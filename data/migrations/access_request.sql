@@ -125,7 +125,7 @@ COMMENT ON SEQUENCE gn_permissions.bib_filters_values_id_filter_value_seq IS
 -- Create request states enum 
 DROP TYPE IF EXISTS filter_value_formats CASCADE ;
 
-CREATE TYPE filter_value_formats AS ENUM ('str', 'int', 'bool', 'geom', 'csv-int') ;
+CREATE TYPE filter_value_formats AS ENUM ('string', 'integer', 'boolean', 'geometry', 'csvint') ;
 
 
 -- -------------------------------------------------------------------------------------------------
@@ -185,10 +185,10 @@ INSERT INTO gn_permissions.bib_filters_values (
 ) 
     SELECT
         gn_permissions.get_id_filter_type('SCOPE'),
-        'int',
+        'integer',
         true,
         '0',
-        'Aucune',
+        'À personne',
         'Aucune appartenance. Cette valeur empèche l''accès aux objets.'
     WHERE NOT EXISTS (
         SELECT 'X'
@@ -202,10 +202,10 @@ INSERT INTO gn_permissions.bib_filters_values (
 ) 
     SELECT
         gn_permissions.get_id_filter_type('SCOPE'),
-        'int',
+        'integer',
         true,
         '1',
-        'Personnelle',
+        'À moi',
         'Appartenant à l''utilisateur. '
         'Indique un accès restreint aux objets créés/associés '
         'à l''utilisateur connecté.'
@@ -221,10 +221,10 @@ INSERT INTO gn_permissions.bib_filters_values (
 ) 
     SELECT
         gn_permissions.get_id_filter_type('SCOPE'),
-        'int',
+        'integer',
         true,
         '2',
-        'Institutionnelle',
+        'À mon organisme',
         'Appartenant à l''ogranisme de l''utilisateur. '
         'Indique un accès restreint aux objets créés/associés à des utilisateurs '
         'du même organisme que l''utilisateur actuellement connecté.'
@@ -240,10 +240,10 @@ INSERT INTO gn_permissions.bib_filters_values (
 ) 
     SELECT
         gn_permissions.get_id_filter_type('SCOPE'),
-        'int',
+        'integer',
         true,
         '3',
-        'À tous',
+        'À tout le monde',
         'Appartenant à tout le monde. '
         'Indique un accès à tous non restreint par l''appartenance des objets.'
     WHERE NOT EXISTS (
@@ -258,7 +258,7 @@ INSERT INTO gn_permissions.bib_filters_values (
 ) 
     SELECT
         gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-        'csv-int',
+        'csvint',
         false,
         'ref_geo.l_areas.id_area',
         'id_area',
@@ -275,7 +275,7 @@ INSERT INTO gn_permissions.bib_filters_values (
 ) 
     SELECT
         gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'csv-int',
+        'csvint',
         false,
         'taxonomie.taxref.cd_nom',
         'cd_nom',
@@ -292,7 +292,7 @@ INSERT INTO gn_permissions.bib_filters_values (
 ) 
     SELECT
         gn_permissions.get_id_filter_type('PRECISION'),
-        'str',
+        'string',
         true,
         'exact',
         'Exacte',
@@ -309,7 +309,7 @@ INSERT INTO gn_permissions.bib_filters_values (
 ) 
     SELECT
         gn_permissions.get_id_filter_type('PRECISION'),
-        'str',
+        'string',
         true,
         'fuzzy',
         'Floutée',
@@ -522,7 +522,8 @@ ALTER TABLE gn_permissions.cor_role_action_filter_module_object
     ADD COLUMN id_filter_type int4 NULL,
     -- TODO: not used today. Remove ? See if really usefull or not !
     -- ADD COLUMN id_filter_value int4 NULL,
-    ADD COLUMN value_filter text NULL ;
+    ADD COLUMN value_filter text NULL,
+    ADD COLUMN id_request int4 NULL ;
 
 
 COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.gathering IS 
@@ -540,6 +541,9 @@ COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_filter_
 COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.value_filter IS 
 	E'Contient les valeurs du filtre à appliquer. '
      'Voir la description du type de filtre pour les valeurs possibles.' ;
+COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_request IS 
+	E'Identifiant de la requête à l''origine de la création de la permission'
+     'Si la permission n''est pas liée à une demande d''accès contient NULL.' ;
 
 
 ALTER TABLE gn_permissions.cor_role_action_filter_module_object
@@ -549,6 +553,198 @@ ALTER TABLE gn_permissions.cor_role_action_filter_module_object
 	ADD CONSTRAINT fk_cor_r_a_f_m_o_id_filter_type FOREIGN KEY (id_filter_type)
 	REFERENCES gn_permissions.bib_filters_type (id_filter_type) MATCH FULL
 	ON UPDATE CASCADE ;
+
+ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+	ADD CONSTRAINT fk_cor_r_a_f_m_o_id_request FOREIGN KEY (id_request)
+	REFERENCES gn_permissions.t_requests (id_request) MATCH FULL
+	ON UPDATE CASCADE ;
+
+
+-- -------------------------------------------------------------------------------------------------
+-- Rename and update trigger to force only one filter type by permission (gathering)
+-- TODO: see if we can rename this trigger
+CREATE OR REPLACE FUNCTION gn_permissions.fct_tri_only_one_filter_type_by_permission()
+RETURNS trigger AS
+$BODY$
+    -- Check if a role has not already the same filter type for a permission (= module-action-object).
+    -- Use as constraint to force not set multiple same filter type by permission (= module-action-object).
+    DECLARE 
+        codeFilterType character varying ;
+        nbPermission integer ;
+    BEGIN
+        -- For this filter type, check if there is not already a permission with it for this
+        -- role-module-action-object
+        SELECT INTO nbPermission COUNT(id_permission)
+        FROM gn_permissions.cor_role_action_filter_module_object
+        WHERE id_role = NEW.id_role 
+            AND id_action = NEW.id_action 
+            AND id_module = NEW.id_module 
+            AND id_object = NEW.id_object 
+            AND gathering = NEW.gathering
+            AND id_filter_type = NEW.id_filter_type ;
+
+        -- if its an insert 0 row must be present, if its an update 1 row must be present
+        IF (TG_OP = 'INSERT' AND nbPermission = 0) OR (TG_OP = 'UPDATE' AND nbPermission = 1) THEN
+            RETURN NEW;
+        END IF;
+        BEGIN
+            -- Get code filter type
+            SELECT INTO codeFilterType code_filter_type
+            FROM gn_permissions.bib_filters_type 
+            WHERE id_filter_type = NEW.id_filter_type ;
+
+            RAISE EXCEPTION 'ATTENTION: il existe déjà un enregistrement avec le type de filtre % '
+                'pour le role % sur le module %, son action % et objet % . Il est interdit de '
+                'définir plusieurs fois le même type de filtre pour un même ensemble role, module, '
+                'action et objet.', 
+                codeFilterType, 
+                NEW.id_role, 
+                NEW.id_module, 
+                NEW.id_action, 
+                NEW.id_object ;
+        END;
+    END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100 ;
+
+DROP TRIGGER IF EXISTS tri_check_no_multiple_filter_type 
+    ON gn_permissions.cor_role_action_filter_module_object ;
+
+CREATE TRIGGER tri_check_no_multiple_filter_type 
+    BEFORE INSERT OR UPDATE
+    ON gn_permissions.cor_role_action_filter_module_object 
+    FOR EACH ROW 
+    EXECUTE PROCEDURE gn_permissions.fct_tri_only_one_filter_type_by_permission() ;
+
+DROP TRIGGER IF EXISTS tri_check_no_multiple_scope_perm 
+    ON gn_permissions.cor_role_action_filter_module_object ;
+
+DROP FUNCTION IF EXISTS gn_permissions.fct_tri_does_user_have_already_scope_filter ;
+
+
+-- -------------------------------------------------------------------------------------------------
+-- Rebuild view "v_roles_permissions"
+DROP VIEW IF EXISTS gn_permissions.v_roles_permissions ;
+
+CREATE VIEW gn_permissions.v_roles_permissions
+AS WITH 
+    -- Get users permissions
+    p_user_permission AS (
+        SELECT u.id_role,
+            u.nom_role,
+            u.prenom_role,
+            NULL AS group_name,
+            u.id_organisme,
+            c_1.id_permission,
+            c_1.id_module,
+            c_1.id_action,
+            c_1.id_object,
+            c_1.gathering,
+            c_1.end_date,
+            c_1.id_filter,-- TODO: remove this line
+            c_1.id_filter_type,
+            c_1.value_filter
+        FROM utilisateurs.t_roles AS u
+            JOIN gn_permissions.cor_role_action_filter_module_object AS c_1 
+                ON (c_1.id_role = u.id_role)
+        WHERE u.groupe = false
+    ),
+    -- Get permissions of groups AND the user permissions inherited from his group(s)
+    -- WARNING : get permissions from groups only if they have users
+    p_groupe_permission AS (
+        SELECT u.id_role,
+            u.nom_role,
+            u.prenom_role,
+            TRIM(TRAILING FROM CONCAT(grp.nom_role, ' ', grp.prenom_role)) AS group_name,
+            u.id_organisme,
+            c_1.id_permission,
+            c_1.id_module,
+            c_1.id_action,
+            c_1.id_object,
+            c_1.gathering,
+            c_1.end_date,
+            c_1.id_filter,-- TODO: remove this line
+            c_1.id_filter_type,
+            c_1.value_filter
+        FROM utilisateurs.t_roles AS u
+            JOIN utilisateurs.cor_roles AS g 
+                ON (g.id_role_utilisateur = u.id_role OR g.id_role_groupe = u.id_role)
+            JOIN utilisateurs.t_roles AS grp 
+                ON (g.id_role_groupe = grp.id_role)
+            JOIN gn_permissions.cor_role_action_filter_module_object AS c_1 
+                ON (c_1.id_role = g.id_role_groupe)
+        -- TODO: check if below lines are really useful
+        -- WHERE g.id_role_groupe IN (
+        --     SELECT DISTINCT cor_roles.id_role_groupe 
+        --     FROM utilisateurs.cor_roles
+        -- )
+    ), 
+    all_user_permission AS (
+        -- UNION operator removes all duplicate rows from the combined data set
+        SELECT p_user_permission.id_role,
+            p_user_permission.nom_role,
+            p_user_permission.prenom_role,
+            p_user_permission.group_name,
+            p_user_permission.id_organisme,
+            p_user_permission.id_permission,
+            p_user_permission.id_module,
+            p_user_permission.id_action,
+            p_user_permission.id_object,
+            p_user_permission.gathering,
+            p_user_permission.end_date,
+            p_user_permission.id_filter,-- TODO: remove this line
+            p_user_permission.id_filter_type,
+            p_user_permission.value_filter
+        FROM p_user_permission
+        UNION
+        SELECT p_groupe_permission.id_role,
+            p_groupe_permission.nom_role,
+            p_groupe_permission.prenom_role,
+            p_groupe_permission.group_name,
+            p_groupe_permission.id_organisme,
+            p_groupe_permission.id_permission,
+            p_groupe_permission.id_module,
+            p_groupe_permission.id_action,
+            p_groupe_permission.id_object,
+            p_groupe_permission.gathering,
+            p_groupe_permission.end_date,
+            p_groupe_permission.id_filter,-- TODO: remove this line
+            p_groupe_permission.id_filter_type,
+            p_groupe_permission.value_filter
+        FROM p_groupe_permission
+    )
+SELECT v.id_role,
+    v.nom_role,
+    v.prenom_role,
+    v.group_name,
+    v.id_organisme,
+    v.id_module,
+    modules.module_code,
+    v.id_action,
+    actions.code_action,
+    actions.description_action,
+    obj.code_object,
+    v.id_filter,-- TODO: remove this line
+    v.id_filter_type,
+    v.value_filter,
+    --filters.label_filter,-- TODO: remove this line
+    filter_type.code_filter_type,
+    v.gathering,
+    v.end_date,
+    v.id_permission
+FROM all_user_permission AS v
+    JOIN gn_permissions.t_actions AS actions 
+        ON (actions.id_action = v.id_action)
+    JOIN gn_permissions.t_objects AS obj 
+        ON (obj.id_object = v.id_object)
+    JOIN gn_permissions.bib_filters_type AS filter_type 
+        ON (v.id_filter_type = filter_type.id_filter_type)
+    JOIN gn_commons.t_modules AS modules 
+        ON (modules.id_module = v.id_module)
+-- TODO: check performance issues with order by
+ORDER BY nom_role, prenom_role, module_code, gathering, id_action, code_object, code_filter_type, end_date ;
+
 
 -- -------------------------------------------------------------------------------------------------
 -- Add sequence for new table "cor_module_action_object_filter" primary key
@@ -925,56 +1121,9 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         WHERE cmaof.code = 'ADMIN-U-PERMISSIONS-SCOPE'
     ) ;
 
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('ADMIN'),
-        gn_permissions.get_id_action('V'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'ADMIN-V-ALL-SCOPE',
-        'Valider des données',
-        'Valider des données dans le module Admin en étant limité par la portée.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'ADMIN-V-ALL-SCOPE'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('ADMIN'),
-        gn_permissions.get_id_action('V'),
-        gn_permissions.get_id_object('NOMENCLATURES'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'ADMIN-V-NOMENCLATURES-SCOPE',
-        'Valider des nomenclatures',
-        'Valider des nomenclatures dans le module Admin en étant limité par la portée.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'ADMIN-V-NOMENCLATURES-SCOPE'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('ADMIN'),
-        gn_permissions.get_id_action('V'),
-        gn_permissions.get_id_object('PERMISSIONS'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'ADMIN-V-PERMISSIONS-SCOPE',
-        'Valider des permissions',
-        'Valider des permissions dans le module Admin en étant limité par la portée.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'ADMIN-V-PERMISSIONS-SCOPE'
-    ) ;
+-- ADMIN-V-ALL-SCOPE : not used !
+-- ADMIN-V-NOMENCLATURES-SCOPE : not used !
+-- ADMIN-V-PERMISSIONS-SCOPE : not used !
 
 INSERT INTO gn_permissions.cor_module_action_object_filter (
     id_module, id_action, id_object, id_filter_type, code, label, description
@@ -1189,11 +1338,45 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
     SELECT
         gn_commons.get_id_module_bycode('SYNTHESE'),
         gn_permissions.get_id_action('R'),
+        gn_permissions.get_id_object('ALL'),
+        gn_permissions.get_id_filter_type('SCOPE'),
+        'SYNTHESE-R-ALL-SCOPE',
+        'Lire des données',
+        'Lire des données dans le module Synthèse en étant limité par la portée.'
+    WHERE NOT EXISTS (
+        SELECT 'X'
+        FROM gn_permissions.cor_module_action_object_filter AS cmaof
+        WHERE cmaof.code = 'SYNTHESE-R-ALL-SCOPE'
+    ) ;
+
+INSERT INTO gn_permissions.cor_module_action_object_filter (
+    id_module, id_action, id_object, id_filter_type, code, label, description
+) 
+    SELECT
+        gn_commons.get_id_module_bycode('SYNTHESE'),
+        gn_permissions.get_id_action('E'),
+        gn_permissions.get_id_object('ALL'),
+        gn_permissions.get_id_filter_type('SCOPE'),
+        'SYNTHESE-E-ALL-SCOPE',
+        'Exporter des données',
+        'Exporter des données dans le module Synthèse en étant limité par la portée.'
+    WHERE NOT EXISTS (
+        SELECT 'X'
+        FROM gn_permissions.cor_module_action_object_filter AS cmaof
+        WHERE cmaof.code = 'SYNTHESE-E-ALL-SCOPE'
+    ) ;
+
+INSERT INTO gn_permissions.cor_module_action_object_filter (
+    id_module, id_action, id_object, id_filter_type, code, label, description
+) 
+    SELECT
+        gn_commons.get_id_module_bycode('SYNTHESE'),
+        gn_permissions.get_id_action('R'),
         gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
         gn_permissions.get_id_filter_type('PRECISION'),
         'SYNTHESE-R-PRIVATE_OBSERVATION-PRECISION',
         'Lire des observations privées',
-        'Lire des observations privées dans le module Synthèse en étant limité la précision.'
+        'Lire des observations privées dans le module Synthèse en étant limité par la précision.'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
@@ -1261,7 +1444,7 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_permissions.get_id_filter_type('PRECISION'),
         'SYNTHESE-E-PRIVATE_OBSERVATION-PRECISION',
         'Exporter des observations privées',
-        'Exporter des observations privées dans le module Synthèse en étant limité la précision.'
+        'Exporter des observations privées dans le module Synthèse en étant limité par la précision.'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
@@ -1397,7 +1580,7 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_permissions.get_id_filter_type('PRECISION'),
         'SYNTHESE-E-SENSITIVE_OBSERVATION-PRECISION',
         'Exporter des observations sensibles',
-        'Exporter des observations sensibles dans le module Synthèse en étant limité la précision.'
+        'Exporter des observations sensibles dans le module Synthèse en étant limité par la précision.'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
@@ -1465,7 +1648,7 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_permissions.get_id_filter_type('PRECISION'),
         'VALIDATION-R-PRIVATE_OBSERVATION-PRECISION',
         'Lire des observations privées',
-        'Lire des observations privées dans le module Validation en étant limité la précision.'
+        'Lire des observations privées dans le module Validation en étant limité par la précision.'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
