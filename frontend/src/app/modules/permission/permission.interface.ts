@@ -50,13 +50,22 @@ export interface IRolePermission {
   type: 'USER' | 'GROUP';
   permissionsNbr?: number;
   permissions?: Record<string, IPermission[]>;// Not use in list to decrease bandwidth consumption.
+  groups?: IGroupPermission[]
+}
+
+export interface IGroupPermission {
+  id: number;
+  groupName: string;
 }
 
 export interface IPermission {
   name: string;
   code: string;
+  gathering?: string;
   module: string;
-  end_date: string;// TODO: use Date
+  action: string;
+  object: string;
+  endDate: string;// TODO: use Date
   //filters: Record<string, IPermissionFilter[]>;
   filters: IPermissionFilter[];
 }
@@ -83,4 +92,33 @@ export interface IModule {
   activatedBackend: boolean;
   docUrl?: URL;
   order?: number;
+}
+
+// ACTION-OJBECT (= PERMISSION)
+export interface IActionObject {
+  moduleCode: string;
+  actionCode: string;
+  objectCode: string;
+  label: string;
+}
+
+export interface IFilter {
+  moduleCode: string;
+  actionCode: string;
+  objectCode: string;
+  filterTypeCode: string;
+  code: string;
+  description: string;
+}
+
+export interface IFilterValue {
+  id: number;
+  filterTypeCode: string;
+  filterTypeId: number;
+  label: string;
+  description: string;
+  predefined: boolean;
+  valueFormat: string;
+  valueOrField: string;
+  value?: string | number | boolean;
 }

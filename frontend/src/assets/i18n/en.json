@@ -25,6 +25,8 @@
   "Delete": "Delete",
   "Send": "Send",
   "Validate": "Validate",
+  "Create": "Add",
+  "Update": "Update",
   "NotAllowed": "You do not have the rights to perform this action",
   "LoginError": "Login or password incorrect",
   "DownloadData": "Download data",
@@ -261,9 +263,9 @@
         "PRECISION": "Precision"
       },
       "tooltips": {
-        "SCOPE": "Permissions limited by the type of data membership.",
-        "GEOGRAPHIC": "Permissions limited by geographic areas.",
-        "TAXONOMIC": "Permissions limited by taxa.",
+        "SCOPE": "Permission limited by the type of data membership.",
+        "GEOGRAPHIC": "Permission limited by geographic areas.",
+        "TAXONOMIC": "Permission limited by taxa.",
         "PRECISION": "Activates (= fuzzy) or deactivates (= exact) the blurring of data (sensitive or private)."
       },
       "values": {
@@ -290,19 +292,28 @@
     "reset": "Reset",
     "module": {
       "label":"Modules",
-      "stepLabel": "Choose a module"
+      "stepLabel": "Module",
+      "moduleHelp": "Choose a module."
     },
     "actionObject": {
       "label": "Permissions",
-      "stepLabel": "Choose a permission"
+      "stepLabel": "Permission",
+      "actionObjectHelp": "Choose a permission."
     },
     "filter": {
-      "stepLabel": "Add filters"
+      "stepLabel": "Filters",
+      "atLeastOneFieldMsg": "At least one filter field has to be provided. The property filter is mandatory."
     },
     "validating": {
       "stepLabel": "Validating",
-      "endDateLabel": "End date of permission"
-    }
+      "endDateLabel": "End date of permission",
+      "endDateTooltip": "Format for end date of permission: dd/mm/yyyy.",
+      "endDateHelp": "Peek a date or leave blank to make the permission permanent."
+    },
+    "addingOk": "Permission added successfully.",
+    "addingKo": "An error occured while adding the permission: {{errorMsg}}.",
+    "updatingOk": "Permission updated successfully.",
+    "updatingKo": "An error occured while updatind the permission: {{errorMsg}}."
   },
   "Datatable": {
     "emptyMessage": "No data to display.",

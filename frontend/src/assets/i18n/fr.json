@@ -25,6 +25,8 @@
   "Delete": "Supprimer",
   "Send": "Envoyer",
   "Validate": "Valider",
+  "Create": "Ajouter",
+  "Update": "Mettre à jour",
   "Yes": "Oui",
   "No": "Non",
   "NotAllowed": "Vous n'avez pas les droits pour effectuer cette action",
@@ -265,9 +267,9 @@
         "PRECISION": "Précision"
       },
       "tooltips": {
-        "SCOPE": "Permissions limitées par le type d''appartenances des données.",
-        "GEOGRAPHIC": "Permissions limitées par zones géographiques.",
-        "TAXONOMIC": "Permissions limitées par des taxons.",
+        "SCOPE": "Permission limitée par le type d''appartenance des données.",
+        "GEOGRAPHIC": "Permission limitée par des zones géographiques.",
+        "TAXONOMIC": "Permission limitée par des taxons.",
         "PRECISION": "Active (=floutée) ou désactive (=exacte) le floutage des données (sensibles ou privées)."
       },
       "values": {
@@ -286,7 +288,7 @@
     "deleteOk": "Suppression de la permission prise en compte",
     "deleteKo": "Une erreur est survenue lors de la suppression de la permission : {{errorMsg}}",
     "titles": {
-      "update": "Édtion d'une permission",
+      "update": "Édition d'une permission",
       "add": "Ajout d'une permission"
     },
     "previous": "Précédent",
@@ -294,19 +296,28 @@
     "reset": "Réinitialiser",
     "module": {
       "label": "Modules",
-      "stepLabel": "Choisissez un module"
+      "stepLabel": "Module",
+      "moduleHelp": "Choisissez un module."
     },
     "actionObject": {
       "label": "Permissions",
-      "stepLabel": "Choisissez une permission"
+      "stepLabel": "Permission",
+      "actionObjectHelp": "Choisissez une permission."
     },
     "filter": {
-      "stepLabel": "Ajouter des filtres"
+      "stepLabel": "Filtre",
+      "atLeastOneFieldMsg": "Au moins un filtre doit être sélectionné. Le filtre d'appartenance est obligatoire."
     },
     "validating": {
       "stepLabel": "Validation",
-      "endDateLabel": "Date de fin de permission"
-    }
+      "endDateLabel": "Date de fin de permission",
+      "endDateTooltip": "Format de la date de fin de permisison : jj/mm/aaaa.",
+      "endDateHelp": "Choisissez une date ou laisser vide pour rendre permanente la permission."
+    },
+    "addingOk": "Permission ajoutée avec succès.",
+    "addingKo": "Une erreur est survenue lors de l'ajout de la permission.",
+    "updatingOk": "Permission mise à jour avec succès.",
+    "updatingKo": "Une erreur est survenue lors de la mise à jour de la permission."
   },
   "Datatable": {
     "emptyMessage": "Aucune donnée à afficher.",

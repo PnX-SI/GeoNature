@@ -1,10 +1,10 @@
-import { ActivatedRoute } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
 import { map, mergeMap } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import { of, Subject, Subscription } from 'rxjs';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 import { CommonService } from '@geonature_common/service/common.service';
 import { IModule, IPermission, IRolePermission } from '../permission.interface'
@@ -21,6 +21,9 @@ import { Permission } from '../shared/permission.model';
 })
 export class PermissionDetailComponent implements OnInit {
 
+  loading: boolean = false;
+  locale: string;
+  destroy$: Subject<boolean> = new Subject<boolean>();
   idRole: number;
   role: IRolePermission;
   modules: IModule[];
@@ -28,16 +31,25 @@ export class PermissionDetailComponent implements OnInit {
 
   constructor(
     public activatedRoute: ActivatedRoute,
+    private commonService: CommonService,
     public dialog: MatDialog,
     public permissionService: PermissionService,
-    private commonService: CommonService,
+    private router: Router,
     private translateService: TranslateService,
     private toasterService: ToastrService,
-  ) {}
+  ) {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+  }
 
   ngOnInit(): void {
     this.extractRouteParams();
     this.loadRole();
+    this.getI18nLocale();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
   private extractRouteParams() {
@@ -53,39 +65,56 @@ export class PermissionDetailComponent implements OnInit {
   }
 
   private loadRole() {
+    this.loading = true;
     this.permissionService.getRoleById(this.idRole)
       .pipe(
         map( role => {
           let modulesCodes = Object.keys(role.permissions);
           this.role = role;
-          console.log('Role:', this.role)
           return modulesCodes;
         }),
         mergeMap( modulesCodes => {
           if (modulesCodes.length > 0) {
             return this.permissionService.getModules(modulesCodes)
           } else {
-            return [];
+            return of([]);
           }
         })
       )
       .subscribe(modules => {
         this.modules = modules;
-        console.log('Modules:', this.modules)
+        this.loading = false;
       });
-      console.log(`In loadRole end: role ${this.role}`)
   }
 
-  openAddModal(permission: IPermission = new Permission()): void {
+  private getI18nLocale() {
+    this.locale = this.translateService.currentLang;
+    this.translateService.onLangChange
+      .takeUntil(this.destroy$)
+      .subscribe((langChangeEvent: LangChangeEvent) => {
+        this.locale = langChangeEvent.lang;
+      });
+  }
+
+  trackByModuleCode(index: number, module: any): string {
+    return module.code;
+  }
+
+  openEditModal(permission: IPermission = new Permission()): void {
+    console.log("Open edit modal:", permission)
     const dialogRef = this.dialog.open(EditPermissionModal, {
-      data: permission,
+      data: {
+        "idRole": this.idRole,
+        "permission": permission,
+      },
       disableClose: true,
       panelClass: 'edit-permission-modal',
     });
 
-    dialogRef.afterClosed().subscribe(permission => {
-      if (permission) {
-        console.log("In after add permission modal closed:", permission)
+    dialogRef.afterClosed().subscribe(msg => {
+      if (msg == 'OK') {
+        console.log("In after add permission modal closed:", msg)
+        this.loadRole();
       }
     });
   }

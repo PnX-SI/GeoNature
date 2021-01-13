@@ -4,7 +4,7 @@ import { delay } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
-import { IRolePermission, IPermissionRequest, IModule } from './permission.interface'
+import { IRolePermission, IPermissionRequest, IModule, IActionObject, IFilter, IFilterValue } from './permission.interface'
 
 
 @Injectable()
@@ -60,6 +60,42 @@ export class PermissionService {
       params = new HttpParams().set('codes', codes.join(','));
     }
     return this.http.get<IModule[]>(url, {params: params});
+  }
+
+  getActionsObjects(module: string = ''): Observable<IActionObject[]> {
+    const url = `${this.cfg.API_ENDPOINT}/permissions/availables/actions-objects`;
+    let params = null;
+    if (module) {
+      params = new HttpParams().set('module', module);
+    }
+    return this.http.get<IActionObject[]>(url, {params: params});
+  }
+
+  getActionsObjectsFilters(actionObj: IActionObject): Observable<IFilter[]> {
+    const url = `${this.cfg.API_ENDPOINT}/permissions/availables/actions-objects-filters`;
+    let params = null;
+    if (actionObj) {
+      params = new HttpParams()
+        .set('module', actionObj.moduleCode)
+        .set('action', actionObj.actionCode)
+        .set('object', actionObj.objectCode);
+    }
+    return this.http.get<IFilter[]>(url, {params: params});
+  }
+
+  getFiltersValues(): Observable<Record<string, IFilterValue[]>> {
+    const url = `${this.cfg.API_ENDPOINT}/permissions/filters-values`;
+    return this.http.get<Record<string, IFilterValue[]>>(url);
+  }
+
+  addPermission(data: any): Observable<any> {
+    const url = `${this.cfg.API_ENDPOINT}/permissions`;
+    return this.http.post<any>(url, data);
+  }
+
+  updatePermission(data: any): Observable<any> {
+    const url = `${this.cfg.API_ENDPOINT}/permissions/${data.gathering}`;
+    return this.http.put<any>(url, data);
   }
 
   getAllProcessedRequests(): Observable<IPermissionRequest[]> {

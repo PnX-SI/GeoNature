@@ -1,9 +1,12 @@
-import { IPermissionFilter } from '../permission.interface';
+import { IPermission, IPermissionFilter } from '../permission.interface';
 
-export class Permission {
+export class Permission implements IPermission {
   name: string;
   code: string;
   module: string;
-  end_date: string;// TODO: use Date
+  action: string;
+  object: string;
+  gathering?: string;
+  endDate: string;// TODO: use Date
   filters: IPermissionFilter[];
 }
