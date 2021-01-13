@@ -21,30 +21,31 @@ class VUsersPermissions(DB.Model):
     id_role = DB.Column(DB.Integer, primary_key=True)
     nom_role = DB.Column(DB.Unicode)
     prenom_role = DB.Column(DB.Unicode)
+    groupe = DB.Column(DB.Boolean)
     id_organisme = DB.Column(DB.Integer)
     id_module = DB.Column(DB.Integer, primary_key=True)
     module_code = DB.Column(DB.Unicode)
-    code_object = DB.Column(DB.Unicode)
     id_action = DB.Column(DB.Integer, primary_key=True)
-    description_action = DB.Column(DB.Unicode)
-    id_filter = DB.Column(DB.Integer, primary_key=True)
-    label_filter = DB.Column(DB.Integer, primary_key=True)
     code_action = DB.Column(DB.Unicode)
     description_action = DB.Column(DB.Unicode)
+    code_object = DB.Column(DB.Unicode)
+    id_filter = DB.Column(DB.Integer, primary_key=True)# TODO: remove this line
+    id_filter_type = DB.Column(DB.Integer)
     value_filter = DB.Column(DB.Unicode)
     code_filter_type = DB.Column(DB.Unicode)
-    id_filter_type = DB.Column(DB.Integer)
+    gathering = DB.Column(UUID(as_uuid=True))
+    end_date = DB.Column(DB.DateTime)
     id_permission = DB.Column(DB.Integer)
 
     def __repr__(self):
         return """VUsersPermissions
-            role='{}' action='{}' filter='{}' module='{}' filter_type='{}' object='{} >""".format(
+            role='{}' module='{}' action='{}' object='{}' filter_type='{}' filter_value='{}'""".format(
             self.id_role,
-            self.code_action,
-            self.value_filter,
             self.module_code,
-            self.code_filter_type,
+            self.code_action,
             self.code_object,
+            self.code_filter_type,
+            self.value_filter,
         )
 
 
@@ -57,12 +58,13 @@ class BibFiltersType(DB.Model):
     label_filter_type = DB.Column(DB.Unicode)
     description_filter_type = DB.Column(DB.Unicode)
 
+
 class FilterValueFormats(str, enum.Enum):
-    string: str = "str"
-    integer: str = "int"
-    boolean: str = "bool"
-    geometry: str = "geom"
-    csvint: str = "csv-int"
+    string: str = "string"
+    integer: str = "integer"
+    boolean: str = "boolean"
+    geometry: str = "geometry"
+    csvint: str = "csvint"
 
 
 @serializable
@@ -72,11 +74,13 @@ class BibFiltersValues(DB.Model):
     id_filter_value = DB.Column(DB.Integer, primary_key=True)
     id_filter_type = DB.Column(DB.Integer)
     value_format = DB.Column(DB.Enum(FilterValueFormats))
-    code_filter_type = DB.Column(DB.Unicode)
-    label = DB.Column(DB.Unicode)
-    description = DB.Column(DB.Unicode)
+    predefined = DB.Column(DB.Boolean)
+    value_or_field = DB.Column(DB.Unicode(length=50))
+    label = DB.Column(DB.Unicode(length=255))
+    description = DB.Column(DB.UnicodeText)
 
 
+# TODO: remove this class
 @serializable
 class TFilters(DB.Model):
     __tablename__ = "t_filters"
@@ -127,6 +131,10 @@ class CorRoleActionFilterModuleObject(DB.Model):
         ForeignKey("gn_permissions.bib_filters_type.id_filter_type"),
     )
     value_filter = DB.Column(DB.Unicode)
+    id_request = DB.Column(
+        DB.Integer,
+        ForeignKey("gn_permissions.t_requests.id_request"),
+    )
 
     role = DB.relationship(
         User,
@@ -138,6 +146,7 @@ class CorRoleActionFilterModuleObject(DB.Model):
         primaryjoin=(TActions.id_action == id_action),
         foreign_keys=[id_action],
     )
+    #TODO: remove this relation
     filter = DB.relationship(
         TFilters,
         primaryjoin=(TFilters.id_filter == id_filter),
@@ -159,9 +168,17 @@ class CorRoleActionFilterModuleObject(DB.Model):
         primaryjoin=(BibFiltersType.id_filter_type == id_filter_type),
         foreign_keys=[id_filter_type],
     )
+    # cor_request = DB.relationship(
+    #     t_requests,
+    #     primaryjoin=(t_requests.id_request == id_request),
+    #     foreign_keys=[id_request],
+    # )
 
-    def is_permission_already_exist(self):
+    def is_already_exist(self):
         """ Retourne la première permission trouvée correspondant à l'objet courant.
+            ATTENTION: cette méthode ne vérifie pas tous les filtres d'une permission. Elle
+            vérfie seulement qu'il n'existe pas déjà un enregistrement similaire dans la table.
+            Tous les champs sont vérifiés à l'exception de la clé "id_permission".
 
             Returns
             -------
@@ -173,13 +190,16 @@ class CorRoleActionFilterModuleObject(DB.Model):
             "id_action": self.id_action,
             "id_module": self.id_module,
             "id_object": self.id_object,
+            "gathering": self.gathering,
             "end_date": self.end_date,
             "id_filter_type": self.id_filter_type,
             "value_filter": self.value_filter,
+            "id_request": self.id_request,
         }
         return (
             DB.session.query(CorRoleActionFilterModuleObject)
             .filter_by(**privilege)
+            # TODO: remove joint and filters to TFilters
             .join(TFilters, TFilters.id_filter == CorRoleActionFilterModuleObject.id_filter)
             .filter(TFilters.id_filter_type == self.id_filter_type)
             .filter(TFilters.value_filter == self.value_filter)
