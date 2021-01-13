@@ -38,6 +38,10 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
   endAccessDateCellTpl: TemplateRef<any>;
   @ViewChild('stateCellTpl')
   stateCellTpl: TemplateRef<any>;
+  @ViewChild('processedDateCellTpl')
+  processedDateCellTpl: TemplateRef<any>;
+  @ViewChild('processedByCellTpl')
+  processedByCellTpl: TemplateRef<any>;
   @ViewChild('actionsCellTpl')
   actionsCellTpl: TemplateRef<any>;
 
@@ -91,6 +95,20 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
       prop: 'processedState',
       name: 'État',
       tooltip: "État de la demande : acceptée ou refusée.",
+      flexGrow: 1,
+      searchable: true,
+    },
+    {
+      prop: 'processedDate',
+      name: 'Date traitement',
+      tooltip: "Date et heure à laquelle le traitement de la demande a eu lieu.",
+      flexGrow: 1,
+      searchable: true,
+    },
+    {
+      prop: 'processedBy',
+      name: 'Traité par',
+      tooltip: "Prénom et nom de l'administrateur ayant traité la demande. ANONYME si le traitement a eu lieu via l'email.",
       flexGrow: 1,
       searchable: true,
     },
@@ -150,6 +168,10 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
         col.cellTemplate = this.endAccessDateCellTpl;
       } else if (col.prop === 'processedState') {
         col.cellTemplate = this.stateCellTpl;
+      } else if (col.prop === 'processedDate') {
+        col.cellTemplate = this.processedDateCellTpl;
+      } else if (col.prop === 'processedBy') {
+        col.cellTemplate = this.processedByCellTpl;
       } else if (col.prop === 'actions') {
         col.cellTemplate = this.actionsCellTpl;
       }
@@ -206,8 +228,14 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
     this.rows = this.filteredData.filter(function (item) {
       // Iterate through each row's column data
       for (let i = 0; i < searchColsAmount; i++) {
+        // Handle item (defined or not)
+        let item_value = ''
+        if (item[searchColumns[i]]) {
+          item_value = item[searchColumns[i]].toString().toLowerCase();
+        }
+
         // Check for a match
-        if (item[searchColumns[i]].toString().toLowerCase().indexOf(val) !== -1 || !val){
+        if (item_value.indexOf(val) !== -1 || !val){
           // Found match, return true to add to result set
           return true;
         }

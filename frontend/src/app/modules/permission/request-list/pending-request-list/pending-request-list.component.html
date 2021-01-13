@@ -53,6 +53,10 @@
     <span [matTooltip]="value"> {{ value | slice:0:5 }}...</span>
   </ng-template>
 
+  <ng-template #endAccessDateCellTpl let-value="value">
+    <span> {{ value | date:'mediumDate':undefined:locale }}</span>
+  </ng-template>
+
   <ng-template #geographicCellTpl let-value="value">
       <span class="d-inline-block w-100 h-100" [matTooltip]="value?.join(',\n')">
         {{ value?.length }}
@@ -70,9 +74,10 @@
     <ng-template #unsensitive>NON</ng-template>
   </ng-template>
 
-  <ng-template #endAccessDateCellTpl let-value="value">
-    <span> {{ value | date:'mediumDate':undefined:locale }}</span>
+  <ng-template #createDateCellTpl let-value="value">
+    <span> {{ value | date:'short':undefined:locale }}</span>
   </ng-template>
+
 
   <ng-template #actionsCellTpl let-value="value" let-row="row">
     <div class="d-flex justify-content-end flex-wrap">

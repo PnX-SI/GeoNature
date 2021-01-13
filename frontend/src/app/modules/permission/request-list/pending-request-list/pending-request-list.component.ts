@@ -41,6 +41,8 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
   sensitiveCellTpl: TemplateRef<any>;
   @ViewChild('endAccessDateCellTpl')
   endAccessDateCellTpl: TemplateRef<any>;
+  @ViewChild('createDateCellTpl')
+  createDateCellTpl: TemplateRef<any>;
   @ViewChild('actionsCellTpl')
   actionsCellTpl: TemplateRef<any>;
 
@@ -66,6 +68,13 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
       searchable: true,
     },
     {
+      prop: 'endAccessDate',
+      name: 'Date de fin',
+      tooltip: "Date à laquelle les permissions demandées expires.",
+      flexGrow: 1,
+      searchable: true,
+    },
+    {
       prop: 'geographicFiltersLabels',
       name: 'Zones géo.',
       tooltip: 'Nombre de zones géographiques concernées par la demande.',
@@ -84,9 +93,9 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
       flexGrow: 1,
     },
     {
-      prop: 'endAccessDate',
-      name: 'Date de fin',
-      tooltip: "Date à laquelle les permissions demandées expires.",
+      prop: 'metaCreateDate',
+      name: 'Date demande',
+      tooltip: "Date d'enregistrement de la demande.",
       flexGrow: 1,
       searchable: true,
     },
@@ -154,14 +163,16 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
       // Set specific config
       if (col.prop === 'token') {
         col.cellTemplate = this.tokenCellTpl;
+      } else if (col.prop === 'endAccessDate') {
+        col.cellTemplate = this.endAccessDateCellTpl;
       } else if (col.prop === 'geographicFiltersLabels') {
         col.cellTemplate = this.geographicCellTpl;
       } else if (col.prop === 'taxonomicFiltersLabels') {
         col.cellTemplate = this.taxonomicCellTpl;
       } else if (col.prop === 'sensitiveAccess') {
         col.cellTemplate = this.sensitiveCellTpl;
-      } else if (col.prop === 'endAccessDate') {
-        col.cellTemplate = this.endAccessDateCellTpl;
+      } else if (col.prop === 'metaCreateDate') {
+        col.cellTemplate = this.createDateCellTpl;
       } else if (col.prop === 'actions') {
         col.cellTemplate = this.actionsCellTpl;
       }
@@ -208,8 +219,14 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
     this.rows = this.filteredData.filter(function (item) {
       // Iterate through each row's column data
       for (let i = 0; i < searchColsAmount; i++) {
+        // Handle item (defined or not)
+        let item_value = ''
+        if (item[searchColumns[i]]) {
+          item_value = item[searchColumns[i]].toString().toLowerCase();
+        }
+
         // Check for a match
-        if (item[searchColumns[i]].toString().toLowerCase().indexOf(val) !== -1 || !val){
+        if (item_value.indexOf(val) !== -1 || !val){
           // Found match, return true to add to result set
           return true;
         }

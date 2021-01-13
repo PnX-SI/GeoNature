@@ -73,11 +73,20 @@
   </ng-template>
 
   <ng-template #endAccessDateCellTpl let-value="value">
-    <span> {{ value | date:'mediumDate':undefined:locale }}</span>
+    <span> {{ value | date:'shortDate':undefined:locale }} </span>
   </ng-template>
 
   <ng-template #stateCellTpl let-value="value">
-    <span> {{ 'Permissions.accessRequest.' + value | translate }}</span>
+    <span> {{ 'Permissions.accessRequest.' + value | translate }} </span>
+  </ng-template>
+
+  <ng-template #processedDateCellTpl let-value="value">
+    <span> {{ value | date:'short':undefined:locale }} </span>
+  </ng-template>
+
+  <ng-template #processedByCellTpl let-value="value">
+    <span *ngIf="value; else anonymous">{{ value }}</span>
+    <ng-template #anonymous>ANONYME</ng-template>
   </ng-template>
 
   <ng-template #actionsCellTpl let-value="value" let-row="row">
@@ -90,6 +99,7 @@
       <mat-icon>description</mat-icon>
     </button>
   </ng-template>
+
 </ngx-datatable>
 
 <!-- Reorderable columns templates -->
