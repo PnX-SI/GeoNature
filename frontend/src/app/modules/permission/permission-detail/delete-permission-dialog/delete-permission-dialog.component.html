@@ -6,14 +6,17 @@
 <div mat-dialog-content>
   <h2 class="h5">Infos</h2>
   <dl class="row ml-3">
+    <dt class="col-sm-5 col-md-3 text-sm-right text-md-right">Module :</dt>
+    <dd class="col-sm-7 col-md-9">{{ permission.module }}</dd>
+
     <dt class="col-sm-5 col-md-3 text-sm-right text-md-right">Permission :</dt>
     <dd class="col-sm-7 col-md-9">{{ permission.name }}</dd>
 
     <dt class="col-sm-5 col-md-3 text-sm-right text-md-right">Date de fin :</dt>
     <dd class="col-sm-7 col-md-9">
-      <ng-template *ngIf="permission.end_date ; else permanent">
-        {{ permission.end_date }}
-      </ng-template>
+      <ng-container *ngIf="permission.endDate ; else permanent">
+        {{ permission.endDate | date:'mediumDate':null:locale }}
+      </ng-container>
       <ng-template #permanent>Aucune</ng-template>
     </dd>
   </dl>
@@ -33,7 +36,9 @@
         </dd>
         <dd *ngIf="filter.label" class="col-sm-7 col-md-9">
           <mat-chip-list>
-            <mat-chip *ngFor="let label of filter.label">{{ label }}</mat-chip>
+            <mat-chip *ngFor="let label of filter.label">
+              <span [innerHtml]="label | safeHTML"></span>
+            </mat-chip>
           </mat-chip-list>
         </dd>
       </ng-container>
