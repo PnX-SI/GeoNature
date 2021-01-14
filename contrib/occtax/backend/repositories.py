@@ -242,7 +242,6 @@ def get_query_occtax_filters(
         q = q.filter(TOccurrencesOccurrence.digital_proof == params.pop("digital_proof"))
     # Generic Filters
     for param in params:
-        print(table_columns)
         if param in table_columns:
             col = getattr(table_columns, param)
             testT = testDataType(params[param], col.type, param)

@@ -47,10 +47,6 @@ def check_cruved_scope(
             user = get_user_from_token_and_raise(
                 request, action, redirect_on_expiration, redirect_on_invalid_token
             )
-            # If user not a dict: its a token issue
-            # return the appropriate Response from get_user_from_token_and_raise
-            if not isinstance(user, dict):
-                return user
             user_with_highter_perm = None
             user_permissions = get_user_permissions(
                 user, "SCOPE", action, module_code, object_code

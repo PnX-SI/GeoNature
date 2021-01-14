@@ -2,6 +2,7 @@ import pytest
 
 
 from flask import url_for, current_app, request, Response
+from werkzeug.exceptions import Unauthorized
 
 from pypnusershub.db.tools import (
     InsufficientRightsError,
@@ -45,11 +46,17 @@ class TestGnPermissionsTools:
         assert user["nom_role"] == "Administrateur"
 
     def test_user_from_token_and_raise_fail(self):
+        # no cookie
+        with pytest.raises(Unauthorized, match="No token"):
+            resp = get_user_from_token_and_raise(request)
         # set a fake cookie
-        self.client.set_cookie("/", "token", "fake cookie")
-        resp = get_user_from_token_and_raise(request)
-        assert isinstance(resp, Response)
-        assert resp.status_code == 403
+        self.client.set_cookie("/", "token", "fake token")
+        # fake request to set cookie
+        response = self.client.get(
+            url_for("gn_permissions_backoffice.filter_list", id_filter_type=4)
+        )
+        with pytest.raises(Unauthorized, match="Token corrupted") as exc_info:
+            resp = get_user_from_token_and_raise(request)
 
     def test_get_user_permissions(self):
         # set a real cookie

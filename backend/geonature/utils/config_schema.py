@@ -37,7 +37,11 @@ class CasSchemaConf(Schema):
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, missing=dict())
     USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(missing=False)
     # Quel modules seront associés au JDD récupérés depuis MTD
+
+class MTDSchemaConf(Schema):
     JDD_MODULE_CODE_ASSOCIATION = fields.List(fields.String, missing=["OCCTAX", "OCCHAB"])
+    ID_INSTANCE_FILTER = fields.Integer(missing=None)
+
 
 
 class BddConfig(Schema):
@@ -94,6 +98,18 @@ class MediasConfig(Schema):
 
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(missing=50, validate=OneOf([10, 25, 50, 100]))
+    ENABLE_CLOSE_AF = fields.Boolean(missing=False)
+    CLOSED_AF_TITLE = fields.String(missing="")
+    AF_PDF_TITLE = fields.String(missing="Cadre d'acquisition: ")
+    DS_PDF_TITLE = fields.String(missing="")
+    MAIL_SUBJECT_AF_CLOSED_BASE = fields.String(missing="")
+    MAIL_CONTENT_AF_CLOSED_ADDITION = fields.String(missing="")
+    MAIL_CONTENT_AF_CLOSED_PDF = fields.String(missing="")
+    MAIL_CONTENT_AF_CLOSED_URL = fields.String(missing="")
+    MAIL_CONTENT_AF_CLOSED_GREETINGS = fields.String(missing="")
+    CLOSED_MODAL_LABEL = fields.String(missing="Fermer un cadre d'acquisition")
+    CLOSED_MODAL_CONTENT = fields.String(missing="""L'action de fermeture est irréversible. Il ne sera
+    plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite.""")
 
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
@@ -123,6 +139,7 @@ class GnPySchemaConf(Schema):
     CAS = fields.Nested(CasSchemaConf, missing=dict())
     MAIL_ON_ERROR = fields.Boolean(missing=False)
     MAIL_CONFIG = fields.Nested(MailConfig, missing=None)
+    METADATA = fields.Nested(MetadataConfig, missing=dict())
     ADMIN_APPLICATION_LOGIN = fields.String()
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
     USERSHUB = fields.Nested(UsersHubConfig, missing={})
@@ -132,8 +149,8 @@ class GnPySchemaConf(Schema):
     @post_load()
     def unwrap_usershub(self, data):
         """
-            On met la section [USERSHUB] à la racine de la conf
-            pour compatibilité et simplicité ave le sous-module d'authentif
+        On met la section [USERSHUB] à la racine de la conf
+        pour compatibilité et simplicité ave le sous-module d'authentif
         """
         for key, value in data["USERSHUB"].items():
             data[key] = value
@@ -200,7 +217,8 @@ class Synthese(Schema):
     EXPORT_GEOJSON_LOCAL_COL = fields.String(missing="geojson_local")
     EXPORT_METADATA_ID_DATASET_COL = fields.String(missing="jdd_id")
     EXPORT_METADATA_ACTOR_COL = fields.String(missing="acteurs")
-    EXPORT_FORMAT = fields.List(fields.String(), missing=["csv", "geojson", "shapefile"])
+    # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
+    EXPORT_FORMAT = fields.List(fields.String(), missing=["csv", "geojson", "gpkg"])
     # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
     TAXON_RESULT_NUMBER = fields.Integer(missing=20)
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
@@ -240,17 +258,24 @@ BASEMAP = [
     {
         "name": "OpenStreetMap",
         "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
-        "options": {"attribution": "&copy OpenStreetMap",},
+        "options": {
+            "attribution": "&copy OpenStreetMap",
+        },
     },
     {
         "name": "OpenTopoMap",
         "url": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
-        "options": {"attribution": "© OpenTopoMap",},
+        "options": {
+            "attribution": "© OpenTopoMap",
+        },
     },
     {
         "name": "GoogleSatellite",
         "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
-        "options": {"subdomains": ["mt0", "mt1", "mt2", "mt3"], "attribution": "© GoogleMap",},
+        "options": {
+            "subdomains": ["mt0", "mt1", "mt2", "mt3"],
+            "attribution": "© GoogleMap",
+        },
     },
 ]
 
@@ -293,6 +318,8 @@ class GnGeneralSchemaConf(Schema):
     MEDIAS = fields.Nested(MediasConfig, missing={})
     UPLOAD_FOLDER = fields.String(missing="static/medias")
     METADATA = fields.Nested(MetadataConfig, missing={})
+    MTD = fields.Nested(MTDSchemaConf, missing={})
+    NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(missing=1000000)
 
     @validates_schema
     def validate_enable_sign_up(self, data):

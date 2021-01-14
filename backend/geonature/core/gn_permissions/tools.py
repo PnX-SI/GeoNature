@@ -1,6 +1,7 @@
 import logging, json
 
 from flask import current_app, redirect, Response
+from werkzeug.exceptions import Unauthorized
 
 from itsdangerous import (
     TimedJSONWebSignatureSerializer as Serializer,
@@ -44,48 +45,30 @@ def get_user_from_token_and_raise(
 ):
     """
     Deserialize the token
-    catch excetpion and return appropriate Response(403, 302 ...)
+    Catch specific exceptions and return common exceptions (Unauthorized, Forbidden) with
+    appropriate message
     """
     try:
         token = request.cookies["token"]
         return user_from_token(token, secret_key)
 
+    except KeyError:
+        raise Unauthorized(description='No token.')
     except AccessRightsExpiredError:
-        if redirect_on_expiration:
-            res = redirect(redirect_on_expiration, code=302)
-        else:
-            res = Response("Token Expired", 403)
-        res.set_cookie("token", expires=0)
-        return res
-    except InsufficientRightsError as e:
-        log.info(e)
-        if redirect_on_expiration:
-            res = redirect(redirect_on_expiration, code=302)
-        else:
-            res = Response("Forbidden", 403)
-        return res
-    except KeyError as e:
-        if redirect_on_expiration:
-            return redirect(redirect_on_expiration, code=302)
-        return Response("No token", 403)
-
+        raise Unauthorized(description='Token expired.')
     except UnreadableAccessRightsError:
-        log.info("Invalid Token : BadSignature")
-        # invalid token
-        if redirect_on_invalid_token:
-            res = redirect(redirect_on_invalid_token, code=302)
-        else:
-            res = Response("Token BadSignature", 403)
-        res.set_cookie("token", expires=0)
-        return res
-
+        e = Unauthorized(description='Token corrupted.')
+        response = e.get_response()
+        response.set_cookie("token", expires=0)
+        raise Unauthorized(response=response, description=e.get_description())
+    except InsufficientRightsError:
+        raise Forbidden
     except Exception as e:
         trap_all_exceptions = current_app.config.get("TRAP_ALL_EXCEPTIONS", True)
         if not trap_all_exceptions:
             raise
         log.critical(e)
-        msg = json.dumps({"type": "Exception", "msg": repr(e)})
-        return Response(msg, 403)
+        raise Forbidden(description=repr(e))
 
 
 class UserCruved:

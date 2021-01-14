@@ -24,8 +24,9 @@ div.a {
 div.b {
 	text-indent: 20px;
 	font-weight: bold;
-	font-size: 90%;
+	font-size: 110%;
 	line-height: 150%;
+	margin-bottom: 5px;
 }
 
 div.c {
@@ -55,4 +56,28 @@ div.c {
 	margin-bottom: 0;
 	background-color: transparent;
 	border-bottom: 1px solid #edf2f9
+}
+
+#imgRapport{
+	text-align:center;
+  }
+
+  .imgIcone{
+	display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+	height: 40px;
+	padding: 2%;
+	cursor: pointer;
+  }
+
+
+  .imgStatus{
+	margin-left: auto;
+	margin-right: auto;
+	width: 50%;
+}
+
+.textCenter{
+	text-align: center;
 }

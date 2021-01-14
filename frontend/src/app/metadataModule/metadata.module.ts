@@ -44,6 +44,5 @@ const routes: Routes = [
     ActorComponent,
     AfCardComponent
   ],
-  providers: []
 })
-export class MetadataModule {}
+export class MetadataModule { }

@@ -9,6 +9,7 @@ import { SyntheseStoreService } from '@geonature_common/form/synthese-form/synth
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 import { AppConfig } from '@geonature_config/app.config';
 import { ToastrService } from 'ngx-toastr';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'pnx-synthese',
@@ -29,8 +30,9 @@ export class SyntheseComponent implements OnInit {
     private _modalService: NgbModal,
     private _fs: SyntheseFormService,
     private _syntheseStore: SyntheseStoreService,
-    private _toasterService: ToastrService
-  ) {}
+    private _toasterService: ToastrService,
+    private _route: ActivatedRoute
+  ) { }
 
   loadAndStoreData(formParams) {
     this.searchService.dataLoaded = false;
@@ -61,7 +63,7 @@ export class SyntheseComponent implements OnInit {
         }
       }
     );
-    if (this.firstLoad) {
+    if (this.firstLoad && 'limit' in formParams) {
       //toaster
       this._toasterService.info(
         `Les ${AppConfig.SYNTHESE.NB_LAST_OBS} dernières observations de la synthèse`,
@@ -72,13 +74,25 @@ export class SyntheseComponent implements OnInit {
   }
 
   ngOnInit() {
-    // reinitialize the form
-    this._fs.searchForm.reset();
-    this._fs.selectedCdRefFromTree = [];
-    this._fs.selectedTaxonFromRankInput = [];
-    this._fs.selectedtaxonFromComponent = [];
-    const initialFilter = { limit: AppConfig.SYNTHESE.NB_LAST_OBS };
-    this.loadAndStoreData(initialFilter);
+    this._route.queryParamMap.subscribe(params => {
+      let initialFilter = {};
+      if (params.get('id_acquisition_framework')) {
+        initialFilter['id_acquisition_framework'] = params.get('id_acquisition_framework');
+      }
+      else if (params.get('id_dataset')) {
+        initialFilter['id_dataset'] = params.get('id_dataset');
+      } else {
+        initialFilter = { limit: AppConfig.SYNTHESE.NB_LAST_OBS };
+      }
+
+      // reinitialize the form
+      this._fs.searchForm.reset();
+      this._fs.selectedCdRefFromTree = [];
+      this._fs.selectedTaxonFromRankInput = [];
+      this._fs.selectedtaxonFromComponent = [];
+      this.loadAndStoreData(initialFilter);
+    })
+
   }
 
   mooveButton() {

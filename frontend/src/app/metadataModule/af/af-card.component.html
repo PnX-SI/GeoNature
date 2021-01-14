@@ -1,33 +1,61 @@
 <div class="container-fluid mt-4 ">
   <div class="row">
-    <div class="col-xs-12 col-sm-6 col-lg-8">
-      <h3>CADRE D'ACQUISITION : {{af?.acquisition_framework_name}}</h3>
-    </div>
-    <div class="c col-xs-6 col-lg-4">
+    <div class="col-5">
       <button
         mat-raised-button
-        class="mr-1"
         routerLink="/metadata"
+        class="mb-2"
       >
         <mat-icon>chevron_left</mat-icon>
         Retour
       </button>
-      <button
-        mat-raised-button
-        class="button-success"
-        (click)="getPdf()"
-      >
-        Export PDF
-        <mat-icon>file_download</mat-icon>
-      </button>
+    </div>
+
+  </div>
+  <div class="row">
+
+    <div class="col-8">
+
+      <div class="card">
+        <div class="card-body">
+          <h5 class="text-muted"> Cadre d'acquisition</h5>
+          <h4>{{af?.acquisition_framework_name}}
+            <button
+              [disabled]="!af?.cruved?.U"
+              [routerLink]="['/metadata/af_detail', af?.id_acquisition_framework]"
+              mat-mini-fab
+              color="primary"
+              matTooltip="Editer le cadre d'acquisition"
+              class="mr-2 float-right"
+            >
+              <mat-icon>create</mat-icon>
+
+            </button>
+          </h4>
+
+        </div>
+      </div>
+    </div>
+    <div class="col-4">
+      <div class="card">
+        <div class="card-body">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="getPdf()"
+          >
+            Export PDF
+            <mat-icon>file_download</mat-icon>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
-  <br>
 
   <div class=" row">
-    <div class="col-xs-6 col-sm-3 col-md-3 col-lg-3">
+    <div class="col-3">
       <div class="card">
-        <div class="card-header">
+        <div class="card-body">
           <div class="row">
             <div class="col">
               <h5>Jeux de données</h5>
@@ -47,10 +75,10 @@
     </div>
     <div
       *ngIf="af?.stats?.nb_taxons > 0"
-      class="col-xs-6 col-sm-3 col-md-3 col-lg-3"
+      class="col-3"
     >
       <div class="card">
-        <div class="card-header">
+        <div class="card-body">
           <div class="row">
             <div class="col">
               <h5>Taxons</h5>
@@ -70,10 +98,10 @@
     </div>
     <div
       *ngIf="af?.stats?.nb_habitats > 0"
-      class="col-xs-6 col-sm-3 col-md-3 col-lg-3 "
+      class="col-3"
     >
       <div class="card">
-        <div class="card-header">
+        <div class="card-body">
           <div class="row">
             <div class="col">
               <h5>Habitats</h5>
@@ -93,10 +121,10 @@
     </div>
     <div
       *ngIf="af?.stats?.nb_observations > 0 && af?.stats?.nb_taxons > 0"
-      class="col-xs-6 col-sm-3 col-md-3 col-lg-3"
+      class="col-3"
     >
       <div class="card">
-        <div class="card-header">
+        <div class="card-body">
           <div class="row">
             <div class="col">
               <h5>Observations</h5>
@@ -126,24 +154,28 @@
         </div>
         <div class="card-body">
           <div class="b">Identification </div>
-          <div class="a"> Instance SNIP du cadre d'acquisition :
+          <div class="a"> <b> Nom :</b>
+            {{af?.acquisition_framework_name}}</div>
+          <div class="a"> <b> Identifiant SINP du cadre d'acquisition : </b>
             {{af?.unique_acquisition_framework_id}}</div>
-          <div class="a"> Libellé du cadre d'acquisition : {{af?.acquisition_framework_name}}</div>
+          <div class="a"> <b> Identifiant GeoNature du cadre d'acquisition :</b>
+            {{af?.id_acquisition_framework}}</div>
+
+
           <br />
 
           <div class="b">Description </div>
-          <div class="a"> Cadre de réfèrence : {{af?.acquisition_framework_name}}</div>
-          <div class="a"> Est un méta-cadre : {{af?.is_parent ? 'Oui' : 'Non'}}</div>
+          <div class="a"> <b>Est un méta-cadre : </b> {{af?.is_parent ? 'Oui' : 'Non'}}</div>
           <div
             class="a"
-            *ngIf="af?.is_parent"
+            *ngIf="!af?.is_parent"
           > Identifiant du méta-cadre : {{af?.acquisition_framework_parent_id}}</div>
           <br />
 
           <div class="b">Dates </div>
-          <div class="a"> Date de lancement du cadre d'acquisition :
+          <div class="a"> <b>Date de lancement du cadre d'acquisition : </b>
             {{af?.acquisition_framework_start_date}}</div>
-          <div class="a"> Date de clôture du cadre d'acquisition :
+          <div class="a"> <b> Date de clôture du cadre d'acquisition :</b>
             {{af?.acquisition_framework_end_date}}</div>
           <br />
 
@@ -158,15 +190,15 @@
 
           <div>
             <div class="b">Territoires concernés </div>
-            <div class="a"> Etendue territoriale : {{af?.id_nomenclature_territorial_level}}</div>
-            <!-- <div class="a"> Territoires : ??</div>
-            <div class="a"> Précision géographique : ??</div> -->
+            <div class="a"> <b> Etendue territoriale : </b>{{af?.id_nomenclature_territorial_level}}
+            </div>
+
             <br />
           </div>
 
           <div *ngIf="af?.target_description">
             <div class="b">Cible taxonomique </div>
-            <div class="a"> Description : {{af?.target_description}}</div>
+            <div class="a"> <b> Description : </b> {{af?.target_description}}</div>
             <br />
           </div>
 
@@ -176,7 +208,7 @@
               class="a"
               *ngFor="let actor of af?.cor_af_actor"
             >
-              <div> {{ actor?.nomenclature_actor_role?.mnemonique}} :
+              <div> <b>{{ actor?.nomenclature_actor_role?.mnemonique}} : </b>
                 {{ actor?.organism?.nom_organisme }} <span
                   *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"
                 > - </span> {{ actor?.role?.nom_complet }} </div>
@@ -194,7 +226,10 @@
       </div>
     </div>
     <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
-      <div class="card">
+      <div
+        *ngIf="af?.stats?.nb_data > 0"
+        class="card"
+      >
         <div class="card-header">
           <h5>
             Zone géographique
@@ -216,7 +251,10 @@
           </div>
         </div>
       </div>
-      <div class="card ">
+      <div
+        *ngIf="this.pieChartLabels.length > 0 && af?.stats?.nb_data > 0"
+        class="card"
+      >
         <div class="card-header">
           <h5>
             Réparition des espèces
@@ -240,15 +278,18 @@
           </div>
         </div>
       </div>
-      <div class="card ">
+      <div
+        *ngIf="af?.stats?.nb_data > 0"
+        class="card"
+      >
         <div class="card-header">
           <h5>
             Jeux de données associés
           </h5>
         </div>
         <div
-          *ngIf="af?.stats?.nb_data > 0"
           class="card-body"
+          *ngIf="af?.stats?.nb_data > 0"
         >
           <table>
             <tr *ngFor="let dataset of af?.datasets">

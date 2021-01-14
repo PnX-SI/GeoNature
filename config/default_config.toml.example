@@ -1,8 +1,8 @@
 ###############################################################################
 # Liste complète des paramètres et de leurs valeurs par défaut
 # 
-# UTILISATION : piochez des paramètres dans ce fichier et intégrez les au
-#     fichier 'config/geonature_config.toml'.
+# UTILISATION : piochez les paramètres que vous souhaitez surcoucher dans ce 
+#     fichier et intégrez les au fichier 'config/geonature_config.toml'.
 #
 # ATTENTION : Les paramètres qui ne sont pas dans une section (entre crochets) 
 #     doivent être au début du fichier !
@@ -125,6 +125,13 @@ MAIL_ON_ERROR = false
     URL = "https://inpn2.mnhn.fr/authentication/information"
     ID = "mon_id"
     PASSWORD = "mon_pass"
+
+# Connexion avec le WS MTD
+[MTD]
+    # Modules auxquels les JDD sont automatiquement associés
+    JDD_MODULE_CODE_ASSOCIATION = ["OCCTAX", "OCCHAB"]
+    # Filter les JDD par id_instance
+    ID_INSTANCE_FILTER = null
 
 [BDD]
     id_area_type_municipality = 25
@@ -451,3 +458,16 @@ MAIL_ON_ERROR = false
 [METADATADA]
     # Nombre de cadre d'acquisition affiché sur la liste
     NB_AF_DISPLAYED = 100
+    # activer la fonctionalité de dépot/publication
+    ENABLE_CLOSE_AF = false
+
+    AF_PDF_TITLE = ""
+    DS_PDF_TITLE = ""
+    URL_FRAMEWORK_DOWNLOAD = ""
+    MAIL_SUBJECT_AF_CLOSED_BASE = ""
+    MAIL_CONTENT_AF_CLOSED_ADDITION = ""
+    MAIL_CONTENT_AF_CLOSED_PDF = ""
+    MAIL_CONTENT_AF_CLOSED_URL = ""
+    MAIL_CONTENT_AF_CLOSED_GREETINGS = ""
+    CLOSED_MODAL_LABEL = "Dépôt d'un cadre d'acquisition"
+    CLOSED_MODAL_CONTENT = L'action de dépôt est une action irréversible. Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite. Vous ne pourrez pas supprimer votre dépôt. "
