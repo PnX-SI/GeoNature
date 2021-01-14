@@ -266,19 +266,20 @@ export class OcctaxMapListComponent
     } else {
       for (let i = 0; i < row.t_occurrences_occtax.length; i++) {
         let occ = row.t_occurrences_occtax[i];
-
         const taxName = occ.taxref !== undefined
           ? occ.taxref.nom_complet
           : occ.nom_cite;
-
-        const medias = occ.cor_counting_occtax
+        let medias = [];
+        let icons = '';
+        if (occ.cor_counting_occtax) {
+          medias = occ.cor_counting_occtax
           .map(c => c.medias)
           .flat()
           .filter(m => !!m);
-        const icons = medias
-          .map(media => this.mediaService.tooltip(media))
-          .join(' ');
-
+          icons = medias
+            .map(media => this.mediaService.tooltip(media))
+            .join(' ');
+        }
         tooltip.push({ taxName, icons, medias });
       }
     }

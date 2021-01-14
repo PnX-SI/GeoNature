@@ -38,7 +38,6 @@ jdd_name AS (
 )
 INSERT INTO gn_meta.t_datasets (
     unique_dataset_id,
-    id_dataset,
     id_acquisition_framework,
     dataset_name,
     dataset_shortname,
@@ -57,7 +56,6 @@ INSERT INTO gn_meta.t_datasets (
     )
     SELECT
     jdd_uuid.uuid::uuid,
-    jdd.id,
     (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE acquisition_framework_name = 'CA provisoire - import Ginco -> GeoNature' LIMIT 1),
     jdd_name.jdd_name,
     'A compléter',
@@ -78,3 +76,8 @@ INSERT INTO gn_meta.t_datasets (
     JOIN jdd_name ON jdd_name.jdd_id = jdd.id
     where status != 'deleted'
 ;
+
+
+
+
+SELECT pg_catalog.setval('gn_meta.t_datasets_id_dataset_seq', (SELECT max(id_dataset)+1 FROM gn_meta.t_datasets), true);

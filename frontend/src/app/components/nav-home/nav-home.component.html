@@ -16,7 +16,7 @@
       class="row"
     >
       <button
-        class="mat-elevation-z0 mr-2"
+        class="mat-elevation-z1 mr-2"
         mat-icon-button
         matTooltip="Ouvrir le menu principal"
         (click)="closeSideBar()"
@@ -123,7 +123,7 @@
       </ng-container>
 
       <a
-        class="mx-2"
+        class="mx-2 mat-elevation-z1"
         mat-icon-button
         matTooltip="Ouvrir la documentation"
         [href]="currentDocUrl"
@@ -133,7 +133,7 @@
       </a>
 
       <button
-        class="mx-2"
+        class="mx-2 mat-elevation-z1"
         mat-icon-button
         matTooltip="{{ 'LogOut' | translate }}"
         (click)="authService.logout()"

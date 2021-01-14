@@ -149,8 +149,6 @@ export class OcctaxFormReleveService {
           }
         }),
         switchMap((editionMode: boolean) => {
-          console.log(editionMode);
-          
           //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
           return editionMode ? this.releveValues : this.defaultValues;
         })
@@ -311,7 +309,7 @@ export class OcctaxFormReleveService {
             meta_device_entry: "web",
             comment: this.occtaxParamS.get("releve.comment"),
             observers: this.occtaxParamS.get("releve.observers") ||
-              previousReleve.observers,
+              previousReleve.observers || [this.occtaxFormService.currentUser],
             observers_txt: this.occtaxParamS.get("releve.observers_txt") || previousReleve.observers_txt,
             id_nomenclature_grp_typ:
               this.occtaxParamS.get("releve.id_nomenclature_grp_typ") ||
