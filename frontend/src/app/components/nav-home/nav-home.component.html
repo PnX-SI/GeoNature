@@ -1,11 +1,10 @@
 <mat-sidenav-container class="sidenav-container">
 
   <mat-sidenav
-    class="appnav"
     id="app-sidenav"
     #sidenav
     mode="side"
-    [opened]="_sideNavService.opened"
+    [opened]="sideNavService.opened"
   >
     <pnx-sidenav-items></pnx-sidenav-items>
   </mat-sidenav>
@@ -17,23 +16,19 @@
       class="row"
     >
       <button
-        class="menu-button toolbar-button mat-elevation-z0"
-        id="btn-toolbar"
-        mat-mini-fab
+        class="mat-elevation-z0 mr-2"
+        mat-icon-button
+        matTooltip="Ouvrir le menu principal"
         (click)="closeSideBar()"
       >
-        <mat-icon
-          class="menu-icon"
-          aria-label="Ouvrir le menu"
-        >
-          menu
-        </mat-icon>
+        <mat-icon aria-label="Ouvrir le menu principal">menu</mat-icon>
       </button>
 
-      <span id="module-name"> {{ moduleName }} </span>
+      <span class="mx-2"> {{ moduleName }} </span>
 
       <img
         id="logo-structure"
+        class="mx-2"
         src="custom/images/{{appConfig.LOGO_STRUCTURE_FILE}}"
         alt=""
       >
@@ -54,106 +49,96 @@
           else noUserManagement
         ">
         <button
+          class="mx-1"
           mat-raised-button
-          class="toolbar-button toolbar-rigth"
-          matTooltip="Ouvrir le menu"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
+          matTooltip="Ouvrir le menu de mon profil"
+          [matMenuTriggerFor]="userMenu"
         >
           <mat-icon> person </mat-icon>
-          {{ currentUser?.user_login }}
+          <span class="user-name">
+            {{ currentUser?.user_login }}
+          </span>
         </button>
-        <div
-          class="dropdown-menu"
-          aria-labelledby="dropdownMenuButton"
-        >
+
+        <mat-menu #userMenu>
           <a
-            class="dropdown-item"
+            mat-menu-item
+            matTooltip="Accéder aux paramètres de mon compte"
+            matTooltipPosition="before"
             routerLink="/user"
           >
             {{ 'MyAccount' | translate }}
           </a>
-        </div>
+        </mat-menu>
       </ng-container>
 
       <ng-template #noUserManagement>
-        <span
-          style="font-size:15px"
-          class="toolbar-rigth"
-        >
+        <span class="user-name">
           {{ currentUser?.user_login }}
         </span>
       </ng-template>
 
-      <div
-        *ngIf="appConfig.FRONTEND.MULTILINGUAL"
-        class="dropdown"
-      >
-        <mat-icon
-          class="clickable toolbar-rigth"
-          matTooltip="{{ 'Language' | translate }}"
-          id="dropdownMenuButton"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
+      <ng-container *ngIf="appConfig.FRONTEND.MULTILINGUAL">
+        <button
+          class="mx-2"
+          mat-icon-button
+          matTooltip="{{ 'Sel_lang' | translate }}"
+          [matMenuTriggerFor]="languagesMenu"
         >
-          language
-        </mat-icon>
+          <mat-icon>language</mat-icon>
+        </button>
 
-        <div
-          class="dropdown-menu"
-          aria-labelledby="dropdownMenuButton"
-        >
-          <a
-            class="dropdown-item"
-            (click)="changeLanguage('en')"
-            href="#"
-          >
-            {{ 'Languages.English' | translate }}
-          </a>
-          <a
-            class="dropdown-item"
+        <mat-menu #languagesMenu>
+          <button
+            mat-menu-item
             (click)="changeLanguage('fr')"
-            href="#"
+            [disabled]="locale == 'fr'"
+            matTooltip="Afficher l'interface en français"
+            matTooltipPosition="before"
           >
+            <mat-icon *ngIf="locale == 'fr'">check</mat-icon>
             {{ 'Languages.French' | translate }}
-          </a>
-          <a
-            class="dropdown-item"
+          </button>
+          <button
+            mat-menu-item
+            (click)="changeLanguage('en')"
+            [disabled]="locale == 'en'"
+            matTooltip="Afficher l'interface en Anglais"
+            matTooltipPosition="before"
+          >
+            <mat-icon *ngIf="locale == 'en'">check</mat-icon>
+            {{ 'Languages.English' | translate }}
+          </button>
+          <button
+            mat-menu-item
             (click)="changeLanguage('zh')"
-            href="#"
+            [disabled]="locale == 'zh'"
+            matTooltip="Afficher l'interface en Chinois"
+            matTooltipPosition="before"
           >
+            <mat-icon *ngIf="locale == 'zh'">check</mat-icon>
             {{ 'Languages.Chinese' | translate }}
-          </a>
-        </div>
-      </div>
+          </button>
+        </mat-menu>
+      </ng-container>
 
-      <button
-        mat-button
-        matTooltip="Documentation"
+      <a
+        class="mx-2"
+        mat-icon-button
+        matTooltip="Ouvrir la documentation"
+        [href]="currentDocUrl"
+        target="_blank"
       >
-        <a
-          [href]="currentDocUrl"
-          target="_blank"
-        >
-          <mat-icon
-            id="documentation_link"
-            class="clickable toolbar-rigth"
-          >
-            library_books
-          </mat-icon>
-        </a>
-      </button>
+        <mat-icon id="documentation_link">library_books</mat-icon>
+      </a>
 
       <button
-        mat-button
+        class="mx-2"
+        mat-icon-button
         matTooltip="{{ 'LogOut' | translate }}"
-        (click)="_authService.logout()"
+        (click)="authService.logout()"
       >
-        <mat-icon class="clickable toolbar-rigth">
-          exit_to_app
-        </mat-icon>
+        <mat-icon>exit_to_app</mat-icon>
       </button>
     </mat-toolbar>
 
