@@ -70,6 +70,11 @@ export class TaxaComponent implements OnInit {
 
   ngOnInit() {
     this.taxa = [];
+
+    // In update mode
+    if (this.parentFormControl.value) {
+      this.taxa = this.parentFormControl.value;
+    }
   }
 
   /** Relance un appel à l'API fournissant les noms scientifiques si le
