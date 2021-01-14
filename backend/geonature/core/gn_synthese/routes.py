@@ -750,7 +750,7 @@ def getDefaultsNomenclatures():
 @routes.route("/color_taxon", methods=["GET"])
 @json_resp
 def get_color_taxon():
-    """Get color of taxon in areas (table synthese.cor_area_taxon).
+    """Get color of taxon in areas (vue synthese.v_color_taxon_area).
 
     .. :quickref: Synthese;
 
