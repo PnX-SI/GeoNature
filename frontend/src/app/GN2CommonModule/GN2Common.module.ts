@@ -89,8 +89,6 @@ import { DisplayMouseOverDirective } from './directive/display-mouse-over.direct
 // pipe
 import { ReadablePropertiePipe } from './pipe/readable-propertie.pipe';
 import { SafeHtmlPipe } from './pipe/sanitizer.pipe';
-import { SafeStripHtmlPipe } from './pipe/strip-html.pipe';
-import { StripHtmlPipe } from './pipe/strip-html.pipe';
 
 // Service
 import { MapService } from './map/map.service';
@@ -188,8 +186,6 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     DatalistComponent,
     PlacesComponent,
     PlacesListComponent,
-    SafeStripHtmlPipe,
-    StripHtmlPipe,
     TaxaComponent,
   ],
   providers: [
@@ -266,8 +262,6 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     AcquisitionFrameworksComponent,
     PeriodComponent,
     AutoCompleteComponent,
-    SafeStripHtmlPipe,
-    StripHtmlPipe,
     SyntheseSearchComponent,
     TaxonAdvancedModalComponent,
     DumbSelectComponent,

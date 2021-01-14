@@ -30,12 +30,6 @@ if [ -d "${myrootpath}/geonature_old/backend/static/images" ]
 then
   cp -r $myrootpath/geonature_old/backend/static/images/* backend/static/images
 fi
-
-if [ -f "${myrootpath}/geonature_old/backend/static/css/custom.css" ]
-then
-  cp $myrootpath/geonature_old/backend/static/css/custom.css backend/static/css/custom.css
-fi
-
 if [ -d "${myrootpath}/geonature_old/backend/static/mobile" ]
 then
   cp -r $myrootpath/geonature_old/backend/static/mobile/* backend/static/mobile

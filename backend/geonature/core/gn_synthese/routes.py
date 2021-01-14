@@ -19,7 +19,6 @@ from utils_flask_sqla_geo.generic import GenericTableGeo
 from geonature.utils import filemanager
 from geonature.utils.env import DB, ROOT_DIR
 from geonature.utils.errors import GeonatureApiError
-from geonature.utils.utilsgeometrytools import export_as_geo_file
 
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_meta.repositories import get_datasets_cruved
@@ -251,7 +250,7 @@ def get_one_synthese(id_synthese):
             ),
         )
         .filter(SyntheseOneRecord.id_synthese == id_synthese)
-        .outerjoin(
+        .join(
             metadata_view.tableDef,
             getattr(
                 metadata_view.tableDef.columns,
@@ -292,9 +291,7 @@ def export_taxon_web(info_role):
     """
 
     taxon_view = GenericTable(
-        tableName="v_synthese_taxon_for_export_view",
-        schemaName="gn_synthese",
-        engine=DB.engine,
+        tableName="v_synthese_taxon_for_export_view", schemaName="gn_synthese", engine=DB.engine,
     )
     columns = taxon_view.tableDef.columns
     # Test de conformité de la vue v_synthese_for_export_view
@@ -371,16 +368,12 @@ def export_observations_web(info_role):
 
     POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
 
-    :query str export_format: str<'csv', 'geojson', 'shapefiles', 'gpkg'>
+    :query str export_format: str<'csv', 'geojson', 'shapefiles'>
 
     """
     params = request.args
-    export_format = params.get("export_format", "csv")
-    # Test export_format
-    if not export_format in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
-        raise GeonatureApiError("Unsupported format")
-
     # set default to csv
+    export_format = "csv"
     export_view = GenericTableGeo(
         tableName="v_synthese_for_export",
         schemaName="gn_synthese",
@@ -388,6 +381,8 @@ def export_observations_web(info_role):
         geometry_field=None,
         srid=current_app.config["LOCAL_SRID"],
     )
+    if "export_format" in params:
+        export_format = params["export_format"]
 
     # get list of id synthese from POST
     id_list = request.get_json()
@@ -438,23 +433,27 @@ def export_observations_web(info_role):
                 getattr(r, current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"])
             )
             feature = Feature(
-                geometry=geometry,
-                properties=export_view.as_dict(r, columns=columns_to_serialize),
+                geometry=geometry, properties=export_view.as_dict(r, columns=columns_to_serialize),
             )
             features.append(feature)
         results = FeatureCollection(features)
         return to_json_resp(results, as_file=True, filename=file_name, indent=4)
     else:
         try:
-            dir_name, file_name = export_as_geo_file(
-                export_format=export_format,
-                export_view=export_view,
+            filemanager.delete_recursively(
+                str(ROOT_DIR / "backend/static/shapefiles"), excluded_files=[".gitkeep"]
+            )
+
+            dir_path = str(ROOT_DIR / "backend/static/shapefiles")
+
+            export_view.as_shape(
                 db_cols=db_cols_for_shape,
-                geojson_col=current_app.config["SYNTHESE"]["EXPORT_GEOJSON_LOCAL_COL"],
                 data=results,
+                geojson_col=current_app.config["SYNTHESE"]["EXPORT_GEOJSON_LOCAL_COL"],
+                dir_path=dir_path,
                 file_name=file_name,
             )
-            return send_from_directory(dir_name, file_name, as_attachment=True)
+            return send_from_directory(dir_path, file_name + ".zip", as_attachment=True)
 
         except GeonatureApiError as e:
             message = str(e)
@@ -550,9 +549,7 @@ def export_status(info_role):
     # add join
     synthese_query_class.add_join(Taxref, Taxref.cd_nom, VSyntheseForWebApp.cd_nom)
     synthese_query_class.add_join(
-        TaxrefProtectionEspeces,
-        TaxrefProtectionEspeces.cd_nom,
-        VSyntheseForWebApp.cd_nom,
+        TaxrefProtectionEspeces, TaxrefProtectionEspeces.cd_nom, VSyntheseForWebApp.cd_nom,
     )
     synthese_query_class.add_join(
         TaxrefProtectionArticles,
@@ -627,10 +624,8 @@ def general_stats(info_role):
         func.count(func.distinct(Synthese.cd_nom)),
         func.count(func.distinct(Synthese.observers)),
     )
-    synthese_query_obj = SyntheseQuery(Synthese, q, {})
-    synthese_query_obj.filter_query_with_cruved(info_role)
-    # q = synthese_query.filter_query_with_cruved(Synthese, q, info_role)
-    data = synthese_query_obj.query.one()
+    q = synthese_query.filter_query_with_cruved(Synthese, q, info_role)
+    data = q.one()
     data = {
         "nb_data": data[0],
         "nb_species": data[1],
@@ -750,7 +745,7 @@ def getDefaultsNomenclatures():
 @routes.route("/color_taxon", methods=["GET"])
 @json_resp
 def get_color_taxon():
-    """Get color of taxon in areas (vue synthese.v_color_taxon_area).
+    """Get color of taxon in areas (table synthese.cor_area_taxon).
 
     .. :quickref: Synthese;
 

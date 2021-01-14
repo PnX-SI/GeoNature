@@ -107,7 +107,7 @@ import { UserDataService } from "./userModule/services/user-data.service";
     SideNavService,
     CruvedStoreService,
     UserDataService,
-    { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

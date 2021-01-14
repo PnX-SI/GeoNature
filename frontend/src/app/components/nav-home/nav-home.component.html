@@ -1,10 +1,11 @@
 <mat-sidenav-container class="sidenav-container">
 
   <mat-sidenav
+    class="appnav"
     id="app-sidenav"
     #sidenav
     mode="side"
-    [opened]="sideNavService.opened"
+    [opened]="_sideNavService.opened"
   >
     <pnx-sidenav-items></pnx-sidenav-items>
   </mat-sidenav>
@@ -16,19 +17,23 @@
       class="row"
     >
       <button
-        class="mat-elevation-z0 mr-2"
-        mat-icon-button
-        matTooltip="Ouvrir le menu principal"
+        class="menu-button toolbar-button mat-elevation-z0"
+        id="btn-toolbar"
+        mat-mini-fab
         (click)="closeSideBar()"
       >
-        <mat-icon aria-label="Ouvrir le menu principal">menu</mat-icon>
+        <mat-icon
+          class="menu-icon"
+          aria-label="Ouvrir le menu"
+        >
+          menu
+        </mat-icon>
       </button>
 
-      <span class="mx-2"> {{ moduleName }} </span>
+      <span id="module-name"> {{ moduleName }} </span>
 
       <img
         id="logo-structure"
-        class="mx-2"
         src="custom/images/{{appConfig.LOGO_STRUCTURE_FILE}}"
         alt=""
       >
@@ -49,96 +54,106 @@
           else noUserManagement
         ">
         <button
-          class="mx-1"
           mat-raised-button
-          matTooltip="Ouvrir le menu de mon profil"
-          [matMenuTriggerFor]="userMenu"
+          class="toolbar-button toolbar-rigth"
+          matTooltip="Ouvrir le menu"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
         >
           <mat-icon> person </mat-icon>
-          <span class="user-name">
-            {{ currentUser?.user_login }}
-          </span>
+          {{ currentUser?.user_login }}
         </button>
-
-        <mat-menu #userMenu>
+        <div
+          class="dropdown-menu"
+          aria-labelledby="dropdownMenuButton"
+        >
           <a
-            mat-menu-item
-            matTooltip="Accéder aux paramètres de mon compte"
-            matTooltipPosition="before"
+            class="dropdown-item"
             routerLink="/user"
           >
             {{ 'MyAccount' | translate }}
           </a>
-        </mat-menu>
+        </div>
       </ng-container>
 
       <ng-template #noUserManagement>
-        <span class="user-name">
+        <span
+          style="font-size:15px"
+          class="toolbar-rigth"
+        >
           {{ currentUser?.user_login }}
         </span>
       </ng-template>
 
-      <ng-container *ngIf="appConfig.FRONTEND.MULTILINGUAL">
-        <button
-          class="mx-2"
-          mat-icon-button
-          matTooltip="{{ 'Sel_lang' | translate }}"
-          [matMenuTriggerFor]="languagesMenu"
-        >
-          <mat-icon>language</mat-icon>
-        </button>
-
-        <mat-menu #languagesMenu>
-          <button
-            mat-menu-item
-            (click)="changeLanguage('fr')"
-            [disabled]="locale == 'fr'"
-            matTooltip="Afficher l'interface en français"
-            matTooltipPosition="before"
-          >
-            <mat-icon *ngIf="locale == 'fr'">check</mat-icon>
-            {{ 'Languages.French' | translate }}
-          </button>
-          <button
-            mat-menu-item
-            (click)="changeLanguage('en')"
-            [disabled]="locale == 'en'"
-            matTooltip="Afficher l'interface en Anglais"
-            matTooltipPosition="before"
-          >
-            <mat-icon *ngIf="locale == 'en'">check</mat-icon>
-            {{ 'Languages.English' | translate }}
-          </button>
-          <button
-            mat-menu-item
-            (click)="changeLanguage('zh')"
-            [disabled]="locale == 'zh'"
-            matTooltip="Afficher l'interface en Chinois"
-            matTooltipPosition="before"
-          >
-            <mat-icon *ngIf="locale == 'zh'">check</mat-icon>
-            {{ 'Languages.Chinese' | translate }}
-          </button>
-        </mat-menu>
-      </ng-container>
-
-      <a
-        class="mx-2"
-        mat-icon-button
-        matTooltip="Ouvrir la documentation"
-        [href]="currentDocUrl"
-        target="_blank"
+      <div
+        *ngIf="appConfig.FRONTEND.MULTILINGUAL"
+        class="dropdown"
       >
-        <mat-icon id="documentation_link">library_books</mat-icon>
-      </a>
+        <mat-icon
+          class="clickable toolbar-rigth"
+          matTooltip="{{ 'Language' | translate }}"
+          id="dropdownMenuButton"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          language
+        </mat-icon>
+
+        <div
+          class="dropdown-menu"
+          aria-labelledby="dropdownMenuButton"
+        >
+          <a
+            class="dropdown-item"
+            (click)="changeLanguage('en')"
+            href="#"
+          >
+            {{ 'Languages.English' | translate }}
+          </a>
+          <a
+            class="dropdown-item"
+            (click)="changeLanguage('fr')"
+            href="#"
+          >
+            {{ 'Languages.French' | translate }}
+          </a>
+          <a
+            class="dropdown-item"
+            (click)="changeLanguage('zh')"
+            href="#"
+          >
+            {{ 'Languages.Chinese' | translate }}
+          </a>
+        </div>
+      </div>
 
       <button
-        class="mx-2"
-        mat-icon-button
-        matTooltip="{{ 'LogOut' | translate }}"
-        (click)="authService.logout()"
+        mat-button
+        matTooltip="Documentation"
       >
-        <mat-icon>exit_to_app</mat-icon>
+        <a
+          [href]="currentDocUrl"
+          target="_blank"
+        >
+          <mat-icon
+            id="documentation_link"
+            class="clickable toolbar-rigth"
+          >
+            library_books
+          </mat-icon>
+        </a>
+      </button>
+
+      <button
+        mat-button
+        matTooltip="{{ 'LogOut' | translate }}"
+        (click)="_authService.logout()"
+      >
+        <mat-icon class="clickable toolbar-rigth">
+          exit_to_app
+        </mat-icon>
       </button>
     </mat-toolbar>
 

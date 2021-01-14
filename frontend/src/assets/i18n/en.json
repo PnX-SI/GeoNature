@@ -1,12 +1,12 @@
 {
   "Title": "GeoNature",
   "Home": "Home",
-  "Sel_lang": "Choose the language",
+  "Sel_lang": "Choose Language",
   "Language": "Language",
   "Languages": {
     "English": "English",
-    "French": "Français (French)",
-    "Chinese": "中文 (Chinese)"
+    "French": "French",
+    "Chinese": "Chinese"
   },
   "Email": "Email",
   "Username": "Username",

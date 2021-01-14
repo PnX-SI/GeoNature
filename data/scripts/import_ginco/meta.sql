@@ -7,18 +7,14 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
     acquisition_framework_desc, 
     id_nomenclature_territorial_level, 
     id_nomenclature_financing_type, 
-    acquisition_framework_start_date,
-    meta_create_date,
-    meta_update_date
+    acquisition_framework_start_date
 
     ) VALUES (
     'CA provisoire - import Ginco -> GeoNature',
     ' - ',
     ref_nomenclatures.get_id_nomenclature('NIVEAU_TERRITORIAL', '4'),
     ref_nomenclatures.get_id_nomenclature('TYPE_FINANCEMENT', '1'),
-    '2019-11-17',
-    NOW(),
-    NOW()
+    '2019-11-17'
     )
 ;
 
@@ -58,7 +54,7 @@ INSERT INTO gn_meta.t_datasets (
     SELECT
     jdd_uuid.uuid::uuid,
     jdd.id,
-    (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE acquisition_framework_name = 'CA provisoire - import Ginco -> GeoNature' LIMIT 1),
+    (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE acquisition_framework_name = 'CA provisoire - import Ginco -> GeoNature'),
     jdd_name.jdd_name,
     'A compléter',
     'A compléter',

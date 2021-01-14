@@ -12,14 +12,12 @@ export class ModuleService {
     this.fetchModules();
   }
 
-  get modules(): Array<any> {        
-    const modules = this.$module.getValue()
-    this.setModulesLocalStorage(modules)
-    return modules;
+  get modules(): Array<any> {
+    return this.$module.getValue();
   }
 
   fetchModules() {
-    this._api.getModulesList([]).subscribe(data => {      
+    this._api.getModulesList([]).subscribe(data => {
       this.$module.next(data);
       this.displayedModules = data.filter(mod => {
         return (
@@ -46,7 +44,7 @@ export class ModuleService {
   getModule(module_code: string) {
     const modules = localStorage.getItem('modules');
     let searchModule = null;
-    if (modules && JSON.parse(modules)) {
+    if (modules) {
       JSON.parse(modules).forEach(mod => {
         if (mod.module_code.toLowerCase() === module_code.toLowerCase()) {
           searchModule = mod;

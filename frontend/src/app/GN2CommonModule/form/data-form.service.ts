@@ -24,7 +24,7 @@ export const FormatMapMime = new Map([
 @Injectable()
 export class DataFormService {
   private _blob: Blob;
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient) {}
 
   getNomenclature(
     codeNomenclatureType: string,
@@ -75,10 +75,11 @@ export class DataFormService {
     });
   }
 
-  getDatasets(params?: ParamsDict, orderByName = true, recursif = false) {
+  getDatasets(params?: ParamsDict, orderByName = true) {
     let queryString: HttpParams = new HttpParams();
-    queryString = this.addOrderBy(queryString, 'dataset_name');
-    queryString = queryString.set('recursif', recursif.toString())
+    if (orderByName) {
+      queryString = this.addOrderBy(queryString, 'dataset_name');
+    }
 
     if (params) {
       for (const key in params) {
@@ -102,17 +103,8 @@ export class DataFormService {
   /**
    * Get dataset list for metadata modules
    */
-  getAfAndDatasetListMetadata(searchTerms) {
-
-    let queryString = new HttpParams();
-    for (let key in searchTerms) {
-      queryString = queryString.set(key, searchTerms[key])
-    }
-
-    return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/meta/af_datasets_metadata`,
-      { params: queryString }
-    );
+  getAfAndDatasetListMetadata() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/af_datasets_metadata`, {});
   }
 
   getImports(id_dataset) {
@@ -492,8 +484,8 @@ export class DataFormService {
       application === 'GeoNature'
         ? `${AppConfig.API_ENDPOINT}/${api}`
         : application === 'TaxHub'
-          ? `${AppConfig.API_TAXHUB}/${api}`
-          : api;
+        ? `${AppConfig.API_TAXHUB}/${api}`
+        : api;
 
     return this._http.get<any>(url, { params: queryString });
   }
@@ -537,31 +529,20 @@ export class DataFormService {
     document.body.removeChild(link);
   }
 
-
+  //--------------------------------------------------------------------------------------
+  //----------------Geofit additional code data-form.service.ts
   //liste des lieux
   getPlaces() {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/places`);
-  }
-  //Ajouter lieu
-  addPlace(place) {
-    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place`, place);
   }
 
   // Supprimer lieu
   deletePlace(idPlace) {
     return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place/${idPlace}`);
   }
-  deleteAf(af_id) {
-    return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${af_id}`);
-  }
 
-  publishAf(af_id) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/publish/${af_id}`);
+  //Ajouter lieu
+  addPlace(place) {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place`, place);
   }
-
-  deleteDs(ds_id) {
-    return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${ds_id}`);
-  }
-
 }
-

@@ -1,16 +1,13 @@
-
-import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { MatSidenav } from '@angular/material/sidenav';
-
-import { Subscription } from 'rxjs';
+import { Component, OnInit, OnDestroy, Inject, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs';
 import { AuthService, User } from '../../components/auth/auth.service';
 import { AppConfig } from '../../../conf/app.config';
-import { GlobalSubService } from '../../services/global-sub.service';
+import { MatSidenav } from '@angular/material/sidenav';
 import { SideNavService } from '../sidenav-items/sidenav-service';
-
+import { Location } from '@angular/common';
+import { GlobalSubService } from '../../services/global-sub.service';
 
 @Component({
   selector: 'pnx-nav-home',
@@ -18,69 +15,33 @@ import { SideNavService } from '../sidenav-items/sidenav-service';
   styleUrls: ['./nav-home.component.scss']
 })
 export class NavHomeComponent implements OnInit, OnDestroy {
-
   public moduleName = 'Accueil';
   private subscription: Subscription;
   public currentUser: User;
   public appConfig: any;
   public currentDocUrl: string;
-  public locale: string;
   @ViewChild('sidenav') public sidenav: MatSidenav;
 
   constructor(
-    private translateService: TranslateService,
-    public authService: AuthService,
+    private translate: TranslateService,
+    public _authService: AuthService,
     private activatedRoute: ActivatedRoute,
-    public sideNavService: SideNavService,
-    private globalSubService: GlobalSubService,
-    private router: Router,
+    public _sideNavService: SideNavService,
+    private _location: Location,
+    private _globalSub: GlobalSubService
   ) {}
 
   ngOnInit() {
-    // Inject App config to use in the template
     this.appConfig = AppConfig;
-
     // Subscribe to router event
-    this.extractLocaleFromUrl();
-
-    // Set the current module name in the navbar
-    this.onModuleChange();
-
-    // Init the sidenav instance in sidebar service
-    this.sideNavService.setSideNav(this.sidenav);
-
-    // Put the user name in navbar
-    this.currentUser = this.authService.getCurrentUser();
-  }
-
-
-  private extractLocaleFromUrl() {
     this.subscription = this.activatedRoute.queryParams.subscribe((param: any) => {
       const locale = param['locale'];
       if (locale !== undefined) {
-        this.defineLanguage(locale);
-      } else {
-        this.locale = this.translateService.getDefaultLang();
+        this.translate.use(locale);
       }
     });
-  }
-
-  changeLanguage(lang) {
-    this.defineLanguage(lang);
-    const prev = this.router.url;
-    this.router.navigate(['/']).then(data => {
-      this.router.navigate([prev]);
-    });
-  }
-
-  private defineLanguage(lang) {
-    this.locale = lang;
-    this.translateService.use(lang);
-    this.translateService.setDefaultLang(lang);
-  }
-
-  private onModuleChange() {
-    this.globalSubService.currentModuleSub.subscribe(module => {
+    // Subscribe to currentModuleSub event to set the current module name in the navbar
+    this._globalSub.currentModuleSub.subscribe(module => {
       if (module) {
         this.moduleName = module.module_label;
         if (module.module_doc_url) {
@@ -90,14 +51,31 @@ export class NavHomeComponent implements OnInit, OnDestroy {
         this.moduleName = 'Accueil';
       }
     });
+    // Init the sidenav instance in sidebar service
+    this._sideNavService.setSideNav(this.sidenav);
+
+    // Put the user name in navbar
+    this.currentUser = this._authService.getCurrentUser();
+  }
+
+  changeLanguage(lang) {
+    this.translate.use(lang);
   }
 
   closeSideBar() {
-    this.sideNavService.sidenav.toggle();
+    this._sideNavService.sidenav.toggle();
+  }
+
+  backPage() {
+    this._location.back();
+  }
+
+  forwardPage() {
+    this._location.forward();
   }
 
   ngOnDestroy() {
-    // Prevent memory leak by unsubscribing
+    // prevent memory leak by unsubscribing
     this.subscription.unsubscribe();
   }
 }

@@ -62,4 +62,9 @@ export class ValidationDataService {
     );
   }
 
+  getOneSyntheseObservation(id_synthese) {
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/synthese/vsynthese/${id_synthese}`
+    );
+  }
 }

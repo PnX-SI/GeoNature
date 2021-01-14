@@ -57,7 +57,9 @@ export class OcctaxFormMapService {
           this._geometry.valid ? { geometry: geometry } : null
         )
       )
-      .subscribe((geojson) => this.geojson.next(geojson));
+      .subscribe((geojson) => {
+        this.geojson.next(geojson);
+      });
   }
 
   private get releveGeojsonValue(): Observable<any> {

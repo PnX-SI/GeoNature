@@ -104,9 +104,11 @@
   <br>
 
   <pnx-synthese-info-obs
+    [selectedObs]="selectedObs"
     [idSynthese]="id_synthese"
-    [mailCustomSubject]="VALIDATION_CONFIG.MAIL_SUBJECT"
-    [mailCustomBody]="VALIDATION_CONFIG.MAIL_BODY"
+    [uuidSynthese]="uuidSynthese"
+    [validationHistory]="validationHistory"
+    [selectedObsTaxonDetail]="selectedObsTaxonDetail"
   >
   </pnx-synthese-info-obs>
 
@@ -119,7 +121,7 @@
     <button
       [disabled]="!isPrevButtonValid"
       class="btn btn-sm"
-      (click)="changeObsIndex(-1)"
+      (click)="decreaseObs()"
     >
       <i class="material-icons">navigate_before</i>
     </button>
@@ -127,7 +129,7 @@
     <button
       [disabled]="!isNextButtonValid"
       class="btn btn-sm"
-      (click)="changeObsIndex(1)"
+      (click)="increaseObs()"
     >
       <i class="material-icons">navigate_next</i>
     </button>
