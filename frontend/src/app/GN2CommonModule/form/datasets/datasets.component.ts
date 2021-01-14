@@ -90,7 +90,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
         if (res['with_mtd_errors']) {
           this._commonService.translateToaster('error', 'MetaData.JddErrorMTD');
         }
-        if (this.defaultDatasetId){ this.parentFormControl.setValue(this.defaultDatasetId); }
+        if (this.defaultDatasetId && this.dataSets.some(e => e.id_dataset == this.defaultDatasetId ) ){ this.parentFormControl.setValue(this.defaultDatasetId); }
       },
       error => {
         if (error.status === 500) {
