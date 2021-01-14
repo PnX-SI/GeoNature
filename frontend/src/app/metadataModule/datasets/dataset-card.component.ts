@@ -1,9 +1,11 @@
 import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { BaseChartDirective } from 'ng2-charts';
-import { AppConfig } from '@geonature_config/app.config';
+import { AppConfig } from "@geonature_config/app.config";
+import { CommonService } from '@geonature_common/service/common.service';
+import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 @Component({
   selector: 'pnx-datasets-card',
@@ -15,6 +17,7 @@ export class DatasetCardComponent implements OnInit {
   public id_dataset: number;
   public dataset: any;
   public nbTaxons: number;
+  public taxs;
   public nbObservations: number;
   public geojsonData: any = null;
 
@@ -36,7 +39,7 @@ export class DatasetCardComponent implements OnInit {
       position: 'left',
       labels: {
         fontSize: 15,
-        filter: function(legendItem, chartData) {
+        filter: function (legendItem, chartData) {
           return chartData.datasets[0].data[legendItem.index] != 0;
         }
       }
@@ -68,8 +71,11 @@ export class DatasetCardComponent implements OnInit {
   constructor(
     private _route: ActivatedRoute,
     private _dfs: DataFormService,
-    public moduleService: ModuleService
-  ) {}
+    public moduleService: ModuleService,
+    private _commonService: CommonService,
+    public _dataService: SyntheseDataService,
+    private _router: Router
+  ) { }
 
   ngOnInit() {
     // get the id from the route
@@ -81,8 +87,10 @@ export class DatasetCardComponent implements OnInit {
     });
   }
 
+
   getDataset(id) {
     this._dfs.getDatasetDetails(id).subscribe(data => {
+      console.log(data)
       this.dataset = data;
       if (this.dataset.modules) {
         this.dataset.modules = this.dataset.modules.map(e => e.module_code).join(', ');
@@ -105,11 +113,72 @@ export class DatasetCardComponent implements OnInit {
     });
   }
 
+  uuidReport(ds_id) {
+    this._dataService.downloadUuidReport(
+      `UUID_JDD-${ds_id}_${this.dataset.unique_dataset_id}`,
+      { id_dataset: ds_id }
+    );
+  }
+
+  sensiReport(ds_id) {
+    this._dataService.downloadSensiReport(
+      `Sensibilite_JDD-${ds_id}_${this.dataset.unique_dataset_id}`,
+      { id_dataset: ds_id }
+    );
+  }
+
   getPdf() {
     const url = `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`;
     const dataUrl = this.chart ? this.chart.ctx.canvas.toDataURL('image/png') : '';
     this._dfs.uploadCanvas(dataUrl).subscribe(data => {
+      console.log(url);
+
       window.open(url);
     });
   }
+
+  uuidReportImport(id_import) {
+    const imp = this.dataset.imports.find(imp => imp.id_import == id_import);
+    this._dataService.downloadUuidReport(
+      `UUID_Import-${id_import}_JDD-${imp.id_dataset}`,
+      { id_import: id_import }
+    );
+  }
+
+  sensiReportImport(id_import) {
+    console.log("OK");
+    const imp = this.dataset.imports.find(imp => imp.id_import == id_import);
+    this._dataService.downloadSensiReport(
+      `Sensibilite_Import-${id_import}_JDD-${imp.id_dataset}`,
+      { id_import: id_import }
+    );
+  }
+
+  deleteDataset(idDataset) {
+    if (window.confirm('Etes-vous sûr de vouloir supprimer ce jeu de données ?')) {
+      this._dfs.deleteDs(idDataset).subscribe(d => {
+        this._router.navigate(['metadata'])
+      });
+    }
+  }
+
+  importDs(idDataset) {
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+        "datasetId": idDataset,
+        "resetStepper": true
+      }
+    };
+    this._router.navigate(['/import/process/step/1'], navigationExtras);
+  }
+
+  syntheseDs(idDataset) {
+    let navigationExtras: NavigationExtras = {
+      queryParams: {
+        "id_dataset": idDataset
+      }
+    };
+    this._router.navigate(['/synthese'], navigationExtras);
+  }
+
 }

@@ -70,40 +70,7 @@ def loginCas():
 
             info_user = response.json()
             organism_id = info_user["codeOrganisme"]
-
-            if info_user["libelleLongOrganisme"] is not None:
-                organism_name = info_user["libelleLongOrganisme"]
-            else:
-                organism_name = "Autre"
-
-            user_login = info_user["login"]
-            user_id = info_user["id"]
-            try:
-                assert user_id is not None and user_login is not None
-            except AssertionError:
-                log.error("'CAS ERROR: no ID or LOGIN provided'")
-                raise CasAuthentificationError(
-                    "CAS ERROR: no ID or LOGIN provided", status_code=500
-                )
-            # Reconciliation avec base GeoNature
-            if organism_id:
-                organism = {"id_organisme": organism_id, "nom_organisme": organism_name}
-                resp = users.insert_organism(organism)
-
-            user = {
-                "id_role": user_id,
-                "identifiant": user_login,
-                "nom_role": info_user["nom"],
-                "prenom_role": info_user["prenom"],
-                "id_organisme": organism_id,
-                "email": info_user["email"],
-                "active": True,
-            }
-            try:
-                resp = users.insert_role(user)
-            except Exception as e:
-                gunicorn_error_logger.info(e)
-                log.error(e)
+            insert_user_and_org(info_user)
             # push the user in the right group
             try:
                 if not current_app.config["CAS"]["USERS_CAN_SEE_ORGANISM_DATA"]:
@@ -168,3 +135,54 @@ def logout_cruved():
     for key in copy_session_key:
         session.pop(key)
     return Response("Logout", 200)
+
+
+def get_user_from_id_inpn_ws(id_user):
+    URL = f"https://inpn.mnhn.fr/authentication/rechercheParId/{id_user}"
+    config_cas = current_app.config["CAS"]
+    try:
+        response = utilsrequests.get(
+            URL,
+            (config_cas["CAS_USER_WS"]["ID"], config_cas["CAS_USER_WS"]["PASSWORD"],),
+        )
+        assert response.status_code == 200
+        return response.json()
+    except AssertionError:
+        log.error("Error with the inpn authentification service")
+
+
+def insert_user_and_org(info_user):
+    organism_id = info_user["codeOrganisme"]
+    if info_user["libelleLongOrganisme"] is not None:
+        organism_name = info_user["libelleLongOrganisme"]
+    else:
+        organism_name = "Autre"
+
+    user_login = info_user["login"]
+    user_id = info_user["id"]
+    try:
+        assert user_id is not None and user_login is not None
+    except AssertionError:
+        log.error("'CAS ERROR: no ID or LOGIN provided'")
+        raise CasAuthentificationError(
+            "CAS ERROR: no ID or LOGIN provided", status_code=500
+        )
+    # Reconciliation avec base GeoNature
+    if organism_id:
+        organism = {"id_organisme": organism_id, "nom_organisme": organism_name}
+        resp = users.insert_organism(organism)
+
+    user = {
+        "id_role": user_id,
+        "identifiant": user_login,
+        "nom_role": info_user["nom"],
+        "prenom_role": info_user["prenom"],
+        "id_organisme": organism_id,
+        "email": info_user["email"],
+        "active": True,
+    }
+    try:
+        resp = users.insert_role(user)
+    except Exception as e:
+        gunicorn_error_logger.info(e)
+        log.error(e)

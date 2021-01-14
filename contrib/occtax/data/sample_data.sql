@@ -130,7 +130,7 @@ INSERT INTO gn_meta.cor_acquisition_framework_voletsinp (id_acquisition_framewor
 
 INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework, id_nomenclature_objectif) VALUES
 ((SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5')
-, ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', '1'))
+, ref_nomenclatures.get_id_nomenclature('CA_OBJECTIFS', '8'))
 ;
 
 INSERT INTO gn_meta.cor_acquisition_framework_actor (id_acquisition_framework, id_role, id_organism, id_nomenclature_actor_role) VALUES

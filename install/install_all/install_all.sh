@@ -161,6 +161,7 @@ sed -i "s/db_host=.*$/db_host=$pg_host/g" config/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
 sed -i "s/srid_local=.*$/srid_local=$srid_local/g" config/settings.ini
 sed -i "s/install_sig_layers=.*$/install_sig_layers=$install_sig_layers/g" config/settings.ini
+sed -i "s/install_grid_layer=.*$/install_grid_layer=$install_grid_layer/g" config/settings.ini
 sed -i "s/install_default_dem=.*$/install_default_dem=$install_default_dem/g" config/settings.ini
 sed -i "s/vectorise_dem=.*$/vectorise_dem=$vectorise_dem/g" config/settings.ini
 sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
