@@ -85,6 +85,7 @@ class UserCruved:
             VUsersPermissions
 
         """
+
         # loop on user permissions
         # return the module permission if exist
         # otherwise return GEONATURE permission
@@ -94,11 +95,30 @@ class UserCruved:
         # filter the GeoNature perm and the module perm in two
         # arrays to make heritage
         for user_permission in user_permissions:
-            if user_permission.code_object == object_code:
+
+            if (
+                user_permission.code_object == object_code
+                and
+                user_permission.module_code == module_code
+            ):
                 object_permissions.append(user_permission)
-            elif user_permission.module_code == module_code:
+            elif(
+                user_permission.module_code == module_code
+                and
+                user_permission.code_object == 'ALL'
+            ):
                 module_permissions.append(user_permission)
-            else:
+            elif (
+                user_permission.module_code == "GEONATURE"
+                and
+                user_permission.code_object == object_code
+            ):
+                geonature_permission.append(user_permission)
+            elif (
+                user_permission.module_code == "GEONATURE"
+                and
+                user_permission.code_object == 'ALL'
+            ):
                 geonature_permission.append(user_permission)
 
         # take the max of the different permissions
@@ -119,17 +139,21 @@ def query_user_perm(
     id_role, code_filter_type, code_action=None, module_code=None, object_code=None
 ):
 
-    ors = [VUsersPermissions.module_code.ilike("GEONATURE")]
+    ors = [sa.and_(VUsersPermissions.module_code.ilike("GEONATURE"), VUsersPermissions.code_object == "ALL")]
 
     q = VUsersPermissions.query.filter(VUsersPermissions.id_role == id_role).filter(
         VUsersPermissions.code_filter_type == code_filter_type
     )
+
     if code_action:
         q = q.filter(VUsersPermissions.code_action == code_action)
-    if module_code:
-        ors.append(VUsersPermissions.module_code.ilike(module_code))
+
     if object_code:
-        ors.append(VUsersPermissions.code_object == object_code)
+        ors.append(sa.and_(VUsersPermissions.module_code.ilike("GEONATURE"), VUsersPermissions.code_object == object_code))
+        if  module_code:
+            ors.append(sa.and_(VUsersPermissions.module_code.ilike(module_code), VUsersPermissions.code_object == object_code))
+    if module_code:
+        ors.append(sa.and_(VUsersPermissions.module_code.ilike(module_code), VUsersPermissions.code_object == "ALL"))
     # if object code is None, only take ALL
     else:
         q = q.filter(VUsersPermissions.code_object == "ALL")
@@ -143,7 +167,7 @@ def get_user_permissions(
         Get all the permissions of a user for an action, a module (or an object) and a filter_type
         Users permissions could be multiples because of user's group. The view mapped by VUsersPermissions does not take the
         max because some filter type could be not quantitative
-        
+
         Parameters:
             user(dict)
             code_filter_type(str): <SCOPE, GEOGRAPHIC ...>
@@ -228,14 +252,14 @@ def cruved_scope_for_user_in_module(
     """
     get the user cruved for a module or object
     if no cruved for a module, the cruved parent module is taken
-    Child app cruved alway overright parent module cruved 
+    Child app cruved alway overright parent module cruved
     Params:
         - id_role(int)
         - module_code(str)
         - object_code(str)
         - get_id(bool): if true return the id_scope for each action
             if false return the filter_value for each action
-    Return a tuple 
+    Return a tuple
     - index 0: the cruved as a dict : {'C': 0, 'R': 2 ...}
     - index 1: a boolean which say if its an herited cruved
     """
@@ -322,7 +346,7 @@ def cruved_scope_for_user_in_module(
 def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, object_code=None):
     """
         Check if the cruved is in the session
-        if not, get the cruved from the DB with 
+        if not, get the cruved from the DB with
         cruved_for_user_in_app()
     """
     if module_code in session and "user_cruved" in session[module_code]:

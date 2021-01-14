@@ -87,7 +87,7 @@ def permission_form(info_role, id_module, id_role, id_object=None):
         if len(real_cruved) == 0 and not module.module_code == "ADMIN":
             flash(
                 """
-                Attention ce role n'a pas encore de CRUVED dans ce module. 
+                Attention ce role n'a pas encore de CRUVED dans ce module.
                 Celui-ci lui est hérité de son groupe et/ou du module parent GEONATURE
                 """
             )
