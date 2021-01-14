@@ -20,20 +20,11 @@ import { OcctaxFormCountingService } from "./counting/counting.service";
 import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
-import { OcctaxFormMapService } from "../occtax-form/map/map.service";
+
 @Component({
   selector: "pnx-occtax-form",
   templateUrl: "./occtax-form.component.html",
-  styleUrls: ["./occtax-form.component.scss"],
-  // le composant doit initier les services suivants pour le bon fonctionnemment du formulaire
-  // et le rechargemernt des données
-  providers: [
-    OcctaxTaxaListService,
-    OcctaxFormMapService,
-    OcctaxFormReleveService,
-    OcctaxFormCountingService,
-    OcctaxFormOccurrenceService,
-  ],
+  styleUrls: ["./occtax-form.component.scss"]
 })
 export class OcctaxFormComponent implements OnInit, AfterViewInit {
   public occtaxConfig = ModuleConfig;
