@@ -210,7 +210,7 @@ def user_cruved(id_role):
     Get all scope CRUVED (with heritage) for a user in all modules
     """
     user = DB.session.query(User).get(id_role).as_dict()
-    modules_data = DB.session.query(TModules).all()
+    modules_data = DB.session.query(TModules).order_by(TModules.module_order).all()
     groupes_data = DB.session.query(CorRole).filter(CorRole.id_role_utilisateur == id_role).all()
     actions_label = {}
     for action in DB.session.query(TActions).all():
@@ -250,7 +250,6 @@ def user_cruved(id_role):
         cruved, (herited, herited_obj) = cruved_scope_for_user_in_module(
             id_role, module["module_code"], get_herited_obj=True
         )
-        print(module["module_code"], herited, herited_obj, cruved)
         cruved_beautiful = beautifulize_cruved(actions_label, cruved)
         module["module_cruved"] = (cruved_beautiful, herited, herited_obj)
         modules.append(module)
