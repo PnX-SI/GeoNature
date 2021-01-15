@@ -95,7 +95,8 @@
           </div>
         <td>
           {% if mod.module_cruved[1] %}
-          Hérité du module parent {{mod.module_cruved[2][0]}}, objet {{mod.module_cruved[2][1]}}
+          Hérité du module parent {{mod.module_cruved[2][0]}}
+          {% if mod.module_cruved[2][1] != "ALL" %},{{mod.module_cruved[2][1]}}{% endif %}
           {% endif %}
         </td>
         <td>
