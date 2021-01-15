@@ -56,6 +56,7 @@ def check_cruved_scope(
             ).get_herited_user_cruved_by_action(action)
             if user_with_highter_perm:
                 user_with_highter_perm = user_with_highter_perm[0]
+
             print(user_with_highter_perm)
             # if get_role = True : set info_role as kwargs
             if get_role:
@@ -65,9 +66,9 @@ def check_cruved_scope(
                 user_with_highter_perm is not None and user_with_highter_perm.value_filter == "0"
             ):
                 if object_code:
-                    message = f"""User {user_with_highter_perm.id_role} cannot "{user_with_highter_perm.code_action}" {object_code}"""
+                    message = f"""User {user["id_role"]} cannot "{action}" {object_code}"""
                 else:
-                    message = f"""User {user_with_highter_perm.id_role}" cannot "{user_with_highter_perm.code_action}" in {user_with_highter_perm.module_code}"""
+                    message = f"""User {user["id_role"]}" cannot "{action}" in {module_code}"""
                 raise InsufficientRightsError(message, 403)
             g.user = user_with_highter_perm
             return fn(*args, **kwargs)
