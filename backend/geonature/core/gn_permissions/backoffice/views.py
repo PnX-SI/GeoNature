@@ -90,13 +90,16 @@ def permission_form(info_role, id_module, id_role, id_object=None):
             .all()
         )
         if len(real_cruved) == 0 and not module.module_code == "ADMIN":
-            msg_heritage_obj = f" - objet {herited_obj[1]}"
-            if herited_obj[1] == "ALL":
-                msg_heritage_obj = ""
+            msg_heritage_obj = ""
+            if herited_obj:
+                msg_heritage_obj = f" - objet {herited_obj[1]}"
+                if herited_obj[1] == "ALL":
+                    msg_heritage_obj = ""
+                msg_heritage_obj = f" {herited_obj[0]} {msg_heritage_obj}"
             flash(
                 f"""
                 Attention ce role n'a pas encore de CRUVED dans ce module.
-                Celui-ci lui est hérité de son groupe et/ou du module parent {herited_obj[0]} {msg_heritage_obj}
+                Celui-ci lui est hérité de son groupe et/ou du module parent{msg_heritage_obj}
                 """
             )
         return render_template(

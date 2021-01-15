@@ -92,29 +92,42 @@ def get_user_from_token_and_raise(
 
 
 class UserCruved:
+    """
+    Classe permettant de récupérer le cruved d'un utilisateur
+        pour un module et un objet données
+
+    """
 
     _main_module_code = "GEONATURE"
     _main_object_code = "ALL"
     _cruved_actions = ["C", "R", "U", "V", "E", "D"]
 
-    def __init__(self, id_role, code_filter_type, module_code=None, object_code=None):
+    def __init__(
+        self, id_role, code_filter_type, module_code=None, object_code=None, append_to_select=None
+    ):
 
         self._id_role = id_role
         self._code_filter_type = code_filter_type
         self._module_code = module_code
         self._object_code = object_code
-        self._permission_select = self._build_permission_select_list()
+        self._permission_select = self._build_permission_select_list(append_to_select)
 
-    def _build_permission_select_list(self):
+    def _build_permission_select_list(self, append_to_select):
 
         # Construction de la liste des couples module_code, object_code
         #   a récupérer pour générer le cruved
+        #   append_to_select => Ajout de selection pour complexifié l'héritage
         permissions_select = {
             0: [self._module_code, self._object_code],
             10: [self._module_code, self._main_object_code],
             20: [self._main_module_code, self._object_code],
             30: [self._main_module_code, self._main_object_code],
         }
+
+        # append_to_select
+        if append_to_select:
+            permissions_select = {**permissions_select, **append_to_select}
+
         # filter null value
         active_permissions_select = {k: v for k, v in permissions_select.items() if v[0] and v[1]}
 
@@ -341,7 +354,12 @@ def beautifulize_cruved(actions, cruved):
 
 
 def cruved_scope_for_user_in_module(
-    id_role=None, module_code=None, object_code=None, get_id=False, get_herited_obj=False
+    id_role=None,
+    module_code=None,
+    object_code=None,
+    get_id=False,
+    get_herited_obj=False,
+    append_to_select=None,
 ):
     """
     get the user cruved for a module or object
@@ -353,6 +371,7 @@ def cruved_scope_for_user_in_module(
         - object_code(str)
         - get_id(bool): if true return the id_scope for each action
             if false return the filter_value for each action
+        - append_to_select (dict) : dict of extra select module object for heritage
     Return a tuple
     - index 0: the cruved as a dict : {'C': 0, 'R': 2 ...}
     - index 1: a boolean which say if its an herited cruved
@@ -362,6 +381,7 @@ def cruved_scope_for_user_in_module(
         code_filter_type="SCOPE",
         module_code=module_code,
         object_code=object_code,
+        append_to_select=append_to_select,
     ).get_perm_for_all_actions(get_id)
     if get_herited_obj:
         is_herited = (is_herited, herited_object)

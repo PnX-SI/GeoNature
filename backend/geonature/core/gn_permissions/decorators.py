@@ -57,7 +57,6 @@ def check_cruved_scope(
             if user_with_highter_perm:
                 user_with_highter_perm = user_with_highter_perm[0]
 
-            print(user_with_highter_perm)
             # if get_role = True : set info_role as kwargs
             if get_role:
                 kwargs["info_role"] = user_with_highter_perm
