@@ -24,26 +24,24 @@ WHERE a.enable = true;
 
 -- Maintenance
 VACUUM FULL gn_synthese.cor_area_synthese;
-VACUUM FULL gn_synthese.cor_area_taxon;
 VACUUM FULL gn_synthese.cor_observer_synthese;
 VACUUM FULL gn_synthese.synthese;
 VACUUM FULL gn_synthese.t_sources;
 
 VACUUM ANALYSE gn_synthese.cor_area_synthese;
-VACUUM ANALYSE gn_synthese.cor_area_taxon;
 VACUUM ANALYSE gn_synthese.cor_observer_synthese;
 VACUUM ANALYSE gn_synthese.synthese;
 VACUUM ANALYSE gn_synthese.t_sources;
 
 REINDEX TABLE gn_synthese.cor_area_synthese;
-REINDEX TABLE gn_synthese.cor_area_taxon;
 REINDEX TABLE gn_synthese.cor_observer_synthese;
 REINDEX TABLE gn_synthese.synthese;
 REINDEX TABLE gn_synthese.t_sources;
 
 
 -- On réactive les triggers du schéma synthese après avoir joué (ci-dessus) leurs actions
-ALTER TABLE gn_synthese.cor_area_synthese ENABLE TRIGGER tri_maj_cor_area_taxon;
 ALTER TABLE gn_synthese.cor_observer_synthese ENABLE TRIGGER trg_maj_synthese_observers_txt;
 ALTER TABLE gn_synthese.synthese ENABLE TRIGGER tri_meta_dates_change_synthese;
 ALTER TABLE gn_synthese.synthese ENABLE TRIGGER tri_insert_cor_area_synthese;
+ALTER TABLE gn_synthese.synthese ENABLE TRIGGER tri_insert_calculate_sensitivity;
+

@@ -79,14 +79,7 @@ SELECT nextval('vm_data_model_source'::regclass) AS id,
    -- on ne prend que les JDD non supprimé car la table gn_meta.t_datasets ne comprend que les JDD non supprimé
    join gn_meta.t_datasets d on d.unique_dataset_id = m.jddmetadonneedeeid::uuid
     where m.geometrie is null
-    and
-    m.jddmetadonneedeeid not IN (
-      select f.value_string
-      from ginco_migration.jdd j
-      join ginco_migration.jdd_field f on f.jdd_id = j.id
-      where j.status = 'deleted'
-      and f."key" = 'metadataId'
-     )
+
 ;
 
 INSERT INTO gn_synthese.synthese (
@@ -127,7 +120,7 @@ SELECT
   m.identifiantpermanent::uuid,
   (SELECT id_source FROM gn_synthese.t_sources WHERE name_source = 'Ginco'),
   m.identifiantpermanent,
-  (SELECT id_dataset FROM gn_meta.t_datasets ds where ds.unique_dataset_id = COALESCE(m.jddmetadonneedeeid::uuid, NULL)),
+  (SELECT id_dataset FROM gn_meta.t_datasets ds where ds.unique_dataset_id = COALESCE(m.jddmetadonneedeeid::uuid, NULL) LIMIT 1),
   t1.id_nomenclature,
   t2.id_nomenclature,
   t3.id_nomenclature,
@@ -175,14 +168,7 @@ JOIN ref_geo.l_areas areas ON areas.area_code = CASE WHEN (codecommune[1]  is no
                                        WHEN (codemaille[1]  is not null and codemaille[2]  is  null) THEN codemaille[1]
                                        WHEN (codedepartement[1]  is not null and codedepartement[2]  is  null) THEN codedepartement[1]
 END
-WHERE m.identifiantpermanent NOT IN (
-    SELECT distinct identifiantpermanent FROM (
-        select identifiantpermanent, jddmetadonneedeeid
-        from ginco_migration.vm_data_model_source
-        group by identifiantpermanent, jddmetadonneedeeid
-        having count(*) > 1
-    ) a
-) AND ((codecommune[1]  is not null and codecommune[2]  is null)
+WHERE ((codecommune[1]  is not null and codecommune[2]  is null)
 OR ((codemaille[1]  is not null and codemaille[2]  is null) and (codecommune[1]  is null or codecommune is null))
 OR ((codemaille[1]  is null or codemaille is null) and (codecommune[1]  is null or codecommune is null) and (codedepartement[1]  is not null and codedepartement[2]  is null)))
 ;
