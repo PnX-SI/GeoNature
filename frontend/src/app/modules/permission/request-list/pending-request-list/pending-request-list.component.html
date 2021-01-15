@@ -54,7 +54,8 @@
   </ng-template>
 
   <ng-template #endAccessDateCellTpl let-value="value">
-    <span> {{ value | date:'mediumDate':undefined:locale }}</span>
+    <span *ngIf="value; else permanentPermission"> {{ value | date:'mediumDate':undefined:locale }}</span>
+    <ng-template #permanentPermission>Aucune</ng-template>
   </ng-template>
 
   <ng-template #geographicCellTpl let-value="value">

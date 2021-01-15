@@ -539,6 +539,8 @@ def get_permissions_with_filters(request, default_permissions):
 
 
 def split_value_filter(data: str):
+    if data == None or data == '':
+        return []
     values = data.split(',')
     unduplicated_data = unduplicate_values(values)
     return unduplicated_data
@@ -1066,7 +1068,7 @@ def formatAccessRequest(request, asker, asker_organism, validator):
         "taxonomic_filters": taxa,
         "taxonomic_filters_labels": format_taxonomic_filter_values(taxa),
         "sensitive_access": sensitive,
-        "end_access_date": request.end_date.strftime("%Y-%m-%d"),
+        "end_access_date": format_end_access_date_from_string(request.end_date),
         "processed_state": request.processed_state,
         "processed_date": request.processed_date,
         "processed_by": request.processed_by,
@@ -1081,6 +1083,8 @@ def formatAccessRequest(request, asker, asker_organism, validator):
         access_request["processed_by"] = f"{validator.prenom_role} {validator.nom_role}"
     return access_request
 
+def format_end_access_date_from_string(date):
+    return None if not date else date.strftime("%Y-%m-%d")
 
 # TODO: Delete this route if not used !
 @routes.route("/requests/<token>", methods=["PUT"])
