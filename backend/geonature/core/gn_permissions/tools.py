@@ -41,7 +41,10 @@ def user_from_token(token, secret_key=None):
 
 
 def get_user_from_token_and_raise(
-    request, secret_key=None, redirect_on_expiration=None, redirect_on_invalid_token=None,
+    request,
+    secret_key=None,
+    redirect_on_expiration=None,
+    redirect_on_invalid_token=None,
 ):
     """
     Deserialize the token
@@ -53,11 +56,11 @@ def get_user_from_token_and_raise(
         return user_from_token(token, secret_key)
 
     except KeyError:
-        raise Unauthorized(description='No token.')
+        raise Unauthorized(description="No token.")
     except AccessRightsExpiredError:
-        raise Unauthorized(description='Token expired.')
+        raise Unauthorized(description="Token expired.")
     except UnreadableAccessRightsError:
-        e = Unauthorized(description='Token corrupted.')
+        e = Unauthorized(description="Token corrupted.")
         response = e.get_response()
         response.set_cookie("token", expires=0)
         raise Unauthorized(response=response, description=e.get_description())
@@ -72,7 +75,9 @@ def get_user_from_token_and_raise(
 
 
 class UserCruved:
-    def __init__(self,):
+    def __init__(
+        self,
+    ):
         self.is_herited = False
 
     def build_herited_user_cruved(self, user_permissions, module_code, object_code):
@@ -98,26 +103,20 @@ class UserCruved:
 
             if (
                 user_permission.code_object == object_code
-                and
-                user_permission.module_code == module_code
+                and user_permission.module_code == module_code
             ):
                 object_permissions.append(user_permission)
-            elif(
-                user_permission.module_code == module_code
-                and
-                user_permission.code_object == 'ALL'
+            elif (
+                user_permission.module_code == module_code and user_permission.code_object == "ALL"
             ):
                 module_permissions.append(user_permission)
             elif (
                 user_permission.module_code == "GEONATURE"
-                and
-                user_permission.code_object == object_code
+                and user_permission.code_object == object_code
             ):
                 geonature_permission.append(user_permission)
             elif (
-                user_permission.module_code == "GEONATURE"
-                and
-                user_permission.code_object == 'ALL'
+                user_permission.module_code == "GEONATURE" and user_permission.code_object == "ALL"
             ):
                 geonature_permission.append(user_permission)
 
@@ -138,8 +137,29 @@ class UserCruved:
 def query_user_perm(
     id_role, code_filter_type, code_action=None, module_code=None, object_code=None
 ):
+    """
+    Construction de la requête de récupération des permissions
+        en prenant en compte l'héritage des objets et des modules
 
-    ors = [sa.and_(VUsersPermissions.module_code.ilike("GEONATURE"), VUsersPermissions.code_object == "ALL")]
+    Parameters:
+        id_role(int) : id of role
+        code_filter_type(str): <SCOPE, GEOGRAPHIC ...>
+        code_action(str): <C,R,U,V,E,D> or None if all actions wanted
+        module_code(str): 'GEONATURE', 'OCCTAX'
+        code_object(str): 'PERMISSIONS', 'DATASET' (table gn_permissions.t_oject)
+    Return:
+        Array<VUsersPermissions>
+    """
+    # Construction de la liste des couple module_code, object_code
+    #   a récupérer pour générer le cruved
+    permissions_select = {
+        0: [module_code, object_code],
+        10: [module_code, "ALL"],
+        20: ["GEONATURE", object_code],
+        30: ["GEONATURE", "ALL"],
+    }
+    # filter null value
+    active_permissions_select = {k: v for k, v in permissions_select.items() if v[0] and v[1]}
 
     q = VUsersPermissions.query.filter(VUsersPermissions.id_role == id_role).filter(
         VUsersPermissions.code_filter_type == code_filter_type
@@ -148,15 +168,19 @@ def query_user_perm(
     if code_action:
         q = q.filter(VUsersPermissions.code_action == code_action)
 
-    if object_code:
-        ors.append(sa.and_(VUsersPermissions.module_code.ilike("GEONATURE"), VUsersPermissions.code_object == object_code))
-        if  module_code:
-            ors.append(sa.and_(VUsersPermissions.module_code.ilike(module_code), VUsersPermissions.code_object == object_code))
-    if module_code:
-        ors.append(sa.and_(VUsersPermissions.module_code.ilike(module_code), VUsersPermissions.code_object == "ALL"))
-    # if object code is None, only take ALL
-    else:
-        q = q.filter(VUsersPermissions.code_object == "ALL")
+    # Liste des couples module_code, object_code à sélectionner
+    ors = []
+    for k, (module_code, object_code) in active_permissions_select.items():
+        # Si module code et object code sont définis
+        # déjà testé dans active_permissions_select
+        if module_code and object_code:
+            ors.append(
+                sa.and_(
+                    VUsersPermissions.module_code.ilike(module_code),
+                    VUsersPermissions.code_object == object_code,
+                )
+            )
+
     return q.filter(sa.or_(*ors)).all()
 
 
@@ -164,18 +188,18 @@ def get_user_permissions(
     user, code_filter_type, code_action=None, module_code=None, code_object=None
 ):
     """
-        Get all the permissions of a user for an action, a module (or an object) and a filter_type
-        Users permissions could be multiples because of user's group. The view mapped by VUsersPermissions does not take the
-        max because some filter type could be not quantitative
+    Get all the permissions of a user for an action, a module (or an object) and a filter_type
+    Users permissions could be multiples because of user's group. The view mapped by VUsersPermissions does not take the
+    max because some filter type could be not quantitative
 
-        Parameters:
-            user(dict)
-            code_filter_type(str): <SCOPE, GEOGRAPHIC ...>
-            code_action(str): <C,R,U,V,E,D> or None if all actions wanted
-            module_code(str): 'GEONATURE', 'OCCTAX'
-            code_object(str): 'PERMISSIONS', 'DATASET' (table gn_permissions.t_oject)
-        Return:
-            Array<VUsersPermissions>
+    Parameters:
+        user(dict)
+        code_filter_type(str): <SCOPE, GEOGRAPHIC ...>
+        code_action(str): <C,R,U,V,E,D> or None if all actions wanted
+        module_code(str): 'GEONATURE', 'OCCTAX'
+        code_object(str): 'PERMISSIONS', 'DATASET' (table gn_permissions.t_oject)
+    Return:
+        Array<VUsersPermissions>
     """
     user_cruved = query_user_perm(
         id_role=user["id_role"],
@@ -200,8 +224,8 @@ def get_user_permissions(
 
 def get_max_perm(perm_list):
     """
-        Return the max filter_code from a list of VUsersPermissions instance
-        get_user_permissions return a list of VUsersPermissions from its group or himself
+    Return the max filter_code from a list of VUsersPermissions instance
+    get_user_permissions return a list of VUsersPermissions from its group or himself
     """
     user_with_highter_perm = perm_list[0]
     max_code = user_with_highter_perm.value_filter
@@ -216,8 +240,8 @@ def get_max_perm(perm_list):
 
 def build_cruved_dict(cruved, get_id):
     """
-        function utils to build a dict like {'C':'3', 'R':'2'}...
-        from Array<VUsersPermissions>
+    function utils to build a dict like {'C':'3', 'R':'2'}...
+    from Array<VUsersPermissions>
     """
     cruved_dict = {}
     for action_scope in cruved:
@@ -345,9 +369,9 @@ def cruved_scope_for_user_in_module(
 
 def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, object_code=None):
     """
-        Check if the cruved is in the session
-        if not, get the cruved from the DB with
-        cruved_for_user_in_app()
+    Check if the cruved is in the session
+    if not, get the cruved from the DB with
+    cruved_for_user_in_app()
     """
     if module_code in session and "user_cruved" in session[module_code]:
         return session[module_code]["user_cruved"]
@@ -358,4 +382,3 @@ def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, objec
         session[module_code] = {}
         session[module_code]["user_cruved"] = user_cruved
     return user_cruved
-
