@@ -507,13 +507,37 @@ WHERE code_filter_type = 'SENSITIVITY' ;
 
 
 -- -------------------------------------------------------------------------------------------------
+-- Rename "SENSITIVITY" filter values. See #1062
+-- TODO: to remove when new permissions management implemented.
+UPDATE gn_permissions.t_filters 
+SET 
+    value_filter = 'fuzzy',
+    description_filter = 'Filtre pour flouter les données sensibles et privées.'
+WHERE value_filter = 'DONNEES_DEGRADEES' ;
+
+-- TODO: to remove when new permissions management implemented.
+UPDATE gn_permissions.t_filters 
+SET 
+    value_filter = 'exact',
+    description_filter = 'Filtre pour afficher précisément les données sensibles et privées.'
+WHERE value_filter = 'DONNEES_PRECISES' ;
+
+
+-- -------------------------------------------------------------------------------------------------
+-- Drop "v_roles_permissions" before alterate "cor_role_action_filter_module_object"
+-- because columns depend on it.
+DROP VIEW IF EXISTS gn_permissions.v_roles_permissions ;
+
+
+-- -------------------------------------------------------------------------------------------------
 -- Alter table "cor_role_action_filter_module_object" to group permissions,
 -- manage permissions timing, store value of filters.
 ALTER TABLE gn_permissions.cor_role_action_filter_module_object
     DROP COLUMN IF EXISTS gathering,
     DROP COLUMN IF EXISTS end_date,
     DROP COLUMN IF EXISTS id_filter_type,
-    DROP COLUMN IF EXISTS value_filter ;
+    DROP COLUMN IF EXISTS value_filter,
+    DROP COLUMN IF EXISTS id_request ;
 
 
 ALTER TABLE gn_permissions.cor_role_action_filter_module_object
@@ -561,6 +585,32 @@ ALTER TABLE gn_permissions.cor_role_action_filter_module_object
 
 
 -- -------------------------------------------------------------------------------------------------
+-- Drop trigger before migrate, recreate it after migrate
+DROP TRIGGER IF EXISTS tri_check_no_multiple_filter_type 
+    ON gn_permissions.cor_role_action_filter_module_object ;
+
+
+-- -------------------------------------------------------------------------------------------------
+-- Migrate "t_filters" entries
+-- TODO: see why this update can be blocked by trigger gn_permissions.fct_tri_only_one_filter_type_by_permission()
+UPDATE gn_permissions.cor_role_action_filter_module_object AS c
+SET 
+    id_filter_type = f.id_filter_type,
+    value_filter = f.value_filter
+FROM gn_permissions.t_filters AS f
+WHERE c.id_filter = f.id_filter 
+    AND c.id_filter_type IS NULL
+    AND c.value_filter IS NULL ;
+
+
+-- -------------------------------------------------------------------------------------------------
+-- Re-alter table "cor_role_action_filter_module_object" to set NOT NULL on columns after migrate
+ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+    ALTER COLUMN id_filter_type SET NOT NULL,
+    ALTER COLUMN value_filter SET NOT NULL ;
+
+
+-- -------------------------------------------------------------------------------------------------
 -- Rename and update trigger to force only one filter type by permission (gathering)
 -- TODO: see if we can rename this trigger
 CREATE OR REPLACE FUNCTION gn_permissions.fct_tri_only_one_filter_type_by_permission()
@@ -593,10 +643,11 @@ $BODY$
             FROM gn_permissions.bib_filters_type 
             WHERE id_filter_type = NEW.id_filter_type ;
 
-            RAISE EXCEPTION 'ATTENTION: il existe déjà un enregistrement avec le type de filtre % '
+            RAISE EXCEPTION 'ATTENTION: il existe déjà un % enregistrement avec le type de filtre % '
                 'pour le role % sur le module %, son action % et objet % . Il est interdit de '
                 'définir plusieurs fois le même type de filtre pour un même ensemble role, module, '
                 'action et objet.', 
+                nbPermission,
                 codeFilterType, 
                 NEW.id_role, 
                 NEW.id_module, 
@@ -607,9 +658,6 @@ $BODY$
 $BODY$
 LANGUAGE plpgsql VOLATILE
 COST 100 ;
-
-DROP TRIGGER IF EXISTS tri_check_no_multiple_filter_type 
-    ON gn_permissions.cor_role_action_filter_module_object ;
 
 CREATE TRIGGER tri_check_no_multiple_filter_type 
     BEFORE INSERT OR UPDATE
@@ -624,9 +672,7 @@ DROP FUNCTION IF EXISTS gn_permissions.fct_tri_does_user_have_already_scope_filt
 
 
 -- -------------------------------------------------------------------------------------------------
--- Rebuild view "v_roles_permissions"
-DROP VIEW IF EXISTS gn_permissions.v_roles_permissions ;
-
+-- Build view "v_roles_permissions"
 CREATE VIEW gn_permissions.v_roles_permissions
 AS WITH 
     -- Get users permissions
@@ -634,8 +680,9 @@ AS WITH
         SELECT u.id_role,
             u.nom_role,
             u.prenom_role,
-            NULL AS group_name,
+            u.groupe,
             u.id_organisme,
+            NULL AS group_name,
             c_1.id_permission,
             c_1.id_module,
             c_1.id_action,
@@ -645,7 +692,7 @@ AS WITH
             c_1.id_filter,-- TODO: remove this line
             c_1.id_filter_type,
             c_1.value_filter
-        FROM utilisateurs.t_roles AS u
+        FROM utilisateurs.t_roles AS u 
             JOIN gn_permissions.cor_role_action_filter_module_object AS c_1 
                 ON (c_1.id_role = u.id_role)
         WHERE u.groupe = false
@@ -656,8 +703,9 @@ AS WITH
         SELECT u.id_role,
             u.nom_role,
             u.prenom_role,
-            TRIM(TRAILING FROM CONCAT(grp.nom_role, ' ', grp.prenom_role)) AS group_name,
+            u.groupe,
             u.id_organisme,
+            TRIM(TRAILING FROM CONCAT(grp.nom_role, ' ', grp.prenom_role)) AS group_name,
             c_1.id_permission,
             c_1.id_module,
             c_1.id_action,
@@ -667,7 +715,7 @@ AS WITH
             c_1.id_filter,-- TODO: remove this line
             c_1.id_filter_type,
             c_1.value_filter
-        FROM utilisateurs.t_roles AS u
+        FROM utilisateurs.t_roles AS u 
             JOIN utilisateurs.cor_roles AS g 
                 ON (g.id_role_utilisateur = u.id_role OR g.id_role_groupe = u.id_role)
             JOIN utilisateurs.t_roles AS grp 
@@ -685,8 +733,9 @@ AS WITH
         SELECT p_user_permission.id_role,
             p_user_permission.nom_role,
             p_user_permission.prenom_role,
-            p_user_permission.group_name,
+            p_user_permission.groupe,
             p_user_permission.id_organisme,
+            p_user_permission.group_name,
             p_user_permission.id_permission,
             p_user_permission.id_module,
             p_user_permission.id_action,
@@ -701,8 +750,9 @@ AS WITH
         SELECT p_groupe_permission.id_role,
             p_groupe_permission.nom_role,
             p_groupe_permission.prenom_role,
-            p_groupe_permission.group_name,
+            p_groupe_permission.groupe,
             p_groupe_permission.id_organisme,
+            p_groupe_permission.group_name,
             p_groupe_permission.id_permission,
             p_groupe_permission.id_module,
             p_groupe_permission.id_action,
@@ -717,8 +767,9 @@ AS WITH
 SELECT v.id_role,
     v.nom_role,
     v.prenom_role,
-    v.group_name,
+    v.groupe,
     v.id_organisme,
+    v.group_name,
     v.id_module,
     modules.module_code,
     v.id_action,
@@ -1773,35 +1824,6 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
         WHERE cmaof.code = 'VALIDATION-R-SENSITIVE_OBSERVATION-TAXONOMIC'
     ) ;
-
-
--- -------------------------------------------------------------------------------------------------
--- Rename "SENSITIVITY" filter values. See #1062
--- TODO: to remove when new permissions management implemented.
-UPDATE gn_permissions.t_filters 
-SET 
-    value_filter = 'fuzzy',
-    description_filter = 'Filtre pour flouter les données sensibles et privées.'
-WHERE value_filter = 'DONNEES_DEGRADEES' ;
-
--- TODO: to remove when new permissions management implemented.
-UPDATE gn_permissions.t_filters 
-SET 
-    value_filter = 'exact',
-    description_filter = 'Filtre pour afficher précisément les données sensibles et privées.'
-WHERE value_filter = 'DONNEES_PRECISES' ;
-
-
--- -------------------------------------------------------------------------------------------------
--- Migrate "t_filters" entries
-UPDATE gn_permissions.cor_role_action_filter_module_object AS c
-SET 
-    id_filter_type = f.id_filter_type,
-    value_filter = f.value_filter
-FROM gn_permissions.t_filters AS f
-WHERE c.id_filter = f.id_filter 
-    AND c.id_filter_type IS NULL
-    AND c.value_filter IS NULL ;
 
 -- TODO: uncomment the database cleaning queries.
 -- -------------------------------------------------------------------------------------------------
