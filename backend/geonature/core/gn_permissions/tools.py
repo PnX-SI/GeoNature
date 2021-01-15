@@ -298,11 +298,9 @@ def get_user_permissions(
     object_for_error = None
 
     try:
-        print("DEBUG", user_cruved)
         assert len(user_cruved) > 0
         return user_cruved
     except AssertionError:
-        print("AssertionError", code_object, module_code)
         object_for_error = ",".join(filter(None, (code_object, module_code)))
         raise InsufficientRightsError(
             f"User {user['id_role']} cannot '{code_action}' in module/app/object {object_for_error}"
