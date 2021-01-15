@@ -942,7 +942,7 @@ def get_permissions_requests_by_token(token):
     query = (
         DB.session.query(TRequests, UserAsker, BibOrganismes, UserValidator)
             .join(UserAsker, UserAsker.id_role == TRequests.id_role)
-            .join(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme)
+            .join(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme, isouter=True)
             .join(UserValidator, UserValidator.id_role == TRequests.processed_by, isouter=True)
             .filter(TRequests.token == token)
     )
