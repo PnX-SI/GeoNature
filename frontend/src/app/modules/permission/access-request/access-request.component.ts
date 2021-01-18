@@ -19,6 +19,7 @@ import { ConventiondModalContent } from '../convention-modal/convention-modal.co
 })
 export class AccessRequestComponent implements OnInit {
 
+  public sendingRequest = false;
   public disableSubmit = false;
   public regularFormGrp: FormGroup;
   public dynamicFormGrp: FormGroup;
@@ -122,10 +123,8 @@ export class AccessRequestComponent implements OnInit {
     modalRef.componentInstance.accessRequestInfos = this.accessRequestInfos;
     modalRef.componentInstance.customData = this.customData;
     modalRef.result.then((result) => {
-      console.log(`Closed with: ${result}`);
       this.sendAccessRequest();
     }, (reason) => {
-      console.log(`Dismissed ${reason}`);
       this.commonService.translateToaster('warning', 'Permissions.accessRequest.conventionCanceled');
       this.disableSubmit = false;
     });
@@ -199,6 +198,7 @@ export class AccessRequestComponent implements OnInit {
   }
 
   private sendAccessRequest() {
+    this.sendingRequest = true;
     const accessRequestData = this.getAccessRequestData();
 
     this.permissionService
@@ -209,10 +209,11 @@ export class AccessRequestComponent implements OnInit {
         this.router.navigate(['/']);
       },
       error => {
-        console.log('In displayError:', error);
+        console.log('Error occurred when sending access request:', error);
         this.commonService.translateToaster('error', 'Permissions.accessRequest.responseError');
       })
     .add(() => {
+      this.sendingRequest = false;
       this.disableSubmit = false;
     });
   }
