@@ -22,6 +22,7 @@ export class RequestDetailComponent implements OnInit {
 
   token: string;
   request: IPermissionRequest;
+  errorMsg: string;
 
   constructor(
     public activatedRoute: ActivatedRoute,
@@ -31,7 +32,9 @@ export class RequestDetailComponent implements OnInit {
     private toasterService: ToastrService,
     private translateService: TranslateService,
     private router: Router,
-  ) {}
+  ) {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+  }
 
   ngOnInit(): void {
     this.extractRouteParams();
@@ -42,7 +45,6 @@ export class RequestDetailComponent implements OnInit {
     const urlParams = this.activatedRoute.snapshot.paramMap;
     this.token = urlParams.get('requestToken');
     if (urlParams.has('user') && urlParams.has('organism')) {
-      console.log('IN')
       this.request = {
         'token': this.token,
         'userName': urlParams.get('user'),
@@ -52,9 +54,26 @@ export class RequestDetailComponent implements OnInit {
   }
 
   private loadRequest() {
-    this.permissionService.getRequestByToken(this.token).subscribe(data => {
-      this.request = data;
-    });
+    this.permissionService.getRequestByToken(this.token)
+      .subscribe(
+        data => {
+          this.request = data;
+          this.errorMsg = undefined;
+        },
+        error => {
+          this.errorMsg = (error.error && error.error.msg) ? error.error.msg : error.message;
+          this.request = undefined;
+
+          if (error.status === 404) {
+            this.errorMsg = `Token « ${this.token} » de la demande d'accès introuvable.`
+          }
+          this.translateService
+            .get('Permissions.errors.stdMsg', {errorMsg: this.errorMsg})
+            .subscribe((translatedTxt: string) => {
+              this.toasterService.error(translatedTxt);
+            });
+        }
+      );
   }
 
   openAcceptDialog(request: IPermissionRequest): void {
@@ -89,7 +108,6 @@ export class RequestDetailComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(request_token => {
       if (request_token) {
-        console.log(request_token)
         this.permissionService.pendingRequest(request_token).subscribe(
           () => {
             this.router.navigate(['permissions/requests/pending']);

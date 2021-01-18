@@ -232,7 +232,7 @@
   },
   "Permissions": {
     "accessRequest": {
-      "link": "Demander des permissions",
+      "link": "Demander un accès aux données précises",
       "formTitle": "Demande de permissions d'accès",
       "permissionTitle": "Permissions demandées",
       "regularFormIntro": "Veuillez indiquer ci-dessous les zones géographiques pour lesquelles vous souhaitez accéder aux données à leur précision maximale. Merci de préciser également les groupes taxonomiques concernés et le calendrier de votre étude.",
@@ -246,6 +246,7 @@
       "sensitiveAccessText" : "Je souhaite accéder aux observations sensibles",
       "sensitiveAccessRules": "Merci de consulter au préalable les règles d’accès aux données sensibles",
       "endDateLabel": "Accès jusqu'au",
+      "sending": "Votre demande est en cours d'envoie...",
       "responseOk": "Votre demande a bien été prise en compte. Elle va être évaluée par un administrateur.",
       "responseError": "Une erreur est survenue lors de la prise en compte de votre demande.",
       "conventionTitle": "Convention",
@@ -317,7 +318,12 @@
     "addingOk": "Permission ajoutée avec succès.",
     "addingKo": "Une erreur est survenue lors de l'ajout de la permission.",
     "updatingOk": "Permission mise à jour avec succès.",
-    "updatingKo": "Une erreur est survenue lors de la mise à jour de la permission."
+    "updatingKo": "Une erreur est survenue lors de la mise à jour de la permission.",
+    "loading": "Chargement en cours...",
+    "errors": {
+      "std": "Une erreur est survenue",
+      "stdMsg": "Une erreur est survenue : {{errorMsg}}"
+    }
   },
   "Datatable": {
     "emptyMessage": "Aucune donnée à afficher.",

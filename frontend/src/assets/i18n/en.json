@@ -228,7 +228,7 @@
   },
   "Permissions": {
     "accessRequest": {
-      "link": "Permissions request",
+      "link": "Request access to precise data",
       "formTitle": "Request access permissions",
       "permissionTitle": "Permissions requested",
       "regularFormIntro": "Please indicate below the geographic areas for which you want to access the data to its maximum precision. Please also specify the taxonomic groups concerned and the timetable for your study.",
@@ -242,6 +242,7 @@
       "sensitiveAccessText" : "I want to access sensitive observations",
       "sensitiveAccessRules": "Please consult the rules for access to sensitive data beforehand",
       "endDateLabel": "Access until",
+      "sending": "Your request is being sent...",
       "responseOk": "Your request has been taken into account. It will be evaluated by an administrator.",
       "responseError": "An error occurred while taking your request into account.",
       "conventionTitle": "Convention",
@@ -313,7 +314,12 @@
     "addingOk": "Permission added successfully.",
     "addingKo": "An error occured while adding the permission: {{errorMsg}}.",
     "updatingOk": "Permission updated successfully.",
-    "updatingKo": "An error occured while updatind the permission: {{errorMsg}}."
+    "updatingKo": "An error occured while updatind the permission: {{errorMsg}}.",
+    "loading": "Loading...",
+    "errors": {
+      "std": "An error occured",
+      "stdMsg": "An error occured : {{errorMsg}}"
+    }
   },
   "Datatable": {
     "emptyMessage": "No data to display.",
