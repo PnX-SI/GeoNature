@@ -217,11 +217,13 @@ def render_request_approval_tpl(user_id, data, request_token):
         "gn_permissions.manage_access_request_by_link",
         token=request_token,
         action="approve",
+        _external=True,
     )
     refusal_url = url_for(
         "gn_permissions.manage_access_request_by_link",
         token=request_token,
         action="refuse",
+        _external=True,
     )
     return render_template(
         template,
