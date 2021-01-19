@@ -275,7 +275,8 @@ class UserCruved:
                 herited_cruved[action] = getattr(herited_perm[action], select_col)
             else:
                 herited_cruved[action] = default_value
-        return herited_cruved, is_herited, herited_object
+
+        return herited_cruved, is_herited, g_herited_object
 
     def get_herited_user_cruved_by_action(self, action):
         """
