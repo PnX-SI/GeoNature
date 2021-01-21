@@ -246,8 +246,14 @@ export class MetadataComponent implements OnInit {
 
   publishAf() {
     this._dfs.publishAf(this.afPublishModalId).subscribe(
-      res => this.getAcquisitionFrameworksAndDatasets()
-    );
+      res => this.getAcquisitionFrameworksAndDatasets(),
+      error => {
+        this._commonService.regularToaster(
+          'error', "Une erreur s'est produite lors de la fermeture du cadre d'acquisition. Contactez l'administrateur"
+          )
+    }
+    )
+
     this.modal.dismissAll();
   }
 
