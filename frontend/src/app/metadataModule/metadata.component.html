@@ -123,7 +123,7 @@
                   <button
                     *ngIf="APP_CONFIG.METADATA?.ENABLE_CLOSE_AF"
                     mat-icon-button
-                    [disabled]="!af.cruved.E || !af.opened || af['datasetsTemp'].length == 0"
+                    [disabled]="!af.cruved.V || !af.opened || af['datasetsTemp'].length == 0"
                     (click)="openPublishModalAf($event, af.id_acquisition_framework, publishModal)"
                   >
                     <mat-icon

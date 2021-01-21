@@ -10,14 +10,9 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 **TODO**
 
 - Review and include some PR : https://github.com/PnX-SI/GeoNature/pulls
-- Bug des observateurs par défaut non chargé
 - Update SQL - J'ai fait un deuxième SQL à part dédié à cela - Calculer la sensibilité de toutes les données existantes dans la synthèse, mais ne pas écraser les niveaux de diffusion existants, supérieurs au niveau de diffusion calculé automatiquement. A relire, ajuster : data/migrations/2.5.5to2.6.0-update-sensitivity.sql
-- Finir le tableau des JDD (https://github.com/PnX-SI/GeoNature/issues/889#issuecomment-742655014), je n'ai pas vu passer les commits liés aux 2 derniers points cochés (Dépôt sur V du CRUVED et paramètre du bouton Import depuis JDD)
 - https://github.com/PnX-SI/GeoNature/issues/922#issuecomment-690033212 indique une vérification à faire ?
 - Merger la branche Sensibilité (https://github.com/PnX-SI/GeoNature/compare/develop...sensitivity) ?
-- Supprimer le fichier https://github.com/PnX-SI/GeoNature/blob/develop/data/scripts/sensi/sensibles_to_inpn_20201218.csv car c'est celui sur geonature.fr/data qui est utilisé ?
-- data/migrations/insert_reg.sh à déplacer dans data/scripts/ref_geo/ ?
-- Import initial depuis GINCO-DEPOBIO 1 : Mettre tous les JDD importés en inactif. Et les CA en fermés ?
 
 **🚀 Nouveautés**
 
@@ -64,6 +59,7 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 **⚠️ Notes de version**
 
 * https://github.com/PnX-SI/GeoNature/blob/develop/data/migrations/2.5.5to2.6.0.sql
+- Nomenclatures Sensibilité à renommer ???
 * Calcul de la sensibilité des données existantes dans la Synthèse (ainsi que de leur niveau de diffusion si celui-ci n'a pas été renseigné par ailleurs) : data/migrations/2.5.5to2.6.0-update-sensitivity.sql
 * Si vous aviez fait des customisations (logo, PDF export...) alors XXXXXX
 * Revoir http://docs.geonature.fr/admin-manual.html#integrer-son-logo ?

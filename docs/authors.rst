@@ -6,6 +6,7 @@ Parc national des Ecrins
 
 * Gil Deluermoz
 * Theo Lechemia
+* Elie Bouttier
 * Camille Monchicourt
 
 .. image:: http://geonature.fr/img/logo-pne.jpg
