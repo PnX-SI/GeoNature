@@ -627,10 +627,18 @@ def general_stats(info_role):
         func.count(func.distinct(Synthese.cd_nom)),
         func.count(func.distinct(Synthese.observers)),
     )
+    q = select(
+        [
+            func.count(Synthese.id_synthese),
+            func.count(func.distinct(Synthese.cd_nom)),
+            func.count(func.distinct(Synthese.observers))
+        ]
+    )   
+
     synthese_query_obj = SyntheseQuery(Synthese, q, {})
     synthese_query_obj.filter_query_with_cruved(info_role)
-    # q = synthese_query.filter_query_with_cruved(Synthese, q, info_role)
-    data = synthese_query_obj.query.one()
+    result = DB.engine.execute(synthese_query_obj.query)
+    data = result.fetchone()
     data = {
         "nb_data": data[0],
         "nb_species": data[1],
