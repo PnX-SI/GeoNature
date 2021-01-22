@@ -45,6 +45,14 @@ class SyntheseQuery:
 
     def __init__(self, model, query, filters):
         self.query = query
+
+        # Passage de l'ensemble des filtres
+        #   en array pour des questions de compatibilité
+        # TODO voir si ça ne peut pas être modifié
+        for k in filters.keys():
+            if not isinstance(filters[k], list):
+                filters[k] = [filters[k]]
+
         self.filters = filters
         self.first = True
         self.model = model
@@ -239,15 +247,10 @@ class SyntheseQuery:
             # Insersect with the geom send from the map
             ors = []
 
-            # Si la géometrie d'intersection n'est pas un array
-            #  cas des saisies manuelle de filtre géo
-            if isinstance(self.filters["geoIntersection"], str):
-                self.filters["geoIntersection"] = [self.filters["geoIntersection"]]
-
             for str_wkt in self.filters["geoIntersection"]:
                 # if the geom is a circle
                 if "radius" in self.filters:
-                    radius = self.filters.pop("radius")
+                    radius = self.filters.pop("radius")[0]
                     wkt = loads(str_wkt)
                     wkt = circle_from_point(wkt, float(radius))
                 else:

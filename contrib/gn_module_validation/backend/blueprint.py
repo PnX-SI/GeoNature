@@ -49,14 +49,23 @@ def get_synthese_data(info_role):
         }
 
     """
+    if request.json:
+        filters = request.json
+    elif request.data:
+        #  decode byte to str - compat python 3.5
+        filters = json.loads(request.data.decode("utf-8"))
+    else:
+        filters = {key: request.args.get(key) for key, value in request.args.items()}
 
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
+    # Traitement des listes de valeurs
+    # POURQUOI différents de la synthèse ?
+    #   Où les filtres à valeur multiple sont passés en array
     for key, value in filters.items():
-        if "," in value[0] and key != "geoIntersection":
-            filters[key] = value[0].split(",")
+        if "," in value and key != "geoIntersection":
+            filters[key] = value.split(",")
 
     if "limit" in filters:
-        result_limit = filters.pop("limit")[0]
+        result_limit = filters.pop("limit")
     else:
         result_limit = blueprint.config["NB_MAX_OBS_MAP"]
 

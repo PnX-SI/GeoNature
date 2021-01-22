@@ -119,19 +119,13 @@ def get_observations_for_web(info_role):
         #  decode byte to str - compat python 3.5
         filters = json.loads(request.data.decode("utf-8"))
     else:
-        filters = {key: request.args.getlist(key) for key, value in request.args.items()}
-
-    # Passage de l'ensemble des filtres
-    #   en array pour des questions de compatibilité
-    # TODO voir si ça ne peut pas être modifié
-    for k in filters.keys():
-        if not isinstance(filters[k], list):
-            filters[k] = [filters[k]]
+        filters = {key: request.args.get(key) for key, value in request.args.items()}
 
     if "limit" in filters:
-        result_limit = filters.pop("limit")[0]
+        result_limit = filters.pop("limit")
     else:
         result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
+
     query = (
         select(
             [
@@ -633,7 +627,7 @@ def general_stats(info_role):
             func.count(func.distinct(Synthese.cd_nom)),
             func.count(func.distinct(Synthese.observers))
         ]
-    )   
+    )
 
     synthese_query_obj = SyntheseQuery(Synthese, q, {})
     synthese_query_obj.filter_query_with_cruved(info_role)
