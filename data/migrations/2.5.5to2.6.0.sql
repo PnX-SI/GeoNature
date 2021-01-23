@@ -5,9 +5,24 @@
 ------------------------------------
 
 -- gn_synthese.t_sources.name_source UNIQUE
-ALTER TABLE ONLY t_sources
+ALTER TABLE ONLY gn_synthese.t_sources
     ADD CONSTRAINT unique_name_source UNIQUE (name_source);
-CREATE UNIQUE INDEX i_unique_t_sources_name_source ON t_sources USING btree (name_source);
+CREATE UNIQUE INDEX i_unique_t_sources_name_source ON gn_synthese.t_sources USING btree (name_source);
+
+ALTER TABLE gn_meta.t_datasets
+  ADD CONSTRAINT unique_dataset_uuid UNIQUE (unique_dataset_id);
+CREATE UNIQUE INDEX i_unique_t_datasets_unique_id ON gn_meta.t_datasets USING btree (unique_dataset_id);
+
+ALTER TABLE gn_meta.t_acquisition_frameworks
+  ADD CONSTRAINT unique_acquisition_frameworks_uuid UNIQUE (unique_acquisition_framework_id);
+CREATE UNIQUE INDEX i_unique_t_acquisition_framework_unique_id ON gn_meta.t_acquisition_frameworks USING btree (unique_acquisition_framework_id);
+
+ALTER TABLE gn_meta.sinp_datatype_protocols
+  ADD CONSTRAINT unique_sinp_datatype_protocols_uuid UNIQUE (unique_protocol_id);
+
+ALTER TABLE gn_meta.sinp_datatype_publications
+  ADD CONSTRAINT unique_sinp_datatype_publications_uuid UNIQUE (unique_publication_id);
+
 
 ----------------------------
 -- SENSITIVITY schema update
