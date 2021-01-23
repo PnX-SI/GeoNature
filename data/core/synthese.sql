@@ -332,6 +332,9 @@ ALTER TABLE ONLY cor_observer_synthese
 --CONSTRAINTS--
 ---------------
 
+ALTER TABLE ONLY t_sources
+    ADD CONSTRAINT unique_name_source UNIQUE (name_source);
+
 ALTER TABLE ONLY synthese
     ADD CONSTRAINT unique_id_sinp_unique UNIQUE (unique_id_sinp);
 
@@ -458,6 +461,8 @@ ORDER BY loc.cd_ref;
 -----------
 --INDEXES--
 -----------
+
+CREATE UNIQUE INDEX i_unique_t_sources_name_source ON t_sources USING btree (name_source);
 
 CREATE INDEX i_synthese_t_sources ON synthese USING btree (id_source);
 

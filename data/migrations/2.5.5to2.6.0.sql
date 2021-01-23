@@ -1,5 +1,14 @@
 -- Update script from GeoNature 2.5.5 to 2.6.0
 
+------------------------------------
+-- ADD MISSING UNIQUE CONSTRAINTS --
+------------------------------------
+
+-- gn_synthese.t_sources.name_source UNIQUE
+ALTER TABLE ONLY t_sources
+    ADD CONSTRAINT unique_name_source UNIQUE (name_source);
+CREATE UNIQUE INDEX i_unique_t_sources_name_source ON t_sources USING btree (name_source);
+
 ----------------------------
 -- SENSITIVITY schema update
 ----------------------------
