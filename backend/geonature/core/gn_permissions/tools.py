@@ -272,12 +272,16 @@ class UserCruved:
 
         return herited_cruved, is_herited, g_herited_object
 
-    def get_herited_user_cruved_by_action(self, action):
+    def get_perm_for_one_action(self, action):
         """
-        Récupération des permissions par action
+        Récupération de la permission hérité avec la valeur la plus grande 
+        pour une action donnée.
         """
         permissions = self._build_query_permission(action)
-        return self.build_herited_user_cruved(permissions)
+        permissions = self.build_herited_user_cruved(permissions)
+        if permissions is not None:
+            (max_perm, is_inherited_by_module, herited_by) = permissions
+            return max_perm, is_inherited_by_module, herited_by
 
 
 def get_user_permissions(

@@ -78,7 +78,7 @@ class TestGnPermissionsTools:
         user_ok = {"id_role": 1, "nom_role": "Administrateur"}
         perms, is_herited, herited_object = UserCruved(
             id_role=user_ok["id_role"], code_filter_type="SCOPE", module_code="GEONATURE"
-        ).get_herited_user_cruved_by_action("C")
+        ).get_perm_for_one_action("C")
 
         assert isinstance(perms, VUsersPermissions)
         assert perms.value_filter == "3"
@@ -91,7 +91,7 @@ class TestGnPermissionsTools:
 
         perms = perms, is_herited, herited_object = UserCruved(
             id_role=user_ok["id_role"], code_filter_type="SCOPE", module_code="ADMIN"
-        ).get_herited_user_cruved_by_action("C")
+        ).get_perm_for_one_action("C")
         assert perms.value_filter == "3"
 
         # # with code_object -> heritage
@@ -101,7 +101,7 @@ class TestGnPermissionsTools:
             code_filter_type="SCOPE",
             module_code="GEONATURE",
             object_code="PERMISSIONS",
-        ).get_herited_user_cruved_by_action("C")
+        ).get_perm_for_one_action("C")
 
         assert isinstance(perms, VUsersPermissions)
         assert perms.value_filter == "3"

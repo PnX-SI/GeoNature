@@ -57,7 +57,7 @@ def check_cruved_scope(
                 code_filter_type="SCOPE",
                 module_code=module_code,
                 object_code=object_code,
-            ).get_herited_user_cruved_by_action(action)
+            ).get_perm_for_one_action(action)
             if user_with_highter_perm:
                 user_with_highter_perm = user_with_highter_perm[0]
 
