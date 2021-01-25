@@ -43,7 +43,7 @@ from geonature.core.gn_permissions.models import (
     TRequests,
     RequestStates,
 )
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, UserCruved
 from geonature.utils.env import DB
 from geonature.utils.utilsmails import send_mail
 
@@ -1186,16 +1186,22 @@ def get_permissions_by_role_id(id_role):
     Retourne un rôle avec ses permissions.
 
     .. :quickref: Permissions;
-
+    
+    Params:
+    :param with-inheritance: booléen indiquant si oui (=true) 
+    ou non (=false) les permissions héritées doivent être retournée.
+    
     :returns: un dictionnaire avec les infos du rôle et ses permissions.
     """
+    # Get request parameters
+    params = request.args.to_dict()
+
     # Get role infos
     query = (
-        DB.session.query(User, BibOrganismes)
-            #.select_from(CorRoleActionFilterModuleObject)
-            #.join(User, User.id_role == CorRoleActionFilterModuleObject.id_role)
-            .outerjoin(BibOrganismes, BibOrganismes.id_organisme == User.id_organisme)
-            .filter(User.id_role == id_role)
+        DB.session
+        .query(User, BibOrganismes)
+        .outerjoin(BibOrganismes, BibOrganismes.id_organisme == User.id_organisme)
+        .filter(User.id_role == id_role)
     )
     result = query.first()
 
@@ -1206,7 +1212,6 @@ def get_permissions_by_role_id(id_role):
             "status": "error"
         }
         return response, 404
-    
     (user, organism) = result
     role = formatRole(user, organism)
 
@@ -1215,10 +1220,294 @@ def get_permissions_by_role_id(id_role):
     for role_group in get_user_groups(id_role):
         role["groups"].append({
             "id": role_group.id_role, 
-            "groupName": formatRoleName(role_group), 
+            "group_name": formatRoleName(role_group), 
         })
 
-    # Get permissions
+    # Get permissions uninherited
+    query = build_permission_query(id_role=id_role)
+    results = query.all()
+
+    # Prepare permissions
+    permissions = {}
+    for result in results:
+        (
+            id_role, label, code, module, action_code, object_code, 
+            end_date, gathering, filter_type, filter_value
+        ) = result
+        append_permission(
+            permissions=permissions, 
+            label=label, 
+            code=code, 
+            module_code=module, 
+            action_code=action_code, 
+            object_code=object_code, 
+            end_date=end_date, 
+            gathering=gathering, 
+            filter_type=filter_type, 
+            filter_value=filter_value,
+            is_inherited=False
+        )
+
+    # Recover inherited permissions
+    if "with-inheritance" in params and is_true(params["with-inheritance"]):
+        inheritance = []
+        gatherings = {}
+        property_filter_code = "SCOPE"
+        # Get all modules
+        modules = DB.session.query(TModules).order_by(TModules.module_order).all()
+        for module in modules:
+            # Initialize variables
+            module_code = module.module_code
+
+            # Get max_perm for each action code in CRUVED for this module
+            for action_code in UserCruved._cruved_actions:
+                perm_infos = UserCruved(
+                    id_role=id_role,
+                    code_filter_type=property_filter_code,
+                    module_code=module_code,
+                ).get_perm_for_one_action(action_code)
+                if perm_infos is None:
+                    continue
+                else:
+                    (max_perm, is_inherited_by_module, inherited_by) = perm_infos
+                
+                gathering = str(max_perm.gathering)
+                if gathering not in gatherings.keys():
+                    gatherings[gathering] = gathering
+
+                inheritance.append({
+                    "module_code": module_code,
+                    "action_code": action_code,
+                    "object_code": max_perm.code_object,# Get default value set in DB
+                    "gathering": gathering,
+                    "is_inherited": True,
+                    "inherited_by": prepare_inherited_by(max_perm, inherited_by, is_inherited_by_module),
+                })
+
+            # For this module get its related objects
+            module_objects = (
+                DB.session.query(TObjects)
+                .join(
+                    CorModuleActionObjectFilter, 
+                    CorModuleActionObjectFilter.id_object == TObjects.id_object,
+                )
+                .filter_by(id_module=module.id_module)
+                .all()
+            )
+            # For each object get herited permissions for each CRUVED action and filter SCOPE
+            for mo in module_objects:
+                # Initialize variables
+                object_code = mo.code_object
+
+                # Get max_perm for each action code in CRUVED for this object in this module
+                for action_code in UserCruved._cruved_actions:
+                    perm_infos = UserCruved(
+                        id_role=id_role,
+                        code_filter_type=property_filter_code,
+                        module_code=module_code,
+                        object_code=object_code,
+                    ).get_perm_for_one_action(action_code)
+                    if perm_infos is None:
+                        continue
+                    else:
+                        (max_perm, is_inherited_by_module, inherited_by) = perm_infos
+
+                    gathering = str(max_perm.gathering)
+                    if gathering not in gatherings.keys():
+                        gatherings[gathering] = gathering
+                    
+                    inheritance.append({
+                        "module_code": module_code,
+                        "action_code": action_code,
+                        "object_code": object_code,
+                        "gathering": gathering,
+                        "is_inherited": True,
+                        "inherited_by": prepare_inherited_by(max_perm, inherited_by, is_inherited_by_module),
+                    })
+
+        # Get inherited permissions details
+        # TODO: extract gatherings from inheritance here !
+        query = build_permission_query(
+            gatherings=gatherings.keys(), 
+            limit_by_filter_code=property_filter_code
+        )
+        results = query.all()
+        for result in results:
+            (
+                id_role, label, code, module, action_code, object_code, 
+                end_date, gathering, filter_type, filter_value
+            ) = result
+            gathering = str(gathering)
+            gatherings[gathering] = {
+                "label": label, 
+                "code": code, 
+                "end_date": end_date, 
+                "filter_type": filter_type, 
+                "filter_value": filter_value,
+            }
+
+        # Append inherited permissions
+        for perm in inheritance:
+            perm_detail = gatherings[perm["gathering"]]
+            if not isinstance(perm_detail, str):
+                permission_infos = {**perm, **perm_detail}
+                
+                # If it's an inherited permission label and code by new one adapted to a specific object
+                if permission_infos["is_inherited"] and permission_infos["object_code"] != "ALL":
+                    object_permission_infos = get_permission_available(
+                        module_code=permission_infos["module_code"], 
+                        action_code=permission_infos["action_code"], 
+                        object_code=permission_infos["object_code"], 
+                        filter_type_code=permission_infos["filter_type"],
+                    )
+                    if object_permission_infos:
+                        permission_infos["label"] = object_permission_infos["label"]
+                        permission_infos["code"] = object_permission_infos["code"]
+                        # WARNING : only add an inherited permission by an object if a 
+                        # corresponding entry was found in cor_module_action_object_filter table
+                        append_permission(permissions=permissions, **permission_infos)
+                    else:
+                        log.warn(
+                            "Permission available not found for: "
+                            f"module={permission_infos['module_code']}, "+
+                            f"action={permission_infos['action_code']}, "+
+                            f"object={permission_infos['object_code']}, "+
+                            f"filter_type={permission_infos['filter_type']}. "
+                        )
+                else:
+                    append_permission(permissions=permissions, **permission_infos)
+            else:
+                log.warn(
+                    "Permission not implemented detected (see cor_module_action_object_filter table). "+
+                    "Please remove this useless permission from cor_role_action_filter_module_object:"+
+                    f" {perm}"
+                )
+
+    # Add permissions list to role (remove "gathering from output")
+    for module_name in permissions:
+        permissions[module_name] = list(permissions[module_name].values())
+    role["permissions"] = permissions
+
+    # Send response
+    output = prepare_output(role)
+    return output, 200
+
+
+def get_user_groups(id_role):
+    """
+    Fournit tous les groupes d'un utilisateur.
+    Parameters:
+        id_role (int): identifiant de l'utilisateur.
+    Return:
+        Array<User>
+    """
+    return (
+        DB.session.query(User)
+            .join(CorRole, User.id_role == CorRole.id_role_groupe)
+            .filter(CorRole.id_role_utilisateur == id_role)
+            .all()
+    )
+
+
+def prepare_inherited_by(permission, inherited_by, is_inherited_by_module):
+    return {
+        "by_module": is_inherited_by_module,
+        "module_code": (inherited_by[0] if inherited_by else None),
+        "object_code": (inherited_by[1] if inherited_by else None),
+        "by_group": (True if permission.group_name else False),
+        "group_name": (permission.group_name if permission.group_name else None),
+    }
+
+def get_permission_available(module_code, action_code, object_code, filter_type_code):
+    try:
+        query = (
+            DB.session.query(
+                CorModuleActionObjectFilter.label,
+                CorModuleActionObjectFilter.code,
+            )
+            .join(
+                TModules, 
+                TModules.id_module == CorModuleActionObjectFilter.id_module
+            )
+            .join(
+                TActions, 
+                TActions.id_action == CorModuleActionObjectFilter.id_action
+            )
+            .join(
+                TObjects, 
+                TObjects.id_object == CorModuleActionObjectFilter.id_object
+            )
+            .join(
+                BibFiltersType, 
+                BibFiltersType.id_filter_type == CorModuleActionObjectFilter.id_filter_type
+            )
+            .filter(TModules.module_code == module_code)
+            .filter(TActions.code_action == action_code)
+            .filter(TObjects.code_object == object_code)
+            .filter(BibFiltersType.code_filter_type == filter_type_code)
+        )
+        result = query.one()
+        data = {"label": result.label, "code": result.code}
+    except exc.NoResultFound:
+        return False
+    return data
+
+
+def append_permission(
+        permissions, module_code, action_code, object_code,  
+        label, code, filter_type, filter_value, gathering, end_date,
+        is_inherited, inherited_by=None,
+    ):
+    """Les permissions non héritées doivent être ajouté en premier.
+
+    Parameters
+    ----------
+    is_inherited : bool
+        Booléen indiquant si oui ou non la permission est héritée d'un module parent ou d'un groupe.
+    """
+    # Initialize new module entry
+    if module_code not in permissions.keys():
+        permissions[module_code] = {}
+
+    # Build filter labels if necessary
+    labels = None
+    if filter_type == 'GEOGRAPHIC':
+        filter_value = split_value_filter(filter_value)
+        labels = format_geographic_filter_values(filter_value)
+    if filter_type == 'TAXONOMIC':
+        filter_value = split_value_filter(filter_value)
+        labels = format_taxonomic_filter_values(filter_value)
+
+    # Create new permission or only add an additionnal filter
+    gathering = str(gathering)
+    permission_hash = f"{module_code}-{action_code}-{object_code}-{gathering}"
+    if permission_hash not in permissions[module_code].keys():
+        permissions[module_code][permission_hash] = {
+            "name": label,
+            "code": code,
+            "gathering": gathering,
+            "module": module_code,
+            "action": action_code,
+            "object": object_code,
+            "end_date": end_date,
+            "filters": [{
+                "type": filter_type,
+                "value": filter_value,
+                "label": labels,
+            }],
+            "is_inherited": is_inherited,
+            "inherited_by": (inherited_by if is_inherited else None),
+        }
+    elif not any(f['type'] == filter_type for f in permissions[module_code][permission_hash]["filters"]):
+        new_filter = {
+            "type": filter_type,
+            "value": filter_value,
+            "label": labels,
+        }
+        permissions[module_code][permission_hash]["filters"].append(new_filter)
+
+
+def build_permission_query(id_role=None, gatherings=None, limit_by_filter_code=None):
     query = (
         DB.session.query(
             CorRoleActionFilterModuleObject.id_role,
@@ -1249,80 +1538,20 @@ def get_permissions_by_role_id(id_role):
         )
         .join(TModules, TModules.id_module == CorRoleActionFilterModuleObject.id_module)
         .join(BibFiltersType, BibFiltersType.id_filter_type == CorRoleActionFilterModuleObject.id_filter_type)
-        .filter(User.id_role == id_role)
     )
-    results = query.all()
-
-    # Prepare permissions
-    permissions = {}
-    for result in results:
-        (
-            id_role, label, code, module, action_code, object_code, 
-            end_date, gathering, filter_type, filter_value
-        ) = result
-        
-        # Initialize new module entry
-        if module not in permissions.keys():
-            permissions[module] = {}
-
-        # Build filter labels if necessary
-        labels = None
-        if filter_type == 'GEOGRAPHIC':
-            filter_value = split_value_filter(filter_value)
-            labels = format_geographic_filter_values(filter_value)
-        if filter_type == 'TAXONOMIC':
-            filter_value = split_value_filter(filter_value)
-            labels = format_taxonomic_filter_values(filter_value)
-
-        # Create new permission or only add an additionnal filter
-        gathering = str(gathering)
-        if gathering not in permissions[module].keys():
-            permissions[module][gathering] = {
-                "name": label,
-                "code": code,
-                "gathering": gathering,
-                "module": module,
-                "action": action_code,
-                "object": object_code,
-                "end_date": end_date,
-                "filters": [{
-                    "type": filter_type,
-                    "value": filter_value,
-                    "label": labels,
-                }],
-            }
-        else:
-            new_filter = {
-                "type": filter_type,
-                "value": filter_value,
-                "label": labels,
-            }
-            permissions[module][gathering]["filters"].append(new_filter)
-
-    # Add permissions list to role (remove "gathering from output")
-    for module_name in permissions:
-        permissions[module_name] = list(permissions[module_name].values())
-    role["permissions"] = permissions
-
-    # Send response
-    output = prepare_output(role)
-    return output, 200
+    if id_role:
+        query = query.filter(User.id_role == id_role)
+    if gatherings:
+        query = query.filter(CorRoleActionFilterModuleObject.gathering.in_(gatherings))
+    if limit_by_filter_code:
+        query = query.filter(BibFiltersType.code_filter_type == limit_by_filter_code)
+    return query
 
 
-def get_user_groups(id_role):
-    """
-    Fournit tous les groupes d'un utilisateur.
-    Parameters:
-        id_role (int): identifiant de l'utilisateur.
-    Return:
-        Array<User>
-    """
-    return (
-        DB.session.query(User)
-            .join(CorRole, User.id_role == CorRole.id_role_groupe)
-            .filter(CorRole.id_role_utilisateur == id_role)
-            .all()
-    )
+def is_true(param):
+    return True if (param.lower() in ["true", "1"]) else False
+    
+
 
 @routes.route("/<gathering>", methods=["DELETE"])
 @json_resp
@@ -1711,7 +1940,7 @@ def prepare_output(d, remove_in_key=None):
 
 def format_to_camel_case(snake_str):
     components = snake_str.split('_')
-    return components[0] + ''.join(x.title() for x in components[1:])
+    return components[0].lower() + ''.join(x.title() for x in components[1:])
 
 
 def prepare_input(d):

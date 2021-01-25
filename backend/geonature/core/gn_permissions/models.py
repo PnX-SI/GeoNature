@@ -38,15 +38,19 @@ class VUsersPermissions(DB.Model):
     id_permission = DB.Column(DB.Integer)
 
     def __repr__(self):
-        return """VUsersPermissions
-            role='{}' module='{}' action='{}' object='{}' filter_type='{}' filter_value='{}'""".format(
-            self.id_role,
-            self.module_code,
-            self.code_action,
-            self.code_object,
-            self.code_filter_type,
-            self.value_filter,
+        msg = (
+            "VUsersPermissions " +
+            f"role='{self.id_role}', " +
+            f"module='{self.module_code}', " + 
+            f"action='{self.code_action}', " +
+            f"object='{self.code_object}', " +
+            f"filter_type='{self.code_filter_type}', " +
+            f"filter_value='{self.value_filter}', " +
+            f"gatehring='{self.gathering}', " +
+            f"end_date='{self.end_date}', " +
+            f"herited_from_group='{self.group_name}' "
         )
+        return msg
 
 
 @serializable
