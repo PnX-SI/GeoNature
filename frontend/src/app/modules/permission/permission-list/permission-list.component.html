@@ -56,8 +56,9 @@
               [matTooltip]="column.tooltip"
               matTooltipPosition="above"
               (click)="sort()"
-            >
+             >
               {{ column.name }}
+              <mat-icon *ngIf="column.tooltip" class="icon-help">help_outline</mat-icon>
             </span>
           </span>
           <span class="sort-btn"></span>

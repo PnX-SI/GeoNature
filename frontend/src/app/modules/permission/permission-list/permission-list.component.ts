@@ -74,7 +74,7 @@ export class PermissionListComponent implements OnInit {
       prop: 'permissionsNbr',
       name: 'Nbre permissions',
       flexGrow: 1,
-      tooltip: 'Nombre de permissions attribuées.',
+      tooltip: 'Nombre de permissions réellement attribuées (ne tient pas compte des permissions héritées).',
     },
     {
       prop: 'actions',
