@@ -458,7 +458,7 @@ CREATE TRIGGER tri_modify_meta_update_date_t_requests
 INSERT INTO gn_permissions.t_objects (code_object, description_object) 
     SELECT
         'PRIVATE_OBSERVATION',
-        'Observation privée.'
+        'Observation privée'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.t_objects AS o
@@ -467,7 +467,7 @@ INSERT INTO gn_permissions.t_objects (code_object, description_object)
 INSERT INTO gn_permissions.t_objects (code_object, description_object) 
     SELECT
         'SENSITIVE_OBSERVATION',
-        'Observation senssible.'
+        'Observation senssible'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.t_objects AS o
