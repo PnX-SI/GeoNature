@@ -1,6 +1,7 @@
 import ast
 import logging
 import datetime
+import json
 from operator import itemgetter
 from sqlalchemy import select
 from flask import Blueprint, request
@@ -24,7 +25,7 @@ blueprint = Blueprint("validation", __name__)
 log = logging.getLogger()
 
 
-@blueprint.route("", methods=["GET"])
+@blueprint.route("", methods=["GET", "POST"])
 @permissions.check_cruved_scope("R", True, module_code="VALIDATION")
 @json_resp
 def get_synthese_data(info_role):
@@ -57,12 +58,6 @@ def get_synthese_data(info_role):
     else:
         filters = {key: request.args.get(key) for key, value in request.args.items()}
 
-    # Traitement des listes de valeurs
-    # POURQUOI différents de la synthèse ?
-    #   Où les filtres à valeur multiple sont passés en array
-    for key, value in filters.items():
-        if "," in value and key != "geoIntersection":
-            filters[key] = value.split(",")
 
     if "limit" in filters:
         result_limit = filters.pop("limit")
@@ -99,7 +94,6 @@ def get_synthese_data(info_role):
     validation_query_class.filter_query_all_filters(info_role)
     result = DB.engine.execute(validation_query_class.query.limit(result_limit))
 
-    print(query)
     # TODO nb_total factice
     nb_total = 0
     geojson_features = []
