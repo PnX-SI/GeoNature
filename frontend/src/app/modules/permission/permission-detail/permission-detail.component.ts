@@ -1,18 +1,19 @@
 import { Router, ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSlideToggleChange } from '@angular/material';
 
 import { map, mergeMap } from 'rxjs/operators';
 import { of, Subject, Subscription } from 'rxjs';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 import { CommonService } from '@geonature_common/service/common.service';
-import { IModule, IPermission, IRolePermission } from '../permission.interface'
+import { IModule, IObject, IPermission, IRolePermission } from '../permission.interface'
 import { DeletePermissionDialog } from './delete-permission-dialog/delete-permission-dialog.component';
 import { PermissionService } from '../permission.service';
 import { ToastrService } from 'ngx-toastr';
 import { EditPermissionModal } from './edit-permission-modal/edit-permission-modal.component';
 import { Permission } from '../shared/permission.model';
+import { HttpParams } from '@angular/common/http';
 
 @Component({
   selector: 'gn-permission-detail',
@@ -26,6 +27,10 @@ export class PermissionDetailComponent implements OnInit {
   destroy$: Subject<boolean> = new Subject<boolean>();
   idRole: number;
   role: IRolePermission;
+  objects: Record<string, IObject> = {};
+  permissionsByCode: Record<string, Record<string, IPermission[]>> = {};
+  permissionsNbrByCode: Record<string, number> = {};
+  showInheritance: boolean = true;
   modules: IModule[];
   subscription: Subscription;
 
@@ -43,6 +48,7 @@ export class PermissionDetailComponent implements OnInit {
 
   ngOnInit(): void {
     this.extractRouteParams();
+    this.loadPermissionsObjects();
     this.loadRole();
     this.getI18nLocale();
   }
@@ -64,13 +70,45 @@ export class PermissionDetailComponent implements OnInit {
     }
   }
 
+  private loadPermissionsObjects() {
+    this.permissionService.getObjects().subscribe(objects => {
+      this.objects = {};
+      objects.forEach((obj) => {
+        this.objects[obj.code] = obj;
+      });
+      console.log("Objects:", this.objects)
+    })
+  }
+
   private loadRole() {
     this.loading = true;
-    this.permissionService.getRoleById(this.idRole)
+    let params = new HttpParams().set('with-inheritance', (this.showInheritance ? '1' : '0'));
+    console.log(`With inheritance: ${this.showInheritance.toString()}`, params)
+    this.permissionService.getRoleById(this.idRole, params)
       .pipe(
         map( role => {
-          let modulesCodes = Object.keys(role.permissions);
           this.role = role;
+
+          // Extract modules codes and dispatch permissions by module code
+          let modulesCodes = [];
+          for (let prop in role.permissions) {
+            let permissions = role.permissions[prop];
+            permissions.forEach((item) => {
+              if (! modulesCodes.includes(item.module)) {
+                modulesCodes.push(item.module);
+                this.permissionsByCode[item.module] = {};
+                this.permissionsByCode[item.module][item.object] = [item];
+                this.permissionsNbrByCode[item.module] = 1;
+              } else {
+                if (this.permissionsByCode[item.module][item.object]) {
+                  this.permissionsByCode[item.module][item.object].push(item);
+                } else {
+                  this.permissionsByCode[item.module][item.object] = [item];
+                }
+                this.permissionsNbrByCode[item.module]++;
+              }
+            })
+          }
           return modulesCodes;
         }),
         mergeMap( modulesCodes => {
@@ -100,11 +138,20 @@ export class PermissionDetailComponent implements OnInit {
     return module.code;
   }
 
+  onShowInheritanceChange(ob: MatSlideToggleChange) {
+    console.log(`Show inheritance checked change : ${ob.checked}`);
+    if (ob.checked != this.showInheritance) {
+      this.showInheritance = ob.checked
+      this.loadRole();
+    }
+  }
+
   openEditModal(permission: IPermission = new Permission()): void {
     console.log("Open edit modal:", permission)
+    console.log("this.role:", this.role);
     const dialogRef = this.dialog.open(EditPermissionModal, {
       data: {
-        "idRole": this.idRole,
+        "role": this.role,
         "permission": permission,
       },
       disableClose: true,

@@ -1,4 +1,22 @@
-$panel-header-bg-color: #eeeeee;
+@function color($color-name) {
+  @return var(--#{$color-name});
+}
+
+// Infos panel
+$panel-bg-info: #d1ecf1;
+$panel-txt-info: #0c5460;
+mat-expansion-panel.bg-info {
+  background-color: $panel-bg-info !important;
+  color: $panel-txt-info !important;
+
+  & mat-expansion-panel-header, & mat-panel-title {
+    background-color: $panel-bg-info !important;
+    color: $panel-txt-info !important;
+  }
+}
+
+// Permission panel
+$panel-header-bg-permission: #eeeeee;
 .header-icon {
   display: block;
   font-size: 3rem;
@@ -10,18 +28,25 @@ mat-panel-title {
   text-transform: uppercase;
 }
 mat-expansion-panel-header {
-  background-color: $panel-header-bg-color;
+  background-color: $panel-header-bg-permission;
 
   &.mat-expanded {
     &:focus, &:hover {
-      background-color: $panel-header-bg-color;
+      background-color: $panel-header-bg-permission;
     }
   }
 }
 
-// ul.list-inline li:after {
-//   content: ",";
-// }
-// ul.list-inline li:last-child:after {
-//   content: ".";
-// }
+// Permissions table
+.table .thead-dark th {
+  vertical-align: middle !important;
+  padding: .25rem .75rem;
+}
+.table td {
+  padding: .25rem .5rem;
+}
+.icon-help {
+  font-size: 0.8rem;
+  color:color(light);
+  vertical-align: super;
+}

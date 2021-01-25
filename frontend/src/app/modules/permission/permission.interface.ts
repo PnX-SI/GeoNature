@@ -68,12 +68,29 @@ export interface IPermission {
   endDate: string;// TODO: use Date
   //filters: Record<string, IPermissionFilter[]>;
   filters: IPermissionFilter[];
+  isInherited: boolean;
+  inheritedBy: IInheritance;
 }
 
 export interface IPermissionFilter {
   type: string;
   value: any;
   label?: string | string[];
+}
+
+export interface IInheritance {
+  byModule: boolean;
+  moduleCode: string;
+  objectCode: string;
+  byGroup: boolean;
+  groupName: string;
+}
+
+// OBJECT
+export interface IObject {
+  id: number
+  code: string;
+  description: string;
 }
 
 // MODULES

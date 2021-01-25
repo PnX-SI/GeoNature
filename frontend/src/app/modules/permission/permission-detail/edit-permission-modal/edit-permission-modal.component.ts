@@ -2,18 +2,16 @@ import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ActivatedRoute, Router } from '@angular/router';
 
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 
-import { IActionObject, IFilter, IFilterValue, IModule, IPermission } from '../../permission.interface';
+import { IActionObject, IFilter, IFilterValue, IModule, IPermission, IRolePermission } from '../../permission.interface';
 import { PermissionService } from '../../permission.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { atLeastOne } from '../../shared/permission.directive';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { filter } from 'rxjs-compat/operator/filter';
 
 @Component({
   selector: 'gn-edit-permission-modal',
@@ -26,7 +24,7 @@ import { filter } from 'rxjs-compat/operator/filter';
 export class EditPermissionModal implements OnInit {
 
   permission: IPermission;
-  idRole: number;
+  role: IRolePermission;
   // Boolean to check if its updateMode
   updateMode: BehaviorSubject<boolean> = new BehaviorSubject(false);
   formGroup;
@@ -44,15 +42,13 @@ export class EditPermissionModal implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: any,
     public modalRef: MatDialogRef<EditPermissionModal>,
     private dateParser: NgbDateParserFormatter,
-    private route: ActivatedRoute,
-    private router: Router,
     private permissionService: PermissionService,
     private formBuilder: FormBuilder,
     private commonService: CommonService,
     private translateService: TranslateService,
     private toasterService: ToastrService,
   ) {
-    this.idRole = data.idRole;
+    this.role = data.role;
     this.permission = data.permission;
 
     // TODO: use code instead of id ! Use config parameter with token Dependency Injection !
@@ -98,7 +94,16 @@ export class EditPermissionModal implements OnInit {
 
   private loadFiltersValues() {
     this.permissionService.getFiltersValues().subscribe( fValues => {
-      this.filtersValues = fValues;
+      // Extract filter type codes and dispatch filter values by filter type code
+      this.filtersValues = {};
+      for (let prop in fValues) {
+        // Get all value of a sepcific filter type
+        let values = fValues[prop];
+        // All values inside the object property have the same filter type code.
+        let filterCode = values[0].filterTypeCode;
+        // Dispatch values by filter type code
+        this.filtersValues[filterCode] = values;
+      }
     });
   }
 
@@ -167,12 +172,14 @@ export class EditPermissionModal implements OnInit {
     console.log(`In loadFilters, value: ${actionObj.moduleCode}-${actionObj.actionCode}-${actionObj.objectCode}`, actionObj)
     this.permissionService.getActionsObjectsFilters(actionObj)
       .subscribe( filters => {
+        console.log("Filters received:", filters)
         this.availableFilters = [];
         filters.forEach(filter => {
           this.availableFilters.push(filter.filterTypeCode);
         });
 
         if (this.updateMode.getValue()) {
+          console.log("Permission:", this.permission)
           this.permission.filters.forEach(filter => {
             let filterFormOjbect = {filters: {}};
             filterFormOjbect['filters'][filter.type.toLowerCase()] = this.buildFilterValue(filter);
@@ -278,7 +285,7 @@ export class EditPermissionModal implements OnInit {
     console.log("FormData:", formData)
 
     let permissionData = {
-      idRole: this.idRole,
+      idRole: this.role.id,
       module: formData.modules.module.code,
       action: formData.actionsObjects.actionObject.actionCode,
       object: formData.actionsObjects.actionObject.objectCode,
@@ -291,7 +298,7 @@ export class EditPermissionModal implements OnInit {
       endDate: formData.validating.endDate,
     };
 
-    if (this.updateMode.getValue()) {
+    if (this.updateMode.getValue() && ! this.permission.isInherited) {
       permissionData['gathering'] = this.permission.gathering;
     }
 

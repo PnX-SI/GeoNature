@@ -286,7 +286,8 @@
     "deleteKo": "An error occurred while deleting the permission : {{errorMsg}}",
     "titles": {
       "update": "Editing a permission",
-      "add": "Adding a permission"
+      "add": "Adding a permission",
+      "addBaseOnInheritance": "Overloading an inherited permission"
     },
     "previous": "Previous",
     "next": "Next",

@@ -290,7 +290,8 @@
     "deleteKo": "Une erreur est survenue lors de la suppression de la permission : {{errorMsg}}",
     "titles": {
       "update": "Édition d'une permission",
-      "add": "Ajout d'une permission"
+      "add": "Ajout d'une permission",
+      "addBaseOnInheritance": "Surcharge d'une permission héritée"
     },
     "previous": "Précédent",
     "next": "Suivant",

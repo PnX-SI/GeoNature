@@ -1,8 +1,13 @@
 <div class="modal-header">
   <h1 class="modal-title" mat-dialog-title>
-    <ng-container *ngIf="(updateMode|async); else addModeTitleTpl">
+    <ng-container *ngIf="(updateMode | async); else addModeTitleTpl">
       <mat-icon inline="true">edit</mat-icon>
-      {{ 'Permissions.titles.update' | translate }}
+      <ng-container *ngIf="!permission.isInherited; else addBaseOnInheritedPermission">
+        {{ 'Permissions.titles.update' | translate }}
+      </ng-container>
+      <ng-template #addBaseOnInheritedPermission>
+        {{ 'Permissions.titles.addBaseOnInheritance' | translate }}
+      </ng-template>
     </ng-container>
     <ng-template #addModeTitleTpl>
       <mat-icon inline="true">add_box</mat-icon>
@@ -16,6 +21,33 @@
 </div>
 
 <div mat-dialog-content>
+  <p *ngIf="permission.isInherited" class="alert alert-warning m-3" role="alert">
+    <strong>Attention :</strong> la permission en cours de modification est basée sur une permission héritée
+    <ng-container *ngIf="permission.inheritedBy.byModule">
+      du module <strong>{{permission.inheritedBy.moduleCode}}</strong>
+    </ng-container>
+    <ng-container *ngIf="permission.inheritedBy.byGroup">
+      via le groupe <strong>{{permission.inheritedBy.groupName}}</strong>
+    </ng-container>.<br/>
+    {{role.type == "GROUP" ? "Ce groupe"  : "Cet utilisateur" }} ne possède pas encore
+    de permission équivalante dans ce module.<br/>
+    Son enregistrement va entrainer la création d'une nouvelle permission
+    qui viendra surcharger la permission héritée.
+  </p>
+
+  <p *ngIf="role.type == 'USER'" class="alert alert-warning m-3" role="alert">
+    <ng-container *ngIf="role.groups && role.groups.length > 0; else userWithoutGroup">
+      Préferez l'attribution de permissions aux groupes de cet utilisateur
+      pour simplifier leurs gestion.
+    </ng-container>
+    <ng-template #userWithoutGroup>
+      Cet utilisateur ne possède pas de groupe.<br/>
+      Pour simplifier la gestion des permissions, il serait préférable d'en créer un
+      (via <i>UsersHub</i> si vous en disposez), d'y associer cet utilisateur et
+      d'ajouter la permission au nouveau groupe.
+    </ng-template>
+  </p>
+
   <form [formGroup]="formGroup">
     <mat-horizontal-stepper linear labelPosition="bottom" #stepper>
       <mat-step formGroupName="modules" [stepControl]="formGroup?.controls.modules">
@@ -238,7 +270,7 @@
           </button>
 
           <button
-            *ngIf="!updateMode.getValue()"
+            *ngIf="!updateMode.getValue() || (updateMode.getValue() && permission.isInherited)"
             mat-raised-button
             class="uppercase"
             color="primary"
@@ -254,7 +286,7 @@
           </button>
 
           <button
-            *ngIf="updateMode.getValue()"
+            *ngIf="updateMode.getValue() && ! permission.isInherited"
             mat-raised-button
             class="uppercase"
             color="primary"

@@ -4,7 +4,7 @@ import { delay } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
-import { IRolePermission, IPermissionRequest, IModule, IActionObject, IFilter, IFilterValue } from './permission.interface'
+import { IRolePermission, IPermissionRequest, IModule, IActionObject, IFilter, IFilterValue, IObject } from './permission.interface'
 
 
 @Injectable()
@@ -42,14 +42,23 @@ export class PermissionService {
     return this.http.get<IRolePermission[]>(url);
   }
 
-  getRoleById(id: number): Observable<IRolePermission> {
+  getRoleById(id: number, params: HttpParams = null): Observable<IRolePermission> {
     const url = `${this.cfg.API_ENDPOINT}/permissions/roles/${id}`;
-    return this.http.get<IRolePermission>(url);
+    let options = {
+      'params': (params ? params : null),
+    }
+    console.log("Options: ", options)
+    return this.http.get<IRolePermission>(url, options);
   }
 
   deletePermission(gathering: string): Observable<boolean> {
     const url = `${this.cfg.API_ENDPOINT}/permissions/${gathering}`;
     return this.http.delete<boolean>(url);
+  }
+
+  getObjects(): Observable<IObject[]> {
+    const url = `${this.cfg.API_ENDPOINT}/permissions/objects`;
+    return this.http.get<IObject[]>(url);
   }
 
   getModules(codes: string[] = []): Observable<IModule[]> {
