@@ -770,6 +770,8 @@ SELECT v.id_role,
     v.groupe,
     v.id_organisme,
     v.group_name,
+    perm_available.label AS permission_label,
+    perm_available.code AS permission_code,
     v.id_module,
     modules.module_code,
     v.id_action,
@@ -793,6 +795,13 @@ FROM all_user_permission AS v
         ON (v.id_filter_type = filter_type.id_filter_type)
     JOIN gn_commons.t_modules AS modules 
         ON (modules.id_module = v.id_module)
+    LEFT JOIN gn_permissions.cor_module_action_object_filter AS perm_available
+        ON (
+            v.id_module = perm_available.id_module
+            AND v.id_action = perm_available.id_action
+            AND v.id_object = perm_available.id_object
+            AND v.id_filter_type = perm_available.id_filter_type
+        )
 -- TODO: check performance issues with order by
 ORDER BY nom_role, prenom_role, module_code, gathering, id_action, code_object, code_filter_type, end_date ;
 

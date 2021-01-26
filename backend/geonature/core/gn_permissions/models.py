@@ -23,6 +23,8 @@ class VUsersPermissions(DB.Model):
     prenom_role = DB.Column(DB.Unicode)
     id_organisme = DB.Column(DB.Integer)
     group_name = DB.Column(DB.Boolean)
+    permission_label = DB.Column(DB.Unicode)
+    permission_code = DB.Column(DB.Unicode)
     id_module = DB.Column(DB.Integer, primary_key=True)
     module_code = DB.Column(DB.Unicode)
     id_action = DB.Column(DB.Integer, primary_key=True)
@@ -46,7 +48,7 @@ class VUsersPermissions(DB.Model):
             f"object='{self.code_object}', " +
             f"filter_type='{self.code_filter_type}', " +
             f"filter_value='{self.value_filter}', " +
-            f"gatehring='{self.gathering}', " +
+            f"gathering='{self.gathering}', " +
             f"end_date='{self.end_date}', " +
             f"herited_from_group='{self.group_name}' "
         )

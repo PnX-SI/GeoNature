@@ -156,6 +156,38 @@ class UserCruved:
 
         return q.filter(sa.or_(*ors)).all()
 
+    def _build_other_filters_for_max_perm_query(self, gathering):
+        """
+        Construction de la requête de récupération des "permissions" contenant
+        les éventuels autres filtres (différent de self._code_filter_type).
+        Ordre de récupération
+            - code_objet et module_code
+            - ALL et module_code
+            - code_objet et GEONATURE
+            - ALL et GEONATURE
+        """
+        q = (
+            VUsersPermissions.query
+            .filter(VUsersPermissions.code_filter_type != self._code_filter_type)
+            .filter(VUsersPermissions.gathering == gathering)
+        )
+
+        # List of module_code, object_code couples to select
+        # ors = []
+        # for k, (module_code, object_code) in self._permission_select.items():
+        #     ors.append(
+        #         sa.and_(
+        #             VUsersPermissions.module_code.ilike(module_code),
+        #             VUsersPermissions.code_object == object_code,
+        #         )
+        #     )
+        # q = q.filter(sa.or_(*ors))
+        #print(q)
+        return q.all()
+
+    def get_actions_codes():
+        return UserCruved._cruved_actions
+
     def get_user_perm_list(self, code_action=None):
         return self._build_query_permission(code_action=code_action)
 
@@ -179,7 +211,7 @@ class UserCruved:
     def build_herited_user_cruved(self, user_permissions):
         """
         Retourne la permission avec la valeur la plus haute pour une liste 
-        de permission données apparetenant à un utilisateur.
+        de permission données appartenant à un utilisateur.
 
         Parameters:
             - user_permissions(list<VUsersPermissions>)
@@ -219,9 +251,9 @@ class UserCruved:
                 return max_perm, herited, herited_object
 
     # TODO: remove if it's not used
-    def get_herited_user_cruved(self):
-        user_permissions = self.get_user_perm_list()
-        return self.build_herited_user_cruved(user_permissions)
+    # def get_herited_user_cruved(self):
+    #     user_permissions = self.get_user_perm_list()
+    #     return self.build_herited_user_cruved(user_permissions)
 
     def get_perm_for_all_actions(self, get_id):
         """
@@ -280,11 +312,13 @@ class UserCruved:
         Récupération de la permission hérité avec la valeur la plus grande 
         pour une action donnée.
         """
-        permissions = self._build_query_permission(action)
+        permissions = self.get_user_perm_list(action)
+        
         permissions = self.build_herited_user_cruved(permissions)
         if permissions is not None:
             (max_perm, is_inherited_by_module, herited_by) = permissions
-            return max_perm, is_inherited_by_module, herited_by
+            other_filters_permissions = self._build_other_filters_for_max_perm_query(max_perm.gathering)
+            return max_perm, is_inherited_by_module, herited_by, other_filters_permissions
 
 
 # TODO: remove if it's not used
@@ -325,7 +359,7 @@ def get_user_permissions(
             f"User {user['id_role']} cannot '{code_action}' in module/app/object {object_for_error}"
         )
 
-
+# TODO: remove with old interface
 def beautifulize_cruved(actions, cruved):
     """
     Construit un dictionnaire contenant les intitulés des actions afin 
