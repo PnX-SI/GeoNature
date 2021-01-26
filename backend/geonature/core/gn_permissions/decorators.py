@@ -3,7 +3,7 @@ Decorators to protects routes with permissions
 """
 import json
 
-from flask import redirect, request, Response, current_app, g, Response
+from flask import redirect, request, Response, current_app, g
 
 from functools import wraps
 
@@ -47,7 +47,7 @@ def check_cruved_scope(
                 redirect_on_expiration,
                 redirect_on_invalid_token
             )
-            if isinstance(user, Response):
+            if not isinstance(user, dict) and user.status_code:
                 return user
 
             user_with_highter_perm = None
