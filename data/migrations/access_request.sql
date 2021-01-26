@@ -620,21 +620,21 @@ $BODY$
     -- Use as constraint to force not set multiple same filter type by permission (= module-action-object).
     DECLARE 
         codeFilterType character varying ;
-        nbPermission integer ;
+        filterRecordNbr integer ;
     BEGIN
         -- For this filter type, check if there is not already a permission with it for this
-        -- role-module-action-object
-        SELECT INTO nbPermission COUNT(id_permission)
+        -- role-module-action-object-gathering
+        SELECT INTO filterRecordNbr COUNT(id_permission)
         FROM gn_permissions.cor_role_action_filter_module_object
         WHERE id_role = NEW.id_role 
-            AND id_action = NEW.id_action 
             AND id_module = NEW.id_module 
+            AND id_action = NEW.id_action 
             AND id_object = NEW.id_object 
             AND gathering = NEW.gathering
             AND id_filter_type = NEW.id_filter_type ;
-
-        -- if its an insert 0 row must be present, if its an update 1 row must be present
-        IF (TG_OP = 'INSERT' AND nbPermission = 0) OR (TG_OP = 'UPDATE' AND nbPermission = 1) THEN
+       
+        -- For INSERT and UPDATE
+        IF (filterRecordNbr = 0) THEN
             RETURN NEW;
         END IF;
         BEGIN
@@ -643,16 +643,17 @@ $BODY$
             FROM gn_permissions.bib_filters_type 
             WHERE id_filter_type = NEW.id_filter_type ;
 
-            RAISE EXCEPTION 'ATTENTION: il existe déjà un % enregistrement avec le type de filtre % '
-                'pour le role % sur le module %, son action % et objet % . Il est interdit de '
+            RAISE EXCEPTION 'ATTENTION: il existe déjà % enregistrement avec : type de filtre % '
+                ', role %, module %, action %, objet % et groupement %. Il est interdit de '
                 'définir plusieurs fois le même type de filtre pour un même ensemble role, module, '
-                'action et objet.', 
-                nbPermission,
+                'action, objet et groupement (=gathering).', 
+                filterRecordNbr,
                 codeFilterType, 
                 NEW.id_role, 
                 NEW.id_module, 
                 NEW.id_action, 
-                NEW.id_object ;
+                NEW.id_object,
+                NEW.gathering ;
         END;
     END;
 $BODY$
@@ -665,6 +666,7 @@ CREATE TRIGGER tri_check_no_multiple_filter_type
     FOR EACH ROW 
     EXECUTE PROCEDURE gn_permissions.fct_tri_only_one_filter_type_by_permission() ;
 
+-- Remove old trigger and function (old names)
 DROP TRIGGER IF EXISTS tri_check_no_multiple_scope_perm 
     ON gn_permissions.cor_role_action_filter_module_object ;
 
