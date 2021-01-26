@@ -139,6 +139,11 @@ def permission_form(info_role, id_module, id_role, id_object=None):
                     .filter(BibFiltersType.code_filter_type == "SCOPE")
                     .first()
                 )
+                filter_infos = (
+                    DB.session.query(TFilters)
+                    .filter(TFilters.id_filter == int(form.data[code_action]))
+                    .first()
+                )
                 # if already exist update the id_filter
                 if permission_instance:
                     permission_instance.id_filter = int(form.data[code_action])
@@ -150,6 +155,8 @@ def permission_form(info_role, id_module, id_role, id_object=None):
                         id_filter=int(form.data[code_action]),
                         id_module=id_module,
                         id_object=object_instance.id_object,
+                        id_filter_type=filter_infos.id_filter_type,
+                        value_filter=filter_infos.value_filter,
                     )
                     DB.session.add(permission_row)
                 DB.session.commit()
@@ -311,6 +318,7 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None):
     Form to define permisisons for a user expect SCOPE permissions
     .. :quickref: View_Permission;
     """
+    perm = None
     if id_permission:
         perm = DB.session.query(CorRoleActionFilterModuleObject).get(id_permission)
         form = OtherPermissionsForm(
@@ -325,6 +333,11 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None):
     filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
 
     if request.method == "POST" and form.validate_on_submit():
+        filter_infos = (
+            DB.session.query(TFilters)
+            .filter(TFilters.id_filter == int(form.data["filter"]))
+            .first()
+        )
 
         permInstance = CorRoleActionFilterModuleObject(
             id_permission=id_permission,
@@ -332,6 +345,9 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None):
             id_action=int(form.data["action"]),
             id_filter=int(form.data["filter"]),
             id_module=int(form.data["module"]),
+            gathering=(perm.gathering if perm else None),
+            id_filter_type=filter_infos.id_filter_type,
+            value_filter=filter_infos.value_filter,
         )
         if id_permission:
             DB.session.merge(permInstance)

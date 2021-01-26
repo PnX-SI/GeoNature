@@ -49,16 +49,19 @@ class TestGnPermissionsTools:
 
     def test_user_from_token_and_raise_fail(self):
         # no cookie
-        with pytest.raises(Unauthorized, match="No token"):
-            resp = get_user_from_token_and_raise(request)
+        response = get_user_from_token_and_raise(request)
+        assert response.status_code == 403
+        assert b"No token" in response.data
+        
         # set a fake cookie
         self.client.set_cookie("/", "token", "fake token")
         # fake request to set cookie
         response = self.client.get(
             url_for("gn_permissions_backoffice.filter_list", id_filter_type=4)
         )
-        with pytest.raises(Unauthorized, match="Token corrupted") as exc_info:
-            resp = get_user_from_token_and_raise(request)
+        response = get_user_from_token_and_raise(request)
+        assert response.status_code == 403
+        assert b"Token BadSignature" in response.data
 
     def test_get_user_permissions(self):
         # set a real cookie
@@ -76,7 +79,7 @@ class TestGnPermissionsTools:
         Test get_user_permissions
         """
         user_ok = {"id_role": 1, "nom_role": "Administrateur"}
-        perms, is_herited, herited_object = UserCruved(
+        perms, is_herited, herited_object, other_filters_perm = UserCruved(
             id_role=user_ok["id_role"], code_filter_type="SCOPE", module_code="GEONATURE"
         ).get_perm_for_one_action("C")
 
@@ -89,14 +92,14 @@ class TestGnPermissionsTools:
             perms = get_user_permissions(fake_user, code_action="C", code_filter_type="SCOPE")
         # with module code
 
-        perms = perms, is_herited, herited_object = UserCruved(
+        perms = perms, is_herited, herited_object, other_filters_perm = UserCruved(
             id_role=user_ok["id_role"], code_filter_type="SCOPE", module_code="ADMIN"
         ).get_perm_for_one_action("C")
         assert perms.value_filter == "3"
 
         # # with code_object -> heritage
 
-        perms = perms, is_herited, herited_object = UserCruved(
+        perms = perms, is_herited, herited_object, other_filters_perms = UserCruved(
             id_role=user_ok["id_role"],
             code_filter_type="SCOPE",
             module_code="GEONATURE",
