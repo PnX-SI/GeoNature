@@ -90,7 +90,6 @@ export class DatasetCardComponent implements OnInit {
 
   getDataset(id) {
     this._dfs.getDatasetDetails(id).subscribe(data => {
-      console.log(data)
       this.dataset = data;
       if (this.dataset.modules) {
         this.dataset.modules = this.dataset.modules.map(e => e.module_code).join(', ');

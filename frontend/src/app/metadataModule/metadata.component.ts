@@ -56,6 +56,7 @@ export class MetadataComponent implements OnInit {
   private researchTerm: string = '';
   public organisms: Array<any>;
   public roles: Array<any>;
+  public isLoading = false;
 
   pageSize: number = AppConfig.METADATA.NB_AF_DISPLAYED;
   activePage: number = 0;
@@ -99,16 +100,23 @@ export class MetadataComponent implements OnInit {
   }
   //recuperation cadres d'acquisition
   getAcquisitionFrameworksAndDatasets() {
-    this._dfs.getAfAndDatasetListMetadata({}).subscribe(data => {
-      this.acquisitionFrameworks = data.data;
-      this.tempAF = this.acquisitionFrameworks;
-      this.datasets = [];
-      this.acquisitionFrameworks.forEach(af => {
-        af['datasetsTemp'] = af['datasets'];
-        this.datasets = this.datasets.concat(af['datasets']);
-      })
+    this.isLoading = true;
+    this._dfs.getAfAndDatasetListMetadata({}).subscribe(
+      data => {
+        this.isLoading = false;
+        this.acquisitionFrameworks = data.data;
+        this.tempAF = this.acquisitionFrameworks;
+        this.datasets = [];
+        this.acquisitionFrameworks.forEach(af => {
+          af['datasetsTemp'] = af['datasets'];
+          this.datasets = this.datasets.concat(af['datasets']);
+        })
 
-    });
+    },
+    err => {
+      this.isLoading = false;
+    }
+    );
   }
 
 

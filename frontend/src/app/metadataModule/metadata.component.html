@@ -63,6 +63,13 @@
           <div class="col-md-5"> Acteurs</div>
           <div class="col-md-1"> Actions</div>
         </div>
+        <mat-spinner
+          *ngIf="isLoading"
+          diameter="50"
+          strokeWidth="2"
+          style="margin: 0 auto;"
+        >
+      </mat-spinner>
         <ng-container *ngFor="let af of tempAF; let idx = index">
           <mat-expansion-panel
             *ngIf="isDisplayed(idx)"
