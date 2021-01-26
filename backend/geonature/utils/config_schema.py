@@ -99,6 +99,7 @@ class MediasConfig(Schema):
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(missing=50, validate=OneOf([10, 25, 50, 100]))
     ENABLE_CLOSE_AF = fields.Boolean(missing=False)
+    AF_SHEET_CLOSED_LINK_NAME = fields.String(missing="Lien du certificat de dépôt")
     CLOSED_AF_TITLE = fields.String(missing="")
     AF_PDF_TITLE = fields.String(missing="Cadre d'acquisition: ")
     DS_PDF_TITLE = fields.String(missing="")

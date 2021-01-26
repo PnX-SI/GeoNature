@@ -127,6 +127,8 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
             MAIL.init_app(app)
 
         app.config['TEMPLATES_AUTO_RELOAD'] = True
+        # disable cache for downloaded files (PDF file stat for ex)
+        app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
         # Loading third-party modules
         if with_external_mods:
