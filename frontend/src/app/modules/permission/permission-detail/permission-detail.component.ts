@@ -14,6 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 import { EditPermissionModal } from './edit-permission-modal/edit-permission-modal.component';
 import { Permission } from '../shared/permission.model';
 import { HttpParams } from '@angular/common/http';
+import { NumberValueAccessor } from '@angular/forms/src/directives';
 
 @Component({
   selector: 'gn-permission-detail',
@@ -29,7 +30,7 @@ export class PermissionDetailComponent implements OnInit {
   role: IRolePermission;
   objects: Record<string, IObject> = {};
   permissionsByCode: Record<string, Record<string, IPermission[]>> = {};
-  permissionsNbrByCode: Record<string, number> = {};
+  permissionsNbrByCode: Record<string, {total: number, inherited: number, owned: number}> = {};
   showInheritance: boolean = true;
   modules: IModule[];
   subscription: Subscription;
@@ -98,14 +99,25 @@ export class PermissionDetailComponent implements OnInit {
                 modulesCodes.push(item.module);
                 this.permissionsByCode[item.module] = {};
                 this.permissionsByCode[item.module][item.object] = [item];
-                this.permissionsNbrByCode[item.module] = 1;
+                // Set numbers of permissions
+                this.permissionsNbrByCode[item.module] = {
+                  total: 1,
+                  inherited: (item.isInherited ? 1 : 0),
+                  owned: (item.isInherited ? 0 : 1),
+                };
               } else {
                 if (this.permissionsByCode[item.module][item.object]) {
                   this.permissionsByCode[item.module][item.object].push(item);
                 } else {
                   this.permissionsByCode[item.module][item.object] = [item];
                 }
-                this.permissionsNbrByCode[item.module]++;
+                // Update numbers of permissions
+                this.permissionsNbrByCode[item.module]['total']++;
+                if (item.isInherited) {
+                  this.permissionsNbrByCode[item.module]['inherited']++;
+                } else {
+                  this.permissionsNbrByCode[item.module]['owned']++;
+                }
               }
             })
           }

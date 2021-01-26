@@ -44,8 +44,8 @@
           </mat-panel-title>
         </mat-expansion-panel-header>
         <p class="mb-1">
-          GeoNature possède un mécanisme d'héritage des permissions via les groupes et/ou les modules
-          dont voici les principales caractèristiques :
+          GeoNature possède un mécanisme d'héritage des permissions via les groupes d'utilisateurs
+          et/ou les modules dont voici les principales caractèristiques :
         </p>
         <ul class="mb-0">
           <li>Les membres d'un groupe héritent des permissions de son ou ses groupes d'appartenance.</li>
@@ -101,9 +101,18 @@
               </h5>
             </mat-panel-title>
             <mat-panel-description>
-              <p>
-                <strong>{{ permissionsNbrByCode[module.code] }}</strong>
-                permissions pour le module {{module.label}}.
+              <p *ngIf="permissionsNbrByCode[module.code] as nbr">
+                <strong>{{ nbr.total }}</strong>
+                {{ nbr.total < 2 ? 'permission' : 'permissions' }}
+                dans le module {{ module.label }} (
+                <ng-container *ngIf="showInheritance && nbr.owned > 0">
+                  {{ nbr.owned }} {{ nbr.owned < 2 ? 'possédée' : 'possédées'}}
+                </ng-container>
+                <ng-container *ngIf="nbr.owned > 0 && nbr.inherited > 0">, </ng-container>
+                <ng-container *ngIf="showInheritance && nbr.inherited > 0">
+                  {{ nbr.inherited }} {{nbr.inherited < 2 ? 'héritée' : 'héritées'}}
+                </ng-container>
+                ).
               </p>
             </mat-panel-description>
           </mat-expansion-panel-header>
@@ -154,7 +163,10 @@
                   <th
                     class="text-center"
                     scope="col"
-                    matTooltip="Indique si l'utilisateur hérite de la permission via un MODULE."
+                    matTooltip="
+                      Nom du module par lequel l'utilisateur hérite de la permission.
+                      « Parent » indique pour un objet un héritage de la permission par son propre module.
+                    "
                   >
                     module
                     <mat-icon class="icon-help">help_outline</mat-icon>
@@ -162,7 +174,7 @@
                   <th
                     class="text-center"
                     scope="col"
-                    matTooltip="Indique si l'utilisateur hérite de la permission via un GROUPE."
+                    matTooltip="Nom du groupe via lequel l'utilisateur hérite de la permission."
                   >
                     groupe
                     <mat-icon class="icon-help">help_outline</mat-icon>
@@ -217,7 +229,11 @@
                           && permission.inheritedBy.byModule ;
                           else notInheritedByModule
                         ">
-                        {{ permission.inheritedBy.moduleCode }}
+                        {{
+                          permission.inheritedBy.moduleCode == module.code
+                          ? 'Parent'
+                          : permission.inheritedBy.moduleCode
+                        }}
                       </ng-container>
                       <ng-template #notInheritedByModule>&nbsp;</ng-template>
                     </td>
