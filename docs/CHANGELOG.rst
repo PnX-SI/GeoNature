@@ -57,6 +57,7 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 * Synthèse : fonction ``import_row_from_table`` : test sur ``LOWER(tbl_name)``
 * Redirection vers le formulaire d'authentification si l'on essaie d'accéder à une URL sans être authentifié et sans passer par le frontend (#1193)
 * Script d'installation globale : prise en compte du paramètre ``install_grid_layer`` permettant d'intégrer ou non les mailles dans le ``ref_geo`` lors de l'installation initiale (#1133)
+* Synthèse : changement de type pour ``refence_biblio`` (varchar(255) -> text)
 
 **⚠️ Notes de version**
 
@@ -64,6 +65,7 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 - Nomenclatures Sensibilité à renommer ???
 * Calcul de la sensibilité des données existantes dans la Synthèse (ainsi que de leur niveau de diffusion si celui-ci n'a pas été renseigné par ailleurs) : data/migrations/2.5.5to2.6.0-update-sensitivity.sql
 * Si vous aviez fait des customisations (logo, PDF export...) alors XXXXXX
+* Si des vues utilisent la colonne ``gn_synthese.synthese.refence_biblio`` (module d'export) celles-ci doivent être supprimées (DROP) et recrées
 * Revoir http://docs.geonature.fr/admin-manual.html#integrer-son-logo ?
 
 2.5.5 (2020-11-19)
