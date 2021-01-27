@@ -96,11 +96,13 @@ CREATE TABLE t_acquisition_frameworks (
     ecologic_or_geologic_target text,
     acquisition_framework_parent_id integer,
     is_parent boolean,
+    opened boolean DEFAULT true,
     id_digitizer integer,
     acquisition_framework_start_date date NOT NULL,
     acquisition_framework_end_date date,
     meta_create_date timestamp without time zone NOT NULL,
-    meta_update_date timestamp without time zone
+    meta_update_date timestamp without time zone,
+    initial_closing_date timestamp
 );
 COMMENT ON TABLE t_acquisition_frameworks IS 'Define a acquisition framework that embed datasets. Implement 1.3.8 SINP metadata standard';
 COMMENT ON COLUMN t_acquisition_frameworks.id_acquisition_framework IS 'Internal value for primary and foreign keys';
@@ -418,6 +420,10 @@ CREATE TRIGGER tri_meta_dates_change_t_acquisition_frameworks
 --------------
 --CONSTRAINS--
 --------------
+
+ALTER TABLE t_datasets
+  ADD CONSTRAINT unique_dataset_uuid UNIQUE (unique_dataset_id);
+
 ALTER TABLE t_datasets
   ADD CONSTRAINT check_t_datasets_resource_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_resource_type,'RESOURCE_TYP')) NOT VALID;
 
@@ -436,6 +442,9 @@ ALTER TABLE t_datasets
 ALTER TABLE t_datasets
   ADD CONSTRAINT check_t_datasets_source_status CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_source_status,'STATUT_SOURCE')) NOT VALID;
 
+
+ALTER TABLE t_acquisition_frameworks
+  ADD CONSTRAINT unique_acquisition_frameworks_uuid UNIQUE (unique_acquisition_framework_id);
 
 ALTER TABLE t_acquisition_frameworks
   ADD CONSTRAINT check_t_acquisition_frameworks_territorial_level CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_territorial_level,'NIVEAU_TERRITORIAL')) NOT VALID;
@@ -466,8 +475,14 @@ ALTER TABLE cor_acquisition_framework_actor
 
 
 ALTER TABLE sinp_datatype_protocols
+  ADD CONSTRAINT unique_sinp_datatype_protocols_uuid UNIQUE (unique_protocol_id);
+
+ALTER TABLE sinp_datatype_protocols
   ADD CONSTRAINT check_sinp_datatype_protocol_type CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_protocol_type,'TYPE_PROTOCOLE')) NOT VALID;
 
+
+ALTER TABLE sinp_datatype_publications
+  ADD CONSTRAINT unique_sinp_datatype_publications_uuid UNIQUE (unique_publication_id);
 
 ALTER TABLE cor_dataset_actor
   ADD CONSTRAINT check_cor_dataset_actor CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_actor_role,'ROLE_ACTEUR')) NOT VALID;
@@ -494,6 +509,17 @@ CREATE INDEX i_t_datasets_id_acquisition_framework
   ON gn_meta.t_datasets
   USING btree
   (id_acquisition_framework);
+
+CREATE UNIQUE INDEX i_unique_t_acquisition_framework_unique_id 
+  ON gn_meta.t_acquisition_frameworks 
+  USING btree 
+  (unique_acquisition_framework_id);
+
+CREATE UNIQUE INDEX i_unique_t_datasets_unique_id 
+  ON gn_meta.t_datasets 
+  USING btree 
+  (unique_dataset_id);
+
 
 --------
 --VIEW--

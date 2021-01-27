@@ -7,10 +7,18 @@ import {
   OnChanges,
   ElementRef,
   ViewChild,
-  HostListener
+  HostListener,
+  ViewChildren,
+  QueryList,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+
+export enum KEY_CODE {
+  ENTER = 'Enter',
+  ARROW_DOWN = 'ArrowDown',
+  ARROW_UP = 'ArrowUp',
+}
 
 /**
  * Ce composant permet d'afficher un input de type multiselect à partir
@@ -90,7 +98,11 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   /** Action à exécuter lors de la suppression du contenu. */
   @Output() onDelete = new EventEmitter<any>();
 
-  @ViewChild('button_input') el: ElementRef;
+  private searchInputFocused: boolean = false;
+
+  @ViewChild('buttonInput') buttonInput: ElementRef;
+  @ViewChild('searchInput') searchInput: ElementRef;
+  @ViewChildren('dropdownItem') dropdownList: QueryList<ElementRef>;
 
   /** Pour la selection au clavier. */
   public valSave;
@@ -106,21 +118,15 @@ export class MultiSelectComponent implements OnInit, OnChanges {
     this.searchBar = this.searchBar || false;
     this.displayAll = this.displayAll || false;
 
-    // Set the value
+    // Initialize attributes when "values" not change after ngOnInit...
     if (this.values && this.parentFormControl.value) {
-      if (this.bindAllItem) {
-        this.values.forEach(value => {
-          if (this.parentFormControl.value.indexOf(value) !== -1) {
-            this.selectedItems.push(value);
-          }
-        });
-      } else {
-        this.values.forEach(value => {
-          if (this.parentFormControl.value.indexOf(value[this.keyValue]) !== -1) {
-            this.selectedItems.push(value);
-          }
-        });
-      }
+      this.values.forEach(value => {
+        if (this.isInParentFormControl(value)) {
+          this.selectedItems.push(value);
+          // Component Taxa add data here with ngOnInit() when component Areas add with ngOnChange()
+          this.formControlValue.push(value);
+        }
+      });
     }
 
     // Subscribe and output on the search bar
@@ -164,6 +170,19 @@ export class MultiSelectComponent implements OnInit, OnChanges {
         }
       }
     });
+  }
+
+  private isInParentFormControl(value) {
+    if (this.bindAllItem) {
+      return (
+        this.parentFormControl.value
+          .map(item => item[this.keyValue])
+          .indexOf(value[this.keyValue])
+        !== -1
+      );
+    } else {
+      return (this.parentFormControl.value.indexOf(value[this.keyValue]) !== -1)
+    }
   }
 
   /**
@@ -262,6 +281,24 @@ export class MultiSelectComponent implements OnInit, OnChanges {
     }
   }
 
+  onButtonInputClick() {
+    if (this.searchBar) {
+      // TODO: use ngx-bootstrap o ng-bootstrap for dropdown to use event dropdown shown !
+      // TODO: use the event after show dropdown to avoid use of setTimeout() !
+      setTimeout(() => {
+        this.searchInput.nativeElement.focus();
+      }, 0);
+    }
+  }
+
+  onSearchInputFocus() {
+    this.searchInputFocused = true;
+  }
+
+  onSearchInputBlur() {
+    this.searchInputFocused = false;
+  }
+
   onFocus(event) {
     this.valSave = ' ';
   }
@@ -280,20 +317,24 @@ export class MultiSelectComponent implements OnInit, OnChanges {
    */
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    // Enter (parmet d'ouvrir le composant pour choisir un item)
-    if (event.keyCode === 13) {
+    // Enter (permet d'ouvrir le composant pour choisir un item)
+    if (event.key === KEY_CODE.ENTER) {
       if (this.valSave) {
         const valSave = JSON.parse(JSON.stringify(this.valSave));
-        this.el.nativeElement.click();
-        this.el.nativeElement.focus();
+        this.buttonInput.nativeElement.click();
+        this.buttonInput.nativeElement.focus();
         if (valSave !== ' ') {
           this.addItem(valSave);
+          this.valSave = ' ';
         }
       }
     }
     // Down
-    if (event.keyCode === 40) {
-      if (this.valSave) {
+    if (event.key === KEY_CODE.ARROW_DOWN) {
+      // Select first dropdown entry if focus is in search input
+      if (this.searchInputFocused && this.dropdownList.toArray().length > 0) {
+        this.dropdownList.first.nativeElement.focus();
+      } else if (this.valSave) {
         const element = (event.srcElement as HTMLTextAreaElement).nextElementSibling;
         if (element) {
           (element as HTMLElement).focus();
@@ -301,7 +342,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       }
     }
     // Up
-    if (event.keyCode === 38) {
+    if (event.key === KEY_CODE.ARROW_UP) {
       if (this.valSave) {
         const element = (event.srcElement as HTMLTextAreaElement).previousElementSibling;
         if (element) {

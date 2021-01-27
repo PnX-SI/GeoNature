@@ -27,6 +27,7 @@ import {
   MatTooltipModule,
 } from '@angular/material';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
 // Third party's modules
 import 'rxjs/Rx';
@@ -42,6 +43,7 @@ import { AreasIntersectedComponent } from './form/areas-intersected/areas-inters
 import { AutoCompleteComponent } from '@geonature_common/form/autocomplete/autocomplete.component';
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { DatalistComponent } from '@geonature_common/form/datalist/datalist.component';
+import { BreadcrumbsComponent } from '@geonature_common/others/breadcrumbs/breadcrumbs.component'
 import { DatasetsComponent } from './form/datasets/datasets.component';
 import { DateComponent } from './form/date/date.component';
 import { DisplayMediasComponent } from '@geonature_common/form/media/display-medias.component';
@@ -88,6 +90,8 @@ import { DisplayMouseOverDirective } from './directive/display-mouse-over.direct
 // Pipes
 import { ReadablePropertiePipe } from './pipe/readable-propertie.pipe';
 import { SafeHtmlPipe } from './pipe/sanitizer.pipe';
+import { SafeStripHtmlPipe } from './pipe/strip-html.pipe';
+import { StripHtmlPipe } from './pipe/strip-html.pipe';
 
 // Services
 import { CommonService } from './service/common.service';
@@ -132,12 +136,19 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
     NgxDatatableModule,
     NgxMatSelectSearchModule,
     ReactiveFormsModule,
+    NgxDatatableModule,
+    RouterModule,
     TranslateModule.forChild(),
     TreeModule,
   ],
   declarations: [
     AcquisitionFrameworksComponent,
     AreasComponent,
+    NomenclatureComponent,
+    ObserversComponent,
+    BreadcrumbsComponent,
+    DateComponent,
+    TaxonomyComponent,
     AreasIntersectedComponent,
     AutoCompleteComponent,
     ConfirmationDialog,
@@ -178,6 +189,8 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
     ReadablePropertiePipe,
     SafeHtmlPipe,
     SyntheseSearchComponent,
+    SafeStripHtmlPipe,
+    StripHtmlPipe,
     TaxaComponent,
     TaxonAdvancedModalComponent,
     TaxonomyComponent,
@@ -204,6 +217,13 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
   exports: [
     AcquisitionFrameworksComponent,
     AreasComponent,
+    MunicipalitiesComponent,
+    BreadcrumbsComponent,
+    DynamicFormComponent,
+    NomenclatureComponent,
+    ObserversComponent,
+    DateComponent,
+    TaxonomyComponent,
     AreasIntersectedComponent,
     AutoCompleteComponent,
     ConfirmationDialog,
@@ -263,6 +283,18 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
     ObserversComponent,
     ObserversTextComponent,
     PeriodComponent,
+    AutoCompleteComponent,
+    SafeStripHtmlPipe,
+    StripHtmlPipe,
+    SyntheseSearchComponent,
+    TaxonAdvancedModalComponent,
+    DumbSelectComponent,
+    GeometryFormComponent,
+    ConfirmationDialog,
+    MediasComponent,
+    MediaDialog,
+    DisplayMediasComponent,
+    DatalistComponent,
     PlacesComponent,
     PlacesListComponent,
     ReactiveFormsModule,

@@ -12,12 +12,18 @@ export class AreasComponent implements OnInit {
   public areas: any;
   public cachedAreas: any;
   @Input() idTypes: Array<number>; // Areas id_type
+  /** Désactive le composant. */
+  @Input() disabled: boolean = false;
   @Input() label: string;
   @Input() searchBar = false;
   @Input() parentFormControl: FormControl;
   @Input() bindAllItem: false;
   @Input() debounceTime: number;
-  constructor(private _dfs: DataFormService, private _commonService: CommonService) {}
+
+  constructor(
+    private _dfs: DataFormService,
+    private _commonService: CommonService,
+  ) {}
 
   ngOnInit() {
     this._dfs.getAreas(this.idTypes).subscribe(data => {
@@ -25,6 +31,7 @@ export class AreasComponent implements OnInit {
       this.formatAreas(data);
     });
   }
+
   /**
    * Set the departement number if the id_type is municipalities
    * @param data

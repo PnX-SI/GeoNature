@@ -59,6 +59,8 @@ export class TaxaComponent implements OnInit {
    * la valeur par défaut.
    */
   @Input() debounceTime: number;
+  /** Désactive le composant. */
+  @Input() disabled: boolean = false;
 
   /** @ignore */
   constructor(
@@ -68,6 +70,11 @@ export class TaxaComponent implements OnInit {
 
   ngOnInit() {
     this.taxa = [];
+
+    // In update mode
+    if (this.parentFormControl.value) {
+      this.taxa = this.parentFormControl.value;
+    }
   }
 
   /** Relance un appel à l'API fournissant les noms scientifiques si le
