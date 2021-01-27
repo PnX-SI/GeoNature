@@ -12,7 +12,6 @@ from pypnusershub.db.tools import InsufficientRightsError
 from geonature.core.gn_permissions.tools import (
     get_user_permissions,
     get_user_from_token_and_raise,
-    get_max_perm,
     UserCruved,
 )
 
@@ -48,11 +47,15 @@ def check_cruved_scope(
                 request, action, redirect_on_expiration, redirect_on_invalid_token
             )
             user_with_highter_perm = None
-            user_permissions = get_user_permissions(
-                user, "SCOPE", action, module_code, object_code
-            )
-            user_cruved_obj = UserCruved()
-            user_with_highter_perm = user_cruved_obj.build_herited_user_cruved(user_permissions, module_code, object_code)
+
+            user_with_highter_perm = UserCruved(
+                id_role=user["id_role"],
+                code_filter_type="SCOPE",
+                module_code=module_code,
+                object_code=object_code,
+            ).get_herited_user_cruved_by_action(action)
+            if user_with_highter_perm:
+                user_with_highter_perm = user_with_highter_perm[0]
 
             # if get_role = True : set info_role as kwargs
             if get_role:
@@ -60,11 +63,11 @@ def check_cruved_scope(
             # if no perm or perm = 0 -> raise 403
             if user_with_highter_perm is None or (
                 user_with_highter_perm is not None and user_with_highter_perm.value_filter == "0"
-            ):  
+            ):
                 if object_code:
-                    message = f"""User {user_with_highter_perm.id_role} cannot "{user_with_highter_perm.code_action}" {object_code}"""
+                    message = f"""User {user["id_role"]} cannot "{action}" {object_code}"""
                 else:
-                    message = f"""User {user_with_highter_perm.id_role}" cannot "{user_with_highter_perm.code_action}" in {user_with_highter_perm.module_code}"""
+                    message = f"""User {user["id_role"]}" cannot "{action}" in {module_code}"""
                 raise InsufficientRightsError(message, 403)
             g.user = user_with_highter_perm
             return fn(*args, **kwargs)
@@ -72,4 +75,3 @@ def check_cruved_scope(
         return __check_cruved_scope
 
     return _check_cruved_scope
-

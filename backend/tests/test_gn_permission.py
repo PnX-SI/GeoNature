@@ -27,8 +27,10 @@ from geonature.core.gn_permissions.tools import (
     user_from_token,
     get_user_from_token_and_raise,
     cruved_scope_for_user_in_module,
+    UserCruved,
 )
-from geonature.core.gn_permissions.decorators import get_max_perm
+
+# from geonature.core.gn_permissions.decorators import get_max_perm
 from geonature.core.gn_permissions.models import VUsersPermissions
 
 
@@ -71,31 +73,38 @@ class TestGnPermissionsTools:
 
     def test_get_user_permissions(self):
         """
-            Test get_user_permissions
+        Test get_user_permissions
         """
         user_ok = {"id_role": 1, "nom_role": "Administrateur"}
-        perms = get_user_permissions(user_ok, code_action="C", code_filter_type="SCOPE")
-        assert isinstance(perms, list)
-        assert get_max_perm(perms).value_filter == "3"
+        perms, is_herited, herited_object = UserCruved(
+            id_role=user_ok["id_role"], code_filter_type="SCOPE", module_code="GEONATURE"
+        ).get_herited_user_cruved_by_action("C")
+
+        assert isinstance(perms, VUsersPermissions)
+        assert perms.value_filter == "3"
 
         fake_user = {"id_role": 220, "nom_role": "Administrateur"}
-
+        # get_user_permissions(fake_user, code_action="C", code_filter_type="SCOPE")
         with pytest.raises(InsufficientRightsError):
             perms = get_user_permissions(fake_user, code_action="C", code_filter_type="SCOPE")
         # with module code
-        perms = get_user_permissions(
-            user_ok, code_action="C", code_filter_type="SCOPE", module_code="ADMIN"
-        )
-        max_perm = get_max_perm(perms)
-        assert max_perm.value_filter == "3"
 
-        # with code_object -> heritage
-        perms = get_user_permissions(
-            user_ok, code_action="C", code_filter_type="SCOPE", code_object="PERMISSIONS",
-        )
-        assert isinstance(perms, list)
-        assert get_max_perm(perms).value_filter == "3"
+        perms = perms, is_herited, herited_object = UserCruved(
+            id_role=user_ok["id_role"], code_filter_type="SCOPE", module_code="ADMIN"
+        ).get_herited_user_cruved_by_action("C")
+        assert perms.value_filter == "3"
 
+        # # with code_object -> heritage
+
+        perms = perms, is_herited, herited_object = UserCruved(
+            id_role=user_ok["id_role"],
+            code_filter_type="SCOPE",
+            module_code="GEONATURE",
+            object_code="PERMISSIONS",
+        ).get_herited_user_cruved_by_action("C")
+
+        assert isinstance(perms, VUsersPermissions)
+        assert perms.value_filter == "3"
 
     def test_cruved_scope_for_user_in_module(self):
         # get cruved for geonature
@@ -115,7 +124,7 @@ class TestGnPermissionsTools:
 class TestGnPermissionsView:
     def test_get_users(self):
         """
-            Test get page with all roles
+        Test get page with all roles
         """
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
@@ -127,7 +136,7 @@ class TestGnPermissionsView:
 
     def test_get_user_cruveds(self):
         """
-            Test get page with all cruved of a user
+        Test get page with all cruved of a user
         """
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
@@ -139,7 +148,7 @@ class TestGnPermissionsView:
 
     def test_get_cruved_scope_form_allowed(self):
         """
-            Test get user cruved form page
+        Test get user cruved form page
         """
         # with user admin
         token = get_token(self.client)
@@ -154,10 +163,9 @@ class TestGnPermissionsView:
         )
         assert response.status_code == 200
 
-
     def test_post_cruved_scope_form(self):
         """
-            Test a post an an update on table cor_role_action_filter_module_object
+        Test a post an an update on table cor_role_action_filter_module_object
         """
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
@@ -178,7 +186,10 @@ class TestGnPermissionsView:
         permissions = (
             DB.session.query(VUsersPermissions)
             .filter_by(
-                id_role=15, module_code="GEONATURE", code_object="ALL", code_filter_type="SCOPE",
+                id_role=15,
+                module_code="GEONATURE",
+                code_object="ALL",
+                code_filter_type="SCOPE",
             )
             .all()
         )
@@ -195,7 +206,7 @@ class TestGnPermissionsView:
 
     def test_get_user_cruved(self):
         """
-            Test of view who return the user cruved in all modules
+        Test of view who return the user cruved in all modules
         """
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
@@ -205,7 +216,7 @@ class TestGnPermissionsView:
 
     def test_get_user_other_permissions(self):
         """
-            Test of view who return the user permissions expect SCOPE
+        Test of view who return the user permissions expect SCOPE
         """
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
@@ -217,7 +228,7 @@ class TestGnPermissionsView:
 
     def test_post_or_update_other_perm(self):
         """
-            Test post/update a permission (no scope)
+        Test post/update a permission (no scope)
         """
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
@@ -225,7 +236,9 @@ class TestGnPermissionsView:
 
         response = self.client.post(
             url_for(
-                "gn_permissions_backoffice.other_permissions_form", id_role=1, id_filter_type=4,
+                "gn_permissions_backoffice.other_permissions_form",
+                id_role=1,
+                id_filter_type=4,
             ),
             data=valid_data,
         )
@@ -249,7 +262,9 @@ class TestGnPermissionsView:
 
         response = self.client.post(
             url_for(
-                "gn_permissions_backoffice.other_permissions_form", id_role=1, id_filter_type=4,
+                "gn_permissions_backoffice.other_permissions_form",
+                id_role=1,
+                id_filter_type=4,
             ),
             data=wrong_data,
         )
@@ -303,7 +318,8 @@ class TestGnPermissionsView:
         self.client.set_cookie("/", "token", token)
 
         response = self.client.post(
-            url_for("gn_permissions_backoffice.filter_form", id_filter_type=4), data=data,
+            url_for("gn_permissions_backoffice.filter_form", id_filter_type=4),
+            data=data,
         )
 
         assert response.status_code == 302

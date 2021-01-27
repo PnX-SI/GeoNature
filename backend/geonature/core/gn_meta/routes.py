@@ -159,16 +159,17 @@ def get_af_and_ds_metadata(info_role):
     if "selector" not in params:
         params["selector"] = None
     datasets = filtered_ds_query(info_role, params).distinct().all()
-
     if len(datasets) == 0:
         return {"data": []}
     ids_dataset_user = TDatasets.get_user_datasets(info_role, only_user=True)
+
     ids_dataset_organisms = TDatasets.get_user_datasets(info_role, only_user=False)
     ids_afs_user = TAcquisitionFramework.get_user_af(info_role, only_user=True)
     ids_afs_org = TAcquisitionFramework.get_user_af(info_role, only_user=False)
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role, module_code="METADATA",
     )[0]
+
 
     #  get all af from the JDD filtered with cruved or af where users has rights
     ids_afs_cruved = (
@@ -177,7 +178,6 @@ def get_af_and_ds_metadata(info_role):
         else []
     )
     list_id_af = [d.id_acquisition_framework for d in datasets] + ids_afs_cruved
-
     afs = (
         filtered_af_query(request.args)
         .filter(TAcquisitionFramework.id_acquisition_framework.in_(list_id_af))
@@ -229,10 +229,10 @@ def get_af_and_ds_metadata(info_role):
             ids_object_user=ids_dataset_user,
             ids_object_organism=ids_dataset_organisms,
         )
+        # dataset_dict["observation_count"] = (
+        #     DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == d.id_dataset).count()
+        # )
         dataset_dict["deletable"] = is_dataset_deletable(d.id_dataset)
-        dataset_dict["observation_count"] = (
-            DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == d.id_dataset).count()
-        )
         af_of_dataset = get_af_from_id(d.id_acquisition_framework, afs_dict)
         af_of_dataset["datasets"].append(dataset_dict)
 
@@ -299,7 +299,7 @@ def get_dataset(id_dataset):
     return dataset
 
 
-@routes.route("/dataset_details/<id_dataset>", methods=["GET"])
+@routes.route("/dataset_details/<int:id_dataset>", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="METADATA")
 @json_resp
 def get_dataset_details(info_role, id_dataset):
@@ -870,13 +870,6 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
             dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
         )
 
-
-    # try:
-    #     f = open(str(BACKEND_DIR) + "/static/images/taxa.png")
-    #     f.close()
-    #     acquisition_framework["chart"] = True
-    # except IOError:
-    #     acquisition_framework["chart"] = False
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf(

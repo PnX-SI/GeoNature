@@ -1,7 +1,7 @@
 """
 Utility function to manage cruved and all filter of Synthese
-Use these functions rather than query.py 
-Filter the query of synthese using SQLA expression language and 'select' object 
+Use these functions rather than query.py
+Filter the query of synthese using SQLA expression language and 'select' object
 https://docs.sqlalchemy.org/en/latest/core/tutorial.html#selecting
 much more efficient
 """
@@ -45,6 +45,14 @@ class SyntheseQuery:
 
     def __init__(self, model, query, filters):
         self.query = query
+
+        # Passage de l'ensemble des filtres
+        #   en array pour des questions de compatibilité
+        # TODO voir si ça ne peut pas être modifié
+        for k in filters.keys():
+            if not isinstance(filters[k], list):
+                filters[k] = [filters[k]]
+
         self.filters = filters
         self.first = True
         self.model = model
@@ -238,6 +246,7 @@ class SyntheseQuery:
         if "geoIntersection" in self.filters:
             # Insersect with the geom send from the map
             ors = []
+
             for str_wkt in self.filters["geoIntersection"]:
                 # if the geom is a circle
                 if "radius" in self.filters:

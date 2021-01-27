@@ -174,6 +174,8 @@ export class OcctaxFormOccurrenceService {
             sample_number_proof: this.occtaxParamS.get(
               "occurrence.sample_number_proof"
             ),
+            digital_proof: this.occtaxParamS.get("occurrence.digital_proof"),
+            non_digital_proof: this.occtaxParamS.get("occurrence.non_digital_proof"),
             comment: this.occtaxParamS.get("occurrence.comment"),
             id_nomenclature_bio_condition:
               this.occtaxParamS.get(

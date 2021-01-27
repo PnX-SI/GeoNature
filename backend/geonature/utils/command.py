@@ -147,9 +147,14 @@ def create_frontend_config(conf_file):
     log.info("Generating configuration")
     configs_gn = load_and_validate_toml(conf_file, GnGeneralSchemaConf)
 
-    with open(str(ROOT_DIR / "frontend/src/conf/app.config.ts"), "w") as outputfile:
-        outputfile.write("export const AppConfig = ")
-        json.dump(configs_gn, outputfile, indent=True)
+    with open(str(ROOT_DIR / "frontend/src/conf/app.config.ts.sample"), "r") as input_file:
+        template = Template(input_file.read())
+        parameters = json.dumps(configs_gn, indent=True)
+        app_config_template = template.render(parameters=parameters)
+
+        with open(str(ROOT_DIR / "frontend/src/conf/app.config.ts"), "w") as output_file:
+            output_file.write(app_config_template)
+
     log.info("...%s\n", MSG_OK)
 
 

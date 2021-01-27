@@ -4,8 +4,8 @@
     "Sel_lang": "选择语言",
     "Language": "语言",
     "Languages":{
-        "English":"英语",
-        "French":"法语",
+        "English":"English (英语)",
+        "French":"Français (法国人)",
         "Chinese":"中文"
     },
     "Email": "电子邮件",
@@ -23,7 +23,7 @@
     "Search": "Search",
     "By": "By",
     "Columns": "Columns",
-  
+
     "Map":{
         "SearchLocation":"搜索位置",
         "AddPoint":"找到观察点 (点)",
