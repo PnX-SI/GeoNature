@@ -214,7 +214,7 @@ def get_dataset_details_dict(id_dataset, session_role):
         .count()
     )
     dataset["observation_count"] = (
-        DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == id_dataset).count()
+        DB.session.query(Synthese.id_synthese).filter(Synthese.id_dataset == id_dataset).count()
     )
     geojsonData = (
         DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))

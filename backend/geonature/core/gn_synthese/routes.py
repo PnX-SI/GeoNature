@@ -811,13 +811,35 @@ def get_observation_count():
     """Get observations found in a given dataset"""
     params = request.args
 
-    query = DB.session.query(func.count(Synthese.cd_nom)).select_from(Synthese)
+    query = DB.session.query(func.count(Synthese.id_synthese)).select_from(Synthese)
 
     if "id_dataset" in params:
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
 
     return query.one()
 
+
+@routes.route("/observation_count_per_column/<column>", methods=["GET"])
+@json_resp
+def observation_count_per_column(column):
+    """Get observations count group by a given column"""
+    params = request.args
+    try:
+        model_column = getattr(Synthese, column)
+    except Exception:
+        return f'No column name {column} in Synthese', 500
+    query = DB.session.query(
+        func.count(Synthese.id_synthese), model_column
+        ).select_from(
+            Synthese
+        ).group_by(model_column)
+    data = []
+    for d in query.all():
+        temp = {}
+        temp[column] = d[1]
+        temp['count'] = d[0]
+        data.append(temp)
+    return data
 
 @routes.route("/taxa_distribution", methods=["GET"])
 @json_resp

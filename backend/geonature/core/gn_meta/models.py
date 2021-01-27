@@ -472,7 +472,7 @@ class TAcquisitionFramework(CruvedHelper):
               - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
 
             return: a list of id_dataset or a query"""
-        q = DB.session.query(TAcquisitionFramework).outerjoin(
+        q = DB.session.query(TAcquisitionFramework.id_acquisition_framework).outerjoin(
             CorAcquisitionFrameworkActor,
             CorAcquisitionFrameworkActor.id_acquisition_framework
             == TAcquisitionFramework.id_acquisition_framework,
@@ -494,7 +494,9 @@ class TAcquisitionFramework(CruvedHelper):
             )
         if only_query:
             return q
-        return list(set([d.id_acquisition_framework for d in q.all()]))
+        print(q)
+        data = q.all()
+        return list(set([d.id_acquisition_framework for d in data]))
 
 
 @serializable

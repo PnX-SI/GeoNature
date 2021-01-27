@@ -57,6 +57,7 @@ export class MetadataComponent implements OnInit {
   public organisms: Array<any>;
   public roles: Array<any>;
   public isLoading = false;
+  public datasetNbObs = null;
 
   pageSize: number = AppConfig.METADATA.NB_AF_DISPLAYED;
   activePage: number = 0;
@@ -98,10 +99,23 @@ export class MetadataComponent implements OnInit {
     })
 
   }
+
+  setDsObservationCount(datasets, dsNbObs) {
+    datasets.forEach(ds=> {
+      let foundDS = dsNbObs.find(d => {                
+        return d.id_dataset == ds.id_dataset
+      })
+      if (foundDS) {
+        ds.observation_count = foundDS.count
+        
+      }
+    })
+  }
+
   //recuperation cadres d'acquisition
-  getAcquisitionFrameworksAndDatasets() {
+  getAcquisitionFrameworksAndDatasets(formValue={}, expand=false) {
     this.isLoading = true;
-    this._dfs.getAfAndDatasetListMetadata({}).subscribe(
+    this._dfs.getAfAndDatasetListMetadata(formValue).subscribe(
       data => {
         this.isLoading = false;
         this.acquisitionFrameworks = data.data;
@@ -111,6 +125,25 @@ export class MetadataComponent implements OnInit {
           af['datasetsTemp'] = af['datasets'];
           this.datasets = this.datasets.concat(af['datasets']);
         })
+      if(expand) {
+        this.expandAccordions = (this.searchFormService.form.value.selector == 'ds');
+
+      }
+      // load stat for ds
+      if (!this.datasetNbObs) {
+        console.log("repasse la ?");
+        
+        this._syntheseDataService.getObsCountByColumn('id_dataset').subscribe(count_ds => {
+          this.datasetNbObs = count_ds
+          this.setDsObservationCount(this.datasets, this.datasetNbObs);
+          
+        })
+      } else {
+        console.log("passe la ");
+        
+        this.setDsObservationCount(this.datasets, this.datasetNbObs);
+      }
+
 
     },
     err => {
@@ -195,15 +228,17 @@ export class MetadataComponent implements OnInit {
     );
 
 
-    this._dfs.getAfAndDatasetListMetadata(formValue).subscribe(data => {
-      this.tempAF = data.data;
-      this.datasets = [];
-      this.tempAF.forEach(af => {
-        af['datasetsTemp'] = af['datasets'];
-        this.datasets = this.datasets.concat(af['datasets']);
-      })
-      this.expandAccordions = (this.searchFormService.form.value.selector == 'ds');
-    });
+
+    // this._dfs.getAfAndDatasetListMetadata(formValue).subscribe(data => {
+    //   this.tempAF = data.data;
+    //   this.datasets = [];
+    //   this.tempAF.forEach(af => {
+    //     af['datasetsTemp'] = af['datasets'];
+    //     this.datasets = this.datasets.concat(af['datasets']);
+    //   })
+    // });
+
+    this.getAcquisitionFrameworksAndDatasets(formValue, true);
   }
 
   openSearchModal(searchModal) {
