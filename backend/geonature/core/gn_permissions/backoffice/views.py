@@ -71,24 +71,35 @@ def permission_form(info_role, id_module, id_role, id_object=None):
 
     user = DB.session.query(User).get(id_role)
     if request.method == "GET":
-        cruved, herited = cruved_scope_for_user_in_module(
+        cruved, (herited, herited_obj) = cruved_scope_for_user_in_module(
             id_role=id_role,
             module_code=module.module_code,
             object_code=object_instance.code_object,
             get_id=True,
+            get_herited_obj=True,
         )
         form = CruvedScopeForm(**cruved)
         # get the real cruved of user to set a warning
         real_cruved = (
             DB.session.query(CorRoleActionFilterModuleObject)
-            .filter_by(id_module=id_module, id_role=id_role, id_object=object_instance.id_object,)
+            .filter_by(
+                id_module=id_module,
+                id_role=id_role,
+                id_object=object_instance.id_object,
+            )
             .all()
         )
         if len(real_cruved) == 0 and not module.module_code == "ADMIN":
+            msg_heritage_obj = ""
+            if herited_obj:
+                msg_heritage_obj = f" - objet {herited_obj[1]}"
+                if herited_obj[1] == "ALL":
+                    msg_heritage_obj = ""
+                msg_heritage_obj = f" {herited_obj[0]} {msg_heritage_obj}"
             flash(
-                """
-                Attention ce role n'a pas encore de CRUVED dans ce module. 
-                Celui-ci lui est hérité de son groupe et/ou du module parent GEONATURE
+                f"""
+                Attention ce role n'a pas encore de CRUVED dans ce module.
+                Celui-ci lui est hérité de son groupe et/ou du module parent{msg_heritage_obj}
                 """
             )
         return render_template(
@@ -120,10 +131,12 @@ def permission_form(info_role, id_module, id_role, id_object=None):
                     DB.session.query(CorRoleActionFilterModuleObject)
                     .filter_by(**privilege)
                     .join(
-                        TFilters, TFilters.id_filter == CorRoleActionFilterModuleObject.id_filter,
+                        TFilters,
+                        TFilters.id_filter == CorRoleActionFilterModuleObject.id_filter,
                     )
                     .join(
-                        BibFiltersType, BibFiltersType.id_filter_type == TFilters.id_filter_type,
+                        BibFiltersType,
+                        BibFiltersType.id_filter_type == TFilters.id_filter_type,
                     )
                     .filter(BibFiltersType.code_filter_type == "SCOPE")
                     .first()
@@ -203,7 +216,7 @@ def user_cruved(id_role):
     Get all scope CRUVED (with heritage) for a user in all modules
     """
     user = DB.session.query(User).get(id_role).as_dict()
-    modules_data = DB.session.query(TModules).all()
+    modules_data = DB.session.query(TModules).order_by(TModules.module_order).all()
     groupes_data = DB.session.query(CorRole).filter(CorRole.id_role_utilisateur == id_role).all()
     actions_label = {}
     for action in DB.session.query(TActions).all():
@@ -223,21 +236,28 @@ def user_cruved(id_role):
         module_objects_as_dict = []
         for _object in module_objects:
             object_as_dict = _object.as_dict()
-            object_cruved, herited = cruved_scope_for_user_in_module(
+            object_cruved, (herited, herited_obj) = cruved_scope_for_user_in_module(
                 id_role=id_role,
                 module_code=module["module_code"],
                 object_code=_object.code_object,
+                get_herited_obj=True,
             )
-            object_as_dict["cruved"] = (beautifulize_cruved(actions_label, object_cruved), herited)
+            object_as_dict["cruved"] = (
+                beautifulize_cruved(actions_label, object_cruved),
+                herited,
+                herited_obj,
+            )
             module_objects_as_dict.append(object_as_dict)
 
         module["module_objects"] = module_objects_as_dict
 
         # do not display cruved for module which have objects
 
-        cruved, herited = cruved_scope_for_user_in_module(id_role, module["module_code"])
+        cruved, (herited, herited_obj) = cruved_scope_for_user_in_module(
+            id_role, module["module_code"], get_herited_obj=True
+        )
         cruved_beautiful = beautifulize_cruved(actions_label, cruved)
-        module["module_cruved"] = (cruved_beautiful, herited)
+        module["module_cruved"] = (cruved_beautiful, herited, herited_obj)
         modules.append(module)
     return render_template(
         "cruved_user.html",
@@ -304,7 +324,10 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None):
     if id_permission:
         perm = DB.session.query(CorRoleActionFilterModuleObject).get(id_permission)
         form = OtherPermissionsForm(
-            id_filter_type, action=perm.id_action, filter=perm.id_filter, module=perm.id_module,
+            id_filter_type,
+            action=perm.id_action,
+            filter=perm.id_filter,
+            module=perm.id_module,
         )
     else:
         form = OtherPermissionsForm(id_filter_type)
@@ -413,5 +436,8 @@ def delete_filter(id_filter):
     DB.session.commit()
     flash("Filtre supprimé avec succès")
     return redirect(
-        url_for("gn_permissions_backoffice.filter_list", id_filter_type=my_filter.id_filter_type,)
+        url_for(
+            "gn_permissions_backoffice.filter_list",
+            id_filter_type=my_filter.id_filter_type,
+        )
     )

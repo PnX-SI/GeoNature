@@ -47,6 +47,22 @@ cor_module_dataset = DB.Table(
 
 
 @serializable
+class CorModuleDataset(DB.Model):
+    __tablename__ = "cor_module_dataset"
+    __table_args__ = {"schema": "gn_commons", 'extend_existing': True}
+    id_module = DB.Column(
+        DB.Integer,
+        ForeignKey("gn_commons.t_modules.id_module"),
+        primary_key=True,
+    )
+    id_dataset = DB.Column(
+        DB.Integer,
+        ForeignKey("gn_meta.t_datasets.id_dataset"),
+        primary_key=True,
+    )
+
+
+@serializable
 class TModules(DB.Model):
     __tablename__ = "t_modules"
     __table_args__ = {"schema": "gn_commons"}

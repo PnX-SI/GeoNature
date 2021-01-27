@@ -26,6 +26,10 @@ from geonature.utils.command import (
     update_app_configuration,
 )
 
+# from rq import Queue, Connection, Worker
+# import redis
+from flask import Flask
+
 
 log = logging.getLogger()
 
@@ -84,6 +88,18 @@ def install_command(ctx):
                 'stick to using "python geonature_cmd.py" manually.'
             ).format(DEFAULT_VIRTUALENV_DIR)
         )
+
+# Unused
+# @main.command()
+# def launch_redis_worker():
+#     """ launch redis worker
+#     """
+#     app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
+#     with app.app_context():
+#         with Connection(redis.Redis(host='localhost', port='6379')):
+#             q = Queue()
+#             w = Worker(q)
+#             w.work()
 
 
 @main.command()
@@ -202,3 +218,15 @@ def update_configuration(conf_file, build, prod):
     # Recréation du fichier de routing car il dépend de la conf
     frontend_routes_templating()
     update_app_configuration(conf_file, build, prod)
+
+
+@main.command()
+@click.argument('table_name')
+def import_jdd_from_mtd(table_name):
+    """
+    Import les JDD et CA (et acters associé) à partir d'une table (ou vue) listant les UUID des JDD dans MTD
+    """
+    app = get_app_for_cmd()
+    with app.app_context():
+        from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actors
+        import_all_dataset_af_and_actors(table_name)

@@ -13,6 +13,7 @@ export PGPASSWORD=$user_pg_pass;
 rm -f /tmp/$dep_zip_name.zip
 rm -f /tmp/$town_zip_name.zip
 rm -f /tmp/$grid_zip_name.zip
+rm -f /tmp/$region_zip_name.zip
 
 echo " START" &> ref.log
 if [ "$town" = true ];
@@ -47,6 +48,23 @@ then
     pg_dump --format=plain --no-owner -h $db_host -U $user_pg -d $db_name -t ref_geo.temp_fr_departements > /tmp/fr_departements.sql
     cd /tmp
     zip $dep_zip_name fr_departements.sql &>> ref.log
+fi
+
+if [ "$reg" = true ];
+then
+    echo "create reg table"
+    cd `pwd`
+    shp2pgsql -d -s $srid $path_reg ref_geo.temp_fr_regions | psql -h $db_host -U $user_pg -d $db_name &>> ref.log
+    echo "add geojson column"
+    psql -h $db_host -U $user_pg -d $db_name -c "
+    ALTER table ref_geo.temp_fr_regions
+    ADD column geojson character varying; 
+    UPDATE ref_geo.temp_fr_regions
+    SET geojson = public.ST_asgeojson(public.st_transform(geom, 4326)); 
+    "&>> ref.log
+    pg_dump --format=plain --no-owner -h $db_host -U $user_pg -d $db_name -t ref_geo.temp_fr_regions > /tmp/fr_regions.sql
+    cd /tmp
+    zip $reg_zip_name fr_regions.sql &>> ref.log
 fi
 
 if [ "$grid" = true ];

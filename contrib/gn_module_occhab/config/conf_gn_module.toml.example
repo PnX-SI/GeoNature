@@ -7,8 +7,8 @@ OBSERVER_AS_TXT = false
 # liste des observateurs si OBSERVER_AS_TXT = false. Voir table utilisateurs.t_listes et utilisateurs.cor_role_liste
 OBSERVER_LIST_ID = 1
 
-# format d'export disponible
-EXPORT_FORMAT = ['csv', 'geojson', 'shapefile']
+# formats d'export disponible ['csv', 'geojson', 'shapefile', 'gpkg']
+EXPORT_FORMAT = ['csv', 'geojson', 'gpkg']
 # Nombre max d'habitat pour les exports
 NB_MAX_EXPORT = 50000
 # Nombre max de station pour le map/liste

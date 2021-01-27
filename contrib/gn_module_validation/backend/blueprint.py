@@ -1,13 +1,14 @@
-
 import ast
 import logging
 import datetime
+import json
 from operator import itemgetter
 from sqlalchemy import select
 from flask import Blueprint, request
 from geojson import FeatureCollection
 
 from utils_flask_sqla.response import json_resp
+from utils_flask_sqla.serializers import SERIALIZERS
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 
@@ -24,7 +25,7 @@ blueprint = Blueprint("validation", __name__)
 log = logging.getLogger()
 
 
-@blueprint.route("", methods=["GET"])
+@blueprint.route("", methods=["GET", "POST"])
 @permissions.check_cruved_scope("R", True, module_code="VALIDATION")
 @json_resp
 def get_synthese_data(info_role):
@@ -38,101 +39,80 @@ def get_synthese_data(info_role):
     ------------
     info_role (User):
         Information about the user asking the route. Auto add with kwargs
-    truc (int):
-        essai
-
 
     Returns
     -------
     dict
-        test
+        {
+        "data": FeatureCollection
+        "nb_obs_limited": int est-ce que le nombre de données retournée est > au nb limites
+        "nb_total": nb_total,
+        }
 
     """
+    if request.json:
+        filters = request.json
+    elif request.data:
+        #  decode byte to str - compat python 3.5
+        filters = json.loads(request.data.decode("utf-8"))
+    else:
+        filters = {key: request.args.get(key) for key, value in request.args.items()}
 
-    # try:
-    filters = {key: request.args.getlist(key)
-               for key, value in request.args.items()}
-    for key, value in filters.items():
-        if "," in value[0] and key != "geoIntersection":
-            filters[key] = value[0].split(",")
 
     if "limit" in filters:
-        result_limit = filters.pop("limit")[0]
+        result_limit = filters.pop("limit")
     else:
         result_limit = blueprint.config["NB_MAX_OBS_MAP"]
 
+    # Construction de la requête select
+    # Les champs correspondent aux champs obligatoires
+    #       + champs définis par l'utilisateur
+    columns = (
+        blueprint.config["COLUMNS_API_VALIDATION_WEB_APP"]
+        + blueprint.config["MANDATORY_COLUMNS"]
+    )
+    select_columns = []
+    serializer = {}
+    for c in columns:
+        try:
+            att = getattr(VSyntheseValidation, c)
+            select_columns.append(att)
+            serializer[c] = SERIALIZERS.get(
+                att.type.__class__.__name__.lower(), lambda x: x
+            )
+        except AttributeError as error:
+            log.warning("Validation : colonne {} inexistante".format(c))
+
+    # Construction de la requête avec SyntheseQuery
+    #   Pour profiter des opérations CRUVED
     query = (
-        select(
-            [
-                VSyntheseValidation.cd_nomenclature_validation_status,
-                VSyntheseValidation.dataset_name,
-                VSyntheseValidation.date_min,
-                VSyntheseValidation.id_nomenclature_valid_status,
-                VSyntheseValidation.id_synthese,
-                VSyntheseValidation.nom_valide,
-                VSyntheseValidation.nom_vern,
-                VSyntheseValidation.geojson,
-                VSyntheseValidation.observers,
-                VSyntheseValidation.validation_auto,
-                VSyntheseValidation.validation_date,
-                VSyntheseValidation.nom_vern,
-                VSyntheseValidation.lb_nom,
-                VSyntheseValidation.cd_nom,
-                VSyntheseValidation.comment_description,
-                VSyntheseValidation.altitude_min,
-                VSyntheseValidation.altitude_max,
-                VSyntheseValidation.unique_id_sinp,
-                VSyntheseValidation.meta_update_date,
-            ]
-        )
+        select(select_columns)
         .where(VSyntheseValidation.the_geom_4326.isnot(None))
         .order_by(VSyntheseValidation.date_min.desc())
     )
     validation_query_class = SyntheseQuery(VSyntheseValidation, query, filters)
     validation_query_class.filter_query_all_filters(info_role)
-    result = DB.engine.execute(
-        validation_query_class.query.limit(result_limit))
+    result = DB.engine.execute(validation_query_class.query.limit(result_limit))
 
+    # TODO nb_total factice
     nb_total = 0
-
-    columns = (
-        blueprint.config["COLUMNS_API_VALIDATION_WEB_APP"]
-        + blueprint.config["MANDATORY_COLUMNS"]
-    )
-
     geojson_features = []
+    properties = {}
     for r in result:
-        properties = {
-            "id_synthese": r["id_synthese"],
-            "cd_nomenclature_validation_status": r["cd_nomenclature_validation_status"],
-            "dataset_name": r["dataset_name"],
-            "date_min": str(r["date_min"]),
-            "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
-            "observers": r["observers"],
-            "validation_auto": r["validation_auto"],
-            "validation_date": str(r["validation_date"]),
-            "altitude_min": r["altitude_min"],
-            "altitude_max": r["altitude_max"],
-            "comment": r["comment_description"],
-            "cd_nom": r["cd_nom"],
-            "unique_id_sinp": str(r["unique_id_sinp"]),
-            "meta_update_date": str(r["meta_update_date"]),
-        }
+        properties = {k: serializer[k](r[k]) for k in serializer.keys()}
+        properties["nom_vern_or_lb_nom"] = (
+            r["nom_vern"] if r["nom_vern"] else r["lb_nom"]
+        )
         geojson = ast.literal_eval(r["geojson"])
         geojson["properties"] = properties
         geojson["id"] = r["id_synthese"]
         geojson_features.append(geojson)
+
     return {
         "data": FeatureCollection(geojson_features),
         "nb_obs_limited": nb_total == blueprint.config["NB_MAX_OBS_MAP"],
         "nb_total": nb_total,
     }
-    # except Exception as e:
-    #     log.error(e)
-    #     return (
-    #         'INTERNAL SERVER ERROR ("get_synthese_data() error"): contactez l\'administrateur du site',
-    #         500,
-    #     )
 
 
 @blueprint.route("/statusNames", methods=["GET"])
@@ -228,7 +208,7 @@ def post_status(info_role, id_synthese):
 @json_resp
 def get_definitions(info_role):
     """
-        return validation status definitions stored in t_nomenclatures
+    return validation status definitions stored in t_nomenclatures
     """
     try:
         definitions = []
@@ -278,19 +258,18 @@ def get_definitions(info_role):
         )
 
 
-
 @blueprint.route("/date/<uuid>", methods=["GET"])
 @json_resp
 def get_validation_date(uuid):
     """
-        Retourne la date de validation
-        pour l'observation uuid
+    Retourne la date de validation
+    pour l'observation uuid
     """
 
     # Test if uuid_attached_row is uuid
     if not test_is_uuid(uuid):
         return (
-            'Value error uuid is not valid',
+            "Value error uuid is not valid",
             500,
         )
 

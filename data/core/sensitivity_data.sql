@@ -71,3 +71,7 @@ WHERE id_territory='TERFXFR';
 
 
 DROP TABLE gn_sensitivity.liste_taxons_sensibles;
+
+INSERT INTO gn_commons.t_parameters
+(id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value)
+VALUES(0, 'ref_sensi_version', 'Version du referenciel de sensibilité', 'Referentiel de sensibilite taxref v13 2020', '');
