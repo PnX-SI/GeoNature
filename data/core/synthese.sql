@@ -576,7 +576,7 @@ $BODY$
       FROM ref_geo.l_areas a
       JOIN gn_synthese.synthese s
         ON public.ST_INTERSECTS(s.the_geom_local, a.geom)
-      WHERE a.enable IS TRUE AND s.id_synthese = NEW.id_synthese AND (ST_GeometryType(NEW.the_geom_local) = 'ST_Point' OR NOT public.ST_TOUCHES(updated_rows.the_geom_local,a.geom));
+      WHERE a.enable IS TRUE AND s.id_synthese = NEW.id_synthese AND (ST_GeometryType(NEW.the_geom_local) = 'ST_Point' OR NOT public.ST_TOUCHES(NEW.the_geom_local,a.geom));
   RETURN NULL;
   END;
   $BODY$
