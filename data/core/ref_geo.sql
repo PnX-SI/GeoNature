@@ -234,6 +234,7 @@ CREATE TABLE l_areas (
     source character varying(250),
     comment text,
     enable boolean NOT NULL DEFAULT (TRUE),
+    additional_data jsonb NULL,
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone,
     CONSTRAINT enforce_geotype_l_areas_geom CHECK (((public.geometrytype(geom) = 'MULTIPOLYGON'::text) OR (geom IS NULL))),

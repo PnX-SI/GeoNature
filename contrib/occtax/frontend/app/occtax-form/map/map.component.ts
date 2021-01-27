@@ -1,5 +1,6 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
-import { filter, map, first } from "rxjs/operators";
+import { Subscription } from "rxjs";
+import { filter, map } from "rxjs/operators";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { CommonService } from "@geonature_common/service/common.service";
 import { ModuleConfig } from "../../module.config";
@@ -15,6 +16,7 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
   public leafletDrawOptions: any;
   public firstFileLayerMessage = true;
   public occtaxConfig = ModuleConfig;
+  private $_geojsonSub: Subscription;
 
   public coordinates = null;
   public geometry = null;
@@ -40,15 +42,10 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
     // set the coord only when load data and when its edition mode (id_releve)
     // after the marker component does it by itself whith the ouput
     // when modifie the coordinates innput, it create twice the marker
-    this.ms.geojson
+    this.$_geojsonSub = this.ms.geojson
       .pipe(
-        filter(
-          (geojson) =>
-            geojson !== null &&
-            this._occtaxFormService.id_releve_occtax.getValue() !== null
-        ),
-        map((geojson) => geojson.geometry),
-        first()
+        filter((geojson) => geojson !== null),
+        map((geojson) => geojson.geometry)
       )
       .subscribe((geometry) => {
         if (geometry.type == "Point") {
@@ -100,5 +97,6 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnDestroy() {
     this.ms.reset();
+    this.$_geojsonSub.unsubscribe();
   }
 }

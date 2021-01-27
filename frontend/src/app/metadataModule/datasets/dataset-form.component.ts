@@ -75,7 +75,7 @@ export class DatasetFormComponent implements OnInit {
     this.cor_dataset_actor_array = this._fb.array([]);
 
     this._dfs.getAcquisitionFrameworks().subscribe(data => {
-      this.acquisitionFrameworks = data;
+      this.acquisitionFrameworks = data.filter(af => af.opened === true);;
     });
 
     this.cor_dataset_actor_array.push(this._formService.generateCorDatasetActorForm());

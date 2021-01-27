@@ -143,6 +143,10 @@ export class MapListService {
   loadData() {
     this.dataService().subscribe(
       data => {
+        console.log("la");
+        console.log(data);
+        
+        
         this.page.totalElements = data.total;
         this.page.itemPerPage = parseInt(this.urlQuery.get('limit'));
         this.page.pageNumber = data.page;
@@ -287,6 +291,8 @@ export class MapListService {
   }
 
   loadTableData(data, customCallBack?) {
+    console.log(customCallBack);
+    
     this.tableData = [];
     if (customCallBack) {
       data.features.forEach(feature => {
@@ -301,6 +307,8 @@ export class MapListService {
         this.tableData.push(feature.properties);
       });
     }
+    console.log(this.tableData);
+    
   }
 }
 

@@ -37,15 +37,21 @@ for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
 	fi
 done
 
-if [ -d '$myrootpath/geonature_old/backend/static/images' ]
+if [ -d "${myrootpath}/geonature_old/backend/static/images" ]
 then
   cp -r $myrootpath/geonature_old/backend/static/images/* backend/static/images
 fi
-if [ -d '$myrootpath/geonature_old/backend/static/mobile' ]
+
+if [ -f "${myrootpath}/geonature_old/backend/static/css/custom.css" ]
+then
+  cp $myrootpath/geonature_old/backend/static/css/custom.css backend/static/css/custom.css
+fi
+
+if [ -d "${myrootpath}/geonature_old/backend/static/mobile" ]
 then
   cp -r $myrootpath/geonature_old/backend/static/mobile/* backend/static/mobile
 fi
-if [ -d '$myrootpath/geonature_old/backend/static/exports' ]
+if [ -d "${myrootpath}/geonature_old/backend/static/exports" ]
 then
   cp -r $myrootpath/geonature_old/backend/static/exports/* backend/static/exports
 fi
@@ -86,7 +92,7 @@ then
   mkdir backend/static/medias
 fi
 
-if [ -d '$myrootpath/geonature_old/backend/static/medias' ]
+if [ -d "${myrootpath}/geonature_old/backend/static/medias" ]
 then
   cp -r $myrootpath/geonature_old/backend/static/medias/* backend/static/medias
 fi

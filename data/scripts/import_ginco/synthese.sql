@@ -97,18 +97,10 @@ CREATE MATERIALIZED VIEW ginco_migration.vm_data_model_source AS
     m.taxomodif,
     m.taxoalerte,
     m.user_login
-   FROM ginco_migration.model_592e825dab701_observation m
+   FROM ginco_migration.<NOM_TABLE> m
    -- on ne prend que les JDD non supprimé car la table gn_meta.t_datasets ne comprend que les JDD non supprimé
    join gn_meta.t_datasets d on d.unique_dataset_id = m.jddmetadonneedeeid::uuid
     where m.geometrie is not null
-    and 
-    m.jddmetadonneedeeid not IN ( 
-      select f.value_string
-      from ginco_migration.jdd j
-      join ginco_migration.jdd_field f on f.jdd_id = j.id
-      where j.status = 'deleted' 
-      and f."key" = 'metadataId'
-     )
    ;
 
 
@@ -137,8 +129,8 @@ WHERE mnemonique_type = 'STATUT_VALID';
 
 
 -- suppresion des contraintes, on tentera de les remettre plus tard...
-ALTER TABLE gn_synthese.synthese DROP CONSTRAINT check_synthese_date_max;
-ALTER TABLE gn_synthese.synthese DROP CONSTRAINT check_synthese_count_max;
+ALTER TABLE gn_synthese.synthese DROP CONSTRAINT IF EXISTS check_synthese_date_max;
+ALTER TABLE gn_synthese.synthese DROP CONSTRAINT IF EXISTS check_synthese_count_max;
 
 INSERT INTO gn_synthese.synthese (
 unique_id_sinp,
@@ -206,23 +198,18 @@ SELECT
   m.commentaire,
   'I'
 FROM ginco_migration.vm_data_model_source as m 
-left JOIN ref_nomenclatures.t_nomenclatures t1 ON t1.cd_nomenclature = m.natureobjetgeo AND t1.id_type = 3
-left JOIN ref_nomenclatures.t_nomenclatures t2 ON t2.cd_nomenclature = m.obsmethode AND t2.id_type = 14
-left JOIN ref_nomenclatures.t_nomenclatures t3 ON t3.cd_nomenclature = m.occstatutbiologique AND t3.id_type = 13
-left JOIN ref_nomenclatures.t_nomenclatures t4 ON t4.cd_nomenclature = m.occetatbiologique AND t4.id_type = 7
-left JOIN ref_nomenclatures.t_nomenclatures t5 ON t5.cd_nomenclature = m.occnaturalite AND t5.id_type = 8
-left JOIN ref_nomenclatures.t_nomenclatures t6 ON t6.cd_nomenclature = m.diffusionniveauprecision AND t6.id_type = 5
-left JOIN ref_nomenclatures.t_nomenclatures t7 ON t7.cd_nomenclature = m.occstadedevie AND t7.id_type = 10
-left JOIN ref_nomenclatures.t_nomenclatures t8 ON t8.cd_nomenclature = m.occsexe AND t8.id_type = 9
-left JOIN ref_nomenclatures.t_nomenclatures t9 ON t9.cd_nomenclature = m.objetdenombrement AND t9.id_type = 6
-left JOIN ref_nomenclatures.t_nomenclatures t10 ON t10.cd_nomenclature = m.statutobservation AND t10.id_type = 18
-left JOIN ref_nomenclatures.t_nomenclatures t11 ON t11.cd_nomenclature = m.deefloutage AND t11.id_type = 4
-left JOIN ref_nomenclatures.t_nomenclatures t12 ON t12.cd_nomenclature = m.statutobservation AND t12.id_type = 19
-left JOIN ref_nomenclatures.t_nomenclatures t13 ON t13.cd_nomenclature = m.typeinfogeoen AND t13.id_type = 23
+left JOIN ref_nomenclatures.t_nomenclatures t1 ON t1.cd_nomenclature = m.natureobjetgeo AND t1.id_type = ref_nomenclatures.get_id_nomenclature_type('NAT_OBJ_GEO')
+left JOIN ref_nomenclatures.t_nomenclatures t2 ON t2.cd_nomenclature = m.obsmethode AND t2.id_type = ref_nomenclatures.get_id_nomenclature_type('METH_OBS')
+left JOIN ref_nomenclatures.t_nomenclatures t3 ON t3.cd_nomenclature = m.occstatutbiologique AND t3.id_type = ref_nomenclatures.get_id_nomenclature_type('STATUT_BIO')
+left JOIN ref_nomenclatures.t_nomenclatures t4 ON t4.cd_nomenclature = m.occetatbiologique AND t4.id_type = ref_nomenclatures.get_id_nomenclature_type('ETA_BIO')
+left JOIN ref_nomenclatures.t_nomenclatures t5 ON t5.cd_nomenclature = m.occnaturalite AND t5.id_type = ref_nomenclatures.get_id_nomenclature_type('NATURALITE')
+left JOIN ref_nomenclatures.t_nomenclatures t6 ON t6.cd_nomenclature = m.diffusionniveauprecision AND t6.id_type = ref_nomenclatures.get_id_nomenclature_type('NIV_PRECIS')
+left JOIN ref_nomenclatures.t_nomenclatures t7 ON t7.cd_nomenclature = m.occstadedevie AND t7.id_type = ref_nomenclatures.get_id_nomenclature_type('STADE_VIE')
+left JOIN ref_nomenclatures.t_nomenclatures t8 ON t8.cd_nomenclature = m.occsexe AND t8.id_type = ref_nomenclatures.get_id_nomenclature_type('SEXE')
+left JOIN ref_nomenclatures.t_nomenclatures t9 ON t9.cd_nomenclature = m.objetdenombrement AND t9.id_type = ref_nomenclatures.get_id_nomenclature_type('OBJ_DENBR')
+left JOIN ref_nomenclatures.t_nomenclatures t10 ON t10.cd_nomenclature = m.statutobservation AND t10.id_type = ref_nomenclatures.get_id_nomenclature_type('STATUT_OBS')
+left JOIN ref_nomenclatures.t_nomenclatures t11 ON t11.cd_nomenclature = m.deefloutage AND t11.id_type = ref_nomenclatures.get_id_nomenclature_type('DEE_FLOU')
+left JOIN ref_nomenclatures.t_nomenclatures t12 ON t12.cd_nomenclature = m.statutsource AND t12.id_type = ref_nomenclatures.get_id_nomenclature_type('STATUT_SOURCE') 
+left JOIN ref_nomenclatures.t_nomenclatures t13 ON t13.cd_nomenclature = m.typeinfogeoen AND t13.id_type = ref_nomenclatures.get_id_nomenclature_type('TYP_INF_GEO') 
 JOIN taxonomie.taxref tax ON tax.cd_nom = m.cdnom::integer
-WHERE m.identifiantpermanent NOT IN (
-  select identifiantpermanent
-from ginco_migration.vm_data_model_source
-group by identifiantpermanent
-having count(*) > 1)
 ;

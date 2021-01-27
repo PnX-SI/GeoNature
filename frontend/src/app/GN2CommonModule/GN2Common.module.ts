@@ -24,6 +24,7 @@ import {
   MatChipsModule,
   MatTabsModule
 } from '@angular/material';
+import { RouterModule } from '@angular/router';
 
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
@@ -39,6 +40,7 @@ import { ObserversComponent } from './form/observers/observers.component';
 import { DateComponent } from './form/date/date.component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
 import { AreasIntersectedComponent } from './form/areas-intersected/areas-intersected-modal.component';
+import { BreadcrumbsComponent } from '@geonature_common/others/breadcrumbs/breadcrumbs.component'
 import { DatasetsComponent } from './form/datasets/datasets.component';
 import { DynamicFormComponent } from './form/dynamic-form/dynamic-form.component';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
@@ -87,6 +89,8 @@ import { DisplayMouseOverDirective } from './directive/display-mouse-over.direct
 // pipe
 import { ReadablePropertiePipe } from './pipe/readable-propertie.pipe';
 import { SafeHtmlPipe } from './pipe/sanitizer.pipe';
+import { SafeStripHtmlPipe } from './pipe/strip-html.pipe';
+import { StripHtmlPipe } from './pipe/strip-html.pipe';
 
 // Service
 import { MapService } from './map/map.service';
@@ -131,6 +135,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     FormsModule,
     ReactiveFormsModule,
     NgxDatatableModule,
+    RouterModule,
     TranslateModule.forChild(),
     NgbModule.forRoot(),
     AutoCompleteModule,
@@ -140,6 +145,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
   declarations: [
     NomenclatureComponent,
     ObserversComponent,
+    BreadcrumbsComponent,
     DateComponent,
     TaxonomyComponent,
     AreasIntersectedComponent,
@@ -182,6 +188,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     DatalistComponent,
     PlacesComponent,
     PlacesListComponent,
+    SafeStripHtmlPipe,
+    StripHtmlPipe,
     TaxaComponent,
   ],
   providers: [
@@ -200,6 +208,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
   entryComponents: [TaxonAdvancedModalComponent, ConfirmationDialog, MediaDialog],
   exports: [
     MunicipalitiesComponent,
+    BreadcrumbsComponent,
     DynamicFormComponent,
     NomenclatureComponent,
     ObserversComponent,
@@ -257,6 +266,8 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     AcquisitionFrameworksComponent,
     PeriodComponent,
     AutoCompleteComponent,
+    SafeStripHtmlPipe,
+    StripHtmlPipe,
     SyntheseSearchComponent,
     TaxonAdvancedModalComponent,
     DumbSelectComponent,

@@ -15,7 +15,26 @@ class TestGnMeta:
         Api to get all datasets
         """
         # token = get_token(self.client)
-        response = self.client.get(url_for("gn_meta.get_datasets_list"))
+        token = get_token(self.client, login="admin", password="admin")
+        self.client.set_cookie("/", "token", token)
+
+        response = self.client.get(url_for("gn_meta.get_datasets"))
+
+        # check fields for mobile
+        data = json_of_response(response)
+        ds = data["data"][0]
+        mandatory_attr = [
+            "id_dataset",
+            "dataset_name",
+            "dataset_desc",
+            "active",
+            "meta_create_date",
+            "modules",
+        ]
+        for attr in mandatory_attr:
+            assert attr in ds
+        module = ds["modules"][0]
+        assert "module_path" in module
         assert response.status_code == 200
 
     def test_one_dataset(self):
@@ -34,10 +53,7 @@ class TestGnMeta:
         self.client.set_cookie("/", "token", token)
         response = self.client.get(url_for("gn_meta.get_datasets"))
         dataset_list = json_of_response(response)
-        assert (
-            response.status_code == 200
-            and len(dataset_list["data"]) == 2
-        )
+        assert response.status_code == 200 and len(dataset_list["data"]) == 2
 
     def test_dataset_cruved_1(self):
         """
