@@ -107,7 +107,9 @@ export class MetadataComponent implements OnInit {
       })
       if (foundDS) {
         ds.observation_count = foundDS.count
-        
+      }
+      else {
+        ds.observation_count = 0;
       }
     })
   }
