@@ -68,7 +68,7 @@ CREATE OR REPLACE FUNCTION gn_permissions.get_id_action(actionCode character var
     RETURNS integer
     LANGUAGE plpgsql
     IMMUTABLE
-AS $function$
+AS $BODY$
     BEGIN
         RETURN (
             SELECT id_action
@@ -76,13 +76,13 @@ AS $function$
             WHERE code_action = actionCode
         );
     END;
-$function$ ;
+$BODY$ ;
 
 CREATE OR REPLACE FUNCTION gn_permissions.get_id_filter_type(filterTypeCode character varying)
     RETURNS integer
     LANGUAGE plpgsql
     IMMUTABLE
-AS $function$
+AS $BODY$
     BEGIN
         RETURN (
             SELECT id_filter_type
@@ -90,7 +90,7 @@ AS $function$
             WHERE code_filter_type = filterTypeCode
         );
     END;
-$function$ ;
+$BODY$ ;
 
 
 -- -------------------------------------------------------------------------------------------------
@@ -435,12 +435,12 @@ ALTER TABLE gn_permissions.t_requests
 CREATE OR REPLACE FUNCTION gn_permissions.tri_func_modify_meta_update_date()
     RETURNS trigger
     LANGUAGE plpgsql
-AS $function$
+AS $BODY$
 BEGIN
     NEW.meta_update_date := now();
     RETURN NEW;
 END;
-$function$ ;
+$BODY$ ;
 
 
 DROP TRIGGER IF EXISTS tri_modify_meta_update_date_t_requests 
@@ -579,6 +579,9 @@ ALTER TABLE gn_permissions.cor_role_action_filter_module_object
 	ON UPDATE CASCADE ;
 
 ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+	DROP CONSTRAINT IF EXISTS fk_cor_r_a_f_m_o_id_request CASCADE ;
+
+ALTER TABLE gn_permissions.cor_role_action_filter_module_object
 	ADD CONSTRAINT fk_cor_r_a_f_m_o_id_request FOREIGN KEY (id_request)
 	REFERENCES gn_permissions.t_requests (id_request) MATCH FULL
 	ON UPDATE CASCADE ;
@@ -587,6 +590,9 @@ ALTER TABLE gn_permissions.cor_role_action_filter_module_object
 -- -------------------------------------------------------------------------------------------------
 -- Drop trigger before migrate, recreate it after migrate
 DROP TRIGGER IF EXISTS tri_check_no_multiple_filter_type 
+    ON gn_permissions.cor_role_action_filter_module_object ;
+
+DROP TRIGGER IF EXISTS tri_check_no_duplicate_permissions 
     ON gn_permissions.cor_role_action_filter_module_object ;
 
 
@@ -612,7 +618,6 @@ ALTER TABLE gn_permissions.cor_role_action_filter_module_object
 
 -- -------------------------------------------------------------------------------------------------
 -- Rename and update trigger to force only one filter type by permission (gathering)
--- TODO: see if we can rename this trigger
 CREATE OR REPLACE FUNCTION gn_permissions.fct_tri_only_one_filter_type_by_permission()
 RETURNS trigger AS
 $BODY$
@@ -671,6 +676,43 @@ DROP TRIGGER IF EXISTS tri_check_no_multiple_scope_perm
     ON gn_permissions.cor_role_action_filter_module_object ;
 
 DROP FUNCTION IF EXISTS gn_permissions.fct_tri_does_user_have_already_scope_filter ;
+
+
+-- -------------------------------------------------------------------------------------------------
+-- Triggers and functions for unduplicate permissions
+CREATE OR REPLACE FUNCTION gn_permissions.tri_check_update_no_duplicate_permissions()
+    RETURNS trigger AS
+$BODY$
+    DECLARE
+    BEGIN
+    
+    IF EXISTS (
+
+        FROM NEW AS updated_rows    
+    ) THEN
+        RETURN NULL ;
+    END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
+
+CREATE TRIGGER tri_check_insert_no_duplicate_permissions
+    BEFORE INSERT ON gn_permissions.cor_role_action_filter_module_object 
+    REFERENCING NEW TABLE AS NEW
+    FOR EACH STATEMENT
+    EXECUTE PROCEDURE gn_permissions.fct_tri_check_upsert_no_duplicate_permissions() ;
+
+CREATE TRIGGER tri_check_update_no_duplicate_permissions
+    BEFORE UPDATE ON gn_permissions.cor_role_action_filter_module_object 
+    REFERENCING NEW TABLE AS NEW
+    FOR EACH STATEMENT
+    EXECUTE PROCEDURE gn_permissions.fct_tri_check_upsert_no_duplicate_permissions() ;
+
+-- CREATE TRIGGER tri_check_update_no_duplicate_permissions
+--     BEFORE DELETE ON gn_permissions.cor_role_action_filter_module_object 
+--     REFERENCING OLD TABLE AS OLD
+--     FOR EACH STATEMENT
+--     EXECUTE PROCEDURE gn_permissions.fct_tri_check_delete_no_duplicate_permissions() ;
 
 
 -- -------------------------------------------------------------------------------------------------
