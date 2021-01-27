@@ -299,7 +299,7 @@ def get_dataset(id_dataset):
     return dataset
 
 
-@routes.route("/dataset_details/<id_dataset>", methods=["GET"])
+@routes.route("/dataset_details/<int:id_dataset>", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="METADATA")
 @json_resp
 def get_dataset_details(info_role, id_dataset):

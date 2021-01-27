@@ -130,17 +130,13 @@ export class MetadataComponent implements OnInit {
 
       }
       // load stat for ds
-      if (!this.datasetNbObs) {
-        console.log("repasse la ?");
-        
+      if (!this.datasetNbObs) {        
         this._syntheseDataService.getObsCountByColumn('id_dataset').subscribe(count_ds => {
           this.datasetNbObs = count_ds
           this.setDsObservationCount(this.datasets, this.datasetNbObs);
           
         })
-      } else {
-        console.log("passe la ");
-        
+      } else {        
         this.setDsObservationCount(this.datasets, this.datasetNbObs);
       }
 

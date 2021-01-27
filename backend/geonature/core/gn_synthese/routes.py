@@ -792,9 +792,16 @@ def get_taxa_count():
     """
     Get taxa count in synthese filtering with generic parameters
 
-    :query int id_dataset: filter by id_dataset
+    .. :quickref: Synthese;
+    
+    Parameters
+    ----------
+    id_dataset: `int` (query parameter)
 
-    :returns int: the number of taxa found
+    Returns
+    -------
+    count: `int`: 
+        the number of taxon
     """
     params = request.args
 
@@ -808,7 +815,21 @@ def get_taxa_count():
 @routes.route("/observation_count", methods=["GET"])
 @json_resp
 def get_observation_count():
-    """Get observations found in a given dataset"""
+    """
+    Get observations found in a given dataset
+
+    .. :quickref: Synthese;
+    
+    Parameters
+    ----------
+    id_dataset: `int` (query parameter)
+
+    Returns
+    -------
+    count: `int`: 
+        the number of observation
+    
+    """
     params = request.args
 
     query = DB.session.query(func.count(Synthese.id_synthese)).select_from(Synthese)
@@ -818,6 +839,34 @@ def get_observation_count():
 
     return query.one()
 
+
+@routes.route("/observations_bbox", methods=["GET"])
+@json_resp
+def get_bbox():
+    """
+    Get bbbox of observations
+
+    .. :quickref: Synthese;
+    
+    Parameters
+    -----------
+    id_dataset: int: (query parameter)
+
+    Returns
+    -------
+        bbox: `geojson`: 
+            the bounding box in geojson
+    """
+    params = request.args
+
+    query = DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+        
+    if "id_dataset" in params:
+        query = query.filter(Synthese.id_dataset == params["id_dataset"])
+    data = query.one()
+    if data:
+        return json.loads(data[0])
+    return None
 
 @routes.route("/observation_count_per_column/<column>", methods=["GET"])
 @json_resp
@@ -840,6 +889,7 @@ def observation_count_per_column(column):
         temp['count'] = d[0]
         data.append(temp)
     return data
+
 
 @routes.route("/taxa_distribution", methods=["GET"])
 @json_resp

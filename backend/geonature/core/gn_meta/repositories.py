@@ -205,26 +205,11 @@ def get_dataset_details_dict(id_dataset, session_role):
     except NoResultFound:
         return None
 
+
     dataset = data.as_dict(True)
 
-    dataset["taxa_count"] = (
-        DB.session.query(Synthese.cd_nom)
-        .filter(Synthese.id_dataset == id_dataset)
-        .distinct()
-        .count()
-    )
-    dataset["observation_count"] = (
-        DB.session.query(Synthese.id_synthese).filter(Synthese.id_dataset == id_dataset).count()
-    )
-    geojsonData = (
-        DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
-        .filter(Synthese.id_dataset == id_dataset)
-        .first()[0]
-    )
-    if geojsonData:
-        dataset["bbox"] = json.loads(geojsonData)
     imports = requests.get(
-        current_app.config["API_ENDPOINT"] + "/import/by_dataset/" + id_dataset,
+        current_app.config["API_ENDPOINT"] + "/import/by_dataset/" + str(id_dataset),
         headers={"Cookie": request.headers.get("Cookie")},  # recuperation du token
     )
     imports = json.loads(imports.content.decode("utf8").replace("'", '"'))

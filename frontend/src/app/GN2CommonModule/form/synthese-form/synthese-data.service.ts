@@ -44,9 +44,6 @@ export class SyntheseDataService {
     return queryUrl;
   }
 
-  getTaxons() {
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/occtax/releves`);
-  }
 
   getSyntheseData(params) {
     return this._api.post<any>(`${AppConfig.API_ENDPOINT}/synthese/for_web`, params);
@@ -55,6 +52,31 @@ export class SyntheseDataService {
   getSyntheseGeneralStat() {
     return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/general_stats`);
   }
+
+  getTaxaCount(params={}){
+    let queryString = new HttpParams();
+    for (let key in params) {
+      queryString = queryString.set(key, params[key].toString())
+    }
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_count`, {params: queryString});
+  }
+
+  getObsCount(params={}){
+    let queryString = new HttpParams();
+    for (let key in params) {
+      queryString = queryString.set(key, params[key].toString())
+    }
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observation_count`, {params: queryString});
+  }
+
+  getObsBbox(params={}){
+    let queryString = new HttpParams();
+    for (let key in params) {
+      queryString = queryString.set(key, params[key].toString())
+    }
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observations_bbox`, {params: queryString});
+  }
+
 
   getObsCountByColumn(column) {
     return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observation_count_per_column/${column}`);

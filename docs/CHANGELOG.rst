@@ -26,6 +26,7 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 * Métadonnées : Amélioration des possibilités de customisation des PDF des fiches de métadonnées
 * Métadonnées : Amélioration des fiches détail des CA et JDD et ajout de la liste des imports dans les fiches des JDD (#889)
 * Synthèse : Possibilité d'ouvrir le module avec un JDD préselectionné (``<URL_GeoNature>/#/synthese?id_dataset=2``) et ajout d'un lien direct depuis le module Métadonnées (#889)
+* Synthese: ajout de web service pour le calcul du nombre d'observations par un paramètre donné (JDD, module, observateur), et du calcul de la bounding-box par jeu de données
 * Exports au format SHP remplacés par défaut par le format GeoPackage (GPKG) plus simple, plus léger, plus performant et unique. Les exports SHP restent activables dans la configuration des modules (#898)
 * Validation : Préremplir l'email à l'observateur avec des informations paramétrables sur l'occurrence (date, nom du taxon, commune, médias) (#981)
 * Validation : Possibilité de paramètrer les colonnes affichées dans la liste des observations (#980)
