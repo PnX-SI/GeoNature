@@ -175,13 +175,20 @@ def post_access_request(info_role):
     DB.session.commit()
 
     # Inform about new access request by email
+    try:
     send_email_after_access_request(
         data=data,
         user_id=user_id,
         request_token=trequest.token,
     )
+    except Exception as exp:
+        response = {
+            "message": f"Erreur lors de l'envoie de l'email aux administrateurs : {exp}.",
+            "code": "AdminSendEmailError",
+            "status": "error"
+        }
+        return response, 500
 
-    #return request.as_dict(True)
     response = {
         "message": "Succès de l'ajout de la demande d'accès.",
         "status": "success"
@@ -329,7 +336,7 @@ def build_dynamic_request_form_infos():
         if "icon" in cfg:
             attr_infos[cfg["attribut_name"]]["icon"] = cfg["icon"]
         if "icon_set" in cfg:
-            attr_infos[cfg["attribut_name"]]["iconSet"] = cfg["icon_set"]
+            attr_infos[cfg["attribut_name"]]["icon_set"] = cfg["icon_set"]
 
     return attr_infos
 
@@ -408,7 +415,16 @@ def manage_access_request_by_link(token, action):
     DB.session.commit()
 
     # Send email to user
+    try:
     send_email_after_managing_request(request)
+    except Exception as exp:
+        response = {
+            "message": f"Erreur lors de l'envoie de l'email à l'utilisateur : {exp}.",
+            "code": "UserSendEmailError",
+            "status": "error"
+        }
+        return response, 500
+
 
     # Redirect to GeoNature app home page
     return redirect(current_app.config["URL_APPLICATION"], code=302)
@@ -654,7 +670,10 @@ def send_email_after_managing_request(request):
     else:
         subject = f"Refus de demande de permissions d'accès {app_name}"
         msg_html = render_refused_request_tpl(user, request)
+    if recipient:
     send_mail(recipient, subject, msg_html)
+    else:
+        log.debug(f"User {request['id_role']} with no email. Email not send.")
 
 
 def render_accepted_request_tpl(user, request):
@@ -898,8 +917,8 @@ def get_permissions_requests():
     query = (
         DB.session.query(TRequests, UserAsker, BibOrganismes, UserValidator)
             .join(UserAsker, UserAsker.id_role == TRequests.id_role)
-            .join(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme, isouter=True)
-            .join(UserValidator, UserValidator.id_role == TRequests.processed_by, isouter=True)
+            .outerjoin(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme)
+            .outerjoin(UserValidator, UserValidator.id_role == TRequests.processed_by)
             .order_by(TRequests.meta_create_date)
     )
     
@@ -946,8 +965,8 @@ def get_permissions_requests_by_token(token):
     query = (
         DB.session.query(TRequests, UserAsker, BibOrganismes, UserValidator)
             .join(UserAsker, UserAsker.id_role == TRequests.id_role)
-            .join(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme, isouter=True)
-            .join(UserValidator, UserValidator.id_role == TRequests.processed_by, isouter=True)
+            .outerjoin(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme)
+            .outerjoin(UserValidator, UserValidator.id_role == TRequests.processed_by)
             .filter(TRequests.token == token)
     )
     results = query.first()
@@ -1021,7 +1040,15 @@ def patch_permissions_request_by_token(info_role, token):
     DB.session.flush()
 
     # Send email to user
+    try:
     send_email_after_managing_request(trequest.as_dict())
+    except Exception as exp:
+        response = {
+            "message": f"Erreur lors de l'envoie de l'email à l'utilisateur : {exp}.",
+            "code": "UserSendEmailError",
+            "status": "error"
+        }
+        return response, 500
 
     # Get updated TRequests
     UserAsker = aliased(User)
@@ -1029,8 +1056,8 @@ def patch_permissions_request_by_token(info_role, token):
     results = (
         DB.session.query(TRequests, UserAsker, BibOrganismes, UserValidator)
             .join(UserAsker, UserAsker.id_role == TRequests.id_role)
-            .join(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme, isouter=True)
-            .join(UserValidator, UserValidator.id_role == TRequests.processed_by, isouter=True)
+            .outerjoin(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme)
+            .outerjoin(UserValidator, UserValidator.id_role == TRequests.processed_by)
             .filter(TRequests.token == token)
             .first()
     )
@@ -1064,6 +1091,7 @@ def formatAccessRequest(request, asker, asker_organism, validator):
     access_request = {
         "token": request.token,
         "user_name": formatRoleName(asker),
+        "user_email": (asker.email if asker.email else "?"),
         "organism_name": (asker_organism.nom_organisme if asker_organism else "-"),
         "geographic_filters": areas,
         "geographic_filters_labels": format_geographic_filter_values(areas),
@@ -1087,6 +1115,7 @@ def formatAccessRequest(request, asker, asker_organism, validator):
 
 def format_end_access_date_from_string(date):
     return None if not date else date.strftime("%Y-%m-%d")
+
 
 # TODO: Delete this route if not used !
 @routes.route("/requests/<token>", methods=["PUT"])
