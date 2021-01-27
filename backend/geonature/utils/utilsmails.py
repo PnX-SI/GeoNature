@@ -1,9 +1,6 @@
 # Fonctions génériques permettant l'envoie de mails
-<<<<<<< HEAD
 import re
-=======
 import logging
->>>>>>> develop
 
 from smtplib import SMTPException
 from flask import current_app
