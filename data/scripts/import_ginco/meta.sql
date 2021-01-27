@@ -77,6 +77,28 @@ INSERT INTO gn_meta.t_datasets (
     where status != 'deleted'
 ;
 
+-- set submission date
+update gn_meta.t_acquisition_frameworks as af
+set initial_closing_date = subquery.date_max
+from (
+with jdd_uuid as (
+select j.id, jf.value_string as _uuid
+from ginco_migration.jdd j 
+join ginco_migration.jdd_field jf on jf.jdd_id = j.id
+where jf.key = 'metadataId'
+)
+select max(TO_TIMESTAMP(value_string, 'YYYY-MM-DD_HH24-MI-SS')) as date_max, taf.id_acquisition_framework 
+from ginco_migration.jdd j 
+join ginco_migration.jdd_field jf on jf.jdd_id = j.id
+join jdd_uuid u on u.id = j.id
+join gn_meta.t_datasets td on u._uuid::uuid = td.unique_dataset_id 
+join gn_meta.t_acquisition_frameworks taf on taf.id_acquisition_framework = td.id_acquisition_framework 
+where jf."key" = 'publishedAt'
+group by  taf.id_acquisition_framework 
+) as subquery 
+where af.id_acquisition_framework = subquery.id_acquisition_framework and af.initial_closing_date is NULL
+
+
 
 
 
