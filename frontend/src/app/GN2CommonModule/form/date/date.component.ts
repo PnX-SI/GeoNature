@@ -61,10 +61,17 @@ export class DateComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (this.defaultToday) {
-      this.parentFormControl.setValue(this.today);
+    // Set a default value to form control
+    if (!this.parentFormControl.value) {
+      if (this.defaultToday) {
+        this.parentFormControl.setValue(this.today);
+      } else {
+        // TODO: set to null to avoid the display of an invalid class. Find a better way !
+        this.parentFormControl.setValue(null);
+      }
     }
 
+    // React to parent form control change
     this.changeSub = this.parentFormControl.valueChanges.subscribe(date => {
       if (date !== null && this._dateParser.format(date) !== 'undefined--') {
         this.onChange.emit(this._dateParser.format(date));
