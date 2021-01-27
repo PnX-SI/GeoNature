@@ -4,7 +4,33 @@
       <mat-card-header>
         <mat-icon class="text-muted" mat-card-avatar>account_box</mat-icon>
         <mat-card-subtitle>Demandeur</mat-card-subtitle>
-        <mat-card-title>{{ request.userName }} ({{ request.organismName }})</mat-card-title>
+        <mat-card-title>
+          {{ request.userName }}
+          <ul *ngIf="!dense" class="list-unstyled ml-3">
+            <li>
+              <small>
+                <mat-icon inline class="user-detail" matTooltip="Organisme de l'utilisateur">
+                  business
+                </mat-icon>: {{ request.organismName }}
+              </small>
+            </li>
+            <li>
+              <small>
+                <mat-icon inline class="user-detail" matTooltip="Email de l'utilisateur">
+                  email
+                </mat-icon>:
+                <ng-container *ngIf="request.userEmail != '?'; else userWithoutEmail">
+                  {{ request.userEmail }}
+                </ng-container>
+                <ng-template #userWithoutEmail>
+                  <span class="rounded-pill text-dark bg-warning d-inline-block p-1">
+                    Utilisateur sans email !
+                  </span>
+                </ng-template>
+              </small>
+            </li>
+          </ul>
+        </mat-card-title>
       </mat-card-header>
     </mat-card>
   </div>

@@ -7,6 +7,10 @@ mat-card-header mat-icon {
   font-size: 3rem;
   color: rgba(0,0,0,.54);
 }
+mat-card-header mat-icon.user-detail {
+  font-size: 20px;
+  vertical-align: middle;
+}
 mat-card mat-card-title {
   margin-bottom: 8px;
 }
