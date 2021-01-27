@@ -266,9 +266,11 @@ export class OcctaxMapListComponent
     } else {
       for (let i = 0; i < row.t_occurrences_occtax.length; i++) {
         let occ = row.t_occurrences_occtax[i];
-        const taxName = occ.taxref !== undefined
-          ? occ.taxref.nom_complet
-          : occ.nom_cite;
+        const taxKey = ModuleConfig.DISPLAY_VERNACULAR_NAME ? 'nom_vern': 'nom_complet'
+        let taxName;
+        if(occ.taxref) {
+          taxName = occ.taxref[taxKey] ? occ.taxref[taxKey] : occ.nom_complet;
+        }
         let medias = [];
         let icons = '';
         if (occ.cor_counting_occtax) {
@@ -291,7 +293,7 @@ export class OcctaxMapListComponent
  */
 
   displayTaxons(row): string[] {
-    return this.displayTaxonsTooltip(row).map(t => t.taxName);
+    return this.displayTaxonsTooltip(row).map(t => " "+t.taxName);
   }
 
   /**

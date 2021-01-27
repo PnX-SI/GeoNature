@@ -41,6 +41,7 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 * Création d'une commande GeoNature permettant de récupérer les JDD, CA et acteurs depuis le webservice MTD de l'INPN, en refactorisant les outils existants d'import depuis ce webservice
 * Création d'un script pour DEPOBIO, permettant de remplacer les règles de sensibilité nationales et régionales, par les règles départementales (``data/scripts/sensi/import_sensi_depobio.sh``)
 * Création d'un script permettant d'importer les régions dans le référentiel géographique (``data/migrations/insert_reg.sh``)
+* OCCTAX : ajout du paramètre `DISPLAY_VERNACULAR_NAME` qui contrôle l'affichage du nom vernaculaire vs nom complet sur les interfaces (Defaut = true: afffiche le nom vernaculaire)
 
 **🐛 Corrections**
 
