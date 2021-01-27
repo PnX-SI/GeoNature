@@ -11,8 +11,6 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 
 - Review and include some PR : https://github.com/PnX-SI/GeoNature/pulls
 - Update SQL - J'ai fait un deuxième SQL à part dédié à cela - Calculer la sensibilité de toutes les données existantes dans la synthèse, mais ne pas écraser les niveaux de diffusion existants, supérieurs au niveau de diffusion calculé automatiquement. A relire, ajuster : data/migrations/2.5.5to2.6.0-update-sensitivity.sql
-- https://github.com/PnX-SI/GeoNature/issues/922#issuecomment-690033212 indique une vérification à faire ?
-- Merger la branche Sensibilité (https://github.com/PnX-SI/GeoNature/compare/develop...sensitivity) ?
 
 **🚀 Nouveautés**
 
