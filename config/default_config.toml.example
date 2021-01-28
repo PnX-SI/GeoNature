@@ -1,8 +1,8 @@
 ###############################################################################
 # Liste complète des paramètres et de leurs valeurs par défaut
 # 
-# UTILISATION : piochez des paramètres dans ce fichier et intégrez les au
-#     fichier 'config/geonature_config.toml'.
+# UTILISATION : piochez les paramètres que vous souhaitez surcoucher dans ce 
+#     fichier et intégrez les au fichier 'config/geonature_config.toml'.
 #
 # ATTENTION : Les paramètres qui ne sont pas dans une section (entre crochets) 
 #     doivent être au début du fichier !
@@ -109,8 +109,16 @@ MAIL_ON_ERROR = false
     # Laisser en commentaire si le serveur n'a pas de limite.
     # MAIL_MAX_EMAILS = 100
     MAIL_ASCII_ATTACHMENTS = false
-    # Email(s) où envoyer les erreurs générées par le backend de GeoNature
-    ERROR_MAIL_TO = ["email@email.com", "email2@email.com"]
+    # Email(s) où envoyer les erreurs générées par le backend de GeoNature.
+    # Deux syntaxes alternatives sont autorisées pour ce paramètre :
+    # - une chaine contenant un ou plusieurs emails séparés par des 
+    #   virgules (exemple ci-dessous).
+    # - une liste de chaine contenant un email.
+    # Un email encadré par des chevrons (<>) peut être précédé par un
+    # libellé qui sera utilisé lors de l'envoi.
+    # Les espaces présents en début et fin de chaine ainsi qu'avant et 
+    # après les virgules sont ignorés.
+    ERROR_MAIL_TO = ["Prénom NOM <email@email.com>", "email2@email.com"]
 
 # CAS authentification (Optionnel, remplace l'authentification locale via UsersHub)
 [CAS_PUBLIC]
@@ -125,6 +133,13 @@ MAIL_ON_ERROR = false
     URL = "https://inpn2.mnhn.fr/authentication/information"
     ID = "mon_id"
     PASSWORD = "mon_pass"
+
+# Connexion avec le WS MTD
+[MTD]
+    # Modules auxquels les JDD sont automatiquement associés
+    JDD_MODULE_CODE_ASSOCIATION = ["OCCTAX", "OCCHAB"]
+    # Filter les JDD par id_instance
+    ID_INSTANCE_FILTER = null
 
 [BDD]
     id_area_type_municipality = 25
@@ -190,9 +205,6 @@ MAIL_ON_ERROR = false
     name = "google"
     url = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
     subdomains = ["mt0", "mt1", "mt2", "mt3"]
-
-
-
 
 # Configuration du module Synthese
 [SYNTHESE]
@@ -371,8 +383,19 @@ MAIL_ON_ERROR = false
     # compte utilisateur
     AUTO_DATASET_CREATION = true
 
-    # Email du validateur si auto_account_creation = false
-    VALIDATOR_EMAIL = "theo.lechemia@ecrins-parcnational.fr"
+    # Email du validateur si auto_account_creation = false.
+    # Deux syntaxes alternatives sont autorisées pour ce paramètre :
+    # - une chaine contenant un ou plusieurs emails séparés par des 
+    #   virgules (exemple ci-dessous).
+    # - une liste de chaine contenant un email.
+    # Un email encadré par des chevrons (<>) peut être précédé par un
+    # libellé qui sera utilisé lors de l'envoi.
+    # Les espaces présents en début et fin de chaine ainsi qu'avant et 
+    # après les virgules sont ignorés.
+    VALIDATOR_EMAIL = """
+        Théo LECHEMIA <theo.lechemia@ecrins-parcnational.fr>,
+        Carl von LINNÉ <c.linnaeus@linnaeus.se>
+        """
 
     # Texte complémentaire ajouté à la fin des emails envoyés à l'utilisateur.
     # Utiliser du HTML simple (compatible avec les email) ou du texte.
@@ -451,3 +474,16 @@ MAIL_ON_ERROR = false
 [METADATADA]
     # Nombre de cadre d'acquisition affiché sur la liste
     NB_AF_DISPLAYED = 100
+    # activer la fonctionalité de dépot/publication
+    ENABLE_CLOSE_AF = false
+
+    AF_PDF_TITLE = ""
+    DS_PDF_TITLE = ""
+    URL_FRAMEWORK_DOWNLOAD = ""
+    MAIL_SUBJECT_AF_CLOSED_BASE = ""
+    MAIL_CONTENT_AF_CLOSED_ADDITION = ""
+    MAIL_CONTENT_AF_CLOSED_PDF = ""
+    MAIL_CONTENT_AF_CLOSED_URL = ""
+    MAIL_CONTENT_AF_CLOSED_GREETINGS = ""
+    CLOSED_MODAL_LABEL = "Dépôt d'un cadre d'acquisition"
+    CLOSED_MODAL_CONTENT = L'action de dépôt est une action irréversible. Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite. Vous ne pourrez pas supprimer votre dépôt. "

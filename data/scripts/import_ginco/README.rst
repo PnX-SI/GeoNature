@@ -1,11 +1,7 @@
 Scripts de migration GINCO -> GeoNature
 =======================================
 
-Version Taxref
-**************
 
-Ginco est actuellement en version Taxref 12. GeoNature ne s'installe lui qu'avec la version 11 ou 13 du référentiel. 
-Le script ``import_taxref/import_new_taxref_version.sh`` permet d'importer Taxref en version 12. Il doit être exécuté sur un GeoNature vierge de toute donnée pour ne pas créer de conflit d'integrité.
 
 Scripts
 *******
@@ -13,11 +9,14 @@ Scripts
 Ce dossier comprend plusieurs scripts permettant d'effectuer la migration des données de GINCO vers GeoNature.
 
 * ``restore_ginco_db.sh`` : Ce script restaure une BDD GINCO à partir d'un DUMP SQL, puis créé un Foreign Data Wrapper (FDW) entre la base restaurée et la base GeoNature cible. Un nouveau schéma ``ginco_migration`` est créé, comportant les tables des schémas ``website`` et ``raw_data`` de la base GINCO source.
-* ``insert_data.sh`` : Ce script vient lire dans le FDW précedemment créé pour insérer les données dans la synthèse de GeoNature.
+* Ginco est actuellement en version Taxref 12. GeoNature ne s'installe lui qu'avec la version 11 ou 13 du référentiel. Le script ``import_taxref/import_new_taxref_version.sh`` permet d'importer Taxref en version 12. Il doit être exécuté sur un GeoNature vierge de toute donnée pour ne pas créer de conflit d'integrité.
+* ``insert_data.sh`` : Ce script vient lire dans le FDW précedemment créé pour insérer les données dans la synthèse de GeoNature. Remplacer la variable <NOM_TABLE> du fichier ``synthese.sql`` par le nom de la table comprenant les données d'occurrence de taxon de Ginco.
 * ``import_mtd.sh`` : Script contenant un script python permettant de récupérer les cadres d'acquisition et les informations détaillées de chaque JDD présents dans la base GINCO à partir du web-service MTD.
 * ``find_conflicts.sql`` Script permettant de remonter les erreurs d'intégrité des données sources (voir plus bas)
 
 Désampler le fichier ``settings.ini.sample``, le remplir puis lancer les scripts dans l'ordre décrit ci-dessous. Pour chaque script un fichier de log est créé dans le répertoire ``log``.
+
+Dans le fichier ``synthese.sql``, remplacer <NOM_TABLE> par le nom de la table contenant les données dans GINCO 
 
 Quelles données sont rapatriées ?
 *********************************

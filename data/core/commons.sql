@@ -626,6 +626,7 @@ INSERT INTO t_parameters (id_organism, parameter_name, parameter_desc, parameter
 (0,'taxref_version','Version du référentiel taxonomique','Taxref V13.0',NULL)
 ,(0,'local_srid','Valeur du SRID local', MYLOCALSRID,NULL)
 ,(0,'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
+,(0,'occtaxmobile_area_type', 'Type de maille pour laquelle la couleur des taxons est calculée', 'M5', NULL)
 ;
 
 -- Insertion du module parent à tous : GeoNature

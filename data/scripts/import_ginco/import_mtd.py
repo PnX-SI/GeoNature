@@ -9,6 +9,7 @@ import xml.etree.ElementTree as ET
 import requests
 import psycopg2
 
+
 """
 CONFIG
 """
@@ -127,20 +128,26 @@ def get_known_protocols():
 
 def insert_sinp_datatype_protocols(cur_protocol_name,cur_protocol_desc,cur_protocol_url):
 	# Protocol type not found in XML files, by default 'inconnu' 
- 	create_protocol='INSERT INTO gn_meta.sinp_datatype_protocols (protocol_name,protocol_desc,id_nomenclature_protocol_type,protocol_url)' \
- 		+ ' VALUES (\''+cur_protocol_name+'\', \''+cur_protocol_desc+'\', SELECT(ref_nomenclatures.get_id_nomenclature(\'TYPE_PROTOCOLE\', \'0\')), \''+cur_protocol_url+'\')'
- 	cursor.execute(create_protocol)
- 	conn.commit()
- 	print('New protocol imported')
+	query = f"""
+	INSERT INTO gn_meta.sinp_datatype_protocols (protocol_name,protocol_desc,id_nomenclature_protocol_type,protocol_url)
+	VALUES ({cur_protocol_name}, {cur_protocol_desc} , (SELECT(ref_nomenclatures.get_id_nomenclature('TYPE_PROTOCOLE', '0'))), {cur_protocol_url})
+	"""
+	print(query)
+	cursor.execute(query)
+	conn.commit()
+	print('New protocol imported')
 
 def update_sinp_datatype_protocols(cur_protocol_name,cur_protocol_desc,cur_protocol_url):
 	# Protocol type not found in XML files, by default 'inconnu' 
- 	update_protocol='UPDATE gn_meta.sinp_datatype_protocols SET protocol_desc=\''+cur_protocol_desc+'\', ' \
- 		+ 'id_nomenclature_protocol_type=ref_nomenclatures.get_id_nomenclature(\'TYPE_PROTOCOLE\', \'0\'), protocol_url=\''+cur_protocol_url \
- 		+ '\' WHERE protocol_name=\''+cur_protocol_name+'\''
- 	cursor.execute(update_protocol)
- 	conn.commit()
- 	print('Existing protocol updated')
+	query = f"""
+		UPDATE gn_meta.sinp_datatype_protocols SET protocol_desc={cur_protocol_desc},
+		id_nomenclature_protocol_type=ref_nomenclatures.get_id_nomenclature('TYPE_PROTOCOLE', '0'), 
+		protocol_url={cur_protocol_url}
+		WHERE protocol_name={cur_protocol_name}
+	"""
+	cursor.execute(query)
+	conn.commit()
+	print('Existing protocol updated')
 
 
 '''
@@ -348,7 +355,7 @@ def insert_update_t_acquisition_frameworks(CURRENT_AF_ROOT, action, cur_af_uuid)
 		) RETURNING id_acquisition_framework;
 		""".format(
 			identifiantCadre=identifiantCadre,
-			libelle=libelle,
+			libelle=libelle[0:254],
 			description=description,
 			id_niveauTerritorial=id_niveauTerritorial,
 			precisionGeographique=precisionGeographique,
@@ -382,7 +389,7 @@ def insert_update_t_acquisition_frameworks(CURRENT_AF_ROOT, action, cur_af_uuid)
 				WHERE unique_acquisition_framework_id='{cur_af_uuid}'
 				RETURNING id_acquisition_framework;
 		""".format(
-			libelle=libelle,
+			libelle=libelle[0:254],
 			description=description,
 			id_niveauTerritorial=id_niveauTerritorial,
 			precisionGeographique=precisionGeographique,
@@ -609,12 +616,25 @@ def insert_cor_ds_territory(cur_ds_uuid, cur_territory):
 	cursor.execute(cur_insert_query)
 	conn.commit()
 
+
 def insert_cor_ds_protocol(cur_ds_uuid, cur_protocol):
-	cur_insert_query='INSERT INTO gn_meta.cor_dataset_protocol(id_dataset, id_protocol)' \
-		+'VALUES ((SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id=\''+cur_ds_uuid+'\'), '\
-		+'(SELECT id_protocol FROM gn_meta.sinp_datatype_protocols WHERE protocol_name=\''+cur_protocol_name+'\'))'
-	cursor.execute(cur_insert_query)
-	conn.commit()
+	query = f"""
+		INSERT INTO gn_meta.cor_dataset_protocol(id_dataset, id_protocol)
+		VALUES (
+			(SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='{cur_ds_uuid}' LIMIT 1), 
+			(SELECT id_protocol FROM gn_meta.sinp_datatype_protocols WHERE protocol_name={cur_protocol_name} LIMIT 1)
+		)
+	"""
+	try:
+		cursor.execute(query)
+		conn.commit()
+	except Exception as e:
+		conn.rollback()
+		print(e)
+
+
+
+
 
 def insert_cor_ds_actor_organism(cur_ds_uuid, cur_organism_uuid, cur_actor_role):
 	cur_insert_query='INSERT INTO gn_meta.cor_dataset_actor (id_dataset,id_organism,id_nomenclature_actor_role)' \
@@ -768,6 +788,8 @@ def insert_CA(cur_af_uuid):
 	Getting XML Files & pushing Datasets data in GeoNature DataBase
 '''
 # Getting uuid list of JDD to import 
+
+
 cursor.execute('SELECT DISTINCT \"'+CHAMP_ID_JDD+'\" FROM '+TABLE_DONNEES_INPN)
 ds_uuid_list=cursor.fetchall()
 
@@ -779,52 +801,77 @@ for ds_iter in range(len(ds_uuid_list)):
 		action='update'
 	# Get and parse corresponding XML File
 	ds_URL = "https://inpn.mnhn.fr/mtd/cadre/jdd/export/xml/GetRecordById?id={}".format(cur_ds_uuid.upper())
-	open('{}.xml'.format(cur_ds_uuid), 'wb').write(requests.get(ds_URL).content)
-	CURRENT_DS_ROOT = ET.parse('{}.xml'.format(cur_ds_uuid)).getroot()
-	# insertion des CA
-	current_af_uuid = get_single_data(CURRENT_DS_ROOT, ds_main,'identifiantCadre')
-	current_id_ca = insert_CA(current_af_uuid)
-	# Feed t_datasets
-	insert_update_t_datasets(CURRENT_DS_ROOT, action, cur_ds_uuid, current_id_ca)
-	# Feed cor territory
-	delete_cor_ds('territory',cur_ds_uuid)
-	ds_territories=get_tuple_data(CURRENT_DS_ROOT, ds_main,'territoire')
-	if ds_territories != "''":
-		for territory_iter in range(len(ds_territories)):
-			cur_territory=ds_territories[territory_iter].replace("'","")
-			insert_cor_ds_territory(cur_ds_uuid, cur_territory)
-	# Feed cor protocol
-	delete_cor_ds('protocol',cur_ds_uuid)
-	ds_protocols=CURRENT_DS_ROOT.findall('gml:featureMember/jdd:JeuDeDonnees/jdd:protocoles/jdd:ProtocoleType',xml_namespaces)
-	for cur_proto in range(len(ds_protocols)):
-		if get_inner_data(ds_protocols, cur_proto, 'libelleProtocole') !="''" : 
-			cur_protocol_name = get_inner_data(ds_protocols, cur_proto, 'libelleProtocole')
-			if get_inner_data(ds_protocols, cur_proto, 'descriptionProtocole')!=None:
-				cur_protocol_desc = get_inner_data(ds_protocols, cur_proto, 'descriptionProtocole')
-			else : 
-				cur_protocol_desc = '\'\''
-			if get_inner_data(ds_protocols, cur_proto, 'url')!=None:
-				cur_protocol_url = get_inner_data(ds_protocols, cur_proto, 'url')
-			else : 
-				cur_protocol_url = '\'\''
-			# Create or update publication
-			if '(\''+cur_protocol_name.replace("''","'")+'\',)' not in get_known_protocols() :
-				insert_sinp_datatype_protocols(cur_protocol_name,cur_protocol_desc,cur_protocol_url)
-			else :
-				update_sinp_datatype_protocols(cur_protocol_name,cur_protocol_desc,cur_protocol_url)
-			insert_cor_ds_protocol(cur_ds_uuid, cur_protocol_name)
-	# ACTORS
-	# Create or update actors and feed cor table
-	delete_cor_ds('actor',cur_ds_uuid)
-	# For contact_points
-	ds_pointscontacts = CURRENT_DS_ROOT.findall('gml:featureMember/jdd:JeuDeDonnees/jdd:pointContactJdd/jdd:ActeurType',xml_namespaces)
-	for point_contact in range(len(ds_pointscontacts)) :
+	req = requests.get(ds_URL)
+	if req.status_code == 200:
+		open('{}.xml'.format(cur_ds_uuid), 'wb').write(requests.get(ds_URL).content)
+		CURRENT_DS_ROOT = ET.parse('{}.xml'.format(cur_ds_uuid)).getroot()
+		# insertion des CA
+		current_af_uuid = get_single_data(CURRENT_DS_ROOT, ds_main,'identifiantCadre')
+		current_id_ca = insert_CA(current_af_uuid)
+		# Feed t_datasets
+		insert_update_t_datasets(CURRENT_DS_ROOT, action, cur_ds_uuid, current_id_ca)
+		# Feed cor territory
+		delete_cor_ds('territory',cur_ds_uuid)
+		ds_territories=get_tuple_data(CURRENT_DS_ROOT, ds_main,'territoire')
+		if ds_territories != "''":
+			for territory_iter in range(len(ds_territories)):
+				cur_territory=ds_territories[territory_iter].replace("'","")
+				insert_cor_ds_territory(cur_ds_uuid, cur_territory)
+		# Feed cor protocol
+		delete_cor_ds('protocol',cur_ds_uuid)
+		ds_protocols=CURRENT_DS_ROOT.findall('gml:featureMember/jdd:JeuDeDonnees/jdd:protocoles/jdd:ProtocoleType',xml_namespaces)
+		for cur_proto in range(len(ds_protocols)):
+			if get_inner_data(ds_protocols, cur_proto, 'libelleProtocole') !="''" : 
+				cur_protocol_name = get_inner_data(ds_protocols, cur_proto, 'libelleProtocole')
+				if get_inner_data(ds_protocols, cur_proto, 'descriptionProtocole')!=None:
+					cur_protocol_desc = get_inner_data(ds_protocols, cur_proto, 'descriptionProtocole')
+				else : 
+					cur_protocol_desc = '\'\''
+				if get_inner_data(ds_protocols, cur_proto, 'url')!=None:
+					cur_protocol_url = get_inner_data(ds_protocols, cur_proto, 'url')
+				else : 
+					cur_protocol_url = '\'\''
+				# Create or update publication
+				if '(\''+cur_protocol_name.replace("''","'")+'\',)' not in get_known_protocols() :
+					insert_sinp_datatype_protocols(cur_protocol_name,cur_protocol_desc,cur_protocol_url)
+				else :
+					update_sinp_datatype_protocols(cur_protocol_name,cur_protocol_desc,cur_protocol_url)
+				insert_cor_ds_protocol(cur_ds_uuid, cur_protocol_name)
+		# ACTORS
+		# Create or update actors and feed cor table
+		delete_cor_ds('actor',cur_ds_uuid)
+		# For contact_points
+		ds_pointscontacts = CURRENT_DS_ROOT.findall('gml:featureMember/jdd:JeuDeDonnees/jdd:pointContactJdd/jdd:ActeurType',xml_namespaces)
+		for point_contact in range(len(ds_pointscontacts)) :
+			# Person : name is the reference
+			cur_actor_role = get_inner_data(ds_pointscontacts, point_contact, 'roleActeur')
+			if get_inner_data(ds_pointscontacts, point_contact, 'nomPrenom') != "''" :
+				cur_person_name = get_inner_data(ds_pointscontacts, point_contact, 'nomPrenom').replace('\t','').replace("'","").rstrip()
+				if get_inner_data(ds_pointscontacts, point_contact, 'mail') != "''" :
+					cur_person_mail = get_inner_data(ds_pointscontacts, point_contact, 'mail')
+				else : 
+					cur_person_mail = ''
+				if '(\''+cur_person_name.replace("'","")+'\',)' not in get_known_persons() :
+					insert_person(cur_person_name, cur_person_mail)
+				# else :
+				# 	update_person(cur_person_name, cur_person_mail)
+				insert_cor_ds_actor_person(cur_ds_uuid, cur_person_name, cur_actor_role)
+			# Organism : the uuid is the reference
+			if get_inner_data(ds_pointscontacts, point_contact, 'idOrganisme') != "''" and get_inner_data(ds_pointscontacts, point_contact, 'organisme') != "''" :
+				cur_organism_uuid = get_inner_data(ds_pointscontacts, point_contact, 'idOrganisme')
+				cur_organism_name = get_inner_data(ds_pointscontacts, point_contact, 'organisme')
+				if str.lower(cur_organism_uuid).replace("'","") not in get_known_organisms():
+					insert_organism(cur_organism_uuid, cur_organism_name)
+				else :
+					update_organism(cur_organism_uuid, cur_organism_name)
+				insert_cor_ds_actor_organism(cur_ds_uuid, cur_organism_uuid, cur_actor_role)
+		# For PF_contact (single)
+		cur_actor_role = get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'roleActeur')
 		# Person : name is the reference
-		cur_actor_role = get_inner_data(ds_pointscontacts, point_contact, 'roleActeur')
-		if get_inner_data(ds_pointscontacts, point_contact, 'nomPrenom') != "''" :
-			cur_person_name = get_inner_data(ds_pointscontacts, point_contact, 'nomPrenom').replace('\t','').replace("'","").rstrip()
-			if get_inner_data(ds_pointscontacts, point_contact, 'mail') != "''" :
-				cur_person_mail = get_inner_data(ds_pointscontacts, point_contact, 'mail')
+		if get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'nomPrenom') != "''":
+			cur_person_name = get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'nomPrenom').replace('\t','').replace("'","").rstrip()
+			if get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'mail') != "''" :
+				cur_person_mail = get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'mail').replace("'",'')
 			else : 
 				cur_person_mail = ''
 			if '(\''+cur_person_name.replace("'","")+'\',)' not in get_known_persons() :
@@ -833,39 +880,20 @@ for ds_iter in range(len(ds_uuid_list)):
 			# 	update_person(cur_person_name, cur_person_mail)
 			insert_cor_ds_actor_person(cur_ds_uuid, cur_person_name, cur_actor_role)
 		# Organism : the uuid is the reference
-		if get_inner_data(ds_pointscontacts, point_contact, 'idOrganisme') != "''" and get_inner_data(ds_pointscontacts, point_contact, 'organisme') != "''" :
-			cur_organism_uuid = get_inner_data(ds_pointscontacts, point_contact, 'idOrganisme')
-			cur_organism_name = get_inner_data(ds_pointscontacts, point_contact, 'organisme')
+		if get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'idOrganisme') != "''" and get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'organisme') != "''" :
+			cur_organism_uuid = get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'idOrganisme')
+			cur_organism_name = get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'organisme')
 			if str.lower(cur_organism_uuid).replace("'","") not in get_known_organisms():
 				insert_organism(cur_organism_uuid, cur_organism_name)
 			else :
 				update_organism(cur_organism_uuid, cur_organism_name)
 			insert_cor_ds_actor_organism(cur_ds_uuid, cur_organism_uuid, cur_actor_role)
-	# For PF_contact (single)
-	cur_actor_role = get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'roleActeur')
-	# Person : name is the reference
-	if get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'nomPrenom') != "''":
-		cur_person_name = get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'nomPrenom').replace('\t','').replace("'","").rstrip()
-		if get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'mail') != "''" :
-			cur_person_mail = get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'mail').replace("'",'')
-		else : 
-			cur_person_mail = ''
-		if '(\''+cur_person_name.replace("'","")+'\',)' not in get_known_persons() :
-			insert_person(cur_person_name, cur_person_mail)
-		# else :
-		# 	update_person(cur_person_name, cur_person_mail)
-		insert_cor_ds_actor_person(cur_ds_uuid, cur_person_name, cur_actor_role)
-	# Organism : the uuid is the reference
-	if get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'idOrganisme') != "''" and get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'organisme') != "''" :
-		cur_organism_uuid = get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'idOrganisme')
-		cur_organism_name = get_single_data(CURRENT_DS_ROOT, ds_contact_pf, 'organisme')
-		if str.lower(cur_organism_uuid).replace("'","") not in get_known_organisms():
-			insert_organism(cur_organism_uuid, cur_organism_name)
-		else :
-			update_organism(cur_organism_uuid, cur_organism_name)
-		insert_cor_ds_actor_organism(cur_ds_uuid, cur_organism_uuid, cur_actor_role)
-	# Delete files if choosen
-	if DELETE_XML_FILE_AFTER_IMPORT=='True':
-		os.remove('{}.xml'.format(cur_ds_uuid))
+		# Delete files if choosen
+		if DELETE_XML_FILE_AFTER_IMPORT=='True':
+			os.remove('{}.xml'.format(cur_ds_uuid))
+	else:
+		print(f"{cur_ds_uuid} not found")
+
+
 
 

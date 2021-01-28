@@ -27,6 +27,7 @@ write_log "INSERT IN SYNTHESE...cela peut être long"
 psql -h $db_host -U $geonature_pg_user -d $geonature_db_name -f synthese_before_insert.sql  &>> log/insert_data.log
 
 psql -h $db_host -U $geonature_pg_user -d $geonature_db_name -v GINCO_TABLE=$ginco_data_table_name -v GINCO_TABLE_QUOTED="'$ginco_data_table_name'" -f synthese.sql  &>> log/insert_data.log
+psql -h $db_host -U $geonature_pg_user -d $geonature_db_name -v GINCO_TABLE=$ginco_data_table_name -v GINCO_TABLE_QUOTED="'$ginco_data_table_name'" -f synthese_without_geom.sql  &>> log/insert_data.log
 
 
 psql -h $db_host -U $geonature_pg_user -d $geonature_db_name -f synthese_after_insert.sql  &>> log/insert_data.log

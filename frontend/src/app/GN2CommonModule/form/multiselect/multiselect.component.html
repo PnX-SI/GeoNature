@@ -2,13 +2,14 @@
 <div class="input-group">
   <div
     class="dropdown-toggle btn-white full-width clickable"
-    #button_input
+    #buttonInput
     data-toggle="dropdown"
     tabindex="0"
     aria-expanded="true"
     [ngClass]="{'disabled': disabled, 'custom-invalid' : parentFormControl.invalid && !disabled}"
     (focus)="onFocus($event)"
     (blur)="onBlur($event)"
+    (click)="onButtonInputClick($event)"
     style="white-space: normal;"
     id="button-input"
   >
@@ -37,17 +38,17 @@
     <span class="caret caret-input"></span>
   </div>
   <div class="dropdown-menu full-width select-data">
-    <div
-      *ngIf="searchBar"
-      class="search-box"
-    >
+    <div *ngIf="searchBar" class="search-box">
       <input
+        #searchInput
         class="form-control"
         type="text"
         placeholder="{{'Search' | translate}}"
         [formControl]="searchControl"
         autocomplete="off"
         id="search-input"
+        (focus)="onSearchInputFocus()"
+        (blur)="onSearchInputBlur()"
       >
     </div>
     <ul>
@@ -55,8 +56,10 @@
         *ngIf="displayAll"
         (click)="addItem('all')"
         class="clickable li-dropdown li-label padded-multiline"
+        #dropdownItem
       >
-        {{'AllItems' | translate}} </li>
+        {{'AllItems' | translate}}
+      </li>
       <li
         *ngFor="let val of values"
         tabindex="0"
@@ -64,6 +67,7 @@
         (blur)="setValSave()"
         (click)="addItem(val)"
         class="clickable li-dropdown padded-multiline"
+        #dropdownItem
       >
         <span
           *ngIf="isHtml; else itemNotHtml"

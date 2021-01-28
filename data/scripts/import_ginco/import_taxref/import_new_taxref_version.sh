@@ -28,5 +28,5 @@ done
 echo "Import taxref v12"
 # sudo -n -u postgres -s psql -d $geonature_db_name -c "DROP TABLE taxonomie.import_taxref"
 export PGPASSWORD=$geonature_user_pg_pass;psql -h $db_host -U $geonature_pg_user -d $geonature_db_name  -f create_structure.sql   &>> $LOG_DIR/update_taxref_v12.log
-sudo -n -u postgres -s psql -d $geonature_db_name -v USER_GN=$geonature_pg_user -f import_taxref_data.sql
+sudo -n -u postgres -s psql -d $geonature_db_name -f import_taxref_data.sql
 export PGPASSWORD=$geonature_user_pg_pass;psql -h $db_host -U $geonature_pg_user -d $geonature_db_name  -f migrate_taxref_data.sql   &>> $LOG_DIR/update_taxref_v12.log

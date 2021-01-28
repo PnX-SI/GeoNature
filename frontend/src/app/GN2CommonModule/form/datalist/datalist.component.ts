@@ -109,7 +109,10 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
     }
     const label = '';
     const item = (this.values || []).find(v => v[this.keyValue] === value);
-    return this.displayLabel(item);
+    if (item) {
+      return this.displayLabel(item);
+    }
+    return undefined;
   }
 
   initValues(data) {
