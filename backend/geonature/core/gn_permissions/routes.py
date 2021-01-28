@@ -57,7 +57,7 @@ routes = Blueprint("gn_permissions", __name__, template_folder="templates")
 
 
 @routes.route("/cruved", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
+@permissions.check_cruved_scope("R", get_role=True, module_code="GEONATURE")
 @json_resp
 def get_cruved(info_role):
     """
@@ -136,7 +136,7 @@ def logout():
 
 
 @routes.route("/access_requests", methods=["POST"])
-@permissions.check_cruved_scope(action='R', get_role=True)
+@permissions.check_cruved_scope(action="R", get_role=True, module_code="GEONATURE")
 @json_resp
 def post_access_request(info_role):
     """
@@ -176,11 +176,11 @@ def post_access_request(info_role):
 
     # Inform about new access request by email
     try:
-    send_email_after_access_request(
-        data=data,
-        user_id=user_id,
-        request_token=trequest.token,
-    )
+        send_email_after_access_request(
+            data=data,
+            user_id=user_id,
+            request_token=trequest.token,
+        )
     except Exception as exp:
         response = {
             "message": f"Erreur lors de l'envoie de l'email aux administrateurs : {exp}.",
@@ -342,6 +342,7 @@ def build_dynamic_request_form_infos():
 
 
 @routes.route("/access_requests/<token>/<action>", methods=["GET"])
+# Do not check CRUVED because this web service is called outside an app
 def manage_access_request_by_link(token, action):
     """
         Approuve/Refuse une demande de permissions d'accès.
@@ -416,7 +417,7 @@ def manage_access_request_by_link(token, action):
 
     # Send email to user
     try:
-    send_email_after_managing_request(request)
+        send_email_after_managing_request(request)
     except Exception as exp:
         response = {
             "message": f"Erreur lors de l'envoie de l'email à l'utilisateur : {exp}.",
@@ -424,7 +425,7 @@ def manage_access_request_by_link(token, action):
             "status": "error"
         }
         return response, 500
-
+    
 
     # Redirect to GeoNature app home page
     return redirect(current_app.config["URL_APPLICATION"], code=302)
@@ -671,7 +672,7 @@ def send_email_after_managing_request(request):
         subject = f"Refus de demande de permissions d'accès {app_name}"
         msg_html = render_refused_request_tpl(user, request)
     if recipient:
-    send_mail(recipient, subject, msg_html)
+        send_mail(recipient, subject, msg_html)
     else:
         log.debug(f"User {request['id_role']} with no email. Email not send.")
 
@@ -736,8 +737,8 @@ def get_validators():
     return validators.strip()
 
 
-# TODO: Delete if not used !
 @routes.route("/modules", methods=["GET"])
+@permissions.check_cruved_scope(action="R", module_code="ADMIN", object_code="PERMISSIONS")
 def get_all_modules():
     """
     Retourne tous les modules.
@@ -768,6 +769,7 @@ def get_all_modules():
 
 # TODO: Delete if not used !
 @routes.route("/actions", methods=["GET"])
+@permissions.check_cruved_scope(action="R", module_code="ADMIN", object_code="PERMISSIONS")
 def get_all_actions():
     """
     Retourne toutes les actions.
@@ -787,6 +789,7 @@ def get_all_actions():
 
 # TODO: Delete if not used !
 @routes.route("/filters", methods=["GET"])
+@permissions.check_cruved_scope(action="R", module_code="ADMIN", object_code="PERMISSIONS")
 def get_all_filters():
     """
     Retourne tous les types de filtres.
@@ -805,6 +808,7 @@ def get_all_filters():
 
 # TODO: Delete if not used !
 @routes.route("/filters-values", methods=["GET"])
+@permissions.check_cruved_scope(action="R", module_code="ADMIN", object_code="PERMISSIONS")
 def get_all_filters_values():
     """
     Retourne toutes les valeurs des différents types de filtres.
@@ -852,6 +856,7 @@ def get_all_filters_values():
 
 # TODO: Delete if not used !
 @routes.route("/objects", methods=["GET"])
+@permissions.check_cruved_scope(action="R", module_code="ADMIN", object_code="PERMISSIONS")
 def get_all_objects():
     """
     Retourne toutes les objets.
@@ -870,7 +875,7 @@ def get_all_objects():
 
 
 @routes.route("/requests", methods=["GET"])
-#@json_resp
+@permissions.check_cruved_scope(action="R", module_code="ADMIN", object_code="ACCESS_REQUESTS")
 def get_permissions_requests():
     """
     Retourne toutes les demandes de permissions avec des info sur 
@@ -944,6 +949,7 @@ def get_permissions_requests():
 
 
 @routes.route("/requests/<token>", methods=["GET"])
+@permissions.check_cruved_scope(action="R", module_code="ADMIN", object_code="ACCESS_REQUESTS")
 def get_permissions_requests_by_token(token):
     """
     Retourne le détail d'une demande.
@@ -984,7 +990,12 @@ def get_permissions_requests_by_token(token):
 
 
 @routes.route("/requests/<token>", methods=["PATCH"])
-@permissions.check_cruved_scope(action='U', get_role=True)
+@permissions.check_cruved_scope(
+    action="U", 
+    get_role=True, 
+    module_code="ADMIN", 
+    object_code="ACCESS_REQUESTS",
+)
 @json_resp
 def patch_permissions_request_by_token(info_role, token):
     """
@@ -1041,7 +1052,7 @@ def patch_permissions_request_by_token(info_role, token):
 
     # Send email to user
     try:
-    send_email_after_managing_request(trequest.as_dict())
+        send_email_after_managing_request(trequest.as_dict())
     except Exception as exp:
         response = {
             "message": f"Erreur lors de l'envoie de l'email à l'utilisateur : {exp}.",
@@ -1119,7 +1130,12 @@ def format_end_access_date_from_string(date):
 
 # TODO: Delete this route if not used !
 @routes.route("/requests/<token>", methods=["PUT"])
-@permissions.check_cruved_scope(action='U', get_role=True)
+@permissions.check_cruved_scope(
+    action="U", 
+    get_role=True, 
+    module_code="ADMIN", 
+    object_code="ACCESS_REQUESTS",
+)
 @json_resp
 def update_permissions_requests_by_token(token):
     """
@@ -1137,7 +1153,7 @@ def update_permissions_requests_by_token(token):
 
 
 @routes.route("/roles", methods=["GET"])
-@permissions.check_cruved_scope("R", True, object_code="PERMISSION")
+@permissions.check_cruved_scope("R", get_role=True, module_code="ADMIN", object_code="PERMISSIONS")
 @json_resp
 def get_permissions_for_all_roles(info_role):
     """
@@ -1209,6 +1225,7 @@ def formatRoleName(role):
 
 
 @routes.route("/roles/<int:id_role>", methods=["GET"])
+@permissions.check_cruved_scope("R", module_code="ADMIN", object_code="PERMISSIONS")
 @json_resp
 def get_permissions_by_role_id(id_role):
     """
@@ -1580,6 +1597,7 @@ def is_true(param):
 
 
 @routes.route("/<gathering>", methods=["DELETE"])
+@permissions.check_cruved_scope("D", module_code="ADMIN", object_code="PERMISSIONS")
 @json_resp
 def delete_permission(gathering):
     """
@@ -1626,6 +1644,7 @@ def delete_permission_by_gathering(gathering):
     return result
 
 @routes.route("/availables/actions-objects", methods=["GET"])
+@permissions.check_cruved_scope("R", module_code="ADMIN", object_code="PERMISSIONS")
 @json_resp
 def get_availables_actions_objects():
     """
@@ -1690,6 +1709,7 @@ def get_availables_actions_objects():
 
 
 @routes.route("/availables/actions-objects-filters", methods=["GET"])
+@permissions.check_cruved_scope("R", module_code="ADMIN", object_code="PERMISSIONS")
 @json_resp
 def get_availables_actions_objects_filters():
     """
@@ -1774,7 +1794,7 @@ def get_availables_actions_objects_filters():
 
 
 @routes.route("", methods=["POST"])
-@permissions.check_cruved_scope(action='C', get_role=True)
+@permissions.check_cruved_scope("C", get_role=True, module_code="ADMIN", object_code="PERMISSIONS")
 @json_resp
 def post_permission(info_role):
     """
@@ -1817,7 +1837,7 @@ def post_permission(info_role):
 
 
 @routes.route("<gathering>", methods=["PUT"])
-@permissions.check_cruved_scope(action='U', get_role=True)
+@permissions.check_cruved_scope("U", get_role=True, module_code="ADMIN", object_code="PERMISSIONS")
 @json_resp
 def update_permission(info_role, gathering):
     """
