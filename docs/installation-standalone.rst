@@ -56,7 +56,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     sudo apt-get install wget git
     sudo apt-get install -y postgresql postgis postgresql-server-dev-11
     sudo apt-get install -y postgis-2.5 postgis postgresql-11-postgis-2.5
-    sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev libgdal-dev python-gdal build-essential
+    sudo apt-get install -y python3 python3-dev python3-setuptools python3-pip libpq-dev libgdal-dev python-gdal build-essential
     sudo apt-get install -y python3-wheel python3-cffi libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info
     python3 -m pip install pip==20.0.2
     pip3 install virtualenv==20.0.1
