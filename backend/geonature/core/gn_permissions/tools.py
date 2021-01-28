@@ -1,6 +1,7 @@
 import logging, json
 
 from flask import current_app, redirect, Response
+from werkzeug.exceptions import Unauthorized
 
 from itsdangerous import (
     TimedJSONWebSignatureSerializer as Serializer,
