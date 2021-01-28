@@ -73,7 +73,12 @@ def clean_recipients(recipients):
     [str or tuple]
         Liste contenant des chaines (email) ou des tuples (libellé, email).
     """
-    splited_recipients = recipients if type(recipients) is list else recipients.split(",")
+    if type(recipients) is list and len(recipients) > 0:
+        splited_recipients = recipients
+    elif type(recipients) is str and recipients != '':
+        splited_recipients = recipients.split(",")
+    else:
+        raise Exception("Recipients not set")
     trimed_recipients = list(map(str.strip, splited_recipients))
     return list(map(split_name_address, trimed_recipients))
 
