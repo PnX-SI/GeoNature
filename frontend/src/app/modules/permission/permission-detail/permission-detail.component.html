@@ -182,11 +182,11 @@
                 </tr>
               </thead>
               <tbody>
-                <ng-container *ngFor="let permsByOject of permissionsByCode[module.code] | keyvalue">
-                  <tr *ngIf="permsByOject.key != 'ALL'" class="table-secondary">
-                    <th colspan="6" class="text-uppercase">{{ objects[permsByOject.key].description }}</th>
+                <ng-container *ngFor="let objectCode of objectsOrder[module.code]">
+                  <tr *ngIf="objectCode != 'ALL'" class="table-secondary">
+                    <th colspan="6" class="text-uppercase">{{ objects[objectCode].description }}</th>
                   </tr>
-                  <tr *ngFor="let permission of permsByOject.value">
+                  <tr *ngFor="let permission of permissionsByCode[module.code][objectCode]">
                     <th class="align-middle" scope="row">
                       {{ permission.name }}
                     </th>

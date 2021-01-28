@@ -29,11 +29,24 @@ export class PermissionDetailComponent implements OnInit {
   idRole: number;
   role: IRolePermission;
   objects: Record<string, IObject> = {};
+  objectsOrder: Record<string, string[]> = {};
   permissionsByCode: Record<string, Record<string, IPermission[]>> = {};
   permissionsNbrByCode: Record<string, {total: number, inherited: number, owned: number}> = {};
   showInheritance: boolean = true;
   modules: IModule[];
   subscription: Subscription;
+
+  compareObjectCode = function(a, b) {
+    if (b == 'ALL') {
+      return 1;
+    } else if (a < b) {
+      return -1;
+    } else if (a > b) {
+      return 1;
+    } else {
+      return 0;
+    }
+  }
 
   constructor(
     public activatedRoute: ActivatedRoute,
@@ -77,14 +90,12 @@ export class PermissionDetailComponent implements OnInit {
       objects.forEach((obj) => {
         this.objects[obj.code] = obj;
       });
-      console.log("Objects:", this.objects)
     })
   }
 
   private loadRole() {
     this.loading = true;
     let params = new HttpParams().set('with-inheritance', (this.showInheritance ? '1' : '0'));
-    console.log(`With inheritance: ${this.showInheritance.toString()}`, params)
     this.permissionService.getRoleById(this.idRole, params)
       .pipe(
         map( role => {
@@ -97,20 +108,32 @@ export class PermissionDetailComponent implements OnInit {
             permissions.forEach((item) => {
               if (! modulesCodes.includes(item.module)) {
                 modulesCodes.push(item.module);
+                // Initialize permission sort by module and object
                 this.permissionsByCode[item.module] = {};
                 this.permissionsByCode[item.module][item.object] = [item];
-                // Set numbers of permissions
+
+                // Initialize object order
+                this.objectsOrder[item.module] = [item.object];
+
+                // Initialize numbers of permissions
                 this.permissionsNbrByCode[item.module] = {
                   total: 1,
                   inherited: (item.isInherited ? 1 : 0),
                   owned: (item.isInherited ? 0 : 1),
                 };
               } else {
+                // Add permission sort by module and object
                 if (this.permissionsByCode[item.module][item.object]) {
                   this.permissionsByCode[item.module][item.object].push(item);
                 } else {
                   this.permissionsByCode[item.module][item.object] = [item];
                 }
+
+                // Add object order
+                if (! this.objectsOrder[item.module].includes(item.object)) {
+                  this.objectsOrder[item.module].push(item.object)
+                }
+
                 // Update numbers of permissions
                 this.permissionsNbrByCode[item.module]['total']++;
                 if (item.isInherited) {
@@ -119,7 +142,13 @@ export class PermissionDetailComponent implements OnInit {
                   this.permissionsNbrByCode[item.module]['owned']++;
                 }
               }
-            })
+            });
+          };
+          // Reorder objects code
+          for (let prop in this.objectsOrder) {
+            let objects = this.objectsOrder[prop];
+            objects.sort(this.compareObjectCode);
+            this.objectsOrder[prop] = objects;
           }
           return modulesCodes;
         }),
@@ -137,6 +166,8 @@ export class PermissionDetailComponent implements OnInit {
       });
   }
 
+
+
   private getI18nLocale() {
     this.locale = this.translateService.currentLang;
     this.translateService.onLangChange
@@ -151,7 +182,6 @@ export class PermissionDetailComponent implements OnInit {
   }
 
   onShowInheritanceChange(ob: MatSlideToggleChange) {
-    console.log(`Show inheritance checked change : ${ob.checked}`);
     if (ob.checked != this.showInheritance) {
       this.showInheritance = ob.checked
       this.loadRole();
@@ -159,8 +189,6 @@ export class PermissionDetailComponent implements OnInit {
   }
 
   openEditModal(permission: IPermission = new Permission()): void {
-    console.log("Open edit modal:", permission)
-    console.log("this.role:", this.role);
     const dialogRef = this.dialog.open(EditPermissionModal, {
       data: {
         "role": this.role,
@@ -172,7 +200,6 @@ export class PermissionDetailComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(msg => {
       if (msg == 'OK') {
-        console.log("In after add permission modal closed:", msg)
         this.loadRole();
       }
     });
@@ -186,7 +213,6 @@ export class PermissionDetailComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(permission => {
       if (permission) {
-        console.log(permission);
         this.permissionService.deletePermission(permission.gathering).subscribe(
           () => {
             this.commonService.translateToaster('info', 'Permissions.deleteOk');
