@@ -60,14 +60,12 @@ def get_user_from_token_and_raise(
         response = Unauthorized(description='Token corrupted.').get_response()
         response.set_cookie("token", expires=0)
         raise Unauthorized(response=response)
-    except InsufficientRightsError as e:
-        raise Forbidden
     except Exception as e:
         trap_all_exceptions = current_app.config.get("TRAP_ALL_EXCEPTIONS", True)
         if not trap_all_exceptions:
             raise
         log.critical(e)
-        raise Forbidden(description=repr(e))
+        raise Unauthorized(description=repr(e))
 
 
 class UserCruved:
