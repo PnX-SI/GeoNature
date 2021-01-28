@@ -731,7 +731,6 @@ def getDefaultNomenclatures():
     "E",
     True,
     module_code="OCCTAX",
-    redirect_on_expiration=current_app.config.get("URL_APPLICATION"),
 )
 def export(info_role):
     """Export data from pr_occtax.v_export_occtax view (parameter)
