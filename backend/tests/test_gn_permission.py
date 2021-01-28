@@ -49,19 +49,21 @@ class TestGnPermissionsTools:
 
     def test_user_from_token_and_raise_fail(self):
         # no cookie
-        response = get_user_from_token_and_raise(request)
-        assert response.status_code == 403
-        assert b"No token" in response.data
+        with pytest.raises(Unauthorized, match="No token"):
+            resp = get_user_from_token_and_raise(request)
         
         # set a fake cookie
+        self.client
         self.client.set_cookie("/", "token", "fake token")
         # fake request to set cookie
         response = self.client.get(
-            url_for("gn_permissions_backoffice.filter_list", id_filter_type=4)
+            url_for("gn_permissions_backoffice.filter_list", id_filter_type=4),
+            headers={'Accept': 'application/json'},
         )
-        response = get_user_from_token_and_raise(request)
-        assert response.status_code == 403
-        assert b"Token BadSignature" in response.data
+        with pytest.raises(Unauthorized) as exc_info:
+            resp = get_user_from_token_and_raise(request)
+        assert 401 == exc_info.value.response.status_code
+        assert "Token corrupted." in str(exc_info.value.response.get_data())
 
     def test_get_user_permissions(self):
         # set a real cookie

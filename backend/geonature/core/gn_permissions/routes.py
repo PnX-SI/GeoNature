@@ -57,7 +57,7 @@ routes = Blueprint("gn_permissions", __name__, template_folder="templates")
 
 
 @routes.route("/cruved", methods=["GET"])
-@permissions.check_cruved_scope("R", get_role=True, module_code="GEONATURE")
+@permissions.check_cruved_scope(action="R", get_role=True, module_code="GEONATURE")
 @json_resp
 def get_cruved(info_role):
     """

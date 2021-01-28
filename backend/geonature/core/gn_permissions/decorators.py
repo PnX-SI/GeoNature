@@ -47,9 +47,6 @@ def check_cruved_scope(
                 redirect_on_expiration,
                 redirect_on_invalid_token
             )
-            if not isinstance(user, dict) and user.status_code:
-                return user
-
             user_with_highter_perm = None
 
             user_with_highter_perm = UserCruved(
