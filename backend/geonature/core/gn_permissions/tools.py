@@ -42,8 +42,6 @@ def user_from_token(token, secret_key=None):
 def get_user_from_token_and_raise(
     request,
     secret_key=None,
-    redirect_on_expiration=None,
-    redirect_on_invalid_token=None,
 ):
     """
     Deserialize the token
@@ -53,42 +51,22 @@ def get_user_from_token_and_raise(
         token = request.cookies["token"]
         return user_from_token(token, secret_key)
 
+    except KeyError:
+        raise Unauthorized(description='No token.')
     except AccessRightsExpiredError:
-        if redirect_on_expiration:
-            res = redirect(redirect_on_expiration, code=302)
-        else:
-            res = Response("Token Expired", 403)
-        res.set_cookie("token", expires=0)
-        return res
-    except InsufficientRightsError as e:
-        log.info(e)
-        if redirect_on_expiration:
-            res = redirect(redirect_on_expiration, code=302)
-        else:
-            res = Response("Forbidden", 403)
-        return res
-    except KeyError as e:
-        if redirect_on_expiration:
-            return redirect(redirect_on_expiration, code=302)
-        return Response("No token", 403)
-
+        raise Unauthorized(description='Token expired.')
     except UnreadableAccessRightsError:
-        log.info("Invalid Token : BadSignature")
-        # invalid token
-        if redirect_on_invalid_token:
-            res = redirect(redirect_on_invalid_token, code=302)
-        else:
-            res = Response("Token BadSignature", 403)
-        res.set_cookie("token", expires=0)
-        return res
-
+        response = Unauthorized(description='Token corrupted.').get_response()
+        response.set_cookie("token", expires=0)
+        raise Unauthorized(response=response)
+    except InsufficientRightsError as e:
+        raise Forbidden
     except Exception as e:
         trap_all_exceptions = current_app.config.get("TRAP_ALL_EXCEPTIONS", True)
         if not trap_all_exceptions:
             raise
         log.critical(e)
-        msg = json.dumps({"type": "Exception", "msg": repr(e)})
-        return Response(msg, 403)
+        raise Forbidden(description=repr(e))
 
 
 class UserCruved:

@@ -20,9 +20,7 @@ def check_cruved_scope(
     action,
     get_role=False,
     module_code=None,
-    object_code=None,
-    redirect_on_expiration=None,
-    redirect_on_invalid_token=None,
+    object_code=None
 ):
     """
     Decorator to protect routes with SCOPE CRUVED
@@ -36,15 +34,13 @@ def check_cruved_scope(
         get_role(boolean): is the decorator should retour the VUsersPermissions object as kwargs
         module_code(string): the code of the module (gn_commons.t_modules) ('OCCTAX') for the requested permission
         object_code(string): the code of the object (gn_permissions.t_object) for the requested permission ('PERMISSIONS')
-        redirect_on_expiration(string): url where we redirect on token expiration
-        redirect_on_invalid_token(string): url where we redirect on token invalid token
     """
 
     def _check_cruved_scope(fn):
         @wraps(fn)
         def __check_cruved_scope(*args, **kwargs):
             user = get_user_from_token_and_raise(
-                request, action, redirect_on_expiration, redirect_on_invalid_token
+                request, action
             )
             user_with_highter_perm = None
 
