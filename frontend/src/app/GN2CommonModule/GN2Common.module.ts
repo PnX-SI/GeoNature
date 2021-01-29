@@ -24,6 +24,7 @@ import {
   MatChipsModule,
   MatTabsModule
 } from '@angular/material';
+import { RouterModule } from '@angular/router';
 
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
@@ -40,6 +41,7 @@ import { ObserversComponent } from './form/observers/observers.component';
 import { DateComponent } from './form/date/date.component';
 import { TaxonomyComponent } from './form/taxonomy/taxonomy.component';
 import { AreasIntersectedComponent } from './form/areas-intersected/areas-intersected-modal.component';
+import { BreadcrumbsComponent } from '@geonature_common/others/breadcrumbs/breadcrumbs.component'
 import { DatasetsComponent } from './form/datasets/datasets.component';
 import { DynamicFormComponent } from './form/dynamic-form/dynamic-form.component';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
@@ -133,6 +135,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
     ReactiveFormsModule,
     NgxDatatableModule,
     NgSelectModule,
+    RouterModule,
     TranslateModule.forChild(),
     NgbModule.forRoot(),
     AutoCompleteModule,
@@ -142,6 +145,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
   declarations: [
     NomenclatureComponent,
     ObserversComponent,
+    BreadcrumbsComponent,
     DateComponent,
     TaxonomyComponent,
     AreasIntersectedComponent,
@@ -202,6 +206,7 @@ import { MultiSelectComponent } from './form/multiselect/multiselect.component';
   entryComponents: [TaxonAdvancedModalComponent, ConfirmationDialog, MediaDialog],
   exports: [
     MunicipalitiesComponent,
+    BreadcrumbsComponent,
     DynamicFormComponent,
     NomenclatureComponent,
     ObserversComponent,

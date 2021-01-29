@@ -174,6 +174,7 @@ def get_user_permissions(
         id_role=user["id_role"],
         code_filter_type=code_filter_type,
         code_action=code_action,
+        module_code=module_code,
         object_code=code_object,
     )
     object_for_error = None
