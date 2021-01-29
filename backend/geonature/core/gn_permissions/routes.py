@@ -35,10 +35,8 @@ from geonature.core.gn_permissions.models import (
     BibFiltersType,
     BibFiltersValues,
     CorModuleActionObjectFilter,
-    CorObjectModule,
     CorRoleActionFilterModuleObject,
     TActions,
-    TFilters,
     TObjects,
     TRequests,
     RequestStates,
@@ -88,12 +86,7 @@ def get_cruved(info_role):
     for mod in modules:
         mod_as_dict = mod.as_dict()
         # get mod objects
-        module_objects = (
-            DB.session.query(TObjects)
-            .join(CorObjectModule, CorObjectModule.id_object == TObjects.id_object)
-            .filter_by(id_module=mod_as_dict["id_module"])
-            .all()
-        )
+        module_objects = get_module_objects(mod_as_dict["id_module"])
 
         module_cruved, herited = cruved_scope_for_user_in_module(
             id_role=info_role.id_role, module_code=mod_as_dict["module_code"]
@@ -117,6 +110,19 @@ def get_cruved(info_role):
         modules_with_cruved[mod_as_dict["module_code"]] = mod_as_dict
 
     return modules_with_cruved
+
+
+def get_module_objects(id_module):
+    query = (
+        DB.session.query(TObjects)
+        .join(
+            CorModuleActionObjectFilter, 
+            CorModuleActionObjectFilter.id_object == TObjects.id_object,
+        )
+        .filter_by(id_module = id_module)
+        
+    )
+    return query.all()
 
 
 @routes.route("/logout_cruved", methods=["GET"])
@@ -469,20 +475,6 @@ def add_permission(request):
     # Persists permissions in database
     for permission in new_permissions:
         if not permission.is_already_exist():
-            # TODO: remove permission_filter managment !
-            permission_filter = get_filter(
-                id_filter_type=permission.id_filter_type,
-                value_filter=permission.value_filter,
-            )
-            if not permission_filter:
-                filter_type_label = get_filter_type_label(permission.id_filter_type)
-                permission_filter = TFilters(
-                    label_filter=f"{filter_type_label} : {permission.value_filter}",
-                    id_filter_type=permission.id_filter_type,
-                    value_filter=permission.value_filter,
-                )
-            permission.filter.append(permission_filter)
-
             DB.session.add(permission)
 
 
@@ -615,7 +607,6 @@ def get_fresh_permission(filter_type_code, module_code, action_code, object_code
         id_module=permission_module.id_module,
         id_action=permission_action.id_action,
         id_object=permission_object.id_object,
-        id_filter=0,# TODO: remove this line !
         id_filter_type=permission_filter_type.id_filter_type,
     )
     
@@ -631,31 +622,6 @@ def get_fresh_permission(filter_type_code, module_code, action_code, object_code
 def build_value_filter_from_list(data: list):
     unduplicated_data = unduplicate_values(data)
     return ",".join(map(str, unduplicated_data))
-
-
-def get_filter(id_filter_type, value_filter):
-    try:
-        permission_filter = (DB
-            .session.query(TFilters)
-            .filter(TFilters.id_filter_type == id_filter_type)
-            .filter(TFilters.value_filter == value_filter)
-            .one()
-        )
-    except exc.NoResultFound:
-        return False
-    return permission_filter
-
-
-def get_filter_type_label(id_filter_type):
-    try:
-        label = (DB
-            .session.query(BibFiltersType.label_filter_type)
-            .filter(BibFiltersType.id_filter_type == id_filter_type)
-            .one()[0]
-        )
-    except exc.NoResultFound:
-        return False
-    return label
 
 
 def send_email_after_managing_request(request):
@@ -1336,15 +1302,8 @@ def get_permissions_by_role_id(id_role):
                     })
 
             # For this module get its related objects
-            module_objects = (
-                DB.session.query(TObjects)
-                .join(
-                    CorModuleActionObjectFilter, 
-                    CorModuleActionObjectFilter.id_object == TObjects.id_object,
-                )
-                .filter_by(id_module = module.id_module)
-                .all()
-            )
+            module_objects = get_module_objects(module.id_module)
+            
             # For each object get herited permissions for each CRUVED action and filter SCOPE
             for mo in module_objects:
                 # Initialize variables
@@ -1907,27 +1866,12 @@ def create_permission(gathering, data):
                 "id_module": module_id,
                 "id_action": action_id,
                 "id_object": object_id,
-                "id_filter": 0,# TODO: delete this line !
                 "gathering": gathering,
                 "end_date": end_access_date,
                 "id_filter_type": filter_type_id,
                 "value_filter": value_filter,
             })
             if not permission.is_already_exist():
-                # TODO: remove permission_filter managment !
-                permission_filter = get_filter(
-                    id_filter_type=permission.id_filter_type,
-                    value_filter=permission.value_filter,
-                )
-                if not permission_filter:
-                    filter_type_label = get_filter_type_label(permission.id_filter_type)
-                    permission_filter = TFilters(
-                        label_filter=f"{filter_type_label} : {permission.value_filter}",
-                        id_filter_type=permission.id_filter_type,
-                        value_filter=permission.value_filter,
-                    )
-                permission.filter.append(permission_filter)
-                
                 DB.session.add(permission)
 
 

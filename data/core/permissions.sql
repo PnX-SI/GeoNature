@@ -289,7 +289,6 @@ CREATE TABLE cor_role_action_filter_module_object (
     id_module integer NOT NULL,
     id_action integer NOT NULL,
     id_object integer NOT NULL DEFAULT gn_permissions.get_id_object('ALL'),
-    id_filter integer NOT NULL,-- TODO: remove this line !
     gathering uuid DEFAULT public.uuid_generate_v4(),
     end_date timestamp NULL,
     id_filter_type int4 NOT NULL,
@@ -297,28 +296,6 @@ CREATE TABLE cor_role_action_filter_module_object (
     -- id_filter_value int4 NULL,
     value_filter text NOT NULL,
     id_request int4 NULL 
-);
-
--- TODO : remove this table
-CREATE TABLE t_filters (
-    id_filter serial NOT NULL,
-    label_filter character varying(255) NOT NULL,
-    value_filter text NOT NULL,
-    description_filter text,
-    id_filter_type integer NOT NULL
-);
-
--- TODO : remove this SQL request
-CREATE TABLE cor_object_module (
-    id_cor_object_module serial NOT NULL,
-    id_object integer NOT NULL,
-    id_module integer NOT NULL
-);
-
--- TODO : remove this table
-CREATE TABLE cor_filter_type_module (
-    id_filter_type integer NOT NULL,
-    id_module integer NOT NULL
 );
 
 CREATE TABLE gn_permissions.bib_filters_values (
@@ -555,21 +532,6 @@ ALTER TABLE ONLY cor_role_action_filter_module_object
     ADD CONSTRAINT pk_cor_r_a_f_m_o 
     PRIMARY KEY (id_permission) ;
 
--- TODO : remove this SQL request
-ALTER TABLE ONLY t_filters
-    ADD CONSTRAINT pk_t_filters 
-    PRIMARY KEY (id_filter) ;
-
--- TODO : remove this SQL request
-ALTER TABLE ONLY cor_object_module
-    ADD CONSTRAINT pk_cor_object_module 
-    PRIMARY KEY (id_cor_object_module) ;
-
--- TODO : remove this SQL request
-ALTER TABLE ONLY cor_filter_type_module
-    ADD CONSTRAINT pk_cor_filter_module 
-    PRIMARY KEY (id_filter_type, id_module) ;
-
 
 -- -------------------------------------------------------------------------------------------------
 -- FOREIGN KEY
@@ -604,44 +566,6 @@ ALTER TABLE gn_permissions.cor_role_action_filter_module_object
 	ADD CONSTRAINT fk_cor_r_a_f_m_o_id_request FOREIGN KEY (id_request)
 	REFERENCES gn_permissions.t_requests (id_request) MATCH FULL
 	ON UPDATE CASCADE ;
-
--- TODO : remove this SQL request
-ALTER TABLE ONLY cor_role_action_filter_module_object
-    ADD CONSTRAINT  fk_cor_r_a_f_m_o_id_filter FOREIGN KEY (id_filter) 
-    REFERENCES t_filters (id_filter) 
-    ON UPDATE CASCADE ;
-
--- TODO : remove this SQL request
-ALTER TABLE ONLY t_filters
-    ADD CONSTRAINT fk_t_filters_id_filter_type FOREIGN KEY (id_filter_type) 
-    REFERENCES bib_filters_type (id_filter_type) 
-    ON UPDATE CASCADE ;
-
--- TODO : remove this SQL request
-ALTER TABLE ONLY cor_object_module
-    ADD CONSTRAINT fk_cor_object_module_id_module FOREIGN KEY (id_module) 
-    REFERENCES gn_commons.t_modules (id_module) 
-    ON UPDATE CASCADE 
-    ON DELETE CASCADE ;
-
--- TODO : remove this SQL request
-ALTER TABLE ONLY cor_object_module
-    ADD CONSTRAINT  fk_cor_object_module_id_object FOREIGN KEY (id_object) 
-    REFERENCES t_objects (id_object) 
-    ON UPDATE CASCADE 
-    ON DELETE CASCADE ;
-
--- TODO : remove this SQL request
-ALTER TABLE ONLY cor_filter_type_module
-    ADD CONSTRAINT  fk_cor_filter_module_id_filter FOREIGN KEY (id_filter_type) 
-    REFERENCES bib_filters_type (id_filter_type) 
-    ON UPDATE CASCADE ;
-
--- TODO : remove this SQL request
-ALTER TABLE ONLY cor_filter_type_module
-    ADD CONSTRAINT fk_cor_filter_module_id_module FOREIGN KEY (id_module) 
-    REFERENCES gn_commons.t_modules (id_module) 
-    ON UPDATE CASCADE ;
 
 -- Constraints for table "bib_filters_values"
 ALTER TABLE gn_permissions.bib_filters_values 
@@ -706,7 +630,6 @@ AS WITH
             c_1.id_object,
             c_1.gathering,
             c_1.end_date,
-            c_1.id_filter,-- TODO: remove this line
             c_1.id_filter_type,
             c_1.value_filter
         FROM utilisateurs.t_roles AS u 
@@ -729,7 +652,6 @@ AS WITH
             c_1.id_object,
             c_1.gathering,
             c_1.end_date,
-            c_1.id_filter,-- TODO: remove this line
             c_1.id_filter_type,
             c_1.value_filter
         FROM utilisateurs.t_roles AS u 
@@ -739,11 +661,6 @@ AS WITH
                 ON (g.id_role_groupe = grp.id_role)
             JOIN gn_permissions.cor_role_action_filter_module_object AS c_1 
                 ON (c_1.id_role = g.id_role_groupe)
-        -- TODO: check if below lines are really useful
-        -- WHERE g.id_role_groupe IN (
-        --     SELECT DISTINCT cor_roles.id_role_groupe 
-        --     FROM utilisateurs.cor_roles
-        -- )
     ), 
     all_user_permission AS (
         -- UNION operator removes all duplicate rows from the combined data set
@@ -759,7 +676,6 @@ AS WITH
             p_user_permission.id_object,
             p_user_permission.gathering,
             p_user_permission.end_date,
-            p_user_permission.id_filter,-- TODO: remove this line
             p_user_permission.id_filter_type,
             p_user_permission.value_filter
         FROM p_user_permission
@@ -776,7 +692,6 @@ AS WITH
             p_groupe_permission.id_object,
             p_groupe_permission.gathering,
             p_groupe_permission.end_date,
-            p_groupe_permission.id_filter,-- TODO: remove this line
             p_groupe_permission.id_filter_type,
             p_groupe_permission.value_filter
         FROM p_groupe_permission
@@ -795,7 +710,6 @@ SELECT v.id_role,
     actions.code_action,
     actions.description_action,
     obj.code_object,
-    v.id_filter,-- TODO: remove this line
     v.id_filter_type,
     v.value_filter,
     filter_type.code_filter_type,

@@ -31,11 +31,10 @@ class VUsersPermissions(DB.Model):
     code_action = DB.Column(DB.Unicode)
     description_action = DB.Column(DB.Unicode)
     code_object = DB.Column(DB.Unicode)
-    id_filter = DB.Column(DB.Integer, primary_key=True)# TODO: remove this line
-    id_filter_type = DB.Column(DB.Integer)
-    value_filter = DB.Column(DB.Unicode)
+    id_filter_type = DB.Column(DB.Integer, primary_key=True)
+    value_filter = DB.Column(DB.Unicode, primary_key=True)
     code_filter_type = DB.Column(DB.Unicode)
-    gathering = DB.Column(UUID(as_uuid=True))
+    gathering = DB.Column(UUID(as_uuid=True), primary_key=True)
     end_date = DB.Column(DB.DateTime)
     id_permission = DB.Column(DB.Integer)
 
@@ -86,18 +85,6 @@ class BibFiltersValues(DB.Model):
     description = DB.Column(DB.UnicodeText)
 
 
-# TODO: remove this class
-@serializable
-class TFilters(DB.Model):
-    __tablename__ = "t_filters"
-    __table_args__ = {"schema": "gn_permissions"}
-    id_filter = DB.Column(DB.Integer, primary_key=True)
-    value_filter = DB.Column(DB.Unicode)
-    label_filter = DB.Column(DB.Unicode)
-    description_filter = DB.Column(DB.Unicode)
-    id_filter_type = DB.Column(DB.Integer)
-
-
 @serializable
 class TActions(DB.Model):
     __tablename__ = "t_actions"
@@ -122,9 +109,8 @@ class CorRoleActionFilterModuleObject(DB.Model):
     __table_args__ = {"schema": "gn_permissions"}
     id_permission = DB.Column(DB.Integer, primary_key=True)
     id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
-    id_action = DB.Column(DB.Integer, ForeignKey("gn_permissions.t_actions.id_action"))
-    id_filter = DB.Column(DB.Integer, ForeignKey("gn_permissions.t_filters.id_filter"))# TODO: remove this line
     id_module = DB.Column(DB.Integer, ForeignKey("gn_commons.t_modules.id_module"))
+    id_action = DB.Column(DB.Integer, ForeignKey("gn_permissions.t_actions.id_action"))
     id_object = DB.Column(
         DB.Integer,
         ForeignKey("gn_permissions.t_objects.id_object"),
@@ -152,13 +138,6 @@ class CorRoleActionFilterModuleObject(DB.Model):
         primaryjoin=(TActions.id_action == id_action),
         foreign_keys=[id_action],
     )
-    #TODO: remove this relation
-    filter = DB.relationship(
-        TFilters,
-        primaryjoin=(TFilters.id_filter == id_filter),
-        foreign_keys=[id_filter],
-        uselist=True,
-    )
     module = DB.relationship(
         TModules,
         primaryjoin=(TModules.id_module == id_module),
@@ -174,16 +153,11 @@ class CorRoleActionFilterModuleObject(DB.Model):
         primaryjoin=(BibFiltersType.id_filter_type == id_filter_type),
         foreign_keys=[id_filter_type],
     )
-    # cor_request = DB.relationship(
-    #     t_requests,
-    #     primaryjoin=(t_requests.id_request == id_request),
-    #     foreign_keys=[id_request],
-    # )
 
     def is_already_exist(self):
         """ Retourne la première permission trouvée correspondant à l'objet courant.
             ATTENTION: cette méthode ne vérifie pas tous les filtres d'une permission. Elle
-            vérfie seulement qu'il n'existe pas déjà un enregistrement similaire dans la table.
+            vérifie seulement qu'il n'existe pas déjà un enregistrement similaire dans la table.
             Tous les champs sont vérifiés à l'exception de la clé "id_permission".
 
             Returns
@@ -193,8 +167,8 @@ class CorRoleActionFilterModuleObject(DB.Model):
         """
         privilege = {
             "id_role": self.id_role,
-            "id_action": self.id_action,
             "id_module": self.id_module,
+            "id_action": self.id_action,
             "id_object": self.id_object,
             "gathering": self.gathering,
             "end_date": self.end_date,
@@ -205,21 +179,8 @@ class CorRoleActionFilterModuleObject(DB.Model):
         return (
             DB.session.query(CorRoleActionFilterModuleObject)
             .filter_by(**privilege)
-            # TODO: remove joint and filters to TFilters
-            .join(TFilters, TFilters.id_filter == CorRoleActionFilterModuleObject.id_filter)
-            .filter(TFilters.id_filter_type == self.id_filter_type)
-            .filter(TFilters.value_filter == self.value_filter)
             .first()
         )
-
-
-@serializable
-class CorObjectModule(DB.Model):
-    __tablename__ = "cor_object_module"
-    __table_args__ = {"schema": "gn_permissions"}
-    id_cor_object_module = DB.Column(DB.Integer, primary_key=True)
-    id_object = DB.Column(DB.Integer)
-    id_module = DB.Column(DB.Integer)
 
 
 class RequestStates(str, enum.Enum):

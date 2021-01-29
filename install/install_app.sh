@@ -230,11 +230,13 @@ geonature install_gn_module $my_current_geonature_directory/contrib/occtax /occt
 
 if [ "$install_module_occhab" = true ];
   then
+  echo "Installation du module OccHab en cours..."
   geonature install_gn_module $my_current_geonature_directory/contrib/gn_module_occhab /occhab --build=false
 fi
 
 if [ "$install_module_validation" = true ];
   then
+    echo "Installation du module Validation en cours..."
     geonature install_gn_module $my_current_geonature_directory/contrib/gn_module_validation /validation --build=false
 fi
 

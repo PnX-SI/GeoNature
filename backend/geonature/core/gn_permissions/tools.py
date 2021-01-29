@@ -21,7 +21,7 @@ from pypnusershub.db.tools import (
     UnreadableAccessRightsError,
 )
 
-from geonature.core.gn_permissions.models import VUsersPermissions, TFilters
+from geonature.core.gn_permissions.models import VUsersPermissions
 from geonature.utils.env import DB
 
 log = logging.getLogger(__name__)
@@ -55,9 +55,9 @@ def get_user_from_token_and_raise(
     redirect_on_invalid_token=None
 ):
     """
-    Déserialisation du token utilisateur
-    Attrape les exceptions et retourne la réponse d'erreur appropriée : 
-    Response(403, 302 ...).
+    Déserialisation du token utilisateur.
+    Attrape les exceptions et en retourne de nouvelles qui seront gérées
+    par "l'attrapeur" global d'exception (voir backend/geonature/core/errors/routes.py).
     """
     try:
         token = request.cookies["token"]
@@ -153,8 +153,11 @@ class UserCruved:
                     VUsersPermissions.code_object == object_code,
                 )
             )
-
-        return q.filter(sa.or_(*ors)).all()
+        q = q.filter(sa.or_(*ors))
+        from sqlalchemy.dialects import postgresql;
+        print('-'*72)
+        print(q.statement.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
+        return q.all()
 
     def _build_other_filters_for_max_perm_query(self, gathering):
         """
@@ -171,18 +174,6 @@ class UserCruved:
             .filter(VUsersPermissions.code_filter_type != self._code_filter_type)
             .filter(VUsersPermissions.gathering == gathering)
         )
-
-        # List of module_code, object_code couples to select
-        # ors = []
-        # for k, (module_code, object_code) in self._permission_select.items():
-        #     ors.append(
-        #         sa.and_(
-        #             VUsersPermissions.module_code.ilike(module_code),
-        #             VUsersPermissions.code_object == object_code,
-        #         )
-        #     )
-        # q = q.filter(sa.or_(*ors))
-        #print(q)
         return q.all()
 
     def get_actions_codes():
@@ -198,6 +189,8 @@ class UserCruved:
         Ce fonctionnement est prévu pour des filtres dont la valeur est numérique.
         Utilisé principalement pour le CRUVED avec le filtre de propriété (=SCOPE).
         """
+        print("HIGHTER PERM:")
+        print(perm_list)
         user_with_highter_perm = perm_list[0]
         max_code = user_with_highter_perm.value_filter
         i = 1
@@ -237,6 +230,8 @@ class UserCruved:
                 ):
                     type_of_perm.setdefault(k, []).append(user_permission)
 
+        print("TYPE of PERM:")
+        print(type_of_perm)
         # Take the max of the different permissions
         herited = False
         herited_object = None
@@ -250,18 +245,10 @@ class UserCruved:
                     herited_object = self._permission_select[k]
                 return max_perm, herited, herited_object
 
-    # TODO: remove if it's not used
-    # def get_herited_user_cruved(self):
-    #     user_permissions = self.get_user_perm_list()
-    #     return self.build_herited_user_cruved(user_permissions)
-
-    def get_perm_for_all_actions(self, get_id):
+    def get_perm_for_all_actions(self):
         """
         Construction des permissions pour chaque action d'un module/objet données
 
-        Parameters:
-            - get_id(boolean) : indique si la valeur de la permission retournée
-                correspond au code (False) ou à son identifiant (True)
         Return:
             - herited_cruved : valeur max de la permission pour chaque action du cruved.
             - herited(boolean) : True si hérité, False sinon.
@@ -287,21 +274,14 @@ class UserCruved:
                 is_herited = True
                 g_herited_object = herited_object
 
-        # Get the default value to return
-        if get_id:
-            default_value = (
-                DB.session.query(TFilters.id_filter).filter(TFilters.value_filter == "0").one()[0]
-            )
-            select_col = "id_filter"
-        else:
-            default_value = "0"
-            select_col = "value_filter"
+        # Set default value to return
+        default_value = "0"
 
         # Prepare output
         herited_cruved = {}
         for action in self._cruved_actions:
             if action in herited_perm:
-                herited_cruved[action] = getattr(herited_perm[action], select_col)
+                herited_cruved[action] = getattr(herited_perm[action], "value_filter")
             else:
                 herited_cruved[action] = default_value
 
@@ -309,11 +289,14 @@ class UserCruved:
 
     def get_perm_for_one_action(self, action):
         """
-        Récupération de la permission hérité avec la valeur la plus grande 
+        Récupération de la permission héritée avec la valeur la plus grande 
         pour une action donnée.
         """
         permissions = self.get_user_perm_list(action)
-        
+        print("USER PERMISSIONS:")
+        print(f"Size:{len(permissions)}")
+        print(permissions)
+
         permissions = self.build_herited_user_cruved(permissions)
         if permissions is not None:
             (max_perm, is_inherited_by_module, herited_by) = permissions
@@ -359,31 +342,11 @@ def get_user_permissions(
             f"User {user['id_role']} cannot '{code_action}' in module/app/object {object_for_error}"
         )
 
-# TODO: remove with old interface
-def beautifulize_cruved(actions, cruved):
-    """
-    Construit un dictionnaire contenant les intitulés des actions afin 
-    que le CRUVED soit plus lisible.
-    Params:
-        actions: dictionnaire des actions : {'C': 'Action de créer'}
-        cruved: dictionnaire contenant le CRUVED
-    Return:
-        Array<dict> [{'label': 'Action de Lire', 'value': '3'}]
-    """
-    cruved_beautiful = []
-    for key, value in cruved.items():
-        temp = {}
-        temp["label"] = actions.get(key)
-        temp["value"] = value
-        cruved_beautiful.append(temp)
-    return cruved_beautiful
-
 
 def cruved_scope_for_user_in_module(
     id_role=None,
     module_code=None,
     object_code=None,
-    get_id=False,
     get_herited_obj=False,
     append_to_select=None,
 ):
@@ -397,8 +360,6 @@ def cruved_scope_for_user_in_module(
         - id_role(int)
         - module_code(str)
         - object_code(str)
-        - get_id(bool): si true retourne la valeur id_scope pour chaque action
-            si false retourne la valeur filter_value pour chaque action
         - append_to_select (dict) : dictionnaire contenant des règles 
             d'héritage supplémentaires.
 
@@ -412,7 +373,7 @@ def cruved_scope_for_user_in_module(
         module_code=module_code,
         object_code=object_code,
         append_to_select=append_to_select,
-    ).get_perm_for_all_actions(get_id)
+    ).get_perm_for_all_actions()
     if get_herited_obj:
         is_herited = (is_herited, herited_object)
     return herited_cruved, is_herited

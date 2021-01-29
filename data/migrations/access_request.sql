@@ -522,23 +522,6 @@ WHERE code_filter_type = 'SENSITIVITY' ;
 
 
 -- -------------------------------------------------------------------------------------------------
--- Rename "SENSITIVITY" filter values. See #1062
--- TODO: to remove when new permissions management implemented.
-UPDATE gn_permissions.t_filters 
-SET 
-    value_filter = 'fuzzy',
-    description_filter = 'Filtre pour flouter les données sensibles et privées.'
-WHERE value_filter = 'DONNEES_DEGRADEES' ;
-
--- TODO: to remove when new permissions management implemented.
-UPDATE gn_permissions.t_filters 
-SET 
-    value_filter = 'exact',
-    description_filter = 'Filtre pour afficher précisément les données sensibles et privées.'
-WHERE value_filter = 'DONNEES_PRECISES' ;
-
-
--- -------------------------------------------------------------------------------------------------
 -- Drop "v_roles_permissions" before alterate "cor_role_action_filter_module_object"
 -- because columns depend on it.
 DROP VIEW IF EXISTS gn_permissions.v_roles_permissions ;
@@ -697,14 +680,13 @@ DROP FUNCTION IF EXISTS gn_permissions.fct_tri_does_user_have_already_scope_filt
 -- Insert new permissions on ACCESS_REQUESTS object for ADMIN module for "group_admin"
 -- C
 INSERT INTO gn_permissions.cor_role_action_filter_module_object
-    (id_role, id_action, id_filter, id_module, id_object, id_filter_type, value_filter)
-    SELECT 9, 1, 4, 1, 4, 1, '3'
+    (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
+    SELECT 9, 1, 1, 4, 1, '3'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_role_action_filter_module_object AS cor
         WHERE cor.id_role = 9
             AND cor.id_action = 1
-            AND cor.id_filter = 4
             AND cor.id_module = 1
             AND cor.id_object = 4
             AND cor.id_filter_type = 1
@@ -712,14 +694,13 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
     ) ;
 -- R
 INSERT INTO gn_permissions.cor_role_action_filter_module_object
-    (id_role, id_action, id_filter, id_module, id_object, id_filter_type, value_filter)
-    SELECT 9, 2, 4, 1, 4, 1, '3'
+    (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
+    SELECT 9, 2, 1, 4, 1, '3'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_role_action_filter_module_object AS cor
         WHERE cor.id_role = 9
             AND cor.id_action = 2
-            AND cor.id_filter = 4
             AND cor.id_module = 1
             AND cor.id_object = 4
             AND cor.id_filter_type = 1
@@ -727,14 +708,13 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
     ) ;
 -- U
 INSERT INTO gn_permissions.cor_role_action_filter_module_object
-    (id_role, id_action, id_filter, id_module, id_object, id_filter_type, value_filter)
-    SELECT 9, 3, 4, 1, 4, 1, '3'
+    (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
+    SELECT 9, 3, 1, 4, 1, '3'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_role_action_filter_module_object AS cor
         WHERE cor.id_role = 9
             AND cor.id_action = 3
-            AND cor.id_filter = 4
             AND cor.id_module = 1
             AND cor.id_object = 4
             AND cor.id_filter_type = 1
@@ -742,14 +722,13 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
     ) ;
 -- D
 INSERT INTO gn_permissions.cor_role_action_filter_module_object
-    (id_role, id_action, id_filter, id_module, id_object, id_filter_type, value_filter)
+    (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
     SELECT 9, 6, 4, 1, 4, 1, '3'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_role_action_filter_module_object AS cor
         WHERE cor.id_role = 9
             AND cor.id_action = 6
-            AND cor.id_filter = 4
             AND cor.id_module = 1
             AND cor.id_object = 4
             AND cor.id_filter_type = 1
@@ -814,7 +793,6 @@ AS WITH
             c_1.id_object,
             c_1.gathering,
             c_1.end_date,
-            c_1.id_filter,-- TODO: remove this line
             c_1.id_filter_type,
             c_1.value_filter
         FROM utilisateurs.t_roles AS u 
@@ -837,7 +815,6 @@ AS WITH
             c_1.id_object,
             c_1.gathering,
             c_1.end_date,
-            c_1.id_filter,-- TODO: remove this line
             c_1.id_filter_type,
             c_1.value_filter
         FROM utilisateurs.t_roles AS u 
@@ -847,11 +824,6 @@ AS WITH
                 ON (g.id_role_groupe = grp.id_role)
             JOIN gn_permissions.cor_role_action_filter_module_object AS c_1 
                 ON (c_1.id_role = g.id_role_groupe)
-        -- TODO: check if below lines are really useful
-        -- WHERE g.id_role_groupe IN (
-        --     SELECT DISTINCT cor_roles.id_role_groupe 
-        --     FROM utilisateurs.cor_roles
-        -- )
     ), 
     all_user_permission AS (
         -- UNION operator removes all duplicate rows from the combined data set
@@ -867,7 +839,6 @@ AS WITH
             p_user_permission.id_object,
             p_user_permission.gathering,
             p_user_permission.end_date,
-            p_user_permission.id_filter,-- TODO: remove this line
             p_user_permission.id_filter_type,
             p_user_permission.value_filter
         FROM p_user_permission
@@ -884,7 +855,6 @@ AS WITH
             p_groupe_permission.id_object,
             p_groupe_permission.gathering,
             p_groupe_permission.end_date,
-            p_groupe_permission.id_filter,-- TODO: remove this line
             p_groupe_permission.id_filter_type,
             p_groupe_permission.value_filter
         FROM p_groupe_permission
@@ -903,10 +873,8 @@ SELECT v.id_role,
     actions.code_action,
     actions.description_action,
     obj.code_object,
-    v.id_filter,-- TODO: remove this line
     v.id_filter_type,
     v.value_filter,
-    --filters.label_filter,-- TODO: remove this line
     filter_type.code_filter_type,
     v.gathering,
     v.end_date,
@@ -2599,26 +2567,25 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         WHERE cmaof.code = 'OCCHAB-D-ALL-SCOPE'
     ) ;
 
--- TODO: uncomment the database cleaning queries.
 -- -------------------------------------------------------------------------------------------------
 -- Remove useless column from cor_role_action_filter_module_object
--- ALTER TABLE gn_permissions.cor_role_action_filter_module_object
---     DROP COLUMN id_filter IF EXISTS, 
---     DROP CONSTRAINT IF EXISTS fk_cor_r_a_f_m_o_id_filter CASCADE ;
+ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+    DROP COLUMN id_filter IF EXISTS, 
+    DROP CONSTRAINT IF EXISTS fk_cor_r_a_f_m_o_id_filter CASCADE ;
 
 -- -------------------------------------------------------------------------------------------------
 -- Remove table "t_filters"
--- DROP TABLE IF EXISTS gn_permissions.t_filters ;
+DROP TABLE IF EXISTS gn_permissions.t_filters ;
 
 
 -- -------------------------------------------------------------------------------------------------
 -- Remove table "cor_object_module"
--- DROP TABLE IF EXISTS gn_permissions.cor_object_module ;
+DROP TABLE IF EXISTS gn_permissions.cor_object_module ;
 
 
 -- -------------------------------------------------------------------------------------------------
 -- Remove table "cor_filter_type_module"
--- DROP TABLE IF EXISTS gn_permissions.cor_filter_type_module ;
+DROP TABLE IF EXISTS gn_permissions.cor_filter_type_module ;
 
 
 COMMIT ;
