@@ -36,7 +36,7 @@ ALTER TABLE gn_meta.sinp_datatype_publications
   RETURNS trigger AS
 $BODY$
 BEGIN
-    UPDATE gn_synthese.synthese 
+    UPDATE gn_synthese.synthese
     SET id_nomenclature_sensitivity = updated_rows.id_nomenclature_sensitivity
     FROM NEW AS updated_rows
     JOIN gn_synthese.synthese s ON s.unique_id_sinp = updated_rows.uuid_attached_row;
@@ -51,7 +51,7 @@ CREATE OR REPLACE FUNCTION gn_sensitivity.fct_tri_delete_id_sensitivity_synthese
   RETURNS trigger AS
 $BODY$
 BEGIN
-    UPDATE gn_synthese.synthese 
+    UPDATE gn_synthese.synthese
     SET id_nomenclature_sensitivity = gn_synthese.get_default_nomenclature_value('SENSIBILITE'::character varying)
     FROM OLD AS deleted_rows
     JOIN gn_synthese.synthese s ON s.unique_id_sinp = deleted_rows.uuid_attached_row;
@@ -68,21 +68,21 @@ CREATE OR REPLACE FUNCTION gn_sensitivity.calculate_cd_diffusion_level(
  LANGUAGE plpgsql
 AS $function$
 BEGIN
-  IF cd_nomenclature_diffusion_level IS NULL 
+  IF cd_nomenclature_diffusion_level IS NULL
     THEN RETURN
-    CASE 
+    CASE
       WHEN cd_nomenclature_sensitivity = '0' THEN '5'
       WHEN cd_nomenclature_sensitivity = '1' THEN '3'
       WHEN cd_nomenclature_sensitivity = '2' THEN '2'
       WHEN cd_nomenclature_sensitivity = '3' THEN '3'
       WHEN cd_nomenclature_sensitivity = '4' THEN '4'
     END;
-  ELSE 
+  ELSE
     RETURN cd_nomenclature_diffusion_level;
   END IF;
 END;
 $function$;
- 
+
 
  CREATE TRIGGER tri_insert_id_sensitivity_synthese
   AFTER INSERT ON gn_sensitivity.cor_sensitivity_synthese
@@ -111,14 +111,14 @@ ALTER TABLE ONLY gn_synthese.synthese
 
 CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement() RETURNS TRIGGER
   LANGUAGE plpgsql
-  AS $$ 
+  AS $$
   -- Calculate sensitivity and diffusion level on insert in synthese
     BEGIN
     WITH cte AS (
-        SELECT 
+        SELECT
         gn_sensitivity.get_id_nomenclature_sensitivity(
-          updated_rows.date_min::date, 
-          taxonomie.find_cdref(updated_rows.cd_nom), 
+          updated_rows.date_min::date,
+          taxonomie.find_cdref(updated_rows.cd_nom),
           updated_rows.the_geom_local,
           ('{"STATUT_BIO": ' || updated_rows.id_nomenclature_bio_status::text || '}')::jsonb
         ) AS id_nomenclature_sensitivity,
@@ -128,15 +128,15 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_stat
       LEFT JOIN ref_nomenclatures.t_nomenclatures t_diff ON t_diff.id_nomenclature = updated_rows.id_nomenclature_diffusion_level
     )
     UPDATE gn_synthese.synthese AS s
-    SET 
+    SET
       id_nomenclature_sensitivity = c.id_nomenclature_sensitivity,
       id_nomenclature_diffusion_level = ref_nomenclatures.get_id_nomenclature(
         'NIV_PRECIS',
         gn_sensitivity.calculate_cd_diffusion_level(
-          c.cd_nomenclature_diffusion_level, 
+          c.cd_nomenclature_diffusion_level,
           t_sensi.cd_nomenclature
         )
-        
+
       )
     FROM cte AS c
     LEFT JOIN ref_nomenclatures.t_nomenclatures t_sensi ON t_sensi.id_nomenclature = c.id_nomenclature_sensitivity
@@ -148,19 +148,19 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_stat
 
  CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_row() RETURNS TRIGGER
   LANGUAGE plpgsql
-  AS $$ 
+  AS $$
   -- Calculate sensitivity and diffusion level on update in synthese
   DECLARE calculated_id_sensi integer;
     BEGIN
-        SELECT 
+        SELECT
         gn_sensitivity.get_id_nomenclature_sensitivity(
-          NEW.date_min::date, 
-          taxonomie.find_cdref(NEW.cd_nom), 
+          NEW.date_min::date,
+          taxonomie.find_cdref(NEW.cd_nom),
           NEW.the_geom_local,
           ('{"STATUT_BIO": ' || NEW.id_nomenclature_bio_status::text || '}')::jsonb
         ) INTO calculated_id_sensi;
-      UPDATE gn_synthese.synthese 
-      SET 
+      UPDATE gn_synthese.synthese
+      SET
       id_nomenclature_sensitivity = calculated_id_sensi,
       -- TODO: est-ce qu'on remet à jour le niveau de diffusion lors d'une MAJ de la sensi ?
       id_nomenclature_diffusion_level = (
@@ -177,20 +177,20 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_stat
       RETURN NULL;
     END;
   $$;
-  
+
 CREATE TRIGGER tri_insert_calculate_sensitivity
  AFTER INSERT ON gn_synthese.synthese
   REFERENCING NEW TABLE AS NEW
   FOR EACH STATEMENT
   EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement();
-  
+
 CREATE TRIGGER tri_update_calculate_sensitivity
  AFTER UPDATE OF date_min, date_max, cd_nom, the_geom_local, id_nomenclature_bio_status ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_row();
- 
--- Fin schema sensitivity 
- 
+
+-- Fin schema sensitivity
+
 -- Refactor cor_area triggers
 CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese_on_each_statement()
   RETURNS trigger AS
@@ -198,13 +198,13 @@ $BODY$
   DECLARE
   BEGIN
   -- Intersection avec toutes les areas et écriture dans cor_area_synthese
-      INSERT INTO gn_synthese.cor_area_synthese 
+      INSERT INTO gn_synthese.cor_area_synthese
         SELECT
           updated_rows.id_synthese AS id_synthese,
           a.id_area AS id_area
         FROM NEW as updated_rows
         JOIN ref_geo.l_areas a
-          ON public.ST_INTERSECTS(updated_rows.the_geom_local, a.geom)  
+          ON public.ST_INTERSECTS(updated_rows.the_geom_local, a.geom)
         WHERE a.enable IS TRUE AND (ST_GeometryType(updated_rows.the_geom_local) = 'ST_Point' OR NOT public.ST_TOUCHES(updated_rows.the_geom_local,a.geom));
   RETURN NULL;
   END;
@@ -309,7 +309,7 @@ ALTER TABLE ref_geo.l_areas ADD additional_data jsonb NULL;
 -- Update VIEW export OCCHAB
 DROP VIEW IF EXISTS pr_occhab.v_export_sinp;
 CREATE VIEW pr_occhab.v_export_sinp AS
-SELECT 
+SELECT
 s.id_station,
 s.id_dataset,
 s.id_digitiser,
@@ -338,7 +338,7 @@ LEFT join ref_nomenclatures.t_nomenclatures nom4 on nom4.id_nomenclature = h.id_
 
 
 -- Révision de la vue validation de gn_commons pour disposer du nom français et latin
-DROP VIEW gn_commons.v_synthese_validation_forwebapp; 
+DROP VIEW gn_commons.v_synthese_validation_forwebapp;
 
 
 CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
@@ -503,3 +503,28 @@ ALTER TABLE gn_sensitivity.t_sensitivity_rules DROP CONSTRAINT check_t_sensitivi
 
 ALTER TABLE gn_sensitivity.t_sensitivity_rules
   ADD CONSTRAINT check_t_sensitivity_rules_niv_precis CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitivity, 'SENSIBILITE'::character varying)) NOT VALID;
+
+-- Ajout trigger sur date_max de la visite
+CREATE OR REPLACE FUNCTION gn_monitoring.fct_trg_visite_date_max()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+	-- Si la date max de la visite est nulle ou inférieure à la date_min
+	--	Modification de date max pour garder une cohérence des données
+	IF
+		NEW.visit_date_max IS NULL
+		OR NEW.visit_date_max < NEW.visit_date_min
+	THEN
+      NEW.visit_date_max := NEW.visit_date_min;
+    END IF;
+  RETURN NEW;
+END;
+$function$
+;
+
+CREATE TRIGGER tri_visite_date_max
+  BEFORE INSERT OR UPDATE OF visit_date_min
+  ON gn_monitoring.t_base_visits
+  FOR EACH ROW
+  EXECUTE FUNCTION gn_monitoring.fct_trg_visite_date_max();

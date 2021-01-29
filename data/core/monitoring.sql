@@ -175,6 +175,23 @@ CREATE INDEX idx_t_base_sites_type_site ON t_base_sites USING btree (id_nomencla
 ----------------------
 --@ TODO Trigger de calcul des intersections avec la table l_areas ????
 
+CREATE OR REPLACE FUNCTION gn_monitoring.fct_trg_visite_date_max()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+	-- Si la date max de la visite est nulle ou inférieure à la date_min
+	--	Modification de date max pour garder une cohérence des données
+	IF
+		NEW.visit_date_max IS NULL
+		OR NEW.visit_date_max < NEW.visit_date_min
+	THEN
+      NEW.visit_date_max := NEW.visit_date_min;
+    END IF;
+  RETURN NEW;
+END;
+$function$
+;
 
 ------------
 --TRIGGERS--
@@ -203,6 +220,12 @@ CREATE TRIGGER tri_meta_dates_change_t_base_visits
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
+
+CREATE TRIGGER tri_visite_date_max
+  BEFORE INSERT OR UPDATE OF visit_date_min
+  ON gn_monitoring.t_base_visits
+  FOR EACH ROW
+  EXECUTE FUNCTION gn_monitoring.fct_trg_visite_date_max();
 
 CREATE FUNCTION fct_trg_cor_site_area()
   RETURNS trigger AS
