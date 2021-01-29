@@ -20,7 +20,9 @@ def check_cruved_scope(
     action,
     get_role=False,
     module_code=None,
-    object_code=None
+    object_code=None,
+    redirect_on_expiration=None,
+    redirect_on_invalid_token=None
 ):
     """
     Decorator to protect routes with SCOPE CRUVED
@@ -40,7 +42,10 @@ def check_cruved_scope(
         @wraps(fn)
         def __check_cruved_scope(*args, **kwargs):
             user = get_user_from_token_and_raise(
-                request, action
+                request,
+                action,
+                redirect_on_expiration,
+                redirect_on_invalid_token
             )
             user_with_highter_perm = None
 

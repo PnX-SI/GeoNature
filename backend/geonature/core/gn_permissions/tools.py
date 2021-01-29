@@ -2,6 +2,8 @@ import logging, json
 
 from flask import current_app, redirect, Response
 from werkzeug.exceptions import Unauthorized
+from werkzeug.routing import RequestRedirect
+
 
 from itsdangerous import (
     TimedJSONWebSignatureSerializer as Serializer,
@@ -39,10 +41,18 @@ def user_from_token(token, secret_key=None):
     except BadSignature:
         raise UnreadableAccessRightsError("Token BadSignature", 403)
 
+def log_expiration_warning():
+    log.warning("""
+        The parameter redirect_on_expiration will be soon removed.
+        The redirection will be default to GeoNature login page
+        """
+    )
 
 def get_user_from_token_and_raise(
     request,
     secret_key=None,
+    redirect_on_expiration=None,
+    redirect_on_invalid_token=None
 ):
     """
     Deserialize the token
@@ -53,10 +63,19 @@ def get_user_from_token_and_raise(
         return user_from_token(token, secret_key)
 
     except KeyError:
+        if redirect_on_expiration:
+            log_expiration_warning()
+            raise RequestRedirect(new_url=redirect_on_expiration)
         raise Unauthorized(description='No token.')
     except AccessRightsExpiredError:
+        if redirect_on_expiration:
+            log_expiration_warning()
+            raise RequestRedirect(new_url=redirect_on_expiration)
         raise Unauthorized(description='Token expired.')
     except UnreadableAccessRightsError:
+        if redirect_on_invalid_token:
+            log_expiration_warning()
+            raise RequestRedirect(new_url=redirect_on_invalid_token)
         response = Unauthorized(description='Token corrupted.').get_response()
         response.set_cookie("token", expires=0)
         raise Unauthorized(response=response)
