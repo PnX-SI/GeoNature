@@ -55,7 +55,8 @@ CREATE TABLE t_base_visits
 CREATE TABLE cor_visit_observer
 (
   id_base_visit integer NOT NULL,
-  id_role integer NOT NULL
+  id_role integer NOT NULL,
+  unique_id_core_visit_observer uuid  NOT NULL DEFAULT uuid_generate_v4()
 );
 
 CREATE TABLE cor_site_module (
@@ -208,6 +209,11 @@ CREATE TRIGGER tri_log_changes
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
+CREATE TRIGGER tri_log_changes_cor_visit_observer
+  AFTER INSERT OR DELETE OR UPDATE
+  ON gn_monitoring.cor_visit_observer
+  FOR EACH ROW EXECUTE FUNCTION gn_commons.fct_trg_log_changes();
+
 CREATE TRIGGER tri_meta_dates_change_t_base_sites
   BEFORE INSERT OR UPDATE
   ON gn_monitoring.t_base_sites
@@ -258,11 +264,12 @@ CREATE TRIGGER tri_t_base_sites_calculate_alt
   FOR EACH ROW
   EXECUTE PROCEDURE ref_geo.fct_trg_calculate_alt_minmax('geom');
 
-
 ------------
 --TRIGGERS--
 ------------
 INSERT INTO gn_commons.bib_tables_location(table_desc, schema_name, table_name, pk_field, uuid_field_name)
 VALUES
 ('Table centralisant les sites faisant l''objet de protocole de suivis', 'gn_monitoring', 't_base_sites', 'id_base_site', 'uuid_base_site'),
-('Table centralisant les visites réalisées sur un site', 'gn_monitoring', 't_base_visits', 'id_base_visit', 'uuid_base_visit');
+('Table centralisant les visites réalisées sur un site', 'gn_monitoring', 't_base_visits', 'id_base_visit', 'uuid_base_visit'),
+('Liste des observateurs d''une visite', 'gn_monitoring', 'cor_visit_observer', 'unique_id_core_visit_observer', 'unique_id_core_visit_observer');
+

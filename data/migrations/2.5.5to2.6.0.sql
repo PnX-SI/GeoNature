@@ -528,3 +528,17 @@ CREATE TRIGGER tri_visite_date_max
   ON gn_monitoring.t_base_visits
   FOR EACH ROW
   EXECUTE FUNCTION gn_monitoring.fct_trg_visite_date_max();
+
+
+--- Historisation de la table cor_visit_observer
+ALTER TABLE gn_monitoring.cor_visit_observer ADD unique_id_core_visit_observer uuid  NOT NULL DEFAULT uuid_generate_v4();
+
+INSERT INTO gn_commons.bib_tables_location(table_desc, schema_name, table_name, pk_field, uuid_field_name)
+VALUES
+('Liste des observateurs d''une visite', 'gn_monitoring', 'cor_visit_observer', 'unique_id_core_visit_observer', 'unique_id_core_visit_observer');
+
+CREATE TRIGGER tri_log_changes_cor_visit_observer
+AFTER INSERT OR DELETE OR UPDATE
+ON gn_monitoring.cor_visit_observer
+FOR EACH ROW EXECUTE FUNCTION gn_commons.fct_trg_log_changes();
+
