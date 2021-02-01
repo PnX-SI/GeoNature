@@ -505,6 +505,11 @@ ALTER TABLE gn_sensitivity.t_sensitivity_rules
   ADD CONSTRAINT check_t_sensitivity_rules_niv_precis CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitivity, 'SENSIBILITE'::character varying)) NOT VALID;
 
 -- Ajout trigger sur date_max de la visite
+
+-- Mise à jour des données
+UPDATE  gn_monitoring.t_base_visits SET date_max = date_min
+WHERE date_max < date_min;
+
 CREATE OR REPLACE FUNCTION gn_monitoring.fct_trg_visite_date_max()
  RETURNS trigger
  LANGUAGE plpgsql
