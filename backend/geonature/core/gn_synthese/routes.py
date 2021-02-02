@@ -196,12 +196,15 @@ def get_synthese(info_role):
     else:
         result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
 
-    q = DB.session.query(VSyntheseForWebApp)
+    query = select([VSyntheseForWebApp]).order_by(VSyntheseForWebApp.date_min.desc())
+    synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
+    synthese_query_class.filter_query_all_filters(info_role)
+    data = DB.engine.execute(synthese_query_class.query.limit(result_limit))
 
-    q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role)
-    q = q.order_by(VSyntheseForWebApp.date_min.desc())
 
-    data = q.limit(result_limit)
+    # q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role)
+
+    # data = q.limit(result_limit)
     columns = current_app.config["SYNTHESE"]["COLUMNS_API_SYNTHESE_WEB_APP"] + MANDATORY_COLUMNS
     features = []
     for d in data:
@@ -284,7 +287,6 @@ def export_taxon_web(info_role):
     :query str export_format: str<'csv'>
 
     """
-
     taxon_view = GenericTable(
         tableName="v_synthese_taxon_for_export_view",
         schemaName="gn_synthese",
@@ -313,38 +315,32 @@ def export_taxon_web(info_role):
 
     # check R and E CRUVED to know if we filter with cruved
     cruved = cruved_scope_for_user_in_module(info_role.id_role, module_code="SYNTHESE")[0]
-
-    subq = (
-        DB.session.query(
+    sub_query = (
+        select([
             VSyntheseForWebApp.cd_ref,
             func.count(distinct(VSyntheseForWebApp.id_synthese)).label("nb_obs"),
             func.min(VSyntheseForWebApp.date_min).label("date_min"),
-            func.max(VSyntheseForWebApp.date_max).label("date_max"),
-        )
-        .filter(VSyntheseForWebApp.id_synthese.in_(id_list))
+            func.max(VSyntheseForWebApp.date_max).label("date_max")
+        ])
+        .where(VSyntheseForWebApp.id_synthese.in_(id_list))
         .group_by(VSyntheseForWebApp.cd_ref)
     )
 
+    synthese_query_class = SyntheseQuery(
+        VSyntheseForWebApp,
+        sub_query,
+        {},
+    )
+
     if cruved["R"] > cruved["E"]:
-        # filter on cruved specifying the column
-        # id_dataset, id_synthese, id_digitiser
-        #   and observer in the v_synthese_for_export_view
-        subq = synthese_query.filter_query_with_cruved(
-            VSyntheseForWebApp,
-            subq,
-            info_role,
-            id_synthese_column="id_synthese",
-            id_dataset_column="id_dataset",
-            observers_column="observers",
-            id_digitiser_column="id_digitiser",
-            with_generic_table=False,
-        )
-    subq = subq.subquery()
+        # filter on cruved
+        synthese_query_class.filter_query_with_cruved(info_role)
+
+    subq = synthese_query_class.query.alias("subq")
 
     q = DB.session.query(*columns, subq.c.nb_obs, subq.c.date_min, subq.c.date_max).join(
         subq, subq.c.cd_ref == columns.cd_ref
     )
-
     return to_csv_resp(
         datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
         data=serializeQuery(q.all(), q.column_descriptions),
@@ -394,32 +390,31 @@ def export_observations_web(info_role):
             db_cols_for_shape.append(db_col)
             columns_to_serialize.append(db_col.key)
 
-    q = DB.session.query(export_view.tableDef).filter(
+    query = select([export_view.tableDef]).where(
         export_view.tableDef.columns[current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"]].in_(
             id_list
         )
     )
+    synthese_query_class = SyntheseQuery(
+        export_view.tableDef,
+        query,
+        {},
+        id_synthese_column=current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"],
+        id_dataset_column=current_app.config["SYNTHESE"]["EXPORT_ID_DATASET_COL"],
+        observers_column=current_app.config["SYNTHESE"]["EXPORT_OBSERVERS_COL"],
+        id_digitiser_column=current_app.config["SYNTHESE"]["EXPORT_ID_DIGITISER_COL"],
+        with_generic_table=True,
+    )
     # check R and E CRUVED to know if we filter with cruved
     cruved = cruved_scope_for_user_in_module(info_role.id_role, module_code="SYNTHESE")[0]
     if cruved["R"] > cruved["E"]:
-        # filter on cruved specifying the column
-        # id_dataset, id_synthese, id_digitiser and observer in the v_synthese_for_export_view
-        q = synthese_query.filter_query_with_cruved(
-            export_view.tableDef,
-            q,
-            info_role,
-            id_synthese_column=current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"],
-            id_dataset_column=current_app.config["SYNTHESE"]["EXPORT_ID_DATASET_COL"],
-            observers_column=current_app.config["SYNTHESE"]["EXPORT_OBSERVERS_COL"],
-            id_digitiser_column=current_app.config["SYNTHESE"]["EXPORT_ID_DIGITISER_COL"],
-            with_generic_table=True,
-        )
-    results = q.limit(current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
+        synthese_query_class.filter_query_with_cruved(info_role)
+    results = DB.session.execute(synthese_query_class.query.limit(
+        current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
+    )
 
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
-
-    # columns = [db_col.key for db_col in export_view.db_cols]
 
     if export_format == "csv":
         formated_data = [export_view.as_dict(d, columns=columns_to_serialize) for d in results]
@@ -492,11 +487,24 @@ def export_metadata(info_role):
         == VSyntheseForWebApp.id_dataset,
     )
 
-    q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role)
+    q = select([
+        distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef
+    ])
+    synthese_query_class = SyntheseQuery(VSyntheseForWebApp, q, filters)
+    synthese_query_class.add_join(
+        metadata_view.tableDef, 
+        getattr(
+            metadata_view.tableDef.columns,
+            current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"],
+        ),
+         VSyntheseForWebApp.id_dataset
+    )
+    synthese_query_class.filter_query_all_filters(info_role)
 
+    data = DB.engine.execute(synthese_query_class.query)
     return to_csv_resp(
         datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
-        data=[metadata_view.as_dict(d) for d in q.all()],
+        data=[metadata_view.as_dict(d) for d in data],
         separator=";",
         columns=[db_col.key for db_col in metadata_view.tableDef.columns],
     )
