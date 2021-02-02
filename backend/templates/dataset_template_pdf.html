@@ -12,7 +12,7 @@
     <link
       rel="stylesheet"
       type="text/css"
-      href="../../static/css/custom.css"
+      href="{{url_for('static', filename='css/custom.css')}}"
     >
   </head>
 
@@ -323,7 +323,6 @@
               {% else %}
               <img
                 class="import-state"
-                src="../../static/images/close.png"
                 src="{{url_for('static', filename='images/close.png')}}"
                 alt="close-icon"
               >

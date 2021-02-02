@@ -41,3 +41,12 @@ def get_jdd_by_user_id(id_user):
             message="Error with the MTD Web Service (JDD), status_code: {}".format(r.status_code)
         )
     return r.content
+
+def get_jdd_by_uuid(uuid):
+    ds_URL = f"{api_endpoint}/cadre/jdd/export/xml/GetRecordById?id={uuid.upper()}"
+    try:
+        r = utilsrequests.get(ds_URL)
+        assert r.status_code == 200
+    except AssertionError:
+        print(f'NO JDD FOUND FOR UUID {uuid}')
+    return r.content

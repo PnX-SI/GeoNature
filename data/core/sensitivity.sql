@@ -25,11 +25,14 @@ CREATE TABLE gn_sensitivity.t_sensitivity_rules
       ON UPDATE CASCADE ON DELETE NO ACTION,
   CONSTRAINT fk_t_sensitivity_rules_id_nomenclature_sensitivity FOREIGN KEY (id_nomenclature_sensitivity)
       REFERENCES ref_nomenclatures.t_nomenclatures (id_nomenclature) MATCH SIMPLE
-      ON UPDATE CASCADE ON DELETE NO ACTION,
-  CONSTRAINT check_t_sensitivity_rules_niv_precis CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitivity, 'SENSIBILITE'::character varying))  NOT VALID
+      ON UPDATE CASCADE ON DELETE NO ACTION
 );
 COMMENT ON TABLE gn_sensitivity.t_sensitivity_rules
   IS 'List of sensitivity rules per taxon. Compilation of national and regional list. If you whant to disable one ou several rules you can set false to enable.';
+
+ALTER TABLE gn_sensitivity.t_sensitivity_rules
+  ADD CONSTRAINT check_t_sensitivity_rules_niv_precis CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitivity, 'SENSIBILITE'::character varying)) NOT VALID;
+
 
 -- Trigger: tri_meta_dates_change_t_sensitivity_rules on gn_sensitivity.t_sensitivity_rules
 
@@ -283,10 +286,12 @@ CREATE TABLE gn_sensitivity.cor_sensitivity_synthese  (
     CONSTRAINT cor_sensitivity_synthese_pk PRIMARY KEY (uuid_attached_row, id_nomenclature_sensitivity),
     CONSTRAINT cor_sensitivity_synthese_id_nomenclature_sensitivity_fkey FOREIGN KEY (id_nomenclature_sensitivity)
       REFERENCES ref_nomenclatures.t_nomenclatures (id_nomenclature) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-    CONSTRAINT check_synthese_sensitivity
-        CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitivity, 'SENSIBILITE'::character varying)) NOT VALID
+      ON UPDATE NO ACTION ON DELETE NO ACTION
 );
+
+ALTER TABLE gn_sensitivity.cor_sensitivity_synthese
+  ADD CONSTRAINT check_synthese_sensitivity CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_sensitivity, 'SENSIBILITE'::character varying)) NOT VALID;
+
 
 --Trigger function executed by a ON EACH STATEMENT triger
 CREATE OR REPLACE FUNCTION gn_sensitivity.fct_tri_maj_id_sensitivity_synthese()

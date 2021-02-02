@@ -50,13 +50,16 @@ import { ModuleService } from './services/module.service';
 import { CruvedStoreService } from './GN2CommonModule/service/cruved-store.service';
 import { SideNavService } from './components/sidenav-items/sidenav-service';
 
-import { MyCustomInterceptor, ContentTypeInterceptor } from './services/http.interceptor';
+import { MyCustomInterceptor } from './services/http.interceptor';
 import { GlobalSubService } from './services/global-sub.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 import { UserDataService } from "./userModule/services/user-data.service";
+
+// Config
+import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
 
 @NgModule({
   imports: [
@@ -107,8 +110,8 @@ import { UserDataService } from "./userModule/services/user-data.service";
     SideNavService,
     CruvedStoreService,
     UserDataService,
+    { provide: APP_CONFIG_TOKEN, useValue: AppConfig },
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: ContentTypeInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })

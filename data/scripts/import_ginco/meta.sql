@@ -7,14 +7,18 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
     acquisition_framework_desc, 
     id_nomenclature_territorial_level, 
     id_nomenclature_financing_type, 
-    acquisition_framework_start_date
+    acquisition_framework_start_date,
+    meta_create_date,
+    meta_update_date
 
     ) VALUES (
     'CA provisoire - import Ginco -> GeoNature',
     ' - ',
     ref_nomenclatures.get_id_nomenclature('NIVEAU_TERRITORIAL', '4'),
     ref_nomenclatures.get_id_nomenclature('TYPE_FINANCEMENT', '1'),
-    '2019-11-17'
+    '2019-11-17',
+    NOW(),
+    NOW()
     )
 ;
 
@@ -34,7 +38,6 @@ jdd_name AS (
 )
 INSERT INTO gn_meta.t_datasets (
     unique_dataset_id,
-    id_dataset,
     id_acquisition_framework,
     dataset_name,
     dataset_shortname,
@@ -53,8 +56,7 @@ INSERT INTO gn_meta.t_datasets (
     )
     SELECT
     jdd_uuid.uuid::uuid,
-    jdd.id,
-    (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE acquisition_framework_name = 'CA provisoire - import Ginco -> GeoNature'),
+    (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE acquisition_framework_name = 'CA provisoire - import Ginco -> GeoNature' LIMIT 1),
     jdd_name.jdd_name,
     'A compléter',
     'A compléter',
@@ -74,3 +76,30 @@ INSERT INTO gn_meta.t_datasets (
     JOIN jdd_name ON jdd_name.jdd_id = jdd.id
     where status != 'deleted'
 ;
+
+-- set submission date
+update gn_meta.t_acquisition_frameworks as af
+set initial_closing_date = subquery.date_max
+from (
+with jdd_uuid as (
+select j.id, jf.value_string as _uuid
+from ginco_migration.jdd j 
+join ginco_migration.jdd_field jf on jf.jdd_id = j.id
+where jf.key = 'metadataId'
+)
+select max(TO_TIMESTAMP(value_string, 'YYYY-MM-DD_HH24-MI-SS')) as date_max, taf.id_acquisition_framework 
+from ginco_migration.jdd j 
+join ginco_migration.jdd_field jf on jf.jdd_id = j.id
+join jdd_uuid u on u.id = j.id
+join gn_meta.t_datasets td on u._uuid::uuid = td.unique_dataset_id 
+join gn_meta.t_acquisition_frameworks taf on taf.id_acquisition_framework = td.id_acquisition_framework 
+where jf."key" = 'publishedAt'
+group by  taf.id_acquisition_framework 
+) as subquery 
+where af.id_acquisition_framework = subquery.id_acquisition_framework and af.initial_closing_date is NULL
+
+
+
+
+
+SELECT pg_catalog.setval('gn_meta.t_datasets_id_dataset_seq', (SELECT max(id_dataset)+1 FROM gn_meta.t_datasets), true);

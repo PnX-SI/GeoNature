@@ -1,6 +1,7 @@
 import ast
 import logging
 import datetime
+import json
 from operator import itemgetter
 from sqlalchemy import select
 from flask import Blueprint, request
@@ -24,7 +25,7 @@ blueprint = Blueprint("validation", __name__)
 log = logging.getLogger()
 
 
-@blueprint.route("", methods=["GET"])
+@blueprint.route("", methods=["GET", "POST"])
 @permissions.check_cruved_scope("R", True, module_code="VALIDATION")
 @json_resp
 def get_synthese_data(info_role):
@@ -49,14 +50,17 @@ def get_synthese_data(info_role):
         }
 
     """
+    if request.json:
+        filters = request.json
+    elif request.data:
+        #  decode byte to str - compat python 3.5
+        filters = json.loads(request.data.decode("utf-8"))
+    else:
+        filters = {key: request.args.get(key) for key, value in request.args.items()}
 
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
-    for key, value in filters.items():
-        if "," in value[0] and key != "geoIntersection":
-            filters[key] = value[0].split(",")
 
     if "limit" in filters:
-        result_limit = filters.pop("limit")[0]
+        result_limit = filters.pop("limit")
     else:
         result_limit = blueprint.config["NB_MAX_OBS_MAP"]
 
@@ -90,7 +94,6 @@ def get_synthese_data(info_role):
     validation_query_class.filter_query_all_filters(info_role)
     result = DB.engine.execute(validation_query_class.query.limit(result_limit))
 
-    print(query)
     # TODO nb_total factice
     nb_total = 0
     geojson_features = []

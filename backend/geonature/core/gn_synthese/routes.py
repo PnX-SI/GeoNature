@@ -119,19 +119,13 @@ def get_observations_for_web(info_role):
         #  decode byte to str - compat python 3.5
         filters = json.loads(request.data.decode("utf-8"))
     else:
-        filters = {key: request.args.getlist(key) for key, value in request.args.items()}
-
-    # Passage de l'ensemble des filtres
-    #   en array pour des questions de compatibilité
-    # TODO voir si ça ne peut pas être modifié
-    for k in filters.keys():
-        if not isinstance(filters[k], list):
-            filters[k] = [filters[k]]
+        filters = {key: request.args.get(key) for key, value in request.args.items()}
 
     if "limit" in filters:
-        result_limit = filters.pop("limit")[0]
+        result_limit = filters.pop("limit")
     else:
         result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
+
     query = (
         select(
             [
@@ -251,7 +245,7 @@ def get_one_synthese(id_synthese):
             ),
         )
         .filter(SyntheseOneRecord.id_synthese == id_synthese)
-        .join(
+        .outerjoin(
             metadata_view.tableDef,
             getattr(
                 metadata_view.tableDef.columns,
@@ -627,8 +621,18 @@ def general_stats(info_role):
         func.count(func.distinct(Synthese.cd_nom)),
         func.count(func.distinct(Synthese.observers)),
     )
-    q = synthese_query.filter_query_with_cruved(Synthese, q, info_role)
-    data = q.one()
+    q = select(
+        [
+            func.count(Synthese.id_synthese),
+            func.count(func.distinct(Synthese.cd_nom)),
+            func.count(func.distinct(Synthese.observers))
+        ]
+    )
+
+    synthese_query_obj = SyntheseQuery(Synthese, q, {})
+    synthese_query_obj.filter_query_with_cruved(info_role)
+    result = DB.engine.execute(synthese_query_obj.query)
+    data = result.fetchone()
     data = {
         "nb_data": data[0],
         "nb_species": data[1],
@@ -748,7 +752,7 @@ def getDefaultsNomenclatures():
 @routes.route("/color_taxon", methods=["GET"])
 @json_resp
 def get_color_taxon():
-    """Get color of taxon in areas (table synthese.cor_area_taxon).
+    """Get color of taxon in areas (vue synthese.v_color_taxon_area).
 
     .. :quickref: Synthese;
 
@@ -788,9 +792,16 @@ def get_taxa_count():
     """
     Get taxa count in synthese filtering with generic parameters
 
-    :query int id_dataset: filter by id_dataset
+    .. :quickref: Synthese;
+    
+    Parameters
+    ----------
+    id_dataset: `int` (query parameter)
 
-    :returns int: the number of taxa found
+    Returns
+    -------
+    count: `int`: 
+        the number of taxon
     """
     params = request.args
 
@@ -804,15 +815,80 @@ def get_taxa_count():
 @routes.route("/observation_count", methods=["GET"])
 @json_resp
 def get_observation_count():
-    """Get observations found in a given dataset"""
+    """
+    Get observations found in a given dataset
+
+    .. :quickref: Synthese;
+    
+    Parameters
+    ----------
+    id_dataset: `int` (query parameter)
+
+    Returns
+    -------
+    count: `int`: 
+        the number of observation
+    
+    """
     params = request.args
 
-    query = DB.session.query(func.count(Synthese.cd_nom)).select_from(Synthese)
+    query = DB.session.query(func.count(Synthese.id_synthese)).select_from(Synthese)
 
     if "id_dataset" in params:
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
 
     return query.one()
+
+
+@routes.route("/observations_bbox", methods=["GET"])
+@json_resp
+def get_bbox():
+    """
+    Get bbbox of observations
+
+    .. :quickref: Synthese;
+    
+    Parameters
+    -----------
+    id_dataset: int: (query parameter)
+
+    Returns
+    -------
+        bbox: `geojson`: 
+            the bounding box in geojson
+    """
+    params = request.args
+
+    query = DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+        
+    if "id_dataset" in params:
+        query = query.filter(Synthese.id_dataset == params["id_dataset"])
+    data = query.one()
+    if data:
+        return json.loads(data[0])
+    return None
+
+@routes.route("/observation_count_per_column/<column>", methods=["GET"])
+@json_resp
+def observation_count_per_column(column):
+    """Get observations count group by a given column"""
+    params = request.args
+    try:
+        model_column = getattr(Synthese, column)
+    except Exception:
+        return f'No column name {column} in Synthese', 500
+    query = DB.session.query(
+        func.count(Synthese.id_synthese), model_column
+        ).select_from(
+            Synthese
+        ).group_by(model_column)
+    data = []
+    for d in query.all():
+        temp = {}
+        temp[column] = d[1]
+        temp['count'] = d[0]
+        data.append(temp)
+    return data
 
 
 @routes.route("/taxa_distribution", methods=["GET"])

@@ -58,7 +58,6 @@ pylint==2.6.0
 scandir==1.6
 shutilwhich==1.1.0
 simplegeneric==0.8.1
-six==1.11.0
 snowballstemmer==1.2.1
 sphinx_rtd_theme==0.4.3
 sphinx==1.6.6

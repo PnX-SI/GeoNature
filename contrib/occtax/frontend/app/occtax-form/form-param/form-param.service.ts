@@ -14,13 +14,18 @@ interface OCCTAX_FORM_PARAM {
     hour_max?: string;
     altitude_min?: number;
     altitude_max?: number;
+    depth_min?: number;
+    depth_max?: number;
     meta_device_entry?: string;
     comment?: string;
+    cd_hab?: number;
     id_nomenclature_tech_collect_campanule?: number;
     observers?: Array<any>;
     observers_txt?: string;
     id_nomenclature_grp_typ?: number;
     grp_method?: string;
+    id_nomenclature_geo_object_nature?: number;
+    precision?: number;
   };
   occurrence?: {
     id_nomenclature_obs_technique?: number;
@@ -28,12 +33,15 @@ interface OCCTAX_FORM_PARAM {
     id_nomenclature_bio_status?: number;
     id_nomenclature_naturalness?: number;
     id_nomenclature_exist_proof?: number;
+    id_nomenclature_behaviour?: number;
     id_nomenclature_observation_status?: number;
     id_nomenclature_blurring?: number;
     id_nomenclature_source_status?: number;
     determiner?: string;
     id_nomenclature_determination_method?: number;
     sample_number_proof?: string;
+    digital_proof?: string;
+    non_digital_proof?: string;
     comment?: string;
   };
   counting?: {
@@ -61,13 +69,18 @@ export class OcctaxFormParamService {
       hour_max: null,
       altitude_min: null,
       altitude_max: null,
+      depth_min: null,
+      depth_max: null,
       meta_device_entry: null,
       comment: null,
+      cd_hab: null,
       id_nomenclature_tech_collect_campanule: null,
       observers: null,
       observers_txt: null,
       id_nomenclature_grp_typ: null,
       grp_method: null,
+      id_nomenclature_geo_object_nature: null,
+      precision: null
     },
     occurrence: {
       id_nomenclature_obs_technique: null,
@@ -75,12 +88,15 @@ export class OcctaxFormParamService {
       id_nomenclature_bio_status: null,
       id_nomenclature_naturalness: null,
       id_nomenclature_exist_proof: null,
+      id_nomenclature_behaviour: null,
       id_nomenclature_observation_status: null,
       id_nomenclature_blurring: null,
       id_nomenclature_source_status: null,
       determiner: null,
       id_nomenclature_determination_method: null,
       sample_number_proof: null,
+      digital_proof: null,
+      non_digital_proof: null,
       comment: null,
     },
     counting: {

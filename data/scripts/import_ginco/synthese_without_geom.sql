@@ -1,28 +1,6 @@
--------------------
---SCHEMA SYNTHESE--
--------------------
--- Creation d'une vue materialisée avec seulement les données avec geom 
--- et qui n'appartiennent pas à un JDD suppriméé
-CREATE OR REPLACE FUNCTION convert_to_integer(v_input text)
-RETURNS INTEGER AS $$
-DECLARE v_int_value INTEGER DEFAULT NULL;
-BEGIN
-    BEGIN
-        v_int_value := v_input::INTEGER;
-    EXCEPTION WHEN OTHERS THEN
-        RAISE NOTICE 'Invalid integer value: "%".  Returning NULL.', v_input;
-        RETURN NULL;
-    END;
-RETURN v_int_value;
-END;
-$$ LANGUAGE plpgsql;
-
-
-DROP MATERIALIZED VIEW IF exists ginco_migration.vm_data_model_source CASCADE;
-DROP SEQUENCE IF EXISTS vm_data_model_source;
-CREATE SEQUENCE vm_data_model_source CYCLE;
-CREATE MATERIALIZED VIEW ginco_migration.vm_data_model_source AS 
- SELECT nextval('vm_data_model_source'::regclass) AS id,
+DROP MATERIALIZED VIEW IF exists ginco_migration.vm_data_model_source_ratt CASCADE;
+CREATE MATERIALIZED VIEW ginco_migration.vm_data_model_source_ratt AS
+SELECT nextval('vm_data_model_source'::regclass) AS id,
     m.anneerefcommune,
     m.typeinfogeomaille,
     convert_to_integer(m.cdnom) AS cdnom,
@@ -97,40 +75,12 @@ CREATE MATERIALIZED VIEW ginco_migration.vm_data_model_source AS
     m.taxomodif,
     m.taxoalerte,
     m.user_login
-   FROM ginco_migration.<NOM_TABLE> m
+   FROM ginco_migration.model_1_observation m
    -- on ne prend que les JDD non supprimé car la table gn_meta.t_datasets ne comprend que les JDD non supprimé
    join gn_meta.t_datasets d on d.unique_dataset_id = m.jddmetadonneedeeid::uuid
-    where m.geometrie is not null
-   ;
+    where m.geometrie is null
 
-
--- Insertion des données
-DELETE FROM gn_synthese.synthese;
-DELETE FROM gn_synthese.t_sources 
-WHERE name_source = 'Ginco';
-
--- creation d'une source
-INSERT INTO gn_synthese.t_sources
-(
-  name_source, 
-  desc_source, 
-  entity_source_pk_field
-  )
-VALUES(
-  'Ginco', 
-  'Données source Ginco', 
-  concat('ginco_migration.', :GINCO_TABLE_QUOTED)
-);
-
-
-UPDATE gn_synthese.defaults_nomenclatures_value 
-SET id_nomenclature = ref_nomenclatures.get_id_nomenclature('STATUT_VALID', '6')
-WHERE mnemonique_type = 'STATUT_VALID';
-
-
--- suppresion des contraintes, on tentera de les remettre plus tard...
-ALTER TABLE gn_synthese.synthese DROP CONSTRAINT IF EXISTS check_synthese_date_max;
-ALTER TABLE gn_synthese.synthese DROP CONSTRAINT IF EXISTS check_synthese_count_max;
+;
 
 INSERT INTO gn_synthese.synthese (
 unique_id_sinp,
@@ -155,6 +105,7 @@ count_max,
 cd_nom,
 nom_cite,
 meta_v_taxref,
+id_area_attachment,
 the_geom_4326,
 the_geom_point,
 the_geom_local,
@@ -169,7 +120,7 @@ SELECT
   m.identifiantpermanent::uuid,
   (SELECT id_source FROM gn_synthese.t_sources WHERE name_source = 'Ginco'),
   m.identifiantpermanent,
-  (SELECT id_dataset FROM gn_meta.t_datasets ds where ds.unique_dataset_id = COALESCE(m.jddmetadonneedeeid::uuid, NULL)),
+  (SELECT id_dataset FROM gn_meta.t_datasets ds where ds.unique_dataset_id = COALESCE(m.jddmetadonneedeeid::uuid, NULL) LIMIT 1),
   t1.id_nomenclature,
   t2.id_nomenclature,
   t3.id_nomenclature,
@@ -182,22 +133,23 @@ SELECT
   t10.id_nomenclature,
   t11.id_nomenclature,
   t12.id_nomenclature,
-  t13.id_nomenclature,
+  ref_nomenclatures.get_id_nomenclature('TYP_INF_GEO', '2'),
   m.denombrementmin,
   m.denombrementmax,
   tax.cd_nom,
   m.nomcite,
   substring(m.versiontaxref from 1 for 50),
-  m.geometrie,
-  public.st_centroid(m.geometrie),
-  public.st_transform(m.geometrie, 2154),
+  areas.id_area as id_area_attachment,
+  public.st_transform(areas.geom, 4326),
+  public.st_centroid(public.st_transform(areas.geom, 4326)),
+  areas.geom,
   concat((to_char(m.jourdatedebut, 'DD/MM/YYYY'), ' ', COALESCE(to_char(m.heuredatedebut, 'HH24:MI:SS'),'00:00:00')))::timestamp,
   concat((to_char(m.jourdatefin, 'DD/MM/YYYY'), ' ', COALESCE(to_char(m.heuredatedebut, 'HH24:MI:SS'),'00:00:00')))::timestamp,
   m.observateuridentite,
   (select id_role from utilisateurs.t_roles tr where tr.nom_role = m.user_login LIMIT 1),
   m.commentaire,
   'I'
-FROM ginco_migration.vm_data_model_source as m 
+FROM ginco_migration.vm_data_model_source_ratt as m
 left JOIN ref_nomenclatures.t_nomenclatures t1 ON t1.cd_nomenclature = m.natureobjetgeo AND t1.id_type = ref_nomenclatures.get_id_nomenclature_type('NAT_OBJ_GEO')
 left JOIN ref_nomenclatures.t_nomenclatures t2 ON t2.cd_nomenclature = m.obsmethode AND t2.id_type = ref_nomenclatures.get_id_nomenclature_type('METH_OBS')
 left JOIN ref_nomenclatures.t_nomenclatures t3 ON t3.cd_nomenclature = m.occstatutbiologique AND t3.id_type = ref_nomenclatures.get_id_nomenclature_type('STATUT_BIO')
@@ -212,4 +164,12 @@ left JOIN ref_nomenclatures.t_nomenclatures t11 ON t11.cd_nomenclature = m.deefl
 left JOIN ref_nomenclatures.t_nomenclatures t12 ON t12.cd_nomenclature = m.statutsource AND t12.id_type = ref_nomenclatures.get_id_nomenclature_type('STATUT_SOURCE') 
 left JOIN ref_nomenclatures.t_nomenclatures t13 ON t13.cd_nomenclature = m.typeinfogeoen AND t13.id_type = ref_nomenclatures.get_id_nomenclature_type('TYP_INF_GEO') 
 JOIN taxonomie.taxref tax ON tax.cd_nom = m.cdnom::integer
+JOIN ref_geo.l_areas areas ON areas.area_code = CASE WHEN (codecommune[1]  is not null and codecommune[2]  is  null) THEN codecommune[1]
+                                       WHEN (codemaille[1]  is not null and codemaille[2]  is  null) THEN codemaille[1]
+                                       WHEN (codedepartement[1]  is not null and codedepartement[2]  is  null) THEN codedepartement[1]
+END
+WHERE ((codecommune[1]  is not null and codecommune[2]  is null)
+OR ((codemaille[1]  is not null and codemaille[2]  is null) and (codecommune[1]  is null or codecommune is null))
+OR ((codemaille[1]  is null or codemaille is null) and (codecommune[1]  is null or codecommune is null) and (codedepartement[1]  is not null and codedepartement[2]  is null)))
 ;
+

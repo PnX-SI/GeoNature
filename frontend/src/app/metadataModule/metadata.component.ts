@@ -56,6 +56,8 @@ export class MetadataComponent implements OnInit {
   private researchTerm: string = '';
   public organisms: Array<any>;
   public roles: Array<any>;
+  public isLoading = false;
+  public datasetNbObs = null;
 
   pageSize: number = AppConfig.METADATA.NB_AF_DISPLAYED;
   activePage: number = 0;
@@ -97,18 +99,55 @@ export class MetadataComponent implements OnInit {
     })
 
   }
-  //recuperation cadres d'acquisition
-  getAcquisitionFrameworksAndDatasets() {
-    this._dfs.getAfAndDatasetListMetadata({}).subscribe(data => {
-      this.acquisitionFrameworks = data.data;
-      this.tempAF = this.acquisitionFrameworks;
-      this.datasets = [];
-      this.acquisitionFrameworks.forEach(af => {
-        af['datasetsTemp'] = af['datasets'];
-        this.datasets = this.datasets.concat(af['datasets']);
-      })
 
-    });
+  setDsObservationCount(datasets, dsNbObs) {
+    datasets.forEach(ds=> {
+      let foundDS = dsNbObs.find(d => {                
+        return d.id_dataset == ds.id_dataset
+      })
+      if (foundDS) {
+        ds.observation_count = foundDS.count
+      }
+      else {
+        ds.observation_count = 0;
+      }
+    })
+  }
+
+  //recuperation cadres d'acquisition
+  getAcquisitionFrameworksAndDatasets(formValue={}, expand=false) {
+    this.isLoading = true;
+    this._dfs.getAfAndDatasetListMetadata(formValue).subscribe(
+      data => {
+        this.isLoading = false;
+        this.acquisitionFrameworks = data.data;
+        this.tempAF = this.acquisitionFrameworks;
+        this.datasets = [];
+        this.acquisitionFrameworks.forEach(af => {
+          af['datasetsTemp'] = af['datasets'];
+          this.datasets = this.datasets.concat(af['datasets']);
+        })
+      if(expand) {
+        this.expandAccordions = (this.searchFormService.form.value.selector == 'ds');
+
+      }
+      // load stat for ds
+      if (!this.datasetNbObs) {        
+        this._syntheseDataService.getObsCountByColumn('id_dataset').subscribe(count_ds => {
+          this.datasetNbObs = count_ds
+          this.setDsObservationCount(this.datasets, this.datasetNbObs);
+          
+        })
+      } else {        
+        this.setDsObservationCount(this.datasets, this.datasetNbObs);
+      }
+
+
+    },
+    err => {
+      this.isLoading = false;
+    }
+    );
   }
 
 
@@ -133,6 +172,7 @@ export class MetadataComponent implements OnInit {
         if ((af.id_acquisition_framework + ' ').toLowerCase().indexOf(this.researchTerm) !== -1
           || af.acquisition_framework_name.toLowerCase().indexOf(this.researchTerm) !== -1
           || af.acquisition_framework_start_date.toLowerCase().indexOf(this.researchTerm) !== -1
+          || af.unique_acquisition_framework_id.toLowerCase().indexOf(this.researchTerm) !== -1
         ) {
           //si un cadre matche on affiche tout ses JDD
           af.datasetsTemp = af.datasets;
@@ -144,6 +184,7 @@ export class MetadataComponent implements OnInit {
           af.datasetsTemp = af.datasets.filter(
             ds => ((ds.id_dataset + ' ').toLowerCase().indexOf(this.researchTerm) !== -1
               || ds.dataset_name.toLowerCase().indexOf(this.researchTerm) !== -1
+              || ds.unique_dataset_id.toLowerCase().indexOf(this.researchTerm) !== -1
               || ds.meta_create_date.toLowerCase().indexOf(this.researchTerm) !== -1)
           );
           return af.datasetsTemp.length;
@@ -185,15 +226,17 @@ export class MetadataComponent implements OnInit {
     );
 
 
-    this._dfs.getAfAndDatasetListMetadata(formValue).subscribe(data => {
-      this.tempAF = data.data;
-      this.datasets = [];
-      this.tempAF.forEach(af => {
-        af['datasetsTemp'] = af['datasets'];
-        this.datasets = this.datasets.concat(af['datasets']);
-      })
-      this.expandAccordions = (this.searchFormService.form.value.selector == 'ds');
-    });
+
+    // this._dfs.getAfAndDatasetListMetadata(formValue).subscribe(data => {
+    //   this.tempAF = data.data;
+    //   this.datasets = [];
+    //   this.tempAF.forEach(af => {
+    //     af['datasetsTemp'] = af['datasets'];
+    //     this.datasets = this.datasets.concat(af['datasets']);
+    //   })
+    // });
+
+    this.getAcquisitionFrameworksAndDatasets(formValue, true);
   }
 
   openSearchModal(searchModal) {
@@ -244,8 +287,14 @@ export class MetadataComponent implements OnInit {
 
   publishAf() {
     this._dfs.publishAf(this.afPublishModalId).subscribe(
-      res => this.getAcquisitionFrameworksAndDatasets()
-    );
+      res => this.getAcquisitionFrameworksAndDatasets(),
+      error => {
+        this._commonService.regularToaster(
+          'error', "Une erreur s'est produite lors de la fermeture du cadre d'acquisition. Contactez l'administrateur"
+          )
+    }
+    )
+
     this.modal.dismissAll();
   }
 

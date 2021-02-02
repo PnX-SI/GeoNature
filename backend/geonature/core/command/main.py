@@ -218,3 +218,15 @@ def update_configuration(conf_file, build, prod):
     # Recréation du fichier de routing car il dépend de la conf
     frontend_routes_templating()
     update_app_configuration(conf_file, build, prod)
+
+
+@main.command()
+@click.argument('table_name')
+def import_jdd_from_mtd(table_name):
+    """
+    Import les JDD et CA (et acters associé) à partir d'une table (ou vue) listant les UUID des JDD dans MTD
+    """
+    app = get_app_for_cmd()
+    with app.app_context():
+        from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actors
+        import_all_dataset_af_and_actors(table_name)

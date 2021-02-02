@@ -60,6 +60,9 @@ def filter_query_with_cruved(
             ors_filters.append(model_observers_column.ilike(user_fullname1))
             ors_filters.append(model_observers_column.ilike(user_fullname2))
         if user.value_filter == "1":
+            allowed_datasets = TDatasets.get_user_datasets(
+                user, only_query=True, only_user=True).exists()
+            ors_filters.append(allowed_datasets)
             q = q.filter(or_(*ors_filters))
         elif user.value_filter == "2":
             allowed_datasets = TDatasets.get_user_datasets(

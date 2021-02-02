@@ -64,7 +64,7 @@ def geonature_insuffisant_rights_error(error):
 
 @current_app.errorhandler(Unauthorized)
 def handle_unauthenticated_request(e):
-    if request.headers.get('Content-Type') == 'application/json':
+    if request.accept_mimetypes.best == 'application/json':
         response = e.get_response()
         response.data = json.dumps({
             'code': e.code,
@@ -89,7 +89,7 @@ def handle_unauthenticated_request(e):
 @current_app.errorhandler(HTTPException)
 def handle_exception(e):
     response = e.get_response()
-    if request.headers.get('Content-Type') == 'application/json':
+    if request.accept_mimetypes.best == 'application/json':
         response.data = json.dumps({
             'code': e.code,
             'name': e.name,

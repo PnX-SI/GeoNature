@@ -10,14 +10,7 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 **TODO**
 
 - Review and include some PR : https://github.com/PnX-SI/GeoNature/pulls
-- Bug des observateurs par défaut et de la modification des dates en mode édition
-- Update SQL - J'ai un deuxième SQL à part dédié à cela - Calculer la sensibilité de toutes les données existantes dans la synthèse, mais ne pas écraser les niveaux de diffusion existants, supérieurs au niveau de diffusion calculé automatiquement. A relire, ajuster : data/migrations/2.5.5to2.6.0-update-sensitivity.sql
-- Finir le tableau des JDD (https://github.com/PnX-SI/GeoNature/issues/889#issuecomment-742655014), je n'ai pas vu passer les commits liés aux 2 derniers points cochés (Dépôt sur V du CRUVED et paramètre du bouton Import depuis JDD)
-- https://github.com/PnX-SI/GeoNature/issues/922#issuecomment-690033212 indique une vérification à faire ?
-- Merger la branche Sensibilité (https://github.com/PnX-SI/GeoNature/compare/develop...sensitivity) ?
-- Supprimer le fichier https://github.com/PnX-SI/GeoNature/blob/develop/data/scripts/sensi/sensibles_to_inpn_20201218.csv car c'est celui sur geonature.fr/data qui est utilisé ?
-- data/migrations/insert_reg.sh à déplacer dans data/scripts/ref_geo/ ?
-- Import initial depuis GINCO-DEPOBIO 1 : Mettre tous les JDD importés en inactif. Et les CA en fermés ?
+- Update SQL - J'ai fait un deuxième SQL à part dédié à cela - Calculer la sensibilité de toutes les données existantes dans la synthèse, mais ne pas écraser les niveaux de diffusion existants, supérieurs au niveau de diffusion calculé automatiquement. A relire, ajuster : data/migrations/2.5.5to2.6.0-update-sensitivity.sql
 
 **🚀 Nouveautés**
 
@@ -31,6 +24,7 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 * Métadonnées : Amélioration des possibilités de customisation des PDF des fiches de métadonnées
 * Métadonnées : Amélioration des fiches détail des CA et JDD et ajout de la liste des imports dans les fiches des JDD (#889)
 * Synthèse : Possibilité d'ouvrir le module avec un JDD préselectionné (``<URL_GeoNature>/#/synthese?id_dataset=2``) et ajout d'un lien direct depuis le module Métadonnées (#889)
+* Synthese: ajout de web service pour le calcul du nombre d'observations par un paramètre donné (JDD, module, observateur), et du calcul de la bounding-box par jeu de données
 * Exports au format SHP remplacés par défaut par le format GeoPackage (GPKG) plus simple, plus léger, plus performant et unique. Les exports SHP restent activables dans la configuration des modules (#898)
 * Validation : Préremplir l'email à l'observateur avec des informations paramétrables sur l'occurrence (date, nom du taxon, commune, médias) (#981)
 * Validation : Possibilité de paramètrer les colonnes affichées dans la liste des observations (#980)
@@ -38,12 +32,14 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 * Ajout d'un champs json ``additional_data`` dans la table ``l_areas`` (#1111)
 * Complément des scripts de migration des données depuis GINCO (``data/scripts/import_ginco/``)
 * Barre de navigation : Mention plus générique et générale des auteurs
-* Redirection vers el formulaire d'authentification si on tente d'accéder à une page directement sans être authentifié et sans passer par le frontend (#1193 par @bouttier)
+* Redirection vers le formulaire d'authentification si on tente d'accéder à une page directement sans être authentifié et sans passer par le frontend (#1193 par @bouttier)
 * Connexion à MTD : possibilité de filtrer les JDD par instance, avec le paramètre ``ID_INSTANCE_FILTER``, par exemple pour ne récupérer que les JDD de sa région (#1195)
 * Connexion à MTD : récupération du créateur et des acteurs (#922, #1008 et #1196)
 * Connexion à MTD : récupération du nouveau champs ``statutDonneesSource`` pour indiquer si le JDD est d'origine publique ou privée
+* Création d'une commande GeoNature permettant de récupérer les JDD, CA et acteurs depuis le webservice MTD de l'INPN, en refactorisant les outils existants d'import depuis ce webservice
 * Création d'un script pour DEPOBIO, permettant de remplacer les règles de sensibilité nationales et régionales, par les règles départementales (``data/scripts/sensi/import_sensi_depobio.sh``)
 * Création d'un script permettant d'importer les régions dans le référentiel géographique (``data/migrations/insert_reg.sh``)
+* OCCTAX : ajout du paramètre `DISPLAY_VERNACULAR_NAME` qui contrôle l'affichage du nom vernaculaire vs nom complet sur les interfaces (Defaut = true: afffiche le nom vernaculaire)
 
 **🐛 Corrections**
 
@@ -52,17 +48,23 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 * Synthèse : Amélioration du trigger calculant les zonages d'une observation en ne faisant un ``ST_Touches()`` seulement si l'observation n'est pas un point et en le passant ``on each statement`` (#716)
 * Synthèse : Retour du bouton pour revenir à l'observation dans son module d'origine (Occtax par exemple) depuis la fiche info d'une observation (#1147)
 * Synthèse : Suppression du message "Aucun historique de validation" quand une observation n'a pas encore de validation (#1147)
+* Synthèse : Correction du CRUVED sur le R = 1 (ajout des JDD de l'utilisateur)
 * Occtax : Correction de l'erreur de chargement de l'observateur lors de la modification d'un relevé (#1177)
 * Occtax : Suppression de l'obligation de remplir les champs "Déterminateur" et "Méthode de détermination"
 * Métadonnées : Suppression du graphique de répartition des espèces dans les exports PDF car il était partiellement fonctionnel
 * Synthèse : fonction ``import_row_from_table`` : test sur ``LOWER(tbl_name)``
+* Redirection vers le formulaire d'authentification si l'on essaie d'accéder à une URL sans être authentifié et sans passer par le frontend (#1193)
 * Script d'installation globale : prise en compte du paramètre ``install_grid_layer`` permettant d'intégrer ou non les mailles dans le ``ref_geo`` lors de l'installation initiale (#1133)
+* Synthèse : changement de type pour ``refence_biblio`` (varchar(255) -> text)
+* Sensibilité : corrections contraintes NOT VALID
 
 **⚠️ Notes de version**
 
 * https://github.com/PnX-SI/GeoNature/blob/develop/data/migrations/2.5.5to2.6.0.sql
-* Calcul de la sensibilité des données exitantes dans la Synthèse (ainsi que de leur niveau de diffusion si celui-ci n'a pas été renseigné par ailleurs) : data/migrations/2.5.5to2.6.0-update-sensitivity.sql
+- Nomenclatures Sensibilité à renommer ???
+* Calcul de la sensibilité des données existantes dans la Synthèse (ainsi que de leur niveau de diffusion si celui-ci n'a pas été renseigné par ailleurs) : data/migrations/2.5.5to2.6.0-update-sensitivity.sql
 * Si vous aviez fait des customisations (logo, PDF export...) alors XXXXXX
+* Si des vues utilisent la colonne ``gn_synthese.synthese.refence_biblio`` (module d'export) celles-ci doivent être supprimées (DROP) et recrées
 * Revoir http://docs.geonature.fr/admin-manual.html#integrer-son-logo ?
 
 2.5.5 (2020-11-19)

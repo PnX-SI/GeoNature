@@ -90,13 +90,23 @@ export class DatasetCardComponent implements OnInit {
 
   getDataset(id) {
     this._dfs.getDatasetDetails(id).subscribe(data => {
-      console.log(data)
       this.dataset = data;
+      // first set to 0 to disable delete button
+      this.dataset.observation_count = 0;
+      // load stat
+      this._dataService.getObsCount({'id_dataset': id}).subscribe(count => {
+        this.dataset.observation_count = count;
+      })
+      this._dataService.getTaxaCount({'id_dataset': id}).subscribe(count => {
+        this.dataset.taxa_count = count;
+      });
+
+      this._dataService.getObsBbox({'id_dataset': id}).subscribe(bbox => {
+        this.geojsonData = bbox;
+      })
+      
       if (this.dataset.modules) {
         this.dataset.modules = this.dataset.modules.map(e => e.module_code).join(', ');
-      }
-      if ('bbox' in data) {
-        this.geojsonData = data['bbox'];
       }
     });
     this._dfs.getTaxaDistribution('group2_inpn', { id_dataset: id }).subscribe(data => {

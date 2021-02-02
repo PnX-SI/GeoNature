@@ -16,6 +16,8 @@ Ce dossier comprend plusieurs scripts permettant d'effectuer la migration des do
 
 Désampler le fichier ``settings.ini.sample``, le remplir puis lancer les scripts dans l'ordre décrit ci-dessous. Pour chaque script un fichier de log est créé dans le répertoire ``log``.
 
+Dans le fichier ``synthese.sql``, remplacer <NOM_TABLE> par le nom de la table contenant les données dans GINCO 
+
 Quelles données sont rapatriées ?
 *********************************
 
