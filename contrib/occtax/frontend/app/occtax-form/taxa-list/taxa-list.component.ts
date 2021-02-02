@@ -113,19 +113,6 @@ export class OcctaxFormTaxaListComponent implements OnInit {
    *  Return un titre formaté sans balise HTML
    **/
   taxonTitle(occurrence) {    
-    if (occurrence.taxref) {
-      console.log(occurrence.taxref.nom_vern);
-      
-      let taxKey = ModuleConfig.DISPLAY_VERNACULAR_NAME ? 'nom_vern': 'nom_complet';
-      let taxName;
-      if(occurrence.taxref[taxKey]) {
-        taxName = occurrence.taxref[taxKey];
-      }
-      else {        
-        taxName = occurrence.taxref.nom_complet;
-      }
-      return "<b>" + taxName + "</b>"
-    }
     return this.removeHtml(occurrence.nom_cite);
   }
 
