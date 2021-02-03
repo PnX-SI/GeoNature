@@ -242,7 +242,7 @@ class Synthese(Schema):
     EXPORT_METADATA_ID_DATASET_COL = fields.String(missing="jdd_id")
     EXPORT_METADATA_ACTOR_COL = fields.String(missing="acteurs")
     # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
-    EXPORT_FORMAT = fields.List(fields.String(), missing=["csv", "geojson", "gpkg"])
+    EXPORT_FORMAT = fields.List(fields.String(), missing=["csv", "geojson", "shapefile"])
     # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
     TAXON_RESULT_NUMBER = fields.Integer(missing=20)
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
