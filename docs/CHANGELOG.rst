@@ -7,10 +7,17 @@ CHANGELOG
 
 Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimum (qui n'est pas fourni par défaut avec Debian 9) pour les triggers déclenchés "on each statement", plus performants.
 
+TODO 
+
+- Tester routes mobiles
+- ref_biblio, longueur à revoir en insert et update
+- Update diffusion, seulement si NUL ???
+- Update requirements et utils-sqlalchemy
+
 **🚀 Nouveautés**
 
 * Sensibilité : Ajout d'un trigger sur la synthèse déclenchant automatiquement le calcul de la sensibilité des observations et calculant ensuite leur niveau de diffusion (si celui-ci est NULL) en fonction de la sensibilité (#871)
-* Ajout du format GeoPackage (GPKG) pour les exports SIG, plus simple, plus léger, plus performant et unique que le SHAPEFILE. Les exports au format SHP restent utilisés par défaut (modifiable dans la configuration des modules Occtax, Occhab et Synthèse) (#898)
+* Ajout du format GeoPackage (GPKG) pour les exports SIG, plus simple, plus léger, plus performant et unique que le SHAPEFILE. Les exports au format SHP restent pour le moment utilisés par défaut (modifiable dans la configuration des modules Occtax, Occhab et Synthèse) (#898)
 * Métadonnées : Refonte de la liste des CA et JDD avec l'ajout d'informations et d'actions, ainsi qu'une recherche avancée (#889)
 * Métadonnées : Révision des fiches info des CA et JDD avec l'ajout d'actions, du tableau des imports et du téléchargement des rapports d'UUID et de sensibilité (#889)
 * Métadonnées: Ajout de la fonctionnalité de fermeture (dépot) au niveau du CA (qui ferme tous les JDD du CA), seulement si le CA a au moins un JDD. Désactivée par défaut via le paramètre ``ENABLE_CLOSE_AF`` (#889 par @alainlaupinmnhn)
@@ -19,20 +26,22 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 * Métadonnées : Possibilité d'importer directement dans un JDD actif depuis le module Métadonnées, désactivé par défaut (#889)
 * Métadonnées : Amélioration des possibilités de customisation des PDF des fiches de métadonnées
 * Métadonnées : Amélioration des fiches détail des CA et JDD et ajout de la liste des imports dans les fiches des JDD (#889)
+* Métadonnées : Ajout d'un spinner lors du chargement de la liste des métadonnées et parallélisation du calcul du nombre de données par JDD (#1231)
 * Synthèse : Possibilité d'ouvrir le module avec un JDD préselectionné (``<URL_GeoNature>/#/synthese?id_dataset=2``) et ajout d'un lien direct depuis le module Métadonnées (#889)
 * Synthèse : ajout de web service pour le calcul du nombre d'observations par un paramètre donné (JDD, module, observateur), et du calcul de la bounding-box par jeu de données
-* Occtax : ajout du paramètre `DISPLAY_VERNACULAR_NAME` qui contrôle l'affichage du nom vernaculaire vs nom complet sur les interfaces (Defaut = true: afffiche le nom vernaculaire)
+* Occtax : ajout du paramètre ``DISPLAY_VERNACULAR_NAME`` qui contrôle l'affichage du nom vernaculaire vs nom complet sur les interfaces (Defaut = true: afffiche le nom vernaculaire)
 * Validation : Préremplir l'email à l'observateur avec des informations paramétrables sur l'occurrence (date, nom du taxon, commune, médias) (#981)
 * Validation : Possibilité de paramètrer les colonnes affichées dans la liste des observations (#980)
 * Possibilité de customiser le logo principal (GeoNature par défaut) dans ``frontend/src/custom/images/``
 * Ajout d'un champs json ``additional_data`` dans la table ``l_areas`` (#1111)
 * Complément des scripts de migration des données depuis GINCO (``data/scripts/import_ginco/``)
 * Barre de navigation : Mention plus générique et générale des auteurs et contributeurs
-* Redirection vers le formulaire d'authentification si on tente d'accéder à une page directement sans être authentifié et sans passer par le frontend (#1193 par @bouttier)
+* Redirection vers le formulaire d'authentification si on tente d'accéder à une page directement sans être authentifié et sans passer par le frontend (#1193)
 * Connexion à MTD : possibilité de filtrer les JDD par instance, avec le paramètre ``ID_INSTANCE_FILTER``, par exemple pour ne récupérer que les JDD de sa région (#1195)
 * Connexion à MTD : récupération du créateur et des acteurs (#922, #1008 et #1196)
 * Connexion à MTD : récupération du nouveau champs ``statutDonneesSource`` pour indiquer si le JDD est d'origine publique ou privée
 * Création d'une commande GeoNature permettant de récupérer les JDD, CA et acteurs depuis le webservice MTD de l'INPN, en refactorisant les outils existants d'import depuis ce webservice
+* Ajout de contraintes d'unicité sur certains champs des tables de métadonnées et de la table des sources (#1215)
 * Création d'un script pour DEPOBIO, permettant de remplacer les règles de sensibilité nationales et régionales, par les règles départementales (``data/scripts/sensi/import_sensi_depobio.sh``)
 * Création d'un script permettant d'importer les régions dans le référentiel géographique (``data/migrations/insert_reg.sh``)
 
@@ -41,16 +50,18 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 * Occhab : Export SIG (GPKG ou SHP) corrigé (#898)
 * Meilleur nettoyage des sessions enregistrées dans le navigateur (#1178)
 * Synthèse : Amélioration du trigger calculant les zonages d'une observation en ne faisant un ``ST_Touches()`` seulement si l'observation n'est pas un point et en le passant ``on each statement`` (#716)
+* Correction des droits CRUVED et de leur héritage (#1170)
 * Synthèse : Retour du bouton pour revenir à l'observation dans son module d'origine (Occtax par exemple) depuis la fiche info d'une observation (#1147)
 * Synthèse : Suppression du message "Aucun historique de validation" quand une observation n'a pas encore de validation (#1147)
 * Synthèse : Correction du CRUVED sur le R = 1 (ajout des JDD de l'utilisateur)
+* Synthèse : Correction de l'export des statuts basé sur une recherche géographique (#1203)
 * Occtax : Correction de l'erreur de chargement de l'observateur lors de la modification d'un relevé (#1177)
 * Occtax : Suppression de l'obligation de remplir les champs "Déterminateur" et "Méthode de détermination"
 * Métadonnées : Suppression du graphique de répartition des espèces dans les exports PDF car il était partiellement fonctionnel
 * Synthèse : Fonction ``import_row_from_table``, test sur ``LOWER(tbl_name)``
 * Redirection vers le formulaire d'authentification si l'on essaie d'accéder à une URL sans être authentifié et sans passer par le frontend (#1193)
 * Script d'installation globale : prise en compte du paramètre ``install_grid_layer`` permettant d'intégrer ou non les mailles dans le ``ref_geo`` lors de l'installation initiale (#1133)
-* Synthèse : Changement de longueur du champs ``ref_biblio`` (varchar(255) -> text)
+* Synthèse : Changement de la longueur du champs ``reference_biblio`` de la table ``gn_synthese.synthese`` (de 255 à 5000 caractères)
 * Sensibilité : Corrections des contraintes NOT VALID (#1245)
 
 **⚠️ Notes de version**
