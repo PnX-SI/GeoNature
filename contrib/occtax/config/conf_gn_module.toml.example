@@ -37,7 +37,7 @@ default_maplist_columns = [
 
 # Available columns which can be add manualy by user
 available_maplist_column = [
-	{ prop = "altitude_max", name = "altitude_max" },
+    { prop = "altitude_max", name = "altitude_max" },
     { prop = "altitude_min", name = "altitude_min" },
     { prop = "comment", name = "Commentaire" },
     { prop = "date_max", name = "Date fin" },
@@ -70,7 +70,7 @@ export_observer_txt_column = 'obsId'
 export_srid = 4326
 
 # Export available format (Only csv, geojson and shapefile and 'gpkg' is possible)
-export_available_format = ['csv', 'geojson', 'gpkg']
+export_available_format = ['csv', 'geojson', 'shapefile']
 
 # Custom message to display in the export modal
 export_message = "<p> <b> Attention: </b> </br>  Vous vous apprêtez à télécharger les données de la <b>recherche courante. </b> </p>"
