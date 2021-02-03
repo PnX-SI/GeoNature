@@ -76,9 +76,7 @@ def get_user_from_token_and_raise(
         if redirect_on_invalid_token:
             log_expiration_warning()
             raise RequestRedirect(new_url=redirect_on_invalid_token)
-        response = Unauthorized(description='Token corrupted.').get_response()
-        response.set_cookie("token", expires=0)
-        raise Unauthorized(response=response)
+        raise Unauthorized(description='Token corrupted.')
     except Exception as e:
         trap_all_exceptions = current_app.config.get("TRAP_ALL_EXCEPTIONS", True)
         if not trap_all_exceptions:
