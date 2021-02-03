@@ -494,7 +494,6 @@ class TAcquisitionFramework(CruvedHelper):
             )
         if only_query:
             return q
-        print(q)
         data = q.all()
         return list(set([d.id_acquisition_framework for d in data]))
 
