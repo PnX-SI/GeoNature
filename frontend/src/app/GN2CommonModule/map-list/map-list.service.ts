@@ -142,11 +142,7 @@ export class MapListService {
 
   loadData() {
     this.dataService().subscribe(
-      data => {
-        console.log("la");
-        console.log(data);
-        
-        
+      data => {        
         this.page.totalElements = data.total;
         this.page.itemPerPage = parseInt(this.urlQuery.get('limit'));
         this.page.pageNumber = data.page;
