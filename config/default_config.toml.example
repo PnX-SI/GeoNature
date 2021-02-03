@@ -281,6 +281,9 @@ MAIL_ON_ERROR = false
     EXPORT_OBSERVERS_COL = "observateur"
     EXPORT_GEOJSON_4326_COL = "geojson_4326"
     EXPORT_GEOJSON_LOCAL_COL = "geojson_local"
+    
+    # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
+    EXPORT_FORMAT = ["csv", "geojson", "shapefile"]
 
     # Noms des colonnes obligatoires de la vue ``gn_synthese.v_metadata_for_export``
     EXPORT_METADATA_ID_DATASET_COL = "jdd_id"
