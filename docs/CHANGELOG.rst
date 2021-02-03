@@ -7,10 +7,6 @@ CHANGELOG
 
 Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimum (qui n'est pas fourni par défaut avec Debian 9) pour les triggers déclenchés "on each statement", plus performants.
 
-**TODO**
-
-- Update SQL - J'ai fait un deuxième SQL à part dédié à cela - Calculer la sensibilité de toutes les données existantes dans la synthèse, mais ne pas écraser les niveaux de diffusion existants, supérieurs au niveau de diffusion calculé automatiquement. A relire, ajuster : data/migrations/2.5.5to2.6.0-update-sensitivity.sql
-
 **🚀 Nouveautés**
 
 * Sensibilité : Ajout d'un trigger sur la synthèse déclenchant automatiquement le calcul de la sensibilité des observations et calculant ensuite leur niveau de diffusion (si celui-ci est NULL) en fonction de la sensibilité (#871)
