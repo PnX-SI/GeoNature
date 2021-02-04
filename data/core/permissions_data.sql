@@ -1120,7 +1120,7 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_permissions.get_id_action('E'),
         gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
         gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'SYNTHESE-R-PRIVATE_OBSERVATION-TAXONOMIC',
+        'SYNTHESE-E-PRIVATE_OBSERVATION-TAXONOMIC',
         'Exporter des observations privées',
         'Exporter des observations privées dans le module Synthèse en étant limité par des taxons.'
     WHERE NOT EXISTS (
@@ -1259,7 +1259,7 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_permissions.get_id_action('E'),
         gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
         gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'SYNTHESE-R-SENSITIVE_OBSERVATION-TAXONOMIC',
+        'SYNTHESE-E-SENSITIVE_OBSERVATION-TAXONOMIC',
         'Exporter des observations sensibles',
         'Exporter des observations sensibles dans le module Synthèse en étant limité par des taxons.'
     WHERE NOT EXISTS (

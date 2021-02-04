@@ -307,7 +307,7 @@ CREATE TABLE gn_permissions.bib_filters_values (
     value_or_field varchar(50) NOT NULL,
     label varchar(255) NOT NULL,
     description text,
-	CONSTRAINT bib_filters_values_pk PRIMARY KEY (id_filter_value)
+	CONSTRAINT pk_bib_filters_values PRIMARY KEY (id_filter_value)
 ) ;
 
 CREATE TABLE gn_permissions.t_requests (
@@ -326,7 +326,7 @@ CREATE TABLE gn_permissions.t_requests (
 	additional_data jsonb,  
 	meta_create_date timestamp NOT NULL DEFAULT now(),
 	meta_update_date timestamp NOT NULL DEFAULT now(),
-	CONSTRAINT t_requests_pk PRIMARY KEY (id_request)
+	CONSTRAINT pk_t_requests PRIMARY KEY (id_request)
 ) ;
 
 -- Add new table "cor_module_action_object_filter" (AKA "t_permissions_available")
@@ -339,7 +339,7 @@ CREATE TABLE gn_permissions.cor_module_action_object_filter (
     code varchar(200) NOT NULL,
     label varchar(250) NOT NULL,
     description text NULL,
-    CONSTRAINT cor_module_action_object_filter_pk PRIMARY KEY (id_permission_available)
+    CONSTRAINT pk_cor_module_action_object_filter PRIMARY KEY (id_permission_available)
 );
 
 
@@ -610,6 +610,33 @@ ALTER TABLE gn_permissions.cor_module_action_object_filter
 -- 	ADD CONSTRAINT fk_cor_module_action_object_filter_id_filter_value FOREIGN KEY (id_filter_value)
 -- 	REFERENCES gn_permissions.bib_filters_values (id_filter_value) MATCH FULL
 -- 	ON UPDATE CASCADE ;
+
+
+-- -------------------------------------------------------------------------------------------------
+-- UNIQUE INDEXES
+
+-- bib_filters_type
+CREATE UNIQUE INDEX unique_bib_filters_type_code ON gn_permissions.bib_filters_type 
+    USING btree(UPPER(code_filter_type)) ;
+
+-- bib_filters_values
+CREATE UNIQUE INDEX unique_bib_filters_values ON gn_permissions.bib_filters_values  
+    USING btree(id_filter_type, UPPER(value_or_field)) ;
+
+-- cor_module_action_object_filter
+CREATE UNIQUE INDEX unique_cor_m_a_o_f_ids ON gn_permissions.cor_module_action_object_filter 
+    USING btree(id_module, id_action, id_object, id_filter_type);
+
+CREATE UNIQUE INDEX unique_cor_m_a_o_f_code ON gn_permissions.cor_module_action_object_filter 
+    USING btree(UPPER(code));
+
+-- t_actions
+CREATE UNIQUE INDEX unique_t_actions_code ON gn_permissions.t_actions 
+    USING btree(UPPER(code_action)) ;
+
+-- t_objects
+CREATE UNIQUE INDEX unique_t_objects_code ON gn_permissions.t_objects 
+    USING btree(UPPER(code_object)) ;
 
 -- -------------------------------------------------------------------------------------------------
 -- VIEWS

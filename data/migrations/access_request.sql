@@ -141,7 +141,7 @@ CREATE TABLE gn_permissions.bib_filters_values (
     value_or_field varchar(50) NOT NULL,
     label varchar(255) NOT NULL,
     description text,
-	CONSTRAINT bib_filters_values_pk PRIMARY KEY (id_filter_value)
+	CONSTRAINT pk_bib_filters_values PRIMARY KEY (id_filter_value)
 ) ;
 COMMENT ON TABLE gn_permissions.bib_filters_values IS 
     E'Contient les types de valeurs des filtres.';
@@ -367,7 +367,7 @@ CREATE TABLE gn_permissions.t_requests (
 	additional_data jsonb,  
 	meta_create_date timestamp NOT NULL DEFAULT now(),
 	meta_update_date timestamp NOT NULL DEFAULT now(),
-	CONSTRAINT t_requests_pk PRIMARY KEY (id_request)
+	CONSTRAINT pk_t_requests PRIMARY KEY (id_request)
 ) ;
 COMMENT ON TABLE gn_permissions.t_requests IS 
     E'Contient les demandes de permissions.';
@@ -616,6 +616,7 @@ ALTER TABLE gn_permissions.cor_role_action_filter_module_object
 
 -- -------------------------------------------------------------------------------------------------
 -- Rename and update trigger to force only one filter type by permission (gathering)
+-- TODO: can we replace this trigger by unique index ?
 CREATE OR REPLACE FUNCTION gn_permissions.fct_tri_only_one_filter_type_by_permission()
 RETURNS trigger AS
 $BODY$
@@ -928,7 +929,7 @@ CREATE TABLE gn_permissions.cor_module_action_object_filter (
     code varchar(200) NOT NULL,
     label varchar(250) NOT NULL,
     description text NULL,
-    CONSTRAINT cor_module_action_object_filter_pk PRIMARY KEY (id_permission_available)
+    CONSTRAINT pk_cor_module_action_object_filter PRIMARY KEY (id_permission_available)
 );
 
 COMMENT ON TABLE gn_permissions.cor_module_action_object_filter IS 
@@ -1002,6 +1003,48 @@ ALTER TABLE gn_permissions.cor_module_action_object_filter
 -- 	ADD CONSTRAINT fk_cor_module_action_object_filter_id_filter_value FOREIGN KEY (id_filter_value)
 -- 	REFERENCES gn_permissions.bib_filters_values (id_filter_value) MATCH FULL
 -- 	ON UPDATE CASCADE ;
+
+-- -------------------------------------------------------------------------------------------------
+-- UNIQUE INDEXES
+
+-- bib_filters_type
+DROP INDEX IF EXISTS gn_permissions.unique_bib_filters_type_code ;
+
+CREATE UNIQUE INDEX unique_bib_filters_type_code ON gn_permissions.bib_filters_type
+    USING btree(UPPER(code_filter_type)) ;
+
+
+-- bib_filters_values
+DROP INDEX IF EXISTS gn_permissions.unique_bib_filters_values ;
+
+CREATE UNIQUE INDEX unique_bib_filters_values ON gn_permissions.bib_filters_values 
+    USING btree(id_filter_type, UPPER(value_or_field)) ;
+
+
+-- cor_module_action_object_filter
+DROP INDEX IF EXISTS gn_permissions.unique_cor_m_a_o_f_ids ;
+
+CREATE UNIQUE INDEX unique_cor_m_a_o_f_ids ON gn_permissions.cor_module_action_object_filter 
+    USING btree(id_module, id_action, id_object, id_filter_type) ;
+
+DROP INDEX IF EXISTS gn_permissions.unique_cor_m_a_o_f_code ;
+
+CREATE UNIQUE INDEX unique_cor_m_a_o_f_code ON gn_permissions.cor_module_action_object_filter 
+    USING btree(UPPER(code)) ;
+
+
+-- t_actions
+DROP INDEX IF EXISTS gn_permissions.unique_t_actions_code ;
+
+CREATE UNIQUE INDEX unique_t_actions_code ON gn_permissions.t_actions 
+    USING btree(UPPER(code_action)) ;
+
+
+-- t_objects
+DROP INDEX IF EXISTS gn_permissions.unique_t_objects_code ;
+
+CREATE UNIQUE INDEX unique_t_objects_code ON gn_permissions.t_objects 
+    USING btree(UPPER(code_object)) ;
 
 
 -- -------------------------------------------------------------------------------------------------
@@ -1858,7 +1901,7 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_permissions.get_id_action('E'),
         gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
         gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'SYNTHESE-R-PRIVATE_OBSERVATION-TAXONOMIC',
+        'SYNTHESE-E-PRIVATE_OBSERVATION-TAXONOMIC',
         'Exporter des observations privées',
         'Exporter des observations privées dans le module Synthèse en étant limité par des taxons.'
     WHERE NOT EXISTS (
@@ -1997,7 +2040,7 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_permissions.get_id_action('E'),
         gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
         gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'SYNTHESE-R-SENSITIVE_OBSERVATION-TAXONOMIC',
+        'SYNTHESE-E-SENSITIVE_OBSERVATION-TAXONOMIC',
         'Exporter des observations sensibles',
         'Exporter des observations sensibles dans le module Synthèse en étant limité par des taxons.'
     WHERE NOT EXISTS (
