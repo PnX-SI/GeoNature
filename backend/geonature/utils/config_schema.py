@@ -66,7 +66,6 @@ class MTDSchemaConf(Schema):
     ID_INSTANCE_FILTER = fields.Integer(missing=None)
 
 
-
 class BddConfig(Schema):
     id_area_type_municipality = fields.Integer(missing=25)
     ID_USER_SOCLE_1 = fields.Integer(missing=8)
@@ -90,7 +89,7 @@ class MailConfig(Schema):
     MAIL_DEFAULT_SENDER = fields.String(missing=None)
     MAIL_MAX_EMAILS = fields.Integer(missing=None)
     MAIL_ASCII_ATTACHMENTS = fields.Boolean(missing=False)
-    ERROR_MAIL_TO = EmailStrOrListOfEmailStrField(missing=list())
+    ERROR_MAIL_TO = EmailStrOrListOfEmailStrField(missing=None)
 
 
 class AccountManagement(Schema):
