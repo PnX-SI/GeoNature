@@ -72,6 +72,12 @@ Si vous mettez à jour GeoNature :
 * Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.5to2.6.0.sql)
 * Toutes les nouvelles données intégrées dans le Synthèse auront leur niveau de sensibilité et de diffusion calculé automatiquement. Vous pouvez ajouter ou désactiver des règles de sensibilité dans la table ``gn_sensivity.t_sensitivity_rules``
 * Vous pouvez aussi exécuter le script qui va calculer automatiquement le niveau de sensibilité et de diffusion de toutes les données déjà présentes dans la Synthèse, éventuellement en l'adaptant à votre contexte : https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.5to2.6.0-update-sensitivity.sql
+* Mise à jour de la longueur du champs `gn_synthese.synthese.reference_biblio` à 5000 charactères. Jouer la commande suivante:
+
+  `sudo -u postgres psql -d geonature2db -c"
+  UPDATE pg_attribute SET atttypmod = 5004
+  WHERE attrelid = 'gn_synthese.synthese'::regclass
+  AND attname = 'reference_biblio';"`
 
 2.5.5 (2020-11-19)
 ------------------
