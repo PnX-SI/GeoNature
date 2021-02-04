@@ -2,21 +2,14 @@
 CHANGELOG
 =========
 
-2.6.0 - Saxifraga (unreleased)
+2.6.0 - Saxifraga (2020-02-04)
 ------------------------------
 
 Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimum (qui n'est pas fourni par défaut avec Debian 9) pour les triggers déclenchés "on each statement", plus performants.
 
-TODO 
-
-- Tester routes mobiles
-- ref_biblio, longueur à revoir en insert et update
-- Update diffusion, seulement si NUL ???
-- Update requirements et utils-sqlalchemy
-
 **🚀 Nouveautés**
 
-* Sensibilité : Ajout d'un trigger sur la synthèse déclenchant automatiquement le calcul de la sensibilité des observations et calculant ensuite leur niveau de diffusion (si celui-ci est NULL) en fonction de la sensibilité (#871)
+* Sensibilité : Ajout d'un trigger sur la synthèse déclenchant automatiquement le calcul de la sensibilité des observations et calculant ensuite leur niveau de diffusion (si celui-ci est NULL) en fonction de la sensibilité (#413 et #871)
 * Ajout du format GeoPackage (GPKG) pour les exports SIG, plus simple, plus léger, plus performant et unique que le SHAPEFILE. Les exports au format SHP restent pour le moment utilisés par défaut (modifiable dans la configuration des modules Occtax, Occhab et Synthèse) (#898)
 * Métadonnées : Refonte de la liste des CA et JDD avec l'ajout d'informations et d'actions, ainsi qu'une recherche avancée (#889)
 * Métadonnées : Révision des fiches info des CA et JDD avec l'ajout d'actions, du tableau des imports et du téléchargement des rapports d'UUID et de sensibilité (#889)
@@ -70,17 +63,12 @@ Si vous mettez à jour GeoNature :
 
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
 * Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.5to2.6.0.sql)
-* Toutes les nouvelles données intégrées dans le Synthèse auront leur niveau de sensibilité et de diffusion calculé automatiquement. Vous pouvez ajouter ou désactiver des règles de sensibilité dans la table ``gn_sensivity.t_sensitivity_rules``
+* Toutes les nouvelles données intégrées dans le Synthèse auront leur niveau de sensibilité et de diffusion calculés automatiquement. Vous pouvez ajouter ou désactiver des règles de sensibilité dans la table ``gn_sensivity.t_sensitivity_rules``
 * Vous pouvez aussi exécuter le script qui va calculer automatiquement le niveau de sensibilité et de diffusion de toutes les données déjà présentes dans la Synthèse, éventuellement en l'adaptant à votre contexte : https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.5to2.6.0-update-sensitivity.sql
-* Mise à jour de la longueur du champs `gn_synthese.synthese.reference_biblio` à 5000 charactères. Jouer la commande suivante:
-
-  `sudo -u postgres psql -d geonature2db -c"
-  UPDATE pg_attribute SET atttypmod = 5004
-  WHERE attrelid = 'gn_synthese.synthese'::regclass
-  AND attname = 'reference_biblio';"`
-  
-* Executer le script de migration du sous-module de nomenclature:
+* Mettez à jour de la longueur du champs ``gn_synthese.synthese.reference_biblio`` à 5000 charactères. Exécutez la commande suivante dans la console : ``sudo -u postgres psql -d geonature2db -c "UPDATE pg_attribute SET atttypmod = 5004 WHERE attrelid = 'gn_synthese.synthese'::regclass AND attname = 'reference_biblio';"``
+* Exécuter le script de migration du sous-module de nomenclature:
   https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.4to1.3.5.sql
+* Si vous disposez du module d'import, vous devez le mettre à jour en version 1.1.1
 
 2.5.5 (2020-11-19)
 ------------------
