@@ -1351,8 +1351,9 @@ def get_permissions_by_role_id(id_role):
                     "Please remove this useless permission from cor_role_action_filter_module_object:"+
                     f" {perm}"
                 )
-            elif perm["is_inherited"] and perm["object_code"] != "ALL":
-                # If it's an inherited permission for a specific object, label and code must be updated
+            elif perm["is_inherited"] and perm["module_code"] != "GEONATURE":
+                # WARNING : only add an inherited permission by an object if a 
+                # corresponding entry was found in cor_module_action_object_filter table
                 object_permission_infos = get_permission_available(
                     module_code=perm["module_code"], 
                     action_code=perm["action_code"], 
@@ -1360,10 +1361,10 @@ def get_permissions_by_role_id(id_role):
                     filter_type_code=perm["filter_type"],
                 )
                 if object_permission_infos:
+                    # If it's an inherited permission for a specific object, label and code must be updated
                     perm["label"] = object_permission_infos["label"]
                     perm["code"] = object_permission_infos["code"]
-                    # WARNING : only add an inherited permission by an object if a 
-                    # corresponding entry was found in cor_module_action_object_filter table
+                    
                     append_permission(permissions=permissions, **perm)
             else:
                 append_permission(permissions=permissions, **perm)
