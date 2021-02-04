@@ -125,7 +125,7 @@ CREATE TABLE synthese (
     id_nomenclature_info_geo_type integer DEFAULT get_default_nomenclature_value('TYP_INF_GEO'),
     id_nomenclature_behaviour integer DEFAULT get_default_nomenclature_value('OCC_COMPORTEMENT'),
     id_nomenclature_biogeo_status integer DEFAULT get_default_nomenclature_value('STAT_BIOGEO'),
-    reference_biblio text,
+    reference_biblio character varying(5000),
     count_min integer,
     count_max integer,
     cd_nom integer,
@@ -819,6 +819,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
 -- Vue listant les observations pour l'export de la Synthèse
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
  SELECT 
+    s.id_synthese AS id_synthese,
     s.date_min::date AS date_debut,
     s.date_max::date AS date_fin,
     s.date_min::time AS heure_debut,
@@ -891,7 +892,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     n19.label_default AS methode_determination,
     n20.label_default AS comportement,
     s.reference_biblio AS reference_biblio,
-    s.id_synthese AS id_synthese,
     s.entity_source_pk_value AS id_origine,
     s.unique_id_sinp AS uuid_perm_sinp,
     s.unique_id_sinp_grp AS uuid_perm_grp_sinp,
