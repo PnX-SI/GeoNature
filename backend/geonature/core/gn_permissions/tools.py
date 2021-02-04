@@ -155,8 +155,6 @@ class UserCruved:
             )
         q = q.filter(sa.or_(*ors))
         from sqlalchemy.dialects import postgresql;
-        print('-'*72)
-        print(q.statement.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
         return q.all()
 
     def _build_other_filters_for_max_perm_query(self, gathering):
@@ -189,8 +187,6 @@ class UserCruved:
         Ce fonctionnement est prévu pour des filtres dont la valeur est numérique.
         Utilisé principalement pour le CRUVED avec le filtre de propriété (=SCOPE).
         """
-        print("HIGHTER PERM:")
-        print(perm_list)
         user_with_highter_perm = perm_list[0]
         max_code = user_with_highter_perm.value_filter
         i = 1
@@ -230,8 +226,6 @@ class UserCruved:
                 ):
                     type_of_perm.setdefault(k, []).append(user_permission)
 
-        print("TYPE of PERM:")
-        print(type_of_perm)
         # Take the max of the different permissions
         herited = False
         herited_object = None
@@ -293,9 +287,6 @@ class UserCruved:
         pour une action donnée.
         """
         permissions = self.get_user_perm_list(action)
-        print("USER PERMISSIONS:")
-        print(f"Size:{len(permissions)}")
-        print(permissions)
 
         permissions = self.build_herited_user_cruved(permissions)
         if permissions is not None:
