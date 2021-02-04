@@ -584,7 +584,6 @@ $BODY$
   COST 100;
 
 
--- trigger on insert/update - ON EACH PROCEDURE
 CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement() RETURNS TRIGGER
   LANGUAGE plpgsql
   AS $$ 
@@ -638,8 +637,8 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_stat
       UPDATE gn_synthese.synthese 
       SET 
       id_nomenclature_sensitivity = calculated_id_sensi,
-      -- TODO: est-ce qu'on remet à jour le niveau de diffusion lors d'une MAJ de la sensi ?
-      id_nomenclature_diffusion_level = (
+      -- On ne met pas à jour le niveau de diffusion s'il a déjà une valeur
+      id_nomenclature_diffusion_level = CASE WHEN OLD.id_nomenclature_diffusion_level IS NULL THEN (
         SELECT ref_nomenclatures.get_id_nomenclature(
             'NIV_PRECIS',
             gn_sensitivity.calculate_cd_diffusion_level(
@@ -648,6 +647,8 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_stat
           )
       	)
       )
+      ELSE OLD.id_nomenclature_diffusion_level
+      END
       WHERE id_synthese = OLD.id_synthese
       ;
       RETURN NULL;
