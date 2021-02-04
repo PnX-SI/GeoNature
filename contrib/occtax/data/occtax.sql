@@ -1163,7 +1163,7 @@ INSERT INTO gn_synthese.t_sources ( name_source, desc_source, entity_source_pk_f
 -- ----------------------------------------------------------------------
 -- Add available OccTax permissions
 
--- OCCTAX - CRU--D - ALL - SCOPE
+-- OCCTAX - CRU-ED - ALL - SCOPE
 INSERT INTO gn_permissions.cor_module_action_object_filter (
     id_module, id_action, id_object, id_filter_type, code, label, description
 ) 
@@ -1213,6 +1213,23 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         SELECT 'X'
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
         WHERE cmaof.code = 'OCCTAX-U-ALL-SCOPE'
+    ) ;
+
+INSERT INTO gn_permissions.cor_module_action_object_filter (
+    id_module, id_action, id_object, id_filter_type, code, label, description
+) 
+    SELECT
+        gn_commons.get_id_module_bycode('OCCTAX'),
+        gn_permissions.get_id_action('E'),
+        gn_permissions.get_id_object('ALL'),
+        gn_permissions.get_id_filter_type('SCOPE'),
+        'OCCTAX-E-ALL-SCOPE',
+        'Exporter des données',
+        'Exporter des données dans OccTax en étant limité par l''appartenance.'
+    WHERE NOT EXISTS (
+        SELECT 'X'
+        FROM gn_permissions.cor_module_action_object_filter AS cmaof
+        WHERE cmaof.code = 'OCCTAX-E-ALL-SCOPE'
     ) ;
 
 INSERT INTO gn_permissions.cor_module_action_object_filter (
