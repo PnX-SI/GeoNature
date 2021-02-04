@@ -11,6 +11,8 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 
 * Sensibilité : Ajout d'un trigger sur la synthèse déclenchant automatiquement le calcul de la sensibilité des observations et calculant ensuite leur niveau de diffusion (si celui-ci est NULL) en fonction de la sensibilité (#413 et #871)
 * Ajout du format GeoPackage (GPKG) pour les exports SIG, plus simple, plus léger, plus performant et unique que le SHAPEFILE. Les exports au format SHP restent pour le moment utilisés par défaut (modifiable dans la configuration des modules Occtax, Occhab et Synthèse) (#898)
+* Performances : Suppression du trigger le plus lourd calculant les couleurs des taxons par unités géographiques. Il est remplacé par une vue utilisant le nouveau paramètre ``gn_commons.t_parameters.occtaxmobile_area_type``, définissant le code du type de zonage à utiliser pour les unités géographiques dans Occtax-mobile (Mailles de 5km par défaut) (#997)
+* Performances : Amélioration du trigger de la Synthèse calculant les zonages d'une observation en ne faisant un ``ST_Touches()`` seulement si l'observation n'est pas un point et en le passant ``on each statement`` (#716)
 * Métadonnées : Refonte de la liste des CA et JDD avec l'ajout d'informations et d'actions, ainsi qu'une recherche avancée (#889)
 * Métadonnées : Révision des fiches info des CA et JDD avec l'ajout d'actions, du tableau des imports et du téléchargement des rapports d'UUID et de sensibilité (#889)
 * Métadonnées: Ajout de la fonctionnalité de fermeture (dépot) au niveau du CA (qui ferme tous les JDD du CA), seulement si le CA a au moins un JDD. Désactivée par défaut via le paramètre ``ENABLE_CLOSE_AF`` (#889 par @alainlaupinmnhn)
@@ -42,7 +44,6 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 
 * Occhab : Export SIG (GPKG ou SHP) corrigé (#898)
 * Meilleur nettoyage des sessions enregistrées dans le navigateur (#1178)
-* Synthèse : Amélioration du trigger calculant les zonages d'une observation en ne faisant un ``ST_Touches()`` seulement si l'observation n'est pas un point et en le passant ``on each statement`` (#716)
 * Correction des droits CRUVED et de leur héritage (#1170)
 * Synthèse : Retour du bouton pour revenir à l'observation dans son module d'origine (Occtax par exemple) depuis la fiche info d'une observation (#1147)
 * Synthèse : Suppression du message "Aucun historique de validation" quand une observation n'a pas encore de validation (#1147)
@@ -66,8 +67,8 @@ Si vous mettez à jour GeoNature :
 * Toutes les nouvelles données intégrées dans le Synthèse auront leur niveau de sensibilité et de diffusion calculés automatiquement. Vous pouvez ajouter ou désactiver des règles de sensibilité dans la table ``gn_sensivity.t_sensitivity_rules``
 * Vous pouvez aussi exécuter le script qui va calculer automatiquement le niveau de sensibilité et de diffusion de toutes les données déjà présentes dans la Synthèse, éventuellement en l'adaptant à votre contexte : https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.5to2.6.0-update-sensitivity.sql
 * Mettez à jour de la longueur du champs ``gn_synthese.synthese.reference_biblio`` à 5000 charactères. Exécutez la commande suivante dans la console : ``sudo -u postgres psql -d geonature2db -c "UPDATE pg_attribute SET atttypmod = 5004 WHERE attrelid = 'gn_synthese.synthese'::regclass AND attname = 'reference_biblio';"``
-* Exécuter le script de migration du sous-module de nomenclature:
-  https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.4to1.3.5.sql
+* Exécuter le script de migration du sous-module de nomenclature : https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.4to1.3.5.sql
+* Si vous utilisez Occtax-mobile, vous pouvez modifier la valeur du nouveau paramètre ``gn_commons.t_parameters.occtaxmobile_area_type`` pour lui indiquer le code du type de zonage que vous utilisez pour les unités géographiques (mailles de 5km par défaut)
 * Si vous disposez du module d'import, vous devez le mettre à jour en version 1.1.1
 
 2.5.5 (2020-11-19)
