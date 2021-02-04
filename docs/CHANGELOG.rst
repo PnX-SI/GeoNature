@@ -78,6 +78,9 @@ Si vous mettez à jour GeoNature :
   UPDATE pg_attribute SET atttypmod = 5004
   WHERE attrelid = 'gn_synthese.synthese'::regclass
   AND attname = 'reference_biblio';"`
+  
+* Executer le script de migration du sous-module de nomenclature:
+  https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.4to1.3.5.sql
 
 2.5.5 (2020-11-19)
 ------------------
