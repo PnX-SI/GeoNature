@@ -354,7 +354,7 @@ DROP TABLE IF EXISTS gn_permissions.t_requests CASCADE ;
 CREATE TABLE gn_permissions.t_requests (
 	id_request integer NOT NULL DEFAULT nextval('gn_permissions.t_requests_id_request_seq'::regclass),
 	id_role integer,
-    token uuid NOT NULL DEFAULT uuid_generate_v4(),
+    token uuid NOT NULL DEFAULT public.uuid_generate_v4(),
     end_date date,
 	processed_state request_states NOT NULL DEFAULT 'pending',
     processed_date timestamp,
@@ -528,90 +528,114 @@ DROP VIEW IF EXISTS gn_permissions.v_roles_permissions ;
 
 
 -- -------------------------------------------------------------------------------------------------
--- Alter table "cor_role_action_filter_module_object" to group permissions,
--- manage permissions timing, store value of filters.
-ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-    DROP COLUMN IF EXISTS gathering,
-    DROP COLUMN IF EXISTS end_date,
-    DROP COLUMN IF EXISTS id_filter_type,
-    DROP COLUMN IF EXISTS value_filter,
-    DROP COLUMN IF EXISTS id_request ;
-
-
-ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-    ADD COLUMN gathering uuid DEFAULT uuid_generate_v4(),
-    ADD COLUMN end_date timestamp NULL,
-    ADD COLUMN id_filter_type int4 NULL,
-    -- TODO: not used today. Remove ? See if really usefull or not !
-    -- ADD COLUMN id_filter_value int4 NULL,
-    ADD COLUMN value_filter text NULL,
-    ADD COLUMN id_request int4 NULL ;
-
-
-COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.gathering IS 
-	E'Groupe les permissions. Toutes les permissions possédant le même UUID sont à rassembler.'
-     'Permet ainsi de cummuler plusieurs filtres distincts.' ;
-COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.end_date IS 
-	E'Indique la date à laquelle la permission prend fin la permission. '
-     'Répéter cette date pour toutes les permissions d''un même groupe.' ;
-COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_filter_type IS 
-	E'Identifiant du type de filtre de la permission.' ;
--- TODO: not used today. Remove ?
--- COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_filter_value IS 
--- 	E'Identifiant du type de valeur du filtre de la permission.'
---   'Utile pour les filtres non prédéfini pouvant posséder plusieurs types de valeurs.' ;
-COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.value_filter IS 
-	E'Contient les valeurs du filtre à appliquer. '
-     'Voir la description du type de filtre pour les valeurs possibles.' ;
-COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_request IS 
-	E'Identifiant de la requête à l''origine de la création de la permission'
-     'Si la permission n''est pas liée à une demande d''accès contient NULL.' ;
-
-
-ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-	DROP CONSTRAINT IF EXISTS fk_cor_r_a_f_m_o_id_filter_type CASCADE ;
-
-ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-	ADD CONSTRAINT fk_cor_r_a_f_m_o_id_filter_type FOREIGN KEY (id_filter_type)
-	REFERENCES gn_permissions.bib_filters_type (id_filter_type) MATCH FULL
-	ON UPDATE CASCADE ;
-
-ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-	DROP CONSTRAINT IF EXISTS fk_cor_r_a_f_m_o_id_request CASCADE ;
-
-ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-	ADD CONSTRAINT fk_cor_r_a_f_m_o_id_request FOREIGN KEY (id_request)
-	REFERENCES gn_permissions.t_requests (id_request) MATCH FULL
-	ON UPDATE CASCADE ;
-
-
--- -------------------------------------------------------------------------------------------------
 -- Drop trigger before migrate, recreate it after migrate
 DROP TRIGGER IF EXISTS tri_check_no_multiple_filter_type 
     ON gn_permissions.cor_role_action_filter_module_object ;
 
-DROP TRIGGER IF EXISTS tri_check_no_duplicate_permissions 
-    ON gn_permissions.cor_role_action_filter_module_object ;
-
 
 -- -------------------------------------------------------------------------------------------------
--- Migrate "t_filters" entries
+-- Migrate "t_filters" entries in updated cor_role_action_filter_module_object table.
 -- TODO: see why this update can be blocked by trigger gn_permissions.fct_tri_only_one_filter_type_by_permission()
-UPDATE gn_permissions.cor_role_action_filter_module_object AS c
-SET 
-    id_filter_type = f.id_filter_type,
-    value_filter = f.value_filter
-FROM gn_permissions.t_filters AS f
-WHERE c.id_filter = f.id_filter 
-    AND c.id_filter_type IS NULL
-    AND c.value_filter IS NULL ;
+DO
+$$
+DECLARE
+    tablesFoundCount INTEGER := 0;
+BEGIN
+    RAISE NOTICE 'Migrate data if tables t_filters, cor_object_module, cor_filter_type_module exist' ;
+    
+    SELECT COUNT(*) INTO tablesFoundCount
+    FROM information_schema.tables 
+    WHERE table_schema = 'gn_permissions' 
+        AND table_name IN ('t_filters', 'cor_object_module', 'cor_filter_type_module') ;
+
+    IF tablesFoundCount = 3 THEN
+        RAISE NOTICE 'Tables exist ! Let''s start to migrate data...' ;
+        
+        -- -------------------------------------------------------------------------------------------------
+        -- Alter table "cor_role_action_filter_module_object" to group permissions,
+        -- manage permissions timing, store value of filters.
+        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+            DROP COLUMN IF EXISTS gathering,
+            DROP COLUMN IF EXISTS end_date,
+            DROP COLUMN IF EXISTS id_filter_type,
+            DROP COLUMN IF EXISTS value_filter,
+            DROP COLUMN IF EXISTS id_request ;
 
 
--- -------------------------------------------------------------------------------------------------
--- Re-alter table "cor_role_action_filter_module_object" to set NOT NULL on columns after migrate
-ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-    ALTER COLUMN id_filter_type SET NOT NULL,
-    ALTER COLUMN value_filter SET NOT NULL ;
+        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+            ADD COLUMN gathering uuid DEFAULT public.uuid_generate_v4(),
+            ADD COLUMN end_date timestamp NULL,
+            ADD COLUMN id_filter_type int4 NULL,
+            -- TODO: not used today. Remove ? See if really usefull or not !
+            -- ADD COLUMN id_filter_value int4 NULL,
+            ADD COLUMN value_filter text NULL,
+            ADD COLUMN id_request int4 NULL ;
+
+
+        COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.gathering IS 
+            E'Groupe les permissions. Toutes les permissions possédant le même UUID sont à rassembler.'
+            'Permet ainsi de cummuler plusieurs filtres distincts.' ;
+        COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.end_date IS 
+            E'Indique la date à laquelle la permission prend fin la permission. '
+            'Répéter cette date pour toutes les permissions d''un même groupe.' ;
+        COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_filter_type IS 
+            E'Identifiant du type de filtre de la permission.' ;
+        -- TODO: not used today. Remove ?
+        -- COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_filter_value IS 
+        -- 	E'Identifiant du type de valeur du filtre de la permission.'
+        --   'Utile pour les filtres non prédéfini pouvant posséder plusieurs types de valeurs.' ;
+        COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.value_filter IS 
+            E'Contient les valeurs du filtre à appliquer. '
+            'Voir la description du type de filtre pour les valeurs possibles.' ;
+        COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_request IS 
+            E'Identifiant de la requête à l''origine de la création de la permission'
+            'Si la permission n''est pas liée à une demande d''accès contient NULL.' ;
+
+
+        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+            DROP CONSTRAINT IF EXISTS fk_cor_r_a_f_m_o_id_filter_type CASCADE ;
+
+        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+            ADD CONSTRAINT fk_cor_r_a_f_m_o_id_filter_type FOREIGN KEY (id_filter_type)
+            REFERENCES gn_permissions.bib_filters_type (id_filter_type) MATCH FULL
+            ON UPDATE CASCADE ;
+
+        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+            DROP CONSTRAINT IF EXISTS fk_cor_r_a_f_m_o_id_request CASCADE ;
+
+        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+            ADD CONSTRAINT fk_cor_r_a_f_m_o_id_request FOREIGN KEY (id_request)
+            REFERENCES gn_permissions.t_requests (id_request) MATCH FULL
+            ON UPDATE CASCADE ;
+
+        -- -------------------------------------------------------------------------------------------------
+        -- Migrate "t_filters" entries
+        UPDATE gn_permissions.cor_role_action_filter_module_object AS c
+        SET 
+            id_filter_type = f.id_filter_type,
+            value_filter = f.value_filter
+        FROM gn_permissions.t_filters AS f
+        WHERE c.id_filter = f.id_filter 
+            AND c.id_filter_type IS NULL
+            AND c.value_filter IS NULL ;
+
+        -- -------------------------------------------------------------------------------------------------
+        -- Re-alter table "cor_role_action_filter_module_object" to set NOT NULL on columns after migrate
+        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+            ALTER COLUMN id_filter_type SET NOT NULL,
+            ALTER COLUMN value_filter SET NOT NULL ;
+
+        -- -------------------------------------------------------------------------------------------------
+        -- Remove useless column from cor_role_action_filter_module_object
+        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+            DROP COLUMN IF EXISTS id_filter, 
+            DROP CONSTRAINT IF EXISTS fk_cor_r_a_f_m_o_id_filter CASCADE ;
+
+    ELSE
+        RAISE NOTICE 'Tables NOT exist. Founded tables : %. Migration already passed ?', tablesFoundCount ;
+    END IF ;
+END ;
+$$ ;
 
 
 -- -------------------------------------------------------------------------------------------------
@@ -679,65 +703,88 @@ DROP FUNCTION IF EXISTS gn_permissions.fct_tri_does_user_have_already_scope_filt
 
 -- -------------------------------------------------------------------------------------------------
 -- Insert new permissions on ACCESS_REQUESTS object for ADMIN module for "group_admin"
+-- CRU--D
 -- C
 INSERT INTO gn_permissions.cor_role_action_filter_module_object
     (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
-    SELECT 9, 1, 1, 4, 1, '3'
+    SELECT 
+        9, 
+        gn_permissions.get_id_action('C'), 
+        gn_commons.get_id_module_bycode('ADMIN'), 
+        gn_permissions.get_id_object('ACCESS_REQUESTS'), 
+        gn_permissions.get_id_filter_type('SCOPE'), 
+        '3'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_role_action_filter_module_object AS cor
         WHERE cor.id_role = 9
-            AND cor.id_action = 1
-            AND cor.id_module = 1
-            AND cor.id_object = 4
-            AND cor.id_filter_type = 1
+            AND cor.id_action = gn_permissions.get_id_action('C')
+            AND cor.id_module = gn_commons.get_id_module_bycode('ADMIN')
+            AND cor.id_object = gn_permissions.get_id_object('ACCESS_REQUESTS')
+            AND cor.id_filter_type = gn_permissions.get_id_filter_type('SCOPE')
             AND cor.value_filter = '3'
     ) ;
 -- R
 INSERT INTO gn_permissions.cor_role_action_filter_module_object
     (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
-    SELECT 9, 2, 1, 4, 1, '3'
+    SELECT 
+        9, 
+        gn_permissions.get_id_action('R'), 
+        gn_commons.get_id_module_bycode('ADMIN'), 
+        gn_permissions.get_id_object('ACCESS_REQUESTS'), 
+        gn_permissions.get_id_filter_type('SCOPE'), 
+        '3'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_role_action_filter_module_object AS cor
         WHERE cor.id_role = 9
-            AND cor.id_action = 2
-            AND cor.id_module = 1
-            AND cor.id_object = 4
-            AND cor.id_filter_type = 1
+            AND cor.id_action = gn_permissions.get_id_action('R')
+            AND cor.id_module = gn_commons.get_id_module_bycode('ADMIN')
+            AND cor.id_object = gn_permissions.get_id_object('ACCESS_REQUESTS')
+            AND cor.id_filter_type = gn_permissions.get_id_filter_type('SCOPE')
             AND cor.value_filter = '3'
     ) ;
 -- U
 INSERT INTO gn_permissions.cor_role_action_filter_module_object
     (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
-    SELECT 9, 3, 1, 4, 1, '3'
+    SELECT 
+        9, 
+        gn_permissions.get_id_action('U'), 
+        gn_commons.get_id_module_bycode('ADMIN'), 
+        gn_permissions.get_id_object('ACCESS_REQUESTS'), 
+        gn_permissions.get_id_filter_type('SCOPE'), 
+        '3'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_role_action_filter_module_object AS cor
         WHERE cor.id_role = 9
-            AND cor.id_action = 3
-            AND cor.id_module = 1
-            AND cor.id_object = 4
-            AND cor.id_filter_type = 1
+            AND cor.id_action = gn_permissions.get_id_action('U')
+            AND cor.id_module = gn_commons.get_id_module_bycode('ADMIN')
+            AND cor.id_object = gn_permissions.get_id_object('ACCESS_REQUESTS')
+            AND cor.id_filter_type = gn_permissions.get_id_filter_type('SCOPE')
             AND cor.value_filter = '3'
     ) ;
 -- D
 INSERT INTO gn_permissions.cor_role_action_filter_module_object
     (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
-    SELECT 9, 6, 4, 1, 4, 1, '3'
+    SELECT 
+        9, 
+        gn_permissions.get_id_action('D'), 
+        gn_commons.get_id_module_bycode('ADMIN'), 
+        gn_permissions.get_id_object('ACCESS_REQUESTS'), 
+        gn_permissions.get_id_filter_type('SCOPE'), 
+        '3'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_role_action_filter_module_object AS cor
         WHERE cor.id_role = 9
-            AND cor.id_action = 6
-            AND cor.id_module = 1
-            AND cor.id_object = 4
-            AND cor.id_filter_type = 1
+            AND cor.id_action = gn_permissions.get_id_action('D')
+            AND cor.id_module = gn_commons.get_id_module_bycode('ADMIN')
+            AND cor.id_object = gn_permissions.get_id_object('ACCESS_REQUESTS')
+            AND cor.id_filter_type = gn_permissions.get_id_filter_type('SCOPE')
             AND cor.value_filter = '3'
     ) ;
 
--- -------------------------------------------------------------------------------------------------
--- TODO : remove existing permissions, action "Validate", for groupe_admin on module ADMIN ?
 
 -- -------------------------------------------------------------------------------------------------
 -- Triggers and functions for unduplicate permissions
@@ -774,130 +821,6 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
 --     REFERENCING OLD TABLE AS OLD
 --     FOR EACH STATEMENT
 --     EXECUTE PROCEDURE gn_permissions.fct_tri_check_delete_no_duplicate_permissions() ;
-
-
--- -------------------------------------------------------------------------------------------------
--- Build view "v_roles_permissions"
-CREATE VIEW gn_permissions.v_roles_permissions
-AS WITH 
-    -- Get users permissions
-    p_user_permission AS (
-        SELECT u.id_role,
-            u.nom_role,
-            u.prenom_role,
-            u.groupe,
-            u.id_organisme,
-            NULL AS group_name,
-            c_1.id_permission,
-            c_1.id_module,
-            c_1.id_action,
-            c_1.id_object,
-            c_1.gathering,
-            c_1.end_date,
-            c_1.id_filter_type,
-            c_1.value_filter
-        FROM utilisateurs.t_roles AS u 
-            JOIN gn_permissions.cor_role_action_filter_module_object AS c_1 
-                ON (c_1.id_role = u.id_role)
-        WHERE u.groupe = false
-    ),
-    -- Get permissions of groups AND the user permissions inherited from his group(s)
-    -- WARNING : get permissions from groups only if they have users
-    p_groupe_permission AS (
-        SELECT u.id_role,
-            u.nom_role,
-            u.prenom_role,
-            u.groupe,
-            u.id_organisme,
-            TRIM(TRAILING FROM CONCAT(grp.nom_role, ' ', grp.prenom_role)) AS group_name,
-            c_1.id_permission,
-            c_1.id_module,
-            c_1.id_action,
-            c_1.id_object,
-            c_1.gathering,
-            c_1.end_date,
-            c_1.id_filter_type,
-            c_1.value_filter
-        FROM utilisateurs.t_roles AS u 
-            JOIN utilisateurs.cor_roles AS g 
-                ON (g.id_role_utilisateur = u.id_role OR g.id_role_groupe = u.id_role)
-            JOIN utilisateurs.t_roles AS grp 
-                ON (g.id_role_groupe = grp.id_role)
-            JOIN gn_permissions.cor_role_action_filter_module_object AS c_1 
-                ON (c_1.id_role = g.id_role_groupe)
-    ), 
-    all_user_permission AS (
-        -- UNION operator removes all duplicate rows from the combined data set
-        SELECT p_user_permission.id_role,
-            p_user_permission.nom_role,
-            p_user_permission.prenom_role,
-            p_user_permission.groupe,
-            p_user_permission.id_organisme,
-            p_user_permission.group_name,
-            p_user_permission.id_permission,
-            p_user_permission.id_module,
-            p_user_permission.id_action,
-            p_user_permission.id_object,
-            p_user_permission.gathering,
-            p_user_permission.end_date,
-            p_user_permission.id_filter_type,
-            p_user_permission.value_filter
-        FROM p_user_permission
-        UNION
-        SELECT p_groupe_permission.id_role,
-            p_groupe_permission.nom_role,
-            p_groupe_permission.prenom_role,
-            p_groupe_permission.groupe,
-            p_groupe_permission.id_organisme,
-            p_groupe_permission.group_name,
-            p_groupe_permission.id_permission,
-            p_groupe_permission.id_module,
-            p_groupe_permission.id_action,
-            p_groupe_permission.id_object,
-            p_groupe_permission.gathering,
-            p_groupe_permission.end_date,
-            p_groupe_permission.id_filter_type,
-            p_groupe_permission.value_filter
-        FROM p_groupe_permission
-    )
-SELECT v.id_role,
-    v.nom_role,
-    v.prenom_role,
-    v.groupe,
-    v.id_organisme,
-    v.group_name,
-    perm_available.label AS permission_label,
-    perm_available.code AS permission_code,
-    v.id_module,
-    modules.module_code,
-    v.id_action,
-    actions.code_action,
-    actions.description_action,
-    obj.code_object,
-    v.id_filter_type,
-    v.value_filter,
-    filter_type.code_filter_type,
-    v.gathering,
-    v.end_date,
-    v.id_permission
-FROM all_user_permission AS v
-    JOIN gn_permissions.t_actions AS actions 
-        ON (actions.id_action = v.id_action)
-    JOIN gn_permissions.t_objects AS obj 
-        ON (obj.id_object = v.id_object)
-    JOIN gn_permissions.bib_filters_type AS filter_type 
-        ON (v.id_filter_type = filter_type.id_filter_type)
-    JOIN gn_commons.t_modules AS modules 
-        ON (modules.id_module = v.id_module)
-    LEFT JOIN gn_permissions.cor_module_action_object_filter AS perm_available
-        ON (
-            v.id_module = perm_available.id_module
-            AND v.id_action = perm_available.id_action
-            AND v.id_object = perm_available.id_object
-            AND v.id_filter_type = perm_available.id_filter_type
-        )
--- TODO: check performance issues with order by
-ORDER BY nom_role, prenom_role, module_code, gathering, id_action, code_object, code_filter_type, end_date ;
 
 
 -- -------------------------------------------------------------------------------------------------
@@ -1045,6 +968,132 @@ DROP INDEX IF EXISTS gn_permissions.unique_t_objects_code ;
 
 CREATE UNIQUE INDEX unique_t_objects_code ON gn_permissions.t_objects 
     USING btree(UPPER(code_object)) ;
+
+
+
+-- -------------------------------------------------------------------------------------------------
+-- Build view "v_roles_permissions"
+CREATE VIEW gn_permissions.v_roles_permissions
+AS WITH 
+    -- Get users permissions
+    p_user_permission AS (
+        SELECT u.id_role,
+            u.nom_role,
+            u.prenom_role,
+            u.groupe,
+            u.id_organisme,
+            NULL AS group_name,
+            c_1.id_permission,
+            c_1.id_module,
+            c_1.id_action,
+            c_1.id_object,
+            c_1.gathering,
+            c_1.end_date,
+            c_1.id_filter_type,
+            c_1.value_filter
+        FROM utilisateurs.t_roles AS u 
+            JOIN gn_permissions.cor_role_action_filter_module_object AS c_1 
+                ON (c_1.id_role = u.id_role)
+        WHERE u.groupe = false
+    ),
+    -- Get permissions of groups AND the user permissions inherited from his group(s)
+    -- WARNING : get permissions from groups only if they have users
+    p_groupe_permission AS (
+        SELECT u.id_role,
+            u.nom_role,
+            u.prenom_role,
+            u.groupe,
+            u.id_organisme,
+            TRIM(TRAILING FROM CONCAT(grp.nom_role, ' ', grp.prenom_role)) AS group_name,
+            c_1.id_permission,
+            c_1.id_module,
+            c_1.id_action,
+            c_1.id_object,
+            c_1.gathering,
+            c_1.end_date,
+            c_1.id_filter_type,
+            c_1.value_filter
+        FROM utilisateurs.t_roles AS u 
+            JOIN utilisateurs.cor_roles AS g 
+                ON (g.id_role_utilisateur = u.id_role OR g.id_role_groupe = u.id_role)
+            JOIN utilisateurs.t_roles AS grp 
+                ON (g.id_role_groupe = grp.id_role)
+            JOIN gn_permissions.cor_role_action_filter_module_object AS c_1 
+                ON (c_1.id_role = g.id_role_groupe)
+    ), 
+    all_user_permission AS (
+        -- UNION operator removes all duplicate rows from the combined data set
+        SELECT p_user_permission.id_role,
+            p_user_permission.nom_role,
+            p_user_permission.prenom_role,
+            p_user_permission.groupe,
+            p_user_permission.id_organisme,
+            p_user_permission.group_name,
+            p_user_permission.id_permission,
+            p_user_permission.id_module,
+            p_user_permission.id_action,
+            p_user_permission.id_object,
+            p_user_permission.gathering,
+            p_user_permission.end_date,
+            p_user_permission.id_filter_type,
+            p_user_permission.value_filter
+        FROM p_user_permission
+        UNION
+        SELECT p_groupe_permission.id_role,
+            p_groupe_permission.nom_role,
+            p_groupe_permission.prenom_role,
+            p_groupe_permission.groupe,
+            p_groupe_permission.id_organisme,
+            p_groupe_permission.group_name,
+            p_groupe_permission.id_permission,
+            p_groupe_permission.id_module,
+            p_groupe_permission.id_action,
+            p_groupe_permission.id_object,
+            p_groupe_permission.gathering,
+            p_groupe_permission.end_date,
+            p_groupe_permission.id_filter_type,
+            p_groupe_permission.value_filter
+        FROM p_groupe_permission
+    )
+SELECT v.id_role,
+    v.nom_role,
+    v.prenom_role,
+    v.groupe,
+    v.id_organisme,
+    v.group_name,
+    perm_available.label AS permission_label,
+    perm_available.code AS permission_code,
+    v.id_module,
+    modules.module_code,
+    v.id_action,
+    actions.code_action,
+    actions.description_action,
+    obj.code_object,
+    v.id_filter_type,
+    v.value_filter,
+    filter_type.code_filter_type,
+    v.gathering,
+    v.end_date,
+    v.id_permission
+FROM all_user_permission AS v
+    JOIN gn_permissions.t_actions AS actions 
+        ON (actions.id_action = v.id_action)
+    JOIN gn_permissions.t_objects AS obj 
+        ON (obj.id_object = v.id_object)
+    JOIN gn_permissions.bib_filters_type AS filter_type 
+        ON (v.id_filter_type = filter_type.id_filter_type)
+    JOIN gn_commons.t_modules AS modules 
+        ON (modules.id_module = v.id_module)
+    LEFT JOIN gn_permissions.cor_module_action_object_filter AS perm_available
+        ON (
+            v.id_module = perm_available.id_module
+            AND v.id_action = perm_available.id_action
+            AND v.id_object = perm_available.id_object
+            AND v.id_filter_type = perm_available.id_filter_type
+        )
+-- TODO: check performance issues with order by
+ORDER BY nom_role, prenom_role, module_code, gathering, id_action, code_object, code_filter_type, end_date ;
+
 
 
 -- -------------------------------------------------------------------------------------------------
@@ -2049,572 +2098,623 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         WHERE cmaof.code = 'SYNTHESE-E-SENSITIVE_OBSERVATION-TAXONOMIC'
     ) ;
 
+DO
+$$
+BEGIN
+    RAISE NOTICE 'Add Validation available permissions if module installed' ;
+
+    IF EXISTS (SELECT 1 FROM gn_commons.t_modules WHERE UPPER(module_code) = 'VALIDATION') THEN
+        RAISE NOTICE 'Validation module installed - Adding available permissions...' ;
+
+        -- ----------------------------------------------------------------------
+        -- VALIDATION - C - ALL - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('C'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('PRECISION'),
+                'VALIDATION-C-ALL-PRECISION',
+                'Créer des données',
+                'Créer des données dans le module Validation en étant limité par la précision.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-C-ALL-PRECISION'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('C'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('SCOPE'),
+                'VALIDATION-C-ALL-SCOPE',
+                'Créer des données',
+                'Créer des données dans le module Validation en étant limité par l''appartenance.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-C-ALL-SCOPE'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('C'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('GEOGRAPHIC'),
+                'VALIDATION-C-ALL-GEOGRAPHIC',
+                'Créer des données',
+                'Créer des données dans le module Validation en étant limité par zones géographiques.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-C-ALL-GEOGRAPHIC'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('C'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('TAXONOMIC'),
+                'VALIDATION-C-ALL-TAXONOMIC',
+                'Créer des données',
+                'Créer des données dans le module Validation en étant limité par des taxons.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-C-ALL-TAXONOMIC'
+            ) ;
+
+        -- ----------------------------------------------------------------------
+        -- VALIDATION - R - ALL - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('PRECISION'),
+                'VALIDATION-R-ALL-PRECISION',
+                'Lire des données',
+                'Lire des données dans le module Validation en étant limité par la précision.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-R-ALL-PRECISION'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('SCOPE'),
+                'VALIDATION-R-ALL-SCOPE',
+                'Lire des données',
+                'Lire des données dans le module Validation en étant limité par l''appartenance.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-R-ALL-SCOPE'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('GEOGRAPHIC'),
+                'VALIDATION-R-ALL-GEOGRAPHIC',
+                'Lire des données',
+                'Lire des données dans le module Validation en étant limité par zones géographiques.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-R-ALL-GEOGRAPHIC'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('TAXONOMIC'),
+                'VALIDATION-R-ALL-TAXONOMIC',
+                'Lire des données',
+                'Lire des données dans le module Validation en étant limité par des taxons.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-R-ALL-TAXONOMIC'
+            ) ;
+
+        -- ----------------------------------------------------------------------
+        -- VALIDATION - C - PRIVATE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('C'),
+                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('PRECISION'),
+                'VALIDATION-C-PRIVATE_OBSERVATION-PRECISION',
+                'Créer des observations privées',
+                'Créer des observations privées dans le module Validation en étant limité par la précision.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-C-PRIVATE_OBSERVATION-PRECISION'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('C'),
+                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('SCOPE'),
+                'VALIDATION-C-PRIVATE_OBSERVATION-SCOPE',
+                'Créer des observations privées',
+                'Créer des observations privées dans le module Validation en étant limité par l''appartenance.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-C-PRIVATE_OBSERVATION-SCOPE'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('C'),
+                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('GEOGRAPHIC'),
+                'VALIDATION-C-PRIVATE_OBSERVATION-GEOGRAPHIC',
+                'Créer des observations privées',
+                'Créer des observations privées dans le module Validation en étant limité par zones géographiques.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-C-PRIVATE_OBSERVATION-GEOGRAPHIC'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('C'),
+                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('TAXONOMIC'),
+                'VALIDATION-C-PRIVATE_OBSERVATION-TAXONOMIC',
+                'Créer des observations privées',
+                'Créer des observations privées dans le module Validation en étant limité par des taxons.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-C-PRIVATE_OBSERVATION-TAXONOMIC'
+            ) ;
+
+
+        -- ----------------------------------------------------------------------
+        -- VALIDATION - R - PRIVATE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('PRECISION'),
+                'VALIDATION-R-PRIVATE_OBSERVATION-PRECISION',
+                'Lire des observations privées',
+                'Lire des observations privées dans le module Validation en étant limité par la précision.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-R-PRIVATE_OBSERVATION-PRECISION'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('SCOPE'),
+                'VALIDATION-R-PRIVATE_OBSERVATION-SCOPE',
+                'Lire des observations privées',
+                'Lire des observations privées dans le module Validation en étant limité par l''appartenance.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-R-PRIVATE_OBSERVATION-SCOPE'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('GEOGRAPHIC'),
+                'VALIDATION-R-PRIVATE_OBSERVATION-GEOGRAPHIC',
+                'Lire des observations privées',
+                'Lire des observations privées dans le module Validation en étant limité par zones géographiques.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-R-PRIVATE_OBSERVATION-GEOGRAPHIC'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('TAXONOMIC'),
+                'VALIDATION-R-PRIVATE_OBSERVATION-TAXONOMIC',
+                'Lire des observations privées',
+                'Lire des observations privées dans le module Validation en étant limité par des taxons.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-R-PRIVATE_OBSERVATION-TAXONOMIC'
+            ) ;
+
+        -- ----------------------------------------------------------------------
+        -- VALIDATION - C - SENSITIVE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('C'),
+                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('PRECISION'),
+                'VALIDATION-C-SENSITIVE_OBSERVATION-PRECISION',
+                'Créer des observations sensibles',
+                'Créer des observations sensibles dans le module Validation en étant limité par la précision.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-C-SENSITIVE_OBSERVATION-PRECISION'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('C'),
+                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('SCOPE'),
+                'VALIDATION-C-SENSITIVE_OBSERVATION-SCOPE',
+                'Créer des observations sensibles',
+                'Créer des observations sensibles dans le module Validation en étant limité par l''appartenance.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-C-SENSITIVE_OBSERVATION-SCOPE'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('C'),
+                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('GEOGRAPHIC'),
+                'VALIDATION-C-SENSITIVE_OBSERVATION-GEOGRAPHIC',
+                'Créer des observations sensibles',
+                'Créer des observations sensibles dans le module Validation en étant limité par zones géographiques.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-C-SENSITIVE_OBSERVATION-GEOGRAPHIC'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('C'),
+                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('TAXONOMIC'),
+                'VALIDATION-C-SENSITIVE_OBSERVATION-TAXONOMIC',
+                'Créer des observations sensibles',
+                'Créer des observations sensibles dans le module Validation en étant limité par des taxons.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-C-SENSITIVE_OBSERVATION-TAXONOMIC'
+            ) ;
+
+        -- ----------------------------------------------------------------------
+        -- VALIDATION - R - SENSITIVE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('PRECISION'),
+                'VALIDATION-R-SENSITIVE_OBSERVATION-PRECISION',
+                'Lire des observations sensibles',
+                'Lire des observations sensibles dans le module Validation en étant limité par la précision.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-R-SENSITIVE_OBSERVATION-PRECISION'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('SCOPE'),
+                'VALIDATION-R-SENSITIVE_OBSERVATION-SCOPE',
+                'Lire des observations sensibles',
+                'Lire des observations sensibles dans le module Validation en étant limité par l''appartenance.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-R-SENSITIVE_OBSERVATION-SCOPE'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('GEOGRAPHIC'),
+                'VALIDATION-R-SENSITIVE_OBSERVATION-GEOGRAPHIC',
+                'Lire des observations sensibles',
+                'Lire des observations sensibles dans le module Validation en étant limité par zones géographiques.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-R-SENSITIVE_OBSERVATION-GEOGRAPHIC'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
+                gn_permissions.get_id_filter_type('TAXONOMIC'),
+                'VALIDATION-R-SENSITIVE_OBSERVATION-TAXONOMIC',
+                'Lire des observations sensibles',
+                'Lire des observations sensibles dans le module Validation en étant limité par des taxons.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'VALIDATION-R-SENSITIVE_OBSERVATION-TAXONOMIC'
+            ) ;
+    ELSE
+        RAISE NOTICE 'Validation module NOT installed.' ;
+    END IF;
+END ;
+$$ ;
+
 -- ----------------------------------------------------------------------
--- VALIDATION - C - ALL - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('C'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('PRECISION'),
-        'VALIDATION-C-ALL-PRECISION',
-        'Créer des données',
-        'Créer des données dans le module Validation en étant limité par la précision.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-C-ALL-PRECISION'
-    ) ;
+-- OCCTAX - CRU-ED - ALL - SCOPE
+DO
+$$
+BEGIN
+    RAISE NOTICE 'Add OccTax available permissions if module installed' ;
 
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('C'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'VALIDATION-C-ALL-SCOPE',
-        'Créer des données',
-        'Créer des données dans le module Validation en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-C-ALL-SCOPE'
-    ) ;
+    IF EXISTS (SELECT 1 FROM gn_commons.t_modules WHERE UPPER(module_code) = 'OCCTAX') THEN
+        RAISE NOTICE 'OccTax module installed - Adding available permissions...' ;
 
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('C'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-        'VALIDATION-C-ALL-GEOGRAPHIC',
-        'Créer des données',
-        'Créer des données dans le module Validation en étant limité par zones géographiques.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-C-ALL-GEOGRAPHIC'
-    ) ;
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('OCCTAX'),
+                gn_permissions.get_id_action('C'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('SCOPE'),
+                'OCCTAX-C-ALL-SCOPE',
+                'Créer des données',
+                'Créer des données dans OccTax en étant limité par l''appartenance.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'OCCTAX-C-ALL-SCOPE'
+            ) ;
 
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('C'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'VALIDATION-C-ALL-TAXONOMIC',
-        'Créer des données',
-        'Créer des données dans le module Validation en étant limité par des taxons.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-C-ALL-TAXONOMIC'
-    ) ;
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('OCCTAX'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('SCOPE'),
+                'OCCTAX-R-ALL-SCOPE',
+                'Lire les données',
+                'Lire les données dans OccTax limitées en étant limité par l''appartenance.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'OCCTAX-R-ALL-SCOPE'
+            ) ;
 
--- ----------------------------------------------------------------------
--- VALIDATION - R - ALL - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('PRECISION'),
-        'VALIDATION-R-ALL-PRECISION',
-        'Lire des données',
-        'Lire des données dans le module Validation en étant limité par la précision.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-R-ALL-PRECISION'
-    ) ;
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('OCCTAX'),
+                gn_permissions.get_id_action('U'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('SCOPE'),
+                'OCCTAX-U-ALL-SCOPE',
+                'Mettre à jour des données',
+                'Mettre à jour des données dans OccTax en étant limité par l''appartenance.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'OCCTAX-U-ALL-SCOPE'
+            ) ;
 
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'VALIDATION-R-ALL-SCOPE',
-        'Lire des données',
-        'Lire des données dans le module Validation en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-R-ALL-SCOPE'
-    ) ;
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('OCCTAX'),
+                gn_permissions.get_id_action('E'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('SCOPE'),
+                'OCCTAX-E-ALL-SCOPE',
+                'Exporter des données',
+                'Exporter des données dans OccTax en étant limité par l''appartenance.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'OCCTAX-E-ALL-SCOPE'
+            ) ;
 
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-        'VALIDATION-R-ALL-GEOGRAPHIC',
-        'Lire des données',
-        'Lire des données dans le module Validation en étant limité par zones géographiques.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-R-ALL-GEOGRAPHIC'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'VALIDATION-R-ALL-TAXONOMIC',
-        'Lire des données',
-        'Lire des données dans le module Validation en étant limité par des taxons.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-R-ALL-TAXONOMIC'
-    ) ;
-
--- ----------------------------------------------------------------------
--- VALIDATION - C - PRIVATE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('C'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('PRECISION'),
-        'VALIDATION-C-PRIVATE_OBSERVATION-PRECISION',
-        'Créer des observations privées',
-        'Créer des observations privées dans le module Validation en étant limité par la précision.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-C-PRIVATE_OBSERVATION-PRECISION'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('C'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'VALIDATION-C-PRIVATE_OBSERVATION-SCOPE',
-        'Créer des observations privées',
-        'Créer des observations privées dans le module Validation en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-C-PRIVATE_OBSERVATION-SCOPE'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('C'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-        'VALIDATION-C-PRIVATE_OBSERVATION-GEOGRAPHIC',
-        'Créer des observations privées',
-        'Créer des observations privées dans le module Validation en étant limité par zones géographiques.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-C-PRIVATE_OBSERVATION-GEOGRAPHIC'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('C'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'VALIDATION-C-PRIVATE_OBSERVATION-TAXONOMIC',
-        'Créer des observations privées',
-        'Créer des observations privées dans le module Validation en étant limité par des taxons.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-C-PRIVATE_OBSERVATION-TAXONOMIC'
-    ) ;
-
-
--- ----------------------------------------------------------------------
--- VALIDATION - R - PRIVATE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('PRECISION'),
-        'VALIDATION-R-PRIVATE_OBSERVATION-PRECISION',
-        'Lire des observations privées',
-        'Lire des observations privées dans le module Validation en étant limité par la précision.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-R-PRIVATE_OBSERVATION-PRECISION'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'VALIDATION-R-PRIVATE_OBSERVATION-SCOPE',
-        'Lire des observations privées',
-        'Lire des observations privées dans le module Validation en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-R-PRIVATE_OBSERVATION-SCOPE'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-        'VALIDATION-R-PRIVATE_OBSERVATION-GEOGRAPHIC',
-        'Lire des observations privées',
-        'Lire des observations privées dans le module Validation en étant limité par zones géographiques.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-R-PRIVATE_OBSERVATION-GEOGRAPHIC'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'VALIDATION-R-PRIVATE_OBSERVATION-TAXONOMIC',
-        'Lire des observations privées',
-        'Lire des observations privées dans le module Validation en étant limité par des taxons.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-R-PRIVATE_OBSERVATION-TAXONOMIC'
-    ) ;
-
--- ----------------------------------------------------------------------
--- VALIDATION - C - SENSITIVE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('C'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('PRECISION'),
-        'VALIDATION-C-SENSITIVE_OBSERVATION-PRECISION',
-        'Créer des observations sensibles',
-        'Créer des observations sensibles dans le module Validation en étant limité par la précision.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-C-SENSITIVE_OBSERVATION-PRECISION'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('C'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'VALIDATION-C-SENSITIVE_OBSERVATION-SCOPE',
-        'Créer des observations sensibles',
-        'Créer des observations sensibles dans le module Validation en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-C-SENSITIVE_OBSERVATION-SCOPE'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('C'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-        'VALIDATION-C-SENSITIVE_OBSERVATION-GEOGRAPHIC',
-        'Créer des observations sensibles',
-        'Créer des observations sensibles dans le module Validation en étant limité par zones géographiques.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-C-SENSITIVE_OBSERVATION-GEOGRAPHIC'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('C'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'VALIDATION-C-SENSITIVE_OBSERVATION-TAXONOMIC',
-        'Créer des observations sensibles',
-        'Créer des observations sensibles dans le module Validation en étant limité par des taxons.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-C-SENSITIVE_OBSERVATION-TAXONOMIC'
-    ) ;
-
--- ----------------------------------------------------------------------
--- VALIDATION - R - SENSITIVE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('PRECISION'),
-        'VALIDATION-R-SENSITIVE_OBSERVATION-PRECISION',
-        'Lire des observations sensibles',
-        'Lire des observations sensibles dans le module Validation en étant limité par la précision.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-R-SENSITIVE_OBSERVATION-PRECISION'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'VALIDATION-R-SENSITIVE_OBSERVATION-SCOPE',
-        'Lire des observations sensibles',
-        'Lire des observations sensibles dans le module Validation en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-R-SENSITIVE_OBSERVATION-SCOPE'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-        'VALIDATION-R-SENSITIVE_OBSERVATION-GEOGRAPHIC',
-        'Lire des observations sensibles',
-        'Lire des observations sensibles dans le module Validation en étant limité par zones géographiques.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-R-SENSITIVE_OBSERVATION-GEOGRAPHIC'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('VALIDATION'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'VALIDATION-R-SENSITIVE_OBSERVATION-TAXONOMIC',
-        'Lire des observations sensibles',
-        'Lire des observations sensibles dans le module Validation en étant limité par des taxons.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'VALIDATION-R-SENSITIVE_OBSERVATION-TAXONOMIC'
-    ) ;
-
--- ----------------------------------------------------------------------
--- OCCTAX - CRU--D - ALL - SCOPE
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('OCCTAX'),
-        gn_permissions.get_id_action('C'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'OCCTAX-C-ALL-SCOPE',
-        'Créer des données',
-        'Créer des données dans OccTax en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'OCCTAX-C-ALL-SCOPE'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('OCCTAX'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'OCCTAX-R-ALL-SCOPE',
-        'Lire les données',
-        'Lire les données dans OccTax limitées en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'OCCTAX-R-ALL-SCOPE'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('OCCTAX'),
-        gn_permissions.get_id_action('U'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'OCCTAX-U-ALL-SCOPE',
-        'Mettre à jour des données',
-        'Mettre à jour des données dans OccTax en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'OCCTAX-U-ALL-SCOPE'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('OCCTAX'),
-        gn_permissions.get_id_action('D'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'OCCTAX-D-ALL-SCOPE',
-        'Supprimer des données',
-        'Supprimer des données dans OccTax en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'OCCTAX-D-ALL-SCOPE'
-    ) ;
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('OCCTAX'),
+                gn_permissions.get_id_action('D'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('SCOPE'),
+                'OCCTAX-D-ALL-SCOPE',
+                'Supprimer des données',
+                'Supprimer des données dans OccTax en étant limité par l''appartenance.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'OCCTAX-D-ALL-SCOPE'
+            ) ;
+    ELSE
+        RAISE NOTICE 'OccTax module NOT installed.' ;
+    END IF;
+END ;
+$$ ;
 
 -- ----------------------------------------------------------------------
 -- OCCHAB - CR--ED - ALL - SCOPE
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('OCCHAB'),
-        gn_permissions.get_id_action('C'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'OCCHAB-C-ALL-SCOPE',
-        'Créer des données',
-        'Créer des données dans OccHab en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'OCCHAB-C-ALL-SCOPE'
-    ) ;
+DO
+$$
+BEGIN
+    RAISE NOTICE 'Add OccHab available permissions if module installed' ;
 
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('OCCHAB'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'OCCHAB-R-ALL-SCOPE',
-        'Lire les données',
-        'Lire les données dans OccHab limitées en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'OCCHAB-R-ALL-SCOPE'
-    ) ;
+    IF EXISTS (SELECT 1 FROM gn_commons.t_modules WHERE UPPER(module_code) = 'OCCHAB') THEN
+        RAISE NOTICE 'OccHab module installed - Adding available permissions...' ;
 
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('OCCHAB'),
-        gn_permissions.get_id_action('E'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'OCCHAB-E-ALL-SCOPE',
-        'Exporter des données',
-        'Exporter des données dans OccHab en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'OCCHAB-E-ALL-SCOPE'
-    ) ;
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('OCCHAB'),
+                gn_permissions.get_id_action('C'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('SCOPE'),
+                'OCCHAB-C-ALL-SCOPE',
+                'Créer des données',
+                'Créer des données dans OccHab en étant limité par l''appartenance.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'OCCHAB-C-ALL-SCOPE'
+            ) ;
 
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('OCCHAB'),
-        gn_permissions.get_id_action('D'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'OCCHAB-D-ALL-SCOPE',
-        'Supprimer des données',
-        'Supprimer des données dans OccHab en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'OCCHAB-D-ALL-SCOPE'
-    ) ;
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('OCCHAB'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('SCOPE'),
+                'OCCHAB-R-ALL-SCOPE',
+                'Lire les données',
+                'Lire les données dans OccHab limitées en étant limité par l''appartenance.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'OCCHAB-R-ALL-SCOPE'
+            ) ;
 
--- -------------------------------------------------------------------------------------------------
--- Remove useless column from cor_role_action_filter_module_object
-ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-    DROP COLUMN id_filter IF EXISTS, 
-    DROP CONSTRAINT IF EXISTS fk_cor_r_a_f_m_o_id_filter CASCADE ;
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('OCCHAB'),
+                gn_permissions.get_id_action('E'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('SCOPE'),
+                'OCCHAB-E-ALL-SCOPE',
+                'Exporter des données',
+                'Exporter des données dans OccHab en étant limité par l''appartenance.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'OCCHAB-E-ALL-SCOPE'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('OCCHAB'),
+                gn_permissions.get_id_action('D'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('SCOPE'),
+                'OCCHAB-D-ALL-SCOPE',
+                'Supprimer des données',
+                'Supprimer des données dans OccHab en étant limité par l''appartenance.'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'OCCHAB-D-ALL-SCOPE'
+            ) ;
+    ELSE
+        RAISE NOTICE 'OccHab module NOT installed.' ;
+    END IF;
+END ;
+$$ ;
+
 
 -- -------------------------------------------------------------------------------------------------
 -- Remove table "t_filters"
