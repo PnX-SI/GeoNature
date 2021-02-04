@@ -108,9 +108,12 @@ BEGIN;
     ALTER TABLE ONLY gn_synthese.synthese
         ADD CONSTRAINT fk_synthese_id_nomenclature_biogeo_status FOREIGN KEY (id_nomenclature_biogeo_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
-    -- suppression de la valeur par defaut du champ id_nomenclature_sensitivity
+    -- suppression de la valeur par defaut du champ id_nomenclature_sensitivity et id_nomenclature_diffusion_level
     ALTER TABLE gn_synthese.synthese 
     ALTER column id_nomenclature_sensitivity DROP DEFAULT;
+
+    ALTER TABLE gn_synthese.synthese 
+    ALTER column id_nomenclature_diffusion_level DROP DEFAULT;
 
     CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement() RETURNS TRIGGER
       LANGUAGE plpgsql

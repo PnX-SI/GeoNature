@@ -113,7 +113,7 @@ CREATE TABLE synthese (
     id_nomenclature_naturalness integer DEFAULT get_default_nomenclature_value('NATURALITE'),
     id_nomenclature_exist_proof integer DEFAULT get_default_nomenclature_value('PREUVE_EXIST'),
     id_nomenclature_valid_status integer DEFAULT get_default_nomenclature_value('STATUT_VALID'),
-    id_nomenclature_diffusion_level integer DEFAULT get_default_nomenclature_value('NIV_PRECIS'),
+    id_nomenclature_diffusion_level integer,
     id_nomenclature_life_stage integer DEFAULT get_default_nomenclature_value('STADE_VIE'),
     id_nomenclature_sex integer DEFAULT get_default_nomenclature_value('SEXE'),
     id_nomenclature_obj_count integer DEFAULT get_default_nomenclature_value('OBJ_DENBR'),
