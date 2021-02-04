@@ -262,7 +262,7 @@ BEGIN
     THEN RETURN
     CASE 
       WHEN cd_nomenclature_sensitivity = '0' THEN '5'
-      WHEN cd_nomenclature_sensitivity = '1' THEN '3'
+      WHEN cd_nomenclature_sensitivity = '1' THEN '1'
       WHEN cd_nomenclature_sensitivity = '2' THEN '2'
       WHEN cd_nomenclature_sensitivity = '3' THEN '3'
       WHEN cd_nomenclature_sensitivity = '4' THEN '4'
