@@ -118,7 +118,7 @@ CREATE TABLE synthese (
     id_nomenclature_sex integer DEFAULT get_default_nomenclature_value('SEXE'),
     id_nomenclature_obj_count integer DEFAULT get_default_nomenclature_value('OBJ_DENBR'),
     id_nomenclature_type_count integer DEFAULT get_default_nomenclature_value('TYP_DENBR'),
-    id_nomenclature_sensitivity integer DEFAULT get_default_nomenclature_value('SENSIBILITE'),
+    id_nomenclature_sensitivity integer,
     id_nomenclature_observation_status integer DEFAULT get_default_nomenclature_value('STATUT_OBS'),
     id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value('DEE_FLOU'),
     id_nomenclature_source_status integer DEFAULT get_default_nomenclature_value('STATUT_SOURCE'),
@@ -601,6 +601,7 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_stat
         t_diff.cd_nomenclature as cd_nomenclature_diffusion_level
       FROM NEW AS updated_rows
       LEFT JOIN ref_nomenclatures.t_nomenclatures t_diff ON t_diff.id_nomenclature = updated_rows.id_nomenclature_diffusion_level
+      WHERE NEW.id_nomenclature_sensitivity IS NULL
     )
     UPDATE gn_synthese.synthese AS s
     SET 
