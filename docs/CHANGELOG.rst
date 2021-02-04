@@ -11,7 +11,7 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 
 * Sensibilité : Ajout d'un trigger sur la synthèse déclenchant automatiquement le calcul de la sensibilité des observations et calculant ensuite leur niveau de diffusion (si celui-ci est NULL) en fonction de la sensibilité (#413 et #871)
 * Ajout du format GeoPackage (GPKG) pour les exports SIG, plus simple, plus léger, plus performant et unique que le SHAPEFILE. Les exports au format SHP restent pour le moment utilisés par défaut (modifiable dans la configuration des modules Occtax, Occhab et Synthèse) (#898)
-* Performances : Suppression du trigger le plus lourd calculant les couleurs des taxons par unités géographiques, en le remplaçant par une vue (#997)
+* Performances : Suppression du trigger le plus lourd calculant les couleurs des taxons par unités géographiques. Il est remplacé par une vue utilisant le nouveau paramètre ``gn_commons.t_parametersocctaxmobile_area_type``, définissant le code du type de zonage à utiliser pour les unités géographiques dans Occtax-mobile (Mailles de 5km par défaut) (#997)
 * Performances : Amélioration du trigger de la Synthèse calculant les zonages d'une observation en ne faisant un ``ST_Touches()`` seulement si l'observation n'est pas un point et en le passant ``on each statement`` (#716)
 * Métadonnées : Refonte de la liste des CA et JDD avec l'ajout d'informations et d'actions, ainsi qu'une recherche avancée (#889)
 * Métadonnées : Révision des fiches info des CA et JDD avec l'ajout d'actions, du tableau des imports et du téléchargement des rapports d'UUID et de sensibilité (#889)
