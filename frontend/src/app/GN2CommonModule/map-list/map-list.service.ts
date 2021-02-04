@@ -287,7 +287,6 @@ export class MapListService {
   }
 
   loadTableData(data, customCallBack?) {
-    console.log(customCallBack);
     
     this.tableData = [];
     if (customCallBack) {
@@ -302,9 +301,7 @@ export class MapListService {
       data.features.forEach(feature => {
         this.tableData.push(feature.properties);
       });
-    }
-    console.log(this.tableData);
-    
+    }    
   }
 }
 
