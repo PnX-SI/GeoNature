@@ -66,7 +66,6 @@ class MTDSchemaConf(Schema):
     ID_INSTANCE_FILTER = fields.Integer(missing=None)
 
 
-
 class BddConfig(Schema):
     id_area_type_municipality = fields.Integer(missing=25)
     ID_USER_SOCLE_1 = fields.Integer(missing=8)
@@ -90,7 +89,7 @@ class MailConfig(Schema):
     MAIL_DEFAULT_SENDER = fields.String(missing=None)
     MAIL_MAX_EMAILS = fields.Integer(missing=None)
     MAIL_ASCII_ATTACHMENTS = fields.Boolean(missing=False)
-    ERROR_MAIL_TO = EmailStrOrListOfEmailStrField(missing=list())
+    ERROR_MAIL_TO = EmailStrOrListOfEmailStrField(missing=None)
 
 
 class AccountManagement(Schema):
@@ -242,7 +241,7 @@ class Synthese(Schema):
     EXPORT_METADATA_ID_DATASET_COL = fields.String(missing="jdd_id")
     EXPORT_METADATA_ACTOR_COL = fields.String(missing="acteurs")
     # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
-    EXPORT_FORMAT = fields.List(fields.String(), missing=["csv", "geojson", "gpkg"])
+    EXPORT_FORMAT = fields.List(fields.String(), missing=["csv", "geojson", "shapefile"])
     # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
     TAXON_RESULT_NUMBER = fields.Integer(missing=20)
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese

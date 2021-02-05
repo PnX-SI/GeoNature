@@ -133,7 +133,7 @@ default_columns_export = [
 
 
 # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
-available_export_format = ["csv", "geojson", "gpkg"]
+available_export_format = ["csv", "geojson", "shapefile"]
 
 list_messages = {
     "emptyMessage": "Aucune donnée à afficher",

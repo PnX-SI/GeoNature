@@ -262,8 +262,9 @@ class VSyntheseForWebApp(DB.Model):
     st_asgeojson = DB.Column(DB.Unicode)
 
     has_medias = column_property(
-        select([func.count()>0]).\
+        select([TMedias.id_media]).\
             where(TMedias.uuid_attached_row==unique_id_sinp)
+            .exists()
     )
 
     def get_geofeature(self, recursif=False, columns=()):

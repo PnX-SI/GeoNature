@@ -268,8 +268,8 @@ export class OcctaxMapListComponent
         let occ = row.t_occurrences_occtax[i];
         const taxKey = ModuleConfig.DISPLAY_VERNACULAR_NAME ? 'nom_vern': 'nom_complet'
         let taxName;
-        if(occ.taxref) {
-          taxName = occ.taxref[taxKey] ? occ.taxref[taxKey] : occ.nom_complet;
+        if(occ.taxref) {                 
+          taxName = occ.taxref[taxKey] ? occ.taxref[taxKey] : occ.taxref.nom_complet;
         }
         let medias = [];
         let icons = '';

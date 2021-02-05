@@ -189,7 +189,7 @@ def get_all_habitats(info_role):
     feature_list = []
     for d in data:
         feature = d.get_geofeature(True)
-        feature["properties"]["rights"] = d.get_releve_cruved(info_role, user_cruved)
+        feature["properties"]["rights"] = d.get_model_cruved(info_role, user_cruved)
 
         feature_list.append(feature)
     return FeatureCollection(feature_list)

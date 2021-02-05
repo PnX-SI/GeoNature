@@ -157,7 +157,7 @@ export class OcctaxFormReleveService {
         
         
         this.propertiesForm.patchValue(values)
-        if(!this.occtaxFormService.editionMode) {
+        if(!this.occtaxFormService.editionMode && !ModuleConfig.observers_txt) {
           this.propertiesForm.patchValue({'observers': [this.occtaxFormService.currentUser]})
 
         }
@@ -309,7 +309,7 @@ export class OcctaxFormReleveService {
             meta_device_entry: "web",
             comment: this.occtaxParamS.get("releve.comment"),
             observers: this.occtaxParamS.get("releve.observers") ||
-              previousReleve.observers || [this.occtaxFormService.currentUser],
+              previousReleve.observers || ModuleConfig.observers_txt ? null: [this.occtaxFormService.currentUser],
             observers_txt: this.occtaxParamS.get("releve.observers_txt") || previousReleve.observers_txt,
             id_nomenclature_grp_typ:
               this.occtaxParamS.get("releve.id_nomenclature_grp_typ") ||
@@ -370,8 +370,6 @@ export class OcctaxFormReleveService {
   }
 
   setCurrentUser() {
-    console.log(this.occtaxFormService.editionMode);
-    
     this.occtaxFormService.editionMode ? null: [this.occtaxFormService.currentUser]
   }
 

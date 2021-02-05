@@ -1,6 +1,9 @@
 import logging, json
 
 from flask import current_app, redirect, Response
+from werkzeug.exceptions import Unauthorized
+from werkzeug.routing import RequestRedirect
+
 
 from itsdangerous import (
     TimedJSONWebSignatureSerializer as Serializer,
@@ -38,12 +41,18 @@ def user_from_token(token, secret_key=None):
     except BadSignature:
         raise UnreadableAccessRightsError("Token BadSignature", 403)
 
+def log_expiration_warning():
+    log.warning("""
+        The parameter redirect_on_expiration will be soon removed.
+        The redirection will be default to GeoNature login page
+        """
+    )
 
 def get_user_from_token_and_raise(
     request,
     secret_key=None,
     redirect_on_expiration=None,
-    redirect_on_invalid_token=None,
+    redirect_on_invalid_token=None
 ):
     """
     Deserialize the token
@@ -53,42 +62,27 @@ def get_user_from_token_and_raise(
         token = request.cookies["token"]
         return user_from_token(token, secret_key)
 
+    except KeyError:
+        if redirect_on_expiration:
+            log_expiration_warning()
+            raise RequestRedirect(new_url=redirect_on_expiration)
+        raise Unauthorized(description='No token.')
     except AccessRightsExpiredError:
         if redirect_on_expiration:
-            res = redirect(redirect_on_expiration, code=302)
-        else:
-            res = Response("Token Expired", 403)
-        res.set_cookie("token", expires=0)
-        return res
-    except InsufficientRightsError as e:
-        log.info(e)
-        if redirect_on_expiration:
-            res = redirect(redirect_on_expiration, code=302)
-        else:
-            res = Response("Forbidden", 403)
-        return res
-    except KeyError as e:
-        if redirect_on_expiration:
-            return redirect(redirect_on_expiration, code=302)
-        return Response("No token", 403)
-
+            log_expiration_warning()
+            raise RequestRedirect(new_url=redirect_on_expiration)
+        raise Unauthorized(description='Token expired.')
     except UnreadableAccessRightsError:
-        log.info("Invalid Token : BadSignature")
-        # invalid token
         if redirect_on_invalid_token:
-            res = redirect(redirect_on_invalid_token, code=302)
-        else:
-            res = Response("Token BadSignature", 403)
-        res.set_cookie("token", expires=0)
-        return res
-
+            log_expiration_warning()
+            raise RequestRedirect(new_url=redirect_on_invalid_token)
+        raise Unauthorized(description='Token corrupted.')
     except Exception as e:
         trap_all_exceptions = current_app.config.get("TRAP_ALL_EXCEPTIONS", True)
         if not trap_all_exceptions:
             raise
         log.critical(e)
-        msg = json.dumps({"type": "Exception", "msg": repr(e)})
-        return Response(msg, 403)
+        raise Unauthorized(description=repr(e))
 
 
 class UserCruved:

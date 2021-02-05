@@ -51,9 +51,7 @@ routes = Blueprint("gn_permissions_backoffice", __name__, template_folder="templ
 @permissions.check_cruved_scope(
     "R",
     True,
-    object_code="PERMISSIONS",
-    redirect_on_expiration=current_app.config["URL_APPLICATION"] + "/#/login",
-    redirect_on_invalid_token=current_app.config["URL_APPLICATION"] + "/#/login",
+    object_code="PERMISSIONS"
 )
 def permission_form(info_role, id_module, id_role, id_object=None):
     """
@@ -163,9 +161,7 @@ def permission_form(info_role, id_module, id_role, id_object=None):
 @permissions.check_cruved_scope(
     "R",
     True,
-    object_code="PERMISSIONS",
-    redirect_on_expiration=current_app.config["URL_APPLICATION"] + "/#/login",
-    redirect_on_invalid_token=current_app.config["URL_APPLICATION"] + "/#/login",
+    object_code="PERMISSIONS"
 )
 def users(info_role):
     """
@@ -207,8 +203,6 @@ def users(info_role):
 @permissions.check_cruved_scope(
     "R",
     object_code="PERMISSIONS",
-    redirect_on_expiration=current_app.config["URL_APPLICATION"] + "/#/login",
-    redirect_on_invalid_token=current_app.config["URL_APPLICATION"] + "/#/login",
 )
 def user_cruved(id_role):
     """
@@ -272,8 +266,6 @@ def user_cruved(id_role):
 @permissions.check_cruved_scope(
     "R",
     object_code="PERMISSIONS",
-    redirect_on_expiration=current_app.config["URL_APPLICATION"] + "/#/login",
-    redirect_on_invalid_token=current_app.config["URL_APPLICATION"] + "/#/login",
 )
 def user_other_permissions(id_role):
     """
@@ -313,8 +305,6 @@ def user_other_permissions(id_role):
 @permissions.check_cruved_scope(
     "R",
     object_code="PERMISSIONS",
-    redirect_on_expiration=current_app.config["URL_APPLICATION"] + "/#/login",
-    redirect_on_invalid_token=current_app.config["URL_APPLICATION"] + "/#/login",
 )
 def other_permissions_form(id_role, id_filter_type, id_permission=None):
     """
@@ -366,8 +356,6 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None):
 @permissions.check_cruved_scope(
     "R",
     object_code="PERMISSIONS",
-    redirect_on_expiration=current_app.config["URL_APPLICATION"] + "/#/login",
-    redirect_on_invalid_token=current_app.config["URL_APPLICATION"] + "/#/login",
 )
 def filter_form(id_filter_type, id_filter=None):
     """
@@ -408,8 +396,6 @@ def filter_form(id_filter_type, id_filter=None):
 @permissions.check_cruved_scope(
     "R",
     object_code="PERMISSIONS",
-    redirect_on_expiration=current_app.config["URL_APPLICATION"] + "/#/login",
-    redirect_on_invalid_token=current_app.config["URL_APPLICATION"] + "/#/login",
 )
 def filter_list(id_filter_type):
     """
@@ -424,8 +410,6 @@ def filter_list(id_filter_type):
 @permissions.check_cruved_scope(
     "D",
     object_code="PERMISSIONS",
-    redirect_on_expiration=current_app.config["URL_APPLICATION"] + "/#/login",
-    redirect_on_invalid_token=current_app.config["URL_APPLICATION"] + "/#/login",
 )
 def delete_filter(id_filter):
     """

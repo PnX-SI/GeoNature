@@ -32,6 +32,7 @@ BACKEND_DIR = ROOT_DIR / "backend"
 DEFAULT_VIRTUALENV_DIR = BACKEND_DIR / "venv"
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/geonature_config.toml"
 
+os.environ['FLASK_SQLALCHEMY_DB'] = 'geonature.utils.env.DB'
 DB = SQLAlchemy()
 MA = Marshmallow()
 

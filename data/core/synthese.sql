@@ -113,19 +113,19 @@ CREATE TABLE synthese (
     id_nomenclature_naturalness integer DEFAULT get_default_nomenclature_value('NATURALITE'),
     id_nomenclature_exist_proof integer DEFAULT get_default_nomenclature_value('PREUVE_EXIST'),
     id_nomenclature_valid_status integer DEFAULT get_default_nomenclature_value('STATUT_VALID'),
-    id_nomenclature_diffusion_level integer DEFAULT get_default_nomenclature_value('NIV_PRECIS'),
+    id_nomenclature_diffusion_level integer,
     id_nomenclature_life_stage integer DEFAULT get_default_nomenclature_value('STADE_VIE'),
     id_nomenclature_sex integer DEFAULT get_default_nomenclature_value('SEXE'),
     id_nomenclature_obj_count integer DEFAULT get_default_nomenclature_value('OBJ_DENBR'),
     id_nomenclature_type_count integer DEFAULT get_default_nomenclature_value('TYP_DENBR'),
-    id_nomenclature_sensitivity integer DEFAULT get_default_nomenclature_value('SENSIBILITE'),
+    id_nomenclature_sensitivity integer,
     id_nomenclature_observation_status integer DEFAULT get_default_nomenclature_value('STATUT_OBS'),
     id_nomenclature_blurring integer DEFAULT get_default_nomenclature_value('DEE_FLOU'),
     id_nomenclature_source_status integer DEFAULT get_default_nomenclature_value('STATUT_SOURCE'),
     id_nomenclature_info_geo_type integer DEFAULT get_default_nomenclature_value('TYP_INF_GEO'),
     id_nomenclature_behaviour integer DEFAULT get_default_nomenclature_value('OCC_COMPORTEMENT'),
     id_nomenclature_biogeo_status integer DEFAULT get_default_nomenclature_value('STAT_BIOGEO'),
-    reference_biblio text,
+    reference_biblio character varying(5000),
     count_min integer,
     count_max integer,
     cd_nom integer,
@@ -584,7 +584,6 @@ $BODY$
   COST 100;
 
 
--- trigger on insert/update - ON EACH PROCEDURE
 CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement() RETURNS TRIGGER
   LANGUAGE plpgsql
   AS $$ 
@@ -602,6 +601,7 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_stat
         t_diff.cd_nomenclature as cd_nomenclature_diffusion_level
       FROM NEW AS updated_rows
       LEFT JOIN ref_nomenclatures.t_nomenclatures t_diff ON t_diff.id_nomenclature = updated_rows.id_nomenclature_diffusion_level
+      WHERE NEW.id_nomenclature_sensitivity IS NULL
     )
     UPDATE gn_synthese.synthese AS s
     SET 
@@ -638,8 +638,8 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_stat
       UPDATE gn_synthese.synthese 
       SET 
       id_nomenclature_sensitivity = calculated_id_sensi,
-      -- TODO: est-ce qu'on remet à jour le niveau de diffusion lors d'une MAJ de la sensi ?
-      id_nomenclature_diffusion_level = (
+      -- On ne met pas à jour le niveau de diffusion s'il a déjà une valeur
+      id_nomenclature_diffusion_level = CASE WHEN OLD.id_nomenclature_diffusion_level IS NULL THEN (
         SELECT ref_nomenclatures.get_id_nomenclature(
             'NIV_PRECIS',
             gn_sensitivity.calculate_cd_diffusion_level(
@@ -648,6 +648,8 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_stat
           )
       	)
       )
+      ELSE OLD.id_nomenclature_diffusion_level
+      END
       WHERE id_synthese = OLD.id_synthese
       ;
       RETURN NULL;
@@ -819,6 +821,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_web_app AS
 -- Vue listant les observations pour l'export de la Synthèse
 CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
  SELECT 
+    s.id_synthese AS id_synthese,
     s.date_min::date AS date_debut,
     s.date_max::date AS date_fin,
     s.date_min::time AS heure_debut,
@@ -891,7 +894,6 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
     n19.label_default AS methode_determination,
     n20.label_default AS comportement,
     s.reference_biblio AS reference_biblio,
-    s.id_synthese AS id_synthese,
     s.entity_source_pk_value AS id_origine,
     s.unique_id_sinp AS uuid_perm_sinp,
     s.unique_id_sinp_grp AS uuid_perm_grp_sinp,

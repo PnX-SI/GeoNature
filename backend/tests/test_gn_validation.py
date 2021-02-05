@@ -24,7 +24,6 @@ class TestValidation:
             "cd_nom",
             "unique_id_sinp",
             "meta_update_date",
-            "comment",
         ]
         response_key = data["data"]["features"][0]["properties"].keys()
         for c in mandatory_columns:
