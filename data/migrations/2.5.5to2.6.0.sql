@@ -1,11 +1,10 @@
 -- Update script from GeoNature 2.5.5 to 2.6.0
 
-
-------------------------------------
--- ADD MISSING UNIQUE CONSTRAINTS --
-------------------------------------
-
 BEGIN;
+
+   ------------------------------------
+   -- ADD MISSING UNIQUE CONSTRAINTS --
+   ------------------------------------
 
    -- gn_synthese.t_sources.name_source UNIQUE
     ALTER TABLE ONLY gn_synthese.t_sources
@@ -108,7 +107,7 @@ BEGIN;
     ALTER TABLE ONLY gn_synthese.synthese
         ADD CONSTRAINT fk_synthese_id_nomenclature_biogeo_status FOREIGN KEY (id_nomenclature_biogeo_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
-    -- suppression de la valeur par defaut du champ id_nomenclature_sensitivity et id_nomenclature_diffusion_level
+    -- Suppression de la valeur par defaut du champ id_nomenclature_sensitivity et id_nomenclature_diffusion_level
     ALTER TABLE gn_synthese.synthese 
     ALTER column id_nomenclature_sensitivity DROP DEFAULT;
 
@@ -195,7 +194,9 @@ BEGIN;
       FOR EACH ROW
       EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_row();
     
-    -- Fin schema sensitivity 
+    -------------------------
+    -- Fin schema sensitivity
+    -------------------------
     
     -- Refactor cor_area triggers
     CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_insert_in_cor_area_synthese_on_each_statement()
@@ -356,7 +357,6 @@ BEGIN;
     -- Révision de la vue validation de gn_commons pour disposer du nom français et latin
     DROP VIEW gn_commons.v_synthese_validation_forwebapp; 
 
-
     CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
     SELECT  s.id_synthese,
         s.unique_id_sinp,
@@ -462,9 +462,10 @@ BEGIN;
         JOIN count_nb_obs ON count_nb_obs.id_dataset = d.id_dataset
       GROUP BY d.id_dataset, d.unique_dataset_id, d.dataset_name, af.acquisition_framework_name, af.unique_acquisition_framework_id, count_nb_obs.nb_obs;
 
+    ---- Ajout du paramètre stockant la version du référentiel de sensibilité
     INSERT INTO gn_commons.t_parameters
     (id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value)
-    VALUES(0, 'ref_sensi_version', 'Version du referenciel de sensibilité', 'Referentiel de sensibilite taxref v13 2020', '');
+    VALUES(0, 'ref_sensi_version', 'Version du referentiel de sensibilité', 'Referentiel de sensibilite taxref v13 2020', '');
 
 
     ---- AFTER 2.6.0.rc.1
@@ -472,6 +473,7 @@ BEGIN;
     ALTER TABLE gn_synthese.synthese
       DROP CONSTRAINT check_synthese_info_geo_type_id_area_attachment;
 
+    -- Suppression des fonctions et triggers de calcul des couleurs des taxons par unités géographiques (remplacés par une vue)
     DROP FUNCTION gn_synthese.calcul_cor_area_taxon;
 
     DROP TRIGGER tri_maj_cor_area_taxon ON gn_synthese.cor_area_synthese;
@@ -486,9 +488,9 @@ BEGIN;
 
     DROP TABLE gn_synthese.cor_area_taxon CASCADE;
 
-
+    -- Ajout du paramètre permettant de définir le type de zonage utilisé pour les unités géographiques dans Occtax-mobile 
     INSERT INTO gn_commons.t_parameters (id_organism, parameter_name, parameter_desc, parameter_value)
-    VALUES (0, 'occtaxmobile_area_type', 'Type de maille pour laquelle la couleur des taxons est calculée', 'M5');
+    VALUES (0, 'occtaxmobile_area_type', 'Type de zonage pour lequel la couleur des taxons est calculée pour Occtax-mobile', 'M5');
 
     CREATE VIEW gn_synthese.v_area_taxon AS
     SELECT s.cd_nom, c.id_area, count(DISTINCT s.id_synthese) as nb_obs, max(s.date_min) as last_date
@@ -499,6 +501,7 @@ BEGIN;
     JOIN gn_commons.t_parameters tp ON tp.parameter_name = 'occtaxmobile_area_type' AND tp.parameter_value = bat.type_code
     GROUP BY c.id_area, s.cd_nom;
 
+    -- Création d'une vue, remplaçant la table, pour calculer les couleurs des taxons par unités géographiques (pour Occtax-mobile)
     CREATE VIEW gn_synthese.v_color_taxon_area AS
     SELECT cd_nom, id_area, nb_obs, last_date,
     CASE
@@ -508,7 +511,7 @@ BEGIN;
     FROM gn_synthese.v_area_taxon;
 
 
-    -- Correction NOT VALID gn_sensitivity
+    -- Correction des contraintes NOT VALID dans gn_sensitivity
     ALTER TABLE gn_sensitivity.cor_sensitivity_synthese DROP CONSTRAINT check_synthese_sensitivity;
 
     ALTER TABLE gn_sensitivity.cor_sensitivity_synthese
