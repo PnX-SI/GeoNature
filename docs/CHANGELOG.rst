@@ -37,7 +37,7 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 * Connexion à MTD : récupération du nouveau champs ``statutDonneesSource`` pour indiquer si le JDD est d'origine publique ou privée
 * Création d'une commande GeoNature permettant de récupérer les JDD, CA et acteurs depuis le webservice MTD de l'INPN, en refactorisant les outils existants d'import depuis ce webservice
 * Ajout de contraintes d'unicité sur certains champs des tables de métadonnées et de la table des sources (#1215)
-* Création d'un script pour DEPOBIO, permettant de remplacer les règles de sensibilité nationales et régionales, par les règles départementales (``data/scripts/sensi/import_sensi_depobio.sh``)
+* Création d'un script permettant de remplacer les règles de sensibilité nationales et régionales, par les règles départementales plus précises (``data/scripts/sensi/import_sensi_depobio.sh``), uniquement utilisé pour DEPOBIO pour le moment, en attendant de clarifier dans une prochaine release le fonctionnement que l'on retient par défaut dans GeoNature (#413)
 * Création d'un script permettant d'importer les régions dans le référentiel géographique (``data/migrations/insert_reg.sh``)
 
 **🐛 Corrections**
