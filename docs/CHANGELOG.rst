@@ -15,6 +15,7 @@ Si vous mettez à jour GeoNature :
 
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
 * Exécuter le script de mise à jour de la BDD du sous-module de nomenclature : https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.5to1.3.6.sql
+* Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.0to2.6.1.sql)
 
 2.6.0 - Saxifraga (2021-02-04)
 ------------------------------
