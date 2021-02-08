@@ -601,7 +601,7 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_stat
         t_diff.cd_nomenclature as cd_nomenclature_diffusion_level
       FROM NEW AS updated_rows
       LEFT JOIN ref_nomenclatures.t_nomenclatures t_diff ON t_diff.id_nomenclature = updated_rows.id_nomenclature_diffusion_level
-      WHERE NEW.id_nomenclature_sensitivity IS NULL
+      WHERE updated_rows.id_nomenclature_sensitivity IS NULL
     )
     UPDATE gn_synthese.synthese AS s
     SET 
