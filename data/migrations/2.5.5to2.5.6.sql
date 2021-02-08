@@ -1,2 +1,0 @@
--- ALTER TABLE ONLY gn_synthese.synthese
---     ADD CONSTRAINT unique_id_source_entity_source_pk_value UNIQUE (id_source, entity_source_pk_value);
