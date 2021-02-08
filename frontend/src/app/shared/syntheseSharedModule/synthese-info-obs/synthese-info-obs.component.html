@@ -85,14 +85,12 @@
         <br>
       </span>
       <button
-        *ngIf="syntheseObs?.url_source"
+        *ngIf="selectedObs?.source?.url_source"
         mat-raised-button
         color="primary"
-        (click)="backToModule(syntheseObs?.url_source, syntheseObs?.entity_source_pk_value)"
+        (click)="backToModule(selectedObs?.source?.url_source, selectedObs?.entity_source_pk_value)"
       >
         Voir l'observation dans le module de saisie
-        <mat-icon>insert_drive_file</mat-icon>
-
       </button>
     </span>
   </mat-card-content>

@@ -13,6 +13,7 @@ export class ValidationDataService {
     private _commonService: CommonService
   ) { }
 
+  // TODO REMOVE : Unused
   buildQueryUrl(params): HttpParams {
     let queryUrl = new HttpParams();
     for (let key in params) {
@@ -25,13 +26,10 @@ export class ValidationDataService {
     return queryUrl;
   }
 
+
   getSyntheseData(params) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/validation`, {
-      params: this.buildQueryUrl(params)
-    });
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/validation`, params);
   }
-
-
 
   postStatus(data: any, endpoint: Array<number>) {
     const urlStatus = `${AppConfig.API_ENDPOINT}/validation/${endpoint}`;
@@ -62,9 +60,4 @@ export class ValidationDataService {
     );
   }
 
-  getOneSyntheseObservation(id_synthese) {
-    return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/synthese/vsynthese/${id_synthese}`
-    );
-  }
 }

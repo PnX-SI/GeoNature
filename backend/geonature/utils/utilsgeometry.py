@@ -1,3 +1,8 @@
+"""
+
+    REMARQUE : TODO A SUPPRIMER
+    Car intégré dans flask-sqla-geo
+"""
 import ast
 import datetime
 import logging
@@ -112,7 +117,11 @@ class FionaShapeService:
             cls.file_poly, "w", "ESRI Shapefile", cls.polygon_schema, crs=cls.source_crs
         )
         cls.polyline_shape = fiona.open(
-            cls.file_line, "w", "ESRI Shapefile", cls.polyline_schema, crs=cls.source_crs,
+            cls.file_line,
+            "w",
+            "ESRI Shapefile",
+            cls.polyline_schema,
+            crs=cls.source_crs,
         )
 
     @classmethod
@@ -195,7 +204,7 @@ class FionaShapeService:
     @classmethod
     def write_a_feature(cls, feature, geom_wkt):
         """
-            write a feature by checking the type of the shape given
+        write a feature by checking the type of the shape given
         """
         log.warning(
             "WARNING: utilsgemetry will soon be removed from GeoNature.\nPlease use utils_flask_sqla_geo instead\n"
@@ -237,13 +246,18 @@ class FionaShapeService:
 
         for shape_format in format_to_save:
             final_file_name = cls.dir_path + "/" + shape_format + "_" + cls.file_name
-            final_file_name = "{dir_path}/{shape_format}_{file_name}/{shape_format}_{file_name}".format(
-                dir_path=cls.dir_path, shape_format=shape_format, file_name=cls.file_name,
+            final_file_name = (
+                "{dir_path}/{shape_format}_{file_name}/{shape_format}_{file_name}".format(
+                    dir_path=cls.dir_path,
+                    shape_format=shape_format,
+                    file_name=cls.file_name,
+                )
             )
             extentions = ("dbf", "shx", "shp", "prj")
             for ext in extentions:
                 zp_file.write(
-                    final_file_name + "." + ext, shape_format + "_" + cls.file_name + "." + ext,
+                    final_file_name + "." + ext,
+                    shape_format + "_" + cls.file_name + "." + ext,
                 )
         zp_file.close()
 
@@ -282,11 +296,11 @@ def shapeserializable(cls):
         Class method to create 3 shapes from datas
         Parameters
 
-        geom_col (string): name of the geometry column 
+        geom_col (string): name of the geometry column
         geojson_col (str): name of the geojson column if present. If None create the geojson from geom_col with shapely
                             for performance reason its better to use geojson_col rather than geom_col
-        data (list): list of datas 
-        file_name (string): 
+        data (list): list of datas
+        file_name (string):
         columns (list): columns to be serialize
 
         Returns:
@@ -321,7 +335,7 @@ def shapeserializable(cls):
 
 def circle_from_point(point, radius, nb_point=20):
     """
-    return a circle (shapely POLYGON) from a point 
+    return a circle (shapely POLYGON) from a point
     parameters:
         - point: a shapely POINT
         - radius: circle's diameter in meter

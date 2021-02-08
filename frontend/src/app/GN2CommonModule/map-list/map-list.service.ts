@@ -142,7 +142,7 @@ export class MapListService {
 
   loadData() {
     this.dataService().subscribe(
-      data => {
+      data => {        
         this.page.totalElements = data.total;
         this.page.itemPerPage = parseInt(this.urlQuery.get('limit'));
         this.page.pageNumber = data.page;
@@ -287,6 +287,7 @@ export class MapListService {
   }
 
   loadTableData(data, customCallBack?) {
+    
     this.tableData = [];
     if (customCallBack) {
       data.features.forEach(feature => {
@@ -300,7 +301,7 @@ export class MapListService {
       data.features.forEach(feature => {
         this.tableData.push(feature.properties);
       });
-    }
+    }    
   }
 }
 

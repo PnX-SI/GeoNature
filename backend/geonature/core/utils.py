@@ -8,7 +8,7 @@ from geonature.core.users.models import UserRigth
 from geonature.utils.env import DB
 
 
-class ReleveCruvedAutorization(DB.Model):
+class ModelCruvedAutorization(DB.Model):
     """
         Classe abstraite permettant d'ajout des méthodes
         de controle d'accès à la donnée en fonction
@@ -19,6 +19,7 @@ class ReleveCruvedAutorization(DB.Model):
         - id_digitiser
         - id_dataset
         A définir en tant que "synonymes" si les attributs sont différents
+        ou surcharger les méthodes
     """
 
     __abstract__ = True
@@ -28,7 +29,8 @@ class ReleveCruvedAutorization(DB.Model):
         return user.id_role == self.id_digitiser or user.id_role in observers
 
     def user_is_in_dataset_actor(self, user):
-        return self.id_dataset in TDatasets.get_user_datasets(user)
+        only_user = user.value_filter == "1"
+        return self.id_dataset in TDatasets.get_user_datasets(user, only_user=only_user)
 
     def user_is_allowed_to(self, user, level):
         """
@@ -74,7 +76,7 @@ class ReleveCruvedAutorization(DB.Model):
             403,
         )
 
-    def get_releve_cruved(self, user, user_cruved):
+    def get_model_cruved(self, user, user_cruved):
         """
         Return the user's cruved for a Releve instance.
         Use in the map-list interface to allow or not an action
