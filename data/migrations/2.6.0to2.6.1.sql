@@ -35,3 +35,10 @@ CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_stat
     RETURN NULL;
     END;
   $$;
+
+
+DROP TRIGGER tri_update_cor_area_synthese ON gn_synthese.synthese;
+CREATE TRIGGER tri_update_cor_area_synthese
+AFTER UPDATE OF the_geom_local, the_geom_4326 ON gn_synthese.synthese
+FOR EACH ROW
+EXECUTE PROCEDURE gn_synthese.fct_trig_update_in_cor_area_synthese();
