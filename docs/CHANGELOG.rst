@@ -2,12 +2,12 @@
 CHANGELOG
 =========
 
-2.6.1 (unreleased)
+2.6.1 (2020-02-08)
 ------------------
 
 **🐛 Corrections**
 
-* 
+* Correction du trigger `fct_tri_cal_sensi_diff_level_on_each_statement` non compatible avec PG10
 
 **⚠️ Notes de version**
 
