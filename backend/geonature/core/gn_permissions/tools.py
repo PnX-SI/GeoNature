@@ -154,7 +154,6 @@ class UserCruved:
                 )
             )
         q = q.filter(sa.or_(*ors))
-        from sqlalchemy.dialects import postgresql;
         return q.all()
 
     def _build_other_filters_for_max_perm_query(self, gathering):
@@ -293,45 +292,6 @@ class UserCruved:
             (max_perm, is_inherited_by_module, herited_by) = permissions
             other_filters_permissions = self._build_other_filters_for_max_perm_query(max_perm.gathering)
             return max_perm, is_inherited_by_module, herited_by, other_filters_permissions
-
-
-# TODO: remove if it's not used
-def get_user_permissions(
-    user, code_filter_type, code_action=None, module_code=None, code_object=None
-):
-    """
-    Retourne toutes les permission d'un utilisateur pour une action, un module
-    (ou un objet) et un type de filtre.
-    Les permissions d'un utilisateur peuvent être multiples via l'héritage par les groupes auxquels
-    il appartient.
-    La vue mappé par VUsersPermissions ne tient pas compte de la permission max 
-    car certains types de filtre ont des valeurs qui ne sont pas quantitatives.
-
-    Parameters:
-        user(dict)
-        code_filter_type(str): <SCOPE, GEOGRAPHIC ...>
-        code_action(str): <C,R,U,V,E,D> or None si toutes les actions sont désirées
-        module_code(str): 'GEONATURE', 'OCCTAX'
-        code_object(str): 'PERMISSIONS', 'DATASET' (table gn_permissions.t_oject)
-    Return:
-        Array<VUsersPermissions>
-    """
-    user_cruved = UserCruved(
-        id_role=user["id_role"],
-        code_filter_type=code_filter_type,
-        module_code=module_code,
-        object_code=code_object,
-    ).get_user_perm_list(code_action=code_action)
-    object_for_error = None
-
-    try:
-        assert len(user_cruved) > 0
-        return user_cruved
-    except AssertionError:
-        object_for_error = ",".join(filter(None, (code_object, module_code)))
-        raise InsufficientRightsError(
-            f"User {user['id_role']} cannot '{code_action}' in module/app/object {object_for_error}"
-        )
 
 
 def cruved_scope_for_user_in_module(
