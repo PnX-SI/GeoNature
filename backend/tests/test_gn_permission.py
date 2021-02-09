@@ -22,7 +22,6 @@ from geonature.utils.env import DB
 
 
 from geonature.core.gn_permissions.tools import (
-    get_user_permissions,
     user_from_token,
     get_user_from_token_and_raise,
     cruved_scope_for_user_in_module,
@@ -87,26 +86,21 @@ class TestGnPermissionsTools:
         assert isinstance(perms, VUsersPermissions)
         assert perms.value_filter == "3"
 
-        fake_user = {"id_role": 220, "nom_role": "Administrateur"}
-        # get_user_permissions(fake_user, code_action="C", code_filter_type="SCOPE")
-        with pytest.raises(InsufficientRightsError):
-            perms = get_user_permissions(fake_user, code_action="C", code_filter_type="SCOPE")
         # with module code
-
         perms = perms, is_herited, herited_object, other_filters_perm = UserCruved(
-            id_role=user_ok["id_role"], code_filter_type="SCOPE", module_code="ADMIN"
+            id_role=user_ok["id_role"], 
+            code_filter_type="SCOPE", 
+            module_code="ADMIN"
         ).get_perm_for_one_action("C")
         assert perms.value_filter == "3"
 
-        # # with code_object -> heritage
-
+        # with code_object -> heritage
         perms = perms, is_herited, herited_object, other_filters_perms = UserCruved(
             id_role=user_ok["id_role"],
             code_filter_type="SCOPE",
             module_code="GEONATURE",
             object_code="PERMISSIONS",
         ).get_perm_for_one_action("C")
-
         assert isinstance(perms, VUsersPermissions)
         assert perms.value_filter == "3"
 

@@ -10,7 +10,6 @@ from functools import wraps
 from pypnusershub.db.tools import InsufficientRightsError
 
 from geonature.core.gn_permissions.tools import (
-    get_user_permissions,
     get_user_from_token_and_raise,
     UserCruved,
 )
