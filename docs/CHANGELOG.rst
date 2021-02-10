@@ -10,6 +10,8 @@ CHANGELOG
 * https://github.com/PnX-SI/GeoNature/issues/1252
 * https://github.com/PnX-SI/GeoNature/issues/1253
 * Script de création de ``gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement()`` à l'installation initiale toujours différent de celui d'update ??
+* generic_view backdoor de GN à commenter dans le code
+* Problème de Ludovic ?
 
 **🐛 Corrections**
 
