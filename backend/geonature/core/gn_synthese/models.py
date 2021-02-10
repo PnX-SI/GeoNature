@@ -3,7 +3,7 @@ from collections import OrderedDict
 from flask import current_app
 from sqlalchemy import ForeignKey, or_, Sequence
 from sqlalchemy.orm import relationship, column_property
-from sqlalchemy.sql import select, func
+from sqlalchemy.sql import select, func, exists
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
@@ -262,9 +262,8 @@ class VSyntheseForWebApp(DB.Model):
     st_asgeojson = DB.Column(DB.Unicode)
 
     has_medias = column_property(
-        select([TMedias.id_media]).\
+        exists([TMedias.id_media]).\
             where(TMedias.uuid_attached_row==unique_id_sinp)
-            .exists()
     )
 
     def get_geofeature(self, recursif=False, columns=()):

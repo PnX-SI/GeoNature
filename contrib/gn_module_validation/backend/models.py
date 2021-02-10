@@ -1,5 +1,8 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import column_property
+from sqlalchemy.sql import exists
+from geonature.core.gn_commons.models import TMedias
 
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
@@ -78,6 +81,11 @@ class VSyntheseValidation(DB.Model):
     validation_auto = DB.Column(DB.Boolean)
     validation_date = DB.Column(DB.DateTime)
     geojson = DB.Column(DB.Unicode)
+
+    has_medias = column_property(
+        exists([TMedias.id_media]).\
+            where(TMedias.uuid_attached_row==unique_id_sinp)
+    )
 
     def get_geofeature(self, recursif=False, columns=()):
         return self.as_geofeature(
