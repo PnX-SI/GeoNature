@@ -2,7 +2,31 @@
 CHANGELOG
 =========
 
-2.6.0 - Saxifraga (2020-02-04)
+2.6.1 (unreleased)
+------------------
+
+**TOCHECK**
+
+* https://github.com/PnX-SI/GeoNature/issues/1252
+* https://github.com/PnX-SI/GeoNature/issues/1253
+* Script de création de ``gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement()`` à l'installation initiale toujours différent de celui d'update ??
+* generic_view backdoor de GN à commenter dans le code
+* Problème de Ludovic ?
+
+**🐛 Corrections**
+
+* Correction de la fonction ``gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement()`` non compatible avec PostgreSQL 10 (#1255)
+* Précision de la documentation de mise à jour de GeoNature (#1251)
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
+* Exécuter le script de mise à jour de la BDD du sous-module de nomenclature : https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.5to1.3.6.sql
+* Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.0to2.6.1.sql)
+
+2.6.0 - Saxifraga (2021-02-04)
 ------------------------------
 
 Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimum (qui n'est pas fourni par défaut avec Debian 9) pour les triggers déclenchés "on each statement", plus performants.
@@ -39,7 +63,7 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 * Connexion à MTD : récupération du nouveau champs ``statutDonneesSource`` pour indiquer si le JDD est d'origine publique ou privée
 * Création d'une commande GeoNature permettant de récupérer les JDD, CA et acteurs depuis le webservice MTD de l'INPN, en refactorisant les outils existants d'import depuis ce webservice
 * Ajout de contraintes d'unicité sur certains champs des tables de métadonnées et de la table des sources (#1215)
-* Création d'un script pour DEPOBIO, permettant de remplacer les règles de sensibilité nationales et régionales, par les règles départementales (``data/scripts/sensi/import_sensi_depobio.sh``)
+* Création d'un script permettant de remplacer les règles de sensibilité nationales et régionales, par les règles départementales plus précises (``data/scripts/sensi/import_sensi_depobio.sh``), uniquement utilisé pour DEPOBIO pour le moment, en attendant de clarifier dans une prochaine release le fonctionnement que l'on retient par défaut dans GeoNature (#413)
 * Création d'un script permettant d'importer les régions dans le référentiel géographique (``data/migrations/insert_reg.sh``)
 
 **🐛 Corrections**
@@ -78,7 +102,8 @@ Si vous mettez à jour GeoNature :
 * Toutes les nouvelles données intégrées dans le Synthèse auront leur niveau de sensibilité et de diffusion calculés automatiquement. Vous pouvez ajouter ou désactiver des règles de sensibilité dans la table ``gn_sensivity.t_sensitivity_rules``
 * Vous pouvez aussi exécuter le script qui va calculer automatiquement le niveau de sensibilité et de diffusion de toutes les données déjà présentes dans la Synthèse, éventuellement en l'adaptant à votre contexte : https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.5to2.6.0-update-sensitivity.sql
 * Mettez à jour de la longueur du champs ``gn_synthese.synthese.reference_biblio`` à 5000 charactères. Exécutez la commande suivante dans la console : ``sudo -u postgres psql -d geonature2db -c "UPDATE pg_attribute SET atttypmod = 5004 WHERE attrelid = 'gn_synthese.synthese'::regclass AND attname = 'reference_biblio';"``
-* Exécuter le script de migration du sous-module de nomenclature : https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.4to1.3.5.sql
+* Exécuter le script de mise à jour de la BDD du sous-module de nomenclature : https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.4to1.3.5.sql
+* Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * Si vous utilisez Occtax-mobile, vous pouvez modifier la valeur du nouveau paramètre ``gn_commons.t_parameters.occtaxmobile_area_type`` pour lui indiquer le code du type de zonage que vous utilisez pour les unités géographiques (mailles de 5km par défaut)
 * Si vous disposez du module d'import, vous devez le mettre à jour en version 1.1.1
 >>>>>>> develop
