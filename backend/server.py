@@ -131,9 +131,7 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
 
         # Loading third-party modules
         if with_external_mods:
-            for conf, manifest, module in list_and_import_gn_modules(app):
-                app.register_blueprint(
-                    module.backend.blueprint.blueprint, url_prefix=conf["MODULE_URL"]
-                )
+            for blueprint, url_prefix in list_and_import_gn_modules(app):
+                app.register_blueprint(blueprint, url_prefix=url_prefix)
         _app = app
     return app
