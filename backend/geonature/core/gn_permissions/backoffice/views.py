@@ -154,7 +154,8 @@ def permission_form(info_role, id_module, id_role, id_object=None):
                     DB.session.add(permission_row)
                 DB.session.commit()
             flash("CRUVED mis à jour pour le role {}".format(user.id_role))
-        return redirect(url_for("gn_permissions_backoffice.user_cruved", id_role=id_role))
+        relative_url = url_for("gn_permissions_backoffice.user_cruved", id_role=id_role)
+        return redirect(f"{current_app.config['API_ENDPOINT']}{relative_url}")
 
 
 @routes.route("/users", methods=["GET"])
