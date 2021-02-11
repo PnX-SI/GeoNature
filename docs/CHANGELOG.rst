@@ -2,20 +2,14 @@
 CHANGELOG
 =========
 
-2.6.1 (unreleased)
+2.6.1 (2021-02-11)
 ------------------
-
-**TOCHECK**
-
-* https://github.com/PnX-SI/GeoNature/issues/1252
-* https://github.com/PnX-SI/GeoNature/issues/1253
-* Script de création de ``gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement()`` à l'installation initiale toujours différent de celui d'update ??
-* generic_view backdoor de GN à commenter dans le code
-* Problème de Ludovic ?
 
 **🐛 Corrections**
 
 * Correction de la fonction ``gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement()`` non compatible avec PostgreSQL 10 (#1255)
+* Synthese: correction de l'affichage du filtre "statut de validation" #1267
+* Permission: correction de l'URL de redirection après l'éditiondes permissions #1253
 * Précision de la documentation de mise à jour de GeoNature (#1251)
 
 **⚠️ Notes de version**
