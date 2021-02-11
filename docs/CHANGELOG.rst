@@ -12,7 +12,8 @@ CHANGELOG
 * Permissions : correction de l'URL de redirection après l'éditiondes permissions (#1253)
 * Précision de la documentation de mise à jour de GeoNature (#1251)
 * Ajout du paramètre ``DISPLAY_EMAIL_INFO_OBS`` dans le fichier d'exemple de configuration (#1066 par @jbdesbas)
-* Sécurité : suppression d'une route inutile
+* Sécurité : suppression d'une route inutile*
+* Correction de l'URL de la doc sur la page d'accueil
 
 **⚠️ Notes de version**
 
