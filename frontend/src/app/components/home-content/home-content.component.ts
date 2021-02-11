@@ -4,6 +4,7 @@ import { MapService } from '@geonature_common/map/map.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { GlobalSubService } from '../../services/global-sub.service';
+import { ModuleService } from '../../services/module.service';
 
 @Component({
   selector: 'pnx-home-content',
@@ -21,10 +22,23 @@ export class HomeContentComponent implements OnInit {
     private _SideNavService: SideNavService,
     private _syntheseApi: SyntheseDataService,
     private _globalSub: GlobalSubService,
-    private _mapService: MapService
+    private _mapService: MapService,
+    private _moduleService: ModuleService
   ) {}
 
   ngOnInit() {
+    this._moduleService.moduleSub
+    .filter(m => m!== null)
+    .subscribe(m => {
+      const gn_module = m.find(el => {
+        return el.module_code == 'GEONATURE'
+      });
+      gn_module.module_label = 'Accueil'
+      this._globalSub.currentModuleSubject.next(gn_module);
+      
+      
+    })
+    
     this._SideNavService.sidenav.open();
     this.appConfig = AppConfig;
 
@@ -53,8 +67,6 @@ export class HomeContentComponent implements OnInit {
         });
     }
 
-    // Emit the currentModule event: Home is not a module => null
-    this._globalSub.currentModuleSubject.next(null);
   }
 
   onEachFeature(feature, layer) {
