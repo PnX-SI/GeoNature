@@ -8,9 +8,11 @@ CHANGELOG
 **🐛 Corrections**
 
 * Correction de la fonction ``gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement()`` non compatible avec PostgreSQL 10 (#1255)
-* Synthese: correction de l'affichage du filtre "statut de validation" #1267
-* Permission: correction de l'URL de redirection après l'éditiondes permissions #1253
+* Synthese : correction de l'affichage du filtre "statut de validation" (#1267)
+* Permissions : correction de l'URL de redirection après l'éditiondes permissions (#1253)
 * Précision de la documentation de mise à jour de GeoNature (#1251)
+* Ajout du paramètre ``DISPLAY_EMAIL_INFO_OBS`` dans le fichier d'exemple de configuration (#1066 par @jbdesbas)
+* Sécurité : suppression d'une route inutile
 
 **⚠️ Notes de version**
 
