@@ -42,3 +42,6 @@ CREATE TRIGGER tri_update_cor_area_synthese
 AFTER UPDATE OF the_geom_local, the_geom_4326 ON gn_synthese.synthese
 FOR EACH ROW
 EXECUTE PROCEDURE gn_synthese.fct_trig_update_in_cor_area_synthese();
+
+
+CREATE UNIQUE INDEX IF NOT EXISTS i_unique_l_areas_id_type_area_code ON ref_geo.l_areas (id_type, area_code);

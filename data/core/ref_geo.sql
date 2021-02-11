@@ -342,6 +342,7 @@ ALTER TABLE ref_geo.li_grids
 CREATE INDEX index_l_areas_geom ON l_areas USING gist (geom);
 CREATE INDEX index_l_areas_centroid ON l_areas USING gist (centroid);
 CREATE INDEX index_dem_vector_geom ON dem_vector USING gist (geom);
+CREATE UNIQUE INDEX IF NOT EXISTS i_unique_l_areas_id_type_area_code ON ref_geo.l_areas (id_type, area_code);
 
 ------------
 --TRIGGERS--
