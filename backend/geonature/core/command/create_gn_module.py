@@ -124,7 +124,7 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                         # generation du routing du frontend
                         frontend_routes_templating(app)
                         # generation du fichier de configuration du frontend
-                        create_module_config(app, module_code.lower(), module_path, build=False)
+                        create_module_config(app, module_code.lower(), build=False)
 
                     if build and enable_frontend:
                         # Rebuild the frontend

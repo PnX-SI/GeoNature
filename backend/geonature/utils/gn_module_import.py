@@ -19,6 +19,8 @@ from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
 from geonature.utils.command import build_geonature_front, frontend_routes_templating
 from geonature.utils.command import get_app_for_cmd
+from geonature.utils.module import import_gn_module
+from geonature.core.gn_commons.models import TModules
 
 from geonature.utils.env import (
     GEONATURE_VERSION,
@@ -122,8 +124,6 @@ def gn_module_import_requirements(module_path):
 
 
 def gn_module_activate(module_code, activ_front, activ_back):
-    from geonature.core.gn_commons.models import TModules
-
     # TODO utiliser les commande os de python
     log.info("Activate module")
 
@@ -162,7 +162,6 @@ def gn_module_activate(module_code, activ_front, activ_back):
 
 def gn_module_deactivate(module_code, activ_front, activ_back):
     log.info("Desactivate module")
-    from geonature.core.gn_commons.models import TModules
 
     app = None
     try:
@@ -411,37 +410,18 @@ def create_module_config(app, module_code, mod_path=None, build=True):
     """
     Create the frontend config
     """
-    from geonature.core.gn_commons.models import TModules
 
     with app.app_context():
-        if not mod_path:
-            # get the symlink location to write the config file
-            mod_path = os.readlink(str(GN_EXTERNAL_MODULE / module_code.lower()))
-
         # fetch the module in the DB from its name
         module_object = (
             DB.session.query(TModules).filter(TModules.module_code == module_code.upper()).one()
         )
-
-        # import du module dans le sys.path
-        module_parent_dir = str(Path(mod_path).parent)
-        module_schema_conf = "{}.config.conf_schema_toml".format(Path(mod_path).name)  # noqa
-        sys.path.insert(0, module_parent_dir)
-        module = __import__(module_schema_conf, globals=globals())
-        front_module_conf_file = os.path.join(mod_path, "config/conf_gn_module.toml")  # noqa
-        config_module = utilstoml.load_and_validate_toml(
-            front_module_conf_file, module.config.conf_schema_toml.GnModuleSchemaConf
-        )
-        # set id_module and module_code
-        config_module["ID_MODULE"] = module_object.id_module
-        config_module["MODULE_CODE"] = module_object.module_code
-        config_module["MODULE_URL"] = module_object.module_path.replace(" ", "")
-
-        frontend_config_path = os.path.join(mod_path, "frontend/app/module.config.ts")  # noqa
+        module, blueprint = import_gn_module(module_object)
+        frontend_config_path = os.path.join(blueprint.config['FRONTEND_PATH'], "app/module.config.ts")  # noqa
         try:
             with open(str(ROOT_DIR / frontend_config_path), "w") as outputfile:
                 outputfile.write("export const ModuleConfig = ")
-                json.dump(config_module, outputfile, indent=True, sort_keys=True)
+                json.dump(blueprint.config, outputfile, indent=True, sort_keys=True)
         except FileNotFoundError:
             log.info("No frontend config file")
         if build:

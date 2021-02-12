@@ -12,22 +12,18 @@ from geonature.core.gn_commons.models import TModules
 
 
 
-def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
-    sys.path.insert(0, mod_path)  # to be able to import non-packaged modules
-    enabled_modules = TModules.query.filter(TModules.active_backend == True).all()
-    for mod in enabled_modules:
+def import_gn_module(mod):
+    sys.path.insert(0, str(GN_EXTERNAL_MODULE))  # to be able to import non-packaged modules
+    try:
         module_name = mod.module_path
-        try:
-            module = import_module(module_name)
-        except ModuleNotFoundError:
-            # probably an internal module which we do not require to import
-            # (we miss a method to differentiate internal module with imported module)
-            continue
+        module = import_module(module_name)
         module_path = Path(module.__file__).parent
         manifest_path = module_path / 'manifest.toml'
         module_config = {
             'ID_MODULE': mod.id_module,
             'MODULE_CODE': mod.module_code,
+            'BACKEND_PATH': str(module_path / 'backend'),
+            'FRONTEND_PATH': str(module_path / 'frontend'),
         }
         if manifest_path.is_file():  # non-packaged module
             module_manifest = load_and_validate_toml(module_path / 'manifest.toml', ManifestSchemaProdConf)
@@ -48,18 +44,36 @@ def list_and_import_gn_modules(app, mod_path=GN_EXTERNAL_MODULE):
                 'MODULE_URL': '/' + mod.module_code.lower(),
             })
         module_config.update(load_and_validate_toml(config_path, module_schema))
-        app.config[mod.module_code] = module_config
+        #app.config[mod.module_code] = module_config
         module_blueprint.config = module_config
-        yield module_blueprint, module_config['MODULE_URL']
-    sys.path.pop(0)
+        return module, module_blueprint
+    finally:
+        sys.path.pop(0)
 
 
+def import_backend_enabled_modules():
+    enabled_modules = TModules.query.filter(TModules.active_backend == True).all()
+    for mod in enabled_modules:
+        try:
+            module, module_blueprint = import_gn_module(mod)
+        except ModuleNotFoundError:
+            # probably an internal module which we do not require to import
+            # (we miss a method to differentiate internal module with imported module)
+            continue
+        yield module, module_blueprint
 
-def list_frontend_enabled_modules(app, mod_path=GN_EXTERNAL_MODULE):
+
+def import_frontend_enabled_modules():
     """
         Get all the module frontend enabled from gn_commons.t_modules
-        and return the conf and the manifest
+        and return the url path and the module_code
     """
     enabled_modules = TModules.query.filter(TModules.active_frontend == True).all()
     for mod in enabled_modules:
-        yield mod.module_path.replace(" ", ""), mod.module_code
+        try:
+            module, blueprint = import_gn_module(mod)
+        except ModuleNotFoundError:
+            # probably an internal module which we do not require to import
+            # (we miss a method to differentiate internal module with imported module)
+            continue
+        yield blueprint.config['MODULE_URL'], mod.module_code

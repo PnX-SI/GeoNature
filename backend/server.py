@@ -11,7 +11,7 @@ from sqlalchemy import exc as sa_exc
 from flask_sqlalchemy import before_models_committed
 
 from geonature.utils.env import MAIL, DB, MA, load_config, get_config_file_path
-from geonature.utils.module import list_and_import_gn_modules
+from geonature.utils.module import import_backend_enabled_modules
 
 
 def get_app(config=None, _app=None, with_external_mods=True, with_flask_admin=True):
@@ -133,7 +133,8 @@ def get_app(config=None, _app=None, with_external_mods=True, with_flask_admin=Tr
 
         # Loading third-party modules
         if with_external_mods:
-            for blueprint, url_prefix in list_and_import_gn_modules(app):
-                app.register_blueprint(blueprint, url_prefix=url_prefix)
+            for module, blueprint in import_backend_enabled_modules():
+                app.config[blueprint.config['MODULE_CODE']] = blueprint.config
+                app.register_blueprint(blueprint, url_prefix=blueprint.config['MODULE_URL'])
         _app = app
     return app
