@@ -61,7 +61,6 @@
         <ul class="list-inline mb-0">
           <li *ngFor="let group of role?.groups" class="list-inline-item">
             <a
-              class=""
               mat-stroked-button
               matRipple
               matTooltip="Accéder aux permissions de ce groupe."
@@ -104,15 +103,18 @@
               <p *ngIf="permissionsNbrByCode[module.code] as nbr">
                 <strong>{{ nbr.total }}</strong>
                 {{ nbr.total < 2 ? 'permission' : 'permissions' }}
-                dans le module {{ module.label }} (
-                <ng-container *ngIf="showInheritance && nbr.owned > 0">
-                  {{ nbr.owned }} {{ nbr.owned < 2 ? 'possédée' : 'possédées'}}
+                dans le module {{ module.label }}
+                <ng-container *ngIf="showInheritance">
+                  (
+                  <ng-container *ngIf="showInheritance && nbr.owned > 0">
+                    {{ nbr.owned }} {{ nbr.owned < 2 ? 'possédée' : 'possédées'}}
+                  </ng-container>
+                  <ng-container *ngIf="nbr.owned > 0 && nbr.inherited > 0">, </ng-container>
+                  <ng-container *ngIf="showInheritance && nbr.inherited > 0">
+                    {{ nbr.inherited }} {{nbr.inherited < 2 ? 'héritée' : 'héritées'}}
+                  </ng-container>
+                  )
                 </ng-container>
-                <ng-container *ngIf="nbr.owned > 0 && nbr.inherited > 0">, </ng-container>
-                <ng-container *ngIf="showInheritance && nbr.inherited > 0">
-                  {{ nbr.inherited }} {{nbr.inherited < 2 ? 'héritée' : 'héritées'}}
-                </ng-container>
-                ).
               </p>
             </mat-panel-description>
           </mat-expansion-panel-header>
@@ -183,10 +185,16 @@
               </thead>
               <tbody>
                 <ng-container *ngFor="let objectCode of objectsOrder[module.code]">
-                  <tr *ngIf="objectCode != 'ALL'" class="table-secondary">
-                    <th colspan="6" class="text-uppercase">{{ objects[objectCode].description }}</th>
-                  </tr>
-                  <tr *ngFor="let permission of permissionsByCode[module.code][objectCode]">
+                  <ng-container *ngIf="objectCode != 'ALL'">
+                    <tr class="spacer"></tr>
+                    <tr  class="table-secondary object-row">
+                      <th colspan="6" class="text-uppercase">{{ objects[objectCode].description }}</th>
+                    </tr>
+                  </ng-container>
+                  <tr
+                    *ngFor="let permission of permissionsByCode[module.code][objectCode]"
+                    [class.object-row]="objectCode != 'ALL'"
+                  >
                     <th class="align-middle" scope="row">
                       {{ permission.name }}
                     </th>
@@ -229,11 +237,7 @@
                           && permission.inheritedBy.byModule ;
                           else notInheritedByModule
                         ">
-                        {{
-                          permission.inheritedBy.moduleCode == module.code
-                          ? 'Parent'
-                          : permission.inheritedBy.moduleCode
-                        }}
+                        {{ permission.inheritedBy.moduleCode }}
                       </ng-container>
                       <ng-template #notInheritedByModule>&nbsp;</ng-template>
                     </td>
@@ -256,12 +260,19 @@
                           mat-icon-button
                           color="primary"
                           matRipple
-                          matTooltip="Éditer la permission."
+                          [matTooltip]="
+                            permission.isInherited
+                              ? 'Créer une nouvelle permission basée sur cette permission héritée.'
+                              : 'Éditer la permission.'
+                            "
                           (click)="openEditModal(permission)"
                         >
-                          <mat-icon>create</mat-icon>
+                          <mat-icon>
+                            {{ permission.isInherited ? 'add_circle' : 'create' }}
+                          </mat-icon>
                         </button>
                         <button
+                          *ngIf="!permission.isInherited"
                           class="mat-elevation-z1 mx-1"
                           mat-icon-button
                           color="warn"

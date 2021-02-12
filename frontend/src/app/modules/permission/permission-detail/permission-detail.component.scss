@@ -38,6 +38,10 @@ mat-expansion-panel-header {
 }
 
 // Permissions table
+.table {
+  // Remove border from table but keep around cells !
+  border: none;
+}
 .table .thead-dark th {
   vertical-align: middle !important;
   padding: .25rem .75rem;
@@ -49,4 +53,11 @@ mat-expansion-panel-header {
   font-size: 0.8rem;
   color:color(light);
   vertical-align: super;
+}
+.table .spacer {
+  display: block;
+  margin-top: 20px;
+}
+tr.object-row > th:first-child {
+  text-indent: 40px;
 }
