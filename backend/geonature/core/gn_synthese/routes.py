@@ -872,7 +872,7 @@ def get_bbox():
     if "id_dataset" in params:
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
     data = query.one()
-    if data:
+    if data and data[0]:
         return json.loads(data[0])
     return None
 
