@@ -8,6 +8,8 @@ export class ModuleService {
   // all modules exepted GEONATURE, for sidebar display
   public displayedModules: Array<any>;
   private $module: BehaviorSubject<Array<any>> = new BehaviorSubject(null);
+  public moduleSub = this.$module.asObservable();
+
   constructor(private _api: DataFormService) {
     this.fetchModules();
   }

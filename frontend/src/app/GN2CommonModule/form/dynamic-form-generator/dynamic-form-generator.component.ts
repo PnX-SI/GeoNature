@@ -119,5 +119,7 @@ export class GenericFormGeneratorComponent implements OnInit {
       return form.attribut_name !== formDef.attribut_name;
     });
     this._dynformService.addNewControl(formDef, this.myFormGroup);
+    // pour être sûr que les composants (displayed et hidden) soient bien mis à jour)
+    this.setForms();
   }
 }
