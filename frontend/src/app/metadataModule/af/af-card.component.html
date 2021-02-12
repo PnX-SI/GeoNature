@@ -189,13 +189,13 @@
             <div
               *ngFor="let objectif of af?.cor_objectifs"
               class="a"
-            > {{ objectif?.mnemonique }} </div>
+            > {{ objectif?.label_default }} </div>
             <br />
           </div>
 
           <div>
             <div class="b">Territoires concernés </div>
-            <div class="a"> <b> Etendue territoriale : </b>{{af?.id_nomenclature_territorial_level}}
+            <div class="a"> <b> Etendue territoriale : </b>{{af?.nomenclature_territorial_level?.label_default}}
             </div>
 
             <br />
@@ -262,7 +262,7 @@
       >
         <div class="card-header">
           <h5>
-            Réparition des espèces
+            Répartition des espèces
           </h5>
         </div>
         <div
