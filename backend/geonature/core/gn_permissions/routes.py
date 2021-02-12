@@ -1133,16 +1133,36 @@ def get_permissions_for_all_roles(info_role):
     # Get params
     params = request.args.to_dict()
 
+    # Subquery to get only implemented permissions (= link to cor_module_action_object_filter)
+    gatherings_for_roles = (
+        DB.session.query(
+            CorRoleActionFilterModuleObject.id_role, 
+            CorRoleActionFilterModuleObject.gathering
+        )
+        .distinct(CorRoleActionFilterModuleObject.gathering)
+        .join(
+            CorModuleActionObjectFilter, 
+            (CorModuleActionObjectFilter.id_module == CorRoleActionFilterModuleObject.id_module)
+            &
+            (CorModuleActionObjectFilter.id_action == CorRoleActionFilterModuleObject.id_action)
+            &
+            (CorModuleActionObjectFilter.id_object == CorRoleActionFilterModuleObject.id_object)
+            &
+            (CorModuleActionObjectFilter.id_filter_type == CorRoleActionFilterModuleObject.id_filter_type)
+        )
+        .subquery()
+    )
+
     # Get roles with permissions
     # TODO: use AppRole instead of User and BibOrganismes
     query = (
         DB.session.query(
                 User, 
                 BibOrganismes, 
-                func.count(distinct(CorRoleActionFilterModuleObject.gathering))
+                func.count(distinct(gatherings_for_roles.c.gathering))
             )
             .join(AppRole, AppRole.id_role == User.id_role)
-            .outerjoin(CorRoleActionFilterModuleObject, CorRoleActionFilterModuleObject.id_role == User.id_role)
+            .outerjoin(gatherings_for_roles, gatherings_for_roles.c.id_role == User.id_role)
             .outerjoin(BibOrganismes, BibOrganismes.id_organisme == User.id_organisme)
             .filter(AppRole.id_application == current_app.config["ID_APPLICATION_GEONATURE"])
             .group_by(
