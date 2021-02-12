@@ -490,13 +490,15 @@ def get_access_request_default_permissions(request):
             "action_code": "E", 
             "object_code": "PRIVATE_OBSERVATION",
         },
-        {
+    ]
+    
+    if (DB.session.query(TModules).filter(TModules.module_code == "VALIDATION").first()):
+         default_permissions.append({
             "module_code": "VALIDATION", 
             "action_code": "R", 
             "object_code": "PRIVATE_OBSERVATION",
-        },
-    ]
-    
+        })
+
     # Add new permissions for sensitive observations
     if (request["sensitive_access"] is True):
         default_sensitive_permissions = copy.deepcopy(default_permissions)
