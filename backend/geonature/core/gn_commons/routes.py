@@ -51,8 +51,14 @@ def get_modules(info_role):
             module = mod.as_dict()
             module["cruved"] = app_cruved
             if mod.active_frontend:
+                # try to get module url from conf for new modules
+                if module['module_code'] in current_app.config:
+                    module_url = current_app.config[module['module_code']].get('MODULE_URL', mod.module_path)
+                else:
+                    # fallback for legacy modules
+                    module_url = mod.module_path
                 module["module_url"] = "{}/#/{}".format(
-                    current_app.config["URL_APPLICATION"], mod.module_path
+                    current_app.config["URL_APPLICATION"], module_url
                 )
             else:
                 module["module_url"] = mod.module_external_url
