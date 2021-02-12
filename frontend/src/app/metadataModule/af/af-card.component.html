@@ -21,13 +21,13 @@
           <h5 class="text-muted"> Cadre d'acquisition</h5>
           <h4>{{af?.acquisition_framework_name}}
             <button
+              [routerLink]="['/metadata/af', af?.id_acquisition_framework]"
               [disabled]="!af?.cruved?.U"
-              [routerLink]="['/metadata/af_detail', af?.id_acquisition_framework]"
               mat-mini-fab
               color="primary"
               matTooltip="Editer le cadre d'acquisition"
               class="mr-2 float-right"
-            >
+            > 
               <mat-icon>create</mat-icon>
 
             </button>
@@ -189,13 +189,13 @@
             <div
               *ngFor="let objectif of af?.cor_objectifs"
               class="a"
-            > {{ objectif?.mnemonique }} </div>
+            > {{ objectif?.label_default }} </div>
             <br />
           </div>
 
           <div>
             <div class="b">Territoires concernés </div>
-            <div class="a"> <b> Etendue territoriale : </b>{{af?.id_nomenclature_territorial_level}}
+            <div class="a"> <b> Etendue territoriale : </b>{{af?.nomenclature_territorial_level?.label_default}}
             </div>
 
             <br />
@@ -262,7 +262,7 @@
       >
         <div class="card-header">
           <h5>
-            Réparition des espèces
+            Répartition des espèces
           </h5>
         </div>
         <div
