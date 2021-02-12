@@ -212,9 +212,8 @@ def get_dataset_details_dict(id_dataset, session_role):
         current_app.config["API_ENDPOINT"] + "/import/by_dataset/" + str(id_dataset),
         headers={"Cookie": request.headers.get("Cookie")},  # recuperation du token
     )
-    imports = json.loads(imports.content.decode("utf8").replace("'", '"'))
-    if imports:
-        dataset["imports"] = imports
+    if imports.status_code == 200:
+        dataset["imports"] = imports.json()
 
     user_cruved = cruved_scope_for_user_in_module(
         id_role=session_role.id_role, module_code="METADATA",
