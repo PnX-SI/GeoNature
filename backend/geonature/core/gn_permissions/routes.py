@@ -1053,8 +1053,9 @@ def remove_permission_by_request(request):
             .query(CorRoleActionFilterModuleObject)
             .filter(CorRoleActionFilterModuleObject.id_request == request['id_request'])
         )
-        result = query.first()
-        DB.session.delete(result)
+        results = query.all()
+        for result in results:
+            DB.session.delete(result)
     except exc.NoResultFound:
         log.info("No permissions found. No permissions to remove.")
     except Exception as exp:
