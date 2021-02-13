@@ -1258,33 +1258,33 @@ def get_permissions_by_role_id(id_role):
             "group_name": formatRoleName(role_group), 
         })
 
+    # Prepare permissions
+    permissions = {}
+
     # Get permissions uninherited
     query = build_permission_query(id_role=id_role)
     results = query.all()
-
-    # Prepare permissions
-    permissions = {}
     for result in results:
         (
-            id_role, label, code, module, action_code, object_code, 
+            id_role, label, code, module, action_code, object_code,
             end_date, gathering, filter_type, filter_value
         ) = result
         append_permission(
-            permissions=permissions, 
-            label=label, 
-            code=code, 
-            module_code=module, 
-            action_code=action_code, 
-            object_code=object_code, 
-            end_date=end_date, 
-            gathering=gathering, 
-            filter_type=filter_type, 
+            permissions=permissions,
+            label=label,
+            code=code,
+            module_code=module,
+            action_code=action_code,
+            object_code=object_code,
+            end_date=end_date,
+            gathering=gathering,
+            filter_type=filter_type,
             filter_value=filter_value,
             is_inherited=False
         )
 
-    # Recover inherited permissions
-    if "with-inheritance" in params and is_true(params["with-inheritance"]):
+    # Recover inherited permissions if necessary
+    if ("with-inheritance" in params and is_true(params["with-inheritance"])):
         inheritance = []
         property_filter_code = "SCOPE"
         # Get all modules
@@ -1308,6 +1308,9 @@ def get_permissions_by_role_id(id_role):
                 prepared_inherited_by = prepare_inherited_by(
                     role, max_perm, inherited_by, is_inherited_by_module
                 )
+                is_inherited = (
+                    prepared_inherited_by["by_group"] or prepared_inherited_by["by_module"]
+                )
 
                 for perm in [max_perm, *other_filters_permissions]:
                     inheritance.append({
@@ -1320,7 +1323,7 @@ def get_permissions_by_role_id(id_role):
                         "end_date": perm.end_date, 
                         "filter_type": perm.code_filter_type, 
                         "filter_value": perm.value_filter,
-                        "is_inherited": True,
+                        "is_inherited": is_inherited,
                         "inherited_by": prepared_inherited_by,
                     })
 
@@ -1349,6 +1352,9 @@ def get_permissions_by_role_id(id_role):
                     prepared_inherited_by = prepare_inherited_by(
                         role, max_perm, inherited_by, is_inherited_by_module
                     )
+                    is_inherited = (
+                        prepared_inherited_by["by_group"] or prepared_inherited_by["by_module"]
+                    )
 
                     for perm in [max_perm, *other_filters_permissions]:
                         inheritance.append({
@@ -1361,7 +1367,7 @@ def get_permissions_by_role_id(id_role):
                             "end_date": perm.end_date, 
                             "filter_type": perm.code_filter_type, 
                             "filter_value": perm.value_filter,
-                            "is_inherited": True,
+                            "is_inherited": is_inherited,
                             "inherited_by": prepared_inherited_by,
                         })
 
@@ -1500,7 +1506,7 @@ def append_permission(
 
     # Create new permission or only add an additionnal filter
     gathering = str(gathering)
-    permission_hash = f"{module_code}-{action_code}-{object_code}"
+    permission_hash = f"{module_code}-{action_code}-{object_code}-{gathering}"
     if permission_hash not in permissions[module_code].keys():
         permissions[module_code][permission_hash] = {
             "name": label,
