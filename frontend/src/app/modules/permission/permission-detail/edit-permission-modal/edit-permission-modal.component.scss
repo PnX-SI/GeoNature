@@ -24,9 +24,11 @@ form.ng-invalid, mat-select.ng-invalid {
 }
 
 mat-dialog-content {
-  overflow-y: none !important;
-  margin: 0;
   max-height: 75vh !important;
+}
+.mat-dialog-content {
+  margin: 0;
+  padding: 0;
 }
 .modal-body {
   min-height: 20vh;
