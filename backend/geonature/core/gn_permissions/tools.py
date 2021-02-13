@@ -343,3 +343,445 @@ def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, objec
         session[module_code] = {}
         session[module_code]["user_cruved"] = user_cruved
     return user_cruved
+
+
+class PermissionsManager:
+    """Classe de gestion des permissions.
+    Elle permet de vérifier l'accès d'un utilisateur et de récupérer
+    ses permissions.
+    """
+    _main_module_code = "GEONATURE"
+    _main_object_code = "ALL"
+    _property_filter_type = "SCOPE"
+    _actions = ["C", "R", "U", "V", "E", "D"]
+    _current_access_permission = None
+
+    def __init__(
+        self, 
+        id_role, 
+        module_code, 
+        action_code=None, 
+        object_code=None, 
+        append_inheritance_rules=None
+    ):
+        self._id_role = id_role
+        self._module_code = module_code
+        self._action_code = action_code
+        self._object_code = object_code
+        self._inheritance_rules = self._build_inheritance_rules(append_inheritance_rules)
+
+
+    def _build_inheritance_rules(self, append_extra_rules=None):
+        """
+        Construction de la liste des règles permettant d'applatir les
+        permissions. Basé sur des couples "module_code, object_code".
+        Ordre de l'héritage par défaut entre modules et objets (=~ sous-modules) :
+            - objet et module spécififés
+            - objet par défaut (=ALL) et module spécififé
+            - objet spécififé et module par défaut (=GEONATURE)
+            - objet par défaut (=ALL) et module par défaut (=GEONATURE)
+
+        Parameters
+        ----------
+        append_extra_rules : dict
+            Ajout de règles pour étendre l'héritage. Ces règles sont fusionnées
+            aux règle par défaut.
+            Format du dictionnaire :
+            la clé est un entier permettant de définir la priorité de la régèle,
+            la valeur correspondante un tableau avec l'entrée 0 correspondant
+            au code d'un module et l'entrée 1 au code d'un objet.
+        
+        Returns
+        -------
+        dict
+            Dictionnaire des règles fusionné avec les éventuelles règles
+            supplémentaires.
+        """
+        default_rules = {
+            0: [self._module_code, self._object_code],
+            10: [self._module_code, self._main_object_code],
+            20: [self._main_module_code, self._object_code],
+            30: [self._main_module_code, self._main_object_code],
+        }
+
+        # Append extra permissions rules if necessary
+        rules = {**default_rules, **append_extra_rules} if append_extra_rules else default_rules
+
+        # Filter null value
+        active_rules = {k: v for k, v in rules.items() if v[0] and v[1]}
+        return active_rules
+
+    def _get_access_permissions(self):
+        """ Fournie toutes les permissions d'accès d'un utilisateur.
+
+        Construit la requête de récupération de toutes les permissions d'accès
+        de l'utilisateur défini en se basant sur le filtre d'appartenance 
+        (=SCOPE) et les règles d'héritage entre modules et objets.
+        L'héritage entre groupe et utilisateur est pris en compte via 
+        la vue "v_users_permissions" sur laquelle elle s'appuie.
+        Les résultats contiennent toutes les permissions nécessaires à l'
+        application de l'héritage entre modules et objets (voir _fatten_permissions()).
+
+        Returns
+        -------
+        array<VUsersPermissions>
+            Un tableau d'objet VUsersPermissions résultant de la requête.
+        """
+        query = self._build_base_query()
+        query = query.filter(VUsersPermissions.code_filter_type == self._property_filter_type)
+        
+        # List of module_code, object_code couples to select
+        ors = []
+        for k, (module_code, object_code) in self._inheritance_rules.items():
+            ors.append(
+                sa.and_(
+                    VUsersPermissions.module_code.ilike(module_code),
+                    VUsersPermissions.code_object == object_code,
+                )
+            )
+        query = query.filter(sa.or_(*ors))
+        
+        return query.all()
+
+    def _get_all_permissions(self, property_value=None):
+        """ Fournie toutes les permissions (avec tous les filtres) d'un utilisateur.
+
+        Construit la requête de récupération de toutes les permissions de 
+        l'utilisateur défini en se basant sur les règles d'héritage entre 
+        modules et objets.
+        L'héritage entre groupe et utilisateur est pris en compte via 
+        la vue "v_users_permissions" sur laquelle elle s'appuie.
+        Les résultats contiennent toutes les permissions nécessaires à l'
+        application de l'héritage entre modules et objets (voir _fatten_permissions()).
+
+        Parameters
+        ----------
+        property_value : int, optional
+            Les permissions retournée doivent posséder une valeur pour le
+            filtre d'appartenance (=SCOPE) supérieur ou égale à la valeur
+            fournie.
+
+        Returns
+        -------
+        array<VUsersPermissions>
+            Un tableau d'objet VUsersPermissions résultant de la requête.
+        """
+        filter_by_modules = VUsersPermissions.module_code.in_((
+            self._main_module_code, 
+            self._module_code,
+        ))
+
+        # Default query send all permissions link to main and current initialized modules
+        query = self._build_base_query().filter(filter_by_modules)
+
+        # Get all gathering with a property level bigger or equal to the property value parameter
+        if property_value:
+            subquery = (
+                self._build_base_query(VUsersPermissions.gathering.distinct())
+                .filter(filter_by_modules)
+                .filter(
+                    sa.and_(
+                        VUsersPermissions.value_filter >= property_value,
+                        VUsersPermissions.code_filter_type == self._property_filter_type,
+                    )
+                )
+                .subquery()
+            )
+            query = query.filter(VUsersPermissions.gathering.in_(subquery))
+
+        return query.all()
+
+    def _build_base_query(self, fields=VUsersPermissions):
+        # TODO: check if filter on end_date work as expected !
+        query = (
+            DB.session
+            .query(fields)
+            .filter(VUsersPermissions.id_role == self._id_role)
+            .filter(
+                sa.or_(
+                    VUsersPermissions.end_date == None,
+                    VUsersPermissions.end_date >= func.now(),
+                )
+            ) 
+        )
+        if self._action_code:
+            query = query.filter(VUsersPermissions.code_action == self._action_code)
+        
+        return query
+
+    def _flatten_permissions(self, permissions):
+        """
+        Retourne la permission avec la valeur la plus haute pour une liste 
+        de permissions données appartenant à un utilisateur.
+
+        Parameters
+        ----------
+        permissions : list<VUsersPermissions>
+
+        Returns
+        ------
+        dict
+            Dictionnaire contenant les clés suivantes :
+            - higher_perm : objet VUsersPermissions possédant
+            la valeur value_filter la plus haute.
+            - is_inherited : booléen indiquant si la permission la plus 
+            haute est issue d'un héritage.
+             - inherited_by :
+            herited_object : objet VUsersPermissions parent de l'entrée
+            higher_perm.
+        """
+        # Dispatch permissions by inheritance rules keys
+        sorted_perms = {}
+        for permission in permissions:
+            for k, (module_code, object_code) in self._inheritance_rules.items():
+                if (
+                    permission.code_object == object_code
+                    and permission.module_code == module_code
+                ):
+                    sorted_perms.setdefault(k, []).append(permission)
+
+        
+        # Return the sorted list of keys from inheritance rules dictionary
+        sorted_rules_keys = sorted(self._inheritance_rules)
+
+        is_inherited = False
+        inherited_by = None
+        # Take the permission with the higher value of the different permissions 
+        # given for the property filter (=SCOPE).
+        for k in sorted_rules_keys:
+            if k in sorted_perms and len(sorted_perms[k]) > 0:
+                higher_perm = self._extract_higher_permission(sorted_perms[k])
+
+                # If current key is superior to the first key in sorted rules key list that indicate
+                # an inherited permission !
+                if k > sorted_rules_keys[0]:
+                    is_inherited = True
+                    inherited_by = self._inheritance_rules[k]
+                return {
+                    "higher_perm": higher_perm, 
+                    "is_inherited": is_inherited, 
+                    "inherited_by": inherited_by,
+                }
+
+    def _extract_higher_permission(self, permissions):
+        """Extrait la permission possédant la valeur de filtre la plus grande
+        parmis une liste.
+
+        Ce fonctionnement est prévu pour des filtres dont la valeur est numérique.
+        Utilisé principalement pour le CRUVED avec le filtre de propriété (=SCOPE).
+        Il est nécessaire de s'assurer au préalable que la list de permissions
+        fournies appartiennent toutes au même type de filtre.
+
+        Parameters
+        ----------
+        permissions : list<VUsersPermissions>
+            Liste d'instances de VUsersPermissions avec le même type de filtre.
+
+        Returns
+        -------
+        VUsersPermissions
+            La permission possédant la valeur de filtre la plus haute.
+        """
+        higher_perm = permissions[0]
+        max_value = higher_perm.value_filter
+        i = 1
+        while i < len(permissions):
+            if int(permissions[i].value_filter) >= int(max_value):
+                max_value = permissions[i].value_filter
+                higher_perm = permissions[i]
+            i = i + 1
+        return higher_perm
+    
+    def get_actions_codes():
+        """Accès aux codes des actions.
+
+        Les codes des actions sont issus d'un paramètre privé de cett classe.
+        Bien que les actions évolue rarement dans la base, il peut exister
+        une différence.
+
+        Returns
+        -------
+        list<string>
+            Retourne la liste des codes d'action possible.
+        """
+        return PermissionsManager._actions
+
+    def get_access_permission(self):
+        """Extrait la permission d'accès correspondant au module, à l'action et 
+        éventuellement à l'objet définient lors de l'initialisation de la classe.
+
+        Cela correspond à la permission héritée ou pas possédant la valeur
+        la plus grande pour le filtre d'appartenance (=SCOPE).
+        La permission d'accès est seulement évaluée pour le filtre d'appartenance.
+        Elle est retournée quelque soit la valeur du filtre trouvée.
+        
+        See Also
+        --------
+        check_access
+        
+        Returns
+        -------
+        VUsersPermissions | None
+            Retourne la permission permettant à l'utilisateur d'accès 
+        """
+        # Use memory cache to avoid to flatten and query several times the database.
+        if self._current_access_permission == None:
+            access_permissions = self._get_access_permissions()
+            flattened_access_permission_infos = self._flatten_permissions(access_permissions)
+            access_permission = flattened_access_permission_infos["higher_perm"]
+            self._current_access_permission = access_permission
+
+        return self._current_access_permission
+
+    def get_auth(self):
+        """Fourni les informations sur l'authorisation d'accès : utilisateur et permission d'accès.
+
+        See Also
+        --------
+        check_access
+        
+        Returns
+        -------
+        dict<dict>
+            Format :
+            {
+                "user": {
+                    "id": 1,
+                    "fisrtname": "Paul",
+                    "lastname": "DUPONT",
+                    "fullname": "Paul DUPONT",
+                    "organisme_id": 1,
+                },
+                "permission": {
+                    "id": 1,
+                    "module" : "SYNTHESE",
+                    "action": "R",
+                    "object": "PRIVATE_OBSERVATION",
+                    "filter": "SCOPE",
+                    "value": "3",
+                    "gathering": "00e21d2d-6e7e-4002-808c-c205798e36e6",
+                    "end_date" : "2021-05-06 00:00:00"
+                }
+            }
+        """
+        perm = self.get_access_permission()
+        # TODO : Voir si nous devrions pas utiliser des classes pour user et permission ?
+
+        auth = {
+            "user": {
+                "id": int(perm.id_role),
+                "fisrtname": perm.prenom_role,
+                "lastname": perm.nom_role,
+                "fullname": " ".join((perm.prenom_role, perm.nom_role)),
+                "organisme_id": int(perm.id_organisme),
+            },
+            "permission": {
+                "id": int(perm.id_permission),
+                "module" : perm.module_code,
+                "action": perm.code_action,
+                "object": perm.code_object,
+                "filter": perm.code_filter_type,
+                "value": perm.value_filter,
+                "gathering": str(perm.gathering),
+                "end_date" : perm.end_date
+            }
+        }
+        return auth
+
+    def check_access(self):
+        """Vérifie les permissions d'accès d'un utilisateur.
+        
+        Cette vérification se base sur le filtre d'appartenance (=SCOPE).
+        Il est nécessaire d'avoir définie à minima un module et une action 
+        au niveau de la classe. Si présent, l'objet sera pris en compte.
+
+        Si l'utilisateur possède une permission correspondant à l'action définie
+        sur le module ou l'objet défini au niveau de la classe, l'accès est autorisé.
+        Ceci peut importe la valeur du filtre du moment qu'elle est supérieur à 0 donc 
+        différente de "Appartenant à personne".
+
+        Raises
+        ------
+        InsufficientRightsError
+            Exception levée si l'utilisateur n'a pas les permissions d'accès
+            nécessaires.
+
+        Returns
+        -------
+        bool
+            Retourne True si l'utilisateur a les bons droits d'accès.
+        """
+        access_permission = self.get_access_permission()
+
+        if access_permission is None or (
+            access_permission is not None 
+            and access_permission.value_filter == "0"
+        ):
+            if self._object_code:
+                message = f"User {self._id_role} cannot {self._action_code} {self._object_code}"
+            else:
+                message = f"User {self._id_role} cannot {self._action_code} in {self._module_code}"
+            raise InsufficientRightsError(message, 403)
+        else:
+            return True
+    
+    def get_all_permissions_with_all_filters(self):
+        """Retourne toutes les permissions correspondant au module, à l'objet (si
+        défini) et à l'action définient au niveau de la classe et possédant un 
+        filtre de type SCOPE avec une valeur équivalante à la valeur de la 
+        permission d'accès.
+
+        Seule les permission dont la date de fin n'est pas dépassée sont prises
+        en compte.
+        Les filtres sont rassemblée par le champ de rassemblement (gathering) 
+        des permissions.
+
+        Returns
+        -------
+        list<dict>
+            Retourne une liste de dictionnaires  contenant les atributs :
+            - "gathering" : UUID corespondant à la valeur de rassemblement 
+            des différents filtres d'une permission,
+            - "module" : code du module de la permission.
+            - "action" : code l'action de la permission.
+            - "object" : code de l'objet de la permission.
+            - "filters" : dictionnaire des filtres avec en clé le 
+            code du type de filtre et en valeur la valeur du filtre.
+            Ex. : [ 
+                {
+                    "gathering: "65da3705-45cc-4f95-8d88-d217ed6fcc25",
+                    "object": "PRIVATE_OBSERVATION",
+                    "filters": {
+                        "SCOPE" : "3",
+                        "PRECISION": "exact",
+                        "GEOGRAPHIC: ["3896"],
+                        "TAXONOMIC": ["188731"]
+                    }
+                }
+            ]       
+        """
+        access_permission = self.get_access_permission()
+        min_property_value = access_permission.value_filter
+        permissions = self._get_all_permissions(min_property_value)
+
+        # Gather all filters of each permission
+        gathered_filters = {}
+        for perm in permissions:
+            gathering = str(perm.gathering)
+            if gathering not in gathered_filters.keys():
+                gathered_filters[gathering] = {
+                    "gathering": gathering,
+                    "module": perm.module_code,
+                    "action": perm.code_action,
+                    "object": perm.code_object,
+                    "filters": {
+                        perm.code_filter_type: perm.value_filter,
+                    }
+                }
+            else:
+                gathered_filters[gathering]["filters"][perm.code_filter_type] = perm.value_filter
+
+        # Prepare output: remove gathering key
+        output = gathered_filters.values()
+        return output
+        
