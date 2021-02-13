@@ -41,7 +41,10 @@ from geonature.core.gn_permissions.models import (
     TRequests,
     RequestStates,
 )
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, UserCruved
+from geonature.core.gn_permissions.tools import (
+    cruved_scope_for_user_in_module, 
+    PermissionsManager,
+)
 from geonature.utils.env import DB
 from geonature.utils.utilsmails import send_mail
 
@@ -1286,7 +1289,6 @@ def get_permissions_by_role_id(id_role):
     # Recover inherited permissions if necessary
     if ("with-inheritance" in params and is_true(params["with-inheritance"])):
         inheritance = []
-        property_filter_code = "SCOPE"
         # Get all modules
         modules = DB.session.query(TModules).order_by(TModules.module_order).all()
         for module in modules:
@@ -1294,16 +1296,21 @@ def get_permissions_by_role_id(id_role):
             module_code = module.module_code
 
             # Get max_perm for each action code in CRUVED for this module
-            for action_code in UserCruved.get_actions_codes():
-                perm_infos = UserCruved(
+            for action_code in PermissionsManager.get_actions_codes():
+                perm_infos = PermissionsManager(
                     id_role=id_role,
-                    code_filter_type=property_filter_code,
                     module_code=module_code,
-                ).get_perm_for_one_action(action_code)
+                    action_code=action_code,
+                    without_outdated=False
+                ).get_full_access_permission()
                 if perm_infos is None:
                     continue
                 else:
-                    (max_perm, is_inherited_by_module, inherited_by, other_filters_permissions) = perm_infos
+                    max_perm = perm_infos["higher_perm"]
+                    is_inherited_by_module = perm_infos["is_inherited"]
+                    inherited_by = perm_infos["inherited_by"]
+                    other_filters_permissions = perm_infos["other_filters"]
+
 
                 prepared_inherited_by = prepare_inherited_by(
                     role, max_perm, inherited_by, is_inherited_by_module
@@ -1337,17 +1344,21 @@ def get_permissions_by_role_id(id_role):
 
                 # Get max_perm for each action code in CRUVED for this object in this module
                 # max_perm : permission with max value filter for property filter type (="SCOPE").
-                for action_code in UserCruved.get_actions_codes():
-                    perm_infos = UserCruved(
+                for action_code in PermissionsManager.get_actions_codes():
+                    perm_infos = PermissionsManager(
                         id_role=id_role,
-                        code_filter_type=property_filter_code,
                         module_code=module_code,
+                        action_code=action_code,
                         object_code=object_code,
-                    ).get_perm_for_one_action(action_code)
+                        without_outdated=True
+                    ).get_full_access_permission()
                     if perm_infos is None:
                         continue
                     else:
-                        (max_perm, is_inherited_by_module, inherited_by, other_filters_permissions) = perm_infos
+                        max_perm = perm_infos["higher_perm"]
+                        is_inherited_by_module = perm_infos["is_inherited"]
+                        inherited_by = perm_infos["inherited_by"]
+                        other_filters_permissions = perm_infos["other_filters"]
                     
                     prepared_inherited_by = prepare_inherited_by(
                         role, max_perm, inherited_by, is_inherited_by_module
@@ -1842,6 +1853,8 @@ def update_permission(info_role, gathering):
     exp = None
 
     try:
+        # TODO: get values from fields in database (id_request) not in request data. 
+        # Then insert them inside data.
         # Delete permission before create new one
         delete_permission_by_gathering(gathering)
         create_permission(gathering, data)

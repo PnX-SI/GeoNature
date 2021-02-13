@@ -354,7 +354,7 @@ class PermissionsManager:
     _main_object_code = "ALL"
     _property_filter_type = "SCOPE"
     _actions = ["C", "R", "U", "V", "E", "D"]
-    _current_access_permission = None
+    _current_access_permission_infos = None
 
     def __init__(
         self, 
@@ -362,13 +362,41 @@ class PermissionsManager:
         module_code, 
         action_code=None, 
         object_code=None, 
-        append_inheritance_rules=None
+        append_inheritance_rules=None,
+        without_outdated=True,
     ):
+        """[summary]
+
+        Parameters
+        ----------
+        id_role : int
+            Identifiant d'un rôle.
+        module_code : str
+            Code d'un module.
+        action_code : str, optional
+            Code d'une action. Par défaut : None.
+        object_code : str, optional
+            Code d'un objet. Par défaut : None.
+        append_inheritance_rules : dict<list>, optional
+            Permet l'ajout de nouvelles règle d'héritage. Par défaut : None.
+            Ajout de règles pour étendre l'héritage. Ces règles sont fusionnées
+            aux règle par défaut.
+            Format du dictionnaire :
+            la clé est un entier permettant de définir la priorité de la régle,
+            la valeur correspondante un tableau avec l'entrée 0 correspondant
+            au code d'un module et l'entrée 1 au code d'un objet.
+        without_outdated : bool, optional
+            Indique si la requête d'extraction des permissions doit (=False)
+            ou pas (=True) retourner les permissions dont la date de fin est dépassée.
+            Par défaut : True, les permissions dont la date de fin est dépassée 
+            ne sont pas retournées.
+        """
         self._id_role = id_role
         self._module_code = module_code
         self._action_code = action_code
         self._object_code = object_code
         self._inheritance_rules = self._build_inheritance_rules(append_inheritance_rules)
+        self._without_outdated = without_outdated
 
 
     def _build_inheritance_rules(self, append_extra_rules=None):
@@ -387,7 +415,7 @@ class PermissionsManager:
             Ajout de règles pour étendre l'héritage. Ces règles sont fusionnées
             aux règle par défaut.
             Format du dictionnaire :
-            la clé est un entier permettant de définir la priorité de la régèle,
+            la clé est un entier permettant de définir la priorité de la régle,
             la valeur correspondante un tableau avec l'entrée 0 correspondant
             au code d'un module et l'entrée 1 au code d'un objet.
         
@@ -492,22 +520,51 @@ class PermissionsManager:
         return query.all()
 
     def _build_base_query(self, fields=VUsersPermissions):
-        # TODO: check if filter on end_date work as expected !
+        """Construit la requête de base permettant d'extraire les permissions.
+
+        Parameters
+        ----------
+        fields : any, optional
+            Le contenu est passé à méthode query() de SqlAlchemy. 
+            Par defaut VUsersPermissions.
+
+        Returns
+        -------
+        sqlalchemy.orm.Query
+            Retourne la requete de base.
+        """
+
         query = (
             DB.session
             .query(fields)
             .filter(VUsersPermissions.id_role == self._id_role)
-            .filter(
+        )
+
+        if self._without_outdated:
+            # TODO: check if filter on end_date work as expected !
+            query = query.filter(
                 sa.or_(
                     VUsersPermissions.end_date == None,
                     VUsersPermissions.end_date >= func.now(),
                 )
-            ) 
-        )
+            )
+
         if self._action_code:
             query = query.filter(VUsersPermissions.code_action == self._action_code)
         
         return query
+
+    def _get_other_filters(self, gathering):
+        """Récupération des "permissions" contenant les éventuels autres filtres 
+        (différent de self._property_filter_type).
+        """
+        query = (
+            DB.session
+            .query(VUsersPermissions)
+            .filter(VUsersPermissions.code_filter_type != self._property_filter_type)
+            .filter(VUsersPermissions.gathering == gathering)
+        )
+        return query.all()
 
     def _flatten_permissions(self, permissions):
         """
@@ -624,14 +681,36 @@ class PermissionsManager:
         VUsersPermissions | None
             Retourne la permission permettant à l'utilisateur d'accès 
         """
-        # Use memory cache to avoid to flatten and query several times the database.
-        if self._current_access_permission == None:
-            access_permissions = self._get_access_permissions()
-            flattened_access_permission_infos = self._flatten_permissions(access_permissions)
-            access_permission = flattened_access_permission_infos["higher_perm"]
-            self._current_access_permission = access_permission
+        return self._get_current_access_permission_infos()["higher_perm"]
 
-        return self._current_access_permission
+    def get_full_access_permission(self):
+        """Retourne la permission d'accès, les infos d'héritage et les 
+        autres filtres (différent du filtre d'appartenance).
+
+        Returns
+        -------
+        dic
+            Dictionnaire contenant:
+            - higher_perm : la permission (VUsersPermissions) d'accès
+            - is_inherited : booléen indiquant si la permission est héritée
+            par un module.
+            - inherited_by : les informations concernant l'héritage.
+            - other_filters : les "permissions" (VUsersPermissions) des 
+                autres filtres.
+
+        """
+        infos = self._get_current_access_permission_infos()
+        if infos:
+            gathering = str(infos["higher_perm"].gathering)
+            infos["other_filters"] = self._get_other_filters(gathering)
+        return infos
+
+    def _get_current_access_permission_infos(self):
+        # Use memory cache to avoid to flatten and query several times the database.
+        if self._current_access_permission_infos == None:
+            access_permissions = self._get_access_permissions()
+            self._current_access_permission_infos = self._flatten_permissions(access_permissions)
+        return self._current_access_permission_infos
 
     def get_auth(self):
         """Fourni les informations sur l'authorisation d'accès : utilisateur et permission d'accès.
@@ -731,8 +810,6 @@ class PermissionsManager:
         filtre de type SCOPE avec une valeur équivalante à la valeur de la 
         permission d'accès.
 
-        Seule les permission dont la date de fin n'est pas dépassée sont prises
-        en compte.
         Les filtres sont rassemblée par le champ de rassemblement (gathering) 
         des permissions.
 
