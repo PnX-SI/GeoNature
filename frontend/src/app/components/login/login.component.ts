@@ -15,7 +15,8 @@ export class LoginComponent implements OnInit {
   enable_user_management: boolean = false;
   public casLogin: boolean;
   public disableSubmit = false;
-
+  public APP_CONFIG = AppConfig;
+  
   identifiant: FormGroup;
   password: FormGroup;
   form: FormGroup;

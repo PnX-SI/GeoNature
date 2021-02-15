@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.6.2 (unreleased)
+------------------
+
+**🐛 Corrections**
+
+* La page login affiche désormais le nom de l'application appName définit dans la configuration de GeoNature (#1277)
+
+
 2.6.1 (2021-02-11)
 ------------------
 
