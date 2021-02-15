@@ -181,7 +181,14 @@
 <li class="toctree-l3"><a class="reference internal" href="#id4">Configuration</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#module-validation">Module VALIDATION</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validation">Module VALIDATION</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Configuration</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#liste-des-champs-visibles">Liste des champs visibles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mail">Mail</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="import-level-1.html">IMPORT NIVEAU 1</a></li>
@@ -301,7 +308,8 @@ NB : Le backend et le frontend se lancent séparément dans GeoNature.</p>
 <div class="section" id="gestion-des-droits">
 <h3>Gestion des droits<a class="headerlink" href="#gestion-des-droits" title="Permalink to this headline">¶</a></h3>
 <p>Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l’application GeoNature est géré de manière centralisée dans UsersHub. Pour qu’un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de “Lecteur” dans l’application GeoNature, grâce à l’application UsersHub.</p>
-<p>La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (<code class="docutils literal"><span class="pre">gn_permissions</span></code>) et un module de GeoNature dédié. Dans la version 1 de GeoNature, il était possible d’attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d’attribution de droits et les rendre plus génériques.</p>
+<p>La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (<code class="docutils literal"><span class="pre">gn_permissions</span></code>) et un module de GeoNature dédié. Les permissions des groupes et utilisateurs peuvent en effet être administrées dans le module “Admin / Administration des permissions” de GeoNature.
+Dans la version 1 de GeoNature, il était possible d’attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d’attribution de droits et les rendre plus génériques.</p>
 <p>La gestion des droits dans GeoNature, comme dans beaucoup d’applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l’application nous avons rajouté deux actions : “Valider” et “Exporter”, ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.</p>
 <p>Sur ces actions, on va pouvoir appliquer des filtres de manière générique.</p>
 <p>Le filtre le plus courant est celui de la “portée”. On autorise des actions à un utilisateur sur une portée : “Ses données”, “Les données de son organisme”, “Toutes les données”.</p>
@@ -344,11 +352,12 @@ NB : Le backend et le frontend se lancent séparément dans GeoNature.</p>
 <li>Les identifiants des nomenclatures et des types de nomenclature sont des serials (entiers auto-incrémentés) et ne sont pas prédéfinis lors de l’installation, ni utilisées en dur dans le code des applications. En effet, les nomenclatures peuvent varier en fonction des structures. On utilise le <code class="docutils literal"><span class="pre">cd_nomenclature</span></code> et le <code class="docutils literal"><span class="pre">mnémonique</span></code> du type de nomenclature pour retrouver dynamiquement l’<code class="docutils literal"><span class="pre">id_nomenclature</span></code> d’une nomenclature. C’est cependant cet identifiant qu’on stocke au niveau des données pour garantir l’intégrité référentielle</li>
 <li>Chaque nomenclature peut être associée à un règne ou un group2inpn (<code class="docutils literal"><span class="pre">ref_nomenclatures.cor_taxref_nomenclature</span></code>) pour proposer des nomenclatures correspondants à un taxon</li>
 <li>Les valeurs par défaut sont définies dans chaque module</li>
-<li>Pour OccTax c’est dans <code class="docutils literal"><span class="pre">pr_occtax.defaults_nomenclatures_value</span></code>. Elles peuvent être définies pour chaque type de nomenclature ainsi que par organisme, règne et/ou group2inpn</li>
+<li>Pour Occtax c’est dans <code class="docutils literal"><span class="pre">pr_occtax.defaults_nomenclatures_value</span></code>. Elles peuvent être définies pour chaque type de nomenclature ainsi que par organisme, règne et/ou group2inpn</li>
 <li>Si organisme = 0 alors la valeur par défaut s’applique à tous les organismes. Idem pour les règnes et group2inpn</li>
 <li>La fonction <code class="docutils literal"><span class="pre">pr_occtax.get_default_nomenclature_value</span></code> permet de renvoyer l’id de la nomenclature par défaut</li>
 <li>Ces valeurs par défaut sont aussi utilisées pour certains champs qui sont cachés (statut_observation, floutage, statut_validation…) mais ne sont donc pas modifiables par l’utilisateur</li>
 <li>Il existe aussi une table pour définir des valeurs par défaut générales de nomenclature (<code class="docutils literal"><span class="pre">ref_nomenclatures.defaults_nomenclatures_value</span></code>)</li>
+<li>Elles peuvent être administrées dans le module Admin de GeoNature</li>
 </ul>
 </div>
 <div class="section" id="metadonnees">
@@ -356,6 +365,7 @@ NB : Le backend et le frontend se lancent séparément dans GeoNature.</p>
 <ul class="simple">
 <li>Elles sont gérées dans le schéma <code class="docutils literal"><span class="pre">gn_meta</span></code> basé sur le standard Métadonnées du SINP (<a class="reference external" href="http://standards-sinp.mnhn.fr/category/standards/metadonnees/">http://standards-sinp.mnhn.fr/category/standards/metadonnees/</a>)</li>
 <li>Elles permettent de gérer des jeux de données, des cadres d’acquisition, des acteurs (propriétaire, financeur, producteur…) et des protocoles</li>
+<li>Elles peuvent être administrées dans le module Métadonnées de GeoNature</li>
 </ul>
 </div>
 <div class="section" id="donnees-sig">
@@ -958,7 +968,8 @@ chmod g+rwx /home/`whoami`/backup
 </div>
 <div class="section" id="customiser-les-exports-pdf">
 <h3>Customiser les exports PDF<a class="headerlink" href="#customiser-les-exports-pdf" title="Permalink to this headline">¶</a></h3>
-<p>Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en modifiant les images <code class="docutils literal"><span class="pre">Bandeau_pdf.png</span></code> et <code class="docutils literal"><span class="pre">Logo_pdf.png</span></code> dans <code class="docutils literal"><span class="pre">backend/static/images</span></code>. Les fichiers CSS des exports PDF sont dans <code class="docutils literal"><span class="pre">backend/static/css</span></code>.</p>
+<p>Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en modifiant les images <code class="docutils literal"><span class="pre">Bandeau_pdf.png</span></code> et <code class="docutils literal"><span class="pre">Logo_pdf.png</span></code> dans <code class="docutils literal"><span class="pre">backend/static/images</span></code>.
+Le style des fichiers est également customisable grâce au fichier “backend/geonature/static/css/custom.css”. La classe <code class="docutils literal"><span class="pre">main-color</span></code> permet notamment de changer la couleur des séparateurs (orange par défaut).</p>
 </div>
 </div>
 <div class="section" id="integrer-des-donnees">
@@ -1527,6 +1538,65 @@ Attention : Si des données sont déjà présentes dans la synthèse et que l’
 <p>La vue <code class="docutils literal"><span class="pre">gn_commons.v_latest_validation</span></code> permet de récupérer le dernier statut de validation d’une occurrence.</p>
 <p>NB : une donnée non présente dans la SYNTHESE, ne remontera pas dans l’interface du module VALIDATION. Cependant rien n’empêche un administrateur avancé d’utiliser la table de validation et son mécanisme pour des données qui ne seraient pas en SYNTHESE (du moment que les données disposent d’un UUID).</p>
 <p>Au niveau de l’interface, le formulaire de recherche est commun avec le module SYNTHESE. Les paramètres de configuration du formulaire sont donc également partagés et administrables depuis le fichier <code class="docutils literal"><span class="pre">geonature_config.toml</span></code>, rubrique SYNTHESE.</p>
+<div class="section" id="id5">
+<h3>Configuration<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<p>Le parametrage du module VALIDATION se fait depuis le fichier <code class="docutils literal"><span class="pre">/home/`whoami`/geonature/contrib/gn_module_validation/config/conf_gn_module.toml</span></code>
+Après toute modification de la configuration d’un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a></p>
+<div class="section" id="liste-des-champs-visibles">
+<h4>Liste des champs visibles<a class="headerlink" href="#liste-des-champs-visibles" title="Permalink to this headline">¶</a></h4>
+<blockquote>
+<div>La configuration des champs de la liste se fait via deux paramètres:</div></blockquote>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">COLUMNS_API_VALIDATION_WEB_APP</span></code></li>
+</ul>
+<p>Liste des colonnes qui seront récupérées en plus des colonnes obligatoires. Les colonnes disponibles correspondent à celles présentent dans la vue <code class="docutils literal"><span class="pre">v_synthese_validation_forwebapp</span></code></p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;id_nomenclature_valid_status&quot;</span>
+<span class="s2">&quot;id_synthese&quot;</span>
+<span class="s2">&quot;entity_source_pk_value&quot;</span>
+<span class="s2">&quot;validation_auto&quot;</span>
+<span class="s2">&quot;cd_nom&quot;</span>
+<span class="s2">&quot;meta_update_date&quot;</span>
+<span class="s2">&quot;cd_nomenclature_validation_status&quot;</span>
+<span class="s2">&quot;mnemonique&quot;</span>
+<span class="s2">&quot;label_default&quot;</span>
+<span class="s2">&quot;unique_id_sinp&quot;</span>
+<span class="s2">&quot;geojson&quot;</span>
+<span class="s2">&quot;nom_vern&quot;</span>
+<span class="s2">&quot;lb_nom&quot;</span>
+<span class="s2">&quot;nom_vern_or_lb_nom&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">LIST_COLUMNS_FRONTEND</span></code></li>
+</ul>
+<p>Gestion de l’affichage des colonnes de la liste</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="n">LIST_COLUMNS_FRONTEND</span><span class="p">]]</span>
+<span class="n">prop</span> <span class="o">=</span> <span class="s2">&quot;observers&quot;</span> <span class="c1"># Nom de la propriété en base</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Observateurs&quot;</span> <span class="c1"># Titre de la colonne</span>
+<span class="n">min_width</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1"># Taille minimale de la colonne</span>
+<span class="n">max_width</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1"># Taille maximale de la colonne</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="mail">
+<h4>Mail<a class="headerlink" href="#mail" title="Permalink to this headline">¶</a></h4>
+<p>Il est possible de personnaliser le message du mail envoyé aux observateurs.
+Pour ce faire il faut modifier les  paramètres <code class="docutils literal"><span class="pre">MAIL_BODY</span></code> et <code class="docutils literal"><span class="pre">MAIL_SUBJECT</span></code></p>
+<p>Pour afficher dans le mail des données relatives à l’observation ou au taxon il faut respecter la syntaxe suivante:
+<code class="docutils literal"><span class="pre">${</span> <span class="pre">d.NOM_PROPRIETE</span> <span class="pre">}</span></code></p>
+<dl class="docutils">
+<dt>Liste des propriétés disponibles :</dt>
+<dd><ul class="first last simple">
+<li>communes : liste des communes</li>
+<li>medias : Titre, auteur et lien vers le média associée</li>
+<li>data_link : lien vers l’observation dans son module de saisie</li>
+<li>tous les champs de la synthèse (acquisition_framework, altitude_max, altitude_min, bio_status, blurring, cd_hab, cd_nom, comment_context, comment_description, date_min, depth_max, depth_min, determiner, diffusion_level, digital_proof, entity_source_pk_value, exist_proof, grp_method, grp_typ, last_action, life_stage, meta_create_date, meta_update_date, meta_v_taxref, meta_validation_date, nat_obj_geo, naturalness, nom_cite, non_digital_proof, obj_count, obs_technique, observation_status, observers, occ_behaviour, occ_stat_biogeo, place_name, precision, sample_number_proof, sensitivity, sex, source, type_count, unique_id_sinp, unique_id_sinp_grp, valid_status, validation_comment)</li>
+<li>tous les champs du taxon (cd_nom, cd_ref, cd_sup, cd_taxsup, regne, ordre, classe, famille, group1_inpn, group2_inpn, id_rang, nom_complet, nom_habitat, nom_rang, nom_statut, nom_valide, nom_vern)</li>
+</ul>
+</dd>
+</dl>
+</div>
+</div>
 </div>
 </div>
 

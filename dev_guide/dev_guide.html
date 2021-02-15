@@ -346,10 +346,6 @@ redirige en cas de niveau insuffisant ou d’informations de session erronés.
 <ul class="simple">
 <li>level &lt;int&gt;: niveau de droits requis pour accéder à la vue</li>
 <li>get_role &lt;bool:False&gt;: si True, ajoute l’id utilisateur aux kwargs de la vue</li>
-<li>redirect_on_expiration &lt;str:None&gt; : identifiant de vue  sur laquelle
-rediriger l’utilisateur en cas d’expiration de sa session</li>
-<li>redirect_on_invalid_token &lt;str:None&gt; : identifiant de vue sur laquelle
-rediriger l’utilisateur en cas d’informations de session invalides</li>
 </ul>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Blueprint</span>
 <span class="kn">from</span> <span class="nn">pypnusershub.routes</span> <span class="k">import</span> <span class="n">check_auth</span>
@@ -361,8 +357,6 @@ rediriger l’utilisateur en cas d’informations de session invalides</li>
 <span class="nd">@check_auth</span><span class="p">(</span>
     <span class="mi">1</span><span class="p">,</span>
     <span class="kc">True</span><span class="p">,</span>
-    <span class="n">redirect_on_expiration</span><span class="o">=</span><span class="s1">&#39;my_reconnexion_handler&#39;</span><span class="p">,</span>
-    <span class="n">redirect_on_invalid_token</span><span class="o">=</span><span class="s1">&#39;my_affreux_pirate_handler&#39;</span>
     <span class="p">)</span>
 <span class="nd">@json_resp</span>
 <span class="k">def</span> <span class="nf">my_view</span><span class="p">(</span><span class="n">id_role</span><span class="p">):</span>
@@ -380,10 +374,6 @@ d’informations de session erronées</p>
 <li>action &lt;str:[‘C’,’R’,’U’,’V’,’E’,’D’]&gt; type d’action effectuée par la route
 (Create, Read, Update, Validate, Export, Delete)</li>
 <li>get_role &lt;bool:False&gt;: si True, ajoute l’id utilisateur aux kwargs de la vue</li>
-<li>redirect_on_expiration &lt;str:None&gt; : identifiant de vue  sur laquelle
-rediriger l’utilisateur en cas d’expiration de sa session</li>
-<li>redirect_on_invalid_token &lt;str:None&gt; : identifiant de vue sur laquelle
-rediriger l’utilisateur en cas d’informations de session invalides</li>
 </ul>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Blueprint</span>
 <span class="kn">from</span> <span class="nn">pypnusershub.routes</span> <span class="k">import</span> <span class="n">check_auth_cruved</span>
@@ -395,8 +385,6 @@ rediriger l’utilisateur en cas d’informations de session invalides</li>
 <span class="nd">@check_auth_cruved</span><span class="p">(</span>
     <span class="s1">&#39;R&#39;</span><span class="p">,</span>
     <span class="kc">True</span><span class="p">,</span>
-    <span class="n">redirect_on_expiration</span><span class="o">=</span><span class="s1">&#39;my_reconnexion_handler&#39;</span><span class="p">,</span>
-    <span class="n">redirect_on_invalid_token</span><span class="o">=</span><span class="s1">&#39;my_affreux_pirate_handler&#39;</span>
     <span class="p">)</span>
 <span class="nd">@json_resp</span>
 <span class="k">def</span> <span class="nf">my_sensible_view</span><span class="p">(</span><span class="n">id_role</span><span class="p">):</span>
@@ -416,7 +404,7 @@ mère.</p>
 * id_application: id du module surlequel on veut avoir le cruved
 * id_application_parent: id l’application parent du module</p>
 <p>Valeur retourné:
-&lt;dict&gt; {‘C’: ‘1’, ‘R’:‘2’, ‘U’: ‘1’, ‘V’:‘2’, ‘E’:‘3’, ‘D’: ‘3’}</p>
+&lt;dict&gt; {‘C’: ‘1’, ‘R’:’2’, ‘U’: ‘1’, ‘V’:’2’, ‘E’:’3’, ‘D’: ‘3’}</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pypnusershub.db.tools</span> <span class="k">import</span> <span class="n">cruved_for_user_in_app</span>
 
 <span class="n">cruved</span> <span class="o">=</span> <span class="n">cruved_for_user_in_app</span><span class="p">(</span><span class="n">id_role</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">id_application</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">id_application_parent</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>

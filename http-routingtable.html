@@ -181,7 +181,6 @@
 
    <div class="modindex-jumpbox">
    <a href="#cap-/config"><strong>/config</strong></a> | 
-   <a href="#cap-/genericview"><strong>/genericview</strong></a> | 
    <a href="#cap-/geo"><strong>/geo</strong></a> | 
    <a href="#cap-/gn_auth"><strong>/gn_auth</strong></a> | 
    <a href="#cap-/gn_commons"><strong>/gn_commons</strong></a> | 
@@ -191,12 +190,14 @@
    <a href="#cap-/meta"><strong>/meta</strong></a> | 
    <a href="#cap-/nomenclatures/nomenclature"><strong>/nomenclatures/nomenclature</strong></a> | 
    <a href="#cap-/nomenclatures/nomenclatures"><strong>/nomenclatures/nomenclatures</strong></a> | 
+   <a href="#cap-/occhab"><strong>/occhab</strong></a> | 
    <a href="#cap-/occtax"><strong>/occtax</strong></a> | 
    <a href="#cap-/permissions"><strong>/permissions</strong></a> | 
    <a href="#cap-/permissions_backoffice"><strong>/permissions_backoffice</strong></a> | 
    <a href="#cap-/pypn"><strong>/pypn</strong></a> | 
    <a href="#cap-/synthese"><strong>/synthese</strong></a> | 
-   <a href="#cap-/users"><strong>/users</strong></a>
+   <a href="#cap-/users"><strong>/users</strong></a> | 
+   <a href="#cap-/validation"><strong>/validation</strong></a>
    </div>
 
    <table class="indextable modindextable">
@@ -207,14 +208,6 @@
        <td></td>
        <td>
        <a href="development.html#get--config"><code class="xref">GET /config</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-/genericview"><td></td><td>
-       <strong>/genericview</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--genericview-(view_schema)-(view_name)"><code class="xref">GET /genericview/(view_schema)/(view_name)</code></a></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-/geo"><td></td><td>
@@ -480,6 +473,11 @@
      <tr>
        <td></td>
        <td>
+       <a href="development.html#get--meta-acquisition_framework-publish-(int-af_id)"><code class="xref">GET /meta/acquisition_framework/publish/(int:af_id)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
        <a href="development.html#get--meta-acquisition_framework_details-(id_acquisition_framework)"><code class="xref">GET /meta/acquisition_framework_details/(id_acquisition_framework)</code></a></td><td>
        <em></em></td></tr>
      <tr>
@@ -515,12 +513,27 @@
      <tr>
        <td></td>
        <td>
-       <a href="development.html#get--meta-dataset_details-(id_dataset)"><code class="xref">GET /meta/dataset_details/(id_dataset)</code></a></td><td>
+       <a href="development.html#get--meta-dataset_details-(int-id_dataset)"><code class="xref">GET /meta/dataset_details/(int:id_dataset)</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
        <td>
        <a href="development.html#get--meta-datasets"><code class="xref">GET /meta/datasets</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--meta-sensi_report"><code class="xref">GET /meta/sensi_report</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--meta-update_sensitivity"><code class="xref">GET /meta/update_sensitivity</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--meta-uuid_report"><code class="xref">GET /meta/uuid_report</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
@@ -552,6 +565,16 @@
        <td>
        <a href="development.html#post--meta-upload_canvas"><code class="xref">POST /meta/upload_canvas</code></a></td><td>
        <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#delete--meta-acquisition_framework-(int-af_id)"><code class="xref">DELETE /meta/acquisition_framework/(int:af_id)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#delete--meta-dataset-(int-ds_id)"><code class="xref">DELETE /meta/dataset/(int:ds_id)</code></a></td><td>
+       <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-/nomenclatures/nomenclature"><td></td><td>
        <strong>/nomenclatures/nomenclature</strong></td><td></td></tr>
@@ -572,6 +595,39 @@
        <td></td>
        <td>
        <a href="development.html#get--nomenclatures-nomenclatures"><code class="xref">GET /nomenclatures/nomenclatures</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/occhab"><td></td><td>
+       <strong>/occhab</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--occhab-defaultNomenclatures"><code class="xref">GET /occhab/defaultNomenclatures</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--occhab-station-(int-id_station)"><code class="xref">GET /occhab/station/(int:id_station)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--occhab-stations"><code class="xref">GET /occhab/stations</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--occhab-export_stations-(export_format)"><code class="xref">POST /occhab/export_stations/(export_format)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--occhab-station"><code class="xref">POST /occhab/station</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#delete--occhab-station-(int-id_station)"><code class="xref">DELETE /occhab/station/(int:id_station)</code></a></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-/occtax"><td></td><td>
@@ -806,6 +862,16 @@
      <tr>
        <td></td>
        <td>
+       <a href="development.html#get--synthese-observation_count_per_column-(column)"><code class="xref">GET /synthese/observation_count_per_column/(column)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--synthese-observations_bbox"><code class="xref">GET /synthese/observations_bbox</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
        <a href="development.html#get--synthese-sources"><code class="xref">GET /synthese/sources</code></a></td><td>
        <em></em></td></tr>
      <tr>
@@ -935,6 +1001,29 @@
        <td></td>
        <td>
        <a href="development.html#put--users-role"><code class="xref">PUT /users/role</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/validation"><td></td><td>
+       <strong>/validation</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--validation"><code class="xref">GET /validation</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--validation-date-(uuid)"><code class="xref">GET /validation/date/(uuid)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--validation-definitions"><code class="xref">GET /validation/definitions</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--validation"><code class="xref">POST /validation</code></a></td><td>
        <em></em></td></tr>
    </table>
 

@@ -1,8 +1,5 @@
 (function(compodoc) {
-    var MAX_RESULTS = 15,
-        MAX_DESCRIPTION_SIZE = 500,
-
-        usePushState = (typeof history.pushState !== 'undefined'),
+    var usePushState = (typeof history.pushState !== 'undefined'),
 
     // DOM Elements
         $body = $('body'),
@@ -23,7 +20,7 @@
             var ctx = this, args = arguments;
             if (!timeout) {
                 timeout = setTimeout(function() {
-                    timeout = null;
+                    timeout = undefined;
                     fn.apply(ctx, args);
                 }, wait);
             }
@@ -32,6 +29,7 @@
 
     function displayResults(res) {
         var noResults = res.count == 0;
+        var groups = {};
         $searchResults.toggleClass('no-results', noResults);
 
         // Clear old results
@@ -41,30 +39,74 @@
         $searchResultsCount.text(res.count);
         $searchQuery.text(res.query);
 
-        // Create an <li> element for each result
+        // Group result by context
         res.results.forEach(function(res) {
-            var $li = $('<li>', {
-                'class': 'search-results-item'
-            });
-
-            var $title = $('<h3>');
-
-            var $link = $('<a>', {
-                'href': res.url,
-                'text': res.title
-            });
-
-            var content = res.body.trim();
-            if (content.length > MAX_DESCRIPTION_SIZE) {
-                content = content.slice(0, MAX_DESCRIPTION_SIZE).trim()+'...';
+            var context = res.title.split(' - ')[0];
+            if (typeof groups[context] === 'undefined') {
+                groups[context] = {
+                    results: [res]
+                }
+            } else {
+                groups[context].results.push(res)
             }
-            var $content = $('<p>').html(content);
-
-            $link.appendTo($title);
-            $title.appendTo($li);
-            $content.appendTo($li);
-            $li.appendTo($searchList);
         });
+
+        var sortedGroups = Object.keys(groups).sort();
+
+        for (var i = 0; i < sortedGroups.length; i++) {
+            var property = sortedGroups[i];
+            
+            var $li = $('<li>', {
+                'class': 'search-results-group'
+            });
+            var finalPropertyLabel = '';
+            var propertyLabels = property.split('-');
+            
+            if (propertyLabels.length === 2 && propertyLabels[0] !== 'miscellaneous' && propertyLabels[0] !== 'additional') {
+                finalPropertyLabel = propertyLabels[0].charAt(0).toUpperCase() + propertyLabels[0].substring(1) + ' - ' + propertyLabels[1].charAt(0).toUpperCase() + propertyLabels[1].substring(1) + ' (' + groups[property].results.length + ')';
+            } else if (propertyLabels[0] === 'additional') {
+                finalPropertyLabel = 'Additional pages' + ' (' + groups[property].results.length + ')'
+            } else {
+                finalPropertyLabel = propertyLabels[0].charAt(0).toUpperCase() + propertyLabels[0].substring(1) + ' (' + groups[property].results.length + ')'
+            }
+            var $groupTitle = $('<h3>', {
+                'text': finalPropertyLabel
+            });
+            $groupTitle.appendTo($li);
+
+            var $ulResults = $('<ul>', {
+                'class': 'search-results-list'
+            })
+
+            groups[property].results.forEach(function(res) {
+                var link = '';
+                var $liResult = $('<li>', {
+                    'class': 'search-results-item'
+                });
+                switch (COMPODOC_CURRENT_PAGE_DEPTH) {
+                    case 0:
+                        link = './';
+                        break;
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                        link = '../'.repeat(COMPODOC_CURRENT_PAGE_DEPTH);
+                        break;
+                };
+                var finalResLabel = res.title.split(' - ')[1].charAt(0).toUpperCase() + res.title.split(' - ')[1].substring(1);
+                var $link = $('<a>', {
+                    'href': link + res.url,
+                    'text': finalResLabel
+                });
+                $link.appendTo($liResult);
+                $liResult.appendTo($ulResults);
+            });
+            $ulResults.appendTo($li);
+
+            $li.appendTo($searchList);
+        }
     }
 
     function launchSearch(q) {
@@ -75,7 +117,7 @@
             $mainContainer.css('margin-top', '100px');
         }
 
-        throttle(compodoc.search.query(q, 0, MAX_RESULTS)
+        throttle(compodoc.search.query(q, 0, MAX_SEARCH_RESULTS)
         .then(function(results) {
             displayResults(results);
         }), 1000);
@@ -121,6 +163,7 @@
 
             if (q.length == 0) {
                 closeSearch();
+                window.location.href = window.location.href.replace(window.location.search, '');
             } else {
                 launchSearch(q);
             }
@@ -152,7 +195,9 @@
                 // Update history state
                 if (usePushState) {
                     var uri = updateQueryString('q', $(this).val());
-                    history.pushState({ path: uri }, null, uri);
+                    if ($(this).val() !== '') {
+                        history.pushState({ path: uri }, null, uri);
+                    }
                 }
             });
         });

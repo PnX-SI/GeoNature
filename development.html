@@ -289,7 +289,7 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--synthese-observation_count">GET /synthese/observation_count</a></td>
+<td><a class="reference external" href="#get--validation-definitions">GET /validation/definitions</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
@@ -297,43 +297,35 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--synthese-taxa_count">GET /synthese/taxa_count</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--occtax-vreleveocctax">GET /occtax/vreleveocctax</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--import-bibFields">GET /import/bibFields</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--import-mapping">POST /import/mapping</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--users-confirmation">GET /users/confirmation</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--users-inscription">POST /users/inscription</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#put--users-role">PUT /users/role</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--meta-upload_canvas">POST /meta/upload_canvas</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--import">GET /import</a></td>
-<td>&#160;</td>
-</tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#post--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)">POST /import/data_checker/(import_id)/field_mapping/(int:id_field_mapping)/content_mapping/(int:id_content_mapping)</a></td>
+<td><a class="reference external" href="#get--import">GET /import</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
@@ -341,7 +333,7 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#post--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)">POST /import/getNomencInfo/(int:id_import)/field_mapping/(int:id_field_mapping)</a></td>
+<td><a class="reference external" href="#post--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)">POST /import/data_checker/(import_id)/field_mapping/(int:id_field_mapping)/content_mapping/(int:id_content_mapping)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
@@ -349,31 +341,39 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)">POST /import/getNomencInfo/(int:id_import)/field_mapping/(int:id_field_mapping)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--occtax-releve-(int-id_releve)-occurrence">POST /occtax/releve/(int:id_releve)/occurrence</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--occtax-only-releve-(int-id_releve)">POST /occtax/only/releve/(int:id_releve)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--meta-acquisition_frameworks-export_pdf-(id_acquisition_framework)">GET /meta/acquisition_frameworks/export_pdf/(id_acquisition_framework)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--pypn-register-post_usershub-(string-type_action)">POST /pypn/register/post_usershub/(string:type_action)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--meta-dataset-export_pdf-(id_dataset)">GET /meta/dataset/export_pdf/(id_dataset)</a></td>
 <td>&#160;</td>
 </tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--validation-date-(uuid)">GET /validation/date/(uuid)</a></td>
+<td>&#160;</td>
+</tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#post--import-create_or_update_field_mapping-(int-id_mapping)">POST /import/create_or_update_field_mapping/(int:id_mapping)</a></td>
+<td><a class="reference external" href="#get--synthese-observation_count_per_column-(column)">GET /synthese/observation_count_per_column/(column)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#post--import-update_content_mapping-(int-id_mapping)">POST /import/update_content_mapping/(int:id_mapping)</a></td>
+<td><a class="reference external" href="#post--import-create_or_update_field_mapping-(int-id_mapping)">POST /import/create_or_update_field_mapping/(int:id_mapping)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
@@ -381,23 +381,23 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--import-update_content_mapping-(int-id_mapping)">POST /import/update_content_mapping/(int:id_mapping)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--import-content_mappings-(id_mapping)">GET /import/content_mappings/(id_mapping)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--import-columns_import-(int-id_import)">GET /import/columns_import/(int:id_import)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--import-field_mappings-(id_mapping)">GET /import/field_mappings/(id_mapping)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#post--occtax-occurrence-(int-id_occurrence)">POST /occtax/occurrence/(int:id_occurrence)</a></td>
-<td>&#160;</td>
-</tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#post--import-importData-(import_id)">POST /import/importData/(import_id)</a></td>
+<td><a class="reference external" href="#post--occtax-occurrence-(int-id_occurrence)">POST /occtax/occurrence/(int:id_occurrence)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
@@ -405,7 +405,7 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#post--import-get_errors-(import_id)">POST /import/get_errors/(import_id)</a></td>
+<td><a class="reference external" href="#post--import-importData-(import_id)">POST /import/importData/(import_id)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
@@ -413,63 +413,63 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--import-get_errors-(import_id)">POST /import/get_errors/(import_id)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--import-mappings-(mapping_type)">GET /import/mappings/(mapping_type)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#delete--import-mapping-(int-id_mapping)">DELETE /import/mapping/(int:id_mapping)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>Commons</td>
+<tr class="row-even"><td>Commons</td>
 <td><a class="reference external" href="#get--gn_commons-list-parameters">GET /gn_commons/list/parameters</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--gn_commons-t_mobile_apps">GET /gn_commons/t_mobile_apps</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--gn_commons-modules">GET /gn_commons/modules</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#put--gn_commons-media-(int-id_media)">PUT /gn_commons/media/(int:id_media)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#put--gn_commons-media">PUT /gn_commons/media</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--gn_commons-media-(int-id_media)">POST /gn_commons/media/(int:id_media)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--gn_commons-media">POST /gn_commons/media</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--gn_commons-media-thumbnails-(int-id_media)-(int-size)">GET /gn_commons/media/thumbnails/(int:id_media)/(int:size)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--gn_commons-medias-(string-uuid_attached_row)">GET /gn_commons/medias/(string:uuid_attached_row)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--gn_commons-media-(int-id_media)">GET /gn_commons/media/(int:id_media)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#delete--gn_commons-media-(int-id_media)">DELETE /gn_commons/media/(int:id_media)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>Generic</td>
+<tr class="row-odd"><td>Generic</td>
 <td><a class="reference external" href="#get--config">GET /config</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--genericview-(view_schema)-(view_name)">GET /genericview/(view_schema)/(view_name)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>Habref</td>
@@ -509,11 +509,27 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--meta-datasets">GET /meta/datasets</a></td>
+<td><a class="reference external" href="#get--meta-update_sensitivity">GET /meta/update_sensitivity</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--meta-sensi_report">GET /meta/sensi_report</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--meta-uuid_report">GET /meta/uuid_report</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--meta-datasets">GET /meta/datasets</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--meta-dataset">POST /meta/dataset</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--meta-acquisition_framework-publish-(int-af_id)">GET /meta/acquisition_framework/publish/(int:af_id)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
@@ -525,19 +541,27 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#delete--meta-acquisition_framework-(int-af_id)">DELETE /meta/acquisition_framework/(int:af_id)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--meta-acquisition_framework-(id_acquisition_framework)">GET /meta/acquisition_framework/(id_acquisition_framework)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--meta-dataset_details-(id_dataset)">GET /meta/dataset_details/(id_dataset)</a></td>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--meta-dataset_details-(int-id_dataset)">GET /meta/dataset_details/(int:id_dataset)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--meta-dataset_mtd-(id_user)-(id_organism)">POST /meta/dataset_mtd/(id_user)/(id_organism)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--meta-dataset_mtd-(id_user)">POST /meta/dataset_mtd/(id_user)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#delete--meta-dataset-(int-ds_id)">DELETE /meta/dataset/(int:ds_id)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
@@ -566,6 +590,30 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 </tr>
 <tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--nomenclatures-nomenclature-(string-code_type)">GET /nomenclatures/nomenclature/(string:code_type)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>OccHab</td>
+<td><a class="reference external" href="#post--occhab-station">POST /occhab/station</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>Occhab</td>
+<td><a class="reference external" href="#get--occhab-defaultNomenclatures">GET /occhab/defaultNomenclatures</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--occhab-stations">GET /occhab/stations</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--occhab-export_stations-(export_format)">POST /occhab/export_stations/(export_format)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--occhab-station-(int-id_station)">GET /occhab/station/(int:id_station)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#delete--occhab-station-(int-id_station)">DELETE /occhab/station/(int:id_station)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>Occtax</td>
@@ -657,11 +705,19 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#post--synthese-export_metadata">POST /synthese/export_metadata</a></td>
+<td><a class="reference external" href="#get--synthese-observation_count">GET /synthese/observation_count</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#get--synthese-observations_bbox">GET /synthese/observations_bbox</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--synthese-export_metadata">GET /synthese/export_metadata</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--synthese-export_metadata">POST /synthese/export_metadata</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
@@ -685,31 +741,31 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#post--synthese-for_web">POST /synthese/for_web</a></td>
-<td>Get filtered observations</td>
+<td><a class="reference external" href="#get--synthese-taxa_count">GET /synthese/taxa_count</a></td>
+<td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--synthese-for_web">GET /synthese/for_web</a></td>
-<td>&#160;</td>
+<td>Get filtered observations</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--synthese-sources">GET /synthese/sources</a></td>
+<td><a class="reference external" href="#post--synthese-for_web">POST /synthese/for_web</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#get--synthese">GET /synthese</a></td>
-<td>Deprecated</td>
-</tr>
-<tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#get--synthese-vsynthese-(id_synthese)">GET /synthese/vsynthese/(id_synthese)</a></td>
-<td>Get one synthese</td>
-</tr>
-<tr class="row-even"><td>User</td>
-<td><a class="reference external" href="#get--gn_auth-logout_cruved">GET /gn_auth/logout_cruved</a></td>
+<td><a class="reference external" href="#get--synthese-sources">GET /synthese/sources</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#post--gn_auth-login_cas">POST /gn_auth/login_cas</a></td>
+<td><a class="reference external" href="#get--synthese">GET /synthese</a></td>
+<td>Deprecated</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#get--synthese-vsynthese-(id_synthese)">GET /synthese/vsynthese/(id_synthese)</a></td>
+<td>Get one synthese</td>
+</tr>
+<tr class="row-odd"><td>User</td>
+<td><a class="reference external" href="#get--gn_auth-logout_cruved">GET /gn_auth/logout_cruved</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
@@ -717,106 +773,118 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td>&#160;</td>
 </tr>
 <tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--gn_auth-login_cas">POST /gn_auth/login_cas</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--users-organisms_dataset_actor">GET /users/organisms_dataset_actor</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--users-organisms">GET /users/organisms</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#post--users-cor_role">POST /users/cor_role</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--users-organism">POST /users/organism</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--users-roles">GET /users/roles</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--users-role">POST /users/role</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--users-menu_from_code-(string-code_liste)">GET /users/menu_from_code/(string:code_liste)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--users-menu-(int-id_menu)">GET /users/menu/(int:id_menu)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--users-role-(int-id_role)">GET /users/role/(int:id_role)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>View_Permission</td>
+<tr class="row-odd"><td>Validation</td>
+<td><a class="reference external" href="#get--validation">GET /validation</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#post--validation">POST /validation</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-odd"><td>View_Permission</td>
 <td><a class="reference external" href="#get--permissions_backoffice-users">GET /permissions_backoffice/users</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#post--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)">POST /permissions_backoffice/other_permissions_form/id_permission/(int:id_permission)/user/(int:id_role)/filter_type/(int:id_filter_type)</a></td>
-<td>&#160;</td>
-</tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#post--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)">POST /permissions_backoffice/other_permissions_form/user/(int:id_role)/filter_type/(int:id_filter_type)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)">GET /permissions_backoffice/other_permissions_form/id_permission/(int:id_permission)/user/(int:id_role)/filter_type/(int:id_filter_type)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)">GET /permissions_backoffice/other_permissions_form/user/(int:id_role)/filter_type/(int:id_filter_type)</a></td>
 <td>&#160;</td>
 </tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#post--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)">POST /permissions_backoffice/other_permissions_form/id_permission/(int:id_permission)/user/(int:id_role)/filter_type/(int:id_filter_type)</a></td>
+<td>&#160;</td>
+</tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#post--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">POST /permissions_backoffice/cruved_form/module/(int:id_module)/role/(int:id_role)/object/(int:id_object)</a></td>
+<td><a class="reference external" href="#post--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)">POST /permissions_backoffice/other_permissions_form/user/(int:id_role)/filter_type/(int:id_filter_type)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#post--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)">POST /permissions_backoffice/cruved_form/module/(int:id_module)/role/(int:id_role)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">GET /permissions_backoffice/cruved_form/module/(int:id_module)/role/(int:id_role)/object/(int:id_object)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)">GET /permissions_backoffice/cruved_form/module/(int:id_module)/role/(int:id_role)</a></td>
 <td>&#160;</td>
 </tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#post--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">POST /permissions_backoffice/cruved_form/module/(int:id_module)/role/(int:id_role)/object/(int:id_object)</a></td>
+<td>&#160;</td>
+</tr>
 <tr class="row-odd"><td>&#160;</td>
-<td><a class="reference external" href="#post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)">POST /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)/id_filter/(int:id_filter)</a></td>
+<td><a class="reference external" href="#post--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)">POST /permissions_backoffice/cruved_form/module/(int:id_module)/role/(int:id_role)</a></td>
 <td>&#160;</td>
 </tr>
 <tr class="row-even"><td>&#160;</td>
-<td><a class="reference external" href="#post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">POST /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)</a></td>
-<td>&#160;</td>
-</tr>
-<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)">GET /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)/id_filter/(int:id_filter)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">GET /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)</a></td>
 <td>&#160;</td>
 </tr>
+<tr class="row-even"><td>&#160;</td>
+<td><a class="reference external" href="#post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)">POST /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)/id_filter/(int:id_filter)</a></td>
+<td>&#160;</td>
+</tr>
 <tr class="row-odd"><td>&#160;</td>
+<td><a class="reference external" href="#post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">POST /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)</a></td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--permissions_backoffice-filter_list-id_filter_type-(int-id_filter_type)">GET /permissions_backoffice/filter_list/id_filter_type/(int:id_filter_type)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#get--permissions_backoffice-user_other_permissions-(id_role)">GET /permissions_backoffice/user_other_permissions/(id_role)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-odd"><td>&#160;</td>
+<tr class="row-even"><td>&#160;</td>
 <td><a class="reference external" href="#get--permissions_backoffice-user_cruved-(id_role)">GET /permissions_backoffice/user_cruved/(id_role)</a></td>
 <td>&#160;</td>
 </tr>
-<tr class="row-even"><td>&#160;</td>
+<tr class="row-odd"><td>&#160;</td>
 <td><a class="reference external" href="#post--permissions_backoffice-filter-(id_filter)">POST /permissions_backoffice/filter/(id_filter)</a></td>
 <td>&#160;</td>
 </tr>
@@ -1005,6 +1073,12 @@ when the user logout we need clear the session to get the new cruved session</p>
 </dd></dl>
 
 <dl class="get">
+<dt id="get--validation-definitions">
+<code class="descname">GET </code><code class="descname">/validation/definitions</code><a class="headerlink" href="#get--validation-definitions" title="Permalink to this definition">¶</a></dt>
+<dd><p>return validation status definitions stored in t_nomenclatures</p>
+</dd></dl>
+
+<dl class="get">
 <dt id="get--gn_commons-modules">
 <code class="descname">GET </code><code class="descname">/gn_commons/modules</code><a class="headerlink" href="#get--gn_commons-modules" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the allowed modules of user from its cruved
@@ -1068,7 +1142,7 @@ Some columns are mandatory: id_synthese, geojson and geojson_local to generate t
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name" colspan="2">Query Parameters:</th></tr>
 <tr class="field-odd field"><td>&#160;</td><td class="field-body"><ul class="first last simple">
-<li><strong>export_format</strong> (<em>str</em>) – str&lt;’csv’, ‘geojson’, ‘shapefiles’&gt;</li>
+<li><strong>export_format</strong> (<em>str</em>) – str&lt;’csv’, ‘geojson’, ‘shapefiles’, ‘gpkg’&gt;</li>
 </ul>
 </td>
 </tr>
@@ -1101,6 +1175,24 @@ Some columns are mandatory: id_synthese, geojson and geojson_local to generate t
 <dt id="get--synthese-observation_count">
 <code class="descname">GET </code><code class="descname">/synthese/observation_count</code><a class="headerlink" href="#get--synthese-observation_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get observations found in a given dataset</p>
+<p>id_dataset: <cite>int</cite> (query parameter)</p>
+<dl class="docutils">
+<dt>count: <cite>int</cite>: </dt>
+<dd>the number of observation</dd>
+</dl>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--synthese-observations_bbox">
+<code class="descname">GET </code><code class="descname">/synthese/observations_bbox</code><a class="headerlink" href="#get--synthese-observations_bbox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get bbbox of observations</p>
+<p>id_dataset: int: (query parameter)</p>
+<blockquote>
+<div><dl class="docutils">
+<dt>bbox: <cite>geojson</cite>: </dt>
+<dd>the bounding box in geojson</dd>
+</dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="get">
@@ -1110,18 +1202,18 @@ Some columns are mandatory: id_synthese, geojson and geojson_local to generate t
 and grouped by a certain taxa rank</p>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--synthese-export_metadata">
-<code class="descname">POST </code><code class="descname">/synthese/export_metadata</code><a class="headerlink" href="#post--synthese-export_metadata" title="Permalink to this definition">¶</a></dt>
+<dl class="get">
+<dt id="get--synthese-export_metadata">
+<code class="descname">GET </code><code class="descname">/synthese/export_metadata</code><a class="headerlink" href="#get--synthese-export_metadata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Route to export the metadata in CSV</p>
 <p>The table synthese is join with gn_synthese.v_metadata_for_export
 The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export</p>
 <p>POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view</p>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--synthese-export_metadata">
-<code class="descname">GET </code><code class="descname">/synthese/export_metadata</code><a class="headerlink" href="#get--synthese-export_metadata" title="Permalink to this definition">¶</a></dt>
+<dl class="post">
+<dt id="post--synthese-export_metadata">
+<code class="descname">POST </code><code class="descname">/synthese/export_metadata</code><a class="headerlink" href="#post--synthese-export_metadata" title="Permalink to this definition">¶</a></dt>
 <dd><p>Route to export the metadata in CSV</p>
 <p>The table synthese is join with gn_synthese.v_metadata_for_export
 The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export</p>
@@ -1182,7 +1274,7 @@ Some columns are mandatory: cd_ref</p>
 <dl class="get">
 <dt id="get--synthese-color_taxon">
 <code class="descname">GET </code><code class="descname">/synthese/color_taxon</code><a class="headerlink" href="#get--synthese-color_taxon" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get color of taxon in areas (table synthese.cor_area_taxon).</p>
+<dd><p>Get color of taxon in areas (vue synthese.v_color_taxon_area).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1205,26 +1297,16 @@ Some columns are mandatory: cd_ref</p>
 <dt id="get--synthese-taxa_count">
 <code class="descname">GET </code><code class="descname">/synthese/taxa_count</code><a class="headerlink" href="#get--synthese-taxa_count" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get taxa count in synthese filtering with generic parameters</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name" colspan="2">Query Parameters:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body"><ul class="first simple">
-<li><strong>id_dataset</strong> (<em>int</em>) – filter by id_dataset</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns int:</th><td class="field-body"><p class="first last">the number of taxa found</p>
-</td>
-</tr>
-</tbody>
-</table>
+<p>id_dataset: <cite>int</cite> (query parameter)</p>
+<dl class="docutils">
+<dt>count: <cite>int</cite>: </dt>
+<dd>the number of taxon</dd>
+</dl>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--synthese-for_web">
-<code class="descname">POST </code><code class="descname">/synthese/for_web</code><a class="headerlink" href="#post--synthese-for_web" title="Permalink to this definition">¶</a></dt>
+<dl class="get">
+<dt id="get--synthese-for_web">
+<code class="descname">GET </code><code class="descname">/synthese/for_web</code><a class="headerlink" href="#get--synthese-for_web" title="Permalink to this definition">¶</a></dt>
 <dd><p>Optimized route to serve data for the frontend with all filters.</p>
 <p>Query filtered by any filter, returning all the fields of the
 view v_synthese_for_export:</p>
@@ -1286,9 +1368,9 @@ view v_synthese_for_export:</p>
 </table>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--synthese-for_web">
-<code class="descname">GET </code><code class="descname">/synthese/for_web</code><a class="headerlink" href="#get--synthese-for_web" title="Permalink to this definition">¶</a></dt>
+<dl class="post">
+<dt id="post--synthese-for_web">
+<code class="descname">POST </code><code class="descname">/synthese/for_web</code><a class="headerlink" href="#post--synthese-for_web" title="Permalink to this definition">¶</a></dt>
 <dd><p>Optimized route to serve data for the frontend with all filters.</p>
 <p>Query filtered by any filter, returning all the fields of the
 view v_synthese_for_export:</p>
@@ -1364,6 +1446,12 @@ To avoid multiples server call, we store the cruved in the session
 when the user logout we need clear the session to get the new cruved session</p>
 </dd></dl>
 
+<dl class="get">
+<dt id="get--gn_auth-login_cas">
+<code class="descname">GET </code><code class="descname">/gn_auth/login_cas</code><a class="headerlink" href="#get--gn_auth-login_cas" title="Permalink to this definition">¶</a></dt>
+<dd><p>Login route with the INPN CAS</p>
+</dd></dl>
+
 <dl class="post">
 <dt id="post--gn_auth-login_cas">
 <code class="descname">POST </code><code class="descname">/gn_auth/login_cas</code><a class="headerlink" href="#post--gn_auth-login_cas" title="Permalink to this definition">¶</a></dt>
@@ -1371,15 +1459,23 @@ when the user logout we need clear the session to get the new cruved session</p>
 </dd></dl>
 
 <dl class="get">
-<dt id="get--gn_auth-login_cas">
-<code class="descname">GET </code><code class="descname">/gn_auth/login_cas</code><a class="headerlink" href="#get--gn_auth-login_cas" title="Permalink to this definition">¶</a></dt>
-<dd><p>Login route with the INPN CAS</p>
-</dd></dl>
-
-<dl class="get">
 <dt id="get--occtax-defaultNomenclatures">
 <code class="descname">GET </code><code class="descname">/occtax/defaultNomenclatures</code><a class="headerlink" href="#get--occtax-defaultNomenclatures" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get default nomenclatures define in occtax module</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dict: {‘MODULE_CODE’: ‘ID_NOMENCLATURE’}</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--occhab-defaultNomenclatures">
+<code class="descname">GET </code><code class="descname">/occhab/defaultNomenclatures</code><a class="headerlink" href="#get--occhab-defaultNomenclatures" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get default nomenclatures define in occhab module</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1417,16 +1513,37 @@ when the user logout we need clear the session to get the new cruved session</p>
 Use in field mapping steps</p>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--import-mapping">
-<code class="descname">POST </code><code class="descname">/import/mapping</code><a class="headerlink" href="#post--import-mapping" title="Permalink to this definition">¶</a></dt>
-<dd><p>Post a new mapping (value or content)</p>
+<dl class="get">
+<dt id="get--occhab-stations">
+<code class="descname">GET </code><code class="descname">/occhab/stations</code><a class="headerlink" href="#get--occhab-stations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all stations with their hab</p>
 </dd></dl>
 
 <dl class="get">
 <dt id="get--occtax-releves">
 <code class="descname">GET </code><code class="descname">/occtax/releves</code><a class="headerlink" href="#get--occtax-releves" title="Permalink to this definition">¶</a></dt>
 <dd><p>Route for map list web interface</p>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--occhab-station">
+<code class="descname">POST </code><code class="descname">/occhab/station</code><a class="headerlink" href="#post--occhab-station" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post one occhab station (station + habitats)</p>
+<p>Post one occhab station (station + habitats)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">GeoJson&lt;TStationsOcchab&gt;</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--import-mapping">
+<code class="descname">POST </code><code class="descname">/import/mapping</code><a class="headerlink" href="#post--import-mapping" title="Permalink to this definition">¶</a></dt>
+<dd><p>Post a new mapping (value or content)</p>
 </dd></dl>
 
 <dl class="post">
@@ -1592,7 +1709,7 @@ Add the cruved permission for each row</p>
 <dl class="post">
 <dt id="post--meta-acquisition_framework">
 <code class="descname">POST </code><code class="descname">/meta/acquisition_framework</code><a class="headerlink" href="#post--meta-acquisition_framework" title="Permalink to this definition">¶</a></dt>
-<dd><p>Post a dataset
+<dd><p>Post an acquisition framework
 .. :quickref: Metadata;</p>
 </dd></dl>
 
@@ -1620,10 +1737,28 @@ Add the CRUVED permission for each row (Dataset and AD)</p>
 </table>
 </dd></dl>
 
+<dl class="get">
+<dt id="get--meta-update_sensitivity">
+<code class="descname">GET </code><code class="descname">/meta/update_sensitivity</code><a class="headerlink" href="#get--meta-update_sensitivity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update sensitivity of all datasets</p>
+</dd></dl>
+
 <dl class="post">
 <dt id="post--meta-upload_canvas">
 <code class="descname">POST </code><code class="descname">/meta/upload_canvas</code><a class="headerlink" href="#post--meta-upload_canvas" title="Permalink to this definition">¶</a></dt>
 <dd><p>Upload the canvas as a temporary image used while generating the pdf file</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--meta-sensi_report">
+<code class="descname">GET </code><code class="descname">/meta/sensi_report</code><a class="headerlink" href="#get--meta-sensi_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the UUID report of a dataset</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--meta-uuid_report">
+<code class="descname">GET </code><code class="descname">/meta/uuid_report</code><a class="headerlink" href="#get--meta-uuid_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>get the UUID report of a dataset</p>
 </dd></dl>
 
 <dl class="get">
@@ -1709,6 +1844,44 @@ and the altitude min/max</p>
 </dd></dl>
 
 <dl class="get">
+<dt id="get--validation">
+<code class="descname">GET </code><code class="descname">/validation</code><a class="headerlink" href="#get--validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return synthese and t_validations data filtered by form params
+Params must have same synthese fields names</p>
+<dl class="docutils">
+<dt>info_role (User):</dt>
+<dd>Information about the user asking the route. Auto add with kwargs</dd>
+</dl>
+<dl class="docutils">
+<dt>dict</dt>
+<dd>{
+“data”: FeatureCollection
+“nb_obs_limited”: int est-ce que le nombre de données retournée est &gt; au nb limites
+“nb_total”: nb_total,
+}</dd>
+</dl>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--validation">
+<code class="descname">POST </code><code class="descname">/validation</code><a class="headerlink" href="#post--validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return synthese and t_validations data filtered by form params
+Params must have same synthese fields names</p>
+<dl class="docutils">
+<dt>info_role (User):</dt>
+<dd>Information about the user asking the route. Auto add with kwargs</dd>
+</dl>
+<dl class="docutils">
+<dt>dict</dt>
+<dd>{
+“data”: FeatureCollection
+“nb_obs_limited”: int est-ce que le nombre de données retournée est &gt; au nb limites
+“nb_total”: nb_total,
+}</dd>
+</dl>
+</dd></dl>
+
+<dl class="get">
 <dt id="get--synthese">
 <code class="descname">GET </code><code class="descname">/synthese</code><a class="headerlink" href="#get--synthese" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return synthese row(s) filtered by form params. NOT USED ANY MORE FOR PERFORMANCE ISSUES</p>
@@ -1747,18 +1920,6 @@ and the altitude min/max</p>
 <dd><p>return import list</p>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)">
-<code class="descname">POST </code><code class="descname">/permissions_backoffice/other_permissions_form/id_permission/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_permission</em><span class="sig-paren">)</span><code class="descname">/user/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><code class="descname">/filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#post--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="post">
-<dt id="post--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)">
-<code class="descname">POST </code><code class="descname">/permissions_backoffice/other_permissions_form/user/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><code class="descname">/filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#post--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Form to define permisisons for a user expect SCOPE permissions
-.. :quickref: View_Permission;</p>
-</dd></dl>
-
 <dl class="get">
 <dt id="get--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)">
 <code class="descname">GET </code><code class="descname">/permissions_backoffice/other_permissions_form/id_permission/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_permission</em><span class="sig-paren">)</span><code class="descname">/user/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><code class="descname">/filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
@@ -1772,14 +1933,16 @@ and the altitude min/max</p>
 </dd></dl>
 
 <dl class="post">
-<dt id="post--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">
-<code class="descname">POST </code><code class="descname">/permissions_backoffice/cruved_form/module/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_module</em><span class="sig-paren">)</span><code class="descname">/role/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><code class="descname">/object/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_object</em><span class="sig-paren">)</span><a class="headerlink" href="#post--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)" title="Permalink to this definition">¶</a></dt>
+<dt id="post--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)">
+<code class="descname">POST </code><code class="descname">/permissions_backoffice/other_permissions_form/id_permission/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_permission</em><span class="sig-paren">)</span><code class="descname">/user/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><code class="descname">/filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#post--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="post">
-<dt id="post--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)">
-<code class="descname">POST </code><code class="descname">/permissions_backoffice/cruved_form/module/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_module</em><span class="sig-paren">)</span><code class="descname">/role/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><a class="headerlink" href="#post--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="post--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)">
+<code class="descname">POST </code><code class="descname">/permissions_backoffice/other_permissions_form/user/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><code class="descname">/filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#post--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Form to define permisisons for a user expect SCOPE permissions
+.. :quickref: View_Permission;</p>
+</dd></dl>
 
 <dl class="get">
 <dt id="get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">
@@ -1792,13 +1955,13 @@ and the altitude min/max</p>
 <dd></dd></dl>
 
 <dl class="post">
-<dt id="post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)">
-<code class="descname">POST </code><code class="descname">/permissions_backoffice/filter_form/id_filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><code class="descname">/id_filter/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter</em><span class="sig-paren">)</span><a class="headerlink" href="#post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)" title="Permalink to this definition">¶</a></dt>
+<dt id="post--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">
+<code class="descname">POST </code><code class="descname">/permissions_backoffice/cruved_form/module/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_module</em><span class="sig-paren">)</span><code class="descname">/role/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><code class="descname">/object/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_object</em><span class="sig-paren">)</span><a class="headerlink" href="#post--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="post">
-<dt id="post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">
-<code class="descname">POST </code><code class="descname">/permissions_backoffice/filter_form/id_filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
+<dt id="post--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)">
+<code class="descname">POST </code><code class="descname">/permissions_backoffice/cruved_form/module/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_module</em><span class="sig-paren">)</span><code class="descname">/role/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_role</em><span class="sig-paren">)</span><a class="headerlink" href="#post--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="get">
@@ -1812,14 +1975,24 @@ and the altitude min/max</p>
 <dd></dd></dl>
 
 <dl class="post">
-<dt id="post--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)">
-<code class="descname">POST </code><code class="descname">/import/data_checker/</code><span class="sig-paren">(</span><em>import_id</em><span class="sig-paren">)</span><code class="descname">/field_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_field_mapping</em><span class="sig-paren">)</span><code class="descname">/content_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_content_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#post--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Check and transform the data for field and content mapping</p>
-</dd></dl>
+<dt id="post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)">
+<code class="descname">POST </code><code class="descname">/permissions_backoffice/filter_form/id_filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><code class="descname">/id_filter/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter</em><span class="sig-paren">)</span><a class="headerlink" href="#post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="post">
+<dt id="post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">
+<code class="descname">POST </code><code class="descname">/permissions_backoffice/filter_form/id_filter_type/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_filter_type</em><span class="sig-paren">)</span><a class="headerlink" href="#post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="get">
 <dt id="get--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)">
 <code class="descname">GET </code><code class="descname">/import/data_checker/</code><span class="sig-paren">(</span><em>import_id</em><span class="sig-paren">)</span><code class="descname">/field_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_field_mapping</em><span class="sig-paren">)</span><code class="descname">/content_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_content_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check and transform the data for field and content mapping</p>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)">
+<code class="descname">POST </code><code class="descname">/import/data_checker/</code><span class="sig-paren">(</span><em>import_id</em><span class="sig-paren">)</span><code class="descname">/field_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_field_mapping</em><span class="sig-paren">)</span><code class="descname">/content_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_content_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#post--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check and transform the data for field and content mapping</p>
 </dd></dl>
 
@@ -1835,16 +2008,16 @@ and the altitude min/max</p>
 .. :quickref: Commons;</p>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)">
-<code class="descname">POST </code><code class="descname">/import/getNomencInfo/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_import</em><span class="sig-paren">)</span><code class="descname">/field_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_field_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#post--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)" title="Permalink to this definition">¶</a></dt>
+<dl class="get">
+<dt id="get--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)">
+<code class="descname">GET </code><code class="descname">/import/getNomencInfo/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_import</em><span class="sig-paren">)</span><code class="descname">/field_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_field_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all nomenclature info for a mapping
 Use for the value mapping step</p>
 </dd></dl>
 
-<dl class="get">
-<dt id="get--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)">
-<code class="descname">GET </code><code class="descname">/import/getNomencInfo/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_import</em><span class="sig-paren">)</span><code class="descname">/field_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_field_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)" title="Permalink to this definition">¶</a></dt>
+<dl class="post">
+<dt id="post--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)">
+<code class="descname">POST </code><code class="descname">/import/getNomencInfo/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_import</em><span class="sig-paren">)</span><code class="descname">/field_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_field_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#post--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get all nomenclature info for a mapping
 Use for the value mapping step</p>
 </dd></dl>
@@ -1880,6 +2053,13 @@ Use for the value mapping step</p>
 <dt id="get--meta-acquisition_frameworks-export_pdf-(id_acquisition_framework)">
 <code class="descname">GET </code><code class="descname">/meta/acquisition_frameworks/export_pdf/</code><span class="sig-paren">(</span><em>id_acquisition_framework</em><span class="sig-paren">)</span><a class="headerlink" href="#get--meta-acquisition_frameworks-export_pdf-(id_acquisition_framework)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a PDF export of one acquisition</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--meta-acquisition_framework-publish-(int-af_id)">
+<code class="descname">GET </code><code class="descname">/meta/acquisition_framework/publish/</code><span class="sig-paren">(</span><em class="property">int: </em><em>af_id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--meta-acquisition_framework-publish-(int-af_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Publish an acquisition framework
+.. :quickref: Metadata;</p>
 </dd></dl>
 
 <dl class="post">
@@ -1987,6 +2167,19 @@ Possibilité de filtrer par regne et group2Inpn</p>
 </dd></dl>
 
 <dl class="get">
+<dt id="get--validation-date-(uuid)">
+<code class="descname">GET </code><code class="descname">/validation/date/</code><span class="sig-paren">(</span><em>uuid</em><span class="sig-paren">)</span><a class="headerlink" href="#get--validation-date-(uuid)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retourne la date de validation
+pour l’observation uuid</p>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--synthese-observation_count_per_column-(column)">
+<code class="descname">GET </code><code class="descname">/synthese/observation_count_per_column/</code><span class="sig-paren">(</span><em>column</em><span class="sig-paren">)</span><a class="headerlink" href="#get--synthese-observation_count_per_column-(column)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get observations count group by a given column</p>
+</dd></dl>
+
+<dl class="get">
 <dt id="get--synthese-vsynthese-(id_synthese)">
 <code class="descname">GET </code><code class="descname">/synthese/vsynthese/</code><span class="sig-paren">(</span><em>id_synthese</em><span class="sig-paren">)</span><a class="headerlink" href="#get--synthese-vsynthese-(id_synthese)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get one synthese record for web app with all decoded nomenclature</p>
@@ -2006,6 +2199,12 @@ Possibilité de filtrer par regne et group2Inpn</p>
 <dd><p>Create or update a field_mapping</p>
 </dd></dl>
 
+<dl class="get">
+<dt id="get--import-update_content_mapping-(int-id_mapping)">
+<code class="descname">GET </code><code class="descname">/import/update_content_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-update_content_mapping-(int-id_mapping)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update a content mapping (table TMappingsValues)</p>
+</dd></dl>
+
 <dl class="post">
 <dt id="post--import-update_content_mapping-(int-id_mapping)">
 <code class="descname">POST </code><code class="descname">/import/update_content_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#post--import-update_content_mapping-(int-id_mapping)" title="Permalink to this definition">¶</a></dt>
@@ -2013,15 +2212,16 @@ Possibilité de filtrer par regne et group2Inpn</p>
 </dd></dl>
 
 <dl class="get">
-<dt id="get--import-update_content_mapping-(int-id_mapping)">
-<code class="descname">GET </code><code class="descname">/import/update_content_mapping/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-update_content_mapping-(int-id_mapping)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update a content mapping (table TMappingsValues)</p>
-</dd></dl>
-
-<dl class="get">
 <dt id="get--import-content_mappings-(id_mapping)">
 <code class="descname">GET </code><code class="descname">/import/content_mappings/</code><span class="sig-paren">(</span><em>id_mapping</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-content_mappings-(id_mapping)" title="Permalink to this definition">¶</a></dt>
 <dd><p>load source and target contents from an id_mapping</p>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--occhab-export_stations-(export_format)">
+<code class="descname">POST </code><code class="descname">/occhab/export_stations/</code><span class="sig-paren">(</span><em>export_format</em><span class="sig-paren">)</span><a class="headerlink" href="#post--occhab-export_stations-(export_format)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Download all stations
+The route is in post to avoid a too large query string</p>
 </dd></dl>
 
 <dl class="get">
@@ -2071,13 +2271,6 @@ Possibilité de filtrer par regne et group2Inpn</p>
 </table>
 </dd></dl>
 
-<dl class="post">
-<dt id="post--import-importData-(import_id)">
-<code class="descname">POST </code><code class="descname">/import/importData/</code><span class="sig-paren">(</span><em>import_id</em><span class="sig-paren">)</span><a class="headerlink" href="#post--import-importData-(import_id)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run import data in synthese
-The route must return an import object with its mapping (use in frontend)</p>
-</dd></dl>
-
 <dl class="get">
 <dt id="get--import-importData-(import_id)">
 <code class="descname">GET </code><code class="descname">/import/importData/</code><span class="sig-paren">(</span><em>import_id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-importData-(import_id)" title="Permalink to this definition">¶</a></dt>
@@ -2086,14 +2279,21 @@ The route must return an import object with its mapping (use in frontend)</p>
 </dd></dl>
 
 <dl class="post">
-<dt id="post--import-get_errors-(import_id)">
-<code class="descname">POST </code><code class="descname">/import/get_errors/</code><span class="sig-paren">(</span><em>import_id</em><span class="sig-paren">)</span><a class="headerlink" href="#post--import-get_errors-(import_id)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export invalid data in CSV</p>
+<dt id="post--import-importData-(import_id)">
+<code class="descname">POST </code><code class="descname">/import/importData/</code><span class="sig-paren">(</span><em>import_id</em><span class="sig-paren">)</span><a class="headerlink" href="#post--import-importData-(import_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run import data in synthese
+The route must return an import object with its mapping (use in frontend)</p>
 </dd></dl>
 
 <dl class="get">
 <dt id="get--import-get_errors-(import_id)">
 <code class="descname">GET </code><code class="descname">/import/get_errors/</code><span class="sig-paren">(</span><em>import_id</em><span class="sig-paren">)</span><a class="headerlink" href="#get--import-get_errors-(import_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export invalid data in CSV</p>
+</dd></dl>
+
+<dl class="post">
+<dt id="post--import-get_errors-(import_id)">
+<code class="descname">POST </code><code class="descname">/import/get_errors/</code><span class="sig-paren">(</span><em>import_id</em><span class="sig-paren">)</span><a class="headerlink" href="#post--import-get_errors-(import_id)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export invalid data in CSV</p>
 </dd></dl>
 
@@ -2138,6 +2338,33 @@ The route must return an import object with its mapping (use in frontend)</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="get">
+<dt id="get--occhab-station-(int-id_station)">
+<code class="descname">GET </code><code class="descname">/occhab/station/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_station</em><span class="sig-paren">)</span><a class="headerlink" href="#get--occhab-station-(int-id_station)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return one station</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id_station</strong> (<em>int</em>) – the id_station</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return:</th><td class="field-body"><p class="first last">a dict representing one station with its habitats</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>:rtype dict&lt;TStationsOcchab&gt;</p>
+</dd></dl>
+
+<dl class="delete">
+<dt id="delete--occhab-station-(int-id_station)">
+<code class="descname">DELETE </code><code class="descname">/occhab/station/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_station</em><span class="sig-paren">)</span><a class="headerlink" href="#delete--occhab-station-(int-id_station)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a station with its habitat and its observers</p>
 </dd></dl>
 
 <dl class="delete">
@@ -2305,6 +2532,13 @@ Use trigram algo to add relevance</p>
 .. :quickref: Metadata;</p>
 </dd></dl>
 
+<dl class="delete">
+<dt id="delete--meta-acquisition_framework-(int-af_id)">
+<code class="descname">DELETE </code><code class="descname">/meta/acquisition_framework/</code><span class="sig-paren">(</span><em class="property">int: </em><em>af_id</em><span class="sig-paren">)</span><a class="headerlink" href="#delete--meta-acquisition_framework-(int-af_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete an acquisition framework
+.. :quickref: Metadata;</p>
+</dd></dl>
+
 <dl class="get">
 <dt id="get--meta-acquisition_framework-(id_acquisition_framework)">
 <code class="descname">GET </code><code class="descname">/meta/acquisition_framework/</code><span class="sig-paren">(</span><em>id_acquisition_framework</em><span class="sig-paren">)</span><a class="headerlink" href="#get--meta-acquisition_framework-(id_acquisition_framework)" title="Permalink to this definition">¶</a></dt>
@@ -2324,8 +2558,8 @@ Use trigram algo to add relevance</p>
 </dd></dl>
 
 <dl class="get">
-<dt id="get--meta-dataset_details-(id_dataset)">
-<code class="descname">GET </code><code class="descname">/meta/dataset_details/</code><span class="sig-paren">(</span><em>id_dataset</em><span class="sig-paren">)</span><a class="headerlink" href="#get--meta-dataset_details-(id_dataset)" title="Permalink to this definition">¶</a></dt>
+<dt id="get--meta-dataset_details-(int-id_dataset)">
+<code class="descname">GET </code><code class="descname">/meta/dataset_details/</code><span class="sig-paren">(</span><em class="property">int: </em><em>id_dataset</em><span class="sig-paren">)</span><a class="headerlink" href="#get--meta-dataset_details-(int-id_dataset)" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get one dataset with nomenclatures and af</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -2356,6 +2590,12 @@ Use trigram algo to add relevance</p>
 .. :quickref: Metadata;</p>
 </dd></dl>
 
+<dl class="delete">
+<dt id="delete--meta-dataset-(int-ds_id)">
+<code class="descname">DELETE </code><code class="descname">/meta/dataset/</code><span class="sig-paren">(</span><em class="property">int: </em><em>ds_id</em><span class="sig-paren">)</span><a class="headerlink" href="#delete--meta-dataset-(int-ds_id)" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a dataset</p>
+</dd></dl>
+
 <dl class="get">
 <dt id="get--meta-dataset-(id_dataset)">
 <code class="descname">GET </code><code class="descname">/meta/dataset/</code><span class="sig-paren">(</span><em>id_dataset</em><span class="sig-paren">)</span><a class="headerlink" href="#get--meta-dataset-(id_dataset)" title="Permalink to this definition">¶</a></dt>
@@ -2375,63 +2615,6 @@ Use trigram algo to add relevance</p>
 </tr>
 </tbody>
 </table>
-</dd></dl>
-
-<dl class="get">
-<dt id="get--genericview-(view_schema)-(view_name)">
-<code class="descname">GET </code><code class="descname">/genericview/</code><span class="sig-paren">(</span><em>view_schema</em><span class="sig-paren">)</span><code class="descname">/</code><span class="sig-paren">(</span><em>view_name</em><span class="sig-paren">)</span><a class="headerlink" href="#get--genericview-(view_schema)-(view_name)" title="Permalink to this definition">¶</a></dt>
-<dd><p>Service générique permettant de requeter une vue
-.. :quickref: Generic;</p>
-<p>limit : nombre limit de résultats à retourner
-offset : numéro de page
-geometry_field : nom de la colonne contenant la géométrie</p>
-<blockquote>
-<div>Si elle est spécifiée les données seront retournés en geojson</div></blockquote>
-<dl class="docutils">
-<dt>FILTRES :</dt>
-<dd><dl class="first last docutils">
-<dt>nom_col=val: Si nom_col fait partie des colonnes</dt>
-<dd>de la vue alors filtre nom_col=val</dd>
-<dt>ilikenom_col=val: Si nom_col fait partie des colonnes</dt>
-<dd>de la vue et que la colonne est de type texte
-alors filtre nom_col ilike ‘%val%’</dd>
-<dt>filter_d_up_nom_col=val: Si nom_col fait partie des colonnes</dt>
-<dd>de la vue et que la colonne est de type date
-alors filtre nom_col &gt;= val</dd>
-<dt>filter_d_lo_nom_col=val: Si nom_col fait partie des colonnes</dt>
-<dd>de la vue et que la colonne est de type date
-alors filtre nom_col &lt;= val</dd>
-<dt>filter_d_eq_nom_col=val: Si nom_col fait partie des colonnes</dt>
-<dd>de la vue et que la colonne est de type date
-alors filtre nom_col == val</dd>
-<dt>filter_n_up_nom_col=val: Si nom_col fait partie des colonnes</dt>
-<dd>de la vue et que la colonne est de type numérique
-alors filtre nom_col &gt;= val</dd>
-<dt>filter_n_lo_nom_col=val: Si nom_col fait partie des colonnes</dt>
-<dd>de la vue et que la colonne est de type numérique
-alors filtre nom_col &lt;= val</dd>
-</dl>
-</dd>
-<dt>ORDONNANCEMENT :</dt>
-<dd><dl class="first last docutils">
-<dt>orderby: char</dt>
-<dd>Nom du champ sur lequel baser l’ordonnancement</dd>
-<dt>order: char (asc|desc)</dt>
-<dd>Sens de l’ordonnancement</dd>
-</dl>
-</dd>
-</dl>
-<p>json
-{</p>
-<blockquote>
-<div>‘total’: Nombre total de résultat,
-‘total_filtered’: Nombre total de résultat après filtration,
-‘page’: Numéro de la page retournée,
-‘limit’: Nombre de résultats,
-‘items’: données au format Json ou GeoJson</div></blockquote>
-<p>}</p>
-<blockquote>
-<div>order by : &#64;TODO</div></blockquote>
 </dd></dl>
 
 </div>
@@ -2944,10 +3127,6 @@ redirige en cas de niveau insuffisant ou d’informations de session erronés
 <ul class="simple">
 <li>level &lt;int&gt; : niveau de droits requis pour accéder à la vue</li>
 <li>get_role &lt;bool:False&gt; : si True, ajoute l’id utilisateur aux kwargs de la vue</li>
-<li>redirect_on_expiration &lt;str:None&gt; : identifiant de vue  sur laquelle
-rediriger l’utilisateur en cas d’expiration de sa session</li>
-<li>redirect_on_invalid_token &lt;str:None&gt; : identifiant de vue sur laquelle
-rediriger l’utilisateur en cas d’informations de session invalides</li>
 </ul>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Blueprint</span>
 <span class="kn">from</span> <span class="nn">pypnusershub.routes</span> <span class="k">import</span> <span class="n">check_auth</span>
@@ -2959,8 +3138,6 @@ rediriger l’utilisateur en cas d’informations de session invalides</li>
 <span class="nd">@check_auth</span><span class="p">(</span>
         <span class="mi">1</span><span class="p">,</span>
         <span class="kc">True</span><span class="p">,</span>
-        <span class="n">redirect_on_expiration</span><span class="o">=</span><span class="s1">&#39;my_reconnexion_handler&#39;</span><span class="p">,</span>
-        <span class="n">redirect_on_invalid_token</span><span class="o">=</span><span class="s1">&#39;my_affreux_pirate_handler&#39;</span>
         <span class="p">)</span>
 <span class="nd">@json_resp</span>
 <span class="k">def</span> <span class="nf">my_view</span><span class="p">(</span><span class="n">id_role</span><span class="p">):</span>
@@ -2980,10 +3157,6 @@ d’informations de session erronées</p>
 <li>module_code: &lt;str:None&gt;: Code du module (gn_commons.t_modules) sur lequel on
 veut récupérer le CRUVED. Si ce paramètre n’est pas passer on vérifie le
 cruved de GeoNature</li>
-<li>redirect_on_expiration &lt;str:None&gt; : identifiant de vue ou URL sur laquelle
-rediriger l’utilisateur en cas d’expiration de sa session</li>
-<li>redirect_on_invalid_token &lt;str:None&gt; : identifiant de vue ou URL sur laquelle
-rediriger l’utilisateur en cas d’informations de session invalides</li>
 </ul>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Blueprint</span>
 <span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.tools</span> <span class="k">import</span> <span class="n">get_or_fetch_user_cruved</span>
@@ -2997,8 +3170,6 @@ rediriger l’utilisateur en cas d’informations de session invalides</li>
         <span class="s1">&#39;R&#39;</span><span class="p">,</span>
         <span class="kc">True</span><span class="p">,</span>
         <span class="n">module_code</span><span class="o">=</span><span class="s2">&quot;OCCTAX&quot;</span>
-        <span class="n">redirect_on_expiration</span><span class="o">=</span><span class="s1">&#39;my_reconnexion_handler&#39;</span><span class="p">,</span>
-        <span class="n">redirect_on_invalid_token</span><span class="o">=</span><span class="s1">&#39;my_affreux_pirate_handler&#39;</span>
 <span class="p">)</span>
 <span class="nd">@json_resp</span>
 <span class="k">def</span> <span class="nf">my_sensible_view</span><span class="p">(</span><span class="n">info_role</span><span class="p">):</span>
