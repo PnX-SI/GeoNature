@@ -245,6 +245,7 @@ CREATE TABLE l_areas (
 ALTER SEQUENCE l_areas_id_area_seq OWNED BY l_areas.id_area;
 ALTER TABLE ONLY l_areas ALTER COLUMN id_area SET DEFAULT nextval('l_areas_id_area_seq'::regclass);
 ALTER TABLE l_areas ALTER COLUMN geom SET STORAGE EXTERNAL;
+ALTER TABLE ONLY ref_geo.l_areas ADD CONSTRAINT unique_id_type_area_code UNIQUE (id_type, area_code);
 
 CREATE TABLE li_municipalities (
     id_municipality character varying(25) NOT NULL,
@@ -342,6 +343,7 @@ ALTER TABLE ref_geo.li_grids
 CREATE INDEX index_l_areas_geom ON l_areas USING gist (geom);
 CREATE INDEX index_l_areas_centroid ON l_areas USING gist (centroid);
 CREATE INDEX index_dem_vector_geom ON dem_vector USING gist (geom);
+CREATE UNIQUE INDEX IF NOT EXISTS i_unique_l_areas_id_type_area_code ON ref_geo.l_areas (id_type, area_code);
 
 ------------
 --TRIGGERS--
