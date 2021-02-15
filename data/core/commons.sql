@@ -679,3 +679,8 @@ FROM gn_commons.t_validations
 GROUP BY uuid_attached_row
 ) last_val
 ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last_val.max_date;
+
+
+INSERT INTO gn_commons.t_parameters
+(id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value)
+VALUES(0, 'ref_sensi_version', 'Version du referentiel de sensibilité', 'Referentiel de sensibilite taxref v13 2020', '');
