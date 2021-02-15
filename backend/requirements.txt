@@ -41,7 +41,7 @@ packaging==16.8
 psycopg2==2.8.5
 pillow==7.2.0
 pyparsing==2.2.0
-python-dateutil==2.6.1
+python-dateutil==2.8.1
 requests==2.25.1
 shapely==1.5.16
 six==1.12.0
