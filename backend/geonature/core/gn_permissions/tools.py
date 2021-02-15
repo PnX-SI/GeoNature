@@ -172,7 +172,8 @@ class UserCruved:
             .filter(VUsersPermissions.gathering == gathering)
         )
         return q.all()
-
+        
+    @staticmethod
     def get_actions_codes():
         return UserCruved._cruved_actions
 
@@ -649,7 +650,8 @@ class PermissionsManager:
             i = i + 1
         return higher_perm
     
-    def get_actions_codes():
+    @staticmethod
+    def get_actions_codes(self):
         """Accès aux codes des actions.
 
         Les codes des actions sont issus d'un paramètre privé de cett classe.
