@@ -1073,7 +1073,7 @@ def formatAccessRequest(request, asker, asker_organism, validator):
     sensitive = request.sensitive_access
     access_request = {
         "token": request.token,
-        "user_name": formatRoleName(asker),
+        "user_name": format_role_name(asker),
         "user_email": (asker.email if asker.email else "?"),
         "organism_name": (asker_organism.nom_organisme if asker_organism else "-"),
         "geographic_filters": areas,
@@ -1189,7 +1189,7 @@ def get_permissions_for_all_roles(info_role):
     roles = []
     for result in results:
         (user, organism, permissions_number) = result
-        role = formatRole(user, organism)
+        role = format_role(user, organism)
         role["permissions_nbr"] = permissions_number
         roles.append(role)
     
@@ -1198,16 +1198,16 @@ def get_permissions_for_all_roles(info_role):
     return output
     
 
-def formatRole(user, organism):
+def format_role(user, organism):
     return {
         "id": user.id_role,
-        "user_name": formatRoleName(user),
+        "user_name": format_role_name(user),
         "organism_name": (organism.nom_organisme if organism else None),
         "type": "GROUP" if user.groupe == True else "USER",
     }
 
 
-def formatRoleName(role):
+def format_role_name(role):
     name_parts = []
     if role.prenom_role:
         name_parts.append(role.prenom_role)
@@ -1251,14 +1251,14 @@ def get_permissions_by_role_id(id_role):
         }
         return response, 404
     (user, organism) = result
-    role = formatRole(user, organism)
+    role = format_role(user, organism)
 
     # Get, prepare and add groups of an user (for permissions inheritance)
     role["groups"] = []
     for role_group in get_user_groups(id_role):
         role["groups"].append({
             "id": role_group.id_role, 
-            "group_name": formatRoleName(role_group), 
+            "group_name": format_role_name(role_group), 
         })
 
     # Prepare permissions
