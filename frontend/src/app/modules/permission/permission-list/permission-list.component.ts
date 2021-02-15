@@ -164,7 +164,7 @@ export class PermissionListComponent implements OnInit {
     let searchColsAmount = searchColumns.length;
 
     // Filter our data
-    this.rows = this.filteredData.filter(function (item) {
+    this.rows = this.filteredData.filter( (item) => {
       // Iterate through each row's column data
       for (let i = 0; i < searchColsAmount; i++) {
 
