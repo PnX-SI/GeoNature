@@ -14,7 +14,7 @@ from geonature.utils.env import MAIL, DB, MA, load_config, get_config_file_path
 from geonature.utils.module import import_backend_enabled_modules
 
 
-def get_app(config=None, _app=None, with_external_mods=True, with_flask_admin=True):
+def create_app(config=None, _app=None, with_external_mods=True, with_flask_admin=True):
     if config is None:
         config = load_config(get_config_file_path())
     # Make sure app is a singleton
