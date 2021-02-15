@@ -1195,7 +1195,7 @@ def get_permissions_for_all_roles(info_role):
     
     # Send response
     output = prepare_output(roles)
-    return output, 200
+    return output
     
 
 def formatRole(user, organism):
