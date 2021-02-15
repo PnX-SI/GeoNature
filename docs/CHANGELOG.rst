@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.6.2 (2021-02-11)
+------------------
+
+**🐛 Corrections**
+
+* Metadonnées: correction d'un bug sur la fiche JDD si le module d'import n'est pas installé
+* Metadonnées: correction d'un bug si le module d'import n'est pas installé
+* Metadonnées: la recherche rapide n'est plus sensible à la casse
+
+
 2.6.1 (2021-02-11)
 ------------------
 
