@@ -1,12 +1,4 @@
 -- Update script from GeoNature 2.6.0 to 2.6.1
-------------------------------------
--- ADD MISSING UNIQUE CONSTRAINTS --
-------------------------------------
-BEGIN;
-
-ALTER TABLE ONLY ref_geo.l_areas
-  ADD CONSTRAINT unique_id_type_area_code UNIQUE (id_type, area_code);
-CREATE UNIQUE INDEX IF NOT EXISTS i_unique_l_areas_id_type_area_code ON ref_geo.l_areas (id_type, area_code);
 
 ----------------------------
 -- SYNTHESE schema update
