@@ -651,7 +651,7 @@ class PermissionsManager:
         return higher_perm
     
     @staticmethod
-    def get_actions_codes(self):
+    def get_actions_codes():
         """Accès aux codes des actions.
 
         Les codes des actions sont issus d'un paramètre privé de cett classe.
