@@ -201,7 +201,7 @@ trg_maj_synthese_observers_txt;
       END;
     $BODY$;
 
-
+-- 
 -- TRUNCATE TABLE gn_synthese.import_logs;
 -- DROP TABLE IF EXISTS gn_synthese.test;
 -- CREATE TABLE gn_synthese.test AS (
@@ -210,8 +210,11 @@ trg_maj_synthese_observers_txt;
 -- '4' AS entity_source_pk_value,
 -- 'youpi' AS nom_cite,
 -- NOW() as date_min,
--- NOW() as date_max
+-- NOW() as date_max,
+-- '{1, 2}'::INT[] as ids_observateur
 -- );
+-- SELECT * FROM gn_synthese.test;
 -- SELECT gn_synthese.import_from_table('id_source', '1', 'gn_synthese.test', 1000, 0);
 -- SELECT * FROM gn_synthese.import_logs;
-
+-- SELECT observers FROM gn_synthese.synthese;
+-- SELECT * FROM gn_synthese.cor_observer_synthese
