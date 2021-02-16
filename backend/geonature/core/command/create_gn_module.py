@@ -42,6 +42,7 @@ from geonature.utils.gn_module_import import (
     MSG_OK,
 )
 from geonature.utils.errors import GNModuleInstallError, GeoNatureError
+from geonature.core.gn_commons.models import TModules
 from geonature import create_app
 
 
@@ -72,8 +73,6 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
         # TODO vérifier que l'utilisateur est root ou du groupe geonature
         app = create_app(with_external_mods=False)
         with app.app_context():
-            from geonature.core.gn_commons.models import TModules
-
             sys.path.append(module_path)
             # Vérification de la conformité du module
 
