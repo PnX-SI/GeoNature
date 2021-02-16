@@ -20,8 +20,15 @@ from pypnusershub.db.tools import (
     AccessRightsExpiredError,
     UnreadableAccessRightsError,
 )
+from pypnusershub.db.models import (User, AppRole)
+
+from geonature.core.gn_commons.models import TModules
+from geonature.core.taxonomie.models import Taxref
+from geonature.core.users.models import (BibOrganismes, CorRole)
+from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 
 from geonature.core.gn_permissions.models import VUsersPermissions
+  
 from geonature.utils.env import DB
 
 log = logging.getLogger(__name__)
@@ -360,7 +367,7 @@ class PermissionsManager:
     def __init__(
         self, 
         id_role, 
-        module_code, 
+        module_code=None, 
         action_code=None, 
         object_code=None, 
         append_inheritance_rules=None,
@@ -378,6 +385,8 @@ class PermissionsManager:
             Code d'une action. Par défaut : None.
         object_code : str, optional
             Code d'un objet. Par défaut : None.
+        permissions: dict
+            Permissions d'un utilisateur sur l'ensemble des modules
         append_inheritance_rules : dict<list>, optional
             Permet l'ajout de nouvelles règle d'héritage. Par défaut : None.
             Ajout de règles pour étendre l'héritage. Ces règles sont fusionnées
@@ -398,6 +407,7 @@ class PermissionsManager:
         self._object_code = object_code
         self._inheritance_rules = self._build_inheritance_rules(append_inheritance_rules)
         self._without_outdated = without_outdated
+        self.permissions = {}
 
 
     def _build_inheritance_rules(self, append_extra_rules=None):
@@ -449,7 +459,7 @@ class PermissionsManager:
         L'héritage entre groupe et utilisateur est pris en compte via 
         la vue "v_users_permissions" sur laquelle elle s'appuie.
         Les résultats contiennent toutes les permissions nécessaires à l'
-        application de l'héritage entre modules et objets (voir _fatten_permissions()).
+        application de l'héritage entre modules et objets (voir _flatten_permissions()).
 
         Returns
         -------
@@ -457,7 +467,7 @@ class PermissionsManager:
             Un tableau d'objet VUsersPermissions résultant de la requête.
         """
         query = self._build_base_query()
-        query = query.filter(VUsersPermissions.code_filter_type == self._property_filter_type)
+        query = query.filter(VUsersPermissions.code_filter_type == PermissionsManager._property_filter_type)
         
         # List of module_code, object_code couples to select
         ors = []
@@ -562,7 +572,7 @@ class PermissionsManager:
         query = (
             DB.session
             .query(VUsersPermissions)
-            .filter(VUsersPermissions.code_filter_type != self._property_filter_type)
+            .filter(VUsersPermissions.code_filter_type != PermissionsManager._property_filter_type)
             .filter(VUsersPermissions.gathering == gathering)
         )
         return query.all()
@@ -598,10 +608,8 @@ class PermissionsManager:
                 ):
                     sorted_perms.setdefault(k, []).append(permission)
 
-        
         # Return the sorted list of keys from inheritance rules dictionary
         sorted_rules_keys = sorted(self._inheritance_rules)
-
         is_inherited = False
         inherited_by = None
         # Take the permission with the higher value of the different permissions 
@@ -691,7 +699,7 @@ class PermissionsManager:
 
         Returns
         -------
-        dic
+        dict
             Dictionnaire contenant:
             - higher_perm : la permission (VUsersPermissions) d'accès
             - is_inherited : booléen indiquant si la permission est héritée
@@ -864,3 +872,130 @@ class PermissionsManager:
         output = gathered_filters.values()
         return output
         
+
+
+
+
+class UserPermissions:
+    def __init__(self, id_role):
+        self.id_role = id_role
+        self.permissions = {}
+
+    def append_permission(
+        self, module_code, action_code, object_code,  
+        label, code, filter_type, filter_value, gathering, end_date,
+        is_inherited, inherited_by=None,
+    ):
+        """Les permissions non héritées doivent être ajouté en premier.
+
+        Parameters
+        ----------
+        is_inherited : bool
+            Booléen indiquant si oui ou non la permission est héritée d'un module parent ou d'un groupe.
+        """
+        # Initialize new module entry
+        if module_code not in self.permissions.keys():
+            self.permissions[module_code] = {}
+
+        # Build filter labels if necessary
+        labels = None
+        if filter_type == 'GEOGRAPHIC':
+            filter_value = split_value_filter(filter_value)
+            labels = format_geographic_filter_values(filter_value)
+        if filter_type == 'TAXONOMIC':
+            filter_value = split_value_filter(filter_value)
+            labels = format_taxonomic_filter_values(filter_value)
+
+        # Create new permission or only add an additionnal filter
+        gathering = str(gathering)
+        permission_hash = f"{module_code}-{action_code}-{object_code}-{gathering}"
+        if permission_hash not in self.permissions[module_code].keys():
+            self.permissions[module_code][permission_hash] = {
+                "name": label,
+                "code": code,
+                "gathering": gathering,
+                "module": module_code,
+                "action": action_code,
+                "object": object_code,
+                "end_date": end_date,
+                "filters": [{
+                    "type": filter_type,
+                    "value": filter_value,
+                    "label": labels,
+                }],
+                "is_inherited": is_inherited,
+                "inherited_by": (inherited_by if is_inherited else None),
+            }
+        else:
+            recorded_gathering = self.permissions[module_code][permission_hash]["gathering"]
+            recorded_filters = self.permissions[module_code][permission_hash]["filters"]
+            if (
+                not any(f['type'] == filter_type for f in recorded_filters) 
+                and gathering == recorded_gathering
+            ):
+                new_filter = {
+                    "type": filter_type,
+                    "value": filter_value,
+                    "label": labels,
+                }
+                self.permissions[module_code][permission_hash]["filters"].append(new_filter)
+
+
+
+
+def split_value_filter(data: str):
+    if data == None or data == '':
+        return []
+    values = data.split(',')
+    unduplicated_data = unduplicate_values(values)
+    return unduplicated_data
+
+def unduplicate_values(data: list) -> list:
+    unduplicated_data = []
+    [unduplicated_data.append(x) for x in data if x not in unduplicated_data]
+    return unduplicated_data
+
+def format_geographic_filter_values(areas: [int]):
+    formated_geo = []
+    if len(areas) > 0:
+        for area in get_areas_infos(areas):
+            name = area["area_name"]
+            code = area["area_code"]
+            if area["type_code"] == "DEP":
+                name = f"{name} [{code}]"
+            elif area["type_code"] == "COM":
+                name = f"{name} [{code[:2]}]"
+            formated_geo.append(name)
+    return formated_geo
+
+def get_areas_infos(area_ids: [int]):
+    data = (DB
+        .session.query(
+            LAreas.area_name,
+            LAreas.area_code,
+            BibAreasTypes.type_code
+        )
+        .join(LAreas, LAreas.id_type == BibAreasTypes.id_type)
+        .filter(LAreas.id_area.in_(tuple(area_ids)))
+        .all()
+    )
+    return [row._asdict() for row in data]
+
+
+def format_taxonomic_filter_values(taxa: [int]):
+    formated_taxonomic = []
+    if len(taxa) > 0:
+        for taxon in get_taxons_infos(taxa):
+            name = taxon["nom_complet_html"]
+            code = taxon["cd_nom"]
+            formated_taxonomic.append(f"{name} [{code}]")
+    return formated_taxonomic
+
+
+def get_taxons_infos(taxon_ids: [int]):
+    data = (DB
+        .session.query(Taxref)
+        .filter(Taxref.cd_nom.in_(tuple(taxon_ids)))
+        .all()
+    )
+    return [row.as_dict() for row in data]

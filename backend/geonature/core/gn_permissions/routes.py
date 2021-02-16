@@ -21,14 +21,12 @@ from flask import (
     redirect,
     jsonify
 )
-from sqlalchemy import (and_, cast, Date, distinct, func, or_)
+from sqlalchemy import (and_, distinct, func, or_)
 from sqlalchemy.orm import (aliased, noload, exc)
 from utils_flask_sqla.response import json_resp
 from pypnusershub.db.models import (User, AppRole)
 
 from geonature.core.gn_commons.models import TModules
-from geonature.core.ref_geo.models import LAreas, BibAreasTypes
-from geonature.core.taxonomie.models import Taxref
 from geonature.core.users.models import (BibOrganismes, CorRole)
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.models import (
@@ -43,8 +41,12 @@ from geonature.core.gn_permissions.models import (
 )
 from geonature.core.gn_permissions.tools import (
     cruved_scope_for_user_in_module, 
-    PermissionsManager,
+    PermissionsManager, UserPermissions, split_value_filter, unduplicate_values,
+    format_geographic_filter_values, get_areas_infos, format_taxonomic_filter_values,
+    get_taxons_infos
 )
+
+from geonature.core.gn_permissions.repositories import PermissionRepository
 from geonature.utils.env import DB
 from geonature.utils.utilsmails import send_mail
 
@@ -213,10 +215,7 @@ def format_end_access_date(end_date, date_format="%Y-%m-%d"):
     return formated_end_date
 
 
-def unduplicate_values(data: list) -> list:
-    unduplicated_data = []
-    [unduplicated_data.append(x) for x in data if x not in unduplicated_data]
-    return unduplicated_data
+
 
 
 def send_email_after_access_request(data, user_id, request_token):
@@ -264,53 +263,6 @@ def get_user_infos(user_id):
         .as_dict()
     )
     return user
-
-
-def format_geographic_filter_values(areas: [int]):
-    formated_geo = []
-    if len(areas) > 0:
-        for area in get_areas_infos(areas):
-            name = area["area_name"]
-            code = area["area_code"]
-            if area["type_code"] == "DEP":
-                name = f"{name} [{code}]"
-            elif area["type_code"] == "COM":
-                name = f"{name} [{code[:2]}]"
-            formated_geo.append(name)
-    return formated_geo
-
-
-def get_areas_infos(area_ids: [int]):
-    data = (DB
-        .session.query(
-            LAreas.area_name,
-            LAreas.area_code,
-            BibAreasTypes.type_code
-        )
-        .join(LAreas, LAreas.id_type == BibAreasTypes.id_type)
-        .filter(LAreas.id_area.in_(tuple(area_ids)))
-        .all()
-    )
-    return [row._asdict() for row in data]
-
-
-def format_taxonomic_filter_values(taxa: [int]):
-    formated_taxonomic = []
-    if len(taxa) > 0:
-        for taxon in get_taxons_infos(taxa):
-            name = taxon["nom_complet_html"]
-            code = taxon["cd_nom"]
-            formated_taxonomic.append(f"{name} [{code}]")
-    return formated_taxonomic
-
-
-def get_taxons_infos(taxon_ids: [int]):
-    data = (DB
-        .session.query(Taxref)
-        .filter(Taxref.cd_nom.in_(tuple(taxon_ids)))
-        .all()
-    )
-    return [row.as_dict() for row in data]
 
 
 def format_additional_fields(data):
@@ -553,13 +505,6 @@ def get_permissions_with_filters(request, default_permissions):
     
     return permissions_with_filters
 
-
-def split_value_filter(data: str):
-    if data == None or data == '':
-        return []
-    values = data.split(',')
-    unduplicated_data = unduplicate_values(values)
-    return unduplicated_data
 
 
 def get_geographic_permissions(default_permissions):
@@ -1233,7 +1178,7 @@ def get_permissions_by_role_id(id_role):
     """
     # Get request parameters
     params = request.args.to_dict()
-
+    user_permissions = UserPermissions(id_role=id_role)
     # Get role infos
     query = (
         DB.session
@@ -1262,18 +1207,15 @@ def get_permissions_by_role_id(id_role):
         })
 
     # Prepare permissions
-    permissions = {}
 
     # Get permissions uninherited
-    query = build_permission_query(id_role=id_role)
-    results = query.all()
+    results = PermissionRepository().get_all_personal_permissions(id_role=id_role)
     for result in results:
         (
             id_role, label, code, module, action_code, object_code,
             end_date, gathering, filter_type, filter_value
         ) = result
-        append_permission(
-            permissions=permissions,
+        user_permissions.append_permission(
             label=label,
             code=code,
             module_code=module,
@@ -1285,6 +1227,8 @@ def get_permissions_by_role_id(id_role):
             filter_value=filter_value,
             is_inherited=False
         )
+    
+    # return user_permissions.permissions
 
     # Recover inherited permissions if necessary
     if ("with-inheritance" in params and is_true(params["with-inheritance"])):
@@ -1310,15 +1254,12 @@ def get_permissions_by_role_id(id_role):
                     is_inherited_by_module = perm_infos["is_inherited"]
                     inherited_by = perm_infos["inherited_by"]
                     other_filters_permissions = perm_infos["other_filters"]
-
-
                 prepared_inherited_by = prepare_inherited_by(
                     role, max_perm, inherited_by, is_inherited_by_module
                 )
                 is_inherited = (
                     prepared_inherited_by["by_group"] or prepared_inherited_by["by_module"]
                 )
-
                 for perm in [max_perm, *other_filters_permissions]:
                     inheritance.append({
                         "module_code": module_code,
@@ -1394,7 +1335,7 @@ def get_permissions_by_role_id(id_role):
             elif perm["is_inherited"] and perm["module_code"] != "GEONATURE":
                 # WARNING : only add an inherited permission by an object if a 
                 # corresponding entry was found in cor_module_action_object_filter table
-                object_permission_infos = get_permission_available(
+                object_permission_infos = PermissionRepository().get_permission_available(
                     module_code=perm["module_code"], 
                     action_code=perm["action_code"], 
                     object_code=perm["object_code"], 
@@ -1405,18 +1346,17 @@ def get_permissions_by_role_id(id_role):
                     perm["label"] = object_permission_infos["label"]
                     perm["code"] = object_permission_infos["code"]
                     
-                    append_permission(permissions=permissions, **perm)
+                    user_permissions.append_permission(**perm)
             else:
-                append_permission(permissions=permissions, **perm)
+                user_permissions.append_permission(**perm)
 
     # Add permissions list to role (remove "gathering from output")
-    for module_name in permissions:
-        permissions[module_name] = list(permissions[module_name].values())
-    role["permissions"] = permissions
+    for module_name in user_permissions.permissions:
+        user_permissions.permissions[module_name] = list(user_permissions.permissions[module_name].values())
+    role["permissions"] = user_permissions.permissions
 
     # Send response
-    output = prepare_output(role)
-    return output, 200
+    return prepare_output(role)
 
 
 def get_user_groups(id_role):
@@ -1448,147 +1388,7 @@ def prepare_inherited_by(role, permission, inherited_by, is_inherited_by_module)
         "group_name": group_name,
     }
 
-def get_permission_available(module_code, action_code, object_code, filter_type_code):
-    try:
-        query = (
-            DB.session.query(
-                CorModuleActionObjectFilter.label,
-                CorModuleActionObjectFilter.code,
-            )
-            .join(
-                TModules, 
-                TModules.id_module == CorModuleActionObjectFilter.id_module
-            )
-            .join(
-                TActions, 
-                TActions.id_action == CorModuleActionObjectFilter.id_action
-            )
-            .join(
-                TObjects, 
-                TObjects.id_object == CorModuleActionObjectFilter.id_object
-            )
-            .join(
-                BibFiltersType, 
-                BibFiltersType.id_filter_type == CorModuleActionObjectFilter.id_filter_type
-            )
-            .filter(TModules.module_code == module_code)
-            .filter(TActions.code_action == action_code)
-            .filter(TObjects.code_object == object_code)
-            .filter(BibFiltersType.code_filter_type == filter_type_code)
-        )
-        result = query.one()
-        data = {"label": result.label, "code": result.code}
-    except exc.NoResultFound:
-        log.warn(
-            "Permission available not found for: "
-            f"module={module_code}, "+
-            f"action={action_code}, "+
-            f"object={object_code}, "+
-            f"filter_type={filter_type_code}. "
-        )
-        return False
-    return data
 
-
-def append_permission(
-        permissions, module_code, action_code, object_code,  
-        label, code, filter_type, filter_value, gathering, end_date,
-        is_inherited, inherited_by=None,
-    ):
-    """Les permissions non héritées doivent être ajouté en premier.
-
-    Parameters
-    ----------
-    is_inherited : bool
-        Booléen indiquant si oui ou non la permission est héritée d'un module parent ou d'un groupe.
-    """
-    # Initialize new module entry
-    if module_code not in permissions.keys():
-        permissions[module_code] = {}
-
-    # Build filter labels if necessary
-    labels = None
-    if filter_type == 'GEOGRAPHIC':
-        filter_value = split_value_filter(filter_value)
-        labels = format_geographic_filter_values(filter_value)
-    if filter_type == 'TAXONOMIC':
-        filter_value = split_value_filter(filter_value)
-        labels = format_taxonomic_filter_values(filter_value)
-
-    # Create new permission or only add an additionnal filter
-    gathering = str(gathering)
-    permission_hash = f"{module_code}-{action_code}-{object_code}-{gathering}"
-    if permission_hash not in permissions[module_code].keys():
-        permissions[module_code][permission_hash] = {
-            "name": label,
-            "code": code,
-            "gathering": gathering,
-            "module": module_code,
-            "action": action_code,
-            "object": object_code,
-            "end_date": end_date,
-            "filters": [{
-                "type": filter_type,
-                "value": filter_value,
-                "label": labels,
-            }],
-            "is_inherited": is_inherited,
-            "inherited_by": (inherited_by if is_inherited else None),
-        }
-    else:
-        recorded_gathering = permissions[module_code][permission_hash]["gathering"]
-        recorded_filters = permissions[module_code][permission_hash]["filters"]
-        if (
-            not any(f['type'] == filter_type for f in recorded_filters) 
-            and gathering == recorded_gathering
-        ):
-            new_filter = {
-                "type": filter_type,
-                "value": filter_value,
-                "label": labels,
-            }
-            permissions[module_code][permission_hash]["filters"].append(new_filter)
-
-
-def build_permission_query(id_role=None, gatherings=None, limit_by_filter_code=None):
-    query = (
-        DB.session.query(
-            CorRoleActionFilterModuleObject.id_role,
-            CorModuleActionObjectFilter.label,
-            CorModuleActionObjectFilter.code,
-            TModules.module_code,
-            TActions.code_action,
-            TObjects.code_object,
-            cast(CorRoleActionFilterModuleObject.end_date, Date),
-            CorRoleActionFilterModuleObject.gathering,
-            BibFiltersType.code_filter_type,
-            CorRoleActionFilterModuleObject.value_filter
-        )
-        .join(User, User.id_role == CorRoleActionFilterModuleObject.id_role)
-        .join(CorModuleActionObjectFilter, and_(
-            CorModuleActionObjectFilter.id_module == CorRoleActionFilterModuleObject.id_module,
-            CorModuleActionObjectFilter.id_action == CorRoleActionFilterModuleObject.id_action,
-            CorModuleActionObjectFilter.id_object == CorRoleActionFilterModuleObject.id_object,
-            CorModuleActionObjectFilter.id_filter_type == CorRoleActionFilterModuleObject.id_filter_type,
-        ))
-        .join(
-            TActions, 
-            TActions.id_action == CorModuleActionObjectFilter.id_action
-        )
-        .join(
-            TObjects, 
-            TObjects.id_object == CorModuleActionObjectFilter.id_object
-        )
-        .join(TModules, TModules.id_module == CorRoleActionFilterModuleObject.id_module)
-        .join(BibFiltersType, BibFiltersType.id_filter_type == CorRoleActionFilterModuleObject.id_filter_type)
-    )
-    if id_role:
-        query = query.filter(User.id_role == id_role)
-    if gatherings:
-        query = query.filter(CorRoleActionFilterModuleObject.gathering.in_(gatherings))
-    if limit_by_filter_code:
-        query = query.filter(BibFiltersType.code_filter_type == limit_by_filter_code)
-    return query
 
 
 def is_true(param):
@@ -1613,7 +1413,7 @@ def delete_permission(gathering):
     """
     # Delete permission
     try:
-        delete_permission_by_gathering(gathering)
+        PermissionRepository().delete_permission_by_gathering(gathering)
         DB.session.commit()
         DB.session.flush()
     except exc.NoResultFound:
@@ -1634,14 +1434,7 @@ def delete_permission(gathering):
     return "", 204
 
 
-def delete_permission_by_gathering(gathering):
-    result = (
-        DB.session
-        .query(CorRoleActionFilterModuleObject)
-        .filter(CorRoleActionFilterModuleObject.gathering == gathering)
-        .delete()
-    )
-    return result
+
 
 @routes.route("/availables/actions-objects", methods=["GET"])
 @permissions.check_cruved_scope("R", module_code="ADMIN", object_code="PERMISSIONS")
