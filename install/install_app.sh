@@ -245,8 +245,8 @@ npm ci --only=prod
 
 if [[ $MODE != "dev" ]]
 then
-  cd frontend
   echo "Build du frontend..."
+  cd "${BASE_DIR}/frontend"
   npm rebuild node-sass --force
   npm run build
 fi
