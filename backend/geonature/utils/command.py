@@ -19,8 +19,6 @@ from geonature.utils.env import (
     BACKEND_DIR,
     ROOT_DIR,
     GN_MODULE_FE_FILE,
-    load_config,
-    get_config_file_path,
     DB,
     GN_EXTERNAL_MODULE,
 )
@@ -28,6 +26,7 @@ from geonature.utils.errors import ConfigError
 from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.config_schema import GnGeneralSchemaConf
 from geonature.utils.module import import_frontend_enabled_modules
+from geonature.utils.config import config_frontend
 
 log = logging.getLogger(__name__)
 
@@ -37,18 +36,6 @@ MSG_OK = "\033[92mok\033[0m\n"
 def start_gunicorn_cmd(uri, worker):
     cmd = "gunicorn server:app -w {gun_worker} -b {gun_uri}"
     subprocess.call(cmd.format(gun_worker=worker, gun_uri=uri).split(" "), cwd=str(BACKEND_DIR))
-
-
-def get_app_for_cmd(config_file=None, with_external_mods=True, with_flask_admin=True):
-    """ Return the flask app object, logging error instead of raising them"""
-    try:
-        conf = load_config(config_file)
-        return create_app(
-            conf, with_external_mods=with_external_mods, with_flask_admin=with_flask_admin,
-        )
-    except ConfigError as e:
-        log.critical("%s \n" % e)
-        sys.exit(1)
 
 
 def supervisor_cmd(action, app_name):
@@ -68,7 +55,7 @@ def build_geonature_front(rebuild_sass=False):
 
 def frontend_routes_templating(app=None):
     if not app:
-        app = get_app_for_cmd(with_external_mods=False)
+        app = create_app(with_external_mods=False)
 
     with app.app_context():
 
@@ -119,7 +106,7 @@ def tsconfig_templating():
 
 def tsconfig_app_templating(app=None):
     if not app:
-        app = get_app_for_cmd(with_external_mods=False)
+        app = create_app(with_external_mods=False)
 
     with app.app_context():
 
@@ -146,13 +133,12 @@ def tsconfig_app_templating(app=None):
         log.info("...%s\n", MSG_OK)
 
 
-def create_frontend_config(conf_file):
+def create_frontend_config():
     log.info("Generating configuration")
-    configs_gn = load_and_validate_toml(conf_file, GnGeneralSchemaConf)
 
     with open(str(ROOT_DIR / "frontend/src/conf/app.config.ts.sample"), "r") as input_file:
         template = Template(input_file.read())
-        parameters = json.dumps(configs_gn, indent=True)
+        parameters = json.dumps(config_frontend, indent=True)
         app_config_template = template.render(parameters=parameters)
 
         with open(str(ROOT_DIR / "frontend/src/conf/app.config.ts"), "w") as output_file:
@@ -161,11 +147,11 @@ def create_frontend_config(conf_file):
     log.info("...%s\n", MSG_OK)
 
 
-def update_app_configuration(conf_file, build=True, prod=True):
+def update_app_configuration(build=True, prod=True):
     log.info("Update app configuration")
     if prod:
         subprocess.call(["sudo", "supervisorctl", "reload"])
-    create_frontend_config(conf_file)
+    create_frontend_config()
     if build:
         subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
     log.info("...%s\n", MSG_OK)

@@ -10,17 +10,12 @@ from flask_cors import CORS
 from sqlalchemy import exc as sa_exc
 from flask_sqlalchemy import before_models_committed
 
-from geonature.utils.env import MAIL, DB, MA, load_config, get_config_file_path
+from geonature.utils.config import config
+from geonature.utils.env import MAIL, DB, MA
 from geonature.utils.module import import_backend_enabled_modules
 
 
-def create_app(config=None, _app=None, with_external_mods=True, with_flask_admin=True):
-    if config is None:
-        config = load_config(get_config_file_path())
-    # Make sure app is a singleton
-    if _app is not None:
-        return _app
-
+def create_app(with_external_mods=True, with_flask_admin=True):
     app = Flask(__name__)
     app.config.update(config)
 

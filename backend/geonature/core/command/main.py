@@ -11,7 +11,6 @@ from geonature.utils.env import (
     GEONATURE_VERSION,
 )
 from geonature.utils.command import (
-    get_app_for_cmd,
     start_gunicorn_cmd,
     supervisor_cmd,
     start_geonature_front,
@@ -22,6 +21,7 @@ from geonature.utils.command import (
     tsconfig_app_templating,
     update_app_configuration,
 )
+from geonature import create_app
 
 # from rq import Queue, Connection, Worker
 # import redis
@@ -43,7 +43,7 @@ def main(ctx):
 # def launch_redis_worker():
 #     """ launch redis worker
 #     """
-#     app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
+#     app = create_app()
 #     with app.app_context():
 #         with Connection(redis.Redis(host='localhost', port='6379')):
 #             q = Queue()
@@ -52,27 +52,22 @@ def main(ctx):
 
 
 @main.command()
-@click.option("--conf-file", required=False, default=DEFAULT_CONFIG_FILE)
 @click.option("--build", type=bool, required=False, default=True)
-def generate_frontend_config(conf_file, build):
+def generate_frontend_config(build):
     """
         Génération des fichiers de configurations pour javascript
         Relance le build du front par defaut
     """
-    try:
-        create_frontend_config(conf_file)
-        if build:
-            build_geonature_front()
-        log.info("Config successfully updated")
-    except FileNotFoundError:
-        log.warning("file {} doesn't exists".format(conf_file))
+    create_frontend_config()
+    if build:
+        build_geonature_front()
+    log.info("Config successfully updated")
 
 
 @main.command()
 @click.option("--uri", default="0.0.0.0:8000")
 @click.option("--worker", default=4)
-@click.option("--conf-file", required=False, default=DEFAULT_CONFIG_FILE)
-def start_gunicorn(uri, worker, config_file=None):
+def start_gunicorn(uri, worker):
     """
         Lance l'api du backend avec gunicorn
     """
@@ -82,8 +77,7 @@ def start_gunicorn(uri, worker, config_file=None):
 @main.command()
 @click.option("--host", default="0.0.0.0")
 @click.option("--port", default=8000)
-@click.option("--conf-file", required=False, default=DEFAULT_CONFIG_FILE)
-def dev_back(host, port, conf_file):
+def dev_back(host, port):
     """
         Lance l'api du backend avec flask
 
@@ -93,7 +87,7 @@ def dev_back(host, port, conf_file):
 
         - geonature dev_back --port=8080 --port=0.0.0.0
     """
-    app = get_app_for_cmd(conf_file)
+    app = create_app()
     app.run(host=host, port=int(port), debug=True)
 
 
@@ -150,10 +144,9 @@ def generate_frontend_tsconfig_app():
 
 
 @main.command()
-@click.option("--conf-file", required=False, default=DEFAULT_CONFIG_FILE)
 @click.option("--build", type=bool, required=False, default=True)
 @click.option("--prod", type=bool, required=False, default=True)
-def update_configuration(conf_file, build, prod):
+def update_configuration(build, prod):
     """
         Regénère la configuration de l'application
 
@@ -166,7 +159,7 @@ def update_configuration(conf_file, build, prod):
     """
     # Recréation du fichier de routing car il dépend de la conf
     frontend_routes_templating()
-    update_app_configuration(conf_file, build, prod)
+    update_app_configuration(build, prod)
 
 
 @main.command()
@@ -175,7 +168,7 @@ def import_jdd_from_mtd(table_name):
     """
     Import les JDD et CA (et acters associé) à partir d'une table (ou vue) listant les UUID des JDD dans MTD
     """
-    app = get_app_for_cmd()
+    app = create_app()
     with app.app_context():
         from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actors
         import_all_dataset_af_and_actors(table_name)

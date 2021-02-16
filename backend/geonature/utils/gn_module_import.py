@@ -14,13 +14,14 @@ from packaging import version
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
 
+from geonature.utils.config import config
 from geonature.utils.config_schema import GnGeneralSchemaConf, ManifestSchemaProdConf
 from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
 from geonature.utils.command import build_geonature_front, frontend_routes_templating
-from geonature.utils.command import get_app_for_cmd
 from geonature.utils.module import import_gn_module
 from geonature.core.gn_commons.models import TModules
+from geonature import create_app
 
 from geonature.utils.env import (
     GEONATURE_VERSION,
@@ -29,8 +30,6 @@ from geonature.utils.env import (
     GN_MODULE_FE_FILE,
     ROOT_DIR,
     DB,
-    DEFAULT_CONFIG_FILE,
-    load_config,
     import_requirements,
 )
 from geonature.utils.config_schema import ManifestSchemaConf
@@ -134,7 +133,7 @@ def gn_module_activate(module_code, activ_front, activ_back):
             "Module {} is not activated (Not in external_module directory)".format(module_code)
         )
     else:
-        app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
+        app = create_app()
         with app.app_context():
             try:
                 module = (
@@ -165,7 +164,7 @@ def gn_module_deactivate(module_code, activ_front, activ_back):
 
     app = None
     try:
-        app = get_app_for_cmd(DEFAULT_CONFIG_FILE)
+        app = create_app()
         with app.app_context():
             module = (
                 DB.session.query(TModules)
@@ -346,8 +345,7 @@ def add_application_db(app, module_code, url, enable_frontend, enable_backend):
     from geonature.core.gn_commons.models import TModules
 
     new_module = True
-    app_conf = load_config(DEFAULT_CONFIG_FILE)
-    id_application_geonature = app_conf["ID_APPLICATION_GEONATURE"]
+    id_application_geonature = config["ID_APPLICATION_GEONATURE"]
     # remove / at the end and at the beginning
     if url[0] == "/":
         url = url[1:]

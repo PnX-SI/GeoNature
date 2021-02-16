@@ -8,7 +8,6 @@ from urllib.parse import urlparse
 from sqlalchemy import exc as sa_exc
 from werkzeug.middleware.proxy_fix import ProxyFix
 
-from geonature.utils.env import load_config, get_config_file_path
 from geonature import create_app
 
 class ReverseProxied(object):

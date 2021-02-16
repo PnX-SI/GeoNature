@@ -5,7 +5,6 @@ import subprocess
 import sys
 
 from pathlib import Path
-from collections import ChainMap, namedtuple
 import pkg_resources
 
 from flask_sqlalchemy import SQLAlchemy
@@ -25,12 +24,6 @@ try:
 except pkg_resources.DistributionNotFound:
     with open(str((ROOT_DIR / "VERSION"))) as v:
         GEONATURE_VERSION = v.read()
-from geonature.utils.config_schema import (
-    GnGeneralSchemaConf,
-    GnPySchemaConf,
-    ManifestSchemaProdConf,
-)
-from geonature.utils.utilstoml import load_and_validate_toml
 
 BACKEND_DIR = ROOT_DIR / "backend"
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/geonature_config.toml"
@@ -48,30 +41,6 @@ GN_MODULE_FILES = (
 
 GN_EXTERNAL_MODULE = ROOT_DIR / "external_modules"
 GN_MODULE_FE_FILE = "frontend/app/gnModule.module"
-
-
-def get_config_file_path(config_file=None):
-    """ Return the config file path by checking several sources
-
-        1 - Parameter passed
-        2 - GEONATURE_CONFIG_FILE env var
-        3 - Default config file value
-    """
-    config_file = config_file or os.environ.get("GEONATURE_CONFIG_FILE")
-    return Path(config_file or DEFAULT_CONFIG_FILE)
-
-
-def load_config(config_file=None):
-    """ Load the geonature configuration from a given file """
-    # load and validate configuration
-    configs_py = load_and_validate_toml(str(get_config_file_path(config_file)), GnPySchemaConf)
-
-    # Settings also exported to backend
-    configs_gn = load_and_validate_toml(
-        str(get_config_file_path(config_file)), GnGeneralSchemaConf
-    )
-
-    return ChainMap({}, configs_py, configs_gn)
 
 
 def import_requirements(req_file):
