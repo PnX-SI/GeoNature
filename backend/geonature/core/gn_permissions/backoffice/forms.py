@@ -15,6 +15,7 @@ from wtforms import (
 )
 from wtforms.validators import DataRequired, Email
 from wtforms.widgets import TextArea
+from wtforms_sqlalchemy.fields import QuerySelectField
 
 
 from geonature.core.gn_permissions.models import TFilters, BibFiltersType, TActions
@@ -59,19 +60,17 @@ class CruvedScopeForm(FlaskForm):
 
 
 class OtherPermissionsForm(FlaskForm):
-    module = SelectField(
+    module = QuerySelectField(
         "action",
-        choices=[
-            (str(mod.id_module), mod.module_label)
-            for mod in DB.session.query(TModules).order_by(TModules.module_label).all()
-        ],
+        query_factory=lambda: DB.session.query(TModules).order_by(TModules.module_label).all(),
+        get_pk=lambda mod: str(mod.id_module),
+        get_label=lambda mod: mod.module_label,
     )
-    action = SelectField(
+    action = QuerySelectField(
         "action",
-        choices=[
-            (str(act.id_action), act.description_action)
-            for act in DB.session.query(TActions).all()
-        ],
+        query_factory=lambda: DB.session.query(TActions).all(),
+        get_pk=lambda act: str(act.id_action),
+        get_label=lambda act: act.description_action,
     )
     filter = SelectField("filtre",)
     submit = SubmitField("Valider")
