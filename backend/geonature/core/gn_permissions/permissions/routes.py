@@ -34,45 +34,45 @@ from ..routes import routes
 log = logging.getLogger()
 
 # TODO: Delete if not used !
-@routes.route("/actions", methods=["GET"])
-@permissions.check_cruved_scope(action="R", module_code="ADMIN", object_code="PERMISSIONS")
-@json_resp
-def get_all_actions():
-    """
-    Retourne toutes les actions.
+# @routes.route("/actions", methods=["GET"])
+# @permissions.check_cruved_scope(action="R", module_code="ADMIN", object_code="PERMISSIONS")
+# @json_resp
+# def get_all_actions():
+#     """
+#     Retourne toutes les actions.
 
-    .. :quickref: Permissions;
+#     .. :quickref: Permissions;
 
-    :returns: un tableau de dictionnaire contenant les infos des actions.
-    """
-    q = DB.session.query(TActions)
-    actions = []
-    for act in q.all():
-        actions.append(act.as_dict())
+#     :returns: un tableau de dictionnaire contenant les infos des actions.
+#     """
+#     q = DB.session.query(TActions)
+#     actions = []
+#     for act in q.all():
+#         actions.append(act.as_dict())
 
-    output = prepare_output(actions, remove_in_key="action")
-    return output
+#     output = prepare_output(actions, remove_in_key="action")
+#     return output
 
 
-# TODO: Delete if not used !
-@routes.route("/filters", methods=["GET"])
-@permissions.check_cruved_scope(action="R", module_code="ADMIN", object_code="PERMISSIONS")
-@json_resp
-def get_all_filters():
-    """
-    Retourne tous les types de filtres.
+# # TODO: Delete if not used !
+# @routes.route("/filters", methods=["GET"])
+# @permissions.check_cruved_scope(action="R", module_code="ADMIN", object_code="PERMISSIONS")
+# @json_resp
+# def get_all_filters():
+#     """
+#     Retourne tous les types de filtres.
 
-    .. :quickref: Permissions;
+#     .. :quickref: Permissions;
 
-    :returns: un tableau de dictionnaire contenant les infos des filtres.
-    """
-    q = DB.session.query(BibFiltersType)
-    filters = []
-    for fit in q.all():
-        filters.append(fit.as_dict())
+#     :returns: un tableau de dictionnaire contenant les infos des filtres.
+#     """
+#     q = DB.session.query(BibFiltersType)
+#     filters = []
+#     for fit in q.all():
+#         filters.append(fit.as_dict())
     
-    output = prepare_output(filters, remove_in_key="filter_type")
-    return output
+#     output = prepare_output(filters, remove_in_key="filter_type")
+#     return output
 
 @routes.route("/filters-values", methods=["GET"])
 @permissions.check_cruved_scope(action="R", module_code="ADMIN", object_code="PERMISSIONS")
@@ -121,7 +121,6 @@ def get_all_filters_values():
 
 
 
-# TODO: Delete if not used !
 @routes.route("/objects", methods=["GET"])
 @permissions.check_cruved_scope(action="R", module_code="ADMIN", object_code="PERMISSIONS")
 @json_resp
