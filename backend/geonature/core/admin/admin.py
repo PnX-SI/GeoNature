@@ -1,7 +1,8 @@
-from flask import current_app
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.menu import MenuLink
+
 from geonature.utils.env import DB
+from geonature.utils.config import config
 
 from pypnnomenclature.admin import (
     BibNomenclaturesTypesAdminConfig,
@@ -23,7 +24,7 @@ class MyHomeView(AdminIndexView):
                 if v.category not in already_added_categie:
                     category["module_name"] = v.category
                     category["module_views"].append(
-                        {"url": current_app.config["API_ENDPOINT"] + v.url, "name": v.name,}
+                        {"url": config["API_ENDPOINT"] + v.url, "name": v.name,}
                     )
                     already_added_categie.append(v.category)
                 else:
@@ -31,7 +32,7 @@ class MyHomeView(AdminIndexView):
                         if m["module_name"] == v.category:
                             m["module_views"].append(
                                 {
-                                    "url": current_app.config["API_ENDPOINT"] + v.url,
+                                    "url": config["API_ENDPOINT"] + v.url,
                                     "name": v.name,
                                 }
                             )
@@ -39,8 +40,7 @@ class MyHomeView(AdminIndexView):
         return self.render("admin_home.html", admin_modules=admin_modules)
 
 
-flask_admin = Admin(
-    current_app,
+admin = Admin(
     template_mode="bootstrap3",
     url="/admin",
     index_view=MyHomeView(
@@ -52,7 +52,7 @@ flask_admin = Admin(
     base_template="my_master.html",
 )
 
-flask_admin.add_view(
+admin.add_view(
     BibNomenclaturesTypesAdminConfig(
         BibNomenclaturesTypesAdmin,
         DB.session,
@@ -61,7 +61,7 @@ flask_admin.add_view(
     )
 )
 
-flask_admin.add_view(
+admin.add_view(
     TNomenclaturesAdminConfig(
         TNomenclaturesAdmin, DB.session, name="Items de nomenclatures", category="Nomenclatures",
     )
