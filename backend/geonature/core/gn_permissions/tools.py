@@ -1,6 +1,7 @@
-import logging, json
+import logging
+import datetime
 
-from flask import current_app, redirect, Response
+from flask import current_app
 from werkzeug.exceptions import Unauthorized
 from werkzeug.routing import RequestRedirect
 
@@ -999,3 +1000,72 @@ def get_taxons_infos(taxon_ids: [int]):
         .all()
     )
     return [row.as_dict() for row in data]
+
+def build_value_filter_from_list(data: list):
+    unduplicated_data = unduplicate_values(data)
+    return ",".join(map(str, unduplicated_data))
+
+
+
+
+
+# -----------------------------------------------------------------------
+# UTILS functions
+# TODO: move this functions in other file (?)
+def prepare_output(d, remove_in_key=None):
+    if isinstance(d, list):
+        output = []
+        for item in d:
+            output.append(prepare_output(item, remove_in_key))
+        return output
+    elif isinstance(d, dict) :
+        new = {}
+        for k, v in d.items():
+            # Remove None and empty values
+            if v != None and v != "":
+                # Remove substring in key
+                if remove_in_key:
+                    k = k.replace(remove_in_key, '').strip('_')
+                # Value processing recursively
+                new[format_to_camel_case(k)] = prepare_output(v, remove_in_key)
+        return new
+    else:
+        return d
+
+
+def format_to_camel_case(snake_str):
+    components = snake_str.split('_')
+    return components[0].lower() + ''.join(x.title() for x in components[1:])
+
+
+def prepare_input(d):
+    if isinstance(d, list):
+        output = []
+        for item in d:
+            output.append(prepare_input(item))
+        return output
+    elif isinstance(d, dict) :
+        return dict((format_to_snake_case(k), v) for k, v in d.items())
+    else:
+        return d
+
+
+def format_to_snake_case(camel_str): 
+    return ''.join(['_'+char.lower() if char.isupper()  
+        else char for char in camel_str]).lstrip('_') 
+
+
+def format_role_name(role):
+    name_parts = []
+    if role.prenom_role:
+        name_parts.append(role.prenom_role)
+    if role.nom_role:
+        name_parts.append(role.nom_role)
+    return " ".join(name_parts)
+
+def format_end_access_date(end_date, date_format="%Y-%m-%d"):
+    formated_end_date = None
+    if (end_date):
+        date = datetime.date(end_date["year"], end_date["month"], end_date["day"])
+        formated_end_date = date.strftime(date_format)
+    return formated_end_date
