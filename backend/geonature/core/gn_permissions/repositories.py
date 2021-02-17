@@ -122,6 +122,8 @@ class PermissionRepository:
         # TODO: check if this permission with all this specific filters already exist
 
         # (Re)create permissions
+        print('LAAAAAAAA')
+        print(data['filters'])
         for key, val in data["filters"].items():
             if val != None:
                 # Get filter type and value

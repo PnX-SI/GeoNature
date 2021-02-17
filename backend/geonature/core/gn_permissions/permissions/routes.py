@@ -194,6 +194,8 @@ def get_permissions_for_all_roles(info_role):
             .order_by(User.groupe.desc(), User.prenom_role, User.nom_role)
     )
 
+    print(query)
+
     # Filter with user authentified permissions
     if info_role.value_filter == "2":
         query = query.filter(BibOrganismes.id_organisme == info_role.id_organisme)

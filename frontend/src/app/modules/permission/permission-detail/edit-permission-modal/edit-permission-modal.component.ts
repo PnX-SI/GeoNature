@@ -139,10 +139,11 @@ export class EditPermissionModal implements OnInit {
       filters: this.formBuilder.group({
         geographic: [''],
         taxonomic: [''],
-        precision: [''],
+        private: [''],
+        sensitivity: [''],
         scope: ['', Validators.required],
       }, {
-        validator: atLeastOne('geographic','taxonomic', 'precision', 'scope')
+        validator: atLeastOne('geographic','taxonomic', 'scope')
       }),
       validating: this.formBuilder.group({
         endDate: [''],
@@ -293,7 +294,8 @@ export class EditPermissionModal implements OnInit {
         geographic: null,
         taxonomic: null,
         scope: null,
-        precision: null,
+        sensitivity: null,
+        private: null
       },
       endDate: formData.validating.endDate,
     };
@@ -321,8 +323,12 @@ export class EditPermissionModal implements OnInit {
       permissionData.filters.scope = formData.filters.scope;
     }
 
-    if (formData.filters.precision) {
-      permissionData.filters.precision = formData.filters.precision;
+    if (formData.filters.sensitivity) {
+      permissionData.filters.sensitivity = formData.filters.sensitivity;
+    }
+
+    if (formData.filters.private) {
+      permissionData.filters.private = formData.filters.private;
     }
 
     return permissionData;

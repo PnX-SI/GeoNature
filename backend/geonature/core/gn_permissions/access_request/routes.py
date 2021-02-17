@@ -352,12 +352,12 @@ def get_access_request_default_permissions(request):
         {
             "module_code": "SYNTHESE", 
             "action_code": "R", 
-            "object_code": "PRIVATE_OBSERVATION",
+            "object_code": "ALL",
         },
         {
             "module_code": "SYNTHESE", 
             "action_code": "E", 
-            "object_code": "PRIVATE_OBSERVATION",
+            "object_code": "ALL",
         },
     ]
     
@@ -365,15 +365,15 @@ def get_access_request_default_permissions(request):
          default_permissions.append({
             "module_code": "VALIDATION", 
             "action_code": "R", 
-            "object_code": "PRIVATE_OBSERVATION",
+            "object_code": "ALL",
         })
 
     # Add new permissions for sensitive observations
-    if (request["sensitive_access"] is True):
-        default_sensitive_permissions = copy.deepcopy(default_permissions)
-        for permission in default_sensitive_permissions:
-            permission["object_code"] = "SENSITIVE_OBSERVATION" 
-        default_permissions.extend(default_sensitive_permissions)
+    # if (request["sensitive_access"] is True):
+    #     default_sensitive_permissions = copy.deepcopy(default_permissions)
+    #     for permission in default_sensitive_permissions:
+    #         permission["object_code"] = "SENSITIVE_OBSERVATION" 
+    #     default_permissions.extend(default_sensitive_permissions)
     
     return default_permissions
 
@@ -389,6 +389,21 @@ def get_permissions_with_filters(request, default_permissions):
         perm.end_date = request["end_date"]
         perm.value_filter = "3"# À tous le monde
         permissions_with_filters.append(perm)
+
+    permissions = get_private_permission(default_permissions)
+    for perm in permissions:
+        perm.id_role = request["id_role"]
+        perm.end_date = request["end_date"]
+        perm.value_filter = "true"
+        permissions_with_filters.append(perm) 
+
+    if (request["sensitive_access"] is True):
+        permissions = get_sensitivity_permission(default_permissions)
+        for perm in permissions:
+            perm.id_role = request["id_role"]
+            perm.end_date = request["end_date"]
+            perm.value_filter = "true"
+            permissions_with_filters.append(perm) 
 
     # Add Geo and Taxo filters to each permission
     if (request["geographic_filter"]):
@@ -408,14 +423,6 @@ def get_permissions_with_filters(request, default_permissions):
             perm.end_date = request["end_date"]
             perm.value_filter = build_value_filter_from_list(taxa)
             permissions_with_filters.append(perm)
-
-    # Precision filter
-    permissions = get_precision_permissions(default_permissions)
-    for perm in permissions:
-        perm.id_role = request["id_role"]
-        perm.end_date = request["end_date"]
-        perm.value_filter = "exact"
-        permissions_with_filters.append(perm)
     
     return permissions_with_filters
 
@@ -454,6 +461,22 @@ def get_property_permissions(default_permissions):
         fresh_perm = get_fresh_permission(**new_perm)
         permissions.append(fresh_perm)
     return permissions
+
+def get_private_permission(default_permissions):
+    permissions = []
+    for new_perm in default_permissions:
+        new_perm["filter_type_code"] = "PRIVATE"
+        fresh_perm = get_fresh_permission(**new_perm)
+        permissions.append(fresh_perm)
+    return permissions    
+
+def get_sensitivity_permission(default_permissions):
+    permissions = []
+    for new_perm in default_permissions:
+        new_perm["filter_type_code"] = "SENSITIVITY" # TODO: rename to PROPERTY...
+        fresh_perm = get_fresh_permission(**new_perm)
+        permissions.append(fresh_perm)
+    return permissions   
 
 
 def get_fresh_permission(filter_type_code, module_code, action_code, object_code, gathering=None, id_request=None):

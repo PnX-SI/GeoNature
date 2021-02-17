@@ -265,13 +265,16 @@
         "SCOPE": "Appartenance",
         "GEOGRAPHIC": "Géographique",
         "TAXONOMIC": "Taxonomique",
-        "PRECISION": "Précision"
+        "PRECISION": "Précision",
+        "PRIVATE": "Privée",
+        "SENSITIVITY": "Sensible"
       },
       "tooltips": {
         "SCOPE": "Permission limitée par le type d''appartenance des données.",
         "GEOGRAPHIC": "Permission limitée par des zones géographiques.",
         "TAXONOMIC": "Permission limitée par des taxons.",
-        "PRECISION": "Active (=floutée) ou désactive (=exacte) le floutage des données (sensibles ou privées)."
+        "PRIVATE": "Donne accès aux données privée",
+        "SENSITIVITY": "Donne accès aux données sensible"
       },
       "values": {
         "SCOPE": {
@@ -283,6 +286,14 @@
         "PRECISION": {
           "exact": "Exacte",
           "fuzzy": "Floutée"
+        },
+        "PRIVATE": {
+          "true": "Oui",
+          "false": "Non"
+        },
+        "SENSITIVITY": {
+          "true": "Oui",
+          "false": "Non"
         }
       }
     },
