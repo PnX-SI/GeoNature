@@ -1,6 +1,5 @@
 from collections import OrderedDict
 
-from flask import current_app
 from sqlalchemy import ForeignKey, or_, Sequence
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import select, func
@@ -23,6 +22,7 @@ from geonature.core.ref_geo.models import LAreas
 from geonature.core.ref_geo.models import LiMunicipalities
 from geonature.core.gn_commons.models import THistoryActions, TValidations, TMedias
 from geonature.utils.env import DB
+from geonature.utils.config import config
 
 
 @serializable
@@ -133,7 +133,7 @@ class Synthese(DB.Model):
     precision = DB.Column(DB.Integer)
     the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_point = DB.Column(Geometry("GEOMETRY", 4326))
-    the_geom_local = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
+    the_geom_local = DB.Column(Geometry("GEOMETRY", config["LOCAL_SRID"]))
     place_name = DB.Column(DB.Unicode)
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
@@ -272,7 +272,7 @@ def synthese_export_serialization(cls):
     Il rajoute la fonction as_dict_ordered qui conserve l'ordre des attributs tel que definit dans le model
     (fonctions utilisees pour les exports) et qui redefinit le nom des colonnes tel qu'ils sont nommes en configuration
     """
-    EXPORT_COLUMNS = current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]
+    EXPORT_COLUMNS = config["SYNTHESE"]["EXPORT_COLUMNS"]
     # tab of cls attributes from EXPORT COLUMNS
     formated_default_columns = [key for key, value in EXPORT_COLUMNS.items()]
 

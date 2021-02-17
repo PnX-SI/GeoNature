@@ -248,11 +248,11 @@ BEGIN;
     FOR EACH STATEMENT
     EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese_on_each_statement();
 
-    DROP TRIGGER tri_update_cor_area_synthese ON gn_synthese.synthese;
-    CREATE TRIGGER tri_update_cor_area_synthese
-    AFTER UPDATE OF the_geom_local, the_geom_4326 ON gn_synthese.synthese
-    FOR EACH ROW
-    EXECUTE PROCEDURE gn_synthese.fct_trig_update_in_cor_area_synthese();
+   DROP TRIGGER IF EXISTS tri_update_cor_area_synthese ON gn_synthese.synthese;
+   CREATE TRIGGER tri_update_cor_area_synthese
+   AFTER UPDATE OF the_geom_local, the_geom_4326 ON gn_synthese.synthese
+   FOR EACH ROW
+   EXECUTE PROCEDURE gn_synthese.fct_trig_update_in_cor_area_synthese();
 
 
     -- Update import in synthese function
@@ -474,19 +474,19 @@ BEGIN;
       DROP CONSTRAINT check_synthese_info_geo_type_id_area_attachment;
 
     -- Suppression des fonctions et triggers de calcul des couleurs des taxons par unités géographiques (remplacés par une vue)
-    DROP FUNCTION gn_synthese.calcul_cor_area_taxon;
+    DROP FUNCTION IF EXISTS gn_synthese.calcul_cor_area_taxon;
 
-    DROP TRIGGER tri_maj_cor_area_taxon ON gn_synthese.cor_area_synthese;
-    DROP FUNCTION gn_synthese.fct_tri_maj_cor_unite_taxon;
+    DROP TRIGGER IF EXISTS tri_maj_cor_area_taxon ON gn_synthese.cor_area_synthese;
+    DROP FUNCTION IF EXISTS gn_synthese.fct_tri_maj_cor_unite_taxon;
 
-    DROP TRIGGER tri_del_area_synt_maj_corarea_tax ON gn_synthese.synthese;
-    DROP FUNCTION gn_synthese.fct_tri_manage_area_synth_and_taxon;
-    DROP FUNCTION gn_synthese.delete_and_insert_area_taxon;
+    DROP TRIGGER IF EXISTS tri_del_area_synt_maj_corarea_tax ON gn_synthese.synthese;
+    DROP FUNCTION IF EXISTS gn_synthese.fct_tri_manage_area_synth_and_taxon;
+    DROP FUNCTION IF EXISTS gn_synthese.delete_and_insert_area_taxon;
 
-    DROP TRIGGER tri_update_cor_area_taxon_update_cd_nom on gn_synthese.synthese;
-    DROP FUNCTION gn_synthese.fct_tri_update_cd_nom;
+    DROP TRIGGER IF EXISTS tri_update_cor_area_taxon_update_cd_nom on gn_synthese.synthese;
+    DROP FUNCTION IF EXISTS gn_synthese.fct_tri_update_cd_nom;
 
-    DROP TABLE gn_synthese.cor_area_taxon CASCADE;
+    DROP TABLE IF EXISTS gn_synthese.cor_area_taxon CASCADE;
 
     -- Ajout du paramètre permettant de définir le type de zonage utilisé pour les unités géographiques dans Occtax-mobile 
     INSERT INTO gn_commons.t_parameters (id_organism, parameter_name, parameter_desc, parameter_value)

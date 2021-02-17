@@ -156,7 +156,7 @@ export class MetadataComponent implements OnInit {
    **/
   updateSearchbar(event) {
     this.researchTerm = event;
-
+    const searchTerm = this.researchTerm.toLocaleLowerCase();
     //recherche des cadres d'acquisition qui matchent
     this.tempAF = this.acquisitionFrameworks.filter(af => {
       //si vide => affiche tout et ferme le panel
@@ -167,12 +167,13 @@ export class MetadataComponent implements OnInit {
         af.datasetsTemp = af.datasets;
         return true;
       } else {
+        
         // expand tout les accordion recherchés pour voir le JDD des CA
         this.expandAccordions = true;
-        if ((af.id_acquisition_framework + ' ').toLowerCase().indexOf(this.researchTerm) !== -1
-          || af.acquisition_framework_name.toLowerCase().indexOf(this.researchTerm) !== -1
-          || af.acquisition_framework_start_date.toLowerCase().indexOf(this.researchTerm) !== -1
-          || af.unique_acquisition_framework_id.toLowerCase().indexOf(this.researchTerm) !== -1
+        if ((af.id_acquisition_framework + ' ').toLowerCase().indexOf(searchTerm) !== -1
+          || af.acquisition_framework_name.toLowerCase().indexOf(searchTerm) !== -1
+          || af.acquisition_framework_start_date.toLowerCase().indexOf(searchTerm) !== -1
+          || af.unique_acquisition_framework_id.toLowerCase().indexOf(searchTerm) !== -1
         ) {
           //si un cadre matche on affiche tout ses JDD
           af.datasetsTemp = af.datasets;
@@ -182,10 +183,10 @@ export class MetadataComponent implements OnInit {
         //Sinon on on filtre les JDD qui matchent eventuellement.
         if (af.datasets) {
           af.datasetsTemp = af.datasets.filter(
-            ds => ((ds.id_dataset + ' ').toLowerCase().indexOf(this.researchTerm) !== -1
-              || ds.dataset_name.toLowerCase().indexOf(this.researchTerm) !== -1
-              || ds.unique_dataset_id.toLowerCase().indexOf(this.researchTerm) !== -1
-              || ds.meta_create_date.toLowerCase().indexOf(this.researchTerm) !== -1)
+            ds => ((ds.id_dataset + ' ').toLowerCase().indexOf(searchTerm) !== -1
+              || ds.dataset_name.toLowerCase().indexOf(searchTerm) !== -1
+              || ds.unique_dataset_id.toLowerCase().indexOf(searchTerm) !== -1
+              || ds.meta_create_date.toLowerCase().indexOf(searchTerm) !== -1)
           );
           return af.datasetsTemp.length;
         }

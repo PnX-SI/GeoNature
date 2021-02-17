@@ -215,6 +215,7 @@ COMMENT ON COLUMN bib_areas_types.ref_name IS 'Indique le nom du référentiel g
 COMMENT ON COLUMN bib_areas_types.ref_version IS 'Indique l''année du référentiel utilisé';
 ALTER SEQUENCE bib_areas_types_id_type_seq OWNED BY bib_areas_types.id_type;
 ALTER TABLE ONLY bib_areas_types ALTER COLUMN id_type SET DEFAULT nextval('bib_areas_types_id_type_seq'::regclass);
+ALTER TABLE ONLY bib_areas_types ADD CONSTRAINT unique_bib_areas_types_type_code UNIQUE (type_code);
 
 CREATE SEQUENCE l_areas_id_area_seq
     START WITH 1
@@ -245,6 +246,7 @@ CREATE TABLE l_areas (
 ALTER SEQUENCE l_areas_id_area_seq OWNED BY l_areas.id_area;
 ALTER TABLE ONLY l_areas ALTER COLUMN id_area SET DEFAULT nextval('l_areas_id_area_seq'::regclass);
 ALTER TABLE l_areas ALTER COLUMN geom SET STORAGE EXTERNAL;
+ALTER TABLE ONLY ref_geo.l_areas ADD CONSTRAINT unique_id_type_area_code UNIQUE (id_type, area_code);
 
 CREATE TABLE li_municipalities (
     id_municipality character varying(25) NOT NULL,
@@ -342,6 +344,8 @@ ALTER TABLE ref_geo.li_grids
 CREATE INDEX index_l_areas_geom ON l_areas USING gist (geom);
 CREATE INDEX index_l_areas_centroid ON l_areas USING gist (centroid);
 CREATE INDEX index_dem_vector_geom ON dem_vector USING gist (geom);
+CREATE UNIQUE INDEX i_unique_l_areas_id_type_area_code ON l_areas (id_type, area_code);
+CREATE UNIQUE INDEX i_unique_bib_areas_types_type_code ON bib_areas_types(type_code);
 
 ------------
 --TRIGGERS--

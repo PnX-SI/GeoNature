@@ -10,13 +10,12 @@ from flask_cors import CORS
 from sqlalchemy import exc as sa_exc
 from flask_sqlalchemy import before_models_committed
 
-from geonature.utils.env import MAIL, DB, MA, list_and_import_gn_modules
+from geonature.utils.config import config
+from geonature.utils.env import MAIL, DB, MA
+from geonature.utils.module import import_backend_enabled_modules
 
-def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
-    # Make sure app is a singleton
-    if _app is not None:
-        return _app
 
+def create_app(with_external_mods=True, with_flask_admin=True):
     app = Flask(__name__)
     app.config.update(config)
 
@@ -125,9 +124,8 @@ def get_app(config, _app=None, with_external_mods=True, with_flask_admin=True):
 
         # Loading third-party modules
         if with_external_mods:
-            for conf, manifest, module in list_and_import_gn_modules(app):
-                app.register_blueprint(
-                    module.backend.blueprint.blueprint, url_prefix=conf["MODULE_URL"]
-                )
+            for module, blueprint in import_backend_enabled_modules():
+                app.config[blueprint.config['MODULE_CODE']] = blueprint.config
+                app.register_blueprint(blueprint, url_prefix=blueprint.config['MODULE_URL'])
         _app = app
     return app
