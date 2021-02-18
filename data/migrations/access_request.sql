@@ -746,7 +746,7 @@ COMMENT ON COLUMN gn_permissions.cor_module_action_object_filter.label IS
      'Cette valeur sera identique pour toutes les lignes ayant les mêmes valeurs '
      'd''action et d''objet.\n'
      'Elle sert à nommer une permission quelque soit son filtre et son module.\n'
-     'Ex.: Lire les observations privées';
+     'Ex.: Lire les observations précises';
 COMMENT ON COLUMN gn_permissions.cor_module_action_object_filter.description IS 
 	E'Description de la permission, de son cadre d''utilisation et des valeurs autorisées '
      'pour le filtre.';
@@ -1935,8 +1935,8 @@ BEGIN
                     gn_permissions.get_id_object('ALL'),
                     gn_permissions.get_id_filter_type('PRIVATE'),
                     'SYNTHESE-V-ALL-PRIVATE-SCOPE',
-                    'Valider des observations privées',
-                    'Valider des observations privées dans le module Validation en étant limitée aux par le statut des données (privé / public)'
+                    'Valider des observations précises',
+                    'Valider des observations précises dans le module Validation en étant limitée aux par le statut des données (privé / public)'
                 WHERE NOT EXISTS (
                     SELECT 'X'
                     FROM gn_permissions.cor_module_action_object_filter AS cmaof
