@@ -33,13 +33,13 @@ GeoNature utilise :
 Liste des routes
 *****************
 
-.. qrefflask:: geonature.utils.command:get_app_for_cmd(with_flask_admin=False)
+.. qrefflask:: geonature:create_app(with_flask_admin=False)
   :undoc-static:
 
 Documentation des routes
 ************************
 
-.. autoflask:: geonature.utils.command:get_app_for_cmd(with_flask_admin=False)
+.. autoflask:: geonature:create_app(with_flask_admin=False)
   :undoc-static:
 
 

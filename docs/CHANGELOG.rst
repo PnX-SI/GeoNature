@@ -476,12 +476,12 @@ par :
 **⚠️ Notes de version**
 
 * Vous pouvez passer directement à cette version depuis la 2.2.x, mais en suivant les notes des versions intermédiaires (NB : il n'est pas nécessaire d’exécuter le script ``migrate.sh`` des versions précédentes)
-* Installez ``pip3`` et ``virtualenv``
-::
+* Installez ``pip3`` et ``virtualenv``::
 
     sudo apt-get update
     sudo apt-get install python3-pip
     sudo pip3 install virtualenv==20.0.1
+
 * Rajoutez la ligne ``gun_timeout=30`` au fichier ``config/settings.ini`` puis rechargez supervisor (``sudo supervisorctl reload``). Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.
 * Depuis le répertoire ``frontend``, lancez la commande ``nvm install``
 

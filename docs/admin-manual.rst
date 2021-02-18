@@ -1513,8 +1513,11 @@ Après toute modification de la configuration d'un module, il faut regénérer l
 
 Liste des champs visibles
 *************************
- La configuration des champs de la liste se fait via deux paramètres:
+
+La configuration des champs de la liste se fait via deux paramètres:
+
 - ``COLUMNS_API_VALIDATION_WEB_APP``
+
 Liste des colonnes qui seront récupérées en plus des colonnes obligatoires. Les colonnes disponibles correspondent à celles présentent dans la vue ``v_synthese_validation_forwebapp``
 
 ::
@@ -1535,6 +1538,7 @@ Liste des colonnes qui seront récupérées en plus des colonnes obligatoires. L
     "nom_vern_or_lb_nom"
 
 - ``LIST_COLUMNS_FRONTEND``
+
 Gestion de l'affichage des colonnes de la liste
 
 ::
