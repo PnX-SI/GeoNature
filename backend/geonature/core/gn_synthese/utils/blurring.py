@@ -19,6 +19,7 @@ class DataBlurring:
     def __init__(
         self, 
         permissions,
+        # TODO: try to not use sensitivity_column and diffusion_column parameters
         sensitivity_column="id_nomenclature_sensitivity",
         diffusion_column="id_nomenclature_diffusion_level",
         result_to_dict=True,
@@ -31,42 +32,30 @@ class DataBlurring:
         ]
     ):
         self.permissions = permissions
-        print(json.dumps(list(permissions), indent=4))
         self.sensitivity_column = sensitivity_column
         self.diffusion_column = diffusion_column
         self.result_to_dict = result_to_dict
         self.fields_to_erase = fields_to_erase
         self.geom_fields = geom_fields
+        self.diffusion_levels_ids = self._get_diffusion_levels()
+        self.sensitivity_ids = self._get_sensitivity_levels()
+        self.non_diffusable = []
 
     def blurre(self, synthese_results):
         (exact_filters, see_all) = self._compute_exact_filters()
-        print(exact_filters)
+        ignored_object = self._get_ignored_object(see_all)
         
         output = []
-        if see_all["PRIVATE_OBSERVATION"] and see_all["SENSITIVE_OBSERVATION"]:
+        if ignored_object == "NONE":
             output = synthese_results
         else:
             # For iterate many times on SQLA ProxyResult
             synthese_results = list(synthese_results)
-
-            if see_all["PRIVATE_OBSERVATION"] and not see_all["SENSITIVE_OBSERVATION"]:
-                geojson_by_synthese_ids = self._associate_geojson_to_synthese_id(
-                    synthese_results, 
-                    exact_filters,
-                    "PRIVATE_OBSERVATION"
-                )
-            elif not see_all["PRIVATE_OBSERVATION"] and see_all["SENSITIVE_OBSERVATION"]:
-                geojson_by_synthese_ids = self._associate_geojson_to_synthese_id(
-                    synthese_results, 
-                    exact_filters,
-                    "SENSITIVE_OBSERVATION"
-                )
-            elif not see_all["PRIVATE_OBSERVATION"] and not see_all["SENSITIVE_OBSERVATION"]:
-                geojson_by_synthese_ids = self._associate_geojson_to_synthese_id(
-                    synthese_results, 
-                    exact_filters,
-                    "PRIVATE_AND_SENSITIVE"
-                )
+            geojson_by_synthese_ids = self._associate_geojson_to_synthese_id(
+                synthese_results, 
+                exact_filters,
+                ignored_object,
+            )
 
             for result in synthese_results:
                 synthese_id = getattr(result, "id_synthese")
@@ -76,13 +65,15 @@ class DataBlurring:
                     result = dict(result)
                     result = self._erase_fields(result)
                     for col in self.geom_fields:
-                        geojson = geojson_by_synthese_ids[synthese_id][col["output_field"]]
-                        result[col["output_field"]] = geojson
-                    # Re-convert to
+                        blurred_geometry = geojson_by_synthese_ids[synthese_id][col["output_field"]]
+                        result[col["output_field"]] = blurred_geometry
+                    # Re-convert to RowProxy object
                     if not self.result_to_dict:
                         result = namedtuple("RowProxy", result.keys())(*result.values())
-                # TODO: remove result with code 4 for sensitivity or diffusion_level
-                output.append(result)
+                    
+                # Remove result with code 4 for sensitivity or diffusion_level
+                if synthese_id not in self.non_diffusable:
+                    output.append(result)
 
         return output
 
@@ -106,15 +97,26 @@ class DataBlurring:
             exact_filters.setdefault(perm["object"], []).append(details)
         return (exact_filters, see_all)
 
-
     def _have_exact_precision(self, filters):
         has_precision = True if "PRECISION" in filters.keys() else False
         return True if (has_precision and filters["PRECISION"] == "exact") else False
 
+    def _get_ignored_object(self, see_all):
+        ignored_object = None
+        if see_all["PRIVATE_OBSERVATION"] and see_all["SENSITIVE_OBSERVATION"]:
+            ignored_object = "NONE"
+        elif see_all["PRIVATE_OBSERVATION"] and not see_all["SENSITIVE_OBSERVATION"]:
+            ignored_object = "PRIVATE_OBSERVATION"
+        elif not see_all["PRIVATE_OBSERVATION"] and see_all["SENSITIVE_OBSERVATION"]:
+            ignored_object = "SENSITIVE_OBSERVATION"
+        elif not see_all["PRIVATE_OBSERVATION"] and not see_all["SENSITIVE_OBSERVATION"]:
+            ignored_object = "PRIVATE_AND_SENSITIVE"
+        return ignored_object
 
     def _associate_geojson_to_synthese_id(self, synthese_results, exact_filters, ignored_object):
         sorted_synthese_by_area_type = self._sort_synthese_id_by_area_type_id(synthese_results, ignored_object)
-        print(sorted_synthese_by_area_type)
+        diffusion_level_ids = self._get_diffusion_levels_area_types().keys()
+        sensitivity_ids = self._get_sensitivity_area_types().keys()
         columns = self._prepare_geom_columns()
         
         query = (DB.session
@@ -135,11 +137,9 @@ class DataBlurring:
                     conditions = []
                     
                     if object_type == "PRIVATE_OBSERVATION":
-                        # TODO: extract diffusion levels ids from actual database
-                        conditions.append(Synthese.id_nomenclature_diffusion_level.in_([136,137,138,139]))
+                        conditions.append(Synthese.id_nomenclature_diffusion_level.in_(diffusion_level_ids))
                     elif object_type == "SENSITIVE_OBSERVATION":
-                        # TODO: extract sensititivy ids from actual database
-                        conditions.append(Synthese.id_nomenclature_sensitivity.in_([66,67,68]))
+                        conditions.append(Synthese.id_nomenclature_sensitivity.in_(sensitivity_ids))
 
                     if "GEOGRAPHIC" in exact_filter.keys() and exact_filter["GEOGRAPHIC"] != "ALL":
                         filter_value = exact_filter["GEOGRAPHIC"]
@@ -155,7 +155,8 @@ class DataBlurring:
                         )
                         conditions.append(Taxref.cd_ref.in_(stmt))
                     ors.append(and_(*conditions))
-
+                
+                # TODO: replace not_ in_ by NOT EXISTS (most efficient)
                 subquery = (DB.session
                     .query(Synthese.id_synthese)
                     .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
@@ -185,30 +186,34 @@ class DataBlurring:
     def _prepare_geom_columns(self):
         columns = []
         for field in self.geom_fields:
-            column = getattr(LAreas, field.get("area_field", "geom"))
+            larea_col = getattr(LAreas, field.get("area_field", "geom"))
             srid = field.get("srid", 4326)
             label = field["output_field"]
             compute = field.get("compute", None)
             if compute == "x":
-                column = func.ST_X(func.ST_Transform(func.ST_Centroid(column), srid))
+                column = func.ST_X(func.ST_Transform(func.ST_Centroid(larea_col), srid))
             elif compute == "y":
-                column = func.ST_Y(func.ST_Transform(func.ST_Centroid(column), srid))
+                column = func.ST_Y(func.ST_Transform(func.ST_Centroid(larea_col), srid))
             elif compute == "astext":
-                column = func.ST_AsText(func.ST_Transform(column, srid))
+                column = func.ST_AsText(func.ST_Transform(larea_col, srid))
             elif compute == "asgeojson":
-                column = func.ST_AsGeoJSON(func.ST_Transform(column, srid))
+                column = func.ST_AsGeoJSON(func.ST_Transform(larea_col, srid))
+            else:
+                column = larea_col
             columns.append(column.label(label))
         return columns
 
     def _sort_synthese_id_by_area_type_id(self, synthese_results, ignored_object):
-        print(ignored_object)
         sorted_ids = {}
         area_type_by_diffusion_level = self._get_diffusion_levels_area_types()
         area_type_by_sensitivity = self._get_sensitivity_area_types()
         for result in synthese_results:
+            if self._remove_non_diffusable(result):
+                continue
+            
             if ignored_object != "PRIVATE_OBSERVATION":
                 diffusion_level_id = result[self.diffusion_column]
-                if diffusion_level_id in area_type_by_diffusion_level.keys():
+                if diffusion_level_id in area_type_by_diffusion_level:
                     area_type_id = area_type_by_diffusion_level[diffusion_level_id]
                     (
                         sorted_ids
@@ -219,7 +224,7 @@ class DataBlurring:
             
             if ignored_object != "SENSITIVE_OBSERVATION":
                 sensitivity_id = result[self.sensitivity_column]
-                if sensitivity_id in area_type_by_sensitivity.keys():
+                if sensitivity_id in area_type_by_sensitivity:
                     area_type_id = area_type_by_sensitivity[sensitivity_id]
                     (
                         sorted_ids
@@ -227,20 +232,17 @@ class DataBlurring:
                         .setdefault(area_type_id, [])
                         .append(result["id_synthese"])
                     )
-                    
         return sorted_ids
 
 
     def _get_diffusion_levels_area_types(self):
-        diffusion_levels_ids = self._get_diffusion_levels()
-        
         area_types_by_diffusion_levels = self._get_diffusion_level_area_type_codes()
         area_type_codes = list(set(area_types_by_diffusion_levels.values()))
         area_type_ids = self._get_area_types_ids_by_codes(area_type_codes)
         
         area_types_by_diffusion_levels_ids = {}
         for level_code, area_type_code in area_types_by_diffusion_levels.items():
-            diffusion_level_id = diffusion_levels_ids[level_code]
+            diffusion_level_id = self.diffusion_levels_ids[level_code]
             area_type_id = area_type_ids[area_type_code]
             area_types_by_diffusion_levels_ids[diffusion_level_id] = area_type_id
         return area_types_by_diffusion_levels_ids
@@ -268,16 +270,26 @@ class DataBlurring:
         return area_type_for_diffusion_levels
 
 
+    def _remove_non_diffusable(self, result):
+        diffusion_level_id = result[self.diffusion_column]
+        sensitivity_id = result[self.sensitivity_column]
+        if (
+            self.diffusion_levels_ids["4"] == diffusion_level_id
+            or self.sensitivity_ids["4"] == sensitivity_id
+        ):
+            self.non_diffusable.append(result["id_synthese"])
+            return True
+        else:
+            return False
+
     def _get_sensitivity_area_types(self):
-        sensitivity_ids = self._get_sensitivity_levels()
-        
         area_types_by_sensitivity = self._get_sensitivity_area_type_codes()
         area_types = list(set(area_types_by_sensitivity.values()))
         area_types_ids = self._get_area_types_ids_by_codes(area_types)
         
         area_types_by_sensitivity_ids = {}
         for level_code, area_type_code in area_types_by_sensitivity.items():
-            sensitivity_id = sensitivity_ids[level_code]
+            sensitivity_id = self.sensitivity_ids[level_code]
             area_type_id = area_types_ids[area_type_code]
             area_types_by_sensitivity_ids[sensitivity_id] = area_type_id
         return area_types_by_sensitivity_ids

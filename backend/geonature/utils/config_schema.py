@@ -306,12 +306,10 @@ class DataBlurringManagement(Schema):
     ])
     # Nom de la colonne du niveau de sensibilité dans la vue gn_synthese.v_synthese_for_export
     # Colonne obligatoire pour les téléchargements de la Synthese
-    EXPORT_SENSITIVITY_COL = fields.String(missing="niveau_sensibilite")
+    EXPORT_SENSITIVITY_COL = fields.String(missing="id_nomenclature_sensitivity")
     # Nom de la colonne du niveau de diffusion dans la vue gn_synthese.v_synthese_for_export
     # Colonne obligatoire pour les téléchargements de la Synthese
-    EXPORT_DIFFUSION_COL = fields.String(missing="niveau_precision_diffusion")
-    # Nom de la colonne contenant la geometrie floutée dans les téléchargements de la Synthese
-    EXPORT_BLURRED_GEOM_FIELD = fields.String(missing="geometrie_wkt_4326")
+    EXPORT_DIFFUSION_COL = fields.String(missing="id_nomenclature_diffusion_level")
     # Nom des champs à vider dans les téléchargements de la Synthese 
     # lorsqu'une observation doit être floutée
     EXPORT_FIELDS_TO_BLURRE = fields.List(fields.String, missing=[

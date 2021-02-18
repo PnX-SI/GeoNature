@@ -154,7 +154,7 @@ def get_observations_for_web(auth, permissions):
         .order_by(VSyntheseForWebApp.date_min.desc())
     )
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
-    synthese_query_class.apply_all_filters(auth, permissions)
+    synthese_query_class.filter_query_all_filters(auth)
     results = DB.engine.execute(synthese_query_class.query.limit(result_limit))
 
     if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
@@ -389,7 +389,7 @@ def export_observations_web(auth, permissions):
     if not export_format in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
         raise GeonatureApiError("Unsupported format")
 
-    # set default to csv
+    # Set default to csv
     export_view = GenericTableGeo(
         tableName="v_synthese_for_export",
         schemaName="gn_synthese",
@@ -398,12 +398,12 @@ def export_observations_web(auth, permissions):
         srid=current_app.config["LOCAL_SRID"],
     )
 
-    # get list of id synthese from POST
+    # Get list of id synthese from POST
     id_list = request.get_json()
 
     db_cols_for_shape = []
     columns_to_serialize = []
-    # loop over synthese config to get the columns for export
+    # Loop over synthese config to get the columns for export
     for db_col in export_view.db_cols:
         if db_col.key in current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]:
             db_cols_for_shape.append(db_col)
@@ -431,7 +431,7 @@ def export_observations_web(auth, permissions):
         with_generic_table=True,
         **columns_options,
     )
-    # check R and E CRUVED to know if we filter with cruved
+    # Check R and E CRUVED to know if we filter with cruved
     cruved = cruved_scope_for_user_in_module(auth.id_role, module_code="SYNTHESE")[0]
     if cruved["R"] > cruved["E"]:
         synthese_query_class.filter_query_with_cruved(auth)
@@ -440,7 +440,6 @@ def export_observations_web(auth, permissions):
     )
 
     if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
-        columns_to_serialize.append(current_app.config["DATA_BLURRING"]["EXPORT_BLURRED_GEOM_FIELD"])
         data_blurring = DataBlurring(
             permissions, 
             sensitivity_column=current_app.config["DATA_BLURRING"]["EXPORT_SENSITIVITY_COL"],
@@ -448,38 +447,19 @@ def export_observations_web(auth, permissions):
             result_to_dict=False,
             fields_to_erase=current_app.config["DATA_BLURRING"]["EXPORT_FIELDS_TO_BLURRE"],
             geom_fields=[
-                # {
-                #     "output_field": current_app.config["DATA_BLURRING"]["EXPORT_BLURRED_GEOM_FIELD"],
-                #     "area_field": "geom",
-                #     "compute": "astext",
-                #     "srid": 4326,
-                # },
-                # { 
-                #     "output_field": "x_centroid_4326",
-                #     "area_field": "geom",
-                #     "compute": "x",
-                #     "srid": 4326,
-                # },
-                # {
-                #     "output_field": "y_centroid_4326",
-                #     "area_field": "geom",
-                #     "compute": "y",
-                #     "srid": 4326,
-                # },
-                {
+               {
                     "output_field": current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"],
                     "area_field": "geojson_4326",
                 },
-                # {
-                #     "output_field": current_app.config["SYNTHESE"]["EXPORT_GEOJSON_LOCAL_COL"],
-                #     "area_field": "geom",
-                #     "compute": "asgeojson",
-                #     "srid": current_app.config["LOCAL_SRID"],
-                # },
+                {
+                    "output_field": current_app.config["SYNTHESE"]["EXPORT_GEOJSON_LOCAL_COL"],
+                    "area_field": "geom",
+                    "compute": "asgeojson",
+                    "srid": current_app.config["LOCAL_SRID"],
+                },
             ]
         )
         results = data_blurring.blurre(results)
-    #print(json.dumps(list(results), indent=4))
     
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
@@ -491,19 +471,14 @@ def export_observations_web(auth, permissions):
     elif export_format == "geojson":
         features = []
         for r in results:
-            try:
-                geometry = ast.literal_eval(
-                    getattr(r, current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"])
-                )
-                feature = Feature(
-                    geometry=geometry,
-                    properties=export_view.as_dict(r, columns=columns_to_serialize),
-                )
-                features.append(feature)
-            except Exception as e:
-                print(f"id synthese: {r['id_synthese']}")
-                print(current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"])
-                print(r)
+            geometry = ast.literal_eval(
+                getattr(r, current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"])
+            )
+            feature = Feature(
+                geometry=geometry,
+                properties=export_view.as_dict(r, columns=columns_to_serialize),
+            )
+            features.append(feature)
         results = FeatureCollection(features)
         return to_json_resp(results, as_file=True, filename=file_name, indent=4)
     else:

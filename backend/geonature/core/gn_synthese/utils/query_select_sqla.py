@@ -32,7 +32,6 @@ from geonature.core.gn_meta.models import (
 from geonature.utils.errors import GeonatureApiError
 
 
-
 class SyntheseQuery:
     """
         class for building synthese query and manage join
@@ -160,22 +159,6 @@ class SyntheseQuery:
             ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
             
             self.query = self.query.where(or_(*ors_filters))
-
-    # TODO: removed if unused !
-    def filter_query_with_permissions_filters(self, auth, permission):
-        """Filtre les données de la synthèse en fonction des filtres de 
-        permissions (TAXONOMIC, GEOGRAPHIC...)
-
-        Parameters
-        ----------
-        permission : list<dict>
-            Liste de dictionnaire contenant les différents filtres rassemblés
-            et des infos sur la permission (module, action, objet...).
-        """
-        # TODO: limit query results by TAXONOMIC and/or GEOGRAPHIC filters values
-        # if no filter "PRECISION" was specified.
-
-
 
     def filter_taxonomy(self):
         """
@@ -376,10 +359,4 @@ class SyntheseQuery:
         if self.query_joins is not None:
             self.query = self.query.select_from(self.query_joins)
         
-        return self.query
-
-    def apply_all_filters(self, auth, permissions):
-        self.filter_query_with_permissions_filters(auth, permissions)
-
-        self.query = self.filter_query_all_filters(auth)
         return self.query
