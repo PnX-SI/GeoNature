@@ -72,6 +72,7 @@ class VSyntheseValidation(DB.Model):
     id_nomenclature_source_status = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
     id_nomenclature_valid_status = DB.Column(DB.Integer)
+    id_nomenclature_behaviour = DB.Column(DB.Integer)
     mnemonique = DB.Column(DB.Unicode)
     cd_nomenclature_validation_status = DB.Column(DB.Unicode)
     label_default = DB.Column(DB.Unicode)

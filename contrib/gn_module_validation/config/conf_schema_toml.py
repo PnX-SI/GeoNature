@@ -28,7 +28,8 @@ MANDATORY_COLUMNS = [
     "unique_id_sinp",
     "geojson",
     "nom_vern",
-    "lb_nom"
+    "lb_nom",
+
 ]
 
 # CONFIG MAP-LIST
@@ -97,3 +98,4 @@ class GnModuleSchemaConf(Schema):
     AREA_FILTERS = fields.List(fields.Dict, missing=AREA_FILTERS)
     MAIL_BODY = fields.String(missing=MAIL_BODY)
     MAIL_SUBJECT = fields.String(missing=MAIL_SUBJECT)
+    COLUMNS_API_FUNCTIONS = fields.Dict(fields.Dict())
