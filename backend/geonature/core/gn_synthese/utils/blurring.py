@@ -234,7 +234,6 @@ class DataBlurring:
                     )
         return sorted_ids
 
-
     def _get_diffusion_levels_area_types(self):
         area_types_by_diffusion_levels = self._get_diffusion_level_area_type_codes()
         area_type_codes = list(set(area_types_by_diffusion_levels.values()))
@@ -246,7 +245,6 @@ class DataBlurring:
             area_type_id = area_type_ids[area_type_code]
             area_types_by_diffusion_levels_ids[diffusion_level_id] = area_type_id
         return area_types_by_diffusion_levels_ids
-
 
     def _get_diffusion_levels(self):
         query = (DB.session
@@ -261,14 +259,12 @@ class DataBlurring:
             diffusion_levels[nomenclature_code] = nomenclature_id
         return diffusion_levels
 
-
     def _get_diffusion_level_area_type_codes(self):
         cfg_parameters = current_app.config["DATA_BLURRING"]["AREA_TYPE_FOR_DIFFUSION_LEVELS"]
         area_type_for_diffusion_levels = {}
         for param in cfg_parameters:
             area_type_for_diffusion_levels[param["level"]] = param["area"]
         return area_type_for_diffusion_levels
-
 
     def _remove_non_diffusable(self, result):
         diffusion_level_id = result[self.diffusion_column]
@@ -294,14 +290,12 @@ class DataBlurring:
             area_types_by_sensitivity_ids[sensitivity_id] = area_type_id
         return area_types_by_sensitivity_ids
 
-
     def _get_sensitivity_area_type_codes(self):
         cfg_parameters = current_app.config["DATA_BLURRING"]["AREA_TYPE_FOR_SENSITIVITY_LEVELS"]
         area_type_for_sensitivity = {}
         for param in cfg_parameters:
             area_type_for_sensitivity[param["level"]] = param["area"]
         return area_type_for_sensitivity
-
 
     def _get_area_types_ids_by_codes(self, area_type_codes):
         query = (DB.session
@@ -315,7 +309,6 @@ class DataBlurring:
             area_types_ids[type_code] = type_id
         return area_types_ids
 
-
     def _get_sensitivity_levels(self):
         query = (DB.session
             .query(TNomenclatures.id_nomenclature, TNomenclatures.cd_nomenclature)
@@ -328,7 +321,6 @@ class DataBlurring:
         for (nomenclature_id, nomenclature_code) in results:
             sensitivity_levels[nomenclature_code] = nomenclature_id
         return sensitivity_levels
-
 
     def _split_value_filter(self, data: str):
         if data == None or data == '':
