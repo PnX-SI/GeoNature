@@ -180,146 +180,17 @@ ALTER TABLE gn_permissions.bib_filters_values
 
 -- -------------------------------------------------------------------------------------------------
 -- Add filters values types knowned
-INSERT INTO gn_permissions.bib_filters_values (
-    id_filter_type, value_format, predefined, value_or_field, label, description
-) 
-    SELECT
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'integer',
-        true,
-        '0',
-        'À personne',
-        'Aucune appartenance. Cette valeur empèche l''accès aux objets.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.bib_filters_values AS bfv
-        WHERE id_filter_type = gn_permissions.get_id_filter_type('SCOPE')
-            AND bfv.value_or_field = '0'
-    ) ;
-
-INSERT INTO gn_permissions.bib_filters_values (
-    id_filter_type, value_format, predefined, value_or_field, label, description
-) 
-    SELECT
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'integer',
-        true,
-        '1',
-        'À moi',
-        'Appartenant à l''utilisateur. '
-        'Indique un accès restreint aux objets créés/associés '
-        'à l''utilisateur connecté.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.bib_filters_values AS bfv
-        WHERE id_filter_type = gn_permissions.get_id_filter_type('SCOPE')
-            AND bfv.value_or_field = '1'
-    ) ;
-
-INSERT INTO gn_permissions.bib_filters_values (
-    id_filter_type, value_format, predefined, value_or_field, label, description
-) 
-    SELECT
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'integer',
-        true,
-        '2',
-        'À mon organisme',
-        'Appartenant à l''ogranisme de l''utilisateur. '
-        'Indique un accès restreint aux objets créés/associés à des utilisateurs '
-        'du même organisme que l''utilisateur actuellement connecté.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.bib_filters_values AS bfv
-        WHERE id_filter_type = gn_permissions.get_id_filter_type('SCOPE')
-            AND bfv.value_or_field = '2'
-    ) ;
-
-INSERT INTO gn_permissions.bib_filters_values (
-    id_filter_type, value_format, predefined, value_or_field, label, description
-) 
-    SELECT
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'integer',
-        true,
-        '3',
-        'À tout le monde',
-        'Appartenant à tout le monde. '
-        'Indique un accès à tous non restreint par l''appartenance des objets.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.bib_filters_values AS bfv
-        WHERE id_filter_type = gn_permissions.get_id_filter_type('SCOPE')
-            AND bfv.value_or_field = '3'
-    ) ;
-
-INSERT INTO gn_permissions.bib_filters_values (
-    id_filter_type, value_format, predefined, value_or_field, label, description
-) 
-    SELECT
-        gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-        'csvint',
-        false,
-        'ref_geo.l_areas.id_area',
-        'id_area',
-        'Liste d''identifiant de zones géographiques séparés par des virgules. '
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.bib_filters_values AS bfv
-        WHERE id_filter_type = gn_permissions.get_id_filter_type('GEOGRAPHIC')
-            AND bfv.value_or_field = 'id_area'
-    ) ;
-
-INSERT INTO gn_permissions.bib_filters_values (
-    id_filter_type, value_format, predefined, value_or_field, label, description
-) 
-    SELECT
-        gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'csvint',
-        false,
-        'taxonomie.taxref.cd_nom',
-        'cd_nom',
-        'Liste d''identifiant de noms scientifiques séparés par des virgules. '
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.bib_filters_values AS bfv
-        WHERE id_filter_type = gn_permissions.get_id_filter_type('TAXONOMIC')
-            AND bfv.value_or_field = 'cd_nom'
-    ) ;
-
-INSERT INTO gn_permissions.bib_filters_values (
-    id_filter_type, value_format, predefined, value_or_field, label, description
-) 
-    SELECT
-        gn_permissions.get_id_filter_type('PRECISION'),
-        'string',
-        true,
-        'exact',
-        'Exacte',
-        'Accès aux objets avec les informations géographiques précises.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.bib_filters_values AS bfv
-        WHERE id_filter_type = gn_permissions.get_id_filter_type('PRECISION')
-            AND bfv.value_or_field = 'exact'
-    ) ;
-
-INSERT INTO gn_permissions.bib_filters_values (
-    id_filter_type, value_format, predefined, value_or_field, label, description
-) 
-    SELECT
-        gn_permissions.get_id_filter_type('PRECISION'),
-        'string',
-        true,
-        'fuzzy',
-        'Floutée',
-        'Accès aux objets avec les informations géographiques floutées.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.bib_filters_values AS bfv
-        WHERE id_filter_type = gn_permissions.get_id_filter_type('PRECISION')
-            AND bfv.value_or_field = 'fuzzy'
-    ) ;
+INSERT INTO gn_permissions.bib_filters_values (id_filter_type,value_format,predefined,value_or_field,"label",description) VALUES
+	 (gn_permissions.get_id_filter_type('SCOPE'),'integer'::filter_value_formats::filter_value_formats,true,'0','À personne','Aucune appartenance. Cette valeur empèche l''accès aux objets.'),
+	 (gn_permissions.get_id_filter_type('SCOPE'),'integer'::filter_value_formats::filter_value_formats,true,'1','À moi','Appartenant à l''utilisateur. Indique un accès restreint aux objets créés/associés à l''utilisateur connecté.'),
+	 (gn_permissions.get_id_filter_type('SCOPE'),'integer'::filter_value_formats::filter_value_formats,true,'2','À mon organisme','Appartenant à l''ogranisme de l''utilisateur. Indique un accès restreint aux objets créés/associés à des utilisateurs du même organisme que l''utilisateur actuellement connecté.'),
+	 (gn_permissions.get_id_filter_type('SCOPE'),'integer'::filter_value_formats::filter_value_formats,true,'3','À tout le monde','Appartenant à tout le monde. Indique un accès à tous non restreint par l''appartenance des objets.'),
+	 (gn_permissions.get_id_filter_type('GEOGRAPHIC'),'csvint'::filter_value_formats::filter_value_formats,false,'ref_geo.l_areas.id_area','id_area','Liste d''identifiant de zones géographiques séparés par des virgules. '),
+	 (gn_permissions.get_id_filter_type('TAXONOMIC'),'csvint'::filter_value_formats::filter_value_formats,false,'taxonomie.taxref.cd_nom','cd_nom','Liste d''identifiant de noms scientifiques séparés par des virgules. '),
+	 (gn_permissions.get_id_filter_type('SENSITIVITY'),'boolean'::filter_value_formats::filter_value_formats,true,'true','Oui','Accès aux données sensibles'),
+	 (gn_permissions.get_id_filter_type('SENSITIVITY'),'boolean'::filter_value_formats::filter_value_formats,true,'false','Non','Pas d''accès aux données sensibles'),
+	 (gn_permissions.get_id_filter_type('PRIVATE'),'boolean'::filter_value_formats::filter_value_formats,true,'true','Oui','Accès aux données privées'),
+	 (gn_permissions.get_id_filter_type('PRIVATE'),'boolean'::filter_value_formats::filter_value_formats,true,'false','Non','Pas d''accès aux données privées');
 
 
 -- -------------------------------------------------------------------------------------------------
@@ -471,22 +342,12 @@ INSERT INTO gn_permissions.t_objects (code_object, description_object)
 
 INSERT INTO gn_permissions.t_objects (code_object, description_object) 
     SELECT
-        'PRIVATE_OBSERVATION',
+        'BLURRED_OBSERVATION',
         'Observation privée'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.t_objects AS o
-        WHERE o.code_object = 'PRIVATE_OBSERVATION'
-    ) ;
-
-INSERT INTO gn_permissions.t_objects (code_object, description_object) 
-    SELECT
-        'SENSITIVE_OBSERVATION',
-        'Observation senssible'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.t_objects AS o
-        WHERE o.code_object = 'SENSITIVE_OBSERVATION'
+        WHERE o.code_object = 'BLURRED_OBSERVATION'
     ) ;
 
 
@@ -513,12 +374,22 @@ SET
         'Utiliser des cd_nom séparés par des virgules.'
 WHERE code_filter_type = 'TAXONOMIC' ;
 
-UPDATE gn_permissions.bib_filters_type 
-SET 
-    code_filter_type = 'PRECISION',
-    label_filter_type = 'Filtre de précision',
-    description_filter_type = 'Active (=fuzzy) ou désactive (=exact) le floutage des données (sensibles ou privées).'
-WHERE code_filter_type = 'SENSITIVITY' ;
+INSERT INTO gn_permissions.bib_filters_type (code_filter_type,label_filter_type,description_filter_type)
+	SELECT 'SENSITIVITY','Filtres les données sensibles','Permissions d''accès aux données sensibles'
+        WHERE NOT EXISTS (
+        SELECT 'X'
+        FROM gn_permissions.bib_filters_type b
+        WHERE b.code_filter_type = 'SENSITIVITY'
+    ) ; 
+
+INSERT INTO gn_permissions.bib_filters_type (code_filter_type,label_filter_type,description_filter_type)
+	SELECT 'PRIVATE','Filtre des données privées','Permission d''accès aux données privées'
+    WHERE NOT EXISTS (
+        SELECT 'X'
+        FROM gn_permissions.bib_filters_type b
+        WHERE b.code_filter_type = 'PRIVATE'
+    ) ; 
+
 
 
 -- -------------------------------------------------------------------------------------------------
@@ -1680,7 +1551,7 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
     ) ;
 
 -- ----------------------------------------------------------------------
--- SYNTHESE - R - ALL - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
+-- SYNTHESE - R - ALL - SCOPE,TAXONOMIC,GEOGRAPHIC,PRIVATE,SENSITIVITY
 INSERT INTO gn_permissions.cor_module_action_object_filter (
     id_module, id_action, id_object, id_filter_type, code, label, description
 ) 
@@ -1690,7 +1561,7 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_permissions.get_id_object('ALL'),
         gn_permissions.get_id_filter_type('SCOPE'),
         'SYNTHESE-R-ALL-SCOPE',
-        'Lire des données',
+        'Lire des observations précises',
         'Lire des données dans le module Synthèse en étant limité par l''appartenance.'
     WHERE NOT EXISTS (
         SELECT 'X'
@@ -1705,14 +1576,48 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_commons.get_id_module_bycode('SYNTHESE'),
         gn_permissions.get_id_action('R'),
         gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'SYNTHESE-R-TAXONOMIC-SCOPE',
-        'Lire des données',
-        'Lire des données dans le module Synthèse en étant limité par des taxons.'
+        gn_permissions.get_id_filter_type('PRIVATE'),
+        'SYNTHESE-R-ALL-PRIVATE-SCOPE',
+        'Lire des observations précises',
+        'Lire des observations précises dans le module Synthèse en étant limitée aux par le statut des données (privé / public)'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-R-ALL-TAXONOMIC'
+        WHERE cmaof.code = 'SYNTHESE-R-ALL-PRIVATE-SCOPE'
+    ) ;
+
+INSERT INTO gn_permissions.cor_module_action_object_filter (
+    id_module, id_action, id_object, id_filter_type, code, label, description
+) 
+    SELECT
+        gn_commons.get_id_module_bycode('SYNTHESE'),
+        gn_permissions.get_id_action('R'),
+        gn_permissions.get_id_object('ALL'),
+        gn_permissions.get_id_filter_type('SENSITIVITY'),
+        'SYNTHESE-R-ALL-SENSITIVITY-SCOPE',
+        'Lire des observations précises',
+        'Lire  des observations précises dans la module Synthèse en filtrant sur la sensibilté'
+    WHERE NOT EXISTS (
+        SELECT 'X'
+        FROM gn_permissions.cor_module_action_object_filter AS cmaof
+        WHERE cmaof.code = 'SYNTHESE-R-ALL-SENSITIVITY-SCOPE'
+    ) ;
+
+INSERT INTO gn_permissions.cor_module_action_object_filter (
+    id_module, id_action, id_object, id_filter_type, code, label, description
+) 
+    SELECT
+        gn_commons.get_id_module_bycode('SYNTHESE'),
+        gn_permissions.get_id_action('R'),
+        gn_permissions.get_id_object('ALL'),
+        gn_permissions.get_id_filter_type('TAXONOMIC'),
+        'SYNTHESE-R-ALL-TAXONOMIC-SCOPE',
+        'Lire des observations précises',
+        'Lire des observations précises dans le module Synthèse en étant limité par des taxons.'
+    WHERE NOT EXISTS (
+        SELECT 'X'
+        FROM gn_permissions.cor_module_action_object_filter AS cmaof
+        WHERE cmaof.code = 'SYNTHESE-R-ALL-TAXONOMIC-SCOPE'
     ) ;
 
 INSERT INTO gn_permissions.cor_module_action_object_filter (
@@ -1723,34 +1628,104 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_permissions.get_id_action('R'),
         gn_permissions.get_id_object('ALL'),
         gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-        'SYNTHESE-R-GEOGRAPHIC-SCOPE',
-        'Lire des données',
-        'Lire des données dans le module Synthèse en étant limité par zones géographiques.'
+        'SYNTHESE-R-ALL-GEOGRAPHIC-SCOPE',
+        'Lire des observations précises',
+        'Lire des observations précises dans le module Synthèse en étant limité par zones géographiques.'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-R-ALL-GEOGRAPHIC'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('SYNTHESE'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('PRECISION'),
-        'SYNTHESE-R-PRECISION-SCOPE',
-        'Lire des données',
-        'Lire des données dans le module Synthèse en étant limité par la précision.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-R-ALL-PRECISION'
+        WHERE cmaof.code = 'SYNTHESE-R-ALL-GEOGRAPHIC-SCOPE'
     ) ;
 
 -- ----------------------------------------------------------------------
--- SYNTHESE - E - ALL - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
+-- SYNTHESE - E - ALL - SCOPE,TAXONOMIC,GEOGRAPHIC,PRIVATE,SENSITIVITY
+
+    INSERT INTO gn_permissions.cor_module_action_object_filter (
+        id_module, id_action, id_object, id_filter_type, code, label, description
+    ) 
+        SELECT
+            gn_commons.get_id_module_bycode('SYNTHESE'),
+            gn_permissions.get_id_action('E'),
+            gn_permissions.get_id_object('BLURRED_OBSERVATION'),
+            gn_permissions.get_id_filter_type('SCOPE'),
+            'SYNTHESE-E-BLURRED_OBSERVATION-SCOPE',
+            'Exporter des observations floutées',
+            'Exporter des observations floutée dans le module Synthèse en étant limité par l''appartenance.'
+        WHERE NOT EXISTS (
+            SELECT 'X'
+            FROM gn_permissions.cor_module_action_object_filter AS cmaof
+            WHERE cmaof.code = 'SYNTHESE-E-BLURRED_OBSERVATION-SCOPE'
+        ) ;
+
+    INSERT INTO gn_permissions.cor_module_action_object_filter (
+        id_module, id_action, id_object, id_filter_type, code, label, description
+    ) 
+        SELECT
+            gn_commons.get_id_module_bycode('SYNTHESE'),
+            gn_permissions.get_id_action('E'),
+            gn_permissions.get_id_object('BLURRED_OBSERVATION'),
+            gn_permissions.get_id_filter_type('PRIVATE'),
+            'SYNTHESE-E-BLURRED_OBSERVATION-PRIVATE-SCOPE',
+            'Exporter des observations floutées',
+            'Exporter des observations floutées dans le module Synthèse en étant limitée aux par le statut des données (privé / public)'
+        WHERE NOT EXISTS (
+            SELECT 'X'
+            FROM gn_permissions.cor_module_action_object_filter AS cmaof
+            WHERE cmaof.code = 'SYNTHESE-E-BLURRED_OBSERVATION-PRIVATE-SCOPE'
+        ) ;
+
+    INSERT INTO gn_permissions.cor_module_action_object_filter (
+        id_module, id_action, id_object, id_filter_type, code, label, description
+    ) 
+        SELECT
+            gn_commons.get_id_module_bycode('SYNTHESE'),
+            gn_permissions.get_id_action('E'),
+            gn_permissions.get_id_object('BLURRED_OBSERVATION'),
+            gn_permissions.get_id_filter_type('SENSITIVITY'),
+            'SYNTHESE-E-BLURRED_OBSERVATION-SENSITIVITY-SCOPE',
+            'Exporter des observations floutées',
+            'Exporter des observations floutées dans la module Synthèse en filtrant sur la sensibilté'
+        WHERE NOT EXISTS (
+            SELECT 'X'
+            FROM gn_permissions.cor_module_action_object_filter AS cmaof
+            WHERE cmaof.code = 'SYNTHESE-E-BLURRED_OBSERVATION-SENSITIVITY-SCOPE'
+        ) ;
+
+    INSERT INTO gn_permissions.cor_module_action_object_filter (
+        id_module, id_action, id_object, id_filter_type, code, label, description
+    ) 
+        SELECT
+            gn_commons.get_id_module_bycode('SYNTHESE'),
+            gn_permissions.get_id_action('E'),
+            gn_permissions.get_id_object('BLURRED_OBSERVATION'),
+            gn_permissions.get_id_filter_type('TAXONOMIC'),
+            'SYNTHESE-E-BLURRED_OBSERVATION-TAXONOMIC-SCOPE',
+            'Exporter des observations floutées',
+            'Exporter des observations floutées dans le module Synthèse en étant limité par des taxons.'
+        WHERE NOT EXISTS (
+            SELECT 'X'
+            FROM gn_permissions.cor_module_action_object_filter AS cmaof
+            WHERE cmaof.code = 'SYNTHESE-E-BLURRED_OBSERVATION-TAXONOMIC-SCOPE'
+        ) ;
+
+    INSERT INTO gn_permissions.cor_module_action_object_filter (
+        id_module, id_action, id_object, id_filter_type, code, label, description
+    ) 
+        SELECT
+            gn_commons.get_id_module_bycode('SYNTHESE'),
+            gn_permissions.get_id_action('E'),
+            gn_permissions.get_id_object('BLURRED_OBSERVATION'),
+            gn_permissions.get_id_filter_type('GEOGRAPHIC'),
+            'SYNTHESE-E-BLURRED_OBSERVATION-GEOGRAPHIC-SCOPE',
+            'Exporter des observations floutées',
+            'Exporter des observations floutées dans le module Synthèse en étant limité par zones géographiques.'
+        WHERE NOT EXISTS (
+            SELECT 'X'
+            FROM gn_permissions.cor_module_action_object_filter AS cmaof
+            WHERE cmaof.code = 'SYNTHESE-E-BLURRED_OBSERVATION-GEOGRAPHIC-SCOPE'
+        ) ;
+
+-- SYNTHESE - E - BLURRED_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRIVATE,SENSITIVITY
 INSERT INTO gn_permissions.cor_module_action_object_filter (
     id_module, id_action, id_object, id_filter_type, code, label, description
 ) 
@@ -1760,8 +1735,8 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_permissions.get_id_object('ALL'),
         gn_permissions.get_id_filter_type('SCOPE'),
         'SYNTHESE-E-ALL-SCOPE',
-        'Exporter des données',
-        'Exporter des données dans le module Synthèse en étant limité par l''appartenance.'
+        'Exporter des observations précises',
+        'Exporter des observations précises dans le module Synthèse en étant limité par l''appartenance.'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
@@ -1775,14 +1750,48 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_commons.get_id_module_bycode('SYNTHESE'),
         gn_permissions.get_id_action('E'),
         gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'SYNTHESE-E-ALL-TAXONOMIC',
-        'Exporter des données',
-        'Exporter des données dans le module Synthèse en étant limité par des taxons.'
+        gn_permissions.get_id_filter_type('PRIVATE'),
+        'SYNTHESE-E-ALL-PRIVATE-SCOPE',
+        'Exporter des observations précises',
+        'Exporter des observations précises dans le module Synthèse en étant limitée aux par le statut des données (privé / public)'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-E-ALL-TAXONOMIC'
+        WHERE cmaof.code = 'SYNTHESE-E-ALL-PRIVATE-SCOPE'
+    ) ;
+
+INSERT INTO gn_permissions.cor_module_action_object_filter (
+    id_module, id_action, id_object, id_filter_type, code, label, description
+) 
+    SELECT
+        gn_commons.get_id_module_bycode('SYNTHESE'),
+        gn_permissions.get_id_action('E'),
+        gn_permissions.get_id_object('ALL'),
+        gn_permissions.get_id_filter_type('SENSITIVITY'),
+        'SYNTHESE-E-ALL-SENSITIVITY-SCOPE',
+        'Exporter des observations précises',
+        'Exporter  des observations précises dans la module Synthèse en filtrant sur la sensibilté'
+    WHERE NOT EXISTS (
+        SELECT 'X'
+        FROM gn_permissions.cor_module_action_object_filter AS cmaof
+        WHERE cmaof.code = 'SYNTHESE-E-ALL-SENSITIVITY-SCOPE'
+    ) ;
+
+INSERT INTO gn_permissions.cor_module_action_object_filter (
+    id_module, id_action, id_object, id_filter_type, code, label, description
+) 
+    SELECT
+        gn_commons.get_id_module_bycode('SYNTHESE'),
+        gn_permissions.get_id_action('E'),
+        gn_permissions.get_id_object('ALL'),
+        gn_permissions.get_id_filter_type('TAXONOMIC'),
+        'SYNTHESE-E-ALL-TAXONOMIC-SCOPE',
+        'Exporter des observations précises',
+        'Exporter des observations précises dans le module Synthèse en étant limité par des taxons.'
+    WHERE NOT EXISTS (
+        SELECT 'X'
+        FROM gn_permissions.cor_module_action_object_filter AS cmaof
+        WHERE cmaof.code = 'SYNTHESE-E-ALL-TAXONOMIC-SCOPE'
     ) ;
 
 INSERT INTO gn_permissions.cor_module_action_object_filter (
@@ -1793,66 +1802,32 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_permissions.get_id_action('E'),
         gn_permissions.get_id_object('ALL'),
         gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-        'SYNTHESE-E-ALL-GEOGRAPHIC',
-        'Exporter des données',
-        'Exporter des données dans le module Synthèse en étant limité par zones géographiques.'
+        'SYNTHESE-E-ALL-GEOGRAPHIC-SCOPE',
+        'Exporter des observations précises',
+        'Exporter des observations précises dans le module Synthèse en étant limité par zones géographiques.'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-E-ALL-GEOGRAPHIC'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('SYNTHESE'),
-        gn_permissions.get_id_action('E'),
-        gn_permissions.get_id_object('ALL'),
-        gn_permissions.get_id_filter_type('PRECISION'),
-        'SYNTHESE-E-ALL-PRECISION',
-        'Exporter des données',
-        'Exporter des données dans le module Synthèse en étant limité par la précision.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-E-ALL-PRECISION'
+        WHERE cmaof.code = 'SYNTHESE-E-ALL-GEOGRAPHIC-SCOPE'
     ) ;
 
 -- ----------------------------------------------------------------------
--- SYNTHESE - R - PRIVATE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
+-- SYNTHESE - R - BLURRED_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRIVATE,SENSITIVITY
 INSERT INTO gn_permissions.cor_module_action_object_filter (
     id_module, id_action, id_object, id_filter_type, code, label, description
 ) 
     SELECT
         gn_commons.get_id_module_bycode('SYNTHESE'),
         gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('PRECISION'),
-        'SYNTHESE-R-PRIVATE_OBSERVATION-PRECISION',
-        'Lire des observations privées',
-        'Lire des observations privées dans le module Synthèse en étant limité par la précision.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-R-PRIVATE_OBSERVATION-PRECISION'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('SYNTHESE'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
+        gn_permissions.get_id_object('BLURRED_OBSERVATION'),
         gn_permissions.get_id_filter_type('SCOPE'),
-        'SYNTHESE-R-PRIVATE_OBSERVATION-SCOPE',
-        'Lire des observations privées',
-        'Lire des observations privées dans le module Synthèse en étant limité par l''appartenance.'
+        'SYNTHESE-R-BLURRED_OBSERVATION-SCOPE',
+        'Lire des observations floutées',
+        'Lire des observations floutées dans le module Synthèse en étant limité par l''appartenance.'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-R-PRIVATE_OBSERVATION-SCOPE'
+        WHERE cmaof.code = 'SYNTHESE-R-BLURRED_OBSERVATION-SCOPE'
     ) ;
 
 INSERT INTO gn_permissions.cor_module_action_object_filter (
@@ -1861,15 +1836,49 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
     SELECT
         gn_commons.get_id_module_bycode('SYNTHESE'),
         gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
+        gn_permissions.get_id_object('BLURRED_OBSERVATION'),
+        gn_permissions.get_id_filter_type('PRIVATE'),
+        'SYNTHESE-R-BLURRED_OBSERVATION-PRIVATE-SCOPE',
+        'Lire des observations floutées',
+        'Lire des observations floutées dans le module Synthèse en étant limitée aux par le statut des données (privé / public)'
+    WHERE NOT EXISTS (
+        SELECT 'X'
+        FROM gn_permissions.cor_module_action_object_filter AS cmaof
+        WHERE cmaof.code = 'SYNTHESE-R-BLURRED_OBSERVATION-PRIVATE-SCOPE'
+    ) ;
+
+INSERT INTO gn_permissions.cor_module_action_object_filter (
+    id_module, id_action, id_object, id_filter_type, code, label, description
+) 
+    SELECT
+        gn_commons.get_id_module_bycode('SYNTHESE'),
+        gn_permissions.get_id_action('R'),
+        gn_permissions.get_id_object('BLURRED_OBSERVATION'),
+        gn_permissions.get_id_filter_type('SENSITIVITY'),
+        'SYNTHESE-R-BLURRED_OBSERVATION-SENSITIVITY-SCOPE',
+        'Lire des observations floutées',
+        'Lire  des observations floutées dans la module Synthèse en filtrant sur la sensibilté'
+    WHERE NOT EXISTS (
+        SELECT 'X'
+        FROM gn_permissions.cor_module_action_object_filter AS cmaof
+        WHERE cmaof.code = 'SYNTHESE-R-BLURRED_OBSERVATION-SENSITIVITY-SCOPE'
+    ) ;
+
+INSERT INTO gn_permissions.cor_module_action_object_filter (
+    id_module, id_action, id_object, id_filter_type, code, label, description
+) 
+    SELECT
+        gn_commons.get_id_module_bycode('SYNTHESE'),
+        gn_permissions.get_id_action('R'),
+        gn_permissions.get_id_object('BLURRED_OBSERVATION'),
         gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-        'SYNTHESE-R-PRIVATE_OBSERVATION-GEOGRAPHIC',
-        'Lire des observations privées',
-        'Lire des observations privées dans le module Synthèse en étant limité par zones géographiques.'
+        'SYNTHESE-R-BLURRED_OBSERVATION-GEOGRAPHIC-SCOPE',
+        'Lire des observations floutées',
+        'Lire des observations floutées dans le module Synthèse en étant limité par zones géographiques.'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-R-PRIVATE_OBSERVATION-GEOGRAPHIC'
+        WHERE cmaof.code = 'SYNTHESE-R-BLURRED_OBSERVATION-GEOGRAPHIC-SCOPE'
     ) ;
 
 INSERT INTO gn_permissions.cor_module_action_object_filter (
@@ -1878,225 +1887,17 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
     SELECT
         gn_commons.get_id_module_bycode('SYNTHESE'),
         gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
+        gn_permissions.get_id_object('BLURRED_OBSERVATION'),
         gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'SYNTHESE-R-PRIVATE_OBSERVATION-TAXONOMIC',
-        'Lire des observations privées',
-        'Lire des observations privées dans le module Synthèse en étant limité par des taxons.'
+        'SYNTHESE-R-BLURRED_OBSERVATION-TAXONOMIC-SCOPE',
+        'Lire des observations floutées',
+        'Lire des observations floutées dans le module Synthèse en étant limité par des taxons.'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-R-PRIVATE_OBSERVATION-TAXONOMIC'
+        WHERE cmaof.code = 'SYNTHESE-R-BLURRED_OBSERVATION-TAXONOMIC-SCOPE'
     ) ;
 
--- ----------------------------------------------------------------------
--- SYNTHESE - E - PRIVATE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('SYNTHESE'),
-        gn_permissions.get_id_action('E'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('PRECISION'),
-        'SYNTHESE-E-PRIVATE_OBSERVATION-PRECISION',
-        'Exporter des observations privées',
-        'Exporter des observations privées dans le module Synthèse en étant limité par la précision.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-E-PRIVATE_OBSERVATION-PRECISION'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('SYNTHESE'),
-        gn_permissions.get_id_action('E'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'SYNTHESE-E-PRIVATE_OBSERVATION-SCOPE',
-        'Exporter des observations privées',
-        'Exporter des observations privées dans le module Synthèse en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-E-PRIVATE_OBSERVATION-SCOPE'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('SYNTHESE'),
-        gn_permissions.get_id_action('E'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-        'SYNTHESE-E-PRIVATE_OBSERVATION-GEOGRAPHIC',
-        'Exporter des observations privées',
-        'Exporter des observations privées dans le module Synthèse en étant limité par zones géographiques.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-E-PRIVATE_OBSERVATION-GEOGRAPHIC'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('SYNTHESE'),
-        gn_permissions.get_id_action('E'),
-        gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'SYNTHESE-E-PRIVATE_OBSERVATION-TAXONOMIC',
-        'Exporter des observations privées',
-        'Exporter des observations privées dans le module Synthèse en étant limité par des taxons.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-E-PRIVATE_OBSERVATION-TAXONOMIC'
-    ) ;
-
--- ----------------------------------------------------------------------
--- SYNTHESE - R - SENSITIVE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('SYNTHESE'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('PRECISION'),
-        'SYNTHESE-R-SENSITIVE_OBSERVATION-PRECISION',
-        'Lire des observations sensibles',
-        'Lire des observations sensibles dans le module Synthèse en étant limité par la précision.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-R-SENSITIVE_OBSERVATION-PRECISION'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('SYNTHESE'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'SYNTHESE-R-SENSITIVE_OBSERVATION-SCOPE',
-        'Lire des observations sensibles',
-        'Lire des observations sensibles dans le module Synthèse en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-R-SENSITIVE_OBSERVATION-SCOPE'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('SYNTHESE'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-        'SYNTHESE-R-SENSITIVE_OBSERVATION-GEOGRAPHIC',
-        'Lire des observations sensibles',
-        'Lire des observations sensibles dans le module Synthèse en étant limité par zones géographiques.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-R-SENSITIVE_OBSERVATION-GEOGRAPHIC'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('SYNTHESE'),
-        gn_permissions.get_id_action('R'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'SYNTHESE-R-SENSITIVE_OBSERVATION-TAXONOMIC',
-        'Lire des observations sensibles',
-        'Lire des observations sensibles dans le module Synthèse en étant limité par des taxons.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-R-SENSITIVE_OBSERVATION-TAXONOMIC'
-    ) ;
--- ----------------------------------------------------------------------
--- SYNTHESE - E - SENSITIVE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('SYNTHESE'),
-        gn_permissions.get_id_action('E'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('PRECISION'),
-        'SYNTHESE-E-SENSITIVE_OBSERVATION-PRECISION',
-        'Exporter des observations sensibles',
-        'Exporter des observations sensibles dans le module Synthèse en étant limité par la précision.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-E-SENSITIVE_OBSERVATION-PRECISION'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('SYNTHESE'),
-        gn_permissions.get_id_action('E'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('SCOPE'),
-        'SYNTHESE-E-SENSITIVE_OBSERVATION-SCOPE',
-        'Exporter des observations sensibles',
-        'Exporter des observations sensibles dans le module Synthèse en étant limité par l''appartenance.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-E-SENSITIVE_OBSERVATION-SCOPE'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('SYNTHESE'),
-        gn_permissions.get_id_action('E'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-        'SYNTHESE-E-SENSITIVE_OBSERVATION-GEOGRAPHIC',
-        'Exporter des observations sensibles',
-        'Exporter des observations sensibles dans le module Synthèse en étant limité par zones géographiques.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-E-SENSITIVE_OBSERVATION-GEOGRAPHIC'
-    ) ;
-
-INSERT INTO gn_permissions.cor_module_action_object_filter (
-    id_module, id_action, id_object, id_filter_type, code, label, description
-) 
-    SELECT
-        gn_commons.get_id_module_bycode('SYNTHESE'),
-        gn_permissions.get_id_action('E'),
-        gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-        gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'SYNTHESE-E-SENSITIVE_OBSERVATION-TAXONOMIC',
-        'Exporter des observations sensibles',
-        'Exporter des observations sensibles dans le module Synthèse en étant limité par des taxons.'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-E-SENSITIVE_OBSERVATION-TAXONOMIC'
-    ) ;
 
 DO
 $$
@@ -2107,93 +1908,93 @@ BEGIN
         RAISE NOTICE 'Validation module installed - Adding available permissions...' ;
 
         -- ----------------------------------------------------------------------
-        -- VALIDATION - C - ALL - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('C'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('PRECISION'),
-                'VALIDATION-C-ALL-PRECISION',
-                'Créer des données',
-                'Créer des données dans le module Validation en étant limité par la précision.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-C-ALL-PRECISION'
-            ) ;
+        -- VALIDATION - V - ALL - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
+            INSERT INTO gn_permissions.cor_module_action_object_filter (
+                id_module, id_action, id_object, id_filter_type, code, label, description
+            ) 
+                SELECT
+                    gn_commons.get_id_module_bycode('VALIDATION'),
+                    gn_permissions.get_id_action('V'),
+                    gn_permissions.get_id_object('ALL'),
+                    gn_permissions.get_id_filter_type('SCOPE'),
+                    'SYNTHESE-V-ALL-SCOPE',
+                    'Valider des données précises',
+                    'Valider des données dans le module Validation en étant limité par l''appartenance.'
+                WHERE NOT EXISTS (
+                    SELECT 'X'
+                    FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                    WHERE cmaof.code = 'SYNTHESE-V-ALL-SCOPE'
+                ) ;
 
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('C'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'VALIDATION-C-ALL-SCOPE',
-                'Créer des données',
-                'Créer des données dans le module Validation en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-C-ALL-SCOPE'
-            ) ;
+            INSERT INTO gn_permissions.cor_module_action_object_filter (
+                id_module, id_action, id_object, id_filter_type, code, label, description
+            ) 
+                SELECT
+                    gn_commons.get_id_module_bycode('VALIDATION'),
+                    gn_permissions.get_id_action('V'),
+                    gn_permissions.get_id_object('ALL'),
+                    gn_permissions.get_id_filter_type('PRIVATE'),
+                    'SYNTHESE-V-ALL-PRIVATE-SCOPE',
+                    'Valider des observations privées',
+                    'Valider des observations privées dans le module Validation en étant limitée aux par le statut des données (privé / public)'
+                WHERE NOT EXISTS (
+                    SELECT 'X'
+                    FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                    WHERE cmaof.code = 'SYNTHESE-V-ALL-PRIVATE-SCOPE'
+                ) ;
 
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('C'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-                'VALIDATION-C-ALL-GEOGRAPHIC',
-                'Créer des données',
-                'Créer des données dans le module Validation en étant limité par zones géographiques.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-C-ALL-GEOGRAPHIC'
-            ) ;
+            INSERT INTO gn_permissions.cor_module_action_object_filter (
+                id_module, id_action, id_object, id_filter_type, code, label, description
+            ) 
+                SELECT
+                    gn_commons.get_id_module_bycode('VALIDATION'),
+                    gn_permissions.get_id_action('V'),
+                    gn_permissions.get_id_object('ALL'),
+                    gn_permissions.get_id_filter_type('SENSITIVITY'),
+                    'SYNTHESE-V-ALL-SENSITIVITY-SCOPE',
+                    'Valider des observations précises',
+                    'Valider des observations précises dans la module Valiadation en filtrant sur la sensibilté'
+                WHERE NOT EXISTS (
+                    SELECT 'X'
+                    FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                    WHERE cmaof.code = 'SYNTHESE-V-ALL-SENSITIVITY-SCOPE'
+                ) ;
 
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('C'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('TAXONOMIC'),
-                'VALIDATION-C-ALL-TAXONOMIC',
-                'Créer des données',
-                'Créer des données dans le module Validation en étant limité par des taxons.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-C-ALL-TAXONOMIC'
-            ) ;
+            INSERT INTO gn_permissions.cor_module_action_object_filter (
+                id_module, id_action, id_object, id_filter_type, code, label, description
+            ) 
+                SELECT
+                    gn_commons.get_id_module_bycode('VALIDATION'),
+                    gn_permissions.get_id_action('V'),
+                    gn_permissions.get_id_object('ALL'),
+                    gn_permissions.get_id_filter_type('TAXONOMIC'),
+                    'VALIDATION-V-ALL-TAXONOMIC-SCOPE',
+                    'Valider des données précises',
+                    'Valider des données précises dans le module Validation en étant limité par des taxons.'
+                WHERE NOT EXISTS (
+                    SELECT 'X'
+                    FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                    WHERE cmaof.code = 'Validation-V-ALL-TAXONOMIC-SCOPE'
+                ) ;
 
-        -- ----------------------------------------------------------------------
-        -- VALIDATION - R - ALL - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('R'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('PRECISION'),
-                'VALIDATION-R-ALL-PRECISION',
-                'Lire des données',
-                'Lire des données dans le module Validation en étant limité par la précision.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-R-ALL-PRECISION'
-            ) ;
+            INSERT INTO gn_permissions.cor_module_action_object_filter (
+                id_module, id_action, id_object, id_filter_type, code, label, description
+            ) 
+                SELECT
+                    gn_commons.get_id_module_bycode('VALIDATION'),
+                    gn_permissions.get_id_action('V'),
+                    gn_permissions.get_id_object('ALL'),
+                    gn_permissions.get_id_filter_type('GEOGRAPHIC'),
+                    'VALIDATION-V-ALL-GEOGRAPHIC-SCOPE',
+                    'Valider des données précises',
+                    'Valider des données précises dans le module Validation en étant limité par zones géographiques.'
+                WHERE NOT EXISTS (
+                    SELECT 'X'
+                    FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                    WHERE cmaof.code = 'Validation-V-ALL-GEOGRAPHIC-SCOPE'
+                ) ;
+
+        -- Validation - R - ALL 
 
         INSERT INTO gn_permissions.cor_module_action_object_filter (
             id_module, id_action, id_object, id_filter_type, code, label, description
@@ -2204,7 +2005,7 @@ BEGIN
                 gn_permissions.get_id_object('ALL'),
                 gn_permissions.get_id_filter_type('SCOPE'),
                 'VALIDATION-R-ALL-SCOPE',
-                'Lire des données',
+                'Lire des observations précises',
                 'Lire des données dans le module Validation en étant limité par l''appartenance.'
             WHERE NOT EXISTS (
                 SELECT 'X'
@@ -2219,14 +2020,31 @@ BEGIN
                 gn_commons.get_id_module_bycode('VALIDATION'),
                 gn_permissions.get_id_action('R'),
                 gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-                'VALIDATION-R-ALL-GEOGRAPHIC',
-                'Lire des données',
-                'Lire des données dans le module Validation en étant limité par zones géographiques.'
+                gn_permissions.get_id_filter_type('PRIVATE'),
+                'VALIDATION-R-ALL-PRIVATE-SCOPE',
+                'Lire des observations précises',
+                'Lire des observations précises dans le module Validation en étant limitée aux par le statut des données (privé / public)'
             WHERE NOT EXISTS (
                 SELECT 'X'
                 FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-R-ALL-GEOGRAPHIC'
+                WHERE cmaof.code = 'VALIDATION-R-ALL-PRIVATE-SCOPE'
+            ) ;
+
+        INSERT INTO gn_permissions.cor_module_action_object_filter (
+            id_module, id_action, id_object, id_filter_type, code, label, description
+        ) 
+            SELECT
+                gn_commons.get_id_module_bycode('VALIDATION'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('ALL'),
+                gn_permissions.get_id_filter_type('SENSITIVITY'),
+                'VALIDATION-R-ALL-SENSITIVITY-SCOPE',
+                'Lire des observations précises',
+                'Lire  des observations précises dans la module Synthèse en filtrant sur la sensibilté'
+            WHERE NOT EXISTS (
+                SELECT 'X'
+                FROM gn_permissions.cor_module_action_object_filter AS cmaof
+                WHERE cmaof.code = 'SYNTHESE-R-ALL-SENSITIVITY-SCOPE'
             ) ;
 
         INSERT INTO gn_permissions.cor_module_action_object_filter (
@@ -2237,32 +2055,13 @@ BEGIN
                 gn_permissions.get_id_action('R'),
                 gn_permissions.get_id_object('ALL'),
                 gn_permissions.get_id_filter_type('TAXONOMIC'),
-                'VALIDATION-R-ALL-TAXONOMIC',
-                'Lire des données',
-                'Lire des données dans le module Validation en étant limité par des taxons.'
+                'VALIDATION-R-ALL-TAXONOMIC-SCOPE',
+                'Lire des observations précises',
+                'Lire des observations précises dans le module Validation en étant limité par des taxons.'
             WHERE NOT EXISTS (
                 SELECT 'X'
                 FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-R-ALL-TAXONOMIC'
-            ) ;
-
-        -- ----------------------------------------------------------------------
-        -- VALIDATION - C - PRIVATE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('C'),
-                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-                gn_permissions.get_id_filter_type('PRECISION'),
-                'VALIDATION-C-PRIVATE_OBSERVATION-PRECISION',
-                'Créer des observations privées',
-                'Créer des observations privées dans le module Validation en étant limité par la précision.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-C-PRIVATE_OBSERVATION-PRECISION'
+                WHERE cmaof.code = 'VALIDATION-R-ALL-TAXONOMIC-SCOPE'
             ) ;
 
         INSERT INTO gn_permissions.cor_module_action_object_filter (
@@ -2270,262 +2069,22 @@ BEGIN
         ) 
             SELECT
                 gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('C'),
-                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'VALIDATION-C-PRIVATE_OBSERVATION-SCOPE',
-                'Créer des observations privées',
-                'Créer des observations privées dans le module Validation en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-C-PRIVATE_OBSERVATION-SCOPE'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('C'),
-                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
+                gn_permissions.get_id_action('R'),
+                gn_permissions.get_id_object('ALL'),
                 gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-                'VALIDATION-C-PRIVATE_OBSERVATION-GEOGRAPHIC',
-                'Créer des observations privées',
-                'Créer des observations privées dans le module Validation en étant limité par zones géographiques.'
+                'VALIDATION-R-ALL-GEOGRAPHIC-SCOPE',
+                'Lire des observations précises',
+                'Lire des observations précises dans le module Validation en étant limité par zones géographiques.'
             WHERE NOT EXISTS (
                 SELECT 'X'
                 FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-C-PRIVATE_OBSERVATION-GEOGRAPHIC'
+                WHERE cmaof.code = 'VALIDATION-R-ALL-GEOGRAPHIC-SCOPE'
             ) ;
 
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('C'),
-                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-                gn_permissions.get_id_filter_type('TAXONOMIC'),
-                'VALIDATION-C-PRIVATE_OBSERVATION-TAXONOMIC',
-                'Créer des observations privées',
-                'Créer des observations privées dans le module Validation en étant limité par des taxons.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-C-PRIVATE_OBSERVATION-TAXONOMIC'
-            ) ;
+        -- Lire et valider des données imprécises non mis car pas de sens !
 
+        
 
-        -- ----------------------------------------------------------------------
-        -- VALIDATION - R - PRIVATE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('R'),
-                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-                gn_permissions.get_id_filter_type('PRECISION'),
-                'VALIDATION-R-PRIVATE_OBSERVATION-PRECISION',
-                'Lire des observations privées',
-                'Lire des observations privées dans le module Validation en étant limité par la précision.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-R-PRIVATE_OBSERVATION-PRECISION'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('R'),
-                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'VALIDATION-R-PRIVATE_OBSERVATION-SCOPE',
-                'Lire des observations privées',
-                'Lire des observations privées dans le module Validation en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-R-PRIVATE_OBSERVATION-SCOPE'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('R'),
-                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-                gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-                'VALIDATION-R-PRIVATE_OBSERVATION-GEOGRAPHIC',
-                'Lire des observations privées',
-                'Lire des observations privées dans le module Validation en étant limité par zones géographiques.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-R-PRIVATE_OBSERVATION-GEOGRAPHIC'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('R'),
-                gn_permissions.get_id_object('PRIVATE_OBSERVATION'),
-                gn_permissions.get_id_filter_type('TAXONOMIC'),
-                'VALIDATION-R-PRIVATE_OBSERVATION-TAXONOMIC',
-                'Lire des observations privées',
-                'Lire des observations privées dans le module Validation en étant limité par des taxons.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-R-PRIVATE_OBSERVATION-TAXONOMIC'
-            ) ;
-
-        -- ----------------------------------------------------------------------
-        -- VALIDATION - C - SENSITIVE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('C'),
-                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-                gn_permissions.get_id_filter_type('PRECISION'),
-                'VALIDATION-C-SENSITIVE_OBSERVATION-PRECISION',
-                'Créer des observations sensibles',
-                'Créer des observations sensibles dans le module Validation en étant limité par la précision.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-C-SENSITIVE_OBSERVATION-PRECISION'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('C'),
-                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'VALIDATION-C-SENSITIVE_OBSERVATION-SCOPE',
-                'Créer des observations sensibles',
-                'Créer des observations sensibles dans le module Validation en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-C-SENSITIVE_OBSERVATION-SCOPE'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('C'),
-                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-                gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-                'VALIDATION-C-SENSITIVE_OBSERVATION-GEOGRAPHIC',
-                'Créer des observations sensibles',
-                'Créer des observations sensibles dans le module Validation en étant limité par zones géographiques.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-C-SENSITIVE_OBSERVATION-GEOGRAPHIC'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('C'),
-                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-                gn_permissions.get_id_filter_type('TAXONOMIC'),
-                'VALIDATION-C-SENSITIVE_OBSERVATION-TAXONOMIC',
-                'Créer des observations sensibles',
-                'Créer des observations sensibles dans le module Validation en étant limité par des taxons.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-C-SENSITIVE_OBSERVATION-TAXONOMIC'
-            ) ;
-
-        -- ----------------------------------------------------------------------
-        -- VALIDATION - R - SENSITIVE_OBSERVATION - SCOPE,TAXONOMIC,GEOGRAPHIC,PRECISION
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('R'),
-                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-                gn_permissions.get_id_filter_type('PRECISION'),
-                'VALIDATION-R-SENSITIVE_OBSERVATION-PRECISION',
-                'Lire des observations sensibles',
-                'Lire des observations sensibles dans le module Validation en étant limité par la précision.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-R-SENSITIVE_OBSERVATION-PRECISION'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('R'),
-                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'VALIDATION-R-SENSITIVE_OBSERVATION-SCOPE',
-                'Lire des observations sensibles',
-                'Lire des observations sensibles dans le module Validation en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-R-SENSITIVE_OBSERVATION-SCOPE'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('R'),
-                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-                gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-                'VALIDATION-R-SENSITIVE_OBSERVATION-GEOGRAPHIC',
-                'Lire des observations sensibles',
-                'Lire des observations sensibles dans le module Validation en étant limité par zones géographiques.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-R-SENSITIVE_OBSERVATION-GEOGRAPHIC'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('R'),
-                gn_permissions.get_id_object('SENSITIVE_OBSERVATION'),
-                gn_permissions.get_id_filter_type('TAXONOMIC'),
-                'VALIDATION-R-SENSITIVE_OBSERVATION-TAXONOMIC',
-                'Lire des observations sensibles',
-                'Lire des observations sensibles dans le module Validation en étant limité par des taxons.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-R-SENSITIVE_OBSERVATION-TAXONOMIC'
-            ) ;
     ELSE
         RAISE NOTICE 'Validation module NOT installed.' ;
     END IF;
