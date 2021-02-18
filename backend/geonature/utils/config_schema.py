@@ -281,10 +281,44 @@ class Synthese(Schema):
     NB_MAX_OBS_EXPORT = fields.Integer(missing=50000)
     # Nombre des "dernières observations" affiché à l'arrive sur la synthese
     NB_LAST_OBS = fields.Integer(missing=100)
-
     # Display email on synthese and validation info obs modal
     DISPLAY_EMAIL = fields.Boolean(missing=True)
 
+class DataBlurringManagement(Schema):
+    # Configuration parameters for blurring geo data based on diffusion_level, sensitivity
+    # and user permissions
+    
+    # Enable blurring results based on diffusion_level and user permissions
+    # By default, data blurring is disable
+    ENABLE_DATA_BLURRING = fields.Boolean(missing=False)
+    # Type of area use to display data for each diffusion level
+    AREA_TYPE_FOR_DIFFUSION_LEVELS = fields.List(fields.Dict, missing=[
+        {"level": "0", "area": "COM"},
+        {"level": "1", "area": "COM"},
+        {"level": "2", "area": "M10"},
+        {"level": "3", "area": "DEP"},
+    ])
+    # Type of area use to display data for each sensitivity level
+    AREA_TYPE_FOR_SENSITIVITY_LEVELS = fields.List(fields.Dict, missing=[
+        {"level": "1", "area": "COM"},
+        {"level": "2", "area": "M10"},
+        {"level": "3", "area": "DEP"},
+    ])
+    # Nom de la colonne du niveau de sensibilité dans la vue gn_synthese.v_synthese_for_export
+    # Colonne obligatoire pour les téléchargements de la Synthese
+    EXPORT_SENSITIVITY_COL = fields.String(missing="niveau_sensibilite")
+    # Nom de la colonne du niveau de diffusion dans la vue gn_synthese.v_synthese_for_export
+    # Colonne obligatoire pour les téléchargements de la Synthese
+    EXPORT_DIFFUSION_COL = fields.String(missing="niveau_precision_diffusion")
+    # Nom de la colonne contenant la geometrie floutée dans les téléchargements de la Synthese
+    EXPORT_BLURRED_GEOM_FIELD = fields.String(missing="geometrie_wkt_4326")
+    # Nom des champs à vider dans les téléchargements de la Synthese 
+    # lorsqu'une observation doit être floutée
+    EXPORT_FIELDS_TO_BLURRE = fields.List(fields.String, missing=[
+        "geometrie_wkt_4326", 
+        "x_centroid_4326", "y_centroid_4326",
+        "geojson_4326", "geojson_local",
+    ])
 
 # On met la valeur par défaut de DISCONECT_AFTER_INACTIVITY inferieure à COOKIE_EXPIRATION
 cookie_expiration = GnPySchemaConf().load({}).data.get("COOKIE_EXPIRATION")
@@ -353,6 +387,7 @@ class GnGeneralSchemaConf(Schema):
     URL_USERSHUB = fields.Url(required=False)
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, missing={})
     PERMISSION_MANAGEMENT = fields.Nested(PermissionManagement, missing={})
+    DATA_BLURRING = fields.Nested(DataBlurringManagement, missing={})
     MEDIAS = fields.Nested(MediasConfig, missing={})
     UPLOAD_FOLDER = fields.String(missing="static/medias")
     METADATA = fields.Nested(MetadataConfig, missing={})

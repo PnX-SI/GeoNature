@@ -30,6 +30,8 @@ class LAreas(DB.Model):
     area_name = DB.Column(DB.Unicode)
     area_code = DB.Column(DB.Unicode)
     geom = DB.Column(Geometry("GEOMETRY", config["LOCAL_SRID"]))
+    centroid = DB.Column(Geometry("GEOMETRY", config["LOCAL_SRID"]))
+    geojson_4326 = DB.Column(DB.Unicode)
     source = DB.Column(DB.Unicode)
     geom = DB.Column(Geometry("GEOMETRY", 4326))
     area_type = DB.relationship("BibAreasTypes", lazy="select")

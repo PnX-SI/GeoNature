@@ -53,6 +53,8 @@ class SyntheseQuery:
         id_dataset_column="id_dataset",
         observers_column="observers",
         id_digitiser_column="id_digitiser",
+        sensitivity_column="id_nomenclature_sensitivity",
+        diffusion_column="id_nomenclature_diffusion_level",
         with_generic_table=False
     ):
         self.query = query
@@ -81,9 +83,13 @@ class SyntheseQuery:
             self.model_id_dataset_column = getattr(model_temp, id_dataset_column)
             self.model_observers_column = getattr(model_temp, observers_column)
             self.model_id_digitiser_column = getattr(model_temp, id_digitiser_column)
+
+            if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
+                self.model_sensitivity_column = getattr(model_temp, sensitivity_column)
+                self.model_diffusion_column = getattr(model_temp, diffusion_column)
         except AttributeError as e:
             raise GeonatureApiError(
-                """the {model} table     does not have a column {e}
+                """the {model} table does not have a column {e}
                 If you change the {model} table, please edit your synthese config (cf EXPORT_***_COL)
                 """.format(
                     e=e, model=model
@@ -120,35 +126,56 @@ class SyntheseQuery:
                 # push the joined table in _already_joined_table list
                 self._already_joined_table.append(right_table)
 
-    def filter_query_with_cruved(self, user):
+    def filter_query_with_cruved(self, auth):
         """
         Filter the query with the cruved authorization of a user
         """
-        if user.value_filter in ("1", "2"):
-            # get id synthese where user is observer
+        if auth.value_filter in ("1", "2"):
+            # Get id synthese where user authenticated is observer and ...
             subquery_observers = (
                 select([CorObserverSynthese.id_synthese])
                 .select_from(CorObserverSynthese)
-                .where(CorObserverSynthese.id_role == user.id_role)
+                .where(CorObserverSynthese.id_role == auth.id_role)
             )
+            
+            # ... if user authenticated id is observer or digitiser
             ors_filters = [
                 self.model_id_syn_col.in_(subquery_observers),
-                self.model_id_digitiser_column == user.id_role,
+                self.model_id_digitiser_column == auth.id_role,
             ]
-            if current_app.config["SYNTHESE"]["CRUVED_SEARCH_WITH_OBSERVER_AS_TXT"]:
-                user_fullname1 = user.nom_role + " " + user.prenom_role + "%"
-                user_fullname2 = user.prenom_role + " " + user.nom_role + "%"
-                ors_filters.append(self.model_observers_column.ilike(user_fullname1))
-                ors_filters.append(self.model_observers_column.ilike(user_fullname2))
 
-            if user.value_filter == "1":
-                allowed_datasets = TDatasets.get_user_datasets(user, only_user=True)
-                ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
-                self.query = self.query.where(or_(*ors_filters))
-            elif user.value_filter == "2":
-                allowed_datasets = TDatasets.get_user_datasets(user)
-                ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
-                self.query = self.query.where(or_(*ors_filters))
+            # ... if user authenticated firstname and lastname combinaisons are 
+            # in observers plain text column
+            if current_app.config["SYNTHESE"]["CRUVED_SEARCH_WITH_OBSERVER_AS_TXT"]:
+                user_fullname = f"{auth.nom_role} {auth.prenom_role}%"
+                user_fullname_alernative = f"{auth.prenom_role} {auth.nom_role}%"
+                ors_filters.append(self.model_observers_column.ilike(user_fullname))
+                ors_filters.append(self.model_observers_column.ilike(user_fullname_alernative))
+
+            # ... if user authenticated is linked to a dataset with an access
+            # to my organism data (= 2) or only one linked with an access 
+            # to my personnal data (= 1).
+            only_user = (True if auth.value_filter == "1" else False)
+            allowed_datasets = TDatasets.get_user_datasets(auth, only_user=only_user)
+            ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
+            
+            self.query = self.query.where(or_(*ors_filters))
+
+    # TODO: removed if unused !
+    def filter_query_with_permissions_filters(self, auth, permission):
+        """Filtre les données de la synthèse en fonction des filtres de 
+        permissions (TAXONOMIC, GEOGRAPHIC...)
+
+        Parameters
+        ----------
+        permission : list<dict>
+            Liste de dictionnaire contenant les différents filtres rassemblés
+            et des infos sur la permission (module, action, objet...).
+        """
+        # TODO: limit query results by TAXONOMIC and/or GEOGRAPHIC filters values
+        # if no filter "PRECISION" was specified.
+
+
 
     def filter_taxonomy(self):
         """
@@ -326,7 +353,7 @@ class SyntheseQuery:
                 col = getattr(self.model.__table__.columns, colname)
                 self.query = self.query.where(col.ilike("%{}%".format(value[0])))
 
-    def filter_query_all_filters(self, user):
+    def filter_query_all_filters(self, auth):
         """High level function to manage query with all filters.
 
         Apply CRUVED, toxonomy and other filters.
@@ -342,12 +369,17 @@ class SyntheseQuery:
             Combined filter to apply.
 
         """
-
-        self.filter_query_with_cruved(user)
-
+        self.filter_query_with_cruved(auth)
         self.filter_taxonomy()
         self.filter_other_filters()
 
         if self.query_joins is not None:
             self.query = self.query.select_from(self.query_joins)
+        
+        return self.query
+
+    def apply_all_filters(self, auth, permissions):
+        self.filter_query_with_permissions_filters(auth, permissions)
+
+        self.query = self.filter_query_all_filters(auth)
         return self.query
