@@ -1918,7 +1918,7 @@ BEGIN
                     gn_permissions.get_id_object('ALL'),
                     gn_permissions.get_id_filter_type('SCOPE'),
                     'SYNTHESE-V-ALL-SCOPE',
-                    'Valider des données précises',
+                    'Valider des observations précises',
                     'Valider des données dans le module Validation en étant limité par l''appartenance.'
                 WHERE NOT EXISTS (
                     SELECT 'X'
@@ -1969,8 +1969,8 @@ BEGIN
                     gn_permissions.get_id_object('ALL'),
                     gn_permissions.get_id_filter_type('TAXONOMIC'),
                     'VALIDATION-V-ALL-TAXONOMIC-SCOPE',
-                    'Valider des données précises',
-                    'Valider des données précises dans le module Validation en étant limité par des taxons.'
+                    'Valider des observations précises',
+                    'Valider des observations précises dans le module Validation en étant limité par des taxons.'
                 WHERE NOT EXISTS (
                     SELECT 'X'
                     FROM gn_permissions.cor_module_action_object_filter AS cmaof
@@ -1986,8 +1986,8 @@ BEGIN
                     gn_permissions.get_id_object('ALL'),
                     gn_permissions.get_id_filter_type('GEOGRAPHIC'),
                     'VALIDATION-V-ALL-GEOGRAPHIC-SCOPE',
-                    'Valider des données précises',
-                    'Valider des données précises dans le module Validation en étant limité par zones géographiques.'
+                    'Valider des observations précises',
+                    'Valider des observations précises dans le module Validation en étant limité par zones géographiques.'
                 WHERE NOT EXISTS (
                     SELECT 'X'
                     FROM gn_permissions.cor_module_action_object_filter AS cmaof
