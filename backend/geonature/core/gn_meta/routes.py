@@ -435,7 +435,8 @@ def sensi_report(info_role):
     """
 
     params = request.args
-    ds_id = params.get("id_dataset")
+    ds_id = params["id_dataset"]
+    dataset = TDatasets.query.get_or_404(ds_id)
     id_import = params.get("id_import")
     id_module = params.get("id_module")
 
@@ -471,8 +472,7 @@ def sensi_report(info_role):
     if id_module:
         query = query.filter(Synthese.id_module == id_module)
 
-    if ds_id:
-        query = query.filter(Synthese.id_dataset == ds_id)
+    query = query.filter(Synthese.id_dataset == ds_id)
 
     if id_import:
         query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).filter(
@@ -481,11 +481,9 @@ def sensi_report(info_role):
 
     data = query.group_by(Synthese.id_synthese, TNomenclatures.cd_nomenclature, TNomenclatures.label_fr).all()
 
-    dataset = None
     str_productor = ""
     header = ""
-    if len(data) > 0 and ds_id:
-        dataset = DB.session.query(TDatasets).get(ds_id)
+    if len(data) > 0:
         index_productor = -1
         if dataset.cor_dataset_actor:
             for index, actor in enumerate(dataset.cor_dataset_actor):
@@ -519,17 +517,16 @@ def sensi_report(info_role):
     if sensi_version:
         sensi_version = sensi_version[0]
     # set an header only if the rapport is on a dataset
-    if ds_id:
-        header = f""""Rapport de sensibilité"
-            "Jeu de données";"{dataset.dataset_name}"
-            "Identifiant interne";"{dataset.id_dataset}"
-            "Identifiant SINP";"{dataset.unique_dataset_id}"
-            "Organisme/personne fournisseur";"{str_productor}"
-            "Date de création du rapport";"{dt.datetime.now().strftime("%d/%m/%Y %Hh%M")}"
-            "Nombre de données sensibles";"{len(list(filter(lambda row: row["sensible"] == "Oui", data)))}"
-            "Nombre de données total dans le fichier";"{len(data)}"
-            "sensiVersionReferentiel";"{sensi_version}"
-            """
+    header = f""""Rapport de sensibilité"
+        "Jeu de données";"{dataset.dataset_name}"
+        "Identifiant interne";"{dataset.id_dataset}"
+        "Identifiant SINP";"{dataset.unique_dataset_id}"
+        "Organisme/personne fournisseur";"{str_productor}"
+        "Date de création du rapport";"{dt.datetime.now().strftime("%d/%m/%Y %Hh%M")}"
+        "Nombre de données sensibles";"{len(list(filter(lambda row: row["sensible"] == "Oui", data)))}"
+        "Nombre de données total dans le fichier";"{len(data)}"
+        "sensiVersionReferentiel";"{sensi_version}"
+        """
 
     return my_csv_resp(
         filename="filename",
