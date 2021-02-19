@@ -201,10 +201,6 @@ params :
 
 * level <int>: niveau de droits requis pour accéder à la vue
 * get_role <bool:False>: si True, ajoute l'id utilisateur aux kwargs de la vue
-* redirect_on_expiration <str:None> : identifiant de vue  sur laquelle
-  rediriger l'utilisateur en cas d'expiration de sa session
-* redirect_on_invalid_token <str:None> : identifiant de vue sur laquelle
-  rediriger l'utilisateur en cas d'informations de session invalides
 
 ::
 
@@ -218,8 +214,6 @@ params :
     @check_auth(
         1,
         True,
-        redirect_on_expiration='my_reconnexion_handler',
-        redirect_on_invalid_token='my_affreux_pirate_handler'
         )
     @json_resp
     def my_view(id_role):
@@ -238,10 +232,7 @@ params :
 * action <str:['C','R','U','V','E','D']> type d'action effectuée par la route
   (Create, Read, Update, Validate, Export, Delete)
 * get_role <bool:False>: si True, ajoute l'id utilisateur aux kwargs de la vue
-* redirect_on_expiration <str:None> : identifiant de vue  sur laquelle
-  rediriger l'utilisateur en cas d'expiration de sa session
-* redirect_on_invalid_token <str:None> : identifiant de vue sur laquelle
-  rediriger l'utilisateur en cas d'informations de session invalides
+
 
 ::
 
@@ -255,8 +246,6 @@ params :
     @check_auth_cruved(
         'R',
         True,
-        redirect_on_expiration='my_reconnexion_handler',
-        redirect_on_invalid_token='my_affreux_pirate_handler'
         )
     @json_resp
     def my_sensible_view(id_role):

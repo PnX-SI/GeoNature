@@ -51,7 +51,7 @@ class TestSynthese:
                 """,
             key_municipality: 28290,
         }
-        response = self.client.get(url_for("gn_synthese.get_synthese"), query_string=query_string)
+        response = self.client.get(url_for("gn_synthese.get_observations_for_web"), query_string=query_string)
         data = json_of_response(response)
         assert len(data["data"]) >= 2
 
@@ -61,13 +61,13 @@ class TestSynthese:
             "radius": "83883.94104436478",
         }
 
-        response = self.client.get(url_for("gn_synthese.get_synthese"), query_string=query_string)
+        response = self.client.get(url_for("gn_synthese.get_observations_for_web"), query_string=query_string)
         data = json_of_response(response)
         assert len(data["data"]) >= 2
 
         # test organisms and multiple same arg in query string
 
-        response = self.client.get("/synthese?id_organism=1&id_organism=2")
+        response = self.client.get("/synthese/for_web?id_organism=1&id_organism=2")
         data = json_of_response(response)
         assert len(data["data"]) >= 2
 
@@ -79,7 +79,7 @@ class TestSynthese:
         response = self.client.get(url_for("gn_synthese.get_observations_for_web"))
         data = json_of_response(response)
 
-        assert len(data["data"]["features"]) == 0
+        assert len(data["data"]["features"]) > 0
         assert response.status_code == 200
 
     def test_filter_cor_observers(self):
@@ -160,4 +160,9 @@ class TestSynthese:
 
     def test_color_taxon(self):
         response = self.client.get(url_for("gn_synthese.get_color_taxon"))
+        data = json_of_response(response)
+        one_line = data[0]
+        mandatory_columns = ["cd_nom", "id_area", "color", "nb_obs", "last_date"]
+        for attr in mandatory_columns:
+            assert attr in one_line
         assert response.status_code == 200

@@ -73,8 +73,6 @@ export class AfFormComponent implements OnInit {
         this.afForm.get('acquisition_framework_end_date')
       )
     ]);
-
-    console.log(this.af);
   }
 
   getAf(id_af) {

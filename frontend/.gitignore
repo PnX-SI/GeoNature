@@ -11,13 +11,10 @@ src/app/routing/app-routing.module.ts
 #tsconfig
 tsconfig.json
 
-
 # custom components
-src/custom/components/footer/footer.component.ts
-src/custom/components/footer/footer.component.html
-src/custom/components/introduction/introduction.component.html
-src/custom/components/introduction/introduction.component.ts
+src/custom/components/**/*.component.ts
+src/custom/components/**/*.component.scss
+src/custom/components/**/*.component.css
+src/custom/components/**/*.component.html
 src/custom/images/bandeau_toolbar.jpg
 src/custom/custom.scss
-
-

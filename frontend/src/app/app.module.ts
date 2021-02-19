@@ -56,6 +56,10 @@ import { GlobalSubService } from './services/global-sub.service';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
+import { UserDataService } from "./userModule/services/user-data.service";
+
+// Config
+import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
 
 @NgModule({
   imports: [
@@ -105,8 +109,10 @@ export function createTranslateLoader(http: HttpClient) {
     UserManagementGuard,
     SideNavService,
     CruvedStoreService,
-    { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true }
+    UserDataService,
+    { provide: APP_CONFIG_TOKEN, useValue: AppConfig },
+    { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

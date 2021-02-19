@@ -88,7 +88,7 @@ export class DatasetFormComponent implements OnInit {
   getAF() {
     this.acquisitionFrameworks = this._dfs.getAcquisitionFrameworks()
                                           .pipe(
-                                            map(data => data)
+                                            map(data => data.filter(af => af.opened === true))
                                           );
   }
 
@@ -125,8 +125,6 @@ export class DatasetFormComponent implements OnInit {
 
     if (this._formService.formValid) {
       const dataset = Object.assign(this.datasetForm.value, {});
-      // format module
-      dataset.modules = dataset.modules.map(mod => mod.id_module);
 
       dataset['cor_dataset_actor'] = update_cor_dataset_actor;
       this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/dataset`, dataset).subscribe(

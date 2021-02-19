@@ -24,16 +24,34 @@ echo "OK, let's migrate GeoNature version..."
 
 cp $myrootpath/geonature_old/config/settings.ini config/settings.ini
 cp $myrootpath/geonature_old/config/geonature_config.toml config/geonature_config.toml
+
+# Handle frontend custom components
+echo "Copie des fichiers existant des composants personnalisables du frontend..."
 cp -r $myrootpath/geonature_old/frontend/src/custom/* frontend/src/custom/
-if [ -d '$myrootpath/geonature_old/backend/static/images' ]
+
+echo "Création des fichiers des nouveaux composants personnalisables du frontend..."
+custom_component_dir="frontend/src/custom/components/"
+for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
+	if [[ ! -f "${file%.sample}" ]]; then
+		cp "${file}" "${file%.sample}"
+	fi
+done
+
+if [ -d "${myrootpath}/geonature_old/backend/static/images" ]
 then
   cp -r $myrootpath/geonature_old/backend/static/images/* backend/static/images
 fi
-if [ -d '$myrootpath/geonature_old/backend/static/mobile' ]
+
+if [ -f "${myrootpath}/geonature_old/backend/static/css/custom.css" ]
+then
+  cp $myrootpath/geonature_old/backend/static/css/custom.css backend/static/css/custom.css
+fi
+
+if [ -d "${myrootpath}/geonature_old/backend/static/mobile" ]
 then
   cp -r $myrootpath/geonature_old/backend/static/mobile/* backend/static/mobile
 fi
-if [ -d '$myrootpath/geonature_old/backend/static/exports' ]
+if [ -d "${myrootpath}/geonature_old/backend/static/exports" ]
 then
   cp -r $myrootpath/geonature_old/backend/static/exports/* backend/static/exports
 fi
@@ -74,7 +92,7 @@ then
   mkdir backend/static/medias
 fi
 
-if [ -d '$myrootpath/geonature_old/backend/static/medias' ]
+if [ -d "${myrootpath}/geonature_old/backend/static/medias" ]
 then
   cp -r $myrootpath/geonature_old/backend/static/medias/* backend/static/medias
 fi

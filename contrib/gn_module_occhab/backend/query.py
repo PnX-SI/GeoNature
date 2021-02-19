@@ -44,7 +44,6 @@ def filter_query_with_cruved(
                 e=e, model=model
             )
         )
-
     if user.value_filter in ("1", "2"):
 
         sub_query_id_role = DB.session.query(CorStationObserverOccHab).filter(
@@ -53,17 +52,19 @@ def filter_query_with_cruved(
             sub_query_id_role,
             model_id_digitiser_column == user.id_role,
         ]
-        q = q.filter(or_(*ors_filters))
         if filter_on_obs_txt:
             user_fullname1 = user.nom_role + " " + user.prenom_role + "%"
             user_fullname2 = user.prenom_role + " " + user.nom_role + "%"
             ors_filters.append(model_observers_column.ilike(user_fullname1))
             ors_filters.append(model_observers_column.ilike(user_fullname2))
         if user.value_filter == "1":
+            allowed_datasets = TDatasets.get_user_datasets(
+                user, only_query=True, only_user=True).exists()
+            ors_filters.append(allowed_datasets)
             q = q.filter(or_(*ors_filters))
         elif user.value_filter == "2":
             allowed_datasets = TDatasets.get_user_datasets(
                 user, only_query=True).exists()
             ors_filters.append(allowed_datasets)
-            q = q.filter(or_(*ors_filters))
+        q = q.filter(or_(*ors_filters))
     return q

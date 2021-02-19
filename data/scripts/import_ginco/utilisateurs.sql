@@ -9,7 +9,7 @@ ALTER TABLE utilisateurs.bib_organismes ADD COLUMN desc_organsime text;
 
 -- WARNING: champs d'organisme plus long que 100 char ne rentre pas
 
-TRUNCATE utilisateurs.t_roles CASCADE;
+--TRUNCATE utilisateurs.t_roles CASCADE;
 
 INSERT INTO utilisateurs.bib_organismes(
             id_organisme, uuid_organisme, nom_organisme, desc_organsime)

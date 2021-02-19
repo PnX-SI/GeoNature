@@ -4,29 +4,31 @@
 
 from marshmallow import Schema, fields
 
-#
+
 DEFAULT_COLUMNS_API_VALIDATION = [
-    "validation_auto",
-    "id_nomenclature_valid_status",
-    "id_synthese",
     "date_min",
     "observers",
     "nom_valide",
     "dataset_name",
-    "validation_date",
+    "validation_date"
 ]
 
 # Colonnes renvoyees par l'API synthese qui sont obligatoires pour que les fonctionnalités
 #  front fonctionnent
 MANDATORY_COLUMNS = [
+    "id_nomenclature_valid_status",
+    "id_synthese",
     "entity_source_pk_value",
-    "url_source",
+    "validation_auto",
     "cd_nom",
     "meta_update_date",
     "cd_nomenclature_validation_status",
     "mnemonique",
     "label_default",
     "unique_id_sinp",
+    "geojson",
+    "nom_vern",
+    "lb_nom"
 ]
 
 # CONFIG MAP-LIST
@@ -71,6 +73,11 @@ DISPLAY_TAXON_TREE = True
 ID_ATTRIBUT_TAXHUB = [1, 2]
 
 AREA_FILTERS = [{"label": "Communes", "id_type": 25}]
+MAIL_BODY = """La donnée en date du ${ d.date_min } relative au taxon ${ d.nom_vern } - ${ d.nom_valide } pose question.\n\r
+Merci de contacter la personne en charge de la validation. \n\rCommunes : ${ d.communes }\n\rMédias : ${ d.medias }
+"""
+MAIL_SUBJECT = "[GeoNature Validation] Donnée du ${ d.date_min } - ${ d.nom_vern } - ${ d.nom_valide }"
+
 
 
 class GnModuleSchemaConf(Schema):
@@ -88,3 +95,5 @@ class GnModuleSchemaConf(Schema):
     DISPLAY_TAXON_TREE = fields.Boolean(missing=True)
     ID_ATTRIBUT_TAXHUB = fields.List(fields.Integer, missing=ID_ATTRIBUT_TAXHUB)
     AREA_FILTERS = fields.List(fields.Dict, missing=AREA_FILTERS)
+    MAIL_BODY = fields.String(missing=MAIL_BODY)
+    MAIL_SUBJECT = fields.String(missing=MAIL_SUBJECT)
