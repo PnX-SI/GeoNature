@@ -437,23 +437,6 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         WHERE cmaof.code = 'ADMIN-C-PERMISSIONS-SCOPE'
     ) ;
 
--- INSERT INTO gn_permissions.cor_module_action_object_filter (
---     id_module, id_action, id_object, id_filter_type, code, label, description
--- ) 
---     SELECT
---         gn_commons.get_id_module_bycode('ADMIN'),
---         gn_permissions.get_id_action('C'),
---         gn_permissions.get_id_object('ACCESS_REQUESTS'),
---         gn_permissions.get_id_filter_type('SCOPE'),
---         'ADMIN-C-ACCESS_REQUESTS-SCOPE',
---         'Créer des demandes d''accès',
---         'Créer des demandes d''accès dans le module Admin en étant limité par l''appartenance.'
---     WHERE NOT EXISTS (
---         SELECT 'X'
---         FROM gn_permissions.cor_module_action_object_filter AS cmaof
---         WHERE cmaof.code = 'ADMIN-C-ACCESS_REQUESTS-SCOPE'
---     ) ;
-
 -- ADMIN - R - ALL,NOMENCLATURES,PERMISSIONS,ACCESS_REQUESTS - SCOPE
 INSERT INTO gn_permissions.cor_module_action_object_filter (
     id_module, id_action, id_object, id_filter_type, code, label, description
@@ -592,85 +575,6 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         WHERE cmaof.code = 'ADMIN-U-ACCESS_REQUESTS-SCOPE'
     ) ;
 
--- ADMIN - V - ALL,NOMENCLATURES,PERMISSIONS,ACCESS_REQUESTS - SCOPE
--- ADMIN-V-ALL-SCOPE : not used !
--- ADMIN-V-NOMENCLATURES-SCOPE : not used !
--- ADMIN-V-PERMISSIONS-SCOPE : not used !
--- ADMIN-V-ACCESS_REQUESTS-SCOPE : not used !
-
--- ADMIN - E - ALL,NOMENCLATURES,PERMISSIONS,ACCESS_REQUESTS - SCOPE
--- ADMIN-E-ALL-SCOPE : not used !
--- ADMIN-E-NOMENCLATURES-SCOPE : not used !
--- ADMIN-E-PERMISSIONS-SCOPE : not used !
--- ADMIN-E-ACCESS_REQUESTS-SCOPE : not used !
--- INSERT INTO gn_permissions.cor_module_action_object_filter (
---     id_module, id_action, id_object, id_filter_type, code, label, description
--- ) 
---     SELECT
---         gn_commons.get_id_module_bycode('ADMIN'),
---         gn_permissions.get_id_action('E'),
---         gn_permissions.get_id_object('ALL'),
---         gn_permissions.get_id_filter_type('SCOPE'),
---         'ADMIN-E-ALL-SCOPE',
---         'Exporter des données',
---         'Exporter des données dans le module Admin en étant limité par l''appartenance.'
---     WHERE NOT EXISTS (
---         SELECT 'X'
---         FROM gn_permissions.cor_module_action_object_filter AS cmaof
---         WHERE cmaof.code = 'ADMIN-E-ALL-SCOPE'
---     ) ;
-
--- INSERT INTO gn_permissions.cor_module_action_object_filter (
---     id_module, id_action, id_object, id_filter_type, code, label, description
--- ) 
---     SELECT
---         gn_commons.get_id_module_bycode('ADMIN'),
---         gn_permissions.get_id_action('E'),
---         gn_permissions.get_id_object('NOMENCLATURES'),
---         gn_permissions.get_id_filter_type('SCOPE'),
---         'ADMIN-E-NOMENCLATURES-SCOPE',
---         'Exporter des nomenclatures',
---         'Exporter des nomenclatures dans le module Admin en étant limité par l''appartenance.'
---     WHERE NOT EXISTS (
---         SELECT 'X'
---         FROM gn_permissions.cor_module_action_object_filter AS cmaof
---         WHERE cmaof.code = 'ADMIN-E-NOMENCLATURES-SCOPE'
---     ) ;
-
--- INSERT INTO gn_permissions.cor_module_action_object_filter (
---     id_module, id_action, id_object, id_filter_type, code, label, description
--- ) 
---     SELECT
---         gn_commons.get_id_module_bycode('ADMIN'),
---         gn_permissions.get_id_action('E'),
---         gn_permissions.get_id_object('PERMISSIONS'),
---         gn_permissions.get_id_filter_type('SCOPE'),
---         'ADMIN-E-PERMISSIONS-SCOPE',
---         'Exporter des permissions',
---         'Exporter des permissions dans le module Admin en étant limité par l''appartenance.'
---     WHERE NOT EXISTS (
---         SELECT 'X'
---         FROM gn_permissions.cor_module_action_object_filter AS cmaof
---         WHERE cmaof.code = 'ADMIN-E-PERMISSIONS-SCOPE'
---     ) ;
-
--- INSERT INTO gn_permissions.cor_module_action_object_filter (
---     id_module, id_action, id_object, id_filter_type, code, label, description
--- ) 
---     SELECT
---         gn_commons.get_id_module_bycode('ADMIN'),
---         gn_permissions.get_id_action('E'),
---         gn_permissions.get_id_object('ACCESS_REQUESTS'),
---         gn_permissions.get_id_filter_type('SCOPE'),
---         'ADMIN-E-ACCESS_REQUESTS-SCOPE',
---         'Exporter des demandes d''accès',
---         'Exporter des demandes d''accès dans le module Admin en étant limité par l''appartenance.'
---     WHERE NOT EXISTS (
---         SELECT 'X'
---         FROM gn_permissions.cor_module_action_object_filter AS cmaof
---         WHERE cmaof.code = 'ADMIN-E-ACCESS_REQUESTS-SCOPE'
---     ) ;
-
 -- ADMIN - D - ALL,NOMENCLATURES,PERMISSIONS - SCOPE
 INSERT INTO gn_permissions.cor_module_action_object_filter (
     id_module, id_action, id_object, id_filter_type, code, label, description
@@ -723,23 +627,6 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         WHERE cmaof.code = 'ADMIN-D-PERMISSIONS-SCOPE'
     ) ;
 
--- ADMIN-D-ACCESS_REQUESTS-SCOPE : not used !
--- INSERT INTO gn_permissions.cor_module_action_object_filter (
---     id_module, id_action, id_object, id_filter_type, code, label, description
--- ) 
---     SELECT
---         gn_commons.get_id_module_bycode('ADMIN'),
---         gn_permissions.get_id_action('D'),
---         gn_permissions.get_id_object('ACCESS_REQUESTS'),
---         gn_permissions.get_id_filter_type('SCOPE'),
---         'ADMIN-D-ACCESS_REQUESTS-SCOPE',
---         'Supprimer des demandes d''accès',
---         'Supprimer des demandes d''accès dans le module Admin en étant limité par l''appartenance.'
---     WHERE NOT EXISTS (
---         SELECT 'X'
---         FROM gn_permissions.cor_module_action_object_filter AS cmaof
---         WHERE cmaof.code = 'ADMIN-D-ACCESS_REQUESTS-SCOPE'
---     ) ;
 
 -- ----------------------------------------------------------------------
 -- METADATA - CR--ED - ALL - SCOPE
@@ -777,43 +664,6 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
         WHERE cmaof.code = 'METADATA-R-ALL-SCOPE'
     ) ;
-
--- METADATA-U-ALL-SCOPE : not used !
--- METADATA-V-ALL-SCOPE : not used !
-
--- INSERT INTO gn_permissions.cor_module_action_object_filter (
---     id_module, id_action, id_object, id_filter_type, code, label, description
--- ) 
---     SELECT
---         gn_commons.get_id_module_bycode('METADATA'),
---         gn_permissions.get_id_action('U'),
---         gn_permissions.get_id_object('ALL'),
---         gn_permissions.get_id_filter_type('SCOPE'),
---         'METADATA-U-ALL-SCOPE',
---         'Mettre à jour des données',
---         'Mettre à jour des données dans le module Métadonnées en étant limité par l''appartenance.'
---     WHERE NOT EXISTS (
---         SELECT 'X'
---         FROM gn_permissions.cor_module_action_object_filter AS cmaof
---         WHERE cmaof.code = 'METADATA-U-ALL-SCOPE'
---     ) ;
-
--- INSERT INTO gn_permissions.cor_module_action_object_filter (
---     id_module, id_action, id_object, id_filter_type, code, label, description
--- ) 
---     SELECT
---         gn_commons.get_id_module_bycode('METADATA'),
---         gn_permissions.get_id_action('V'),
---         gn_permissions.get_id_object('ALL'),
---         gn_permissions.get_id_filter_type('SCOPE'),
---         'METADATA-V-ALL-SCOPE',
---         'Valider des données',
---         'Valider des données dans le module Métadonnées en étant limité par l''appartenance.'
---     WHERE NOT EXISTS (
---         SELECT 'X'
---         FROM gn_permissions.cor_module_action_object_filter AS cmaof
---         WHERE cmaof.code = 'METADATA-V-ALL-SCOPE'
---     ) ;
 
 INSERT INTO gn_permissions.cor_module_action_object_filter (
     id_module, id_action, id_object, id_filter_type, code, label, description
@@ -876,7 +726,7 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_permissions.get_id_action('R'),
         gn_permissions.get_id_object('ALL'),
         gn_permissions.get_id_filter_type('TAXONOMIC'),
-        'SYNTHESE-R-TAXONOMIC-SCOPE',
+        'SYNTHESE-R-ALL-TAXONOMIC',
         'Lire des données',
         'Lire des données dans le module Synthèse en étant limité par des taxons.'
     WHERE NOT EXISTS (
@@ -893,7 +743,7 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_permissions.get_id_action('R'),
         gn_permissions.get_id_object('ALL'),
         gn_permissions.get_id_filter_type('GEOGRAPHIC'),
-        'SYNTHESE-R-GEOGRAPHIC-SCOPE',
+        'SYNTHESE-R-ALL-GEOGRAPHIC',
         'Lire des données',
         'Lire des données dans le module Synthèse en étant limité par zones géographiques.'
     WHERE NOT EXISTS (
@@ -910,13 +760,13 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_permissions.get_id_action('R'),
         gn_permissions.get_id_object('ALL'),
         gn_permissions.get_id_filter_type('PRECISION'),
-        'SYNTHESE-R-PRECISION-SCOPE',
+        'SYNTHESE-R-ALL-SCOPE',
         'Lire des données',
         'Lire des données dans le module Synthèse en étant limité par la précision.'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-R-ALL-PRECISION'
+        WHERE cmaof.code = 'SYNTHESE-R-ALL-SCOPE'
     ) ;
 
 -- ----------------------------------------------------------------------
