@@ -14,6 +14,12 @@ import { FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import _ from "lodash";
 
+export enum KEY_CODE {
+  ENTER = 'Enter',
+  ARROW_DOWN = 'ArrowDown',
+  ARROW_UP = 'ArrowUp',
+}
+
 /**
  * Ce composant permet d'afficher un input de type multiselect à partir
  * d'une liste de valeurs passé en Input.
@@ -116,6 +122,4 @@ export class MultiSelectComponent implements OnInit {
         }))
       ).subscribe(formValues=>this.parentFormControl.patchValue(formValues));
   }
-
-
 }

@@ -58,6 +58,9 @@ export function createTranslateLoader(http: HttpClient) {
 }
 import { UserDataService } from "./userModule/services/user-data.service";
 
+// Config
+import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -107,7 +110,8 @@ import { UserDataService } from "./userModule/services/user-data.service";
     SideNavService,
     CruvedStoreService,
     UserDataService,
-    { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true }
+    { provide: APP_CONFIG_TOKEN, useValue: AppConfig },
+    { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
   ],
   bootstrap: [AppComponent]
 })

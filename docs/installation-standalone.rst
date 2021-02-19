@@ -56,7 +56,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     sudo apt-get install wget git
     sudo apt-get install -y postgresql postgis postgresql-server-dev-11
     sudo apt-get install -y postgis-2.5 postgis postgresql-11-postgis-2.5
-    sudo apt-get install -y python3 python3-dev python3-setuptools python-pip libpq-dev libgdal-dev python-gdal build-essential
+    sudo apt-get install -y python3 python3-dev python3-setuptools python3-pip libpq-dev libgdal-dev python-gdal build-essential
     sudo apt-get install -y python3-wheel python3-cffi libcairo2 libpango-1.0-0 libpangocairo-1.0-0 libgdk-pixbuf2.0-0 libffi-dev shared-mime-info
     python3 -m pip install pip==20.0.2
     pip3 install virtualenv==20.0.1
@@ -281,7 +281,9 @@ Mise à jour de l'application
 
 Attention, avant chaque mise à jour, il est important de sauvegarder l'application et sa base de données, ou de faire un snapshot du serveur pour pouvoir revenir à son état antérieure avant mise à jour en cas de problème.
 
-La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans un nouveau répertoire, récupérer les fichiers de configuration et de surcouche depuis la version actuelle et de relancer l'installation dans le répertoire de la nouvelle version. 
+La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans un nouveau répertoire, récupérer les fichiers de configuration et de surcouche depuis la version actuelle et de relancer l'installation dans le répertoire de la nouvelle version.
+
+La mise à jour doit être réalisée avec votre utilisateur linux courant (``geonatureadmin`` par exemple) et non pas le super-utilisateur ``root``.
 
 * Télécharger la dernière version de GeoNature :
 
@@ -301,7 +303,7 @@ La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans 
 
 * Suivez les éventuelles notes de version spécifiques décrites au niveau de chaque version : https://github.com/PnX-SI/GeoNature/releases.
 
-⚠️ Si la realease inclut des scripts de migration SQL : *lancer ces scripts avec l'utilisateur de BDD courant* (généralement ``geonatadmin``) et non le super-utilisateur ``postgres``.
+⚠️ Si la release inclut des scripts de migration SQL : *lancer ces scripts avec l'utilisateur de BDD courant* (généralement ``geonatadmin``) et non le super-utilisateur ``postgres``.
 
 Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions intermédiaires et notamment les scripts de mise à jour de la base de données à exécuter successivement.
 

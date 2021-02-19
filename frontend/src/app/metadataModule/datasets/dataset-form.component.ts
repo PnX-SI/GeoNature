@@ -88,7 +88,7 @@ export class DatasetFormComponent implements OnInit {
   getAF() {
     this.acquisitionFrameworks = this._dfs.getAcquisitionFrameworks()
                                           .pipe(
-                                            map(data => data)
+                                            map(data => data.filter(af => af.opened === true))
                                           );
   }
 
