@@ -58,7 +58,7 @@ class CorAcquisitionFrameworkActor(DB.Model):
     id_nomenclature_actor_role = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=TNomenclatures.get_default_nomenclature("ROLE_ACTEUR"),
+        default=lambda: TNomenclatures.get_default_nomenclature("ROLE_ACTEUR"),
     )
 
     nomenclature_actor_role = DB.relationship(
@@ -117,7 +117,7 @@ class CorDatasetActor(DB.Model):
     id_nomenclature_actor_role = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=TNomenclatures.get_default_nomenclature("ROLE_ACTEUR"),
+        default=lambda: TNomenclatures.get_default_nomenclature("ROLE_ACTEUR"),
     )
     nomenclature_actor_role = DB.relationship(
         TNomenclatures, primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role),
@@ -268,7 +268,7 @@ class TDatasets(CruvedHelper):
     id_nomenclature_data_type = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=TNomenclatures.get_default_nomenclature("DATA_TYP"),
+        default=lambda: TNomenclatures.get_default_nomenclature("DATA_TYP"),
     )
     keywords = DB.Column(DB.Unicode)
     marine_domain = DB.Column(DB.Boolean)
@@ -276,7 +276,7 @@ class TDatasets(CruvedHelper):
     id_nomenclature_dataset_objectif = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=TNomenclatures.get_default_nomenclature("JDD_OBJECTIFS"),
+        default=lambda: TNomenclatures.get_default_nomenclature("JDD_OBJECTIFS"),
     )
     bbox_west = DB.Column(DB.Float)
     bbox_east = DB.Column(DB.Float)
@@ -285,22 +285,22 @@ class TDatasets(CruvedHelper):
     id_nomenclature_collecting_method = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=TNomenclatures.get_default_nomenclature("METHO_RECUEIL"),
+        default=lambda: TNomenclatures.get_default_nomenclature("METHO_RECUEIL"),
     )
     id_nomenclature_data_origin = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=TNomenclatures.get_default_nomenclature("DS_PUBLIQUE"),
+        default=lambda: TNomenclatures.get_default_nomenclature("DS_PUBLIQUE"),
     )
     id_nomenclature_source_status = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=TNomenclatures.get_default_nomenclature("STATUT_SOURCE"),
+        default=lambda: TNomenclatures.get_default_nomenclature("STATUT_SOURCE"),
     )
     id_nomenclature_resource_type = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=TNomenclatures.get_default_nomenclature("RESOURCE_TYP"),
+        default=lambda: TNomenclatures.get_default_nomenclature("RESOURCE_TYP"),
     )
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
@@ -384,14 +384,14 @@ class TAcquisitionFramework(CruvedHelper):
     id_nomenclature_territorial_level = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=TNomenclatures.get_default_nomenclature("NIVEAU_TERRITORIAL"),
+        default=lambda: TNomenclatures.get_default_nomenclature("NIVEAU_TERRITORIAL"),
     )
     territory_desc = DB.Column(DB.Unicode)
     keywords = DB.Column(DB.Unicode)
     id_nomenclature_financing_type = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=TNomenclatures.get_default_nomenclature("TYPE_FINANCEMENT"),
+        default=lambda: TNomenclatures.get_default_nomenclature("TYPE_FINANCEMENT"),
     )
     target_description = DB.Column(DB.Unicode)
     ecologic_or_geologic_target = DB.Column(DB.Unicode)

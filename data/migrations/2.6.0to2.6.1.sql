@@ -1,3 +1,8 @@
+-- Update script from GeoNature 2.6.0 to 2.6.1
+
+----------------------------
+-- SYNTHESE schema update
+----------------------------
 CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement() RETURNS TRIGGER
   LANGUAGE plpgsql
   AS $$ 
@@ -42,3 +47,5 @@ CREATE TRIGGER tri_update_cor_area_synthese
 AFTER UPDATE OF the_geom_local, the_geom_4326 ON gn_synthese.synthese
 FOR EACH ROW
 EXECUTE PROCEDURE gn_synthese.fct_trig_update_in_cor_area_synthese();
+
+COMMIT;
