@@ -381,7 +381,7 @@ Idem côté Frontend, où chaque module a sa configuration et ses composants : h
 
 Mais en pouvant utiliser des composants du Cœur comme expliqué dans la documentation Developpeur.
 
-Plus d'infos sur le développement d'un module : https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#d%C3%A9velopper-et-installer-un-gn_module
+Plus d'infos sur le développement d'un module : https://github.com/PnX-SI/GeoNature/blob/master/docs/development.rst#d%C3%A9velopper-et-installer-un-gn_module
 
 
 Configuration
