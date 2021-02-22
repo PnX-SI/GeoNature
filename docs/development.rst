@@ -909,18 +909,7 @@ tslint fait la même chose que pylint mais pour la partie frontend en
 typescript::
 
         cd frontend
-        ng lint
-
-
-L'intallation globale de l'interface en ligne de commande (CLI)
-d'Angular est nécessaire pour utilser la commande "ng"
-
-Si la commande "ng" n'existe pas, il faudra alors utiliser la commande suivante auparavant
-
-::
-
-        npm install -g @angular/cli
-
+        npm run lint
 
 
 Pytest
