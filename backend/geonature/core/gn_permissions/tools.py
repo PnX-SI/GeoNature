@@ -386,7 +386,7 @@ def cruved_scope_for_user_in_module(
 def get_scopes_by_action(id_role, module_code=None, object_code=None):
     cruved = UserCruved(id_role=id_role, code_filter_type="SCOPE",
                         module_code=module_code, object_code=object_code)
-    return cruved.get_perm_for_all_actions(get_id=False)[0]
+    return { action: int(scope) for action, scope in cruved.get_perm_for_all_actions(get_id=False)[0].items() }
 
 
 def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, object_code=None):
