@@ -167,7 +167,7 @@ export class SyntheseInfoObsComponent implements OnInit {
 
   //En fonction des paramètres passés dans la config CONFIG.FRONTEND.DISPLAY_EMAIL_DISPLAY_INFO,
   //On affichera les informations de l'observation. Pour le moment fait pour "NOM_VERN", "DATE", "COMMUNES", "MEDIAS"
-  public contentInfoObservationForMail(){
+  /*public contentInfoObservationForMail(){
     if(this.CONFIG.FRONTEND.DISPLAY_EMAIL_DISPLAY_INFO.length == 0){
       return;
     }
@@ -228,5 +228,5 @@ export class SyntheseInfoObsComponent implements OnInit {
       };
     })
     return encodeURI(content);
-  }
+  }*/
 }

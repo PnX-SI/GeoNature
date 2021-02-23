@@ -150,6 +150,7 @@ Vous vous apprêtez à télécharger les données de la <b>recherche courante. <
 
 default_export_col_name_additional_data = "additional_data"
 
+default_media_fields_details = ['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile']
 
 class DatasetFieldsConfiguration(Schema):
     # config liée au formulaire dynamique OCCTAX par dataset
@@ -193,4 +194,5 @@ class GnModuleSchemaConf(Schema):
     ENABLE_MY_PLACES = fields.Boolean(missing=True)
     ADD_FIELDS = fields.Nested(DatasetConfiguration, missing={"FORMFIELDS": []})
     export_col_name_additional_data = fields.String(missing=default_export_col_name_additional_data)
+    MEDIA_FIELDS_DETAILS = fields.List(fields.String(), missing=default_media_fields_details)
 

@@ -457,7 +457,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
   //En fonction des paramètres passés dans la config CONFIG.FRONTEND.DISPLAY_EMAIL_INFO.DISPLAY_INFO,
   //On affichera les informations de l'observation. Pour le moment fait pour 'NOM_VERN', 'DATE', 'COMMUNES', 'MEDIAS'
-  public contentInfoObservationForMail(){
+  /*public contentInfoObservationForMail(){
     if(this.APP_CONFIG.FRONTEND.DISPLAY_EMAIL_DISPLAY_INFO.length == 0){
       return;
     }
@@ -518,5 +518,5 @@ export class ValidationModalInfoObsComponent implements OnInit {
       };
     })
     return encodeURI(content);
-  }
+  }*/
 }
