@@ -62,6 +62,41 @@ export class MediaComponent implements OnInit {
       }
     );
 
+    //if field not hidden => put it before advance setting
+    let afterDisplay = false;
+    let mediaDetailsFields = this.mediaFormDefinition.filter(field => {
+      if (afterDisplay && field.hidden !== true){
+        return true; 
+      }
+      if (field.attribut_name == "displayDetails"){
+        afterDisplay = true;
+      }
+      return false;
+    } );
+      
+    //Si la liste de champs à afficher dans detail est différente de la liste des champs details
+    if(mediaDetailsFields.length > 0 && this.details.length != mediaDetailsFields.length){
+      let outDetailsFields = this.mediaFormDefinition.filter(field => !this.details.includes(field.attribut_name) && mediaDetailsFields.includes(field));
+      const cMediaFormDefinition = this.mediaFormDefinition;
+      const newMediaFormDefinition = [];
+      const formDefinitionDone = [];
+      for (var i=0; i < cMediaFormDefinition.length; i++ ){
+        //on met avant la checkbox les champs à montrer
+        if(cMediaFormDefinition[i].attribut_name  == "displayDetails"){
+          for(var j=0; j < outDetailsFields.length; j++ ){
+            newMediaFormDefinition.push(outDetailsFields[j]);
+            formDefinitionDone.push(outDetailsFields[j]);
+          }
+        }
+
+        if(!formDefinitionDone.includes(cMediaFormDefinition[i])){
+          newMediaFormDefinition.push(cMediaFormDefinition[i]);
+        }
+      }
+      //La liste des champs est réorganisée pour bien les afficher
+      this.mediaFormDefinition = newMediaFormDefinition;
+    }
+
     this.initIdTableLocation(this.schemaDotTable);
     this.ms.getNomenclatures().subscribe(() => {
       this.initForm();

@@ -182,3 +182,5 @@ ENABLE_MY_PLACES = true
 # ------------- MEDIAS PARAMETER ---------------
 
 ENABLE_MEDIAS = true
+
+MEDIA_FIELDS_DETAILS = ['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile']
