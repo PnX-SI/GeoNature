@@ -195,9 +195,11 @@ if ! database_exists "${db_name}"; then
 
     # sed to replace /tmp/taxhub to ~/<geonature_dir>/tmp.taxhub
     sed -i 's#'/tmp/taxhub'#'$parentdir/tmp/taxhub'#g' tmp/taxhub/data_inpn_taxhub.sql
+    sed -i 's#TAXREF_INPN_v13/TAXREFv13#TAXREFv12#g' tmp/taxhub/data_inpn_taxhub.sql
+    #sed -i 's#BDC_STATUTS_TYPES_13#BDC_STATUTS_TYPES_12#g' tmp/taxhub/data_inpn_taxhub.sql
+    #sed -i 's#BDC_STATUTS_13#BDC_STATUTS_12#g' tmp/taxhub/data_inpn_taxhub.sql
 
-
-    array=( TAXREF_INPN_v13.zip ESPECES_REGLEMENTEES_v11.zip LR_FRANCE_20160000.zip BDC_STATUTS_13.zip )
+    array=( TAXREF_INPN_v12.zip ESPECES_REGLEMENTEES_v11.zip LR_FRANCE_20160000.zip BDC_STATUTS_13.zip )
     for i in "${array[@]}"
     do
       if [ ! -f 'tmp/taxhub/'$i ]
@@ -436,7 +438,7 @@ fi
 echo "Cleaning files..."
 rm -f tmp/geonature/*.sql
 rm -f tmp/usershub/*.sql
-rm -rf tmp/taxhub/TAXREF_INPN_v13
+rm -rf tmp/taxhub/TAXREF_INPN_v12
 rm -f tmp/taxhub/*.csv
 rm -f tmp/taxhub/*.sql
 rm -f tmp/habref/*.csv
