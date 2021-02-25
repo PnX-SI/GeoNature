@@ -80,15 +80,16 @@ class RightsSchemaConf(Schema):
 
 
 class MailConfig(Schema):
-    MAIL_SERVER = fields.String(required=True)
-    MAIL_PORT = fields.Integer(missing=465)
-    MAIL_USE_TLS = fields.Boolean(missing=False)
-    MAIL_USE_SSL = fields.Boolean(missing=True)
-    MAIL_USERNAME = fields.String(required=True)
-    MAIL_PASSWORD = fields.String(required=True)
-    MAIL_DEFAULT_SENDER = fields.String(missing=None)
-    MAIL_MAX_EMAILS = fields.Integer(missing=None)
-    MAIL_ASCII_ATTACHMENTS = fields.Boolean(missing=False)
+    MAIL_SERVER = fields.String(required=False)
+    MAIL_PORT = fields.Integer(required=False)
+    MAIL_USE_TLS = fields.Boolean(required=False)
+    MAIL_USE_SSL = fields.Boolean(required=False)
+    MAIL_USERNAME = fields.String(required=False)
+    MAIL_PASSWORD = fields.String(required=False)
+    MAIL_DEFAULT_SENDER = fields.String(required=False)
+    MAIL_MAX_EMAILS = fields.Integer(required=False)
+    MAIL_SUPPRESS_SEND = fields.Boolean(required=False)
+    MAIL_ASCII_ATTACHMENTS = fields.Boolean(required=False)
     ERROR_MAIL_TO = EmailStrOrListOfEmailStrField(missing=None)
 
 
