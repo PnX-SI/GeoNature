@@ -124,6 +124,7 @@ def filtered_ds_query(info_role, args):
         DB.session.query(TDatasets)
         .outerjoin(CorDatasetActor, CorDatasetActor.id_dataset == TDatasets.id_dataset)
         .outerjoin(BibOrganismes, BibOrganismes.id_organisme == CorDatasetActor.id_organism)
+        .order_by(TDatasets.dataset_name)
         .options(joinedload("creator"))
         .options(joinedload("cor_dataset_actor"))
     )
