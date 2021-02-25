@@ -1159,7 +1159,6 @@ def publish_acquisition_framework_mail(af, info_role):
         digitizer = DB.session.query(User).get(af.id_digitizer)
         if digitizer and digitizer.email:
             mail_recipients.add(digitizer.email)
-
     # Mail sent
     if mail_subject and mail_content and len(mail_recipients) > 0:
         mail.send_mail(list(mail_recipients), mail_subject, mail_content)
@@ -1196,10 +1195,17 @@ def publish_acquisition_framework(info_role, af_id):
     af.opened=False
     if (af.initial_closing_date is None):
         af.initial_closing_date=dt.datetime.now()
-    # We send a mail to notify the AF publication
-    publish_acquisition_framework_mail(af, info_role)
 
+    # first commit before sending mail
     DB.session.commit()
+    try:
+        # We send a mail to notify the AF publication
+        publish_acquisition_framework_mail(af, info_role)
+    except Exception:
+        return {
+            'error': 'error while sending mail',
+            'name': 'mailError'
+            }, 500
 
     return af.as_dict()
 
