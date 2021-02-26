@@ -188,7 +188,7 @@ sudo -s supervisorctl reload
 # Lien symbolique vers le dossier static du backend (pour le backoffice)
 ln -sf "${BASE_DIR}/frontend/node_modules" "${BASE_DIR}/backend/static"
 
-cd "${GEONATURE}/frontend"
+cd "${BASE_DIR}/frontend"
 
 # Creation du dossier des assets externes
 mkdir -p "src/external_assets"
