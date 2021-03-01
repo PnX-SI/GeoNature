@@ -131,7 +131,7 @@ class DataBlurring:
                 ors_area_types.append(LAreas.id_type == area_type_id)
                 ors_area_types.append(CorAreaSynthese.id_synthese.in_(synthese_ids))
 
-            if exact_filters[object_type] and len(exact_filters[object_type]) > 0 :
+            if object_type in exact_filters and exact_filters[object_type] and len(exact_filters[object_type]) > 0 :
                 ors = []
                 for exact_filter in exact_filters[object_type]:
                     conditions = []
