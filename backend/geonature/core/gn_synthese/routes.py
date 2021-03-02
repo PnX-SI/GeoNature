@@ -985,3 +985,80 @@ def get_taxa_distribution():
 #     # DB.session.add(s)
 #     # DB.session.commit()
 #     return "la"
+
+
+@routes.route("/log/actions", methods=["get"])
+@permissions.check_cruved_scope("R", True)
+@json_resp
+def log_delete_history(info_role):
+    """list last history actions optionally filtered by date 
+
+    Parameters
+    ----------
+    info_role : int
+        Info role id
+
+    Returns
+    -------
+    list
+        list of actions executed from date
+    """
+    default_date = datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=10), datetime.datetime.min.time())
+    start = request.args.get("start", default=default_date, type=str)
+    end = request.args.get("end", default=None, type=str)
+    action  = request.args.get("action", default=None, type=str)
+    page = request.args.get("page", default=1, type=int)
+    limit = request.args.get("limit", default=1000, type=int)
+    
+    if not start:
+        # set default history query to 10 days
+        d = datetime.date.today() - datetime.timedelta(days=10)
+        start = datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=10), datetime.datetime.min.time())
+    try: 
+        delete_q = DB.session.query(
+            TLogSynthese.id_synthese, 
+            TLogSynthese.unique_id_sinp, 
+            TLogSynthese.last_action, 
+            TLogSynthese.meta_action_date
+            )
+        upsert_q = DB.session.query(
+            Synthese.id_synthese, 
+            Synthese.unique_id_sinp, 
+            Synthese.last_action,
+            Synthese.meta_update_date
+            )
+        union_q = delete_q.union(upsert_q)
+        union_q = union_q.filter(TLogSynthese.meta_action_date >= start)
+        
+        
+        if end is not None:
+            logger.info(f"END {end}")
+            union_q = union_q.filter(TLogSynthese.meta_action_date <= end)
+
+        if action is not None:
+            union_q = union_q.filter(TLogSynthese.last_action == action)
+
+        logger.info(f"union_q {union_q}")
+        
+        p_data= union_q.order_by(TLogSynthese.meta_action_date.desc()).paginate(page,per_page=limit)
+
+        logger.info(f"DEBUG {current_app.debug}")
+        
+        result = { 
+            "limit": p_data.per_page,
+            "page": p_data.page,
+            "pages": p_data.pages,
+            "count_items": p_data.total,
+        }
+        if p_data.has_prev :
+            result['prev_page']=p_data.prev_page
+        if p_data.has_next:
+            result['next_page']=p_data.has_next
+        
+        result['items'] = [{"id":d.id_synthese, "uuid":d.unique_id_sinp, "last_action": d.last_action, "meta_action_date": d.meta_action_date} for d in p_data.items]
+        return result
+    except Exception as error:
+        
+        logger.error(error)
+        
+        return {"error": error}, 500
