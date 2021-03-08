@@ -55,7 +55,9 @@
       <div>Liste des cadres d'acquisition et des jeux de données associés</div>
       <br>
 
-      <mat-accordion [multi]="true">
+      <mat-accordion 
+        [multi]="true"
+        >
         <div class="tab-title">
           <div class="col-md-1">ID </div>
           <div class="col-md-2"> Nom</div>
@@ -63,6 +65,13 @@
           <div class="col-md-5"> Acteurs</div>
           <div class="col-md-1"> Actions</div>
         </div>
+        <mat-spinner
+          *ngIf="isLoading"
+          diameter="50"
+          strokeWidth="2"
+          style="margin: 0 auto;"
+        >
+      </mat-spinner>
         <ng-container *ngFor="let af of tempAF; let idx = index">
           <mat-expansion-panel
             *ngIf="isDisplayed(idx)"
@@ -123,7 +132,7 @@
                   <button
                     *ngIf="APP_CONFIG.METADATA?.ENABLE_CLOSE_AF"
                     mat-icon-button
-                    [disabled]="!af.cruved.E || !af.opened || af['datasetsTemp'].length == 0"
+                    [disabled]="!af.cruved.V || !af.opened || af['datasetsTemp'].length == 0"
                     (click)="openPublishModalAf($event, af.id_acquisition_framework, publishModal)"
                   >
                     <mat-icon
@@ -203,7 +212,14 @@
 
                     </div>
                   </td>
-                  <td> {{ds.observation_count}} </td>
+                  <td> 
+                    <mat-spinner
+                    *ngIf="!datasetNbObs"
+                    diameter="25"
+                    strokeWidth="2"
+                    >
+                    </mat-spinner>
+                    {{ds?.observation_count}} </td>
                   <!-- <td>{{ds.creator?.nom_complet}} </td> -->
                   <td>
                     <button
@@ -229,12 +245,12 @@
 
                     <button
                       mat-icon-button
-                      [disabled]="ds.observation_count == 0"
+                      [disabled]="ds?.observation_count == 0"
                       (click)="syntheseDs(ds.id_dataset, ds.observation_count, syntheseNoneModal)"
                       matTooltip="Afficher les données dans la Synthèse"
                     >
                       <mat-icon
-                        *ngIf="ds.observation_count == 0; else elseSynthese;"
+                        *ngIf="ds?.observation_count == 0; else elseSynthese;"
                         matTooltip="Le jeu de données ne comporte aucune donnée"
                       > room </mat-icon>
                       <ng-template #elseSynthese>
@@ -253,7 +269,7 @@
                     <button
                       mat-icon-button
                       [disabled]="!ds.cruved.D || !ds.deletable"
-                      (click)="syntheseDs(ds.id_dataset, ds.observation_count, syntheseNoneModal)"
+                      (click)="syntheseDs(ds.id_dataset, ds?.observation_count, syntheseNoneModal)"
                     >
                       <mat-icon
                         *ngIf="!ds.deletable; else elseblock"

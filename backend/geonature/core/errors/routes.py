@@ -23,7 +23,6 @@ gunicorn_error_logger = logging.getLogger("gunicorn.error")
 @json_resp
 def internal_error(error):  # pylint: disable=W0613
     gunicorn_error_logger.error(error)
-    DB.session.rollback()
     return {"message": "internal server error"}, 500
 
 
@@ -31,14 +30,12 @@ def internal_error(error):  # pylint: disable=W0613
 @json_resp
 def sqlalchemy_error(error):  # pylint: disable=W0613
     gunicorn_error_logger.error(error)
-    DB.session.rollback()
     return {"message": "internal server error"}, 500
 
 
 @current_app.errorhandler(GeonatureApiError)
 def geonature_api_error(error):
     gunicorn_error_logger.error(error.to_dict())
-    DB.session.rollback()
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     return response
@@ -47,7 +44,6 @@ def geonature_api_error(error):
 @current_app.errorhandler(UtilsSqlaError)
 def utils_flask_sql_error(error):
     gunicorn_error_logger.error(error.to_dict())
-    DB.session.rollback()
     response = jsonify(error.to_dict())
     response.status_code = error.status_code
     return response
@@ -56,7 +52,6 @@ def utils_flask_sql_error(error):
 @current_app.errorhandler(InsufficientRightsError)
 def geonature_insuffisant_rights_error(error):
     gunicorn_error_logger.error(error)
-    DB.session.rollback()
     response = jsonify(str(error))
     response.status_code = 403
     return response

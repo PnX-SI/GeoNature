@@ -8,7 +8,7 @@ from geonature.core.users.models import UserRigth
 from geonature.utils.env import DB
 
 
-class ReleveCruvedAutorization(DB.Model):
+class ModelCruvedAutorization(DB.Model):
     """
         Classe abstraite permettant d'ajout des méthodes
         de controle d'accès à la donnée en fonction
@@ -19,6 +19,7 @@ class ReleveCruvedAutorization(DB.Model):
         - id_digitiser
         - id_dataset
         A définir en tant que "synonymes" si les attributs sont différents
+        ou surcharger les méthodes
     """
 
     __abstract__ = True
@@ -75,7 +76,7 @@ class ReleveCruvedAutorization(DB.Model):
             403,
         )
 
-    def get_releve_cruved(self, user, user_cruved):
+    def get_model_cruved(self, user, user_cruved):
         """
         Return the user's cruved for a Releve instance.
         Use in the map-list interface to allow or not an action

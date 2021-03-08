@@ -133,7 +133,7 @@ default_columns_export = [
 
 
 # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
-available_export_format = ["csv", "geojson", "gpkg"]
+available_export_format = ["csv", "geojson", "shapefile"]
 
 list_messages = {
     "emptyMessage": "Aucune donnée à afficher",
@@ -177,3 +177,4 @@ class GnModuleSchemaConf(Schema):
     ENABLE_MEDIAS = fields.Boolean(missing=True)
     ENABLE_MY_PLACES = fields.Boolean(missing=True)
     DEFAULT_DATASET_ID = fields.Integer(missing=None)
+    DISPLAY_VERNACULAR_NAME = fields.Boolean(missing=True)

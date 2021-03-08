@@ -1,0 +1,4 @@
+include VERSION
+include LICENCE
+include README.rst
+include backend/requirements.in

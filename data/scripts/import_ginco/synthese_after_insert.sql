@@ -13,7 +13,7 @@ REINDEX TABLE gn_synthese.synthese;
 
 -- Actions du trigger tri_insert_cor_area_synthese
 -- On recalcule l'intersection entre les données de la synthèse et les géométries de ref_geo.l_areas
-TRUNCATE TABLE gn_synthese.cor_area_synthese;
+--TRUNCATE TABLE gn_synthese.cor_area_synthese;
 INSERT INTO gn_synthese.cor_area_synthese 
 SELECT
   s.id_synthese,
@@ -22,38 +22,26 @@ FROM ref_geo.l_areas a
 JOIN gn_synthese.synthese s ON public.st_intersects(s.the_geom_local, a.geom)
 WHERE a.enable = true;
 
---Action du trigger tri_maj_cor_area_taxon
---On vide la table cor_area_taxon
-TRUNCATE TABLE gn_synthese.cor_area_taxon;
---On recalcul tout son contenu avec ce qu'il y a dans la synthèse et dans cor_area synthese
-INSERT INTO gn_synthese.cor_area_taxon (id_area, cd_nom, last_date, nb_obs)
-SELECT id_area, s.cd_nom,  max(s.date_min) AS last_date, count(s.id_synthese) AS nb_obs
-FROM gn_synthese.cor_area_synthese cor
-JOIN gn_synthese.synthese s ON s.id_synthese = cor.id_synthese
-GROUP BY id_area, s.cd_nom;
-
 -- Maintenance
 VACUUM FULL gn_synthese.cor_area_synthese;
-VACUUM FULL gn_synthese.cor_area_taxon;
 VACUUM FULL gn_synthese.cor_observer_synthese;
 VACUUM FULL gn_synthese.synthese;
 VACUUM FULL gn_synthese.t_sources;
 
 VACUUM ANALYSE gn_synthese.cor_area_synthese;
-VACUUM ANALYSE gn_synthese.cor_area_taxon;
 VACUUM ANALYSE gn_synthese.cor_observer_synthese;
 VACUUM ANALYSE gn_synthese.synthese;
 VACUUM ANALYSE gn_synthese.t_sources;
 
 REINDEX TABLE gn_synthese.cor_area_synthese;
-REINDEX TABLE gn_synthese.cor_area_taxon;
 REINDEX TABLE gn_synthese.cor_observer_synthese;
 REINDEX TABLE gn_synthese.synthese;
 REINDEX TABLE gn_synthese.t_sources;
 
 
 -- On réactive les triggers du schéma synthese après avoir joué (ci-dessus) leurs actions
-ALTER TABLE gn_synthese.cor_area_synthese ENABLE TRIGGER tri_maj_cor_area_taxon;
 ALTER TABLE gn_synthese.cor_observer_synthese ENABLE TRIGGER trg_maj_synthese_observers_txt;
 ALTER TABLE gn_synthese.synthese ENABLE TRIGGER tri_meta_dates_change_synthese;
 ALTER TABLE gn_synthese.synthese ENABLE TRIGGER tri_insert_cor_area_synthese;
+ALTER TABLE gn_synthese.synthese ENABLE TRIGGER tri_insert_calculate_sensitivity;
+

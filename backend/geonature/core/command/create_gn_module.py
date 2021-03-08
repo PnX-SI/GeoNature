@@ -20,7 +20,6 @@ from sqlalchemy.orm.exc import NoResultFound
 from geonature.utils.env import DB, DEFAULT_CONFIG_FILE
 
 from geonature.utils.command import (
-    get_app_for_cmd,
     build_geonature_front,
     tsconfig_app_templating,
 )
@@ -43,6 +42,8 @@ from geonature.utils.gn_module_import import (
     MSG_OK,
 )
 from geonature.utils.errors import GNModuleInstallError, GeoNatureError
+from geonature.core.gn_commons.models import TModules
+from geonature import create_app
 
 
 log = logging.getLogger(__name__)
@@ -70,10 +71,8 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
         if not Path(module_path).is_dir():
             raise GeoNatureError("dir {} doesn't exists".format(module_path))
         # TODO vérifier que l'utilisateur est root ou du groupe geonature
-        app = get_app_for_cmd(conf_file, with_external_mods=False)
+        app = create_app(with_external_mods=False)
         with app.app_context():
-            from geonature.core.gn_commons.models import TModules
-
             sys.path.append(module_path)
             # Vérification de la conformité du module
 
@@ -124,7 +123,7 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                         # generation du routing du frontend
                         frontend_routes_templating(app)
                         # generation du fichier de configuration du frontend
-                        create_module_config(app, module_code.lower(), module_path, build=False)
+                        create_module_config(app, module_code.lower(), build=False)
 
                     if build and enable_frontend:
                         # Rebuild the frontend
@@ -257,5 +256,5 @@ def update_module_configuration(module_code, build, prod):
     """
     if prod:
         subprocess.call(["sudo", "supervisorctl", "reload"])
-    app = get_app_for_cmd(with_external_mods=False)
+    app = create_app(with_external_mods=False)
     create_module_config(app, module_code.lower(), build=build)

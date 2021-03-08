@@ -269,11 +269,11 @@ def post_jdd_from_user(id_user=None, id_organism=None):
     return {"message": "Not found"}, 404
 
 
-def import_all_dataset_af_and_actors():
+def import_all_dataset_af_and_actors(table_name):
     file_handler = logging.FileHandler('/tmp/uuid_ca.txt')
     file_handler.setLevel(logging.CRITICAL)
     log.addHandler(file_handler)
-    datasets = DB.session.query(TDatasets).all()
+    datasets = DB.engine.execute(f"SELECT * FROM {table_name}")
     for d in datasets:
         xml_jdd = get_jdd_by_uuid(str(d.unique_dataset_id))
         if xml_jdd:
@@ -294,7 +294,7 @@ def import_all_dataset_af_and_actors():
                     )
                     # get the id from the uuid
                     ds["id_acquisition_framework"] = new_af['id_acquisition_framework']
-                    log.critical(new_af['id_acquisition_framework']+ ",")
+                    log.critical(str(new_af['id_acquisition_framework'])+ ",")
                     ds.pop("uuid_acquisition_framework")
                     # get the id of the dataset to check if exists
                     id_dataset = TDatasets.get_id(ds["unique_dataset_id"])

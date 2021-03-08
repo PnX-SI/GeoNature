@@ -11,7 +11,7 @@ from pypn_habref_api.models import Habref
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
-from geonature.core.utils import ReleveCruvedAutorization
+from geonature.core.utils import ModelCruvedAutorization
 from geonature.utils.env import DB
 
 
@@ -55,7 +55,7 @@ class THabitatsOcchab(DB.Model):
 
 @serializable
 @geoserializable
-class TStationsOcchab(ReleveCruvedAutorization):
+class TStationsOcchab(ModelCruvedAutorization):
     __tablename__ = "t_stations"
     __table_args__ = {"schema": "pr_occhab"}
     id_station = DB.Column(DB.Integer, primary_key=True)

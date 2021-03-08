@@ -626,7 +626,7 @@ INSERT INTO t_parameters (id_organism, parameter_name, parameter_desc, parameter
 (0,'taxref_version','Version du référentiel taxonomique','Taxref V13.0',NULL)
 ,(0,'local_srid','Valeur du SRID local', MYLOCALSRID,NULL)
 ,(0,'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
-,(0,'occtaxmobile_area_type', 'Type de maille pour laquelle la couleur des taxons est calculée', 'M5', NULL)
+,(0,'occtaxmobile_area_type', 'Type de zonage pour lequel la couleur des taxons est calculée pour Occtax-mobile', 'M5', NULL)
 ;
 
 -- Insertion du module parent à tous : GeoNature
@@ -679,3 +679,8 @@ FROM gn_commons.t_validations
 GROUP BY uuid_attached_row
 ) last_val
 ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last_val.max_date;
+
+
+INSERT INTO gn_commons.t_parameters
+(id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value)
+VALUES(0, 'ref_sensi_version', 'Version du referentiel de sensibilité', 'Referentiel de sensibilite taxref v13 2020', '');

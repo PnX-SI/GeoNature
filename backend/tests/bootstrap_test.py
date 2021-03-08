@@ -5,17 +5,15 @@ import pytest
 from flask import url_for, current_app
 from cookies import Cookie
 
-import server
-from geonature.utils.env import load_config, get_config_file_path
+from geonature import create_app
+
 
 # TODO: fixture pour mettre des données test dans la base a chaque test
 
 
 @pytest.fixture
 def app():
-    config_path = get_config_file_path()
-    config = load_config(config_path)
-    app = server.get_app(config)
+    app = create_app()
     app.config["TESTING"] = True
     app.config["WTF_CSRF_ENABLED"] = False
     return app

@@ -159,16 +159,17 @@ def get_af_and_ds_metadata(info_role):
     if "selector" not in params:
         params["selector"] = None
     datasets = filtered_ds_query(info_role, params).distinct().all()
-
     if len(datasets) == 0:
         return {"data": []}
     ids_dataset_user = TDatasets.get_user_datasets(info_role, only_user=True)
+
     ids_dataset_organisms = TDatasets.get_user_datasets(info_role, only_user=False)
     ids_afs_user = TAcquisitionFramework.get_user_af(info_role, only_user=True)
     ids_afs_org = TAcquisitionFramework.get_user_af(info_role, only_user=False)
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role, module_code="METADATA",
     )[0]
+
 
     #  get all af from the JDD filtered with cruved or af where users has rights
     ids_afs_cruved = (
@@ -177,7 +178,6 @@ def get_af_and_ds_metadata(info_role):
         else []
     )
     list_id_af = [d.id_acquisition_framework for d in datasets] + ids_afs_cruved
-
     afs = (
         filtered_af_query(request.args)
         .filter(TAcquisitionFramework.id_acquisition_framework.in_(list_id_af))
@@ -229,10 +229,10 @@ def get_af_and_ds_metadata(info_role):
             ids_object_user=ids_dataset_user,
             ids_object_organism=ids_dataset_organisms,
         )
+        # dataset_dict["observation_count"] = (
+        #     DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == d.id_dataset).count()
+        # )
         dataset_dict["deletable"] = is_dataset_deletable(d.id_dataset)
-        dataset_dict["observation_count"] = (
-            DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset == d.id_dataset).count()
-        )
         af_of_dataset = get_af_from_id(d.id_acquisition_framework, afs_dict)
         af_of_dataset["datasets"].append(dataset_dict)
 
@@ -299,7 +299,7 @@ def get_dataset(id_dataset):
     return dataset
 
 
-@routes.route("/dataset_details/<id_dataset>", methods=["GET"])
+@routes.route("/dataset_details/<int:id_dataset>", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="METADATA")
 @json_resp
 def get_dataset_details(info_role, id_dataset):
@@ -435,7 +435,8 @@ def sensi_report(info_role):
     """
 
     params = request.args
-    ds_id = params.get("id_dataset")
+    ds_id = params["id_dataset"]
+    dataset = TDatasets.query.get_or_404(ds_id)
     id_import = params.get("id_import")
     id_module = params.get("id_module")
 
@@ -471,8 +472,7 @@ def sensi_report(info_role):
     if id_module:
         query = query.filter(Synthese.id_module == id_module)
 
-    if ds_id:
-        query = query.filter(Synthese.id_dataset == ds_id)
+    query = query.filter(Synthese.id_dataset == ds_id)
 
     if id_import:
         query = query.outerjoin(TSources, TSources.id_source == Synthese.id_source).filter(
@@ -481,11 +481,9 @@ def sensi_report(info_role):
 
     data = query.group_by(Synthese.id_synthese, TNomenclatures.cd_nomenclature, TNomenclatures.label_fr).all()
 
-    dataset = None
     str_productor = ""
     header = ""
-    if len(data) > 0 and ds_id:
-        dataset = DB.session.query(TDatasets).get(ds_id)
+    if len(data) > 0:
         index_productor = -1
         if dataset.cor_dataset_actor:
             for index, actor in enumerate(dataset.cor_dataset_actor):
@@ -519,17 +517,16 @@ def sensi_report(info_role):
     if sensi_version:
         sensi_version = sensi_version[0]
     # set an header only if the rapport is on a dataset
-    if ds_id:
-        header = f""""Rapport de sensibilité"
-            "Jeu de données";"{dataset.dataset_name}"
-            "Identifiant interne";"{dataset.id_dataset}"
-            "Identifiant SINP";"{dataset.unique_dataset_id}"
-            "Organisme/personne fournisseur";"{str_productor}"
-            "Date de création du rapport";"{dt.datetime.now().strftime("%d/%m/%Y %Hh%M")}"
-            "Nombre de données sensibles";"{len(list(filter(lambda row: row["sensible"] == "Oui", data)))}"
-            "Nombre de données total dans le fichier";"{len(data)}"
-            "sensiVersionReferentiel";"{sensi_version}"
-            """
+    header = f""""Rapport de sensibilité"
+        "Jeu de données";"{dataset.dataset_name}"
+        "Identifiant interne";"{dataset.id_dataset}"
+        "Identifiant SINP";"{dataset.unique_dataset_id}"
+        "Organisme/personne fournisseur";"{str_productor}"
+        "Date de création du rapport";"{dt.datetime.now().strftime("%d/%m/%Y %Hh%M")}"
+        "Nombre de données sensibles";"{len(list(filter(lambda row: row["sensible"] == "Oui", data)))}"
+        "Nombre de données total dans le fichier";"{len(data)}"
+        "sensiVersionReferentiel";"{sensi_version}"
+        """
 
     return my_csv_resp(
         filename="filename",
@@ -871,13 +868,6 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
         )
 
 
-    # try:
-    #     f = open(str(BACKEND_DIR) + "/static/images/taxa.png")
-    #     f.close()
-    #     acquisition_framework["chart"] = True
-    # except IOError:
-    #     acquisition_framework["chart"] = False
-
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf(
         "acquisition_framework_template_pdf.html", acquisition_framework, filename
@@ -1169,7 +1159,6 @@ def publish_acquisition_framework_mail(af, info_role):
         digitizer = DB.session.query(User).get(af.id_digitizer)
         if digitizer and digitizer.email:
             mail_recipients.add(digitizer.email)
-
     # Mail sent
     if mail_subject and mail_content and len(mail_recipients) > 0:
         mail.send_mail(list(mail_recipients), mail_subject, mail_content)
@@ -1206,10 +1195,17 @@ def publish_acquisition_framework(info_role, af_id):
     af.opened=False
     if (af.initial_closing_date is None):
         af.initial_closing_date=dt.datetime.now()
-    # We send a mail to notify the AF publication
-    publish_acquisition_framework_mail(af, info_role)
 
+    # first commit before sending mail
     DB.session.commit()
+    try:
+        # We send a mail to notify the AF publication
+        publish_acquisition_framework_mail(af, info_role)
+    except Exception:
+        return {
+            'error': 'error while sending mail',
+            'name': 'mailError'
+            }, 500
 
     return af.as_dict()
 

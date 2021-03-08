@@ -381,7 +381,7 @@ Idem côté Frontend, où chaque module a sa configuration et ses composants : h
 
 Mais en pouvant utiliser des composants du Cœur comme expliqué dans la documentation Developpeur.
 
-Plus d'infos sur le développement d'un module : https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#d%C3%A9velopper-et-installer-un-gn_module
+Plus d'infos sur le développement d'un module : https://github.com/PnX-SI/GeoNature/blob/master/docs/development.rst#d%C3%A9velopper-et-installer-un-gn_module
 
 
 Configuration
@@ -1513,8 +1513,11 @@ Après toute modification de la configuration d'un module, il faut regénérer l
 
 Liste des champs visibles
 *************************
- La configuration des champs de la liste se fait via deux paramètres:
+
+La configuration des champs de la liste se fait via deux paramètres:
+
 - ``COLUMNS_API_VALIDATION_WEB_APP``
+
 Liste des colonnes qui seront récupérées en plus des colonnes obligatoires. Les colonnes disponibles correspondent à celles présentent dans la vue ``v_synthese_validation_forwebapp``
 
 ::
@@ -1535,6 +1538,7 @@ Liste des colonnes qui seront récupérées en plus des colonnes obligatoires. L
     "nom_vern_or_lb_nom"
 
 - ``LIST_COLUMNS_FRONTEND``
+
 Gestion de l'affichage des colonnes de la liste
 
 ::

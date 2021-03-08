@@ -112,13 +112,7 @@ export class OcctaxFormTaxaListComponent implements OnInit {
   /**
    *  Return un titre formaté sans balise HTML
    **/
-  taxonTitle(occurrence) {
-    if (occurrence.taxref) {
-      occurrence.taxref.nom_complet;
-      return occurrence.taxref.cd_nom === occurrence.taxref.cd_ref
-        ? "<b>" + occurrence.taxref.nom_valide + "</b>"
-        : occurrence.taxref.nom_complet;
-    }
+  taxonTitle(occurrence) {    
     return this.removeHtml(occurrence.nom_cite);
   }
 

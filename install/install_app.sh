@@ -1,18 +1,29 @@
 #!/bin/bash
 
-# make nvm available
+# Make nvm available
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 OS_BITS="$(getconf LONG_BIT)"
 
-# test the server architecture
+# Test the server architecture
 if [ !"$OS_BITS" == "64" ]; then
    echo "GeoNature must be installed on a 64-bits operating system ; your is $OS_BITS-bits" 1>&2
    exit 1
 fi
 
+# Check dependencies (binary used by local user)
+# TODO: check binary used by root (logrotate, supervisorctl)
+# TODO: move nvm and npm install before check
+commands=("find" "sed" "pip3" "python3")
+for cmd in "${commands[@]}"; do
+  if ! command -v "${cmd}" > /dev/null 2>&1; then
+	  echo "Missing dependency. Please install: ${cmd}"
+	  exit 1
+  fi
+done
+echo "All dependencies found for $(basename $BASH_SOURCE)."
 
 # settings.ini file path. Default value overwriten by settings-path parameter
 cd ../
@@ -138,9 +149,9 @@ then
   pip install -r requirements-dev.txt
 fi
 
+echo "Installation du backend geonature..."
+pip install --editable "${BASE_DIR}"  # geonature ne support pas encore autre chose que editable
 
-echo "Création des commandes 'geonature'..."
-python ${BASE_DIR}/geonature_cmd.py install_command
 echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
 geonature generate_frontend_config --conf-file ${BASE_DIR}/config/geonature_config.toml --build=false
 
@@ -172,43 +183,28 @@ sudo -s supervisorctl reread
 sudo -s supervisorctl reload
 
 
-# Frontend installation
-echo "Installation de Node et Npm"
-cd ../frontend
-nvm install
-nvm use
-
-echo " ############"
-echo "Installation des paquets Npm"
-npm ci --only=prod
-
+# Préparation du frontend
 
 # Lien symbolique vers le dossier static du backend (pour le backoffice)
-ln -s "${BASE_DIR}/frontend/node_modules" "${BASE_DIR}/backend/static"
+ln -sf "${BASE_DIR}/frontend/node_modules" "${BASE_DIR}/backend/static"
 
+cd "${BASE_DIR}/frontend"
 
 # Creation du dossier des assets externes
-mkdir "src/external_assets"
+mkdir -p "src/external_assets"
 
 
 # Copy the custom components
 echo "Création des fichiers de customisation du frontend..."
 if [ ! -f src/custom/custom.scss ]; then
-  cp src/custom/custom.scss.sample src/custom/custom.scss
+  cp -n src/custom/custom.scss.sample src/custom/custom.scss
 fi
-if [ ! -f src/custom/components/footer/footer.component.ts ]; then
-  cp src/custom/components/footer/footer.component.ts.sample src/custom/components/footer/footer.component.ts
-fi
-if [ ! -f src/custom/components/footer/footer.component.html ]; then
-  cp src/custom/components/footer/footer.component.html.sample src/custom/components/footer/footer.component.html
-fi
-if [ ! -f src/custom/components/introduction/introduction.component.ts ]; then
-  cp src/custom/components/introduction/introduction.component.ts.sample src/custom/components/introduction/introduction.component.ts
-fi
-if [ ! -f src/custom/components/introduction/introduction.component.html ]; then
-  cp src/custom/components/introduction/introduction.component.html.sample src/custom/components/introduction/introduction.component.html
-fi
-
+custom_component_dir="src/custom/components/"
+for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
+	if [[ ! -f "${file%.sample}" ]]; then
+		cp "${file}" "${file%.sample}"
+	fi
+done
 
 # Generate the tsconfig.json
 geonature generate_frontend_tsconfig
@@ -218,34 +214,39 @@ geonature generate_frontend_tsconfig_app
 geonature generate_frontend_modules_route
 
 # Retour à la racine de GeoNature
-cd ../
-my_current_geonature_directory=$(pwd)
+cd "${BASE_DIR}"
 
 # Installation du module Occtax et OccHab
-geonature install_gn_module $my_current_geonature_directory/contrib/occtax /occtax --build=false
+geonature install_gn_module "${BASE_DIR}/contrib/occtax" /occtax --build=false
 
 if [ "$install_module_occhab" = true ];
   then
-  geonature install_gn_module $my_current_geonature_directory/contrib/gn_module_occhab /occhab --build=false
+  geonature install_gn_module "${BASE_DIR}/contrib/gn_module_occhab" /occhab --build=false
 fi
 
 if [ "$install_module_validation" = true ];
   then
-    geonature install_gn_module $my_current_geonature_directory/contrib/gn_module_validation /validation --build=false
+    geonature install_gn_module "${BASE_DIR}/contrib/gn_module_validation" /validation --build=false
 fi
 
 echo "Désactiver le virtual env"
 deactivate
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# Frontend installation
+echo "Installation de Node et Npm"
+cd "${BASE_DIR}/frontend"
+nvm install
+nvm use
+
+echo " ############"
+echo "Installation des paquets Npm"
+npm ci --only=prod
 
 
 if [[ $MODE != "dev" ]]
 then
-  cd frontend
   echo "Build du frontend..."
+  cd "${BASE_DIR}/frontend"
   npm rebuild node-sass --force
   npm run build
 fi

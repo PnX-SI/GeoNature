@@ -1,7 +1,7 @@
 """
 Utility function to manage cruved and all filter of Synthese
-Use these functions rather than query.py 
-Filter the query of synthese using SQLA expression language and 'select' object 
+Use these functions rather than query.py
+Filter the query of synthese using SQLA expression language and 'select' object
 https://docs.sqlalchemy.org/en/latest/core/tutorial.html#selecting
 much more efficient
 """
@@ -29,6 +29,8 @@ from geonature.core.gn_meta.models import (
     CorDatasetActor,
     TDatasets,
 )
+from geonature.utils.errors import GeonatureApiError
+
 
 
 class SyntheseQuery:
@@ -43,13 +45,50 @@ class SyntheseQuery:
             query_joins = SQLA Join object
     """
 
-    def __init__(self, model, query, filters):
+    def __init__(self, 
+        model, 
+        query, 
+        filters, 
+        id_synthese_column="id_synthese",
+        id_dataset_column="id_dataset",
+        observers_column="observers",
+        id_digitiser_column="id_digitiser",
+        with_generic_table=False
+    ):
         self.query = query
+
+        # Passage de l'ensemble des filtres
+        #   en array pour des questions de compatibilité
+        # TODO voir si ça ne peut pas être modifié
+        for k in filters.keys():
+            if not isinstance(filters[k], list):
+                filters[k] = [filters[k]]
+
         self.filters = filters
         self.first = True
         self.model = model
         self._already_joined_table = []
         self.query_joins = None
+
+        if with_generic_table:
+            model_temp = model.columns
+        else:
+            model_temp = model
+
+        # get the mandatory column
+        try:
+            self.model_id_syn_col = getattr(model_temp, id_synthese_column)
+            self.model_id_dataset_column = getattr(model_temp, id_dataset_column)
+            self.model_observers_column = getattr(model_temp, observers_column)
+            self.model_id_digitiser_column = getattr(model_temp, id_digitiser_column)
+        except AttributeError as e:
+            raise GeonatureApiError(
+                """the {model} table     does not have a column {e}
+                If you change the {model} table, please edit your synthese config (cf EXPORT_***_COL)
+                """.format(
+                    e=e, model=model
+                )
+            )
 
     def add_join(self, right_table, right_column, left_column, join_type="right"):
         if self.first:
@@ -93,22 +132,22 @@ class SyntheseQuery:
                 .where(CorObserverSynthese.id_role == user.id_role)
             )
             ors_filters = [
-                self.model.id_synthese.in_(subquery_observers),
-                self.model.id_digitiser == user.id_role,
+                self.model_id_syn_col.in_(subquery_observers),
+                self.model_id_digitiser_column == user.id_role,
             ]
             if current_app.config["SYNTHESE"]["CRUVED_SEARCH_WITH_OBSERVER_AS_TXT"]:
                 user_fullname1 = user.nom_role + " " + user.prenom_role + "%"
                 user_fullname2 = user.prenom_role + " " + user.nom_role + "%"
-                ors_filters.append(self.model.observers.ilike(user_fullname1))
-                ors_filters.append(self.model.observers.ilike(user_fullname2))
+                ors_filters.append(self.model_observers_column.ilike(user_fullname1))
+                ors_filters.append(self.model_observers_column.ilike(user_fullname2))
 
             if user.value_filter == "1":
                 allowed_datasets = TDatasets.get_user_datasets(user, only_user=True)
-                ors_filters.append(self.model.id_dataset.in_(allowed_datasets))
+                ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
                 self.query = self.query.where(or_(*ors_filters))
             elif user.value_filter == "2":
                 allowed_datasets = TDatasets.get_user_datasets(user)
-                ors_filters.append(self.model.id_dataset.in_(allowed_datasets))
+                ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
                 self.query = self.query.where(or_(*ors_filters))
 
     def filter_taxonomy(self):
@@ -238,6 +277,7 @@ class SyntheseQuery:
         if "geoIntersection" in self.filters:
             # Insersect with the geom send from the map
             ors = []
+
             for str_wkt in self.filters["geoIntersection"]:
                 # if the geom is a circle
                 if "radius" in self.filters:

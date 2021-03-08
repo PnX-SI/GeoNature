@@ -8,7 +8,7 @@ OBSERVER_AS_TXT = false
 OBSERVER_LIST_ID = 1
 
 # formats d'export disponible ['csv', 'geojson', 'shapefile', 'gpkg']
-EXPORT_FORMAT = ['csv', 'geojson', 'gpkg']
+EXPORT_FORMAT = ['csv', 'geojson', 'shapefile']
 # Nombre max d'habitat pour les exports
 NB_MAX_EXPORT = 50000
 # Nombre max de station pour le map/liste

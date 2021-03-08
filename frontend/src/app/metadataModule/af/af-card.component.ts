@@ -58,6 +58,7 @@ export class AfCardComponent implements OnInit {
   };
 
   public spinner = true;
+  public APP_CONFIG = AppConfig;
 
   constructor(private _dfs: DataFormService, private _route: ActivatedRoute) {}
   ngOnInit() {

@@ -12,12 +12,35 @@ from marshmallow import (
     post_load,
 )
 from marshmallow.validate import OneOf, Regexp, Email
+
+
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
     DEFAULT_LIST_COLUMN,
     DEFAULT_COLUMNS_API_SYNTHESE,
 )
 from geonature.utils.env import GEONATURE_VERSION
+from geonature.utils.utilsmails import clean_recipients
+
+
+class EmailStrOrListOfEmailStrField(fields.Field):
+    def _deserialize(self, value, attr, data, **kwargs):
+        if isinstance(value, str):
+            self._check_email(value)
+            return value
+        elif isinstance(value, list) and all(isinstance(x, str) for x in value):
+            self._check_email(value)
+            return value
+        else:
+            raise ValidationError('Field should be str or list of str')
+    
+    def _check_email(self, value):
+        recipients = clean_recipients(value)
+        for recipient in recipients:
+            email = recipient[1] if isinstance(recipient, tuple) else recipient
+            # Validate email with Marshmallow
+            validator = Email()
+            validator(email)
 
 
 class CasUserSchemaConf(Schema):
@@ -43,7 +66,6 @@ class MTDSchemaConf(Schema):
     ID_INSTANCE_FILTER = fields.Integer(missing=None)
 
 
-
 class BddConfig(Schema):
     id_area_type_municipality = fields.Integer(missing=25)
     ID_USER_SOCLE_1 = fields.Integer(missing=8)
@@ -58,16 +80,17 @@ class RightsSchemaConf(Schema):
 
 
 class MailConfig(Schema):
-    MAIL_SERVER = fields.String(required=True)
-    MAIL_PORT = fields.Integer(missing=465)
-    MAIL_USE_TLS = fields.Boolean(missing=False)
-    MAIL_USE_SSL = fields.Boolean(missing=True)
-    MAIL_USERNAME = fields.String(required=True)
-    MAIL_PASSWORD = fields.String(required=True)
-    MAIL_DEFAULT_SENDER = fields.String(missing=None)
-    MAIL_MAX_EMAILS = fields.Integer(missing=None)
-    MAIL_ASCII_ATTACHMENTS = fields.Boolean(missing=False)
-    ERROR_MAIL_TO = fields.List(fields.String(), missing=list())
+    MAIL_SERVER = fields.String(required=False)
+    MAIL_PORT = fields.Integer(required=False)
+    MAIL_USE_TLS = fields.Boolean(required=False)
+    MAIL_USE_SSL = fields.Boolean(required=False)
+    MAIL_USERNAME = fields.String(required=False)
+    MAIL_PASSWORD = fields.String(required=False)
+    MAIL_DEFAULT_SENDER = fields.String(required=False)
+    MAIL_MAX_EMAILS = fields.Integer(required=False)
+    MAIL_SUPPRESS_SEND = fields.Boolean(required=False)
+    MAIL_ASCII_ATTACHMENTS = fields.Boolean(required=False)
+    ERROR_MAIL_TO = EmailStrOrListOfEmailStrField(missing=None)
 
 
 class AccountManagement(Schema):
@@ -76,7 +99,7 @@ class AccountManagement(Schema):
     ENABLE_USER_MANAGEMENT = fields.Boolean(missing=False)
     AUTO_ACCOUNT_CREATION = fields.Boolean(missing=True)
     AUTO_DATASET_CREATION = fields.Boolean(missing=True)
-    VALIDATOR_EMAIL = fields.Email()
+    VALIDATOR_EMAIL = EmailStrOrListOfEmailStrField(missing=None)
     ACCOUNT_FORM = fields.List(fields.Dict(), missing=[])
     ADDON_USER_EMAIL = fields.String(missing="")
 
@@ -99,6 +122,7 @@ class MediasConfig(Schema):
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(missing=50, validate=OneOf([10, 25, 50, 100]))
     ENABLE_CLOSE_AF = fields.Boolean(missing=False)
+    AF_SHEET_CLOSED_LINK_NAME = fields.String(missing="Lien du certificat de dépôt")
     CLOSED_AF_TITLE = fields.String(missing="")
     AF_PDF_TITLE = fields.String(missing="Cadre d'acquisition: ")
     DS_PDF_TITLE = fields.String(missing="")
@@ -218,7 +242,7 @@ class Synthese(Schema):
     EXPORT_METADATA_ID_DATASET_COL = fields.String(missing="jdd_id")
     EXPORT_METADATA_ACTOR_COL = fields.String(missing="acteurs")
     # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
-    EXPORT_FORMAT = fields.List(fields.String(), missing=["csv", "geojson", "gpkg"])
+    EXPORT_FORMAT = fields.List(fields.String(), missing=["csv", "geojson", "shapefile"])
     # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
     TAXON_RESULT_NUMBER = fields.Integer(missing=20)
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese

@@ -21,7 +21,7 @@ class VUserslistForallMenu(DB.Model):
 @serializable
 class BibOrganismes(DB.Model):
     __tablename__ = "bib_organismes"
-    __table_args__ = {"schema": "utilisateurs"}
+    __table_args__ = {"schema": "utilisateurs", "extend_existing": True}
     id_organisme = DB.Column(DB.Integer, primary_key=True)
     uuid_organisme = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
@@ -37,7 +37,7 @@ class BibOrganismes(DB.Model):
 @serializable
 class CorRole(DB.Model):
     __tablename__ = "cor_roles"
-    __table_args__ = {"schema": "utilisateurs"}
+    __table_args__ = {"schema": "utilisateurs", "extend_existing": True}
     id_role_groupe = DB.Column(
         DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"), primary_key=True
     )
