@@ -42,6 +42,10 @@ class DataBlurring:
         self.non_diffusable = []
 
     def blurre(self, synthese_results):
+        # If no result return directly
+        if synthese_results == None:
+            return synthese_results
+
         (exact_filters, see_all) = self._compute_exact_filters()
         ignored_object = self._get_ignored_object(see_all)
         
@@ -51,6 +55,11 @@ class DataBlurring:
         else:
             # For iterate many times on SQLA ProxyResult
             synthese_results = list(synthese_results)
+            
+            # If no result return output directly
+            if len(synthese_results) == 0:
+                return output
+            
             geojson_by_synthese_ids = self._associate_geojson_to_synthese_id(
                 synthese_results, 
                 exact_filters,
