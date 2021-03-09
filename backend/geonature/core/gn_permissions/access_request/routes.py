@@ -176,9 +176,6 @@ def post_access_request(info_role):
     return response
 
 
-
-
-
 def send_email_after_access_request(data, user_id, request_token):
     recipients = current_app.config["PERMISSION_MANAGEMENT"]["VALIDATOR_EMAIL"]
     app_name = current_app.config["appName"]
