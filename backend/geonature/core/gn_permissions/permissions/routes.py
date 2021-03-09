@@ -705,7 +705,6 @@ def update_permission(info_role, gathering):
     """
     # Transform received data
     
-    role = DB.session.query(User).get(info_role.id_role).as_dict()
     data = prepare_input(dict(request.get_json()))
     exp = None
 
@@ -713,7 +712,6 @@ def update_permission(info_role, gathering):
         # TODO: get values from fields in database (id_request) not in request data. 
         # Then insert them inside data.
         # Delete permission before create new one
-        gathering = uuid.uuid4()
         permsission_repo = PermissionRepository()
         permsission_repo.delete_permission_by_gathering(gathering)
         permsission_repo.create_permission(gathering, data)
