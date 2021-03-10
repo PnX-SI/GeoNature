@@ -2,7 +2,7 @@ import json
 from collections import namedtuple
 
 from flask import current_app
-from sqlalchemy import (func, not_, and_, or_, select, column)
+from sqlalchemy import (func, not_, and_, or_, select, column, text, union, literal, exists)
 
 from pypnnomenclature.models import (
     TNomenclatures,
@@ -126,22 +126,40 @@ class DataBlurring:
         sorted_synthese_by_area_type = self._sort_synthese_id_by_area_type_id(synthese_results, ignored_object)
         diffusion_level_ids = self._get_diffusion_levels_area_types().keys()
         sensitivity_ids = self._get_sensitivity_area_types().keys()
-        columns = self._prepare_geom_columns()
         
-        query = (DB.session
-            .query(CorAreaSynthese.id_synthese, *columns)
-            .join(LAreas, LAreas.id_area == CorAreaSynthese.id_area)
-        )
-
-        ors_object_types = []
+        blurred_obs_queries = []
         for object_type, synthese_by_area_type in sorted_synthese_by_area_type.items():
-            ors_area_types = []
-            for area_type_id, synthese_ids in synthese_by_area_type.items():
-                ors_area_types.append(LAreas.id_type == area_type_id)
-                ors_area_types.append(CorAreaSynthese.id_synthese.in_(synthese_ids))
+            obs_geo_queries = []
+            for (area_type_id, area_type_code), synthese_ids in synthese_by_area_type.items():
+                # Build obs queries giving id_synthese dispatched by object and area type
+                name = f"{object_type}_{area_type_code}"
+                # TODO: replace by Values() with SQLAlchemy v1.4+
+                # See: https://stackoverflow.com/a/66332616/13311850
+                values = self._build_values_clause(synthese_ids)
+                obs_cte = (
+                    select([column('id_synthese')])
+                    .select_from(text(f"(VALUES {values}) AS t (id_synthese)"))
+                    .cte(name=name)
+                )
 
+                # Build obs queries giving id_synthese and area geojson dispatched by object type
+                geom_columns = self._prepare_geom_columns(LAreas, with_compute=True)
+                obs_geo_query = (
+                    select([obs_cte.c.id_synthese, *geom_columns])
+                    .select_from(
+                        CorAreaSynthese.__table__
+                        .join(LAreas, LAreas.id_area == CorAreaSynthese.id_area)
+                        .join(obs_cte, obs_cte.c.id_synthese == CorAreaSynthese.id_synthese)
+                    )
+                    .where(LAreas.id_type == area_type_id)
+                )
+                obs_geo_queries.append(obs_geo_query)
+            
+            object_cte = union(*obs_geo_queries).cte(name=object_type)
+
+            # Build permissions conditions
             if object_type in exact_filters and exact_filters[object_type] and len(exact_filters[object_type]) > 0 :
-                ors = []
+                permissions_ors = []
                 for exact_filter in exact_filters[object_type]:
                     conditions = []
                     
@@ -163,53 +181,79 @@ class DataBlurring:
                             .select_from(func.taxonomie.find_all_taxons_children(*splited_values))
                         )
                         conditions.append(Taxref.cd_ref.in_(stmt))
-                    ors.append(and_(*conditions))
-                
-                # TODO: replace not_ in_ by NOT EXISTS (most efficient)
-                subquery = (DB.session
-                    .query(Synthese.id_synthese)
+                    permissions_ors.append(and_(*conditions))
+            
+            # Build permissions NOT EXISTS clause
+            perms_object_alias = object_cte.alias()
+            permissions_query = (
+                ~exists([Synthese.id_synthese])
+                .select_from(Synthese.__table__
                     .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
                     .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
-                    .filter(or_(*ors))
-                    .subquery()
+                    .join(perms_object_alias, perms_object_alias.c.id_synthese == Synthese.id_synthese)
                 )
-                ors_area_types.append(not_(CorAreaSynthese.id_synthese.in_(subquery)))
-            
-            ors_object_types.append(and_(*ors_area_types))
-            
-        query = query.filter(or_(*ors_object_types))
+                .where(or_(*permissions_ors))
+                .where(object_cte.c.id_synthese == Synthese.id_synthese)
+            )
 
-        #from sqlalchemy.dialects import postgresql
-        #print(query.statement.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
+            # Build blurred geom by id_synthese query
+            priority = 1 if object_type == "PRIVATE_OBSERVATION" else 2
+            geom_columns = self._prepare_geom_columns(object_cte)
+            blurred_obs_query = (
+                select([literal(priority).label("priority"), object_cte.c.id_synthese, *geom_columns])
+                .select_from(object_cte)
+                .where(permissions_query)
+            )
+            blurred_obs_queries.append(blurred_obs_query)
         
-        results = query.all()
+        # Build final query
+        obs_subquery = union(*blurred_obs_queries).alias("obs")
+        geom_columns = self._prepare_geom_columns(obs_subquery)
+        query = (
+            select(
+                [obs_subquery.c.id_synthese, obs_subquery.c.priority, *geom_columns], 
+                distinct=obs_subquery.c.id_synthese,
+            )
+            .select_from(obs_subquery)
+            .order_by(obs_subquery.c.id_synthese, obs_subquery.c.priority)
+        )
+
+        # DEBUG QUERY:
+        #from sqlalchemy.dialects import postgresql
+        #print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
+        #exit()
+
+        results = DB.engine.execute(query)
         geojson_by_synthese_ids = {}
         for result in results:
-            # TODO: try to find an alternative to _asdict()
-            result = result._asdict()
+            result = dict(result)
             synthese_id = result["id_synthese"] 
             del result["id_synthese"]
             geojson_by_synthese_ids[synthese_id] = result
         return geojson_by_synthese_ids
 
-    def _prepare_geom_columns(self):
+    def _prepare_geom_columns(self, table, with_compute=False):
         columns = []
         for field in self.geom_fields:
-            larea_col = getattr(LAreas, field.get("area_field", "geom"))
-            srid = field.get("srid", 4326)
             label = field["output_field"]
-            compute = field.get("compute", None)
-            if compute == "x":
-                column = func.ST_X(func.ST_Transform(func.ST_Centroid(larea_col), srid))
-            elif compute == "y":
-                column = func.ST_Y(func.ST_Transform(func.ST_Centroid(larea_col), srid))
-            elif compute == "astext":
-                column = func.ST_AsText(func.ST_Transform(larea_col, srid))
-            elif compute == "asgeojson":
-                column = func.ST_AsGeoJSON(func.ST_Transform(larea_col, srid))
+            if with_compute:
+                larea_col = getattr(table, field.get("area_field", "geom"))
+                srid = field.get("srid", 4326)
+                compute = field.get("compute", None)
+                if compute == "x":
+                    geocolumn = func.ST_X(func.ST_Transform(func.ST_Centroid(larea_col), srid))
+                elif compute == "y":
+                    geocolumn = func.ST_Y(func.ST_Transform(func.ST_Centroid(larea_col), srid))
+                elif compute == "astext":
+                    geocolumn = func.ST_AsText(func.ST_Transform(larea_col, srid))
+                elif compute == "asgeojson":
+                    geocolumn = func.ST_AsGeoJSON(func.ST_Transform(larea_col, srid))
+                else:
+                    geocolumn = larea_col
+                columns.append(geocolumn.label(label))
             else:
-                column = larea_col
-            columns.append(column.label(label))
+                columns.append(column(label))
+                
         return columns
 
     def _sort_synthese_id_by_area_type_id(self, synthese_results, ignored_object):
@@ -223,25 +267,31 @@ class DataBlurring:
             if ignored_object != "PRIVATE_OBSERVATION":
                 diffusion_level_id = result[self.diffusion_column]
                 if diffusion_level_id in area_type_by_diffusion_level:
-                    area_type_id = area_type_by_diffusion_level[diffusion_level_id]
+                    (area_type_id, area_type_code) = area_type_by_diffusion_level[diffusion_level_id]
                     (
                         sorted_ids
                         .setdefault("PRIVATE_OBSERVATION", {})
-                        .setdefault(area_type_id, [])
+                        .setdefault((area_type_id, area_type_code), [])
                         .append(result["id_synthese"])
                     )
             
             if ignored_object != "SENSITIVE_OBSERVATION":
                 sensitivity_id = result[self.sensitivity_column]
                 if sensitivity_id in area_type_by_sensitivity:
-                    area_type_id = area_type_by_sensitivity[sensitivity_id]
+                    (area_type_id, area_type_code) = area_type_by_sensitivity[sensitivity_id]
                     (
                         sorted_ids
                         .setdefault("SENSITIVE_OBSERVATION", {})
-                        .setdefault(area_type_id, [])
+                        .setdefault((area_type_id, area_type_code), [])
                         .append(result["id_synthese"])
                     )
         return sorted_ids
+
+    def _build_values_clause(self, ids):
+        values = []
+        for val in ids:
+            values.append(f"({val})")
+        return ', '.join(values)
 
     def _get_diffusion_levels_area_types(self):
         area_types_by_diffusion_levels = self._get_diffusion_level_area_type_codes()
@@ -252,16 +302,20 @@ class DataBlurring:
         for level_code, area_type_code in area_types_by_diffusion_levels.items():
             diffusion_level_id = self.diffusion_levels_ids[level_code]
             area_type_id = area_type_ids[area_type_code]
-            area_types_by_diffusion_levels_ids[diffusion_level_id] = area_type_id
+            area_types_by_diffusion_levels_ids[diffusion_level_id] = (area_type_id, area_type_code)
         return area_types_by_diffusion_levels_ids
 
     def _get_diffusion_levels(self):
-        query = (DB.session
-            .query(TNomenclatures.id_nomenclature, TNomenclatures.cd_nomenclature)
-            .join(BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type)
-            .filter(BibNomenclaturesTypes.mnemonique == "NIV_PRECIS")
+        query = (
+            select([TNomenclatures.id_nomenclature, TNomenclatures.cd_nomenclature])
+            .select_from(
+                TNomenclatures.__table__.join(
+                    BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type
+                )
+            )
+            .where(BibNomenclaturesTypes.mnemonique == "NIV_PRECIS")
         )
-        results = query.all()
+        results = DB.engine.execute(query)
 
         diffusion_levels = {}
         for (nomenclature_id, nomenclature_code) in results:
@@ -296,7 +350,7 @@ class DataBlurring:
         for level_code, area_type_code in area_types_by_sensitivity.items():
             sensitivity_id = self.sensitivity_ids[level_code]
             area_type_id = area_types_ids[area_type_code]
-            area_types_by_sensitivity_ids[sensitivity_id] = area_type_id
+            area_types_by_sensitivity_ids[sensitivity_id] = (area_type_id, area_type_code)
         return area_types_by_sensitivity_ids
 
     def _get_sensitivity_area_type_codes(self):
@@ -307,11 +361,11 @@ class DataBlurring:
         return area_type_for_sensitivity
 
     def _get_area_types_ids_by_codes(self, area_type_codes):
-        query = (DB.session
-            .query(BibAreasTypes.id_type, BibAreasTypes.type_code)
-            .filter(BibAreasTypes.type_code.in_(area_type_codes))
+        query = (
+            select([BibAreasTypes.id_type, BibAreasTypes.type_code])
+            .where(BibAreasTypes.type_code.in_(area_type_codes))
         )
-        results = query.all()
+        results = DB.engine.execute(query)
     
         area_types_ids = {}
         for (type_id, type_code) in results:
@@ -319,13 +373,17 @@ class DataBlurring:
         return area_types_ids
 
     def _get_sensitivity_levels(self):
-        query = (DB.session
-            .query(TNomenclatures.id_nomenclature, TNomenclatures.cd_nomenclature)
-            .join(BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type)
-            .filter(BibNomenclaturesTypes.mnemonique == "SENSIBILITE")
+        query = (
+            select([TNomenclatures.id_nomenclature, TNomenclatures.cd_nomenclature])
+            .select_from(
+                TNomenclatures.__table__.join(
+                    BibNomenclaturesTypes, BibNomenclaturesTypes.id_type == TNomenclatures.id_type
+                )
+            )
+            .where(BibNomenclaturesTypes.mnemonique == "SENSIBILITE")
         )
-        results = query.all()
-
+        results = DB.engine.execute(query)
+        
         sensitivity_levels = {}
         for (nomenclature_id, nomenclature_code) in results:
             sensitivity_levels[nomenclature_code] = nomenclature_id
