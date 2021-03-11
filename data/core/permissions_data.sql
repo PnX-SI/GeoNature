@@ -760,13 +760,13 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         gn_permissions.get_id_action('R'),
         gn_permissions.get_id_object('ALL'),
         gn_permissions.get_id_filter_type('PRECISION'),
-        'SYNTHESE-R-ALL-SCOPE',
+        'SYNTHESE-R-ALL-PRECISION',
         'Lire des données',
         'Lire des données dans le module Synthèse en étant limité par la précision.'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
-        WHERE cmaof.code = 'SYNTHESE-R-ALL-SCOPE'
+        WHERE cmaof.code = 'SYNTHESE-R-ALL-PRECISION'
     ) ;
 
 -- ----------------------------------------------------------------------
