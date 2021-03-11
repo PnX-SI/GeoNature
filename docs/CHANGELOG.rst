@@ -7,7 +7,8 @@ CHANGELOG
 
 **🐛 Corrections**
 
-* 
+* OCCTAX: correction d'un bug sur le renseignement de l'utilisateur courant en mode édition.
+* OCCTAX: Renseignement de l'utilisateur à la création de relevé en mode "observater_txt".
 
 2.6.2 (2021-02-15)
 ------------------
