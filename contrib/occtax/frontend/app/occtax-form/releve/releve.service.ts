@@ -2,7 +2,7 @@ import { Injectable } from "@angular/core";
 import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Observable, Subscription } from "rxjs";
-import { filter, map, switchMap, tap } from "rxjs/operators";
+import { filter, map, switchMap, tap, skip } from "rxjs/operators";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { GeoJSON } from "leaflet";
 import { ModuleConfig } from "../../module.config";
@@ -136,7 +136,8 @@ export class OcctaxFormReleveService {
     //patch le form par les valeurs par defaut si creation
     this.occtaxFormService.editionMode
       .pipe(
-        tap((editionMode: boolean) => {
+        skip(1), // skip initilization value (false)
+        tap((editionMode: boolean) => {          
           // gestion de l'autocomplétion de la date ou non.
           this.$_autocompleteDate.unsubscribe();
           // autocomplete si mode création ou si mode edition et date_min = date_max
@@ -154,16 +155,8 @@ export class OcctaxFormReleveService {
         })
       )
       .subscribe((values) => {
-        
-        
         this.propertiesForm.patchValue(values)
-        if(!this.occtaxFormService.editionMode && !ModuleConfig.observers_txt) {
-          this.propertiesForm.patchValue({'observers': [this.occtaxFormService.currentUser]})
-
-        }
-
-      
-      }); //filter((editionMode: boolean) => !editionMode))
+      }); 
 
     //Observation de la geometry pour récupere les info d'altitudes
     this.occtaxFormMapService.geojson
@@ -310,7 +303,8 @@ export class OcctaxFormReleveService {
             comment: this.occtaxParamS.get("releve.comment"),
             observers: this.occtaxParamS.get("releve.observers") ||
               previousReleve.observers || ModuleConfig.observers_txt ? null: [this.occtaxFormService.currentUser],
-            observers_txt: this.occtaxParamS.get("releve.observers_txt") || previousReleve.observers_txt,
+            observers_txt: this.occtaxParamS.get("releve.observers_txt") || previousReleve.observers_txt || 
+              ModuleConfig.observers_txt ? [this.occtaxFormService.currentUser.nom_complet]:  null,
             id_nomenclature_grp_typ:
               this.occtaxParamS.get("releve.id_nomenclature_grp_typ") ||
               data["TYP_GRP"],
