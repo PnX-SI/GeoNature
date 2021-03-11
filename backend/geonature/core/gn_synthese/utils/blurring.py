@@ -158,8 +158,8 @@ class DataBlurring:
             object_cte = union(*obs_geo_queries).cte(name=object_type)
 
             # Build permissions conditions
+            permissions_ors = []
             if object_type in exact_filters and exact_filters[object_type] and len(exact_filters[object_type]) > 0 :
-                permissions_ors = []
                 for exact_filter in exact_filters[object_type]:
                     conditions = []
                     
