@@ -48,11 +48,12 @@ class DataBlurring:
 
         (exact_filters, see_all) = self._compute_exact_filters()
         ignored_object = self._get_ignored_object(see_all)
-        
         output = []
-        if ignored_object == "NONE":
+        if ignored_object == "PRIVATE_AND_SENSITIVE":
+            # No need to blurre, set output directly
             output = synthese_results
         else:
+            # Need to blurre observations
             # For iterate many times on SQLA ProxyResult
             synthese_results = list(synthese_results)
             
@@ -69,7 +70,7 @@ class DataBlurring:
             for result in synthese_results:
                 synthese_id = getattr(result, "id_synthese")
                 # Blurre/Erase geometry fields if necessary
-                if synthese_id in geojson_by_synthese_ids.keys():
+                if synthese_id in geojson_by_synthese_ids:
                     # Transform RowProxy to dictionary for update values
                     result = dict(result)
                     result = self._erase_fields(result)
@@ -102,28 +103,35 @@ class DataBlurring:
                 "TAXONOMIC": filters["TAXONOMIC"] if "TAXONOMIC" in types else "ALL",
             }
             if (details["GEOGRAPHIC"] == "ALL" and details["TAXONOMIC"] == "ALL"):
-                see_all[perm["object"]] = True
+                if perm["object"] == 'ALL':
+                    see_all["PRIVATE_OBSERVATION"] = True
+                    see_all["SENSITIVE_OBSERVATION"] = True
+                else:
+                    see_all[perm["object"]] = True
             exact_filters.setdefault(perm["object"], []).append(details)
         return (exact_filters, see_all)
 
     def _have_exact_precision(self, filters):
-        has_precision = True if "PRECISION" in filters.keys() else False
+        has_precision = True if "PRECISION" in filters else False
         return True if (has_precision and filters["PRECISION"] == "exact") else False
 
     def _get_ignored_object(self, see_all):
         ignored_object = None
         if see_all["PRIVATE_OBSERVATION"] and see_all["SENSITIVE_OBSERVATION"]:
-            ignored_object = "NONE"
+            ignored_object = "PRIVATE_AND_SENSITIVE"
         elif see_all["PRIVATE_OBSERVATION"] and not see_all["SENSITIVE_OBSERVATION"]:
             ignored_object = "PRIVATE_OBSERVATION"
         elif not see_all["PRIVATE_OBSERVATION"] and see_all["SENSITIVE_OBSERVATION"]:
             ignored_object = "SENSITIVE_OBSERVATION"
         elif not see_all["PRIVATE_OBSERVATION"] and not see_all["SENSITIVE_OBSERVATION"]:
-            ignored_object = "PRIVATE_AND_SENSITIVE"
+            ignored_object = "NONE"
         return ignored_object
 
     def _associate_geojson_to_synthese_id(self, synthese_results, exact_filters, ignored_object):
         sorted_synthese_by_area_type = self._sort_synthese_id_by_area_type_id(synthese_results, ignored_object)
+        if not sorted_synthese_by_area_type:
+            return {}
+
         diffusion_level_ids = self._get_diffusion_levels_area_types().keys()
         sensitivity_ids = self._get_sensitivity_area_types().keys()
         
@@ -157,9 +165,17 @@ class DataBlurring:
             
             object_cte = union(*obs_geo_queries).cte(name=object_type)
 
+            # Build blurred geom by id_synthese query
+            priority = 1 if object_type == "PRIVATE_OBSERVATION" else 2
+            geom_columns = self._prepare_geom_columns(object_cte)
+            blurred_obs_query = (
+                select([literal(priority).label("priority"), object_cte.c.id_synthese, *geom_columns])
+                .select_from(object_cte)
+            )
+
             # Build permissions conditions
-            permissions_ors = []
             if object_type in exact_filters and exact_filters[object_type] and len(exact_filters[object_type]) > 0 :
+                permissions_ors = []
                 for exact_filter in exact_filters[object_type]:
                     conditions = []
                     
@@ -182,28 +198,21 @@ class DataBlurring:
                         )
                         conditions.append(Taxref.cd_ref.in_(stmt))
                     permissions_ors.append(and_(*conditions))
-            
-            # Build permissions NOT EXISTS clause
-            perms_object_alias = object_cte.alias()
-            permissions_query = (
-                ~exists([Synthese.id_synthese])
-                .select_from(Synthese.__table__
-                    .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
-                    .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
-                    .join(perms_object_alias, perms_object_alias.c.id_synthese == Synthese.id_synthese)
+                
+                # Build permissions NOT EXISTS clause
+                perms_object_alias = object_cte.alias()
+                permissions_query = (
+                    ~exists([Synthese.id_synthese])
+                    .select_from(Synthese.__table__
+                        .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
+                        .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+                        .join(perms_object_alias, perms_object_alias.c.id_synthese == Synthese.id_synthese)
+                    )
+                    .where(or_(*permissions_ors))
+                    .where(object_cte.c.id_synthese == Synthese.id_synthese)
                 )
-                .where(or_(*permissions_ors))
-                .where(object_cte.c.id_synthese == Synthese.id_synthese)
-            )
-
-            # Build blurred geom by id_synthese query
-            priority = 1 if object_type == "PRIVATE_OBSERVATION" else 2
-            geom_columns = self._prepare_geom_columns(object_cte)
-            blurred_obs_query = (
-                select([literal(priority).label("priority"), object_cte.c.id_synthese, *geom_columns])
-                .select_from(object_cte)
-                .where(permissions_query)
-            )
+                blurred_obs_query = blurred_obs_query.where(permissions_query)
+            
             blurred_obs_queries.append(blurred_obs_query)
         
         # Build final query
