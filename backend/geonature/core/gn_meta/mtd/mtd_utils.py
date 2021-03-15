@@ -217,13 +217,16 @@ def post_jdd_from_user(id_user=None, id_organism=None):
             ds_copy = copy(ds)
             for key, value in ds_copy.items():
                 if key.startswith("id_nomenclature"):
-                    if value is not None:
-                        ds[key] = func.ref_nomenclatures.get_id_nomenclature(
-                            NOMENCLATURE_MAPPING.get(key), value
+                    response = DB.session.query(
+                        func.ref_nomenclatures.get_id_nomenclature(
+                        NOMENCLATURE_MAPPING.get(key), value
                         )
+                    ).one_or_none()
+                    if response and response[0]:
+                        ds[key] = response[0]
                     else:
                         ds.pop(key)
-            
+        
             #  set validable = true
             ds["validable"] = True
             dataset = TDatasets(**ds)
