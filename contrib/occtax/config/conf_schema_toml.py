@@ -145,6 +145,7 @@ export_message = """
 Vous vous apprêtez à télécharger les données de la <b>recherche courante. </b> </p>
 """
 
+default_media_fields_details = ['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile']
 
 class GnModuleSchemaConf(Schema):
     form_fields = fields.Nested(FormConfig, missing=dict())
@@ -177,3 +178,4 @@ class GnModuleSchemaConf(Schema):
     ENABLE_MEDIAS = fields.Boolean(missing=True)
     ENABLE_MY_PLACES = fields.Boolean(missing=True)
     DISPLAY_VERNACULAR_NAME = fields.Boolean(missing=True)
+    MEDIA_FIELDS_DETAILS = fields.List(fields.String(), missing=default_media_fields_details)
