@@ -257,6 +257,16 @@
             </div>
             <div class="right-block">
 
+                {% if data['chart']: %}
+                <div class="zone">
+                    <p class="zone-geographique">Zone géographique</p>
+                    <img
+                        class="taxons"
+                        src="{{url_for('static', filename='images/map.svg')}}"
+                        alt="Pas d'observations à afficher."
+                    >
+                </div>
+                {% endif %}
                 <!-- <div class="zone">
                 <p class="zone-geographique">Zone géographique</p>
             </div> -->
@@ -267,7 +277,7 @@
                     <p class="repartition-especes">Répartition des espèces</p>
                     <img
                         class="taxons"
-                        src="{{url_for('static', filename='images/taxa.svg')}}"
+                        src="{{url_for('static', filename='images/taxa.png')}}"
                         alt="Pas d'espèces à afficher."
                     >
                 </div>

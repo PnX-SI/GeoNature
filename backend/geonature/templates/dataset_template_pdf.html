@@ -200,6 +200,16 @@
         class="right-block"
         style="display:grid"
       >
+        {% if data['chart']: %}
+        <div class="zone">
+          <p class="zone-geographique">Zone géographique</p>
+          <img
+            class="taxons"
+            src="{{url_for('static', filename='images/map.svg')}}"
+            alt="Pas d'observations à afficher."
+          >
+        </div>
+        {% endif %}
         <!-- <div class="zone">
                     <p class="zone-geographique">Zone géographique</p>
                     <div class="map"></div>

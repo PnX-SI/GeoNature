@@ -1,6 +1,7 @@
 """
     Routes for gn_meta 
 """
+import os
 import datetime as dt
 import json
 import logging
@@ -29,6 +30,10 @@ from geonature.core.gn_synthese.models import (
     TSources,
     CorAreaSynthese,
     CorSensitivitySynthese,
+)
+from geonature.core.gn_synthese.routes import (
+    get_taxa_distribution,
+    get_bbox
 )
 from geonature.core.ref_geo.models import LAreas
 
@@ -330,6 +335,90 @@ def upload_canvas():
         fd.write(binary_data)
         fd.close()
     return "OK"
+
+def create_taxa_chart(id_dataset=None, id_af=None):
+    import matplotlib.pyplot as plt
+    import numpy as np
+
+    filepath = str(BACKEND_DIR) + "/static/images/taxa.png"
+    if (id_dataset):
+        response = get_taxa_distribution(id_dataset=id_dataset, rank="group2_inpn")
+    elif (id_af):
+        response = get_taxa_distribution(id_af=id_af, rank="group2_inpn")
+        
+    taxa_distribution = json.loads(response.data)
+    count = []
+    group = []
+    for taxa in taxa_distribution:
+        count.append(taxa['count'])
+        group.append(taxa['group'])
+
+    def func(pct, allvals):
+        absolute = int(pct/100.*np.sum(allvals))
+        return "{:.1f}%\n({:d})".format(pct, absolute)
+
+    fig, ax = plt.subplots(figsize=(6, 3.5), subplot_kw=dict(aspect="equal"))
+
+    wedges, texts, autotexts = ax.pie(count,
+        autopct=lambda pct: func(pct, count),
+        wedgeprops=dict(width=0.65),
+        startangle=-40,
+        radius=1.5,
+        pctdistance=0.75)
+
+    bbox_props = dict(boxstyle="square,pad=0.3", fc="w", ec="k", lw=0.72)
+    kw = dict(arrowprops=dict(arrowstyle="-"),
+            bbox=bbox_props, zorder=0, va="center")
+
+    ax.legend(wedges, group,
+          loc="center left",
+          bbox_to_anchor=(0, 0.5),
+          bbox_transform=plt.gcf().transFigure,
+          fontsize="x-large")
+
+    plt.setp(autotexts, size='x-large')
+    plt.tight_layout()
+    plt.subplots_adjust(left=0.35)
+
+    fig.savefig(filepath, dpi=200)
+
+
+def create_taxa_map(id_dataset=None, bbox=None):
+    import staticmaps
+
+    html_filepath = str(BACKEND_DIR) + "/static/images/map.html"
+    img_filepath = str(BACKEND_DIR) + "/static/images/map.svg"
+    
+    if not bbox:
+        response = get_bbox(id_dataset=id_dataset)
+        bbox = json.loads(response.data)
+
+    if bbox['coordinates']:
+        context = staticmaps.Context()
+        context.set_tile_provider(staticmaps.tile_provider_OSM)
+        
+        if bbox['type'] == 'Point':
+            bbox_coordinates = staticmaps.create_latlng(bbox['coordinates'][1], bbox['coordinates'][0])
+            context.add_object(staticmaps.Marker(bbox_coordinates, color=staticmaps.BLUE, size=12))
+            
+        elif bbox['type'] == 'Polygon':
+            bbox_coordinates = []
+            for coordinates in bbox['coordinates'][0]:
+                reversed = coordinates.copy()
+                reversed.reverse()
+                bbox_coordinates.append(reversed)
+            context.add_object(
+                staticmaps.Area(
+                    [staticmaps.create_latlng(lat, lng) for lat, lng in bbox_coordinates],
+                    fill_color=staticmaps.parse_color("#87CEFA3F"),
+                    width=2,
+                    color=staticmaps.BLUE,
+                )
+            )
+        
+        svg_image = context.render_svg(800, 500)
+        with open(img_filepath, "w", encoding="utf-8") as f:
+            svg_image.write(f, pretty=True)
 
 
 @routes.route("/dataset/<int:ds_id>", methods=["DELETE"])
@@ -726,7 +815,8 @@ def get_export_pdf_dataset(id_dataset, info_role):
         df["dataset_shortname"].replace(" ", "_"),
         dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
     )
-
+    create_taxa_chart(id_dataset=id_dataset)
+    create_taxa_map(id_dataset=id_dataset)
     try:
         f = open(str(BACKEND_DIR) + "/static/images/taxa.png")
         f.close()
@@ -738,6 +828,9 @@ def get_export_pdf_dataset(id_dataset, info_role):
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf("dataset_template_pdf.html", df, filename)
     pdf_file_posix = Path(pdf_file)
+
+    os.remove(str(BACKEND_DIR) + "/static/images/taxa.png")
+    os.remove(str(BACKEND_DIR) + "/static/images/map.svg")
 
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 
@@ -771,7 +864,13 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     data = q.filter(TDatasets.id_acquisition_framework == id_acquisition_framework).all()
     dataset_ids = [d.id_dataset for d in data]
     acquisition_framework["datasets"] = [d.as_dict(True) for d in data]
-
+    geojsonData = (
+        DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+        .filter(Synthese.id_dataset.in_(dataset_ids))
+        .first()[0]
+    )
+    if geojsonData:
+        acquisition_framework["bbox"] = json.loads(geojsonData)
     nb_data = len(dataset_ids)
     nb_taxons = (
         DB.session.query(Synthese.cd_nom)
@@ -867,12 +966,24 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
             dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
         )
 
+    create_taxa_chart(id_af=id_acquisition_framework)
+    create_taxa_map(bbox=acquisition_framework["bbox"])
+    try:
+        f = open(str(BACKEND_DIR) + "/static/images/taxa.png")
+        f.close()
+        acquisition_framework["chart"] = True
+    except IOError:
+        acquisition_framework["chart"] = False
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf(
         "acquisition_framework_template_pdf.html", acquisition_framework, filename
     )
     pdf_file_posix = Path(pdf_file)
+
+    os.remove(str(BACKEND_DIR) + "/static/images/taxa.png")
+    os.remove(str(BACKEND_DIR) + "/static/images/map.svg")
+
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 
 
