@@ -7,7 +7,9 @@ CHANGELOG
 
 **🐛 Corrections**
 
-* 
+
+**🚀 Nouveautés**
+* Métadonnées : Possibilité de paramétrer l'affichage des champs du composant MEDIA dans OCCTAX (paramètre MEDIA_FIELDS_DETAILS #1287) 
 
 2.6.2 (2021-02-15)
 ------------------
