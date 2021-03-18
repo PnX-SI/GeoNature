@@ -321,21 +321,6 @@ def get_dataset_details(info_role, id_dataset):
     return get_dataset_details_dict(id_dataset, info_role)
 
 
-@routes.route("/upload_canvas", methods=["POST"])
-@json_resp
-def upload_canvas():
-    """Upload the canvas as a temporary image used while generating the pdf file
-    """
-    data = request.data[22:]
-    filepath = str(BACKEND_DIR) + "/static/images/taxa.png"
-    fm.remove_file(filepath)
-    if data:
-        binary_data = a2b_base64(data)
-        fd = open(filepath, "wb")
-        fd.write(binary_data)
-        fd.close()
-    return "OK"
-
 def create_taxa_chart(id_dataset=None, id_af=None):
     """Create a png chart of the taxonomic distribution using the matplotlib library
     """
