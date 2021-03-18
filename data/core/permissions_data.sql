@@ -208,7 +208,7 @@ VALUES
     ('NOMENCLATURES', 'Gestion du backoffice des nomenclatures'),
     ('ACCESS_REQUESTS', 'Gestion des demandes de permissions d''accès'),
     ('PRIVATE_OBSERVATION', 'Observation privée'),
-    ('SENSITIVE_OBSERVATION', 'Observation senssible')
+    ('SENSITIVE_OBSERVATION', 'Observation sensible')
 ;
 
 
