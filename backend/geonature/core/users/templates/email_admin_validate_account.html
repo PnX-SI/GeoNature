@@ -10,6 +10,8 @@
   <li><b>Prénom :</b> {{user.prenom_role}}</li>
   <li><b>Identifiant :</b> {{user.identifiant}}</li>
   <li><b>Email :</b> {{user.email}}</li>
+  <li><b>Organisme :</b> {{user.organisme}}</li>
+  <li><b>Remarque :</b> {{user.remarques}}</li>
 </ul>
 
 {% if additional_fields | length > 0 %}
@@ -20,9 +22,22 @@
     {% endfor %}
   </ul>
 {% endif%}
-<p>
-  Pour valider cette demande, 
-  <a href="{{ url_validation }}">cliquer sur ce lien</a>.
-</p>
+
+<h5>Souhaitez vous :</h5>
+<ul>
+  {% if url_usershub %}
+  <li>
+    <a href="{{ url_usershub }}">
+      Accéder à l'interface de gestion (UsersHub), pour approuver ou supprimer cette demande.
+    </a>
+  </li>
+  {% endif%}
+  <li>
+    <a href="{{ url_validation }}">
+      Accepter directement cette demande, en cliquant sur ce lien.
+    </a>
+  </li>
+</ul>    
+
 <p>Bien cordialement,</p>
 <p>l'administrateur.</p>

@@ -1,7 +1,8 @@
 <p>*** Ceci est un message généré automatiquement ***</p>
 <p>Bonjour {{ user.prenom_role }}  {{ user.nom_role }},</p>
 <p>
-    Votre demande de permissions d'accès à "{{ app_name }}" vient d'être refusée.<br/>
+    Votre demande de permissions d'accès aux données précises 
+    sur "{{ app_name }}" vient d'être refusée.<br/>
     {% if refusal_reason %}
         Raison du refus : {{ refusal_reason }}
     {% endif %}
