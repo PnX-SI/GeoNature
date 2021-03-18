@@ -23,6 +23,12 @@ import { Subscription } from "rxjs/Subscription";
 import * as moment from "moment";
 import { MediaService } from '@geonature_common/service/media.service';
 
+import { OcctaxFormReleveService } from "../occtax-form/releve/releve.service";
+import { OcctaxFormOccurrenceService } from "../occtax-form/occurrence/occurrence.service";
+import { OcctaxFormService } from "../occtax-form/occtax-form.service";
+
+// /occurrence/occurrence.service";
+
 
 @Component({
   selector: "pnx-occtax-map-list",
@@ -65,6 +71,10 @@ export class OcctaxMapListComponent
     public globalSub: GlobalSubService,
     private renderer: Renderer2,
     public mediaService: MediaService,
+    private _releveFormService: OcctaxFormReleveService,
+    private _occurrenceFormService: OcctaxFormOccurrenceService,
+    private _occtaxFormService: OcctaxFormService
+
   ) { }
 
   ngOnInit() {
@@ -75,7 +85,8 @@ export class OcctaxMapListComponent
     this.occtaxConfig = ModuleConfig;
     this.idName = "id_releve_occtax";
     this.apiEndPoint = "occtax/releves";
-
+    // refresh forms
+    this.refreshForms();
     // get user cruved
     this.moduleSub = this.globalSub.currentModuleSub
       // filter undefined or null
@@ -126,6 +137,14 @@ export class OcctaxMapListComponent
     let wH = window.innerHeight;
     let listHeight = wH - 64 - 150;
     this.rowPerPage = Math.round(listHeight / 40);
+  }
+
+  refreshForms() {
+    // when navigate to list refresh services forms
+    this._releveFormService.releveForm.reset();
+    this._releveFormService.previousReleve = null;
+    this._occurrenceFormService.form.reset();
+    this._occtaxFormService.occtaxData.next(null);
   }
 
   calcCardContentHeight() {
