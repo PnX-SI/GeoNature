@@ -337,6 +337,8 @@ def upload_canvas():
     return "OK"
 
 def create_taxa_chart(id_dataset=None, id_af=None):
+    """Create a png chart of the taxonomic distribution using the matplotlib library
+    """
     import matplotlib.pyplot as plt
     import numpy as np
 
@@ -347,6 +349,12 @@ def create_taxa_chart(id_dataset=None, id_af=None):
         response = get_taxa_distribution(id_af=id_af, rank="group2_inpn")
         
     taxa_distribution = json.loads(response.data)
+    try:
+        if taxa_distribution['message'] == "not found":
+            return
+    except TypeError:
+        pass
+
     count = []
     group = []
     for taxa in taxa_distribution:
@@ -384,6 +392,8 @@ def create_taxa_chart(id_dataset=None, id_af=None):
 
 
 def create_taxa_map(id_dataset=None, bbox=None):
+    """ Create a svg map of the taxonomic repartition using the staticmaps libary
+    """
     import staticmaps
 
     html_filepath = str(BACKEND_DIR) + "/static/images/map.html"
@@ -392,6 +402,11 @@ def create_taxa_map(id_dataset=None, bbox=None):
     if not bbox:
         response = get_bbox(id_dataset=id_dataset)
         bbox = json.loads(response.data)
+        try:
+            if bbox['message'] == "not found":
+                return
+        except KeyError:
+            pass
 
     if bbox['coordinates']:
         context = staticmaps.Context()
@@ -816,7 +831,6 @@ def get_export_pdf_dataset(id_dataset, info_role):
         dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
     )
     create_taxa_chart(id_dataset=id_dataset)
-    create_taxa_map(id_dataset=id_dataset)
     try:
         f = open(str(BACKEND_DIR) + "/static/images/taxa.png")
         f.close()
@@ -824,13 +838,22 @@ def get_export_pdf_dataset(id_dataset, info_role):
     except IOError:
         df["chart"] = False
 
+    create_taxa_map(id_dataset=id_dataset)
+    try:
+        f = open(str(BACKEND_DIR) + "/static/images/map.svg")
+        f.close()
+        df["map"] = True
+    except IOError:
+        df["map"] = False
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf("dataset_template_pdf.html", df, filename)
     pdf_file_posix = Path(pdf_file)
 
-    os.remove(str(BACKEND_DIR) + "/static/images/taxa.png")
-    os.remove(str(BACKEND_DIR) + "/static/images/map.svg")
+    if os.path.exists(str(BACKEND_DIR) + "/static/images/taxa.png"):
+        os.remove(str(BACKEND_DIR) + "/static/images/taxa.png")
+    if os.path.exists(str(BACKEND_DIR) + "/static/images/map.svg"):
+        os.remove(str(BACKEND_DIR) + "/static/images/map.svg")
 
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 
@@ -871,6 +894,8 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     )
     if geojsonData:
         acquisition_framework["bbox"] = json.loads(geojsonData)
+    else:
+        acquisition_framework["bbox"] = None
     nb_data = len(dataset_ids)
     nb_taxons = (
         DB.session.query(Synthese.cd_nom)
@@ -967,7 +992,6 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
         )
 
     create_taxa_chart(id_af=id_acquisition_framework)
-    create_taxa_map(bbox=acquisition_framework["bbox"])
     try:
         f = open(str(BACKEND_DIR) + "/static/images/taxa.png")
         f.close()
@@ -975,14 +999,25 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     except IOError:
         acquisition_framework["chart"] = False
 
+    if acquisition_framework["bbox"]:
+        create_taxa_map(bbox=acquisition_framework["bbox"])
+    try:
+        f = open(str(BACKEND_DIR) + "/static/images/map.svg")
+        f.close()
+        acquisition_framework["map"] = True
+    except IOError:
+        acquisition_framework["map"] = False
+
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf(
         "acquisition_framework_template_pdf.html", acquisition_framework, filename
     )
     pdf_file_posix = Path(pdf_file)
 
-    os.remove(str(BACKEND_DIR) + "/static/images/taxa.png")
-    os.remove(str(BACKEND_DIR) + "/static/images/map.svg")
+    if os.path.exists(str(BACKEND_DIR) + "/static/images/taxa.png"):
+        os.remove(str(BACKEND_DIR) + "/static/images/taxa.png")
+    if os.path.exists(str(BACKEND_DIR) + "/static/images/map.svg"):
+        os.remove(str(BACKEND_DIR) + "/static/images/map.svg")
 
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 

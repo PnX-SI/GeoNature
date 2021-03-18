@@ -190,17 +190,14 @@
           </p>
         </div>
         {% endif %}
-
-      </div>
-
       {% endif %}
-
+      </div>
 
       <div
         class="right-block"
         style="display:grid"
       >
-        {% if data['chart']: %}
+        {% if data['map']: %}
         <div class="zone">
           <p class="zone-geographique">Zone géographique</p>
           <img
@@ -210,11 +207,6 @@
           >
         </div>
         {% endif %}
-        <!-- <div class="zone">
-                    <p class="zone-geographique">Zone géographique</p>
-                    <div class="map"></div>
-                </div> -->
-        <!-- A modifier lorsque la carte sera prete -->
 
         {% if data['chart']: %}
         <div class="repartition">
