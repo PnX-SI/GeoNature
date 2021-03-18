@@ -3,8 +3,8 @@
 <p>
   L'utilisateur <b>{{ user.prenom_role }}  {{ user.nom_role }}</b>
   ({{ "sans email" if not user.email else user.email }})
-  vient d'effectuer une demande de permissions d'accès
-  à "<a href="{{ app_url }}">{{ app_name }}</a>".
+  vient d'effectuer une demande d'accès aux données précises
+  sur "<a href="{{ app_url }}">{{ app_name }}</a>".
 </p>
 
 <h5>Permissions demandées</h5>
@@ -50,6 +50,12 @@
 <h5>Souhaitez vous :</h5>
 <ul>
   <li>
+    <a href="{{ app_url }}">
+      Accéder à l'interface de gestion, pour approuver ou refuser une demande
+      en indiquant un motif.
+    </a>
+  </li>
+  <li>
     <a href="{{ approval_url }}">
       Accepter directement cette demande, en cliquant sur ce lien.
     </a>
@@ -57,12 +63,6 @@
   <li>
     <a href="{{ refusal_url }}">
       Refuser directement cette demande (SANS MOTIF), en cliquant sur ce lien.
-    </a>
-  </li>
-  <li>
-    <a href="{{ app_url }}">
-      Accéder à l'interface de gestion, pour approuver ou refuser une demande
-      en indiquant un motif.
     </a>
   </li>
 </ul>

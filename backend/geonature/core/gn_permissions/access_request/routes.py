@@ -179,7 +179,7 @@ def post_access_request(info_role):
 def send_email_after_access_request(data, user_id, request_token):
     recipients = current_app.config["PERMISSION_MANAGEMENT"]["VALIDATOR_EMAIL"]
     app_name = current_app.config["appName"]
-    subject = f"Demande de permissions d'accès {app_name}"
+    subject = f"Demande accès données précises {app_name} - {str(request_token)[:7]}"
     msg_html = render_request_approval_tpl(user_id, data, request_token)
     send_mail(recipients, subject, msg_html)
 
@@ -479,13 +479,13 @@ def send_email_after_managing_request(request):
     recipient = user["email"]
     app_name = current_app.config["appName"]
     if request["processed_state"] == RequestStates.accepted:
-        subject = f"Acceptation de demande de permissions d'accès {app_name}"
+        subject = f"Acceptation de demande d'accès aux données précises de {app_name}"
         msg_html = render_accepted_request_tpl(user, request)
     elif request["processed_state"] == RequestStates.pending:
-        subject = f"Mise en attente de la demande de permissions d'accès {app_name}"
+        subject = f"Mise en attente de demande d'accès aux données précises de {app_name}"
         msg_html = render_pending_request_tpl(user, request)
     else:
-        subject = f"Refus de demande de permissions d'accès {app_name}"
+        subject = f"Refus de demande d'accès aux données précises de {app_name}"
         msg_html = render_refused_request_tpl(user, request)
     if recipient:
         send_mail(recipient, subject, msg_html)
