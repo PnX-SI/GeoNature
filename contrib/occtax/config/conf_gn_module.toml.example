@@ -182,3 +182,27 @@ ENABLE_MY_PLACES = true
 # ------------- MEDIAS PARAMETER ---------------
 
 ENABLE_MEDIAS = true
+
+[ADD_FIELDS]
+    [[ADD_FIELDS.FORMFIELDS]]
+        DATASET = 1
+        ID_TAXON_LIST = 5
+        [[ADD_FIELDS.FORMFIELDS.RELEVE]]
+            type_widget = "select"
+            attribut_label = "Label"
+            attribut_name = "name"
+            values = ["Val1", "Val2", "Val3"]
+        [[ADD_FIELDS.FORMFIELDS.OCCURRENCE]]
+            type_widget = "text"
+            attribut_label = "Label"
+            attribut_name = "name2"
+            required = false
+        [[ADD_FIELDS.FORMFIELDS.COUNTING]]
+            type_widget = "radio"
+            attribut_label = "Label"
+            attribut_name = "name3"
+            values = ["Oui", "Non"]
+        
+    [[ADD_FIELDS.FORMFIELDS]]
+        DATASET = 2
+        ID_TAXON_LIST = 6

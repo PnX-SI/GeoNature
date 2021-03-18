@@ -9,17 +9,8 @@
   height: 90%;
   overflow-y: auto;
   background-color: #95949833;
-  box-shadow: 2px 3px 4px 0px rgba(0, 0, 0, 0.2),
-             -2px 3px 4px 0px rgba(0, 0, 0, 0.2);
-
-}
-
-#zero-taxon-container {
-  padding: 10px
-}
-
-.mat-expansion-panel-body {
-  padding: 0px 0px 16px !important;
+  box-shadow: -10px 5px 22px -2px rgba(0, 0, 0, 0.75);
+  padding-top: 15px;
 }
 
 .right-aligned-header > .mat-content {
@@ -31,6 +22,7 @@
 }
 
 .btn-actions {
+
   height: 5px;
 }
 
@@ -92,9 +84,11 @@
     0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
   border-radius: 4px;
   overflow: hidden;
-  padding: 0 24px;
-  // margin-left: 60px !important;
+  margin-bottom: 2px;
+  margin-top: 2px;
+  margin-left: 60px !important;
   align-items: center;
+  padding: 10px 15px;
   transition: background-color 0.2s ease-out !important;
 }
 
@@ -124,4 +118,15 @@
   display: inline-block;
   margin-right: 10px;
   vertical-align: middle;
+}
+
+
+.media-center {
+  margin-left: auto;
+  margin-right: auto;
+}
+.flex-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

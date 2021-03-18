@@ -1,5 +1,5 @@
-import { Component, Input, OnInit, OnDestroy } from "@angular/core";
-import { FormGroup, FormControl } from "@angular/forms";
+import { Component, Input, OnInit, OnDestroy, ViewContainerRef, ViewChild } from "@angular/core";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { GeoJSON } from "leaflet";
 import { map, filter } from "rxjs/operators";
@@ -15,13 +15,17 @@ import { AppConfig } from "@geonature_config/app.config";
   selector: "pnx-occtax-form-releve",
   templateUrl: "releve.component.html",
   styleUrls: ["./releve.component.scss"],
+  providers: []
 })
 export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
+  @ViewChild("dynamiqueContainer", { read: ViewContainerRef }) public container: ViewContainerRef;
+
   public occtaxConfig: any;
   public geojson: GeoJSON;
   public userDatasets: Array<any>;
   public releveForm: FormGroup;
   public AppConfig = AppConfig;
+  public datasetId : number;
 
   constructor(
     private route: ActivatedRoute,
@@ -37,14 +41,19 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.releveForm = this.occtaxFormReleveService.releveForm;
     this.initHabFormSub();
-    // in order to pass data to the inserected area component
     this.occtaxFormMapService.geojson.subscribe(geojson => {
       this.geojson = geojson;
       // check if edition
-
+      if (geojson) {
+        this._dataService.getAltitudes(geojson).subscribe(altitude => {
+          this.releveForm.get("properties").patchValue(altitude)
+        })
+      }
     })
 
     this.occtaxFormReleveService.route = this.route;
+    //MET ADD Champs additionels
+    this.occtaxFormReleveService.dynamicContainer = this.container;
   } // END INIT
 
   get dataset(): any {
@@ -69,7 +78,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
       filter((hab) => hab !== null && hab.cd_hab !== undefined),
       map((hab) => hab.cd_hab)
     ).subscribe(cd_hab => {
-      this.releveForm.get('properties').get('cd_hab').setValue(cd_hab);
+      this.releveForm.get("properties").get("cd_hab").setValue(cd_hab);
     });
 
   }
@@ -103,6 +112,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   }
 
   submitReleveForm() {
+
     if (this.releveForm.valid) {
       this.occtaxFormReleveService.submitReleve();
     }

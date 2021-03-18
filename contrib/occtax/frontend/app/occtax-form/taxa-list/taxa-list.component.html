@@ -84,10 +84,10 @@
           <!-- <ng-container *ngIf="(getStatuts(taxon.statuts)).length">
             <mat-icon class="nb-statut" [matBadge]="(getStatuts(taxon.statuts)).length" [matTooltip]="(getStatuts(taxon.statuts)).length + ' statuts'">star</mat-icon>
           </ng-container> -->
-
-          <mat-tab-group>
+  
+          <mat-tab-group (selectedTabChange)="tabChanged($event)">
             <mat-tab label="Occurrence">
-              <div class="list-values">
+              <div class="list-values" id="tabOccurence{{ occurrence.id_occurrence_occtax }}">
                 <div>
                   <div class="label">ID occurrence :</div>
                   <div class="value">{{ occurrence.id_occurrence_occtax }}</div>
@@ -310,7 +310,7 @@
                 dénombrements
                 --
               >
-                <mat-tab *ngIf="occurrence.cor_counting_occtax">
+                <mat-tab *ngIf="occurrence.cor_counting_occtax" label="counting#{{ occurrence.id_occurrence_occtax }}">
                   <ng-template mat-tab-label>
                     <span
                       [matBadge]="occurrence.cor_counting_occtax.length"
@@ -325,7 +325,7 @@
                   <ng-container *ngFor="let counting of occurrence.cor_counting_occtax; index as i">
                     <h5 class="counting-title">{{ 'Counting.Counting' | translate }} #{{ i + 1 }}
                     </h5>
-                    <div class="list-values">
+                    <div class="list-values" id="tabCounting{{ counting.id_counting_occtax }}">
                       <div>
                         <div class="label">ID {{ 'Counting.Counting' | translate }} :</div>
                         <div class="value">{{ counting.id_counting_occtax }}</div>

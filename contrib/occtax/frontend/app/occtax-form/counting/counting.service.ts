@@ -1,9 +1,10 @@
-import { Injectable } from "@angular/core";
+import { Injectable, ComponentRef, ViewContainerRef, ComponentFactory, ComponentFactoryResolver } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
   Validators,
   AbstractControl,
+  FormControl
 } from "@angular/forms";
 import { Observable, Subscription } from "rxjs";
 import { map, filter, tap } from "rxjs/operators";
@@ -11,18 +12,26 @@ import { map, filter, tap } from "rxjs/operators";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { MediaService } from '@geonature_common/service/media.service';
+import { dynamicFormReleveComponent } from "../dynamique-form-releve/dynamic-form-releve.component";
+import { ModuleConfig } from "../../module.config";
 
 @Injectable()
 export class OcctaxFormCountingService {
   // public form: FormGroup;
   counting: any;
   synchroCountSub: Subscription;
+  
+  public dynamicFormGroup: FormGroup;
+  componentRefCounting: ComponentRef<any>;
+  public dynamicContainerCounting: ViewContainerRef;
+  public data : any;
 
   constructor(
     private fb: FormBuilder,
     private occtaxFormService: OcctaxFormService,
     private occtaxParamS: OcctaxFormParamService,
-    private mediaService: MediaService
+    private mediaService: MediaService,
+    private _resolver: ComponentFactoryResolver
   ) {}
 
   createForm(patchWithDefaultValues: boolean = false): FormGroup {
@@ -37,9 +46,21 @@ export class OcctaxFormCountingService {
       medias: [[], this.mediaService.mediasValidator()],
     });
 
+    //Ajout du composant dynamique
+    if (this.componentRefCounting){
+      //Copy du formGroupDynamique
+      const formGroup = new FormGroup({});
+      const controls = this.componentRefCounting.instance.formArray.controls;
+      Object.keys(controls).forEach(key => {
+        formGroup.addControl(key, new FormControl(null));
+      })
+      form.addControl('additional_fields', formGroup);
+    }
+
     form.setValidators([this.countingValidator]);
 
     if (patchWithDefaultValues) {
+      
       this.defaultValues.subscribe((DATA) => form.patchValue(DATA));
       form
         .get("count_min")

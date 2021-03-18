@@ -1,5 +1,5 @@
-import { Injectable } from "@angular/core";
-import { FormControl } from "@angular/forms";
+import { Injectable, ViewContainerRef, ComponentRef, ComponentFactory, ComponentFactoryResolver } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
 import { BehaviorSubject } from "rxjs";
 import { filter, tap, skip } from "rxjs/operators";
 
@@ -9,6 +9,8 @@ import { Router } from "@angular/router";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
+import { dynamicFormReleveComponent } from "./dynamique-form-releve/dynamic-form-releve.component";
+import { ModuleConfig } from "../module.config";
 
 @Injectable()
 export class OcctaxFormService {
@@ -22,14 +24,25 @@ export class OcctaxFormService {
   public editionMode: BehaviorSubject<boolean> = new BehaviorSubject(false); // boolean to check if its editionMode
   public chainRecording: boolean = false; // boolean to check if chain the recording is activate
   public stayOnFormInterface = new FormControl(false);
+  
+  public dynamicFormGroup: FormGroup;
+  public currentIdDataset:any;
+  public dynamicContainer: ViewContainerRef;
+  public dynamicContainerOccurence: ViewContainerRef;
+  componentRef: ComponentRef<any>;
+  componentRefOccurence: ComponentRef<any>;
   public previousReleve = null;
+  public formDatasetFields: any;
+
+  public nomenclatureAdditionnel: any = [];
 
   constructor(
     private _http: HttpClient,
     private _router: Router,
     private _auth: AuthService,
     private _commonService: CommonService,
-    private _dataS: OcctaxDataService
+    private _dataS: OcctaxDataService,
+    private _resolver: ComponentFactoryResolver
   ) {
     this.currentUser = this._auth.getCurrentUser();
 
@@ -135,5 +148,28 @@ export class OcctaxFormService {
     let occtaxData = this.occtaxData.getValue();
     occtaxData.releve = releve;
     this.occtaxData.next(occtaxData);
+  }
+
+  getAddDynamiqueFields(idDataset){
+    this.formDatasetFields = [];
+    if(ModuleConfig.ADD_FIELDS){
+      if(ModuleConfig.ADD_FIELDS.FORMFIELDS){
+        ModuleConfig.ADD_FIELDS.FORMFIELDS.map((formFields) => {
+          if(formFields.DATASET == idDataset){
+            this.formDatasetFields = formFields;
+          }
+        })
+      }
+    }
+    return this.formDatasetFields;
+  }
+
+  formatDate(strDate) {
+    const date = new Date(strDate);
+    return {
+      year: date.getFullYear(),
+      month: date.getMonth() + 1,
+      day: date.getDate(),
+    };
   }
 }

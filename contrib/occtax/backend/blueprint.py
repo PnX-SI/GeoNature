@@ -34,7 +34,7 @@ from .models import (
     CorCountingOccurrence,
     VReleveOccurrence,
     corRoleRelevesOccurrence,
-    DefaultNomenclaturesValue,
+    DefaultNomenclaturesValue
 )
 from .repositories import (
     ReleveRepository,
@@ -51,6 +51,11 @@ from geonature.core.users.models import UserRigth
 from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
+
+import os
+from shutil import copyfile
+from io import BytesIO
+import zipfile
 
 blueprint = Blueprint("pr_occtax", __name__)
 log = logging.getLogger(__name__)
@@ -108,7 +113,7 @@ def getReleves(info_role):
                 "digitiser",
                 "dataset",
                 "right",
-                "medias",
+                "medias"
             )
         )
         feature["properties"]["rights"] = releve_cruved
@@ -185,7 +190,7 @@ def getOneReleve(id_releve, info_role):
     :param id_releve: the id releve from pr_occtax.t_releve_occtax
     :type id_releve: int
     :returns: Return a releve with its attached Cruved
-    :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}`
+    :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}` 
     """
     releveCruvedSchema = ReleveCruvedSchema()
     releve = DB.session.query(TRelevesOccurrence).get(id_releve)
@@ -300,8 +305,8 @@ def insertOrUpdateOneReleve(info_role):
                 "t_occurrences_occtax":[{
                     "id_releve_occtax":null,"id_occurrence_occtax":null,"id_nomenclature_obs_technique":41,"id_nomenclature_bio_condition":157,"id_nomenclature_bio_status":29,"id_nomenclature_naturalness":160,"id_nomenclature_exist_proof":81,"id_nomenclature_observation_status":88,"id_nomenclature_blurring":175,"id_nomenclature_source_status":75,"determiner":null,"id_nomenclature_determination_method":445,"cd_nom":67111,"nom_cite":"Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]","meta_v_taxref":null,"sample_number_proof":null,"comment":null,
                 "cor_counting_occtax":[{
-                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1
-                    }]
+                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1   
+                    }]    
                 }]
             }
         }
@@ -427,6 +432,8 @@ def releveHandler(request, *, releve, info_role):
     # Modification de la requete geojson en releve
     json_req = request.get_json()
     json_req["properties"]["geom_4326"] = json_req["geometry"]
+    #json_req["properties"]["additional_fields"] = json_req["additional_fields"]
+    #print(json_req)
     # chargement des données POST et merge avec relevé initial
     releve, errors = releveSchema.load(json_req["properties"], instance=releve)
     if bool(errors):
@@ -475,8 +482,8 @@ def createReleve(info_role):
                 "t_occurrences_occtax":[{
                     "id_releve_occtax":null,"id_occurrence_occtax":null,"id_nomenclature_obs_technique":41,"id_nomenclature_bio_condition":157,"id_nomenclature_bio_status":29,"id_nomenclature_naturalness":160,"id_nomenclature_exist_proof":81,"id_nomenclature_observation_status":88,"id_nomenclature_blurring":175,"id_nomenclature_source_status":75,"determiner":null,"id_nomenclature_determination_method":445,"cd_nom":67111,"nom_cite":"Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]","meta_v_taxref":null,"sample_number_proof":null,"comment":null,
                 "cor_counting_occtax":[{
-                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1
-                    }]
+                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1   
+                    }]    
                 }]
             }
         }
@@ -731,17 +738,18 @@ def getDefaultNomenclatures():
     module_code="OCCTAX",
 )
 def export(info_role):
-    """Export data from pr_occtax.v_export_occtax view (parameter)
+    """Export data from pr_occtax.export_occtax_sinp view (parameter)
 
-    .. :quickref: Occtax; Export data from pr_occtax.v_export_occtax
+    .. :quickref: Occtax; Export data from pr_occtax.export_occtax_sinp
 
-    :query str format: format of the export ('csv', 'geojson', 'shapefile')
+    :query str format: format of the export ('csv', 'geojson', 'shapefile', 'medias')
 
     """
     export_view_name = blueprint.config["export_view_name"]
     export_geom_column = blueprint.config["export_geom_columns_name"]
     export_columns = blueprint.config["export_columns"]
     export_srid = blueprint.config["export_srid"]
+    export_col_name_additional_data = blueprint.config["export_col_name_additional_data"]
 
     export_view = GenericTableGeo(
         tableName=export_view_name,
@@ -766,6 +774,27 @@ def export(info_role):
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
 
+    #Ajout des colonnes additionnels
+    col_names = []
+    
+    if "id_dataset" in request.args:
+        configDataset = getDatasetConfig(request.args['id_dataset'])
+        if "EXPORT_FIELDS" in configDataset:
+            col_names = configDataset["EXPORT_FIELDS"]
+        if not col_names:
+            col_names = getDefaultExportFields(configDataset)
+
+            
+    if not col_names:
+        for row in data:
+            dict_row = export_view.as_dict(row)
+            if export_col_name_additional_data in dict_row:
+                additional_data = dict_row[export_col_name_additional_data]
+                if additional_data:
+                    for col_name in additional_data:
+                        if col_name not in col_names:
+                            col_names.append(col_name)
+
     export_format = request.args["format"] if "format" in request.args else "geojson"
     if export_format == "csv":
         columns = (
@@ -773,9 +802,29 @@ def export(info_role):
             if len(export_columns) > 0
             else [db_col.key for db_col in export_view.db_cols]
         )
+        #On ajoute les colonnes additionnels aux colonnes de l'export
+        columns = columns + col_names
+        data_add_field = []
+        
+        for row in data:
+            additional_data = export_view.as_dict(row)[export_col_name_additional_data]
+            tab_value = {}
+            for col_name in col_names:
+                if additional_data:
+                    if col_name in additional_data:
+                        tab_value[col_name] = additional_data[col_name]
+                    else:
+                        tab_value[col_name] = ""
+                else:
+                    tab_value[col_name] = ""
+            row_test = {**export_view.as_dict(row), **tab_value}
+            data_add_field.append(row_test)
         return to_csv_resp(
-            file_name, [export_view.as_dict(d) for d in data], columns, ";"
+            file_name, [d for d in data_add_field], columns, ";"
         )
+        #return to_csv_resp(
+        #    file_name, [export_view.as_dict(d) for d in data], columns, ";"
+        #)
     elif export_format == "geojson":
         results = FeatureCollection(
             [export_view.as_geofeature(d, columns=export_columns) for d in data]
@@ -783,6 +832,56 @@ def export(info_role):
         return to_json_resp(
             results, as_file=True, filename=file_name, indent=4, extension="geojson"
         )
+    #MET 21/10/2020 Ajout d'un export medias
+    elif export_format == "medias":
+        try:
+            releve_repository_for_media = ReleveRepository(TRelevesOccurrence)
+            q = releve_repository_for_media.get_filtered_query(info_role)
+
+            parameters = request.args
+
+            # Filters
+            q = get_query_occtax_filters(parameters, TRelevesOccurrence, q)
+            data = q.all()
+
+            user = info_role
+            user_cruved = get_or_fetch_user_cruved(
+                session=session, id_role=info_role.id_role, module_code="OCCTAX"
+            )
+            
+            #on crée le dossier s'il n'existe pas
+            dir_path = str(ROOT_DIR / "backend/static/medias/exports")
+            if not os.path.exists(dir_path):
+                os.makedirs(dir_path)
+            #on le clean
+            filemanager.delete_recursively(dir_path)
+            featureCollection = []
+            
+            zip_path = dir_path + "/" + file_name + ".zip"
+            zp_file = zipfile.ZipFile(zip_path, mode="w")
+            for n in data:
+                releve_cruved = n.get_releve_cruved(user, user_cruved)
+                feature = n.get_geofeature(
+                    relationships=(
+                        "t_occurrences_occtax",
+                        "cor_counting_occtax",
+                        "medias"
+                    )
+                )
+                if "properties" in feature:
+                    if "t_occurrences_occtax" in feature["properties"]:
+                        for occurence in feature["properties"]["t_occurrences_occtax"]:
+                            for counting in occurence["cor_counting_occtax"]:
+                                if "medias" in counting:
+                                    for media in counting["medias"]:
+                                        if media["media_path"] is not None:
+                                            file_path = str(ROOT_DIR / "backend/" ) + "/" +  media["media_path"]
+                                            if os.path.exists(file_path):
+                                                zp_file.write(file_path, os.path.basename(file_path))
+            zp_file.close()
+            return send_from_directory(dir_path, file_name + ".zip", as_attachment=True)
+        except GeonatureApiError as e:
+            message = str(e)
     else:
         try:
             db_cols = [
@@ -796,7 +895,16 @@ def export(info_role):
                 data=data,
                 file_name=file_name,
             )
-            return send_from_directory(dir_name, file_name, as_attachment=True)
+            db_cols = [
+                db_col for db_col in export_view.db_cols if db_col.key in export_columns
+            ]
+            dir_path = str(ROOT_DIR / "backend/static/shapefiles")
+            
+            export_view.as_shape(
+                db_cols=db_cols, data=data, dir_path=dir_path, file_name=file_name
+            )
+
+            return send_from_directory(dir_path, file_name + ".zip", as_attachment=True)
 
         except GeonatureApiError as e:
             message = str(e)
@@ -806,3 +914,50 @@ def export(info_role):
             error=message,
             redirect=current_app.config["URL_APPLICATION"] + "/#/occtax",
         )
+
+
+@blueprint.route("/test", methods=["GET"])
+@permissions.check_cruved_scope(
+    "E",
+    True,
+    module_code="OCCTAX",
+    redirect_on_expiration=current_app.config.get("URL_APPLICATION"),
+)
+def test(info_role):
+    """
+    Deprecated
+    """
+    
+    return to_json_resp("test")
+
+#Fonction renvoyant la configuration du module OCCTAX en fonction du jeux de données 
+def getDatasetConfig(id_dataset):
+    if id_dataset.isnumeric():
+        add_fields = blueprint.config["ADD_FIELDS"]
+        if "FORMFIELDS" in add_fields:
+            for formFields in add_fields["FORMFIELDS"]:
+                #return formFields
+                if int(formFields["DATASET"]) == int(id_dataset):
+                    return formFields
+    return []
+
+#Fonction renvoyant la liste des colonnes en fonction de la configuration du jeux de données
+def getDefaultExportFields(formFields):
+    col_names = []
+    if "RELEVE" in formFields:
+        for widget in formFields["RELEVE"]:
+            if "type_widget" in widget and "attribut_name" in widget:
+                if widget["type_widget"] != "html":
+                    col_names.append(widget["attribut_name"])
+    if "OCCURRENCE" in formFields:
+        for widget in formFields["OCCURRENCE"]:
+            if "type_widget" in widget and "attribut_name" in widget:
+                if widget["type_widget"] != "html":
+                    col_names.append(widget["attribut_name"])
+    if "COUNTING" in formFields:
+        for widget in formFields["COUNTING"]:
+            if "type_widget" in widget and "attribut_name" in widget:
+                if widget["type_widget"] != "html":
+                    col_names.append(widget["attribut_name"])
+
+    return col_names

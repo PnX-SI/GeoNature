@@ -30,6 +30,7 @@ class VSyntheseValidation(DB.Model):
     count_max = DB.Column(DB.Integer)
     cd_nom = DB.Column(DB.Integer)
     cd_ref = DB.Column(DB.Unicode)
+    nom_vern_or_lb_nom = DB.Column(DB.Unicode)
     nom_cite = DB.Column(DB.Unicode)
     nom_valide = DB.Column(DB.Unicode)
     nom_vern = DB.Column(DB.Unicode)

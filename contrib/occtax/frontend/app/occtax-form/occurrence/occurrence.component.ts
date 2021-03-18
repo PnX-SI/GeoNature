@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewContainerRef, ViewChild, ComponentRef, ComponentFactory, ComponentFactoryResolver } from "@angular/core";
 import {
   animate,
   state,
@@ -6,8 +6,8 @@ import {
   transition,
   trigger
 } from "@angular/animations";
-import { FormControl, FormGroup, FormArray, Validators } from "@angular/forms";
-import { map, filter, tap, delay } from "rxjs/operators";
+import { FormControl, FormGroup, FormArray, Validators, FormBuilder } from "@angular/forms";
+import { map, filter, tap, delay, switchMap } from "rxjs/operators";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
 import { AppConfig } from "@geonature_config/app.config";
@@ -17,6 +17,7 @@ import { FormService } from "@geonature_common/form/form.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { MatDialog } from "@angular/material";
+import { Observable } from "rxjs";
 
 
 @Component({
@@ -45,6 +46,8 @@ import { MatDialog } from "@angular/material";
   ],
 })
 export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
+  @ViewChild("dynamiqueContainerOccurence", { read: ViewContainerRef }) public containerOccurence: ViewContainerRef;
+  componentOccurenceRef: ComponentRef<any>;
   public occtaxConfig = ModuleConfig;
   public appConfig = AppConfig;
   public occurrenceForm: FormGroup;
@@ -56,12 +59,21 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
 
   public displayProofFromElements: boolean = false;
 
+  public dynamicFormGroup: FormGroup;
+  public data : any;
+  public dynamicContainerOccurence: ViewContainerRef;
+  componentRefOccurence: ComponentRef<any>;
+
+  //public idTaxonList: number;
+
   constructor(
     public fs: OcctaxFormService,
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private _coreFormService: FormService,
     private _occtaxTaxaListService: OcctaxTaxaListService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private _resolver: ComponentFactoryResolver,
+    private fb: FormBuilder,
   ) { }
 
   ngOnInit() {
@@ -82,8 +94,13 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
       .subscribe(
         (display: boolean) => (this.displayProofFromElements = display)
       );
-
+        
     this.initTaxrefSearch();
+    this.occtaxFormOccurrenceService.dynamicContainerOccurence = this.containerOccurence;
+
+    this.occtaxFormOccurrenceService.idTaxonList = this.occtaxConfig.id_taxon_list;
+    //MET MAYBE TODO => ADD PARAM TO OCCTAX FIELDS FROM DATASET
+    //this.occtaxFormOccurrenceService.formFieldsStatus = this.occtaxConfig.form_fields;
   }
 
   ngAfterViewInit() {
@@ -102,6 +119,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
       "blur",
       (event) => (this.taxonFormFocus = false)
     );
+    this.occtaxFormOccurrenceService.idTaxonList = 100;
   }
 
   setExistProofData(data) {
@@ -152,10 +170,10 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
           );
           if (alreadyExistingTax) {
             const message =
-              "Le taxon saisi est déjà dans la liste des taxons enregistrés. <br/>\
-               <small> Privilegiez d'ajouter plusieurs dénombrements sur le même taxon. </small> <br/> \
-               Voulez-vous continuer ? \
-               ";
+            "Le taxon saisi est déjà dans la liste des taxons enregistrés. <br/>\
+             <small> Privilegiez d'ajouter plusieurs dénombrements sur le même taxon. </small> <br/> \
+             Voulez-vous continuer ? \
+             ";
             const dialogRef = this.dialog.open(ConfirmationDialog, {
               width: "auto",
               position: { top: "5%" },

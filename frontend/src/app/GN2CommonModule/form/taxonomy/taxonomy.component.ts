@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { DataFormService } from '../data-form.service';
@@ -108,6 +108,14 @@ export class TaxonomyComponent implements OnInit {
         this.groupControl.patchValue(null);
       }
     });
+  }
+  
+  //permet de charger dynamiquement la liste des taxons lorsque l'on modifie son idList
+  ngOnChanges(changes: SimpleChanges) {
+    // if change idList => change apiEndPoint
+    if (changes.idList !== undefined) {
+      this.apiEndPoint = `${AppConfig.API_TAXHUB}/taxref/allnamebylist/${this.idList}`;
+    }
   }
 
   taxonSelected(e: NgbTypeaheadSelectItemEvent) {

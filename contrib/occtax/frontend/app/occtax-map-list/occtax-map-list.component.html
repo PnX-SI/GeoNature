@@ -118,6 +118,7 @@
                 <div *ngFor="let taxon of displayTaxonsTooltip(row)">
                   {{ taxon.taxName }} <br>
                   <span [innerHTML]="taxon.icons | safeHTML"></span>
+                  <!-- <pnx-display-medias [medias]="taxon.medias" diaporama="true" display='mini'></pnx-display-medias> -->
                 </div>
               </div>
 

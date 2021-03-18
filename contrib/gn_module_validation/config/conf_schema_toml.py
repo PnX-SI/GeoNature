@@ -6,11 +6,13 @@ from marshmallow import Schema, fields
 
 
 DEFAULT_COLUMNS_API_VALIDATION = [
+    "validation_auto",
     "date_min",
     "observers",
     "nom_valide",
     "dataset_name",
-    "validation_date"
+    "validation_date",
+    "nom_vern_or_lb_nom"
 ]
 
 # Colonnes renvoyees par l'API synthese qui sont obligatoires pour que les fonctionnalités
@@ -26,9 +28,7 @@ MANDATORY_COLUMNS = [
     "mnemonique",
     "label_default",
     "unique_id_sinp",
-    "geojson",
-    "nom_vern",
-    "lb_nom"
+    "geojson"
 ]
 
 # CONFIG MAP-LIST
@@ -79,6 +79,8 @@ Merci de contacter la personne en charge de la validation. \n\rCommunes : ${ d.c
 MAIL_SUBJECT = "[GeoNature Validation] Donnée du ${ d.date_min } - ${ d.nom_vern } - ${ d.nom_valide }"
 
 
+MAIL_BODY = "La donnée en date du ${ d.date_min } relative au taxon ${ d.nom_vern } - ${ d.nom_valide } pose question\n\rMerci de contacter la personne en charge de la validation. \n\rCommunes : ${ d.communes }\n\rMédias : ${ d.medias }"
+MAIL_SUBJECT = "[GeoNature Validation]Donnée du ${ d.date_min } - ${ d.nom_vern } - ${ d.nom_valide }"
 
 class GnModuleSchemaConf(Schema):
     MANDATORY_COLUMNS = fields.List(fields.String(), missing=MANDATORY_COLUMNS)
