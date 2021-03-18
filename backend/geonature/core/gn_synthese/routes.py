@@ -920,8 +920,6 @@ def get_taxa_distribution(id_dataset=None, id_af=None, rank=None):
     if not rank:
         rank = "regne"
 
-    print(id_dataset, id_af, rank)
-
     rank = getattr(Taxref.__table__.columns, rank)
 
     Taxref.group2_inpn
