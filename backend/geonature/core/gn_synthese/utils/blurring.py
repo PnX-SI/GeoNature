@@ -194,7 +194,7 @@ class DataBlurring:
                         splited_values = self._split_value_filter(filter_value)
                         stmt = (
                             DB.select([column("cd_ref")])
-                            .select_from(func.taxonomie.find_all_taxons_children(*splited_values))
+                            .select_from(func.taxonomie.find_all_taxons_children(splited_values))
                         )
                         conditions.append(Taxref.cd_ref.in_(stmt))
                     permissions_ors.append(and_(*conditions))
