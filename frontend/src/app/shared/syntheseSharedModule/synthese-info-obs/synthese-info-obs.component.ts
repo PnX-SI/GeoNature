@@ -102,14 +102,15 @@ export class SyntheseInfoObsComponent implements OnInit {
 
         // for angular tempate we need to convert it into a aray
         // tslint:disable-next-line:forin
-        for (let key in areaDict) {
-          //Ajout du type code
-          if(areaDict[key][0].area_type.type_code){
-            this.formatedAreas.push({ type_code : areaDict[key][0].area_type.type_code, area_type: key, areas: areaDict[key] });
-          }else{
-            this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
-          }
-        }
+        // TODO: CHECK THIS
+        // for (let key in areaDict) {
+        //   //Ajout du type code
+        //   if(areaDict[key][0].area_type.type_code){
+        //     this.formatedAreas.push({ type_code : areaDict[key][0].area_type.type_code, area_type: key, areas: areaDict[key] });
+        //   }else{
+        //     this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
+        //   }
+        // }
 
         this._gnDataService
           .getTaxonAttributsAndMedia(data.cd_nom, AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB)
