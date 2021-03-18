@@ -155,7 +155,7 @@ def get_observations_for_web(auth, permissions):
     )
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
     synthese_query_class.filter_query_all_filters(auth)
-    results = DB.engine.execute(synthese_query_class.query.limit(result_limit))
+    results = DB.session.execute(synthese_query_class.query.limit(result_limit))
 
     if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
         data_blurring = DataBlurring(permissions)
@@ -218,7 +218,7 @@ def get_synthese(auth, permissions):
     query = select([VSyntheseForWebApp]).order_by(VSyntheseForWebApp.date_min.desc())
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
     synthese_query_class.filter_query_all_filters(auth)
-    data = DB.engine.execute(synthese_query_class.query.limit(result_limit))
+    data = DB.session.execute(synthese_query_class.query.limit(result_limit))
 
 
     # q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, auth)
@@ -549,7 +549,7 @@ def export_metadata(info_role):
     )
     synthese_query_class.filter_query_all_filters(info_role)
 
-    data = DB.engine.execute(synthese_query_class.query)
+    data = DB.session.execute(synthese_query_class.query)
     return to_csv_resp(
         datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
         data=[metadata_view.as_dict(d) for d in data],
@@ -612,7 +612,7 @@ def export_status(info_role):
     # filter with all get params
     q = synthese_query_class.filter_query_all_filters(info_role)
 
-    data = DB.engine.execute(q)
+    data = DB.session.execute(q)
 
     protection_status = []
     for d in data:
@@ -687,7 +687,7 @@ def general_stats(info_role):
 
     synthese_query_obj = SyntheseQuery(Synthese, q, {})
     synthese_query_obj.filter_query_with_cruved(info_role)
-    result = DB.engine.execute(synthese_query_obj.query)
+    result = DB.session.execute(synthese_query_obj.query)
     data = result.fetchone()
     data = {
         "nb_data": data[0],
@@ -1008,7 +1008,7 @@ def get_taxa_distribution():
 #         s_as_dict["id_synthese"] = random.randint(1500, 999999999)
 
 #         # with random cd_nom
-#         random_cd_nom = DB.engine.execute(
+#         random_cd_nom = DB.session.execute(
 #             """
 #         SELECT cd_nom FROM taxonomie.bib_noms OFFSET random() * (select count(*) from taxonomie.bib_noms) limit 1 ;"""
 #         )

@@ -232,7 +232,7 @@ class DataBlurring:
         #print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
         #exit()
 
-        results = DB.engine.execute(query)
+        results = DB.session.execute(query)
         geojson_by_synthese_ids = {}
         for result in results:
             result = dict(result)
@@ -324,7 +324,7 @@ class DataBlurring:
             )
             .where(BibNomenclaturesTypes.mnemonique == "NIV_PRECIS")
         )
-        results = DB.engine.execute(query)
+        results = DB.session.execute(query)
 
         diffusion_levels = {}
         for (nomenclature_id, nomenclature_code) in results:
@@ -374,7 +374,7 @@ class DataBlurring:
             select([BibAreasTypes.id_type, BibAreasTypes.type_code])
             .where(BibAreasTypes.type_code.in_(area_type_codes))
         )
-        results = DB.engine.execute(query)
+        results = DB.session.execute(query)
     
         area_types_ids = {}
         for (type_id, type_code) in results:
@@ -391,7 +391,7 @@ class DataBlurring:
             )
             .where(BibNomenclaturesTypes.mnemonique == "SENSIBILITE")
         )
-        results = DB.engine.execute(query)
+        results = DB.session.execute(query)
         
         sensitivity_levels = {}
         for (nomenclature_id, nomenclature_code) in results:
