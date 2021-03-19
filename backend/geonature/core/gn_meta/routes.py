@@ -1114,57 +1114,74 @@ def delete_acquisition_framework(info_role, af_id):
     return "OK"
 
 
+def acquisitionFrameworkHandler(request, *, acquisition_framework, info_role):
+
+    # Test des droits d'édition du acquisition framework si modification
+    if acquisition_framework.id_acquisition_framework is not None:
+        user_cruved = cruved_scope_for_user_in_module(
+            id_role=info_role.id_role, module_code="METADATA",
+        )[0]
+        af_cruved = acquisition_framework.get_object_cruved(info_role, user_cruved)
+        #verification des droits d'édition pour le acquisition framework
+        if not af_cruved['U']:
+            raise InsufficientRightsError(
+                "User {} has no right in acquisition_framework {}".format(
+                    info_role.id_role, acquisition_framework.id_acquisition_framework
+                ),
+                403,
+            )
+
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema()
+    acquisition_framework, errors = acquisitionFrameworkSchema.load(request.get_json(), instance=acquisition_framework)
+
+    if bool(errors):
+        raise Exception(
+            errors,
+            422,
+        )
+
+    DB.session.add(acquisition_framework)
+    DB.session.commit()
+
+    return acquisition_framework
+
+
 @routes.route("/acquisition_framework", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
-@json_resp
-def post_acquisition_framework(info_role):
+def createAcquisitionFramework(info_role):
     """
-    Post an acquisition framework
+    Post one AcquisitionFramework data
     .. :quickref: Metadata;
     """
-    if info_role.value_filter == "0":
-        raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataset').format(info_role.id_role, info_role.code_action),
-            403,
+
+    # create new acquisition_framework
+    try:
+        return AcquisitionFrameworkSchema().dump(
+           acquisitionFrameworkHandler(request=request, acquisition_framework=TAcquisitionFramework(), info_role=info_role)
         )
-    data = dict(request.get_json())
+    except Exception as e:
+        # retourne les erreurs levées en erreur 422
+        return e.args
 
-    cor_af_actor = data.pop("cor_af_actor")
-    cor_objectifs = data.pop("cor_objectifs")
-    cor_volets_sinp = data.pop("cor_volets_sinp")
 
-    af = TAcquisitionFramework(**data)
+@routes.route("/acquisition_framework/<int:id_acquisition_framework>", methods=["POST"])
+@permissions.check_cruved_scope("U", True, module_code="METADATA")
+def updateAcquisitionFramework(id_acquisition_framework, info_role):
+    """
+    Post one AcquisitionFramework data for update acquisition_framework
+    .. :quickref: Metadata;
+    """
+    acquisition_framework = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
+    if not acquisition_framework:
+        return {"message": "not found"}, 404
 
-    for cor in cor_af_actor:
-        # remove id_cda if None otherwise merge no working well
-        if "id_cafa" in cor and cor["id_cafa"] is None:
-            cor.pop("id_cafa")
-        af.cor_af_actor.append(CorAcquisitionFrameworkActor(**cor))
-
-    if cor_objectifs is not None:
-        objectif_nom = (
-            DB.session.query(TNomenclatures)
-            .filter(TNomenclatures.id_nomenclature.in_(cor_objectifs))
-            .all()
+    try:
+        return AcquisitionFrameworkSchema().dump(
+            acquisitionFrameworkHandler(request=request, acquisition_framework=acquisition_framework, info_role=info_role)
         )
-        for obj in objectif_nom:
-            af.cor_objectifs.append(obj)
-
-    if cor_volets_sinp is not None:
-        volet_nom = (
-            DB.session.query(TNomenclatures)
-            .filter(TNomenclatures.id_nomenclature.in_(cor_volets_sinp))
-            .all()
-        )
-        for volet in volet_nom:
-            af.cor_volets_sinp.append(volet)
-    if af.id_acquisition_framework:
-        DB.session.merge(af)
-    else:
-        af.id_digitizer = info_role.id_role
-        DB.session.add(af)
-    DB.session.commit()
-    return af.as_dict()
+    except Exception as e:
+        # retourne les erreurs levées en erreur 422
+        return e.args
 
 def publish_acquisition_framework_mail(af, info_role):
     """
