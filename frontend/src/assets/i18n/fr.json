@@ -246,7 +246,7 @@
       "sensitiveAccessText" : "Je souhaite accéder aux observations sensibles",
       "sensitiveAccessRules": "Merci de consulter au préalable les règles d’accès aux données sensibles",
       "endDateLabel": "Accès jusqu'au",
-      "sending": "Votre demande est en cours d'envoie...",
+      "sending": "Votre demande est en cours d'envoi...",
       "responseOk": "Votre demande a bien été prise en compte. Elle va être évaluée par un administrateur.",
       "responseError": "Une erreur est survenue lors de la prise en compte de votre demande.",
       "conventionTitle": "Convention",
