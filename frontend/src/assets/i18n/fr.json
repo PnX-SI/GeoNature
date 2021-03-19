@@ -233,8 +233,8 @@
   "Permissions": {
     "accessRequest": {
       "link": "Demande accès données précises",
-      "formTitle": "Demande de permissions d'accès",
-      "permissionTitle": "Permissions demandées",
+      "formTitle": "Demande d'accès aux données précises",
+      "permissionTitle": "Accès demandées",
       "regularFormIntro": "Veuillez indiquer ci-dessous les zones géographiques pour lesquelles vous souhaitez accéder aux données à leur précision maximale. Merci de préciser également les groupes taxonomiques concernés et le calendrier de votre étude.",
       "sendBtnTooltip": "Envoyer votre demande d'accès.",
       "cancelBtnTooltip": "Annuler votre demande d'accès.",
