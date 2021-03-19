@@ -39,7 +39,7 @@ marshmallow==2.15.2
 marshmallow-sqlalchemy==0.23.1
 packaging==16.8
 psycopg2==2.8.5
-pillow==7.2.0
+pillow==8.1.1
 pyparsing==2.2.0
 python-dateutil==2.6.1
 requests==2.25.1
