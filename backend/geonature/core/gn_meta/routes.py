@@ -972,30 +972,27 @@ def get_acquisition_framework(id_acquisition_framework):
 
 @routes.route("/acquisition_framework_details/<id_acquisition_framework>", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="METADATA")
-@json_resp
 def get_acquisition_framework_details(info_role, id_acquisition_framework):
     """
     Get one AF
-
     .. :quickref: Metadata;
-
     :param id_acquisition_framework: the id_acquisition_framework
     :param type: int
     """
-    af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
+    af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
     if not af:
         return None
     acquisition_framework = af.as_dict(True)
 
-    datasets = acquisition_framework["datasets"] if "datasets" in acquisition_framework else []
+    datasets = acquisition_framework["t_datasets"] if "t_datasets" in acquisition_framework else []
     dataset_ids = [d["id_dataset"] for d in datasets]
     geojsonData = (
         DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
         .filter(Synthese.id_dataset.in_(dataset_ids))
         .first()[0]
     )
-    if geojsonData:
-        acquisition_framework["bbox"] = json.loads(geojsonData)
+    bbox = json.loads(geojsonData) if geojsonData else None
+
     nb_data = len(dataset_ids)
     nb_taxons = (
         DB.session.query(Synthese.cd_nom)
@@ -1025,25 +1022,26 @@ def get_acquisition_framework_details(info_role, id_acquisition_framework):
 
         nb_habitat = DB.engine.execute(text(query)).first()[0]
 
-    acquisition_framework["stats"] = {
+    stats = {
         "nb_data": nb_data,
         "nb_taxons": nb_taxons,
         "nb_observations": nb_observations,
         "nb_habitats": nb_habitat,
     }
-    ids_afs_user = TAcquisitionFramework.get_user_af(info_role, only_user=True)
-    ids_afs_org = TAcquisitionFramework.get_user_af(info_role, only_user=False)
-    user_cruved = cruved_scope_for_user_in_module(
-        id_role=info_role.id_role, module_code="METADATA",
-    )[0]
-    acquisition_framework["cruved"] = af.get_object_cruved(
-        user_cruved=user_cruved,
-        id_object=af.id_acquisition_framework,
-        ids_object_user=ids_afs_user,
-        ids_object_organism=ids_afs_org,
-    )
 
-    return acquisition_framework
+    user_cruved = cruved_scope_for_user_in_module(
+        id_role=info_role.id_role, module_code="METADATA"
+    )[0]
+    
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema()
+    acquisitionFrameworkSchema.context = {
+        'info_role': info_role, 
+        'user_cruved': user_cruved, 
+        'stats': stats,
+        'bbox': bbox
+    }
+
+    return acquisitionFrameworkSchema.dumps(acquisition_framework)
 
 
 @routes.route("/acquisition_framework/<int:af_id>", methods=["DELETE"])

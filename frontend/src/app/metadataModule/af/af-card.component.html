@@ -297,8 +297,8 @@
           *ngIf="af?.stats?.nb_data > 0"
         >
           <table>
-            <tr *ngFor="let dataset of af?.datasets">
-              <td [ngSwitch]="dataset.data_type.cd_nomenclature">
+            <tr *ngFor="let dataset of af?.t_datasets">
+              <td [ngSwitch]="dataset?.nomenclature_data_type.cd_nomenclature">
                 <img
                   width="60"
                   *ngSwitchCase="'1'"
