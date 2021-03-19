@@ -51,7 +51,7 @@
             </pnx-taxa>
           </div>
 
-          <div class="form-group">
+          <div *ngIf="enableSensitiveAccess" class="form-group">
             <div class="custom-control custom-checkbox">
               <!--<label for="sensitive_access">
                 {{ 'Permissions.accessRequest.sensitiveAccessLabel' | translate }}

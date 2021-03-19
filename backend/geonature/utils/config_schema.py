@@ -107,6 +107,7 @@ class PermissionManagement(Schema):
     # Configuration parameters for permissions managment and access request
     ENABLE_ACCESS_REQUEST = fields.Boolean(missing=False)
     AREA_TYPES = fields.List(fields.Integer(), missing=[25, 26])
+    ENABLE_SENSITIVE_ACCESS = fields.Boolean(missing=True)
     DATA_ACCESS_RULES_LINK = fields.String(missing=None)
     DEFAULT_ACCESS_DURATION = fields.Integer(missing=None)
     MAX_ACCESS_DURATION = fields.Integer(missing=365)
