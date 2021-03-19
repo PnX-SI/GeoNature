@@ -336,11 +336,9 @@ def upload_canvas():
 
 @routes.route("/dataset/<int:ds_id>", methods=["DELETE"])
 @permissions.check_cruved_scope("D", True, module_code="METADATA")
-@json_resp
 def delete_dataset(info_role, ds_id):
     """
     Delete a dataset
-
     .. :quickref: Metadata;
     """
 
@@ -362,7 +360,7 @@ def delete_dataset(info_role, ds_id):
 
     DB.session.commit()
 
-    return "OK"
+    return '', 204 #DELETE No Content
 
 
 @routes.route("/uuid_report", methods=["GET"])
