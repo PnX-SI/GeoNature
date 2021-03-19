@@ -997,80 +997,6 @@ def get_acquisition_framework(id_acquisition_framework):
     return None
 
 
-@routes.route("/acquisition_framework_details/<id_acquisition_framework>", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="METADATA")
-def get_acquisition_framework_details(info_role, id_acquisition_framework):
-    """
-    Get one AF
-    .. :quickref: Metadata;
-    :param id_acquisition_framework: the id_acquisition_framework
-    :param type: int
-    """
-    af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
-    if not af:
-        return None
-    acquisition_framework = af.as_dict(True)
-
-    datasets = acquisition_framework["t_datasets"] if "t_datasets" in acquisition_framework else []
-    dataset_ids = [d["id_dataset"] for d in datasets]
-    geojsonData = (
-        DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
-        .filter(Synthese.id_dataset.in_(dataset_ids))
-        .first()[0]
-    )
-    bbox = json.loads(geojsonData) if geojsonData else None
-
-    nb_data = len(dataset_ids)
-    nb_taxons = (
-        DB.session.query(Synthese.cd_nom)
-        .filter(Synthese.id_dataset.in_(dataset_ids))
-        .distinct()
-        .count()
-    )
-    nb_observations = (
-        DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
-    )
-    nb_habitat = 0
-
-    # Check if pr_occhab exist
-    check_schema_query = exists(
-        select([text("schema_name")])
-        .select_from(text("information_schema.schemata"))
-        .where(text("schema_name = 'pr_occhab'"))
-    )
-
-    if DB.session.query(check_schema_query).scalar() and nb_data > 0:
-        query = (
-            "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
-        ("
-            + str(dataset_ids).strip("[]")
-            + ")"
-        )
-
-        nb_habitat = DB.engine.execute(text(query)).first()[0]
-
-    stats = {
-        "nb_data": nb_data,
-        "nb_taxons": nb_taxons,
-        "nb_observations": nb_observations,
-        "nb_habitats": nb_habitat,
-    }
-
-    user_cruved = cruved_scope_for_user_in_module(
-        id_role=info_role.id_role, module_code="METADATA"
-    )[0]
-    
-    acquisitionFrameworkSchema = AcquisitionFrameworkSchema()
-    acquisitionFrameworkSchema.context = {
-        'info_role': info_role, 
-        'user_cruved': user_cruved, 
-        'stats': stats,
-        'bbox': bbox
-    }
-
-    return acquisitionFrameworkSchema.dumps(acquisition_framework)
-
-
 @routes.route("/acquisition_framework/<int:af_id>", methods=["DELETE"])
 @permissions.check_cruved_scope("D", True, module_code="METADATA")
 @json_resp
@@ -1182,6 +1108,85 @@ def updateAcquisitionFramework(id_acquisition_framework, info_role):
     except Exception as e:
         # retourne les erreurs levées en erreur 422
         return e.args
+
+@routes.route("/acquisition_framework/<id_acquisition_framework>/stats", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+@json_resp
+def get_acquisition_framework_stats(info_role, id_acquisition_framework):
+    """
+    Get stats from one AF
+    .. :quickref: Metadata;
+    :param id_acquisition_framework: the id_acquisition_framework
+    :param type: int
+    """
+    af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
+    if not af:
+        return None
+    acquisition_framework = af.as_dict(True)
+
+    datasets = acquisition_framework["t_datasets"] if "t_datasets" in acquisition_framework else []
+    dataset_ids = [d["id_dataset"] for d in datasets]
+
+    nb_data = len(dataset_ids)
+    nb_taxons = (
+        DB.session.query(Synthese.cd_nom)
+        .filter(Synthese.id_dataset.in_(dataset_ids))
+        .distinct()
+        .count()
+    )
+    nb_observations = (
+        DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
+    )
+    nb_habitat = 0
+
+    # Check if pr_occhab exist
+    check_schema_query = exists(
+        select([text("schema_name")])
+        .select_from(text("information_schema.schemata"))
+        .where(text("schema_name = 'pr_occhab'"))
+    )
+
+    if DB.session.query(check_schema_query).scalar() and nb_data > 0:
+        query = (
+            "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
+        ("
+            + str(dataset_ids).strip("[]")
+            + ")"
+        )
+
+        nb_habitat = DB.engine.execute(text(query)).first()[0]
+
+    return {
+        "nb_data": nb_data,
+        "nb_taxons": nb_taxons,
+        "nb_observations": nb_observations,
+        "nb_habitats": nb_habitat,
+    }
+
+@routes.route("/acquisition_framework/<id_acquisition_framework>/bbox", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+@json_resp
+def get_acquisition_framework_bbox(info_role, id_acquisition_framework):
+    """
+    Get BBOX from one AF
+    .. :quickref: Metadata;
+    :param id_acquisition_framework: the id_acquisition_framework
+    :param type: int
+    """
+    af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
+    if not af:
+        return None
+    acquisition_framework = af.as_dict(True)
+
+    datasets = acquisition_framework["t_datasets"] if "t_datasets" in acquisition_framework else []
+    dataset_ids = [d["id_dataset"] for d in datasets]
+    geojsonData = (
+        DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+        .filter(Synthese.id_dataset.in_(dataset_ids))
+        .first()[0]
+    )
+    return json.loads(geojsonData) if geojsonData else None
+
 
 def publish_acquisition_framework_mail(af, info_role):
     """

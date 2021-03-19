@@ -372,13 +372,30 @@ export class DataFormService {
     });
   }
 
+  /**
+   * @param id_af: id of acquisition_framework
+   */
   getAcquisitionFramework(id_af) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`);
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`
+    );
   }
 
-  getAcquisitionFrameworkDetails(id_af) {
+  /**
+   * @param id_af: id of acquisition_framework
+   */
+  getAcquisitionFrameworkStats(id_af) {
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework_details/${id_af}`
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}/stats`
+    );
+  }
+
+  /**
+   * @param id_af: id of acquisition_framework
+   */
+  getAcquisitionFrameworkBbox(id_af) {
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}/bbox`
     );
   }
 

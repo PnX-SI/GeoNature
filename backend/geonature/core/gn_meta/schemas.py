@@ -215,11 +215,3 @@ class AcquisitionFrameworkSchema(MetadataSchema):
     nomenclature_territorial_level = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_financing_type = MA.Nested(NomenclatureSchema, dump_only=True)
     creator = MA.Nested(UserSchema, dump_only=True)
-    #stats = fields.Method("get_af_stats")
-    #bbox = fields.Method("get_af_bbox")
-
-    #def get_af_stats(self, obj):
-    #    return self.context['stats'] if "stats" in self.context else None
-
-    #def get_af_bbox(self, obj):
-    #    return self.context['bbox'] if "bbox" in self.context else None

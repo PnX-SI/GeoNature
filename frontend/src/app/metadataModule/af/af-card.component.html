@@ -65,21 +65,23 @@
             <div class="col">
               <h5>Jeux de données</h5>
               <br>
-              <div class="center">{{af?.stats?.nb_data}}</div>
+              <div class="center">{{ stats?.nb_data }}</div>
             </div>
             <div
               class="col-auto"
               width="60"
-            ><img
+            >
+              <img
                 src="./assets/images/JDD_icon.svg"
                 width="60"
-              ></div>
+              >
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div
-      *ngIf="af?.stats?.nb_taxons > 0"
+      *ngIf="stats?.nb_taxons > 0"
       class="col-3"
     >
       <div class="card">
@@ -88,21 +90,23 @@
             <div class="col">
               <h5>Taxons</h5>
               <br>
-              <div class="center">{{af?.stats?.nb_taxons}}</div>
+              <div class="center">{{ stats?.nb_taxons }}</div>
             </div>
             <div
               class="col-auto"
               width="60"
-            ><img
+            >
+              <img
                 src="./assets/images/Taxon_icon.svg"
                 width="60"
-              ></div>
+              >
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div
-      *ngIf="af?.stats?.nb_habitats > 0"
+      *ngIf="stats?.nb_habitats > 0"
       class="col-3"
     >
       <div class="card">
@@ -111,21 +115,23 @@
             <div class="col">
               <h5>Habitats</h5>
               <br>
-              <div class="center">{{af?.stats?.nb_habitats}}</div>
+              <div class="center">{{ stats?.nb_habitats }}</div>
             </div>
             <div
               class="col-auto"
               width="60"
-            ><img
+            >
+              <img
                 src="./assets/images/Habitat_icon.svg"
                 width="60"
-              ></div>
+              >
+            </div>
           </div>
         </div>
       </div>
     </div>
     <div
-      *ngIf="af?.stats?.nb_observations > 0 && af?.stats?.nb_taxons > 0"
+      *ngIf="stats?.nb_observations > 0 && stats?.nb_taxons > 0"
       class="col-3"
     >
       <div class="card">
@@ -134,15 +140,17 @@
             <div class="col">
               <h5>Observations</h5>
               <br>
-              <div class="center">{{af?.stats?.nb_observations}}</div>
+              <div class="center">{{ stats?.nb_observations }}</div>
             </div>
             <div
               class="col-auto"
               width="60"
-            ><img
+            >
+              <img
                 src="./assets/images/Donnee_icon.svg"
                 width="60"
-              ></div>
+              >
+            </div>
           </div>
         </div>
       </div>
@@ -232,7 +240,7 @@
     </div>
     <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
       <div
-        *ngIf="af?.stats?.nb_data > 0"
+        *ngIf="stats?.nb_data > 0"
         class="card"
       >
         <div class="card-header">
@@ -240,7 +248,7 @@
             Zone géographique
           </h5>
           <div
-            *ngIf="af?.stats?.nb_data > 0"
+            *ngIf="stats?.nb_data > 0"
             class="card-body"
           >
             <pnx-map
@@ -248,7 +256,7 @@
               searchBar="false"
             >
               <pnx-geojson
-                [geojson]="af?.bbox"
+                [geojson]="bbox"
                 [zoomOnFirstTime]="true"
               >
               </pnx-geojson>
@@ -257,7 +265,7 @@
         </div>
       </div>
       <div
-        *ngIf="this.pieChartLabels.length > 0 && af?.stats?.nb_data > 0"
+        *ngIf="this.pieChartLabels.length > 0 && stats?.nb_data > 0"
         class="card"
       >
         <div class="card-header">
@@ -266,7 +274,7 @@
           </h5>
         </div>
         <div
-          *ngIf="this.pieChartLabels.length > 0 && af?.stats?.nb_data > 0"
+          *ngIf="this.pieChartLabels.length > 0 && stats?.nb_data > 0"
           class="card-body"
         >
           <div style="display: block">
@@ -284,7 +292,7 @@
         </div>
       </div>
       <div
-        *ngIf="af?.stats?.nb_data > 0"
+        *ngIf="stats?.nb_data > 0"
         class="card"
       >
         <div class="card-header">
@@ -294,7 +302,7 @@
         </div>
         <div
           class="card-body"
-          *ngIf="af?.stats?.nb_data > 0"
+          *ngIf="stats?.nb_data > 0"
         >
           <table>
             <tr *ngFor="let dataset of af?.t_datasets">
