@@ -229,8 +229,8 @@
   "Permissions": {
     "accessRequest": {
       "link": "Request access to precise data",
-      "formTitle": "Request access permissions",
-      "permissionTitle": "Permissions requested",
+      "formTitle": "Request for access to precise data",
+      "permissionTitle": "Access requested",
       "regularFormIntro": "Please indicate below the geographic areas for which you want to access the data to its maximum precision. Please also specify the taxonomic groups concerned and the timetable for your study.",
       "sendBtnTooltip": "Send your permissions access request.",
       "cancelBtnTooltip": "Cancel your permissions access request.",
