@@ -62,6 +62,7 @@ from geonature.core.gn_meta.repositories import (
 )
 from .schemas import (
     AcquisitionFrameworkSchema,
+    DatasetSchema,
 )
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from werkzeug.datastructures import Headers
@@ -275,32 +276,29 @@ def get_af_from_id(id_af, af_list):
     return found_af
 
 
-@routes.route("/dataset/<id_dataset>", methods=["GET"])
-@json_resp
-def get_dataset(id_dataset):
+@routes.route("/dataset/<int:id_dataset>", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+def get_dataset(info_role, id_dataset):
     """
-    Get one dataset
-
+    Get one dataset with nomenclatures and af
     .. :quickref: Metadata;
-
     :param id_dataset: the id_dataset
     :param type: int
     :returns: dict<TDataset>
     """
-    data = DB.session.query(TDatasets).get(id_dataset)
-    cor = data.cor_dataset_actor
-    dataset = data.as_dict(True)
-    organisms = []
-    for c in cor:
-        if c.organism:
-            organisms.append(c.organism.as_dict())
-        else:
-            organisms.append(None)
-    i = 0
-    for o in organisms:
-        dataset["cor_dataset_actor"][i]["organism"] = o
-        i = i + 1
-    return dataset
+    datasetSchema = DatasetSchema()
+    
+    user_cruved = cruved_scope_for_user_in_module(
+        id_role=info_role.id_role, module_code="METADATA",
+    )[0]
+
+    datasetSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
+
+    dataset = DB.session.query(TDatasets).get(id_dataset)
+    if not dataset:
+        raise NotFound('Dataset "{}" does not exist'.format(id_dataset))
+
+    return datasetSchema.dumps(dataset)
 
 
 @routes.route("/dataset_details/<int:id_dataset>", methods=["GET"])

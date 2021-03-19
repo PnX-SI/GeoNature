@@ -19,24 +19,25 @@
       <div class="card">
         <div class="card-body">
           <h5 class="text-muted">Jeu de données</h5>
-          <h4>{{dataset?.dataset_name}}
+          <h4>{{ dataset.dataset_name }}
             <button
+              *ngIf="dataset.cruved.D"
               mat-mini-fab
               color="warn"
-              [disabled]="dataset?.observation_count > 0 || !dataset.cruved.D"
-              (click)="deleteDataset(id_dataset)"
+              [disabled]="nbObservations > 0"
+              (click)="deleteDataset(dataset)"
               class="float-right"
               matTooltip="Supprimer le jeu de données"
             >
               <mat-icon
-                *ngIf="dataset?.observation_count > 0; else elseblock"
+                *ngIf="nbObservations > 0; else elseblock"
                 matTooltip="Le jeu de données contient des données et ne peut pas être supprimé"
               > delete </mat-icon>
               <ng-template #elseblock>
                 <mat-icon> delete </mat-icon>
               </ng-template>
             </button>
-            <button
+            <a
               [disabled]="!dataset?.cruved.U"
               [routerLink]="['/metadata/dataset', dataset.id_dataset]"
               mat-mini-fab
@@ -45,7 +46,7 @@
               class="mr-2 float-right"
             >
               <mat-icon>create</mat-icon>
-            </button>
+            </a>
 
           </h4>
 
@@ -56,8 +57,8 @@
       <div class="card">
         <div class="card-body">
           <button
+            *ngIf="dataset.cruved.E"
             mat-raised-button
-            [disabled]="!dataset.cruved.E"
             color="primary"
             class="mr-1 mb-2"
             matTooltip="Télécharger la fiche PDF"
@@ -67,10 +68,11 @@
             <mat-icon>file_download</mat-icon>
           </button>
           <span
-            [matTooltip]="dataset?.observation_count > 0 ? 'Télécharger le rapport sensibilité' : 'Le jeu de données ne comporte aucune donnée'"
+            *ngIf="dataset.cruved.E"
+            [matTooltip]="nbObservations > 0 ? 'Télécharger le rapport sensibilité' : 'Le jeu de données ne comporte aucune donnée'"
           >
             <button
-              [disabled]="!dataset.cruved.E || dataset?.observation_count == 0"
+              [disabled]="nbObservations == 0"
               mat-raised-button
               color="primary"
               matTooltip="Télécharger le rapport de sensibilité"
@@ -84,10 +86,11 @@
           </span>
 
           <span
-            [matTooltip]="dataset?.observation_count > 0 ? 'Télécharger le rapport d\'UUID' : 'Le jeu de données ne comporte aucune donnée'"
+            *ngIf="dataset.cruved.E"
+            [matTooltip]="nbObservations > 0 ? 'Télécharger le rapport d\'UUID' : 'Le jeu de données ne comporte aucune donnée'"
           >
             <button
-              [disabled]="!dataset.cruved.E || dataset?.observation_count == 0"
+              [disabled]="nbObservations == 0"
               mat-raised-button
               color="primary"
               class="mb-2 mr-1"
@@ -120,16 +123,17 @@
     </div>
   </div>
 
-  <div
-    *ngIf="dataset.taxa_count"
-    class="row"
-  >
-    <div class="col-4">
+  <div class="row">
+
+    <div
+      *ngIf="nbTaxons"
+      class="col-4"
+    >
       <div class="card">
         <div class="card-body">
           <div class="row">
             <div class="col">
-              <h5>Taxons</h5> {{dataset?.taxa_count}}
+              <h5>Taxons</h5> {{ nbTaxons }}
             </div>
             <div
               class="col-auto"
@@ -142,12 +146,15 @@
         </div>
       </div>
     </div>
-    <div class="col-4">
+    <div
+      *ngIf="nbObservations"
+      class="col-4"
+    >
       <div class="card">
         <div class="card-body">
           <div class="row">
             <div class="col">
-              <h5>Observations</h5> {{dataset?.observation_count}}
+              <h5>Observations</h5> {{ nbObservations }}
             </div>
             <div
               class="col-auto"
@@ -173,21 +180,38 @@
         <div class="card-body">
 
           <div class="b">Identification</div>
-          <div class="a"> <b>Nom : </b> {{dataset.dataset_name}}</div>
-          <div class="a"> <b> Identifiant SINP du jeu de données :</b> {{dataset.unique_dataset_id}}
+          <div class="a">
+            <b>Nom : </b>
+            {{dataset.dataset_name}}
           </div>
-          <div class="a"> <b> Identifiant GeoNature du jeu de données :</b> {{dataset.id_dataset}}
+          <div class="a">
+            <b> Identifiant SINP du jeu de données :</b>
+            {{dataset.unique_dataset_id}}
           </div>
-          <div class="a"> <b> Libellé court :</b> {{dataset.dataset_shortname}}</div>
-          <div class="a"> <b> Description : </b> {{dataset.dataset_desc}}</div>
+          <div class="a">
+            <b> Identifiant GeoNature du jeu de données :</b>
+            {{dataset.id_dataset}}
+          </div>
+          <div class="a">
+            <b> Libellé court :</b>
+            {{dataset.dataset_shortname || '-'}}
+          </div>
+          <div class="a">
+            <b> Description : </b>
+            {{dataset.dataset_desc || '-'}}
+          </div>
           <br />
 
           <div class="b">Type de données</div>
-          <div class="a"> {{dataset.data_type.label_default}}</div>
+          <div class="a">
+            {{dataset?.nomenclature_data_type.label_default || 'Non renseigné'}}
+          </div>
           <br />
 
           <div class="b"> Objectifs </div>
-          <div class="a"> {{dataset.dataset_objectif.label_default}}</div>
+          <div class="a">
+            {{dataset?.nomenclature_dataset_objectif.label_default || 'Non renseigné' }}
+          </div>
           <br />
 
           <div class="b">Territoires</div>
@@ -203,16 +227,22 @@
           <div class="b">Cadre de référence</div>
           <div class="a">
             <b> Titre du cadre d'acquisition :</b>
-            {{dataset.acquisition_framework.acquisition_framework_name}} </div>
+            {{dataset.acquisition_framework.acquisition_framework_name}}
+          </div>
           <div class="a">
             <b> Identifiant du cadre d'acquisition :</b>
-            {{dataset.acquisition_framework.unique_acquisition_framework_id }} </div>
+            {{dataset.acquisition_framework.unique_acquisition_framework_id }}
+          </div>
           <br />
 
 
           <div class="b">Processus de collecte</div>
-          <div class="a"> <b>Libellé : </b> {{dataset.collecting_method.label_default}} </div>
-          <div class="a"> <b> Description :</b> {{dataset.collecting_method.definition_default}}
+          <div class="a">
+            <b>Libellé : </b>
+            {{dataset?.nomenclature_collecting_method.label_default || 'Non renseigné'}} </div>
+          <div class="a">
+            <b> Description :</b>
+            {{dataset?.nomenclature_collecting_method.definition_default || 'Non renseigné'}}
           </div>
 
           <br />
@@ -224,10 +254,10 @@
               *ngFor="let actor of dataset.cor_dataset_actor"
             >
               <div>
-                <b>{{ actor.nomenclature_actor_role?.mnemonique}} : </b>
-                {{ actor.organism?.nom_organisme }}
-                <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span>
-                {{ actor.role?.nom_complet }}
+                <b>{{ actor?.nomenclature_actor_role.mnemonique }} : </b>
+                {{ actor?.organism?.nom_organisme }}
+                <span *ngIf="(actor.organism && actor.organism.nom_organisme) && (actor.role && actor.role.nom_complet)"> - </span>
+                {{ actor?.role?.nom_complet }}
               </div>
             </div>
           </div>
@@ -235,20 +265,31 @@
 
           <div class="b"> Créateur</div>
 
-          <div class="a"> <b> Créateur du jeu de données :</b> {{dataset.creator?.nom_complet}}
+          <div class="a">
+            <b> Créateur du jeu de données :</b>
+            {{dataset?.creator?.nom_complet || 'Non renseigné' }}
           </div>
           <br />
 
           <div class="b">Attribut additionnels</div>
-          <div class="a"><b> Actif :</b> {{dataset.active ? 'Oui' : 'Non'}} </div>
-          <div class="a"> <b>Validable :</b> {{dataset.validable ? 'Oui' : 'Non'}} </div>
+          <div class="a">
+            <b> Actif :</b>
+            {{dataset.active ? 'Oui' : 'Non'}}
+          </div>
+          <div class="a">
+            <b>Validable :</b>
+            {{dataset.validable ? 'Oui' : 'Non'}}
+          </div>
 
           <br />
 
-
-          <div *ngIf="dataset.modules">
+          <div *ngIf="dataset.modules.length">
             <div class="b">Module(s) GeoNature associé(s) au jeu de données :</div>
-            <div class="a">{{ dataset.modules }}</div>
+            <div class="a">
+              <div *ngFor="let module of dataset.modules">
+                {{ module.module_label }}
+              </div>
+            </div>
           </div>
 
           <br />
@@ -360,9 +401,9 @@
       </div>
     </div>
 
-    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4">
+    <div class="col-xs-12 col-md-8 col-lg-4">
       <div
-        *ngIf="this.geojsonData"
+        *ngIf="bbox"
         class="card"
       >
         <!-- changer la valeur du ngif quand la carte sera prete -->
@@ -382,10 +423,7 @@
           </h5>
 
         </div>
-        <div
-          *ngIf="this.geojsonData"
-          class="card-body"
-        >
+        <div class="card-body">
 
           <!-- changer la valeur du ngif quand la carte sera prete -->
           <pnx-map
@@ -393,7 +431,7 @@
             searchBar="false"
           >
             <pnx-geojson
-              [geojson]="this.geojsonData"
+              [geojson]="bbox"
               [zoomOnFirstTime]="true"
             >
             </pnx-geojson>
@@ -401,16 +439,13 @@
         </div>
       </div>
       <div
-        *ngIf="dataset.taxa_count"
+        *ngIf="nbTaxons"
         class="card"
       >
         <div class="card-header">
           <h5>Répartition des espèces</h5>
         </div>
-        <div
-          *ngIf="dataset.taxa_count"
-          class="card-body"
-        >
+        <div class="card-body">
           <div style="display: block">
             <canvas
               baseChart

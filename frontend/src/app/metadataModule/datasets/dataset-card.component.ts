@@ -1,11 +1,18 @@
 import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
+import { BaseChartDirective } from 'ng2-charts';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+import { MatDialog } from "@angular/material";
+import { TranslateService } from "@ngx-translate/core";
+
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
-import { BaseChartDirective } from 'ng2-charts';
 import { AppConfig } from "@geonature_config/app.config";
 import { CommonService } from '@geonature_common/service/common.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
+
 
 @Component({
   selector: 'pnx-datasets-card',
@@ -13,13 +20,13 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
   styleUrls: ['./dataset-card.scss']
 })
 export class DatasetCardComponent implements OnInit {
-  public organisms: Array<any>;
+
   public id_dataset: number;
   public dataset: any;
-  public nbTaxons: number;
+  public nbTaxons: number = null;
+  public nbObservations: number = null;
+  public bbox: any = null;
   public taxs;
-  public nbObservations: number;
-  public geojsonData: any = null;
 
   @ViewChild(BaseChartDirective) public chart: BaseChartDirective;
 
@@ -71,10 +78,12 @@ export class DatasetCardComponent implements OnInit {
   constructor(
     private _route: ActivatedRoute,
     private _dfs: DataFormService,
+    private translate: TranslateService,
     public moduleService: ModuleService,
     private _commonService: CommonService,
     public _dataService: SyntheseDataService,
-    private _router: Router
+    private _router: Router,
+    public dialog: MatDialog,
   ) { }
 
   ngOnInit() {
@@ -82,34 +91,26 @@ export class DatasetCardComponent implements OnInit {
     this._route.params.subscribe(params => {
       this.id_dataset = params['id'];
       if (this.id_dataset) {
-        this.getDataset(this.id_dataset);
+        this.getData();
       }
     });
   }
 
 
-  getDataset(id) {
-    this._dfs.getDatasetDetails(id).subscribe(data => {
-      this.dataset = data;
-      // first set to 0 to disable delete button
-      this.dataset.observation_count = 0;
-      // load stat
-      this._dataService.getObsCount({'id_dataset': id}).subscribe(count => {
-        this.dataset.observation_count = count;
-      })
-      this._dataService.getTaxaCount({'id_dataset': id}).subscribe(count => {
-        this.dataset.taxa_count = count;
-      });
+  getData() {
+    this._dataService.getObsCount({'id_dataset': this.id_dataset})
+      .subscribe((res: number) => this.nbObservations = res);
 
-      this._dataService.getObsBbox({'id_dataset': id}).subscribe(bbox => {
-        this.geojsonData = bbox;
-      })
-      
-      if (this.dataset.modules) {
-        this.dataset.modules = this.dataset.modules.map(e => e.module_code).join(', ');
-      }
-    });
-    this._dfs.getTaxaDistribution('group2_inpn', { id_dataset: id }).subscribe(data => {
+    this._dataService.getTaxaCount({'id_dataset': this.id_dataset})
+      .subscribe((res: number) => this.nbTaxons = res);;
+
+    this._dataService.getObsBbox({'id_dataset': this.id_dataset})
+      .subscribe((res: any) => this.bbox = res);;
+
+    this._dfs.getDataset(this.id_dataset)
+      .subscribe(dataset => this.dataset = dataset);
+
+    this._dfs.getTaxaDistribution('group2_inpn', { id_dataset: this.id_dataset }).subscribe(data => {
       this.pieChartData = [];
       this.pieChartLabels = [];
       for (let row of data) {
@@ -121,6 +122,7 @@ export class DatasetCardComponent implements OnInit {
         this.chart.chart.update();
       }, 1000);
     });
+
   }
 
   uuidReport(ds_id) {
@@ -164,12 +166,39 @@ export class DatasetCardComponent implements OnInit {
     );
   }
 
-  deleteDataset(idDataset) {
+  delete_Dataset(idDataset) {
     if (window.confirm('Etes-vous sûr de vouloir supprimer ce jeu de données ?')) {
       this._dfs.deleteDs(idDataset).subscribe(d => {
         this._router.navigate(['metadata'])
       });
     }
+  }
+  deleteDataset(dataset) {
+    const message = `${this.translate.instant("Delete")} ${dataset.dataset_name} ?`;
+    const dialogRef = this.dialog.open(ConfirmationDialog, {
+      width: "350px",
+      position: { top: "5%" },
+      data: { message: message },
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this._dfs.deleteDs(dataset.id_dataset)
+          .pipe(
+            tap(() => this._commonService.translateToaster("success", "MetaData.DatasetRemoved"))
+          )
+          .subscribe(
+            () => this._router.navigate(['metadata']),
+            err => {
+              if (err.error.message) {
+                this._commonService.regularToaster("error", err.error.message);
+              } else {
+                this._commonService.translateToaster("error", "ErrorMessage");
+              }
+             }
+          );
+      }
+    });
   }
 
   importDs(idDataset) {
