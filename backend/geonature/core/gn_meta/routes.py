@@ -58,6 +58,10 @@ from geonature.core.gn_meta.repositories import (
     get_dataset_details_dict,
     filtered_af_query,
     filtered_ds_query,
+    get_metadata_list,
+)
+from .schemas import (
+    AcquisitionFrameworkSchema,
 )
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from werkzeug.datastructures import Headers
@@ -746,17 +750,54 @@ def get_export_pdf_dataset(id_dataset, info_role):
 
 
 @routes.route("/acquisition_frameworks", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
-@json_resp
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
 def get_acquisition_frameworks(info_role):
     """
-    Get all AF with cruved filter
-
+    Get all AF with their datasets 
+    The Cruved in only apply on dataset in order to see all the AF
+    where the user have rights with its dataset
+    Use in maplist
+    Add the CRUVED permission for each row (Dataset and AD)
+    
     .. :quickref: Metadata;
-
+    :param info_role: add with kwargs
+    :type info_role: TRole
+    :returns:  `dict{'data':list<AF with Datasets>, 'with_erros': <boolean>}`
     """
-    params = request.args
-    return get_af_cruved(info_role, params)
+    with_mtd_error = False
+    if current_app.config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
+        # synchronise the CA and JDD from the MTD WS
+        try:
+            mtd_utils.post_jdd_from_user(
+                id_user=info_role.id_role, id_organism=info_role.id_organisme
+            )
+        except Exception as e:
+            gunicorn_error_logger.info(e)
+            log.error(e)
+            with_mtd_error = True
+    params = request.args.to_dict()
+    params["orderby"] = "acquisition_framework_name"
+    #params["offset"] = params["offset"] if "offset" in params else 0
+    #params["limit"] = params["limit"] if "limit" in params else 50
+
+    if "selector" not in params:
+        params["selector"] = None
+
+    user_cruved = cruved_scope_for_user_in_module(
+        id_role=info_role.id_role, module_code="METADATA",
+    )[0]
+
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
+        exclude=(
+            "nomenclature_territorial_level",
+            "nomenclature_financing_type",
+            "cor_volets_sinp",
+            "cor_objectifs",
+        )
+    )
+    acquisitionFrameworkSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
+
+    return acquisitionFrameworkSchema.dumps((get_metadata_list(info_role, params).all()), many=True)
 
 
 @routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"])
