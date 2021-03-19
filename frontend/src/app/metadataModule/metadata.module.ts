@@ -16,6 +16,7 @@ import { AfCardComponent } from './af/af-card.component';
 import { ChartsModule } from 'ng2-charts/ng2-charts';
 import { ChartModule } from 'angular2-chartjs';
 import { MetadataService } from './services/metadata.service';
+import { ActorFormService } from './services/actor-form.service';
 
 const routes: Routes = [
   { path: '', component: MetadataComponent },
@@ -71,6 +72,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
   ],
   providers: [
     MetadataService,
+    ActorFormService,
     {
       provide: MatPaginatorIntl,
       useClass: MetadataPaginator

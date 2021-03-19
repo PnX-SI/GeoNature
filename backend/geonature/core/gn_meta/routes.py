@@ -642,37 +642,68 @@ def update_sensitivity_query(id_syntheses):
     return "OK"
 
 
+def datasetHandler(request, *, dataset, info_role):
+
+    # Test des droits d'édition du dataset si modification
+    if dataset.id_dataset is not None:
+        user_cruved = cruved_scope_for_user_in_module(
+            id_role=info_role.id_role, module_code="METADATA",
+        )[0]
+        dataset_cruved = dataset.get_object_cruved(info_role, user_cruved)
+        #verification des droits d'édition pour le dataset
+        if not dataset_cruved['U']:
+            raise InsufficientRightsError(
+                "User {} has no right in dataset {}".format(
+                    info_role.id_role, dataset.id_dataset
+                ),
+                403,
+            )
+
+    datasetSchema = DatasetSchema()
+    dataset, errors = datasetSchema.load(request.get_json(), instance=dataset)
+
+    if bool(errors):
+        return errors, 422
+
+    DB.session.add(dataset)
+    DB.session.commit()
+
+    return dataset
+
+
 @routes.route("/dataset", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
-@json_resp
-def post_dataset(info_role):
-    """
-    Post a dataset
+def createDataset(info_role):
+   """
+   Post one Dataset data
+   .. :quickref: Metadata;
+   """
 
+   # create new dataset
+   return DatasetSchema().dump(
+       datasetHandler(request=request, dataset=TDatasets(), info_role=info_role)
+   )
+
+
+@routes.route("/dataset/<int:id_dataset>", methods=["POST"])
+@permissions.check_cruved_scope("U", True, module_code="METADATA")
+def updateDataset(id_dataset, info_role):
+    """
+    Post one Dataset data for update dataset
     .. :quickref: Metadata;
     """
-    data = dict(request.get_json())
-    cor_dataset_actor = data.pop("cor_dataset_actor")
-    modules = data.pop("modules")
+    try:
+        dataset = DB.session.query(TDatasets).get(id_dataset)
+    except Exception as e:
+        DB.session.rollback()
+        raise
 
-    dataset = TDatasets(**data)
-    for cor in cor_dataset_actor:
-        # remove id_cda if None otherwise merge no working well
-        if "id_cda" in cor and cor.get("id_cda") is None:
-            cor.pop("id_cda")
-        dataset.cor_dataset_actor.append(CorDatasetActor(**cor))
+    if not dataset:
+        return {"message": "not found"}, 404
 
-    # init the relationship as an empty list
-    modules_obj = DB.session.query(TModules).filter(TModules.id_module.in_(modules)).all()
-    dataset.modules = modules_obj
-    if dataset.id_dataset:
-        DB.session.merge(dataset)
-    # add id_digitiser only on creation
-    else:
-        dataset.id_digitizer = info_role.id_role
-        DB.session.add(dataset)
-    DB.session.commit()
-    return dataset.as_dict(True)
+    return DatasetSchema().dump(
+        datasetHandler(request=request, dataset=dataset, info_role=info_role)
+    )
 
 
 @routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET"])
