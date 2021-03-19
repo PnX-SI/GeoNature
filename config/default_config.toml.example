@@ -498,6 +498,9 @@ MAIL_ON_ERROR = false
     # Activer (=true) l'affichage du lien vers le formulaire de demande 
     # de permissions. Par défaut : désactivé (=false).
     ENABLE_ACCESS_REQUEST = true
+    # Activer la possibilité de demander l'accès aux données sensibles.
+    # Affiche une case à cocher dans le formulaire des demandes d'accès.
+    ENABLE_SENSITIVE_ACCESS = true
     # Lien vers les règles d'accès aux observations sensibles/privées 
     # propres à cette instance de GeoNature.
     # Ce lien est ajouté au formulaire de demande d'accès.
