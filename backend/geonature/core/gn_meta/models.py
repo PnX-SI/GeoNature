@@ -11,7 +11,7 @@ from utils_flask_sqla.serializers import serializable
 from geonature.utils.env import DB
 from geonature.core.users.models import BibOrganismes
 
-from geonature.core.gn_commons.models import cor_module_dataset
+from geonature.core.gn_commons.models import TModules, CorModuleDataset, cor_module_dataset
 
 
 class CorAcquisitionFrameworkObjectif(DB.Model):
@@ -24,8 +24,14 @@ class CorAcquisitionFrameworkObjectif(DB.Model):
     )
     id_nomenclature_objectif = DB.Column(
         DB.Integer,
-        ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         primary_key=True,
+    )
+
+    nomenclature_objectif = DB.relationship(
+        TNomenclatures,
+        lazy="joined",
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_objectif),
     )
 
 
@@ -42,6 +48,33 @@ class CorAcquisitionFrameworkVoletSINP(DB.Model):
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         primary_key=True,
+    )
+
+    nomenclature_voletsinp = DB.relationship(
+        TNomenclatures,
+        lazy="joined",
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_voletsinp),
+    )
+
+class CorAcquisitionFrameworkTerritory(DB.Model):
+    __tablename__ = "cor_acquisition_framework_territory"
+    __table_args__ = {"schema": "gn_meta"}
+    id_acquisition_framework = DB.Column(
+        DB.Integer,
+        ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
+        primary_key=True,
+    )
+    id_nomenclature_territory = DB.Column(
+        "id_nomenclature_territory",
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        primary_key=True,
+    )
+
+    nomenclature_territory = DB.relationship(
+        TNomenclatures,
+        lazy="joined",
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_territory),
     )
 
 
@@ -62,12 +95,23 @@ class CorAcquisitionFrameworkActor(DB.Model):
     )
 
     nomenclature_actor_role = DB.relationship(
-        TNomenclatures, primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role),
+        TNomenclatures,
+        lazy="joined",
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role),
     )
 
-    role = DB.relationship(User, primaryjoin=(User.id_role == id_role), foreign_keys=[id_role])
+    role = DB.relationship(
+        User,
+        lazy="joined",
+        primaryjoin=(User.id_role == id_role),
+        foreign_keys=[id_role]
+    )
 
-    organism = relationship("BibOrganismes", foreign_keys=[id_organism])
+    organism = relationship(
+        "BibOrganismes",
+        lazy="joined",
+        foreign_keys=[id_organism]
+    )
 
     @staticmethod
     def get_actor(
@@ -110,17 +154,28 @@ class CorDatasetActor(DB.Model):
     id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
     id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     id_organism = DB.Column(DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme"))
-
-    role = DB.relationship(User, primaryjoin=(User.id_role == id_role), foreign_keys=[id_role])
-    organism = relationship("BibOrganismes", foreign_keys=[id_organism])
-
     id_nomenclature_actor_role = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("ROLE_ACTEUR"),
     )
+
+    role = DB.relationship(
+        User,
+        lazy="joined",
+        primaryjoin=(User.id_role == id_role),
+        foreign_keys=[id_role]
+    )
+    organism = relationship(
+        "BibOrganismes",
+        lazy="joined",
+        foreign_keys=[id_organism]
+    )
+
     nomenclature_actor_role = DB.relationship(
-        TNomenclatures, primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role),
+        TNomenclatures,
+        lazy="joined",
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role),
     )
 
     @staticmethod
@@ -167,23 +222,35 @@ class CorDatasetProtocol(DB.Model):
 class CorDatasetTerritory(DB.Model):
     __tablename__ = "cor_dataset_territory"
     __table_args__ = {"schema": "gn_meta"}
-    id_cdt = DB.Column(DB.Integer, primary_key=True)
-    id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
-    id_protocol = DB.Column(
-        DB.Integer, ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature")
-    )
-
-
-@serializable
-class CorModuleDataset(DB.Model):
-    __tablename__ = "cor_module_dataset"
-    __table_args__ = {"schema": "gn_commons", "extend_existing": True}
-    id_module = DB.Column(
-        DB.Integer, ForeignKey("gn_commons.t_modules.id_module"), primary_key=True
-    )
     id_dataset = DB.Column(
-        DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"), primary_key=True
+        DB.Integer,
+        ForeignKey("gn_meta.t_datasets.id_dataset"),
+        primary_key=True,
     )
+    id_nomenclature_territory = DB.Column(
+        "id_nomenclature_territory",
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        primary_key=True,
+    )
+
+    nomenclature_territory = DB.relationship(
+        TNomenclatures,
+        lazy="joined",
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_territory),
+    )
+
+
+#@serializable
+#class CorModuleDataset(DB.Model):
+#    __tablename__ = "cor_module_dataset"
+#    __table_args__ = {"schema": "gn_commons", "extend_existing": True}
+#    id_module = DB.Column(
+#        DB.Integer, ForeignKey("gn_commons.t_modules.id_module"), primary_key=True
+#    )
+#    id_dataset = DB.Column(
+#        DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"), primary_key=True
+#    )
 
 
 class CruvedHelper(DB.Model):
@@ -196,9 +263,8 @@ class CruvedHelper(DB.Model):
 
     def user_is_allowed_to(
         self,
-        id_object: int,
-        id_object_users_actor: list,
-        id_object_organism_actor: list,
+        object_actors: list,
+        info_role: list,
         level: str,
     ):
         """
@@ -206,7 +272,6 @@ class CruvedHelper(DB.Model):
             peu ou non agir sur une donnée
 
             Params:
-                id_object: identifiant de l'objet duquel on contrôle l'accès à la donnée (id_dataset, id_ca)
                 id_role: identifiant de la personne qui demande la route
                 id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
                 id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
@@ -214,43 +279,60 @@ class CruvedHelper(DB.Model):
             Return: boolean
         """
         # Si l'utilisateur n'a pas de droit d'accès aux données
-        if level == "0" or level not in ("1", "2", "3"):
+        if level not in ("1", "2", "3"):
             return False
 
         # Si l'utilisateur à le droit d'accéder à toutes les données
         if level == "3":
             return True
 
-        # Si l'utilisateur est propriétaire de la données
-        if id_object in id_object_users_actor:
+        # Si l'utilisateur est createur de la données
+        if self.id_digitizer == info_role.id_role:
             return True
 
-        # Si l'utilisateur appartient à un organisme
-        # qui a un droit sur la données et
-        # que son niveau d'accès est 2 ou 3
-        if id_object in id_object_organism_actor and level == "2":
-            return True
+        for actor in object_actors :
+            # Si l'utilisateur est indiqué comme role dans la données
+            if actor.id_role == info_role.id_role :
+                return True
+            # Si l'utilisateur appartient à un organisme
+            # qui a un droit sur la données et
+            # que son niveau d'accès est 2 ou 3
+            if actor.id_organism == info_role.id_organisme and level == "2":
+                return True
+
         return False
 
-    def get_object_cruved(
-        self, user_cruved, id_object: int, ids_object_user: list, ids_object_organism: list,
-    ):
-        """
-        Return the user's cruved for a Model instance.
-        Use in the map-list interface to allow or not an action
-        params:
-            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
-            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
-            - id_role: identifiant de la personne qui demande la route
-            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
-            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs    
+#    def get_object_cruved(
+#        self, user_cruved, id_object: int, ids_object_user: list, ids_object_organism: list,
+#    ):
+#        """
+#        Return the user's cruved for a Model instance.
+#        Use in the map-list interface to allow or not an action
+#        params:
+#            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
+#            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
+#            - id_role: identifiant de la personne qui demande la route
+#            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
+#            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
+#
+#        Return: dict {'C': True, 'R': False ...}
+#        """
+#        return {
+#            action: self.user_is_allowed_to(id_object, ids_object_user, ids_object_organism, level)
+#            for action, level in user_cruved.items()
+#        }
 
-        Return: dict {'C': True, 'R': False ...}
-        """
-        return {
-            action: self.user_is_allowed_to(id_object, ids_object_user, ids_object_organism, level)
-            for action, level in user_cruved.items()
-        }
+
+@serializable
+class TBibliographicReference(CruvedHelper):
+    __tablename__ = "t_bibliographical_references"
+    __table_args__ = {"schema": "gn_meta"}
+    id_bibliographic_reference = DB.Column(DB.Integer, primary_key=True)
+    id_acquisition_framework = DB.Column(
+        DB.Integer, ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
+    )
+    publication_url = DB.Column(DB.Unicode)
+    publication_reference = DB.Column(DB.Unicode)
 
 
 @serializable
@@ -308,14 +390,92 @@ class TDatasets(CruvedHelper):
     validable = DB.Column(DB.Boolean)
     id_digitizer = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
 
-    creator = DB.relationship("User", lazy="select")
-    modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
+    creator = DB.relationship("User", lazy="joined")
+    nomenclature_data_type = DB.relationship(
+        TNomenclatures,
+        lazy="select",
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_data_type),
+    )
+    nomenclature_dataset_objectif = DB.relationship(
+        TNomenclatures,
+        lazy="select",
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_dataset_objectif),
+    )
+    nomenclature_collecting_method = DB.relationship(
+        TNomenclatures,
+        lazy="select",
+        primaryjoin=(
+            TNomenclatures.id_nomenclature == id_nomenclature_collecting_method
+        ),
+    )
+    nomenclature_data_origin = DB.relationship(
+        TNomenclatures,
+        lazy="select",
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_data_origin),
+    )
+    nomenclature_source_status = DB.relationship(
+        TNomenclatures,
+        lazy="select",
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_source_status),
+    )
+    nomenclature_resource_type = DB.relationship(
+        TNomenclatures,
+        lazy="select",
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_resource_type),
+    )
 
-    # HACK: the relationship is not well defined for many to many relationship
+    modules = DB.relationship(
+        TModules,
+        lazy="select",
+        secondary=CorModuleDataset.__table__,
+        primaryjoin=(CorModuleDataset.id_dataset == id_dataset),
+        secondaryjoin=(CorModuleDataset.id_module == TModules.id_module),
+        foreign_keys=[
+            CorModuleDataset.id_dataset,
+            CorModuleDataset.id_module,
+        ],
+    )
+
+    cor_territories = DB.relationship(
+        TNomenclatures,
+        lazy="select",
+        secondary=CorDatasetTerritory.__table__,
+        primaryjoin=(CorDatasetTerritory.id_dataset == id_dataset),
+        secondaryjoin=(CorDatasetTerritory.id_nomenclature_territory == TNomenclatures.id_nomenclature),
+        foreign_keys=[
+            CorDatasetTerritory.id_dataset,
+            CorDatasetTerritory.id_nomenclature_territory,
+        ],
+        backref=DB.backref("territory_dataset", lazy="select")
+    )
+
     # because CorDatasetActor could be an User or an Organisme object...
     cor_dataset_actor = relationship(
-        CorDatasetActor, lazy="select", cascade="save-update, merge, delete, delete-orphan",
+        CorDatasetActor,
+        lazy="joined",
+        cascade="save-update, merge, delete, delete-orphan",
+        backref=DB.backref("actor_dataset", lazy="select")
     )
+
+    def get_object_cruved(
+        self, info_role, user_cruved
+    ):
+        """
+        Return the user's cruved for a Model instance.
+        Use in the map-list interface to allow or not an action
+        params:
+            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
+            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
+            - id_role: identifiant de la personne qui demande la route
+            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
+            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
+
+        Return: dict {'C': True, 'R': False ...}
+        """
+        return {
+            action: self.user_is_allowed_to(self.cor_dataset_actor, info_role, level)
+            for action, level in user_cruved.items()
+        }
 
     @staticmethod
     def get_id(uuid_dataset):
@@ -400,22 +560,36 @@ class TAcquisitionFramework(CruvedHelper):
     opened = DB.Column(DB.Boolean, default=True)
     id_digitizer = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
 
-    acquisition_framework_start_date = DB.Column(DB.DateTime)
-    acquisition_framework_end_date = DB.Column(DB.DateTime)
+    acquisition_framework_start_date = DB.Column(DB.Date)
+    acquisition_framework_end_date = DB.Column(DB.Date)
 
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
     initial_closing_date = DB.Column(DB.DateTime)
 
-    creator = DB.relationship("User", lazy="select")
+    creator = DB.relationship("User", lazy="joined")
+    nomenclature_territorial_level = DB.relationship(
+        TNomenclatures,
+        lazy="select",
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_territorial_level),
+    )
+    nomenclature_financing_type = DB.relationship(
+        TNomenclatures,
+        lazy="select",
+        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_financing_type),
+    )
     cor_af_actor = relationship(
         CorAcquisitionFrameworkActor,
-        lazy="select",
-        cascade="save-update, merge, delete, delete-orphan",
+        lazy="joined",
+        #cascade="save-update, merge, delete, delete-orphan",
+        cascade="all,delete-orphan",
+        uselist=True,
+        backref=DB.backref("actor_af", lazy="select")
     )
 
     cor_objectifs = DB.relationship(
         TNomenclatures,
+        lazy="select",
         secondary=CorAcquisitionFrameworkObjectif.__table__,
         primaryjoin=(
             CorAcquisitionFrameworkObjectif.id_acquisition_framework == id_acquisition_framework
@@ -428,25 +602,70 @@ class TAcquisitionFramework(CruvedHelper):
             CorAcquisitionFrameworkObjectif.id_acquisition_framework,
             CorAcquisitionFrameworkObjectif.id_nomenclature_objectif,
         ],
-        lazy="select",
+        backref=DB.backref("objectif_af", lazy="select")
     )
 
     cor_volets_sinp = DB.relationship(
         TNomenclatures,
+        lazy="select",
         secondary=CorAcquisitionFrameworkVoletSINP.__table__,
-        primaryjoin=(
-            CorAcquisitionFrameworkVoletSINP.id_acquisition_framework == id_acquisition_framework
-        ),
-        secondaryjoin=(
-            CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp
-            == TNomenclatures.id_nomenclature
-        ),
+        primaryjoin=(CorAcquisitionFrameworkVoletSINP.id_acquisition_framework == id_acquisition_framework),
+        secondaryjoin=(CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp == TNomenclatures.id_nomenclature),
         foreign_keys=[
             CorAcquisitionFrameworkVoletSINP.id_acquisition_framework,
             CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp,
         ],
-        lazy="select",
+        backref=DB.backref("volet_sinp_af", lazy="select")
     )
+
+    cor_territories = DB.relationship(
+        TNomenclatures,
+        lazy="select",
+        secondary=CorAcquisitionFrameworkTerritory.__table__,
+        primaryjoin=(CorAcquisitionFrameworkTerritory.id_acquisition_framework == id_acquisition_framework),
+        secondaryjoin=(CorAcquisitionFrameworkTerritory.id_nomenclature_territory == TNomenclatures.id_nomenclature),
+        foreign_keys=[
+            CorAcquisitionFrameworkTerritory.id_acquisition_framework,
+            CorAcquisitionFrameworkTerritory.id_nomenclature_territory,
+        ],
+        backref=DB.backref("territory_af", lazy="select")
+    )
+
+    bibliographical_references = relationship(
+        "TBibliographicReference",
+        lazy="select",
+        cascade="all,delete-orphan",
+        uselist=True,
+        backref=DB.backref("acquisition_framework", lazy="select"),
+    )
+
+    t_datasets = relationship(
+        "TDatasets",
+        lazy="select",
+        cascade="all,delete-orphan",
+        uselist=True,
+        backref=DB.backref("acquisition_framework", lazy="select"),
+    )
+
+    def get_object_cruved(
+        self, info_role, user_cruved
+    ):
+        """
+        Return the user's cruved for a Model instance.
+        Use in the map-list interface to allow or not an action
+        params:
+            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
+            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
+            - id_role: identifiant de la personne qui demande la route
+            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
+            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
+
+        Return: dict {'C': True, 'R': False ...}
+        """
+        return {
+            action: self.user_is_allowed_to(self.cor_af_actor, info_role, level)
+            for action, level in user_cruved.items()
+        }
 
     @staticmethod
     def get_id(uuid_af):
@@ -544,7 +763,7 @@ class TAcquisitionFrameworkDetails(TAcquisitionFramework):
     Class which extends TAcquisitionFramework with nomenclatures relationships
     """
 
-    datasets = DB.relationship(TDatasetDetails, lazy="joined")
+    #datasets = DB.relationship(TDatasetDetails, lazy="joined")
     nomenclature_territorial_level = DB.relationship(
         TNomenclatures,
         primaryjoin=(
