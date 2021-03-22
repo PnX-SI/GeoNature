@@ -989,10 +989,7 @@ def get_acquisition_framework(info_role, id_acquisition_framework):
     :param type: int
     :returns: dict<TAcquisitionFramework>
     """
-    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
-        exclude=(
-            "t_datasets",
-        ))
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema()
     
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role, module_code="METADATA",
@@ -1137,7 +1134,7 @@ def get_acquisition_framework_stats(info_role, id_acquisition_framework):
     datasets = acquisition_framework["t_datasets"] if "t_datasets" in acquisition_framework else []
     dataset_ids = [d["id_dataset"] for d in datasets]
 
-    nb_data = len(dataset_ids)
+    nb_dataset = len(dataset_ids)
     nb_taxons = (
         DB.session.query(Synthese.cd_nom)
         .filter(Synthese.id_dataset.in_(dataset_ids))
@@ -1156,7 +1153,7 @@ def get_acquisition_framework_stats(info_role, id_acquisition_framework):
         .where(text("schema_name = 'pr_occhab'"))
     )
 
-    if DB.session.query(check_schema_query).scalar() and nb_data > 0:
+    if DB.session.query(check_schema_query).scalar() and nb_dataset > 0:
         query = (
             "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
         ("
@@ -1167,7 +1164,7 @@ def get_acquisition_framework_stats(info_role, id_acquisition_framework):
         nb_habitat = DB.engine.execute(text(query)).first()[0]
 
     return {
-        "nb_data": nb_data,
+        "nb_dataset": nb_dataset,
         "nb_taxons": nb_taxons,
         "nb_observations": nb_observations,
         "nb_habitats": nb_habitat,
