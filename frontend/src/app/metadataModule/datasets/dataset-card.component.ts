@@ -12,6 +12,7 @@ import { AppConfig } from "@geonature_config/app.config";
 import { CommonService } from '@geonature_common/service/common.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
+import { MetadataDataService } from "../services/metadata-data.service";
 
 
 @Component({
@@ -26,6 +27,7 @@ export class DatasetCardComponent implements OnInit {
   public nbTaxons: number = null;
   public nbObservations: number = null;
   public bbox: any = null;
+  public imports: any = [];
   public taxs;
 
   @ViewChild(BaseChartDirective) public chart: BaseChartDirective;
@@ -89,6 +91,7 @@ export class DatasetCardComponent implements OnInit {
     public _dataService: SyntheseDataService,
     private _router: Router,
     public dialog: MatDialog,
+    public metadataDataS: MetadataDataService,
   ) { }
 
   ngOnInit() {
@@ -101,16 +104,18 @@ export class DatasetCardComponent implements OnInit {
     });
   }
 
-
   getData() {
     this._dataService.getObsCount({'id_dataset': this.id_dataset})
       .subscribe((res: number) => this.nbObservations = res);
 
     this._dataService.getTaxaCount({'id_dataset': this.id_dataset})
-      .subscribe((res: number) => this.nbTaxons = res);;
+      .subscribe((res: number) => this.nbTaxons = res);
 
     this._dataService.getObsBbox({'id_dataset': this.id_dataset})
-      .subscribe((res: any) => this.bbox = res);;
+      .subscribe((res: any) => this.bbox = res);
+
+    this.metadataDataS.getdatasetImports(this.id_dataset)
+      .subscribe((res: any) => this.imports = res);
 
     this._dfs.getDataset(this.id_dataset)
       .subscribe(dataset => this.dataset = dataset);

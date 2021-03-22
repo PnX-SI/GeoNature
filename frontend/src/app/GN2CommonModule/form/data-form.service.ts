@@ -441,10 +441,6 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${id}`);
   }
 
-  getDatasetDetails(id) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset_details/${id}`);
-  }
-
   // getTaxaDistribution(id_dataset) {
   //   return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/dataset_taxa_distribution/${id_dataset}`);
   // }
