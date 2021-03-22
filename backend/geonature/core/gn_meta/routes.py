@@ -980,21 +980,31 @@ def get_acquisition_frameworks_metadata(info_role):
 
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>", methods=["GET"])
-@json_resp
-def get_acquisition_framework(id_acquisition_framework):
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+def get_acquisition_framework(info_role, id_acquisition_framework):
     """
-    Get one AF
-
+    Get one AF with nomenclatures
     .. :quickref: Metadata;
-
     :param id_acquisition_framework: the id_acquisition_framework
     :param type: int
+    :returns: dict<TAcquisitionFramework>
     """
-    af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
+        exclude=(
+            "t_datasets",
+        ))
+    
+    user_cruved = cruved_scope_for_user_in_module(
+        id_role=info_role.id_role, module_code="METADATA",
+    )[0]
 
-    if af:
-        return af.as_dict(True)
-    return None
+    acquisitionFrameworkSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
+
+    acquisition_framework = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
+    if not acquisition_framework:
+        raise NotFound('Acquisition framework "{}" does not exist'.format(id_acquisition_framework))
+
+    return acquisitionFrameworkSchema.dumps(acquisition_framework)
 
 
 @routes.route("/acquisition_framework/<int:af_id>", methods=["DELETE"])
