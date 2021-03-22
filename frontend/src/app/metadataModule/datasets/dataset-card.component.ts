@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
 import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { tap, map } from 'rxjs/operators';
 import { MatDialog } from "@angular/material";
 import { TranslateService } from "@ngx-translate/core";
 
@@ -75,6 +75,11 @@ export class DatasetCardComponent implements OnInit {
 
   public spinner = true;
 
+  private _moduleImportIsAuthorized: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  get moduleImportIsAuthorized() {
+    return this._moduleImportIsAuthorized.getValue();
+  }
+
   constructor(
     private _route: ActivatedRoute,
     private _dfs: DataFormService,
@@ -122,6 +127,23 @@ export class DatasetCardComponent implements OnInit {
         this.chart.chart.update();
       }, 1000);
     });
+
+    //vérification que l'utilisateur est autorisé à utiliser le module d'import
+    this.moduleService.moduleSub
+      .pipe(
+        map((modules: any[]): boolean => {
+          if (modules) {
+            for (let i = 0; i < modules.length; i++) {
+              //recherche du module d'import et test si l'utilisateur a des droits dessus
+              if (modules[i].module_code == 'IMPORT' && modules[i].cruved['C'] > 0) {
+                return true;
+              }
+            }
+          }
+          return false;
+        })
+      )
+      .subscribe((importIsAuthorized: boolean) => this._moduleImportIsAuthorized.next(importIsAuthorized));
 
   }
 

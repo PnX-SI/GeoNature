@@ -14,8 +14,10 @@
       </button>
     </div>
   </div>
+
   <div class="row">
     <div class="col-8">
+
       <div class="card">
         <div class="card-body">
           <h5 class="text-muted">Jeu de données</h5>
@@ -52,125 +54,59 @@
 
         </div>
       </div>
-    </div>
-    <div class="col-4">
-      <div class="card">
-        <div class="card-body">
-          <button
-            *ngIf="dataset.cruved.E"
-            mat-raised-button
-            color="primary"
-            class="mr-1 mb-2"
-            matTooltip="Télécharger la fiche PDF"
-            (click)="getPdf()"
-          >
-            Export PDF
-            <mat-icon>file_download</mat-icon>
-          </button>
-          <span
-            *ngIf="dataset.cruved.E"
-            [matTooltip]="nbObservations > 0 ? 'Télécharger le rapport sensibilité' : 'Le jeu de données ne comporte aucune donnée'"
-          >
-            <button
-              [disabled]="nbObservations == 0"
-              mat-raised-button
-              color="primary"
-              matTooltip="Télécharger le rapport de sensibilité"
-              class="mb-2 mr-1"
-              (click)="sensiReport(dataset.id_dataset)"
-            >
-              Rapport de sensibilité
-              <mat-icon> do_not_touch
-              </mat-icon>
-            </button>
-          </span>
 
-          <span
-            *ngIf="dataset.cruved.E"
-            [matTooltip]="nbObservations > 0 ? 'Télécharger le rapport d\'UUID' : 'Le jeu de données ne comporte aucune donnée'"
-          >
-            <button
-              [disabled]="nbObservations == 0"
-              mat-raised-button
-              color="primary"
-              class="mb-2 mr-1"
-              (click)="uuidReport(dataset?.id_dataset)"
-            >
-              Rapport d'UUID
-              <mat-icon> format_list_numbered
-              </mat-icon>
-            </button>
-          </span>
-
-
-          <span
-            [matTooltip]="dataset?.active ?  'Importer dans ce jeu de données': 'Le jeu de données est inactif'"
-          >
-            <button
-              [disabled]="!dataset?.active"
-              mat-raised-button
-              color="primary"
-              (click)="importDs(dataset?.id_dataset)"
-            >
-              Importer des données
-              <mat-icon> publish
-              </mat-icon>
-            </button>
-          </span>
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-
-    <div
-      *ngIf="nbTaxons"
-      class="col-4"
-    >
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col">
-              <h5>Taxons</h5> {{ nbTaxons }}
+      <!-- Ligne des stats -->
+      <div class="row">
+        <div
+          *ngIf="nbTaxons"
+          class="col-6"
+        >
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5>Taxons</h5> {{ nbTaxons }}
+                </div>
+                <div
+                  class="col-auto"
+                  width="60"
+                >
+                  <img
+                    src="./assets/images/Taxon_icon.svg"
+                    width="60"
+                  >
+                </div>
+              </div>
             </div>
-            <div
-              class="col-auto"
-              width="60"
-            ><img
-                src="./assets/images/Taxon_icon.svg"
-                width="60"
-              ></div>
+          </div>
+        </div>
+        <div
+          *ngIf="nbObservations"
+          class="col-6"
+        >
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5>Observations</h5> {{ nbObservations }}
+                </div>
+                <div
+                  class="col-auto"
+                  width="60"
+                >
+                  <img
+                    src="./assets/images/Donnee_icon.svg"
+                    width="64"
+                  >
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div
-      *ngIf="nbObservations"
-      class="col-4"
-    >
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col">
-              <h5>Observations</h5> {{ nbObservations }}
-            </div>
-            <div
-              class="col-auto"
-              width="60"
-            ><img
-                src="./assets/images/Donnee_icon.svg"
-                width="64"
-              ></div>
-          </div>
-        </div>
-      </div>
-    </div>
+      <!-- Fin stats -->
 
-  </div>
-  <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 ">
+      <!-- Fiche descriptive -->
       <div class="card">
         <div class="card-header">
           <h5>
@@ -301,6 +237,9 @@
 
         </div>
       </div>
+      <!-- Fin fiche descriptive -->
+
+      <!-- Liste des imports -->
       <div
         class="card"
         *ngIf="dataset.imports && dataset.imports.length>0"
@@ -399,9 +338,87 @@
           </table>
         </div>
       </div>
+      <!-- Fin liste des imports -->
+
     </div>
 
-    <div class="col-xs-12 col-md-8 col-lg-4">
+    <div class="col-4">
+
+      <!-- Bloc boutons -->
+      <div 
+        *ngIf="dataset.cruved.E || moduleImportIsAuthorized"
+        class="card">
+        <div class="card-body">
+
+          <button
+            *ngIf="dataset.cruved.E"
+            mat-raised-button
+            color="primary"
+            class="mr-1 mb-2"
+            matTooltip="Télécharger la fiche PDF"
+            (click)="getPdf()"
+          >
+            Export PDF
+            <mat-icon>file_download</mat-icon>
+          </button>
+
+          <!-- Rapport de sensibilité  button -->
+          <span
+            *ngIf="dataset.cruved.E"
+            [matTooltip]="nbObservations ? 'Télécharger le rapport sensibilité' : 'Le jeu de données ne comporte aucune donnée'"
+          >
+            <button
+              [disabled]="!nbObservations"
+              mat-raised-button
+              color="primary"
+              class="mb-2 mr-1"
+              (click)="sensiReport(dataset.id_dataset)"
+            >
+              Rapport de sensibilité
+              <mat-icon> do_not_touch
+              </mat-icon>
+            </button>
+          </span>
+
+          <!-- UUID report button -->
+          <span
+            *ngIf="dataset.cruved.E"
+            [matTooltip]="nbObservations ? 'Télécharger le rapport d\'UUID' : 'Le jeu de données ne comporte aucune donnée'"
+          >
+            <button
+              [disabled]="!nbObservations"
+              mat-raised-button
+              color="primary"
+              class="mb-2 mr-1"
+              (click)="uuidReport(dataset?.id_dataset)"
+            >
+              Rapport d'UUID
+              <mat-icon> format_list_numbered
+              </mat-icon>
+            </button>
+          </span>
+
+          <span
+            *ngIf="moduleImportIsAuthorized"
+            [matTooltip]="dataset.active ?  'Importer dans ce jeu de données': 'Le jeu de données est inactif'"
+          >
+            <button
+              [disabled]="!dataset.active"
+              mat-raised-button
+              color="primary"
+              (click)="importDs(dataset.id_dataset)"
+            >
+              Importer des données
+              <mat-icon> publish
+              </mat-icon>
+            </button>
+          </span>
+        </div>
+
+      </div>
+      <!-- Fin bloc boutons -->
+
+      <!-- Bloc BBOX -->
       <div
         *ngIf="bbox"
         class="card"
@@ -438,6 +455,9 @@
           </pnx-map>
         </div>
       </div>
+      <!-- Fin bloc BBOX -->
+
+      <!-- Bloc PieChart -->
       <div
         *ngIf="nbTaxons"
         class="card"
@@ -460,6 +480,9 @@
           </div>
         </div>
       </div>
+      <!-- Fin bloc PieChart -->
+
+      <!-- Bloc AF -->
       <div class="card ">
         <div class="card-header">
           <h5>Cadre d'acquisition</h5>
@@ -469,33 +492,43 @@
             <div
               class="col-auto"
               width="60"
-            ><img
+            >
+              <img
                 src="./assets/images/Taxon_icon_vert.svg"
                 width="64"
-              ></div>
+              >
+            </div>
             <div class="col">
-              <div><a
+              <div>
+                <a
                   [routerLink]="['/metadata/af_detail', dataset.id_acquisition_framework]"
                   style="color:black"
                 >
-                  {{dataset.acquisition_framework.acquisition_framework_name}}
-                </a></div>
-              <div><small>{{dataset.acquisition_framework.unique_acquisition_framework_id}}</small>
+                  {{ dataset.acquisition_framework.acquisition_framework_name }}
+                </a>
+              </div>
+              <div>
+                <small>{{ dataset.acquisition_framework.unique_acquisition_framework_id }}</small>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <!-- Fin bloc AF -->
+
     </div>
+
+    
   </div>
+
 </div>
 
 
 <ng-template #spinnerBlock>
   <mat-spinner
-  diameter="50"
-  strokeWidth="2"
-  style="margin: 0 auto;"
->
-</mat-spinner>
+    diameter="50"
+    strokeWidth="2"
+    style="margin: 0 auto;"
+  >
+  </mat-spinner>
 </ng-template>

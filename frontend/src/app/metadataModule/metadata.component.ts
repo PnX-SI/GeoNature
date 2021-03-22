@@ -10,7 +10,6 @@ import { tap, map, startWith, distinctUntilChanged, debounceTime, filter  } from
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { CommonService } from "@geonature_common/service/common.service";
-import { ModuleService } from '@geonature/services/module.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { MetadataService } from './services/metadata.service';
 
@@ -48,39 +47,18 @@ export class MetadataComponent implements OnInit {
   pageSize: number;
   pageIndex: number;
 
-  private _moduleImportIsAuthorized: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  get moduleImportIsAuthorized() {
-    return this._moduleImportIsAuthorized.getValue();
-  }
+  
 
   constructor(
     public _cruvedStore: CruvedStoreService,
     private _dfs: DataFormService,
     private _router: Router,
     private modal: NgbModal,
-    public moduleService: ModuleService,
     public metadataService: MetadataService,
     private _commonService: CommonService,
   ) { }
 
   ngOnInit() {
-
-    //vérification que l'utilisateur est autorisé à utiliser le module d'import
-    this.moduleService.moduleSub
-      .pipe(
-        map((modules: any[]): boolean => {
-          if (modules) {
-            for (let i = 0; i < modules.length; i++) {
-              //recherche du module d'import et test si l'utilisateur a des droits dessus
-              if (modules[i].module_code == 'IMPORT' && modules[i].cruved['C'] > 0) {
-                return true;
-              }
-            }
-          }
-          return false;
-        })
-      )
-      .subscribe((importIsAuthorized: boolean) => this._moduleImportIsAuthorized.next(importIsAuthorized));
 
     this._dfs.getOrganisms()
       .subscribe(organisms => this.organisms = organisms);
