@@ -4,18 +4,15 @@ import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.serv
 import { AppConfig } from '@geonature_config/app.config';
 import { Router, NavigationExtras } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { MatDialog } from "@angular/material";
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin, Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import { tap, map, startWith, distinctUntilChanged, debounceTime, filter  } from 'rxjs/operators';
-import { TranslateService } from "@ngx-translate/core";
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { CommonService } from "@geonature_common/service/common.service";
 import { ModuleService } from '@geonature/services/module.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { MetadataService } from './services/metadata.service';
-import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 
 
 @Component({
@@ -58,8 +55,6 @@ export class MetadataComponent implements OnInit {
 
   constructor(
     public _cruvedStore: CruvedStoreService,
-    public dialog: MatDialog,
-    private translate: TranslateService,
     private _dfs: DataFormService,
     private _router: Router,
     private modal: NgbModal,
@@ -158,31 +153,4 @@ export class MetadataComponent implements OnInit {
     this.modal.dismissAll();
   }
 
-  deleteDs(dataset) {
-    const message = `${this.translate.instant("Delete")} ${dataset.dataset_name} ?`;
-    const dialogRef = this.dialog.open(ConfirmationDialog, {
-      width: "350px",
-      position: { top: "5%" },
-      data: { message: message },
-    });
-
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this._dfs.deleteDs(dataset.id_dataset)
-          .pipe(
-            tap(() => this.metadataService.getMetadata())
-          )
-          .subscribe(
-            () => this._commonService.translateToaster("success", "MetaData.DatasetRemoved"),
-            err => {
-              if (err.error.message) {
-                this._commonService.regularToaster("error", err.error.message);
-              } else {
-                this._commonService.translateToaster("error", "ErrorMessage");
-              }
-             }
-          );
-      }
-    });
-  }
 }

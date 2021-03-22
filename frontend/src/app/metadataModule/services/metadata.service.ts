@@ -21,6 +21,7 @@ export class MetadataService {
   get acquisitionFrameworks() {
     return this._acquisitionFrameworks.getValue();
   }
+
   /* resultat du filtre sur _acquisitionFrameworks */
   public filteredAcquisitionFrameworks: Observable<any[]>;
  
@@ -49,7 +50,7 @@ export class MetadataService {
     })
  
     this.getMetadata();
- 
+
     // rapid search event
     //combinaison de la zone de recherche et du chargement des données
     this.filteredAcquisitionFrameworks = combineLatest(
@@ -58,7 +59,7 @@ export class MetadataService {
           startWith(''),
           debounceTime(200),
           distinctUntilChanged(),
-          map((term) => this._removeAccentAndLower(term))
+          map((term) => this._removeAccentAndLower(term)),
         ),
       this._acquisitionFrameworks.asObservable()
     ).pipe(
@@ -67,6 +68,11 @@ export class MetadataService {
         if (this.rapidSearchControl.value !== null && term !== this.rapidSearchControl.value) {
           return [this._removeAccentAndLower(this.rapidSearchControl.value), afs];
         }
+        return [term, afs];
+      }),
+      map(([term, afs]) => {
+        //restaure les datasets avant les filtres
+        afs.map(af => af['datasetsTemp'] = af['t_datasets']);
         return [term, afs];
       }),
       //filtre des éléments selon le texte, retourne les AF filtrés
@@ -99,7 +105,6 @@ export class MetadataService {
           //boucle sur les CA pour attribuer le nombre de données au JDD et création de la clé datasetsTemp
           for (let i = 0; i < val.afs.length; i++) {
             this.setDsObservationCount(val.afs[i]['t_datasets'], val.datasetNbObs);
-            val.afs[i]['datasetsTemp'] = val.afs[i]['t_datasets'];
           }
           //renvoie uniquement les CA
           return val.afs;
@@ -126,7 +131,6 @@ export class MetadataService {
       ) {
         return true;
       }
-         
       //Sinon on filtre les JDD qui matchent eventuellement.
       if (af.t_datasets) {
         af.datasetsTemp = af.t_datasets.filter(ds => {

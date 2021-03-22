@@ -12,6 +12,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { DatasetFormService } from '../services/dataset-form.service';
 import { ActorFormService } from '../services/actor-form.service';
 import { MetadataService } from '../services/metadata.service';
+import { MetadataDataService } from '../services/metadata-data.service';
 
 @Component({
   selector: 'pnx-datasets-form',
@@ -27,7 +28,6 @@ export class DatasetFormComponent implements OnInit {
   public acquisitionFrameworks: Observable<any>;
 
   constructor(
-    private _api: HttpClient,
     private _route: ActivatedRoute,
     private _router: Router,
     private _commonService: CommonService,
@@ -35,7 +35,8 @@ export class DatasetFormComponent implements OnInit {
     public datasetFormS: DatasetFormService,
     public moduleService: ModuleService,
     private actorFormS: ActorFormService,
-    private metadataS: MetadataService
+    private metadataS: MetadataService,
+    private metadataDataS: MetadataDataService
   ) {}
 
   ngOnInit() {
@@ -80,11 +81,10 @@ export class DatasetFormComponent implements OnInit {
     if (this.datasetFormS.dataset.getValue() !== null) {
       //si modification on assign les valeurs du formulaire au dataset modifié
       const dataset = Object.assign(this.datasetFormS.dataset.getValue(), this.form.value);
-
-      api = this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${dataset.id_dataset}`, dataset);
+      api = this.metadataDataS.updateDataset(dataset.id_dataset, dataset);
     } else {
       //si creation on envoie le contenu du formulaire
-      api = this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/dataset`, this.form.value);
+      api = this.metadataDataS.createDataset(this.form.value);
     }
 
     //envoie de la requete au serveur

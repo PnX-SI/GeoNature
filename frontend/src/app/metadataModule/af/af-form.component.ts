@@ -13,6 +13,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { ActorFormService } from '../services/actor-form.service';
 import { AcquisitionFrameworkFormService } from '../services/af-form.service';
 import { MetadataService } from '../services/metadata.service';
+import { MetadataDataService } from '../services/metadata-data.service';
 
 @Component({
   selector: 'pnx-af-form',
@@ -37,7 +38,8 @@ export class AfFormComponent implements OnInit {
     private dateParser: NgbDateParserFormatter,
     private afFormS: AcquisitionFrameworkFormService,
     private actorFormS: ActorFormService,
-    private metadataS: MetadataService
+    private metadataS: MetadataService,
+    private metadataDataS: MetadataDataService
   ) {}
   ngOnInit() {
     // get the id from the route
@@ -102,12 +104,10 @@ export class AfFormComponent implements OnInit {
     //UPDATE
     if (this.afFormS.acquisition_framework.getValue() !== null) {
       //si modification on assign les valeurs du formulaire au dataset modifié
-
-
-      api = this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${af.id_acquisition_framework}`, af);
+      api = this.metadataDataS.updateAF(af.id_acquisition_framework, af);
     } else {
       //si creation on envoie le contenu du formulaire
-      api = this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework`, af);
+      api = this.metadataDataS.createAF(af);
     }
 
     //envoie de la requete au serveur

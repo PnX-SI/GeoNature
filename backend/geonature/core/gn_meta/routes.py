@@ -685,7 +685,7 @@ def createDataset(info_role):
    )
 
 
-@routes.route("/dataset/<int:id_dataset>", methods=["POST"])
+@routes.route("/dataset/<int:id_dataset>", methods=["POST", "PATCH"])
 @permissions.check_cruved_scope("U", True, module_code="METADATA")
 def updateDataset(id_dataset, info_role):
     """

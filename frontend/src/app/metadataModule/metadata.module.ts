@@ -12,10 +12,12 @@ import { DatasetCardComponent } from './datasets/dataset-card.component';
 import { AfFormComponent } from './af/af-form.component';
 import { ActorComponent } from './actors/actors.component';
 import { MetadataComponent } from './metadata.component';
+import { MetadataDatasetComponent } from './metadata-dataset.component';
 import { AfCardComponent } from './af/af-card.component';
 import { ChartsModule } from 'ng2-charts/ng2-charts';
 import { ChartModule } from 'angular2-chartjs';
 import { MetadataService } from './services/metadata.service';
+import { MetadataDataService } from './services/metadata-data.service';
 import { ActorFormService } from './services/actor-form.service';
 
 const routes: Routes = [
@@ -64,6 +66,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
   exports: [],
   declarations: [
     MetadataComponent,
+    MetadataDatasetComponent,
     DatasetFormComponent,
     DatasetCardComponent,
     AfFormComponent,
@@ -72,6 +75,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
   ],
   providers: [
     MetadataService,
+    MetadataDataService,
     ActorFormService,
     {
       provide: MatPaginatorIntl,
