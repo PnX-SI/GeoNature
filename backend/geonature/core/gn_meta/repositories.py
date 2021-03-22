@@ -326,6 +326,22 @@ def filtered_af_query(args):
     return query
 
 
+def get_dataset_import(id_dataset, session_role):
+    """
+    Return a dataset from TDatasetDetails model (with all relationships)
+    return also the number of taxon and observation of the dataset
+    Use for get_one datasert
+    """
+    imports = requests.get(
+        current_app.config["API_ENDPOINT"] + "/import/by_dataset/" + str(id_dataset),
+        headers={"Cookie": request.headers.get("Cookie")},  # recuperation du token
+    )
+    if imports.status_code == 200:
+        return imports.json()
+
+    return None
+
+
 def get_dataset_details_dict(id_dataset, session_role):
     """
     Return a dataset from TDatasetDetails model (with all relationships)

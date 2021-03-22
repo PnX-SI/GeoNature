@@ -301,23 +301,6 @@ def get_dataset(info_role, id_dataset):
     return datasetSchema.dumps(dataset)
 
 
-@routes.route("/dataset_details/<int:id_dataset>", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="METADATA")
-@json_resp
-def get_dataset_details(info_role, id_dataset):
-    """
-    Get one dataset with nomenclatures and af
-
-    .. :quickref: Metadata;
-
-    :param id_dataset: the id_dataset
-    :param type: int
-    :returns: dict<TDatasetDetails>
-    """
-
-    return get_dataset_details_dict(id_dataset, info_role)
-
-
 @routes.route("/upload_canvas", methods=["POST"])
 @json_resp
 def upload_canvas():
@@ -712,65 +695,63 @@ def get_export_pdf_dataset(id_dataset, info_role):
     """
     Get a PDF export of one dataset
     """
-    df = get_dataset_details_dict(id_dataset, info_role)
+    datasetSchema = DatasetSchema()
+    
+    user_cruved = cruved_scope_for_user_in_module(
+        id_role=info_role.id_role, module_code="METADATA",
+    )[0]
 
-    if info_role.value_filter != "3":
-        try:
-            user_actor = [cor["id_role"] for cor in df["cor_dataset_actor"] if cor["id_role"]]
-            user_actor.append(df.get('id_digitizer'))
-            if info_role.value_filter == "1":
-                assert info_role.id_role in user_actor
-            elif info_role.value_filter == "2":
-                organisms = [cor["id_organism"] for cor in df["cor_dataset_actor"] if cor["id_organism"]]
-                assert info_role.id_role in user_actor or info_role.id_organisme in organisms
-        except AssertionError:
-            raise InsufficientRightsError(
-                ('User "{}" cannot export this current dataset').format(info_role.id_role), 403,
-            )
+    datasetSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
 
-    if not df:
+    dataset = DB.session.query(TDatasets).get(id_dataset)
+    if not dataset:
+        raise NotFound('Dataset "{}" does not exist'.format(id_dataset))
+
+    dataset = json.loads((datasetSchema.dumps(dataset)).data)
+
+    #test du droit d'export de l'utilisateur
+    if not dataset.get('cruved').get('E'):
         return (
             render_template(
                 "error.html",
-                error="Le dataset presente des erreurs",
+                error="Vous n'avez pas les droits d'exporter ces informations",
                 redirect=current_app.config["URL_APPLICATION"] + "/#/metadata",
             ),
             404,
         )
 
-    if len(df["dataset_desc"]) > 240:
-        df["dataset_desc"] = df["dataset_desc"][:240] + "..."
+    if len(dataset.get("dataset_desc")) > 240:
+        dataset["dataset_desc"] = dataset.get("dataset_desc")[:240] + "..."
 
-    df["css"] = {
+    dataset["css"] = {
         "logo": "Logo_pdf.png",
         "bandeau": "Bandeau_pdf.png",
         "entite": "sinp",
     }
-    df["title"] = current_app.config["METADATA"]["DS_PDF_TITLE"]
+    dataset["title"] = current_app.config["METADATA"]["DS_PDF_TITLE"]
 
     date = dt.datetime.now().strftime("%d/%m/%Y")
 
-    df["footer"] = {
+    dataset["footer"] = {
         "url": current_app.config["URL_APPLICATION"] + "/#/metadata/dataset_detail/" + id_dataset,
         "date": date,
     }
 
     filename = "jdd_{}_{}_{}.pdf".format(
         id_dataset,
-        df["dataset_shortname"].replace(" ", "_"),
+        dataset["dataset_shortname"].replace(" ", "_"),
         dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
     )
 
     try:
         f = open(str(BACKEND_DIR) + "/static/images/taxa.png")
         f.close()
-        df["chart"] = True
+        dataset["chart"] = True
     except IOError:
-        df["chart"] = False
-
+        dataset["chart"] = False
 
     # Appel de la methode pour generer un pdf
-    pdf_file = fm.generate_pdf("dataset_template_pdf.html", df, filename)
+    pdf_file = fm.generate_pdf("dataset_template_pdf.html", dataset, filename)
     pdf_file_posix = Path(pdf_file)
 
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
