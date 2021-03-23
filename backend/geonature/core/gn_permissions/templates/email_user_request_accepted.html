@@ -27,11 +27,11 @@
 <ul>
     <li>
         entités géographiques :
-        {{ geographic_filter_values | join(" ; ") if geographic_filter_values | length > 0 else "Aucune" }}.
+        {{ geographic_filter_values | join(" ; ") if geographic_filter_values | length > 0 else "Toutes" }}.
     </li>
     <li>
         groupes taxonomiques :
-        {{ taxonomic_filter_values | join(" ; ") | safe if taxonomic_filter_values | length > 0 else "Aucun" }}.
+        {{ taxonomic_filter_values | join(" ; ") | safe if taxonomic_filter_values | length > 0 else "Tous" }}.
     </li>
 </ul>
 
