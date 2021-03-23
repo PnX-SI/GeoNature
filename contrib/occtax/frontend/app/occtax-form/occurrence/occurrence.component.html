@@ -15,6 +15,7 @@
       (onChange)="selectAddOcc()"
     >
     </pnx-taxonomy>
+    ALORS : {{occtaxFormOccurrenceService.idTaxonList |json}}
     <small
       *ngIf="(occurrenceForm.get('nom_cite').hasError('required') && taxonForm.touched) && !taxonFormFocus"
       class="error"

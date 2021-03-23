@@ -155,7 +155,7 @@ default_media_fields_details = ['title_fr', 'description_fr', 'id_nomenclature_m
 class DatasetFieldsConfiguration(Schema):
     # config liée au formulaire dynamique OCCTAX par dataset
     DATASET = fields.Integer()
-    ID_TAXON_LIST = fields.Integer(missing=100)
+    ID_TAXON_LIST = fields.Integer(missing=None)
     RELEVE = fields.List(fields.Dict(), missing=[])
     OCCURRENCE = fields.List(fields.Dict(), missing=[])
     COUNTING = fields.List(fields.Dict(), missing=[])
