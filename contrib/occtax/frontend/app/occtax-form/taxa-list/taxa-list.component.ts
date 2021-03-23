@@ -103,7 +103,6 @@ export class OcctaxFormTaxaListComponent implements OnInit {
   }
 
   editOccurrence(occurrence) {
-    setTimeout(() => { })
     this.occtaxFormOccurrenceService.occurrence.next(occurrence);
     //on redessine la tab au prochain affichage
     this.alreadyActivatedCountingTab[occurrence.id_occurrence_occtax] = false;

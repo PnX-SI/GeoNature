@@ -13,7 +13,7 @@ import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormMapService } from "../map/map.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
-import { dynamicFormReleveComponent } from "../dynamique-form-releve/dynamic-form-releve.component";
+import { DynamicFormComponent } from "../dynamique-form/dynamic-form.component";
 
 @Injectable()
 export class OcctaxFormReleveService {
@@ -159,7 +159,7 @@ export class OcctaxFormReleveService {
       let disableForm = this.propertiesForm.disabled ? true : false;
       
       this.dynamicContainer.clear(); 
-      const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
+      const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(DynamicFormComponent);
       this.componentRef = this.dynamicContainer.createComponent(factory);
 
       if(!this.dynamicFormGroup){
@@ -170,35 +170,29 @@ export class OcctaxFormReleveService {
       this.propertiesForm.setControl("additional_fields", this.dynamicFormGroup);
       
       //On charge les nomenclatures additionnels
-      let NOMENCLATURES = [];
-      dynamiqueFormDataset["RELEVE"].map((widget) => {
+      let NOMENCLATURES = [];      
+      dynamiqueFormDataset["RELEVE"].forEach((widget) => {
         if(widget.type_widget == "nomenclature"){
           NOMENCLATURES.push(widget.code_nomenclature_type);
         }
       })
+      if(NOMENCLATURES.length > 0){
+        this.dataFormService.getNomenclatures(NOMENCLATURES)
+        .subscribe((nomenclatures) => {
+          this.occtaxFormService.storeAdditionalNomenclaturesValues(nomenclatures)
+        });
+      }
 
-      this.dataFormService.getNomenclatures(NOMENCLATURES)
-      .pipe(
-        map((data) => {
-          let values = [];
-          for (let i = 0; i < data.length; i++) {
-            data[i].values.forEach((element) => {
-              element["nomenclature_mnemonique"] = data[i]["mnemonique"];
-              values[element.id_nomenclature] = element;
-            });
-          }
-          return values;
-        })
-      )
-      .subscribe((nomenclatures) => (this.occtaxFormService.nomenclatureAdditionnel = nomenclatures));
       //dans le cas d'une création avec le jdd passé en paramètre, l'ajout du control dynamique désactive le formulaire
       //Donc on force la réactivation 
+      console.log("DISABLE ?", disableForm);
+            
       if(disableForm){
         //Mystère du disabled, il faut le mettre 2 fois dans un timeout pour que le formulaire se désactive
         setTimeout(() => this.propertiesForm.disable(), 100);
         setTimeout(() => this.propertiesForm.disable(), 500);
       }
-    }else{
+    } else {
       if (this.propertiesForm.get("additional_fields")){
         this.propertiesForm.removeControl("additional_fields")
       }
@@ -482,8 +476,7 @@ export class OcctaxFormReleveService {
 
     /* Champs additionnels - formatter les dates et les nomenclatures */
     let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(value.properties.id_dataset);
-    if (dynamiqueFormDataset){
-      if (dynamiqueFormDataset["RELEVE"]){
+    if (dynamiqueFormDataset && dynamiqueFormDataset["RELEVE"] ){
         dynamiqueFormDataset["RELEVE"].map((widget) => {
           if(widget.type_widget == "date"){
             value.properties.additional_fields[widget.attribut_name] = this.dateParser.format(
@@ -491,16 +484,17 @@ export class OcctaxFormReleveService {
             );
           }
           if(widget.type_widget == "nomenclature"){
-            const res = this.occtaxFormService.nomenclatureAdditionnel.filter((item) => item !== undefined)
-            .find(n => n["id_nomenclature"] === value.properties.additional_fields[widget.attribut_name]);
-            if(res){
-              value.properties.additional_fields[widget.attribut_name] = res.label_fr;
+            // set the label_fr nomenclature in the posted additional data
+            const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {
+              return n["id_nomenclature"] === value.properties.additional_fields[widget.attribut_name];
+            });
+            if(nomenclature_item){
+              value.properties.additional_fields[widget.attribut_name] = nomenclature_item.label_fr;
             }else{
               value.properties.additional_fields[widget.attribut_name] = "";
             }
           }
         })
-      }
     }
 
     return value;

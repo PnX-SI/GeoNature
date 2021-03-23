@@ -9,7 +9,6 @@ import { Router } from "@angular/router";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
-import { dynamicFormReleveComponent } from "./dynamique-form-releve/dynamic-form-releve.component";
 import { ModuleConfig } from "../module.config";
 
 @Injectable()
@@ -93,6 +92,16 @@ export class OcctaxFormService {
     );
   }
 
+  storeAdditionalNomenclaturesValues(nomenclatures_types: Array<any>) {
+    // store all nomenclatures element in a array in order to fin
+    // the label on submit
+    nomenclatures_types.forEach(nomenc_type => {
+      nomenc_type.values.forEach(nomenc_element => {
+        this.nomenclatureAdditionnel.push(nomenc_element);
+      });
+    });
+  }
+
   onEditReleve(id) {
     this._router.navigate(["occtax/form", id]);
   }
@@ -151,16 +160,12 @@ export class OcctaxFormService {
   }
 
   getAddDynamiqueFields(idDataset){
-    this.formDatasetFields = [];
-    if(ModuleConfig.ADD_FIELDS){
-      if(ModuleConfig.ADD_FIELDS.FORMFIELDS){
-        ModuleConfig.ADD_FIELDS.FORMFIELDS.map((formFields) => {
-          if(formFields.DATASET == idDataset){
-            this.formDatasetFields = formFields;
-          }
-        })
-      }
-    }
+    this.formDatasetFields = null;
+    if(ModuleConfig.ADD_FIELDS && ModuleConfig.ADD_FIELDS.FORMFIELDS){
+      this.formDatasetFields = ModuleConfig.ADD_FIELDS.FORMFIELDS.find(formFields => {          
+          return formFields.DATASET == idDataset
+        });
+    }    
     return this.formDatasetFields;
   }
 

@@ -12,7 +12,7 @@ import { map, filter, tap } from "rxjs/operators";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { MediaService } from '@geonature_common/service/media.service';
-import { dynamicFormReleveComponent } from "../dynamique-form-releve/dynamic-form-releve.component";
+import { DynamicFormComponent } from "../dynamique-form/dynamic-form.component";
 import { ModuleConfig } from "../../module.config";
 
 @Injectable()

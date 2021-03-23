@@ -5,7 +5,7 @@ import { ModuleConfig } from "../../module.config";
 import { AppConfig } from "@geonature_config/app.config";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxFormCountingService } from "./counting.service";
-import { dynamicFormReleveComponent } from "../dynamique-form-releve/dynamic-form-releve.component";
+import { DynamicFormComponent } from "../dynamique-form/dynamic-form.component";
 
 @Component({
   selector: "pnx-occtax-form-counting",
@@ -48,7 +48,7 @@ export class OcctaxFormCountingComponent {
       if(hasDynamicForm){
         // Initialisation du formulaire dynamique 
         this.occtaxFormCountingService.dynamicContainerCounting.clear(); 
-        const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(dynamicFormReleveComponent);
+        const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(DynamicFormComponent);
         this.occtaxFormCountingService.componentRefCounting = this.occtaxFormCountingService.dynamicContainerCounting.createComponent(factory);
         
         this.dynamicFormGroup = this.fb.group({});

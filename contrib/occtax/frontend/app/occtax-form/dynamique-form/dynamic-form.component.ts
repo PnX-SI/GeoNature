@@ -21,7 +21,7 @@ import {
   `,
   styles: [':host { width: 100%; }']
 })
-export class dynamicFormReleveComponent {
+export class DynamicFormComponent {
   @Input() formArray: FormGroup;
   @Input() formConfigReleveDataSet: any;
   @Output() output = new EventEmitter();

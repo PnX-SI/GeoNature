@@ -30,7 +30,7 @@ import { OcctaxTaxaListService } from "./occtax-form/taxa-list/taxa-list.service
 import { OcctaxFormParamService } from "./occtax-form/form-param/form-param.service";
 
 import { MatSlideToggleModule, MatTabsModule } from "@angular/material";
-import { dynamicFormReleveComponent } from "./occtax-form/dynamique-form-releve/dynamic-form-releve.component";
+import { DynamicFormComponent } from "./occtax-form/dynamique-form/dynamic-form.component";
 
 const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },
@@ -70,9 +70,9 @@ const routes: Routes = [
     OcctaxFormTaxaListComponent,
     OcctaxFormCountingComponent,
     OcctaxFormParamDialog,
-    dynamicFormReleveComponent
+    DynamicFormComponent
   ],
-  entryComponents: [OcctaxFormParamDialog, dynamicFormReleveComponent],
+  entryComponents: [OcctaxFormParamDialog, DynamicFormComponent],
   providers: [
     OcctaxDataService,
     MapListService,

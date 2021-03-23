@@ -62,7 +62,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public dynamicFormGroup: FormGroup;
   public data : any;
   public dynamicContainerOccurence: ViewContainerRef;
-  componentRefOccurence: ComponentRef<any>;
+  public componentRefOccurence: ComponentRef<any>;
 
   //public idTaxonList: number;
 
@@ -105,12 +105,12 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit() {
     //a chaque reinitialisation du formulaire on place le focus sur la zone de saisie du taxon
+    const taxonInput: HTMLElement = document.getElementById("taxonInput");
     this.occtaxFormOccurrenceService.occurrence.subscribe(() =>
-      document.getElementById("taxonInput").focus()
+    taxonInput.focus()
     );
 
     //Pour gérer l'affichage de l'erreur required quand le focus est présent dans l'input
-    const taxonInput = document.getElementById("taxonInput");
     taxonInput.addEventListener(
       "focus",
       (event) => (this.taxonFormFocus = true)
@@ -119,7 +119,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
       "blur",
       (event) => (this.taxonFormFocus = false)
     );
-    this.occtaxFormOccurrenceService.idTaxonList = 100;
   }
 
   setExistProofData(data) {
