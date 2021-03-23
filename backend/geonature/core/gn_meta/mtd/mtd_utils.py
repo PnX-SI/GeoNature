@@ -16,7 +16,7 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkActor,
 )
 from geonature.core.gn_commons.models import TModules
-from geonature.core.users.models import BibOrganismes
+from pypnusershub.db.models import Organisme as BibOrganismes
 from geonature.core.users import routes as users
 from geonature.core.auth.routes import insert_user_and_org, get_user_from_id_inpn_ws
 from pypnusershub.db.models import User
