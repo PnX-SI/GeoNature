@@ -162,6 +162,9 @@ MAIL_ON_ERROR = false
 
     # Affiche un bloc de stat sur la page d'accueil
     DISPLAY_STAT_BLOC = true
+    # Périodicité du renouvellement du cache des stats (local storage) 
+    # dans le navigateur en secondes. Défaut : 86400s (= 1 jour)
+    STAT_BLOC_TTL = 86400
 
     # Affiche la carte des 100 dernieres observations sur la page d'accueil
     DISPLAY_MAP_LAST_OBS = true
