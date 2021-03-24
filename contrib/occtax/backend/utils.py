@@ -1,3 +1,5 @@
+from flask import current_app
+
 # nomenclatures fields
 counting_nomenclatures = [
     "id_nomenclature_life_stage",
@@ -54,3 +56,27 @@ def is_already_joined(my_class, query):
     """
     return my_class in [mapper.class_ for mapper in query._join_entities]
 
+
+def get_dataset_config(id_dataset):
+    """
+    Fonction renvoyant la configuration du module OCCTAX en fonction du jeux de données 
+    """
+    if id_dataset.isnumeric():
+        return next(
+            (c["FORMFIELDS"] for c in current_app.config['OCCTAX']["DATASETS_CONFIG"] if c["ID_DATASET"] == int(id_dataset)),
+            {}
+        )
+    return {}
+
+def get_default_export_fields(form_fields):
+    """
+    Fonction renvoyant la liste des colonnes en fonction de la configuration du jeux de données
+    """
+    col_names = []
+    for c in ("RELEVE", "OCCURRENCE", "COUNTING"):
+        if c in form_fields:
+            for widget in form_fields[c]:
+                if "type_widget" in widget and "attribut_name" in widget and widget["type_widget"] != "html":
+                    col_names.append(widget["attribut_name"])
+
+    return col_names

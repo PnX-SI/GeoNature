@@ -162,7 +162,7 @@ class DatasetFieldsConfiguration(Schema):
 class FormFieldConfiguration(Schema):
     # config liée au formulaire dynamique OCCTAX par dataset
     ID_DATASET = fields.Integer(required=True)
-    FORMFIELDS = fields.List(fields.Nested(DatasetFieldsConfiguration), missing=[])
+    FORMFIELDS = fields.Nested(DatasetFieldsConfiguration, missing={})
     ID_TAXON_LIST = fields.Integer(missing=100)
     EXPORT_FIELDS = fields.List(fields.String(), missing=[])
 
