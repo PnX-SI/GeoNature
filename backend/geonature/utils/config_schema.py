@@ -211,6 +211,7 @@ class GnFrontEndConf(Schema):
     PROD_MOD = fields.Boolean(missing=True)
     DISPLAY_FOOTER = fields.Boolean(missing=True)
     DISPLAY_STAT_BLOC = fields.Boolean(missing=True)
+    STAT_BLOC_TTL = fields.Integer(missing=86400)
     DISPLAY_MAP_LAST_OBS = fields.Boolean(missing=True)
     MULTILINGUAL = fields.Boolean(missing=False)
     # show email on synthese and validation info obs modal
