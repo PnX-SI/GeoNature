@@ -183,26 +183,27 @@ ENABLE_MY_PLACES = true
 
 ENABLE_MEDIAS = true
 
-[ADD_FIELDS]
-    [[ADD_FIELDS.FORMFIELDS]]
+[DATASETS_CONFIG]
+    [[DATASETS_CONFIG.FORMFIELDS]]
         DATASET = 1
+        # attention: l'id_taxon list doit être une chaine de charactère pour pouvoir passer une valeur null (aucune liste)
         ID_TAXON_LIST = 5
-        [[ADD_FIELDS.FORMFIELDS.RELEVE]]
+        [[DATASETS_CONFIG.FORMFIELDS.RELEVE]]
             type_widget = "select"
             attribut_label = "Label"
             attribut_name = "name"
             values = ["Val1", "Val2", "Val3"]
-        [[ADD_FIELDS.FORMFIELDS.OCCURRENCE]]
+        [[DATASETS_CONFIG.FORMFIELDS.OCCURRENCE]]
             type_widget = "text"
             attribut_label = "Label"
             attribut_name = "name2"
             required = false
-        [[ADD_FIELDS.FORMFIELDS.COUNTING]]
+        [[DATASETS_CONFIG.FORMFIELDS.COUNTING]]
             type_widget = "radio"
             attribut_label = "Label"
             attribut_name = "name3"
             values = ["Oui", "Non"]
         
-    [[ADD_FIELDS.FORMFIELDS]]
+    [[DATASETS_CONFIG.FORMFIELDS]]
         DATASET = 2
         ID_TAXON_LIST = 6

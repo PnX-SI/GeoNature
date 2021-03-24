@@ -154,18 +154,18 @@ default_media_fields_details = ['title_fr', 'description_fr', 'id_nomenclature_m
 
 class DatasetFieldsConfiguration(Schema):
     # config liée au formulaire dynamique OCCTAX par dataset
-    DATASET = fields.Integer()
-    ID_TAXON_LIST = fields.Integer(missing=100)
     RELEVE = fields.List(fields.Dict(), missing=[])
     OCCURRENCE = fields.List(fields.Dict(), missing=[])
     COUNTING = fields.List(fields.Dict(), missing=[])
+
+
+class FormFieldConfiguration(Schema):
+    # config liée au formulaire dynamique OCCTAX par dataset
+    ID_DATASET = fields.Integer(required=True)
+    FORMFIELDS = fields.List(fields.Nested(DatasetFieldsConfiguration), missing=[])
+    ID_TAXON_LIST = fields.Integer(missing=100)
     EXPORT_FIELDS = fields.List(fields.String(), missing=[])
 
-
-class DatasetConfiguration(Schema):
-    # config liée au formulaire dynamique OCCTAX par dataset
-    FORMFIELDS = fields.List(fields.Nested(DatasetFieldsConfiguration), missing=[])
-    
 class GnModuleSchemaConf(Schema):
     form_fields = fields.Nested(FormConfig, missing=dict())
     observers_txt = fields.Boolean(missing=False)
@@ -197,7 +197,7 @@ class GnModuleSchemaConf(Schema):
     ENABLE_MEDIAS = fields.Boolean(missing=True)
     ENABLE_MY_PLACES = fields.Boolean(missing=True)
     DISPLAY_VERNACULAR_NAME = fields.Boolean(missing=True)
-    ADD_FIELDS = fields.Nested(DatasetConfiguration, missing={"FORMFIELDS": []})
+    DATASETS_CONFIG = fields.List(fields.Nested(FormFieldConfiguration), missing=[])
     export_col_name_additional_data = fields.String(missing=default_export_col_name_additional_data)
     MEDIA_FIELDS_DETAILS = fields.List(fields.String(), missing=default_media_fields_details)
 

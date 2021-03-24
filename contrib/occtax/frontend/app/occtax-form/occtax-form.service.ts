@@ -31,7 +31,7 @@ export class OcctaxFormService {
   componentRef: ComponentRef<any>;
   componentRefOccurence: ComponentRef<any>;
   public previousReleve = null;
-  public formDatasetFields: any;
+  public dataSetConfig: any;
 
   public nomenclatureAdditionnel: any = [];
 
@@ -160,13 +160,13 @@ export class OcctaxFormService {
   }
 
   getAddDynamiqueFields(idDataset){
-    this.formDatasetFields = null;
-    if(ModuleConfig.ADD_FIELDS && ModuleConfig.ADD_FIELDS.FORMFIELDS){
-      this.formDatasetFields = ModuleConfig.ADD_FIELDS.FORMFIELDS.find(formFields => {          
-          return formFields.DATASET == idDataset
+    this.dataSetConfig = null;
+    if(ModuleConfig.DATASETS_CONFIG){
+      this.dataSetConfig = ModuleConfig.DATASETS_CONFIG.find(dataset_conf => {          
+          return dataset_conf.ID_DATASET == idDataset
         });
     }    
-    return this.formDatasetFields;
+    return this.dataSetConfig;
   }
 
   formatDate(strDate) {

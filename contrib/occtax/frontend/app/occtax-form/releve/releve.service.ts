@@ -145,11 +145,9 @@ export class OcctaxFormReleveService {
   onDatasetChanged(idDataset) {
     let hasDynamicForm = false;
     let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(idDataset);
-    if (dynamiqueFormDataset){
-      if (dynamiqueFormDataset["RELEVE"]){
+    if (dynamiqueFormDataset && dynamiqueFormDataset["RELEVE"]){
         hasDynamicForm = true;
       }
-    }
 
     if (hasDynamicForm){      
       this.dynamicContainer.clear(); 

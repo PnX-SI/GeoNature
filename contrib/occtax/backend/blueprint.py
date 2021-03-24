@@ -933,7 +933,7 @@ def test(info_role):
 #Fonction renvoyant la configuration du module OCCTAX en fonction du jeux de données 
 def getDatasetConfig(id_dataset):
     if id_dataset.isnumeric():
-        add_fields = blueprint.config["ADD_FIELDS"]
+        add_fields = blueprint.config["DATASETS_CONFIG"]
         if "FORMFIELDS" in add_fields:
             for formFields in add_fields["FORMFIELDS"]:
                 #return formFields
