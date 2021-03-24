@@ -184,9 +184,7 @@ export class OcctaxFormReleveService {
       }
 
       //dans le cas d'une création avec le jdd passé en paramètre, l'ajout du control dynamique désactive le formulaire
-      //Donc on force la réactivation 
-      console.log("DISABLE ?", disableForm);
-            
+      //Donc on force la réactivation             
       if(disableForm){
         //Mystère du disabled, il faut le mettre 2 fois dans un timeout pour que le formulaire se désactive
         setTimeout(() => this.propertiesForm.disable(), 100);

@@ -204,8 +204,8 @@ export class OcctaxFormOccurrenceService {
         let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(this.idDataset);
         
         let hasDynamicFormOccurence = dynamiqueFormDataset && dynamiqueFormDataset["OCCURRENCE"] ? true: false;
-        let hasDynamicFormCounting = dynamiqueFormDataset && dynamiqueFormDataset["COUNTING"] ? true: false;
-        if(dynamiqueFormDataset){
+        let hasDynamicFormCounting = dynamiqueFormDataset && dynamiqueFormDataset["COUNTING"] ? true: false;        
+        if(dynamiqueFormDataset && !(dynamiqueFormDataset["ID_TAXON_LIST"] == -1)){
             this.idTaxonList = dynamiqueFormDataset["ID_TAXON_LIST"];
         }
         let NOMENCLATURES = [];
