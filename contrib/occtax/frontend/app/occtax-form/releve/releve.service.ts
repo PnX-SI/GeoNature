@@ -61,16 +61,10 @@ export class OcctaxFormReleveService {
   }
 
   private get initialValues() {
-    /*MET Si on passe jdd en paramètre, alors on rempli le champs dataset avec la valeur et on rempli la valeur par défault*/
-    this._route.queryParams.subscribe(params => {
-      let datasetId = params["jdd"];
-      if (datasetId){
-        this.datasetId = datasetId;
-      } 
-    });
     return {
       id_digitiser: this.occtaxFormService.currentUser.id_role,
       meta_device_entry: "web",
+      
     };
   }
 
@@ -144,6 +138,8 @@ export class OcctaxFormReleveService {
 
     //on desactive le form, il sera réactivé si la geom est ok
     this.propertiesForm.disable();
+    console.log("INIT as disabled");
+    
   }
   
   onDatasetChanged(idDataset) {
@@ -155,9 +151,7 @@ export class OcctaxFormReleveService {
       }
     }
 
-    if (hasDynamicForm){
-      let disableForm = this.propertiesForm.disabled ? true : false;
-      
+    if (hasDynamicForm){      
       this.dynamicContainer.clear(); 
       const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(DynamicFormComponent);
       this.componentRef = this.dynamicContainer.createComponent(factory);
@@ -182,16 +176,7 @@ export class OcctaxFormReleveService {
           this.occtaxFormService.storeAdditionalNomenclaturesValues(nomenclatures)
         });
       }
-
-      //dans le cas d'une création avec le jdd passé en paramètre, l'ajout du control dynamique désactive le formulaire
-      //Donc on force la réactivation 
-      console.log("DISABLE ?", disableForm);
-            
-      if(disableForm){
-        //Mystère du disabled, il faut le mettre 2 fois dans un timeout pour que le formulaire se désactive
-        setTimeout(() => this.propertiesForm.disable(), 100);
-        setTimeout(() => this.propertiesForm.disable(), 500);
-      }
+      // }
     } else {
       if (this.propertiesForm.get("additional_fields")){
         this.propertiesForm.removeControl("additional_fields")
@@ -219,16 +204,18 @@ export class OcctaxFormReleveService {
               this.propertiesForm as FormGroup,
               "date_min",
               "date_max"
-            );
+            );            
           }
         }),
-        switchMap((editionMode: boolean) => {
+        switchMap((editionMode: boolean) => {          
           //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
           return editionMode ? this.releveValues : this.defaultValues;
         })
       )
-      .subscribe((values) => {
-        this.propertiesForm.patchValue(values)
+      .subscribe((values) => {    
+        const test = {...this.initialValues, ...values}    
+        // emitEvent : false (if the patchvalue change q value (eg id_dataset), the form is enabled and we don't want this)        
+         this.propertiesForm.patchValue(values, {emitEvent: false});
       }); 
 
     //Observation de la geometry pour récupere les info d'altitudes
@@ -240,7 +227,7 @@ export class OcctaxFormReleveService {
           if (!this.occtaxFormService.editionMode.getValue()) {
             //recup des info d'altitude uniquement en mode creation
             this.getAltitude(geojson);
-          }
+          }          
           this.propertiesForm.enable(); //active le form
         })
       )
@@ -416,8 +403,11 @@ export class OcctaxFormReleveService {
       .getDefaultValues(this.occtaxFormService.currentUser.id_organisme)
       .pipe(
         map((data) => {
+          console.log(this.datasetId);
+          
           const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);
           return {
+            // datasetId could be get for get parameters (see releve.component)
             id_dataset: this.datasetId || this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset,
             date_min: this.occtaxParamS.get("releve.date_min") ||
               previousReleve.date_min ||

@@ -1,8 +1,9 @@
-import { Component, Input, OnInit, OnDestroy, ViewContainerRef, ViewChild } from "@angular/core";
-import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { Component, OnInit, OnDestroy, ViewContainerRef, ViewChild } from "@angular/core";
+import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { GeoJSON } from "leaflet";
 import { map, filter } from "rxjs/operators";
+import { Subscription } from "rxjs";
 import { ModuleConfig } from "../../module.config";
 import { CommonService } from "@geonature_common/service/common.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
@@ -25,7 +26,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public userDatasets: Array<any>;
   public releveForm: FormGroup;
   public AppConfig = AppConfig;
-  public datasetId : number;
+  public routeSub: Subscription ;
 
   constructor(
     private route: ActivatedRoute,
@@ -51,7 +52,14 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
       }
     })
 
-    this.occtaxFormReleveService.route = this.route;
+    // if id_dataset pass as query parameters, pass it to the releve service in the form
+    this.routeSub = this.route.queryParams.subscribe(params => {
+      let datasetId = params["id_dataset"];
+      if (datasetId){
+        this.occtaxFormReleveService.datasetId = datasetId;
+      } 
+    });
+
     //MET ADD Champs additionels
     this.occtaxFormReleveService.dynamicContainer = this.container;
   } // END INIT
@@ -100,6 +108,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.occtaxFormReleveService.reset();
+    this.routeSub.unsubscribe();
   }
 
   formDisabled() {
