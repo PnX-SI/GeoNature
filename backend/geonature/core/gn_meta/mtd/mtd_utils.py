@@ -119,11 +119,13 @@ def create_cor_object_actors(actors, new_object):
 
             # We finally build the correlation corresponding to the JDD/AF
             if isinstance(new_object, TAcquisitionFramework):
-                cor_actor = CorAcquisitionFrameworkActor(**dict_cor)
-                new_object.cor_af_actor.append(cor_actor)
+                if not any(map(lambda cafa: dict_cor['id_organism']==cafa.id_organism and act['actor_role']==cafa.id_nomenclature_actor_role.clauses.clauses[1].value, new_object.cor_af_actor)):
+                    cor_actor = CorAcquisitionFrameworkActor(**dict_cor)
+                    new_object.cor_af_actor.append(cor_actor)
             elif isinstance(new_object, TDatasets):
-                cor_actor = CorDatasetActor(**dict_cor)
-                new_object.cor_dataset_actor.append(cor_actor)
+                if not any(map(lambda ca: dict_cor['id_organism']==ca.id_organism and act['actor_role']==ca.id_nomenclature_actor_role.clauses.clauses[1].value, new_object.cor_dataset_actor)):
+                    cor_actor = CorDatasetActor(**dict_cor)
+                    new_object.cor_dataset_actor.append(cor_actor)
 
 
 def post_acquisition_framework(uuid=None, id_user=None, id_organism=None):
