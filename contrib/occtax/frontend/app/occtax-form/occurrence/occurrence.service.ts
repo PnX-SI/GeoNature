@@ -198,18 +198,19 @@ export class OcctaxFormOccurrenceService {
       filter(data => data && data.releve.properties)
       ).subscribe(data => {    
         const releve = data.releve.properties;
+        
 
         /* OCCTAX - CHAMPS ADDITIONNELS DEB */
         this.idDataset = data.releve.properties.dataset.id_dataset;
-        let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(this.idDataset);
         
-        let hasDynamicFormOccurence = dynamiqueFormDataset && dynamiqueFormDataset["OCCURRENCE"] ? true: false;
-        let hasDynamicFormCounting = dynamiqueFormDataset && dynamiqueFormDataset["COUNTING"] ? true: false;
-        if(dynamiqueFormDataset && dynamiqueFormDataset["ID_TAXON_LIST"]){
-            this.idTaxonList = dynamiqueFormDataset["ID_TAXON_LIST"];
+        let dynamicFormDataset = this.occtaxFormService.getAddDynamiqueFields(this.idDataset);        
+        let hasDynamicFormOccurence = dynamicFormDataset && dynamicFormDataset["FORMFIELDS"]["OCCURRENCE"].length > 0 ? true: false;
+        let hasDynamicFormCounting = dynamicFormDataset && dynamicFormDataset["FORMFIELDS"]["COUNTING"].length > 0 ? true: false;
+        if(dynamicFormDataset && dynamicFormDataset["ID_TAXON_LIST"]){
+            this.idTaxonList = dynamicFormDataset["ID_TAXON_LIST"];
         }
         let NOMENCLATURES = [];
-        if(hasDynamicFormOccurence){
+        if(hasDynamicFormOccurence){          
           if (this.form.get("additional_fields") == undefined && this.dynamicContainerOccurence){
             this.dynamicContainerOccurence.clear(); 
             const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(DynamicFormComponent);
@@ -218,14 +219,14 @@ export class OcctaxFormOccurrenceService {
             //Ajout du composant dynamique
             this.dynamicFormGroup = this.fb.group({});
         
-            this.componentRefOccurence.instance.formConfigReleveDataSet = dynamiqueFormDataset["OCCURRENCE"];
+            this.componentRefOccurence.instance.formConfigReleveDataSet = dynamicFormDataset["FORMFIELDS"]["OCCURRENCE"];
             this.componentRefOccurence.instance.formArray = this.dynamicFormGroup;
             
             //on insert le formulaire dynamique au form control
             this.form.addControl("additional_fields", this.dynamicFormGroup);
           }
           
-          dynamiqueFormDataset["OCCURRENCE"].forEach((widget) => {            
+          dynamicFormDataset["FORMFIELDS"]["OCCURRENCE"].forEach((widget) => {            
             if(widget.type_widget == "date"){
               releve.t_occurrences_occtax.forEach(occurrence => {
                 //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
@@ -271,7 +272,7 @@ export class OcctaxFormOccurrenceService {
             /*MET Champs additionnel*/
             this.dynamicFormGroup = this.fb.group({});
         
-            this.occtaxFormCountingService.componentRefCounting.instance.formConfigReleveDataSet = dynamiqueFormDataset["COUNTING"];
+            this.occtaxFormCountingService.componentRefCounting.instance.formConfigReleveDataSet = dynamicFormDataset["FORMFIELDS"]["COUNTING"];
             this.occtaxFormCountingService.componentRefCounting.instance.formArray = this.dynamicFormGroup;
             
             //on insert le formulaire dynamique au form control
@@ -280,7 +281,7 @@ export class OcctaxFormOccurrenceService {
               countingsFormGroup.setControl("additional_fields", this.dynamicFormGroup);
             }
             
-            dynamiqueFormDataset["COUNTING"].map((widget) => {
+            dynamicFormDataset["FORMFIELDS"]["COUNTING"].map((widget) => {
               if(widget.type_widget == "date"){
                 releve.t_occurrences_occtax.map((occurrence) => {
                   occurrence.cor_counting_occtax.map((counting) => {
@@ -479,10 +480,10 @@ export class OcctaxFormOccurrenceService {
 
   formDynamiqueValue(){
     //Mise en forme des champs additionnels
-    let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(this.idDataset);
-    if (dynamiqueFormDataset){
-      if (dynamiqueFormDataset["OCCURRENCE"]){
-        dynamiqueFormDataset["OCCURRENCE"].forEach((widget) => {
+    let dynamicFormDataset = this.occtaxFormService.getAddDynamiqueFields(this.idDataset);
+    if (dynamicFormDataset){
+      if (dynamicFormDataset["FORMFIELDS"]["OCCURRENCE"]){
+        dynamicFormDataset["FORMFIELDS"]["OCCURRENCE"].forEach((widget) => {
           if(widget.type_widget == "date"){
             this.form.value.additional_fields[widget.attribut_name] = this.dateParser.format(
               this.form.value.additional_fields[widget.attribut_name]
@@ -502,8 +503,8 @@ export class OcctaxFormOccurrenceService {
         })
       }
 
-      if (dynamiqueFormDataset["COUNTING"]){
-        dynamiqueFormDataset["COUNTING"].forEach((widget) => {
+      if (dynamicFormDataset["FORMFIELDS"]["COUNTING"]){
+        dynamicFormDataset["FORMFIELDS"]["COUNTING"].forEach((widget) => {
           if(widget.type_widget == "date"){
             this.form.value.cor_counting_occtax.forEach(counting => {
               counting.additional_fields[widget.attribut_name] = this.dateParser.format(

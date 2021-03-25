@@ -41,6 +41,8 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.releveForm = this.occtaxFormReleveService.releveForm;
+    // pass route to releve.service to navigate
+    this.occtaxFormReleveService.route = this.route;
     this.initHabFormSub();
     this.occtaxFormMapService.geojson.subscribe(geojson => {
       this.geojson = geojson;

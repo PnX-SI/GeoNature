@@ -49,7 +49,6 @@ export class OcctaxFormReleveService {
     private occtaxDataService: OcctaxDataService,
     private occtaxParamS: OcctaxFormParamService,
     private _resolver: ComponentFactoryResolver,
-    private _route: ActivatedRoute,
   ) {
     this.initPropertiesForm();
     this.setObservables();
@@ -138,18 +137,13 @@ export class OcctaxFormReleveService {
 
     //on desactive le form, il sera réactivé si la geom est ok
     this.propertiesForm.disable();
-    console.log("INIT as disabled");
     
   }
   
-  onDatasetChanged(idDataset) {
-    let hasDynamicForm = false;
+  onDatasetChanged(idDataset) {    
     let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(idDataset);
-    if (dynamiqueFormDataset && dynamiqueFormDataset["RELEVE"]){
-        hasDynamicForm = true;
-      }
-
-    if (hasDynamicForm){      
+    
+    if (dynamiqueFormDataset && dynamiqueFormDataset["FORMFIELDS"]["RELEVE"].length > 0){      
       this.dynamicContainer.clear(); 
       const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(DynamicFormComponent);
       this.componentRef = this.dynamicContainer.createComponent(factory);
@@ -157,13 +151,13 @@ export class OcctaxFormReleveService {
       if(!this.dynamicFormGroup){
         this.dynamicFormGroup = this.fb.group({});
       }
-      this.componentRef.instance.formConfigReleveDataSet = dynamiqueFormDataset["RELEVE"];
+      this.componentRef.instance.formConfigReleveDataSet = dynamiqueFormDataset["FORMFIELDS"]["RELEVE"];
       this.componentRef.instance.formArray = this.dynamicFormGroup;
       this.propertiesForm.setControl("additional_fields", this.dynamicFormGroup);
       
       //On charge les nomenclatures additionnels
       let NOMENCLATURES = [];      
-      dynamiqueFormDataset["RELEVE"].forEach((widget) => {
+      dynamiqueFormDataset["FORMFIELDS"]["RELEVE"].forEach((widget) => {
         if(widget.type_widget == "nomenclature"){
           NOMENCLATURES.push(widget.code_nomenclature_type);
         }

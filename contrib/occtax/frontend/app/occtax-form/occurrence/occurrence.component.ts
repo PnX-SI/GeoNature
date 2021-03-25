@@ -17,7 +17,6 @@ import { FormService } from "@geonature_common/form/form.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { MatDialog } from "@angular/material";
-import { Observable } from "rxjs";
 
 
 @Component({
