@@ -31,7 +31,7 @@
   [headerHeight]="50"
   [footerHeight]="50"
   [rowHeight]="'auto'"
-  [limit]="5"
+  [limit]="10"
   [targetMarkerTemplate]="targetMarkerTemplate"
   [rowClass]="getRowClass"
 >
@@ -87,6 +87,10 @@
   <ng-template #processedByCellTpl let-value="value">
     <span *ngIf="value; else anonymous">{{ value }}</span>
     <ng-template #anonymous>ANONYME</ng-template>
+  </ng-template>
+
+  <ng-template #createDateCellTpl let-value="value">
+    <span> {{ value | date:'short':undefined:locale }}</span>
   </ng-template>
 
   <ng-template #actionsCellTpl let-value="value" let-row="row">
