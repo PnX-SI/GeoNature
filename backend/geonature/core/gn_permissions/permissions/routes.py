@@ -176,7 +176,6 @@ def get_permissions_for_all_roles(info_role):
     )
 
     # Get roles with permissions
-    # TODO: use AppRole instead of User and BibOrganismes
     query = (
         DB.session.query(
                 User, 
@@ -709,10 +708,12 @@ def update_permission(info_role, gathering):
     exp = None
 
     try:
-        # TODO: get values from fields in database (id_request) not in request data. 
-        # Then insert them inside data.
-        # Delete permission before create new one
         permsission_repo = PermissionRepository()
+
+        # Get existing id_request (or None) for current gathering
+        data["id_request"] = permsission_repo.get_id_request(gathering)
+
+        # Delete permission before create new one
         permsission_repo.delete_permission_by_gathering(gathering)
         permsission_repo.create_permission(gathering, data)
 
