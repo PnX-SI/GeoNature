@@ -70,13 +70,13 @@ export class MetadataService {
         }
         return [term, afs];
       }),
-      map(([term, afs]) => {
+      map(([term, afs]: [string, any[]]): [string, any[]] => {
         //restaure les datasets avant les filtres
         afs.map(af => af['datasetsTemp'] = af['t_datasets']);
         return [term, afs];
       }),
       //filtre des éléments selon le texte, retourne les AF filtrés
-      map(([term, afs]) => term === '' ? afs : this._filterAcquisitionFrameworks(term))
+      map(([term, afs]: [string, any[]]): any[] => term === '' ? afs : this._filterAcquisitionFrameworks(term))
     );
  
     //retour à la premiere page du tableau pour voir les résultats du filtre rapide
