@@ -80,3 +80,10 @@ def get_default_export_fields(form_fields):
                     col_names.append(widget["attribut_name"])
 
     return col_names
+
+def as_dict_with_add_cols(export_view, row, additional_cols_key: str, addition_cols_to_export:list):
+    row_as_dict = export_view.as_dict(row)
+    additional_data = row_as_dict.pop(additional_cols_key) or {}
+    for col_name in addition_cols_to_export:
+        row_as_dict[col_name] = additional_data.get(col_name, "")
+    return row_as_dict

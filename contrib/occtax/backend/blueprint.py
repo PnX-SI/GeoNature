@@ -12,9 +12,9 @@ from flask import (
 from sqlalchemy import or_, func, distinct
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import joinedload
-from geojson import FeatureCollection
+from geojson import Feature, FeatureCollection
 from shapely.geometry import asShape
-from geoalchemy2.shape import from_shape
+from geoalchemy2.shape import from_shape, to_shape
 
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
@@ -22,7 +22,6 @@ from geonature.utils.env import DB, ROOT_DIR
 from pypnusershub.db.models import User
 from pypnusershub.db.tools import InsufficientRightsError
 from utils_flask_sqla_geo.generic import GenericTableGeo
-from utils_flask_sqla.generic import testDataType
 
 from geonature.utils import filemanager
 from .models import (
@@ -38,8 +37,8 @@ from .repositories import (
     get_query_occtax_order,
 )
 from .schemas import OccurrenceSchema, ReleveCruvedSchema, ReleveSchema
-from .utils import get_dataset_config, get_default_export_fields
-from utils_flask_sqla.response import to_csv_resp, to_json_resp, csv_resp, json_resp
+from .utils import get_dataset_config, get_default_export_fields, as_dict_with_add_cols
+from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
@@ -744,7 +743,7 @@ def export(info_role):
     export_geom_column = blueprint.config["export_geom_columns_name"]
     export_columns = blueprint.config["export_columns"]
     export_srid = blueprint.config["export_srid"]
-    # TODO: unused ?
+    export_format = request.args["format"] if "format" in request.args else "geojson"
     export_col_name_additional_data = blueprint.config["export_col_name_additional_data"]
 
     export_view = GenericTableGeo(
@@ -779,6 +778,7 @@ def export(info_role):
         if not additionnal_col_names:
             additionnal_col_names = get_default_export_fields(config_dataset)
 
+    #TODO: 
     if not additionnal_col_names:
         for row in data:
             dict_row = export_view.as_dict(row)
@@ -789,40 +789,46 @@ def export(info_role):
                         if col_name not in additionnal_col_names:
                             additionnal_col_names.append(col_name)
 
-    export_format = request.args["format"] if "format" in request.args else "geojson"
     if export_format == "csv":
         columns = (
             export_columns
             if len(export_columns) > 0
             else [db_col.key for db_col in export_view.db_cols]
         )
-        #On ajoute les colonnes additionnels aux colonnes de l'export
+        # serialize data with additional cols or not
         columns = columns + additionnal_col_names
-        data_add_field = []
-        for row in data:
-            row_as_dict = export_view.as_dict(row)
-            additional_data = row_as_dict.pop(export_col_name_additional_data) or {}
-            additionnal_dict = {}
-            for col_name in additionnal_col_names:
-                if col_name in additional_data:
-                    additionnal_dict[col_name] = additional_data[col_name]
-                else:
-                    additionnal_dict[col_name] = ""
-
-            row_test = {**row_as_dict, **additionnal_dict}
-            data_add_field.append(row_test)
+        if additionnal_col_names:
+            serialize_result = [
+                as_dict_with_add_cols(
+                    export_view, row, export_col_name_additional_data, additionnal_col_names
+                ) for row in data
+            ]
+        else:
+            serialize_result = [export_view.as_dict(row) for row in data]
         return to_csv_resp(
-            file_name, data_add_field , columns, ";"
+            file_name, serialize_result , columns, ";"
         )
-        #return to_csv_resp(
-        #    file_name, [export_view.as_dict(d) for d in data], columns, ";"
-        #)
+    # TODO: addtional fields in geojson
     elif export_format == "geojson":
-        results = FeatureCollection(
-            [export_view.as_geofeature(d, columns=export_columns) for d in data]
-        )
+        if additionnal_col_names:
+            features = []
+            for row in data :
+                properties = as_dict_with_add_cols(
+                    export_view, row, export_col_name_additional_data, additionnal_col_names
+                )
+                feature = Feature(
+                    properties=properties,
+                    geometry=to_shape(getattr(row, export_geom_column))
+                )
+                features.append(feature)
+            serialize_result = FeatureCollection(features)
+            
+        else:
+            serialize_result = FeatureCollection(
+                [export_view.as_geofeature(d, columns=export_columns) for d in data]
+            )
         return to_json_resp(
-            results, as_file=True, filename=file_name, indent=4, extension="geojson"
+            serialize_result, as_file=True, filename=file_name, indent=4, extension="geojson"
         )
     #MET 21/10/2020 Ajout d'un export medias
     elif export_format == "medias":
@@ -846,9 +852,7 @@ def export(info_role):
             if not os.path.exists(dir_path):
                 os.makedirs(dir_path)
             #on le clean
-            filemanager.delete_recursively(dir_path)
-            featureCollection = []
-            
+            filemanager.delete_recursively(dir_path)            
             zip_path = dir_path + "/" + file_name + ".zip"
             zp_file = zipfile.ZipFile(zip_path, mode="w")
             for n in data:
@@ -890,14 +894,8 @@ def export(info_role):
             db_cols = [
                 db_col for db_col in export_view.db_cols if db_col.key in export_columns
             ]
-            dir_path = str(ROOT_DIR / "backend/static/shapefiles")
-            
-            export_view.as_shape(
-                db_cols=db_cols, data=data, dir_path=dir_path, file_name=file_name
-            )
 
-            return send_from_directory(dir_path, file_name + ".zip", as_attachment=True)
-
+            return send_from_directory(dir_name, file_name, as_attachment=True)
         except GeonatureApiError as e:
             message = str(e)
 
