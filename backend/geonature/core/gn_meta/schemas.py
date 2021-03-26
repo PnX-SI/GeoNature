@@ -10,7 +10,7 @@ from .models import (
     TBibliographicReference
 )
 from pypnusershub.db.models import User
-from geonature.core.users.models import BibOrganismes
+from pypnusershub.db.models import Organisme
 from pypnnomenclature.models import TNomenclatures
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_commons.models import CorModuleDataset, TModules
@@ -54,7 +54,7 @@ class UserSchema(MA.SQLAlchemyAutoSchema):
 
 class OrganismeSchema(MA.SQLAlchemyAutoSchema):
     class Meta:
-        model = BibOrganismes
+        model = Organisme
         load_instance = True
 
 class ModuleSchema(MA.SQLAlchemyAutoSchema):
