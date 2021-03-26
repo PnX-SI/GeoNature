@@ -9,7 +9,7 @@ from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
 
 from geonature.utils.env import DB
-from geonature.core.users.models import BibOrganismes
+from pypnusershub.db.models import Organisme
 
 from geonature.core.gn_commons.models import TModules, CorModuleDataset, cor_module_dataset
 
@@ -108,7 +108,7 @@ class CorAcquisitionFrameworkActor(DB.Model):
     )
 
     organism = relationship(
-        "BibOrganismes",
+        "Organisme",
         lazy="joined",
         foreign_keys=[id_organism]
     )
@@ -154,6 +154,7 @@ class CorDatasetActor(DB.Model):
     id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
     id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     id_organism = DB.Column(DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme"))
+
     id_nomenclature_actor_role = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
@@ -167,7 +168,7 @@ class CorDatasetActor(DB.Model):
         foreign_keys=[id_role]
     )
     organism = relationship(
-        "BibOrganismes",
+        "Organisme",
         lazy="joined",
         foreign_keys=[id_organism]
     )

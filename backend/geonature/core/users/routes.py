@@ -12,10 +12,10 @@ from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
 from geonature.core.gn_meta.repositories import get_datasets_cruved
 from geonature.core.users.models import (
     VUserslistForallMenu,
-    BibOrganismes,
     CorRole,
     TListes,
 )
+from pypnusershub.db.models import Organisme as BibOrganismes
 from geonature.core.users.register_post_actions import function_dict
 from pypnusershub.db.models import User
 from pypnusershub.db.models_register import TempUser

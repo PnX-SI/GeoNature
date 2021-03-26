@@ -32,8 +32,8 @@ from geonature.core.gn_permissions.models import (
     CorObjectModule,
     VUsersPermissions,
 )
-from geonature.core.users.models import BibOrganismes
 from geonature.core.users.models import CorRole
+from pypnusershub.db.models import Organisme as BibOrganismes
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
 

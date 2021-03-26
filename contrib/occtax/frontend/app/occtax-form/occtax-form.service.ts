@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { BehaviorSubject } from "rxjs";
-import { filter, tap } from "rxjs/operators";
+import { filter, tap, skip } from "rxjs/operators";
 
 import { AppConfig } from "@geonature_config/app.config";
 import { HttpClient, HttpParams } from "@angular/common/http";
@@ -36,13 +36,19 @@ export class OcctaxFormService {
     //observation de l'URL
     this.id_releve_occtax
       .pipe(
-        tap(() => this.editionMode.next(false)), //reinitialisation du mode edition à faux
+        skip(1), // skip initilization value (null)
+        tap((id) =>{ 
+          if(id == null) {
+            this.editionMode.next(false)
+          }
+        }), //reinitialisation du mode edition à faux
         filter((id) => id !== null)
       )
       .subscribe((id) => this.getOcctaxData(id));
   }
 
   getOcctaxData(id) {
+    
     this._dataS.getOneReleve(id).subscribe(
       (data) => {
         this.occtaxData.next(data);

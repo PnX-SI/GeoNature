@@ -130,7 +130,7 @@
     "Priority": "Prioritaire",
     "Optional": "Facultatif",
     "Taxon": "Taxon",
-    "NomCite": "Nom cité",
+    "NomCite": "Taxon (nom cité)",
     "Taxons": "Taxons",
     "TaxonName": "Nom du taxon",
     "ObsTech": "Technique d'observation",

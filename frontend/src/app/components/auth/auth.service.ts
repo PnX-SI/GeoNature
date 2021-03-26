@@ -2,9 +2,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AppConfig } from '../../../conf/app.config';
+
 import { CookieService } from 'ng2-cookies';
 import 'rxjs/add/operator/delay';
+
+import { AppConfig } from '../../../conf/app.config';
+import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 
 export interface User {
   user_login: string;
@@ -22,7 +25,10 @@ export class AuthService {
   token: string;
   loginError: boolean;
   public isLoading = false;
-  constructor(private router: Router, private route: ActivatedRoute, private _http: HttpClient, private _cookie: CookieService) { }
+  constructor(
+    private router: Router, private route: ActivatedRoute, private _http: HttpClient,
+    private _cookie: CookieService, private cruvedService: CruvedStoreService,
+  ) { }
 
   setCurrentUser(user) {
     localStorage.setItem('current_user', JSON.stringify(user));
@@ -89,15 +95,18 @@ export class AuthService {
           };
           this.setCurrentUser(userForFront);
           this.loginError = false;
-          let next_url = '';
-          this.route.queryParams.subscribe(params => {
-              next_url = params['next'];
+          // Now that we are logged, we fetch the cruved again, and redirect once received
+          this.cruvedService.fetchCruved().subscribe(() => {
+            let next_url = '';
+            this.route.queryParams.subscribe(params => {
+                next_url = params['next'];
+            });
+            if (next_url) {
+                window.location.href = next_url;
+            } else {
+                this.router.navigate(['']);
+            }
           });
-          if (next_url) {
-              window.location.href = next_url;
-          } else {
-              this.router.navigate(['']);
-          }
         },
         // error callback
         () => {
@@ -138,6 +147,7 @@ export class AuthService {
   logout() {
     this.deleteAllCookies();
     localStorage.clear();
+    this.cruvedService.clearCruved();
     if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
       document.location.href = `${AppConfig.CAS_PUBLIC.CAS_URL_LOGOUT}?service=${
         AppConfig.URL_APPLICATION
