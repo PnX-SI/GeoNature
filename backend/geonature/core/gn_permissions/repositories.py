@@ -118,6 +118,7 @@ class PermissionRepository:
         action_id = self.get_action_id(data["action"])
         object_id = self.get_object_id(data["object"])
         end_access_date = format_end_access_date(data["end_date"])
+        id_request = data["id_request"]
         
         # TODO: check if this permission with all this specific filters already exist
 
@@ -140,7 +141,8 @@ class PermissionRepository:
                     id_object=object_id,
                     end_date=end_access_date,
                     id_filter_type=filter_type_id,
-                    value_filter=value_filter
+                    value_filter=value_filter,
+                    id_request=id_request,
                 )
                 if not permission.is_already_exist():
                     DB.session.add(permission)
@@ -183,3 +185,11 @@ class PermissionRepository:
             
         )
         return query.all()
+    
+    def get_id_request(self, gathering):
+        return (DB
+            .session.query(CorRoleActionFilterModuleObject.id_request)
+            .filter(CorRoleActionFilterModuleObject.gathering == gathering)
+            .limit(1)
+            .scalar()
+        )

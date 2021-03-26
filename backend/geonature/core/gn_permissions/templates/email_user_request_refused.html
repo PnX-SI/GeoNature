@@ -1,7 +1,7 @@
 <p>*** Ceci est un message généré automatiquement ***</p>
 <p>Bonjour {{ user.prenom_role }}  {{ user.nom_role }},</p>
 <p>
-    Votre demande de permissions d'accès aux données précises 
+    Votre demande d'accès aux données précises 
     sur "{{ app_name }}" vient d'être refusée.<br/>
     {% if refusal_reason %}
         Raison du refus : {{ refusal_reason }}
@@ -19,7 +19,7 @@
     aux observations :
 </p>
 <ul>
-    <li>privés: OUI</li>
+    <li>privées: OUI</li>
     <li>
         <b>sensibles</b> :
         {{ "OUI" if sensitive_permission else "NON" }}

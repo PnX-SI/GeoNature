@@ -42,6 +42,8 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
   processedDateCellTpl: TemplateRef<any>;
   @ViewChild('processedByCellTpl')
   processedByCellTpl: TemplateRef<any>;
+  @ViewChild('createDateCellTpl')
+  createDateCellTpl: TemplateRef<any>;
   @ViewChild('actionsCellTpl')
   actionsCellTpl: TemplateRef<any>;
 
@@ -113,6 +115,13 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
       searchable: true,
     },
     {
+      prop: 'metaCreateDate',
+      name: 'Date demande',
+      tooltip: "Date d'enregistrement de la demande.",
+      flexGrow: 1,
+      searchable: true,
+    },
+    {
       prop: 'actions',
       name: 'Actions',
       flexGrow: 1,
@@ -172,6 +181,8 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
         col.cellTemplate = this.processedDateCellTpl;
       } else if (col.prop === 'processedBy') {
         col.cellTemplate = this.processedByCellTpl;
+      } else if (col.prop === 'metaCreateDate') {
+        col.cellTemplate = this.createDateCellTpl;
       } else if (col.prop === 'actions') {
         col.cellTemplate = this.actionsCellTpl;
       }

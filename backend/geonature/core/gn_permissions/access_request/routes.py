@@ -90,19 +90,28 @@ def get_permissions_requests():
             .join(UserAsker, UserAsker.id_role == TRequests.id_role)
             .outerjoin(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme)
             .outerjoin(UserValidator, UserValidator.id_role == TRequests.processed_by)
-            .order_by(TRequests.meta_create_date)
     )
     
     if "state" in params:
         if params["state"] == "processed":
-            query = query.filter(
-                or_(
-                    TRequests.processed_state == RequestStates.accepted, 
-                    TRequests.processed_state == RequestStates.refused, 
+            query = (
+                query.filter(
+                    or_(
+                        TRequests.processed_state == RequestStates.accepted, 
+                        TRequests.processed_state == RequestStates.refused, 
+                    )
                 )
+                .order_by(TRequests.processed_date.desc())
             )
         else:
             query = query.filter(TRequests.processed_state == RequestStates(params["state"]))
+            if params["state"] != "pending":
+                query = query.order_by(TRequests.processed_date.desc())
+            else:
+                query = query.order_by(TRequests.meta_create_date)
+    else:
+        query = query.order_by(TRequests.meta_create_date)
+    
     results = query.all()
 
     requests = []
