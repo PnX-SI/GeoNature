@@ -35,35 +35,10 @@ export class OcctaxFormCountingComponent {
 
   ngOnInit() {
     this.occtaxFormCountingService.dynamicContainerCounting = this.containerCounting;
-    
-    //Ajout du composant dynamique
+    this.occtaxFormCountingService.form = this.countingForm;
     let dynamiqueFormDataset = this.fs.getAddDynamiqueFields(this.occtaxFormOccurrenceService.idDataset);
-    if (this.occtaxFormOccurrenceService.idDataset){
-      let hasDynamicForm = false;
-      if (dynamiqueFormDataset){
-        if (dynamiqueFormDataset['COUNTING']){
-          hasDynamicForm = true;
-        }
-      }
-      if(hasDynamicForm){
-        // Initialisation du formulaire dynamique 
-        this.occtaxFormCountingService.dynamicContainerCounting.clear(); 
-        const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(DynamicFormComponent);
-        this.occtaxFormCountingService.componentRefCounting = this.occtaxFormCountingService.dynamicContainerCounting.createComponent(factory);
-        
-        this.dynamicFormGroup = this.fb.group({});
-        
-        if(this.countingForm.get('additional_fields')){
-          for (const key of Object.keys(this.countingForm.get('additional_fields').value)){
-            this.dynamicFormGroup.addControl(key, new FormControl(this.countingForm.get('additional_fields').value[key]));
-          }
-        }
-
-        this.occtaxFormCountingService.componentRefCounting.instance.formConfigReleveDataSet = dynamiqueFormDataset['COUNTING'];
-        this.occtaxFormCountingService.componentRefCounting.instance.formArray = this.dynamicFormGroup;
-        
-        this.countingForm.setControl('additional_fields', this.dynamicFormGroup); 
-      }
+    if(dynamiqueFormDataset && dynamiqueFormDataset['FORMFIELDS']['COUNTING'].length > 0){
+      this.occtaxFormCountingService.generateAdditionForm(dynamiqueFormDataset)
     }
   }
 
@@ -71,6 +46,8 @@ export class OcctaxFormCountingComponent {
     const taxref = this.occtaxFormOccurrenceService.taxref.getValue();
     return taxref;
   }
+
+
 
   defaultsMedia() {
     const occtaxData = this.fs.occtaxData.getValue();

@@ -778,7 +778,7 @@ def export(info_role):
         if not additionnal_col_names:
             additionnal_col_names = get_default_export_fields(config_dataset)
 
-    #TODO: 
+    #TODO pourquoi ajouter les colonnes quand elle ne sont pas définis en conf ?: 
     if not additionnal_col_names:
         for row in data:
             dict_row = export_view.as_dict(row)
@@ -808,7 +808,6 @@ def export(info_role):
         return to_csv_resp(
             file_name, serialize_result , columns, ";"
         )
-    # TODO: addtional fields in geojson
     elif export_format == "geojson":
         if additionnal_col_names:
             features = []

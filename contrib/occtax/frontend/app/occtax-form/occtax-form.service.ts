@@ -93,8 +93,10 @@ export class OcctaxFormService {
   }
 
   storeAdditionalNomenclaturesValues(nomenclatures_types: Array<any>) {
-    // store all nomenclatures element in a array in order to fin
+    // store all nomenclatures element in a array in order to find
     // the label on submit
+    console.log("la ?!;:");
+    
     nomenclatures_types.forEach(nomenc_type => {
       nomenc_type.values.forEach(nomenc_element => {
         this.nomenclatureAdditionnel.push(nomenc_element);

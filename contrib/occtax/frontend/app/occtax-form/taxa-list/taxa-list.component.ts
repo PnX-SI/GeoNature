@@ -36,6 +36,13 @@ export class OcctaxFormTaxaListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.occtaxTaxaListService.occurrences$.map(d => {
+      console.log(d);
+      
+    }).subscribe(s => {
+      console.log("la");
+      
+    })
     combineLatest(
       this.occtaxFormService.occtaxData,
       this.occtaxFormOccurrenceService.occurrence
@@ -161,9 +168,13 @@ export class OcctaxFormTaxaListComponent implements OnInit {
 
   //Met Affichage des champs additionnel dans l'onglet Dénombrement. L'élément est chargé seulement lorsque l'on clique dessus => Angular Material
   tabChanged(tabChangeEvent: MatTabChangeEvent): void {
+    console.log("ça ?");
+    
     
     //Petit bidouillage avec le label pour récupérer l'id_occurrence_occtax
     let infoTab = tabChangeEvent.tab.textLabel.split("#");
+    console.log(infoTab);
+    
     if(infoTab[0] == "counting"){
       this.occtaxTaxaListService.occurrences$.value.map((occurrence) => {
         if(occurrence.id_occurrence_occtax == infoTab[1]){

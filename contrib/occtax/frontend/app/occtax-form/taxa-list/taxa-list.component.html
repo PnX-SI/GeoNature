@@ -34,7 +34,6 @@
       *ngFor="let occurrence of occtaxTaxaListService.occurrences$ | async; let i=index"
       selector=".btn-actions"
     >
-
       <mat-accordion [multi]="true">
 
         <mat-expansion-panel
@@ -79,12 +78,6 @@
             </mat-panel-description>
           </mat-expansion-panel-header>
 
-
-
-          <!-- <ng-container *ngIf="(getStatuts(taxon.statuts)).length">
-            <mat-icon class="nb-statut" [matBadge]="(getStatuts(taxon.statuts)).length" [matTooltip]="(getStatuts(taxon.statuts)).length + ' statuts'">star</mat-icon>
-          </ng-container> -->
-  
           <mat-tab-group (selectedTabChange)="tabChanged($event)">
             <mat-tab label="Occurrence">
               <div class="list-values" id="tabOccurence{{ occurrence.id_occurrence_occtax }}">
@@ -197,23 +190,13 @@
                   <div class="value">{{ occurrence?.comment || "-" }}</div>
                 </div>
 
+                <div *ngIf="occurrence.additional_fields">
+                  {{occurrence.additional_fields |json}}
+                </div>
+
               </div>
             </mat-tab>
 
-            <--
-              TAB
-              des
-              information
-              taxref
-              (uniquement
-              si
-              une
-              valeur
-              taxref
-              est
-              fournie)
-              --
-            >
               <mat-tab
                 label="Taxonomie"
                 *ngIf="occurrence.taxref"
