@@ -32,6 +32,16 @@ def configure_alembic(alembic_config):
     return alembic_config
 
 
+if config.get('SENTRY_DSN'):
+    import sentry_sdk
+    from sentry_sdk.integrations.flask import FlaskIntegration
+    sentry_sdk.init(
+        config['SENTRY_DSN'],
+        integrations=[FlaskIntegration()],
+        traces_sample_rate=1.0,
+    )
+
+
 def create_app(with_external_mods=True, with_flask_admin=True):
     app = Flask(__name__)
     app.config.update(config)
