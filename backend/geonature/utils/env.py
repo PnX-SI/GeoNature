@@ -11,6 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm.exc import NoResultFound
 from flask_marshmallow import Marshmallow
 from flask_mail import Mail
+from flask_migrate import Migrate
 
 
 # Must be at top of this file. I don't know why (?)
@@ -31,6 +32,7 @@ DEFAULT_CONFIG_FILE = ROOT_DIR / "config/geonature_config.toml"
 os.environ['FLASK_SQLALCHEMY_DB'] = 'geonature.utils.env.DB'
 DB = SQLAlchemy()
 MA = Marshmallow()
+migrate = Migrate()
 
 GN_MODULE_FILES = (
     "manifest.toml",

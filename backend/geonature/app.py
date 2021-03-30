@@ -9,10 +9,27 @@ from flask_mail import Message
 from flask_cors import CORS
 from sqlalchemy import exc as sa_exc
 from flask_sqlalchemy import before_models_committed
+from pkg_resources import iter_entry_points
 
 from geonature.utils.config import config
-from geonature.utils.env import MAIL, DB, MA
+from geonature.utils.env import MAIL, DB, MA, migrate
 from geonature.utils.module import import_backend_enabled_modules
+
+
+@migrate.configure
+def configure_alembic(alembic_config):
+    """
+    This function add to the 'version_locations' parameter of the alembic config the
+    'migrations' entry point value of the 'gn_module' group for all modules having such entry point.
+    Thus, alembic will find migrations of all installed geonature modules.
+    """
+    version_locations = alembic_config.get_main_option('version_locations', default='').split()
+    for entry_point in iter_entry_points('gn_module', 'migrations'):
+        # TODO: define enabled module in configuration (skip disabled module, raise error on missing module)
+        _, migrations = str(entry_point).split('=', 1)
+        version_locations += [ migrations.strip() ]
+    alembic_config.set_main_option('version_locations', ' '.join(version_locations))
+    return alembic_config
 
 
 def create_app(with_external_mods=True, with_flask_admin=True):
@@ -21,6 +38,8 @@ def create_app(with_external_mods=True, with_flask_admin=True):
 
     # Bind app to DB
     DB.init_app(app)
+
+    migrate.init_app(app, DB)
 
     MAIL.init_app(app)
 
