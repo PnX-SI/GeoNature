@@ -10,10 +10,6 @@ ALTER TABLE pr_occtax.cor_counting_occtax
 
 CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
     RETURNS integer[]
-    LANGUAGE 'plpgsql'
-    VOLATILE
-    PARALLEL UNSAFE
-    COST 100
 AS $BODY$  DECLARE
   new_count RECORD;
   occurrence RECORD;
@@ -233,10 +229,9 @@ AS $BODY$  DECLARE
       non_digital_proof = NEW.non_digital_proof,
       comment_description = NEW.comment,
       last_action = 'U',
-	  --CHAMPS ADDITIONNELS OCCTAX
 	  additional_data = NEW.additional_fields || pr_occtax.t_releves_occtax.additional_fields || pr_occtax.cor_counting_occtax.additional_fields
-	FROM pr_occtax.t_releves_occtax
-	INNER JOIN pr_occtax.cor_counting_occtax ON NEW.id_occurrence_occtax = pr_occtax.cor_counting_occtax.id_occurrence_occtax
+	FROM pr_occtax.t_releves_occtax 
+	JOIN pr_occtax.cor_counting_occtax ON NEW.id_occurrence_occtax = pr_occtax.cor_counting_occtax.id_occurrence_occtax
     WHERE unique_id_sinp = pr_occtax.cor_counting_occtax.unique_id_sinp_occtax;
 	
     RETURN NULL;
@@ -280,10 +275,9 @@ AS $BODY$  DECLARE
         id_nomenclature_geo_object_nature = NEW.id_nomenclature_geo_object_nature,
         last_action = 'U',
         comment_context = NEW.comment,
-	  --CHAMPS ADDITIONNELS OCCTAX
 		additional_data = NEW.additional_fields || occurrence.additional_fields || counting.additional_fields
 	FROM pr_occtax.t_occurrences_occtax occurrence 
-	INNER JOIN pr_occtax.cor_counting_occtax counting
+	JOIN pr_occtax.cor_counting_occtax counting
 		ON counting.id_occurrence_occtax = occurrence.id_occurrence_occtax
 		AND NEW.id_releve_occtax = occurrence.id_releve_occtax
 	WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
@@ -357,23 +351,7 @@ AS $BODY$  DECLARE
       rel.geom_4326,
       rel.place_name AS "nomLieu",
       rel.precision,
-      (occ.additional_fields || rel.additional_fields) || ccc.additional_fields AS additional_data,
-      ( SELECT string_agg(media.title_fr::text, ' - '::text) AS string_agg
-            FROM gn_commons.t_medias media
-              JOIN gn_commons.bib_tables_location tab_loc ON tab_loc.id_table_location = media.id_table_location
-            WHERE tab_loc.table_name::text = 'cor_counting_occtax'::text AND ccc.unique_id_sinp_occtax = media.uuid_attached_row) AS "titreMedias",
-      ( SELECT string_agg(media.description_fr, ' - '::text) AS string_agg
-            FROM gn_commons.t_medias media
-              JOIN gn_commons.bib_tables_location tab_loc ON tab_loc.id_table_location = media.id_table_location
-            WHERE tab_loc.table_name::text = 'cor_counting_occtax'::text AND ccc.unique_id_sinp_occtax = media.uuid_attached_row) AS "descriptionMedias",
-      ( SELECT string_agg(
-                  CASE
-                      WHEN media.media_path IS NOT NULL THEN concat(gn_commons.get_default_parameter('url_api'::text), '/', media.media_path)::character varying
-                      ELSE media.media_url
-                  END::text, ' - '::text) AS string_agg
-            FROM gn_commons.t_medias media
-              JOIN gn_commons.bib_tables_location tab_loc ON tab_loc.id_table_location = media.id_table_location
-            WHERE tab_loc.table_name::text = 'cor_counting_occtax'::text AND ccc.unique_id_sinp_occtax = media.uuid_attached_row) AS "URLMedias"
+      (occ.additional_fields || rel.additional_fields) || ccc.additional_fields AS additional_data
     FROM pr_occtax.t_releves_occtax rel
       LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
       LEFT JOIN pr_occtax.cor_counting_occtax ccc ON ccc.id_occurrence_occtax = occ.id_occurrence_occtax
