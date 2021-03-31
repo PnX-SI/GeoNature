@@ -33,7 +33,7 @@ gunicorn==19.7.0
 idna==2.6
 itsdangerous==0.24
 jinja2==2.10.1
-lxml==4.5.1
+lxml==4.6.3
 markupsafe==1.1
 marshmallow==2.15.2
 marshmallow-sqlalchemy==0.23.1
