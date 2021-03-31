@@ -244,11 +244,6 @@ export class SyntheseInfoObsComponent implements OnInit {
     window.open(url_source + "/" + id_pk_source, "_blank");
   }
 
-  //TODO rendre global, additionnal fields
-  sortingFunction = (a, b) => {
-    return a.key > b.key ? -1 : 1;
-  }
-
   //En fonction des paramètres passés dans la config CONFIG.FRONTEND.DISPLAY_EMAIL_DISPLAY_INFO,
   //On affichera les informations de l'observation. Pour le moment fait pour "NOM_VERN", "DATE", "COMMUNES", "MEDIAS"
   /*public contentInfoObservationForMail(){
