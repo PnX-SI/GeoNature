@@ -7,8 +7,6 @@ ALTER TABLE pr_occtax.t_occurrences_occtax
 ALTER TABLE pr_occtax.cor_counting_occtax
     ADD COLUMN additional_fields jsonb;
 
-ALTER TABLE gn_synthese.synthese 
-    ADD COLUMN additional_data jsonb;
 
 CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
     RETURNS integer[]
