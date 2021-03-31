@@ -17,7 +17,6 @@ LOCAL_SRID = 2154
 # Langue principale par défaut
 DEFAULT_LANGUAGE='fr'
 
-
 #######################################################################################
 ###### Si vous souhaitez surcoucher certains paramètres,
 ###### compléter les sections ci-dessous à partir du modèle default_config.toml.example
@@ -37,3 +36,9 @@ DEFAULT_LANGUAGE='fr'
 
 # Configuration médias
 [MEDIAS]
+
+# Configuration Public Access
+[PUBLIC_ACCESS]
+PUBLIC_LOGIN = 'public'
+PUBLIC_PASSWORD = 'public'
+ENABLE_PUBLIC_ACCESS = true
