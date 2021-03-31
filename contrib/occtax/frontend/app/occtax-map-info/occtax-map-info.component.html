@@ -137,8 +137,10 @@
               <div class="value"> {{releve.comment || "-"}}  </div>
             </div> 
 
+            
+
             <!--Champs additionnels-->
-            <ng-container *ngFor="let dynamiqueField of dynamiqueFormDataset.RELEVE ">
+            <ng-container *ngFor="let dynamiqueField of dynamiqueFormDataset?.FORMFIELDS?.RELEVE ">
               <div *ngIf="['text','textarea','radio','select','time','date','number','bool_radio','nomenclature'].includes(dynamiqueField.type_widget)">
                 <div class="label"> {{dynamiqueField.attribut_label}} : </div>
                 <div class="value" *ngIf="['text','textarea','radio','select','time','number','bool_radio'].includes(dynamiqueField.type_widget)"> 
@@ -242,7 +244,7 @@
                   </div>
     
                   <!--Champs additionnels-->
-                  <ng-container *ngFor="let dynamiqueField of dynamiqueFormDataset.OCCURRENCE ">
+                  <ng-container *ngFor="let dynamiqueField of dynamiqueFormDataset?.FORMFIELDS?.OCCURRENCE ">
                     <div *ngIf="['text','textarea','radio','select','time','date','number','bool_radio','nomenclature'].includes(dynamiqueField.type_widget)">
                       <div class="label"> {{dynamiqueField.attribut_label}} : </div>
                       <div class="value" *ngIf="['text','textarea','radio','select','time','number','bool_radio'].includes(dynamiqueField.type_widget)"> 
@@ -301,7 +303,7 @@
                     </div>
     
                     <!--Champs additionnels-->
-                    <ng-container *ngFor="let dynamiqueField of dynamiqueFormDataset.COUNTING ">
+                    <ng-container *ngFor="let dynamiqueField of dynamiqueFormDataset?.FORMFIELDS?.COUNTING ">
                       <div *ngIf="['text','textarea','radio','select','time','date','number','bool_radio','nomenclature'].includes(dynamiqueField.type_widget)">
                         <div class="label"> {{dynamiqueField.attribut_label}} : </div>
                         <div class="value" *ngIf="['text','textarea','radio','select','time','number','bool_radio'].includes(dynamiqueField.type_widget)"> 
