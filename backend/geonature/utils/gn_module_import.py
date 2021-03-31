@@ -217,7 +217,7 @@ def check_codefile_validity(module_path, module_code):
                     module_code, gn_file
                 )
             )
-        except ImportError as:
+        except ImportError as e:
             raise GeoNatureError(
             f"""
                 Import error...
