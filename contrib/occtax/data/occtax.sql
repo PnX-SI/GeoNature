@@ -97,10 +97,6 @@ $BODY$
 -- AJOUT CHAMPS ADDITIONNEL - MET 27/10/2020
 CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
     RETURNS integer[]
-    LANGUAGE 'plpgsql'
-    VOLATILE
-    PARALLEL UNSAFE
-    COST 100
 AS $BODY$  DECLARE
   new_count RECORD;
   occurrence RECORD;
@@ -189,7 +185,6 @@ AS $BODY$  DECLARE
   comment_context,
   comment_description,
   last_action,
-	--CHAMPS ADDITIONNELS OCCTAX
   additional_data
   )
   VALUES(
@@ -245,7 +240,6 @@ AS $BODY$  DECLARE
     releve.comment,
     occurrence.comment,
     'I',
-	  --CHAMPS ADDITIONNELS OCCTAX
 	  new_count.additional_fields || occurrence.additional_fields || releve.additional_fields
   );
 
