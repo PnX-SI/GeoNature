@@ -205,7 +205,7 @@ def check_codefile_validity(module_path, module_code):
             if not inspect.getargspec(fonc).args == ["gn_db", "gn_app"]:
                 raise GeoNatureError("Invalid variable")
             log.info("      install_gn_module  OK")
-        except (ImportError, GeoNatureError):
+        except GeoNatureError:
             raise GeoNatureError(
                 """Module {}
                     File {} must have a function call :
@@ -217,6 +217,15 @@ def check_codefile_validity(module_path, module_code):
                     module_code, gn_file
                 )
             )
+        except ImportError as:
+            raise GeoNatureError(
+            f"""
+                Import error...
+                Check all imports in blueprint.py are installed.
+                {e}
+            """
+        )
+
     # Backend
     gn_file = Path(module_path) / "backend/blueprint.py"
     if gn_file.is_file():
