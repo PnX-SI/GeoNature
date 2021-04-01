@@ -14,7 +14,7 @@ from pkg_resources import iter_entry_points
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, MA, migrate
 from geonature.utils.module import import_backend_enabled_modules
-
+from geonature.utils.config import manage_frontend_assets
 
 @migrate.configure
 def configure_alembic(alembic_config):
@@ -45,6 +45,9 @@ if config.get('SENTRY_DSN'):
 def create_app(with_external_mods=True, with_flask_admin=True):
     app = Flask(__name__)
     app.config.update(config)
+
+    # Manage assets et frontend_config
+    manage_frontend_assets()
 
     # Bind app to DB
     DB.init_app(app)

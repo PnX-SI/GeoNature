@@ -2,10 +2,10 @@ import { Component, Input, OnInit, ViewChild, Injectable } from '@angular/core';
 import { MapService } from './map.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Map, LatLngExpression } from 'leaflet';
-import { AppConfig } from '@geonature_config/app.config';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import * as L from 'leaflet';
 import { CommonService } from '../service/common.service';
+import { ConfigService } from '@geonature/utils/configModule/core';
 
 import 'leaflet-draw';
 import { FormControl } from '@angular/forms';
@@ -59,7 +59,7 @@ export class MapComponent implements OnInit {
    */
   @Input() center: Array<number>;
   /** Niveaux de zoom à l'initialisation de la carte */
-  @Input() zoom: number = AppConfig.MAPCONFIG.ZOOM_LEVEL;
+  @Input() zoom: number = this._configService.getSettings('MAPCONFIG.ZOOM_LEVEL');
   /** Hauteur de la carte (obligatoire) */
   @Input() height: string;
   /** Activer la barre de recherche */
@@ -76,6 +76,7 @@ export class MapComponent implements OnInit {
     private _commonService: CommonService,
     private _http: HttpClient,
     private _nominatim: NominatimService,
+    private _configService: ConfigService,
   ) {
     this.searchLocation = '';
   }
@@ -113,7 +114,7 @@ export class MapComponent implements OnInit {
     if (this.center !== undefined) {
       center = L.latLng(this.center[0], this.center[1]);
     } else {
-      center = L.latLng(AppConfig.MAPCONFIG.CENTER[0], AppConfig.MAPCONFIG.CENTER[1]);
+      center = L.latLng(this._configService.getSettings('MAPCONFIG.CENTER')[0], this._configService.getSettings('MAPCONFIG.CENTER')[1]);
     }
 
 
@@ -129,7 +130,7 @@ export class MapComponent implements OnInit {
 
     L.control.zoom({ position: 'topright' }).addTo(map);
     const baseControl = {};
-    const BASEMAP = JSON.parse(JSON.stringify(AppConfig.MAPCONFIG.BASEMAP));
+    const BASEMAP = JSON.parse(JSON.stringify(this._configService.getSettings('MAPCONFIG.BASEMAP')));
 
     BASEMAP.forEach((basemap, index) => {
       const formatedBasemap = this.formatBaseMapConfig(basemap);
@@ -170,7 +171,7 @@ export class MapComponent implements OnInit {
   }
 
   /** Retrocompatibility hack to format map config to the expected format:
-   * 
+   *
    {
     name: string,
     url: string,
