@@ -140,11 +140,12 @@ export class OcctaxFormReleveService {
     
   }
   
-  onDatasetChanged(idDataset) {    
-    let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(idDataset);
-    
-    if (dynamiqueFormDataset && dynamiqueFormDataset["FORMFIELDS"]["RELEVE"].length > 0){      
+  onDatasetChanged(idDataset) {
+    if (this.dynamicContainer) {
       this.dynamicContainer.clear(); 
+    }
+    let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(idDataset);    
+    if (dynamiqueFormDataset && dynamiqueFormDataset["FORMFIELDS"]["RELEVE"].length > 0){      
       const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(DynamicFormComponent);
       this.componentRef = this.dynamicContainer.createComponent(factory);
 

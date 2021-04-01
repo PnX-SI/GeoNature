@@ -36,13 +36,7 @@ export class OcctaxFormTaxaListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.occtaxTaxaListService.occurrences$.map(d => {
-      console.log(d);
-      
-    }).subscribe(s => {
-      console.log("la");
-      
-    })
+
     combineLatest(
       this.occtaxFormService.occtaxData,
       this.occtaxFormOccurrenceService.occurrence

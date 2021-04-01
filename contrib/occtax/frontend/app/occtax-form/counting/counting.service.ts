@@ -86,11 +86,12 @@ export class OcctaxFormCountingService {
   }
 
   generateAdditionForm(dynamicFormDatasetConfig) {
-    if(dynamicFormDatasetConfig['FORMFIELDS']['COUNTING'].length > 0){
-     //A l'initialisation du composant, on charge le formulaire dynamique
-     if (this.dynamicContainerCounting != undefined){
+    if (this.dynamicContainerCounting){
       this.dynamicContainerCounting.clear(); 
      }
+    if(dynamicFormDatasetConfig['FORMFIELDS']['COUNTING'].length > 0){
+     //A l'initialisation du composant, on charge le formulaire dynamique
+
       const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(DynamicFormComponent);
       this.componentRefCounting = this.dynamicContainerCounting.createComponent(factory);
       
