@@ -190,9 +190,11 @@
                   <div class="value">{{ occurrence?.comment || "-" }}</div>
                 </div>
 
-                <div *ngIf="occurrence.additional_fields">
-                  {{occurrence.additional_fields |json}}
+                <div *ngFor="let item of occurrence?.additional_fields | keyvalue">
+                    <div class="label"> {{item.key}} : </div>
+                    <div class="value"> {{item.value}} </div>
                 </div>
+                
 
               </div>
             </mat-tab>
@@ -349,6 +351,10 @@
                           {{ occtaxTaxaListService.getLibelleByID(counting.id_nomenclature_type_count) || "-" }}
                         </div>
                       </div>
+                      <div *ngFor="let item of counting?.additional_fields | keyvalue">
+                        <div class="label"> {{item.key}} : </div>
+                        <div class="value"> {{item.value}} </div>
+                    </div>
                       <!-- <div>
                     <div class="label">validation_status</div>
                     <div class="value"></div>

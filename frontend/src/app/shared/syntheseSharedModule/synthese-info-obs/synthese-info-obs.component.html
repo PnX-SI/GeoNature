@@ -20,6 +20,7 @@
 
 </div>
 
+
 <mat-card>
   <span *ngIf="selectedObsTaxonDetail?.nom_vern">
     {{ selectedObsTaxonDetail?.nom_vern }} -
@@ -238,7 +239,7 @@
         <td> Identifiant unique SINP </td>
         <td> {{selectedObs?.unique_id_sinp}} </td>
       </tr>
-      <tr *ngFor="let data of selectedObs?.additional_data | keyvalue:sortingFunction">
+      <tr *ngFor="let data of selectedObs?.additional_data | keyvalue">
         <td> {{data.key}} </td>
         <td *ngIf="data.value?.day"> {{data.value.day}} </td>
         <td *ngIf="!data.value?.day"> {{data.value}} </td>
