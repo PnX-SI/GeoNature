@@ -36,7 +36,9 @@
   - [x] configuration des modules (module.config.ts)
   - [x]recharge les config depuis les fichiers à l'appel de l'api
     - [x] avantage par rapport à la creation de fichiers
-
+  - [x] config des modules dans les blueprint !!
+  - [ ] reload config des mails, à tester
+  - [x] marche à priori, à tester avec des données 
 ## II - Passez à la nouvelle config partout (A faire)
 
 - Geonature

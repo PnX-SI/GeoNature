@@ -19,7 +19,7 @@ from geonature.utils.errors import (
     GeonatureApiError,
 )
 
-from geonature.utils.config import get_config, get_whole_frontend_config
+from geonature.utils.config import get_updated_frontend_config
 
 
 routes = Blueprint("gn_commons", __name__)
@@ -255,12 +255,5 @@ def api_get_config():
             }
 
     '''
-
-    # MAJ config app ????
-    config_app = get_config()
-    current_app.config.update(config_app)
-
-    # recupération de la configuration pour le frontend
-    whole_config_frontend = get_whole_frontend_config(current_app)
-
-    return whole_config_frontend
+    # get_updated_frontend_config recupère ET met à jour la config de l'appli
+    return get_updated_frontend_config(current_app)
