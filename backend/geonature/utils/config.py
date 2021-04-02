@@ -46,9 +46,10 @@ def get_updated_config(app):
 
     # Update config app 
     app.config.update({**config, **config_modules})
+
     # parametre de mail ??
-    MAIL.init_app(app)
-    DB.init_app(app)
+    # MAIL.init_app(app)
+    # DB.init_app(app)
 
     return config, config_backend, config_frontend, config_modules
 

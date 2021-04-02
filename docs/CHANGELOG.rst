@@ -5,6 +5,10 @@ CHANGELOG
 2.6.3 (unreleased)
 ------------------
 
+** Configuration
+
+* Suppression de FRONTEND.PROD_MOD (utilisatation de environnement.ts à la place)
+
 Voir https://github.com/PnX-SI/GeoNature/compare/develop
 
 **🐛 Corrections**

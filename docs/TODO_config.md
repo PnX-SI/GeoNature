@@ -47,6 +47,7 @@
 - éditer les fichiers de config depuis le site ??
   - comment sécuriser / cacher les données sensibles ? 
 
+- que faire de APP_CONFIG_TOKEN ??
 # III - fichiers custom
 
 - supprimer scss ??

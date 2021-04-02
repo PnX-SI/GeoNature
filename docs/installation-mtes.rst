@@ -165,8 +165,6 @@ Pour l'instance de pré-prod, rajouter "instance de démo" à la variable
 ::
 
     [FRONTEND]
-        # Compilation du fronend en mode production
-        PROD_MOD = true
         # Affichage du footer sur la page d'acceuil
         DISPLAY_FOOTER = true
         # affiche la carte des dernières observations basées sur la synthese
