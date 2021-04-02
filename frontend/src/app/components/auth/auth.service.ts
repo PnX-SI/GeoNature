@@ -118,7 +118,7 @@ export class AuthService {
                     window.location.href = next;
                 }
             } else if (route) {
-                this.router.navigate([route]);
+                this.router.navigateByUrl(route);
             } else {
                 this.router.navigate(['']);
             }
