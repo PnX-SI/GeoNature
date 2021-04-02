@@ -27,17 +27,9 @@ export class HomeContentComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this._moduleService.moduleSub
-    .filter(m => m!== null)
-    .subscribe(m => {
-      const gn_module = m.find(el => {
-        return el.module_code == 'GEONATURE'
-      });
-      gn_module.module_label = 'Accueil'
-      this._globalSub.currentModuleSubject.next(gn_module);
-      
-      
-    })
+    let gn_module = this._moduleService.getModule('GEONATURE');
+    gn_module.module_label = 'Accueil';
+    this._globalSub.currentModuleSubject.next(gn_module);
     
     this._SideNavService.sidenav.open();
     this.appConfig = AppConfig;

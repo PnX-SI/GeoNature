@@ -184,7 +184,7 @@
           </small>
           <br>
           <pnx-multiselect
-            [values]="moduleService.modules"
+            [values]="moduleService.getModules()"
             [parentFormControl]="datasetForm.get('modules')"
             keyLabel="module_label"
             keyValue="id_module"

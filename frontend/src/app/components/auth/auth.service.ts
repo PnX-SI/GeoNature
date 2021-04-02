@@ -97,12 +97,18 @@ export class AuthService {
           this.loginError = false;
           // Now that we are logged, we fetch the cruved again, and redirect once received
           this.cruvedService.fetchCruved().subscribe(() => {
-            let next_url = '';
-            this.route.queryParams.subscribe(params => {
-                next_url = params['next'];
-            });
-            if (next_url) {
-                window.location.href = next_url;
+            let next = this.route.snapshot.queryParams['next'];
+            let route = this.route.snapshot.queryParams['route'];
+            // next means redirect to url
+            // route means navigate to angular route
+            if (next) {
+                if (route) {
+                    window.location.href = next + '#' + route;
+                } else {
+                    window.location.href = next;
+                }
+            } else if (route) {
+                this.router.navigate([route]);
             } else {
                 this.router.navigate(['']);
             }
