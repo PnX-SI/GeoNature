@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable()
 export class ModuleService {
@@ -10,7 +10,9 @@ export class ModuleService {
   constructor(private _api: DataFormService) { }
 
   fetchModules(): Observable<any> {
+    // see CruvedStoreService.fetchCruved comments about the catchError
     return this._api.getModulesList([]).pipe(
+      catchError(err => of([])),
       map((modules) => {
         this.modules = modules;
         return modules;
