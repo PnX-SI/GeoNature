@@ -5,7 +5,7 @@ import { MapService } from '@geonature_common/map/map.service';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import * as L from 'leaflet';
 
 @Component({
@@ -18,11 +18,10 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
   public leafletDrawOptions = leafletDrawOption;
   public currentLeafletDrawCoord: any;
   public firstFileLayerMessage = true;
-  public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
+  public appConfig: any;
+  public SYNTHESE_CONFIG: any;
   // set a new featureGroup - cluster or not depending of the synthese config
-  public cluserOrSimpleFeatureGroup = AppConfig.SYNTHESE.ENABLE_LEAFLET_CLUSTER
-    ? (L as any).markerClusterGroup()
-    : new L.FeatureGroup();
+  public cluserOrSimpleFeatureGroup: any;
 
   originStyle = {
     color: '#3388ff',
@@ -41,8 +40,16 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     public mapListService: MapListService,
     private _ms: MapService,
     public formService: SyntheseFormService,
-    private _commonService: CommonService
-  ) {}
+    private _commonService: CommonService,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();
+    this.SYNTHESE_CONFIG = this.appConfig.SYNTHESE;
+    // set a new featureGroup - cluster or not depending of the synthese config
+    this.cluserOrSimpleFeatureGroup = this.appConfig.SYNTHESE.ENABLE_LEAFLET_CLUSTER
+      ? (L as any).markerClusterGroup()
+      : new L.FeatureGroup();
+  }
 
   ngOnInit() {
     this.leafletDrawOptions.draw.rectangle = true;
@@ -135,7 +142,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     }
     if (change && change.inputSyntheseData.currentValue) {
       // regenerate the featuregroup
-      this.cluserOrSimpleFeatureGroup = AppConfig.SYNTHESE.ENABLE_LEAFLET_CLUSTER
+      this.cluserOrSimpleFeatureGroup = this.appConfig.SYNTHESE.ENABLE_LEAFLET_CLUSTER
         ? (L as any).markerClusterGroup()
         : new L.FeatureGroup();
 

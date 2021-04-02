@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { ValidationDataService } from "../../services/data.service";
 import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
-import { AppConfig } from "@geonature_config/app.config";
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { ModuleConfig } from "../../module.config";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
@@ -40,13 +40,18 @@ export class ValidationModalInfoObsComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private _fb: FormBuilder,
     private _commonService: CommonService,
-  ) {
+    private _configService: ConfigService,
+    ) {
+    this.appConfig = this._configService.getSettings();
+
     // form used for changing validation status
     this.statusForm = this._fb.group({
       statut: ["", Validators.required],
       comment: [""]
     });
   }
+
+  public appConfig: any; 
 
   ngOnInit() {
 

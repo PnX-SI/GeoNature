@@ -4,12 +4,13 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
 import { TreeModel } from 'angular-tree-component';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { formatTaxonTree } from '@geonature_common/form/taxon-tree/taxon-tree.service';
 
 @Injectable()
 export class TaxonAdvancedStoreService {
-  public AppConfig = AppConfig;
+  public appConfig: any;
+
   public taxonTree: any;
   public treeModel: TreeModel;
   public taxonTreeState: any;
@@ -23,9 +24,13 @@ export class TaxonAdvancedStoreService {
     private _dataService: DataFormService,
     private _validationDataService: SyntheseDataService,
     private _formService: SyntheseFormService,
-    private _formGen: DynamicFormService
+    private _formGen: DynamicFormService,
+    private _configService: ConfigService,
   ) {
-    if (AppConfig.SYNTHESE.DISPLAY_TAXON_TREE) {
+    this.appConfig = this._configService.getSettings();!this.appConfig
+ && console.log('this.appConfig', this.appConfig);
+
+    if (this.appConfig.SYNTHESE.DISPLAY_TAXON_TREE) {
       this._validationDataService.getTaxonTree().subscribe(data => {
         this.taxonTree = formatTaxonTree(data);
       });
@@ -36,7 +41,7 @@ export class TaxonAdvancedStoreService {
       // display only the taxhub attributes set in the config
       this.taxhubAttributes = attrs
         .filter(attr => {
-          return AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB.indexOf(attr.id_attribut) !== -1;
+          return this.appConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB.indexOf(attr.id_attribut) !== -1;
         })
         .map(attr => {
           // format attributes to fit with the GeoNature dynamicFormComponent

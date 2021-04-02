@@ -5,7 +5,7 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
 import { FormGroup } from '@angular/forms';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 
 @Component({
   selector: 'pnx-validation-taxon-advanced',
@@ -15,8 +15,9 @@ import { AppConfig } from '@geonature_config/app.config';
 })
 export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   @ViewChild('tree') treeComponent: TreeComponent;
-  public AppConfig = AppConfig;
-  public URL_AUTOCOMPLETE = AppConfig.API_TAXHUB + '/taxref/search/lb_nom';
+  public appConfig: any;
+
+  public URL_AUTOCOMPLETE: any;
   public taxonsTree;
   public treeOptions;
   public selectedNodes = [];
@@ -30,8 +31,12 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   constructor(
     public activeModal: NgbActiveModal,
     public formService: SyntheseFormService,
-    public storeService: TaxonAdvancedStoreService
+    public storeService: TaxonAdvancedStoreService,
+    private _configService: ConfigService,
   ) {
+    this.appConfig = this._configService.getSettings();
+    this.URL_AUTOCOMPLETE = this.appConfig.API_TAXHUB + '/taxref/search/lb_nom';
+
     const actionMapping: IActionMapping = {
       mouse: {
         click: (tree, node, $event) => {},

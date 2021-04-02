@@ -3,7 +3,7 @@ import { FormControl } from "@angular/forms";
 import { BehaviorSubject } from "rxjs";
 import { filter, tap, skip } from "rxjs/operators";
 
-import { AppConfig } from "@geonature_config/app.config";
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
@@ -24,14 +24,19 @@ export class OcctaxFormService {
   public stayOnFormInterface = new FormControl(false);
   public previousReleve = null;
 
+  public appConfig: any; 
+
   constructor(
     private _http: HttpClient,
     private _router: Router,
     private _auth: AuthService,
     private _commonService: CommonService,
-    private _dataS: OcctaxDataService
-  ) {
+    private _dataS: OcctaxDataService,
+    private _configService: ConfigService,
+    ) {
     this.currentUser = this._auth.getCurrentUser();
+    this.appConfig = this._configService.getSettings();!this.appConfig 
+ && console.log('this.appConfig', this.appConfig);
 
     //observation de l'URL
     this.id_releve_occtax
@@ -73,7 +78,7 @@ export class OcctaxFormService {
       params = params.append("group2_inpn", group2_inpn);
     }
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/occtax/defaultNomenclatures`,
+      `${this.appConfig.API_ENDPOINT}/occtax/defaultNomenclatures`,
       {
         params: params,
       }

@@ -9,7 +9,7 @@ import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormReleveService } from "./releve.service";
 import { OcctaxFormMapService } from "../map/map.service";
-import { AppConfig } from "@geonature_config/app.config";
+import { ConfigService } from '@geonature/utils/configModule/core';
 
 @Component({
   selector: "pnx-occtax-form-releve",
@@ -21,7 +21,8 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public geojson: GeoJSON;
   public userDatasets: Array<any>;
   public releveForm: FormGroup;
-  public AppConfig = AppConfig;
+  public appConfig: any;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -29,8 +30,10 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     private occtaxFormReleveService: OcctaxFormReleveService,
     private occtaxFormMapService: OcctaxFormMapService,
     private commonService: CommonService,
-    private _dataService: DataFormService
-  ) {
+    private _dataService: DataFormService,
+    private _configService: ConfigService,
+    ) {
+    this.appConfig = this._configService.getSettings();
     this.occtaxConfig = ModuleConfig;
   }
 
@@ -107,4 +110,6 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
       this.occtaxFormReleveService.submitReleve();
     }
   }
+}
+}
 }

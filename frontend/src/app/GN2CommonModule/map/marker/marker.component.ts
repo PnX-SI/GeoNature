@@ -3,7 +3,7 @@ import { Map, Marker } from 'leaflet';
 import { BehaviorSubject } from 'rxjs';
 import { filter } from 'rxjs/operators';
 import { MapService } from '../map.service';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import * as L from 'leaflet';
 import { CommonService } from '../../service/common.service';
 import { GeoJson } from 'togeojson';
@@ -21,6 +21,7 @@ export class MarkerComponent implements OnInit, OnChanges {
   public map: Map;
   public previousCoord: Array<any>;
   private _coordinates: BehaviorSubject<Array<any>> = new BehaviorSubject(null);
+  public appConfig: any;
   get coordinates(): Array<any> {
     return this._coordinates.getValue();
   }
@@ -33,11 +34,17 @@ export class MarkerComponent implements OnInit, OnChanges {
   /** Contrôle si le marker est activé par défaut au lancement du composant */
   @Input() defaultEnable = true;
   @Output() markerChanged = new EventEmitter<GeoJson>();
-  constructor(public mapservice: MapService, private _commonService: CommonService) {}
+  constructor(
+    public mapservice: MapService,
+    private _commonService: CommonService,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();
+  }
 
   ngOnInit() {
     this.map = this.mapservice.map;
-    this.zoomLevel = this.zoomLevel || AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE;
+    this.zoomLevel = this.zoomLevel || this.appConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE;
     this.setMarkerLegend();
     // activation or not of the marker
     if (this.defaultEnable) {

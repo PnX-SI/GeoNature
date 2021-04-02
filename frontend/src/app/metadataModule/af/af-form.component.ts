@@ -3,7 +3,7 @@ import { FormGroup, FormBuilder, FormArray, Validators } from '@angular/forms';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { MetadataFormService } from '../services/metadata-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -21,6 +21,7 @@ export class AfFormComponent implements OnInit {
   public cor_af_actor: FormArray;
   public id_af: number;
   public af: any;
+  public appConfig;
 
   constructor(
     private _fb: FormBuilder,
@@ -32,8 +33,11 @@ export class AfFormComponent implements OnInit {
     private _api: HttpClient,
     private _router: Router,
     private _toaster: ToastrService,
-    private _dateParser: NgbDateParserFormatter
-  ) {}
+    private _dateParser: NgbDateParserFormatter,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();
+  }
 
   ngOnInit() {
     this._route.params.subscribe(params => {
@@ -132,7 +136,7 @@ export class AfFormComponent implements OnInit {
       }
 
       af['cor_af_actor'] = update_cor_af_actor;
-      this._api.post<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework`, af).subscribe(
+      this._api.post<any>(`${this.appConfig.API_ENDPOINT}/meta/acquisition_framework`, af).subscribe(
         data => {
           this._router.navigate(['/metadata']);
           this._commonService.translateToaster('success', 'MetaData.AFadded');
@@ -149,7 +153,7 @@ export class AfFormComponent implements OnInit {
   }
 
   getPdf() {
-    const url = `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${
+    const url = `${this.appConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${
       this.af.id_acquisition_framework
     }`;
     window.open(url);

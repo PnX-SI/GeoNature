@@ -17,7 +17,7 @@ import { ModuleConfig } from "../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { FormGroup } from "@angular/forms";
 import { GenericFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
-import { AppConfig } from "@geonature_config/app.config";
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { GlobalSubService } from "@geonature/services/global-sub.service";
 import { Subscription } from "rxjs/Subscription";
 import * as moment from "moment";
@@ -37,6 +37,7 @@ import { OcctaxFormService } from "../occtax-form/occtax-form.service";
 })
 export class OcctaxMapListComponent
   implements OnInit, OnDestroy, AfterViewInit {
+  public appConfig = this._configService().getSettings() 
   public userCruved: any;
   public displayColumns: Array<any>;
   public availableColumns: Array<any>;
@@ -73,9 +74,11 @@ export class OcctaxMapListComponent
     public mediaService: MediaService,
     private _releveFormService: OcctaxFormReleveService,
     private _occurrenceFormService: OcctaxFormOccurrenceService,
-    private _occtaxFormService: OcctaxFormService
-
-  ) { }
+    private _occtaxFormService: OcctaxFormService,
+    private _configService: ConfigService,
+  ) { 
+    this.appConfig = this._configService.getSettings();
+  }
 
   ngOnInit() {
     // set zoom on layer to true
@@ -230,7 +233,7 @@ export class OcctaxMapListComponent
     let queryString = this.mapListService.urlQuery.delete("limit");
     queryString = queryString.delete("offset");
     const url = `${
-      AppConfig.API_ENDPOINT
+      this.appConfig.API_ENDPOINT
       }/occtax/export?${queryString.toString()}&format=${format}`;
 
     document.location.href = url;

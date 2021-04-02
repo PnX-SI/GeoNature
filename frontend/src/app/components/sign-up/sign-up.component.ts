@@ -1,7 +1,8 @@
+import { appConfig } from './../../../conf/app.config';
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from '../auth/auth.service';
 import { similarValidator } from '@geonature/services/validators/validators';
@@ -17,16 +18,20 @@ export class SignUpComponent implements OnInit {
   dynamicFormGroup: FormGroup;
   public disableSubmit = false;
   public formControlBuilded = false;
-  public FORM_CONFIG = AppConfig.ACCOUNT_MANAGEMENT.ACCOUNT_FORM;
-
+  public appConfig: any
+  public FORM_CONFIG: any
   constructor(
     private fb: FormBuilder,
     private _authService: AuthService,
     private _router: Router,
     private _toasterService: ToastrService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _configService: ConfigService,
   ) {
-    if (!(AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false)) {
+    this.appConfig = this._configService.getSettings();
+    this.FORM_CONFIG = this.appConfig.ACCOUNT_MANAGEMENT.ACCOUNT_FORM;
+
+    if (!(this.appConfig['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false)) {
       this._router.navigate(['/login']);
     }
   }
@@ -58,14 +63,14 @@ export class SignUpComponent implements OnInit {
       this.disableSubmit = true;
       const finalForm = Object.assign({}, this.form.value);
       // concatenate two forms
-      if (AppConfig.ACCOUNT_MANAGEMENT.ACCOUNT_FORM.length > 0) {
+      if (this.appConfig.ACCOUNT_MANAGEMENT.ACCOUNT_FORM.length > 0) {
         finalForm['champs_addi'] = this.dynamicFormGroup.value;
       }
       this._authService
         .signupUser(finalForm)
         .subscribe(
           res => {
-            const callbackMessage = AppConfig.ACCOUNT_MANAGEMENT.AUTO_ACCOUNT_CREATION
+            const callbackMessage = this.appConfig.ACCOUNT_MANAGEMENT.AUTO_ACCOUNT_CREATION
               ? 'AutoAccountEmailConfirmation'
               : 'AdminAccountEmailConfirmation';
             this._commonService.translateToaster('info', callbackMessage);

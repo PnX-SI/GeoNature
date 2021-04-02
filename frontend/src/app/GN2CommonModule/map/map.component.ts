@@ -69,6 +69,7 @@ export class MapComponent implements OnInit {
   searchLocation: string;
   public searching = false;
   public searchFailed = false;
+  public appConfig: any;
   public locationControl = new FormControl();
   public map: Map;
   constructor(
@@ -78,6 +79,7 @@ export class MapComponent implements OnInit {
     private _nominatim: NominatimService,
     private _configService: ConfigService,
   ) {
+    this.appConfig = this._configService.getSettings();
     this.searchLocation = '';
   }
 
@@ -114,7 +116,7 @@ export class MapComponent implements OnInit {
     if (this.center !== undefined) {
       center = L.latLng(this.center[0], this.center[1]);
     } else {
-      center = L.latLng(this._configService.getSettings('MAPCONFIG.CENTER')[0], this._configService.getSettings('MAPCONFIG.CENTER')[1]);
+      center = L.latLng(this.appConfig.MAPCONFIG.CENTER[0], this.appConfig.MAPCONFIG.CENTER[1]);
     }
 
 
@@ -130,7 +132,7 @@ export class MapComponent implements OnInit {
 
     L.control.zoom({ position: 'topright' }).addTo(map);
     const baseControl = {};
-    const BASEMAP = JSON.parse(JSON.stringify(this._configService.getSettings('MAPCONFIG.BASEMAP')));
+    const BASEMAP = JSON.parse(JSON.stringify(this.appConfig.MAPCONFIG.BASEMAP));
 
     BASEMAP.forEach((basemap, index) => {
       const formatedBasemap = this.formatBaseMapConfig(basemap);

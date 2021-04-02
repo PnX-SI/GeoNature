@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 
 @Component({
@@ -9,10 +9,18 @@ import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.serv
   providers: []
 })
 export class AdminComponent implements OnInit {
-  URL_NOMENCLATURE_ADMIN = AppConfig.API_ENDPOINT + '/admin/';
+  public appConfig: any;
+  URL_NOMENCLATURE_ADMIN: any;
+  URL_BACKOFFICE_PERM: any;
 
-  URL_BACKOFFICE_PERM = AppConfig.API_ENDPOINT + '/permissions_backoffice/users';
-  constructor(public _cruvedStore: CruvedStoreService) {}
+  constructor(
+    public _cruvedStore: CruvedStoreService,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();
+    this.URL_NOMENCLATURE_ADMIN = this.appConfig.API_ENDPOINT + '/admin/';
+    this.URL_BACKOFFICE_PERM = this.appConfig.API_ENDPOINT + '/permissions_backoffice/users';
+  }
 
   ngOnInit() {}
 }

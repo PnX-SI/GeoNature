@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.service';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 
 @Component({
   selector: 'pnx-dynamic-form',
@@ -23,12 +23,17 @@ export class DynamicFormComponent implements OnInit {
 
   @Output() change = new EventEmitter<any>();
 
-  public appConfig = AppConfig;
+  public appConfig: any;
   public rand = Math.ceil(Math.random() * 1e10);
 
   public formDefComp = {};
 
-  constructor(private _dynformService: DynamicFormService) { }
+  constructor(
+    private _dynformService: DynamicFormService,
+    private _configService: ConfigService,
+    ) {
+    this.appConfig = this._configService.getSettings();
+    }
 
   ngOnInit() {
     this.setFormDefComp();

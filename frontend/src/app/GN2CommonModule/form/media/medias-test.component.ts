@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { Media } from './media';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MediaService } from '@geonature_common/service/media.service';
 
@@ -14,7 +14,7 @@ import { MediaService } from '@geonature_common/service/media.service';
 export class MediasTestComponent implements OnInit {
   public mediaForm: FormGroup;
 
-  public appConfig = AppConfig;
+  public appConfig: any;
 
   bInitialized = false;
 
@@ -39,8 +39,11 @@ export class MediasTestComponent implements OnInit {
   constructor(
     private _route: ActivatedRoute,
     public ms: MediaService,
-    private _formBuilder: FormBuilder
-  ) {}
+    private _formBuilder: FormBuilder,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();
+  }
 
   ngOnInit() {
     // test TODO remove

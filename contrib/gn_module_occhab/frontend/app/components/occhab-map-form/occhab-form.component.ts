@@ -8,7 +8,7 @@ import { MapService } from "@geonature_common/map/map.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs/Subscription";
 import { CommonService } from "@geonature_common/service/common.service";
-import { AppConfig } from "@geonature_config/app.config";
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { ModuleConfig } from "../../module.config";
 import { filter } from "rxjs/operators";
 @Component({
@@ -25,7 +25,7 @@ export class OccHabFormComponent implements OnInit {
   public MAP_SMALL_HEIGHT = "50vh !important;";
   public MAP_FULL_HEIGHT = "87vh";
   public mapHeight = this.MAP_FULL_HEIGHT;
-  public appConfig = AppConfig;
+  public appConfig: any;
   public moduleConfig = ModuleConfig;
   public showHabForm = false;
   public showTabHab = false;
@@ -46,8 +46,11 @@ export class OccHabFormComponent implements OnInit {
     private _router: Router,
     private _commonService: CommonService,
     private _gnDataService: DataFormService,
-    private _mapService: MapService
-  ) { }
+    private _mapService: MapService,
+    private _configService: ConfigService,
+    ) {
+      this.appConfig = this._configService.getSettings();
+    }
 
   ngOnInit() {
     this.leafletDrawOptions;

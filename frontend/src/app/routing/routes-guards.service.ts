@@ -10,16 +10,23 @@ import { AuthService } from '@geonature/components/auth/auth.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { GlobalSubService } from '../services/global-sub.service';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 
 @Injectable()
 export class ModuleGuardService implements CanActivate {
+
+  public appConfig: any;
+
   constructor(
     private _router: Router,
     private _moduleService: ModuleService,
     private _globalSubService: GlobalSubService,
-    private _commonService: CommonService
-  ) {}
+    private _commonService: CommonService,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();!this.appConfig
+ && console.log('this.appConfig', this.appConfig);
+  }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const moduleName = route.data['module_code'];
@@ -41,11 +48,16 @@ export class ModuleGuardService implements CanActivate {
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild {
+  public appConfig: any;
   constructor(
     private _authService: AuthService,
     private _router: Router,
-    private _moduleService: ModuleService
-  ) {}
+    private _moduleService: ModuleService,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();!this.appConfig
+ && console.log('this.appConfig', this.appConfig);
+  }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this._authService.getToken() === null) {
@@ -68,10 +80,17 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
 @Injectable()
 export class SignUpGuard implements CanActivate {
-  constructor(private _router: Router) {}
+  public appConfig: any;
+  constructor(
+    private _router: Router,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();!this.appConfig
+ && console.log('this.appConfig', this.appConfig);
+  }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false) {
+    if (this.appConfig['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false) {
       return true;
     } else {
       this._router.navigate(['/login']);
@@ -82,10 +101,19 @@ export class SignUpGuard implements CanActivate {
 
 @Injectable()
 export class UserManagementGuard implements CanActivate {
-  constructor(private _router: Router) {}
+
+  public appConfig: any;
+
+  constructor(
+    private _router: Router,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();!this.appConfig
+ && console.log('this.appConfig', this.appConfig);
+  }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false) {
+    if (this.appConfig['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false) {
       return true;
     } else {
       this._router.navigate(['/login']);

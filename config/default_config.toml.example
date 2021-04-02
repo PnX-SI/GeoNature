@@ -154,9 +154,6 @@ MAIL_ON_ERROR = false
 
 # Configuration générale de l'interface de GeoNature
 [FRONTEND]
-    # En mode production (=true) moins de message dans la Console navigateur
-    PROD_MOD = true
-
     # Affiche le composant 'custom/components/footer' sur la page d'accueil
     DISPLAY_FOOTER = false
 

@@ -4,6 +4,7 @@ import { MapService } from '../map.service';
 import { MapListService } from '../../map-list/map-list.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '../../service/common.service';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import * as L from 'leaflet';
 
 /**
@@ -21,9 +22,10 @@ export class GPSComponent extends MarkerComponent implements OnInit {
     public mapService: MapService,
     public modalService: NgbModal,
     public commonService: CommonService,
-    private _mapListServive: MapListService
+    public configService: ConfigService,
+    private _mapListServive: MapListService,
   ) {
-    super(mapService, commonService);
+    super(mapService, commonService, configService);
   }
 
   ngOnInit() {

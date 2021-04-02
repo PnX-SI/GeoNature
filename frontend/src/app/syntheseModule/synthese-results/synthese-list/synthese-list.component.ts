@@ -14,7 +14,7 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { HttpParams } from '@angular/common/http/src/params';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
@@ -27,7 +27,8 @@ import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule
   styleUrls: ['synthese-list.component.scss']
 })
 export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
-  public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
+  public appConfig: any
+  public SYNTHESE_CONFIG: any;
   public selectedObs: any;
   public selectObsTaxonInfo: any;
   public selectedObsTaxonDetail: any;
@@ -49,8 +50,12 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     private _fs: SyntheseFormService,
     public sanitizer: DomSanitizer,
     public ref: ChangeDetectorRef,
-    public _cruvedStore: CruvedStoreService
-  ) {}
+    public _cruvedStore: CruvedStoreService,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();
+    this.SYNTHESE_CONFIG = this.appConfig.SYNTHESE;
+  }
 
   ngOnInit() {
     // get wiewport height to set the number of rows in the tabl

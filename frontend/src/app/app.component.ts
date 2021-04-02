@@ -6,7 +6,7 @@ import localeZh from '@angular/common/locales/zh';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AuthService } from '@geonature/components/auth/auth.service';
-import { AppConfig } from '../conf/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 
 
 @Component({
@@ -15,17 +15,21 @@ import { AppConfig } from '../conf/app.config';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  public appConfig;
   constructor(
     private _authService: AuthService,
     private translate: TranslateService,
+    private _configService: ConfigService,
   ) {
+    this.appConfig = this._configService.getSettings();
+
     // Register all locales (default 'en') used by GeoNature for Angular Pipes
     registerLocaleData(localeFr, 'fr');
     registerLocaleData(localeZh, 'zh');
 
     translate.addLangs(['en', 'fr', 'zh']);
-    translate.setDefaultLang(AppConfig.DEFAULT_LANGUAGE);
-    translate.use(AppConfig.DEFAULT_LANGUAGE);
+    translate.setDefaultLang(this.appConfig.DEFAULT_LANGUAGE);
+    translate.use(this.appConfig.DEFAULT_LANGUAGE);
   }
 
   ngOnInit() {}

@@ -46,7 +46,7 @@
       [parentFormControl]="formService.searchForm.controls.cd_nom"
       [idList]="500"
       [charNumber]="3"
-      [listLength]="AppConfig.SYNTHESE.TAXON_RESULT_NUMBER"
+      [listLength]="appConfig.SYNTHESE.TAXON_RESULT_NUMBER"
       [apiEndPoint]="taxonApiEndPoint"
       (onChange)=formService.getCurrentTaxon($event)
     >
@@ -173,10 +173,10 @@
   <fieldset>
     <legend> Qui ?</legend>
 
-    <ng-container *ngIf="AppConfig.SYNTHESE.SEARCH_OBSERVER_WITH_LIST; else observersTxtBlock">
+    <ng-container *ngIf="appConfig.SYNTHESE.SEARCH_OBSERVER_WITH_LIST; else observersTxtBlock">
       <pnx-observers
         [parentFormControl]="formService.searchForm.get('observers_list')"
-        [idMenu]="AppConfig.SYNTHESE.ID_SEARCH_OBSERVER_LIST"
+        [idMenu]="appConfig.SYNTHESE.ID_SEARCH_OBSERVER_LIST"
         [label]="'Releve.Observers' | translate"
         [bindAllItem]="true"
       >

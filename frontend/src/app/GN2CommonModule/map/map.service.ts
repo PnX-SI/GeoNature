@@ -5,13 +5,14 @@ import { Subject, Observable } from 'rxjs';
 
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { CommonService } from '../service/common.service';
 import { Feature } from 'geojson';
 
 @Injectable()
 export class MapService {
   public map: Map;
+  public appConfig: any;
   public baseMaps: any;
   private currentLayer: GeoJSON;
   public marker: Marker;
@@ -52,7 +53,13 @@ export class MapService {
     color: 'green'
   };
 
-  constructor(private http: HttpClient, private _commonService: CommonService) {
+  constructor(
+    private http: HttpClient,
+    private _commonService: CommonService,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();!this.appConfig
+ && console.log('this.appConfig', this.appConfig);
     this.fileLayerFeatureGroup = new L.FeatureGroup();
   }
 
@@ -217,7 +224,7 @@ export class MapService {
       };
       this.setGeojsonCoord(geojson);
       this.marker.on('moveend', (event: L.LeafletMouseEvent) => {
-        if (this.map.getZoom() < AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE) {
+        if (this.map.getZoom() < this.appConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE) {
           this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         } else {
           markerCoord = this.marker.getLatLng();
@@ -262,7 +269,7 @@ export class MapService {
   //----------------Geofit additional code map.service.ts
   //liste des lieux
   /*getPlaces(): Observable<any> {
-  return this.http.get<any>(`${AppConfig.API_ENDPOINT}/occtax/places`);
+  return this.http.get<any>(`${this.appConfig.API_ENDPOINT}/occtax/places`);
 }*/
   /*
 //Afficher lieu
@@ -275,13 +282,13 @@ drawPlace(place:GeoJSON.Feature){
   /*
 // Supprimer lieu
 deletePlace(nom:String): Observable<{}> {
-const url=`${AppConfig.API_ENDPOINT}/occtax/delPlace/${nom}`;
+const url=`${this.appConfig.API_ENDPOINT}/occtax/delPlace/${nom}`;
 return this.http.delete(url);
 }
 
   //Ajouter lieu
   addPlace(place:GeoJSON.Feature): Observable<any>{
-      
-    return this.http.post<GeoJSON.Feature>(`${AppConfig.API_ENDPOINT}/occtax/addPlace`,place);
+
+    return this.http.post<GeoJSON.Feature>(`${this.appConfig.API_ENDPOINT}/occtax/addPlace`,place);
   } */
 }

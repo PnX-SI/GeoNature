@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
@@ -23,12 +23,12 @@ export class SyntheseInfoObsComponent implements OnInit {
   public selectedObsTaxonDetail: any;
   public selectObsTaxonInfo;
   public formatedAreas = [];
-  public CONFIG = AppConfig;
+  public appConfig: any;
+
   public isLoading = false;
   public email;
   public mailto: String;
 
-  public APP_CONFIG = AppConfig;
 
   public validationColor = {
     '0': '#FFFFFF',
@@ -44,8 +44,11 @@ export class SyntheseInfoObsComponent implements OnInit {
     private _dataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
     public mediaService: MediaService,
-    private _commonService: CommonService
-  ) { }
+    private _commonService: CommonService,
+    private _configService: ConfigService,
+    ) {
+      this.appConfig = this._configService.getSettings();
+    }
 
   ngOnInit() {
     this.loadOneSyntheseReleve(this.idSynthese);
@@ -96,7 +99,7 @@ export class SyntheseInfoObsComponent implements OnInit {
         }
 
         this._gnDataService
-          .getTaxonAttributsAndMedia(data.cd_nom, AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB)
+          .getTaxonAttributsAndMedia(data.cd_nom, this.appConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB)
           .subscribe(taxAttr => {
             this.selectObsTaxonInfo = taxAttr;
           });
@@ -121,7 +124,7 @@ export class SyntheseInfoObsComponent implements OnInit {
 
       if (this.selectedObs.source.url_source) {
         d['data_link'] = "Lien vers l'observation : " + [
-          this.APP_CONFIG.URL_APPLICATION,
+          this.appConfig.URL_APPLICATION,
           this.selectedObs.source.url_source,
           this.selectedObs.entity_source_pk_value
         ].join("/");

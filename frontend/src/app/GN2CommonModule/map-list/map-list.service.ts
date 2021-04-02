@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { AppConfig } from '../../../conf/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { CommonService } from '@geonature_common/service/common.service';
 import * as L from 'leaflet';
 import { FormControl } from '@angular/forms';
@@ -10,6 +10,7 @@ import { Map } from 'leaflet';
 
 @Injectable()
 export class MapListService {
+  public appConfig: any;
   public tableSelected = new Subject<any>();
   public mapSelected = new Subject<any>();
   public onMapClik$: Observable<string> = this.mapSelected.asObservable();
@@ -55,8 +56,11 @@ export class MapListService {
   constructor(
     private _http: HttpClient,
     private _commonService: CommonService,
-    private _ms: MapService
-  ) {
+    private _ms: MapService,
+    private _configService: ConfigService,
+    ) {
+    this.appConfig = this._configService.getSettings();!this.appConfig
+ && console.log('this.appConfig', this.appConfig);
     this.columns = [];
     this.page.pageNumber = 0;
     this.page.size = 12;
@@ -135,14 +139,14 @@ export class MapListService {
   dataService() {
     this.isLoading = true;
     return this._http
-      .get<any>(`${AppConfig.API_ENDPOINT}/${this.endPoint}`, { params: this.urlQuery })
+      .get<any>(`${this.appConfig.API_ENDPOINT}/${this.endPoint}`, { params: this.urlQuery })
       .delay(200)
       .finally(() => (this.isLoading = false));
   }
 
   loadData() {
     this.dataService().subscribe(
-      data => {        
+      data => {
         this.page.totalElements = data.total;
         this.page.itemPerPage = parseInt(this.urlQuery.get('limit'));
         this.page.pageNumber = data.page;
@@ -287,7 +291,7 @@ export class MapListService {
   }
 
   loadTableData(data, customCallBack?) {
-    
+
     this.tableData = [];
     if (customCallBack) {
       data.features.forEach(feature => {
@@ -301,7 +305,7 @@ export class MapListService {
       data.features.forEach(feature => {
         this.tableData.push(feature.properties);
       });
-    }    
+    }
   }
 }
 

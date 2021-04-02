@@ -7,9 +7,9 @@ import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AuthService, User } from '../../components/auth/auth.service';
-import { AppConfig } from '../../../conf/app.config';
 import { GlobalSubService } from '../../services/global-sub.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
+import { ConfigService } from '@geonature/utils/configModule/core';
 
 
 @Component({
@@ -34,12 +34,12 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     public sideNavService: SideNavService,
     private globalSubService: GlobalSubService,
     private router: Router,
-  ) {}
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();
+  }
 
   ngOnInit() {
-    // Inject App config to use in the template
-    this.appConfig = AppConfig;
-
     // Subscribe to router event
     this.extractLocaleFromUrl();
 

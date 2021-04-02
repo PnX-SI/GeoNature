@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { SyntheseStoreService } from '@geonature_common/form/synthese-form/synthese-store.service';
@@ -10,7 +10,8 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
   templateUrl: 'modal-download.component.html'
 })
 export class SyntheseModalDownloadComponent {
-  public syntheseConfig = AppConfig.SYNTHESE;
+  public syntheseConfig: any;
+  public appConfig: any;
 
   @Input() tooManyObs = false;
 
@@ -18,8 +19,12 @@ export class SyntheseModalDownloadComponent {
     public activeModal: NgbActiveModal,
     public _dataService: SyntheseDataService,
     private _fs: SyntheseFormService,
-    private _storeService: SyntheseStoreService
-  ) {}
+    private _storeService: SyntheseStoreService,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();
+    this.syntheseConfig = this.appConfig.SYNTHESE;
+  }
 
   downloadObservations(format) {
     this._dataService.downloadObservations(this._storeService.idSyntheseList, format);
@@ -32,7 +37,7 @@ export class SyntheseModalDownloadComponent {
   downloadStatusOrMetadata(url, filename) {
     const params = this._fs.formatParams();
     this._dataService.downloadStatusOrMetadata(
-      `${AppConfig.API_ENDPOINT}/${url}`,
+      `${this.appConfig.API_ENDPOINT}/${url}`,
       'csv',
       params,
       filename

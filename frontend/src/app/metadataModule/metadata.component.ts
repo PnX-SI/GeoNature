@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { PageEvent, MatPaginator, MatPaginatorIntl } from '@angular/material';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { Router, NavigationExtras } from "@angular/router";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
@@ -59,7 +59,7 @@ export class MetadataComponent implements OnInit {
   public isLoading = false;
   public datasetNbObs = null;
 
-  pageSize: number = AppConfig.METADATA.NB_AF_DISPLAYED;
+  pageSize: number;
   activePage: number = 0;
   pageSizeOptions: Array<number> = [10, 25, 50, 100];
 
@@ -67,7 +67,7 @@ export class MetadataComponent implements OnInit {
   afPublishModalId: number;
   afPublishModalLabel: string;
   afPublishModalContent: string;
-  APP_CONFIG = AppConfig;
+  public appConfig =this._configService.getSettings() ;
 
   constructor(
     public _cruvedStore: CruvedStoreService,
@@ -76,8 +76,13 @@ export class MetadataComponent implements OnInit {
     private modal: NgbModal,
     public searchFormService: MetadataSearchFormService,
     private _commonService: CommonService,
-    private _syntheseDataService: SyntheseDataService
-  ) { }
+    private _syntheseDataService: SyntheseDataService,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();
+    this.pageSize = this.appConfig.METADATA.NB_AF_DISPLAYED;
+
+  }
 
   ngOnInit() {
     this.getAcquisitionFrameworksAndDatasets();
@@ -87,8 +92,8 @@ export class MetadataComponent implements OnInit {
     this._dfs.getRoles({ 'group': false }).subscribe(data => {
       this.roles = data;
     });
-    this.afPublishModalLabel = AppConfig.METADATA.CLOSED_MODAL_LABEL;
-    this.afPublishModalContent = AppConfig.METADATA.CLOSED_MODAL_CONTENT;
+    this.afPublishModalLabel = this.appConfig.METADATA.CLOSED_MODAL_LABEL;
+    this.afPublishModalContent = this.appConfig.METADATA.CLOSED_MODAL_CONTENT;
 
     // rapid search event
     this.searchFormService.rapidSearchControl.valueChanges.pipe(
@@ -102,7 +107,7 @@ export class MetadataComponent implements OnInit {
 
   setDsObservationCount(datasets, dsNbObs) {
     datasets.forEach(ds=> {
-      let foundDS = dsNbObs.find(d => {                
+      let foundDS = dsNbObs.find(d => {
         return d.id_dataset == ds.id_dataset
       })
       if (foundDS) {
@@ -132,13 +137,13 @@ export class MetadataComponent implements OnInit {
 
       }
       // load stat for ds
-      if (!this.datasetNbObs) {        
+      if (!this.datasetNbObs) {
         this._syntheseDataService.getObsCountByColumn('id_dataset').subscribe(count_ds => {
           this.datasetNbObs = count_ds
           this.setDsObservationCount(this.datasets, this.datasetNbObs);
-          
+
         })
-      } else {        
+      } else {
         this.setDsObservationCount(this.datasets, this.datasetNbObs);
       }
 
@@ -167,7 +172,7 @@ export class MetadataComponent implements OnInit {
         af.datasetsTemp = af.datasets;
         return true;
       } else {
-        
+
         // expand tout les accordion recherchés pour voir le JDD des CA
         this.expandAccordions = true;
         if ((af.id_acquisition_framework + ' ').toLowerCase().indexOf(searchTerm) !== -1
@@ -299,7 +304,7 @@ export class MetadataComponent implements OnInit {
             'error', "Une erreur s'est produite lors de la fermeture du cadre d'acquisition. Contactez l'administrateur"
             )
         }
-        
+
 
     }
     )

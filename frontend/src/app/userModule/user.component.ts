@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { AuthService, User } from '@geonature/components/auth/auth.service';
 import { Role, RoleFormService } from './services/form.service';
 import { UserDataService } from './services/user-data.service';
@@ -13,12 +13,16 @@ import { UserDataService } from './services/user-data.service';
 })
 export class UserComponent implements OnInit {
   form: FormGroup;
+  public appConfig: any;
 
   constructor(
     private authService: AuthService,
     private roleFormService: RoleFormService,
-    private userService: UserDataService
-  ) {}
+    private userService: UserDataService,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();
+  }
 
   ngOnInit() {
     this.initForm();

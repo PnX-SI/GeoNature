@@ -7,6 +7,7 @@ import {
   ViewEncapsulation,
   SimpleChanges
 } from '@angular/core';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { FormControl } from '@angular/forms';
 import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service';
@@ -36,7 +37,7 @@ export class MediasComponent implements OnInit {
 
   public bInitialized: boolean;
 
-  constructor(public ms: MediaService) {}
+  constructor(public ms: MediaService, private _configService: ConfigService) {}
 
   ngOnInit() {
     this.ms.getNomenclatures().subscribe(() => {
@@ -51,7 +52,7 @@ export class MediasComponent implements OnInit {
     }
     for (const index in this.parentFormControl.value) {
       if (!(this.parentFormControl.value[index] instanceof Media)) {
-        this.parentFormControl.value[index] = new Media(this.parentFormControl.value[index]);
+        this.parentFormControl.value[index] = new Media(this.parentFormControl.value[index], this._configService);
       }
     }
   }
@@ -68,7 +69,7 @@ export class MediasComponent implements OnInit {
     if (!this.parentFormControl.value) {
       this.parentFormControl.patchValue([]);
     }
-    this.parentFormControl.value.push(new Media());
+    this.parentFormControl.value.push(new Media(null, this._configService));
     this.parentFormControl.patchValue(this.parentFormControl.value);
   }
 

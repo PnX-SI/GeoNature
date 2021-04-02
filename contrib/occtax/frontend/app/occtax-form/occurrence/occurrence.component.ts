@@ -10,7 +10,7 @@ import { FormControl, FormGroup, FormArray, Validators } from "@angular/forms";
 import { map, filter, tap, delay } from "rxjs/operators";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
-import { AppConfig } from "@geonature_config/app.config";
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { OcctaxFormOccurrenceService } from "./occurrence.service";
 import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { FormService } from "@geonature_common/form/form.service";
@@ -46,7 +46,7 @@ import { MatDialog } from "@angular/material";
 })
 export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public occtaxConfig = ModuleConfig;
-  public appConfig = AppConfig;
+  public appConfig: any;
   public occurrenceForm: FormGroup;
   public taxonForm: FormControl; //control permettant de rechercher un taxon TAXREF
   public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required
@@ -61,8 +61,11 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private _coreFormService: FormService,
     private _occtaxTaxaListService: OcctaxTaxaListService,
-    public dialog: MatDialog
-  ) { }
+    public dialog: MatDialog,
+    private _configService: ConfigService,
+  ) { 
+    this.appConfig = this._configService.getSettings();
+  }
 
   ngOnInit() {
     this.occurrenceForm = this.occtaxFormOccurrenceService.form;

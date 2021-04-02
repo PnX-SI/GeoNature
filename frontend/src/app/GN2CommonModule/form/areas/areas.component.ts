@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { DataFormService } from '../data-form.service';
 import { FormControl } from '@angular/forms';
 import { CommonService } from '@geonature_common/service/common.service';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 
 @Component({
   selector: 'pnx-areas',
@@ -10,6 +10,7 @@ import { AppConfig } from '@geonature_config/app.config';
 })
 export class AreasComponent implements OnInit {
   public areas: any;
+  public appConfig: any;
   public cachedAreas: any;
   @Input() idTypes: Array<number>; // Areas id_type
   /** Désactive le composant. */
@@ -23,7 +24,10 @@ export class AreasComponent implements OnInit {
   constructor(
     private _dfs: DataFormService,
     private _commonService: CommonService,
-  ) {}
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();
+  }
 
   ngOnInit() {
     this._dfs.getAreas(this.idTypes).subscribe(data => {
@@ -37,7 +41,7 @@ export class AreasComponent implements OnInit {
    * @param data
    */
   formatAreas(data) {
-    if (data.length > 0 && data[0]['id_type'] === AppConfig.BDD.id_area_type_municipality) {
+    if (data.length > 0 && data[0]['id_type'] === this.appConfig.BDD.id_area_type_municipality) {
       this.areas = data.map(element => {
         element['area_name'] = `${element['area_name']} (${element.area_code.substr(0, 2)}) `;
         return element;

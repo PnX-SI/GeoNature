@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { BaseChartDirective } from 'ng2-charts';
-import { AppConfig } from "@geonature_config/app.config";
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { CommonService } from '@geonature_common/service/common.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
@@ -67,15 +67,18 @@ export class DatasetCardComponent implements OnInit {
   };
 
   public spinner = true;
-
+  public appConfig: any;
   constructor(
     private _route: ActivatedRoute,
     private _dfs: DataFormService,
     public moduleService: ModuleService,
     private _commonService: CommonService,
     public _dataService: SyntheseDataService,
-    private _router: Router
-  ) { }
+    private _router: Router,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();
+  }
 
   ngOnInit() {
     // get the id from the route
@@ -104,7 +107,7 @@ export class DatasetCardComponent implements OnInit {
       this._dataService.getObsBbox({'id_dataset': id}).subscribe(bbox => {
         this.geojsonData = bbox;
       })
-      
+
       if (this.dataset.modules) {
         this.dataset.modules = this.dataset.modules.map(e => e.module_code).join(', ');
       }
@@ -138,7 +141,7 @@ export class DatasetCardComponent implements OnInit {
   }
 
   getPdf() {
-    const url = `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`;
+    const url = `${this.appConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`;
     const dataUrl = this.chart ? this.chart.ctx.canvas.toDataURL('image/png') : '';
     this._dfs.uploadCanvas(dataUrl).subscribe(data => {
       console.log(url);

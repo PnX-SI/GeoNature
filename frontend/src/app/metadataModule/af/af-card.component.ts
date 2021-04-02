@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { BaseChartDirective } from 'ng2-charts';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 
 @Component({
   selector: 'pnx-af-card',
@@ -58,9 +58,16 @@ export class AfCardComponent implements OnInit {
   };
 
   public spinner = true;
-  public APP_CONFIG = AppConfig;
+  public appConfig: any;
 
-  constructor(private _dfs: DataFormService, private _route: ActivatedRoute) {}
+
+  constructor(
+    private _dfs: DataFormService,
+    private _route: ActivatedRoute,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();
+  }
   ngOnInit() {
     this._route.params.subscribe(params => {
       this.id_af = params['id'];
@@ -102,7 +109,7 @@ export class AfCardComponent implements OnInit {
   }
 
   getPdf() {
-    const url = `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${
+    const url = `${this.appConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${
       this.af.id_acquisition_framework
     }`;
     const chart_img = this.chart ? this.chart.ctx.canvas.toDataURL('image/png') : '';

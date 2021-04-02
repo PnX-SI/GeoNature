@@ -9,7 +9,8 @@ export class ConfigService {
 
   constructor(
     readonly loader: ConfigLoader,
-    ) {}
+    ) {
+    }
 
     init(): any {
       return this.loader.loadSettings().then((res: any) => (this.settings = res));

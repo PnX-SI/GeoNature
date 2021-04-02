@@ -41,13 +41,17 @@
   - [x] marche à priori, à tester avec des données 
 ## II - Passez à la nouvelle config partout (A faire)
 
-- Geonature
+add config service construtor
+add appConfig ???
+redo home page ???
+
+- Geonat 
 - Modules coeur de geonature
 - autres modules ...
 - éditer les fichiers de config depuis le site ??
   - comment sécuriser / cacher les données sensibles ? 
 
-- que faire de APP_CONFIG_TOKEN ??
+- que faire de appConfig_TOKEN ??
 # III - fichiers custom
 
 - supprimer scss ??

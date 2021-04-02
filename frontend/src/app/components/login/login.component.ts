@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { AppConfig } from '../../../conf/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { AuthService } from '../auth/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -15,6 +15,7 @@ export class LoginComponent implements OnInit {
   enable_user_management: boolean = false;
   public casLogin: boolean;
   public disableSubmit = false;
+  public appConfig: any;
 
   identifiant: FormGroup;
   password: FormGroup;
@@ -25,19 +26,21 @@ export class LoginComponent implements OnInit {
     private _authService: AuthService,
     private fb: FormBuilder,
     private _toasterService: ToastrService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _configService: ConfigService,
   ) {
-    this.casLogin = AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION;
-    this.enable_sign_up = AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false;
+    this.appConfig = this._configService.getSettings();
+    this.casLogin = this.appConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION;
+    this.enable_sign_up = this.appConfig['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false;
     this.enable_user_management =
-      AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false;
+      this.appConfig['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false;
   }
 
   ngOnInit() {
-    if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
+    if (this.appConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
       // if token not here here, redirection to CAS login page
-      const url_redirection_cas = `${AppConfig.CAS_PUBLIC.CAS_URL_LOGIN}?service=${
-        AppConfig.API_ENDPOINT
+      const url_redirection_cas = `${this.appConfig.CAS_PUBLIC.CAS_URL_LOGIN}?service=${
+        this.appConfig.API_ENDPOINT
       }/gn_auth/login_cas`;
       document.location.href = url_redirection_cas;
     }

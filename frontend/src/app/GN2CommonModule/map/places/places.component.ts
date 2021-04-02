@@ -5,6 +5,7 @@ import { MapService } from '../map.service';
 import { MapListService } from '../../map-list/map-list.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '../../service/common.service';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import * as L from 'leaflet';
 import { Subscription } from 'rxjs/Subscription';
 import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
@@ -28,10 +29,11 @@ export class PlacesComponent extends MarkerComponent implements OnInit, OnDestro
     public mapService: MapService,
     public modalService: NgbModal,
     public commonService: CommonService,
+    public configService: ConfigService,
     private _dfs: DataFormService,
-    private _mapListServive: MapListService
+    private _mapListServive: MapListService,
   ) {
-    super(mapService, commonService);
+    super(mapService, commonService, configService);
   }
 
   ngOnInit() {

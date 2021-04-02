@@ -49,7 +49,7 @@
           </button>
           <br>
           <span *ngIf="!af?.opened">
-            <b> {{APP_CONFIG.METADATA.AF_SHEET_CLOSED_LINK_NAME}} </b> : <a href="{{APP_CONFIG.API_ENDPOINT }}/meta/acquisition_frameworks/export_pdf/{{af?.id_acquisition_framework }}"> {{APP_CONFIG.API_ENDPOINT }}/meta/acquisition_frameworks/export_pdf/{{af?.id_acquisition_framework }}</a> 
+            <b> {{appConfig.METADATA.AF_SHEET_CLOSED_LINK_NAME}} </b> : <a href="{{appConfig.API_ENDPOINT }}/meta/acquisition_frameworks/export_pdf/{{af?.id_acquisition_framework }}"> {{appConfig.API_ENDPOINT }}/meta/acquisition_frameworks/export_pdf/{{af?.id_acquisition_framework }}</a> 
           </span>
           
         </div>

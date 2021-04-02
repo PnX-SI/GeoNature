@@ -7,7 +7,7 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { SyntheseStoreService } from '@geonature_common/form/synthese-form/synthese-store.service';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
 
@@ -21,7 +21,8 @@ export class SyntheseComponent implements OnInit {
   public searchBarHidden = false;
   public marginButton: number;
   public firstLoad = true;
-  public CONFIG = AppConfig;
+  public appConfig: any;
+
 
   constructor(
     public searchService: SyntheseDataService,
@@ -31,8 +32,11 @@ export class SyntheseComponent implements OnInit {
     private _fs: SyntheseFormService,
     private _syntheseStore: SyntheseStoreService,
     private _toasterService: ToastrService,
-    private _route: ActivatedRoute
-  ) { }
+    private _route: ActivatedRoute,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();
+  }
 
   loadAndStoreData(formParams) {
     this.searchService.dataLoaded = false;
@@ -66,7 +70,7 @@ export class SyntheseComponent implements OnInit {
     if (this.firstLoad && 'limit' in formParams) {
       //toaster
       this._toasterService.info(
-        `Les ${AppConfig.SYNTHESE.NB_LAST_OBS} dernières observations de la synthèse`,
+        `Les ${this.appConfig.SYNTHESE.NB_LAST_OBS} dernières observations de la synthèse`,
         ''
       );
     }
@@ -82,7 +86,7 @@ export class SyntheseComponent implements OnInit {
       else if (params.get('id_dataset')) {
         initialFilter['id_dataset'] = params.get('id_dataset');
       } else {
-        initialFilter = { limit: AppConfig.SYNTHESE.NB_LAST_OBS };
+        initialFilter = { limit: this.appConfig.SYNTHESE.NB_LAST_OBS };
       }
 
       // reinitialize the form

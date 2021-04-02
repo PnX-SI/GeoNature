@@ -17,7 +17,7 @@ import { ChartModule } from 'angular2-chartjs';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
-import { ConfigModule, ConfigLoader } from './utils/configModule/core';
+import { ConfigModule, ConfigLoader, ConfigService } from './utils/configModule/core';
 import { ConfigHttpLoader } from './utils/configModule/http-loader';
 
 // Modules
@@ -65,11 +65,16 @@ export function createTranslateLoader(http: HttpClient) {
 import { UserDataService } from "./userModule/services/user-data.service";
 
 // Config
-import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
+import { appConfig_TOKEN, appConfig } from '@geonature_config/app.config';
 
-
-export function get_cruved(cruvedStore: CruvedStoreService) {
-    return () => { return cruvedStore.fetchCruved().toPromise(); };
+export function get_cruved(cruvedStore: CruvedStoreService, configService: ConfigService) {
+    return () => configService.init().then(() => cruvedStore.fetchCruved().toPromise());
+//     return () => { return new Promise((resolve, reject) => {
+//       configService.init().then(() =>
+//         resolve(cruvedStore.fetchCruved())
+//     )
+//     });
+// }
 }
 
 
@@ -127,9 +132,9 @@ export function get_cruved(cruvedStore: CruvedStoreService) {
     SideNavService,
     CruvedStoreService,
     UserDataService,
-    { provide: APP_CONFIG_TOKEN, useValue: AppConfig },
+    { provide: appConfig_TOKEN, useValue: appConfig },
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
-    { provide: APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService], multi: true}
+    { provide: APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService, ConfigService], multi: true}
   ],
   bootstrap: [AppComponent]
 })

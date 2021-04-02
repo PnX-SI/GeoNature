@@ -13,6 +13,7 @@ import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service';
 import { MatDialog } from '@angular/material';
 import { MediaDialog } from './media-dialog.component';
+import { ConfigService } from '@geonature/utils/configModule/core';
 
 export interface MediaDialogData {
   medias: Array<Media>;
@@ -31,11 +32,16 @@ export class DisplayMediasComponent {
   @Input() diaporama = false;
 
   public height: string;
-  public thumbnailHeight: number;
+  public thumbnailHeight: number;1
   public bInitialized = false;
   public innerHTMLPDF = {};
 
-  constructor(public ms: MediaService, public dialog: MatDialog, public _sanitizer: DomSanitizer) {}
+  constructor(
+    public ms: MediaService,
+    public dialog: MatDialog,
+    public _sanitizer: DomSanitizer,
+    public _configService: ConfigService,
+  ) {}
 
   ngOnInit() {
     this.initMedias();
@@ -48,7 +54,7 @@ export class DisplayMediasComponent {
     for (const index in this.medias) {
       if (true) {
         if (!(this.medias[index] instanceof Media)) {
-          this.medias[index] = new Media(this.medias[index]);
+          this.medias[index] = new Media(this.medias[index], this._configService);
         }
         this.medias[index].safeUrl = this.getSafeUrl(index);
         this.medias[index].safeEmbedUrl = this.getSafeEmbedUrl(index);

@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { AppConfig } from '../../../conf/app.config';
 import { MapService } from '@geonature_common/map/map.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
@@ -26,7 +25,9 @@ export class HomeContentComponent implements OnInit {
     private _mapService: MapService,
     private _moduleService: ModuleService,
     private _configService: ConfigService,
-  ) {}
+  ) {
+    this.appConfig = this._configService.getSettings();
+  }
 
   ngOnInit() {
     this._moduleService.moduleSub
@@ -37,20 +38,17 @@ export class HomeContentComponent implements OnInit {
       });
       gn_module.module_label = 'Accueil'
       this._globalSub.currentModuleSubject.next(gn_module);
-
-
     })
 
     this._SideNavService.sidenav.open();
-    this.appConfig = AppConfig;
 
-    if (AppConfig.FRONTEND.DISPLAY_MAP_LAST_OBS) {
+    if (this.appConfig.FRONTEND.DISPLAY_MAP_LAST_OBS) {
       this._syntheseApi.getSyntheseData({ limit: 100 }).subscribe(result => {
         this.lastObs = result.data;
       });
     }
 
-    if (AppConfig.FRONTEND.DISPLAY_STAT_BLOC) {
+    if (this.appConfig.FRONTEND.DISPLAY_STAT_BLOC) {
       // Get general stats
       this._syntheseApi
         .getSyntheseGeneralStat()

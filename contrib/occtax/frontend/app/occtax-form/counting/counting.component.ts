@@ -2,7 +2,7 @@ import { Component, Input } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
-import { AppConfig } from "@geonature_config/app.config";
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxFormCountingService } from "./counting.service";
 
@@ -14,14 +14,17 @@ import { OcctaxFormCountingService } from "./counting.service";
 export class OcctaxFormCountingComponent {
 
   public occtaxConfig = ModuleConfig;
-  public appConfig = AppConfig;
+  public appConfig: any;
 
   @Input('form') countingForm: FormGroup;
 
   constructor(
     public fs: OcctaxFormService,
-    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService
-  ) { }
+    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    private _configService: ConfigService,
+  ) {
+    this.appConfig = this._configService.getSettings();
+  }
 
   taxref() {
     const taxref = this.occtaxFormOccurrenceService.taxref.getValue();

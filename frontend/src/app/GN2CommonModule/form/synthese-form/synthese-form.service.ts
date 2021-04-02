@@ -1,6 +1,7 @@
+import { appConfig } from './../../../../conf/app.config';
 import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, ValidatorFn } from '@angular/forms';
-import { AppConfig } from '@geonature_config/app.config';
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { stringify } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
@@ -14,12 +15,15 @@ export class SyntheseFormService {
   public selectedCdRefFromTree = [];
   public selectedTaxonFromRankInput = [];
   public dynamycFormDef: Array<any>;
-
+  public appConfig: any;
   constructor(
     private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter,
-    private _periodFormatter: NgbDatePeriodParserFormatter
+    private _periodFormatter: NgbDatePeriodParserFormatter,
+    private _configService: ConfigService,
   ) {
+    this.appConfig = this._configService.getSettings();!this.appConfig
+ && console.log('this.appConfig', this.appConfig);
     this.searchForm = this._fb.group({
       cd_nom: null,
       observers: null,
@@ -43,7 +47,7 @@ export class SyntheseFormService {
     });
 
     this.searchForm.setValidators([this.periodValidator()]);
-    AppConfig.SYNTHESE.AREA_FILTERS.forEach(area => {
+    this.appConfig.SYNTHESE.AREA_FILTERS.forEach(area => {
       const control_name = 'area_' + area.id_type;
       this.searchForm.addControl(control_name, new FormControl(new Array()));
       const control = this.searchForm.controls[control_name];
@@ -51,9 +55,9 @@ export class SyntheseFormService {
     });
 
     // init the dynamic form with the user parameters
-    // remove the filters which are in AppConfig.SYNTHESE.EXCLUDED_COLUMNS
+    // remove the filters which are in this.appConfig.SYNTHESE.EXCLUDED_COLUMNS
     this.dynamycFormDef = DYNAMIC_FORM_DEF.filter(formDef => {
-      return AppConfig.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
+      return this.appConfig.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
     });
     this.formBuilded = true;
   }
