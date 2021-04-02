@@ -106,7 +106,7 @@ export class AuthService {
           forkJoin({
               cruved: this.cruvedService.fetchCruved(),
               modules: this.moduleService.fetchModules(),
-          }).subscribe((cruved, modules) => {
+          }).subscribe(() => {
             let next = this.route.snapshot.queryParams['next'];
             let route = this.route.snapshot.queryParams['route'];
             // next means redirect to url
