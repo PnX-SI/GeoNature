@@ -33,3 +33,4 @@ for dir_name in os.listdir(plugin_folder):
 
     if os.path.isfile(cmd_file):
         import_cmd(dir_name)
+sys.path.pop(0)

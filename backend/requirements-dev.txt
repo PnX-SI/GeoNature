@@ -1,37 +1,26 @@
-################################################################################
-# This requirements files has been automatically generated from `Pipfile` with
-# `pipenv-to-requirements`
-#
-#
-# This has been done to maintain backward compatibility with tools and services
-# that do not support `Pipfile` yet.
-#
-# Do NOT edit it directly, use `pipenv install [-d]` to modify `Pipfile` and
-# `Pipfile.lock` and then regenerate `requirements*.txt`.
-################################################################################
--r requirements.txt
+-r requirements-common.txt
+
+git+https://github.com/PnX-SI/UsersHub-authentification-module@develop#egg=pypnusershub
+git+https://github.com/PnX-SI/Nomenclature-api-module@develop#egg=pypnnomenclature
+git+https://github.com/PnX-SI/Habref-api-module@develop#egg=pypn_habref_api
+git+https://github.com/PnX-SI/TaxHub@develop#egg=taxhub
 
 alabaster==0.7.10
 attrs==19.3.0
 babel==2.5.3
 backports.shutil-get-terminal-size==1.0.0
 black==20.8b0
-chardet==3.0.4
 configparser==3.5.0
 cookies==2.2.1
 coverage==4.4.2
 decorator==4.2.1
-enum34==1.1.6
 flake8==3.5.0
 funcsigs==1.0.2
-idna==2.6
 imagesize==0.7.1
 importlib-metadata==0.12
 ipdb==0.10.3
 ipython-genutils==0.2.0
 ipython==5.5.0
-jinja2==2.10.1
-markupsafe==1.1
 mccabe==0.6.1
 mypy==0.782
 pathlib==1.0.1
@@ -42,7 +31,7 @@ pexpect==4.3.1
 pickleshare==0.7.4
 pipenv-to-requirements==0.2.2
 pipenv==9.0.3
-pluggy==0.12.0
+pluggy==0.13.1
 prompt-toolkit==1.0.15
 ptyprocess==0.5.2
 py==1.8.2

@@ -10,7 +10,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "format": "prettier --write '**/*.ts'",
-    "compodoc": "npx compodoc -p src/tsconfig.app.json --output=../docs/build/html/frontend"
+    "compodoc": "npx compodoc -p tsconfig.json --output=../docs/build/html/frontend"
   },
   "private": true,
   "dependencies": {
