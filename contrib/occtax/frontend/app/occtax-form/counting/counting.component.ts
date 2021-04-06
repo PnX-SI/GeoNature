@@ -1,7 +1,7 @@
 import { Component, Input } from "@angular/core";
 import { FormControl, FormGroup } from "@angular/forms";
 import { OcctaxFormService } from "../occtax-form.service";
-import { ModuleConfig } from "../../module.config";
+import { moduleCode } from "../../module.code.config";
 import { ConfigService } from '@geonature/utils/configModule/core';
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxFormCountingService } from "./counting.service";
@@ -13,7 +13,7 @@ import { OcctaxFormCountingService } from "./counting.service";
 })
 export class OcctaxFormCountingComponent {
 
-  public occtaxConfig = ModuleConfig;
+  public moduleConfig: any;
   public appConfig: any;
 
   @Input('form') countingForm: FormGroup;

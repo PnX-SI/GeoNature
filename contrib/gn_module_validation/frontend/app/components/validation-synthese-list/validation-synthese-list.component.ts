@@ -14,12 +14,13 @@ import {
 import { MapService } from "@geonature_common/map/map.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
-import { ModuleConfig } from "../../module.config";
 import { DomSanitizer } from "@angular/platform-browser";
 import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { ValidationModalInfoObsComponent } from "../validation-modal-info-obs/validation-modal-info-obs.component";
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
 import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
+import { ConfigService } from "@geonature/utils/configModule/core";
+import { moduleCode } from "../../module.code.config";
 @Component({
   selector: "pnx-validation-synthese-list",
   templateUrl: "validation-synthese-list.component.html",
@@ -27,7 +28,7 @@ import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthe
 })
 export class ValidationSyntheseListComponent
   implements OnInit, OnChanges, AfterContentChecked {
-  public VALIDATION_CONFIG = ModuleConfig;
+  public moduleConfig: any;
   public oneSyntheseObs: any;
   selectedObs: Array<number> = []; // list of id_synthese values for selected rows
   selectedIndex: Array<number> = [];
@@ -56,7 +57,9 @@ export class ValidationSyntheseListComponent
     public ref: ChangeDetectorRef,
     private _ms: MapService,
     public formService: SyntheseFormService,
+    private _configService: ConfigService,
   ) {
+    this.moduleConfig = this._configService.getSettings(moduleCode);
   }
 
   ngOnInit() {
@@ -135,7 +138,7 @@ export class ValidationSyntheseListComponent
   setOriginStyleToAll() {
     for (let obs in this.mapListService.layerDict) {
       this.mapListService.layerDict[obs].setStyle(
-        this.VALIDATION_CONFIG.MAP_POINT_STYLE.originStyle
+        this.moduleConfig.MAP_POINT_STYLE.originStyle
       );
     }
   }
@@ -143,7 +146,7 @@ export class ValidationSyntheseListComponent
   setSelectedSyleToSelectedRows() {
     for (let obs of this.selectedObs) {
       this.mapListService.layerDict[obs].setStyle(
-        this.VALIDATION_CONFIG.MAP_POINT_STYLE.selectedStyle
+        this.moduleConfig.MAP_POINT_STYLE.selectedStyle
       );
     }
   }

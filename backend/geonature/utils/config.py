@@ -28,39 +28,39 @@ config_frontend = load_and_validate_toml(config_path, GnGeneralSchemaConf)
 config = ChainMap({}, config_frontend, config_backend)
 
 
-def get_updated_config(app):
-    """
-        Get config (pour pouvoir relire et mettre à jour la config)
-    """
-    # A factoriser avec app.py
+# def get_updated_config(app):
+#     """
+#         Get config (pour pouvoir relire et mettre à jour la config)
+#     """
+#     # A factoriser avec app.py
 
 
-    config_backend = load_and_validate_toml(config_path, GnPySchemaConf)
-    config_frontend = load_and_validate_toml(config_path, GnGeneralSchemaConf)
-    config = ChainMap({}, config_frontend, config_backend)
+#     config_backend = load_and_validate_toml(config_path, GnPySchemaConf)
+#     config_frontend = load_and_validate_toml(config_path, GnGeneralSchemaConf)
+#     config = ChainMap({}, config_frontend, config_backend)
 
 
-    config_modules = {}        
-    for module, blueprint in import_backend_enabled_modules():
-        config_modules[blueprint.config['MODULE_CODE']] = blueprint.config
+#     config_modules = {}        
+#     for module, blueprint in import_backend_enabled_modules():
+#         config_modules[blueprint.config['MODULE_CODE']] = blueprint.config
 
-    # Update config app 
-    app.config.update({**config, **config_modules})
+#     # Update config app 
+#     app.config.update({**config, **config_modules})
 
-    # parametre de mail ??
-    # MAIL.init_app(app)
-    # DB.init_app(app)
+#     # parametre de mail ??
+#     # MAIL.init_app(app)
+#     # DB.init_app(app)
 
-    return config, config_backend, config_frontend, config_modules
+#     return config, config_backend, config_frontend, config_modules
 
 
-def get_updated_frontend_config(app):
-    '''
+# def get_updated_frontend_config(app):
+#     '''
 
-    '''
+#     '''
     
-    _, _, config_frontend, config_modules = get_updated_config(app)
-    return {**config_frontend, **config_modules}
+#     _, _, config_frontend, config_modules = get_updated_config(app)
+#     return {**config_frontend, **config_modules}
 
 
 # def get_whole_frontend_config(app):

@@ -10,7 +10,7 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
   templateUrl: 'modal-download.component.html'
 })
 export class SyntheseModalDownloadComponent {
-  public syntheseConfig: any;
+  public moduleConfig: any;
   public appConfig: any;
 
   @Input() tooManyObs = false;
@@ -23,7 +23,7 @@ export class SyntheseModalDownloadComponent {
     private _configService: ConfigService,
   ) {
     this.appConfig = this._configService.getSettings();
-    this.syntheseConfig = this.appConfig.SYNTHESE;
+    this.moduleConfig = this.appConfig.SYNTHESE;
   }
 
   downloadObservations(format) {

@@ -27,8 +27,8 @@ export class RoleFormService {
     private dataService: DataFormService,
     private _configService: ConfigService,
   ) {
-    this.appConfig = this._configService.getSettings();!this.appConfig
- && console.log('this.appConfig', this.appConfig);
+    this.appConfig = this._configService.getSettings();
+
     this.setForm();
   }
 

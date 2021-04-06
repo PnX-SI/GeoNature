@@ -3,7 +3,7 @@
   #table
   class="material striped margin-top-xs table-size expandable"
   [rows]="mapListService.tableData"
-  [columns]="VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND"
+  [columns]="moduleConfig.LIST_COLUMNS_FRONTEND"
   [columnMode]="'force'"
   [headerHeight]="50"
   [footerHeight]="35"
@@ -87,7 +87,7 @@
 
 
   <ngx-datatable-column
-    *ngFor="let col of VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND"
+    *ngFor="let col of moduleConfig.LIST_COLUMNS_FRONTEND"
     name="{{col.name}}"
     prop="{{col.prop}}"
     maxWidth="{{col.max_width||10000}}"
@@ -112,11 +112,11 @@
       <div class="statusContent">
         <span
           class="validationCircle"
-          [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}"
+          [ngStyle]="{'background': moduleConfig.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}"
         >
           <i class="material-icons">{{row.validation_auto}}</i></span>
         <div
-          [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}"
+          [ngStyle]="{'background': moduleConfig.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}"
           class="statusName"
         >
           <span>{{getValidationStatusMnemonique(row.cd_nomenclature_validation_status)}}</span><span

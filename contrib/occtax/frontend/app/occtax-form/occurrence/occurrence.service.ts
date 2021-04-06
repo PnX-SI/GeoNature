@@ -16,8 +16,9 @@ import { OcctaxFormCountingService } from "../counting/counting.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
-import { ModuleConfig } from "../../module.config";
-
+import { ConfigService } from "@geonature/utils/configModule/core";
+import { moduleCode } from "../../module.code.config";
+    
 @Injectable()
 export class OcctaxFormOccurrenceService {
   public form: FormGroup;
@@ -25,6 +26,7 @@ export class OcctaxFormOccurrenceService {
   public occurrence: BehaviorSubject<any> = new BehaviorSubject(null);
   public existProof_DATA: Array<any> = [];
   public saveWaiting: boolean = false;
+  public moduleConfig: any;
 
   constructor(
     private fb: FormBuilder,
@@ -34,7 +36,9 @@ export class OcctaxFormOccurrenceService {
     private occtaxDataService: OcctaxDataService,
     private occtaxParamS: OcctaxFormParamService,
     private occtaxTaxaListService: OcctaxTaxaListService,
+    private _configService: ConfigService,
   ) {
+    this.moduleConfig = this._configService.getSettings(moduleCode);
     this.initForm();
     this.setObservables();
   }
@@ -117,7 +121,7 @@ export class OcctaxFormOccurrenceService {
           this.form
             .get("digital_proof")
             .setValidators(
-              ModuleConfig.digital_proof_validator ?
+              this.moduleConfig.digital_proof_validator ?
                 Validators.pattern("^(http://|https://|ftp://){1}.+$") :
                 []
             );

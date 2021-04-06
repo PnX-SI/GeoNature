@@ -27,8 +27,8 @@ export class TaxonAdvancedStoreService {
     private _formGen: DynamicFormService,
     private _configService: ConfigService,
   ) {
-    this.appConfig = this._configService.getSettings();!this.appConfig
- && console.log('this.appConfig', this.appConfig);
+    this.appConfig = this._configService.getSettings();
+
 
     if (this.appConfig.SYNTHESE.DISPLAY_TAXON_TREE) {
       this._validationDataService.getTaxonTree().subscribe(data => {

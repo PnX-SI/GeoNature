@@ -13,11 +13,11 @@ import { OcctaxDataService } from "../services/occtax-data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { DatatableComponent } from "@swimlane/ngx-datatable/release";
-import { ModuleConfig } from "../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { FormGroup } from "@angular/forms";
 import { GenericFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
 import { ConfigService } from '@geonature/utils/configModule/core';
+import { moduleCode } from "../module.code.config";
 import { GlobalSubService } from "@geonature/services/global-sub.service";
 import { Subscription } from "rxjs/Subscription";
 import * as moment from "moment";
@@ -37,7 +37,8 @@ import { OcctaxFormService } from "../occtax-form/occtax-form.service";
 })
 export class OcctaxMapListComponent
   implements OnInit, OnDestroy, AfterViewInit {
-  public appConfig = this._configService().getSettings() 
+  public appConfig: any; 
+  public moduleConfig: any; 
   public userCruved: any;
   public displayColumns: Array<any>;
   public availableColumns: Array<any>;
@@ -45,7 +46,6 @@ export class OcctaxMapListComponent
   public pathInfo: string;
   public idName: string;
   public apiEndPoint: string;
-  public occtaxConfig: any;
   // public formsDefinition = FILTERSLIST;
   public dynamicFormGroup: FormGroup;
   public formsSelected = [];
@@ -78,6 +78,7 @@ export class OcctaxMapListComponent
     private _configService: ConfigService,
   ) { 
     this.appConfig = this._configService.getSettings();
+    this.moduleConfig = this._configService.getSettings(moduleCode);
   }
 
   ngOnInit() {
@@ -85,7 +86,6 @@ export class OcctaxMapListComponent
     // zoom only when search data
     this.mapListService.zoomOnLayer = true;
     //config
-    this.occtaxConfig = ModuleConfig;
     this.idName = "id_releve_occtax";
     this.apiEndPoint = "occtax/releves";
     // refresh forms
@@ -100,9 +100,9 @@ export class OcctaxMapListComponent
 
     // parameters for maplist
     // columns to be default displayed
-    this.mapListService.displayColumns = this.occtaxConfig.default_maplist_columns;
+    this.mapListService.displayColumns = this.moduleConfig.default_maplist_columns;
     // columns available for display
-    this.mapListService.availableColumns = this.occtaxConfig.available_maplist_column;
+    this.mapListService.availableColumns = this.moduleConfig.available_maplist_column;
 
     this.mapListService.idName = this.idName;
     // FETCH THE DATA
@@ -288,7 +288,7 @@ export class OcctaxMapListComponent
     } else {
       for (let i = 0; i < row.t_occurrences_occtax.length; i++) {
         let occ = row.t_occurrences_occtax[i];
-        const taxKey = ModuleConfig.DISPLAY_VERNACULAR_NAME ? 'nom_vern': 'nom_complet'
+        const taxKey = this.moduleConfig.DISPLAY_VERNACULAR_NAME ? 'nom_vern': 'nom_complet'
         let taxName;
         if(occ.taxref) {                 
           taxName = occ.taxref[taxKey] ? occ.taxref[taxKey] : occ.taxref.nom_complet;

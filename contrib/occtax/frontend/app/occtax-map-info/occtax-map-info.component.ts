@@ -5,7 +5,6 @@ import { map, filter, tap } from "rxjs/operators";
 import { isEqual } from "lodash";
 import { MapService } from "@geonature_common/map/map.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
-import { ModuleConfig } from "../module.config";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
 import { MediaService } from "@geonature_common/service/media.service";
@@ -38,7 +37,7 @@ const NOMENCLATURES = [
   styleUrls: ["./occtax-map-info.component.scss"],
 })
 export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
-  public occtaxConfig = ModuleConfig;
+  public moduleConfig: any;
   public occtaxData: BehaviorSubject<any> = new BehaviorSubject(null);
   nomenclatures: Array<any> = [];
   public cardHeight: number;

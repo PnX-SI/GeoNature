@@ -22,8 +22,8 @@ export class SyntheseFormService {
     private _periodFormatter: NgbDatePeriodParserFormatter,
     private _configService: ConfigService,
   ) {
-    this.appConfig = this._configService.getSettings();!this.appConfig
- && console.log('this.appConfig', this.appConfig);
+    this.appConfig = this._configService.getSettings();
+
     this.searchForm = this._fb.group({
       cd_nom: null,
       observers: null,

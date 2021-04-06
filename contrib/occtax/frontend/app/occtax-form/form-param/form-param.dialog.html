@@ -124,7 +124,7 @@
 
     <div class="row">
       <div
-        *ngIf="occtaxConfig.form_fields.precision"
+        *ngIf="moduleConfig.form_fields.precision"
         class="col-4"
       >
         <small>Précision du pointage (m)</small>
@@ -137,7 +137,7 @@
       </div>
 
       <div 
-        *ngIf="occtaxConfig.form_fields.place_name"
+        *ngIf="moduleConfig.form_fields.place_name"
         class="col-4"
       >
         <small> {{ 'Releve.PlaceName' | translate }} </small>
@@ -150,9 +150,9 @@
     </div>
 
     <pnx-observers
-      *ngIf="!occtaxConfig.observers_txt; else elseBlock"
+      *ngIf="!moduleConfig.observers_txt; else elseBlock"
       [parentFormControl]="releveParamForm.get('observers')"
-      [idMenu]="occtaxConfig.id_observers_list"
+      [idMenu]="moduleConfig.id_observers_list"
       label="{{ 'Releve.Observers' | translate }}"
       [bindAllItem]="true"
     >
@@ -172,17 +172,17 @@
     <div class="row">
       <div class="col-6">
         <pnx-date
-          *ngIf="occtaxConfig.form_fields.date_min"
+          *ngIf="moduleConfig.form_fields.date_min"
           [isInvalid]="releveParamForm.hasError('invalidDate') || releveParamForm.get('date_min').invalid"
           label="{{ 'Releve.MinDate' | translate }}"
-          [defaultToday]="occtaxConfig.DATE_FORM_WITH_TODAY"
+          [defaultToday]="moduleConfig.DATE_FORM_WITH_TODAY"
           [parentFormControl]="releveParamForm.get('date_min')"
         >
         </pnx-date>
       </div>
       <div class="col-6">
         <pnx-date
-          *ngIf="occtaxConfig.form_fields.date_max"
+          *ngIf="moduleConfig.form_fields.date_max"
           [isInvalid]="releveParamForm.hasError('invalidDate') || releveParamForm.get('date_max').invalid"
           label="{{ 'Releve.MaxDate' | translate }} "
           [parentFormControl]="releveParamForm.get('date_max')"
@@ -194,7 +194,7 @@
     <div class="row">
       <div class="col-6">
         <div
-          *ngIf="occtaxConfig.form_fields.hour_min"
+          *ngIf="moduleConfig.form_fields.hour_min"
           class="form-group"
         >
           <small> {{'Releve.HourMin' | translate }} </small>
@@ -209,7 +209,7 @@
       </div>
       <div class="col-6">
         <div
-          *ngIf="occtaxConfig.form_fields.hour_max"
+          *ngIf="moduleConfig.form_fields.hour_max"
           class="form-group"
         >
           <small> {{'Releve.HourMax' | translate }} </small>
@@ -226,7 +226,7 @@
 
     <div class="row">
       <div
-        *ngIf="occtaxConfig.form_fields.altitude_min"
+        *ngIf="moduleConfig.form_fields.altitude_min"
         class="col-6"
       >
         <small> {{ 'Releve.MinAltitude' | translate }} </small>
@@ -239,7 +239,7 @@
 
       <!-- ALTITUDE MAX -->
       <div
-        *ngIf="occtaxConfig.form_fields.altitude_max"
+        *ngIf="moduleConfig.form_fields.altitude_max"
         class="col-6"
       >
         <small> {{ 'Releve.MaxAltitude' | translate }} </small>
@@ -253,7 +253,7 @@
 
     <div class="row">
       <div 
-        *ngIf="occtaxConfig.form_fields.depth_min"
+        *ngIf="moduleConfig.form_fields.depth_min"
         class="col-6"
       >
         <small> {{ 'Releve.MinDepth' | translate }} </small>
@@ -265,7 +265,7 @@
       </div>
 
       <div 
-        *ngIf="occtaxConfig.form_fields.depth_min"
+        *ngIf="moduleConfig.form_fields.depth_min"
         class="col-6"
       >
         <small> {{ 'Releve.MaxDepth' | translate }} </small>
@@ -280,7 +280,7 @@
 
     <div class="row">
       <div
-        *ngIf="occtaxConfig.form_fields.group_type"
+        *ngIf="moduleConfig.form_fields.group_type"
         class="col-4"
       >
         <pnx-nomenclature
@@ -292,7 +292,7 @@
       </div>
 
       <div
-        *ngIf="occtaxConfig.form_fields.grp_method"
+        *ngIf="moduleConfig.form_fields.grp_method"
         class="col-4"
       >
         <small> {{'Releve.GroupMethod' | translate}} </small>
@@ -304,7 +304,7 @@
       </div>
 
       <div 
-        *ngIf="occtaxConfig.form_fields.geo_object_nature"
+        *ngIf="moduleConfig.form_fields.geo_object_nature"
         class="col-4"
       >
         <pnx-nomenclature
@@ -317,7 +317,7 @@
     </div>
 
     <pnx-nomenclature
-      *ngIf="occtaxConfig.form_fields.tech_collect"
+      *ngIf="moduleConfig.form_fields.tech_collect"
       label="{{ 'Releve.TechCollectCampanule' | translate }}"
       [parentFormControl]="releveParamForm.get('id_nomenclature_tech_collect_campanule')"
       codeNomenclatureType="TECHNIQUE_OBS"
@@ -325,7 +325,7 @@
     </pnx-nomenclature>
 
 
-    <div *ngIf="occtaxConfig.form_fields.comment_releve">
+    <div *ngIf="moduleConfig.form_fields.comment_releve">
       <small> {{ 'Releve.Comment' | translate }} </small>
       <textarea
         class="form-control"
@@ -354,7 +354,7 @@
 
     <div class="row">
       <div
-        *ngIf="occtaxConfig.form_fields.determiner"
+        *ngIf="moduleConfig.form_fields.determiner"
         class="col-sm-6"
       >
         <small> {{ 'Taxon.Determiner' | translate }} </small>
@@ -366,7 +366,7 @@
       </div>
 
       <div
-        *ngIf="occtaxConfig.form_fields.determination_method"
+        *ngIf="moduleConfig.form_fields.determination_method"
         class="col-sm-6"
       >
         <pnx-nomenclature
@@ -380,7 +380,7 @@
 
     <div class="row">
       <div
-        *ngIf="occtaxConfig.form_fields.observation_status"
+        *ngIf="moduleConfig.form_fields.observation_status"
         class="col-lg-4 col-sm-6"
       >
         <pnx-nomenclature
@@ -392,7 +392,7 @@
       </div>
 
       <div
-        *ngIf="occtaxConfig.form_fields.obs_method"
+        *ngIf="moduleConfig.form_fields.obs_method"
         class="col-lg-4 col-sm-6"
       >
         <pnx-nomenclature
@@ -404,7 +404,7 @@
       </div>
 
       <div
-        *ngIf="occtaxConfig.form_fields.bio_condition"
+        *ngIf="moduleConfig.form_fields.bio_condition"
         class="col-lg-4 col-sm-6"
       >
         <pnx-nomenclature
@@ -416,7 +416,7 @@
       </div>
 
       <div
-        *ngIf="occtaxConfig.form_fields.naturalness"
+        *ngIf="moduleConfig.form_fields.naturalness"
         class="col-lg-4 col-sm-6"
       >
         <pnx-nomenclature
@@ -428,7 +428,7 @@
       </div>
 
       <div
-        *ngIf="occtaxConfig.form_fields.bio_status"
+        *ngIf="moduleConfig.form_fields.bio_status"
         class="col-lg-4 col-sm-6"
       >
         <pnx-nomenclature
@@ -440,7 +440,7 @@
       </div>
 
       <div
-        *ngIf="occtaxConfig.form_fields.behaviour"
+        *ngIf="moduleConfig.form_fields.behaviour"
         class="col-lg-4 col-sm-6"
       >
         <pnx-nomenclature
@@ -452,7 +452,7 @@
       </div>
 
       <div
-        *ngIf="occtaxConfig.form_fields.source_status"
+        *ngIf="moduleConfig.form_fields.source_status"
         class="col-lg-4 col-sm-6"
       >
         <pnx-nomenclature
@@ -464,7 +464,7 @@
       </div>
 
       <div
-        *ngIf="occtaxConfig.form_fields.blurring"
+        *ngIf="moduleConfig.form_fields.blurring"
         class="col-lg-4 col-sm-6"
       >
         <pnx-nomenclature
@@ -478,7 +478,7 @@
 
     <div class="row">
       <div
-        *ngIf="occtaxConfig.form_fields.exist_proof"
+        *ngIf="moduleConfig.form_fields.exist_proof"
         class="col-lg-4 col-sm-6"
         style="margin-bottom: 1rem;"
       >
@@ -491,7 +491,7 @@
       </div>
 
       <div
-        *ngIf="occtaxConfig.form_fields.digital_proof"
+        *ngIf="moduleConfig.form_fields.digital_proof"
         class="col-lg-4 col-sm-6"
       >
         <div class="form-group">
@@ -504,7 +504,7 @@
         </div>
       </div>
       <div
-        *ngIf="occtaxConfig.form_fields.non_digital_proof"
+        *ngIf="moduleConfig.form_fields.non_digital_proof"
         class="col-lg-4 col-sm-6"
       >
         <div class="form-group">
@@ -518,7 +518,7 @@
       </div>
     </div>
 
-    <div *ngIf="occtaxConfig.form_fields.comment_occ">
+    <div *ngIf="moduleConfig.form_fields.comment_occ">
       <textarea
         placeholder="{{ 'Taxon.Comment' | translate }}"
         class="form-control"
@@ -538,7 +538,7 @@
 
     <div class="row">
       <div
-        *ngIf="occtaxConfig.form_fields.life_stage"
+        *ngIf="moduleConfig.form_fields.life_stage"
         class="col-sm-6"
       >
         <pnx-nomenclature
@@ -549,7 +549,7 @@
         </pnx-nomenclature>
       </div>
       <div
-        *ngIf="occtaxConfig.form_fields.sex"
+        *ngIf="moduleConfig.form_fields.sex"
         class="col-sm-6"
       >
         <pnx-nomenclature
@@ -561,7 +561,7 @@
       </div>
 
       <div
-        *ngIf="occtaxConfig.form_fields.count_min"
+        *ngIf="moduleConfig.form_fields.count_min"
         class="col-sm-6"
       >
         <small> {{ 'Counting.NumberMin' | translate }} </small>
@@ -574,7 +574,7 @@
       </div>
 
       <div
-        *ngIf="occtaxConfig.form_fields.count_max"
+        *ngIf="moduleConfig.form_fields.count_max"
         class="col-sm-6"
       >
         <small> {{ 'Counting.NumberMax' | translate }} </small>
@@ -587,7 +587,7 @@
       </div>
 
       <div
-        *ngIf="occtaxConfig.form_fields.obj_count"
+        *ngIf="moduleConfig.form_fields.obj_count"
         class="col-sm-6"
       >
         <pnx-nomenclature
@@ -598,7 +598,7 @@
         </pnx-nomenclature>
       </div>
       <div
-        *ngIf="occtaxConfig.form_fields.type_count"
+        *ngIf="moduleConfig.form_fields.type_count"
         class="col-sm-6"
       >
         <pnx-nomenclature

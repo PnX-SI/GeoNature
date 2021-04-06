@@ -32,7 +32,7 @@
           id="validButtons"
         >
           <label
-            [ngStyle]="{'background-color': VALIDATION_CONFIG.STATUS_INFO[item.cd_nomenclature]?.color}"
+            [ngStyle]="{'background-color': moduleConfig.STATUS_INFO[item.cd_nomenclature]?.color}"
             role="button"
             class="btn btn-success box-shadow"
             aria-pressed="true"
@@ -105,8 +105,8 @@
 
   <pnx-synthese-info-obs
     [idSynthese]="id_synthese"
-    [mailCustomSubject]="VALIDATION_CONFIG.MAIL_SUBJECT"
-    [mailCustomBody]="VALIDATION_CONFIG.MAIL_BODY"
+    [mailCustomSubject]="moduleConfig.MAIL_SUBJECT"
+    [mailCustomBody]="moduleConfig.MAIL_BODY"
   >
   </pnx-synthese-info-obs>
 

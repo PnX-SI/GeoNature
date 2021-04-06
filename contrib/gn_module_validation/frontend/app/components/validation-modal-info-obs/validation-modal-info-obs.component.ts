@@ -4,7 +4,7 @@ import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthe
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { ConfigService } from '@geonature/utils/configModule/core';
 import { MapListService } from "@geonature_common/map-list/map-list.service";
-import { ModuleConfig } from "../../module.config";
+import { moduleCode } from "../../module.code.config";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
@@ -21,7 +21,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   public position;
   public isNextButtonValid: any;
   public isPrevButtonValid: any;
-  public VALIDATION_CONFIG = ModuleConfig;
+  public moduleConfig: any;
   public statusForm: FormGroup;
   public edit = false;
   public validationStatus;

@@ -29,7 +29,7 @@
       role="alert"
     >
       Vous pouvez néamoins exporter les données, dans une limite de <b>
-        {{syntheseConfig.NB_MAX_OBS_EXPORT}} </b>
+        {{moduleConfig.NB_MAX_OBS_EXPORT}} </b>
       observations en cliquant sur les liens ci-dessous
     </div>
 
@@ -38,7 +38,7 @@
       role="alert"
     >
       En fermant cette fenêtre vous pouvez visualiser <b> seulement</b> les
-      {{syntheseConfig.NB_MAX_OBS_MAP}} dernières
+      {{moduleConfig.NB_MAX_OBS_MAP}} dernières
       observations
       correspondant à votre requête. <br>
     </div>
@@ -49,7 +49,7 @@
     <button
       [disabled]="_dataService.isDownloading"
       style="margin-left: 5px;"
-      *ngFor="let format of syntheseConfig.EXPORT_FORMAT"
+      *ngFor="let format of moduleConfig.EXPORT_FORMAT"
       mat-raised-button
       (click)="downloadObservations(format)"
       type="button"

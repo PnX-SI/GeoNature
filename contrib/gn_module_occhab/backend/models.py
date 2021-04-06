@@ -17,7 +17,7 @@ from geonature.utils.env import DB
 
 class CorStationObserverOccHab(DB.Model):
     __tablename__ = "cor_station_observer"
-    __table_args__ = {"schema": "pr_occhab"}
+    __table_args__ = {"schema": "pr_occhab", "extend_existing": True}
     id_cor_station_observer = DB.Column(DB.Integer, primary_key=True)
     id_station = DB.Column(
         "id_station", DB.Integer, ForeignKey("pr_occhab.t_stations.id_station")

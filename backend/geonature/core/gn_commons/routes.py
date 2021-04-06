@@ -19,8 +19,7 @@ from geonature.utils.errors import (
     GeonatureApiError,
 )
 
-from geonature.utils.config import get_updated_frontend_config
-
+from geonature.utils.config import config_frontend
 
 routes = Blueprint("gn_commons", __name__)
 
@@ -239,7 +238,7 @@ def add_one_place(info_role):
 
 ## config
 @routes.route("/frontend_config", methods=["GET"])
-@permissions.check_cruved_scope("R")
+# @permissions.check_cruved_scope("R")
 @json_resp
 def api_get_config():
     '''
@@ -256,4 +255,4 @@ def api_get_config():
 
     '''
     # get_updated_frontend_config recupère ET met à jour la config de l'appli
-    return get_updated_frontend_config(current_app)
+    return config_frontend

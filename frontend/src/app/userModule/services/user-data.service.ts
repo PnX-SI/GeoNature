@@ -10,8 +10,8 @@ import { Role } from './form.service';
 export class UserDataService {
   public appConfig: any;
   constructor(private _http: HttpClient, private _configService: ConfigService) {
-    this.appConfig = this._configService.getSettings();!this.appConfig
- && console.log('this.appConfig', this.appConfig);
+    this.appConfig = this._configService.getSettings();
+
   }
 
   getRole(id: number) {

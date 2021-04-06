@@ -3,7 +3,6 @@ import { Component, OnInit, Input } from "@angular/core";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { MapService } from "@geonature_common/map/map.service";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
-import { ModuleConfig } from "../../module.config";
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
 
 @Component({
@@ -14,7 +13,7 @@ import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthe
 })
 export class ValidationSyntheseCarteComponent implements OnInit {
   public leafletDrawOptions = leafletDrawOption;
-  public VALIDATION_CONFIG = ModuleConfig;
+  public moduleConfig: any;
   @Input() inputSyntheseData: any;
   constructor(
     public mapListService: MapListService,
@@ -33,12 +32,12 @@ export class ValidationSyntheseCarteComponent implements OnInit {
       click: e => {
         for (let obs in this.mapListService.layerDict) {
           this.mapListService.layerDict[obs].setStyle(
-            this.VALIDATION_CONFIG.MAP_POINT_STYLE.originStyle
+            this.moduleConfig.MAP_POINT_STYLE.originStyle
           );
         }
         // toggle style
         this.mapListService.layerDict[feature.id].setStyle(
-          this.VALIDATION_CONFIG.MAP_POINT_STYLE.selectedStyle
+          this.moduleConfig.MAP_POINT_STYLE.selectedStyle
         );
         // observable
         this.mapListService.mapSelected.next(feature.id);

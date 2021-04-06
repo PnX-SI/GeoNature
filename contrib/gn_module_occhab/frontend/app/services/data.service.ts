@@ -6,25 +6,26 @@ import {
 } from "@geonature_common/form/data-form.service";
 
 import { ConfigService } from '@geonature/utils/configModule/core';
-import { ModuleConfig } from "../module.config";
+import { moduleCode } from "../module.code.config";
 
 @Injectable()
 export class OccHabDataService {
 
   public appConfig: any;
+  public moduleConfig: any;
 
   constructor(
     private _http: HttpClient,
     private _gnDataService: DataFormService,
     private _configService: ConfigService,
   ) {
-    this.appConfig = this._configService.getSettings();!this.appConfig 
- && console.log('this.appConfig', this.appConfig);
+    this.appConfig = this._configService.getSettings();
+      this.moduleConfig = this._configService.getSettings(moduleCode);
   }
 
   postStation(data) {
     return this._http.post(
-      `${this.appConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/station`,
+      `${this.appConfig.API_ENDPOINT}/${this.moduleConfig.MODULE_URL}/station`,
       data
     );
   }
@@ -37,26 +38,26 @@ export class OccHabDataService {
       }
     }
     return this._http.get<any>(
-      `${this.appConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/stations`,
+      `${this.appConfig.API_ENDPOINT}/${this.moduleConfig.MODULE_URL}/stations`,
       { params: queryString }
     );
   }
 
   getOneStation(idStation) {
     return this._http.get<any>(
-      `${this.appConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/station/${idStation}`
+      `${this.appConfig.API_ENDPOINT}/${this.moduleConfig.MODULE_URL}/station/${idStation}`
     );
   }
 
   deleteOneStation(idStation) {
     return this._http.delete<any>(
-      `${this.appConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/station/${idStation}`
+      `${this.appConfig.API_ENDPOINT}/${this.moduleConfig.MODULE_URL}/station/${idStation}`
     );
   }
 
   exportStations(export_format, idsStation?: Array<number>) {
     const sub = this._http.post(
-      `${this.appConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/export_stations/${export_format}`,
+      `${this.appConfig.API_ENDPOINT}/${this.moduleConfig.MODULE_URL}/export_stations/${export_format}`,
       { idsStation: idsStation },
       {
         observe: "events",

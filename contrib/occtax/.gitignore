@@ -1,2 +1,3 @@
 frontend/app/module.config.ts
 frontend/app/*.config.ts
+!frontend/app/module.code.config.ts

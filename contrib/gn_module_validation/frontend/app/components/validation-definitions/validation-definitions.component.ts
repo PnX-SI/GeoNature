@@ -3,8 +3,6 @@ import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { ValidationDataService } from "../../services/data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 
-import { ModuleConfig } from "../../module.config";
-
 @Component({
   selector: "pnx-validation-definitions",
   templateUrl: "validation-definitions.component.html",
@@ -14,7 +12,7 @@ import { ModuleConfig } from "../../module.config";
 export class ValidationDefinitionsComponent {
   public definitions;
   private showDefinitions: Boolean = false;
-  public VALIDATION_CONFIG = ModuleConfig;
+  public moduleConfig: any;
 
   constructor(
     public searchService: ValidationDataService,

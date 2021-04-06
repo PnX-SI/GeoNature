@@ -7,14 +7,13 @@ import { ConfigService } from '@geonature/utils/configModule/core';
 })
 export class OcctaxDataService {
 
-  public appConfig = this._configService().getSettings();
+  public appConfig: any;
 
   constructor(
     private _api: HttpClient,
     private _configService: ConfigService,
   ) {
-    this.appConfig = this._configService.getSettings();!this.appConfig 
- && console.log('this.appConfig', this.appConfig);
+    this.appConfig = this._configService.getSettings();
   }
 
   getOneReleve(id) {

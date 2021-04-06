@@ -10,11 +10,13 @@ import { MatDialogRef } from "@angular/material";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { combineLatest } from "rxjs";
 import { filter, map, pairwise } from "rxjs/operators";
-import { ModuleConfig } from "../../module.config";
 import { OcctaxFormMapService } from "../map/map.service";
 import { OcctaxFormReleveService } from "../releve/releve.service";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxFormParamService } from "./form-param.service";
+import { ConfigService } from "@geonature/utils/configModule/core";
+import { moduleCode } from "../../module.code.config";
+
 
 @Component({
   selector: "pnx-occtax-form-param",
@@ -41,7 +43,7 @@ import { OcctaxFormParamService } from "./form-param.service";
   ],
 })
 export class OcctaxFormParamDialog implements OnInit {
-  public occtaxConfig: any;
+  public moduleConfig: any;
   public paramsForm: FormGroup;
   public selectedIndex: number = null;
   public state: string = "collapsed";
@@ -68,9 +70,10 @@ export class OcctaxFormParamDialog implements OnInit {
     private occtaxFormMapService: OcctaxFormMapService,
     private occtaxFormReleveService: OcctaxFormReleveService,
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
-    public occtaxFormParamService: OcctaxFormParamService
+    public occtaxFormParamService: OcctaxFormParamService,
+    private _configService: ConfigService,
   ) {
-    this.occtaxConfig = ModuleConfig;
+    this.moduleConfig = this._configService.getSettings(moduleCode);
   }
 
   ngOnInit() {

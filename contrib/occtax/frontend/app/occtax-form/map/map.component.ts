@@ -3,7 +3,6 @@ import { Subscription } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { CommonService } from "@geonature_common/service/common.service";
-import { ModuleConfig } from "../../module.config";
 import { MapService } from '@geonature_common/map/map.service';
 import { OcctaxFormMapService } from "./map.service";
 import { OcctaxFormService } from "../occtax-form.service";
@@ -15,7 +14,7 @@ import { OcctaxFormService } from "../occtax-form.service";
 export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy {
   public leafletDrawOptions: any;
   public firstFileLayerMessage = true;
-  public occtaxConfig = ModuleConfig;
+  public moduleConfig: any;
   private $_geojsonSub: Subscription;
 
   public coordinates = null;

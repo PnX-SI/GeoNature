@@ -7,9 +7,9 @@
     <pnx-taxonomy
       label="{{ 'Taxon.NomCite' | translate }}"
       [parentFormControl]="taxonForm"
-      [idList]="occtaxConfig.id_taxon_list"
+      [idList]="moduleConfig.id_taxon_list"
       [charNumber]="3"
-      [listLength]="occtaxConfig.taxon_result_number"
+      [listLength]="moduleConfig.taxon_result_number"
       [displayAdvancedFilters]="false"
       displayedLabel="search_name"
       (onChange)="selectAddOcc()"
@@ -31,7 +31,7 @@
     </small>
   </div>
   <div
-    *ngIf="occtaxConfig.form_fields.display_nom_valide"
+    *ngIf="moduleConfig.form_fields.display_nom_valide"
     class="col-sm-6"
   >
     <small> TAXREF - Nom valide </small>
@@ -48,7 +48,7 @@
 
 <div class="row">
   <div
-    *ngIf="occtaxConfig.form_fields.obs_tech"
+    *ngIf="moduleConfig.form_fields.obs_tech"
     class="col-lg-4 col-sm-6"
   >
     <pnx-nomenclature
@@ -68,7 +68,7 @@
     </small>
   </div>
   <div
-    *ngIf="occtaxConfig.form_fields.bio_condition"
+    *ngIf="moduleConfig.form_fields.bio_condition"
     class="col-lg-4 col-sm-6"
   >
     <pnx-nomenclature
@@ -108,7 +108,7 @@
 <div [@detailExpand]='advanced'>
   <div class="row">
     <div
-      *ngIf="occtaxConfig.form_fields.determiner"
+      *ngIf="moduleConfig.form_fields.determiner"
       class="col-lg-4 col-sm-6"
     >
       <small> {{ 'Taxon.Determiner' | translate }} </small>
@@ -126,7 +126,7 @@
       </small>
     </div>
     <div
-      *ngIf="occtaxConfig.form_fields.determination_method"
+      *ngIf="moduleConfig.form_fields.determination_method"
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
@@ -146,7 +146,7 @@
       </small>
     </div>
     <div
-      *ngIf="occtaxConfig.form_fields.observation_status"
+      *ngIf="moduleConfig.form_fields.observation_status"
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
@@ -158,7 +158,7 @@
     </div>
 
     <div
-      *ngIf="occtaxConfig.form_fields.naturalness"
+      *ngIf="moduleConfig.form_fields.naturalness"
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
@@ -172,7 +172,7 @@
     </div>
 
     <div
-      *ngIf="occtaxConfig.form_fields.bio_status"
+      *ngIf="moduleConfig.form_fields.bio_status"
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
@@ -186,7 +186,7 @@
     </div>
 
     <div
-      *ngIf="occtaxConfig.form_fields.behaviour"
+      *ngIf="moduleConfig.form_fields.behaviour"
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
@@ -199,7 +199,7 @@
       </pnx-nomenclature>
     </div>
     <div
-      *ngIf="occtaxConfig.form_fields.source_status"
+      *ngIf="moduleConfig.form_fields.source_status"
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
@@ -211,7 +211,7 @@
     </div>
 
     <div
-      *ngIf="occtaxConfig.form_fields.blurring"
+      *ngIf="moduleConfig.form_fields.blurring"
       class="col-lg-4 col-sm-6"
     >
       <pnx-nomenclature
@@ -226,7 +226,7 @@
 
   <div class="row">
     <div
-      *ngIf="occtaxConfig.form_fields.exist_proof"
+      *ngIf="moduleConfig.form_fields.exist_proof"
       class="col-lg-4 col-sm-6"
       style="margin-bottom: 1rem;"
     >
@@ -242,7 +242,7 @@
     </div>
 
     <div
-      *ngIf="occtaxConfig.form_fields.digital_proof"
+      *ngIf="moduleConfig.form_fields.digital_proof"
       class="col-lg-4 col-sm-6"
       [ngClass]="{'d-none': !displayProofFromElements && !occurrenceForm.get('digital_proof').hasError('proofNotNull')}"
     >
@@ -264,7 +264,7 @@
       </small>
     </div>
     <div
-      *ngIf="occtaxConfig.form_fields.non_digital_proof"
+      *ngIf="moduleConfig.form_fields.non_digital_proof"
       class="col-lg-4 col-sm-6"
       [ngClass]="{'d-none': !displayProofFromElements && !occurrenceForm.get('non_digital_proof').hasError('proofNotNull')}"
     >
@@ -296,7 +296,7 @@
   </div>
 
 
-  <div *ngIf="occtaxConfig.form_fields.comment_occ">
+  <div *ngIf="moduleConfig.form_fields.comment_occ">
     <textarea
       placeholder="{{ 'Taxon.Comment' | translate }}"
       class="form-control"

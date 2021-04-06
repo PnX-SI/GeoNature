@@ -1,6 +1,10 @@
 // Angular core
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
+import {
+  ORDERED_APP_INITIALIZER,
+  ORDERED_APP_PROVIDER,
+} from 'ngx-ordered-initializer';
 
 import {
   HttpClientModule,
@@ -67,14 +71,15 @@ import { UserDataService } from "./userModule/services/user-data.service";
 // Config
 import { appConfig_TOKEN, appConfig } from '@geonature_config/app.config';
 
-export function get_cruved(cruvedStore: CruvedStoreService, configService: ConfigService) {
-    return () => configService.init().then(() => cruvedStore.fetchCruved().toPromise());
-//     return () => { return new Promise((resolve, reject) => {
-//       configService.init().then(() =>
-//         resolve(cruvedStore.fetchCruved())
-//     )
-//     });
-// }
+
+export function get_config(configService: ConfigService) {
+  return () => configService.init().then(() => {console.log('config ok')});
+}
+
+export function get_cruved(cruvedStore: CruvedStoreService) {
+    return () => {
+    console.log('get_cruved');
+    return cruvedStore.fetchCruved().toPromise()};
 }
 
 
@@ -134,7 +139,8 @@ export function get_cruved(cruvedStore: CruvedStoreService, configService: Confi
     UserDataService,
     { provide: appConfig_TOKEN, useValue: appConfig },
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
-    { provide: APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService, ConfigService], multi: true}
+    { provide: ORDERED_APP_INITIALIZER, useFactory: get_config, deps: [ConfigService], multi: true},
+    { provide: ORDERED_APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService], multi: true},
   ],
   bootstrap: [AppComponent]
 })

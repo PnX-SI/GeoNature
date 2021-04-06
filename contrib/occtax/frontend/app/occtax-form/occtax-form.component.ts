@@ -9,7 +9,6 @@ import { DOCUMENT } from "@angular/common";
 import { MatDialog, MatDialogConfig } from "@angular/material";
 import { ActivatedRoute, Router } from "@angular/router";
 import { CommonService } from "@geonature_common/service/common.service"
-import { ModuleConfig } from "../module.config";
 import { OcctaxFormService } from "./occtax-form.service";
 import { MapService } from "@geonature_common/map/map.service";
 import { OcctaxFormParamDialog } from "./form-param/form-param.dialog";
@@ -26,7 +25,7 @@ import { OcctaxDataService } from "../services/occtax-data.service";
   styleUrls: ["./occtax-form.component.scss"]
 })
 export class OcctaxFormComponent implements OnInit, AfterViewInit {
-  public occtaxConfig = ModuleConfig;
+  public moduleConfig: any;
   public id;
   public disableCancel = false;
   releveUrl: string = null;

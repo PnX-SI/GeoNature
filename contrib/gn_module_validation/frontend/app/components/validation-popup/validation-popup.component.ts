@@ -1,7 +1,6 @@
 import { Component, Input, Output, EventEmitter } from "@angular/core";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import { ModuleConfig } from "../../module.config";
 import {  FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 //import { FILTERSLIST } from "./filters-list";
@@ -22,7 +21,7 @@ export class ValidationPopupComponent {
   public modalRef:any;
   string_observations: string;
   public statusForm: FormGroup;
-  public VALIDATION_CONFIG = ModuleConfig;
+  public moduleConfig: any;
   public status;
   public plurielObservations;
   public plurielNbOffPage;

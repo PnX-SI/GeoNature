@@ -17,7 +17,6 @@ from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.env import DB
 
-
 class ReleveModel(DB.Model):
     """
         Classe abstraite permettant d'ajout des méthodes
@@ -90,8 +89,8 @@ class ReleveModel(DB.Model):
 
 
 class corRoleRelevesOccurrence(DB.Model):
-    __tablename__ = "cor_role_releves_occtax"
-    __table_args__ = {"schema": "pr_occtax"}
+    __tablename__ = "cor_role_releves_occtax"   
+    __table_args__ = {"schema": "pr_occtax", "extend_existing": True}
     unique_id_cor_role_releve = DB.Column(
         "unique_id_cor_role_releve",
         UUID(as_uuid=True),
@@ -111,11 +110,10 @@ class corRoleRelevesOccurrence(DB.Model):
         primary_key=False,
     )
 
-
 @serializable
 class CorCountingOccurrence(DB.Model):
     __tablename__ = "cor_counting_occtax"
-    __table_args__ = {"schema": "pr_occtax"}
+    __table_args__ = {"schema": "pr_occtax", "extend_existing": True}
     id_counting_occtax = DB.Column(DB.Integer, primary_key=True)
     unique_id_sinp_occtax = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()]), nullable=False
@@ -140,16 +138,17 @@ class CorCountingOccurrence(DB.Model):
 
     medias = DB.relationship(
         TMedias,
-        primaryjoin=('TMedias.uuid_attached_row == CorCountingOccurrence.unique_id_sinp_occtax'),
+        primaryjoin=(TMedias.uuid_attached_row == unique_id_sinp_occtax),
         foreign_keys=[TMedias.uuid_attached_row],
         cascade="all",
         lazy="select",
     )
 
+
 @serializable
 class TOccurrencesOccurrence(DB.Model):
     __tablename__ = "t_occurrences_occtax"
-    __table_args__ = {"schema": "pr_occtax"}
+    __table_args__ = {"schema": "pr_occtax", "extend_existing": True}
     id_occurrence_occtax = DB.Column(DB.Integer, primary_key=True)
     id_releve_occtax = DB.Column(
         DB.Integer, ForeignKey("pr_occtax.t_releves_occtax.id_releve_occtax")
@@ -180,7 +179,7 @@ class TOccurrencesOccurrence(DB.Model):
         default=select([func.uuid_generate_v4()]),
     )
     cor_counting_occtax = relationship(
-        "CorCountingOccurrence",
+        CorCountingOccurrence,
         lazy="joined",
         cascade="all,delete-orphan",
         uselist=True,
@@ -196,7 +195,7 @@ class TOccurrencesOccurrence(DB.Model):
 @geoserializable
 class TRelevesOccurrence(ReleveModel):
     __tablename__ = "t_releves_occtax"
-    __table_args__ = {"schema": "pr_occtax"}
+    __table_args__ = {"schema": "pr_occtax", "extend_existing": True}
     id_releve_occtax = DB.Column(DB.Integer, primary_key=True)
     unique_id_sinp_grp = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
@@ -227,7 +226,7 @@ class TRelevesOccurrence(ReleveModel):
     habitat = relationship(Habref, lazy="select")
 
     t_occurrences_occtax = relationship(
-        "TOccurrencesOccurrence", lazy="joined", cascade="all, delete-orphan"
+        TOccurrencesOccurrence, lazy="joined", cascade="all, delete-orphan"
     )
 
     observers = DB.relationship(
@@ -266,7 +265,7 @@ class TRelevesOccurrence(ReleveModel):
 @geoserializable
 class VReleveOccurrence(ReleveModel):
     __tablename__ = "v_releve_occtax"
-    __table_args__ = {"schema": "pr_occtax"}
+    __table_args__ = {"schema": "pr_occtax", "extend_existing": True}
     id_releve_occtax = DB.Column(DB.Integer)
     id_dataset = DB.Column(DB.Integer)
     id_digitiser = DB.Column(DB.Integer)
@@ -306,7 +305,7 @@ class VReleveOccurrence(ReleveModel):
 @serializable
 class DefaultNomenclaturesValue(DB.Model):
     __tablename__ = "defaults_nomenclatures_value"
-    __table_args__ = {"schema": "pr_occtax"}
+    __table_args__ = {"schema": "pr_occtax", "extend_existing": True}
     mnemonique_type = DB.Column(DB.Integer, primary_key=True)
     id_organism = DB.Column(DB.Integer, primary_key=True)
     id_nomenclature = DB.Column(DB.Integer, primary_key=True)

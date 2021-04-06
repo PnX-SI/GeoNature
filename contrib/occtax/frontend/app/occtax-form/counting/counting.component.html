@@ -1,6 +1,6 @@
 <div class="row">
   <div
-    *ngIf="occtaxConfig.form_fields.obj_count"
+    *ngIf="moduleConfig.form_fields.obj_count"
     class="col-lg-4 col-sm-6"
   >
     <pnx-nomenclature
@@ -13,7 +13,7 @@
     </pnx-nomenclature>
   </div>
   <div
-    *ngIf="occtaxConfig.form_fields.type_count"
+    *ngIf="moduleConfig.form_fields.type_count"
     class="col-lg-4 col-sm-6"
   >
     <pnx-nomenclature
@@ -39,7 +39,7 @@
 <div class="row">
 
   <div
-    *ngIf="occtaxConfig.form_fields.count_min"
+    *ngIf="moduleConfig.form_fields.count_min"
     class="col-3"
   >
     <small> {{ 'Counting.NumberMin' | translate }} </small>
@@ -53,7 +53,7 @@
   </div>
 
   <div
-    *ngIf="occtaxConfig.form_fields.count_max"
+    *ngIf="moduleConfig.form_fields.count_max"
     class="col-3"
   >
     <small> {{ 'Counting.NumberMax' | translate }} </small>
@@ -74,7 +74,7 @@
   </div>
 
   <div
-    *ngIf="occtaxConfig.form_fields.life_stage"
+    *ngIf="moduleConfig.form_fields.life_stage"
     class="col-3"
   >
     <pnx-nomenclature
@@ -94,7 +94,7 @@
     </small>
   </div>
   <div
-    *ngIf="occtaxConfig.form_fields.sex"
+    *ngIf="moduleConfig.form_fields.sex"
     class="col-3"
   >
     <pnx-nomenclature
@@ -118,7 +118,7 @@
 <div class="row">
   <div
     id='occurrence-medias'
-    *ngIf="occtaxConfig.ENABLE_MEDIAS"
+    *ngIf="moduleConfig.ENABLE_MEDIAS"
     class="col-sm-12"
   >
 

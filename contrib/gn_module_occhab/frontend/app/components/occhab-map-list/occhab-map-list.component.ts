@@ -7,7 +7,8 @@ import { OccHabModalDownloadComponent } from "./modal-download.component";
 import { NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
 import * as moment from "moment";
-import { ModuleConfig } from "../../../../../../external_modules/occhab/frontend/app/module.config";
+import { ConfigService } from "@geonature/utils/configModule/core";
+import { moduleCode } from "../../module.code.config";
 
 @Component({
   selector: "pnx-occhab-map-list",
@@ -22,6 +23,7 @@ export class OccHabMapListComponent implements OnInit {
     { name: "Jeu de données", prop: "dataset_name", width: "200" }
   ];
   @ViewChild("dataTable") dataTable: DatatableComponent;
+  public moduleConfig: any;
   public rowNumber: number;
   public dataLoading = true;
   public deleteOne: any;
@@ -30,8 +32,11 @@ export class OccHabMapListComponent implements OnInit {
     private _occHabDataService: OccHabDataService,
     public mapListService: MapListService,
     private _ngbModal: NgbModal,
-    private _commonService: CommonService
-  ) {}
+    private _commonService: CommonService,
+    private _configService: ConfigService,
+  ) {
+    this.moduleConfig = this._configService.getSettings(moduleCode);
+  }
   ngOnInit() {
     if (this.storeService.firstMessageMapList) {
       this._commonService.regularToaster(
@@ -77,7 +82,7 @@ export class OccHabMapListComponent implements OnInit {
       featuresCollection => {
         // store the idsStation in the store service
         if (
-          featuresCollection.features.length === ModuleConfig.NB_MAX_MAP_LIST
+          featuresCollection.features.length === this.moduleConfig.NB_MAX_MAP_LIST
         ) {
           this.openModal(true);
         }
@@ -194,3 +199,4 @@ export class OccHabMapListComponent implements OnInit {
     this._ngbModal.open(deleteModal);
   }
 }
+

@@ -24,8 +24,8 @@ export class ModuleGuardService implements CanActivate {
     private _commonService: CommonService,
     private _configService: ConfigService,
   ) {
-    this.appConfig = this._configService.getSettings();!this.appConfig
- && console.log('this.appConfig', this.appConfig);
+    this.appConfig = this._configService.getSettings();
+
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
@@ -55,8 +55,8 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     private _moduleService: ModuleService,
     private _configService: ConfigService,
   ) {
-    this.appConfig = this._configService.getSettings();!this.appConfig
- && console.log('this.appConfig', this.appConfig);
+    this.appConfig = this._configService.getSettings();
+
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
@@ -85,8 +85,8 @@ export class SignUpGuard implements CanActivate {
     private _router: Router,
     private _configService: ConfigService,
   ) {
-    this.appConfig = this._configService.getSettings();!this.appConfig
- && console.log('this.appConfig', this.appConfig);
+    this.appConfig = this._configService.getSettings();
+
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
@@ -108,8 +108,8 @@ export class UserManagementGuard implements CanActivate {
     private _router: Router,
     private _configService: ConfigService,
   ) {
-    this.appConfig = this._configService.getSettings();!this.appConfig
- && console.log('this.appConfig', this.appConfig);
+    this.appConfig = this._configService.getSettings();
+
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {

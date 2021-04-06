@@ -12,6 +12,7 @@ import {
 import { BehaviorSubject } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 
+
 export const FormatMapMime = new Map([
   ['csv', 'text/csv'],
   ['json', 'application/json'],
@@ -40,7 +41,7 @@ export class ModalDownloadComponent implements OnInit {
   constructor(
     private _modalService: NgbModal,
     private _api: HttpClient,
-    private _commonService: CommonService
+    private _commonService: CommonService,
   ) {
     this.downloadProgress$ = <BehaviorSubject<number>>new BehaviorSubject(0.0);
     this.downloadProgress$.subscribe(state => {

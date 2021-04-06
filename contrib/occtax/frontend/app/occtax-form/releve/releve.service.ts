@@ -5,7 +5,6 @@ import { Observable, Subscription } from "rxjs";
 import { filter, map, switchMap, tap, skip } from "rxjs/operators";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { GeoJSON } from "leaflet";
-import { ModuleConfig } from "../../module.config";
 import { CommonService } from "@geonature_common/service/common.service";
 import { FormService } from "@geonature_common/form/form.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
@@ -13,12 +12,14 @@ import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormMapService } from "../map/map.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
+import { ConfigService } from "@geonature/utils/configModule/core";
+import { moduleCode } from "../../module.code.config";
 
 @Injectable()
 export class OcctaxFormReleveService {
   public userReleveRigth: any;
   public $_autocompleteDate: Subscription = new Subscription();
-
+  public moduleConfig: any;
   public propertiesForm: FormGroup;
   public habitatForm = new FormControl();
   public releve: any;
@@ -39,8 +40,10 @@ export class OcctaxFormReleveService {
     private occtaxFormService: OcctaxFormService,
     private occtaxFormMapService: OcctaxFormMapService,
     private occtaxDataService: OcctaxDataService,
-    private occtaxParamS: OcctaxFormParamService
+    private occtaxParamS: OcctaxFormParamService,
+    private _configService: ConfigService,
   ) {
+    this.moduleConfig = this._configService.getSettings(moduleCode);
     this.initPropertiesForm();
     this.setObservables();
 
@@ -87,11 +90,11 @@ export class OcctaxFormReleveService {
       id_nomenclature_tech_collect_campanule: null,
       observers: [
         null,
-        !ModuleConfig.observers_txt ? Validators.required : null,
+        !this.moduleConfig.observers_txt ? Validators.required : null,
       ],
       observers_txt: [
         null,
-        ModuleConfig.observers_txt ? Validators.required : null,
+        this.moduleConfig.observers_txt ? Validators.required : null,
       ],
       id_nomenclature_grp_typ: null,
       grp_method: null,
@@ -248,7 +251,7 @@ export class OcctaxFormReleveService {
   }
 
   private defaultDateWithToday() {
-    if (!ModuleConfig.DATE_FORM_WITH_TODAY) {
+    if (!this.moduleConfig.DATE_FORM_WITH_TODAY) {
       return null;
     } else {
       const today = new Date();
@@ -261,7 +264,7 @@ export class OcctaxFormReleveService {
   }
 
   getPreviousReleve(previousReleve) {    
-    if (previousReleve && !ModuleConfig.ENABLE_SETTINGS_TOOLS) {
+    if (previousReleve && !this.moduleConfig.ENABLE_SETTINGS_TOOLS) {
       return {
         'id_dataset': previousReleve.properties.id_dataset,
         'observers': previousReleve.properties.observers,
@@ -302,9 +305,9 @@ export class OcctaxFormReleveService {
             meta_device_entry: "web",
             comment: this.occtaxParamS.get("releve.comment"),
             observers: this.occtaxParamS.get("releve.observers") ||
-              previousReleve.observers || ModuleConfig.observers_txt ? null: [this.occtaxFormService.currentUser],
+              previousReleve.observers || this.moduleConfig.observers_txt ? null: [this.occtaxFormService.currentUser],
             observers_txt: this.occtaxParamS.get("releve.observers_txt") || previousReleve.observers_txt || 
-              ModuleConfig.observers_txt ? [this.occtaxFormService.currentUser.nom_complet]:  null,
+              this.moduleConfig.observers_txt ? [this.occtaxFormService.currentUser.nom_complet]:  null,
             id_nomenclature_grp_typ:
               this.occtaxParamS.get("releve.id_nomenclature_grp_typ") ||
               data["TYP_GRP"],
@@ -354,7 +357,7 @@ export class OcctaxFormReleveService {
     value.properties.date_max = this.dateParser.format(
       value.properties.date_max
     );
-    if (!ModuleConfig.observers_txt) {
+    if (!this.moduleConfig.observers_txt) {
       value.properties.observers = value.properties.observers.map(
         (observer) => observer.id_role
       );

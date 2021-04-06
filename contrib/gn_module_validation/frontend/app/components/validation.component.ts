@@ -3,8 +3,9 @@ import { ValidationDataService } from "../services/data.service";
 
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { CommonService } from "@geonature_common/service/common.service";
-import { ModuleConfig } from "../module.config";
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
+import { ConfigService } from "@geonature/utils/configModule/core";
+import { moduleCode } from "../module.code.config";
 
 @Component({
   selector: "pnx-validation",
@@ -13,6 +14,7 @@ import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthe
 })
 export class ValidationComponent implements OnInit {
   public sameCoordinates: any;
+  public moduleConfig: any;
   public validationStatus;
   public searchBarHidden: boolean = true;
 
@@ -20,8 +22,11 @@ export class ValidationComponent implements OnInit {
     public _ds: ValidationDataService,
     private _mapListService: MapListService,
     private _commonService: CommonService,
-    private _fs: SyntheseFormService
-  ) { }
+    private _fs: SyntheseFormService,
+    private _configService: ConfigService,
+  ) {
+    this.moduleConfig = this._configService.getSettings(moduleCode);
+  }
 
   ngOnInit() {
     // reinitialize the form
@@ -31,7 +36,7 @@ export class ValidationComponent implements OnInit {
     this._fs.selectedtaxonFromComponent = [];
     this.getStatusNames();
     this._commonService.translateToaster("info", "La limite de nombre d'observations affichable dans le module est de " +
-      ModuleConfig.NB_MAX_OBS_MAP);
+      this.moduleConfig.NB_MAX_OBS_MAP);
     this._commonService.translateToaster("info", "Les 100 dernières observations");
   }
 
@@ -99,7 +104,7 @@ export class ValidationComponent implements OnInit {
     // function pass to the LoadTableData maplist service function to format date
     if (feature.properties.validation_auto === true) {
       feature.properties.validation_auto =
-        ModuleConfig.ICON_FOR_AUTOMATIC_VALIDATION;
+        this.moduleConfig.ICON_FOR_AUTOMATIC_VALIDATION;
     }
     if (feature.properties.validation_auto === false) {
       feature.properties.validation_auto = "";

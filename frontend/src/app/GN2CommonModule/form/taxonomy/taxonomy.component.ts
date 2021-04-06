@@ -39,8 +39,8 @@ export interface Taxon {
  * <pnx-taxonomy #taxon
  * label="{{ 'Taxon.Taxon' | translate }}
  * [parentFormControl]="occurrenceForm.controls.cd_nom"
- * [idList]="occtaxConfig.id_taxon_list" [charNumber]="3"
- *  [listLength]="occtaxConfig.taxon_result_number"
+ * [idList]="moduleConfig.id_taxon_list" [charNumber]="3"
+ *  [listLength]="moduleConfig.taxon_result_number"
  * (onChange)="fs.onTaxonChanged($event);"
  * [displayAdvancedFilters]=true>
  * </pnx-taxonomy>

@@ -9,8 +9,9 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs/Subscription";
 import { CommonService } from "@geonature_common/service/common.service";
 import { ConfigService } from '@geonature/utils/configModule/core';
-import { ModuleConfig } from "../../module.config";
 import { filter } from "rxjs/operators";
+import { moduleCode } from "../../module.code.config";
+
 @Component({
   selector: "pnx-occhab-form",
   templateUrl: "occhab-form.component.html",
@@ -18,6 +19,7 @@ import { filter } from "rxjs/operators";
   providers: [OcchabFormService]
 })
 export class OccHabFormComponent implements OnInit {
+  public moduleConfig: any;
   public leafletDrawOptions = leafletDrawOption;
   public filteredHab: any;
   private _sub: Subscription;
@@ -26,7 +28,6 @@ export class OccHabFormComponent implements OnInit {
   public MAP_FULL_HEIGHT = "87vh";
   public mapHeight = this.MAP_FULL_HEIGHT;
   public appConfig: any;
-  public moduleConfig = ModuleConfig;
   public showHabForm = false;
   public showTabHab = false;
   public showDepth = false;
@@ -50,6 +51,7 @@ export class OccHabFormComponent implements OnInit {
     private _configService: ConfigService,
     ) {
       this.appConfig = this._configService.getSettings();
+      this.moduleConfig = this._configService.getSettings(moduleCode);
     }
 
   ngOnInit() {

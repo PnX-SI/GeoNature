@@ -32,8 +32,8 @@ export class SyntheseDataService {
     private _commonService: CommonService,
     private _configService: ConfigService,
   ) {
-    this.appConfig = this._configService.getSettings();!this.appConfig
- && console.log('this.appConfig', this.appConfig);
+    this.appConfig = this._configService.getSettings();
+
     this.downloadProgress = <BehaviorSubject<number>>new BehaviorSubject(0.0);
   }
 

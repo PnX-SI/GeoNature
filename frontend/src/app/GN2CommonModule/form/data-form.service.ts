@@ -28,8 +28,8 @@ export class DataFormService {
   constructor(private _http: HttpClient, private _configService: ConfigService) {
     // pb à l'initialisation avec l'appel à get_cruved dans app.module.ts ??????
     // on ne peux pas se servir de appConfig ici
-    this.appConfig = this._configService.getSettings();!this.appConfig
-    && console.log('this.appConfig', this.appConfig);
+    this.appConfig = this._configService.getSettings();
+
   }
 
   getNomenclature(

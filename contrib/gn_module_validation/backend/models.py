@@ -12,7 +12,7 @@ from geoalchemy2 import Geometry
 @geoserializable
 class VSyntheseValidation(DB.Model):
     __tablename__ = "v_synthese_validation_forwebapp"
-    __table_args__ = {"schema": "gn_commons"}
+    __table_args__ = {"schema": "gn_commons", "extend_existing": True}
 
     id_synthese = DB.Column(
         DB.Integer,

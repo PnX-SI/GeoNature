@@ -35,8 +35,7 @@ export class OcctaxFormService {
     private _configService: ConfigService,
     ) {
     this.currentUser = this._auth.getCurrentUser();
-    this.appConfig = this._configService.getSettings();!this.appConfig 
- && console.log('this.appConfig', this.appConfig);
+    this.appConfig = this._configService.getSettings();
 
     //observation de l'URL
     this.id_releve_occtax
