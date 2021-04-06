@@ -22,7 +22,11 @@ from geonature.utils.command import (
     tsconfig_templating,
     tsconfig_app_templating,
     update_app_configuration,
+
 )
+
+from geonature.utils.config import manage_frontend_assets
+
 from geonature import create_app
 
 # from rq import Queue, Connection, Worker
@@ -51,6 +55,14 @@ def main(ctx):
 #             q = Queue()
 #             w = Worker(q)
 #             w.work()
+
+
+@main.command()
+def manage_frontend_assets():
+    '''
+        Pour créer api.config.json, etc...
+    '''
+    manage_frontend_assets()
 
 
 @main.command()
