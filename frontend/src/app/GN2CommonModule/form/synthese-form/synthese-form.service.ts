@@ -1,4 +1,3 @@
-import { appConfig } from './../../../../conf/app.config';
 import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, ValidatorFn } from '@angular/forms';
 import { ConfigService } from '@geonature/utils/configModule/core';

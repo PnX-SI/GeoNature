@@ -1,4 +1,3 @@
-import { appConfig } from './../../../../conf/app.config';
 import { Subscription } from 'rxjs';
 import { ConfigService } from '@geonature/utils/configModule/core';
 import { SafeResourceUrl } from '@angular/platform-browser';

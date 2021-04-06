@@ -1,4 +1,3 @@
-import { appConfig } from './../../../../conf/app.config';
 import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';

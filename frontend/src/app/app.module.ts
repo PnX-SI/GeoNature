@@ -70,7 +70,7 @@ export function createTranslateLoader(http: HttpClient) {
 import { UserDataService } from "./userModule/services/user-data.service";
 
 // Config
-import { appConfig_TOKEN, appConfig } from '@geonature_config/app.config';
+// import { appConfig_TOKEN, appConfig } from '@geonature_config/app.config';
 
 
 export function get_config(configService: ConfigService) {
@@ -139,7 +139,7 @@ export function get_modules(moduleService: ModuleService) {
     SideNavService,
     CruvedStoreService,
     UserDataService,
-    { provide: appConfig_TOKEN, useValue: appConfig },
+    // { provide: appConfig_TOKEN, useValue: appConfig },
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
     { provide: ORDERED_APP_INITIALIZER, useFactory: get_config, deps: [ConfigService], multi: true},
