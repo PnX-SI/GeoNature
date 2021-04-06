@@ -10,6 +10,7 @@ import click
 from geonature.utils.env import (
     DEFAULT_CONFIG_FILE,
     GEONATURE_VERSION,
+ROOT_DIR,
 )
 from geonature.utils.command import (
     start_gunicorn_cmd,
@@ -90,8 +91,15 @@ def dev_back(host, port):
     """
     if not environ.get('FLASK_ENV'):
         environ['FLASK_ENV'] = 'development'
+        
     app = create_app()
-    app.run(host=host, port=int(port))
+    app.run(
+        host=host,
+        port=int(port),
+        extra_files=[
+            ROOT_DIR / str('config/geonature_config.toml')
+        ]
+    )
 
 
 @main.command()

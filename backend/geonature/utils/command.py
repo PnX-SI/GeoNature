@@ -32,10 +32,13 @@ log = logging.getLogger(__name__)
 
 MSG_OK = "\033[92mok\033[0m\n"
 
-
 def start_gunicorn_cmd(uri, worker):
-    cmd = "gunicorn server:app -w {gun_worker} -b {gun_uri}"
-    subprocess.call(cmd.format(gun_worker=worker, gun_uri=uri).split(" "), cwd=str(BACKEND_DIR))
+    cmd = "gunicorn geonature.wsgi:app -w {gun_worker} -b {gun_uri} --reload-extra-file={extra_files}"
+    subprocess.call(cmd.format(
+        gun_worker=worker,
+        gun_uri=uri,
+        extra_files=ROOT_DIR / str('config/geonature_config.toml')
+        ).split(" "), cwd=str(BACKEND_DIR))
 
 
 def supervisor_cmd(action, app_name):
