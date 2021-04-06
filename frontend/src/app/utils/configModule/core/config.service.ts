@@ -1,3 +1,6 @@
+import { Observable, of } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+
 import { HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
@@ -12,8 +15,13 @@ export class ConfigService {
     ) {
     }
 
-    init(): any {
-      return this.loader.loadSettings().then((res: any) => (this.settings = res));
+    fetchConfig(): Observable<any> {
+      return this.loader.loadSettings()
+      .pipe(mergeMap((res) => {
+          this.settings = res
+          return of(res);
+        })
+      );
     }
 
   getSettings<T = any>(key?: string | Array<string>, defaultValue?: any): T {

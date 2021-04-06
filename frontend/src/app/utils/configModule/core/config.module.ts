@@ -16,7 +16,7 @@ export const configFactory = () => new ConfigStaticLoader();
 
 export const initializerFactory = (config: ConfigService) => {
   // workaround for AoT compilation
-  const res = () => config.init();
+  const res = () => config.fetchConfig().toPromise();
   return res;
 };
 

@@ -10,14 +10,12 @@ export class ConfigHttpLoader implements ConfigLoader {
     private readonly endpoint: string = '/api.config.json'
   ) {}
 
-  loadSettings(): any {
-    return new Promise((resolve: any, reject: Function) => {
+  loadSettings(): Observable<any> {
       const http = resolveForwardRef(this.http);
-      of(true)
+      return of(true)
       .pipe(
         mergeMap(() => { return http.get(this.endpoint) }),
         mergeMap((apiEndpoint) => { return http.get(`${apiEndpoint}/gn_commons/frontend_config`)})
-      ).subscribe(resolve, (err) => reject('Endpoint unreachable!'))
-    });
+      )
   }
 }

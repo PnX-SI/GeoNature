@@ -1,11 +1,9 @@
 // Angular core
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
-import {
-  ORDERED_APP_INITIALIZER,
-  ORDERED_APP_PROVIDER,
-} from 'ngx-ordered-initializer';
-
+import { forkJoin, Observable, timer } from 'rxjs';
+import { mergeMap, tap } from 'rxjs/operators';
+​
 import {
   HttpClientModule,
   HttpClient,
@@ -73,17 +71,24 @@ import { UserDataService } from "./userModule/services/user-data.service";
 // import { appConfig_TOKEN, appConfig } from '@geonature_config/app.config';
 
 
-export function get_config(configService: ConfigService) {
-  return () => configService.init();
+export function init_geonature(
+  configService: ConfigService,
+  cruvedStore: CruvedStoreService,
+  moduleService: ModuleService
+  ) {
+    console.log('init_geonature');
+  return () => {
+    return configService.fetchConfig().pipe(
+    mergeMap((config) => {
+      console.log({config})
+      return forkJoin({
+        cruved: cruvedStore.fetchCruved(),
+        modules: moduleService.fetchModules(),
+      });
+    })
+    ).toPromise();
+    }
 }
-
-export function get_cruved(cruvedStore: CruvedStoreService) {
-    return () => cruvedStore.fetchCruved().toPromise();
-}
-export function get_modules(moduleService: ModuleService) {
-    return () => { return moduleService.fetchModules().toPromise(); };
-}
-
 
 @NgModule({
   imports: [
@@ -142,10 +147,12 @@ export function get_modules(moduleService: ModuleService) {
     // { provide: appConfig_TOKEN, useValue: appConfig },
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
-    { provide: ORDERED_APP_INITIALIZER, useFactory: get_config, deps: [ConfigService], multi: true},
-    { provide: ORDERED_APP_INITIALIZER, useFactory: get_modules, deps: [ModuleService], multi: true},
-    { provide: ORDERED_APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService], multi: true},
-    ORDERED_APP_PROVIDER,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: init_geonature,
+      deps: [ConfigService, CruvedStoreService, ModuleService],
+      multi: true
+    },
   ],
   bootstrap: [AppComponent]
 })
