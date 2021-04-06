@@ -13,8 +13,7 @@ export class ConfigService {
     }
 
     init(): any {
-      console.log('init config')
-      return this.loader.loadSettings().then((res: any) => {this.settings = res; console.log('config ok')});
+      return this.loader.loadSettings().then((res: any) => (this.settings = res));
     }
 
   getSettings<T = any>(key?: string | Array<string>, defaultValue?: any): T {

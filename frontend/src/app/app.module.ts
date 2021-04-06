@@ -57,6 +57,7 @@ import { CruvedStoreService } from './GN2CommonModule/service/cruved-store.servi
 import { SideNavService } from './components/sidenav-items/sidenav-service';
 
 import { MyCustomInterceptor } from './services/http.interceptor';
+import { UnauthorizedInterceptor } from './services/unauthorized.interceptor';
 import { GlobalSubService } from './services/global-sub.service';
 
 export function configFactory(http: HttpClient): ConfigLoader {
@@ -73,13 +74,14 @@ import { appConfig_TOKEN, appConfig } from '@geonature_config/app.config';
 
 
 export function get_config(configService: ConfigService) {
-  return () => configService.init().then(() => {console.log('config ok')});
+  return () => configService.init();
 }
 
 export function get_cruved(cruvedStore: CruvedStoreService) {
-    return () => {
-    console.log('get_cruved');
-    return cruvedStore.fetchCruved().toPromise()};
+    return () => cruvedStore.fetchCruved().toPromise();
+}
+export function get_modules(moduleService: ModuleService) {
+    return () => { return moduleService.fetchModules().toPromise(); };
 }
 
 
@@ -139,8 +141,11 @@ export function get_cruved(cruvedStore: CruvedStoreService) {
     UserDataService,
     { provide: appConfig_TOKEN, useValue: appConfig },
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
+    { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
     { provide: ORDERED_APP_INITIALIZER, useFactory: get_config, deps: [ConfigService], multi: true},
+    { provide: ORDERED_APP_INITIALIZER, useFactory: get_modules, deps: [ModuleService], multi: true},
     { provide: ORDERED_APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService], multi: true},
+    ORDERED_APP_PROVIDER,
   ],
   bootstrap: [AppComponent]
 })

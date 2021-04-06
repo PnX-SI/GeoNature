@@ -29,9 +29,6 @@ export class SidenavItemsComponent implements OnInit {
 
   ngOnInit() {
     this.home_page = { module_url: '/', module_label: 'Accueil', module_picto: 'fa-home', id: '1' };
-    if (!this.moduleService.modules) {
-      this.moduleService.fetchModules();
-    }
   }
 
   setHome() {
