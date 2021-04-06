@@ -118,7 +118,7 @@ class PermissionRepository:
         action_id = self.get_action_id(data["action"])
         object_id = self.get_object_id(data["object"])
         end_access_date = format_end_access_date(data["end_date"])
-        id_request = data["id_request"]
+        id_request = data.get("id_request")
         
         # TODO: check if this permission with all this specific filters already exist
 
