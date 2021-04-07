@@ -157,8 +157,8 @@ def create_app(with_external_mods=True, with_flask_admin=True):
 
         # Loading third-party modules
         if with_external_mods:
-            for module, blueprint in import_backend_enabled_modules():
-                app.config[blueprint.config['MODULE_CODE']] = blueprint.config
-                app.register_blueprint(blueprint, url_prefix=blueprint.config['MODULE_URL'])
+            for module_object, module_config, module_blueprint in import_backend_enabled_modules():
+                app.config[module_config['MODULE_CODE']] = module_config
+                app.register_blueprint(module_blueprint, url_prefix=module_config['MODULE_URL'])
         _app = app
     return app

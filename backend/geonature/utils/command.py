@@ -68,7 +68,9 @@ def frontend_routes_templating(app=None):
         ) as input_file:
             template = Template(input_file.read())
             routes = []
-            for url_path, module_code in import_frontend_enabled_modules():
+            for module_config in import_frontend_enabled_modules():
+                module_code = module_config['MODULE_CODE']
+                url_path = module_config['MODULE_URL']
                 location = Path(GN_EXTERNAL_MODULE / module_code.lower())
 
                 # test if module have frontend
@@ -115,7 +117,8 @@ def tsconfig_app_templating(app=None):
         with open(str(ROOT_DIR / "frontend/src/tsconfig.app.json.sample"), "r") as input_file:
             template = Template(input_file.read())
             routes = []
-            for url_path, module_code in import_frontend_enabled_modules():
+            for module_config in import_frontend_enabled_modules():
+                module_code = module_config['MODULE_CODE']
                 location = Path(GN_EXTERNAL_MODULE / module_code.lower())
 
                 # test if module have frontend

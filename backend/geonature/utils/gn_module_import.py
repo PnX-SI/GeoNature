@@ -19,7 +19,7 @@ from geonature.utils.config_schema import GnGeneralSchemaConf, ManifestSchemaPro
 from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
 from geonature.utils.command import build_geonature_front, frontend_routes_templating
-from geonature.utils.module import import_gn_module
+from geonature.utils.module import import_frontend_module
 from geonature.core.gn_commons.models import TModules
 from geonature import create_app
 
@@ -349,7 +349,7 @@ def install_frontend_dependencies(module_path):
 
 
 def add_application_db(app, module_code, url, enable_frontend, enable_backend):
-    log.info("Register the module in gn_commons.t_modules ... \n")
+    log.info("Register the module {} in gn_commons.t_modules ... \n".format(module_code))
     from geonature.core.users.models import TApplications
     from geonature.core.gn_commons.models import TModules
 
@@ -413,23 +413,25 @@ def remove_application_db(app, module_code):
     log.info("...%s\n", MSG_OK)
 
 
-def create_module_config(app, module_code, mod_path=None, build=True):
+def create_module_config(app, module_code, build=True):
     """
     Create the frontend config
     """
-
+    module_code = module_code.upper()
     with app.app_context():
         # fetch the module in the DB from its name
-        module_object = (
-            DB.session.query(TModules).filter(TModules.module_code == module_code.upper()).one()
-        )
-        module, blueprint = import_gn_module(module_object)
-        frontend_config_path = os.path.join(blueprint.config['FRONTEND_PATH'], "app/module.config.ts")  # noqa
+        try:
+            module_object = TModules.query.filter_by(module_code=module_code).one()
+        except NoResultFound:
+            raise Exception(f"Module with code '{module_code}' not found in database.")
+        module_config = import_frontend_module(module_object)
+        frontend_config_path = os.path.join(module_config['FRONTEND_PATH'], "app/module.config.ts")
         try:
             with open(str(ROOT_DIR / frontend_config_path), "w") as outputfile:
                 outputfile.write("export const ModuleConfig = ")
-                json.dump(blueprint.config, outputfile, indent=True, sort_keys=True)
+                json.dump(module_config, outputfile, indent=True, sort_keys=True)
         except FileNotFoundError:
             log.info("No frontend config file")
+            raise
         if build:
             build_geonature_front()
