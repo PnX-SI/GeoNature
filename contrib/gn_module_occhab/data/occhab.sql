@@ -304,6 +304,7 @@ INSERT INTO pr_occhab.defaults_nomenclatures_value (mnemonique_type, id_organism
 INSERT INTO gn_commons.bib_tables_location (table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES
 ('occurence d''habitat du module OccHab', 'pr_occhab', 't_habitats', 'id_habitat', 'unique_id_sinp_hab')
 ,('Station correspondant à un regroupement d''occurence d''habitat du module OccHab', 'pr_occhab', 't_stations', 'id_station', 'unique_id_sinp_station')
+ON CONFLICT DO NOTHING
 ;
 
 -- ;

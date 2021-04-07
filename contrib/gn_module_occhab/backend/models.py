@@ -30,7 +30,7 @@ class CorStationObserverOccHab(DB.Model):
 @serializable
 class THabitatsOcchab(DB.Model):
     __tablename__ = "t_habitats"
-    __table_args__ = {"schema": "pr_occhab"}
+    __table_args__ = {"schema": "pr_occhab", "extend_existing": True}
     id_habitat = DB.Column(DB.Integer, primary_key=True)
     id_station = DB.Column(DB.Integer, ForeignKey(
         "pr_occhab.t_stations.id_station"))
@@ -57,7 +57,7 @@ class THabitatsOcchab(DB.Model):
 @geoserializable
 class TStationsOcchab(ModelCruvedAutorization):
     __tablename__ = "t_stations"
-    __table_args__ = {"schema": "pr_occhab"}
+    __table_args__ = {"schema": "pr_occhab", "extend_existing": True}
     id_station = DB.Column(DB.Integer, primary_key=True)
     unique_id_sinp_station = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
@@ -84,8 +84,7 @@ class TStationsOcchab(ModelCruvedAutorization):
     id_digitiser = DB.Column(DB.Integer)
     geom_4326 = DB.Column(Geometry("GEOMETRY", 4626))
 
-    t_habitats = relationship(
-        "THabitatsOcchab", lazy="joined",  cascade="all, delete-orphan")
+    t_habitats = DB.relationship( THabitatsOcchab, lazy="joined",  cascade="all, delete-orphan")
     dataset = relationship("TDatasets", lazy="joined")
     observers = DB.relationship(
         User,
@@ -165,7 +164,7 @@ class OneStation(TStationsOcchab):
                      TStationsOcchab.id_nomenclature_geographic_object),
     )
 
-    t_one_habitats = relationship("OneHabitat", lazy="select")
+    t_one_habitats = DB.relationship(OneHabitat, lazy="select")
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature(
@@ -190,7 +189,7 @@ class OneStation(TStationsOcchab):
 @serializable
 class DefaultNomenclaturesValue(DB.Model):
     __tablename__ = "defaults_nomenclatures_value"
-    __table_args__ = {"schema": "pr_occhab"}
+    __table_args__ = {"schema": "pr_occhab", "extend_existing": True}
     mnemonique_type = DB.Column(DB.Integer, primary_key=True)
     id_organism = DB.Column(DB.Integer, primary_key=True)
     id_nomenclature = DB.Column(DB.Integer, primary_key=True)

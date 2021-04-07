@@ -17,8 +17,9 @@ def gnmodule_install_app(gn_db, gn_app):
                 MYLOCALSRID=gn_app.config['LOCAL_SRID']
             )
             gn_db.session.commit()
-        except Exception:
-            raise "Erreur lors de l'installation du schéma pr_occhab"
+
+        except Exception as e:
+            raise ValueError("Erreur lors de l'installation du schéma pr_occhab {}".format(str(e)))
         try:
             gn_db.engine.execute(
                 text(open(script_data, 'r').read()).execution_options(autocommit=True))
