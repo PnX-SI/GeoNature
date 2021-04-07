@@ -5,7 +5,7 @@
 
 {% for mod in admin_modules %}
   {% if mod.module_name is not none %}
-    <h3> Module {{mod.module_name}}: </h3> 
+    <h3> {{mod.module_name}}: </h3> 
 
     {% for view in mod.module_views %}
     <ul>

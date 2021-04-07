@@ -9,7 +9,6 @@ from sqlalchemy.sql import select
 from utils_flask_sqla.serializers import serializable
 from pypnusershub.db.models import User
 
-from geonature.core.gn_commons.models import TModules
 from geonature.utils.env import DB
 
 
@@ -85,6 +84,8 @@ class TObjects(DB.Model):
     code_object = DB.Column(DB.Unicode)
     description_object = DB.Column(DB.Unicode)
 
+    def __repr__(self):
+        return f"{self.code_object} ({self.description_object})"
 
 @serializable
 class CorRoleActionFilterModuleObject(DB.Model):
@@ -108,16 +109,12 @@ class CorRoleActionFilterModuleObject(DB.Model):
     )
 
     filter = DB.relationship(
-        TFilters, primaryjoin=(TFilters.id_filter == id_filter), foreign_keys=[id_filter],
+        TFilters, 
+        primaryjoin=(TFilters.id_filter == id_filter), foreign_keys=[id_filter],
     )
 
-    module = DB.relationship(
-        TModules, primaryjoin=(TModules.id_module == id_module), foreign_keys=[id_module],
-    )
-
-    object = DB.relationship(
-        TObjects, primaryjoin=(TObjects.id_object == id_object), foreign_keys=[id_object],
-    )
+    module = DB.relationship("TModules")
+    object = DB.relationship("TObjects")
 
     def is_permission_already_exist(
         self, id_role, id_action, id_module, id_filter_type, id_object=1

@@ -1,17 +1,15 @@
 """
     Modèles du schéma gn_commons
 """
-
-from sqlalchemy import ForeignKey
-from sqlalchemy.sql import select, func
-from sqlalchemy.dialects.postgresql import UUID
-from geoalchemy2 import Geometry
-
 import os
 
 from flask import current_app
+from sqlalchemy import ForeignKey
+from sqlalchemy.sql import select, func
+from sqlalchemy.dialects.postgresql import UUID, JSONB
+from geoalchemy2 import Geometry
 
-from pypnnomenclature.models import TNomenclatures
+from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
@@ -19,7 +17,6 @@ from utils_flask_sqla_geo.serializers import geoserializable
 from geonature.utils.env import DB
 from geonature.core.gn_commons.file_manager import rename_file
 
-# from geonature.core.gn_meta.models import TDatasets
 
 
 @serializable
@@ -80,6 +77,9 @@ class TModules(DB.Model):
     active_backend = DB.Column(DB.Boolean)
     module_doc_url = DB.Column(DB.Unicode)
     module_order = DB.Column(DB.Integer)
+
+    def __repr__(self):
+        return self.module_label.capitalize()
 
 
 @serializable
@@ -242,9 +242,6 @@ class TMobileApps(DB.Model):
     version_code = DB.Column(DB.Unicode)
 
 
-#######################################################################################
-# ----------------Geofit additional code  models.py
-#######################################################################################
 @serializable
 @geoserializable
 class TPlaces(DB.Model):
@@ -257,3 +254,56 @@ class TPlaces(DB.Model):
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature("place_geom", "place_name", recursif)
+
+@serializable
+class BibWidgets(DB.Model):
+    __tablename__ = "bib_widgets"
+    __table_args__ = {"schema": "gn_commons"}
+    id_widget = DB.Column(DB.Integer, primary_key=True)
+    widget_name = DB.Column(DB.String)
+    def __repr__(self):
+        return self.widget_name.capitalize()
+
+@serializable
+class TAddtitionalFields(DB.Model):
+    __tablename__ = "t_additonal_fields"
+    __table_args__ = {"schema": "gn_commons"}
+    id_field = DB.Column(DB.Integer, primary_key=True)
+    field_name = DB.Column(DB.String)
+    field_label = DB.Column(DB.String)
+    required = DB.Column(DB.Boolean)
+    description = DB.Column(DB.String)
+    quantitative = DB.Column(DB.Boolean)
+    unity = DB.Column(DB.String)
+    field_values = DB.Column(JSONB)
+    code_nomenclature_type = DB.Column(DB.String, ForeignKey(BibNomenclaturesTypes.mnemonique))
+    additional_attributes = DB.Column(JSONB)
+    id_widget = DB.Column(DB.Integer, ForeignKey(BibWidgets.id_widget))
+    type_widget = DB.relationship(BibWidgets)
+    bib_nomenclature_type = DB.relationship(BibNomenclaturesTypes)
+    # cor_addi = DB.relationship("CorAdditionnalFields")
+
+    def __repr__(self):
+        return f"{self.field_label} ({self.description})"
+    
+
+from geonature.core.gn_permissions.models import TObjects
+from geonature.core.gn_meta.models import TDatasets
+
+@serializable
+class CorAdditionnalFields(DB.Model):
+    __tablename__ = "cor_additionnal_fields"
+    __table_args__ = {"schema": "gn_commons"}
+    id_field = DB.Column(DB.Integer, ForeignKey(TAddtitionalFields.id_field))
+    id_cor = DB.Column(DB.Integer, primary_key=True)
+    id_module = DB.Column(DB.Integer, ForeignKey(TModules.id_module))
+    id_object = DB.Column(DB.Integer, ForeignKey("gn_permissions.t_objects.id_object"))
+    id_dataset = DB.Column(DB.Integer, ForeignKey('gn_meta.t_datasets.id_dataset'))
+    field = DB.relationship(TAddtitionalFields)
+    module = DB.relationship(TModules)
+    object = DB.relationship(TObjects)
+    dataset = DB.relationship(TDatasets)
+
+
+
+

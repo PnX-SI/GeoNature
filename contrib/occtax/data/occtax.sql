@@ -1164,3 +1164,10 @@ INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
 SELECT o.id_object, t.id_module
 FROM gn_permissions.t_objects o, gn_commons.t_modules t
 WHERE o.code_object = 'TDatasets' AND t.module_code = 'OCCTAX';
+
+
+INSERT INTO gn_permissions.t_objects (code_object, description_object) VALUES 
+  ('OCCTAX_RELEVE', 'Représente la table pr_occtax.t_releves_occtax'),
+  ('OCCTAX_OCCURENCE', 'Représente la table pr_occtax.t_occurrences_occtax'),
+  ('OCCTAX_DENOMBREMENT', 'Représente la table pr_occtax.cor_counting_occtax')
+  ;

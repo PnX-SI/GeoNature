@@ -85,62 +85,59 @@ export class OcctaxFormCountingService {
     return null;
   }
 
-  generateAdditionForm(dynamicFormDatasetConfig) {
-    if (this.dynamicContainerCounting){
-      this.dynamicContainerCounting.clear(); 
-     }
-    if(dynamicFormDatasetConfig['FORMFIELDS']['COUNTING'].length > 0){
-     //A l'initialisation du composant, on charge le formulaire dynamique
+  generateAdditionForm(countingAddFields) {
+    if(countingAddFields.length > 0 && this.dynamicContainerCounting){
 
-      const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(DynamicFormComponent);
-      this.componentRefCounting = this.dynamicContainerCounting.createComponent(factory);
-      
-      this.dynamicFormGroup = this.fb.group({});      
-      
+      this.dynamicFormGroup = this.fb.group({});
       if(this.form.get('additional_fields')){
         for (const key of Object.keys(this.form.get('additional_fields').value)){
           this.dynamicFormGroup.addControl(key, new FormControl(this.form.get('additional_fields').value[key]));
         }
       }
-  
-      this.componentRefCounting.instance.formConfigReleveDataSet = dynamicFormDatasetConfig["FORMFIELDS"]["COUNTING"];
-      this.componentRefCounting.instance.formArray = this.dynamicFormGroup;
+      console.log("FROM  COUNTING");
       
+      this.occtaxFormService.createAdditionnalFieldsUI(
+        this.dynamicContainerCounting,
+        countingAddFields,
+        this.dynamicFormGroup
+      )
       //on insert le formulaire dynamique au form control
         this.form.setControl("additional_fields", this.dynamicFormGroup);
     }
   }
 
-  setAddtionnalFieldsValues(releve, dynamicFormDatasetConfig) {
-    dynamicFormDatasetConfig["FORMFIELDS"]["COUNTING"].map((widget) => {
-      if(widget.type_widget == "date"){
+  setAddtionnalFieldsValues(releve, countingAddFields) {
+    
+    countingAddFields.forEach((field) => {
+      
+      if(field.type_widget == "date"){
         releve.t_occurrences_occtax.map((occurrence) => {
           occurrence.cor_counting_occtax.map((counting) => {
             //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
-            if(typeof counting.additional_fields[widget.attribut_name] !== "object" && counting.additional_fields[widget.attribut_name] !== ""){
-              counting.additional_fields[widget.attribut_name] = this.occtaxFormService.formatDate(counting.additional_fields[widget.attribut_name]);
+            if(typeof counting.additional_fields[field.attribut_name] !== "object" && counting.additional_fields[field.attribut_name] !== ""){
+              counting.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(counting.additional_fields[field.attribut_name]);
             }
-            if ( counting.additional_fields[widget.attribut_name] == ""){
-              counting.additional_fields[widget.attribut_name] = null;
+            if ( counting.additional_fields[field.attribut_name] == ""){
+              counting.additional_fields[field.attribut_name] = null;
             }
           })
         })
       }
       //Formattage des nomenclatures
-      if(widget.type_widget == "nomenclature"){
+      if(field.type_widget == "nomenclature"){
         //mise en forme des nomenclatures
         releve.t_occurrences_occtax.forEach(occurrence => {
           occurrence.cor_counting_occtax.forEach(counting => {
-            this.dataFormService.getNomenclatures([widget.code_nomenclature_type])
+            this.dataFormService.getNomenclatures([field.code_nomenclature_type])
               .subscribe((nomenclatures) => {
                 this.occtaxFormService.storeAdditionalNomenclaturesValues(nomenclatures);
                 const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {
-                  return n["label_fr"] === counting.additional_fields[widget.attribut_name];
+                  return n["label_fr"] === counting.additional_fields[field.attribut_name];
                 });
                 if(nomenclature_item){
-                  counting.additional_fields[widget.attribut_name] = nomenclature_item.id_nomenclature;
+                  counting.additional_fields[field.attribut_name] = nomenclature_item.id_nomenclature;
                 }else{
-                  counting.additional_fields[widget.attribut_name] = "";
+                  counting.additional_fields[field.attribut_name] = "";
                 }
               });
             })

@@ -140,7 +140,7 @@
             
 
             <!--Champs additionnels-->
-            <ng-container *ngFor="let dynamiqueField of dynamiqueFormDataset?.FORMFIELDS?.RELEVE ">
+            <ng-container *ngFor="let dynamiqueField of releveAddFields ">
               <div *ngIf="['text','textarea','radio','select','time','date','number','bool_radio','nomenclature'].includes(dynamiqueField.type_widget)">
                 <div class="label"> {{dynamiqueField.attribut_label}} : </div>
                 <div class="value" *ngIf="['text','textarea','radio','select','time','number','bool_radio'].includes(dynamiqueField.type_widget)"> 
@@ -244,7 +244,7 @@
                   </div>
     
                   <!--Champs additionnels-->
-                  <ng-container *ngFor="let dynamiqueField of dynamiqueFormDataset?.FORMFIELDS?.OCCURRENCE ">
+                  <ng-container *ngFor="let dynamiqueField of occurrenceAddFields ">
                     <div *ngIf="['text','textarea','radio','select','time','date','number','bool_radio','nomenclature'].includes(dynamiqueField.type_widget)">
                       <div class="label"> {{dynamiqueField.attribut_label}} : </div>
                       <div class="value" *ngIf="['text','textarea','radio','select','time','number','bool_radio'].includes(dynamiqueField.type_widget)"> 
@@ -303,7 +303,7 @@
                     </div>
     
                     <!--Champs additionnels-->
-                    <ng-container *ngFor="let dynamiqueField of dynamiqueFormDataset?.FORMFIELDS?.COUNTING ">
+                    <ng-container *ngFor="let dynamiqueField of occurrenceAddFields ">
                       <div *ngIf="['text','textarea','radio','select','time','date','number','bool_radio','nomenclature'].includes(dynamiqueField.type_widget)">
                         <div class="label"> {{dynamiqueField.attribut_label}} : </div>
                         <div class="value" *ngIf="['text','textarea','radio','select','time','number','bool_radio'].includes(dynamiqueField.type_widget)"> 

@@ -364,3 +364,10 @@ AS $BODY$  DECLARE
     GROUP BY ccc.id_counting_occtax,occ.id_occurrence_occtax,rel.id_releve_occtax,d.id_dataset
     ,tax.cd_ref , tax.lb_nom, tax.nom_vern , hab.cd_hab, hab.lb_code, hab.lb_hab_fr
     ;
+
+
+INSERT INTO gn_permissions.t_objects (code_object, description_object) VALUES 
+  ('OCCTAX_RELEVE', 'Représente la table pr_occtax.t_releves_occtax'),
+  ('OCCTAX_OCCURENCE', 'Représente la table pr_occtax.t_occurrences_occtax'),
+  ('OCCTAX_DENOMBREMENT', 'Représente la table pr_occtax.cor_counting_occtax')
+  ;

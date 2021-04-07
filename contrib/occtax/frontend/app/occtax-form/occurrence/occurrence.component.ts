@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef, ViewChild, ComponentRef, ComponentFactory, ComponentFactoryResolver } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewContainerRef, ViewChild, ComponentRef } from "@angular/core";
 import {
   animate,
   state,
@@ -6,8 +6,8 @@ import {
   transition,
   trigger
 } from "@angular/animations";
-import { FormControl, FormGroup, FormArray, Validators, FormBuilder } from "@angular/forms";
-import { map, filter, tap, delay, switchMap } from "rxjs/operators";
+import { FormControl, FormGroup, FormArray, Validators } from "@angular/forms";
+import { map, filter, tap } from "rxjs/operators";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
 import { AppConfig } from "@geonature_config/app.config";
@@ -70,12 +70,10 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private _coreFormService: FormService,
     private _occtaxTaxaListService: OcctaxTaxaListService,
-    public dialog: MatDialog,
-    private _resolver: ComponentFactoryResolver,
-    private fb: FormBuilder,
+    public dialog: MatDialog
   ) { }
 
-  ngOnInit() {
+  ngOnInit() {    
     this.occurrenceForm = this.occtaxFormOccurrenceService.form;
 
     //gestion de l'affichage des preuves d'existence selon si Preuve = 'Oui' ou non.
@@ -95,7 +93,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
       );
         
     this.initTaxrefSearch();
-    this.occtaxFormOccurrenceService.dynamicContainerOccurence = this.containerOccurence;
     
     this.occtaxFormOccurrenceService.idTaxonList = this.occtaxConfig.id_taxon_list;
     //MET MAYBE TODO => ADD PARAM TO OCCTAX FIELDS FROM DATASET
@@ -103,6 +100,9 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
+    this.occtaxFormOccurrenceService.dynamicContainerOccurence = this.containerOccurence;
+    
+    //this.fs.createAdditionnalFieldsUI(this.containerOccurence, this.fs.occurrenceAddFields);
     //a chaque reinitialisation du formulaire on place le focus sur la zone de saisie du taxon
     const taxonInput: HTMLElement = document.getElementById("taxonInput");
     this.occtaxFormOccurrenceService.occurrence.subscribe(() =>

@@ -62,7 +62,6 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
       } 
     });
 
-    //MET ADD Champs additionels
     this.occtaxFormReleveService.dynamicContainer = this.container;
   } // END INIT
 

@@ -46,8 +46,9 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
   displayOccurrence: BehaviorSubject<any> = new BehaviorSubject(null);
   private _geojson: any;
   public userReleveCruved: any;
-  public dynamiqueFormDataset: Array<any> = [];
-
+  public releveAddFields: Array<any> = [];
+  public occurrenceAddFields: Array<any> = [];
+  public countingAddFields: Array<any> = [];
   get releve() {
     return this.occtaxData.getValue()
       ? this.occtaxData.getValue().properties
@@ -110,7 +111,6 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
         });
     }
 
-    //On charge les nomenclatures après avoir récupéré celle présente dans le formulaire dynamique
     //this.getNomenclatures();
   }
 
@@ -144,39 +144,38 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
           let releve = data.releve;
           releve.properties.date_min = new Date(releve.properties.date_min);
           releve.properties.date_max = new Date(releve.properties.date_max);
-          /*Ajout de champs additionnels*/
-          this.dynamiqueFormDataset = this.OcctaxFormService.getAddDynamiqueFields(releve.properties.id_dataset);
-          if(this.dynamiqueFormDataset["RELEVE"]){
-            this.dynamiqueFormDataset["RELEVE"].map((widget) => {
-              if(widget.type_widget == "nomenclature"){
-                NOMENCLATURES.push(widget.code_nomenclature_type);
-              }
-              if(widget.type_widget == "date"){
-                //NOMENCLATURES.push(widget.code_nomenclature_type);
-              }
-            })
-          }
-          if(this.dynamiqueFormDataset["OCCURENCE"]){
-            this.dynamiqueFormDataset["OCCURENCE"].map((widget) => {
-              if(widget.type_widget == "nomenclature"){
-                NOMENCLATURES.push(widget.code_nomenclature_type);
-              }
-            })
-          }
-          if(this.dynamiqueFormDataset["COUNTING"]){
-            this.dynamiqueFormDataset["COUNTING"].map((widget) => {
-              if(widget.type_widget == "nomenclature"){
-                NOMENCLATURES.push(widget.code_nomenclature_type);
-              }
-            })
-          }
           this.getNomenclatures();
-          
           return releve;
         })
       )
       .subscribe(
-        (data) => this.occtaxData.next(data),
+        (data) => {
+          this.occtaxData.next(data)
+
+            /* find all nomenclatures added by additionnal fields
+            and store additional fields
+            */
+            this.dataFormS.getAdditionnalFields({
+              'id_dataset': data.properties.id_dataset,
+              'module_code': ['OCCTAX', 'GEONATURE'],
+            }).subscribe(additionnalFields => {
+              additionnalFields.forEach(field => {
+                const map = {
+                  "OCCTAX_RELEVE": this.releveAddFields,
+                  "OCCTAX_OCCURENCE": this.occurrenceAddFields,
+                  "OCCTAX_DENOMBREMENT": this.countingAddFields,
+                }
+                
+                map[field.cor_additionnal.object.code_object].push(field);
+                
+                if(field.type_widget == "nomenclature"){
+                  NOMENCLATURES.push(field.code_nomenclature_type);
+                }
+              });
+              this.getNomenclatures()
+  
+            })
+        },
         (error) => {
           this._commonService.translateToaster("error", "Releve.DoesNotExist");
           this._router.navigate(["occtax"]);

@@ -2,7 +2,7 @@ import { Injectable, ViewContainerRef, ComponentRef, ComponentFactory, Component
 import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Observable, Subscription } from "rxjs";
-import { filter, map, switchMap, tap, skip } from "rxjs/operators";
+import { filter, map, switchMap, tap, skip, mergeMap } from "rxjs/operators";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { GeoJSON } from "leaflet";
 import { ModuleConfig } from "../../module.config";
@@ -137,47 +137,54 @@ export class OcctaxFormReleveService {
 
     //on desactive le form, il sera réactivé si la geom est ok
     this.propertiesForm.disable();
+
+    // TODO: general additional fields
+    // this.dataFormService.getAdditionnalFields({
+    //   'module_code': ['OCCTAX', 'GEONATURE'],
+    //   'object_code': 'OCCTAX_RELEVE'
+    // }).subscribe(additionnalFields => {
+    //   console.log(additionnalFields);
+      
+    // })
     
   }
   
-  onDatasetChanged(idDataset) {
-    if (this.dynamicContainer) {
-      this.dynamicContainer.clear(); 
-    }
-    let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(idDataset);    
-    if (dynamiqueFormDataset && dynamiqueFormDataset["FORMFIELDS"]["RELEVE"].length > 0){      
-      const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(DynamicFormComponent);
-      this.componentRef = this.dynamicContainer.createComponent(factory);
-
-      if(!this.dynamicFormGroup){
-        this.dynamicFormGroup = this.fb.group({});
-      }
-      this.componentRef.instance.formConfigReleveDataSet = dynamiqueFormDataset["FORMFIELDS"]["RELEVE"];
-      this.componentRef.instance.formArray = this.dynamicFormGroup;
-      this.propertiesForm.setControl("additional_fields", this.dynamicFormGroup);
-      
-      //On charge les nomenclatures additionnels
-      let NOMENCLATURES = [];      
-      dynamiqueFormDataset["FORMFIELDS"]["RELEVE"].forEach((widget) => {
-        if(widget.type_widget == "nomenclature"){
-          NOMENCLATURES.push(widget.code_nomenclature_type);
+  onDatasetChanged(idDataset) {    
+    this.dataFormService.getAdditionnalFields({
+      'id_dataset': idDataset,
+      'module_code': 'OCCTAX',
+      'object_code': 'OCCTAX_RELEVE'
+    }).subscribe(additionnalFields => {
+      this.occtaxFormService.releveAddFields = additionnalFields;
+      if (additionnalFields.length > 0){      
+        if(!this.dynamicFormGroup){
+          this.dynamicFormGroup = this.fb.group({});
         }
-      })
-      if(NOMENCLATURES.length > 0){
-        this.dataFormService.getNomenclatures(NOMENCLATURES)
-        .subscribe((nomenclatures) => {
-          this.occtaxFormService.storeAdditionalNomenclaturesValues(nomenclatures)
-        });
+        this.propertiesForm.setControl("additional_fields", this.dynamicFormGroup);
+        // create UI
+        this.createAdditionnalFieldsUI(additionnalFields);
+
+        //On charge les nomenclatures additionnels
+        let NOMENCLATURES = [];      
+        additionnalFields.forEach((field) => {
+          if(field.type_widget == "nomenclature"){
+            NOMENCLATURES.push(field.code_nomenclature_type);
+          }
+        })
+        if(NOMENCLATURES.length > 0){
+          this.dataFormService.getNomenclatures(NOMENCLATURES)
+          .subscribe((nomenclatures) => {
+            this.occtaxFormService.storeAdditionalNomenclaturesValues(nomenclatures)
+          });
+        }
+        // }
+      } else {
+        if (this.propertiesForm.get("additional_fields")){
+          this.propertiesForm.removeControl("additional_fields")
+        }
       }
-      // }
-    } else {
-      if (this.propertiesForm.get("additional_fields")){
-        this.propertiesForm.removeControl("additional_fields")
-      }
-      if ( this.dynamicContainer){
-        this.dynamicContainer.clear(); 
-      }
-    }
+    })
+
   }
 
   /**
@@ -205,8 +212,9 @@ export class OcctaxFormReleveService {
           return editionMode ? this.releveValues : this.defaultValues;
         })
       )
-      .subscribe((values) => {    
-        const test = {...this.initialValues, ...values}    
+      .subscribe((values) => {       
+        console.log("FINNALYYY", values);
+             
         // emitEvent : false (if the patchvalue change q value (eg id_dataset), the form is enabled and we don't want this)        
          this.propertiesForm.patchValue(values, {emitEvent: false});
       }); 
@@ -265,10 +273,9 @@ export class OcctaxFormReleveService {
   /** Get occtax data and patch value to the form */
   private get releveValues(): Observable<any> {
     return this.occtaxFormService.occtaxData.pipe(
-      filter((data) => data && data.releve.properties),
-      map((data) => {
+      filter(data => data && data.releve.properties),
+      map(data => {
         const releve = data.releve.properties;
-
         //Parfois il passe 2 fois ici, et la seconde fois la date est déja formattée en objet, si c'est le cas, on saute
         if(typeof releve.date_min !== "object"){
           // on affiche la date_max si date_min != date_max
@@ -287,7 +294,7 @@ export class OcctaxFormReleveService {
 
           releve.date_min = this.occtaxFormService.formatDate(releve.date_min);
           releve.date_max = this.occtaxFormService.formatDate(releve.date_max);
-        }else{
+        } else {
           if (releve.date_min.year != releve.date_max.year || releve.date_min.month != releve.date_max.month || releve.date_min.day != releve.date_max.day) {
             this.showTime = true;
           }
@@ -299,58 +306,54 @@ export class OcctaxFormReleveService {
           // set search_name properties to the form
           habitatFormValue["search_name"] = habitatFormValue.lb_code + " - " + habitatFormValue.lb_hab_fr;
           this.habitatForm.setValue(habitatFormValue)
-        }
-
-        /*MET Champs additionnel*/
-        let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(releve.id_dataset);
-        if (dynamiqueFormDataset){
-          if (dynamiqueFormDataset["RELEVE"]){
-            this.dynamicFormGroup = this.fb.group({});
-            dynamiqueFormDataset["RELEVE"].map((widget) => {
-              //Formattage des dates
-              if(widget.type_widget == "date"){
-                //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
-                if(typeof releve.additional_fields[widget.attribut_name] !== "object"){
-                  releve.additional_fields[widget.attribut_name] = this.occtaxFormService.formatDate(releve.additional_fields[widget.attribut_name]);
-                }
-              }
-              //Formattage des nomenclatures
-              if(widget.type_widget == "nomenclature"){
-                this.dataFormService.getNomenclatures([widget.code_nomenclature_type])
-                  .pipe(
-                    map((data) => {
-                      let values = [];
-                      for (let i = 0; i < data.length; i++) {
-                        data[i].values.forEach((element) => {
-                          element["nomenclature_mnemonique"] = data[i]["mnemonique"];
-                          values[element.id_nomenclature] = element;
-                        });
-                      }
-                      return values;
-                    })
-                  )
-                  .subscribe((nomenclatures) => {
-                    const res = nomenclatures.filter((item) => item !== undefined)
-                    .find(n => (n["label_fr"] === releve.additional_fields[widget.attribut_name]));
-                    if(res){
-                      releve.additional_fields[widget.attribut_name] = res.id_nomenclature;
-                    }else{
-                      releve.additional_fields[widget.attribut_name] = "";
-                    }
-                    releve[widget.attribut_name] =  releve.additional_fields[widget.attribut_name];
-                    this.dynamicFormGroup.setControl(widget.attribut_name, new FormControl(releve.additional_fields[widget.attribut_name]));
-                    //this.propertiesForm.setControl("additional_fields", this.dynamicFormGroup);
-                  });
-                }
-                releve[widget.attribut_name] =  releve.additional_fields[widget.attribut_name];
-                this.dynamicFormGroup.addControl(widget.attribut_name, new FormControl(releve.additional_fields[widget.attribut_name]));
-                
-            })
-            this.propertiesForm.setControl("additional_fields", this.dynamicFormGroup);
-          }
-        }
-
+        }        
+        
         return releve;
+      }),
+      mergeMap(releve => {
+        return this.dataFormService.getAdditionnalFields({
+          'id_dataset': releve.id_dataset,
+          'module_code': 'OCCTAX',
+          'object_code': 'OCCTAX_RELEVE'
+        }).map(additionnalFields => {
+          this.occtaxFormService.releveAddFields = additionnalFields;
+          this.dynamicFormGroup = this.fb.group({});
+          additionnalFields.forEach(field => {
+            //Formattage des dates
+            if(field.type_widget == "date"){
+              //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
+              if(typeof releve.additional_fields[field.attribut_name] !== "object"){
+                releve.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(releve.additional_fields[field.attribut_name]);
+              }
+            }
+            //Formattage des nomenclatures
+            if(field.type_widget == "nomenclature"){
+              this.dataFormService.getNomenclatures([field.code_nomenclature_type])
+                .pipe(
+                  map(data => {
+                    return this.formatNomenclature(data);
+                  })
+                )
+                .subscribe((nomenclatures) => {                                    
+                  const res = nomenclatures.filter((item) => item !== undefined)
+                  .find(n => (n["label_fr"] === releve.additional_fields[field.attribut_name]));
+                  if(res){
+                    releve.additional_fields[field.attribut_name] = res.id_nomenclature;
+                  }else{
+                    releve.additional_fields[field.attribut_name] = "";
+                  }
+                  releve[field.attribut_name] =  releve.additional_fields[field.attribut_name];
+                  
+                  this.dynamicFormGroup.setControl(field.attribut_name, new FormControl(releve.additional_fields[field.attribut_name]));
+                  this.createAdditionnalFieldsUI(additionnalFields);
+                });
+              }
+              releve[field.attribut_name] =  releve.additional_fields[field.attribut_name];
+              this.dynamicFormGroup.addControl(field.attribut_name, new FormControl(releve.additional_fields[field.attribut_name]));
+          })
+          this.propertiesForm.setControl("additional_fields", this.dynamicFormGroup);
+          return releve
+        })
       })
     );
   }
@@ -365,6 +368,18 @@ export class OcctaxFormReleveService {
         month: today.getMonth() + 1,
         day: today.getDate(),
       };
+    }
+  }
+
+  createAdditionnalFieldsUI(additionnalFields) {
+    if (this.dynamicContainer) {      
+      this.dynamicContainer.clear(); 
+    }    
+    if (additionnalFields.length > 0 && this.dynamicContainer){      
+      const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(DynamicFormComponent);
+      this.componentRef = this.dynamicContainer.createComponent(factory);
+      this.componentRef.instance.formConfigReleveDataSet = additionnalFields;
+      this.componentRef.instance.formArray = this.dynamicFormGroup;
     }
   }
 
@@ -455,31 +470,34 @@ export class OcctaxFormReleveService {
       value.properties.observers = value.properties.observers.map(
         (observer) => observer.id_role
       );
-    }
-
+    }    
     /* Champs additionnels - formatter les dates et les nomenclatures */
-    let dynamiqueFormDataset = this.occtaxFormService.getAddDynamiqueFields(value.properties.id_dataset);
-    if (dynamiqueFormDataset && dynamiqueFormDataset["RELEVE"] ){
-        dynamiqueFormDataset["RELEVE"].map((widget) => {
-          if(widget.type_widget == "date"){
-            value.properties.additional_fields[widget.attribut_name] = this.dateParser.format(
-              value.properties.additional_fields[widget.attribut_name]
+        this.occtaxFormService.releveAddFields.forEach((field) => {
+          if(field.type_widget == "date"){
+            value.properties.additional_fields[field.attribut_name] = this.dateParser.format(
+              value.properties.additional_fields[field.attribut_name]
             );
           }
-          if(widget.type_widget == "nomenclature"){
+          if(field.type_widget == "nomenclature"){
+            
             // set the label_fr nomenclature in the posted additional data
             const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {
-              return n["id_nomenclature"] === value.properties.additional_fields[widget.attribut_name];
-            });
+              console.log(n.id_nomenclature);
+              console.log(value.properties.additional_fields[field.attribut_name]);
+              
+              
+              return n["id_nomenclature"] === value.properties.additional_fields[field.attribut_name];
+            });            
+            
             if(nomenclature_item){
-              value.properties.additional_fields[widget.attribut_name] = nomenclature_item.label_fr;
+              value.properties.additional_fields[field.attribut_name] = nomenclature_item.label_fr;
             }else{
-              value.properties.additional_fields[widget.attribut_name] = "";
+              value.properties.additional_fields[field.attribut_name] = "";
             }
           }
         })
-    }
-
+    console.log("LA gueule du truc", value);
+    
     return value;
   }
 
@@ -538,6 +556,17 @@ export class OcctaxFormReleveService {
           }
         );
     }
+  }
+
+  formatNomenclature(data) {
+    let values = [];
+    for (let i = 0; i < data.length; i++) {
+      data[i].values.forEach((element) => {
+        element["nomenclature_mnemonique"] = data[i]["mnemonique"];
+        values[element.id_nomenclature] = element;
+      });
+    }
+    return values
   }
 
   reset() {

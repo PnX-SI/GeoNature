@@ -1,11 +1,10 @@
 import { Component, Input, ViewContainerRef, ViewChild, ComponentRef, ComponentFactory, ComponentFactoryResolver } from "@angular/core";
-import { FormControl, FormGroup, FormBuilder } from "@angular/forms";
+import { FormGroup } from "@angular/forms";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
 import { AppConfig } from "@geonature_config/app.config";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxFormCountingService } from "./counting.service";
-import { DynamicFormComponent } from "../dynamique-form/dynamic-form.component";
 
 @Component({
   selector: "pnx-occtax-form-counting",
@@ -29,17 +28,15 @@ export class OcctaxFormCountingComponent {
     public fs: OcctaxFormService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxFormCountingService: OcctaxFormCountingService,
-    private _resolver: ComponentFactoryResolver,
-    private fb: FormBuilder,
   ) { }
 
   ngOnInit() {
     this.occtaxFormCountingService.dynamicContainerCounting = this.containerCounting;
     this.occtaxFormCountingService.form = this.countingForm;
-    let dynamiqueFormDataset = this.fs.getAddDynamiqueFields(this.occtaxFormOccurrenceService.idDataset);
-    if(dynamiqueFormDataset && dynamiqueFormDataset['FORMFIELDS']['COUNTING'].length > 0){
-      this.occtaxFormCountingService.generateAdditionForm(dynamiqueFormDataset)
-    }
+    // let dynamiqueFormDataset = this.fs.getAddDynamiqueFields(this.occtaxFormOccurrenceService.idDataset);
+    // if(dynamiqueFormDataset && dynamiqueFormDataset['FORMFIELDS']['COUNTING'].length > 0){
+    //   this.occtaxFormCountingService.generateAdditionForm(dynamiqueFormDataset);
+    // }
   }
 
   taxref() {

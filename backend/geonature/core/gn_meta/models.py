@@ -317,6 +317,9 @@ class TDatasets(CruvedHelper):
         CorDatasetActor, lazy="select", cascade="save-update, merge, delete, delete-orphan",
     )
 
+    def __repr__(self):
+        return self.dataset_name
+
     @staticmethod
     def get_id(uuid_dataset):
         id_dataset = (

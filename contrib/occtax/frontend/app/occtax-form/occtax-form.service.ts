@@ -9,7 +9,8 @@ import { Router } from "@angular/router";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
-import { ModuleConfig } from "../module.config";
+import { DynamicFormComponent } from "./dynamique-form/dynamic-form.component";
+
 
 @Injectable()
 export class OcctaxFormService {
@@ -24,14 +25,15 @@ export class OcctaxFormService {
   public chainRecording: boolean = false; // boolean to check if chain the recording is activate
   public stayOnFormInterface = new FormControl(false);
   
-  public dynamicFormGroup: FormGroup;
   public currentIdDataset:any;
-  public dynamicContainer: ViewContainerRef;
   public dynamicContainerOccurence: ViewContainerRef;
   componentRef: ComponentRef<any>;
   componentRefOccurence: ComponentRef<any>;
   public previousReleve = null;
   public dataSetConfig: any;
+  public releveAddFields: Array<any> = [];
+  public occurrenceAddFields: Array<any> = [];
+  public countingAddFields: Array<any> = [];
 
   public nomenclatureAdditionnel: any = [];
 
@@ -41,7 +43,8 @@ export class OcctaxFormService {
     private _auth: AuthService,
     private _commonService: CommonService,
     private _dataS: OcctaxDataService,
-    private _resolver: ComponentFactoryResolver
+    private _resolver: ComponentFactoryResolver,
+
   ) {
     this.currentUser = this._auth.getCurrentUser();
 
@@ -94,9 +97,7 @@ export class OcctaxFormService {
 
   storeAdditionalNomenclaturesValues(nomenclatures_types: Array<any>) {
     // store all nomenclatures element in a array in order to find
-    // the label on submit
-    console.log("la ?!;:");
-    
+    // the label on submit    
     nomenclatures_types.forEach(nomenc_type => {
       nomenc_type.values.forEach(nomenc_element => {
         this.nomenclatureAdditionnel.push(nomenc_element);
@@ -161,15 +162,6 @@ export class OcctaxFormService {
     this.occtaxData.next(occtaxData);
   }
 
-  getAddDynamiqueFields(idDataset){
-    this.dataSetConfig = null;
-    if(ModuleConfig.DATASETS_CONFIG){
-      this.dataSetConfig = ModuleConfig.DATASETS_CONFIG.find(dataset_conf => {          
-          return dataset_conf.ID_DATASET == idDataset
-        });
-    }    
-    return this.dataSetConfig;
-  }
 
   formatDate(strDate) {
     const date = new Date(strDate);
@@ -178,5 +170,21 @@ export class OcctaxFormService {
       month: date.getMonth() + 1,
       day: date.getDate(),
     };
+  }
+
+  createAdditionnalFieldsUI(container: ViewContainerRef, additionnalFields, dynamicForm: FormGroup) {
+    console.log(container);
+    console.log(additionnalFields);
+    
+    
+    if (container) {      
+      container.clear(); 
+    }    
+    if (additionnalFields.length > 0 && container){      
+      const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(DynamicFormComponent);
+      this.componentRef = container.createComponent(factory);
+      this.componentRef.instance.formConfigReleveDataSet = additionnalFields;
+      this.componentRef.instance.formArray = dynamicForm;
+    }
   }
 }

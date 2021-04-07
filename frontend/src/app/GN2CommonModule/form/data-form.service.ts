@@ -563,5 +563,33 @@ export class DataFormService {
     return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${ds_id}`);
   }
 
+  getAdditionnalFields(params?: ParamsDict) {
+    let queryString: HttpParams = new HttpParams();
+    // tslint:disable-next-line:forin
+    for (const key in params) {
+      queryString = queryString.set(key, params[key].toString());
+    }
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/additionnal_fields`,
+     {params: queryString}).map(additionnalFields => {
+      return additionnalFields.map(data => {
+        return {
+          "attribut_label": data.field_label,
+          "attribut_name": data.field_name,
+          "required": data.required,
+          "description": data.description,
+          "quantitative": data.quantitative,
+          "unity": data.unity,
+          "code_nomenclature_type": data.code_nomenclature_type,
+          "type_widget": data.type_widget.widget_name,
+          "multi_select": null,
+          "values": data.field_values,
+          "cor_additionnal": data.cor_additionnal
+        }
+      })
+        
+     });
+
+  }
+
 }
 
