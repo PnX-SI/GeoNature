@@ -1,6 +1,5 @@
 import { Observable, of } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-
 import { HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 

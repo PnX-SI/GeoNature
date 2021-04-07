@@ -255,4 +255,4 @@ def api_get_config():
 
     '''
     # get_updated_frontend_config recupère ET met à jour la config de l'appli
-    return config_frontend
+    return current_app.config['frontend']

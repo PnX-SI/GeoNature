@@ -1,8 +1,8 @@
 // Angular core
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
-import { forkJoin, Observable, timer } from 'rxjs';
-import { mergeMap, tap } from 'rxjs/operators';
+import { NgModule, APP_INITIALIZER, APP_BOOTSTRAP_LISTENER } from '@angular/core';
+import { forkJoin, Observable, of, timer } from 'rxjs';
+import { mergeMap, concatMap } from 'rxjs/operators';
 ​
 import {
   HttpClientModule,
@@ -27,7 +27,7 @@ import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 
 // Angular created component
 import { AppComponent } from './app.component';
-import { routing } from './routing/app-routing.module'; // RoutingModule
+import { routing, getDynamicRoutes } from './routing/app-routing.module.new'; // RoutingModule
 import { HomeContentComponent } from './components/home-content/home-content.component';
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
@@ -50,6 +50,7 @@ import {
   SignUpGuard,
   UserManagementGuard
 } from '@geonature/routing/routes-guards.service';
+import { Router } from "@angular/router";
 import { ModuleService } from './services/module.service';
 import { CruvedStoreService } from './GN2CommonModule/service/cruved-store.service';
 import { SideNavService } from './components/sidenav-items/sidenav-service';
@@ -57,6 +58,8 @@ import { SideNavService } from './components/sidenav-items/sidenav-service';
 import { MyCustomInterceptor } from './services/http.interceptor';
 import { UnauthorizedInterceptor } from './services/unauthorized.interceptor';
 import { GlobalSubService } from './services/global-sub.service';
+
+
 
 export function configFactory(http: HttpClient): ConfigLoader {
   return new ConfigHttpLoader(http, './assets/config/api.config.json');
@@ -70,25 +73,40 @@ import { UserDataService } from "./userModule/services/user-data.service";
 // Config
 // import { appConfig_TOKEN, appConfig } from '@geonature_config/app.config';
 
-
 export function init_geonature(
   configService: ConfigService,
   cruvedStore: CruvedStoreService,
-  moduleService: ModuleService
+  moduleService: ModuleService,
   ) {
-    console.log('init_geonature');
   return () => {
+    console.log('init_geonature');
     return configService.fetchConfig().pipe(
     mergeMap((config) => {
-      console.log({config})
       return forkJoin({
         cruved: cruvedStore.fetchCruved(),
         modules: moduleService.fetchModules(),
       });
+    }),
+    concatMap(() => {
+      console.log('init_geonature done');
+      return of(true);
     })
     ).toPromise();
     }
 }
+
+export function init_router(
+  router: Router,
+  configService: ConfigService,
+) {
+  return () => {
+    console.log('init_router');
+    const dynamicRoutes = getDynamicRoutes(configService);
+    for (const route of dynamicRoutes) {
+      router.config.push(route);
+    }
+  };
+};
 
 @NgModule({
   imports: [
@@ -96,7 +114,6 @@ export function init_geonature(
     HttpClientModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
-    routing,
     ChartModule,
     ChartsModule,
     ConfigModule.forRoot({
@@ -104,6 +121,7 @@ export function init_geonature(
       useFactory: configFactory,
       deps: [HttpClient]
     }),
+    routing,
     ToastrModule.forRoot({
       positionClass: 'toast-top-center',
       tapToDismiss: true,
@@ -119,6 +137,18 @@ export function init_geonature(
     })
   ],
   declarations: [
+    AppComponent,
+    HomeContentComponent,
+    SidenavItemsComponent,
+    PageNotFoundComponent,
+    LoginComponent,
+    SignUpComponent,
+    NewPasswordComponent,
+    NavHomeComponent,
+    FooterComponent,
+    IntroductionComponent
+  ],
+  entryComponents: [
     AppComponent,
     HomeContentComponent,
     SidenavItemsComponent,
@@ -152,6 +182,12 @@ export function init_geonature(
       useFactory: init_geonature,
       deps: [ConfigService, CruvedStoreService, ModuleService],
       multi: true
+    },
+    {
+      provide: APP_BOOTSTRAP_LISTENER,
+      useFactory: init_router,
+      deps: [Router, ConfigService],
+      multi: true,
     },
   ],
   bootstrap: [AppComponent]

@@ -5,12 +5,12 @@ npm-debug.log
 /dist/
 src/conf/app.config.ts
 src/assets/config/api.config.json
-src/tsconfig.app.json
+# src/tsconfig.app.json
 
 #routing
 src/app/routing/app-routing.module.ts
 #tsconfig
-tsconfig.json
+# tsconfig.json
 
 # custom components
 src/custom/components/**/*.component.ts

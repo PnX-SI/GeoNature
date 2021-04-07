@@ -57,83 +57,86 @@ def build_geonature_front(rebuild_sass=False):
 
 
 def frontend_routes_templating(app=None):
-    if not app:
-        app = create_app(with_external_mods=False)
+    pass
+    # if not app:
+    #     app = create_app(with_external_mods=False)
 
-    with app.app_context():
+    # with app.app_context():
 
-        log.info("Generating frontend routing")
-        # recuperation de la configuration
-        configs_gn = app.config
+    #     log.info("Generating frontend routing")
+    #     # recuperation de la configuration
+    #     configs_gn = app.config
 
-        with open(
-            str(ROOT_DIR / "frontend/src/app/routing/app-routing.module.ts.sample"), "r"
-        ) as input_file:
-            template = Template(input_file.read())
-            routes = []
-            for url_path, module_code in import_frontend_enabled_modules():
-                location = Path(GN_EXTERNAL_MODULE / module_code.lower())
+    #     with open(
+    #         str(ROOT_DIR / "frontend/src/app/routing/app-routing.module.ts.sample"), "r"
+    #     ) as input_file:
+    #         template = Template(input_file.read())
+    #         routes = []
+    #         for url_path, module_code in import_frontend_enabled_modules():
+    #             location = Path(GN_EXTERNAL_MODULE / module_code.lower())
 
-                # test if module have frontend
-                if (location / "frontend").is_dir():
-                    path = url_path.lstrip("/")
-                    location = "{}/{}#GeonatureModule".format(location, GN_MODULE_FE_FILE)
-                    routes.append({"path": path, "location": location, "module_code": module_code})
+    #             # test if module have frontend
+    #             if (location / "frontend").is_dir():
+    #                 path = url_path.lstrip("/")
+    #                 location = "{}/{}#GeonatureModule".format(location, GN_MODULE_FE_FILE)
+    #                 routes.append({"path": path, "location": location, "module_code": module_code})
 
-                # TODO test if two modules with the same name is okay for Angular
+    #             # TODO test if two modules with the same name is okay for Angular
 
-            route_template = template.render(
-                routes=routes,
-                enable_user_management=configs_gn["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT"),
-                enable_sign_up=configs_gn["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP"),
-            )
+    #         route_template = template.render(
+    #             routes=routes,
+    #             enable_user_management=configs_gn["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT"),
+    #             enable_sign_up=configs_gn["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP"),
+    #         )
 
-            with open(
-                str(ROOT_DIR / "frontend/src/app/routing/app-routing.module.ts"), "w"
-            ) as output_file:
-                output_file.write(route_template)
+    #         with open(
+    #             str(ROOT_DIR / "frontend/src/app/routing/app-routing.module.ts"), "w"
+    #         ) as output_file:
+    #             output_file.write(route_template)
 
-        log.info("...%s\n", MSG_OK)
+    #     log.info("...%s\n", MSG_OK)
 
 
 def tsconfig_templating():
-    log.info("Generating tsconfig.json")
-    with open(str(ROOT_DIR / "frontend/tsconfig.json.sample"), "r") as input_file:
-        template = Template(input_file.read())
-        tsconfig_templated = template.render(geonature_path=ROOT_DIR)
+    pass
+    # log.info("Generating tsconfig.json")
+    # with open(str(ROOT_DIR / "frontend/tsconfig.json.sample"), "r") as input_file:
+    #     template = Template(input_file.read())
+    #     tsconfig_templated = template.render(geonature_path=ROOT_DIR)
 
-    with open(str(ROOT_DIR / "frontend/tsconfig.json"), "w") as output_file:
-        output_file.write(tsconfig_templated)
-    log.info("...%s\n", MSG_OK)
+    # with open(str(ROOT_DIR / "frontend/tsconfig.json"), "w") as output_file:
+    #     output_file.write(tsconfig_templated)
+    # log.info("...%s\n", MSG_OK)
 
 
 def tsconfig_app_templating(app=None):
-    if not app:
-        app = create_app(with_external_mods=False)
+    pass
+    # if not app:
+    #     app = create_app(with_external_mods=False)
 
-    with app.app_context():
+    # with app.app_context():
 
-        log.info("Generating tsconfig.app.json")
+    #     log.info("Generating tsconfig.app.json")
 
-        with open(str(ROOT_DIR / "frontend/src/tsconfig.app.json.sample"), "r") as input_file:
-            template = Template(input_file.read())
-            routes = []
-            for url_path, module_code in import_frontend_enabled_modules():
-                location = Path(GN_EXTERNAL_MODULE / module_code.lower())
+    #     with open(str(ROOT_DIR / "frontend/src/tsconfig.app.json.sample"), "r") as input_file:
+    #         template = Template(input_file.read())
+    #         routes = []
+    #         for url_path, module_code in import_frontend_enabled_modules():
+    #             location = Path(GN_EXTERNAL_MODULE / module_code.lower())
 
-                # test if module have frontend
-                if (location / "frontend").is_dir():
-                    location = "{}/frontend/app".format(location)
-                    routes.append({"location": location})
+    #             # test if module have frontend
+    #             if (location / "frontend").is_dir():
+    #                 location = "{}/frontend/app".format(location)
+    #                 routes.append({"location": location})
 
-                # TODO test if two modules with the same name is okay for Angular
+    #             # TODO test if two modules with the same name is okay for Angular
 
-            route_template = template.render(routes=routes)
+    #         route_template = template.render(routes=routes)
 
-            with open(str(ROOT_DIR / "frontend/src/tsconfig.app.json"), "w") as output_file:
-                output_file.write(route_template)
+    #         with open(str(ROOT_DIR / "frontend/src/tsconfig.app.json"), "w") as output_file:
+    #             output_file.write(route_template)
 
-        log.info("...%s\n", MSG_OK)
+    #     log.info("...%s\n", MSG_OK)
 
 
 def create_frontend_config():

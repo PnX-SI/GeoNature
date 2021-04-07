@@ -14,7 +14,7 @@ from pkg_resources import iter_entry_points
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, MA, migrate
 from geonature.utils.module import import_backend_enabled_modules
-from geonature.utils.config import manage_frontend_assets
+from geonature.utils.config import manage_frontend_assets, config_frontend
 
 @migrate.configure
 def configure_alembic(alembic_config):
@@ -159,9 +159,17 @@ def create_app(with_external_mods=True, with_flask_admin=True):
         app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
         # Loading third-party modules
+        modules = []
         if with_external_mods:
             for module, blueprint in import_backend_enabled_modules():
+                modules.append(blueprint.config['MODULE_CODE'])
+                config_frontend[blueprint.config['MODULE_CODE']] = blueprint.config
                 app.config[blueprint.config['MODULE_CODE']] = blueprint.config
                 app.register_blueprint(blueprint, url_prefix=blueprint.config['MODULE_URL'])
+
+        # pour renvoyer 
+        config_frontend['modules'] = modules
+        app.config['frontend'] = config_frontend
+
         _app = app
     return app

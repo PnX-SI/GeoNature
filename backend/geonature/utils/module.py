@@ -22,6 +22,7 @@ def import_gn_module(mod):
         module_config = {
             'ID_MODULE': mod.id_module,
             'MODULE_CODE': mod.module_code,
+            'MODULE_PATH': mod.module_path,
             'BACKEND_PATH': str(module_path / 'backend'),
             'FRONTEND_PATH': str(module_path / 'frontend'),
         }
@@ -57,6 +58,7 @@ def import_backend_enabled_modules():
         try:
             module, module_blueprint = import_gn_module(mod)
         except ModuleNotFoundError:
+            print('module not found', str(ModuleNotFoundError))
             # probably an internal module which we do not require to import
             # (we miss a method to differentiate internal module with imported module)
             continue
