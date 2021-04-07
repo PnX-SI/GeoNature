@@ -129,7 +129,7 @@ config = ChainMap({}, config_frontend, config_backend)
 
 
 # ???? A déplacer ailleurs ??
-def manage_frontend_assets():
+def process_manage_frontend_assets():
     '''
         Ici on cherche à rendre le build du frontend 'indépendant' de la config
         Pour cela on crée directement des fichiers dans les assets du frontend, 

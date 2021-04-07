@@ -78,4 +78,4 @@ def import_frontend_enabled_modules():
             # probably an internal module which we do not require to import
             # (we miss a method to differentiate internal module with imported module)
             continue
-        yield blueprint.config['MODULE_URL'], mod.module_code
+        yield blueprint.config

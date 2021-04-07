@@ -22,10 +22,11 @@ from geonature.utils.command import (
     tsconfig_templating,
     tsconfig_app_templating,
     update_app_configuration,
+    process_prebuild_frontend
 
 )
 
-from geonature.utils.config import manage_frontend_assets
+from geonature.utils.config import process_manage_frontend_assets
 
 from geonature import create_app
 
@@ -58,11 +59,20 @@ def main(ctx):
 
 
 @main.command()
+def prebuild_frontend():
+    '''
+        Pour faire tout ce qu'il y a faire avant le build du frontend
+          - external_modules/index.ts : 
+            permet de lister et charger les modules externes dans le routing
+    '''
+    process_prebuild_frontend()
+    
+@main.command()
 def manage_frontend_assets():
     '''
         Pour créer api.config.json, etc...
     '''
-    manage_frontend_assets()
+    process_manage_frontend_assets()
 
 
 @main.command()

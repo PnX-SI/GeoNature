@@ -56,6 +56,40 @@ def build_geonature_front(rebuild_sass=False):
     subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
 
 
+def process_prebuild_frontend(app=None):
+    if not app:
+        app = create_app(with_external_mods=False)
+
+    with app.app_context():
+        log.info("Process prebuild frontend")
+        # recuperation de la configuration
+        configs_gn = app.config
+
+        with open(
+            str(ROOT_DIR / "external_modules/index.ts.sample"), "r"
+        ) as input_file:
+            template = Template(input_file.read())
+            modules = []
+            for module_config in import_frontend_enabled_modules():
+                location = Path(GN_EXTERNAL_MODULE / module_config['MODULE_PATH'])
+
+                # test if module have frontend
+                if (location / "frontend").is_dir():
+                    modules.append(module_config)
+
+            route_template = template.render(
+                modules=modules,
+            )
+
+            with open(
+                str(ROOT_DIR / "external_modules/index.ts"), "w"
+            ) as output_file:
+                output_file.write(route_template)
+
+        log.info("...%s\n", MSG_OK)
+
+
+
 def frontend_routes_templating(app=None):
     pass
     # if not app:

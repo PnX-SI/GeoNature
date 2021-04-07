@@ -50,7 +50,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
    * <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/occtax/occtax-map-form/occtax-map-form.component.ts#L27>`_
    */
   @Input() options = leafletDrawOption;
-  @Input() zoomLevel = this.appConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE;
+  @Input() zoomLevel = this._configService.getSettings('MAPCONFIG.ZOOM_LEVEL_RELEVE');
   /** Niveau de zoom à partir du quel on peut dessiner sur la carte */
   @Output() layerDrawed = new EventEmitter<GeoJSON>();
   @Output() layerDeleted = new EventEmitter<any>();

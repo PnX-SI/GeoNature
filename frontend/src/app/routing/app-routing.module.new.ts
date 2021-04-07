@@ -21,6 +21,9 @@ import { ConfigService } from '@geonature/utils/configModule/core'
 import { LoginComponent } from '../components/login/login.component';
 import { NavHomeComponent } from '../components/nav-home/nav-home.component';
 
+import  { externalModules }  from '../../../../external_modules';
+
+
 const getDynamicRoutes = (configService: ConfigService) => {
 
   const appConfig = configService.getSettings();
@@ -28,10 +31,9 @@ const getDynamicRoutes = (configService: ConfigService) => {
   // ajout des modules avec frontend dans navChildren
   for (const moduleCode of appConfig.modules) {
     const moduleConfig = appConfig[moduleCode]
-    const path = moduleConfig.FRONTEND_PATH + '/app/gnModule.module';
     navChildrenModules.push({
       path: moduleConfig.MODULE_PATH,
-      loadChildren: () => import(path).then(m => m.GeonatureModule),
+      loadChildren: () => externalModules[moduleCode],
       canActivate: [ModuleGuardService],
       data: {
         module_code: moduleCode
@@ -68,9 +70,6 @@ const getDynamicRoutes = (configService: ConfigService) => {
         component: PageNotFoundComponent
       }
   ]
-
-
-  console.log(navChildren)
 
   // if (appConfig['ACCOUNT_MANAGEMENET']['ENABLE_USER_MANAGEMENT']) {
   //   navChildren.push({

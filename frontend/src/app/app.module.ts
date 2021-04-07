@@ -105,6 +105,7 @@ export function init_router(
     for (const route of dynamicRoutes) {
       router.config.push(route);
     }
+    router.resetConfig(dynamicRoutes);
   };
 };
 

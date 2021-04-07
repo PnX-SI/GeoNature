@@ -6,7 +6,7 @@ npm-debug.log
 src/conf/app.config.ts
 src/assets/config/api.config.json
 # src/tsconfig.app.json
-
+../external_modules/index.ts
 #routing
 src/app/routing/app-routing.module.ts
 #tsconfig
