@@ -17,16 +17,9 @@ from geonature.utils.command import (
     supervisor_cmd,
     start_geonature_front,
     build_geonature_front,
-    create_frontend_config,
-    frontend_routes_templating,
-    tsconfig_templating,
-    tsconfig_app_templating,
-    update_app_configuration,
-    process_prebuild_frontend
-
+    process_prebuild_frontend,
+    process_manage_frontend_assets
 )
-
-from geonature.utils.config import process_manage_frontend_assets
 
 from geonature import create_app
 
@@ -119,7 +112,7 @@ def dev_back(host, port):
         host=host,
         port=int(port),
         extra_files=[
-            ROOT_DIR / str('config/geonature_config.toml')
+            ROOT_DIR / str('config/*.toml')
         ]
     )
 
@@ -151,48 +144,7 @@ def frontend_build(build_sass):
     build_geonature_front(build_sass)
 
 
-@main.command()
-def generate_frontend_modules_route():
-    """
-        Génere le fichier de routing du frontend
-        à partir des modules GeoNature activé
-    """
-    frontend_routes_templating()
 
-
-@main.command()
-def generate_frontend_tsconfig():
-    """
-        Génere tsconfig du frontend
-    """
-    tsconfig_templating()
-
-
-@main.command()
-def generate_frontend_tsconfig_app():
-    """
-        Génere tsconfig.app du frontend/src
-    """
-    tsconfig_app_templating()
-
-
-@main.command()
-@click.option("--build", type=bool, required=False, default=True)
-@click.option("--prod", type=bool, required=False, default=True)
-def update_configuration(build, prod):
-    """
-        Regénère la configuration de l'application
-
-        Example:
-
-        - geonature update_configuration
-
-        - geonature update_configuration --build=false (met à jour la configuration sans recompiler le frontend)
-
-    """
-    # Recréation du fichier de routing car il dépend de la conf
-    frontend_routes_templating()
-    update_app_configuration(build, prod)
 
 
 @main.command()
@@ -204,4 +156,4 @@ def import_jdd_from_mtd(table_name):
     app = create_app()
     with app.app_context():
         from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actors
-        import_all_dataset_af_and_actors(table_name)
+        import_all_dataset_af_and_actors(table_name)    

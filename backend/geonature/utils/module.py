@@ -6,8 +6,9 @@ from pkg_resources import load_entry_point
 
 from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.config_schema import ManifestSchemaProdConf
-from geonature.utils.env import GN_EXTERNAL_MODULE, \
-                                GN_MODULE_FE_FILE, GN_MODULE_FILES
+from geonature.utils.env import (
+    GN_EXTERNAL_MODULE, GN_MODULE_FE_FILE, GN_MODULE_FILES, conf_gn_module_path
+)
 from geonature.core.gn_commons.models import TModules
 
 
@@ -30,7 +31,7 @@ def import_gn_module(mod):
             module_manifest = load_and_validate_toml(module_path / 'manifest.toml', ManifestSchemaProdConf)
             module_schema = import_module(f'{module_name}.config.conf_schema_toml').GnModuleSchemaConf
             module_blueprint = import_module(f'{module_name}.backend.blueprint').blueprint
-            config_path = str(module_path / "config/conf_gn_module.toml")
+            config_path = conf_gn_module_path(mod.module_code)
             module_config.update({
                 'MODULE_URL': '/' + mod.module_path.replace(' ', ''),
             })
@@ -40,7 +41,8 @@ def import_gn_module(mod):
             config_path = os.environ.get(f'GEONATURE_{mod.module_code}_CONFIG_FILE')
             if not config_path:  # fallback to legacy conf path guessing
                 # .parent.parent goes up 'backend/{module_name}'
-                config_path = str(module_path.parent.parent / 'config/conf_gn_module.toml')
+                # config_path = str(module_path.parent.parent / 'config/conf_gn_module.toml')
+                config_path = conf_gn_module_path(mod.module_code)
             module_config.update({
                 'MODULE_URL': '/' + mod.module_code.lower(),
             })

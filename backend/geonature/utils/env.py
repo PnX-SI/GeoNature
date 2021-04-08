@@ -51,3 +51,6 @@ def import_requirements(req_file):
     cmd_return = subprocess.call(["pip", "install", "-r", req_file])
     if cmd_return != 0:
         raise GeoNatureError("Error while installing module backend dependencies")
+
+def conf_gn_module_path(module_code):
+    return str(ROOT_DIR / "config/{}.toml".format(module_code.lower()))

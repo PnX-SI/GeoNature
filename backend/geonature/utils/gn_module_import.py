@@ -18,7 +18,7 @@ from geonature.utils.config import config
 from geonature.utils.config_schema import GnGeneralSchemaConf, ManifestSchemaProdConf
 from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
-from geonature.utils.command import build_geonature_front, frontend_routes_templating
+from geonature.utils.command import build_geonature_front, process_prebuild_frontend
 from geonature.utils.module import import_gn_module
 from geonature.core.gn_commons.models import TModules
 from geonature import create_app
@@ -33,6 +33,7 @@ from geonature.utils.env import (
     import_requirements,
 )
 from geonature.utils.config_schema import ManifestSchemaConf
+from geonature.utils.env import conf_gn_module_path
 
 log = logging.getLogger(__name__)
 
@@ -97,11 +98,11 @@ def gn_module_register_config(module_code):
 
     """
     log.info("Register module")
-    conf_gn_module_path = str(GN_EXTERNAL_MODULE / module_code / "config/conf_gn_module.toml")
-    # creation du fichier s'il n'existe pas
-    config_file = open(conf_gn_module_path, "w+")
 
-    exist_config = utilstoml.load_toml(conf_gn_module_path)
+    # creation du fichier s'il n'existe pas
+    config_file = open(conf_gn_module_path(module_code), "w+")
+
+    exist_config = utilstoml.load_toml(conf_gn_module_path(module_code))
     cmds = []
     for cmd in cmds:
         proc = subprocess.Popen(
@@ -150,9 +151,9 @@ def gn_module_activate(module_code, activ_front, activ_back):
                     """The module does not exist.
                     \n Check the gn_commons.t_module to get the module name"""
                 )
-    log.info("Generate frontend routes")
+    log.info("Process frontend prebuild")
     try:
-        frontend_routes_templating(app)
+        process_prebuild_frontend(app)
         log.info("...%s\n", MSG_OK)
     except Exception:
         log.error("Error while generating frontend routing")
@@ -180,9 +181,9 @@ def gn_module_deactivate(module_code, activ_front, activ_back):
             """The module does not exist.
             \n Check the gn_commons.t_module to get the module name"""
         )
-    log.info("Regenerate frontend routes")
+    log.info("Process frontend prebuild")
     try:
-        frontend_routes_templating(app)
+        process_prebuild_frontend(app)
         log.info("...%s\n", MSG_OK)
     except Exception as e:
         raise GeoNatureError(e)
@@ -411,25 +412,3 @@ def remove_application_db(app, module_code):
             log.error("Error %s", exp)
 
     log.info("...%s\n", MSG_OK)
-
-
-def create_module_config(app, module_code, mod_path=None, build=True):
-    """
-    Create the frontend config
-    """
-
-    with app.app_context():
-        # fetch the module in the DB from its name
-        module_object = (
-            DB.session.query(TModules).filter(TModules.module_code == module_code.upper()).one()
-        )
-        module, blueprint = import_gn_module(module_object)
-        frontend_config_path = os.path.join(blueprint.config['FRONTEND_PATH'], "app/module.config.ts")  # noqa
-        try:
-            with open(str(ROOT_DIR / frontend_config_path), "w") as outputfile:
-                outputfile.write("export const ModuleConfig = ")
-                json.dump(blueprint.config, outputfile, indent=True, sort_keys=True)
-        except FileNotFoundError:
-            log.info("No frontend config file")
-        if build:
-            build_geonature_front()

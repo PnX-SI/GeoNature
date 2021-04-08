@@ -14,7 +14,8 @@ from pkg_resources import iter_entry_points
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, MA, migrate
 from geonature.utils.module import import_backend_enabled_modules
-from geonature.utils.config import process_manage_frontend_assets, config_frontend
+from geonature.utils.command import process_manage_frontend_assets
+from geonature.utils.config import config_frontend
 
 @migrate.configure
 def configure_alembic(alembic_config):

@@ -25,4 +25,4 @@ cd $FLASKDIR
 
 # Start your gunicorn
 exec gunicorn  geonature.wsgi:app --error-log $APP_DIR/var/log/gn_errors.log --pid="${app_name}.pid" --timeout=$gun_timeout -w "${gun_num_workers}"  -b "${gun_host}:${gun_port}"  -n "${app_name}" \
---reload-extra-file="$APPDIR/config/geonature_config.toml"
+--reload-extra-file="$APPDIR/config/*.toml"
