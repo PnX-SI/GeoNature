@@ -71,12 +71,12 @@ def frontend_routes_templating(app=None):
             for module_config in import_frontend_enabled_modules():
                 module_code = module_config['MODULE_CODE']
                 url_path = module_config['MODULE_URL']
-                location = Path(GN_EXTERNAL_MODULE / module_code.lower())
+                module_dir = Path(GN_EXTERNAL_MODULE / module_code.lower())
 
                 # test if module have frontend
-                if (location / "frontend").is_dir():
+                if (module_dir / "frontend").is_dir():
                     path = url_path.lstrip("/")
-                    location = "{}/{}#GeonatureModule".format(location, GN_MODULE_FE_FILE)
+                    location = "{}/{}#GeonatureModule".format(module_dir, GN_MODULE_FE_FILE)
                     routes.append({"path": path, "location": location, "module_code": module_code})
 
                 # TODO test if two modules with the same name is okay for Angular
@@ -119,10 +119,10 @@ def tsconfig_app_templating(app=None):
             routes = []
             for module_config in import_frontend_enabled_modules():
                 module_code = module_config['MODULE_CODE']
-                location = Path(GN_EXTERNAL_MODULE / module_code.lower())
+                module_dir = Path(GN_EXTERNAL_MODULE / module_code.lower())
 
                 # test if module have frontend
-                if (location / "frontend").is_dir():
+                if (module_dir/ "frontend").is_dir():
                     location = "{}/frontend/app".format(location)
                     routes.append({"location": location})
 
