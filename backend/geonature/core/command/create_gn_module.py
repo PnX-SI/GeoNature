@@ -111,7 +111,7 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                     # Installation du module
                     run_install_gn_module(app, module_path)
                     # Enregistrement de la config du module
-                    gn_module_register_config(module_code.lower())
+                    gn_module_register_config(module_code)
 
                     if enable_frontend:
                         install_frontend_dependencies(module_path)

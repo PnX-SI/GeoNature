@@ -1,8 +1,10 @@
 #!/bin/bash
 
+set -ex 
+
 # Make nvm available
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" || true  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
 OS_BITS="$(getconf LONG_BIT)"
@@ -41,7 +43,6 @@ case $key in
     -d|--dev)
     MODE='dev'
     shift # Past argument
-    shift # Past value
     ;;
     -h|--help)
     echo ""
@@ -107,11 +108,11 @@ cd backend
 
 # Installation du virtual env
 # Suppression du venv s'il existe
-if [ -d 'venv/' ]
-then
-  echo "Suppression du virtual env existant..."
-  sudo rm -rf venv
-fi
+# if [ -d 'venv/' ]
+# then
+#   echo "Suppression du virtual env existant..."
+#   sudo rm -rf venv
+# fi
 
 pip3 install virtualenv
 
@@ -153,8 +154,7 @@ echo "Installation du backend geonature..."
 pip install --editable "${BASE_DIR}"  # geonature ne support pas encore autre chose que editable
 
 echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
-geonature generate_frontend_config --conf-file ${BASE_DIR}/config/geonature_config.toml --build=false
-
+geonature manage_frontend_assets
 
 echo "Création du fichier de log des erreurs GeoNature"
 # Cela évite sa création par Supervisor avec des droits root
@@ -206,12 +206,6 @@ for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
 	fi
 done
 
-# Generate the tsconfig.json
-geonature generate_frontend_tsconfig
-# Generate the src/tsconfig.app.json
-geonature generate_frontend_tsconfig_app
-# Generate the modules routing file by templating
-geonature generate_frontend_modules_route
 
 # Retour à la racine de GeoNature
 cd "${BASE_DIR}"
@@ -247,6 +241,5 @@ if [[ $MODE != "dev" ]]
 then
   echo "Build du frontend..."
   cd "${BASE_DIR}/frontend"
-  npm rebuild node-sass --force
   npm run build
 fi

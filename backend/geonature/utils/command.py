@@ -29,6 +29,8 @@ from geonature.utils.config_schema import GnGeneralSchemaConf
 from geonature.utils.module import import_frontend_enabled_modules
 from geonature.utils.config import config_frontend, config
 
+from geonature import create_app
+
 log = logging.getLogger(__name__)
 
 MSG_OK = "\033[92mok\033[0m\n"
@@ -72,11 +74,12 @@ def process_prebuild_frontend(app=None):
             template = Template(input_file.read())
             modules = []
             for module_config in import_frontend_enabled_modules():
-                location = Path(GN_EXTERNAL_MODULE / module_config['MODULE_PATH'])
+                module_code = module_config['MODULE_CODE']
+                location = Path(GN_EXTERNAL_MODULE / module_code.lower())
 
                 # test if module have frontend
                 if (location / "frontend").is_dir():
-                    modules.append(module_config)
+                    modules.append(module_code)
 
             route_template = template.render(
                 modules=modules,
@@ -90,16 +93,19 @@ def process_prebuild_frontend(app=None):
         log.info("...%s\n", MSG_OK)
 
 
-def process_manage_frontend_assets():
+def process_manage_frontend_assets(app=None):
     '''
         Ici on cherche à rendre le build du frontend 'indépendant' de la config
         Pour cela on crée directement des fichiers dans les assets du frontend, 
         dans les repertoires 'frontend/dist' et 'frontend/src'
-
         Les fichiers concernés:
             - pour fournir API_ENDPOINT au frontend :
                 - config/api.config.json
     '''
+
+    # if not app:
+    #     app = create_app(with_external_mods=False)
+
 
     for mode in ['src', 'dist']:
         assets_dir = str(ROOT_DIR / "frontend/{}/assets".format(mode))

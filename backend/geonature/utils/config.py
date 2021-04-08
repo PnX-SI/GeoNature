@@ -17,8 +17,6 @@ from geonature.utils.env import (
     ROOT_DIR, MAIL
 )
 
-from geonature.utils.module import import_backend_enabled_modules
-
 log = logging.getLogger(__name__)
 
 

@@ -37,20 +37,6 @@ log = logging.getLogger()
 def main(ctx):
     pass
 
-
-# Unused
-# @main.command()
-# def launch_redis_worker():
-#     """ launch redis worker
-#     """
-#     app = create_app()
-#     with app.app_context():
-#         with Connection(redis.Redis(host='localhost', port='6379')):
-#             q = Queue()
-#             w = Worker(q)
-#             w.work()
-
-
 @main.command()
 def prebuild_frontend():
     '''
@@ -66,19 +52,6 @@ def manage_frontend_assets():
         Pour créer api.config.json, etc...
     '''
     process_manage_frontend_assets()
-
-
-@main.command()
-@click.option("--build", type=bool, required=False, default=True)
-def generate_frontend_config(build):
-    """
-        Génération des fichiers de configurations pour javascript
-        Relance le build du front par defaut
-    """
-    create_frontend_config()
-    if build:
-        build_geonature_front()
-    log.info("Config successfully updated")
 
 
 @main.command()

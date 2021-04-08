@@ -344,6 +344,7 @@ class GnGeneralSchemaConf(Schema):
     METADATA = fields.Nested(MetadataConfig, missing={})
     MTD = fields.Nested(MTDSchemaConf, missing={})
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(missing=1000000)
+    ENABLED_MODULES = fields.List(fields.String, missing=[])
 
     @validates_schema
     def validate_enable_sign_up(self, data):

@@ -12,7 +12,7 @@ export class ModuleService {
   fetchModules(): Observable<any> {
     // see CruvedStoreService.fetchCruved comments about the catchError
     return this._api.getModulesList([]).pipe(
-      catchError(err => of([])),
+      catchError(err => of([])), // TODO: error MUST be handled in case we are logged! (typically, api down)
       map((modules) => {
         this.modules = modules;
         return modules;
