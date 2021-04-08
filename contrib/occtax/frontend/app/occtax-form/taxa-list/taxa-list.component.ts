@@ -1,6 +1,6 @@
-import { Component, Input, OnInit, Renderer2, ElementRef, ViewChild } from "@angular/core";
+import { Component, OnInit, ElementRef, ViewChild } from "@angular/core";
 import { combineLatest } from "rxjs";
-import { filter, map, tap } from "rxjs/operators";
+import { filter, map } from "rxjs/operators";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { MatDialog, MatTabChangeEvent  } from "@angular/material";
 import { TranslateService } from "@ngx-translate/core";
@@ -31,18 +31,15 @@ export class OcctaxFormTaxaListComponent implements OnInit {
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxTaxaListService: OcctaxTaxaListService,
     public ms: MediaService,
-    private renderer: Renderer2
   ) {
   }
 
   ngOnInit() {
-
     combineLatest(
       this.occtaxFormService.occtaxData,
       this.occtaxFormOccurrenceService.occurrence
     )
     .pipe(
-      //tap(() => (this.occurrences = [])),
       filter(
         ([occtaxData, occurrence]: any) =>
           occtaxData && occtaxData.releve.properties.t_occurrences_occtax
@@ -74,24 +71,8 @@ export class OcctaxFormTaxaListComponent implements OnInit {
           });
       })
     )
-    .subscribe((occurrences) => {
+    .subscribe((occurrences) => {      
       this.occtaxTaxaListService.occurrences$.next(occurrences);
-      setTimeout(() => {
-        this.occtaxTaxaListService.occurrences$.value.map((occurrence) => {
-          //Réinitialiser le contenu des champs additionnel
-          let containerOccurrence = document.getElementById("tabOccurence" + occurrence.id_occurrence_occtax);
-          if(containerOccurrence){
-            while(containerOccurrence.getElementsByClassName("additional_field").length > 0) {
-              containerOccurrence.getElementsByClassName("additional_field")[0].remove();
-            }
-          }
-          //Ajoute le contenu
-
-            this.occtaxFormService.occurrenceAddFields.forEach((widget) => {
-              this.ms.createVisualizeElement(containerOccurrence, widget, occurrence);
-            });
-        })
-      }, 200);
     });
   }
 
@@ -150,33 +131,5 @@ export class OcctaxFormTaxaListComponent implements OnInit {
 
     this.editOccurrence(occ_in_progress.data);
     this.occtaxTaxaListService.removeOccurrenceInProgress(occ_in_progress.id);
-  }
-
-  //Met Affichage des champs additionnel dans l'onglet Dénombrement. 
-  // L'élément est chargé seulement lorsque l'on clique dessus => Angular Material
-  tabChanged(tabChangeEvent: MatTabChangeEvent): void {    
-    //Petit bidouillage avec le label pour récupérer l'id_occurrence_occtax
-    let infoTab = tabChangeEvent.tab.textLabel.split("#");
-    
-    if(infoTab[0] == "counting"){
-      this.occtaxTaxaListService.occurrences$.value.map((occurrence) => {
-        if(occurrence.id_occurrence_occtax == infoTab[1]){
-          //On ne créer pas les composants 2 fois, merci
-          if (this.alreadyActivatedCountingTab[occurrence.id_occurrence_occtax]){return}
-          this.alreadyActivatedCountingTab[occurrence.id_occurrence_occtax] = true;
-          if(this.occtaxFormService.countingAddFields.length > 0) {
-            //Pour chaque counting, on créer les composants associés
-            occurrence.cor_counting_occtax.map((counting) => {
-              //On récupère la div mère, en l'occurrence, la div list-values du mat-tab
-              let containerCounting = document.getElementById("tabCounting" + counting.id_counting_occtax);
-              //Pour chaque widget, on ajoute son libelle et sa valeur
-              this.occtaxFormService.countingAddFields.forEach((widget) => {
-                this.ms.createVisualizeElement(containerCounting, widget, counting);
-              });
-            });
-          }
-        }
-      })
-    }
   }
 }

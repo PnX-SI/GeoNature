@@ -1,4 +1,5 @@
 import datetime
+import json
 import logging
 
 from flask import (
@@ -577,10 +578,10 @@ def createOccurrence(id_releve, info_role):
     # get releve by id_releve
     occurrence = TOccurrencesOccurrence()
     occurrence.id_releve_occtax = id_releve
-
     return OccurrenceSchema().dump(
         occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role)
     )
+
 
 
 @blueprint.route("/occurrence/<int:id_occurrence>", methods=["POST"])

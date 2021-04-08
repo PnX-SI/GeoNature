@@ -73,7 +73,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     public dialog: MatDialog
   ) { }
 
-  ngOnInit() {    
+  ngOnInit() {
     this.occurrenceForm = this.occtaxFormOccurrenceService.form;
 
     //gestion de l'affichage des preuves d'existence selon si Preuve = 'Oui' ou non.
@@ -101,8 +101,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit() {
     this.occtaxFormOccurrenceService.dynamicContainerOccurence = this.containerOccurence;
-    
-    //this.fs.createAdditionnalFieldsUI(this.containerOccurence, this.fs.occurrenceAddFields);
+    this.occtaxFormOccurrenceService.regenerateAddtionnalFieldsUI();   
     //a chaque reinitialisation du formulaire on place le focus sur la zone de saisie du taxon
     const taxonInput: HTMLElement = document.getElementById("taxonInput");
     this.occtaxFormOccurrenceService.occurrence.subscribe(() =>
@@ -233,6 +232,8 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   }
 
   addCounting() {
+    console.log("stop");
+    
     this.occtaxFormOccurrenceService.addCountingForm(true); //patchwithdefaultvalue
   }
 

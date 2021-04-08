@@ -66,6 +66,8 @@ export class OcctaxFormService {
     
     this._dataS.getOneReleve(id).subscribe(
       (data) => {
+        console.log("LA ?§§", data);
+        
         this.occtaxData.next(data);
         this.editionMode.next(true);
       },
@@ -123,11 +125,15 @@ export class OcctaxFormService {
 
   addOccurrenceData(occurrence): void {
     let occtaxData = this.occtaxData.getValue();
+    console.log(occtaxData);
+    
 
     if (!occtaxData.releve.properties.t_occurrences_occtax) {
       occtaxData.releve.properties.t_occurrences_occtax = [];
     }
     occtaxData.releve.properties.t_occurrences_occtax.push(occurrence);
+    console.log(occtaxData);
+    
     this.occtaxData.next(occtaxData);
   }
 
@@ -173,18 +179,17 @@ export class OcctaxFormService {
   }
 
   createAdditionnalFieldsUI(container: ViewContainerRef, additionnalFields, dynamicForm: FormGroup) {
-    console.log(container);
-    console.log(additionnalFields);
-    
-    
     if (container) {      
       container.clear(); 
-    }    
-    if (additionnalFields.length > 0 && container){      
+    }
+    if (additionnalFields.length > 0 && container){
+      console.log(additionnalFields);
+      
       const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(DynamicFormComponent);
-      this.componentRef = container.createComponent(factory);
-      this.componentRef.instance.formConfigReleveDataSet = additionnalFields;
-      this.componentRef.instance.formArray = dynamicForm;
+      const componentRef = container.createComponent(factory);
+      componentRef.instance.formConfigReleveDataSet = additionnalFields;
+      componentRef.instance.formArray = dynamicForm;
+      return componentRef
     }
   }
 }

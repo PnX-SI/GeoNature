@@ -1,4 +1,4 @@
-import { Component, Input, ViewContainerRef, ViewChild, ComponentRef, ComponentFactory, ComponentFactoryResolver } from "@angular/core";
+import { Component, OnInit, Input, ViewContainerRef, ViewChild, ComponentRef, OnDestroy, ComponentFactoryResolver } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
@@ -11,7 +11,7 @@ import { OcctaxFormCountingService } from "./counting.service";
   templateUrl: "./counting.component.html",
   styleUrls: ["./counting.component.scss"]
 })
-export class OcctaxFormCountingComponent {
+export class OcctaxFormCountingComponent implements OnInit {
   @ViewChild("dynamiqueContainerCounting", { read: ViewContainerRef }) public containerCounting: ViewContainerRef;
 
   public occtaxConfig = ModuleConfig;
@@ -33,9 +33,10 @@ export class OcctaxFormCountingComponent {
   ngOnInit() {
     this.occtaxFormCountingService.dynamicContainerCounting = this.containerCounting;
     this.occtaxFormCountingService.form = this.countingForm;
-    // let dynamiqueFormDataset = this.fs.getAddDynamiqueFields(this.occtaxFormOccurrenceService.idDataset);
-    // if(dynamiqueFormDataset && dynamiqueFormDataset['FORMFIELDS']['COUNTING'].length > 0){
-    //   this.occtaxFormCountingService.generateAdditionForm(dynamiqueFormDataset);
+
+    // if(this.fs.countingAddFields.length > 0) {      
+    //   this.occtaxFormCountingService.generateAdditionForm(this.fs.countingAddFields);
+    //   this.occtaxFormCountingService.setAddtionnalFieldsValues(this.occtaxFormOccurrenceService.form, this.fs.countingAddFields)
     // }
   }
 
