@@ -19,7 +19,7 @@ from geonature.utils.config_schema import GnGeneralSchemaConf, ManifestSchemaPro
 from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
 from geonature.utils.command import build_geonature_front, frontend_routes_templating
-from geonature.utils.module import import_frontend_module
+from geonature.utils.module import import_gn_module
 from geonature.core.gn_commons.models import TModules
 from geonature import create_app
 
@@ -424,7 +424,7 @@ def create_module_config(app, module_code, build=True):
             module_object = TModules.query.filter_by(module_code=module_code).one()
         except NoResultFound:
             raise Exception(f"Module with code '{module_code}' not found in database.")
-        module_config = import_frontend_module(module_object)
+        _, module_config, _ = import_gn_module(module_object)
         frontend_config_path = os.path.join(module_config['FRONTEND_PATH'], "app/module.config.ts")
         try:
             with open(str(ROOT_DIR / frontend_config_path), "w") as outputfile:
