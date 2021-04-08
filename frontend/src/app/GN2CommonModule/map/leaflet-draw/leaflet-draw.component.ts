@@ -1,5 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Map } from 'leaflet';
+import '@geoman-io/leaflet-geoman-free';  
+import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 
 import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
@@ -67,48 +69,153 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     this.options.edit['featureGroup'] = this.mapservice.leafletDrawFeatureGroup;
     this.drawControl = new this._Le.Control.Draw(this.options);
     this.map.addControl(this.drawControl);
+    console.log(this.drawControl);
+    this.map.pm.addControls({
+      drawPolyline: false,
+      drawRectangle: false,
+      drawCircle: true,
+      drawCircleMarker: true,
+      editMode: false,
+      dragMode: false,
+      cutPolygon: false,
+      removalMode: false
+    });
+    console.log("GEOMAN CONTROLS");
 
     if (!this.bEnable) {
       this.disableDrawControl();
     }
 
-    this.map.on(this._Le.Draw.Event.DRAWSTART, e => {
+    this.map.on('pm:drawstart', e => {
+      console.log("GEOMAN DRAW START");
+      console.log(e);
       this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
       if (this.map.getZoom() < this.zoomLevel) {
+        console.log("ZOOM <");
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
       }
       // remove eventual filelayer layers
       if (this.mapservice.fileLayerFeatureGroup) {
+        console.log("fileLayerFeatureGroup");
         // delete only if fileLayerEditionMode = false
         // if true we let the filelayer layer to draw it
         if (!this.mapservice.fileLayerEditionMode) {
+          console.log("fileLayerEditionMode");
           this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
         }
       }
       // remove the current draw
       if (this._currentDraw !== null) {
+        console.log("_currentDraw = NULL");
+        this.mapservice.removeAllLayers(this.map, this.mapservice.leafletDrawFeatureGroup);
+      }
+      // remove the current marker
+      const markerLegend = document.getElementById('markerLegend');
+      console.log("MARKER LEGEND");
+      console.log(markerLegend);
+      if (markerLegend) {
+        console.log("markerLegend");
+        markerLegend.style.backgroundColor = 'white';
+      }
+      this.mapservice.editingMarker = false;
+      //this.map.off('click');
+      console.log("PREMARKER");
+      console.log(this.mapservice);
+      if (this.mapservice.marker) {
+        console.log("MARKER");
+        this.map.removeLayer(this.mapservice.marker);
+      }
+      console.log("GEOMAN DRAW START END");
+    })
+
+    this.map.on("pm:create", e => {
+      console.log("GEOMAN LAYER CREATED");
+      console.log(e);
+      if (this.map.getZoom() < this.zoomLevel) {
+        console.log(" GET ZOOM <")
+        this._commonService.translateToaster('warning', 'Map.ZoomWarning');
+        this.layerDrawed.emit({ geojson: null });
+      } else {
+        console.log(" GET ZOOM >")
+        this._currentDraw = (e as any).layer;
+        console.log(e);
+        if ((e as any).shape !== 'Marker') {
+          console.log(" MARKER");
+          console.log(this._currentDraw);
+          console.log(typeof(this._currentDraw));
+          this._currentDraw = this._currentDraw.setStyle(this.mapservice.searchStyle);
+        }
+        this.currentLayerType = (e as any).shape;
+        console.log("LAYER TYPE");
+        console.log(this.currentLayerType);
+        this.mapservice.leafletDrawFeatureGroup.addLayer(this._currentDraw);
+        const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
+        // set firLayerFromMap = false because we just draw a layer
+        // the boolean change MUST be before the output fire (emit)
+        this.mapservice.firstLayerFromMap = false;
+        console.log(geojson);
+        this.mapservice.setGeojsonCoord(geojson);
+        this.layerDrawed.emit(geojson);
+        console.log("GEOMAN LAYER CREATED END");
+        
+      }
+    });
+
+    this.map.on(this._Le.Draw.Event.DRAWSTART, e => {
+    //this.map.on('pm:drawstart', e => {
+      console.log("DRAW START");
+      console.log(e);
+      this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
+      if (this.map.getZoom() < this.zoomLevel) {
+        console.log("ZOOM <");
+        this._commonService.translateToaster('warning', 'Map.ZoomWarning');
+      }
+      // remove eventual filelayer layers
+      if (this.mapservice.fileLayerFeatureGroup) {
+        console.log("fileLayerFeatureGroup");
+        // delete only if fileLayerEditionMode = false
+        // if true we let the filelayer layer to draw it
+        if (!this.mapservice.fileLayerEditionMode) {
+          console.log("fileLayerEditionMode");
+          this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
+        }
+      }
+      // remove the current draw
+      if (this._currentDraw !== null) {
+        console.log("_currentDraw = NULL");
         this.mapservice.removeAllLayers(this.map, this.mapservice.leafletDrawFeatureGroup);
       }
       // remove the current marker
       const markerLegend = document.getElementById('markerLegend');
       if (markerLegend) {
+        console.log("markerLegend");
         markerLegend.style.backgroundColor = 'white';
       }
       this.mapservice.editingMarker = false;
       this.map.off('click');
+      console.log("PREMARKER");
+      console.log(this.mapservice);
       if (this.mapservice.marker) {
+        console.log("MARKER");
         this.map.removeLayer(this.mapservice.marker);
       }
+      console.log("DRAW START END");
     });
 
     // on draw layer created
     this.map.on(this._Le.Draw.Event.CREATED, e => {
+    //this.map.on("pm:create", e => {
+      console.log("LAYER CREATED");
+      console.log(e);
       if (this.map.getZoom() < this.zoomLevel) {
+        console.log(" GET ZOOM <")
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         this.layerDrawed.emit({ geojson: null });
       } else {
+        console.log(" GET ZOOM >")
         this._currentDraw = (e as any).layer;
         if ((e as any).layerType !== 'marker') {
+          console.log(" MARKER")
           this._currentDraw = this._currentDraw.setStyle(this.mapservice.searchStyle);
         }
         this.currentLayerType = (e as any).layerType;
@@ -119,11 +226,13 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this.mapservice.firstLayerFromMap = false;
         this.mapservice.setGeojsonCoord(geojson);
         this.layerDrawed.emit(geojson);
+        console.log("LAYER CREATED END");
       }
     });
 
     // on draw edited
     this.mapservice.map.on(this._Le.Draw.Event.EDITED, e => {
+      console.log("LAYER EDITED");
       // output
       const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
       // set firLayerFromMap = false because we just edit a layer
@@ -135,6 +244,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
 
     // on layer deleted
     this.map.on(this._Le.Draw.Event.DELETESTART, e => {
+      console.log("LAYER DELETED");
       this.layerDeleted.emit();
     });
 
@@ -150,7 +260,11 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     let geojson: any = this.mapservice.leafletDrawFeatureGroup.toGeoJSON();
     geojson = geojson.features[0];
 
-    if (layerType === 'circle') {
+    //if (layerType === 'circle') {
+    if (layerType === 'Circle') {
+      console.log("CIRCLE RADIUS");
+      console.log(this._currentDraw);
+      console.log(this._currentDraw.getRadius());
       const radius = this._currentDraw.getRadius();
       geojson.properties.radius = radius;
     }
@@ -199,6 +313,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       }
     }
     // disable point event on the map
+    console.log("IS EDITING MARKER");
     this.mapservice.setEditingMarker(false);
     // send observable
     let new_geojson = this.mapservice.leafletDrawFeatureGroup.toGeoJSON();
@@ -208,6 +323,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
 
   // cache le draw control
   disableDrawControl() {
+    console.log("DISABLE DRAW CONTROL");
     if (!this.drawControl) {
       return;
     }

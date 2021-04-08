@@ -5,6 +5,8 @@ import { Subject, Observable } from 'rxjs';
 
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
+import '@geoman-io/leaflet-geoman-free';  
+import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../service/common.service';
 import { Feature } from 'geojson';
@@ -58,10 +60,18 @@ export class MapService {
 
   setMap(map) {
     this.map = map;
+  
   }
 
   getMap() {
     return this.map;
+  }
+
+  setControls() {
+    this.map.pm.addControls({ 
+      position: 'topleft'  
+    });
+    console.log("GEOMAN CONTROLS");
   }
 
   initializeLeafletDrawFeatureGroup() {
@@ -88,7 +98,9 @@ export class MapService {
    * @param isEditing : boolean
    */
   setEditingMarker(isEditing: boolean): void {
+    console.log(this._isEditingMarker);
     this._isEditingMarker.next(isEditing);
+    console.log(this._isEditingMarker);
   }
 
   // ***** UTILS *****
@@ -113,6 +125,7 @@ export class MapService {
         customLegend.style.backgroundRepeat = 'no-repeat';
         customLegend.style.backgroundPosition = '7px';
         customLegend.onclick = () => {
+          console.log("Func");
           if (func) {
             func();
           }
@@ -145,6 +158,7 @@ export class MapService {
   }
 
   createMarker(x, y, isDraggable) {
+    console.log("CREATE MARKER");
     return L.marker([y, x], {
       icon: L.icon({
         iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
@@ -217,6 +231,7 @@ export class MapService {
       };
       this.setGeojsonCoord(geojson);
       this.marker.on('moveend', (event: L.LeafletMouseEvent) => {
+        console.log("Moveend");
         if (this.map.getZoom() < AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE) {
           this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         } else {

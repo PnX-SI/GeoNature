@@ -64,6 +64,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
     // la
     // event on load success
     (this.fileLayerControl as any).loader.on('data:loaded', event => {
+      console.log("FILELAYER DATA LOADED");
       // remove layer from leaflet draw
       this.mapService.removeAllLayers(this.mapService.map, this.mapService.leafletDrawFeatureGroup);
       // set marker editing OFF
@@ -96,6 +97,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
 
             //on right click display popup
             layer.on('contextmenu', e => {
+              console.log("FILELAYER CONTEXTMENU");
               if (propertiesContent.length > 0) {
                 layer.bindPopup(propertiesContent);
                 layer.openPopup();
@@ -105,6 +107,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
             // on click on a layer, change the color of the layer
             if (this.editMode) {
               layer.on('click', e => {
+                console.log("FILELAYER ON CLICK");
                 if (this.previousCurrentLayer) {
                   this.previousCurrentLayer.setStyle(this.style);
                 }
@@ -141,6 +144,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
   }
 
   ngOnChanges(changes) {
+    console.log("FILELAYER CHANGE");
     if (changes && changes.removeLayer && changes.removeLayer.currentValue) {
       if (this.previousLayer) {
         // when this input change -> delete the layer because an other layer has been loaded

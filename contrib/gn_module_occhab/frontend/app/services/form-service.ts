@@ -177,16 +177,26 @@ export class OcchabFormService {
   }
 
   patchGeoValue(geom) {
+    console.log("PATCH GEOVALUE");
+    console.log(geom);
+    console.log(Math.round(Math.PI * Math.pow(geom.properties.radius, 2)));
     this.stationForm.patchValue({ geom_4326: geom.geometry });
-    this._gn_dataSerice.getAreaSize(geom).subscribe(
-      data => {
-        this.stationForm.patchValue({ area: Math.round(data) });
-      },
-      // if error reset area
-      () => {
-        this.stationForm.patchValue({ area: null });
-      }
-    );
+    if (geom.properties.hasOwnProperty('radius')) {
+      console.log("RADIUS");
+      this.stationForm.patchValue({ area: Math.round(Math.PI * Math.pow(geom.properties.radius, 2)) });
+    }
+    else {
+      this._gn_dataSerice.getAreaSize(geom).subscribe(
+        data => {
+          this.stationForm.patchValue({ area: Math.round(data) });
+        },
+        // if error reset area
+        () => {
+          this.stationForm.patchValue({ area: null });
+        }
+      );
+    }
+    
     // this._gn_dataSerice.getGeoIntersection(geom).subscribe(data => {
     //   // TODO: areas intersected
     // });
