@@ -14,7 +14,7 @@ from pkg_resources import iter_entry_points
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, MA, migrate
 from geonature.utils.module import import_backend_enabled_modules
-# from geonature.utils.command import process_manage_frontend_assets
+from geonature.utils.assets import process_manage_frontend_assets
 from geonature.utils.config import config_frontend
 
 @migrate.configure
@@ -48,7 +48,7 @@ def create_app(with_external_mods=True, with_flask_admin=True):
     app.config.update(config)
 
     # Manage assets et frontend_config
-    # process_manage_frontend_assets()
+    process_manage_frontend_assets()
 
     # Bind app to DB
     DB.init_app(app)

@@ -16,13 +16,26 @@ then
     export HTTP_PROXY="'$proxy_http'"
     export HTTPS_PROXY="'$proxy_https'"
 fi
-
+echo a $APP_DIR
 
 # activate the virtualenv
 source $FLASKDIR/$venv_dir/bin/activate
 
 cd $FLASKDIR
 
+# options --reload-extra-file=$f
+# pour recharger en cas de changement de config et changement de custom
+
+extra_files_config="$(ls $APP_DIR/config/*.toml)"
+extra_files_custom="$(find $APP_DIR/frontend/src/custom -type f)"
+extra_files="$extra_files_config $extra_files_custom"
+options_extra_files=""
+
+
+for f in $(echo $extra_files)
+do
+    options_extra_files="$options_extra_files --reload-extra-file=$f"
+done
+
 # Start your gunicorn
-exec gunicorn  geonature.wsgi:app --error-log $APP_DIR/var/log/gn_errors.log --pid="${app_name}.pid" --timeout=$gun_timeout -w "${gun_num_workers}"  -b "${gun_host}:${gun_port}"  -n "${app_name}" \
---reload-extra-file="$APPDIR/config/*.toml"
+exec gunicorn  geonature.wsgi:app  --pid="${app_name}.pid" --timeout=$gun_timeout -w "${gun_num_workers}"  -b "${gun_host}:${gun_port}"  -n "${app_name}" --reload $options_extra_files

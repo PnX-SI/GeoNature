@@ -1,3 +1,4 @@
+import { IntroductionComponent } from './../../../custom/components/introduction/introduction.component';
 import { Component, OnInit } from '@angular/core';
 import { MapService } from '@geonature_common/map/map.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
@@ -5,6 +6,7 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { GlobalSubService } from '../../services/global-sub.service';
 import { ConfigService } from '@geonature/utils/configModule/core';
 import { ModuleService } from '../../services/module.service';
+import { HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'pnx-home-content',
@@ -17,6 +19,8 @@ export class HomeContentComponent implements OnInit {
   public appConfig: any;
   public lastObs: any;
   public generalStat: any;
+  public introductionComponent: any;
+  public footerComponent: any;
 
   constructor(
     private _SideNavService: SideNavService,
@@ -25,11 +29,13 @@ export class HomeContentComponent implements OnInit {
     private _mapService: MapService,
     private _moduleService: ModuleService,
     private _configService: ConfigService,
+    private _httpClient: HttpClient,
   ) {
     this.appConfig = this._configService.getSettings();
   }
 
   ngOnInit() {
+    this.loadCustomComponents();
     let gn_module = this._moduleService.getModule('GEONATURE');
     gn_module.module_label = 'Accueil';
     this._globalSub.currentModuleSubject.next(gn_module);
@@ -61,6 +67,20 @@ export class HomeContentComponent implements OnInit {
         });
     }
 
+  }
+
+  loadCustomComponents() {
+    this._httpClient.get('custom/components/introduction/introduction.component.html', {
+      responseType: 'text'
+    }).subscribe(html => {
+      this.introductionComponent = html;
+    });
+
+    this._httpClient.get('custom/components/footer/footer.component.html', {
+      responseType: 'text'
+    }).subscribe(html => {
+      this.footerComponent = html;
+    })
   }
 
   onEachFeature(feature, layer) {

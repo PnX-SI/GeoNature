@@ -18,9 +18,9 @@ from geonature.utils.command import (
     start_geonature_front,
     build_geonature_front,
     process_prebuild_frontend,
-    process_manage_frontend_assets
 )
 
+from geonature.utils.assets import process_manage_frontend_assets
 from geonature import create_app
 
 # from rq import Queue, Connection, Worker

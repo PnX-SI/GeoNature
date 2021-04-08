@@ -36,10 +36,6 @@ import { SignUpComponent } from './components/sign-up/sign-up.component';
 import { NewPasswordComponent } from './components/new-password/new-password.component';
 import { NavHomeComponent } from './components/nav-home/nav-home.component';
 
-// Custom component (footer, presentation etc...)
-import { FooterComponent } from '../custom/components/footer/footer.component';
-import { IntroductionComponent } from '../custom/components/introduction/introduction.component';
-
 // Service
 import { AuthService } from './components/auth/auth.service';
 import { CookieService } from 'ng2-cookies';
@@ -143,8 +139,6 @@ export function init_router(
     SignUpComponent,
     NewPasswordComponent,
     NavHomeComponent,
-    FooterComponent,
-    IntroductionComponent
   ],
   entryComponents: [
     AppComponent,
@@ -155,8 +149,6 @@ export function init_router(
     SignUpComponent,
     NewPasswordComponent,
     NavHomeComponent,
-    FooterComponent,
-    IntroductionComponent
   ],
   providers: [
     AuthService,

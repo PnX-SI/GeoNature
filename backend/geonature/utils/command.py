@@ -11,6 +11,7 @@ import sys
 import logging
 import subprocess
 import json
+import shutil
 
 from jinja2 import Template
 from pathlib import Path
@@ -40,8 +41,11 @@ def start_gunicorn_cmd(uri, worker):
     subprocess.call(cmd.format(
         gun_worker=worker,
         gun_uri=uri,
-        extra_files=ROOT_DIR / str('config/*.toml')
-        ).split(" "), cwd=str(BACKEND_DIR))
+        extra_files=' '.join([
+            ROOT_DIR / str('config/*.toml'),
+            ROOT_DIR / str('frontend/src/custom/**/*'),
+        ])
+    ).split(" "), cwd=str(BACKEND_DIR))
 
 
 def supervisor_cmd(action, app_name):
@@ -92,29 +96,3 @@ def process_prebuild_frontend(app=None):
         log.info("...%s\n", MSG_OK)
 
 
-def process_manage_frontend_assets(app=None):
-    '''
-        Ici on cherche à rendre le build du frontend 'indépendant' de la config
-        Pour cela on crée directement des fichiers dans les assets du frontend, 
-        dans les repertoires 'frontend/dist' et 'frontend/src'
-        Les fichiers concernés:
-            - pour fournir API_ENDPOINT au frontend :
-                - config/api.config.json
-    '''
-
-    # if not app:
-    #     app = create_app(with_external_mods=False)
-
-
-    for mode in ['src', 'dist']:
-        assets_dir = str(ROOT_DIR / "frontend/{}/assets".format(mode))
-        if not os.path.exists(assets_dir):
-            os.makedirs(assets_dir)
-
-        assets_config_dir =  assets_dir + "/config"
-        if not os.path.exists(assets_config_dir):
-            os.makedirs(assets_config_dir)
-
-        path = assets_config_dir + "/api.config.json"
-        with open(path, "w") as outputfile:
-            outputfile.write('"{}"'.format(config['API_ENDPOINT']))
