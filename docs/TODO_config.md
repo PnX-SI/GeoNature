@@ -1,3 +1,8 @@
+- install_app
+- install_gn_module
+- toml modules
+- fichiers custom
+
 # Changement config
 
 - l'idée est de ne plus avoir besoin de refaire le build de l'application 

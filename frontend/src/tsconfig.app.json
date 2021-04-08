@@ -12,6 +12,7 @@
     "polyfills.ts",
     "*.d.ts",
     "**/*",
+    "../../external_modules/*.ts",
     "../../external_modules/**/*.ts",
   ],
   "exclude": [

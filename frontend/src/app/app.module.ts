@@ -27,7 +27,7 @@ import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 
 // Angular created component
 import { AppComponent } from './app.component';
-import { routing, getDynamicRoutes } from './routing/app-routing.module.new'; // RoutingModule
+import { routing, getDynamicRoutes } from './routing/app-routing.module'; // RoutingModule
 import { HomeContentComponent } from './components/home-content/home-content.component';
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';

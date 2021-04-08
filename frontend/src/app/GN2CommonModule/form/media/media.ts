@@ -1,7 +1,6 @@
 import { Subscription } from 'rxjs';
 import { ConfigService } from '@geonature/utils/configModule/core';
 import { SafeResourceUrl } from '@angular/platform-browser';
-
 class Media {
   // media data
   public id_media: number;

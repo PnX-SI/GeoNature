@@ -8,7 +8,7 @@ src/assets/config/api.config.json
 # src/tsconfig.app.json
 ../external_modules/index.ts
 #routing
-src/app/routing/app-routing.module.ts
+# src/app/routing/app-routing.module.ts
 #tsconfig
 # tsconfig.json
 
