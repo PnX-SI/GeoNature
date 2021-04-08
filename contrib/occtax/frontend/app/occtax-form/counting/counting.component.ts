@@ -9,7 +9,7 @@ import { OcctaxFormCountingService } from "./counting.service";
 @Component({
   selector: "pnx-occtax-form-counting",
   templateUrl: "./counting.component.html",
-  styleUrls: ["./counting.component.scss"]
+  styleUrls: ["./counting.component.css"]
 })
 export class OcctaxFormCountingComponent {
 

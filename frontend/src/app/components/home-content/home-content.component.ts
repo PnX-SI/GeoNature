@@ -9,7 +9,7 @@ import { ModuleService } from '../../services/module.service';
 @Component({
   selector: 'pnx-home-content',
   templateUrl: './home-content.component.html',
-  styleUrls: ['./home-content.component.scss'],
+  styleUrls: ['./home-content.component.css'],
   providers: [MapService, SyntheseDataService]
 })
 export class HomeContentComponent implements OnInit {

@@ -8,7 +8,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 @Component({
   selector: 'pnx-login',
   templateUrl: 'login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
   enable_sign_up: boolean = false;

@@ -21,7 +21,7 @@ import { moduleCode } from "../../module.code.config";
 @Component({
   selector: "pnx-occtax-form-param",
   templateUrl: "./form-param.dialog.html",
-  styleUrls: ["./form-param.dialog.scss"],
+  styleUrls: ["./form-param.dialog.css"],
   animations: [
     trigger("detailExpand", [
       state(

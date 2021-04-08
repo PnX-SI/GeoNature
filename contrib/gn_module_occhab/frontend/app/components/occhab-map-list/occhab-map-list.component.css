@@ -31,9 +31,9 @@
 }
 
 #download-btn {
-  // margin-top: 8px;
-  // margin-right: 5px;
-  // float: right;
+  /* margin-top: 8px; */
+  /* margin-right: 5px; */
+  /* float: right; */
   z-index: 1000;
   bottom: 1%;
   right: 1%;
@@ -41,6 +41,6 @@
 }
 
 :host /deep/ ngx-datatable {
-  // height: 92vh !important;
+  /* height: 92vh !important; */
   height: 100%;
 }

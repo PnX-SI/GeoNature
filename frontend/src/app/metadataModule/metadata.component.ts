@@ -33,7 +33,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
 @Component({
   selector: 'pnx-metadata',
   templateUrl: './metadata.component.html',
-  styleUrls: ['./metadata.component.scss'],
+  styleUrls: ['./metadata.component.css'],
   providers: [
     {
       provide: MatPaginatorIntl,

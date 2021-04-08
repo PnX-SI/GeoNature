@@ -11,7 +11,7 @@ import { ConfigService } from '@geonature/utils/configModule/core';
   selector: 'pnx-validation-taxon-advanced',
   templateUrl: './synthese-advanced-form.component.html',
   providers: [DynamicFormService],
-  styleUrls: ['./synthese-advanced-form.component.scss']
+  styleUrls: ['./synthese-advanced-form.component.css']
 })
 export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   @ViewChild('tree') treeComponent: TreeComponent;

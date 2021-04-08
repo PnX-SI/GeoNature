@@ -24,7 +24,7 @@ import { moduleCode } from "../../module.code.config";
 @Component({
   selector: "pnx-validation-synthese-list",
   templateUrl: "validation-synthese-list.component.html",
-  styleUrls: ["validation-synthese-list.component.scss"]
+  styleUrls: ["validation-synthese-list.component.css"]
 })
 export class ValidationSyntheseListComponent
   implements OnInit, OnChanges, AfterContentChecked {

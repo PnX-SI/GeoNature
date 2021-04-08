@@ -3,7 +3,7 @@
   width: 20px;
   height: 20px;
   padding: 0px;
-  //background: #00ff00;
+  /* //background: #00ff00; */
   color: "black";
   border: 1px solid black;
   text-align: center;
@@ -70,20 +70,56 @@
   font-size: 30px;
 }
 
-ngx-datatable {
-  // position: absolute;
-  // left:0;
-  // bottom:0;
-  // right:0;
-  // top:0;
-  // overflow:scroll;
-}
+/* ngx-datatable { */
+  /* position: absolute; */
+  /* left:0; */
+  /* bottom:0; */
+  /* right:0; */
+  /* top:0; */
+  /* overflow:scroll; */
+/* } */
 
 :host /deep/ .datatable-body {
   overflow-x: auto;
 }
 
+
 :host /deep/ .datatable-body-row {
+  height: 30px !important;
+}
+
+:host /deep/ .datatable-body-row.active .datatable-row-group {
+  background-color: #1976d2 !important;
+}
+
+:host /deep/ .datatable-body-row.active .datatable-row-group .datatable-body-cell {
+  color: #fff;
+}
+
+:host /deep/ .datatable-body-row.active .datatable-row-group .datatable-body-cell button {
+  color: #fff !important;
+}
+
+:host /deep/ .datatable-body-row.active .datatable-row-group button:focus{
+  outline: none;
+  box-shadow: none !important;
+}
+
+:host /deep/ .datatable-body-row .datatable-body-cell {
+  font-size: 12px !important;
+  /* //padding: 5px 5px !important; */
+  padding-bottom: 15px !important;
+  padding-top: 8px !important;
+  padding-left: 15px !important;
+}
+
+:host /deep/ .datatable-body-row .datatable-footer-inner {
+  padding-top: 5px;
+}
+
+
+
+/* :host /deep/ .datatable-body-row {
   height: 30px !important;
   &.active .datatable-row-group {
     background-color: #1976d2 !important;
@@ -108,8 +144,19 @@ ngx-datatable {
   .datatable-footer-inner {
     padding-top: 5px;
   }
+} */
+
+
+:host /deep/ ngx-datatable.material datatable-footer datatable-pager a {
+  margin: 0px !important;
+  padding: 0px !important;
 }
 
+:host /deep/ ngx-datatable.material .datatable-checkbox input[type="checkbox"]:before {
+  border-color: #bfbdbd !important;
+}
+
+/* 
 :host /deep/ ngx-datatable.material {
   datatable-footer datatable-pager a {
     margin: 0px !important;
@@ -118,7 +165,7 @@ ngx-datatable {
   .datatable-checkbox input[type="checkbox"]:before {
     border-color: #bfbdbd !important;
   }
-}
+} */
 
 :host /deep/ .datatable-body-cell i {
   font-size: 12px;
@@ -169,11 +216,14 @@ button:active {
     width: 100%;
     height: auto !important;
     padding-top: 5px;
-    .datatable-pager {
-      width: fit-content;
-      flex: inherit !important;
-    }
+    
   }
+
+  :host /deep/ .datatable-footer-inner .datatable-pager {
+    width: fit-content;
+    flex: inherit !important;
+  }
+
 }
 
 /* @media screen and (min-width: 1340px) {

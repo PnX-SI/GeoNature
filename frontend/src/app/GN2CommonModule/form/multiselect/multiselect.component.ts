@@ -40,7 +40,7 @@ export enum KEY_CODE {
 @Component({
   selector: 'pnx-multiselect',
   templateUrl: './multiselect.component.html',
-  styleUrls: ['./multiselect.component.scss']
+  styleUrls: ['./multiselect.component.css']
 })
 export class MultiSelectComponent implements OnInit, OnChanges {
   public selectedItems = [];

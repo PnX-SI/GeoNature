@@ -13,7 +13,7 @@ import { ConfigService } from '@geonature/utils/configModule/core';
 @Component({
   selector: "pnx-occtax-form-releve",
   templateUrl: "releve.component.html",
-  styleUrls: ["./releve.component.scss"],
+  styleUrls: ["./releve.component.css"],
 })
 export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public moduleConfig: any;

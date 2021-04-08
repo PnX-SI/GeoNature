@@ -48,7 +48,7 @@ export interface Taxon {
 @Component({
   selector: 'pnx-taxonomy',
   templateUrl: './taxonomy.component.html',
-  styleUrls: ['./taxonomy.component.scss'],
+  styleUrls: ['./taxonomy.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class TaxonomyComponent implements OnInit {

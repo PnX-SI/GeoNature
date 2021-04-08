@@ -1,0 +1,19 @@
+.sidenav-container {
+  height: 100%;
+}
+
+#app-sidenav {
+  width: 220px;
+  min-width: 65px;
+}
+
+#app-toolbar mat-raised-button, #app-toolbar mat-icon-button {
+  background-color: white !important;
+  outline: none;
+}
+#app-toolbar .user-name {
+    font-size: 15px;
+}
+#documentation_link {
+    color: black !important;
+}

@@ -7,7 +7,7 @@ import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 @Component({
   selector: "pnx-occhab-map-list-filter",
   templateUrl: "./occhab-map-list-filter.component.html",
-  styleUrls: ["./occhab-map-list-filter.component.scss"]
+  styleUrls: ["./occhab-map-list-filter.component.css"]
 })
 export class OcchabMapListFilterComponent implements OnInit {
 

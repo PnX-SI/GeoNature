@@ -17,7 +17,7 @@ import { DataFormService } from '../data-form.service';
 @Component({
   selector: 'pnx-observers',
   templateUrl: './observers.component.html',
-  styleUrls: ['./observers.component.scss'],
+  styleUrls: ['./observers.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class ObserversComponent implements OnInit {

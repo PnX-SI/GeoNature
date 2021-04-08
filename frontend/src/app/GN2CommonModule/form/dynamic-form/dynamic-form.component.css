@@ -17,17 +17,17 @@
   border: 0px !important;
 }
 
-//
+/* //
 // factorisation patchs présents dans media et monitoring
-//
+// */
 
-// eviter les trop grand eccarts verticaux
+/* // eviter les trop grand eccarts verticaux */
 
-// :host /deep/ .padding-sm {
+/* // :host /deep/ .padding-sm {
 //   padding-right: 0px !important;
 //   padding-left: 0px !important;
-// }
+// } */
 
 
-// éviter les doubles bandes rouges
+/* // éviter les doubles bandes rouges */
 

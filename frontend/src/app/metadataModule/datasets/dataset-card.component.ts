@@ -9,7 +9,7 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 @Component({
   selector: 'pnx-datasets-card',
   templateUrl: './dataset-card.component.html',
-  styleUrls: ['./dataset-card.scss']
+  styleUrls: ['./dataset-card.css']
 })
 export class DatasetCardComponent implements OnInit {
   public organisms: Array<any>;

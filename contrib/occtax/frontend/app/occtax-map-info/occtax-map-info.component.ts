@@ -34,7 +34,7 @@ const NOMENCLATURES = [
 @Component({
   selector: "pnx-occtax-map-info",
   templateUrl: "occtax-map-info.component.html",
-  styleUrls: ["./occtax-map-info.component.scss"],
+  styleUrls: ["./occtax-map-info.component.css"],
 })
 export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
   public moduleConfig: any;

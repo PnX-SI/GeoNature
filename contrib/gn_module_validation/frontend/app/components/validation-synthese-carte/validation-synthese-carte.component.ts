@@ -8,7 +8,7 @@ import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthe
 @Component({
   selector: "pnx-validation-synthese-carte",
   templateUrl: "validation-synthese-carte.component.html",
-  styleUrls: ["validation-synthese-carte.component.scss"],
+  styleUrls: ["validation-synthese-carte.component.css"],
   providers: []
 })
 export class ValidationSyntheseCarteComponent implements OnInit {

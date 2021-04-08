@@ -24,13 +24,13 @@ label:hover {
   width: 20px;
   height: 20px;
   padding: 0px;
-  //background: #00ff00;
+  /* //background: #00ff00; */
   color: "black";
   border: 1px solid black;
   text-align: center;
   font: 15px Arial, sans-serif;
   position: absolute;
-  //left:0%;
+  /* //left:0%; */
   transform: translateX(0%);
 }
 
@@ -49,12 +49,28 @@ label:hover {
   border-radius: 6px;
   z-index: 1;
 }
-// a confirmer
+/* // a confirmer */
 .edit {
   display: flex;
 }
 
-.modal-body {
+.modal-body form #validButtons label {
+  color: #607d8b;
+}
+
+.modal-body form #validButtons.waves-effect {
+  color: #fff;
+}
+
+.modal-body #statusChange {
+  padding: 5px;
+}
+
+.modal-body form.ng-invalid {
+  border-left: none !important;
+}
+
+/* .modal-body {
   form {
     #validButtons label {
       color: #607d8b;
@@ -69,4 +85,4 @@ label:hover {
   form.ng-invalid {
     border-left: none !important;
   }
-}
+} */

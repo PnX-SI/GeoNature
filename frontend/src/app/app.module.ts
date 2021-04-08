@@ -79,7 +79,6 @@ export function init_geonature(
   moduleService: ModuleService,
   ) {
   return () => {
-    console.log('init_geonature');
     return configService.fetchConfig().pipe(
     mergeMap((config) => {
       return forkJoin({
@@ -88,7 +87,6 @@ export function init_geonature(
       });
     }),
     concatMap(() => {
-      console.log('init_geonature done');
       return of(true);
     })
     ).toPromise();
@@ -100,7 +98,6 @@ export function init_router(
   configService: ConfigService,
 ) {
   return () => {
-    console.log('init_router');
     const dynamicRoutes = getDynamicRoutes(configService);
     for (const route of dynamicRoutes) {
       router.config.push(route);

@@ -19,7 +19,7 @@ import { ColumnActions } from '@geonature_common/map-list/map-list.component';
 @Component({
   selector: 'pnx-map-data',
   templateUrl: './map-data.component.html',
-  styleUrls: ['./map-data.component.scss']
+  styleUrls: ['./map-data.component.css']
 })
 export class MapDataComponent implements OnInit {
   @ViewChild(DatatableComponent) table: DatatableComponent;

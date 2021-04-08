@@ -12,7 +12,7 @@ import { moduleCode } from "../../module.code.config";
 @Component({
   selector: "pnx-occtax-map-list-filter",
   templateUrl: "occtax-map-list-filter.component.html",
-  styleUrls: ["./occtax-map-list-filter.component.scss"]
+  styleUrls: ["./occtax-map-list-filter.component.css"]
 })
 export class OcctaxMapListFilterComponent implements OnInit {
   public formsDefinition = FILTERSLIST;

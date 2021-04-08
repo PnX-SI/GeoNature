@@ -12,7 +12,7 @@ import { CommonService } from "@geonature_common/service/common.service";
 @Component({
   selector: "pnx-validation-modal-info-obs",
   templateUrl: "validation-modal-info-obs.component.html",
-  styleUrls: ["./validation-modal-info-obs.component.scss"],
+  styleUrls: ["./validation-modal-info-obs.component.css"],
   providers: [MapListService]
 })
 export class ValidationModalInfoObsComponent implements OnInit {

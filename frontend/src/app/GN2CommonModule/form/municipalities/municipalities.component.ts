@@ -8,7 +8,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 @Component({
   selector: 'pnx-municipalities',
   templateUrl: './municipalities.component.html',
-  styleUrls: ['./municipalities.component.scss']
+  styleUrls: ['./municipalities.component.css']
 })
 export class MunicipalitiesComponent implements OnInit {
   public municipalities: Array<any>;

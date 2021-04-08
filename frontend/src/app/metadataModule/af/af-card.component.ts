@@ -7,7 +7,7 @@ import { ConfigService } from '@geonature/utils/configModule/core';
 @Component({
   selector: 'pnx-af-card',
   templateUrl: './af-card.component.html',
-  styleUrls: ['./af-card.component.scss']
+  styleUrls: ['./af-card.component.css']
 })
 export class AfCardComponent implements OnInit {
   public id_af: number;

@@ -50,7 +50,7 @@ export class NominatimService {
 @Component({
   selector: 'pnx-map',
   templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss'],
+  styleUrls: ['./map.component.css'],
   providers: [NominatimService]
 })
 export class MapComponent implements OnInit {

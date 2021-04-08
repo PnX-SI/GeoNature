@@ -10,7 +10,7 @@ import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'pnx-synthese-info-obs',
   templateUrl: 'synthese-info-obs.component.html',
-  styleUrls: ['./synthese-info-obs.component.scss']
+  styleUrls: ['./synthese-info-obs.component.css']
 })
 export class SyntheseInfoObsComponent implements OnInit {
   @Input() idSynthese: number;

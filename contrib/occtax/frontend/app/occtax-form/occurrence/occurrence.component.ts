@@ -21,7 +21,7 @@ import { MatDialog } from "@angular/material";
 @Component({
   selector: "pnx-occtax-form-occurrence",
   templateUrl: "./occurrence.component.html",
-  styleUrls: ["./occurrence.component.scss"],
+  styleUrls: ["./occurrence.component.css"],
   animations: [
     trigger("detailExpand", [
       state(

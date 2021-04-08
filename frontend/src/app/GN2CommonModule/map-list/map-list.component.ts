@@ -13,7 +13,7 @@ export interface ColumnActions {
 @Component({
   selector: 'pnx-map-list',
   templateUrl: './map-list.component.html',
-  styleUrls: ['./map-list.component.scss']
+  styleUrls: ['./map-list.component.css']
 })
 export class MapListComponent implements OnInit, AfterViewInit {
   public layerDict: any;

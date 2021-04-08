@@ -9,7 +9,7 @@ import { CommonService } from "@geonature_common/service/common.service";
 @Component({
   selector: "pnx-occhab-info",
   templateUrl: "./occhab-info.component.html",
-  styleUrls: ["./occhab-info.component.scss", "../responsive-map.scss"]
+  styleUrls: ["./occhab-info.component.css", "../responsive-map.css"]
 })
 export class OcchabInfoComponent implements OnInit, OnDestroy {
   public oneStation;

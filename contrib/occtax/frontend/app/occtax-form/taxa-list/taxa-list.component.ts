@@ -15,7 +15,7 @@ import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/
 @Component({
   selector: "pnx-occtax-form-taxa-list",
   templateUrl: "./taxa-list.component.html",
-  styleUrls: ["./taxa-list.component.scss"],
+  styleUrls: ["./taxa-list.component.css"],
 })
 export class OcctaxFormTaxaListComponent implements OnInit {
   public ModuleConfig = ModuleConfig;

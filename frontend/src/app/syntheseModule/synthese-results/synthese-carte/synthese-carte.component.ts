@@ -11,7 +11,7 @@ import * as L from 'leaflet';
 @Component({
   selector: 'pnx-synthese-carte',
   templateUrl: 'synthese-carte.component.html',
-  styleUrls: ['synthese-carte.component.scss'],
+  styleUrls: ['synthese-carte.component.css'],
   providers: []
 })
 export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges {

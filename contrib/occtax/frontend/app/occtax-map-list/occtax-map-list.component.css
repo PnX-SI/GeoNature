@@ -52,11 +52,11 @@
   max-height: 81vh;
   height: 80vh;
 }
-ngx-datatable {
+/* ngx-datatable {
   // max-height: 79vh !important;
   box-shadow: none !important;
   // overflow-y: scroll;
-}
+} */
 
 :host /deep/ .ngx-datatable.material .datatable-footer .page-count {
   padding: 5px;

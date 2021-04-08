@@ -12,7 +12,7 @@ import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.servi
 @Component({
   selector: 'pnx-media',
   templateUrl: './media.component.html',
-  styleUrls: ['./media.scss']
+  styleUrls: ['./media.css']
 })
 export class MediaComponent implements OnInit {
 

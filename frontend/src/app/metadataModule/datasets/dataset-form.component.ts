@@ -12,7 +12,7 @@ import { ModuleService } from '@geonature/services/module.service';
 @Component({
   selector: 'pnx-datasets-form',
   templateUrl: './dataset-form.component.html',
-  styleUrls: ['./dataset-form.scss'],
+  styleUrls: ['./dataset-form.css'],
   providers: [MetadataFormService]
 })
 export class DatasetFormComponent implements OnInit {

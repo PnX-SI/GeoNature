@@ -14,7 +14,7 @@ button .mat-spinner {
   vertical-align: middle;
 }
 
-// disable overlay
+/* // disable overlay */
 #overlay,
 #form {
   width: 100%;

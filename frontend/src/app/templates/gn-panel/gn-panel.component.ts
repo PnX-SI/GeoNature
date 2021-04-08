@@ -4,7 +4,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 @Component({
   selector: 'gn-panel',
   templateUrl: './gn-panel.component.html',
-  styleUrls: ['./gn-panel.component.scss'],
+  styleUrls: ['./gn-panel.component.css'],
   animations: [
     trigger('detailExpand', [
       state(

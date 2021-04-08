@@ -10,7 +10,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 @Component({
   selector: 'pnx-signup',
   templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.scss']
+  styleUrls: ['./sign-up.component.css']
 })
 export class SignUpComponent implements OnInit {
   form: FormGroup;

@@ -24,8 +24,9 @@ import { externalModules } from '../../../../external_modules';
 
 const getDynamicRoutes = (configService: ConfigService) => {
   const appConfig = configService.getSettings();
-  console.log(appConfig)
+
   const navChildrenModules = [];
+
   // ajout des modules avec frontend dans navChildren
   for (const moduleCode of appConfig.modules) {
     const moduleConfig = appConfig[moduleCode];

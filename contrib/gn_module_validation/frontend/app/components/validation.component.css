@@ -1,9 +1,9 @@
-// #awaitingObs {
+/* #awaitingObs {
 //   position: fixed;
 //   bottom: 0;
 //   width: 100%;
 // }
-
+*/
 .is-loading {
   display: none;
 }
@@ -57,8 +57,8 @@
 @media (min-width: 1000px) {
   #sidebar {
     width: 250px;
-    // min-width: 250px;
-    // max-width: 250px;
+    /* // min-width: 250px; */
+    /* // max-width: 250px; */
   }
   #sidebar.active {
     margin-left: -250px;
@@ -68,8 +68,8 @@
 @media (min-width: 1200px) {
   #sidebar {
     width: 300px;
-    // min-width: 250px;
-    // max-width: 250px;
+    /* // min-width: 250px; */
+    /* // max-width: 250px; */
   }
   #sidebar.active {
     margin-left: -300px;
@@ -79,8 +79,8 @@
 @media (min-width: 1500px) {
   #sidebar {
     width: 350px;
-    // min-width: 250px;
-    // max-width: 250px;
+    /* // min-width: 250px;
+    // max-width: 250px; */
   }
   #sidebar.active {
     margin-left: -350px;
@@ -90,7 +90,7 @@
 .btn-toogle-sidenav {
   z-index: 10000;
   position: absolute;
-  //left: 248px;
+  /* //left: 248px; */
   padding: 0px 5px;
   padding: 0px 5px;
   border-bottom-left-radius: 0px;
@@ -131,10 +131,11 @@ a[data-toggle="collapse"] {
   display: flex;
   flex-direction: column;
   padding-left: 18px !important;
-  button {
-    top: 0;
-    bottom: 0;
-  }
+}
+
+.middle button {
+  top: 0;
+  bottom: 0;
 }
 
 .collapse:not(.show) ~ .last {
@@ -142,7 +143,7 @@ a[data-toggle="collapse"] {
   max-width: 58% !important;
 }
 
-// TOGGLE SIDEBAR
+/* // TOGGLE SIDEBAR */
 #sidebarCollapse {
   z-index: 10000;
   position: absolute;
@@ -155,8 +156,8 @@ a[data-toggle="collapse"] {
 @media (min-width: 1000px) {
   #sidebar {
     width: 250px;
-    // min-width: 250px;
-    // max-width: 250px;
+    /* // min-width: 250px;
+    // max-width: 250px; */
   }
   #sidebar.active {
     margin-left: -250px;
@@ -165,8 +166,8 @@ a[data-toggle="collapse"] {
 @media (min-width: 1200px) {
   #sidebar {
     width: 300px;
-    // min-width: 250px;
-    // max-width: 250px;
+    /* // min-width: 250px; */
+    /* // max-width: 250px; */
   }
   #sidebar.active {
     margin-left: -300px;
@@ -175,8 +176,8 @@ a[data-toggle="collapse"] {
 @media (min-width: 1500px) {
   #sidebar {
     width: 350px;
-    // min-width: 250px;
-    // max-width: 250px;
+    /* // min-width: 250px; */
+    /* // max-width: 250px; */
   }
   #sidebar.active {
     margin-left: -350px;
@@ -185,7 +186,7 @@ a[data-toggle="collapse"] {
 .btn-toogle-sidenav {
   z-index: 10000;
   position: absolute;
-  //left: 248px;
+  /* //left: 248px; */
   padding: 0px 5px;
   padding: 0px 5px;
   border-bottom-left-radius: 0px;

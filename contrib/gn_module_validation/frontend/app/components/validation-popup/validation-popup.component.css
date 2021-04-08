@@ -1,6 +1,6 @@
 #validatorButton {
   float: right;
-  //background-color: #1976D2;
+  /* background-color: #1976D2; */
   border: none;
 }
 
@@ -38,22 +38,23 @@ label:hover {
 .modal-content {
   background-color: #eaeaea;
   border: none;
-  &.ng-invalid {
-    border-left: none !important;
-  }
 }
 
-.modal-body {
+.modal-content.ng-invalid {
+  border-left: none !important;
+}
+
+/* .modal-body {
   // #validButtons:not(:last-child) label {
   //   color : #fff;
   // }
-}
+} */
 
 .modal-footer {
-  //border-color:#0E4175;
-  //border-top-width: 1px;
+  /* border-color:#0E4175; */
+  /* border-top-width: 1px; */
   color: white;
-  //background-color:#8EAFD1;
+  /* background-color:#8EAFD1; */
 }
 
 fieldset {

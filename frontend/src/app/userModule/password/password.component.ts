@@ -8,7 +8,7 @@ import { similarValidator } from '@geonature/services/validators';
 @Component({
   selector: 'pnx-user-password',
   templateUrl: './password.component.html',
-  styleUrls: ['./password.component.scss']
+  styleUrls: ['./password.component.css']
 })
 export class PasswordComponent implements OnInit {
   form: FormGroup;

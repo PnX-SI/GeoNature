@@ -15,7 +15,7 @@ import { ConfigService } from '@geonature/utils/configModule/core';
 @Component({
   selector: 'pnx-nav-home',
   templateUrl: './nav-home.component.html',
-  styleUrls: ['./nav-home.component.scss']
+  styleUrls: ['./nav-home.component.css']
 })
 export class NavHomeComponent implements OnInit, OnDestroy {
 

@@ -20,7 +20,7 @@ export interface MediaDialogData {
 @Component({
   selector: 'pnx-media-dialog',
   templateUrl: './media-dialog.component.html',
-  styleUrls: ['./media.scss']
+  styleUrls: ['./media.css']
 })
 export class MediaDialog {
   constructor(

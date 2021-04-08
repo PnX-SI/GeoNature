@@ -24,7 +24,7 @@ import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
-  styleUrls: ['synthese-list.component.scss']
+  styleUrls: ['synthese-list.component.css']
 })
 export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
   public appConfig: any

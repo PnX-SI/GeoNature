@@ -8,7 +8,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'pnx-new-password',
   templateUrl: 'new-password.component.html',
-  styleUrls: ['./new-password.component.scss']
+  styleUrls: ['./new-password.component.css']
 })
 export class NewPasswordComponent implements OnInit {
   token: string;

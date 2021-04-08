@@ -36,7 +36,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
 @Component({
   selector: 'pnx-nomenclature',
   templateUrl: './nomenclature.component.html',
-  styleUrls: ['./nomenclature.component.scss'],
+  styleUrls: ['./nomenclature.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class NomenclatureComponent extends GenericFormComponent

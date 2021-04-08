@@ -33,7 +33,7 @@ import { OcctaxFormService } from "../occtax-form/occtax-form.service";
 @Component({
   selector: "pnx-occtax-map-list",
   templateUrl: "occtax-map-list.component.html",
-  styleUrls: ["./occtax-map-list.component.scss"],
+  styleUrls: ["./occtax-map-list.component.css"],
 })
 export class OcctaxMapListComponent
   implements OnInit, OnDestroy, AfterViewInit {

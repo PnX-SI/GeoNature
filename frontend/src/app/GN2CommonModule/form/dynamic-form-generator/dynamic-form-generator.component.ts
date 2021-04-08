@@ -10,7 +10,7 @@ import * as equal from 'fast-deep-equal/es6';
 @Component({
   selector: 'pnx-dynamic-form-generator',
   templateUrl: './dynamic-form-generator.component.html',
-  styleUrls: ['./dynamic-form-generator.component.scss']
+  styleUrls: ['./dynamic-form-generator.component.css']
 })
 export class GenericFormGeneratorComponent implements OnInit {
   public formControlBuilded = false;

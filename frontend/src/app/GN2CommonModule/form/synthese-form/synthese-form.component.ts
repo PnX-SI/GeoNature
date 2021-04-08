@@ -12,7 +12,7 @@ import { ActivatedRoute } from "@angular/router";
 @Component({
   selector: 'pnx-synthese-search',
   templateUrl: 'synthese-form.component.html',
-  styleUrls: ['synthese-form.component.scss'],
+  styleUrls: ['synthese-form.component.css'],
   providers: []
 })
 export class SyntheseSearchComponent implements OnInit {

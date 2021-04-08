@@ -22,7 +22,7 @@ import { OcctaxDataService } from "../services/occtax-data.service";
 @Component({
   selector: "pnx-occtax-form",
   templateUrl: "./occtax-form.component.html",
-  styleUrls: ["./occtax-form.component.scss"]
+  styleUrls: ["./occtax-form.component.css"]
 })
 export class OcctaxFormComponent implements OnInit, AfterViewInit {
   public moduleConfig: any;

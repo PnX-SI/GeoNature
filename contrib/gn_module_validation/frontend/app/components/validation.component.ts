@@ -9,7 +9,7 @@ import { moduleCode } from "../module.code.config";
 
 @Component({
   selector: "pnx-validation",
-  styleUrls: ["validation.component.scss"],
+  styleUrls: ["validation.component.css"],
   templateUrl: "validation.component.html"
 })
 export class ValidationComponent implements OnInit {

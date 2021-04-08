@@ -13,7 +13,7 @@ import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'pnx-synthese',
-  styleUrls: ['synthese.component.scss'],
+  styleUrls: ['synthese.component.css'],
   templateUrl: 'synthese.component.html',
   providers: [MapListService]
 })

@@ -18,4 +18,3 @@ src/custom/components/**/*.component.scss
 src/custom/components/**/*.component.css
 src/custom/components/**/*.component.html
 src/custom/images/bandeau_toolbar.jpg
-src/custom/custom.scss

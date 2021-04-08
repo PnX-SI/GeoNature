@@ -12,7 +12,7 @@ import { ConfigService } from '@geonature/utils/configModule/core';
 @Component({
   selector: 'pnx-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent implements OnInit {
   public appConfig;

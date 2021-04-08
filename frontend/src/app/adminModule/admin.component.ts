@@ -5,7 +5,7 @@ import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.serv
 @Component({
   selector: 'pnx-admin',
   templateUrl: './admin.component.html',
-  styleUrls: ['./admin.component.scss'],
+  styleUrls: ['./admin.component.css'],
   providers: []
 })
 export class AdminComponent implements OnInit {

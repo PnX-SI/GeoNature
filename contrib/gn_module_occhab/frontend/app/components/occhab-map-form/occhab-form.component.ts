@@ -15,7 +15,7 @@ import { moduleCode } from "../../module.code.config";
 @Component({
   selector: "pnx-occhab-form",
   templateUrl: "occhab-form.component.html",
-  styleUrls: ["./occhab-form.component.scss", "../responsive-map.scss"],
+  styleUrls: ["./occhab-form.component.css", "../responsive-map.css"],
   providers: [OcchabFormService]
 })
 export class OccHabFormComponent implements OnInit {

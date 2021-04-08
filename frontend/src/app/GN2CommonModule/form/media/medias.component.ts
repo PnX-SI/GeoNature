@@ -15,7 +15,7 @@ import { MediaService } from '@geonature_common/service/media.service';
 @Component({
   selector: 'pnx-medias',
   templateUrl: './medias.component.html',
-  styleUrls: ['./media.scss']
+  styleUrls: ['./media.css']
 })
 export class MediasComponent implements OnInit {
   //  @Input() medias: Array<Media> = []; /** list of medias */

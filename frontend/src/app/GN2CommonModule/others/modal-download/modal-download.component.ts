@@ -22,7 +22,7 @@ export const FormatMapMime = new Map([
 @Component({
   selector: 'pnx-modal-download',
   templateUrl: 'modal-download.component.html',
-  styleUrls: ['./modal-download.component.scss']
+  styleUrls: ['./modal-download.component.css']
 })
 export class ModalDownloadComponent implements OnInit {
   @Input() pathDownload: string;

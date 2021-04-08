@@ -12,7 +12,7 @@ import { CommonService } from "@geonature_common/service/common.service";
 @Component({
   selector: "pnx-validation-popup",
   templateUrl: "validation-popup.component.html",
-  styleUrls: ["./validation-popup.component.scss"],
+  styleUrls: ["./validation-popup.component.css"],
   providers: [MapListService]
 })
 export class ValidationPopupComponent {

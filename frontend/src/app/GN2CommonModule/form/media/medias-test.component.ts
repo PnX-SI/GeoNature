@@ -8,7 +8,7 @@ import { MediaService } from '@geonature_common/service/media.service';
 @Component({
   selector: 'pnx-medias-test',
   templateUrl: './medias-test.component.html',
-  styleUrls: ['./media.scss']
+  styleUrls: ['./media.css']
   // encapsulation: ViewEncapsulation.None
 })
 export class MediasTestComponent implements OnInit {

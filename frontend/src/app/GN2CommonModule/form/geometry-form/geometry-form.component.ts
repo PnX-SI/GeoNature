@@ -13,7 +13,7 @@ import { leafletDrawOptions } from './leaflet-draw.options';
 @Component({
   selector: 'pnx-geometry-form',
   templateUrl: './geometry-form.component.html',
-  styleUrls: ['./geometry-form.component.scss'],
+  styleUrls: ['./geometry-form.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class GeometryFormComponent implements OnInit {

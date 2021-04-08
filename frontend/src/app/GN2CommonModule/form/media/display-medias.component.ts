@@ -23,7 +23,7 @@ export interface MediaDialogData {
 @Component({
   selector: 'pnx-display-medias',
   templateUrl: './display-medias.component.html',
-  styleUrls: ['./media.scss']
+  styleUrls: ['./media.css']
 })
 export class DisplayMediasComponent {
   @Input() medias: Array<Media> = [];

@@ -13,7 +13,7 @@ import { ConfigService } from '@geonature/utils/configModule/core';
 @Component({
   selector: 'pnx-dynamic-form',
   templateUrl: './dynamic-form.component.html',
-  styleUrls: ['./dynamic-form.component.scss']
+  styleUrls: ['./dynamic-form.component.css']
 })
 export class DynamicFormComponent implements OnInit {
   @Input() formDef: any;

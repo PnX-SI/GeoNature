@@ -5,7 +5,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 @Component({
   selector: 'pnx-map-list-generic-filter',
   templateUrl: 'generic-filters.component.html',
-  styleUrls: ['generic-filters.component.scss']
+  styleUrls: ['generic-filters.component.css']
 })
 export class MapListGenericFiltersComponent implements OnInit {
   @Input() availableColumns: Array<any>;

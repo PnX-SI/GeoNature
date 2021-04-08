@@ -58,7 +58,7 @@ tbody {
   max-height: 35vh;
 }
 
-// disable overlay
+/* // disable overlay */
 #overlay {
   width: 100%;
   height: 100%;

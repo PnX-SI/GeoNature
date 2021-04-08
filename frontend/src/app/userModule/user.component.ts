@@ -9,7 +9,7 @@ import { UserDataService } from './services/user-data.service';
 @Component({
   selector: 'pnx-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss']
+  styleUrls: ['./user.component.css']
 })
 export class UserComponent implements OnInit {
   form: FormGroup;

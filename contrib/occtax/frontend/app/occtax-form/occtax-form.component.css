@@ -88,7 +88,7 @@
 
 /* Change background color of buttons on hover */
 .tab a.tablinks:not(.disabled, .active):hover {
-  // background-color: #ddd;
+  /* // background-color: #ddd; */
   background-color: #efefef;
   border-bottom: 2px solid #ba81ef;
   color: #333;

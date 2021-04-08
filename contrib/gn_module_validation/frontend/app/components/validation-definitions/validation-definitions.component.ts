@@ -6,7 +6,7 @@ import { CommonService } from "@geonature_common/service/common.service";
 @Component({
   selector: "pnx-validation-definitions",
   templateUrl: "validation-definitions.component.html",
-  styleUrls: ["./validation-definitions.component.scss"],
+  styleUrls: ["./validation-definitions.component.css"],
   providers: []
 })
 export class ValidationDefinitionsComponent {

@@ -13,7 +13,7 @@ import { moduleCode } from "../../module.code.config";
 @Component({
   selector: "pnx-occhab-map-list",
   templateUrl: "occhab-map-list.component.html",
-  styleUrls: ["./occhab-map-list.component.scss", "../responsive-map.scss"],
+  styleUrls: ["./occhab-map-list.component.css", "../responsive-map.css"],
   providers: [NgbActiveModal]
 })
 export class OccHabMapListComponent implements OnInit {
