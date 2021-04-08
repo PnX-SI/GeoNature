@@ -50,13 +50,6 @@ def import_legacy_module(module_object):
         sys.path.pop(0)
 
 
-def get_dist_from_code(module_code):
-    for entry_point in iter_entry_points('gn_module', 'code'):
-        if module_code == entry_point.load():
-            return entry_point.dist
-    raise Exception(f"No installed module with code '{module_code}' found.")
-
-
 def import_packaged_module(module_dist, module_object):
     module_code = module_object.module_code
     module_dir = GN_EXTERNAL_MODULE / module_object.module_path
@@ -111,29 +104,48 @@ def import_backend_enabled_modules():
         yield module_object, module_config, module_blueprint
 
 
-def import_frontend_module(module_object):
-    module_config = None
+def get_dist_from_code(module_code):
+    for entry_point in iter_entry_points('gn_module', 'code'):
+        if module_code == entry_point.load():
+            return entry_point.dist
+
+
+def import_gn_module(module_object):
+    """
+    return (module_object, module_config, module_blueprint)
+    module_blueprint may be None in case of front-only module
+    """
     # try to find a packaged module with the given code
-    try:
-        module_dist = get_dist_from_code(module_object.module_code)
-    except Exception:
-        pass
+    module_dist = get_dist_from_code(module_object.module_code)
+    if module_dist:
+        return import_packaged_module(module_dist, module_object)
     else:
-        _, module_config, _ = import_packaged_module(module_dist, module_object)
-    if not module_config:
-        # if no packaged module found, try to load a legacy module
-        module_config, _ = import_legacy_module(module_object)
-    return module_config
+        module_config, module_blueprint = import_legacy_module(module_object)
+        return (module_object, module_config, module_blueprint)
+
+
+def import_backend_enabled_modules():
+    """
+        yield (module_object, module_config, module_blueprint)
+        for backend-enabled modules in gn_commons.t_modules
+    """
+    enabled_modules = TModules.query.filter_by(active_backend=True).all()
+    for module_object in enabled_modules:
+        # ignore internal module (i.e. without symlink in external module directory)
+        if not Path(GN_EXTERNAL_MODULE / module_object.module_code.lower()).exists():
+            continue
+        yield import_gn_module(module_object)
 
 
 def import_frontend_enabled_modules():
     """
-        Get all the module frontend enabled from gn_commons.t_modules
-        and return the url path and the module_code
+        yield module_config
+        for frontend-enabled modules in gn_commons.t_modules
     """
-    enabled_modules = TModules.query.filter(TModules.active_frontend == True).all()
+    enabled_modules = TModules.query.filter_by(active_frontend=True).all()
     for module_object in enabled_modules:
-        # some modules are front-enabled in database, but without frontend dir (e.g. admin)
-        if not Path(GN_EXTERNAL_MODULE / module_object.module_path).exists():
+        # ignore internal module (i.e. without symlink in external module directory)
+        if not Path(GN_EXTERNAL_MODULE / module_object.module_code.lower()).exists():
             continue
-        yield import_frontend_module(module_object)
+        _, module_config, _ = import_gn_module(module_object)
+        yield module_config

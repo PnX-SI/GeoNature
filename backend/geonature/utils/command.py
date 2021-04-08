@@ -75,12 +75,11 @@ def process_prebuild_frontend(app=None):
             modules = []
             for module_config in import_frontend_enabled_modules():
                 module_code = module_config['MODULE_CODE']
-                location = Path(GN_EXTERNAL_MODULE / module_code.lower())
+                module_dir = Path(GN_EXTERNAL_MODULE / module_code.lower())
 
                 # test if module have frontend
-                if (location / "frontend").is_dir():
+                if (module_dir / "frontend").is_dir():
                     modules.append(module_code)
-
             route_template = template.render(
                 modules=modules,
             )

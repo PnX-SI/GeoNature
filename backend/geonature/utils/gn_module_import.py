@@ -19,7 +19,7 @@ from geonature.utils.config_schema import GnGeneralSchemaConf, ManifestSchemaPro
 from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
 from geonature.utils.command import build_geonature_front, process_prebuild_frontend
-from geonature.utils.module import import_frontend_module
+from geonature.utils.module import import_gn_module
 from geonature.core.gn_commons.models import TModules
 from geonature import create_app
 
