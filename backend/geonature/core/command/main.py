@@ -85,7 +85,17 @@ def dev_back(host, port):
         host=host,
         port=int(port),
         extra_files=[
-            ROOT_DIR / str('config/*.toml')
+            # ROOT_DIR / str('config/*.toml'), wid card ne marche pas
+
+            # PATCH
+            # comment rendre cette liste automatique ??
+            # .. ça reste pour du dev
+            ROOT_DIR / str('config/occtax_config.toml'),
+            ROOT_DIR / str('config/occhab_config.toml'),
+            ROOT_DIR / str('config/validation_config.toml'),
+            # FIN PATCH
+
+            ROOT_DIR / str('config/geonature_config.toml'),
         ]
     )
 

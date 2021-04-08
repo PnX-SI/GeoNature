@@ -196,9 +196,6 @@ mkdir -p "src/external_assets"
 
 # Copy the custom components
 echo "Création des fichiers de customisation du frontend..."
-if [ ! -f src/custom/custom.scss ]; then
-  cp -n src/custom/custom.scss.sample src/custom/custom.scss
-fi
 custom_component_dir="src/custom/components/"
 for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
 	if [[ ! -f "${file%.sample}" ]]; then
