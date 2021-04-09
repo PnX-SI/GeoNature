@@ -23,6 +23,8 @@ export class OcctaxFormCountingComponent implements OnInit {
   componentRefOccurence: ComponentRef<any>;
 
   @Input('form') countingForm: FormGroup;
+  @Input('addFields') addFields: any;
+
 
   constructor(
     public fs: OcctaxFormService,
@@ -38,6 +40,21 @@ export class OcctaxFormCountingComponent implements OnInit {
     //   this.occtaxFormCountingService.generateAdditionForm(this.fs.countingAddFields);
     //   this.occtaxFormCountingService.setAddtionnalFieldsValues(this.occtaxFormOccurrenceService.form, this.fs.countingAddFields)
     // }
+  }
+
+  ngOnChanges(changes) {
+    if(changes.addFields && changes.addFields.currentValue) {
+      console.log("changeeees ???");
+      this.occtaxFormCountingService.dynamicContainerCounting = this.containerCounting;
+
+      
+      this.occtaxFormCountingService.generateAdditionForm(changes.addFields.currentValue)
+      this.occtaxFormCountingService.setAddtionnalFieldsValues(
+        this.occtaxFormCountingService.form,
+        changes.addFields.currentValue
+      )
+    }
+    
   }
 
   taxref() {

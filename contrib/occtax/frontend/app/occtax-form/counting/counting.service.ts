@@ -35,9 +35,7 @@ export class OcctaxFormCountingService {
     private mediaService: MediaService,
   ) {}
 
-  createForm(patchWithDefaultValues: boolean = false): FormGroup {
-    console.log("CREATE FORM");
-    
+  createForm(patchWithDefaultValues: boolean = false): FormGroup {    
     const form = this.fb.group({
       id_counting_occtax: null,
       id_nomenclature_life_stage: [null, Validators.required],
@@ -47,10 +45,9 @@ export class OcctaxFormCountingService {
       count_min: [null, [Validators.required, Validators.pattern("[0-9]+")]],
       count_max: [null, [Validators.required, Validators.pattern("[0-9]+")]],
       medias: [[], this.mediaService.mediasValidator()],
-    });
-    if(this.occtaxFormService.countingAddFields.length > 0) {
-      //this.setAddtionnalFieldsValues(this._occurrenceFormService.form, this.occtaxFormService.countingAddFields)
-    }
+      // additional_fields: this.fb.group({})
+    }); 
+
     form.setValidators([this.countingValidator]);
 
     if (patchWithDefaultValues) {
@@ -75,53 +72,55 @@ export class OcctaxFormCountingService {
   }
 
   generateAdditionForm(countingAddFields) {
+    console.log("???", this.form.value );
+
     
-    if(countingAddFields.length > 0 && this.dynamicContainerCounting){
-      this.dynamicFormGroup = this.fb.group({});
-      if(this.form.get('additional_fields')){
-        for (const key of Object.keys(this.form.get('additional_fields').value)){
-          this.dynamicFormGroup.addControl(key, new FormControl(this.form.get('additional_fields').value[key]));
-        }
-      }
-      this.occtaxFormService.createAdditionnalFieldsUI(
-        this.dynamicContainerCounting,
-        countingAddFields,
-        this.dynamicFormGroup
-      )
-      //on insert le formulaire dynamique au form control
-        this.form.setControl("additional_fields", this.dynamicFormGroup);
-        console.log(this.form.value);
+    // if(countingAddFields.length > 0 && this.dynamicContainerCounting){
+    //   this.dynamicFormGroup = this.fb.group({});
+    //   // if(this.form.get('additional_fields')){
+    //   //   for (const key of Object.keys(this.form.get('additional_fields').value)){
+    //   //     this.dynamicFormGroup.addControl(key, new FormControl(this.form.get('additional_fields').value[key]));
+    //   //   }
+    //   // }
+    //   this.occtaxFormService.createAdditionnalFieldsUI(
+    //     this.dynamicContainerCounting,
+    //     countingAddFields,
+    //     this.dynamicFormGroup
+    //   )
+    //   //on insert le formulaire dynamique au form control
+    //     this.form.setControl("additional_fields", this.dynamicFormGroup);
         
-    }
+    // }
   }
 
   setAddtionnalFieldsValues(form, countingAddFields) {
-    form.value.cor_counting_occtax.forEach((counting, index) => {
+    
       countingAddFields.forEach((field) => {
         if(field.type_widget == "date"){
               // counting.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(counting.additional_fields[field.attribut_name]);
-              if ( counting.additional_fields[field.attribut_name] == ""){
-                //counting.additional_fields[field.attribut_name] = null;
-              }
+              // if ( counting.additional_fields[field.attribut_name] == ""){
+              //   //counting.additional_fields[field.attribut_name] = null;
+              // }
             }
         //Formattage des nomenclatures
         if(field.type_widget == "nomenclature"){
+          console.log(form.value);
+          
           //mise en forme des nomenclatures
             this.dataFormService.getNomenclatures([field.code_nomenclature_type])
               .subscribe((nomenclatures) => {
-                const control: AbstractControl = form.controls.cor_counting_occtax.controls[index].controls.additional_fields.get(field.attribut_name);
+                
+                // const control: AbstractControl = form.controls.additional_fields.get(field.attribut_name);
                 this.occtaxFormService.storeAdditionalNomenclaturesValues(nomenclatures);
-                if (control) {
-                  const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {                                        
-                    return n["label_fr"] === counting.additional_fields[field.attribut_name];
-                  });
-                    const control_value = nomenclature_item ? nomenclature_item.id_nomenclature : "";
-                    control.setValue(control_value);
-
-                }
+                // if (control) {
+                //   const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {                                        
+                //     return n["label_fr"] === form.value.additional_fields[field.attribut_name];
+                //   });
+                //     const control_value = nomenclature_item ? nomenclature_item.id_nomenclature : "";
+                //     control.setValue(control_value);
+                // }
               });
           }
-      })
     })
   }
 

@@ -31,9 +31,9 @@ export class OcctaxFormService {
   componentRefOccurence: ComponentRef<any>;
   public previousReleve = null;
   public dataSetConfig: any;
-  public releveAddFields: Array<any> = [];
-  public occurrenceAddFields: Array<any> = [];
-  public countingAddFields: Array<any> = [];
+  public releveAddFields: Array<any>;
+  public occurrenceAddFields: Array<any>;
+  public countingAddFields: Array<any>;
 
   public nomenclatureAdditionnel: any = [];
 
@@ -182,7 +182,7 @@ export class OcctaxFormService {
     if (container) {      
       container.clear(); 
     }
-    if (additionnalFields.length > 0 && container){
+    if (additionnalFields && additionnalFields.length > 0 && container){
       console.log(additionnalFields);
       
       const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(DynamicFormComponent);

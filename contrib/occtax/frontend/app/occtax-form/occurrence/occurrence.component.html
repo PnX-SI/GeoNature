@@ -365,7 +365,11 @@
     
     </mat-expansion-panel-header>
 
-    <pnx-occtax-form-counting [form]="formCounting"></pnx-occtax-form-counting>
+    <pnx-occtax-form-counting 
+      [form]="formCounting" 
+      [addFields]="fs.countingAddFields"
+    >
+    </pnx-occtax-form-counting>
 
   </mat-expansion-panel>
 
