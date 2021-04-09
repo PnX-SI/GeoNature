@@ -1,5 +1,5 @@
-import { Injectable, ViewContainerRef, ComponentRef, ComponentFactory, ComponentFactoryResolver } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { Injectable, ComponentFactoryResolver } from "@angular/core";
+import { FormControl } from "@angular/forms";
 import { BehaviorSubject } from "rxjs";
 import { filter, tap, skip } from "rxjs/operators";
 
@@ -9,7 +9,6 @@ import { Router } from "@angular/router";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
-import { DynamicFormComponent } from "./dynamique-form/dynamic-form.component";
 
 
 @Injectable()
@@ -24,11 +23,7 @@ export class OcctaxFormService {
   public editionMode: BehaviorSubject<boolean> = new BehaviorSubject(false); // boolean to check if its editionMode
   public chainRecording: boolean = false; // boolean to check if chain the recording is activate
   public stayOnFormInterface = new FormControl(false);
-  
   public currentIdDataset:any;
-  public dynamicContainerOccurence: ViewContainerRef;
-  componentRef: ComponentRef<any>;
-  componentRefOccurence: ComponentRef<any>;
   public previousReleve = null;
   public dataSetConfig: any;
   public releveAddFields: Array<any>;
@@ -43,7 +38,6 @@ export class OcctaxFormService {
     private _auth: AuthService,
     private _commonService: CommonService,
     private _dataS: OcctaxDataService,
-    private _resolver: ComponentFactoryResolver,
 
   ) {
     this.currentUser = this._auth.getCurrentUser();
@@ -65,9 +59,7 @@ export class OcctaxFormService {
   getOcctaxData(id) {
     
     this._dataS.getOneReleve(id).subscribe(
-      (data) => {
-        console.log("LA ?§§", data);
-        
+      (data) => {        
         this.occtaxData.next(data);
         this.editionMode.next(true);
       },
@@ -102,6 +94,7 @@ export class OcctaxFormService {
     // the label on submit    
     nomenclatures_types.forEach(nomenc_type => {
       nomenc_type.values.forEach(nomenc_element => {
+        nomenc_element['MNEMONIQUE_TYPE'] = nomenc_type.mnemonique
         this.nomenclatureAdditionnel.push(nomenc_element);
       });
     });
@@ -124,15 +117,12 @@ export class OcctaxFormService {
   }
 
   addOccurrenceData(occurrence): void {
-    let occtaxData = this.occtaxData.getValue();
-    console.log(occtaxData);
-    
+    let occtaxData = this.occtaxData.getValue();    
 
     if (!occtaxData.releve.properties.t_occurrences_occtax) {
       occtaxData.releve.properties.t_occurrences_occtax = [];
     }
     occtaxData.releve.properties.t_occurrences_occtax.push(occurrence);
-    console.log(occtaxData);
     
     this.occtaxData.next(occtaxData);
   }
@@ -178,18 +168,4 @@ export class OcctaxFormService {
     };
   }
 
-  createAdditionnalFieldsUI(container: ViewContainerRef, additionnalFields, dynamicForm: FormGroup) {
-    if (container) {      
-      container.clear(); 
-    }
-    if (additionnalFields && additionnalFields.length > 0 && container){
-      console.log(additionnalFields);
-      
-      const factory: ComponentFactory<any> = this._resolver.resolveComponentFactory(DynamicFormComponent);
-      const componentRef = container.createComponent(factory);
-      componentRef.instance.formConfigReleveDataSet = additionnalFields;
-      componentRef.instance.formArray = dynamicForm;
-      return componentRef
-    }
-  }
 }

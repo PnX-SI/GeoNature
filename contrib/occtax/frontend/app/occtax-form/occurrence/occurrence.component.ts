@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef, ViewChild, ComponentRef } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy, ViewContainerRef, ViewChild, ComponentRef } from "@angular/core";
 import {
   animate,
   state,
@@ -46,6 +46,7 @@ import { MatDialog } from "@angular/material";
 })
 export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   @ViewChild("dynamiqueContainerOccurence", { read: ViewContainerRef }) public containerOccurence: ViewContainerRef;
+  @Input() addFields: Array<any>;
   componentOccurenceRef: ComponentRef<any>;
   public occtaxConfig = ModuleConfig;
   public appConfig = AppConfig;
@@ -54,13 +55,8 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required
   private advanced: string = "collapsed";
   public countingStep: number = 0;
-
-
   public displayProofFromElements: boolean = false;
-
-  public dynamicFormGroup: FormGroup;
   public data : any;
-  public dynamicContainerOccurence: ViewContainerRef;
   public componentRefOccurence: ComponentRef<any>;
 
   //public idTaxonList: number;
@@ -101,7 +97,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
 
   ngAfterViewInit() {
     this.occtaxFormOccurrenceService.dynamicContainerOccurence = this.containerOccurence;
-    this.occtaxFormOccurrenceService.regenerateAddtionnalFieldsUI();   
     //a chaque reinitialisation du formulaire on place le focus sur la zone de saisie du taxon
     const taxonInput: HTMLElement = document.getElementById("taxonInput");
     this.occtaxFormOccurrenceService.occurrence.subscribe(() =>
@@ -117,6 +112,23 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
       "blur",
       (event) => (this.taxonFormFocus = false)
     );
+  }
+
+  ngOnChanges(changes) {
+    // if(changes.addFields && changes.addFields.currentValue) {
+    //   console.log("##########",this.occtaxFormOccurrenceService.form);
+      
+    //   const dynamicFormGroup = new FormGroup({});
+    //   this.occtaxFormOccurrenceService.form.addControl("additional_fields", dynamicFormGroup);
+
+    //   this.fs.createAdditionnalFieldsUI(
+    //     this.containerOccurence, 
+    //     changes.addFields.currentValue, 
+    //     dynamicFormGroup
+    //   );     
+    //   console.log("INIT UI OCCURRENCE");
+      
+    // }
   }
 
   setExistProofData(data) {
@@ -222,7 +234,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   }
 
 
-
   resetOccurrenceForm() {
     this.occtaxFormOccurrenceService.reset();
   }
@@ -231,9 +242,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     this.resetOccurrenceForm();
   }
 
-  addCounting() {
-    console.log("stop");
-    
+  addCounting() {    
     this.occtaxFormOccurrenceService.addCountingForm(true); //patchwithdefaultvalue
   }
 

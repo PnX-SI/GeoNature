@@ -20,6 +20,7 @@ import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
 
+
 @Component({
   selector: "pnx-occtax-form",
   templateUrl: "./occtax-form.component.html",

@@ -30,7 +30,6 @@ export class OcctaxFormOccurrenceService {
   public saveWaiting: boolean = false;
   public additionnalFormLoaded: boolean = false;
   
-  public dynamicFormGroup: FormGroup;
   componentRefOccurence: ComponentRef<any>;
   public dynamicContainerOccurence: ViewContainerRef;
   public data : any;
@@ -78,6 +77,7 @@ export class OcctaxFormOccurrenceService {
       digital_proof: null,
       non_digital_proof: null,
       comment: null,
+      additional_fields: this.fb.group({}),
       cor_counting_occtax: this.fb.array([], Validators.required),
     });
   }
@@ -116,37 +116,13 @@ export class OcctaxFormOccurrenceService {
         }),
       )
       .subscribe((values) => {
-        
-        //Ajout du composant dynamique
-        //initialiser les valeurs null à des objets vides, sinon ca pétille
-        
-        // if(values.additional_fields == null){
-        //   values.additional_fields = {};
-        // } else if (values.cor_counting_occtax) {
-        //   for (const key of Object.keys(values.cor_counting_occtax)){
-        //     if(values.cor_counting_occtax[key].additional_fields == null){
-        //       values.cor_counting_occtax[key].additional_fields = {};
-        //     }
-        //   }
+      
 
-        // }
-
-        this.setAddtionnalForm(values).subscribe(val => {
-          console.log("#############", val);
-          
-          this.form.patchValue(values);
-
+        this.setAddtionnalForm(Object.assign({}, values)).subscribe(editedOccurrence => {     
+          console.log("PATCH VALUE", editedOccurrence);
+          console.log(this.form);
+          this.form.patchValue(editedOccurrence);
         })
-
-        // transform value with additionnal fields 
-        // this.getAdditionnalForm().subscribe(addFields => {
-        //   console.log("YAAAAAAA");
-        //   this.setAddtionnalForm(
-        //     values,
-        //     this.occtaxFormService.occurrenceAddFields,
-        //     this.occtaxFormService.countingAddFields
-        //   );
-        // })
 
       });
 
@@ -255,14 +231,46 @@ export class OcctaxFormOccurrenceService {
     return this.getAdditionnalForm().pipe(
       mergeMap(addFields => {
         const {occurrenceAddFields, countingAddFields} = addFields;
+  
+ 
+        // load all npmenclature
         const nomenclature_mnemonique_types = [];
         [...occurrenceAddFields, ...countingAddFields].forEach(field => {
           if(field.type_widget === 'nomenclature') {
             nomenclature_mnemonique_types.push(field.code_nomenclature_type)
           }
         })
-        return this.dataFormService.getNomenclatures(nomenclature_mnemonique_types).map(nomenclature => {
-          // blah
+        return this.dataFormService.getNomenclatures(nomenclature_mnemonique_types).map(nomenclatures => {
+          this.occtaxFormService.storeAdditionalNomenclaturesValues(nomenclatures);
+          if(occurrenceValue.additional_fields) {
+            occurrenceAddFields.forEach(field => {
+              if(field.type_widget == 'nomenclature') {                
+                const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {              
+                  return n.MNEMONIQUE_TYPE === field.code_nomenclature_type && n["label_fr"] === occurrenceValue.additional_fields[field.attribut_name] ;
+                }); 
+                occurrenceValue.additional_fields[field.attribut_name] = nomenclature_item ? nomenclature_item.id_nomenclature: ""; 
+              }
+
+            });
+          }
+          
+          if(occurrenceValue.cor_counting_occtax) {
+            occurrenceValue.cor_counting_occtax.forEach(counting => {
+              if(counting.additional_fields) {
+                countingAddFields.forEach(field => {
+                  if(field.type_widget == 'nomenclature') {
+                    const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {              
+                      return n.MNEMONIQUE_TYPE === field.code_nomenclature_type && n["label_fr"] === counting.additional_fields[field.attribut_name] ;
+                    }); 
+                    counting.additional_fields[field.attribut_name] = nomenclature_item ? nomenclature_item.id_nomenclature: ""; 
+                  }
+  
+                });
+              }
+              
+            });
+          }
+
           return occurrenceValue;
         })
       })
@@ -401,14 +409,6 @@ export class OcctaxFormOccurrenceService {
       i++;
     }
     return null;
-  }
-
-  regenerateAddtionnalFieldsUI() {
-    this.occtaxFormService.createAdditionnalFieldsUI(
-      this.dynamicContainerOccurence, 
-      this.occtaxFormService.occurrenceAddFields, 
-      this.dynamicFormGroup
-    );
   }
 
 

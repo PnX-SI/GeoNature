@@ -91,7 +91,9 @@
           id="left-form"
           [ngStyle]="{'height.px': cardContentHeight - 50}"
         >
-          <pnx-occtax-form-occurrence></pnx-occtax-form-occurrence>
+          <pnx-occtax-form-occurrence 
+            [addFields]="occtaxFormService.occurrenceAddFields">
+          </pnx-occtax-form-occurrence>
         </div>
         <div
           [ngStyle]="{'height.px': cardContentHeight - 30}"

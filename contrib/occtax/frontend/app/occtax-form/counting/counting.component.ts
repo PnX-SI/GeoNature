@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, ViewContainerRef, ViewChild, ComponentRef, OnDestroy, ComponentFactoryResolver } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { Component, OnInit, Input } from "@angular/core";
+import { FormGroup, FormBuilder } from "@angular/forms";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
 import { AppConfig } from "@geonature_config/app.config";
@@ -12,15 +12,10 @@ import { OcctaxFormCountingService } from "./counting.service";
   styleUrls: ["./counting.component.scss"]
 })
 export class OcctaxFormCountingComponent implements OnInit {
-  @ViewChild("dynamiqueContainerCounting", { read: ViewContainerRef }) public containerCounting: ViewContainerRef;
 
   public occtaxConfig = ModuleConfig;
   public appConfig = AppConfig;
-  
-  public dynamicFormGroup: FormGroup;
   public data : any;
-  //public dynamicContainerOccurence: ViewContainerRef;
-  componentRefOccurence: ComponentRef<any>;
 
   @Input('form') countingForm: FormGroup;
   @Input('addFields') addFields: any;
@@ -30,11 +25,13 @@ export class OcctaxFormCountingComponent implements OnInit {
     public fs: OcctaxFormService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxFormCountingService: OcctaxFormCountingService,
+    private fb: FormBuilder,
+
   ) { }
 
   ngOnInit() {
-    this.occtaxFormCountingService.dynamicContainerCounting = this.containerCounting;
     this.occtaxFormCountingService.form = this.countingForm;
+    
 
     // if(this.fs.countingAddFields.length > 0) {      
     //   this.occtaxFormCountingService.generateAdditionForm(this.fs.countingAddFields);
@@ -42,20 +39,24 @@ export class OcctaxFormCountingComponent implements OnInit {
     // }
   }
 
-  ngOnChanges(changes) {
-    if(changes.addFields && changes.addFields.currentValue) {
-      console.log("changeeees ???");
-      this.occtaxFormCountingService.dynamicContainerCounting = this.containerCounting;
-
+  // ngOnChanges(changes) {
+  //   if(changes.addFields && changes.addFields.currentValue) {
+  //     // console.log("changeeees ???");
+  //     this.occtaxFormCountingService.dynamicContainerCounting = this.containerCounting;
+  //     this.generateAdditionForm(changes.addFields.currentValue)
+  //     console.log("CREATE countING form and UI");
+  //     console.log(this.countingForm);
       
-      this.occtaxFormCountingService.generateAdditionForm(changes.addFields.currentValue)
-      this.occtaxFormCountingService.setAddtionnalFieldsValues(
-        this.occtaxFormCountingService.form,
-        changes.addFields.currentValue
-      )
-    }
+      
+  //     // this.occtaxFormCountingService.setAddtionnalFieldsValues(
+  //     //   this.occtaxFormCountingService.form,
+  //     //   changes.addFields.currentValue
+  //     // )
+  //   }
     
-  }
+  // }
+
+
 
   taxref() {
     const taxref = this.occtaxFormOccurrenceService.taxref.getValue();

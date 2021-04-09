@@ -1,10 +1,9 @@
-import { Injectable, ComponentRef, ViewContainerRef, ComponentFactory, ComponentFactoryResolver } from "@angular/core";
+import { Injectable} from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
   Validators,
   AbstractControl,
-  FormControl
 } from "@angular/forms";
 import { Observable, Subscription } from "rxjs";
 import { map, filter } from "rxjs/operators";
@@ -13,8 +12,6 @@ import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { MediaService } from '@geonature_common/service/media.service';
 import { DataFormService } from "@geonature_common/form/data-form.service";
-import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
-
 
 @Injectable()
 export class OcctaxFormCountingService {
@@ -22,9 +19,6 @@ export class OcctaxFormCountingService {
   counting: any;
   synchroCountSub: Subscription;
   public form: FormGroup;
-  public dynamicFormGroup: FormGroup;
-  componentRefCounting: ComponentRef<any>;
-  public dynamicContainerCounting: ViewContainerRef;
   public data : any;
 
   constructor(
@@ -45,7 +39,7 @@ export class OcctaxFormCountingService {
       count_min: [null, [Validators.required, Validators.pattern("[0-9]+")]],
       count_max: [null, [Validators.required, Validators.pattern("[0-9]+")]],
       medias: [[], this.mediaService.mediasValidator()],
-      // additional_fields: this.fb.group({})
+      additional_fields: this.fb.group({})
     }); 
 
     form.setValidators([this.countingValidator]);
@@ -71,27 +65,7 @@ export class OcctaxFormCountingService {
     return null;
   }
 
-  generateAdditionForm(countingAddFields) {
-    console.log("???", this.form.value );
 
-    
-    // if(countingAddFields.length > 0 && this.dynamicContainerCounting){
-    //   this.dynamicFormGroup = this.fb.group({});
-    //   // if(this.form.get('additional_fields')){
-    //   //   for (const key of Object.keys(this.form.get('additional_fields').value)){
-    //   //     this.dynamicFormGroup.addControl(key, new FormControl(this.form.get('additional_fields').value[key]));
-    //   //   }
-    //   // }
-    //   this.occtaxFormService.createAdditionnalFieldsUI(
-    //     this.dynamicContainerCounting,
-    //     countingAddFields,
-    //     this.dynamicFormGroup
-    //   )
-    //   //on insert le formulaire dynamique au form control
-    //     this.form.setControl("additional_fields", this.dynamicFormGroup);
-        
-    // }
-  }
 
   setAddtionnalFieldsValues(form, countingAddFields) {
     
@@ -104,7 +78,7 @@ export class OcctaxFormCountingService {
             }
         //Formattage des nomenclatures
         if(field.type_widget == "nomenclature"){
-          console.log(form.value);
+          // console.log(form.value);
           
           //mise en forme des nomenclatures
             this.dataFormService.getNomenclatures([field.code_nomenclature_type])

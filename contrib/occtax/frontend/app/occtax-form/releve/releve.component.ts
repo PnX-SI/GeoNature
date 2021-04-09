@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewContainerRef, ViewChild } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { GeoJSON } from "leaflet";
@@ -19,7 +19,6 @@ import { AppConfig } from "@geonature_config/app.config";
   providers: []
 })
 export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
-  @ViewChild("dynamiqueContainer", { read: ViewContainerRef }) public container: ViewContainerRef;
 
   public occtaxConfig: any;
   public geojson: GeoJSON;
@@ -27,6 +26,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public releveForm: FormGroup;
   public AppConfig = AppConfig;
   public routeSub: Subscription ;
+  public test = new FormGroup({});
 
   constructor(
     private route: ActivatedRoute,
@@ -62,7 +62,6 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
       } 
     });
 
-    this.occtaxFormReleveService.dynamicContainer = this.container;
   } // END INIT
 
   get dataset(): any {
