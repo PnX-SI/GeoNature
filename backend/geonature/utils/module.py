@@ -2,7 +2,7 @@ import os
 import sys
 from pathlib import Path
 from importlib import import_module
-from pkg_resources import load_entry_point, iter_entry_points
+from pkg_resources import load_entry_point, get_entry_info, iter_entry_points
 
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -65,13 +65,12 @@ def import_packaged_module(module_dist, module_object):
         config_path = str(module_dir / 'config/conf_gn_module.toml')
     module_config.update(load_and_validate_toml(config_path, module_schema))
 
-    try:
-        module_blueprint = load_entry_point(module_dist, 'gn_module', 'blueprint')
-    except ImportError:
-        # this module has no backend
-        module_blueprint = None
-    else:
+    blueprint_entry_point = get_entry_info(module_dist, 'gn_module', 'blueprint')
+    if blueprint_entry_point:
+        module_blueprint = blueprint_entry_point.load()
         module_blueprint.config = module_config
+    else:
+        module_blueprint = None
     return (module_object, module_config, module_blueprint)
 
 
