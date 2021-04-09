@@ -21,3 +21,5 @@ src/custom/images/bandeau_toolbar.jpg
 
 src/custom/**/*.ts
 src/custom/**/*.html
+
+assets_test.txt

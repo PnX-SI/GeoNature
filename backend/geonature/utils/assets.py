@@ -18,20 +18,20 @@ def process_manage_frontend_assets():
                 - custom ??
     '''
 
-    # write api.config.json
-    if (os.path.exists(ROOT_DIR / 'assets_management')):
+    path_test = ROOT_DIR / 'frontend/assets_test.txt'
+
+    # test sur le fichier pour faire en sorte qu'un seul worker n'execute cet action
+    if (
+        (os.path.exists(path_test)) 
+        and 
+        # si le fichier a été modifié depuis moins de  5 seconde
+        (int(time.time()) - os.path.getmtime(path_test)) < 5
+    ): 
         return
 
-    # test sur la date de modif de api.config.json pour nepas le faire dexu fois d'affilée
-    path_api_config = ROOT_DIR / 'frontend/src/assets/config/api.config.json'
-    if os.path.exists(path_api_config):
-        diff = int(time.time()) - os.path.getctime(path_api_config) 
-        if diff < 5:
-            return 
 
-    with open(ROOT_DIR / 'assets_management', "w") as outputfile:
+    with open(path_test, "w+") as outputfile:
         outputfile.write(' ')
-
 
     src_assets_dir = str(ROOT_DIR / "frontend/src/assets")
     dist_assets_dir = str(ROOT_DIR / "frontend/dist/assets")
@@ -69,7 +69,5 @@ def process_manage_frontend_assets():
     if os.path.exists(dist_custom_dir):
         shutil.rmtree(dist_custom_dir)
     shutil.copytree(src_custom_dir, dist_custom_dir)
-
-    os.remove(ROOT_DIR / 'assets_management')
 
 
