@@ -46,7 +46,6 @@ import { MatDialog } from "@angular/material";
 })
 export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   @ViewChild("dynamiqueContainerOccurence", { read: ViewContainerRef }) public containerOccurence: ViewContainerRef;
-  @Input() addFields: Array<any>;
   componentOccurenceRef: ComponentRef<any>;
   public occtaxConfig = ModuleConfig;
   public appConfig = AppConfig;
@@ -114,22 +113,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnChanges(changes) {
-    // if(changes.addFields && changes.addFields.currentValue) {
-    //   console.log("##########",this.occtaxFormOccurrenceService.form);
-      
-    //   const dynamicFormGroup = new FormGroup({});
-    //   this.occtaxFormOccurrenceService.form.addControl("additional_fields", dynamicFormGroup);
-
-    //   this.fs.createAdditionnalFieldsUI(
-    //     this.containerOccurence, 
-    //     changes.addFields.currentValue, 
-    //     dynamicFormGroup
-    //   );     
-    //   console.log("INIT UI OCCURRENCE");
-      
-    // }
-  }
 
   setExistProofData(data) {
     this.occtaxFormOccurrenceService.existProof_DATA = data;

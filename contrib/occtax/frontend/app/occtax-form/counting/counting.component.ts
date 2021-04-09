@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from "@angular/core";
-import { FormGroup, FormBuilder } from "@angular/forms";
+import { FormGroup } from "@angular/forms";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
 import { AppConfig } from "@geonature_config/app.config";
@@ -18,43 +18,20 @@ export class OcctaxFormCountingComponent implements OnInit {
   public data : any;
 
   @Input('form') countingForm: FormGroup;
-  @Input('addFields') addFields: any;
 
 
   constructor(
     public fs: OcctaxFormService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxFormCountingService: OcctaxFormCountingService,
-    private fb: FormBuilder,
 
   ) { }
 
   ngOnInit() {
     this.occtaxFormCountingService.form = this.countingForm;
-    
-
-    // if(this.fs.countingAddFields.length > 0) {      
-    //   this.occtaxFormCountingService.generateAdditionForm(this.fs.countingAddFields);
-    //   this.occtaxFormCountingService.setAddtionnalFieldsValues(this.occtaxFormOccurrenceService.form, this.fs.countingAddFields)
-    // }
+  
   }
 
-  // ngOnChanges(changes) {
-  //   if(changes.addFields && changes.addFields.currentValue) {
-  //     // console.log("changeeees ???");
-  //     this.occtaxFormCountingService.dynamicContainerCounting = this.containerCounting;
-  //     this.generateAdditionForm(changes.addFields.currentValue)
-  //     console.log("CREATE countING form and UI");
-  //     console.log(this.countingForm);
-      
-      
-  //     // this.occtaxFormCountingService.setAddtionnalFieldsValues(
-  //     //   this.occtaxFormCountingService.form,
-  //     //   changes.addFields.currentValue
-  //     // )
-  //   }
-    
-  // }
 
 
 
