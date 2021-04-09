@@ -20,6 +20,10 @@ CHANGELOG
 * suppression des commandes associées aux fichier suivants:
   * désormais en 'dur' : ts.config, ts.app.config et app.routing.module.ts, 
   * n'existent plus (remplacés par l'api et ConfigService) : app.config.ts, module.config.ts
+* placement des config des modules `conf_gn_module.toml` dans le dossier `GeoNature/config`
+  * avec la convention de nomage `<module_code.lower()>_config.toml` (par ex. occtax_config.toml, validation_config.toml)
+
+
 Voir https://github.com/PnX-SI/GeoNature/compare/develop
 
 **🐛 Corrections**
@@ -34,6 +38,8 @@ Si vous mettez à jour GeoNature :
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
 * Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.6.3.sql)
 * Des choses à faire au niveau des évolutions des commandes GeoNature ?
+
+
 
 2.6.2 (2021-02-15)
 ------------------
