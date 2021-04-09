@@ -5,11 +5,12 @@ from geonature.utils.env import DB
 
 
 def request_synthese(id_synthese=None, unique_id_sinp=None, id_source=None, entity_source_pk_value=None):
-    filter_params={}
+    
 
-    if id_synthese:
+    if id_source and entity_source_pk_value:
         filter_params = {
-            'id_synthese': id_synthese
+            'id_source': id_source,
+            'entity_source_pk_value': str(entity_source_pk_value)
         }
 
     elif unique_id_sinp:
@@ -17,11 +18,11 @@ def request_synthese(id_synthese=None, unique_id_sinp=None, id_source=None, enti
             'unique_id_sinp': unique_id_sinp
         }
 
-    elif id_source and entity_source_pk_value:
+    elif id_synthese:
         filter_params = {
-            'id_source': id_source,
-            'entity_source_pk_value': str(entity_source_pk_value)
-        }
+            'id_synthese': id_synthese
+        })
+        
 
 
     return  (
@@ -47,7 +48,6 @@ def get_synthese(id_synthese=None, unique_id_sinp=None, id_source=None, entity_s
         request_synthese(id_synthese, unique_id_sinp, id_source, entity_source_pk_value)
     )
     
-
     return req_synthese.one() if req_synthese else Synthese()
 
 
@@ -67,7 +67,7 @@ def create_or_update_synthese(synthese_data, id_synthese=None, unique_id_sinp=No
         synthese = get_synthese(id_synthese, unique_id_sinp, id_source, entity_source_pk_value)
 
     else:
-
+        print('new')
         synthese = Synthese()
         DB.session.add(synthese)
 
