@@ -8,7 +8,18 @@ CHANGELOG
 ** Configuration
 
 * Suppression de FRONTEND.PROD_MOD (utilisatation de environnement.ts à la place)
-
+* Ajout d'un service pour accéder à la configuration (ConfigService)
+  * recupération de la config depuis l'api gn_commons/frontend_config
+* ajout d'une commande `geonature manage_frontend_assets` qui permet de gérer très rapidement les dossiers `assets` 
+  * config: en particulier le fichier `api.config.json` qui permet de récupérer la valeur de `API_ENDPOINT`
+  * custom: 
+* Ajout d'options (--reload et --reload-extra-file) pour relancer l'application en cas de changement de config ou de fichier 'custom'
+* ajout d'un fichier external_modules/index.ts qui dépend du backend
+  * créé par la commande `geonature prebuild_frontend`
+  * permet de lister les modules et de les charger dans `app.routing.module.ts`
+* suppression des commandes associées aux fichier suivants:
+  * désormais en 'dur' : ts.config, ts.app.config et app.routing.module.ts, 
+  * n'existent plus (remplacés par l'api et ConfigService) : app.config.ts, module.config.ts
 Voir https://github.com/PnX-SI/GeoNature/compare/develop
 
 **🐛 Corrections**
