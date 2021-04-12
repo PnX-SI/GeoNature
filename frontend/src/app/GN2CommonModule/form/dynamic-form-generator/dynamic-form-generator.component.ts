@@ -40,7 +40,7 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
 
   constructor(private _dynformService: DynamicFormService) {}
 
-  ngOnInit() {    
+  ngOnInit() {
     this.formsDefinition = this.formsDefinition || [];
     this.initDynamicForm();
     this.myFormGroup.valueChanges.subscribe(values => {
@@ -55,6 +55,7 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
       for (const controlName in this.myFormGroup.controls) {
         this.myFormGroup.removeControl(controlName)
       }
+            
       this.initDynamicForm();
     }
   }

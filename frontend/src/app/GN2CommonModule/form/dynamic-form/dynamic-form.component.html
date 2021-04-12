@@ -275,6 +275,7 @@
       [label]="formDefComp.attribut_label"
       [parentFormControl]="form.get(formDefComp.attribut_name)"
       [idMenu]="formDefComp.id_menu"
+      [idList]="formDefComp.id_list"
       [codeList]="formDefComp.code_list"
     >
     </pnx-observers>
@@ -303,6 +304,7 @@
       [searchBar]="false"
     >
     </pnx-multiselect>
+    {{formDefComp.values |json}}
 
     <pnx-datalist
       *ngSwitchCase="'datalist'"

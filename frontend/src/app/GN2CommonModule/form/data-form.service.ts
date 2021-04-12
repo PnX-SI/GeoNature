@@ -583,6 +583,7 @@ export class DataFormService {
           "type_widget": data.type_widget.widget_name,
           "multi_select": null,
           "values": data.field_values,
+          "id_list": data.id_list,
           "cor_additionnal": data.cor_additionnal
         }
       })

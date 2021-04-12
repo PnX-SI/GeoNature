@@ -26,9 +26,13 @@ export class OcctaxFormService {
   public currentIdDataset:any;
   public previousReleve = null;
   public dataSetConfig: any;
-  public releveAddFields: Array<any>;
-  public occurrenceAddFields: Array<any>;
-  public countingAddFields: Array<any>;
+  public globalReleveAddFields: Array<any> = [];
+  public globalOccurrenceAddFields: Array<any>= [];
+  public globalCountingAddFields: Array<any>= [];
+  public datasetReleveAddFields: Array<any>= [];
+  public datasetOccurrenceAddFields: Array<any>= [];
+  public datasetCountingAddFields: Array<any>= [];
+  public truc;
 
   public nomenclatureAdditionnel: any = [];
 
@@ -41,6 +45,8 @@ export class OcctaxFormService {
 
   ) {
     this.currentUser = this._auth.getCurrentUser();
+     //this.truc = [...this.globalReleveAddFields, ...this.datasetReleveAddFields]
+
 
     //observation de l'URL
     this.id_releve_occtax
@@ -166,6 +172,17 @@ export class OcctaxFormService {
       month: date.getMonth() + 1,
       day: date.getDate(),
     };
+  }
+
+  clearFormerAdditonnalFields(globalAddFields, formerDatasetAddFields, newDatasetAddFields) {
+      // copy object in order to not modify him directly (he is linked to an input)
+      let inter = Object.assign([], globalAddFields);
+      // remove formde dataset additionnal field from globalAddfield
+      inter = globalAddFields.filter(globalField => {
+        return !formerDatasetAddFields.map(f => f.cor_additionnal.id_field).includes(globalField.cor_additionnal.id_field)
+      })
+
+      return inter;
   }
 
 }

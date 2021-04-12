@@ -279,6 +279,7 @@ class TAddtitionalFields(DB.Model):
     code_nomenclature_type = DB.Column(DB.String, ForeignKey(BibNomenclaturesTypes.mnemonique))
     additional_attributes = DB.Column(JSONB)
     id_widget = DB.Column(DB.Integer, ForeignKey(BibWidgets.id_widget))
+    id_list = DB.Column(DB.Integer)
     type_widget = DB.relationship(BibWidgets)
     bib_nomenclature_type = DB.relationship(BibNomenclaturesTypes)
     # cor_addi = DB.relationship("CorAdditionnalFields")
@@ -294,8 +295,8 @@ from geonature.core.gn_meta.models import TDatasets
 class CorAdditionnalFields(DB.Model):
     __tablename__ = "cor_additionnal_fields"
     __table_args__ = {"schema": "gn_commons"}
-    id_field = DB.Column(DB.Integer, ForeignKey(TAddtitionalFields.id_field))
     id_cor = DB.Column(DB.Integer, primary_key=True)
+    id_field = DB.Column(DB.Integer,  ForeignKey(TAddtitionalFields.id_field))
     id_module = DB.Column(DB.Integer, ForeignKey(TModules.id_module))
     id_object = DB.Column(DB.Integer, ForeignKey("gn_permissions.t_objects.id_object"))
     id_dataset = DB.Column(DB.Integer, ForeignKey('gn_meta.t_datasets.id_dataset'))

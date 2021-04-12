@@ -52,9 +52,6 @@ export class OcctaxFormOccurrenceService {
   ) {
     this.initForm();
     this.setObservables();
-    // this.getAdditionnalForm().subscribe(additionnalFields => {
-    //   this.setAddtionnalForm(additionnalFields.occurrenceAddFields, additionnalFields.countingAddFields)
-    // });
   }
 
   initForm(): void {
@@ -80,6 +77,14 @@ export class OcctaxFormOccurrenceService {
       additional_fields: this.fb.group({}),
       cor_counting_occtax: this.fb.array([], Validators.required),
     });
+    this.dataFormService.getAdditionnalFields({
+      'module_code': ['OCCTAX', 'GEONATURE'],
+      'object_code': 'OCCTAX_DENOMBREMENT',
+      "id_dataset": "null"
+    }).subscribe(additionnalFields => {
+      
+      this.occtaxFormService.globalOccurrenceAddFields = additionnalFields;
+    })
   }
 
   /**
@@ -118,9 +123,7 @@ export class OcctaxFormOccurrenceService {
       .subscribe((values) => {
       
 
-        this.setAddtionnalForm(Object.assign({}, values)).subscribe(editedOccurrence => {     
-          console.log("PATCH VALUE", editedOccurrence);
-          console.log(this.form);
+        this.setAddtionnalForm(Object.assign({}, values)).subscribe(editedOccurrence => {               
           this.form.patchValue(editedOccurrence);
         })
 
@@ -195,7 +198,7 @@ export class OcctaxFormOccurrenceService {
     // TODO RELOAD ONLY IF DATASET HAS CHANGED
     return this.occtaxFormService.occtaxData.pipe(
       filter(data => data && data.releve.properties),
-       concatMap(data => {         
+       concatMap(data => {   
         this.currentReleve = data.releve.properties;
         this.idDataset = data.releve.properties.dataset.id_dataset;
         return this.dataFormService.getAdditionnalFields({
@@ -204,23 +207,40 @@ export class OcctaxFormOccurrenceService {
           'object_code': ['OCCTAX_OCCURENCE', 'OCCTAX_DENOMBREMENT']
         })
        })
-      ).map(additionnalFields => {        
-        this.occtaxFormService.occurrenceAddFields = [];
-        this.occtaxFormService.countingAddFields = [];  
-
+      ).map(additionnalFields => {
+        this.occtaxFormService.globalOccurrenceAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
+          this.occtaxFormService.globalOccurrenceAddFields,
+          this.occtaxFormService.datasetReleveAddFields,
+          additionnalFields
+        );
+        this.occtaxFormService.globalCountingAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
+          this.occtaxFormService.globalCountingAddFields,
+          this.occtaxFormService.datasetCountingAddFields,
+          additionnalFields
+        );
+        this.occtaxFormService.datasetOccurrenceAddFields = [];
+        this.occtaxFormService.datasetCountingAddFields = [];
         additionnalFields.forEach(field => {
           if(field.cor_additionnal && field.cor_additionnal.object) {            
             if (field.cor_additionnal.object.code_object == "OCCTAX_OCCURENCE") {              
-              this.occtaxFormService.occurrenceAddFields.push(field);
+              this.occtaxFormService.datasetOccurrenceAddFields.push(field);
             }
             if (field.cor_additionnal.object.code_object == "OCCTAX_DENOMBREMENT") {
-              this.occtaxFormService.countingAddFields.push(field);
+              this.occtaxFormService.datasetCountingAddFields.push(field);
             }
           }
         });
+        
+        this.occtaxFormService.globalOccurrenceAddFields = this.occtaxFormService.globalOccurrenceAddFields.concat(
+          this.occtaxFormService.datasetOccurrenceAddFields
+        )
+        this.occtaxFormService.globalCountingAddFields = this.occtaxFormService.globalCountingAddFields.concat(
+          this.occtaxFormService.datasetCountingAddFields
+        )
+
         return {
-          "occurrenceAddFields": this.occtaxFormService.occurrenceAddFields,
-          "countingAddFields": this.occtaxFormService.countingAddFields,
+          "occurrenceAddFields": this.occtaxFormService.datasetOccurrenceAddFields,
+          "countingAddFields": this.occtaxFormService.datasetCountingAddFields,
         }
       },
       );
@@ -511,7 +531,7 @@ export class OcctaxFormOccurrenceService {
    */
   transformDynamicFormValues(formValue, edit = true){
     //Mise en forme des champs additionnels
-      this.occtaxFormService.occurrenceAddFields.forEach((field) => {
+    this.occtaxFormService.globalOccurrenceAddFields.forEach((field) => {
         if(field.type_widget == "date"){
           formValue.additional_fields[field.attribut_name] = this.dateParser.format(
             formValue.additional_fields[field.attribut_name]
@@ -530,8 +550,11 @@ export class OcctaxFormOccurrenceService {
           }          
         }
       })
-
-      this.occtaxFormService.countingAddFields.forEach(field => {
+      const countingAddFields = [
+        ...this.occtaxFormService.globalCountingAddFields,
+        ...this.occtaxFormService.datasetCountingAddFields
+      ]
+      countingAddFields.forEach(field => {
         if(field.type_widget == "date"){
           formValue.cor_counting_occtax.forEach(counting => {
             counting.additional_fields[field.attribut_name] = this.dateParser.format(

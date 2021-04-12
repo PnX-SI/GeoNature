@@ -107,7 +107,11 @@ def get_additionnal_fields():
     join_with_cor_fields = None
     if "id_dataset" in params:
         q = q.join(CorAdditionnalFields, CorAdditionnalFields.id_field == TAddtitionalFields.id_field)
-        q = q.filter(CorAdditionnalFields.id_dataset == params["id_dataset"])
+        if params["id_dataset"] == "null":
+            q = q.filter(CorAdditionnalFields.id_dataset.is_(None))
+        else:
+            q = q.filter(CorAdditionnalFields.id_dataset == params["id_dataset"])
+
         join_with_cor_fields = True
     if "module_code" in params:
         if not join_with_cor_fields:
@@ -124,6 +128,7 @@ def get_additionnal_fields():
         q = q.join(TObjects, TObjects.id_object == CorAdditionnalFields.id_object)
         q = q.filter(TObjects.code_object.in_(params["object_code"].split(",")))
 
+    print(q)
     results = []
     for d in q.all():
         _dict = d[0].as_dict(True, depth=1)

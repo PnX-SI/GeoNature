@@ -2,7 +2,7 @@ import { Injectable, ViewContainerRef, ComponentRef, ComponentFactory, Component
 import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Observable, Subscription } from "rxjs";
-import { filter, map, switchMap, tap, skip, mergeMap } from "rxjs/operators";
+import { filter, map, switchMap, tap, skip, mergeMap, concatMap } from "rxjs/operators";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { GeoJSON } from "leaflet";
 import { ModuleConfig } from "../../module.config";
@@ -28,7 +28,6 @@ export class OcctaxFormReleveService {
   public waiting: boolean = false;
   public route: ActivatedRoute;
 
-  public dynamicFormGroup: FormGroup;
   public currentIdDataset:any;
 
   public datasetId : number = null;
@@ -135,14 +134,13 @@ export class OcctaxFormReleveService {
     //on desactive le form, il sera réactivé si la geom est ok
     this.propertiesForm.disable();
 
-    // TODO: general additional fields
-    // this.dataFormService.getAdditionnalFields({
-    //   'module_code': ['OCCTAX', 'GEONATURE'],
-    //   'object_code': 'OCCTAX_RELEVE'
-    // }).subscribe(additionnalFields => {
-    //   console.log(additionnalFields);
-
-    // })
+    this.dataFormService.getAdditionnalFields({
+      'module_code': ['OCCTAX', 'GEONATURE'],
+      'object_code': 'OCCTAX_RELEVE',
+      "id_dataset": "null"
+    }).subscribe(additionnalFields => {
+      this.occtaxFormService.globalReleveAddFields = additionnalFields;
+    })
 
   }
 
@@ -152,22 +150,27 @@ export class OcctaxFormReleveService {
       'module_code': 'OCCTAX',
       'object_code': 'OCCTAX_RELEVE'
     }).subscribe(additionnalFields => {
-      this.occtaxFormService.releveAddFields = additionnalFields;
-      if (additionnalFields.length > 0){
-
-        //On charge les nomenclatures additionnels
-        let NOMENCLATURES = [];
-        additionnalFields.forEach((field) => {
-          if(field.type_widget == "nomenclature"){
-            NOMENCLATURES.push(field.code_nomenclature_type);
-          }
-        })
-        if(NOMENCLATURES.length > 0){
-          this.dataFormService.getNomenclatures(NOMENCLATURES)
-          .subscribe((nomenclatures) => {
-            this.occtaxFormService.storeAdditionalNomenclaturesValues(nomenclatures)
-          });
+      this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
+        this.occtaxFormService.globalReleveAddFields,
+        this.occtaxFormService.datasetReleveAddFields,
+        additionnalFields
+      );
+      this.occtaxFormService.datasetReleveAddFields = additionnalFields;
+      this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.globalReleveAddFields.concat(
+        additionnalFields
+      );
+      //On charge les nomenclatures additionnels
+      let NOMENCLATURES = [];
+      additionnalFields.forEach((field) => {
+        if(field.type_widget == "nomenclature"){
+          NOMENCLATURES.push(field.code_nomenclature_type);
         }
+      })
+      if(NOMENCLATURES.length > 0){
+        this.dataFormService.getNomenclatures(NOMENCLATURES)
+        .subscribe((nomenclatures) => {
+          this.occtaxFormService.storeAdditionalNomenclaturesValues(nomenclatures)
+        });
       }
     })
 
@@ -198,11 +201,15 @@ export class OcctaxFormReleveService {
           return editionMode ? this.releveValues : this.defaultValues;
         })
       )
-      .subscribe((values) => {
-        console.log("FINNALYYY", values);
-
+      .subscribe((values) => {        
         // emitEvent : false (if the patchvalue change q value (eg id_dataset), the form is enabled and we don't want this)
+        // HACK: wait for the dynamicformGenerator Component to set the additionnal fields
+        // TODO: subscribe to an observable of dynamicFormCOmponent to wait it
+        setTimeout(() => {
+          console.log(values);
+          
          this.propertiesForm.patchValue(values, {emitEvent: false});
+        }, 2000);
       });
 
     //Observation de la geometry pour récupere les info d'altitudes
@@ -256,12 +263,13 @@ export class OcctaxFormReleveService {
       });
   }
 
-  /** Get occtax data and patch value to the form */
+  /** Get occtax data in order to patch value to the form */
   private get releveValues(): Observable<any> {
     return this.occtaxFormService.occtaxData.pipe(
       filter(data => data && data.releve.properties),
       map(data => {
-        const releve = data.releve.properties;
+        const copied_data = Object.assign({}, data)
+        const releve = copied_data.releve.properties;
         //Parfois il passe 2 fois ici, et la seconde fois la date est déja formattée en objet, si c'est le cas, on saute
         if(typeof releve.date_min !== "object"){
           // on affiche la date_max si date_min != date_max
@@ -296,14 +304,30 @@ export class OcctaxFormReleveService {
 
         return releve;
       }),
-      mergeMap(releve => {
+      // load additionnal fields
+      concatMap(releve => {
         return this.dataFormService.getAdditionnalFields({
           'id_dataset': releve.id_dataset,
           'module_code': 'OCCTAX',
           'object_code': 'OCCTAX_RELEVE'
         }).map(additionnalFields => {
-          this.occtaxFormService.releveAddFields = additionnalFields;
-          this.dynamicFormGroup = this.fb.group({});
+          console.log("la");
+          
+          // remove old dataset addField from globalAddFields
+          this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
+            this.occtaxFormService.globalReleveAddFields,
+            this.occtaxFormService.datasetReleveAddFields,
+            additionnalFields
+          );
+          this.occtaxFormService.datasetReleveAddFields = additionnalFields;
+          this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.globalReleveAddFields.concat(
+            additionnalFields
+          );
+          console.log( this.occtaxFormService.globalReleveAddFields);
+          console.log( additionnalFields);
+          
+          
+
           additionnalFields.forEach(field => {
             //Formattage des dates
             if(field.type_widget == "date"){
@@ -381,8 +405,6 @@ export class OcctaxFormReleveService {
       .getDefaultValues(this.occtaxFormService.currentUser.id_organisme)
       .pipe(
         map((data) => {
-          console.log(this.datasetId);
-
           const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);
           return {
             // datasetId could be get for get parameters (see releve.component)
@@ -442,7 +464,7 @@ export class OcctaxFormReleveService {
       );
     }
     /* Champs additionnels - formatter les dates et les nomenclatures */
-        this.occtaxFormService.releveAddFields.forEach((field) => {
+        this.occtaxFormService.globalReleveAddFields.forEach((field:any) => {
           if(field.type_widget == "date"){
             value.properties.additional_fields[field.attribut_name] = this.dateParser.format(
               value.properties.additional_fields[field.attribut_name]
@@ -452,10 +474,6 @@ export class OcctaxFormReleveService {
 
             // set the label_fr nomenclature in the posted additional data
             const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {
-              console.log(n.id_nomenclature);
-              console.log(value.properties.additional_fields[field.attribut_name]);
-
-
               return n["id_nomenclature"] === value.properties.additional_fields[field.attribut_name];
             });
 
@@ -466,8 +484,6 @@ export class OcctaxFormReleveService {
             }
           }
         })
-    console.log("LA gueule du truc", value);
-
     return value;
   }
 

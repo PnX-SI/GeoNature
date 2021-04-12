@@ -53,6 +53,13 @@ export class OcctaxFormCountingService {
         )
         .subscribe((count_min) => form.get("count_max").setValue(count_min));
     }
+    this.dataFormService.getAdditionnalFields({
+      'module_code': ['OCCTAX', 'GEONATURE'],
+      'object_code': 'OCCTAX_OCCURENCE',
+      "id_dataset": "null"
+    }).subscribe(additionnalFields => {
+      this.occtaxFormService.globalCountingAddFields = additionnalFields;
+    })
     return form;
   }
 
