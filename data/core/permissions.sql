@@ -577,12 +577,14 @@ ALTER TABLE gn_permissions.bib_filters_values
 ALTER TABLE gn_permissions.t_requests 
     ADD CONSTRAINT fk_t_requests_id_role FOREIGN KEY (id_role)
     REFERENCES utilisateurs.t_roles (id_role) MATCH FULL
-    ON UPDATE CASCADE ;
+    ON UPDATE CASCADE 
+    ON DELETE CASCADE ;
 
 ALTER TABLE gn_permissions.t_requests 
     ADD CONSTRAINT fk_t_requests_processed_by FOREIGN KEY (processed_by)
     REFERENCES utilisateurs.t_roles (id_role) MATCH FULL
-    ON UPDATE CASCADE ;
+    ON UPDATE CASCADE 
+    ON DELETE SET NULL ;
 
 -- Constraints for table "cor_module_action_object_filter"
 ALTER TABLE gn_permissions.cor_module_action_object_filter
