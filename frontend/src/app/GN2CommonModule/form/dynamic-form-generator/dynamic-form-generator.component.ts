@@ -40,7 +40,7 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
 
   constructor(private _dynformService: DynamicFormService) {}
 
-  ngOnInit() {
+  ngOnInit() {    
     this.formsDefinition = this.formsDefinition || [];
     this.initDynamicForm();
     this.myFormGroup.valueChanges.subscribe(values => {
@@ -49,7 +49,9 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes) {
-    if(changes.formsDefinition && changes.formsDefinition.currentValue) {
+    // on formdef changes, regenerate the form and UI
+    // Do not load the form at first change: done by ngOnInit which wait for the component to be ready    
+    if(changes.formsDefinition && !changes.formsDefinition.firstChange && changes.formsDefinition.currentValue) {      
       for (const controlName in this.myFormGroup.controls) {
         this.myFormGroup.removeControl(controlName)
       }
