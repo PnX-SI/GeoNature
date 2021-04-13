@@ -515,14 +515,22 @@ CREATE TABLE gn_commons.t_additonal_fields (
   api varchar(250)
 );
 
-
-CREATE TABLE gn_commons.cor_additionnal_fields (
-  id_cor serial,
-	id_field int4 NOT NULL,
-	id_module int4 NOT NULL,
-	id_object int4 NOT NULL,
-	id_dataset int4 NULL
+CREATE TABLE gn_commons.cor_field_object(
+ id_field integer,
+ id_object integer
 );
+
+CREATE TABLE gn_commons.cor_field_module(
+ id_field integer,
+ id_module integer
+);
+
+CREATE TABLE gn_commons.cor_field_dataset(
+ id_field integer,
+ id_dataset integer
+);
+
+
 
 ---------------
 --PRIMARY KEY--
@@ -555,8 +563,14 @@ ALTER TABLE ONLY t_places
 ALTER TABLE ONLY gn_commons.t_additonal_fields
     ADD CONSTRAINT pk_t_additonal_fields PRIMARY KEY (id_field);
 
-ALTER TABLE ONLY gn_commons.cor_additionnal_fields
-    ADD CONSTRAINT pk_t_cor_add_fields PRIMARY KEY (id_cor);
+ALTER TABLE ONLY gn_commons.cor_field_module
+    ADD CONSTRAINT pk_cor_field_module PRIMARY KEY (id_field, id_module);
+
+ALTER TABLE ONLY gn_commons.cor_field_object
+    ADD CONSTRAINT pk_cor_field_object PRIMARY KEY (id_field, id_object);
+
+ALTER TABLE ONLY gn_commons.cor_field_dataset
+    ADD CONSTRAINT pk_cor_field_dataset PRIMARY KEY (id_field, id_dataset);
 
 
 ----------------
@@ -584,20 +598,28 @@ ALTER TABLE ONLY t_history_actions
 ALTER TABLE ONLY t_places
   ADD CONSTRAINT fk_t_places_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
-ALTER TABLE ONLY gn_commons.cor_additionnal_fields
-  ADD CONSTRAINT fk_cor_addi_t_field FOREIGN KEY (id_field) 
+ALTER TABLE ONLY gn_commons.cor_field_object
+  ADD CONSTRAINT fk_cor_field_obj_field FOREIGN KEY (id_field) 
   REFERENCES gn_commons.t_additonal_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY gn_commons.cor_additionnal_fields
-  ADD CONSTRAINT fk_cor_addi_t_modules FOREIGN KEY (id_module) 
-  REFERENCES gn_commons.t_modules(id_module) ON UPDATE CASCADE ON DELETE CASCADE;
-
-ALTER TABLE ONLY gn_commons.cor_additionnal_fields
-  ADD CONSTRAINT fk_cor_addi_t_object FOREIGN KEY (id_object) 
+ALTER TABLE ONLY gn_commons.cor_field_object
+  ADD CONSTRAINT fk_cor_field_object FOREIGN KEY (id_object) 
   REFERENCES gn_permissions.t_objects(id_object) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY gn_commons.cor_additionnal_fields
-  ADD CONSTRAINT fk_cor_addi_t_datasets FOREIGN KEY (id_dataset) 
+ALTER TABLE ONLY gn_commons.cor_field_module
+  ADD CONSTRAINT fk_cor_field_module_field FOREIGN KEY (id_field) 
+  REFERENCES gn_commons.t_additonal_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_commons.cor_field_module
+  ADD CONSTRAINT fk_cor_field_module FOREIGN KEY (id_module) 
+  REFERENCES gn_commons.t_modules(id_module) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_commons.cor_field_dataset
+  ADD CONSTRAINT fk_cor_field_dataset_field FOREIGN KEY (id_field) 
+  REFERENCES gn_commons.t_additonal_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_commons.cor_field_dataset
+  ADD CONSTRAINT fk_cor_field_dataset FOREIGN KEY (id_dataset) 
   REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
 ---------------
 --CONSTRAINTS--

@@ -264,6 +264,30 @@ class BibWidgets(DB.Model):
     def __repr__(self):
         return self.widget_name.capitalize()
 
+from geonature.core.gn_permissions.models import TObjects
+from geonature.core.gn_meta.models import TDatasets
+
+cor_field_object = DB.Table(
+    'cor_field_object',
+    DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additonal_fields.id_field')),
+    DB.Column('id_object', DB.Integer, DB.ForeignKey('gn_permissions.t_objects.id_object')),
+    schema="gn_commons",
+)
+
+cor_field_module = DB.Table(
+    'cor_field_module',
+    DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additonal_fields.id_field')),
+    DB.Column('id_module', DB.Integer, DB.ForeignKey('gn_commons.t_modules.id_module')),
+    schema="gn_commons",
+)
+
+cor_field_dataset = DB.Table(
+    'cor_field_dataset',
+    DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additonal_fields.id_field')),
+    DB.Column('id_dataset', DB.Integer, DB.ForeignKey('gn_meta.t_datasets.id_dataset')),
+    schema="gn_commons",
+)
+
 @serializable
 class TAddtitionalFields(DB.Model):
     __tablename__ = "t_additonal_fields"
@@ -283,27 +307,23 @@ class TAddtitionalFields(DB.Model):
     type_widget = DB.relationship(BibWidgets)
     bib_nomenclature_type = DB.relationship(BibNomenclaturesTypes)
     # cor_addi = DB.relationship("CorAdditionnalFields")
-
+#     module = DB.relationship(TModules)
+    modules = DB.relationship(
+        "TModules",
+        secondary=cor_field_module
+    )
+    objects = DB.relationship(
+        "TObjects",
+        secondary=cor_field_object
+    )
+    datasets = DB.relationship(
+        "TDatasets",
+        secondary=cor_field_dataset
+    )
+    # dataset = DB.relationship(TDatasets)
     def __repr__(self):
         return f"{self.field_label} ({self.description})"
     
-
-from geonature.core.gn_permissions.models import TObjects
-from geonature.core.gn_meta.models import TDatasets
-
-@serializable
-class CorAdditionnalFields(DB.Model):
-    __tablename__ = "cor_additionnal_fields"
-    __table_args__ = {"schema": "gn_commons"}
-    id_cor = DB.Column(DB.Integer, primary_key=True)
-    id_field = DB.Column(DB.Integer,  ForeignKey(TAddtitionalFields.id_field))
-    id_module = DB.Column(DB.Integer, ForeignKey(TModules.id_module))
-    id_object = DB.Column(DB.Integer, ForeignKey("gn_permissions.t_objects.id_object"))
-    id_dataset = DB.Column(DB.Integer, ForeignKey('gn_meta.t_datasets.id_dataset'))
-    field = DB.relationship(TAddtitionalFields)
-    module = DB.relationship(TModules)
-    object = DB.relationship(TObjects)
-    dataset = DB.relationship(TDatasets)
 
 
 

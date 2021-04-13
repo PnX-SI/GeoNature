@@ -3,8 +3,10 @@ from flask_admin.contrib.sqla import ModelView
 class BibFieldAdmin(ModelView):
     form_columns = (
         "type_widget", "field_name", "field_label", "required", "description",
-        "quantitative", "unity", "field_values", "bib_nomenclature_type", "id_list"
+        "quantitative", "unity", "field_values", "bib_nomenclature_type", "id_list",
+        "modules", "objects", "datasets"
     )
+
     column_display_all_relations = True
     # form_columns = ('truc', BibFields.field_name)
     # column_labels = dict(name='Name', last_name='Last Name')
@@ -25,11 +27,5 @@ class BibFieldAdmin(ModelView):
         "id_list":'Identifiant en BDD de la liste (pour Type widget = taxonomy/observers)',
 
     }
-
-
-
-
-class CorAdditionnalFieldsAdmin(ModelView):
-    column_display_all_relations = True
 
 

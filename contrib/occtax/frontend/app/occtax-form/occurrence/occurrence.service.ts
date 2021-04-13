@@ -221,14 +221,15 @@ export class OcctaxFormOccurrenceService {
         this.occtaxFormService.datasetOccurrenceAddFields = [];
         this.occtaxFormService.datasetCountingAddFields = [];
         additionnalFields.forEach(field => {
-          if(field.cor_additionnal && field.cor_additionnal.object) {            
-            if (field.cor_additionnal.object.code_object == "OCCTAX_OCCURENCE") {              
+          field.objects.forEach(object => {
+            if (object.code_object == "OCCTAX_OCCURENCE") {              
               this.occtaxFormService.datasetOccurrenceAddFields.push(field);
             }
-            if (field.cor_additionnal.object.code_object == "OCCTAX_DENOMBREMENT") {
+            if (object.code_object == "OCCTAX_DENOMBREMENT") {
               this.occtaxFormService.datasetCountingAddFields.push(field);
-            }
-          }
+            }            
+          });
+
         });
         
         this.occtaxFormService.globalOccurrenceAddFields = this.occtaxFormService.globalOccurrenceAddFields.concat(

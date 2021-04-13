@@ -1,4 +1,5 @@
 import json
+from operator import or_
 
 from flask import Blueprint, request, current_app
 import requests
@@ -6,7 +7,9 @@ import requests
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
-from geonature.core.gn_commons.models import CorAdditionnalFields, TModules, TParameters, TMobileApps, TMedias, TPlaces, TAddtitionalFields
+from geonature.core.gn_commons.models import (
+    TModules, TParameters, TMobileApps, TPlaces, TAddtitionalFields,
+)
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.repositories import get_table_location_id
 from geonature.core.gn_permissions.models import TObjects
@@ -103,40 +106,42 @@ def get_one_parameter(param_name, id_org=None):
 @json_resp
 def get_additionnal_fields():
     params = request.args
-    q = DB.session.query(TAddtitionalFields, CorAdditionnalFields)
-    join_with_cor_fields = None
+    q = DB.session.query(TAddtitionalFields)
     if "id_dataset" in params:
-        q = q.join(CorAdditionnalFields, CorAdditionnalFields.id_field == TAddtitionalFields.id_field)
         if params["id_dataset"] == "null":
-            q = q.filter(CorAdditionnalFields.id_dataset.is_(None))
+            # ~ operator means NOT EXISTS
+            q = q.filter(~TAddtitionalFields.datasets.any())
         else:
-            q = q.filter(CorAdditionnalFields.id_dataset == params["id_dataset"])
-
-        join_with_cor_fields = True
+            if len(params["id_dataset"].split(",")) > 1:
+                ors = [
+                    TAddtitionalFields.datasets.any(id_dataset=id_dastaset) for id_dastaset in params.split(',')
+                    ]
+                q = q.filter(or_(*ors))
+            else:
+                TAddtitionalFields.datasets.any(id_dataset=params["id_dataset"])
     if "module_code" in params:
-        if not join_with_cor_fields:
-            q = q.join(CorAdditionnalFields, CorAdditionnalFields.id_field == TAddtitionalFields.id_field)
-        q = q.join(TModules, TModules.id_module == CorAdditionnalFields.id_module)
-        q = q.filter(
-            TModules.module_code.in_(params["module_code"].split(","))
-           )
-        join_with_cor_fields = True
+        if len(params["module_code"].split(",")) > 1:
+
+            ors = [
+                TAddtitionalFields.modules.any(module_code=module_code) 
+                for module_code in params["module_code"].split(",")
+                ]
+
+            q = q.filter(or_(*ors))
+        else:
+            q = q.filter(TAddtitionalFields.modules.any(module_code=params["module_code"]))
+
     if "object_code" in params:
-        if not join_with_cor_fields:
-            q = q.join(CorAdditionnalFields, CorAdditionnalFields.id_field == TAddtitionalFields.id_field)
-            join_with_cor_fields = True
-        q = q.join(TObjects, TObjects.id_object == CorAdditionnalFields.id_object)
-        q = q.filter(TObjects.code_object.in_(params["object_code"].split(",")))
-
+        if len(params["object_code"].split(",")) > 1:
+            ors = [
+                TAddtitionalFields.objects.any(code_object=code_object) for code_object in params["object_code"].split(",")
+                ]
+            q = q.filter(or_(*ors))
+        else:
+            q = q.filter(TAddtitionalFields.objects.any(code_object=params["object_code"]))
     print(q)
-    results = []
-    for d in q.all():
-        _dict = d[0].as_dict(True, depth=1)
-        _dict["cor_additionnal"] = d[1].as_dict(True, depth=1)
-        results.append(_dict)
+    return [d.as_dict(True, depth=1) for d in q.all()]
 
-
-    return results
 
 
 @routes.route("/t_mobile_apps", methods=["GET"])

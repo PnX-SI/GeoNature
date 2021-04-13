@@ -584,7 +584,9 @@ export class DataFormService {
           "multi_select": null,
           "values": data.field_values,
           "id_list": data.id_list,
-          "cor_additionnal": data.cor_additionnal
+          "objects": data.objects,
+          "modules": data.modules,
+          "datasets": data.datasets,
         }
       })
         
