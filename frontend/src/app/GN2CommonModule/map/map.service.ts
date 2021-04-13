@@ -66,12 +66,6 @@ export class MapService {
     return this.map;
   }
 
-  setControls() {
-    this.map.pm.addControls({
-      position: 'topleft'
-    });
-  }
-
   initializeLeafletDrawFeatureGroup() {
     this.leafletDrawFeatureGroup = new L.FeatureGroup();
     this.map.addLayer(this.leafletDrawFeatureGroup);

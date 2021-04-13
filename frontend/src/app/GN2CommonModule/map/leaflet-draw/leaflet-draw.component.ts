@@ -68,7 +68,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     this.options.edit['featureGroup'] = this.drawnItems;
     this.options.edit['featureGroup'] = this.mapservice.leafletDrawFeatureGroup;
     this.drawControl = new this._Le.Control.Draw(this.options);
-    this.map.addControl(this.drawControl);
+    //this.map.addControl(this.drawControl);
     this.map.pm.addControls({
       drawPolyline: false,
       drawRectangle: false,
@@ -114,8 +114,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     })
 
     this.map.on("pm:create", e => {
-      console.log("GEOMAN LAYER CREATED");
-      console.log(e);
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         this.layerDrawed.emit({ geojson: null });

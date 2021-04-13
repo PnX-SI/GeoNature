@@ -75,13 +75,13 @@
           (getBoundingBox)="loadDatasetGeom($event)"
         >
         </pnx-occhab-dataset-map-overlay> -->
-      <pnx-marker
+      <!--<pnx-marker
         [coordinates]="markerCoordinates"
         zoomLevel="5"
         [defaultEnable]="false"
         (markerChanged)="occHabForm.patchGeoValue($event)"
       >
-      </pnx-marker>
+      </pnx-marker>-->
       <pnx-leaflet-draw
         [geojson]="currentGeoJsonFileLayer"
         [options]="leafletDrawOptions"

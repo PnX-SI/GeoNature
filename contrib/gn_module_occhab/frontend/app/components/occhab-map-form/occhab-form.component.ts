@@ -75,12 +75,9 @@ export class OccHabFormComponent implements OnInit {
       .subscribe(val => {
         this.occHabForm.patchDefaultNomenclaureStation(val);
       });
-    
-    
   }
 
   ngAfterViewInit() {
-    //this._mapService.setControls();
     // get the id from the route
     this._sub = this._route.params.subscribe(params => {
       if (params["id_station"]) {
