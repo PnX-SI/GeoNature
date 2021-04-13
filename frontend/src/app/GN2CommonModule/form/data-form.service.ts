@@ -563,15 +563,15 @@ export class DataFormService {
     return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${ds_id}`);
   }
 
-  getAdditionnalFields(params?: ParamsDict) {
+  getadditionalFields(params?: ParamsDict) {
     let queryString: HttpParams = new HttpParams();
     // tslint:disable-next-line:forin
     for (const key in params) {
       queryString = queryString.set(key, params[key].toString());
     }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/additionnal_fields`,
-     {params: queryString}).map(additionnalFields => {
-      return additionnalFields.map(data => {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/additional_fields`,
+     {params: queryString}).map(additionalFields => {
+      return additionalFields.map(data => {
         return {
           "attribut_label": data.field_label,
           "attribut_name": data.field_name,

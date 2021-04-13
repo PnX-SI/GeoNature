@@ -658,7 +658,7 @@ ALTER TABLE t_mobile_apps
 ALTER TABLE bib_tables_location
   ADD CONSTRAINT unique_bib_tables_location_schema_name_table_name UNIQUE (schema_name, table_name);
 
-ALTER TABLE gn_commons.cor_additionnal_fields
+ALTER TABLE gn_commons.cor_additional_fields
   ADD CONSTRAINT unique_cor_addi_fields UNIQUE (id_field, id_module, id_object, id_dataset);
 
 

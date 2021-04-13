@@ -102,9 +102,9 @@ def get_one_parameter(param_name, id_org=None):
     data = q.all()
     return [d.as_dict() for d in data]
 
-@routes.route("/additionnal_fields", methods=["GET"])
+@routes.route("/additional_fields", methods=["GET"])
 @json_resp
-def get_additionnal_fields():
+def get_additional_fields():
     params = request.args
     q = DB.session.query(TAddtitionalFields)
     if "id_dataset" in params:

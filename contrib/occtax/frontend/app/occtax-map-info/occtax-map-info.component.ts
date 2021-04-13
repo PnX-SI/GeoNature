@@ -152,21 +152,21 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
         (data) => {
           this.occtaxData.next(data)
 
-            /* find all nomenclatures added by additionnal fields
+            /* find all nomenclatures added by additional fields
             and store additional fields
             */
-            this.dataFormS.getAdditionnalFields({
+            this.dataFormS.getadditionalFields({
               'id_dataset': data.properties.id_dataset,
               'module_code': ['OCCTAX', 'GEONATURE'],
-            }).subscribe(additionnalFields => {
-              additionnalFields.forEach(field => {
+            }).subscribe(additionalFields => {
+              additionalFields.forEach(field => {
                 const map = {
                   "OCCTAX_RELEVE": this.releveAddFields,
                   "OCCTAX_OCCURENCE": this.occurrenceAddFields,
                   "OCCTAX_DENOMBREMENT": this.countingAddFields,
                 }
                 
-                map[field.cor_additionnal.object.code_object].push(field);
+                map[field.cor_additional.object.code_object].push(field);
                 
                 if(field.type_widget == "nomenclature"){
                   NOMENCLATURES.push(field.code_nomenclature_type);
@@ -228,7 +228,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
       }
     );
   }
-  //TODO rendre global, additionnal fields
+  //TODO rendre global, additional fields
   sortingFunction = (a, b) => {
     return a.key > b.key ? -1 : 1;
   }

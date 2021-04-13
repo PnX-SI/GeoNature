@@ -306,7 +306,7 @@ class TAddtitionalFields(DB.Model):
     id_list = DB.Column(DB.Integer)
     type_widget = DB.relationship(BibWidgets)
     bib_nomenclature_type = DB.relationship(BibNomenclaturesTypes)
-    # cor_addi = DB.relationship("CorAdditionnalFields")
+    # cor_addi = DB.relationship("CoradditionalFields")
 #     module = DB.relationship(TModules)
     modules = DB.relationship(
         "TModules",

@@ -177,9 +177,9 @@ export class OcctaxFormService {
   clearFormerAdditonnalFields(globalAddFields, formerDatasetAddFields, newDatasetAddFields) {
       // copy object in order to not modify him directly (he is linked to an input)
       let inter = Object.assign([], globalAddFields);
-      // remove formde dataset additionnal field from globalAddfield
+      // remove formde dataset additional field from globalAddfield
       inter = globalAddFields.filter(globalField => {
-        return !formerDatasetAddFields.map(f => f.cor_additionnal.id_field).includes(globalField.cor_additionnal.id_field)
+        return !formerDatasetAddFields.map(f => f.cor_additional.id_field).includes(globalField.cor_additional.id_field)
       })
 
       return inter;

@@ -134,34 +134,34 @@ export class OcctaxFormReleveService {
     //on desactive le form, il sera réactivé si la geom est ok
     this.propertiesForm.disable();
 
-    this.dataFormService.getAdditionnalFields({
+    this.dataFormService.getadditionalFields({
       'module_code': ['OCCTAX', 'GEONATURE'],
       'object_code': 'OCCTAX_RELEVE',
       "id_dataset": "null"
-    }).subscribe(additionnalFields => {
-      this.occtaxFormService.globalReleveAddFields = additionnalFields;
+    }).subscribe(additionalFields => {
+      this.occtaxFormService.globalReleveAddFields = additionalFields;
     })
 
   }
 
   onDatasetChanged(idDataset) {
-    this.dataFormService.getAdditionnalFields({
+    this.dataFormService.getadditionalFields({
       'id_dataset': idDataset,
       'module_code': 'OCCTAX',
       'object_code': 'OCCTAX_RELEVE'
-    }).subscribe(additionnalFields => {
+    }).subscribe(additionalFields => {
       this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
         this.occtaxFormService.globalReleveAddFields,
         this.occtaxFormService.datasetReleveAddFields,
-        additionnalFields
+        additionalFields
       );
-      this.occtaxFormService.datasetReleveAddFields = additionnalFields;
+      this.occtaxFormService.datasetReleveAddFields = additionalFields;
       this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.globalReleveAddFields.concat(
-        additionnalFields
+        additionalFields
       );
       //On charge les nomenclatures additionnels
       let NOMENCLATURES = [];
-      additionnalFields.forEach((field) => {
+      additionalFields.forEach((field) => {
         if(field.type_widget == "nomenclature"){
           NOMENCLATURES.push(field.code_nomenclature_type);
         }
@@ -203,7 +203,7 @@ export class OcctaxFormReleveService {
       )
       .subscribe((values) => {        
         // emitEvent : false (if the patchvalue change q value (eg id_dataset), the form is enabled and we don't want this)
-        // HACK: wait for the dynamicformGenerator Component to set the additionnal fields
+        // HACK: wait for the dynamicformGenerator Component to set the additional fields
         // TODO: subscribe to an observable of dynamicFormCOmponent to wait it
         setTimeout(() => {
           console.log(values);
@@ -304,31 +304,31 @@ export class OcctaxFormReleveService {
 
         return releve;
       }),
-      // load additionnal fields
+      // load additional fields
       concatMap(releve => {
-        return this.dataFormService.getAdditionnalFields({
+        return this.dataFormService.getadditionalFields({
           'id_dataset': releve.id_dataset,
           'module_code': 'OCCTAX',
           'object_code': 'OCCTAX_RELEVE'
-        }).map(additionnalFields => {
+        }).map(additionalFields => {
           console.log("la");
           
           // remove old dataset addField from globalAddFields
           this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
             this.occtaxFormService.globalReleveAddFields,
             this.occtaxFormService.datasetReleveAddFields,
-            additionnalFields
+            additionalFields
           );
-          this.occtaxFormService.datasetReleveAddFields = additionnalFields;
+          this.occtaxFormService.datasetReleveAddFields = additionalFields;
           this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.globalReleveAddFields.concat(
-            additionnalFields
+            additionalFields
           );
           console.log( this.occtaxFormService.globalReleveAddFields);
-          console.log( additionnalFields);
+          console.log( additionalFields);
           
           
 
-          additionnalFields.forEach(field => {
+          additionalFields.forEach(field => {
             //Formattage des dates
             if(field.type_widget == "date"){
               //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée

@@ -771,24 +771,24 @@ def export(info_role):
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
 
     #Ajout des colonnes additionnels
-    additionnal_col_names = []
+    additional_col_names = []
     if "id_dataset" in request.args:
         config_dataset = get_dataset_config(request.args['id_dataset'])
         if "EXPORT_FIELDS" in config_dataset:
-            additionnal_col_names = config_dataset["EXPORT_FIELDS"]
-        if not additionnal_col_names:
-            additionnal_col_names = get_default_export_fields(config_dataset)
+            additional_col_names = config_dataset["EXPORT_FIELDS"]
+        if not additional_col_names:
+            additional_col_names = get_default_export_fields(config_dataset)
 
     #TODO pourquoi ajouter les colonnes quand elle ne sont pas définis en conf ?: 
-    if not additionnal_col_names:
+    if not additional_col_names:
         for row in data:
             dict_row = export_view.as_dict(row)
             if export_col_name_additional_data in dict_row:
                 additional_data = dict_row[export_col_name_additional_data]
                 if additional_data:
                     for col_name in additional_data:
-                        if col_name not in additionnal_col_names:
-                            additionnal_col_names.append(col_name)
+                        if col_name not in additional_col_names:
+                            additional_col_names.append(col_name)
 
     if export_format == "csv":
         columns = (
@@ -797,11 +797,11 @@ def export(info_role):
             else [db_col.key for db_col in export_view.db_cols]
         )
         # serialize data with additional cols or not
-        columns = columns + additionnal_col_names
-        if additionnal_col_names:
+        columns = columns + additional_col_names
+        if additional_col_names:
             serialize_result = [
                 as_dict_with_add_cols(
-                    export_view, row, export_col_name_additional_data, additionnal_col_names
+                    export_view, row, export_col_name_additional_data, additional_col_names
                 ) for row in data
             ]
         else:
@@ -810,11 +810,11 @@ def export(info_role):
             file_name, serialize_result , columns, ";"
         )
     elif export_format == "geojson":
-        if additionnal_col_names:
+        if additional_col_names:
             features = []
             for row in data :
                 properties = as_dict_with_add_cols(
-                    export_view, row, export_col_name_additional_data, additionnal_col_names
+                    export_view, row, export_col_name_additional_data, additional_col_names
                 )
                 feature = Feature(
                     properties=properties,

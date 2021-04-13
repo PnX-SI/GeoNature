@@ -132,7 +132,7 @@ class CorCountingOccurrence(DB.Model):
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
 
-    #additionnal fields dans occtax MET 14/10/2020
+    #additional fields dans occtax MET 14/10/2020
     additional_fields = DB.Column(JSONB)
 
     readonly_fields = [
@@ -179,7 +179,7 @@ class TOccurrencesOccurrence(DB.Model):
     non_digital_proof = DB.Column(DB.Unicode)
     comment = DB.Column(DB.Unicode)
     
-    #additionnal fields dans occtax MET 28/09/2020
+    #additional fields dans occtax MET 28/09/2020
     additional_fields = DB.Column(JSONB)
     
     unique_id_occurence_occtax = DB.Column(
@@ -233,7 +233,7 @@ class TRelevesOccurrence(ReleveModel):
 
     habitat = relationship(Habref, lazy="select")
 
-    #additionnal fields dans occtax MET 28/09/2020
+    #additional fields dans occtax MET 28/09/2020
     additional_fields = DB.Column(JSONB)
 
     t_occurrences_occtax = relationship(

@@ -53,12 +53,12 @@ export class OcctaxFormCountingService {
         )
         .subscribe((count_min) => form.get("count_max").setValue(count_min));
     }
-    this.dataFormService.getAdditionnalFields({
+    this.dataFormService.getadditionalFields({
       'module_code': ['OCCTAX', 'GEONATURE'],
       'object_code': 'OCCTAX_OCCURENCE',
       "id_dataset": "null"
-    }).subscribe(additionnalFields => {
-      this.occtaxFormService.globalCountingAddFields = additionnalFields;
+    }).subscribe(additionalFields => {
+      this.occtaxFormService.globalCountingAddFields = additionalFields;
     })
     return form;
   }
@@ -74,7 +74,7 @@ export class OcctaxFormCountingService {
 
 
 
-  setAddtionnalFieldsValues(form, countingAddFields) {
+  setadditionalFieldsValues(form, countingAddFields) {
     
       countingAddFields.forEach((field) => {
         if(field.type_widget == "date"){
