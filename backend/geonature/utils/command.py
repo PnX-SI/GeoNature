@@ -123,7 +123,7 @@ def tsconfig_app_templating(app=None):
 
                 # test if module have frontend
                 if (module_dir/ "frontend").is_dir():
-                    location = "{}/frontend/app".format(location)
+                    location = "{}/frontend/app".format(module_dir)
                     routes.append({"location": location})
 
                 # TODO test if two modules with the same name is okay for Angular
