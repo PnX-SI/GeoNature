@@ -39,16 +39,13 @@ export class MarkerComponent implements OnInit, OnChanges {
     this.map = this.mapservice.map;
     this.zoomLevel = this.zoomLevel || AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE;
     this.setMarkerLegend();
-    console.log("ENABLE MARKER ON CLICK");
     // activation or not of the marker
     if (this.defaultEnable) {
       this.enableMarkerOnClick();
     } else {
       this.changeMarkerButtonColor(false);
     }
-    console.log("ON INIT TOGGLE EDITING");
     this.mapservice.isMarkerEditing$.subscribe(isEditing => {
-      console.log("IS EDITING");
       this.toggleEditing(isEditing);
     });
 
@@ -73,19 +70,12 @@ export class MarkerComponent implements OnInit, OnChanges {
     // custom the marker
     document.getElementById('markerLegend').style.backgroundColor = '#c8c8cc';
     L.DomEvent.disableClickPropagation(document.getElementById('markerLegend'));
-    console.log("SET MARKER LEGEND");
-    console.log(typeof(document.getElementsByClassName('control-button')[0]));
-    console.log(document.getElementsByClassName('control-button')[0]);
-    console.log(typeof(document.getElementById('markerLegend')));
-    console.log(document.getElementById('markerLegend'));
     document.getElementById('markerLegend').onclick = () => {
-      console.log("TOGGLE");
       this.toggleEditing(true);
     };
   }
 
   enableMarkerOnClick() {
-    console.log("CLICKCLICK");
     this.map.on('click', (e: any) => {
       // the boolean change MUST be before the output fire (emit)
       this.mapservice.firstLayerFromMap = false;
@@ -93,7 +83,6 @@ export class MarkerComponent implements OnInit, OnChanges {
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
       } else {
-        console.log("ENABLE MARKER");
         this.generateMarkerAndEvent(e.latlng.lng, e.latlng.lat);
       }
     });
@@ -113,7 +102,6 @@ export class MarkerComponent implements OnInit, OnChanges {
 
     const geojsonMarker = this.markerToGeojson(this.mapservice.marker.getLatLng());
     this.mapservice.setGeojsonCoord(geojsonMarker);
-    console.log("MARKER CHANGED");
     this.markerChanged.emit(geojsonMarker);
   }
 
@@ -140,7 +128,6 @@ export class MarkerComponent implements OnInit, OnChanges {
   }
 
   toggleEditing(enable: boolean) {
-    console.log(this.mapservice.editingMarker);
     this.mapservice.editingMarker = enable;
     this.changeMarkerButtonColor(this.mapservice.editingMarker);
 
@@ -154,7 +141,6 @@ export class MarkerComponent implements OnInit, OnChanges {
     } else {
       this.mapservice.removeAllLayers(this.map, this.mapservice.leafletDrawFeatureGroup);
       this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
-      console.log("TOGGLE EDITING");
       this.enableMarkerOnClick();
     }
   }

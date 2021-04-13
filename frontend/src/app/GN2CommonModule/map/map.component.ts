@@ -5,8 +5,6 @@ import { Map, LatLngExpression } from 'leaflet';
 import { AppConfig } from '@geonature_config/app.config';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import * as L from 'leaflet';
-import '@geoman-io/leaflet-geoman-free';  
-import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 import { CommonService } from '../service/common.service';
 
 import 'leaflet-draw';
@@ -116,7 +114,7 @@ export class MapComponent implements OnInit {
       center = L.latLng(this.center[0], this.center[1]);
     } else {
       center = L.latLng(AppConfig.MAPCONFIG.CENTER[0], AppConfig.MAPCONFIG.CENTER[1]);
-    } 
+    }
 
     const map = L.map(this.mapContainer.nativeElement, {
       zoomControl: false,
@@ -170,7 +168,7 @@ export class MapComponent implements OnInit {
   }
 
   /** Retrocompatibility hack to format map config to the expected format:
-   * 
+   *
    {
     name: string,
     url: string,

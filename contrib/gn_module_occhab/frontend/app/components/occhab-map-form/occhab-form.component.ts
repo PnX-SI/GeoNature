@@ -61,9 +61,8 @@ export class OccHabFormComponent implements OnInit {
     })
     this.leafletDrawOptions;
     leafletDrawOption.draw.polyline = false;
-    leafletDrawOption.draw.circle = true;
+    leafletDrawOption.draw.circle = false;
     leafletDrawOption.draw.rectangle = false;
-    
 
     this.currentStations = [];
 
@@ -135,7 +134,6 @@ export class OccHabFormComponent implements OnInit {
   }
 
   setDatasetOnLayers(datasetId, stations) {
-
     // const stationsLayerGroup = this._mapService.L.geoJSON(this.geojsonStations$.getValue());
     if (this.stationsgeoJson) {
       this._mapService.map.removeLayer(this.stationsgeoJson);

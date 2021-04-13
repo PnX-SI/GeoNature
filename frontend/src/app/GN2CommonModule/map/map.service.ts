@@ -5,8 +5,7 @@ import { Subject, Observable } from 'rxjs';
 
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
-import '@geoman-io/leaflet-geoman-free';  
-import '@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
+import '@geoman-io/leaflet-geoman-free';
 import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../service/common.service';
 import { Feature } from 'geojson';
@@ -60,7 +59,7 @@ export class MapService {
 
   setMap(map) {
     this.map = map;
-  
+
   }
 
   getMap() {
@@ -68,10 +67,9 @@ export class MapService {
   }
 
   setControls() {
-    this.map.pm.addControls({ 
-      position: 'topleft'  
+    this.map.pm.addControls({
+      position: 'topleft'
     });
-    console.log("GEOMAN CONTROLS");
   }
 
   initializeLeafletDrawFeatureGroup() {
@@ -98,9 +96,7 @@ export class MapService {
    * @param isEditing : boolean
    */
   setEditingMarker(isEditing: boolean): void {
-    console.log(this._isEditingMarker);
     this._isEditingMarker.next(isEditing);
-    console.log(this._isEditingMarker);
   }
 
   // ***** UTILS *****
@@ -158,7 +154,6 @@ export class MapService {
   }
 
   createMarker(x, y, isDraggable) {
-    console.log("CREATE MARKER");
     return L.marker([y, x], {
       icon: L.icon({
         iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
@@ -296,7 +291,7 @@ return this.http.delete(url);
 
   //Ajouter lieu
   addPlace(place:GeoJSON.Feature): Observable<any>{
-      
+
     return this.http.post<GeoJSON.Feature>(`${AppConfig.API_ENDPOINT}/occtax/addPlace`,place);
   } */
 }
