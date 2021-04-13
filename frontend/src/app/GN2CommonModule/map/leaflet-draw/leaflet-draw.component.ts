@@ -2,7 +2,6 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angu
 import { Map } from 'leaflet';
 import '@geoman-io/leaflet-geoman-free';
 
-
 import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../../service/common.service';
@@ -243,6 +242,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       this.mapservice.map.fitBounds(layer.getBounds());
     } else if (geojson.type === 'Point') {
       // marker
+      console.log(geojson);
       layer = L.marker(new L.LatLng(geojson.coordinates[1], geojson.coordinates[0]), {});
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
       if (this.bZoomOnPoint) {

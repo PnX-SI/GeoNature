@@ -45,6 +45,7 @@ export class MarkerComponent implements OnInit, OnChanges {
     } else {
       this.changeMarkerButtonColor(false);
     }
+    
     this.mapservice.isMarkerEditing$.subscribe(isEditing => {
       this.toggleEditing(isEditing);
     });

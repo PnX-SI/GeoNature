@@ -116,6 +116,8 @@ export class MapComponent implements OnInit {
       center = L.latLng(AppConfig.MAPCONFIG.CENTER[0], AppConfig.MAPCONFIG.CENTER[1]);
     }
 
+
+
     const map = L.map(this.mapContainer.nativeElement, {
       zoomControl: false,
       center: center,
@@ -168,7 +170,7 @@ export class MapComponent implements OnInit {
   }
 
   /** Retrocompatibility hack to format map config to the expected format:
-   *
+   * 
    {
     name: string,
     url: string,

@@ -12,7 +12,6 @@ import { AppConfig } from "@geonature_config/app.config";
 import { ModuleConfig } from "../../module.config";
 import { filter } from "rxjs/operators";
 import { L } from "leaflet";
-
 @Component({
   selector: "pnx-occhab-form",
   templateUrl: "occhab-form.component.html",

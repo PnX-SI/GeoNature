@@ -59,7 +59,6 @@ export class MapService {
 
   setMap(map) {
     this.map = map;
-
   }
 
   getMap() {
@@ -115,7 +114,6 @@ export class MapService {
         customLegend.style.backgroundRepeat = 'no-repeat';
         customLegend.style.backgroundPosition = '7px';
         customLegend.onclick = () => {
-          console.log("Func");
           if (func) {
             func();
           }
@@ -220,7 +218,6 @@ export class MapService {
       };
       this.setGeojsonCoord(geojson);
       this.marker.on('moveend', (event: L.LeafletMouseEvent) => {
-        console.log("Moveend");
         if (this.map.getZoom() < AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE) {
           this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         } else {
@@ -285,7 +282,7 @@ return this.http.delete(url);
 
   //Ajouter lieu
   addPlace(place:GeoJSON.Feature): Observable<any>{
-
+      
     return this.http.post<GeoJSON.Feature>(`${AppConfig.API_ENDPOINT}/occtax/addPlace`,place);
   } */
 }
