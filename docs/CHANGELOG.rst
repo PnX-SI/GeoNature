@@ -11,11 +11,14 @@ Voir https://github.com/PnX-SI/GeoNature/compare/develop
 
 * Occtax : correction d'un bug sur le champs observateur lors de la modification d'un relevé (#1177)
 * Occtax : renseignement par défaut de l'utilisateur connecté à la création d'un relevé en mode "observers_txt" (#1292)
+* Occtax: possibilité de désactiver la recherche de taxon par liste (#1315)
+* Occtax: par défaut la recherche de taxon n'interroge pas une liste mais tout Taxref (retrocompatibilité cassé, voir note de version)
 
 **⚠️ Notes de version**
 
 Si vous mettez à jour GeoNature :
 
+* Attention: si vous n'aviez pas renseigné de valeur pour le paramètre `id_taxon_list` dans le fichier `conf_gn_module.toml` du module Occtax, la liste 100 n'est plus passé par defaut et le module va rechercher sur tout Taxref. Veuillez renseigné manuellement l'identifiant de votre liste 
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
 * Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.6.3.sql)
 * Des choses à faire au niveau des évolutions des commandes GeoNature ?

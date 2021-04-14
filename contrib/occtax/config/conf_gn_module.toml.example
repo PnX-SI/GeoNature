@@ -9,6 +9,7 @@ observers_txt = false
 id_observers_list = 1
 
 # id of the taxon list -- taxonomie.bib_listes. Use for the taxonomy search in the occtax forml
+# default = None: search on full taxref
 id_taxon_list = 100
 # number of results in the autocomplete taxon search
 taxon_result_number = 20
@@ -186,9 +187,9 @@ ENABLE_MEDIAS = true
 [DATASETS_CONFIG]
     [[DATASETS_CONFIG.FORMFIELDS]]
         DATASET = 1
-        # attention: l'id_taxon list doit être une chaine de charactère pour pouvoir passer une valeur null (aucune liste)
-        ID_TAXON_LIST = 5
-        [[DATASETS_CONFIG.FORMFIELDS.RELEVE]]
+        # ID_TAXON_LIST = -1 to disable list search and search on full taxref
+        ID_TAXON_LIST = -1
+        [[ADD_FIELDS.FORMFIELDS.RELEVE]]
             type_widget = "select"
             attribut_label = "Label"
             attribut_name = "name"

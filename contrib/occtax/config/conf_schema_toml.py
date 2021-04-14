@@ -4,7 +4,7 @@
    Fichier à ne pas modifier. Paramètres surcouchables dans config/config_gn_module.tml
 """
 
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, post_load
 
 
 class MapListConfig(Schema):
@@ -154,12 +154,16 @@ default_media_fields_details = ['title_fr', 'description_fr', 'id_nomenclature_m
 
 class DatasetFieldsConfiguration(Schema):
     # config liée au formulaire dynamique OCCTAX par dataset
+    DATASET = fields.Integer()
+    # missing : fill with global id_taxon_list
+    ID_TAXON_LIST = fields.Integer()
     RELEVE = fields.List(fields.Dict(), missing=[])
     OCCURRENCE = fields.List(fields.Dict(), missing=[])
     COUNTING = fields.List(fields.Dict(), missing=[])
 
 
-class FormFieldConfiguration(Schema):
+
+class DatasetConfiguration(Schema):
     # config liée au formulaire dynamique OCCTAX par dataset
     ID_DATASET = fields.Integer(required=True)
     FORMFIELDS = fields.Nested(DatasetFieldsConfiguration, missing={})
@@ -182,7 +186,7 @@ class GnModuleSchemaConf(Schema):
     list_messages = fields.Dict(missing=list_messages)
     digital_proof_validator = fields.Boolean(missing=True)
     releve_map_zoom_level = fields.Integer()
-    id_taxon_list = fields.Integer(missing=100)
+    id_taxon_list = fields.Integer(missing=None)
     taxon_result_number = fields.Integer(missing=20)
     id_observers_list = fields.Integer(missing=1)
     default_maplist_columns = fields.List(fields.Dict(), missing=default_map_list_conf)
@@ -201,3 +205,14 @@ class GnModuleSchemaConf(Schema):
     export_col_name_additional_data = fields.String(missing=default_export_col_name_additional_data)
     MEDIA_FIELDS_DETAILS = fields.List(fields.String(), missing=default_media_fields_details)
 
+    @post_load()
+    def set_missing_id_taxon_list(self, data):
+        """
+        If no ID_TAXON_LIST is set for a additionnal fields
+        we push the global module 'id_taxon_list'
+        """
+        addi_fielfs = data['ADD_FIELDS']['FORMFIELDS']
+        for a in addi_fielfs:
+            if not a.get('ID_TAXON_LIST'):
+                a['ID_TAXON_LIST'] = data['id_taxon_list']
+        return data
