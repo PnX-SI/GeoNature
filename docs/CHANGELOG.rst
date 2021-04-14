@@ -6,12 +6,14 @@ CHANGELOG
 ------------------
 
 TOCHECK :
+
 - Voir https://github.com/PnX-SI/GeoNature/compare/develop
 - Tester l'outil Occtax de conservation d'info d'un taxon à l'autre
 - Rétrocompatibilité des évolutions ? Bien tester installation des différents modules
 - Bien vérifier update SQL
 - Bien vérifier notes de versions liées à des changements à appliquer suite aux évolutions techniques
 - Mettre à jour template de module ?
+- Bien tester les emails de validation pré-remplis
 
 **🐛 Corrections**
 
