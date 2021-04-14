@@ -246,6 +246,15 @@
           <br />
 
 
+          <div *ngIf="dataset.keywords">
+            <div class="b">Mots-clés :</div>
+            <div class="a"> {{dataset.keywords}} </div>
+          </div>
+
+          <br/>
+
+          <h3>Spécificités GeoNature</h3>
+
           <div *ngIf="dataset.modules">
             <div class="b">Module(s) GeoNature associé(s) au jeu de données :</div>
             <div class="a">{{ dataset.modules }}</div>
@@ -253,9 +262,9 @@
 
           <br />
 
-          <div *ngIf="dataset.keywords">
-            <div class="b">Mots-clés :</div>
-            <div class="a"> {{dataset.keywords}} </div>
+          <div *ngIf="dataset.additional_fields">
+            <div class="b">Champ(s) addionnel(s) du jeu de données :</div>
+            <div class="a">{{ dataset.additional_fields |json }}</div>
           </div>
 
         </div>

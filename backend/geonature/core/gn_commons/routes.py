@@ -139,7 +139,6 @@ def get_additional_fields():
             q = q.filter(or_(*ors))
         else:
             q = q.filter(TAddtitionalFields.objects.any(code_object=params["object_code"]))
-    print(q)
     return [d.as_dict(True, depth=1) for d in q.all()]
 
 

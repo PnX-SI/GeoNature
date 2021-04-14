@@ -201,18 +201,6 @@ class GnModuleSchemaConf(Schema):
     ENABLE_MEDIAS = fields.Boolean(missing=True)
     ENABLE_MY_PLACES = fields.Boolean(missing=True)
     DISPLAY_VERNACULAR_NAME = fields.Boolean(missing=True)
-    DATASETS_CONFIG = fields.List(fields.Nested(FormFieldConfiguration), missing=[])
     export_col_name_additional_data = fields.String(missing=default_export_col_name_additional_data)
     MEDIA_FIELDS_DETAILS = fields.List(fields.String(), missing=default_media_fields_details)
 
-    @post_load()
-    def set_missing_id_taxon_list(self, data):
-        """
-        If no ID_TAXON_LIST is set for a additionnal fields
-        we push the global module 'id_taxon_list'
-        """
-        addi_fielfs = data['ADD_FIELDS']['FORMFIELDS']
-        for a in addi_fielfs:
-            if not a.get('ID_TAXON_LIST'):
-                a['ID_TAXON_LIST'] = data['id_taxon_list']
-        return data

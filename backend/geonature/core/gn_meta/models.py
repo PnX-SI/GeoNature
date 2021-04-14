@@ -1,7 +1,7 @@
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship, exc
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
@@ -307,6 +307,7 @@ class TDatasets(CruvedHelper):
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
     id_digitizer = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    id_taxa_list = DB.Column(DB.Integer)
 
     creator = DB.relationship("User", lazy="select")
     modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
@@ -500,6 +501,7 @@ class TAcquisitionFramework(CruvedHelper):
         data = q.all()
         return list(set([d.id_acquisition_framework for d in data]))
 
+from geonature.core.gn_commons.models import cor_field_dataset
 
 @serializable
 class TDatasetDetails(TDatasets):
@@ -539,6 +541,9 @@ class TDatasetDetails(TDatasets):
             TAcquisitionFramework.id_acquisition_framework == TDatasets.id_acquisition_framework
         ),
     )
+
+    additional_fields = DB.relationship("TAdditionnalFields", secondary=cor_field_dataset)
+ 
 
 
 @serializable

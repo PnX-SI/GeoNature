@@ -264,8 +264,7 @@ class BibWidgets(DB.Model):
     def __repr__(self):
         return self.widget_name.capitalize()
 
-from geonature.core.gn_permissions.models import TObjects
-from geonature.core.gn_meta.models import TDatasets
+
 
 cor_field_object = DB.Table(
     'cor_field_object',
@@ -287,6 +286,9 @@ cor_field_dataset = DB.Table(
     DB.Column('id_dataset', DB.Integer, DB.ForeignKey('gn_meta.t_datasets.id_dataset')),
     schema="gn_commons",
 )
+
+from geonature.core.gn_permissions.models import TObjects
+from geonature.core.gn_meta.models import TDatasets
 
 @serializable
 class TAddtitionalFields(DB.Model):
