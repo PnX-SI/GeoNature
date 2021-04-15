@@ -15,7 +15,7 @@ export class LoginComponent implements OnInit {
   enable_user_management: boolean = false;
   public casLogin: boolean;
   public disableSubmit = false;
-
+  public enablePublicAccess = AppConfig.PUBLIC_ACCESS.ENABLE_PUBLIC_ACCESS;
   identifiant: FormGroup;
   password: FormGroup;
   form: FormGroup;
@@ -45,6 +45,14 @@ export class LoginComponent implements OnInit {
 
   register(user) {
     this._authService.signinUser(user);
+  }
+
+  registerPublic() {
+    const userPublic = {
+      "username": AppConfig.PUBLIC_ACCESS.PUBLIC_LOGIN,
+      "password": AppConfig.PUBLIC_ACCESS.PUBLIC_PASSWORD,
+    } 
+    this._authService.signinUser(userPublic);
   }
 
   loginOrPwdRecovery(data) {
