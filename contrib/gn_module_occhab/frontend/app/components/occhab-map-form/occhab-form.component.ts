@@ -4,6 +4,7 @@ import { OcchabStoreService } from "../../services/store.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OccHabDataService } from "../../services/data.service";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
+import { geomanDrawOption } from "@geonature_common/map/geoman-draw.options";
 import { MapService } from "@geonature_common/map/map.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs/Subscription";
@@ -20,6 +21,7 @@ import { L } from "leaflet";
 })
 export class OccHabFormComponent implements OnInit {
   public leafletDrawOptions = leafletDrawOption;
+  public geomanDrawOptions = geomanDrawOption;
   public filteredHab: any;
   private _sub: Subscription;
   public editionMode = false;
@@ -59,9 +61,10 @@ export class OccHabFormComponent implements OnInit {
       this.datasets = data.data;
     })
     this.leafletDrawOptions;
-    leafletDrawOption.draw.polyline = false;
-    leafletDrawOption.draw.circle = false;
-    leafletDrawOption.draw.rectangle = false;
+    this.geomanDrawOptions;
+    geomanDrawOption.draw.drawPolyline = false;
+    geomanDrawOption.draw.drawCircle = true;
+    geomanDrawOption.draw.drawRectangle = false;
 
     this.currentStations = [];
 

@@ -84,7 +84,7 @@
       </pnx-marker>-->
       <pnx-leaflet-draw
         [geojson]="currentGeoJsonFileLayer"
-        [options]="leafletDrawOptions"
+        [options]="geomanDrawOptions"
         zoomLevel="5"
         (layerDrawed)="occHabForm.patchGeoValue($event)"
       >

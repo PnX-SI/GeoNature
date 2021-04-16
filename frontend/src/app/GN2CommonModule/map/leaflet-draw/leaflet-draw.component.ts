@@ -6,6 +6,7 @@ import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../../service/common.service';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
+import { geomanDrawOption } from '@geonature_common/map/geoman-draw.options';
 import { GeoJSON } from 'togeojson';
 
 import 'leaflet-draw';
@@ -49,7 +50,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
    * Voir `exemple
    * <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/occtax/occtax-map-form/occtax-map-form.component.ts#L27>`_
    */
-  @Input() options = leafletDrawOption;
+  @Input() options = geomanDrawOption;
   @Input() zoomLevel = AppConfig.MAPCONFIG.ZOOM_LEVEL_RELEVE;
   /** Niveau de zoom à partir du quel on peut dessiner sur la carte */
   @Output() layerDrawed = new EventEmitter<GeoJSON>();
@@ -64,24 +65,29 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   }
 
   enableLeafletDraw() {
-    this.options.edit['featureGroup'] = this.drawnItems;
-    this.options.edit['featureGroup'] = this.mapservice.leafletDrawFeatureGroup;
-    this.drawControl = new this._Le.Control.Draw(this.options);
+    //this.options.edit['featureGroup'] = this.drawnItems;
+    //this.options.edit['featureGroup'] = this.mapservice.leafletDrawFeatureGroup;
+    //this.drawControl = new this._Le.Control.Draw(this.options);
+
     //this.map.addControl(this.drawControl);
-    this.map.pm.addControls({
-      drawPolyline: false,
-      drawRectangle: false,
-      drawCircle: false,
-      drawCircleMarker: false,
-      editMode: false,
-      dragMode: false,
-      cutPolygon: false,
-      removalMode: false
-    });
+    this.map.pm.addControls(this.options.draw);
 
     if (!this.bEnable) {
       this.disableDrawControl();
     }
+
+    this.map.on("pm:globaldrawmodetoggled", e => {
+      // Redraw the geometrical layers when the Polygon tool is toggled
+      // to avoid opacity incompatibilities with Geoman tools
+      if (e['shape'] == "Polygon") {
+        this.map.eachLayer((layer) => {
+          if(layer['feature']) {
+            layer.remove();
+            layer.addTo(this.map);
+          }
+        });
+      }
+    });
 
     this.map.on('pm:drawstart', e => {
       this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
