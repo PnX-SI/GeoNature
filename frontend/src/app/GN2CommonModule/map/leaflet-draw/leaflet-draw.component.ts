@@ -76,6 +76,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       this.disableDrawControl();
     }
 
+    // Geoman triggers
     this.map.on("pm:globaldrawmodetoggled", e => {
       // Redraw the geometrical layers when the Polygon tool is toggled
       // to avoid opacity incompatibilities with Geoman tools
@@ -142,6 +143,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       }
     });
 
+    // Leaflet triggers
     this.map.on(this._Le.Draw.Event.DRAWSTART, e => {
       this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
       if (this.map.getZoom() < this.zoomLevel) {
