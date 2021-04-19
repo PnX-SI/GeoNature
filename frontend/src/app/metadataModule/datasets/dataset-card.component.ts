@@ -8,7 +8,6 @@ import { TranslateService } from "@ngx-translate/core";
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ModuleService } from '@geonature/services/module.service';
-import { BaseChartDirective } from 'ng2-charts';
 import { AppConfig } from "@geonature_config/app.config";
 import { CommonService } from '@geonature_common/service/common.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
@@ -135,9 +134,10 @@ export class DatasetCardComponent implements OnInit {
     });
 
     //vérification que l'utilisateur est autorisé à utiliser le module d'import
-    this.moduleService.moduleSub
+    this.moduleService.fetchModules()
       .pipe(
         map((modules: any[]): boolean => {
+          console.log(modules);
           if (modules) {
             for (let i = 0; i < modules.length; i++) {
               //recherche du module d'import et test si l'utilisateur a des droits dessus

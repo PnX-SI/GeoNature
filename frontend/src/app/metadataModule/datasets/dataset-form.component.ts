@@ -52,7 +52,7 @@ export class DatasetFormComponent implements OnInit {
     this.form = this.datasetFormS.form;
 
     // get Modules
-    if (!this.moduleService.modules) {
+    if (!this.moduleService.getModules()) {
       this.moduleService.fetchModules();
     }
 

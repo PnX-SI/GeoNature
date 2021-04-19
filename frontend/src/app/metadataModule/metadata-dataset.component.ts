@@ -38,7 +38,7 @@ export class MetadataDatasetComponent implements OnInit {
 
   ngOnInit() {
     //vérification que l'utilisateur est autorisé à utiliser le module d'import
-    this.moduleService.moduleSub
+    this.moduleService.fetchModules()
       .pipe(
         map((modules: any[]): boolean => {
           if (modules) {
