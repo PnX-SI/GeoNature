@@ -42,7 +42,6 @@ export class OcctaxMapListComponent
   public availableColumns: Array<any>;
   public pathEdit: string;
   public pathInfo: string;
-  public idName: string;
   public apiEndPoint: string;
   public occtaxConfig: any;
   // public formsDefinition = FILTERSLIST;
@@ -50,7 +49,6 @@ export class OcctaxMapListComponent
   public formsSelected = [];
   public moduleSub: Subscription;
   public cardContentHeight: number;
-  public rowPerPage: number;
 
   advandedFilterOpen = false;
   @ViewChild(NgbModal)
@@ -83,7 +81,7 @@ export class OcctaxMapListComponent
     this.mapListService.zoomOnLayer = true;
     //config
     this.occtaxConfig = ModuleConfig;
-    this.idName = "id_releve_occtax";
+    this.mapListService.idName = "id_releve_occtax";
     this.apiEndPoint = "occtax/releves";
     // refresh forms
     this.refreshForms();
@@ -101,13 +99,12 @@ export class OcctaxMapListComponent
     // columns available for display
     this.mapListService.availableColumns = this.occtaxConfig.available_maplist_column;
 
-    this.mapListService.idName = this.idName;
     // FETCH THE DATA
     this.mapListService.refreshUrlQuery();
     this.calculateNbRow();
     this.mapListService.getData(
       this.apiEndPoint,
-      [{ param: "limit", value: this.rowPerPage }],
+      [{ param: "limit", value: this.mapListService.rowPerPage }],
       this.displayLeafletPopupCallback.bind(this) //afin que le this présent dans displayLeafletPopupCallback soit ce component.
     );
     // end OnInit
@@ -136,7 +133,7 @@ export class OcctaxMapListComponent
   calculateNbRow() {
     let wH = window.innerHeight;
     let listHeight = wH - 64 - 150;
-    this.rowPerPage = Math.round(listHeight / 40);
+    this.mapListService.rowPerPage = Math.round(listHeight / 40);
   }
 
   refreshForms() {
