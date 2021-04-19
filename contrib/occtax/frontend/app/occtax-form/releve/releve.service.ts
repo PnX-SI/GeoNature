@@ -149,7 +149,7 @@ export class OcctaxFormReleveService {
       'id_dataset': idDataset,
       'module_code': 'OCCTAX',
       'object_code': 'OCCTAX_RELEVE'
-    }).subscribe(additionalFields => {
+    }).subscribe(additionalFields => {      
       this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
         this.occtaxFormService.globalReleveAddFields,
         this.occtaxFormService.datasetReleveAddFields,
@@ -158,7 +158,7 @@ export class OcctaxFormReleveService {
       this.occtaxFormService.datasetReleveAddFields = additionalFields;
       this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.globalReleveAddFields.concat(
         additionalFields
-      );
+      );      
       //On charge les nomenclatures additionnels
       let NOMENCLATURES = [];
       additionalFields.forEach((field) => {
@@ -205,9 +205,7 @@ export class OcctaxFormReleveService {
         // emitEvent : false (if the patchvalue change q value (eg id_dataset), the form is enabled and we don't want this)
         // HACK: wait for the dynamicformGenerator Component to set the additional fields
         // TODO: subscribe to an observable of dynamicFormCOmponent to wait it
-        setTimeout(() => {
-          console.log(values);
-          
+        setTimeout(() => {          
          this.propertiesForm.patchValue(values, {emitEvent: false});
         }, 2000);
       });
@@ -311,7 +309,6 @@ export class OcctaxFormReleveService {
           'module_code': "OCCTAX",
           'object_code': 'OCCTAX_RELEVE'
         }).map(additionalFields => {
-          console.log("la");
           
           // remove old dataset addField from globalAddFields
           this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
@@ -320,6 +317,7 @@ export class OcctaxFormReleveService {
             additionalFields
           );
           this.occtaxFormService.datasetReleveAddFields = additionalFields;
+          
           this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.globalReleveAddFields.concat(
             additionalFields
           );

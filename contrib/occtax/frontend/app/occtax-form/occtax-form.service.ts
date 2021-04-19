@@ -179,7 +179,7 @@ export class OcctaxFormService {
       let inter = Object.assign([], globalAddFields);
       // remove formde dataset additional field from globalAddfield
       inter = globalAddFields.filter(globalField => {
-        return !formerDatasetAddFields.map(f => f.cor_additional.id_field).includes(globalField.cor_additional.id_field)
+        return !formerDatasetAddFields.map(f => f.id_field).includes(globalField.id_field)
       })
 
       return inter;

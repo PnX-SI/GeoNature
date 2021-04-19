@@ -70,7 +70,7 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
       // (on affiche tous les champs sans les filtrer au préalable)
       this.formsSelected = this.formsDefinition;
       this.formsDefinition.forEach(formDef => {
-        if (formDef.type_widget) {
+        if (formDef.type_widget) {          
           this._dynformService.addNewControl(formDef, this.myFormGroup);
         }
       });

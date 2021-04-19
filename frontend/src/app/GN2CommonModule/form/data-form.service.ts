@@ -591,6 +591,7 @@ export class DataFormService {
           "objects": data.objects,
           "modules": data.modules,
           "datasets": data.datasets,
+          ...data.additional_attributes
         }
       })
         

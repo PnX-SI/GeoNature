@@ -304,8 +304,6 @@
       [searchBar]="false"
     >
     </pnx-multiselect>
-    {{formDefComp.values |json}}
-
     <pnx-datalist
       *ngSwitchCase="'datalist'"
       [parentFormControl]="form.get(formDefComp.attribut_name)"
