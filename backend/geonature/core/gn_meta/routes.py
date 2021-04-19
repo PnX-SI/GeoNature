@@ -43,7 +43,6 @@ from geonature.core.gn_meta.models import (
     CorDatasetActor,
     CorDatasetProtocol,
     CorDatasetTerritory,
-    CorModuleDataset,
     TAcquisitionFramework,
     TAcquisitionFrameworkDetails,
     CorAcquisitionFrameworkActor,

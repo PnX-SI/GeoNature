@@ -9,8 +9,6 @@ from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from geoalchemy2 import Geometry
 
-from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
-from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
@@ -172,20 +170,22 @@ class TValidations(DB.Model):
 
     id_validation = DB.Column(DB.Integer, primary_key=True)
     uuid_attached_row = DB.Column(UUID(as_uuid=True))
-    id_nomenclature_valid_status = DB.Column(DB.Integer)
+    id_nomenclature_valid_status = DB.Column(
+        DB.Integer,
+        ForeignKey("ref_nomenclature.t_nomenclatures.id_nomenclature")
+    )
     id_validator = DB.Column(DB.Integer)
     validation_auto = DB.Column(DB.Boolean)
     validation_comment = DB.Column(DB.Unicode)
     validation_date = DB.Column(DB.DateTime)
     validation_auto = DB.Column(DB.Boolean)
-    validation_label = DB.relationship(
-        TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_valid_status),
-        foreign_keys=[id_nomenclature_valid_status],
-    )
-    validator_role = DB.relationship(
-        User, primaryjoin=(User.id_role == id_validator), foreign_keys=[id_validator]
-    )
+    # validation_label = DB.relationship(
+    #     "TNomenclatures",
+    #     primaryjoin=("TNomenclatures.id_nomenclature" == id_nomenclature_valid_status),
+    # )
+    # validator_role = DB.relationship(
+    #     "User", primaryjoin=("User.id_role" == id_validator), foreign_keys=[id_validator]
+    # )
 
     def __init__(
         self,
@@ -290,6 +290,7 @@ cor_field_dataset = DB.Table(
 from geonature.core.gn_permissions.models import TObjects
 from geonature.core.gn_meta.models import TDatasets
 
+
 @serializable
 class TAddtitionalFields(DB.Model):
     __tablename__ = "t_additonal_fields"
@@ -302,12 +303,19 @@ class TAddtitionalFields(DB.Model):
     quantitative = DB.Column(DB.Boolean)
     unity = DB.Column(DB.String)
     field_values = DB.Column(JSONB)
-    code_nomenclature_type = DB.Column(DB.String, ForeignKey(BibNomenclaturesTypes.mnemonique))
+    code_nomenclature_type = DB.Column(DB.String, 
+        ForeignKey("ref_nomenclatures.bib_nomenclatures_types.mnemonique"),
+    )
     additional_attributes = DB.Column(JSONB)
-    id_widget = DB.Column(DB.Integer, ForeignKey(BibWidgets.id_widget))
+    id_widget = DB.Column(DB.Integer, 
+        ForeignKey("gn_commons.bib_widgets.id_widget")
+    )
     id_list = DB.Column(DB.Integer)
-    type_widget = DB.relationship(BibWidgets)
-    bib_nomenclature_type = DB.relationship(BibNomenclaturesTypes)
+    type_widget = DB.relationship("BibWidgets")
+    bib_nomenclature_type = DB.relationship(
+        "BibNomenclaturesTypes",
+        primaryjoin="BibNomenclaturesTypes.mnemonique == TAddtitionalFields.code_nomenclature_type"
+    )
     # cor_addi = DB.relationship("CoradditionalFields")
 #     module = DB.relationship(TModules)
     modules = DB.relationship(

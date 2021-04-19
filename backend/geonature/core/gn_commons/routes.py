@@ -118,7 +118,7 @@ def get_additional_fields():
                     ]
                 q = q.filter(or_(*ors))
             else:
-                TAddtitionalFields.datasets.any(id_dataset=params["id_dataset"])
+                q = q.filter(TAddtitionalFields.datasets.any(id_dataset=params["id_dataset"]))
     if "module_code" in params:
         if len(params["module_code"].split(",")) > 1:
 
@@ -139,6 +139,7 @@ def get_additional_fields():
             q = q.filter(or_(*ors))
         else:
             q = q.filter(TAddtitionalFields.objects.any(code_object=params["object_code"]))
+    print(q)
     return [d.as_dict(True, depth=1) for d in q.all()]
 
 

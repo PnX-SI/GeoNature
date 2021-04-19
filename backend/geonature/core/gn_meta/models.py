@@ -1,7 +1,7 @@
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship, exc
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy.dialects.postgresql import UUID
 from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
@@ -11,7 +11,7 @@ from utils_flask_sqla.serializers import serializable
 from geonature.utils.env import DB
 from geonature.core.users.models import BibOrganismes
 
-from geonature.core.gn_commons.models import cor_module_dataset
+from geonature.core.gn_commons.models import cor_module_dataset, cor_field_dataset
 
 
 class CorAcquisitionFrameworkObjectif(DB.Model):
@@ -308,7 +308,6 @@ class TDatasets(CruvedHelper):
     validable = DB.Column(DB.Boolean)
     id_digitizer = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
     id_taxa_list = DB.Column(DB.Integer)
-
     creator = DB.relationship("User", lazy="select")
     modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
@@ -501,8 +500,6 @@ class TAcquisitionFramework(CruvedHelper):
         data = q.all()
         return list(set([d.id_acquisition_framework for d in data]))
 
-from geonature.core.gn_commons.models import cor_field_dataset
-
 @serializable
 class TDatasetDetails(TDatasets):
     """
@@ -541,8 +538,12 @@ class TDatasetDetails(TDatasets):
             TAcquisitionFramework.id_acquisition_framework == TDatasets.id_acquisition_framework
         ),
     )
+    additional_fields = DB.relationship(
+        "TAddtitionalFields",
+        secondary=cor_field_dataset
+    )
 
-    additional_fields = DB.relationship("TAdditionnalFields", secondary=cor_field_dataset)
+        
  
 
 

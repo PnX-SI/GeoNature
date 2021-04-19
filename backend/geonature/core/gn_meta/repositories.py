@@ -201,24 +201,13 @@ def get_dataset_details_dict(id_dataset, session_role):
     Use for get_one datasert
     """
 
-    q = DB.session.query(TDatasetDetails, TAddtitionalFields)
-    q = q.outerjoin(
-        cor_field_dataset, 
-        cor_field_dataset.c.id_dataset == TDatasetDetails.id_dataset
-    ).outerjoin(
-        TAddtitionalFields, 
-        TAddtitionalFields.id_field == cor_field_dataset.c.id_field
-    )
+    q = DB.session.query(TDatasetDetails)
     q = cruved_filter(q, TDatasetDetails, session_role)
     try:
         data = q.filter(TDatasetDetails.id_dataset == id_dataset).one()
     except NoResultFound:
         return None
-
-
-    dataset = data[0].as_dict(True, depth=1)
-    if len(data) > 0:
-        dataset["additional_fields"] = data[1].as_dict()
+    dataset = data.as_dict(True, depth=2)
 
     imports = requests.get(
         current_app.config["API_ENDPOINT"] + "/import/by_dataset/" + str(id_dataset),
@@ -230,9 +219,9 @@ def get_dataset_details_dict(id_dataset, session_role):
     user_cruved = cruved_scope_for_user_in_module(
         id_role=session_role.id_role, module_code="METADATA",
     )[0]
-    cruved = data[0].get_object_cruved(
+    cruved = data.get_object_cruved(
         user_cruved=user_cruved,
-        id_object=data[0].id_dataset,
+        id_object=data.id_dataset,
         ids_object_user=TDatasets.get_user_datasets(session_role, only_user=True),
         ids_object_organism=TDatasets.get_user_datasets(session_role, only_user=False),
     )
