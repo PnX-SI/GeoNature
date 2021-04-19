@@ -37,22 +37,19 @@ def send_mail(recipients, subject, msg_html):
     """
     if not MAIL:
         raise Exception("No configuration for email")
+    
+    with MAIL.connect() as conn:
+        mail_sender = current_app.config.get('MAIL_DEFAULT_SENDER') 
+        if not mail_sender:
+            mail_sender = current_app.config["MAIL_USERNAME"]
+        msg = Message(
+            subject, 
+            sender=mail_sender, 
+            recipients=clean_recipients(recipients)
+        )
+        msg.html = msg_html
+        conn.send(msg)
 
-    try:
-        with MAIL.connect() as conn:
-            mail_sender = current_app.config.get('MAIL_DEFAULT_SENDER') 
-            if not mail_sender:
-                mail_sender = current_app.config["MAIL_USERNAME"]
-            msg = Message(
-                subject, 
-                sender=mail_sender, 
-                recipients=clean_recipients(recipients)
-            )
-            msg.html = msg_html
-            conn.send(msg)
-    except SMTPException as e:
-        gunicorn_error_logger.critical('Email sending error')
-        raise
 
 
 

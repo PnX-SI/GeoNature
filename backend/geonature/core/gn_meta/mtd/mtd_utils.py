@@ -16,7 +16,7 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkActor,
 )
 from geonature.core.gn_commons.models import TModules
-from geonature.core.users.models import BibOrganismes
+from pypnusershub.db.models import Organisme as BibOrganismes
 from geonature.core.users import routes as users
 from geonature.core.auth.routes import insert_user_and_org, get_user_from_id_inpn_ws
 from pypnusershub.db.models import User
@@ -119,11 +119,13 @@ def create_cor_object_actors(actors, new_object):
 
             # We finally build the correlation corresponding to the JDD/AF
             if isinstance(new_object, TAcquisitionFramework):
-                cor_actor = CorAcquisitionFrameworkActor(**dict_cor)
-                new_object.cor_af_actor.append(cor_actor)
+                if not any(map(lambda cafa: dict_cor['id_organism']==cafa.id_organism and act['actor_role']==cafa.id_nomenclature_actor_role.clauses.clauses[1].value, new_object.cor_af_actor)):
+                    cor_actor = CorAcquisitionFrameworkActor(**dict_cor)
+                    new_object.cor_af_actor.append(cor_actor)
             elif isinstance(new_object, TDatasets):
-                cor_actor = CorDatasetActor(**dict_cor)
-                new_object.cor_dataset_actor.append(cor_actor)
+                if not any(map(lambda ca: dict_cor['id_organism']==ca.id_organism and act['actor_role']==ca.id_nomenclature_actor_role.clauses.clauses[1].value, new_object.cor_dataset_actor)):
+                    cor_actor = CorDatasetActor(**dict_cor)
+                    new_object.cor_dataset_actor.append(cor_actor)
 
 
 def post_acquisition_framework(uuid=None, id_user=None, id_organism=None):
@@ -217,13 +219,16 @@ def post_jdd_from_user(id_user=None, id_organism=None):
             ds_copy = copy(ds)
             for key, value in ds_copy.items():
                 if key.startswith("id_nomenclature"):
-                    if value is not None:
-                        ds[key] = func.ref_nomenclatures.get_id_nomenclature(
-                            NOMENCLATURE_MAPPING.get(key), value
+                    response = DB.session.query(
+                        func.ref_nomenclatures.get_id_nomenclature(
+                        NOMENCLATURE_MAPPING.get(key), value
                         )
+                    ).one_or_none()
+                    if response and response[0]:
+                        ds[key] = response[0]
                     else:
                         ds.pop(key)
-            
+        
             #  set validable = true
             ds["validable"] = True
             dataset = TDatasets(**ds)

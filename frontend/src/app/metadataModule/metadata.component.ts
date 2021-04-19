@@ -290,9 +290,17 @@ export class MetadataComponent implements OnInit {
     this._dfs.publishAf(this.afPublishModalId).subscribe(
       res => this.getAcquisitionFrameworksAndDatasets(),
       error => {
-        this._commonService.regularToaster(
-          'error', "Une erreur s'est produite lors de la fermeture du cadre d'acquisition. Contactez l'administrateur"
-          )
+        if(error.error.name == 'mailError') {
+          this._commonService.regularToaster(
+            'warning', "Erreur lors de l'envoie du mail de confirmation. Le cadre d'acquisition a bien été fermé"
+            )
+        } else {
+          this._commonService.regularToaster(
+            'error', "Une erreur s'est produite lors de la fermeture du cadre d'acquisition. Contactez l'administrateur"
+            )
+        }
+        
+
     }
     )
 

@@ -199,7 +199,6 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
   ],
   providers: [
     CommonService,
-    CruvedStoreService,
     DataFormService,
     DynamicFormService,
     FormService,

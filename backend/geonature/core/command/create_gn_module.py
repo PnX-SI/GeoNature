@@ -42,6 +42,7 @@ from geonature.utils.gn_module_import import (
     MSG_OK,
 )
 from geonature.utils.errors import GNModuleInstallError, GeoNatureError
+from geonature.core.gn_commons.models import TModules
 from geonature import create_app
 
 
@@ -72,8 +73,6 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
         # TODO vérifier que l'utilisateur est root ou du groupe geonature
         app = create_app(with_external_mods=False)
         with app.app_context():
-            from geonature.core.gn_commons.models import TModules
-
             sys.path.append(module_path)
             # Vérification de la conformité du module
 
@@ -115,7 +114,7 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                     # Installation du module
                     run_install_gn_module(app, module_path)
                     # Enregistrement de la config du module
-                    gn_module_register_config(module_code.lower())
+                    gn_module_register_config(module_code)
 
                     if enable_frontend:
                         install_frontend_dependencies(module_path)
@@ -124,7 +123,7 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                         # generation du routing du frontend
                         frontend_routes_templating(app)
                         # generation du fichier de configuration du frontend
-                        create_module_config(app, module_code.lower(), build=False)
+                        create_module_config(app, module_code, build=False)
 
                     if build and enable_frontend:
                         # Rebuild the frontend
@@ -258,4 +257,4 @@ def update_module_configuration(module_code, build, prod):
     if prod:
         subprocess.call(["sudo", "supervisorctl", "reload"])
     app = create_app(with_external_mods=False)
-    create_module_config(app, module_code.lower(), build=build)
+    create_module_config(app, module_code, build=build)

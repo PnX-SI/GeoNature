@@ -5,9 +5,28 @@ CHANGELOG
 2.6.3 (unreleased)
 ------------------
 
+TOCHECK :
+
+- Voir https://github.com/PnX-SI/GeoNature/compare/develop
+- Tester l'outil Occtax de conservation d'info d'un taxon à l'autre
+- Rétrocompatibilité des évolutions ? Bien tester installation des différents modules
+- Bien vérifier update SQL
+- Bien vérifier notes de versions liées à des changements à appliquer suite aux évolutions techniques
+- Mettre à jour template de module ?
+- Bien tester les emails de validation pré-remplis
+
 **🐛 Corrections**
 
-* 
+* Occtax : correction d'un bug sur le champs observateur lors de la modification d'un relevé (#1177)
+* Occtax : renseignement par défaut de l'utilisateur connecté à la création d'un relevé en mode "observers_txt" (#1292)
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
+* Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.6.3.sql)
+* Des choses à faire au niveau des évolutions des commandes GeoNature ?
 
 2.6.2 (2021-02-15)
 ------------------
@@ -476,12 +495,12 @@ par :
 **⚠️ Notes de version**
 
 * Vous pouvez passer directement à cette version depuis la 2.2.x, mais en suivant les notes des versions intermédiaires (NB : il n'est pas nécessaire d’exécuter le script ``migrate.sh`` des versions précédentes)
-* Installez ``pip3`` et ``virtualenv``
-::
+* Installez ``pip3`` et ``virtualenv``::
 
     sudo apt-get update
     sudo apt-get install python3-pip
     sudo pip3 install virtualenv==20.0.1
+
 * Rajoutez la ligne ``gun_timeout=30`` au fichier ``config/settings.ini`` puis rechargez supervisor (``sudo supervisorctl reload``). Il s'agit du temps maximal (en seconde) autorisé pour chaque requête. A augmenter, si vous avez déjà rencontré des problèmes de timeout.
 * Depuis le répertoire ``frontend``, lancez la commande ``nvm install``
 
