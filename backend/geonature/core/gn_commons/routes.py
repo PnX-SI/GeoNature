@@ -106,7 +106,7 @@ def get_one_parameter(param_name, id_org=None):
 @json_resp
 def get_additional_fields():
     params = request.args
-    q = DB.session.query(TAddtitionalFields)
+    q = DB.session.query(TAddtitionalFields).order_by(TAddtitionalFields.field_order)
     if "id_dataset" in params:
         if params["id_dataset"] == "null":
             # ~ operator means NOT EXISTS

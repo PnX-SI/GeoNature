@@ -495,7 +495,7 @@ COMMENT ON COLUMN t_places.id_role IS 'Clé étrangère vers la table utilisateu
 COMMENT ON COLUMN t_places.place_name IS 'Nom du lieu';
 COMMENT ON COLUMN t_places.place_geom IS 'Géométrie du lieu';
 
-CREATE TABLE gn_commons.t_additonal_fields (
+CREATE TABLE gn_commons.t_additional_fields (
 	id_field serial NOT NULL,
 	field_name varchar(255) NOT NULL,
 	field_label varchar(50) NOT NULL,
@@ -512,7 +512,9 @@ CREATE TABLE gn_commons.t_additonal_fields (
   id_list integer,
   key_label varchar(250),
   key_value varchar(250),
-  api varchar(250)
+  api varchar(250),
+  exportable boolean default TRUE,
+  field_order integer NULL 
 );
 
 CREATE TABLE gn_commons.cor_field_object(
@@ -560,8 +562,8 @@ ALTER TABLE ONLY t_mobile_apps
 ALTER TABLE ONLY t_places
     ADD CONSTRAINT pk_t_places PRIMARY KEY (id_place);
 
-ALTER TABLE ONLY gn_commons.t_additonal_fields
-    ADD CONSTRAINT pk_t_additonal_fields PRIMARY KEY (id_field);
+ALTER TABLE ONLY gn_commons.t_additional_fields
+    ADD CONSTRAINT pk_t_additional_fields PRIMARY KEY (id_field);
 
 ALTER TABLE ONLY gn_commons.cor_field_module
     ADD CONSTRAINT pk_cor_field_module PRIMARY KEY (id_field, id_module);
@@ -600,7 +602,7 @@ ALTER TABLE ONLY t_places
 
 ALTER TABLE ONLY gn_commons.cor_field_object
   ADD CONSTRAINT fk_cor_field_obj_field FOREIGN KEY (id_field) 
-  REFERENCES gn_commons.t_additonal_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
+  REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY gn_commons.cor_field_object
   ADD CONSTRAINT fk_cor_field_object FOREIGN KEY (id_object) 
@@ -608,7 +610,7 @@ ALTER TABLE ONLY gn_commons.cor_field_object
 
 ALTER TABLE ONLY gn_commons.cor_field_module
   ADD CONSTRAINT fk_cor_field_module_field FOREIGN KEY (id_field) 
-  REFERENCES gn_commons.t_additonal_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
+  REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY gn_commons.cor_field_module
   ADD CONSTRAINT fk_cor_field_module FOREIGN KEY (id_module) 
@@ -616,7 +618,7 @@ ALTER TABLE ONLY gn_commons.cor_field_module
 
 ALTER TABLE ONLY gn_commons.cor_field_dataset
   ADD CONSTRAINT fk_cor_field_dataset_field FOREIGN KEY (id_field) 
-  REFERENCES gn_commons.t_additonal_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
+  REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY gn_commons.cor_field_dataset
   ADD CONSTRAINT fk_cor_field_dataset FOREIGN KEY (id_dataset) 
@@ -768,8 +770,8 @@ INSERT INTO gn_commons.bib_widgets (widget_name) VALUES
 	 ('time'),
 	 ('medias'),
 	 ('bool_radio'),
-	 ('date'),
 	 ('multiselect'),
 	 ('number'),
 	 ('taxonomy'),
-	 ('observers');
+	 ('html'),
+   ;

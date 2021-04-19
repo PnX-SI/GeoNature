@@ -3,8 +3,9 @@ from flask_admin.contrib.sqla import ModelView
 class BibFieldAdmin(ModelView):
     form_columns = (
         "type_widget", "field_name", "field_label", "required", "description",
-        "quantitative", "unity", "field_values", "bib_nomenclature_type", "id_list",
-        "modules", "objects", "datasets"
+        "quantitative", "unity", "field_values", "field_order", "exportable",
+         "bib_nomenclature_type", "id_list", "modules", "objects", "datasets",
+         "additional_attributes"
     )
 
     column_display_all_relations = True
@@ -18,6 +19,8 @@ class BibFieldAdmin(ModelView):
         "quantitative": {"label":"Quantitatif"},
         "unity": {"label":"Unité"},
         "field_values": {"label":"Valeurs"},
+        "field_order": {"label":"Ordre"},
+        "additional_attributes": {"label":"Attribut additionnels"},
     }
     column_descriptions = {
         "bib_nomenclature_type":'Si Type widget = Nomenclature',

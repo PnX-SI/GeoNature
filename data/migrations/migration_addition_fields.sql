@@ -351,7 +351,7 @@ AS $BODY$  DECLARE
       rel.geom_4326,
       rel.place_name AS "nomLieu",
       rel.precision,
-      (occ.additional_fields || rel.additional_fields) || ccc.additional_fields AS additional_data
+      (occ.additional_fields || rel.additional_fields || ccc.additional_fields) AS additional_data
     FROM pr_occtax.t_releves_occtax rel
       LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
       LEFT JOIN pr_occtax.cor_counting_occtax ccc ON ccc.id_occurrence_occtax = occ.id_occurrence_occtax
@@ -365,6 +365,23 @@ AS $BODY$  DECLARE
     ,tax.cd_ref , tax.lb_nom, tax.nom_vern , hab.cd_hab, hab.lb_code, hab.lb_hab_fr
     ;
 
+
+  -- ( SELECT string_agg(media.title_fr::text, ' - '::text) AS string_agg
+  --          FROM gn_commons.t_medias media
+  --            JOIN gn_commons.bib_tables_location tab_loc ON tab_loc.id_table_location = media.id_table_location
+  --         WHERE tab_loc.table_name::text = 'cor_counting_occtax'::text AND ccc.unique_id_sinp_occtax = media.uuid_attached_row) AS "titreMedias",
+  --   ( SELECT string_agg(media.description_fr, ' - '::text) AS string_agg
+  --          FROM gn_commons.t_medias media
+  --            JOIN gn_commons.bib_tables_location tab_loc ON tab_loc.id_table_location = media.id_table_location
+  --         WHERE tab_loc.table_name::text = 'cor_counting_occtax'::text AND ccc.unique_id_sinp_occtax = media.uuid_attached_row) AS "descriptionMedias",
+  --   ( SELECT string_agg(
+  --               CASE
+  --                   WHEN media.media_path IS NOT NULL THEN concat(gn_commons.get_default_parameter('url_api'::text), '/', media.media_path)::character varying
+  --                   ELSE media.media_url
+  --               END::text, ' - '::text) AS string_agg
+  --          FROM gn_commons.t_medias media
+  --            JOIN gn_commons.bib_tables_location tab_loc ON tab_loc.id_table_location = media.id_table_location
+  --         WHERE tab_loc.table_name::text = 'cor_counting_occtax'::text AND ccc.unique_id_sinp_occtax = media.uuid_attached_row) AS "URLMedias"
 
 INSERT INTO gn_permissions.t_objects (code_object, description_object) VALUES 
   ('OCCTAX_RELEVE', 'Représente la table pr_occtax.t_releves_occtax'),

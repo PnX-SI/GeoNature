@@ -11,7 +11,7 @@ from utils_flask_sqla.serializers import serializable
 from geonature.utils.env import DB
 from geonature.core.users.models import BibOrganismes
 
-from geonature.core.gn_commons.models import cor_module_dataset, cor_field_dataset
+from geonature.core.gn_commons.models import cor_field_dataset, cor_module_dataset
 
 
 class CorAcquisitionFrameworkObjectif(DB.Model):

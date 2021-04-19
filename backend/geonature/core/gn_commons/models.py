@@ -40,7 +40,6 @@ cor_module_dataset = DB.Table(
     schema="gn_commons",
 )
 
-
 @serializable
 class CorModuleDataset(DB.Model):
     __tablename__ = "cor_module_dataset"
@@ -55,7 +54,6 @@ class CorModuleDataset(DB.Model):
         ForeignKey("gn_meta.t_datasets.id_dataset"),
         primary_key=True,
     )
-
 
 @serializable
 class TModules(DB.Model):
@@ -265,7 +263,6 @@ class BibWidgets(DB.Model):
         return self.widget_name.capitalize()
 
 
-
 cor_field_object = DB.Table(
     'cor_field_object',
     DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additonal_fields.id_field')),
@@ -286,9 +283,8 @@ cor_field_dataset = DB.Table(
     DB.Column('id_dataset', DB.Integer, DB.ForeignKey('gn_meta.t_datasets.id_dataset')),
     schema="gn_commons",
 )
-
-from geonature.core.gn_permissions.models import TObjects
 from geonature.core.gn_meta.models import TDatasets
+from geonature.core.gn_permissions.models import TObjects
 
 
 @serializable
@@ -311,16 +307,19 @@ class TAddtitionalFields(DB.Model):
         ForeignKey("gn_commons.bib_widgets.id_widget")
     )
     id_list = DB.Column(DB.Integer)
+    exportable = DB.Column(DB.Boolean, default=True)
+    field_order = DB.Column(DB.Integer)
     type_widget = DB.relationship("BibWidgets")
     bib_nomenclature_type = DB.relationship(
         "BibNomenclaturesTypes",
         primaryjoin="BibNomenclaturesTypes.mnemonique == TAddtitionalFields.code_nomenclature_type"
     )
-    # cor_addi = DB.relationship("CoradditionalFields")
-#     module = DB.relationship(TModules)
+    additional_attributes = DB.Column(JSONB)
     modules = DB.relationship(
         "TModules",
-        secondary=cor_field_module
+        secondary=cor_field_module,
+        #primaryjoin="TAddtitionalFields.id_field == cor_field_module.id_field"
+        # secondaryjoin="TModules.id_module == 1"
     )
     objects = DB.relationship(
         "TObjects",
