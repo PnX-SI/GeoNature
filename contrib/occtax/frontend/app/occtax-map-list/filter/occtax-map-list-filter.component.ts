@@ -39,7 +39,7 @@ export class OcctaxMapListFilterComponent implements OnInit {
 
   searchData() {
     this.mapListService.zoomOnLayer = true;
-    this.mapListService.refreshUrlQuery(this.mapListService.rowPerPage);
+    this.mapListService.refreshUrlQuery(this.occtaxMapListService.rowPerPage);
     const params = [];
     for (let key in this.occtaxMapListService.dynamicFormGroup.value) {
       let value = this.occtaxMapListService.dynamicFormGroup.value[key];

@@ -26,6 +26,7 @@ import { MediaService } from '@geonature_common/service/media.service';
 import { OcctaxFormReleveService } from "../occtax-form/releve/releve.service";
 import { OcctaxFormOccurrenceService } from "../occtax-form/occurrence/occurrence.service";
 import { OcctaxFormService } from "../occtax-form/occtax-form.service";
+import { OcctaxMapListService } from "./occtax-map-list.service";
 
 // /occurrence/occurrence.service";
 
@@ -71,7 +72,8 @@ export class OcctaxMapListComponent
     public mediaService: MediaService,
     private _releveFormService: OcctaxFormReleveService,
     private _occurrenceFormService: OcctaxFormOccurrenceService,
-    private _occtaxFormService: OcctaxFormService
+    private _occtaxFormService: OcctaxFormService,
+    private occtaxMapListS: OcctaxMapListService
 
   ) { }
 
@@ -104,7 +106,7 @@ export class OcctaxMapListComponent
     this.calculateNbRow();
     this.mapListService.getData(
       this.apiEndPoint,
-      [{ param: "limit", value: this.mapListService.rowPerPage }],
+      [{ param: "limit", value: this.occtaxMapListS.rowPerPage }],
       this.displayLeafletPopupCallback.bind(this) //afin que le this présent dans displayLeafletPopupCallback soit ce component.
     );
     // end OnInit
@@ -133,7 +135,7 @@ export class OcctaxMapListComponent
   calculateNbRow() {
     let wH = window.innerHeight;
     let listHeight = wH - 64 - 150;
-    this.mapListService.rowPerPage = Math.round(listHeight / 40);
+    this.occtaxMapListS.rowPerPage = Math.round(listHeight / 40);
   }
 
   refreshForms() {
