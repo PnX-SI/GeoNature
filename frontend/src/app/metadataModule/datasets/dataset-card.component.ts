@@ -137,7 +137,6 @@ export class DatasetCardComponent implements OnInit {
     this.moduleService.fetchModules()
       .pipe(
         map((modules: any[]): boolean => {
-          console.log(modules);
           if (modules) {
             for (let i = 0; i < modules.length; i++) {
               //recherche du module d'import et test si l'utilisateur a des droits dessus
@@ -171,8 +170,6 @@ export class DatasetCardComponent implements OnInit {
     const url = `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`;
     const dataUrl = this.chart ? this.chart.ctx.canvas.toDataURL('image/png') : '';
     this._dfs.uploadCanvas(dataUrl).subscribe(data => {
-      console.log(url);
-
       window.open(url);
     });
   }
@@ -186,7 +183,6 @@ export class DatasetCardComponent implements OnInit {
   }
 
   sensiReportImport(id_import) {
-    console.log("OK");
     const imp = this.dataset.imports.find(imp => imp.id_import == id_import);
     this._dataService.downloadSensiReport(
       `Sensibilite_Import-${id_import}_JDD-${imp.id_dataset}`,
