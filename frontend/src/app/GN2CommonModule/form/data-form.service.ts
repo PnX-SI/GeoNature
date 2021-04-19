@@ -469,17 +469,18 @@ export class DataFormService {
     });
   }
 
-  getModulesList(exclude: Array<string>) {
+  getModulesList(exclude: Array<string> = []): Observable<Array<any>> {
     let queryString: HttpParams = new HttpParams();
     exclude.forEach(mod_code => {
       queryString = queryString.append('exclude', mod_code);
     });
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/modules`, {
+    return this._http.get<Array<any>>(`${AppConfig.API_ENDPOINT}/gn_commons/modules`, {
       params: queryString
     });
   }
 
-  getModuleByCodeName(module_code) {
+  getModuleByCodeName(module_code): Observable<any> {
+    console.log("WARNING: use moduleService.getModule(module_code) instead?");
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/modules/${module_code}`);
   }
 

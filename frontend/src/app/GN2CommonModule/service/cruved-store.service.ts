@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 
 import { Observable, of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable()
 export class CruvedStoreService {
@@ -17,11 +17,13 @@ export class CruvedStoreService {
     // This may be solved by adding a dedicated service which do not
     // requires Router or ActivatedRoute.
     // For now, simply ignore all errors…
-    let obs = this._api.getCruved().pipe(catchError(err => of([])))
-    obs.subscribe(cruved => {
-        this.cruved = cruved;
-      });
-    return obs;
+    return this._api.getCruved().pipe(
+        catchError(err => of([])),
+        map(cruved => {
+            this.cruved = cruved;
+            return cruved;
+        }),
+    );
   }
 
   clearCruved(): void {

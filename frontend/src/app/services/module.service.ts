@@ -1,44 +1,36 @@
 import { Injectable } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { BehaviorSubject } from 'rxjs';
+import { Observable, of } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 @Injectable()
 export class ModuleService {
-  // all active modules
-  // all modules exepted GEONATURE, for sidebar display
-  public displayedModules: Array<any>;
-  private $module: BehaviorSubject<Array<any>> = new BehaviorSubject(null);
-  public moduleSub = this.$module.asObservable();
+  private modules: Array<any>;
 
-  constructor(private _api: DataFormService) {
-    this.fetchModules();
-  }
+  constructor(private _api: DataFormService) { }
 
-  get modules(): Array<any> {        
-    const modules = this.$module.getValue()
-    this.setModulesLocalStorage(modules)
-    return modules;
-  }
-
-  fetchModules() {
-    this._api.getModulesList([]).subscribe(data => {      
-      this.$module.next(data);
-      this.displayedModules = data.filter(mod => {
-        return (
-          mod.module_code.toLowerCase() !== 'geonature' &&
-          (mod.active_frontend || mod.module_external_url)
-        );
-      });
-      this.setModulesLocalStorage(data);
-    });
-  }
-
-  setModulesLocalStorage(modules) {
-    localStorage.setItem('modules', JSON.stringify(modules));
+  fetchModules(): Observable<any> {
+    // see CruvedStoreService.fetchCruved comments about the catchError
+    return this._api.getModulesList([]).pipe(
+      catchError(err => of([])), // TODO: error MUST be handled in case we are logged! (typically, api down)
+      map((modules) => {
+        this.modules = modules;
+        return modules;
+      }),
+    );
   }
 
   getModules() {
-    return localStorage.getItem('modules');
+    return this.modules;
+  }
+
+  getDisplayedModules() {
+    return this.modules.filter(mod => {
+      return (
+        mod.module_code.toLowerCase() !== 'geonature' &&
+        (mod.active_frontend || mod.module_external_url)
+      );
+    });
   }
 
   /**
@@ -46,15 +38,11 @@ export class ModuleService {
    * @param module_code: name of the module
    */
   getModule(module_code: string) {
-    const modules = localStorage.getItem('modules');
-    let searchModule = null;
-    if (modules && JSON.parse(modules)) {
-      JSON.parse(modules).forEach(mod => {
-        if (mod.module_code.toLowerCase() === module_code.toLowerCase()) {
-          searchModule = mod;
-        }
-      });
+    for (let mod of this.modules) {
+      if (mod.module_code.toLowerCase() === module_code.toLowerCase()) {
+        return mod;
+      }
     }
-    return searchModule;
+    return null;  // module with this code not found
   }
 }

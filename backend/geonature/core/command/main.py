@@ -3,6 +3,7 @@
 """
 
 import logging
+from os import environ
 
 import click
 
@@ -87,8 +88,10 @@ def dev_back(host, port):
 
         - geonature dev_back --port=8080 --port=0.0.0.0
     """
+    if not environ.get('FLASK_ENV'):
+        environ['FLASK_ENV'] = 'development'
     app = create_app()
-    app.run(host=host, port=int(port), debug=True)
+    app.run(host=host, port=int(port))
 
 
 @main.command()

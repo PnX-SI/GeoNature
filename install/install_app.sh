@@ -153,7 +153,7 @@ echo "Installation du backend geonature..."
 pip install --editable "${BASE_DIR}"  # geonature ne support pas encore autre chose que editable
 
 echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
-geonature generate_frontend_config --conf-file ${BASE_DIR}/config/geonature_config.toml --build=false
+geonature generate_frontend_config --build=false
 
 
 echo "Création du fichier de log des erreurs GeoNature"

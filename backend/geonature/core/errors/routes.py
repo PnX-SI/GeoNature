@@ -1,4 +1,5 @@
 from urllib.parse import urlparse
+import sys
 
 from flask import current_app, request, json, redirect
 from werkzeug.exceptions import Unauthorized, InternalServerError, HTTPException
@@ -64,9 +65,14 @@ def handle_internal_server_error(e):
         })
     return response
 
+
 @current_app.errorhandler(Exception)
 def handle_exception(e):
     if request.accept_mimetypes.best == 'application/json':
+        # exceptions are logged by flask when not handled or when re-raised.
+        # as here we construct a json error response, we have to log the exception our-self.
+        current_app.log_exception(sys.exc_info())
+        # TODO: verify that sentry is able to collect these exceptions!
         server_error = InternalServerError(original_exception=e)
         return handle_internal_server_error(server_error)
     else:
