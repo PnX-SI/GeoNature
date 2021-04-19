@@ -2,7 +2,7 @@ import { Component, Input, OnInit, OnDestroy } from "@angular/core";
 import { FormGroup, FormControl } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { GeoJSON } from "leaflet";
-import { map, filter } from "rxjs/operators";
+import { map, filter, tap } from "rxjs/operators";
 import { ModuleConfig } from "../../module.config";
 import { CommonService } from "@geonature_common/service/common.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
@@ -65,12 +65,18 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
 
   initHabFormSub() {
     // set current cd_hab to the releve form
-    this.occtaxFormReleveService.habitatForm.valueChanges.pipe(
-      filter((hab) => hab !== null && hab.cd_hab !== undefined),
-      map((hab) => hab.cd_hab)
-    ).subscribe(cd_hab => {
-      this.releveForm.get('properties').get('cd_hab').setValue(cd_hab);
-    });
+    this.occtaxFormReleveService.habitatForm.valueChanges
+      .pipe(
+        filter((hab) => hab !== null),
+        map((hab: any): number => {
+          if (hab.cd_hab !== undefined && Number.isInteger(hab.cd_hab)) {
+            return hab.cd_hab;
+          }
+          return null
+        })
+      ).subscribe(cd_hab => {
+        this.releveForm.get('properties').get('cd_hab').setValue(cd_hab);
+      });
 
   }
 
