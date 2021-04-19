@@ -318,8 +318,6 @@ class TAddtitionalFields(DB.Model):
     modules = DB.relationship(
         "TModules",
         secondary=cor_field_module,
-        #primaryjoin="TAddtitionalFields.id_field == cor_field_module.id_field"
-        # secondaryjoin="TModules.id_module == 1"
     )
     objects = DB.relationship(
         "TObjects",
