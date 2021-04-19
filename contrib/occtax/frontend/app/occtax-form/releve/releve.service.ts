@@ -135,7 +135,7 @@ export class OcctaxFormReleveService {
     this.propertiesForm.disable();
 
     this.dataFormService.getadditionalFields({
-      'module_code': ['OCCTAX', 'GEONATURE'],
+      'module_code': 'OCCTAX',
       'object_code': 'OCCTAX_RELEVE',
       "id_dataset": "null"
     }).subscribe(additionalFields => {
@@ -308,7 +308,7 @@ export class OcctaxFormReleveService {
       concatMap(releve => {
         return this.dataFormService.getadditionalFields({
           'id_dataset': releve.id_dataset,
-          'module_code': 'OCCTAX',
+          'module_code': "OCCTAX",
           'object_code': 'OCCTAX_RELEVE'
         }).map(additionalFields => {
           console.log("la");
