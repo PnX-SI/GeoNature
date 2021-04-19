@@ -10,6 +10,7 @@ from flask import (
     send_from_directory,
     render_template,
 )
+from geonature.core.gn_commons.models import TAddtitionalFields
 from sqlalchemy import or_, func, distinct
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import joinedload
@@ -772,24 +773,17 @@ def export(info_role):
 
     #Ajout des colonnes additionnels
     additional_col_names = []
+    query_add_fields = DB.session.query(TAddtitionalFields).filter(
+        TAddtitionalFields.modules.any(module_code="OCCTAX")
+    )
     if "id_dataset" in request.args:
-        config_dataset = get_dataset_config(request.args['id_dataset'])
-        if "EXPORT_FIELDS" in config_dataset:
-            additional_col_names = config_dataset["EXPORT_FIELDS"]
-        if not additional_col_names:
-            additional_col_names = get_default_export_fields(config_dataset)
+        additional_col_names = query_add_fields.filter(TAddtitionalFields.datasets.any(
+            id_dataset=request.args['id_dataset']
+        )).all()
+    else:
+        additional_col_names = query_add_fields.filter(~TAddtitionalFields.datasets.any()).all()
 
-    #TODO pourquoi ajouter les colonnes quand elle ne sont pas définis en conf ?: 
-    if not additional_col_names:
-        for row in data:
-            dict_row = export_view.as_dict(row)
-            if export_col_name_additional_data in dict_row:
-                additional_data = dict_row[export_col_name_additional_data]
-                if additional_data:
-                    for col_name in additional_data:
-                        if col_name not in additional_col_names:
-                            additional_col_names.append(col_name)
-
+    additional_col_names = [field.field_name for field in additional_col_names]
     if export_format == "csv":
         columns = (
             export_columns
