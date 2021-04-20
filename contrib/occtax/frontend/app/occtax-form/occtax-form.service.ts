@@ -1,4 +1,4 @@
-import { Injectable, ComponentFactoryResolver } from "@angular/core";
+import { Injectable } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { BehaviorSubject } from "rxjs";
 import { filter, tap, skip } from "rxjs/operators";
@@ -44,6 +44,8 @@ export class OcctaxFormService {
     private _dataS: OcctaxDataService,
 
   ) {
+    console.log("INIT ");
+    
     this.currentUser = this._auth.getCurrentUser();
      //this.truc = [...this.globalReleveAddFields, ...this.datasetReleveAddFields]
 

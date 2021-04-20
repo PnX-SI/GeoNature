@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, ViewContainerRef, ViewChild, ComponentRef } from "@angular/core";
+import { Component, OnInit, OnDestroy, ComponentRef } from "@angular/core";
 import {
   animate,
   state,
@@ -45,8 +45,6 @@ import { MatDialog } from "@angular/material";
   ],
 })
 export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
-  @ViewChild("dynamiqueContainerOccurence", { read: ViewContainerRef }) public containerOccurence: ViewContainerRef;
-  componentOccurenceRef: ComponentRef<any>;
   public occtaxConfig = ModuleConfig;
   public appConfig = AppConfig;
   public occurrenceForm: FormGroup;
@@ -95,7 +93,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    this.occtaxFormOccurrenceService.dynamicContainerOccurence = this.containerOccurence;
     //a chaque reinitialisation du formulaire on place le focus sur la zone de saisie du taxon
     const taxonInput: HTMLElement = document.getElementById("taxonInput");
     this.occtaxFormOccurrenceService.occurrence.subscribe(() =>

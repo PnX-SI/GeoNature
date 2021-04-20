@@ -4,6 +4,8 @@ import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { GNPanelModule } from "@geonature/templates/gn-panel/gn-panel.module";
+import { MatDialogRef } from "@angular/material";
+
 // Components
 import { OcctaxMapListComponent } from "./occtax-map-list/occtax-map-list.component";
 import { OcctaxMapListFilterComponent } from "./occtax-map-list/filter/occtax-map-list-filter.component";
@@ -70,17 +72,21 @@ const routes: Routes = [
     OcctaxFormCountingComponent,
     OcctaxFormParamDialog,
   ],
-  entryComponents: [OcctaxFormParamDialog],
+  //entryComponents: [OcctaxFormParamDialog],
   providers: [
+    {
+      provide: MatDialogRef,
+      useValue: {}
+    },
     OcctaxDataService,
     MapListService,
-    OcctaxFormService,
+    // OcctaxFormService,
     OcctaxFormMapService,
-    OcctaxFormReleveService,
-    OcctaxFormOccurrenceService,
-    OcctaxFormCountingService,
-    OcctaxTaxaListService,
-    OcctaxFormParamService,
+    //OcctaxFormReleveService,
+    //OcctaxFormOccurrenceService,
+    //OcctaxFormCountingService,
+    // OcctaxTaxaListService,
+    // OcctaxFormParamService,
   ],
 })
 export class GeonatureModule {}

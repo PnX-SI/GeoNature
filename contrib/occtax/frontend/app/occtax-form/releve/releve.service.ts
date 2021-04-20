@@ -133,7 +133,8 @@ export class OcctaxFormReleveService {
 
     //on desactive le form, il sera réactivé si la geom est ok
     this.propertiesForm.disable();
-
+    console.log("LAAA");
+    
     this.dataFormService.getadditionalFields({
       'module_code': 'OCCTAX',
       'object_code': 'OCCTAX_RELEVE',

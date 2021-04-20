@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import {
   animate,
   state,
@@ -41,6 +41,8 @@ import { OcctaxFormParamService } from "./form-param.service";
   ],
 })
 export class OcctaxFormParamDialog implements OnInit {
+  @ViewChild("modalContent") modalContent;
+
   public occtaxConfig: any;
   public paramsForm: FormGroup;
   public selectedIndex: number = null;

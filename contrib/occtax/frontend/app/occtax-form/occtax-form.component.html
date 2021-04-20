@@ -43,11 +43,11 @@
           *ngIf="occtaxConfig.ENABLE_SETTINGS_TOOLS"
           mat-icon-button
           class="setting-btn"
-          (click)="openParametersDialog()"
+          (click)="openParametersDialog(modalComponent)"
           matTooltip="Paramétrer la valeur par défaut des différents champs"
         >
           <mat-icon
-            [matBadge]="occtaxFormParamService.numberOfActive"
+            [matBadge]="occtaxFormParamService?.numberOfActive"
             matBadgeColor="primary"
             class="example-tab-icon"
           >
@@ -107,7 +107,7 @@
               info
             </mat-icon>
           </h5>
-          <pnx-occtax-form-taxa-list></pnx-occtax-form-taxa-list>
+          <!-- <pnx-occtax-form-taxa-list></pnx-occtax-form-taxa-list> -->
 
         </div>
 
@@ -128,4 +128,5 @@
     </div>
 
   </div>
+  <pnx-occtax-form-param #modalComponent ></pnx-occtax-form-param>
 </div>

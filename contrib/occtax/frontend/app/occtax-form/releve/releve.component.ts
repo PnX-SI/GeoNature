@@ -62,6 +62,14 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
       } 
     });
 
+    // this._dataService.getadditionalFields({
+    //   'module_code': 'OCCTAX',
+    //   'object_code': 'OCCTAX_RELEVE',
+    //   "id_dataset": "null"
+    // }).subscribe(additionalFields => {
+    //   this.occtaxFormService.globalReleveAddFields = additionalFields;
+    // })
+
   } // END INIT
 
   get dataset(): any {

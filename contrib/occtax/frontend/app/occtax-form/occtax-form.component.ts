@@ -19,12 +19,24 @@ import { OcctaxFormReleveService } from "./releve/releve.service";
 import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
+import { OcctaxFormCountingService } from "./counting/counting.service";
+import { OcctaxFormMapService } from "./map/map.service";
+import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
 
 
 @Component({
   selector: "pnx-occtax-form",
   templateUrl: "./occtax-form.component.html",
-  styleUrls: ["./occtax-form.component.scss"]
+  styleUrls: ["./occtax-form.component.scss"],
+  providers : [
+    OcctaxFormService,
+    OcctaxFormReleveService,
+    OcctaxFormOccurrenceService,
+    OcctaxTaxaListService,
+    OcctaxFormCountingService,
+    OcctaxFormMapService,
+    OcctaxFormParamService
+  ],
 })
 export class OcctaxFormComponent implements OnInit, AfterViewInit {
   public occtaxConfig = ModuleConfig;
@@ -47,10 +59,11 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxTaxaListService: OcctaxTaxaListService,
     private _ds: OcctaxDataService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _modalService: NgbModal
   ) { }
 
-  ngOnInit() {
+  ngOnInit() {    
     //si modification, récuperation de l'ID du relevé
     let id = this._route.snapshot.paramMap.get("id");
     if (id && Number.isInteger(Number(id))) {
@@ -105,14 +118,22 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     }
   }
 
-  openParametersDialog(): void {
-    const dialogConfig = new MatDialogConfig();
+  openParametersDialog(modalComponent): void {
+    console.log(modalComponent);
+    
+    this._modalService.open(
+      modalComponent.modalContent,
+      {windowClass: "large-modal"}
+    )
+    
+    // const dialogConfig = new MatDialogConfig();
 
-    dialogConfig.data = {};
-    dialogConfig.maxHeight = window.innerHeight - 20 + "px";
-    dialogConfig.position = { top: "30px" };
+    // dialogConfig.data = {};
+    // dialogConfig.maxHeight = window.innerHeight - 20 + "px";
+    // dialogConfig.position = { top: "30px" };
 
-    const dialogRef = this.dialog.open(OcctaxFormParamDialog, dialogConfig);
+    // // const dialogRef = this.dialog.open(OcctaxFormParamDialog, dialogConfig);
+    // const dialogRef = this.dialog.open(test, dialogConfig);
   }
   /**
    *
