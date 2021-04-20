@@ -12,7 +12,6 @@ import { CommonService } from "@geonature_common/service/common.service"
 import { ModuleConfig } from "../module.config";
 import { OcctaxFormService } from "./occtax-form.service";
 import { MapService } from "@geonature_common/map/map.service";
-import { OcctaxFormParamDialog } from "./form-param/form-param.dialog";
 import { OcctaxFormParamService } from "./form-param/form-param.service";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { OcctaxFormReleveService } from "./releve/releve.service";
@@ -35,7 +34,6 @@ import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
     OcctaxTaxaListService,
     OcctaxFormCountingService,
     OcctaxFormMapService,
-    OcctaxFormParamService
   ],
 })
 export class OcctaxFormComponent implements OnInit, AfterViewInit {
@@ -125,15 +123,6 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
       modalComponent.modalContent,
       {windowClass: "large-modal"}
     )
-    
-    // const dialogConfig = new MatDialogConfig();
-
-    // dialogConfig.data = {};
-    // dialogConfig.maxHeight = window.innerHeight - 20 + "px";
-    // dialogConfig.position = { top: "30px" };
-
-    // // const dialogRef = this.dialog.open(OcctaxFormParamDialog, dialogConfig);
-    // const dialogRef = this.dialog.open(test, dialogConfig);
   }
   /**
    *

@@ -55,7 +55,6 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
       for (const controlName in this.myFormGroup.controls) {
         this.myFormGroup.removeControl(controlName)
       }
-            
       this.initDynamicForm();
     }
   }
@@ -70,10 +69,11 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
       // (on affiche tous les champs sans les filtrer au préalable)
       this.formsSelected = this.formsDefinition;
       this.formsDefinition.forEach(formDef => {
-        if (formDef.type_widget) {          
+        if (formDef.type_widget) {
           this._dynformService.addNewControl(formDef, this.myFormGroup);
         }
       });
+
     } else {
       this.selectControl.valueChanges
         .filter(value => value !== null)

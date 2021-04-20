@@ -4,7 +4,6 @@ import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { GNPanelModule } from "@geonature/templates/gn-panel/gn-panel.module";
-import { MatDialogRef } from "@angular/material";
 
 // Components
 import { OcctaxMapListComponent } from "./occtax-map-list/occtax-map-list.component";
@@ -23,12 +22,7 @@ import { OcctaxFormParamDialog } from "./occtax-form/form-param/form-param.dialo
 import { OcctaxDataService } from "./services/occtax-data.service";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 
-import { OcctaxFormService } from "./occtax-form/occtax-form.service";
 import { OcctaxFormMapService } from "./occtax-form/map/map.service";
-import { OcctaxFormReleveService } from "./occtax-form/releve/releve.service";
-import { OcctaxFormOccurrenceService } from "./occtax-form/occurrence/occurrence.service";
-import { OcctaxFormCountingService } from "./occtax-form/counting/counting.service";
-import { OcctaxTaxaListService } from "./occtax-form/taxa-list/taxa-list.service";
 import { OcctaxFormParamService } from "./occtax-form/form-param/form-param.service";
 
 import { MatSlideToggleModule, MatTabsModule } from "@angular/material";
@@ -72,21 +66,11 @@ const routes: Routes = [
     OcctaxFormCountingComponent,
     OcctaxFormParamDialog,
   ],
-  //entryComponents: [OcctaxFormParamDialog],
   providers: [
-    {
-      provide: MatDialogRef,
-      useValue: {}
-    },
     OcctaxDataService,
     MapListService,
-    // OcctaxFormService,
     OcctaxFormMapService,
-    //OcctaxFormReleveService,
-    //OcctaxFormOccurrenceService,
-    //OcctaxFormCountingService,
-    // OcctaxTaxaListService,
-    // OcctaxFormParamService,
+    OcctaxFormParamService,
   ],
 })
 export class GeonatureModule {}

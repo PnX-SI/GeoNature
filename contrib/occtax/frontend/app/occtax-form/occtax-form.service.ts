@@ -43,12 +43,8 @@ export class OcctaxFormService {
     private _commonService: CommonService,
     private _dataS: OcctaxDataService,
 
-  ) {
-    console.log("INIT ");
-    
+  ) {    
     this.currentUser = this._auth.getCurrentUser();
-     //this.truc = [...this.globalReleveAddFields, ...this.datasetReleveAddFields]
-
 
     //observation de l'URL
     this.id_releve_occtax

@@ -74,7 +74,6 @@ export class DynamicFormComponent implements OnInit, OnChanges {
       currentFormValue.push(event.target.value);
       // Patch value to declench validators
       formControl.patchValue(currentFormValue);
-      console.log(event.target.value);
     } else {
       // Find the unselected element
       currentFormValue.forEach((val, index) => {

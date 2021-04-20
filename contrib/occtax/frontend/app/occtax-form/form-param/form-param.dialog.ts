@@ -6,7 +6,6 @@ import {
   transition,
   trigger,
 } from "@angular/animations";
-import { MatDialogRef } from "@angular/material";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { combineLatest } from "rxjs";
 import { filter, map, pairwise } from "rxjs/operators";
@@ -65,7 +64,6 @@ export class OcctaxFormParamDialog implements OnInit {
   }
 
   constructor(
-    public dialogRef: MatDialogRef<OcctaxFormParamDialog>,
     private fb: FormBuilder,
     private occtaxFormMapService: OcctaxFormMapService,
     private occtaxFormReleveService: OcctaxFormReleveService,

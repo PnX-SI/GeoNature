@@ -131,26 +131,29 @@ export class OcctaxFormReleveService {
       ),
     ]);
 
+
     //on desactive le form, il sera réactivé si la geom est ok
     this.propertiesForm.disable();
-    console.log("LAAA");
-    
+
     this.dataFormService.getadditionalFields({
       'module_code': 'OCCTAX',
       'object_code': 'OCCTAX_RELEVE',
       "id_dataset": "null"
-    }).subscribe(additionalFields => {
+    })
+    .subscribe(additionalFields => {
       this.occtaxFormService.globalReleveAddFields = additionalFields;
+
     })
 
   }
 
   onDatasetChanged(idDataset) {
+    
     this.dataFormService.getadditionalFields({
       'id_dataset': idDataset,
       'module_code': 'OCCTAX',
       'object_code': 'OCCTAX_RELEVE'
-    }).subscribe(additionalFields => {      
+    }).subscribe(additionalFields => {
       this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
         this.occtaxFormService.globalReleveAddFields,
         this.occtaxFormService.datasetReleveAddFields,
@@ -173,8 +176,17 @@ export class OcctaxFormReleveService {
           this.occtaxFormService.storeAdditionalNomenclaturesValues(nomenclatures)
         });
       }
-    })
-
+    },
+    // error 404 for ex
+    () => {
+      this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
+        this.occtaxFormService.globalReleveAddFields,
+        this.occtaxFormService.datasetReleveAddFields,
+        []
+      );
+      this.occtaxFormService.datasetReleveAddFields = [];
+    }
+    )
   }
 
   /**
@@ -202,13 +214,18 @@ export class OcctaxFormReleveService {
           return editionMode ? this.releveValues : this.defaultValues;
         })
       )
-      .subscribe((values) => {        
-        // emitEvent : false (if the patchvalue change q value (eg id_dataset), the form is enabled and we don't want this)
+      .subscribe((values) => {
+        // re disable the form here
+        // Angular bug: when we add additionnal form controls, it enable the form
+        if(!values.id_releve_occtax) {
+          this.propertiesForm.disable();
+        }
         // HACK: wait for the dynamicformGenerator Component to set the additional fields
         // TODO: subscribe to an observable of dynamicFormCOmponent to wait it
-        setTimeout(() => {          
+        setTimeout(() => {       
          this.propertiesForm.patchValue(values, {emitEvent: false});
-        }, 2000);
+         this.propertiesForm.controls.observers.patchValue(values.observers);
+        }, 1000);
       });
 
     //Observation de la geometry pour récupere les info d'altitudes
@@ -220,7 +237,7 @@ export class OcctaxFormReleveService {
           if (!this.occtaxFormService.editionMode.getValue()) {
             //recup des info d'altitude uniquement en mode creation
             this.getAltitude(geojson);
-          }
+          }          
           this.propertiesForm.enable(); //active le form
         })
       )
@@ -322,11 +339,6 @@ export class OcctaxFormReleveService {
           this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.globalReleveAddFields.concat(
             additionalFields
           );
-          console.log( this.occtaxFormService.globalReleveAddFields);
-          console.log( additionalFields);
-          
-          
-
           additionalFields.forEach(field => {
             //Formattage des dates
             if(field.type_widget == "date"){
@@ -434,6 +446,7 @@ export class OcctaxFormReleveService {
                 "releve.id_nomenclature_geo_object_nature"
               ) || data["NAT_OBJ_GEO"],
           };
+          
         })
       );
   }
