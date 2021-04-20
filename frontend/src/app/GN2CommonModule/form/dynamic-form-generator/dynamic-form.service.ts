@@ -150,6 +150,9 @@ export class DynamicFormService {
 
     if (formDef.type_widget !== 'html') {
       let control = this.createControl(formDef);
+      if(formDef.disable) {
+        control.disable();
+      }
       formGroup.addControl(formDef.attribut_name, control);
     }
   }
