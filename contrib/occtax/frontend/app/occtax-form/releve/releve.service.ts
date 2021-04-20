@@ -270,6 +270,7 @@ export class OcctaxFormReleveService {
         'date_max': this.formatDate(previousReleve.properties.date_max),
         'hour_min': previousReleve.properties.hour_min,
         'hour_max': previousReleve.properties.hour_max,
+        'place_name': previousReleve.properties.place_name,
       }
     }
     return {
@@ -280,6 +281,7 @@ export class OcctaxFormReleveService {
       'date_max': null,
       'hour_min': null,
       'hour_max': null,
+      'place_name': null,
     };
   }
 
@@ -297,14 +299,17 @@ export class OcctaxFormReleveService {
             date_max: this.occtaxParamS.get("releve.date_max") || previousReleve.date_max,
             hour_min: this.occtaxParamS.get("releve.hour_min") || previousReleve.hour_min,
             hour_max: this.occtaxParamS.get("releve.hour_max") || previousReleve.hour_max,
+            place_name: this.occtaxParamS.get("releve.place_name") || previousReleve.place_name,
             altitude_min: this.occtaxParamS.get("releve.altitude_min"),
             altitude_max: this.occtaxParamS.get("releve.altitude_max"),
             meta_device_entry: "web",
             comment: this.occtaxParamS.get("releve.comment"),
-            observers: this.occtaxParamS.get("releve.observers") ||
-              previousReleve.observers || ModuleConfig.observers_txt ? null: [this.occtaxFormService.currentUser],
-            observers_txt: this.occtaxParamS.get("releve.observers_txt") || previousReleve.observers_txt || 
-              ModuleConfig.observers_txt ? [this.occtaxFormService.currentUser.nom_complet]:  null,
+            observers: !ModuleConfig.observers_txt ? 
+                        this.occtaxParamS.get("releve.observers") || previousReleve.observers || [this.occtaxFormService.currentUser] :
+                        null,
+            observers_txt: ModuleConfig.observers_txt ? 
+                            (this.occtaxParamS.get("releve.observers_txt") || previousReleve.observers_txt || [this.occtaxFormService.currentUser.nom_complet]) : 
+                            null,
             id_nomenclature_grp_typ:
               this.occtaxParamS.get("releve.id_nomenclature_grp_typ") ||
               data["TYP_GRP"],
