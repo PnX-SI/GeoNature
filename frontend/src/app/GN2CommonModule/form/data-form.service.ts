@@ -577,6 +577,7 @@ export class DataFormService {
      {params: queryString}).map(additionalFields => {
       return additionalFields.map(data => {
         return {
+          "id_field": data.id_field,
           "attribut_label": data.field_label,
           "attribut_name": data.field_name,
           "required": data.required,
