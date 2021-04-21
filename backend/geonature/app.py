@@ -14,7 +14,6 @@ from pkg_resources import iter_entry_points
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, MA, migrate
 from geonature.utils.module import import_backend_enabled_modules
-from geonature.utils.assets import process_manage_frontend_assets
 from geonature.utils.config import config_frontend
 
 @migrate.configure

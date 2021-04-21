@@ -9,6 +9,7 @@ from sqlalchemy import exc as sa_exc
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from geonature import create_app
+from geonature.utils.assets import process_manage_frontend_assets
 
 class ReverseProxied(object):
     def __init__(self, app, script_name=None, scheme=None, server=None):
@@ -35,7 +36,9 @@ class ReverseProxied(object):
 # give the app context from server.py in a app object and filter sqlalchemy warning
 with warnings.catch_warnings():
     warnings.simplefilter("ignore", category=sa_exc.SAWarning)
+
     app = create_app()
+    
     app.wsgi_app = ReverseProxied(
         app.wsgi_app, 
         script_name=urlparse(app.config["API_ENDPOINT"]).path

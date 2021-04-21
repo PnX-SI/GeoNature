@@ -108,11 +108,11 @@ cd backend
 
 # Installation du virtual env
 # Suppression du venv s'il existe
-# if [ -d 'venv/' ]
-# then
-#   echo "Suppression du virtual env existant..."
-#   sudo rm -rf venv
-# fi
+if [ -d 'venv/' ]
+then
+  echo "Suppression du virtual env existant..."
+  sudo rm -rf venv
+fi
 
 pip3 install virtualenv
 
