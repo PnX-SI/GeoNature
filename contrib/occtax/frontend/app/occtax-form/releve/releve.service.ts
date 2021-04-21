@@ -157,7 +157,6 @@ export class OcctaxFormReleveService {
       this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
         this.occtaxFormService.globalReleveAddFields,
         this.occtaxFormService.datasetReleveAddFields,
-        additionalFields
       );
       this.occtaxFormService.datasetReleveAddFields = additionalFields;
       this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.globalReleveAddFields.concat(
@@ -182,7 +181,6 @@ export class OcctaxFormReleveService {
       this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
         this.occtaxFormService.globalReleveAddFields,
         this.occtaxFormService.datasetReleveAddFields,
-        []
       );
       this.occtaxFormService.datasetReleveAddFields = [];
     }
@@ -332,7 +330,6 @@ export class OcctaxFormReleveService {
           this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
             this.occtaxFormService.globalReleveAddFields,
             this.occtaxFormService.datasetReleveAddFields,
-            additionalFields
           );
           this.occtaxFormService.datasetReleveAddFields = additionalFields;
           

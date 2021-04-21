@@ -77,14 +77,7 @@ export class OcctaxFormOccurrenceService {
       additional_fields: this.fb.group({}),
       cor_counting_occtax: this.fb.array([], Validators.required),
     });
-    this.dataFormService.getadditionalFields({
-      'module_code': ['OCCTAX', 'GEONATURE'],
-      'object_code': 'OCCTAX_DENOMBREMENT',
-      "id_dataset": "null"
-    }).subscribe(additionalFields => {
-      
-      this.occtaxFormService.globalOccurrenceAddFields = additionalFields;
-    })
+
   }
 
   /**
@@ -121,11 +114,16 @@ export class OcctaxFormOccurrenceService {
         }),
       )
       .subscribe((values) => {
-      
-
-        this.setadditionalForm(Object.assign({}, values)).subscribe(editedOccurrence => {               
+        this.setadditionalForm(Object.assign({}, values)).subscribe(
+          editedOccurrence => {                           
           this.form.patchValue(editedOccurrence);
-        })
+        },
+        // error call back: no additional fields
+        () => {
+          this.form.patchValue(values);
+          
+        }
+        )
 
       });
 
@@ -211,12 +209,10 @@ export class OcctaxFormOccurrenceService {
         this.occtaxFormService.globalOccurrenceAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
           this.occtaxFormService.globalOccurrenceAddFields,
           this.occtaxFormService.datasetReleveAddFields,
-          additionalFields
         );
         this.occtaxFormService.globalCountingAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
           this.occtaxFormService.globalCountingAddFields,
           this.occtaxFormService.datasetCountingAddFields,
-          additionalFields
         );
         this.occtaxFormService.datasetOccurrenceAddFields = [];
         this.occtaxFormService.datasetCountingAddFields = [];
@@ -252,9 +248,7 @@ export class OcctaxFormOccurrenceService {
     return this.getadditionalForm().pipe(
       mergeMap(addFields => {
         const {occurrenceAddFields, countingAddFields} = addFields;
-  
- 
-        // load all npmenclature
+        // load all nomenclature
         const nomenclature_mnemonique_types = [];
         [...occurrenceAddFields, ...countingAddFields].forEach(field => {
           if(field.type_widget === 'nomenclature') {

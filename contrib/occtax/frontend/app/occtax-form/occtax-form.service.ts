@@ -172,7 +172,7 @@ export class OcctaxFormService {
     };
   }
 
-  clearFormerAdditonnalFields(globalAddFields, formerDatasetAddFields, newDatasetAddFields) {
+  clearFormerAdditonnalFields(globalAddFields, formerDatasetAddFields) {
       // copy object in order to not modify him directly (he is linked to an input)
       let inter = Object.assign([], globalAddFields);
       // remove formde dataset additional field from globalAddfield
