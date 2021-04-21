@@ -15,6 +15,7 @@ from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, MA, migrate
 from geonature.utils.module import import_backend_enabled_modules
 from geonature.utils.config import config_frontend
+from geonature.utils.assets import process_manage_frontend_assets
 
 @migrate.configure
 def configure_alembic(alembic_config):
