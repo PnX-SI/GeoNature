@@ -11,7 +11,7 @@ from flask import (
     render_template,
 )
 from geonature.core.gn_commons.models import TAddtitionalFields
-from sqlalchemy import or_, func, distinct
+from sqlalchemy import or_, func, distinct, case
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import joinedload
 from geojson import Feature, FeatureCollection
@@ -39,7 +39,7 @@ from .repositories import (
     get_query_occtax_order,
 )
 from .schemas import OccurrenceSchema, ReleveCruvedSchema, ReleveSchema
-from .utils import get_dataset_config, get_default_export_fields, as_dict_with_add_cols
+from .utils import as_dict_with_add_cols
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
@@ -755,6 +755,11 @@ def export(info_role):
         geometry_field=export_geom_column,
         srid=export_srid,
     )
+    columns = (
+        export_columns
+        if len(export_columns) > 0
+        else [db_col.key for db_col in export_view.db_cols]
+    )
 
     releve_repository = ReleveRepository(export_view)
     q = releve_repository.get_filtered_query(info_role, from_generic_table=True)
@@ -765,6 +770,11 @@ def export(info_role):
         from_generic_table=True,
         obs_txt_column=blueprint.config["export_observer_txt_column"],
     )
+
+    if current_app.config["OCCTAX"]["ADD_MEDIA_IN_EXPORT"]:
+        q, columns = releve_repository.add_media_in_export(q, columns)
+
+
 
     data = q.all()
 
@@ -785,11 +795,6 @@ def export(info_role):
 
     additional_col_names = [field.field_name for field in additional_col_names]
     if export_format == "csv":
-        columns = (
-            export_columns
-            if len(export_columns) > 0
-            else [db_col.key for db_col in export_view.db_cols]
-        )
         # serialize data with additional cols or not
         columns = columns + additional_col_names
         if additional_col_names:

@@ -1,4 +1,5 @@
 from flask import current_app
+from urllib.parse import urljoin
 
 # nomenclatures fields
 counting_nomenclatures = [
@@ -83,6 +84,17 @@ def get_default_export_fields(form_fields):
 
 def as_dict_with_add_cols(export_view, row, additional_cols_key: str, addition_cols_to_export:list):
     row_as_dict = export_view.as_dict(row)
+    if current_app.config["OCCTAX"]["ADD_MEDIA_IN_EXPORT"]:
+        row_as_dict['titreMedia'] = row.titreMedia
+        row_as_dict['descMedia'] = row.descMedia
+        if row.urlMedia:
+            row_as_dict['urlMedia'] = (
+                row.urlMedia if row.urlMedia.startswith("http") else urljoin(
+                    current_app.config["API_ENDPOINT"], row.urlMedia
+                )
+            )
+        else:
+            row_as_dict['urlMedia'] = ""
     additional_data = row_as_dict.pop(additional_cols_key) or {}
     for col_name in addition_cols_to_export:
         row_as_dict[col_name] = additional_data.get(col_name, "")

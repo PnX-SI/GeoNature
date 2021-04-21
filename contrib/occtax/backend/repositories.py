@@ -1,13 +1,15 @@
-from sqlalchemy import or_
-from werkzeug.exceptions import NotFound
+from flask import current_app
+from sqlalchemy import or_, case, func
 from sqlalchemy.sql import func, and_
 from sqlalchemy.orm.exc import NoResultFound
+from urllib.parse import urljoin
+from werkzeug.exceptions import NotFound
 
-from pypnnomenclature.models import TNomenclatures
+
 from utils_flask_sqla.generic import testDataType
 
 from geonature.utils.env import DB
-from geonature.core.gn_commons.models import VLatestValidations
+from geonature.core.gn_commons.models import TMedias, VLatestValidations
 from geonature.utils.errors import GeonatureApiError
 from .utils import get_nomenclature_filters, is_already_joined
 
@@ -163,6 +165,33 @@ class ReleveRepository:
             return self.filter_query_generic_table(info_user)
         else:
             return self.filter_query_with_autorization(info_user)
+    
+    def add_media_in_export(self, query, columns):
+        query = query.outerjoin(
+            TMedias,
+            TMedias.uuid_attached_row == self.model.tableDef.c.permId
+        )
+        query = query.add_columns(
+            func.string_agg(TMedias.title_fr, " | ").label('titreMedia'),
+            func.string_agg(TMedias.description_fr, " | ").label('descMedia'),
+            func.string_agg(
+                case(
+                    [
+                        (TMedias.media_url == None, TMedias.media_path)
+                    ],
+                    else_=TMedias.media_url
+                ),
+            " | "
+            ).label("urlMedia")
+        )
+        query = query.group_by(
+            *self.model.db_cols
+        )
+        added_medias_cols = ["titreMedia", "descMedia", "urlMedia"]
+        columns = columns + added_medias_cols
+        return query, columns
+
+
 
 
 def get_query_occtax_filters(
