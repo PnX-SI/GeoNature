@@ -42,18 +42,9 @@
           selector=".btn-actions"
         >
           <mat-expansion-panel-header class="right-aligned-header">
+            
             <mat-panel-title>
-
-              <span
-                [innerHTML]="taxonTitle(occurrence)"
-                [matTooltip]="occurrence.taxref?.nom_valide || removeHtml(occurrence.nom_cite)"
-                class="header-title"
-              >
-              </span>
-
-            </mat-panel-title>
-            <mat-panel-description>
-              <span class="btn-actions d-none">
+             <span class="btn-actions d-none">
                 <button
                   mat-icon-button
                   class="btn-edit"
@@ -76,7 +67,17 @@
                   >clear</mat-icon>
                 </button>
               </span>
+            </mat-panel-title>
+            
+            <mat-panel-description>
+              <span
+                [innerHTML]="taxonTitle(occurrence)"
+                [matTooltip]="occurrence.taxref?.nom_valide || removeHtml(occurrence.nom_cite)"
+                class="header-title"
+              >
+              </span> 
             </mat-panel-description>
+            
           </mat-expansion-panel-header>
 
 

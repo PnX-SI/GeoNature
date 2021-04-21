@@ -94,5 +94,3 @@ def process_prebuild_frontend(app=None):
                 output_file.write(route_template)
 
         log.info("...%s\n", MSG_OK)
-
-
