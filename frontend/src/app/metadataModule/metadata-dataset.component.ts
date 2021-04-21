@@ -20,11 +20,7 @@ export class MetadataDatasetComponent implements OnInit {
 
   @Input() dataset: any;
   stateChangeSaving: boolean = false;
-
-  private _moduleImportIsAuthorized: BehaviorSubject<boolean> = new BehaviorSubject(false);
-  get moduleImportIsAuthorized() {
-    return this._moduleImportIsAuthorized.getValue();
-  }
+  moduleImportIsAuthorized: boolean = false;
   
   constructor(
     private _dfs: DataFormService,
@@ -38,21 +34,11 @@ export class MetadataDatasetComponent implements OnInit {
 
   ngOnInit() {
     //vérification que l'utilisateur est autorisé à utiliser le module d'import
-    this.moduleService.fetchModules()
-      .pipe(
-        map((modules: any[]): boolean => {
-          if (modules) {
-            for (let i = 0; i < modules.length; i++) {
-              //recherche du module d'import et test si l'utilisateur a des droits dessus
-              if (modules[i].module_code == 'IMPORT' && modules[i].cruved['C'] > 0) {
-                return true;
-              }
-            }
-          }
-          return false;
-        })
-      )
-      .subscribe((importIsAuthorized: boolean) => this._moduleImportIsAuthorized.next(importIsAuthorized));
+    this.moduleService.getModules().forEach(mod => {
+      if (mod.module_code == 'IMPORT' && mod.cruved['C'] > 0) {
+        return this.moduleImportIsAuthorized = true;
+      }
+    });
   }
   
 
