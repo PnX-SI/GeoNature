@@ -1,4 +1,4 @@
-import { Injectable, ComponentRef, ViewContainerRef, ComponentFactoryResolver } from "@angular/core";
+import { Injectable, ComponentRef, ViewContainerRef } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -8,8 +8,8 @@ import {
   ValidationErrors,
   AbstractControl,
 } from "@angular/forms";
-import { BehaviorSubject, Observable } from "rxjs";
-import { map, filter, switchMap, tap, pairwise, retry, concatMap, mergeMap } from "rxjs/operators";
+import { BehaviorSubject, Observable, of } from "rxjs";
+import { map, filter, switchMap, tap, pairwise, retry, mergeMap, distinctUntilChanged, first } from "rxjs/operators";
 import { CommonService } from "@geonature_common/service/common.service";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormCountingService } from "../counting/counting.service";
@@ -54,7 +54,7 @@ export class OcctaxFormOccurrenceService {
     this.setObservables();
   }
 
-  initForm(): void {
+  initForm(): void {    
     this.form = this.fb.group({
       id_nomenclature_obs_technique: [null, Validators.required],
       id_nomenclature_bio_condition: [null, Validators.required],
@@ -77,7 +77,12 @@ export class OcctaxFormOccurrenceService {
       additional_fields: this.fb.group({}),
       cor_counting_occtax: this.fb.array([], Validators.required),
     });
-
+    // load global additional fields (not related to a dataset)
+    this.getAdditionnalFields(["OCCTAX_OCCURENCE"]).subscribe(
+      addFields => {        
+        this.occtaxFormService.globalOccurrenceAddFields = addFields;
+      }
+    )
   }
 
   /**
@@ -113,17 +118,24 @@ export class OcctaxFormOccurrenceService {
           }
         }),
       )
-      .subscribe((values) => {
-        this.setadditionalForm(Object.assign({}, values)).subscribe(
-          editedOccurrence => {                           
-          this.form.patchValue(editedOccurrence);
-        },
-        // error call back: no additional fields
-        () => {
-          this.form.patchValue(values);
-          
-        }
-        )
+      .subscribe((occurrenceValue) => {        
+          this.getReleveDataAndGetAddFields(
+            ['OCCTAX_OCCURENCE', 'OCCTAX_DENOMBREMENT'],
+          ).subscribe(
+            additionalFields => {       
+              const occValueWithAddFields = this.setAddFieldinOccValue(occurrenceValue, additionalFields);            
+              this.form.patchValue(occValueWithAddFields);
+            },
+          () => {            
+            // not additional fields for the dataset
+            // set global addfields
+            const occValueWithAddFields = this.setAddFieldinOccValue(
+              occurrenceValue, 
+              this.occtaxFormService.globalOccurrenceAddFields.concat(this.occtaxFormService.globalCountingAddFields)
+            );            
+            this.form.patchValue(occValueWithAddFields);          
+          })
+
 
       });
 
@@ -192,165 +204,140 @@ export class OcctaxFormOccurrenceService {
 
   }
 
-  getadditionalForm(): Observable<any> {
-    // TODO RELOAD ONLY IF DATASET HAS CHANGED
-    return this.occtaxFormService.occtaxData.pipe(
-      filter(data => data && data.releve.properties),
-       concatMap(data => {   
-        this.currentReleve = data.releve.properties;
-        this.idDataset = data.releve.properties.dataset.id_dataset;
-        return this.dataFormService.getadditionalFields({
-          'id_dataset':  data.releve.properties.dataset.id_dataset,
-          'module_code': ['OCCTAX', 'GEONATURE'],
-          'object_code': ['OCCTAX_OCCURENCE', 'OCCTAX_DENOMBREMENT']
-        })
-       })
-      ).map(additionalFields => {
-        this.occtaxFormService.globalOccurrenceAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
+  getAdditionnalFields(object_code: Array<string>, releveData?): Observable<any> {        
+    
+    let idDataset = "null";
+    if(releveData) {
+      idDataset = releveData.releve.properties.dataset.id_dataset
+    }
+    return this.dataFormService.getadditionalFields({
+      'id_dataset':  idDataset,
+      'module_code': ['OCCTAX'],
+      'object_code': object_code
+    }).map(addFields => {
+      // check if addFields contain nomenclature
+      const nomenclature_mnemonique_types = [];
+      addFields.forEach(field => {        
+        if(field.type_widget == 'nomenclature') {          
+          nomenclature_mnemonique_types.push(field.code_nomenclature_type)
+        }
+      })
+      return {"addFiels": addFields, nomencMnemonique: nomenclature_mnemonique_types}
+    }).pipe(
+      mergeMap(
+        addFieldDict => {          
+          if(addFieldDict.nomencMnemonique.length > 0) {
+            return this.dataFormService.getNomenclatures(addFieldDict.nomencMnemonique).map(nomenclatures => {
+              this.occtaxFormService.storeAdditionalNomenclaturesValues(nomenclatures);
+              return addFieldDict.addFiels;
+            });
+          } else {        
+            return of(addFieldDict.addFiels);
+          }
+      })
+    )
+  }
+  compareAddFieldsList() {
+
+  }
+
+  setAddFieldinOccValue(occurrenceValue, addFields) {
+    
+    const occurrenceCopy = Object.assign({}, occurrenceValue)
+    const {datasetOccAddFieds, datasetCountAddFields} = this.orderNewAdditionalFields(addFields);
+    // if create and datasetfields has changes: reload it
+    if(!occurrenceCopy.id_occurrence_occtax) {
+      if (this.occtaxFormService.datasetOccurrenceAddFields.length == 0 || JSON.stringify(datasetOccAddFieds) != JSON.stringify(this.occtaxFormService.datasetOccurrenceAddFields)) {
+        let globalOccurrenceAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
           this.occtaxFormService.globalOccurrenceAddFields,
-          this.occtaxFormService.datasetReleveAddFields,
+          this.occtaxFormService.datasetOccurrenceAddFields,
         );
-        this.occtaxFormService.globalCountingAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
+        this.occtaxFormService.datasetOccurrenceAddFields = datasetOccAddFieds;
+        this.occtaxFormService.globalOccurrenceAddFields = globalOccurrenceAddFields.concat(
+          this.occtaxFormService.datasetOccurrenceAddFields
+        );
+      }
+      if (this.occtaxFormService.datasetCountingAddFields.length == 0 || JSON.stringify(datasetCountAddFields) != JSON.stringify(this.occtaxFormService.datasetCountingAddFields)) {
+        let globalCountingAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
           this.occtaxFormService.globalCountingAddFields,
           this.occtaxFormService.datasetCountingAddFields,
         );
-        this.occtaxFormService.datasetOccurrenceAddFields = [];
-        this.occtaxFormService.datasetCountingAddFields = [];
-        additionalFields.forEach(field => {
-          field.objects.forEach(object => {
-            if (object.code_object == "OCCTAX_OCCURENCE") {              
-              this.occtaxFormService.datasetOccurrenceAddFields.push(field);
-            }
-            if (object.code_object == "OCCTAX_DENOMBREMENT") {
-              this.occtaxFormService.datasetCountingAddFields.push(field);
-            }            
-          });
-
-        });
-        
-        this.occtaxFormService.globalOccurrenceAddFields = this.occtaxFormService.globalOccurrenceAddFields.concat(
-          this.occtaxFormService.datasetOccurrenceAddFields
-        )
-        this.occtaxFormService.globalCountingAddFields = this.occtaxFormService.globalCountingAddFields.concat(
+        this.occtaxFormService.datasetCountingAddFields = datasetCountAddFields
+        this.occtaxFormService.globalCountingAddFields = globalCountingAddFields.concat(
           this.occtaxFormService.datasetCountingAddFields
         )
-
-        return {
-          "occurrenceAddFields": this.occtaxFormService.datasetOccurrenceAddFields,
-          "countingAddFields": this.occtaxFormService.datasetCountingAddFields,
-        }
-      },
-      );
-  }
-  
-  /** Get occtax data and patch value to the form */
-  setadditionalForm(occurrenceValue): Observable<any> {
-    return this.getadditionalForm().pipe(
-      mergeMap(addFields => {
-        const {occurrenceAddFields, countingAddFields} = addFields;
-        // load all nomenclature
-        const nomenclature_mnemonique_types = [];
-        [...occurrenceAddFields, ...countingAddFields].forEach(field => {
-          if(field.type_widget === 'nomenclature') {
-            nomenclature_mnemonique_types.push(field.code_nomenclature_type)
+      }
+      
+      // if update
+    } else {      
+      // modify occurrence value with all nomenclature
+      if(occurrenceCopy.additional_fields) {
+        this.occtaxFormService.globalOccurrenceAddFields.forEach(field => {
+          if(field.type_widget == 'nomenclature') {  
+                          
+            const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {              
+              return n.MNEMONIQUE_TYPE === field.code_nomenclature_type && n["label_fr"] === occurrenceCopy.additional_fields[field.attribut_name] ;
+            });             
+            occurrenceCopy.additional_fields[field.attribut_name] = nomenclature_item ? nomenclature_item.id_nomenclature: ""; 
           }
-        })
-        return this.dataFormService.getNomenclatures(nomenclature_mnemonique_types).map(nomenclatures => {
-          this.occtaxFormService.storeAdditionalNomenclaturesValues(nomenclatures);
-          if(occurrenceValue.additional_fields) {
-            occurrenceAddFields.forEach(field => {
-              if(field.type_widget == 'nomenclature') {                
+
+        });
+      }
+      
+      if(occurrenceCopy.cor_counting_occtax) {
+        occurrenceCopy.cor_counting_occtax.forEach(counting => {
+          if(counting.additional_fields) {
+            this.occtaxFormService.globalCountingAddFields.forEach(field => {
+              if(field.type_widget == 'nomenclature') {
                 const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {              
-                  return n.MNEMONIQUE_TYPE === field.code_nomenclature_type && n["label_fr"] === occurrenceValue.additional_fields[field.attribut_name] ;
+                  return n.MNEMONIQUE_TYPE === field.code_nomenclature_type && n["label_fr"] === counting.additional_fields[field.attribut_name] ;
                 }); 
-                occurrenceValue.additional_fields[field.attribut_name] = nomenclature_item ? nomenclature_item.id_nomenclature: ""; 
+                counting.additional_fields[field.attribut_name] = nomenclature_item ? nomenclature_item.id_nomenclature: ""; 
               }
 
             });
           }
           
-          if(occurrenceValue.cor_counting_occtax) {
-            occurrenceValue.cor_counting_occtax.forEach(counting => {
-              if(counting.additional_fields) {
-                countingAddFields.forEach(field => {
-                  if(field.type_widget == 'nomenclature') {
-                    const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {              
-                      return n.MNEMONIQUE_TYPE === field.code_nomenclature_type && n["label_fr"] === counting.additional_fields[field.attribut_name] ;
-                    }); 
-                    counting.additional_fields[field.attribut_name] = nomenclature_item ? nomenclature_item.id_nomenclature: ""; 
-                  }
-  
-                });
-              }
-              
-            });
-          }
-
-          return occurrenceValue;
-        })
-      })
-    ) 
-
-    
-    // if(countingAddFields.length > 0){
-    //     this.occtaxFormCountingService.generateAdditionForm(countingAddFields)
-    //     this.form.value.cor_counting_occtax.forEach((counting, index) => {
-    //       this.occtaxFormCountingService.setadditionalFieldsValues(
-    //         this.form.controls.cor_counting_occtax.controls[index], 
-    //         countingAddFields
-    //       )
-    //     });
-
-    // }
+        });
+      }
+    }
+        
+      return occurrenceCopy;
   }
 
-  // let NOMENCLATURES = [];
-  // if(occurrenceAddFields && occurrenceAddFields.length > 0){             
-  //   if (this.form.get("additional_fields") == undefined && this.dynamicContainerOccurence){
-  //     this.dynamicFormGroup = this.fb.group({});
-  //     this.occtaxFormService.createadditionalFieldsUI(
-  //       this.dynamicContainerOccurence, 
-  //       occurrenceAddFields, 
-  //       this.dynamicFormGroup
-  //     );
-  //     this.form.addControl("additional_fields", this.dynamicFormGroup);
-  //   }
-  //   occurrenceAddFields.forEach(field => {        
-  //     if(field.type_widget == "date"){
-  //       this.currentReleve.t_occurrences_occtax.forEach(occurrence => {
-  //         //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
-  //         if(typeof occurrence.additional_fields[field.attribut_name] !== "object"){
-  //           occurrence.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(
-  //             occurrence.additional_fields[field.attribut_name]
-  //           );
-  //         }
-  //       });
-  //     }
-  //     //Formattage des nomenclatures
-  //     if(field.type_widget == "nomenclature"){
-  //       //Charger les nomenclatures dynamiques dans un tableau
-  //       if (!NOMENCLATURES[field.code_nomenclature_type]){
-  //         NOMENCLATURES.push(field.code_nomenclature_type);
-  //       }
+  orderNewAdditionalFields(additionalFields) {
+    const datasetOccAddFieds = [];
+    const datasetCountAddFields = [];
+    additionalFields.forEach(field => {
+      field.objects.forEach(object => {
+        if (object.code_object == "OCCTAX_OCCURENCE") {              
+          datasetOccAddFieds.push(field);
+        }
+        if (object.code_object == "OCCTAX_DENOMBREMENT") {
+          datasetCountAddFields.push(field);
+        }            
+      });
 
-  //       this.dataFormService.getNomenclatures([field.code_nomenclature_type]).pipe(
-  //         map((nomenclatures) => {
-  //           this.occtaxFormService.storeAdditionalNomenclaturesValues(nomenclatures);
-  //           const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {              
-  //             return  n["label_fr"] === this.form.value.additional_fields[field.attribut_name] ;
-  //           }); 
-            
-  //           const nomenclature_value = nomenclature_item ? nomenclature_item.id_nomenclature: "";
-  //           console.log("HEYYY", nomenclature_value);
+    });
+    return {
+      "datasetOccAddFieds": datasetOccAddFieds,
+      "datasetCountAddFields": datasetCountAddFields
+    }
+  }
 
-  //           occurrenceValue.additional_fields[field.attribut_name] = nomenclature_value;
-  //         })
-  //       )
-
-  //       }
-  //   })
-  // }
-  // return "COUCOU";
+  getReleveDataAndGetAddFields(objectCode: Array<string>): Observable<any> {
+    return this.occtaxFormService.occtaxData.pipe(
+      distinctUntilChanged(),
+      filter(releveData => releveData && releveData.releve.properties),
+      mergeMap(releveData => {
+        return this.getAdditionnalFields(
+          objectCode,
+          releveData,
+        )
+      })
+    )
+  }
+  
 
 
   private get defaultValues(): Observable<any> {
@@ -508,14 +495,6 @@ export class OcctaxFormOccurrenceService {
       );
   }
 
-  transformDynamicValuesBis(occurrence, occadditionalFields, countingAddFelds) {
-    occadditionalFields.forEach(field => {
-        if(field.type_widget == "nomenclature"){
-        
-        }
-    });
-  }
-
   /**
    * Transform formValue in order to post it or to edit it
    * If edit = true: Transform nomenclature from label to ID
@@ -527,13 +506,7 @@ export class OcctaxFormOccurrenceService {
   transformDynamicFormValues(formValue, edit = true){
     //Mise en forme des champs additionnels
     this.occtaxFormService.globalOccurrenceAddFields.forEach((field) => {
-        if(field.type_widget == "date"){
-          formValue.additional_fields[field.attribut_name] = this.dateParser.format(
-            formValue.additional_fields[field.attribut_name]
-          );
-        }
-        if(field.type_widget == "nomenclature"){
-          
+        if(field.type_widget == "nomenclature"){          
           // set the label_fr nomenclature in the posted additional data
           const nomenclature_item =  this.occtaxFormService.nomenclatureAdditionnel.find( n => {            
             return n["id_nomenclature"] === formValue.additional_fields[field.attribut_name];

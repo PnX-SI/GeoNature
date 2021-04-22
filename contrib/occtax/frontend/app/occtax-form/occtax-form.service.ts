@@ -32,7 +32,6 @@ export class OcctaxFormService {
   public datasetReleveAddFields: Array<any>= [];
   public datasetOccurrenceAddFields: Array<any>= [];
   public datasetCountingAddFields: Array<any>= [];
-  public truc;
 
   public nomenclatureAdditionnel: any = [];
 
@@ -93,7 +92,7 @@ export class OcctaxFormService {
     );
   }
 
-  storeAdditionalNomenclaturesValues(nomenclatures_types: Array<any>) {
+  storeAdditionalNomenclaturesValues(nomenclatures_types: Array<any>) {    
     // store all nomenclatures element in a array in order to find
     // the label on submit    
     nomenclatures_types.forEach(nomenc_type => {
@@ -101,7 +100,7 @@ export class OcctaxFormService {
         nomenc_element['MNEMONIQUE_TYPE'] = nomenc_type.mnemonique
         this.nomenclatureAdditionnel.push(nomenc_element);
       });
-    });
+    });    
   }
 
   onEditReleve(id) {

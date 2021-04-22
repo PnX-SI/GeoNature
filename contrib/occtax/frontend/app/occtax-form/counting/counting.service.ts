@@ -53,6 +53,15 @@ export class OcctaxFormCountingService {
         )
         .subscribe((count_min) => form.get("count_max").setValue(count_min));
     }
+    // load global additional fields (not related to a dataset)
+
+    this.dataFormService.getadditionalFields({
+      'module_code': ['OCCTAX', 'GEONATURE'],
+      'object_code': 'OCCTAX_DENOMBREMENT',
+      "id_dataset": "null"
+    }).subscribe(additionalFields => {
+      this.occtaxFormService.globalCountingAddFields = additionalFields;
+    })
     return form;
   }
 
