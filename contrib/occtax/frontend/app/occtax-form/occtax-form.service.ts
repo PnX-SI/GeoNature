@@ -1,13 +1,15 @@
 import { Injectable } from "@angular/core";
 import { FormControl } from "@angular/forms";
-import { BehaviorSubject } from "rxjs";
-import { filter, tap, skip } from "rxjs/operators";
+import { BehaviorSubject, Observable, of } from "rxjs";
+import { filter, tap, skip, mergeMap } from "rxjs/operators";
 
 import { AppConfig } from "@geonature_config/app.config";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { CommonService } from "@geonature_common/service/common.service";
+import { DataFormService } from "@geonature_common/form/data-form.service";
+
 import { OcctaxDataService } from "../services/occtax-data.service";
 
 
@@ -32,7 +34,6 @@ export class OcctaxFormService {
   public datasetReleveAddFields: Array<any>= [];
   public datasetOccurrenceAddFields: Array<any>= [];
   public datasetCountingAddFields: Array<any>= [];
-
   public nomenclatureAdditionnel: any = [];
 
   constructor(
@@ -41,6 +42,8 @@ export class OcctaxFormService {
     private _auth: AuthService,
     private _commonService: CommonService,
     private _dataS: OcctaxDataService,
+    private dataFormService: DataFormService,
+
 
   ) {    
     this.currentUser = this._auth.getCurrentUser();
@@ -90,6 +93,39 @@ export class OcctaxFormService {
         params: params,
       }
     );
+  }
+  getAdditionnalFields(object_code: Array<string>, releveData?): Observable<any> {        
+    
+    let idDataset = "null";
+    if(releveData) {
+      idDataset = releveData.releve.properties.dataset.id_dataset
+    }
+    return this.dataFormService.getadditionalFields({
+      'id_dataset':  idDataset,
+      'module_code': ['OCCTAX'],
+      'object_code': object_code
+    }).map(addFields => {
+      // check if addFields contain nomenclature
+      const nomenclature_mnemonique_types = [];
+      addFields.forEach(field => {        
+        if(field.type_widget == 'nomenclature') {          
+          nomenclature_mnemonique_types.push(field.code_nomenclature_type)
+        }
+      })
+      return {"addFiels": addFields, nomencMnemonique: nomenclature_mnemonique_types}
+    }).pipe(
+      mergeMap(
+        addFieldDict => {          
+          if(addFieldDict.nomencMnemonique.length > 0) {
+            return this.dataFormService.getNomenclatures(addFieldDict.nomencMnemonique).map(nomenclatures => {
+              this.storeAdditionalNomenclaturesValues(nomenclatures);
+              return addFieldDict.addFiels;
+            });
+          } else {        
+            return of(addFieldDict.addFiels);
+          }
+      })
+    )
   }
 
   storeAdditionalNomenclaturesValues(nomenclatures_types: Array<any>) {    

@@ -6,7 +6,7 @@ import {
   AbstractControl,
 } from "@angular/forms";
 import { Observable, Subscription } from "rxjs";
-import { map, filter } from "rxjs/operators";
+import { map, filter, first } from "rxjs/operators";
 
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
@@ -27,7 +27,14 @@ export class OcctaxFormCountingService {
     private occtaxFormService: OcctaxFormService,
     private occtaxParamS: OcctaxFormParamService,
     private mediaService: MediaService,
-  ) {}
+  ) {
+    this.occtaxFormService.getAdditionnalFields(["OCCTAX_DENOMBREMENT"])
+    .pipe(first())
+    .subscribe(
+      addFields => {
+        this.occtaxFormService.globalCountingAddFields = addFields;
+      });
+  }
 
   createForm(patchWithDefaultValues: boolean = false): FormGroup {    
     const form = this.fb.group({
@@ -55,13 +62,6 @@ export class OcctaxFormCountingService {
     }
     // load global additional fields (not related to a dataset)
 
-    this.dataFormService.getadditionalFields({
-      'module_code': ['OCCTAX', 'GEONATURE'],
-      'object_code': 'OCCTAX_DENOMBREMENT',
-      "id_dataset": "null"
-    }).subscribe(additionalFields => {
-      this.occtaxFormService.globalCountingAddFields = additionalFields;
-    })
     return form;
   }
 
@@ -74,38 +74,6 @@ export class OcctaxFormCountingService {
     return null;
   }
 
-
-
-  setadditionalFieldsValues(form, countingAddFields) {
-    
-      countingAddFields.forEach((field) => {
-        if(field.type_widget == "date"){
-              // counting.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(counting.additional_fields[field.attribut_name]);
-              // if ( counting.additional_fields[field.attribut_name] == ""){
-              //   //counting.additional_fields[field.attribut_name] = null;
-              // }
-            }
-        //Formattage des nomenclatures
-        if(field.type_widget == "nomenclature"){
-          // console.log(form.value);
-          
-          //mise en forme des nomenclatures
-            this.dataFormService.getNomenclatures([field.code_nomenclature_type])
-              .subscribe((nomenclatures) => {
-                
-                // const control: AbstractControl = form.controls.additional_fields.get(field.attribut_name);
-                this.occtaxFormService.storeAdditionalNomenclaturesValues(nomenclatures);
-                // if (control) {
-                //   const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {                                        
-                //     return n["label_fr"] === form.value.additional_fields[field.attribut_name];
-                //   });
-                //     const control_value = nomenclature_item ? nomenclature_item.id_nomenclature : "";
-                //     control.setValue(control_value);
-                // }
-              });
-          }
-    })
-  }
 
   private get defaultValues(): Observable<any> {
     return this.occtaxFormService

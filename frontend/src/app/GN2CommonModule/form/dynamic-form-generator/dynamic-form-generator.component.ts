@@ -56,6 +56,10 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
         this.myFormGroup.removeControl(controlName)
       }
       this.initDynamicForm();
+      console.log("###################");
+      console.log(changes.formsDefinition.currentValue);
+      
+      
     }
   }
 
