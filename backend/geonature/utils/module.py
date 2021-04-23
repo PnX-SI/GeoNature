@@ -13,7 +13,7 @@ from geonature.core.gn_commons.models import TModules
 class NoManifestFound(Exception):
     pass
 
-def load_config(module_object):
+def load_module_config(module_object):
     sys.path.insert(0, str(GN_EXTERNAL_MODULE))
     try:
         module_dir = GN_EXTERNAL_MODULE / module_object.module_path
@@ -41,10 +41,8 @@ def import_legacy_module(module_object):
         # module dist is module_code.lower() because the symlink is created like this
         # in utils.gn_module_import.copy_in_external_mods
         module_dist = module_object.module_code.lower()
-        module_schema = import_module(f'{module_dist}.config.conf_schema_toml').GnModuleSchemaConf
         module_blueprint = import_module(f'{module_dist}.backend.blueprint').blueprint
-        config_path = module_dir / "config/conf_gn_module.toml"
-        module_config = load_config(module_object)
+        module_config = load_module_config(module_object)
         module_blueprint.config = module_config
         return module_config, module_blueprint
     finally:
