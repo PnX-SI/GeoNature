@@ -91,6 +91,7 @@ export class SyntheseInfoObsComponent implements OnInit {
 
         // for angular tempate we need to convert it into a aray
         // tslint:disable-next-line:forin
+        this.formatedAreas = [];
         for (let key in areaDict) {
           this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
         }
