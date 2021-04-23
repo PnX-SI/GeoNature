@@ -222,9 +222,6 @@ class GnFrontEndConf(Schema):
     # show email on synthese and validation info obs modal
     DISPLAY_EMAIL_INFO_OBS = fields.Boolean(missing=True)
 
-    # si l'on souhaite préconfigurer le mail avec des informations particulières 
-    DISPLAY_EMAIL_INFO_SUJET = fields.String(missing="")
-    DISPLAY_EMAIL_INFO_CONTENT = fields.String(missing="")
     DISPLAY_EMAIL_DISPLAY_INFO = fields.List(fields.String(), missing=["NOM_VERN"])
 
 id_municipality = BddConfig().load({}).data.get("id_area_type_municipality")

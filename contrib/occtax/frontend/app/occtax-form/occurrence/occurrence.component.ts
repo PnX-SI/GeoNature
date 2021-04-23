@@ -56,8 +56,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public data : any;
   public componentRefOccurence: ComponentRef<any>;
 
-  //public idTaxonList: number;
-
   constructor(
     public fs: OcctaxFormService,
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
@@ -67,6 +65,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
+    this.fs.idTaxonList = ModuleConfig.id_taxon_list;
     this.occurrenceForm = this.occtaxFormOccurrenceService.form;
 
     //gestion de l'affichage des preuves d'existence selon si Preuve = 'Oui' ou non.
@@ -87,9 +86,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
         
     this.initTaxrefSearch();
     
-    this.occtaxFormOccurrenceService.idTaxonList = this.occtaxConfig.id_taxon_list;
-    //MET MAYBE TODO => ADD PARAM TO OCCTAX FIELDS FROM DATASET
-    //this.occtaxFormOccurrenceService.formFieldsStatus = this.occtaxConfig.form_fields;
   }
 
   ngAfterViewInit() {

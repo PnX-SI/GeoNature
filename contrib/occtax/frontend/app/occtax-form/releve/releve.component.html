@@ -72,6 +72,7 @@
       </ng-container>
       <ng-template #elseblocDatasetForm>
         <pnx-datasets 
+          #dataset
           label="{{ 'MetaData.Datasets' | translate }}" 
           [parentFormControl]="propertiesForm.get('id_dataset')"
           [disabled]="propertiesForm.disabled"

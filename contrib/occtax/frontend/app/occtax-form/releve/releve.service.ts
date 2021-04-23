@@ -13,6 +13,7 @@ import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormMapService } from "../map/map.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
+import { DatasetStoreService } from '@geonature_common/form/datasets/dataset.service';
 
 @Injectable()
 export class OcctaxFormReleveService {
@@ -31,6 +32,7 @@ export class OcctaxFormReleveService {
   public currentIdDataset:any;
 
   public datasetId : number = null;
+  public datasetComponent;
   public previousReleve = null;
 
   constructor(
@@ -44,6 +46,7 @@ export class OcctaxFormReleveService {
     private occtaxFormMapService: OcctaxFormMapService,
     private occtaxDataService: OcctaxDataService,
     private occtaxParamS: OcctaxFormParamService,
+    private _datasetStoreService: DatasetStoreService
   ) {
     this.initPropertiesForm();
     this.setObservables();
@@ -148,6 +151,12 @@ export class OcctaxFormReleveService {
   }
 
   onDatasetChanged(idDataset) {
+
+    console.log(this._datasetStoreService.datasets);
+    const currentDataset = this.datasetComponent.find(d => d.id_dataset == idDataset);
+    if(currentDataset && currentDataset.id_taxa_list) {
+      this.occtaxFormService.idTaxonList = currentDataset.id_taxa_list;
+    }
     
     this.dataFormService.getadditionalFields({
       'id_dataset': idDataset,

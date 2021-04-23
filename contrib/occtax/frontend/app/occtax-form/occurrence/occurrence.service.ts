@@ -36,7 +36,6 @@ export class OcctaxFormOccurrenceService {
   public idDataset : number;
 
 
-  public idTaxonList: number;
   public formFieldsStatus: any;
 
   constructor(

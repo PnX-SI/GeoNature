@@ -35,6 +35,8 @@ export class OcctaxFormService {
   public datasetOccurrenceAddFields: Array<any>= [];
   public datasetCountingAddFields: Array<any>= [];
   public nomenclatureAdditionnel: any = [];
+  public idTaxonList: number;
+
 
   constructor(
     private _http: HttpClient,

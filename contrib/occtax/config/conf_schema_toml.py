@@ -149,23 +149,9 @@ default_export_col_name_additional_data = "additional_data"
 
 default_media_fields_details = ['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile']
 
-class DatasetFieldsConfiguration(Schema):
-    # config liée au formulaire dynamique OCCTAX par dataset
-    DATASET = fields.Integer()
-    # missing : fill with global id_taxon_list
-    ID_TAXON_LIST = fields.Integer()
-    RELEVE = fields.List(fields.Dict(), missing=[])
-    OCCURRENCE = fields.List(fields.Dict(), missing=[])
-    COUNTING = fields.List(fields.Dict(), missing=[])
 
 
 
-class DatasetConfiguration(Schema):
-    # config liée au formulaire dynamique OCCTAX par dataset
-    ID_DATASET = fields.Integer(required=True)
-    FORMFIELDS = fields.Nested(DatasetFieldsConfiguration, missing={})
-    ID_TAXON_LIST = fields.Integer(missing=100)
-    EXPORT_FIELDS = fields.List(fields.String(), missing=[])
 
 class GnModuleSchemaConf(Schema):
     form_fields = fields.Nested(FormConfig, missing=dict())
