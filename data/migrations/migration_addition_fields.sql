@@ -160,7 +160,9 @@ AS $BODY$  DECLARE
 
     RETURN myobservers.observers_id ;
   END;
-  $BODY$;
+  $BODY$
+    LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_counting()
   RETURNS trigger
