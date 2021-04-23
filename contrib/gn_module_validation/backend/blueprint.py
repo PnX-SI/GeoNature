@@ -3,13 +3,12 @@ import logging
 import datetime
 import json
 from operator import itemgetter
-from sqlalchemy import select, func, literal_column
+from sqlalchemy import select
 from flask import Blueprint, request
 from geojson import FeatureCollection
 
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla.serializers import SERIALIZERS
-from utils_flask_sqla_geo.serializers import sqla_query_to_geojson
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 
@@ -59,12 +58,6 @@ def get_synthese_data(info_role):
     else:
         filters = {key: request.args.get(key) for key, value in request.args.items()}
 
-    # TODO check geointersection filter
-    # filters = {key: request.args.getlist(key)
-    #            for key, value in request.args.items()}
-    # for key, value in filters.items():
-    #     if "," in value[0] and key != "geoIntersection":
-    #         filters[key] = value[0].split(",")
 
     if "limit" in filters:
         result_limit = filters.pop("limit")
@@ -87,7 +80,7 @@ def get_synthese_data(info_role):
             serializer[c] = SERIALIZERS.get(
                 att.type.__class__.__name__.lower(), lambda x: x
             )
-        except AttributeError:
+        except AttributeError as error:
             log.warning("Validation : colonne {} inexistante".format(c))
 
     # Construction de la requête avec SyntheseQuery
@@ -107,30 +100,16 @@ def get_synthese_data(info_role):
     properties = {}
     for r in result:
         properties = {k: serializer[k](r[k]) for k in serializer.keys()}
-        geojson = json.loads(r["geojson"])
+        properties["nom_vern_or_lb_nom"] = (
+            r["nom_vern"] if r["nom_vern"] else r["lb_nom"]
+        )
+        geojson = ast.literal_eval(r["geojson"])
         geojson["properties"] = properties
         geojson["id"] = r["id_synthese"]
         geojson_features.append(geojson)
 
-    # TODO le transférer dans sqla-geo
-    # Génération d'une requête sql générant un geojson valide
-    #TODO tester le plus performant ?
-    # geojson_features = sqla_query_to_geojson(
-    #     session=DB.session,
-    #     query=validation_query_class.query.limit(
-    #         result_limit
-    #     ),
-    #     id_col="id_synthese",
-    #     geom_col="geojson",
-    #     geom_srid=4326,
-    #     is_geojson=True,
-    #     keep_id_col=True
-    # )
-    # TODO nb_total pas vraiment traité
-    nb_total = 0
-
     return {
-        "data": geojson_features,
+        "data": FeatureCollection(geojson_features),
         "nb_obs_limited": nb_total == blueprint.config["NB_MAX_OBS_MAP"],
         "nb_total": nb_total,
     }

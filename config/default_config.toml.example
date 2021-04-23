@@ -173,8 +173,6 @@ MAIL_ON_ERROR = false
     DISPLAY_EMAIL_INFO_OBS = true
 
     # Ajoute du contenu à l'email validation / synthèse
-    DISPLAY_EMAIL_INFO_SUJET = "Titre de l'email"
-    DISPLAY_EMAIL_INFO_CONTENT = "Message général de l'email"
 
     #Information de l'observation à mettre dans l'email 
     DISPLAY_EMAIL_DISPLAY_INFO = ["NOM_VERN", "DATE", "COMMUNES", "MEDIAS"]

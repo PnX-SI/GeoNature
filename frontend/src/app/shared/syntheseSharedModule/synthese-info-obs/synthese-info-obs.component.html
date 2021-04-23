@@ -20,7 +20,6 @@
 
 </div>
 
-
 <mat-card>
   <span *ngIf="selectedObsTaxonDetail?.nom_vern">
     {{ selectedObsTaxonDetail?.nom_vern }} -
@@ -36,11 +35,6 @@
       color="primary"
     > Fiche INPN du taxon </button>
   </a>
-  <div *ngIf="selectedObs?.source?.url_source">
-    <a class="btn btn-sm btn-primary"href="{{selectedObs?.source?.url_source}}/{{selectedObs?.entity_source_pk_value}}" target="_blank">
-      <i matTooltip="Voir l'observation dans le module de saisie" class="fa fa-file-text" aria-hidden="true"></i>
-    </a>
-  </div>
 
   <mat-card-content>
     <span class="font-xs">
@@ -53,10 +47,8 @@
         </span>
       </div>
       <b> Observation de : </b> {{selectedObs?.observers}}
-      <!--span
-        *ngIf="selectedObs?.cor_observers?.length > 0 && CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_OBS"-->
       <span
-        *ngIf="selectedObs?.cor_observers?.length > 0 && mailto">
+        *ngIf="selectedObs?.cor_observers?.length > 0 && CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_OBS">
         (
         <span *ngFor="let observers of selectedObs?.cor_observers; let i = index">
           {{ observers.email}} <span *ngIf="i != selectedObs?.cor_observers.length -1">, </span>
@@ -238,11 +230,6 @@
       <tr>
         <td> Identifiant unique SINP </td>
         <td> {{selectedObs?.unique_id_sinp}} </td>
-      </tr>
-      <tr *ngFor="let data of selectedObs?.additional_data | keyvalue">
-        <td> {{data.key}} </td>
-        <td *ngIf="data.value?.day"> {{data.value.day}} </td>
-        <td *ngIf="!data.value?.day"> {{data.value}} </td>
       </tr>
     </table>
   </mat-tab>
