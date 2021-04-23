@@ -4,6 +4,8 @@ git+https://github.com/PnX-SI/UsersHub-authentification-module@develop#egg=pypnu
 git+https://github.com/PnX-SI/Nomenclature-api-module@develop#egg=pypnnomenclature
 git+https://github.com/PnX-SI/Habref-api-module@develop#egg=pypn_habref_api
 git+https://github.com/PnX-SI/TaxHub@develop#egg=taxhub
+git+https://github.com/PnX-SI/Utils-Flask-SQLAlchemy@develop#egg=utils-flask-sqlalchemy
+git+https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo@develop#egg=utils-flask-sqlalchemy-geo
 
 alabaster==0.7.10
 attrs==19.3.0
