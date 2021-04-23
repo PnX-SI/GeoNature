@@ -4,30 +4,37 @@ from pathlib import Path
 from importlib import import_module
 from pkg_resources import load_entry_point, get_entry_info, iter_entry_points
 
-from sqlalchemy.orm.exc import NoResultFound
-
 from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.config_schema import ManifestSchemaProdConf
-from geonature.utils.env import GN_EXTERNAL_MODULE, \
-                                GN_MODULE_FE_FILE, GN_MODULE_FILES
-from geonature.utils.config import config
+from geonature.utils.env import GN_EXTERNAL_MODULE
 from geonature.core.gn_commons.models import TModules
 
 
 class NoManifestFound(Exception):
     pass
 
-
+def load_config(module_object):
+    sys.path.insert(0, str(GN_EXTERNAL_MODULE))
+    try:
+        module_dir = GN_EXTERNAL_MODULE / module_object.module_path
+        module_config = {
+            'ID_MODULE': module_object.id_module,
+            'MODULE_CODE': module_object.module_code,
+            'MODULE_URL': '/' + module_object.module_path.replace(' ', ''),
+            'FRONTEND_PATH': str(module_dir / 'frontend'),
+        }
+        module_schema = import_module(f'{module_object.module_code.lower()}.config.conf_schema_toml').GnModuleSchemaConf
+        config_path = module_dir / "config/conf_gn_module.toml"
+        module_config.update(load_and_validate_toml(config_path, module_schema))
+        return module_config
+    finally:
+        sys.path.pop(0)
 
 def import_legacy_module(module_object):
     sys.path.insert(0, str(GN_EXTERNAL_MODULE))  # to be able to import non-packaged modules
     try:
         module_dir = GN_EXTERNAL_MODULE / module_object.module_path
         manifest_path = module_dir / 'manifest.toml'
-        module_config = {
-            'ID_MODULE': module_object.id_module,
-            'MODULE_CODE': module_object.module_code,
-        }
         if not manifest_path.is_file():
             raise NoManifestFound()
         module_manifest = load_and_validate_toml(manifest_path, ManifestSchemaProdConf)
@@ -37,11 +44,7 @@ def import_legacy_module(module_object):
         module_schema = import_module(f'{module_dist}.config.conf_schema_toml').GnModuleSchemaConf
         module_blueprint = import_module(f'{module_dist}.backend.blueprint').blueprint
         config_path = module_dir / "config/conf_gn_module.toml"
-        module_config.update({
-            'MODULE_URL': '/' + module_object.module_path.replace(' ', ''),
-            'FRONTEND_PATH': str(module_dir / 'frontend'),
-        })
-        module_config.update(load_and_validate_toml(config_path, module_schema))
+        module_config = load_config(module_object)
         module_blueprint.config = module_config
         return module_config, module_blueprint
     finally:
@@ -107,7 +110,7 @@ def import_backend_enabled_modules():
         yield import_gn_module(module_object)
 
 
-def import_frontend_enabled_modules():
+def list_frontend_enabled_modules():
     """
         yield module_config
         for frontend-enabled modules in gn_commons.t_modules
@@ -117,5 +120,4 @@ def import_frontend_enabled_modules():
         # ignore internal module (i.e. without symlink in external module directory)
         if not Path(GN_EXTERNAL_MODULE / module_object.module_code.lower()).exists():
             continue
-        _, module_config, _ = import_gn_module(module_object)
-        yield module_config
+        yield module_object.module_code

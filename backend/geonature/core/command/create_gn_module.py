@@ -119,12 +119,18 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                     if enable_frontend:
                         install_frontend_dependencies(module_path)
                         # generation du fichier tsconfig.app.json
-                        tsconfig_app_templating(app)
+                        tsconfig_app_templating(
+                            module_code=module_code,
+                            app=app
+                        )
                         # generation du routing du frontend
-                        frontend_routes_templating(app)
+                        frontend_routes_templating(
+                            module_code=module_code,
+                            module_path=module_path,
+                            app=app
+                        )
                         # generation du fichier de configuration du frontend
                         create_module_config(app, module_code, build=False)
-
                     if build and enable_frontend:
                         # Rebuild the frontend
                         build_geonature_front(rebuild_sass=True)
@@ -145,15 +151,16 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                 )  # noqa
 
     except (GNModuleInstallError, GeoNatureError) as ex:
-        # S'il y a une erreur lors de l'installation initiale du module
-        #   suppression de ce module
-        if fresh_install:
-            remove_application_db(app, module_code)
         log.critical(
             (
                 "\n\n\033[91mError while installing GN module \033[0m.The process returned:\n\t{}"
             ).format(ex)
         )
+        # S'il y a une erreur lors de l'installation initiale du module
+        #   suppression de ce module
+        if fresh_install:
+            remove_application_db(app, module_code)
+
         sys.exit(1)
 
 
