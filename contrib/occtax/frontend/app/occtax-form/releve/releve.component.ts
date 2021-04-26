@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ViewChild, AfterViewInit } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { ActivatedRoute } from "@angular/router";
 import { GeoJSON } from "leaflet";
@@ -27,7 +27,6 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public AppConfig = AppConfig;
   public routeSub: Subscription ;
   public test = new FormGroup({});
-  @ViewChild("dataset") datasetComponent;
 
   constructor(
     private route: ActivatedRoute,
@@ -40,7 +39,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     this.occtaxConfig = ModuleConfig;
   }
 
-  ngOnInit() {
+  ngOnInit() {    
     this.releveForm = this.occtaxFormReleveService.releveForm;
     // pass route to releve.service to navigate
     this.occtaxFormReleveService.route = this.route;
@@ -64,10 +63,6 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     });
 
   } // END INIT
-
-  ngAfterViewInit() {
-    this.occtaxFormReleveService.datasetComponent = this.datasetComponent;
-  }
 
   get dataset(): any {
     const occtaxData = this.occtaxFormService.occtaxData.getValue();

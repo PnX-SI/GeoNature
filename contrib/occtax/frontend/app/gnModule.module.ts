@@ -29,12 +29,23 @@ import { MatSlideToggleModule, MatTabsModule } from "@angular/material";
 
 const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },
-  { path: "form", component: OcctaxFormComponent },
-  { path: "form/:id", component: OcctaxFormComponent, pathMatch: "full" },
-  {
-    path: "form/:id/taxons",
+  { 
+    path: "form", 
     component: OcctaxFormComponent,
-    pathMatch: "full",
+    children : [
+      {
+        path: "releve",
+        component: OcctaxFormReleveComponent
+      },
+      {
+        path: "releve/:id",
+        component: OcctaxFormReleveComponent
+      },
+      {
+        path: ":id/taxons",
+        component: OcctaxFormOccurrenceComponent
+      }
+    ] 
   },
   { path: "info/:id", component: OcctaxMapInfoComponent, pathMatch: "full" },
   {

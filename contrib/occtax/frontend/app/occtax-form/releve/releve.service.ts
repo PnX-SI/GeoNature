@@ -1,4 +1,5 @@
-import { Injectable, ViewContainerRef, ComponentRef, ComponentFactory, ComponentFactoryResolver } from "@angular/core";
+import { Injectable} from "@angular/core";
+import { Location} from "@angular/common";
 import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Observable, Subscription } from "rxjs";
@@ -39,6 +40,7 @@ export class OcctaxFormReleveService {
     private router: Router,
     private fb: FormBuilder,
     private _commonService: CommonService,
+    private _location: Location,
     private dateParser: NgbDateParserFormatter,
     private coreFormService: FormService,
     private dataFormService: DataFormService,
@@ -152,11 +154,12 @@ export class OcctaxFormReleveService {
 
   onDatasetChanged(idDataset) {
 
-    console.log(this._datasetStoreService.datasets);
-    const currentDataset = this.datasetComponent.find(d => d.id_dataset == idDataset);
+    const currentDataset = this._datasetStoreService.datasets.find(d => d.id_dataset == idDataset);
     if(currentDataset && currentDataset.id_taxa_list) {
       this.occtaxFormService.idTaxonList = currentDataset.id_taxa_list;
     }
+    console.log(this.occtaxFormService.idTaxonList);
+    
     
     this.dataFormService.getadditionalFields({
       'id_dataset': idDataset,
@@ -527,6 +530,9 @@ export class OcctaxFormReleveService {
             );
             this.occtaxFormService.replaceReleveData(data);
             this.releveForm.markAsPristine();
+            
+            console.log(this.route.snapshot);
+            
             this.router.navigate(["taxons"], {
               relativeTo: this.route,
             });
@@ -546,13 +552,14 @@ export class OcctaxFormReleveService {
         .pipe(tap(() => (this.waiting = false)))
         .subscribe(
           (data: any) => {
+            this.occtaxFormService.id_releve_occtax.next(data.id);
             this._commonService.translateToaster(
               "info",
               "Releve.Infos.ReleveAdded"
             );
-            this.router.navigate([data.id, "taxons"], {
-              relativeTo: this.route,
-            });
+            this.router.navigate([data.id, "taxons"], {relativeTo: this.route});
+            this.occtaxFormService.currentTab = "taxons";
+            
           },
           (err) => {
             this.waiting = false;

@@ -27,7 +27,6 @@ export class OcctaxFormService {
   public stayOnFormInterface = new FormControl(false);
   public currentIdDataset:any;
   public previousReleve = null;
-  public dataSetConfig: any;
   public globalReleveAddFields: Array<any> = [];
   public globalOccurrenceAddFields: Array<any>= [];
   public globalCountingAddFields: Array<any>= [];
@@ -36,6 +35,8 @@ export class OcctaxFormService {
   public datasetCountingAddFields: Array<any>= [];
   public nomenclatureAdditionnel: any = [];
   public idTaxonList: number;
+  public currentTab: "releve" | "taxons";
+
 
 
   constructor(
@@ -47,7 +48,7 @@ export class OcctaxFormService {
     private dataFormService: DataFormService,
 
 
-  ) {    
+  ) {      
     this.currentUser = this._auth.getCurrentUser();
 
     //observation de l'URL
