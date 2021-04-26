@@ -64,7 +64,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     this._router.events
     .pipe(
       filter(event => event instanceof NavigationEnd)
-    ).subscribe(event => {      
+    ).subscribe((event:any) => {      
       this.setCurrentTabAndIdReleve(event.url);
     })
   

@@ -11,6 +11,7 @@ import { CommonService } from "@geonature_common/service/common.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 
 import { OcctaxDataService } from "../services/occtax-data.service";
+import { ModuleConfig } from "../module.config";
 
 
 @Injectable()
@@ -75,6 +76,7 @@ export class OcctaxFormService {
         this.occtaxData.next(data);
         this.editionMode.next(true);
         // set taxa list
+
         if(data.releve.properties.dataset.id_taxa_list) {
           this.idTaxonList = data.releve.properties.dataset.id_taxa_list;
         }

@@ -197,7 +197,8 @@
             class="form-control form-control-sm"
             [formControl]="datasetForm.controls.id_taxa_list"
           >
-            <option [ngValue]="null"> Aucune liste (tout Taxref)</option>
+            <option [ngValue]="null"> --Selectionner une liste de taxon--</option>
+            <option [ngValue]="-1"> Aucune liste (tout Taxref)</option>
             <option
               *ngFor="let list of taxaBibList"
               [ngValue]="list.id_liste"
