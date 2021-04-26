@@ -105,8 +105,8 @@
             {% endif %}
             <br>
             Type de données :
-            {% if data.data_type.label_default: %}
-            {{ data.data_type.label_default }}
+            {% if data.nomenclature_data_type.label_default: %}
+            {{ data.nomenclature_data_type.label_default }}
             {% endif %}
           </p>
         </div>
@@ -114,8 +114,8 @@
         <div class="information">
           <p class="info-titre">Objectifs</p>
           <p class="info-contenu">
-            {% if data.dataset_objectif.label_default: %}
-            {{ data.dataset_objectif.label_default }}
+            {% if data.nomenclature_dataset_objectif.label_default: %}
+            {{ data.nomenclature_dataset_objectif.label_default }}
             {% endif %}
           </p>
         </div>
@@ -149,8 +149,8 @@
         <div class="information">
           <p class="info-titre">Processus de collecte</p>
           <p class="info-contenu">
-            {% if data.collecting_method.label_default: %}
-            {{ data.collecting_method.label_default }}
+            {% if data.nomenclature_collecting_method.label_default: %}
+            {{ data.nomenclature_collecting_method.label_default }}
             {% endif %}
           </p>
         </div>

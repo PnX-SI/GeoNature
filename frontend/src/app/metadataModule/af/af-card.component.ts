@@ -1,8 +1,11 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { DataFormService } from '@geonature_common/form/data-form.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
+import { tap, map } from 'rxjs/operators';
+
+import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
+import { CommonService } from "@geonature_common/service/common.service";
 
 @Component({
   selector: 'pnx-af-card',
@@ -12,6 +15,8 @@ import { AppConfig } from '@geonature_config/app.config';
 export class AfCardComponent implements OnInit {
   public id_af: number;
   public af: any;
+  public stats: any;
+  public bbox: any;
   public acquisitionFrameworks: any;
   @ViewChild(BaseChartDirective) chart: BaseChartDirective;
   // Type de graphe
@@ -60,45 +65,81 @@ export class AfCardComponent implements OnInit {
   public spinner = true;
   public APP_CONFIG = AppConfig;
 
-  constructor(private _dfs: DataFormService, private _route: ActivatedRoute) {}
+  constructor(
+    private _dfs: DataFormService,
+    private _route: ActivatedRoute,
+    private _router: Router,
+    private _commonService: CommonService,
+  ) {}
+
   ngOnInit() {
     this._route.params.subscribe(params => {
       this.id_af = params['id'];
       if (this.id_af) {
-        this.getAf(this.id_af);
+        this.getAf();
+        this.getTaxaDistribution();
+        this.getStats();
+        this.getBbox();
       }
     });
   }
-  getAf(id_af: number) {
-    this._dfs.getAcquisitionFrameworkDetails(id_af).subscribe(data => {
-      this.af = data;
-      if (this.af.acquisition_framework_start_date) {
-        var start_date = new Date(this.af.acquisition_framework_start_date);
-        this.af.acquisition_framework_start_date = start_date.toLocaleDateString();
-      }
-      if (this.af.acquisition_framework_end_date) {
-        var end_date = new Date(this.af.acquisition_framework_end_date);
-        this.af.acquisition_framework_end_date = end_date.toLocaleDateString();
-      }
-      if (this.af.datasets) {
-        this._dfs
-          .getTaxaDistribution('group2_inpn', { id_af: this.af.id_acquisition_framework })
-          .subscribe(data2 => {
-            this.pieChartData.length = 0;
-            this.pieChartLabels.length = 0;
-            this.pieChartData = [];
-            this.pieChartLabels = [];
-            for (let row of data2) {
-              this.pieChartData.push(row['count']);
-              this.pieChartLabels.push(row['group']);
-            }
-            this.spinner = false;
-            setTimeout(() => {
-              this.chart.chart.update();
-            }, 1000);
-          });
-      }
-    });
+
+  getAf() {
+    this._dfs.getAcquisitionFramework(this.id_af)
+      .pipe(
+        map((af) => {
+          if (af.acquisition_framework_start_date) {
+            af.acquisition_framework_start_date = new Date(af.acquisition_framework_start_date).toLocaleDateString()
+          }
+          if (af.acquisition_framework_end_date) {
+            af.acquisition_framework_end_date = new Date(af.acquisition_framework_end_date).toLocaleDateString()
+          }
+          return af;
+        })
+      )
+      .subscribe(
+        af => this.af = af,
+        err => {
+          if (err.status === 404) {
+            this._commonService.translateToaster("error", "MetaData.AF404");
+          } else {
+            this._commonService.translateToaster("error", "ErrorMessage");
+          }
+          this._router.navigate(['/metadata']);
+        }
+      );
+  }
+
+  getStats() {
+    this._dfs.getAcquisitionFrameworkStats(this.id_af)
+      .subscribe(res => this.stats = res);
+  }
+
+  getBbox() {
+    this._dfs.getAcquisitionFrameworkBbox(this.id_af)
+      .subscribe(res => this.bbox = res);
+  }
+
+  getTaxaDistribution() {
+    this.spinner = true;
+    this._dfs.getTaxaDistribution('group2_inpn', { id_af: this.id_af })
+      .pipe(
+        tap(() => this.spinner = false)
+      )
+      .subscribe(res => {
+        this.pieChartData.length = 0;
+        this.pieChartLabels.length = 0;
+        this.pieChartData = [];
+        this.pieChartLabels = [];
+        for (let row of res) {
+          this.pieChartData.push(row['count']);
+          this.pieChartLabels.push(row['group']);
+        }
+        
+        setTimeout(() => {
+          this.chart.chart.update();
+        }, 1000);
+      });
   }
 
   getPdf() {

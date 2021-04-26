@@ -9,7 +9,7 @@ export class ModuleService {
 
   constructor(private _api: DataFormService) { }
 
-  fetchModules(): Observable<any> {
+  fetchModules(): Observable<any[]> {
     // see CruvedStoreService.fetchCruved comments about the catchError
     return this._api.getModulesList([]).pipe(
       catchError(err => of([])), // TODO: error MUST be handled in case we are logged! (typically, api down)
