@@ -2,12 +2,10 @@ import {
   Component,
   OnInit,
   HostListener,
-  Inject,
   AfterViewInit,
 } from "@angular/core";
-import { DOCUMENT } from "@angular/common";
 import { MatDialog } from "@angular/material";
-import { ActivatedRoute, Router, NavigationEnd } from "@angular/router";
+import { Router, NavigationEnd } from "@angular/router";
 import { CommonService } from "@geonature_common/service/common.service"
 import { ModuleConfig } from "../module.config";
 import { OcctaxFormService } from "./occtax-form.service";
@@ -20,7 +18,7 @@ import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
 import { OcctaxFormCountingService } from "./counting/counting.service";
 import { OcctaxFormMapService } from "./map/map.service";
-import {NgbModal, ModalDismissReasons} from '@ng-bootstrap/ng-bootstrap';
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import { filter } from "rxjs/operators";
 
 
@@ -46,9 +44,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
   cardContentHeight: any;
 
   constructor(
-    @Inject(DOCUMENT) document,
     public dialog: MatDialog,
-    private _route: ActivatedRoute,
     private _router: Router,
     public occtaxFormService: OcctaxFormService,
     private _mapService: MapService,
@@ -62,11 +58,13 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {          
+    this.occtaxFormService.idTaxonList = ModuleConfig.id_taxon_list;
+
     this.setCurrentTabAndIdReleve(this._router.routerState.snapshot.url);
     this._router.events
     .pipe(
       filter(event => event instanceof NavigationEnd)
-    ).subscribe(event => {
+    ).subscribe(event => {      
       this.setCurrentTabAndIdReleve(event.url);
     })
   
@@ -74,27 +72,26 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
 
   setCurrentTabAndIdReleve(url) {
     let urlSegments = url.split("/");
-
     if (urlSegments[urlSegments.length - 1] === "taxons") {
-      const idReleve = urlSegments[urlSegments.length - 2];
-      console.log(idReleve);
-      
+      const idReleve = urlSegments[urlSegments.length - 2];      
       if (idReleve && Number.isInteger(Number(idReleve)))  {
         this.occtaxFormService.id_releve_occtax.next(idReleve)
-      } else {
+      } else {        
         // if no idReleve on taxon tab -> redirect
-        this._router.navigate(["occtax/form/relve"])
+        this._router.navigate(["occtax/form/releve"]);
+        this.occtaxFormService.id_releve_occtax.next(null)
         
       }
       this.occtaxFormService.currentTab = <"releve" | "taxons">urlSegments.pop();
     } else {
       this.occtaxFormService.currentTab = "releve";
-      const idReleve = urlSegments[urlSegments.length - 1];
-      if (idReleve && Number.isInteger(Number(idReleve)))  {
+      const idReleve = urlSegments[urlSegments.length - 1];      
+      if (idReleve && Number.isInteger(Number(idReleve)))  {        
         this.occtaxFormService.id_releve_occtax.next(idReleve)
+      }else {        
+        this.occtaxFormService.id_releve_occtax.next(null);
       }
     }
-    return urlSegments
   }
   navigate(tab) {    
     const idReleve = this.occtaxFormService.id_releve_occtax.getValue();    
@@ -140,9 +137,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     }
   }
 
-  openParametersDialog(modalComponent): void {
-    console.log(modalComponent);
-    
+  openParametersDialog(modalComponent): void {    
     this._modalService.open(
       modalComponent.modalContent,
       {windowClass: "large-modal"}

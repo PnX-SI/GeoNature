@@ -1,9 +1,8 @@
 import { Injectable} from "@angular/core";
-import { Location} from "@angular/common";
 import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
-import { Observable, Subscription } from "rxjs";
-import { filter, map, switchMap, tap, skip, mergeMap, concatMap } from "rxjs/operators";
+import { Observable, Subscription, of } from "rxjs";
+import { filter, map, switchMap, tap, skip, concatMap } from "rxjs/operators";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { GeoJSON } from "leaflet";
 import { ModuleConfig } from "../../module.config";
@@ -40,7 +39,6 @@ export class OcctaxFormReleveService {
     private router: Router,
     private fb: FormBuilder,
     private _commonService: CommonService,
-    private _location: Location,
     private dateParser: NgbDateParserFormatter,
     private coreFormService: FormService,
     private dataFormService: DataFormService,
@@ -52,7 +50,6 @@ export class OcctaxFormReleveService {
   ) {
     this.initPropertiesForm();
     this.setObservables();
-
     this.releveForm = this.fb.group({
       geometry: this.occtaxFormMapService.geometry,
       properties: this.propertiesForm,
@@ -67,7 +64,7 @@ export class OcctaxFormReleveService {
     };
   }
 
-  initPropertiesForm(): void {
+  initPropertiesForm(): void {    
     //FORM
     this.propertiesForm = this.fb.group({
       id_dataset: [null, Validators.required] ,
@@ -152,14 +149,11 @@ export class OcctaxFormReleveService {
 
   }
 
-  onDatasetChanged(idDataset) {
-
+  onDatasetChanged(idDataset) {    
     const currentDataset = this._datasetStoreService.datasets.find(d => d.id_dataset == idDataset);
-    if(currentDataset && currentDataset.id_taxa_list) {
+    if(currentDataset && currentDataset.id_taxa_list) {      
       this.occtaxFormService.idTaxonList = currentDataset.id_taxa_list;
     }
-    console.log(this.occtaxFormService.idTaxonList);
-    
     
     this.dataFormService.getadditionalFields({
       'id_dataset': idDataset,
@@ -207,7 +201,7 @@ export class OcctaxFormReleveService {
     this.occtaxFormService.editionMode
       .pipe(
         skip(1), // skip initilization value (false)
-        tap((editionMode: boolean) => {
+        tap((editionMode: boolean) => {          
           // gestion de l'autocomplétion de la date ou non.
           this.$_autocompleteDate.unsubscribe();
           // autocomplete si mode création ou si mode edition et date_min = date_max
@@ -219,12 +213,13 @@ export class OcctaxFormReleveService {
             );
           }
         }),
-        switchMap((editionMode: boolean) => {
+        switchMap((editionMode: boolean) => {   
+                 
           //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
           return editionMode ? this.releveValues : this.defaultValues;
         })
       )
-      .subscribe((values) => {
+      .subscribe((values) => {        
         // re disable the form here
         // Angular bug: when we add additionnal form controls, it enable the form
         if(!values.id_releve_occtax) {
@@ -236,7 +231,8 @@ export class OcctaxFormReleveService {
          this.propertiesForm.patchValue(values, {emitEvent: false});
          this.propertiesForm.controls.observers.patchValue(values.observers);
         }, 1000);
-      });
+      }
+      );
 
     //Observation de la geometry pour récupere les info d'altitudes
     this.occtaxFormMapService.geojson
@@ -379,6 +375,8 @@ export class OcctaxFormReleveService {
               releve[field.attribut_name] =  releve.additional_fields[field.attribut_name];
           })
           return releve
+        }).catch(() => {
+          return of(releve);          
         })
       })
     );
@@ -530,12 +528,8 @@ export class OcctaxFormReleveService {
             );
             this.occtaxFormService.replaceReleveData(data);
             this.releveForm.markAsPristine();
-            
-            console.log(this.route.snapshot);
-            
-            this.router.navigate(["taxons"], {
-              relativeTo: this.route,
-            });
+                        
+            this.router.navigate(["occtax/form", data.id, "taxons"]);
           },
           (err) => {
             this.waiting = false;

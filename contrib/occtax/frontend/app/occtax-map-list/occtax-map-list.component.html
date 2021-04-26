@@ -170,7 +170,7 @@
               <ng-container *ngIf="row.rights.U; else disabledEditBlc">
                 <a
                   class="btn btn-outline-shadow btn-no-padding btn-ghost"
-                  [routerLink]="['form', row.id_releve_occtax]"
+                  [routerLink]="['form/releve', row.id_releve_occtax]"
                 >
                   <i
                     matTooltip="{{'Releve.Edit' | translate}} {{ row.id_releve_occtax }}"

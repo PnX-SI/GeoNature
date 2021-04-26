@@ -65,7 +65,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit() {
-    this.fs.idTaxonList = ModuleConfig.id_taxon_list;
     this.occurrenceForm = this.occtaxFormOccurrenceService.form;
 
     //gestion de l'affichage des preuves d'existence selon si Preuve = 'Oui' ou non.

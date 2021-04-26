@@ -47,7 +47,6 @@ export class OcctaxFormOccurrenceService {
     private occtaxParamS: OcctaxFormParamService,
     private occtaxTaxaListService: OcctaxTaxaListService,
     private dateParser: NgbDateParserFormatter,
-    private dataFormService: DataFormService,
   ) {
     this.initForm();
     this.setObservables();

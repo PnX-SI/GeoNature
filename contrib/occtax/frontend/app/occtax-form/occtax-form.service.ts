@@ -48,7 +48,7 @@ export class OcctaxFormService {
     private dataFormService: DataFormService,
 
 
-  ) {      
+  ) {    
     this.currentUser = this._auth.getCurrentUser();
 
     //observation de l'URL
@@ -56,21 +56,29 @@ export class OcctaxFormService {
       .pipe(
         skip(1), // skip initilization value (null)
         tap((id) =>{ 
-          if(id == null) {
-            this.editionMode.next(false)
+          if(id == null) {            
+            this.editionMode.next(false);
+          } else {
+            this.editionMode.next(true);
           }
         }), //reinitialisation du mode edition à faux
         filter((id) => id !== null)
       )
-      .subscribe((id) => this.getOcctaxData(id));
+      .subscribe((id) => {        
+        this.getOcctaxData(id)
+      });
   }
 
   getOcctaxData(id) {
-    
     this._dataS.getOneReleve(id).subscribe(
-      (data) => {        
+      (data) => {
         this.occtaxData.next(data);
         this.editionMode.next(true);
+        // set taxa list
+        if(data.releve.properties.dataset.id_taxa_list) {
+          this.idTaxonList = data.releve.properties.dataset.id_taxa_list;
+        }
+        
       },
       (error) => {
         this._commonService.translateToaster("error", "Releve.DoesNotExist");
