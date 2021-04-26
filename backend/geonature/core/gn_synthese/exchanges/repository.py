@@ -21,8 +21,7 @@ def request_synthese(id_synthese=None, unique_id_sinp=None, id_source=None, enti
     elif id_synthese:
         filter_params = {
             'id_synthese': id_synthese
-        })
-        
+        }
 
 
     return  (
