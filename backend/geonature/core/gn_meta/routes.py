@@ -2,7 +2,9 @@
     Routes for gn_meta 
 """
 import os
+import base64
 import datetime as dt
+import io
 import json
 import logging
 
@@ -32,7 +34,7 @@ from geonature.core.gn_synthese.models import (
     CorSensitivitySynthese,
 )
 from geonature.core.gn_synthese.routes import (
-    get_taxa_distribution,
+    taxa_distribution,
     get_bbox
 )
 from geonature.core.ref_geo.models import LAreas
@@ -320,6 +322,12 @@ def get_dataset_details(info_role, id_dataset):
 
     return get_dataset_details_dict(id_dataset, info_role)
 
+def decode_bytesio(b):
+    """ Return the decoded value of a map/chart image saved in a BytesIO
+    """
+    base = base64.b64encode(b.getvalue())
+    decoded = base.decode('ascii')
+    return decoded
 
 def create_taxa_chart(id_dataset=None, id_af=None):
     """Create a png chart of the taxonomic distribution using the matplotlib library
@@ -327,22 +335,21 @@ def create_taxa_chart(id_dataset=None, id_af=None):
     import matplotlib.pyplot as plt
     import numpy as np
 
-    filepath = str(BACKEND_DIR) + "/static/images/taxa.png"
     if (id_dataset):
-        response = get_taxa_distribution(id_dataset=id_dataset, rank="group2_inpn")
+        response = taxa_distribution(id_dataset=id_dataset, rank="group2_inpn")
     elif (id_af):
-        response = get_taxa_distribution(id_af=id_af, rank="group2_inpn")
+        response = taxa_distribution(id_af=id_af, rank="group2_inpn")
         
-    taxa_distribution = json.loads(response.data)
+    distribution = json.loads(response.data)
     try:
-        if taxa_distribution['message'] == "not found":
+        if distribution['message'] == "not found":
             return
     except TypeError:
         pass
 
     count = []
     group = []
-    for taxa in taxa_distribution:
+    for taxa in distribution:
         count.append(taxa['count'])
         group.append(taxa['group'])
 
@@ -373,7 +380,9 @@ def create_taxa_chart(id_dataset=None, id_af=None):
     plt.tight_layout()
     plt.subplots_adjust(left=0.35)
 
-    fig.savefig(filepath, dpi=200)
+    b = io.BytesIO()
+    plt.savefig(b, format='png')
+    return decode_bytesio(b)
 
 
 def create_taxa_map(id_dataset=None, bbox=None):
@@ -381,9 +390,6 @@ def create_taxa_map(id_dataset=None, bbox=None):
     """
     import staticmaps
 
-    html_filepath = str(BACKEND_DIR) + "/static/images/map.html"
-    img_filepath = str(BACKEND_DIR) + "/static/images/map.svg"
-    
     if not bbox:
         response = get_bbox(id_dataset=id_dataset)
         bbox = json.loads(response.data)
@@ -415,10 +421,11 @@ def create_taxa_map(id_dataset=None, bbox=None):
                     color=staticmaps.BLUE,
                 )
             )
-        
-        svg_image = context.render_svg(800, 500)
-        with open(img_filepath, "w", encoding="utf-8") as f:
-            svg_image.write(f, pretty=True)
+
+        b = io.BytesIO()
+        image = context.render_cairo(800, 500)
+        image.write_to_png(b)
+        return decode_bytesio(b)
 
 
 @routes.route("/dataset/<int:ds_id>", methods=["DELETE"])
@@ -815,30 +822,18 @@ def get_export_pdf_dataset(id_dataset, info_role):
         df["dataset_shortname"].replace(" ", "_"),
         dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
     )
-    create_taxa_chart(id_dataset=id_dataset)
-    try:
-        f = open(str(BACKEND_DIR) + "/static/images/taxa.png")
-        f.close()
-        df["chart"] = True
-    except IOError:
-        df["chart"] = False
+    
+    chart = create_taxa_chart(id_dataset=id_dataset)
+    if chart:
+        df["chart"] = chart
 
-    create_taxa_map(id_dataset=id_dataset)
-    try:
-        f = open(str(BACKEND_DIR) + "/static/images/map.svg")
-        f.close()
-        df["map"] = True
-    except IOError:
-        df["map"] = False
+    map = create_taxa_map(id_dataset=id_dataset)
+    if map:
+        df["map"] = map
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf("dataset_template_pdf.html", df, filename)
     pdf_file_posix = Path(pdf_file)
-
-    if os.path.exists(str(BACKEND_DIR) + "/static/images/taxa.png"):
-        os.remove(str(BACKEND_DIR) + "/static/images/taxa.png")
-    if os.path.exists(str(BACKEND_DIR) + "/static/images/map.svg"):
-        os.remove(str(BACKEND_DIR) + "/static/images/map.svg")
 
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 
@@ -976,33 +971,20 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
             dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
         )
 
-    create_taxa_chart(id_af=id_acquisition_framework)
-    try:
-        f = open(str(BACKEND_DIR) + "/static/images/taxa.png")
-        f.close()
-        acquisition_framework["chart"] = True
-    except IOError:
-        acquisition_framework["chart"] = False
+    chart = create_taxa_chart(id_af=id_acquisition_framework)
+    if chart:
+        acquisition_framework["chart"] = chart
 
     if acquisition_framework["bbox"]:
-        create_taxa_map(bbox=acquisition_framework["bbox"])
-    try:
-        f = open(str(BACKEND_DIR) + "/static/images/map.svg")
-        f.close()
-        acquisition_framework["map"] = True
-    except IOError:
-        acquisition_framework["map"] = False
+        map = create_taxa_map(bbox=acquisition_framework["bbox"])
+        if map:
+            acquisition_framework["map"] = map
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf(
         "acquisition_framework_template_pdf.html", acquisition_framework, filename
     )
     pdf_file_posix = Path(pdf_file)
-
-    if os.path.exists(str(BACKEND_DIR) + "/static/images/taxa.png"):
-        os.remove(str(BACKEND_DIR) + "/static/images/taxa.png")
-    if os.path.exists(str(BACKEND_DIR) + "/static/images/map.svg"):
-        os.remove(str(BACKEND_DIR) + "/static/images/map.svg")
 
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 

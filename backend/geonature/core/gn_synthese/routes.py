@@ -901,10 +901,8 @@ def observation_count_per_column(column):
         data.append(temp)
     return data
 
-
-@routes.route("/taxa_distribution", methods=["GET"])
 @json_resp
-def get_taxa_distribution(id_dataset=None, id_af=None, rank=None):
+def taxa_distribution(id_dataset=None, id_af=None, rank=None):
     """
     Get taxa distribution for a given dataset or acquisition framework
     and grouped by a certain taxa rank
@@ -940,6 +938,15 @@ def get_taxa_distribution(id_dataset=None, id_af=None, rank=None):
 
     data = query.group_by(rank).all()
     return [{"count": d[0], "group": d[1]} for d in data]
+
+@routes.route("/taxa_distribution", methods=["GET"])
+@json_resp
+def get_taxa_distribution():
+    """
+    Get taxa distribution for a given dataset or acquisition framework
+    and grouped by a certain taxa rank
+    """
+    return taxa_distribution()
 
 
 # @routes.route("/test", methods=["GET"])
