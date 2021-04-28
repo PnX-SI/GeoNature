@@ -48,16 +48,10 @@ class CorObserverSynthese(DB.Model):
     id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"), primary_key=True)
 
 
-corAreaSynthese = DB.Table(
-    "cor_area_synthese",
-    DB.MetaData(schema="gn_synthese"),
-    DB.Column(
-        "id_synthese",
-        DB.Integer,
-        ForeignKey("gn_synthese.cor_area_synthese.id_synthese"),
-        primary_key=True,
-    ),
-    DB.Column("id_area", DB.Integer, ForeignKey("ref_geo.t_areas.id_area"), primary_key=True),
+corAreaSynthese = DB.Table("cor_area_synthese",
+    DB.Column("id_synthese", DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True),
+    DB.Column("id_area", DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True),
+    schema='gn_synthese',
 )
 
 
@@ -96,7 +90,8 @@ class Synthese(DB.Model):
     id_synthese = DB.Column(DB.Integer, primary_key=True)
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
-    id_source = DB.Column(DB.Integer)
+    id_source = DB.Column(DB.Integer, ForeignKey(TSources.id_source))
+    source = relationship(TSources)
     id_module = DB.Column(DB.Integer)
     entity_source_pk_value = DB.Column(DB.Integer)  # FIXME varchar in db!
     id_dataset = DB.Column(DB.Integer)
@@ -156,6 +151,7 @@ class Synthese(DB.Model):
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
     last_action = DB.Column(DB.Unicode)
+    areas = relationship('LAreas', secondary=corAreaSynthese)
 
     def get_geofeature(self, recursif=True, columns=None):
         return self.as_geofeature("the_geom_4326", "id_synthese", recursif, columns=columns)
@@ -164,9 +160,9 @@ class Synthese(DB.Model):
 @serializable
 class CorAreaSynthese(DB.Model):
     __tablename__ = "cor_area_synthese"
-    __table_args__ = {"schema": "gn_synthese"}
-    id_synthese = DB.Column(DB.Integer, primary_key=True)
-    id_area = DB.Column(DB.Integer)
+    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
+    id_synthese = DB.Column(DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True)
+    id_area = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True)
 
 
 @serializable
@@ -345,7 +341,7 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         primary_key=True,
     )
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
-    id_source = DB.Column(DB.Integer)
+    id_source = DB.Column(DB.Integer, ForeignKey(TSources.id_source))
     id_dataset = DB.Column(DB.Integer)
     cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
 
@@ -357,9 +353,6 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
     areas = DB.relationship(
         "LAreas",
         secondary=corAreaSynthese,
-        primaryjoin=(corAreaSynthese.c.id_synthese == id_synthese),
-        secondaryjoin=(corAreaSynthese.c.id_area == LAreas.id_area),
-        foreign_keys=[corAreaSynthese.c.id_synthese, corAreaSynthese.c.id_area],
     )
     datasets = DB.relationship(
         "TDatasets", primaryjoin=(TDatasets.id_dataset == id_dataset), foreign_keys=[id_dataset],
