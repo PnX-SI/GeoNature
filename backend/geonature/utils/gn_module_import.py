@@ -7,7 +7,6 @@ import subprocess
 import logging
 import os
 import json
-import sys
 
 from pathlib import Path
 from packaging import version
@@ -15,11 +14,10 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
 
 from geonature.utils.config import config
-from geonature.utils.config_schema import GnGeneralSchemaConf, ManifestSchemaProdConf
 from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
 from geonature.utils.command import build_geonature_front, process_prebuild_frontend
-from geonature.utils.module import import_gn_module
+from geonature.utils.module import load_module_config
 from geonature.core.gn_commons.models import TModules
 from geonature import create_app
 
@@ -98,7 +96,6 @@ def gn_module_register_config(module_code):
 
     """
     log.info("Register module")
-
     # creation du fichier s'il n'existe pas
     config_file = open(conf_gn_module_path(module_code), "w+")
 
@@ -202,7 +199,6 @@ def check_codefile_validity(module_path, module_code):
     if gn_file.is_file():
         try:
             from install_gn_module import gnmodule_install_app as fonc
-
             if not inspect.getargspec(fonc).args == ["gn_db", "gn_app"]:
                 raise GeoNatureError("Invalid variable")
             log.info("      install_gn_module  OK")
