@@ -773,9 +773,6 @@ def export(info_role):
 
     if current_app.config["OCCTAX"]["ADD_MEDIA_IN_EXPORT"]:
         q, columns = releve_repository.add_media_in_export(q, columns)
-
-
-
     data = q.all()
 
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
@@ -786,14 +783,16 @@ def export(info_role):
     query_add_fields = DB.session.query(TAddtitionalFields).filter(
         TAddtitionalFields.modules.any(module_code="OCCTAX")
     )
-    if "id_dataset" in request.args:
-        additional_col_names = query_add_fields.filter(TAddtitionalFields.datasets.any(
-            id_dataset=request.args['id_dataset']
-        )).all()
-    else:
-        additional_col_names = query_add_fields.filter(~TAddtitionalFields.datasets.any()).all()
+    global_add_fields = query_add_fields.filter(~TAddtitionalFields.datasets.any()).all()
 
-    additional_col_names = [field.field_name for field in additional_col_names]
+    if "id_dataset" in request.args:
+        dataset_add_fields = query_add_fields.filter(
+            TAddtitionalFields.datasets.any(id_dataset=request.args['id_dataset'])
+        ).all()
+        global_add_fields = [*global_add_fields, *dataset_add_fields]
+    
+
+    additional_col_names = [field.field_name for field in global_add_fields]
     if export_format == "csv":
         # serialize data with additional cols or not
         columns = columns + additional_col_names
