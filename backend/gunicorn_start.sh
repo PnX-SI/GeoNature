@@ -26,12 +26,8 @@ cd $FLASKDIR
 # options --reload-extra-file=$f
 # pour recharger en cas de changement de config et changement de custom
 
-extra_files_config="$(ls $APP_DIR/config/*.toml)"
-extra_files_custom="$(find $APP_DIR/frontend/src/custom -type f)"
-extra_files="$extra_files_config $extra_files_custom"
+extra_files="$(find $APP_DIR/config -type f)"
 options_extra_files=""
-
-
 for f in $(echo $extra_files)
 do
     options_extra_files="$options_extra_files --reload-extra-file=$f"

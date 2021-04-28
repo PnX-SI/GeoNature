@@ -188,6 +188,8 @@ sudo -s supervisorctl reload
 # Lien symbolique vers le dossier static du backend (pour le backoffice)
 ln -sf "${BASE_DIR}/frontend/node_modules" "${BASE_DIR}/backend/static"
 
+ln -snf "${BASE_DIR}/config/custom" "${BASE_DIR}/frontend/src/custom"
+
 cd "${BASE_DIR}/frontend"
 
 # Creation du dossier des assets externes
@@ -196,8 +198,9 @@ mkdir -p "src/external_assets"
 
 # Copy the custom components
 echo "Création des fichiers de customisation du frontend..."
-custom_component_dir="src/custom/components/"
-for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
+
+custom_dir="src/custom/"
+for file in $(find "${custom_dir}" -type f -name "*.sample"); do
 	if [[ ! -f "${file%.sample}" ]]; then
 		cp "${file}" "${file%.sample}"
 	fi

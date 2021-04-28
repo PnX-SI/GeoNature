@@ -15,7 +15,7 @@ import { OcctaxFormReleveService } from "../releve/releve.service";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxFormParamService } from "./form-param.service";
 import { ConfigService } from "@geonature/utils/configModule/core";
-import { moduleCode } from "../../module.code.config";
+import { MODULE_CODE } from "../../module.code.config";
 
 
 @Component({
@@ -73,7 +73,7 @@ export class OcctaxFormParamDialog implements OnInit {
     public occtaxFormParamService: OcctaxFormParamService,
     private _configService: ConfigService,
   ) {
-    this.moduleConfig = this._configService.getSettings(moduleCode);
+    this.moduleConfig = this._configService.getSettings(MODULE_CODE);
   }
 
   ngOnInit() {
@@ -204,7 +204,7 @@ export class OcctaxFormParamDialog implements OnInit {
   geometryFormMapper() {
     this.paramsForm
       .get("geometry")
-      .patchValue(this.occtaxFormMapService.geometry.value);
+      .patchValue(this.occtaxFormMapService['geometry']['value']);
   }
 
   releveFormMapper() {

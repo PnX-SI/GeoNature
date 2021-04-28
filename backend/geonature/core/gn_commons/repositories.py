@@ -126,6 +126,7 @@ class TMediaRepository:
                 raise Exception("Errors {}".format(exp.args))
 
     def absolute_file_path(self, thumbnail_height=None):
+        print(current_app.config["BASE_DIR"], self.file_path(thumbnail_height))
         return os.path.join(current_app.config["BASE_DIR"], self.file_path(thumbnail_height))
 
     def test_video_link(self):
@@ -340,7 +341,7 @@ class TMediaRepository:
             thumb_path, os.path.join(current_app.config["BASE_DIR"], "static")
         )
         # Get URL
-        thumb_url = url_for("static", filename=relative_path)
+        thumb_url = current_app.config["API_ENDPOINT"] + '/' +  relative_path 
         return thumb_url
 
     def delete(self):

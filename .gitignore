@@ -2,6 +2,13 @@
 settings.ini
 config/geonature_config.toml
 config/*.toml
+config/modules/*
+!config/modules/.gitkeep
+config/custom/*.html
+config/custom/*.css
+config/custom/*.jpg
+config/custom/*.png
+
 
 **/conf_gn_module.toml
 **/module.config.ts

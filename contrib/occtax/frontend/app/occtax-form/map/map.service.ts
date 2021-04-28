@@ -12,12 +12,13 @@ export class OcctaxFormMapService {
   private _geometry: FormControl;
   public geojson: BehaviorSubject<GeoJSON> = new BehaviorSubject(null);
 
-  get geometry() {
-    return this._geometry;
-  }
+  // get geometry(): FormControl {
+  //   return this._geometry;
+  // }
+
   set geometry(geojson: GeoJSON) {
-    if (!isEqual(geojson.geometry, this._geometry.value)) {
-      this._geometry.setValue(geojson.geometry);
+    if (!isEqual(geojson['geometry'], this._geometry.value)) {
+      this._geometry.setValue(geojson['geometry']);
       this._geometry.markAsDirty();
     }
   }
@@ -50,12 +51,17 @@ export class OcctaxFormMapService {
       )
       .subscribe((geometry) => this._geometry.setValue(geometry));
 
-    //active la saisie si la geometry est valide
+    // active la saisie si la geometry est valide
     this._geometry.valueChanges
       .pipe(
-        map((geometry) =>
-          this._geometry.valid ? { geometry: geometry } : null
-        )
+        map((geometry) => {
+          if (!this._geometry.valid) {
+            return null;
+          }
+          const g = new GeoJSON();
+          g['geometry'] = geometry;
+          return g;
+        })
       )
       .subscribe((geojson) => this.geojson.next(geojson));
   }

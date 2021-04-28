@@ -9,7 +9,6 @@ from sqlalchemy import exc as sa_exc
 from werkzeug.middleware.proxy_fix import ProxyFix
 
 from geonature import create_app
-from geonature.utils.assets import process_manage_frontend_assets
 
 class ReverseProxied(object):
     def __init__(self, app, script_name=None, scheme=None, server=None):

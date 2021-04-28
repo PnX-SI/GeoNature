@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import { ConfigService } from "@geonature/utils/configModule/core";
-import { moduleCode } from "../../module.code.config";
+import { MODULE_CODE } from "../../module.code.config";
 
 interface OCCTAX_FORM_PARAM {
   geometry?: any;
@@ -140,7 +140,7 @@ export class OcctaxFormParamService {
   constructor(
     private _configService: ConfigService,
   ) {
-    this.moduleConfig = this._configService.getSettings(moduleCode);
+    this.moduleConfig = this._configService.getSettings(MODULE_CODE);
   }
 
   get(element: string) {

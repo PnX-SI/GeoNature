@@ -1,1 +1,1 @@
-export const moduleCode = 'OCCTAX';
+export const MODULE_CODE = 'OCCTAX';

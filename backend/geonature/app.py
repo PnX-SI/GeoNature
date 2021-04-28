@@ -74,6 +74,8 @@ def create_app(with_external_mods=True, with_flask_admin=True):
     # Pass the ID_APP to the submodule to avoid token conflict between app on the same server
     app.config["ID_APP"] = app.config["ID_APPLICATION_GEONATURE"]
 
+    print(app.config['BASE_DIR'])
+
     if with_flask_admin:
         from geonature.core.admin.admin import admin
         admin.init_app(app)

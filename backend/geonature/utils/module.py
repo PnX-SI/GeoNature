@@ -9,7 +9,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.config_schema import ManifestSchemaProdConf
 from geonature.utils.env import (
-    GN_EXTERNAL_MODULE, GN_MODULE_FE_FILE, GN_MODULE_FILES, conf_gn_module_path
+    GN_EXTERNAL_MODULE, GN_MODULE_FE_FILE, GN_MODULE_FILES, conf_gn_module_path, DB
 )
 from geonature.core.gn_commons.models import TModules
 from geonature.utils.config import config
@@ -52,6 +52,7 @@ def import_legacy_module(module_object):
 
 def import_packaged_module(module_dist, module_object):
     module_code = module_object.module_code
+    module_path = module_object.module_path
     module_dir = GN_EXTERNAL_MODULE / module_object.module_path
     frontend_path = os.environ.get(f'GEONATURE_{module_code}_FRONTEND_PATH',
                                    str(module_dir / 'frontend'))
@@ -59,6 +60,7 @@ def import_packaged_module(module_dist, module_object):
         'MODULE_CODE': module_code,
         'MODULE_URL': '/' + module_object.module_path,
         'FRONTEND_PATH': frontend_path,
+        'MODULE_PATH': module_path,
     }
 
     module_schema = load_entry_point(module_dist, 'gn_module', 'config_schema')

@@ -12,6 +12,7 @@
     "polyfills.ts",
     "*.d.ts",
     "**/*",
+    "../node_modules/gn_module_*/**/*.ts",
     "../../external_modules/*.ts",
     "../../external_modules/**/*.ts",
   ],
@@ -19,6 +20,7 @@
     "test.ts",
     "**/*.spec.ts",
     "**/*.sample",
-    "../../external_modules/**/*.spec.ts"
+    "../../external_modules/**/*.spec.ts",
+    "../node_modules/gn_module_*/**/*.spec.ts",
   ],
 }

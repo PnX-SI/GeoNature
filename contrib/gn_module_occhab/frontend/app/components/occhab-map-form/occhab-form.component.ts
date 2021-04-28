@@ -10,7 +10,7 @@ import { Subscription } from "rxjs/Subscription";
 import { CommonService } from "@geonature_common/service/common.service";
 import { ConfigService } from '@geonature/utils/configModule/core';
 import { filter } from "rxjs/operators";
-import { moduleCode } from "../../module.code.config";
+import { MODULE_CODE } from "../../module.code.config";
 
 @Component({
   selector: "pnx-occhab-form",
@@ -51,7 +51,7 @@ export class OccHabFormComponent implements OnInit {
     private _configService: ConfigService,
     ) {
       this.appConfig = this._configService.getSettings();
-      this.moduleConfig = this._configService.getSettings(moduleCode);
+      this.moduleConfig = this._configService.getSettings(MODULE_CODE);
     }
 
   ngOnInit() {

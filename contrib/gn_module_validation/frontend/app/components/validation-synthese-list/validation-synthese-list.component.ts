@@ -20,7 +20,7 @@ import { ValidationModalInfoObsComponent } from "../validation-modal-info-obs/va
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
 import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
 import { ConfigService } from "@geonature/utils/configModule/core";
-import { moduleCode } from "../../module.code.config";
+import { MODULE_CODE } from "../../module.code.config";
 @Component({
   selector: "pnx-validation-synthese-list",
   templateUrl: "validation-synthese-list.component.html",
@@ -59,7 +59,7 @@ export class ValidationSyntheseListComponent
     public formService: SyntheseFormService,
     private _configService: ConfigService,
   ) {
-    this.moduleConfig = this._configService.getSettings(moduleCode);
+    this.moduleConfig = this._configService.getSettings(MODULE_CODE);
   }
 
   ngOnInit() {

@@ -53,4 +53,4 @@ def import_requirements(req_file):
         raise GeoNatureError("Error while installing module backend dependencies")
 
 def conf_gn_module_path(module_code):
-    return str(ROOT_DIR / "config/{}_config.toml".format(module_code.lower()))
+    return str(ROOT_DIR / "config/modules/{}_config.toml".format(module_code.lower()))

@@ -5,7 +5,7 @@ import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
 import { ConfigService } from "@geonature/utils/configModule/core";
-import { moduleCode } from "../module.code.config";
+import { MODULE_CODE } from "../module.code.config";
 
 @Component({
   selector: "pnx-validation",
@@ -25,7 +25,7 @@ export class ValidationComponent implements OnInit {
     private _fs: SyntheseFormService,
     private _configService: ConfigService,
   ) {
-    this.moduleConfig = this._configService.getSettings(moduleCode);
+    this.moduleConfig = this._configService.getSettings(MODULE_CODE);
   }
 
   ngOnInit() {

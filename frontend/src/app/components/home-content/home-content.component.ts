@@ -1,4 +1,3 @@
-import { IntroductionComponent } from './../../../custom/components/introduction/introduction.component';
 import { Component, OnInit } from '@angular/core';
 import { MapService } from '@geonature_common/map/map.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
@@ -70,13 +69,13 @@ export class HomeContentComponent implements OnInit {
   }
 
   loadCustomComponents() {
-    this._httpClient.get('custom/components/introduction/introduction.component.html', {
+    this._httpClient.get('custom/introduction.component.html', {
       responseType: 'text'
     }).subscribe(html => {
       this.introductionComponent = html;
     });
 
-    this._httpClient.get('custom/components/footer/footer.component.html', {
+    this._httpClient.get('custom/footer.component.html', {
       responseType: 'text'
     }).subscribe(html => {
       this.footerComponent = html;

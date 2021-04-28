@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { OccHabMapListService } from "../../services/occhab-map-list.service";
 import { ConfigService } from '@geonature/utils/configModule/core';
-import { moduleCode } from "../../module.code.config";  
+import { MODULE_CODE } from "../../module.code.config";  
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
@@ -17,7 +17,7 @@ export class OcchabMapListFilterComponent implements OnInit {
     private _configService: ConfigService,
   ) {
     this.appConfig = this._configService.getSettings();
-    this.moduleConfig = this._configService.getSettings(moduleCode);
+    this.moduleConfig = this._configService.getSettings(MODULE_CODE);
   }
 
   public appConfig: any;

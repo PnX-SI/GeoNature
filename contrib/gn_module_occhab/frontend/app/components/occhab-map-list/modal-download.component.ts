@@ -3,7 +3,7 @@ import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { OccHabDataService } from "../../services/data.service";
 import { OcchabStoreService } from "../../services/store.service";
 import { ConfigService } from "@geonature/utils/configModule/core";
-import { moduleCode } from "../../module.code.config";
+import { MODULE_CODE } from "../../module.code.config";
 
 @Component({
   selector: "pnx-occhab-map-list-download-modal",
@@ -18,7 +18,7 @@ export class OccHabModalDownloadComponent implements OnInit {
     private _configService: ConfigService,
     public storeService: OcchabStoreService,
   ) {
-    this.moduleConfig = this._configService.getSettings(moduleCode);
+    this.moduleConfig = this._configService.getSettings(MODULE_CODE);
   }
 
   ngOnInit() {}

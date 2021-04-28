@@ -12,7 +12,7 @@ import { FormService } from "@geonature_common/form/form.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcchabStoreService } from "./store.service";
 import { ConfigService } from '@geonature/utils/configModule/core';
-import { moduleCode } from "../module.code.config";
+import { MODULE_CODE } from "../module.code.config";
 
 @Injectable()
 export class OcchabFormService {
@@ -29,7 +29,7 @@ export class OcchabFormService {
     private _formService: FormService,
     private _configService: ConfigService,
     ) {
-      this.moduleConfig = this._configService.getSettings(moduleCode);
+      this.moduleConfig = this._configService.getSettings(MODULE_CODE);
       // get selected cd_typo to filter the habref autcomplete
       this.typoHabControl.valueChanges.subscribe(data => {
         this.selectedTypo = { cd_typo: data };

@@ -8,7 +8,7 @@ import { NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
 import * as moment from "moment";
 import { ConfigService } from "@geonature/utils/configModule/core";
-import { moduleCode } from "../../module.code.config";
+import { MODULE_CODE } from "../../module.code.config";
 
 @Component({
   selector: "pnx-occhab-map-list",
@@ -35,7 +35,7 @@ export class OccHabMapListComponent implements OnInit {
     private _commonService: CommonService,
     private _configService: ConfigService,
   ) {
-    this.moduleConfig = this._configService.getSettings(moduleCode);
+    this.moduleConfig = this._configService.getSettings(MODULE_CODE);
   }
   ngOnInit() {
     if (this.storeService.firstMessageMapList) {

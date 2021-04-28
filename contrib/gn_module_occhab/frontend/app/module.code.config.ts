@@ -1,1 +1,1 @@
-export const moduleCode = 'OCCHAB';
+export const MODULE_CODE = 'OCCHAB';

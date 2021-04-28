@@ -277,14 +277,14 @@ CREATE TABLE t_releves_occtax (
     place_name character varying(500),
     meta_device_entry character varying(20),
     comment text,
-    geom_local public.geometry(Geometry,MYLOCALSRID),
+    geom_local public.geometry(Geometry,:MYLOCALSRID),
     geom_4326 public.geometry(Geometry,4326),
     id_nomenclature_geo_object_nature integer,
     precision integer,
     CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
     CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
     CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
-    CONSTRAINT enforce_srid_geom_local CHECK ((public.st_srid(geom_local) = MYLOCALSRID))
+    CONSTRAINT enforce_srid_geom_local CHECK ((public.st_srid(geom_local) = :MYLOCALSRID))
 );
 COMMENT ON COLUMN t_releves_occtax.id_nomenclature_tech_collect_campanule IS 'Correspondance nomenclature CAMPANULE = technique_obs';
 COMMENT ON COLUMN t_releves_occtax.id_nomenclature_grp_typ IS 'Correspondance nomenclature INPN = Type de regroupement';

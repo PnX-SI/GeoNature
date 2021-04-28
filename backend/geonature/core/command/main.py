@@ -3,7 +3,7 @@
 """
 
 import logging
-from os import environ
+from os import environ, path, listdir
 
 import click
 
@@ -20,7 +20,7 @@ from geonature.utils.command import (
     process_prebuild_frontend,
 )
 
-from geonature.utils.assets import process_manage_frontend_assets
+from geonature.utils.assets import process_manage_frontend_assets, extra_files
 from geonature import create_app
 
 # from rq import Queue, Connection, Worker
@@ -79,24 +79,14 @@ def dev_back(host, port):
     """
     if not environ.get('FLASK_ENV'):
         environ['FLASK_ENV'] = 'development'
-        
+
+
+
     app = create_app()
     app.run(
         host=host,
         port=int(port),
-        extra_files=[
-            # ROOT_DIR / str('config/*.toml'), wid card ne marche pas
-
-            # PATCH
-            # comment rendre cette liste automatique ??
-            # .. ça reste pour du dev
-            ROOT_DIR / str('config/occtax_config.toml'),
-            ROOT_DIR / str('config/occhab_config.toml'),
-            ROOT_DIR / str('config/validation_config.toml'),
-            # FIN PATCH
-
-            ROOT_DIR / str('config/geonature_config.toml'),
-        ]
+        extra_files=extra_files()
     )
 
 

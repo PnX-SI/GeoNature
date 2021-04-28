@@ -29,6 +29,7 @@ from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.config_schema import GnGeneralSchemaConf
 from geonature.utils.module import import_frontend_enabled_modules
 from geonature.utils.config import config_frontend, config
+from geonature.utils.assets import extra_files
 
 from geonature import create_app
 
@@ -37,14 +38,11 @@ log = logging.getLogger(__name__)
 MSG_OK = "\033[92mok\033[0m\n"
 
 def start_gunicorn_cmd(uri, worker):
-    cmd = "gunicorn geonature.wsgi:app -w {gun_worker} -b {gun_uri} --reload-extra-file={extra_files}"
+
+    cmd = "gunicorn geonature.wsgi:app -w {gun_worker} -b {gun_uri}"
     subprocess.call(cmd.format(
         gun_worker=worker,
-        gun_uri=uri,
-        extra_files=' '.join([
-            ROOT_DIR / str('config/*.toml'),
-            ROOT_DIR / str('frontend/src/custom/**/*'),
-        ])
+        gun_uri=uri
     ).split(" "), cwd=str(BACKEND_DIR))
 
 

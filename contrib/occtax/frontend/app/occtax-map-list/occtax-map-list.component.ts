@@ -17,7 +17,7 @@ import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.comp
 import { FormGroup } from "@angular/forms";
 import { GenericFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
 import { ConfigService } from '@geonature/utils/configModule/core';
-import { moduleCode } from "../module.code.config";
+import { MODULE_CODE } from "../module.code.config";
 import { GlobalSubService } from "@geonature/services/global-sub.service";
 import { Subscription } from "rxjs/Subscription";
 import * as moment from "moment";
@@ -78,7 +78,7 @@ export class OcctaxMapListComponent
     private _configService: ConfigService,
   ) { 
     this.appConfig = this._configService.getSettings();
-    this.moduleConfig = this._configService.getSettings(moduleCode);
+    this.moduleConfig = this._configService.getSettings(MODULE_CODE);
   }
 
   ngOnInit() {

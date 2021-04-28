@@ -6,7 +6,7 @@ import {
 } from "@geonature_common/form/data-form.service";
 
 import { ConfigService } from '@geonature/utils/configModule/core';
-import { moduleCode } from "../module.code.config";
+import { MODULE_CODE } from "../module.code.config";
 
 @Injectable()
 export class OccHabDataService {
@@ -20,7 +20,7 @@ export class OccHabDataService {
     private _configService: ConfigService,
   ) {
     this.appConfig = this._configService.getSettings();
-      this.moduleConfig = this._configService.getSettings(moduleCode);
+      this.moduleConfig = this._configService.getSettings(MODULE_CODE);
   }
 
   postStation(data) {

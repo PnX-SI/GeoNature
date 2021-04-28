@@ -13,7 +13,7 @@ import { OcctaxFormMapService } from "../map/map.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { ConfigService } from "@geonature/utils/configModule/core";
-import { moduleCode } from "../../module.code.config";
+import { MODULE_CODE } from "../../module.code.config";
 
 @Injectable()
 export class OcctaxFormReleveService {
@@ -43,7 +43,7 @@ export class OcctaxFormReleveService {
     private occtaxParamS: OcctaxFormParamService,
     private _configService: ConfigService,
   ) {
-    this.moduleConfig = this._configService.getSettings(moduleCode);
+    this.moduleConfig = this._configService.getSettings(MODULE_CODE);
     this.initPropertiesForm();
     this.setObservables();
 

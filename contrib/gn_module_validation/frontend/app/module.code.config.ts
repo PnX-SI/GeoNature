@@ -1,1 +1,1 @@
-export const moduleCode = 'VALIDATION';
+export const MODULE_CODE = 'VALIDATION';

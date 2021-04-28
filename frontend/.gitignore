@@ -8,18 +8,20 @@ src/assets/config/api.config.json
 # src/tsconfig.app.json
 ../external_modules/index.ts
 #routing
-# src/app/routing/app-routing.module.ts
+src/app/routing/external_modules.ts
 #tsconfig
 # tsconfig.json
 
 # custom components
-src/custom/components/**/*.component.ts
-src/custom/components/**/*.component.scss
-src/custom/components/**/*.component.css
-src/custom/components/**/*.component.html
-src/custom/images/bandeau_toolbar.jpg
+src/custom
 
-src/custom/**/*.ts
-src/custom/**/*.html
+# src/custom/components/**/*.component.ts
+# src/custom/components/**/*.component.scss
+# src/custom/components/**/*.component.css
+# src/custom/components/**/*.component.html
+# src/custom/images/bandeau_toolbar.jpg
+
+# src/custom/**/*.ts
+# src/custom/**/*.html
 
 assets_test.txt

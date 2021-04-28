@@ -44,7 +44,7 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
     this.$_geojsonSub = this.ms.geojson
       .pipe(
         filter((geojson) => geojson !== null),
-        map((geojson) => geojson.geometry)
+        map((geojson) => geojson['geometry'])
       )
       .subscribe((geometry) => {
         if (geometry.type == "Point") {

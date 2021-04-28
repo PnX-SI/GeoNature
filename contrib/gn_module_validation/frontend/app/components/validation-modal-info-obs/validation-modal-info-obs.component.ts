@@ -4,7 +4,7 @@ import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthe
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { ConfigService } from '@geonature/utils/configModule/core';
 import { MapListService } from "@geonature_common/map-list/map-list.service";
-import { moduleCode } from "../../module.code.config";
+import { MODULE_CODE } from "../../module.code.config";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";

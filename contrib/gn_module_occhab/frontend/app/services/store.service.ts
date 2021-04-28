@@ -3,7 +3,7 @@ import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OccHabDataService } from "./data.service";
 import { Observable, BehaviorSubject } from "rxjs";
 import { ConfigService } from "@geonature/utils/configModule/core";
-import { moduleCode } from "../module.code.config";
+import { MODULE_CODE } from "../module.code.config";
 
 @Injectable()
 export class OcchabStoreService {
@@ -25,7 +25,7 @@ export class OcchabStoreService {
     private _occHabDataService: OccHabDataService,
     private _configService: ConfigService,
   ) {
-    this.moduleConfig = this._configService.getSettings(moduleCode);
+    this.moduleConfig = this._configService.getSettings(MODULE_CODE);
     this._gnDataService
       .getNomenclatures([
         "METHOD_CALCUL_SURFACE",
