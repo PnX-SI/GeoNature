@@ -136,17 +136,11 @@ export class OcctaxFormReleveService {
 
     //on desactive le form, il sera réactivé si la geom est ok
     this.propertiesForm.disable();
-
-    this.dataFormService.getadditionalFields({
-      'module_code': 'OCCTAX',
-      'object_code': 'OCCTAX_RELEVE',
-      "id_dataset": "null"
-    })
-    .subscribe(additionalFields => {
-      this.occtaxFormService.globalReleveAddFields = additionalFields;
-
-    })
-
+    this.occtaxFormService.getAdditionnalFields(
+      ["OCCTAX_RELEVE"]
+    ).subscribe(addFields => {
+      this.occtaxFormService.globalReleveAddFields = addFields;
+    });
   }
 
   onDatasetChanged(idDataset) {    
@@ -154,43 +148,19 @@ export class OcctaxFormReleveService {
     if(currentDataset && currentDataset.id_taxa_list) {      
       this.occtaxFormService.idTaxonList = currentDataset.id_taxa_list;
     }
-    
-    this.dataFormService.getadditionalFields({
-      'id_dataset': idDataset,
-      'module_code': 'OCCTAX',
-      'object_code': 'OCCTAX_RELEVE'
-    }).subscribe(additionalFields => {
+    this.occtaxFormService.getAdditionnalFields(  
+      ["OCCTAX_RELEVE"],
+      idDataset
+    ).subscribe(addFields => {
       this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
         this.occtaxFormService.globalReleveAddFields,
         this.occtaxFormService.datasetReleveAddFields,
       );
-      this.occtaxFormService.datasetReleveAddFields = additionalFields;
+      this.occtaxFormService.datasetReleveAddFields = addFields;
       this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.globalReleveAddFields.concat(
-        additionalFields
-      );      
-      //On charge les nomenclatures additionnels
-      let NOMENCLATURES = [];
-      additionalFields.forEach((field) => {
-        if(field.type_widget == "nomenclature"){
-          NOMENCLATURES.push(field.code_nomenclature_type);
-        }
-      })
-      if(NOMENCLATURES.length > 0){
-        this.dataFormService.getNomenclatures(NOMENCLATURES)
-        .subscribe((nomenclatures) => {
-          this.occtaxFormService.storeAdditionalNomenclaturesValues(nomenclatures)
-        });
-      }
-    },
-    // error 404 for ex
-    () => {
-      this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
-        this.occtaxFormService.globalReleveAddFields,
-        this.occtaxFormService.datasetReleveAddFields,
-      );
-      this.occtaxFormService.datasetReleveAddFields = [];
-    }
-    )
+        addFields
+      );  
+    })
   }
 
   /**
@@ -219,7 +189,7 @@ export class OcctaxFormReleveService {
           return editionMode ? this.releveValues : this.defaultValues;
         })
       )
-      .subscribe((values) => {        
+      .subscribe((values) => {                
         // re disable the form here
         // Angular bug: when we add additionnal form controls, it enable the form
         if(!values.id_releve_occtax) {
@@ -289,7 +259,7 @@ export class OcctaxFormReleveService {
   private get releveValues(): Observable<any> {
     return this.occtaxFormService.occtaxData.pipe(
       filter(data => data && data.releve.properties),
-      map(data => {
+      map(data => {        
         const copied_data = Object.assign({}, data)
         const releve = copied_data.releve.properties;
         //Parfois il passe 2 fois ici, et la seconde fois la date est déja formattée en objet, si c'est le cas, on saute
@@ -328,12 +298,10 @@ export class OcctaxFormReleveService {
       }),
       // load additional fields
       concatMap(releve => {
-        return this.dataFormService.getadditionalFields({
-          'id_dataset': releve.id_dataset,
-          'module_code': "OCCTAX",
-          'object_code': 'OCCTAX_RELEVE'
-        }).map(additionalFields => {
-          
+        return this.occtaxFormService.getAdditionnalFields(
+          ["OCCTAX_RELEVE"],
+          releve.id_dataset
+        ).map(additionalFields => {              
           // remove old dataset addField from globalAddFields
           this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
             this.occtaxFormService.globalReleveAddFields,
@@ -344,7 +312,7 @@ export class OcctaxFormReleveService {
           this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.globalReleveAddFields.concat(
             additionalFields
           );
-          additionalFields.forEach(field => {
+          this.occtaxFormService.globalReleveAddFields.forEach(field => {
             //Formattage des dates
             if(field.type_widget == "date"){
               //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
@@ -354,14 +322,7 @@ export class OcctaxFormReleveService {
             }
             //Formattage des nomenclatures
             if(field.type_widget == "nomenclature"){
-              this.dataFormService.getNomenclatures([field.code_nomenclature_type])
-                .pipe(
-                  map(data => {
-                    return this.formatNomenclature(data);
-                  })
-                )
-                .subscribe((nomenclatures) => {
-                  const res = nomenclatures.filter((item) => item !== undefined)
+                  const res = this.occtaxFormService.nomenclatureAdditionnel.filter((item) => item !== undefined)
                   .find(n => (n["label_fr"] === releve.additional_fields[field.attribut_name]));
                   if(res){
                     releve.additional_fields[field.attribut_name] = res.id_nomenclature;
@@ -370,14 +331,12 @@ export class OcctaxFormReleveService {
                   }
                   releve[field.attribut_name] =  releve.additional_fields[field.attribut_name];
 
-                });
               }
               releve[field.attribut_name] =  releve.additional_fields[field.attribut_name];
           })
           return releve
-        }).catch(() => {
-          return of(releve);          
         })
+          
       })
     );
   }
@@ -489,13 +448,11 @@ export class OcctaxFormReleveService {
               value.properties.additional_fields[field.attribut_name]
             );
           }
-          if(field.type_widget == "nomenclature"){
-
+          if(field.type_widget == "nomenclature"){            
             // set the label_fr nomenclature in the posted additional data
             const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {
               return n["id_nomenclature"] === value.properties.additional_fields[field.attribut_name];
             });
-
             if(nomenclature_item){
               value.properties.additional_fields[field.attribut_name] = nomenclature_item.label_fr;
             }else{

@@ -123,14 +123,19 @@ export class OcctaxFormOccurrenceService {
           this.getReleveDataAndGetAddFields(
             ['OCCTAX_OCCURENCE', 'OCCTAX_DENOMBREMENT'],
           ).subscribe(
-            additionalFields => {                  
+            additionalFields => {     
+              console.log("PASSE LA ??????????,,");
+              
+              console.log("ADDFIELDS", additionalFields);
+                           
               const occValueWithAddFields = this.setAddFieldinOccValue(occurrenceValue, additionalFields);                          
               this.form.patchValue(occValueWithAddFields);
             },
-          () => {            
+          (error) => {     
+            console.log("errorrrer");
+                   
             // not additional fields for the dataset
             // set global addfields
-            
             const occValueWithAddFields = this.setAddFieldinOccValue(
               occurrenceValue, 
               this.occtaxFormService.globalOccurrenceAddFields.concat(this.occtaxFormService.globalCountingAddFields)
@@ -206,10 +211,7 @@ export class OcctaxFormOccurrenceService {
 
   }
 
- 
-  compareAddFieldsList() {
 
-  }
 
   setAddFieldinOccValue(occurrenceValue, addFields) {
     
@@ -217,7 +219,7 @@ export class OcctaxFormOccurrenceService {
     const {datasetOccAddFieds, datasetCountAddFields} = this.orderNewAdditionalFields(addFields);
     // if create and datasetfields has changes: reload it
     if(!occurrenceCopy.id_occurrence_occtax) {
-      if (this.occtaxFormService.datasetOccurrenceAddFields.length == 0 || JSON.stringify(datasetOccAddFieds) != JSON.stringify(this.occtaxFormService.datasetOccurrenceAddFields)) {
+      if (this.occtaxFormService.datasetOccurrenceAddFields.length == 0 || JSON.stringify(datasetOccAddFieds) != JSON.stringify(this.occtaxFormService.datasetOccurrenceAddFields)) {        
         let globalOccurrenceAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
           this.occtaxFormService.globalOccurrenceAddFields,
           this.occtaxFormService.datasetOccurrenceAddFields,
@@ -226,6 +228,10 @@ export class OcctaxFormOccurrenceService {
         this.occtaxFormService.globalOccurrenceAddFields = globalOccurrenceAddFields.concat(
           this.occtaxFormService.datasetOccurrenceAddFields
         );
+        console.log(addFields);
+        
+        console.log(this.occtaxFormService.globalOccurrenceAddFields);
+        
       }
       if (this.occtaxFormService.datasetCountingAddFields.length == 0 || JSON.stringify(datasetCountAddFields) != JSON.stringify(this.occtaxFormService.datasetCountingAddFields)) {          
         let globalCountingAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
@@ -301,9 +307,11 @@ export class OcctaxFormOccurrenceService {
       distinctUntilChanged(),
       filter(releveData => releveData && releveData.releve.properties),
       mergeMap(releveData => {
+        console.log("FROM OCC WITH ID8DATADAT");
+                   
         return this.occtaxFormService.getAdditionnalFields(
           objectCode,
-          releveData,
+          releveData.releve.properties.id_dataset,
         )
       })
     )

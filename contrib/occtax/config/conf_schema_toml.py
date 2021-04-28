@@ -186,4 +186,4 @@ class GnModuleSchemaConf(Schema):
     DISPLAY_VERNACULAR_NAME = fields.Boolean(missing=True)
     export_col_name_additional_data = fields.String(missing=default_export_col_name_additional_data)
     MEDIA_FIELDS_DETAILS = fields.List(fields.String(), missing=default_media_fields_details)
-    ADD_MEDIA_IN_EXPORT = fields.Boolean(default=False)
+    ADD_MEDIA_IN_EXPORT = fields.Boolean(missing=False)

@@ -107,17 +107,17 @@ export class OcctaxFormService {
       }
     );
   }
-  getAdditionnalFields(object_code: Array<string>, releveData?): Observable<any> {        
+  getAdditionnalFields(object_code: Array<string>, idDataset?): Observable<any> {        
     
-    let idDataset = "null";
-    if(releveData) {
-      idDataset = releveData.releve.properties.dataset.id_dataset
-    }
+    let _idDataset = "null";
+    if(idDataset) {
+      _idDataset = idDataset
+    }    
     return this.dataFormService.getadditionalFields({
-      'id_dataset':  idDataset,
+      'id_dataset':  _idDataset,
       'module_code': ['OCCTAX'],
       'object_code': object_code
-    }).map(addFields => {
+    }).map(addFields => {            
       // check if addFields contain nomenclature
       const nomenclature_mnemonique_types = [];
       addFields.forEach(field => {        
@@ -125,17 +125,22 @@ export class OcctaxFormService {
           nomenclature_mnemonique_types.push(field.code_nomenclature_type)
         }
       })
-      return {"addFiels": addFields, nomencMnemonique: nomenclature_mnemonique_types}
+      return {"addFields": addFields, nomencMnemonique: nomenclature_mnemonique_types}
+    }).catch(() => {      
+      return of({"addFields": [], nomencMnemonique: []})
     }).pipe(
       mergeMap(
-        addFieldDict => {          
-          if(addFieldDict.nomencMnemonique.length > 0) {
-            return this.dataFormService.getNomenclatures(addFieldDict.nomencMnemonique).map(nomenclatures => {
+        addFieldDict => {      
+          if(addFieldDict.nomencMnemonique.length > 0) {            
+            return this.dataFormService.getNomenclatures(addFieldDict.nomencMnemonique)
+              .map(nomenclatures => {
               this.storeAdditionalNomenclaturesValues(nomenclatures);
-              return addFieldDict.addFiels;
+              return addFieldDict.addFields;
+            }).catch(e => {
+              throw "Error while parsing nomenclature values"              
             });
           } else {        
-            return of(addFieldDict.addFiels);
+            return of(addFieldDict.addFields);
           }
       })
     )
@@ -143,12 +148,15 @@ export class OcctaxFormService {
 
   storeAdditionalNomenclaturesValues(nomenclatures_types: Array<any>) {    
     // store all nomenclatures element in a array in order to find
-    // the label on submit    
+    // the label on submit        
     nomenclatures_types.forEach(nomenc_type => {
-      nomenc_type.values.forEach(nomenc_element => {
-        nomenc_element['MNEMONIQUE_TYPE'] = nomenc_type.mnemonique
-        this.nomenclatureAdditionnel.push(nomenc_element);
-      });
+      if(nomenc_type.values) {
+        nomenc_type.values.forEach(nomenc_element => {
+          nomenc_element['MNEMONIQUE_TYPE'] = nomenc_type.mnemonique
+          this.nomenclatureAdditionnel.push(nomenc_element);
+        });
+      }
+
     });    
   }
 

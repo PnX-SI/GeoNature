@@ -81,9 +81,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     this._dfs.getDatasets((params = params)).subscribe(
       res => {
         this.datasetStore.filteredDataSets = res.data;
-        this.datasetStore.datasets = res.data;
-        console.log(this.datasetStore.datasets);
-        
+        this.datasetStore.datasets = res.data;        
         this.valueLoaded.emit({ value: this.datasetStore.datasets });
         if (res['with_mtd_errors']) {
           this._commonService.translateToaster('error', 'MetaData.JddErrorMTD');
