@@ -10,7 +10,6 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
 import { MediaService } from "@geonature_common/service/media.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
-import { OcctaxFormService } from "../occtax-form/occtax-form.service";
 
 const NOMENCLATURES = [
   "TECHNIQUE_OBS",
@@ -91,7 +90,6 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
     private _commonService: CommonService,
     private dataFormS: DataFormService,
     public ms: MediaService,
-    private OcctaxFormService: OcctaxFormService
   ) { }
 
   ngOnInit() {
@@ -150,14 +148,10 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
       )
       .subscribe(
         (data) => {
-          this.occtaxData.next(data)
-
-            /* find all nomenclatures added by additional fields
-            and store additional fields
-            */
+          this.occtaxData.next(data);
             this.dataFormS.getadditionalFields({
               'id_dataset': data.properties.id_dataset,
-              'module_code': ['OCCTAX', 'GEONATURE'],
+              'module_code': ['OCCTAX'],
             }).subscribe(additionalFields => {
               additionalFields.forEach(field => {
                 const map = {
@@ -165,15 +159,30 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
                   "OCCTAX_OCCURENCE": this.occurrenceAddFields,
                   "OCCTAX_DENOMBREMENT": this.countingAddFields,
                 }
-                
-                map[field.cor_additional.object.code_object].push(field);
-                
-                if(field.type_widget == "nomenclature"){
-                  NOMENCLATURES.push(field.code_nomenclature_type);
-                }
+                field.objects.forEach(object => {
+                  if (object.code_object in map) {
+                    map[object.code_object].push(field);
+                  }
+                });
+
               });
-              this.getNomenclatures()
-  
+            })
+            this.dataFormS.getadditionalFields({
+              'id_dataset': "null",
+              'module_code': ['OCCTAX'],
+            }).subscribe(additionalFields => {
+              additionalFields.forEach(field => {
+                const map = {
+                  "OCCTAX_RELEVE": this.releveAddFields,
+                  "OCCTAX_OCCURENCE": this.occurrenceAddFields,
+                  "OCCTAX_DENOMBREMENT": this.countingAddFields,
+                }
+                field.objects.forEach(object => {
+                  if (object.code_object in map) {
+                    map[object.code_object].push(field);
+                  }
+                });
+              });
             })
         },
         (error) => {

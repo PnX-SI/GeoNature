@@ -141,16 +141,10 @@
 
             <!--Champs additionnels-->
             <ng-container *ngFor="let dynamiqueField of releveAddFields ">
-              <div *ngIf="['text','textarea','radio','select','time','date','number','bool_radio','nomenclature'].includes(dynamiqueField.type_widget)">
+              <div>
                 <div class="label"> {{dynamiqueField.attribut_label}} : </div>
-                <div class="value" *ngIf="['text','textarea','radio','select','time','number','bool_radio'].includes(dynamiqueField.type_widget)"> 
+                <div class="value"> 
                   {{releve?.additional_fields[dynamiqueField.attribut_name]}}
-                </div>
-                <div class="value" *ngIf="dynamiqueField.type_widget == 'nomenclature'"> 
-                  {{getLibelleByID(releve?.additional_fields[dynamiqueField.attribut_name])}}
-                </div>
-                <div class="value" *ngIf="dynamiqueField.type_widget == 'date'"> 
-                  {{releve?.additional_fields[dynamiqueField.attribut_name]?.day}}/{{releve?.additional_fields[dynamiqueField.attribut_name]?.month}}/{{releve?.additional_fields[dynamiqueField.attribut_name]?.year}}
                 </div>
               </div>
             </ng-container>
@@ -245,16 +239,10 @@
     
                   <!--Champs additionnels-->
                   <ng-container *ngFor="let dynamiqueField of occurrenceAddFields ">
-                    <div *ngIf="['text','textarea','radio','select','time','date','number','bool_radio','nomenclature'].includes(dynamiqueField.type_widget)">
+                    <div>
                       <div class="label"> {{dynamiqueField.attribut_label}} : </div>
-                      <div class="value" *ngIf="['text','textarea','radio','select','time','number','bool_radio'].includes(dynamiqueField.type_widget)"> 
+                      <div> 
                         {{(displayOccurrence|async)?.additional_fields[dynamiqueField.attribut_name]}}
-                      </div>
-                      <div class="value" *ngIf="dynamiqueField.type_widget == 'nomenclature'"> 
-                        {{getLibelleByID((displayOccurrence|async)?.additional_fields[dynamiqueField.attribut_name])}}
-                      </div>
-                      <div class="value" *ngIf="dynamiqueField.type_widget == 'date'"> 
-                        {{(displayOccurrence|async)?.additional_fields[dynamiqueField.attribut_name]?.day}}/{{(displayOccurrence|async)?.additional_fields[dynamiqueField.attribut_name]?.month}}/{{(displayOccurrence|async)?.additional_fields[dynamiqueField.attribut_name]?.year}}
                       </div>
                     </div>
                   </ng-container>
@@ -303,17 +291,11 @@
                     </div>
     
                     <!--Champs additionnels-->
-                    <ng-container *ngFor="let dynamiqueField of occurrenceAddFields ">
-                      <div *ngIf="['text','textarea','radio','select','time','date','number','bool_radio','nomenclature'].includes(dynamiqueField.type_widget)">
+                    <ng-container *ngFor="let dynamiqueField of countingAddFields">
+                      <div >
                         <div class="label"> {{dynamiqueField.attribut_label}} : </div>
-                        <div class="value" *ngIf="['text','textarea','radio','select','time','number','bool_radio'].includes(dynamiqueField.type_widget)"> 
+                        <div class="value"> 
                           {{counting?.additional_fields[dynamiqueField.attribut_name]}}
-                        </div>
-                        <div class="value" *ngIf="dynamiqueField.type_widget == 'nomenclature'"> 
-                          {{getLibelleByID(counting?.additional_fields[dynamiqueField.attribut_name])}}
-                        </div>
-                        <div class="value" *ngIf="dynamiqueField.type_widget == 'date'"> 
-                          {{counting?.additional_fields[dynamiqueField.attribut_name]?.day}}/{{counting?.additional_fields[dynamiqueField.attribut_name]?.month}}/{{counting?.additional_fields[dynamiqueField.attribut_name]?.year}}
                         </div>
                       </div>
                     </ng-container>
