@@ -17,7 +17,6 @@ from geonature.utils.command import (
     supervisor_cmd,
     start_geonature_front,
     build_geonature_front,
-    process_prebuild_frontend,
 )
 
 from geonature.utils.assets import process_manage_frontend_assets, extra_files
@@ -37,14 +36,6 @@ log = logging.getLogger()
 def main(ctx):
     pass
 
-@main.command()
-def prebuild_frontend():
-    '''
-        Pour faire tout ce qu'il y a faire avant le build du frontend
-          - external_modules/index.ts : 
-            permet de lister et charger les modules externes dans le routing
-    '''
-    process_prebuild_frontend()
     
 @main.command()
 def manage_frontend_assets():

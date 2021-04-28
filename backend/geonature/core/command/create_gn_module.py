@@ -19,9 +19,6 @@ from sqlalchemy.orm.exc import NoResultFound
 
 from geonature.utils.env import DB, DEFAULT_CONFIG_FILE
 
-from geonature.utils.command import (
-    process_prebuild_frontend
-)
 from geonature.core.command.main import main
 from geonature.utils.gn_module_import import (
     check_gn_module_file,
@@ -115,8 +112,6 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
 
                     if enable_frontend:
                         install_frontend_dependencies(module_path)
-                        # generation du fichier tsconfig.app.json
-                        process_prebuild_frontend(app)
                         
                     if build and enable_frontend:
                         # Rebuild the frontend

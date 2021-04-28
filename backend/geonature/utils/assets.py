@@ -55,7 +55,7 @@ def process_manage_frontend_assets():
     config_dir = str(ROOT_DIR / "config/")
 
     src_assets_dir = str(ROOT_DIR / "frontend/src/assets")
-    src_custom_dir = str(ROOT_DIR / "frontend/src/custom")
+    src_custom_dir = config_dir + "/" + "custom"
     src_assets_config_dir = src_assets_dir + "/config"
 
     dist_assets_dir = str(ROOT_DIR / "frontend/dist/assets")

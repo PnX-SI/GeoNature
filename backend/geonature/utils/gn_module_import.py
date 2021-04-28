@@ -16,7 +16,7 @@ from sqlalchemy.exc import IntegrityError
 from geonature.utils.config import config
 from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
-from geonature.utils.command import build_geonature_front, process_prebuild_frontend
+from geonature.utils.command import build_geonature_front
 from geonature.utils.module import load_module_config
 from geonature.core.gn_commons.models import TModules
 from geonature import create_app
@@ -148,13 +148,6 @@ def gn_module_activate(module_code, activ_front, activ_back):
                     """The module does not exist.
                     \n Check the gn_commons.t_module to get the module name"""
                 )
-    log.info("Process frontend prebuild")
-    try:
-        process_prebuild_frontend(app)
-        log.info("...%s\n", MSG_OK)
-    except Exception:
-        log.error("Error while generating frontend routing")
-        raise
 
 
 def gn_module_deactivate(module_code, activ_front, activ_back):
@@ -178,12 +171,6 @@ def gn_module_deactivate(module_code, activ_front, activ_back):
             """The module does not exist.
             \n Check the gn_commons.t_module to get the module name"""
         )
-    log.info("Process frontend prebuild")
-    try:
-        process_prebuild_frontend(app)
-        log.info("...%s\n", MSG_OK)
-    except Exception as e:
-        raise GeoNatureError(e)
 
 
 def check_codefile_validity(module_path, module_code):
