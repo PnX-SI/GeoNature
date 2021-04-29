@@ -485,6 +485,7 @@ def createReleve(info_role):
     """
     # nouveau releve vide
     releve = TRelevesOccurrence()
+    print(request)
     releve = (
         ReleveSchema()
         .dump(releveHandler(request=request, releve=releve, info_role=info_role))

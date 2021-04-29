@@ -8,8 +8,8 @@ import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list.service";
 import { MediaService } from '@geonature_common/service/media.service'
-import { ModuleConfig } from "../../module.config"
-
+import { ConfigService } from '@geonature/utils/configModule/core';
+import { MODULE_CODE } from "../../module.code.config";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 
 @Component({
@@ -18,7 +18,7 @@ import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/
   styleUrls: ["./taxa-list.component.css"],
 })
 export class OcctaxFormTaxaListComponent implements OnInit {
-  public ModuleConfig = ModuleConfig;
+  public moduleConfig;
   constructor(
     public ngbModal: NgbModal,
     public dialog: MatDialog,
@@ -27,7 +27,10 @@ export class OcctaxFormTaxaListComponent implements OnInit {
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxTaxaListService: OcctaxTaxaListService,
     public ms: MediaService,
-  ) {}
+    private _configService: ConfigService,
+    ) { 
+      this.moduleConfig = this._configService.getSettings(MODULE_CODE);
+    }
 
   ngOnInit() {
     combineLatest(

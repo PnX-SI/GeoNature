@@ -9,6 +9,9 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
 import { MediaService } from "@geonature_common/service/media.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
+import { MODULE_CODE } from "../module.code.config";
+import { ConfigService } from '@geonature/utils/configModule/core';
+
 
 const NOMENCLATURES = [
   "TECHNIQUE_OBS",
@@ -87,7 +90,10 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
     private _commonService: CommonService,
     private dataFormS: DataFormService,
     public ms: MediaService,
-  ) { }
+    private _configService: ConfigService,
+    ) { 
+      this.moduleConfig = this._configService.getSettings(MODULE_CODE);
+    }
 
   ngOnInit() {
     //si modification, récuperation de l'ID du relevé

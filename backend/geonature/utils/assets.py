@@ -36,4 +36,4 @@ def process_manage_frontend_assets(app):
     end_time = datetime.datetime.now()
     time_diff = (end_time - start_time)
     execution_time = time_diff.total_seconds() * 1000
-    print(execution_time)
+    # print(execution_time)

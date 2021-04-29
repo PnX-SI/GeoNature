@@ -94,7 +94,7 @@ api_config_src="${FLASKDIR}/frontend/src/assets/api.config.json"
 api_config_dist="${FLASKDIR}/frontend/dist/assets/api.config.json"
 if [ ! -f "${api_config_src}" ] || [ ${geonature_config} -nt ${api_config_src} ]; then
     echo "process assets config"
-    echo "$API_ENDPOINT" > "$api_config_src"
+    echo "\"$API_ENDPOINT\"" > "$api_config_src"
     if [ -d ${FLASKDIR}/frontend/dist ]; then
         cp $api_config_src $api_config_dist
     fi

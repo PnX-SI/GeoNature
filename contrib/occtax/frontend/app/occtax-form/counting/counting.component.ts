@@ -24,6 +24,7 @@ export class OcctaxFormCountingComponent {
     private _configService: ConfigService,
   ) {
     this.appConfig = this._configService.getSettings();
+    this.moduleConfig = this._configService.getSettings(MODULE_CODE);
   }
 
   taxref() {

@@ -1,5 +1,4 @@
 import { Subscription } from 'rxjs';
-import { ConfigService } from '@geonature/utils/configModule/core';
 import { SafeResourceUrl } from '@angular/platform-browser';
 class Media {
   // media data
@@ -13,7 +12,6 @@ class Media {
   public media_path: string;
   public id_nomenclature_media_type: number;
   public author: string;
-  public appConfig: any;
   public bFile: boolean;
   public bLoading: boolean = false;
   public uploadPercentDone: number = 0;
@@ -27,9 +25,7 @@ class Media {
 
   constructor(
     values = {},
-    private _configService: ConfigService,
   ) {
-    this.appConfig = this._configService.getSettings();
     this.setValues(values);
   }
 
@@ -50,7 +46,7 @@ class Media {
   }
 
   setValues(values: Object) {
-    for (const key of Object.keys(values)) {
+    for (const key of Object.keys(values||{})) {
       this[key] = values[key];
     }
     this.sent = this.sent !== undefined ? this.sent : !!this.id_media;
@@ -65,29 +61,6 @@ class Media {
     return data;
   }
 
-  filePath(thumbnailHeight = null) {
-    let filePath;
-    if (this.media_path) {
-      filePath = this.media_path;
-    } else if (this.media_url) {
-      const v_url = this.media_url.split('/');
-      const fileName = v_url[v_url.length - 1];
-      filePath = `${this.appConfig.UPLOAD_FOLDER}/${this.id_table_location}/${this.id_media}`;
-    }
-
-    if (thumbnailHeight) {
-      filePath = `gn_commons/media/thumbnails/${this.id_media}/${thumbnailHeight}`;
-    }
-
-    return filePath;
-  }
-
-  href(thumbnailHeight = null): string {
-    if (thumbnailHeight) {
-      return `${this.appConfig.API_ENDPOINT}/${this.filePath(thumbnailHeight)}`;
-    }
-    return this.media_path ? `${this.appConfig.API_ENDPOINT}/${this.media_path}` : this.media_url;
-  }
 
   valid(): boolean {
     return !!this.sent;

@@ -8,8 +8,8 @@ import { MapService } from "@geonature_common/map/map.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Subscription } from "rxjs/Subscription";
 import { CommonService } from "@geonature_common/service/common.service";
-import { ConfigService } from '@geonature/utils/configModule/core';
 import { filter } from "rxjs/operators";
+import { ConfigService } from '@geonature/utils/configModule/core';
 import { MODULE_CODE } from "../../module.code.config";
 
 @Component({

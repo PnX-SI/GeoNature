@@ -21,6 +21,11 @@ DROP SCHEMA IF EXISTS pr_occtax CASCADE;
 DROP SCHEMA IF EXISTS pr_occhab CASCADE;
 "
 
+source $FLASKDIR/backend/venv/bin/activate
+export FLASK_APP=geonature.app;
+flask db downgrade -d $FLASKDIR/backend/geonature/migrations
+deactivate
+
 modules="contrib/occtax contrib/gn_module_occhab contrib/gn_module_validation ../gn_module_monitoring"
 # modules="../gn_module_monitoring"
 

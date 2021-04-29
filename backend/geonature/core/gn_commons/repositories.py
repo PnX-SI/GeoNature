@@ -341,7 +341,7 @@ class TMediaRepository:
             thumb_path, os.path.join(current_app.config["BASE_DIR"], "static")
         )
         # Get URL
-        thumb_url = current_app.config["API_ENDPOINT"] + '/' +  relative_path 
+        thumb_url = current_app.config["API_ENDPOINT"] + '/static/' +  relative_path 
         return thumb_url
 
     def delete(self):

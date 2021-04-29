@@ -2,7 +2,7 @@
   *ngIf="bInitialized"
   class="medias-form"
 >
-  <div class="mat-accordeon">
+<div class="mat-accordeon">
     <mat-accordion>
       <div
         *ngFor="let media of parentFormControl.value; let i = index"
@@ -49,7 +49,7 @@
                     display="mini"
                   ></pnx-display-medias>
 
-                  <span class="media-title">
+                  <span class="media-title" >
                     Titre: {{ media.title_fr }}
                     <i>
                       ({{ ms.typeMedia(media) }}<span *ngIf="media.author"> par

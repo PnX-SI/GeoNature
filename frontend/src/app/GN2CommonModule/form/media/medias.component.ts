@@ -50,9 +50,10 @@ export class MediasComponent implements OnInit {
     if (!this.bInitialized) {
       return;
     }
+    console.log('init media')
     for (const index in this.parentFormControl.value) {
       if (!(this.parentFormControl.value[index] instanceof Media)) {
-        this.parentFormControl.value[index] = new Media(this.parentFormControl.value[index], this._configService);
+        this.parentFormControl.value[index] = new Media(this.parentFormControl.value[index]);
       }
     }
   }
@@ -62,6 +63,7 @@ export class MediasComponent implements OnInit {
   }
 
   onMediaChange() {
+    console.log('mediachange', this.parentFormControl.value)
     this.parentFormControl.patchValue(this.parentFormControl.value);
   }
 
@@ -69,7 +71,7 @@ export class MediasComponent implements OnInit {
     if (!this.parentFormControl.value) {
       this.parentFormControl.patchValue([]);
     }
-    this.parentFormControl.value.push(new Media(null, this._configService));
+    this.parentFormControl.value.push(new Media(null));
     this.parentFormControl.patchValue(this.parentFormControl.value);
   }
 
@@ -89,6 +91,11 @@ export class MediasComponent implements OnInit {
       });
     }
     this.parentFormControl.patchValue(this.parentFormControl.value);
+  }
+
+
+  voidcheckNoChanges() {
+
   }
 
   ngOnChanges(changes: SimpleChanges) {

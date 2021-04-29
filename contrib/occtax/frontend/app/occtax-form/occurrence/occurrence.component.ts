@@ -9,13 +9,14 @@ import {
 import { FormControl, FormGroup, FormArray, Validators } from "@angular/forms";
 import { map, filter, tap, delay } from "rxjs/operators";
 import { OcctaxFormService } from "../occtax-form.service";
-import { ConfigService } from '@geonature/utils/configModule/core';
 import { OcctaxFormOccurrenceService } from "./occurrence.service";
 import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { FormService } from "@geonature_common/form/form.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { MatDialog } from "@angular/material";
+import { ConfigService } from '@geonature/utils/configModule/core';
+import { MODULE_CODE } from "../../module.code.config";
 
 
 @Component({
@@ -64,6 +65,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     private _configService: ConfigService,
   ) { 
     this.appConfig = this._configService.getSettings();
+    this.moduleConfig = this._configService.getSettings(MODULE_CODE);
   }
 
   ngOnInit() {

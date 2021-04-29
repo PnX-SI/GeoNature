@@ -125,7 +125,7 @@ export class MediaService {
       !medias ||
       !medias.length ||
       medias.every(mediaData => {
-        const media = new Media(mediaData, this._configService);
+        const media = new Media(mediaData);
         return media.valid();
       })
     );
@@ -136,7 +136,7 @@ export class MediaService {
       !medias ||
       !medias.length ||
       medias.every(mediaData => {
-        const media = new Media(mediaData, this._configService);
+        const media = new Media(mediaData);
         return media.valid() || media.bLoading;
       })
     );
@@ -149,19 +149,38 @@ export class MediaService {
     };
   }
 
-  href(media, thumbnail = null) {
-    if (!(media instanceof Media)) {
-      media = new Media(media, this._configService);
+  filePath(media, thumbnailHeight) {
+    let filePath;
+    if (media.media_path) {
+      filePath = media.media_path;
+    } else if (media.media_url) {
+      const v_url = media.media_url.split('/');
+      const fileName = v_url[v_url.length - 1];
+      filePath = `${this.appConfig.UPLOAD_FOLDER}/${media.id_table_location}/${media.id_media}`;
     }
-    return media.href(thumbnail);
+    if (thumbnailHeight) {
+      filePath = `gn_commons/media/thumbnails/${media.id_media}/${thumbnailHeight}`;
+    }
+    return filePath;
+  }
+
+  href(media, thumbnailHeight = null) {
+    if (!(media instanceof Media)) {
+      media = new Media(media);
+    }
+    return thumbnailHeight
+      ? `${this.appConfig.API_ENDPOINT}/${this.filePath(media, thumbnailHeight)}`
+      : media.media_path
+        ? `${this.appConfig.API_ENDPOINT}/${media.media_path}`
+        : media.media_url;
   }
 
   embedHref(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media, this._configService);
+      media = new Media(media);
     }
     if (['Vidéo Youtube'].includes(this.typeMedia(media))) {
-      const v_href = media.href().split('/');
+      const v_href = this.href(media).split('/');
       const urlLastPart = v_href[v_href.length - 1];
       const videoId = urlLastPart.includes('?')
         ? urlLastPart.includes('v=')
@@ -174,23 +193,23 @@ export class MediaService {
       return `https://www.youtube.com/embed/${videoId}`;
     }
     if (['Vidéo Dailymotion'].includes(this.typeMedia(media))) {
-      const v = media.href().split('/');
+      const v = this.href(media).split('/');
       const videoId = v[v.length - 1].split('?')[0];
       return `https://www.dailymotion.com/embed/video/${videoId}`;
     }
 
     if (['Vidéo Vimeo'].includes(this.typeMedia(media))) {
-      const v = media.href().split('/');
+      const v = this.href(media).split('/');
       const videoId = v[v.length - 1].split('?')[0];
       return `https://player.vimeo.com/video/${videoId}`;
     }
 
-    return media.href();
+    return this.href(media);
   }
 
   icon(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media, this._configService);
+      media = new Media(media);
     }
     const typeMedia = this.typeMedia(media);
     if (typeMedia === 'PDF') {
@@ -214,7 +233,7 @@ export class MediaService {
 
   toString(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media, this._configService);
+      media = new Media(media);
     }
     const description = media.description_fr ? ` : ${media.description_fr}` : '';
     const details =
@@ -228,16 +247,16 @@ export class MediaService {
 
   toHTML(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media, this._configService);
+      media = new Media(media);
     }
-    return `<a target="_blank" href="${media.href()}">${media.title_fr}</a> : ${
+    return `<a target="_blank" href="${this.href(media)}">${media.title_fr}</a> : ${
       media.description_fr
     } (${this.getNomenclature(media.id_nomenclature_media_type).label_fr}, ${media.author})`;
   }
 
   typeMedia(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media, this._configService);
+      media = new Media(media);
     }
     return this.getNomenclature(media.id_nomenclature_media_type).label_fr;
   }
@@ -246,12 +265,22 @@ export class MediaService {
     return this.typeMedia(media) === 'Photo';
   }
 
+  getValue(media, fieldName) {
+    return media && media[fieldName];
+  }
+
+  htmlAuthor(media) {
+    return media && media.author
+      ? `<span> par ${media.author}</span>`
+      : ''
+  }
+
   tooltip(media) {
     if (!(media instanceof Media)) {
-      media = new Media(media, this._configService);
+      media = new Media(media);
     }
     let tooltip = `<a
-    href=${media.href()}
+    href=${this.href(media)}
     title='${this.toString(media)}'
     target='_blank'
     style='margin: 0 2px'
@@ -260,7 +289,7 @@ export class MediaService {
       tooltip += `<img style='
       height: 50px; width: 50px; border-radius: 25px; object-fit: cover;
       '
-      src='${media.href(50)}' alt='${media.title_fr}' >`; // TODO PARAMETERS => taille des thumbnails
+      src='${this.href(media, 50)}' alt='${media.title_fr}' >`; // TODO PARAMETERS => taille des thumbnails
     } else {
       tooltip += `
       <div style='

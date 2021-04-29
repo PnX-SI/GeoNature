@@ -243,7 +243,6 @@ if [ -z "$app_only" ]; then
         export FLASK_APP=geonature.app;
         flask db upgrade gn_module_${module_code_lower}@head -d $FLASKDIR/backend/geonature/migrations
         deactivate
-        cd $cur
     else 
         echo "--- register module"
         . $FLASKDIR/config/settings.ini

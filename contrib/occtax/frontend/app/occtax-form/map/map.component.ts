@@ -6,6 +6,9 @@ import { CommonService } from "@geonature_common/service/common.service";
 import { MapService } from '@geonature_common/map/map.service';
 import { OcctaxFormMapService } from "./map.service";
 import { OcctaxFormService } from "../occtax-form.service";
+import { ConfigService } from '@geonature/utils/configModule/core';
+import { MODULE_CODE } from "../../module.code.config";
+
 
 @Component({
   selector: "pnx-occtax-form-map",
@@ -25,8 +28,11 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
     private ms: OcctaxFormMapService,
     private _commonService: CommonService,
     private _occtaxFormService: OcctaxFormService,
-    private _mapService: MapService
-  ) { }
+    private _mapService: MapService,
+    private _configService: ConfigService,
+  ) {
+    this.moduleConfig = this._configService.getSettings(MODULE_CODE);
+  }
 
   ngOnInit() {
     // overight the leaflet draw object to set options
@@ -57,7 +63,7 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
 
     // to get geometry from filelayer
     this._mapService.gettingGeojson$.subscribe(geojson => {
-      this.ms.geometry = geojson;
+      this.ms.setGeometry(geojson);
     })
   }
 
@@ -91,7 +97,7 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   sendGeoInfo(geojson) {
-    this.ms.geometry = geojson;
+    this.ms.setGeometry(geojson);
   }
 
   ngOnDestroy() {

@@ -11,13 +11,13 @@
       [index]="curIndex"
       display="diaporama"
     ></pnx-display-medias>
-    <!-- <img *ngIf='ms.isImg(media)' mat-card-image [src]="media.href()" /> -->
+    <!-- <img *ngIf='ms.isImg(media)' mat-card-image [src]="ms.href(media)" /> -->
     <mat-card-content>
       <a
-        *ngIf="media.href()"
+        *ngIf="ms.href(media)"
         target="_blank"
         class="link-media float-right"
-        [href]="media.href()"
+        [href]="ms.href(media)"
       >
         <mat-icon matTooltip="{{ 'Media.link' | translate }}">link</mat-icon>
       </a>

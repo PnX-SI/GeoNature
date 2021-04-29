@@ -255,6 +255,7 @@ export class OcctaxFormOccurrenceService {
       this.occurrence.getValue().id_occurrence_occtax
     ) {
       //update
+      console.log('uuuuu', this.occurrence.getValue().id_occurrence_occtax, this.form.value)
       this.occtaxDataService
         .updateOccurrence(
           this.occurrence.getValue().id_occurrence_occtax,

@@ -8,7 +8,7 @@
         <ng-container *ngIf="ms.typeMedia(media) === 'Photo'">
           <img
             class="media-mini"
-            [src]="media.href(50)"
+            [src]="ms.href(media, 50)"
             alt="{{ media.title_fr }}"
             [ngClass]="{ 'media-diapo-link': !!diaporama }"
             matTooltip="{{ diaporama ? ('Media.diaporama' | translate) : '' }}"
@@ -53,7 +53,7 @@
             <video
               class="media-center"
               controls
-              [src]="media.href()"
+              [src]="ms.href(media)"
             ></video>
           </ng-container>
 
@@ -61,14 +61,14 @@
             <audio
               class="media-center"
               controls
-              [src]="media.href()"
+              [src]="ms.href(media)"
             ></audio>
           </ng-container>
           <ng-container *ngIf="ms.typeMedia(media) === 'Photo'">
             <img
               *ngIf="['medium', 'small'].includes(display)"
               class="media-center"
-              [src]="media.href(thumbnailHeight)"
+              [src]="ms.href(media, thumbnailHeight)"
               [ngClass]="{ 'media-diapo-link': !!diaporama }"
               alt="{{ media.title_fr }}"
               matTooltip="{{ diaporama ? ('Media.diaporama' | translate) : '' }}"
@@ -77,7 +77,7 @@
             <img
               *ngIf="display === 'diaporama'"
               class="media-diaporama media-center"
-              [src]="media.href()"
+              [src]="ms.href(media)"
               alt="{{ media.title_fr }}"
             />
           </ng-container>

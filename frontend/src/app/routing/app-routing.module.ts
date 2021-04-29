@@ -20,6 +20,10 @@ import { ConfigService } from '@geonature/utils/configModule/core';
 import { LoginComponent } from '../components/login/login.component';
 import { NavHomeComponent } from '../components/nav-home/nav-home.component';
 
+import { MetadataModule } from '@geonature/metadataModule/metadata.module';
+import { SyntheseModule } from '@geonature/syntheseModule/synthese.module';
+import { AdminModule } from '@geonature/adminModule/admin.module';
+
 import { externalModules } from './external_modules';
 
 const getDynamicRoutes = (configService: ConfigService) => {
@@ -49,19 +53,19 @@ const getDynamicRoutes = (configService: ConfigService) => {
       path: 'synthese',
       data: { module_code: 'synthese' },
       canActivate: [ModuleGuardService],
-      loadChildren: '@geonature/syntheseModule/synthese.module#SyntheseModule'
+      loadChildren: () => SyntheseModule,
     },
     {
       path: 'metadata',
       data: { module_code: 'metadata' },
       canActivate: [ModuleGuardService],
-      loadChildren: '@geonature/metadataModule/metadata.module#MetadataModule'
+      loadChildren: () => MetadataModule,
     },
     {
       path: 'admin',
-      loadChildren: '@geonature/adminModule/admin.module#AdminModule',
+      data: { module_code: 'admin' },
       canActivate: [ModuleGuardService],
-      data: { module_code: 'admin' }
+      loadChildren: () => AdminModule,
     },
     ...navChildrenModules,
     {

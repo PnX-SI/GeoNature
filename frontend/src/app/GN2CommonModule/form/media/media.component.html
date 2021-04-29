@@ -1,9 +1,9 @@
 <div>
   <a
-    *ngIf="media.href()"
+    *ngIf="ms.href(media)"
     target="_blank"
     class="link-media float-right"
-    [href]="media.href()"
+    [href]="ms.href(media)"
   >
     <mat-icon matTooltip="{{ 'Media.link' | translate }}">link</mat-icon>
   </a>

@@ -18,6 +18,8 @@ import { OcctaxFormReleveService } from "./releve/releve.service";
 import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
+import { ConfigService } from "@geonature/utils/configModule/core";
+import { MODULE_CODE } from "../module.code.config";
 
 @Component({
   selector: "pnx-occtax-form",
@@ -45,8 +47,12 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxTaxaListService: OcctaxTaxaListService,
     private _ds: OcctaxDataService,
-    private _commonService: CommonService
-  ) { }
+    private _commonService: CommonService,
+    private _configService: ConfigService,
+  ) {
+    this.moduleConfig = this._configService.getSettings(MODULE_CODE);
+    console.log(this.moduleConfig);
+  }
 
   ngOnInit() {
     //si modification, récuperation de l'ID du relevé

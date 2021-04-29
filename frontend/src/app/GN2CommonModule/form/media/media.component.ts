@@ -199,7 +199,7 @@ export class MediaComponent implements OnInit {
         media_path: null
       });
     }
-
+    console.log('emit')
     this.mediaChange.emit(this.media);
   }
 
