@@ -265,21 +265,21 @@ class BibWidgets(DB.Model):
 
 cor_field_object = DB.Table(
     'cor_field_object',
-    DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additonal_fields.id_field')),
+    DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additional_fields.id_field')),
     DB.Column('id_object', DB.Integer, DB.ForeignKey('gn_permissions.t_objects.id_object')),
     schema="gn_commons",
 )
 
 cor_field_module = DB.Table(
     'cor_field_module',
-    DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additonal_fields.id_field')),
+    DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additional_fields.id_field')),
     DB.Column('id_module', DB.Integer, DB.ForeignKey('gn_commons.t_modules.id_module')),
     schema="gn_commons",
 )
 
 cor_field_dataset = DB.Table(
     'cor_field_dataset',
-    DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additonal_fields.id_field')),
+    DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additional_fields.id_field')),
     DB.Column('id_dataset', DB.Integer, DB.ForeignKey('gn_meta.t_datasets.id_dataset')),
     schema="gn_commons",
 )
@@ -289,7 +289,7 @@ from geonature.core.gn_permissions.models import TObjects
 
 @serializable
 class TAddtitionalFields(DB.Model):
-    __tablename__ = "t_additonal_fields"
+    __tablename__ = "t_additional_fields"
     __table_args__ = {"schema": "gn_commons"}
     id_field = DB.Column(DB.Integer, primary_key=True)
     field_name = DB.Column(DB.String, nullable=False)
