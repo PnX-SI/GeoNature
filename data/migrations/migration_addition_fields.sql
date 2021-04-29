@@ -286,6 +286,11 @@ AS $BODY$  DECLARE
     RETURN NULL;
   END;
   $BODY$;
+
+CREATE TABLE gn_commons.bib_widgets (
+	id_widget serial NOT NULL,
+	widget_name varchar(50) NOT NULL
+);  
   
 CREATE TABLE gn_commons.t_additional_fields (
 	id_field serial NOT NULL,
@@ -324,7 +329,7 @@ CREATE TABLE gn_commons.cor_field_dataset(
  id_dataset integer
 );
 
-ALTER TABLE ONLY gn_commons.t_additional_fields
+ALTER TABLE ONLY gn_commons.bib_widgets
     ADD CONSTRAINT pk_bib_widgets PRIMARY KEY (id_widget);
 
 ALTER TABLE ONLY gn_commons.t_additional_fields
@@ -374,8 +379,7 @@ INSERT INTO gn_permissions.t_objects (code_object, description_object) VALUES
   ('OCCTAX_DENOMBREMENT', 'Représente la table pr_occtax.cor_counting_occtax')
   ;
 
-INSERT INTO gn_commons.bib_widgets (widget_name) VALUES
-	 ('select'),
+INSERT INTO gn_commons.bib_widgets (widget_name) VALUES ('select'),
 	 ('checkbox'),
 	 ('nomenclature'),
 	 ('text'),
