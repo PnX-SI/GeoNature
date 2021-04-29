@@ -48,9 +48,9 @@ def create_app(with_external_mods=True, with_flask_admin=True):
     app.config.update(config)
 
     # Manage assets et frontend_config
-    process_manage_frontend_assets()
+    process_manage_frontend_assets(app)
 
-    # Bind app to DB
+    # Bind app to DB    
     DB.init_app(app)
 
     migrate.init_app(app, DB)

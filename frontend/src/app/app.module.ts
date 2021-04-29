@@ -58,7 +58,7 @@ import { GlobalSubService } from './services/global-sub.service';
 
 
 export function configFactory(http: HttpClient): ConfigLoader {
-  return new ConfigHttpLoader(http, './assets/config/api.config.json');
+  return new ConfigHttpLoader(http, './assets/api.config.json');
 }
 
 export function createTranslateLoader(http: HttpClient) {

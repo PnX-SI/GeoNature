@@ -1,4 +1,5 @@
-#
+#!/bin/bash
+
 #
 # on passe en script la commande qui permet d'installer un module
 #

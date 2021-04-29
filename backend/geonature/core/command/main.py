@@ -19,7 +19,7 @@ from geonature.utils.command import (
     build_geonature_front,
 )
 
-from geonature.utils.assets import process_manage_frontend_assets, extra_files
+from geonature.utils.assets import extra_files
 from geonature import create_app
 
 # from rq import Queue, Connection, Worker
@@ -35,14 +35,6 @@ log = logging.getLogger()
 @click.pass_context
 def main(ctx):
     pass
-
-    
-@main.command()
-def manage_frontend_assets():
-    '''
-        Pour créer api.config.json, etc...
-    '''
-    process_manage_frontend_assets()
 
 
 @main.command()
