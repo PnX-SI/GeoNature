@@ -395,8 +395,27 @@ Il est également possible de filtrer :
 Admin
 -----
 
-Il permet aussi de gérer les permissions (CRUVED et autres filtres) et les nomenclatures (typologies et vocabulaires) utilisées dans les différents modules de GeoNature
+C'est le module "backoffice" de GeoNature.
+Il permet notamment de gérer les permissions (CRUVED et autres filtres), les nomenclatures (typologies et vocabulaires) utilisées dans les différents modules de GeoNature ainsi que les champs additionels.
 
+Administration des champs additionels
+"""""""""""""""""""""""""""""""""""""
+
+Certains protocoles necessitent la saisie de champs qui vont au delà des standard du SINP sur lesquels GeoNature s'appuie. Les champs additionnels permettent ainsi d'étendre les formulaires en ajoutant des informations spécifiques pour des jeux de données (JDD) ou pour l'ensemble d'un module.
+Actuellement seul le module Occtax implémente la gestion de ces champs additionnels.
+
+Le backoffice de GeoNature offre une interface de création et de gestion de ces champs additionnels. 
+Un champ additionel est définit par:
+
+- son nom (nom de la colonne en base de données)
+- son label (nom tel qu'il sera affiché en interface)
+- son type de widget: vous devez définir si le nouveau champs est une liste déroulante, une checkbox, une nomenclature, un entier, un champ texte etc...
+- le ou les modules auquel il est rattaché 
+- le ou les objets auquel il est rattaché. Il s'agit du placement et de la table de rattachement du champs dans le module. Par exemple Occtax et composé de 3 "objets/table". L'objet "relevé", "occurrence" et "dénombrement".
+- le ou les JDD auquel il est rattaché. Si aucun JDD n'est renseigné le champ sera proposé dans tout le module pour tous les JDD. S'il est rattaché à un JDD, le champs sera chargé dynamiquement à la selection du JDD dans le formulaire 
+- une série d'autres options pour paramétrer le comportement du champs (obligatoire, ordre, description, exportable etc...)
+
+Implémentation JSON
 .. image :: http://geonature.fr/docs/img/user-manual/2018-09-geonature-admin.gif
 
 

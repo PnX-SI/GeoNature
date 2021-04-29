@@ -7,9 +7,11 @@ from geonature.utils.env import DB
 
 class BibFieldAdmin(ModelView):
     form_columns = (
-        "type_widget", "field_name", "field_label", "required", "description",
+        "field_name", "field_label", "type_widget",  
+        "modules", "objects", "datasets",
+        "required", "description",
         "quantitative", "unity", "field_values", "field_order", "exportable",
-         "bib_nomenclature_type", "id_list", "modules", "objects", "datasets",
+         "bib_nomenclature_type", "id_list", 
          "additional_attributes"
     )
 
@@ -43,9 +45,13 @@ class BibFieldAdmin(ModelView):
         "bib_nomenclature_type":'Si Type widget = Nomenclature',
         "field_label":'Label du champ en interface',
         "field_name":'Nom du champ en base de donnée',
-        "field_values":'Obligatoire si widget = select/radio/bool_radio (tableau de valeurs ou tableau clé/valeur. Utilisez des doubles quotes pour les valeurs et les clés)',
+        "field_values":'Obligatoire si widget = select/radio/bool_radio (Format JSON : tableau de valeurs ou tableau clé/valeur. Utilisez des doubles quotes pour les valeurs et les clés)',
         "id_list":'Identifiant en BDD de la liste (pour Type widget = taxonomy/observers)',
-
+        "field_order":"Numéro d'ordonnancement du champs (si plusieurs champs pour le même module/objet/JDD)",
+        "modules":"Module(s) auquel le champs est rattaché",
+        "objects":"Objet(s) auquel le champs est rattaché",
+        "datasets":"Jeu(x) de donnés auquel le champs est rattaché",
+        "datasets":"Jeu(x) de donnés auquel le champs est rattaché",
     }
 
 

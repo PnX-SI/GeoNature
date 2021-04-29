@@ -70,6 +70,9 @@ export_observer_txt_column = 'obsId'
 # SRID for the shapefile
 export_srid = 4326
 
+# Add medias URL in export
+ADD_MEDIA_IN_EXPORT = false
+
 # Export available format (Only csv, geojson and shapefile and 'gpkg' is possible)
 export_available_format = ['csv', 'geojson', 'shapefile']
 
