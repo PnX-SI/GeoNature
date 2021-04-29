@@ -48,9 +48,8 @@ class BibFieldAdmin(ModelView):
         "field_values":'Obligatoire si widget = select/radio/bool_radio (Format JSON : tableau de valeurs ou tableau clé/valeur. Utilisez des doubles quotes pour les valeurs et les clés)',
         "id_list":'Identifiant en BDD de la liste (pour Type widget = taxonomy/observers)',
         "field_order":"Numéro d'ordonnancement du champs (si plusieurs champs pour le même module/objet/JDD)",
-        "modules":"Module(s) auquel le champs est rattaché",
-        "objects":"Objet(s) auquel le champs est rattaché",
-        "datasets":"Jeu(x) de donnés auquel le champs est rattaché",
+        "modules":"Module(s) auquel le champs est rattaché. *Obligatoire",
+        "objects":"Objet(s) auquel le champs est rattaché. *Obligatoire",
         "datasets":"Jeu(x) de donnés auquel le champs est rattaché",
     }
 

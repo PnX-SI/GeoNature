@@ -396,16 +396,16 @@ Admin
 -----
 
 C'est le module "backoffice" de GeoNature.
-Il permet notamment de gérer les permissions (CRUVED et autres filtres), les nomenclatures (typologies et vocabulaires) utilisées dans les différents modules de GeoNature ainsi que les champs additionels.
+Il permet notamment de gérer les permissions (CRUVED et autres filtres), les nomenclatures (typologies et vocabulaires) utilisées dans les différents modules de GeoNature ainsi que les champs additionnels.
 
-Administration des champs additionels
+Administration des champs additionnels
 """""""""""""""""""""""""""""""""""""
 
 Certains protocoles necessitent la saisie de champs qui vont au delà des standard du SINP sur lesquels GeoNature s'appuie. Les champs additionnels permettent ainsi d'étendre les formulaires en ajoutant des informations spécifiques pour des jeux de données (JDD) ou pour l'ensemble d'un module.
 Actuellement seul le module Occtax implémente la gestion de ces champs additionnels.
 
 Le backoffice de GeoNature offre une interface de création et de gestion de ces champs additionnels. 
-Un champ additionel est définit par:
+Un champ additionnel est définit par:
 
 - son nom (nom de la colonne en base de données)
 - son label (nom tel qu'il sera affiché en interface)

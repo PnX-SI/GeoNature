@@ -258,7 +258,7 @@ class BibWidgets(DB.Model):
     __tablename__ = "bib_widgets"
     __table_args__ = {"schema": "gn_commons"}
     id_widget = DB.Column(DB.Integer, primary_key=True)
-    widget_name = DB.Column(DB.String)
+    widget_name = DB.Column(DB.String, nullable=False)
     def __repr__(self):
         return self.widget_name.capitalize()
 
@@ -292,8 +292,8 @@ class TAddtitionalFields(DB.Model):
     __tablename__ = "t_additonal_fields"
     __table_args__ = {"schema": "gn_commons"}
     id_field = DB.Column(DB.Integer, primary_key=True)
-    field_name = DB.Column(DB.String)
-    field_label = DB.Column(DB.String)
+    field_name = DB.Column(DB.String, nullable=False)
+    field_label = DB.Column(DB.String, nullable=False)
     required = DB.Column(DB.Boolean)
     description = DB.Column(DB.String)
     quantitative = DB.Column(DB.Boolean)
@@ -304,7 +304,8 @@ class TAddtitionalFields(DB.Model):
     )
     additional_attributes = DB.Column(JSONB)
     id_widget = DB.Column(DB.Integer, 
-        ForeignKey("gn_commons.bib_widgets.id_widget")
+        ForeignKey("gn_commons.bib_widgets.id_widget"),
+        nullable=False
     )
     id_list = DB.Column(DB.Integer)
     exportable = DB.Column(DB.Boolean, default=True)

@@ -495,6 +495,12 @@ COMMENT ON COLUMN t_places.id_role IS 'Clé étrangère vers la table utilisateu
 COMMENT ON COLUMN t_places.place_name IS 'Nom du lieu';
 COMMENT ON COLUMN t_places.place_geom IS 'Géométrie du lieu';
 
+CREATE TABLE gn_commons.bib_widgets (
+	id_widget serial NOT NULL,
+	widget_name varchar(50) NOT NULL
+);
+
+
 CREATE TABLE gn_commons.t_additional_fields (
 	id_field serial NOT NULL,
 	field_name varchar(255) NOT NULL,
@@ -562,6 +568,9 @@ ALTER TABLE ONLY t_mobile_apps
 ALTER TABLE ONLY t_places
     ADD CONSTRAINT pk_t_places PRIMARY KEY (id_place);
 
+ALTER TABLE ONLY gn_commons.t_additional_fields
+    ADD CONSTRAINT pk_bib_widgets PRIMARY KEY (id_widget);
+    
 ALTER TABLE ONLY gn_commons.t_additional_fields
     ADD CONSTRAINT pk_t_additional_fields PRIMARY KEY (id_field);
 
@@ -660,8 +669,6 @@ ALTER TABLE t_mobile_apps
 ALTER TABLE bib_tables_location
   ADD CONSTRAINT unique_bib_tables_location_schema_name_table_name UNIQUE (schema_name, table_name);
 
-ALTER TABLE gn_commons.cor_additional_fields
-  ADD CONSTRAINT unique_cor_addi_fields UNIQUE (id_field, id_module, id_object, id_dataset);
 
 
 ------------
@@ -770,8 +777,9 @@ INSERT INTO gn_commons.bib_widgets (widget_name) VALUES
 	 ('time'),
 	 ('medias'),
 	 ('bool_radio'),
+	 ('date'),
 	 ('multiselect'),
 	 ('number'),
 	 ('taxonomy'),
-	 ('html'),
-   ;
+	 ('observers'),
+	 ('html');

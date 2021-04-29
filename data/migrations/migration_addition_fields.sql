@@ -287,106 +287,106 @@ AS $BODY$  DECLARE
   END;
   $BODY$;
   
+CREATE TABLE gn_commons.t_additional_fields (
+	id_field serial NOT NULL,
+	field_name varchar(255) NOT NULL,
+	field_label varchar(50) NOT NULL,
+	required bool NOT NULL DEFAULT false,
+	description text NULL,
+	field_type varchar(50) NULL,
+	id_widget int4 NOT NULL,
+	quantitative bool NULL DEFAULT false,
+	unity varchar(50) NULL,
+	additional_attributes jsonb NULL,
+	code_nomenclature_type varchar(50) NULL,
+	field_values jsonb NULL,
+  multiselect boolean NULL,
+  id_list integer,
+  key_label varchar(250),
+  key_value varchar(250),
+  api varchar(250),
+  exportable boolean default TRUE,
+  field_order integer NULL 
+);
+
+CREATE TABLE gn_commons.cor_field_object(
+ id_field integer,
+ id_object integer
+);
+
+CREATE TABLE gn_commons.cor_field_module(
+ id_field integer,
+ id_module integer
+);
+
+CREATE TABLE gn_commons.cor_field_dataset(
+ id_field integer,
+ id_dataset integer
+);
+
+ALTER TABLE ONLY gn_commons.t_additional_fields
+    ADD CONSTRAINT pk_bib_widgets PRIMARY KEY (id_widget);
+
+ALTER TABLE ONLY gn_commons.t_additional_fields
+    ADD CONSTRAINT pk_t_additional_fields PRIMARY KEY (id_field);
+
+ALTER TABLE ONLY gn_commons.cor_field_module
+    ADD CONSTRAINT pk_cor_field_module PRIMARY KEY (id_field, id_module);
+
+ALTER TABLE ONLY gn_commons.cor_field_object
+    ADD CONSTRAINT pk_cor_field_object PRIMARY KEY (id_field, id_object);
+
+ALTER TABLE ONLY gn_commons.cor_field_dataset
+    ADD CONSTRAINT pk_cor_field_dataset PRIMARY KEY (id_field, id_dataset);
+
+ALTER TABLE ONLY gn_commons.t_additional_fields
+  ADD CONSTRAINT fk_t_additional_fields_id_widget FOREIGN KEY (id_widget) 
+  REFERENCES gn_commons.bib(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
-  -- Révision de la vue des exports Occtax
-  CREATE OR REPLACE VIEW pr_occtax.v_export_occtax AS
-  SELECT
-      rel.unique_id_sinp_grp as "idSINPRegroupement",
-      ref_nomenclatures.get_cd_nomenclature(rel.id_nomenclature_grp_typ) AS "typGrp",
-      rel.grp_method AS "methGrp",
-      ccc.unique_id_sinp_occtax AS "permId",
-      ccc.id_counting_occtax AS "idOrigine",
-      ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_observation_status) AS "statObs",
-      occ.nom_cite AS "nomCite",
-      to_char(rel.date_min, 'YYYY-MM-DD'::text) AS "dateDebut",
-      to_char(rel.date_max, 'YYYY-MM-DD'::text) AS "dateFin",
-      rel.hour_min AS "heureDebut",
-      rel.hour_max AS "heureFin",
-      rel.altitude_max AS "altMax",
-      rel.altitude_min AS "altMin",
-      rel.depth_min AS "profMin",
-      rel.depth_max AS "profMax",
-      occ.cd_nom AS "cdNom",
-      tax.cd_ref AS "cdRef",
-      ref_nomenclatures.get_nomenclature_label(d.id_nomenclature_data_origin) AS "dSPublique",
-      d.unique_dataset_id AS "jddMetaId",
-      ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_source_status) AS "statSource",
-      d.dataset_name AS "jddCode",
-      d.unique_dataset_id AS "jddId",
-      ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_obs_technique) AS "obsTech",
-      ref_nomenclatures.get_nomenclature_label(rel.id_nomenclature_tech_collect_campanule) AS "techCollect",
-      ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_bio_condition) AS "ocEtatBio",
-      ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_naturalness) AS "ocNat",
-      ref_nomenclatures.get_nomenclature_label(ccc.id_nomenclature_sex) AS "ocSex",
-      ref_nomenclatures.get_nomenclature_label(ccc.id_nomenclature_life_stage) AS "ocStade",
-      ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_bio_status) AS "ocStatBio",
-      ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_exist_proof) AS "preuveOui",
-      ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_determination_method) AS "ocMethDet",
-      ref_nomenclatures.get_nomenclature_label(occ.id_nomenclature_behaviour) AS "occComp",
-      occ.digital_proof AS "preuvNum",
-      occ.non_digital_proof AS "preuvNoNum",
-      rel.comment AS "obsCtx",
-      occ.comment AS "obsDescr",
-      rel.unique_id_sinp_grp AS "permIdGrp",
-      ccc.count_max AS "denbrMax",
-      ccc.count_min AS "denbrMin",
-      ref_nomenclatures.get_nomenclature_label(ccc.id_nomenclature_obj_count) AS "objDenbr",
-      ref_nomenclatures.get_nomenclature_label(ccc.id_nomenclature_type_count) AS "typDenbr",
-      COALESCE(string_agg(DISTINCT (r.nom_role::text || ' '::text) || r.prenom_role::text, ','::text), rel.observers_txt::text) AS "obsId",
-      COALESCE(string_agg(DISTINCT o.nom_organisme::text, ','::text), 'NSP'::text) AS "obsNomOrg",
-      COALESCE(occ.determiner, 'Inconnu'::character varying) AS "detId",
-      ref_nomenclatures.get_nomenclature_label(rel.id_nomenclature_geo_object_nature) AS "natObjGeo",
-      st_astext(rel.geom_4326) AS "WKT",
-      -- 'In'::text AS "natObjGeo",
-      tax.lb_nom AS "nomScienti",
-      tax.nom_vern AS "nomVern",
-      hab.lb_code AS "codeHab",
-      hab.lb_hab_fr AS "nomHab",
-      hab.cd_hab,
-      rel.date_min,
-      rel.date_max,
-      rel.id_dataset,
-      rel.id_releve_occtax,
-      occ.id_occurrence_occtax,
-      rel.id_digitiser,
-      rel.geom_4326,
-      rel.place_name AS "nomLieu",
-      rel.precision,
-      (occ.additional_fields || rel.additional_fields || ccc.additional_fields) AS additional_data
-    FROM pr_occtax.t_releves_occtax rel
-      LEFT JOIN pr_occtax.t_occurrences_occtax occ ON rel.id_releve_occtax = occ.id_releve_occtax
-      LEFT JOIN pr_occtax.cor_counting_occtax ccc ON ccc.id_occurrence_occtax = occ.id_occurrence_occtax
-      LEFT JOIN taxonomie.taxref tax ON tax.cd_nom = occ.cd_nom
-      LEFT JOIN gn_meta.t_datasets d ON d.id_dataset = rel.id_dataset
-      LEFT JOIN pr_occtax.cor_role_releves_occtax cr ON cr.id_releve_occtax = rel.id_releve_occtax
-      LEFT JOIN utilisateurs.t_roles r ON r.id_role = cr.id_role
-      LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = r.id_organisme
-      LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = rel.cd_hab
-    GROUP BY ccc.id_counting_occtax,occ.id_occurrence_occtax,rel.id_releve_occtax,d.id_dataset
-    ,tax.cd_ref , tax.lb_nom, tax.nom_vern , hab.cd_hab, hab.lb_code, hab.lb_hab_fr
-    ;
+ALTER TABLE ONLY gn_commons.cor_field_object
+  ADD CONSTRAINT fk_cor_field_obj_field FOREIGN KEY (id_field) 
+  REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
 
+ALTER TABLE ONLY gn_commons.cor_field_object
+  ADD CONSTRAINT fk_cor_field_object FOREIGN KEY (id_object) 
+  REFERENCES gn_permissions.t_objects(id_object) ON UPDATE CASCADE ON DELETE CASCADE;
 
-  -- ( SELECT string_agg(media.title_fr::text, ' - '::text) AS string_agg
-  --          FROM gn_commons.t_medias media
-  --            JOIN gn_commons.bib_tables_location tab_loc ON tab_loc.id_table_location = media.id_table_location
-  --         WHERE tab_loc.table_name::text = 'cor_counting_occtax'::text AND ccc.unique_id_sinp_occtax = media.uuid_attached_row) AS "titreMedias",
-  --   ( SELECT string_agg(media.description_fr, ' - '::text) AS string_agg
-  --          FROM gn_commons.t_medias media
-  --            JOIN gn_commons.bib_tables_location tab_loc ON tab_loc.id_table_location = media.id_table_location
-  --         WHERE tab_loc.table_name::text = 'cor_counting_occtax'::text AND ccc.unique_id_sinp_occtax = media.uuid_attached_row) AS "descriptionMedias",
-  --   ( SELECT string_agg(
-  --               CASE
-  --                   WHEN media.media_path IS NOT NULL THEN concat(gn_commons.get_default_parameter('url_api'::text), '/', media.media_path)::character varying
-  --                   ELSE media.media_url
-  --               END::text, ' - '::text) AS string_agg
-  --          FROM gn_commons.t_medias media
-  --            JOIN gn_commons.bib_tables_location tab_loc ON tab_loc.id_table_location = media.id_table_location
-  --         WHERE tab_loc.table_name::text = 'cor_counting_occtax'::text AND ccc.unique_id_sinp_occtax = media.uuid_attached_row) AS "URLMedias"
+ALTER TABLE ONLY gn_commons.cor_field_module
+  ADD CONSTRAINT fk_cor_field_module_field FOREIGN KEY (id_field) 
+  REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_commons.cor_field_module
+  ADD CONSTRAINT fk_cor_field_module FOREIGN KEY (id_module) 
+  REFERENCES gn_commons.t_modules(id_module) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_commons.cor_field_dataset
+  ADD CONSTRAINT fk_cor_field_dataset_field FOREIGN KEY (id_field) 
+  REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_commons.cor_field_dataset
+  ADD CONSTRAINT fk_cor_field_dataset FOREIGN KEY (id_dataset) 
+  REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
 
 INSERT INTO gn_permissions.t_objects (code_object, description_object) VALUES 
   ('OCCTAX_RELEVE', 'Représente la table pr_occtax.t_releves_occtax'),
   ('OCCTAX_OCCURENCE', 'Représente la table pr_occtax.t_occurrences_occtax'),
   ('OCCTAX_DENOMBREMENT', 'Représente la table pr_occtax.cor_counting_occtax')
   ;
+
+INSERT INTO gn_commons.bib_widgets (widget_name) VALUES
+	 ('select'),
+	 ('checkbox'),
+	 ('nomenclature'),
+	 ('text'),
+	 ('textarea'),
+	 ('radio'),
+	 ('time'),
+	 ('medias'),
+	 ('bool_radio'),
+	 ('date'),
+	 ('multiselect'),
+	 ('number'),
+	 ('taxonomy'),
+	 ('observers'),
+	 ('html');
