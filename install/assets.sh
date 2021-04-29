@@ -1,22 +1,47 @@
 #!/bin/bash
 
-# ce script 
-
-# gestion des assets config + custom
-
+# Ce script permet de gérer automatiquemet les assets du frontend suivant : 
+# 
+# - le fichier api.config.json qui permet au frontend de connaitre la valeur de API_ENDPOINT
+# - les fichiers custom (présents dans config/custom)
+#
+# Ce script permet de modifier automatiquement des derniers fichiers dans le frontend (dans les src et les dist)
+# Il est appelé au demarrage de l'application
+# 
+# Cela permet de pouvoir construire (en frontend et backend) une application indépendament de la configuration et de la customisation
+# Cette dernière peut être définie au dernier moment, juste avant le lancement de l'application.
+#
+# Afin d'éviter les actions inutiles, un test est effectué sur les dates de modification
+# Dans le cadre de gunicorn, on l'on peut avoir plusieurs worker un test supplémentaire permet d'assurer que seul le premier worker effetctue les actions
+#
+# En pratique, lorsque l'on change un fichier du repertoire config (pour la configuraiton ou la customisation) 
+# - l'application flask redearre automatiquement,
+#   - prend en compte les nouvelles configuration
+#   - relance ce scprit pour mettre à jour au besoin : 
+#     - les fichiers custom
+#     - le fichier api.config.json
+#
+# La seule action a faire pour voir les effets des changement est de recharger la page du navigateur
+#
 
  set -e
 
 FLASKDIR=$(readlink -e "${0%/*}")/..
 
 
-# test pour les worker
+################################################
+# I ) - test pour les worker
+#
+# dans le cadre de gunicorn on souhaite que ce script de soit exécuté que par un seul worker 
+# si ce script a été lancé depuis moins de 5 secondes -> exit
+#
+################################################
+
 file_test="${FLASKDIR}/frontend/assets_test.txt"
 if [ ! -f $file_test ]; then
     echo create_file_test
     touch $file_test
 fi
-
 last_update_file_test="$(stat -c %Y $file_test)"
 now="$(date +%s)"
 let diff="${now}-${last_update_file_test}"
@@ -26,8 +51,17 @@ fi
 
 touch $file_test
 
+
+################################################
+# II ) - test sur les fichiers nécessaires
+#
+# On teste ici si les fichiers nécessaire sont présents
+# et si API_ENDPOINT est bien défini
+#
+################################################
+
 # test sur les fichiers nécessaires
-required_files="config/geonature_config.toml"
+required_files="config/geonature_config.toml config/settings.ini"
 missing_files=""
 
 for f in $(echo ${required_files}); do
@@ -50,7 +84,11 @@ if  [ -z "${API_ENDPOINT}" ]; then
     echo "La variable API_ENDPOINT n'a pas été trouvée dans le fichier ${FLASKDIR}/config/geonature_config.toml"
 fi
 
-# config
+
+################################################
+# III ) - api.config
+################################################
+
 geonature_config="${FLASKDIR}/config/geonature_config.toml"
 api_config_src="${FLASKDIR}/frontend/src/assets/api.config.json"
 api_config_dist="${FLASKDIR}/frontend/dist/assets/api.config.json"
@@ -62,7 +100,11 @@ if [ ! -f "${api_config_src}" ] || [ ${geonature_config} -nt ${api_config_src} ]
     fi
 fi
 
-# custom
+
+################################################
+# IV ) - custom
+################################################
+
 f_last_modif_custom_config=$(find $FLASKDIR/config/custom -type f -printf '%T@ %p\n' 2> /dev/null | sort -n | tail -1 | cut -f2- -d" ")
 f_last_modif_custom_src=$(find $FLASKDIR/frontend/src/custom -type f -printf '%T@ %p\n' 2> /dev/null | sort -n | tail -1 | cut -f2- -d" ")
 if [ -z "$f_last_modif_custom_src" ] || [ $f_last_modif_custom_config -nt $f_last_modif_custom_src ]; then
