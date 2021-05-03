@@ -167,6 +167,10 @@ vous pouvez ajouter un premier taxon à celui-ci en cliquant sur ``Ajouter un ta
 
 .. image :: http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon.jpg
 
+Par défaut l'ensemble des taxons de Taxref sont disponibles à la saisie. Il est possible de resteindre cette liste pour mettre une liste personalisée via les listes TaxHub:
+- au niveau du module (paramètre `id_taxon_list`. La paramètre doit être un entier correspondant à l'identifiant de la liste de la table `taxonomie.bib_listes` )
+- au niveau d'un jeu de données (via le formulaire de saisie des JDD, rubriques "spécificités GeoNature")
+
 Pour sélectionner un taxon, saisissez au moins les 3 premières lettres de son nom latin ou français. 
 
 Vous pouvez aussi saisir les 3 premières lettres de l'espèce et de la sous-espèce.
@@ -399,7 +403,7 @@ C'est le module "backoffice" de GeoNature.
 Il permet notamment de gérer les permissions (CRUVED et autres filtres), les nomenclatures (typologies et vocabulaires) utilisées dans les différents modules de GeoNature ainsi que les champs additionnels.
 
 Administration des champs additionnels
-"""""""""""""""""""""""""""""""""""""
+""""""""""""""""""""""""""""""""""""""
 
 Certains protocoles necessitent la saisie de champs qui vont au delà des standard du SINP sur lesquels GeoNature s'appuie. Les champs additionnels permettent ainsi d'étendre les formulaires en ajoutant des informations spécifiques pour des jeux de données (JDD) ou pour l'ensemble d'un module.
 Actuellement seul le module Occtax implémente la gestion de ces champs additionnels.
@@ -415,8 +419,14 @@ Un champ additionnel est définit par:
 - le ou les JDD auquel il est rattaché. Si aucun JDD n'est renseigné le champ sera proposé dans tout le module pour tous les JDD. S'il est rattaché à un JDD, le champs sera chargé dynamiquement à la selection du JDD dans le formulaire 
 - une série d'autres options pour paramétrer le comportement du champs (obligatoire, ordre, description, exportable etc...)
 
-Implémentation JSON
-.. image :: http://geonature.fr/docs/img/user-manual/2018-09-geonature-admin.gif
+Exemple de configuration:
+
+- Un champs type "select":
+
+- Un champs type "multiselect" (la clé "value" est obligatoire dans le dictionnaire de valeurs)
+
+- Un champs type "html". C'est un champs de type "présentation", aucune valeur ne sera enregistré en base de données pour ce champs.
+
 
 
 Metadonnées
@@ -424,3 +434,4 @@ Metadonnées
 
 Ce module permet de gérer les métadonnées (Cadres d'acquisition et jeux de données), basées sur le standard Métadonnées du SINP
 (http://standards-sinp.mnhn.fr/category/standards/metadonnees/).
+
