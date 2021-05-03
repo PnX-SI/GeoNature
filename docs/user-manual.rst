@@ -422,10 +422,14 @@ Un champ additionnel est définit par:
 Exemple de configuration:
 
 - Un champs type "select":
+.. image :: https://github.com/PnX-SI/GeoNature/blob/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/select_exemple.png
 
 - Un champs type "multiselect" (la clé "value" est obligatoire dans le dictionnaire de valeurs)
+.. image :: https://github.com/PnX-SI/GeoNature/blob/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/multiselect3.png
 
 - Un champs type "html". C'est un champs de type "présentation", aucune valeur ne sera enregistré en base de données pour ce champs.
+.. image :: https://github.com/PnX-SI/GeoNature/blob/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/html1.png
+
 
 
 
