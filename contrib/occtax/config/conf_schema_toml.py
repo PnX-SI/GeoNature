@@ -132,7 +132,7 @@ default_columns_export = [
     "additional_data"
 ]
 
-
+# Export available format (Only csv, geojson and shapefile and 'gpkg' is possible)
 available_export_format = ["csv", "geojson", "shapefile"]
 
 list_messages = {

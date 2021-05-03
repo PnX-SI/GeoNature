@@ -16,8 +16,6 @@ class BibFieldAdmin(ModelView):
     )
 
     column_display_all_relations = True
-    # form_columns = ('truc', BibFields.field_name)
-    # column_labels = dict(name='Name', last_name='Last Name')
     form_args = {
         "field_name": {"label":"Nom du champ"},
         "bib_nomenclature_type": {"label":"Type de nomenclature"},

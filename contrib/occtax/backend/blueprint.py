@@ -738,7 +738,7 @@ def export(info_role):
 
     .. :quickref: Occtax; Export data from pr_occtax.v_export_occtax
 
-    :query str format: format of the export ('csv', 'geojson', 'shapefile', 'medias')
+    :query str format: format of the export ('csv', 'geojson', 'shapefile', 'gpkg')
 
     """
     export_view_name = blueprint.config["export_view_name"]

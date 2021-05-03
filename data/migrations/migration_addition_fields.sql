@@ -62,6 +62,7 @@ AS $BODY$  DECLARE
   id_nomenclature_bio_condition,
   id_nomenclature_naturalness,
   id_nomenclature_exist_proof,
+  id_nomenclature_diffusion_level,
   id_nomenclature_life_stage,
   id_nomenclature_sex,
   id_nomenclature_obj_count,
@@ -116,6 +117,7 @@ AS $BODY$  DECLARE
     occurrence.id_nomenclature_bio_condition,
     occurrence.id_nomenclature_naturalness,
     occurrence.id_nomenclature_exist_proof,
+    occurrence.id_nomenclature_diffusion_level,
     new_count.id_nomenclature_life_stage,
     new_count.id_nomenclature_sex,
     new_count.id_nomenclature_obj_count,
@@ -217,6 +219,7 @@ AS $BODY$  DECLARE
       id_nomenclature_bio_status = NEW.id_nomenclature_bio_status,
       id_nomenclature_naturalness = NEW.id_nomenclature_naturalness,
       id_nomenclature_exist_proof = NEW.id_nomenclature_exist_proof,
+      id_nomenclature_diffusion_level = NEW.id_nomenclature_diffusion_level,
       id_nomenclature_observation_status = NEW.id_nomenclature_observation_status,
       id_nomenclature_blurring = NEW.id_nomenclature_blurring,
       id_nomenclature_source_status = NEW.id_nomenclature_source_status,
@@ -298,7 +301,6 @@ CREATE TABLE gn_commons.t_additional_fields (
 	field_label varchar(50) NOT NULL,
 	required bool NOT NULL DEFAULT false,
 	description text NULL,
-	field_type varchar(50) NULL,
 	id_widget int4 NOT NULL,
 	quantitative bool NULL DEFAULT false,
 	unity varchar(50) NULL,
@@ -394,3 +396,13 @@ INSERT INTO gn_commons.bib_widgets (widget_name) VALUES ('select'),
 	 ('taxonomy'),
 	 ('observers'),
 	 ('html');
+
+
+-- META
+
+ALTER TABLE gn_meta.t_datasets 
+ADD COLUMN id_taxa_list integer;
+COMMENT ON COLUMN gn_meta.t_datasets.id_taxa_list IS 'Identifiant de la liste de taxon associé au JDD. FK: taxonomie.bib_liste';
+
+ALTER TABLE ONLY gn_meta.t_datasets
+    ADD CONSTRAINT fk_t_datasets_id_taxa_list FOREIGN KEY (id_taxa_list) REFERENCES taxonomie.bib_listes ON UPDATE CASCADE;

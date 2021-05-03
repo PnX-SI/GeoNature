@@ -317,7 +317,7 @@ class TDatasets(CruvedHelper):
         CorDatasetActor, lazy="select", cascade="save-update, merge, delete, delete-orphan",
     )
 
-    def __repr__(self):
+    def __str__(self):
         return self.dataset_name
 
     @staticmethod

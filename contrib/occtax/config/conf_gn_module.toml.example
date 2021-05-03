@@ -74,7 +74,7 @@ export_srid = 4326
 ADD_MEDIA_IN_EXPORT = false
 
 # Export available format (Only csv, geojson and shapefile and 'gpkg' is possible)
-export_available_format = ['csv', 'geojson', 'shapefile']
+export_available_format = ['csv', 'geojson', 'shapefile', 'gpkg']
 
 # Custom message to display in the export modal
 export_message = "<p> <b> Attention: </b> </br>  Vous vous apprêtez à télécharger les données de la <b>recherche courante. </b> </p>"

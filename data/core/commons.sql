@@ -507,7 +507,6 @@ CREATE TABLE gn_commons.t_additional_fields (
 	field_label varchar(50) NOT NULL,
 	required bool NOT NULL DEFAULT false,
 	description text NULL,
-	field_type varchar(50) NULL,
 	id_widget int4 NOT NULL,
 	quantitative bool NULL DEFAULT false,
 	unity varchar(50) NULL,

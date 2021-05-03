@@ -132,6 +132,4 @@ def create_app(with_external_mods=True, with_flask_admin=True):
                 app.config[blueprint.config['MODULE_CODE']] = blueprint.config
                 app.register_blueprint(blueprint, url_prefix=blueprint.config['MODULE_URL'])
         _app = app
-        # for clazz in DB.Model._decl_class_registry.values():
-        #     print(clazz)
     return app

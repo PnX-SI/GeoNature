@@ -34,7 +34,7 @@ class VUsersPermissions(DB.Model):
     id_filter_type = DB.Column(DB.Integer)
     id_permission = DB.Column(DB.Integer)
 
-    def __repr__(self):
+    def __str__(self):
         return """VUsersPermissions
             role='{}' action='{}' filter='{}' module='{}' filter_type='{}' object='{} >""".format(
             self.id_role,
@@ -84,7 +84,7 @@ class TObjects(DB.Model):
     code_object = DB.Column(DB.Unicode)
     description_object = DB.Column(DB.Unicode)
 
-    def __repr__(self):
+    def __str__(self):
         return f"{self.code_object} ({self.description_object})"
 
 @serializable
