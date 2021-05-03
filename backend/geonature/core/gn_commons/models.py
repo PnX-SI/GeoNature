@@ -1,7 +1,6 @@
 """
     Modèles du schéma gn_commons
 """
-
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
@@ -18,8 +17,6 @@ from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.utils.env import DB
 from geonature.core.gn_commons.file_manager import rename_file
-
-# from geonature.core.gn_meta.models import TDatasets
 
 
 @serializable
@@ -62,6 +59,11 @@ class CorModuleDataset(DB.Model):
     )
 
 
+# see https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html#late-evaluation-of-relationship-arguments
+def _resolve_import_cor_object_module():
+    from geonature.core.gn_permissions.models import cor_object_module
+    return cor_object_module
+
 @serializable
 class TModules(DB.Model):
     __tablename__ = "t_modules"
@@ -80,6 +82,10 @@ class TModules(DB.Model):
     active_backend = DB.Column(DB.Boolean)
     module_doc_url = DB.Column(DB.Unicode)
     module_order = DB.Column(DB.Integer)
+    objects = DB.relationship(
+        "TObjects",
+        secondary= lambda:_resolve_import_cor_object_module(),
+    )
 
 
 @serializable

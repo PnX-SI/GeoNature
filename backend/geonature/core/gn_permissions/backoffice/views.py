@@ -9,6 +9,7 @@ from flask import (
 )
 
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+from sqlalchemy.orm import joinedload
 from sqlalchemy.sql import func
 from sqlalchemy import or_
 
@@ -29,7 +30,6 @@ from geonature.core.gn_permissions.models import (
     TActions,
     CorRoleActionFilterModuleObject,
     TObjects,
-    CorObjectModule,
     VUsersPermissions,
 )
 from geonature.core.users.models import CorRole
@@ -211,38 +211,34 @@ def user_cruved(id_role):
     Get all scope CRUVED (with heritage) for a user in all modules
     """
     user = DB.session.query(User).get(id_role).as_dict()
-    modules_data = DB.session.query(TModules).order_by(TModules.module_order).all()
+    modules_data = DB.session.query(
+        TModules
+        ).options(
+            joinedload(TModules.objects
+        )
+        ).order_by(TModules.module_order).all()
     groupes_data = DB.session.query(CorRole).filter(CorRole.id_role_utilisateur == id_role).all()
     actions_label = {}
     for action in DB.session.query(TActions).all():
         actions_label[action.code_action] = action.description_action
     modules = []
     for module in modules_data:
-        module = module.as_dict()
-        # for each module get its related object
-        module_objects = (
-            DB.session.query(TObjects)
-            .join(CorObjectModule, CorObjectModule.id_object == TObjects.id_object)
-            .filter_by(id_module=module["id_module"])
-            .all()
-        )
-        # get cruved for all object
-
+        module = module.as_dict(True, depth=1)
+        # get cruved for all objects
         module_objects_as_dict = []
-        for _object in module_objects:
-            object_as_dict = _object.as_dict()
+        for _object in module.get("objects", []):
             object_cruved, (herited, herited_obj) = cruved_scope_for_user_in_module(
                 id_role=id_role,
                 module_code=module["module_code"],
-                object_code=_object.code_object,
+                object_code=_object["code_object"],
                 get_herited_obj=True,
             )
-            object_as_dict["cruved"] = (
+            _object["cruved"] = (
                 beautifulize_cruved(actions_label, object_cruved),
                 herited,
                 herited_obj,
             )
-            module_objects_as_dict.append(object_as_dict)
+            module_objects_as_dict.append(_object)
 
         module["module_objects"] = module_objects_as_dict
 
