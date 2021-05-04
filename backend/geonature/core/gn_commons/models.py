@@ -18,8 +18,6 @@ from utils_flask_sqla_geo.serializers import geoserializable
 from geonature.utils.env import DB
 from geonature.core.gn_commons.file_manager import rename_file
 
-print('IMPORT COMMONS')
-
 @serializable
 class BibTablesLocation(DB.Model):
     __tablename__ = "bib_tables_location"
