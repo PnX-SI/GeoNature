@@ -32,8 +32,10 @@ const getDynamicRoutes = (configService: ConfigService) => {
   const navChildrenModules = [];
 
   // ajout des modules avec frontend dans navChildren
+  console.log(appConfig.modules)
   for (const moduleCode of appConfig.modules) {
     const moduleConfig = appConfig[moduleCode];
+    console.log(moduleCode, moduleConfig.MODULE_PATH)
     navChildrenModules.push({
       path: moduleConfig.MODULE_PATH,
       loadChildren: () => externalModules[moduleCode],

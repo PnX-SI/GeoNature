@@ -143,7 +143,7 @@ fi
 # Test : $module_directory correct ?
 if [ ! -d "$module_directory" ]; then
     echo "
-- ! Le chemin vers le répertoire du module n'existe pas ($module_path),
+- ! Le chemin vers le répertoire du module n'existe pas ($module_directory),
 --> Veuillez utiliser l'option -d ou --module-directory pour le préciser"
     exit 1
 fi
@@ -175,13 +175,6 @@ ln -nsf ${module_directory} ${FLASKDIR}/external_modules/${module_code_lower}
 
 # Installation du module : Applicatif
 if [ -z "$bdd_only" ]; then
-    echo "-- APP"
-
-    # install_app.sh
-    if [ -f $module_directory/install_app.sh ]; then
-        echo "--- install_app.sh"
-        $module_directory/install_app.sh $FLASKDIR
-    fi
 
     echo "--- Backend"
 
@@ -201,6 +194,14 @@ if [ -z "$bdd_only" ]; then
         echo "---- Packaged module"
         source ${FLASKDIR}/backend/venv/bin/activate
         pip install -e  $module_directory &> $log_file
+    fi
+
+    echo "-- APP"
+
+    # install_app.sh
+    if [ -f $module_directory/install_app.sh ]; then
+        echo "--- install_app.sh"
+        $module_directory/install_app.sh $FLASKDIR
     fi
 
     # - frontend

@@ -15,15 +15,16 @@ rm -f $FLASKDIR/frontend/src/external_assets/*
 . $FLASKDIR/config/settings.ini
 export PGPASSWORD=$user_pg_pass;
 psql -h $db_host -U $user_pg -d $db_name -c "
-DELETE FROM gn_commons.cor_module_dataset; 
-DELETE FROM gn_commons.t_modules WHERE module_code IN ('VALIDATION', 'OCCTAX', 'OCCHAB', 'MONITORINGS');
+DELETE FROM gn_commons.cor_module_dataset;
+DELETE FROM gn_synthese.synthese    ;
+DELETE FROM gn_commons.t_modules CASCADE WHERE module_code IN ('VALIDATION', 'OCCTAX', 'OCCHAB', 'MONITORINGS');
 DROP SCHEMA IF EXISTS pr_occtax CASCADE;
 DROP SCHEMA IF EXISTS pr_occhab CASCADE;
 "
 
 source $FLASKDIR/backend/venv/bin/activate
 export FLASK_APP=geonature.app;
-flask db downgrade -d $FLASKDIR/backend/geonature/migrations
+flask db downgrade -d $FLASKDIR/backend/geonature/migrations || true
 deactivate
 
 modules="contrib/occtax contrib/gn_module_occhab contrib/gn_module_validation ../gn_module_monitoring"

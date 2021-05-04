@@ -82,33 +82,6 @@ def import_packaged_module(module_dist, module_object):
     return (module_object, module_config, module_blueprint)
 
 
-def import_backend_enabled_modules():
-    # ⇒ import packaged modules
-    for module_code in config['ENABLED_MODULES']:
-        module_dist = get_dist_from_code(module_code)
-        try:
-            module_object = TModules.query.filter_by(module_code=module_code).one()
-        except NoResultFound:
-            raise Exception(f"Module with code '{module_code}' not found in database; "
-                             "have you installed its database schema "
-                             "(flask db upgread module_name@head)?")
-        module_object, module_config, module_blueprint = import_packaged_module(module_dist, module_object)
-        if not module_blueprint:  # module without backend routes
-            continue
-        yield module_object, module_config, module_blueprint
-    # ⇒ import legacy modules
-    enabled_modules = TModules.query.filter(TModules.active_backend == True).all()
-    for module_object in enabled_modules:
-        try:
-            module_config, module_blueprint = import_legacy_module(module_object)
-        except NoManifestFound:
-            print('module not found', str(ModuleNotFoundError))
-            # an internal module which we do not require to be imported
-            # or a packaged module (in both case without legacy manifest)
-            continue
-        yield module_object, module_config, module_blueprint
-
-
 def get_dist_from_code(module_code):
     for entry_point in iter_entry_points('gn_module', 'code'):
         if module_code == entry_point.load():
