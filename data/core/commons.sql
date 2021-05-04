@@ -511,7 +511,7 @@ CREATE TABLE gn_commons.t_additional_fields (
 	quantitative bool NULL DEFAULT false,
 	unity varchar(50) NULL,
 	additional_attributes jsonb NULL,
-	code_nomenclature_type varchar(50) NULL,
+	code_nomenclature_type varchar(255) NULL,
 	field_values jsonb NULL,
   multiselect boolean NULL,
   id_list integer,
