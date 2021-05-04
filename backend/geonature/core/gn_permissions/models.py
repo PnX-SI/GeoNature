@@ -2,14 +2,12 @@
 Models of gn_permissions schema
 """
 
-
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select
 
 from utils_flask_sqla.serializers import serializable
 from pypnusershub.db.models import User
 
-from geonature.core.gn_commons.models import TModules
 from geonature.utils.env import DB
 
 
@@ -77,6 +75,23 @@ class TActions(DB.Model):
     description_action = DB.Column(DB.Unicode)
 
 
+cor_object_module = DB.Table(
+    "cor_object_module",
+    DB.Column(
+        "id_cor_object_module", DB.Integer, primary_key=True,
+    ),
+    
+    DB.Column(
+        "id_object", DB.Integer,
+          ForeignKey("gn_permissions.t_objects.id_object"),
+    ),
+    DB.Column(
+        "id_module", DB.Integer,
+        ForeignKey("gn_commons.t_modules.id_module"),
+    ),
+    schema="gn_permissions",
+)
+
 @serializable
 class TObjects(DB.Model):
     __tablename__ = "t_objects"
@@ -84,7 +99,6 @@ class TObjects(DB.Model):
     id_object = DB.Column(DB.Integer, primary_key=True)
     code_object = DB.Column(DB.Unicode)
     description_object = DB.Column(DB.Unicode)
-
 
 @serializable
 class CorRoleActionFilterModuleObject(DB.Model):
@@ -111,9 +125,7 @@ class CorRoleActionFilterModuleObject(DB.Model):
         TFilters, primaryjoin=(TFilters.id_filter == id_filter), foreign_keys=[id_filter],
     )
 
-    module = DB.relationship(
-        TModules, primaryjoin=(TModules.id_module == id_module), foreign_keys=[id_module],
-    )
+    module = DB.relationship("TModules")
 
     object = DB.relationship(
         TObjects, primaryjoin=(TObjects.id_object == id_object), foreign_keys=[id_object],
@@ -142,11 +154,3 @@ class CorRoleActionFilterModuleObject(DB.Model):
             .first()
         )
 
-
-@serializable
-class CorObjectModule(DB.Model):
-    __tablename__ = "cor_object_module"
-    __table_args__ = {"schema": "gn_permissions"}
-    id_cor_object_module = DB.Column(DB.Integer, primary_key=True)
-    id_object = DB.Column(DB.Integer)
-    id_module = DB.Column(DB.Integer)
