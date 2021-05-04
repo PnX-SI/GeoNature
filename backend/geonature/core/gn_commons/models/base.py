@@ -6,7 +6,7 @@ import os
 from flask import current_app
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
 
 from pypnnomenclature.models import TNomenclatures
@@ -17,6 +17,7 @@ from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.utils.env import DB
 from geonature.core.gn_commons.file_manager import rename_file
+
 
 @serializable
 class BibTablesLocation(DB.Model):
@@ -287,59 +288,3 @@ cor_field_dataset = DB.Table(
     DB.Column('id_dataset', DB.Integer, DB.ForeignKey('gn_meta.t_datasets.id_dataset')),
     schema="gn_commons",
 )
-from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_permissions.models import TObjects
-
-
-@serializable
-class TAdditionalFields(DB.Model):
-    __tablename__ = "t_additional_fields"
-    __table_args__ = {"schema": "gn_commons"}
-    id_field = DB.Column(DB.Integer, primary_key=True)
-    field_name = DB.Column(DB.String, nullable=False)
-    field_label = DB.Column(DB.String, nullable=False)
-    required = DB.Column(DB.Boolean)
-    description = DB.Column(DB.String)
-    quantitative = DB.Column(DB.Boolean, default=False)
-    unity = DB.Column(DB.String(50))
-    field_values = DB.Column(JSONB)
-    code_nomenclature_type = DB.Column(DB.String, 
-        ForeignKey("ref_nomenclatures.bib_nomenclatures_types.mnemonique"),
-    )
-    additional_attributes = DB.Column(JSONB)
-    id_widget = DB.Column(DB.Integer, 
-        ForeignKey("gn_commons.bib_widgets.id_widget"),
-        nullable=False
-    )
-    id_list = DB.Column(DB.Integer)
-    exportable = DB.Column(DB.Boolean, default=True)
-    field_order = DB.Column(DB.Integer)
-    type_widget = DB.relationship("BibWidgets")
-    bib_nomenclature_type = DB.relationship(
-        "BibNomenclaturesTypes",
-        primaryjoin="BibNomenclaturesTypes.mnemonique == TAdditionalFields.code_nomenclature_type"
-    )
-    additional_attributes = DB.Column(JSONB)
-    multiselect = DB.Column(DB.Boolean)
-    key_label = DB.Column(DB.String)
-    key_value = DB.Column(DB.String)
-    api = DB.Column(DB.String)
-    modules = DB.relationship(
-        "TModules",
-        secondary=cor_field_module,
-    )
-    objects = DB.relationship(
-        "TObjects",
-        secondary=cor_field_object
-    )
-    datasets = DB.relationship(
-        "TDatasets",
-        secondary=cor_field_dataset
-    )
-    def __str__(self):
-        return f"{self.field_label} ({self.description})"
-    
-
-
-
-
