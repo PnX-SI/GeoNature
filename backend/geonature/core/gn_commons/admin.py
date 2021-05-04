@@ -1,7 +1,7 @@
 from flask import current_app
 
 from flask_admin.contrib.sqla import ModelView
-from geonature.core.gn_commons.models import TAddtitionalFields, TModules
+from geonature.core.gn_commons.models import TAdditionalFields, TModules
 from geonature.core.gn_permissions.models import TObjects
 from geonature.utils.env import DB
 

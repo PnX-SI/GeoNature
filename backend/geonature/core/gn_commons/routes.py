@@ -8,7 +8,7 @@ from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
 from geonature.core.gn_commons.models import (
-    TModules, TParameters, TMobileApps, TPlaces, TAddtitionalFields,
+    TModules, TParameters, TMobileApps, TPlaces, TAdditionalFields,
 )
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.repositories import get_table_location_id
@@ -106,39 +106,39 @@ def get_one_parameter(param_name, id_org=None):
 @json_resp
 def get_additional_fields():
     params = request.args
-    q = DB.session.query(TAddtitionalFields).order_by(TAddtitionalFields.field_order)
+    q = DB.session.query(TAdditionalFields).order_by(TAdditionalFields.field_order)
     if "id_dataset" in params:
         if params["id_dataset"] == "null":
             # ~ operator means NOT EXISTS
-            q = q.filter(~TAddtitionalFields.datasets.any())
+            q = q.filter(~TAdditionalFields.datasets.any())
         else:
             if len(params["id_dataset"].split(",")) > 1:
                 ors = [
-                    TAddtitionalFields.datasets.any(id_dataset=id_dastaset) for id_dastaset in params.split(',')
+                    TAdditionalFields.datasets.any(id_dataset=id_dastaset) for id_dastaset in params.split(',')
                     ]
                 q = q.filter(or_(*ors))
             else:
-                q = q.filter(TAddtitionalFields.datasets.any(id_dataset=params["id_dataset"]))
+                q = q.filter(TAdditionalFields.datasets.any(id_dataset=params["id_dataset"]))
     if "module_code" in params:
         if len(params["module_code"].split(",")) > 1:
 
             ors = [
-                TAddtitionalFields.modules.any(module_code=module_code) 
+                TAdditionalFields.modules.any(module_code=module_code) 
                 for module_code in params["module_code"].split(",")
                 ]
 
             q = q.filter(or_(*ors))
         else:
-            q = q.filter(TAddtitionalFields.modules.any(module_code=params["module_code"]))
+            q = q.filter(TAdditionalFields.modules.any(module_code=params["module_code"]))
 
     if "object_code" in params:
         if len(params["object_code"].split(",")) > 1:
             ors = [
-                TAddtitionalFields.objects.any(code_object=code_object) for code_object in params["object_code"].split(",")
+                TAdditionalFields.objects.any(code_object=code_object) for code_object in params["object_code"].split(",")
                 ]
             q = q.filter(or_(*ors))
         else:
-            q = q.filter(TAddtitionalFields.objects.any(code_object=params["object_code"]))
+            q = q.filter(TAdditionalFields.objects.any(code_object=params["object_code"]))
     print(q)
     return [d.as_dict(True, depth=1) for d in q.all()]
 

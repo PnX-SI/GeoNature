@@ -10,7 +10,7 @@ from flask import (
     send_from_directory,
     render_template,
 )
-from geonature.core.gn_commons.models import TAddtitionalFields
+from geonature.core.gn_commons.models import TAdditionalFields
 from sqlalchemy import or_, func, distinct, case
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import joinedload
@@ -780,14 +780,14 @@ def export(info_role):
 
     #Ajout des colonnes additionnels
     additional_col_names = []
-    query_add_fields = DB.session.query(TAddtitionalFields).filter(
-        TAddtitionalFields.modules.any(module_code="OCCTAX")
+    query_add_fields = DB.session.query(TAdditionalFields).filter(
+        TAdditionalFields.modules.any(module_code="OCCTAX")
     )
-    global_add_fields = query_add_fields.filter(~TAddtitionalFields.datasets.any()).all()
+    global_add_fields = query_add_fields.filter(~TAdditionalFields.datasets.any()).all()
 
     if "id_dataset" in request.args:
         dataset_add_fields = query_add_fields.filter(
-            TAddtitionalFields.datasets.any(id_dataset=request.args['id_dataset'])
+            TAdditionalFields.datasets.any(id_dataset=request.args['id_dataset'])
         ).all()
         global_add_fields = [*global_add_fields, *dataset_add_fields]
     

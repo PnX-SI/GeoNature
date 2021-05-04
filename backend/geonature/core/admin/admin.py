@@ -5,7 +5,7 @@ from flask_admin.contrib.sqla import ModelView
 
 from geonature.utils.env import DB
 from geonature.utils.config import config
-from geonature.core.gn_commons.models import TAddtitionalFields
+from geonature.core.gn_commons.models import TAdditionalFields
 from geonature.core.gn_commons.admin import BibFieldAdmin
 
 
@@ -74,7 +74,7 @@ admin.add_view(
 
 admin.add_view(
     BibFieldAdmin(
-        TAddtitionalFields, 
+        TAdditionalFields, 
         DB.session, 
         name="Bibliothèque de champs additionnels",
         category="Champs additionnels"

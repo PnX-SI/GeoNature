@@ -292,7 +292,7 @@ from geonature.core.gn_permissions.models import TObjects
 
 
 @serializable
-class TAddtitionalFields(DB.Model):
+class TAdditionalFields(DB.Model):
     __tablename__ = "t_additional_fields"
     __table_args__ = {"schema": "gn_commons"}
     id_field = DB.Column(DB.Integer, primary_key=True)
@@ -317,7 +317,7 @@ class TAddtitionalFields(DB.Model):
     type_widget = DB.relationship("BibWidgets")
     bib_nomenclature_type = DB.relationship(
         "BibNomenclaturesTypes",
-        primaryjoin="BibNomenclaturesTypes.mnemonique == TAddtitionalFields.code_nomenclature_type"
+        primaryjoin="BibNomenclaturesTypes.mnemonique == TAdditionalFields.code_nomenclature_type"
     )
     additional_attributes = DB.Column(JSONB)
     multiselect = DB.Column(DB.Boolean)

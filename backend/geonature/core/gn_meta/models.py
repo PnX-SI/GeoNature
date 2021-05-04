@@ -539,7 +539,7 @@ class TDatasetDetails(TDatasets):
         ),
     )
     additional_fields = DB.relationship(
-        "TAddtitionalFields",
+        "TAdditionalFields",
         secondary=cor_field_dataset
     )
 
