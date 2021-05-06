@@ -5,9 +5,12 @@ import { HttpClient } from '@angular/common/http';
 
 import { CookieService } from 'ng2-cookies';
 import 'rxjs/add/operator/delay';
+import { forkJoin } from "rxjs/observable/forkJoin";
 
 import { AppConfig } from '../../../conf/app.config';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
+import { ModuleService } from '../../services/module.service';
+
 
 export interface User {
   user_login: string;
@@ -26,8 +29,12 @@ export class AuthService {
   loginError: boolean;
   public isLoading = false;
   constructor(
-    private router: Router, private route: ActivatedRoute, private _http: HttpClient,
-    private _cookie: CookieService, private cruvedService: CruvedStoreService,
+    private router: Router,
+    private route: ActivatedRoute,
+    private _http: HttpClient,
+    private _cookie: CookieService,
+    private cruvedService: CruvedStoreService,
+    private moduleService: ModuleService,
   ) { }
 
   setCurrentUser(user) {
@@ -96,13 +103,22 @@ export class AuthService {
           this.setCurrentUser(userForFront);
           this.loginError = false;
           // Now that we are logged, we fetch the cruved again, and redirect once received
-          this.cruvedService.fetchCruved().subscribe(() => {
-            let next_url = '';
-            this.route.queryParams.subscribe(params => {
-                next_url = params['next'];
-            });
-            if (next_url) {
-                window.location.href = next_url;
+          forkJoin({
+              cruved: this.cruvedService.fetchCruved(),
+              modules: this.moduleService.fetchModules(),
+          }).subscribe(() => {
+            let next = this.route.snapshot.queryParams['next'];
+            let route = this.route.snapshot.queryParams['route'];
+            // next means redirect to url
+            // route means navigate to angular route
+            if (next) {
+                if (route) {
+                    window.location.href = next + '#' + route;
+                } else {
+                    window.location.href = next;
+                }
+            } else if (route) {
+                this.router.navigateByUrl(route);
             } else {
                 this.router.navigate(['']);
             }

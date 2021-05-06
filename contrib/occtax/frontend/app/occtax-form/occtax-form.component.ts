@@ -16,7 +16,6 @@ import { OcctaxFormParamDialog } from "./form-param/form-param.dialog";
 import { OcctaxFormParamService } from "./form-param/form-param.service";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { OcctaxFormReleveService } from "./releve/releve.service";
-import { OcctaxFormCountingService } from "./counting/counting.service";
 import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";

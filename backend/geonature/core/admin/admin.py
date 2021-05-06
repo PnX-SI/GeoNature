@@ -66,3 +66,5 @@ admin.add_view(
         TNomenclaturesAdmin, DB.session, name="Items de nomenclatures", category="Nomenclatures",
     )
 )
+
+flask_admin = admin  # for retro-compatibility, usefull for export module for instance

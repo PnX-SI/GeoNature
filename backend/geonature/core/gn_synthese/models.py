@@ -48,16 +48,10 @@ class CorObserverSynthese(DB.Model):
     id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"), primary_key=True)
 
 
-corAreaSynthese = DB.Table(
-    "cor_area_synthese",
-    DB.MetaData(schema="gn_synthese"),
-    DB.Column(
-        "id_synthese",
-        DB.Integer,
-        ForeignKey("gn_synthese.cor_area_synthese.id_synthese"),
-        primary_key=True,
-    ),
-    DB.Column("id_area", DB.Integer, ForeignKey("ref_geo.t_areas.id_area"), primary_key=True),
+corAreaSynthese = DB.Table("cor_area_synthese",
+    DB.Column("id_synthese", DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True),
+    DB.Column("id_area", DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True),
+    schema='gn_synthese',
 )
 
 
@@ -96,12 +90,14 @@ class Synthese(DB.Model):
     id_synthese = DB.Column(DB.Integer, primary_key=True)
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
-    id_source = DB.Column(DB.Integer)
+    id_source = DB.Column(DB.Integer, ForeignKey(TSources.id_source))
+    source = relationship(TSources)
     id_module = DB.Column(DB.Integer)
-    entity_source_pk_value = DB.Column(DB.Integer)
+    entity_source_pk_value = DB.Column(DB.Integer)  # FIXME varchar in db!
     id_dataset = DB.Column(DB.Integer)
+    id_nomenclature_geo_object_nature = DB.Column(DB.Integer)
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
-    grp_method = DB.Column(DB.Unicode)
+    grp_method = DB.Column(DB.Unicode(length=255))
     id_nomenclature_obs_technique = DB.Column(DB.Integer)
     id_nomenclature_bio_status = DB.Column(DB.Integer)
     id_nomenclature_bio_condition = DB.Column(DB.Integer)
@@ -117,39 +113,45 @@ class Synthese(DB.Model):
     id_nomenclature_observation_status = DB.Column(DB.Integer)
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
+    id_nomenclature_info_geo_type = DB.Column(DB.Integer)
     id_nomenclature_behaviour = DB.Column(DB.Integer)
+    id_nomenclature_biogeo_status = DB.Column(DB.Integer)
+    reference_biblio = DB.Column(DB.Unicode(length=5000))
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
     cd_nom = DB.Column(DB.Integer)
-    nom_cite = DB.Column(DB.Unicode)
-    meta_v_taxref = DB.Column(DB.Unicode)
-    sample_number_proof = DB.Column(DB.Unicode)
-    digital_proof = DB.Column(DB.Unicode)
-    non_digital_proof = DB.Column(DB.Unicode)
+    cd_hab = DB.Column(DB.Integer)
+    nom_cite = DB.Column(DB.Unicode(length=1000))
+    meta_v_taxref = DB.Column(DB.Unicode(length=50))
+    sample_number_proof = DB.Column(DB.UnicodeText)
+    digital_proof = DB.Column(DB.UnicodeText)
+    non_digital_proof = DB.Column(DB.UnicodeText)
     altitude_min = DB.Column(DB.Integer)
     altitude_max = DB.Column(DB.Integer)
     depth_min = DB.Column(DB.Integer)
     depth_max = DB.Column(DB.Integer)
-    precision = DB.Column(DB.Integer)
+    place_name = DB.Column(DB.Unicode(length=500))
     the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_point = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_local = DB.Column(Geometry("GEOMETRY", config["LOCAL_SRID"]))
-    place_name = DB.Column(DB.Unicode)
+    precision = DB.Column(DB.Integer)
+    id_area_attachment = DB.Column(DB.Integer)
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
-    validator = DB.Column(DB.Unicode)
+    validator = DB.Column(DB.Unicode(length=1000))
     validation_comment = DB.Column(DB.Unicode)
-    observers = DB.Column(DB.Unicode)
-    determiner = DB.Column(DB.Unicode)
+    observers = DB.Column(DB.Unicode(length=1000))
+    determiner = DB.Column(DB.Unicode(length=1000))
     id_digitiser = DB.Column(DB.Integer)
     id_nomenclature_determination_method = DB.Column(DB.Integer)
-    comment_context = DB.Column(DB.Unicode)
-    comment_description = DB.Column(DB.Unicode)
+    comment_context = DB.Column(DB.UnicodeText)
+    comment_description = DB.Column(DB.UnicodeText)
     additional_data = DB.Column(JSONB)
     meta_validation_date = DB.Column(DB.DateTime)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
     last_action = DB.Column(DB.Unicode)
+    areas = relationship('LAreas', secondary=corAreaSynthese)
 
     def get_geofeature(self, recursif=True, columns=None):
         return self.as_geofeature("the_geom_4326", "id_synthese", recursif, columns=columns)
@@ -158,9 +160,9 @@ class Synthese(DB.Model):
 @serializable
 class CorAreaSynthese(DB.Model):
     __tablename__ = "cor_area_synthese"
-    __table_args__ = {"schema": "gn_synthese"}
-    id_synthese = DB.Column(DB.Integer, primary_key=True)
-    id_area = DB.Column(DB.Integer)
+    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
+    id_synthese = DB.Column(DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True)
+    id_area = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True)
 
 
 @serializable
@@ -339,7 +341,7 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
         primary_key=True,
     )
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
-    id_source = DB.Column(DB.Integer)
+    id_source = DB.Column(DB.Integer, ForeignKey(TSources.id_source))
     id_dataset = DB.Column(DB.Integer)
     cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
 
@@ -351,9 +353,6 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
     areas = DB.relationship(
         "LAreas",
         secondary=corAreaSynthese,
-        primaryjoin=(corAreaSynthese.c.id_synthese == id_synthese),
-        secondaryjoin=(corAreaSynthese.c.id_area == LAreas.id_area),
-        foreign_keys=[corAreaSynthese.c.id_synthese, corAreaSynthese.c.id_area],
     )
     datasets = DB.relationship(
         "TDatasets", primaryjoin=(TDatasets.id_dataset == id_dataset), foreign_keys=[id_dataset],

@@ -3,4 +3,5 @@ flask-sqlalchemy
 flask-cors
 flask-mail
 flask-marshmallow
+flask-migrate
 WTForms-SQLAlchemy

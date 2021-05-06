@@ -25,7 +25,7 @@ from geonature.utils.env import (
 from geonature.utils.errors import ConfigError
 from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.config_schema import GnGeneralSchemaConf
-from geonature.utils.module import import_frontend_enabled_modules
+from geonature.utils.module import list_frontend_enabled_modules
 from geonature.utils.config import config_frontend
 
 log = logging.getLogger(__name__)
@@ -53,7 +53,7 @@ def build_geonature_front(rebuild_sass=False):
     subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
 
 
-def frontend_routes_templating(app=None):
+def frontend_routes_templating(module_code, module_path, app=None):
     if not app:
         app = create_app(with_external_mods=False)
 
@@ -68,13 +68,12 @@ def frontend_routes_templating(app=None):
         ) as input_file:
             template = Template(input_file.read())
             routes = []
-            for url_path, module_code in import_frontend_enabled_modules():
-                location = Path(GN_EXTERNAL_MODULE / module_code.lower())
-
+            for module_config in list_frontend_enabled_modules():
+                module_dir = Path(GN_EXTERNAL_MODULE / module_code.lower())
                 # test if module have frontend
-                if (location / "frontend").is_dir():
-                    path = url_path.lstrip("/")
-                    location = "{}/{}#GeonatureModule".format(location, GN_MODULE_FE_FILE)
+                if (module_dir / "frontend").is_dir():
+                    path = module_path.lstrip("/")
+                    location = "{}/{}#GeonatureModule".format(module_dir, GN_MODULE_FE_FILE)
                     routes.append({"path": path, "location": location, "module_code": module_code})
 
                 # TODO test if two modules with the same name is okay for Angular
@@ -104,7 +103,7 @@ def tsconfig_templating():
     log.info("...%s\n", MSG_OK)
 
 
-def tsconfig_app_templating(app=None):
+def tsconfig_app_templating(module_code, app=None):
     if not app:
         app = create_app(with_external_mods=False)
 
@@ -115,12 +114,11 @@ def tsconfig_app_templating(app=None):
         with open(str(ROOT_DIR / "frontend/src/tsconfig.app.json.sample"), "r") as input_file:
             template = Template(input_file.read())
             routes = []
-            for url_path, module_code in import_frontend_enabled_modules():
-                location = Path(GN_EXTERNAL_MODULE / module_code.lower())
-
+            for module in list_frontend_enabled_modules():
+                module_dir = Path(GN_EXTERNAL_MODULE / module_code.lower())
                 # test if module have frontend
-                if (location / "frontend").is_dir():
-                    location = "{}/frontend/app".format(location)
+                if (module_dir/ "frontend").is_dir():
+                    location = "{}/frontend/app".format(module_dir)
                     routes.append({"location": location})
 
                 # TODO test if two modules with the same name is okay for Angular

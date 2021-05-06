@@ -26,7 +26,7 @@
   </a>
 
   <a
-    *ngFor="let module of moduleService.displayedModules"
+    *ngFor="let module of moduleService.getDisplayedModules()"
     href="{{module.module_url}}"
     target="_self"
   >

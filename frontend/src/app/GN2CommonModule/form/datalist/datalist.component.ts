@@ -140,7 +140,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
       const res = value.map(val =>
         typeof val === 'object'
           ? (this.filteredValues.find(v => Object.keys(val).every(key => v[key] === val[key])) ||
-              {})[this.keyValue]
+            {})[this.keyValue]
           : val
       );
       this.parentFormControl.patchValue(this.multiple ? res : res[0]);
@@ -163,7 +163,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
         },
         error => {
           console.log('error', error);
-          this._commonService.regularToaster('error', error);
+          this._commonService.regularToaster('error', error.message);
         }
       );
     } else if (this.values) {

@@ -27,7 +27,7 @@ from geonature.core.gn_meta.models import (
     TDatasetDetails,
 )
 from geonature.core.gn_synthese.models import Synthese
-from geonature.core.users.models import BibOrganismes
+from pypnusershub.db.models import Organisme as BibOrganismes
 
 log = logging.getLogger()
 
