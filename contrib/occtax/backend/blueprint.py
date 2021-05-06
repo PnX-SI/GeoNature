@@ -448,16 +448,6 @@ def releveHandler(request, *, releve, info_role):
         )
     # set id_digitiser
     releve.id_digitiser = info_role.id_role
-    if info_role.value_filter in ("0", "1", "2"):
-        # Check if user can add a releve in the current dataset
-        allowed = releve.user_is_in_dataset_actor(info_role)
-        if not allowed:
-            raise InsufficientRightsError(
-                "User {} has no right in dataset {}".format(
-                    info_role.id_role, releve.id_dataset
-                ),
-                403,
-            )
 
     DB.session.add(releve)
     DB.session.commit()
