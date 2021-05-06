@@ -16,24 +16,25 @@ mat-sidenav-content {
 }
 
 .purple {
-  color:#673ab7
+  color: #673ab7;
 }
 
 .button-success {
-  background-color: #389938!important;
-  color: white!important;
+  background-color: #389938 !important;
+  color: white !important;
 }
 
 .right-aligned-header > .mat-content {
-  justify-content: space-between!important;
+  justify-content: space-between !important;
 }
 
-.mat-content > mat-panel-title, .mat-content > mat-panel-description {
+.mat-content > mat-panel-title,
+.mat-content > mat-panel-description {
   flex: 0 0 auto !important;
 }
 
 .button-success:disabled {
-  background-color: #38993850!important;
+  background-color: #38993850 !important;
 }
 
 .mat-toolbar {
@@ -230,7 +231,6 @@ li.no-bullet {
 
 .large-modal > .modal-dialog {
   max-width: 1500px !important;
-  margin: 25px;
 }
 
 .font-xs {
@@ -268,7 +268,7 @@ li.no-bullet {
 }
 
 .hard-shadow {
-  box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.49), 7px 6px 20px 0 rgba(0, 0, 0, 0.41)!important;
+  box-shadow: 4px 5px 8px 0 rgba(0, 0, 0, 0.49), 7px 6px 20px 0 rgba(0, 0, 0, 0.41) !important;
 }
 
 .disabled {

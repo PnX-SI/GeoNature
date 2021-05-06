@@ -192,12 +192,25 @@
             [bindAllItem]="true"
           >
           </pnx-multiselect>
+          <small>Liste de taxon (facultatif)</small>
+          <select
+            class="form-control form-control-sm"
+            [formControl]="datasetForm.controls.id_taxa_list"
+          >
+            <option [ngValue]="null"> --Selectionner une liste de taxon--</option>
+            <option [ngValue]="-1"> Aucune liste (tout Taxref)</option>
+            <option
+              *ngFor="let list of taxaBibList"
+              [ngValue]="list.id_liste"
+            >
+            {{list.nom_liste}}
+          </option>
+          </select>
 
         </div>
 
       </div>
     </div>
-
     <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 padding-sm">
 
 

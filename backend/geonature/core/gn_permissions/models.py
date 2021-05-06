@@ -33,7 +33,7 @@ class VUsersPermissions(DB.Model):
     id_filter_type = DB.Column(DB.Integer)
     id_permission = DB.Column(DB.Integer)
 
-    def __repr__(self):
+    def __str__(self):
         return """VUsersPermissions
             role='{}' action='{}' filter='{}' module='{}' filter_type='{}' object='{} >""".format(
             self.id_role,
@@ -100,6 +100,9 @@ class TObjects(DB.Model):
     code_object = DB.Column(DB.Unicode)
     description_object = DB.Column(DB.Unicode)
 
+    def __str__(self):
+        return f"{self.code_object} ({self.description_object})"
+
 @serializable
 class CorRoleActionFilterModuleObject(DB.Model):
     __tablename__ = "cor_role_action_filter_module_object"
@@ -122,14 +125,12 @@ class CorRoleActionFilterModuleObject(DB.Model):
     )
 
     filter = DB.relationship(
-        TFilters, primaryjoin=(TFilters.id_filter == id_filter), foreign_keys=[id_filter],
+        TFilters,
+        primaryjoin=(TFilters.id_filter == id_filter), foreign_keys=[id_filter],
     )
 
     module = DB.relationship("TModules")
-
-    object = DB.relationship(
-        TObjects, primaryjoin=(TObjects.id_object == id_object), foreign_keys=[id_object],
-    )
+    object = DB.relationship("TObjects")
 
     def is_permission_already_exist(
         self, id_role, id_action, id_module, id_filter_type, id_object=1
@@ -153,4 +154,3 @@ class CorRoleActionFilterModuleObject(DB.Model):
             .filter(BibFiltersType.id_filter_type == id_filter_type)
             .first()
         )
-

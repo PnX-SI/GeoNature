@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.6.3 (unreleased)
+2.7.0 (unreleased)
 ------------------
 
 TOCHECK :
@@ -15,15 +15,26 @@ TOCHECK :
 - Mettre à jour template de module ?
 - Bien tester les emails de validation pré-remplis
 
+**🚀 Nouveautés**
+
+* Occtax: possibilité d'ajouter des champs additionels par JDD ou globaux au module
+* Admin: création d'un backoffice d'administration des champs additionels
+* Occtax: possibilité de désactiver la recherche de taxon par liste (#1315)
+* Occtax/Metadonnées: possibilité d'associer une liste de taxon à un JDD. (implémenté uniquement dans Occtax)
+* Occtax: par défaut la recherche de taxon n'interroge pas une liste mais tout Taxref (retrocompatibilité cassé, voir note de version)
+* Occtax: possibilité d'ajouter les médias aux exports (paramètre `ADD_MEDIA_IN_EXPORT`)
+
 **🐛 Corrections**
 
 * Occtax : correction d'un bug sur le champs observateur lors de la modification d'un relevé (#1177)
 * Occtax : renseignement par défaut de l'utilisateur connecté à la création d'un relevé en mode "observers_txt" (#1292)
 
+
 **⚠️ Notes de version**
 
 Si vous mettez à jour GeoNature :
 
+* Attention: si vous n'aviez pas renseigné de valeur pour le paramètre `id_taxon_list` dans le fichier `conf_gn_module.toml` du module Occtax, la liste 100 n'est plus passé par defaut et le module va rechercher sur tout Taxref. Veuillez renseigné manuellement l'identifiant de votre liste 
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
 * Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.6.3.sql)
 * Des choses à faire au niveau des évolutions des commandes GeoNature ?

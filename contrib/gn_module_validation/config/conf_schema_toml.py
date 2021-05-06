@@ -74,7 +74,10 @@ ID_ATTRIBUT_TAXHUB = [1, 2]
 
 AREA_FILTERS = [{"label": "Communes", "id_type": 25}]
 MAIL_BODY = """La donnée en date du ${ d.date_min } relative au taxon ${ d.nom_vern } - ${ d.nom_valide } pose question.\n\r
-Merci de contacter la personne en charge de la validation. \n\rCommunes : ${ d.communes }\n\rMédias : ${ d.medias }
+Merci de contacter la personne en charge de la validation. 
+\n\rCommunes : ${ d.communes }
+Médias : ${ d.medias }\n\r
+Lien vers l'observation: ${ d.data_link }
 """
 MAIL_SUBJECT = "[GeoNature Validation] Donnée du ${ d.date_min } - ${ d.nom_vern } - ${ d.nom_valide }"
 

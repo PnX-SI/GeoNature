@@ -17,6 +17,7 @@ from utils_flask_sqla.generic import test_type_and_generate_query, testDataType
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.core.gn_commons.models import cor_field_dataset, TAdditionalFields
 
 
 from geonature.core.gn_meta.models import (
@@ -199,15 +200,14 @@ def get_dataset_details_dict(id_dataset, session_role):
     return also the number of taxon and observation of the dataset
     Use for get_one datasert
     """
+
     q = DB.session.query(TDatasetDetails)
     q = cruved_filter(q, TDatasetDetails, session_role)
     try:
         data = q.filter(TDatasetDetails.id_dataset == id_dataset).one()
     except NoResultFound:
         return None
-
-
-    dataset = data.as_dict(True)
+    dataset = data.as_dict(True, depth=2)
 
     imports = requests.get(
         current_app.config["API_ENDPOINT"] + "/import/by_dataset/" + str(id_dataset),

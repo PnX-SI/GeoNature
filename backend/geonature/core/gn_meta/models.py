@@ -11,7 +11,7 @@ from utils_flask_sqla.serializers import serializable
 from geonature.utils.env import DB
 from pypnusershub.db.models import Organisme
 
-from geonature.core.gn_commons.models import cor_module_dataset
+from geonature.core.gn_commons.models import cor_field_dataset, cor_module_dataset
 
 
 class CorAcquisitionFrameworkObjectif(DB.Model):
@@ -307,7 +307,7 @@ class TDatasets(CruvedHelper):
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
     id_digitizer = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
-
+    id_taxa_list = DB.Column(DB.Integer)
     creator = DB.relationship("User", lazy="select")
     modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
@@ -316,6 +316,9 @@ class TDatasets(CruvedHelper):
     cor_dataset_actor = relationship(
         CorDatasetActor, lazy="select", cascade="save-update, merge, delete, delete-orphan",
     )
+
+    def __str__(self):
+        return self.dataset_name
 
     @staticmethod
     def get_id(uuid_dataset):
@@ -497,7 +500,6 @@ class TAcquisitionFramework(CruvedHelper):
         data = q.all()
         return list(set([d.id_acquisition_framework for d in data]))
 
-
 @serializable
 class TDatasetDetails(TDatasets):
     """
@@ -536,6 +538,13 @@ class TDatasetDetails(TDatasets):
             TAcquisitionFramework.id_acquisition_framework == TDatasets.id_acquisition_framework
         ),
     )
+    additional_fields = DB.relationship(
+        "TAdditionalFields",
+        secondary=cor_field_dataset
+    )
+
+        
+ 
 
 
 @serializable

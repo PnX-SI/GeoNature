@@ -132,16 +132,27 @@ export class DynamicFormService {
 
   }
 
-  createControl(formDef): AbstractControl {
+  createControl(formDef): AbstractControl {    
     const formControl = new FormControl();
     const value = formDef.value || null;
     this.setControl(formControl, formDef, value);
     return formControl;
   }
 
-  addNewControl(formDef, formGroup: FormGroup) {
+  addNewControl(formDef, formGroup: FormGroup) {    
+    //Mise en fonction des valeurs des dynamic-form ex: "hidden: "({value}) => value.monChamps != 'maValeur'""
+    for (const keyParam of Object.keys(formDef)) {
+      const func = this.toFunction(formDef[keyParam])
+      if(func) {
+        formDef[keyParam] = func;  
+      }
+    }
+
     if (formDef.type_widget !== 'html') {
       let control = this.createControl(formDef);
+      if(formDef.disable) {
+        control.disable();
+      }
       formGroup.addControl(formDef.attribut_name, control);
     }
   }
@@ -163,4 +174,36 @@ export class DynamicFormService {
 
     return formDefinitions;
   }
+  
+
+  /**
+   * Converti s en function js
+   *  
+   * 
+   * @param s chaine de caractere
+   */
+  toFunction(s_in) {
+    //En cas de tableau de fonction, on les joint (utile pour fonction complexe)
+    let s = Array.isArray(s_in) ? s_in.join("\n") : s_in;
+    if(! (typeof(s) == 'string')) {
+      return
+    }
+
+    const tests = [ '(', ')', '{', '}', '=>']
+
+    if (!tests.every(test => s.includes(test))) {
+      return 
+    }
+
+    let func;
+
+    try {
+      func = eval(s);
+    } catch(error) {
+      console.error(`Erreur dans la définition de la fonction ${error}`);
+    }
+
+    return func;
+
+  } 
 }

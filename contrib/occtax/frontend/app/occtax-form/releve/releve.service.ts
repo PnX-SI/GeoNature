@@ -1,8 +1,8 @@
-import { Injectable } from "@angular/core";
+import { Injectable} from "@angular/core";
 import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
-import { Observable, Subscription } from "rxjs";
-import { filter, map, switchMap, tap, skip } from "rxjs/operators";
+import { Observable, Subscription, of } from "rxjs";
+import { filter, map, switchMap, tap, skip, concatMap } from "rxjs/operators";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { GeoJSON } from "leaflet";
 import { ModuleConfig } from "../../module.config";
@@ -13,6 +13,7 @@ import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormMapService } from "../map/map.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
+import { DatasetStoreService } from '@geonature_common/form/datasets/dataset.service';
 
 @Injectable()
 export class OcctaxFormReleveService {
@@ -27,6 +28,11 @@ export class OcctaxFormReleveService {
   public showTime: boolean = false; //gestion de l'affichage des infos complémentaires de temps
   public waiting: boolean = false;
   public route: ActivatedRoute;
+
+  public currentIdDataset:any;
+
+  public datasetId : number = null;
+  public datasetComponent;
   public previousReleve = null;
 
   constructor(
@@ -39,11 +45,11 @@ export class OcctaxFormReleveService {
     private occtaxFormService: OcctaxFormService,
     private occtaxFormMapService: OcctaxFormMapService,
     private occtaxDataService: OcctaxDataService,
-    private occtaxParamS: OcctaxFormParamService
+    private occtaxParamS: OcctaxFormParamService,
+    private _datasetStoreService: DatasetStoreService
   ) {
     this.initPropertiesForm();
     this.setObservables();
-
     this.releveForm = this.fb.group({
       geometry: this.occtaxFormMapService.geometry,
       properties: this.propertiesForm,
@@ -54,13 +60,14 @@ export class OcctaxFormReleveService {
     return {
       id_digitiser: this.occtaxFormService.currentUser.id_role,
       meta_device_entry: "web",
+
     };
   }
 
-  initPropertiesForm(): void {
+  initPropertiesForm(): void {    
     //FORM
     this.propertiesForm = this.fb.group({
-      id_dataset: [null, Validators.required],
+      id_dataset: [null, Validators.required] ,
       id_digitiser: null,
       date_min: [null, Validators.required],
       date_max: [null, Validators.required],
@@ -96,9 +103,10 @@ export class OcctaxFormReleveService {
       id_nomenclature_grp_typ: null,
       grp_method: null,
       id_nomenclature_geo_object_nature: null,
-      precision: null
+      precision: null,
+      additional_fields: this.fb.group({})
     });
-  
+
     this.propertiesForm.patchValue(this.initialValues);
 
     // VALIDATORS
@@ -125,8 +133,34 @@ export class OcctaxFormReleveService {
       ),
     ]);
 
+
     //on desactive le form, il sera réactivé si la geom est ok
     this.propertiesForm.disable();
+    this.occtaxFormService.getAdditionnalFields(
+      ["OCCTAX_RELEVE"]
+    ).subscribe(addFields => {
+      this.occtaxFormService.globalReleveAddFields = addFields;
+    });
+  }
+
+  onDatasetChanged(idDataset) {    
+    const currentDataset = this._datasetStoreService.datasets.find(d => d.id_dataset == idDataset);
+    if(currentDataset && currentDataset.id_taxa_list) {      
+      this.occtaxFormService.idTaxonList = currentDataset.id_taxa_list;
+    }
+    this.occtaxFormService.getAdditionnalFields(  
+      ["OCCTAX_RELEVE"],
+      idDataset
+    ).subscribe(addFields => {
+      this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
+        this.occtaxFormService.globalReleveAddFields,
+        this.occtaxFormService.datasetReleveAddFields,
+      );
+      this.occtaxFormService.datasetReleveAddFields = addFields;
+      this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.globalReleveAddFields.concat(
+        addFields
+      );  
+    })
   }
 
   /**
@@ -149,14 +183,26 @@ export class OcctaxFormReleveService {
             );
           }
         }),
-        switchMap((editionMode: boolean) => {
+        switchMap((editionMode: boolean) => {   
+                 
           //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
           return editionMode ? this.releveValues : this.defaultValues;
         })
       )
-      .subscribe((values) => {
-        this.propertiesForm.patchValue(values)
-      }); 
+      .subscribe((values) => {                
+        // re disable the form here
+        // Angular bug: when we add additionnal form controls, it enable the form
+        if(!values.id_releve_occtax) {
+          this.propertiesForm.disable();
+        }
+        // HACK: wait for the dynamicformGenerator Component to set the additional fields
+        // TODO: subscribe to an observable of dynamicFormCOmponent to wait it
+        setTimeout(() => {       
+         this.propertiesForm.patchValue(values, {emitEvent: false});
+         this.propertiesForm.controls.observers.patchValue(values.observers);
+        }, 1000);
+      }
+      );
 
     //Observation de la geometry pour récupere les info d'altitudes
     this.occtaxFormMapService.geojson
@@ -167,7 +213,7 @@ export class OcctaxFormReleveService {
           if (!this.occtaxFormService.editionMode.getValue()) {
             //recup des info d'altitude uniquement en mode creation
             this.getAltitude(geojson);
-          }
+          }          
           this.propertiesForm.enable(); //active le form
         })
       )
@@ -209,40 +255,88 @@ export class OcctaxFormReleveService {
       });
   }
 
-  /** Get occtax data and patch value to the form */
+  /** Get occtax data in order to patch value to the form */
   private get releveValues(): Observable<any> {
     return this.occtaxFormService.occtaxData.pipe(
-      filter((data) => data && data.releve.properties),
-      map((data) => {
-        const releve = data.releve.properties;
+      filter(data => data && data.releve.properties),
+      map(data => {        
+        const copied_data = Object.assign({}, data)
+        const releve = copied_data.releve.properties;
+        //Parfois il passe 2 fois ici, et la seconde fois la date est déja formattée en objet, si c'est le cas, on saute
+        if(typeof releve.date_min !== "object"){
+          // on affiche la date_max si date_min != date_max
+          if (releve.date_min != releve.date_max) {
+            this.showTime = true;
+          }
+          // si les date sont égales, on active l'autocomplete pour garder la correlation
+          else {
+            this.$_autocompleteDate.unsubscribe()
+            this.$_autocompleteDate = this.coreFormService.autoCompleteDate(
+              this.propertiesForm as FormGroup,
+              "date_min",
+              "date_max"
+            );
+          }
 
-        // on affiche la date_max si date_min != date_max
-        if (releve.date_min != releve.date_max) {
-          this.showTime = true;
+          releve.date_min = this.occtaxFormService.formatDate(releve.date_min);
+          releve.date_max = this.occtaxFormService.formatDate(releve.date_max);
+        } else {
+          if (releve.date_min.year != releve.date_max.year || releve.date_min.month != releve.date_max.month || releve.date_min.day != releve.date_max.day) {
+            this.showTime = true;
+          }
         }
-        // si les date sont égales, on active l'autocomplete pour garder la correlation
-        else {
-          this.$_autocompleteDate.unsubscribe()
-          this.$_autocompleteDate = this.coreFormService.autoCompleteDate(
-            this.propertiesForm as FormGroup,
-            "date_min",
-            "date_max"
-          );
-        }
 
-        releve.date_min = this.formatDate(releve.date_min);
-        releve.date_max = this.formatDate(releve.date_max);
-
-
-        // set habitat form value from 
+        // set habitat form value from
         if (releve.habitat) {
           const habitatFormValue = releve.habitat;
           // set search_name properties to the form
-          habitatFormValue['search_name'] = habitatFormValue.lb_code + " - " + habitatFormValue.lb_hab_fr;
+          habitatFormValue["search_name"] = habitatFormValue.lb_code + " - " + habitatFormValue.lb_hab_fr;
           this.habitatForm.setValue(habitatFormValue)
         }
 
         return releve;
+      }),
+      // load additional fields
+      concatMap(releve => {
+        return this.occtaxFormService.getAdditionnalFields(
+          ["OCCTAX_RELEVE"],
+          releve.id_dataset
+        ).map(additionalFields => {              
+          // remove old dataset addField from globalAddFields
+          this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
+            this.occtaxFormService.globalReleveAddFields,
+            this.occtaxFormService.datasetReleveAddFields,
+          );
+          this.occtaxFormService.datasetReleveAddFields = additionalFields;
+          
+          this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.globalReleveAddFields.concat(
+            additionalFields
+          );
+          this.occtaxFormService.globalReleveAddFields.forEach(field => {
+            //Formattage des dates
+            if(field.type_widget == "date"){
+              //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
+              if(typeof releve.additional_fields[field.attribut_name] !== "object"){
+                releve.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(releve.additional_fields[field.attribut_name]);
+              }
+            }
+            //Formattage des nomenclatures
+            if(field.type_widget == "nomenclature"){
+                  const res = this.occtaxFormService.nomenclatureAdditionnel.filter((item) => item !== undefined)
+                  .find(n => (n["label_fr"] === releve.additional_fields[field.attribut_name]));
+                  if(res){
+                    releve.additional_fields[field.attribut_name] = res.id_nomenclature;
+                  }else{
+                    releve.additional_fields[field.attribut_name] = "";
+                  }
+                  releve[field.attribut_name] =  releve.additional_fields[field.attribut_name];
+
+              }
+              releve[field.attribut_name] =  releve.additional_fields[field.attribut_name];
+          })
+          return releve
+        })
+          
       })
     );
   }
@@ -260,26 +354,26 @@ export class OcctaxFormReleveService {
     }
   }
 
-  getPreviousReleve(previousReleve) {    
+  getPreviousReleve(previousReleve) {
     if (previousReleve && !ModuleConfig.ENABLE_SETTINGS_TOOLS) {
       return {
-        'id_dataset': previousReleve.properties.id_dataset,
-        'observers': previousReleve.properties.observers,
-        'observers_txt': previousReleve.properties.observers_txt,
-        'date_min': this.formatDate(previousReleve.properties.date_min),
-        'date_max': this.formatDate(previousReleve.properties.date_max),
-        'hour_min': previousReleve.properties.hour_min,
-        'hour_max': previousReleve.properties.hour_max,
+        "id_dataset": previousReleve.properties.id_dataset,
+        "observers": previousReleve.properties.observers,
+        "observers_txt": previousReleve.properties.observers_txt,
+        "date_min": this.occtaxFormService.formatDate(previousReleve.properties.date_min),
+        "date_max": this.occtaxFormService.formatDate(previousReleve.properties.date_max),
+        "hour_min": previousReleve.properties.hour_min,
+        "hour_max": previousReleve.properties.hour_max,
       }
     }
     return {
-      'id_dataset': null,
-      'observers': null,
-      'observers_txt': null,
-      'date_min': null,
-      'date_max': null,
-      'hour_min': null,
-      'hour_max': null,
+      "id_dataset": null,
+      "observers": null,
+      "observers_txt": null,
+      "date_min": null,
+      "date_max": null,
+      "hour_min": null,
+      "hour_max": null,
     };
   }
 
@@ -290,7 +384,8 @@ export class OcctaxFormReleveService {
         map((data) => {
           const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);
           return {
-            id_dataset: this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset,
+            // datasetId could be get for get parameters (see releve.component)
+            id_dataset: this.datasetId || this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset,
             date_min: this.occtaxParamS.get("releve.date_min") ||
               previousReleve.date_min ||
               this.defaultDateWithToday(),
@@ -303,7 +398,7 @@ export class OcctaxFormReleveService {
             comment: this.occtaxParamS.get("releve.comment"),
             observers: this.occtaxParamS.get("releve.observers") ||
               previousReleve.observers || ModuleConfig.observers_txt ? null: [this.occtaxFormService.currentUser],
-            observers_txt: this.occtaxParamS.get("releve.observers_txt") || previousReleve.observers_txt || 
+            observers_txt: this.occtaxParamS.get("releve.observers_txt") || previousReleve.observers_txt ||
               ModuleConfig.observers_txt ? [this.occtaxFormService.currentUser.nom_complet]:  null,
             id_nomenclature_grp_typ:
               this.occtaxParamS.get("releve.id_nomenclature_grp_typ") ||
@@ -317,32 +412,19 @@ export class OcctaxFormReleveService {
                 "releve.id_nomenclature_geo_object_nature"
               ) || data["NAT_OBJ_GEO"],
           };
+          
         })
       );
   }
 
   private getAltitude(geojson) {
     // get to geo info from API
-    this.dataFormService.getAltitudes(geojson).subscribe((res) => {
+    this.dataFormService.getGeoInfo(geojson).subscribe((res) => {
       this.propertiesForm.patchValue({
-        altitude_min: res.altitude_min,
-        altitude_max: res.altitude_max,
+        altitude_min: res.altitude.altitude_min,
+        altitude_max: res.altitude.altitude_max,
       });
     });
-  }
-
-  private formatDate(strDate) {
-    // if its an object return it
-    if (typeof strDate === 'object' && strDate !== null) {
-      return strDate
-    } else {
-      const date = new Date(strDate);
-      return {
-        year: date.getFullYear(),
-        month: date.getMonth() + 1,
-        day: date.getDate(),
-      };
-    }
   }
 
   releveFormValue() {
@@ -359,7 +441,25 @@ export class OcctaxFormReleveService {
         (observer) => observer.id_role
       );
     }
-
+    /* Champs additionnels - formatter les dates et les nomenclatures */
+        this.occtaxFormService.globalReleveAddFields.forEach((field:any) => {
+          if(field.type_widget == "date"){
+            value.properties.additional_fields[field.attribut_name] = this.dateParser.format(
+              value.properties.additional_fields[field.attribut_name]
+            );
+          }
+          if(field.type_widget == "nomenclature"){            
+            // set the label_fr nomenclature in the posted additional data
+            const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {
+              return n["id_nomenclature"] === value.properties.additional_fields[field.attribut_name];
+            });
+            if(nomenclature_item){
+              value.properties.additional_fields[field.attribut_name] = nomenclature_item.label_fr;
+            }else{
+              value.properties.additional_fields[field.attribut_name] = "";
+            }
+          }
+        })
     return value;
   }
 
@@ -385,9 +485,8 @@ export class OcctaxFormReleveService {
             );
             this.occtaxFormService.replaceReleveData(data);
             this.releveForm.markAsPristine();
-            this.router.navigate(["taxons"], {
-              relativeTo: this.route,
-            });
+                        
+            this.router.navigate(["occtax/form", data.id, "taxons"]);
           },
           (err) => {
             this.waiting = false;
@@ -404,13 +503,14 @@ export class OcctaxFormReleveService {
         .pipe(tap(() => (this.waiting = false)))
         .subscribe(
           (data: any) => {
+            this.occtaxFormService.id_releve_occtax.next(data.id);
             this._commonService.translateToaster(
               "info",
               "Releve.Infos.ReleveAdded"
             );
-            this.router.navigate([data.id, "taxons"], {
-              relativeTo: this.route,
-            });
+            this.router.navigate([data.id, "taxons"], {relativeTo: this.route});
+            this.occtaxFormService.currentTab = "taxons";
+            
           },
           (err) => {
             this.waiting = false;
@@ -418,6 +518,17 @@ export class OcctaxFormReleveService {
           }
         );
     }
+  }
+
+  formatNomenclature(data) {
+    let values = [];
+    for (let i = 0; i < data.length; i++) {
+      data[i].values.forEach((element) => {
+        element["nomenclature_mnemonique"] = data[i]["mnemonique"];
+        values[element.id_nomenclature] = element;
+      });
+    }
+    return values
   }
 
   reset() {

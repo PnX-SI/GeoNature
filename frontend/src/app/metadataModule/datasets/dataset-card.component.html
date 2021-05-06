@@ -236,16 +236,22 @@
           <div class="b"> Créateur</div>
 
           <div class="a"> <b> Créateur du jeu de données :</b> {{dataset.creator?.nom_complet}}
+          </div>         
+
+          <br />
+
+
+          <div *ngIf="dataset.keywords">
+            <div class="b">Mots-clés :</div>
+            <div class="a"> {{dataset.keywords}} </div>
           </div>
-          <br />
 
-          <div class="b">Attribut additionnels</div>
-          <div class="a"><b> Actif :</b> {{dataset.active ? 'Oui' : 'Non'}} </div>
-          <div class="a"> <b>Validable :</b> {{dataset.validable ? 'Oui' : 'Non'}} </div>
+          <br/>
 
-          <br />
-
-
+          <h4>Spécificités GeoNature</h4>
+          <div class="align"> <b>Actif :  </b>  {{dataset.active ? 'Oui' : 'Non'}} </div>
+          <div class="align"> <b> Validable :</b>  {{dataset.validable ? 'Oui' : 'Non'}} </div>
+          <div *ngIf="dataset.id_taxa_list" class="b"> ID de liste de taxon : {{dataset.id_taxa_list}} </div>
           <div *ngIf="dataset.modules">
             <div class="b">Module(s) GeoNature associé(s) au jeu de données :</div>
             <div class="a">{{ dataset.modules }}</div>
@@ -253,9 +259,22 @@
 
           <br />
 
-          <div *ngIf="dataset.keywords">
-            <div class="b">Mots-clés :</div>
-            <div class="a"> {{dataset.keywords}} </div>
+          <div *ngIf="dataset.additional_fields">
+            <div class="b">Champ(s) addionnel(s) du jeu de données :</div>
+            <div class="a" *ngFor="let field of dataset.additional_fields">
+              - <span class="bold">{{field.field_label}} : </span>
+              <br/>
+              <div class="ml-5">
+                <span class="bold"> Description : </span> <span> {{field.description |json}}  </span> <br/>
+                <span class="bold"> Type widget : </span> <span> {{field.type_widget.widget_name}}  </span> <br/>
+                <span class="bold"> Obligatoire : </span> <span> {{field.required}}  </span> <br/>
+                <span class="bold"> Quantitatif : </span> <span> {{field.quantitative}}  </span> <br/>
+                <span class="bold"> Unité : </span> <span> {{field.unity |json}}  </span>  
+              </div>
+     
+
+              
+            </div>
           </div>
 
         </div>

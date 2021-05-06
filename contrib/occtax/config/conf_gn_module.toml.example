@@ -9,7 +9,8 @@ observers_txt = false
 id_observers_list = 1
 
 # id of the taxon list -- taxonomie.bib_listes. Use for the taxonomy search in the occtax forml
-id_taxon_list = 100
+# default = None: search on full taxref
+id_taxon_list = <un entier>
 # number of results in the autocomplete taxon search
 taxon_result_number = 20
 
@@ -69,8 +70,11 @@ export_observer_txt_column = 'obsId'
 # SRID for the shapefile
 export_srid = 4326
 
+# Add medias URL in export
+ADD_MEDIA_IN_EXPORT = false
+
 # Export available format (Only csv, geojson and shapefile and 'gpkg' is possible)
-export_available_format = ['csv', 'geojson', 'shapefile']
+export_available_format = ['csv', 'geojson', 'shapefile', 'gpkg']
 
 # Custom message to display in the export modal
 export_message = "<p> <b> Attention: </b> </br>  Vous vous apprêtez à télécharger les données de la <b>recherche courante. </b> </p>"
