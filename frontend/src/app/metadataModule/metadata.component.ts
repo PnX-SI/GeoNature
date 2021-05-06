@@ -168,19 +168,19 @@ export class MetadataComponent implements OnInit {
         return true;
       } else {
         
-        // expand tout les accordion recherchés pour voir le JDD des CA
+        // expand tous les accordeons recherchés pour voir le JDD des CA
         this.expandAccordions = true;
         if ((af.id_acquisition_framework + ' ').toLowerCase().indexOf(searchTerm) !== -1
           || af.acquisition_framework_name.toLowerCase().indexOf(searchTerm) !== -1
           || af.acquisition_framework_start_date.toLowerCase().indexOf(searchTerm) !== -1
           || af.unique_acquisition_framework_id.toLowerCase().indexOf(searchTerm) !== -1
         ) {
-          //si un cadre matche on affiche tout ses JDD
+          //si un cadre matche on affiche tous ses JDD
           af.datasetsTemp = af.datasets;
           return true;
         }
 
-        //Sinon on on filtre les JDD qui matchent eventuellement.
+        //Sinon on on filtre les JDD qui matchent eventuellement
         if (af.datasets) {
           af.datasetsTemp = af.datasets.filter(
             ds => ((ds.id_dataset + ' ').toLowerCase().indexOf(searchTerm) !== -1
@@ -253,7 +253,7 @@ export class MetadataComponent implements OnInit {
   isDisplayed(idx: number) {
     //numero du CA à partir de 1
     let element = idx + 1;
-    //calcule des tranches active à afficher
+    //calcul des tranches active à afficher
     let idxMin = this.pageSize * this.activePage;
     let idxMax = this.pageSize * (this.activePage + 1);
 
@@ -292,7 +292,7 @@ export class MetadataComponent implements OnInit {
       error => {
         if(error.error.name == 'mailError') {
           this._commonService.regularToaster(
-            'warning', "Erreur lors de l'envoie du mail de confirmation. Le cadre d'acquisition a bien été fermé"
+            'warning', "Erreur lors de l'envoi de l'email de confirmation. Le cadre d'acquisition a bien été fermé"
             )
         } else {
           this._commonService.regularToaster(

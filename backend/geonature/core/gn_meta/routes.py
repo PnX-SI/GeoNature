@@ -43,7 +43,6 @@ from geonature.core.gn_meta.models import (
     CorDatasetActor,
     CorDatasetProtocol,
     CorDatasetTerritory,
-    CorModuleDataset,
     TAcquisitionFramework,
     TAcquisitionFrameworkDetails,
     CorAcquisitionFrameworkActor,
@@ -354,7 +353,7 @@ def delete_dataset(info_role, ds_id):
 
     DB.session.query(CorDatasetTerritory).filter(CorDatasetTerritory.id_dataset == ds_id).delete()
 
-    DB.session.query(CorModuleDataset).filter(CorModuleDataset.id_dataset == ds_id).delete()
+    #DB.session.query(CorModuleDataset).filter(CorModuleDataset.id_dataset == ds_id).delete()
 
     DB.session.query(TDatasets).filter(TDatasets.id_dataset == ds_id).delete()
 

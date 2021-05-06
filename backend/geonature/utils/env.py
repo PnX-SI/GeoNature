@@ -17,6 +17,8 @@ from flask_migrate import Migrate
 # Must be at top of this file. I don't know why (?)
 MAIL = Mail()
 
+from flask import current_app
+
 # Define GEONATURE_VERSION before import config_shema module
 # because GEONATURE_VERSION is imported in this module
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent

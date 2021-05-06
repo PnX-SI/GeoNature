@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import {
   animate,
   state,
@@ -6,7 +6,6 @@ import {
   transition,
   trigger,
 } from "@angular/animations";
-import { MatDialogRef } from "@angular/material";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { combineLatest } from "rxjs";
 import { filter, map, pairwise } from "rxjs/operators";
@@ -41,6 +40,8 @@ import { OcctaxFormParamService } from "./form-param.service";
   ],
 })
 export class OcctaxFormParamDialog implements OnInit {
+  @ViewChild("modalContent") modalContent;
+
   public occtaxConfig: any;
   public paramsForm: FormGroup;
   public selectedIndex: number = null;
@@ -63,7 +64,6 @@ export class OcctaxFormParamDialog implements OnInit {
   }
 
   constructor(
-    public dialogRef: MatDialogRef<OcctaxFormParamDialog>,
     private fb: FormBuilder,
     private occtaxFormMapService: OcctaxFormMapService,
     private occtaxFormReleveService: OcctaxFormReleveService,

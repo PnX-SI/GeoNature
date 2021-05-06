@@ -118,6 +118,12 @@ class MediasConfig(Schema):
     MEDIAS_SIZE_MAX = fields.Integer(missing=50000)
     THUMBNAIL_SIZES = fields.List(fields.Integer, missing=[200, 50])
 
+class AdditionalFields(Schema):
+    IMPLEMENTED_MODULES = fields.List(fields.String(), missing=["OCCTAX"])
+    IMPLEMENTED_OBJECTS = fields.List(
+        fields.String(), 
+        missing=["OCCTAX_RELEVE",  "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"]
+    )
 
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(missing=50, validate=OneOf([10, 25, 50, 100]))
@@ -217,6 +223,7 @@ class GnFrontEndConf(Schema):
     # show email on synthese and validation info obs modal
     DISPLAY_EMAIL_INFO_OBS = fields.Boolean(missing=True)
 
+    DISPLAY_EMAIL_DISPLAY_INFO = fields.List(fields.String(), missing=["NOM_VERN"])
 
 id_municipality = BddConfig().load({}).data.get("id_area_type_municipality")
 
@@ -272,6 +279,7 @@ class Synthese(Schema):
 
     # Display email on synthese and validation info obs modal
     DISPLAY_EMAIL = fields.Boolean(missing=True)
+
 
 
 # On met la valeur par défaut de DISCONECT_AFTER_INACTIVITY inferieure à COOKIE_EXPIRATION
@@ -345,6 +353,7 @@ class GnGeneralSchemaConf(Schema):
     METADATA = fields.Nested(MetadataConfig, missing={})
     MTD = fields.Nested(MTDSchemaConf, missing={})
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(missing=1000000)
+    ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, missing={})
 
     @validates_schema
     def validate_enable_sign_up(self, data):

@@ -1,18 +1,18 @@
-import { Observable, Subscription } from 'rxjs';
-import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { Media } from './media';
-import { mediaFormDefinitionsDict } from './media-form-definition';
-import { FormBuilder } from '@angular/forms';
-import { MediaService } from '@geonature_common/service/media.service';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { CommonService } from '@geonature_common/service/common.service';
-import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.service';
+import { Observable, Subscription } from "rxjs";
+import { Component, OnInit, Input, Output, EventEmitter, SimpleChanges } from "@angular/core";
+import { FormGroup } from "@angular/forms";
+import { Media } from "./media";
+import { mediaFormDefinitionsDict } from "./media-form-definition";
+import { FormBuilder } from "@angular/forms";
+import { MediaService } from "@geonature_common/service/media.service";
+import { HttpEventType, HttpResponse } from "@angular/common/http";
+import { CommonService } from "@geonature_common/service/common.service";
+import { DynamicFormService } from "../dynamic-form-generator/dynamic-form.service";
 
 @Component({
-  selector: 'pnx-media',
-  templateUrl: './media.component.html',
-  styleUrls: ['./media.scss']
+  selector: "pnx-media",
+  templateUrl: "./media.component.html",
+  styleUrls: ["./media.scss"]
 })
 export class MediaComponent implements OnInit {
   // public mediaSave: Media = new Media();
@@ -62,6 +62,41 @@ export class MediaComponent implements OnInit {
       }
     );
 
+    //if field not hidden => put it before advance setting
+    //Si mediaFieldsDetailsDefault est renseigné et de taille différente des champs details
+    let afterDisplay = false;
+    let mediaDetailsFields = this.mediaFormDefinition.filter(field => {
+      if (afterDisplay && field.hidden !== true){
+        return true; 
+      }
+      if (field.attribut_name == "displayDetails"){
+        afterDisplay = true;
+      }
+      return false;
+    } );
+      
+    if(mediaDetailsFields.length > 0 && this.details.length != mediaDetailsFields.length){
+      let outDetailsFields = this.mediaFormDefinition.filter(field => !this.details.includes(field.attribut_name) && mediaDetailsFields.includes(field));
+      const cMediaFormDefinition = this.mediaFormDefinition;
+      const newMediaFormDefinition = [];
+      const formDefinitionDone = [];
+      for (var i=0; i < cMediaFormDefinition.length; i++ ){
+        //on met avant la checkbox les champs à montrer
+        if(cMediaFormDefinition[i].attribut_name  == "displayDetails"){
+          for(var j=0; j < outDetailsFields.length; j++ ){
+            newMediaFormDefinition.push(outDetailsFields[j]);
+            formDefinitionDone.push(outDetailsFields[j]);
+          }
+        }
+
+        if(!formDefinitionDone.includes(cMediaFormDefinition[i])){
+          newMediaFormDefinition.push(cMediaFormDefinition[i]);
+        }
+      }
+      this.mediaFormDefinition = newMediaFormDefinition;
+    }
+
+
     this.initIdTableLocation(this.schemaDotTable);
     this.ms.getNomenclatures().subscribe(() => {
       this.initForm();
@@ -84,8 +119,8 @@ export class MediaComponent implements OnInit {
       : this.mediaFormReadyToSend()
       ? 'Veuillez valider le média en appuyant sur le bouton de validation'
       : this.media.bFile
-      ? 'Veuillez compléter le formulaire et renseigner un fichier'
-      : 'Veuillez compléter le formulaire et Renseigner une URL valide';
+      ? "Veuillez compléter le formulaire et renseigner un fichier"
+      : "Veuillez compléter le formulaire et Renseigner une URL valide";
   }
 
   /**
@@ -122,7 +157,15 @@ export class MediaComponent implements OnInit {
     // PHOTO par defaut TODO : comment le mettre dans default
     this.media.id_nomenclature_media_type =
       this.media.id_nomenclature_media_type ||
-      this.ms.getNomenclature('Photo', 'mnemonique', 'TYPE_MEDIA').id_nomenclature;
+      this.ms.getNomenclature("Photo", "mnemonique", "TYPE_MEDIA").id_nomenclature;
+
+    /* MET Ajout d'un filtre par code nomenclature */
+    if (this.default["mnemonique_nomenclature_media_type"]){
+      let nomenclatureMediaType = this.ms.getNomenclature(this.default["mnemonique_nomenclature_media_type"], "mnemonique", "TYPE_MEDIA")
+      if (nomenclatureMediaType){
+        this.media.id_nomenclature_media_type = nomenclatureMediaType.id_nomenclature;
+      }
+    }
 
     /* Fix #1078 Ajout d'un filtre par code nomenclature */
     if (this.default['mnemonique_nomenclature_media_type']){
@@ -175,7 +218,7 @@ export class MediaComponent implements OnInit {
     // => media_path et file passent à null
     const label_fr = this.ms.getNomenclature(value.id_nomenclature_media_type).label_fr;
     if (
-      ['Vidéo Dailymotion', 'Vidéo Youtube', 'Vidéo Vimeo', 'Page web'].includes(label_fr) &&
+      ["Vidéo Dailymotion", "Vidéo Youtube", "Vidéo Vimeo", "Page web"].includes(label_fr) &&
       value.bFile
     ) {
       this.setValue({
@@ -186,7 +229,7 @@ export class MediaComponent implements OnInit {
 
     // si type de media implique un fichier
     // => bFile = true et media_url = null
-    if (['Vidéo (fichier)'].includes(label_fr) && !value.bFile) {
+    if (["Vidéo (fichier)"].includes(label_fr) && !value.bFile) {
       this.mediaForm.setValue({
         bFile: true,
         media_url: null
@@ -235,13 +278,13 @@ export class MediaComponent implements OnInit {
           this.media.bLoading = false;
           this.media.sent = true;
           this.media.pendingRequest = null;
-          this.errorMsg = '';
+          this.errorMsg = "";
           this.mediaChange.emit(this.media);
         }
       },
       error => {
         this._commonService.regularToaster(
-          'error',
+          "error",
           `Erreur avec la requête : ${error && error.error}`
         );
         this.errorMsg = error.error;
@@ -253,11 +296,11 @@ export class MediaComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges) {
     for (const propName of Object.keys(changes)) {
-      if (['media', 'sizeMax'].includes(propName)) {
+      if (["media", "sizeMax"].includes(propName)) {
         this.initForm();
       }
 
-      if (propName === 'schemaDotTable') {
+      if (propName === "schemaDotTable") {
         this.initIdTableLocation(this.schemaDotTable);
       }
     }

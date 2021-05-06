@@ -4,7 +4,7 @@
    Fichier à ne pas modifier. Paramètres surcouchables dans config/config_gn_module.tml
 """
 
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, post_load
 
 
 class MapListConfig(Schema):
@@ -129,10 +129,10 @@ default_columns_export = [
     "natObjGeo",
     "nomLieu",
     "precision",
+    "additional_data"
 ]
 
-
-# Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
+# Export available format (Only csv, geojson and shapefile and 'gpkg' is possible)
 available_export_format = ["csv", "geojson", "shapefile"]
 
 list_messages = {
@@ -144,6 +144,13 @@ export_message = """
 <p> <b> Attention: </b> </br>
 Vous vous apprêtez à télécharger les données de la <b>recherche courante. </b> </p>
 """
+
+default_export_col_name_additional_data = "additional_data"
+
+default_media_fields_details = ['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile']
+
+
+
 
 
 class GnModuleSchemaConf(Schema):
@@ -162,7 +169,7 @@ class GnModuleSchemaConf(Schema):
     list_messages = fields.Dict(missing=list_messages)
     digital_proof_validator = fields.Boolean(missing=True)
     releve_map_zoom_level = fields.Integer()
-    id_taxon_list = fields.Integer(missing=100)
+    id_taxon_list = fields.Integer(missing=None)
     taxon_result_number = fields.Integer(missing=20)
     id_observers_list = fields.Integer(missing=1)
     default_maplist_columns = fields.List(fields.Dict(), missing=default_map_list_conf)
@@ -177,3 +184,6 @@ class GnModuleSchemaConf(Schema):
     ENABLE_MEDIAS = fields.Boolean(missing=True)
     ENABLE_MY_PLACES = fields.Boolean(missing=True)
     DISPLAY_VERNACULAR_NAME = fields.Boolean(missing=True)
+    export_col_name_additional_data = fields.String(missing=default_export_col_name_additional_data)
+    MEDIA_FIELDS_DETAILS = fields.List(fields.String(), missing=default_media_fields_details)
+    ADD_MEDIA_IN_EXPORT = fields.Boolean(missing=False)

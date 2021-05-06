@@ -71,9 +71,9 @@ export class OcctaxMapListComponent
     public globalSub: GlobalSubService,
     private renderer: Renderer2,
     public mediaService: MediaService,
-    private _releveFormService: OcctaxFormReleveService,
-    private _occurrenceFormService: OcctaxFormOccurrenceService,
-    private _occtaxFormService: OcctaxFormService
+    // private _releveFormService: OcctaxFormReleveService,
+    // private _occurrenceFormService: OcctaxFormOccurrenceService,
+    // private _occtaxFormService: OcctaxFormService
 
   ) { }
 
@@ -141,10 +141,10 @@ export class OcctaxMapListComponent
 
   refreshForms() {
     // when navigate to list refresh services forms
-    this._releveFormService.releveForm.reset();
-    this._releveFormService.previousReleve = null;
-    this._occurrenceFormService.form.reset();
-    this._occtaxFormService.occtaxData.next(null);
+    // this._releveFormService.releveForm.reset();
+    // this._releveFormService.previousReleve = null;
+    // this._occurrenceFormService.form.reset();
+    // this._occtaxFormService.occtaxData.next(null);
   }
 
   calcCardContentHeight() {

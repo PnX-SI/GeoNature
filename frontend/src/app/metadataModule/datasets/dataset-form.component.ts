@@ -24,6 +24,7 @@ export class DatasetFormComponent implements OnInit {
   public cor_dataset_actor_array: FormArray;
   public id_dataset: number;
   public dataset: any;
+  public taxaBibList: Array<any>;
 
   constructor(
     private _fb: FormBuilder,
@@ -64,6 +65,7 @@ export class DatasetFormComponent implements OnInit {
       id_nomenclature_source_status: [null, Validators.required],
       id_nomenclature_resource_type: [null, Validators.required],
       validable: true,
+      id_taxa_list: null,
       active: [true, Validators.required],
       modules: [new Array()]
     });
@@ -73,6 +75,7 @@ export class DatasetFormComponent implements OnInit {
     this._dfs.getAcquisitionFrameworks().subscribe(data => {
       this.acquisitionFrameworks = data.filter(af => af.opened === true);;
     });
+    this._dfs.getTaxaBibList().subscribe(d => this.taxaBibList = d);
 
     this.cor_dataset_actor_array.push(this._formService.generateCorDatasetActorForm());
   }
@@ -112,7 +115,7 @@ export class DatasetFormComponent implements OnInit {
       this._formService.checkFormValidity(element);
     });
 
-    if (this._formService.formValid) {
+    if (this._formService.formValid) {      
       const dataset = Object.assign(this.datasetForm.value, {});
       // format module
       dataset.modules = dataset.modules.map(mod => mod.id_module);

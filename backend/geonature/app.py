@@ -95,6 +95,10 @@ def create_app(with_external_mods=True, with_flask_admin=True):
 
         app.register_blueprint(routes, url_prefix="/nomenclatures")
 
+        from geonature.core.gn_commons.routes import routes
+
+        app.register_blueprint(routes, url_prefix="/gn_commons")
+
         from geonature.core.gn_permissions.routes import routes
 
         app.register_blueprint(routes, url_prefix="/permissions")
@@ -134,10 +138,6 @@ def create_app(with_external_mods=True, with_flask_admin=True):
         from geonature.core.gn_monitoring.routes import routes
 
         app.register_blueprint(routes, url_prefix="/gn_monitoring")
-
-        from geonature.core.gn_commons.routes import routes
-
-        app.register_blueprint(routes, url_prefix="/gn_commons")
 
         # Errors
         from geonature.core.errors import routes

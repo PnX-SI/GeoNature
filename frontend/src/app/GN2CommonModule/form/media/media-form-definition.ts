@@ -29,6 +29,9 @@ export const mediaFormDefinitionsDict = {
         case 'PDF': {
           return '.pdf';
         }
+        case 'Excel/CSV (fichier)': {
+          return '.xls,.csv,.xlsx';
+        }
         default:
           return '*';
       }

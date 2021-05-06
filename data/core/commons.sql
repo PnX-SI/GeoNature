@@ -495,6 +495,50 @@ COMMENT ON COLUMN t_places.id_role IS 'Clé étrangère vers la table utilisateu
 COMMENT ON COLUMN t_places.place_name IS 'Nom du lieu';
 COMMENT ON COLUMN t_places.place_geom IS 'Géométrie du lieu';
 
+CREATE TABLE gn_commons.bib_widgets (
+	id_widget serial NOT NULL,
+	widget_name varchar(50) NOT NULL
+);
+
+
+CREATE TABLE gn_commons.t_additional_fields (
+	id_field serial NOT NULL,
+	field_name varchar(255) NOT NULL,
+	field_label varchar(50) NOT NULL,
+	required bool NOT NULL DEFAULT false,
+	description text NULL,
+	id_widget int4 NOT NULL,
+	quantitative bool NULL DEFAULT false,
+	unity varchar(50) NULL,
+	additional_attributes jsonb NULL,
+	code_nomenclature_type varchar(255) NULL,
+	field_values jsonb NULL,
+  multiselect boolean NULL,
+  id_list integer,
+  key_label varchar(250),
+  key_value varchar(250),
+  api varchar(250),
+  exportable boolean default TRUE,
+  field_order integer NULL 
+);
+
+CREATE TABLE gn_commons.cor_field_object(
+ id_field integer,
+ id_object integer
+);
+
+CREATE TABLE gn_commons.cor_field_module(
+ id_field integer,
+ id_module integer
+);
+
+CREATE TABLE gn_commons.cor_field_dataset(
+ id_field integer,
+ id_dataset integer
+);
+
+
+
 ---------------
 --PRIMARY KEY--
 ---------------
@@ -520,9 +564,24 @@ ALTER TABLE ONLY t_modules
 ALTER TABLE ONLY t_mobile_apps
     ADD CONSTRAINT pk_t_moobile_apps PRIMARY KEY (id_mobile_app);
     
-/*MET 14/09/2020 Ajout de la clé primaire*/
 ALTER TABLE ONLY t_places
     ADD CONSTRAINT pk_t_places PRIMARY KEY (id_place);
+
+ALTER TABLE ONLY gn_commons.t_additional_fields
+    ADD CONSTRAINT pk_bib_widgets PRIMARY KEY (id_widget);
+    
+ALTER TABLE ONLY gn_commons.t_additional_fields
+    ADD CONSTRAINT pk_t_additional_fields PRIMARY KEY (id_field);
+
+ALTER TABLE ONLY gn_commons.cor_field_module
+    ADD CONSTRAINT pk_cor_field_module PRIMARY KEY (id_field, id_module);
+
+ALTER TABLE ONLY gn_commons.cor_field_object
+    ADD CONSTRAINT pk_cor_field_object PRIMARY KEY (id_field, id_object);
+
+ALTER TABLE ONLY gn_commons.cor_field_dataset
+    ADD CONSTRAINT pk_cor_field_dataset PRIMARY KEY (id_field, id_dataset);
+
 
 ----------------
 --FOREIGN KEYS--
@@ -546,13 +605,32 @@ ALTER TABLE ONLY t_validations
 ALTER TABLE ONLY t_history_actions
   ADD CONSTRAINT fk_t_history_actions_bib_tables_location FOREIGN KEY (id_table_location) REFERENCES bib_tables_location (id_table_location) ON UPDATE CASCADE;
 
---ALTER TABLE ONLY t_history_actions
-    --ADD CONSTRAINT fk_t_history_actions_t_roles FOREIGN KEY (id_digitiser) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
-    
-/*MET 14/09/2020 Ajout de la clé étrangère*/
 ALTER TABLE ONLY t_places
   ADD CONSTRAINT fk_t_places_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY gn_commons.cor_field_object
+  ADD CONSTRAINT fk_cor_field_obj_field FOREIGN KEY (id_field) 
+  REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_commons.cor_field_object
+  ADD CONSTRAINT fk_cor_field_object FOREIGN KEY (id_object) 
+  REFERENCES gn_permissions.t_objects(id_object) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_commons.cor_field_module
+  ADD CONSTRAINT fk_cor_field_module_field FOREIGN KEY (id_field) 
+  REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_commons.cor_field_module
+  ADD CONSTRAINT fk_cor_field_module FOREIGN KEY (id_module) 
+  REFERENCES gn_commons.t_modules(id_module) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_commons.cor_field_dataset
+  ADD CONSTRAINT fk_cor_field_dataset_field FOREIGN KEY (id_field) 
+  REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_commons.cor_field_dataset
+  ADD CONSTRAINT fk_cor_field_dataset FOREIGN KEY (id_dataset) 
+  REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
 ---------------
 --CONSTRAINTS--
 ---------------
@@ -589,6 +667,8 @@ ALTER TABLE t_mobile_apps
 
 ALTER TABLE bib_tables_location
   ADD CONSTRAINT unique_bib_tables_location_schema_name_table_name UNIQUE (schema_name, table_name);
+
+
 
 ------------
 --TRIGGERS--
@@ -684,3 +764,21 @@ ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last
 INSERT INTO gn_commons.t_parameters
 (id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value)
 VALUES(0, 'ref_sensi_version', 'Version du referentiel de sensibilité', 'Referentiel de sensibilite taxref v13 2020', '');
+
+
+INSERT INTO gn_commons.bib_widgets (widget_name) VALUES
+	 ('select'),
+	 ('checkbox'),
+	 ('nomenclature'),
+	 ('text'),
+	 ('textarea'),
+	 ('radio'),
+	 ('time'),
+	 ('medias'),
+	 ('bool_radio'),
+	 ('date'),
+	 ('multiselect'),
+	 ('number'),
+	 ('taxonomy'),
+	 ('observers'),
+	 ('html');

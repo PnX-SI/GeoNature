@@ -1,11 +1,14 @@
-import { DataFormService } from '@geonature_common/form/data-form.service';
-import { ValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpEvent, HttpParams, HttpRequest } from '@angular/common/http';
-import { Observable, of, Subject } from '@librairies/rxjs';
-import { map, filter, switchMap, tap, pairwise, retry } from 'rxjs/operators';
-import { AppConfig } from '@geonature_config/app.config';
-import { Media } from '@geonature_common/form/media/media';
+import { DataFormService } from "@geonature_common/form/data-form.service";
+import { ValidatorFn, AbstractControl, ValidationErrors } from "@angular/forms";
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpEvent, HttpParams, HttpRequest } from "@angular/common/http";
+import { Observable, of, Subject } from "@librairies/rxjs";
+import { map, filter, switchMap, tap, pairwise, retry } from "rxjs/operators";
+import { AppConfig } from "@geonature_config/app.config";
+import { Media } from "@geonature_common/form/media/media";
+import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
+
+const _NOMENCLATURES = ["TYPE_MEDIA"];
 /**
  *
  *  Ce service référence les méthodes pour la gestion des medias
@@ -23,11 +26,16 @@ import { Media } from '@geonature_common/form/media/media';
  */
 @Injectable()
 export class MediaService {
+  
   idTableLocations = [];
   nomenclatures = null;
   bInitialized = false;
 
-  constructor(private _http: HttpClient, private _dataFormService: DataFormService) {
+  constructor(
+    private _http: HttpClient, 
+    private _dataFormService: DataFormService,
+    private dateParser: NgbDateParserFormatter,
+    ) {
     // initialisation des nomenclatures
     this.getNomenclatures().subscribe(() => {
       this.bInitialized = true;
@@ -36,8 +44,8 @@ export class MediaService {
 
   metaNomenclatures() {
     const nomenclatures = {};
-    for (const nomenclature of this.nomenclatures.find(N => N.mnemonique === 'TYPE_MEDIA')[
-      'values'
+    for (const nomenclature of this.nomenclatures.find(N => N.mnemonique === "TYPE_MEDIA")[
+      "values"
     ]) {
       nomenclatures[nomenclature.id_nomenclature] = nomenclature;
     }
@@ -46,7 +54,7 @@ export class MediaService {
 
   getNomenclatures(): Observable<any> {
     if (this.nomenclatures) return of(this.nomenclatures);
-    return this._dataFormService.getNomenclatures(['TYPE_MEDIA']).pipe(
+    return this._dataFormService.getNomenclatures(_NOMENCLATURES).pipe(
       switchMap(nomenclatures => {
         this.nomenclatures = nomenclatures;
         return of(nomenclatures);
@@ -55,7 +63,7 @@ export class MediaService {
   }
 
   /** une fois que la nomenclature est chargées */
-  getNomenclature(value, fieldName = 'id_nomenclature', nomenclatureType = null) {
+  getNomenclature(value, fieldName = "id_nomenclature", nomenclatureType = null) {
     if (!value) {
       return {};
     }
@@ -75,20 +83,20 @@ export class MediaService {
     const formData = new FormData();
     const postData = media;
     for (const p in postData) {
-      if (typeof postData[p] != 'function') {
+      if (typeof postData[p] != "function") {
         formData.append(p, postData[p]);
       }
     }
 
-    formData.append('file', file);
+    formData.append("file", file);
     const params = new HttpParams();
 
     const url = `${AppConfig.API_ENDPOINT}/gn_commons/media`;
 
-    const req = new HttpRequest('POST', url, formData, {
+    const req = new HttpRequest("POST", url, formData, {
       params: params,
       reportProgress: true,
-      responseType: 'json'
+      responseType: "json"
     });
     const id_request = String(Math.random());
     return this._http.request(req);
@@ -153,28 +161,28 @@ export class MediaService {
     if (!(media instanceof Media)) {
       media = new Media(media);
     }
-    if (['Vidéo Youtube'].includes(this.typeMedia(media))) {
-      const v_href = media.href().split('/');
+    if (["Vidéo Youtube"].includes(this.typeMedia(media))) {
+      const v_href = media.href().split("/");
       const urlLastPart = v_href[v_href.length - 1];
-      const videoId = urlLastPart.includes('?')
-        ? urlLastPart.includes('v=')
+      const videoId = urlLastPart.includes("?")
+        ? urlLastPart.includes("v=")
           ? urlLastPart
-              .split('?')
-              .find(s => s.includes('v='))
-              .replace('v=', '')
-          : urlLastPart.split('?')[0]
+              .split("?")
+              .find(s => s.includes("v="))
+              .replace("v=", "")
+          : urlLastPart.split("?")[0]
         : urlLastPart;
       return `https://www.youtube.com/embed/${videoId}`;
     }
-    if (['Vidéo Dailymotion'].includes(this.typeMedia(media))) {
-      const v = media.href().split('/');
-      const videoId = v[v.length - 1].split('?')[0];
+    if (["Vidéo Dailymotion"].includes(this.typeMedia(media))) {
+      const v = media.href().split("/");
+      const videoId = v[v.length - 1].split("?")[0];
       return `https://www.dailymotion.com/embed/video/${videoId}`;
     }
 
-    if (['Vidéo Vimeo'].includes(this.typeMedia(media))) {
-      const v = media.href().split('/');
-      const videoId = v[v.length - 1].split('?')[0];
+    if (["Vidéo Vimeo"].includes(this.typeMedia(media))) {
+      const v = media.href().split("/");
+      const videoId = v[v.length - 1].split("?")[0];
       return `https://player.vimeo.com/video/${videoId}`;
     }
 
@@ -186,22 +194,22 @@ export class MediaService {
       media = new Media(media);
     }
     const typeMedia = this.typeMedia(media);
-    if (typeMedia === 'PDF') {
-      return 'picture_as_pdf';
+    if (typeMedia === "PDF") {
+      return "picture_as_pdf";
     }
     if (
-      ['Vidéo Dailymotion', 'Vidéo Youtube', 'Vidéo Vimeo', 'Vidéo (fichier)'].includes(typeMedia)
+      ["Vidéo Dailymotion", "Vidéo Youtube", "Vidéo Vimeo", "Vidéo (fichier)"].includes(typeMedia)
     ) {
-      return 'videocam';
+      return "videocam";
     }
-    if (typeMedia === 'Audio') {
-      return 'audiotrack';
+    if (typeMedia === "Audio") {
+      return "audiotrack";
     }
-    if (typeMedia === 'Photo') {
-      return 'insert_photo';
+    if (typeMedia === "Photo") {
+      return "insert_photo";
     }
-    if (typeMedia === 'Page web') {
-      return 'web';
+    if (typeMedia === "Page web") {
+      return "web";
     }
   }
 
@@ -209,13 +217,13 @@ export class MediaService {
     if (!(media instanceof Media)) {
       media = new Media(media);
     }
-    const description = media.description_fr ? ` : ${media.description_fr}` : '';
+    const description = media.description_fr ? ` : ${media.description_fr}` : "";
     const details =
       this.typeMedia(media) || media.author
         ? `(${this.getNomenclature(media.id_nomenclature_media_type).label_fr}${
-            media.author ? 'par ' + media.author : ''
+            media.author ? "par " + media.author : ""
           })`
-        : '';
+        : "";
     return `${media.title_fr} ${description} ${details}`.trim();
   }
 
@@ -236,7 +244,7 @@ export class MediaService {
   }
 
   isImg(media) {
-    return this.typeMedia(media) === 'Photo';
+    return this.typeMedia(media) === "Photo";
   }
 
   tooltip(media) {
@@ -245,11 +253,11 @@ export class MediaService {
     }
     let tooltip = `<a
     href=${media.href()}
-    title='${this.toString(media)}'
-    target='_blank'
-    style='margin: 0 2px'
+    title="${this.toString(media)}"
+    target="_blank"
+    style="margin: 0 2px"
     >`;
-    if (this.typeMedia(media) === 'Photo') {
+    if (this.typeMedia(media) === "Photo") {
       tooltip += `<img style='
       height: 50px; width: 50px; border-radius: 25px; object-fit: cover;
       '
@@ -276,7 +284,9 @@ export class MediaService {
       </div>
       `;
     }
-    tooltip += '</a>';
+    tooltip += "</a>";
     return tooltip;
   }
+
+
 }

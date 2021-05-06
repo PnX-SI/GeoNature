@@ -1,8 +1,13 @@
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.menu import MenuLink
+from flask_admin.contrib.sqla import ModelView
+
 
 from geonature.utils.env import DB
 from geonature.utils.config import config
+from geonature.core.gn_commons.models import TAdditionalFields
+from geonature.core.gn_commons.admin import BibFieldAdmin
+
 
 from pypnnomenclature.admin import (
     BibNomenclaturesTypesAdminConfig,
@@ -64,6 +69,15 @@ admin.add_view(
 admin.add_view(
     TNomenclaturesAdminConfig(
         TNomenclaturesAdmin, DB.session, name="Items de nomenclatures", category="Nomenclatures",
+    )
+)
+
+admin.add_view(
+    BibFieldAdmin(
+        TAdditionalFields, 
+        DB.session, 
+        name="Bibliothèque de champs additionnels",
+        category="Champs additionnels"
     )
 )
 
