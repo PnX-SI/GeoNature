@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, ComponentRef } from "@angular/core";
 import {
   animate,
   state,
@@ -7,7 +7,7 @@ import {
   trigger
 } from "@angular/animations";
 import { FormControl, FormGroup, FormArray, Validators } from "@angular/forms";
-import { map, filter, tap, delay } from "rxjs/operators";
+import { map, filter, tap } from "rxjs/operators";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
 import { AppConfig } from "@geonature_config/app.config";
@@ -52,9 +52,9 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required
   private advanced: string = "collapsed";
   public countingStep: number = 0;
-
-
   public displayProofFromElements: boolean = false;
+  public data : any;
+  public componentRefOccurence: ComponentRef<any>;
 
   constructor(
     public fs: OcctaxFormService,
@@ -82,18 +82,19 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
       .subscribe(
         (display: boolean) => (this.displayProofFromElements = display)
       );
-
+        
     this.initTaxrefSearch();
+    
   }
 
   ngAfterViewInit() {
     //a chaque reinitialisation du formulaire on place le focus sur la zone de saisie du taxon
+    const taxonInput: HTMLElement = document.getElementById("taxonInput");
     this.occtaxFormOccurrenceService.occurrence.subscribe(() =>
-      document.getElementById("taxonInput").focus()
+    taxonInput.focus()
     );
 
     //Pour gérer l'affichage de l'erreur required quand le focus est présent dans l'input
-    const taxonInput = document.getElementById("taxonInput");
     taxonInput.addEventListener(
       "focus",
       (event) => (this.taxonFormFocus = true)
@@ -103,6 +104,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
       (event) => (this.taxonFormFocus = false)
     );
   }
+
 
   setExistProofData(data) {
     this.occtaxFormOccurrenceService.existProof_DATA = data;
@@ -152,10 +154,10 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
           );
           if (alreadyExistingTax) {
             const message =
-              "Le taxon saisi est déjà dans la liste des taxons enregistrés. <br/>\
-               <small> Privilegiez d'ajouter plusieurs dénombrements sur le même taxon. </small> <br/> \
-               Voulez-vous continuer ? \
-               ";
+            "Le taxon saisi est déjà dans la liste des taxons enregistrés. <br/>\
+             <small> Privilegiez d'ajouter plusieurs dénombrements sur le même taxon. </small> <br/> \
+             Voulez-vous continuer ? \
+             ";
             const dialogRef = this.dialog.open(ConfirmationDialog, {
               width: "auto",
               position: { top: "5%" },
@@ -207,7 +209,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   }
 
 
-
   resetOccurrenceForm() {
     this.occtaxFormOccurrenceService.reset();
   }
@@ -216,7 +217,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     this.resetOccurrenceForm();
   }
 
-  addCounting() {
+  addCounting() {    
     this.occtaxFormOccurrenceService.addCountingForm(true); //patchwithdefaultvalue
   }
 

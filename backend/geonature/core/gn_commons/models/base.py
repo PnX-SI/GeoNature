@@ -1,14 +1,13 @@
 """
     Modèles du schéma gn_commons
 """
+import os
+
+from flask import current_app
 from sqlalchemy import ForeignKey
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
-
-import os
-
-from flask import current_app
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
@@ -86,6 +85,9 @@ class TModules(DB.Model):
         "TObjects",
         secondary= lambda:_resolve_import_cor_object_module(),
     )
+
+    def __str__(self):
+        return self.module_label.capitalize()
 
 
 @serializable
@@ -178,7 +180,10 @@ class TValidations(DB.Model):
 
     id_validation = DB.Column(DB.Integer, primary_key=True)
     uuid_attached_row = DB.Column(UUID(as_uuid=True))
-    id_nomenclature_valid_status = DB.Column(DB.Integer)
+    id_nomenclature_valid_status = DB.Column(
+        DB.Integer,
+        ForeignKey("ref_nomenclature.t_nomenclatures.id_nomenclature")
+    )
     id_validator = DB.Column(DB.Integer)
     validation_auto = DB.Column(DB.Boolean)
     validation_comment = DB.Column(DB.Unicode)
@@ -190,7 +195,9 @@ class TValidations(DB.Model):
         foreign_keys=[id_nomenclature_valid_status],
     )
     validator_role = DB.relationship(
-        User, primaryjoin=(User.id_role == id_validator), foreign_keys=[id_validator]
+        User,    
+        primaryjoin=(User.id_role == id_validator), 
+        foreign_keys=[id_validator]
     )
 
     def __init__(
@@ -263,3 +270,34 @@ class TPlaces(DB.Model):
 
     def get_geofeature(self, recursif=True):
         return self.as_geofeature("place_geom", "place_name", recursif)
+
+@serializable
+class BibWidgets(DB.Model):
+    __tablename__ = "bib_widgets"
+    __table_args__ = {"schema": "gn_commons"}
+    id_widget = DB.Column(DB.Integer, primary_key=True)
+    widget_name = DB.Column(DB.String, nullable=False)
+    def __str__(self):
+        return self.widget_name.capitalize()
+
+
+cor_field_object = DB.Table(
+    'cor_field_object',
+    DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additional_fields.id_field')),
+    DB.Column('id_object', DB.Integer, DB.ForeignKey('gn_permissions.t_objects.id_object')),
+    schema="gn_commons",
+)
+
+cor_field_module = DB.Table(
+    'cor_field_module',
+    DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additional_fields.id_field')),
+    DB.Column('id_module', DB.Integer, DB.ForeignKey('gn_commons.t_modules.id_module')),
+    schema="gn_commons",
+)
+
+cor_field_dataset = DB.Table(
+    'cor_field_dataset',
+    DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additional_fields.id_field')),
+    DB.Column('id_dataset', DB.Integer, DB.ForeignKey('gn_meta.t_datasets.id_dataset')),
+    schema="gn_commons",
+)

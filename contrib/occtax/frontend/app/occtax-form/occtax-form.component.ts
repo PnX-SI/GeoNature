@@ -2,42 +2,49 @@ import {
   Component,
   OnInit,
   HostListener,
-  Inject,
   AfterViewInit,
 } from "@angular/core";
-import { DOCUMENT } from "@angular/common";
-import { MatDialog, MatDialogConfig } from "@angular/material";
-import { ActivatedRoute, Router } from "@angular/router";
+import { MatDialog } from "@angular/material";
+import { Router, NavigationEnd } from "@angular/router";
 import { CommonService } from "@geonature_common/service/common.service"
 import { ModuleConfig } from "../module.config";
 import { OcctaxFormService } from "./occtax-form.service";
 import { MapService } from "@geonature_common/map/map.service";
-import { OcctaxFormParamDialog } from "./form-param/form-param.dialog";
 import { OcctaxFormParamService } from "./form-param/form-param.service";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { OcctaxFormReleveService } from "./releve/releve.service";
 import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
+import { OcctaxFormCountingService } from "./counting/counting.service";
+import { OcctaxFormMapService } from "./map/map.service";
+import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
+import { filter } from "rxjs/operators";
+
 
 @Component({
   selector: "pnx-occtax-form",
   templateUrl: "./occtax-form.component.html",
-  styleUrls: ["./occtax-form.component.scss"]
+  styleUrls: ["./occtax-form.component.scss"],
+  providers : [
+    OcctaxFormService,
+    OcctaxFormReleveService,
+    OcctaxFormOccurrenceService,
+    OcctaxTaxaListService,
+    OcctaxFormCountingService,
+    OcctaxFormMapService,
+  ],
 })
 export class OcctaxFormComponent implements OnInit, AfterViewInit {
   public occtaxConfig = ModuleConfig;
   public id;
   public disableCancel = false;
   releveUrl: string = null;
-  currentTab: "releve" | "taxons";
   cardHeight: number;
   cardContentHeight: any;
 
   constructor(
-    @Inject(DOCUMENT) document,
     public dialog: MatDialog,
-    private _route: ActivatedRoute,
     private _router: Router,
     public occtaxFormService: OcctaxFormService,
     private _mapService: MapService,
@@ -46,35 +53,61 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxTaxaListService: OcctaxTaxaListService,
     private _ds: OcctaxDataService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _modalService: NgbModal
   ) { }
 
-  ngOnInit() {
-    //si modification, récuperation de l'ID du relevé
-    let id = this._route.snapshot.paramMap.get("id");
-    if (id && Number.isInteger(Number(id))) {
-      this.occtaxFormService.id_releve_occtax.next(Number(id));
-    } else {
-      id = null;
-      this.occtaxFormService.id_releve_occtax.next(null);
-    }
+  ngOnInit() {          
+    this.occtaxFormService.idTaxonList = ModuleConfig.id_taxon_list;
 
-    //gestion de la route pour les occurrences
-    let urlSegments = this._router.routerState.snapshot.url.split("/");
-    if (urlSegments[urlSegments.length - 1] === "taxons") {
-      this.currentTab = <"releve" | "taxons">urlSegments.pop();
-    } else {
-      this.currentTab = "releve";
-    }
-    this.releveUrl = urlSegments.join("/");
-
-    //Vérification de la route taxons avec un ID de releve, sinon redirection
-    if (this.currentTab === "taxons" && id === null) {
-      this._router.navigate([this.releveUrl]);
-    }
+    this.setCurrentTabAndIdReleve(this._router.routerState.snapshot.url);
+    this._router.events
+    .pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event:any) => {      
+      this.setCurrentTabAndIdReleve(event.url);
+    })
+  
   }
 
+  setCurrentTabAndIdReleve(url) {
+    let urlSegments = url.split("/");
+    if (urlSegments[urlSegments.length - 1] === "taxons") {
+      const idReleve = urlSegments[urlSegments.length - 2];      
+      if (idReleve && Number.isInteger(Number(idReleve)))  {
+        this.occtaxFormService.id_releve_occtax.next(idReleve)
+      } else {        
+        // if no idReleve on taxon tab -> redirect
+        this._router.navigate(["occtax/form/releve"]);
+        this.occtaxFormService.id_releve_occtax.next(null)
+        
+      }
+      this.occtaxFormService.currentTab = <"releve" | "taxons">urlSegments.pop();
+    } else {
+      this.occtaxFormService.currentTab = "releve";
+      const idReleve = urlSegments[urlSegments.length - 1];      
+      if (idReleve && Number.isInteger(Number(idReleve)))  {        
+        this.occtaxFormService.id_releve_occtax.next(idReleve)
+      }else {        
+        this.occtaxFormService.id_releve_occtax.next(null);
+      }
+    }
+  }
+  navigate(tab) {    
+    const idReleve = this.occtaxFormService.id_releve_occtax.getValue();    
+    if(tab == "releve") {
+      if(idReleve) {
+        this._router.navigate(
+          [`occtax/form/releve/${idReleve}`]
+        )
+      }
+    } else {
+      this._router.navigate(
+        [`occtax/form/${idReleve}/taxons`]
+      )
+    }
 
+  }
 
   ngAfterViewInit() {
     setTimeout(() => this.calcCardContentHeight(), 500);
@@ -104,14 +137,11 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     }
   }
 
-  openParametersDialog(): void {
-    const dialogConfig = new MatDialogConfig();
-
-    dialogConfig.data = {};
-    dialogConfig.maxHeight = window.innerHeight - 20 + "px";
-    dialogConfig.position = { top: "30px" };
-
-    const dialogRef = this.dialog.open(OcctaxFormParamDialog, dialogConfig);
+  openParametersDialog(modalComponent): void {    
+    this._modalService.open(
+      modalComponent.modalContent,
+      {windowClass: "large-modal"}
+    )
   }
   /**
    *
@@ -130,9 +160,9 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
 
     // si le formulair est en cour d'édition
     if (
-      (this.currentTab === "releve" &&
+      (this.occtaxFormService.currentTab === "releve" &&
         this.occtaxFormReleveService.releveForm.dirty) ||
-      (this.currentTab === "taxons" &&
+      (this.occtaxFormService.currentTab === "taxons" &&
         this.occtaxFormOccurrenceService.form.dirty)
     ) {
       //si un des 2 formulaires a été modifié mais non sauvegardé
@@ -147,7 +177,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
       dialogRef.afterClosed().subscribe((result) => {
         if (result) {
           if (this.occtaxFormService.chainRecording) {
-            this.currentTab = "releve";
+            this.occtaxFormService.currentTab = "releve";
           }
           if (cancel) {
             this.deleteReleveIfNoOcc();
@@ -158,7 +188,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
       });
     } else {
       if (this.occtaxFormService.chainRecording) {
-        this.currentTab = "releve";
+        this.occtaxFormService.currentTab = "releve";
       }
       if (cancel) {
         this.deleteReleveIfNoOcc();

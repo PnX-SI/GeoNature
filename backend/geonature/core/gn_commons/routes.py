@@ -1,21 +1,24 @@
 import json
+from operator import or_
 
-from flask import Blueprint, request, current_app, redirect
+from flask import Blueprint, request, current_app
 import requests
 
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
-from geonature.core.gn_commons.models import TModules, TParameters, TMobileApps, TMedias, TPlaces
+from geonature.core.gn_commons.models import (
+    TModules, TParameters, TMobileApps, TPlaces, TAdditionalFields,
+)
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.repositories import get_table_location_id
+from geonature.core.gn_permissions.models import TObjects
 from geonature.utils.env import DB, BACKEND_DIR
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from shapely.geometry import asShape
 from geoalchemy2.shape import from_shape
 from geonature.utils.errors import (
-    GeoNatureError,
     GeonatureApiError,
 )
 
@@ -98,6 +101,47 @@ def get_one_parameter(param_name, id_org=None):
 
     data = q.all()
     return [d.as_dict() for d in data]
+
+@routes.route("/additional_fields", methods=["GET"])
+@json_resp
+def get_additional_fields():
+    params = request.args
+    q = DB.session.query(TAdditionalFields).order_by(TAdditionalFields.field_order)
+    if "id_dataset" in params:
+        if params["id_dataset"] == "null":
+            # ~ operator means NOT EXISTS
+            q = q.filter(~TAdditionalFields.datasets.any())
+        else:
+            if len(params["id_dataset"].split(",")) > 1:
+                ors = [
+                    TAdditionalFields.datasets.any(id_dataset=id_dastaset) for id_dastaset in params.split(',')
+                    ]
+                q = q.filter(or_(*ors))
+            else:
+                q = q.filter(TAdditionalFields.datasets.any(id_dataset=params["id_dataset"]))
+    if "module_code" in params:
+        if len(params["module_code"].split(",")) > 1:
+
+            ors = [
+                TAdditionalFields.modules.any(module_code=module_code) 
+                for module_code in params["module_code"].split(",")
+                ]
+
+            q = q.filter(or_(*ors))
+        else:
+            q = q.filter(TAdditionalFields.modules.any(module_code=params["module_code"]))
+
+    if "object_code" in params:
+        if len(params["object_code"].split(",")) > 1:
+            ors = [
+                TAdditionalFields.objects.any(code_object=code_object) for code_object in params["object_code"].split(",")
+                ]
+            q = q.filter(or_(*ors))
+        else:
+            q = q.filter(TAdditionalFields.objects.any(code_object=params["object_code"]))
+    print(q)
+    return [d.as_dict(True, depth=1) for d in q.all()]
+
 
 
 @routes.route("/t_mobile_apps", methods=["GET"])

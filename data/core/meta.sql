@@ -193,6 +193,7 @@ CREATE TABLE t_datasets (
     active boolean NOT NULL DEFAULT TRUE,
     validable boolean DEFAULT TRUE,
     id_digitizer integer,
+    id_taxa_list integer,
     meta_create_date timestamp without time zone NOT NULL,
     meta_update_date timestamp without time zone
 );
@@ -218,6 +219,7 @@ COMMENT ON COLUMN t_datasets.id_nomenclature_source_status IS 'Terrain, littéra
 COMMENT ON COLUMN t_datasets.id_nomenclature_resource_type IS 'jeu de données ou série de jeu de données. Dans le standard SINP cette information se situe au niveau de chaque occurrence de taxon. On considère ici qu''elle doit être homoogène pour un même jeu de données - OBLIGATOIRE';
 COMMENT ON COLUMN t_datasets.meta_create_date IS 'Correspondance standard SINP = dateCreation : Date de création de la fiche de métadonnées du jeu de données, format AAAA-MM-JJ - OBLIGATOIRE';
 COMMENT ON COLUMN t_datasets.meta_update_date IS 'Correspondance standard SINP = dateRevision : Date de révision du jeu de données ou de sa fiche de métadonnées. Il est fortement recommandé de remplir cet attribut si une révision de la fiche ou du jeu de données a été effectuées, format AAAA-MM-JJ - RECOMMANDE';
+COMMENT ON COLUMN t_datasets.meta_update_date IS 'Identifiant de la liste de taxon associé au JDD. FK: taxonomie.bib_liste';
 CREATE SEQUENCE t_datasets_id_dataset_seq
     START WITH 1
     INCREMENT BY 1

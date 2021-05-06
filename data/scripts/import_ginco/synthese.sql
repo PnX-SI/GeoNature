@@ -150,6 +150,7 @@ id_nomenclature_observation_status,
 id_nomenclature_blurring,
 id_nomenclature_source_status,
 id_nomenclature_info_geo_type,
+id_nomenclature_sensitivity,
 count_min,
 count_max,
 cd_nom,
@@ -183,6 +184,7 @@ SELECT
   t11.id_nomenclature,
   t12.id_nomenclature,
   t13.id_nomenclature,
+  t14.id_nomenclature,
   m.denombrementmin,
   m.denombrementmax,
   tax.cd_nom,
@@ -211,5 +213,7 @@ left JOIN ref_nomenclatures.t_nomenclatures t10 ON t10.cd_nomenclature = m.statu
 left JOIN ref_nomenclatures.t_nomenclatures t11 ON t11.cd_nomenclature = m.deefloutage AND t11.id_type = ref_nomenclatures.get_id_nomenclature_type('DEE_FLOU')
 left JOIN ref_nomenclatures.t_nomenclatures t12 ON t12.cd_nomenclature = m.statutsource AND t12.id_type = ref_nomenclatures.get_id_nomenclature_type('STATUT_SOURCE') 
 left JOIN ref_nomenclatures.t_nomenclatures t13 ON t13.cd_nomenclature = m.typeinfogeoen AND t13.id_type = ref_nomenclatures.get_id_nomenclature_type('TYP_INF_GEO') 
+left JOIN ref_nomenclatures.t_nomenclatures t14 ON t14.cd_nomenclature = m.sensiniveau AND t13.id_type = ref_nomenclatures.get_id_nomenclature_type('SENSIBLE') 
+
 JOIN taxonomie.taxref tax ON tax.cd_nom = m.cdnom::integer
 ;

@@ -157,6 +157,10 @@ export class DataFormService {
     });
   }
 
+  getTaxaBibList() {
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/biblistes`).map(d => d.data);
+  }
+
   async getTaxonInfoSynchrone(cd_nom: number): Promise<any> {
     const response = await this._http
       .get<Taxon>(`${AppConfig.API_TAXHUB}/taxref/${cd_nom}`)
@@ -562,6 +566,39 @@ export class DataFormService {
 
   deleteDs(ds_id) {
     return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${ds_id}`);
+  }
+
+  getadditionalFields(params?: ParamsDict) {
+    let queryString: HttpParams = new HttpParams();
+    // tslint:disable-next-line:forin
+    for (const key in params) {
+      queryString = queryString.set(key, params[key].toString());
+    }
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/additional_fields`,
+     {params: queryString}).map(additionalFields => {
+      return additionalFields.map(data => {
+        return {
+          "id_field": data.id_field,
+          "attribut_label": data.field_label,
+          "attribut_name": data.field_name,
+          "required": data.required,
+          "description": data.description,
+          "quantitative": data.quantitative,
+          "unity": data.unity,
+          "code_nomenclature_type": data.code_nomenclature_type,
+          "type_widget": data.type_widget.widget_name,
+          "multi_select": null,
+          "values": data.field_values,
+          "id_list": data.id_list,
+          "objects": data.objects,
+          "modules": data.modules,
+          "datasets": data.datasets,
+          ...data.additional_attributes
+        }
+      })
+        
+     });
+
   }
 
 }

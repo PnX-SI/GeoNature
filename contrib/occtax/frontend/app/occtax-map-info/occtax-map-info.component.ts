@@ -45,7 +45,9 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
   displayOccurrence: BehaviorSubject<any> = new BehaviorSubject(null);
   private _geojson: any;
   public userReleveCruved: any;
-
+  public releveAddFields: Array<any> = [];
+  public occurrenceAddFields: Array<any> = [];
+  public countingAddFields: Array<any> = [];
   get releve() {
     return this.occtaxData.getValue()
       ? this.occtaxData.getValue().properties
@@ -107,7 +109,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
         });
     }
 
-    this.getNomenclatures();
+    //this.getNomenclatures();
   }
 
   ngAfterViewInit() {
@@ -140,11 +142,49 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
           let releve = data.releve;
           releve.properties.date_min = new Date(releve.properties.date_min);
           releve.properties.date_max = new Date(releve.properties.date_max);
+          this.getNomenclatures();
           return releve;
         })
       )
       .subscribe(
-        (data) => this.occtaxData.next(data),
+        (data) => {
+          this.occtaxData.next(data);
+            this.dataFormS.getadditionalFields({
+              'id_dataset': data.properties.id_dataset,
+              'module_code': ['OCCTAX'],
+            }).subscribe(additionalFields => {
+              additionalFields.forEach(field => {
+                const map = {
+                  "OCCTAX_RELEVE": this.releveAddFields,
+                  "OCCTAX_OCCURENCE": this.occurrenceAddFields,
+                  "OCCTAX_DENOMBREMENT": this.countingAddFields,
+                }
+                field.objects.forEach(object => {
+                  if (object.code_object in map) {
+                    map[object.code_object].push(field);
+                  }
+                });
+
+              });
+            })
+            this.dataFormS.getadditionalFields({
+              'id_dataset': "null",
+              'module_code': ['OCCTAX'],
+            }).subscribe(additionalFields => {
+              additionalFields.forEach(field => {
+                const map = {
+                  "OCCTAX_RELEVE": this.releveAddFields,
+                  "OCCTAX_OCCURENCE": this.occurrenceAddFields,
+                  "OCCTAX_DENOMBREMENT": this.countingAddFields,
+                }
+                field.objects.forEach(object => {
+                  if (object.code_object in map) {
+                    map[object.code_object].push(field);
+                  }
+                });
+              });
+            })
+        },
         (error) => {
           this._commonService.translateToaster("error", "Releve.DoesNotExist");
           this._router.navigate(["occtax"]);
@@ -196,5 +236,9 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
         }
       }
     );
+  }
+  //TODO rendre global, additional fields
+  sortingFunction = (a, b) => {
+    return a.key > b.key ? -1 : 1;
   }
 }

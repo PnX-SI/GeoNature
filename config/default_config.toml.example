@@ -172,6 +172,11 @@ MAIL_ON_ERROR = false
     #Affiche les emails des observateurs dans les modules Synthese et Validation
     DISPLAY_EMAIL_INFO_OBS = true
 
+    # Ajoute du contenu à l'email validation / synthèse
+
+    #Information de l'observation à mettre dans l'email 
+    DISPLAY_EMAIL_DISPLAY_INFO = ["NOM_VERN", "DATE", "COMMUNES", "MEDIAS"]
+
 # Configuration de l'affichage des cartes dans GeoNature
 [MAPCONFIG]
 

@@ -38,6 +38,22 @@
                   >
                   <mat-icon>edit</mat-icon>
                 </button>
+                <!-- <a 
+                  *ngIf="userReleveCruved?.U != false"
+                  [routerLink]="['/occtax/form', id]"
+                  matTooltip="Editez le relevé {{id}}" 
+                  class="btn btn-success button-rounded float-right">
+                  <i class="fa fa-pencil-square-o fa-lg" aria-hidden="true"></i>
+                </a>
+      
+                <button 
+                  matTooltip="Supprimer le relevé {{ id }}" 
+                  type="button" 
+                  (click)="openModalDelete(modalDelete)" 
+                  class="btn btn-danger button-rounded float-right"
+                  [disabled]="userReleveCruved?.D == false">
+                  <i class="fa fa-trash-o  fa-lg" aria-hidden="true"></i>
+                </button> -->
               </ng-container>
             </mat-card-title>
 
@@ -122,20 +138,30 @@
             </div> 
 
             
+
+            <!--Champs additionnels-->
+            <ng-container *ngFor="let dynamiqueField of releveAddFields ">
+              <div>
+                <div class="label"> {{dynamiqueField.attribut_label}} : </div>
+                <div class="value"> 
+                  {{releve?.additional_fields[dynamiqueField.attribut_name]}}
+                </div>
+              </div>
+            </ng-container>
   
             <p id="info-geo">
               <pnx-areas-intersected-modal 
                 [geojson]="geojson">
               </pnx-areas-intersected-modal>
             </p>
-
+  
             <label> {{ 'Taxon.ObservedTaxon' | translate }} </label>
             <div class="row ">
               <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
-                  <table class="table table-hover">
+                  <table class="table table-hover ">
                     <tr 
                       *ngFor="let occ of occurrences; let i = index"
-                      [ngClass]="{'table-success': occ.id_occurrence_occtax == (displayOccurrence |async)?.id_occurrence_occtax}" 
+                      [ngClass]="{'table-success': i == selectedIndex}" 
                       (click)="displayOccurrence.next(occ)">
                       <td class="selected-taxon">{{(occ.taxref?.nom_vern!==null) ? occ.taxref?.nom_vern+' - ' : ''}}{{occ.taxref?.nom_complet}}</td>
                       <td>
@@ -210,19 +236,19 @@
                     <div class="label"> {{ 'Taxon.Comment' | translate }} : </div>
                     <div class="value"> {{(displayOccurrence|async).comment || ""}} </div>
                   </div>
+    
+                  <!--Champs additionnels-->
+                  <ng-container *ngFor="let dynamiqueField of occurrenceAddFields ">
+                    <div>
+                      <div class="label"> {{dynamiqueField.attribut_label}} : </div>
+                      <div> 
+                        {{(displayOccurrence|async)?.additional_fields[dynamiqueField.attribut_name]}}
+                      </div>
+                    </div>
+                  </ng-container>
   
-
                 </mat-tab>
-                <mat-tab> 
-                  <ng-template mat-tab-label>
-                    <span 
-                      [matBadge]="((displayOccurrence|async).cor_counting_occtax || []).length" 
-                      matBadgeOverlap="false">
-                      Dénombrement(s)
-                    </span>
-            
-                  </ng-template>
-
+                <mat-tab label="Dénombrement"> 
                   <div *ngFor="let counting of (displayOccurrence|async).cor_counting_occtax; let index = index">  
                     <div *ngIf="occtaxConfig.form_fields.life_stage">
                       <div class="label"> {{ 'Counting.LifeStage' | translate }} : </div>
@@ -263,6 +289,16 @@
                       <div class="label"> UUID SINP : </div>
                       <div class="value"> {{counting?.unique_id_sinp_occtax}} </div>
                     </div>
+    
+                    <!--Champs additionnels-->
+                    <ng-container *ngFor="let dynamiqueField of countingAddFields">
+                      <div >
+                        <div class="label"> {{dynamiqueField.attribut_label}} : </div>
+                        <div class="value"> 
+                          {{counting?.additional_fields[dynamiqueField.attribut_name]}}
+                        </div>
+                      </div>
+                    </ng-container>
 
                     <ng-container *ngFor="let media of counting.medias; index as i">
                       <div>

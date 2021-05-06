@@ -15,7 +15,7 @@
       {{formDefComp.attribut_label}}
     </small>
     <mat-icon
-      *ngIf="formDefComp.definition"
+      *ngIf="formDefComp.definition && !formDefComp.link_definition"
       [matTooltip]="formDefComp.definition"
       matTooltipClass="form-tooltip"
       class="small-icon"
@@ -23,8 +23,12 @@
     >
       help
     </mat-icon>
+  
+    <!-- Ajout d'un bouton lien externe -->
+    <a *ngIf="formDefComp.link_definition && formDefComp.definition" target="_blank" class="link-media" [href]="formDefComp.link_definition"
+      ><mat-icon [matTooltip]="formDefComp.definition" matTooltipClass="form-tooltip">info</mat-icon>
+    </a>
   </div>
-
   <div [ngSwitch]="formDefComp.type_widget">
 
     <input
@@ -271,6 +275,7 @@
       [label]="formDefComp.attribut_label"
       [parentFormControl]="form.get(formDefComp.attribut_name)"
       [idMenu]="formDefComp.id_menu"
+      [idList]="formDefComp.id_list"
       [codeList]="formDefComp.code_list"
     >
     </pnx-observers>
@@ -299,7 +304,6 @@
       [searchBar]="false"
     >
     </pnx-multiselect>
-
     <pnx-datalist
       *ngSwitchCase="'datalist'"
       [parentFormControl]="form.get(formDefComp.attribut_name)"
