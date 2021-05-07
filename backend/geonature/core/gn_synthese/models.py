@@ -87,7 +87,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
 class Synthese(DB.Model):
     __tablename__ = "synthese"
     __table_args__ = {"schema": "gn_synthese"}
-    id_synthese = DB.Column(DB.Integer, primary_key=True)
+    id_synthese = DB.Column(DB.Integer, primary_key=True, nullable=False)
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
     id_source = DB.Column(DB.Integer, ForeignKey(TSources.id_source))
@@ -121,7 +121,7 @@ class Synthese(DB.Model):
     count_max = DB.Column(DB.Integer)
     cd_nom = DB.Column(DB.Integer)
     cd_hab = DB.Column(DB.Integer)
-    nom_cite = DB.Column(DB.Unicode(length=1000))
+    nom_cite = DB.Column(DB.Unicode(length=1000), nullable=False)
     meta_v_taxref = DB.Column(DB.Unicode(length=50))
     sample_number_proof = DB.Column(DB.UnicodeText)
     digital_proof = DB.Column(DB.UnicodeText)
@@ -136,8 +136,8 @@ class Synthese(DB.Model):
     the_geom_local = DB.Column(Geometry("GEOMETRY", config["LOCAL_SRID"]))
     precision = DB.Column(DB.Integer)
     id_area_attachment = DB.Column(DB.Integer)
-    date_min = DB.Column(DB.DateTime)
-    date_max = DB.Column(DB.DateTime)
+    date_min = DB.Column(DB.DateTime, nullable=False)
+    date_max = DB.Column(DB.DateTime, nullable=False)
     validator = DB.Column(DB.Unicode(length=1000))
     validation_comment = DB.Column(DB.Unicode)
     observers = DB.Column(DB.Unicode(length=1000))
