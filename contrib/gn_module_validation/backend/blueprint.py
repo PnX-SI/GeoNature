@@ -3,7 +3,7 @@ import logging
 import datetime
 import json
 from operator import itemgetter
-from sqlalchemy import select
+from sqlalchemy import select, func
 from flask import Blueprint, request
 from geojson import FeatureCollection
 
@@ -82,6 +82,23 @@ def get_synthese_data(info_role):
             )
         except AttributeError as error:
             log.warning("Validation : colonne {} inexistante".format(c))
+
+    for key, val in blueprint.config["COLUMNS_API_FUNCTIONS"].items():
+        try:
+            col = getattr(VSyntheseValidation, val["id_col"])
+        except AttributeError as error:
+            log.warning("Validation : colonne {} inexistante".format(col))
+        else:
+
+            if val["func"] == "cd_nomenclature":
+                select_columns.append(
+                    func.ref_nomenclatures.get_cd_nomenclature(col).label(key)
+                )
+            else:
+                select_columns.append(
+                    func.ref_nomenclatures.get_nomenclature_label(col).label(key)
+                )
+            serializer[key] = lambda x: x
 
     # Construction de la requête avec SyntheseQuery
     #   Pour profiter des opérations CRUVED

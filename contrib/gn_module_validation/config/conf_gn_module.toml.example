@@ -1,0 +1,51 @@
+
+# Exemple de configuration des colonnes retournées au frontend
+COLUMNS_API_VALIDATION_WEB_APP = [
+    "observers",
+    "count_min",
+    "date_min",
+    "comment_description"
+]
+
+
+# Exemple affichage colonne de nomenclature affichée avec son label
+[COLUMNS_API_FUNCTIONS.label_stade_vie]
+func = "get_nomenclature_label"
+id_col = "id_nomenclature_life_stage"
+
+
+# Exemple de configuration de l'affichage du tableau
+[[LIST_COLUMNS_FRONTEND]]
+prop = "id_nomenclature_valid_status"
+name = ""
+max_width = 40
+
+
+[[LIST_COLUMNS_FRONTEND]]
+prop = "nom_vern_or_lb_nom"
+name = "Taxon"
+min_width = 250
+
+
+[[LIST_COLUMNS_FRONTEND]]
+prop = "date_min"
+name = "Date obs."
+min_width = 100
+
+
+[[LIST_COLUMNS_FRONTEND]]
+prop = "count_min"
+name = "Nb min"
+min_width = 50
+
+
+[[LIST_COLUMNS_FRONTEND]]
+prop = "label_stade_vie"
+name = "Stade vie"
+min_width = 50
+
+# Exemple de configuration des mail
+MAIL_BODY = """La donnée en date du ${ d.date_min } relative au taxon ${ d.nom_vern } - ${ d.nom_valide } pose question.\n\r
+Merci de contacter la personne en charge de la validation. \n\rCommunes : ${ d.communes }\n\rMédias : ${ d.medias }
+"""
+MAIL_SUBJECT = "[GeoNature Validation] Donnée du ${ d.date_min } - ${ d.nom_vern } - ${ d.nom_valide }"
