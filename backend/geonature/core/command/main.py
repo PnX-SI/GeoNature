@@ -63,8 +63,6 @@ def dev_back(host, port):
     if not environ.get('FLASK_ENV'):
         environ['FLASK_ENV'] = 'development'
 
-
-
     app = create_app()
     app.run(
         host=host,

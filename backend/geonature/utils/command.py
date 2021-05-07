@@ -30,7 +30,6 @@ from geonature.utils.config_schema import GnGeneralSchemaConf
 
 from geonature.utils.module import list_frontend_enabled_modules
 from geonature.utils.config import config_frontend, config
-from geonature.utils.assets import extra_files
 
 from geonature import create_app
 

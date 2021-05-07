@@ -69,13 +69,13 @@ export class HomeContentComponent implements OnInit {
   }
 
   loadCustomComponents() {
-    this._httpClient.get('custom/introduction.component.html', {
+    this._httpClient.get(this.appConfig.API_ENDPOINT + '/static/custom/components/introduction.component.html', {
       responseType: 'text'
     }).subscribe(html => {
       this.introductionComponent = html;
     });
 
-    this._httpClient.get('custom/footer.component.html', {
+    this._httpClient.get(this.appConfig.API_ENDPOINT + '/static/custom/components/footer.component.html', {
       responseType: 'text'
     }).subscribe(html => {
       this.footerComponent = html;

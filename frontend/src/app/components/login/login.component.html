@@ -1,4 +1,7 @@
-<div id="login-body">
+<div
+  id="login-body"
+  [ngStyle]="{'background': 'url(' + appConfig['API_ENDPOINT'] + '/static/custom/login_background.jpg)'}"
+>
   <div
     *ngIf="!casLogin"
     class="container"

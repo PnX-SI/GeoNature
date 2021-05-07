@@ -98,16 +98,10 @@ function process_module_index() {
     for module in $(ls ${module_search}); do
         module_dir=${module%%app/gnModule.module.ts}
         module_code_=$(get_module_code $module_dir)
-        module_import_cut="${module_search%\**}"
-        module_import="${module#*${module_import_cut}}"
         if [ -z "$module_code_" ]; then
             continue
         fi
         module_code_lower_=$(echo $module_code_ | tr '[:upper:]' '[:lower:]')
-        echo $module_code_lower_
-        echo "ln -nsf $module_dir $FLASKDIR/frontend/src/external_modules/$module_code_lower_"
-
-        # ln -nsf $module_dir $FLASKDIR/frontend/src/external_modules/$module_code_lower_
 
         # imports="${imports}import { GeonatureModule as ${module_code_} } from '${path}${module_code_lower_}/app/gnModule.module';
         imports="${imports}import { GeonatureModule as ${module_code_} } from '${module%%.ts}';
@@ -119,7 +113,6 @@ function process_module_index() {
 export const externalModules = {$modules
 };
 " > $index_ts
-    cat $index_ts
 }
 
 # DESC : Récupère le code du module

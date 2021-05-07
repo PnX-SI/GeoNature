@@ -153,8 +153,8 @@ fi
 echo "Installation du backend geonature..."
 pip install --editable "${BASE_DIR}"  # geonature ne support pas encore autre chose que editable
 
-echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
-geonature manage_frontend_assets
+# echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
+# geonature manage_frontend_assets
 
 echo "Création du fichier de log des erreurs GeoNature"
 # Cela évite sa création par Supervisor avec des droits root
@@ -188,7 +188,7 @@ sudo -s supervisorctl reload
 # Lien symbolique vers le dossier static du backend (pour le backoffice)
 ln -sf "${BASE_DIR}/frontend/node_modules" "${BASE_DIR}/backend/static"
 
-ln -snf "${BASE_DIR}/config/custom" "${BASE_DIR}/frontend/src/custom"
+ln -snf "${BASE_DIR}/config/custom" "${BASE_DIR}/backend/static/custom"
 
 cd "${BASE_DIR}/frontend"
 
@@ -211,16 +211,14 @@ done
 cd "${BASE_DIR}"
 
 # Installation du module Occtax et OccHab
-geonature install_gn_module "${BASE_DIR}/contrib/occtax" /occtax --build=false
+install/install_gn_module -d "${BASE_DIR}/contrib/occtax" --app-only --no-build
 
-if [ "$install_module_occhab" = true ];
-  then
-  geonature install_gn_module "${BASE_DIR}/contrib/gn_module_occhab" /occhab --build=false
+if [ "$install_module_occhab" = true ]; then
+  install/install_gn_module -d "${BASE_DIR}/contrib/gn_module_occhab" --app-only --no-build
 fi
 
-if [ "$install_module_validation" = true ];
-  then
-    geonature install_gn_module "${BASE_DIR}/contrib/gn_module_validation" /validation --build=false
+if [ "$install_module_validation" = true ]; then
+    install/install_gn_module -d "${BASE_DIR}/contrib/gn_module_validation" --app-only --no-build
 fi
 
 echo "Désactiver le virtual env"
@@ -234,11 +232,13 @@ nvm use
 
 echo " ############"
 echo "Installation des paquets Npm"
+# avant modules ????
 npm ci --only=prod
 
 
 if [[ $MODE != "dev" ]]
 then
+  # ?? sass
   echo "Build du frontend..."
   cd "${BASE_DIR}/frontend"
   npm run build

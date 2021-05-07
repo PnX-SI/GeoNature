@@ -2,12 +2,13 @@
 settings.ini
 config/geonature_config.toml
 config/*.toml
+config/**/*.toml
 config/modules/*
 !config/modules/.gitkeep
-config/custom/*.html
-config/custom/*.css
-config/custom/*.jpg
-config/custom/*.png
+config/**/*.html
+config/**/*.css
+config/**/*.jpg
+config/**/*.png
 
 
 **/conf_gn_module.toml
@@ -20,13 +21,13 @@ external_assets/
 external_modules/*
 tmp/
 var/
-data/migrations/v1tov2/old/v1_compat.ini
+data/migrations/v1tov2/old/vgit 1_compat.ini
 data/migrations/v1tov2/old/v1_compat.log
 data/migrations/v1tov2/migratetoV2.ini
 
 config.py
 backend/static/medias/*
-backend/static/customs/*
+backend/static/custom
 
 backend/static/shapefiles/*
 backend/static/geopackages/*
