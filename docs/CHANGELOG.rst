@@ -123,6 +123,8 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 * Métadonnées : Ajout d'un spinner lors du chargement de la liste des métadonnées et parallélisation du calcul du nombre de données par JDD (#1231)
 * Synthèse : Possibilité d'ouvrir le module avec un JDD préselectionné (``<URL_GeoNature>/#/synthese?id_dataset=2``) et ajout d'un lien direct depuis le module Métadonnées (#889)
 * Synthèse : ajout de web service pour le calcul du nombre d'observations par un paramètre donné (JDD, module, observateur), et du calcul de la bounding-box par jeu de données
+* Synthese : ajout d'un filtre avancé ``Possède médias``
+* Exports au format SHP remplacés par défaut par le format GeoPackage (GPKG) plus simple, plus léger, plus performant et unique. Les exports SHP restent activables dans la configuration des modules (#898)
 * Occtax : ajout du paramètre ``DISPLAY_VERNACULAR_NAME`` qui contrôle l'affichage du nom vernaculaire vs nom complet sur les interfaces (Defaut = true: afffiche le nom vernaculaire)
 * Validation : Préremplir l'email à l'observateur avec des informations paramétrables sur l'occurrence (date, nom du taxon, commune, médias) (#981)
 * Validation : Possibilité de paramètrer les colonnes affichées dans la liste des observations (#980)
@@ -159,6 +161,15 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 
 **⚠️ Notes de version**
 
+<<<<<<< HEAD
+* https://github.com/PnX-SI/GeoNature/blob/develop/data/migrations/2.5.5to2.6.0.sql
+- Nomenclatures Sensibilité à renommer ???
+* Calcul de la sensibilité des données existantes dans la Synthèse (ainsi que de leur niveau de diffusion si celui-ci n'a pas été renseigné par ailleurs) : data/migrations/2.5.5to2.6.0-update-sensitivity.sql
+* Si vous aviez fait des customisations (logo, PDF export...) alors XXXXXX
+* Si des vues utilisent la colonne ``gn_synthese.synthese.refence_biblio`` (module d'export) celles-ci doivent être supprimées (DROP) et recrées
+* Revoir http://docs.geonature.fr/admin-manual.html#integrer-son-logo ?
+>>>>>>> develop
+=======
 Si vous mettez à jour GeoNature :
 
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
@@ -170,6 +181,7 @@ Si vous mettez à jour GeoNature :
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * Si vous utilisez Occtax-mobile, vous pouvez modifier la valeur du nouveau paramètre ``gn_commons.t_parameters.occtaxmobile_area_type`` pour lui indiquer le code du type de zonage que vous utilisez pour les unités géographiques (mailles de 5km par défaut)
 * Si vous disposez du module d'import, vous devez le mettre à jour en version 1.1.1
+>>>>>>> develop
 
 2.5.5 (2020-11-19)
 ------------------
