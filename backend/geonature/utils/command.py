@@ -53,7 +53,7 @@ def build_geonature_front(rebuild_sass=False):
     subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
 
 
-def frontend_routes_templating(module_code, module_path, app=None):
+def frontend_routes_templating(app=None):
     if not app:
         app = create_app(with_external_mods=False)
 
@@ -68,13 +68,13 @@ def frontend_routes_templating(module_code, module_path, app=None):
         ) as input_file:
             template = Template(input_file.read())
             routes = []
-            for module_config in list_frontend_enabled_modules():
-                module_dir = Path(GN_EXTERNAL_MODULE / module_code.lower())
+            for module_object in list_frontend_enabled_modules():
+                module_dir = Path(GN_EXTERNAL_MODULE / module_object.module_code.lower())
                 # test if module have frontend
                 if (module_dir / "frontend").is_dir():
-                    path = module_path.lstrip("/")
+                    path = module_object.module_path.lstrip("/")
                     location = "{}/{}#GeonatureModule".format(module_dir, GN_MODULE_FE_FILE)
-                    routes.append({"path": path, "location": location, "module_code": module_code})
+                    routes.append({"path": path, "location": location, "module_code": module_object.module_code})
 
                 # TODO test if two modules with the same name is okay for Angular
 

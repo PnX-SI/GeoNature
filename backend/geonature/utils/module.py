@@ -118,4 +118,4 @@ def list_frontend_enabled_modules():
         # ignore internal module (i.e. without symlink in external module directory)
         if not Path(GN_EXTERNAL_MODULE / module_object.module_code.lower()).exists():
             continue
-        yield module_object.module_code
+        yield module_object
