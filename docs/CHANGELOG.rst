@@ -161,15 +161,6 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 
 **⚠️ Notes de version**
 
-<<<<<<< HEAD
-* https://github.com/PnX-SI/GeoNature/blob/develop/data/migrations/2.5.5to2.6.0.sql
-- Nomenclatures Sensibilité à renommer ???
-* Calcul de la sensibilité des données existantes dans la Synthèse (ainsi que de leur niveau de diffusion si celui-ci n'a pas été renseigné par ailleurs) : data/migrations/2.5.5to2.6.0-update-sensitivity.sql
-* Si vous aviez fait des customisations (logo, PDF export...) alors XXXXXX
-* Si des vues utilisent la colonne ``gn_synthese.synthese.refence_biblio`` (module d'export) celles-ci doivent être supprimées (DROP) et recrées
-* Revoir http://docs.geonature.fr/admin-manual.html#integrer-son-logo ?
->>>>>>> develop
-=======
 Si vous mettez à jour GeoNature :
 
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
