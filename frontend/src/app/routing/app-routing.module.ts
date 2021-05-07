@@ -24,7 +24,7 @@ import { MetadataModule } from '@geonature/metadataModule/metadata.module';
 import { SyntheseModule } from '@geonature/syntheseModule/synthese.module';
 import { AdminModule } from '@geonature/adminModule/admin.module';
 
-import { externalModules } from './external_modules';
+import { externalModules } from './external-modules';
 
 const getDynamicRoutes = (configService: ConfigService) => {
   const appConfig = configService.getSettings();

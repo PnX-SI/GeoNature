@@ -26,6 +26,8 @@ data/migrations/v1tov2/migratetoV2.ini
 
 config.py
 backend/static/medias/*
+backend/static/customs/*
+
 backend/static/shapefiles/*
 backend/static/geopackages/*
 backend/static/node_modules

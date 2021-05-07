@@ -68,6 +68,13 @@ def _resolve_import_cor_object_module():
 class TModules(DB.Model):
     __tablename__ = "t_modules"
     __table_args__ = {"schema": "gn_commons"}
+
+    type = DB.Column(DB.Unicode)
+    __mapper_args__=  {
+        "with_polymorphic": "*",
+        'polymorphic_on':type
+    }
+
     id_module = DB.Column(DB.Integer, primary_key=True)
     module_code = DB.Column(DB.Unicode)
     module_label = DB.Column(DB.Unicode)
@@ -85,6 +92,7 @@ class TModules(DB.Model):
     objects = DB.relationship(
         "TObjects",
         secondary= lambda:_resolve_import_cor_object_module(),
+        backref='modules'
     )
 
 

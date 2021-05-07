@@ -85,14 +85,32 @@ function process_module_index() {
     echo "---- Routing external_modules.ts"
     import=""
     modules=""
-    index_ts=$FLASKDIR/frontend/src/app/routing/external_modules.ts
-    for module in $(ls $FLASKDIR/frontend/node_modules/ | grep gn_module_); do
-        module_code_=$(get_module_code $FLASKDIR/frontend/node_modules/$module)
+    index_ts=${FLASKDIR}/frontend/src/app/routing/external-modules.ts
+
+    module_search=${FLASKDIR}/frontend/node_modules/*/app/gnModule.module.ts
+    module_search=${FLASKDIR}/external_modules/*/frontend/app/gnModule.module.ts
+
+    path=''
+    path="@external_modules/"
+
+    mkdir -p  $FLASKDIR/frontend/src/external-modules
+
+    for module in $(ls ${module_search}); do
+        module_dir=${module%%app/gnModule.module.ts}
+        module_code_=$(get_module_code $module_dir)
+        module_import_cut="${module_search%\**}"
+        module_import="${module#*${module_import_cut}}"
         if [ -z "$module_code_" ]; then
             continue
         fi
         module_code_lower_=$(echo $module_code_ | tr '[:upper:]' '[:lower:]')
-        imports="${imports}import { GeonatureModule as ${module_code_} } from '@librairies/${module}/app/gnModule.module';
+        echo $module_code_lower_
+        echo "ln -nsf $module_dir $FLASKDIR/frontend/src/external_modules/$module_code_lower_"
+
+        # ln -nsf $module_dir $FLASKDIR/frontend/src/external_modules/$module_code_lower_
+
+        # imports="${imports}import { GeonatureModule as ${module_code_} } from '${path}${module_code_lower_}/app/gnModule.module';
+        imports="${imports}import { GeonatureModule as ${module_code_} } from '${module%%.ts}';
 "
         modules="${modules}
     ${module_code_},"   
@@ -101,6 +119,7 @@ function process_module_index() {
 export const externalModules = {$modules
 };
 " > $index_ts
+    cat $index_ts
 }
 
 # DESC : Récupère le code du module
@@ -160,7 +179,7 @@ fi
 
 module_code_lower=$(echo $module_code | tr '[:upper:]' '[:lower:]')
 
-log_file=$FLASKDIR/var/log/install_gn_module_$module_code_lower.log
+log_file=${FLASKDIR}/var/log/install_gn_module_$module_code_lower.log
 
 if [ -z "$module_path" ]; then 
     module_path=$module_code_lower
@@ -201,7 +220,7 @@ if [ -z "$bdd_only" ]; then
     # install_app.sh
     if [ -f $module_directory/install_app.sh ]; then
         echo "--- install_app.sh"
-        $module_directory/install_app.sh $FLASKDIR
+        $module_directory/install_app.sh ${FLASKDIR}
     fi
 
     # - frontend
@@ -216,16 +235,16 @@ if [ -z "$bdd_only" ]; then
         cd ${FLASKDIR}/frontend
         echo "--- Frontend"
         echo "---- npm install"
-        # npm install --no-save $module_directory/frontend &> $log_file
+        npm install --no-save $module_directory/frontend &> $log_file
         cd $cur
     fi 
 
-    # -- external_modules.ts
+    # -- external-modules.ts
     process_module_index
 
     echo "--- Config ${module_code_lower}_config.toml" 
     # - creation fichier de config
-    config_file=$FLASKDIR/config/modules/${module_code_lower}_config.toml
+    config_file=${FLASKDIR}/config/modules/${module_code_lower}_config.toml
     touch $config_file
 
     echo "-- APP ok"
@@ -236,17 +255,17 @@ fi
 if [ -z "$app_only" ]; then
     echo "-- BDD"
 
-    install_db_file=$FLASKDIR/external_modules/$module_code_lower/install_db.sh
+    install_db_file=${FLASKDIR}/external_modules/$module_code_lower/install_db.sh
 
     if [ -f $module_directory/setup.py ]; then
         echo "--- alembic"
-        source $FLASKDIR/backend/venv/bin/activate
+        source ${FLASKDIR}/backend/venv/bin/activate
         export FLASK_APP=geonature.app;
-        flask db upgrade gn_module_${module_code_lower}@head -d $FLASKDIR/backend/geonature/migrations
+        flask db upgrade gn_module_${module_code_lower}@head -d ${FLASKDIR}/backend/geonature/migrations
         deactivate
     else 
         echo "--- register module"
-        . $FLASKDIR/config/settings.ini
+        . ${FLASKDIR}/config/settings.ini
         export PGPASSWORD=$user_pg_pass;
         psql -h $db_host -U $user_pg -d $db_name -c "
         INSERT INTO gn_commons.t_modules(
@@ -264,7 +283,7 @@ if [ -z "$app_only" ]; then
         " &> $log_file
         if [ -f ${install_db_file} ]; then
             echo "--- install_db.sh"
-            ${install_db_file} $FLASKDIR $>$log_file
+            ${install_db_file} ${FLASKDIR} $>$log_file
         fi
     fi
     echo "-- BDD ok"
