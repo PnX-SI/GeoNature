@@ -5,8 +5,6 @@ CHANGELOG
 2.7.0 (unreleased)
 ------------------
 
-TOCHECK :
-
 - Voir https://github.com/PnX-SI/GeoNature/compare/develop
 - Tester l'outil Occtax de conservation d'info d'un taxon à l'autre
 - Rétrocompatibilité des évolutions ? Bien tester installation des différents modules
@@ -14,30 +12,63 @@ TOCHECK :
 - Bien vérifier notes de versions liées à des changements à appliquer suite aux évolutions techniques
 - Mettre à jour template de module ?
 - Bien tester les emails de validation pré-remplis
+- Bouger doc Admin champs additionnels de Doc utilisateurs à Doc administrateur (section Occtax)
+- Fusionner 3 SQL d'update et renommer en 2.6.2to2.7.0.sql
+- Monitoring : Problème d'héritage des objets >> Ajouter un champs dans t_modules, sinon Monitoring ne fonctionnera pas avec le nouveau GN...
+- Export des additional_data dans la Synthese ???
 
 **🚀 Nouveautés**
 
-* Occtax: possibilité d'ajouter des champs additionels par JDD ou globaux au module
-* Admin: création d'un backoffice d'administration des champs additionels
-* Occtax: possibilité de désactiver la recherche de taxon par liste (#1315)
-* Occtax/Metadonnées: possibilité d'associer une liste de taxon à un JDD. (implémenté uniquement dans Occtax)
-* Occtax: par défaut la recherche de taxon n'interroge pas une liste mais tout Taxref (retrocompatibilité cassé, voir note de version)
-* Occtax: possibilité d'ajouter les médias aux exports (paramètre `ADD_MEDIA_IN_EXPORT`)
+* Occtax : possibilité d'ajouter des champs additionels par JDD ou globaux au module (#1007)
+* Occtax : Ajout des champs additionnels dans les exports (#1114)
+* Admin : création d'un backoffice d'administration des champs additionels (#1007)
+* Admin : création d'une documentation d'administration des champs additionnels (#1007)
+* Occtax : possibilité de désactiver la recherche de taxon par liste (#1315)
+* Occtax : par défaut la recherche de taxon n'interroge pas une liste mais tout Taxref, si aucune liste de taxons n'a été spécifiée dans la configuration du module Occtax (voir notes de version) (#1315)
+* Occtax/Metadonnées : possibilité d'associer une liste de taxons à un JDD (implémenté uniquement dans Occtax) (#1315)
+* Occtax : possibilité d'ajouter les infos sur les médias dans les exports (paramètre ``ADD_MEDIA_IN_EXPORT``) (#1326)
+* Occtax : Ajout du paramètre ``MEDIA_FIELDS_DETAILS`` permettant de définir les champs des médias affichés par défaut
+* Métadonnées : Ordonnancement des JDD par leur nom
+* DynamicForm : enrichissement des formulaires dynamiques pour les médias, l'ajout de liens externes
+* Ajout d'une contrainte d'unicité de la combinaison des champs ``id_type`` et ``area_code`` dans ``ref_geo.l_areas`` (#1270)
+* Ajout d'une contrainte d'unicité du champs ``type_code`` de la table ``ref_geo.bib_areas_types``
+* Mise à jour des versions de nombreuses dépendances
+* Support du gestionnaire d'erreurs Sentry
 
 **🐛 Corrections**
 
 * Occtax : correction d'un bug sur le champs observateur lors de la modification d'un relevé (#1177)
 * Occtax : renseignement par défaut de l'utilisateur connecté à la création d'un relevé en mode "observers_txt" (#1292)
+* Occtax : Déplacement des boutons d'action à gauche dans la liste des taxons d'un relevé pour éviter qu'ils soient masqués quand les noms de taxon sont longs (#1299 et #1337)
+* Occtax : Correction de la suppression d'un habitat par modification de relevé (#1296)
+* Occtax : Correction de la possibilité de modifier un relevé si U=1 (#1365)
+* Métadonnées : Correction de la récupération des valeurs de nomenclature depuis MTD n'existant pas dans GeoNature (#1297)
+* Authentification : Redirection vers la page login après une période d'inactivité (#1193)
+* Résolution des problèmes de permission sur le fichier ``gn_errors.log`` (#1003)
 
+**💻 Développement**
+
+* Possibilité d'utiliser la commande ``flask`` (eg ``flask shell``)
+* Préparation de l'utilisation d'alembic pour la gestion du schéma de la BDD (#880)
+* Possibilité d'importer des modules packagés (#1272)
+* Réorganisation des fichiers ``requirements`` et installation des branches ``develop`` des dépendances du fichier ``requirements-dev.txt``
+* Simplification de la gestion des erreurs
+* Diverses améliorations mineures de l'architecture du code
 
 **⚠️ Notes de version**
 
 Si vous mettez à jour GeoNature :
 
-* Attention: si vous n'aviez pas renseigné de valeur pour le paramètre `id_taxon_list` dans le fichier `conf_gn_module.toml` du module Occtax, la liste 100 n'est plus passé par defaut et le module va rechercher sur tout Taxref. Veuillez renseigné manuellement l'identifiant de votre liste 
+* Attention : si vous n'aviez pas renseigné de valeur pour le paramètre ``id_taxon_list`` dans le fichier ``conf_gn_module.toml`` du module Occtax, la liste 100 n'est plus passé par defaut et le module va rechercher sur tout Taxref. Veuillez renseigner manuellement l'identifiant de votre liste 
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
 * Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.6.3.sql)
 * Des choses à faire au niveau des évolutions des commandes GeoNature ?
+* Modifier dans le fichier ``/etc/supervisor/conf.d/geonature-service.conf``, remplacer ``gn_errors.log`` par ``supervisor.log`` dans la variable ``stdout_logfile`` :
+
+::
+
+    sudo sed -i 's|\(stdout_logfile = .*\)/gn_errors.log|\1/supervisor.log|' /etc/supervisor/conf.d/geonature-service.conf
+    sudo supervisorctl reload
 
 2.6.2 (2021-02-15)
 ------------------
@@ -92,6 +123,8 @@ Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimu
 * Métadonnées : Ajout d'un spinner lors du chargement de la liste des métadonnées et parallélisation du calcul du nombre de données par JDD (#1231)
 * Synthèse : Possibilité d'ouvrir le module avec un JDD préselectionné (``<URL_GeoNature>/#/synthese?id_dataset=2``) et ajout d'un lien direct depuis le module Métadonnées (#889)
 * Synthèse : ajout de web service pour le calcul du nombre d'observations par un paramètre donné (JDD, module, observateur), et du calcul de la bounding-box par jeu de données
+* Synthese : ajout d'un filtre avancé ``Possède médias``
+* Exports au format SHP remplacés par défaut par le format GeoPackage (GPKG) plus simple, plus léger, plus performant et unique. Les exports SHP restent activables dans la configuration des modules (#898)
 * Occtax : ajout du paramètre ``DISPLAY_VERNACULAR_NAME`` qui contrôle l'affichage du nom vernaculaire vs nom complet sur les interfaces (Defaut = true: afffiche le nom vernaculaire)
 * Validation : Préremplir l'email à l'observateur avec des informations paramétrables sur l'occurrence (date, nom du taxon, commune, médias) (#981)
 * Validation : Possibilité de paramètrer les colonnes affichées dans la liste des observations (#980)
@@ -139,6 +172,7 @@ Si vous mettez à jour GeoNature :
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * Si vous utilisez Occtax-mobile, vous pouvez modifier la valeur du nouveau paramètre ``gn_commons.t_parameters.occtaxmobile_area_type`` pour lui indiquer le code du type de zonage que vous utilisez pour les unités géographiques (mailles de 5km par défaut)
 * Si vous disposez du module d'import, vous devez le mettre à jour en version 1.1.1
+>>>>>>> develop
 
 2.5.5 (2020-11-19)
 ------------------

@@ -228,7 +228,11 @@ Installation d'un module GeoNature
 
 L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur (NB : le module Occurrence de Taxon - Occtax - est fourni par défaut). Pour ajouter un gn_module externe, il est nécessaire de l'installer :
 
-**1.** Téléchargez le module depuis son dépôt Github puis dézippez-le.
+**1.** Téléchargez le module depuis son dépôt Github puis dézippez-le dans le repertoire utilisateur, au même niveau que le dossier ``geonature``.
+
+::
+
+    cd /home/`whoami`
 
 **2.** Renseignez l'éventuel fichier ``config/settings.ini`` du module.
 
@@ -246,9 +250,9 @@ Exemple pour un module Import :
 
 ::
 
-    geonature install_gn_module /home/gn_module_import import
+    geonature install_gn_module /home/`whoami`/gn_module_import import
 
-Le module sera disponible à l'adresse ``http://mon-geonature.fr/geonature/#/validation``
+Le module sera disponible à l'adresse ``http://mon-geonature.fr/geonature/#/import``
 
 L'API du module sera disponible à l'adresse ``http://mon-geonature.fr/api/import``
 

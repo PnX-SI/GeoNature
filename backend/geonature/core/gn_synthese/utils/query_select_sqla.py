@@ -229,6 +229,12 @@ class SyntheseQuery:
         """
             Other filters
         """
+
+        if "has_medias" in self.filters:
+            self.query = self.query.where(
+                self.model.has_medias
+            )
+
         if "id_dataset" in self.filters:
             self.query = self.query.where(
                 self.model.id_dataset.in_(self.filters.pop("id_dataset"))
@@ -322,7 +328,7 @@ class SyntheseQuery:
             elif colname.startswith("id_"):
                 col = getattr(self.model.__table__.columns, colname)
                 self.query = self.query.where(col.in_(value))
-            else:
+            elif hasattr(self.model.__table__.columns, colname):
                 col = getattr(self.model.__table__.columns, colname)
                 self.query = self.query.where(col.ilike("%{}%".format(value[0])))
 
