@@ -89,7 +89,6 @@ export class AuthService {
     };
     this._http
       .post<any>(`${AppConfig.API_ENDPOINT}/auth/login`, options)
-      .finally(() => (this.isLoading = false))
       .subscribe(
         data => {
           const userForFront = {
@@ -107,6 +106,7 @@ export class AuthService {
               cruved: this.cruvedService.fetchCruved(),
               modules: this.moduleService.fetchModules(),
           }).subscribe(() => {
+            this.isLoading = false;
             let next = this.route.snapshot.queryParams['next'];
             let route = this.route.snapshot.queryParams['route'];
             // next means redirect to url
@@ -126,6 +126,7 @@ export class AuthService {
         },
         // error callback
         () => {
+          this.isLoading = false;
           this.loginError = true;
         }
       );

@@ -269,7 +269,7 @@
                     <button
                       mat-icon-button
                       [disabled]="!ds.cruved.D || !ds.deletable"
-                      (click)="syntheseDs(ds.id_dataset, ds?.observation_count, syntheseNoneModal)"
+                      (click)="deleteDs(ds.id_dataset)"
                     >
                       <mat-icon
                         *ngIf="!ds.deletable; else elseblock"
