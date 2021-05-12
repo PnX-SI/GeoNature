@@ -103,7 +103,7 @@ def tsconfig_templating():
     log.info("...%s\n", MSG_OK)
 
 
-def tsconfig_app_templating(module_code, app=None):
+def tsconfig_app_templating(app=None):
     if not app:
         app = create_app(with_external_mods=False)
 
@@ -115,7 +115,7 @@ def tsconfig_app_templating(module_code, app=None):
             template = Template(input_file.read())
             routes = []
             for module in list_frontend_enabled_modules():
-                module_dir = Path(GN_EXTERNAL_MODULE / module_code.lower())
+                module_dir = Path(GN_EXTERNAL_MODULE / module.module_code.lower())
                 # test if module have frontend
                 if (module_dir/ "frontend").is_dir():
                     location = "{}/frontend/app".format(module_dir)
