@@ -813,13 +813,8 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
 
     # Recuperation des données
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
-    acquisition_framework = af.as_dict(True)
-
-    q = DB.session.query(TDatasets).distinct()
-    data = q.filter(TDatasets.id_acquisition_framework == id_acquisition_framework).all()
-    dataset_ids = [d.id_dataset for d in data]
-    acquisition_framework["datasets"] = [d.as_dict(True) for d in data]
-
+    acquisition_framework = af.as_dict(True, depth=2)
+    dataset_ids = [d.id_dataset for d in acquisition_framework.t_datasets]
     nb_data = len(dataset_ids)
     nb_taxons = (
         DB.session.query(Synthese.cd_nom)
@@ -977,7 +972,6 @@ def get_acquisition_framework(info_role, id_acquisition_framework):
     acquisition_framework = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
     if not acquisition_framework:
         raise NotFound('Acquisition framework "{}" does not exist'.format(id_acquisition_framework))
-
     return acquisitionFrameworkSchema.dumps(acquisition_framework)
 
 
@@ -1103,13 +1097,8 @@ def get_acquisition_framework_stats(info_role, id_acquisition_framework):
     :param id_acquisition_framework: the id_acquisition_framework
     :param type: int
     """
-    af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
-    if not af:
-        return None
-    acquisition_framework = af.as_dict(True)
-
-    datasets = acquisition_framework["t_datasets"] if "t_datasets" in acquisition_framework else []
-    dataset_ids = [d["id_dataset"] for d in datasets]
+    datasets = TDatasets.query.filter(TDatasets.id_acquisition_framework == id_acquisition_framework).all()
+    dataset_ids = [d.id_dataset for d in datasets]
 
     nb_dataset = len(dataset_ids)
     nb_taxons = (
@@ -1157,13 +1146,8 @@ def get_acquisition_framework_bbox(info_role, id_acquisition_framework):
     :param id_acquisition_framework: the id_acquisition_framework
     :param type: int
     """
-    af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
-    if not af:
-        return None
-    acquisition_framework = af.as_dict(True)
-
-    datasets = acquisition_framework["t_datasets"] if "t_datasets" in acquisition_framework else []
-    dataset_ids = [d["id_dataset"] for d in datasets]
+    datasets = TDatasets.query.filter(TDatasets.id_acquisition_framework == id_acquisition_framework).all()
+    dataset_ids = [d.id_dataset for d in datasets]
     geojsonData = (
         DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
         .filter(Synthese.id_dataset.in_(dataset_ids))
