@@ -374,6 +374,8 @@ export class OcctaxFormReleveService {
       "date_max": null,
       "hour_min": null,
       "hour_max": null,
+      'place_name': null,
+      'cd_hab': null,
     };
   }
 
