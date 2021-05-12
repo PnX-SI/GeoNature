@@ -814,7 +814,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     # Recuperation des données
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
     acquisition_framework = af.as_dict(True, depth=2)
-    dataset_ids = [d.id_dataset for d in acquisition_framework.t_datasets]
+    dataset_ids = [d.id_dataset for d in af.t_datasets]
     nb_data = len(dataset_ids)
     nb_taxons = (
         DB.session.query(Synthese.cd_nom)
