@@ -454,3 +454,7 @@ li.no-bullet {
   -webkit-animation: spin 0.8s linear infinite;
   animation: spin 0.8s linear infinite;
 }
+
+a.mat-raised-button:hover {
+  text-decoration: none!important;
+}

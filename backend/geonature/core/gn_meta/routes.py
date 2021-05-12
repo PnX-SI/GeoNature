@@ -57,6 +57,11 @@ from geonature.core.gn_meta.repositories import (
     get_dataset_details_dict,
     filtered_af_query,
     filtered_ds_query,
+    get_metadata_list,
+)
+from .schemas import (
+    AcquisitionFrameworkSchema,
+    DatasetSchema,
 )
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from werkzeug.datastructures import Headers
@@ -270,49 +275,29 @@ def get_af_from_id(id_af, af_list):
     return found_af
 
 
-@routes.route("/dataset/<id_dataset>", methods=["GET"])
-@json_resp
-def get_dataset(id_dataset):
+@routes.route("/dataset/<int:id_dataset>", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+def get_dataset(info_role, id_dataset):
     """
-    Get one dataset
-
+    Get one dataset with nomenclatures and af
     .. :quickref: Metadata;
-
     :param id_dataset: the id_dataset
     :param type: int
     :returns: dict<TDataset>
     """
-    data = DB.session.query(TDatasets).get(id_dataset)
-    cor = data.cor_dataset_actor
-    dataset = data.as_dict(True)
-    organisms = []
-    for c in cor:
-        if c.organism:
-            organisms.append(c.organism.as_dict())
-        else:
-            organisms.append(None)
-    i = 0
-    for o in organisms:
-        dataset["cor_dataset_actor"][i]["organism"] = o
-        i = i + 1
-    return dataset
+    datasetSchema = DatasetSchema()
+    
+    user_cruved = cruved_scope_for_user_in_module(
+        id_role=info_role.id_role, module_code="METADATA",
+    )[0]
 
+    datasetSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
 
-@routes.route("/dataset_details/<int:id_dataset>", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="METADATA")
-@json_resp
-def get_dataset_details(info_role, id_dataset):
-    """
-    Get one dataset with nomenclatures and af
+    dataset = DB.session.query(TDatasets).get(id_dataset)
+    if not dataset:
+        raise NotFound('Dataset "{}" does not exist'.format(id_dataset))
 
-    .. :quickref: Metadata;
-
-    :param id_dataset: the id_dataset
-    :param type: int
-    :returns: dict<TDatasetDetails>
-    """
-
-    return get_dataset_details_dict(id_dataset, info_role)
+    return datasetSchema.dumps(dataset)
 
 
 @routes.route("/upload_canvas", methods=["POST"])
@@ -333,11 +318,9 @@ def upload_canvas():
 
 @routes.route("/dataset/<int:ds_id>", methods=["DELETE"])
 @permissions.check_cruved_scope("D", True, module_code="METADATA")
-@json_resp
 def delete_dataset(info_role, ds_id):
     """
     Delete a dataset
-
     .. :quickref: Metadata;
     """
 
@@ -359,7 +342,7 @@ def delete_dataset(info_role, ds_id):
 
     DB.session.commit()
 
-    return "OK"
+    return '', 204 #DELETE No Content
 
 
 @routes.route("/uuid_report", methods=["GET"])
@@ -638,37 +621,68 @@ def update_sensitivity_query(id_syntheses):
     return "OK"
 
 
+def datasetHandler(request, *, dataset, info_role):
+
+    # Test des droits d'édition du dataset si modification
+    if dataset.id_dataset is not None:
+        user_cruved = cruved_scope_for_user_in_module(
+            id_role=info_role.id_role, module_code="METADATA",
+        )[0]
+        dataset_cruved = dataset.get_object_cruved(info_role, user_cruved)
+        #verification des droits d'édition pour le dataset
+        if not dataset_cruved['U']:
+            raise InsufficientRightsError(
+                "User {} has no right in dataset {}".format(
+                    info_role.id_role, dataset.id_dataset
+                ),
+                403,
+            )
+
+    datasetSchema = DatasetSchema()
+    dataset, errors = datasetSchema.load(request.get_json(), instance=dataset)
+
+    if bool(errors):
+        return errors, 422
+
+    DB.session.add(dataset)
+    DB.session.commit()
+
+    return dataset
+
+
 @routes.route("/dataset", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
-@json_resp
-def post_dataset(info_role):
-    """
-    Post a dataset
+def createDataset(info_role):
+   """
+   Post one Dataset data
+   .. :quickref: Metadata;
+   """
 
+   # create new dataset
+   return DatasetSchema().dump(
+       datasetHandler(request=request, dataset=TDatasets(), info_role=info_role)
+   )
+
+
+@routes.route("/dataset/<int:id_dataset>", methods=["POST", "PATCH"])
+@permissions.check_cruved_scope("U", True, module_code="METADATA")
+def updateDataset(id_dataset, info_role):
+    """
+    Post one Dataset data for update dataset
     .. :quickref: Metadata;
     """
-    data = dict(request.get_json())
-    cor_dataset_actor = data.pop("cor_dataset_actor")
-    modules = data.pop("modules")
+    try:
+        dataset = DB.session.query(TDatasets).get(id_dataset)
+    except Exception as e:
+        DB.session.rollback()
+        raise
 
-    dataset = TDatasets(**data)
-    for cor in cor_dataset_actor:
-        # remove id_cda if None otherwise merge no working well
-        if "id_cda" in cor and cor.get("id_cda") is None:
-            cor.pop("id_cda")
-        dataset.cor_dataset_actor.append(CorDatasetActor(**cor))
+    if not dataset:
+        return {"message": "not found"}, 404
 
-    # init the relationship as an empty list
-    modules_obj = DB.session.query(TModules).filter(TModules.id_module.in_(modules)).all()
-    dataset.modules = modules_obj
-    if dataset.id_dataset:
-        DB.session.merge(dataset)
-    # add id_digitiser only on creation
-    else:
-        dataset.id_digitizer = info_role.id_role
-        DB.session.add(dataset)
-    DB.session.commit()
-    return dataset.as_dict(True)
+    return DatasetSchema().dump(
+        datasetHandler(request=request, dataset=dataset, info_role=info_role)
+    )
 
 
 @routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET"])
@@ -677,82 +691,117 @@ def get_export_pdf_dataset(id_dataset, info_role):
     """
     Get a PDF export of one dataset
     """
-    df = get_dataset_details_dict(id_dataset, info_role)
+    datasetSchema = DatasetSchema()
+    
+    user_cruved = cruved_scope_for_user_in_module(
+        id_role=info_role.id_role, module_code="METADATA",
+    )[0]
 
-    if info_role.value_filter != "3":
-        try:
-            user_actor = [cor["id_role"] for cor in df["cor_dataset_actor"] if cor["id_role"]]
-            user_actor.append(df.get('id_digitizer'))
-            if info_role.value_filter == "1":
-                assert info_role.id_role in user_actor
-            elif info_role.value_filter == "2":
-                organisms = [cor["id_organism"] for cor in df["cor_dataset_actor"] if cor["id_organism"]]
-                assert info_role.id_role in user_actor or info_role.id_organisme in organisms
-        except AssertionError:
-            raise InsufficientRightsError(
-                ('User "{}" cannot export this current dataset').format(info_role.id_role), 403,
-            )
+    datasetSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
 
-    if not df:
+    dataset = DB.session.query(TDatasets).get(id_dataset)
+    if not dataset:
+        raise NotFound('Dataset "{}" does not exist'.format(id_dataset))
+
+    dataset = json.loads((datasetSchema.dumps(dataset)).data)
+
+    #test du droit d'export de l'utilisateur
+    if not dataset.get('cruved').get('E'):
         return (
             render_template(
                 "error.html",
-                error="Le dataset presente des erreurs",
+                error="Vous n'avez pas les droits d'exporter ces informations",
                 redirect=current_app.config["URL_APPLICATION"] + "/#/metadata",
             ),
             404,
         )
 
-    if len(df["dataset_desc"]) > 240:
-        df["dataset_desc"] = df["dataset_desc"][:240] + "..."
+    if len(dataset.get("dataset_desc")) > 240:
+        dataset["dataset_desc"] = dataset.get("dataset_desc")[:240] + "..."
 
-    df["css"] = {
+    dataset["css"] = {
         "logo": "Logo_pdf.png",
         "bandeau": "Bandeau_pdf.png",
         "entite": "sinp",
     }
-    df["title"] = current_app.config["METADATA"]["DS_PDF_TITLE"]
+    dataset["title"] = current_app.config["METADATA"]["DS_PDF_TITLE"]
 
     date = dt.datetime.now().strftime("%d/%m/%Y")
 
-    df["footer"] = {
+    dataset["footer"] = {
         "url": current_app.config["URL_APPLICATION"] + "/#/metadata/dataset_detail/" + id_dataset,
         "date": date,
     }
 
     filename = "jdd_{}_{}_{}.pdf".format(
         id_dataset,
-        df["dataset_shortname"].replace(" ", "_"),
+        dataset["dataset_shortname"].replace(" ", "_"),
         dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
     )
 
     try:
         f = open(str(BACKEND_DIR) + "/static/images/taxa.png")
         f.close()
-        df["chart"] = True
+        dataset["chart"] = True
     except IOError:
-        df["chart"] = False
-
+        dataset["chart"] = False
 
     # Appel de la methode pour generer un pdf
-    pdf_file = fm.generate_pdf("dataset_template_pdf.html", df, filename)
+    pdf_file = fm.generate_pdf("dataset_template_pdf.html", dataset, filename)
     pdf_file_posix = Path(pdf_file)
 
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 
 
 @routes.route("/acquisition_frameworks", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
-@json_resp
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
 def get_acquisition_frameworks(info_role):
     """
-    Get all AF with cruved filter
-
+    Get all AF with their datasets 
+    The Cruved in only apply on dataset in order to see all the AF
+    where the user have rights with its dataset
+    Use in maplist
+    Add the CRUVED permission for each row (Dataset and AD)
+    
     .. :quickref: Metadata;
-
+    :param info_role: add with kwargs
+    :type info_role: TRole
+    :returns:  `dict{'data':list<AF with Datasets>, 'with_erros': <boolean>}`
     """
-    params = request.args
-    return get_af_cruved(info_role, params)
+    with_mtd_error = False
+    if current_app.config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
+        # synchronise the CA and JDD from the MTD WS
+        try:
+            mtd_utils.post_jdd_from_user(
+                id_user=info_role.id_role, id_organism=info_role.id_organisme
+            )
+        except Exception as e:
+            gunicorn_error_logger.info(e)
+            log.error(e)
+            with_mtd_error = True
+    params = request.args.to_dict()
+    params["orderby"] = "acquisition_framework_name"
+    #params["offset"] = params["offset"] if "offset" in params else 0
+    #params["limit"] = params["limit"] if "limit" in params else 50
+
+    if "selector" not in params:
+        params["selector"] = None
+
+    user_cruved = cruved_scope_for_user_in_module(
+        id_role=info_role.id_role, module_code="METADATA",
+    )[0]
+
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
+        exclude=(
+            "nomenclature_territorial_level",
+            "nomenclature_financing_type",
+            "cor_volets_sinp",
+            "cor_objectifs",
+        )
+    )
+    acquisitionFrameworkSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
+
+    return acquisitionFrameworkSchema.dumps((get_metadata_list(info_role, params).all()), many=True)
 
 
 @routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"])
@@ -908,97 +957,28 @@ def get_acquisition_frameworks_metadata(info_role):
 
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>", methods=["GET"])
-@json_resp
-def get_acquisition_framework(id_acquisition_framework):
-    """
-    Get one AF
-
-    .. :quickref: Metadata;
-
-    :param id_acquisition_framework: the id_acquisition_framework
-    :param type: int
-    """
-    af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
-
-    if af:
-        return af.as_dict(True)
-    return None
-
-
-@routes.route("/acquisition_framework_details/<id_acquisition_framework>", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="METADATA")
-@json_resp
-def get_acquisition_framework_details(info_role, id_acquisition_framework):
+def get_acquisition_framework(info_role, id_acquisition_framework):
     """
-    Get one AF
-
+    Get one AF with nomenclatures
     .. :quickref: Metadata;
-
     :param id_acquisition_framework: the id_acquisition_framework
     :param type: int
+    :returns: dict<TAcquisitionFramework>
     """
-    af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
-    if not af:
-        return None
-    acquisition_framework = af.as_dict(True)
-
-    datasets = acquisition_framework["datasets"] if "datasets" in acquisition_framework else []
-    dataset_ids = [d["id_dataset"] for d in datasets]
-    geojsonData = (
-        DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
-        .filter(Synthese.id_dataset.in_(dataset_ids))
-        .first()[0]
-    )
-    if geojsonData:
-        acquisition_framework["bbox"] = json.loads(geojsonData)
-    nb_data = len(dataset_ids)
-    nb_taxons = (
-        DB.session.query(Synthese.cd_nom)
-        .filter(Synthese.id_dataset.in_(dataset_ids))
-        .distinct()
-        .count()
-    )
-    nb_observations = (
-        DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
-    )
-    nb_habitat = 0
-
-    # Check if pr_occhab exist
-    check_schema_query = exists(
-        select([text("schema_name")])
-        .select_from(text("information_schema.schemata"))
-        .where(text("schema_name = 'pr_occhab'"))
-    )
-
-    if DB.session.query(check_schema_query).scalar() and nb_data > 0:
-        query = (
-            "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
-        ("
-            + str(dataset_ids).strip("[]")
-            + ")"
-        )
-
-        nb_habitat = DB.engine.execute(text(query)).first()[0]
-
-    acquisition_framework["stats"] = {
-        "nb_data": nb_data,
-        "nb_taxons": nb_taxons,
-        "nb_observations": nb_observations,
-        "nb_habitats": nb_habitat,
-    }
-    ids_afs_user = TAcquisitionFramework.get_user_af(info_role, only_user=True)
-    ids_afs_org = TAcquisitionFramework.get_user_af(info_role, only_user=False)
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema()
+    
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role, module_code="METADATA",
     )[0]
-    acquisition_framework["cruved"] = af.get_object_cruved(
-        user_cruved=user_cruved,
-        id_object=af.id_acquisition_framework,
-        ids_object_user=ids_afs_user,
-        ids_object_organism=ids_afs_org,
-    )
 
-    return acquisition_framework
+    acquisitionFrameworkSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
+
+    acquisition_framework = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
+    if not acquisition_framework:
+        raise NotFound('Acquisition framework "{}" does not exist'.format(id_acquisition_framework))
+
+    return acquisitionFrameworkSchema.dumps(acquisition_framework)
 
 
 @routes.route("/acquisition_framework/<int:af_id>", methods=["DELETE"])
@@ -1044,57 +1024,153 @@ def delete_acquisition_framework(info_role, af_id):
     return "OK"
 
 
+def acquisitionFrameworkHandler(request, *, acquisition_framework, info_role):
+
+    # Test des droits d'édition du acquisition framework si modification
+    if acquisition_framework.id_acquisition_framework is not None:
+        user_cruved = cruved_scope_for_user_in_module(
+            id_role=info_role.id_role, module_code="METADATA",
+        )[0]
+        af_cruved = acquisition_framework.get_object_cruved(info_role, user_cruved)
+        #verification des droits d'édition pour le acquisition framework
+        if not af_cruved['U']:
+            raise InsufficientRightsError(
+                "User {} has no right in acquisition_framework {}".format(
+                    info_role.id_role, acquisition_framework.id_acquisition_framework
+                ),
+                403,
+            )
+
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema()
+    acquisition_framework, errors = acquisitionFrameworkSchema.load(request.get_json(), instance=acquisition_framework)
+
+    if bool(errors):
+        raise Exception(
+            errors,
+            422,
+        )
+
+    DB.session.add(acquisition_framework)
+    DB.session.commit()
+
+    return acquisition_framework
+
+
 @routes.route("/acquisition_framework", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="METADATA")
-@json_resp
-def post_acquisition_framework(info_role):
+def createAcquisitionFramework(info_role):
     """
-    Post an acquisition framework
+    Post one AcquisitionFramework data
     .. :quickref: Metadata;
     """
-    if info_role.value_filter == "0":
-        raise InsufficientRightsError(
-            ('User "{}" cannot "{}" a dataset').format(info_role.id_role, info_role.code_action),
-            403,
+
+    # create new acquisition_framework
+    try:
+        return AcquisitionFrameworkSchema().dump(
+           acquisitionFrameworkHandler(request=request, acquisition_framework=TAcquisitionFramework(), info_role=info_role)
         )
-    data = dict(request.get_json())
+    except Exception as e:
+        # retourne les erreurs levées en erreur 422
+        return e.args
 
-    cor_af_actor = data.pop("cor_af_actor")
-    cor_objectifs = data.pop("cor_objectifs")
-    cor_volets_sinp = data.pop("cor_volets_sinp")
 
-    af = TAcquisitionFramework(**data)
+@routes.route("/acquisition_framework/<int:id_acquisition_framework>", methods=["POST"])
+@permissions.check_cruved_scope("U", True, module_code="METADATA")
+def updateAcquisitionFramework(id_acquisition_framework, info_role):
+    """
+    Post one AcquisitionFramework data for update acquisition_framework
+    .. :quickref: Metadata;
+    """
+    acquisition_framework = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
+    if not acquisition_framework:
+        return {"message": "not found"}, 404
 
-    for cor in cor_af_actor:
-        # remove id_cda if None otherwise merge no working well
-        if "id_cafa" in cor and cor["id_cafa"] is None:
-            cor.pop("id_cafa")
-        af.cor_af_actor.append(CorAcquisitionFrameworkActor(**cor))
-
-    if cor_objectifs is not None:
-        objectif_nom = (
-            DB.session.query(TNomenclatures)
-            .filter(TNomenclatures.id_nomenclature.in_(cor_objectifs))
-            .all()
+    try:
+        return AcquisitionFrameworkSchema().dump(
+            acquisitionFrameworkHandler(request=request, acquisition_framework=acquisition_framework, info_role=info_role)
         )
-        for obj in objectif_nom:
-            af.cor_objectifs.append(obj)
+    except Exception as e:
+        # retourne les erreurs levées en erreur 422
+        return e.args
 
-    if cor_volets_sinp is not None:
-        volet_nom = (
-            DB.session.query(TNomenclatures)
-            .filter(TNomenclatures.id_nomenclature.in_(cor_volets_sinp))
-            .all()
+@routes.route("/acquisition_framework/<id_acquisition_framework>/stats", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+@json_resp
+def get_acquisition_framework_stats(info_role, id_acquisition_framework):
+    """
+    Get stats from one AF
+    .. :quickref: Metadata;
+    :param id_acquisition_framework: the id_acquisition_framework
+    :param type: int
+    """
+    af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
+    if not af:
+        return None
+    acquisition_framework = af.as_dict(True)
+
+    datasets = acquisition_framework["t_datasets"] if "t_datasets" in acquisition_framework else []
+    dataset_ids = [d["id_dataset"] for d in datasets]
+
+    nb_dataset = len(dataset_ids)
+    nb_taxons = (
+        DB.session.query(Synthese.cd_nom)
+        .filter(Synthese.id_dataset.in_(dataset_ids))
+        .distinct()
+        .count()
+    )
+    nb_observations = (
+        DB.session.query(Synthese.cd_nom).filter(Synthese.id_dataset.in_(dataset_ids)).count()
+    )
+    nb_habitat = 0
+
+    # Check if pr_occhab exist
+    check_schema_query = exists(
+        select([text("schema_name")])
+        .select_from(text("information_schema.schemata"))
+        .where(text("schema_name = 'pr_occhab'"))
+    )
+
+    if DB.session.query(check_schema_query).scalar() and nb_dataset > 0:
+        query = (
+            "SELECT count(*) FROM pr_occhab.t_stations s, pr_occhab.t_habitats h WHERE s.id_station = h.id_station AND s.id_dataset in \
+        ("
+            + str(dataset_ids).strip("[]")
+            + ")"
         )
-        for volet in volet_nom:
-            af.cor_volets_sinp.append(volet)
-    if af.id_acquisition_framework:
-        DB.session.merge(af)
-    else:
-        af.id_digitizer = info_role.id_role
-        DB.session.add(af)
-    DB.session.commit()
-    return af.as_dict()
+
+        nb_habitat = DB.engine.execute(text(query)).first()[0]
+
+    return {
+        "nb_dataset": nb_dataset,
+        "nb_taxons": nb_taxons,
+        "nb_observations": nb_observations,
+        "nb_habitats": nb_habitat,
+    }
+
+@routes.route("/acquisition_framework/<id_acquisition_framework>/bbox", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+@json_resp
+def get_acquisition_framework_bbox(info_role, id_acquisition_framework):
+    """
+    Get BBOX from one AF
+    .. :quickref: Metadata;
+    :param id_acquisition_framework: the id_acquisition_framework
+    :param type: int
+    """
+    af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
+    if not af:
+        return None
+    acquisition_framework = af.as_dict(True)
+
+    datasets = acquisition_framework["t_datasets"] if "t_datasets" in acquisition_framework else []
+    dataset_ids = [d["id_dataset"] for d in datasets]
+    geojsonData = (
+        DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
+        .filter(Synthese.id_dataset.in_(dataset_ids))
+        .first()[0]
+    )
+    return json.loads(geojsonData) if geojsonData else None
+
 
 def publish_acquisition_framework_mail(af, info_role):
     """

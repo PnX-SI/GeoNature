@@ -102,18 +102,18 @@ export class DataFormService {
   /**
    * Get dataset list for metadata modules
    */
-  getAfAndDatasetListMetadata(searchTerms) {
+  // getAfAndDatasetListMetadata(searchTerms) {
 
-    let queryString = new HttpParams();
-    for (let key in searchTerms) {
-      queryString = queryString.set(key, searchTerms[key])
-    }
+  //   let queryString = new HttpParams();
+  //   for (let key in searchTerms) {
+  //     queryString = queryString.set(key, searchTerms[key])
+  //   }
 
-    return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/meta/af_datasets_metadata`,
-      { params: queryString }
-    );
-  }
+  //   return this._http.get<any>(
+  //     `${AppConfig.API_ENDPOINT}/meta/af_datasets_metadata`,
+  //     { params: queryString }
+  //   );
+  // }
 
   getImports(id_dataset) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/import/by_dataset/${id_dataset}`);
@@ -334,22 +334,33 @@ export class DataFormService {
    * @param params: dict of paramters
    * @param orderByName :default true
    */
-  getAcquisitionFrameworks(params?: ParamsDict, orderByName = true) {
+  getAcquisitionFrameworks(searchTerms = {}) {
     let queryString: HttpParams = new HttpParams();
-    if (orderByName) {
-      queryString = this.addOrderBy(queryString, 'acquisition_framework_name');
+    for (let key in searchTerms) {
+      queryString = queryString.set(key, searchTerms[key])
     }
-    if (params) {
-      // tslint:disable-next-line:forin
-      for (let key in params) {
-        if (params[key] !== null) {
-          queryString = queryString.set(key, params[key]);
-        }
-      }
+
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`,
+      { params: queryString }
+    );
+  }
+
+  /**
+   *
+   * @param params: dict of paramters
+   * @param orderByName :default true
+   */
+  getAcquisitionFrameworksForSelect(searchTerms = {}) {
+    let queryString: HttpParams = new HttpParams();
+    for (let key in searchTerms) {
+      queryString = queryString.set(key, searchTerms[key])
     }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`, {
-      params: queryString
-    });
+
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/select`,
+      { params: queryString }
+    );
   }
 
   /**
@@ -365,13 +376,30 @@ export class DataFormService {
     });
   }
 
+  /**
+   * @param id_af: id of acquisition_framework
+   */
   getAcquisitionFramework(id_af) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`);
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`
+    );
   }
 
-  getAcquisitionFrameworkDetails(id_af) {
+  /**
+   * @param id_af: id of acquisition_framework
+   */
+  getAcquisitionFrameworkStats(id_af) {
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework_details/${id_af}`
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}/stats`
+    );
+  }
+
+  /**
+   * @param id_af: id of acquisition_framework
+   */
+  getAcquisitionFrameworkBbox(id_af) {
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}/bbox`
     );
   }
 
@@ -415,10 +443,6 @@ export class DataFormService {
 
   getDataset(id) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${id}`);
-  }
-
-  getDatasetDetails(id) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset_details/${id}`);
   }
 
   // getTaxaDistribution(id_dataset) {

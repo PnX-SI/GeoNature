@@ -1,43 +1,143 @@
-<h5> Acteur(s)</h5>
-<div *ngFor="let form of parentFormArray.controls; let i=index;">
-  <h5> </h5>
-  <!-- Organismes -->
-  <small> Organisme </small>
-  <div class="input-group">
-    <select class="form-control form-control-sm" [disableControl]="disabled" [formControl]="form.controls.id_organism">
-        <option [ngValue]="null"></option>
-      <option *ngFor="let org of organisms" [ngValue]="org.id_organisme" >
-        {{org.nom_organisme}} </option>
-    </select>
-    <button type="button" class="btn btn-outline-shadow btn-sm" data-toggle="collapse"
-    [attr.data-target]="'#collapse'+i">
-    <i class="fa fa-cog" aria-hidden="true"></i>
-    </button>
-  </div>
-
-  <div class="collapse" [attr.id]="'collapse'+i">
-    <small> Un jeu de données ou un cadre d'acquisition peut être rattaché à un organisme  <b> et/ou </b> à une personne </small>
-    <small> Personne </small>
-    <div class="input-group">
-      <select class="form-control form-control-sm" [disableControl]="disabled" [formControl]="form.controls.id_role">
-        <option [ngValue]="null"></option>
-        <option *ngFor="let role of roles" [ngValue]="role.id_role">
-          {{role.nom_complet}} </option>
-      </select>
+<ng-container *ngIf="!toggleForm; else formBlock">
+  <div class="dislay-actor">
+    <div class="pull-right">
+      <button
+        mat-icon-button
+        color="primary"
+        (click)="toggleForm=true"
+        matTooltip="Modifier cet acteur"
+      >
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button
+        mat-icon-button
+        color="warn"
+        matTooltip="Supprimer cet acteur"
+        (click)="remove()"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+    </div>
+    <div *ngIf="organismValue">
+      <small><b>Organisme</b> :</small>
+      <div style="padding-left: 10px;">{{ organismValue?.nom_organisme || ' - ' }}</div>
+    </div>
+    <div *ngIf="roleValue">
+      <small><b>Role</b> :</small>
+      <div style="padding-left: 10px;">{{ roleValue?.nom_complet || ' - ' }}</div>
     </div>
   </div>
+</ng-container>
+<ng-template #formBlock>
+  <mat-button-toggle-group
+    [(value)] = "toggleButtonValue"
+    #group="matButtonToggleGroup"
+    appearance="legacy"
+  >
+    <mat-button-toggle
+      value="organism"
+      matTooltip="Renseigner un organisme uniquement"
+      checked="true"
+    >
+      <mat-icon>domain</mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle
+      value="person"
+      matTooltip="Renseigner une personne uniquement"
+    >
+      <mat-icon>person</mat-icon>
+    </mat-button-toggle>
+    <mat-button-toggle
+      value="all"
+      matTooltip="Renseigner un organisme et un personne"
+    >
+      <mat-icon>domain</mat-icon>
+      <mat-icon>person</mat-icon>
+    </mat-button-toggle>
+  </mat-button-toggle-group>
 
-  <pnx-nomenclature label="Type de role" [parentFormControl]="form.controls.id_nomenclature_actor_role" codeNomenclatureType="ROLE_ACTEUR">
-  </pnx-nomenclature>
+  <form [formGroup]="actorForm">
+    <ng-container *ngIf="!isMainContact">
+      <small> Type de role </small>
+      <div>
+        <select
+          class="form-control form-control-sm"
+          formControlName="id_nomenclature_actor_role"
+        >
+          <option [ngValue]="null"></option>
+          <option
+            *ngFor="let role_type of role_types"
+            [ngValue]="role_type.id_nomenclature"
+          >
+            {{ role_type.definition_default }}
+          </option>
+        </select>
+      </div>
+    </ng-container>
 
-  <button *ngIf="i != 0"
-    mat-mini-fab
-    color="warn"
-    class="mt-1"
-    (click)="deleteFormArray(i)">
-    <mat-icon>delete</mat-icon>
-  </button>
-  <hr>
+    <!-- Organismes -->
+    <ng-container *ngIf="group.value == 'organism' || group.value == 'all'">
+      <small> Organisme </small>
+      <div>
+        <select
+          class="form-control form-control-sm"
+          formControlName="id_organism"
+        >
+          <option [ngValue]="null"></option>
+          <option
+            *ngFor="let org of organisms"
+            [ngValue]="org.id_organisme"
+          >
+            {{org.nom_organisme}}
+          </option>
+        </select>
+      </div>
+    </ng-container>
 
-</div>
+    <!-- Personnes -->
+    <ng-container *ngIf="group.value == 'person' || group.value == 'all'">
+      <small> Personne </small>
+      <div>
+        <select
+          class="form-control form-control-sm"
+          formControlName="id_role"
+        >
+          <option [ngValue]="null"></option>
+          <option
+            *ngFor="let role of roles"
+            [ngValue]="role.id_role"
+          >
+            {{ role.nom_complet }}
+          </option>
+        </select>
+      </div>
+    </ng-container>
 
+    <div class="validate-zone">
+      <ng-container *ngIf="isEdition; else submitButton">
+        <div class="text-right">
+          <button
+            mat-mini-fab
+            class="float-right"
+            [disabled]="actorForm.invalid"
+            color="primary"
+            (click)="toggleForm = false"
+          >
+            <mat-icon>check</mat-icon>
+          </button>
+        </div>
+      </ng-container>
+      <ng-template #submitButton>
+        <button
+          mat-raised-button
+          type="button"
+          [disabled]="actorForm.invalid"
+          color="primary"
+          (click)="submitActor()"
+        >
+          Ajouter acteur
+        </button>
+      </ng-template>
+    </div>
+  </form>
+</ng-template>
