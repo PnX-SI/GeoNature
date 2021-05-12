@@ -207,6 +207,16 @@
               </label>
             </div>
           </div>
+
+            <pnx-multiselect
+              [values]="moduleService.modules"
+              [parentFormControl]="form.get('modules')"
+              keyLabel="module_label"
+              keyValue="id_module"
+              label="Module(s) GeoNature associé(s) au jeu de données"
+              [bindAllItem]="true"
+            >
+            </pnx-multiselect>
           <small>Liste de taxon (facultatif)</small>
           <select
             class="form-control form-control-sm"
@@ -221,18 +231,6 @@
             {{list.nom_liste}}
           </option>
           </select>
-
-          <div>
-            <pnx-multiselect
-              [values]="moduleService.modules"
-              [parentFormControl]="form.get('modules')"
-              keyLabel="module_label"
-              keyValue="id_module"
-              label="Module(s) GeoNature associé(s) au jeu de données"
-              [bindAllItem]="true"
-            >
-            </pnx-multiselect>
-          </div>
         </div>
       </div>
     </div>

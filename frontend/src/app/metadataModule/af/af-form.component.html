@@ -155,7 +155,25 @@
             >
             </textarea>
           </div>
+          <pnx-date
+            label="Date début"
+            [parentFormControl]="form.get('acquisition_framework_start_date')"
+          >
+          </pnx-date>
 
+          <pnx-date
+            label="Date fin"
+            [parentFormControl]="form.get('acquisition_framework_end_date')"
+          >
+          </pnx-date>
+
+          <small
+            *ngIf="form.errors?.invalidDate"
+            class="error"
+            style="color:red"
+          >
+            {{ 'Releve.DateMaxError' | translate }}
+          </small>
           <div>
             <h6>Référence(s) bibliographique(s)</h6>
 
@@ -227,26 +245,6 @@
               </ng-template>
             </div>
           </div>
-
-          <pnx-date
-            label="Date début"
-            [parentFormControl]="form.get('acquisition_framework_start_date')"
-          >
-          </pnx-date>
-
-          <pnx-date
-            label="Date fin"
-            [parentFormControl]="form.get('acquisition_framework_end_date')"
-          >
-          </pnx-date>
-
-          <small
-            *ngIf="form.errors?.invalidDate"
-            class="error"
-            style="color:red"
-          >
-            {{ 'Releve.DateMaxError' | translate }}
-          </small>
         </div>
       </div>
     </div>
