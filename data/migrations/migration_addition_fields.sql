@@ -348,7 +348,7 @@ ALTER TABLE ONLY gn_commons.cor_field_dataset
 
 ALTER TABLE ONLY gn_commons.t_additional_fields
   ADD CONSTRAINT fk_t_additional_fields_id_widget FOREIGN KEY (id_widget) 
-  REFERENCES gn_commons.bib(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
+  REFERENCES gn_commons.bib_widgets(id_widget) ON UPDATE CASCADE ON DELETE CASCADE;
 
 
 ALTER TABLE ONLY gn_commons.cor_field_object

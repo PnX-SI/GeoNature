@@ -611,6 +611,10 @@ ALTER TABLE ONLY t_history_actions
 ALTER TABLE ONLY t_places
   ADD CONSTRAINT fk_t_places_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY gn_commons.t_additional_fields
+  ADD CONSTRAINT fk_t_additional_fields_id_widget FOREIGN KEY (id_widget)
+  REFERENCES gn_commons.bib_widgets(id_widget) ON UPDATE CASCADE ON DELETE CASCADE;
+
 ALTER TABLE ONLY gn_commons.cor_field_object
   ADD CONSTRAINT fk_cor_field_obj_field FOREIGN KEY (id_field) 
   REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
