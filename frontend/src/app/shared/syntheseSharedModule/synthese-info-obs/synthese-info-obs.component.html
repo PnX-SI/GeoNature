@@ -231,6 +231,10 @@
         <td> Identifiant unique SINP </td>
         <td> {{selectedObs?.unique_id_sinp}} </td>
       </tr>
+      <tr>
+        <td> Champs additionnels </td>
+        <td> {{selectedObs?.additional_data |json}} </td>
+      </tr>
     </table>
   </mat-tab>
   <mat-tab label="Métadonnées">
