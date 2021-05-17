@@ -18,6 +18,8 @@ CHANGELOG
 - Export des additional_data dans la Synthese à vérifier et tester
 - Fix des commandes (https://github.com/PnX-SI/GeoNature/commit/ec62b24ef1539116697aa29758dd135dcbaa85b1) à préciser ou répercuter ?
 - https://github.com/PnX-SI/GeoNature/issues/1071 fonctionne ?
+- Voir acteurs des métadonnées (https://github.com/PnX-SI/GeoNature/pull/1313#issuecomment-839705016)
+- Voir corrections de Occtax à réintégrer (https://github.com/PnX-SI/GeoNature/issues/1191#issuecomment-839663324)
 
 PRE-PROD PNE : 
 
