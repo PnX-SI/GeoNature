@@ -1,5 +1,4 @@
 import datetime
-import json
 import logging
 
 from flask import (
@@ -10,6 +9,7 @@ from flask import (
     send_from_directory,
     render_template,
 )
+from werkzeug.exceptions import NotFound
 from geonature.core.gn_commons.models import TAdditionalFields
 from sqlalchemy import or_, func, distinct, case
 from sqlalchemy.orm.exc import NoResultFound
@@ -48,10 +48,6 @@ from geonature.core.users.models import UserRigth
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 
-import os
-from shutil import copyfile
-from io import BytesIO
-import zipfile
 
 blueprint = Blueprint("pr_occtax", __name__)
 log = logging.getLogger(__name__)
@@ -101,16 +97,15 @@ def getReleves(info_role):
     for n in data:
         releve_cruved = n.get_releve_cruved(user, user_cruved)
         feature = n.get_geofeature(
-            relationships=(
-                "t_occurrences_occtax",
-                "cor_counting_occtax",
-                "taxref",
-                "observers",
-                "digitiser",
-                "dataset",
-                "right",
-                "medias"
-            )
+			fields=[
+				"t_occurrences_occtax",
+				"t_occurrences_occtax.cor_counting_occtax",
+				"t_occurrences_occtax.taxref",
+				"observers",
+				"digitiser",
+				"dataset",
+				"t_occurrences_occtax.cor_counting_occtax.medias"
+            ]
         )
         feature["properties"]["rights"] = releve_cruved
         featureCollection.append(feature)
