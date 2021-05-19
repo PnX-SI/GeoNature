@@ -108,15 +108,14 @@ class TStationsOcchab(ModelCruvedAutorization):
         self.id_digitiser_col = getattr(self, 'id_digitiser')
         self.id_dataset_col = getattr(self, 'id_dataset')
 
-    def get_geofeature(self, recursif=True):
+    def get_geofeature(self):
         return self.as_geofeature(
             "geom_4326",
             "id_station",
-            recursif,
-            relationships=[
+            fields=[
                 'observers',
                 't_habitats',
-                'habref',
+                't_habitats.habref',
                 'dataset',
             ]
         )
@@ -165,24 +164,23 @@ class OneStation(TStationsOcchab):
                      TStationsOcchab.id_nomenclature_geographic_object),
     )
 
-    t_one_habitats = relationship("OneHabitat", lazy="select")
+    t_one_habitats = relationship("OneHabitat", lazy="joined")
 
-    def get_geofeature(self, recursif=True):
+    def get_geofeature(self):
         return self.as_geofeature(
             "geom_4326",
             "id_station",
-            True,
-            relationships=[
+            fields=[
                 'observers',
                 't_one_habitats',
                 'exposure',
                 'dataset',
                 'area_surface_calculation',
                 'geographic_object',
-                'determination_method',
-                'collection_technique',
-                'abundance',
-                "habref"
+                't_one_habitats.determination_method',
+                't_one_habitats.collection_technique',
+                't_one_habitats.abundance',
+                "t_habitats.habref"
             ]
         )
 
