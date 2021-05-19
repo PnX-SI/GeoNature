@@ -73,8 +73,6 @@ routes = Blueprint("gn_meta", __name__)
 
 # get the root logger
 log = logging.getLogger()
-gunicorn_error_logger = logging.getLogger("gunicorn.error")
-
 
 @routes.route("/list/datasets", methods=["GET"])
 @json_resp
@@ -109,7 +107,6 @@ def get_datasets(info_role):
                 id_user=info_role.id_role, id_organism=info_role.id_organisme
             )
         except Exception as e:
-            gunicorn_error_logger.info(e)
             log.error(e)
             with_mtd_error = True
     params = request.args.to_dict()
@@ -150,7 +147,6 @@ def get_af_and_ds_metadata(info_role):
                 id_user=info_role.id_role, id_organism=info_role.id_organisme
             )
         except Exception as e:
-            gunicorn_error_logger.info(e)
             log.error(e)
             with_mtd_error = True
     params = request.args.to_dict()
@@ -189,13 +185,12 @@ def get_af_and_ds_metadata(info_role):
     #  get cruved for each AF and prepare dataset
     for af in afs:
         af_dict = af.as_dict(
-            True,
-            relationships=[
+            fields=[
                 "creator",
                 "cor_af_actor",
-                "nomenclature_actor_role",
-                "organism",
-                "role",
+                "cor_af_actor.nomenclature_actor_role",
+                "cor_af_actor.organism",
+                "cor_af_actor.role",
             ],
         )
         af_dict["cruved"] = af.get_object_cruved(
@@ -211,13 +206,12 @@ def get_af_and_ds_metadata(info_role):
     #  get cruved for each ds and push them in the af
     for d in datasets:
         dataset_dict = d.as_dict(
-            recursif=True,
-            relationships=[
+            fields=[
                 "creator",
                 "cor_dataset_actor",
-                "nomenclature_actor_role",
-                "organism",
-                "role",
+                "cor_dataset_actor.nomenclature_actor_role",
+                "cor_dataset_actor.organism",
+                "cor_dataset_actor.role",
             ],
         )
         if d.id_acquisition_framework not in list_id_af:

@@ -13,6 +13,7 @@ from pkg_resources import iter_entry_points
 
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, MA, migrate
+from geonature.utils.logs import config_loggers
 from geonature.utils.module import import_backend_enabled_modules
 
 
@@ -70,15 +71,14 @@ def create_app(with_external_mods=True, with_flask_admin=True):
     # Pass the ID_APP to the submodule to avoid token conflict between app on the same server
     app.config["ID_APP"] = app.config["ID_APPLICATION_GEONATURE"]
 
+    # set logging config
+    config_loggers(app.config)
+
     if with_flask_admin:
         from geonature.core.admin.admin import admin
         admin.init_app(app)
 
     with app.app_context():
-        if app.config["MAIL_ON_ERROR"] and app.config["MAIL_CONFIG"]:
-            from geonature.utils.logs import mail_handler
-            logging.getLogger().addHandler(mail_handler)
-
         from pypnusershub.routes import routes
 
         app.register_blueprint(routes, url_prefix="/auth")
