@@ -820,7 +820,7 @@ def export(info_role):
             
         else:
             serialize_result = FeatureCollection(
-                [export_view.as_geofeature(d, columns=export_columns) for d in data]
+                [export_view.as_geofeature(d, fields=export_columns) for d in data]
             )
         return to_json_resp(
             serialize_result, as_file=True, filename=file_name, indent=4, extension="geojson"

@@ -122,7 +122,7 @@ def getAreasIntersection():
         raise
     data = {}
     for b in bibareatype:
-        data[b.id_type] = b.as_dict(columns=("type_name", "type_code"))
+        data[b.id_type] = b.as_dict(fields=("type_name", "type_code"))
         data[b.id_type]["areas"] = [a for a in areas if a["id_type"] == b.id_type]
 
     return data
