@@ -15,6 +15,7 @@ export class ActorComponent implements OnInit {
 
   //formulaire acteur demandé par le componenent dataset-form.component ou af-form.component
   @Input() actorForm: FormGroup;
+  @Input() isRemovable: boolean = true;
   @Output() actorFormSubmit = new EventEmitter<boolean>();
   @Output() actorFormRemove = new EventEmitter<boolean>();
   @Input() metadataType: 'dataset'|'af' = null;

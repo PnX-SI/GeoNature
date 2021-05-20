@@ -55,6 +55,15 @@
       <mat-icon>person</mat-icon>
     </mat-button-toggle>
   </mat-button-toggle-group>
+  <button
+    *ngIf="isRemovable"
+    mat-icon-button
+    color="warn"
+    matTooltip="Supprimer cet acteur"
+    (click)="remove()"
+  >
+    <mat-icon>clear</mat-icon>
+  </button>
 
   <form [formGroup]="actorForm">
     <ng-container *ngIf="!isMainContact">
@@ -113,31 +122,5 @@
       </div>
     </ng-container>
 
-    <div class="validate-zone">
-      <ng-container *ngIf="isEdition; else submitButton">
-        <div class="text-right">
-          <button
-            mat-mini-fab
-            class="float-right"
-            [disabled]="actorForm.invalid"
-            color="primary"
-            (click)="toggleForm = false"
-          >
-            <mat-icon>check</mat-icon>
-          </button>
-        </div>
-      </ng-container>
-      <ng-template #submitButton>
-        <button
-          mat-raised-button
-          type="button"
-          [disabled]="actorForm.invalid"
-          color="primary"
-          (click)="submitActor()"
-        >
-          Ajouter acteur
-        </button>
-      </ng-template>
-    </div>
   </form>
 </ng-template>

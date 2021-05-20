@@ -21,7 +21,6 @@ import { MetadataDataService } from '../services/metadata-data.service';
 export class DatasetFormComponent implements OnInit {
 
   public form: FormGroup;
-  public genericActorForm: FormGroup = this.actorFormS.createForm();
   //observable pour la liste déroulantes HTML des AF
   public acquisitionFrameworks: Observable<any>;
   public taxaBibList: number;
@@ -62,29 +61,39 @@ export class DatasetFormComponent implements OnInit {
 
   genericActorFormSubmit(result) {
     if (result) {
-      this.datasetFormS.addActor(this.genericActorForm.value);
-      this.genericActorForm.reset();
+      // TODO
+      // this.datasetFormS.addActor(this.genericActorForm.value);
+      // this.genericActorForm.reset();
     }
   }
 
   addMainContact(){
     this.datasetFormS.addActor({id_nomenclature_actor_role: this.actorFormS.getIDRoleTypeByCdNomenclature("1")})
   }
+  addGenericContact(){
+    this.datasetFormS.genericActorForm.push(this.actorFormS.createForm())
+  }
+
+  mergeActors(dataset, genericActors) {
+    dataset.cor_dataset_actor = dataset.cor_dataset_actor.concat(genericActors)
+  }
 
   postDataset() {
-    if (!this.form.valid)
+    if (this.form.invalid || this.datasetFormS.genericActorForm.invalid)
       return;
 
     let api: Observable<any>;
-
     //UPDATE
     if (this.datasetFormS.dataset.getValue() !== null) {
       //si modification on assign les valeurs du formulaire au dataset modifié
       const dataset = Object.assign(this.datasetFormS.dataset.getValue(), this.form.value);
+      this.mergeActors(dataset, this.datasetFormS.genericActorForm.value);
       api = this.metadataDataS.updateDataset(dataset.id_dataset, dataset);
     } else {
       //si creation on envoie le contenu du formulaire
-      api = this.metadataDataS.createDataset(this.form.value);
+      const dataset = Object.assign({}, this.form.value);
+      this.mergeActors(dataset, this.datasetFormS.genericActorForm.value)
+      api = this.metadataDataS.createDataset(dataset);
     }
 
     //envoie de la requete au serveur

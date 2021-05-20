@@ -245,30 +245,15 @@
             <pnx-metadata-actor
               *ngIf="datasetFormS.isMainContact(actorForm)"
               [actorForm]="actorForm"
+              [isRemovable]="idx != 0"
               metadataType="dataset"
-              (actorFormRemove)="datasetFormS.removeActor(idx)"
+              (actorFormRemove)="datasetFormS.removeActor(datasetFormS.actors, idx)"
             >
             </pnx-metadata-actor>
           </ng-container>
-          <ng-container *ngIf="form.get('cor_dataset_actor').invalid && form.get('cor_dataset_actor').errors?.mainContactRequired; else addButton">
-            <small
-              class="mat-error">
-              Le renseignement d'un contact principal est obligatoire
-            </small>
-            <div>
+
               <button
-                type="button"
-                mat-raised-button
-                color="warn"
-                (click)="addMainContact()"
-              >
-                Corriger
-              </button>
-            </div>
-          </ng-container>
-          <ng-template #addButton>
-            <div>
-              <button
+                class="mt-2"
                 type="button"
                 mat-mini-fab
                 color="primary"
@@ -276,8 +261,6 @@
               >
                 <mat-icon>add</mat-icon>
               </button>
-            </div>
-          </ng-template>
         </div>
       </div>
 
@@ -286,12 +269,24 @@
           <h3 class="main-color"> Autre(s) acteur(s) </h3>
         </div>
         <div class="card-body">
-          <pnx-metadata-actor
-            [actorForm]="genericActorForm"
-            (actorFormSubmit)="genericActorFormSubmit($event)"
+          <ng-container *ngFor="let actorForm of datasetFormS.genericActorForm.controls; let idx = index">
+            <pnx-metadata-actor
+            [actorForm]="actorForm"
             metadataType="dataset"
+            (actorFormRemove)="datasetFormS.removeActor(datasetFormS.genericActorForm, idx)"
+            >
+            </pnx-metadata-actor>
+          </ng-container>
+
+          <button
+            class="mt-2"
+            type="button"
+            mat-mini-fab
+            color="primary"
+            (click)="addGenericContact()"
           >
-          </pnx-metadata-actor>
+            <mat-icon>add</mat-icon>
+          </button>
 
           <ng-container *ngIf="(datasetFormS.otherActorGroupForms|async) != {}">
             <ng-container *ngFor="let otherActorGroupForm of (datasetFormS.otherActorGroupForms|async) | keyvalue">
@@ -325,7 +320,7 @@
       Annuler
     </button>
     <button
-      [disabled]="form.invalid"
+      [disabled]="form.invalid || datasetFormS.genericActorForm.invalid"
       class="button-success ml-1"
       mat-raised-button
       (click)="postDataset()"

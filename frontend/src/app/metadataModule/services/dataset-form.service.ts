@@ -10,6 +10,8 @@ import { ActorFormService, ID_ROLE_DATASET_ACTORS } from './actor-form.service';
 export class DatasetFormService {
  
   public form: FormGroup;
+  public genericActorForm: FormArray ;
+
   public dataset: BehaviorSubject<any> = new BehaviorSubject(null);
   public otherActorGroupForms: BehaviorSubject<any> = new BehaviorSubject({});
  
@@ -72,6 +74,7 @@ export class DatasetFormService {
         this.mainContactRequired.bind(this)
       ])
     });
+    this.genericActorForm = this.fb.array([]);
   }
  
   /**
@@ -112,8 +115,8 @@ export class DatasetFormService {
     this.actors.push(actorForm);
   }
  
-  removeActor(i: number): void {
-    this.actors.removeAt(i);;
+  removeActor(formaArray: FormArray, i: number): void {
+    formaArray.removeAt(i);
   }
  
   //retourne true sur l'acteur est contact principal
