@@ -75,10 +75,10 @@ export class DataFormService {
     });
   }
 
-  getDatasets(params?: ParamsDict, orderByName = true, recursif = false) {
+  getDatasets(params?: ParamsDict, orderByName = true, depth = 0) {
     let queryString: HttpParams = new HttpParams();
     queryString = this.addOrderBy(queryString, 'dataset_name');
-    queryString = queryString.set('recursif', recursif.toString())
+    queryString = queryString.set('depth', depth.toString())
 
     if (params) {
       for (const key in params) {
