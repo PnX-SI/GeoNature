@@ -18,7 +18,10 @@ class TestGnMeta:
         token = get_token(self.client, login="admin", password="admin")
         self.client.set_cookie("/", "token", token)
 
-        response = self.client.get(url_for("gn_meta.get_datasets"))
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            query_string={"depth":1}
+        )
 
         # check fields for mobile
         data = json_of_response(response)
@@ -37,6 +40,14 @@ class TestGnMeta:
         assert "module_path" in module
         assert response.status_code == 200
 
+        # test with depth = 0 (default param)
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+        )
+        assert response.status_code == 200
+        data = json_of_response(response)
+        ds = data["data"][0]
+        assert "modules" not in ds
     def test_one_dataset(self):
         """
         API to get one dataset from id_dataset
@@ -62,7 +73,9 @@ class TestGnMeta:
         """
         token = get_token(self.client, login="partenaire", password="admin")
         self.client.set_cookie("/", "token", token)
-        response = self.client.get(url_for("gn_meta.get_datasets"))
+        response = self.client.get(
+            url_for("gn_meta.get_datasets")
+        )
         dataset_list = json_of_response(response)
         assert (
             response.status_code == 200
@@ -163,7 +176,8 @@ class TestGnMeta:
             self.client, url_for("gn_meta.post_dataset"), json_dict=fetched_dataset
         )
         updated_dataset = json_of_response(response)
-        assert "modules" not in updated_dataset
+        assert  len(updated_dataset["modules"]) == 0
+
         assert len(updated_dataset["cor_dataset_actor"]) == 2
         assert updated_dataset["dataset_name"] == "new_name"
         assert response.status_code == 200
