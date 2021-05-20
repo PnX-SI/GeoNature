@@ -11,6 +11,7 @@ from sqlalchemy import exc as sa_exc
 from flask_sqlalchemy import before_models_committed
 from pkg_resources import iter_entry_points
 
+from utils_flask_sqla.serializers import CustomJSONEncoder
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, MA, migrate
 from geonature.utils.logs import config_loggers
@@ -46,6 +47,7 @@ if config.get('SENTRY_DSN'):
 def create_app(with_external_mods=True, with_flask_admin=True):
     app = Flask(__name__, static_folder="../static")
     app.config.update(config)
+    app.json_encoder = CustomJSONEncoder
 
     # Bind app to DB
     DB.init_app(app)
