@@ -206,7 +206,6 @@ def get_af_and_ds_metadata(info_role):
         dataset_dict = d.as_dict(
             fields=[
                 "creator",
-                "cor_dataset_actor",
                 "cor_dataset_actor.nomenclature_actor_role",
                 "cor_dataset_actor.organism",
                 "cor_dataset_actor.role",
@@ -277,9 +276,7 @@ def get_dataset(id_dataset):
     data = DB.session.query(TDatasets).get(id_dataset)
     cor = data.cor_dataset_actor
     dataset = data.as_dict(
-        fields=[
-            "cor_dataset_actor", "cor_dataset_actor.nomenclature_actor_role",
-            ]
+        fields=["cor_dataset_actor.nomenclature_actor_role"]
     )
     organisms = []
     for c in cor:
