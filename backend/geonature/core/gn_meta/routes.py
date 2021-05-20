@@ -276,7 +276,11 @@ def get_dataset(id_dataset):
     """
     data = DB.session.query(TDatasets).get(id_dataset)
     cor = data.cor_dataset_actor
-    dataset = data.as_dict(True)
+    dataset = data.as_dict(
+        fields=[
+            "cor_dataset_actor", "cor_dataset_actor.nomenclature_actor_role",
+            ]
+    )
     organisms = []
     for c in cor:
         if c.organism:
@@ -660,7 +664,7 @@ def post_dataset(info_role):
         dataset.id_digitizer = info_role.id_role
         DB.session.add(dataset)
     DB.session.commit()
-    return dataset.as_dict(True)
+    return dataset.as_dict(depth=1)
 
 
 @routes.route("/dataset/export_pdf/<id_dataset>", methods=["GET"])
@@ -756,12 +760,12 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
 
     # Recuperation des données
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
-    acquisition_framework = af.as_dict(True)
+    acquisition_framework = af.as_dict(depth=2)
 
     q = DB.session.query(TDatasets).distinct()
     data = q.filter(TDatasets.id_acquisition_framework == id_acquisition_framework).all()
     dataset_ids = [d.id_dataset for d in data]
-    acquisition_framework["datasets"] = [d.as_dict(True) for d in data]
+    acquisition_framework["datasets"] = [d.as_dict(depth=2) for d in data]
 
     nb_data = len(dataset_ids)
     nb_taxons = (
@@ -913,7 +917,7 @@ def get_acquisition_framework(id_acquisition_framework):
     af = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
 
     if af:
-        return af.as_dict(True)
+        return af.as_dict(depth=2)
     return None
 
 
@@ -932,7 +936,7 @@ def get_acquisition_framework_details(info_role, id_acquisition_framework):
     af = DB.session.query(TAcquisitionFrameworkDetails).get(id_acquisition_framework)
     if not af:
         return None
-    acquisition_framework = af.as_dict(True)
+    acquisition_framework = af.as_dict(depth=2)
 
     datasets = acquisition_framework["datasets"] if "datasets" in acquisition_framework else []
     dataset_ids = [d["id_dataset"] for d in datasets]
@@ -1231,20 +1235,3 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
     .. :quickref: Metadata;
     """
     return mtd_utils.post_jdd_from_user(id_user=id_user, id_organism=id_organism)
-
-
-@routes.route("/caSearch", methods=["GET"])
-@json_resp
-def ca_search():
-
-    args = request.args
-    return {"data": [d.as_dict(True) for d in filtered_af_query(args).all()]}
-
-
-@routes.route("/jdSearch", methods=["GET"])
-@json_resp
-def jdd_search():
-
-    args = request.args
-    return {"data": [d.as_dict(True) for d in filtered_ds_query(args).all()]}
-
