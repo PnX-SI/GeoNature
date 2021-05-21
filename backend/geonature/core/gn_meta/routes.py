@@ -21,6 +21,7 @@ from flask import (
 )
 from sqlalchemy.sql import text, exists, select, update
 from sqlalchemy.sql.functions import func
+from werkzeug.exceptions import BadRequest
 
 
 from geonature.utils.env import DB, BACKEND_DIR
@@ -622,7 +623,6 @@ def update_sensitivity_query(id_syntheses):
 
 
 def datasetHandler(request, *, dataset, info_role):
-
     # Test des droits d'édition du dataset si modification
     if dataset.id_dataset is not None:
         user_cruved = cruved_scope_for_user_in_module(
@@ -637,16 +637,13 @@ def datasetHandler(request, *, dataset, info_role):
                 ),
                 403,
             )
-
     datasetSchema = DatasetSchema()
     dataset, errors = datasetSchema.load(request.get_json(), instance=dataset)
-
     if bool(errors):
-        return errors, 422
+        raise BadRequest(errors)
 
     DB.session.add(dataset)
     DB.session.commit()
-
     return dataset
 
 
