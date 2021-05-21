@@ -1036,10 +1036,7 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework, info_role):
     acquisition_framework, errors = acquisitionFrameworkSchema.load(request.get_json(), instance=acquisition_framework)
 
     if bool(errors):
-        raise Exception(
-            errors,
-            422,
-        )
+        raise BadRequest(errors)
 
     DB.session.add(acquisition_framework)
     DB.session.commit()
@@ -1056,13 +1053,10 @@ def createAcquisitionFramework(info_role):
     """
 
     # create new acquisition_framework
-    try:
-        return AcquisitionFrameworkSchema().dump(
-           acquisitionFrameworkHandler(request=request, acquisition_framework=TAcquisitionFramework(), info_role=info_role)
-        )
-    except Exception as e:
-        # retourne les erreurs levées en erreur 422
-        return e.args
+    return AcquisitionFrameworkSchema().dump(
+        acquisitionFrameworkHandler(request=request, acquisition_framework=TAcquisitionFramework(), info_role=info_role)
+    )
+
 
 
 @routes.route("/acquisition_framework/<int:id_acquisition_framework>", methods=["POST"])

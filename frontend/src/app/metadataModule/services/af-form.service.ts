@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormControl, FormArray, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
-import { ToastrService } from 'ngx-toastr';
-import { BehaviorSubject, Observable, combineLatest  } from 'rxjs';
-import { tap, filter, switchMap, map, distinctUntilChanged, exhaustMap } from 'rxjs/operators';
+import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
+import { BehaviorSubject, Observable  } from 'rxjs';
+import { tap, filter, switchMap, map } from 'rxjs/operators';
  
 import { ActorFormService, ID_ROLE_AF_ACTORS } from './actor-form.service';
 import { FormService } from '@geonature_common/form/form.service';
@@ -12,11 +11,10 @@ export class AcquisitionFrameworkFormService {
  
   public form: FormGroup;
   public acquisition_framework: BehaviorSubject<any> = new BehaviorSubject(null);
-  public otherActorGroupForms: BehaviorSubject<any> = new BehaviorSubject({});
+  public genericActorsForm: FormArray; 
  
   constructor(
     private fb: FormBuilder, 
-    private _toaster: ToastrService,
     private actorFormS: ActorFormService,
     private formS: FormService
   ) {
@@ -71,6 +69,7 @@ export class AcquisitionFrameworkFormService {
       ]),
       bibliographical_references: this.fb.array([]),
     });
+    this.genericActorsForm = this.fb.array([]);
  
     this.form.setValidators([
       this.formS.dateValidator(
@@ -93,7 +92,7 @@ export class AcquisitionFrameworkFormService {
         tap((value) => {
           if (value.cor_af_actor) {
             value.cor_af_actor.forEach(e => {
-              this.addActor();
+              this.addActor(this.actors);
             });
           }
           if (value.bibliographical_references) {
@@ -125,16 +124,16 @@ export class AcquisitionFrameworkFormService {
   }
  
   //ajoute un acteur au formulaire, par défaut un acteur vide est ajouté
-  addActor(value: any = null): void {
+  addActor(formArray, value: any = null): void {
     const actorForm = this.actorFormS.createForm();
     if (value) {
       actorForm.patchValue(value);
     }
-    this.actors.push(actorForm);
+    formArray.push(actorForm);
   }
  
-  removeActor(i: number): void {
-    this.actors.removeAt(i);;
+  removeActor(formArray: FormArray, i: number): void {
+    formArray.removeAt(i);;
   }
  
   get bibliographicalReferences(): FormArray {
@@ -161,21 +160,15 @@ export class AcquisitionFrameworkFormService {
   }
  
   setOtherActorGroupForms(): void {
-    const groups = {};
     for (let i = 0; i < this.actors.controls.length; i++) {
       const actorControl = this.actors.controls[i]
       const role_type = this.actorFormS.getRoleTypeByID(actorControl.get('id_nomenclature_actor_role').value);
  
       if (role_type !== undefined && !this.isMainContact(actorControl)) {
-        if (groups[role_type.definition_default] === undefined) {
-          groups[role_type.definition_default] = [];
-        }
- 
-        groups[role_type.definition_default][i] = actorControl;
+        this.actors.removeAt(i);
+        this.genericActorsForm.push(actorControl);
       }
     }
- 
-    this.otherActorGroupForms.next(groups);
   }
  
   reset() {

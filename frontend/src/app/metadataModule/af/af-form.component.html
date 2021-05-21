@@ -262,26 +262,26 @@
             <pnx-metadata-actor
               *ngIf="afFormS.isMainContact(actorForm)"
               [actorForm]="actorForm"
+              [isRemovable]="idx != 0"
               metadataType="af"
-              (actorFormRemove)="afFormS.removeActor(idx)"
-            >
+              (actorFormRemove)="afFormS.removeActor(afFormS.actors, idx)"
+              [defaultTab]="afFormS.acquisition_framework?.value?.id_acquisition_framework ? 'all': 'organism'"            >
             </pnx-metadata-actor>
+            <button
+              class="mt-2"
+              type="button"
+              mat-mini-fab
+              color="primary"
+              (click)="addContact(afFormS.actors, true)"
+            >
+              <mat-icon>add</mat-icon>
+            </button>
           </ng-container>
           <ng-container *ngIf="form.get('cor_af_actor').invalid && form.get('cor_af_actor').errors?.mainContactRequired">
             <small
               class="mat-error">
               Le renseignement d'un contact principal est obligatoire
             </small>
-            <div>
-              <button
-                type="button"
-                mat-raised-button
-                color="warn"
-                (click)="addMainContact()"
-              >
-                Corriger
-              </button>
-            </div>
           </ng-container>
         </div>
       </div>
@@ -291,51 +291,30 @@
           <h3 class="main-color"> Autre(s) acteur(s) </h3>
         </div>
         <div class="card-body">
+          <ng-container *ngFor="let actorForm of afFormS.genericActorsForm.controls; let idx = index"> 
+
           <pnx-metadata-actor
             [actorForm]="genericActorForm"
-            (actorFormSubmit)="genericActorFormSubmit($event)"
             metadataType="af"
+            (actorFormRemove)="afFormS.removeActor(afFormS.genericActorsForm, idx)"
+            [defaultTab]="afFormS.acquisition_framework?.value?.id_acquisition_framework ? 'all': 'organism'"
           >
           </pnx-metadata-actor>
 
-          <ng-container *ngIf="(afFormS.otherActorGroupForms|async) != {}">
-            <ng-container *ngFor="let otherActorGroupForm of (afFormS.otherActorGroupForms|async) | keyvalue">
-              <h5 class="actor-title"> {{ otherActorGroupForm.key }} </h5>
-              <ng-container *ngFor="let otherActorForm of otherActorGroupForm.value; let idx = index">
-                <!-- otherActorForm peut être undefined car setOtherActorGroupForms() conserve les indexs initiaux de form.cor_dataset_actor -->
-                <pnx-metadata-actor
-                  *ngIf="otherActorForm"
-                  [actorForm]="otherActorForm"
-                  (actorFormRemove)="afFormS.removeActor(idx)"
-                  metadataType="af"
-                >
-                </pnx-metadata-actor>
 
-              </ng-container>
-            </ng-container>
-          </ng-container>
-
+        </ng-container>
+        <button
+          class="mt-2"
+          type="button"
+          mat-mini-fab
+          color="primary"
+          (click)="addContact(afFormS.genericActorsForm, false)"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
         </div>
       </div>
     </div>
-
-<!--     <div class="col-md-3 col-lg-3 padding-sm">
-      <div class="card">
-        <div class="card-body">
-
-          <pnx-metadata-actor [parentFormArray]="cor_af_actor"> </pnx-metadata-actor>
-          <button
-            mat-mini-fab
-            class="float-right"
-            color="primary"
-            (click)="addFormArray()"
-          >
-            <mat-icon>add</mat-icon>
-          </button>
-
-        </div>
-      </div>
-    </div> -->
   </div>
 
   <div class="ml-1 mt-1">

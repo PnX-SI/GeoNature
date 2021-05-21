@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { FormArray, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -77,8 +77,15 @@ export class AfFormComponent implements OnInit {
       );
   }
 
-  addMainContact(){
-    this.afFormS.addActor({id_nomenclature_actor_role: this.actorFormS.getIDRoleTypeByCdNomenclature("1")})
+  addContact(formArray: FormArray, mainContact: boolean){
+    let value = null;
+    if(mainContact) {
+      value = {id_nomenclature_actor_role: this.actorFormS.getIDRoleTypeByCdNomenclature("1")}
+    }
+    this.afFormS.addActor(
+      formArray,
+      value 
+    )
   }
 
 
