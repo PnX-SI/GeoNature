@@ -1,7 +1,9 @@
 import logging
 import json
+from pypnusershub.db.tools import InsufficientRightsError
 
 from sqlalchemy import or_, String, Date, and_
+from sqlalchemy.inspection import inspect
 from sqlalchemy.orm import joinedload, contains_eager, aliased
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.sql.functions import func
@@ -29,6 +31,7 @@ from geonature.core.gn_meta.models import (
 )
 from geonature.core.gn_synthese.models import Synthese
 from pypnusershub.db.models import Organisme as BibOrganismes
+from werkzeug.exceptions import Unauthorized
 
 log = logging.getLogger()
 
@@ -51,7 +54,11 @@ def cruved_filter(q, model, info_role):
     return q
 
 def cruved_ds_filter(model, info_role):
-    if info_role.value_filter in ("1", "2"):
+    if info_role.value_filter not in ("1", "2", "3"):
+        raise Unauthorized("Not a valid cruved value")
+    elif info_role.value_filter == "3":
+        return True
+    elif info_role.value_filter in ("1", "2"):
         sub_q = (
             DB.session.query(TDatasets)
             .join(CorDatasetActor, TDatasets.id_dataset == CorDatasetActor.id_dataset)
@@ -71,27 +78,35 @@ def cruved_ds_filter(model, info_role):
     return True
 
 def cruved_af_filter(model, info_role):
-    #if info_role.value_filter in ("1", "2"):
-    sub_q = (
-        DB.session.query(TAcquisitionFramework)
-        .join(CorAcquisitionFrameworkActor, TAcquisitionFramework.id_acquisition_framework == CorAcquisitionFrameworkActor.id_acquisition_framework)
-    )
+    if info_role.value_filter not in ("1", "2", "3"):
+        raise Unauthorized("Not a valid cruved value")
+    elif info_role.value_filter == "3":
+        return True
+    elif info_role.value_filter in ("1", "2"):
+        sub_q = (
+            DB.session.query(TAcquisitionFramework)
+            .join(CorAcquisitionFrameworkActor, TAcquisitionFramework.id_acquisition_framework == CorAcquisitionFrameworkActor.id_acquisition_framework)
+        )
 
-    or_filter = [
-        TAcquisitionFramework.id_digitizer == info_role.id_role,
-        CorAcquisitionFrameworkActor.id_role == info_role.id_role,
+        or_filter = [
+            TAcquisitionFramework.id_digitizer == info_role.id_role,
+            CorAcquisitionFrameworkActor.id_role == info_role.id_role,
+        ]
+
+        # if organism is None => do not filter on id_organism even if level = 2
+        if info_role.value_filter == "2" and info_role.id_organisme is not None:
+            or_filter.append(CorAcquisitionFrameworkActor.id_organism == info_role.id_organisme)
+        sub_q = sub_q.filter(and_(or_(*or_filter), model.id_acquisition_framework == TAcquisitionFramework.id_acquisition_framework))
+        return sub_q.exists()
+
+def get_metadata_list(info_role, args, exclude_cols):
+    joined_loads_rels = [
+        db_rel.key for db_rel in inspect(TAcquisitionFramework).relationships
+        if db_rel.key not in exclude_cols
     ]
 
-    # if organism is None => do not filter on id_organism even if level = 2
-    if info_role.value_filter == "2" and info_role.id_organisme is not None:
-        or_filter.append(CorAcquisitionFrameworkActor.id_organism == info_role.id_organisme)
-    sub_q = sub_q.filter(and_(or_(*or_filter), model.id_acquisition_framework == TAcquisitionFramework.id_acquisition_framework))
-    return sub_q.exists()
-
-    return True
-
-def get_metadata_list(info_role, args):
-
+    print("LOADED JOIN", joined_loads_rels)
+    
     num = request.args.get("num")
     uuid = args.get("uuid")
     name = request.args.get("name")
@@ -103,38 +118,41 @@ def get_metadata_list(info_role, args):
     t_afs_actors = aliased(CorAcquisitionFrameworkActor)
     t_dts = aliased(TDatasets)
     t_dts_actors = aliased(CorDatasetActor)
-
-    query = (
-        DB.session.query(t_af)
-        .options(
-            joinedload(t_af.cor_af_actor.of_type(t_afs_actors))
-            .joinedload(t_afs_actors.organism)
+    query = DB.session.query(t_af)
+    for rel in joined_loads_rels:
+        query = query.options(
+            joinedload(getattr(t_af, rel))
         )
-        .options(
-            joinedload(t_af.cor_af_actor.of_type(t_afs_actors))
-            .joinedload(t_afs_actors.role)
-        )
-        .options(
-            joinedload(t_af.creator)
-        )
-        .options(
-            joinedload(t_af.t_datasets.of_type(t_dts))
-            .joinedload(t_dts.creator)
-        )
-        .options(
-            joinedload(t_af.t_datasets.of_type(t_dts))
-            .joinedload(t_dts.cor_dataset_actor.of_type(t_dts_actors))
-            .joinedload(t_dts_actors.organism)
-        )
-        .options(
-            joinedload(t_af.t_datasets.of_type(t_dts))
-            .joinedload(t_dts.cor_dataset_actor.of_type(t_dts_actors))
-            .joinedload(t_dts_actors.role)
-        )
-    )
+    # query_bis = (
+    #     DB.session.query(t_af)
+    #     .options(
+    #         joinedload(t_af.cor_af_actor.of_type(t_afs_actors))
+    #         .joinedload(t_afs_actors.organism)
+    #     )
+    #     .options(
+    #         joinedload(t_af.cor_af_actor.of_type(t_afs_actors))
+    #         .joinedload(t_afs_actors.role)
+    #     )
+    #     .options(
+    #         joinedload(t_af.creator)
+    #     )
+    #     .options(
+    #         joinedload(t_af.t_datasets.of_type(t_dts))
+    #         .joinedload(t_dts.creator)
+    #     )
+    #     .options(
+    #         joinedload(t_af.t_datasets.of_type(t_dts))
+    #         .joinedload(t_dts.cor_dataset_actor.of_type(t_dts_actors))
+    #         .joinedload(t_dts_actors.organism)
+    #     )
+    #     .options(
+    #         joinedload(t_af.t_datasets.of_type(t_dts))
+    #         .joinedload(t_dts.cor_dataset_actor.of_type(t_dts_actors))
+    #         .joinedload(t_dts_actors.role)
+    #     )
+    # )
 
     query = query.filter(or_(cruved_af_filter(t_af, info_role), cruved_ds_filter(t_dts, info_role)))
-
     if args.get("selector") == "af":
         if num is not None:
             query = query.filter(t_af.id_acquisition_framework == num)

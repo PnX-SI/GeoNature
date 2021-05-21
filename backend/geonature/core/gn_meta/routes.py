@@ -4,6 +4,8 @@
 import datetime as dt
 import json
 import logging
+import threading
+
 
 from pathlib import Path
 from binascii import a2b_base64
@@ -19,9 +21,11 @@ from flask import (
     copy_current_request_context,
     Response,
 )
+from sqlalchemy import inspect
 from sqlalchemy.sql import text, exists, select, update
 from sqlalchemy.sql.functions import func
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, NotFound
+from werkzeug.datastructures import Headers
 
 
 from geonature.utils.env import DB, BACKEND_DIR
@@ -50,30 +54,26 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkObjectif,
     CorAcquisitionFrameworkVoletSINP,
 )
-from geonature.core.gn_commons.models import TModules
-from geonature.core.users.models import VUserslistForallMenu
 from geonature.core.gn_meta.repositories import (
     get_datasets_cruved,
     get_af_cruved,
-    get_dataset_details_dict,
     filtered_af_query,
     filtered_ds_query,
     get_metadata_list,
 )
-from .schemas import (
+from geonature.core.gn_meta.schemas import (
     AcquisitionFrameworkSchema,
     DatasetSchema,
 )
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
-from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_meta.mtd import mtd_utils
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
+from geonature.utils.errors import GeonatureApiError
 
 
-import threading
 
 routes = Blueprint("gn_meta", __name__)
 
@@ -119,7 +119,7 @@ def get_datasets(info_role):
             log.error(e)
             with_mtd_error = True
     params = request.args.to_dict()
-    recursif = params.get("recursif", True)
+    recursif = params.get("recursif", False)
     if recursif == "false":
         recursif = False
     datasets = get_datasets_cruved(info_role, params, recursif=recursif)
@@ -778,8 +778,6 @@ def get_acquisition_frameworks(info_role):
             with_mtd_error = True
     params = request.args.to_dict()
     params["orderby"] = "acquisition_framework_name"
-    #params["offset"] = params["offset"] if "offset" in params else 0
-    #params["limit"] = params["limit"] if "limit" in params else 50
 
     if "selector" not in params:
         params["selector"] = None
@@ -787,18 +785,31 @@ def get_acquisition_frameworks(info_role):
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role, module_code="METADATA",
     )[0]
+    nested_serialization = params.get("nested", False)
+    nested_serialization = True if nested_serialization == "true" else False
+    if nested_serialization == "true":
+        nested_serialization = True
+    exclude_fields = []
+    if "excluded_fields" in params:
+        exclude_fields = params.get("excluded_fields")
+        try:
+            exclude_fields = exclude_fields.split(',')
+        except:
+            raise BadRequest("Malformated parameter 'excluded_fields'")
+
+    if not nested_serialization:
+        exclude_fields = [db_rel.key for db_rel in inspect(TAcquisitionFramework).relationships]
 
     acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
-        exclude=(
-            "nomenclature_territorial_level",
-            "nomenclature_financing_type",
-            "cor_volets_sinp",
-            "cor_objectifs",
-        )
+        exclude=exclude_fields
     )
-    acquisitionFrameworkSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
+    if nested_serialization:
+        acquisitionFrameworkSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
 
-    return acquisitionFrameworkSchema.dumps((get_metadata_list(info_role, params).all()), many=True)
+    return acquisitionFrameworkSchema.dumps(
+        get_metadata_list(info_role, params, exclude_fields).all(),
+        many=True
+    )
 
 
 @routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"])

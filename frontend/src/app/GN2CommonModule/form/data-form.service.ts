@@ -332,12 +332,13 @@ export class DataFormService {
   /**
    *
    * @param params: dict of paramters
-   * @param orderByName :default true
    */
-  getAcquisitionFrameworks(searchTerms = {}) {
+  getAcquisitionFrameworks(params = {}) {
+    console.log(params);
+    
     let queryString: HttpParams = new HttpParams();
-    for (let key in searchTerms) {
-      queryString = queryString.set(key, searchTerms[key])
+    for (let key in params) {
+      queryString = queryString.set(key, params[key])
     }
 
     return this._http.get<any>(

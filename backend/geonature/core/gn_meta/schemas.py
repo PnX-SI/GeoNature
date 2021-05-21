@@ -22,7 +22,7 @@ class MetadataSchema(MA.SQLAlchemyAutoSchema):
     def get_user_cruved(self, obj):
         if 'info_role' in self.context and 'user_cruved' in self.context:
             return obj.get_object_cruved(self.context['info_role'], self.context['user_cruved'])
-        return None;
+        return None
 
 class UserSchema(MA.SQLAlchemyAutoSchema):
     class Meta:
@@ -121,12 +121,12 @@ class DatasetSchema(MetadataSchema):
     modules = MA.Nested("ModuleSchema", many=True)
 
     creator = MA.Nested(UserSchema, dump_only=True)
-    nomenclature_data_type = MA.Nested(UserSchema, dump_only=True)
-    nomenclature_dataset_objectif = MA.Nested(UserSchema, dump_only=True)
-    nomenclature_collecting_method = MA.Nested(UserSchema, dump_only=True)
-    nomenclature_data_origin = MA.Nested(UserSchema, dump_only=True)
-    nomenclature_source_status = MA.Nested(UserSchema, dump_only=True)
-    nomenclature_resource_type = MA.Nested(UserSchema, dump_only=True)
+    nomenclature_data_type = MA.Nested(NomenclatureSchema, dump_only=True)
+    nomenclature_dataset_objectif = MA.Nested(NomenclatureSchema, dump_only=True)
+    nomenclature_collecting_method = MA.Nested(NomenclatureSchema, dump_only=True)
+    nomenclature_data_origin = MA.Nested(NomenclatureSchema, dump_only=True)
+    nomenclature_source_status = MA.Nested(NomenclatureSchema, dump_only=True)
+    nomenclature_resource_type = MA.Nested(NomenclatureSchema, dump_only=True)
     cor_territories = MA.Nested(
         NomenclatureSchema,
         many=True
