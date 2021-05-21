@@ -43,16 +43,10 @@ COMMENT ON TABLE gn_meta.cor_acquisition_framework_territory
     IS 'A acquisition_framework must have 1 or n "territoire". Implement 1.3.10 SINP metadata standard : Cible géographique du jeu de données, ou zone géographique visée par le jeu. Défini par une valeur dans la nomenclature TerritoireValue. - OBLIGATOIRE';
  
  
-CREATE SEQUENCE gn_meta.t_bibliographical_references_id_bibliographic_reference_seq
-    INCREMENT 1
-    START 1
-    MINVALUE 1
-    MAXVALUE 9223372036854775807
-    CACHE 1;
  
 CREATE TABLE gn_meta.t_bibliographical_references
 (
-    id_bibliographic_reference bigint NOT NULL DEFAULT nextval('gn_meta.t_bibliographical_references_id_bibliographic_reference_seq'::regclass),
+    id_bibliographic_reference serial NOT NULL,
     id_acquisition_framework integer NOT NULL,
     publication_url character varying COLLATE pg_catalog."default",
     publication_reference character varying COLLATE pg_catalog."default" NOT NULL,
