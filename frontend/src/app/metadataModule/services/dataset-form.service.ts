@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { FormGroup, FormControl, FormArray, FormBuilder, Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap, filter, switchMap, map } from 'rxjs/operators';
@@ -115,8 +115,10 @@ export class DatasetFormService {
     this.actors.push(actorForm);
   }
  
-  removeActor(formaArray: FormArray, i: number): void {
-    formaArray.removeAt(i);
+  removeActor(formArray: FormArray, i: number): void {
+    console.log(formArray);
+    
+    formArray.removeAt(i);
   }
  
   //retourne true sur l'acteur est contact principal
@@ -129,17 +131,12 @@ export class DatasetFormService {
     for (let i = 0; i < this.actors.controls.length; i++) {
       const actorControl = this.actors.controls[i]
       const role_type = this.actorFormS.getRoleTypeByID(actorControl.get('id_nomenclature_actor_role').value);
- 
       if (role_type !== undefined && !this.isMainContact(actorControl)) {
-        if (groups[role_type.definition_default] === undefined) {
-          groups[role_type.definition_default] = [];
-        }
- 
-        groups[role_type.definition_default][i] = actorControl;
+        this.actors.removeAt(i);
+        this.genericActorForm.push(actorControl)
       }
     }
  
-    this.otherActorGroupForms.next(groups);
   }
  
   reset() {

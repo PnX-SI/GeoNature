@@ -105,7 +105,12 @@ export class DatasetFormComponent implements OnInit {
         })
       )
       .subscribe(
-        (dataset: any) => this._router.navigate(['/metadata/dataset_detail', dataset.id_dataset]),
+        (dataset: any) =>{ 
+          console.log(dataset);
+          
+          this._router.navigate(['/metadata/dataset_detail', dataset.id_dataset])
+          
+        },
         error => {
           if (error.status === 403) {
             this._commonService.translateToaster('error', 'NotAllowed');

@@ -1,34 +1,4 @@
-<ng-container *ngIf="!toggleForm; else formBlock">
-  <div class="dislay-actor">
-    <div class="pull-right">
-      <button
-        mat-icon-button
-        color="primary"
-        (click)="toggleForm=true"
-        matTooltip="Modifier cet acteur"
-      >
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button
-        mat-icon-button
-        color="warn"
-        matTooltip="Supprimer cet acteur"
-        (click)="remove()"
-      >
-        <mat-icon>clear</mat-icon>
-      </button>
-    </div>
-    <div *ngIf="organismValue">
-      <small><b>Organisme</b> :</small>
-      <div style="padding-left: 10px;">{{ organismValue?.nom_organisme || ' - ' }}</div>
-    </div>
-    <div *ngIf="roleValue">
-      <small><b>Role</b> :</small>
-      <div style="padding-left: 10px;">{{ roleValue?.nom_complet || ' - ' }}</div>
-    </div>
-  </div>
-</ng-container>
-<ng-template #formBlock>
+<div >
   <mat-button-toggle-group
     [(value)] = "toggleButtonValue"
     #group="matButtonToggleGroup"
@@ -37,19 +7,21 @@
     <mat-button-toggle
       value="organism"
       matTooltip="Renseigner un organisme uniquement"
-      checked="true"
+      [checked]="defaultTab == 'organism'"
     >
       <mat-icon>domain</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="person"
       matTooltip="Renseigner une personne uniquement"
+      [checked]="defaultTab == 'person'"
     >
       <mat-icon>person</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="all"
       matTooltip="Renseigner un organisme et un personne"
+      [checked]="defaultTab == 'all'"
     >
       <mat-icon>domain</mat-icon>
       <mat-icon>person</mat-icon>
@@ -123,4 +95,4 @@
     </ng-container>
 
   </form>
-</ng-template>
+</div>

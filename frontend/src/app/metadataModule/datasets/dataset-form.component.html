@@ -248,6 +248,8 @@
               [isRemovable]="idx != 0"
               metadataType="dataset"
               (actorFormRemove)="datasetFormS.removeActor(datasetFormS.actors, idx)"
+              [defaultTab]="datasetFormS.dataset?.value?.id_dataset ? 'all': 'organism'"
+
             >
             </pnx-metadata-actor>
           </ng-container>
@@ -274,10 +276,10 @@
             [actorForm]="actorForm"
             metadataType="dataset"
             (actorFormRemove)="datasetFormS.removeActor(datasetFormS.genericActorForm, idx)"
+            [defaultTab]="datasetFormS.dataset?.value?.id_dataset ? 'all': 'organism'"
             >
             </pnx-metadata-actor>
           </ng-container>
-
           <button
             class="mt-2"
             type="button"
@@ -287,23 +289,6 @@
           >
             <mat-icon>add</mat-icon>
           </button>
-
-          <ng-container *ngIf="(datasetFormS.otherActorGroupForms|async) != {}">
-            <ng-container *ngFor="let otherActorGroupForm of (datasetFormS.otherActorGroupForms|async) | keyvalue">
-              <h5 class="actor-title"> {{ otherActorGroupForm.key }} </h5>
-              <ng-container *ngFor="let otherActorForm of otherActorGroupForm.value; let idx = index">
-                <!-- otherActorForm peut être undefined car setOtherActorGroupForms() conserve les indexs initiaux de form.cor_dataset_actor -->
-                <pnx-metadata-actor
-                  *ngIf="otherActorForm"
-                  [actorForm]="otherActorForm"
-                  (actorFormRemove)="datasetFormS.removeActor(idx)"
-                  metadataType="dataset"
-                >
-                </pnx-metadata-actor>
-
-              </ng-container>
-            </ng-container>
-          </ng-container>
 
         </div>
       </div>

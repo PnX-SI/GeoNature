@@ -19,6 +19,7 @@ export class ActorComponent implements OnInit {
   @Output() actorFormSubmit = new EventEmitter<boolean>();
   @Output() actorFormRemove = new EventEmitter<boolean>();
   @Input() metadataType: 'dataset'|'af' = null;
+  @Input() defaultTab: 'organism' | 'person' | 'all'
 
   //liste des organismes pour peupler le select HTML
   get organisms() { return this.actorFormS.organisms; }
