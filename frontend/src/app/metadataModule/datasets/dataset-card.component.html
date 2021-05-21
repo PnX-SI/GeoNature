@@ -151,13 +151,21 @@
           <br />
 
           <div class="b">Territoires</div>
+          <ul class="a">
+            <li *ngFor="let ter of dataset?.cor_territories">
+              - {{ter.label_default}}
+            </li>
+          </ul>
           <div class="a">
             <b> Couverture du territoire terrestre :</b>
-            {{dataset.terrestrial_domain ? "oui" : "non"}} </div>
+            {{dataset.terrestrial_domain ? "oui" : "non"}}
+           </div>
           <div class="a">
             <b>Couverture du territoire marin : </b>
             {{dataset.marine_domain ? "oui" : "non"}}
           </div>
+
+
           <br />
 
           <div class="b">Cadre de référence</div>

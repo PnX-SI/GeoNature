@@ -14,13 +14,21 @@
   font-size: 14px;
 }
 
-div.a {
+.a {
   margin-left: 60px;
   font-size: 90%;
   line-height: 150%;
 }
 
-div.b {
+ul.a {
+  padding-left: 0px;
+  margin-bottom: 0px;
+}
+.a li {
+  list-style-type: none;
+}
+
+.b {
   text-indent: 20px;
   font-weight: bold;
   font-size: 110%;

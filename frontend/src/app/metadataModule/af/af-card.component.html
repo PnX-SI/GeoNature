@@ -211,6 +211,11 @@
 
           <div>
             <div class="b">Territoires concernés </div>
+            <ul class="a">
+              <li *ngFor="let ter of af?.cor_territories">
+                - {{ter.label_default}}
+              </li>
+            </ul>
             <div class="a"> <b> Etendue territoriale : </b>{{af?.nomenclature_territorial_level?.label_default}}
             </div>
 
@@ -242,6 +247,18 @@
             <div class="a"> {{af?.keywords}} </div>
             <br />
           </div>
+
+          <div *ngIf="af?.bibliographical_references">
+            <div class="b">Référence bibliographiques </div>
+            <ul class="a">
+              <li *ngFor="let ref of af?.bibliographical_references">
+                - <b>Url : </b> <a [href]="ref.publication_url">{{ref.publication_url}}</a>  
+                <b> rérérence : </b> {{ref.publication_reference}}
+              </li>
+            </ul>
+            <div class="a"> {{af?.keywords}} </div>
+          </div>
+          
 
         </div>
       </div>
