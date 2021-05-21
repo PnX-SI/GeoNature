@@ -8,7 +8,6 @@
       <mat-slide-toggle
         *ngIf="!stateChangeSaving"
         [checked]="dataset.active"
-        color="primary"
         [matTooltip]="dataset.active ? 'Le jeu de données est actif' : 'Le jeu de données est inactif'"
         (change)="switchDatasetState($event)"
       >
