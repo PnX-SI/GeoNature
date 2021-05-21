@@ -88,6 +88,8 @@ class NomenclatureSchema(MA.SQLAlchemyAutoSchema):
             "definition_de",
             "label_it",
             "definition_it",
+            "meta_create_date",
+            "meta_update_date"
         )
 
 class DatasetActorSchema(MA.SQLAlchemyAutoSchema):
