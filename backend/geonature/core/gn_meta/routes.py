@@ -763,6 +763,9 @@ def get_acquisition_frameworks(info_role):
     .. :quickref: Metadata;
     :param info_role: add with kwargs
     :type info_role: TRole
+    :qparam list excluded_fields: fields excluded from serialization
+    :qparam boolean nested: Default False - serialized relationships. If false: remove add all relationships in excluded_fields
+
     :returns:  `dict{'data':list<AF with Datasets>, 'with_erros': <boolean>}`
     """
     with_mtd_error = False
