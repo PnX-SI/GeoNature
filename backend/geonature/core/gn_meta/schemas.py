@@ -5,15 +5,13 @@ from .models import (
     TAcquisitionFramework,
     CorAcquisitionFrameworkActor,
     CorDatasetActor,
-    CorAcquisitionFrameworkVoletSINP,
-    CorAcquisitionFrameworkObjectif,
     TBibliographicReference
 )
-from pypnusershub.db.models import User
-from pypnusershub.db.models import Organisme
-from pypnnomenclature.models import TNomenclatures
+from pypnusershub.db.models import User, Organisme
+from pypnusershub.schemas import UserSchema, OrganismeSchema
+from pypnnomenclature.schemas import NomenclatureSchema
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
-from geonature.core.gn_commons.models import CorModuleDataset, TModules
+from geonature.core.gn_commons.models import TModules
 
 
 class MetadataSchema(MA.SQLAlchemyAutoSchema):
@@ -24,73 +22,6 @@ class MetadataSchema(MA.SQLAlchemyAutoSchema):
             return obj.get_object_cruved(self.context['info_role'], self.context['user_cruved'])
         return None
 
-class UserSchema(MA.SQLAlchemyAutoSchema):
-    class Meta:
-        model = User
-        load_instance = True
-        exclude = (
-            "_password",
-            "_password_plus",
-            "active",
-            "date_insert",
-            "date_update",
-            "desc_role",
-            "email",
-            "groupe",
-            "remarques",
-            "identifiant",
-        )
-
-    nom_complet = fields.Function(
-        lambda obj: (obj.nom_role if obj.nom_role else "")
-        + (" " + obj.prenom_role if obj.prenom_role else "")
-    )
-
-    @pre_load
-    def make_observer(self, data, **kwargs):
-        if isinstance(data, int):
-            return dict({"id_role": data})
-        return data
-
-class OrganismeSchema(MA.SQLAlchemyAutoSchema):
-    class Meta:
-        model = Organisme
-        load_instance = True
-
-class ModuleSchema(MA.SQLAlchemyAutoSchema):
-    class Meta:
-        model = TModules
-        load_instance = True
-        exclude = (
-            "module_picto",
-            "module_desc",
-            "module_group",
-            "module_path",
-            "module_external_url",
-            "module_target",
-            "module_comment",
-            "active_frontend",
-            "active_backend",
-            "module_doc_url",
-            "module_order",
-        )
-
-class NomenclatureSchema(MA.SQLAlchemyAutoSchema):
-    class Meta:
-        model = TNomenclatures
-        load_instance = True
-        exclude = (
-            "label_en",
-            "definition_en",
-            "label_es",
-            "definition_es",
-            "label_de",
-            "definition_de",
-            "label_it",
-            "definition_it",
-            "meta_create_date",
-            "meta_update_date"
-        )
 
 class DatasetActorSchema(MA.SQLAlchemyAutoSchema):
     class Meta:

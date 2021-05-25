@@ -303,25 +303,6 @@ class CruvedHelper(DB.Model):
 
         return False
 
-#    def get_object_cruved(
-#        self, user_cruved, id_object: int, ids_object_user: list, ids_object_organism: list,
-#    ):
-#        """
-#        Return the user's cruved for a Model instance.
-#        Use in the map-list interface to allow or not an action
-#        params:
-#            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
-#            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
-#            - id_role: identifiant de la personne qui demande la route
-#            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
-#            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
-#
-#        Return: dict {'C': True, 'R': False ...}
-#        """
-#        return {
-#            action: self.user_is_allowed_to(id_object, ids_object_user, ids_object_organism, level)
-#            for action, level in user_cruved.items()
-#        }
 
 
 @serializable
@@ -625,7 +606,7 @@ class TAcquisitionFramework(CruvedHelper):
         backref=DB.backref("territory_af", lazy="select")
     )
 
-    bibliographical_references = relationship(
+    bibliographical_references = DB.relationship(
         "TBibliographicReference",
         lazy="select",
         cascade="all,delete-orphan",
@@ -633,7 +614,7 @@ class TAcquisitionFramework(CruvedHelper):
         backref=DB.backref("acquisition_framework", lazy="select"),
     )
 
-    t_datasets = relationship(
+    t_datasets = DB.relationship(
         "TDatasets",
         lazy="select",
         cascade="all,delete-orphan",

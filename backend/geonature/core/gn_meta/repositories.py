@@ -104,8 +104,6 @@ def get_metadata_list(info_role, args, exclude_cols):
         db_rel.key for db_rel in inspect(TAcquisitionFramework).relationships
         if db_rel.key not in exclude_cols
     ]
-
-    print("LOADED JOIN", joined_loads_rels)
     
     num = request.args.get("num")
     uuid = args.get("uuid")
@@ -123,34 +121,6 @@ def get_metadata_list(info_role, args, exclude_cols):
         query = query.options(
             joinedload(getattr(t_af, rel))
         )
-    # query_bis = (
-    #     DB.session.query(t_af)
-    #     .options(
-    #         joinedload(t_af.cor_af_actor.of_type(t_afs_actors))
-    #         .joinedload(t_afs_actors.organism)
-    #     )
-    #     .options(
-    #         joinedload(t_af.cor_af_actor.of_type(t_afs_actors))
-    #         .joinedload(t_afs_actors.role)
-    #     )
-    #     .options(
-    #         joinedload(t_af.creator)
-    #     )
-    #     .options(
-    #         joinedload(t_af.t_datasets.of_type(t_dts))
-    #         .joinedload(t_dts.creator)
-    #     )
-    #     .options(
-    #         joinedload(t_af.t_datasets.of_type(t_dts))
-    #         .joinedload(t_dts.cor_dataset_actor.of_type(t_dts_actors))
-    #         .joinedload(t_dts_actors.organism)
-    #     )
-    #     .options(
-    #         joinedload(t_af.t_datasets.of_type(t_dts))
-    #         .joinedload(t_dts.cor_dataset_actor.of_type(t_dts_actors))
-    #         .joinedload(t_dts_actors.role)
-    #     )
-    # )
 
     query = query.filter(or_(cruved_af_filter(t_af, info_role), cruved_ds_filter(t_dts, info_role)))
     if args.get("selector") == "af":

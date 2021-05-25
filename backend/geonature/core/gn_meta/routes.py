@@ -24,7 +24,7 @@ from flask import (
 from sqlalchemy import inspect
 from sqlalchemy.sql import text, exists, select, update
 from sqlalchemy.sql.functions import func
-from werkzeug.exceptions import BadRequest, NotFound
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 from werkzeug.datastructures import Headers
 
 
@@ -328,9 +328,13 @@ def delete_dataset(info_role, ds_id):
     if not is_dataset_deletable(ds_id):
         raise GeonatureApiError(
             "La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse",
-            500,
+            406,
         )
-
+    user_actor = TDatasets.get_user_datasets(info_role)
+    dataset = TDatasets.query.get(ds_id)
+    allowed = dataset.user_is_allowed_to(user_actor, info_role, info_role.value_filter)
+    if not allowed:
+        raise Forbidden(f"User {info_role.id_role} cannot delete dataset {dataset.id_dataset}")
     DB.session.query(CorDatasetActor).filter(CorDatasetActor.id_dataset == ds_id).delete()
 
     DB.session.query(CorDatasetProtocol).filter(CorDatasetProtocol.id_dataset == ds_id).delete()
@@ -343,7 +347,7 @@ def delete_dataset(info_role, ds_id):
 
     DB.session.commit()
 
-    return '', 204 #DELETE No Content
+    return '', 204
 
 
 @routes.route("/uuid_report", methods=["GET"])
@@ -768,7 +772,6 @@ def get_acquisition_frameworks(info_role):
 
     :returns:  `dict{'data':list<AF with Datasets>, 'with_erros': <boolean>}`
     """
-    with_mtd_error = False
     if current_app.config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
         # synchronise the CA and JDD from the MTD WS
         try:
@@ -778,7 +781,6 @@ def get_acquisition_frameworks(info_role):
         except Exception as e:
             gunicorn_error_logger.info(e)
             log.error(e)
-            with_mtd_error = True
     params = request.args.to_dict()
     params["orderby"] = "acquisition_framework_name"
 
@@ -790,8 +792,6 @@ def get_acquisition_frameworks(info_role):
     )[0]
     nested_serialization = params.get("nested", False)
     nested_serialization = True if nested_serialization == "true" else False
-    if nested_serialization == "true":
-        nested_serialization = True
     exclude_fields = []
     if "excluded_fields" in params:
         exclude_fields = params.get("excluded_fields")
@@ -801,6 +801,7 @@ def get_acquisition_frameworks(info_role):
             raise BadRequest("Malformated parameter 'excluded_fields'")
 
     if not nested_serialization:
+        # exclude all relationships from serialization if nested = false
         exclude_fields = [db_rel.key for db_rel in inspect(TAcquisitionFramework).relationships]
 
     acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
@@ -994,13 +995,6 @@ def delete_acquisition_framework(info_role, af_id):
     Delete an acquisition framework
     .. :quickref: Metadata;
     """
-    if info_role.value_filter == "0":
-        raise InsufficientRightsError(
-            ('User "{}" cannot "{}" an acquisition_framework').format(
-                info_role.id_role, info_role.code_action
-            ),
-            403,
-        )
 
     if not is_af_deletable(af_id):
         raise GeonatureApiError(
