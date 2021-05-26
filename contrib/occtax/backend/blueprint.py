@@ -307,6 +307,7 @@ def insertOrUpdateOneReleve(info_role):
 
     releveRepository = ReleveRepository(TRelevesOccurrence)
     data = dict(request.get_json())
+    depth = data.pop("depth", None)
     occurrences_occtax = None
     if "t_occurrences_occtax" in data["properties"]:
         occurrences_occtax = data["properties"]["t_occurrences_occtax"]
@@ -396,7 +397,7 @@ def insertOrUpdateOneReleve(info_role):
     DB.session.commit()
     DB.session.flush()
 
-    return releve.get_geofeature()
+    return releve.get_geofeature(depth=depth)
 
 
 def releveHandler(request, *, releve, info_role):

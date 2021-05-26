@@ -268,8 +268,8 @@ class TRelevesOccurrence(ReleveModel):
 
     readonly_fields = ["id_releve_occtax", "t_occurrences_occtax", "observers"]
 
-    def get_geofeature(self, fields=[]):
-        return self.as_geofeature("geom_4326", "id_releve_occtax", fields=fields)
+    def get_geofeature(self, fields=[], depth=None):
+        return self.as_geofeature("geom_4326", "id_releve_occtax", fields=fields, depth=depth)
 
 
 @serializable
