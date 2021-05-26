@@ -34,14 +34,3 @@ class TestAPICore:
     #     # )
     #     assert response.status_code == 200
 
-    def test_gn_core_generic_view(self):
-        query_string = {"cd_nom": 60612, "ilike_lb_nom": "Ly"}
-        response = self.client.get(
-            url_for(
-                "core.get_generic_view",
-                view_schema="gn_synthese",
-                view_name="v_synthese_for_web_app",
-            ),
-            query_string=query_string,
-        )
-        assert response.status_code == 200
