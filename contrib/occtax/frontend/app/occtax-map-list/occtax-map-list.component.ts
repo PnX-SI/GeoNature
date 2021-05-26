@@ -276,7 +276,7 @@ export class OcctaxMapListComponent
    */
   displayTaxonsTooltip(row): any[] {
     let tooltip = [];
-    if (row.t_occurrences_occtax === undefined) {
+    if (row.t_occurrences_occtax && row.t_occurrences_occtax.length == 0) {
       tooltip.push({ taxName: "Aucun taxon" });
     } else {
       for (let i = 0; i < row.t_occurrences_occtax.length; i++) {
