@@ -6,7 +6,7 @@ import time
 
 from collections import OrderedDict
 
-from flask import Blueprint, request, current_app, send_from_directory, render_template
+from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
@@ -113,7 +113,7 @@ def get_observations_for_web(info_role):
     :>jsonarr int nb_total: Number of observations
     :>jsonarr bool nb_obs_limited: Is number of observations capped
     """
-    if request.json:
+    if request.is_json:
         filters = request.json
     elif request.data:
         #  decode byte to str - compat python 3.5
@@ -758,7 +758,6 @@ def getDefaultsNomenclatures():
 
 
 @routes.route("/color_taxon", methods=["GET"])
-@json_resp
 def get_color_taxon():
     """Get color of taxon in areas (vue synthese.v_color_taxon_area).
 
@@ -791,7 +790,7 @@ def get_color_taxon():
         q = q.filter(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
     data = q.limit(limit).offset(offset).all()
 
-    return [d.as_dict() for d in data]
+    return jsonify([d.as_dict() for d in data])
 
 
 @routes.route("/taxa_count", methods=["GET"])
