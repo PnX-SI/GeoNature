@@ -32,7 +32,7 @@ BACKEND_DIR = ROOT_DIR / "backend"
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/geonature_config.toml"
 
 os.environ['FLASK_SQLALCHEMY_DB'] = 'geonature.utils.env.DB'
-os.environ['MARSHMALLOW_OBJ'] = 'geonature.utils.env.MA'
+os.environ['FLASK_MARSHMALLOW'] = 'geonature.utils.env.MA'
 DB = SQLAlchemy()
 MA = Marshmallow()
 migrate = Migrate()
