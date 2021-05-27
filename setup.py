@@ -23,6 +23,9 @@ setuptools.setup(
     package_dir={'': 'backend'},
     package_data={'geonature.tests': ['data/*.sql']},
     install_requires=list(open('backend/requirements.in', 'r')),
+    extra_requires={
+        'tests': ['pytest', 'pytest-flask'],
+    },
     classifiers=[
         "Framework :: Flask",
         "Programming Language :: Python :: 3",
