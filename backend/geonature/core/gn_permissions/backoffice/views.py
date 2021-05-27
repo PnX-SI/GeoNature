@@ -322,7 +322,6 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None):
     filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
 
     if request.method == "POST" and form.validate_on_submit():
-        print(form.data)
         permInstance = CorRoleActionFilterModuleObject(
             id_permission=id_permission,
             id_role=id_role,
