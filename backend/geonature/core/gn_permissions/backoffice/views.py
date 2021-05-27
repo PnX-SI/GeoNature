@@ -322,13 +322,13 @@ def other_permissions_form(id_role, id_filter_type, id_permission=None):
     filter_type = DB.session.query(BibFiltersType).get(id_filter_type)
 
     if request.method == "POST" and form.validate_on_submit():
-
+        print(form.data)
         permInstance = CorRoleActionFilterModuleObject(
             id_permission=id_permission,
             id_role=id_role,
-            id_action=int(form.data["action"]),
+            id_action=form.data["action"].id_action,
             id_filter=int(form.data["filter"]),
-            id_module=int(form.data["module"]),
+            id_module=form.data["module"].id_module,
         )
         if id_permission:
             DB.session.merge(permInstance)
