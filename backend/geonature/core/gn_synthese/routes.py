@@ -17,7 +17,7 @@ from utils_flask_sqla_geo.generic import GenericTableGeo
 
 
 from geonature.utils import filemanager
-from geonature.utils.env import DB, ROOT_DIR
+from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 

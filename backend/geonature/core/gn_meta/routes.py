@@ -9,6 +9,7 @@ import threading
 
 from pathlib import Path
 from binascii import a2b_base64
+from flask.json import jsonify
 
 from lxml import etree as ET
 
@@ -179,7 +180,7 @@ def get_dataset(info_role, id_dataset):
     if not dataset:
         raise NotFound('Dataset "{}" does not exist'.format(id_dataset))
 
-    return datasetSchema.dumps(dataset)
+    return datasetSchema.jsonify(dataset)
 
 
 @routes.route("/upload_canvas", methods=["POST"])
@@ -542,11 +543,9 @@ def create_dataset(info_role):
    """
 
    # create new dataset
-   t = DatasetSchema().dump(
+   return DatasetSchema().jsonify(
        datasetHandler(request=request, dataset=TDatasets(), info_role=info_role)
    )
-   print("OHHHHHHHHHHHHHHHHHHHHh", t)
-   return t
 
 
 @routes.route("/dataset/<int:id_dataset>", methods=["POST", "PATCH"])
@@ -563,7 +562,7 @@ def update_dataset(id_dataset, info_role):
     if not dataset:
         return {"message": "not found"}, 404
 
-    return DatasetSchema().dump(
+    return DatasetSchema().jsonify(
         datasetHandler(request=request, dataset=dataset, info_role=info_role)
     )
 
@@ -635,18 +634,34 @@ def get_export_pdf_dataset(id_dataset, info_role):
 
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 
-
 @routes.route("/acquisition_frameworks", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="METADATA")
+@permissions.check_cruved_scope("R", True, )
 def get_acquisition_frameworks(info_role):
     """
-    Get all AF with their datasets 
-    The Cruved in only apply on dataset in order to see all the AF
-    where the user have rights with its dataset
+        Get a simple list of AF without any nested relationships
+        Use for AF select in form
+        Get the GeoNature CRUVED
+    """
+    params = request.args.to_dict()
+    exclude_fields = [db_rel.key for db_rel in inspect(TAcquisitionFramework).relationships]
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
+        exclude=exclude_fields
+    )
+    return acquisitionFrameworkSchema.jsonify(
+        get_metadata_list(info_role, params, exclude_fields).all(),
+        many=True
+    )
 
+@routes.route("/list/acquisition_frameworks", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
+def get_acquisition_frameworks_list(info_role):
+    """
+    Get all AF with their datasets 
+    Use in metadata module for list of AF and DS
     Add the CRUVED permission for each row (Dataset and AD)
     
     .. :quickref: Metadata;
+
     :param info_role: add with kwargs
     :type info_role: TRole
     :qparam list excluded_fields: fields excluded from serialization
@@ -687,14 +702,13 @@ def get_acquisition_frameworks(info_role):
     acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
         exclude=exclude_fields
     )
-    if nested_serialization:
-        acquisitionFrameworkSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
-
-    return acquisitionFrameworkSchema.dumps(
+    acquisitionFrameworkSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
+    print("LAAAAAAAAa", nested_serialization)
+    print("LAAAAAAAAa", exclude_fields)
+    return acquisitionFrameworkSchema.jsonify(
         get_metadata_list(info_role, params, exclude_fields).all(),
         many=True
     )
-
 
 @routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"])
 @permissions.check_cruved_scope("E", True, module_code="METADATA")
@@ -865,7 +879,7 @@ def get_acquisition_framework(info_role, id_acquisition_framework):
     acquisition_framework = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
     if not acquisition_framework:
         raise NotFound('Acquisition framework "{}" does not exist'.format(id_acquisition_framework))
-    return acquisitionFrameworkSchema.dumps(acquisition_framework)
+    return acquisitionFrameworkSchema.jsonify(acquisition_framework)
 
 
 @routes.route("/acquisition_framework/<int:af_id>", methods=["DELETE"])

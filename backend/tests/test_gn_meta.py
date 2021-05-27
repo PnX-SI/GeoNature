@@ -215,3 +215,34 @@ class TestGnMeta:
             self.client, url_for("gn_meta.create_acquisition_framework"), json_dict=one_ca
         )
         assert response.status_code == 200
+
+    def test_get_af_list(self):
+        token = get_token(self.client, login="admin", password="admin")
+        self.client.set_cookie("/", "token", token)
+        query_string = {
+            "nested": "true",
+            "excluded_fields": "creator"
+        }
+        response = self.client.get(
+            url_for("gn_meta.get_acquisition_frameworks_list"),
+            query_string=query_string
+        )
+        assert response.status_code == 200
+        afs = response.get_json()
+        af = afs[0]
+        assert "creator" not in af 
+        assert "nomenclature_financing_type" in af
+
+    def test_get_afs(self):
+        token = get_token(self.client, login="admin", password="admin")
+        self.client.set_cookie("/", "token", token)
+        response = self.client.get(
+            url_for("gn_meta.get_acquisition_frameworks"),
+        )
+        assert response.status_code == 200
+        afs = response.get_json()
+        af = afs[0]
+        # check there are NO relationship in the result
+        for key, val in af.items():
+            assert type(val) is not dict
+            assert type(val) is not list
