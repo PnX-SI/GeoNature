@@ -50,7 +50,7 @@ def get_cruved(info_role):
     # then get its related object and their cruved
     modules_with_cruved = {}
     for mod in modules:
-        mod_as_dict = mod.as_dict(True, depth=1)
+        mod_as_dict = mod.as_dict(depth=1)
         module_cruved, herited = cruved_scope_for_user_in_module(
             id_role=info_role.id_role, module_code=mod_as_dict["module_code"]
         )

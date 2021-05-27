@@ -207,7 +207,7 @@ def get_dataset_details_dict(id_dataset, session_role):
         data = q.filter(TDatasetDetails.id_dataset == id_dataset).one()
     except NoResultFound:
         return None
-    dataset = data.as_dict(True, depth=2)
+    dataset = data.as_dict(depth=2)
 
     imports = requests.get(
         current_app.config["API_ENDPOINT"] + "/import/by_dataset/" + str(id_dataset),
