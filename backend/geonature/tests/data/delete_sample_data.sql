@@ -1,18 +1,27 @@
 
 
-TRUNCATE pr_occtax.t_releves_occtax CASCADE;
+DELETE FROM pr_occtax.t_releves_occtax CASCADE;
 
-TRUNCATE gn_meta.t_datasets CASCADE;
+DELETE FROM gn_synthese.synthese CASCADE;
 
-TRUNCATE gn_meta.t_acquisition_frameworks CASCADE;
+DELETE FROM gn_commons.cor_module_dataset CASCADE;
+DELETE FROM gn_meta.cor_dataset_actor CASCADE;
+DELETE FROM gn_meta.cor_dataset_territory CASCADE;
+DELETE FROM gn_meta.cor_dataset_protocol CASCADE;
+DELETE FROM gn_meta.t_datasets CASCADE;
 
-TRUNCATE gn_permissions.cor_role_action_filter_module_object CASCADE;
+DELETE FROM gn_meta.cor_acquisition_framework_voletsinp CASCADE;
+DELETE FROM gn_meta.cor_acquisition_framework_actor CASCADE;
+DELETE FROM gn_meta.cor_acquisition_framework_objectif CASCADE;
+DELETE FROM gn_meta.cor_acquisition_framework_publication CASCADE;
+DELETE FROM gn_meta.cor_acquisition_framework_territory CASCADE;
+DELETE FROM gn_meta.t_acquisition_frameworks CASCADE;
 
-TRUNCATE gn_synthese.synthese CASCADE;
+DELETE FROM gn_permissions.cor_role_action_filter_module_object CASCADE;
 
-TRUNCATE utilisateurs.cor_role_app_profil CASCADE;
+DELETE FROM utilisateurs.cor_role_app_profil CASCADE;
 
-TRUNCATE taxonomie.cor_taxon_attribut;
+DELETE FROM taxonomie.cor_taxon_attribut;
 
 -- set the serial of synthese to 0
 SELECT pg_catalog.setval('gn_synthese.synthese_id_synthese_seq', 1, true);

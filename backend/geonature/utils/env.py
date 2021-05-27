@@ -23,7 +23,7 @@ from flask import current_app
 # because GEONATURE_VERSION is imported in this module
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 try:
-    GEONATURE_VERSION = pkg_resources.require("geonature")[0].version
+    GEONATURE_VERSION = pkg_resources.get_distribution("geonature").version
 except pkg_resources.DistributionNotFound:
     with open(str((ROOT_DIR / "VERSION"))) as v:
         GEONATURE_VERSION = v.read()
