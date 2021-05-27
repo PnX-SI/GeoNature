@@ -1,4 +1,5 @@
 import json
+import pkg_resources
 
 import pytest
 from flask import testing
@@ -20,12 +21,11 @@ class JSONClient(testing.FlaskClient):
             headers.extend(Headers({
                 'Accept': 'application/json, text/plain, */*',
             }))
-        if 'Content-Type' not in headers:
+        if 'Content-Type' not in headers and 'data' in kwargs:
+            kwargs['data'] = json.dumps(kwargs['data'])
             headers.extend(Headers({
                 'Content-Type': 'application/json',
             }))
-            if 'data' in kwargs:
-                kwargs['data'] = json.dumps(kwargs['data'])
         kwargs['headers'] = headers
         return super().open(*args, **kwargs)
 
@@ -38,6 +38,14 @@ def app():
     app.config['SERVER_NAME'] = 'test.geonature.fr'  # required by url_for
 
     with app.app_context():
+        """
+        Note: This may seem redundant with 'temporary_transaction' fixture.
+        It is not as 'temporary_transaction' has a function scope.
+        This nested transaction is useful to rollback class-scoped fixtures.
+        Note: As we does not have a complex savepoint restart mechanism here,
+        fixtures must commit their database changes in a nested transaction
+        (i.e. in a with db.session.begin_nested() block).
+        """
         transaction = db.session.begin_nested()  # execute tests in a savepoint
         yield app
         transaction.rollback()  # rollback all database changes
@@ -123,8 +131,17 @@ def datasets(users):
 
 
 
+@pytest.fixture(scope='class')
+def sample_data(app):
+    with db.session.begin_nested():
+        for sql_file in ['delete_sample_data.sql', 'sample_data.sql']:
+            operations = pkg_resources.resource_string("geonature.tests", f"data/{sql_file}") \
+                                      .decode('utf-8')
+            db.session.execute(operations)
+
+
 @pytest.fixture(scope='function')
-def client(app):
+def temporary_transaction(app):
     """
     We start two nested transaction (SAVEPOINT):
         - The outer one will be used to rollback all changes made by the current test function.
@@ -147,8 +164,7 @@ def client(app):
 
     db.event.listen(db.session, "after_transaction_end", restart_savepoint)
 
-    with app.test_client() as client:
-        yield client
+    yield
 
     db.event.remove(db.session, "after_transaction_end", restart_savepoint)
 
