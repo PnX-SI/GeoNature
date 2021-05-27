@@ -87,7 +87,7 @@ class VSyntheseValidation(DB.Model):
             where(TMedias.uuid_attached_row==unique_id_sinp)
     )
 
-    def get_geofeature(self, recursif=False, columns=()):
+    def get_geofeature(self, recursif=False, fields=()):
         return self.as_geofeature(
-            "the_geom_4326", "id_synthese", recursif, columns=columns
+            "the_geom_4326", "id_synthese", recursif, fields=fields
         )

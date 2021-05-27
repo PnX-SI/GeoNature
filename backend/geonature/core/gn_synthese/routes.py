@@ -7,6 +7,7 @@ import time
 from collections import OrderedDict
 
 from flask import Blueprint, request, current_app, send_from_directory, render_template
+from flask.json import jsonify
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
@@ -208,7 +209,7 @@ def get_synthese(info_role):
     columns = current_app.config["SYNTHESE"]["COLUMNS_API_SYNTHESE_WEB_APP"] + MANDATORY_COLUMNS
     features = []
     for d in data:
-        feature = d.get_geofeature(columns=columns)
+        feature = d.get_geofeature(fields=columns)
         feature["properties"]["nom_vern_or_lb_nom"] = (
             d.lb_nom if d.nom_vern is None else d.nom_vern
         )
@@ -221,7 +222,6 @@ def get_synthese(info_role):
 
 
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
-@json_resp
 def get_one_synthese(id_synthese):
     """Get one synthese record for web app with all decoded nomenclature
 
@@ -259,9 +259,12 @@ def get_one_synthese(id_synthese):
     )
     try:
         data = q.one()
-        synthese_as_dict = data[0].as_dict(True)
+        synthese_as_dict = data[0].as_dict(
+            depth=2,
+        )
+
         synthese_as_dict["actors"] = data[1]
-        return synthese_as_dict
+        return jsonify(synthese_as_dict)
     except exc.NoResultFound:
         return None
 

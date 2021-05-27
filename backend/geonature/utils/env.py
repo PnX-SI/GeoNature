@@ -2,16 +2,15 @@
 
 import os
 import subprocess
-import sys
 
 from pathlib import Path
 import pkg_resources
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm.exc import NoResultFound
 from flask_marshmallow import Marshmallow
 from flask_mail import Mail
 from flask_migrate import Migrate
+
 
 
 # Must be at top of this file. I don't know why (?)
@@ -54,3 +53,6 @@ def import_requirements(req_file):
     cmd_return = subprocess.call(["pip", "install", "-r", req_file])
     if cmd_return != 0:
         raise GeoNatureError("Error while installing module backend dependencies")
+
+
+

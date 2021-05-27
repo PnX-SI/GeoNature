@@ -8,9 +8,6 @@ import logging
 
 from flask import Blueprint, request, current_app, jsonify
 
-from utils_flask_sqla.response import json_resp
-from utils_flask_sqla.generic import GenericQuery
-
 from geonature.utils.env import DB
 from geonature.core.gn_monitoring.config_manager import generate_config
 

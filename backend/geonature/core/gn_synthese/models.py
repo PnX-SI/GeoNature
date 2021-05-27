@@ -153,8 +153,8 @@ class Synthese(DB.Model):
     last_action = DB.Column(DB.Unicode)
     areas = relationship('LAreas', secondary=corAreaSynthese)
 
-    def get_geofeature(self, recursif=True, columns=None):
-        return self.as_geofeature("the_geom_4326", "id_synthese", recursif, columns=columns)
+    def get_geofeature(self, recursif=True, fields=None):
+        return self.as_geofeature("the_geom_4326", "id_synthese", recursif, fields=fields)
 
 
 @serializable
@@ -268,8 +268,8 @@ class VSyntheseForWebApp(DB.Model):
             where(TMedias.uuid_attached_row==unique_id_sinp)
     )
 
-    def get_geofeature(self, recursif=False, columns=()):
-        return self.as_geofeature("the_geom_4326", "id_synthese", recursif, columns=columns)
+    def get_geofeature(self, recursif=False, fields=[]):
+        return self.as_geofeature("the_geom_4326", "id_synthese", recursif, fields=fields)
 
 
 # Non utilisé - laissé pour exemple d'une sérialisation ordonnée
@@ -329,8 +329,6 @@ def synthese_export_serialization(cls):
 
     return cls
 
-
-@serializable
 @geoserializable
 class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
     """

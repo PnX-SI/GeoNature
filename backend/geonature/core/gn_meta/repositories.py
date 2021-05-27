@@ -167,7 +167,7 @@ def get_metadata_list(info_role, args, exclude_cols):
     return query
 
 
-def get_datasets_cruved(info_role, params=dict(), as_model=False, recursif=False, lazyloaded=[]):
+def get_datasets_cruved(info_role, params=dict(), as_model=False, depth=0, lazyloaded=[]):
     """
         Return the datasets filtered with cruved
 
@@ -175,7 +175,7 @@ def get_datasets_cruved(info_role, params=dict(), as_model=False, recursif=False
             params (dict): parameter to add where clause
             as_model (boolean): default false, if truereturn an array of model
                                 instead of an array of dict
-            recursif (boolean): serialize recursively (availabke only if as_model = False)
+            depth (integer): serialization recursion depth
             lazyloaded (iterable): list of relationships property to lazyload
     """
     q = DB.session.query(TDatasets).distinct()
@@ -225,7 +225,7 @@ def get_datasets_cruved(info_role, params=dict(), as_model=False, recursif=False
     data = q.all()
     if as_model:
         return data
-    return [d.as_dict(recursif) for d in data]
+    return [d.as_dict(depth=depth) for d in data]
 
 
 def filtered_ds_query(info_role, args):
@@ -345,7 +345,7 @@ def get_dataset_details_dict(id_dataset, session_role):
         data = q.filter(TDatasetDetails.id_dataset == id_dataset).one()
     except NoResultFound:
         return None
-    dataset = data.as_dict(True, depth=2)
+    dataset = data.as_dict(depth=2)
 
     imports = requests.get(
         current_app.config["API_ENDPOINT"] + "/import/by_dataset/" + str(id_dataset),

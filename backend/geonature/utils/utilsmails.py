@@ -9,7 +9,6 @@ from flask_mail import Message
 from geonature.utils.env import MAIL
 
 log = logging.getLogger()
-gunicorn_error_logger = logging.getLogger("gunicorn.error")
 
 name_address_email_regex = re.compile(r"^([^<]+)<([^>]+)>$", re.IGNORECASE)
 

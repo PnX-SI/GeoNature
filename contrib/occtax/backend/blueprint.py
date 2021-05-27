@@ -1,5 +1,4 @@
 import datetime
-import json
 import logging
 
 from flask import (
@@ -10,6 +9,7 @@ from flask import (
     send_from_directory,
     render_template,
 )
+from werkzeug.exceptions import NotFound
 from geonature.core.gn_commons.models import TAdditionalFields
 from sqlalchemy import or_, func, distinct, case
 from sqlalchemy.orm.exc import NoResultFound
@@ -48,10 +48,6 @@ from geonature.core.users.models import UserRigth
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 
-import os
-from shutil import copyfile
-from io import BytesIO
-import zipfile
 
 blueprint = Blueprint("pr_occtax", __name__)
 log = logging.getLogger(__name__)
@@ -101,16 +97,15 @@ def getReleves(info_role):
     for n in data:
         releve_cruved = n.get_releve_cruved(user, user_cruved)
         feature = n.get_geofeature(
-            relationships=(
-                "t_occurrences_occtax",
-                "cor_counting_occtax",
-                "taxref",
-                "observers",
-                "digitiser",
-                "dataset",
-                "right",
-                "medias"
-            )
+			fields=[
+				"t_occurrences_occtax",
+				"t_occurrences_occtax.cor_counting_occtax",
+				"t_occurrences_occtax.taxref",
+				"observers",
+				"digitiser",
+				"dataset",
+				"t_occurrences_occtax.cor_counting_occtax.medias"
+            ]
         )
         feature["properties"]["rights"] = releve_cruved
         featureCollection.append(feature)
@@ -312,6 +307,7 @@ def insertOrUpdateOneReleve(info_role):
 
     releveRepository = ReleveRepository(TRelevesOccurrence)
     data = dict(request.get_json())
+    depth = data.pop("depth", None)
     occurrences_occtax = None
     if "t_occurrences_occtax" in data["properties"]:
         occurrences_occtax = data["properties"]["t_occurrences_occtax"]
@@ -401,7 +397,7 @@ def insertOrUpdateOneReleve(info_role):
     DB.session.commit()
     DB.session.flush()
 
-    return releve.get_geofeature()
+    return releve.get_geofeature(depth=depth)
 
 
 def releveHandler(request, *, releve, info_role):
@@ -825,7 +821,7 @@ def export(info_role):
             
         else:
             serialize_result = FeatureCollection(
-                [export_view.as_geofeature(d, columns=export_columns) for d in data]
+                [export_view.as_geofeature(d, fields=export_columns) for d in data]
             )
         return to_json_resp(
             serialize_result, as_file=True, filename=file_name, indent=4, extension="geojson"

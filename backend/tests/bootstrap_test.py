@@ -58,6 +58,7 @@ def releve_data(client):
     response = client.get(url_for("pr_occtax.getDefaultNomenclatures"))
     default_nomenclatures = json_of_response(response)
     data = {
+        "depth": 2,
         "geometry": {"type": "Point", "coordinates": [3.428936004638672, 44.276611357355904],},
         "properties": {
             "id_dataset": 1,

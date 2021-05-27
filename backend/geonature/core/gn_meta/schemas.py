@@ -7,12 +7,10 @@ from .models import (
     CorDatasetActor,
     TBibliographicReference
 )
-from pypnusershub.db.models import User, Organisme
 from pypnusershub.schemas import UserSchema, OrganismeSchema
 from pypnnomenclature.schemas import NomenclatureSchema
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_commons.models import TModules
-
+from geonature.core.gn_commons.schemas import ModuleSchema
 
 class MetadataSchema(MA.SQLAlchemyAutoSchema):
     cruved = fields.Method("get_user_cruved")
@@ -49,7 +47,7 @@ class DatasetSchema(MetadataSchema):
         DatasetActorSchema,
         many=True
     )
-    modules = MA.Nested("ModuleSchema", many=True)
+    modules = MA.Nested(ModuleSchema, many=True)
 
     creator = MA.Nested(UserSchema, dump_only=True)
     nomenclature_data_type = MA.Nested(NomenclatureSchema, dump_only=True)
