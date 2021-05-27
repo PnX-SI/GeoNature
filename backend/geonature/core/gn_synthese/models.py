@@ -329,8 +329,6 @@ def synthese_export_serialization(cls):
 
     return cls
 
-
-@serializable
 @geoserializable
 class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
     """

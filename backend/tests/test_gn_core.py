@@ -16,7 +16,7 @@ from geonature.utils.env import DB
 
 @pytest.mark.usefixtures("client_class")
 class TestAPICore:
-
+    pass
     # TODO: revoie ce test, ne comprend pas ce qu'il fait
 
     # def test_gn_core_route_config(self):
@@ -27,10 +27,17 @@ class TestAPICore:
     #       'app':'test',
     #       'vue':'test'
     #     }
+    #     response = self.client.get(
+    #         url_for(
+    #             "core.get_generic_view",
+    #             view_schema="gn_synthese",
+    #             view_name="v_synthese_for_web_app",
+    #         ),
+    #         query_string=query_string,
+    #     )
     #     # response = requests.get(
     #     #     '{}/config?app=test&vue=test'.format(
     #     #         geonature_app.config['API_ENDPOINT']
     #     #     )
     #     # )
     #     assert response.status_code == 200
-
