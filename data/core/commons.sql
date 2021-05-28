@@ -462,7 +462,10 @@ CREATE TABLE t_modules(
   active_frontend boolean NOT NULL,
   active_backend boolean NOT NULL,
   module_doc_url character varying(255),
-  module_order integer
+  module_order integer,
+  type character varying(255),
+  meta_create_date timestamp without time zone DEFAULT now(),
+  meta_update_date timestamp without time zone DEFAULT now()
 );
 COMMENT ON COLUMN t_modules.id_module IS 'PK mais aussi FK vers la table "utilisateurs.t_applications". ATTENTION de ne pas utiliser l''identifiant d''une application existante dans cette table et qui ne serait pas un module de GeoNature';
 COMMENT ON COLUMN t_modules.module_target IS 'Value = NULL ou "blank". On peux ainsi référencer des modules externes et les ouvrir dans un nouvel onglet.';
@@ -608,6 +611,10 @@ ALTER TABLE ONLY t_history_actions
 ALTER TABLE ONLY t_places
   ADD CONSTRAINT fk_t_places_t_roles FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
+ALTER TABLE ONLY gn_commons.t_additional_fields
+  ADD CONSTRAINT fk_t_additional_fields_id_widget FOREIGN KEY (id_widget)
+  REFERENCES gn_commons.bib_widgets(id_widget) ON UPDATE CASCADE ON DELETE CASCADE;
+
 ALTER TABLE ONLY gn_commons.cor_field_object
   ADD CONSTRAINT fk_cor_field_obj_field FOREIGN KEY (id_field) 
   REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -686,6 +693,11 @@ CREATE TRIGGER tri_insert_synthese_update_validation_status
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_update_synthese_validation_status();
 
+CREATE TRIGGER tri_meta_dates_change_t_modules
+      BEFORE INSERT OR UPDATE
+      ON gn_commons.t_modules
+      FOR EACH ROW
+      EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
 -----------
 --INDEXES--

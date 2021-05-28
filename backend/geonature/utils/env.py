@@ -2,16 +2,15 @@
 
 import os
 import subprocess
-import sys
 
 from pathlib import Path
 import pkg_resources
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm.exc import NoResultFound
 from flask_marshmallow import Marshmallow
 from flask_mail import Mail
 from flask_migrate import Migrate
+
 
 
 # Must be at top of this file. I don't know why (?)
@@ -23,7 +22,7 @@ from flask import current_app
 # because GEONATURE_VERSION is imported in this module
 ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
 try:
-    GEONATURE_VERSION = pkg_resources.require("geonature")[0].version
+    GEONATURE_VERSION = pkg_resources.get_distribution("geonature").version
 except pkg_resources.DistributionNotFound:
     with open(str((ROOT_DIR / "VERSION"))) as v:
         GEONATURE_VERSION = v.read()
@@ -32,6 +31,7 @@ BACKEND_DIR = ROOT_DIR / "backend"
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/geonature_config.toml"
 
 os.environ['FLASK_SQLALCHEMY_DB'] = 'geonature.utils.env.DB'
+os.environ['FLASK_MARSHMALLOW'] = 'geonature.utils.env.MA'
 DB = SQLAlchemy()
 MA = Marshmallow()
 migrate = Migrate()
@@ -53,3 +53,6 @@ def import_requirements(req_file):
     cmd_return = subprocess.call(["pip", "install", "-r", req_file])
     if cmd_return != 0:
         raise GeoNatureError("Error while installing module backend dependencies")
+
+
+

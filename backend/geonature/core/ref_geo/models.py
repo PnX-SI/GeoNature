@@ -22,8 +22,7 @@ class BibAreasTypes(DB.Model):
     ref_version = DB.Column(DB.Integer)
     num_version = DB.Column(DB.Unicode)
 
-
-@serializable
+@geoserializable
 class LAreas(DB.Model):
     __tablename__ = "l_areas"
     __table_args__ = {"schema": "ref_geo"}

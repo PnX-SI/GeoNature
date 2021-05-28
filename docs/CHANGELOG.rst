@@ -8,27 +8,45 @@ CHANGELOG
 - Voir https://github.com/PnX-SI/GeoNature/compare/develop
 - Tester l'outil Occtax de conservation d'info d'un taxon à l'autre
 - Rétrocompatibilité des évolutions ? Bien tester installation des différents modules
-- Bien vérifier update SQL
+- Bien vérifier et regrouper les update SQL
+- Fusionner 3 SQL d'update et renommer en 2.6.2to2.7.0.sql
 - Bien vérifier notes de versions liées à des changements à appliquer suite aux évolutions techniques
-- Mettre à jour template de module ?
+- Mettre à jour et release template de module ?
 - Bien tester les emails de validation pré-remplis
 - Bouger doc Admin champs additionnels de Doc utilisateurs à Doc administrateur (section Occtax)
-- Fusionner 3 SQL d'update et renommer en 2.6.2to2.7.0.sql
-- Monitoring : Problème d'héritage des objets >> Ajouter un champs dans t_modules, sinon Monitoring ne fonctionnera pas avec le nouveau GN...
-- Export des additional_data dans la Synthese ???
+- Monitoring : Problème d'héritage des objets >> Ajouter un champs dans t_modules, sinon Monitoring ne fonctionnera pas avec le nouveau GN... A indiquer dans les notes de version si quelque chose doit être fait pour que Monitoring continue à fonctionner avec GN 2.7.0
+- Export des additional_data dans la Synthese à vérifier et tester
+- Fix des commandes (https://github.com/PnX-SI/GeoNature/commit/ec62b24ef1539116697aa29758dd135dcbaa85b1) à préciser ou répercuter ?
+- https://github.com/PnX-SI/GeoNature/issues/1071 fonctionne ?
+- Voir acteurs des métadonnées (https://github.com/PnX-SI/GeoNature/pull/1313#issuecomment-839705016)
+- Voir corrections de Occtax à réintégrer (https://github.com/PnX-SI/GeoNature/issues/1191#issuecomment-839663324)
+
+PRE-PROD PNE : 
+
+- "undefined" sur la liste des relevés Occtax - Du à notre migration Taxref 14 ?
+- Désactiver l'ajout de médias dans Occtax qui sont actifs sur notre pre-prod ?
+- Je modifie un relevé Occtax, je perds l'observateur... Le JDD est bien récupéré mais le champs est affiché en rouge alors qu'il est renseigné... Quand je les renseigne et enregistre : "Une erreur s'est produite".
+- Titre des médias par défaut, récupère des undefined à la place de la date...
+- Synthèse : Envoyer un email à l'observateur me renvoie vers l'accueil de GN
+- Validation : La coche de recherche des données modifiées est affichée en rouge comme obligatoire
+- Validation : Le nombre de résultats n'est plus affiché à la fin de la liste
+- Synthèse : Erreur sur l'export CSV des observations (testé avec le filtre "Possède des médias")
 
 **🚀 Nouveautés**
 
-* Occtax : possibilité d'ajouter des champs additionels par JDD ou globaux au module (#1007)
+* Occtax : Possibilité d'ajouter des champs additionels par JDD ou globaux au module (#1007)
 * Occtax : Ajout des champs additionnels dans les exports (#1114)
-* Admin : création d'un backoffice d'administration des champs additionels (#1007)
-* Admin : création d'une documentation d'administration des champs additionnels (#1007)
-* Occtax : possibilité de désactiver la recherche de taxon par liste (#1315)
-* Occtax : par défaut la recherche de taxon n'interroge pas une liste mais tout Taxref, si aucune liste de taxons n'a été spécifiée dans la configuration du module Occtax (voir notes de version) (#1315)
+* Admin : Création d'un backoffice d'administration des champs additionels (#1007)
+* Admin : Création d'une documentation d'administration des champs additionnels (#1007)
+* Occtax : Possibilité de désactiver la recherche de taxon par liste (#1315)
+* Occtax : Par défaut la recherche de taxon n'interroge pas une liste mais tout Taxref, si aucune liste de taxons n'a été spécifiée dans la configuration du module Occtax (voir notes de version) (#1315)
 * Occtax/Metadonnées : possibilité d'associer une liste de taxons à un JDD (implémenté uniquement dans Occtax) (#1315)
-* Occtax : possibilité d'ajouter les infos sur les médias dans les exports (paramètre ``ADD_MEDIA_IN_EXPORT``) (#1326)
+* Occtax : Possibilité d'ajouter les infos sur les médias dans les exports (paramètre ``ADD_MEDIA_IN_EXPORT``) (#1326)
 * Occtax : Ajout du paramètre ``MEDIA_FIELDS_DETAILS`` permettant de définir les champs des médias affichés par défaut
+* Accueil : Réorganisation des blocs (#1375)
 * Métadonnées : Ordonnancement des JDD par leur nom
+* Synthèse et validation : Ajout d'un filtre avancé ``Possède des médias`` (#1179, #1338, #1180)
+* Synthèse : Affichage du contenu json du champs des données additionnelles, dans la fiche détail d'une observation
 * DynamicForm : enrichissement des formulaires dynamiques pour les médias, l'ajout de liens externes
 * Ajout d'une contrainte d'unicité de la combinaison des champs ``id_type`` et ``area_code`` dans ``ref_geo.l_areas`` (#1270)
 * Ajout d'une contrainte d'unicité du champs ``type_code`` de la table ``ref_geo.bib_areas_types``
@@ -42,6 +60,13 @@ CHANGELOG
 * Occtax : Déplacement des boutons d'action à gauche dans la liste des taxons d'un relevé pour éviter qu'ils soient masqués quand les noms de taxon sont longs (#1299 et #1337)
 * Occtax : Correction de la suppression d'un habitat par modification de relevé (#1296)
 * Occtax : Correction de la possibilité de modifier un relevé si U=1 (#1365)
+* Occtax : Suppression du zoom quand on localise le relevé (#1317)
+* Occtax : Correction du nombre de lignes affichées après une recherche
+* Occtax : Correction de la suppression d'un habitat lors de la modification d'un relevé (#1296)
+* Occtax : Correction de l'enchainement des saisies (#1300)
+* Occtax : Correction de l'affichage des taxons quand le nom est long (#1299, #1337)
+* Occtax : fix observers_txt default value (https://github.com/PnX-SI/GeoNature/commit/f23d27b1f55fbdb0a71c473247028e8707b97934) ????
+* Métadonnées : Correction de la suppression d'un JDD sans données, depuis la liste des JDD (#1312)
 * Métadonnées : Correction de la récupération des valeurs de nomenclature depuis MTD n'existant pas dans GeoNature (#1297)
 * Authentification : Redirection vers la page login après une période d'inactivité (#1193)
 * Résolution des problèmes de permission sur le fichier ``gn_errors.log`` (#1003)
@@ -53,6 +78,8 @@ CHANGELOG
 * Possibilité d'importer des modules packagés (#1272)
 * Réorganisation des fichiers ``requirements`` et installation des branches ``develop`` des dépendances du fichier ``requirements-dev.txt``
 * Simplification de la gestion des erreurs
+* Ajout d'un champs ``type`` dans la table ``gn_commons.t_modules`` pour gérer le polymorphisme, utilisé dans le module Monitoring
+* Ajout des champs ``meta_create_date`` et ``meta_update_date`` dans la table ``gn_commons.t_modules``
 * Diverses améliorations mineures de l'architecture du code
 
 **⚠️ Notes de version**

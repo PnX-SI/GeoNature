@@ -53,8 +53,7 @@ export class MarkerComponent implements OnInit, OnChanges {
     //Observable pour gérer de l'affichage du marker
     this._coordinates
       .pipe(filter(coords => this.map !== undefined && coords != null))
-      .subscribe(coords => {
-        this.mapservice.zoomOnMarker(coords, this.zoomToLocationLevel);
+      .subscribe(coords => {        
         this.previousCoord = coords;
         this.generateMarkerAndEvent(coords[0], coords[1]);
       });

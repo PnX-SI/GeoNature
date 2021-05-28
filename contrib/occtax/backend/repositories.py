@@ -66,7 +66,7 @@ class ReleveRepository:
                 except NoResultFound:
                     return releve, rel_as_geojson
                 count["validation_status"] = validation_status.as_dict(
-                    columns=["mnemonique", "validation_date"]
+                    fields=["mnemonique", "validation_date"]
                 )
         return releve, rel_as_geojson
 

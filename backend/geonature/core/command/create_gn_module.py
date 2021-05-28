@@ -120,7 +120,6 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                         install_frontend_dependencies(module_path)
                         # generation du fichier tsconfig.app.json
                         tsconfig_app_templating(
-                            module_code=module_code,
                             app=app
                         )
                         # generation du routing du frontend

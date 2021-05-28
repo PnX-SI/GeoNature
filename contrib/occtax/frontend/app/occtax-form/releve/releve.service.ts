@@ -374,6 +374,8 @@ export class OcctaxFormReleveService {
       "date_max": null,
       "hour_min": null,
       "hour_max": null,
+      'place_name': null,
+      'cd_hab': null,
     };
   }
 
@@ -399,7 +401,7 @@ export class OcctaxFormReleveService {
             observers: this.occtaxParamS.get("releve.observers") ||
               previousReleve.observers || ModuleConfig.observers_txt ? null: [this.occtaxFormService.currentUser],
             observers_txt: this.occtaxParamS.get("releve.observers_txt") || previousReleve.observers_txt ||
-              ModuleConfig.observers_txt ? [this.occtaxFormService.currentUser.nom_complet]:  null,
+              ModuleConfig.observers_txt ? this.occtaxFormService.currentUser.nom_complet:  null,
             id_nomenclature_grp_typ:
               this.occtaxParamS.get("releve.id_nomenclature_grp_typ") ||
               data["TYP_GRP"],
