@@ -2,18 +2,17 @@
 
 BEGIN;
 
-/* CREATE TYPE IF NOT EXISTS data_actions AS ENUM ('I', 'U', 'D'); */
-DROP TABLE IF EXISTS gn_synthese.t_log_synthese
-;
+CREATE TYPE LOG_SYNTHESE_ACTIONS AS ENUM ('I', 'U', 'D');
+-- DROP TABLE IF EXISTS gn_synthese.t_log_synthese
+-- ;
 
 CREATE TABLE gn_synthese.t_log_synthese
 (
     id_synthese      INT PRIMARY KEY,
     unique_id_sinp   UUID,
-    last_action      CHAR(1),
+    last_action      LOG_SYNTHESE_ACTIONS,
     meta_action_date TIMESTAMP WITHOUT TIME ZONE DEFAULT now()
-)
-;
+);
 
 CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_log_delete_on_synthese() RETURNS TRIGGER AS
 $BODY$
@@ -25,7 +24,9 @@ BEGIN
         old.id_synthese    AS id_synthese
       , old.unique_id_sinp AS unique_id_sinp
       , 'D'                AS last_action
-      , now()              AS meta_action_date;
+      , now()              AS meta_action_date
+      ON CONFLICT (id_synthese)
+      DO UPDATE SET last_action = 'D', meta_action_date = now();
     RETURN NULL;
 END;
 $BODY$ LANGUAGE plpgsql COST 100

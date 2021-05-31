@@ -31,6 +31,7 @@ from geonature.core.gn_synthese.models import (
     SyntheseOneRecord,
     VSyntheseForWebApp,
     VColorAreaTaxon,
+    TLogSynthese,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
@@ -1007,43 +1008,53 @@ def log_delete_history(info_role):
     default_date = datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=10), datetime.datetime.min.time())
     start = request.args.get("start", default=default_date, type=str)
     end = request.args.get("end", default=None, type=str)
-    action  = request.args.get("action", default=None, type=str)
+    actions  = request.args.getlist("action", type=str)
     page = request.args.get("page", default=1, type=int)
     limit = request.args.get("limit", default=1000, type=int)
     
-    if not start:
+    start = start if start else (
+        datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=10), datetime.datetime.min.time())
+    )
         # set default history query to 10 days
-        d = datetime.date.today() - datetime.timedelta(days=10)
-        start = datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=10), datetime.datetime.min.time())
-    try: 
+        # d = datetime.date.today() - datetime.timedelta(days=10)
+        # start = datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=10), datetime.datetime.min.time())
+    try:
         delete_q = DB.session.query(
             TLogSynthese.id_synthese, 
             TLogSynthese.unique_id_sinp, 
             TLogSynthese.last_action, 
             TLogSynthese.meta_action_date
             )
+
         upsert_q = DB.session.query(
             Synthese.id_synthese, 
             Synthese.unique_id_sinp, 
             Synthese.last_action,
             Synthese.meta_update_date
             )
-        union_q = delete_q.union(upsert_q)
-        union_q = union_q.filter(TLogSynthese.meta_action_date >= start)
-        
-        
+            
+        delete = 'D' in actions
+        upsert = any(item in actions for item in ['U','I'])
+        upsert_q = upsert_q.filter(TLogSynthese.last_action.in_(actions)) if upsert else upsert_q
+        if delete and not upsert:
+            q = delete_q
+        elif not delete and upsert:
+            q = upsert_q.filter(TLogSynthese.last_action.in_(actions))
+        else:
+            q = delete_q.union(upsert_q) 
+
+        q = q.filter(TLogSynthese.meta_action_date >= start)             
+
+
         if end is not None:
-            logger.info(f"END {end}")
-            union_q = union_q.filter(TLogSynthese.meta_action_date <= end)
+            log.debug(f"END {end}")
+            q = q.filter(TLogSynthese.meta_action_date <= end)
 
-        if action is not None:
-            union_q = union_q.filter(TLogSynthese.last_action == action)
-
-        logger.info(f"union_q {union_q}")
+        log.debug(f"Q {q}")
         
-        p_data= union_q.order_by(TLogSynthese.meta_action_date.desc()).paginate(page,per_page=limit)
+        p_data= q.order_by(TLogSynthese.meta_action_date.desc()).paginate(page,per_page=limit)
 
-        logger.info(f"DEBUG {current_app.debug}")
+        log.debug(f"DEBUG {current_app.debug}")
         
         result = { 
             "limit": p_data.per_page,
@@ -1059,7 +1070,5 @@ def log_delete_history(info_role):
         result['items'] = [{"id":d.id_synthese, "uuid":d.unique_id_sinp, "last_action": d.last_action, "meta_action_date": d.meta_action_date} for d in p_data.items]
         return result
     except Exception as error:
-        
-        logger.error(error)
-        
+        log.error(error)
         return {"error": error}, 500
