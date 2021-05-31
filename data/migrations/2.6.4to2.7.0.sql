@@ -39,27 +39,38 @@ ALTER TABLE ONLY gn_meta.cor_dataset_protocol
 
 
 -- AF
-ALTER TABLE ONLY cor_acquisition_framework_objectif
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_objectif
+drop  constraint fk_cor_acquisition_framework_objectif_id_acquisition_framework;
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_objectif
     ADD CONSTRAINT fk_cor_acquisition_framework_objectif_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) 
-    REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
+    REFERENCES gn_meta.t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
 
-
-ALTER TABLE ONLY cor_acquisition_framework_actor
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
+drop  constraint fk_cor_acquisition_framework_actor_id_acquisition_framework;
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
     ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) 
-    REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
+    REFERENCES gn_meta.t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY cor_acquisition_framework_actor
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
+drop  constraint fk_cor_acquisition_framework_actor_id_role;
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
     ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_role FOREIGN KEY (id_role) 
     REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY cor_acquisition_framework_actor
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
+drop  constraint fk_cor_acquisition_framework_actor_id_organism;
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
     ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_organism FOREIGN KEY (id_organism) 
     REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY cor_acquisition_framework_voletsinp
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_voletsinp
+drop  constraint fk_cor_acquisition_framework_voletsinp_id_acquisition_framework;
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_voletsinp
     ADD CONSTRAINT fk_cor_acquisition_framework_voletsinp_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) 
-    REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
+    REFERENCES gn_meta.t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
 
-ALTER TABLE ONLY cor_acquisition_framework_publication
-    ADD CONSTRAINT fk_cor_acquisition_framework_publication_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) 
-    REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_publication
+drop  constraint fk_cor_acquisition_framework_publication_id_publication;
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_publication
+    ADD CONSTRAINT fk_cor_acquisition_framework_publication_id_publication FOREIGN KEY (id_acquisition_framework) 
+    REFERENCES gn_meta.t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
