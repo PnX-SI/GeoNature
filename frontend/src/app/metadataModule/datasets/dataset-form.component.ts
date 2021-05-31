@@ -56,7 +56,7 @@ export class DatasetFormComponent implements OnInit {
     }
 
     //getAcquisitionFrameworksForSelect
-    this.acquisitionFrameworks = this._dfs.getAcquisitionFrameworks();
+    this.acquisitionFrameworks = this._dfs.getAcquisitionFrameworksForSelect();
   }
 
   genericActorFormSubmit(result) {
