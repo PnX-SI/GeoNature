@@ -218,14 +218,7 @@ def delete_dataset(info_role, ds_id):
     allowed = dataset.user_is_allowed_to(user_actor, info_role, info_role.value_filter)
     if not allowed:
         raise Forbidden(f"User {info_role.id_role} cannot delete dataset {dataset.id_dataset}")
-    DB.session.query(CorDatasetActor).filter(CorDatasetActor.id_dataset == ds_id).delete()
-
-    DB.session.query(CorDatasetProtocol).filter(CorDatasetProtocol.id_dataset == ds_id).delete()
-
-    DB.session.query(CorDatasetTerritory).filter(CorDatasetTerritory.id_dataset == ds_id).delete()
-
-    #DB.session.query(CorModuleDataset).filter(CorModuleDataset.id_dataset == ds_id).delete()
-
+    
     DB.session.query(TDatasets).filter(TDatasets.id_dataset == ds_id).delete()
 
     DB.session.commit()
@@ -896,18 +889,6 @@ def delete_acquisition_framework(info_role, af_id):
             "La suppression du cadre d'acquisition n'est pas possible car des jeux de données y sont rattachées",
             500,
         )
-
-    DB.session.query(CorAcquisitionFrameworkActor).filter(
-        CorAcquisitionFrameworkActor.id_acquisition_framework == af_id
-    ).delete()
-
-    DB.session.query(CorAcquisitionFrameworkObjectif).filter(
-        CorAcquisitionFrameworkObjectif.id_acquisition_framework == af_id
-    ).delete()
-
-    DB.session.query(CorAcquisitionFrameworkVoletSINP).filter(
-        CorAcquisitionFrameworkVoletSINP.id_acquisition_framework == af_id
-    ).delete()
 
     DB.session.query(TAcquisitionFramework).filter(
         TAcquisitionFramework.id_acquisition_framework == af_id

@@ -353,90 +353,116 @@ ALTER TABLE ONLY cor_dataset_protocol
 ----------------
 
 ALTER TABLE ONLY t_acquisition_frameworks
-    ADD CONSTRAINT fk_t_acquisition_frameworks_id_digitizer FOREIGN KEY (id_digitizer) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_acquisition_frameworks_id_digitizer FOREIGN KEY (id_digitizer) 
+    REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_acquisition_framework_voletsinp
-    ADD CONSTRAINT fk_cor_acquisition_framework_voletsinp_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_acquisition_framework_voletsinp_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) 
+    REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_acquisition_framework_voletsinp
-    ADD CONSTRAINT fk_cor_acquisition_framework_voletsinp_id_nomenclature_voletsinp FOREIGN KEY (id_nomenclature_voletsinp) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
-
-
-ALTER TABLE ONLY cor_acquisition_framework_objectif
-    ADD CONSTRAINT fk_cor_acquisition_framework_objectif_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_acquisition_framework_voletsinp_id_nomenclature_voletsinp FOREIGN KEY (id_nomenclature_voletsinp) 
+    REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_acquisition_framework_objectif
-    ADD CONSTRAINT fk_cor_acquisition_framework_objectif_id_nomenclature_objectif FOREIGN KEY (id_nomenclature_objectif) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_acquisition_framework_objectif_id_acquisition_framework FOREIGN KEY (id_acquisition_framework)
+    REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY cor_acquisition_framework_objectif
+    ADD CONSTRAINT fk_cor_acquisition_framework_objectif_id_nomenclature_objectif FOREIGN KEY (id_nomenclature_objectif)
+    REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_acquisition_framework_actor
-    ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) 
+    REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_acquisition_framework_actor
-    ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_role FOREIGN KEY (id_role) 
+    REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_acquisition_framework_actor
-    ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_organism FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_organism FOREIGN KEY (id_organism) 
+    REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_acquisition_framework_actor
-    ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_nomenclature_actor_role FOREIGN KEY (id_nomenclature_actor_role) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_nomenclature_actor_role FOREIGN KEY (id_nomenclature_actor_role) 
+    REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_acquisition_framework_publication
-    ADD CONSTRAINT fk_cor_acquisition_framework_publication_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_acquisition_framework_publication_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) 
+    REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_acquisition_framework_publication
-    ADD CONSTRAINT fk_cor_acquisition_framework_publication_id_publication FOREIGN KEY (id_publication) REFERENCES sinp_datatype_publications(id_publication) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_acquisition_framework_publication_id_publication FOREIGN KEY (id_publication) 
+    REFERENCES sinp_datatype_publications(id_publication) ON UPDATE CASCADE ON DELETE ;
 
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_t_acquisition_frameworks FOREIGN KEY (id_acquisition_framework) REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_t_acquisition_frameworks FOREIGN KEY (id_acquisition_framework) 
+    REFERENCES t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_resource_type FOREIGN KEY (id_nomenclature_resource_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_resource_type FOREIGN KEY (id_nomenclature_resource_type) 
+    REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_data_type FOREIGN KEY (id_nomenclature_data_type) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_data_type FOREIGN KEY (id_nomenclature_data_type) 
+    REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_objectif FOREIGN KEY (id_nomenclature_dataset_objectif) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_objectif FOREIGN KEY (id_nomenclature_dataset_objectif) 
+    REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_collecting_method FOREIGN KEY (id_nomenclature_collecting_method) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_collecting_method FOREIGN KEY (id_nomenclature_collecting_method) 
+    REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_data_origin FOREIGN KEY (id_nomenclature_data_origin) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_data_origin FOREIGN KEY (id_nomenclature_data_origin) 
+    REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_source_status FOREIGN KEY (id_nomenclature_source_status) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_source_status FOREIGN KEY (id_nomenclature_source_status) 
+    REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY t_datasets
-    ADD CONSTRAINT fk_t_datasets_id_digitizer FOREIGN KEY (id_digitizer) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_t_datasets_id_digitizer FOREIGN KEY (id_digitizer) 
+    REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE;
 
 
 ALTER TABLE ONLY cor_dataset_actor
-    ADD CONSTRAINT fk_cor_dataset_actor_id_dataset FOREIGN KEY (id_dataset) REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_dataset_actor_id_dataset FOREIGN KEY (id_dataset) 
+    REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_dataset_actor
-    ADD CONSTRAINT fk_dataset_actor_id_role FOREIGN KEY (id_role) REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_dataset_actor_id_role FOREIGN KEY (id_role) 
+    REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_dataset_actor
-    ADD CONSTRAINT fk_dataset_actor_id_organism FOREIGN KEY (id_organism) REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_dataset_actor_id_organism FOREIGN KEY (id_organism) 
+    REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_dataset_actor
-    ADD CONSTRAINT fk_cor_dataset_actor_id_nomenclature_actor_role FOREIGN KEY (id_nomenclature_actor_role) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_dataset_actor_id_nomenclature_actor_role FOREIGN KEY (id_nomenclature_actor_role) 
+    REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_dataset_territory
-    ADD CONSTRAINT fk_cor_dataset_territory_id_dataset FOREIGN KEY (id_dataset) REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_dataset_territory_id_dataset FOREIGN KEY (id_dataset) 
+    REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_dataset_territory
-    ADD CONSTRAINT fk_cor_dataset_territory_id_nomenclature_territory FOREIGN KEY (id_nomenclature_territory) REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_dataset_territory_id_nomenclature_territory FOREIGN KEY (id_nomenclature_territory) 
+    REFERENCES ref_nomenclatures.t_nomenclatures(id_nomenclature) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY cor_dataset_protocol
-    ADD CONSTRAINT fk_cor_dataset_protocol_id_dataset FOREIGN KEY (id_dataset) REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_dataset_protocol_id_dataset FOREIGN KEY (id_dataset) 
+    REFERENCES t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 ALTER TABLE ONLY cor_dataset_protocol
-    ADD CONSTRAINT fk_cor_dataset_protocol_id_protocol FOREIGN KEY (id_protocol) REFERENCES sinp_datatype_protocols(id_protocol) ON UPDATE CASCADE ON DELETE NO ACTION;
+    ADD CONSTRAINT fk_cor_dataset_protocol_id_protocol FOREIGN KEY (id_protocol) 
+    REFERENCES sinp_datatype_protocols(id_protocol) ON UPDATE CASCADE ON DELETE NO ACTION;
 
 
 
@@ -597,10 +623,10 @@ CREATE TABLE gn_commons.cor_module_dataset (
   CONSTRAINT pk_cor_module_dataset PRIMARY KEY (id_module, id_dataset),
   CONSTRAINT fk_cor_module_dataset_id_module FOREIGN KEY (id_module)
       REFERENCES gn_commons.t_modules (id_module) MATCH SIMPLE
-      ON UPDATE CASCADE ON DELETE NO ACTION,
+      ON UPDATE CASCADE ON DELETE CASCADE,
   CONSTRAINT fk_cor_module_dataset_id_dataset FOREIGN KEY (id_dataset)
       REFERENCES gn_meta.t_datasets (id_dataset) MATCH SIMPLE
-      ON UPDATE CASCADE ON DELETE NO ACTION
+      ON UPDATE CASCADE ON DELETE CASCADE
 );
 COMMENT ON TABLE gn_commons.cor_module_dataset IS 'Define which datasets can be used in modules';
 
