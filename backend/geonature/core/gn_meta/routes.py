@@ -57,7 +57,6 @@ from geonature.core.gn_meta.models import (
 )
 from geonature.core.gn_meta.repositories import (
     get_datasets_cruved,
-    get_af_cruved,
     get_metadata_list,
 )
 from geonature.core.gn_meta.schemas import (
@@ -818,36 +817,6 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 
 
-@routes.route("/acquisition_frameworks_metadata", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="METADATA")
-@json_resp
-def get_acquisition_frameworks_metadata(info_role):
-    """
-    Get all AF with cruved filter
-    Use for metadata module. 
-    Add the cruved permission for each row
-
-    .. :quickref: Metadata;
-
-    """
-    params = request.args
-    afs = get_af_cruved(info_role, params, as_model=True)
-    id_afs_user = TAcquisitionFramework.get_user_af(info_role, only_user=True)
-    id_afs_org = TAcquisitionFramework.get_user_af(info_role, only_user=False)
-    user_cruved = cruved_scope_for_user_in_module(
-        id_role=info_role.id_role, module_code="METADATA",
-    )[0]
-    afs_dict = []
-    for af in afs:
-        af_dict = af.as_dict()
-        af_dict["cruved"] = af.get_object_cruved(
-            user_cruved=user_cruved,
-            id_object=af.id_acquisition_framework,
-            ids_object_user=id_afs_user,
-            ids_object_organism=id_afs_org,
-        )
-        afs_dict.append(af_dict)
-    return afs_dict
 
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>", methods=["GET"])
