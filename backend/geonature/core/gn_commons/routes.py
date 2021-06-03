@@ -3,6 +3,7 @@ from operator import or_
 
 from flask import Blueprint, request, current_app
 import requests
+from sqlalchemy.orm import joinedload
 
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
@@ -15,7 +16,7 @@ from geonature.core.gn_commons.repositories import get_table_location_id
 from geonature.core.gn_permissions.models import TObjects
 from geonature.utils.env import DB, BACKEND_DIR
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, get_all_perms
 from shapely.geometry import asShape
 from geoalchemy2.shape import from_shape
 from geonature.utils.errors import (
@@ -40,15 +41,19 @@ def get_modules(info_role):
 
     """
     params = request.args
-    q = DB.session.query(TModules)
+    q = DB.session.query(TModules).options(
+        joinedload(TModules.objects)
+    )
     if "exclude" in params:
         q = q.filter(TModules.module_code.notin_(params.getlist("exclude")))
     q = q.order_by(TModules.module_order.asc()).order_by(TModules.module_label.asc())
     modules = q.all()
+    all_permissions = get_all_perms(info_role.id_role, "SCOPE")
     allowed_modules = []
     for mod in modules:
         app_cruved = cruved_scope_for_user_in_module(
-            id_role=info_role.id_role, module_code=mod.module_code
+            id_role=info_role.id_role, module_code=mod.module_code, 
+            perms=all_permissions.get(mod.module_code, [])
         )[0]
         if app_cruved["R"] != "0":
             module = mod.as_dict()
