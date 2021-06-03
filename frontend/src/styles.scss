@@ -420,6 +420,23 @@ li.no-bullet {
   z-index: 9999;
 }
 
+#cover-spin-removable {
+  opacity: 0;
+  position: fixed;
+  width: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.39);
+  z-index: -1;
+}
+
+pnx-root:empty + #cover-spin-removable {
+  opacity: 1;
+  z-index: 110;
+}
+
 @-webkit-keyframes spin {
   from {
     -webkit-transform: rotate(0deg);
@@ -438,7 +455,8 @@ li.no-bullet {
   }
 }
 
-#cover-spin::after {
+#cover-spin::after,
+#cover-spin-removable::after {
   content: '';
   display: block;
   position: absolute;
@@ -456,5 +474,7 @@ li.no-bullet {
 }
 
 a.mat-raised-button:hover {
-  text-decoration: none!important;
+  text-decoration: none !important;
 }
+
+/* .loading screen is visible when app is not bootstrapped yet, my-app is empty */
