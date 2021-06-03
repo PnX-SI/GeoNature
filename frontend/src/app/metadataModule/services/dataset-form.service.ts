@@ -115,9 +115,7 @@ export class DatasetFormService {
     this.actors.push(actorForm);
   }
  
-  removeActor(formArray: FormArray, i: number): void {
-    console.log(formArray);
-    
+  removeActor(formArray: FormArray, i: number): void {    
     formArray.removeAt(i);
   }
  

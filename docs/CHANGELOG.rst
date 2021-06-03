@@ -13,7 +13,6 @@ CHANGELOG
 - Bien vérifier notes de versions liées à des changements à appliquer suite aux évolutions techniques
 - Mettre à jour et release template de module ?
 - Bien tester les emails de validation pré-remplis
-- Bouger doc Admin champs additionnels de Doc utilisateurs à Doc administrateur (section Occtax)
 - Monitoring : Problème d'héritage des objets >> Ajouter un champs dans t_modules, sinon Monitoring ne fonctionnera pas avec le nouveau GN... A indiquer dans les notes de version si quelque chose doit être fait pour que Monitoring continue à fonctionner avec GN 2.7.0
 - Export des additional_data dans la Synthese à vérifier et tester
 - Fix des commandes (https://github.com/PnX-SI/GeoNature/commit/ec62b24ef1539116697aa29758dd135dcbaa85b1) à préciser ou répercuter ?

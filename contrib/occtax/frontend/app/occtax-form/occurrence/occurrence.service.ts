@@ -123,17 +123,11 @@ export class OcctaxFormOccurrenceService {
           this.getReleveDataAndGetAddFields(
             ['OCCTAX_OCCURENCE', 'OCCTAX_DENOMBREMENT'],
           ).subscribe(
-            additionalFields => {     
-              console.log("PASSE LA ??????????,,");
-              
-              console.log("ADDFIELDS", additionalFields);
-                           
+            additionalFields => {                                
               const occValueWithAddFields = this.setAddFieldinOccValue(occurrenceValue, additionalFields);                          
               this.form.patchValue(occValueWithAddFields);
             },
-          (error) => {     
-            console.log("errorrrer");
-                   
+          (error) => {                        
             // not additional fields for the dataset
             // set global addfields
             const occValueWithAddFields = this.setAddFieldinOccValue(

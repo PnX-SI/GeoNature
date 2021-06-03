@@ -329,10 +329,12 @@ export class OcctaxFormReleveService {
                   }else{
                     releve.additional_fields[field.attribut_name] = "";
                   }
-                  releve[field.attribut_name] =  releve.additional_fields[field.attribut_name];
-
+              }              
+              if(releve.additional_fields) {
+                releve[field.attribut_name] =  releve.additional_fields[field.attribut_name];
+              }else {
+                releve.additional_fields = {};
               }
-              releve[field.attribut_name] =  releve.additional_fields[field.attribut_name];
           })
           return releve
         })
