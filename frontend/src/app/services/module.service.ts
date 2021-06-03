@@ -5,7 +5,7 @@ import { catchError, map } from 'rxjs/operators';
 
 @Injectable()
 export class ModuleService {
-  private modules: Array<any>;
+  public modules: Array<any>;
 
   constructor(private _api: DataFormService) { }
 

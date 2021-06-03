@@ -103,7 +103,6 @@ export class AuthService {
           this.loginError = false;
           // Now that we are logged, we fetch the cruved again, and redirect once received
           forkJoin({
-              cruved: this.cruvedService.fetchCruved(),
               modules: this.moduleService.fetchModules(),
           }).subscribe(() => {
             this.isLoading = false;
