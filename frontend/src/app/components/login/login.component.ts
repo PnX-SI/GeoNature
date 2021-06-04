@@ -20,6 +20,7 @@ export class LoginComponent implements OnInit {
   password: FormGroup;
   form: FormGroup;
   login_or_pass_recovery: boolean = false;
+  public APP_NAME = AppConfig.appName;
 
   constructor(
     private _authService: AuthService,

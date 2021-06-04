@@ -23,14 +23,14 @@ CHANGELOG
 PRE-PROD PNE : 
 
 - Désactiver l'ajout de médias dans Occtax qui sont actifs sur notre pre-prod ? A True par défaut. On laisse comme ça non ?
-- Titre des médias par défaut, récupère des undefined à la place de la date...: corrigé ?
-- Synthèse : Envoyer un email à l'observateur me renvoie vers l'accueil de GN
-- Validation : La coche de recherche des données modifiées est affichée en rouge comme obligatoire
+- Synthèse : Envoyer un email à l'observateur me renvoie vers l'accueil de GN: je ne reproduit pas
+- Validation : La coche de recherche des données modifiées est affichée en rouge comme :obligatoire
 - Validation : Le nombre de résultats n'est plus affiché à la fin de la liste
 - Synthèse : Erreur sur l'export CSV des observations (testé avec le filtre "Possède des médias")
 
 **🚀 Nouveautés**
 
+* La page login affiche désormais le nom de l'application appName définit dans la configuration de GeoNature (#1277 @DonovanMaillard) 
 * Occtax : Possibilité d'ajouter des champs additionels par JDD ou globaux au module (#1007)
 * Occtax : Ajout des champs additionnels dans les exports (#1114)
 * Admin : Création d'un backoffice d'administration des champs additionels (#1007)
