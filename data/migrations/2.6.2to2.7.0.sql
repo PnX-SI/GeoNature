@@ -530,3 +530,50 @@ INSERT INTO gn_commons.bib_widgets (widget_name) VALUES ('select'),
 
 COMMIT;
 
+----------------------------------
+-- MONITORING - DATES & HISTORY --
+----------------------------------
+
+-- Ajout trigger sur date_max de la visite
+
+-- Mise à jour des données
+UPDATE  gn_monitoring.t_base_visits SET date_max = date_min
+WHERE date_max < date_min;
+
+CREATE OR REPLACE FUNCTION gn_monitoring.fct_trg_visite_date_max()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+	-- Si la date max de la visite est nulle ou inférieure à la date_min
+	--	Modification de date max pour garder une cohérence des données
+	IF
+		NEW.visit_date_max IS NULL
+		OR NEW.visit_date_max < NEW.visit_date_min
+	THEN
+      NEW.visit_date_max := NEW.visit_date_min;
+    END IF;
+  RETURN NEW;
+END;
+$function$
+;
+
+CREATE TRIGGER tri_visite_date_max
+  BEFORE INSERT OR UPDATE OF visit_date_min
+  ON gn_monitoring.t_base_visits
+  FOR EACH ROW
+  EXECUTE FUNCTION gn_monitoring.fct_trg_visite_date_max();
+
+
+--- Historisation de la table cor_visit_observer
+ALTER TABLE gn_monitoring.cor_visit_observer ADD unique_id_core_visit_observer uuid  NOT NULL DEFAULT uuid_generate_v4();
+
+INSERT INTO gn_commons.bib_tables_location(table_desc, schema_name, table_name, pk_field, uuid_field_name)
+VALUES
+('Liste des observateurs d''une visite', 'gn_monitoring', 'cor_visit_observer', 'unique_id_core_visit_observer', 'unique_id_core_visit_observer');
+
+CREATE TRIGGER tri_log_changes_cor_visit_observer
+AFTER INSERT OR DELETE OR UPDATE
+ON gn_monitoring.cor_visit_observer
+FOR EACH ROW EXECUTE FUNCTION gn_commons.fct_trg_log_changes();
+
