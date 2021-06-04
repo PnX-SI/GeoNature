@@ -1,4 +1,4 @@
--- Update script from GeoNature 2.6.2 to 2.6.3
+-- Update script from GeoNature 2.6.2 to 2.7.0
 
 BEGIN;
 
