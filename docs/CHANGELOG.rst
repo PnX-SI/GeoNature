@@ -49,6 +49,8 @@ PRE-PROD PNE :
 * Ajout d'une contrainte d'unicité du champs ``type_code`` de la table ``ref_geo.bib_areas_types``
 * Mise à jour des versions de nombreuses dépendances
 * Support du gestionnaire d'erreurs Sentry
+* Validation: possibilité de passer des fonctions dans la liste des colonnes affichées (pour décoder une nomenclature)
+* Les paramètres: LIST_COLUMNS_FRONTEND, COLUMNS_API_VALIDATION_WEB_APP sont regroupé en un seul nomme COLUMN_LIST. Voir le fichier `contrib/gn_module_validation/config/conf_gn_module.toml.example`
 
 **🐛 Corrections**
 
@@ -89,6 +91,7 @@ Si vous mettez à jour GeoNature :
 * Des choses à faire au niveau des évolutions des commandes GeoNature ?
 * Modifier dans le fichier ``/etc/supervisor/conf.d/geonature-service.conf``, remplacer ``gn_errors.log`` par ``supervisor.log`` dans la variable ``stdout_logfile`` :
 
+* Si vous aviez renseigner un des deux paramètres LIST_COLUMNS_FRONTEND, COLUMNS_API_VALIDATION_WEB_APP dans le module validation, il est necessaire de les remplacer par le nouveau paramètre COLUMN_LIST. Voir le fichier `contrib/gn_module_validation/config/conf_gn_module.toml.example`   
 ::
 
     sudo sed -i 's|\(stdout_logfile = .*\)/gn_errors.log|\1/supervisor.log|' /etc/supervisor/conf.d/geonature-service.conf

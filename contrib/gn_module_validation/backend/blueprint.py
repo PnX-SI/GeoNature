@@ -2,8 +2,7 @@ import ast
 import logging
 import datetime
 import json
-from operator import itemgetter
-from sqlalchemy import select
+from sqlalchemy import select, func
 from flask import Blueprint, request
 from geojson import FeatureCollection
 
@@ -68,20 +67,39 @@ def get_synthese_data(info_role):
     # Les champs correspondent aux champs obligatoires
     #       + champs définis par l'utilisateur
     columns = (
-        blueprint.config["COLUMNS_API_VALIDATION_WEB_APP"]
+        blueprint.config["COLUMN_LIST"]
         + blueprint.config["MANDATORY_COLUMNS"]
     )
+    # remove doublon
+    columns = list({v['column_name']:v for v in columns}.values())
     select_columns = []
     serializer = {}
-    for c in columns:
+    for column_config in columns:
         try:
-            att = getattr(VSyntheseValidation, c)
-            select_columns.append(att)
-            serializer[c] = SERIALIZERS.get(
-                att.type.__class__.__name__.lower(), lambda x: x
-            )
+            if "func" in column_config:
+                col = getattr(VSyntheseValidation, column_config["id_nomenclature_field"])
+            else:
+                col = getattr(VSyntheseValidation, column_config["column_name"])
         except AttributeError as error:
-            log.warning("Validation : colonne {} inexistante".format(c))
+            log.error("Validation : colonne {} inexistante".format(col))
+        else:
+            if "func" in column_config:
+                label = column_config.get("column_name")
+                if column_config["func"] == "cd_nomenclature":
+                    select_columns.append(
+                        func.ref_nomenclatures.get_cd_nomenclature(col).label(label)
+                    )
+                else:
+                    select_columns.append(
+                        func.ref_nomenclatures.get_nomenclature_label(col).label(label)
+                    )
+
+                serializer[label] = lambda x: x
+            else:
+                select_columns.append(col)
+                serializer[column_config["column_name"]] = SERIALIZERS.get(
+                    col.type.__class__.__name__.lower(), lambda x: x
+                )
 
     # Construction de la requête avec SyntheseQuery
     #   Pour profiter des opérations CRUVED
@@ -93,12 +111,11 @@ def get_synthese_data(info_role):
     validation_query_class = SyntheseQuery(VSyntheseValidation, query, filters)
     validation_query_class.filter_query_all_filters(info_role)
     result = DB.engine.execute(validation_query_class.query.limit(result_limit))
-
     # TODO nb_total factice
     nb_total = 0
     geojson_features = []
     properties = {}
-    for r in result:
+    for r in result:    
         properties = {k: serializer[k](r[k]) for k in serializer.keys()}
         properties["nom_vern_or_lb_nom"] = (
             r["nom_vern"] if r["nom_vern"] else r["lb_nom"]

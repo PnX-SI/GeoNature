@@ -46,6 +46,7 @@ export class ValidationSyntheseListComponent
   @ViewChild("table") table: DatatableComponent;
   @Output() pageChange: EventEmitter<number>;
   public validationStatusAsDict: any;
+  public datatable_column_list: Array<any>
 
   constructor(
     public mapListService: MapListService,
