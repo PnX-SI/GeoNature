@@ -153,7 +153,10 @@ class DataBlurring:
                 # Build obs queries giving id_synthese and area geojson dispatched by object type
                 geom_columns = self._prepare_geom_columns(LAreas, with_compute=True)
                 obs_geo_query = (
-                    select([obs_cte.c.id_synthese, *geom_columns])
+                    select(
+                        [obs_cte.c.id_synthese, *geom_columns],
+                        distinct=obs_cte.c.id_synthese,
+                    )
                     .select_from(
                         CorAreaSynthese.__table__
                         .join(LAreas, LAreas.id_area == CorAreaSynthese.id_area)
@@ -200,18 +203,21 @@ class DataBlurring:
                     permissions_ors.append(and_(*conditions))
                 
                 # Build permissions NOT EXISTS clause
-                perms_object_alias = object_cte.alias()
-                permissions_query = (
-                    ~exists([Synthese.id_synthese])
-                    .select_from(Synthese.__table__
+                permissions_cte = (
+                    select([object_cte.c.id_synthese])
+                    .select_from(object_cte
+                        .join(Synthese.__table__, Synthese.id_synthese == object_cte.c.id_synthese)
                         .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
                         .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
-                        .join(perms_object_alias, perms_object_alias.c.id_synthese == Synthese.id_synthese)
                     )
                     .where(or_(*permissions_ors))
-                    .where(object_cte.c.id_synthese == Synthese.id_synthese)
+                    .cte(name=f"{object_type}_PERM")
                 )
-                blurred_obs_query = blurred_obs_query.where(permissions_query)
+                blurred_obs_query = blurred_obs_query.where(
+                    ~exists([literal('X')])
+                    .select_from(permissions_cte)
+                    .where(permissions_cte.c.id_synthese == object_cte.c.id_synthese)
+                )
             
             blurred_obs_queries.append(blurred_obs_query)
         
