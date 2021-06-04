@@ -22,10 +22,8 @@ CHANGELOG
 
 PRE-PROD PNE : 
 
-- "undefined" sur la liste des relevés Occtax - Du à notre migration Taxref 14 ?
-- Désactiver l'ajout de médias dans Occtax qui sont actifs sur notre pre-prod ?
-- Je modifie un relevé Occtax, je perds l'observateur... Le JDD est bien récupéré mais le champs est affiché en rouge alors qu'il est renseigné... Quand je les renseigne et enregistre : "Une erreur s'est produite".
-- Titre des médias par défaut, récupère des undefined à la place de la date...
+- Désactiver l'ajout de médias dans Occtax qui sont actifs sur notre pre-prod ? A True par défaut. On laisse comme ça non ?
+- Titre des médias par défaut, récupère des undefined à la place de la date...: corrigé ?
 - Synthèse : Envoyer un email à l'observateur me renvoie vers l'accueil de GN
 - Validation : La coche de recherche des données modifiées est affichée en rouge comme obligatoire
 - Validation : Le nombre de résultats n'est plus affiché à la fin de la liste

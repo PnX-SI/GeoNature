@@ -182,8 +182,7 @@ export class OcctaxFormService {
     if (!occtaxData.releve.properties.t_occurrences_occtax) {
       occtaxData.releve.properties.t_occurrences_occtax = [];
     }
-    occtaxData.releve.properties.t_occurrences_occtax.push(occurrence);
-    
+    occtaxData.releve.properties.t_occurrences_occtax.push(occurrence);    
     this.occtaxData.next(occtaxData);
   }
 

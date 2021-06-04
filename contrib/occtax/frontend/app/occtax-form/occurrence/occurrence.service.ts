@@ -221,11 +221,7 @@ export class OcctaxFormOccurrenceService {
         this.occtaxFormService.datasetOccurrenceAddFields = datasetOccAddFieds;
         this.occtaxFormService.globalOccurrenceAddFields = globalOccurrenceAddFields.concat(
           this.occtaxFormService.datasetOccurrenceAddFields
-        );
-        console.log(addFields);
-        
-        console.log(this.occtaxFormService.globalOccurrenceAddFields);
-        
+        );                
       }
       if (this.occtaxFormService.datasetCountingAddFields.length == 0 || JSON.stringify(datasetCountAddFields) != JSON.stringify(this.occtaxFormService.datasetCountingAddFields)) {          
         let globalCountingAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
@@ -300,9 +296,7 @@ export class OcctaxFormOccurrenceService {
     return this.occtaxFormService.occtaxData.pipe(
       distinctUntilChanged(),
       filter(releveData => releveData && releveData.releve.properties),
-      mergeMap(releveData => {
-        console.log("FROM OCC WITH ID8DATADAT");
-                   
+      mergeMap(releveData => {                   
         return this.occtaxFormService.getAdditionnalFields(
           objectCode,
           releveData.releve.properties.id_dataset,
@@ -433,7 +427,7 @@ export class OcctaxFormOccurrenceService {
       this.occtaxDataService
         .createOccurrence(id_releve, formValue)
         .subscribe(
-          (occurrence) => {            
+          (occurrence) => {                        
             this.occtaxTaxaListService.removeOccurrenceInProgress(
               TEMP_ID_OCCURRENCE
             );
