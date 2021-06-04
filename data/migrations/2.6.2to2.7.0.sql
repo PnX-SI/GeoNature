@@ -1,3 +1,132 @@
+-- Update script from GeoNature 2.6.2 to 2.6.3
+
+BEGIN;
+
+-------------
+-- VARIOUS --
+-------------
+
+-- REF_GEO - Add missing unique contraints
+CREATE UNIQUE INDEX IF NOT EXISTS i_unique_l_areas_id_type_area_code ON ref_geo.l_areas (id_type, area_code);
+ALTER TABLE ONLY ref_geo.l_areas DROP CONSTRAINT IF EXISTS unique_l_areas_id_type_area_code;
+ALTER TABLE ONLY ref_geo.l_areas
+     ADD CONSTRAINT  unique_l_areas_id_type_area_code UNIQUE (id_type, area_code);
+CREATE UNIQUE INDEX IF NOT EXISTS  i_unique_bib_areas_types_type_code ON ref_geo.bib_areas_types(type_code);
+ALTER TABLE ONLY ref_geo.bib_areas_types DROP CONSTRAINT IF EXISTS unique_bib_areas_types_type_code;
+ALTER TABLE ONLY ref_geo.bib_areas_types
+     ADD CONSTRAINT unique_bib_areas_types_type_code UNIQUE (type_code);
+    
+-- !!! TODO !!! A ne faire que si le paramètre n'existe pas déjà dans la table...
+-- Oubli de la 2.6.0 - A faire seulement sur une nouvelle installation faite avec la 2.6.0, 2.6.1 ou 2.6.2
+-- où il manquait ce paramètre fait en update2.5.5to2.6.0
+INSERT INTO gn_commons.t_parameters
+(id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value)
+VALUES(0, 'ref_sensi_version', 'Version du referentiel de sensibilité', 'Referentiel de sensibilite taxref v13 2020', '');
+
+-- Ajout de contraintes d'unicité sur les permissions
+ALTER TABLE gn_permissions.cor_object_module ADD CONSTRAINT unique_cor_object_module UNIQUE (id_object,id_module);
+ALTER TABLE gn_permissions.t_objects ADD CONSTRAINT unique_t_objects UNIQUE (code_object);
+
+-- Ajout de champs à la table t_modules
+ALTER TABLE gn_commons.t_modules ADD type CHARACTER VARYING(255);  -- polymorphisme
+ALTER TABLE gn_commons.t_modules ADD meta_create_date timestamp without time zone DEFAULT now();
+ALTER TABLE gn_commons.t_modules ADD meta_update_date timestamp without time zone DEFAULT now();
+CREATE TRIGGER tri_meta_dates_change_t_modules
+      BEFORE INSERT OR UPDATE
+      ON gn_commons.t_modules
+      FOR EACH ROW
+      EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
+
+-- Datasets - Ajout d'un champs pour lier un JDD à une liste de taxons
+ALTER TABLE gn_meta.t_datasets 
+    ADD COLUMN id_taxa_list integer;
+COMMENT ON COLUMN gn_meta.t_datasets.id_taxa_list IS 'Identifiant de la liste de taxon associé au JDD. FK: taxonomie.bib_liste';
+
+ALTER TABLE ONLY gn_meta.t_datasets
+    ADD CONSTRAINT fk_t_datasets_id_taxa_list FOREIGN KEY (id_taxa_list) REFERENCES taxonomie.bib_listes ON UPDATE CASCADE;
+
+--------------------------------------------
+-- METADATA - DELETE CASCADE ON DS AND AF --
+--------------------------------------------
+
+-- cor module dataset
+ALTER TABLE gn_commons.cor_module_dataset 
+    DROP constraint fk_cor_module_dataset_id_module;
+ALTER TABLE gn_commons.cor_module_dataset 
+    DROP constraint fk_cor_module_dataset_id_dataset;
+
+ALTER TABLE gn_commons.cor_module_dataset 
+    ADD constraint fk_cor_module_dataset_id_dataset FOREIGN KEY (id_dataset) REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE cascade on delete cascade,
+    ADD constraint fk_cor_module_dataset_id_module FOREIGN KEY (id_module) REFERENCES gn_commons.t_modules(id_module) ON UPDATE cascade on delete cascade;
+
+-- cor dataset actor
+ALTER TABLE ONLY gn_meta.cor_dataset_actor
+    DROP constraint fk_cor_dataset_actor_id_dataset;
+ALTER TABLE ONLY gn_meta.cor_dataset_actor
+    DROP constraint fk_dataset_actor_id_role;
+
+ALTER TABLE ONLY gn_meta.cor_dataset_actor
+    ADD CONSTRAINT fk_cor_dataset_actor_id_dataset FOREIGN KEY (id_dataset)
+     REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE,
+    ADD CONSTRAINT fk_dataset_actor_id_role FOREIGN KEY (id_role) 
+     REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- territory
+ALTER TABLE ONLY gn_meta.cor_dataset_territory
+    DROP constraint fk_cor_dataset_territory_id_dataset;
+ALTER TABLE ONLY gn_meta.cor_dataset_protocol
+    ADD CONSTRAINT fk_cor_dataset_territory_id_dataset FOREIGN KEY (id_dataset) 
+    REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- protocol
+ALTER TABLE ONLY gn_meta.cor_dataset_protocol
+    DROP constraint fk_cor_dataset_protocol_id_dataset;
+ALTER TABLE ONLY gn_meta.cor_dataset_protocol
+    ADD CONSTRAINT fk_cor_dataset_protocol_id_dataset FOREIGN KEY (id_dataset) 
+    REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
+
+-- AF
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_objectif
+    DROP constraint fk_cor_acquisition_framework_objectif_id_acquisition_framework;
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_objectif
+    ADD CONSTRAINT fk_cor_acquisition_framework_objectif_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) 
+    REFERENCES gn_meta.t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
+    DROP constraint fk_cor_acquisition_framework_actor_id_acquisition_framework;
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
+    ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) 
+    REFERENCES gn_meta.t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
+drop  constraint fk_cor_acquisition_framework_actor_id_role;
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
+    ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_role FOREIGN KEY (id_role) 
+    REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
+    DROP constraint fk_cor_acquisition_framework_actor_id_organism;
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
+    ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_organism FOREIGN KEY (id_organism) 
+    REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_voletsinp
+    DROP constraint fk_cor_acquisition_framework_voletsinp_id_acquisition_framework;
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_voletsinp
+    ADD CONSTRAINT fk_cor_acquisition_framework_voletsinp_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) 
+    REFERENCES gn_meta.t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
+
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_publication
+    DROP constraint fk_cor_acquisition_framework_publication_id_publication;
+ALTER TABLE ONLY gn_meta.cor_acquisition_framework_publication
+    ADD CONSTRAINT fk_cor_acquisition_framework_publication_id_publication FOREIGN KEY (id_acquisition_framework) 
+    REFERENCES gn_meta.t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
+
+---------------------------------------
+-- OCCTAX - ADDITIONAL FIELDS & DATA --
+---------------------------------------
+
+-- Ajout des tables pour les données additionnels dans Occtax
 ALTER TABLE pr_occtax.t_releves_occtax
     ADD COLUMN additional_fields jsonb;
 	
@@ -7,7 +136,7 @@ ALTER TABLE pr_occtax.t_occurrences_occtax
 ALTER TABLE pr_occtax.cor_counting_occtax
     ADD COLUMN additional_fields jsonb;
 
-
+-- Révision de la fonction insérant les données d'Occtax vers la synthèse, pour y ajouter les champs additionnels
 CREATE OR REPLACE FUNCTION pr_occtax.insert_in_synthese(my_id_counting integer)
     RETURNS integer[]
 AS $BODY$  DECLARE
@@ -166,6 +295,7 @@ AS $BODY$  DECLARE
     LANGUAGE plpgsql VOLATILE
   COST 100;
 
+-- Révision de la fonction mettant à jour les données d'Occtax vers la synthèse, pour y ajouter les champs additionnels
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_counting()
   RETURNS trigger
   LANGUAGE 'plpgsql'
@@ -290,6 +420,7 @@ AS $BODY$  DECLARE
   END;
   $BODY$;
 
+-- Ajout des tables de gestion des champs additionnels
 CREATE TABLE gn_commons.bib_widgets (
 	id_widget serial NOT NULL,
 	widget_name varchar(50) NOT NULL
@@ -350,7 +481,6 @@ ALTER TABLE ONLY gn_commons.t_additional_fields
   ADD CONSTRAINT fk_t_additional_fields_id_widget FOREIGN KEY (id_widget) 
   REFERENCES gn_commons.bib_widgets(id_widget) ON UPDATE CASCADE ON DELETE CASCADE;
 
-
 ALTER TABLE ONLY gn_commons.cor_field_object
   ADD CONSTRAINT fk_cor_field_obj_field FOREIGN KEY (id_field) 
   REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -375,6 +505,7 @@ ALTER TABLE ONLY gn_commons.cor_field_dataset
   ADD CONSTRAINT fk_cor_field_dataset FOREIGN KEY (id_dataset) 
   REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
 
+-- Insertion des données de référence pour les champs additionnels
 INSERT INTO gn_permissions.t_objects (code_object, description_object) VALUES 
   ('OCCTAX_RELEVE', 'Représente la table pr_occtax.t_releves_occtax'),
   ('OCCTAX_OCCURENCE', 'Représente la table pr_occtax.t_occurrences_occtax'),
@@ -397,12 +528,5 @@ INSERT INTO gn_commons.bib_widgets (widget_name) VALUES ('select'),
 	 ('observers'),
 	 ('html');
 
+COMMIT;
 
--- META
-
-ALTER TABLE gn_meta.t_datasets 
-ADD COLUMN id_taxa_list integer;
-COMMENT ON COLUMN gn_meta.t_datasets.id_taxa_list IS 'Identifiant de la liste de taxon associé au JDD. FK: taxonomie.bib_liste';
-
-ALTER TABLE ONLY gn_meta.t_datasets
-    ADD CONSTRAINT fk_t_datasets_id_taxa_list FOREIGN KEY (id_taxa_list) REFERENCES taxonomie.bib_listes ON UPDATE CASCADE;
