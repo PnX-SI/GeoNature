@@ -63,7 +63,6 @@ export class MediaComponent implements OnInit {
     );
 
     //if field not hidden => put it before advance setting
-    //Si mediaFieldsDetailsDefault est renseigné et de taille différente des champs details
     let afterDisplay = false;
     let mediaDetailsFields = this.mediaFormDefinition.filter(field => {
       if (afterDisplay && field.hidden !== true){
@@ -75,6 +74,7 @@ export class MediaComponent implements OnInit {
       return false;
     } );
       
+    //Si la liste de champs à afficher dans detail est différente de la liste des champs details
     if(mediaDetailsFields.length > 0 && this.details.length != mediaDetailsFields.length){
       let outDetailsFields = this.mediaFormDefinition.filter(field => !this.details.includes(field.attribut_name) && mediaDetailsFields.includes(field));
       const cMediaFormDefinition = this.mediaFormDefinition;
@@ -93,9 +93,9 @@ export class MediaComponent implements OnInit {
           newMediaFormDefinition.push(cMediaFormDefinition[i]);
         }
       }
+      //La liste des champs est réorganisée pour bien les afficher
       this.mediaFormDefinition = newMediaFormDefinition;
     }
-
 
     this.initIdTableLocation(this.schemaDotTable);
     this.ms.getNomenclatures().subscribe(() => {
