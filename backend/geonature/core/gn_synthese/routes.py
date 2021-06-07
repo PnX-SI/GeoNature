@@ -623,14 +623,9 @@ def general_stats(info_role):
         - nb of observations
         - nb of distinct species
         - nb of distinct observer
-        - nb ob datasets
+        - nb of datasets
     """
     allowed_datasets = get_datasets_cruved(info_role)
-    q = DB.session.query(
-        func.count(Synthese.id_synthese),
-        func.count(func.distinct(Synthese.cd_nom)),
-        func.count(func.distinct(Synthese.observers)),
-    )
     q = select(
         [
             func.count(Synthese.id_synthese),
@@ -638,15 +633,15 @@ def general_stats(info_role):
             func.count(func.distinct(Synthese.observers))
         ]
     )
-
     synthese_query_obj = SyntheseQuery(Synthese, q, {})
     synthese_query_obj.filter_query_with_cruved(info_role)
-    result = DB.engine.execute(synthese_query_obj.query)
-    data = result.fetchone()
+    result = DB.session.execute(synthese_query_obj.query)
+    synthese_counts = result.fetchone()
+
     data = {
-        "nb_data": data[0],
-        "nb_species": data[1],
-        "nb_observers": data[2],
+        "nb_data": synthese_counts[0],
+        "nb_species": synthese_counts[1],
+        "nb_observers": synthese_counts[2],
         "nb_dataset": len(allowed_datasets),
     }
     return data
