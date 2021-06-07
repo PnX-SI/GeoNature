@@ -25,11 +25,11 @@ MANDATORY_COLUMNS = [
 
 
 COLUMN_LIST = [
-    {"column_name": "id_nomenclature_valid_status", "name": "", "max_width": 40},
-    {"column_name": "nom_vern_or_lb_nom", "name": "Taxon", "min_width": 250},
-    {"column_name": "date_min", "name": "Date obs.", "min_width": 100},
-    {"column_name": "dataset_name", "name": "Jeu de donnees", "min_width": 100},
-    {"column_name": "observers", "name": "Observateur", "min_width": 100},
+    {"column_name": "id_nomenclature_valid_status", "column_label": "", "max_width": 40},
+    {"column_name": "nom_vern_or_lb_nom", "column_label": "Taxon", "min_width": 250},
+    {"column_name": "date_min", "column_label": "Date obs.", "min_width": 100},
+    {"column_name": "dataset_name", "column_label": "Jeu de donnees", "min_width": 100},
+    {"column_name": "observers", "column_label": "Observateur", "min_width": 100},
 ]
 
 # cd_nomenclature_valid_status used for validation module only use for color style
