@@ -41,7 +41,8 @@ PRE-PROD PNE :
 * Occtax/Metadonnées : possibilité d'associer une liste de taxons à un JDD (implémenté uniquement dans Occtax) (#1315)
 * Occtax : Possibilité d'ajouter les infos sur les médias dans les exports (paramètre ``ADD_MEDIA_IN_EXPORT``) (#1326)
 * Occtax : Ajout du paramètre ``MEDIA_FIELDS_DETAILS`` permettant de définir les champs des médias affichés par défaut
-* OCCTAX: Possibilité de paramétrer l'affichage des champs du composant MEDIA dans OCCTAX (paramètre MEDIA_FIELDS_DETAILS #1287) 
+* Occtax: Possibilité de paramétrer l'affichage des champs du composant MEDIA dans OCCTAX (paramètre MEDIA_FIELDS_DETAILS #1287) 
+* Occtax: Possibilité de fitrer le liste des habitats du formulaire via les paramètres `ID_LIST_HABITAT` et `CD_TYPO_HABITAT`
 * Accueil : Réorganisation des blocs (#1375)
 * Accueil :jout d'un paramètre controlant la fréquence de MAJ des statistiques de la page d'accueil (`STAT_BLOC_TTL` par défaut 1h: 3600 secondes)
 * Métadonnées : Ordonnancement des JDD par leur nom

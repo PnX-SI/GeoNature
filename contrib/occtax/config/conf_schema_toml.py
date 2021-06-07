@@ -187,3 +187,5 @@ class GnModuleSchemaConf(Schema):
     export_col_name_additional_data = fields.String(missing=default_export_col_name_additional_data)
     MEDIA_FIELDS_DETAILS = fields.List(fields.String(), missing=default_media_fields_details)
     ADD_MEDIA_IN_EXPORT = fields.Boolean(missing=False)
+    ID_LIST_HABITAT = fields.Integer(missing=None)
+    CD_TYPO_HABITAT = fields.Integer(missing=None)

@@ -23,6 +23,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public geojson: GeoJSON;
   public userDatasets: Array<any>;
   public releveForm: FormGroup;
+  public moduleConfig = ModuleConfig;
   public AppConfig = AppConfig;
   public routeSub: Subscription ;
   private _subscriptions: Subscription[] = [];
