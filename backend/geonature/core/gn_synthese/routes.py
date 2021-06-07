@@ -46,6 +46,7 @@ from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from werkzeug.exceptions import BadRequest
 
 
 # debug
@@ -373,7 +374,7 @@ def export_observations_web(info_role):
     export_format = params.get("export_format", "csv")
     # Test export_format
     if not export_format in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
-        raise GeonatureApiError("Unsupported format")
+        raise BadRequest("Unsupported format")
 
     # set default to csv
     export_view = GenericTableGeo(

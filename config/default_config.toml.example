@@ -377,7 +377,8 @@ MAIL_ON_ERROR = false
         "uuid_perm_sinp",
         "uuid_perm_grp_sinp",
         "date_creation",
-        "date_modification"
+        "date_modification",
+        "champs_additionnels
     ]
 
 # Configuration de l'accès sans authentication 

@@ -13,7 +13,7 @@ CHANGELOG
 - Mettre à jour et release template de module ?
 - Bien tester les emails de validation pré-remplis
 - Monitoring : Problème d'héritage des objets >> Ajouter un champs dans t_modules, sinon Monitoring ne fonctionnera pas avec le nouveau GN... A indiquer dans les notes de version si quelque chose doit être fait pour que Monitoring continue à fonctionner avec GN 2.7.0
-- Export des additional_data dans la Synthese à vérifier et tester
+- Export des additional_data dans la Synthese à vérifier et tester: Fait OK
 - Fix des commandes (https://github.com/PnX-SI/GeoNature/commit/ec62b24ef1539116697aa29758dd135dcbaa85b1) à préciser ou répercuter ?
 - https://github.com/PnX-SI/GeoNature/issues/1071 fonctionne ?
 - Voir acteurs des métadonnées (https://github.com/PnX-SI/GeoNature/pull/1313#issuecomment-839705016)
@@ -23,15 +23,14 @@ PRE-PROD PNE :
 
 - Désactiver l'ajout de médias dans Occtax qui sont actifs sur notre pre-prod ? A True par défaut. On laisse comme ça non ?
 - Synthèse : Envoyer un email à l'observateur me renvoie vers l'accueil de GN: je ne reproduit pas
-- Validation : La coche de recherche des données modifiées est affichée en rouge comme :obligatoire
-- Validation : Le nombre de résultats n'est plus affiché à la fin de la liste
-
+- Validation : La coche de recherche des données modifiées est affichée en rouge comme :obligatoire ? Comprend pas pk ...
+=
 **🚀 Nouveautés**
 
 * La page login affiche désormais le nom de l'application appName définit dans la configuration de GeoNature (#1277 @DonovanMaillard) 
 * Possibilité d'ouvrir une instance GeoNature au grnd public sans authentification (voir doc admin à ce sujet)
 * Occtax : Possibilité d'ajouter des champs additionels par JDD ou globaux au module (#1007)
-* Occtax : Ajout des champs additionnels dans les exports (#1114)
+* Occtax/Synthese : Ajout des champs additionnels dans les exports (#1114)
 * Admin : Création d'un backoffice d'administration des champs additionels (#1007)
 * Admin : Création d'une documentation d'administration des champs additionnels (#1007)
 * Occtax : Possibilité de désactiver la recherche de taxon par liste (#1315)
@@ -51,8 +50,8 @@ PRE-PROD PNE :
 * Ajout d'une contrainte d'unicité du champs ``type_code`` de la table ``ref_geo.bib_areas_types``
 * Mise à jour des versions de nombreuses dépendances
 * Support du gestionnaire d'erreurs Sentry
-* Validation: possibilité de passer des fonctions dans la liste des colonnes affichées (pour décoder une nomenclature)
-* Les paramètres: LIST_COLUMNS_FRONTEND, COLUMNS_API_VALIDATION_WEB_APP sont regroupé en un seul nomme COLUMN_LIST. Voir le fichier `contrib/gn_module_validation/config/conf_gn_module.toml.example`
+* Validation : possibilité de passer des fonctions dans la liste des colonnes affichées (pour décoder une nomenclature)
+* Validation : Les paramètres: LIST_COLUMNS_FRONTEND, COLUMNS_API_VALIDATION_WEB_APP sont regroupés en un seul nomme COLUMN_LIST. Voir le fichier `contrib/gn_module_validation/config/conf_gn_module.toml.example`
 
 **🐛 Corrections**
 
