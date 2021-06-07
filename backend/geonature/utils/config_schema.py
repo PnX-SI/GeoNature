@@ -110,8 +110,8 @@ class UsersHubConfig(Schema):
     URL_USERSHUB = fields.Url()
 
 class PublicAccess(Schema):
-    PUBLIC_LOGIN = fields.String()
-    PUBLIC_PASSWORD = fields.String()
+    PUBLIC_LOGIN = fields.String(missing=None)
+    PUBLIC_PASSWORD = fields.String(missing=None)
     ENABLE_PUBLIC_ACCESS = fields.Boolean(missing=False)
 
 class ServerConfig(Schema):
