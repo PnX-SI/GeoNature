@@ -258,6 +258,7 @@ export class OcctaxFormReleveService {
   /** Get occtax data in order to patch value to the form */
   private get releveValues(): Observable<any> {
     return this.occtaxFormService.occtaxData.pipe(
+      tap(() => this.habitatForm.setValue(null)),
       filter(data => data && data.releve.properties),
       map(data => {        
         const copied_data = Object.assign({}, data)
