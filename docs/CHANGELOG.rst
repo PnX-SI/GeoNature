@@ -9,7 +9,6 @@ CHANGELOG
 - Tester l'outil Occtax de conservation d'info d'un taxon à l'autre
 - Rétrocompatibilité des évolutions ? Bien tester installation des différents modules
 - Bien vérifier et regrouper les update SQL
-- Fusionner 3 SQL d'update et renommer en 2.6.2to2.7.0.sql
 - Bien vérifier notes de versions liées à des changements à appliquer suite aux évolutions techniques
 - Mettre à jour et release template de module ?
 - Bien tester les emails de validation pré-remplis
@@ -26,7 +25,6 @@ PRE-PROD PNE :
 - Synthèse : Envoyer un email à l'observateur me renvoie vers l'accueil de GN: je ne reproduit pas
 - Validation : La coche de recherche des données modifiées est affichée en rouge comme :obligatoire
 - Validation : Le nombre de résultats n'est plus affiché à la fin de la liste
-- Synthèse : Erreur sur l'export CSV des observations (testé avec le filtre "Possède des médias")
 
 **🚀 Nouveautés**
 

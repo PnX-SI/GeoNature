@@ -8,7 +8,7 @@ from marshmallow import Schema, fields
 # Colonnes renvoyees par l'API synthese qui sont obligatoires pour que les fonctionnalités
 #  front fonctionnent
 MANDATORY_COLUMNS = [
-    {"column_name": "id_nomenclature_valid_status", "column_label": "id_nomenclature_valid_status"},
+    {"column_name": "id_nomenclature_valid_status", "column_label": ""},
     {"column_name": "id_synthese", "column_label": "id_synthese"},
     {"column_name": "entity_source_pk_value", "column_label": "entity_source_pk_value"},
     {"column_name": "validation_auto", "column_label": "validation_auto"},
@@ -75,7 +75,7 @@ MAIL_SUBJECT = "[GeoNature Validation] Donnée du ${ d.date_min } - ${ d.nom_ver
 
 class ColumnSchema(Schema):
     column_name = fields.Str(required=True)
-    column_label = fields.Str(required=True)
+    column_label = fields.Str()
     max_width = fields.Integer()
     min_width = fields.Integer()
     func = fields.Str()
