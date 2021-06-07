@@ -31,6 +31,7 @@ PRE-PROD PNE :
 **🚀 Nouveautés**
 
 * La page login affiche désormais le nom de l'application appName définit dans la configuration de GeoNature (#1277 @DonovanMaillard) 
+* Possibilité d'ouvrir une instance GeoNature au grnd public sans authentification (voir doc admin à ce sujet)
 * Occtax : Possibilité d'ajouter des champs additionels par JDD ou globaux au module (#1007)
 * Occtax : Ajout des champs additionnels dans les exports (#1114)
 * Admin : Création d'un backoffice d'administration des champs additionels (#1007)
@@ -42,6 +43,7 @@ PRE-PROD PNE :
 * Occtax : Ajout du paramètre ``MEDIA_FIELDS_DETAILS`` permettant de définir les champs des médias affichés par défaut
 * OCCTAX: Possibilité de paramétrer l'affichage des champs du composant MEDIA dans OCCTAX (paramètre MEDIA_FIELDS_DETAILS #1287) 
 * Accueil : Réorganisation des blocs (#1375)
+* Accueil :jout d'un paramètre controlant la fréquence de MAJ des statistiques de la page d'accueil (`STAT_BLOC_TTL` par défaut 1h: 3600 secondes)
 * Métadonnées : Ordonnancement des JDD par leur nom
 * Synthèse et validation : Ajout d'un filtre avancé ``Possède des médias`` (#1179, #1338, #1180)
 * Synthèse : Affichage du contenu json du champs des données additionnelles, dans la fiche détail d'une observation
