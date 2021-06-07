@@ -28,7 +28,7 @@ export class SyntheseFormService {
       id_dataset: null,
       id_acquisition_framework: null,
       id_nomenclature_valid_status: null,
-      modif_since_validation: false,
+      modif_since_validation: [false, null],
       date_min: null,
       date_max: null,
       period_start: null,
