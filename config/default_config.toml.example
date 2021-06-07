@@ -380,6 +380,12 @@ MAIL_ON_ERROR = false
         "date_modification"
     ]
 
+# Configuration de l'accès sans authentication 
+[PUBLIC_ACCESS]
+    PUBLIC_LOGIN = "admin"
+    PUBLIC_PASSWORD = "admin"
+    ENABLE_PUBLIC_ACCESS = true
+
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
     # Activer l'affichage du lien vers le formulaire d'inscription

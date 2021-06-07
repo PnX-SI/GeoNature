@@ -109,6 +109,10 @@ class UsersHubConfig(Schema):
     ADMIN_APPLICATION_PASSWORD = fields.String()
     URL_USERSHUB = fields.Url()
 
+class PublicAccess(Schema):
+    PUBLIC_LOGIN = fields.String()
+    PUBLIC_PASSWORD = fields.String()
+    ENABLE_PUBLIC_ACCESS = fields.Boolean(missing=False)
 
 class ServerConfig(Schema):
     LOG_LEVEL = fields.Integer(missing=20)
@@ -355,6 +359,7 @@ class GnGeneralSchemaConf(Schema):
     MTD = fields.Nested(MTDSchemaConf, missing={})
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(missing=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, missing={})
+    PUBLIC_ACCESS = fields.Nested(PublicAccess, missing={})
 
     @validates_schema
     def validate_enable_sign_up(self, data):
