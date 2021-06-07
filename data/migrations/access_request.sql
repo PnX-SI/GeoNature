@@ -343,7 +343,7 @@ INSERT INTO gn_permissions.t_objects (code_object, description_object)
 INSERT INTO gn_permissions.t_objects (code_object, description_object) 
     SELECT
         'BLURRED_OBSERVATION',
-        'Observation privée'
+        'Observation floutée'
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.t_objects AS o
