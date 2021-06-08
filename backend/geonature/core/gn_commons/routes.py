@@ -2,6 +2,7 @@ import json
 from operator import or_
 
 from flask import Blueprint, request, current_app
+from flask.json import jsonify
 import requests
 from sqlalchemy.orm import joinedload
 
@@ -108,7 +109,6 @@ def get_one_parameter(param_name, id_org=None):
     return [d.as_dict() for d in data]
 
 @routes.route("/additional_fields", methods=["GET"])
-@json_resp
 def get_additional_fields():
     params = request.args
     q = DB.session.query(TAdditionalFields).order_by(TAdditionalFields.field_order)
@@ -144,7 +144,7 @@ def get_additional_fields():
             q = q.filter(or_(*ors))
         else:
             q = q.filter(TAdditionalFields.objects.any(code_object=params["object_code"]))
-    return [d.as_dict(depth=1) for d in q.all()]
+    return jsonify([d.as_dict(depth=1) for d in q.all()])
 
 
 
