@@ -39,7 +39,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     this.occtaxConfig = ModuleConfig;
   }
 
-  ngOnInit() {
+  ngOnInit() {    
     this.releveForm = this.occtaxFormReleveService.releveForm;
     // pass route to releve.service to navigate
     this.occtaxFormReleveService.route = this.route;

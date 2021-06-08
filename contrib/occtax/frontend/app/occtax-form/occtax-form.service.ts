@@ -11,7 +11,6 @@ import { CommonService } from "@geonature_common/service/common.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 
 import { OcctaxDataService } from "../services/occtax-data.service";
-import { ModuleConfig } from "../module.config";
 
 
 @Injectable()

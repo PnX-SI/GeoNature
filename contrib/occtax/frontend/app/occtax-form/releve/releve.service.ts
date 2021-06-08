@@ -34,6 +34,7 @@ export class OcctaxFormReleveService {
   public datasetId : number = null;
   public datasetComponent;
   public previousReleve = null;
+  public formDisable = true;
 
   constructor(
     private router: Router,
@@ -189,11 +190,11 @@ export class OcctaxFormReleveService {
           return editionMode ? this.releveValues : this.defaultValues;
         })
       )
-      .subscribe((values) => {                
+      .subscribe((values) => {                        
         // re disable the form here
         // Angular bug: when we add additionnal form controls, it enable the form
         if(!values.id_releve_occtax) {
-          this.propertiesForm.disable();
+          this.propertiesForm.disable();          
         }
         // HACK: wait for the dynamicformGenerator Component to set the additional fields
         // TODO: subscribe to an observable of dynamicFormCOmponent to wait it
@@ -382,12 +383,12 @@ export class OcctaxFormReleveService {
     };
   }
 
-  private get defaultValues(): Observable<any> {
+  private get defaultValues(): Observable<any> {    
     return this.occtaxFormService
       .getDefaultValues(this.occtaxFormService.currentUser.id_organisme)
       .pipe(
         map((data) => {
-          const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);
+          const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);                
           return {
             // datasetId could be get for get parameters (see releve.component)
             id_dataset: this.datasetId || this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset,
@@ -402,9 +403,9 @@ export class OcctaxFormReleveService {
             meta_device_entry: "web",
             comment: this.occtaxParamS.get("releve.comment"),
             observers: this.occtaxParamS.get("releve.observers") ||
-              previousReleve.observers || ModuleConfig.observers_txt ? null: [this.occtaxFormService.currentUser],
+              previousReleve.observers || (ModuleConfig.observers_txt ? null: [this.occtaxFormService.currentUser]),
             observers_txt: this.occtaxParamS.get("releve.observers_txt") || previousReleve.observers_txt ||
-              ModuleConfig.observers_txt ? this.occtaxFormService.currentUser.nom_complet:  null,
+              (ModuleConfig.observers_txt ? this.occtaxFormService.currentUser.nom_complet:  null),
             id_nomenclature_grp_typ:
               this.occtaxParamS.get("releve.id_nomenclature_grp_typ") ||
               data["TYP_GRP"],
@@ -499,7 +500,7 @@ export class OcctaxFormReleveService {
           }
         );
     } else {
-      if(this.occtaxFormService.chainRecording) {
+      if(this.occtaxFormService.chainRecording) {        
         this.occtaxFormService.previousReleve = JSON.parse(JSON.stringify(this.releveForm.value));
       }
       //create

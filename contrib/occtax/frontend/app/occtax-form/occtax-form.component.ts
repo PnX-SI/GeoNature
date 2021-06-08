@@ -148,6 +148,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
    * @param cancel : boolean. Action vient du bouton annuler = true, sinon false
    */
   leaveTheForm(cancel) {
+    this.occtaxFormService.disabled = true;
     this.disableCancel = true;
     let url;
     if (this.occtaxFormService.chainRecording) {
