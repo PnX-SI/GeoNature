@@ -273,7 +273,7 @@
                 </div>
                 {% endif %}
 
-                {% if data.datasets: %}
+                {% if data.t_datasets: %}
                 <div class="jdd">
                     <hr
                         class="ligne-jeux-donnees ligne"
@@ -284,7 +284,7 @@
                         {% endif %}
                     >
                     <p class="liste-jdd">Liste des jeux de données associés au cadre</p>
-                    {% for dataset in data.datasets -%}
+                    {% for dataset in data.t_datasets -%}
                     <div class="jdd-details">
                         <img
                             class="logo-jdd"

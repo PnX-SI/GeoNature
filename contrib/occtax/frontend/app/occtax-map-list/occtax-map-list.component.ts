@@ -23,6 +23,13 @@ import { Subscription } from "rxjs/Subscription";
 import * as moment from "moment";
 import { MediaService } from '@geonature_common/service/media.service';
 
+import { OcctaxFormReleveService } from "../occtax-form/releve/releve.service";
+import { OcctaxFormOccurrenceService } from "../occtax-form/occurrence/occurrence.service";
+import { OcctaxFormService } from "../occtax-form/occtax-form.service";
+import { OcctaxMapListService } from "./occtax-map-list.service";
+
+// /occurrence/occurrence.service";
+
 
 @Component({
   selector: "pnx-occtax-map-list",
@@ -36,7 +43,6 @@ export class OcctaxMapListComponent
   public availableColumns: Array<any>;
   public pathEdit: string;
   public pathInfo: string;
-  public idName: string;
   public apiEndPoint: string;
   public occtaxConfig: any;
   // public formsDefinition = FILTERSLIST;
@@ -44,7 +50,6 @@ export class OcctaxMapListComponent
   public formsSelected = [];
   public moduleSub: Subscription;
   public cardContentHeight: number;
-  public rowPerPage: number;
 
   advandedFilterOpen = false;
   @ViewChild(NgbModal)
@@ -65,6 +70,8 @@ export class OcctaxMapListComponent
     public globalSub: GlobalSubService,
     private renderer: Renderer2,
     public mediaService: MediaService,
+    private occtaxMapListS: OcctaxMapListService
+
   ) { }
 
   ngOnInit() {
@@ -73,9 +80,10 @@ export class OcctaxMapListComponent
     this.mapListService.zoomOnLayer = true;
     //config
     this.occtaxConfig = ModuleConfig;
-    this.idName = "id_releve_occtax";
+    this.mapListService.idName = "id_releve_occtax";
     this.apiEndPoint = "occtax/releves";
-
+    // refresh forms
+    this.refreshForms();
     // get user cruved
     this.moduleSub = this.globalSub.currentModuleSub
       // filter undefined or null
@@ -90,13 +98,12 @@ export class OcctaxMapListComponent
     // columns available for display
     this.mapListService.availableColumns = this.occtaxConfig.available_maplist_column;
 
-    this.mapListService.idName = this.idName;
     // FETCH THE DATA
     this.mapListService.refreshUrlQuery();
     this.calculateNbRow();
     this.mapListService.getData(
       this.apiEndPoint,
-      [{ param: "limit", value: this.rowPerPage }],
+      [{ param: "limit", value: this.occtaxMapListS.rowPerPage }],
       this.displayLeafletPopupCallback.bind(this) //afin que le this présent dans displayLeafletPopupCallback soit ce component.
     );
     // end OnInit
@@ -125,7 +132,15 @@ export class OcctaxMapListComponent
   calculateNbRow() {
     let wH = window.innerHeight;
     let listHeight = wH - 64 - 150;
-    this.rowPerPage = Math.round(listHeight / 40);
+    this.occtaxMapListS.rowPerPage = Math.round(listHeight / 40);
+  }
+
+  refreshForms() {
+    // when navigate to list refresh services forms
+    // this._releveFormService.releveForm.reset();
+    // this._releveFormService.previousReleve = null;
+    // this._occurrenceFormService.form.reset();
+    // this._occtaxFormService.occtaxData.next(null);
   }
 
   calcCardContentHeight() {
@@ -261,7 +276,7 @@ export class OcctaxMapListComponent
    */
   displayTaxonsTooltip(row): any[] {
     let tooltip = [];
-    if (row.t_occurrences_occtax === undefined) {
+    if (row.t_occurrences_occtax && row.t_occurrences_occtax.length == 0) {
       tooltip.push({ taxName: "Aucun taxon" });
     } else {
       for (let i = 0; i < row.t_occurrences_occtax.length; i++) {

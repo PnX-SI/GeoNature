@@ -29,6 +29,7 @@
       </ng-template>
 
       <span
+        *ngIf="!disabled"
         (click)="removeItem($event, item)"
         class="fa fa-times clickable remove-button"
       > </span>

@@ -381,7 +381,7 @@ Idem côté Frontend, où chaque module a sa configuration et ses composants : h
 
 Mais en pouvant utiliser des composants du Cœur comme expliqué dans la documentation Developpeur.
 
-Plus d'infos sur le développement d'un module : https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#d%C3%A9velopper-et-installer-un-gn_module
+Plus d'infos sur le développement d'un module : https://github.com/PnX-SI/GeoNature/blob/master/docs/development.rst#d%C3%A9velopper-et-installer-un-gn_module
 
 
 Configuration
@@ -1018,6 +1018,49 @@ Cet espace est activable grâce au paramètre ``ENABLE_USER_MANAGEMENT``. Par d�
         ENABLE_SIGN_UP = true
         ENABLE_USER_MANAGEMENT = true
 
+Rendre GeoNature accessible sans authentification
+--------------------------------------------------
+
+Cette section de la documentation concerne l'implémentation d'un utilisateur-lecteur pour votre instance GeoNature. 
+
+Etapes :
+
+1/ UsersHub :
+   - Aller dans la section `Utilisateurs` 
+   - Créer un utilisateur 
+   - Définir un identifiant et un mot de passe (par défaut utilisateur 'public' et mot de passe 'public')
+   - Aller ensuite dans la section `Applications`
+   - Pour GeoNature, cliquer sur le premier icône 'Voir les membres'
+   - Cliquer sur ajouter un rôle 
+   - Choisir l'utilisateur juste créé
+   - Attribuer le rôle 1, 'lecteur' 
+
+2/ Configuration GeoNature : 
+   - Reporter identifiant et mot de passe dans le fichier de configuration de GeoNature 
+``` 
+$ cd config
+$ nano geonature_config.toml
+```
+`PUBLIC_LOGIN = 'public'`  
+`PUBLIC_PASSWORD = 'public'`  
+
+   - Mettre à jour la configuration de GeoNature 
+```
+$ source backend/venv/bin/activate
+$ geonature update_configuration
+```
+
+A ce moment là, cet utilisateur a tous les droits sur GeoNature.
+Il s'agit donc de gérer ses permissions dans GeoNature même. 
+
+3/ GeoNature 
+
+   - Se connecter à GeoNature avec un utilisateur administrateur
+   - Aller dans le module Admin
+   - Cliquer sur 'Gestion des permissions'
+   - Choisissez l'utilisateur sélectionné 
+   - Editer le CRUVED pour chacun des modules de l'instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser '3' pour les modules d'intérêt. 
+
 
 Module OCCTAX
 -------------
@@ -1230,6 +1273,38 @@ La gestion des droits (CRUVED) se fait module par module. Cependant si on ne red
 Pour ne pas afficher le module Occtax à un utilisateur où à un groupe, il faut lui mettre l'action Read (R) à 0.
 
 L'administration des droits des utilisateurs pour le module Occtax se fait dans le backoffice de gestion des permissions de GeoNature.
+
+
+Module Admin
+""""""""""""
+
+Administration des champs additionnels
+**************************************
+
+Certains protocoles necessitent la saisie de champs qui vont au delà des standard du SINP sur lesquels GeoNature s'appuie. Les champs additionnels permettent ainsi d'étendre les formulaires en ajoutant des informations spécifiques pour des jeux de données (JDD) ou pour l'ensemble d'un module.
+Actuellement seul le module Occtax implémente la gestion de ces champs additionnels.
+
+Le backoffice de GeoNature offre une interface de création et de gestion de ces champs additionnels. 
+Un champ additionnel est définit par:
+
+- son nom (nom de la colonne en base de données)
+- son label (nom tel qu'il sera affiché en interface)
+- son type de widget: vous devez définir si le nouveau champs est une liste déroulante, une checkbox, une nomenclature, un entier, un champ texte etc...
+- le ou les modules auquel il est rattaché 
+- le ou les objets auquel il est rattaché. Il s'agit du placement et de la table de rattachement du champs dans le module. Par exemple Occtax et composé de 3 "objets/table". L'objet "relevé", "occurrence" et "dénombrement".
+- le ou les JDD auquel il est rattaché. Si aucun JDD n'est renseigné le champ sera proposé dans tout le module pour tous les JDD. S'il est rattaché à un JDD, le champs sera chargé dynamiquement à la selection du JDD dans le formulaire 
+- une série d'autres options pour paramétrer le comportement du champs (obligatoire, ordre, description, exportable etc...)
+
+Exemple de configuration:
+
+- Un champs type "select":
+.. image :: https://github.com/PnX-SI/GeoNature/blob/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/select_exemple.png
+
+- Un champs type "multiselect" (la clé "value" est obligatoire dans le dictionnaire de valeurs)
+.. image :: https://github.com/PnX-SI/GeoNature/blob/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/multiselect3.png
+
+- Un champs type "html". C'est un champs de type "présentation", aucune valeur ne sera enregistré en base de données pour ce champs.
+.. image :: https://github.com/PnX-SI/GeoNature/blob/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/html1.png
 
 
 Module OCCHAB
@@ -1513,8 +1588,11 @@ Après toute modification de la configuration d'un module, il faut regénérer l
 
 Liste des champs visibles
 *************************
- La configuration des champs de la liste se fait via deux paramètres:
+
+La configuration des champs de la liste se fait via deux paramètres:
+
 - ``COLUMNS_API_VALIDATION_WEB_APP``
+
 Liste des colonnes qui seront récupérées en plus des colonnes obligatoires. Les colonnes disponibles correspondent à celles présentent dans la vue ``v_synthese_validation_forwebapp``
 
 ::
@@ -1535,6 +1613,7 @@ Liste des colonnes qui seront récupérées en plus des colonnes obligatoires. L
     "nom_vern_or_lb_nom"
 
 - ``LIST_COLUMNS_FRONTEND``
+
 Gestion de l'affichage des colonnes de la liste
 
 ::

@@ -1,5 +1,5 @@
-import { Component, Input } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { Component, OnInit, Input } from "@angular/core";
+import { FormGroup } from "@angular/forms";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
 import { AppConfig } from "@geonature_config/app.config";
@@ -11,22 +11,36 @@ import { OcctaxFormCountingService } from "./counting.service";
   templateUrl: "./counting.component.html",
   styleUrls: ["./counting.component.scss"]
 })
-export class OcctaxFormCountingComponent {
+export class OcctaxFormCountingComponent implements OnInit {
 
   public occtaxConfig = ModuleConfig;
   public appConfig = AppConfig;
+  public data : any;
 
   @Input('form') countingForm: FormGroup;
 
+
   constructor(
     public fs: OcctaxFormService,
-    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService
+    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    private occtaxFormCountingService: OcctaxFormCountingService,
+
   ) { }
+
+  ngOnInit() {
+    this.occtaxFormCountingService.form = this.countingForm;
+  
+  }
+
+
+
 
   taxref() {
     const taxref = this.occtaxFormOccurrenceService.taxref.getValue();
     return taxref;
   }
+
+
 
   defaultsMedia() {
     const occtaxData = this.fs.occtaxData.getValue();

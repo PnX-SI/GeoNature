@@ -11,9 +11,9 @@ from geojson import Feature, FeatureCollection
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
 from geonature.utils.env import MA
-from geonature.core.gn_commons.models import TMedias
 from .models import CorCountingOccurrence, TOccurrencesOccurrence, TRelevesOccurrence
 from geonature.core.gn_meta.schemas import DatasetSchema
+from geonature.core.gn_commons.schemas import MediaSchema
 from geonature.core.taxonomie.schemas import TaxrefSchema
 from pypnusershub.db.models import User
 from pypn_habref_api.schemas import HabrefSchema
@@ -68,17 +68,7 @@ class ObserverSchema(MA.SQLAlchemyAutoSchema):
         return data
 
 
-class MediaSchema(MA.SQLAlchemyAutoSchema):
-    class Meta:
-        model = TMedias
-        load_instance = True
-        include_fk = True
 
-    @pre_load
-    def make_media(self, data, **kwargs):
-        if data.get("id_media") is None:
-            data.pop("id_media", None)
-        return data
 
 
 class CountingSchema(MA.SQLAlchemyAutoSchema):
@@ -86,7 +76,9 @@ class CountingSchema(MA.SQLAlchemyAutoSchema):
         model = CorCountingOccurrence
         load_instance = True
 
-    medias = MA.Nested(MediaSchema, many=True)
+    medias = MA.Nested(
+        MediaSchema, many=True, dump_only=True
+        )
 
     @pre_load
     def make_counting(self, data, **kwargs):

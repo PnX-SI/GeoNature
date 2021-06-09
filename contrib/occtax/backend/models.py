@@ -3,7 +3,7 @@ from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey, not_
 from sqlalchemy.sql import select, func, and_
 from sqlalchemy.orm import relationship, backref
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
@@ -132,6 +132,9 @@ class CorCountingOccurrence(DB.Model):
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
 
+    #additional fields dans occtax MET 14/10/2020
+    additional_fields = DB.Column(JSONB)
+
     readonly_fields = [
         "id_counting_occtax",
         "unique_id_sinp_occtax",
@@ -175,6 +178,10 @@ class TOccurrencesOccurrence(DB.Model):
     digital_proof = DB.Column(DB.Unicode)
     non_digital_proof = DB.Column(DB.Unicode)
     comment = DB.Column(DB.Unicode)
+    
+    #additional fields dans occtax MET 28/09/2020
+    additional_fields = DB.Column(JSONB)
+    
     unique_id_occurence_occtax = DB.Column(
         UUID(as_uuid=True),
         default=select([func.uuid_generate_v4()]),
@@ -226,6 +233,9 @@ class TRelevesOccurrence(ReleveModel):
 
     habitat = relationship(Habref, lazy="select")
 
+    #additional fields dans occtax MET 28/09/2020
+    additional_fields = DB.Column(JSONB)
+
     t_occurrences_occtax = relationship(
         "TOccurrencesOccurrence", lazy="joined", cascade="all, delete-orphan"
     )
@@ -258,8 +268,8 @@ class TRelevesOccurrence(ReleveModel):
 
     readonly_fields = ["id_releve_occtax", "t_occurrences_occtax", "observers"]
 
-    def get_geofeature(self, recursif=True, relationships=()):
-        return self.as_geofeature("geom_4326", "id_releve_occtax", recursif, relationships=relationships)
+    def get_geofeature(self, fields=[], depth=None):
+        return self.as_geofeature("geom_4326", "id_releve_occtax", fields=fields, depth=depth)
 
 
 @serializable

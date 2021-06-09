@@ -49,7 +49,9 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this._authService.getToken() === null) {
-      this._router.navigate(['/login']);
+      this._router.navigate(['/login'], {
+          queryParams: { route: state.url, }
+      });
       return false;
     } else {
       return true;
@@ -58,7 +60,9 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
   canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this._authService.getToken() === null) {
-      this._router.navigate(['/login']);
+      this._router.navigate(['/login'], {
+          queryParams: { route: state.url, }
+      });
       return false;
     } else {
       return true;

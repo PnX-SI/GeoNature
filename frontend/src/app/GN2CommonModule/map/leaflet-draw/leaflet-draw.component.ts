@@ -177,7 +177,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       this.mapservice.map.fitBounds(layer.getBounds());
     } else if (geojson.type === 'Point') {
       // marker
-      console.log(geojson);
       layer = L.marker(new L.LatLng(geojson.coordinates[1], geojson.coordinates[0]), {});
       this.mapservice.leafletDrawFeatureGroup.addLayer(layer);
       if (this.bZoomOnPoint) {

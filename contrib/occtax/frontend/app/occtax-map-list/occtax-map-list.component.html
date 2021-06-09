@@ -7,7 +7,7 @@
           mat-raised-button
           color="primary"
           class="btn-action hard-shadow button-success uppercase ml-3"
-          [routerLink]="['form']"
+          [routerLink]="['form/releve']"
         >
           {{ 'Releve.AddReleve' | translate }}
           <mat-icon>add_circle_outline</mat-icon>
@@ -50,7 +50,7 @@
       >
         <!-- MAP -->
         <pnx-map-list
-          [idName]="idName"
+          [idName]="mapListService.idName"
           height="100%"
         >
         </pnx-map-list>
@@ -72,7 +72,7 @@
           [externalSorting]="true"
           [footerHeight]="40"
           [headerHeight]="35"
-          [limit]="rowPerPage"
+          [limit]="occtaxMapListS.rowPerPage"
           [loadingIndicator]="mapListService.isLoading"
           [messages]="occtaxConfig.list_messages"
           [offset]="mapListService.page.pageNumber"
@@ -118,6 +118,7 @@
                 <div *ngFor="let taxon of displayTaxonsTooltip(row)">
                   {{ taxon.taxName }} <br>
                   <span [innerHTML]="taxon.icons | safeHTML"></span>
+                  <!-- <pnx-display-medias [medias]="taxon.medias" diaporama="true" display='mini'></pnx-display-medias> -->
                 </div>
               </div>
 
@@ -169,7 +170,7 @@
               <ng-container *ngIf="row.rights.U; else disabledEditBlc">
                 <a
                   class="btn btn-outline-shadow btn-no-padding btn-ghost"
-                  [routerLink]="['form', row.id_releve_occtax]"
+                  [routerLink]="['form/releve', row.id_releve_occtax]"
                 >
                   <i
                     matTooltip="{{'Releve.Edit' | translate}} {{ row.id_releve_occtax }}"

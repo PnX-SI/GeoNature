@@ -14,29 +14,32 @@
       </button>
     </div>
   </div>
+
   <div class="row">
     <div class="col-8">
+
       <div class="card">
         <div class="card-body">
           <h5 class="text-muted">Jeu de données</h5>
-          <h4>{{dataset?.dataset_name}}
+          <h4>{{ dataset.dataset_name }}
             <button
+              *ngIf="dataset.cruved.D"
               mat-mini-fab
               color="warn"
-              [disabled]="dataset?.observation_count > 0 || !dataset.cruved.D"
-              (click)="deleteDataset(id_dataset)"
+              [disabled]="nbObservations > 0"
+              (click)="deleteDataset(dataset)"
               class="float-right"
               matTooltip="Supprimer le jeu de données"
             >
               <mat-icon
-                *ngIf="dataset?.observation_count > 0; else elseblock"
+                *ngIf="nbObservations > 0; else elseblock"
                 matTooltip="Le jeu de données contient des données et ne peut pas être supprimé"
               > delete </mat-icon>
               <ng-template #elseblock>
                 <mat-icon> delete </mat-icon>
               </ng-template>
             </button>
-            <button
+            <a
               [disabled]="!dataset?.cruved.U"
               [routerLink]="['/metadata/dataset', dataset.id_dataset]"
               mat-mini-fab
@@ -45,125 +48,65 @@
               class="mr-2 float-right"
             >
               <mat-icon>create</mat-icon>
-            </button>
+            </a>
 
           </h4>
 
         </div>
       </div>
-    </div>
-    <div class="col-4">
-      <div class="card">
-        <div class="card-body">
-          <button
-            mat-raised-button
-            [disabled]="!dataset.cruved.E"
-            color="primary"
-            class="mr-1 mb-2"
-            matTooltip="Télécharger la fiche PDF"
-            (click)="getPdf()"
-          >
-            Export PDF
-            <mat-icon>file_download</mat-icon>
-          </button>
-          <span
-            [matTooltip]="dataset?.observation_count > 0 ? 'Télécharger le rapport sensibilité' : 'Le jeu de données ne comporte aucune donnée'"
-          >
-            <button
-              [disabled]="!dataset.cruved.E || dataset?.observation_count == 0"
-              mat-raised-button
-              color="primary"
-              matTooltip="Télécharger le rapport de sensibilité"
-              class="mb-2 mr-1"
-              (click)="sensiReport(dataset.id_dataset)"
-            >
-              Rapport de sensibilité
-              <mat-icon> do_not_touch
-              </mat-icon>
-            </button>
-          </span>
 
-          <span
-            [matTooltip]="dataset?.observation_count > 0 ? 'Télécharger le rapport d\'UUID' : 'Le jeu de données ne comporte aucune donnée'"
-          >
-            <button
-              [disabled]="!dataset.cruved.E || dataset?.observation_count == 0"
-              mat-raised-button
-              color="primary"
-              class="mb-2 mr-1"
-              (click)="uuidReport(dataset?.id_dataset)"
-            >
-              Rapport d'UUID
-              <mat-icon> format_list_numbered
-              </mat-icon>
-            </button>
-          </span>
-
-
-          <span
-            [matTooltip]="dataset?.active ?  'Importer dans ce jeu de données': 'Le jeu de données est inactif'"
-          >
-            <button
-              [disabled]="!dataset?.active"
-              mat-raised-button
-              color="primary"
-              (click)="importDs(dataset?.id_dataset)"
-            >
-              Importer des données
-              <mat-icon> publish
-              </mat-icon>
-            </button>
-          </span>
-
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div
-    *ngIf="dataset.taxa_count"
-    class="row"
-  >
-    <div class="col-4">
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col">
-              <h5>Taxons</h5> {{dataset?.taxa_count}}
+      <!-- Ligne des stats -->
+      <div class="row">
+        <div
+          *ngIf="nbTaxons"
+          class="col-6"
+        >
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5>Taxons</h5> {{ nbTaxons }}
+                </div>
+                <div
+                  class="col-auto"
+                  width="60"
+                >
+                  <img
+                    src="./assets/images/Taxon_icon.svg"
+                    width="60"
+                  >
+                </div>
+              </div>
             </div>
-            <div
-              class="col-auto"
-              width="60"
-            ><img
-                src="./assets/images/Taxon_icon.svg"
-                width="60"
-              ></div>
+          </div>
+        </div>
+        <div
+          *ngIf="nbObservations"
+          class="col-6"
+        >
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col">
+                  <h5>Observations</h5> {{ nbObservations }}
+                </div>
+                <div
+                  class="col-auto"
+                  width="60"
+                >
+                  <img
+                    src="./assets/images/Donnee_icon.svg"
+                    width="64"
+                  >
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-4">
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col">
-              <h5>Observations</h5> {{dataset?.observation_count}}
-            </div>
-            <div
-              class="col-auto"
-              width="60"
-            ><img
-                src="./assets/images/Donnee_icon.svg"
-                width="64"
-              ></div>
-          </div>
-        </div>
-      </div>
-    </div>
+      <!-- Fin stats -->
 
-  </div>
-  <div class="row">
-    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-8 ">
+      <!-- Fiche descriptive -->
       <div class="card">
         <div class="card-header">
           <h5>
@@ -173,46 +116,77 @@
         <div class="card-body">
 
           <div class="b">Identification</div>
-          <div class="a"> <b>Nom : </b> {{dataset.dataset_name}}</div>
-          <div class="a"> <b> Identifiant SINP du jeu de données :</b> {{dataset.unique_dataset_id}}
+          <div class="a">
+            <b>Nom : </b>
+            {{dataset.dataset_name}}
           </div>
-          <div class="a"> <b> Identifiant GeoNature du jeu de données :</b> {{dataset.id_dataset}}
+          <div class="a">
+            <b> Identifiant SINP du jeu de données :</b>
+            {{dataset.unique_dataset_id}}
           </div>
-          <div class="a"> <b> Libellé court :</b> {{dataset.dataset_shortname}}</div>
-          <div class="a"> <b> Description : </b> {{dataset.dataset_desc}}</div>
+          <div class="a">
+            <b> Identifiant GeoNature du jeu de données :</b>
+            {{dataset.id_dataset}}
+          </div>
+          <div class="a">
+            <b> Libellé court :</b>
+            {{dataset.dataset_shortname || '-'}}
+          </div>
+          <div class="a">
+            <b> Description : </b>
+            {{dataset.dataset_desc || '-'}}
+          </div>
           <br />
 
           <div class="b">Type de données</div>
-          <div class="a"> {{dataset.data_type.label_default}}</div>
+          <div class="a">
+            {{dataset?.nomenclature_data_type.label_default || 'Non renseigné'}}
+          </div>
           <br />
 
           <div class="b"> Objectifs </div>
-          <div class="a"> {{dataset.dataset_objectif.label_default}}</div>
+          <div class="a">
+            {{dataset?.nomenclature_dataset_objectif.label_default || 'Non renseigné' }}
+          </div>
           <br />
 
           <div class="b">Territoires</div>
+          <ul class="a">
+            <li *ngFor="let ter of dataset?.cor_territories">
+              - {{ter.label_default}}
+            </li>
+          </ul>
           <div class="a">
             <b> Couverture du territoire terrestre :</b>
-            {{dataset.terrestrial_domain ? "oui" : "non"}} </div>
+            {{dataset.terrestrial_domain ? "oui" : "non"}}
+           </div>
           <div class="a">
             <b>Couverture du territoire marin : </b>
             {{dataset.marine_domain ? "oui" : "non"}}
           </div>
+
+
           <br />
 
           <div class="b">Cadre de référence</div>
           <div class="a">
             <b> Titre du cadre d'acquisition :</b>
-            {{dataset.acquisition_framework.acquisition_framework_name}} </div>
+            {{dataset.acquisition_framework.acquisition_framework_name}}
+          </div>
           <div class="a">
             <b> Identifiant du cadre d'acquisition :</b>
-            {{dataset.acquisition_framework.unique_acquisition_framework_id }} </div>
+            {{dataset.acquisition_framework.unique_acquisition_framework_id }}
+          </div>
           <br />
 
 
           <div class="b">Processus de collecte</div>
-          <div class="a"> <b>Libellé : </b> {{dataset.collecting_method.label_default}} </div>
-          <div class="a"> <b> Description :</b> {{dataset.collecting_method.definition_default}}
+          <div class="a">
+            <b>Libellé : </b>
+            {{dataset?.nomenclature_collecting_method.label_default || 'Non renseigné'}} </div>
+          <div class="a">
+            <b> Description :</b>
+            {{dataset?.nomenclature_collecting_method.definition_default || 'Non renseigné'}}
           </div>
 
           <br />
@@ -224,10 +198,10 @@
               *ngFor="let actor of dataset.cor_dataset_actor"
             >
               <div>
-                <b>{{ actor.nomenclature_actor_role?.mnemonique}} : </b>
-                {{ actor.organism?.nom_organisme }}
-                <span *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"> - </span>
-                {{ actor.role?.nom_complet }}
+                <b>{{ actor?.nomenclature_actor_role.mnemonique }} : </b>
+                {{ actor?.organism?.nom_organisme }}
+                <span *ngIf="(actor.organism && actor.organism.nom_organisme) && (actor.role && actor.role.nom_complet)"> - </span>
+                {{ actor?.role?.nom_complet }}
               </div>
             </div>
           </div>
@@ -235,34 +209,60 @@
 
           <div class="b"> Créateur</div>
 
-          <div class="a"> <b> Créateur du jeu de données :</b> {{dataset.creator?.nom_complet}}
-          </div>
-          <br />
-
-          <div class="b">Attribut additionnels</div>
-          <div class="a"><b> Actif :</b> {{dataset.active ? 'Oui' : 'Non'}} </div>
-          <div class="a"> <b>Validable :</b> {{dataset.validable ? 'Oui' : 'Non'}} </div>
+          <div class="a"> <b> Créateur du jeu de données :</b> {{dataset.creator?.nom_complet || 'Non renseigné'}}
+          </div>         
 
           <br />
 
-
-          <div *ngIf="dataset.modules">
-            <div class="b">Module(s) GeoNature associé(s) au jeu de données :</div>
-            <div class="a">{{ dataset.modules }}</div>
-          </div>
-
-          <br />
 
           <div *ngIf="dataset.keywords">
             <div class="b">Mots-clés :</div>
             <div class="a"> {{dataset.keywords}} </div>
           </div>
 
+          <br/>
+
+          <h4>Spécificités GeoNature</h4>
+          <div class="align"> <b>Actif :  </b>  {{dataset.active ? 'Oui' : 'Non'}} </div>
+          <div class="align"> <b> Validable :</b>  {{dataset.validable ? 'Oui' : 'Non'}} </div>
+          <div *ngIf="dataset.id_taxa_list" class="b"> ID de liste de taxon : {{dataset.id_taxa_list}} </div>
+          <div *ngIf="dataset.modules.length">
+            <div class="b">Module(s) GeoNature associé(s) au jeu de données :</div>
+            <div class="a">
+              <div *ngFor="let module of dataset.modules">
+                {{ module.module_label }}
+              </div>
+            </div>
+          </div>
+
+          <br />
+
+          <div *ngIf="dataset.additional_fields">
+            <div class="b">Champ(s) addionnel(s) du jeu de données :</div>
+            <div class="a" *ngFor="let field of dataset.additional_fields">
+              - <span class="bold">{{field.field_label}} : </span>
+              <br/>
+              <div class="ml-5">
+                <span class="bold"> Description : </span> <span> {{field.description |json}}  </span> <br/>
+                <span class="bold"> Type widget : </span> <span> {{field.type_widget.widget_name}}  </span> <br/>
+                <span class="bold"> Obligatoire : </span> <span> {{field.required}}  </span> <br/>
+                <span class="bold"> Quantitatif : </span> <span> {{field.quantitative}}  </span> <br/>
+                <span class="bold"> Unité : </span> <span> {{field.unity |json}}  </span>  
+              </div>
+     
+
+              
+            </div>
+          </div>
+
         </div>
       </div>
+      <!-- Fin fiche descriptive -->
+
+      <!-- Liste des imports -->
       <div
         class="card"
-        *ngIf="dataset.imports && dataset.imports.length>0"
+        *ngIf="imports.length"
       >
         <div class="card-header">
           <h5>
@@ -358,11 +358,89 @@
           </table>
         </div>
       </div>
+      <!-- Fin liste des imports -->
+
     </div>
 
-    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-4">
+    <div class="col-4">
+
+      <!-- Bloc boutons -->
+      <div 
+        *ngIf="dataset.cruved.E || moduleImportIsAuthorized"
+        class="card">
+        <div class="card-body">
+
+          <button
+            *ngIf="dataset.cruved.E"
+            mat-raised-button
+            color="primary"
+            class="mr-1 mb-2"
+            matTooltip="Télécharger la fiche PDF"
+            (click)="getPdf()"
+          >
+            Export PDF
+            <mat-icon>file_download</mat-icon>
+          </button>
+
+          <!-- Rapport de sensibilité  button -->
+          <span
+            *ngIf="dataset.cruved.E"
+            [matTooltip]="nbObservations ? 'Télécharger le rapport sensibilité' : 'Le jeu de données ne comporte aucune donnée'"
+          >
+            <button
+              [disabled]="!nbObservations"
+              mat-raised-button
+              color="primary"
+              class="mb-2 mr-1"
+              (click)="sensiReport(dataset.id_dataset)"
+            >
+              Rapport de sensibilité
+              <mat-icon> do_not_touch
+              </mat-icon>
+            </button>
+          </span>
+
+          <!-- UUID report button -->
+          <span
+            *ngIf="dataset.cruved.E"
+            [matTooltip]="nbObservations ? 'Télécharger le rapport d\'UUID' : 'Le jeu de données ne comporte aucune donnée'"
+          >
+            <button
+              [disabled]="!nbObservations"
+              mat-raised-button
+              color="primary"
+              class="mb-2 mr-1"
+              (click)="uuidReport(dataset?.id_dataset)"
+            >
+              Rapport d'UUID
+              <mat-icon> format_list_numbered
+              </mat-icon>
+            </button>
+          </span>
+
+          <span
+            *ngIf="moduleImportIsAuthorized"
+            [matTooltip]="dataset.active ?  'Importer dans ce jeu de données': 'Le jeu de données est inactif'"
+          >
+            <button
+              [disabled]="!dataset.active"
+              mat-raised-button
+              color="primary"
+              (click)="importDs(dataset.id_dataset)"
+            >
+              Importer des données
+              <mat-icon> publish
+              </mat-icon>
+            </button>
+          </span>
+        </div>
+
+      </div>
+      <!-- Fin bloc boutons -->
+
+      <!-- Bloc BBOX -->
       <div
-        *ngIf="this.geojsonData"
+        *ngIf="bbox"
         class="card"
       >
         <!-- changer la valeur du ngif quand la carte sera prete -->
@@ -382,10 +460,7 @@
           </h5>
 
         </div>
-        <div
-          *ngIf="this.geojsonData"
-          class="card-body"
-        >
+        <div class="card-body">
 
           <!-- changer la valeur du ngif quand la carte sera prete -->
           <pnx-map
@@ -393,24 +468,24 @@
             searchBar="false"
           >
             <pnx-geojson
-              [geojson]="this.geojsonData"
+              [geojson]="bbox"
               [zoomOnFirstTime]="true"
             >
             </pnx-geojson>
           </pnx-map>
         </div>
       </div>
+      <!-- Fin bloc BBOX -->
+
+      <!-- Bloc PieChart -->
       <div
-        *ngIf="dataset.taxa_count"
+        *ngIf="nbTaxons"
         class="card"
       >
         <div class="card-header">
           <h5>Répartition des espèces</h5>
         </div>
-        <div
-          *ngIf="dataset.taxa_count"
-          class="card-body"
-        >
+        <div class="card-body">
           <div style="display: block">
             <canvas
               baseChart
@@ -425,6 +500,9 @@
           </div>
         </div>
       </div>
+      <!-- Fin bloc PieChart -->
+
+      <!-- Bloc AF -->
       <div class="card ">
         <div class="card-header">
           <h5>Cadre d'acquisition</h5>
@@ -434,33 +512,43 @@
             <div
               class="col-auto"
               width="60"
-            ><img
+            >
+              <img
                 src="./assets/images/Taxon_icon_vert.svg"
                 width="64"
-              ></div>
+              >
+            </div>
             <div class="col">
-              <div><a
+              <div>
+                <a
                   [routerLink]="['/metadata/af_detail', dataset.id_acquisition_framework]"
                   style="color:black"
                 >
-                  {{dataset.acquisition_framework.acquisition_framework_name}}
-                </a></div>
-              <div><small>{{dataset.acquisition_framework.unique_acquisition_framework_id}}</small>
+                  {{ dataset.acquisition_framework.acquisition_framework_name }}
+                </a>
+              </div>
+              <div>
+                <small>{{ dataset.acquisition_framework.unique_acquisition_framework_id }}</small>
               </div>
             </div>
           </div>
         </div>
       </div>
+      <!-- Fin bloc AF -->
+
     </div>
+
+    
   </div>
+
 </div>
 
 
 <ng-template #spinnerBlock>
   <mat-spinner
-  diameter="50"
-  strokeWidth="2"
-  style="margin: 0 auto;"
->
-</mat-spinner>
+    diameter="50"
+    strokeWidth="2"
+    style="margin: 0 auto;"
+  >
+  </mat-spinner>
 </ng-template>

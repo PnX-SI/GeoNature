@@ -49,7 +49,7 @@ class TestApiModulePrOcctax:
         )
 
         assert response.status_code == 200
-
+        print(json_of_response(response))
         update_data = json_of_response(response)
         update_data["properties"].pop("digitiser")
         update_data["properties"]["comment"] = "Super MODIIFF"

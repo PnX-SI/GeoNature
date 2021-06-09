@@ -33,13 +33,13 @@ GeoNature utilise :
 Liste des routes
 *****************
 
-.. qrefflask:: geonature.utils.command:get_app_for_cmd(with_flask_admin=False)
+.. qrefflask:: geonature:create_app(with_flask_admin=False)
   :undoc-static:
 
 Documentation des routes
 ************************
 
-.. autoflask:: geonature.utils.command:get_app_for_cmd(with_flask_admin=False)
+.. autoflask:: geonature:create_app(with_flask_admin=False)
   :undoc-static:
 
 
@@ -225,7 +225,7 @@ Développer un gn_module
 
 Avant de développer un gn_module, assurez-vous d'avoir GeoNature bien
 installé sur votre machine
-(`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-standalone.rst>`__).
+(`voir doc <https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst>`__).
 
 Afin de pouvoir connecter ce module au "coeur", il est impératif de suivre
 une arborescence prédéfinie par l'équipe GeoNature.
@@ -718,7 +718,7 @@ Un ensemble de composants décrits ci-dessous sont intégrés dans le coeur de G
 Voir la `DOCUMENTATION COMPLETE <http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html>`_ sur les composants génériques. 
 
 
-NB: mes composants de type "formulaire" (balise `input` ou `select`) partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs décrit ci dessous. (voir https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
+NB: mes composants de type "formulaire" (balise `input` ou `select`) partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs décrit ci dessous. (voir https://github.com/PnX-SI/GeoNature/blob/master/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 
 Une documentation complète des composants générique est
 `disponible ici <http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html>`_
@@ -726,7 +726,7 @@ Une documentation complète des composants générique est
 NB: mes composants de type "formulaire" (balise `input` ou `select`) partagent
 une logique commune et ont des ``Inputs`` et des ``Outputs`` communs décrit
 ci dessous.
-(voir https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
+(voir https://github.com/PnX-SI/GeoNature/blob/master/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 
 - Inputs
 
@@ -788,7 +788,7 @@ service :
         [{'param': 'limit', 'value': 10'},
         {'param': 'cd_nom', 'value': 212'}])
 
-  `Exemple dans le module OccTax  <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/occtax/occtax-map-list/occtax-map-list.component.ts#L84/>`_
+  `Exemple dans le module OccTax  <https://github.com/PnX-SI/GeoNature/blob/master/contrib/occtax/frontend/app/occtax-map-list/occtax-map-list.component.ts#L99/>`_
 
   L'API doit nécessairement renvoyer un objet comportant un
   GeoJson. La structure du l'objet doit être la suivante :
@@ -909,8 +909,7 @@ tslint fait la même chose que pylint mais pour la partie frontend en
 typescript::
 
         cd frontend
-        ng lint
-
+        npm run lint
 
 
 Pytest

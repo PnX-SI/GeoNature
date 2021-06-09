@@ -1,11 +1,13 @@
+from datetime import datetime
+
 from geoalchemy2 import Geometry
-from flask import current_app
 from sqlalchemy import ForeignKey
 
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.utils.env import DB
+from geonature.utils.config import config
 
 
 @serializable
@@ -20,8 +22,7 @@ class BibAreasTypes(DB.Model):
     ref_version = DB.Column(DB.Integer)
     num_version = DB.Column(DB.Unicode)
 
-
-@serializable
+@geoserializable
 class LAreas(DB.Model):
     __tablename__ = "l_areas"
     __table_args__ = {"schema": "ref_geo"}
@@ -29,9 +30,11 @@ class LAreas(DB.Model):
     id_type = DB.Column(DB.Integer, ForeignKey("ref_geo.bib_areas_types.id_type"))
     area_name = DB.Column(DB.Unicode)
     area_code = DB.Column(DB.Unicode)
-    geom = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
+    geom = DB.Column(Geometry("GEOMETRY", config["LOCAL_SRID"]))
     source = DB.Column(DB.Unicode)
-    geom = DB.Column(Geometry("GEOMETRY", 4326))
+    enable = DB.Column(DB.Boolean, nullable=False, default=True)
+    meta_create_date = DB.Column(DB.DateTime, default=datetime.now)
+    meta_update_date = DB.Column(DB.DateTime, default=datetime.now, onupdate=datetime.now)
     area_type = DB.relationship("BibAreasTypes", lazy="select")
 
 

@@ -11,6 +11,7 @@ import { DataFormService } from '../data-form.service';
 import { AppConfig } from '../../../../conf/app.config';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { CommonService } from '../../service/common.service';
+import { DatasetStoreService } from "./dataset.service";
 
 /**
  *  Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
@@ -26,11 +27,9 @@ import { CommonService } from '../../service/common.service';
  */
 @Component({
   selector: 'pnx-datasets',
-  templateUrl: 'datasets.component.html'
+  templateUrl: 'datasets.component.html',
 })
 export class DatasetsComponent extends GenericFormComponent implements OnInit, OnChanges, DoCheck {
-  public dataSets: any;
-  public savedDatasets: Array<any>;
   public iterableDiffer: IterableDiffer<any>;
   /**
    * Permet de filtrer les JDD en fonction d'un tableau d'ID cadre d'acqusition. A connecter avec le formControl du composant ``pnx-acquisition-framework``.
@@ -59,7 +58,8 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   constructor(
     private _dfs: DataFormService,
     private _commonService: CommonService,
-    private _iterableDiffers: IterableDiffers
+    private _iterableDiffers: IterableDiffers,
+    public datasetStore: DatasetStoreService
   ) {
     super();
     this.iterableDiffer = this._iterableDiffers.find([]).create(null);
@@ -80,9 +80,9 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     }
     this._dfs.getDatasets((params = params)).subscribe(
       res => {
-        this.dataSets = res.data;
-        this.savedDatasets = res.data;
-        this.valueLoaded.emit({ value: this.savedDatasets });
+        this.datasetStore.filteredDataSets = res.data;
+        this.datasetStore.datasets = res.data;        
+        this.valueLoaded.emit({ value: this.datasetStore.datasets });
         if (res['with_mtd_errors']) {
           this._commonService.translateToaster('error', 'MetaData.JddErrorMTD');
         }
@@ -102,7 +102,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   }
 
   filterItems(event) {
-    this.dataSets = super.filterItems(event, this.savedDatasets, 'dataset_shortname');
+    this.datasetStore.filteredDataSets = super.filterItems(event, this.datasetStore.datasets, 'dataset_shortname');
   }
 
   ngOnChanges(changes) {

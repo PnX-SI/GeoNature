@@ -2,7 +2,7 @@ INSTALLATION AUTONOME
 =====================
 
 **Attention** : Ne suivez cette documentation que si vous souhaitez installer GeoNature de manière autonome (sans TaxHub ou UsersHub).
-Pour une installation packagée voir cette `documentation <https://github.com/PnX-SI/GeoNature/blob/install_all/docs/installation-all.rst>`_.
+Pour une installation packagée voir cette `documentation <https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-all.rst>`_.
 
 Prérequis
 ---------
@@ -63,7 +63,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     sudo apt-get install -y supervisor
     sudo apt-get install -y apache2
     # installation de NVM
-    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
+    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.37.2/install.sh | bash
 
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
