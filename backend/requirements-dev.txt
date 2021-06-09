@@ -31,8 +31,6 @@ pbr==3.1.1
 pew==1.1.2
 pexpect==4.3.1
 pickleshare==0.7.4
-pipenv-to-requirements==0.2.2
-pipenv==9.0.3
 pluggy==0.13.1
 prompt-toolkit==1.0.15
 ptyprocess==0.5.2
@@ -51,8 +49,7 @@ shutilwhich==1.1.0
 simplegeneric==0.8.1
 snowballstemmer==1.2.1
 sphinx_rtd_theme==0.4.3
-sphinx==1.6.6
-sphinxcontrib-httpdomain==1.7.0
+sphinx==3.1.0
 sphinxcontrib-httpdomain==1.7.0
 sphinxcontrib-websupport==1.0.1
 traitlets==4.3.2
