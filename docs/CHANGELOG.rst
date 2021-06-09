@@ -6,29 +6,21 @@ CHANGELOG
 ------------------
 
 - Voir https://github.com/PnX-SI/GeoNature/compare/develop
-- Tester l'outil Occtax de conservation d'info d'un taxon à l'autre: OK
 - Rétrocompatibilité des évolutions ? Bien tester installation des différents modules
-- Bien vérifier et regrouper les update SQL
+- Vérifier l'update SQL et régler son TODO
 - Bien vérifier notes de versions liées à des changements à appliquer suite aux évolutions techniques
 - Mettre à jour et release template de module ?
 - Bien tester les emails de validation pré-remplis: OK
 - Monitoring : Problème d'héritage des objets >> Ajouter un champs dans t_modules, sinon Monitoring ne fonctionnera pas avec le nouveau GN... A indiquer dans les notes de version si quelque chose doit être fait pour que Monitoring continue à fonctionner avec GN 2.7.0
-- Export des additional_data dans la Synthese à vérifier et tester: Fait OK
-- Fix des commandes (https://github.com/PnX-SI/GeoNature/commit/ec62b24ef1539116697aa29758dd135dcbaa85b1) à préciser ou répercuter ?: Non transparent pour l'utilisateur, la signature de la commande ne change pas
-- https://github.com/PnX-SI/GeoNature/issues/1071 fonctionne ?: oui avec le paramètre "id_dataset" dans l'URL
-- Voir acteurs des métadonnées (https://github.com/PnX-SI/GeoNature/pull/1313#issuecomment-839705016): j'ai revu le fonctionnement tu peux tester sur ppgeonature
-- Voir corrections de Occtax à réintégrer (https://github.com/PnX-SI/GeoNature/issues/1191#issuecomment-839663324): OK
+- Voir acteurs des métadonnées (https://github.com/PnX-SI/GeoNature/pull/1313#issuecomment-839705016): j'ai revu le fonctionnement tu peux tester sur ppgeonature // On mettrait pas le bouton + plutôt à droite ? / Ajouter une tooltip sur les boutons + des acteurs ("Ajouter un autre acteur"). Et on devrait pas avoir de bouton + sur le bloc "Contact principal" car il ne peut y avoir qu'un ?
+- Sur Occtax, le switch pour Enchainer les taxons est aussi passer en rouge/vert. A cet endroit c'est pas très adapté et laisse penser à une validation du relevé. Repasser celui-ci en gris serait mieux.
 
 PRE-PROD PNE : 
 
-- Désactiver l'ajout de médias dans Occtax qui sont actifs sur notre pre-prod ? A True par défaut. On laisse comme ça non ?
-- Synthèse : Envoyer un email à l'observateur me renvoie vers l'accueil de GN: je ne reproduit pas
 - Validation : La coche de recherche des données modifiées est affichée en rouge comme :obligatoire ? Comprend pas pk ...
-=
+
 **🚀 Nouveautés**
 
-* La page login affiche désormais le nom de l'application appName définit dans la configuration de GeoNature (#1277 @DonovanMaillard) 
-* Possibilité d'ouvrir une instance GeoNature au grnd public sans authentification (voir doc admin à ce sujet)
 * Occtax : Possibilité d'ajouter des champs additionels par JDD ou globaux au module (#1007)
 * Occtax/Synthese : Ajout des champs additionnels dans les exports (#1114)
 * Admin : Création d'un backoffice d'administration des champs additionels (#1007)
@@ -38,10 +30,13 @@ PRE-PROD PNE :
 * Occtax/Metadonnées : possibilité d'associer une liste de taxons à un JDD (implémenté uniquement dans Occtax) (#1315)
 * Occtax : Possibilité d'ajouter les infos sur les médias dans les exports (paramètre ``ADD_MEDIA_IN_EXPORT``) (#1326)
 * Occtax : Ajout du paramètre ``MEDIA_FIELDS_DETAILS`` permettant de définir les champs des médias affichés par défaut
-* Occtax: Possibilité de paramétrer l'affichage des champs du composant MEDIA dans OCCTAX (paramètre MEDIA_FIELDS_DETAILS #1287) 
-* Occtax: Possibilité de fitrer le liste des habitats du formulaire via les paramètres `ID_LIST_HABITAT` et `CD_TYPO_HABITAT`
+* Occtax : Possibilité de paramétrer l'affichage des champs du composant MEDIA dans OCCTAX (paramètre MEDIA_FIELDS_DETAILS #1287) 
+* Occtax : Possibilité de fitrer la liste des habitats du formulaire avec les nouveaux paramètres ``ID_LIST_HABITAT`` et ``CD_TYPO_HABITAT``
+* Occtax : Possibilité d'ouvrir le module avec un JDD pré-selectionné en passant le paramètre ``id_dataset`` dans l'URL (#1071)
 * Accueil : Réorganisation des blocs (#1375)
-* Accueil :jout d'un paramètre controlant la fréquence de MAJ des statistiques de la page d'accueil (`STAT_BLOC_TTL` par défaut 1h: 3600 secondes)
+* Accueil : Ajout d'un paramètre controlant la fréquence de MAJ du cache des statistiques de la page d'accueil (``STAT_BLOC_TTL``, par défaut 1h: 3600 secondes)
+* La page login affiche désormais le nom de l'application (``appName``) défini dans la configuration de GeoNature (#1277 @DonovanMaillard) 
+* Possibilité d'ouvrir l'accès à GeoNature sans authentification (voir documentation d'administration) (#1323)
 * Métadonnées : Ordonnancement des JDD par leur nom
 * Synthèse et validation : Ajout d'un filtre avancé ``Possède des médias`` (#1179, #1338, #1180)
 * Synthèse : Affichage du contenu json du champs des données additionnelles, dans la fiche détail d'une observation
@@ -51,12 +46,12 @@ PRE-PROD PNE :
 * Mise à jour des versions de nombreuses dépendances
 * Support du gestionnaire d'erreurs Sentry
 * Validation : possibilité de passer des fonctions dans la liste des colonnes affichées (pour décoder une nomenclature)
-* Validation : Les paramètres: LIST_COLUMNS_FRONTEND, COLUMNS_API_VALIDATION_WEB_APP sont regroupés en un seul nomme COLUMN_LIST. Voir le fichier `contrib/gn_module_validation/config/conf_gn_module.toml.example`
+* Validation : Les paramètres ``LIST_COLUMNS_FRONTEND`` et ``COLUMNS_API_VALIDATION_WEB_APP`` sont regroupés en un seul paramètre nommé ``COLUMN_LIST``. Voir le fichier ``contrib/gn_module_validation/config/conf_gn_module.toml.example``
 
 **🐛 Corrections**
 
-* Occtax : correction d'un bug sur le champs observateur lors de la modification d'un relevé (#1177)
-* Occtax : renseignement par défaut de l'utilisateur connecté à la création d'un relevé en mode "observers_txt" (#1292)
+* Occtax : Correction d'un bug sur le champs observateur lors de la modification d'un relevé (#1177)
+* Occtax : Renseignement par défaut de l'utilisateur connecté à la création d'un relevé en mode "observers_txt" (#1292)
 * Occtax : Déplacement des boutons d'action à gauche dans la liste des taxons d'un relevé pour éviter qu'ils soient masqués quand les noms de taxon sont longs (#1299 et #1337)
 * Occtax : Correction de la suppression d'un habitat par modification de relevé (#1296)
 * Occtax : Correction de la possibilité de modifier un relevé si U=1 (#1365)
@@ -89,10 +84,10 @@ Si vous mettez à jour GeoNature :
 * Attention : si vous n'aviez pas renseigné de valeur pour le paramètre ``id_taxon_list`` dans le fichier ``conf_gn_module.toml`` du module Occtax, la liste 100 n'est plus passé par defaut et le module va rechercher sur tout Taxref. Veuillez renseigner manuellement l'identifiant de votre liste 
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
 * Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.6.3.sql)
-* Des choses à faire au niveau des évolutions des commandes GeoNature ?
+* Si vous aviez renseigner un des deux paramètres ``LIST_COLUMNS_FRONTEND``, ``COLUMNS_API_VALIDATION_WEB_APP`` dans le module Validation, il est nécessaire de les remplacer par le nouveau paramètre ``COLUMN_LIST``. Voir le fichier ``contrib/gn_module_validation/config/conf_gn_module.toml.example``  
+* /!\ Des choses à faire au niveau des évolutions des commandes GeoNature ?
 * Modifier dans le fichier ``/etc/supervisor/conf.d/geonature-service.conf``, remplacer ``gn_errors.log`` par ``supervisor.log`` dans la variable ``stdout_logfile`` :
-
-* Si vous aviez renseigner un des deux paramètres LIST_COLUMNS_FRONTEND, COLUMNS_API_VALIDATION_WEB_APP dans le module validation, il est necessaire de les remplacer par le nouveau paramètre COLUMN_LIST. Voir le fichier `contrib/gn_module_validation/config/conf_gn_module.toml.example`   
+ 
 ::
 
     sudo sed -i 's|\(stdout_logfile = .*\)/gn_errors.log|\1/supervisor.log|' /etc/supervisor/conf.d/geonature-service.conf
