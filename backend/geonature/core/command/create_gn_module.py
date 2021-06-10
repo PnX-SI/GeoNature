@@ -260,5 +260,5 @@ def update_module_configuration(module_code, build, prod):
     """
     if prod:
         subprocess.call(["sudo", "supervisorctl", "reload"])
-    app = create_app(with_external_mods=False)
+    app = create_app()
     create_module_config(app, module_code, build=build)

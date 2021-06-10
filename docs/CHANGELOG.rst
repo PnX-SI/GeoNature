@@ -2,22 +2,17 @@
 CHANGELOG
 =========
 
-2.7.0 (unreleased)
-------------------
+2.7.0 - Androsace delphinensis (unreleased)
+-------------------------------------------
 
-- Voir https://github.com/PnX-SI/GeoNature/compare/develop
-- Rétrocompatibilité des évolutions ? Bien tester installation des différents modules
+- Voir https://github.com/PnX-SI/GeoNature/compare/2.6.2...develop
 - Vérifier l'update SQL et régler son TODO
 - Bien vérifier notes de versions liées à des changements à appliquer suite aux évolutions techniques
-- Mettre à jour et release template de module ?
 - Bien tester les emails de validation pré-remplis: OK
-- Monitoring : Problème d'héritage des objets >> Ajouter un champs dans t_modules, sinon Monitoring ne fonctionnera pas avec le nouveau GN... A indiquer dans les notes de version si quelque chose doit être fait pour que Monitoring continue à fonctionner avec GN 2.7.0
 - Voir acteurs des métadonnées (https://github.com/PnX-SI/GeoNature/pull/1313#issuecomment-839705016): j'ai revu le fonctionnement tu peux tester sur ppgeonature // On mettrait pas le bouton + plutôt à droite ? / Ajouter une tooltip sur les boutons + des acteurs ("Ajouter un autre acteur"). Et on devrait pas avoir de bouton + sur le bloc "Contact principal" car il ne peut y avoir qu'un ?
 - Sur Occtax, le switch pour Enchainer les taxons est aussi passer en rouge/vert. A cet endroit c'est pas très adapté et laisse penser à une validation du relevé. Repasser celui-ci en gris serait mieux.
-
-PRE-PROD PNE : 
-
-- Validation : La coche de recherche des données modifiées est affichée en rouge comme :obligatoire ? Comprend pas pk ...
+- MTD : Ajout des champs aussi dans les fiches infos web et PDF ?
+- MTS : Ajout de bibliographie retirée ?
 
 **🚀 Nouveautés**
 
@@ -35,8 +30,11 @@ PRE-PROD PNE :
 * Occtax : Possibilité d'ouvrir le module avec un JDD pré-selectionné en passant le paramètre ``id_dataset`` dans l'URL (#1071)
 * Accueil : Réorganisation des blocs (#1375)
 * Accueil : Ajout d'un paramètre controlant la fréquence de MAJ du cache des statistiques de la page d'accueil (``STAT_BLOC_TTL``, par défaut 1h: 3600 secondes)
-* La page login affiche désormais le nom de l'application (``appName``) défini dans la configuration de GeoNature (#1277 @DonovanMaillard) 
+* La page d'authentification affiche désormais le nom de l'application (``appName``) défini dans la configuration de GeoNature (#1277) 
 * Possibilité d'ouvrir l'accès à GeoNature sans authentification (voir documentation d'administration) (#1323)
+* Métadonnées : Optimisation du temps de chargement des listes des CA et JDD (#1291)
+* Métadonnées : Passage de la version 1.3.9 du standard SINP à la version 1.3.10 et ajout des champs liés dans les formulaires (#1291)
+* Métadonnées : Révision du design la partie "Acteurs" du formulaire et mise à part de l'acteur de type "Contact principal", obligatoire dans le standard SINP
 * Métadonnées : Ordonnancement des JDD par leur nom
 * Synthèse et validation : Ajout d'un filtre avancé ``Possède des médias`` (#1179, #1338, #1180)
 * Synthèse : Affichage du contenu json du champs des données additionnelles, dans la fiche détail d'une observation
@@ -53,14 +51,15 @@ PRE-PROD PNE :
 * Occtax : Correction d'un bug sur le champs observateur lors de la modification d'un relevé (#1177)
 * Occtax : Renseignement par défaut de l'utilisateur connecté à la création d'un relevé en mode "observers_txt" (#1292)
 * Occtax : Déplacement des boutons d'action à gauche dans la liste des taxons d'un relevé pour éviter qu'ils soient masqués quand les noms de taxon sont longs (#1299 et #1337)
-* Occtax : Correction de la suppression d'un habitat par modification de relevé (#1296)
 * Occtax : Correction de la possibilité de modifier un relevé si U=1 (#1365)
 * Occtax : Suppression du zoom quand on localise le relevé (#1317)
 * Occtax : Correction du nombre de lignes affichées après une recherche
 * Occtax : Correction de la suppression d'un habitat lors de la modification d'un relevé (#1296)
+* Occtax : Correction du champs "Habitat" quand on enchaine des relevés (#1191)
 * Occtax : Correction de l'enchainement des saisies (#1300)
 * Occtax : Correction de l'affichage des taxons quand le nom est long (#1299, #1337)
-* Occtax : fix observers_txt default value (https://github.com/PnX-SI/GeoNature/commit/f23d27b1f55fbdb0a71c473247028e8707b97934) ????
+* Occtax : Correction de l'observateur par défaut en mode ``observers_txt``
+* Occtax : Correction des messages d'information multiples (#1367)
 * Métadonnées : Correction de la suppression d'un JDD sans données, depuis la liste des JDD (#1312)
 * Métadonnées : Correction de la récupération des valeurs de nomenclature depuis MTD n'existant pas dans GeoNature (#1297)
 * Authentification : Redirection vers la page login après une période d'inactivité (#1193)
