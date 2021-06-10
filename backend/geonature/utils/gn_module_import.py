@@ -224,33 +224,6 @@ def check_codefile_validity(module_path, module_code):
             """
         )
 
-    # Backend
-    gn_file = Path(module_path) / "backend/blueprint.py"
-    if gn_file.is_file():
-        try:
-            from backend.blueprint import blueprint
-        except (ImportError, GeoNatureError) as e:
-            print(e)
-            raise GeoNatureError(
-                """Module {}
-                    File {} must have a variable call :
-                        blueprint instance of Blueprint
-                """.format(
-                    module_code, gn_file
-                )
-            )
-        from flask import Blueprint
-
-        if isinstance(blueprint, Blueprint) is False:
-            raise GeoNatureError(
-                """Module {}
-                        File {} :
-                            blueprint is not an instance of Blueprint
-                """.format(
-                    module_code, gn_file
-                )
-            )
-        log.info("      backend/blueprint/blueprint.py  OK")
     # Font-end
     gn_file = Path(module_path) / "{}.ts".format(GN_MODULE_FE_FILE)
     if gn_file.is_file():
