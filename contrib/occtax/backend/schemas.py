@@ -77,8 +77,8 @@ class CountingSchema(MA.SQLAlchemyAutoSchema):
         load_instance = True
 
     medias = MA.Nested(
-        MediaSchema, many=True, dump_only=True
-        )
+        MediaSchema, many=True
+    )
 
     @pre_load
     def make_counting(self, data, **kwargs):
