@@ -1,4 +1,4 @@
-from marshmallow import pre_load
+from marshmallow import pre_load, fields
 
 from geonature.utils.env import MA 
 from geonature.core.gn_commons.models import TModules, TMedias
@@ -27,6 +27,9 @@ class MediaSchema(MA.SQLAlchemyAutoSchema):
         model = TMedias
         load_instance = True
         include_fk = True
+
+    meta_create_date = fields.DateTime(dump_only=True)
+    meta_update_date = fields.DateTime(dump_only=True)
 
     @pre_load
     def make_media(self, data, **kwargs):
