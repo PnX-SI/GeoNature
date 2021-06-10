@@ -26,8 +26,6 @@ from geonature.utils.env import DB
 
 log = logging.getLogger(__name__)
 
-class NoPermission(Exception):
-    pass
 
 def user_from_token(token, secret_key=None):
     secret_key = secret_key or current_app.config["SECRET_KEY"]
@@ -107,6 +105,7 @@ class UserCruved:
         self._module_code = module_code
         self._object_code = object_code
         self._permission_select = self._build_permission_select_list(append_to_select)
+
     def _build_permission_select_list(self, append_to_select):
 
         # Construction de la liste des couples module_code, object_code
@@ -118,14 +117,15 @@ class UserCruved:
             20: [self._main_module_code, self._object_code],
             30: [self._main_module_code, self._main_object_code],
         }
+
         # append_to_select
         if append_to_select:
             permissions_select = {**permissions_select, **append_to_select}
+
         # filter null value
         active_permissions_select = {k: v for k, v in permissions_select.items() if v[0] and v[1]}
 
         return active_permissions_select
-
 
     def _build_query_permission(self, code_action=None):
         """
@@ -191,9 +191,9 @@ class UserCruved:
 
         # Liste des clés des paramètres de of select trié
         permission_keys = sorted(self._permission_select)
+
         # filter the GeoNature perm and the module perm in two
         # arrays to make heritage
-
         for user_permission in user_permissions:
             for k, (module_code, object_code) in self._permission_select.items():
                 if (
@@ -201,8 +201,7 @@ class UserCruved:
                     and user_permission.module_code == module_code
                 ):
                     type_of_perm.setdefault(k, []).append(user_permission)
-        if not type_of_perm:
-            raise NoPermission
+
         # take the max of the different permissions
         herited = False
         herited_object = None
@@ -258,13 +257,7 @@ class UserCruved:
 
         # Pour chaque action construction des permissions
         for action, perm in perm_by_actions.items():
-            try:
-                herited_perm[action], herited, herited_object = self.build_herited_user_cruved(perm)
-            except NoPermission:
-                continue
-
-            if not herited_perm:
-                return (None, None, None)
+            herited_perm[action], herited, herited_object = self.build_herited_user_cruved(perm)
             if herited:
                 is_herited = True
                 g_herited_object = herited_object
@@ -407,20 +400,8 @@ def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, objec
         return session[module_code]["user_cruved"]
     else:
         user_cruved = cruved_scope_for_user_in_module(
-            id_role=id_role, module_code=module_code, object_code=object_code,
+            id_role=id_role, module_code=module_code, object_code=object_code
         )[0]
         session[module_code] = {}
         session[module_code]["user_cruved"] = user_cruved
     return user_cruved
-
-
-def get_all_perms(id_role, code_filter_type):
-    perms = VUsersPermissions.query.filter(
-            VUsersPermissions.id_role == id_role
-            ).filter(
-                VUsersPermissions.code_filter_type == code_filter_type
-            ).all()
-    user_perms = {}
-    for p in perms:
-        user_perms.setdefault(p.module_code, []).append(p)
-    return user_perms
