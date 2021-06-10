@@ -17,7 +17,7 @@ from geonature.core.gn_commons.repositories import get_table_location_id
 from geonature.core.gn_permissions.models import TObjects
 from geonature.utils.env import DB, BACKEND_DIR
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, get_all_perms
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from shapely.geometry import asShape
 from geoalchemy2.shape import from_shape
 from geonature.utils.errors import (
