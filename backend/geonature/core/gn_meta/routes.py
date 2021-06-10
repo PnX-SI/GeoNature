@@ -695,8 +695,6 @@ def get_acquisition_frameworks_list(info_role):
         exclude=exclude_fields
     )
     acquisitionFrameworkSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
-    print("LAAAAAAAAa", nested_serialization)
-    print("LAAAAAAAAa", exclude_fields)
     return acquisitionFrameworkSchema.jsonify(
         get_metadata_list(info_role, params, exclude_fields).all(),
         many=True
@@ -757,17 +755,9 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
             "nomenclature_financing_type"
         ] = af.nomenclature_financing_type.as_dict()
         if acquisition_framework["acquisition_framework_start_date"]:
-            start_date = dt.datetime.strptime(
-                acquisition_framework["acquisition_framework_start_date"], "%Y-%m-%d"
-            )
-            acquisition_framework["acquisition_framework_start_date"] = start_date.strftime(
-                "%d/%m/%Y"
-            )
+            acquisition_framework["acquisition_framework_start_date"] = af.acquisition_framework_start_date.strftime("%d/%m/%Y")
         if acquisition_framework["acquisition_framework_end_date"]:
-            end_date = dt.datetime.strptime(
-                acquisition_framework["acquisition_framework_end_date"], "%Y-%m-%d"
-            )
-            acquisition_framework["acquisition_framework_end_date"] = end_date.strftime("%d/%m/%Y")
+            acquisition_framework["acquisition_framework_end_date"] = af.acquisition_framework_end_date.strftime("%d/%m/%Y")
         acquisition_framework["css"] = {
             "logo": "Logo_pdf.png",
             "bandeau": "Bandeau_pdf.png",
