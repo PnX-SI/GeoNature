@@ -1,7 +1,5 @@
 
 -- vue validation de gn_commons necessitant le schéma synthese
-
--- vue validation de gn_commons necessitant le schéma synthese
 CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp
     WITH (security_barrier=false)
     AS
@@ -61,7 +59,6 @@ CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp
     s.reference_biblio,
     t.cd_nom,
     t.cd_ref,
-    COALESCE(nom_vern, lb_nom) as nom_vern_or_lb_nom,
     t.nom_valide,
     t.lb_nom,
     t.nom_vern,
@@ -85,3 +82,11 @@ CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp
   WHERE d.validable = true AND NOT s.unique_id_sinp IS NULL;
 
 COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
+
+ALTER TABLE ONLY gn_commons.cor_field_dataset
+  ADD CONSTRAINT fk_cor_field_dataset FOREIGN KEY (id_dataset) 
+  REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY gn_commons.cor_field_object
+  ADD CONSTRAINT fk_cor_field_object FOREIGN KEY (id_object) 
+  REFERENCES gn_permissions.t_objects(id_object) ON UPDATE CASCADE ON DELETE CASCADE;

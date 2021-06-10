@@ -165,17 +165,7 @@ ALTER TABLE ONLY cor_acquisition_framework_actor ALTER COLUMN id_cafa SET DEFAUL
 
 CREATE TABLE cor_acquisition_framework_territory (
     id_acquisition_framework integer NOT NULL,
-    id_nomenclature_territory integer NOT NULL,
-    CONSTRAINT pk_cor_acquisition_framework_territory PRIMARY KEY (id_acquisition_framework, id_nomenclature_territory),
-    CONSTRAINT fk_cor_af_territory_id_af FOREIGN KEY (id_acquisition_framework)
-        REFERENCES gn_meta.t_acquisition_frameworks (id_acquisition_framework) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE NO ACTION,
-    CONSTRAINT fk_cor_af_territory_id_nomenclature_territory FOREIGN KEY (id_nomenclature_territory)
-        REFERENCES ref_nomenclatures.t_nomenclatures (id_nomenclature) MATCH SIMPLE
-        ON UPDATE CASCADE
-        ON DELETE NO ACTION,
-    CONSTRAINT check_cor_af_territory CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_territory, 'TERRITOIRE'::character varying)) NOT VALID
+    id_nomenclature_territory integer NOT NULL
 );
 COMMENT ON TABLE cor_acquisition_framework_territory IS 'A acquisition_framework must have 1 or n "territoire". Implement 1.3.10 SINP metadata standard : Cible géographique du jeu de données, ou zone géographique visée par le jeu. Défini par une valeur dans la nomenclature TerritoireValue. - OBLIGATOIRE';
 
@@ -197,12 +187,7 @@ CREATE TABLE t_bibliographical_references (
     id_bibliographic_reference bigint NOT NULL DEFAULT nextval('gn_meta.t_bibliographical_references_id_bibliographic_reference_seq'::regclass),
     id_acquisition_framework integer NOT NULL,
     publication_url character varying COLLATE pg_catalog."default",
-    publication_reference character varying COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT t_bibliographical_references_pkey PRIMARY KEY (id_bibliographic_reference),
-    CONSTRAINT t_bibliographical_references_id_acquisition_framework_fkey FOREIGN KEY (id_acquisition_framework)
-        REFERENCES gn_meta.t_acquisition_frameworks (id_acquisition_framework) MATCH SIMPLE
-        ON UPDATE NO ACTION
-        ON DELETE NO ACTION
+    publication_reference character varying COLLATE pg_catalog."default" NOT NULL
 );
 COMMENT ON TABLE t_bibliographical_references IS 'A acquisition_framework must have 0 or n "publical references". Implement 1.3.10 SINP metadata standard : Référence(s) bibliographique(s) éventuelle(s) concernant le cadre d''acquisition. - RECOMMANDE';
 
@@ -331,6 +316,11 @@ ALTER TABLE ONLY cor_acquisition_framework_actor
 ALTER TABLE ONLY cor_acquisition_framework_publication
     ADD CONSTRAINT pk_cor_acquisition_framework_publication PRIMARY KEY (id_acquisition_framework, id_publication);
 
+ALTER TABLE ONLY cor_acquisition_framework_territory
+    ADD CONSTRAINT pk_cor_acquisition_framework_territory PRIMARY KEY (id_acquisition_framework, id_nomenclature_territory);
+
+ALTER TABLE ONLY t_bibliographical_references
+    ADD CONSTRAINT t_bibliographical_references_pkey PRIMARY KEY (id_bibliographic_reference);
 
 ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT pk_t_datasets PRIMARY KEY (id_dataset);
@@ -347,6 +337,8 @@ ALTER TABLE ONLY cor_dataset_territory
 
 ALTER TABLE ONLY cor_dataset_protocol
     ADD CONSTRAINT pk_cor_dataset_protocol PRIMARY KEY (id_dataset, id_protocol);
+
+
 
 ----------------
 --FOREIGN KEYS--
@@ -396,8 +388,29 @@ ALTER TABLE ONLY cor_acquisition_framework_publication
 
 ALTER TABLE ONLY cor_acquisition_framework_publication
     ADD CONSTRAINT fk_cor_acquisition_framework_publication_id_publication FOREIGN KEY (id_publication) 
-    REFERENCES sinp_datatype_publications(id_publication) ON UPDATE CASCADE ON DELETE ;
+    REFERENCES sinp_datatype_publications(id_publication) ON UPDATE CASCADE ON DELETE CASCADE;
 
+ALTER TABLE ONLY cor_acquisition_framework_territory
+    ADD CONSTRAINT fk_cor_af_territory_id_af FOREIGN KEY (id_acquisition_framework)
+        REFERENCES gn_meta.t_acquisition_frameworks (id_acquisition_framework) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE CASCADE;
+
+ALTER TABLE ONLY t_bibliographical_references
+    ADD CONSTRAINT t_bibliographical_references_id_acquisition_framework_fkey FOREIGN KEY (id_acquisition_framework)
+        REFERENCES gn_meta.t_acquisition_frameworks (id_acquisition_framework) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE CASCADE;
+
+ALTER TABLE ONLY cor_acquisition_framework_territory
+    ADD CONSTRAINT fk_cor_af_territory_id_nomenclature_territory FOREIGN KEY (id_nomenclature_territory)
+        REFERENCES ref_nomenclatures.t_nomenclatures (id_nomenclature) MATCH SIMPLE
+        ON UPDATE CASCADE
+        ON DELETE NO ACTION;
+
+ALTER TABLE ONLY cor_acquisition_framework_territory
+    ADD CONSTRAINT check_cor_af_territory 
+    CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_territory, 'TERRITOIRE'::character varying)) NOT VALID;
 
 ALTER TABLE ONLY t_datasets
     ADD CONSTRAINT fk_t_datasets_t_acquisition_frameworks FOREIGN KEY (id_acquisition_framework) 

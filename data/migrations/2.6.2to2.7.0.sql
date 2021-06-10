@@ -19,9 +19,14 @@ BEGIN;
   -- !!! TODO !!! A ne faire que si le paramètre n'existe pas déjà dans la table...
   -- Oubli de la 2.6.0 - A faire seulement sur une nouvelle installation faite avec la 2.6.0, 2.6.1 ou 2.6.2
   -- où il manquait ce paramètre fait en update2.5.5to2.6.0
-  INSERT INTO gn_commons.t_parameters
-  (id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value)
-  VALUES(0, 'ref_sensi_version', 'Version du referentiel de sensibilité', 'Referentiel de sensibilite taxref v13 2020', '');
+ DO $$ 
+    BEGIN 
+    INSERT INTO gn_commons.t_parameters
+    (id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value)
+    VALUES(0, 'ref_sensi_version', 'Version du referentiel de sensibilité', 'Referentiel de sensibilite taxref v13 2020', '');
+  EXCEPTION 
+      when unique_violation then RAISE NOTICE 'Ref sensi parameter already exist';
+ END;$$;
 
   -- Ajout de contraintes d'unicité sur les permissions
   ALTER TABLE gn_permissions.cor_object_module ADD CONSTRAINT unique_cor_object_module UNIQUE (id_object,id_module);
@@ -693,6 +698,7 @@ BEGIN;
       LEFT JOIN ref_nomenclatures.t_nomenclatures n22 ON s.id_nomenclature_biogeo_status = n22.id_nomenclature
       LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
 
+
 CREATE OR REPLACE VIEW gn_permissions.v_roles_permissions
 AS WITH p_user_permission AS (
          SELECT u.id_role,
@@ -722,6 +728,8 @@ AS WITH p_user_permission AS (
            FROM utilisateurs.t_roles u
              JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role OR g.id_role_groupe = u.id_role
              JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = g.id_role_groupe
+          WHERE (g.id_role_groupe IN ( SELECT DISTINCT cor_roles.id_role_groupe
+                   FROM utilisateurs.cor_roles))
         ), all_user_permission AS (
          SELECT p_user_permission.id_role,
             p_user_permission.nom_role,
@@ -769,7 +777,6 @@ AS WITH p_user_permission AS (
      JOIN gn_permissions.t_objects obj ON obj.id_object = v.id_object
      JOIN gn_permissions.bib_filters_type filter_type ON filters.id_filter_type = filter_type.id_filter_type
      JOIN gn_commons.t_modules modules ON modules.id_module = v.id_module;
-                   
 
 
 

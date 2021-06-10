@@ -29,7 +29,7 @@ CREATE TABLE t_base_sites
   geom_local public.geometry(Geometry, :MYLOCALSRID),
   altitude_min integer,
   altitude_max integer,
-  uuid_base_site UUID DEFAULT public.uuid_generate_v4(),
+  uuid_base_site uuid DEFAULT public.uuid_generate_v4(),
   meta_create_date timestamp without time zone DEFAULT now(),
   meta_update_date timestamp without time zone DEFAULT now()
 );
@@ -55,7 +55,7 @@ CREATE TABLE cor_visit_observer
 (
   id_base_visit integer NOT NULL,
   id_role integer NOT NULL,
-  unique_id_core_visit_observer uuid  NOT NULL DEFAULT uuid_generate_v4()
+  unique_id_core_visit_observer uuid  NOT NULL DEFAULT public.uuid_generate_v4()
 );
 
 CREATE TABLE cor_site_module (

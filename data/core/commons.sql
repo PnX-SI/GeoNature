@@ -569,9 +569,6 @@ ALTER TABLE ONLY t_mobile_apps
     
 ALTER TABLE ONLY t_places
     ADD CONSTRAINT pk_t_places PRIMARY KEY (id_place);
-
-ALTER TABLE ONLY gn_commons.t_additional_fields
-    ADD CONSTRAINT pk_bib_widgets PRIMARY KEY (id_widget);
     
 ALTER TABLE ONLY gn_commons.t_additional_fields
     ADD CONSTRAINT pk_t_additional_fields PRIMARY KEY (id_field);
@@ -585,6 +582,8 @@ ALTER TABLE ONLY gn_commons.cor_field_object
 ALTER TABLE ONLY gn_commons.cor_field_dataset
     ADD CONSTRAINT pk_cor_field_dataset PRIMARY KEY (id_field, id_dataset);
 
+ALTER TABLE ONLY gn_commons.bib_widgets
+    ADD CONSTRAINT pk_bib_widgets PRIMARY KEY (id_widget);
 
 ----------------
 --FOREIGN KEYS--
@@ -619,10 +618,6 @@ ALTER TABLE ONLY gn_commons.cor_field_object
   ADD CONSTRAINT fk_cor_field_obj_field FOREIGN KEY (id_field) 
   REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY gn_commons.cor_field_object
-  ADD CONSTRAINT fk_cor_field_object FOREIGN KEY (id_object) 
-  REFERENCES gn_permissions.t_objects(id_object) ON UPDATE CASCADE ON DELETE CASCADE;
-
 ALTER TABLE ONLY gn_commons.cor_field_module
   ADD CONSTRAINT fk_cor_field_module_field FOREIGN KEY (id_field) 
   REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -635,9 +630,6 @@ ALTER TABLE ONLY gn_commons.cor_field_dataset
   ADD CONSTRAINT fk_cor_field_dataset_field FOREIGN KEY (id_field) 
   REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
 
-ALTER TABLE ONLY gn_commons.cor_field_dataset
-  ADD CONSTRAINT fk_cor_field_dataset FOREIGN KEY (id_dataset) 
-  REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
 ---------------
 --CONSTRAINTS--
 ---------------
@@ -772,10 +764,6 @@ GROUP BY uuid_attached_row
 ) last_val
 ON v.uuid_attached_row = last_val.uuid_attached_row AND v.validation_date = last_val.max_date;
 
-
-INSERT INTO gn_commons.t_parameters
-(id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value)
-VALUES(0, 'ref_sensi_version', 'Version du referentiel de sensibilité', 'Referentiel de sensibilite taxref v13 2020', '');
 
 
 INSERT INTO gn_commons.bib_widgets (widget_name) VALUES
