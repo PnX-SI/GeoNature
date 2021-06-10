@@ -45,8 +45,6 @@ def get_cruved(info_role):
         q = q.filter(TModules.module_code.in_(params["module_code"]))
     modules = q.all()
 
-    all_permissions = get_all_perms(info_role.id_role, "SCOPE")
-
     # for each modules get its cruved
     # then get its related object and their cruved
     modules_with_cruved = {}
@@ -54,7 +52,6 @@ def get_cruved(info_role):
         mod_as_dict = mod.as_dict(fields=["objects"])
         module_cruved, herited = cruved_scope_for_user_in_module(
             id_role=info_role.id_role, module_code=mod_as_dict["module_code"],
-            perms=all_permissions.get(mod.module_code, [])
         )
         mod_as_dict["cruved"] = module_cruved
 
@@ -65,7 +62,6 @@ def get_cruved(info_role):
                 id_role=info_role.id_role,
                 module_code=mod_as_dict["module_code"],
                 object_code=_object["code_object"],
-                perms=all_permissions.get(mod.module_code, [])
             )
             _object["cruved"] = object_cruved
             module_objects_as_dict[_object["code_object"]] = _object

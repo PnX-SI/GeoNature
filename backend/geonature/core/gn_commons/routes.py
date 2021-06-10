@@ -49,15 +49,13 @@ def get_modules(info_role):
         q = q.filter(TModules.module_code.notin_(params.getlist("exclude")))
     q = q.order_by(TModules.module_order.asc()).order_by(TModules.module_label.asc())
     modules = q.all()
-    all_permissions = get_all_perms(info_role.id_role, "SCOPE")
     allowed_modules = []
     for mod in modules:
         app_cruved = cruved_scope_for_user_in_module(
             id_role=info_role.id_role, module_code=mod.module_code, 
-            perms=all_permissions.get(mod.module_code, [])
         )[0]
         if app_cruved["R"] != "0":
-            module = mod.as_dict()
+            module = mod.as_dict(fields=["objects"])
             module["cruved"] = app_cruved
             if mod.active_frontend:
                 # try to get module url from conf for new modules
@@ -71,6 +69,18 @@ def get_modules(info_role):
                 )
             else:
                 module["module_url"] = mod.module_external_url
+            module_objects_as_dict = {}
+            # # get cruved for each object
+            for _object in module.get("objects", []):
+                object_cruved, herited = cruved_scope_for_user_in_module(
+                    id_role=info_role.id_role,
+                    module_code=module["module_code"],
+                    object_code=_object["code_object"],
+                )
+                _object["cruved"] = object_cruved
+                module_objects_as_dict[_object["code_object"]] = _object
+
+                module["module_objects"] = module_objects_as_dict
             allowed_modules.append(module)
     return allowed_modules
 

@@ -219,7 +219,7 @@ class UserCruved:
         user_permissions = self.get_user_perm_list()
         return self.build_herited_user_cruved(user_permissions)
 
-    def get_perm_for_all_actions(self, get_id, user_permissions=[]):
+    def get_perm_for_all_actions(self, get_id):
         """
         Construction des permissions pour
             chaque action d'un module/objet données
@@ -235,8 +235,7 @@ class UserCruved:
 
         """
         # Récupération de l'ensemble des permissions
-        if not user_permissions:
-            user_permissions = self.get_user_perm_list()
+        user_permissions = self.get_user_perm_list()
         perm_by_actions = {}
 
         # Pour chaque permission tri en fonction de son action
@@ -363,7 +362,6 @@ def cruved_scope_for_user_in_module(
     get_id=False,
     get_herited_obj=False,
     append_to_select=None,
-    perms=[]
 ):
     """
     get the user cruved for a module or object
@@ -386,7 +384,7 @@ def cruved_scope_for_user_in_module(
         module_code=module_code,
         object_code=object_code,
         append_to_select=append_to_select,
-    ).get_perm_for_all_actions(get_id, user_permissions=perms)
+    ).get_perm_for_all_actions(get_id)
     if get_herited_obj:
         is_herited = (is_herited, herited_object)
     return herited_cruved, is_herited
