@@ -417,19 +417,18 @@ def create_module_config(app, module_code, build=True):
     Create the frontend config
     """
     module_code = module_code.upper()
-    with app.app_context():
-        try:
-            module_object = TModules.query.filter_by(module_code=module_code).one()
-        except NoResultFound:
-            raise Exception(f"Module with code '{module_code}' not found in database.")
-        _, module_config, _ = import_gn_module(module_object)
-        frontend_config_path = os.path.join(module_config['FRONTEND_PATH'], "app/module.config.ts")
-        try:
-            with open(str(ROOT_DIR / frontend_config_path), "w") as outputfile:
-                outputfile.write("export const ModuleConfig = ")
-                json.dump(module_config, outputfile, indent=True, sort_keys=True)
-        except FileNotFoundError:
-            log.info("No frontend config file")
-            raise
-        if build:
-            build_geonature_front()
+    try:
+        module_object = TModules.query.filter_by(module_code=module_code).one()
+    except NoResultFound:
+        raise Exception(f"Module with code '{module_code}' not found in database.")
+    _, module_config, _ = import_gn_module(module_object)
+    frontend_config_path = os.path.join(module_config['FRONTEND_PATH'], "app/module.config.ts")
+    try:
+        with open(str(ROOT_DIR / frontend_config_path), "w") as outputfile:
+            outputfile.write("export const ModuleConfig = ")
+            json.dump(module_config, outputfile, indent=True, sort_keys=True)
+    except FileNotFoundError:
+        log.info("No frontend config file")
+        raise
+    if build:
+        build_geonature_front()
