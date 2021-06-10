@@ -13,22 +13,6 @@ from geonature.core.gn_commons.models import TModules
 class NoManifestFound(Exception):
     pass
 
-def load_module_config(module_object):
-    sys.path.insert(0, str(GN_EXTERNAL_MODULE))
-    try:
-        module_dir = GN_EXTERNAL_MODULE / module_object.module_path
-        module_config = {
-            'ID_MODULE': module_object.id_module,
-            'MODULE_CODE': module_object.module_code,
-            'MODULE_URL': '/' + module_object.module_path.replace(' ', ''),
-            'FRONTEND_PATH': str(module_dir / 'frontend'),
-        }
-        module_schema = import_module(f'{module_object.module_code.lower()}.config.conf_schema_toml').GnModuleSchemaConf
-        config_path = module_dir / "config/conf_gn_module.toml"
-        module_config.update(load_and_validate_toml(config_path, module_schema))
-        return module_config
-    finally:
-        sys.path.pop(0)
 
 def import_legacy_module(module_object):
     sys.path.insert(0, str(GN_EXTERNAL_MODULE))  # to be able to import non-packaged modules
@@ -42,7 +26,15 @@ def import_legacy_module(module_object):
         # in utils.gn_module_import.copy_in_external_mods
         module_dist = module_object.module_code.lower()
         module_blueprint = import_module(f'{module_dist}.backend.blueprint').blueprint
-        module_config = load_module_config(module_object)
+        module_config = {
+            'ID_MODULE': module_object.id_module,
+            'MODULE_CODE': module_object.module_code,
+            'MODULE_URL': '/' + module_object.module_path.replace(' ', ''),
+            'FRONTEND_PATH': str(module_dir / 'frontend'),
+        }
+        module_schema = import_module(f'{module_object.module_code.lower()}.config.conf_schema_toml').GnModuleSchemaConf
+        config_path = module_dir / "config/conf_gn_module.toml"
+        module_config.update(load_and_validate_toml(config_path, module_schema))
         module_blueprint.config = module_config
         return module_config, module_blueprint
     finally:
