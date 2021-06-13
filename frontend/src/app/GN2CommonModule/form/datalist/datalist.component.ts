@@ -135,7 +135,6 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
     // valeur par défaut (depuis input value)
     if (!this.parentFormControl.value && this.default) {
-      console.log('value', this.filteredValues.find);
       const value = this.multiple ? this.default : [this.default];
       const res = value.map(val =>
         typeof val === 'object'

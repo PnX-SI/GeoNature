@@ -2,7 +2,9 @@ import json
 from operator import or_
 
 from flask import Blueprint, request, current_app
+from flask.json import jsonify
 import requests
+from sqlalchemy.orm import joinedload
 
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
@@ -40,7 +42,9 @@ def get_modules(info_role):
 
     """
     params = request.args
-    q = DB.session.query(TModules)
+    q = DB.session.query(TModules).options(
+        joinedload(TModules.objects)
+    )
     if "exclude" in params:
         q = q.filter(TModules.module_code.notin_(params.getlist("exclude")))
     q = q.order_by(TModules.module_order.asc()).order_by(TModules.module_label.asc())
@@ -48,10 +52,10 @@ def get_modules(info_role):
     allowed_modules = []
     for mod in modules:
         app_cruved = cruved_scope_for_user_in_module(
-            id_role=info_role.id_role, module_code=mod.module_code
+            id_role=info_role.id_role, module_code=mod.module_code, 
         )[0]
         if app_cruved["R"] != "0":
-            module = mod.as_dict()
+            module = mod.as_dict(fields=["objects"])
             module["cruved"] = app_cruved
             if mod.active_frontend:
                 # try to get module url from conf for new modules
@@ -65,6 +69,18 @@ def get_modules(info_role):
                 )
             else:
                 module["module_url"] = mod.module_external_url
+            module_objects_as_dict = {}
+            # # get cruved for each object
+            for _object in module.get("objects", []):
+                object_cruved, herited = cruved_scope_for_user_in_module(
+                    id_role=info_role.id_role,
+                    module_code=module["module_code"],
+                    object_code=_object["code_object"],
+                )
+                _object["cruved"] = object_cruved
+                module_objects_as_dict[_object["code_object"]] = _object
+
+                module["module_objects"] = module_objects_as_dict
             allowed_modules.append(module)
     return allowed_modules
 
@@ -103,7 +119,6 @@ def get_one_parameter(param_name, id_org=None):
     return [d.as_dict() for d in data]
 
 @routes.route("/additional_fields", methods=["GET"])
-@json_resp
 def get_additional_fields():
     params = request.args
     q = DB.session.query(TAdditionalFields).order_by(TAdditionalFields.field_order)
@@ -139,7 +154,7 @@ def get_additional_fields():
             q = q.filter(or_(*ors))
         else:
             q = q.filter(TAdditionalFields.objects.any(code_object=params["object_code"]))
-    return [d.as_dict(depth=1) for d in q.all()]
+    return jsonify([d.as_dict(depth=1) for d in q.all()])
 
 
 

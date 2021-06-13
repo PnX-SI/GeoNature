@@ -47,6 +47,7 @@ from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from werkzeug.exceptions import BadRequest
 
 
 # debug
@@ -135,6 +136,8 @@ def get_observations_for_web(info_role):
                 VSyntheseForWebApp.lb_nom,
                 VSyntheseForWebApp.cd_nom,
                 VSyntheseForWebApp.nom_vern,
+                VSyntheseForWebApp.count_min,
+                VSyntheseForWebApp.count_max,
                 VSyntheseForWebApp.st_asgeojson,
                 VSyntheseForWebApp.observers,
                 VSyntheseForWebApp.dataset_name,
@@ -157,6 +160,7 @@ def get_observations_for_web(info_role):
             "cd_nom": r["cd_nom"],
             "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
             "lb_nom": r["lb_nom"],
+            "count_min_max": '{} - {}'.format(r["count_min"], r["count_max"]) if r["count_min"] != r["count_max"] else str(r["count_min"] or ''),
             "dataset_name": r["dataset_name"],
             "observers": r["observers"],
             "url_source": r["url_source"],
@@ -371,7 +375,7 @@ def export_observations_web(info_role):
     export_format = params.get("export_format", "csv")
     # Test export_format
     if not export_format in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
-        raise GeonatureApiError("Unsupported format")
+        raise BadRequest("Unsupported format")
 
     # set default to csv
     export_view = GenericTableGeo(
@@ -624,14 +628,9 @@ def general_stats(info_role):
         - nb of observations
         - nb of distinct species
         - nb of distinct observer
-        - nb ob datasets
+        - nb of datasets
     """
     allowed_datasets = get_datasets_cruved(info_role)
-    q = DB.session.query(
-        func.count(Synthese.id_synthese),
-        func.count(func.distinct(Synthese.cd_nom)),
-        func.count(func.distinct(Synthese.observers)),
-    )
     q = select(
         [
             func.count(Synthese.id_synthese),
@@ -639,15 +638,15 @@ def general_stats(info_role):
             func.count(func.distinct(Synthese.observers))
         ]
     )
-
     synthese_query_obj = SyntheseQuery(Synthese, q, {})
     synthese_query_obj.filter_query_with_cruved(info_role)
-    result = DB.engine.execute(synthese_query_obj.query)
-    data = result.fetchone()
+    result = DB.session.execute(synthese_query_obj.query)
+    synthese_counts = result.fetchone()
+
     data = {
-        "nb_data": data[0],
-        "nb_species": data[1],
-        "nb_observers": data[2],
+        "nb_data": synthese_counts[0],
+        "nb_species": synthese_counts[1],
+        "nb_observers": synthese_counts[2],
         "nb_dataset": len(allowed_datasets),
     }
     return data

@@ -19,13 +19,13 @@ gunicorn==19.7.0
 idna==2.6
 itsdangerous==0.24
 jinja2==2.11.3
-lxml==4.5.1
+lxml==4.6.3
 markupsafe==1.1
 marshmallow==2.15.2
 marshmallow-sqlalchemy==0.23.1
 packaging==16.8
 psycopg2==2.8.5
-pillow==7.2.0
+pillow==8.2.0
 pyparsing==2.2.0
 python-dateutil==2.8.1
 requests==2.25.1

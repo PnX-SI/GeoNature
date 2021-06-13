@@ -2,40 +2,21 @@
 CHANGELOG
 =========
 
-2.7.0 (unreleased)
-------------------
+2.7.0 - Androsace delphinensis (unreleased)
+-------------------------------------------
 
-- Voir https://github.com/PnX-SI/GeoNature/compare/develop
-- Tester l'outil Occtax de conservation d'info d'un taxon à l'autre
-- Rétrocompatibilité des évolutions ? Bien tester installation des différents modules
-- Bien vérifier et regrouper les update SQL
-- Fusionner 3 SQL d'update et renommer en 2.6.2to2.7.0.sql
+- Voir https://github.com/PnX-SI/GeoNature/compare/2.6.2...develop
+- Vérifier l'update SQL et régler son TODO
 - Bien vérifier notes de versions liées à des changements à appliquer suite aux évolutions techniques
-- Mettre à jour et release template de module ?
-- Bien tester les emails de validation pré-remplis
-- Bouger doc Admin champs additionnels de Doc utilisateurs à Doc administrateur (section Occtax)
-- Monitoring : Problème d'héritage des objets >> Ajouter un champs dans t_modules, sinon Monitoring ne fonctionnera pas avec le nouveau GN... A indiquer dans les notes de version si quelque chose doit être fait pour que Monitoring continue à fonctionner avec GN 2.7.0
-- Export des additional_data dans la Synthese à vérifier et tester
-- Fix des commandes (https://github.com/PnX-SI/GeoNature/commit/ec62b24ef1539116697aa29758dd135dcbaa85b1) à préciser ou répercuter ?
-- https://github.com/PnX-SI/GeoNature/issues/1071 fonctionne ?
-- Voir acteurs des métadonnées (https://github.com/PnX-SI/GeoNature/pull/1313#issuecomment-839705016)
-- Voir corrections de Occtax à réintégrer (https://github.com/PnX-SI/GeoNature/issues/1191#issuecomment-839663324)
-
-PRE-PROD PNE : 
-
-- "undefined" sur la liste des relevés Occtax - Du à notre migration Taxref 14 ?
-- Désactiver l'ajout de médias dans Occtax qui sont actifs sur notre pre-prod ?
-- Je modifie un relevé Occtax, je perds l'observateur... Le JDD est bien récupéré mais le champs est affiché en rouge alors qu'il est renseigné... Quand je les renseigne et enregistre : "Une erreur s'est produite".
-- Titre des médias par défaut, récupère des undefined à la place de la date...
-- Synthèse : Envoyer un email à l'observateur me renvoie vers l'accueil de GN
-- Validation : La coche de recherche des données modifiées est affichée en rouge comme obligatoire
-- Validation : Le nombre de résultats n'est plus affiché à la fin de la liste
-- Synthèse : Erreur sur l'export CSV des observations (testé avec le filtre "Possède des médias")
+- Bien tester les emails de validation pré-remplis: OK
+- Sur Occtax, le switch pour Enchainer les taxons est aussi passer en rouge/vert. A cet endroit c'est pas très adapté et laisse penser à une validation du relevé. Repasser celui-ci en gris serait mieux.
+- MTD : Ajout des nouveaux champs aussi dans les fiches infos web et PDF ?
+- MTS : Ajout de bibliographie retirée ?
 
 **🚀 Nouveautés**
 
 * Occtax : Possibilité d'ajouter des champs additionels par JDD ou globaux au module (#1007)
-* Occtax : Ajout des champs additionnels dans les exports (#1114)
+* Occtax/Synthese : Ajout des champs additionnels dans les exports (#1114)
 * Admin : Création d'un backoffice d'administration des champs additionels (#1007)
 * Admin : Création d'une documentation d'administration des champs additionnels (#1007)
 * Occtax : Possibilité de désactiver la recherche de taxon par liste (#1315)
@@ -43,29 +24,41 @@ PRE-PROD PNE :
 * Occtax/Metadonnées : possibilité d'associer une liste de taxons à un JDD (implémenté uniquement dans Occtax) (#1315)
 * Occtax : Possibilité d'ajouter les infos sur les médias dans les exports (paramètre ``ADD_MEDIA_IN_EXPORT``) (#1326)
 * Occtax : Ajout du paramètre ``MEDIA_FIELDS_DETAILS`` permettant de définir les champs des médias affichés par défaut
+* Occtax : Possibilité de paramétrer l'affichage des champs du composant MEDIA dans OCCTAX (paramètre MEDIA_FIELDS_DETAILS #1287) 
+* Occtax : Possibilité de fitrer la liste des habitats du formulaire avec les nouveaux paramètres ``ID_LIST_HABITAT`` et ``CD_TYPO_HABITAT``
+* Occtax : Possibilité d'ouvrir le module avec un JDD pré-selectionné en passant le paramètre ``id_dataset`` dans l'URL (#1071)
 * Accueil : Réorganisation des blocs (#1375)
+* Accueil : Ajout d'un paramètre controlant la fréquence de MAJ du cache des statistiques de la page d'accueil (``STAT_BLOC_TTL``, par défaut 1h: 3600 secondes) (#1320)
+* La page d'authentification affiche désormais le nom de l'application (``appName``) défini dans la configuration de GeoNature (#1277) 
+* Possibilité d'ouvrir l'accès à GeoNature sans authentification (voir documentation d'administration) (#1323)
+* Métadonnées : Optimisation du temps de chargement des listes des CA et JDD (#1291)
+* Métadonnées : Passage de la version 1.3.9 du standard SINP à la version 1.3.10 et ajout des champs liés dans les formulaires (#1291)
+* Métadonnées : Révision du design la partie "Acteurs" du formulaire et mise à part de l'acteur de type "Contact principal", obligatoire dans le standard SINP
 * Métadonnées : Ordonnancement des JDD par leur nom
 * Synthèse et validation : Ajout d'un filtre avancé ``Possède des médias`` (#1179, #1338, #1180)
 * Synthèse : Affichage du contenu json du champs des données additionnelles, dans la fiche détail d'une observation
 * DynamicForm : enrichissement des formulaires dynamiques pour les médias, l'ajout de liens externes
 * Ajout d'une contrainte d'unicité de la combinaison des champs ``id_type`` et ``area_code`` dans ``ref_geo.l_areas`` (#1270)
 * Ajout d'une contrainte d'unicité du champs ``type_code`` de la table ``ref_geo.bib_areas_types``
-* Mise à jour des versions de nombreuses dépendances
+* Mise à jour des versions de nombreuses dépendances Python et Javascript
 * Support du gestionnaire d'erreurs Sentry
+* Validation : possibilité de passer des fonctions dans la liste des colonnes affichées (pour décoder une nomenclature)
+* Validation : Les paramètres ``LIST_COLUMNS_FRONTEND`` et ``COLUMNS_API_VALIDATION_WEB_APP`` sont regroupés en un seul paramètre nommé ``COLUMN_LIST``. Voir le fichier ``contrib/gn_module_validation/config/conf_gn_module.toml.example``
 
 **🐛 Corrections**
 
-* Occtax : correction d'un bug sur le champs observateur lors de la modification d'un relevé (#1177)
-* Occtax : renseignement par défaut de l'utilisateur connecté à la création d'un relevé en mode "observers_txt" (#1292)
+* Occtax : Correction d'un bug sur le champs observateur lors de la modification d'un relevé (#1177)
+* Occtax : Renseignement par défaut de l'utilisateur connecté à la création d'un relevé en mode "observers_txt" (#1292)
 * Occtax : Déplacement des boutons d'action à gauche dans la liste des taxons d'un relevé pour éviter qu'ils soient masqués quand les noms de taxon sont longs (#1299 et #1337)
-* Occtax : Correction de la suppression d'un habitat par modification de relevé (#1296)
 * Occtax : Correction de la possibilité de modifier un relevé si U=1 (#1365)
 * Occtax : Suppression du zoom quand on localise le relevé (#1317)
 * Occtax : Correction du nombre de lignes affichées après une recherche
 * Occtax : Correction de la suppression d'un habitat lors de la modification d'un relevé (#1296)
+* Occtax : Correction du champs "Habitat" quand on enchaine des relevés (#1191)
 * Occtax : Correction de l'enchainement des saisies (#1300)
 * Occtax : Correction de l'affichage des taxons quand le nom est long (#1299, #1337)
-* Occtax : fix observers_txt default value (https://github.com/PnX-SI/GeoNature/commit/f23d27b1f55fbdb0a71c473247028e8707b97934) ????
+* Occtax : Correction de l'observateur par défaut en mode ``observers_txt``
+* Occtax : Correction des messages d'information multiples (#1367)
 * Métadonnées : Correction de la suppression d'un JDD sans données, depuis la liste des JDD (#1312)
 * Métadonnées : Correction de la récupération des valeurs de nomenclature depuis MTD n'existant pas dans GeoNature (#1297)
 * Authentification : Redirection vers la page login après une période d'inactivité (#1193)
@@ -74,7 +67,7 @@ PRE-PROD PNE :
 **💻 Développement**
 
 * Possibilité d'utiliser la commande ``flask`` (eg ``flask shell``)
-* Préparation de l'utilisation d'alembic pour la gestion du schéma de la BDD (#880)
+* Préparation de l'utilisation d'alembic pour la gestion des migrations de la structure de la BDD (#880)
 * Possibilité d'importer des modules packagés (#1272)
 * Réorganisation des fichiers ``requirements`` et installation des branches ``develop`` des dépendances du fichier ``requirements-dev.txt``
 * Simplification de la gestion des erreurs
@@ -89,9 +82,10 @@ Si vous mettez à jour GeoNature :
 * Attention : si vous n'aviez pas renseigné de valeur pour le paramètre ``id_taxon_list`` dans le fichier ``conf_gn_module.toml`` du module Occtax, la liste 100 n'est plus passé par defaut et le module va rechercher sur tout Taxref. Veuillez renseigner manuellement l'identifiant de votre liste 
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
 * Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.6.3.sql)
-* Des choses à faire au niveau des évolutions des commandes GeoNature ?
+* Si vous aviez renseigner un des deux paramètres ``LIST_COLUMNS_FRONTEND``, ``COLUMNS_API_VALIDATION_WEB_APP`` dans le module Validation, il est nécessaire de les remplacer par le nouveau paramètre ``COLUMN_LIST``. Voir le fichier ``contrib/gn_module_validation/config/conf_gn_module.toml.example``  
+* /!\ Des choses à faire au niveau des évolutions des commandes GeoNature ?
 * Modifier dans le fichier ``/etc/supervisor/conf.d/geonature-service.conf``, remplacer ``gn_errors.log`` par ``supervisor.log`` dans la variable ``stdout_logfile`` :
-
+ 
 ::
 
     sudo sed -i 's|\(stdout_logfile = .*\)/gn_errors.log|\1/supervisor.log|' /etc/supervisor/conf.d/geonature-service.conf

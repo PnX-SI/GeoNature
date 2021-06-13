@@ -217,7 +217,7 @@
               [bindAllItem]="true"
             >
             </pnx-multiselect>
-          <small>Liste de taxon (facultatif)</small>
+          <small>Liste de taxons (facultatif)</small>
           <select
             class="form-control form-control-sm"
             [formControl]="form.get('id_taxa_list')"
@@ -254,10 +254,11 @@
           </ng-container>
 
               <button
-                class="mt-2"
+                class="mt-2 float-right"
                 type="button"
                 mat-mini-fab
                 color="primary"
+                matTooltip="Ajouter un autre contact principal"
                 (click)="addMainContact()"
               >
                 <mat-icon>add</mat-icon>
@@ -280,10 +281,11 @@
             </pnx-metadata-actor>
           </ng-container>
           <button
-            class="mt-2"
+            class="mt-2 float-right"
             type="button"
             mat-mini-fab
             color="primary"
+            matTooltip="Ajouter un autre acteur"
             (click)="addGenericContact()"
           >
             <mat-icon>add</mat-icon>

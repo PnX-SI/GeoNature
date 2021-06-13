@@ -29,7 +29,7 @@ export class AcquisitionFrameworksComponent extends GenericFormComponent impleme
   }
 
   ngOnInit() {
-    this._dfs.getAcquisitionFrameworks().subscribe(data => {
+    this._dfs.getAcquisitionFrameworksForSelect().subscribe(data => {
       this.values = data;
       this.savedValues = data;
     });

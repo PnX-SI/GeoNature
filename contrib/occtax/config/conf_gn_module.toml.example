@@ -138,6 +138,11 @@ ENABLE_UPLOAD_TOOL = true
 # Activer l'outil "Mes lieux" permettant d'enregistrer et de charger les lieux des utilisateurs
 ENABLE_MY_PLACES = true
 
+# Reglage des liste d'habitat sur le formulaire
+# id list d'habitat (ref_habitats.bib_list_habitat)
+ID_LIST_HABITAT = <integer> (defaut = null)
+# code de type de typologie (ref_habitats.typoref)
+CD_TYPO_HABITAT = <integer (defaut = null)
 
 # ------------- FORM PARAMETER ---------------
 
@@ -186,3 +191,5 @@ ENABLE_MY_PLACES = true
 # ------------- MEDIAS PARAMETER ---------------
 
 ENABLE_MEDIAS = true
+
+MEDIA_FIELDS_DETAILS = ['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile']

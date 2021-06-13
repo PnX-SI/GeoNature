@@ -242,18 +242,6 @@ class CorDatasetTerritory(DB.Model):
     )
 
 
-#@serializable
-#class CorModuleDataset(DB.Model):
-#    __tablename__ = "cor_module_dataset"
-#    __table_args__ = {"schema": "gn_commons", "extend_existing": True}
-#    id_module = DB.Column(
-#        DB.Integer, ForeignKey("gn_commons.t_modules.id_module"), primary_key=True
-#    )
-#    id_dataset = DB.Column(
-#        DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"), primary_key=True
-#    )
-
-
 class CruvedHelper(DB.Model):
     """
     Classe abstraite permettant d'ajouter des méthodes de

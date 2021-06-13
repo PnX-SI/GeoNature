@@ -103,7 +103,6 @@ export class AuthService {
           this.loginError = false;
           // Now that we are logged, we fetch the cruved again, and redirect once received
           forkJoin({
-              cruved: this.cruvedService.fetchCruved(),
               modules: this.moduleService.fetchModules(),
           }).subscribe(() => {
             this.isLoading = false;
@@ -163,8 +162,9 @@ export class AuthService {
 
   logout() {
     this.deleteAllCookies();
-    localStorage.clear();
+    this.cleanLocalStorage();
     this.cruvedService.clearCruved();
+
     if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
       document.location.href = `${AppConfig.CAS_PUBLIC.CAS_URL_LOGOUT}?service=${
         AppConfig.URL_APPLICATION
@@ -182,6 +182,12 @@ export class AuthService {
       // refresh the page to refresh all the shared service to avoid cruved conflict
 
     }
+  }
+
+  private cleanLocalStorage() {
+    // Remove only local storage items need to clear when user logout
+    localStorage.removeItem('current_user');
+    localStorage.removeItem('modules');
   }
 
   isAuthenticated(): boolean {

@@ -98,6 +98,7 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
   }
 
   sendGeoInfo(geojson) {
+    this._occtaxFormService.disabled = false;
     this.ms.geometry = geojson;
   }
 

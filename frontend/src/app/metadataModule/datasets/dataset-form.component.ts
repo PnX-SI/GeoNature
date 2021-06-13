@@ -56,7 +56,7 @@ export class DatasetFormComponent implements OnInit {
     }
 
     //getAcquisitionFrameworksForSelect
-    this.acquisitionFrameworks = this._dfs.getAcquisitionFrameworks();
+    this.acquisitionFrameworks = this._dfs.getAcquisitionFrameworksForSelect();
   }
 
   genericActorFormSubmit(result) {
@@ -105,9 +105,7 @@ export class DatasetFormComponent implements OnInit {
         })
       )
       .subscribe(
-        (dataset: any) =>{ 
-          console.log(dataset);
-          
+        (dataset: any) =>{           
           this._router.navigate(['/metadata/dataset_detail', dataset.id_dataset])
           
         },

@@ -9,7 +9,7 @@ from flask import (
     send_from_directory,
     render_template,
 )
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import BadRequest, NotFound
 from geonature.core.gn_commons.models import TAdditionalFields
 from sqlalchemy import or_, func, distinct, case
 from sqlalchemy.orm.exc import NoResultFound
@@ -559,8 +559,7 @@ def occurrenceHandler(request, *, occurrence, info_role):
     occurrence, errors = occurrenceSchema.load(request.get_json(), instance=occurrence)
 
     if bool(errors):
-        return errors, 422
-
+        raise BadRequest(str(errors))
     DB.session.add(occurrence)
     DB.session.commit()
 

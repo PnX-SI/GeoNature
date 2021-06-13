@@ -11,9 +11,10 @@ CREATE SCHEMA gn_monitoring;
 SET search_path = gn_monitoring, pg_catalog;
 SET default_with_oids = false;
 
----------
---TABLE--
----------
+----------
+--TABLES--
+----------
+
 CREATE TABLE t_base_sites
 (
   id_base_site serial NOT NULL,
@@ -28,7 +29,7 @@ CREATE TABLE t_base_sites
   geom_local public.geometry(Geometry, :MYLOCALSRID),
   altitude_min integer,
   altitude_max integer,
-  uuid_base_site UUID DEFAULT public.uuid_generate_v4(),
+  uuid_base_site uuid DEFAULT public.uuid_generate_v4(),
   meta_create_date timestamp without time zone DEFAULT now(),
   meta_update_date timestamp without time zone DEFAULT now()
 );
@@ -50,12 +51,11 @@ CREATE TABLE t_base_visits
   meta_update_date timestamp without time zone DEFAULT now()
 );
 
-
-
 CREATE TABLE cor_visit_observer
 (
   id_base_visit integer NOT NULL,
-  id_role integer NOT NULL
+  id_role integer NOT NULL,
+  unique_id_core_visit_observer uuid  NOT NULL DEFAULT public.uuid_generate_v4()
 );
 
 CREATE TABLE cor_site_module (
@@ -68,10 +68,10 @@ CREATE TABLE cor_site_area (
   id_area integer NOT NULL
 );
 
+----------------
+--PRIMARY KEYS--
+----------------
 
----------------
---PRIMARY KEY--
----------------
 ALTER TABLE ONLY t_base_sites
     ADD CONSTRAINT pk_t_base_sites PRIMARY KEY (id_base_site);
 
@@ -88,9 +88,10 @@ ALTER TABLE ONLY cor_site_area
     ADD CONSTRAINT pk_cor_site_area PRIMARY KEY (id_base_site, id_area);
 
 
----------------
---FOREIGN KEY--
----------------
+----------------
+--FOREIGN KEYS--
+----------------
+
 ALTER TABLE ONLY t_base_sites
   ADD CONSTRAINT  fk_t_base_sites_id_inventor FOREIGN KEY (id_inventor) REFERENCES utilisateurs.t_roles (id_role) ON UPDATE CASCADE;
 
@@ -139,9 +140,11 @@ ALTER TABLE ONLY t_base_visits
 ALTER TABLE gn_monitoring.t_base_visits
     ADD CONSTRAINT fk_t_base_visits_id_module FOREIGN KEY (id_module) REFERENCES gn_commons.t_modules (id_module) MATCH SIMPLE
             ON UPDATE CASCADE ON DELETE CASCADE;
---------------
---CONSTRAINS--
---------------
+
+---------------
+--CONSTRAINTS--
+---------------
+
 ALTER TABLE t_base_sites
   ADD CONSTRAINT enforce_srid_geom CHECK ((public.st_srid(geom) = 4326));
 
@@ -160,8 +163,8 @@ ALTER TABLE t_base_visits
 ---------
 --INDEX--
 ---------
-CREATE INDEX idx_t_base_visits_fk_bs_id ON t_base_visits USING btree(id_base_site);
 
+CREATE INDEX idx_t_base_visits_fk_bs_id ON t_base_visits USING btree(id_base_site);
 
 CREATE INDEX idx_t_base_sites_geom ON t_base_sites USING gist (geom);
 
@@ -173,12 +176,31 @@ CREATE INDEX idx_t_base_sites_type_site ON t_base_sites USING btree (id_nomencla
 ----------------------
 --FUNCTIONS TRIGGERS--
 ----------------------
+
 --@ TODO Trigger de calcul des intersections avec la table l_areas ????
 
+CREATE OR REPLACE FUNCTION gn_monitoring.fct_trg_visite_date_max()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+	-- Si la date max de la visite est nulle ou inférieure à la date_min
+	--	Modification de date max pour garder une cohérence des données
+	IF
+		NEW.visit_date_max IS NULL
+		OR NEW.visit_date_max < NEW.visit_date_min
+	THEN
+      NEW.visit_date_max := NEW.visit_date_min;
+    END IF;
+  RETURN NEW;
+END;
+$function$
+;
 
 ------------
 --TRIGGERS--
 ------------
+
 CREATE TRIGGER tri_log_changes
   AFTER INSERT OR UPDATE OR DELETE
   ON gn_monitoring.t_base_visits
@@ -190,6 +212,11 @@ CREATE TRIGGER tri_log_changes
   ON gn_monitoring.t_base_sites
   FOR EACH ROW
   EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
+
+CREATE TRIGGER tri_log_changes_cor_visit_observer
+  AFTER INSERT OR DELETE OR UPDATE
+  ON gn_monitoring.cor_visit_observer
+  FOR EACH ROW EXECUTE FUNCTION gn_commons.fct_trg_log_changes();
 
 CREATE TRIGGER tri_meta_dates_change_t_base_sites
   BEFORE INSERT OR UPDATE
@@ -203,6 +230,12 @@ CREATE TRIGGER tri_meta_dates_change_t_base_visits
   FOR EACH ROW
   EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
+
+CREATE TRIGGER tri_visite_date_max
+  BEFORE INSERT OR UPDATE OF visit_date_min
+  ON gn_monitoring.t_base_visits
+  FOR EACH ROW
+  EXECUTE FUNCTION gn_monitoring.fct_trg_visite_date_max();
 
 CREATE FUNCTION fct_trg_cor_site_area()
   RETURNS trigger AS
@@ -235,11 +268,12 @@ CREATE TRIGGER tri_t_base_sites_calculate_alt
   FOR EACH ROW
   EXECUTE PROCEDURE ref_geo.fct_trg_calculate_alt_minmax('geom');
 
+-------------
+--LOCATIONS--
+-------------
 
-------------
---TRIGGERS--
-------------
 INSERT INTO gn_commons.bib_tables_location(table_desc, schema_name, table_name, pk_field, uuid_field_name)
 VALUES
 ('Table centralisant les sites faisant l''objet de protocole de suivis', 'gn_monitoring', 't_base_sites', 'id_base_site', 'uuid_base_site'),
-('Table centralisant les visites réalisées sur un site', 'gn_monitoring', 't_base_visits', 'id_base_visit', 'uuid_base_visit');
+('Table centralisant les visites réalisées sur un site', 'gn_monitoring', 't_base_visits', 'id_base_visit', 'uuid_base_visit'),
+('Liste des observateurs d''une visite', 'gn_monitoring', 'cor_visit_observer', 'unique_id_core_visit_observer', 'unique_id_core_visit_observer');

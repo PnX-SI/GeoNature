@@ -333,16 +333,14 @@ export class DataFormService {
    *
    * @param params: dict of paramters
    */
-  getAcquisitionFrameworks(params = {}) {
-    console.log(params);
-    
+  getAcquisitionFrameworks(params = {}) {    
     let queryString: HttpParams = new HttpParams();
     for (let key in params) {
       queryString = queryString.set(key, params[key])
     }
 
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`,
+      `${AppConfig.API_ENDPOINT}/meta/list/acquisition_frameworks`,
       { params: queryString }
     );
   }
@@ -359,23 +357,11 @@ export class DataFormService {
     }
 
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/select`,
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`,
       { params: queryString }
     );
   }
 
-  /**
-   * Return all AF with cruved for map-list
-   */
-  getAcquisitionFrameworksMetadata(orderByName = true) {
-    let queryString: HttpParams = new HttpParams();
-    if (orderByName) {
-      queryString = this.addOrderBy(queryString, 'acquisition_framework_name');
-    }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks_metadata`, {
-      params: queryString
-    });
-  }
 
   /**
    * @param id_af: id of acquisition_framework

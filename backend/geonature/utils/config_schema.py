@@ -109,6 +109,10 @@ class UsersHubConfig(Schema):
     ADMIN_APPLICATION_PASSWORD = fields.String()
     URL_USERSHUB = fields.Url()
 
+class PublicAccess(Schema):
+    PUBLIC_LOGIN = fields.String(missing=None)
+    PUBLIC_PASSWORD = fields.String(missing=None)
+    ENABLE_PUBLIC_ACCESS = fields.Boolean(missing=False)
 
 class ServerConfig(Schema):
     LOG_LEVEL = fields.Integer(missing=20)
@@ -218,6 +222,7 @@ class GnFrontEndConf(Schema):
     PROD_MOD = fields.Boolean(missing=True)
     DISPLAY_FOOTER = fields.Boolean(missing=True)
     DISPLAY_STAT_BLOC = fields.Boolean(missing=True)
+    STAT_BLOC_TTL = fields.Integer(missing=3600)
     DISPLAY_MAP_LAST_OBS = fields.Boolean(missing=True)
     MULTILINGUAL = fields.Boolean(missing=False)
     # show email on synthese and validation info obs modal
@@ -354,6 +359,7 @@ class GnGeneralSchemaConf(Schema):
     MTD = fields.Nested(MTDSchemaConf, missing={})
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(missing=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, missing={})
+    PUBLIC_ACCESS = fields.Nested(PublicAccess, missing={})
 
     @validates_schema
     def validate_enable_sign_up(self, data):

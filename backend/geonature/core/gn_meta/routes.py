@@ -57,7 +57,6 @@ from geonature.core.gn_meta.models import (
 )
 from geonature.core.gn_meta.repositories import (
     get_datasets_cruved,
-    get_af_cruved,
     get_metadata_list,
 )
 from geonature.core.gn_meta.schemas import (
@@ -218,14 +217,7 @@ def delete_dataset(info_role, ds_id):
     allowed = dataset.user_is_allowed_to(user_actor, info_role, info_role.value_filter)
     if not allowed:
         raise Forbidden(f"User {info_role.id_role} cannot delete dataset {dataset.id_dataset}")
-    DB.session.query(CorDatasetActor).filter(CorDatasetActor.id_dataset == ds_id).delete()
-
-    DB.session.query(CorDatasetProtocol).filter(CorDatasetProtocol.id_dataset == ds_id).delete()
-
-    DB.session.query(CorDatasetTerritory).filter(CorDatasetTerritory.id_dataset == ds_id).delete()
-
-    #DB.session.query(CorModuleDataset).filter(CorModuleDataset.id_dataset == ds_id).delete()
-
+    
     DB.session.query(TDatasets).filter(TDatasets.id_dataset == ds_id).delete()
 
     DB.session.commit()
@@ -703,8 +695,6 @@ def get_acquisition_frameworks_list(info_role):
         exclude=exclude_fields
     )
     acquisitionFrameworkSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
-    print("LAAAAAAAAa", nested_serialization)
-    print("LAAAAAAAAa", exclude_fields)
     return acquisitionFrameworkSchema.jsonify(
         get_metadata_list(info_role, params, exclude_fields).all(),
         many=True
@@ -765,17 +755,9 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
             "nomenclature_financing_type"
         ] = af.nomenclature_financing_type.as_dict()
         if acquisition_framework["acquisition_framework_start_date"]:
-            start_date = dt.datetime.strptime(
-                acquisition_framework["acquisition_framework_start_date"], "%Y-%m-%d"
-            )
-            acquisition_framework["acquisition_framework_start_date"] = start_date.strftime(
-                "%d/%m/%Y"
-            )
+            acquisition_framework["acquisition_framework_start_date"] = af.acquisition_framework_start_date.strftime("%d/%m/%Y")
         if acquisition_framework["acquisition_framework_end_date"]:
-            end_date = dt.datetime.strptime(
-                acquisition_framework["acquisition_framework_end_date"], "%Y-%m-%d"
-            )
-            acquisition_framework["acquisition_framework_end_date"] = end_date.strftime("%d/%m/%Y")
+            acquisition_framework["acquisition_framework_end_date"] = af.acquisition_framework_end_date.strftime("%d/%m/%Y")
         acquisition_framework["css"] = {
             "logo": "Logo_pdf.png",
             "bandeau": "Bandeau_pdf.png",
@@ -825,36 +807,6 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 
 
-@routes.route("/acquisition_frameworks_metadata", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="METADATA")
-@json_resp
-def get_acquisition_frameworks_metadata(info_role):
-    """
-    Get all AF with cruved filter
-    Use for metadata module. 
-    Add the cruved permission for each row
-
-    .. :quickref: Metadata;
-
-    """
-    params = request.args
-    afs = get_af_cruved(info_role, params, as_model=True)
-    id_afs_user = TAcquisitionFramework.get_user_af(info_role, only_user=True)
-    id_afs_org = TAcquisitionFramework.get_user_af(info_role, only_user=False)
-    user_cruved = cruved_scope_for_user_in_module(
-        id_role=info_role.id_role, module_code="METADATA",
-    )[0]
-    afs_dict = []
-    for af in afs:
-        af_dict = af.as_dict()
-        af_dict["cruved"] = af.get_object_cruved(
-            user_cruved=user_cruved,
-            id_object=af.id_acquisition_framework,
-            ids_object_user=id_afs_user,
-            ids_object_organism=id_afs_org,
-        )
-        afs_dict.append(af_dict)
-    return afs_dict
 
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>", methods=["GET"])
@@ -896,18 +848,6 @@ def delete_acquisition_framework(info_role, af_id):
             "La suppression du cadre d'acquisition n'est pas possible car des jeux de données y sont rattachées",
             500,
         )
-
-    DB.session.query(CorAcquisitionFrameworkActor).filter(
-        CorAcquisitionFrameworkActor.id_acquisition_framework == af_id
-    ).delete()
-
-    DB.session.query(CorAcquisitionFrameworkObjectif).filter(
-        CorAcquisitionFrameworkObjectif.id_acquisition_framework == af_id
-    ).delete()
-
-    DB.session.query(CorAcquisitionFrameworkVoletSINP).filter(
-        CorAcquisitionFrameworkVoletSINP.id_acquisition_framework == af_id
-    ).delete()
 
     DB.session.query(TAcquisitionFramework).filter(
         TAcquisitionFramework.id_acquisition_framework == af_id

@@ -379,9 +379,6 @@ if ! database_exists "${db_name}"; then
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/geonature/synthese.sql  &>> var/log/install_db.log
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/synthese_default_values.sql  &>> var/log/install_db.log
 
-    write_log "Creating commons view depending of synthese"
-    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/commons_synthese.sql  &>> var/log/install_db.log
-
     write_log "Creating 'gn_exports' schema..."
     export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/exports.sql  &>> var/log/install_db.log
 
@@ -410,6 +407,8 @@ if ! database_exists "${db_name}"; then
     echo "Insert 'gn_sensitivity' data... (This may take a few minutes)"
     sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/sensitivity_data.sql &>> var/log/install_db.log
 
+    write_log "Creating table and FK depending of other schema"
+    export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f data/core/commons_after.sql  &>> var/log/install_db.log
 
     # Installation des données exemples
     if [ "$add_sample_data" = true ];

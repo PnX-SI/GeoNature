@@ -1,7 +1,7 @@
 <div
-  *ngIf="propertiesForm.disabled"
+  *ngIf="occtaxFormService.disabled"
   id="overlay"
-  [class.disabled-form]="propertiesForm.disabled"
+  [class.disabled-form]="occtaxFormService.disabled"
   (click)="formDisabled()"
 >
 </div>
@@ -328,8 +328,6 @@
 
 </div>
 
-
-
 <div class="row">
   <div class="col-6">
     <pnx-autocomplete
@@ -338,6 +336,7 @@
       [searchAsParameter]="false"
       [parentFormControl]="occtaxFormReleveService.habitatForm"
       queryParamSearch="search_name"
+      [othersGetParams]="{cd_type: moduleConfig?.CD_TYPO_HABITAT, id_list: moduleConfig?.ID_LIST_HABITAT}"
       keyValue="search_name"
       [formatter]="formatter"
       label="Habitat"

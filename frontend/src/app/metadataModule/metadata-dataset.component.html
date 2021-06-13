@@ -6,6 +6,7 @@
     <!-- Button to switch dataset active/inactive -->
     <ng-container *ngIf="dataset.cruved.U; else noSwitchButton">
       <mat-slide-toggle
+        class="custom-toggle"
         *ngIf="!stateChangeSaving"
         [checked]="dataset.active"
         [matTooltip]="dataset.active ? 'Le jeu de données est actif' : 'Le jeu de données est inactif'"
