@@ -7,7 +7,7 @@ import time
 from collections import OrderedDict
 
 from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify
-from sqlalchemy import distinct, func, desc, select, text
+from sqlalchemy import distinct, func, desc, select, or_
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
 
@@ -1056,6 +1056,7 @@ def log_delete_history(info_role):
         log.error(error)
         return {"error": error}, 500
 
+
 @routes.route("/log/upsert", methods=["get"])
 @permissions.check_cruved_scope("R", True)
 @json_resp
@@ -1093,7 +1094,7 @@ def log_upsert_history(info_role):
             Synthese.unique_id_sinp, 
             Synthese.last_action,
             func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date).label('meta_action_date')
-            ).filter(Synthese.last_action.in_(actions)).filter(func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date)>= start)         
+            ).filter(Synthese.last_action.in_(actions)).filter(or_(Synthese.meta_update_date >= start, Synthese.meta_create_date >= start))
 
         if end is not None:
             log.debug(f"END {end}")
