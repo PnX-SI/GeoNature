@@ -9,9 +9,8 @@ CHANGELOG
 - Vérifier l'update SQL et régler son TODO
 - Bien vérifier notes de versions liées à des changements à appliquer suite aux évolutions techniques
 - Bien tester les emails de validation pré-remplis: OK
-- Voir acteurs des métadonnées (https://github.com/PnX-SI/GeoNature/pull/1313#issuecomment-839705016): j'ai revu le fonctionnement tu peux tester sur ppgeonature // On mettrait pas le bouton + plutôt à droite ? / Ajouter une tooltip sur les boutons + des acteurs ("Ajouter un autre acteur"). Et on devrait pas avoir de bouton + sur le bloc "Contact principal" car il ne peut y avoir qu'un ?
 - Sur Occtax, le switch pour Enchainer les taxons est aussi passer en rouge/vert. A cet endroit c'est pas très adapté et laisse penser à une validation du relevé. Repasser celui-ci en gris serait mieux.
-- MTD : Ajout des champs aussi dans les fiches infos web et PDF ?
+- MTD : Ajout des nouveaux champs aussi dans les fiches infos web et PDF ?
 - MTS : Ajout de bibliographie retirée ?
 
 **🚀 Nouveautés**
@@ -29,7 +28,7 @@ CHANGELOG
 * Occtax : Possibilité de fitrer la liste des habitats du formulaire avec les nouveaux paramètres ``ID_LIST_HABITAT`` et ``CD_TYPO_HABITAT``
 * Occtax : Possibilité d'ouvrir le module avec un JDD pré-selectionné en passant le paramètre ``id_dataset`` dans l'URL (#1071)
 * Accueil : Réorganisation des blocs (#1375)
-* Accueil : Ajout d'un paramètre controlant la fréquence de MAJ du cache des statistiques de la page d'accueil (``STAT_BLOC_TTL``, par défaut 1h: 3600 secondes)
+* Accueil : Ajout d'un paramètre controlant la fréquence de MAJ du cache des statistiques de la page d'accueil (``STAT_BLOC_TTL``, par défaut 1h: 3600 secondes) (#1320)
 * La page d'authentification affiche désormais le nom de l'application (``appName``) défini dans la configuration de GeoNature (#1277) 
 * Possibilité d'ouvrir l'accès à GeoNature sans authentification (voir documentation d'administration) (#1323)
 * Métadonnées : Optimisation du temps de chargement des listes des CA et JDD (#1291)
@@ -41,7 +40,7 @@ CHANGELOG
 * DynamicForm : enrichissement des formulaires dynamiques pour les médias, l'ajout de liens externes
 * Ajout d'une contrainte d'unicité de la combinaison des champs ``id_type`` et ``area_code`` dans ``ref_geo.l_areas`` (#1270)
 * Ajout d'une contrainte d'unicité du champs ``type_code`` de la table ``ref_geo.bib_areas_types``
-* Mise à jour des versions de nombreuses dépendances
+* Mise à jour des versions de nombreuses dépendances Python et Javascript
 * Support du gestionnaire d'erreurs Sentry
 * Validation : possibilité de passer des fonctions dans la liste des colonnes affichées (pour décoder une nomenclature)
 * Validation : Les paramètres ``LIST_COLUMNS_FRONTEND`` et ``COLUMNS_API_VALIDATION_WEB_APP`` sont regroupés en un seul paramètre nommé ``COLUMN_LIST``. Voir le fichier ``contrib/gn_module_validation/config/conf_gn_module.toml.example``
@@ -68,7 +67,7 @@ CHANGELOG
 **💻 Développement**
 
 * Possibilité d'utiliser la commande ``flask`` (eg ``flask shell``)
-* Préparation de l'utilisation d'alembic pour la gestion du schéma de la BDD (#880)
+* Préparation de l'utilisation d'alembic pour la gestion des migrations de la structure de la BDD (#880)
 * Possibilité d'importer des modules packagés (#1272)
 * Réorganisation des fichiers ``requirements`` et installation des branches ``develop`` des dépendances du fichier ``requirements-dev.txt``
 * Simplification de la gestion des erreurs
