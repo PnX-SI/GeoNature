@@ -298,11 +298,8 @@ def install_frontend_dependencies(module_path):
     if (frontend_module_path / "package.json").is_file():
         try:
             # To avoid Maximum call stack size exceeded on npm install - clear cache...
-            assert (
-                subprocess.call(
-                    ["/bin/bash", "-i", "-c", "nvm use"], cwd=str(ROOT_DIR / "frontend")
-                )
-                == 0
+            subprocess.call(
+                ["/bin/bash", "-i", "-c", "nvm use"], cwd=str(ROOT_DIR / "frontend")
             )
             assert (
                 subprocess.call(
