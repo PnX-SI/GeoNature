@@ -860,7 +860,7 @@ BEGIN
   END IF;
 
   --mise à jour en synthese des informations correspondant au relevé uniquement
-  UPDATE gn_synthese.synthese SET
+  UPDATE gn_synthese.synthese s SET
       id_dataset = NEW.id_dataset,
       observers = myobservers,
       id_digitiser = NEW.id_digitiser,
@@ -880,8 +880,12 @@ BEGIN
       id_nomenclature_geo_object_nature = NEW.id_nomenclature_geo_object_nature,
       last_action = 'U',
       comment_context = NEW.comment,
-      additional_data = additional_data || NEW.additional_fields
-  WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
+      additional_data = NEW.additional_fields || o.additional_fields || c.additional_fields
+      FROM pr_occtax.cor_counting_occtax c
+      INNER JOIN pr_occtax.t_occurrences_occtax o ON c.id_occurrence_occtax = o.id_occurrence_occtax
+      WHERE c.unique_id_sinp = s.unique_id_sinp
+        AND s.unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
+
   RETURN NULL;
 END;
 $BODY$
