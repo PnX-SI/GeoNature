@@ -24,7 +24,6 @@ import { MetadataDataService } from '../services/metadata-data.service';
 export class AfFormComponent implements OnInit {
 
   public form: FormGroup;
-  public genericActorForm: FormGroup = this.actorFormS.createForm();
   //observable pour la liste déroulantes HTML des AF parents
   public acquisitionFrameworkParents: Observable<any>;
 
