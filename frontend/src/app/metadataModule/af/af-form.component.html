@@ -263,7 +263,8 @@
               [isRemovable]="idx != 0"
               metadataType="af"
               (actorFormRemove)="afFormS.removeActor(afFormS.actors, idx)"
-              [defaultTab]="afFormS.acquisition_framework?.value?.id_acquisition_framework ? 'all': 'organism'"            >
+              [defaultTab]="(afFormS.acquisition_framework | async)?.id_acquisition_framework ? 'all': 'organism'"
+            >
             </pnx-metadata-actor>
           </ng-container>
           <button
@@ -297,7 +298,7 @@
             [actorForm]="actorForm"
             metadataType="af"
             (actorFormRemove)="afFormS.removeActor(afFormS.actors, idx)"
-            [defaultTab]="afFormS.acquisition_framework?.value?.id_acquisition_framework ? 'all': 'organism'"
+            [defaultTab]="(afFormS.acquisition_framework | async)?.id_acquisition_framework ? 'all': 'organism'"
           >
           </pnx-metadata-actor>
 
