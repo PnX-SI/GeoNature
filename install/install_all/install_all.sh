@@ -111,9 +111,6 @@ sudo apt-get install -y libgdk-pixbuf2.0-0
 sudo apt-get install -y libffi-dev
 sudo apt-get install -y libxslt-dev
 sudo apt-get install -y shared-mime-info
-sudo python3 -m pip install pip==20.0.2
-/usr/local/bin/python3 -m pip install virtualenv==20.0.1
-# sudo pip install --upgrade pip virtualenv virtualenvwrapper
 
 
 sudo apt-get install -y supervisor
