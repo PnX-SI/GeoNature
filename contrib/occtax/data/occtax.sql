@@ -843,7 +843,7 @@ COST 100;
 
 
 -- UPDATE Releve
-CREATE OR REPLACE FUNCTION fct_tri_synthese_update_releve()
+CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
   RETURNS trigger AS
 $BODY$
 DECLARE
@@ -883,7 +883,7 @@ BEGIN
       additional_data = NEW.additional_fields || o.additional_fields || c.additional_fields
       FROM pr_occtax.cor_counting_occtax c
       INNER JOIN pr_occtax.t_occurrences_occtax o ON c.id_occurrence_occtax = o.id_occurrence_occtax
-      WHERE c.unique_id_sinp = s.unique_id_sinp
+      WHERE c.unique_id_sinp_occtax = s.unique_id_sinp
         AND s.unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
 
   RETURN NULL;
