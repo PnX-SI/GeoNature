@@ -190,7 +190,10 @@ export class OcctaxFormReleveService {
           return editionMode ? this.releveValues : this.defaultValues;
         })
       )
-      .subscribe((values) => {                        
+      .subscribe((values) => {      
+        if(!values.additional_fields) {
+          values.additional_fields = {};
+        }
         // re disable the form here
         // Angular bug: when we add additionnal form controls, it enable the form
         if(!values.id_releve_occtax) {
@@ -198,7 +201,7 @@ export class OcctaxFormReleveService {
         }
         // HACK: wait for the dynamicformGenerator Component to set the additional fields
         // TODO: subscribe to an observable of dynamicFormCOmponent to wait it
-        setTimeout(() => {       
+        setTimeout(() => {         
          this.propertiesForm.patchValue(values, {emitEvent: false});
          this.propertiesForm.controls.observers.patchValue(values.observers);
         }, 1000);
@@ -257,11 +260,11 @@ export class OcctaxFormReleveService {
   }
 
   /** Get occtax data in order to patch value to the form */
-  private get releveValues(): Observable<any> {
+  private get releveValues(): Observable<any> {    
     return this.occtaxFormService.occtaxData.pipe(
       tap(() => this.habitatForm.setValue(null)),
       filter(data => data && data.releve.properties),
-      map(data => {        
+      map(data => {                
         const copied_data = Object.assign({}, data)
         const releve = copied_data.releve.properties;
         //Parfois il passe 2 fois ici, et la seconde fois la date est déja formattée en objet, si c'est le cas, on saute
@@ -303,7 +306,7 @@ export class OcctaxFormReleveService {
         return this.occtaxFormService.getAdditionnalFields(
           ["OCCTAX_RELEVE"],
           releve.id_dataset
-        ).map(additionalFields => {              
+        ).map(additionalFields => {                        
           // remove old dataset addField from globalAddFields
           this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
             this.occtaxFormService.globalReleveAddFields,
@@ -331,12 +334,10 @@ export class OcctaxFormReleveService {
                   }else{
                     releve.additional_fields[field.attribut_name] = "";
                   }
-              }              
-              if(releve.additional_fields) {
-                releve[field.attribut_name] =  releve.additional_fields[field.attribut_name];
-              }else {
-                releve.additional_fields = {};
-              }
+            }                      
+            if(releve.additional_fields) {
+              releve[field.attribut_name] =  releve.additional_fields[field.attribut_name];
+            }
           })
           return releve
         })
@@ -383,7 +384,7 @@ export class OcctaxFormReleveService {
     };
   }
 
-  private get defaultValues(): Observable<any> {    
+  private get defaultValues(): Observable<any> { 
     return this.occtaxFormService
       .getDefaultValues(this.occtaxFormService.currentUser.id_organisme)
       .pipe(

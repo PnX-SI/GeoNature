@@ -64,14 +64,14 @@ export class OcctaxFormService {
         }), //reinitialisation du mode edition à faux
         filter((id) => id !== null)
       )
-      .subscribe((id) => {        
+      .subscribe((id) => {                
         this.getOcctaxData(id)
       });
   }
 
   getOcctaxData(id) {
     this._dataS.getOneReleve(id).subscribe(
-      (data) => {
+      (data) => {        
         this.occtaxData.next(data);
         this.editionMode.next(true);
         // set taxa list

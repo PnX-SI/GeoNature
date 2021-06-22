@@ -59,18 +59,10 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {          
     this.occtaxFormService.idTaxonList = ModuleConfig.id_taxon_list;
-
     this.setCurrentTabAndIdReleve(this._router.routerState.snapshot.url);
-    this._router.events
-    .pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe((event:any) => {      
-      this.setCurrentTabAndIdReleve(event.url);
-    })
-  
   }
 
-  setCurrentTabAndIdReleve(url) {
+  setCurrentTabAndIdReleve(url) {    
     let urlSegments = url.split("/");
     if (urlSegments[urlSegments.length - 1] === "taxons") {
       const idReleve = urlSegments[urlSegments.length - 2];      
