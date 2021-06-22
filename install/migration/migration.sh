@@ -28,6 +28,8 @@ cp $myrootpath/geonature_old/config/geonature_config.toml config/geonature_confi
 # Handle frontend custom components
 echo "Copie des fichiers existant des composants personnalisables du frontend..."
 cp -r $myrootpath/geonature_old/frontend/src/custom/* frontend/src/custom/
+cp $myrootpath/geonature_old/frontend/src/custom/custom.scss frontend/src/assets/custom.css
+rm frontend/src/custom/custom.scss
 
 echo "Création des fichiers des nouveaux composants personnalisables du frontend..."
 custom_component_dir="frontend/src/custom/components/"

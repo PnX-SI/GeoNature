@@ -17,6 +17,7 @@ CHANGELOG
 
 * Occtax : Possibilité d'ajouter des champs additionels par JDD ou globaux au module (#1007)
 * Occtax/Synthese : Ajout des champs additionnels dans les exports (#1114)
+* Configuration: possibilité de changer le CSS sans rebuilder l'application
 * Admin : Création d'un backoffice d'administration des champs additionels (#1007)
 * Admin : Création d'une documentation d'administration des champs additionnels (#1007)
 * Occtax : Possibilité de désactiver la recherche de taxon par liste (#1315)
