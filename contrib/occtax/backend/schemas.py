@@ -55,11 +55,7 @@ class ObserverSchema(MA.SQLAlchemyAutoSchema):
             "remarques",
             "identifiant",
         )
-
-    nom_complet = fields.Function(
-        lambda obj: (obj.nom_role if obj.nom_role else "")
-        + (" " + obj.prenom_role if obj.prenom_role else "")
-    )
+    nom_complet = fields.Str(dump_only=True)
 
     @pre_load
     def make_observer(self, data, **kwargs):
