@@ -16,17 +16,13 @@ BEGIN;
   ALTER TABLE ONLY ref_geo.bib_areas_types
       ADD CONSTRAINT unique_bib_areas_types_type_code UNIQUE (type_code);
       
-  -- !!! TODO !!! A ne faire que si le paramètre n'existe pas déjà dans la table...
   -- Oubli de la 2.6.0 - A faire seulement sur une nouvelle installation faite avec la 2.6.0, 2.6.1 ou 2.6.2
   -- où il manquait ce paramètre fait en update2.5.5to2.6.0
- DO $$ 
-    BEGIN 
     INSERT INTO gn_commons.t_parameters
     (id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value)
-    VALUES(0, 'ref_sensi_version', 'Version du referentiel de sensibilité', 'Referentiel de sensibilite taxref v13 2020', '');
-  EXCEPTION 
-      when unique_violation then RAISE NOTICE 'Ref sensi parameter already exist';
- END;$$;
+    VALUES(0, 'ref_sensi_version', 'Version du referentiel de sensibilité', 'Referentiel de sensibilite taxref v13 2020', '')
+    ON CONFLICT DO NOTHING;
+
 
   -- Ajout de contraintes d'unicité sur les permissions
   ALTER TABLE gn_permissions.cor_object_module ADD CONSTRAINT unique_cor_object_module UNIQUE (id_object,id_module);
