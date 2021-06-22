@@ -248,7 +248,7 @@
               [isRemovable]="idx != 0"
               metadataType="dataset"
               (actorFormRemove)="datasetFormS.removeActor(datasetFormS.actors, idx)"
-              [defaultTab]="datasetFormS.dataset?.value?.id_dataset ? 'all': 'organism'"
+              [defaultTab]="(datasetFormS.dataset | async)?.id_dataset ? 'all': 'organism'"
             >
             </pnx-metadata-actor>
           </ng-container>
@@ -276,7 +276,7 @@
             [actorForm]="actorForm"
             metadataType="dataset"
             (actorFormRemove)="datasetFormS.removeActor(datasetFormS.genericActorForm, idx)"
-            [defaultTab]="datasetFormS.dataset?.value?.id_dataset ? 'all': 'organism'"
+            [defaultTab]="(datasetFormS.dataset | async)?.id_dataset ? 'all': 'organism'"
             >
             </pnx-metadata-actor>
           </ng-container>

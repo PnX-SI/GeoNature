@@ -263,19 +263,20 @@
               [isRemovable]="idx != 0"
               metadataType="af"
               (actorFormRemove)="afFormS.removeActor(afFormS.actors, idx)"
-              [defaultTab]="afFormS.acquisition_framework?.value?.id_acquisition_framework ? 'all': 'organism'"            >
-            </pnx-metadata-actor>
-            <button
-              class="mt-2 float-right"
-              type="button"
-              mat-mini-fab
-              color="primary"
-              matTooltip="Ajouter un autre contact principal"
-              (click)="addContact(afFormS.actors, true)"
+              [defaultTab]="(afFormS.acquisition_framework | async)?.id_acquisition_framework ? 'all': 'organism'"
             >
-              <mat-icon>add</mat-icon>
-            </button>
+            </pnx-metadata-actor>
           </ng-container>
+          <button
+            class="mt-2 float-right"
+            type="button"
+            mat-mini-fab
+            color="primary"
+            matTooltip="Ajouter un autre contact principal"
+            (click)="addContact(afFormS.actors, true)"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
           <ng-container *ngIf="form.get('cor_af_actor').invalid && form.get('cor_af_actor').errors?.mainContactRequired">
             <small
               class="mat-error">
@@ -290,13 +291,14 @@
           <h3 class="main-color"> Autre(s) acteur(s) </h3>
         </div>
         <div class="card-body">
-          <ng-container *ngFor="let actorForm of afFormS.genericActorsForm.controls; let idx = index"> 
+          <ng-container *ngFor="let actorForm of afFormS.actors.controls; let idx = index"> 
 
           <pnx-metadata-actor
-            [actorForm]="genericActorForm"
+            *ngIf="!afFormS.isMainContact(actorForm)"
+            [actorForm]="actorForm"
             metadataType="af"
-            (actorFormRemove)="afFormS.removeActor(afFormS.genericActorsForm, idx)"
-            [defaultTab]="afFormS.acquisition_framework?.value?.id_acquisition_framework ? 'all': 'organism'"
+            (actorFormRemove)="afFormS.removeActor(afFormS.actors, idx)"
+            [defaultTab]="(afFormS.acquisition_framework | async)?.id_acquisition_framework ? 'all': 'organism'"
           >
           </pnx-metadata-actor>
 
@@ -308,7 +310,7 @@
           mat-mini-fab
           color="primary"
           matTooltip="Ajouter un autre acteur"
-          (click)="addContact(afFormS.genericActorsForm, false)"
+          (click)="addContact(afFormS.actors, false)"
         >
           <mat-icon>add</mat-icon>
         </button>

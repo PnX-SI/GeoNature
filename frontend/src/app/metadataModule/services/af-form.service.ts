@@ -11,7 +11,6 @@ export class AcquisitionFrameworkFormService {
  
   public form: FormGroup;
   public acquisition_framework: BehaviorSubject<any> = new BehaviorSubject(null);
-  public genericActorsForm: FormArray; 
  
   constructor(
     private fb: FormBuilder, 
@@ -69,7 +68,6 @@ export class AcquisitionFrameworkFormService {
       ]),
       bibliographical_references: this.fb.array([]),
     });
-    this.genericActorsForm = this.fb.array([]);
  
     this.form.setValidators([
       this.formS.dateValidator(
@@ -113,10 +111,6 @@ export class AcquisitionFrameworkFormService {
           this.form.get('acquisition_framework_parent_id').disable();
         }
       });
- 
-    //gère la separation des acteurs selon le type de role de chacun d'eux
-    this.actors.valueChanges
-      .subscribe(form => this.setOtherActorGroupForms());
   }
  
   get actors(): FormArray {
@@ -157,18 +151,6 @@ export class AcquisitionFrameworkFormService {
   //retourne true sur l'acteur est contact principal
   isMainContact(actorForm) {
     return actorForm.get('id_nomenclature_actor_role').value == this.actorFormS.getIDRoleTypeByCdNomenclature("1")
-  }
- 
-  setOtherActorGroupForms(): void {
-    for (let i = 0; i < this.actors.controls.length; i++) {
-      const actorControl = this.actors.controls[i]
-      const role_type = this.actorFormS.getRoleTypeByID(actorControl.get('id_nomenclature_actor_role').value);
- 
-      if (role_type !== undefined && !this.isMainContact(actorControl)) {
-        this.actors.removeAt(i);
-        this.genericActorsForm.push(actorControl);
-      }
-    }
   }
  
   reset() {
