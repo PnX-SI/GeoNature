@@ -227,6 +227,8 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   ngOnChanges(changes) {
     if (changes.geojson && changes.geojson.currentValue) {
       this.loadDrawfromGeoJson(changes.geojson.currentValue);
+      this.layerDrawed.emit(changes.geojson.currentValue);
+
     }
     if (changes.bEnable || (changes.options && changes.options.currentValue)) {
       if (this.bEnable) {
