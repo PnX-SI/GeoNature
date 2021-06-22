@@ -3,5 +3,5 @@
 pypnusershub@https://github.com/PnX-SI/UsersHub-authentification-module/archive/1.4.6.zip
 pypnnomenclature@https://github.com/PnX-SI/Nomenclature-api-module/archive/1.3.7.zip
 pypn_habref_api@https://github.com/PnX-SI/Habref-api-module/archive/0.1.6.zip
-utils-flask-sqlalchemy-geo@https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/archive/0.2.0.zip
-utils-flask-sqlalchemy@https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/archive/0.2.0.zip
+utils-flask-sqlalchemy-geo@https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/archive/0.2.1.zip
+utils-flask-sqlalchemy@https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/archive/0.2.2.zip
