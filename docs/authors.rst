@@ -55,4 +55,5 @@ Contributeurs
 * Ludovic Le Pontois (Parc national des Pyrénées)
 * Vincent Prunet (Parc national du Mercantour)
 * David Michallet (CEN 38)
+* Rhandy Grard (Freelance / Natural Solutions)
 * Maxime Toma (LPO France)
