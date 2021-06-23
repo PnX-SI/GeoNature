@@ -42,8 +42,8 @@ def create_aditional_fields(app, datasets):
 
 
 @pytest.mark.usefixtures(
-    "client_class", "temporary_transaction", "datasets",
-    "create_aditional_fields"
+    "client_class", "datasets",
+    "create_aditional_fields", "temporary_transaction"
 )
 class TestCommons:
     def test_additional_data(self):

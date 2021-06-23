@@ -141,32 +141,25 @@ def get_synthese_data(info_role):
 @permissions.check_cruved_scope("R", True, module_code="VALIDATION")
 @json_resp
 def get_statusNames(info_role):
-    try:
-        nomenclatures = (
-            DB.session.query(TNomenclatures)
-            .join(
-                BibNomenclaturesTypes,
-                BibNomenclaturesTypes.id_type == TNomenclatures.id_type,
-            )
-            .filter(BibNomenclaturesTypes.mnemonique == "STATUT_VALID")
-            .filter(TNomenclatures.active == True)
-            .order_by(TNomenclatures.cd_nomenclature)
-            .all()
+    nomenclatures = (
+        DB.session.query(TNomenclatures)
+        .join(
+            BibNomenclaturesTypes,
+            BibNomenclaturesTypes.id_type == TNomenclatures.id_type,
         )
-        return [
-            {
-                "id_nomenclature": n.id_nomenclature,
-                "mnemonique": n.mnemonique,
-                "cd_nomenclature": n.cd_nomenclature,
-            }
-            for n in nomenclatures
-        ]
-    except Exception as e:
-        log.error(e)
-        return (
-            'INTERNAL SERVER ERROR ("get_status_names() error"): contactez l\'administrateur du site',
-            500,
-        )
+        .filter(BibNomenclaturesTypes.mnemonique == "STATUT_VALID")
+        .filter(TNomenclatures.active == True)
+        .order_by(TNomenclatures.cd_nomenclature)
+        .all()
+    )
+    return [
+        {
+            "id_nomenclature": n.id_nomenclature,
+            "mnemonique": n.mnemonique,
+            "cd_nomenclature": n.cd_nomenclature,
+        }
+        for n in nomenclatures
+    ]
 
 
 @blueprint.route("/<id_synthese>", methods=["POST"])
@@ -217,7 +210,6 @@ def post_status(info_role, id_synthese):
         DB.session.add(validation)
         DB.session.commit()
 
-    DB.session.close()
     return jsonify(data)
 
 
@@ -229,52 +221,45 @@ def get_definitions(info_role):
     """
     return validation status definitions stored in t_nomenclatures
     """
-    try:
-        definitions = []
-        for key in blueprint.config["STATUS_INFO"].keys():
-            nomenclature_statut = DB.session.execute(
-                select([TNomenclatures.mnemonique]).where(
-                    TNomenclatures.id_nomenclature == int(key)
-                )
-            ).fetchone()
-            nomenclature_definitions = DB.session.execute(
-                select([TNomenclatures.definition_default]).where(
-                    TNomenclatures.id_nomenclature == int(key)
-                )
-            ).fetchone()
-            definitions.append(
-                {
-                    "status_id": key,
-                    "status": nomenclature_statut[0],
-                    "definition": nomenclature_definitions[0],
-                }
+    definitions = []
+    for key in blueprint.config["STATUS_INFO"].keys():
+        nomenclature_statut = DB.session.execute(
+            select([TNomenclatures.mnemonique]).where(
+                TNomenclatures.id_nomenclature == int(key)
             )
-        nomenclatures = (
-            DB.session.query(TNomenclatures)
-            .join(
-                BibNomenclaturesTypes,
-                BibNomenclaturesTypes.id_type == TNomenclatures.id_type,
+        ).fetchone()
+        nomenclature_definitions = DB.session.execute(
+            select([TNomenclatures.definition_default]).where(
+                TNomenclatures.id_nomenclature == int(key)
             )
-            .filter(BibNomenclaturesTypes.mnemonique == "STATUT_VALID")
-            .filter(TNomenclatures.active == True)
-            .all()
-        )
-
-        return [
+        ).fetchone()
+        definitions.append(
             {
-                "status_id": n.id_nomenclature,
-                "cd_nomenclature": n.cd_nomenclature,
-                "status": n.mnemonique,
-                "definition": n.definition_default,
+                "status_id": key,
+                "status": nomenclature_statut[0],
+                "definition": nomenclature_definitions[0],
             }
-            for n in nomenclatures
-        ]
-    except Exception as e:
-        log.error(e)
-        return (
-            'INTERNAL SERVER ERROR ("get_definitions() error") : contactez l\'administrateur du site',
-            500,
         )
+    nomenclatures = (
+        DB.session.query(TNomenclatures)
+        .join(
+            BibNomenclaturesTypes,
+            BibNomenclaturesTypes.id_type == TNomenclatures.id_type,
+        )
+        .filter(BibNomenclaturesTypes.mnemonique == "STATUT_VALID")
+        .filter(TNomenclatures.active == True)
+        .all()
+    )
+
+    return [
+        {
+            "status_id": n.id_nomenclature,
+            "cd_nomenclature": n.cd_nomenclature,
+            "status": n.mnemonique,
+            "definition": n.definition_default,
+        }
+        for n in nomenclatures
+    ]
 
 
 @blueprint.route("/date/<uuid>", methods=["GET"])
@@ -292,16 +277,10 @@ def get_validation_date(uuid):
             500,
         )
 
-    try:
-        date = DB.session.execute(
-            select([VSyntheseValidation.validation_date]).where(
-                VSyntheseValidation.unique_id_sinp == uuid
-            )
-        ).fetchone()[0]
-        return str(date)
-    except (Exception) as e:
-        log.error(e)
-        return (
-            'INTERNAL SERVER ERROR ("get_validation_date(uuid) error"): contactez l\'administrateur du site',
-            500,
+    date = DB.session.execute(
+        select([VSyntheseValidation.validation_date]).where(
+            VSyntheseValidation.unique_id_sinp == uuid
         )
+    ).fetchone()[0]
+    return str(date)
+
