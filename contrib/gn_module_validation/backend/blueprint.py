@@ -2,6 +2,9 @@ import ast
 import logging
 import datetime
 import json
+from flask.globals import session
+from flask.json import jsonify
+from geonature.core.gn_commons.models.base import TValidations
 from sqlalchemy import select, func
 from flask import Blueprint, request
 from geojson import FeatureCollection
@@ -16,7 +19,9 @@ from geonature.utils.utilssqlalchemy import test_is_uuid
 from geonature.core.gn_synthese.models import Synthese
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_commons.models import TValidations
+from geonature.core.gn_commons.schemas import TValidationSchema
+
+from werkzeug.exceptions import BadRequest
 
 from .models import VSyntheseValidation
 
@@ -166,58 +171,55 @@ def get_statusNames(info_role):
 
 @blueprint.route("/<id_synthese>", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="VALIDATION")
-@json_resp
 def post_status(info_role, id_synthese):
-    try:
-        data = dict(request.get_json())
-        id_validation_status = data["statut"]
-        validation_comment = data["comment"]
+    data = dict(request.get_json())
+    id_validation_status = data["statut"]
+    validation_comment = data["comment"]
 
-        if id_validation_status == "":
-            return "Aucun statut de validation n'est sélectionné", 400
+    if id_validation_status == "":
+        return "Aucun statut de validation n'est sélectionné", 400
 
-        id_synthese = id_synthese.split(",")
+    id_synthese = id_synthese.split(",")
 
-        for id in id_synthese:
-            # t_validations.id_validation:
+    for id in id_synthese:
+        # t_validations.id_validation:
 
-            # t_validations.uuid_attached_row:
-            uuid = DB.session.query(Synthese.unique_id_sinp).filter(
-                Synthese.id_synthese == int(id)
+        # t_validations.uuid_attached_row:
+        uuid = DB.session.query(Synthese.unique_id_sinp).filter(
+            Synthese.id_synthese == int(id)
+        ).one()
+
+        # t_validations.id_validator:
+        id_validator = info_role.id_role
+
+        # t_validations.validation_date
+        val_date = datetime.datetime.now()
+
+        # t_validations.validation_auto
+        val_auto = False
+        val_dict = {
+            "uuid_attached_row": uuid[0],
+            "id_nomenclature_valid_status": id_validation_status,
+            "id_validator" : id_validator,
+            "validation_comment" : validation_comment,
+            "validation_date": str(val_date),
+            "validation_auto" : val_auto,
+        }
+        # insert values in t_validations
+        validationSchema = TValidationSchema()
+        validation, errors = validationSchema.load(
+            val_dict, instance=TValidations(),
+            session=DB.session
             )
+        if bool(errors):
+            log.error(errors)
+            raise BadRequest(errors)
+        DB.session.add(validation)
+        DB.session.commit()
 
-            # t_validations.id_validator:
-            id_validator = info_role.id_role
+    DB.session.close()
+    return jsonify(data)
 
-            # t_validations.validation_date
-            val_date = datetime.datetime.now()
-
-            # t_validations.validation_auto
-            val_auto = False
-
-            # insert values in t_validations
-            addValidation = TValidations(
-                uuid,
-                id_validation_status,
-                id_validator,
-                validation_comment,
-                val_date,
-                val_auto,
-            )
-
-            DB.session.add(addValidation)
-            DB.session.commit()
-
-        DB.session.close()
-
-        return data
-
-    except Exception as e:
-        log.error(e)
-        return (
-            'INTERNAL SERVER ERROR ("post_status() error"): contactez l\'administrateur du site',
-            500,
-        )
 
 
 @blueprint.route("/definitions", methods=["GET"])

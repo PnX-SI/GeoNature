@@ -193,39 +193,20 @@ class TValidations(DB.Model):
     uuid_attached_row = DB.Column(UUID(as_uuid=True))
     id_nomenclature_valid_status = DB.Column(
         DB.Integer,
-        ForeignKey("ref_nomenclature.t_nomenclatures.id_nomenclature")
+        ForeignKey(TNomenclatures.id_nomenclature)
     )
     id_validator = DB.Column(DB.Integer)
     validation_auto = DB.Column(DB.Boolean)
     validation_comment = DB.Column(DB.Unicode)
-    validation_date = DB.Column(DB.DateTime)
+    validation_date = DB.Column(DB.TIMESTAMP)
     validation_auto = DB.Column(DB.Boolean)
-    validation_label = DB.relationship(
-        TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_valid_status),
-        foreign_keys=[id_nomenclature_valid_status],
-    )
+    validation_label = DB.relationship(TNomenclatures)
     validator_role = DB.relationship(
         User,    
         primaryjoin=(User.id_role == id_validator), 
         foreign_keys=[id_validator]
     )
 
-    def __init__(
-        self,
-        uuid_attached_row,
-        id_nomenclature_valid_status,
-        id_validator,
-        validation_comment,
-        validation_date,
-        validation_auto,
-    ):
-        self.uuid_attached_row = uuid_attached_row
-        self.id_nomenclature_valid_status = id_nomenclature_valid_status
-        self.id_validator = id_validator
-        self.validation_comment = validation_comment
-        self.validation_date = validation_date
-        self.validation_auto = validation_auto
 
 
 @serializable
