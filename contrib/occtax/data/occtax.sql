@@ -75,18 +75,16 @@ $BODY$
   COST 100;
 
 
-CREATE OR REPLACE FUNCTION id_releve_from_id_counting(my_id_counting integer)
-  RETURNS integer AS
+CREATE OR REPLACE FUNCTION pr_occtax.id_releve_from_id_counting(my_id_counting integer)
+  RETURNS setof bigint AS
 $BODY$
 -- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
-DECLARE the_id_releve integer;
-BEGIN
-  SELECT INTO the_id_releve rel.id_releve_occtax
+begin
+  return QUERY select rel.id_releve_occtax
   FROM pr_occtax.t_releves_occtax rel
   JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
   JOIN pr_occtax.cor_counting_occtax counting ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
   WHERE counting.id_counting_occtax = my_id_counting;
-  RETURN the_id_releve;
 END;
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
@@ -843,7 +841,7 @@ COST 100;
 
 
 -- UPDATE Releve
-CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
+CREATE OR REPLACE FUNCTION fct_tri_synthese_update_releve()
   RETURNS trigger AS
 $BODY$
 DECLARE
@@ -908,6 +906,28 @@ LANGUAGE plpgsql VOLATILE
 COST 100;
 
 
+
+ CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  uuids_counting  uuid[];
+BEGIN
+  -- Récupération des id_counting à partir de l'id_releve
+  -- a l'insertion d'un relevé les uuid countin ne sont pas existants
+  -- ce trigger se declenche à l'edition d'un releve
+  IF uuids_counting IS NOT NULL THEN
+      -- Insertion dans cor_observer_synthese pour chaque counting
+      INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
+      SELECT id_synthese, NEW.id_role 
+      FROM gn_synthese.synthese 
+      WHERE unique_id_sinp IN(SELECT unnest(uuids_counting));
+  END IF;
+RETURN NULL;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 -- Trigger update cor_role_releve_occtax
 CREATE OR REPLACE FUNCTION fct_tri_synthese_update_cor_role_releve()
@@ -1012,7 +1032,8 @@ DROP TRIGGER IF EXISTS tri_insert_synthese_cor_counting_occtax ON pr_occtax.cor_
 CREATE TRIGGER tri_insert_synthese_cor_counting_occtax
     AFTER INSERT
     ON pr_occtax.cor_counting_occtax
-    FOR EACH ROW
+    REFERENCING NEW TABLE AS NEW
+    FOR EACH STATEMENT
     EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_insert_counting();
 
 DROP TRIGGER IF EXISTS tri_update_synthese_cor_counting_occtax ON pr_occtax.cor_counting_occtax;
@@ -1071,6 +1092,12 @@ CREATE TRIGGER tri_delete_synthese_t_releve_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_delete_releve();
 
+ DROP TRIGGER IF EXISTS tri_synthese_insert_cor_role_releve ON pr_occtax.cor_role_releves_occtax;
+CREATE TRIGGER tri_synthese_insert_cor_role_releve
+  AFTER INSERT
+  ON pr_occtax.cor_role_releves_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_insert_cor_role_releve();
 
 DROP TRIGGER IF EXISTS tri_update_synthese_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
 CREATE TRIGGER tri_update_synthese_cor_role_releves_occtax
@@ -1190,3 +1217,5 @@ INSERT INTO gn_permissions.t_objects (code_object, description_object) VALUES
   ('OCCTAX_DENOMBREMENT', 'Représente la table pr_occtax.cor_counting_occtax')
 ON CONFLICT DO NOTHING
   ;
+
+ 

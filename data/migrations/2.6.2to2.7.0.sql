@@ -777,5 +777,70 @@ AS WITH p_user_permission AS (
      JOIN gn_commons.t_modules modules ON modules.id_module = v.id_module;
 
 
+  DROP FUNCTION pr_occtax.id_releve_from_id_counting(my_id_counting integer);
+  CREATE OR REPLACE FUNCTION pr_occtax.id_releve_from_id_counting(my_id_counting integer)
+    RETURNS setof bigint AS
+  $BODY$
+  -- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
+  begin
+    return QUERY select rel.id_releve_occtax
+    FROM pr_occtax.t_releves_occtax rel
+    JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
+    JOIN pr_occtax.cor_counting_occtax counting ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
+    WHERE counting.id_counting_occtax = my_id_counting;
+  END;
+  $BODY$
+    LANGUAGE plpgsql IMMUTABLE
+    COST 100;
+
+  
+ CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  uuids_counting  uuid[];
+BEGIN
+  -- Récupération des id_counting à partir de l'id_releve
+  -- a l'insertion d'un relevé les uuid countin ne sont pas existants
+  -- ce trigger se declenche à l'edition d'un releve
+  SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
+  IF uuids_counting IS NOT NULL THEN
+      -- Insertion dans cor_observer_synthese pour chaque counting
+      INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
+      SELECT id_synthese, NEW.id_role 
+      FROM gn_synthese.synthese 
+      WHERE unique_id_sinp IN(SELECT unnest(uuids_counting));
+  END IF;
+RETURN NULL;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
+
+  DROP TRIGGER IF EXISTS tri_synthese_insert_cor_role_releve ON pr_occtax.cor_role_releves_occtax;
+  CREATE TRIGGER tri_synthese_insert_cor_role_releve
+    AFTER INSERT
+    ON pr_occtax.cor_role_releves_occtax
+    FOR EACH ROW
+    EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_insert_cor_role_releve();
+
+-- correction des données lié au bug du trigger sur pr_occtax.cor_role
+
+  DELETE FROM gn_synthese.cor_observer_synthese
+  WHERE id_synthese IN (
+    SELECT id_synthese
+    FROM gn_synthese.synthese s 
+    JOIN gn_synthese.t_sources t ON s.id_source = t.id_source 
+    WHERE t.name_source ILIKE 'Occtax';
+  );
+
+  INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
+    SELECT s.id_synthese, obs.id_role 
+    FROM pr_occtax.cor_role_releves_occtax obs
+    JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = obs.id_releve_occtax
+    JOIN pr_occtax.cor_counting_occtax _count ON _count.id_occurrence_occtax = occ.id_occurrence_occtax
+    JOIN gn_synthese.synthese s ON _count.unique_id_sinp_occtax = s.unique_id_sinp
+  ;
 
 COMMIT;
+
