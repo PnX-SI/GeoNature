@@ -1032,8 +1032,7 @@ DROP TRIGGER IF EXISTS tri_insert_synthese_cor_counting_occtax ON pr_occtax.cor_
 CREATE TRIGGER tri_insert_synthese_cor_counting_occtax
     AFTER INSERT
     ON pr_occtax.cor_counting_occtax
-    REFERENCING NEW TABLE AS NEW
-    FOR EACH STATEMENT
+    FOR EACH ROW
     EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_insert_counting();
 
 DROP TRIGGER IF EXISTS tri_update_synthese_cor_counting_occtax ON pr_occtax.cor_counting_occtax;
