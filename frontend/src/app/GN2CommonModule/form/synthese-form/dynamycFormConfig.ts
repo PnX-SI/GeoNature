@@ -194,7 +194,7 @@ export const DYNAMIC_FORM_DEF = [
   {
     type_widget: 'nomenclature',
     attribut_label: "Type d'information géographique",
-    attribut_name: 'id_nomenclature_info_geo_type',
+    attribut_name: 'id_nomenclature_sensitivity',
     code_nomenclature_type: 'TYP_INF_GEO',
     required: false,
     multi_select: true
