@@ -831,7 +831,7 @@ $BODY$
     SELECT id_synthese
     FROM gn_synthese.synthese s 
     JOIN gn_synthese.t_sources t ON s.id_source = t.id_source 
-    WHERE t.name_source ILIKE 'Occtax';
+    WHERE t.name_source ILIKE 'Occtax'
   );
 
   INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
