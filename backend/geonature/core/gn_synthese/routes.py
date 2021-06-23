@@ -9,6 +9,7 @@ from collections import OrderedDict
 from flask import Blueprint, request, current_app, send_from_directory, render_template
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
+from sqlalchemy.sql.expression import delete
 from geojson import FeatureCollection, Feature
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
@@ -159,7 +160,7 @@ def get_observations_for_web(auth, permissions):
 
     if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
         data_blurring = DataBlurring(permissions)
-        results = data_blurring.blurre(results)
+        results = data_blurring.blurSeveralObs(results)
 
     geojson_features = []
     for r in results:
@@ -240,8 +241,9 @@ def get_synthese(auth, permissions):
 
 
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
+@permissions.check_permissions(module_code="SYNTHESE", action_code="R")
 @json_resp
-def get_one_synthese(id_synthese):
+def get_one_synthese(auth, permissions, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature
 
     .. :quickref: Synthese; Get one synthese
@@ -280,6 +282,9 @@ def get_one_synthese(id_synthese):
         data = q.one()
         synthese_as_dict = data[0].as_dict(True)
         synthese_as_dict["actors"] = data[1]
+        if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
+            data_blurring = DataBlurring(permissions)
+            synthese_as_dict = data_blurring.blurOneObsAreas(synthese_as_dict)
         return synthese_as_dict
     except exc.NoResultFound:
         return None
@@ -459,7 +464,7 @@ def export_observations_web(auth, permissions):
                 },
             ]
         )
-        results = data_blurring.blurre(results)
+        results = data_blurring.blurSeveralObs(results)
     
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)

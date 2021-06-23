@@ -19,6 +19,7 @@ class BibAreasTypes(DB.Model):
     ref_name = DB.Column(DB.Unicode)
     ref_version = DB.Column(DB.Integer)
     num_version = DB.Column(DB.Unicode)
+    size_hierarchy = DB.Column(DB.Integer)
 
 
 @serializable
