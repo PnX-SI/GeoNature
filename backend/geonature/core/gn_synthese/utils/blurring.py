@@ -41,7 +41,7 @@ class DataBlurring:
         self.sensitivity_ids = self._get_sensitivity_levels()
         self.non_diffusable = []
 
-    def blurre(self, synthese_results):
+    def blurSeveralObs(self, synthese_results):
         # If no result return directly
         if synthese_results == None:
             return synthese_results
@@ -178,29 +178,17 @@ class DataBlurring:
 
             # Build permissions conditions
             if object_type in exact_filters and exact_filters[object_type] and len(exact_filters[object_type]) > 0 :
-                permissions_ors = []
-                for exact_filter in exact_filters[object_type]:
-                    conditions = []
-                    
-                    if object_type == "PRIVATE_OBSERVATION":
-                        conditions.append(Synthese.id_nomenclature_diffusion_level.in_(diffusion_level_ids))
-                    elif object_type == "SENSITIVE_OBSERVATION":
-                        conditions.append(Synthese.id_nomenclature_sensitivity.in_(sensitivity_ids))
+                nomenclature_ids = (
+                    diffusion_level_ids 
+                    if object_type == "PRIVATE_OBSERVATION" 
+                    else sensitivity_ids
+                )
 
-                    if "GEOGRAPHIC" in exact_filter.keys() and exact_filter["GEOGRAPHIC"] != "ALL":
-                        filter_value = exact_filter["GEOGRAPHIC"]
-                        splited_values = self._split_value_filter(filter_value)
-                        conditions.append(CorAreaSynthese.id_area.in_(splited_values))
-                    
-                    if "TAXONOMIC" in exact_filter.keys() and exact_filter["TAXONOMIC"] != "ALL":
-                        filter_value = exact_filter["TAXONOMIC"]
-                        splited_values = self._split_value_filter(filter_value)
-                        stmt = (
-                            DB.select([column("cd_ref")])
-                            .select_from(func.taxonomie.find_all_taxons_children(splited_values))
-                        )
-                        conditions.append(Taxref.cd_ref.in_(stmt))
-                    permissions_ors.append(and_(*conditions))
+                permissions_ors = self._get_permissions_where_clause(
+                    exact_filters, 
+                    object_type, 
+                    nomenclature_ids,
+                )
                 
                 # Build permissions NOT EXISTS clause
                 permissions_cte = (
@@ -418,3 +406,175 @@ class DataBlurring:
                 if hasattr(record, field):
                     setattr(record, field, None)
         return record
+    
+
+    def blurOneObsAreas(self, obs):
+        DataBlurring._checkObsFields(obs)
+        
+        # Get area blurred types
+        blurred_areas_types = []
+        id_synthese = obs["id_synthese"]
+        current_diffusion_level_id = obs["id_nomenclature_diffusion_level"]
+        diffusion_levels = self._get_diffusion_levels_area_types()
+        if (
+            current_diffusion_level_id != None 
+            and current_diffusion_level_id in diffusion_levels
+            and not self.haveAccessToDiffusionLevels(id_synthese)
+        ):
+            (area_id, area_type) = diffusion_levels[current_diffusion_level_id]
+            blurred_areas_types.append(area_type)
+        current_sensitivity_id = obs["id_nomenclature_sensitivity"]
+        sensitivity_levels = self._get_sensitivity_area_types()
+        if (
+            current_sensitivity_id != None 
+            and current_sensitivity_id in sensitivity_levels
+            and not self.haveAccessToSensitivityLevels(id_synthese)
+        ):
+            (area_id, area_type) = sensitivity_levels[current_sensitivity_id]
+            blurred_areas_types.append(area_type)
+        
+        # Remove duplicates entries
+        blurred_areas_types = list(dict.fromkeys(blurred_areas_types))
+        
+        # Get more restrictive area size
+        blurred_areas_sizes = self._get_areas_size_hierarchy(blurred_areas_types)
+        more_restrictive_size = None
+        for size in blurred_areas_sizes.values():
+            if more_restrictive_size == None or more_restrictive_size > size:
+                more_restrictive_size = int(size)
+        
+        # Remove too precise areas
+        if more_restrictive_size != None and "areas" in obs:
+            obs["areas"][:] = [area for area in obs["areas"] if DataBlurring._checkAreaSize(area, more_restrictive_size)]
+        
+        return obs
+
+    def _checkObsFields(obs):
+        mandatory_fields = [
+            "id_synthese", 
+            "id_nomenclature_diffusion_level", 
+            "id_nomenclature_sensitivity",
+        ]
+        for field in mandatory_fields:
+            if not field in obs:
+                msg = f"Field '{field}' must be present in observation data."
+                raise RuntimeError(msg)
+
+    def _get_areas_size_hierarchy(self, areas_types):
+        query = (
+            select([BibAreasTypes.type_code, BibAreasTypes.size_hierarchy])
+            .select_from(BibAreasTypes.__table__)
+            .where(BibAreasTypes.type_code.in_(areas_types))
+        )
+        results = DB.session.execute(query)
+        
+        areas_hierarchy = {}
+        for (type_code, size) in results:
+            areas_hierarchy[type_code] = size
+        return areas_hierarchy
+
+    def haveAccessToDiffusionLevels(self, id_synthese):
+        have_access = False
+        (exact_filters, see_all) = self._compute_exact_filters()
+
+        if see_all["PRIVATE_OBSERVATION"]:
+            have_access = True
+        elif (
+            "PRIVATE_OBSERVATION" in exact_filters 
+            and len(exact_filters["PRIVATE_OBSERVATION"]) > 0 
+        ):
+            permissions_ors = self._get_permissions_where_clause(
+                exact_filters, 
+                "PRIVATE_OBSERVATION", 
+                self._get_diffusion_levels_area_types().keys(),
+            )
+        
+            # Build permissions query
+            query = (
+                select([Synthese.id_synthese])
+                .select_from(Synthese.__table__
+                    .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
+                    .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+                )
+                .where(or_(*permissions_ors))
+                .where(Synthese.id_synthese == id_synthese)
+            )
+            
+            # DEBUG QUERY:
+            #from sqlalchemy.dialects import postgresql
+            #print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
+            
+            results = DB.session.execute(query)
+            if results.first() is not None:
+                have_access = True
+
+        return have_access
+
+    def haveAccessToSensitivityLevels(self, id_synthese):
+        have_access = False
+        (exact_filters, see_all) = self._compute_exact_filters()
+
+        if see_all["PRIVATE_OBSERVATION"]:
+            have_access = True
+        elif (
+            "SENSITIVE_OBSERVATION" in exact_filters 
+            and len(exact_filters["SENSITIVE_OBSERVATION"]) > 0 
+        ):
+            permissions_ors = self._get_permissions_where_clause(
+                exact_filters, 
+                "SENSITIVE_OBSERVATION", 
+                self._get_sensitivity_area_types().keys(),
+            )
+            
+            # Build permissions query
+            query = (
+                select([Synthese.id_synthese])
+                .select_from(Synthese.__table__
+                    .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
+                    .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+                )
+                .where(or_(*permissions_ors))
+                .where(Synthese.id_synthese == id_synthese)
+            )
+            
+            # DEBUG QUERY:
+            #from sqlalchemy.dialects import postgresql
+            #print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
+            
+            results = DB.session.execute(query)
+            if results.first() is not None:
+                have_access = True
+
+        return have_access
+
+    def _get_permissions_where_clause(self, exact_filters, object_type, nomenclature_ids):
+        permissions_ors = []
+        for exact_filter in exact_filters[object_type]:
+            conditions = []
+            
+            if object_type == "PRIVATE_OBSERVATION":
+                conditions.append(Synthese.id_nomenclature_diffusion_level.in_(nomenclature_ids))
+            elif object_type == "SENSITIVE_OBSERVATION":
+                conditions.append(Synthese.id_nomenclature_sensitivity.in_(nomenclature_ids))
+
+            if "GEOGRAPHIC" in exact_filter.keys() and exact_filter["GEOGRAPHIC"] != "ALL":
+                filter_value = exact_filter["GEOGRAPHIC"]
+                splited_values = self._split_value_filter(filter_value)
+                conditions.append(CorAreaSynthese.id_area.in_(splited_values))
+            
+            if "TAXONOMIC" in exact_filter.keys() and exact_filter["TAXONOMIC"] != "ALL":
+                filter_value = exact_filter["TAXONOMIC"]
+                splited_values = self._split_value_filter(filter_value)
+                stmt = (
+                    DB.select([column("cd_ref")])
+                    .select_from(func.taxonomie.find_all_taxons_children(splited_values))
+                )
+                conditions.append(Taxref.cd_ref.in_(stmt))
+            permissions_ors.append(and_(*conditions))
+        
+        return permissions_ors
+
+
+    def _checkAreaSize(area, more_restrictive_size):
+        current_size = area['area_type']['size_hierarchy']
+        return (False if current_size != None and current_size < more_restrictive_size else True)
