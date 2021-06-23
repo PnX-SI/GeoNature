@@ -494,6 +494,8 @@ export class OcctaxFormReleveService {
             this.releveForm.markAsPristine();
                         
             this.router.navigate(["occtax/form", data.id, "taxons"]);
+            this.occtaxFormService.currentTab = "taxons";
+
           },
           (err) => {
             this.waiting = false;

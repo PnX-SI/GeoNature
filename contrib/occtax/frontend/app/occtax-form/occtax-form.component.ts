@@ -86,17 +86,19 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     }
   }
   navigate(tab) {    
-    const idReleve = this.occtaxFormService.id_releve_occtax.getValue();    
+    const idReleve = this.occtaxFormService.id_releve_occtax.getValue();        
     if(tab == "releve") {
       if(idReleve) {
         this._router.navigate(
           [`occtax/form/releve/${idReleve}`]
         )
+        this.occtaxFormService.currentTab = 'releve';
       }
-    } else {
+    } else {      
       this._router.navigate(
         [`occtax/form/${idReleve}/taxons`]
-      )
+      );
+      this.occtaxFormService.currentTab = 'taxons';
     }
 
   }
