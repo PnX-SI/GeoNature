@@ -43,6 +43,8 @@ class DatasetSchema(MetadataSchema):
         load_instance = True
         include_fk = True
 
+    meta_create_date = fields.DateTime(dump_only=True)
+    meta_update_date = fields.DateTime(dump_only=True)
     cor_dataset_actor = MA.Nested(
         DatasetActorSchema,
         many=True
@@ -102,7 +104,8 @@ class AcquisitionFrameworkSchema(MetadataSchema):
         model = TAcquisitionFramework
         load_instance = True
         include_fk = True
-
+    meta_create_date = fields.DateTime(dump_only=True)
+    meta_update_date = fields.DateTime(dump_only=True)
     t_datasets = MA.Nested(
         DatasetSchema(
             exclude=(
