@@ -440,7 +440,7 @@ class DataBlurring:
         blurred_areas_sizes = self._get_areas_size_hierarchy(blurred_areas_types)
         more_restrictive_size = None
         for size in blurred_areas_sizes.values():
-            if more_restrictive_size == None or more_restrictive_size > size:
+            if more_restrictive_size == None or more_restrictive_size < size:
                 more_restrictive_size = int(size)
         
         # Remove too precise areas
