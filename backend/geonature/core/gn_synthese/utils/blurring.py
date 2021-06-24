@@ -128,6 +128,9 @@ class DataBlurring:
         return ignored_object
 
     def _associate_geojson_to_synthese_id(self, synthese_results, exact_filters, ignored_object):
+        areas_used_to_blur = self._get_distinct_config_areas_types_codes()
+        areas_sizes = self._get_areas_size_hierarchy(areas_used_to_blur)
+
         sorted_synthese_by_area_type = self._sort_synthese_id_by_area_type_id(synthese_results, ignored_object)
         if not sorted_synthese_by_area_type:
             return {}
@@ -144,8 +147,9 @@ class DataBlurring:
                 # TODO: replace by Values() with SQLAlchemy v1.4+
                 # See: https://stackoverflow.com/a/66332616/13311850
                 values = self._build_values_clause(synthese_ids)
+                priority = areas_sizes[area_type_code]
                 obs_cte = (
-                    select([column('id_synthese')])
+                    select([literal(priority).label("priority"), column('id_synthese')])
                     .select_from(text(f"(VALUES {values}) AS t (id_synthese)"))
                     .cte(name=name)
                 )
@@ -154,7 +158,7 @@ class DataBlurring:
                 geom_columns = self._prepare_geom_columns(LAreas, with_compute=True)
                 obs_geo_query = (
                     select(
-                        [obs_cte.c.id_synthese, *geom_columns],
+                        [obs_cte.c.priority, obs_cte.c.id_synthese, *geom_columns],
                         distinct=obs_cte.c.id_synthese,
                     )
                     .select_from(
@@ -169,10 +173,9 @@ class DataBlurring:
             object_cte = union(*obs_geo_queries).cte(name=object_type)
 
             # Build blurred geom by id_synthese query
-            priority = 1 if object_type == "PRIVATE_OBSERVATION" else 2
             geom_columns = self._prepare_geom_columns(object_cte)
             blurred_obs_query = (
-                select([literal(priority).label("priority"), object_cte.c.id_synthese, *geom_columns])
+                select([object_cte.c.priority, object_cte.c.id_synthese, *geom_columns])
                 .select_from(object_cte)
             )
 
@@ -218,7 +221,7 @@ class DataBlurring:
                 distinct=obs_subquery.c.id_synthese,
             )
             .select_from(obs_subquery)
-            .order_by(obs_subquery.c.id_synthese, obs_subquery.c.priority)
+            .order_by(obs_subquery.c.id_synthese, obs_subquery.c.priority.desc())
         )
 
         # DEBUG QUERY:
@@ -574,7 +577,17 @@ class DataBlurring:
         
         return permissions_ors
 
-
     def _checkAreaSize(area, more_restrictive_size):
         current_size = area['area_type']['size_hierarchy']
         return (False if current_size != None and current_size < more_restrictive_size else True)
+
+    def _get_distinct_config_areas_types_codes(self):
+        areas_codes = []
+        sensitivity = self._get_sensitivity_area_type_codes()
+        for code in sensitivity.values():
+            areas_codes.append(code)
+        diffusion = self._get_diffusion_level_area_type_codes()
+        for code in diffusion.values():
+            areas_codes.append(code)
+        # Remove duplicates entries
+        return list(dict.fromkeys(areas_codes))
