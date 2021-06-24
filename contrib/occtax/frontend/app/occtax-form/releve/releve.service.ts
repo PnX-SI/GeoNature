@@ -1,4 +1,4 @@
-import { Injectable} from "@angular/core";
+import { Injectable, ChangeDetectorRef} from "@angular/core";
 import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Observable, Subscription, of } from "rxjs";
@@ -47,7 +47,8 @@ export class OcctaxFormReleveService {
     private occtaxFormMapService: OcctaxFormMapService,
     private occtaxDataService: OcctaxDataService,
     private occtaxParamS: OcctaxFormParamService,
-    private _datasetStoreService: DatasetStoreService
+    private _datasetStoreService: DatasetStoreService,
+    private _cd: ChangeDetectorRef
   ) {
     this.initPropertiesForm();
     this.setObservables();
@@ -199,11 +200,13 @@ export class OcctaxFormReleveService {
         if(!values.id_releve_occtax) {
           this.propertiesForm.disable();          
         }
+        // don't know why we have to patch observer separatly
+        // but don't work in an other way
+        this.propertiesForm.controls.observers.patchValue(values.observers);
         // HACK: wait for the dynamicformGenerator Component to set the additional fields
         // TODO: subscribe to an observable of dynamicFormCOmponent to wait it
-        setTimeout(() => {         
+        setTimeout(() => {
          this.propertiesForm.patchValue(values, {emitEvent: false});
-         this.propertiesForm.controls.observers.patchValue(values.observers);
         }, 1000);
       }
       );
@@ -388,7 +391,7 @@ export class OcctaxFormReleveService {
     return this.occtaxFormService
       .getDefaultValues(this.occtaxFormService.currentUser.id_organisme)
       .pipe(
-        map((data) => {
+        map((data) => {          
           const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);                
           return {
             // datasetId could be get for get parameters (see releve.component)
