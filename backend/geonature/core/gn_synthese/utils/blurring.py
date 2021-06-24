@@ -1,4 +1,4 @@
-import json
+import logging
 from collections import namedtuple
 
 from flask import current_app
@@ -13,7 +13,6 @@ from geonature.core.gn_synthese.models import (CorAreaSynthese, Synthese)
 from geonature.core.ref_geo.models import (LAreas, BibAreasTypes)
 from geonature.core.taxonomie.models import Taxref
 from geonature.utils.env import DB
-
 
 class DataBlurring:
     def __init__(
@@ -31,6 +30,8 @@ class DataBlurring:
             },
         ]
     ):
+        # get the root logger
+        self.log = logging.getLogger()
         self.permissions = permissions
         self.sensitivity_column = sensitivity_column
         self.diffusion_column = diffusion_column
@@ -147,7 +148,7 @@ class DataBlurring:
                 # TODO: replace by Values() with SQLAlchemy v1.4+
                 # See: https://stackoverflow.com/a/66332616/13311850
                 values = self._build_values_clause(synthese_ids)
-                priority = areas_sizes[area_type_code]
+                priority = int(areas_sizes[area_type_code])
                 obs_cte = (
                     select([literal(priority).label("priority"), column('id_synthese')])
                     .select_from(text(f"(VALUES {values}) AS t (id_synthese)"))
@@ -473,6 +474,10 @@ class DataBlurring:
         
         areas_hierarchy = {}
         for (type_code, size) in results:
+            if size == None:
+                msg = f"Field size hierarchy for type {type_code} is not defined in database."
+                self.log.warn(msg)
+                size = 1
             areas_hierarchy[type_code] = size
         return areas_hierarchy
 
