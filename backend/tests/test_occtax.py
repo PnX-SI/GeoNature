@@ -49,7 +49,6 @@ class TestApiModulePrOcctax:
         )
 
         assert response.status_code == 200
-        print(json_of_response(response))
         update_data = json_of_response(response)
         update_data["properties"].pop("digitiser")
         update_data["properties"]["comment"] = "Super MODIIFF"
@@ -78,18 +77,25 @@ class TestApiModulePrOcctax:
 
         assert response.status_code == 200
 
-        resp_data_update = json_of_response(response)
+        resp_data_insert = json_of_response(response)
 
-        assert resp_data_update["properties"]["comment"] == "Super MODIIFF"
-
+        assert resp_data_insert["properties"]["comment"] == "Super MODIIFF"
+        # update with an other user 
+        token = get_token(self.client, login="agent", password="admin")
         # get the releve
         response = self.client.get(
             url_for(
                 "pr_occtax.getOneReleve",
-                id_releve=resp_data_update["properties"]["id_releve_occtax"],
+                id_releve=resp_data_insert["properties"]["id_releve_occtax"],
             )
         )
         resp_data_update = json_of_response(response)
+        # check id_digitizer has not be updated by the editor person
+        assert (
+            resp_data_insert["properties"]["id_digitiser"] 
+            == 
+            resp_data_update["releve"]["properties"]["id_digitiser"] 
+        )
 
         assert "releve" in resp_data_update
         # check that the 3 occurrences are heres

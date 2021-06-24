@@ -429,7 +429,8 @@ def releveHandler(request, *, releve, info_role):
                     ),
                     403,
                 )
-
+        # set id_digitiser
+        releve.id_digitiser = info_role.id_role
     # creation du relevé à partir du POST
     releveSchema = ReleveSchema()
 
@@ -445,8 +446,6 @@ def releveHandler(request, *, releve, info_role):
             errors,
             422,
         )
-    # set id_digitiser
-    releve.id_digitiser = info_role.id_role
 
     DB.session.add(releve)
     DB.session.commit()
