@@ -181,6 +181,9 @@ cd install/
 cd ../
 
 # Apache configuration of GeoNature
+# set server name
+sudo sed -i "s/ServerName.*$/ServerName $my_domain/g" /etc/apache2/sites-available/000-default.conf
+
 if [ -f  /etc/apache2/sites-available/geonature.conf ]; then
   sudo rm  /etc/apache2/sites-available/geonature.conf
 fi
