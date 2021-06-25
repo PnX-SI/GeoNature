@@ -516,6 +516,8 @@ def datasetHandler(request, *, dataset, info_role):
                 ),
                 403,
             )
+    else: 
+        dataset.id_digitizer = info_role.id_role
     datasetSchema = DatasetSchema()
     dataset, errors = datasetSchema.load(request.get_json(), instance=dataset)
     if bool(errors):
@@ -874,6 +876,8 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework, info_role):
                 ),
                 403,
             )
+    else:
+        acquisition_framework.id_digitizer = info_role.id_role
 
     acquisitionFrameworkSchema = AcquisitionFrameworkSchema()
     acquisition_framework, errors = acquisitionFrameworkSchema.load(request.get_json(), instance=acquisition_framework)
