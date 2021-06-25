@@ -521,6 +521,7 @@ def datasetHandler(request, *, dataset, info_role):
     datasetSchema = DatasetSchema()
     dataset, errors = datasetSchema.load(request.get_json(), instance=dataset)
     if bool(errors):
+        log.error(errors)
         raise BadRequest(errors)
 
     DB.session.add(dataset)

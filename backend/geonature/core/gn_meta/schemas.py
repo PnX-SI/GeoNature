@@ -49,7 +49,11 @@ class DatasetSchema(MetadataSchema):
         DatasetActorSchema,
         many=True
     )
-    modules = MA.Nested(ModuleSchema, many=True)
+    modules = MA.Nested(
+        ModuleSchema, 
+        many=True, 
+        exclude=("meta_create_date", "meta_update_date")
+    )
 
     creator = MA.Nested(UserSchema, dump_only=True)
     nomenclature_data_type = MA.Nested(NomenclatureSchema, dump_only=True)

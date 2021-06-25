@@ -203,7 +203,8 @@ class TestGnMeta:
             "marine_domain": False,
             "terrestrial_domain": True,
             "validable": True,
-            "modules": [{"id_module": 1}],
+            # meta_dates must be ignored in the post
+            "modules": [{"id_module": 1, "meta_create_date": "fake_date", "meta_update_date": "fake_date"}],
         }
         response = post_json(self.client, url_for("gn_meta.create_dataset"), json_dict=one_dataset)
         assert response.status_code == 200
