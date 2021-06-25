@@ -242,6 +242,13 @@
             <br />
           </div>
 
+          <div class="b"> Créateur</div>
+
+          <div class="a"> <b> Créateur du cadre d'acquisition :</b> {{af.creator?.nom_complet || 'Non renseigné'}}
+          </div>         
+
+          <br />
+
           <div *ngIf="af?.keywords">
             <div class="b">Mots-clés </div>
             <div class="a"> {{af?.keywords}} </div>
