@@ -173,25 +173,28 @@ export class OcctaxFormReleveService {
     this.occtaxFormService.editionMode
       .pipe(
         skip(1), // skip initilization value (false)
-        tap((editionMode: boolean) => {          
-          // gestion de l'autocomplétion de la date ou non.
-          this.$_autocompleteDate.unsubscribe();
-          // autocomplete si mode création ou si mode edition et date_min = date_max
-          if (!editionMode) {
-            this.$_autocompleteDate = this.coreFormService.autoCompleteDate(
-              this.propertiesForm as FormGroup,
-              "date_min",
-              "date_max"
-            );
-          }
-        }),
         switchMap((editionMode: boolean) => {   
                  
           //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
           return editionMode ? this.releveValues : this.defaultValues;
         })
       )
-      .subscribe((values) => {      
+      .subscribe((values) => {  
+        console.log("YIIII", values);
+        const editionMode = this.occtaxFormService.editionMode.getValue()
+        // gestion de l'autocomplétion de la date ou non.
+        this.$_autocompleteDate.unsubscribe();
+        console.log(JSON.stringify(values.date_min) === JSON.stringify(values.date_max));
+        
+        // autocomplete si mode création ou si mode edition et date_min = date_max
+        if (!editionMode || (editionMode && JSON.stringify(values.date_min) === JSON.stringify(values.date_max))) {
+
+          this.$_autocompleteDate = this.coreFormService.autoCompleteDate(
+            this.propertiesForm as FormGroup,
+            "date_min",
+            "date_max"
+          );
+        }    
         if(!values.additional_fields) {
           values.additional_fields = {};
         }
