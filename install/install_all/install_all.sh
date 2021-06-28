@@ -126,7 +126,6 @@ sudo -n -u postgres -s psql -c "CREATE ROLE $user_pg WITH LOGIN PASSWORD '$user_
 sudo service postgresql restart
 
 # Apache configuration
-sudo sh -c 'echo "ServerName localhost" >> /etc/apache2/apache2.conf'
 sudo a2enmod rewrite
 sudo a2dismod mod_pyth
 sudo a2enmod wsgi
@@ -148,6 +147,7 @@ echo "Installation de la base de données et configuration de l'application GeoN
 my_url="${my_url//\//\\/}"
 proxy_http="${proxy_http//\//\\/}"
 proxy_https="${proxy_https//\//\\/}"
+
 
 sed -i "s/my_local=.*$/my_local=$my_local/g" config/settings.ini
 sed -i "s/my_url=.*$/my_url=$my_url/g" config/settings.ini
@@ -178,31 +178,11 @@ cd install/
 # lance install_app en le sourcant pour que la commande NVM soit disponible
 [ -s "install_app.sh" ] && \. "install_app.sh"
 
-cd ../
-
 # Apache configuration of GeoNature
-# set server name
-sudo sed -i "s/ServerName.*$/ServerName $my_domain/g" /etc/apache2/sites-available/000-default.conf
+sudo cp assets/geonature_apache.conf /etc/apache2/sites-available/geonature.conf
 
-if [ -f  /etc/apache2/sites-available/geonature.conf ]; then
-  sudo rm  /etc/apache2/sites-available/geonature.conf
-fi
-sudo touch /etc/apache2/sites-available/geonature.conf
-
-sudo sh -c 'echo "# Configuration GeoNature" >> /etc/apache2/sites-available/geonature.conf'
-conf="Alias /geonature /home/`whoami`/geonature/frontend/dist"
-echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf
-sudo sh -c 'echo  $conf>> /etc/apache2/sites-available/geonature.conf'
-conf="<Directory /home/`whoami`/geonature/frontend/dist>"
-echo $conf | sudo tee -a /etc/apache2/sites-available/geonature.conf
-sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature.conf'
-sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature.conf'
-# Conf Apache du backend de GeoNature
-sudo sh -c 'echo "<Location /geonature/api>" >> /etc/apache2/sites-available/geonature.conf'
-sudo sh -c 'echo "ProxyPass http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
-sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:8000" >> /etc/apache2/sites-available/geonature.conf'
-sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/geonature.conf'
-sudo sh -c '#FIN Configuration GeoNature 2>" >> /etc/apache2/sites-available/geonature.conf'
+sudo sed -i "s/<DOMAIN_NAME>/$my_domain/" /etc/apache2/sites-available/geonature.conf
+sudo sed -i "s/<USER>/`whoami`/" /etc/apache2/sites-available/geonature.conf
 
 sudo a2ensite geonature
 
@@ -249,16 +229,8 @@ sed -i "s/https_cert_path=.*$/https_cert_path=$enable_https/g" settings.ini
 sed -i "s/https_key_path=.*$/https_key_path=$enable_https/g" settings.ini
 
 # Apache configuration of TaxHub
-if [ -f  /etc/apache2/sites-available/taxhub.conf ]; then
-  sudo rm  /etc/apache2/sites-available/taxhub.conf
-fi
-sudo touch /etc/apache2/sites-available/taxhub.conf
-sudo sh -c 'echo "# Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "<Location /taxhub>" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "ProxyPass  http://127.0.0.1:5000 retry=0" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:5000" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/taxhub.conf'
-sudo sh -c 'echo "#FIN Configuration TaxHub" >> /etc/apache2/sites-available/taxhub.conf'
+sudo cp assets/taxhub_apache.conf /etc/apache2/sites-available/taxhub.conf
+
 
 # Creation of system files used by TaxHub
 . create_sys_dir.sh
@@ -294,18 +266,9 @@ if [ "$install_usershub_app" = true ]; then
     # Installation of UsersHub application
     # lance install_app en le sourcant pour que la commande NVM soit disponible
     ./install_app.sh
+    sudo cp assets/usershub_apache.conf /etc/apache2/sites-available/usershub.conf
 
-    # Apache configuration of UsersHub
-    if [ -f  /etc/apache2/sites-available/usershub.conf ]; then
-        sudo rm /etc/apache2/sites-available/usershub.conf
-    fi
-    sudo touch /etc/apache2/sites-available/usershub.conf
-    sudo sh -c 'echo "# Configuration Usershub" >> /etc/apache2/sites-available/usershub.conf'
-    sudo sh -c 'echo "<Location /usershub>" >> /etc/apache2/sites-available/usershub.conf'
-    sudo sh -c 'echo "ProxyPass  http://127.0.0.1:5001 retry=0" >> /etc/apache2/sites-available/usershub.conf'
-    sudo sh -c 'echo "ProxyPassReverse  http://127.0.0.1:5001" >> /etc/apache2/sites-available/usershub.conf'
-    sudo sh -c 'echo "</Location>" >> /etc/apache2/sites-available/usershub.conf'
-    sudo sh -c 'echo "#FIN Configuration Usershub" >> /etc/apache2/sites-available/usershub.conf'
+
     sudo a2ensite usershub
 fi
 
