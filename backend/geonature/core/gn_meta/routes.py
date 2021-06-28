@@ -10,6 +10,7 @@ import threading
 from pathlib import Path
 from binascii import a2b_base64
 from flask.json import jsonify
+from werkzeug.utils import secure_filename
 
 from lxml import etree as ET
 
@@ -612,7 +613,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
 
     filename = "jdd_{}_{}_{}.pdf".format(
         id_dataset,
-        dataset["dataset_shortname"].replace(" ", "_"),
+        secure_filename(dataset["dataset_shortname"]),
         dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
     )
 
@@ -789,7 +790,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
         acquisition_framework['initial_closing_date'] = af.initial_closing_date.strftime('%d-%m-%Y %H:%M')
         filename = "{}_{}_{}.pdf".format(
             id_acquisition_framework,
-            acquisition_framework["acquisition_framework_name"][0:31].replace(" ", "_"),
+            secure_filename(acquisition_framework["acquisition_framework_name"][0:31]),
             af.initial_closing_date.strftime("%d%m%Y_%H%M%S")
         )
         acquisition_framework["closed_title"] = current_app.config["METADATA"]["CLOSED_AF_TITLE"]
@@ -797,7 +798,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     else:
         filename = "{}_{}_{}.pdf".format(
             id_acquisition_framework,
-            acquisition_framework["acquisition_framework_name"][0:31].replace(" ", "_"),
+            secure_filename(acquisition_framework["acquisition_framework_name"][0:31]),
             dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
         )
 
