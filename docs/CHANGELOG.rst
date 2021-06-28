@@ -60,6 +60,7 @@ CHANGELOG
 * Occtax : Correction de l'affichage des taxons quand le nom est long (#1299, #1337)
 * Occtax : Correction de l'observateur par défaut en mode ``observers_txt``
 * Occtax : Correction des messages d'information multiples (#1367)
+* Occtax : Correction de la mise à jour du "digitiser" lors d'une édition de relevé (#1392)
 * Métadonnées : Correction de la suppression d'un JDD sans données, depuis la liste des JDD (#1312)
 * Métadonnées : Correction de la récupération des valeurs de nomenclature depuis MTD n'existant pas dans GeoNature (#1297)
 * Authentification : Redirection vers la page login après une période d'inactivité (#1193)
