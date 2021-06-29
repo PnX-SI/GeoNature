@@ -12,6 +12,7 @@ CHANGELOG
 - Sur Occtax, le switch pour Enchainer les taxons est aussi passer en rouge/vert. A cet endroit c'est pas très adapté et laisse penser à une validation du relevé. Repasser celui-ci en gris serait mieux.
 - MTD : Ajout des nouveaux champs aussi dans les fiches infos web et PDF ?
 - MTS : Ajout de bibliographie retirée ?
+* Indiquer historisation gn_monitoring
 
 **🚀 Nouveautés**
 
