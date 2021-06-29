@@ -223,7 +223,7 @@ sed -i "s/https_cert_path=.*$/https_cert_path=$enable_https/g" settings.ini
 sed -i "s/https_key_path=.*$/https_key_path=$enable_https/g" settings.ini
 
 # Apache configuration of TaxHub
-sudo cp assets/taxhub_apache.conf /etc/apache2/sites-available/taxhub.conf
+sudo cp /home/`whoami`/geonature/install/assets/taxhub_apache.conf /etc/apache2/sites-available/taxhub.conf
 
 
 # Creation of system files used by TaxHub
@@ -260,7 +260,7 @@ if [ "$install_usershub_app" = true ]; then
     # Installation of UsersHub application
     # lance install_app en le sourcant pour que la commande NVM soit disponible
     ./install_app.sh
-    sudo cp assets/usershub_apache.conf /etc/apache2/sites-available/usershub.conf
+    sudo cp /home/`whoami`/geonature/install/assets/usershub_apache.conf /etc/apache2/sites-available/usershub.conf
 
 
     sudo a2ensite usershub
