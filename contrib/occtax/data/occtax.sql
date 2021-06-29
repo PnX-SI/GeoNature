@@ -847,20 +847,12 @@ $BODY$
 DECLARE
   myobservers text;
 BEGIN
-  --calcul de l'observateur. On privilégie le ou les observateur(s) de cor_role_releves_occtax
-  --Récupération et formatage des observateurs
-  SELECT INTO myobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ')
-  FROM pr_occtax.cor_role_releves_occtax cor
-  JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
-  WHERE cor.id_releve_occtax = NEW.id_releve_occtax;
-  IF myobservers IS NULL THEN
-    myobservers = NEW.observers_txt;
-  END IF;
 
   --mise à jour en synthese des informations correspondant au relevé uniquement
   UPDATE gn_synthese.synthese s SET
       id_dataset = NEW.id_dataset,
-      observers = myobservers,
+      -- take observer_txt only if not null
+      observers = COALESCE(NEW.observers_txt, observers),
       id_digitiser = NEW.id_digitiser,
       grp_method = NEW.grp_method,
       id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
@@ -914,6 +906,7 @@ DECLARE
   uuids_counting  uuid[];
 BEGIN
   -- Récupération des id_counting à partir de l'id_releve
+  SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
   -- a l'insertion d'un relevé les uuid countin ne sont pas existants
   -- ce trigger se declenche à l'edition d'un releve
   IF uuids_counting IS NOT NULL THEN
