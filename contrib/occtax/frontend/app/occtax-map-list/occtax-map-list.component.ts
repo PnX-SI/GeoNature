@@ -315,9 +315,9 @@ export class OcctaxMapListComponent
    * Retourne un tableau des observateurs (prenom nom)
    * Sert aussi à la mise en forme du tooltip
    */
-  displayObservateursTooltip(row): string[] {
-    let tooltip = [];
-    if (row.observers === undefined) {
+  displayObservateursTooltip(row): string[] {    
+    let tooltip = [];    
+    if (row.observers && row.observers.length == 0) {      
       if (row.observers_txt !== null && row.observers_txt.trim() !== "") {
         tooltip.push(row.observers_txt.trim());
       } else {
