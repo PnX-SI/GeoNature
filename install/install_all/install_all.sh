@@ -4,6 +4,8 @@
 OS_NAME=$ID
 OS_VERSION=$VERSION_ID
 OS_BITS="$(getconf LONG_BIT)"
+BASE_DIR=$(readlink -e "${0%/*}")
+
 
 # Test the server architecture
 if [ !"$OS_BITS" == "64" ]; then
@@ -178,28 +180,20 @@ cd install/
 # lance install_app en le sourcant pour que la commande NVM soit disponible
 [ -s "install_app.sh" ] && \. "install_app.sh"
 
+cd /home/`whoami`/geonature
+
 # Apache configuration of GeoNature
-sudo cp assets/geonature_apache.conf /etc/apache2/sites-available/geonature.conf
+sudo cp ./install/assets/geonature_apache.conf /etc/apache2/sites-available/geonature.conf
+sudo cp ./install/assets/geonature_apache_maintenance.conf /etc/apache2/sites-available/geonature_maintenance.conf
 
 sudo sed -i "s/<DOMAIN_NAME>/$my_domain/" /etc/apache2/sites-available/geonature.conf
 sudo sed -i "s/<USER>/`whoami`/" /etc/apache2/sites-available/geonature.conf
+sudo sed -i "s/<DOMAIN_NAME>/$my_domain/" /etc/apache2/sites-available/geongeonature_maintenanceature.conf
+sudo sed -i "s/<USER>/`whoami`/" /etc/apache2/sites-available/geongeonature_maintenanceature.conf
 
 sudo a2ensite geonature
 
-# Apache configuration of GeoNature maintenance page
-if [ -f  /etc/apache2/sites-available/geonature_maintenance.conf ]; then
-  sudo rm  /etc/apache2/sites-available/geonature_maintenance.conf
-fi
-sudo touch /etc/apache2/sites-available/geonature_maintenance.conf
-
-conf="Alias /geonature /home/`whoami`/geonature/frontend/src/app/maintenance"
-echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenance.conf
-sudo sh -c 'echo  $conf>> /etc/apache2/sites-available/geonature_maintenance.conf'
-conf="<Directory /home/`whoami`/geonature/frontend/src/app/maintenance>"
-echo $conf | sudo tee -a /etc/apache2/sites-available/geonature_maintenance.conf
-sudo sh -c 'echo  "Require all granted">> /etc/apache2/sites-available/geonature_maintenance.conf'
-sudo sh -c 'echo  "</Directory>">> /etc/apache2/sites-available/geonature_maintenance.conf'
-
+cd /home
 # Installing TaxHub with current user
 echo "Téléchargement et installation de TaxHub ..."
 wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip
@@ -247,8 +241,8 @@ sudo a2enmod proxy_http
 
 # Installation and configuration of UsersHub application (if activated)
 if [ "$install_usershub_app" = true ]; then
+    cd /home
     echo "Installation de l'application Usershub"
-
     wget https://github.com/PnX-SI/UsersHub/archive/$usershub_release.zip
     unzip $usershub_release.zip
     rm $usershub_release.zip
