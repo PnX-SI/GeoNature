@@ -100,70 +100,85 @@ def cruved_af_filter(model, info_role):
         return sub_q.exists()
 
 def get_metadata_list(info_role, args, exclude_cols):
+    num = args.get("num")
+    uuid = args.get("uuid")
+    name = args.get("name")
+    date = args.get("date")
+    organisme = args.get("organism")
+    person = args.get("person")
+    selector = args.get("selector")
+    query = DB.session.query(TAcquisitionFramework)
+
+    if selector == "af" and ("organism" in args or "person" in args):
+        query = query.join(
+            CorAcquisitionFrameworkActor,
+            TAcquisitionFramework.id_acquisition_framework == CorAcquisitionFrameworkActor.id_acquisition_framework
+        )
+        # remove cor_af_actor from joined load because already joined
+        exclude_cols.append("cor_af_actor")
+    if selector == "ds" :
+        query = query.join(
+            TDatasets, 
+            TDatasets.id_acquisition_framework == TAcquisitionFramework.id_acquisition_framework
+        )
+        if "organism" in args or "person" in args: 
+            query = query.join(
+            CorDatasetActor,
+            CorDatasetActor.id_dataset == TDatasets.id_dataset
+        )
+        exclude_cols.append("t_datasets")
     joined_loads_rels = [
         db_rel.key for db_rel in inspect(TAcquisitionFramework).relationships
         if db_rel.key not in exclude_cols
     ]
-    
-    num = request.args.get("num")
-    uuid = args.get("uuid")
-    name = request.args.get("name")
-    date = request.args.get("date")
-    organisme = request.args.get("organism")
-    person = request.args.get("person")
-
-    t_af = aliased(TAcquisitionFramework)
-    t_afs_actors = aliased(CorAcquisitionFrameworkActor)
-    t_dts = aliased(TDatasets)
-    t_dts_actors = aliased(CorDatasetActor)
-    query = DB.session.query(t_af)
     for rel in joined_loads_rels:
         query = query.options(
-            joinedload(getattr(t_af, rel))
+            joinedload(getattr(TAcquisitionFramework, rel))
         )
 
-    query = query.filter(or_(cruved_af_filter(t_af, info_role), cruved_ds_filter(t_dts, info_role)))
+    query = query.filter(or_(cruved_af_filter(TAcquisitionFramework, info_role), cruved_ds_filter(TDatasets, info_role)))
     if args.get("selector") == "af":
         if num is not None:
-            query = query.filter(t_af.id_acquisition_framework == num)
+            query = query.filter(TAcquisitionFramework.id_acquisition_framework == num)
         if uuid is not None:
             query = query.filter(
-                cast(t_af.unique_acquisition_framework_id, String).ilike(f"%{uuid.strip()}%")
+                cast(TAcquisitionFramework.unique_acquisition_framework_id, String).ilike(f"%{uuid.strip()}%")
             )
         if name is not None:
-            query = query.filter(t_af.acquisition_framework_name.ilike(f"%{name}%"))
+            query = query.filter(TAcquisitionFramework.acquisition_framework_name.ilike(f"%{name}%"))
         if date is not None:
             query = query.filter(
-                cast(t_af.acquisition_framework_start_date, Date) == f"%{date}%"
+                cast(TAcquisitionFramework.acquisition_framework_start_date, Date) == f"%{date}%"
             )
         if organisme is not None:
-            query = query.filter(t_afs_actors.id_organism == organisme)
+            query = query.filter(CorAcquisitionFrameworkActor.id_organism==organisme)
         if person is not None:
-            query = query.filter(t_afs_actors.id_role == person)
+            query = query.filter(CorAcquisitionFrameworkActor.id_role==person)
 
     elif args.get("selector") == "ds":
         if num is not None:
-            query = query.filter(t_dts.id_dataset == num)
+            query = query.filter(TDatasets.id_dataset == num)
         if uuid is not None:
-            query = query.filter(cast(t_dts.unique_dataset_id, String).ilike(f"%{uuid.strip()}%"))
+            query = query.filter(cast(TDatasets.unique_dataset_id, String).ilike(f"%{uuid.strip()}%"))
         if name is not None:
-            query = query.filter(t_dts.dataset_name.ilike(f"%{name}%"))
+            # query = query.filter(TDatasets.dataset_name.ilike(f"%{name}%"))
+            query = query.filter(TAcquisitionFramework.t_datasets.any(dataset_name=name))
         if date is not None:
-            query = query.filter(cast(t_dts.meta_create_date, Date) == date)
+            query = query.filter(cast(TDatasets.meta_create_date, Date) == date)
         if organisme is not None:
-            query = query.filter(t_dts_actors.id_organism == organisme)
+            query = query.filter(CorDatasetActor.id_organism==organisme)
         if person is not None:
-            query = query.filter(t_dts_actors.id_role == person)
+            query = query.filter(CorDatasetActor.id_role==person)
+
 
     if args.get("orderby", None):
         try:
-            query = query.order_by(getattr(t_af, args.get("orderby")).asc())
+            query = query.order_by(getattr(TAcquisitionFramework, args.get("orderby")).asc())
         except:
             try:
-                query = query.order_by(getattr(t_dts, args.get("orderby")).asc())
+                query = query.order_by(getattr(TDatasets, args.get("orderby")).asc())
             except:
                 pass
-
     return query
 
 
