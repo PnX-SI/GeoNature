@@ -6,44 +6,52 @@ CHANGELOG
 -------------------------------------------
 
 - Voir https://github.com/PnX-SI/GeoNature/compare/2.6.2...develop
-- Vérifier l'update SQL et régler son TODO
+- Vérifier l'update SQL et ajouter commentaires
+- GPKG par défaut pour les exports
 - Bien vérifier notes de versions liées à des changements à appliquer suite aux évolutions techniques
 - Bien tester les emails de validation pré-remplis: OK
 - Sur Occtax, le switch pour Enchainer les taxons est aussi passer en rouge/vert. A cet endroit c'est pas très adapté et laisse penser à une validation du relevé. Repasser celui-ci en gris serait mieux.
 - MTD : Ajout des nouveaux champs aussi dans les fiches infos web et PDF ?
-- MTS : Ajout de bibliographie retirée ?
-* Indiquer historisation gn_monitoring
+- MTD : Ajout de bibliographie retirée ?
+- Vérifier routes metadonnées et Occtax-mobile
+- Indiquer Taxref 14 lors d'une nouvelle installation
 
 **🚀 Nouveautés**
 
-* Occtax : Possibilité d'ajouter des champs additionels par JDD ou globaux au module (#1007)
+* Occtax : Possibilité d'ajouter des champs additionels par JDD ou globaux au module et documentation liée (#1007)
 * Occtax/Synthese : Ajout des champs additionnels dans les exports (#1114)
-* Configuration: possibilité de changer le CSS sans rebuilder l'application
+* Occtax/Synthese : Affichage des champs additionnels dans les fiches info
+* Customisation : possibilité de changer le CSS sans rebuilder l'application
 * Admin : Création d'un backoffice d'administration des champs additionels (#1007)
 * Admin : Création d'une documentation d'administration des champs additionnels (#1007)
 * Occtax : Possibilité de désactiver la recherche de taxon par liste (#1315)
 * Occtax : Par défaut la recherche de taxon n'interroge pas une liste mais tout Taxref, si aucune liste de taxons n'a été spécifiée dans la configuration du module Occtax (voir notes de version) (#1315)
 * Occtax/Metadonnées : possibilité d'associer une liste de taxons à un JDD (implémenté uniquement dans Occtax) (#1315)
 * Occtax : Possibilité d'ajouter les infos sur les médias dans les exports (paramètre ``ADD_MEDIA_IN_EXPORT``) (#1326)
-* Occtax : Ajout du paramètre ``MEDIA_FIELDS_DETAILS`` permettant de définir les champs des médias affichés par défaut
-* Occtax : Possibilité de paramétrer l'affichage des champs du composant MEDIA dans OCCTAX (paramètre MEDIA_FIELDS_DETAILS #1287) 
-* Occtax : Possibilité de fitrer la liste des habitats du formulaire avec les nouveaux paramètres ``ID_LIST_HABITAT`` et ``CD_TYPO_HABITAT``
+* Occtax : Possibilité de paramétrer l'affichage des champs du composant MEDIA dans OCCTAX (paramètre ``MEDIA_FIELDS_DETAILS`` - #1287) 
+* Occtax : Possibilité de filtrer la liste des habitats du formulaire avec les nouveaux paramètres ``ID_LIST_HABITAT`` et ``CD_TYPO_HABITAT``
 * Occtax : Possibilité d'ouvrir le module avec un JDD pré-selectionné en passant le paramètre ``id_dataset`` dans l'URL (#1071)
 * Accueil : Réorganisation des blocs (#1375)
 * Accueil : Ajout d'un paramètre controlant la fréquence de MAJ du cache des statistiques de la page d'accueil (``STAT_BLOC_TTL``, par défaut 1h: 3600 secondes) (#1320)
+* ?????????? Amélioration des performances de récupération des modules et du CRUVED ??????????????
+* Monitoring : Ajout d'un trigger garantissant la cohérence entre ``date_min`` et ``date_max`` et historisation de la table ``gn_monitoring.cor_visit_observer`` (#1247)
 * La page d'authentification affiche désormais le nom de l'application (``appName``) défini dans la configuration de GeoNature (#1277) 
 * Possibilité d'ouvrir l'accès à GeoNature sans authentification (voir documentation d'administration) (#1323)
 * Métadonnées : Optimisation du temps de chargement des listes des CA et JDD (#1291)
 * Métadonnées : Passage de la version 1.3.9 du standard SINP à la version 1.3.10 et ajout des champs liés dans les formulaires (#1291)
 * Métadonnées : Révision du design la partie "Acteurs" du formulaire et mise à part de l'acteur de type "Contact principal", obligatoire dans le standard SINP
 * Métadonnées : Ordonnancement des JDD par leur nom
+* Métadonnées : Ajout de la suppression en cascade au niveau des tables des CA et des JDD
 * Synthèse et validation : Ajout d'un filtre avancé ``Possède des médias`` (#1179, #1338, #1180)
 * Synthèse : Affichage du contenu json du champs des données additionnelles, dans la fiche détail d'une observation
+* Synthèse : Ajout de la possibilité d'afficher la colonne "Effectif" dans la liste des observations
 * DynamicForm : enrichissement des formulaires dynamiques pour les médias, l'ajout de liens externes
 * Ajout d'une contrainte d'unicité de la combinaison des champs ``id_type`` et ``area_code`` dans ``ref_geo.l_areas`` (#1270)
 * Ajout d'une contrainte d'unicité du champs ``type_code`` de la table ``ref_geo.bib_areas_types``
 * Mise à jour des versions de nombreuses dépendances Python et Javascript
 * Support du gestionnaire d'erreurs Sentry
+* Compression des images
+* Ajout d'un script permettant d'identifier les doublons dans ``data/scripts/duplicates_deletion`` (#1324)
 * Validation : possibilité de passer des fonctions dans la liste des colonnes affichées (pour décoder une nomenclature)
 * Validation : Les paramètres ``LIST_COLUMNS_FRONTEND`` et ``COLUMNS_API_VALIDATION_WEB_APP`` sont regroupés en un seul paramètre nommé ``COLUMN_LIST``. Voir le fichier ``contrib/gn_module_validation/config/conf_gn_module.toml.example``
 
@@ -56,12 +64,13 @@ CHANGELOG
 * Occtax : Suppression du zoom quand on localise le relevé (#1317)
 * Occtax : Correction du nombre de lignes affichées après une recherche
 * Occtax : Correction de la suppression d'un habitat lors de la modification d'un relevé (#1296)
-* Occtax : Correction du champs "Habitat" quand on enchaine des relevés (#1191)
+* Occtax : Correction des champs "Habitat" et "Lieu" quand on enchaine des relevés (#1191)
 * Occtax : Correction de l'enchainement des saisies (#1300)
 * Occtax : Correction de l'affichage des taxons quand le nom est long (#1299, #1337)
 * Occtax : Correction de l'observateur par défaut en mode ``observers_txt``
 * Occtax : Correction des messages d'information multiples (#1367)
 * Occtax : Correction de la mise à jour du "digitiser" lors d'une édition de relevé (#1392)
+* Occtax : Correction du trigger alimentant les observateurs de la synthèse depuis Occtax (#1399)
 * Métadonnées : Correction de la suppression d'un JDD sans données, depuis la liste des JDD (#1312)
 * Métadonnées : Correction de la récupération des valeurs de nomenclature depuis MTD n'existant pas dans GeoNature (#1297)
 * Authentification : Redirection vers la page login après une période d'inactivité (#1193)
@@ -74,6 +83,8 @@ CHANGELOG
 * Possibilité d'importer des modules packagés (#1272)
 * Réorganisation des fichiers ``requirements`` et installation des branches ``develop`` des dépendances du fichier ``requirements-dev.txt``
 * Simplification de la gestion des erreurs
+* Création de templates pour les configurations Apache de GeoNature, TaxHub et UsersHub, utilisés par le script ``install_all.sh``
+* Ajout du plugon ``leaflet-image``
 * Ajout d'un champs ``type`` dans la table ``gn_commons.t_modules`` pour gérer le polymorphisme, utilisé dans le module Monitoring
 * Ajout des champs ``meta_create_date`` et ``meta_update_date`` dans la table ``gn_commons.t_modules``
 * Diverses améliorations mineures de l'architecture du code
