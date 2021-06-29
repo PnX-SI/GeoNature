@@ -40,19 +40,30 @@
 </td>
 <td> {{dataset.meta_create_date |date:'dd/MM/yyyy' }}</td>
 <td style="text-align: left;">
-  <span *ngIf="dataset.creator"> <b> {{dataset.creator?.nom_complet}} : </b> créateur
-  </span>
-  <div *ngFor="let ac of dataset.cor_dataset_actor">
-    <span *ngIf="ac.organism">
-      <b> {{ac.organism?.nom_organisme }} : </b>
-      {{ac.nomenclature_actor_role.label_fr }} <br>
-    </span>
-    <span *ngIf="ac.role">
-      <b> {{ac.role?.nom_complet }} : </b>
-      {{ac.nomenclature_actor_role.label_fr }} <br>
-    </span>
 
-  </div>
+  <span *ngIf="dataset.creator"> 
+    <b> {{dataset.creator?.nom_complet}} : </b> créateur
+  </span>
+
+  <ng-container *ngIf="dataset.cor_dataset_actor.length; else elifNoActor">
+    <div *ngFor="let ac of dataset.cor_dataset_actor">
+      <span *ngIf="ac.organism">
+        <b> {{ac.organism?.nom_organisme }} : </b>
+        {{ac.nomenclature_actor_role.label_fr }} <br>
+      </span>
+      <span *ngIf="ac.role">
+        <b> {{ac.role?.nom_complet }} : </b>
+        {{ac.nomenclature_actor_role.label_fr }} <br>
+      </span>
+    </div>
+  </ng-container>
+  <ng-template #elifNoActor>
+    <div class="alert-actor">
+      <mat-icon>report</mat-icon>
+      <span> Aucun acteur renseigné </span>
+    </div>
+  </ng-template>
+
 </td>
 <td> {{dataset?.observation_count}} </td>
 <td>
