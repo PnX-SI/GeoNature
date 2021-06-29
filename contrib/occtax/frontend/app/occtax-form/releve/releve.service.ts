@@ -206,7 +206,7 @@ export class OcctaxFormReleveService {
         this.propertiesForm.controls.observers.patchValue(values.observers);
         // HACK: wait for the dynamicformGenerator Component to set the additional fields
         // TODO: subscribe to an observable of dynamicFormCOmponent to wait it
-        setTimeout(() => {
+        setTimeout(() => {          
          this.propertiesForm.patchValue(values, {emitEvent: false});
         }, 1000);
       }
@@ -268,7 +268,7 @@ export class OcctaxFormReleveService {
     return this.occtaxFormService.occtaxData.pipe(
       tap(() => this.habitatForm.setValue(null)),
       filter(data => data && data.releve.properties),
-      map(data => {                
+      map(data => {                        
         const copied_data = Object.assign({}, data)
         const releve = copied_data.releve.properties;
         //Parfois il passe 2 fois ici, et la seconde fois la date est déja formattée en objet, si c'est le cas, on saute
@@ -301,8 +301,7 @@ export class OcctaxFormReleveService {
           // set search_name properties to the form
           habitatFormValue["search_name"] = habitatFormValue.lb_code + " - " + habitatFormValue.lb_hab_fr;
           this.habitatForm.setValue(habitatFormValue)
-        }
-
+        }        
         return releve;
       }),
       // load additional fields
@@ -316,6 +315,7 @@ export class OcctaxFormReleveService {
             this.occtaxFormService.globalReleveAddFields,
             this.occtaxFormService.datasetReleveAddFields,
           );
+          
           this.occtaxFormService.datasetReleveAddFields = additionalFields;
           
           this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.globalReleveAddFields.concat(
@@ -328,17 +328,7 @@ export class OcctaxFormReleveService {
               if(typeof releve.additional_fields[field.attribut_name] !== "object"){
                 releve.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(releve.additional_fields[field.attribut_name]);
               }
-            }
-            //Formattage des nomenclatures
-            if(field.type_widget == "nomenclature"){
-                  const res = this.occtaxFormService.nomenclatureAdditionnel.filter((item) => item !== undefined)
-                  .find(n => (n["label_fr"] === releve.additional_fields[field.attribut_name]));
-                  if(res){
-                    releve.additional_fields[field.attribut_name] = res.id_nomenclature;
-                  }else{
-                    releve.additional_fields[field.attribut_name] = "";
-                  }
-            }                      
+            }                 
             if(releve.additional_fields) {
               releve[field.attribut_name] =  releve.additional_fields[field.attribut_name];
             }
@@ -458,17 +448,6 @@ export class OcctaxFormReleveService {
             value.properties.additional_fields[field.attribut_name] = this.dateParser.format(
               value.properties.additional_fields[field.attribut_name]
             );
-          }
-          if(field.type_widget == "nomenclature"){            
-            // set the label_fr nomenclature in the posted additional data
-            const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {
-              return n["id_nomenclature"] === value.properties.additional_fields[field.attribut_name];
-            });
-            if(nomenclature_item){
-              value.properties.additional_fields[field.attribut_name] = nomenclature_item.label_fr;
-            }else{
-              value.properties.additional_fields[field.attribut_name] = "";
-            }
           }
         })
     return value;

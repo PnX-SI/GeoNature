@@ -33,7 +33,6 @@ export class OcctaxFormService {
   public datasetReleveAddFields: Array<any>= [];
   public datasetOccurrenceAddFields: Array<any>= [];
   public datasetCountingAddFields: Array<any>= [];
-  public nomenclatureAdditionnel: any = [];
   public idTaxonList: number;
   public currentTab: "releve" | "taxons";
 
@@ -65,7 +64,9 @@ export class OcctaxFormService {
         filter((id) => id !== null),
         distinctUntilChanged(),
       )
-      .subscribe((id) => {                        
+      .subscribe((id) => {
+        console.log("LOAD ?");
+                             
         this.getOcctaxData(id)
       });
   }
@@ -117,48 +118,12 @@ export class OcctaxFormService {
       'id_dataset':  _idDataset,
       'module_code': ['OCCTAX'],
       'object_code': object_code
-    }).map(addFields => {            
-      // check if addFields contain nomenclature
-      const nomenclature_mnemonique_types = [];
-      addFields.forEach(field => {        
-        if(field.type_widget == 'nomenclature') {          
-          nomenclature_mnemonique_types.push(field.code_nomenclature_type)
-        }
-      })
-      return {"addFields": addFields, nomencMnemonique: nomenclature_mnemonique_types}
-    }).catch(() => {      
-      return of({"addFields": [], nomencMnemonique: []})
-    }).pipe(
-      mergeMap(
-        addFieldDict => {      
-          if(addFieldDict.nomencMnemonique.length > 0) {            
-            return this.dataFormService.getNomenclatures(addFieldDict.nomencMnemonique)
-              .map(nomenclatures => {
-              this.storeAdditionalNomenclaturesValues(nomenclatures);
-              return addFieldDict.addFields;
-            }).catch(e => {
-              throw "Error while parsing nomenclature values"              
-            });
-          } else {        
-            return of(addFieldDict.addFields);
-          }
-      })
-    )
+    }).catch(() => {    
+      console.error("error while get addional fields");
+      return of({})
+    })
   }
 
-  storeAdditionalNomenclaturesValues(nomenclatures_types: Array<any>) {    
-    // store all nomenclatures element in a array in order to find
-    // the label on submit        
-    nomenclatures_types.forEach(nomenc_type => {
-      if(nomenc_type.values) {
-        nomenc_type.values.forEach(nomenc_element => {
-          nomenc_element['MNEMONIQUE_TYPE'] = nomenc_type.mnemonique
-          this.nomenclatureAdditionnel.push(nomenc_element);
-        });
-      }
-
-    });    
-  }
 
   onEditReleve(id) {
     this._router.navigate(["occtax/form", id]);
@@ -211,7 +176,7 @@ export class OcctaxFormService {
     this.addOccurrenceData(occurrence);
   }
 
-  replaceReleveData(releve): void {
+  replaceReleveData(releve): void {    
     let occtaxData = this.occtaxData.getValue();
     occtaxData.releve = releve;
     this.occtaxData.next(occtaxData);
