@@ -188,12 +188,12 @@ sudo cp ./install/assets/geonature_apache_maintenance.conf /etc/apache2/sites-av
 
 sudo sed -i "s/<DOMAIN_NAME>/$my_domain/" /etc/apache2/sites-available/geonature.conf
 sudo sed -i "s/<USER>/`whoami`/" /etc/apache2/sites-available/geonature.conf
-sudo sed -i "s/<DOMAIN_NAME>/$my_domain/" /etc/apache2/sites-available/geongeonature_maintenanceature.conf
-sudo sed -i "s/<USER>/`whoami`/" /etc/apache2/sites-available/geongeonature_maintenanceature.conf
+sudo sed -i "s/<DOMAIN_NAME>/$my_domain/" /etc/apache2/sites-available/geonature_maintenanceature.conf
+sudo sed -i "s/<USER>/`whoami`/" /etc/apache2/sites-available/geonature_maintenanceature.conf
 
 sudo a2ensite geonature
 
-cd /home
+cd /home/`whoami`
 # Installing TaxHub with current user
 echo "Téléchargement et installation de TaxHub ..."
 wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip
@@ -241,7 +241,7 @@ sudo a2enmod proxy_http
 
 # Installation and configuration of UsersHub application (if activated)
 if [ "$install_usershub_app" = true ]; then
-    cd /home
+    cd /home/`whoami`
     echo "Installation de l'application Usershub"
     wget https://github.com/PnX-SI/UsersHub/archive/$usershub_release.zip
     unzip $usershub_release.zip
