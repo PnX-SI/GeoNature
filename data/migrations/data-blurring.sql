@@ -152,7 +152,7 @@ ALTER TABLE ref_geo.bib_areas_types
     ADD COLUMN size_hierarchy INT default NULL;
 
 COMMENT ON COLUMN ref_geo.bib_areas_types.size_hierarchy IS 
-    'Diamètre moyen en metres de ce type zone. Permet d''établir une hierarchie des types '
+    'Diamètre moyen en mètres de ce type zone. Permet d''établir une hiérarchie des types '
     'de zone géographique. Utile pour le floutage des observations.' ;
 
 UPDATE ref_geo.bib_areas_types SET size_hierarchy = 200000 WHERE type_code = 'REG' ;
