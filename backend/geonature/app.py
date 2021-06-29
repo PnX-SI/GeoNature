@@ -4,8 +4,6 @@ Démarrage de l'application
 
 import logging
 
-from json import JSONEncoder
-
 from flask import Flask
 from flask_mail import Message
 from flask_cors import CORS
@@ -48,8 +46,6 @@ if config.get('SENTRY_DSN'):
 def create_app(with_external_mods=True, with_flask_admin=True):
     app = Flask(__name__, static_folder="../static")
     app.config.update(config)
-    # change default flask JSONEncoder for perf reaseon and because "as_dict" already manage non JSON Types
-    app.json_encoder = JSONEncoder
 
     # Bind app to DB
     DB.init_app(app)
