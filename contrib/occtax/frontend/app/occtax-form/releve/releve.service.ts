@@ -180,11 +180,9 @@ export class OcctaxFormReleveService {
         })
       )
       .subscribe((values) => {  
-        console.log("YIIII", values);
         const editionMode = this.occtaxFormService.editionMode.getValue()
         // gestion de l'autocomplétion de la date ou non.
         this.$_autocompleteDate.unsubscribe();
-        console.log(JSON.stringify(values.date_min) === JSON.stringify(values.date_max));
         
         // autocomplete si mode création ou si mode edition et date_min = date_max
         if (!editionMode || (editionMode && JSON.stringify(values.date_min) === JSON.stringify(values.date_max))) {
