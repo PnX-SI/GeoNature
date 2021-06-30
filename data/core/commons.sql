@@ -774,11 +774,9 @@ INSERT INTO gn_commons.bib_widgets (widget_name) VALUES
 	 ('textarea'),
 	 ('radio'),
 	 ('time'),
-	 ('medias'),
 	 ('bool_radio'),
 	 ('date'),
 	 ('multiselect'),
 	 ('number'),
 	 ('taxonomy'),
-	 ('observers'),
 	 ('html');
