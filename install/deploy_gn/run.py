@@ -5,7 +5,8 @@ from connection import connect
 
 def deploy():
     conn = connect()
-
+    conn.run("sudo apt update -y")
+    conn.run("sudo apt upgrade -y")
     URL_SETTING = f"https://raw.githubusercontent.com/PnX-SI/GeoNature/{GN_VERSION}/install/install_all/install_all.ini"
     URL_SCRIPT = f"https://raw.githubusercontent.com/PnX-SI/GeoNature/{GN_VERSION}/install/install_all/install_all.sh"
     conn.run(f"wget {URL_SETTING}")
