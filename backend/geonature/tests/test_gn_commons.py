@@ -68,14 +68,13 @@ class TestCommons:
 
     def test_add_validation_status(self):
         login(self.client)
-        synthese = DB.session.query(Synthese).order_by(Synthese.id_synthese.desc()).first()
+        synthese = DB.session.query(Synthese).filter(Synthese.unique_id_sinp != None).order_by(Synthese.id_synthese.desc()).first()
         id_nomenclature_valid_status = DB.session.query(TNomenclatures).filter(and_(
             TNomenclatures.cd_nomenclature == "1",
             TNomenclatures.nomenclature_type.has(mnemonique="STATUT_VALID")
         )).one()
             
         data = {
-            "uuid_attached_row": str(uuid4()),
             "statut": id_nomenclature_valid_status.id_nomenclature,
             "comment": "lala",
             "validation_date": str(datetime.now()),
