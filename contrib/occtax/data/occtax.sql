@@ -751,7 +751,7 @@ BEGIN
   count_max = NEW.count_max,
   last_action = 'U',
   --CHAMPS ADDITIONNELS OCCTAX
-  additional_data = NEW.additional_fields || occurrence.additional_fields || releve.additional_fields
+  additional_data = releve.additional_fields || occurrence.additional_fields || NEW.additional_fields
   WHERE unique_id_sinp = NEW.unique_id_sinp_occtax;
   IF(NEW.unique_id_sinp_occtax <> OLD.unique_id_sinp_occtax) THEN
       RAISE EXCEPTION 'ATTENTION : %', 'Le champ "unique_id_sinp_occtax" est généré par GeoNature et ne doit pas être changé.'
