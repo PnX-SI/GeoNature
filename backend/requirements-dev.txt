@@ -16,6 +16,7 @@ configparser==3.5.0
 cookies==2.2.1
 coverage==4.4.2
 decorator==4.2.1
+fabric
 flake8==3.5.0
 funcsigs==1.0.2
 imagesize==0.7.1
