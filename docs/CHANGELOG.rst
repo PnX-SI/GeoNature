@@ -35,6 +35,7 @@ Nécessite la version 1.8.0 de TaxHub.
 * Métadonnées : Révision du design la partie "Acteurs" du formulaire et mise à part de l'acteur de type "Contact principal", obligatoire dans le standard SINP
 * Métadonnées : Ordonnancement des JDD par leur nom
 * Métadonnées : Ajout de la suppression en cascade au niveau des tables des CA et des JDD
+* Métadonnées : Ajout d'un message quand un CA ou JDD n'a pas d'acteur (#1404)
 * Synthèse et validation : Ajout d'un filtre avancé ``Possède des médias`` (#1179, #1338, #1180)
 * Synthèse : Affichage du contenu json du champs des données additionnelles, dans la fiche détail d'une observation
 * Synthèse : Ajout de la possibilité d'afficher la colonne "Effectif" dans la liste des observations
