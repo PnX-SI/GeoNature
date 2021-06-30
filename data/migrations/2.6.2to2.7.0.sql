@@ -16,8 +16,7 @@ BEGIN;
   ALTER TABLE ONLY ref_geo.bib_areas_types
       ADD CONSTRAINT unique_bib_areas_types_type_code UNIQUE (type_code);
       
-  -- Oubli de la 2.6.0 - A faire seulement sur une nouvelle installation faite avec la 2.6.0, 2.6.1 ou 2.6.2
-  -- où il manquait ce paramètre fait en update2.5.5to2.6.0
+  -- Paramètre oublié de la 2.6.0
     INSERT INTO gn_commons.t_parameters
     (id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value)
     VALUES(0, 'ref_sensi_version', 'Version du referentiel de sensibilité', 'Referentiel de sensibilite taxref v13 2020', '')
@@ -287,7 +286,7 @@ BEGIN;
       occurrence.comment,
       'I',
       --CHAMPS ADDITIONNELS OCCTAX
-      new_count.additional_fields || occurrence.additional_fields || releve.additional_fields
+       releve.additional_fields || occurrence.additional_fields || new_count.additional_fields
     );
 
       RETURN myobservers.observers_id ;
@@ -324,7 +323,7 @@ BEGIN;
     count_max = NEW.count_max,
     last_action = 'U',
     --CHAMPS ADDITIONNELS OCCTAX
-    additional_data = NEW.additional_fields || occurrence.additional_fields || releve.additional_fields
+    additional_data = releve.additional_fields || occurrence.additional_fields || NEW.additional_fields
     WHERE unique_id_sinp = NEW.unique_id_sinp_occtax;
     IF(NEW.unique_id_sinp_occtax <> OLD.unique_id_sinp_occtax) THEN
         RAISE EXCEPTION 'ATTENTION : %', 'Le champ "unique_id_sinp_occtax" est généré par GeoNature et ne doit pas être changé.'
@@ -365,7 +364,7 @@ BEGIN;
         non_digital_proof = NEW.non_digital_proof,
         comment_description = NEW.comment,
         last_action = 'U',
-      additional_data = NEW.additional_fields || pr_occtax.t_releves_occtax.additional_fields || pr_occtax.cor_counting_occtax.additional_fields
+      additional_data = pr_occtax.t_releves_occtax.additional_fields || NEW.additional_fields || pr_occtax.cor_counting_occtax.additional_fields
     FROM pr_occtax.t_releves_occtax 
     JOIN pr_occtax.cor_counting_occtax ON NEW.id_occurrence_occtax = pr_occtax.cor_counting_occtax.id_occurrence_occtax
       WHERE unique_id_sinp = pr_occtax.cor_counting_occtax.unique_id_sinp_occtax;
