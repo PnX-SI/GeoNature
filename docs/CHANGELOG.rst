@@ -93,6 +93,7 @@ CHANGELOG
 
 Si vous mettez à jour GeoNature :
 
+* Mettez à jour TaxHub 1.8.0 avant d'effectuer la migration de GeoNature : https://github.com/PnX-SI/TaxHub/releases/tag/1.8.0
 * Attention : si vous n'aviez pas renseigné de valeur pour le paramètre ``id_taxon_list`` dans le fichier ``conf_gn_module.toml`` du module Occtax, la liste 100 n'est plus passé par defaut et le module va rechercher sur tout Taxref. Veuillez renseigner manuellement l'identifiant de votre liste 
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
 * Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.6.3.sql)
