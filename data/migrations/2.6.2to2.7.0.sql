@@ -311,7 +311,7 @@ BEGIN;
     -- Récupération du relevé
     SELECT INTO releve * FROM pr_occtax.t_releves_occtax rel WHERE occurrence.id_releve_occtax = rel.id_releve_occtax;
     
-  -- Update dans la synthese
+    -- Update dans la synthese
     UPDATE gn_synthese.synthese
     SET
     entity_source_pk_value = NEW.id_counting_occtax,
@@ -337,41 +337,43 @@ BEGIN;
   $BODY$;
 
   CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_occ()
-      RETURNS trigger
-      LANGUAGE 'plpgsql'
-      VOLATILE
-      COST 100
-  AS $BODY$  DECLARE
-    BEGIN
-      UPDATE gn_synthese.synthese SET
-        id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
-        id_nomenclature_bio_condition = NEW.id_nomenclature_bio_condition,
-        id_nomenclature_bio_status = NEW.id_nomenclature_bio_status,
-        id_nomenclature_naturalness = NEW.id_nomenclature_naturalness,
-        id_nomenclature_exist_proof = NEW.id_nomenclature_exist_proof,
-        id_nomenclature_diffusion_level = NEW.id_nomenclature_diffusion_level,
-        id_nomenclature_observation_status = NEW.id_nomenclature_observation_status,
-        id_nomenclature_blurring = NEW.id_nomenclature_blurring,
-        id_nomenclature_source_status = NEW.id_nomenclature_source_status,
-        determiner = NEW.determiner,
-        id_nomenclature_determination_method = NEW.id_nomenclature_determination_method,
-        id_nomenclature_behaviour = id_nomenclature_behaviour,
-        cd_nom = NEW.cd_nom,
-        nom_cite = NEW.nom_cite,
-        meta_v_taxref = NEW.meta_v_taxref,
-        sample_number_proof = NEW.sample_number_proof,
-        digital_proof = NEW.digital_proof,
-        non_digital_proof = NEW.non_digital_proof,
-        comment_description = NEW.comment,
-        last_action = 'U',
-      additional_data = pr_occtax.t_releves_occtax.additional_fields || NEW.additional_fields || pr_occtax.cor_counting_occtax.additional_fields
-    FROM pr_occtax.t_releves_occtax 
-    JOIN pr_occtax.cor_counting_occtax ON NEW.id_occurrence_occtax = pr_occtax.cor_counting_occtax.id_occurrence_occtax
-      WHERE unique_id_sinp = pr_occtax.cor_counting_occtax.unique_id_sinp_occtax;
-    
-      RETURN NULL;
-    END;
-    $BODY$;
+    RETURNS trigger
+AS $BODY$  declare
+    counting RECORD;
+    releve_add_fields jsonb;
+  begin
+	 select * into counting from pr_occtax.cor_counting_occtax c where id_occurrence_occtax = new.id_occurrence_occtax;
+	 select r.additional_fields into releve_add_fields from pr_occtax.t_releves_occtax r where id_releve_occtax = new.id_releve_occtax;
+    UPDATE gn_synthese.synthese SET
+      id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
+      id_nomenclature_bio_condition = NEW.id_nomenclature_bio_condition,
+      id_nomenclature_bio_status = NEW.id_nomenclature_bio_status,
+      id_nomenclature_naturalness = NEW.id_nomenclature_naturalness,
+      id_nomenclature_exist_proof = NEW.id_nomenclature_exist_proof,
+      id_nomenclature_diffusion_level = NEW.id_nomenclature_diffusion_level,
+      id_nomenclature_observation_status = NEW.id_nomenclature_observation_status,
+      id_nomenclature_blurring = NEW.id_nomenclature_blurring,
+      id_nomenclature_source_status = NEW.id_nomenclature_source_status,
+      determiner = NEW.determiner,
+      id_nomenclature_determination_method = NEW.id_nomenclature_determination_method,
+      id_nomenclature_behaviour = id_nomenclature_behaviour,
+      cd_nom = NEW.cd_nom,
+      nom_cite = NEW.nom_cite,
+      meta_v_taxref = NEW.meta_v_taxref,
+      sample_number_proof = NEW.sample_number_proof,
+      digital_proof = NEW.digital_proof,
+      non_digital_proof = NEW.non_digital_proof,
+      comment_description = NEW.comment,
+      last_action = 'U',
+	  --CHAMPS ADDITIONNELS OCCTAX
+	  additional_data =  releve_add_fields || NEW.additional_fields || counting.additional_fields
+    WHERE unique_id_sinp = counting.unique_id_sinp_occtax;
+	
+    RETURN NULL;
+  END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
   RETURNS trigger AS
@@ -464,8 +466,8 @@ $BODY$
 
 
 
-  -- ajout champs addi dans l'export 
-  drop view if exists pr_occtax.v_export_occtax;
+  -- Ajout des champs additionnels dans l'export Occtax
+  DROP view if exists pr_occtax.v_export_occtax;
   CREATE OR REPLACE VIEW pr_occtax.v_export_occtax
   AS SELECT rel.unique_id_sinp_grp AS "idSINPRegroupement",
       ref_nomenclatures.get_cd_nomenclature(rel.id_nomenclature_grp_typ) AS "typGrp",
@@ -695,7 +697,7 @@ $BODY$
   ON gn_monitoring.cor_visit_observer
   FOR EACH ROW EXECUTE FUNCTION gn_commons.fct_trg_log_changes();
 
-
+  -- Révision de la vue des exports de la synthèse, pour y ajouter les champs additionnels (champs JSON unique)
   CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
   SELECT 
       s.id_synthese AS id_synthese,
@@ -812,7 +814,7 @@ $BODY$
       LEFT JOIN ref_nomenclatures.t_nomenclatures n22 ON s.id_nomenclature_biogeo_status = n22.id_nomenclature
       LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
 
-
+-- Révision de la vue renvoyant les permissions des utilisateurs (performances)
 CREATE OR REPLACE VIEW gn_permissions.v_roles_permissions
 AS WITH p_user_permission AS (
          SELECT u.id_role,
@@ -842,8 +844,6 @@ AS WITH p_user_permission AS (
            FROM utilisateurs.t_roles u
              JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role OR g.id_role_groupe = u.id_role
              JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = g.id_role_groupe
-          WHERE (g.id_role_groupe IN ( SELECT DISTINCT cor_roles.id_role_groupe
-                   FROM utilisateurs.cor_roles))
         ), all_user_permission AS (
          SELECT p_user_permission.id_role,
             p_user_permission.nom_role,
@@ -894,7 +894,7 @@ AS WITH p_user_permission AS (
 
 
 
--- correction des données lié au bug du trigger sur pr_occtax.cor_role
+-- Correction des données des observateurs de la synthèse, liée au bug du trigger sur pr_occtax.cor_role
 
   DELETE FROM gn_synthese.cor_observer_synthese
   WHERE id_synthese IN (
@@ -912,9 +912,10 @@ AS WITH p_user_permission AS (
     JOIN gn_synthese.synthese s ON _count.unique_id_sinp_occtax = s.unique_id_sinp
   ;
 
-  -- migration MTD
+  -- Mise à jour MTD
+  -- Ajout de commentaires et de 2 tables
 
-  COMMENT ON TABLE gn_meta.cor_dataset_territory
+COMMENT ON TABLE gn_meta.cor_dataset_territory
     IS 'A dataset must have 1 or n "territoire". Implement 1.3.10 SINP metadata standard : Cible géographique du jeu de données, ou zone géographique visée par le jeu. Défini par une valeur dans la nomenclature TerritoireValue. - OBLIGATOIRE';
  
 COMMENT ON TABLE gn_meta.cor_acquisition_framework_publication
@@ -958,9 +959,7 @@ CREATE TABLE gn_meta.cor_acquisition_framework_territory
 COMMENT ON TABLE gn_meta.cor_acquisition_framework_territory
     IS 'A acquisition_framework must have 1 or n "territoire". Implement 1.3.10 SINP metadata standard : Cible géographique du jeu de données, ou zone géographique visée par le jeu. Défini par une valeur dans la nomenclature TerritoireValue. - OBLIGATOIRE';
  
- 
 
- 
 CREATE TABLE gn_meta.t_bibliographical_references
 (
     id_bibliographic_reference serial,
@@ -978,4 +977,3 @@ COMMENT ON TABLE gn_meta.t_bibliographical_references
     IS 'A acquisition_framework must have 0 or n "publical references". Implement 1.3.10 SINP metadata standard : Référence(s) bibliographique(s) éventuelle(s) concernant le cadre d''acquisition. - RECOMMANDE';
 
 COMMIT;
-

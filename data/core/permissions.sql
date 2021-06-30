@@ -351,8 +351,6 @@ AS WITH p_user_permission AS (
            FROM utilisateurs.t_roles u
              JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role OR g.id_role_groupe = u.id_role
              JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = g.id_role_groupe
-          WHERE (g.id_role_groupe IN ( SELECT DISTINCT cor_roles.id_role_groupe
-                   FROM utilisateurs.cor_roles))
         ), all_user_permission AS (
          SELECT p_user_permission.id_role,
             p_user_permission.nom_role,
