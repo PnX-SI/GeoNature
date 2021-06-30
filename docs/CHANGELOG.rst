@@ -2,22 +2,15 @@
 CHANGELOG
 =========
 
-2.7.0 - Androsace delphinensis (unreleased)
+2.7.0 - Androsace delphinensis (2021-06-30)
 -------------------------------------------
 
-- Voir https://github.com/PnX-SI/GeoNature/compare/2.6.2...develop
-- Vérifier l'update SQL et ajouter commentaires
-- GPKG par défaut pour les exports
-- Bien vérifier notes de versions liées à des changements à appliquer suite aux évolutions techniques
-- Bien tester les emails de validation pré-remplis: OK
-- Sur Occtax, le switch pour Enchainer les taxons est aussi passer en rouge/vert. A cet endroit c'est pas très adapté et laisse penser à une validation du relevé. Repasser celui-ci en gris serait mieux.
-- MTD : Ajout des nouveaux champs aussi dans les fiches infos web et PDF ?
-- MTD : Ajout de bibliographie retirée ?
-- Vérifier routes metadonnées et Occtax-mobile
-- Indiquer Taxref 14 lors d'une nouvelle installation
+Nécessite la version 1.8.0 de TaxHub.
 
 **🚀 Nouveautés**
 
+* Compatible avec TaxHub 1.8.0 qui inclut notamment la migration (optionnelle) vers Taxref version 14 et l'ajout de la BDC statuts
+* Installation globale migrée de Taxref version 13 à 14
 * Occtax : Possibilité d'ajouter des champs additionels par JDD ou globaux au module et documentation liée (#1007)
 * Occtax/Synthese : Ajout des champs additionnels dans les exports (#1114)
 * Occtax/Synthese : Affichage des champs additionnels dans les fiches info
@@ -33,7 +26,7 @@ CHANGELOG
 * Occtax : Possibilité d'ouvrir le module avec un JDD pré-selectionné en passant le paramètre ``id_dataset`` dans l'URL (#1071)
 * Accueil : Réorganisation des blocs (#1375)
 * Accueil : Ajout d'un paramètre controlant la fréquence de MAJ du cache des statistiques de la page d'accueil (``STAT_BLOC_TTL``, par défaut 1h: 3600 secondes) (#1320)
-* ?????????? Amélioration des performances de récupération des modules et du CRUVED ??????????????
+* Amélioration des performances de récupération des modules et du CRUVED
 * Monitoring : Ajout d'un trigger garantissant la cohérence entre ``date_min`` et ``date_max`` et historisation de la table ``gn_monitoring.cor_visit_observer`` (#1247)
 * La page d'authentification affiche désormais le nom de l'application (``appName``) défini dans la configuration de GeoNature (#1277) 
 * Possibilité d'ouvrir l'accès à GeoNature sans authentification (voir documentation d'administration) (#1323)
@@ -93,12 +86,11 @@ CHANGELOG
 
 Si vous mettez à jour GeoNature :
 
-* Mettez à jour TaxHub 1.8.0 avant d'effectuer la migration de GeoNature : https://github.com/PnX-SI/TaxHub/releases/tag/1.8.0
-* Attention : si vous n'aviez pas renseigné de valeur pour le paramètre ``id_taxon_list`` dans le fichier ``conf_gn_module.toml`` du module Occtax, la liste 100 n'est plus passé par defaut et le module va rechercher sur tout Taxref. Veuillez renseigner manuellement l'identifiant de votre liste 
+* Mettez à jour TaxHub 1.8.0 avant d'effectuer la mise à jour de GeoNature : https://github.com/PnX-SI/TaxHub/releases/tag/1.8.0
+* Attention : si vous n'aviez pas renseigné de valeur pour le paramètre ``id_taxon_list`` dans le fichier ``contrib/occtax/config/conf_gn_module.toml`` du module Occtax, la liste 100 n'est plus passée par defaut et le module va rechercher sur tout Taxref. Si vous souhaitez utiliser une liste de taxons dans la saisie Occtax, veuillez renseigner l'identifiant de votre liste dans la configuration du module
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
-* Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.6.3.sql)
-* Si vous aviez renseigner un des deux paramètres ``LIST_COLUMNS_FRONTEND``, ``COLUMNS_API_VALIDATION_WEB_APP`` dans le module Validation, il est nécessaire de les remplacer par le nouveau paramètre ``COLUMN_LIST``. Voir le fichier ``contrib/gn_module_validation/config/conf_gn_module.toml.example``  
-* /!\ Des choses à faire au niveau des évolutions des commandes GeoNature ?
+* Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.7.0.sql)
+* Si vous aviez renseigner un des deux paramètres ``LIST_COLUMNS_FRONTEND``, ``COLUMNS_API_VALIDATION_WEB_APP`` dans le module Validation, il est nécessaire de les remplacer par le nouveau paramètre ``COLUMN_LIST``. Voir le fichier ``contrib/gn_module_validation/config/conf_gn_module.toml.example``
 * Modifier dans le fichier ``/etc/supervisor/conf.d/geonature-service.conf``, remplacer ``gn_errors.log`` par ``supervisor.log`` dans la variable ``stdout_logfile`` :
  
 ::
@@ -454,7 +446,7 @@ Si vous mettez à jour GeoNature :
 * Métadonnées : Implémentation du CRUVED sur la liste des CA et JDD (#911)
 * Métadonnées : Affichage de tous les CA des JDD pour lequels l'utilisateur connecté a des droits (#908)
 * Compatible avec TaxHub 1.7.0 qui inclut notamment la migration (optionnelle) vers Taxref version 13
-* Installation globale migrée de Taxref vesion 11 à 13
+* Installation globale migrée de Taxref version 11 à 13
 * Synthèse et zonages : Ne pas inclure l'association aux zonages limitrophes d'une observation quand sa géométrie est égale à un zonage (maille, commune...) (#716 par @jbdesbas)
 * Synthèse : Ajout de la possibilité d'activer la recherche par observateur à travers une liste, avec ajout des paramètres ``SEARCH_OBSERVER_WITH_LIST`` (``False`` par défaut) et ``ID_SEARCH_OBSERVER_LIST`` (#834 par @jbrieuclp)
 * Synthèse : Amélioration de la recherche des observateurs. Non prise en compte de l'ordre des noms saisis (#834 par @jbrieuclp)
