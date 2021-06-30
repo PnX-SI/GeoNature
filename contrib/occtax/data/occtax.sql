@@ -239,7 +239,7 @@ AS $BODY$  DECLARE
     releve.comment,
     occurrence.comment,
     'I',
-	  new_count.additional_fields || occurrence.additional_fields || releve.additional_fields
+	   occurrence.additional_fields || releve.additional_fields || new_count.additional_fields
   );
 
     RETURN myobservers.observers_id ;
@@ -794,7 +794,7 @@ AS $BODY$  DECLARE
       comment_description = NEW.comment,
       last_action = 'U',
 	  --CHAMPS ADDITIONNELS OCCTAX
-	  additional_data = NEW.additional_fields || pr_occtax.t_releves_occtax.additional_fields || pr_occtax.cor_counting_occtax.additional_fields
+	  additional_data =  pr_occtax.t_releves_occtax.additional_fields || NEW.additional_fields || pr_occtax.cor_counting_occtax.additional_fields
 	FROM pr_occtax.t_releves_occtax
 	INNER JOIN pr_occtax.cor_counting_occtax ON NEW.id_occurrence_occtax = pr_occtax.cor_counting_occtax.id_occurrence_occtax
     WHERE unique_id_sinp = pr_occtax.cor_counting_occtax.unique_id_sinp_occtax;
