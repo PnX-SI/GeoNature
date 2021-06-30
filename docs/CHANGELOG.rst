@@ -2,6 +2,16 @@
 CHANGELOG
 =========
 
+2.7.1 (unreleased)
+
+**TODO**
+
+* Revoir le déplacement de custom.css, pour le copier depuis son nouveau dossier, ou depuis l'ancien dossier si il existe
+
+**🐛 Corrections**
+
+* 
+
 2.7.0 - Androsace delphinensis (2021-06-30)
 -------------------------------------------
 
