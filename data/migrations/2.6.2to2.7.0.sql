@@ -801,9 +801,9 @@ DECLARE
   uuids_counting  uuid[];
 BEGIN
   -- Récupération des id_counting à partir de l'id_releve
+  SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
   -- a l'insertion d'un relevé les uuid countin ne sont pas existants
   -- ce trigger se declenche à l'edition d'un releve
-  SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
   IF uuids_counting IS NOT NULL THEN
       -- Insertion dans cor_observer_synthese pour chaque counting
       INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
@@ -823,6 +823,48 @@ $BODY$
     ON pr_occtax.cor_role_releves_occtax
     FOR EACH ROW
     EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_insert_cor_role_releve();
+
+
+  CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_releve()
+    RETURNS trigger AS
+  $BODY$
+  DECLARE
+    myobservers text;
+  BEGIN
+
+    --mise à jour en synthese des informations correspondant au relevé uniquement
+    UPDATE gn_synthese.synthese s SET
+        id_dataset = NEW.id_dataset,
+        -- take observer_txt only if not null
+        observers = COALESCE(NEW.observers_txt, observers),
+        id_digitiser = NEW.id_digitiser,
+        grp_method = NEW.grp_method,
+        id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
+        date_min = date_trunc('day',NEW.date_min)+COALESCE(NEW.hour_min,'00:00:00'::time),
+        date_max = date_trunc('day',NEW.date_max)+COALESCE(NEW.hour_max,'00:00:00'::time), 
+        altitude_min = NEW.altitude_min,
+        altitude_max = NEW.altitude_max,
+        depth_min = NEW.depth_min,
+        depth_max = NEW.depth_max,
+        place_name = NEW.place_name,
+        precision = NEW.precision,
+        the_geom_local = NEW.geom_local,
+        the_geom_4326 = NEW.geom_4326,
+        the_geom_point = ST_CENTROID(NEW.geom_4326),
+        id_nomenclature_geo_object_nature = NEW.id_nomenclature_geo_object_nature,
+        last_action = 'U',
+        comment_context = NEW.comment,
+        additional_data = NEW.additional_fields || o.additional_fields || c.additional_fields
+        FROM pr_occtax.cor_counting_occtax c
+        INNER JOIN pr_occtax.t_occurrences_occtax o ON c.id_occurrence_occtax = o.id_occurrence_occtax
+        WHERE c.unique_id_sinp_occtax = s.unique_id_sinp
+          AND s.unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
+
+    RETURN NULL;
+  END;
+  $BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 -- correction des données lié au bug du trigger sur pr_occtax.cor_role
 
