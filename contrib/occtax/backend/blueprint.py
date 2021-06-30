@@ -181,7 +181,7 @@ def getOneReleve(id_releve, info_role):
     :param id_releve: the id releve from pr_occtax.t_releve_occtax
     :type id_releve: int
     :returns: Return a releve with its attached Cruved
-    :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}` 
+    :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}`
     """
     releveCruvedSchema = ReleveCruvedSchema()
     releve = DB.session.query(TRelevesOccurrence).get(id_releve)
@@ -296,8 +296,8 @@ def insertOrUpdateOneReleve(info_role):
                 "t_occurrences_occtax":[{
                     "id_releve_occtax":null,"id_occurrence_occtax":null,"id_nomenclature_obs_technique":41,"id_nomenclature_bio_condition":157,"id_nomenclature_bio_status":29,"id_nomenclature_naturalness":160,"id_nomenclature_exist_proof":81,"id_nomenclature_observation_status":88,"id_nomenclature_blurring":175,"id_nomenclature_source_status":75,"determiner":null,"id_nomenclature_determination_method":445,"cd_nom":67111,"nom_cite":"Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]","meta_v_taxref":null,"sample_number_proof":null,"comment":null,
                 "cor_counting_occtax":[{
-                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1   
-                    }]    
+                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1
+                    }]
                 }]
             }
         }
@@ -475,8 +475,8 @@ def createReleve(info_role):
                 "t_occurrences_occtax":[{
                     "id_releve_occtax":null,"id_occurrence_occtax":null,"id_nomenclature_obs_technique":41,"id_nomenclature_bio_condition":157,"id_nomenclature_bio_status":29,"id_nomenclature_naturalness":160,"id_nomenclature_exist_proof":81,"id_nomenclature_observation_status":88,"id_nomenclature_blurring":175,"id_nomenclature_source_status":75,"determiner":null,"id_nomenclature_determination_method":445,"cd_nom":67111,"nom_cite":"Ablette =  <i> Alburnus alburnus (Linnaeus, 1758)</i> - [ES - 67111]","meta_v_taxref":null,"sample_number_proof":null,"comment":null,
                 "cor_counting_occtax":[{
-                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1   
-                    }]    
+                    "id_counting_occtax":null,"id_nomenclature_life_stage":1,"id_nomenclature_sex":171,"id_nomenclature_obj_count":146,"id_nomenclature_type_count":94,"id_occurrence_occtax":null,"count_min":1,"count_max":1
+                    }]
                 }]
             }
         }
@@ -780,13 +780,12 @@ def export(info_role):
         TAdditionalFields.modules.any(module_code="OCCTAX")
     )
     global_add_fields = query_add_fields.filter(~TAdditionalFields.datasets.any()).all()
-
     if "id_dataset" in request.args:
         dataset_add_fields = query_add_fields.filter(
             TAdditionalFields.datasets.any(id_dataset=request.args['id_dataset'])
         ).all()
         global_add_fields = [*global_add_fields, *dataset_add_fields]
-    
+
 
     additional_col_names = [field.field_name for field in global_add_fields]
     if export_format == "csv":
@@ -816,7 +815,7 @@ def export(info_role):
                 )
                 features.append(feature)
             serialize_result = FeatureCollection(features)
-            
+
         else:
             serialize_result = FeatureCollection(
                 [export_view.as_geofeature(d, fields=export_columns) for d in data]

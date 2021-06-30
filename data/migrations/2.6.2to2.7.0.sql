@@ -522,13 +522,11 @@ COST 100;
     ('textarea'),
     ('radio'),
     ('time'),
-    ('medias'),
     ('bool_radio'),
     ('date'),
     ('multiselect'),
     ('number'),
     ('taxonomy'),
-    ('observers'),
     ('html');
 
 

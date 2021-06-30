@@ -72,7 +72,7 @@ def as_dict_with_add_cols(export_view, row, additional_cols_key: str, addition_c
             )
         else:
             row_as_dict['urlMedia'] = ""
-    additional_data = row_as_dict.pop(additional_cols_key) or {}
+    additional_data = row_as_dict.get(additional_cols_key, {}) or {}
     for col_name in addition_cols_to_export:
         row_as_dict[col_name] = additional_data.get(col_name, "")
     return row_as_dict
