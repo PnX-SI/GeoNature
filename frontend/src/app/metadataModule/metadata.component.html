@@ -105,17 +105,24 @@
                   <section class="col-md-5">
                     <span *ngIf="af.creator"> <b> {{af.creator?.nom_complet}} : </b> créateur </span>
 
-                    <div *ngFor="let ac of af.cor_af_actor">
-                      <span *ngIf="ac.organism">
-                        <b> {{ac.organism?.nom_organisme }} : </b>
-                        {{ac.nomenclature_actor_role.label_fr }} <br>
-                      </span>
-                      <span *ngIf="ac.role">
-                        <b> {{ac.role?.nom_complet }} : </b>
-                        {{ac.nomenclature_actor_role.label_fr }} <br>
-                      </span>
-
-                    </div>
+                    <ng-container *ngIf="af.cor_af_actor.length; else elifNoActor">
+                      <div *ngFor="let ac of af.cor_af_actor">
+                        <span *ngIf="ac.organism">
+                          <b> {{ac.organism?.nom_organisme }} : </b>
+                          {{ac.nomenclature_actor_role.label_fr }} <br>
+                        </span>
+                        <span *ngIf="ac.role">
+                          <b> {{ac.role?.nom_complet }} : </b>
+                          {{ac.nomenclature_actor_role.label_fr }} <br>
+                        </span>
+                      </div>
+                    </ng-container>
+                    <ng-template #elifNoActor>
+                      <div class="alert-actor">
+                        <mat-icon>report</mat-icon>
+                        <span> Aucun acteur renseigné </span>
+                      </div>
+                    </ng-template>
                   </section>
 
                   <div class="col-md-2">
