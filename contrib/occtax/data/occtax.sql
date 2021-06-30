@@ -770,8 +770,12 @@ $BODY$
 -- AJOUT CHAMPS ADDITIONNEL - MET 27/10/2020
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_occ()
     RETURNS trigger
-AS $BODY$  DECLARE
-  BEGIN
+AS $BODY$  declare
+    counting RECORD;
+    releve_add_fields jsonb;
+  begin
+	 select * into counting from pr_occtax.cor_counting_occtax c where id_occurrence_occtax = new.id_occurrence_occtax;
+	 select r.additional_fields into releve_add_fields from pr_occtax.t_releves_occtax r where id_releve_occtax = new.id_releve_occtax;
     UPDATE gn_synthese.synthese SET
       id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
       id_nomenclature_bio_condition = NEW.id_nomenclature_bio_condition,
@@ -794,10 +798,8 @@ AS $BODY$  DECLARE
       comment_description = NEW.comment,
       last_action = 'U',
 	  --CHAMPS ADDITIONNELS OCCTAX
-	  additional_data =  pr_occtax.t_releves_occtax.additional_fields || NEW.additional_fields || pr_occtax.cor_counting_occtax.additional_fields
-	FROM pr_occtax.t_releves_occtax
-	INNER JOIN pr_occtax.cor_counting_occtax ON NEW.id_occurrence_occtax = pr_occtax.cor_counting_occtax.id_occurrence_occtax
-    WHERE unique_id_sinp = pr_occtax.cor_counting_occtax.unique_id_sinp_occtax;
+	  additional_data =  releve_add_fields || NEW.additional_fields || counting.additional_fields
+    WHERE unique_id_sinp = counting.unique_id_sinp_occtax;
 	
     RETURN NULL;
   END;
