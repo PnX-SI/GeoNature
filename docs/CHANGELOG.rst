@@ -9,6 +9,8 @@ CHANGELOG
 
 * Revoir le déplacement de custom.css, pour le copier depuis son nouveau dossier, ou depuis l'ancien dossier si il existe
 * MAJ la version de TaxHub (en 1.8.1) dans le install_all.ini et settings.ini
+* Doc User-lecteur à récupérer
+* Indiquer modif vue EXPORT si ça a été modifié et nécessité de l'ajouter dans le conf des exports si surcouchée. Idem pour Occtax ?
 
 **🐛 Corrections**
 
