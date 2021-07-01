@@ -3,10 +3,12 @@ CHANGELOG
 =========
 
 2.7.1 (unreleased)
+------------------
 
 **TODO**
 
 * Revoir le déplacement de custom.css, pour le copier depuis son nouveau dossier, ou depuis l'ancien dossier si il existe
+* MAJ la version de TaxHub (en 1.8.1) dans le install_all.ini et settings.ini
 
 **🐛 Corrections**
 
@@ -15,11 +17,11 @@ CHANGELOG
 2.7.0 - Androsace delphinensis (2021-06-30)
 -------------------------------------------
 
-Nécessite la version 1.8.0 de TaxHub.
+Nécessite la version 1.8.1 de TaxHub.
 
 **🚀 Nouveautés**
 
-* Compatible avec TaxHub 1.8.0 qui inclut notamment la migration (optionnelle) vers Taxref version 14 et l'ajout de la BDC statuts
+* Compatible avec TaxHub 1.8.1 qui inclut notamment la migration (optionnelle) vers Taxref version 14 et l'ajout de la BDC statuts
 * Installation globale migrée de Taxref version 13 à 14
 * Occtax : Possibilité d'ajouter des champs additionels par JDD ou globaux au module et documentation liée (#1007)
 * Occtax/Synthese : Ajout des champs additionnels dans les exports (#1114)
@@ -97,7 +99,7 @@ Nécessite la version 1.8.0 de TaxHub.
 
 Si vous mettez à jour GeoNature :
 
-* Mettez à jour TaxHub 1.8.0 avant d'effectuer la mise à jour de GeoNature : https://github.com/PnX-SI/TaxHub/releases/tag/1.8.0
+* Mettez à jour TaxHub 1.8.0 avant d'effectuer la mise à jour de GeoNature : https://github.com/PnX-SI/TaxHub/releases
 * Attention : si vous n'aviez pas renseigné de valeur pour le paramètre ``id_taxon_list`` dans le fichier ``contrib/occtax/config/conf_gn_module.toml`` du module Occtax, la liste 100 n'est plus passée par defaut et le module va rechercher sur tout Taxref. Si vous souhaitez utiliser une liste de taxons dans la saisie Occtax, veuillez renseigner l'identifiant de votre liste dans la configuration du module
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
 * Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.7.0.sql)
