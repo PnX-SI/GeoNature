@@ -79,7 +79,7 @@ install_usershub_schema=true
 usershub_release=2.1.3
 
 # Définir dans quelle version de TaxHub (release, branche ou tag) prendre le code SQL permettant la création du schéma taxonomie de la base de données de GeoNature
-taxhub_release=1.7.8
+taxhub_release=1.8.1
 
 # Définir dans quelle version de Habref-api-module (release, branche ou tag) prendre le code SQL permettant la création du schéma ref_habitats de la base de données de GeoNature
 habref_api_release=0.1.6
