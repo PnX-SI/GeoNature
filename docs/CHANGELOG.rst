@@ -2,20 +2,20 @@
 CHANGELOG
 =========
 
-2.7.1 (unreleased)
+2.7.1 (2021-07-02)
 ------------------
-
-**TODO**
-
-* Revoir le déplacement de custom.css, pour le copier depuis son nouveau dossier, ou depuis l'ancien dossier si il existe
-* MAJ la version de TaxHub (en 1.8.1) dans le install_all.ini et settings.ini
-* Protractor
 
 **🐛 Corrections**
 
-* Installation des dépendances javascript des modules de la migration de version de GeoNature
+* Installation des dépendances javascript des modules lors de la migration de version de GeoNature (#1252)
 * Installation de la version 1.8.1 de TaxHub par défaut à la place de la 1.8.0
 * Intégration de la documentation permettant de mettre en place l'accès public à GeoNature
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
 
 2.7.0 - Androsace delphinensis (2021-06-30)
 -------------------------------------------
