@@ -11,6 +11,10 @@ CHANGELOG
 * MAJ la version de TaxHub (en 1.8.1) dans le install_all.ini et settings.ini
 * Doc User-lecteur à récupérer
 * Indiquer modif vue EXPORT si ça a été modifié et nécessité de l'ajouter dans le conf des exports si surcouchée. Idem pour Occtax ?
+* Insert 'gn_sensitivity' data / psql:tmp/geonature/sensitivity_data.sql:3: NOTICE:  la table « liste_taxons_sensibles » n'existe pas, poursuite du tr$
+* Protractor
+* Recup du CSS et de l'image background ?
+* Version minimale de Monitoring à indiquer ?
 
 **🐛 Corrections**
 
