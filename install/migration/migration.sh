@@ -28,8 +28,16 @@ cp $myrootpath/geonature_old/config/geonature_config.toml config/geonature_confi
 # Handle frontend custom components
 echo "Copie des fichiers existant des composants personnalisables du frontend..."
 cp -r $myrootpath/geonature_old/frontend/src/custom/* frontend/src/custom/
-cp $myrootpath/geonature_old/frontend/src/custom/custom.scss frontend/src/assets/custom.css
-rm frontend/src/custom/custom.scss
+if [ ! -f $myrootpath/geonature/frontend/src/assets/custom.css ]
+then
+  cp $myrootpath/geonature_old/frontend/src/custom/custom.scss $myrootpath/geonature/frontend/src/assets/custom.css
+fi
+
+if [ -f $myrootpath/geonature/frontend/src/custom/custom.scss ]
+then 
+  rm $myrootpath/geonature/frontend/src/custom/custom.scss
+fi
+
 
 echo "Création des fichiers des nouveaux composants personnalisables du frontend..."
 custom_component_dir="frontend/src/custom/components/"
@@ -138,6 +146,13 @@ for D in $(find ../external_modules  -type l | xargs readlink) ; do
         then
             pip install -r requirements.txt
         fi
+        cd ../frontend 
+        if [ -f 'package.json' ]
+        then
+          cd /home/`whoami`/geonature/frontend 
+          npm install $D/frontend --no-save
+        fi
+
     fi
 done
 
