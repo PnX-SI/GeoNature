@@ -9,16 +9,13 @@ CHANGELOG
 
 * Revoir le déplacement de custom.css, pour le copier depuis son nouveau dossier, ou depuis l'ancien dossier si il existe
 * MAJ la version de TaxHub (en 1.8.1) dans le install_all.ini et settings.ini
-* Doc User-lecteur à récupérer
-* Indiquer modif vue EXPORT si ça a été modifié et nécessité de l'ajouter dans le conf des exports si surcouchée. Idem pour Occtax ?
-* Insert 'gn_sensitivity' data / psql:tmp/geonature/sensitivity_data.sql:3: NOTICE:  la table « liste_taxons_sensibles » n'existe pas, poursuite du tr$
 * Protractor
-* Recup du CSS et de l'image background ?
-* Version minimale de Monitoring à indiquer ?
 
 **🐛 Corrections**
 
-* 
+* Installation des dépendances javascript des modules de la migration de version de GeoNature
+* Installation de la version 1.8.1 de TaxHub par défaut à la place de la 1.8.0
+* Intégration de la documentation permettant de mettre en place l'accès public à GeoNature
 
 2.7.0 - Androsace delphinensis (2021-06-30)
 -------------------------------------------
@@ -106,9 +103,12 @@ Nécessite la version 1.8.1 de TaxHub.
 Si vous mettez à jour GeoNature :
 
 * Mettez à jour TaxHub 1.8.0 avant d'effectuer la mise à jour de GeoNature : https://github.com/PnX-SI/TaxHub/releases
-* Attention : si vous n'aviez pas renseigné de valeur pour le paramètre ``id_taxon_list`` dans le fichier ``contrib/occtax/config/conf_gn_module.toml`` du module Occtax, la liste 100 n'est plus passée par defaut et le module va rechercher sur tout Taxref. Si vous souhaitez utiliser une liste de taxons dans la saisie Occtax, veuillez renseigner l'identifiant de votre liste dans la configuration du module
+* Si vous utilisez le module Monitoring, mettez le à jour en version 0.2.4 minimum avant de mettre à jour GeoNature
+* Si vous n'aviez pas renseigné de valeur pour le paramètre ``id_taxon_list`` dans le fichier ``contrib/occtax/config/conf_gn_module.toml`` du module Occtax, la liste 100 n'est plus passée par defaut et le module va rechercher sur tout Taxref. Si vous souhaitez utiliser une liste de taxons dans la saisie Occtax, veuillez renseigner l'identifiant de votre liste dans la configuration du module
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
 * Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.7.0.sql)
+* Le script SQL de mise à jour va supprimer et recréer les vues ``pr_occtax.v_export_occtax`` et ``gn_synthese.v_synthese_for_export`` pour y intégrer les champs additionnels. Si vous aviez modifié ces vues, adaptez le script de mise à jour de GeoNature 2.6.2 à 2.7.0, ou répercuter vos modifications après la mise à jour, à appliquer aussi dans votre éventuelle surcouche des paramètres ``default_columns_export`` (dans ``contrib/occtax/config/conf_gn_module.toml``) et ``EXPORT_COLUMNS`` (dans ``config/geonature_config.toml``)
+* Le fichier de customisation CSS a été déplacé de ``frontend/src/custom/custom.scss`` vers ``frontend/src/assets/custom.css`` pour pouvoir être modifier sans devoir rebuilder l'application. Son déplacement est fait automatiquement lors de la mise à jour de GeoNature. Si vous avez customisé les styles dans ce fichier et notamment fait référence à d'autres fichiers, vérifiez ou adaptez leurs chemins
 * Si vous aviez renseigner un des deux paramètres ``LIST_COLUMNS_FRONTEND``, ``COLUMNS_API_VALIDATION_WEB_APP`` dans le module Validation, il est nécessaire de les remplacer par le nouveau paramètre ``COLUMN_LIST``. Voir le fichier ``contrib/gn_module_validation/config/conf_gn_module.toml.example``
 * Modifier dans le fichier ``/etc/supervisor/conf.d/geonature-service.conf``, remplacer ``gn_errors.log`` par ``supervisor.log`` dans la variable ``stdout_logfile`` :
  
