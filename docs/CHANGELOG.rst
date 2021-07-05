@@ -8,14 +8,16 @@ CHANGELOG
 **🐛 Corrections**
 
 * OCCTAX : correction de la vérification du CRUVED (#1413)
-* OCCTAX : correction deu dégrisement du formulaire au chargement de la fonctionnalité "mes lieux"
+* OCCTAX : correction du dégrisement du formulaire au chargement de la fonctionnalité "mes lieux" (#1414)
+* OCCTAX : Déplacement des champs additionnels pour les dénombrements avant les médias (#1409)
+* Suppression des champs additionnels de type "taxonomy" qui n'étaient pas supportés
 
 **⚠️ Notes de version**
 
 Si vous mettez à jour GeoNature :
 
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
-
+* Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.7.1to2.7.2.sql)
 
 2.7.1 (2021-07-02)
 ------------------
