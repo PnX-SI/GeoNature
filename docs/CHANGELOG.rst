@@ -2,12 +2,20 @@
 CHANGELOG
 =========
 
-2.7.2 (unreleased)
+2.7.2 (2021-07-05)
 ------------------
 
 **🐛 Corrections**
 
-* 
+* OCCTAX : correction de la vérification du CRUVED (#1413)
+* OCCTAX : correction deu dégrisement du formulaire au chargement de la fonctionnalité "mes lieux"
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
+
 
 2.7.1 (2021-07-02)
 ------------------

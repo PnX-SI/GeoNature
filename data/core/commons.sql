@@ -778,5 +778,4 @@ INSERT INTO gn_commons.bib_widgets (widget_name) VALUES
 	 ('date'),
 	 ('multiselect'),
 	 ('number'),
-	 ('taxonomy'),
 	 ('html');
