@@ -401,7 +401,17 @@ def insertOrUpdateOneReleve(info_role):
 
 
 def releveHandler(request, *, releve, info_role):
-
+    releveSchema = ReleveSchema()
+    # Modification de la requete geojson en releve
+    json_req = request.get_json()
+    json_req["properties"]["geom_4326"] = json_req["geometry"]
+    # chargement des données POST et merge avec relevé initial
+    releve, errors = releveSchema.load(json_req["properties"], instance=releve)
+    if bool(errors):
+        raise InsufficientRightsError(
+            errors,
+            422,
+        )
     # Test des droits d'édition du relevé
     if releve.id_releve_occtax is not None:
         user_cruved = get_or_fetch_user_cruved(
@@ -431,22 +441,6 @@ def releveHandler(request, *, releve, info_role):
                 )
         # set id_digitiser
         releve.id_digitiser = info_role.id_role
-    # creation du relevé à partir du POST
-    releveSchema = ReleveSchema()
-
-    # Modification de la requete geojson en releve
-    json_req = request.get_json()
-    json_req["properties"]["geom_4326"] = json_req["geometry"]
-    #json_req["properties"]["additional_fields"] = json_req["additional_fields"]
-    #print(json_req)
-    # chargement des données POST et merge avec relevé initial
-    releve, errors = releveSchema.load(json_req["properties"], instance=releve)
-    if bool(errors):
-        raise InsufficientRightsError(
-            errors,
-            422,
-        )
-
     DB.session.add(releve)
     DB.session.commit()
     DB.session.flush()
