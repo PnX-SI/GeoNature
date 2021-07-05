@@ -9,7 +9,7 @@ from flask import (
     send_from_directory,
     render_template,
 )
-from werkzeug.exceptions import BadRequest, NotFound
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Unauthorized
 from geonature.core.gn_commons.models import TAdditionalFields
 from sqlalchemy import or_, func, distinct, case
 from sqlalchemy.orm.exc import NoResultFound
@@ -22,7 +22,6 @@ from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
 from geonature.utils.env import DB, ROOT_DIR
 from pypnusershub.db.models import User
-from pypnusershub.db.tools import InsufficientRightsError
 from utils_flask_sqla_geo.generic import GenericTableGeo
 
 from geonature.utils import filemanager
@@ -387,11 +386,11 @@ def insertOrUpdateOneReleve(info_role):
             # Check if user can add a releve in the current dataset
             allowed = releve.user_is_in_dataset_actor(info_role)
             if not allowed:
-                raise InsufficientRightsError(
+                print('PASSE LA ?????')
+                raise Forbidden(
                     "User {} has no right in dataset {}".format(
                         info_role.id_role, releve.id_dataset
-                    ),
-                    403,
+                    )
                 )
         DB.session.add(releve)
     DB.session.commit()
@@ -408,7 +407,7 @@ def releveHandler(request, *, releve, info_role):
     # chargement des données POST et merge avec relevé initial
     releve, errors = releveSchema.load(json_req["properties"], instance=releve)
     if bool(errors):
-        raise InsufficientRightsError(
+        raise BadRequest(
             errors,
             422,
         )
@@ -433,11 +432,10 @@ def releveHandler(request, *, releve, info_role):
             # Check if user can add a releve in the current dataset
             allowed = releve.user_is_in_dataset_actor(info_role)
             if not allowed:
-                raise InsufficientRightsError(
+                raise Forbidden(
                     "User {} has no right in dataset {}".format(
                         info_role.id_role, releve.id_dataset
-                    ),
-                    403,
+                    )
                 )
         # set id_digitiser
         releve.id_digitiser = info_role.id_role
@@ -527,10 +525,7 @@ def occurrenceHandler(request, *, occurrence, info_role):
         raise
 
     if not releve:
-        raise InsufficientRightsError(
-            {"message": "not found"},
-            404,
-        )
+        raise NotFound
 
     # Test des droits d'édition du relevé si modification
     if occurrence.id_occurrence_occtax is not None:

@@ -2,7 +2,7 @@ import json
 import pkg_resources
 
 import pytest
-from flask import testing
+from flask import testing, url_for
 from werkzeug.datastructures import Headers
 
 from geonature import create_app
@@ -56,7 +56,8 @@ def users(app):  # an app context is required
     app = Application.query.filter(Application.code_application=='GN').one()
     profil = Profil.query.filter(Profil.nom_profil=='Lecteur').one()
 
-    import_module = TModules.query.filter_by(module_code='IMPORT').one()
+    modules = TModules.query.filter(TModules.module_code.in_(["IMPORT", "OCCTAX"])).all()
+
     actions = { code: TActions.query.filter(TActions.code_action == code).one()
                 for code in 'CRUVED' }
     filters = [
@@ -79,11 +80,13 @@ def users(app):  # an app context is required
             db.session.add(right)
             if scope:
                 for action in actions.values():
-                    permission = CorRoleActionFilterModuleObject(
-                                        role=user,
-                                        action=action,
-                                        filter=scope,
-                                        module=import_module)
+                    for module in modules:
+                        permission = CorRoleActionFilterModuleObject(
+                                            role=user,
+                                            action=action,
+                                            filter=scope,
+                                            module=module
+                                    )
                     db.session.add(permission)
             return user
 
@@ -170,3 +173,35 @@ def temporary_transaction(app):
 
     inner_transaction.rollback()  # probably rollback not so much
     outer_transaction.rollback()  # rollback all changes made during this test
+
+
+@pytest.fixture()
+def releve_data(client, datasets):
+    """
+        Releve associated with dataset created by "user"
+    """
+    id_dataset = datasets["own_dataset"].id_dataset
+    response = client.get(url_for("pr_occtax.getDefaultNomenclatures"))
+    default_nomenclatures = response.get_json()
+    data = {
+        "depth": 2,
+        "geometry": {"type": "Point", "coordinates": [3.428936004638672, 44.276611357355904],},
+        "properties": {
+            "id_dataset": id_dataset,
+            "id_digitiser": 1,
+            "date_min": "2018-03-02",
+            "date_max": "2018-03-02",
+            "hour_min": None,
+            "hour_max": None,
+            "altitude_min": None,
+            "altitude_max": None,
+            "meta_device_entry": "web",
+            "comment": None,
+            "id_nomenclature_obs_technique": default_nomenclatures["TECHNIQUE_OBS"],
+            "observers": [1],
+            "observers_txt": "tatatato",
+            "id_nomenclature_grp_typ": default_nomenclatures["TYP_GRP"],
+        },
+    }
+
+    return data

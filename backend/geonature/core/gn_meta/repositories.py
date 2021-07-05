@@ -1,6 +1,4 @@
 import logging
-import json
-from pypnusershub.db.tools import InsufficientRightsError
 
 from sqlalchemy import or_, String, Date, and_
 from sqlalchemy.inspection import inspect

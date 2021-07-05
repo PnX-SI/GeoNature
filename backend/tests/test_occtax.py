@@ -1,10 +1,9 @@
 import json
 import pytest
 from flask import url_for, session, Response, request
+from werkzeug.exceptions import Forbidden
 from .bootstrap_test import app, releve_data, post_json, json_of_response, get_token
 from cookies import Cookie
-
-from pypnusershub.db.tools import InsufficientRightsError
 
 
 @pytest.mark.usefixtures("client_class")
@@ -108,7 +107,6 @@ class TestApiModulePrOcctax:
         )
 
         assert response.status_code == 200
-
     def test_get_export_sinp(self):
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
@@ -167,5 +165,5 @@ class TestApiModulePrOcctax:
         token = get_token(self.client, login="agent", password="admin")
         self.client.set_cookie("/", "token", token)
 
-        with pytest.raises(InsufficientRightsError):
+        with pytest.raises(Forbidden):
             response = self.client.get(url_for("pr_occtax.deleteOneReleve", id_releve=1))
