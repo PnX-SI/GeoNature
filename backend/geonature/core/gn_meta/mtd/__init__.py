@@ -11,7 +11,6 @@ from geonature.utils.config import config
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets, CorAcquisitionFrameworkActor, CorDatasetActor
 from geonature.core.auth.routes import insert_user_and_org
-from geonature.core.command.main import main
 
 from pypnusershub.db.models import User, Organisme
 
