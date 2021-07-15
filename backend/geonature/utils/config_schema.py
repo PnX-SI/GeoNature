@@ -45,6 +45,7 @@ class EmailStrOrListOfEmailStrField(fields.Field):
 
 class CasUserSchemaConf(Schema):
     URL = fields.Url(missing="https://inpn.mnhn.fr/authentication/information")
+    BASE_URL = fields.Url(missing="https://inpn.mnhn.fr/authentication/")
     ID = fields.String(missing="mon_id")
     PASSWORD = fields.String(missing="mon_pass")
 

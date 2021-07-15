@@ -5,6 +5,7 @@ import datetime as dt
 import json
 import logging
 import threading
+import click
 
 
 from pathlib import Path
@@ -69,6 +70,7 @@ from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_meta.mtd import mtd_utils
+from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
 from geonature.utils.errors import GeonatureApiError
@@ -76,7 +78,7 @@ from geonature.utils.errors import GeonatureApiError
 
 
 
-routes = Blueprint("gn_meta", __name__)
+routes = Blueprint("gn_meta", __name__, cli_group='metadata')
 
 # get the root logger
 log = logging.getLogger()
@@ -1140,3 +1142,8 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
     .. :quickref: Metadata;
     """
     return mtd_utils.post_jdd_from_user(id_user=id_user, id_organism=id_organism)
+
+
+@routes.cli.command()
+def mtd_sync():
+    mtd_sync_af_and_ds()
