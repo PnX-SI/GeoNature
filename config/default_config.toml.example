@@ -131,6 +131,7 @@ MAIL_ON_ERROR = false
 
 [CAS.CAS_USER_WS]
     URL = "https://inpn2.mnhn.fr/authentication/information"
+    BASE_URL = "https://inpn2.mnhn.fr/authentication/"
     ID = "mon_id"
     PASSWORD = "mon_pass"
 
