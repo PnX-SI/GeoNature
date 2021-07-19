@@ -1,6 +1,6 @@
 <div *ngIf="multiSelect; else elseBlock">
   <pnx-multiselect
-    [values]="dataSets"
+    [values]="datasetStore.datasets"
     [parentFormControl]="parentFormControl"
     keyLabel="dataset_name"
     keyValue="id_dataset"
@@ -26,11 +26,11 @@
     >
       <option
         *ngIf="displayAll"
-        [ngValue]="null"
+        [value]="null"
       > Tous </option>
       <option
-        *ngFor="let dataSet of dataSets"
-        [ngValue]="dataSet.id_dataset"
+        *ngFor="let dataSet of datasetStore.datasets"
+        [value]="dataSet.id_dataset"
       >{{ dataSet.dataset_name }}</option>
     </select>
   </div>

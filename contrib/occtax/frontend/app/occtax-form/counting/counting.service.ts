@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Injectable} from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -6,26 +6,37 @@ import {
   AbstractControl,
 } from "@angular/forms";
 import { Observable, Subscription } from "rxjs";
-import { map, filter, tap } from "rxjs/operators";
+import { map, filter, first } from "rxjs/operators";
 
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { MediaService } from '@geonature_common/service/media.service';
+import { DataFormService } from "@geonature_common/form/data-form.service";
 
 @Injectable()
 export class OcctaxFormCountingService {
   // public form: FormGroup;
   counting: any;
   synchroCountSub: Subscription;
+  public form: FormGroup;
+  public data : any;
 
   constructor(
+    public dataFormService: DataFormService,
     private fb: FormBuilder,
     private occtaxFormService: OcctaxFormService,
     private occtaxParamS: OcctaxFormParamService,
-    private mediaService: MediaService
-  ) {}
+    private mediaService: MediaService,
+  ) {
+    this.occtaxFormService.getAdditionnalFields(["OCCTAX_DENOMBREMENT"])
+    .pipe(first())
+    .subscribe(
+      addFields => {
+        this.occtaxFormService.globalCountingAddFields = addFields;
+      });
+  }
 
-  createForm(patchWithDefaultValues: boolean = false): FormGroup {
+  createForm(patchWithDefaultValues: boolean = false): FormGroup {    
     const form = this.fb.group({
       id_counting_occtax: null,
       id_nomenclature_life_stage: [null, Validators.required],
@@ -35,7 +46,8 @@ export class OcctaxFormCountingService {
       count_min: [null, [Validators.required, Validators.pattern("[0-9]+")]],
       count_max: [null, [Validators.required, Validators.pattern("[0-9]+")]],
       medias: [[], this.mediaService.mediasValidator()],
-    });
+      additional_fields: this.fb.group({})
+    }); 
 
     form.setValidators([this.countingValidator]);
 
@@ -48,6 +60,7 @@ export class OcctaxFormCountingService {
         )
         .subscribe((count_min) => form.get("count_max").setValue(count_min));
     }
+    // load global additional fields (not related to a dataset)
 
     return form;
   }
@@ -60,6 +73,7 @@ export class OcctaxFormCountingService {
     }
     return null;
   }
+
 
   private get defaultValues(): Observable<any> {
     return this.occtaxFormService

@@ -17,7 +17,6 @@ LOCAL_SRID = 2154
 # Langue principale par défaut
 DEFAULT_LANGUAGE='fr'
 
-
 #######################################################################################
 ###### Si vous souhaitez surcoucher certains paramètres,
 ###### compléter les sections ci-dessous à partir du modèle default_config.toml.example

@@ -7,25 +7,22 @@ from flask import (
     current_app,
     session,
     send_from_directory,
-    redirect,
-    make_response,
-    Response,
     render_template,
 )
-from sqlalchemy import or_, func, distinct
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Unauthorized
+from geonature.core.gn_commons.models import TAdditionalFields
+from sqlalchemy import or_, func, distinct, case
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.orm import joinedload
-from geojson import FeatureCollection
+from geojson import Feature, FeatureCollection
 from shapely.geometry import asShape
-from geoalchemy2.shape import from_shape
+from geoalchemy2.shape import from_shape, to_shape
 
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
 from geonature.utils.env import DB, ROOT_DIR
 from pypnusershub.db.models import User
-from pypnusershub.db.tools import InsufficientRightsError
 from utils_flask_sqla_geo.generic import GenericTableGeo
-from utils_flask_sqla.generic import testDataType
 
 from geonature.utils import filemanager
 from .models import (
@@ -33,8 +30,7 @@ from .models import (
     TOccurrencesOccurrence,
     CorCountingOccurrence,
     VReleveOccurrence,
-    corRoleRelevesOccurrence,
-    DefaultNomenclaturesValue,
+    DefaultNomenclaturesValue
 )
 from .repositories import (
     ReleveRepository,
@@ -42,15 +38,15 @@ from .repositories import (
     get_query_occtax_order,
 )
 from .schemas import OccurrenceSchema, ReleveCruvedSchema, ReleveSchema
-from .utils import get_nomenclature_filters
-from utils_flask_sqla.response import to_csv_resp, to_json_resp, csv_resp, json_resp
+from .utils import as_dict_with_add_cols
+from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
 from geonature.core.users.models import UserRigth
-from geonature.core.gn_meta.models import TDatasets, CorDatasetActor
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
+
 
 blueprint = Blueprint("pr_occtax", __name__)
 log = logging.getLogger(__name__)
@@ -100,16 +96,15 @@ def getReleves(info_role):
     for n in data:
         releve_cruved = n.get_releve_cruved(user, user_cruved)
         feature = n.get_geofeature(
-            relationships=(
-                "t_occurrences_occtax",
-                "cor_counting_occtax",
-                "taxref",
-                "observers",
-                "digitiser",
-                "dataset",
-                "right",
-                "medias",
-            )
+			fields=[
+				"t_occurrences_occtax",
+				"t_occurrences_occtax.cor_counting_occtax",
+				"t_occurrences_occtax.taxref",
+				"observers",
+				"digitiser",
+				"dataset",
+				"t_occurrences_occtax.cor_counting_occtax.medias"
+            ]
         )
         feature["properties"]["rights"] = releve_cruved
         featureCollection.append(feature)
@@ -311,6 +306,7 @@ def insertOrUpdateOneReleve(info_role):
 
     releveRepository = ReleveRepository(TRelevesOccurrence)
     data = dict(request.get_json())
+    depth = data.pop("depth", None)
     occurrences_occtax = None
     if "t_occurrences_occtax" in data["properties"]:
         occurrences_occtax = data["properties"]["t_occurrences_occtax"]
@@ -390,21 +386,30 @@ def insertOrUpdateOneReleve(info_role):
             # Check if user can add a releve in the current dataset
             allowed = releve.user_is_in_dataset_actor(info_role)
             if not allowed:
-                raise InsufficientRightsError(
+                raise Forbidden(
                     "User {} has no right in dataset {}".format(
                         info_role.id_role, releve.id_dataset
-                    ),
-                    403,
+                    )
                 )
         DB.session.add(releve)
     DB.session.commit()
     DB.session.flush()
 
-    return releve.get_geofeature()
+    return releve.get_geofeature(depth=depth)
 
 
 def releveHandler(request, *, releve, info_role):
-
+    releveSchema = ReleveSchema()
+    # Modification de la requete geojson en releve
+    json_req = request.get_json()
+    json_req["properties"]["geom_4326"] = json_req["geometry"]
+    # chargement des données POST et merge avec relevé initial
+    releve, errors = releveSchema.load(json_req["properties"], instance=releve)
+    if bool(errors):
+        raise BadRequest(
+            errors,
+            422,
+        )
     # Test des droits d'édition du relevé
     if releve.id_releve_occtax is not None:
         user_cruved = get_or_fetch_user_cruved(
@@ -420,33 +425,19 @@ def releveHandler(request, *, releve, info_role):
 
         releve = releve.get_releve_if_allowed(user)
         # fin test, si ici => c'est ok
-
-    # creation du relevé à partir du POST
-    releveSchema = ReleveSchema()
-
-    # Modification de la requete geojson en releve
-    json_req = request.get_json()
-    json_req["properties"]["geom_4326"] = json_req["geometry"]
-    # chargement des données POST et merge avec relevé initial
-    releve, errors = releveSchema.load(json_req["properties"], instance=releve)
-    if bool(errors):
-        raise InsufficientRightsError(
-            errors,
-            422,
-        )
-    # set id_digitiser
-    releve.id_digitiser = info_role.id_role
-    if info_role.value_filter in ("0", "1", "2"):
-        # Check if user can add a releve in the current dataset
-        allowed = releve.user_is_in_dataset_actor(info_role)
-        if not allowed:
-            raise InsufficientRightsError(
-                "User {} has no right in dataset {}".format(
-                    info_role.id_role, releve.id_dataset
-                ),
-                403,
-            )
-
+    # if creation
+    else:
+        if info_role.value_filter in ("0", "1", "2"):
+            # Check if user can add a releve in the current dataset
+            allowed = releve.user_is_in_dataset_actor(info_role)
+            if not allowed:
+                raise Forbidden(
+                    "User {} has no right in dataset {}".format(
+                        info_role.id_role, releve.id_dataset
+                    )
+                )
+        # set id_digitiser
+        releve.id_digitiser = info_role.id_role
     DB.session.add(releve)
     DB.session.commit()
     DB.session.flush()
@@ -533,10 +524,7 @@ def occurrenceHandler(request, *, occurrence, info_role):
         raise
 
     if not releve:
-        raise InsufficientRightsError(
-            {"message": "not found"},
-            404,
-        )
+        raise NotFound
 
     # Test des droits d'édition du relevé si modification
     if occurrence.id_occurrence_occtax is not None:
@@ -558,8 +546,7 @@ def occurrenceHandler(request, *, occurrence, info_role):
     occurrence, errors = occurrenceSchema.load(request.get_json(), instance=occurrence)
 
     if bool(errors):
-        return errors, 422
-
+        raise BadRequest(str(errors))
     DB.session.add(occurrence)
     DB.session.commit()
 
@@ -576,10 +563,10 @@ def createOccurrence(id_releve, info_role):
     # get releve by id_releve
     occurrence = TOccurrencesOccurrence()
     occurrence.id_releve_occtax = id_releve
-
     return OccurrenceSchema().dump(
         occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role)
     )
+
 
 
 @blueprint.route("/occurrence/<int:id_occurrence>", methods=["POST"])
@@ -735,13 +722,15 @@ def export(info_role):
 
     .. :quickref: Occtax; Export data from pr_occtax.v_export_occtax
 
-    :query str format: format of the export ('csv', 'geojson', 'shapefile')
+    :query str format: format of the export ('csv', 'geojson', 'shapefile', 'gpkg')
 
     """
     export_view_name = blueprint.config["export_view_name"]
     export_geom_column = blueprint.config["export_geom_columns_name"]
     export_columns = blueprint.config["export_columns"]
     export_srid = blueprint.config["export_srid"]
+    export_format = request.args["format"] if "format" in request.args else "geojson"
+    export_col_name_additional_data = blueprint.config["export_col_name_additional_data"]
 
     export_view = GenericTableGeo(
         tableName=export_view_name,
@@ -749,6 +738,11 @@ def export(info_role):
         engine=DB.engine,
         geometry_field=export_geom_column,
         srid=export_srid,
+    )
+    columns = (
+        export_columns
+        if len(export_columns) > 0
+        else [db_col.key for db_col in export_view.db_cols]
     )
 
     releve_repository = ReleveRepository(export_view)
@@ -761,27 +755,61 @@ def export(info_role):
         obs_txt_column=blueprint.config["export_observer_txt_column"],
     )
 
+    if current_app.config["OCCTAX"]["ADD_MEDIA_IN_EXPORT"]:
+        q, columns = releve_repository.add_media_in_export(q, columns)
     data = q.all()
 
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
 
-    export_format = request.args["format"] if "format" in request.args else "geojson"
+    #Ajout des colonnes additionnels
+    additional_col_names = []
+    query_add_fields = DB.session.query(TAdditionalFields).filter(
+        TAdditionalFields.modules.any(module_code="OCCTAX")
+    )
+    global_add_fields = query_add_fields.filter(~TAdditionalFields.datasets.any()).all()
+    if "id_dataset" in request.args:
+        dataset_add_fields = query_add_fields.filter(
+            TAdditionalFields.datasets.any(id_dataset=request.args['id_dataset'])
+        ).all()
+        global_add_fields = [*global_add_fields, *dataset_add_fields]
+
+
+    additional_col_names = [field.field_name for field in global_add_fields]
     if export_format == "csv":
-        columns = (
-            export_columns
-            if len(export_columns) > 0
-            else [db_col.key for db_col in export_view.db_cols]
-        )
+        # serialize data with additional cols or not
+        columns = columns + additional_col_names
+        if additional_col_names:
+            serialize_result = [
+                as_dict_with_add_cols(
+                    export_view, row, export_col_name_additional_data, additional_col_names
+                ) for row in data
+            ]
+        else:
+            serialize_result = [export_view.as_dict(row) for row in data]
         return to_csv_resp(
-            file_name, [export_view.as_dict(d) for d in data], columns, ";"
+            file_name, serialize_result , columns, ";"
         )
     elif export_format == "geojson":
-        results = FeatureCollection(
-            [export_view.as_geofeature(d, columns=export_columns) for d in data]
-        )
+        if additional_col_names:
+            features = []
+            for row in data :
+                properties = as_dict_with_add_cols(
+                    export_view, row, export_col_name_additional_data, additional_col_names
+                )
+                feature = Feature(
+                    properties=properties,
+                    geometry=to_shape(getattr(row, export_geom_column))
+                )
+                features.append(feature)
+            serialize_result = FeatureCollection(features)
+
+        else:
+            serialize_result = FeatureCollection(
+                [export_view.as_geofeature(d, fields=export_columns) for d in data]
+            )
         return to_json_resp(
-            results, as_file=True, filename=file_name, indent=4, extension="geojson"
+            serialize_result, as_file=True, filename=file_name, indent=4, extension="geojson"
         )
     else:
         try:
@@ -796,8 +824,11 @@ def export(info_role):
                 data=data,
                 file_name=file_name,
             )
-            return send_from_directory(dir_name, file_name, as_attachment=True)
+            db_cols = [
+                db_col for db_col in export_view.db_cols if db_col.key in export_columns
+            ]
 
+            return send_from_directory(dir_name, file_name, as_attachment=True)
         except GeonatureApiError as e:
             message = str(e)
 

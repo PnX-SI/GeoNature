@@ -21,6 +21,7 @@
     *ngIf="occtaxConfig.ENABLE_UPLOAD_TOOL"
     [editMode]="true"
     (onLoad)="infoMessageFileLayer()"
+    (onGeomChange)="sendGeoInfo($event)"
     [style]="{'color': 'green'}"
   >
   </pnx-leaflet-filelayer>
@@ -40,6 +41,7 @@
   <pnx-placesList
     *ngIf="occtaxConfig.ENABLE_MY_PLACES"
     (markerChanged)="sendGeoInfo($event)"
+    (layerDrawed)="sendGeoInfo($event)"
   >
   </pnx-placesList>
 

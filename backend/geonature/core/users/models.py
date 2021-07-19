@@ -19,22 +19,6 @@ class VUserslistForallMenu(DB.Model):
 
 
 @serializable
-class BibOrganismes(DB.Model):
-    __tablename__ = "bib_organismes"
-    __table_args__ = {"schema": "utilisateurs", "extend_existing": True}
-    id_organisme = DB.Column(DB.Integer, primary_key=True)
-    uuid_organisme = DB.Column(
-        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
-    )
-    nom_organisme = DB.Column(DB.Unicode)
-    cp_organisme = DB.Column(DB.Unicode)
-    ville_organisme = DB.Column(DB.Unicode)
-    tel_organisme = DB.Column(DB.Unicode)
-    fax_organisme = DB.Column(DB.Unicode)
-    email_organisme = DB.Column(DB.Unicode)
-
-
-@serializable
 class CorRole(DB.Model):
     __tablename__ = "cor_roles"
     __table_args__ = {"schema": "utilisateurs", "extend_existing": True}

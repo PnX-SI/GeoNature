@@ -899,6 +899,7 @@ CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
         s.unique_id_sinp_grp AS uuid_perm_grp_sinp,
         s.meta_create_date AS date_creation,
         s.meta_update_date AS date_modification,
+        s.additional_data as champs_additionnels,
         COALESCE(s.meta_update_date, s.meta_create_date) AS derniere_action,
         s.id_nomenclature_sensitivity,
         s.id_nomenclature_diffusion_level

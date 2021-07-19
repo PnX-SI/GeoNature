@@ -4,6 +4,7 @@ import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 import { GNPanelModule } from "@geonature/templates/gn-panel/gn-panel.module";
+
 // Components
 import { OcctaxMapListComponent } from "./occtax-map-list/occtax-map-list.component";
 import { OcctaxMapListFilterComponent } from "./occtax-map-list/filter/occtax-map-list-filter.component";
@@ -21,24 +22,30 @@ import { OcctaxFormParamDialog } from "./occtax-form/form-param/form-param.dialo
 import { OcctaxDataService } from "./services/occtax-data.service";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 
-import { OcctaxFormService } from "./occtax-form/occtax-form.service";
 import { OcctaxFormMapService } from "./occtax-form/map/map.service";
-import { OcctaxFormReleveService } from "./occtax-form/releve/releve.service";
-import { OcctaxFormOccurrenceService } from "./occtax-form/occurrence/occurrence.service";
-import { OcctaxFormCountingService } from "./occtax-form/counting/counting.service";
-import { OcctaxTaxaListService } from "./occtax-form/taxa-list/taxa-list.service";
 import { OcctaxFormParamService } from "./occtax-form/form-param/form-param.service";
 
-import { MatSlideToggleModule } from "@angular/material";
+import { MatSlideToggleModule, MatTabsModule } from "@angular/material";
 
 const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },
-  { path: "form", component: OcctaxFormComponent },
-  { path: "form/:id", component: OcctaxFormComponent, pathMatch: "full" },
-  {
-    path: "form/:id/taxons",
+  { 
+    path: "form", 
     component: OcctaxFormComponent,
-    pathMatch: "full",
+    children : [
+      {
+        path: "releve",
+        component: OcctaxFormReleveComponent
+      },
+      {
+        path: "releve/:id",
+        component: OcctaxFormReleveComponent
+      },
+      {
+        path: ":id/taxons",
+        component: OcctaxFormOccurrenceComponent
+      }
+    ] 
   },
   { path: "info/:id", component: OcctaxMapInfoComponent, pathMatch: "full" },
   {
@@ -54,6 +61,7 @@ const routes: Routes = [
     GN2CommonModule,
     CommonModule,
     MatSlideToggleModule,
+    MatTabsModule,
     NgbModule,
     GNPanelModule,
   ],
@@ -69,17 +77,11 @@ const routes: Routes = [
     OcctaxFormCountingComponent,
     OcctaxFormParamDialog,
   ],
-  entryComponents: [OcctaxFormParamDialog],
   providers: [
     OcctaxDataService,
     MapListService,
-    OcctaxFormService,
     OcctaxFormMapService,
-    OcctaxFormReleveService,
-    OcctaxFormOccurrenceService,
-    OcctaxFormCountingService,
-    OcctaxTaxaListService,
     OcctaxFormParamService,
   ],
 })
-export class GeonatureModule { }
+export class GeonatureModule {}

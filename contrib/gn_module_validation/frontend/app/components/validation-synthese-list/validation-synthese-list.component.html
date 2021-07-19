@@ -3,7 +3,7 @@
   #table
   class="material striped margin-top-xs table-size expandable"
   [rows]="mapListService.tableData"
-  [columns]="VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND"
+  [columns]="VALIDATION_CONFIG.COLUMN_LIST"
   [columnMode]="'force'"
   [headerHeight]="50"
   [footerHeight]="35"
@@ -24,7 +24,6 @@
     [checkboxable]="true"
     [maxWidth]="10"
   >
-
     <ng-template ngx-datatable-header-template>
       <label class="datatable-checkbox">
         <input
@@ -87,9 +86,9 @@
 
 
   <ngx-datatable-column
-    *ngFor="let col of VALIDATION_CONFIG.LIST_COLUMNS_FRONTEND"
-    name="{{col.name}}"
-    prop="{{col.prop}}"
+    *ngFor="let col of VALIDATION_CONFIG.COLUMN_LIST"
+    name="{{col.column_label}}"
+    prop="{{col.column_name }}"
     maxWidth="{{col.max_width||10000}}"
     minWidth="{{col.min_width||10}}"
   >
@@ -98,14 +97,14 @@
             'date_min', 'date_max',
             'meta_validation_date', 'meta_create_date', 'meta_update_date',
             'validation_date'
-          ].includes(col.prop)"
+          ].includes(col.column_name)"
       let-row="row"
       ngx-datatable-cell-template
     >
-      {{row[col.prop] | date:'dd-MM-yyyy'}}
+      {{row[col.column_name] | date:'dd-MM-yyyy'}}
     </ng-template>
     <ng-template
-      *ngIf="col.prop === 'id_nomenclature_valid_status'"
+      *ngIf="col.column_name === 'id_nomenclature_valid_status'"
       let-row="row"
       ngx-datatable-cell-template
     >
@@ -126,41 +125,6 @@
       </div>
     </ng-template>
   </ngx-datatable-column>
-
-
-
-
-  <ngx-datatable-footer>
-    <ng-template
-      ngx-datatable-footer-template
-      let-rowCount="rowCount"
-      let-pageSize="pageSize"
-      let-selectedCount="selectedCount"
-      ,
-      let-curPage="curPage"
-      ,
-      let-offset="offset"
-    >
-
-
-      <datatable-pager
-        [pagerLeftArrowIcon]="'datatable-icon-left'"
-        [pagerRightArrowIcon]="'datatable-icon-right'"
-        [pagerPreviousIcon]="'datatable-icon-prev'"
-        [pagerNextIcon]="'datatable-icon-skip'"
-        [page]="curPage"
-        [size]="pageSize"
-        [count]="rowCount"
-        [hidden]="!((rowCount / pageSize) > 0)"
-        (change)="handlePageChange($event)"
-        (change)="table.onFooterPage($event)"
-      >
-        >
-      </datatable-pager>
-
-    </ng-template>
-
-  </ngx-datatable-footer>
 
 </ngx-datatable>
 
