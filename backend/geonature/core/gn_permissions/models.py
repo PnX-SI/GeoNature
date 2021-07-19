@@ -10,7 +10,6 @@ from sqlalchemy.dialects.postgresql import JSONB, UUID
 from utils_flask_sqla.serializers import serializable
 from pypnusershub.db.models import User
 
-from geonature.core.gn_commons.models import TModules
 from geonature.utils.env import DB
 
 
@@ -38,7 +37,7 @@ class VUsersPermissions(DB.Model):
     end_date = DB.Column(DB.DateTime)
     id_permission = DB.Column(DB.Integer)
 
-    def __repr__(self):
+    def __str__(self):
         msg = (
             "VUsersPermissions " +
             f"role='{self.id_role}', " +
@@ -94,6 +93,23 @@ class TActions(DB.Model):
     description_action = DB.Column(DB.Unicode)
 
 
+cor_object_module = DB.Table(
+    "cor_object_module",
+    DB.Column(
+        "id_cor_object_module", DB.Integer, primary_key=True,
+    ),
+    
+    DB.Column(
+        "id_object", DB.Integer,
+          ForeignKey("gn_permissions.t_objects.id_object"),
+    ),
+    DB.Column(
+        "id_module", DB.Integer,
+        ForeignKey("gn_commons.t_modules.id_module"),
+    ),
+    schema="gn_permissions",
+)
+
 @serializable
 class TObjects(DB.Model):
     __tablename__ = "t_objects"
@@ -102,6 +118,8 @@ class TObjects(DB.Model):
     code_object = DB.Column(DB.Unicode)
     description_object = DB.Column(DB.Unicode)
 
+    def __str__(self):
+        return f"{self.code_object} ({self.description_object})"
 
 @serializable
 class CorRoleActionFilterModuleObject(DB.Model):

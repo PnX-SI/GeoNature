@@ -1,12 +1,68 @@
+from pyrsistent import v
 import pytest
 
 from flask import url_for, current_app
+from jsonschema import validate
 from sqlalchemy.sql import func
+
 
 from .bootstrap_test import app, post_json, json_of_response, get_token
 
 from geonature.core.users import routes as users
 
+dataset_schema = {
+    "type": "object",
+    "properties": {
+        "acquisition_framework": {"type": "object"},
+        "cor_dataset_actor": {"type": "array"},
+        "creator": {"type": "object"},
+        "id_digitizer": {"type": "number"},
+        "dataset_name": {"type": "string"},
+        "dataset_shortname": {"type": "string"},
+        "dataset_desc": {"type": "string"},
+        "id_nomenclature_data_type": {"type": "integer"},
+        "id_nomenclature_source_status": {"type": "integer"},
+        "id_nomenclature_dataset_objectif": {"type": "integer"},
+        "id_nomenclature_collecting_method": {"type": "integer"},
+        "id_nomenclature_data_origin": {"type": "integer"},
+        "id_nomenclature_resource_type": {"type": "integer"},
+        "cor_territories": {"type": "array"},
+
+    },
+    "required": [
+        "id_digitizer", 
+        "acquisition_framework", "cor_dataset_actor", "creator", 
+        "dataset_name", "dataset_shortname",
+        "dataset_desc", "id_nomenclature_data_type", "id_nomenclature_source_status",
+        "id_nomenclature_dataset_objectif", "id_nomenclature_collecting_method",
+        "id_nomenclature_data_origin", "id_nomenclature_resource_type",
+        "cor_territories"
+    ]
+}
+
+af_schema = {
+    "type": "object",
+    "properties": {
+        "t_datasets": {"type": "array"},
+        "cor_af_actor": {"type": "array"},
+        "cor_territories": {"type": "array"},
+        "creator": {"type": "object"},
+        "id_digitizer": {"type": "number"},
+        "acquisition_framework_name": {"type": "string"},
+        "acquisition_framework_desc": {"type": "string"},
+        "acquisition_framework_start_date": {"type": "string"},                
+    },
+    "required": [
+        "id_digitizer", 
+        "t_datasets", 
+        "cor_af_actor", 
+        "creator",
+        "acquisition_framework_name",
+        "acquisition_framework_desc",
+        "cor_territories",
+        "acquisition_framework_start_date"
+    ]
+}
 
 @pytest.mark.usefixtures("client_class")
 class TestGnMeta:
@@ -18,7 +74,10 @@ class TestGnMeta:
         token = get_token(self.client, login="admin", password="admin")
         self.client.set_cookie("/", "token", token)
 
-        response = self.client.get(url_for("gn_meta.get_datasets"))
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            query_string={"depth":1}
+        )
 
         # check fields for mobile
         data = json_of_response(response)
@@ -37,10 +96,21 @@ class TestGnMeta:
         assert "module_path" in module
         assert response.status_code == 200
 
+        # test with depth = 0 (default param)
+        response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+        )
+        assert response.status_code == 200
+        data = json_of_response(response)
+        ds = data["data"][0]
+        assert "modules" not in ds
+
     def test_one_dataset(self):
         """
         API to get one dataset from id_dataset
         """
+        token = get_token(self.client, login="admin", password="admin")
+        self.client.set_cookie("/", "token", token)
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=1))
         assert response.status_code == 200
 
@@ -62,7 +132,9 @@ class TestGnMeta:
         """
         token = get_token(self.client, login="partenaire", password="admin")
         self.client.set_cookie("/", "token", token)
-        response = self.client.get(url_for("gn_meta.get_datasets"))
+        response = self.client.get(
+            url_for("gn_meta.get_datasets")
+        )
         dataset_list = json_of_response(response)
         assert (
             response.status_code == 200
@@ -70,38 +142,36 @@ class TestGnMeta:
             and dataset_list["data"][0]["id_dataset"] == 3
         )
 
-    # def test_mtd_interraction(self):
-    #     from geonature.core.gn_meta.mtd_utils import (
-    #         post_jdd_from_user,
-    #         get_jdd_by_user_id,
-    #         parse_jdd_xml,
-    #     )
+    def test_mtd_interraction(self):
+        from geonature.core.gn_meta.mtd.mtd_utils import (
+            post_jdd_from_user
+        )
 
-    #     """
-    #     Test du web service MTD
-    #     A partir d'un utilisateur renvoyé par le CAS
-    #     on insert l'utilisateur 'demo.geonature' et son organisme s'il existe pas
-    #     puis on poste les CA et JDD renvoyé à le WS MTD
-    #     """
-    #     user = {
-    #         "id_role": 10991,
-    #         "identifiant": "test.mtd",
-    #         "nom_role": "test_mtd",
-    #         "prenom_role": "test_mtd",
-    #         "id_organisme": 104,
-    #     }
+        """
+        Test du web service MTD
+        A partir d'un utilisateur renvoyé par le CAS
+        on insert l'utilisateur 'demo.geonature' et son organisme s'il existe pas
+        puis on poste les CA et JDD renvoyé à le WS MTD
+        """
+        user = {
+            "id_role": 10991,
+            "identifiant": "test.mtd",
+            "nom_role": "test_mtd",
+            "prenom_role": "test_mtd",
+            "id_organisme": 104,
+        }
 
-    #     organism = {"id_organisme": 104, "nom_organisme": "test"}
-    #     resp = users.insert_organism(organism)
-    #     assert resp.status_code == 200
+        organism = {"id_organisme": 104, "nom_organisme": "test"}
+        resp = users.insert_organism(organism)
+        assert resp.status_code == 200
 
-    #     resp = users.insert_role(user)
-    #     # id_role 10 = id_socle 1 in test
-    #     users.insert_in_cor_role(10, user["id_role"])
-    #     assert resp.status_code == 200
+        resp = users.insert_role(user)
+        # id_role 10 = id_socle 1 in test
+        users.insert_in_cor_role(10, user["id_role"])
+        assert resp.status_code == 200
 
-    #     jdds = post_jdd_from_user(id_user=10991, id_organism=104)
-    #     assert len(jdds) >= 1
+        jdds = post_jdd_from_user(id_user=10991, id_organism=104)
+        assert len(jdds) >= 1
 
     def test_post_and_update_dataset(self):
         token = get_token(self.client, login="admin", password="admin")
@@ -124,25 +194,28 @@ class TestGnMeta:
             "dataset_name": "a",
             "dataset_shortname": "a",
             "id_acquisition_framework": 1,
-            "id_dataset": 5,
             "id_nomenclature_collecting_method": 405,
             "id_nomenclature_data_type": 323,
             "id_nomenclature_dataset_objectif": 408,
             "id_nomenclature_resource_type": 321,
             "id_nomenclature_source_status": 73,
+            # meta_dates must be ignored NEVER post !
+            "meta_create_date": "lala",
+            "meta_update_date": "lala",
             "keywords": None,
             "marine_domain": False,
             "terrestrial_domain": True,
             "validable": True,
-            "modules": [1],
+            # meta_dates must be ignored NEVER post !
+            "modules": [{"id_module": 1, "meta_create_date": "fake_date", "meta_update_date": "fake_date"}],
         }
-        response = post_json(self.client, url_for("gn_meta.post_dataset"), json_dict=one_dataset)
-        dataset = json_of_response(response)
-        assert len(dataset["modules"]) == 1
+        response = post_json(self.client, url_for("gn_meta.create_dataset"), json_dict=one_dataset)
         assert response.status_code == 200
+        dataset = response.get_json()
+        assert len(dataset["modules"]) == 1
 
-        # edition
-        # fetch dataset
+        validate(instance=dataset, schema=dataset_schema)
+
         response = self.client.get(
             url_for("gn_meta.get_dataset", id_dataset=dataset["id_dataset"])
         )
@@ -160,10 +233,11 @@ class TestGnMeta:
         # modification du nom
         fetched_dataset["dataset_name"] = "new_name"
         response = post_json(
-            self.client, url_for("gn_meta.post_dataset"), json_dict=fetched_dataset
+            self.client, url_for("gn_meta.update_dataset", id_dataset=fetched_dataset["id_dataset"]), json_dict=fetched_dataset
         )
         updated_dataset = json_of_response(response)
-        assert "modules" not in updated_dataset
+        assert  len(updated_dataset["modules"]) == 0
+
         assert len(updated_dataset["cor_dataset_actor"]) == 2
         assert updated_dataset["dataset_name"] == "new_name"
         assert response.status_code == 200
@@ -185,11 +259,10 @@ class TestGnMeta:
                     "id_role": None,
                 }
             ],
-            "cor_objectifs": [516],
+            "cor_objectifs": [{"id_nomenclature": 515}],
             "cor_volets_sinp": [],
             "ecologic_or_geologic_target": "aaaa",
-            "id_acquisition_framework": None,
-            "id_nomenclature_financing_type": 383,
+            "id_nomenclature_financing_type": 382,
             "id_nomenclature_territorial_level": 355,
             "is_parent": False,
             "keywords": "ttt",
@@ -198,6 +271,40 @@ class TestGnMeta:
         }
 
         response = post_json(
-            self.client, url_for("gn_meta.post_acquisition_framework"), json_dict=one_ca
+            self.client, url_for("gn_meta.create_acquisition_framework"), json_dict=one_ca
+        )
+        af = response.get_json()
+
+        validate(instance=af, schema=af_schema)
+        assert response.status_code == 200
+
+    def test_get_af_list(self):
+        token = get_token(self.client, login="admin", password="admin")
+        self.client.set_cookie("/", "token", token)
+        query_string = {
+            "nested": "true",
+            "excluded_fields": "creator"
+        }
+        response = self.client.get(
+            url_for("gn_meta.get_acquisition_frameworks_list"),
+            query_string=query_string
         )
         assert response.status_code == 200
+        afs = response.get_json()
+        af = afs[0]
+        assert "creator" not in af 
+        assert "nomenclature_financing_type" in af
+
+    def test_get_afs(self):
+        token = get_token(self.client, login="admin", password="admin")
+        self.client.set_cookie("/", "token", token)
+        response = self.client.get(
+            url_for("gn_meta.get_acquisition_frameworks"),
+        )
+        assert response.status_code == 200
+        afs = response.get_json()
+        af = afs[0]
+        # check there are NO relationship in the result
+        for key, val in af.items():
+            assert type(val) is not dict
+            assert type(val) is not list

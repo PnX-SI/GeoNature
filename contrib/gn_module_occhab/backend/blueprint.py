@@ -123,7 +123,7 @@ def get_one_station(id_station, info_role):
 
     """
     station = DB.session.query(OneStation).get(id_station)
-    station_geojson = station.get_geofeature(True)
+    station_geojson = station.get_geofeature()
     user_cruved = get_or_fetch_user_cruved(
         session=session, id_role=info_role.id_role, module_code="OCCHAB"
     )
@@ -148,7 +148,7 @@ def delete_one_station(id_station, info_role):
     if is_allowed:
         DB.session.delete(station)
         DB.session.commit()
-        return station.get_geofeature(True)
+        return station.get_geofeature()
     else:
         return "Forbidden", 403
 
@@ -188,7 +188,7 @@ def get_all_habitats(info_role):
     )
     feature_list = []
     for d in data:
-        feature = d.get_geofeature(True)
+        feature = d.get_geofeature()
         feature["properties"]["rights"] = d.get_model_cruved(info_role, user_cruved)
 
         feature_list.append(feature)
@@ -234,7 +234,7 @@ def export_all_habitats(
         .limit(blueprint.config["NB_MAX_EXPORT"])
     )
     if export_format == "csv":
-        formated_data = [export_view.as_dict(d, columns=[]) for d in results]
+        formated_data = [export_view.as_dict(d, fields=[]) for d in results]
         return to_csv_resp(
             file_name, formated_data, separator=";", columns=columns_to_serialize
         )
@@ -244,7 +244,7 @@ def export_all_habitats(
             features.append(
                 Feature(
                     geometry=json.loads(r.geojson),
-                    properties=export_view.as_dict(r, columns=columns_to_serialize),
+                    properties=export_view.as_dict(r, fields=columns_to_serialize),
                 )
             )
         return to_json_resp(

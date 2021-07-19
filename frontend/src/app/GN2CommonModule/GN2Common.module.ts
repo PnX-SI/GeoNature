@@ -197,7 +197,6 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
   ],
   providers: [
     CommonService,
-    CruvedStoreService,
     DataFormService,
     DynamicFormService,
     FormService,
@@ -234,7 +233,6 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
     DisplayMediasComponent,
     DisplayMouseOverDirective,
     DumbSelectComponent,
-    DynamicFormComponent,
     FormsModule,
     GenericFormComponent,
     GenericFormGeneratorComponent,

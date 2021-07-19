@@ -55,7 +55,9 @@ def get_cruved(info_role):
     params = request.args.to_dict()
 
     # get modules
-    q = DB.session.query(TModules)
+    q = DB.session.query(TModules).options(
+        joinedload(TModules.objects)
+    )
     if "module_code" in params:
         codes = params["module_code"].split(',')
         q = q.filter(TModules.module_code.in_(codes))
@@ -70,21 +72,20 @@ def get_cruved(info_role):
         module_objects = PermissionRepository().get_module_objects(mod_as_dict["id_module"])
 
         module_cruved, herited = cruved_scope_for_user_in_module(
-            id_role=info_role.id_role, module_code=mod_as_dict["module_code"]
+            id_role=info_role.id_role, module_code=mod_as_dict["module_code"],
         )
         mod_as_dict["cruved"] = module_cruved
 
         module_objects_as_dict = {}
-        # get cruved for each object
-        for _object in module_objects:
-            object_as_dict = _object.as_dict()
+        # # get cruved for each object
+        for _object in mod_as_dict.get("objects", []):
             object_cruved, herited = cruved_scope_for_user_in_module(
                 id_role=info_role.id_role,
                 module_code=mod_as_dict["module_code"],
-                object_code=_object.code_object,
+                object_code=_object["code_object"],
             )
-            object_as_dict["cruved"] = object_cruved
-            module_objects_as_dict[object_as_dict["code_object"]] = object_as_dict
+            _object["cruved"] = object_cruved
+            module_objects_as_dict[_object["code_object"]] = _object
 
             mod_as_dict["module_objects"] = module_objects_as_dict
 

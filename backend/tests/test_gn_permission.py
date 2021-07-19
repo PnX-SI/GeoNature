@@ -1,21 +1,16 @@
 import pytest
 
 
-from flask import url_for, current_app, request, Response
-from werkzeug.exceptions import Unauthorized
+from flask import url_for, request
+from werkzeug.exceptions import Forbidden, Unauthorized
 
 from pypnusershub.db.tools import (
-    InsufficientRightsError,
-    AccessRightsExpiredError,
     UnreadableAccessRightsError,
 )
 from .bootstrap_test import app, json_of_response, get_token
-from pypnusershub.db.tools import InsufficientRightsError
 from geonature.core.gn_permissions.models import (
     VUsersPermissions,
     CorRoleActionFilterModuleObject,
-    BibFiltersType,
-    TObjects,
 )
 from geonature.core.gn_commons.models import TModules
 from geonature.utils.env import DB

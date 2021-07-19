@@ -12,10 +12,11 @@ from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
 from geonature.core.gn_meta.repositories import get_datasets_cruved
 from geonature.core.users.models import (
     VUserslistForallMenu,
-    BibOrganismes,
     CorRole,
     TListes,
 )
+from geonature.utils.config import config
+from pypnusershub.db.models import Organisme as BibOrganismes
 from geonature.core.users.register_post_actions import function_dict
 from pypnusershub.db.models import User
 from pypnusershub.db.models_register import TempUser
@@ -27,12 +28,11 @@ from utils_flask_sqla.response import json_resp
 routes = Blueprint("users", __name__, template_folder="templates")
 log = logging.getLogger()
 s = requests.Session()
-config = current_app.config
 
 # configuration of post_request actions for registrations
 
 
-current_app.config["after_USERSHUB_request"] = function_dict
+config["after_USERSHUB_request"] = function_dict
 
 
 @routes.route("/menu/<int:id_menu>", methods=["GET"])

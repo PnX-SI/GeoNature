@@ -45,6 +45,7 @@ class EmailStrOrListOfEmailStrField(fields.Field):
 
 class CasUserSchemaConf(Schema):
     URL = fields.Url(missing="https://inpn.mnhn.fr/authentication/information")
+    BASE_URL = fields.Url(missing="https://inpn.mnhn.fr/authentication/")
     ID = fields.String(missing="mon_id")
     PASSWORD = fields.String(missing="mon_pass")
 
@@ -80,15 +81,16 @@ class RightsSchemaConf(Schema):
 
 
 class MailConfig(Schema):
-    MAIL_SERVER = fields.String(required=True)
-    MAIL_PORT = fields.Integer(missing=465)
-    MAIL_USE_TLS = fields.Boolean(missing=False)
-    MAIL_USE_SSL = fields.Boolean(missing=True)
-    MAIL_USERNAME = fields.String(required=True)
-    MAIL_PASSWORD = fields.String(required=True)
-    MAIL_DEFAULT_SENDER = fields.String(missing=None)
-    MAIL_MAX_EMAILS = fields.Integer(missing=None)
-    MAIL_ASCII_ATTACHMENTS = fields.Boolean(missing=False)
+    MAIL_SERVER = fields.String(required=False)
+    MAIL_PORT = fields.Integer(required=False)
+    MAIL_USE_TLS = fields.Boolean(required=False)
+    MAIL_USE_SSL = fields.Boolean(required=False)
+    MAIL_USERNAME = fields.String(required=False)
+    MAIL_PASSWORD = fields.String(required=False)
+    MAIL_DEFAULT_SENDER = fields.String(required=False)
+    MAIL_MAX_EMAILS = fields.Integer(required=False)
+    MAIL_SUPPRESS_SEND = fields.Boolean(required=False)
+    MAIL_ASCII_ATTACHMENTS = fields.Boolean(required=False)
     ERROR_MAIL_TO = EmailStrOrListOfEmailStrField(missing=None)
 
 
@@ -124,6 +126,10 @@ class UsersHubConfig(Schema):
     ADMIN_APPLICATION_PASSWORD = fields.String()
     URL_USERSHUB = fields.Url()
 
+class PublicAccess(Schema):
+    PUBLIC_LOGIN = fields.String(missing=None)
+    PUBLIC_PASSWORD = fields.String(missing=None)
+    ENABLE_PUBLIC_ACCESS = fields.Boolean(missing=False)
 
 class ServerConfig(Schema):
     LOG_LEVEL = fields.Integer(missing=20)
@@ -133,6 +139,12 @@ class MediasConfig(Schema):
     MEDIAS_SIZE_MAX = fields.Integer(missing=50000)
     THUMBNAIL_SIZES = fields.List(fields.Integer, missing=[200, 50])
 
+class AdditionalFields(Schema):
+    IMPLEMENTED_MODULES = fields.List(fields.String(), missing=["OCCTAX"])
+    IMPLEMENTED_OBJECTS = fields.List(
+        fields.String(), 
+        missing=["OCCTAX_RELEVE",  "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"]
+    )
 
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(missing=50, validate=OneOf([10, 25, 50, 100]))
@@ -168,6 +180,7 @@ class GnPySchemaConf(Schema):
     COOKIE_EXPIRATION = fields.Integer(missing=3600 * 24 * 7)
     COOKIE_AUTORENEW = fields.Boolean(missing=True)
     TRAP_ALL_EXCEPTIONS = fields.Boolean(missing=False)
+    SENTRY_DSN = fields.String()
 
     UPLOAD_FOLDER = fields.String(missing="static/medias")
     BASE_DIR = fields.String(
@@ -225,12 +238,13 @@ class GnFrontEndConf(Schema):
     PROD_MOD = fields.Boolean(missing=True)
     DISPLAY_FOOTER = fields.Boolean(missing=True)
     DISPLAY_STAT_BLOC = fields.Boolean(missing=True)
-    STAT_BLOC_TTL = fields.Integer(missing=86400)
+    STAT_BLOC_TTL = fields.Integer(missing=3600)
     DISPLAY_MAP_LAST_OBS = fields.Boolean(missing=True)
     MULTILINGUAL = fields.Boolean(missing=False)
     # show email on synthese and validation info obs modal
     DISPLAY_EMAIL_INFO_OBS = fields.Boolean(missing=True)
 
+    DISPLAY_EMAIL_DISPLAY_INFO = fields.List(fields.String(), missing=["NOM_VERN"])
 
 id_municipality = BddConfig().load({}).data.get("id_area_type_municipality")
 
@@ -286,6 +300,7 @@ class Synthese(Schema):
 
     # Display email on synthese and validation info obs modal
     DISPLAY_EMAIL = fields.Boolean(missing=True)
+
 
 
 # On met la valeur par défaut de DISCONECT_AFTER_INACTIVITY inferieure à COOKIE_EXPIRATION
@@ -360,6 +375,8 @@ class GnGeneralSchemaConf(Schema):
     METADATA = fields.Nested(MetadataConfig, missing={})
     MTD = fields.Nested(MTDSchemaConf, missing={})
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(missing=1000000)
+    ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, missing={})
+    PUBLIC_ACCESS = fields.Nested(PublicAccess, missing={})
 
     @validates_schema
     def validate_enable_sign_up(self, data):

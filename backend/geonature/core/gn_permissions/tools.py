@@ -17,7 +17,6 @@ from sqlalchemy.sql.expression import func
 
 
 from pypnusershub.db.tools import (
-    InsufficientRightsError,
     AccessRightsExpiredError,
     UnreadableAccessRightsError,
 )
@@ -339,11 +338,18 @@ def cruved_scope_for_user_in_module(
     return herited_cruved, is_herited
 
 
+def get_scopes_by_action(id_role, module_code=None, object_code=None):
+    cruved = UserCruved(id_role=id_role, code_filter_type="SCOPE",
+                        module_code=module_code, object_code=object_code)
+    return { action: int(scope) for action, scope in cruved.get_perm_for_all_actions(get_id=False)[0].items() }
+
+
 def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, object_code=None):
     """
     Vérifie la présence du CRUVED en session sinon le récupère depuis la base de données.
     """
     if module_code in session and "user_cruved" in session[module_code]:
+        # FIXME object_code is not checked!
         return session[module_code]["user_cruved"]
     else:
         user_cruved = cruved_scope_for_user_in_module(

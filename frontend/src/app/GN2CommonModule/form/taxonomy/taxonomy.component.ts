@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { DataFormService } from '../data-form.service';
@@ -38,7 +38,8 @@ export interface Taxon {
  * <pnx-taxonomy #taxon
  * label="{{ 'Taxon.Taxon' | translate }}
  * [parentFormControl]="occurrenceForm.controls.cd_nom"
- * [idList]="occtaxConfig.id_taxon_list" [charNumber]="3"
+ * [idList]="occtaxConfig.id_taxon_list" 
+ * [charNumber]="3"
  *  [listLength]="occtaxConfig.taxon_result_number"
  * (onChange)="fs.onTaxonChanged($event);"
  * [displayAdvancedFilters]=true>
@@ -51,7 +52,7 @@ export interface Taxon {
   styleUrls: ['./taxonomy.component.scss'],
   encapsulation: ViewEncapsulation.None
 })
-export class TaxonomyComponent implements OnInit {
+export class TaxonomyComponent implements OnInit, OnChanges {
   /**
    * Reactive form
    */
@@ -59,7 +60,7 @@ export class TaxonomyComponent implements OnInit {
   @Input() label: string;
   // api endpoint for the automplete ressource
   @Input() apiEndPoint: string;
-  /*** Id de la liste de taxon (obligatoire)*/
+  /*** Id de la liste de taxon */
   @Input() idList: string;
   /** Nombre de charactere avant que la recherche AJAX soit lançé (obligatoire) */
   @Input() charNumber: number;
@@ -83,10 +84,9 @@ export class TaxonomyComponent implements OnInit {
   constructor(private _dfService: DataFormService, private _commonService: CommonService) {}
 
   ngOnInit() {
-    // set default to apiEndPoint for retrocompatibility
-    this.apiEndPoint =
-      this.apiEndPoint || `${AppConfig.API_TAXHUB}/taxref/allnamebylist/${this.idList}`;
-
+    if(!this.apiEndPoint) {
+      this.setApiEndPoint(this.idList);
+    }
     this.parentFormControl.valueChanges
       .filter(value => value !== null && value.length === 0)
       .subscribe(value => {
@@ -108,6 +108,21 @@ export class TaxonomyComponent implements OnInit {
         this.groupControl.patchValue(null);
       }
     });
+  }
+
+  ngOnChanges(changes) {
+    if (changes && changes.idList) {      
+      this.setApiEndPoint(changes.idList.currentValue);
+    }
+    
+  }
+
+  setApiEndPoint(idList) {    
+      if(idList) {      
+        this.apiEndPoint = `${AppConfig.API_TAXHUB}/taxref/allnamebylist/${idList}`;
+      } else {
+        this.apiEndPoint = `${AppConfig.API_TAXHUB}/taxref/allnamebylist`;
+      }
   }
 
   taxonSelected(e: NgbTypeaheadSelectItemEvent) {

@@ -78,6 +78,7 @@ DEFAULT_EXPORT_COLUMNS = [
     "uuid_perm_grp_sinp",
     "date_creation",
     "date_modification",
+    "champs_additionnels"
 ]
 
 

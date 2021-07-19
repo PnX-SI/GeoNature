@@ -91,6 +91,7 @@ export class SyntheseInfoObsComponent implements OnInit {
 
         // for angular tempate we need to convert it into a aray
         // tslint:disable-next-line:forin
+        this.formatedAreas = [];
         for (let key in areaDict) {
           this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
         }
@@ -107,6 +108,7 @@ export class SyntheseInfoObsComponent implements OnInit {
           if (this.selectedObs.cor_observers) {
             this.email = this.selectedObs.cor_observers.map(el => el.email).join();
             this.mailto = this.formatMailContent(this.email);
+            
           }
         });
       });
@@ -117,10 +119,9 @@ export class SyntheseInfoObsComponent implements OnInit {
     if (this.mailCustomSubject || this.mailCustomBody) {
 
       // Mise en forme des données
-      let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };
-
+      let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };      
       if (this.selectedObs.source.url_source) {
-        d['data_link'] = "Lien vers l'observation : " + [
+        d['data_link'] = [
           this.APP_CONFIG.URL_APPLICATION,
           this.selectedObs.source.url_source,
           this.selectedObs.entity_source_pk_value
@@ -129,13 +130,13 @@ export class SyntheseInfoObsComponent implements OnInit {
       else {
         d['data_link'] = "";
       }
-
+      
       d["communes"] = this.selectedObs.areas.filter(
         area => area.area_type.type_code == 'COM'
       ).map(
         area => area.area_name
       ).join(', ');
-
+      
       let contentMedias = "";
       if (!this.selectedObs.medias) {
         contentMedias = "Aucun media";
@@ -156,8 +157,7 @@ export class SyntheseInfoObsComponent implements OnInit {
           contentMedias += "\n";
         })
       }
-      d["medias"] = contentMedias;
-
+      d["medias"] = contentMedias;      
       // Construction du mail
       if (this.mailCustomSubject !== undefined) {
         try {
@@ -173,10 +173,12 @@ export class SyntheseInfoObsComponent implements OnInit {
           console.log('ERROR : unable to eval mail body');
         }
       }
+      
       mailto = encodeURI(mailto);
       mailto = mailto.replace(/,/g, '%2c');
     }
-
+    console.log(mailto);
+    
     return mailto;
   }
 

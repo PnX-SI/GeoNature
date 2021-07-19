@@ -9,7 +9,8 @@ observers_txt = false
 id_observers_list = 1
 
 # id of the taxon list -- taxonomie.bib_listes. Use for the taxonomy search in the occtax forml
-id_taxon_list = 100
+# default = None: search on full taxref
+id_taxon_list = <un entier>
 # number of results in the autocomplete taxon search
 taxon_result_number = 20
 
@@ -69,8 +70,11 @@ export_observer_txt_column = 'obsId'
 # SRID for the shapefile
 export_srid = 4326
 
+# Add medias URL in export
+ADD_MEDIA_IN_EXPORT = false
+
 # Export available format (Only csv, geojson and shapefile and 'gpkg' is possible)
-export_available_format = ['csv', 'geojson', 'shapefile']
+export_available_format = ['csv', 'geojson', 'shapefile', 'gpkg']
 
 # Custom message to display in the export modal
 export_message = "<p> <b> Attention: </b> </br>  Vous vous apprêtez à télécharger les données de la <b>recherche courante. </b> </p>"
@@ -134,6 +138,11 @@ ENABLE_UPLOAD_TOOL = true
 # Activer l'outil "Mes lieux" permettant d'enregistrer et de charger les lieux des utilisateurs
 ENABLE_MY_PLACES = true
 
+# Reglage des liste d'habitat sur le formulaire
+# id list d'habitat (ref_habitats.bib_list_habitat)
+ID_LIST_HABITAT = <integer> (defaut = null)
+# code de type de typologie (ref_habitats.typoref)
+CD_TYPO_HABITAT = <integer (defaut = null)
 
 # ------------- FORM PARAMETER ---------------
 
@@ -182,3 +191,5 @@ ENABLE_MY_PLACES = true
 # ------------- MEDIAS PARAMETER ---------------
 
 ENABLE_MEDIAS = true
+
+MEDIA_FIELDS_DETAILS = ['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile']

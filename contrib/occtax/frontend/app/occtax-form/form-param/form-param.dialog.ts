@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
 import {
   animate,
   state,
@@ -6,10 +6,9 @@ import {
   transition,
   trigger,
 } from "@angular/animations";
-import { MatDialogRef } from "@angular/material";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
-import { combineLatest } from "rxjs";
-import { filter, map, pairwise } from "rxjs/operators";
+import { combineLatest, Subscription } from "rxjs";
+import { filter, map, tap } from "rxjs/operators";
 import { ModuleConfig } from "../../module.config";
 import { OcctaxFormMapService } from "../map/map.service";
 import { OcctaxFormReleveService } from "../releve/releve.service";
@@ -40,7 +39,8 @@ import { OcctaxFormParamService } from "./form-param.service";
     ]),
   ],
 })
-export class OcctaxFormParamDialog implements OnInit {
+export class OcctaxFormParamDialog implements OnInit, OnDestroy {
+  @ViewChild("modalContent") modalContent;
   public occtaxConfig: any;
   public paramsForm: FormGroup;
   public selectedIndex: number = null;
@@ -48,6 +48,7 @@ export class OcctaxFormParamDialog implements OnInit {
 
   public displayProofFromElements: boolean = false;
   public existProof_DATA: Array<any> = [];
+  public _subscriptions: Subscription[] = [];
 
   get geometryParamForm() {
     return this.paramsForm.get("geometry");
@@ -63,7 +64,6 @@ export class OcctaxFormParamDialog implements OnInit {
   }
 
   constructor(
-    public dialogRef: MatDialogRef<OcctaxFormParamDialog>,
     private fb: FormBuilder,
     private occtaxFormMapService: OcctaxFormMapService,
     private occtaxFormReleveService: OcctaxFormReleveService,
@@ -74,6 +74,7 @@ export class OcctaxFormParamDialog implements OnInit {
   }
 
   ngOnInit() {
+
     this.paramsForm = this.fb.group({
       geometry: null,
       releve: this.fb.group({
@@ -136,66 +137,80 @@ export class OcctaxFormParamDialog implements OnInit {
     this.paramsForm.patchValue(this.occtaxFormParamService.parameters);
 
     //a chaque changement du formulairen on patch le service des paramètres
-    this.paramsForm.valueChanges
-      .pipe(filter(() => this.paramsForm.valid))
-      .subscribe((values) => (this.occtaxFormParamService.parameters = values));
+    this._subscriptions.push(
+      this.paramsForm.valueChanges
+        .pipe(
+          filter(() => this.paramsForm.valid)
+        )
+        .subscribe((values) => this.occtaxFormParamService.parameters = values)
+    );
 
     //Observe l'état des switchs pour activer ou non le formulaire
-    this.occtaxFormParamService.releveState.subscribe((value: boolean) => {
-      value
-        ? this.paramsForm.get("releve").enable()
-        : this.paramsForm.get("releve").disable();
-    });
-    this.occtaxFormParamService.occurrenceState.subscribe((value: boolean) => {
-      value
-        ? this.paramsForm.get("occurrence").enable()
-        : this.paramsForm.get("occurrence").disable();
-    });
-    this.occtaxFormParamService.countingState.subscribe((value: boolean) => {
-      value
-        ? this.paramsForm.get("counting").enable()
-        : this.paramsForm.get("counting").disable();
-    });
+    this._subscriptions.push(
+      this.occtaxFormParamService.releveState.subscribe((value: boolean) => {
+        value
+          ? this.paramsForm.get("releve").enable()
+          : this.paramsForm.get("releve").disable();
+      })
+    );
+
+    this._subscriptions.push(
+      this.occtaxFormParamService.occurrenceState.subscribe((value: boolean) => {
+        value
+          ? this.paramsForm.get("occurrence").enable()
+          : this.paramsForm.get("occurrence").disable();
+      })
+    );
+
+    this._subscriptions.push(
+      this.occtaxFormParamService.countingState.subscribe((value: boolean) => {
+        value
+          ? this.paramsForm.get("counting").enable()
+          : this.paramsForm.get("counting").disable();
+      })
+    );
 
 
     //On observe les cases cochées pour savoir quel onglet affiché
     //Uniquement si un seul switch est activé
-    combineLatest(
-      this.occtaxFormParamService.geometryState,
-      this.occtaxFormParamService.releveState,
-      this.occtaxFormParamService.occurrenceState,
-      this.occtaxFormParamService.countingState
-    )
-      .pipe(
-        filter(
-          ([geometryState, releveState, occurrenceState, countingState]) => {
-            //si un unique switch est activé
-            return (
-              (geometryState ? 1 : 0) +
-              (releveState ? 1 : 0) +
-              (occurrenceState ? 1 : 0) +
-              (countingState ? 1 : 0) ===
-              1
-            );
-          }
-        ),
-        map(([geometryState, releveState, occurrenceState, countingState]) => {
-          //convertit la case coché en index de tab à activer
-          if (geometryState) {
-            return 0;
-          }
-          if (releveState) {
-            return 1;
-          }
-          if (occurrenceState) {
-            return 2;
-          }
-          if (countingState) {
-            return 3;
-          }
-        })
+    this._subscriptions.push(
+      combineLatest(
+        this.occtaxFormParamService.geometryState,
+        this.occtaxFormParamService.releveState,
+        this.occtaxFormParamService.occurrenceState,
+        this.occtaxFormParamService.countingState
       )
-      .subscribe((index) => (this.selectedIndex = index));
+        .pipe(
+          filter(
+            ([geometryState, releveState, occurrenceState, countingState]) => {
+              //si un unique switch est activé
+              return (
+                (geometryState ? 1 : 0) +
+                (releveState ? 1 : 0) +
+                (occurrenceState ? 1 : 0) +
+                (countingState ? 1 : 0) ===
+                1
+              );
+            }
+          ),
+          map(([geometryState, releveState, occurrenceState, countingState]) => {
+            //convertit la case coché en index de tab à activer
+            if (geometryState) {
+              return 0;
+            }
+            if (releveState) {
+              return 1;
+            }
+            if (occurrenceState) {
+              return 2;
+            }
+            if (countingState) {
+              return 3;
+            }
+          })
+        )
+        .subscribe((index) => (this.selectedIndex = index))
+    );
   }
 
   geometryFormMapper() {
@@ -218,5 +233,9 @@ export class OcctaxFormParamDialog implements OnInit {
 
   collapse() {
     this.state = this.state === "collapsed" ? "expanded" : "collapsed";
+  }
+
+  ngOnDestroy() {
+    this._subscriptions.forEach(s => { s.unsubscribe(); });
   }
 }
