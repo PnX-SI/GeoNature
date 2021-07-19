@@ -20,20 +20,11 @@
   <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
   
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'2.0',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -46,7 +37,7 @@
     <link rel="search" title="Search" href="search.html" />
  
 
-    <script type="text/javascript">
+    <script>
       DOCUMENTATION_OPTIONS.COLLAPSE_INDEX = true;
     </script>
 
@@ -473,12 +464,17 @@
      <tr>
        <td></td>
        <td>
-       <a href="development.html#get--meta-acquisition_framework-publish-(int-af_id)"><code class="xref">GET /meta/acquisition_framework/publish/(int:af_id)</code></a></td><td>
+       <a href="development.html#get--meta-acquisition_framework-(id_acquisition_framework)-bbox"><code class="xref">GET /meta/acquisition_framework/(id_acquisition_framework)/bbox</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
        <td>
-       <a href="development.html#get--meta-acquisition_framework_details-(id_acquisition_framework)"><code class="xref">GET /meta/acquisition_framework_details/(id_acquisition_framework)</code></a></td><td>
+       <a href="development.html#get--meta-acquisition_framework-(id_acquisition_framework)-stats"><code class="xref">GET /meta/acquisition_framework/(id_acquisition_framework)/stats</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--meta-acquisition_framework-publish-(int-af_id)"><code class="xref">GET /meta/acquisition_framework/publish/(int:af_id)</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
@@ -493,17 +489,7 @@
      <tr>
        <td></td>
        <td>
-       <a href="development.html#get--meta-acquisition_frameworks_metadata"><code class="xref">GET /meta/acquisition_frameworks_metadata</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--meta-af_datasets_metadata"><code class="xref">GET /meta/af_datasets_metadata</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--meta-dataset-(id_dataset)"><code class="xref">GET /meta/dataset/(id_dataset)</code></a></td><td>
+       <a href="development.html#get--meta-dataset-(int-id_dataset)"><code class="xref">GET /meta/dataset/(int:id_dataset)</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
@@ -513,12 +499,12 @@
      <tr>
        <td></td>
        <td>
-       <a href="development.html#get--meta-dataset_details-(int-id_dataset)"><code class="xref">GET /meta/dataset_details/(int:id_dataset)</code></a></td><td>
+       <a href="development.html#get--meta-datasets"><code class="xref">GET /meta/datasets</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
        <td>
-       <a href="development.html#get--meta-datasets"><code class="xref">GET /meta/datasets</code></a></td><td>
+       <a href="development.html#get--meta-list-acquisition_frameworks"><code class="xref">GET /meta/list/acquisition_frameworks</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
@@ -543,12 +529,22 @@
      <tr>
        <td></td>
        <td>
+       <a href="development.html#post--meta-acquisition_framework-(int-id_acquisition_framework)"><code class="xref">POST /meta/acquisition_framework/(int:id_acquisition_framework)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
        <a href="development.html#post--meta-aquisition_framework_mtd-(uuid_af)"><code class="xref">POST /meta/aquisition_framework_mtd/(uuid_af)</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
        <td>
        <a href="development.html#post--meta-dataset"><code class="xref">POST /meta/dataset</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--meta-dataset-(int-id_dataset)"><code class="xref">POST /meta/dataset/(int:id_dataset)</code></a></td><td>
        <em></em></td></tr>
      <tr>
        <td></td>
@@ -574,6 +570,11 @@
        <td></td>
        <td>
        <a href="development.html#delete--meta-dataset-(int-ds_id)"><code class="xref">DELETE /meta/dataset/(int:ds_id)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#patch--meta-dataset-(int-id_dataset)"><code class="xref">PATCH /meta/dataset/(int:id_dataset)</code></a></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-/nomenclatures/nomenclature"><td></td><td>

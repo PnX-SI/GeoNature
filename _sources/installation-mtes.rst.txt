@@ -3,7 +3,7 @@ SPECIFICITES DEPOBIO
 
 Cette documentation mentionne les spécificités et la configuration de l'installation de l'instance nationale du Ministère de la Transition Ecologique et Solidaire (MTES), dans le cadre du projet de Depôt Légal des données de biodiversité (https://depot-legal-biodiversite.naturefrance.fr/).
 
-Pour l'installation de GeoNature, voir la procédure d'installation de GeoNature et ses dépendances (https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-all.rst).
+Pour l'installation de GeoNature, voir la procédure d'installation de GeoNature et ses dépendances (https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-all.rst).
 
 
 Configuration Apache
@@ -304,7 +304,7 @@ Depuis le répertoire ``backend`` de GeoNature
     deactivate
 
 
-Pour plus d'information sur la configuration du module Occtax, voir la documentation concernant le module (https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst#module-occtax).
+Pour plus d'information sur la configuration du module Occtax, voir la documentation concernant le module (https://github.com/PnX-SI/GeoNature/blob/master/docs/admin-manual.rst#module-occtax).
 
 Référentiel géographique
 ------------------------
@@ -319,8 +319,8 @@ des altitudes pour chaque observation).
 Authentification CAS INPN
 -------------------------
 
-- Code source : https://github.com/PnX-SI/GeoNature/blob/develop/backend/geonature/core/auth/routes.py
-- Config : https://github.com/PnX-SI/GeoNature/blob/develop/config/default_config.toml.example#L29-L44
+- Code source : https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/core/auth/routes.py
+- Config : https://github.com/PnX-SI/GeoNature/blob/master/config/default_config.toml.example#L124-L135
 
 
 Connexion et droits dans GeoNature

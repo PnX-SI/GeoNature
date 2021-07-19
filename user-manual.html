@@ -20,20 +20,11 @@
   <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
   
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'2.0',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -200,7 +191,7 @@
 <div class="section" id="authentification">
 <h2>Authentification<a class="headerlink" href="#authentification" title="Permalink to this headline">¶</a></h2>
 <p>Accéder à l’application de démonstration à l’adresse <a class="reference external" href="http://demo.geonature.fr/geonature">http://demo.geonature.fr/geonature</a>.</p>
-<p>Connectez-vous avec l’utilisateur <code class="docutils literal"><span class="pre">admin</span></code> et le mot de passe <code class="docutils literal"><span class="pre">admin</span></code>.</p>
+<p>Connectez-vous avec l’utilisateur <code class="docutils literal notranslate"><span class="pre">admin</span></code> et le mot de passe <code class="docutils literal notranslate"><span class="pre">admin</span></code>.</p>
 </div>
 <div class="section" id="accueil">
 <h2>Accueil<a class="headerlink" href="#accueil" title="Permalink to this headline">¶</a></h2>
@@ -277,16 +268,19 @@ préalable les jeux de données dans l’application Métadonnées (MTD) du SINP
 <p>Pour les lignes et les polygones, il faut cliquer sur le bouton de modification.</p>
 <img alt="http://geonature.fr/docs/img/user-manual/05-occtax-create-polygon-edit.jpg" src="http://geonature.fr/docs/img/user-manual/05-occtax-create-polygon-edit.jpg" />
 <p>Vous pouvez alors déplacer les sommets existants ou en créer de nouveaux pour affiner le tracé en cliquant sur les sommets transparents.</p>
-<p>Cliquer sur <code class="docutils literal"><span class="pre">SAVE</span></code> pour enregistrer les modifications apportées à une ligne ou un polygone.</p>
+<p>Cliquer sur <code class="docutils literal notranslate"><span class="pre">SAVE</span></code> pour enregistrer les modifications apportées à une ligne ou un polygone.</p>
 <p>Les altitudes minimum et maximum du relevé sont calculées automatiquement mais peuvent être modifiées manuellement.</p>
 <p>Les informations géographiques du relevé (communes notamment) sont aussi calculées automatiquement.</p>
 <p>Pour les afficher, il faut cliquer sur le bouton d’information :</p>
 <img alt="http://geonature.fr/docs/img/user-manual/03-occtax-detail-geo-button.jpg" src="http://geonature.fr/docs/img/user-manual/03-occtax-detail-geo-button.jpg" />
 <img alt="http://geonature.fr/docs/img/user-manual/05-occtax-create-geo.jpg" src="http://geonature.fr/docs/img/user-manual/05-occtax-create-geo.jpg" />
 <p>Une fois les informations du relevé renseignées (observateurs, jeu de données, date et commentaire optionnel),
-vous pouvez ajouter un premier taxon à celui-ci en cliquant sur <code class="docutils literal"><span class="pre">Ajouter</span> <span class="pre">un</span> <span class="pre">taxon</span> <span class="pre">sur</span> <span class="pre">ce</span> <span class="pre">relevé</span></code> :</p>
+vous pouvez ajouter un premier taxon à celui-ci en cliquant sur <code class="docutils literal notranslate"><span class="pre">Ajouter</span> <span class="pre">un</span> <span class="pre">taxon</span> <span class="pre">sur</span> <span class="pre">ce</span> <span class="pre">relevé</span></code> :</p>
 <img alt="http://geonature.fr/docs/img/user-manual/05-occtax-add-taxon.jpg" src="http://geonature.fr/docs/img/user-manual/05-occtax-add-taxon.jpg" />
 <img alt="http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon.jpg" src="http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon.jpg" />
+<p>Par défaut l’ensemble des taxons de Taxref sont disponibles à la saisie. Il est possible de resteindre cette liste pour mettre une liste personalisée via les listes TaxHub:
+- au niveau du module (paramètre <cite>id_taxon_list</cite>. La paramètre doit être un entier correspondant à l’identifiant de la liste de la table <cite>taxonomie.bib_listes</cite> )
+- au niveau d’un jeu de données (via le formulaire de saisie des JDD, rubriques “spécificités GeoNature”)</p>
 <p>Pour sélectionner un taxon, saisissez au moins les 3 premières lettres de son nom latin ou français.</p>
 <p>Vous pouvez aussi saisir les 3 premières lettres de l’espèce et de la sous-espèce.</p>
 <p>Renseignez ensuite les autres champs relatifs au taxon. Les valeurs proposées dans les listes dépendent
@@ -296,23 +290,23 @@ du rang et du groupe du taxon selectionné :</p>
 <p>Vous pouvez ensuite renseigner un ou plusieurs dénombrements pour le taxon observé.</p>
 <p>Par défaut, un dénombrement indéterminé d’un individu est renseigné :</p>
 <img alt="http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-counting.jpg" src="http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-counting.jpg" />
-<p>Une fois le taxon renseigné, cliquer sur <code class="docutils literal"><span class="pre">VALIDER</span> <span class="pre">LE</span> <span class="pre">TAXON</span></code> pour l’enregistrer :</p>
+<p>Une fois le taxon renseigné, cliquer sur <code class="docutils literal notranslate"><span class="pre">VALIDER</span> <span class="pre">LE</span> <span class="pre">TAXON</span></code> pour l’enregistrer :</p>
 <img alt="http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-save.jpg" src="http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-save.jpg" />
 <p>Vous pouvez alors :</p>
 <ul class="simple">
-<li>Modifier le taxon enregistré</li>
-<li>Supprimer le taxon enregistré</li>
-<li>Ajouter un autre taxon au relevé</li>
-<li>Enregistrer le relevé pour revenir à la liste des relevés.</li>
+<li><p>Modifier le taxon enregistré</p></li>
+<li><p>Supprimer le taxon enregistré</p></li>
+<li><p>Ajouter un autre taxon au relevé</p></li>
+<li><p>Enregistrer le relevé pour revenir à la liste des relevés.</p></li>
 </ul>
-<p>Pour ajouter un taxon au relevé, il faut cliquer sur <code class="docutils literal"><span class="pre">Ajouter</span> <span class="pre">un</span> <span class="pre">taxon</span> <span class="pre">sur</span> <span class="pre">ce</span> <span class="pre">relevé</span></code> et le renseigner comme le précédent :</p>
+<p>Pour ajouter un taxon au relevé, il faut cliquer sur <code class="docutils literal notranslate"><span class="pre">Ajouter</span> <span class="pre">un</span> <span class="pre">taxon</span> <span class="pre">sur</span> <span class="pre">ce</span> <span class="pre">relevé</span></code> et le renseigner comme le précédent :</p>
 <img alt="http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-2.jpg" src="http://geonature.fr/docs/img/user-manual/05-occtax-create-taxon-2.jpg" />
 </div>
 <div class="section" id="modifier-un-releve">
 <h3>Modifier un relevé<a class="headerlink" href="#modifier-un-releve" title="Permalink to this headline">¶</a></h3>
 <p>Si vous modifiez un relevé existant, vous accédez à sa fiche renseignée, sur laquelle vous pouvez modifier la localisation, les informations du relevé, les taxons observés et leurs dénombrements :</p>
 <img alt="http://geonature.fr/docs/img/user-manual/04-occtax-edit.jpg" src="http://geonature.fr/docs/img/user-manual/04-occtax-edit.jpg" />
-<p>Vous pouvez ajouter un taxon au relevé en cliquant sur <code class="docutils literal"><span class="pre">Ajouter</span> <span class="pre">un</span> <span class="pre">taxon</span> <span class="pre">sur</span> <span class="pre">ce</span> <span class="pre">relevé</span></code> :</p>
+<p>Vous pouvez ajouter un taxon au relevé en cliquant sur <code class="docutils literal notranslate"><span class="pre">Ajouter</span> <span class="pre">un</span> <span class="pre">taxon</span> <span class="pre">sur</span> <span class="pre">ce</span> <span class="pre">relevé</span></code> :</p>
 <img alt="http://geonature.fr/docs/img/user-manual/04-occtax-edit-taxon.jpg" src="http://geonature.fr/docs/img/user-manual/04-occtax-edit-taxon.jpg" />
 <p>Ou modifier une observation existante d’un taxon en le selectionnant dans la liste des taxons déjà enregistrés :</p>
 <img alt="http://geonature.fr/docs/img/user-manual/04-occtax-edit-taxon-list.jpg" src="http://geonature.fr/docs/img/user-manual/04-occtax-edit-taxon-list.jpg" />
@@ -323,16 +317,16 @@ du rang et du groupe du taxon selectionné :</p>
 <p>Une fois que vous avez saisi vos relevés et observations depuis le formulaire, vous pouvez exporter ces données en CSV selon le standard Occurrence de taxon du SINP.</p>
 <p>Deux méthodes sont possibles pour exporter les données :</p>
 <ul class="simple">
-<li>Depuis le module “Occtax”</li>
+<li><p>Depuis le module “Occtax”</p></li>
 </ul>
-<p>Depuis la liste de vos relevés de l’interface carte-liste, filtrez d’abord vos relevés par <strong>jeu de données</strong> (ou autre) et cliquez sur le bouton <code class="docutils literal"><span class="pre">Rechercher</span></code>.</p>
+<p>Depuis la liste de vos relevés de l’interface carte-liste, filtrez d’abord vos relevés par <strong>jeu de données</strong> (ou autre) et cliquez sur le bouton <code class="docutils literal notranslate"><span class="pre">Rechercher</span></code>.</p>
 <img alt="http://geonature.fr/docs/img/user-manual/06-occtax-search-bar.jpg" src="http://geonature.fr/docs/img/user-manual/06-occtax-search-bar.jpg" />
-<p>Puis cliquez sur le bouton <code class="docutils literal"><span class="pre">Télécharger</span> <span class="pre">les</span> <span class="pre">données</span></code> en bas de la liste des relevés.</p>
+<p>Puis cliquez sur le bouton <code class="docutils literal notranslate"><span class="pre">Télécharger</span> <span class="pre">les</span> <span class="pre">données</span></code> en bas de la liste des relevés.</p>
 <img alt="http://geonature.fr/docs/img/user-manual/06-occtax-download-data.jpg" src="http://geonature.fr/docs/img/user-manual/06-occtax-download-data.jpg" />
 <p>Une fenêtre s’ouvre, fournissant des informations sur le téléchargement des données. Selectionnez ensuite le format CSV pour GINCO :</p>
 <img alt="http://geonature.fr/docs/img/user-manual/06-occtax-download.jpg" src="http://geonature.fr/docs/img/user-manual/06-occtax-download.jpg" />
 <ul>
-<li><p class="first">Depuis le module d’export :</p>
+<li><p>Depuis le module d’export :</p>
 <p>Les exports se font par jeu de données.</p>
 </li>
 </ul>
@@ -354,11 +348,11 @@ du rang et du groupe du taxon selectionné :</p>
 </div>
 <div class="section" id="presentation-de-la-synthese">
 <h3>Présentation de la synthèse<a class="headerlink" href="#presentation-de-la-synthese" title="Permalink to this headline">¶</a></h3>
-<p>La page principale de la synthèse est composée de 3 blocs&nbsp;:</p>
+<p>La page principale de la synthèse est composée de 3 blocs :</p>
 <ul class="simple">
-<li>Rechercher dans les résultats</li>
-<li>Visualiser les résultats sur la carte</li>
-<li>Visualiser les résultats en liste</li>
+<li><p>Rechercher dans les résultats</p></li>
+<li><p>Visualiser les résultats sur la carte</p></li>
+<li><p>Visualiser les résultats en liste</p></li>
 </ul>
 <img alt="https://geonature.fr/docs/img/user-manual/synthese/02-presentation-synthese.jpg" src="https://geonature.fr/docs/img/user-manual/synthese/02-presentation-synthese.jpg" />
 <p>Par défaut, la synthèse affiche les 100 observations les plus récentes. Il est possible d’accéder aux données souhaitées en appliquant un ensemble de filtres.</p>
@@ -368,11 +362,11 @@ du rang et du groupe du taxon selectionné :</p>
 <p>Il est possible d’accéder au détail d’une observation en cliquant sur le symbole (i) à gauche d’une observation. Le détail d’une observation correspond à l’ensemble des informations contenues dans la synthèse pour cette observation.</p>
 <p>Une observation au sens de la synthèse ne correspond pas tout à fait à la donnée saisie initialement. C’est une représentation simplifiée et unifiée des données qui repose sur le standard SINP et qui répond aux questions suivantes :</p>
 <ul class="simple">
-<li>Où&nbsp;?</li>
-<li>Quand&nbsp;? : Date et heure de l’observation</li>
-<li>Qui&nbsp;?&nbsp;: Observateur</li>
-<li>Quoi&nbsp;?&nbsp;: Taxon, nombre et type d’individus, état biologique, …</li>
-<li>Dans quel cadre&nbsp;?</li>
+<li><p>Où ?</p></li>
+<li><p>Quand ? : Date et heure de l’observation</p></li>
+<li><p>Qui ? : Observateur</p></li>
+<li><p>Quoi ? : Taxon, nombre et type d’individus, état biologique, …</p></li>
+<li><p>Dans quel cadre ?</p></li>
 </ul>
 <p>Toutes les données de la synthèse sont ramenées au niveau du dénombrement de taxon (exemple : 1 individu mâle adulte de Chevêche). Si une occurrence est constituée de 2 dénombrements, il y aura 2 enregistrements dans la synthèse (exemple : 1 individu mâle adulte et 1 individu femelle indéterminée de Chevêche).</p>
 <img alt="https://geonature.fr/docs/img/user-manual/synthese/03-detail-synthese.jpg" src="https://geonature.fr/docs/img/user-manual/synthese/03-detail-synthese.jpg" />
@@ -380,18 +374,18 @@ du rang et du groupe du taxon selectionné :</p>
 <div class="section" id="rechercher-des-observations">
 <h3>Rechercher des observations<a class="headerlink" href="#rechercher-des-observations" title="Permalink to this headline">¶</a></h3>
 <p><strong>1. Filtrer les données géographiquement :</strong></p>
-<p>Il y a 3 façons de filtrer géographiquement les données&nbsp;:</p>
+<p>Il y a 3 façons de filtrer géographiquement les données :</p>
 <ul class="simple">
-<li>en sélectionnant une commune</li>
-<li>en dessinant une zone sur la carte à l’aide des outils de dessin&nbsp;(rectangle, polygone ou cercle)</li>
-<li>en important un fichier de la zone</li>
+<li><p>en sélectionnant une commune</p></li>
+<li><p>en dessinant une zone sur la carte à l’aide des outils de dessin (rectangle, polygone ou cercle)</p></li>
+<li><p>en important un fichier de la zone</p></li>
 </ul>
 <p><strong>Filtrer par communes :</strong></p>
-<p>Dans le panneau filtre&nbsp;:</p>
+<p>Dans le panneau filtre :</p>
 <ul class="simple">
-<li>cliquez sur le champ Communes</li>
-<li>saisissez les premières lettre de la commune</li>
-<li>sélectionnez la commune souhaitée</li>
+<li><p>cliquez sur le champ Communes</p></li>
+<li><p>saisissez les premières lettre de la commune</p></li>
+<li><p>sélectionnez la commune souhaitée</p></li>
 </ul>
 <p>Il est possible de sélectionner plusieurs communes.</p>
 <img alt="https://geonature.fr/docs/img/user-manual/synthese/04-recherche-communes.jpg" src="https://geonature.fr/docs/img/user-manual/synthese/04-recherche-communes.jpg" />
@@ -404,16 +398,15 @@ du rang et du groupe du taxon selectionné :</p>
 <p>Vous pouvez préparer ce fichier avec QGIS depuis un fichier SHP ou autre. Le fichier doit être enregistré au format GeoJson (projection 4326).</p>
 <p>Sur la couche souhaitée :</p>
 <ul class="simple">
-<li>Faire un clic droit sur la couche puis sélectionner Exporter &gt; Sauvegarder les entités sous…</li>
+<li><p>Faire un clic droit sur la couche puis sélectionner Exporter &gt; Sauvegarder les entités sous…</p></li>
 </ul>
 <img alt="https://geonature.fr/docs/img/user-manual/synthese/06-qgis-geojson.jpg" src="https://geonature.fr/docs/img/user-manual/synthese/06-qgis-geojson.jpg" />
 <ul class="simple">
-<li><dl class="first docutils">
-<dt>Enregistrer le fichier en sélectionnant les bons paramètres&nbsp;:</dt>
-<dd><ul class="first last">
-<li>Format&nbsp;: GeoJson</li>
-<li>SCR&nbsp;: WGS 84 (4326)</li>
-<li>Pour des questions de performance il est possible de ne pas exporter les données attributaires</li>
+<li><dl class="simple">
+<dt>Enregistrer le fichier en sélectionnant les bons paramètres :</dt><dd><ul>
+<li><p>Format : GeoJson</p></li>
+<li><p>SCR : WGS 84 (4326)</p></li>
+<li><p>Pour des questions de performance il est possible de ne pas exporter les données attributaires</p></li>
 </ul>
 </dd>
 </dl>
@@ -422,46 +415,46 @@ du rang et du groupe du taxon selectionné :</p>
 <img alt="https://geonature.fr/docs/img/user-manual/synthese/06b-qgis-geojson.jpg" src="https://geonature.fr/docs/img/user-manual/synthese/06b-qgis-geojson.jpg" />
 <p>Importer le fichier dans la synthèse GeoNature :</p>
 <ul class="simple">
-<li>Cliquer sur l’icône ouvrir un fichier</li>
-<li>Sélectionner le fichier</li>
-<li>La ou les zone(s) apparaissent sur la carte</li>
-<li>Lancer la recherche</li>
+<li><p>Cliquer sur l’icône ouvrir un fichier</p></li>
+<li><p>Sélectionner le fichier</p></li>
+<li><p>La ou les zone(s) apparaissent sur la carte</p></li>
+<li><p>Lancer la recherche</p></li>
 </ul>
 <img alt="https://geonature.fr/docs/img/user-manual/synthese/07-filtre-geojson.jpg" src="https://geonature.fr/docs/img/user-manual/synthese/07-filtre-geojson.jpg" />
 <p><strong>2. Filtrer les données via la taxonomie</strong></p>
 <p>Il est possible de rechercher les données en utilisant des critères taxonomiques, en recherchant soit sur un taxon ou un groupe taxonomique en particulier, soit en se basant sur des critères taxonomiques (statut de protection, attributs)</p>
 <p><strong>Recherche simple :</strong></p>
-<p>Dans le panneau filtre&nbsp;:</p>
+<p>Dans le panneau filtre :</p>
 <ul class="simple">
-<li>cliquez sur le champ taxon</li>
-<li>saisissez les premières lettre du taxon</li>
-<li>sélectionnez le taxon souhaité</li>
+<li><p>cliquez sur le champ taxon</p></li>
+<li><p>saisissez les premières lettre du taxon</p></li>
+<li><p>sélectionnez le taxon souhaité</p></li>
 </ul>
 <p>Il est possible de sélectionner plusieurs taxons.</p>
 <img alt="https://geonature.fr/docs/img/user-manual/synthese/08-filtre-taxons.jpg" src="https://geonature.fr/docs/img/user-manual/synthese/08-filtre-taxons.jpg" />
 <p><strong>Recherche avancée :</strong></p>
-<p>Dans le panneau filtre dans la section «&nbsp;Quoi&nbsp;?&nbsp;» cliquer sur Avancé.</p>
-<p>Vous pourrez&nbsp;:</p>
+<p>Dans le panneau filtre dans la section « Quoi ? » cliquer sur Avancé.</p>
+<p>Vous pourrez :</p>
 <ul class="simple">
-<li>Sélectionner un ou des groupes taxonomiques (exemple Chiroptera)</li>
-<li>Filtrer sur les listes rouge UICN,…</li>
-<li>Filtrer sur des attributs spécifiés dans TaxHub&nbsp;: patrimonialité, enjeu prioritaire, …</li>
+<li><p>Sélectionner un ou des groupes taxonomiques (exemple Chiroptera)</p></li>
+<li><p>Filtrer sur les listes rouge UICN,…</p></li>
+<li><p>Filtrer sur des attributs spécifiés dans TaxHub : patrimonialité, enjeu prioritaire, …</p></li>
 </ul>
 <img alt="https://geonature.fr/docs/img/user-manual/synthese/08-filtre-taxons-avances.jpg" src="https://geonature.fr/docs/img/user-manual/synthese/08-filtre-taxons-avances.jpg" />
 <p><strong>3. Autres filtres</strong></p>
-<p>Il est également possible de filtrer&nbsp;:</p>
+<p>Il est également possible de filtrer :</p>
 <ul class="simple">
-<li>sur une date ou une période donnée</li>
-<li>sur un observateur</li>
-<li>sur un jeu de données</li>
+<li><p>sur une date ou une période donnée</p></li>
+<li><p>sur un observateur</p></li>
+<li><p>sur un jeu de données</p></li>
 </ul>
 <img alt="https://geonature.fr/docs/img/user-manual/synthese/09-filtre-autres.jpg" src="https://geonature.fr/docs/img/user-manual/synthese/09-filtre-autres.jpg" />
 </div>
 </div>
 <div class="section" id="admin">
 <h2>Admin<a class="headerlink" href="#admin" title="Permalink to this headline">¶</a></h2>
-<p>Il permet aussi de gérer les permissions (CRUVED et autres filtres) et les nomenclatures (typologies et vocabulaires) utilisées dans les différents modules de GeoNature</p>
-<img alt="http://geonature.fr/docs/img/user-manual/2018-09-geonature-admin.gif" src="http://geonature.fr/docs/img/user-manual/2018-09-geonature-admin.gif" />
+<p>C’est le module “backoffice” de GeoNature.
+Il permet notamment de gérer les permissions (CRUVED et autres filtres), les nomenclatures (typologies et vocabulaires) utilisées dans les différents modules de GeoNature ainsi que les champs additionnels.</p>
 </div>
 <div class="section" id="metadonnees">
 <h2>Metadonnées<a class="headerlink" href="#metadonnees" title="Permalink to this headline">¶</a></h2>

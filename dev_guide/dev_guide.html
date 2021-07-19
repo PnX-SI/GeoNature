@@ -20,20 +20,11 @@
   <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
   
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'../',
-              VERSION:'2.0',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="../_static/jquery.js"></script>
-        <script type="text/javascript" src="../_static/underscore.js"></script>
-        <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -178,7 +169,7 @@
 <div class="section" id="demarrage-du-serveur-de-dev-backend">
 <h2>Démarrage du serveur de dev backend<a class="headerlink" href="#demarrage-du-serveur-de-dev-backend" title="Permalink to this headline">¶</a></h2>
 <blockquote>
-<div><div class="highlight-default"><div class="highlight"><pre><span></span>(venv)...$ geonature dev_back
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(venv)...$ geonature dev_back
 </pre></div>
 </div>
 </div></blockquote>
@@ -188,11 +179,11 @@
 <div class="section" id="session-sqlalchemy">
 <h3>Session sqlalchemy<a class="headerlink" href="#session-sqlalchemy" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">geonature.utils.env.DB</span></code></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">geonature.utils.env.DB</span></code></p></li>
 </ul>
 <p>Fournit l’instance de connexion SQLAlchemy</p>
 <p>Python</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="k">import</span> <span class="n">DB</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">DB</span>
 
 <span class="n">result</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">MyModel</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -202,13 +193,13 @@
 <div class="section" id="serialisation-des-modeles">
 <h2>Serialisation des modèles<a class="headerlink" href="#serialisation-des-modeles" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">utils_flask_sqla.serializers.serializable</span></code></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">utils_flask_sqla.serializers.serializable</span></code></p></li>
 </ul>
 <p>Décorateur pour les modèles SQLA : Ajoute une méthode as_dict qui retourne un
 dictionnaire des données de l’objet sérialisable json</p>
 <p>Fichier définition modèle</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="k">import</span> <span class="n">DB</span>
-<span class="kn">from</span> <span class="nn">utils_flask_sqla.serializers</span> <span class="k">import</span> <span class="n">serializable</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">DB</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.serializers</span> <span class="kn">import</span> <span class="n">serializable</span>
 
 <span class="nd">@serializable</span>
 <span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
@@ -217,18 +208,18 @@ dictionnaire des données de l’objet sérialisable json</p>
 </pre></div>
 </div>
 <p>fichier utilisation modele</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">instance</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">MyModel</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">instance</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">MyModel</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">as_dict</span><span class="p">()</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">utils_flask_sqla_geo.serializers.geoserializable</span></code></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">utils_flask_sqla_geo.serializers.geoserializable</span></code></p></li>
 </ul>
 <p>Décorateur pour les modèles SQLA : Ajoute une méthode as_geofeature qui
 retourne un dictionnaire serialisable sous forme de Feature geojson.</p>
 <p>Fichier définition modèle</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="k">import</span> <span class="n">DB</span>
-<span class="kn">from</span> <span class="nn">utils_flask_sqla_geo.serializers</span> <span class="k">import</span> <span class="n">geoserializable</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">DB</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla_geo.serializers</span> <span class="kn">import</span> <span class="n">geoserializable</span>
 
 <span class="nd">@geoserializable</span>
 <span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">DB</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
@@ -237,24 +228,24 @@ retourne un dictionnaire serialisable sous forme de Feature geojson.</p>
 </pre></div>
 </div>
 <p>fichier utilisation modele</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">instance</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">MyModel</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">instance</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">MyModel</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">result</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">as_geofeature</span><span class="p">()</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">utils_flask_sqla_geo.serializers.shapeserializable</span></code></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">utils_flask_sqla_geo.serializers.shapeserializable</span></code></p></li>
 </ul>
 <p>Décorateur pour les modèles SQLA:</p>
 <ul class="simple">
-<li>Ajoute une méthode <code class="docutils literal"><span class="pre">as_list</span></code> qui retourne l’objet sous forme de tableau
-(utilisé pour créer des shapefiles)</li>
-<li>Ajoute une méthode de classe <code class="docutils literal"><span class="pre">to_shape</span></code> qui crée des shapefiles à partir
-des données passées en paramètre</li>
+<li><p>Ajoute une méthode <code class="docutils literal notranslate"><span class="pre">as_list</span></code> qui retourne l’objet sous forme de tableau
+(utilisé pour créer des shapefiles)</p></li>
+<li><p>Ajoute une méthode de classe <code class="docutils literal notranslate"><span class="pre">to_shape</span></code> qui crée des shapefiles à partir
+des données passées en paramètre</p></li>
 </ul>
 <p>Fichier définition modèle</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="k">import</span> <span class="n">DB</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.utils.env</span> <span class="kn">import</span> <span class="n">DB</span>
 
-<span class="kn">from</span> <span class="nn">utils_flask_sqla_geo.serializers</span> <span class="k">import</span> <span class="n">shapeserializable</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla_geo.serializers</span> <span class="kn">import</span> <span class="n">shapeserializable</span>
 
 
 <span class="nd">@shapeserializable</span>
@@ -264,7 +255,7 @@ des données passées en paramètre</li>
 </pre></div>
 </div>
 <p>fichier utilisation modele</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># utilisation de as_shape()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># utilisation de as_shape()</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">MyShapeserializableClass</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 <span class="n">MyShapeserializableClass</span><span class="o">.</span><span class="n">as_shape</span><span class="p">(</span>
     <span class="n">geom_col</span><span class="o">=</span><span class="s1">&#39;geom_4326&#39;</span><span class="p">,</span>
@@ -276,19 +267,19 @@ des données passées en paramètre</li>
 </pre></div>
 </div>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">utils_flask_sqla_geo.serializers.FionaShapeService</span></code></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">utils_flask_sqla_geo.serializers.FionaShapeService</span></code></p></li>
 </ul>
 <p>Classe utilitaire pour crer des shapefiles.</p>
 <p>La classe contient 3 méthode de classe:</p>
 <ul class="simple">
-<li>FionaShapeService.create_shapes_struct(): crée la structure de 3 shapefiles
+<li><p>FionaShapeService.create_shapes_struct(): crée la structure de 3 shapefiles
 (point, ligne, polygone) à partir des colonens et de la geom passé en
-paramètre</li>
-<li>FionaShapeService.create_feature(): ajoute un enregistrement aux shapefiles</li>
-<li>FionaShapeService.save_and_zip_shapefiles(): sauvegarde et zip les shapefiles
-qui ont au moin un enregistrement</li>
+paramètre</p></li>
+<li><p>FionaShapeService.create_feature(): ajoute un enregistrement aux shapefiles</p></li>
+<li><p>FionaShapeService.save_and_zip_shapefiles(): sauvegarde et zip les shapefiles
+qui ont au moin un enregistrement</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">MySQLAModel</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">DB</span><span class="o">.</span><span class="n">session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">MySQLAModel</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 
 <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
         <span class="n">FionaShapeService</span><span class="o">.</span><span class="n">create_shapes_struct</span><span class="p">(</span>
@@ -303,15 +294,15 @@ qui ont au moin un enregistrement</li>
 </pre></div>
 </div>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">utils_flask_sqla.response.json_resp</span></code></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">utils_flask_sqla.response.json_resp</span></code></p></li>
 </ul>
 <p>Décorateur pour les routes : les données renvoyées par la route sont
 automatiquement serialisées en json (ou geojson selon la structure des
 données).</p>
 <p>S’insère entre le décorateur de route flask et la signature de fonction</p>
 <p>fichier routes</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Blueprint</span>
-<span class="kn">from</span> <span class="nn">utils_flask_sqla.response</span> <span class="k">import</span> <span class="n">json_resp</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.response</span> <span class="kn">import</span> <span class="n">json_resp</span>
 
 <span class="n">blueprint</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -337,19 +328,19 @@ données).</p>
 <div class="section" id="verification-des-droits-des-utilisateurs">
 <h3>Vérification des droits des utilisateurs<a class="headerlink" href="#verification-des-droits-des-utilisateurs" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">pypnusershub.routes.check_auth</span></code></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pypnusershub.routes.check_auth</span></code></p></li>
 </ul>
 <p>Décorateur pour les routes : vérifie les droits de l’utilisateur et le
 redirige en cas de niveau insuffisant ou d’informations de session erronés.
 (deprecated) Privilegier <cite>check_auth_cruved</cite></p>
 <p>params :</p>
 <ul class="simple">
-<li>level &lt;int&gt;: niveau de droits requis pour accéder à la vue</li>
-<li>get_role &lt;bool:False&gt;: si True, ajoute l’id utilisateur aux kwargs de la vue</li>
+<li><p>level &lt;int&gt;: niveau de droits requis pour accéder à la vue</p></li>
+<li><p>get_role &lt;bool:False&gt;: si True, ajoute l’id utilisateur aux kwargs de la vue</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Blueprint</span>
-<span class="kn">from</span> <span class="nn">pypnusershub.routes</span> <span class="k">import</span> <span class="n">check_auth</span>
-<span class="kn">from</span> <span class="nn">utils_flask_sqla.response</span> <span class="k">import</span> <span class="n">json_resp</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.routes</span> <span class="kn">import</span> <span class="n">check_auth</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.response</span> <span class="kn">import</span> <span class="n">json_resp</span>
 
 <span class="n">blueprint</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -364,20 +355,20 @@ redirige en cas de niveau insuffisant ou d’informations de session erronés.
 </pre></div>
 </div>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">pypnusershub.routes.check_auth_cruved</span></code></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pypnusershub.routes.check_auth_cruved</span></code></p></li>
 </ul>
 <p>Décorateur pour les routes : Vérifie les droits de l’utilisateur à effectuer
 une action sur la donnée et le redirige en cas de niveau insuffisant ou
 d’informations de session erronées</p>
 <p>params :</p>
 <ul class="simple">
-<li>action &lt;str:[‘C’,’R’,’U’,’V’,’E’,’D’]&gt; type d’action effectuée par la route
-(Create, Read, Update, Validate, Export, Delete)</li>
-<li>get_role &lt;bool:False&gt;: si True, ajoute l’id utilisateur aux kwargs de la vue</li>
+<li><p>action &lt;str:[‘C’,’R’,’U’,’V’,’E’,’D’]&gt; type d’action effectuée par la route
+(Create, Read, Update, Validate, Export, Delete)</p></li>
+<li><p>get_role &lt;bool:False&gt;: si True, ajoute l’id utilisateur aux kwargs de la vue</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="k">import</span> <span class="n">Blueprint</span>
-<span class="kn">from</span> <span class="nn">pypnusershub.routes</span> <span class="k">import</span> <span class="n">check_auth_cruved</span>
-<span class="kn">from</span> <span class="nn">utils_flask_sqla.response</span> <span class="k">import</span> <span class="n">json_resp</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Blueprint</span>
+<span class="kn">from</span> <span class="nn">pypnusershub.routes</span> <span class="kn">import</span> <span class="n">check_auth_cruved</span>
+<span class="kn">from</span> <span class="nn">utils_flask_sqla.response</span> <span class="kn">import</span> <span class="n">json_resp</span>
 
 <span class="n">blueprint</span> <span class="o">=</span> <span class="n">Blueprint</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 
@@ -392,7 +383,7 @@ d’informations de session erronées</p>
 </pre></div>
 </div>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">pypnusershub.routes.db.tools.cruved_for_user_in_app</span></code></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pypnusershub.routes.db.tools.cruved_for_user_in_app</span></code></p></li>
 </ul>
 <p>Fonction qui retourne le cruved d’un utilisateur pour une application donnée.
 Si aucun cruved n’est définit pour l’application, c’est celui de l’application
@@ -405,7 +396,7 @@ mère.</p>
 * id_application_parent: id l’application parent du module</p>
 <p>Valeur retourné:
 &lt;dict&gt; {‘C’: ‘1’, ‘R’:’2’, ‘U’: ‘1’, ‘V’:’2’, ‘E’:’3’, ‘D’: ‘3’}</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pypnusershub.db.tools</span> <span class="k">import</span> <span class="n">cruved_for_user_in_app</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pypnusershub.db.tools</span> <span class="kn">import</span> <span class="n">cruved_for_user_in_app</span>
 
 <span class="n">cruved</span> <span class="o">=</span> <span class="n">cruved_for_user_in_app</span><span class="p">(</span><span class="n">id_role</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">id_application</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">id_application_parent</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
 </pre></div>

@@ -20,20 +20,11 @@
   <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
   
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'2.0',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -192,8 +183,8 @@
 <div class="section" id="mise-a-jour-des-configurations-apache">
 <h2>Mise à jour des configurations Apache<a class="headerlink" href="#mise-a-jour-des-configurations-apache" title="Permalink to this headline">¶</a></h2>
 <p>Afin de rendre chaque application disponible sur un sous-domaine qui lui est propre, adapter la configuration Apache des différentes applications comme suit :</p>
-<p>Pour TaxHub, modifier le fichier de configuration Apache <code class="docutils literal"><span class="pre">/etc/apache2/sites-available/taxhub.conf</span></code> et remplacer son contenu par :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Configuration TaxHub sur sous-domaine</span>
+<p>Pour TaxHub, modifier le fichier de configuration Apache <code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/taxhub.conf</span></code> et remplacer son contenu par :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configuration TaxHub sur sous-domaine</span>
     <span class="o">&lt;</span><span class="n">VirtualHost</span> <span class="o">*</span><span class="p">:</span><span class="mi">80</span><span class="o">&gt;</span>
             <span class="n">ServerName</span> <span class="n">taxhub</span><span class="o">.</span><span class="n">mondomaine</span><span class="o">.</span><span class="n">fr</span>
 
@@ -205,8 +196,8 @@
 <span class="c1"># Fin de configuration de TaxHub</span>
 </pre></div>
 </div>
-<p>Pour UsersHub (versions 2.x), modifier le fichier de configuration Apache <code class="docutils literal"><span class="pre">/etc/apache2/sites-available/usershub.conf</span></code> et remplacer son contenu par :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Configuration UsersHub sur sous-domaine</span>
+<p>Pour UsersHub (versions 2.x), modifier le fichier de configuration Apache <code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/usershub.conf</span></code> et remplacer son contenu par :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configuration UsersHub sur sous-domaine</span>
     <span class="o">&lt;</span><span class="n">VirtualHost</span> <span class="o">*</span><span class="p">:</span><span class="mi">80</span><span class="o">&gt;</span>
             <span class="n">ServerName</span> <span class="n">usershub</span><span class="o">.</span><span class="n">mondomaine</span><span class="o">.</span><span class="n">fr</span>
             <span class="o">&lt;</span><span class="n">Location</span> <span class="o">/&gt;</span>
@@ -217,8 +208,8 @@
 <span class="c1"># Fin de configuration de UsersHub</span>
 </pre></div>
 </div>
-<p>Pour GeoNature, modifier le fichier de configuration apache <code class="docutils literal"><span class="pre">/etc/apache2/sites-available/geonature.conf</span></code> et remplacer son contenu par :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">#Configuration GeoNature sur sous-domaine</span>
+<p>Pour GeoNature, modifier le fichier de configuration apache <code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/geonature.conf</span></code> et remplacer son contenu par :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#Configuration GeoNature sur sous-domaine</span>
     <span class="o">&lt;</span><span class="n">VirtualHost</span> <span class="o">*</span><span class="p">:</span><span class="mi">80</span><span class="o">&gt;</span>
             <span class="n">ServerName</span> <span class="n">geonature</span><span class="o">.</span><span class="n">mondomaine</span><span class="o">.</span><span class="n">fr</span>
             <span class="n">DocumentRoot</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">geonatureadmin</span><span class="o">/</span><span class="n">geonature</span><span class="o">/</span><span class="n">frontend</span><span class="o">/</span><span class="n">dist</span>
@@ -235,12 +226,12 @@
 <span class="c1"># Fin de configuration de GeoNature</span>
 </pre></div>
 </div>
-<p>Pensez à modifier également <code class="docutils literal"><span class="pre">/etc/apache2/sites-available/geonature_maintenance.conf</span></code> pour le mode maintenance.</p>
+<p>Pensez à modifier également <code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/geonature_maintenance.conf</span></code> pour le mode maintenance.</p>
 </div>
 <div class="section" id="application-des-nouvelles-configurations-apache">
 <h2>Application des nouvelles configurations Apache<a class="headerlink" href="#application-des-nouvelles-configurations-apache" title="Permalink to this headline">¶</a></h2>
-<p>Activer les modules <code class="docutils literal"><span class="pre">ssl</span></code>, <code class="docutils literal"><span class="pre">headers</span></code> et <code class="docutils literal"><span class="pre">rewrite</span></code> puis redémarrer Apache&nbsp;:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">ssl</span>
+<p>Activer les modules <code class="docutils literal notranslate"><span class="pre">ssl</span></code>, <code class="docutils literal notranslate"><span class="pre">headers</span></code> et <code class="docutils literal notranslate"><span class="pre">rewrite</span></code> puis redémarrer Apache :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">ssl</span>
 <span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">rewrite</span>
 <span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">headers</span>
 <span class="n">sudo</span> <span class="n">apachectl</span> <span class="n">restart</span>
@@ -249,14 +240,14 @@
 </div>
 <div class="section" id="mise-a-jour-de-l-application-geonature">
 <h2>Mise à jour de l’application GeoNature<a class="headerlink" href="#mise-a-jour-de-l-application-geonature" title="Permalink to this headline">¶</a></h2>
-<p>Il est également nécessaire de mettre à jour le fichier de configuration <code class="docutils literal"><span class="pre">geonature_config.toml</span></code> situé dans le répertoire <code class="docutils literal"><span class="pre">config</span></code></p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">URL_APPLICATION</span> <span class="o">=</span> <span class="s1">&#39;http://geonature.mondomaine.fr&#39;</span>
+<p>Il est également nécessaire de mettre à jour le fichier de configuration <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code> situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">config</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">URL_APPLICATION</span> <span class="o">=</span> <span class="s1">&#39;http://geonature.mondomaine.fr&#39;</span>
     <span class="n">API_ENDPOINT</span> <span class="o">=</span> <span class="s1">&#39;http://geonature.mondomaine.fr/api&#39;</span>
     <span class="n">API_TAXHUB</span> <span class="o">=</span> <span class="s1">&#39;http://taxhub.mondomaine.fr/api&#39;</span>
 </pre></div>
 </div>
-<p>Pour que ces modifications soient prises en compte, lancer les commandes suivantes depuis le répertoire <code class="docutils literal"><span class="pre">geonature/backend</span></code> :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span><span class="o">/</span><span class="n">backend</span>
+<p>Pour que ces modifications soient prises en compte, lancer les commandes suivantes depuis le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/backend</span></code> :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span><span class="o">/</span><span class="n">backend</span>
 <span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
 <span class="n">geonature</span> <span class="n">update_configuration</span>
 <span class="n">deactivate</span>
@@ -269,25 +260,25 @@
 <div class="section" id="certifier-chaque-sous-domaine">
 <h2>Certifier chaque sous-domaine<a class="headerlink" href="#certifier-chaque-sous-domaine" title="Permalink to this headline">¶</a></h2>
 <p>Une fois cerbot installé, il faut produire un certificat pour chacun des sous-domaines créés. Lancer la commande suivante pour générer des certificats et des clés pour l’ensemble des noms de domaines que vous souhaitez mettre en HTTPS.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">certbot</span> <span class="n">certonly</span> <span class="o">--</span><span class="n">webroot</span> <span class="o">--</span><span class="n">webroot</span><span class="o">-</span><span class="n">path</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span> <span class="o">--</span><span class="n">domain</span> <span class="n">geonature</span><span class="o">.</span><span class="n">mondomaine</span><span class="o">.</span><span class="n">fr</span> <span class="o">--</span><span class="n">email</span> <span class="n">monemail</span><span class="nd">@domaine</span><span class="o">.</span><span class="n">fr</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">certbot</span> <span class="n">certonly</span> <span class="o">--</span><span class="n">webroot</span> <span class="o">--</span><span class="n">webroot</span><span class="o">-</span><span class="n">path</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span> <span class="o">--</span><span class="n">domain</span> <span class="n">geonature</span><span class="o">.</span><span class="n">mondomaine</span><span class="o">.</span><span class="n">fr</span> <span class="o">--</span><span class="n">email</span> <span class="n">monemail</span><span class="nd">@domaine</span><span class="o">.</span><span class="n">fr</span>
 <span class="n">sudo</span> <span class="n">certbot</span> <span class="n">certonly</span> <span class="o">--</span><span class="n">webroot</span> <span class="o">--</span><span class="n">webroot</span><span class="o">-</span><span class="n">path</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span> <span class="o">--</span><span class="n">domain</span> <span class="n">taxhub</span><span class="o">.</span><span class="n">mondomaine</span><span class="o">.</span><span class="n">fr</span> <span class="o">--</span><span class="n">email</span> <span class="n">monemail</span><span class="nd">@domaine</span><span class="o">.</span><span class="n">fr</span>
 <span class="n">sudo</span> <span class="n">certbot</span> <span class="n">certonly</span> <span class="o">--</span><span class="n">webroot</span> <span class="o">--</span><span class="n">webroot</span><span class="o">-</span><span class="n">path</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span> <span class="o">--</span><span class="n">domain</span> <span class="n">usershub</span><span class="o">.</span><span class="n">mondomaine</span><span class="o">.</span><span class="n">fr</span> <span class="o">--</span><span class="n">email</span> <span class="n">monemail</span><span class="nd">@domaine</span><span class="o">.</span><span class="n">fr</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">certonly</span></code> : demander la création du certificat uniquement.</li>
-<li><code class="docutils literal"><span class="pre">--webroot</span></code> : utiliser le plugin webroot qui se contente d’ajouter des fichiers dans le dossier défini via&nbsp;<code class="docutils literal"><span class="pre">--webroot-path</span></code>.</li>
-<li><code class="docutils literal"><span class="pre">--webroot-path</span></code> : le chemin de votre «&nbsp;DocumentRoot&nbsp;» Apache. Certbot placera ses fichiers dans <code class="docutils literal"><span class="pre">$DocumentRoot/.well-known/</span></code> pour les tests et vérifications</li>
-<li><code class="docutils literal"><span class="pre">--domain</span></code> : le nom de domaine à certifier. Mettre tous les sous-domaines à certifier</li>
-<li><code class="docutils literal"><span class="pre">--email</span></code> : l’adresse qui recevra les notifications de Let’s Encrypt. Principalement pour rappeler de renouveler le certificat le moment venu.</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">certonly</span></code> : demander la création du certificat uniquement.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--webroot</span></code> : utiliser le plugin webroot qui se contente d’ajouter des fichiers dans le dossier défini via <code class="docutils literal notranslate"><span class="pre">--webroot-path</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--webroot-path</span></code> : le chemin de votre « DocumentRoot » Apache. Certbot placera ses fichiers dans <code class="docutils literal notranslate"><span class="pre">$DocumentRoot/.well-known/</span></code> pour les tests et vérifications</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--domain</span></code> : le nom de domaine à certifier. Mettre tous les sous-domaines à certifier</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--email</span></code> : l’adresse qui recevra les notifications de Let’s Encrypt. Principalement pour rappeler de renouveler le certificat le moment venu.</p></li>
 </ul>
-<p>Les certificats obtenus se trouvent dans les dossiers <code class="docutils literal"><span class="pre">/etc/letsencrypt/live/geonature.mondomaine.fr/</span></code>, <code class="docutils literal"><span class="pre">/etc/letsencrypt/live/taxhub.mondomaine.fr/</span></code> et <code class="docutils literal"><span class="pre">/etc/letsencrypt/live/usershub.mondomaine.fr/</span></code>.</p>
+<p>Les certificats obtenus se trouvent dans les dossiers <code class="docutils literal notranslate"><span class="pre">/etc/letsencrypt/live/geonature.mondomaine.fr/</span></code>, <code class="docutils literal notranslate"><span class="pre">/etc/letsencrypt/live/taxhub.mondomaine.fr/</span></code> et <code class="docutils literal notranslate"><span class="pre">/etc/letsencrypt/live/usershub.mondomaine.fr/</span></code>.</p>
 </div>
 <div class="section" id="mettre-a-jour-les-configurations-apache-de-chaque-application">
 <h2>Mettre à jour les configurations Apache de chaque application<a class="headerlink" href="#mettre-a-jour-les-configurations-apache-de-chaque-application" title="Permalink to this headline">¶</a></h2>
-<p>Les fichiers de configuration Apache des différentes applications ainsi que la configuration de l’application GeoNature doivent être mis à jour en conséquence. Dans chaque configuration, le premier VirtualHost (<code class="docutils literal"><span class="pre">*:80</span></code>) sert à faire la redirection du http vers le https. Le second (<code class="docutils literal"><span class="pre">*:443</span></code>) est la configuration du https. Pensez à remplacer “mondomaine” et les chemins des fichiers de certification SSLCertificate.</p>
-<p>Modifier le fichier de configuration de GeoNature <code class="docutils literal"><span class="pre">/etc/apache2/sites-available/geonature.conf</span></code> et remplacer son contenu par :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span># Configuration originale de GeoNature
+<p>Les fichiers de configuration Apache des différentes applications ainsi que la configuration de l’application GeoNature doivent être mis à jour en conséquence. Dans chaque configuration, le premier VirtualHost (<code class="docutils literal notranslate"><span class="pre">*:80</span></code>) sert à faire la redirection du http vers le https. Le second (<code class="docutils literal notranslate"><span class="pre">*:443</span></code>) est la configuration du https. Pensez à remplacer “mondomaine” et les chemins des fichiers de certification SSLCertificate.</p>
+<p>Modifier le fichier de configuration de GeoNature <code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/geonature.conf</span></code> et remplacer son contenu par :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Configuration originale de GeoNature
 #Alias /geonature /home/geonatureadmin/geonature/frontend/dist
 
 #&lt;Directory /home/geonatureadmin/geonature/frontend/dist&gt;
@@ -338,9 +329,9 @@
 # FIN Configuration GeoNature
 </pre></div>
 </div>
-<p>Pensez à modifier également le fichier <code class="docutils literal"><span class="pre">/etc/apache2/sites-available/geonature_maintenance.conf</span></code>.</p>
-<p>Modifier le fichier de configuration de TaxHub <code class="docutils literal"><span class="pre">/etc/apache2/sites-available/taxhub.conf</span></code> et remplacer son contenu par :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span># Configuration originale de TaxHub
+<p>Pensez à modifier également le fichier <code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/geonature_maintenance.conf</span></code>.</p>
+<p>Modifier le fichier de configuration de TaxHub <code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/taxhub.conf</span></code> et remplacer son contenu par :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Configuration originale de TaxHub
 #&lt;Location /taxhub&gt;
 #ProxyPass  http://127.0.0.1:5000 retry=0
 #ProxyPassReverse  http://127.0.0.1:5000
@@ -380,8 +371,8 @@
 #FIN Configuration TaxHub
 </pre></div>
 </div>
-<p>Modifier le fichier de configuration de UsersHub <code class="docutils literal"><span class="pre">/etc/apache2/sites-available/usershub.conf</span></code> et remplacer son contenu par :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>#Configuration originale de UsersHub
+<p>Modifier le fichier de configuration de UsersHub <code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/usershub.conf</span></code> et remplacer son contenu par :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>#Configuration originale de UsersHub
     #Alias /usershub /home/geonatureadmin/usershub/web
     #&lt;Directory /home/geonatureadmin/usershub/web&gt;
     #Require all granted
@@ -425,8 +416,8 @@
 </div>
 <div class="section" id="prise-en-compte-des-nouvelles-configurations-apache">
 <h2>Prise en compte des nouvelles configurations Apache<a class="headerlink" href="#prise-en-compte-des-nouvelles-configurations-apache" title="Permalink to this headline">¶</a></h2>
-<p>Activer les modules <code class="docutils literal"><span class="pre">ssl</span></code>, <code class="docutils literal"><span class="pre">headers</span></code> et <code class="docutils literal"><span class="pre">rewrite</span></code> puis redémarrer Apache&nbsp;:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">ssl</span>
+<p>Activer les modules <code class="docutils literal notranslate"><span class="pre">ssl</span></code>, <code class="docutils literal notranslate"><span class="pre">headers</span></code> et <code class="docutils literal notranslate"><span class="pre">rewrite</span></code> puis redémarrer Apache :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">ssl</span>
 <span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">rewrite</span>
 <span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">headers</span>
 <span class="n">sudo</span> <span class="n">apachectl</span> <span class="n">restart</span>
@@ -436,19 +427,19 @@
 </div>
 <div class="section" id="configuration-de-l-application-geonature">
 <h2>Configuration de l’application GeoNature<a class="headerlink" href="#configuration-de-l-application-geonature" title="Permalink to this headline">¶</a></h2>
-<p>Il est nécessaire de mettre à jour le fichier de configuration geonature_config.toml situé dans le répertoire <code class="docutils literal"><span class="pre">geonature/config</span></code> :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span><span class="o">/</span><span class="n">config</span>
+<p>Il est nécessaire de mettre à jour le fichier de configuration geonature_config.toml situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/config</span></code> :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span><span class="o">/</span><span class="n">config</span>
 <span class="n">nano</span> <span class="n">geonature_config</span><span class="o">.</span><span class="n">toml</span>
 </pre></div>
 </div>
 <p>Modifier les éléments suivants :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">URL_APPLICATION</span> <span class="o">=</span> <span class="s1">&#39;https://geonature.mondomaine.fr&#39;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">URL_APPLICATION</span> <span class="o">=</span> <span class="s1">&#39;https://geonature.mondomaine.fr&#39;</span>
 <span class="n">API_ENDPOINT</span> <span class="o">=</span> <span class="s1">&#39;https://geonature.mondomaine.fr/api&#39;</span>
 <span class="n">API_TAXHUB</span> <span class="o">=</span> <span class="s1">&#39;https://taxhub.mondomaine.fr/api&#39;</span>
 </pre></div>
 </div>
-<p>Pour que ces modifications soient prises en compte, lancer les commandes suivantes depuis le répertoire <code class="docutils literal"><span class="pre">geonature/backend</span></code> :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span><span class="o">/</span><span class="n">backend</span>
+<p>Pour que ces modifications soient prises en compte, lancer les commandes suivantes depuis le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/backend</span></code> :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span><span class="o">/</span><span class="n">backend</span>
 <span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
 <span class="n">geonature</span> <span class="n">update_configuration</span>
 <span class="n">deactivate</span>

@@ -20,20 +20,11 @@
   <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
   
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'2.0',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -197,13 +188,13 @@
   <div class="section" id="specificites-depobio">
 <h1>SPECIFICITES DEPOBIO<a class="headerlink" href="#specificites-depobio" title="Permalink to this headline">¶</a></h1>
 <p>Cette documentation mentionne les spécificités et la configuration de l’installation de l’instance nationale du Ministère de la Transition Ecologique et Solidaire (MTES), dans le cadre du projet de Depôt Légal des données de biodiversité (<a class="reference external" href="https://depot-legal-biodiversite.naturefrance.fr/">https://depot-legal-biodiversite.naturefrance.fr/</a>).</p>
-<p>Pour l’installation de GeoNature, voir la procédure d’installation de GeoNature et ses dépendances (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-all.rst">https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-all.rst</a>).</p>
+<p>Pour l’installation de GeoNature, voir la procédure d’installation de GeoNature et ses dépendances (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-all.rst">https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-all.rst</a>).</p>
 <div class="section" id="configuration-apache">
 <h2>Configuration Apache<a class="headerlink" href="#configuration-apache" title="Permalink to this headline">¶</a></h2>
 <p>Editez la configuration Apache de GeoNature et de TaxHub pour l’adapter au
 contexte de production.</p>
-<p>Fichier <code class="docutils literal"><span class="pre">/etc/apache/site-enabled/geonature.conf</span></code> :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1">#Configuration GeoNature</span>
+<p>Fichier <code class="docutils literal notranslate"><span class="pre">/etc/apache/site-enabled/geonature.conf</span></code> :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#Configuration GeoNature</span>
 
 <span class="n">Alias</span> <span class="o">/</span><span class="n">saisie</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">ecrins</span><span class="o">/</span><span class="n">geonature</span><span class="o">/</span><span class="n">frontend</span><span class="o">/</span><span class="n">dist</span>
 <span class="o">&lt;</span><span class="n">Directory</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">ecrins</span><span class="o">/</span><span class="n">geonature</span><span class="o">/</span><span class="n">frontend</span><span class="o">/</span><span class="n">dist</span><span class="o">&gt;</span>
@@ -216,8 +207,8 @@ contexte de production.</p>
 <span class="o">&lt;/</span><span class="n">Location</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<p>Fichier <code class="docutils literal"><span class="pre">/etc/apache/site-enabled/taxhub.conf</span></code> :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Configuration TaxHub</span>
+<p>Fichier <code class="docutils literal notranslate"><span class="pre">/etc/apache/site-enabled/taxhub.conf</span></code> :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configuration TaxHub</span>
 <span class="n">RewriteEngine</span>  <span class="n">on</span>
 <span class="n">RewriteRule</span>    <span class="s2">&quot;taxhub$&quot;</span>  <span class="s2">&quot;taxhub/&quot;</span>  <span class="p">[</span><span class="n">R</span><span class="p">]</span>
 <span class="o">&lt;</span><span class="n">Location</span> <span class="o">/</span><span class="n">saisie</span><span class="o">/</span><span class="n">taxhub</span><span class="o">&gt;</span>
@@ -227,7 +218,7 @@ contexte de production.</p>
 <span class="c1">#FIN Configuration TaxHub</span>
 </pre></div>
 </div>
-<p>Le fichier <code class="docutils literal"><span class="pre">/etc/apache/site-enabled/000-default.conf</span></code> doit également être
+<p>Le fichier <code class="docutils literal notranslate"><span class="pre">/etc/apache/site-enabled/000-default.conf</span></code> doit également être
 édité pour faire fonctionner le load balancing (Voir la configuration de la
 pre-prod pour l’adapter au serveur de production).</p>
 </div>
@@ -238,13 +229,13 @@ configuration de l’application pour les besoins spécifiques de
 l’instance nationale.</p>
 <p>Lancer le script pour effectuer automatiquement la configuration
 de l’application :</p>
-<p><code class="docutils literal"><span class="pre">/home/&lt;my_user&gt;/geonature/install/install_all/configuration_mtes.sh</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">/home/&lt;my_user&gt;/geonature/install/install_all/configuration_mtes.sh</span></code></p>
 <p>Il est cependant possible de modifier ces configurations.
-Le fichier <code class="docutils literal"><span class="pre">/home/&lt;my_user&gt;/geonature/config/default_config.toml.example</span></code>
+Le fichier <code class="docutils literal notranslate"><span class="pre">/home/&lt;my_user&gt;/geonature/config/default_config.toml.example</span></code>
 liste l’ensemble des variables de configuration disponibles ainsi que leurs
 valeurs par défaut.</p>
 <p>Editer le fichier de configuration de GeoNature pour surcoucher ces variables :</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>sudo nano /home/&lt;MON_USER&gt;/geonature/config/geonature_config.toml`
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>sudo nano /home/&lt;MON_USER&gt;/geonature/config/geonature_config.toml`
 </pre></div>
 </div>
 <p>Ci-dessous, les paramètres de configuration pour l’instance de production.</p>
@@ -263,11 +254,11 @@ appName = ‘Depôt légal de biodiviersité - saisie’</p>
 <h3>Configuration des URLS pour le CAS<a class="headerlink" href="#configuration-des-urls-pour-le-cas" title="Permalink to this headline">¶</a></h3>
 <p>Les URLS doivent correspondre aux informations renseignées dans la
 configuration Apache et au Load Balancer. Elle ne doivent pas contenir
-de <code class="docutils literal"><span class="pre">/</span></code> final.</p>
-<p>Pour la pré-prod, ajouter le préfixe “pp-” avant <code class="docutils literal"><span class="pre">saisie</span></code> et <code class="docutils literal"><span class="pre">taxhub</span></code>
+de <code class="docutils literal notranslate"><span class="pre">/</span></code> final.</p>
+<p>Pour la pré-prod, ajouter le préfixe “pp-” avant <code class="docutils literal notranslate"><span class="pre">saisie</span></code> et <code class="docutils literal notranslate"><span class="pre">taxhub</span></code>
 (naturefrance.fr/pp-saisie, naturefrance.fr/pp-taxhub/api) et adapter la
 configuration Apache en conséquence.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># URL d&#39;accès à l&#39;application</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># URL d&#39;accès à l&#39;application</span>
 <span class="n">URL_APPLICATION</span> <span class="o">=</span> <span class="s1">&#39;https://depot-legal-biodiversite.naturefrance.fr/saisie&#39;</span>
 <span class="c1"># URL de l&#39;API de GeoNature</span>
 <span class="n">API_ENDPOINT</span> <span class="o">=</span> <span class="s1">&#39;https://depot-legal-biodiversite.naturefrance.fr/saisie/api&#39;</span>
@@ -279,13 +270,13 @@ configuration Apache en conséquence.</p>
 <div class="section" id="cle-secrete">
 <h3>Clé secrète<a class="headerlink" href="#cle-secrete" title="Permalink to this headline">¶</a></h3>
 <p>Mettre un clé secrète personnalisée</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="s1">&#39;&lt;MA_CLE_CRYPTEE&gt;&#39;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="s1">&#39;&lt;MA_CLE_CRYPTEE&gt;&#39;</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="configuration-bdd-liee-a-la-connexion-au-cas">
 <h3>Configuration BDD liée à la connexion au CAS<a class="headerlink" href="#configuration-bdd-liee-a-la-connexion-au-cas" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">BDD</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">BDD</span><span class="p">]</span>
 <span class="c1"># id du groupe dans lequel tous les utilisateurs connectés sont ajoutés</span>
 <span class="c1"># (seul le socle 1 - droit minimum - est utilisé pour l&#39;instance de production)</span>
 <span class="n">ID_USER_SOCLE_1</span> <span class="o">=</span> <span class="mi">20003</span>
@@ -296,8 +287,8 @@ configuration Apache en conséquence.</p>
 <div class="section" id="connexion-au-cas-inpn-gestion-centralisee-des-utilisateurs">
 <h3>Connexion au CAS INPN - gestion centralisée des utilisateurs<a class="headerlink" href="#connexion-au-cas-inpn-gestion-centralisee-des-utilisateurs" title="Permalink to this headline">¶</a></h3>
 <p>Bien changer les variables ID et PASSWORD avec les bonnes valeurs.</p>
-<p>NB : pour la pré-prod, utiliser <code class="docutils literal"><span class="pre">https://preprod-inpn.mnhn.fr</span></code></p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">CAS_PUBLIC</span><span class="p">]</span>
+<p>NB : pour la pré-prod, utiliser <code class="docutils literal notranslate"><span class="pre">https://preprod-inpn.mnhn.fr</span></code></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">CAS_PUBLIC</span><span class="p">]</span>
 <span class="n">CAS_AUTHENTIFICATION</span> <span class="o">=</span> <span class="n">true</span>
 <span class="n">CAS_URL_LOGIN</span> <span class="o">=</span> <span class="s1">&#39;https://inpn.mnhn.fr/auth/login&#39;</span>
 <span class="n">CAS_URL_LOGOUT</span> <span class="o">=</span> <span class="s1">&#39;https://inpn.mnhn.fr/auth/logout&#39;</span>
@@ -317,8 +308,8 @@ configuration Apache en conséquence.</p>
 <div class="section" id="configuration-du-frontend">
 <h3>Configuration du frontend<a class="headerlink" href="#configuration-du-frontend" title="Permalink to this headline">¶</a></h3>
 <p>Pour l’instance de pré-prod, rajouter “instance de démo” à la variable
-<code class="docutils literal"><span class="pre">appName</span></code>.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">FRONTEND</span><span class="p">]</span>
+<code class="docutils literal notranslate"><span class="pre">appName</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">FRONTEND</span><span class="p">]</span>
     <span class="c1"># Compilation du fronend en mode production</span>
     <span class="n">PROD_MOD</span> <span class="o">=</span> <span class="n">true</span>
     <span class="c1"># Affichage du footer sur la page d&#39;acceuil</span>
@@ -332,7 +323,7 @@ configuration Apache en conséquence.</p>
 </div>
 <div class="section" id="configuration-de-la-cartographie">
 <h3>Configuration de la cartographie<a class="headerlink" href="#configuration-de-la-cartographie" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">MAPCONFIG</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">MAPCONFIG</span><span class="p">]</span>
 <span class="n">BASEMAP</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">{</span><span class="s2">&quot;name&quot;</span> <span class="o">=</span> <span class="s2">&quot;IGN-topo&quot;</span><span class="p">,</span> <span class="s2">&quot;layer&quot;</span> <span class="o">=</span> <span class="s2">&quot;https://wxs.ign.fr/i53afxeajwaokg3gxzzhn8un/geoportail/wmts?SERVICE=WMTS&amp;REQUEST=GetTile&amp;VERSION=1.0.0&amp;LAYER=GEOGRAP$</span>
     <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="o">=</span> <span class="s2">&quot;IGN-Scan Express&quot;</span><span class="p">,</span> <span class="s2">&quot;layer&quot;</span> <span class="o">=</span> <span class="s2">&quot;https://wxs.ign.fr/i53afxeajwaokg3gxzzhn8un/geoportail/wmts?SERVICE=WMTS&amp;REQUEST=GetTile&amp;VERSION=1.0.0&amp;LAYER=$</span>
@@ -349,8 +340,8 @@ configuration Apache en conséquence.</p>
 <p>Après chaque modification du fichier de configuration, lancez les commandes
 suivantes pour mettre à jour l’application (l’opération peut être longue car
 il s’agit de la recompilation du frontend).</p>
-<p>Depuis le répertoire <code class="docutils literal"><span class="pre">backend</span></code> de GeoNature</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<p>Depuis le répertoire <code class="docutils literal notranslate"><span class="pre">backend</span></code> de GeoNature</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
 <span class="n">geonature</span> <span class="n">update_configuration</span>
 <span class="n">deactivate</span>
 </pre></div>
@@ -359,11 +350,11 @@ il s’agit de la recompilation du frontend).</p>
 <div class="section" id="configuration-du-module-occurrence-de-taxon-occtax">
 <h3>Configuration du module Occurrence de taxon: OCCTAX<a class="headerlink" href="#configuration-du-module-occurrence-de-taxon-occtax" title="Permalink to this headline">¶</a></h3>
 <p>Le fichier de configuration du module Occtax se trouve dans le fichier
-<code class="docutils literal"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/external_modules/occtax/config/conf_gn_module.toml</span></code>.</p>
+<code class="docutils literal notranslate"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/external_modules/occtax/config/conf_gn_module.toml</span></code>.</p>
 <p>Le script de configuration spécifique de l’instance nationale remplit ce
 fichier avec les bonnes configuration.</p>
 <p>Voici la configuration fournie pour l’instance de production:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">api_url</span> <span class="o">=</span> <span class="s1">&#39;/occtax&#39;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">api_url</span> <span class="o">=</span> <span class="s1">&#39;/occtax&#39;</span>
 
 <span class="c1"># message sur la modale des export pour préciser les consignes pour GINCO</span>
 <span class="n">export_message</span> <span class="o">=</span> <span class="s2">&quot;&lt;p&gt; &lt;b&gt; Attention: &lt;/b&gt; &lt;/br&gt; Vous vous apprêtez à télécharger les données de la &lt;b&gt;recherche courante.&lt;/b&gt; &lt;/br&gt; Pour n&#39;exporter qu&#39;un &lt;b&gt;$</span>
@@ -429,19 +420,19 @@ fichier avec les bonnes configuration.</p>
 </pre></div>
 </div>
 <p>Le fichier
-<code class="docutils literal"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/external_modules/occtax/config/conf_gn_module.toml.example</span></code>
+<code class="docutils literal notranslate"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/external_modules/occtax/config/conf_gn_module.toml.example</span></code>
 liste l’ensemble des variables de configuration du module Occtax ainsi que
 leurs valeurs par défault.</p>
 <p>Après chaque modification du fichier de configuration, lancez les commandes
 suivantes pour mettre à jour l’application (l’opération peut être longue car
 il s’agit de la recompilation du frontend).</p>
-<p>Depuis le répertoire <code class="docutils literal"><span class="pre">backend</span></code> de GeoNature</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<p>Depuis le répertoire <code class="docutils literal notranslate"><span class="pre">backend</span></code> de GeoNature</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
 <span class="n">geonature</span> <span class="n">update_module_configuration</span> <span class="n">occtax</span>
 <span class="n">deactivate</span>
 </pre></div>
 </div>
-<p>Pour plus d’information sur la configuration du module Occtax, voir la documentation concernant le module (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst#module-occtax">https://github.com/PnX-SI/GeoNature/blob/develop/docs/admin-manual.rst#module-occtax</a>).</p>
+<p>Pour plus d’information sur la configuration du module Occtax, voir la documentation concernant le module (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/docs/admin-manual.rst#module-occtax">https://github.com/PnX-SI/GeoNature/blob/master/docs/admin-manual.rst#module-occtax</a>).</p>
 </div>
 </div>
 <div class="section" id="referentiel-geographique">
@@ -455,27 +446,27 @@ des altitudes pour chaque observation).</p>
 <div class="section" id="authentification-cas-inpn">
 <h2>Authentification CAS INPN<a class="headerlink" href="#authentification-cas-inpn" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Code source : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/backend/geonature/core/auth/routes.py">https://github.com/PnX-SI/GeoNature/blob/develop/backend/geonature/core/auth/routes.py</a></li>
-<li>Config : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/config/default_config.toml.example#L29-L44">https://github.com/PnX-SI/GeoNature/blob/develop/config/default_config.toml.example#L29-L44</a></li>
+<li><p>Code source : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/core/auth/routes.py">https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/core/auth/routes.py</a></p></li>
+<li><p>Config : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/config/default_config.toml.example#L124-L135">https://github.com/PnX-SI/GeoNature/blob/master/config/default_config.toml.example#L124-L135</a></p></li>
 </ul>
 </div>
 <div class="section" id="connexion-et-droits-dans-geonature">
 <h2>Connexion et droits dans GeoNature<a class="headerlink" href="#connexion-et-droits-dans-geonature" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>A chaque connexion via le CAS INPN on récupère l’ID_Utilisateur.
+<li><p>A chaque connexion via le CAS INPN on récupère l’ID_Utilisateur.
 On ajoute cet utilisateur dans la base de données de GeoNature
-(<code class="docutils literal"><span class="pre">utilisateurs.t_roles</span></code> et <code class="docutils literal"><span class="pre">utilisateurs.bib_organisme</span></code>) et on
-lui affecte des droits CRUVED par défaut.</li>
-<li>On assigne à l’utilisateur le «&nbsp;socle 1&nbsp;» (C1-R1-V0-E1-D1). Il pourra voir
+(<code class="docutils literal notranslate"><span class="pre">utilisateurs.t_roles</span></code> et <code class="docutils literal notranslate"><span class="pre">utilisateurs.bib_organisme</span></code>) et on
+lui affecte des droits CRUVED par défaut.</p></li>
+<li><p>On assigne à l’utilisateur le « socle 1 » (C1-R1-V0-E1-D1). Il pourra voir
 seulement les données qu’il a saisi lui-même et les JDD qu’il a
-créé dans MTD.</li>
+créé dans MTD.</p></li>
 </ul>
-<p>NB sur la gestion des droits dans GeoNature&nbsp;:</p>
+<p>NB sur la gestion des droits dans GeoNature :</p>
 <ul class="simple">
-<li>6 actions sont possibles dans GeoNature :
-Create / Read / Update / Validate / Export / Delete (aka CRUVED).</li>
-<li>3 portées de ces actions sont possibles :
-Mes données / Les données de mon organisme / Toutes les données.</li>
+<li><p>6 actions sont possibles dans GeoNature :
+Create / Read / Update / Validate / Export / Delete (aka CRUVED).</p></li>
+<li><p>3 portées de ces actions sont possibles :
+Mes données / Les données de mon organisme / Toutes les données.</p></li>
 </ul>
 </div>
 <div class="section" id="recuperation-des-jdd">
@@ -483,34 +474,34 @@ Mes données / Les données de mon organisme / Toutes les données.</li>
 <p>Grâce à l’API de MTD, il est désormais possible d’ajouter les jeux de données
 (et des cadres d’acquisition) créés dans MTD dans la BDD GeoNature.</p>
 <ul class="simple">
-<li>On récupère la liste des JDD créés par l’utilisateur grâce à l’API&nbsp;MTD au
+<li><p>On récupère la liste des JDD créés par l’utilisateur grâce à l’API MTD au
 chargement de la liste déroulante des JDD :
-<a class="reference external" href="https://xxxxx/cadre/jdd/export/xml/GetRecordsByUserId">https://xxxxx/cadre/jdd/export/xml/GetRecordsByUserId</a>?id=&lt;ID_USER&gt;</li>
-<li>On récupère l’UUID du cadre CA associé au JDD dans le XML renvoyé et on fait
-appel au l’API MTD pour récupérer le fichier XML du CA&nbsp;:
-<a class="reference external" href="https://xxxxx/cadre/export/xml/GetRecordById">https://xxxxx/cadre/export/xml/GetRecordById</a>?id=&lt;UUID&gt;</li>
-<li>On ajoute le CA dans la table <code class="docutils literal"><span class="pre">gn_meta.t_acquisition_framwork</span></code> et les JDD
-dans la table <code class="docutils literal"><span class="pre">gn_meta.t_datasets</span></code>. Si le CA ou les JDD sont modifiés dans
-MTD, ils seront également modifiés dans le BDD GeoNature.</li>
-<li>Dans la table <code class="docutils literal"><span class="pre">gn_meta.cor_dataset_actor</span></code> on fait le lien entre les
+<a class="reference external" href="https://xxxxx/cadre/jdd/export/xml/GetRecordsByUserId">https://xxxxx/cadre/jdd/export/xml/GetRecordsByUserId</a>?id=&lt;ID_USER&gt;</p></li>
+<li><p>On récupère l’UUID du cadre CA associé au JDD dans le XML renvoyé et on fait
+appel au l’API MTD pour récupérer le fichier XML du CA :
+<a class="reference external" href="https://xxxxx/cadre/export/xml/GetRecordById">https://xxxxx/cadre/export/xml/GetRecordById</a>?id=&lt;UUID&gt;</p></li>
+<li><p>On ajoute le CA dans la table <code class="docutils literal notranslate"><span class="pre">gn_meta.t_acquisition_framwork</span></code> et les JDD
+dans la table <code class="docutils literal notranslate"><span class="pre">gn_meta.t_datasets</span></code>. Si le CA ou les JDD sont modifiés dans
+MTD, ils seront également modifiés dans le BDD GeoNature.</p></li>
+<li><p>Dans la table <code class="docutils literal notranslate"><span class="pre">gn_meta.cor_dataset_actor</span></code> on fait le lien entre les
 acteurs et le JDD. On ajoute l’utilisateur qui a créé le JDD comme
 “Point de contact principal” du JDD. Si on dispose de l’ID_Organisme de
 l’utilisateur, on ajoute également l’organisme comme
-“Point de contact principal” du JDD.</li>
-<li>Pour remplir cette table on ne prend pas les infos renvoyés par le
-XML JDD sous l’intitulé «&nbsp;Acteur&nbsp;» puisque l’ID_Organisme ou l’ID_Acteur
-n’est pas renseigné. (Dans la table <code class="docutils literal"><span class="pre">gn_meta.cor_dataset_actor</span></code>, il faut
-obligatoirement un ID).</li>
-<li>La question de la suppresion de JDD et des CA n’est pas résolue. Si un JDD
+“Point de contact principal” du JDD.</p></li>
+<li><p>Pour remplir cette table on ne prend pas les infos renvoyés par le
+XML JDD sous l’intitulé « Acteur » puisque l’ID_Organisme ou l’ID_Acteur
+n’est pas renseigné. (Dans la table <code class="docutils literal notranslate"><span class="pre">gn_meta.cor_dataset_actor</span></code>, il faut
+obligatoirement un ID).</p></li>
+<li><p>La question de la suppresion de JDD et des CA n’est pas résolue. Si un JDD
 est supprimé dans MTD, qu’est-ce qu’on fait des données associées a celui-ci
-dans GeoNature&nbsp;?</li>
+dans GeoNature ?</p></li>
 </ul>
 </div>
 <div class="section" id="module-synthese">
 <h2>Module Synthese<a class="headerlink" href="#module-synthese" title="Permalink to this headline">¶</a></h2>
 <p>Sur l’instance DEPOPBIO le module synthese a été désactivé en mettant un
 CRUVED à 0 au groupe socle 1 et socle 2 pour le module.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span>  <span class="n">INSERT</span> <span class="n">INTO</span> <span class="n">gn_permissions</span><span class="o">.</span><span class="n">cor_role_action_filter_module_object</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">INSERT</span> <span class="n">INTO</span> <span class="n">gn_permissions</span><span class="o">.</span><span class="n">cor_role_action_filter_module_object</span>
   <span class="p">(</span>
   <span class="n">id_role</span><span class="p">,</span>
   <span class="n">id_action</span><span class="p">,</span>
@@ -566,7 +557,7 @@ CRUVED à 0 au groupe socle 1 et socle 2 pour le module.</p>
 </div>
 <p>Les triggers d’insertion du module Occtax vers le module Synthese ont
 également été désactivés.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ALTER</span> <span class="n">TABLE</span> <span class="n">pr_occtax</span><span class="o">.</span><span class="n">t_releves_occtax</span> <span class="n">DISABLE</span> <span class="n">TRIGGER</span> <span class="n">tri_update_synthese_t_releve_occtax</span><span class="p">;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ALTER</span> <span class="n">TABLE</span> <span class="n">pr_occtax</span><span class="o">.</span><span class="n">t_releves_occtax</span> <span class="n">DISABLE</span> <span class="n">TRIGGER</span> <span class="n">tri_update_synthese_t_releve_occtax</span><span class="p">;</span>
 <span class="n">ALTER</span> <span class="n">TABLE</span> <span class="n">pr_occtax</span><span class="o">.</span><span class="n">t_releves_occtax</span> <span class="n">DISABLE</span> <span class="n">TRIGGER</span> <span class="n">tri_delete_synthese_t_releve_occtax</span><span class="p">;</span>
 
 <span class="n">ALTER</span> <span class="n">TABLE</span> <span class="n">pr_occtax</span><span class="o">.</span><span class="n">t_occurrences_occtax</span> <span class="n">DISABLE</span> <span class="n">TRIGGER</span> <span class="n">tri_update_synthese_t_occurrence_occtax</span><span class="p">;</span>

@@ -20,20 +20,11 @@
   <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
   
     
-      <script type="text/javascript">
-          var DOCUMENTATION_OPTIONS = {
-              URL_ROOT:'./',
-              VERSION:'2.0',
-              LANGUAGE:'None',
-              COLLAPSE_INDEX:false,
-              FILE_SUFFIX:'.html',
-              HAS_SOURCE:  true,
-              SOURCELINK_SUFFIX: '.txt'
-          };
-      </script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -179,65 +170,65 @@
 <div class="section" id="installation-de-usershub-2">
 <h2>Installation de UsersHub 2<a class="headerlink" href="#installation-de-usershub-2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Télécharger la version UsersHub 2</li>
+<li><p>Télécharger la version UsersHub 2</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span>
 <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PnEcrins</span><span class="o">/</span><span class="n">UsersHub</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
 <span class="n">unzip</span> <span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>Renommer l’ancien et le nouveau répertoire</li>
+<li><p>Renommer l’ancien et le nouveau répertoire</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span>mv /home/`whoami`/usershub/ /home/`whoami`/usershub_old/
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mv /home/`whoami`/usershub/ /home/`whoami`/usershub_old/
 mv UsersHub-X.Y.Z /home/`whoami`/usershub/
 </pre></div>
 </div>
 <ul class="simple">
-<li>Créer et renseigner le fichier de configuration de Usershub2 (ici donnees minimales=true, donnees exemple=false)</li>
+<li><p>Créer et renseigner le fichier de configuration de Usershub2 (ici donnees minimales=true, donnees exemple=false)</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">usershub</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">usershub</span>
 <span class="n">cp</span> <span class="n">config</span><span class="o">/</span><span class="n">settings</span><span class="o">.</span><span class="n">ini</span><span class="o">.</span><span class="n">sample</span> <span class="n">config</span><span class="o">/</span><span class="n">settings</span><span class="o">.</span><span class="n">ini</span>
 <span class="n">nano</span> <span class="n">config</span><span class="o">/</span><span class="n">settings</span><span class="o">.</span><span class="n">ini</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>Mettre à jour la base de données</li>
+<li><p>Mettre à jour la base de données</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">psql</span> <span class="o">-</span><span class="n">U</span> <span class="n">MY_PG_USER</span> <span class="o">-</span><span class="n">d</span> <span class="n">MY_DB</span> <span class="o">-</span><span class="n">h</span> <span class="n">localhost</span> <span class="o">-</span><span class="n">f</span> <span class="n">data</span><span class="o">/</span><span class="n">update_1</span><span class="o">.</span><span class="mf">3.3</span><span class="n">to2</span><span class="o">.</span><span class="mf">0.0</span><span class="o">.</span><span class="n">sql</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">psql</span> <span class="o">-</span><span class="n">U</span> <span class="n">MY_PG_USER</span> <span class="o">-</span><span class="n">d</span> <span class="n">MY_DB</span> <span class="o">-</span><span class="n">h</span> <span class="n">localhost</span> <span class="o">-</span><span class="n">f</span> <span class="n">data</span><span class="o">/</span><span class="n">update_1</span><span class="o">.</span><span class="mf">3.3</span><span class="n">to2</span><span class="o">.</span><span class="mf">0.0</span><span class="o">.</span><span class="n">sql</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>Installer l’application</li>
+<li><p>Installer l’application</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">install_app</span><span class="o">.</span><span class="n">sh</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">install_app</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>Mettre à jour la configuration Apache, en supprimant le DocumentRoot et Directory, et en renseignant :</li>
+<li><p>Mettre à jour la configuration Apache, en supprimant le DocumentRoot et Directory, et en renseignant :</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">sites</span><span class="o">-</span><span class="n">available</span><span class="o">/</span><span class="n">usershub</span><span class="o">.</span><span class="n">conf</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">apache2</span><span class="o">/</span><span class="n">sites</span><span class="o">-</span><span class="n">available</span><span class="o">/</span><span class="n">usershub</span><span class="o">.</span><span class="n">conf</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Location</span> <span class="o">/</span><span class="n">usershub</span><span class="o">&gt;</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">Location</span> <span class="o">/</span><span class="n">usershub</span><span class="o">&gt;</span>
     <span class="n">ProxyPass</span>  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">5001</span><span class="o">/</span>
     <span class="n">ProxyPassReverse</span>  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">5001</span><span class="o">/</span>
 <span class="o">&lt;/</span><span class="n">Location</span><span class="o">&gt;</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>Relancer apache et les applications (supervisor) :</li>
+<li><p>Relancer apache et les applications (supervisor) :</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apachectl</span> <span class="n">restart</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apachectl</span> <span class="n">restart</span>
 </pre></div>
 </div>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">supervisorctl</span> <span class="n">restart</span> <span class="nb">all</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">supervisorctl</span> <span class="n">restart</span> <span class="nb">all</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="ajout-de-l-extension-pg-trgm-a-la-bdd">
 <h2>Ajout de l’extension pg_trgm à la BDD<a class="headerlink" href="#ajout-de-l-extension-pg-trgm-a-la-bdd" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">su</span> <span class="n">postgres</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">su</span> <span class="n">postgres</span>
 <span class="n">psql</span> <span class="o">-</span><span class="n">d</span> <span class="n">MYDB</span>
 <span class="n">CREATE</span> <span class="n">EXTENSION</span> <span class="n">IF</span> <span class="n">NOT</span> <span class="n">EXISTS</span> <span class="n">pg_trgm</span><span class="p">;</span>
 \<span class="n">q</span>
@@ -248,46 +239,46 @@ mv UsersHub-X.Y.Z /home/`whoami`/usershub/
 <div class="section" id="mise-a-jour-de-taxhub">
 <h2>Mise à jour de TaxHub<a class="headerlink" href="#mise-a-jour-de-taxhub" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Télécharger la version TaxHub 1.6.1</li>
+<li><p>Télécharger la version TaxHub 1.6.1</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span>
 <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PnX</span><span class="o">-</span><span class="n">SI</span><span class="o">/</span><span class="n">TaxHub</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="mf">1.6</span><span class="o">.</span><span class="mf">1.</span><span class="n">zip</span>
 <span class="n">unzip</span> <span class="mf">1.6</span><span class="o">.</span><span class="mf">1.</span><span class="n">zip</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>Renommer l’ancien et le nouveau répertoire</li>
+<li><p>Renommer l’ancien et le nouveau répertoire</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span>mv /home/`whoami`/taxhub/ /home/`whoami`/taxhub_old/
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mv /home/`whoami`/taxhub/ /home/`whoami`/taxhub_old/
 mv TaxHub-1.6.1 /home/`whoami`/taxhub/
 </pre></div>
 </div>
 <ul class="simple">
-<li>Mise à jour de la base de données pour la compatibilité avec UsersHub2</li>
-<li>NE PAS JOUER LE SCRIPT <code class="docutils literal"><span class="pre">data/adds_for_usershub.sql</span></code></li>
-<li>Mise à jour de la base de données pour la compatibilité avec TaxHub 1.6.1</li>
+<li><p>Mise à jour de la base de données pour la compatibilité avec UsersHub2</p></li>
+<li><p>NE PAS JOUER LE SCRIPT <code class="docutils literal notranslate"><span class="pre">data/adds_for_usershub.sql</span></code></p></li>
+<li><p>Mise à jour de la base de données pour la compatibilité avec TaxHub 1.6.1</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">psql</span> <span class="o">-</span><span class="n">U</span> <span class="n">MY_PG_USER</span> <span class="o">-</span><span class="n">d</span> <span class="n">MY_DB</span>  <span class="o">-</span><span class="n">h</span> <span class="n">localhost</span> <span class="o">-</span><span class="n">f</span> <span class="n">data</span><span class="o">/</span><span class="n">update1</span><span class="o">.</span><span class="mf">5.1</span><span class="n">to1</span><span class="o">.</span><span class="mf">6.0</span><span class="o">.</span><span class="n">sql</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">psql</span> <span class="o">-</span><span class="n">U</span> <span class="n">MY_PG_USER</span> <span class="o">-</span><span class="n">d</span> <span class="n">MY_DB</span>  <span class="o">-</span><span class="n">h</span> <span class="n">localhost</span> <span class="o">-</span><span class="n">f</span> <span class="n">data</span><span class="o">/</span><span class="n">update1</span><span class="o">.</span><span class="mf">5.1</span><span class="n">to1</span><span class="o">.</span><span class="mf">6.0</span><span class="o">.</span><span class="n">sql</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>Récupérer les fichiers de configuration suivants depuis la précédente version de taxhub</li>
+<li><p>Récupérer les fichiers de configuration suivants depuis la précédente version de taxhub</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="n">taxhub_old</span><span class="o">/</span><span class="n">settings</span><span class="o">.</span><span class="n">ini</span> <span class="n">taxhub</span><span class="o">/</span><span class="n">settings</span><span class="o">.</span><span class="n">ini</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="n">taxhub_old</span><span class="o">/</span><span class="n">settings</span><span class="o">.</span><span class="n">ini</span> <span class="n">taxhub</span><span class="o">/</span><span class="n">settings</span><span class="o">.</span><span class="n">ini</span>
 <span class="n">cp</span> <span class="n">taxhub_old</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">py</span> <span class="n">taxhub</span><span class="o">/</span><span class="n">config</span><span class="o">.</span><span class="n">py</span>
 <span class="n">cp</span> <span class="n">taxhub_old</span><span class="o">/</span><span class="n">static</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">constants</span><span class="o">.</span><span class="n">js</span> <span class="n">taxhub</span><span class="o">/</span><span class="n">static</span><span class="o">/</span><span class="n">app</span><span class="o">/</span><span class="n">constants</span><span class="o">.</span><span class="n">js</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>Récupérer les médias uploadés dans la précédente version de taxhub</li>
+<li><p>Récupérer les médias uploadés dans la précédente version de taxhub</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">-</span><span class="n">aR</span> <span class="n">taxhub_old</span><span class="o">/</span><span class="n">static</span><span class="o">/</span><span class="n">medias</span><span class="o">/</span> <span class="n">taxhub</span><span class="o">/</span><span class="n">static</span><span class="o">/</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cp</span> <span class="o">-</span><span class="n">aR</span> <span class="n">taxhub_old</span><span class="o">/</span><span class="n">static</span><span class="o">/</span><span class="n">medias</span><span class="o">/</span> <span class="n">taxhub</span><span class="o">/</span><span class="n">static</span><span class="o">/</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>Lancer la mise à jour de l’application</li>
+<li><p>Lancer la mise à jour de l’application</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">taxhub</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">taxhub</span>
 <span class="o">./</span><span class="n">install_app</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
@@ -295,24 +286,24 @@ mv TaxHub-1.6.1 /home/`whoami`/taxhub/
 <div class="section" id="mise-a-jour-de-la-base-de-donnees-de-geonature">
 <h2>Mise à jour de la base de données de GeoNature<a class="headerlink" href="#mise-a-jour-de-la-base-de-donnees-de-geonature" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Télécharger la version GeoNature RC4 (2.0.0-rc.4.1)</li>
+<li><p>Télécharger la version GeoNature RC4 (2.0.0-rc.4.1)</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span>
 <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PnX</span><span class="o">-</span><span class="n">SI</span><span class="o">/</span><span class="n">GeoNature</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">rc</span><span class="o">.</span><span class="mf">4.1</span><span class="o">.</span><span class="n">zip</span>
 <span class="n">unzip</span> <span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span><span class="o">-</span><span class="n">rc</span><span class="o">.</span><span class="mf">4.1</span><span class="o">.</span><span class="n">zip</span>
 </pre></div>
 </div>
 <ul class="simple">
-<li>Renommer l’ancien et le nouveau répertoire</li>
+<li><p>Renommer l’ancien et le nouveau répertoire</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span>mv /home/`whoami`/geonature/ /home/`whoami`/geonature_old/
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mv /home/`whoami`/geonature/ /home/`whoami`/geonature_old/
 mv GeoNature-2.0.0-rc.4.1 /home/`whoami`/geonature/
 </pre></div>
 </div>
 <ul class="simple">
-<li>Mise à jour de la base de données de GeoNature pour la RC4</li>
+<li><p>Mise à jour de la base de données de GeoNature pour la RC4</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span>
 <span class="n">psql</span> <span class="o">-</span><span class="n">U</span> <span class="n">MY_PG_USER</span> <span class="o">-</span><span class="n">d</span> <span class="n">MY_DB</span> <span class="o">-</span><span class="n">h</span> <span class="n">localhost</span> <span class="o">-</span><span class="n">f</span> <span class="n">data</span><span class="o">/</span><span class="n">migrations</span><span class="o">/</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span><span class="n">rc3</span><span class="o">.</span><span class="mi">1</span><span class="o">-</span><span class="n">to</span><span class="o">-</span><span class="mf">2.0</span><span class="o">.</span><span class="mi">0</span><span class="n">rc4</span><span class="o">.</span><span class="n">sql</span>
 </pre></div>
 </div>
@@ -320,10 +311,10 @@ mv GeoNature-2.0.0-rc.4.1 /home/`whoami`/geonature/
 <div class="section" id="mise-a-jour-de-l-application-geonature">
 <h2>Mise à jour de l’application GeoNature<a class="headerlink" href="#mise-a-jour-de-l-application-geonature" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Lancement de la migration vers la nouvelle version</li>
-<li>!! Le répertoire geonature_old doit être à la racine de l’utilisateur pour lancer ce script</li>
+<li><p>Lancement de la migration vers la nouvelle version</p></li>
+<li><p>!! Le répertoire geonature_old doit être à la racine de l’utilisateur pour lancer ce script</p></li>
 </ul>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">install</span><span class="o">/</span><span class="n">migration</span><span class="o">/</span><span class="n">migration</span><span class="o">.</span><span class="n">sh</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">install</span><span class="o">/</span><span class="n">migration</span><span class="o">/</span><span class="n">migration</span><span class="o">.</span><span class="n">sh</span>
 </pre></div>
 </div>
 <p>– Fin de la mise à jour</p>
