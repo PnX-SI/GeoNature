@@ -1,0 +1,18 @@
+[submodule "backend/dependencies/UsersHub-authentification-module"]
+	path = backend/dependencies/UsersHub-authentification-module
+	url = https://github.com/PnX-SI/UsersHub-authentification-module
+[submodule "backend/dependencies/Nomenclature-api-module"]
+	path = backend/dependencies/Nomenclature-api-module
+	url = https://github.com/PnX-SI/Nomenclature-api-module
+[submodule "backend/dependencies/Habref-api-module"]
+	path = backend/dependencies/Habref-api-module
+	url = https://github.com/PnX-SI/Habref-api-module
+[submodule "backend/dependencies/Utils-Flask-SQLAlchemy"]
+	path = backend/dependencies/Utils-Flask-SQLAlchemy
+	url = https://github.com/PnX-SI/Utils-Flask-SQLAlchemy
+[submodule "backend/dependencies/TaxHub"]
+	path = backend/dependencies/TaxHub
+	url = https://github.com/PnX-SI/TaxHub
+[submodule "backend/dependencies/Utils-Flask-SQLAlchemy-Geo"]
+	path = backend/dependencies/Utils-Flask-SQLAlchemy-Geo
+	url = https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo
