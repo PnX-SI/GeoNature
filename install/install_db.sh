@@ -205,7 +205,7 @@ if ! database_exists "${db_name}"; then
       else
           echo $i exists
       fi
-      unzip tmp/taxhub/$i -d tmp/taxhub
+      unzip -o tmp/taxhub/$i -d tmp/taxhub
     done
 
     echo "Getting 'taxonomie' schema creation scripts..."
@@ -244,7 +244,7 @@ if ! database_exists "${db_name}"; then
     else
       echo HABREF_50.zip exists
     fi
-    unzip tmp/habref/HABREF_50.zip -d tmp/habref
+    unzip -o tmp/habref/HABREF_50.zip -d tmp/habref
 
     wget https://raw.githubusercontent.com/PnX-SI/Habref-api-module/$habref_api_release/src/pypn_habref_api/data/habref.sql -P tmp/habref
     wget https://raw.githubusercontent.com/PnX-SI/Habref-api-module/$habref_api_release/src/pypn_habref_api/data/data_inpn_habref.sql -P tmp/habref
@@ -299,7 +299,7 @@ if ! database_exists "${db_name}"; then
         else
             echo "tmp/geonature/communes_fr_admin_express_2020-02.zip already exist"
         fi
-        unzip tmp/geonature/communes_fr_admin_express_2020-02.zip -d tmp/geonature
+        unzip -o tmp/geonature/communes_fr_admin_express_2020-02.zip -d tmp/geonature
         sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/fr_municipalities.sql &>> var/log/install_db.log
         write_log "Restore $user_pg owner"
         sudo -n -u postgres -s psql -d $db_name -c "ALTER TABLE ref_geo.temp_fr_municipalities OWNER TO $user_pg;" &>> var/log/install_db.log
@@ -315,7 +315,7 @@ if ! database_exists "${db_name}"; then
             echo "tmp/geonature/departement_admin_express_2020-02.zip already exist"
         fi
         write_log "Insert departements"
-        unzip tmp/geonature/departement_admin_express_2020-02.zip -d tmp/geonature
+        unzip -o tmp/geonature/departement_admin_express_2020-02.zip -d tmp/geonature
 
         sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/fr_departements.sql &>> var/log/install_db.log
         write_log "Restore $user_pg owner"
@@ -334,7 +334,7 @@ if ! database_exists "${db_name}"; then
         else
             echo "tmp/geonature/inpn_grids.zip already exist"
         fi
-        unzip tmp/geonature/inpn_grids.zip -d tmp/geonature
+        unzip -o tmp/geonature/inpn_grids.zip -d tmp/geonature
         write_log "Insert grid layers... (This may takes a few minutes)"
         sudo -n -u postgres -s psql -d $db_name -f tmp/geonature/inpn_grids.sql &>> var/log/install_db.log
         write_log "Restore $user_pg owner"
@@ -354,7 +354,7 @@ if ! database_exists "${db_name}"; then
         else
             echo "tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip already exist"
         fi
-	      unzip tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d tmp/geonature
+	      unzip -o tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d tmp/geonature
         #gdalwarp -t_srs EPSG:$srid_local tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc tmp/geonature/dem.tif &>> var/log/install_db.log
         export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d -t 5x5 tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name  &>> var/log/install_db.log
     	#echo "Refresh DEM spatial index. This may take a few minutes..."
