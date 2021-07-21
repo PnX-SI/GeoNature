@@ -334,6 +334,11 @@ Si vous avez téléchargé GeoNature zippé (via la procédure d'installation gl
     --- Reset sur HEAD pour mettre à jour les status --- 
     git reset HEAD
     -> vous êtes à jour sur la branche master
+    --- Cloner les sous-modules pour récupérer les dépendances
+    git submodule init
+    git submodule update
+    --- Installer les dépendances de développement
+    cd backend && pip install -r requirements-dev.txt
 
 
 @TODO : A relire et à basculer dans DOC DEVELOPEMENT ?
