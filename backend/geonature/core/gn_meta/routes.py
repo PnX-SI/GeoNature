@@ -965,8 +965,6 @@ def get_acquisition_framework_stats(info_role, id_acquisition_framework):
             + str(dataset_ids).strip("[]")
             + ")"
         )
-        for obj in objectif_nom:
-            af.cor_objectifs.append(obj)
 
         nb_habitat = DB.engine.execute(text(query)).first()[0]
 
