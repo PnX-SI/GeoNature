@@ -2,12 +2,30 @@
 CHANGELOG
 =========
 
-2.7.3 (unreleased)
+2.7.3 (2021-07-22)
 ------------------
+
+**🚀 Nouveautés**
+
+* Métadonnées : ajout des paramètres ``CD_NOMENCLATURE_ROLE_TYPE_DS`` et ``CD_NOMENCLATURE_ROLE_TYPE_AF`` pour limiter les rôles utilisables au niveau des jeux de données et des cadres d'acquisition (#1417)
+* Ajout de la commande ``mtd_sync`` qui permet de synchroniser les métadonnées de toute une instance depuis le flux MTD du SINP
 
 **🐛 Corrections**
 
-* 
+* Correction de l'affichage des jeux de données sur les fiches des cadres d'acquisition (#1410)
+* Doc : Précision des OS supportés (Debian 10 uniquement en production)
+
+**💻 Développement**
+
+* Support des commandes Flask au niveau de la commande ``geonature`` (``run``, ``db``, ``routes``, ``shell``...)
+* Ajout des sous-modules en tant que dépendances
+* Ajout d'une commande ``install_packaged_gn_module``
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
 
 2.7.2 (2021-07-05)
 ------------------
