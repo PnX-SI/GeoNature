@@ -243,7 +243,6 @@ Si vous mettez à jour GeoNature :
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * Si vous utilisez Occtax-mobile, vous pouvez modifier la valeur du nouveau paramètre ``gn_commons.t_parameters.occtaxmobile_area_type`` pour lui indiquer le code du type de zonage que vous utilisez pour les unités géographiques (mailles de 5km par défaut)
 * Si vous disposez du module d'import, vous devez le mettre à jour en version 1.1.1
->>>>>>> develop
 
 2.5.5 (2020-11-19)
 ------------------
