@@ -386,7 +386,6 @@ def insertOrUpdateOneReleve(info_role):
             # Check if user can add a releve in the current dataset
             allowed = releve.user_is_in_dataset_actor(info_role)
             if not allowed:
-                print('PASSE LA ?????')
                 raise Forbidden(
                     "User {} has no right in dataset {}".format(
                         info_role.id_role, releve.id_dataset
@@ -702,11 +701,7 @@ def getDefaultNomenclatures():
     )
     if len(types) > 0:
         q = q.filter(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
-    try:
-        data = q.all()
-    except Exception:
-        DB.session.rollback()
-        raise
+    data = q.all()
     if not data:
         return {"message": "not found"}, 404
     return {d[0]: d[1] for d in data}

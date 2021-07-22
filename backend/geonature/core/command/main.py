@@ -6,6 +6,8 @@ import logging
 from os import environ
 
 import click
+from flask import current_app
+from flask.cli import run_command
 
 from geonature.utils.env import (
     DEFAULT_CONFIG_FILE,
@@ -23,16 +25,18 @@ from geonature.utils.command import (
     update_app_configuration,
 )
 from geonature import create_app
+from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actors
 
 # from rq import Queue, Connection, Worker
 # import redis
 from flask import Flask
+from flask.cli import FlaskGroup
 
 
 log = logging.getLogger()
 
 
-@click.group()
+@click.group(cls=FlaskGroup, create_app=create_app)
 @click.version_option(version=GEONATURE_VERSION)
 @click.pass_context
 def main(ctx):
@@ -78,7 +82,8 @@ def start_gunicorn(uri, worker):
 @main.command()
 @click.option("--host", default="0.0.0.0")
 @click.option("--port", default=8000)
-def dev_back(host, port):
+@click.pass_context
+def dev_back(ctx, host, port):
     """
         Lance l'api du backend avec flask
 
@@ -90,8 +95,7 @@ def dev_back(host, port):
     """
     if not environ.get('FLASK_ENV'):
         environ['FLASK_ENV'] = 'development'
-    app = create_app()
-    app.run(host=host, port=int(port))
+    ctx.invoke(run_command, host=host, port=port)
 
 
 @main.command()
@@ -171,7 +175,4 @@ def import_jdd_from_mtd(table_name):
     """
     Import les JDD et CA (et acters associé) à partir d'une table (ou vue) listant les UUID des JDD dans MTD
     """
-    app = create_app()
-    with app.app_context():
-        from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actors
-        import_all_dataset_af_and_actors(table_name)
+    import_all_dataset_af_and_actors(table_name)

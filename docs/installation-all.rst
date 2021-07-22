@@ -6,12 +6,12 @@ Prérequis
 
 - Ressources minimum serveur :
 
-Un serveur Linux (Debian 10 ou Ubuntu 18 **architecture 64-bits**) disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.
+Un serveur Debian 10 disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.
 
 Le script global d'installation de GeoNature va aussi se charger d'installer les dépendances nécessaires : 
 
 - PostgreSQL / PostGIS
-- Python 3 et dépendances Python nécessaires à l'application
+- Python 3.7 et dépendances Python nécessaires à l'application
 - Flask (framework web Python)
 - Apache
 - Angular 7, Angular CLI, NodeJS

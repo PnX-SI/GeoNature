@@ -52,11 +52,15 @@ def import_packaged_module(module_dist, module_object):
         'FRONTEND_PATH': frontend_path,
     }
 
-    module_schema = load_entry_point(module_dist, 'gn_module', 'config_schema')
-    config_path = os.environ.get(f'GEONATURE_{module_object.module_code}_CONFIG_FILE')
-    if not config_path:  # fallback to legacy conf path guessing
-        config_path = str(module_dir / 'config/conf_gn_module.toml')
-    module_config.update(load_and_validate_toml(config_path, module_schema))
+    try:
+        module_schema = load_entry_point(module_dist, 'gn_module', 'config_schema')
+    except ImportError:
+        pass
+    else:
+        config_path = os.environ.get(f'GEONATURE_{module_object.module_code}_CONFIG_FILE')
+        if not config_path:  # fallback to legacy conf path guessing
+            config_path = str(module_dir / 'config/conf_gn_module.toml')
+        module_config.update(load_and_validate_toml(config_path, module_schema))
 
     blueprint_entry_point = get_entry_info(module_dist, 'gn_module', 'blueprint')
     if blueprint_entry_point:

@@ -2,6 +2,31 @@
 CHANGELOG
 =========
 
+2.7.3 (2021-07-22)
+------------------
+
+**🚀 Nouveautés**
+
+* Métadonnées : ajout des paramètres ``CD_NOMENCLATURE_ROLE_TYPE_DS`` et ``CD_NOMENCLATURE_ROLE_TYPE_AF`` pour limiter les rôles utilisables au niveau des jeux de données et des cadres d'acquisition (#1417)
+* Ajout de la commande ``mtd_sync`` qui permet de synchroniser les métadonnées de toute une instance depuis le flux MTD du SINP
+
+**🐛 Corrections**
+
+* Correction de l'affichage des jeux de données sur les fiches des cadres d'acquisition (#1410)
+* Doc : Précision des OS supportés (Debian 10 uniquement en production)
+
+**💻 Développement**
+
+* Support des commandes Flask au niveau de la commande ``geonature`` (``run``, ``db``, ``routes``, ``shell``...)
+* Ajout des sous-modules en tant que dépendances
+* Ajout d'une commande ``install_packaged_gn_module``
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
+
 2.7.2 (2021-07-05)
 ------------------
 
@@ -236,7 +261,6 @@ Si vous mettez à jour GeoNature :
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * Si vous utilisez Occtax-mobile, vous pouvez modifier la valeur du nouveau paramètre ``gn_commons.t_parameters.occtaxmobile_area_type`` pour lui indiquer le code du type de zonage que vous utilisez pour les unités géographiques (mailles de 5km par défaut)
 * Si vous disposez du module d'import, vous devez le mettre à jour en version 1.1.1
->>>>>>> develop
 
 2.5.5 (2020-11-19)
 ------------------
