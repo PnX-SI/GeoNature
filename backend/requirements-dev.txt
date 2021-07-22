@@ -1,12 +1,5 @@
 -r requirements-common.txt
 
--e file:dependencies/UsersHub-authentification-module#egg=pypnusershub
--e file:dependencies/Nomenclature-api-module#egg=pypnnomenclature
--e file:dependencies/Habref-api-module#egg=pypn_habref_api
--e file:dependencies/TaxHub#egg=taxhub
--e file:dependencies/Utils-Flask-SQLAlchemy#egg=utils-flask-sqlalchemy
--e file:dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo
-
 alabaster==0.7.10
 attrs==19.3.0
 babel==2.5.3
@@ -42,6 +35,7 @@ pygments==2.7.4
 pytest-cov==2.5.1
 pytest-flask==0.15.1
 pytest-pythonpath==0.7.1
+pytest-mock==3.6.1
 pytest==6.1.2
 pytz==2017.3
 pylint==2.6.0
