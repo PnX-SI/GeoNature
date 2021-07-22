@@ -12,7 +12,7 @@ from flask_sqlalchemy import before_models_committed
 from pkg_resources import iter_entry_points
 
 from geonature.utils.config import config
-from geonature.utils.env import MAIL, DB, MA, migrate
+from geonature.utils.env import MAIL, DB, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
 from geonature.utils.module import import_backend_enabled_modules
 
@@ -50,7 +50,7 @@ def create_app(with_external_mods=True, with_flask_admin=True):
     # Bind app to DB
     DB.init_app(app)
 
-    migrate.init_app(app, DB)
+    migrate.init_app(app, DB, directory=BACKEND_DIR / 'geonature' / 'migrations')
 
     MAIL.init_app(app)
 
