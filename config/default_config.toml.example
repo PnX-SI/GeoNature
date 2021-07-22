@@ -508,3 +508,6 @@ MAIL_ON_ERROR = false
     MAIL_CONTENT_AF_CLOSED_GREETINGS = ""
     CLOSED_MODAL_LABEL = "Dépôt d'un cadre d'acquisition"
     CLOSED_MODAL_CONTENT = L'action de dépôt est une action irréversible. Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite. Vous ne pourrez pas supprimer votre dépôt. "
+    # liste des types de role à afficher sur les formulaires JDD et CA
+    CD_NOMENCLATURE_ROLE_TYPE_DS = ["2"]
+    CD_NOMENCLATURE_ROLE_TYPE_AF = ["3"]

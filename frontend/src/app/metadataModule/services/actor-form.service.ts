@@ -4,9 +4,10 @@ import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
  
 import { DataFormService } from '@geonature_common/form/data-form.service';
+import { AppConfig } from '../../../conf/app.config';
  
-export const ID_ROLE_DATASET_ACTORS = ["5", "6", "7"]; //['Contact principal', 'Fournisseur du jeu de données', 'Producteur du jeu de données']
-export const ID_ROLE_AF_ACTORS = ["2", "3", "4"]; //['Contact principal', 'Fournisseur du jeu de données', 'Producteur du jeu de données']
+// export const ID_ROLE_DATASET_ACTORS = ["5", "6", "7"]; //['Contact principal', 'Fournisseur du jeu de données', 'Producteur du jeu de données']
+// export const ID_ROLE_AF_ACTORS = ["2", "3", "4"]; //['Contact principal', 'Fournisseur du jeu de données', 'Producteur du jeu de données']
  
 @Injectable()
 export class ActorFormService {
@@ -24,15 +25,7 @@ export class ActorFormService {
     return this._role_types.getValue(); 
   }
  
-  get dataset_role_types() { 
-    return this._role_types.getValue()
-            .filter((e) => ID_ROLE_DATASET_ACTORS.includes(e.cd_nomenclature)); 
-  }
- 
-  get af_role_types() { 
-    return this._role_types.getValue()
-            .filter((e) => !(ID_ROLE_DATASET_ACTORS.includes(e.cd_nomenclature))); 
-  }
+
  
   getIDRoleTypeByCdNomenclature(code) {
     const role_type = this._role_types.getValue().find((e) => e.cd_nomenclature == code);
