@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.7.4 (2021-07-23)
+------------------
+
+**🐛 Corrections**
+
+* Correction d'un import manquant entrainant un problème de compilation du frontend.
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
+
 2.7.3 (2021-07-22)
 ------------------
 
