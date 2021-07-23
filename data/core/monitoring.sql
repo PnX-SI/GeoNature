@@ -216,7 +216,7 @@ CREATE TRIGGER tri_log_changes
 CREATE TRIGGER tri_log_changes_cor_visit_observer
   AFTER INSERT OR DELETE OR UPDATE
   ON gn_monitoring.cor_visit_observer
-  FOR EACH ROW EXECUTE FUNCTION gn_commons.fct_trg_log_changes();
+  FOR EACH ROW EXECUTE PROCEDURE gn_commons.fct_trg_log_changes();
 
 CREATE TRIGGER tri_meta_dates_change_t_base_sites
   BEFORE INSERT OR UPDATE
@@ -235,7 +235,7 @@ CREATE TRIGGER tri_visite_date_max
   BEFORE INSERT OR UPDATE OF visit_date_min
   ON gn_monitoring.t_base_visits
   FOR EACH ROW
-  EXECUTE FUNCTION gn_monitoring.fct_trg_visite_date_max();
+  EXECUTE PROCEDURE gn_monitoring.fct_trg_visite_date_max();
 
 CREATE FUNCTION fct_trg_cor_site_area()
   RETURNS trigger AS

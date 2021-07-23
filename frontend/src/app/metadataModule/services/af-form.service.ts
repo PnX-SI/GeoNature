@@ -3,7 +3,7 @@ import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 import { BehaviorSubject, Observable  } from 'rxjs';
 import { tap, filter, switchMap, map } from 'rxjs/operators';
  
-import { ActorFormService, ID_ROLE_AF_ACTORS } from './actor-form.service';
+import { ActorFormService } from './actor-form.service';
 import { FormService } from '@geonature_common/form/form.service';
  
 @Injectable()

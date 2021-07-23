@@ -3,10 +3,9 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { MatDialog } from "@angular/material";
 
-import { ActorFormService, ID_ROLE_DATASET_ACTORS, ID_ROLE_AF_ACTORS } from '../services/actor-form.service';
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { AppConfig } from '../../../conf/app.config';
-
+import {ActorFormService} from '../services/actor-form.service'
 @Component({
   selector: 'pnx-metadata-actor',
   templateUrl: 'actors.component.html',
