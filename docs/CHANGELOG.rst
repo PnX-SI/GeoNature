@@ -7,7 +7,7 @@ CHANGELOG
 
 **🐛 Corrections**
 
-* Correction d'un import manquant entrainant un problème de compilation du frontend.
+* Correction d'un import manquant entrainant un problème de compilation du frontend (#1424)
 
 **⚠️ Notes de version**
 
