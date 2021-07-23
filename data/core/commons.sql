@@ -209,6 +209,7 @@ BEGIN
   UPDATE gn_synthese.synthese 
   SET id_nomenclature_valid_status = NEW.id_nomenclature_valid_status,
   validation_comment = NEW.validation_comment,
+  meta_validation_date = NEW.validation_date,
   validator = (SELECT nom_role || ' ' || prenom_role FROM utilisateurs.t_roles WHERE id_role = NEW.id_validator)::text
   WHERE unique_id_sinp = NEW.uuid_attached_row;
 RETURN NEW;
