@@ -16,7 +16,7 @@ Mainteneurs :
 - Theo LECHEMIA (PnEcrins) : Frontend / Angular
 - Camille MONCHICOURT (PnEcrins) : Documentation / Gestion du projet
 
-.. image :: http://geonature.fr/docs/img/developpement/geonature-techno.png
+.. image :: https://geonature.fr/docs/img/developpement/geonature-techno.png
 
 API
 ---
@@ -66,7 +66,7 @@ Mettre à jour le ``ref_geo`` à partir des données IGN scan express :
 - Télécharger le dernier millesime : http://professionnels.ign.fr/adminexpress
 - Intégrer le fichier Shape dans la BDD grâce à QGIS dans une table nommée ``ref_geo.temp_fr_municipalities``
 - Générer le SQL de création de la table : ``pg_dump --table=ref_geo.temp_fr_municipalities --column-inserts -U <MON_USER> -h <MON_HOST> -d <MA_BASE> > fr_municipalities.sql``. Le fichier en sortie doit s'appeler ``fr_municipalities.sql``
-- Zipper le fichier SQL et le mettre sur le serveur http://geonature.fr/data
+- Zipper le fichier SQL et le mettre sur le serveur https://geonature.fr/data
 - Adapter le script ``install_db.sh`` pour récupérer le nouveau fichier zippé
 
 Pratiques et règles de developpement

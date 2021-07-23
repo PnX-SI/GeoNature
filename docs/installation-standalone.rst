@@ -76,7 +76,7 @@ Sur Ubuntu 18, installez la version 10 de postgresql-server-dev avec la commande
 Python 3.7 sur Debian 9
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-A partir la version 2.5.0 de GeoNature, la version Python 3.5 n'est plus supportée. Seules les version 3.6+ le sont.
+A partir la version 2.5.0 de GeoNature, la version Python 3.5 n'est plus supportée. Seules les version 3.7+ le sont.
 
 Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions suivantes pour monter la version de Python sur Debian 9 :
 

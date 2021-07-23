@@ -1084,19 +1084,23 @@ Etapes :
    - Attribuer le rôle 1, 'lecteur' 
 
 2/ Configuration GeoNature : 
-   - Reporter identifiant et mot de passe dans le fichier de configuration de GeoNature 
-``` 
-$ cd config
-$ nano geonature_config.toml
-```
-`PUBLIC_LOGIN = 'public'`  
-`PUBLIC_PASSWORD = 'public'`  
+  - Reporter identifiant et mot de passe dans le fichier de configuration de GeoNature
 
-   - Mettre à jour la configuration de GeoNature 
-```
-$ source backend/venv/bin/activate
-$ geonature update_configuration
-```
+.. code-block::
+
+    $ cd config
+    $ nano geonature_config.toml
+    PUBLIC_LOGIN = 'public'
+    PUBLIC_PASSWORD = 'public'
+..
+
+   - Mettre à jour la configuration de GeoNature
+
+.. code-block::
+
+    $ source backend/venv/bin/activate
+    $ geonature update_configuration
+..
 
 A ce moment là, cet utilisateur a tous les droits sur GeoNature.
 Il s'agit donc de gérer ses permissions dans GeoNature même. 

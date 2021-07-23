@@ -146,7 +146,7 @@ pip install --upgrade pip
 pip install -r requirements.txt
 if [[ $MODE == "dev" ]]
 then
-  pip install -r requirements-dev.txt
+  pip install -r requirements-dev.txt -r requirements-submodules.txt
 fi
 
 echo "Installation du backend geonature..."
