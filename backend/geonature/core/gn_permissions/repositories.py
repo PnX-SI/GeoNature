@@ -62,7 +62,7 @@ class PermissionRepository:
             result = query.one()
             data = {"label": result.label, "code": result.code}
         except exc.NoResultFound:
-            log.warn(
+            log.warning(
                 "Permission available not found for: "
                 f"module={module_code}, "+
                 f"action={action_code}, "+

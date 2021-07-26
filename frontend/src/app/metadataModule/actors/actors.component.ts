@@ -3,9 +3,9 @@ import { FormArray, FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { MatDialog } from "@angular/material";
 
-import { ActorFormService, ID_ROLE_DATASET_ACTORS, ID_ROLE_AF_ACTORS } from '../services/actor-form.service';
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
-
+import { AppConfig } from '../../../conf/app.config';
+import {ActorFormService} from '../services/actor-form.service'
 @Component({
   selector: 'pnx-metadata-actor',
   templateUrl: 'actors.component.html',
@@ -30,16 +30,19 @@ export class ActorComponent implements OnInit {
   //liste des types de role pour peupler le select HTML
   get role_types() {
     return this.actorFormS.role_types
-              .filter(e => {
-                if (this.metadataType == 'dataset') {
-                  //contact principal est enlevé de cette liste déroulante
-                  return e.cd_nomenclature !== "1" ? ID_ROLE_DATASET_ACTORS.includes(e.cd_nomenclature) : false;
-                } else if (this.metadataType == 'af') {
-                  return e.cd_nomenclature !== "1" ? ID_ROLE_AF_ACTORS.includes(e.cd_nomenclature) : false;
-                } else {
-                  return true;
-                }
-              });
+          .filter(e => {
+            if(e.cd_nomenclature == 1) {
+              return false
+            } else {
+              if(this.metadataType == "dataset" && AppConfig.METADATA.CD_NOMENCLATURE_ROLE_TYPE_DS.length > 0) {
+                return AppConfig.METADATA.CD_NOMENCLATURE_ROLE_TYPE_DS.includes(e.cd_nomenclature);
+              }
+              if(this.metadataType == "af" && AppConfig.METADATA.CD_NOMENCLATURE_ROLE_TYPE_AF.length > 0) {
+                return AppConfig.METADATA.CD_NOMENCLATURE_ROLE_TYPE_AF.includes(e.cd_nomenclature);
+              }
+            }
+            return true;
+          });
   }
 
   //Retourne l'objet organisme à partir de son identifiant issu du formulaire (pour affiche son label en mode edition = false)

@@ -1287,3 +1287,11 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         FROM gn_permissions.cor_module_action_object_filter AS cmaof
         WHERE cmaof.code = 'OCCTAX-D-ALL-SCOPE'
     ) ;
+
+-- ----------------------------------------------------------------------
+-- Insert objects for addionnal_data field not for permission management
+INSERT INTO gn_permissions.t_objects (code_object, description_object) VALUES 
+  ('OCCTAX_RELEVE', 'Représente la table pr_occtax.t_releves_occtax'),
+  ('OCCTAX_OCCURENCE', 'Représente la table pr_occtax.t_occurrences_occtax'),
+  ('OCCTAX_DENOMBREMENT', 'Représente la table pr_occtax.cor_counting_occtax')
+ON CONFLICT DO NOTHING ;

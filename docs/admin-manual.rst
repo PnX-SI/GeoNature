@@ -1084,19 +1084,23 @@ Etapes :
    - Attribuer le rôle 1, 'lecteur' 
 
 2/ Configuration GeoNature : 
-   - Reporter identifiant et mot de passe dans le fichier de configuration de GeoNature 
-``` 
-$ cd config
-$ nano geonature_config.toml
-```
-`PUBLIC_LOGIN = 'public'`  
-`PUBLIC_PASSWORD = 'public'`  
+  - Reporter identifiant et mot de passe dans le fichier de configuration de GeoNature
 
-   - Mettre à jour la configuration de GeoNature 
-```
-$ source backend/venv/bin/activate
-$ geonature update_configuration
-```
+.. code-block::
+
+    $ cd config
+    $ nano geonature_config.toml
+    PUBLIC_LOGIN = 'public'
+    PUBLIC_PASSWORD = 'public'
+..
+
+   - Mettre à jour la configuration de GeoNature
+
+.. code-block::
+
+    $ source backend/venv/bin/activate
+    $ geonature update_configuration
+..
 
 A ce moment là, cet utilisateur a tous les droits sur GeoNature.
 Il s'agit donc de gérer ses permissions dans GeoNature même. 
@@ -1324,7 +1328,7 @@ L'administration des droits des utilisateurs pour le module Occtax se fait dans 
 
 
 Module Admin
-""""""""""""
+-------------
 
 Administration des champs additionnels
 **************************************
@@ -1349,13 +1353,13 @@ Un champ additionnel est définit par:
 Exemples de configuration :
 
 - Un champs type "select" :
-.. image :: https://github.com/PnX-SI/GeoNature/blob/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/select_exemple.png
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/select_exemple.png
 
 - Un champs type "multiselect" (la clé "value" est obligatoire dans le dictionnaire de valeurs) : 
-.. image :: https://github.com/PnX-SI/GeoNature/blob/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/multiselect3.png
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/multiselect3.png
 
 - Un champs type "html". C'est un champs de type "présentation", aucune valeur ne sera enregistré en base de données pour ce champs :
-.. image :: https://github.com/PnX-SI/GeoNature/blob/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/html1.png
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/html1.png
 
 
 Module OCCHAB
