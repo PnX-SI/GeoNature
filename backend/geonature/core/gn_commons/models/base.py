@@ -58,11 +58,6 @@ class CorModuleDataset(DB.Model):
     )
 
 
-# see https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html#late-evaluation-of-relationship-arguments
-def _resolve_import_cor_object_module():
-    from geonature.core.gn_permissions.models import cor_object_module
-    return cor_object_module
-
 @serializable
 class TModules(DB.Model):
     __tablename__ = "t_modules"
@@ -91,10 +86,9 @@ class TModules(DB.Model):
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
 
-    objects = DB.relationship(
-        "TObjects",
-        secondary= lambda:_resolve_import_cor_object_module(),
-        backref='modules'
+    available_permissions = DB.relationship(
+        "CorModuleActionObjectFilter",
+        back_populates="cor_module",
     )
 
     def __str__(self):
