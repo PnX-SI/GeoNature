@@ -161,7 +161,8 @@ class MetadataConfig(Schema):
     CLOSED_MODAL_LABEL = fields.String(missing="Fermer un cadre d'acquisition")
     CLOSED_MODAL_CONTENT = fields.String(missing="""L'action de fermeture est irréversible. Il ne sera
     plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite.""")
-
+    CD_NOMENCLATURE_ROLE_TYPE_DS = fields.List(fields.Str(), missing=[])
+    CD_NOMENCLATURE_ROLE_TYPE_AF = fields.List(fields.Str(), missing=[])
 
 # Class to use for parameters you NOT want to pass to frontend
 class GnPySchemaConf(Schema):
