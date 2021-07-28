@@ -15,7 +15,7 @@ BEGIN;
   ALTER TABLE ONLY ref_geo.bib_areas_types DROP CONSTRAINT IF EXISTS unique_bib_areas_types_type_code;
   ALTER TABLE ONLY ref_geo.bib_areas_types
       ADD CONSTRAINT unique_bib_areas_types_type_code UNIQUE (type_code);
-      
+
   -- Paramètre oublié de la 2.6.0
     INSERT INTO gn_commons.t_parameters
     (id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value)
@@ -24,7 +24,6 @@ BEGIN;
 
 
   -- Ajout de contraintes d'unicité sur les permissions
-  ALTER TABLE gn_permissions.cor_object_module ADD CONSTRAINT unique_cor_object_module UNIQUE (id_object,id_module);
   ALTER TABLE gn_permissions.t_objects ADD CONSTRAINT unique_t_objects UNIQUE (code_object);
 
   -- Ajout de champs à la table t_modules
@@ -38,7 +37,7 @@ BEGIN;
         EXECUTE PROCEDURE public.fct_trg_meta_dates_change();
 
   -- Datasets - Ajout d'un champs pour lier un JDD à une liste de taxons
-  ALTER TABLE gn_meta.t_datasets 
+  ALTER TABLE gn_meta.t_datasets
       ADD COLUMN id_taxa_list integer;
   COMMENT ON COLUMN gn_meta.t_datasets.id_taxa_list IS 'Identifiant de la liste de taxon associé au JDD. FK: taxonomie.bib_liste';
 
@@ -50,12 +49,12 @@ BEGIN;
   --------------------------------------------
 
   -- cor module dataset
-  ALTER TABLE gn_commons.cor_module_dataset 
+  ALTER TABLE gn_commons.cor_module_dataset
       DROP constraint fk_cor_module_dataset_id_module;
-  ALTER TABLE gn_commons.cor_module_dataset 
+  ALTER TABLE gn_commons.cor_module_dataset
       DROP constraint fk_cor_module_dataset_id_dataset;
 
-  ALTER TABLE gn_commons.cor_module_dataset 
+  ALTER TABLE gn_commons.cor_module_dataset
       ADD constraint fk_cor_module_dataset_id_dataset FOREIGN KEY (id_dataset) REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE cascade on delete cascade,
       ADD constraint fk_cor_module_dataset_id_module FOREIGN KEY (id_module) REFERENCES gn_commons.t_modules(id_module) ON UPDATE cascade on delete cascade;
 
@@ -68,58 +67,58 @@ BEGIN;
   ALTER TABLE ONLY gn_meta.cor_dataset_actor
       ADD CONSTRAINT fk_cor_dataset_actor_id_dataset FOREIGN KEY (id_dataset)
       REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE,
-      ADD CONSTRAINT fk_dataset_actor_id_role FOREIGN KEY (id_role) 
+      ADD CONSTRAINT fk_dataset_actor_id_role FOREIGN KEY (id_role)
       REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
 
   -- territory
   ALTER TABLE ONLY gn_meta.cor_dataset_territory
       DROP constraint fk_cor_dataset_territory_id_dataset;
   ALTER TABLE ONLY gn_meta.cor_dataset_protocol
-      ADD CONSTRAINT fk_cor_dataset_territory_id_dataset FOREIGN KEY (id_dataset) 
+      ADD CONSTRAINT fk_cor_dataset_territory_id_dataset FOREIGN KEY (id_dataset)
       REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
 
   -- protocol
   ALTER TABLE ONLY gn_meta.cor_dataset_protocol
       DROP constraint fk_cor_dataset_protocol_id_dataset;
   ALTER TABLE ONLY gn_meta.cor_dataset_protocol
-      ADD CONSTRAINT fk_cor_dataset_protocol_id_dataset FOREIGN KEY (id_dataset) 
+      ADD CONSTRAINT fk_cor_dataset_protocol_id_dataset FOREIGN KEY (id_dataset)
       REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
 
   -- AF
   ALTER TABLE ONLY gn_meta.cor_acquisition_framework_objectif
       DROP constraint fk_cor_acquisition_framework_objectif_id_acquisition_framework;
   ALTER TABLE ONLY gn_meta.cor_acquisition_framework_objectif
-      ADD CONSTRAINT fk_cor_acquisition_framework_objectif_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) 
+      ADD CONSTRAINT fk_cor_acquisition_framework_objectif_id_acquisition_framework FOREIGN KEY (id_acquisition_framework)
       REFERENCES gn_meta.t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
 
   ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
       DROP constraint fk_cor_acquisition_framework_actor_id_acquisition_framework;
   ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
-      ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) 
+      ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_acquisition_framework FOREIGN KEY (id_acquisition_framework)
       REFERENCES gn_meta.t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
 
   ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
   drop  constraint fk_cor_acquisition_framework_actor_id_role;
   ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
-      ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_role FOREIGN KEY (id_role) 
+      ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_role FOREIGN KEY (id_role)
       REFERENCES utilisateurs.t_roles(id_role) ON UPDATE CASCADE ON DELETE CASCADE;
 
   ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
       DROP constraint fk_cor_acquisition_framework_actor_id_organism;
   ALTER TABLE ONLY gn_meta.cor_acquisition_framework_actor
-      ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_organism FOREIGN KEY (id_organism) 
+      ADD CONSTRAINT fk_cor_acquisition_framework_actor_id_organism FOREIGN KEY (id_organism)
       REFERENCES utilisateurs.bib_organismes(id_organisme) ON UPDATE CASCADE ON DELETE CASCADE;
 
   ALTER TABLE ONLY gn_meta.cor_acquisition_framework_voletsinp
       DROP constraint fk_cor_acquisition_framework_voletsinp_id_acquisition_framework;
   ALTER TABLE ONLY gn_meta.cor_acquisition_framework_voletsinp
-      ADD CONSTRAINT fk_cor_acquisition_framework_voletsinp_id_acquisition_framework FOREIGN KEY (id_acquisition_framework) 
+      ADD CONSTRAINT fk_cor_acquisition_framework_voletsinp_id_acquisition_framework FOREIGN KEY (id_acquisition_framework)
       REFERENCES gn_meta.t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE NO ACTION;
 
   ALTER TABLE ONLY gn_meta.cor_acquisition_framework_publication
       DROP constraint fk_cor_acquisition_framework_publication_id_publication;
   ALTER TABLE ONLY gn_meta.cor_acquisition_framework_publication
-      ADD CONSTRAINT fk_cor_acquisition_framework_publication_id_publication FOREIGN KEY (id_acquisition_framework) 
+      ADD CONSTRAINT fk_cor_acquisition_framework_publication_id_publication FOREIGN KEY (id_acquisition_framework)
       REFERENCES gn_meta.t_acquisition_frameworks(id_acquisition_framework) ON UPDATE CASCADE ON DELETE CASCADE;
 
   ---------------------------------------
@@ -129,16 +128,16 @@ BEGIN;
     BEGIN
       IF EXISTS (
         SELECT 1
-        FROM information_schema.schemata 
+        FROM information_schema.schemata
         WHERE schema_name = 'pr_occtax'
       ) IS TRUE THEN
         -- Ajout des tables pour les données additionnels dans Occtax
         ALTER TABLE pr_occtax.t_releves_occtax
             ADD COLUMN additional_fields jsonb;
-          
+
         ALTER TABLE pr_occtax.t_occurrences_occtax
             ADD COLUMN additional_fields jsonb;
-          
+
         ALTER TABLE pr_occtax.cor_counting_occtax
             ADD COLUMN additional_fields jsonb;
 
@@ -316,7 +315,7 @@ BEGIN;
           SELECT INTO occurrence * FROM pr_occtax.t_occurrences_occtax occ WHERE occ.id_occurrence_occtax = NEW.id_occurrence_occtax;
           -- Récupération du relevé
           SELECT INTO releve * FROM pr_occtax.t_releves_occtax rel WHERE occurrence.id_releve_occtax = rel.id_releve_occtax;
-          
+
           -- Update dans la synthese
           UPDATE gn_synthese.synthese
           SET
@@ -374,7 +373,7 @@ BEGIN;
           --CHAMPS ADDITIONNELS OCCTAX
           additional_data =  releve_add_fields || NEW.additional_fields || counting.additional_fields
           WHERE unique_id_sinp = counting.unique_id_sinp_occtax;
-        
+
           RETURN NULL;
         END;
       $BODY$
@@ -397,7 +396,7 @@ BEGIN;
             grp_method = NEW.grp_method,
             id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
             date_min = date_trunc('day',NEW.date_min)+COALESCE(NEW.hour_min,'00:00:00'::time),
-            date_max = date_trunc('day',NEW.date_max)+COALESCE(NEW.hour_max,'00:00:00'::time), 
+            date_max = date_trunc('day',NEW.date_max)+COALESCE(NEW.hour_max,'00:00:00'::time),
             altitude_min = NEW.altitude_min,
             altitude_max = NEW.altitude_max,
             depth_min = NEW.depth_min,
@@ -439,7 +438,7 @@ BEGIN;
           LANGUAGE plpgsql IMMUTABLE
           COST 100;
 
-        
+
       CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve()
         RETURNS trigger AS
       $BODY$
@@ -452,9 +451,9 @@ BEGIN;
         -- ce trigger se declenche à l'edition d'un releve
         IF uuids_counting IS NOT NULL THEN
             -- Insertion dans cor_observer_synthese pour chaque counting
-            INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
-            SELECT id_synthese, NEW.id_role 
-            FROM gn_synthese.synthese 
+            INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role)
+            SELECT id_synthese, NEW.id_role
+            FROM gn_synthese.synthese
             WHERE unique_id_sinp IN(SELECT unnest(uuids_counting));
         END IF;
       RETURN NULL;
@@ -544,10 +543,10 @@ BEGIN;
             LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = r.id_organisme
             LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = rel.cd_hab
           GROUP BY ccc.id_counting_occtax, occ.id_occurrence_occtax, rel.id_releve_occtax, d.id_dataset, tax.cd_ref, tax.lb_nom, tax.nom_vern, hab.cd_hab, hab.lb_code, hab.lb_hab_fr;
-        
+
 
         -- Insertion des données de référence pour les champs additionnels
-        INSERT INTO gn_permissions.t_objects (code_object, description_object) VALUES 
+        INSERT INTO gn_permissions.t_objects (code_object, description_object) VALUES
           ('OCCTAX_RELEVE', 'Représente la table pr_occtax.t_releves_occtax'),
           ('OCCTAX_OCCURENCE', 'Représente la table pr_occtax.t_occurrences_occtax'),
           ('OCCTAX_DENOMBREMENT', 'Représente la table pr_occtax.cor_counting_occtax')
@@ -558,13 +557,13 @@ BEGIN;
         DELETE FROM gn_synthese.cor_observer_synthese
         WHERE id_synthese IN (
           SELECT id_synthese
-          FROM gn_synthese.synthese s 
-          JOIN gn_synthese.t_sources t ON s.id_source = t.id_source 
+          FROM gn_synthese.synthese s
+          JOIN gn_synthese.t_sources t ON s.id_source = t.id_source
           WHERE t.name_source ILIKE 'Occtax'
         );
 
-        INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
-          SELECT s.id_synthese, obs.id_role 
+        INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role)
+          SELECT s.id_synthese, obs.id_role
           FROM pr_occtax.cor_role_releves_occtax obs
           JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = obs.id_releve_occtax
           JOIN pr_occtax.cor_counting_occtax _count ON _count.id_occurrence_occtax = occ.id_occurrence_occtax
@@ -585,8 +584,8 @@ BEGIN;
   CREATE TABLE gn_commons.bib_widgets (
     id_widget serial NOT NULL,
     widget_name varchar(50) NOT NULL
-  );  
-    
+  );
+
   CREATE TABLE gn_commons.t_additional_fields (
     id_field serial NOT NULL,
     field_name varchar(255) NOT NULL,
@@ -605,7 +604,7 @@ BEGIN;
     key_value varchar(250),
     api varchar(250),
     exportable boolean default TRUE,
-    field_order integer NULL 
+    field_order integer NULL
   );
 
   CREATE TABLE gn_commons.cor_field_object(
@@ -639,31 +638,31 @@ BEGIN;
       ADD CONSTRAINT pk_cor_field_dataset PRIMARY KEY (id_field, id_dataset);
 
   ALTER TABLE ONLY gn_commons.t_additional_fields
-    ADD CONSTRAINT fk_t_additional_fields_id_widget FOREIGN KEY (id_widget) 
+    ADD CONSTRAINT fk_t_additional_fields_id_widget FOREIGN KEY (id_widget)
     REFERENCES gn_commons.bib_widgets(id_widget) ON UPDATE CASCADE ON DELETE CASCADE;
 
   ALTER TABLE ONLY gn_commons.cor_field_object
-    ADD CONSTRAINT fk_cor_field_obj_field FOREIGN KEY (id_field) 
+    ADD CONSTRAINT fk_cor_field_obj_field FOREIGN KEY (id_field)
     REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
 
   ALTER TABLE ONLY gn_commons.cor_field_object
-    ADD CONSTRAINT fk_cor_field_object FOREIGN KEY (id_object) 
+    ADD CONSTRAINT fk_cor_field_object FOREIGN KEY (id_object)
     REFERENCES gn_permissions.t_objects(id_object) ON UPDATE CASCADE ON DELETE CASCADE;
 
   ALTER TABLE ONLY gn_commons.cor_field_module
-    ADD CONSTRAINT fk_cor_field_module_field FOREIGN KEY (id_field) 
+    ADD CONSTRAINT fk_cor_field_module_field FOREIGN KEY (id_field)
     REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
 
   ALTER TABLE ONLY gn_commons.cor_field_module
-    ADD CONSTRAINT fk_cor_field_module FOREIGN KEY (id_module) 
+    ADD CONSTRAINT fk_cor_field_module FOREIGN KEY (id_module)
     REFERENCES gn_commons.t_modules(id_module) ON UPDATE CASCADE ON DELETE CASCADE;
 
   ALTER TABLE ONLY gn_commons.cor_field_dataset
-    ADD CONSTRAINT fk_cor_field_dataset_field FOREIGN KEY (id_field) 
+    ADD CONSTRAINT fk_cor_field_dataset_field FOREIGN KEY (id_field)
     REFERENCES gn_commons.t_additional_fields(id_field) ON UPDATE CASCADE ON DELETE CASCADE;
 
   ALTER TABLE ONLY gn_commons.cor_field_dataset
-    ADD CONSTRAINT fk_cor_field_dataset FOREIGN KEY (id_dataset) 
+    ADD CONSTRAINT fk_cor_field_dataset FOREIGN KEY (id_dataset)
     REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
 
   INSERT INTO gn_commons.bib_widgets (widget_name) VALUES ('select'),
@@ -732,7 +731,7 @@ BEGIN;
   DROP VIEW gn_synthese.v_synthese_for_export ;
 
   CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
-  SELECT 
+  SELECT
       s.id_synthese AS id_synthese,
       s.date_min::date AS date_debut,
       s.date_max::date AS date_fin,
@@ -822,7 +821,7 @@ BEGIN;
           FROM gn_synthese.cor_area_synthese cas
           LEFT OUTER JOIN ref_geo.l_areas a_1 ON cas.id_area = a_1.id_area
           JOIN ref_geo.bib_areas_types ta ON ta.id_type = a_1.id_type AND ta.type_code ='COM'
-          GROUP BY id_synthese 
+          GROUP BY id_synthese
       ) sa ON sa.id_synthese = s.id_synthese
       LEFT JOIN ref_nomenclatures.t_nomenclatures n1 ON s.id_nomenclature_geo_object_nature = n1.id_nomenclature
       LEFT JOIN ref_nomenclatures.t_nomenclatures n2 ON s.id_nomenclature_grp_typ = n2.id_nomenclature
@@ -847,112 +846,35 @@ BEGIN;
       LEFT JOIN ref_nomenclatures.t_nomenclatures n22 ON s.id_nomenclature_biogeo_status = n22.id_nomenclature
       LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
 
--- Révision de la vue renvoyant les permissions des utilisateurs (performances)
-CREATE OR REPLACE VIEW gn_permissions.v_roles_permissions
-AS WITH p_user_permission AS (
-    SELECT u.id_role,
-      u.nom_role,
-      u.prenom_role,
-      u.groupe,
-      u.id_organisme,
-      c_1.id_action,
-      c_1.id_filter,
-      c_1.id_module,
-      c_1.id_object,
-      c_1.id_permission
-    FROM utilisateurs.t_roles u
-      JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = u.id_role
-    WHERE u.groupe = false
-  ), p_groupe_permission AS (
-    SELECT u.id_role,
-      u.nom_role,
-      u.prenom_role,
-      u.groupe,
-      u.id_organisme,
-      c_1.id_action,
-      c_1.id_filter,
-      c_1.id_module,
-      c_1.id_object,
-      c_1.id_permission
-      FROM utilisateurs.t_roles u
-        JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role OR g.id_role_groupe = u.id_role
-        JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = g.id_role_groupe
-  ), all_user_permission AS (
-    SELECT p_user_permission.id_role,
-      p_user_permission.nom_role,
-      p_user_permission.prenom_role,
-      p_user_permission.groupe,
-      p_user_permission.id_organisme,
-      p_user_permission.id_action,
-      p_user_permission.id_filter,
-      p_user_permission.id_module,
-      p_user_permission.id_object,
-      p_user_permission.id_permission
-    FROM p_user_permission
-    UNION
-    SELECT p_groupe_permission.id_role,
-      p_groupe_permission.nom_role,
-      p_groupe_permission.prenom_role,
-      p_groupe_permission.groupe,
-      p_groupe_permission.id_organisme,
-      p_groupe_permission.id_action,
-      p_groupe_permission.id_filter,
-      p_groupe_permission.id_module,
-      p_groupe_permission.id_object,
-      p_groupe_permission.id_permission
-    FROM p_groupe_permission
-  )
-  SELECT v.id_role,
-    v.nom_role,
-    v.prenom_role,
-    v.id_organisme,
-    v.id_module,
-    modules.module_code,
-    obj.code_object,
-    v.id_action,
-    v.id_filter,
-    actions.code_action,
-    actions.description_action,
-    filters.value_filter,
-    filters.label_filter,
-    filter_type.code_filter_type,
-    filter_type.id_filter_type,
-    v.id_permission
-  FROM all_user_permission v
-    JOIN gn_permissions.t_actions actions ON actions.id_action = v.id_action
-    JOIN gn_permissions.t_filters filters ON filters.id_filter = v.id_filter
-    JOIN gn_permissions.t_objects obj ON obj.id_object = v.id_object
-    JOIN gn_permissions.bib_filters_type filter_type ON filters.id_filter_type = filter_type.id_filter_type
-    JOIN gn_commons.t_modules modules ON modules.id_module = v.id_module;
 
   -- Mise à jour MTD
   -- Ajout de commentaires et de 2 tables
 
 COMMENT ON TABLE gn_meta.cor_dataset_territory
     IS 'A dataset must have 1 or n "territoire". Implement 1.3.10 SINP metadata standard : Cible géographique du jeu de données, ou zone géographique visée par le jeu. Défini par une valeur dans la nomenclature TerritoireValue. - OBLIGATOIRE';
- 
+
 COMMENT ON TABLE gn_meta.cor_acquisition_framework_publication
     IS 'A acquisition framework can have 0 or n "publication". Implement 1.3.10 SINP metadata standard : Référence(s) bibliographique(s) éventuelle(s) concernant le cadre d''acquisition - RECOMMANDE';
- 
+
 COMMENT ON TABLE gn_meta.cor_acquisition_framework_objectif
     IS 'A acquisition framework can have 1 or n "objectif". Implement 1.3.10 SINP metadata standard : Objectif du cadre d''acquisition, tel que défini par la nomenclature TypeDispositifValue - OBLIGATOIRE';
- 
+
 COMMENT ON TABLE gn_meta.cor_acquisition_framework_actor
     IS 'A acquisition framework must have a principal actor "acteurPrincipal" and can have 0 or n other actor "acteurAutre". Implement 1.3.10 SINP metadata standard : Contact principal pour le cadre d''acquisition (Règle : RoleActeur prendra la valeur 1) - OBLIGATOIRE. Autres contacts pour le cadre d''acquisition (exemples : maître d''oeuvre, d''ouvrage...).- RECOMMANDE';
- 
+
 COMMENT ON TABLE gn_meta.cor_acquisition_framework_voletsinp
     IS 'A acquisition framework can have 0 or n "voletSINP". Implement 1.3.10 SINP metadata standard : Volet du SINP concerné par le dispositif de collecte, tel que défini dans la nomenclature voletSINPValue - FACULTATIF';
- 
+
 COMMENT ON TABLE gn_meta.cor_dataset_actor
     IS 'A dataset must have 1 or n actor ""pointContactJdd"". Implement 1.3.10 SINP metadata standard : Point de contact principal pour les données du jeu de données, et autres éventuels contacts (fournisseur ou producteur). (Règle : Un contact au moins devra avoir roleActeur à 1 - Les autres types possibles pour roleActeur sont 5 et 6 (fournisseur et producteur)) - OBLIGATOIRE';
- 
+
 COMMENT ON TABLE gn_meta.cor_dataset_protocol
     IS 'A dataset can have 0 or n "protocole". Implement 1.3.10 SINP metadata standard : Protocole(s) rattaché(s) au jeu de données (protocole de synthèse et/ou de collecte). On se rapportera au type "Protocole Type". - RECOMMANDE';
- 
+
 COMMENT ON TABLE gn_meta.t_acquisition_frameworks
     IS 'Define a acquisition framework that embed datasets. Implement 1.3.10 SINP metadata standard';
- 
- 
+
+
 CREATE TABLE gn_meta.cor_acquisition_framework_territory
 (
     id_acquisition_framework integer NOT NULL,
@@ -968,10 +890,10 @@ CREATE TABLE gn_meta.cor_acquisition_framework_territory
         ON DELETE NO ACTION,
     CONSTRAINT check_cor_af_territory CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_territory, 'TERRITOIRE'::character varying)) NOT VALID
 );
- 
+
 COMMENT ON TABLE gn_meta.cor_acquisition_framework_territory
     IS 'A acquisition_framework must have 1 or n "territoire". Implement 1.3.10 SINP metadata standard : Cible géographique du jeu de données, ou zone géographique visée par le jeu. Défini par une valeur dans la nomenclature TerritoireValue. - OBLIGATOIRE';
- 
+
 
 CREATE TABLE gn_meta.t_bibliographical_references
 (
@@ -985,7 +907,7 @@ CREATE TABLE gn_meta.t_bibliographical_references
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 );
- 
+
 COMMENT ON TABLE gn_meta.t_bibliographical_references
     IS 'A acquisition_framework must have 0 or n "publical references". Implement 1.3.10 SINP metadata standard : Référence(s) bibliographique(s) éventuelle(s) concernant le cadre d''acquisition. - RECOMMANDE';
 
