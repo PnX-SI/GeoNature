@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.7.5 (2021-07-28)
+------------------
+
+**🐛 Corrections**
+
+* Compatibilité avec Occtax-mobile. Possibilité d'ajouter la query string "fields" sur la route `meta/datasets` pour contrôler les champs renvoyés par l'API 
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
+
 2.7.4 (2021-07-23)
 ------------------
 
