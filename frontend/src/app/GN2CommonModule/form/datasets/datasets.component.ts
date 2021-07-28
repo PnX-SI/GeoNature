@@ -70,15 +70,14 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   }
 
   getDatasets(params?) {
-    params = {};
-
+    const filter_param = {};
     if (this.displayOnlyActive) {
-      params['active'] = true;
+      filter_param['active'] = true;
     }
     if (this.moduleCode) {
-      params['module_code'] = this.moduleCode;
+      filter_param['module_code'] = this.moduleCode;
     }
-    this._dfs.getDatasets((params = params)).subscribe(
+    this._dfs.getDatasets((params = filter_param)).subscribe(
       res => {
         this.datasetStore.filteredDataSets = res.data;
         this.datasetStore.datasets = res.data;        
