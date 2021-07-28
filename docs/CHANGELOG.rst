@@ -7,7 +7,7 @@ CHANGELOG
 
 **🐛 Corrections**
 
-* Compatibilité avec Occtax-mobile. Possibilité d'ajouter la query string "fields" sur la route `meta/datasets` pour contrôler les champs renvoyés par l'API 
+* Compatibilité avec Occtax-mobile 1.3. Possibilité d'ajouter la query string ``fields`` sur la route ``meta/datasets`` pour choisir les champs renvoyés par l'API 
 
 **⚠️ Notes de version**
 
