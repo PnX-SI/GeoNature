@@ -5,7 +5,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing..'
-                tox
+                sh 'tox'
                 junit '**/*.xml'
             }
         }
