@@ -12,6 +12,7 @@ pillow
 weasyprint
 lxml
 xmltodict
+psycopg2-binary
 
 utils-flask-sqlalchemy
 utils-flask-sqlalchemy-geo

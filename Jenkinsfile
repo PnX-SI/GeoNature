@@ -5,7 +5,7 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Testing..'
-                sh 'tox'
+                sh 'tox -e py37-ci'
                 junit '**/*.xml'
             }
         }
