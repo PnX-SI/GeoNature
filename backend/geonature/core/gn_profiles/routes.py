@@ -41,7 +41,7 @@ def get_phenology(cd_ref):
                     )
 
     print(query)
-    data=query.all()
+    data = query.all()
     if data:
         # result=[]
         # for row in data :
@@ -89,6 +89,7 @@ def get_consistancy_data(id_synthese):
     if data:
         return data.as_dict()
     return None
+    
 def get_cor_taxon_phenology(cd_ref):
     q = DB.session.query(VmCorTaxonPhenology)
     data = q.get(cd_ref)
@@ -103,6 +104,8 @@ def get_profile(cd_ref):
         return data.get_geofeature()
     return None
     
+
+
 @routes.route("/get_observation_score/<cd_ref>", methods=["POST"])
 @json_resp
 def get_observation_score(cd_ref):

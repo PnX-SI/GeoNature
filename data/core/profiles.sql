@@ -38,22 +38,22 @@ ALTER TABLE ONLY gn_profiles.cor_taxons_parameters
 	ADD CONSTRAINT pk_taxons_parameters PRIMARY KEY (cd_nom);
 
 -----------------
--- CONSTRAINTS --
+-- FOREIGN KEY --
 -----------------
 
-ALTER TABLE gn_profiles.cor_taxons_profiles_parameters 
-	ADD CONSTRAINT check_t_param_profiles_cdref_is_valid 
-	CHECK (taxonomie.check_is_cd_ref(cd_ref)) NOT VALID;
+ALTER TABLE ONLY gn_profiles.cor_taxons_parameters 
+	ADD CONSTRAINT fk_cor_taxons_parameters_cd_nom FOREIGN KEY (cd_nom) 
+	REFERENCES taxonomie.taxref(cd_nom) ON UPDATE CASCADE;
 
 ------------------
 -- DEFAULT DATA --
 ------------------
 
-INSERT INTO gn_profiles.cor_taxons_profiles_parameters(
-	cd_ref, spatial_precision, temporal_precision_days, active_life_stage
+INSERT INTO gn_profiles.cor_taxons_parameters(
+	cd_nom, spatial_precision, temporal_precision_days, active_life_stage
 )
 SELECT 
-	DISTINCT t.cd_ref, 
+	DISTINCT t.cd_nom, 
 	2000, 
 	10,
 	false
@@ -79,7 +79,8 @@ AND n.cd_nomenclature IN ('1','2') -- Commenter pour considérer l'ensemble des 
 ; 
 
 
--- Ajout d'un paramètre permettant de définir à partir de combien de données une phénologie est jugée valide/fiable
+-- Ajout d'un paramètre pour définir le pourcentage de données à conserver dans le calcul des profils 
+-- afin d'exclure les données aux altitudes extrêmes
 INSERT INTO gn_profiles.t_parameters(
 	id_organism, name, "desc", value
 )
@@ -96,7 +97,7 @@ VALUES (
 -------------
 
 -- Fonctions dédiées à la comparaison des données avec leur profil d'espèce dans gn_profiles
-CREATE OR REPLACE FUNCTION gn_profiles.get_parameters(mycdnom integer)
+CREATE OR REPLACE FUNCTION gn_profiles.get_parameters(my_cd_nom integer)
  RETURNS TABLE (
 	 cd_ref integer, spatial_precision integer, temporal_precision_days integer, 
 	 active_life_stage boolean, distance smallint
@@ -113,10 +114,10 @@ AS $function$
   BEGIN
   	RETURN QUERY
   		WITH all_parameters AS (
-  			SELECT param.cd_ref, param.spatial_precision, param.temporal_precision_days, 
+  			SELECT my_cd_ref, param.spatial_precision, param.temporal_precision_days, 
 			  param.active_life_stage, parents.distance 
-  			FROM gn_profiles.cor_taxons_profiles_parameters param
-			JOIN taxonomie.find_all_taxons_parents(my_cd_ref) parents ON parents.cd_nom=param.cd_ref)
+  			FROM gn_profiles.cor_taxons_parameters param
+			JOIN taxonomie.find_all_taxons_parents(my_cd_ref) parents ON parents.cd_nom=param.cd_nom)
 		SELECT * FROM all_parameters all_param WHERE all_param.distance=(
 			SELECT min(all_param2.distance) FROM all_parameters all_param2
 		)
@@ -126,24 +127,25 @@ $function$
 ;
 
 
-CREATE OR REPLACE FUNCTION gn_profiles.check_profile_distribution(myidsynthese integer)
+CREATE OR REPLACE FUNCTION gn_profiles.check_profile_distribution(my_id_synthese integer)
  RETURNS boolean
  LANGUAGE plpgsql
  IMMUTABLE
 AS $function$
 --fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que sa 
--- localisation est totalement incluse dans l'aire d'occurrences valide définie par le profil du taxon en question
+--localisation est totalement incluse dans l'aire d'occurrences valide définie par le profil du
+--taxon en question
   DECLARE 
-    mycdref integer := t.cd_ref 
+    my_cd_ref integer := t.cd_ref 
 		FROM taxonomie.taxref t 
 		JOIN gn_synthese.synthese s ON s.cd_nom=t.cd_nom 
-		WHERE s.id_synthese=myidsynthese;
+		WHERE s.id_synthese=my_id_synthese;
     valid_geom geometry := vp.valid_distribution 
 		FROM gn_profiles.vm_valid_profiles vp 
-		WHERE vp.cd_ref=mycdref;
+		WHERE vp.cd_ref=my_cd_ref;
   	check_geom geometry := s.the_geom_local 
 	  FROM gn_synthese.synthese s
-	   WHERE s.id_synthese=myidsynthese ;
+	   WHERE s.id_synthese=my_id_synthese ;
   BEGIN
      IF ST_Contains(valid_geom, check_geom) 
     THEN
@@ -156,7 +158,7 @@ $function$
 ;
 
 
-CREATE OR REPLACE FUNCTION gn_profiles.check_profile_phenology(myidsynthese integer)
+CREATE OR REPLACE FUNCTION gn_profiles.check_profile_phenology(my_id_synthese integer)
  RETURNS boolean
  LANGUAGE plpgsql
  IMMUTABLE
@@ -184,7 +186,7 @@ AS $function$
 			FROM gn_synthese.synthese s
 			LEFT JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
 			CROSS JOIN gn_profiles.get_parameters(s.cd_nom) p
-			WHERE s.id_synthese=myidsynthese
+			WHERE s.id_synthese=my_id_synthese
 				AND p.temporal_precision_days IS NOT NULL 
 				AND p.spatial_precision  IS NOT NULL
 				AND p.active_life_stage IS NOT NULL
@@ -216,7 +218,7 @@ $function$
 ;
 
 
-CREATE OR REPLACE FUNCTION gn_profiles.check_profile_altitudes(myidsynthese integer)
+CREATE OR REPLACE FUNCTION gn_profiles.check_profile_altitudes(my_id_synthese integer)
  RETURNS boolean
  LANGUAGE plpgsql
  IMMUTABLE
@@ -224,28 +226,28 @@ AS $function$
 --fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que 
 -- son altitude se trouve entièrement comprise dans la fourchette altitudinale valide du taxon en question
   DECLARE 
-    mycdref integer := t.cd_ref 
+    my_cd_ref integer := t.cd_ref 
 	FROM taxonomie.taxref t 
 	JOIN gn_synthese.synthese s ON s.cd_nom=t.cd_nom 
-	WHERE s.id_synthese=myidsynthese;
+	WHERE s.id_synthese=my_id_synthese;
   BEGIN
      IF (
 		 SELECT altitude_min 
 		 FROM gn_synthese.synthese 
-		 WHERE id_synthese=myidsynthese
+		 WHERE id_synthese=my_id_synthese
 		) >= (
 			SELECT altitude_min 
 			FROM gn_profiles.vm_valid_profiles 
-			WHERE cd_ref=mycdref
+			WHERE cd_ref=my_cd_ref
 		)
      AND  (
 		 SELECT altitude_max 
 		 FROM gn_synthese.synthese 
-		 WHERE id_synthese=myidsynthese
+		 WHERE id_synthese=my_id_synthese
 		) <= (
 			SELECT altitude_max 
 			FROM gn_profiles.vm_valid_profiles 
-			WHERE cd_ref=mycdref
+			WHERE cd_ref=my_cd_ref
 		)
     THEN
    	  RETURN true;
@@ -257,7 +259,7 @@ $function$
 ;
 
 
-CREATE OR REPLACE FUNCTION gn_profiles.get_profile_score(myidsynthese integer)
+CREATE OR REPLACE FUNCTION gn_profiles.get_profile_score(my_id_synthese integer)
  RETURNS integer
  LANGUAGE plpgsql
  IMMUTABLE
@@ -268,9 +270,9 @@ AS $function$
   DECLARE 
   	score integer;
     BEGIN 
-     	SELECT INTO score gn_profiles.check_profile_distribution(myidsynthese)::int + 
-		 gn_profiles.check_profile_phenology(myidsynthese)::int + 
-		 gn_profiles.check_profile_altitudes(myidsynthese)::int;
+     	SELECT INTO score gn_profiles.check_profile_distribution(my_id_synthese)::int + 
+		 gn_profiles.check_profile_phenology(my_id_synthese)::int + 
+		 gn_profiles.check_profile_altitudes(my_id_synthese)::int;
      	RETURN score;
   END;
 $function$
@@ -382,14 +384,14 @@ LEFT JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom;
 
 CREATE VIEW gn_profiles.v_decode_profiles_parameters AS
 SELECT
-	p.cd_ref,
+	t.cd_ref,
 	t.lb_nom,
 	t.id_rang,
 	p.spatial_precision,
 	p.temporal_precision_days,
 	p.active_life_stage
-FROM gn_profiles.cor_taxons_profiles_parameters p
-LEFT JOIN taxonomie.taxref t ON p.cd_ref=t.cd_ref;
+FROM gn_profiles.cor_taxons_parameters p
+LEFT JOIN taxonomie.taxref t ON p.cd_nom=t.cd_nom;
 
 
 -- Rafraichissement des vues matérialisées des profils

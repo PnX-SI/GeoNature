@@ -6,6 +6,9 @@ import { AppConfig } from "@geonature_config/app.config";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxFormCountingService } from "./counting.service";
 
+import { OcctaxDataService } from "../../services/occtax-data.service";
+import { CommonService } from '@geonature_common/service/common.service';
+
 @Component({
   selector: "pnx-occtax-form-counting",
   templateUrl: "./counting.component.html",

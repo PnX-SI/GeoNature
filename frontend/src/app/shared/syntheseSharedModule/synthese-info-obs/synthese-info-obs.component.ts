@@ -9,7 +9,6 @@ import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
 import { Color, BaseChartDirective } from "ng2-charts";
 import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
-import { AppConfig } from "@geonature_config/app.config"
 
 
 
@@ -365,6 +364,33 @@ export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
       }
     );
   }
+
+  /*loadProfile(cdRef) {
+    this._gnDataService.getProfile(cdRef).subscribe(
+      data => {
+        this.profile = data;
+
+      },
+      err => {
+        console.log(err);
+        if (err.status === 404) {
+          this._commonService.translateToaster('warning', 'Aucun profile');
+        } else if (err.statusText === 'Unknown Error') {
+          // show error message if no connexion
+          this._commonService.translateToaster(
+            'error',
+            'ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)'
+          );
+        } else {
+          // show error message if other server error
+          this._commonService.translateToaster('error', err.error);
+        }
+      },
+      () => {
+        //console.log(this.statusNames);
+      }
+    );
+  }*/
 
   backToModule(url_source, id_pk_source) {
     window.open(url_source + '/' + id_pk_source, '_blank');

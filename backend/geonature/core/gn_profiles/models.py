@@ -24,8 +24,8 @@ class VmCorTaxonPhenology(DB.Model):
     # class Meta:
     #     unique_together = (
     #         (
-    #         "cd_ref", 
-    #         "period", 
+    #         "cd_ref",
+    #         "period",
     #         "id_nomenclature_life_stage"
     #         ),
     #     )

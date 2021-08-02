@@ -22,6 +22,9 @@ import { CommonService } from "@geonature_common/service/common.service";
 import {OcctaxDataService} from "../../services/occtax-data.service"
 
 
+import { OcctaxDataService } from "../../services/occtax-data.service";
+import { CommonService } from '@geonature_common/service/common.service';
+
 @Component({
   selector: "pnx-occtax-form-occurrence",
   templateUrl: "./occurrence.component.html",

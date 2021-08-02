@@ -641,5 +641,25 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/consistancy_data/${idSynthese}`)
 
   }
+
+  getProfile(cdRef) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`)
+  }
+
+  getPhenology(cdRef, idNomenclatureLifeStage?) {
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/gn_profiles/cor_taxon_phenology/
+      ${cdRef}?id_nomenclature_life_stage=
+      ${idNomenclatureLifeStage}`
+    )
+  }
+
+  /* A partir d'un id synthese, retourne si l'observation match avec les différents
+   critère d'un profil
+  */
+  getProfileConsistancyData(idSynthese) {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/consistancy_data/${idSynthese}`)
+
+  }
 }
 
