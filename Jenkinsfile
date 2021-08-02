@@ -1,3 +1,22 @@
+node {
+    checkout([
+        $class: 'GitSCM',
+        branches: [[name: '*/jenkins']],
+        extensions: [[
+            $class: 'SubmoduleOption',
+            disableSubmodules: false,
+            parentCredentials: false,
+            recursiveSubmodules: true,
+            reference: '',
+            trackingSubmodules: false,
+        ]],
+        userRemoteConfigs: [[
+            credentialsId: 'github-app-bouttier',
+            url: 'https://github.com/bouttier/GeoNature',
+        ]],
+    ])
+}
+
 pipeline {
     agent any
 
