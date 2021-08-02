@@ -154,3 +154,5 @@ backend/static/images/taxa.png
 
 *.swp
 *.swo
+
+junit-*.xml

@@ -20,6 +20,10 @@ node {
 pipeline {
     agent any
 
+    environment {
+        GEONATURE_SQLALCHEMY_DATABASE_URI = credentials('geonature-sqlalchemy-database-uri')
+    }
+
     stages {
         stage('Test') {
             steps {
