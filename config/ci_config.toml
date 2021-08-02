@@ -1,3 +1,7 @@
 URL_APPLICATION = 'http://localhost:4200'
 API_ENDPOINT = 'http://localhost:8000'
 API_TAXHUB = 'http://localhost:5000/api'
+
+# Overrided by Jenkins with environment variables
+SQLALCHEMY_DATABASE_URI = ''
+SECRET_KEY = ''
