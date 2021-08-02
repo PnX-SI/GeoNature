@@ -301,7 +301,47 @@ La base de données contient de nombreuses fonctions.
   --Function to return id_nomenclature depending on observation sensitivity
   --USAGE : SELECT ref_nomenclatures.calculate_sensitivity(240,21);
 
-TODO : A compléter...
+
+**gn_profiles**
+
+.. code:: sql
+
+gn_profiles.get_profiles_parameters(mycdnom integer)
+RETURNS TABLE (cd_ref integer, spatial_precision integer, temporal_precision_days integer, active_life_stage boolean, distance smallint)
+-- fonction permettant de récupérer les paramètres les plus adaptés (définis au plus proche du taxon) pour calculer le profil d'un taxon donné
+-- par exemple, s'il existe des paramètres pour les "Animalia" des paramètres pour le renard, les paramètres du renard surcoucheront les paramètres Animalia pour cette espèce
+
+
+.. code:: sql
+
+gn_profiles.check_profile_distribution(myidsynthese integer)
+RETURNS boolean
+--fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que sa localisation est totalement incluse dans l'aire d'occurrences valide définie par le profil du taxon en question
+
+
+.. code:: sql
+
+gn_profiles.check_profile_phenology(myidsynthese integer)
+RETURNS boolean
+--fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que sa phénologie (dates, altitude, stade de vie selon les paramètres) correspond bien à la phénologie valide définie par le profil du taxon en question
+--La fonction renvoie 'false' pour les données trop imprécises (durée d'observation supérieure à la précision temporelle définie dans les paramètres des profils).
+
+
+.. code:: sql
+
+gn_profiles.check_profile_altitudes(myidsynthese integer)
+RETURNS boolean
+--fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que son altitude se trouve entièrement comprise dans la fourchette altitudinale valide du taxon en question
+
+
+.. code:: sql
+
+gn_profiles.get_profile_score(myidsynthese integer)
+RETURNS integer
+--fonction permettant de calculer le "score" de la cohérence d'une donnée en cumulant le nombre de "checks" validés (parmi distribution, phénologie et altitudes)
+
+
+TODO : A compléter... A voir si on mentionne les triggers ou pas...
 
 Tables transversales
 """"""""""""""""""""
