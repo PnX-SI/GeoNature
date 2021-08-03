@@ -469,15 +469,23 @@ def export_observations_web(auth, permissions):
                     "compute": "asgeojson",
                     "srid": current_app.config["LOCAL_SRID"],
                 },
+                {
+                    "output_field": 'x_centroid_4326',
+                    "compute": "x",
+                },
+                {
+                    "output_field": 'y_centroid_4326',
+                    "compute": "y",
+                },
             ]
         )
         results = data_blurring.blurSeveralObs(results)
-    
+
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
 
     if export_format == "csv":
-        formated_data = [export_view.as_dict(d, columns=columns_to_serialize) for d in results]
+        formated_data = [export_view.as_dict(d, fields=columns_to_serialize) for d in results]
         return to_csv_resp(file_name, formated_data, separator=";", columns=columns_to_serialize)
 
     elif export_format == "geojson":
@@ -488,7 +496,7 @@ def export_observations_web(auth, permissions):
             )
             feature = Feature(
                 geometry=geometry,
-                properties=export_view.as_dict(r, columns=columns_to_serialize),
+                properties=export_view.as_dict(r, fields=columns_to_serialize),
             )
             features.append(feature)
         results = FeatureCollection(features)
