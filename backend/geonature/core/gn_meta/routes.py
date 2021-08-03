@@ -118,12 +118,13 @@ def get_datasets(info_role):
                 id_user=info_role.id_role, id_organism=info_role.id_organisme
             )
         except Exception as e:
-
             log.error(e)
             with_mtd_error = True
     params = request.args.to_dict()
-    depth = params.get("depth", 0)
-    datasets = get_datasets_cruved(info_role, params, depth=int(depth))
+    fields = params.get("fields", None)
+    if fields:
+        fields = fields.split(',')
+    datasets = get_datasets_cruved(info_role, params, fields=fields)
     datasets_resp = {"data": datasets}
     if with_mtd_error:
         datasets_resp["with_mtd_errors"] = True
