@@ -75,10 +75,12 @@ export class DataFormService {
     });
   }
 
-  getDatasets(params?: ParamsDict, orderByName = true, depth = 0) {
+  getDatasets(params?: ParamsDict, orderByName = true, fields = []) {
     let queryString: HttpParams = new HttpParams();
     queryString = this.addOrderBy(queryString, 'dataset_name');
-    queryString = queryString.set('depth', depth.toString())
+    fields.forEach(f => {
+      queryString = queryString.append('fields', f)
+    })
 
     if (params) {
       for (const key in params) {

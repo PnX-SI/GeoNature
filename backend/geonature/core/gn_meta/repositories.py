@@ -180,7 +180,7 @@ def get_metadata_list(info_role, args, exclude_cols):
     return query
 
 
-def get_datasets_cruved(info_role, params=dict(), as_model=False, depth=0, lazyloaded=[]):
+def get_datasets_cruved(info_role, params=dict(), as_model=False, fields=[], lazyloaded=[]):
     """
         Return the datasets filtered with cruved
 
@@ -238,7 +238,7 @@ def get_datasets_cruved(info_role, params=dict(), as_model=False, depth=0, lazyl
     data = q.all()
     if as_model:
         return data
-    return [d.as_dict(depth=depth) for d in data]
+    return [d.as_dict(fields=fields) for d in data]
 
 
 def filtered_ds_query(info_role, args):
