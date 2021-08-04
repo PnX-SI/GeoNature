@@ -600,8 +600,8 @@ AS $function$
         WHERE new_areas.enable IS true
             AND (
                        ST_GeometryType(s.the_geom_local) = 'ST_Point'
-                   or
-                       not public.ST_TOUCHES(s.the_geom_local, new_areas.geom)
+                   OR
+                       NOT public.ST_TOUCHES(s.the_geom_local, new_areas.geom)
                    );
   RETURN NULL;
   END;
@@ -1048,31 +1048,31 @@ CREATE TRIGGER trg_maj_synthese_observers_txt
   EXECUTE PROCEDURE gn_synthese.fct_tri_maj_observers_txt();
 
 
- CREATE TRIGGER tri_insert_cor_area_synthese
+CREATE TRIGGER tri_insert_cor_area_synthese
   AFTER insert ON gn_synthese.synthese
   REFERENCING NEW TABLE AS NEW
   FOR EACH STATEMENT
   EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese_on_each_statement();
 
- CREATE TRIGGER tri_update_cor_area_synthese
+CREATE TRIGGER tri_update_cor_area_synthese
   AFTER UPDATE OF the_geom_local, the_geom_4326 ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_trig_update_in_cor_area_synthese();
 
-create trigger tri_insert_cor_area_synthese
-	after insert on ref_geo.l_areas
-	referencing new table as new
-	for each statement
-	execute procedure gn_synthese.fct_trig_l_areas_insert_cor_area_synthese_on_each_statement();
+CREATE TRIGGER tri_insert_cor_area_synthese
+  AFTER INSERT ON ref_geo.l_areas
+  REFERENCING NEW TABLE AS NEW
+  FOR EACH STATEMENT
+  EXECUTE PROCEDURE gn_synthese.fct_trig_l_areas_insert_cor_area_synthese_on_each_statement();
 
 CREATE TRIGGER tri_insert_calculate_sensitivity
- AFTER INSERT ON gn_synthese.synthese
+  AFTER INSERT ON gn_synthese.synthese
   REFERENCING NEW TABLE AS NEW
   FOR EACH STATEMENT
   EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement();
   
 CREATE TRIGGER tri_update_calculate_sensitivity
- AFTER UPDATE OF date_min, date_max, cd_nom, the_geom_local, id_nomenclature_bio_status ON gn_synthese.synthese
+  AFTER UPDATE OF date_min, date_max, cd_nom, the_geom_local, id_nomenclature_bio_status ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_row();
 
