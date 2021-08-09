@@ -75,10 +75,12 @@ export class DataFormService {
     });
   }
 
-  getDatasets(params?: ParamsDict, orderByName = true, depth = 0) {
+  getDatasets(params?: ParamsDict, orderByName = true, fields = []) {
     let queryString: HttpParams = new HttpParams();
     queryString = this.addOrderBy(queryString, 'dataset_name');
-    queryString = queryString.set('depth', depth.toString())
+    fields.forEach(f => {
+      queryString = queryString.append('fields', f)
+    })
 
     if (params) {
       for (const key in params) {
@@ -587,7 +589,7 @@ export class DataFormService {
     }
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/additional_fields`,
      {params: queryString}).map(additionalFields => {
-      return additionalFields.map(data => {
+      return additionalFields.map(data => {        
         return {
           "id_field": data.id_field,
           "attribut_label": data.field_label,
@@ -604,6 +606,7 @@ export class DataFormService {
           "objects": data.objects,
           "modules": data.modules,
           "datasets": data.datasets,
+          "key_value": data.type_widget.widget_name === "nomenclature" ? "label_default": null,
           ...data.additional_attributes
         }
       })

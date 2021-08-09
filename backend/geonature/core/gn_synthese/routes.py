@@ -749,11 +749,7 @@ def getDefaultsNomenclatures():
     )
     if len(types) > 0:
         q = q.filter(DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
-    try:
-        data = q.all()
-    except Exception:
-        DB.session.rollback()
-        raise
+    data = q.all()
     if not data:
         return {"message": "not found"}, 404
     return {d[0]: d[1] for d in data}

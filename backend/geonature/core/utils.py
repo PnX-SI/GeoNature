@@ -2,10 +2,10 @@
 GeoNature core utils
 """
 
-from pypnusershub.db.tools import InsufficientRightsError
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.users.models import UserRigth
 from geonature.utils.env import DB
+from werkzeug.exceptions import Forbidden
 
 
 class ModelCruvedAutorization(DB.Model):
@@ -71,9 +71,8 @@ class ModelCruvedAutorization(DB.Model):
         if self.user_is_allowed_to(user, user.value_filter):
             return self
 
-        raise InsufficientRightsError(
+        raise Forbidden(
             ('User "{}" cannot "{}" this current releve').format(user.id_role, user.code_action),
-            403,
         )
 
     def get_model_cruved(self, user, user_cruved):

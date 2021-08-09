@@ -19,8 +19,7 @@ echo "Create occtax schema" &>> ../../var/log/install_occtax_schema.log
 echo "--------------------" &>> ../../var/log/install_occtax_schema.log
 echo "" &>> ../../var/log/install_occtax_schema.log
 cp data/occtax.sql tmp/occtax.sql
-sudo sed -i "s/MYLOCALSRID/$srid_local/g" tmp/occtax.sql
-export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -f tmp/occtax.sql  &>> ../../var/log/install_occtax_schema.log
+export PGPASSWORD=$user_pg_pass;psql -h $db_host -U $user_pg -d $db_name -v MYLOCALSRID=$srid_local -f tmp/occtax.sql  &>> ../../var/log/install_occtax_schema.log
 
 echo "Create export occtax view(s)..."
 echo "--------------------" &>> ../../var/log/install_occtax_schema.log

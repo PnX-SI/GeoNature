@@ -5,7 +5,6 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
-
 CREATE SCHEMA pr_occtax;
 
 
@@ -76,18 +75,16 @@ $BODY$
   COST 100;
 
 
-CREATE OR REPLACE FUNCTION id_releve_from_id_counting(my_id_counting integer)
-  RETURNS integer AS
+CREATE OR REPLACE FUNCTION pr_occtax.id_releve_from_id_counting(my_id_counting integer)
+  RETURNS setof bigint AS
 $BODY$
 -- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)
-DECLARE the_id_releve integer;
-BEGIN
-  SELECT INTO the_id_releve rel.id_releve_occtax
+begin
+  return QUERY select rel.id_releve_occtax
   FROM pr_occtax.t_releves_occtax rel
   JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
   JOIN pr_occtax.cor_counting_occtax counting ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
   WHERE counting.id_counting_occtax = my_id_counting;
-  RETURN the_id_releve;
 END;
 $BODY$
   LANGUAGE plpgsql IMMUTABLE
@@ -242,7 +239,7 @@ AS $BODY$  DECLARE
     releve.comment,
     occurrence.comment,
     'I',
-	  new_count.additional_fields || occurrence.additional_fields || releve.additional_fields
+	   occurrence.additional_fields || releve.additional_fields || new_count.additional_fields
   );
 
     RETURN myobservers.observers_id ;
@@ -278,7 +275,7 @@ CREATE TABLE t_releves_occtax (
     place_name character varying(500),
     meta_device_entry character varying(20),
     comment text,
-    geom_local public.geometry(Geometry,MYLOCALSRID),
+    geom_local public.geometry(Geometry,:MYLOCALSRID),
     geom_4326 public.geometry(Geometry,4326),
     id_nomenclature_geo_object_nature integer,
     precision integer,
@@ -286,7 +283,7 @@ CREATE TABLE t_releves_occtax (
     CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
     CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
     CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
-    CONSTRAINT enforce_srid_geom_local CHECK ((public.st_srid(geom_local) = MYLOCALSRID))
+    CONSTRAINT enforce_srid_geom_local CHECK ((public.st_srid(geom_local) = :MYLOCALSRID))
 );
 COMMENT ON COLUMN t_releves_occtax.id_nomenclature_tech_collect_campanule IS 'Correspondance nomenclature CAMPANULE = technique_obs';
 COMMENT ON COLUMN t_releves_occtax.id_nomenclature_grp_typ IS 'Correspondance nomenclature INPN = Type de regroupement';
@@ -732,9 +729,6 @@ COST 100;
 -- AJOUT CHAMPS ADDITIONNEL - MET 27/10/2020
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_counting()
   RETURNS trigger
-  LANGUAGE 'plpgsql'
-  VOLATILE
-  COST 100
 AS $BODY$DECLARE
   occurrence RECORD;
   releve RECORD;
@@ -757,7 +751,7 @@ BEGIN
   count_max = NEW.count_max,
   last_action = 'U',
   --CHAMPS ADDITIONNELS OCCTAX
-  additional_data = NEW.additional_fields || occurrence.additional_fields || releve.additional_fields
+  additional_data = releve.additional_fields || occurrence.additional_fields || NEW.additional_fields
   WHERE unique_id_sinp = NEW.unique_id_sinp_occtax;
   IF(NEW.unique_id_sinp_occtax <> OLD.unique_id_sinp_occtax) THEN
       RAISE EXCEPTION 'ATTENTION : %', 'Le champ "unique_id_sinp_occtax" est généré par GeoNature et ne doit pas être changé.'
@@ -776,11 +770,12 @@ $BODY$
 -- AJOUT CHAMPS ADDITIONNEL - MET 27/10/2020
 CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_occ()
     RETURNS trigger
-    LANGUAGE 'plpgsql'
-    VOLATILE
-    COST 100
-AS $BODY$  DECLARE
-  BEGIN
+AS $BODY$  declare
+    counting RECORD;
+    releve_add_fields jsonb;
+  begin
+	 select * into counting from pr_occtax.cor_counting_occtax c where id_occurrence_occtax = new.id_occurrence_occtax;
+	 select r.additional_fields into releve_add_fields from pr_occtax.t_releves_occtax r where id_releve_occtax = new.id_releve_occtax;
     UPDATE gn_synthese.synthese SET
       id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
       id_nomenclature_bio_condition = NEW.id_nomenclature_bio_condition,
@@ -803,10 +798,8 @@ AS $BODY$  DECLARE
       comment_description = NEW.comment,
       last_action = 'U',
 	  --CHAMPS ADDITIONNELS OCCTAX
-	  additional_data = NEW.additional_fields || pr_occtax.t_releves_occtax.additional_fields || pr_occtax.cor_counting_occtax.additional_fields
-	FROM pr_occtax.t_releves_occtax
-	INNER JOIN pr_occtax.cor_counting_occtax ON NEW.id_occurrence_occtax = pr_occtax.cor_counting_occtax.id_occurrence_occtax
-    WHERE unique_id_sinp = pr_occtax.cor_counting_occtax.unique_id_sinp_occtax;
+	  additional_data =  releve_add_fields || NEW.additional_fields || counting.additional_fields
+    WHERE unique_id_sinp = counting.unique_id_sinp_occtax;
 	
     RETURN NULL;
   END;
@@ -856,19 +849,12 @@ $BODY$
 DECLARE
   myobservers text;
 BEGIN
-  --calcul de l'observateur. On privilégie le ou les observateur(s) de cor_role_releves_occtax
-  --Récupération et formatage des observateurs
-  SELECT INTO myobservers array_to_string(array_agg(rol.nom_role || ' ' || rol.prenom_role), ', ')
-  FROM pr_occtax.cor_role_releves_occtax cor
-  JOIN utilisateurs.t_roles rol ON rol.id_role = cor.id_role
-  WHERE cor.id_releve_occtax = NEW.id_releve_occtax;
-  IF myobservers IS NULL THEN
-    myobservers = NEW.observers_txt;
-  END IF;
+
   --mise à jour en synthese des informations correspondant au relevé uniquement
-  UPDATE gn_synthese.synthese SET
+  UPDATE gn_synthese.synthese s SET
       id_dataset = NEW.id_dataset,
-      observers = myobservers,
+      -- take observer_txt only if not null
+      observers = COALESCE(NEW.observers_txt, observers),
       id_digitiser = NEW.id_digitiser,
       grp_method = NEW.grp_method,
       id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
@@ -886,10 +872,17 @@ BEGIN
       id_nomenclature_geo_object_nature = NEW.id_nomenclature_geo_object_nature,
       last_action = 'U',
       comment_context = NEW.comment,
-      additional_data = NEW.additional_fields || occurrence.additional_fields || counting.additional_fields
-  WHERE unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
+      additional_data = NEW.additional_fields || o.additional_fields || c.additional_fields
+      FROM pr_occtax.cor_counting_occtax c
+      INNER JOIN pr_occtax.t_occurrences_occtax o ON c.id_occurrence_occtax = o.id_occurrence_occtax
+      WHERE c.unique_id_sinp_occtax = s.unique_id_sinp
+        AND s.unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
+
   RETURN NULL;
 END;
+$BODY$
+LANGUAGE plpgsql VOLATILE
+COST 100;
 
 -- Suppression d'un relevé
 CREATE OR REPLACE FUNCTION fct_tri_synthese_delete_releve()
@@ -907,6 +900,29 @@ LANGUAGE plpgsql VOLATILE
 COST 100;
 
 
+
+ CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_insert_cor_role_releve()
+  RETURNS trigger AS
+$BODY$
+DECLARE
+  uuids_counting  uuid[];
+BEGIN
+  -- Récupération des id_counting à partir de l'id_releve
+  SELECT INTO uuids_counting pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer);
+  -- a l'insertion d'un relevé les uuid countin ne sont pas existants
+  -- ce trigger se declenche à l'edition d'un releve
+  IF uuids_counting IS NOT NULL THEN
+      -- Insertion dans cor_observer_synthese pour chaque counting
+      INSERT INTO gn_synthese.cor_observer_synthese(id_synthese, id_role) 
+      SELECT id_synthese, NEW.id_role 
+      FROM gn_synthese.synthese 
+      WHERE unique_id_sinp IN(SELECT unnest(uuids_counting));
+  END IF;
+RETURN NULL;
+END;
+$BODY$
+  LANGUAGE plpgsql VOLATILE
+  COST 100;
 
 -- Trigger update cor_role_releve_occtax
 CREATE OR REPLACE FUNCTION fct_tri_synthese_update_cor_role_releve()
@@ -1070,6 +1086,12 @@ CREATE TRIGGER tri_delete_synthese_t_releve_occtax
   FOR EACH ROW
   EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_delete_releve();
 
+ DROP TRIGGER IF EXISTS tri_synthese_insert_cor_role_releve ON pr_occtax.cor_role_releves_occtax;
+CREATE TRIGGER tri_synthese_insert_cor_role_releve
+  AFTER INSERT
+  ON pr_occtax.cor_role_releves_occtax
+  FOR EACH ROW
+  EXECUTE PROCEDURE pr_occtax.fct_tri_synthese_insert_cor_role_releve();
 
 DROP TRIGGER IF EXISTS tri_update_synthese_cor_role_releves_occtax ON pr_occtax.cor_role_releves_occtax;
 CREATE TRIGGER tri_update_synthese_cor_role_releves_occtax
@@ -1133,6 +1155,7 @@ INSERT INTO gn_commons.bib_tables_location (table_desc, schema_name, table_name,
 ,('occurence de taxon du module occtax', 'pr_occtax', 't_occurrences_occtax', 'id_occurrence_occtax', 'unique_id_occurence_occtax')
 ,('Relevé correspondant à un regroupement d''occurence de taxon du module occtax', 'pr_occtax', 't_releves_occtax', 'id_releve_occtax', 'unique_id_sinp_grp')
 ,('Observateurs des relevés du module occtax', 'pr_occtax', 'cor_role_releves_occtax', 'unique_id_cor_role_releve', 'unique_id_cor_role_releve')
+ON CONFLICT DO NOTHING
 ;
 
 
@@ -1158,26 +1181,35 @@ INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism
 
 -- Creation d'une liste 'observateur occtax'
 INSERT INTO utilisateurs.t_listes (code_liste, nom_liste, desc_liste)
-VALUES('obsocctax','Observateurs Occtax','Liste des observateurs du module Occtax');
-
+VALUES('obsocctax','Observateurs Occtax','Liste des observateurs du module Occtax')
+ON CONFLICT DO NOTHING
+;
 -- Ajout de l'utilsateur admin dans la liste
 INSERT INTO utilisateurs.cor_role_liste (id_liste, id_role)
 SELECT id_liste, (SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste')
 FROM utilisateurs.t_listes
-WHERE code_liste = 'obsocctax';
+WHERE code_liste = 'obsocctax'
+ON CONFLICT DO NOTHING
+;
 
 
 INSERT INTO gn_synthese.t_sources ( name_source, desc_source, entity_source_pk_field, url_source)
- VALUES ('Occtax', 'Données issues du module Occtax', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '#/occtax/info/id_counting');
+ VALUES ('Occtax', 'Données issues du module Occtax', 'pr_occtax.cor_counting_occtax.id_counting_occtax', '#/occtax/info/id_counting')
+ON CONFLICT DO NOTHING
+ ;
 
 INSERT INTO gn_permissions.cor_object_module (id_object, id_module)
 SELECT o.id_object, t.id_module
 FROM gn_permissions.t_objects o, gn_commons.t_modules t
-WHERE o.code_object = 'TDatasets' AND t.module_code = 'OCCTAX';
+WHERE o.code_object = 'TDatasets' AND t.module_code = 'OCCTAX'
+;
 
 
 INSERT INTO gn_permissions.t_objects (code_object, description_object) VALUES 
   ('OCCTAX_RELEVE', 'Représente la table pr_occtax.t_releves_occtax'),
   ('OCCTAX_OCCURENCE', 'Représente la table pr_occtax.t_occurrences_occtax'),
   ('OCCTAX_DENOMBREMENT', 'Représente la table pr_occtax.cor_counting_occtax')
+ON CONFLICT DO NOTHING
   ;
+
+ 

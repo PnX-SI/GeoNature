@@ -1,7 +1,9 @@
 from marshmallow import pre_load, fields
 
+from pypnnomenclature.schemas import NomenclatureSchema
+from pypnusershub.schemas import UserSchema
 from geonature.utils.env import MA 
-from geonature.core.gn_commons.models import TModules, TMedias
+from geonature.core.gn_commons.models import TModules, TMedias, TValidations
 
 class ModuleSchema(MA.SQLAlchemyAutoSchema):
     class Meta:
@@ -36,3 +38,18 @@ class MediaSchema(MA.SQLAlchemyAutoSchema):
         if data.get("id_media") is None:
             data.pop("id_media", None)
         return data
+
+
+class TValidationSchema(MA.SQLAlchemyAutoSchema):
+    class Meta:
+        model = TValidations
+        load_instance = True
+        include_fk = True
+        validation_label = fields.Nested(
+            NomenclatureSchema,
+            dump_only=True
+        )
+        validator_role = MA.Nested(
+            UserSchema, 
+            dump_only=True
+        )

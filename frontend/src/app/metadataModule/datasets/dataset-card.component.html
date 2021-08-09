@@ -192,18 +192,26 @@
           <br />
 
           <div *ngIf="dataset.cor_dataset_actor">
-            <div class="b">Contacts </div>
-            <div
-              class="a"
-              *ngFor="let actor of dataset.cor_dataset_actor"
-            >
-              <div>
-                <b>{{ actor?.nomenclature_actor_role.mnemonique }} : </b>
-                {{ actor?.organism?.nom_organisme }}
-                <span *ngIf="(actor.organism && actor.organism.nom_organisme) && (actor.role && actor.role.nom_complet)"> - </span>
-                {{ actor?.role?.nom_complet }}
+            <div class="b">Acteurs </div>
+            <ng-container *ngIf="dataset.cor_dataset_actor.length; else elifNoActor">
+              <div
+                class="a"
+                *ngFor="let actor of dataset.cor_dataset_actor"
+              >
+                <div>
+                  <b>{{ actor?.nomenclature_actor_role.mnemonique }} : </b>
+                  {{ actor?.organism?.nom_organisme }}
+                  <span *ngIf="(actor.organism && actor.organism.nom_organisme) && (actor.role && actor.role.nom_complet)"> - </span>
+                  {{ actor?.role?.nom_complet }}
+                </div>
               </div>
-            </div>
+            </ng-container>
+            <ng-template #elifNoActor>
+              <div class="a alert-actor">
+                <mat-icon>report</mat-icon>
+                <span> Aucun acteur renseigné </span>
+              </div>
+            </ng-template>
           </div>
           <br />
 

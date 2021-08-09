@@ -17,14 +17,14 @@ class NoManifestFound(Exception):
 def import_legacy_module(module_object):
     sys.path.insert(0, str(GN_EXTERNAL_MODULE))  # to be able to import non-packaged modules
     try:
-        module_dir = GN_EXTERNAL_MODULE / module_object.module_path
+        # module dist is module_code.lower() because the symlink is created like this
+        # in utils.gn_module_import.copy_in_external_mods
+        module_dist = module_object.module_code.lower()
+        module_dir = GN_EXTERNAL_MODULE / module_dist
         manifest_path = module_dir / 'manifest.toml'
         if not manifest_path.is_file():
             raise NoManifestFound()
         module_manifest = load_and_validate_toml(manifest_path, ManifestSchemaProdConf)
-        # module dist is module_code.lower() because the symlink is created like this
-        # in utils.gn_module_import.copy_in_external_mods
-        module_dist = module_object.module_code.lower()
         module_blueprint = import_module(f'{module_dist}.backend.blueprint').blueprint
         module_config = {
             'ID_MODULE': module_object.id_module,
@@ -52,11 +52,15 @@ def import_packaged_module(module_dist, module_object):
         'FRONTEND_PATH': frontend_path,
     }
 
-    module_schema = load_entry_point(module_dist, 'gn_module', 'config_schema')
-    config_path = os.environ.get(f'GEONATURE_{module_object.module_code}_CONFIG_FILE')
-    if not config_path:  # fallback to legacy conf path guessing
-        config_path = str(module_dir / 'config/conf_gn_module.toml')
-    module_config.update(load_and_validate_toml(config_path, module_schema))
+    try:
+        module_schema = load_entry_point(module_dist, 'gn_module', 'config_schema')
+    except ImportError:
+        pass
+    else:
+        config_path = os.environ.get(f'GEONATURE_{module_object.module_code}_CONFIG_FILE')
+        if not config_path:  # fallback to legacy conf path guessing
+            config_path = str(module_dir / 'config/conf_gn_module.toml')
+        module_config.update(load_and_validate_toml(config_path, module_schema))
 
     blueprint_entry_point = get_entry_info(module_dist, 'gn_module', 'blueprint')
     if blueprint_entry_point:

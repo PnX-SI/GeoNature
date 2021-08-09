@@ -103,6 +103,52 @@ A noter que toutes les actions et toutes les portées n'ont pas été implément
 
 TODO : Lister les permissions implémentées dans chaque module.
 
+
+Accès public
+""""""""""""
+
+Cette section de la documentation concerne l'implémentation d'un utilisateur-lecteur pour votre instance GeoNature, permettant d'y donner accès sans authentification.
+
+Etapes :
+
+1/ UsersHub :
+
+- Aller dans la section ``Utilisateurs``
+- Créer un utilisateur 
+- Définir un identifiant et un mot de passe (par défaut utilisateur 'public' et mot de passe 'public')
+- Aller ensuite dans la section `Applications`
+- Pour GeoNature, cliquer sur le premier icône 'Voir les membres'
+- Cliquer sur ajouter un rôle 
+- Choisir l'utilisateur juste créé
+- Attribuer le rôle 1, 'lecteur' 
+
+2/ Configuration GeoNature : 
+
+- Reporter identifiant et mot de passe dans le fichier de configuration de GeoNature (``config/geonature_config.toml``)
+
+.. code:: 
+
+  PUBLIC_LOGIN = 'public'
+  PUBLIC_PASSWORD = 'public'
+
+- Mettre à jour la configuration de GeoNature
+
+.. code:: 
+
+  $ source backend/venv/bin/activate
+  $ geonature update_configuration
+
+A ce moment-là, cet utilisateur a tous les droits sur GeoNature.
+Il s'agit maintenant de gérer ses permissions dans GeoNature même. 
+
+3/ GeoNature 
+
+- Se connecter à GeoNature avec un utilisateur administrateur
+- Aller dans le module Admin
+- Cliquer sur 'Gestion des permissions'
+- Choisissez l'utilisateur sélectionné 
+- Editer le CRUVED pour chacun des modules de l'instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser '3' pour les modules d'intérêt. 
+
 Nomenclatures
 """""""""""""
 
@@ -634,6 +680,8 @@ Restauration
         sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
         sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+        sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS postgis_raster;"
+        
 
   - Restaurer la BDD à partir du backup
 
@@ -692,7 +740,7 @@ Si la manipulation vous parait compliquée, vous pouvez suivre la documentation 
 Intégrer son logo
 """""""""""""""""
 
-Le logo affiché dans la barre de navigation de GeoNature peut être modifié dans le répertoire ``geonature/frontend/src/custom/images``. Remplacez alors le fichier ``logo_structure.png`` par votre propre logo, en conservant ce nom pour le nouveau fichier. Le bandeau fait 50px de hauteur, vous pouvez donc mettre une image faisant cette hauteur. Il est également possible de modifier la taille de l'image en CSS dans le fichier ``frontend/src/custom/custom.scss`` de la manière suivante:
+Le logo affiché dans la barre de navigation de GeoNature peut être modifié dans le répertoire ``geonature/frontend/src/custom/images``. Remplacez alors le fichier ``logo_structure.png`` par votre propre logo, en conservant ce nom pour le nouveau fichier. Le bandeau fait 50px de hauteur, vous pouvez donc mettre une image faisant cette hauteur. Il est également possible de modifier la taille de l'image en CSS dans le fichier ``frontend/src/assets/custom.css`` de la manière suivante:
 
 .. code:: css
 
@@ -741,7 +789,7 @@ De la même manière, il est nécessaire de relancer les commandes suivantes pou
 Customiser l'aspect esthétique
 """"""""""""""""""""""""""""""
 
-Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant le fichier ``custom.scss``, situé dans le répertoire ``geonature/frontend/src/custom``.
+Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant le fichier ``custom.css``, situé dans le répertoire ``geonature/frontend/src/assets``.
 
 Pour remplacer la couleur de fond du bandeau de navigation par une image, on peut par exemple apporter la modification suivante :
 
@@ -1036,19 +1084,23 @@ Etapes :
    - Attribuer le rôle 1, 'lecteur' 
 
 2/ Configuration GeoNature : 
-   - Reporter identifiant et mot de passe dans le fichier de configuration de GeoNature 
-``` 
-$ cd config
-$ nano geonature_config.toml
-```
-`PUBLIC_LOGIN = 'public'`  
-`PUBLIC_PASSWORD = 'public'`  
+  - Reporter identifiant et mot de passe dans le fichier de configuration de GeoNature
 
-   - Mettre à jour la configuration de GeoNature 
-```
-$ source backend/venv/bin/activate
-$ geonature update_configuration
-```
+.. code-block::
+
+    $ cd config
+    $ nano geonature_config.toml
+    PUBLIC_LOGIN = 'public'
+    PUBLIC_PASSWORD = 'public'
+..
+
+   - Mettre à jour la configuration de GeoNature
+
+.. code-block::
+
+    $ source backend/venv/bin/activate
+    $ geonature update_configuration
+..
 
 A ce moment là, cet utilisateur a tous les droits sur GeoNature.
 Il s'agit donc de gérer ses permissions dans GeoNature même. 
@@ -1276,7 +1328,7 @@ L'administration des droits des utilisateurs pour le module Occtax se fait dans 
 
 
 Module Admin
-""""""""""""
+-------------
 
 Administration des champs additionnels
 **************************************
@@ -1301,13 +1353,13 @@ Un champ additionnel est définit par:
 Exemples de configuration :
 
 - Un champs type "select" :
-.. image :: https://github.com/PnX-SI/GeoNature/blob/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/select_exemple.png
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/select_exemple.png
 
 - Un champs type "multiselect" (la clé "value" est obligatoire dans le dictionnaire de valeurs) : 
-.. image :: https://github.com/PnX-SI/GeoNature/blob/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/multiselect3.png
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/multiselect3.png
 
 - Un champs type "html". C'est un champs de type "présentation", aucune valeur ne sera enregistré en base de données pour ce champs :
-.. image :: https://github.com/PnX-SI/GeoNature/blob/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/html1.png
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/html1.png
 
 
 Module OCCHAB

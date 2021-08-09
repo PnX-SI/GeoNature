@@ -1,4 +1,4 @@
-import { Injectable} from "@angular/core";
+import { Injectable, ChangeDetectorRef} from "@angular/core";
 import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Observable, Subscription, of } from "rxjs";
@@ -47,7 +47,8 @@ export class OcctaxFormReleveService {
     private occtaxFormMapService: OcctaxFormMapService,
     private occtaxDataService: OcctaxDataService,
     private occtaxParamS: OcctaxFormParamService,
-    private _datasetStoreService: DatasetStoreService
+    private _datasetStoreService: DatasetStoreService,
+    private _cd: ChangeDetectorRef
   ) {
     this.initPropertiesForm();
     this.setObservables();
@@ -172,35 +173,41 @@ export class OcctaxFormReleveService {
     this.occtaxFormService.editionMode
       .pipe(
         skip(1), // skip initilization value (false)
-        tap((editionMode: boolean) => {          
-          // gestion de l'autocomplétion de la date ou non.
-          this.$_autocompleteDate.unsubscribe();
-          // autocomplete si mode création ou si mode edition et date_min = date_max
-          if (!editionMode) {
-            this.$_autocompleteDate = this.coreFormService.autoCompleteDate(
-              this.propertiesForm as FormGroup,
-              "date_min",
-              "date_max"
-            );
-          }
-        }),
         switchMap((editionMode: boolean) => {   
                  
           //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
           return editionMode ? this.releveValues : this.defaultValues;
         })
       )
-      .subscribe((values) => {                        
+      .subscribe((values) => {  
+        const editionMode = this.occtaxFormService.editionMode.getValue()
+        // gestion de l'autocomplétion de la date ou non.
+        this.$_autocompleteDate.unsubscribe();
+        
+        // autocomplete si mode création ou si mode edition et date_min = date_max
+        if (!editionMode || (editionMode && JSON.stringify(values.date_min) === JSON.stringify(values.date_max))) {
+
+          this.$_autocompleteDate = this.coreFormService.autoCompleteDate(
+            this.propertiesForm as FormGroup,
+            "date_min",
+            "date_max"
+          );
+        }    
+        if(!values.additional_fields) {
+          values.additional_fields = {};
+        }
         // re disable the form here
         // Angular bug: when we add additionnal form controls, it enable the form
         if(!values.id_releve_occtax) {
           this.propertiesForm.disable();          
         }
+        // don't know why we have to patch observer separatly
+        // but don't work in an other way
+        this.propertiesForm.controls.observers.patchValue(values.observers);
         // HACK: wait for the dynamicformGenerator Component to set the additional fields
         // TODO: subscribe to an observable of dynamicFormCOmponent to wait it
-        setTimeout(() => {       
+        setTimeout(() => {          
          this.propertiesForm.patchValue(values, {emitEvent: false});
-         this.propertiesForm.controls.observers.patchValue(values.observers);
         }, 1000);
       }
       );
@@ -257,11 +264,11 @@ export class OcctaxFormReleveService {
   }
 
   /** Get occtax data in order to patch value to the form */
-  private get releveValues(): Observable<any> {
+  private get releveValues(): Observable<any> {    
     return this.occtaxFormService.occtaxData.pipe(
       tap(() => this.habitatForm.setValue(null)),
       filter(data => data && data.releve.properties),
-      map(data => {        
+      map(data => {                        
         const copied_data = Object.assign({}, data)
         const releve = copied_data.releve.properties;
         //Parfois il passe 2 fois ici, et la seconde fois la date est déja formattée en objet, si c'est le cas, on saute
@@ -294,8 +301,7 @@ export class OcctaxFormReleveService {
           // set search_name properties to the form
           habitatFormValue["search_name"] = habitatFormValue.lb_code + " - " + habitatFormValue.lb_hab_fr;
           this.habitatForm.setValue(habitatFormValue)
-        }
-
+        }        
         return releve;
       }),
       // load additional fields
@@ -303,12 +309,13 @@ export class OcctaxFormReleveService {
         return this.occtaxFormService.getAdditionnalFields(
           ["OCCTAX_RELEVE"],
           releve.id_dataset
-        ).map(additionalFields => {              
+        ).map(additionalFields => {                        
           // remove old dataset addField from globalAddFields
           this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
             this.occtaxFormService.globalReleveAddFields,
             this.occtaxFormService.datasetReleveAddFields,
           );
+          
           this.occtaxFormService.datasetReleveAddFields = additionalFields;
           
           this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.globalReleveAddFields.concat(
@@ -321,22 +328,10 @@ export class OcctaxFormReleveService {
               if(typeof releve.additional_fields[field.attribut_name] !== "object"){
                 releve.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(releve.additional_fields[field.attribut_name]);
               }
+            }                 
+            if(releve.additional_fields) {
+              releve[field.attribut_name] =  releve.additional_fields[field.attribut_name];
             }
-            //Formattage des nomenclatures
-            if(field.type_widget == "nomenclature"){
-                  const res = this.occtaxFormService.nomenclatureAdditionnel.filter((item) => item !== undefined)
-                  .find(n => (n["label_fr"] === releve.additional_fields[field.attribut_name]));
-                  if(res){
-                    releve.additional_fields[field.attribut_name] = res.id_nomenclature;
-                  }else{
-                    releve.additional_fields[field.attribut_name] = "";
-                  }
-              }              
-              if(releve.additional_fields) {
-                releve[field.attribut_name] =  releve.additional_fields[field.attribut_name];
-              }else {
-                releve.additional_fields = {};
-              }
           })
           return releve
         })
@@ -383,11 +378,11 @@ export class OcctaxFormReleveService {
     };
   }
 
-  private get defaultValues(): Observable<any> {    
+  private get defaultValues(): Observable<any> { 
     return this.occtaxFormService
       .getDefaultValues(this.occtaxFormService.currentUser.id_organisme)
       .pipe(
-        map((data) => {
+        map((data) => {          
           const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);                
           return {
             // datasetId could be get for get parameters (see releve.component)
@@ -454,17 +449,6 @@ export class OcctaxFormReleveService {
               value.properties.additional_fields[field.attribut_name]
             );
           }
-          if(field.type_widget == "nomenclature"){            
-            // set the label_fr nomenclature in the posted additional data
-            const nomenclature_item = this.occtaxFormService.nomenclatureAdditionnel.find(n => {
-              return n["id_nomenclature"] === value.properties.additional_fields[field.attribut_name];
-            });
-            if(nomenclature_item){
-              value.properties.additional_fields[field.attribut_name] = nomenclature_item.label_fr;
-            }else{
-              value.properties.additional_fields[field.attribut_name] = "";
-            }
-          }
         })
     return value;
   }
@@ -493,6 +477,8 @@ export class OcctaxFormReleveService {
             this.releveForm.markAsPristine();
                         
             this.router.navigate(["occtax/form", data.id, "taxons"]);
+            this.occtaxFormService.currentTab = "taxons";
+
           },
           (err) => {
             this.waiting = false;

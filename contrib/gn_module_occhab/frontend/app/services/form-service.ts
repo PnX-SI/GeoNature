@@ -234,8 +234,9 @@ export class OcchabFormService {
    * format the data returned by get one station to fit with the form
    */
   formatStationAndHabtoPatch(station) {
-    const formatedHabitats = station.t_one_habitats.map(hab => {
-      hab.habref["search_name"] = hab.nom_cite;
+    // me    
+    const formatedHabitats = station.t_one_habitats.map(hab => {      
+      // hab.habref["search_name"] = hab.nom_cite;
       return {
         ...hab,
         id_nomenclature_determination_type: this.getOrNull(
@@ -249,8 +250,16 @@ export class OcchabFormService {
         id_nomenclature_abundance: this.getOrNull(hab, "abundance")
       };
     });
+    station.t_habitats.forEach((hab, index) => {
+      formatedHabitats[index]["habref"] = hab.habref || {};
+      formatedHabitats[index]["habref"]["search_name"] = hab.nom_cite;
+      
+    });    
     station["t_habitats"] = formatedHabitats;
-
+    console.log(station.date_min);
+    console.log(this._dateParser.parse(station.date_min));
+    
+    
     return {
       ...station,
       date_min: this._dateParser.parse(station.date_min),
@@ -274,6 +283,7 @@ export class OcchabFormService {
         this.initHabForm(this._storeService.defaultNomenclature)
       );
     }
+    
     const formatedData = this.formatStationAndHabtoPatch(oneStation.properties);
     this.stationForm.patchValue(formatedData);
     this.stationForm.patchValue({

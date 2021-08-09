@@ -314,7 +314,7 @@ ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_area_synthese
-    ADD CONSTRAINT fk_cor_area_synthese_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE;
+    ADD CONSTRAINT fk_cor_area_synthese_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT fk_gn_synthese_defaults_nomenclatures_value_mnemonique_type FOREIGN KEY (mnemonique_type) REFERENCES ref_nomenclatures.bib_nomenclatures_types(mnemonique) ON UPDATE CASCADE;
@@ -582,6 +582,31 @@ $BODY$
   $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
+
+CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_l_areas_insert_cor_area_synthese_on_each_statement()
+ RETURNS trigger
+ LANGUAGE plpgsql
+AS $function$
+  DECLARE
+  BEGIN
+  -- Intersection de toutes les observations avec les nouvelles zones et écriture dans cor_area_synthese
+      INSERT INTO gn_synthese.cor_area_synthese
+        SELECT
+          new_areas.id_area AS id_area,
+          s.id_synthese as id_synthese
+        FROM NEW as new_areas
+        join gn_synthese.synthese s
+          ON public.ST_INTERSECTS(s.the_geom_local, new_areas.geom)
+        WHERE new_areas.enable IS true
+            AND (
+                       ST_GeometryType(s.the_geom_local) = 'ST_Point'
+                   OR
+                       NOT public.ST_TOUCHES(s.the_geom_local, new_areas.geom)
+                   );
+  RETURN NULL;
+  END;
+  $function$
+;
 
 
 CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement() RETURNS TRIGGER
@@ -1023,25 +1048,31 @@ CREATE TRIGGER trg_maj_synthese_observers_txt
   EXECUTE PROCEDURE gn_synthese.fct_tri_maj_observers_txt();
 
 
- CREATE TRIGGER tri_insert_cor_area_synthese
+CREATE TRIGGER tri_insert_cor_area_synthese
   AFTER insert ON gn_synthese.synthese
   REFERENCING NEW TABLE AS NEW
   FOR EACH STATEMENT
   EXECUTE PROCEDURE gn_synthese.fct_trig_insert_in_cor_area_synthese_on_each_statement();
 
- CREATE TRIGGER tri_update_cor_area_synthese
+CREATE TRIGGER tri_update_cor_area_synthese
   AFTER UPDATE OF the_geom_local, the_geom_4326 ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_trig_update_in_cor_area_synthese();
 
+CREATE TRIGGER tri_insert_cor_area_synthese
+  AFTER INSERT ON ref_geo.l_areas
+  REFERENCING NEW TABLE AS NEW
+  FOR EACH STATEMENT
+  EXECUTE PROCEDURE gn_synthese.fct_trig_l_areas_insert_cor_area_synthese_on_each_statement();
+
 CREATE TRIGGER tri_insert_calculate_sensitivity
- AFTER INSERT ON gn_synthese.synthese
+  AFTER INSERT ON gn_synthese.synthese
   REFERENCING NEW TABLE AS NEW
   FOR EACH STATEMENT
   EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement();
   
 CREATE TRIGGER tri_update_calculate_sensitivity
- AFTER UPDATE OF date_min, date_max, cd_nom, the_geom_local, id_nomenclature_bio_status ON gn_synthese.synthese
+  AFTER UPDATE OF date_min, date_max, cd_nom, the_geom_local, id_nomenclature_bio_status ON gn_synthese.synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_tri_cal_sensi_diff_level_on_each_row();
 

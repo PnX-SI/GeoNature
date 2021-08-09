@@ -707,7 +707,7 @@ INSERT INTO bib_tables_location (table_desc, schema_name, table_name, pk_field, 
 ;
 
 INSERT INTO t_parameters (id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
-(0,'taxref_version','Version du référentiel taxonomique','Taxref V13.0',NULL)
+(0,'taxref_version','Version du référentiel taxonomique','Taxref V14.0',NULL)
 ,(0,'local_srid','Valeur du SRID local', MYLOCALSRID,NULL)
 ,(0,'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
 ,(0,'occtaxmobile_area_type', 'Type de zonage pour lequel la couleur des taxons est calculée pour Occtax-mobile', 'M5', NULL)
@@ -774,11 +774,8 @@ INSERT INTO gn_commons.bib_widgets (widget_name) VALUES
 	 ('textarea'),
 	 ('radio'),
 	 ('time'),
-	 ('medias'),
 	 ('bool_radio'),
 	 ('date'),
 	 ('multiselect'),
 	 ('number'),
-	 ('taxonomy'),
-	 ('observers'),
 	 ('html');

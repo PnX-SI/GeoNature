@@ -5,11 +5,13 @@ import datetime as dt
 import json
 import logging
 import threading
+import click
 
 
 from pathlib import Path
 from binascii import a2b_base64
 from flask.json import jsonify
+from werkzeug.utils import secure_filename
 
 from lxml import etree as ET
 
@@ -68,6 +70,7 @@ from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.core.gn_meta.mtd import mtd_utils
+from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
 from geonature.utils.errors import GeonatureApiError
@@ -75,7 +78,7 @@ from geonature.utils.errors import GeonatureApiError
 
 
 
-routes = Blueprint("gn_meta", __name__)
+routes = Blueprint("gn_meta", __name__, cli_group='metadata')
 
 # get the root logger
 log = logging.getLogger()
@@ -115,12 +118,13 @@ def get_datasets(info_role):
                 id_user=info_role.id_role, id_organism=info_role.id_organisme
             )
         except Exception as e:
-
             log.error(e)
             with_mtd_error = True
     params = request.args.to_dict()
-    depth = params.get("depth", 0)
-    datasets = get_datasets_cruved(info_role, params, depth=int(depth))
+    fields = params.get("fields", None)
+    if fields:
+        fields = fields.split(',')
+    datasets = get_datasets_cruved(info_role, params, fields=fields)
     datasets_resp = {"data": datasets}
     if with_mtd_error:
         datasets_resp["with_mtd_errors"] = True
@@ -516,9 +520,12 @@ def datasetHandler(request, *, dataset, info_role):
                 ),
                 403,
             )
+    else: 
+        dataset.id_digitizer = info_role.id_role
     datasetSchema = DatasetSchema()
     dataset, errors = datasetSchema.load(request.get_json(), instance=dataset)
     if bool(errors):
+        log.error(errors)
         raise BadRequest(errors)
 
     DB.session.add(dataset)
@@ -609,7 +616,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
 
     filename = "jdd_{}_{}_{}.pdf".format(
         id_dataset,
-        dataset["dataset_shortname"].replace(" ", "_"),
+        secure_filename(dataset["dataset_shortname"]),
         dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
     )
 
@@ -786,7 +793,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
         acquisition_framework['initial_closing_date'] = af.initial_closing_date.strftime('%d-%m-%Y %H:%M')
         filename = "{}_{}_{}.pdf".format(
             id_acquisition_framework,
-            acquisition_framework["acquisition_framework_name"][0:31].replace(" ", "_"),
+            secure_filename(acquisition_framework["acquisition_framework_name"][0:31]),
             af.initial_closing_date.strftime("%d%m%Y_%H%M%S")
         )
         acquisition_framework["closed_title"] = current_app.config["METADATA"]["CLOSED_AF_TITLE"]
@@ -794,7 +801,7 @@ def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
     else:
         filename = "{}_{}_{}.pdf".format(
             id_acquisition_framework,
-            acquisition_framework["acquisition_framework_name"][0:31].replace(" ", "_"),
+            secure_filename(acquisition_framework["acquisition_framework_name"][0:31]),
             dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
         )
 
@@ -874,6 +881,8 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework, info_role):
                 ),
                 403,
             )
+    else:
+        acquisition_framework.id_digitizer = info_role.id_role
 
     acquisitionFrameworkSchema = AcquisitionFrameworkSchema()
     acquisition_framework, errors = acquisitionFrameworkSchema.load(request.get_json(), instance=acquisition_framework)
@@ -959,8 +968,6 @@ def get_acquisition_framework_stats(info_role, id_acquisition_framework):
             + str(dataset_ids).strip("[]")
             + ")"
         )
-        for obj in objectif_nom:
-            af.cor_objectifs.append(obj)
 
         nb_habitat = DB.engine.execute(text(query)).first()[0]
 
@@ -1134,3 +1141,8 @@ def post_jdd_from_user_id(id_user=None, id_organism=None):
     .. :quickref: Metadata;
     """
     return mtd_utils.post_jdd_from_user(id_user=id_user, id_organism=id_organism)
+
+
+@routes.cli.command()
+def mtd_sync():
+    mtd_sync_af_and_ds()

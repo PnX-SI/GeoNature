@@ -36,9 +36,3 @@ DEFAULT_LANGUAGE='fr'
 
 # Configuration médias
 [MEDIAS]
-
-# Configuration Public Access
-[PUBLIC_ACCESS]
-PUBLIC_LOGIN = 'public'
-PUBLIC_PASSWORD = 'public'
-ENABLE_PUBLIC_ACCESS = true

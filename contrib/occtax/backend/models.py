@@ -6,7 +6,6 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 
 from pypnnomenclature.models import TNomenclatures
-from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
@@ -16,6 +15,7 @@ from geonature.core.taxonomie.models import Taxref
 from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.env import DB
+from werkzeug.exceptions import Forbidden
 
 
 class ReleveModel(DB.Model):
@@ -68,11 +68,10 @@ class ReleveModel(DB.Model):
         if self.user_is_allowed_to(user, user.value_filter):
             return self
 
-        raise InsufficientRightsError(
+        raise Forbidden(
             ('User "{}" cannot "{}" this current releve').format(
                 user.id_role, user.code_action
             ),
-            403,
         )
 
     def get_releve_cruved(self, user, user_cruved):

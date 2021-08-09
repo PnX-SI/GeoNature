@@ -89,3 +89,25 @@ mat-expansion-panel {
 /deep/ .mat-slide-toggle.custom-toggle .mat-slide-toggle-thumb {
   background-color: red;
 }
+
+/deep/ .mat-slide-toggle.mat-disabled .mat-slide-toggle-label,
+.mat-slide-toggle.mat-disabled .mat-slide-toggle-thumb-container {
+  cursor: not-allowed !important;
+}
+
+/deep/ .mat-slide-toggle.mat-disabled .mat-slide-toggle-thumb {
+  cursor: not-allowed !important;
+}
+
+.alert-actor {
+  color: #cc2424;
+}
+
+.alert-actor mat-icon {
+  vertical-align: middle;
+}
+
+.alert-actor span {
+  vertical-align: middle;
+  margin-left: 5px;
+}

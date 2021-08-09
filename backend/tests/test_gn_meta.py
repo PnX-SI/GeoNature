@@ -1,12 +1,68 @@
+from pyrsistent import v
 import pytest
 
 from flask import url_for, current_app
+from jsonschema import validate
 from sqlalchemy.sql import func
+
 
 from .bootstrap_test import app, post_json, json_of_response, get_token
 
 from geonature.core.users import routes as users
 
+dataset_schema = {
+    "type": "object",
+    "properties": {
+        "acquisition_framework": {"type": "object"},
+        "cor_dataset_actor": {"type": "array"},
+        "creator": {"type": "object"},
+        "id_digitizer": {"type": "number"},
+        "dataset_name": {"type": "string"},
+        "dataset_shortname": {"type": "string"},
+        "dataset_desc": {"type": "string"},
+        "id_nomenclature_data_type": {"type": "integer"},
+        "id_nomenclature_source_status": {"type": "integer"},
+        "id_nomenclature_dataset_objectif": {"type": "integer"},
+        "id_nomenclature_collecting_method": {"type": "integer"},
+        "id_nomenclature_data_origin": {"type": "integer"},
+        "id_nomenclature_resource_type": {"type": "integer"},
+        "cor_territories": {"type": "array"},
+
+    },
+    "required": [
+        "id_digitizer", 
+        "acquisition_framework", "cor_dataset_actor", "creator", 
+        "dataset_name", "dataset_shortname",
+        "dataset_desc", "id_nomenclature_data_type", "id_nomenclature_source_status",
+        "id_nomenclature_dataset_objectif", "id_nomenclature_collecting_method",
+        "id_nomenclature_data_origin", "id_nomenclature_resource_type",
+        "cor_territories"
+    ]
+}
+
+af_schema = {
+    "type": "object",
+    "properties": {
+        "t_datasets": {"type": "array"},
+        "cor_af_actor": {"type": "array"},
+        "cor_territories": {"type": "array"},
+        "creator": {"type": "object"},
+        "id_digitizer": {"type": "number"},
+        "acquisition_framework_name": {"type": "string"},
+        "acquisition_framework_desc": {"type": "string"},
+        "acquisition_framework_start_date": {"type": "string"},                
+    },
+    "required": [
+        "id_digitizer", 
+        "t_datasets", 
+        "cor_af_actor", 
+        "creator",
+        "acquisition_framework_name",
+        "acquisition_framework_desc",
+        "cor_territories",
+        "acquisition_framework_start_date"
+    ]
+}
 
 @pytest.mark.usefixtures("client_class")
 class TestGnMeta:
@@ -143,20 +199,23 @@ class TestGnMeta:
             "id_nomenclature_dataset_objectif": 407,
             "id_nomenclature_resource_type": 320,
             "id_nomenclature_source_status": 73,
+            # meta_dates must be ignored NEVER post !
+            "meta_create_date": "lala",
+            "meta_update_date": "lala",
             "keywords": None,
             "marine_domain": False,
             "terrestrial_domain": True,
             "validable": True,
-            "modules": [{"id_module": 1}],
+            # meta_dates must be ignored NEVER post !
+            "modules": [{"id_module": 1, "meta_create_date": "fake_date", "meta_update_date": "fake_date"}],
         }
         response = post_json(self.client, url_for("gn_meta.create_dataset"), json_dict=one_dataset)
         assert response.status_code == 200
         dataset = response.get_json()
         assert len(dataset["modules"]) == 1
-    
 
-        # edition
-        # fetch dataset
+        validate(instance=dataset, schema=dataset_schema)
+
         response = self.client.get(
             url_for("gn_meta.get_dataset", id_dataset=dataset["id_dataset"])
         )
@@ -214,6 +273,9 @@ class TestGnMeta:
         response = post_json(
             self.client, url_for("gn_meta.create_acquisition_framework"), json_dict=one_ca
         )
+        af = response.get_json()
+
+        validate(instance=af, schema=af_schema)
         assert response.status_code == 200
 
     def test_get_af_list(self):

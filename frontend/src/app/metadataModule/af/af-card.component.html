@@ -230,17 +230,35 @@
 
           <div *ngIf="af?.cor_af_actor">
             <div class="b">Acteurs </div>
-            <div
-              class="a"
-              *ngFor="let actor of af?.cor_af_actor"
-            >
-              <div> <b>{{ actor?.nomenclature_actor_role?.mnemonique}} : </b>
-                {{ actor?.organism?.nom_organisme }} <span
-                  *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"
-                > - </span> {{ actor?.role?.nom_complet }} </div>
-            </div>
+            <ng-container *ngIf="af.cor_af_actor.length; else elifNoActor">
+              <div
+                class="a"
+                *ngFor="let actor of af?.cor_af_actor"
+              >
+                <div> 
+                  <b>{{ actor?.nomenclature_actor_role?.mnemonique}} : </b>
+                  {{ actor?.organism?.nom_organisme }} 
+                  <span
+                    *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"
+                  > - </span> {{ actor?.role?.nom_complet }} 
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #elifNoActor>
+              <div class="a alert-actor">
+                <mat-icon>report</mat-icon>
+                <span> Aucun acteur renseigné </span>
+              </div>
+            </ng-template>
             <br />
           </div>
+
+          <div class="b"> Créateur</div>
+
+          <div class="a"> <b> Créateur du cadre d'acquisition :</b> {{af?.creator?.nom_complet || 'Non renseigné'}}
+          </div>         
+
+          <br />
 
           <div *ngIf="af?.keywords">
             <div class="b">Mots-clés </div>
@@ -323,7 +341,7 @@
         </div>
         <div class="card-body">
           <table>
-            <tr *ngFor="let dataset of af.t_datasets">
+            <tr *ngFor="let dataset of af?.t_datasets">
               <td [ngSwitch]="dataset.nomenclature_data_type.cd_nomenclature">
                 <img
                   width="60"

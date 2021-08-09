@@ -57,24 +57,28 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     private _modalService: NgbModal
   ) { }
 
-  ngOnInit() {          
+  ngOnInit() {
+   
     this.occtaxFormService.idTaxonList = ModuleConfig.id_taxon_list;
-
+    
+    // set id_releve and tab on initalization (refresh page)
     this.setCurrentTabAndIdReleve(this._router.routerState.snapshot.url);
+    // set id_releve and tab on tab navigation
+    // when come from map list both are trigger. Manage by distinctUntilChanged on getOcctaxData
     this._router.events
     .pipe(
-      filter(event => event instanceof NavigationEnd)
+      filter(event => event instanceof NavigationEnd),
     ).subscribe((event:any) => {      
       this.setCurrentTabAndIdReleve(event.url);
     })
-  
   }
 
-  setCurrentTabAndIdReleve(url) {
+  setCurrentTabAndIdReleve(url) {    
     let urlSegments = url.split("/");
     if (urlSegments[urlSegments.length - 1] === "taxons") {
       const idReleve = urlSegments[urlSegments.length - 2];      
       if (idReleve && Number.isInteger(Number(idReleve)))  {
+        
         this.occtaxFormService.id_releve_occtax.next(idReleve)
       } else {        
         // if no idReleve on taxon tab -> redirect
@@ -86,7 +90,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     } else {
       this.occtaxFormService.currentTab = "releve";
       const idReleve = urlSegments[urlSegments.length - 1];      
-      if (idReleve && Number.isInteger(Number(idReleve)))  {        
+      if (idReleve && Number.isInteger(Number(idReleve)))  { 
         this.occtaxFormService.id_releve_occtax.next(idReleve)
       }else {        
         this.occtaxFormService.id_releve_occtax.next(null);
@@ -94,17 +98,19 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     }
   }
   navigate(tab) {    
-    const idReleve = this.occtaxFormService.id_releve_occtax.getValue();    
+    const idReleve = this.occtaxFormService.id_releve_occtax.getValue();        
     if(tab == "releve") {
       if(idReleve) {
         this._router.navigate(
           [`occtax/form/releve/${idReleve}`]
         )
+        this.occtaxFormService.currentTab = 'releve';
       }
-    } else {
+    } else {      
       this._router.navigate(
         [`occtax/form/${idReleve}/taxons`]
-      )
+      );
+      this.occtaxFormService.currentTab = 'taxons';
     }
 
   }

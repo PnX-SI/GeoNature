@@ -2,14 +2,12 @@ import pytest
 
 
 from flask import url_for, request
-from werkzeug.exceptions import Unauthorized
+from werkzeug.exceptions import Forbidden, Unauthorized
 
 from pypnusershub.db.tools import (
-    InsufficientRightsError,
     UnreadableAccessRightsError,
 )
 from .bootstrap_test import app, json_of_response, get_token
-from pypnusershub.db.tools import InsufficientRightsError
 from geonature.core.gn_permissions.models import (
     VUsersPermissions,
     TFilters,
@@ -82,7 +80,7 @@ class TestGnPermissionsTools:
 
         fake_user = {"id_role": 220, "nom_role": "Administrateur"}
         # get_user_permissions(fake_user, code_action="C", code_filter_type="SCOPE")
-        with pytest.raises(InsufficientRightsError):
+        with pytest.raises(Forbidden):
             perms = get_user_permissions(fake_user, code_action="C", code_filter_type="SCOPE")
         # with module code
 

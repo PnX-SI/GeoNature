@@ -4,7 +4,7 @@ import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap, filter, switchMap, map } from 'rxjs/operators';
  
-import { ActorFormService, ID_ROLE_DATASET_ACTORS } from './actor-form.service';
+import { ActorFormService } from './actor-form.service';
  
 @Injectable()
 export class DatasetFormService {
