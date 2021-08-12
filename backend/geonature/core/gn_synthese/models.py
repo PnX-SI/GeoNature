@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 from sqlalchemy import ForeignKey, or_, Sequence
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship, column_property
 from sqlalchemy.sql import select, func, exists
 from sqlalchemy.dialects.postgresql import UUID, JSONB
@@ -154,6 +155,10 @@ class Synthese(DB.Model):
 
     def get_geofeature(self, recursif=True, fields=None):
         return self.as_geofeature("the_geom_4326", "id_synthese", recursif, fields=fields)
+
+    @hybrid_property
+    def meta_last_action_date(self):
+        return func.coalesce(self.meta_update_date, self.meta_create_date)
 
 
 @serializable
@@ -416,4 +421,5 @@ class TLogSynthese(DB.Model):
     id_synthese = DB.Column(DB.Integer(), primary_key=True)
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     last_action = DB.Column(DB.Unicode)
-    meta_action_date = DB.Column(DB.DateTime)
+    meta_last_action_date = DB.Column(DB.DateTime)
+

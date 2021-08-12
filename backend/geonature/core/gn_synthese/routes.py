@@ -1021,7 +1021,7 @@ def log_delete_history(info_role):
             TLogSynthese.id_synthese, 
             TLogSynthese.unique_id_sinp, 
             TLogSynthese.last_action, 
-            TLogSynthese.meta_action_date
+            TLogSynthese.meta_last_action_date
             ).filter(TLogSynthese.last_action == 'D').filter(TLogSynthese.meta_action_date >= start)             
 
 
@@ -1046,7 +1046,7 @@ def log_delete_history(info_role):
         if p_data.has_next:
             result['next_page']=p_data.has_next
         
-        result['items'] = [{"id":d.id_synthese, "uuid":d.unique_id_sinp, "last_action": d.last_action, "meta_action_date": d.meta_action_date} for d in p_data.items]
+        result['items'] = [{"id":d.id_synthese, "uuid":d.unique_id_sinp, "last_action": d.last_action, "meta_last_action_date": datetime.datetime.isoformat(d.meta_last_action_date)} for d in p_data.items]
         return result
     except Exception as error:
         log.error(error)
@@ -1070,6 +1070,7 @@ def log_upsert_history(info_role):
         list of actions executed from date
     """
     default_date = datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=10), datetime.datetime.min.time())
+    log.debug(f"DEFAULT_DATE = {default_date}")
     start = request.args.get("start", default=default_date, type=str)
     end = request.args.get("end", default=None, type=str)
     actions  = request.args.getlist("action", type=str)
@@ -1089,7 +1090,8 @@ def log_upsert_history(info_role):
             Synthese.id_synthese, 
             Synthese.unique_id_sinp, 
             Synthese.last_action,
-            func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date).label('meta_action_date')
+            #func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date).label('meta_action_date')
+            Synthese.meta_last_action_date,
             ).filter(Synthese.last_action.in_(actions)).filter(or_(Synthese.meta_update_date >= start, Synthese.meta_create_date >= start))
 
         if end is not None:
@@ -1113,7 +1115,7 @@ def log_upsert_history(info_role):
         if p_data.has_next:
             result['next_page']=p_data.has_next
         
-        result['items'] = [{"id":d.id_synthese, "uuid":d.unique_id_sinp, "last_action": d.last_action, "meta_action_date": d.meta_action_date} for d in p_data.items]
+        result['items'] = [{"id":d.id_synthese, "uuid":d.unique_id_sinp, "last_action": d.last_action, "meta_last_action_date": datetime.datetime.isoformat(d.meta_last_action_date)} for d in p_data.items]
         return result
     except Exception as error:
         log.error(error)
