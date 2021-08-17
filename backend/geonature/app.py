@@ -11,12 +11,12 @@ from flask_cors import CORS
 from sqlalchemy import exc as sa_exc
 from flask_sqlalchemy import before_models_committed
 
-from pypnusershub.db.tools import user_from_token, UnreadableAccessRightsError, AccessRightsExpiredError
-
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
 from geonature.utils.module import import_backend_enabled_modules
+
+from pypnusershub.db.tools import user_from_token, UnreadableAccessRightsError, AccessRightsExpiredError
 
 
 @migrate.configure
