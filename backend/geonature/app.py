@@ -66,7 +66,7 @@ def create_app(with_external_mods=True, with_flask_admin=True):
     @app.before_request
     def load_current_user():
         try:
-            g.current_user = user_from_token(request.cookies['token'])
+            g.current_user = user_from_token(request.cookies['token']).role
         except (KeyError, UnreadableAccessRightsError, AccessRightsExpiredError):
             g.current_user = None
 
