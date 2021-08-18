@@ -14,6 +14,11 @@ schema = 'ref_geo'
 logger = logging.getLogger('alembic.runtime.migration')
 
 
+"""
+Ce contextmanager permet d’ouvrir un fichier compressé (xz) après l’avoir préalablement téléchargé.
+Le fichier téléchargé est enregistré dans le dossier spécifié par -x geo-data-directory=…
+Si aucun dossier n’est spécifié, un dossier temporaire, supprimé à la fin de la migration, est utilisé.
+"""
 class open_geofile(ExitStack):
     def __init__(self, base_url, filename):
         super().__init__()
@@ -37,6 +42,9 @@ class open_geofile(ExitStack):
         return stack.enter_context(lzma.open(geofile_path))
 
 
+"""
+Supprimer les zones d’un type donnée, e.g. 'DEP', 'COM', …
+"""
 def delete_area_with_type(area_type):
     op.execute(f"""
         DELETE FROM {schema}.l_areas la
