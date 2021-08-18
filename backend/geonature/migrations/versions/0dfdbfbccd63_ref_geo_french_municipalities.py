@@ -19,7 +19,7 @@ from geonature.migrations.ref_geo_utils import (
 revision = '0dfdbfbccd63'
 down_revision = None
 branch_labels = ('ref_geo_fr_municipalities',)
-depends_on = None
+depends_on = 'f06cc80cc8ba'
 
 filename = 'communes_fr_2020-02.csv.xz'
 base_url = 'http://geonature.fr/data/ign/'
