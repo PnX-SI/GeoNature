@@ -3,6 +3,7 @@ Démarrage de l'application
 """
 
 import logging
+from itertools import chain
 from pkg_resources import iter_entry_points
 
 from flask import Flask, g, request, current_app
@@ -27,7 +28,8 @@ def configure_alembic(alembic_config):
     Thus, alembic will find migrations of all installed geonature modules.
     """
     version_locations = alembic_config.get_main_option('version_locations', default='').split()
-    for entry_point in iter_entry_points('gn_module', 'migrations'):
+    for entry_point in chain(iter_entry_points('alembic', 'migrations'),
+                             iter_entry_points('gn_module', 'migrations')):
         # TODO: define enabled module in configuration (skip disabled module, raise error on missing module)
         _, migrations = str(entry_point).split('=', 1)
         version_locations += [ migrations.strip() ]
