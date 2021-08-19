@@ -331,12 +331,6 @@ export class DataFormService {
     );
   }
 
-  getProfile(cdRef) {
-    return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/gn_profiles/profiles/${cdRef}`,
-      {}
-    );
-  }
 
   /**
    *
@@ -486,7 +480,7 @@ export class DataFormService {
 
   getCruved(modules_code?: Array<string>) {
     let queryString: HttpParams = new HttpParams();
-    if (modules_code) {t_parameters
+    if (modules_code) {
       modules_code.forEach(mod_code => {
         queryString = queryString.set('module_code', mod_code);
       });
@@ -639,27 +633,14 @@ export class DataFormService {
   */
   getProfileConsistancyData(idSynthese) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/consistancy_data/${idSynthese}`)
-
   }
 
-  getProfile(cdRef) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`)
+  controlProfile(cd_ref, data) {
+    return this._http.post(
+      `${AppConfig.API_ENDPOINT}/gn_profiles/get_observation_score/${cd_ref}`,
+      data
+    );
   }
 
-  getPhenology(cdRef, idNomenclatureLifeStage?) {
-    return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/gn_profiles/cor_taxon_phenology/
-      ${cdRef}?id_nomenclature_life_stage=
-      ${idNomenclatureLifeStage}`
-    )
-  }
-
-  /* A partir d'un id synthese, retourne si l'observation match avec les différents
-   critère d'un profil
-  */
-  getProfileConsistancyData(idSynthese) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/consistancy_data/${idSynthese}`)
-
-  }
 }
 

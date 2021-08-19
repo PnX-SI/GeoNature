@@ -18,12 +18,7 @@ import { FormService } from "@geonature_common/form/form.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { MatDialog } from "@angular/material";
-import { CommonService } from "@geonature_common/service/common.service";
-import {OcctaxDataService} from "../../services/occtax-data.service"
 
-
-import { OcctaxDataService } from "../../services/occtax-data.service";
-import { CommonService } from '@geonature_common/service/common.service';
 
 @Component({
   selector: "pnx-occtax-form-occurrence",
@@ -69,8 +64,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     private _coreFormService: FormService,
     private _occtaxTaxaListService: OcctaxTaxaListService,
     public dialog: MatDialog,
-    private _commonService: CommonService,
-    public occtaxDataService: OcctaxDataService
+
   ) { }
 
   ngOnInit() {
@@ -94,6 +88,8 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
         )
     );
 
+    const sub = this.occurrenceForm
+    .get("id_nomenclature_exist_proof")
     this.initTaxrefSearch();
     
   }
@@ -245,60 +241,15 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
 
   /** A la selection d'un taxon, focus sur le bouton ajouter */
   selectAddOcc(taxon) {
-
+    // save current taxon for calling profil on lifestage change
+    this.occtaxFormOccurrenceService.currentTaxon = taxon.item;
+    this.occtaxFormOccurrenceService.profilControl(taxon.item.cd_ref);
     setTimeout(() => {
       document.getElementById("add-occ").focus();
-      this.createControlePostBody(taxon);
     }, 50);
   }
 
   collapse() {
     this.advanced = this.advanced === "collapsed" ? "expanded" : "collapsed";
   }
-
-  createControlePostBody(taxon) {
-
-    var releve = this.fs.occtaxData.getValue().releve
-    var date_min = releve.properties.date_min.year + '-' + releve.properties.date_min.month + '-' + releve.properties.date_min.day
-    var date_max = releve.properties.date_max.year + '-' + releve.properties.date_max.month + '-' + releve.properties.date_max.day
-
-    var postData = {
-      date_min: date_min,
-      date_max: date_max,
-      altitude_min: releve.properties.altitude_min,
-      altitude_max: releve.properties.altitude_max,
-      geom: releve.geometry
-    }
-
-    console.log(taxon)
-
-    this.occtaxDataService.controlOccurence(taxon.item.cd_ref, postData).subscribe(
-      data => {
-        this._commonService.translateToaster('warning', JSON.stringify(data));
-
-      },
-      err => {
-
-
-
-        console.log(err);
-        if (err.status === 404) {
-          this._commonService.translateToaster('warning', 'Aucun profile');
-        } else if (err.statusText === 'Unknown Error') {
-          // show error message if no connexion
-          this._commonService.translateToaster(
-            'error',
-            'ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)'
-          );
-        } else {
-          // show error message if other server error
-          this._commonService.translateToaster('error', err.error);
-        }
-      },
-      () => {
-        //console.log(this.statusNames);
-      }
-    );
-  }
-
 }

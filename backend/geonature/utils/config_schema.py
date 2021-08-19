@@ -331,6 +331,10 @@ class MapConfig(Schema):
     ZOOM_ON_CLICK = fields.Integer(missing=18)
 
 
+class TaxHub(Schema):
+    ID_TYPE_MAIN_PHOTO = fields.Integer(missing=1)
+
+
 # class a utiliser pour les paramètres que l'on veut passer au frontend
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(missing="GeoNature2")
@@ -363,7 +367,7 @@ class GnGeneralSchemaConf(Schema):
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(missing=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, missing={})
     PUBLIC_ACCESS = fields.Nested(PublicAccess, missing={})
-
+    TAXHUB = fields.Nested(TaxHub, missing={})
     @validates_schema
     def validate_enable_sign_up(self, data):
         # si CAS_PUBLIC = true and ENABLE_SIGN_UP = true

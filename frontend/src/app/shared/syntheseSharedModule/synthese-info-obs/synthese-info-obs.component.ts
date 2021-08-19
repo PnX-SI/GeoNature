@@ -31,10 +31,12 @@ export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
   public validationHistory: Array<any>;
   public selectedObsTaxonDetail: any;
   @ViewChild(BaseChartDirective) myChart: BaseChartDirective;
+  @ViewChild('tabGroup') tabGroup;
   public APP_CONFIG = AppConfig;
   public selectedGeom;
   // public chartType = 'line';
   public profileDataChecks: any;
+  public showValidation = false
 
 
   // public results: ChartDataSets[] = [
@@ -114,8 +116,6 @@ export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
   public email;
   public mailto: String;
 
-  public APP_CONFIG = AppConfig;
-
   public profile: any;
   public phenology: any[];
   public validationColor = {
@@ -145,10 +145,12 @@ export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
   }
 
 
-  changeMapSize() {
+  changeTab() {
+    this.showValidation = true;
+    
     setTimeout(() => {
       this._mapService.map.invalidateSize();
-    }, 500);
+    }, 100);
     
   }
 
@@ -198,7 +200,7 @@ export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
           });
 
         this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
-        this._gnDataService.getTaxonInfo(data.cd_nom).subscribe(taxInfo => {
+        this._gnDataService.getTaxonInfo(this.selectedObs['cd_nom']).subscribe(taxInfo => {
           this.selectedObsTaxonDetail = taxInfo;
           if (this.selectedObs.cor_observers) {
             this.email = this.selectedObs.cor_observers.map(el => el.email).join();
@@ -207,6 +209,7 @@ export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
           }
 
           this._gnDataService.getProfile(taxInfo.cd_ref).subscribe(profile => {
+            
             this.profile = profile;
           });
 

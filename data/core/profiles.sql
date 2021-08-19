@@ -125,7 +125,7 @@ AS $function$
   			SELECT my_cd_ref, param.spatial_precision, param.temporal_precision_days, 
 			  param.active_life_stage, parents.distance 
   			FROM gn_profiles.cor_taxons_parameters param
-			JOIN taxonomie.find_all_taxons_parents(my_cd_ref) parents ON parents.cd_nom=param.cd_nom)
+			JOIN taxonomie.find_all_taxons_parents(my_cd_ref) parents ON parents.cd_nom=param.cd_ref)
 		SELECT * FROM all_parameters all_param WHERE all_param.distance=(
 			SELECT min(all_param2.distance) FROM all_parameters all_param2
 		)

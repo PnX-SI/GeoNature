@@ -1,6 +1,7 @@
 from flask import current_app
 from geoalchemy2 import Geometry
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.sql.schema import ForeignKey
 
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
@@ -14,21 +15,18 @@ class VmCorTaxonPhenology(DB.Model):
     __table_args__ = {"schema": "gn_profiles"}
     cd_ref = DB.Column(DB.Integer, primary_key=True)
     period = DB.Column(DB.Integer, primary_key=True)
-    id_nomenclature_life_stage = DB.Column(DB.Integer, primary_key=True)
+    id_nomenclature_life_stage = DB.Column(
+        DB.Integer, 
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        primary_key=True, 
+    )
     count_valid_data = DB.Column(DB.Integer)
     extreme_altitude_min = DB.Column(DB.Integer)
     calculated_altitude_min = DB.Column(DB.Integer)
     extreme_altitude_max = DB.Column(DB.Integer)
     calculated_altitude_max = DB.Column(DB.Integer)
+    nomenclature_life_stage = DB.relationship("TNomenclatures")
 
-    # class Meta:
-    #     unique_together = (
-    #         (
-    #         "cd_ref",
-    #         "period",
-    #         "id_nomenclature_life_stage"
-    #         ),
-    #     )
 
 
 @serializable

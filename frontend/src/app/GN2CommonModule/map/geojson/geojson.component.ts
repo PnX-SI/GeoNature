@@ -55,8 +55,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
       const bounds = curLayerGroup.getBounds();
       if (!Object.keys(bounds).length) {
         return;
-      }
-
+      }      
       map.fitBounds(bounds);
     }, 200);
   }
@@ -74,7 +73,6 @@ export class GeojsonComponent implements OnInit, OnChanges {
     this.mapservice.layerGroup.addLayer(this.currentGeojson);
 
     if (zoom) {
-
       this.zoom(this.mapservice.layerGroup);
     }
   }

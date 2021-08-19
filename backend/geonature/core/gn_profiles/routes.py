@@ -6,10 +6,12 @@ from flask import Blueprint, request
 from geoalchemy2.shape import to_shape
 from geojson import Feature
 from sqlalchemy.sql import func, text
+from werkzeug.exceptions import BadRequest
 from utils_flask_sqla.response import json_resp
 
+from pypnnomenclature.models import TNomenclatures
 from geonature.core.gn_profiles.models import VmCorTaxonPhenology, VmValidProfiles, VConsistancyData
-from geonature.core.taxonomie.models import Taxref
+from geonature.core.taxonomie.models import Taxref, VMTaxrefListForautocomplete
 from geonature.utils.env import DB
 
 routes = Blueprint("gn_profiles", __name__)
@@ -51,7 +53,7 @@ def get_phenology(cd_ref):
     return None
 
 
-@routes.route("/valid_profile/<cd_ref>", methods=["GET"])
+@routes.route("/valid_profile/<int:cd_ref>", methods=["GET"])
 @json_resp
 def get_profile(cd_ref):
     data = (
@@ -60,8 +62,8 @@ def get_profile(cd_ref):
             VmValidProfiles,
         )
         .filter(VmValidProfiles.cd_ref == cd_ref)
-        .one_or_none()
     )
+    data = data.one_or_none()
     if data:
         return Feature(geometry=json.loads(data[0]), properties=data[1].as_dict())
     return None
@@ -89,37 +91,58 @@ def get_consistancy_data(id_synthese):
     if data:
         return data.as_dict()
     return None
-    
+
 def get_cor_taxon_phenology(cd_ref):
     q = DB.session.query(VmCorTaxonPhenology)
     data = q.get(cd_ref)
     return data.as_dict()
 
 
-@routes.route("/profiles/<cd_ref>", methods=["GET"])
-@json_resp
-def get_profile(cd_ref):
-    data = DB.session.query(VmValidProfiles).get(cd_ref)
-    if data:
-        return data.get_geofeature()
-    return None
-    
+# class ProfilValidation:
+#     def __init__(self, valid:bool, type: str, error:str=None):
+#         self.geometry = None
+#         self.altitude = None 
+#         self.period = None 
+#         self.life_stage = None 
 
 
-@routes.route("/get_observation_score/<cd_ref>", methods=["POST"])
+#         self.valid = valid
+#         self.type = type
+#         self.error = error
+#     def add
+#     def as_dict(self):
+#         return {"valid": self.valid, "type": self.type, "error": self.error}
+
+
+@routes.route("/get_observation_score/<int:cd_ref>", methods=["POST"])
 @json_resp
 def get_observation_score(cd_ref):
-    filters = request.get_json()
-    print(filters)
-
+    data = request.get_json()
     # Récupération du profil du cd_ref
     result = {}
     profile = (
         DB.session.query(VmValidProfiles).filter(VmValidProfiles.cd_ref == cd_ref).one_or_none()
     )
+    taxon_parameter_r = DB.session.query(func.gn_profiles.get_parameters(cd_ref)).one_or_none()
+    check_life_stage = False
+    if taxon_parameter_r:
+        check_life_stage = bool(taxon_parameter_r[0][3])
+        
     if not profile:
         return None
 
+    result = {
+        "geom": False,
+        "altitude": False,
+        "period": False,
+        "life_stage": None,
+        "life_stage_accepted": [],
+        "errors": [],
+        "profil": profile.as_dict(),
+        "check_life_stage": check_life_stage
+
+    }
+        
     # Récupération du paramètre "période" attribué au taxon
     sql = text("""select temporal_precision_days from gn_profiles.get_parameters(:cd_ref)""")
     temporal_precision_days = (
@@ -127,9 +150,9 @@ def get_observation_score(cd_ref):
     )
 
     # Calcul de la période correspondant à la date
-    if "date_min" in filters and "date_max" in filters:
-        date_min = datetime.datetime.strptime(filters["date_min"], "%Y-%m-%d")
-        date_max = datetime.datetime.strptime(filters["date_max"], "%Y-%m-%d")
+    if "date_min" in data and "date_max" in data:
+        date_min = datetime.datetime.strptime(data["date_min"], "%Y-%m-%d")
+        date_max = datetime.datetime.strptime(data["date_max"], "%Y-%m-%d")
         # Calcul du numéro du jour pour les dates min et max
         doy_min = date_min.timetuple().tm_yday
         doy_max = date_max.timetuple().tm_yday
@@ -141,53 +164,107 @@ def get_observation_score(cd_ref):
             max_periode = math.ceil(doy_max / temporal_precision_days)
 
     # Récupération des altitudes
-    if "altitude_min" in filters and "altitude_max" in filters:
-        altitude_min = filters["altitude_min"]
-        altitude_max = filters["altitude_max"]
+    if "altitude_min" in data and "altitude_max" in data:
+        altitude_min = data["altitude_min"]
+        altitude_max = data["altitude_max"]
 
     # Check de la répartition
-    if "geom" in filters:
+    if "geom" in data:
         check_geom = DB.session.query(
             func.ST_Contains(
                 func.ST_Transform(profile.valid_distribution, 4326),
-                func.ST_SetSRID(func.ST_GeomFromGeoJSON(json.dumps(filters["geom"])), 4326),
+                func.ST_SetSRID(func.ST_GeomFromGeoJSON(json.dumps(data["geom"])), 4326),
             )
         ).one_or_none()
-
+        if not check_geom:
+            result["geom"] = False
+            result["errors"].append(
+                {
+                    "type":"geometry",
+                    "value":"Erreur lors du calcul de la géométrie valide"
+                }
+            )
         if check_geom[0] is False:
-            result["controle_geom"] = {
-                "code_result": 0,
-                "Commentaire": f"Il existe {profile.count_valid_data} données valides pour ce taxon, mais celui-ci n'a jamais été observé dans cette zone.",
-            }
-
+            result["geom"] = False
+            result["errors"].append({
+                 "type": "geom",
+                "value": f"Le taxon n'a jamais été observé dans cette zone géographique"
+            })
         else:
-            result["controle_geom"] = {
-                "code_result": 1,
-                "Commentaire": "Répartition validée",
-            }
+            result["geom"] = True
 
-    """ Controle date et altitude """
-    q_pheno = DB.session.query(VmCorTaxonPhenology.id_nomenclature_life_stage).distinct()
-    q_pheno = q_pheno.filter(VmCorTaxonPhenology.cd_ref == cd_ref)
-    q_pheno = q_pheno.filter(VmCorTaxonPhenology.period.between(min_periode, max_periode))
-    q_pheno = q_pheno.filter(VmCorTaxonPhenology.calculated_altitude_min <= altitude_min)
-    q_pheno = q_pheno.filter(VmCorTaxonPhenology.calculated_altitude_max >= altitude_max)
+        # check de la periode
+        q_pheno = DB.session.query(VmCorTaxonPhenology.id_nomenclature_life_stage).distinct()
+        q_pheno = q_pheno.filter(VmCorTaxonPhenology.cd_ref == cd_ref)
+        q_pheno = q_pheno.filter(VmCorTaxonPhenology.period.between(min_periode, max_periode))
 
-    if q_pheno.count() > 0:
-        """Construction de la liste des stade de vie potentielle"""
-        l_lifestage = []
-        for row in q_pheno.all():
-            l_lifestage.append(row.id_nomenclature_life_stage)
+        period_result = q_pheno.all()
+        if len(period_result) > 0:
+            result["period"] = True
+        else:
+            result["period"] =  False
+            result["errors"].append({
+                 "type": "period",
+                "value": "Le taxon n'a jamais été observé à cette periode"
+            })
 
-        result["result"] = {
-            "code_result": 1,
-            "Commentaire": "Le taxon a déjà été observé à cette période et à cette altitude",
-            "l_ids_lifestage": l_lifestage,
-        }
-    else:
-        result["result"] = {
-            "code_result": 0,
-            "Commentaire": "Le taxon n'a jamais été observé à cette période ou à cette altitude ou trop peu de données valides permettent de s'assurer de la conformité de cette observation",
-        }
+        # check de l'altitude
+        if altitude_min and altitude_max:
+            if altitude_max > profile.altitude_max or altitude_min < profile.altitude_min:
+                result["altitude"] = False
+                result["errors"].append({
+                 "type": "altitude",
+                 "value": f"Le taxon n'a déjà été observé entre {altitude_min}m et {altitude_max}m d'altitude"
+                })
+            # check de l'altitude pour la période donnée
+            else:
+                peridod_and_altitude = q_pheno.filter(VmCorTaxonPhenology.calculated_altitude_min <= altitude_min)
+                peridod_and_altitude = q_pheno.filter(VmCorTaxonPhenology.calculated_altitude_max >= altitude_max)
+                peridod_and_altitude_r = peridod_and_altitude.all()
+                if len(peridod_and_altitude_r) > 0:
+                    result["altitude"] = True 
+                    for row in peridod_and_altitude_r:
+                        """Construction de la liste des stade de vie potentielle"""
+                        if row.id_nomenclature_life_stage:
+                            result["life_stage_accepted"].append(row.id_nomenclature_life_stage)
+                else:
+                    result["altitude"] = False
+                    result["period"] = False
+                    if altitude_max <= profile.altitude_max and altitude_min >= altitude_min:
+                        result["errors"].append({
+                            "type": "period",
+                            "value": f"Le taxon a déjà été observé entre {altitude_min} et {altitude_max}m d'altitude mais pas à cette periode de l'année"
+                        })
+        # check du stade de vie pour la periode donnée
+        if check_life_stage and "life_stages" in data:
+            if type(data["life_stages"]) is not list:
+                raise BadRequest("life_stages must be a list")
+            for life_stage in data["life_stages"]:
+                life_stage_value = TNomenclatures.query.get(life_stage)
+                q = q_pheno.filter(VmCorTaxonPhenology.id_nomenclature_life_stage == life_stage)
+                r_life_stage = q.all()
+                if len(r_life_stage) == 0:
+                    result["life_stage"] = False 
+                    result["period"] = False
+                    result["errors"].append({
+                        "type": "life_stage",
+                        "value": f"Le taxon n'a jamais été observé à cette periode pour le stade de vie {life_stage_value.label_default}"
+                    })
 
-    return result
+                # check du stade de vie pour la période et l'altitude
+                else:
+                    if altitude_min and altitude_max:
+                        q = q.filter(VmCorTaxonPhenology.calculated_altitude_min <= altitude_min)
+                        q = q.filter(VmCorTaxonPhenology.calculated_altitude_max >= altitude_max)
+                        r_life_stage_altitude = q.all()
+                        if len(r_life_stage_altitude) == 0:
+                            result["life_stage"] = False 
+                            result["altitude"] = False 
+                            result["period"] = False 
+                            result["errors"].append({
+                                "type": "life_stage",
+                                "value": f"""
+                                Le taxon n'a jamais été observé à cette periode entre 
+                                {altitude_min} et {altitude_max}m d'altitude pour le stade de vie {life_stage_value.label_default}"""
+                            })
+        return result

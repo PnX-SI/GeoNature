@@ -16,9 +16,9 @@ import { OcctaxFormCountingService } from "../counting/counting.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
+import {DataFormService} from "@geonature_common/form/data-form.service"
 import { ModuleConfig } from "../../module.config";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
-import { DataFormService } from "@geonature_common/form/data-form.service";
 
 @Injectable()
 export class OcctaxFormOccurrenceService {
@@ -34,9 +34,11 @@ export class OcctaxFormOccurrenceService {
   public dynamicContainerOccurence: ViewContainerRef;
   public data : any;
   public idDataset : number;
-
+  public profilErrors = [];
+  public idNomenclaturelifeStageProfilErrors = new Set();
 
   public formFieldsStatus: any;
+  public currentTaxon: any;
 
   constructor(
     private fb: FormBuilder,
@@ -47,6 +49,7 @@ export class OcctaxFormOccurrenceService {
     private occtaxParamS: OcctaxFormParamService,
     private occtaxTaxaListService: OcctaxTaxaListService,
     private dateParser: NgbDateParserFormatter,
+    private _dataS: DataFormService
   ) {
     this.initForm();
     this.setObservables();
@@ -478,6 +481,40 @@ export class OcctaxFormOccurrenceService {
       return v.toString(16);
     });
   }
+
+
+  profilControl(cdRef:number) {
+    if(!cdRef) {
+      return;
+    }
+
+    const releve = this.occtaxFormService.occtaxData.getValue().releve;
+    
+    const dateMin = this.dateParser.format(releve.properties.date_min);
+    const dateMax = this.dateParser.format(releve.properties.date_min);
+    // find all distinct id_nomenclature_life_stage if countings
+    let idNomenclaturesLifeStage = new Set();
+    (this.form.get("cor_counting_occtax") as FormArray).controls.forEach(
+      counting => {
+        const control = counting.get("id_nomenclature_life_stage");
+        if(control) {
+          idNomenclaturesLifeStage.add(control.value)
+        }
+      });
+    const postData = {
+      date_min: dateMin,
+      date_max: dateMax,
+      altitude_min: releve.properties.altitude_min,
+      altitude_max: releve.properties.altitude_max,
+      geom: releve.geometry,
+      life_stages: Array.from(idNomenclaturesLifeStage)
+    };
+    this._dataS.controlProfile(cdRef, postData).subscribe(
+      data => {        
+        this.profilErrors = data["errors"];
+      });
+  }
+
 }
 
 export const proofRequiredValidator: ValidatorFn = (
