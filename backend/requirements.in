@@ -9,7 +9,7 @@ marshmallow-sqlalchemy
 WTForms-SQLAlchemy
 marshmallow<3.0
 pillow
-weasyprint
+weasyprint<53
 lxml
 xmltodict
 
