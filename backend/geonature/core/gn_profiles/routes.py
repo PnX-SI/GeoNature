@@ -68,21 +68,6 @@ def get_profile(cd_ref):
         return Feature(geometry=json.loads(data[0]), properties=data[1].as_dict())
     return None
 
-    # récupérer la query string
-    # filters = request.args
-    # query = DB.session.query(VmValidProfiles).filter(VmValidProfiles.cd_ref == cd_ref)
-
-    # construire dynamiquement les filtres
-    # if "alt_min" in filters:
-    #     query = query.filter(VmValidProfiles.altitude_min >= filters["alt_min"])
-    # columns = []
-    # if "columns" in filters:
-    #     columns = filters["columns"].split(",")
-    # data = query.one()
-    # if data:
-    #     return data.as_geofeature("valid_distribution", "cd_ref", False, columns)
-    # return None
-
 
 @routes.route("/consistancy_data/<id_synthese>", methods=["GET"])
 @json_resp
@@ -92,32 +77,16 @@ def get_consistancy_data(id_synthese):
         return data.as_dict()
     return None
 
-def get_cor_taxon_phenology(cd_ref):
-    q = DB.session.query(VmCorTaxonPhenology)
-    data = q.get(cd_ref)
-    return data.as_dict()
 
-
-# class ProfilValidation:
-#     def __init__(self, valid:bool, type: str, error:str=None):
-#         self.geometry = None
-#         self.altitude = None 
-#         self.period = None 
-#         self.life_stage = None 
-
-
-#         self.valid = valid
-#         self.type = type
-#         self.error = error
-#     def add
-#     def as_dict(self):
-#         return {"valid": self.valid, "type": self.type, "error": self.error}
-
-
-@routes.route("/get_observation_score/<int:cd_ref>", methods=["POST"])
+@routes.route("/check_observation", methods=["POST"])
 @json_resp
-def get_observation_score(cd_ref):
+def get_observation_score():
     data = request.get_json()
+    try:
+        cd_ref = data["cd_ref"]
+    except AttributeError:
+        raise BadRequest("No cd_ref provided")
+
     # Récupération du profil du cd_ref
     result = {}
     profile = (
@@ -132,15 +101,14 @@ def get_observation_score(cd_ref):
         return None
 
     result = {
-        "geom": False,
-        "altitude": False,
-        "period": False,
-        "life_stage": None,
+        "valid_distribution": False,
+        "valid_altitude": False,
+        "valid_phenology": False,
+        "valid_life_stage": None,
         "life_stage_accepted": [],
         "errors": [],
         "profil": profile.as_dict(),
         "check_life_stage": check_life_stage
-
     }
         
     # Récupération du paramètre "période" attribué au taxon
@@ -177,7 +145,7 @@ def get_observation_score(cd_ref):
             )
         ).one_or_none()
         if not check_geom:
-            result["geom"] = False
+            result["valid_distribution"] = False
             result["errors"].append(
                 {
                     "type":"geometry",
@@ -185,13 +153,13 @@ def get_observation_score(cd_ref):
                 }
             )
         if check_geom[0] is False:
-            result["geom"] = False
+            result["valid_distribution"] = False
             result["errors"].append({
                  "type": "geom",
                 "value": f"Le taxon n'a jamais été observé dans cette zone géographique"
             })
         else:
-            result["geom"] = True
+            result["valid_distribution"] = True
 
         # check de la periode
         q_pheno = DB.session.query(VmCorTaxonPhenology.id_nomenclature_life_stage).distinct()
@@ -200,9 +168,9 @@ def get_observation_score(cd_ref):
 
         period_result = q_pheno.all()
         if len(period_result) > 0:
-            result["period"] = True
+            result["valid_phenology"] = True
         else:
-            result["period"] =  False
+            result["valid_phenology"] =  False
             result["errors"].append({
                  "type": "period",
                 "value": "Le taxon n'a jamais été observé à cette periode"
@@ -211,7 +179,7 @@ def get_observation_score(cd_ref):
         # check de l'altitude
         if altitude_min and altitude_max:
             if altitude_max > profile.altitude_max or altitude_min < profile.altitude_min:
-                result["altitude"] = False
+                result["valid_altitude"] = False
                 result["errors"].append({
                  "type": "altitude",
                  "value": f"Le taxon n'a déjà été observé entre {altitude_min}m et {altitude_max}m d'altitude"
@@ -222,14 +190,14 @@ def get_observation_score(cd_ref):
                 peridod_and_altitude = q_pheno.filter(VmCorTaxonPhenology.calculated_altitude_max >= altitude_max)
                 peridod_and_altitude_r = peridod_and_altitude.all()
                 if len(peridod_and_altitude_r) > 0:
-                    result["altitude"] = True 
+                    result["valid_altitude"] = True 
                     for row in peridod_and_altitude_r:
                         """Construction de la liste des stade de vie potentielle"""
                         if row.id_nomenclature_life_stage:
                             result["life_stage_accepted"].append(row.id_nomenclature_life_stage)
                 else:
-                    result["altitude"] = False
-                    result["period"] = False
+                    result["valid_altitude"] = False
+                    result["valid_phenology"] = False
                     if altitude_max <= profile.altitude_max and altitude_min >= altitude_min:
                         result["errors"].append({
                             "type": "period",
@@ -244,8 +212,8 @@ def get_observation_score(cd_ref):
                 q = q_pheno.filter(VmCorTaxonPhenology.id_nomenclature_life_stage == life_stage)
                 r_life_stage = q.all()
                 if len(r_life_stage) == 0:
-                    result["life_stage"] = False 
-                    result["period"] = False
+                    result["valid_life_stage"] = False 
+                    result["valid_phenology"] = False
                     result["errors"].append({
                         "type": "life_stage",
                         "value": f"Le taxon n'a jamais été observé à cette periode pour le stade de vie {life_stage_value.label_default}"
@@ -258,9 +226,9 @@ def get_observation_score(cd_ref):
                         q = q.filter(VmCorTaxonPhenology.calculated_altitude_max >= altitude_max)
                         r_life_stage_altitude = q.all()
                         if len(r_life_stage_altitude) == 0:
-                            result["life_stage"] = False 
-                            result["altitude"] = False 
-                            result["period"] = False 
+                            result["valid_life_stage"] = False 
+                            result["valid_altitude"] = False 
+                            result["valid_phenology"] = False 
                             result["errors"].append({
                                 "type": "life_stage",
                                 "value": f"""

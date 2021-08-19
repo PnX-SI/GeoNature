@@ -502,6 +502,7 @@ export class OcctaxFormOccurrenceService {
         }
       });
     const postData = {
+      cd_ref: cdRef,
       date_min: dateMin,
       date_max: dateMax,
       altitude_min: releve.properties.altitude_min,
@@ -509,7 +510,7 @@ export class OcctaxFormOccurrenceService {
       geom: releve.geometry,
       life_stages: Array.from(idNomenclaturesLifeStage)
     };
-    this._dataS.controlProfile(cdRef, postData).subscribe(
+    this._dataS.controlProfile(postData).subscribe(
       data => {        
         this.profilErrors = data["errors"];
       });

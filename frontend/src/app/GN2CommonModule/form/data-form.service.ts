@@ -635,9 +635,9 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/consistancy_data/${idSynthese}`)
   }
 
-  controlProfile(cd_ref, data) {
+  controlProfile(data) {
     return this._http.post(
-      `${AppConfig.API_ENDPOINT}/gn_profiles/get_observation_score/${cd_ref}`,
+      `${AppConfig.API_ENDPOINT}/gn_profiles/check_observation`,
       data
     );
   }
