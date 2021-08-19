@@ -7,7 +7,7 @@ flask-migrate
 flask_wtf
 marshmallow-sqlalchemy
 WTForms-SQLAlchemy
-marshmallow<3.0
+marshmallow
 pillow
 weasyprint<53
 lxml

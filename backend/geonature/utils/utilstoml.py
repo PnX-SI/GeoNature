@@ -1,5 +1,8 @@
 from pathlib import Path
+
 import toml
+from marshmallow import EXCLUDE
+from marshmallow.exceptions import ValidationError
 
 from geonature.utils.errors import ConfigError, GeoNatureError
 
@@ -10,9 +13,10 @@ def load_and_validate_toml(toml_file, config_schema):
          et le valide avec un Schema marshmallow
     """
     toml_config = load_toml(toml_file)
-    configs_py, configerrors = config_schema().load(toml_config)
-    if configerrors:
-        raise ConfigError(toml_file, configerrors)
+    try:
+        configs_py = config_schema().load(toml_config, unknown=EXCLUDE)
+    except ValidationError as e:
+        raise ConfigError(toml_file, e.messages)
     return configs_py
 
 
