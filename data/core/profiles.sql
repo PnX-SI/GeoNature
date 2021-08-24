@@ -19,65 +19,78 @@ CREATE SCHEMA gn_profiles;
 --FUNCTIONS--
 -------------
 
-CREATE FUNCTION gn_profiles.check_profile_altitudes(my_id_synthese integer) RETURNS boolean
+
+CREATE FUNCTION gn_profiles.check_profile_altitudes(synthese row, profil row) RETURNS boolean
     LANGUAGE plpgsql IMMUTABLE
     AS $$
---fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que 
--- son altitude se trouve entièrement comprise dans la fourchette altitudinale valide du taxon en question
-  DECLARE 
-    my_cd_ref integer := t.cd_ref 
- FROM taxonomie.taxref t 
- JOIN gn_synthese.synthese s ON s.cd_nom=t.cd_nom 
- WHERE s.id_synthese=my_id_synthese;
-  BEGIN
-     IF (
-   SELECT altitude_min 
-   FROM gn_synthese.synthese 
-   WHERE id_synthese=my_id_synthese
-  ) >= (
-   SELECT altitude_min 
-   FROM gn_profiles.vm_valid_profiles 
-   WHERE cd_ref=my_cd_ref
-  )
-     AND  (
-   SELECT altitude_max 
-   FROM gn_synthese.synthese 
-   WHERE id_synthese=my_id_synthese
-  ) <= (
-   SELECT altitude_max 
-   FROM gn_profiles.vm_valid_profiles 
-   WHERE cd_ref=my_cd_ref
-  )
-    THEN
-      RETURN true;
-    ELSE
-      RETURN false;
-    END IF;
+    return synthese.altitude_min >= profil.altitude_min AND 
+      synthese.altitude_max <= profil.altitude_max 
   END;
 $$;
 
 
-
-CREATE FUNCTION gn_profiles.check_profile_distribution(my_id_synthese integer) RETURNS boolean
+CREATE FUNCTION gn_profiles.check_profile_distribution(synthese gn_synthese.synthese, profil gn_profiles.vm_valid_profiles) RETURNS boolean
     LANGUAGE plpgsql IMMUTABLE
     AS $$
 --fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que sa 
 --localisation est totalement incluse dans l'aire d'occurrences valide définie par le profil du
 --taxon en question
-  DECLARE 
-    my_cd_ref integer := t.cd_ref 
-  FROM taxonomie.taxref t 
-  JOIN gn_synthese.synthese s ON s.cd_nom=t.cd_nom 
-  WHERE s.id_synthese=my_id_synthese;
-    valid_geom geometry := vp.valid_distribution 
-  FROM gn_profiles.vm_valid_profiles vp 
-  WHERE vp.cd_ref=my_cd_ref;
-   check_geom geometry := s.the_geom_local 
-   FROM gn_synthese.synthese s
-    WHERE s.id_synthese=my_id_synthese ;
   BEGIN
-     IF ST_Contains(valid_geom, check_geom) 
-    THEN
+     RETURN ST_Contains(profil.valid_distribution, synthese.the_geom_local);
+  END;
+$$;
+
+
+
+CREATE FUNCTION gn_profiles.check_profile_phenology(my_id_synthese integer) RETURNS boolean
+    LANGUAGE plpgsql IMMUTABLE
+    AS $$
+--fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que 
+-- sa phénologie (dates, altitude, stade de vie selon les paramètres) 
+--correspond bien à la phénologie valide définie par le profil du taxon en question
+--La fonction renvoie 'false' pour les données trop imprécises (durée d'observation supérieure à 
+-- la précision temporelle définie dans les paramètres des profils).
+  BEGIN
+   IF EXISTS(
+  WITH myphenology AS (
+     SELECT DISTINCT
+    t.cd_ref AS cd_ref,
+    unnest(
+     ARRAY[ceiling(EXTRACT(DOY FROM s.date_min)/p.temporal_precision_days)::integer, 
+     ceiling(EXTRACT(DOY FROM s.date_max)/p.temporal_precision_days)::integer]
+    ) AS period,
+    CASE 
+     WHEN p.active_life_stage=true THEN s.id_nomenclature_life_stage
+     ELSE NULL
+     END AS id_nomenclature_life_stage,
+    s.altitude_min,
+    s.altitude_max
+   FROM gn_synthese.synthese s
+   LEFT JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
+   CROSS JOIN gn_profiles.get_parameters(s.cd_nom) p
+   WHERE s.id_synthese=my_id_synthese
+    AND p.temporal_precision_days IS NOT NULL 
+    AND p.spatial_precision  IS NOT NULL
+    AND p.active_life_stage IS NOT NULL
+    AND DATE_part('day', s.date_max-s.date_min)<p.temporal_precision_days
+        AND ST_MaxDistance(ST_centroid(s.the_geom_local), s.the_geom_local)<p.spatial_precision 
+   GROUP BY t.cd_ref, period, 
+   CASE 
+    WHEN p.active_life_stage=true THEN s.id_nomenclature_life_stage 
+    ELSE NULL 
+   END,
+   altitude_min,
+   altitude_max)
+  SELECT * 
+  FROM myphenology mp, gn_profiles.vm_cor_taxon_phenology ctp
+  WHERE ctp.cd_ref=mp.cd_ref
+  AND mp.period=ctp.period
+  AND mp.altitude_min >= ctp.calculated_altitude_min
+  AND mp.altitude_max <= ctp.calculated_altitude_max
+  AND (ctp.id_nomenclature_life_stage=mp.id_nomenclature_life_stage 
+  OR (ctp.id_nomenclature_life_stage IS NULL AND mp.id_nomenclature_life_stage IS NULL))
+  )
+ THEN
       RETURN true;
     ELSE
       RETURN false;
@@ -86,7 +99,13 @@ CREATE FUNCTION gn_profiles.check_profile_distribution(my_id_synthese integer) R
 $$;
 
 
-CREATE FUNCTION gn_profiles.check_profile_phenology(my_id_synthese integer) RETURNS boolean
+
+CREATE FUNCTION gn_profiles.check_profile_phenology_bis(
+  synthese gn_synthese.synthese, 
+  profil gn_profiles.vm_valid_profiles,
+  cor_pheno gn_profiles.vm_cor_taxon_phenology
+
+) RETURNS boolean
     LANGUAGE plpgsql IMMUTABLE
     AS $$
 --fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que 
@@ -292,14 +311,28 @@ CREATE VIEW gn_profiles.v_consistancy_data AS
     s.unique_id_sinp AS id_sinp,
     t.cd_ref,
     t.lb_nom AS valid_name,
-    gn_profiles.check_profile_distribution(s.id_synthese) AS valid_distribution,
+    gn_profiles.check_profile_distribution(s.*, p.*) AS valid_distribution,
     gn_profiles.check_profile_phenology(s.id_synthese) AS valid_phenology,
-    gn_profiles.check_profile_altitudes(s.id_synthese) AS valid_altitude,
-    gn_profiles.get_profile_score(s.id_synthese) AS score,
+    gn_profiles.check_profile_altitudes(s.*, p.*) AS valid_altitude,
+    --gn_profiles.get_profile_score(s.id_synthese) AS score,
     n.label_default AS valid_status
-   FROM ((gn_synthese.synthese s
-     LEFT JOIN ref_nomenclatures.t_nomenclatures n ON ((s.id_nomenclature_valid_status = n.id_nomenclature)))
-     LEFT JOIN taxonomie.taxref t ON ((s.cd_nom = t.cd_nom)));
+   FROM gn_synthese.synthese s
+    JOIN gn_profiles.vm_valid_profiles p ON p.cd_ref = s.cd_nom
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n ON s.id_nomenclature_valid_status = n.id_nomenclature
+     LEFT JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom;
+
+CREATE VIEW gn_profiles.v_consistancy_data AS
+ SELECT s.id_synthese,
+    s.unique_id_sinp AS id_sinp,
+    t.cd_ref,
+    t.lb_nom AS valid_name,
+
+    n.label_default AS valid_status
+   FROM gn_synthese.synthese s
+   JOIN gn_profiles.vm_valid_profiles p ON p.cd_ref = s.cd_nom
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n ON s.id_nomenclature_valid_status = n.id_nomenclature
+     LEFT JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom;
+
 
 
 CREATE VIEW gn_profiles.v_decode_profiles_parameters AS
@@ -331,9 +364,13 @@ CREATE VIEW gn_profiles.v_synthese_for_profiles AS
    FROM ((gn_synthese.synthese s
      LEFT JOIN taxonomie.taxref t ON ((s.cd_nom = t.cd_nom)))
      CROSS JOIN LATERAL gn_profiles.get_parameters(s.cd_nom) p(cd_ref, spatial_precision, temporal_precision_days, active_life_stage, distance))
-  WHERE ((p.spatial_precision IS NOT NULL) AND (public.st_maxdistance(public.st_centroid(s.the_geom_local), s.the_geom_local) < (p.spatial_precision)::double precision) AND (s.id_nomenclature_valid_status IN ( SELECT (regexp_split_to_table(t_parameters.value, ','::text))::integer AS regexp_split_to_table
+  WHERE ((p.spatial_precision IS NOT NULL) AND (
+	  public.st_maxdistance(public.st_centroid(s.the_geom_local), s.the_geom_local) < (p.spatial_precision)::double precision
+	  ) AND (
+		  s.id_nomenclature_valid_status IN ( SELECT (regexp_split_to_table(t_parameters.value, ','::text))::integer AS regexp_split_to_table
            FROM gn_profiles.t_parameters
-          WHERE ((t_parameters.name)::text = 'id_valid_status_for_profiles'::text))) AND ((t.id_rang)::text IN ( SELECT regexp_split_to_table(t_parameters.value, ','::text) AS regexp_split_to_table
+          WHERE ((t_parameters.name)::text = 'id_valid_status_for_profiles'::text))
+		) AND ((t.id_rang)::text IN ( SELECT regexp_split_to_table(t_parameters.value, ','::text) AS regexp_split_to_table
            FROM gn_profiles.t_parameters
           WHERE ((t_parameters.name)::text = 'id_rang_for_profiles'::text))));
 
