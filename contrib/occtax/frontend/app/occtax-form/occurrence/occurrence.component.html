@@ -267,8 +267,7 @@
   </li>
   </ul>
   <button 
-    [routerLink]="['/synthese/taxon', selectedObsTaxonDetail?.cd_ref]" 
-    (click)="activeModal.dismiss('Cross click')"
+    [routerLink]="['/synthese/taxon', occtaxFormOccurrenceService.currentTaxon?.cd_ref]" 
     mat-raised-button
   >
     Voir la fiche profil du taxon
