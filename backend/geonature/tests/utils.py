@@ -1,5 +1,9 @@
 import json
-from flask import url_for
+
+from flask import url_for, current_app
+from werkzeug.http import dump_cookie
+
+from pypnusershub.db.tools import user_to_token
 
 
 def login(client, username='admin', password=None):
@@ -11,6 +15,7 @@ def login(client, username='admin', password=None):
     response = client.post(url_for("auth.login"), json=data)
     assert response.status_code == 200
 
+
 def post_json(client, url, json_dict, query_string=None):
     """Send dictionary json_dict as a json to the specified url """
     return client.post(
@@ -19,3 +24,11 @@ def post_json(client, url, json_dict, query_string=None):
         content_type="application/json",
         query_string=query_string,
     )
+
+
+def logged_user_headers(user, headers={}):
+    cookie = dump_cookie('token', user_to_token(user))
+    headers.update({
+        'COOKIE': cookie,
+    })
+    return headers

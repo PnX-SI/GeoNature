@@ -5,12 +5,10 @@ from sqlalchemy.dialects.postgresql import UUID
 from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
-from pypnusershub.db.models import User
+from pypnusershub.db.models import User, Organisme
 from utils_flask_sqla.serializers import serializable
 
 from geonature.utils.env import DB
-from pypnusershub.db.models import Organisme
-
 from geonature.core.gn_commons.models import cor_field_dataset, cor_module_dataset
 
 
@@ -86,8 +84,8 @@ class CorAcquisitionFrameworkActor(DB.Model):
     id_acquisition_framework = DB.Column(
         DB.Integer, ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
-    id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
-    id_organism = DB.Column(DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme"))
+    id_role = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    id_organism = DB.Column(DB.Integer, ForeignKey(Organisme.id_organisme))
     id_nomenclature_actor_role = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
@@ -108,7 +106,7 @@ class CorAcquisitionFrameworkActor(DB.Model):
     )
 
     organism = relationship(
-        "Organisme",
+        Organisme,
         lazy="joined",
         foreign_keys=[id_organism]
     )
@@ -152,8 +150,8 @@ class CorDatasetActor(DB.Model):
     __table_args__ = {"schema": "gn_meta"}
     id_cda = DB.Column(DB.Integer, primary_key=True)
     id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
-    id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
-    id_organism = DB.Column(DB.Integer, ForeignKey("utilisateurs.bib_organismes.id_organisme"))
+    id_role = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    id_organism = DB.Column(DB.Integer, ForeignKey(Organisme.id_organisme))
 
     id_nomenclature_actor_role = DB.Column(
         DB.Integer,
@@ -161,17 +159,8 @@ class CorDatasetActor(DB.Model):
         default=lambda: TNomenclatures.get_default_nomenclature("ROLE_ACTEUR"),
     )
 
-    role = DB.relationship(
-        User,
-        lazy="joined",
-        primaryjoin=(User.id_role == id_role),
-        foreign_keys=[id_role]
-    )
-    organism = relationship(
-        "Organisme",
-        lazy="joined",
-        foreign_keys=[id_organism]
-    )
+    role = DB.relationship(User, lazy="joined")
+    organism = relationship(Organisme, lazy="joined")
 
     nomenclature_actor_role = DB.relationship(
         TNomenclatures,
@@ -358,11 +347,11 @@ class TDatasets(CruvedHelper):
     meta_update_date = DB.Column(DB.DateTime)
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
-    id_digitizer = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
     id_taxa_list = DB.Column(DB.Integer)
     modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
-    creator = DB.relationship("User", lazy="joined")
+    creator = DB.relationship(User, lazy="joined")  # = digitizer
     nomenclature_data_type = DB.relationship(
         TNomenclatures,
         lazy="select",
@@ -521,7 +510,7 @@ class TAcquisitionFramework(CruvedHelper):
     acquisition_framework_parent_id = DB.Column(DB.Integer)
     is_parent = DB.Column(DB.Boolean)
     opened = DB.Column(DB.Boolean, default=True)
-    id_digitizer = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
 
     acquisition_framework_start_date = DB.Column(DB.Date)
     acquisition_framework_end_date = DB.Column(DB.Date)
@@ -530,7 +519,7 @@ class TAcquisitionFramework(CruvedHelper):
     meta_update_date = DB.Column(DB.DateTime)
     initial_closing_date = DB.Column(DB.DateTime)
 
-    creator = DB.relationship("User", lazy="joined")
+    creator = DB.relationship(User, lazy="joined")  # = digitizer
     nomenclature_territorial_level = DB.relationship(
         TNomenclatures,
         lazy="select",

@@ -44,7 +44,7 @@ class CorObserverSynthese(DB.Model):
     id_synthese = DB.Column(
         DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True
     )
-    id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"), primary_key=True)
+    id_role = DB.Column(DB.Integer, ForeignKey(User.id_role), primary_key=True)
 
 
 corAreaSynthese = DB.Table("cor_area_synthese",
@@ -376,7 +376,7 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
     )
 
     cor_observers = DB.relationship(
-        "User",
+        User,
         uselist=True,
         secondary=CorObserverSynthese.__table__,
         primaryjoin=(CorObserverSynthese.id_synthese == id_synthese),

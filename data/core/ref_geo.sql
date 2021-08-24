@@ -346,6 +346,8 @@ CREATE INDEX index_l_areas_centroid ON l_areas USING gist (centroid);
 CREATE INDEX index_dem_vector_geom ON dem_vector USING gist (geom);
 CREATE UNIQUE INDEX i_unique_l_areas_id_type_area_code ON l_areas (id_type, area_code);
 CREATE UNIQUE INDEX i_unique_bib_areas_types_type_code ON bib_areas_types(type_code);
+CREATE INDEX index_li_grids_id_area ON ref_geo.li_grids (id_area);
+CREATE INDEX index_li_municipalities_id_area ON ref_geo.li_municipalities (id_area);
 
 ------------
 --TRIGGERS--
