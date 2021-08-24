@@ -361,7 +361,7 @@ class GnGeneralSchemaConf(Schema):
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS = fields.Nested(PublicAccess, load_default=PublicAccess().load({}))
-    TAXHUB = fields.Nested(TaxHub, load_default={})
+    TAXHUB = fields.Nested(TaxHub, load_default=TaxHub().load({}))
 
     @validates_schema
     def validate_enable_sign_up(self, data, **kwargs):
