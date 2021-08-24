@@ -1,4 +1,4 @@
 include VERSION
-include LICENCE
+include LICENSE
 include README.rst
 include backend/requirements.in
