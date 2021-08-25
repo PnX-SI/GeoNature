@@ -133,6 +133,7 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
             data["observers"] = []
         if data.get("id_releve_occtax") is None:
             data.pop("id_releve_occtax", None)
+        data.pop("id_digitiser", None)  # id_digitiser is dump_only
         return data
 
     pre_dump_fn = remove_additional_none_val
