@@ -14,7 +14,6 @@ from geonature.utils.env import (
     GEONATURE_VERSION,
 )
 from geonature.utils.command import (
-    start_gunicorn_cmd,
     supervisor_cmd,
     start_geonature_front,
     build_geonature_front,
@@ -67,16 +66,6 @@ def generate_frontend_config(build):
     if build:
         build_geonature_front()
     log.info("Config successfully updated")
-
-
-@main.command()
-@click.option("--uri", default="0.0.0.0:8000")
-@click.option("--worker", default=4)
-def start_gunicorn(uri, worker):
-    """
-        Lance l'api du backend avec gunicorn
-    """
-    start_gunicorn_cmd(uri, worker)
 
 
 @main.command()
