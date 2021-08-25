@@ -53,7 +53,7 @@ def upgrade():
     """)
     cursor = op.get_bind().connection.cursor()
     with open_geofile(base_url, filename) as geofile:
-        logger.info("Inserting departments data in temporary table…")
+        logger.info("Inserting municipalities data in temporary table…")
         cursor.copy_expert(f'COPY {schema}.{temp_table_name} FROM STDIN', geofile)
     logger.info("Copy municipalities in l_areas…")
     op.execute(f"""
