@@ -33,11 +33,6 @@ log = logging.getLogger(__name__)
 MSG_OK = "\033[92mok\033[0m\n"
 
 
-def supervisor_cmd(action, app_name):
-    cmd = "sudo supervisorctl {action} {app}"
-    subprocess.call(cmd.format(action=action, app=app_name).split(" "))
-
-
 def start_geonature_front():
     subprocess.call(["npm", "run", "start"], cwd=str(ROOT_DIR / "frontend"))
 
@@ -140,11 +135,11 @@ def create_frontend_config():
     log.info("...%s\n", MSG_OK)
 
 
-def update_app_configuration(build=True, prod=True):
+def update_app_configuration(build=True):
     log.info("Update app configuration")
-    if prod:
-        subprocess.call(["sudo", "supervisorctl", "reload"])
     create_frontend_config()
     if build:
         subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
     log.info("...%s\n", MSG_OK)
+    log.info("Si vous avez changé des paramtères de configuration nécessaire au backend, "
+             "pensez à également relancer ce dernier.")

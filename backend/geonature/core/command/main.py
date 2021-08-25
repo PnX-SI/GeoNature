@@ -14,7 +14,6 @@ from geonature.utils.env import (
     GEONATURE_VERSION,
 )
 from geonature.utils.command import (
-    supervisor_cmd,
     start_geonature_front,
     build_geonature_front,
     create_frontend_config,
@@ -88,16 +87,6 @@ def dev_back(ctx, host, port):
 
 
 @main.command()
-@click.option("--action", default="restart", type=click.Choice(["start", "stop", "restart"]))
-@click.option("--app_name", default="geonature2")
-def supervisor(action, app_name):
-    """
-        Lance les actions du supervisor
-    """
-    supervisor_cmd(action, app_name)
-
-
-@main.command()
 def dev_front():
     """
         Démarre le frontend en mode develop
@@ -141,8 +130,7 @@ def generate_frontend_tsconfig_app():
 
 @main.command()
 @click.option("--build", type=bool, required=False, default=True)
-@click.option("--prod", type=bool, required=False, default=True)
-def update_configuration(build, prod):
+def update_configuration(build):
     """
         Regénère la configuration de l'application
 
@@ -155,7 +143,7 @@ def update_configuration(build, prod):
     """
     # Recréation du fichier de routing car il dépend de la conf
     frontend_routes_templating()
-    update_app_configuration(build, prod)
+    update_app_configuration(build)
 
 
 @main.command()

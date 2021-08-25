@@ -199,8 +199,7 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                         # Rebuild the frontend
                         build_geonature_front(rebuild_sass=True)
 
-                    # finally restart geonature backend via supervisor
-                    subprocess.call(["sudo", "supervisorctl", "restart", "geonature2"])
+                    log.info("Pensez à relancer geonature")
                 except Exception as e:
                     log.error("%s", e)
                     raise GeoNatureError(
@@ -313,8 +312,7 @@ def deactivate_gn_module(module_code, frontend, backend):
 @main.command()
 @click.argument("module_code")
 @click.option("--build", type=bool, required=False, default=True)
-@click.option("--prod", type=bool, required=False, default=True)
-def update_module_configuration(module_code, build, prod):
+def update_module_configuration(module_code, build):
     """
     Génère la config frontend d'un module
 
@@ -325,8 +323,8 @@ def update_module_configuration(module_code, build, prod):
     - geonature update_module_configuration --build False --prod False occtax
 
     """
-    if prod:
-        subprocess.call(["sudo", "supervisorctl", "reload"])
     app = create_app(with_external_mods=False)
     with app.app_context():
         create_module_config(app, module_code, build=build)
+    log.info("Si vous avez changé des paramtères de configuration nécessaire au backend, "
+             "pensez à également relancer ce dernier.")
