@@ -11,7 +11,7 @@ from sqlalchemy import distinct, func, desc, select, or_
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
 
-from utils_flask_sqla.generic import serializeQuery, GenericTable
+from utils_flask_sqla.generic import serializeQuery, GenericTable, GenericQuery
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo
 
@@ -47,6 +47,7 @@ from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from werkzeug.datastructures import iter_multi_items
 from werkzeug.exceptions import BadRequest
 
 
@@ -983,140 +984,30 @@ def get_taxa_distribution():
 #     # DB.session.commit()
 #     return "la"
 
-
 @routes.route("/log/delete", methods=["get"])
 @permissions.check_cruved_scope("R", True)
 @json_resp
-def log_delete_history(info_role):
-    """list last history actions optionally filtered by date 
+def log_delete_history(info_role) -> dict:
 
-    Parameters
-    ----------
-    info_role : int
-        Info role id
-
-    Returns
-    -------
-    list
-        list of actions executed from date
-    """
-    default_date = datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=10), datetime.datetime.min.time())
-    start = request.args.get("start", default=default_date, type=str)
-    end = request.args.get("end", default=None, type=str)
-    actions  = request.args.getlist("action", type=str)
-    page = request.args.get("page", default=1, type=int)
     limit = request.args.get("limit", default=1000, type=int)
-    
-    
-    start = start if start else (
-        datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=10), datetime.datetime.min.time())
+    offset = request.args.get("offset", default=0, type=int)
+
+    args = request.args.to_dict()
+    if "limit" in args:
+        args.pop("limit")
+    if "offset" in args:
+        args.pop("offset")
+    filters = {f: args.get(f) for f in args}
+
+    query = GenericQuery(
+        DB,
+        't_log_synthese',
+        'gn_synthese',
+        filters=filters,
+        limit=limit,
+        offset=offset
     )
-    log.debug(f'actions {actions}')
-    log.debug(f"start {start}")
-        # set default history query to 10 days
-        # d = datetime.date.today() - datetime.timedelta(days=10)
-        # start = datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=10), datetime.datetime.min.time())
-    try:
-        q = DB.session.query(
-            TLogSynthese.id_synthese, 
-            TLogSynthese.unique_id_sinp, 
-            TLogSynthese.last_action, 
-            TLogSynthese.meta_last_action_date
-            ).filter(TLogSynthese.last_action == 'D').filter(TLogSynthese.meta_action_date >= start)             
 
+    data = query.return_query()
 
-        if end is not None:
-            log.debug(f"END {end}")
-            q = q.filter(TLogSynthese.meta_action_date <= end)
-
-        log.debug(f"Q {q}")
-        
-        p_data= q.order_by(TLogSynthese.meta_action_date.desc()).paginate(page,per_page=limit)
-
-        log.debug(f"DEBUG {current_app.debug}")
-        
-        result = { 
-            "limit": p_data.per_page,
-            "page": p_data.page,
-            "pages": p_data.pages,
-            "count_items": p_data.total,
-        }
-        if p_data.has_prev :
-            result['prev_page']=p_data.prev_page
-        if p_data.has_next:
-            result['next_page']=p_data.has_next
-        
-        result['items'] = [{"id":d.id_synthese, "uuid":d.unique_id_sinp, "last_action": d.last_action, "meta_last_action_date": datetime.datetime.isoformat(d.meta_last_action_date)} for d in p_data.items]
-        return result
-    except Exception as error:
-        log.error(error)
-        return {"error": error}, 500
-
-
-@routes.route("/log/upsert", methods=["get"])
-@permissions.check_cruved_scope("R", True)
-@json_resp
-def log_upsert_history(info_role):
-    """list last history actions optionally filtered by date 
-
-    Parameters
-    ----------
-    info_role : int
-        Info role id
-
-    Returns
-    -------
-    list
-        list of actions executed from date
-    """
-    default_date = datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=10), datetime.datetime.min.time())
-    log.debug(f"DEFAULT_DATE = {default_date}")
-    start = request.args.get("start", default=default_date, type=str)
-    end = request.args.get("end", default=None, type=str)
-    actions  = request.args.getlist("action", type=str)
-    page = request.args.get("page", default=1, type=int)
-    limit = request.args.get("limit", default=1000, type=int)
-    
-
-    actions = actions if (len(actions) > 0 and ('I' in actions or 'U' in actions)) else ['I','U']
-    start = start if start else (
-        datetime.datetime.combine(datetime.date.today() - datetime.timedelta(days=10), datetime.datetime.min.time())
-    )
-    log.debug(f'actions {actions}')
-    log.debug(f"start {start}")
-    
-    try:
-        q = DB.session.query(
-            Synthese.id_synthese, 
-            Synthese.unique_id_sinp, 
-            Synthese.last_action,
-            #func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date).label('meta_action_date')
-            Synthese.meta_last_action_date,
-            ).filter(Synthese.last_action.in_(actions)).filter(or_(Synthese.meta_update_date >= start, Synthese.meta_create_date >= start))
-
-        if end is not None:
-            log.debug(f"END {end}")
-            q = q.filter(func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date) <= end)
-
-        log.debug(f"Q {q}")
-        
-        p_data= q.order_by(func.coalesce(Synthese.meta_update_date, Synthese.meta_create_date)).paginate(page,per_page=limit)
-
-        log.debug(f"DEBUG {current_app.debug}")
-        
-        result = { 
-            "limit": p_data.per_page,
-            "page": p_data.page,
-            "pages": p_data.pages,
-            "count_items": p_data.total,
-        }
-        if p_data.has_prev :
-            result['prev_page']=p_data.prev_page
-        if p_data.has_next:
-            result['next_page']=p_data.has_next
-        
-        result['items'] = [{"id":d.id_synthese, "uuid":d.unique_id_sinp, "last_action": d.last_action, "meta_last_action_date": datetime.datetime.isoformat(d.meta_last_action_date)} for d in p_data.items]
-        return result
-    except Exception as error:
-        log.error(error)
-        return {"error": error}, 500
+    return data
