@@ -984,30 +984,33 @@ def get_taxa_distribution():
 #     # DB.session.commit()
 #     return "la"
 
-@routes.route("/log/delete", methods=["get"])
-@permissions.check_cruved_scope("R", True)
-@json_resp
-def log_delete_history(info_role) -> dict:
 
-    limit = request.args.get("limit", default=1000, type=int)
-    offset = request.args.get("offset", default=0, type=int)
+if current_app.config["SYNTHESE"]["LOG_API"]:
+    @routes.route("/log", methods=["get"])
+    @permissions.check_cruved_scope("R", True)
+    @json_resp
+    def log_delete_history(info_role) -> dict:
+        """Get log history from synthese
+        """
+        limit = request.args.get("limit", default=1000, type=int)
+        offset = request.args.get("offset", default=0, type=int)
 
-    args = request.args.to_dict()
-    if "limit" in args:
-        args.pop("limit")
-    if "offset" in args:
-        args.pop("offset")
-    filters = {f: args.get(f) for f in args}
+        args = request.args.to_dict()
+        if "limit" in args:
+            args.pop("limit")
+        if "offset" in args:
+            args.pop("offset")
+        filters = {f: args.get(f) for f in args}
 
-    query = GenericQuery(
-        DB,
-        't_log_synthese',
-        'gn_synthese',
-        filters=filters,
-        limit=limit,
-        offset=offset
-    )
+        query = GenericQuery(
+            DB,
+            'v_log_synthese',
+            'gn_synthese',
+            filters=filters,
+            limit=limit,
+            offset=offset
+        )
 
-    data = query.return_query()
+        data = query.return_query()
 
-    return data
+        return data

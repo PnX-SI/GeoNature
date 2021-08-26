@@ -11,7 +11,7 @@ CREATE TABLE gn_synthese.t_log_synthese
     id_synthese      INT PRIMARY KEY,
     unique_id_sinp   UUID,
     last_action      LOG_SYNTHESE_ACTIONS,
-    meta_action_date TIMESTAMP WITHOUT TIME ZONE DEFAULT now()
+    meta_last_action_date TIMESTAMP WITHOUT TIME ZONE DEFAULT now()
 );
 
 CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_log_delete_on_synthese() RETURNS TRIGGER AS
@@ -24,7 +24,7 @@ BEGIN
         old.id_synthese    AS id_synthese
       , old.unique_id_sinp AS unique_id_sinp
       , 'D'                AS last_action
-      , now()              AS meta_action_date
+      , now()              AS meta_last_action_date
       ON CONFLICT (id_synthese)
       DO UPDATE SET last_action = 'D', meta_action_date = now();
     RETURN NULL;
@@ -38,5 +38,32 @@ CREATE TRIGGER tri_log_delete_synthese
     FOR EACH ROW
 EXECUTE PROCEDURE gn_synthese.fct_trig_log_delete_on_synthese()
 ;
+
+CREATE VIEW gn_synthese.v_log_synthese AS
+(
+WITH
+    t1 AS (SELECT
+               id_synthese
+             , unique_id_sinp
+             , last_action
+             , meta_last_action_date
+               FROM
+                   gn_synthese.t_log_synthese
+           UNION
+           SELECT
+               id_synthese
+             , unique_id_sinp
+             , last_action
+             , coalesce(meta_update_date, meta_create_date)
+               FROM
+                   gn_synthese.synthese)
+SELECT *
+    FROM
+        t1
+    ORDER BY
+        meta_last_action_date DESC)
+;
+
+
 COMMIT;
 
