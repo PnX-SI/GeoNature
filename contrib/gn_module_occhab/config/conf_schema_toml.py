@@ -9,38 +9,38 @@ from marshmallow import Schema, fields
 
 
 class FormConfig(Schema):
-    date_min = fields.Boolean(missing=True)
-    date_max = fields.Boolean(missing=True)
-    depth_min = fields.Boolean(missing=True)
-    depth_max = fields.Boolean(missing=True)
-    altitude_min = fields.Boolean(missing=True)
-    altitude_max = fields.Boolean(missing=True)
-    exposure = fields.Boolean(missing=True)
-    area = fields.Boolean(missing=True)
-    area_surface_calculation = fields.Boolean(missing=True)
-    geographic_object = fields.Boolean(missing=True)
-    comment = fields.Boolean(missing=True)
-    determination_type = fields.Boolean(missing=True)
-    collection_technique = fields.Boolean(missing=True)
-    technical_precision = fields.Boolean(missing=True)
-    determiner = fields.Boolean(missing=True)
-    recovery_percentage = fields.Boolean(missing=False)
-    abundance = fields.Boolean(missing=True)
-    community_interest = fields.Boolean(missing=True)
+    date_min = fields.Boolean(load_default=True)
+    date_max = fields.Boolean(load_default=True)
+    depth_min = fields.Boolean(load_default=True)
+    depth_max = fields.Boolean(load_default=True)
+    altitude_min = fields.Boolean(load_default=True)
+    altitude_max = fields.Boolean(load_default=True)
+    exposure = fields.Boolean(load_default=True)
+    area = fields.Boolean(load_default=True)
+    area_surface_calculation = fields.Boolean(load_default=True)
+    geographic_object = fields.Boolean(load_default=True)
+    comment = fields.Boolean(load_default=True)
+    determination_type = fields.Boolean(load_default=True)
+    collection_technique = fields.Boolean(load_default=True)
+    technical_precision = fields.Boolean(load_default=True)
+    determiner = fields.Boolean(load_default=True)
+    recovery_percentage = fields.Boolean(load_default=False)
+    abundance = fields.Boolean(load_default=True)
+    community_interest = fields.Boolean(load_default=True)
 
 
 class GnModuleSchemaConf(Schema):
-    ID_LIST_HABITAT = fields.Integer(missing=1)
-    OBSERVER_AS_TXT = fields.Integer(missing=False)
-    OBSERVER_LIST_ID = fields.Integer(missing=1)
-    formConfig = fields.Nested(FormConfig, missing=dict())
+    ID_LIST_HABITAT = fields.Integer(load_default=1)
+    OBSERVER_AS_TXT = fields.Integer(load_default=False)
+    OBSERVER_LIST_ID = fields.Integer(load_default=1)
+    formConfig = fields.Nested(FormConfig, load_default=dict())
     # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
-    EXPORT_FORMAT = fields.List(fields.String(), missing=["csv", "geojson", "shapefile"])
-    NB_MAX_EXPORT = fields.Integer(missing=50000)
-    NB_MAX_MAP_LIST = fields.Integer(missing=5000)
+    EXPORT_FORMAT = fields.List(fields.String(), load_default=["csv", "geojson", "shapefile"])
+    NB_MAX_EXPORT = fields.Integer(load_default=50000)
+    NB_MAX_MAP_LIST = fields.Integer(load_default=5000)
     EXPORT_COLUMS = fields.List(
         fields.String(),
-        missing=[
+        load_default=[
             "identifiantStaSINP",
             "metadonneeId",
             "dSPublique",

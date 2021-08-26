@@ -133,6 +133,7 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
             data["observers"] = []
         if data.get("id_releve_occtax") is None:
             data.pop("id_releve_occtax", None)
+        data.pop("id_digitiser", None)  # id_digitiser is dump_only
         return data
 
     pre_dump_fn = remove_additional_none_val
@@ -143,7 +144,7 @@ class GeojsonReleveSchema(MA.Schema):
     # load_instance = True
 
     id = fields.Integer()
-    properties = fields.Nested(ReleveSchema(exclude=("geom_4326")))
+    properties = fields.Nested(ReleveSchema(exclude=("geom_4326",)))
     geometry = GeojsonSerializationField()
 
     @post_load
@@ -160,12 +161,12 @@ class GeojsonReleveSchema(MA.Schema):
 
 
 class CruvedSchema(MA.Schema):
-    C = fields.Boolean(default=False, missing=False, required=False)
-    R = fields.Boolean(default=False, missing=False, required=False)
-    U = fields.Boolean(default=False, missing=False, required=False)
-    V = fields.Boolean(default=False, missing=False, required=False)
-    E = fields.Boolean(default=False, missing=False, required=False)
-    D = fields.Boolean(default=False, missing=False, required=False)
+    C = fields.Boolean(dump_default=False, load_default=False)
+    R = fields.Boolean(dump_default=False, load_default=False)
+    U = fields.Boolean(dump_default=False, load_default=False)
+    V = fields.Boolean(dump_default=False, load_default=False)
+    E = fields.Boolean(dump_default=False, load_default=False)
+    D = fields.Boolean(dump_default=False, load_default=False)
 
 
 class ReleveCruvedSchema(MA.Schema):
