@@ -1,0 +1,27 @@
+[Unit]
+Description=GeoNature
+After=network.target
+
+[Service]
+Type=simple
+User=${USER}
+Group=${USER}
+WorkingDirectory=${BASE_DIR}/
+Environment=GUNICORN_PROC_NAME=geonature2
+Environment=GUNICORN_NUM_WORKERS=4
+Environment=GUNICORN_HOST=127.0.0.1
+Environment=GUNICORN_PORT=8000
+Environment=GUNICORN_TIMEOUT=30
+EnvironmentFile=-${BASE_DIR}/environ
+ExecStart=${BASE_DIR}/backend/venv/bin/gunicorn geonature.wsgi:app \
+                --name "${GUNICORN_PROC_NAME}" --workers "${GUNICORN_NUM_WORKERS}" \
+                --bind "${GUNICORN_HOST}:${GUNICORN_PORT}" --timeout="${GUNICORN_TIMEOUT}"
+ExecReload=/bin/kill -s HUP $MAINPID
+TimeoutStartSec=10
+TimeoutStopSec=5
+PrivateTmp = true
+StandardOutput=append:/var/log/geonature.log
+StandardError=inherit
+
+[Install]
+WantedBy=multi-user.target
