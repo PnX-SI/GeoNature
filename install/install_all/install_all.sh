@@ -106,13 +106,13 @@ sed -i "s/proxy_https=.*$/proxy_https=$proxy_https/g" config/settings.ini
 cd "${GEONATURE_DIR}/install"
 
 echo "Installation du backend GeoNature"
-#./01_install_backend.sh || exit 1
+./01_install_backend.sh || exit 1
 echo "Installation de la base de données"
-#./02_create_db.sh || exit 1
+./02_create_db.sh || exit 1
 echo "Installation des modules GeoNature"
-#./03_install_gn_modules.sh || exit 1
+./03_install_gn_modules.sh || exit 1
 echo "Installation du frontend GeoNature"
-#./04_install_frontend.sh || exit 1
+./04_install_frontend.sh || exit 1
 
 sudo systemctl start geonature2
 
