@@ -17,6 +17,7 @@ from utils_flask_sqla_geo.generic import GenericTableGeo
 
 
 from geonature.utils import filemanager
+from geonature.utils.config import config
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
@@ -985,7 +986,7 @@ def get_taxa_distribution():
 #     return "la"
 
 
-if current_app.config["SYNTHESE"]["LOG_API"]:
+if config["SYNTHESE"]["LOG_API"]:
     @routes.route("/log", methods=["get"])
     @permissions.check_cruved_scope("R", True)
     @json_resp
