@@ -1,41 +1,5 @@
-INSTALLATION GLOBALE
-====================
-
-Prérequis
----------
-
-- Ressources minimum serveur :
-
-Un serveur Debian 10 disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.
-
-Le script global d'installation de GeoNature va aussi se charger d'installer les dépendances nécessaires : 
-
-- PostgreSQL / PostGIS
-- Python 3 et dépendances Python nécessaires à l'application
-- Flask (framework web Python)
-- Apache
-- Angular 7, Angular CLI, NodeJS
-- Librairies javascript (Leaflet, ChartJS)
-- Librairies CSS (Bootstrap, Material Design)
-
-Configuration serveur
----------------------
-
-GeoNature se sert de flux internet externes durant son installation et son fonctionnement. Le serveur hébergeant l'application doit autoriser les flux externes suivants :
-
-- https://pypi.python.org
-- http://geonature.fr/
-- https://codeload.github.com/
-- https://nodejs.org/dist
-- https://registry.npmjs.org
-- https://www.npmjs.com
-- https://raw.githubusercontent.com/
-- https://inpn.mnhn.fr/mtd
-- https://preprod-inpn.mnhn.fr/mtd
-- https://wxs.ign.fr/
-
-Installation de l'application
------------------------------
+Installation globale
+********************
 
 Ce document décrit une procédure d'installation packagée de GeoNature.
 
@@ -47,70 +11,13 @@ Les applications suivantes seront installées :
 - `TaxHub <https://github.com/PnX-SI/TaxHub>`_ qui pilote le schéma ``taxonomie``
 - `UsersHub <https://github.com/PnEcrins/UsersHub>`_ qui pilote le schéma ``utilisateurs`` (le paramètre ``install_usershub_app`` du fichier de configuration ``install_all.ini`` permet de désactiver l'installation de l'application. Il est cependant recommandé d'installer l'application pour disposer d'une interface pour gérer les utilisateurs dans GeoNature)
 
-Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre la documentation INSTALLATION AUTONOME.
-
-Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ``root``.
+Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre la documentation :ref:`installation-standalone`.
 
 
-* Mettre à jour de la liste des dépôts Linux :
+Installation de l'application
+-----------------------------
 
-::
-
-    # apt update
-    # apt upgrade
-
-* Installer sudo :
-
-::
-
-    # apt install -y sudo ca-certificates
-    
-* Créer un utilisateur linux (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ``root`` :
-
-::
-
-    # adduser geonatureadmin
-
-* Lui donner ensuite des droits ``sudo`` :
-
-::
-
-    # adduser geonatureadmin sudo
-
-
-* Configuration de la locale du serveur
-
-Certains serveurs sont livrés sans "locale" (langue par défaut). Pour l'installation de GeoNature, il est nécessaire de bien configurer la locale. Si la commande ``locale`` renvoie ceci :
-
-::
-
-    LANG=fr_FR.UTF-8
-    LANGUAGE=fr_FR.UTF-8
-    LC_CTYPE="fr_FR.UTF-8"
-    LC_NUMERIC="fr_FR.UTF-8"
-    LC_TIME="fr_FR.UTF-8"
-    LC_COLLATE="fr_FR.UTF-8"
-    LC_MONETARY="fr_FR.UTF-8"
-    LC_MESSAGES="fr_FR.UTF-8"
-    LC_PAPER="fr_FR.UTF-8"
-    LC_NAME="fr_FR.UTF-8"
-    LC_ADDRESS="fr_FR.UTF-8"
-    LC_TELEPHONE="fr_FR.UTF-8"
-    LC_MEASUREMENT="fr_FR.UTF-8"
-    LC_IDENTIFICATION="fr_FR.UTF-8"
-    LC_ALL=fr_FR.UTF-8
-
-Vous pouvez alors passer cette étape de configuration des locales.
-
-Sinon exécuter la commande ``dpkg-reconfigure locales``. Une fenêtre s'affiche dans votre console. Dans la liste déroulante, sélectionnez ``fr_FR.UTF-8 UTF-8`` avec ``Espace``, puis cliquez sur OK. Une 2ème fenêtre s'affiche avec une liste de locale activées (``fr_FR.UTF-8`` doit être présent dans la liste), confirmez votre choix, en cliquant sur OK, puis attendez que la locale s'installe.
-
-Pour la suite de la documentation et pour l'administration courante de GeoNature, **on n'utilisera plus jamais l'utilisateur** ``root`` (utiliser ``geonatureadmin`` dans l'exemple de la documentation; ``su - geonatureadmin`` pour change d'utilisateur). Si besoin d'exécuter des commandes avec des droits d'administrateur, on les précède de ``sudo``.
-
-Il est d'ailleurs possible de renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec l'utilisateur ``root``.
-
-Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informations sur le sécurisation du serveur (port SSH, désactiver root, fail2ban, pare-feu, sauvegarde...).
-
-Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en HTTP pour chiffrer le contenu des échanges entre le navigateur et le serveur (https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/).
+Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur dédié précédemment créé lors de l’étape de :ref:`preparation-server` (usuellement ``geonatureadmin``).
 
 * Se placer à la racine du ``home`` de l'utilisateur puis récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :
  
@@ -182,6 +89,10 @@ Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre ad
 :Note:
 
     Par défaut la base de données est accessible uniquement localement par la machine où elle est installée. Pour y accéder depuis une autre machine (pour s'y connecter avec QGIS, pgAdmin ou autre), ouvrez-en les connexions. Voir la documentation https://github.com/PnEcrins/GeoNature-atlas/blob/master/docs/installation.rst#acc%C3%A9der-%C3%A0-votre-bdd. Attention si vous redémarrez PostgreSQL (``sudo service postgresql restart``), il faut ensuite redémarrer les API GeoNature et TaxHub (``sudo supervisorctl reload``).
+
+:Note:
+
+    Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en HTTP pour chiffrer le contenu des échanges entre le navigateur et le serveur (https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/).
 
 
 Installation d'un module GeoNature

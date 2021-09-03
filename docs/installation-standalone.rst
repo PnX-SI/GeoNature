@@ -1,59 +1,17 @@
-INSTALLATION AUTONOME
-=====================
+Installation de GeoNature uniquement
+************************************
 
-**Attention** : Ne suivez cette documentation que si vous souhaitez installer GeoNature de manière autonome (sans TaxHub ou UsersHub).
-Pour une installation packagée voir cette `documentation <https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-all.rst>`_.
+Cette procédure détail l’installation de GeoNature seul, sans TaxHub et UsersHub.
+Si vous souhaitez installer GeoNature avec TaxHub et UsersHub, reportez-vous à la section :ref:`installation-all`.
 
-Prérequis
----------
+Installation des dépendances
+----------------------------
 
-Ressources minimum serveur :
-
-- Un serveur Linux architecture 64-bits sous Debian 10 ou Debian 11 disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.
-
-GeoNature utilise les technologies suivantes:
-
-- PostgreSQL / PostGIS
-- Python 3 et dépendances Python nécessaires à l'application
-- Flask (framework web Python)
-- Apache
-- Angular 7, Angular CLI, NodeJS
-- Librairies javascript (Leaflet, ChartJS)
-- Librairies CSS (Bootstrap, Material Design)
-
-Préparation du serveur
-----------------------
-
-Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur linux ``root``.
-
-* Mettre à jour de la liste des dépôts Linux :
-
-  ::
-
-    # apt update
-    # apt upgrade
-
-
-* Installer les dépendances de GeoNature :
+Installer les paquets suivants :
 
   ::  
     
-    # apt install unzip git postgresql postgis python2 python3-pip python3-venv libgdal-dev libpangocairo-1.0-0 apache2
-
-* Créer un utilisateur linux (nommé ``geonatureadmin`` dans notre cas) pour ne pas travailler en ``root`` :
-
-  ::
-
-    # adduser geonatureadmin
-
-* Lui donner ensuite des droits administrateur en l’ajoutant au groupe ``sudo`` :
-
-  ::
-
-    # adduser geonatureadmin sudo
-
-
-* Se reconnecter en SSH au serveur avec l’utilisateur nouvellement créé afin d’effectuer la suite du processus d’installation en tant qu’utilisateur non privilégié. Si besoin d'éxecuter des commandes avec des droits d'administrateur, on les précèdera de ``sudo``. Il est d'ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec root. Voir https://docs.ovh.com/fr/vps/conseils-securisation-vps/ pour plus d'informations sur le sécurisation du serveur.
+    $ sudo apt install unzip git postgresql postgis python2 python3-pip python3-venv libgdal-dev libpangocairo-1.0-0 apache2
 
 
 Installation de l'application
