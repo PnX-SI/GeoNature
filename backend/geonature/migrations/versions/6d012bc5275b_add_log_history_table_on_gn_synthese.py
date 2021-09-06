@@ -17,7 +17,6 @@ from sqlalchemy.sql.expression import null
 revision = '6d012bc5275b'
 down_revision = 'f06cc80cc8ba'
 branch_labels = ('add_log_history_table_on_gn_synthese',)
-depends_on = 'f06cc80cc8ba'
 
 
 def upgrade():
