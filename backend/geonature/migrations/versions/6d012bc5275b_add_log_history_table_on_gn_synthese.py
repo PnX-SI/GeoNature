@@ -22,7 +22,7 @@ depends_on = 'f06cc80cc8ba'
 
 def upgrade():
     op.create_table(
-        'testlog',
+        't_log_synthese',
         sa.Column('id_synthese', sa.Integer, primary_key=True),
         sa.Column('unique_id_sinp', UUID(as_uuid=True), nullable=False),
         sa.Column('last_action', sa.CHAR(1), nullable=False),
@@ -30,7 +30,7 @@ def upgrade():
         schema = 'gn_synthese'
         )
     op.execute("""
-    CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_log_delete_on_synthese_test() RETURNS TRIGGER AS
+    CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_log_delete_on_synthese() RETURNS TRIGGER AS
 $BODY$
 DECLARE
 BEGIN
@@ -48,14 +48,14 @@ END;
 $BODY$ LANGUAGE plpgsql COST 100
 ;
 
-CREATE TRIGGER tri_log_delete_synthese_test
+CREATE TRIGGER tri_log_delete_synthese
     AFTER DELETE
     ON gn_synthese.synthese
     FOR EACH ROW
-EXECUTE PROCEDURE gn_synthese.fct_trig_log_delete_on_synthese_test()
+EXECUTE PROCEDURE gn_synthese.fct_tri_log_delete_on_synthese()
 ;
 
-CREATE VIEW gn_synthese.v_log_synthese_test AS
+CREATE VIEW gn_synthese.v_log_synthese AS
 (
 WITH
     t1 AS (SELECT
@@ -83,11 +83,11 @@ SELECT *
 
 
 def downgrade():
-    op.drop_table('testlog', schema = 'gn_synthese')
+    op.drop_table('t_log_synthese', schema = 'gn_synthese')
     op.execute("""
-    DROP VIEW IF EXISTS gn_synthese.v_log_synthese_test;
-    DROP TRIGGER IF EXISTS tri_log_delete_synthese_test ON gn_synthese.synthese;
-    DROP FUNCTION gn_synthese.fct_trig_log_delete_on_synthese_test();    
+    DROP VIEW IF EXISTS gn_synthese.v_log_synthese;
+    DROP TRIGGER IF EXISTS tri_log_delete_synthese ON gn_synthese.synthese;
+    DROP FUNCTION gn_synthese.fct_tri_log_delete_on_synthese();    
     """)
 
 
