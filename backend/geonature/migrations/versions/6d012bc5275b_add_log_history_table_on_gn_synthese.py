@@ -16,7 +16,7 @@ from sqlalchemy.sql.expression import null
 # revision identifiers, used by Alembic.
 revision = '6d012bc5275b'
 down_revision = 'f06cc80cc8ba'
-branch_labels = ('add_log_history_table_on_gn_synthese',)
+branch_labels = None
 
 
 def upgrade():
