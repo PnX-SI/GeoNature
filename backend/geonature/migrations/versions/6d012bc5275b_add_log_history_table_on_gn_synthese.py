@@ -7,9 +7,8 @@ Create Date: 2021-09-06 08:42:03.702116
 """
 from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import UUID, JSONB
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql.expression import null
-import sqlalchemy.types as types
 
 
 
@@ -17,21 +16,21 @@ import sqlalchemy.types as types
 # revision identifiers, used by Alembic.
 revision = '6d012bc5275b'
 down_revision = 'f06cc80cc8ba'
-branch_labels = None
-depends_on = None
+branch_labels = ('add_log_history_table_on_gn_synthese',)
+depends_on = 'f06cc80cc8ba'
 
 
 def upgrade():
-    op.execute("set search_path to gn_synthese")
     op.create_table(
-        't_log_synthese',
+        'testlog',
         sa.Column('id_synthese', sa.Integer, primary_key=True),
         sa.Column('unique_id_sinp', UUID(as_uuid=True), nullable=False),
         sa.Column('last_action', sa.CHAR(1), nullable=False),
-        sa.Column('meta_last_action_date', sa.TIMESTAMP, server_default=sa.func.now())
+        sa.Column('meta_last_action_date', sa.TIMESTAMP, server_default=sa.func.now()),
+        schema = 'gn_synthese'
         )
     op.execute("""
-    CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_log_delete_on_synthese() RETURNS TRIGGER AS
+    CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_log_delete_on_synthese_test() RETURNS TRIGGER AS
 $BODY$
 DECLARE
 BEGIN
@@ -49,14 +48,14 @@ END;
 $BODY$ LANGUAGE plpgsql COST 100
 ;
 
-CREATE TRIGGER tri_log_delete_synthese
+CREATE TRIGGER tri_log_delete_synthese_test
     AFTER DELETE
     ON gn_synthese.synthese
     FOR EACH ROW
-EXECUTE PROCEDURE gn_synthese.fct_trig_log_delete_on_synthese()
+EXECUTE PROCEDURE gn_synthese.fct_trig_log_delete_on_synthese_test()
 ;
 
-CREATE VIEW gn_synthese.v_log_synthese AS
+CREATE VIEW gn_synthese.v_log_synthese_test AS
 (
 WITH
     t1 AS (SELECT
@@ -81,17 +80,14 @@ SELECT *
         meta_last_action_date DESC)
 ;
     """)
-    op.execute("reset search_path;")
 
 
 def downgrade():
-    op.execute("set search_path to gn_synthese;")
-    op.drop_table('testlog')
+    op.drop_table('testlog', schema = 'gn_synthese')
     op.execute("""
-    DROP VIEW IF EXISTS gn_synthese.v_log_synthese;
-    DROP TRIGGER tri_log_delete_synthese on table gn_synthese.synthese;
-    DROP FUNCTION gn_synthese.fct_trig_log_delete_on_synthese() ;    
+    DROP VIEW IF EXISTS gn_synthese.v_log_synthese_test;
+    DROP TRIGGER IF EXISTS tri_log_delete_synthese_test ON gn_synthese.synthese;
+    DROP FUNCTION gn_synthese.fct_trig_log_delete_on_synthese_test();    
     """)
-    op.execute("reset search_path;")
 
 
