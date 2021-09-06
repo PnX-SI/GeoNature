@@ -26,6 +26,21 @@ Dans certains cas, des demandes consistent à rendre l'entiereté des observatio
 d'une espèce (et donc une espèce) sensible.
 Cette documentation propose une méthode pour y arriver dans l'outil GeoNature.
 
+Pour plus d'informations
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Vous pouvez consulter :
+
+   - La page du site du `MNHN traitant de la sensibilité <https://inpn.mnhn.fr/programme/donnees-observations-especes/references/sensibilite>`_.
+   - Le rapport sur `La sensibilité des données du système  d’information  de l’inventaire  du  patrimoine naturel : méthodes, pratiques et usages (J. Ichter et S. Robert) <https://inpn.mnhn.fr/docs-web/docs/download/355449>`_. 
+
+Attention
+---------
+
+L'objectif de ce document n'est pas de transgresser les règles établies par
+le SINP. Il est donc conseillé dans la mesure du possible de respecter ces 
+règles au niveau communal et régional et donc de ne pas ajouter de règles 
+locales.
 
 Intégration dans GeoNature
 --------------------------
