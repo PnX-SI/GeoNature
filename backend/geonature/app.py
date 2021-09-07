@@ -5,12 +5,14 @@ Démarrage de l'application
 import logging
 from itertools import chain
 from pkg_resources import iter_entry_points
+from urllib.parse import urlsplit
 
 from flask import Flask, g, request, current_app
 from flask_mail import Message
 from flask_cors import CORS
 from sqlalchemy import exc as sa_exc
 from flask_sqlalchemy import before_models_committed
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, MA, migrate, BACKEND_DIR
@@ -50,6 +52,13 @@ if config.get('SENTRY_DSN'):
 def create_app(with_external_mods=True, with_flask_admin=True):
     app = Flask(__name__, static_folder="../static")
     app.config.update(config)
+    api_uri = urlsplit(app.config['API_ENDPOINT'])
+    app.config['APPLICATION_ROOT'] = api_uri.path
+    app.config['PREFERRED_URL_SCHEME'] = api_uri.scheme
+    # Setting the SERVER_NAME add misleading restrictions
+    # For instance, if SERVER_NAME = 'localhost:8000', accessing 0.0.0.0:8000 will produce 404
+    #app.config['SERVER_NAME'] = api_uri.netloc
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
 
     # Bind app to DB
     DB.init_app(app)

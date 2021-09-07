@@ -13,7 +13,7 @@ Environment=GUNICORN_HOST=127.0.0.1
 Environment=GUNICORN_PORT=8000
 Environment=GUNICORN_TIMEOUT=30
 EnvironmentFile=-${BASE_DIR}/environ
-ExecStart=${BASE_DIR}/backend/venv/bin/gunicorn geonature.wsgi:app \
+ExecStart=${BASE_DIR}/backend/venv/bin/gunicorn geonature:create_app() \
                 --name "${GUNICORN_PROC_NAME}" --workers "${GUNICORN_NUM_WORKERS}" \
                 --bind "${GUNICORN_HOST}:${GUNICORN_PORT}" --timeout="${GUNICORN_TIMEOUT}"
 ExecReload=/bin/kill -s HUP $MAINPID
