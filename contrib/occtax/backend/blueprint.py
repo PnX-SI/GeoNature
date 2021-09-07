@@ -17,6 +17,7 @@ from sqlalchemy.orm import joinedload
 from geojson import Feature, FeatureCollection
 from shapely.geometry import asShape
 from geoalchemy2.shape import from_shape, to_shape
+from marshmallow import ValidationError
 
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
@@ -404,12 +405,11 @@ def releveHandler(request, *, releve, info_role):
     json_req = request.get_json()
     json_req["properties"]["geom_4326"] = json_req["geometry"]
     # chargement des données POST et merge avec relevé initial
-    releve, errors = releveSchema.load(json_req["properties"], instance=releve)
-    if bool(errors):
-        raise BadRequest(
-            errors,
-            422,
-        )
+    try:
+        releve = releveSchema.load(json_req["properties"], instance=releve)
+    except ValidationError as error:
+        log.exception(error.messages)
+        raise BadRequest(error.messages)
     # Test des droits d'édition du relevé
     if releve.id_releve_occtax is not None:
         user_cruved = get_or_fetch_user_cruved(
@@ -479,7 +479,6 @@ def createReleve(info_role):
     releve = (
         ReleveSchema()
         .dump(releveHandler(request=request, releve=releve, info_role=info_role))
-        .data
     )
 
     return {
@@ -505,7 +504,6 @@ def updateReleve(id_releve, info_role):
     releve = (
         ReleveSchema()
         .dump(releveHandler(request=request, releve=releve, info_role=info_role))
-        .data
     )
 
     return {
@@ -543,10 +541,11 @@ def occurrenceHandler(request, *, occurrence, info_role):
     # fin test, si ici => c'est ok
 
     occurrenceSchema = OccurrenceSchema()
-    occurrence, errors = occurrenceSchema.load(request.get_json(), instance=occurrence)
-
-    if bool(errors):
-        raise BadRequest(str(errors))
+    try:
+        occurrence = occurrenceSchema.load(request.get_json(), instance=occurrence)
+    except ValidationError as error:
+        log.exception(error.messages)
+        raise BadRequest(error.messages)
     DB.session.add(occurrence)
     DB.session.commit()
 

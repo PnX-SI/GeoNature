@@ -92,11 +92,6 @@ proxy_http=
 proxy_https=
 
 
-# Configuration python
-###########################
-python_path=/usr/bin/python3
-
-
 #####################
 ### Gunicorn settings
 #####################
