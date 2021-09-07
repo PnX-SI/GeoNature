@@ -10,8 +10,33 @@
   border-right: 1px solid #dadbda;
 }
 
+.panel-top {
+  padding-top: 0px !important;
+}
+
+.no-margin-bottom {
+  margin-bottom: 0px !important;
+}
+
 mat-spinner {
   width: 50%;
   margin: 0 auto;
   margin-bottom: 10px;
+}
+
+.medium {
+  font-size: 1em;
+}
+
+:host ::ng-deep pnx-introduction .panel-body {
+  height: 50vh !important;
+  overflow-y: auto;
+}
+
+#map-title {
+  position: absolute;
+  z-index: 1000;
+}
+#btn-map {
+  font-weight: bold;
 }

@@ -8,6 +8,7 @@ Parc national des Ecrins
 * Theo Lechemia
 * Elie Bouttier
 * Camille Monchicourt
+* Adrien Pajot
 
 .. image:: http://geonature.fr/img/logo-pne.jpg
     :target: http://www.ecrins-parcnational.fr
@@ -52,3 +53,7 @@ Contributeurs
 * Judith Panijel (UMS Patrinat)
 * Alain Laupin (UMS Patrinat)
 * Ludovic Le Pontois (Parc national des Pyrénées)
+* Vincent Prunet (Parc national du Mercantour)
+* David Michallet (CEN 38)
+* Rhandy Grard (Freelance / Natural Solutions)
+* Maxime Toma (LPO France)

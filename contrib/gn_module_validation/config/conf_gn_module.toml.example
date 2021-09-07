@@ -1,0 +1,34 @@
+[[COLUMN_LIST]]
+column_name = "id_nomenclature_valid_status"
+column_label = "Statut de validation"
+max_width = 20
+
+[[COLUMN_LIST]]
+column_name = "nom_vern_or_lb_nom"
+column_label = "Taxon"
+min_width = 250
+
+
+[[COLUMN_LIST]]
+column_label = "Date obs"
+column_name = "date_min"
+min_width = 100
+
+
+[[COLUMN_LIST]]
+column_label = "Jeu de donnée"
+column_name = "dataset_name"
+max_width = 100
+
+
+[[COLUMN_LIST]]
+column_name = "observers"
+column_label = "Observateur"
+min_width = 100
+
+[[COLUMN_LIST]]
+column_name = "label_life_stage"
+column_label = "Stade de vie"
+func = "get_nomenclature_label"
+id_nomenclature_field = "id_nomenclature_life_stage"
+min_width = 50

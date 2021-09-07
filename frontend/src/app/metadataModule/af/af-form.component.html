@@ -1,13 +1,14 @@
 <div class="container">
-  <button
+  <a
     mat-raised-button
     class="ml-1 mb-1"
     routerLink="/metadata"
   >
     <mat-icon> chevron_left</mat-icon> Retour
-  </button>
-  <div class=" row row-0">
-    <div class="col-xs-12 col-sm-12 col-md-8 col-lg-6 padding-sm">
+  </a>
+
+  <div class="row">
+    <div class="col-md-8">
 
       <div class="card ">
         <div class="card-body">
@@ -16,37 +17,43 @@
           </h3>
 
 
-          <small>Nom </small>
-          <div class="input-group ">
+          <div>
+            <small>Nom </small>
             <input
               class="form-control form-control-sm"
               type="text"
-              [formControl]="afForm.controls.acquisition_framework_name"
+              [formControl]="form.get('acquisition_framework_name')"
             >
           </div>
 
-          <small>Description</small>
-          <div class="input-group">
-            <input
+          <div>
+            <small>Description</small>
+            <textarea
               class="form-control form-control-sm"
               type="text"
-              [formControl]="afForm.controls.acquisition_framework_desc"
+              [formControl]="form.get('acquisition_framework_desc')"
             >
+            </textarea>
           </div>
 
-          <small>Mots clés </small>
-          <div class="input-group">
+          <div>
+            <small>
+              Mots clés
+              <mat-icon matTooltip="Mot(s)-clé(s) représentatifs du cadre d'acquisition, séparés par des virgules">
+                info
+              </mat-icon>
+            </small>
             <input
               class="form-control form-control-sm"
               type="text"
-              [formControl]="afForm.controls.keywords"
+              [formControl]="form.get('keywords')"
             >
           </div>
 
           <br>
-          <div class="">
+          <div>
             <input
-              [formControl]="afForm.controls.is_parent"
+              [formControl]="form.get('is_parent')"
               type="checkbox"
             >
             <small>
@@ -54,12 +61,11 @@
             </small>
           </div>
 
-          <small>Cadre d'acquisition parent </small>
-          <div class="input-group">
+          <div>
+            <small>Cadre d'acquisition parent </small>
             <select
-              [disableControl]="afForm.value.is_parent"
               class="form-control form-control-sm"
-              [formControl]="afForm.controls.acquisition_framework_parent_id"
+              [formControl]="form.get('acquisition_framework_parent_id')"
             >
               <option [ngValue]="null"></option>
               <option
@@ -72,25 +78,35 @@
           </div>
 
           <pnx-nomenclature
+            [multiSelect]="true"
+            label="Territoires"
+            [parentFormControl]="form.get('cor_territories')"
+            codeNomenclatureType="TERRITOIRE"
+            [bindAllItem]="true"
+          >
+          </pnx-nomenclature>
+
+          <pnx-nomenclature
             label="Niveau territorial"
-            [parentFormControl]="afForm.controls.id_nomenclature_territorial_level"
+            [parentFormControl]="form.get('id_nomenclature_territorial_level')"
             codeNomenclatureType="NIVEAU_TERRITORIAL"
           >
           </pnx-nomenclature>
 
-          <small>Description du territoire </small>
-          <div class="input-group">
-            <input
+          <div>
+            <small>Précision sur le territoire</small>
+            <textarea
               class="form-control form-control-sm"
               type="text"
-              [formControl]="afForm.controls.territory_desc"
+              [formControl]="form.get('territory_desc')"
             >
+            </textarea>
           </div>
 
           <pnx-nomenclature
             [multiSelect]="true"
             label="Objectifs du cadre d'acquisition"
-            [parentFormControl]="afForm.controls.cor_objectifs"
+            [parentFormControl]="form.get('cor_objectifs')"
             codeNomenclatureType="CA_OBJECTIFS"
             [bindAllItem]="true"
           >
@@ -99,7 +115,7 @@
           <pnx-nomenclature
             label="Volets SINP"
             [multiSelect]="true"
-            [parentFormControl]="afForm.controls.cor_volets_sinp"
+            [parentFormControl]="form.get('cor_volets_sinp')"
             codeNomenclatureType="VOLET_SINP"
             [bindAllItem]="true"
           >
@@ -107,68 +123,187 @@
 
           <pnx-nomenclature
             label="Type de financement"
-            [parentFormControl]="afForm.controls.id_nomenclature_financing_type"
+            [parentFormControl]="form.get('id_nomenclature_financing_type')"
             codeNomenclatureType="TYPE_FINANCEMENT"
           >
           </pnx-nomenclature>
 
 
-          <small>Cibles écologiques ou géologiques </small>
-          <div class="input-group">
+          <div>
+            <small>
+              Cibles écologiques ou géologiques
+              <mat-icon
+                matTooltip="Doit être composé de CD_NOM de TAXREF, séparés par des points virgules, s'il s'agit de taxons, ou de CD_HAB de
+                HABREF, séparés par des points virgules, s'il s'agit d'habitats"
+              >
+                info
+              </mat-icon>
+            </small>
             <input
               class="form-control form-control-sm"
               type="text"
-              [formControl]="afForm.controls.ecologic_or_geologic_target"
+              [formControl]="form.get('ecologic_or_geologic_target')"
             >
           </div>
 
-          <small>Description de la cible </small>
-          <div class="input-group">
-            <input
+          <div>
+            <small>Description de la cible </small>
+            <textarea
               class="form-control form-control-sm"
               type="text"
-              [formControl]="afForm.controls.target_description"
+              [formControl]="form.get('target_description')"
             >
+            </textarea>
           </div>
-
           <pnx-date
             label="Date début"
-            [parentFormControl]="afForm.controls.acquisition_framework_start_date"
+            [parentFormControl]="form.get('acquisition_framework_start_date')"
           >
           </pnx-date>
 
           <pnx-date
             label="Date fin"
-            [parentFormControl]="afForm.controls.acquisition_framework_end_date"
+            [parentFormControl]="form.get('acquisition_framework_end_date')"
           >
           </pnx-date>
 
           <small
-            *ngIf="afForm.errors?.invalidDate"
+            *ngIf="form.errors?.invalidDate"
             class="error"
             style="color:red"
           >
             {{ 'Releve.DateMaxError' | translate }}
           </small>
+          <div>
+            <h6>Référence(s) bibliographique(s)</h6>
+
+            <ng-container *ngFor="let bibliograpicReferenceForm of form.get('bibliographical_references').controls; let idx = index; let last = last">
+              <div class="row">
+                <div class="col-1">
+                  <button
+                    style="margin-top: 10px;"
+                    matTooltip="Supprimer la référence"
+                    mat-icon-button
+                    color="warn"
+                    (click)="afFormS.removeBibliographicalReferences(idx)"
+                  >
+                    <mat-icon>clear</mat-icon>
+                  </button>
+                </div>
+                <div class="col-11">
+                  <div>
+                    <small>
+                      URL de la publication
+                      <mat-icon matTooltip="Adresse à laquelle trouver la publication">info</mat-icon>
+                    </small>
+                    <input
+                      class="form-control form-control-sm"
+                      type="text"
+                      [formControl]="bibliograpicReferenceForm.get('publication_url')"
+                    >
+                  </div>
+                  <div>
+                    <small>
+                      Référence de la publication
+                      <mat-icon matTooltip="Référence complète de la publication suivant la nomenclature ISO 690">info</mat-icon>
+                    </small>
+                    <input
+                      class="form-control form-control-sm"
+                      type="text"
+                      [formControl]="bibliograpicReferenceForm.get('publication_reference')"
+                    >
+                  </div>
+                </div>
+              </div>
+              <mat-divider style="margin-top:10px;" *ngIf="!last"></mat-divider>
+            </ng-container>
+            <div>
+              <ng-container *ngIf="!form.get('bibliographical_references').controls.length; else roundButton">
+                <button
+                  type="button"
+                  mat-raised-button
+                  color="primary"
+                  (click)="afFormS.addBibliographicalReferences()"
+                >
+                  <mat-icon>add</mat-icon>
+                  Ajouter une référence
+                </button>
+              </ng-container>
+              <ng-template #roundButton>
+                <div class="text-right">
+                  <button
+                    style="margin-top: 5px;"
+                    type="button"
+                    matTooltip="Ajouter une autre référence"
+                    mat-mini-fab
+                    color="primary"
+                    (click)="afFormS.addBibliographicalReferences()"
+                  >
+                    <mat-icon>add</mat-icon>
+                  </button>
+                </div>
+              </ng-template>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
 
-    <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 padding-sm">
+    <div class="col-md-4">
       <div class="card">
+        <div class="card-header">
+          <h3 class="main-color"> Contact principal </h3>
+        </div>
         <div class="card-body">
+          <ng-container *ngFor="let actorForm of afFormS.actors.controls; let idx = index">
+            <pnx-metadata-actor
+              *ngIf="afFormS.isMainContact(actorForm)"
+              [actorForm]="actorForm"
+              [isRemovable]="idx != 0"
+              metadataType="af"
+              (actorFormRemove)="afFormS.removeActor(afFormS.actors, idx)"
+              [defaultTab]="(afFormS.acquisition_framework | async)?.id_acquisition_framework ? 'all': 'organism'"
+            >
+            </pnx-metadata-actor>
+          </ng-container>
+          <ng-container *ngIf="form.get('cor_af_actor').invalid && form.get('cor_af_actor').errors?.mainContactRequired">
+            <small
+              class="mat-error">
+              Le renseignement d'un contact principal est obligatoire
+            </small>
+          </ng-container>
+        </div>
+      </div>
 
-          <pnx-metadata-actor [parentFormArray]="cor_af_actor"> </pnx-metadata-actor>
-          <button
-            mat-mini-fab
-            class="float-right"
-            color="primary"
-            (click)="addFormArray()"
+      <div class="card">
+        <div class="card-header">
+          <h3 class="main-color"> Autre(s) acteur(s) </h3>
+        </div>
+        <div class="card-body">
+          <ng-container *ngFor="let actorForm of afFormS.actors.controls; let idx = index"> 
+
+          <pnx-metadata-actor
+            *ngIf="!afFormS.isMainContact(actorForm)"
+            [actorForm]="actorForm"
+            metadataType="af"
+            (actorFormRemove)="afFormS.removeActor(afFormS.actors, idx)"
+            [defaultTab]="(afFormS.acquisition_framework | async)?.id_acquisition_framework ? 'all': 'organism'"
           >
-            <mat-icon>add</mat-icon>
-          </button>
+          </pnx-metadata-actor>
 
+
+        </ng-container>
+        <button
+          class="mt-2 float-right"
+          type="button"
+          mat-mini-fab
+          color="primary"
+          matTooltip="Ajouter un autre acteur"
+          (click)="addContact(afFormS.actors, false)"
+        >
+          <mat-icon>add</mat-icon>
+        </button>
         </div>
       </div>
     </div>
@@ -177,6 +312,7 @@
   <div class="ml-1 mt-1">
     <button
       class="mr-1"
+      type="button"
       mat-raised-button
       color="warn"
       routerLink="/metadata"
@@ -184,7 +320,7 @@
       Annuler
     </button>
     <button
-      [disabled]="afForm.invalid || cor_af_actor.invalid"
+      [disabled]="form.invalid"
       mat-raised-button
       class="button-success"
       (click)="postAf()"

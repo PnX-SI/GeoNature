@@ -1,14 +1,14 @@
 <div class="container-fluid mt-4 ">
   <div class="row">
     <div class="col-5">
-      <button
+      <a
         mat-raised-button
         routerLink="/metadata"
         class="mb-2"
       >
         <mat-icon>chevron_left</mat-icon>
         Retour
-      </button>
+      </a>
     </div>
 
   </div>
@@ -57,7 +57,11 @@
     </div>
   </div>
 
-  <div class=" row">
+  <div 
+    *ngIf="stats"
+    class="row"
+  >
+    <!-- Nombre de JDD -->
     <div class="col-3">
       <div class="card">
         <div class="card-body">
@@ -65,21 +69,49 @@
             <div class="col">
               <h5>Jeux de données</h5>
               <br>
-              <div class="center">{{af?.stats?.nb_data}}</div>
+              <div class="center">{{ stats.nb_dataset || 0 }}</div>
             </div>
             <div
               class="col-auto"
               width="60"
-            ><img
+            >
+              <img
                 src="./assets/images/JDD_icon.svg"
                 width="60"
-              ></div>
+              >
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Nombre d'observation -->
+    <div class="col-3">
+      <div class="card">
+        <div class="card-body">
+          <div class="row">
+            <div class="col">
+              <h5>Observations</h5>
+              <br>
+              <div class="center">{{ stats.nb_observations }}</div>
+            </div>
+            <div
+              class="col-auto"
+              width="60"
+            >
+              <img
+                src="./assets/images/Donnee_icon.svg"
+                width="60"
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Nombre de taxons -->
     <div
-      *ngIf="af?.stats?.nb_taxons > 0"
+      *ngIf="stats.nb_taxons"
       class="col-3"
     >
       <div class="card">
@@ -88,21 +120,25 @@
             <div class="col">
               <h5>Taxons</h5>
               <br>
-              <div class="center">{{af?.stats?.nb_taxons}}</div>
+              <div class="center">{{ stats.nb_taxons }}</div>
             </div>
             <div
               class="col-auto"
               width="60"
-            ><img
+            >
+              <img
                 src="./assets/images/Taxon_icon.svg"
                 width="60"
-              ></div>
+              >
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- Nombre d'habitats -->
     <div
-      *ngIf="af?.stats?.nb_habitats > 0"
+      *ngIf="stats.nb_habitats"
       class="col-3"
     >
       <div class="card">
@@ -111,42 +147,22 @@
             <div class="col">
               <h5>Habitats</h5>
               <br>
-              <div class="center">{{af?.stats?.nb_habitats}}</div>
+              <div class="center">{{ stats.nb_habitats }}</div>
             </div>
             <div
               class="col-auto"
               width="60"
-            ><img
+            >
+              <img
                 src="./assets/images/Habitat_icon.svg"
                 width="60"
-              ></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      *ngIf="af?.stats?.nb_observations > 0 && af?.stats?.nb_taxons > 0"
-      class="col-3"
-    >
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col">
-              <h5>Observations</h5>
-              <br>
-              <div class="center">{{af?.stats?.nb_observations}}</div>
+              >
             </div>
-            <div
-              class="col-auto"
-              width="60"
-            ><img
-                src="./assets/images/Donnee_icon.svg"
-                width="60"
-              ></div>
           </div>
         </div>
       </div>
     </div>
+
   </div>
 
   <div class="row">
@@ -195,6 +211,11 @@
 
           <div>
             <div class="b">Territoires concernés </div>
+            <ul class="a">
+              <li *ngFor="let ter of af?.cor_territories">
+                - {{ter.label_default}}
+              </li>
+            </ul>
             <div class="a"> <b> Etendue territoriale : </b>{{af?.nomenclature_territorial_level?.label_default}}
             </div>
 
@@ -209,17 +230,35 @@
 
           <div *ngIf="af?.cor_af_actor">
             <div class="b">Acteurs </div>
-            <div
-              class="a"
-              *ngFor="let actor of af?.cor_af_actor"
-            >
-              <div> <b>{{ actor?.nomenclature_actor_role?.mnemonique}} : </b>
-                {{ actor?.organism?.nom_organisme }} <span
-                  *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"
-                > - </span> {{ actor?.role?.nom_complet }} </div>
-            </div>
+            <ng-container *ngIf="af.cor_af_actor.length; else elifNoActor">
+              <div
+                class="a"
+                *ngFor="let actor of af?.cor_af_actor"
+              >
+                <div> 
+                  <b>{{ actor?.nomenclature_actor_role?.mnemonique}} : </b>
+                  {{ actor?.organism?.nom_organisme }} 
+                  <span
+                    *ngIf="actor?.organism?.nom_organisme && actor?.role?.nom_complet"
+                  > - </span> {{ actor?.role?.nom_complet }} 
+                </div>
+              </div>
+            </ng-container>
+            <ng-template #elifNoActor>
+              <div class="a alert-actor">
+                <mat-icon>report</mat-icon>
+                <span> Aucun acteur renseigné </span>
+              </div>
+            </ng-template>
             <br />
           </div>
+
+          <div class="b"> Créateur</div>
+
+          <div class="a"> <b> Créateur du cadre d'acquisition :</b> {{af?.creator?.nom_complet || 'Non renseigné'}}
+          </div>         
+
+          <br />
 
           <div *ngIf="af?.keywords">
             <div class="b">Mots-clés </div>
@@ -227,28 +266,38 @@
             <br />
           </div>
 
+          <div *ngIf="af?.bibliographical_references">
+            <div class="b">Référence bibliographiques </div>
+            <ul class="a">
+              <li *ngFor="let ref of af?.bibliographical_references">
+                - <b>Url : </b> <a [href]="ref.publication_url">{{ref.publication_url}}</a>  
+                <b> rérérence : </b> {{ref.publication_reference}}
+              </li>
+            </ul>
+            <div class="a"> {{af?.keywords}} </div>
+          </div>
+          
+
         </div>
       </div>
     </div>
-    <div class="col-xs-6 col-sm-4 col-md-4 col-lg-4">
-      <div
-        *ngIf="af?.stats?.nb_data > 0"
+
+    <div class="col-xs-6 col-sm-4">
+      
+      <!-- BBOX -->
+      <div 
+        *ngIf="bbox"
         class="card"
       >
         <div class="card-header">
-          <h5>
-            Zone géographique
-          </h5>
-          <div
-            *ngIf="af?.stats?.nb_data > 0"
-            class="card-body"
-          >
+          <h5> Zone géographique </h5>
+          <div class="card-body">
             <pnx-map
               height="40vh"
               searchBar="false"
             >
               <pnx-geojson
-                [geojson]="af?.bbox"
+                [geojson]="bbox"
                 [zoomOnFirstTime]="true"
               >
               </pnx-geojson>
@@ -256,8 +305,10 @@
           </div>
         </div>
       </div>
+
+      <!-- PieChart -->
       <div
-        *ngIf="this.pieChartLabels.length > 0 && af?.stats?.nb_data > 0"
+        *ngIf="this.pieChartLabels.length"
         class="card"
       >
         <div class="card-header">
@@ -265,10 +316,7 @@
             Répartition des espèces
           </h5>
         </div>
-        <div
-          *ngIf="this.pieChartLabels.length > 0 && af?.stats?.nb_data > 0"
-          class="card-body"
-        >
+        <div class="card-body">
           <div style="display: block">
             <canvas
               baseChart
@@ -283,22 +331,18 @@
           </div>
         </div>
       </div>
+
       <div
-        *ngIf="af?.stats?.nb_data > 0"
+        *ngIf="stats && stats.nb_dataset"
         class="card"
       >
         <div class="card-header">
-          <h5>
-            Jeux de données associés
-          </h5>
+          <h5> Jeux de données associés </h5>
         </div>
-        <div
-          class="card-body"
-          *ngIf="af?.stats?.nb_data > 0"
-        >
+        <div class="card-body">
           <table>
-            <tr *ngFor="let dataset of af?.datasets">
-              <td [ngSwitch]="dataset.data_type.cd_nomenclature">
+            <tr *ngFor="let dataset of af?.t_datasets">
+              <td [ngSwitch]="dataset.nomenclature_data_type.cd_nomenclature">
                 <img
                   width="60"
                   *ngSwitchCase="'1'"
@@ -318,11 +362,15 @@
                   alt=""
                 >
               </td>
-              <td> <a
-                  [routerLink]="['/metadata/dataset_detail', dataset?.id_dataset]"
+              <td> 
+                <a
+                  [routerLink]="['/metadata/dataset_detail', dataset.id_dataset]"
                   style="color:black"
-                >{{ dataset?.dataset_name }}</a>
-                <div><small>{{dataset?.unique_dataset_id}}</small>
+                >
+                  {{ dataset.dataset_name }}
+                </a>
+                <div>
+                  <small>{{dataset.unique_dataset_id}}</small>
                 </div>
               </td>
             </tr>

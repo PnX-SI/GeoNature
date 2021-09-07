@@ -120,7 +120,7 @@ CREATE OR REPLACE FUNCTION gn_permissions.fct_tri_does_user_have_already_scope_f
 $BODY$
 -- Check if a role has already a SCOPE permission for an action/module/object
 -- use in constraint to force not set multiple scope permission on the same action/module/object
-DECLARE 
+DECLARE
 the_code_filter_type character varying;
 the_nb_permission integer;
 BEGIN
@@ -130,7 +130,7 @@ BEGIN
  WHERE f.id_filter = NEW.id_filter
 ;
 -- if the filter type is NOT SCOPE, its OK to set multiple permissions
-IF the_code_filter_type != 'SCOPE' THEN 
+IF the_code_filter_type != 'SCOPE' THEN
 RETURN NEW;
 -- if the new filter is 'SCOPE TYPE', check if there is not already a permission for this
 -- action/module/object/role
@@ -138,7 +138,7 @@ ELSE
     SELECT INTO the_nb_permission count(perm.id_permission)
     FROM gn_permissions.cor_role_action_filter_module_object perm
     JOIN gn_permissions.t_filters f ON f.id_filter = perm.id_filter
-    JOIN gn_permissions.bib_filters_type bib ON bib.id_filter_type = f.id_filter_type AND bib.code_filter_type = 'SCOPE' 
+    JOIN gn_permissions.bib_filters_type bib ON bib.id_filter_type = f.id_filter_type AND bib.code_filter_type = 'SCOPE'
     WHERE id_role=NEW.id_role AND id_action=NEW.id_action AND id_module=NEW.id_module AND id_object=NEW.id_object;
 
  -- if its an insert 0 row must be present, if its an update 1 row must be present
@@ -148,7 +148,7 @@ ELSE
     BEGIN
         RAISE EXCEPTION 'ATTENTION: il existe déjà un enregistrement de type SCOPE pour le role % l''action % sur le module % et l''objet % . Il est interdit de définir plusieurs portées à un role pour le même action sur un module et un objet', NEW.id_role, NEW.id_action, NEW.id_module, NEW.id_object ;
     END;
-  
+
 
 END IF;
 
@@ -322,12 +322,9 @@ UPDATE CASCADE;
 -- VIEWS --
 -----------
 
-CREATE OR REPLACE VIEW gn_permissions.v_roles_permissions AS
-WITH
-    p_user_permission
-    AS
-    (
-        SELECT u.id_role,
+CREATE OR REPLACE VIEW gn_permissions.v_roles_permissions
+AS WITH p_user_permission AS (
+         SELECT u.id_role,
             u.nom_role,
             u.prenom_role,
             u.groupe,
@@ -337,14 +334,11 @@ WITH
             c_1.id_module,
             c_1.id_object,
             c_1.id_permission
-        FROM utilisateurs.t_roles u
-            JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = u.id_role
-        WHERE u.groupe = false
-    ),
-    p_groupe_permission
-    AS
-    (
-        SELECT u.id_role,
+           FROM utilisateurs.t_roles u
+             JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = u.id_role
+          WHERE u.groupe = false
+        ), p_groupe_permission AS (
+         SELECT u.id_role,
             u.nom_role,
             u.prenom_role,
             u.groupe,
@@ -354,40 +348,35 @@ WITH
             c_1.id_module,
             c_1.id_object,
             c_1.id_permission
-        FROM utilisateurs.t_roles u
-            JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role OR g.id_role_groupe = u.id_role
-            JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = g.id_role_groupe
-        WHERE (g.id_role_groupe IN ( SELECT DISTINCT cor_roles.id_role_groupe
-        FROM utilisateurs.cor_roles))
-    ),
-    all_user_permission
-    AS
-    (
-                    SELECT p_user_permission.id_role,
-                p_user_permission.nom_role,
-                p_user_permission.prenom_role,
-                p_user_permission.groupe,
-                p_user_permission.id_organisme,
-                p_user_permission.id_action,
-                p_user_permission.id_filter,
-                p_user_permission.id_module,
-                p_user_permission.id_object,
-                p_user_permission.id_permission
-            FROM p_user_permission
+           FROM utilisateurs.t_roles u
+             JOIN utilisateurs.cor_roles g ON g.id_role_utilisateur = u.id_role OR g.id_role_groupe = u.id_role
+             JOIN gn_permissions.cor_role_action_filter_module_object c_1 ON c_1.id_role = g.id_role_groupe
+        ), all_user_permission AS (
+         SELECT p_user_permission.id_role,
+            p_user_permission.nom_role,
+            p_user_permission.prenom_role,
+            p_user_permission.groupe,
+            p_user_permission.id_organisme,
+            p_user_permission.id_action,
+            p_user_permission.id_filter,
+            p_user_permission.id_module,
+            p_user_permission.id_object,
+            p_user_permission.id_permission
+           FROM p_user_permission
         UNION
-            SELECT p_groupe_permission.id_role,
-                p_groupe_permission.nom_role,
-                p_groupe_permission.prenom_role,
-                p_groupe_permission.groupe,
-                p_groupe_permission.id_organisme,
-                p_groupe_permission.id_action,
-                p_groupe_permission.id_filter,
-                p_groupe_permission.id_module,
-                p_groupe_permission.id_object,
-                p_groupe_permission.id_permission
-            FROM p_groupe_permission
-    )
-SELECT v.id_role,
+         SELECT p_groupe_permission.id_role,
+            p_groupe_permission.nom_role,
+            p_groupe_permission.prenom_role,
+            p_groupe_permission.groupe,
+            p_groupe_permission.id_organisme,
+            p_groupe_permission.id_action,
+            p_groupe_permission.id_filter,
+            p_groupe_permission.id_module,
+            p_groupe_permission.id_object,
+            p_groupe_permission.id_permission
+           FROM p_groupe_permission
+        )
+ SELECT v.id_role,
     v.nom_role,
     v.prenom_role,
     v.id_organisme,
@@ -403,13 +392,12 @@ SELECT v.id_role,
     filter_type.code_filter_type,
     filter_type.id_filter_type,
     v.id_permission
-FROM all_user_permission v
-    JOIN gn_permissions.t_actions actions ON actions.id_action = v.id_action
-    JOIN gn_permissions.t_filters filters ON filters.id_filter = v.id_filter
-    JOIN gn_permissions.t_objects obj ON obj.id_object = v.id_object
-    JOIN gn_permissions.bib_filters_type filter_type ON filters.id_filter_type = filter_type.id_filter_type
-    JOIN gn_commons.t_modules modules ON modules.id_module = v.id_module;
-
+   FROM all_user_permission v
+     JOIN gn_permissions.t_actions actions ON actions.id_action = v.id_action
+     JOIN gn_permissions.t_filters filters ON filters.id_filter = v.id_filter
+     JOIN gn_permissions.t_objects obj ON obj.id_object = v.id_object
+     JOIN gn_permissions.bib_filters_type filter_type ON filters.id_filter_type = filter_type.id_filter_type
+     JOIN gn_commons.t_modules modules ON modules.id_module = v.id_module;
 
 
 ---------------
@@ -422,4 +410,12 @@ CREATE TRIGGER tri_check_no_multiple_scope_perm
   ON gn_permissions.cor_role_action_filter_module_object
   FOR EACH ROW
   EXECUTE PROCEDURE gn_permissions.fct_tri_does_user_have_already_scope_filter();
+
+
+-----------------
+-- CONSTAINTS ---
+-----------------
+ALTER TABLE gn_permissions.cor_object_module ADD CONSTRAINT unique_cor_object_module UNIQUE (id_object,id_module);
+
+ALTER TABLE gn_permissions.t_objects ADD CONSTRAINT unique_t_objects UNIQUE (code_object);
 

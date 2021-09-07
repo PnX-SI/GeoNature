@@ -2,7 +2,7 @@ INSTALLATION AUTONOME
 =====================
 
 **Attention** : Ne suivez cette documentation que si vous souhaitez installer GeoNature de manière autonome (sans TaxHub ou UsersHub).
-Pour une installation packagée voir cette `documentation <https://github.com/PnX-SI/GeoNature/blob/install_all/docs/installation-all.rst>`_.
+Pour une installation packagée voir cette `documentation <https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-all.rst>`_.
 
 Prérequis
 ---------
@@ -63,7 +63,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
     sudo apt-get install -y supervisor
     sudo apt-get install -y apache2
     # installation de NVM
-    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.6/install.sh | bash
+    wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.37.2/install.sh | bash
 
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -76,7 +76,7 @@ Sur Ubuntu 18, installez la version 10 de postgresql-server-dev avec la commande
 Python 3.7 sur Debian 9
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-A partir la version 2.5.0 de GeoNature, la version Python 3.5 n'est plus supportée. Seules les version 3.6+ le sont.
+A partir la version 2.5.0 de GeoNature, la version Python 3.5 n'est plus supportée. Seules les version 3.7+ le sont.
 
 Si vous êtes encore sur Debian 9 (fourni par défaut avec Python 3.5), veuillez suivre les instructions suivantes pour monter la version de Python sur Debian 9 :
 
@@ -334,6 +334,11 @@ Si vous avez téléchargé GeoNature zippé (via la procédure d'installation gl
     --- Reset sur HEAD pour mettre à jour les status --- 
     git reset HEAD
     -> vous êtes à jour sur la branche master
+    --- Cloner les sous-modules pour récupérer les dépendances
+    git submodule init
+    git submodule update
+    --- Installer les dépendances de développement
+    cd backend && pip install -r requirements-dev.txt
 
 
 @TODO : A relire et à basculer dans DOC DEVELOPEMENT ?

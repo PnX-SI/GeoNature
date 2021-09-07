@@ -9,8 +9,8 @@ import requests
 from flask import session
 
 from geonature.core.users.models import UserRigth
-from pypnusershub.db.tools import InsufficientRightsError
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from werkzeug.exceptions import Forbidden
 
 from .bootstrap_test import app
 
@@ -93,25 +93,25 @@ class TestReleveModel:
         """
             user is not observer of the releve cannot see dataset
             number 1
-            Must return an InsufficientRightsError
+            Must return an Forbidden
         """
         from occtax.backend.models import ReleveModel, VReleveOccurrence
 
         _user_agent = UserRigth(**user_agent)
         releveInstance = VReleveOccurrence(**valide_occ_tax_releve)
-        with pytest.raises(InsufficientRightsError):
+        with pytest.raises(Forbidden):
             releveInstance.get_releve_if_allowed(_user_agent)
 
     def test_user_not_observer(self):
         """
             user is not observer of the releve and have low right
-            Must return an InsufficientRightsError
+            Must return an Forbidden
         """
         from occtax.backend.models import ReleveModel, VReleveOccurrence
 
         user_2 = UserRigth(**user_low)
         releveInstance = VReleveOccurrence(**valide_occ_tax_releve)
-        with pytest.raises(InsufficientRightsError):
+        with pytest.raises(Forbidden):
             releveInstance.get_releve_if_allowed(user_2)
 
     def test_user_low_digitiser(self):

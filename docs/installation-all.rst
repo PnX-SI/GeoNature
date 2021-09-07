@@ -6,12 +6,12 @@ Prérequis
 
 - Ressources minimum serveur :
 
-Un serveur Linux (Debian 10 ou Ubuntu 18 **architecture 64-bits**) disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.
+Un serveur Debian 10 disposant d’au moins de 4 Go RAM et de 20 Go d’espace disque.
 
 Le script global d'installation de GeoNature va aussi se charger d'installer les dépendances nécessaires : 
 
 - PostgreSQL / PostGIS
-- Python 3 et dépendances Python nécessaires à l'application
+- Python 3.7 et dépendances Python nécessaires à l'application
 - Flask (framework web Python)
 - Apache
 - Angular 7, Angular CLI, NodeJS
@@ -228,7 +228,11 @@ Installation d'un module GeoNature
 
 L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur (NB : le module Occurrence de Taxon - Occtax - est fourni par défaut). Pour ajouter un gn_module externe, il est nécessaire de l'installer :
 
-**1.** Téléchargez le module depuis son dépôt Github puis dézippez-le.
+**1.** Téléchargez le module depuis son dépôt Github puis dézippez-le dans le repertoire utilisateur, au même niveau que le dossier ``geonature``.
+
+::
+
+    cd /home/`whoami`
 
 **2.** Renseignez l'éventuel fichier ``config/settings.ini`` du module.
 
@@ -246,9 +250,9 @@ Exemple pour un module Import :
 
 ::
 
-    geonature install_gn_module /home/gn_module_import import
+    geonature install_gn_module /home/`whoami`/gn_module_import import
 
-Le module sera disponible à l'adresse ``http://mon-geonature.fr/geonature/#/validation``
+Le module sera disponible à l'adresse ``http://mon-geonature.fr/geonature/#/import``
 
 L'API du module sera disponible à l'adresse ``http://mon-geonature.fr/api/import``
 

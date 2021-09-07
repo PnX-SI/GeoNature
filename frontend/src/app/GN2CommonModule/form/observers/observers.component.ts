@@ -28,6 +28,7 @@ export class ObserversComponent extends GenericFormComponent {
    *  Id de la liste d'utilisateur (table ``utilisateur.t_menus``) (obligatoire)
    */
   @Input() idMenu: number;
+  @Input() idList: number;
   @Input() codeList: string;
   @Input() bindAllItem = false;
   @Input() bindValue: string = null;
@@ -38,6 +39,13 @@ export class ObserversComponent extends GenericFormComponent {
   }
 
   ngOnInit() {
+    // uniformise as IdList the id of list
+    // retrocompat: keep idMenu
+    if(this.idList) {
+      this.idMenu = this.idList
+    }
+    // si idMenu
+
     if (this.idMenu) {
       this.observers = this._dfService
                             .getObservers(this.idMenu);

@@ -16,7 +16,7 @@ Mainteneurs :
 - Theo LECHEMIA (PnEcrins) : Frontend / Angular
 - Camille MONCHICOURT (PnEcrins) : Documentation / Gestion du projet
 
-.. image :: http://geonature.fr/docs/img/developpement/geonature-techno.png
+.. image :: https://geonature.fr/docs/img/developpement/geonature-techno.png
 
 API
 ---
@@ -33,13 +33,13 @@ GeoNature utilise :
 Liste des routes
 *****************
 
-.. qrefflask:: geonature.utils.command:get_app_for_cmd(with_flask_admin=False)
+.. qrefflask:: geonature:create_app(with_flask_admin=False)
   :undoc-static:
 
 Documentation des routes
 ************************
 
-.. autoflask:: geonature.utils.command:get_app_for_cmd(with_flask_admin=False)
+.. autoflask:: geonature:create_app(with_flask_admin=False)
   :undoc-static:
 
 
@@ -49,6 +49,7 @@ Release
 Pour sortir une nouvelle version de GeoNature :
 
 - Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, GeoNature-atlas)
+- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances
 - Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``, ``config/settings.ini.sample``, ``backend/requirements.txt``
 - Complétez le fichier ``docs/CHANGELOG.rst`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
 - Mettez à jour le fichier ``VERSION``
@@ -65,7 +66,7 @@ Mettre à jour le ``ref_geo`` à partir des données IGN scan express :
 - Télécharger le dernier millesime : http://professionnels.ign.fr/adminexpress
 - Intégrer le fichier Shape dans la BDD grâce à QGIS dans une table nommée ``ref_geo.temp_fr_municipalities``
 - Générer le SQL de création de la table : ``pg_dump --table=ref_geo.temp_fr_municipalities --column-inserts -U <MON_USER> -h <MON_HOST> -d <MA_BASE> > fr_municipalities.sql``. Le fichier en sortie doit s'appeler ``fr_municipalities.sql``
-- Zipper le fichier SQL et le mettre sur le serveur http://geonature.fr/data
+- Zipper le fichier SQL et le mettre sur le serveur https://geonature.fr/data
 - Adapter le script ``install_db.sh`` pour récupérer le nouveau fichier zippé
 
 Pratiques et règles de developpement
@@ -89,7 +90,8 @@ Backend
 
 - Une fonction ou classe doit contenir une docstring en français. Les doctrings doivent suivre le modèle NumPy/SciPy (voir https://numpydoc.readthedocs.io/en/latest/format.html et https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example)
 - Les commentaires dans le codes doivent être en anglais (ne pas s'empêcher de mettre un commentaire en français sur une partie du code complexe !)
-- Installer les requirements-dev (``pip install -r backend/requirements-dev.txt``) qui contiennent une série d'outils indispensables au développement dans GeoNature.
+- Assurez-vous d’avoir récupérer les dépendances dans les sous-modules git : ``git submodule init && git submodule update``
+- Installer les requirements-dev (``cd backend && pip install -r requirements-dev.txt``) qui contiennent une série d'outils indispensables au développement dans GeoNature.
 - Utiliser *blake* comme formateur de texte et activer l'auto-formatage dans son éditeur de texte (Tuto pour VsCode : https://medium.com/@marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00)
 - Utiliser *pylint* comme formatteur de code 
 - Respecter la norme PEP8 (assurée par les deux outils précédents)
@@ -225,7 +227,7 @@ Développer un gn_module
 
 Avant de développer un gn_module, assurez-vous d'avoir GeoNature bien
 installé sur votre machine
-(`voir doc <https://github.com/PnX-SI/GeoNature/blob/develop/docs/installation-standalone.rst>`__).
+(`voir doc <https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst>`__).
 
 Afin de pouvoir connecter ce module au "coeur", il est impératif de suivre
 une arborescence prédéfinie par l'équipe GeoNature.
@@ -545,10 +547,10 @@ De nombreux paramètres sont néammoins passés à l'application via un schéma
 Marshmallow (voir fichier ``backend/geonature/utils/config_schema.py``).
 
 Dans l'application flask, l'ensemble des paramètres de configuration sont
-utilisables via le dictionnaire ``config`` de l'application Flask ::
+utilisables via le dictionnaire ``config`` ::
 
-    from flask import current_app
-    MY_PARAMETER = current_app.config['MY_PARAMETER']
+    from geonature.utils.config import config
+    MY_PARAMETER = config['MY_PARAMETER']
 
 Chaque module GeoNature dispose de son propre fichier de configuration,
 (``module/config/cong_gn_module.toml``) contrôlé de la même manière par un
@@ -718,7 +720,7 @@ Un ensemble de composants décrits ci-dessous sont intégrés dans le coeur de G
 Voir la `DOCUMENTATION COMPLETE <http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html>`_ sur les composants génériques. 
 
 
-NB: mes composants de type "formulaire" (balise `input` ou `select`) partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs décrit ci dessous. (voir https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
+NB: mes composants de type "formulaire" (balise `input` ou `select`) partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs décrit ci dessous. (voir https://github.com/PnX-SI/GeoNature/blob/master/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 
 Une documentation complète des composants générique est
 `disponible ici <http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html>`_
@@ -726,7 +728,7 @@ Une documentation complète des composants générique est
 NB: mes composants de type "formulaire" (balise `input` ou `select`) partagent
 une logique commune et ont des ``Inputs`` et des ``Outputs`` communs décrit
 ci dessous.
-(voir https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
+(voir https://github.com/PnX-SI/GeoNature/blob/master/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 
 - Inputs
 
@@ -788,7 +790,7 @@ service :
         [{'param': 'limit', 'value': 10'},
         {'param': 'cd_nom', 'value': 212'}])
 
-  `Exemple dans le module OccTax  <https://github.com/PnX-SI/GeoNature/blob/develop/frontend/src/modules/occtax/occtax-map-list/occtax-map-list.component.ts#L84/>`_
+  `Exemple dans le module OccTax  <https://github.com/PnX-SI/GeoNature/blob/master/contrib/occtax/frontend/app/occtax-map-list/occtax-map-list.component.ts#L99/>`_
 
   L'API doit nécessairement renvoyer un objet comportant un
   GeoJson. La structure du l'objet doit être la suivante :
@@ -909,8 +911,7 @@ tslint fait la même chose que pylint mais pour la partie frontend en
 typescript::
 
         cd frontend
-        ng lint
-
+        npm run lint
 
 
 Pytest

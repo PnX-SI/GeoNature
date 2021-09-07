@@ -75,10 +75,12 @@ export class DataFormService {
     });
   }
 
-  getDatasets(params?: ParamsDict, orderByName = true, recursif = false) {
+  getDatasets(params?: ParamsDict, orderByName = true, fields = []) {
     let queryString: HttpParams = new HttpParams();
     queryString = this.addOrderBy(queryString, 'dataset_name');
-    queryString = queryString.set('recursif', recursif.toString())
+    fields.forEach(f => {
+      queryString = queryString.append('fields', f)
+    })
 
     if (params) {
       for (const key in params) {
@@ -102,18 +104,18 @@ export class DataFormService {
   /**
    * Get dataset list for metadata modules
    */
-  getAfAndDatasetListMetadata(searchTerms) {
+  // getAfAndDatasetListMetadata(searchTerms) {
 
-    let queryString = new HttpParams();
-    for (let key in searchTerms) {
-      queryString = queryString.set(key, searchTerms[key])
-    }
+  //   let queryString = new HttpParams();
+  //   for (let key in searchTerms) {
+  //     queryString = queryString.set(key, searchTerms[key])
+  //   }
 
-    return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/meta/af_datasets_metadata`,
-      { params: queryString }
-    );
-  }
+  //   return this._http.get<any>(
+  //     `${AppConfig.API_ENDPOINT}/meta/af_datasets_metadata`,
+  //     { params: queryString }
+  //   );
+  // }
 
   getImports(id_dataset) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/import/by_dataset/${id_dataset}`);
@@ -155,6 +157,10 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_TAXHUB}/bibnoms/taxoninfo/${cd_nom}`, {
       params: query_string
     });
+  }
+
+  getTaxaBibList() {
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/biblistes`).map(d => d.data);
   }
 
   async getTaxonInfoSynchrone(cd_nom: number): Promise<any> {
@@ -328,46 +334,61 @@ export class DataFormService {
   /**
    *
    * @param params: dict of paramters
-   * @param orderByName :default true
    */
-  getAcquisitionFrameworks(params?: ParamsDict, orderByName = true) {
+  getAcquisitionFrameworks(params = {}) {    
     let queryString: HttpParams = new HttpParams();
-    if (orderByName) {
-      queryString = this.addOrderBy(queryString, 'acquisition_framework_name');
+    for (let key in params) {
+      queryString = queryString.set(key, params[key])
     }
-    if (params) {
-      // tslint:disable-next-line:forin
-      for (let key in params) {
-        if (params[key] !== null) {
-          queryString = queryString.set(key, params[key]);
-        }
-      }
-    }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`, {
-      params: queryString
-    });
+
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/meta/list/acquisition_frameworks`,
+      { params: queryString }
+    );
   }
 
   /**
-   * Return all AF with cruved for map-list
+   *
+   * @param params: dict of paramters
+   * @param orderByName :default true
    */
-  getAcquisitionFrameworksMetadata(orderByName = true) {
+  getAcquisitionFrameworksForSelect(searchTerms = {}) {
     let queryString: HttpParams = new HttpParams();
-    if (orderByName) {
-      queryString = this.addOrderBy(queryString, 'acquisition_framework_name');
+    for (let key in searchTerms) {
+      queryString = queryString.set(key, searchTerms[key])
     }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks_metadata`, {
-      params: queryString
-    });
-  }
 
-  getAcquisitionFramework(id_af) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`);
-  }
-
-  getAcquisitionFrameworkDetails(id_af) {
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework_details/${id_af}`
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`,
+      { params: queryString }
+    );
+  }
+
+
+  /**
+   * @param id_af: id of acquisition_framework
+   */
+  getAcquisitionFramework(id_af) {
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`
+    );
+  }
+
+  /**
+   * @param id_af: id of acquisition_framework
+   */
+  getAcquisitionFrameworkStats(id_af) {
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}/stats`
+    );
+  }
+
+  /**
+   * @param id_af: id of acquisition_framework
+   */
+  getAcquisitionFrameworkBbox(id_af) {
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}/bbox`
     );
   }
 
@@ -413,10 +434,6 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${id}`);
   }
 
-  getDatasetDetails(id) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/dataset_details/${id}`);
-  }
-
   // getTaxaDistribution(id_dataset) {
   //   return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/dataset_taxa_distribution/${id_dataset}`);
   // }
@@ -445,17 +462,18 @@ export class DataFormService {
     });
   }
 
-  getModulesList(exclude: Array<string>) {
+  getModulesList(exclude: Array<string> = []): Observable<Array<any>> {
     let queryString: HttpParams = new HttpParams();
     exclude.forEach(mod_code => {
       queryString = queryString.append('exclude', mod_code);
     });
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/modules`, {
+    return this._http.get<Array<any>>(`${AppConfig.API_ENDPOINT}/gn_commons/modules`, {
       params: queryString
     });
   }
 
-  getModuleByCodeName(module_code) {
+  getModuleByCodeName(module_code): Observable<any> {
+    console.log("WARNING: use moduleService.getModule(module_code) instead?");
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/modules/${module_code}`);
   }
 
@@ -561,6 +579,40 @@ export class DataFormService {
 
   deleteDs(ds_id) {
     return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${ds_id}`);
+  }
+
+  getadditionalFields(params?: ParamsDict) {
+    let queryString: HttpParams = new HttpParams();
+    // tslint:disable-next-line:forin
+    for (const key in params) {
+      queryString = queryString.set(key, params[key].toString());
+    }
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/additional_fields`,
+     {params: queryString}).map(additionalFields => {
+      return additionalFields.map(data => {        
+        return {
+          "id_field": data.id_field,
+          "attribut_label": data.field_label,
+          "attribut_name": data.field_name,
+          "required": data.required,
+          "description": data.description,
+          "quantitative": data.quantitative,
+          "unity": data.unity,
+          "code_nomenclature_type": data.code_nomenclature_type,
+          "type_widget": data.type_widget.widget_name,
+          "multi_select": null,
+          "values": data.field_values,
+          "id_list": data.id_list,
+          "objects": data.objects,
+          "modules": data.modules,
+          "datasets": data.datasets,
+          "key_value": data.type_widget.widget_name === "nomenclature" ? "label_default": null,
+          ...data.additional_attributes
+        }
+      })
+        
+     });
+
   }
 
 }

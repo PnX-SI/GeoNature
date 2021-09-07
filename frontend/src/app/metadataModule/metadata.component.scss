@@ -8,9 +8,9 @@
 }
 
 label {
-  font-size:80%;
-  margin-top:5px;
-  margin-bottom: 0px!important;
+  font-size: 80%;
+  margin-top: 5px;
+  margin-bottom: 0px !important;
 }
 
 td {
@@ -24,20 +24,21 @@ td {
   padding-left: 24px;
   padding-right: 30px;
   margin-bottom: 10px;
-  width: 100%!important;
+  width: 100% !important;
 }
 
 .mat-expansion-panel-header-title {
-  width: 100%!important;  
+  width: 100% !important;
 }
 
-tr, tbody {
+tr,
+tbody {
   width: 100%;
 }
 
 mat-expansion-panel {
   mat-expansion-panel-header {
-    height: auto!important; 
+    height: auto !important;
   }
 }
 
@@ -69,9 +70,44 @@ mat-expansion-panel {
   margin: 8px;
 }
 
-
-.li:hover{
+.li:hover {
   cursor: pointer;
 }
 
+/deep/ .mat-slide-toggle.custom-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+  background-color: rgba(0, 128, 0, 0.322);
+}
 
+/deep/ .mat-slide-toggle.custom-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+  background-color: green;
+}
+
+/deep/ .mat-slide-toggle.custom-toggle .mat-slide-toggle-bar {
+  background-color: rgba(255, 0, 0, 0.322);
+}
+
+/deep/ .mat-slide-toggle.custom-toggle .mat-slide-toggle-thumb {
+  background-color: red;
+}
+
+/deep/ .mat-slide-toggle.mat-disabled .mat-slide-toggle-label,
+.mat-slide-toggle.mat-disabled .mat-slide-toggle-thumb-container {
+  cursor: not-allowed !important;
+}
+
+/deep/ .mat-slide-toggle.mat-disabled .mat-slide-toggle-thumb {
+  cursor: not-allowed !important;
+}
+
+.alert-actor {
+  color: #cc2424;
+}
+
+.alert-actor mat-icon {
+  vertical-align: middle;
+}
+
+.alert-actor span {
+  vertical-align: middle;
+  margin-left: 5px;
+}

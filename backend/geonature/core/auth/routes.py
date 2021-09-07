@@ -29,7 +29,6 @@ from geonature.utils.errors import CasAuthentificationError
 
 routes = Blueprint("gn_auth", __name__, template_folder="templates")
 log = logging.getLogger()
-gunicorn_error_logger = logging.getLogger("gunicorn.error")
 
 
 @routes.route("/login_cas", methods=["GET", "POST"])
@@ -91,7 +90,7 @@ def loginCas():
                     )
                 user["id_application"] = current_app.config["ID_APPLICATION_GEONATURE"]
             except Exception as e:
-                gunicorn_error_logger.info(e)
+                log.info(e)
                 log.error(e)
 
             # creation de la Response
@@ -113,7 +112,7 @@ def loginCas():
             response.set_cookie("current_user", str(current_user), expires=cookie_exp)
             return response
         else:
-            gunicorn_error_logger.info("Erreur d'authentification lié au CAS, voir log du CAS")
+            log.info("Erreur d'authentification lié au CAS, voir log du CAS")
             log.error("Erreur d'authentification lié au CAS, voir log du CAS")
             return render_template(
                 "cas_login_error.html",
@@ -186,7 +185,7 @@ def insert_user_and_org(info_user):
     try:
         resp = users.insert_role(user)
     except Exception as e:
-        gunicorn_error_logger.info(e)
+        log.info(e)
         log.error(e)
         raise CasAuthentificationError(
             "Error insering user in GeoNature", status_code=500

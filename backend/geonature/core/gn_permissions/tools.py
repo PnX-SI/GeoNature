@@ -1,7 +1,7 @@
 import logging, json
 
 from flask import current_app, redirect, Response
-from werkzeug.exceptions import Unauthorized
+from werkzeug.exceptions import Forbidden, Unauthorized
 from werkzeug.routing import RequestRedirect
 
 
@@ -16,7 +16,6 @@ from sqlalchemy.sql.expression import func
 
 
 from pypnusershub.db.tools import (
-    InsufficientRightsError,
     AccessRightsExpiredError,
     UnreadableAccessRightsError,
 )
@@ -310,7 +309,7 @@ def get_user_permissions(
         return user_cruved
     except AssertionError:
         object_for_error = ",".join(filter(None, (code_object, module_code)))
-        raise InsufficientRightsError(
+        raise Forbidden(
             f"User {user['id_role']} cannot '{code_action}' in module/app/object {object_for_error}"
         )
 
@@ -383,6 +382,12 @@ def cruved_scope_for_user_in_module(
     return herited_cruved, is_herited
 
 
+def get_scopes_by_action(id_role, module_code=None, object_code=None):
+    cruved = UserCruved(id_role=id_role, code_filter_type="SCOPE",
+                        module_code=module_code, object_code=object_code)
+    return { action: int(scope) for action, scope in cruved.get_perm_for_all_actions(get_id=False)[0].items() }
+
+
 def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, object_code=None):
     """
     Check if the cruved is in the session
@@ -390,6 +395,7 @@ def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, objec
     cruved_for_user_in_app()
     """
     if module_code in session and "user_cruved" in session[module_code]:
+        # FIXME object_code is not checked!
         return session[module_code]["user_cruved"]
     else:
         user_cruved = cruved_scope_for_user_in_module(

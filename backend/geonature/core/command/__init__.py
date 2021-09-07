@@ -12,11 +12,9 @@ from geonature.utils.env import ROOT_DIR
 
 def import_cmd(dir_name):
     try:
-        print("Import module {}".format(dir_name))
 
         module_cms = __import__("{}.backend.commands.geonature_cmd".format(dir_name))
-
-        print(" ... Module imported".format(dir_name))
+        
     except FileNotFoundError as e:
         # Si l'erreur est liée à un fichier inexistant
         #       création du fichier et réimport de la commande
