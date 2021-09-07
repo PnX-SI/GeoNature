@@ -6,7 +6,6 @@ import logging
 from os import environ
 
 import click
-from flask import current_app
 from flask.cli import run_command
 
 from geonature.utils.env import (
@@ -27,7 +26,6 @@ from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actor
 
 # from rq import Queue, Connection, Worker
 # import redis
-from flask import Flask
 from flask.cli import FlaskGroup
 
 
