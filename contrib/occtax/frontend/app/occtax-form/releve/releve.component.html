@@ -41,6 +41,7 @@
     <pnx-observers
       *ngIf="!occtaxConfig.observers_txt; else elseBlock"
       [parentFormControl]="propertiesForm.get('observers')"
+      [multiSelect]="true"
       [idMenu]="occtaxConfig.id_observers_list"
       [disabled]="propertiesForm.disabled"
       label="{{ 'Releve.Observers' | translate }}"

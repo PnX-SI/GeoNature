@@ -150,6 +150,7 @@
               [parentFormControl]="form.get('cor_territories')"
               codeNomenclatureType="TERRITOIRE"
               [bindAllItem]="true"
+              [keyValue]="null"
             >
             </pnx-nomenclature>
           </div>
@@ -212,7 +213,7 @@
               [values]="moduleService.modules"
               [parentFormControl]="form.get('modules')"
               keyLabel="module_label"
-              keyValue="id_module"
+              [keyValue]="null"
               label="Module(s) GeoNature associé(s) au jeu de données"
               [bindAllItem]="true"
             >
