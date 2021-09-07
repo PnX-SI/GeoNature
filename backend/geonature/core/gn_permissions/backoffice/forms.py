@@ -58,18 +58,17 @@ class CruvedScopeForm(FlaskForm):
         super(CruvedScopeForm, self).__init__(*args, **kwargs)
         self.init_choices()
 
-
 class OtherPermissionsForm(FlaskForm):
     module = QuerySelectField(
         "action",
-        query_factory=lambda: DB.session.query(TModules).order_by(TModules.module_label).all(),
+        query_factory=lambda: DB.session.query(TModules.id_module, TModules.module_label).order_by(TModules.module_label).all(),
         get_pk=lambda mod: str(mod.id_module),
         get_label=lambda mod: mod.module_label,
     )
     action = QuerySelectField(
         "action",
         query_factory=lambda: DB.session.query(TActions).all(),
-        get_pk=lambda act: str(act.id_action),
+        get_pk=lambda act: act.id_action,
         get_label=lambda act: act.description_action,
     )
     filter = SelectField("filtre",)

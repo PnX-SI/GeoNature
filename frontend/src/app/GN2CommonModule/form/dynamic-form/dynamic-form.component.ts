@@ -1,10 +1,11 @@
 import {
   Component,
   OnInit,
+  OnChanges,
   Input,
   Output,
   EventEmitter,
-  SimpleChanges
+  SimpleChanges,
 } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.service';
@@ -15,7 +16,7 @@ import { AppConfig } from '@geonature_config/app.config';
   templateUrl: './dynamic-form.component.html',
   styleUrls: ['./dynamic-form.component.scss']
 })
-export class DynamicFormComponent implements OnInit {
+export class DynamicFormComponent implements OnInit, OnChanges {
   @Input() formDef: any;
   @Input() form: FormGroup;
 
@@ -73,7 +74,6 @@ export class DynamicFormComponent implements OnInit {
       currentFormValue.push(event.target.value);
       // Patch value to declench validators
       formControl.patchValue(currentFormValue);
-      console.log(event.target.value);
     } else {
       // Find the unselected element
       currentFormValue.forEach((val, index) => {
@@ -91,7 +91,7 @@ export class DynamicFormComponent implements OnInit {
     formControl.setValue(val);
   }
 
-  ngOnChanges(changes: SimpleChanges) {
+  ngOnChanges(changes: SimpleChanges) {    
     for (const propName of Object.keys(changes)) {
       // si le composant dynamic-form-generator annonce un update
       // => on recalcule les propriétés

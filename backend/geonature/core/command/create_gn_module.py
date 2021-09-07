@@ -11,13 +11,17 @@ import os
 import sys
 import logging
 import subprocess
-
+from pkg_resources import load_entry_point
 from pathlib import Path
 
 import click
+from click import ClickException
+from flask import current_app
+from flask_migrate import upgrade as db_upgrade
 from sqlalchemy.orm.exc import NoResultFound
 
-from geonature.utils.env import DB, DEFAULT_CONFIG_FILE
+from geonature.utils.env import DB, db, DEFAULT_CONFIG_FILE, GN_EXTERNAL_MODULE
+from geonature.utils.module import get_dist_from_code
 
 from geonature.utils.command import (
     build_geonature_front,
@@ -47,6 +51,69 @@ from geonature import create_app
 
 
 log = logging.getLogger(__name__)
+
+@main.command()
+@click.argument("module_path")
+@click.argument("module_code")
+@click.option("--build", type=bool, required=False, default=True)
+def install_packaged_gn_module(module_path, module_code, build):
+    # install python package and dependencies
+    subprocess.run(f"pip install -e {module_path}", shell=True, check=True)
+
+    # load python package
+    module_dist = get_dist_from_code(module_code)
+    if not module_dist:
+        raise ClickException(f"Unable to load module with code {module_code}")
+
+    # add module to database
+    try:
+        module_picto = load_entry_point(module_dist, 'gn_module', 'picto')
+    except ImportError:
+        module_picto = "fa-puzzle-piece"
+    module_object = TModules.query.filter_by(module_code=module_code).one()
+    if not module_object:
+        module_object = TModules(
+                module_code=module_code,
+                module_label=module_code.lower(),
+                module_path=module_code.lower(),
+                module_target="_self",
+                module_picto=module_picto,
+                active_frontend=True,
+                active_backend=True,
+        )
+        db.session.add(module_object)
+    else:
+        module_object.module_picto=module_picto
+        db.session.merge(module_object)
+    db.session.commit()
+
+    db_upgrade(revision=module_code.lower())
+
+    # symlink module in exernal module directory
+    module_symlink = GN_EXTERNAL_MODULE / module_code.lower()
+    if os.path.exists(module_symlink):
+        target = os.readlink(module_symlink)
+        if os.path.abspath(module_path) != target:
+            raise ClickException(f"Module symlink has wrong target '{target}'")
+    else:
+        os.symlink(os.path.abspath(module_path), module_symlink)
+
+    ### Frontend
+    # creation du lien symbolique des assets externes
+    enable_frontend = create_external_assets_symlink(
+        module_path, module_code.lower()
+    )
+
+    install_frontend_dependencies(module_path)
+    # generation du fichier tsconfig.app.json
+    tsconfig_app_templating(app=current_app)
+    # generation du routing du frontend
+    frontend_routes_templating(app=current_app)
+    # generation du fichier de configuration du frontend
+    create_module_config(current_app, module_code, build=False)
+    if build:
+        # Rebuild the frontend
+        build_geonature_front(rebuild_sass=True)
 
 
 @main.command()
@@ -119,18 +186,20 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                     if enable_frontend:
                         install_frontend_dependencies(module_path)
                         # generation du fichier tsconfig.app.json
-                        tsconfig_app_templating(app)
+                        tsconfig_app_templating(
+                            app=app
+                        )
                         # generation du routing du frontend
-                        frontend_routes_templating(app)
+                        frontend_routes_templating(
+                            app=app
+                        )
                         # generation du fichier de configuration du frontend
                         create_module_config(app, module_code, build=False)
-
                     if build and enable_frontend:
                         # Rebuild the frontend
                         build_geonature_front(rebuild_sass=True)
 
-                    # finally restart geonature backend via supervisor
-                    subprocess.call(["sudo", "supervisorctl", "restart", "geonature2"])
+                    log.info("Pensez à relancer geonature")
                 except Exception as e:
                     log.error("%s", e)
                     raise GeoNatureError(
@@ -145,15 +214,16 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                 )  # noqa
 
     except (GNModuleInstallError, GeoNatureError) as ex:
-        # S'il y a une erreur lors de l'installation initiale du module
-        #   suppression de ce module
-        if fresh_install:
-            remove_application_db(app, module_code)
         log.critical(
             (
                 "\n\n\033[91mError while installing GN module \033[0m.The process returned:\n\t{}"
             ).format(ex)
         )
+        # S'il y a une erreur lors de l'installation initiale du module
+        #   suppression de ce module
+        if fresh_install:
+            remove_application_db(app, module_code)
+
         sys.exit(1)
 
 
@@ -242,8 +312,7 @@ def deactivate_gn_module(module_code, frontend, backend):
 @main.command()
 @click.argument("module_code")
 @click.option("--build", type=bool, required=False, default=True)
-@click.option("--prod", type=bool, required=False, default=True)
-def update_module_configuration(module_code, build, prod):
+def update_module_configuration(module_code, build):
     """
     Génère la config frontend d'un module
 
@@ -254,7 +323,8 @@ def update_module_configuration(module_code, build, prod):
     - geonature update_module_configuration --build False --prod False occtax
 
     """
-    if prod:
-        subprocess.call(["sudo", "supervisorctl", "reload"])
     app = create_app(with_external_mods=False)
-    create_module_config(app, module_code, build=build)
+    with app.app_context():
+        create_module_config(app, module_code, build=build)
+    log.info("Si vous avez changé des paramtères de configuration nécessaire au backend, "
+             "pensez à également relancer ce dernier.")

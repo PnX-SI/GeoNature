@@ -4,7 +4,7 @@
    Fichier à ne pas modifier. Paramètres surcouchables dans config/config_gn_module.tml
 """
 
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, post_load
 
 
 class MapListConfig(Schema):
@@ -12,44 +12,44 @@ class MapListConfig(Schema):
 
 
 class FormConfig(Schema):
-    date_min = fields.Boolean(missing=True)
-    date_max = fields.Boolean(missing=True)
-    hour_min = fields.Boolean(missing=True)
-    hour_max = fields.Boolean(missing=True)
-    altitude_min = fields.Boolean(missing=True)
-    altitude_max = fields.Boolean(missing=True)
-    depth_min = fields.Boolean(missing=False)
-    depth_max = fields.Boolean(missing=False)
-    altitude_max = fields.Boolean(missing=True)
-    tech_collect = fields.Boolean(missing=False)
-    group_type = fields.Boolean(missing=False)
-    comment_releve = fields.Boolean(missing=True)
-    obs_tech = fields.Boolean(missing=True)
-    bio_condition = fields.Boolean(missing=True)
-    bio_status = fields.Boolean(missing=True)
-    naturalness = fields.Boolean(missing=True)
-    exist_proof = fields.Boolean(missing=True)
-    observation_status = fields.Boolean(missing=True)
-    blurring = fields.Boolean(missing=False)
-    determiner = fields.Boolean(missing=True)
-    determination_method = fields.Boolean(missing=True)
-    digital_proof = fields.Boolean(missing=True)
-    non_digital_proof = fields.Boolean(missing=True)
-    source_status = fields.Boolean(missing=False)
-    comment_occ = fields.Boolean(missing=True)
-    life_stage = fields.Boolean(missing=True)
-    sex = fields.Boolean(missing=True)
-    obj_count = fields.Boolean(missing=True)
-    type_count = fields.Boolean(missing=True)
-    count_min = fields.Boolean(missing=True)
-    count_max = fields.Boolean(missing=True)
-    display_nom_valide = fields.Boolean(missing=True)
-    geo_object_nature = fields.Boolean(missing=False)
-    habitat = fields.Boolean(missing=True)
-    grp_method = fields.Boolean(missing=False)
-    behaviour = fields.Boolean(missing=True)
-    place_name = fields.Boolean(missing=False)
-    precision = fields.Boolean(missing=False)
+    date_min = fields.Boolean(load_default=True)
+    date_max = fields.Boolean(load_default=True)
+    hour_min = fields.Boolean(load_default=True)
+    hour_max = fields.Boolean(load_default=True)
+    altitude_min = fields.Boolean(load_default=True)
+    altitude_max = fields.Boolean(load_default=True)
+    depth_min = fields.Boolean(load_default=False)
+    depth_max = fields.Boolean(load_default=False)
+    altitude_max = fields.Boolean(load_default=True)
+    tech_collect = fields.Boolean(load_default=False)
+    group_type = fields.Boolean(load_default=False)
+    comment_releve = fields.Boolean(load_default=True)
+    obs_tech = fields.Boolean(load_default=True)
+    bio_condition = fields.Boolean(load_default=True)
+    bio_status = fields.Boolean(load_default=True)
+    naturalness = fields.Boolean(load_default=True)
+    exist_proof = fields.Boolean(load_default=True)
+    observation_status = fields.Boolean(load_default=True)
+    blurring = fields.Boolean(load_default=False)
+    determiner = fields.Boolean(load_default=True)
+    determination_method = fields.Boolean(load_default=True)
+    digital_proof = fields.Boolean(load_default=True)
+    non_digital_proof = fields.Boolean(load_default=True)
+    source_status = fields.Boolean(load_default=False)
+    comment_occ = fields.Boolean(load_default=True)
+    life_stage = fields.Boolean(load_default=True)
+    sex = fields.Boolean(load_default=True)
+    obj_count = fields.Boolean(load_default=True)
+    type_count = fields.Boolean(load_default=True)
+    count_min = fields.Boolean(load_default=True)
+    count_max = fields.Boolean(load_default=True)
+    display_nom_valide = fields.Boolean(load_default=True)
+    geo_object_nature = fields.Boolean(load_default=False)
+    habitat = fields.Boolean(load_default=True)
+    grp_method = fields.Boolean(load_default=False)
+    behaviour = fields.Boolean(load_default=True)
+    place_name = fields.Boolean(load_default=False)
+    precision = fields.Boolean(load_default=False)
 
 
 default_map_list_conf = [
@@ -129,10 +129,10 @@ default_columns_export = [
     "natObjGeo",
     "nomLieu",
     "precision",
+    "additional_data"
 ]
 
-
-# Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
+# Export available format (Only csv, geojson and shapefile and 'gpkg' is possible)
 available_export_format = ["csv", "geojson", "shapefile"]
 
 list_messages = {
@@ -145,35 +145,47 @@ export_message = """
 Vous vous apprêtez à télécharger les données de la <b>recherche courante. </b> </p>
 """
 
+default_export_col_name_additional_data = "additional_data"
+
+default_media_fields_details = ['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile']
+
+
+
+
 
 class GnModuleSchemaConf(Schema):
-    form_fields = fields.Nested(FormConfig, missing=dict())
-    observers_txt = fields.Boolean(missing=False)
-    export_view_name = fields.String(missing="v_export_occtax")
-    export_geom_columns_name = fields.String(missing="geom_4326")
-    export_id_column_name = fields.String(missing="permId")
-    export_srid = fields.Integer(missing=4326)
-    export_observer_txt_column = fields.String(missing="obsId")
+    form_fields = fields.Nested(FormConfig, load_default=dict())
+    observers_txt = fields.Boolean(load_default=False)
+    export_view_name = fields.String(load_default="v_export_occtax")
+    export_geom_columns_name = fields.String(load_default="geom_4326")
+    export_id_column_name = fields.String(load_default="permId")
+    export_srid = fields.Integer(load_default=4326)
+    export_observer_txt_column = fields.String(load_default="obsId")
     export_available_format = fields.List(
-        fields.String(), missing=available_export_format
+        fields.String(), load_default=available_export_format
     )
-    export_columns = fields.List(fields.String(), missing=default_columns_export)
-    export_message = fields.String(missing=export_message)
-    list_messages = fields.Dict(missing=list_messages)
-    digital_proof_validator = fields.Boolean(missing=True)
+    export_columns = fields.List(fields.String(), load_default=default_columns_export)
+    export_message = fields.String(load_default=export_message)
+    list_messages = fields.Dict(load_default=list_messages)
+    digital_proof_validator = fields.Boolean(load_default=True)
     releve_map_zoom_level = fields.Integer()
-    id_taxon_list = fields.Integer(missing=100)
-    taxon_result_number = fields.Integer(missing=20)
-    id_observers_list = fields.Integer(missing=1)
-    default_maplist_columns = fields.List(fields.Dict(), missing=default_map_list_conf)
+    id_taxon_list = fields.Integer(load_default=None)
+    taxon_result_number = fields.Integer(load_default=20)
+    id_observers_list = fields.Integer(load_default=1)
+    default_maplist_columns = fields.List(fields.Dict(), load_default=default_map_list_conf)
     available_maplist_column = fields.List(
-        fields.Dict(), missing=available_maplist_column
+        fields.Dict(), load_default=available_maplist_column
     )
-    MAX_EXPORT_NUMBER = fields.Integer(missing=50000)
-    ENABLE_GPS_TOOL = fields.Boolean(missing=True)
-    ENABLE_UPLOAD_TOOL = fields.Boolean(missing=True)
-    DATE_FORM_WITH_TODAY = fields.Boolean(missing=True)
-    ENABLE_SETTINGS_TOOLS = fields.Boolean(missing=False)
-    ENABLE_MEDIAS = fields.Boolean(missing=True)
-    ENABLE_MY_PLACES = fields.Boolean(missing=True)
-    DISPLAY_VERNACULAR_NAME = fields.Boolean(missing=True)
+    MAX_EXPORT_NUMBER = fields.Integer(load_default=50000)
+    ENABLE_GPS_TOOL = fields.Boolean(load_default=True)
+    ENABLE_UPLOAD_TOOL = fields.Boolean(load_default=True)
+    DATE_FORM_WITH_TODAY = fields.Boolean(load_default=True)
+    ENABLE_SETTINGS_TOOLS = fields.Boolean(load_default=False)
+    ENABLE_MEDIAS = fields.Boolean(load_default=True)
+    ENABLE_MY_PLACES = fields.Boolean(load_default=True)
+    DISPLAY_VERNACULAR_NAME = fields.Boolean(load_default=True)
+    export_col_name_additional_data = fields.String(load_default=default_export_col_name_additional_data)
+    MEDIA_FIELDS_DETAILS = fields.List(fields.String(), load_default=default_media_fields_details)
+    ADD_MEDIA_IN_EXPORT = fields.Boolean(load_default=False)
+    ID_LIST_HABITAT = fields.Integer(load_default=None)
+    CD_TYPO_HABITAT = fields.Integer(load_default=None)

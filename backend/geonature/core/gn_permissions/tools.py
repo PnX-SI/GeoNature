@@ -1,7 +1,7 @@
 import logging, json
 
 from flask import current_app, redirect, Response
-from werkzeug.exceptions import Unauthorized
+from werkzeug.exceptions import Forbidden, Unauthorized
 from werkzeug.routing import RequestRedirect
 
 
@@ -16,7 +16,6 @@ from sqlalchemy.sql.expression import func
 
 
 from pypnusershub.db.tools import (
-    InsufficientRightsError,
     AccessRightsExpiredError,
     UnreadableAccessRightsError,
 )
@@ -310,7 +309,7 @@ def get_user_permissions(
         return user_cruved
     except AssertionError:
         object_for_error = ",".join(filter(None, (code_object, module_code)))
-        raise InsufficientRightsError(
+        raise Forbidden(
             f"User {user['id_role']} cannot '{code_action}' in module/app/object {object_for_error}"
         )
 

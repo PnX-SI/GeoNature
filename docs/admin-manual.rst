@@ -54,6 +54,107 @@ Dernière version complète de la base de données (GeoNature 2.1 / 2019-08) :
 
 Les relations complexes entre les schémas ont été grisées pour faciliter la lisibilité.
 
+Administration avec Alembic
+"""""""""""""""""""""""""""
+
+À partir de la version 2.7.5 de GeoNature, la gestion du schéma de la base de données se fait avec l’outil `Alembic <https://alembic.sqlalchemy.org/en/latest/>`_.
+Celui-ci fonctionne grâce à des fichiers de migration qui sont appliqués de manière atomique (via une transaction) à la base de données, leur application étant enregistré dans la table ``public.alembic_version`` permettant en chaque instant de savoir dans quel état la base de données se trouve.
+
+Les fichiers de migrations de GeoNature se trouve dans le dossier ``backend/geonature/migrations/versions/``.
+Il est possible pour n’importe quelle dépendance ou module GeoNature de fournir également des fichiers de migrations. Pour que ceux-ci soient détectés par Alembic, il suffira de définir un point d’entrée dans le ``setup.py`` de la dépendance ou du module concerné :
+
+.. code-block::
+
+    setuptools.setup(
+        …,
+        entry_points={
+            'alembic': [
+                'migrations = my_module:migrations',
+            ],
+        },
+        …
+    )
+
+Les commandes Alembic sont disponible grâce à la sous-commande ``db`` de la commande ``geonature`` :
+
+.. code-block::
+
+    $ geonature db --help
+
+Chaque fichier de migration est caractérisé par :
+
+* un identifiant, `e.g.` ``f06cc80cc8ba``
+* une branche : Les branches permettent de séparer les fichiers de migrations afin de pouvoir les appliquer séparement. Par exemple, pour un déploiement de TaxHub dans GeoNature, il peut être intéressant de créer le schéma ``taxonomie`` sans créer les schémas de GeoNature, et ainsi gérer indépendamment les migrations de chaque schéma.
+* un ancêtre : Lorsqu’un fichier de migration représente l’évolution d’un état antérieur de la base de données, l’ancêtre indique dans quelle version la base de données doit se trouver avant d’appliquer le-dis ficheir de migration.
+* des dépendances : Il est possible d’indiquer qu’une migration nécessite que une ou plusieurs autres migrations aient été préalablement appliquées. Par exemple, ceci permet d’indiquer que le schéma de GeoNature nécessite les schémas ``taxonomie`` et ``utilisateurs``.
+
+La commande ``history`` permet de lister l’ensemble des fichiers de migration disponible :
+
+.. code-block::
+
+    $ geonature db history
+    <base> (f06cc80cc8ba) -> 586613e2faeb (ref_geo_inpn_grids_1) (head), Insert INPN 1×1 grids in ref_geo
+    <base> (f06cc80cc8ba) -> 0dfdbfbccd63 (ref_geo_fr_municipalities) (head), Insert French municipalities in ref_geo
+    <base> (f06cc80cc8ba) -> 7d6e98441e4c (ref_geo_inpn_grids_5) (head), Insert INPN 5×5 grids in ref_geo
+    <base> (f06cc80cc8ba) -> 3fdaa1805575 (ref_geo_fr_departments) (head), Insert French departments in ref_geo
+    <base> (f06cc80cc8ba) -> ede150d9afd9 (ref_geo_inpn_grids_10) (head), Insert INPN 10×10 grids in ref_geo
+    <base> -> e04a349457e4 (psdrf) (head), create_pr_psdrf_schema
+    <base> -> f06cc80cc8ba (geonature), 2.7.5
+
+Le passage à Alembic nécessite de créer des fichiers de migration pour la création des différents schémas de GeoNature et de ses dépendances. Dans un premier temps, afin de faciliter le passage à Alembic, un unique fichier de migration a été créé, ``f06cc80cc8ba``, appartenant à la branche ``geonature``, non fonctionnel (une exception est levé lorsque celui-ci est joué), afin de représenter l’état du schéma de GeoNature dans sa version 2.7.5. Ainsi, il est pour le moment toujours nécessaire de créer une base de données 2.7.5 grâce au script ``install_db.sh``, ou de mettre à jour une base de données existante jusqu’à la version 2.7.5 en appliquant manuellement les fichiers de migration SQL, avant d’indiquer à Alembic que le schéma se trouve en version 2.7.5 grâce à la commande suivante :
+
+.. code-block::
+
+    $ geonature db stamp f06cc80cc8ba
+
+Afin de savoir dans quel état se trouve la base de données, il est possible de demander l’affichage des migrations qui ont été appliquées :
+
+.. code-block::
+
+    $ geonature db current
+    f06cc80cc8ba (head)
+
+À noter que seule la dernière migration appliquée d’une branche est affichée, les migrations qui la précèdent sont implicitement appliquées puisque la dernière en dépend.
+
+Il a été également créé des migrations afin d’insérer dans le référentiel géographique les mailles INPN, les départements et les communes françaises.
+Ces migrations sont séparées dans différentes branches afin de pouvoir être appliqué séparément. Elles dépendent en revanche toutes de ``f06cc80cc8ba`` (indiqué entre parenthèse dans l’historique) car la schéma ``ref_geo`` nécessite d’exister, ce qui est bien le cas en 2.7.5.
+Ainsi, si vous souhaitez insérer les grilles 10×10 dans votre référentiel géographique :
+
+.. code-block::
+
+    $ geonature db upgrade ref_geo_inpn_grids_10@head -x geo-data-directory=./tmp_geo
+
+Ici, ``@head`` indique que nous souhaitons appliquer toutes les migrations jusqu’à la dernière de la branche ``ref_geo_inpn_grids_10`` (bien que dans notre cas, cette branche contient une unique migration).
+
+L’argument ``-x`` permet de fournir des variables à usage des fichiers de migrations. Dans le cas des migrations de données de zones géographiques, celles-ci supporte la variable ``geo-data-directory`` permettant de spécifier où doivent être cherché et éventuellement téléchargé les données géographiques. Si l’argument n’est pas spécifié, un dossier temporaire, supprimé à la fin de la procédure, sera utilisé.
+
+En revanche, si votre installation contient déjà les mailles 10×10, vous pouvez en informer Alembic :
+
+.. code-block::
+
+    $ geonature db stamp ede150d9afd9
+
+Pour supprimer les mailles 10×10 de son référentiel géographique, on utilisera :
+
+.. code-block::
+
+    $ geonature db downgrade ref_geo_inpn_grids_10@base
+
+Dans le cas d’une branche contenant plusieurs migrations, on pourra appliquer ou dé-appliquer chaque migration individuellement avec ``upgrade branch@+1`` ou ``downgrade branch@-1``. Il est également possible de référencer directement un numéro de migration.
+
+Si l’on souhaite appliquer une migration manuellement, ou si l’on souhaite la modifier, il est possible de passer l’argument ``--sql`` aux commandes ``upgrade`` et ``downgrade`` afin de récupérer le code SQL de la migration. Cela ne fonctionne toutefois pas avec certaines migrations telles que les migrations de données géographique en raison d’import SQL nécessitant de manipuler directement le curseur SQLAlchemy.
+
+Pour créer un nouveau fichier de migration afin d’y placer ses évolutions de la base de données, on utilisera la commande suivante :
+
+.. code-block::
+
+    $ geonature db revision -m "add table gn_commons.t_foo" --head geonature@head
+      Generating […]/backend/geonature/migrations/versions/31250092bce3_add_table_gn_commons_t_foo.py ...  done
+
+La `documentation d’Alembic <https://alembic.sqlalchemy.org/en/latest/ops.html>`_ liste les opérations prises en charge.
+Certaines opérations complexes telles que la création de trigger ne sont pas prévu, mais il reste toujours possible d’executer du SQL directement avec l’opérateur ``op.execute``.
+
+
 Gestion des droits
 """"""""""""""""""
 
@@ -102,6 +203,52 @@ Récapitulatif :
 A noter que toutes les actions et toutes les portées n'ont pas été implémentées dans tous les modules. Elles le sont en fonction des besoins de chaque module.
 
 TODO : Lister les permissions implémentées dans chaque module.
+
+
+Accès public
+""""""""""""
+
+Cette section de la documentation concerne l'implémentation d'un utilisateur-lecteur pour votre instance GeoNature, permettant d'y donner accès sans authentification.
+
+Etapes :
+
+1/ UsersHub :
+
+- Aller dans la section ``Utilisateurs``
+- Créer un utilisateur 
+- Définir un identifiant et un mot de passe (par défaut utilisateur 'public' et mot de passe 'public')
+- Aller ensuite dans la section `Applications`
+- Pour GeoNature, cliquer sur le premier icône 'Voir les membres'
+- Cliquer sur ajouter un rôle 
+- Choisir l'utilisateur juste créé
+- Attribuer le rôle 1, 'lecteur' 
+
+2/ Configuration GeoNature : 
+
+- Reporter identifiant et mot de passe dans le fichier de configuration de GeoNature (``config/geonature_config.toml``)
+
+.. code:: 
+
+  PUBLIC_LOGIN = 'public'
+  PUBLIC_PASSWORD = 'public'
+
+- Mettre à jour la configuration de GeoNature
+
+.. code:: 
+
+  $ source backend/venv/bin/activate
+  $ geonature update_configuration
+
+A ce moment-là, cet utilisateur a tous les droits sur GeoNature.
+Il s'agit maintenant de gérer ses permissions dans GeoNature même. 
+
+3/ GeoNature 
+
+- Se connecter à GeoNature avec un utilisateur administrateur
+- Aller dans le module Admin
+- Cliquer sur 'Gestion des permissions'
+- Choisissez l'utilisateur sélectionné 
+- Editer le CRUVED pour chacun des modules de l'instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser '3' pour les modules d'intérêt. 
 
 Nomenclatures
 """""""""""""
@@ -634,6 +781,8 @@ Restauration
         sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
         sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+        sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS postgis_raster;"
+        
 
   - Restaurer la BDD à partir du backup
 
@@ -692,7 +841,7 @@ Si la manipulation vous parait compliquée, vous pouvez suivre la documentation 
 Intégrer son logo
 """""""""""""""""
 
-Le logo affiché dans la barre de navigation de GeoNature peut être modifié dans le répertoire ``geonature/frontend/src/custom/images``. Remplacez alors le fichier ``logo_structure.png`` par votre propre logo, en conservant ce nom pour le nouveau fichier. Le bandeau fait 50px de hauteur, vous pouvez donc mettre une image faisant cette hauteur. Il est également possible de modifier la taille de l'image en CSS dans le fichier ``frontend/src/custom/custom.scss`` de la manière suivante:
+Le logo affiché dans la barre de navigation de GeoNature peut être modifié dans le répertoire ``geonature/frontend/src/custom/images``. Remplacez alors le fichier ``logo_structure.png`` par votre propre logo, en conservant ce nom pour le nouveau fichier. Le bandeau fait 50px de hauteur, vous pouvez donc mettre une image faisant cette hauteur. Il est également possible de modifier la taille de l'image en CSS dans le fichier ``frontend/src/assets/custom.css`` de la manière suivante:
 
 .. code:: css
 
@@ -741,7 +890,7 @@ De la même manière, il est nécessaire de relancer les commandes suivantes pou
 Customiser l'aspect esthétique
 """"""""""""""""""""""""""""""
 
-Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant le fichier ``custom.scss``, situé dans le répertoire ``geonature/frontend/src/custom``.
+Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant le fichier ``custom.css``, situé dans le répertoire ``geonature/frontend/src/assets``.
 
 Pour remplacer la couleur de fond du bandeau de navigation par une image, on peut par exemple apporter la modification suivante :
 
@@ -1018,6 +1167,53 @@ Cet espace est activable grâce au paramètre ``ENABLE_USER_MANAGEMENT``. Par d�
         ENABLE_SIGN_UP = true
         ENABLE_USER_MANAGEMENT = true
 
+Rendre GeoNature accessible sans authentification
+--------------------------------------------------
+
+Cette section de la documentation concerne l'implémentation d'un utilisateur-lecteur pour votre instance GeoNature. 
+
+Etapes :
+
+1/ UsersHub :
+   - Aller dans la section `Utilisateurs` 
+   - Créer un utilisateur 
+   - Définir un identifiant et un mot de passe (par défaut utilisateur 'public' et mot de passe 'public')
+   - Aller ensuite dans la section `Applications`
+   - Pour GeoNature, cliquer sur le premier icône 'Voir les membres'
+   - Cliquer sur ajouter un rôle 
+   - Choisir l'utilisateur juste créé
+   - Attribuer le rôle 1, 'lecteur' 
+
+2/ Configuration GeoNature : 
+  - Reporter identifiant et mot de passe dans le fichier de configuration de GeoNature
+
+.. code-block::
+
+    $ cd config
+    $ nano geonature_config.toml
+    PUBLIC_LOGIN = 'public'
+    PUBLIC_PASSWORD = 'public'
+..
+
+   - Mettre à jour la configuration de GeoNature
+
+.. code-block::
+
+    $ source backend/venv/bin/activate
+    $ geonature update_configuration
+..
+
+A ce moment là, cet utilisateur a tous les droits sur GeoNature.
+Il s'agit donc de gérer ses permissions dans GeoNature même. 
+
+3/ GeoNature 
+
+   - Se connecter à GeoNature avec un utilisateur administrateur
+   - Aller dans le module Admin
+   - Cliquer sur 'Gestion des permissions'
+   - Choisissez l'utilisateur sélectionné 
+   - Editer le CRUVED pour chacun des modules de l'instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser '3' pour les modules d'intérêt. 
+
 
 Module OCCTAX
 -------------
@@ -1230,6 +1426,41 @@ La gestion des droits (CRUVED) se fait module par module. Cependant si on ne red
 Pour ne pas afficher le module Occtax à un utilisateur où à un groupe, il faut lui mettre l'action Read (R) à 0.
 
 L'administration des droits des utilisateurs pour le module Occtax se fait dans le backoffice de gestion des permissions de GeoNature.
+
+
+Module Admin
+-------------
+
+Administration des champs additionnels
+**************************************
+
+Certains protocoles nécessitent la saisie de champs qui vont au-delà des standards du SINP sur lesquels GeoNature s'appuie. Les champs additionnels permettent ainsi d'étendre les formulaires en ajoutant des informations spécifiques pour des jeux de données (JDD) ou pour l'ensemble d'un module.
+
+Les champs additionnels ne sont pas créés comme des colonnes à part entière, mais leurs valeurs sont stockées dans un champs ``additional_data`` au format JSON.
+
+Actuellement seul le module Occtax implémente la gestion de ces champs additionnels.
+
+Le backoffice de GeoNature offre une interface de création et de gestion de ces champs additionnels. 
+Un champ additionnel est définit par:
+
+- son nom (nom dans la base de données)
+- son label (nom tel qu'il sera affiché sur l'interface)
+- son type de widget : vous devez définir si le champs est une liste déroulante, une checkbox, une nomenclature, un entier, un champ texte, etc...
+- le (ou les) module(s) auquel il est rattaché 
+- le (ou les) objet(s) auquel il est rattaché. Il s'agit du placement et de la table de rattachement du champs dans le module. Par exemple Occtax est composé de 3 "objets/table". Les objets "relevé", "occurrence" et "dénombrement".
+- le (ou les) JDD auquel il est rattaché. Si aucun JDD n'est renseigné le champ sera proposé dans tout le module pour tous les JDD. S'il est rattaché à un JDD, le champs sera chargé dynamiquement à la selection du JDD dans le formulaire 
+- une série d'autres options pour paramétrer le comportement du champs (obligatoire, ordre, description, exportable etc...)
+
+Exemples de configuration :
+
+- Un champs type "select" :
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/select_exemple.png
+
+- Un champs type "multiselect" (la clé "value" est obligatoire dans le dictionnaire de valeurs) : 
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/multiselect3.png
+
+- Un champs type "html". C'est un champs de type "présentation", aucune valeur ne sera enregistré en base de données pour ce champs :
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/html1.png
 
 
 Module OCCHAB

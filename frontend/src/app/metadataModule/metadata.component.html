@@ -26,13 +26,14 @@
           Ajouter un jeu de données
         </button>
       </div>
+
       <div class="row">
         <div class="form-group col-sm-7">
           <input
             class="form-control form-control-sm"
             type="text"
             placeholder="Rechercher"
-            [formControl]="searchFormService.rapidSearchControl"
+            [formControl]="metadataService.rapidSearchControl"
           >
         </div>
         <div class="col-sm-3">
@@ -46,256 +47,169 @@
             color="accent"
             class="ml-2"
             matTooltip="Réinitialiser la recherche"
-            (click)="refreshFilters(searchModal)"
+            (click)="refreshFilters()"
           >
             <mat-icon style="vertical-align: middle;">refresh</mat-icon>
           </button>
         </div>
       </div>
+
       <div>Liste des cadres d'acquisition et des jeux de données associés</div>
       <br>
 
-      <mat-accordion 
-        [multi]="true"
-        >
-        <div class="tab-title">
-          <div class="col-md-1">ID </div>
-          <div class="col-md-2"> Nom</div>
-          <div class="col-md-2"> Date de création</div>
-          <div class="col-md-5"> Acteurs</div>
-          <div class="col-md-1"> Actions</div>
-        </div>
-        <mat-spinner
-          *ngIf="isLoading"
-          diameter="50"
-          strokeWidth="2"
-          style="margin: 0 auto;"
-        >
-      </mat-spinner>
-        <ng-container *ngFor="let af of tempAF; let idx = index">
-          <mat-expansion-panel
-            *ngIf="isDisplayed(idx)"
-            [expanded]="expandAccordions"
+      <ng-container *ngIf="(acquisitionFrameworks | async)?.length || isLoading; else noAcquisitionFrameworks">
+
+        
+
+        <mat-accordion 
+          [multi]="true"
           >
-            <mat-expansion-panel-header
-              collapsedHeight="*"
-              expandedHeight="*"
+          <div class="tab-title" *ngIf="!isLoading">
+            <div class="col-md-1">ID </div>
+            <div class="col-md-2"> Nom</div>
+            <div class="col-md-2"> Date de création</div>
+            <div class="col-md-5"> Acteurs</div>
+            <div class="col-md-1"> Actions</div>
+          </div>
+          <mat-spinner
+            *ngIf="isLoading"
+            diameter="50"
+            strokeWidth="2"
+            style="margin: 0 auto;"
+          >
+          </mat-spinner>
+
+          <ng-container *ngFor="let af of (acquisitionFrameworks | async); let idx = index">
+            <mat-expansion-panel
+              [expanded]="expandAccordions"
             >
-              <mat-panel-title
-                class="af-title"
-                style="margin-top:2.5%;margin-bottom: 1.2%;"
+              <mat-expansion-panel-header
+                collapsedHeight="*"
+                expandedHeight="*"
               >
+                <mat-panel-title
+                  class="af-title"
+                  style="margin-top:2.5%;margin-bottom: 1.2%;"
+                >
 
-                <div class="col-md-1">{{ af.id_acquisition_framework }}</div>
-                <div class="col-md-2">
-                  <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]">
-                    {{ af.acquisition_framework_name }}
-                    <br> <small style="color: gray"> {{ af.unique_acquisition_framework_id  }}
-                    </small>
-                  </a>
-                </div>
-                <div class="col-md-2 ">{{af.meta_create_date |date:'d/MM/yyyy'}}
-                </div>
-                <section class="col-md-5">
-                  <span *ngIf="af.creator"> <b> {{af.creator?.nom_complet}} : </b> créateur </span>
-
-                  <div *ngFor="let ac of af.cor_af_actor">
-                    <span *ngIf="ac.organism">
-                      <b> {{ac.organism?.nom_organisme }} : </b>
-                      {{ac.nomenclature_actor_role.label_fr }} <br>
-                    </span>
-                    <span *ngIf="ac.role">
-                      <b> {{ac.role?.nom_complet }} : </b>
-                      {{ac.nomenclature_actor_role.label_fr }} <br>
-                    </span>
-
-                  </div>
-                </section>
-
-                <div class="col-md-2">
-                  <button
-                    mat-icon-button
-                    [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
-                    matTooltip="Voir la fiche du cadre d'acquisition"
-                    style="color: black;"
-                  >
-                    <mat-icon> info</mat-icon>
-                  </button>
-                  <button
-                    mat-icon-button
-                    [disabled]="!af.cruved.U"
-                    matTooltip="Editer ce cadre d'acquisition"
-                    [routerLink]="['/metadata/af', af.id_acquisition_framework]"
-                  >
-                    <mat-icon> create</mat-icon>
-                  </button>
-                  <button
-                    *ngIf="APP_CONFIG.METADATA?.ENABLE_CLOSE_AF"
-                    mat-icon-button
-                    [disabled]="!af.cruved.V || !af.opened || af['datasetsTemp'].length == 0"
-                    (click)="openPublishModalAf($event, af.id_acquisition_framework, publishModal)"
-                  >
-                    <mat-icon
-                      *ngIf="af.opened==false; else elifEmpty"
-                      matTooltip="Le cadre d'acquisition a déjà été déposé"
-                    > gavel </mat-icon>
-                    <ng-template #elifEmpty>
-                      <mat-icon
-                        *ngIf="af['datasetsTemp'].length == 0; else elsePublish"
-                        matTooltip="Le cadre d'acquisition est vide"
-                      > gavel </mat-icon>
-                    </ng-template>
-                    <ng-template #elsePublish>
-                      <mat-icon
-                        matTooltip="Déposer le cadre d'acquisition"
-                      > gavel </mat-icon>
-                    </ng-template>
-                  </button>
-
-                </div>
-
-              </mat-panel-title>
-
-            </mat-expansion-panel-header>
-            <table class="table table-bordered">
-              <thead class="bold">
-                <tr>
-                  <td style="width:1%">
-                    Id
-                  </td>
-                  <td>Nom du JDD</td>
-                  <td>Date de création</td>
-                  <td>Acteurs</td>
-                  <td>Nombre de données</td>
-                  <td>Actions</td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr *ngFor="let ds of af.datasetsTemp; let last = last;">
-                  <td>
-                    {{ds.id_dataset}}
-                  </td>
-                  <td>
-                    <span class="float-left">
-                      <mat-icon
-                        *ngIf="ds.active"
-                        matTooltip="Le jeu de données est actif"
-                        class="success"
-                      > toggle_on </mat-icon>
-                      <mat-icon
-                        *ngIf="!ds.active"
-                        matTooltip="Le jeu de données est inactif"
-                        color="warn"
-                      > toggle_off </mat-icon>
-                    </span>
-                    <a [routerLink]="['/metadata/dataset_detail', ds.id_dataset]">
-                      {{ds.dataset_name}}
-
-                      <br />
-                      <small style="color: gray"> {{ds.unique_dataset_id}} </small>
-
+                  <div class="col-md-1">{{ af.id_acquisition_framework }}</div>
+                  <div class="col-md-2">
+                    <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]">
+                      {{ af.acquisition_framework_name }}
+                      <br> <small style="color: gray"> {{ af.unique_acquisition_framework_id  }}
+                      </small>
                     </a>
-                  </td>
-                  <td> {{ds.meta_create_date |date:'d/MM/yyyy' }}</td>
-                  <td style="text-align: left;">
-                    <span *ngIf="ds.creator"> <b> {{ds.creator?.nom_complet}} : </b> créateur
-                    </span>
-                    <div *ngFor="let ac of ds.cor_dataset_actor">
-                      <span *ngIf="ac.organism">
-                        <b> {{ac.organism?.nom_organisme }} : </b>
-                        {{ac.nomenclature_actor_role.label_fr }} <br>
-                      </span>
-                      <span *ngIf="ac.role">
-                        <b> {{ac.role?.nom_complet }} : </b>
-                        {{ac.nomenclature_actor_role.label_fr }} <br>
-                      </span>
+                  </div>
+                  <div class="col-md-2 ">{{af.meta_create_date |date:'d/MM/yyyy'}}
+                  </div>
+                  <section class="col-md-5">
+                    <span *ngIf="af.creator"> <b> {{af.creator?.nom_complet}} : </b> créateur </span>
 
-                    </div>
-                  </td>
-                  <td> 
-                    <mat-spinner
-                    *ngIf="!datasetNbObs"
-                    diameter="25"
-                    strokeWidth="2"
-                    >
-                    </mat-spinner>
-                    {{ds?.observation_count}} </td>
-                  <!-- <td>{{ds.creator?.nom_complet}} </td> -->
-                  <td>
-                    <button
-                      mat-icon-button
-                      [routerLink]="['/metadata/dataset_detail', ds.id_dataset]"
-                      matTooltip="Voir la fiche du jeu de données"
-                    >
-                      <mat-icon> info </mat-icon>
-                    </button>
-                    <button
-                      mat-icon-button
-                      [disabled]="!ds.active"
-                      (click)="importDs(ds.id_dataset)"
-                    >
-                      <mat-icon
-                        *ngIf="!ds.active; else elseImport"
-                        matTooltip="Le jeu de donnée est inactif"
-                      > upload </mat-icon>
-                      <ng-template #elseImport>
-                        <mat-icon matTooltip="Importer dans ce jeu de donnée"> upload </mat-icon>
-                      </ng-template>
-                    </button>
+                    <ng-container *ngIf="af.cor_af_actor.length; else elifNoActor">
+                      <div *ngFor="let ac of af.cor_af_actor">
+                        <span *ngIf="ac.organism">
+                          <b> {{ac.organism?.nom_organisme }} : </b>
+                          {{ac.nomenclature_actor_role.label_fr }} <br>
+                        </span>
+                        <span *ngIf="ac.role">
+                          <b> {{ac.role?.nom_complet }} : </b>
+                          {{ac.nomenclature_actor_role.label_fr }} <br>
+                        </span>
+                      </div>
+                    </ng-container>
+                    <ng-template #elifNoActor>
+                      <div class="alert-actor">
+                        <mat-icon>report</mat-icon>
+                        <span> Aucun acteur renseigné </span>
+                      </div>
+                    </ng-template>
+                  </section>
 
-                    <button
+                  <div class="col-md-2">
+                    <a 
                       mat-icon-button
-                      [disabled]="ds?.observation_count == 0"
-                      (click)="syntheseDs(ds.id_dataset, ds.observation_count, syntheseNoneModal)"
-                      matTooltip="Afficher les données dans la Synthèse"
+                      [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
+                      matTooltip="Voir la fiche du cadre d'acquisition"
+                      style="color: black;"
                     >
-                      <mat-icon
-                        *ngIf="ds?.observation_count == 0; else elseSynthese;"
-                        matTooltip="Le jeu de données ne comporte aucune donnée"
-                      > room </mat-icon>
-                      <ng-template #elseSynthese>
-                        <mat-icon matTooltip="Afficher les données dans la Synthèse"> room
-                        </mat-icon>
-                      </ng-template>
-                    </button>
-                    <button
+                      <mat-icon> info</mat-icon>
+                    </a>
+                    <a
                       mat-icon-button
-                      [disabled]="!ds.cruved.U"
-                      [routerLink]="['/metadata/dataset', ds.id_dataset]"
-                      matTooltip="Editer le jeu de données"
+                      [disabled]="!af.cruved.U"
+                      matTooltip="Editer ce cadre d'acquisition"
+                      [routerLink]="['/metadata/af', af.id_acquisition_framework]"
                     >
                       <mat-icon> create</mat-icon>
-                    </button>
+                    </a>
                     <button
+                      *ngIf="APP_CONFIG.METADATA?.ENABLE_CLOSE_AF"
+                      type="button"
                       mat-icon-button
-                      [disabled]="!ds.cruved.D || !ds.deletable"
-                      (click)="syntheseDs(ds.id_dataset, ds?.observation_count, syntheseNoneModal)"
+                      [disabled]="!af.cruved.V || !af.opened || af['t_datasets'].length == 0"
+                      (click)="openPublishModalAf($event, af.id_acquisition_framework, publishModal)"
                     >
                       <mat-icon
-                        *ngIf="!ds.deletable; else elseblock"
-                        matTooltip="Le jeu de données contient des données et ne peut pas être supprimé"
-                      > delete </mat-icon>
-                      <ng-template #elseblock>
-                        <mat-icon matTooltip="Supprimer le jeu de données"> delete </mat-icon>
+                        *ngIf="af.opened==false; else elifEmpty"
+                        matTooltip="Le cadre d'acquisition a déjà été déposé"
+                      > gavel </mat-icon>
+                      <ng-template #elifEmpty>
+                        <mat-icon
+                          *ngIf="af['t_datasets'].length == 0; else elsePublish"
+                          matTooltip="Le cadre d'acquisition est vide"
+                        > gavel </mat-icon>
                       </ng-template>
-
+                      <ng-template #elsePublish>
+                        <mat-icon
+                          matTooltip="Déposer le cadre d'acquisition"
+                        > gavel </mat-icon>
+                      </ng-template>
                     </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </mat-expansion-panel>
-        </ng-container>
 
-      </mat-accordion>
-      <mat-paginator
-        #paginator
-        [length]="tempAF.length"
-        [pageSize]="pageSize"
-        [pageSizeOptions]="pageSizeOptions"
-        (page)="changePaginator($event)"
-      >
-      </mat-paginator>
+                  </div>
+
+                </mat-panel-title>
+
+              </mat-expansion-panel-header>
+              <table class="table table-bordered">
+                <thead class="bold">
+                  <tr>
+                    <td style="width:1%">
+                      Id
+                    </td>
+                    <td>Nom du JDD</td>
+                    <td>Date de création</td>
+                    <td>Acteurs</td>
+                    <td>Nombre de données</td>
+                    <td>Actions</td>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr 
+                    *ngFor="let dataset of af.datasetsTemp; let last = last;"
+                    pnx-metadata-dataset
+                    [dataset]="dataset"
+                  > 
+                  </tr>
+                </tbody>
+              </table>
+            </mat-expansion-panel>
+          </ng-container>
+
+        </mat-accordion>
+        <mat-paginator
+          #paginator
+          [length]="(metadataService.filteredAcquisitionFrameworks | async)?.length || 0"
+          [pageSize]="(metadataService.pageSize | async)"
+          [pageSizeOptions]="metadataService.pageSizeOptions"
+          [pageIndex]="(metadataService.pageIndex | async)"
+          (page)="changePaginator($event)"
+        >
+        </mat-paginator>
+      </ng-container>
+      <ng-template #noAcquisitionFrameworks>
+        <div class="text-center">Oups ! Il n'y a aucune métadonnée à afficher.</div>
+      </ng-template>
 
 
     </div>
@@ -320,7 +234,7 @@
   >
     <label> Rechercher sur:</label>
     <select
-      [formControl]="searchFormService.form.get('selector')"
+      [formControl]="metadataService.form.get('selector')"
       name="selecteur"
       id="selector"
       class="form-control"
@@ -330,25 +244,25 @@
     </select>
     <label>UUID</label>
     <input
-      [formControl]="searchFormService.form.get('uuid')"
+      [formControl]="metadataService.form.get('uuid')"
       class="form-control form-control-sm"
       type="text"
     >
     <label>Titre / Identifiant</label>
 
     <input
-      [formControl]="searchFormService.form.get('name')"
+      [formControl]="metadataService.form.get('name')"
       class="form-control form-control-sm"
     >
 
     <pnx-date
-      [parentFormControl]="searchFormService.form.get('date')"
+      [parentFormControl]="metadataService.form.get('date')"
       label="Date de création"
     ></pnx-date>
     <label>Acteur (organisme)</label>
 
     <select
-      [formControl]="searchFormService.form.get('organism')"
+      [formControl]="metadataService.form.get('organism')"
       class="form-control form-control"
     >
       <option
@@ -365,7 +279,7 @@
 
     <select
       class="form-control form-control"
-      [formControl]="searchFormService.form.get('person')"
+      [formControl]="metadataService.form.get('person')"
     >
       <option
         value=""

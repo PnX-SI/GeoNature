@@ -4,7 +4,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { stringify } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
-import { DYNAMIC_FORM_DEF } from '@geonature_common/form/synthese-form/dynamycFormConfig';
+import { DYNAMIC_FORM_DEF } from '@geonature_common/form/synthese-form/dynamicFormConfig';
 
 @Injectable()
 export class SyntheseFormService {
@@ -28,7 +28,7 @@ export class SyntheseFormService {
       id_dataset: null,
       id_acquisition_framework: null,
       id_nomenclature_valid_status: null,
-      modif_since_validation: false,
+      modif_since_validation: [false, null],
       date_min: null,
       date_max: null,
       period_start: null,

@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, ComponentRef } from "@angular/core";
 import {
   animate,
   state,
@@ -7,7 +7,8 @@ import {
   trigger
 } from "@angular/animations";
 import { FormControl, FormGroup, FormArray, Validators } from "@angular/forms";
-import { map, filter, tap, delay } from "rxjs/operators";
+import { Subscription } from "rxjs";
+import { map, filter, tap } from "rxjs/operators";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
 import { AppConfig } from "@geonature_config/app.config";
@@ -52,9 +53,10 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required
   private advanced: string = "collapsed";
   public countingStep: number = 0;
-
-
+  private _subscriptions: Subscription[] = [];
   public displayProofFromElements: boolean = false;
+  public data : any;
+  public componentRefOccurence: ComponentRef<any>;
 
   constructor(
     public fs: OcctaxFormService,
@@ -68,32 +70,35 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     this.occurrenceForm = this.occtaxFormOccurrenceService.form;
 
     //gestion de l'affichage des preuves d'existence selon si Preuve = 'Oui' ou non.
-    this.occurrenceForm
-      .get("id_nomenclature_exist_proof")
-      .valueChanges.pipe(
-        map((id_nomenclature: number): boolean => {
-          let cd_nomenclature = this.occtaxFormOccurrenceService.getCdNomenclatureById(
-            id_nomenclature,
-            this.occtaxFormOccurrenceService.existProof_DATA
-          );
-          return cd_nomenclature == "1";
-        })
-      )
-      .subscribe(
-        (display: boolean) => (this.displayProofFromElements = display)
-      );
+    this._subscriptions.push(
+      this.occurrenceForm
+        .get("id_nomenclature_exist_proof")
+        .valueChanges.pipe(
+          map((id_nomenclature: number): boolean => {
+            let cd_nomenclature = this.occtaxFormOccurrenceService.getCdNomenclatureById(
+              id_nomenclature,
+              this.occtaxFormOccurrenceService.existProof_DATA
+            );
+            return cd_nomenclature == "1";
+          })
+        )
+        .subscribe(
+          (display: boolean) => (this.displayProofFromElements = display)
+        )
+    );
 
     this.initTaxrefSearch();
+    
   }
 
   ngAfterViewInit() {
     //a chaque reinitialisation du formulaire on place le focus sur la zone de saisie du taxon
+    const taxonInput: HTMLElement = document.getElementById("taxonInput");
     this.occtaxFormOccurrenceService.occurrence.subscribe(() =>
-      document.getElementById("taxonInput").focus()
+    taxonInput.focus()
     );
 
     //Pour gérer l'affichage de l'erreur required quand le focus est présent dans l'input
-    const taxonInput = document.getElementById("taxonInput");
     taxonInput.addEventListener(
       "focus",
       (event) => (this.taxonFormFocus = true)
@@ -103,6 +108,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
       (event) => (this.taxonFormFocus = false)
     );
   }
+
 
   setExistProofData(data) {
     this.occtaxFormOccurrenceService.existProof_DATA = data;
@@ -116,83 +122,87 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
 
     //attribut le cd_nom au formulaire si un taxon est selectionné
     //gère le taxon en cours pour filtrer les valeurs des differents select
-    this.taxonForm.valueChanges
-      .pipe(
-        tap(() => this.occtaxFormOccurrenceService.taxref.next(null)),
-        filter((taxon) => taxon !== null && taxon.cd_nom !== undefined),
-        tap((taxon) => this.occtaxFormOccurrenceService.taxref.next(taxon)),
-        map((taxon) => {
-          // mark the occform as dirty
-          this.occtaxFormOccurrenceService.form.markAsDirty();
-          let nom_cite = null;
-          let cd_nom = null;
-          if (typeof taxon === "string") {
-            nom_cite = taxon.length ? taxon : null;
-          } else {
-            nom_cite = taxon.search_name.replace(/<[^>]*>/g, "");
-            cd_nom = taxon.cd_nom ? taxon.cd_nom : null;
-          }
-          return {
-            nom_cite: nom_cite,
-            cd_nom: cd_nom,
-          };
-        })
-      )
-      .subscribe((values: any) => {
-        const currentOccForm = this.occtaxFormOccurrenceService.occurrence.getValue()
-        // Si édition d'une occurrence, on ne vérifie pas si déjà dans la liste
-        if (currentOccForm && currentOccForm.id_releve_occtax) {
-          this.occurrenceForm.get("nom_cite").setValue(values.nom_cite);
-          this.occurrenceForm.get("cd_nom").setValue(values.cd_nom);
-        } else {
-          // check si taxon pas déjà dans la liste
-          const currentTaxaList = this._occtaxTaxaListService.occurrences$.getValue();
-          const alreadyExistingTax = currentTaxaList.find(
-            (tax) => tax.cd_nom === this.taxonForm.value.cd_nom
-          );
-          if (alreadyExistingTax) {
-            const message =
-              "Le taxon saisi est déjà dans la liste des taxons enregistrés. <br/>\
-               <small> Privilegiez d'ajouter plusieurs dénombrements sur le même taxon. </small> <br/> \
-               Voulez-vous continuer ? \
-               ";
-            const dialogRef = this.dialog.open(ConfirmationDialog, {
-              width: "auto",
-              position: { top: "5%" },
-              data: { message: message, yesColor: "basic", noColor: "warn" },
-            });
-            dialogRef.afterClosed().subscribe((result) => {
-              if (!result) {
-                this.taxonForm.reset();
-              } else {
-                this.occurrenceForm.get("nom_cite").setValue(values.nom_cite);
-                this.occurrenceForm.get("cd_nom").setValue(values.cd_nom);
-              }
-            });
-          } else {
+    this._subscriptions.push(
+      this.taxonForm.valueChanges
+        .pipe(
+          tap(() => this.occtaxFormOccurrenceService.taxref.next(null)),
+          filter((taxon) => taxon !== null && taxon.cd_nom !== undefined),
+          tap((taxon) => this.occtaxFormOccurrenceService.taxref.next(taxon)),
+          map((taxon) => {
+            // mark the occform as dirty
+            this.occtaxFormOccurrenceService.form.markAsDirty();
+            let nom_cite = null;
+            let cd_nom = null;
+            if (typeof taxon === "string") {
+              nom_cite = taxon.length ? taxon : null;
+            } else {
+              nom_cite = taxon.search_name.replace(/<[^>]*>/g, "");
+              cd_nom = taxon.cd_nom ? taxon.cd_nom : null;
+            }
+            return {
+              nom_cite: nom_cite,
+              cd_nom: cd_nom,
+            };
+          })
+        )
+        .subscribe((values: any) => {
+          const currentOccForm = this.occtaxFormOccurrenceService.occurrence.getValue()
+          // Si édition d'une occurrence, on ne vérifie pas si déjà dans la liste
+          if (currentOccForm && currentOccForm.id_releve_occtax) {
             this.occurrenceForm.get("nom_cite").setValue(values.nom_cite);
             this.occurrenceForm.get("cd_nom").setValue(values.cd_nom);
+          } else {
+            // check si taxon pas déjà dans la liste
+            const currentTaxaList = this._occtaxTaxaListService.occurrences$.getValue();
+            const alreadyExistingTax = currentTaxaList.find(
+              (tax) => tax.cd_nom === this.taxonForm.value.cd_nom
+            );
+            if (alreadyExistingTax) {
+              const message =
+                "Le taxon saisi est déjà dans la liste des taxons enregistrés. <br/>\
+                 <small> Privilegiez d'ajouter plusieurs dénombrements sur le même taxon. </small> <br/> \
+                 Voulez-vous continuer ? \
+                 ";
+              const dialogRef = this.dialog.open(ConfirmationDialog, {
+                width: "auto",
+                position: { top: "5%" },
+                data: { message: message, yesColor: "basic", noColor: "warn" },
+              });
+              dialogRef.afterClosed().subscribe((result) => {
+                if (!result) {
+                  this.taxonForm.reset();
+                } else {
+                  this.occurrenceForm.get("nom_cite").setValue(values.nom_cite);
+                  this.occurrenceForm.get("cd_nom").setValue(values.cd_nom);
+                }
+              });
+            } else {
+              this.occurrenceForm.get("nom_cite").setValue(values.nom_cite);
+              this.occurrenceForm.get("cd_nom").setValue(values.cd_nom);
+            }
           }
-        }
 
-      });
+        })
+    );
 
     // set taxon form value from occurrence data observable
-    this.occtaxFormOccurrenceService.occurrence
-      .pipe(
-        tap(() => this.taxonForm.setValue(null)),
-        filter((occurrence) => occurrence),
-        map(
-          (occurrence: any): Taxon => {
-            let taxon: Taxon = occurrence.taxref
-              ? <Taxon>occurrence.taxref
-              : <Taxon>{};
-            taxon.search_name = occurrence.nom_cite.replace(/<[^>]*>/g, "");
-            return taxon;
-          }
+    this._subscriptions.push(
+      this.occtaxFormOccurrenceService.occurrence
+        .pipe(
+          tap(() => this.taxonForm.setValue(null)),
+          filter((occurrence) => occurrence),
+          map(
+            (occurrence: any): Taxon => {
+              let taxon: Taxon = occurrence.taxref
+                ? <Taxon>occurrence.taxref
+                : <Taxon>{};
+              taxon.search_name = occurrence.nom_cite.replace(/<[^>]*>/g, "");
+              return taxon;
+            }
+          )
         )
-      )
-      .subscribe((taxref: Taxon) => this.taxonForm.setValue(taxref));
+        .subscribe((taxref: Taxon) => this.taxonForm.setValue(taxref))
+    );
   }
 
   get countingControls() {
@@ -207,16 +217,16 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   }
 
 
-
   resetOccurrenceForm() {
     this.occtaxFormOccurrenceService.reset();
   }
 
   ngOnDestroy() {
     this.resetOccurrenceForm();
+    this._subscriptions.forEach(s => { s.unsubscribe(); });
   }
 
-  addCounting() {
+  addCounting() {    
     this.occtaxFormOccurrenceService.addCountingForm(true); //patchwithdefaultvalue
   }
 

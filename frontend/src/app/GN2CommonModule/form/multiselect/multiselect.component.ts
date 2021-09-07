@@ -2,17 +2,17 @@ import {
   Component,
   OnInit,
   Input,
+  EventEmitter,
   Output,
-  EventEmitter
+  OnChanges,
+  ElementRef,
+  ViewChild,
+  HostListener,
+  ViewChildren,
+  QueryList,
 } from '@angular/core';
-import { 
-  BehaviorSubject, 
-  combineLatest 
-} from 'rxjs';
-import { filter, map, tap, pairwise, startWith } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import _ from "lodash";
 
 export enum KEY_CODE {
   ENTER = 'Enter',
@@ -31,6 +31,9 @@ export enum KEY_CODE {
  *   [parentFormControl]="form.controls.organisms"
  *   keyLabel="nom_organisme"
  *   keyValue="id_organisme"
+ *   (onChange)="doWhatever($event)"
+ *   (onDelete)="deleteCallback($event)"
+ *   (onSearch)="filterItems($event)"
  * >
  * </pnx-multiselect>
  */
@@ -40,15 +43,15 @@ export enum KEY_CODE {
   styleUrls: ['./multiselect.component.scss']
 })
 export class MultiSelectComponent implements OnInit {
+  public selectedItems = [];
+  public searchControl = new FormControl();
+  public formControlValue = [];
+
   @Input() parentFormControl: FormControl;
   /** Valeurs à afficher dans la liste déroulante. Doit être un tableau
    * de dictionnaire.
    */
-  private _values: BehaviorSubject<Array<any>> = new BehaviorSubject([]);
-  get values() { return this._values.getValue(); }
-  @Input() set values(values: Array<any>) {
-    this._values.next(values);
-  }
+  @Input() values: Array<any>;
   /** Clé du dictionnaire de valeur que le composant doit prendre pour
    * l'affichage de la liste déroulante.
    */
@@ -62,14 +65,9 @@ export class MultiSelectComponent implements OnInit {
   /** Affiche la barre de recherche (=true). */
   @Input() searchBar: boolean;
  /** Désactive le contrôle de formulaire. */
-  @Input() disabled: boolean = false;
+  @Input() disabled: boolean;
   /** Initutlé du contrôle de formulaire. */
   @Input() label: any;
-  // palceholder displayed in the input
-  @Input() placeholder: string;
-  // class displayed in the input
-  @Input() class: string = "auto";
-
   /**
    * Booléan qui permet de passer tout l'objet au formControl, et pas
    * seulement une propriété de l'objet renvoyé par l'API.
@@ -92,13 +90,6 @@ export class MultiSelectComponent implements OnInit {
    * comme du HTML sûr.
    */
   @Input() isHtml: boolean = false;
-  /** Action à exécuter lors d'une recherche. */
-  @Output() onSearch = new EventEmitter();
-  /** Action à exécuter lors du changement du contenu. */
-  @Output() onChange = new EventEmitter<any>();
-  /** Action à exécuter lors de la suppression du contenu. */
-  @Output() onDelete = new EventEmitter<any>();
-
 
   /** @ignore */
   constructor(private _translate: TranslateService) {}
@@ -106,20 +97,11 @@ export class MultiSelectComponent implements OnInit {
   // you can pass whatever callback to the onSearch output, to trigger
   // database research or simple search on an array
   ngOnInit() {
-    // transform objet to id key with this.keyValue
-    this.parentFormControl.valueChanges
-      .pipe(
-        startWith([]),
-        pairwise(),
-        filter(([prev, next]: [any, any])=> !_.isEqual(_.sortBy(prev), _.sortBy(next))),
-        map(([prev, next]: [any, any])=>next),
-        map((values)=>values.map(value=>{
-          if ( Number.isInteger(value) ) {
-            return value;
-          } else if (value[this.keyValue] !== undefined) {
-            return value[this.keyValue];
-          }
-        }))
-      ).subscribe(formValues=>this.parentFormControl.patchValue(formValues));
+    this.debounceTime = this.debounceTime || 100;
+    this.disabled = this.disabled || false;
+    this.searchBar = this.searchBar || false;
+    this.displayAll = this.displayAll || false;
+
   }
+
 }

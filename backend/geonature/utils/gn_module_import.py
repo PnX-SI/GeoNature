@@ -7,19 +7,18 @@ import subprocess
 import logging
 import os
 import json
-import sys
 
+from flask import current_app
 from pathlib import Path
 from packaging import version
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import IntegrityError
 
 from geonature.utils.config import config
-from geonature.utils.config_schema import GnGeneralSchemaConf, ManifestSchemaProdConf
+from geonature.utils.module import import_gn_module
 from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
 from geonature.utils.command import build_geonature_front, frontend_routes_templating
-from geonature.utils.module import import_gn_module
 from geonature.core.gn_commons.models import TModules
 from geonature import create_app
 
@@ -97,7 +96,7 @@ def gn_module_register_config(module_code):
 
     """
     log.info("Register module")
-    conf_gn_module_path = str(GN_EXTERNAL_MODULE / module_code / "config/conf_gn_module.toml")
+    conf_gn_module_path = str(GN_EXTERNAL_MODULE / module_code.lower() / "config/conf_gn_module.toml")
     # creation du fichier s'il n'existe pas
     config_file = open(conf_gn_module_path, "w+")
 
@@ -201,7 +200,6 @@ def check_codefile_validity(module_path, module_code):
     if gn_file.is_file():
         try:
             from install_gn_module import gnmodule_install_app as fonc
-
             if not inspect.getargspec(fonc).args == ["gn_db", "gn_app"]:
                 raise GeoNatureError("Invalid variable")
             log.info("      install_gn_module  OK")
@@ -226,33 +224,6 @@ def check_codefile_validity(module_path, module_code):
             """
         )
 
-    # Backend
-    gn_file = Path(module_path) / "backend/blueprint.py"
-    if gn_file.is_file():
-        try:
-            from backend.blueprint import blueprint
-        except (ImportError, GeoNatureError) as e:
-            print(e)
-            raise GeoNatureError(
-                """Module {}
-                    File {} must have a variable call :
-                        blueprint instance of Blueprint
-                """.format(
-                    module_code, gn_file
-                )
-            )
-        from flask import Blueprint
-
-        if isinstance(blueprint, Blueprint) is False:
-            raise GeoNatureError(
-                """Module {}
-                        File {} :
-                            blueprint is not an instance of Blueprint
-                """.format(
-                    module_code, gn_file
-                )
-            )
-        log.info("      backend/blueprint/blueprint.py  OK")
     # Font-end
     gn_file = Path(module_path) / "{}.ts".format(GN_MODULE_FE_FILE)
     if gn_file.is_file():
@@ -327,11 +298,8 @@ def install_frontend_dependencies(module_path):
     if (frontend_module_path / "package.json").is_file():
         try:
             # To avoid Maximum call stack size exceeded on npm install - clear cache...
-            assert (
-                subprocess.call(
-                    ["/bin/bash", "-i", "-c", "nvm use"], cwd=str(ROOT_DIR / "frontend")
-                )
-                == 0
+            subprocess.call(
+                ["/bin/bash", "-i", "-c", "nvm use"], cwd=str(ROOT_DIR / "frontend")
             )
             assert (
                 subprocess.call(
@@ -413,25 +381,24 @@ def remove_application_db(app, module_code):
     log.info("...%s\n", MSG_OK)
 
 
+
 def create_module_config(app, module_code, build=True):
     """
     Create the frontend config
     """
     module_code = module_code.upper()
-    with app.app_context():
-        # fetch the module in the DB from its name
-        try:
-            module_object = TModules.query.filter_by(module_code=module_code).one()
-        except NoResultFound:
-            raise Exception(f"Module with code '{module_code}' not found in database.")
-        _, module_config, _ = import_gn_module(module_object)
-        frontend_config_path = os.path.join(module_config['FRONTEND_PATH'], "app/module.config.ts")
-        try:
-            with open(str(ROOT_DIR / frontend_config_path), "w") as outputfile:
-                outputfile.write("export const ModuleConfig = ")
-                json.dump(module_config, outputfile, indent=True, sort_keys=True)
-        except FileNotFoundError:
-            log.info("No frontend config file")
-            raise
-        if build:
-            build_geonature_front()
+    try:
+        module_object = TModules.query.filter_by(module_code=module_code).one()
+    except NoResultFound:
+        raise Exception(f"Module with code '{module_code}' not found in database.")
+    _, module_config, _ = import_gn_module(module_object)
+    frontend_config_path = os.path.join(module_config['FRONTEND_PATH'], "app/module.config.ts")
+    try:
+        with open(str(ROOT_DIR / frontend_config_path), "w") as outputfile:
+            outputfile.write("export const ModuleConfig = ")
+            json.dump(module_config, outputfile, indent=True, sort_keys=True)
+    except FileNotFoundError:
+        log.info("No frontend config file")
+        raise
+    if build:
+        build_geonature_front()

@@ -1,0 +1,1 @@
+DELETE FROM gn_commons.bib_widgets WHERE widget_name = 'taxonomy';

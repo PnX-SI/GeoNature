@@ -1,13 +1,13 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit, ElementRef, ViewChild } from "@angular/core";
 import { combineLatest } from "rxjs";
-import { filter, map, tap } from "rxjs/operators";
+import { filter, map } from "rxjs/operators";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { MatDialog } from "@angular/material";
+import { MatDialog, MatTabChangeEvent  } from "@angular/material";
 import { TranslateService } from "@ngx-translate/core";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list.service";
-import { MediaService } from '@geonature_common/service/media.service'
+import { MediaService } from "@geonature_common/service/media.service"
 import { ModuleConfig } from "../../module.config"
 
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
@@ -18,7 +18,11 @@ import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/
   styleUrls: ["./taxa-list.component.scss"],
 })
 export class OcctaxFormTaxaListComponent implements OnInit {
+  @ViewChild("tabOccurence") tabOccurence: ElementRef;
+
   public ModuleConfig = ModuleConfig;
+  public alreadyActivatedCountingTab : Array<any> = [];
+
   constructor(
     public ngbModal: NgbModal,
     public dialog: MatDialog,
@@ -27,54 +31,55 @@ export class OcctaxFormTaxaListComponent implements OnInit {
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxTaxaListService: OcctaxTaxaListService,
     public ms: MediaService,
-  ) {}
+  ) {
+  }
 
   ngOnInit() {
     combineLatest(
       this.occtaxFormService.occtaxData,
       this.occtaxFormOccurrenceService.occurrence
     )
-      .pipe(
-        //tap(() => (this.occurrences = [])),
-        filter(
-          ([occtaxData, occurrence]: any) =>
-            occtaxData && occtaxData.releve.properties.t_occurrences_occtax
-        ),
-        map(([occtaxData, occurrence]: any) => {
-          return occtaxData.releve.properties.t_occurrences_occtax
-            .filter((occ) => {
-              //enlève l'occurrence en cours de modification de la liste affichée
-              return occurrence !== null
-                ? occ.id_occurrence_occtax !== occurrence.id_occurrence_occtax
-                : true;
-            })
-            .sort((o1, o2) => {
-              const name1 = (o1.taxref
-                ? o1.taxref.nom_complet
-                : this.removeHtml(o1.nom_cite)
-              ).toLowerCase();
-              const name2 = (o2.taxref
-                ? o2.taxref.nom_complet
-                : this.removeHtml(o2.nom_cite)
-              ).toLowerCase();
-              if (name1 > name2) {
-                return 1;
-              }
-              if (name1 < name2) {
-                return -1;
-              }
-              return 0;
-            });
-        })
-      )
-      .subscribe((occurrences) => {
-        this.occtaxTaxaListService.occurrences$.next(occurrences);
-      });
+    .pipe(
+      filter(
+        ([occtaxData, occurrence]: any) =>
+          occtaxData && occtaxData.releve.properties.t_occurrences_occtax
+      ),
+      map(([occtaxData, occurrence]: any) => {
+        return occtaxData.releve.properties.t_occurrences_occtax
+          .filter((occ) => {
+            //enlève l'occurrence en cours de modification de la liste affichée
+            return occurrence !== null
+              ? occ.id_occurrence_occtax !== occurrence.id_occurrence_occtax
+              : true;
+          })
+          .sort((o1, o2) => {
+            const name1 = (o1.taxref
+              ? o1.taxref.nom_complet
+              : this.removeHtml(o1.nom_cite)
+            ).toLowerCase();
+            const name2 = (o2.taxref
+              ? o2.taxref.nom_complet
+              : this.removeHtml(o2.nom_cite)
+            ).toLowerCase();
+            if (name1 > name2) {
+              return 1;
+            }
+            if (name1 < name2) {
+              return -1;
+            }
+            return 0;
+          });
+      })
+    )
+    .subscribe((occurrences) => {      
+      this.occtaxTaxaListService.occurrences$.next(occurrences);
+    });
   }
 
   editOccurrence(occurrence) {
-    setTimeout(() => { })
     this.occtaxFormOccurrenceService.occurrence.next(occurrence);
+    //on redessine la tab au prochain affichage
+    this.alreadyActivatedCountingTab[occurrence.id_occurrence_occtax] = false;
   }
 
   deleteOccurrence(occurrence) {

@@ -235,7 +235,6 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
     DisplayMediasComponent,
     DisplayMouseOverDirective,
     DumbSelectComponent,
-    DynamicFormComponent,
     FormsModule,
     GenericFormComponent,
     GenericFormGeneratorComponent,

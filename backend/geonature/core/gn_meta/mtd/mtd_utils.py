@@ -33,7 +33,6 @@ NOMENCLATURE_MAPPING = {
 
 # get the root logger
 log = logging.getLogger()
-gunicorn_error_logger = logging.getLogger("gunicorn.error")
 
 
 def create_cor_object_actors(actors, new_object):

@@ -4,7 +4,9 @@ import json
 from flask import current_app
 from lxml import etree as ET
 
-namespace = current_app.config["XML_NAMESPACE"]
+from geonature.utils.config import config
+
+namespace = config["XML_NAMESPACE"]
 
 _xml_parser = ET.XMLParser(ns_clean=True, recover=True, encoding="utf-8")
 
@@ -65,6 +67,10 @@ def parse_acquisition_framwork_xml(xml):
     """
     root = ET.fromstring(xml, parser=_xml_parser)
     ca = root.find(".//" + namespace + "CadreAcquisition")
+    return parse_acquisition_framework(ca)
+
+
+def parse_acquisition_framework(ca):
 
     # We extract all the required informations from the different tags of the XML file
     ca_uuid = get_tag_content(ca, "identifiantCadre")

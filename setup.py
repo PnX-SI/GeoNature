@@ -4,7 +4,7 @@ from pathlib import Path
 
 root_dir = Path(__file__).absolute().parent
 with (root_dir / 'VERSION').open() as f:
-    version = f.read()
+    version = f.read().strip()
 with (root_dir / 'README.rst').open() as f:
     long_description = f.read()
 
@@ -19,9 +19,18 @@ setuptools.setup(
     url='https://github.com/PnX-SI/GeoNature/',
     python_requires='>=3.6',
     version=version,
-    packages=setuptools.find_packages('backend'),
-    package_dir={'': 'backend'},
+    packages=setuptools.find_packages(where='backend', include=['geonature*']),
+    package_dir={
+        '': 'backend',
+    },
+    package_data={
+        'geonature.tests': ['data/*.sql'],
+        'geonature.migrations': ['data/**/*.sql'],
+    },
     install_requires=list(open('backend/requirements.in', 'r')),
+    extras_require={
+        'tests': ['pytest', 'pytest-flask'],
+    },
     classifiers=[
         "Framework :: Flask",
         "Programming Language :: Python :: 3",

@@ -1,0 +1,46 @@
+#!/bin/bash
+
+
+export BASE_DIR=$(dirname "${SCRIPT_DIR}")
+export SETTINGS="${BASE_DIR}/config/settings.ini"
+export LOG_FILE="${BASE_DIR}/var/log/install_db.log"
+
+
+# Make sure root isnt running the script
+if [ "$(id -u)" == "0" ]; then
+    echo "This script must NOT be run as root" 1>&2
+    exit 1
+fi
+
+
+if [ ! -f "${SETTINGS}" ]; then
+    echo "Fichier de configuration '${SETTINGS}' non trouvé"
+    echo "Avez-vous copié et adapté le fichier d’exemple ?"
+    exit 1
+fi
+. "${SETTINGS}" || exit 1
+
+
+function write_log() {
+	echo -e $1
+	echo "" &>> ${LOG_FILE}
+	echo "" &>> ${LOG_FILE}
+	echo "--------------------" &>> ${LOG_FILE}
+	echo -e $1 &>> ${LOG_FILE}
+	echo "--------------------" &>> ${LOG_FILE}
+}
+
+
+function database_exists () {
+    # /!\ Will return false if psql can't list database. Edit your pg_hba.conf
+    # as appropriate.
+    if [ -z $1 ]
+        then
+        # Argument is null
+        return 0
+    else
+        # Grep DB name in the list of databases
+        sudo -u postgres -s -- psql -tAl | grep -q "^$1|"
+        return $?
+    fi
+}

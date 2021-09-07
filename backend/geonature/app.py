@@ -2,18 +2,24 @@
 Démarrage de l'application
 """
 
-import logging
+import logging, os
+from itertools import chain
+from pkg_resources import iter_entry_points
+from urllib.parse import urlsplit
 
-from flask import Flask
+from flask import Flask, g, request, current_app
 from flask_mail import Message
 from flask_cors import CORS
 from sqlalchemy import exc as sa_exc
 from flask_sqlalchemy import before_models_committed
-from pkg_resources import iter_entry_points
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 from geonature.utils.config import config
-from geonature.utils.env import MAIL, DB, MA, migrate
+from geonature.utils.env import MAIL, DB, MA, migrate, BACKEND_DIR
+from geonature.utils.logs import config_loggers
 from geonature.utils.module import import_backend_enabled_modules
+
+from pypnusershub.db.tools import user_from_token, UnreadableAccessRightsError, AccessRightsExpiredError
 
 
 @migrate.configure
@@ -24,7 +30,8 @@ def configure_alembic(alembic_config):
     Thus, alembic will find migrations of all installed geonature modules.
     """
     version_locations = alembic_config.get_main_option('version_locations', default='').split()
-    for entry_point in iter_entry_points('gn_module', 'migrations'):
+    for entry_point in chain(iter_entry_points('alembic', 'migrations'),
+                             iter_entry_points('gn_module', 'migrations')):
         # TODO: define enabled module in configuration (skip disabled module, raise error on missing module)
         _, migrations = str(entry_point).split('=', 1)
         version_locations += [ migrations.strip() ]
@@ -45,11 +52,17 @@ if config.get('SENTRY_DSN'):
 def create_app(with_external_mods=True, with_flask_admin=True):
     app = Flask(__name__, static_folder="../static")
     app.config.update(config)
+    api_uri = urlsplit(app.config['API_ENDPOINT'])
+    app.config['APPLICATION_ROOT'] = api_uri.path
+    app.config['PREFERRED_URL_SCHEME'] = api_uri.scheme
+    if 'SCRIPT_NAME' not in os.environ:
+        os.environ['SCRIPT_NAME'] = app.config['APPLICATION_ROOT']
+    app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
 
     # Bind app to DB
     DB.init_app(app)
 
-    migrate.init_app(app, DB)
+    migrate.init_app(app, DB, directory=BACKEND_DIR / 'geonature' / 'migrations')
 
     MAIL.init_app(app)
 
@@ -59,6 +72,13 @@ def create_app(with_external_mods=True, with_flask_admin=True):
         for obj, change in changes:
             if change == "delete" and hasattr(obj, "__before_commit_delete__"):
                 obj.__before_commit_delete__()
+
+    @app.before_request
+    def load_current_user():
+        try:
+            g.current_user = user_from_token(request.cookies['token']).role
+        except (KeyError, UnreadableAccessRightsError, AccessRightsExpiredError):
+            g.current_user = None
 
     # Bind app to MA
     MA.init_app(app)
@@ -70,15 +90,14 @@ def create_app(with_external_mods=True, with_flask_admin=True):
     # Pass the ID_APP to the submodule to avoid token conflict between app on the same server
     app.config["ID_APP"] = app.config["ID_APPLICATION_GEONATURE"]
 
+    # set logging config
+    config_loggers(app.config)
+
     if with_flask_admin:
         from geonature.core.admin.admin import admin
         admin.init_app(app)
 
     with app.app_context():
-        if app.config["MAIL_ON_ERROR"] and app.config["MAIL_CONFIG"]:
-            from geonature.utils.logs import mail_handler
-            logging.getLogger().addHandler(mail_handler)
-
         from pypnusershub.routes import routes
 
         app.register_blueprint(routes, url_prefix="/auth")
@@ -94,6 +113,10 @@ def create_app(with_external_mods=True, with_flask_admin=True):
         from pypnnomenclature.routes import routes
 
         app.register_blueprint(routes, url_prefix="/nomenclatures")
+
+        from geonature.core.gn_commons.routes import routes
+
+        app.register_blueprint(routes, url_prefix="/gn_commons")
 
         from geonature.core.gn_permissions.routes import routes
 
@@ -134,10 +157,6 @@ def create_app(with_external_mods=True, with_flask_admin=True):
         from geonature.core.gn_monitoring.routes import routes
 
         app.register_blueprint(routes, url_prefix="/gn_monitoring")
-
-        from geonature.core.gn_commons.routes import routes
-
-        app.register_blueprint(routes, url_prefix="/gn_commons")
 
         # Errors
         from geonature.core.errors import routes

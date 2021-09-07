@@ -1,9 +1,8 @@
 from geonature.utils import utilsrequests
 from geonature.utils.errors import GeonatureApiError
+from geonature.utils.config import config
 
-from flask import current_app
-
-api_endpoint = current_app.config["MTD_API_ENDPOINT"]
+api_endpoint = config["MTD_API_ENDPOINT"]
 
 
 def get_acquisition_framework(uuid_af):

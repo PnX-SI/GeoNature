@@ -131,6 +131,7 @@ MAIL_ON_ERROR = false
 
 [CAS.CAS_USER_WS]
     URL = "https://inpn2.mnhn.fr/authentication/information"
+    BASE_URL = "https://inpn2.mnhn.fr/authentication/"
     ID = "mon_id"
     PASSWORD = "mon_pass"
 
@@ -162,6 +163,9 @@ MAIL_ON_ERROR = false
 
     # Affiche un bloc de stat sur la page d'accueil
     DISPLAY_STAT_BLOC = true
+    # Périodicité du renouvellement du cache des stats (local storage) 
+    # dans le navigateur en secondes. Défaut : 3600s (= 1h)
+    STAT_BLOC_TTL = 3600
 
     # Affiche la carte des 100 dernieres observations sur la page d'accueil
     DISPLAY_MAP_LAST_OBS = true
@@ -171,6 +175,11 @@ MAIL_ON_ERROR = false
     
     #Affiche les emails des observateurs dans les modules Synthese et Validation
     DISPLAY_EMAIL_INFO_OBS = true
+
+    # Ajoute du contenu à l'email validation / synthèse
+
+    #Information de l'observation à mettre dans l'email 
+    DISPLAY_EMAIL_DISPLAY_INFO = ["NOM_VERN", "DATE", "COMMUNES", "MEDIAS"]
 
 # Configuration de l'affichage des cartes dans GeoNature
 [MAPCONFIG]
@@ -226,7 +235,7 @@ MAIL_ON_ERROR = false
     # Colonne à afficher par défaut sur la liste des résultats de la synthese
     # Choisir le champ 'prop' parmis les colonnes suivantes :
     # id_synthese, date_min, cd_nom, lb_nom, nom_vern_or_lb_nom, st_asgeojson, 
-    # observers, dataset_name, url_source
+    # observers, dataset_name, url_source, count_min_max
     LIST_COLUMNS_FRONTEND = [
         { prop = "nom_vern_or_lb_nom", name = "Taxon" },
         { prop = "date_min", name = "Date début" },
@@ -369,8 +378,15 @@ MAIL_ON_ERROR = false
         "uuid_perm_sinp",
         "uuid_perm_grp_sinp",
         "date_creation",
-        "date_modification"
+        "date_modification",
+        "champs_additionnels
     ]
+
+# Configuration de l'accès sans authentication 
+[PUBLIC_ACCESS]
+    PUBLIC_LOGIN = "admin"
+    PUBLIC_PASSWORD = "admin"
+    ENABLE_PUBLIC_ACCESS = true
 
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
@@ -493,3 +509,6 @@ MAIL_ON_ERROR = false
     MAIL_CONTENT_AF_CLOSED_GREETINGS = ""
     CLOSED_MODAL_LABEL = "Dépôt d'un cadre d'acquisition"
     CLOSED_MODAL_CONTENT = L'action de dépôt est une action irréversible. Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite. Vous ne pourrez pas supprimer votre dépôt. "
+    # liste des types de role à afficher sur les formulaires JDD et CA
+    CD_NOMENCLATURE_ROLE_TYPE_DS = ["2"]
+    CD_NOMENCLATURE_ROLE_TYPE_AF = ["3"]

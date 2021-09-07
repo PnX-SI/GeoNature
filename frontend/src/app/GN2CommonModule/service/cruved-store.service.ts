@@ -1,29 +1,27 @@
 import { Injectable } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 
-import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import {map, startWith} from "rxjs/operators";
+
+import { ModuleService } from "@geonature/services/module.service"
 
 @Injectable()
 export class CruvedStoreService {
-  public cruved: any = null;
+  public cruved: any = {};
 
-  constructor(private _api: DataFormService) { }
+  constructor(private _moduleService: ModuleService) {
+    this.fetchCruved().subscribe(cruved => this.cruved = cruved);
+   }
 
-  fetchCruved(): Observable<any> {
-    // Generally errors are 401 because we are not logged-in yet.
-    // We should check authentication status before fetching the cruved,
-    // but importing the AuthService create a cycle inclusion.
-    // This may be solved by adding a dedicated service which do not
-    // requires Router or ActivatedRoute.
-    // For now, simply ignore all errors…
-    return this._api.getCruved().pipe(
-        catchError(err => of([])),
-        map(cruved => {
-            this.cruved = cruved;
-            return cruved;
-        }),
-    );
+  fetchCruved(){
+      // The cruved service is deprecated (doublon of moduleService which provice cruved)
+      // for retrocompat, it return the modules from modules service      
+       this._moduleService.modules.forEach(mod => {
+          this.cruved[mod.module_code] = mod;     
+        });        
+      return of(this.cruved);
+    
   }
 
   clearCruved(): void {

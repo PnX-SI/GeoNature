@@ -1,7 +1,8 @@
+import os
+import warnings
 import smtplib
 import logging
 from logging.handlers import SMTPHandler
-from flask import current_app
 
 
 # custom class to send email in SSL and with non ascii character
@@ -37,18 +38,29 @@ class SSLSMTPHandler(SMTPHandler):
         except:
             self.handleError(record)
 
+def config_loggers(config):
+    """
+        Configuration des niveaux de logging/warnings 
+        et des hanlers
+    """
+    root_logger = logging.getLogger()
+    root_logger.addHandler(logging.StreamHandler())
+    root_logger.setLevel(config["SERVER"]["LOG_LEVEL"])
+    if config["MAIL_ON_ERROR"] and config["MAIL_CONFIG"]:
+        MAIL_CONFIG = config["MAIL_CONFIG"]
+        mail_handler = SSLSMTPHandler(
+            mailhost=(MAIL_CONFIG["MAIL_SERVER"], MAIL_CONFIG["MAIL_PORT"]),
+            fromaddr=MAIL_CONFIG["MAIL_USERNAME"],
+            toaddrs=MAIL_CONFIG["ERROR_MAIL_TO"],
+            subject="GeoNature error",
+            credentials=(MAIL_CONFIG["MAIL_USERNAME"], MAIL_CONFIG["MAIL_PASSWORD"]),
+        )
+        mail_handler.setLevel(logging.ERROR)
+        root_logger.addHandler(mail_handler)
+    if os.environ.get('FLASK_ENV') == "development":
+        warnings.simplefilter("always", DeprecationWarning)
+    else:
+        gunicorn_error_logger = logging.getLogger("gunicorn.error")
+        root_logger.handlers.extend(gunicorn_error_logger.handlers)
 
-# Si la configuration des mails est spécifié
-#   et que le paramètre MAIL_ON_ERROR est à True
-# Configuration de l'envoie de mail lors des erreurs GeoNature
-if current_app.config["MAIL_CONFIG"] and current_app.config["MAIL_ON_ERROR"]:
-    MAIL_CONFIG = current_app.config["MAIL_CONFIG"]
-    mail_handler = SSLSMTPHandler(
-        mailhost=(MAIL_CONFIG["MAIL_SERVER"], MAIL_CONFIG["MAIL_PORT"]),
-        fromaddr=MAIL_CONFIG["MAIL_USERNAME"],
-        toaddrs=MAIL_CONFIG["ERROR_MAIL_TO"],
-        subject="GeoNature error",
-        credentials=(MAIL_CONFIG["MAIL_USERNAME"], MAIL_CONFIG["MAIL_PASSWORD"]),
-    )
 
-    mail_handler.setLevel(logging.ERROR)

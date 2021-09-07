@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
 
@@ -20,8 +22,7 @@ class BibAreasTypes(DB.Model):
     ref_version = DB.Column(DB.Integer)
     num_version = DB.Column(DB.Unicode)
 
-
-@serializable
+@geoserializable
 class LAreas(DB.Model):
     __tablename__ = "l_areas"
     __table_args__ = {"schema": "ref_geo"}
@@ -31,7 +32,9 @@ class LAreas(DB.Model):
     area_code = DB.Column(DB.Unicode)
     geom = DB.Column(Geometry("GEOMETRY", config["LOCAL_SRID"]))
     source = DB.Column(DB.Unicode)
-    geom = DB.Column(Geometry("GEOMETRY", 4326))
+    enable = DB.Column(DB.Boolean, nullable=False, default=True)
+    meta_create_date = DB.Column(DB.DateTime, default=datetime.now)
+    meta_update_date = DB.Column(DB.DateTime, default=datetime.now, onupdate=datetime.now)
     area_type = DB.relationship("BibAreasTypes", lazy="select")
 
 

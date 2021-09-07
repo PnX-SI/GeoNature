@@ -25,22 +25,12 @@ from geonature.utils.env import (
 from geonature.utils.errors import ConfigError
 from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.config_schema import GnGeneralSchemaConf
-from geonature.utils.module import import_frontend_enabled_modules
+from geonature.utils.module import list_frontend_enabled_modules
 from geonature.utils.config import config_frontend
 
 log = logging.getLogger(__name__)
 
 MSG_OK = "\033[92mok\033[0m\n"
-
-
-def start_gunicorn_cmd(uri, worker):
-    cmd = "gunicorn server:app -w {gun_worker} -b {gun_uri}"
-    subprocess.call(cmd.format(gun_worker=worker, gun_uri=uri).split(" "), cwd=str(BACKEND_DIR))
-
-
-def supervisor_cmd(action, app_name):
-    cmd = "sudo supervisorctl {action} {app}"
-    subprocess.call(cmd.format(action=action, app=app_name).split(" "))
 
 
 def start_geonature_front():
@@ -68,16 +58,13 @@ def frontend_routes_templating(app=None):
         ) as input_file:
             template = Template(input_file.read())
             routes = []
-            for module_config in import_frontend_enabled_modules():
-                module_code = module_config['MODULE_CODE']
-                url_path = module_config['MODULE_URL']
-                module_dir = Path(GN_EXTERNAL_MODULE / module_code.lower())
-
+            for module_object in list_frontend_enabled_modules():
+                module_dir = Path(GN_EXTERNAL_MODULE / module_object.module_code.lower())
                 # test if module have frontend
                 if (module_dir / "frontend").is_dir():
-                    path = url_path.lstrip("/")
+                    path = module_object.module_path.lstrip("/")
                     location = "{}/{}#GeonatureModule".format(module_dir, GN_MODULE_FE_FILE)
-                    routes.append({"path": path, "location": location, "module_code": module_code})
+                    routes.append({"path": path, "location": location, "module_code": module_object.module_code})
 
                 # TODO test if two modules with the same name is okay for Angular
 
@@ -117,10 +104,8 @@ def tsconfig_app_templating(app=None):
         with open(str(ROOT_DIR / "frontend/src/tsconfig.app.json.sample"), "r") as input_file:
             template = Template(input_file.read())
             routes = []
-            for module_config in import_frontend_enabled_modules():
-                module_code = module_config['MODULE_CODE']
-                module_dir = Path(GN_EXTERNAL_MODULE / module_code.lower())
-
+            for module in list_frontend_enabled_modules():
+                module_dir = Path(GN_EXTERNAL_MODULE / module.module_code.lower())
                 # test if module have frontend
                 if (module_dir/ "frontend").is_dir():
                     location = "{}/frontend/app".format(module_dir)
@@ -150,11 +135,11 @@ def create_frontend_config():
     log.info("...%s\n", MSG_OK)
 
 
-def update_app_configuration(build=True, prod=True):
+def update_app_configuration(build=True):
     log.info("Update app configuration")
-    if prod:
-        subprocess.call(["sudo", "supervisorctl", "reload"])
     create_frontend_config()
     if build:
         subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
     log.info("...%s\n", MSG_OK)
+    log.info("Si vous avez changé des paramtères de configuration nécessaire au backend, "
+             "pensez à également relancer ce dernier.")

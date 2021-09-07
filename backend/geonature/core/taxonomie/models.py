@@ -19,7 +19,7 @@ class TaxrefProtectionArticles(DB.Model):
     type_protection = DB.Column(DB.Unicode)
     concerne_mon_territoire = DB.Column(DB.Boolean)
 
-    def __repr__(self):
+    def __str__(self):
         return "<TaxrefProtectionArticles %r>" % self.article
 
 
@@ -66,7 +66,7 @@ class Taxref(DB.Model):
     group2_inpn = DB.Column(DB.Unicode)
     url = DB.Column(DB.Unicode)
 
-    def __repr__(self):
+    def __str__(self):
         return "<Taxref %r>" % self.nom_complet
 
 
@@ -77,7 +77,7 @@ class CorTaxonAttribut(DB.Model):
     cd_ref = DB.Column(DB.Integer, nullable=False, primary_key=True)
     valeur_attribut = DB.Column(DB.Text, nullable=False)
 
-    def __repr__(self):
+    def __str__(self):
         return "<CorTaxonAttribut %r>" % self.valeur_attribut
 
 
@@ -122,7 +122,7 @@ class VMTaxrefListForautocomplete(DB.Model):
     regne = DB.Column(DB.Unicode)
     group2_inpn = DB.Column(DB.Unicode)
 
-    def __repr__(self):
+    def __str__(self):
         return "<VMTaxrefListForautocomplete  %r>" % self.search_name
 
 
@@ -137,5 +137,5 @@ class BibListes(DB.Model):
     regne = DB.Column(DB.Unicode)
     group2_inpn = DB.Column(DB.Unicode)
 
-    def __repr__(self):
+    def __str__(self):
         return "<BibListes %r>" % self.nom_liste
