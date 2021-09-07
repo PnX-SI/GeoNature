@@ -11,9 +11,10 @@ from importlib import import_module
 from flask import Flask, g, request, current_app
 from flask_mail import Message
 from flask_cors import CORS
-from sqlalchemy import exc as sa_exc
 from flask_sqlalchemy import before_models_committed
 from werkzeug.middleware.proxy_fix import ProxyFix
+from psycopg2.errors import UndefinedTable
+from sqlalchemy.exc import ProgrammingError
 
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
@@ -133,8 +134,14 @@ def create_app(with_external_mods=True):
 
         # Loading third-party modules
         if with_external_mods:
-            for module_object, module_config, module_blueprint in import_backend_enabled_modules():
-                app.config[module_config['MODULE_CODE']] = module_config
-                app.register_blueprint(module_blueprint, url_prefix=module_config['MODULE_URL'])
+            try:
+                for module_object, module_config, module_blueprint in import_backend_enabled_modules():
+                    app.config[module_config['MODULE_CODE']] = module_config
+                    app.register_blueprint(module_blueprint, url_prefix=module_config['MODULE_URL'])
+            except ProgrammingError as sqla_error:
+                if isinstance(sqla_error.orig, UndefinedTable):
+                    logging.warning("Warning: database not yet initialized, skipping loading of external modules")
+                else:
+                    raise sqla_error
 
     return app
