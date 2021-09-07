@@ -110,14 +110,7 @@ gn_psql -f data/core/public.sql
 
 if [ "$install_usershub_schema" = true ];
  then
-    write_log "Getting and creating USERS schema (utilisateurs)..."
-    wget -nc https://raw.githubusercontent.com/PnX-SI/UsersHub/$usershub_release/data/usershub.sql -P tmp/usershub || exit 1
-    gn_psql -f tmp/usershub/usershub.sql
-    write_log "Insert minimal data (utilisateurs)..."
-    wget -nc https://raw.githubusercontent.com/PnX-SI/UsersHub/$usershub_release/data/usershub-data.sql -P tmp/usershub || exit 1
-    gn_psql -f tmp/usershub/usershub-data.sql
-    wget -nc https://raw.githubusercontent.com/PnX-SI/UsersHub/$usershub_release/data/usershub-dataset.sql -P tmp/usershub || exit 1
-    gn_psql -f tmp/usershub/usershub-dataset.sql
+    geonature db upgrade utilisateurs-samples@head
     write_log "Insertion of data for usershub..."
     # First insert TaxHub data for UsersHub
     wget -nc https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/adds_for_usershub.sql -P tmp/taxhub || exit 1
