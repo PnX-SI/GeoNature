@@ -2,7 +2,7 @@
 Démarrage de l'application
 """
 
-import logging
+import logging, os
 from itertools import chain
 from pkg_resources import iter_entry_points
 from urllib.parse import urlsplit
@@ -55,9 +55,8 @@ def create_app(with_external_mods=True, with_flask_admin=True):
     api_uri = urlsplit(app.config['API_ENDPOINT'])
     app.config['APPLICATION_ROOT'] = api_uri.path
     app.config['PREFERRED_URL_SCHEME'] = api_uri.scheme
-    # Setting the SERVER_NAME add misleading restrictions
-    # For instance, if SERVER_NAME = 'localhost:8000', accessing 0.0.0.0:8000 will produce 404
-    #app.config['SERVER_NAME'] = api_uri.netloc
+    if 'SCRIPT_NAME' not in os.environ:
+        os.environ['SCRIPT_NAME'] = app.config['APPLICATION_ROOT']
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
 
     # Bind app to DB
