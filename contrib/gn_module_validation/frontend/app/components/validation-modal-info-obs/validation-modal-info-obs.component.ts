@@ -8,7 +8,7 @@ import { ModuleConfig } from "../../module.config";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
-
+ 
 @Component({
   selector: "pnx-validation-modal-info-obs",
   templateUrl: "validation-modal-info-obs.component.html",
@@ -28,7 +28,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   public MapListService;
   public validationDate;
   public currentCdNomenclature;
-
+ 
   @Input() id_synthese: any;
   @Input() uuidSynthese: any;
   @Output() modifiedStatus = new EventEmitter();
@@ -49,7 +49,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   }
  
   ngOnInit() {
-
+ 
     // get all id_synthese of the filtered observations:
     this.filteredIds = [];
     for (let id in this.mapListService.tableData) {
@@ -57,11 +57,11 @@ export class ValidationModalInfoObsComponent implements OnInit {
     }
     this.isNextButtonValid = true;
     this.isPrevButtonValid = true;
-
+ 
     // disable nextButton or previousButton if first last observation selected
     this.activateNextPrevButton(this.filteredIds.indexOf(this.id_synthese));
   }
-
+ 
   setCurrentCdNomenclature(item) {
     this.currentCdNomenclature = item.cd_nomenclature;
   }
@@ -95,14 +95,14 @@ export class ValidationModalInfoObsComponent implements OnInit {
       }
     );
   }
-
-
+ 
+ 
   changeObsIndex(increment: bigint) {
     // add 1 to find new position
     this.position = this.filteredIds.indexOf(this.id_synthese) + increment;
     // disable next button if last observation
     this.activateNextPrevButton(this.position);
-
+ 
     // array value (=id_synthese) of the new position
     this.id_synthese = this.filteredIds[
       this.filteredIds.indexOf(this.id_synthese) + 1
@@ -112,7 +112,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     this.statusForm.reset();
     this.edit = false;
   }
-
+ 
   closeModal() {
     this.activeModal.close();
   }
@@ -141,7 +141,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
           );
           this.update_status();
           this.getValidationDate(this.uuidSynthese);
-
+ 
           // bind statut value with validation-synthese-list component
           this.statusForm.reset();
           resolve("data updated");
@@ -209,7 +209,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
       }
     );
   }
-
+ 
   activateNextPrevButton(position) {
     // disable nextButton if last observation selected
     if (position == this.filteredIds.length - 1) {
@@ -217,7 +217,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     } else {
       this.isNextButtonValid = true;
     }
-
+ 
     // disable previousButton if first observation selected
     if (position == 0) {
       this.isPrevButtonValid = false;
