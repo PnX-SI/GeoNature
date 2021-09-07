@@ -193,14 +193,10 @@ if [ "$install_usershub_app" = true ]; then
     sed -i 's#url_application=.*#url_application='$my_url'usershub#g' config/settings.ini
 
     # Installation of UsersHub application
-    # lance install_app en le sourcant pour que la commande NVM soit disponible
     ./install_app.sh
 
-    envsubst '${TAXHUB_DIR}' < "${GEONATURE_DIR}/install/assets/usershub_apache.conf" | sudo tee /etc/apache2/conf-available/usershub.conf || exit 1
-
-    sudo a2enconf usershub
-
-    sudo systemctl reload apache2 || exit 1
+    sudo systemctl enable usershub || exit 1
+    sudo systemctl start usershub || exit 1
 fi
 
 

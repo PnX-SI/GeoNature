@@ -19,7 +19,7 @@ ExecStart=${BASE_DIR}/backend/venv/bin/gunicorn geonature.wsgi:app \
 ExecReload=/bin/kill -s HUP $MAINPID
 TimeoutStartSec=10
 TimeoutStopSec=5
-PrivateTmp = true
+PrivateTmp=true
 StandardOutput=append:/var/log/geonature.log
 StandardError=inherit
 
