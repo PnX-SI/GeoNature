@@ -163,7 +163,7 @@ sudo systemctl start taxhub || exit 1
 
 # Installation and configuration of UsersHub application (if activated)
 if [ "$install_usershub_app" = true ]; then
-    if [ ! -d "${TAXHUB_DIR}" ]; then
+    if [ ! -d "${USERSHUB_DIR}" ]; then
         echo "Installation de l'application Usershub"
         cd "${HOME}"
         wget https://github.com/PnX-SI/UsersHub/archive/$usershub_release.zip -O UsersHub-$usershub_release.zip || exit 1
@@ -187,7 +187,4 @@ if [ "$install_usershub_app" = true ]; then
 fi
 
 
-# fix nvm version
-cd "${GEONATURE_DIR}"/frontend
-nvm alias default
 echo "L'installation est terminée!"
