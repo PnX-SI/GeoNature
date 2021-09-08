@@ -19,12 +19,12 @@ Installation de l'application
 
 Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur dédié précédemment créé lors de l’étape de :ref:`preparation-server` (usuellement ``geonatureadmin``).
 
-* Se placer à la racine du ``home`` de l'utilisateur puis récupérer les scripts d'installation (``master`` peut être remplacé par le numéro d’une `version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :
+* Se placer à la racine du ``home`` de l'utilisateur puis récupérer les scripts d'installation (X.Y.Z à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :
  
 ::
 
-    $ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/master/install/install_all/install_all.ini
-    $ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/master/install/install_all/install_all.sh
+    $ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.ini
+    $ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_all/install_all.sh
 
 *Attention* : l'installation globale fonctionne uniquement si les scripts sont placés à la racine du ``home`` de l'utilisateur courant.	
 	
