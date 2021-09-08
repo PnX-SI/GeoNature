@@ -207,6 +207,7 @@
           type="radio"
           id="{{formDefComp.attribut_name}}_{{rand}}_{{i}}"
           class="custom-control-input"
+          (click)="onRadioChange(i==0, form.get(formDefComp.attribut_name))"
           name="{{formDefComp.attribut_name}}_{{rand}}_{{i}}"
           [value]="i==0"
           [formControl]="form.get(formDefComp.attribut_name)"

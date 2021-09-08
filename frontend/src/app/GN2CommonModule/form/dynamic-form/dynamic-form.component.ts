@@ -88,7 +88,13 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   }
 
   onRadioChange(val, formControl: FormControl) {
-    formControl.setValue(val);
+    if (formControl.value === val) {
+      // quand on clique sur un bouton déjà coché
+      // cela décoche ce dernier
+      formControl.setValue(null);
+    } else {
+      formControl.setValue(val);
+    }
   }
 
   ngOnChanges(changes: SimpleChanges) {    
