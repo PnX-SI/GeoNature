@@ -67,8 +67,8 @@ sudo systemctl restart apache2 || exit 1
 if [ ! -d "${GEONATURE_DIR}" ]; then
 	echo "Téléchargement et installation de GeoNature ..."
 	cd "${HOME}"
-	wget https://github.com/PnX-SI/GeoNature/archive/$geonature_release.zip || exit 1
-	unzip $geonature_release.zip || exit 1
+	wget https://github.com/PnX-SI/GeoNature/archive/$geonature_release.zip -O GeoNature-$geonature_release.zip || exit 1
+	unzip GeoNature-$geonature_release.zip || exit 1
 	mv GeoNature-$geonature_release "${GEONATURE_DIR}"
 fi
 
@@ -128,8 +128,8 @@ sudo a2ensite geonature && sudo systemctl reload apache2 || exit 1
 if [ ! -d "${TAXHUB_DIR}" ]; then
 	echo "Téléchargement et installation de TaxHub ..."
 	cd "${HOME}"
-	wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip
-	unzip $taxhub_release.zip
+	wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip -O TaxHub-$taxhub_release.zip || exit 1
+	unzip TaxHub-$taxhub_release.zip || exit 1
 	mv TaxHub-$taxhub_release "${TAXHUB_DIR}"
 fi
 
@@ -166,8 +166,8 @@ if [ "$install_usershub_app" = true ]; then
     if [ ! -d "${TAXHUB_DIR}" ]; then
         echo "Installation de l'application Usershub"
         cd "${HOME}"
-        wget https://github.com/PnX-SI/UsersHub/archive/$usershub_release.zip
-        unzip $usershub_release.zip
+        wget https://github.com/PnX-SI/UsersHub/archive/$usershub_release.zip -O UsersHub-$usershub_release.zip || exit 1
+        unzip UsersHub-$usershub_release.zip || exit 1
         mv UsersHub-$usershub_release "${USERSHUB_DIR}"
     fi
     cd "${USERSHUB_DIR}"
