@@ -13,6 +13,7 @@ import logging
 import subprocess
 from pkg_resources import load_entry_point
 from pathlib import Path
+import sqlalchemy.orm.exc as sa_exc
 
 import click
 from click import ClickException
@@ -70,8 +71,11 @@ def install_packaged_gn_module(module_path, module_code, build):
         module_picto = load_entry_point(module_dist, 'gn_module', 'picto')
     except ImportError:
         module_picto = "fa-puzzle-piece"
-    module_object = TModules.query.filter_by(module_code=module_code).one()
-    if not module_object:
+    try:
+        module_object = TModules.query.filter_by(module_code=module_code).one()
+        module_object.module_picto=module_picto
+        db.session.merge(module_object)
+    except sa_exc.NoResultFound:
         module_object = TModules(
                 module_code=module_code,
                 module_label=module_code.lower(),
@@ -82,9 +86,6 @@ def install_packaged_gn_module(module_path, module_code, build):
                 active_backend=True,
         )
         db.session.add(module_object)
-    else:
-        module_object.module_picto=module_picto
-        db.session.merge(module_object)
     db.session.commit()
 
     db_upgrade(revision=module_code.lower())
