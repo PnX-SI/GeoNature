@@ -154,19 +154,6 @@ sed -i "s/enable_https=.*$/enable_https=$enable_https/g" settings.ini
 sed -i "s/https_cert_path=.*$/https_cert_path=$enable_https/g" settings.ini
 sed -i "s/https_key_path=.*$/https_key_path=$enable_https/g" settings.ini
 
-# Creation of system files used by TaxHub
-. create_sys_dir.sh
-create_sys_dir || exit 1
-
-# Apache configuration of TaxHub
-envsubst '${TAXHUB_DIR}' < "${GEONATURE_DIR}/install/assets/taxhub_apache.conf" | sudo tee /etc/apache2/conf-available/taxhub.conf || exit 1
-
-sudo a2enconf taxhub || exit 1
-sudo a2enmod proxy || exit 1
-sudo a2enmod proxy_http || exit 1
-
-sudo systemctl restart apache2 || exit 1
-
 # Installation of TaxHub
 # lance install_app en le sourcant pour que la commande NVM soit disponible
 ./install_app.sh || exit 1
