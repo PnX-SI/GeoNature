@@ -184,7 +184,7 @@ if [ "$install_usershub_app" = true ]; then
 
     # Installation of UsersHub database through geonature db as UsersHub does not known all revisions
     # Tell geonature where to find UsersHub alembic revision files
-    echo -e "\n[ALEMBIC]\nVERSION_LOCATIONS = '${USERSHUB_DIR}/app/migrations/versions/'" >> "${GEONATURE_DIR}/config/geonature_config.toml"
+    grep '\[ALEMBIC\]' "${GEONATURE_DIR}/config/geonature_config.toml" > /dev/null || echo -e "\n[ALEMBIC]\nVERSION_LOCATIONS = '${USERSHUB_DIR}/app/migrations/versions/'" >> "${GEONATURE_DIR}/config/geonature_config.toml"
     source "${GEONATURE_DIR}/backend/venv/bin/activate"
     geonature db upgrade usershub-samples@head
     deactivate
