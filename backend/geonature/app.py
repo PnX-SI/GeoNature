@@ -33,6 +33,8 @@ def configure_alembic(alembic_config):
     Thus, alembic will find migrations of all installed geonature modules.
     """
     version_locations = alembic_config.get_main_option('version_locations', default='').split()
+    if 'VERSION_LOCATIONS' in config['ALEMBIC']:
+        version_locations.extend(config['ALEMBIC']['VERSION_LOCATIONS'].split())
     for entry_point in chain(iter_entry_points('alembic', 'migrations'),
                              iter_entry_points('gn_module', 'migrations')):
         # TODO: define enabled module in configuration (skip disabled module, raise error on missing module)

@@ -125,6 +125,9 @@ class MediasConfig(Schema):
     MEDIAS_SIZE_MAX = fields.Integer(load_default=50000)
     THUMBNAIL_SIZES = fields.List(fields.Integer, load_default=[200, 50])
 
+class AlembicConfig(Schema):
+    VERSION_LOCATIONS = fields.String()
+
 class AdditionalFields(Schema):
     IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX"])
     IMPLEMENTED_OBJECTS = fields.List(
@@ -183,6 +186,7 @@ class GnPySchemaConf(Schema):
     USERSHUB = fields.Nested(UsersHubConfig, load_default=UsersHubConfig().load({}))
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
+    ALEMBIC = fields.Nested(AlembicConfig, load_default=AlembicConfig().load({}))
 
     @post_load()
     def unwrap_usershub(self, data, **kwargs):
