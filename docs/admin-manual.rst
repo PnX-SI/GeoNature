@@ -155,6 +155,24 @@ La `documentation d’Alembic <https://alembic.sqlalchemy.org/en/latest/ops.html
 Certaines opérations complexes telles que la création de trigger ne sont pas prévu, mais il reste toujours possible d’executer du SQL directement avec l’opérateur ``op.execute``.
 
 
+Description des branches
+````````````````````````
+
+Cette section liste les branches Alembic et ce qu’elles installent.
+
+* ``geonature`` : Installe les schémas propres à GeoNature (``gn_commons``, ``gn_synthese``, …). Requière les branches ``utilisateurs`` et ``taxonomie``.
+* ``taxonomie`` : Installe le schéma ``taxonomie``.
+* ``utilisateurs`` : Installe le schéma ``utilisateurs``.
+* ``utilisateurs-samples`` : Insert des données d’exemples (utilisateurs, groupes) dans le schéma ``utilisateurs``. Requière la branche ``utilisateurs``.
+* ``usershub`` : Déclare l’application UsersHub dans la liste des applications. Requière la branche ``utilisateurs``.
+* ``usershub-samples`` : Associe le groupe « Grp_admin » issue des données d’exemple à l’application UsersHub et au profil « Administrateur » permettant aux utilisateurs du groupe de se connecter à UsersHub. Requière les branches ``usershub`` et ``utilisateurs-samples``.
+* ``ref_geo_inpn_grids_1`` : Insert les mailles 1×1 km (INPN) dans le référentiel géographique (type de zone ``M1``). Requière la branche ``geonature``.
+* ``ref_geo_inpn_grids_5`` : Insert les mailles 5×5 km (INPN) dans le référentiel géographique (type de zone ``M5``). Requière la branche ``geonature``.
+* ``ref_geo_inpn_grids_10`` : Insert les mailles 10×10 km (INPN) dans le référentiel géographique (type de zone ``M10``). Requière la branche ``geonature``.
+* ``ref_geo_fr_municipalities`` : Insert les municipalités française (IGN février 2020) dans le référentiel géographique (type de zone ``COM``). Requière la branche ``geonature``.
+* ``ref_geo_fr_departments`` : Insert les départements français (IGN février 2020) dans le référentiel géographique (type de zone ``DEP``). Requière la branche ``geonature``.
+
+
 Gestion des droits
 """"""""""""""""""
 
