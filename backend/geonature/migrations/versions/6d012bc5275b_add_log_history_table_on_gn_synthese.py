@@ -34,24 +34,30 @@ $BODY$
 DECLARE
 BEGIN
     -- log id/uuid of deleted datas into specific log table
-    INSERT INTO gn_synthese.t_log_synthese
-    SELECT
-        old.id_synthese    AS id_synthese
-      , old.unique_id_sinp AS unique_id_sinp
-      , 'D'                AS last_action
-      , now()              AS meta_last_action_date
-      ON CONFLICT (id_synthese)
-      DO UPDATE SET last_action = 'D', meta_action_date = now();
+    IF (TG_OP = 'DELETE') THEN
+        INSERT INTO gn_synthese.t_log_synthese
+        SELECT
+            o.id_synthese    AS id_synthese
+            , o.unique_id_sinp AS unique_id_sinp
+            , 'D'                AS last_action
+            , now()              AS meta_last_action_date
+        from old_table o
+        ON CONFLICT (id_synthese)
+        DO UPDATE SET last_action = 'D', meta_last_action_date = now();
+    END IF;
     RETURN NULL;
 END;
 $BODY$ LANGUAGE plpgsql COST 100
 ;
 
+DROP TRIGGER IF EXISTS tri_log_delete_synthese ON gn_synthese.synthese;
+
 CREATE TRIGGER tri_log_delete_synthese
     AFTER DELETE
     ON gn_synthese.synthese
-    FOR EACH ROW
-EXECUTE PROCEDURE gn_synthese.fct_tri_log_delete_on_synthese()
+    REFERENCING OLD TABLE AS old_table
+    FOR EACH STATEMENT
+EXECUTE FUNCTION gn_synthese.fct_tri_log_delete_on_synthese()
 ;
 
 CREATE VIEW gn_synthese.v_log_synthese AS
