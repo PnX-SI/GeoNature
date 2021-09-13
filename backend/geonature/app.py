@@ -23,6 +23,7 @@ from geonature.utils.module import import_backend_enabled_modules
 from geonature.core.admin.admin import admin
 
 from pypnusershub.db.tools import user_from_token, UnreadableAccessRightsError, AccessRightsExpiredError
+from pypnusershub.db.models import Application
 
 
 @migrate.configure
@@ -89,8 +90,6 @@ def create_app(with_external_mods=True):
     app.config["DB"] = DB
     # Pass parameters to the submodules
     app.config["MA"] = MA
-    # Pass the ID_APP to the submodule to avoid token conflict between app on the same server
-    app.config["ID_APP"] = app.config["ID_APPLICATION_GEONATURE"]
 
     # For deleting files on "delete" media
     @before_models_committed.connect_via(app)
@@ -108,6 +107,15 @@ def create_app(with_external_mods=True):
             g.current_user = None
 
     admin.init_app(app)
+
+    # Pass the ID_APP to the submodule to avoid token conflict between app on the same server
+    with app.app_context():
+        try:
+            gn_app = Application.query.filter_by(code_application='GN').one()
+        except ProgrammingError:
+            logging.warning("Warning: unable to find GeoNature application, database not yet initialized?")
+        else:
+            app.config["ID_APP"] = app.config["ID_APPLICATION_GEONATURE"] = gn_app.id_application
 
     for blueprint_path, url_prefix in [
                 ('pypnusershub.routes:routes', '/auth'),
@@ -144,6 +152,6 @@ def create_app(with_external_mods=True):
                 if isinstance(sqla_error.orig, UndefinedTable):
                     logging.warning("Warning: database not yet initialized, skipping loading of external modules")
                 else:
-                    raise sqla_error
+                    raise
 
     return app

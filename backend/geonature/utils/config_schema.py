@@ -339,7 +339,6 @@ class GnGeneralSchemaConf(Schema):
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
     LOCAL_SRID = fields.Integer(load_default=2154)
-    ID_APPLICATION_GEONATURE = fields.Integer(load_default=3)
     XML_NAMESPACE = fields.String(load_default="{http://inpn.mnhn.fr/mtd}")
     MTD_API_ENDPOINT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/mtd")
     CAS_PUBLIC = fields.Nested(CasFrontend, load_default=CasFrontend().load({}))
