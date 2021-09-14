@@ -2,6 +2,53 @@
 CHANGELOG
 =========
 
+2.8.0
+-----
+
+**🚀 Nouveautés**
+
+* Passage de ``supervisor`` à ``systemd``
+* Gestion des évolutions de la base de données avec Alembic ; l’installation se fait partiellement avec Alembic (voir documentation)
+* Mise-à-jour de la procédure d’installation afin d’utiliser Alembic
+* Passage à Marshmallow 3
+* Suppression du paramètre ``ID_APP``, celui-ci est automatiquement déterminé à partir de la base de données et du code de l’application
+* Ajout d’un index sur ``ref_geo.l_areas.id_area``
+
+**🐛 Corrections**
+
+* Mise-à-jour de ``cor_area_synthese`` lors de l’ajout de nouvelles zones via un trigger sur ``l_areas`` (#1433)
+* Jeu de données : correction de l’affichage des imports sources
+* Correction de la configuration apache et de la gestion par flask d’un GeoNature accessible sur un préfix (e.g. ``/geonature``)
+* Correction de la commande ``install_packaged_gn_module``
+* Correction des boutons radios (champs additionnels)
+
+**💻 Développement**
+
+* Mise-à-jour de plusieurs dépendances
+* L’utilisateur connecté est maintenant accessible via ``g.current_user``
+* Nettoyage et refactoring divers
+
+**⚠️ Notes de version**
+
+* Passage à systemd :
+
+  * Stopper GeoNature : ``sudo supervisorctl stop geonature2``
+  * Supprimer le fichier de configuration de supervisor ``/etc/supervisor/conf.d/geonature-service.conf``
+  * Si supervisor n’est plus utilisé par aucun service, il peut être désinstallé
+  * Copier et adapter ``install/assets/geonature.service`` dans ``/etc/systemd/system``
+  * Lancer la commande ``sudo systemctl daemon-reload``
+
+* Correction de la configuration apache : si vous servez GeoNature sur un prefix (typiquement ``/geonature/api``), assurez vous que celui-ci figure bien également à la fin des directives ProxyPass et ProxyPassReverse comme c’est le cas dans le fichier d’exemple ``install/assets/geonature_apache.conf``.
+* Si vous avez UsersHub d’installé, ajoutez dans votre configuration GeoNature la section suivante :
+
+.. code-block::
+
+    [ALEMBIC]
+    VERSION_LOCATIONS = '/path/to/usershub/app/migrations/versions'
+
+* Passage à Alembic : reportez-vous à la documentation de GeoNature, section administration de la base de données avec Alembic.
+
+
 2.7.5 (2021-07-28)
 ------------------
 
