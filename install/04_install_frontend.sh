@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # DESC: Usage help
 # ARGS: None
 # OUTS: None
@@ -93,22 +95,22 @@ wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
 
 # Frontend installation
 echo "Installation de Node et Npm"
-nvm install || exit 1
-nvm use || exit 1
+nvm install
+nvm use
 
 # TODO: @angular-devkit/build-angular 0.13.10 requière node-gyp 3.8 qui est compatible python2.7 uniquement
 # il faut donc mettre à jour @angular-devkit/build-angular avant de pouvoir se passer de l’installation de python2
 # rappelons que python2 n’est plus supporté depuis le 1er janvier 2020…
 #npm config set python /bin/python3
- 
+
 echo " ############"
 echo "Installation des paquets Npm"
-npm ci --only=prod || exit 1
+npm ci --only=prod
 
 
 if [[ "${MODE}" != "dev" ]]; then
   echo "Build du frontend..."
   cd "${BASE_DIR}/frontend"
-  npm rebuild node-sass --force || exit 1
-  npm run build || exit 1
+  npm rebuild node-sass --force
+  npm run build
 fi

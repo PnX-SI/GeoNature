@@ -129,11 +129,11 @@ Ainsi, si vous souhaitez insérer les grilles 10×10 dans votre référentiel g�
 
 .. code-block::
 
-    $ geonature db upgrade ref_geo_inpn_grids_10@head -x geo-data-directory=./tmp_geo
+    $ geonature db upgrade ref_geo_inpn_grids_10@head -x data-directory=./tmp_geo
 
 Ici, ``@head`` indique que nous souhaitons appliquer toutes les migrations jusqu’à la dernière de la branche ``ref_geo_inpn_grids_10`` (bien que dans notre cas, cette branche contient une unique migration).
 
-L’argument ``-x`` permet de fournir des variables à usage des fichiers de migrations. Dans le cas des migrations de données de zones géographiques, celles-ci supporte la variable ``geo-data-directory`` permettant de spécifier où doivent être cherché et éventuellement téléchargé les données géographiques. Si l’argument n’est pas spécifié, un dossier temporaire, supprimé à la fin de la procédure, sera utilisé.
+L’argument ``-x`` permet de fournir des variables à usage des fichiers de migrations. Dans le cas des migrations de données de zones géographiques, celles-ci supporte la variable ``data-directory`` permettant de spécifier où doivent être cherché et éventuellement téléchargé les données géographiques. Si l’argument n’est pas spécifié, un dossier temporaire, supprimé à la fin de la procédure, sera utilisé.
 
 En revanche, si votre installation contient déjà les mailles 10×10, vous pouvez en informer Alembic :
 
@@ -178,7 +178,7 @@ Cette section liste les branches Alembic et ce qu’elles installent.
 * ``ref_geo_inpn_grids_10`` : Insert les mailles 10×10 km (INPN) dans le référentiel géographique (type de zone ``M10``). Requière la branche ``geonature``.
 * ``ref_geo_fr_municipalities`` : Insert les municipalités française (IGN février 2020) dans le référentiel géographique (type de zone ``COM``). Requière la branche ``geonature``.
 * ``ref_geo_fr_departments`` : Insert les départements français (IGN février 2020) dans le référentiel géographique (type de zone ``DEP``). Requière la branche ``geonature``.
-
+* ``sensitivity_inpn_rules`` : Insert les données liée à la sensibilité
 
 Gestion des droits
 """"""""""""""""""

@@ -7,10 +7,10 @@ Create Date: 2021-06-01 11:02:56.834432
 from alembic import op
 from shutil import copyfileobj
 
-from geonature.migrations.ref_geo_utils import (
+from geonature.migrations.utils import (
     logger,
     schema,
-    open_geofile,
+    open_remote_file,
     delete_area_with_type,
 )
 
@@ -46,7 +46,7 @@ def upgrade():
             ADD CONSTRAINT {temp_table_name}_pkey PRIMARY KEY (gid)
     """)
     cursor = op.get_bind().connection.cursor()
-    with open_geofile(base_url, filename) as geofile:
+    with open_remote_file(base_url, filename) as geofile:
         logger.info("Inserting departments data in temporary table…")
         cursor.copy_expert(f'COPY {schema}.{temp_table_name} FROM STDIN', geofile)
     logger.info("Copy departments data in l_areas…")

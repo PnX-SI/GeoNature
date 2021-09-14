@@ -15,31 +15,41 @@ logger = logging.getLogger('alembic.runtime.migration')
 
 
 """
-Ce contextmanager permet d’ouvrir un fichier compressé (xz) après l’avoir préalablement téléchargé.
-Le fichier téléchargé est enregistré dans le dossier spécifié par -x geo-data-directory=…
+Ce contextmanager permet d’ouvrir un fichier après l’avoir préalablement téléchargé.
+Le fichier peut être compréssé et gérer en tant que tel pour les types suivants:
+  - xz
+dans les autres cas le fichier est ouvert comme un fichier normal
+Le fichier téléchargé est enregistré dans le dossier spécifié par -x data-directory=…
 Si aucun dossier n’est spécifié, un dossier temporaire, supprimé à la fin de la migration, est utilisé.
 """
-class open_geofile(ExitStack):
+class open_remote_file(ExitStack):
     def __init__(self, base_url, filename):
         super().__init__()
         self.base_url = base_url
         self.filename = filename
-        self.geo_dir = context.get_x_argument(as_dictionary=True).get('geo-data-directory')
+        self.file_extension = filename.split('.')[-1]
+        self.data_dir = context.get_x_argument(as_dictionary=True).get('data-directory')
 
     def __enter__(self):
         stack = super().__enter__()
-        if not self.geo_dir:
-            self.geo_dir = stack.enter_context(TemporaryDirectory())
-            logger.info("Created temporary directory '{}'".format(self.geo_dir))
-        if not os.path.exists(self.geo_dir):
-            os.mkdir(self.geo_dir)
-        geofile_path = os.path.join(self.geo_dir, self.filename)
-        if not os.path.isfile(geofile_path):
+        if not self.data_dir:
+            self.data_dir = stack.enter_context(TemporaryDirectory())
+            logger.info("Created temporary directory '{}'".format(self.data_dir))
+        if not os.path.exists(self.data_dir):
+            os.mkdir(self.data_dir)
+        remote_file_path = os.path.join(self.data_dir, self.filename)
+        if not os.path.isfile(remote_file_path):
             logger.info("Downloading '{}'…".format(self.filename))
             with urlopen('{}{}'.format(self.base_url, self.filename)) as response, \
-                                              open(geofile_path, 'wb') as geofile:
-                copyfileobj(response, geofile)
-        return stack.enter_context(lzma.open(geofile_path))
+                                              open(remote_file_path, 'wb') as remote_file:
+                copyfileobj(response, remote_file)
+        # test des extension
+        f = None
+        if self.filename.endswith('.xz'):
+            f = lzma.open(remote_file_path)
+        else:
+            f = open(remote_file_path)
+        return stack.enter_context(f)
 
 
 """

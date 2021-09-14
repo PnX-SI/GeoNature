@@ -229,8 +229,8 @@ CREATE TABLE l_areas (
     id_type integer NOT NULL,
     area_name character varying(250),
     area_code character varying(25),
-    geom public.geometry(MultiPolygon,MYLOCALSRID),
-    centroid public.geometry(Point,MYLOCALSRID),
+    geom public.geometry(MultiPolygon,:MYLOCALSRID),
+    centroid public.geometry(Point,:MYLOCALSRID),
     geojson_4326 character varying,
     source character varying(250),
     comment text,
@@ -239,9 +239,9 @@ CREATE TABLE l_areas (
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone,
     CONSTRAINT enforce_geotype_l_areas_geom CHECK (((public.geometrytype(geom) = 'MULTIPOLYGON'::text) OR (geom IS NULL))),
-    CONSTRAINT enforce_srid_l_areas_geom CHECK ((public.st_srid(geom) = MYLOCALSRID)),
+    CONSTRAINT enforce_srid_l_areas_geom CHECK ((public.st_srid(geom) = :MYLOCALSRID)),
     CONSTRAINT enforce_geotype_l_areas_centroid CHECK (((public.geometrytype(centroid) = 'POINT'::text) OR (centroid IS NULL))),
-    CONSTRAINT enforce_srid_l_areas_centroid CHECK ((public.st_srid(centroid) = MYLOCALSRID))
+    CONSTRAINT enforce_srid_l_areas_centroid CHECK ((public.st_srid(centroid) = :MYLOCALSRID))
 );
 ALTER SEQUENCE l_areas_id_area_seq OWNED BY l_areas.id_area;
 ALTER TABLE ONLY l_areas ALTER COLUMN id_area SET DEFAULT nextval('l_areas_id_area_seq'::regclass);
@@ -293,7 +293,7 @@ CREATE TABLE dem
 CREATE TABLE dem_vector
 (
   gid serial NOT NULL,
-  geom public.geometry(Geometry,MYLOCALSRID),
+  geom public.geometry(Geometry,:MYLOCALSRID),
   val double precision
 );
 
