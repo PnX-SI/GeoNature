@@ -114,7 +114,7 @@ echo "Installation des modules GeoNature"
 echo "Installation du frontend GeoNature"
 ./04_install_frontend.sh || exit 1
 
-sudo systemctl start geonature2
+sudo systemctl start geonature
 
 cd "${GEONATURE_DIR}"
 

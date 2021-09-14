@@ -7,7 +7,7 @@ Type=simple
 User=${USER}
 Group=${USER}
 WorkingDirectory=${BASE_DIR}/
-Environment=GUNICORN_PROC_NAME=geonature2
+Environment=GUNICORN_PROC_NAME=geonature
 Environment=GUNICORN_NUM_WORKERS=4
 Environment=GUNICORN_HOST=127.0.0.1
 Environment=GUNICORN_PORT=8000
