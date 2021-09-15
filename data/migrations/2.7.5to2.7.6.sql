@@ -38,9 +38,3 @@ CREATE TRIGGER tri_insert_cor_area_synthese after
 	REFERENCING NEW TABLE AS new
 	FOR EACH STATEMENT
 	EXECUTE PROCEDURE gn_synthese.fct_trig_l_areas_insert_cor_area_synthese_on_each_statement();
-
-
--- Add indexes on ref_geo.li_grids.id_area and ref_geo.li_municipalities.id_area
--- This speed-up deletion in ref_geo.l_areas due to FK checks
-CREATE INDEX index_li_grids_id_area ON ref_geo.li_grids (id_area);
-CREATE INDEX index_li_municipalities_id_area ON ref_geo.li_municipalities (id_area);
