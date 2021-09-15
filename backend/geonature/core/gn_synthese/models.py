@@ -19,7 +19,7 @@ from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
 from pypn_habref_api.models import Habref
 
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
-from geonature.core.ref_geo.models import LAreas
+from geonature.core.ref_geo.models import LAreas, CorAreaStatus
 from geonature.core.ref_geo.models import LiMunicipalities
 from geonature.core.gn_commons.models import THistoryActions, TValidations, TMedias, TModules
 from geonature.utils.env import DB, db
@@ -93,6 +93,14 @@ class VSyntheseDecodeNomenclatures(DB.Model):
 class SyntheseQuery(BaseQuery):
     def with_nomenclatures(self):
         return self.options(*[joinedload(n) for n in Synthese.nomenclature_fields])
+
+
+@serializable
+class CorAreaSynthese(DB.Model):
+    __tablename__ = "cor_area_synthese"
+    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
+    id_synthese = DB.Column(DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True)
+    id_area = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True)
 
 
 @serializable
@@ -226,6 +234,13 @@ class Synthese(DB.Model):
 
     cor_observers = DB.relationship(User, secondary=cor_observer_synthese)
 
+    areas_status = DB.relationship(
+        "CorAreaStatus",
+        secondary=corAreaSynthese,
+        primaryjoin=(CorAreaSynthese.id_synthese == id_synthese),
+        secondaryjoin=(CorAreaSynthese.id_area == CorAreaStatus.id_area),
+    )
+
     def get_geofeature(self, recursif=True, fields=None):
         return self.as_geofeature("the_geom_4326", "id_synthese", recursif, fields=fields)
 
@@ -243,15 +258,6 @@ class Synthese(DB.Model):
             return False
         elif scope == 3:
             return True
-
-
-
-@serializable
-class CorAreaSynthese(DB.Model):
-    __tablename__ = "cor_area_synthese"
-    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
-    id_synthese = DB.Column(DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True)
-    id_area = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True)
 
 
 @serializable

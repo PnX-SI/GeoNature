@@ -33,8 +33,8 @@
       <label
         for="modif_checkbox"
         class="form-check-label"
-      > 
-        <small>Données modifiées depuis la dernière validation</small> 
+      >
+        <small>Données modifiées depuis la dernière validation</small>
       </label>
     </div>
     <button
@@ -52,8 +52,8 @@
     <div class="advanded-score collapse" id="collapseScore">
           <small> Score</small>
           <div class="input-group">
-            <select 
-              class="form-control form-control-sm" 
+            <select
+              class="form-control form-control-sm"
               [formControl]="formService.searchForm.get('score')"
               name="score"
             >
@@ -63,12 +63,12 @@
               <option value="3">3</option>
             </select>
           </div>
-          <small> Localisation valide 
-            <mat-icon class="small-icon" matTooltip="La localisation est-elle dans l'aire de répartition connue du taxon ?" >info</mat-icon> 
+          <small> Localisation valide
+            <mat-icon class="small-icon" matTooltip="La localisation est-elle dans l'aire de répartition connue du taxon ?" >info</mat-icon>
           </small>
           <div class="input-group">
-            <select 
-              class="form-control form-control-sm" 
+            <select
+              class="form-control form-control-sm"
               [formControl]="formService.searchForm.get('valid_distribution')"
               name="score"
             >
@@ -77,12 +77,12 @@
             <option [ngValue]="false">Invalide</option>
             </select>
           </div>
-          <small> Altitude valide 
-            <mat-icon class="small-icon" matTooltip="L'altitude de l'observation est-elle dans la plage d'altitude connue du taxon ?" >info</mat-icon> 
+          <small> Altitude valide
+            <mat-icon class="small-icon" matTooltip="L'altitude de l'observation est-elle dans la plage d'altitude connue du taxon ?" >info</mat-icon>
           </small>
           <div class="input-group">
-            <select 
-              class="form-control form-control-sm" 
+            <select
+              class="form-control form-control-sm"
               [formControl]="formService.searchForm.get('valid_altitude')"
               name="score"
             >
@@ -91,12 +91,12 @@
               <option [ngValue]="false">Invalide</option>
             </select>
           </div>
-          <small> Phénologie valide 
-            <mat-icon class="small-icon" matTooltip="La date et l'altitude de l'observation sont-elle conforme à la phénologie connue du taxon ?" >info</mat-icon> 
+          <small> Phénologie valide
+            <mat-icon class="small-icon" matTooltip="La date et l'altitude de l'observation sont-elle conforme à la phénologie connue du taxon ?" >info</mat-icon>
           </small>
           <div class="input-group">
-            <select 
-              class="form-control form-control-sm" 
+            <select
+              class="form-control form-control-sm"
               [formControl]="formService.searchForm.get('valid_phenology')"
               name="score"
             >
@@ -223,7 +223,7 @@
     <legend> Ou ?</legend>
 
     <div *ngIf="formService.formBuilded">
-      <div *ngFor="let area of areaFilters; let i = index;">
+      <div *ngFor="let area of formService.areasFilters; let i = index;">
         <pnx-areas
           [parentFormControl]="area.control"
           [label]="area.label"
@@ -232,8 +232,6 @@
         </pnx-areas>
       </div>
     </div>
-
-
   </fieldset>
 
 

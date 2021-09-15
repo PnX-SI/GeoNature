@@ -337,7 +337,7 @@ export class DataFormService {
    *
    * @param params: dict of paramters
    */
-  getAcquisitionFrameworks(params = {}) {    
+  getAcquisitionFrameworks(params = {}) {
     let queryString: HttpParams = new HttpParams();
     for (let key in params) {
       queryString = queryString.set(key, params[key])
@@ -349,7 +349,7 @@ export class DataFormService {
     );
   }
 
-  getAcquisitionFrameworksForSelect(searchTerms = {}) {    
+  getAcquisitionFrameworksForSelect(searchTerms = {}) {
     let queryString: HttpParams = new HttpParams();
     for (let key in searchTerms) {
       queryString = queryString.set(key, searchTerms[key])
@@ -366,7 +366,7 @@ export class DataFormService {
    * @param id_af: id of acquisition_framework
    * @params params : get parameters
    */
-  getAcquisitionFramework(id_af, params?: ParamsDict) {    
+  getAcquisitionFramework(id_af, params?: ParamsDict) {
     let queryString: HttpParams = new HttpParams();
     for (let key in params) {
       if(isArray(params[key])) {
@@ -598,7 +598,7 @@ export class DataFormService {
     }
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/additional_fields`,
      {params: queryString}).map(additionalFields => {
-      return additionalFields.map(data => {        
+      return additionalFields.map(data => {
         return {
           "id_field": data.id_field,
           "attribut_label": data.field_label,
@@ -620,9 +620,11 @@ export class DataFormService {
           ...data.additional_attributes
         }
       })
-        
-     });
+    });
+  }
 
+  getRedListValues(statusType: String) {
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/bdc_statuts/red_lists/${statusType}`);
   }
 
   getProfile(cdRef) {
@@ -651,5 +653,14 @@ export class DataFormService {
     );
   }
 
-}
+  getStatusType(statusTypes: String[]) {
+    let queryString: HttpParams = new HttpParams();
+    if (statusTypes) {
+      queryString = queryString.set('codes', statusTypes.join(','));
+    }
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/bdc_statuts/status_types`, {
+      params: queryString
+    });
+  }
 
+}
