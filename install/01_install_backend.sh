@@ -1,5 +1,48 @@
 #!/bin/bash
 
+# DESC: Usage help
+# ARGS: None
+# OUTS: None
+function printScriptUsage() {
+  cat << EOF
+Usage: ./$(basename $BASH_SOURCE)[options]
+     -h | --help: display this help
+     -v | --verbose: display more infos
+     -x | --debug: display debug script infos
+     -d | --dev: use GeoNature in development mode.
+EOF
+  exit 0
+}
+
+# DESC: Parameter parser
+# ARGS: $@ (optional): Arguments provided to the script
+# OUTS: Variables indicating command-line parameters and options
+function parseScriptOptions() {
+  # Transform long options to short ones
+  for arg in "${@}"; do
+    shift
+    case "${arg}" in
+      "--help") set -- "${@}" "-h" ;;
+      "--verbose") set -- "${@}" "-v" ;;
+      "--debug") set -- "${@}" "-x" ;;
+      "--dev") set -- "${@}" "-d" ;;
+      "--"*) exitScript "ERROR : parameter '${arg}' invalid ! Use -h option to know more." 1 ;;
+      *) set -- "${@}" "${arg}"
+    esac
+  done
+
+  while getopts "hvxd" option; do
+    case "${option}" in
+      "h") printScriptUsage ;;
+      "v") readonly VERBOSE=true ;;
+      "x") readonly DEBUG=true; set -x ;;
+      "d") readonly MODE="dev" ;;
+      *) exitScript "ERROR : parameter invalid ! Use -h option to know more." 1 ;;
+    esac
+  done
+}
+
+parseScriptOptions "${@}"
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 . "${SCRIPT_DIR}/utils"
@@ -60,8 +103,8 @@ source venv/bin/activate
 echo "Installation des dépendances Python..."
 pip install --upgrade pip
 pip install -r requirements.txt
-if [[ $MODE == "dev" ]]
-then
+if [[ "${MODE}" == "dev" ]]; then
+  echo "Installation des dépendances Python de l'environnement de DEV..."
   pip install -r requirements-dev.txt -r requirements-submodules.txt
 fi
 
@@ -71,5 +114,7 @@ pip install --editable "${BASE_DIR}"
 
 echo "Installation du service-file systemd…"
 envsubst '${USER} ${BASE_DIR}' < ${BASE_DIR}/install/assets/geonature.service | sudo tee /etc/systemd/system/geonature.service && sudo systemctl daemon-reload || exit 1
-echo "Activation de geonature au démarrage…"
-sudo systemctl enable geonature || exit 1
+if [[ "${MODE}" != "dev" ]]; then
+  echo "Activation de geonature au démarrage…"
+  sudo systemctl enable geonature || exit 1
+fi
