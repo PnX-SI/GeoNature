@@ -1,11 +1,14 @@
-import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterContentInit, Inject } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode, TreeComponent, IActionMapping } from '@circlon/angular-tree-component';
-import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
+
+import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
-import { FormGroup } from '@angular/forms';
+import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
-import { AppConfig } from '@geonature_config/app.config';
+
 
 @Component({
   selector: 'pnx-validation-taxon-advanced',
@@ -29,13 +32,17 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   public showTree = false;
 
   constructor(
+    @Inject(APP_CONFIG_TOKEN) private cfg,
     public activeModal: NgbActiveModal,
     public formService: SyntheseFormService,
     public storeService: TaxonAdvancedStoreService
   ) {
+    // Set config parameters
+    this.URL_AUTOCOMPLETE = this.cfg.API_TAXHUB + '/taxref/search/lb_nom';
+
     const actionMapping: IActionMapping = {
       mouse: {
-        click: (tree, node, $event) => {},
+        click: (tree, node, $event) => { },
         checkboxClick: (tree, node, $event) => {
           node.toggleSelected();
           if (!node.isExpanded) {
@@ -88,6 +95,61 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
     this.formService.selectedTaxonFromRankInput.push($event.item);
     $event.preventDefault();
     this.formService.searchForm.controls.taxon_rank.reset();
+  }
+
+  onStatusCheckboxChanged(event) {
+    console.log('onStatusCheckboxSelected:', event.target.value, event.target.checked);
+    if (event.target.checked == true) {
+      this.formService.selectedStatus.push(event.target.value);
+    } else if (event.target.checked == false) {
+      this.formService.selectedStatus.splice(
+        this.formService.selectedStatus.indexOf(event.target.value),
+        1
+      );
+      // Reset input checkbox Reactive From to not send "False"
+      this.formService.searchForm.controls[event.target.id].reset()
+    }
+  }
+
+  onStatusSelected(event) {
+    console.log('onStatusSelected:', event)
+    this.formService.selectedStatus.push(event.code);
+  }
+
+  onStatusDeleted(event) {
+    console.log('onStatusDeleted:', event)
+    this.formService.selectedStatus.splice(
+      this.formService.selectedStatus.indexOf(event.value.code),
+      1
+    );
+  }
+
+  onRedListsSelected(event) {
+    console.log('onRedListsSelected:', event)
+    let key = `${event.statusType} [${event.code}]`;
+    this.formService.selectedRedLists.push(key);
+  }
+
+  onRedListsDeleted(event) {
+    console.log('onRedListsDeleted:', event)
+    let key = `${event.statusType} [${event.value.code}]`;
+    this.formService.selectedRedLists.splice(
+      this.formService.selectedRedLists.indexOf(key),
+      1
+    );
+  }
+
+  onTaxRefAttributsSelected(event) {
+    console.log('onTaxRefAttributsSelected:', event)
+    this.formService.selectedTaxRefAttributs.push(event);
+  }
+
+  onTaxRefAttributsDeleted(event) {
+    console.log('onTaxRefAttributssDeleted:', event)
+    this.formService.selectedTaxRefAttributs.splice(
+      this.formService.selectedTaxRefAttributs.indexOf(event),
+      1
+    );
   }
 
   // algo recursif pour retrouver tout les cd_ref sélectionné à partir de l'arbre

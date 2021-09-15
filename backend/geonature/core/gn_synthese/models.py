@@ -29,7 +29,8 @@ from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
 from utils_flask_sqla_geo.mixins import GeoFeatureCollectionMixin
 from pypn_habref_api.models import Habref
 from apptax.taxonomie.models import Taxref
-from ref_geo.models import LAreas
+from ref_geo.models import LAreas, LiMunicipalities
+from geonature.core.ref_geo.models import CorAreaStatus
 
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.gn_commons.models import (
@@ -130,7 +131,15 @@ class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
 
 
 @serializable
-@geoserializable(geoCol="the_geom_4326", idCol="id_synthese")
+class CorAreaSynthese(DB.Model):
+    __tablename__ = "cor_area_synthese"
+    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
+    id_synthese = DB.Column(DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True)
+    id_area = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True)
+
+
+@serializable
+@geoserializable
 @shapeserializable
 class Synthese(DB.Model):
     __tablename__ = "synthese"
@@ -322,6 +331,16 @@ class Synthese(DB.Model):
 
     cor_observers = DB.relationship(User, secondary=cor_observer_synthese)
 
+    areas_status = DB.relationship(
+        "CorAreaStatus",
+        secondary=corAreaSynthese,
+        primaryjoin=(CorAreaSynthese.id_synthese == id_synthese),
+        secondaryjoin=(CorAreaSynthese.id_area == CorAreaStatus.id_area),
+    )
+
+    def get_geofeature(self, recursif=True, fields=None):
+        return self.as_geofeature("the_geom_4326", "id_synthese", recursif, fields=fields)
+
     def has_instance_permission(self, scope):
         if scope == 0:
             return False
@@ -335,14 +354,6 @@ class Synthese(DB.Model):
             return True
 
 
-@serializable
-class CorAreaSynthese(DB.Model):
-    __tablename__ = "cor_area_synthese"
-    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
-    id_synthese = DB.Column(
-        DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True
-    )
-    id_area = DB.Column(DB.Integer, ForeignKey(LAreas.id_area), primary_key=True)
 
 
 @serializable

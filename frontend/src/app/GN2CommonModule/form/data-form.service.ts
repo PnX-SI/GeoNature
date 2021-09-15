@@ -26,7 +26,7 @@ export const FormatMapMime = new Map([
 @Injectable()
 export class DataFormService {
   private _blob: Blob;
-  constructor(private _http: HttpClient) {}
+  constructor(private _http: HttpClient) { }
 
   getNomenclature(
     codeNomenclatureType: string,
@@ -508,8 +508,8 @@ export class DataFormService {
       application === 'GeoNature'
         ? `${AppConfig.API_ENDPOINT}/${api}`
         : application === 'TaxHub'
-        ? `${AppConfig.API_TAXHUB}/${api}`
-        : api;
+          ? `${AppConfig.API_TAXHUB}/${api}`
+          : api;
 
     return this._http.get<any>(url, { params: queryString });
   }
@@ -640,4 +640,16 @@ export class DataFormService {
   controlProfile(data) {
     return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/check_observation`, data);
   }
+
+  getStatusType(statusTypes: String[]) {
+    let queryString: HttpParams = new HttpParams();
+    if (statusTypes) {
+      queryString = queryString.set('codes', statusTypes.join(','));
+    }
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/bdc_statuts/status_types`, {
+      params: queryString
+    });
+  }
+
 }
+

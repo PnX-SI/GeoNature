@@ -27,7 +27,10 @@
         type="checkbox"
         checked
       />
-      <label for="modif_checkbox" class="form-check-label">
+      <label
+        for="modif_checkbox"
+        class="form-check-label"
+      >
         <small>Données modifiées depuis la dernière validation</small>
       </label>
     </div>
@@ -229,7 +232,7 @@
   <fieldset>
     <legend>Quand ?</legend>
     <div class="row row-sm">
-      <pnx-date 
+      <pnx-date
         label="Date min" [parentFormControl]="formService.searchForm.controls.date_min"
         data-qa="synthese-form-date-min"
         >
@@ -292,6 +295,8 @@
         </pnx-areas>
       </div>
     </div>
+
+
   </fieldset>
 
   <fieldset>

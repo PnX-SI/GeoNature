@@ -19,7 +19,6 @@ import { ActivatedRoute } from '@angular/router';
 export class SyntheseSearchComponent implements OnInit {
   public AppConfig = AppConfig;
   public organisms: any;
-  public areaFilters: Array<any>;
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
   public validationStatus: Array<any>;
   private params: any;

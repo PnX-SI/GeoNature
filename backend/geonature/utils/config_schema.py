@@ -255,9 +255,72 @@ class GnFrontEndConf(Schema):
 
 
 class Synthese(Schema):
+    #--------------------------------------------------------------------
+    # SYNTHESE - SEARCH FORM
     AREA_FILTERS = fields.List(
         fields.Dict, load_default=[{"label": "Communes", "type_code": "COM"}]
     )
+    # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
+    TAXON_RESULT_NUMBER = fields.Integer(load_default=20)
+    # Afficher ou non l'arbre taxonomique
+    DISPLAY_TAXON_TREE = fields.Boolean(load_default=True)
+    # Ajouter le filtre sur l'observers_txt en ILIKE sur les portée 1 et 2 du CRUVED
+    CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = fields.Boolean(load_default=False)
+    # Switch the observer form input in free text input (true) or in select input (false)
+    SEARCH_OBSERVER_WITH_LIST = fields.Boolean(load_default=False)
+    # Id of the observer list -- utilisateurs.t_menus
+    ID_SEARCH_OBSERVER_LIST = fields.Integer(load_default=1)
+    # Regulatory or not status list of fields
+    STATUS_FILTERS = fields.List(fields.Dict, missing=[
+        {
+            "id": "protections",
+            "show": True,
+            "display_name": "Taxons protégés",
+            "status_types": ["PN", "PR", "PD"],
+        },
+        {
+            "id": "regulations",
+            "show": True,
+            "display_name": "Taxons réglementés",
+            "status_types": ["REGLII", "REGLLUTTE", "REGL", "REGLSO"],
+        },
+        {
+            "id": "znief",
+            "show": True,
+            "display_name": "Espèces déterminantes ZNIEFF",
+            "status_types": ["ZDET"],
+        },
+    ])
+    # Red lists list of fields
+    RED_LISTS_FILTERS = fields.List(fields.Dict, missing=[
+        {
+            "id": "worldwide",
+            "show": True,
+            "display_name": "Liste rouge mondiale",
+            "status_type": "LRM",
+        },
+        {
+            "id": "european",
+            "show": True,
+            "display_name": "Liste rouge européenne",
+            "status_type": "LRE",
+        },
+        {
+            "id": "national",
+            "show": True,
+            "display_name": "Liste rouge nationale",
+            "status_type": "LRN",
+        },
+        {
+            "id": "regional",
+            "show": True,
+            "display_name": "Liste rouge régionale",
+            "status_type": "LRR",
+        },
+    ])
+
+    #--------------------------------------------------------------------
+    # SYNTHESE - OBSERVATIONS LIST
     # Listes des champs renvoyés par l'API synthese '/synthese'
     # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
     # d'abbord s'assurer que ces champs sont bien renvoyé par l'API !
@@ -267,6 +330,9 @@ class Synthese(Schema):
     )
     # Colonnes affichées sur la liste des résultats de la sytnthese
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, load_default=DEFAULT_LIST_COLUMN)
+
+    #--------------------------------------------------------------------
+    # SYNTHESE - DOWNLOADS (AKA EXPORTS)
     EXPORT_COLUMNS = fields.List(fields.String(), load_default=DEFAULT_EXPORT_COLUMNS)
     # Certaines colonnes sont obligatoires pour effectuer les filtres CRUVED
     EXPORT_ID_SYNTHESE_COL = fields.String(load_default="id_synthese")
@@ -279,15 +345,23 @@ class Synthese(Schema):
     EXPORT_METADATA_ACTOR_COL = fields.String(load_default="acteurs")
     # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
     EXPORT_FORMAT = fields.List(fields.String(), load_default=["csv", "geojson", "shapefile"])
-    # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
-    TAXON_RESULT_NUMBER = fields.Integer(load_default=20)
+    # Nombre max d'observation dans les exports
+    NB_MAX_OBS_EXPORT = fields.Integer(load_default=50000)
+
+    #--------------------------------------------------------------------
+    # SYNTHESE - OBSERVATION DETAILS
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
     # et sur les filtres taxonomiques avancés
     ID_ATTRIBUT_TAXHUB = fields.List(fields.Integer(), load_default=[102, 103])
-    # nom des colonnes de la table gn_synthese.synthese que l'on veux retirer des filres dynamiques
-    # et de la modale d'information détaillée d'une observation
-    # example = "[non_digital_proof]"
+    # Display email on synthese and validation info obs modal
+    DISPLAY_EMAIL = fields.Boolean(load_default=True)
+
+    #--------------------------------------------------------------------
+    # SYNTHESE - SHARED PARAMETERS
+    # Nom des colonnes de la table gn_synthese.synthese que l'on veux retirer des filtres dynamiques
+    # et de la modale d'information détaillée d'une observation example = "[non_digital_proof]"
     EXCLUDED_COLUMNS = fields.List(fields.String(), load_default=[])
+
     # Afficher ou non l'arbre taxonomique
     DISPLAY_TAXON_TREE = fields.Boolean(load_default=True)
     # Switch the observer form input in free text input (true) or in select input (false)
@@ -296,11 +370,9 @@ class Synthese(Schema):
     ID_SEARCH_OBSERVER_LIST = fields.Integer(load_default=1)
     # Nombre max d'observation à afficher sur la carte
     NB_MAX_OBS_MAP = fields.Integer(load_default=50000)
-    # clusteriser les layers sur la carte
+    # Clusteriser les layers sur la carte
     ENABLE_LEAFLET_CLUSTER = fields.Boolean(load_default=True)
-    # Nombre max d'observation dans les exports
-    NB_MAX_OBS_EXPORT = fields.Integer(load_default=50000)
-    # Nombre des "dernières observations" affiché à l'arrive sur la synthese
+    # Nombre des "dernières observations" affichées à l'arrivée sur la synthese
     NB_LAST_OBS = fields.Integer(load_default=100)
 
     # Display email on synthese and validation info obs modal
