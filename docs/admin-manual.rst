@@ -75,6 +75,13 @@ Il est possible pour n’importe quelle dépendance ou module GeoNature de fourn
         …
     )
 
+Il est également possible de spécifier l’emplacement de révisions Alembic manuellement dans la configuration de GeoNature. Cela est nécessaire entre autre pour UsersHub afin de pouvoir manipuler son schéma alors que UsersHub n’est usuellemment pas installé dans le venv de GeoNature (seul UsersHub-authentification-module l’est) :
+
+.. code-block::
+
+    [ALEMBIC]
+    VERSION_LOCATIONS = '/path/to/usershub/app/migrations/versions'
+
 Les commandes Alembic sont disponible grâce à la sous-commande ``db`` de la commande ``geonature`` :
 
 .. code-block::
@@ -153,6 +160,24 @@ Pour créer un nouveau fichier de migration afin d’y placer ses évolutions de
 
 La `documentation d’Alembic <https://alembic.sqlalchemy.org/en/latest/ops.html>`_ liste les opérations prises en charge.
 Certaines opérations complexes telles que la création de trigger ne sont pas prévu, mais il reste toujours possible d’executer du SQL directement avec l’opérateur ``op.execute``.
+
+
+Description des branches
+````````````````````````
+
+Cette section liste les branches Alembic et ce qu’elles installent.
+
+* ``geonature`` : Installe les schémas propres à GeoNature (``gn_commons``, ``gn_synthese``, …). Requière les branches ``utilisateurs`` et ``taxonomie``.
+* ``taxonomie`` : Installe le schéma ``taxonomie``. Fournie par TaxHub.
+* ``utilisateurs`` : Installe le schéma ``utilisateurs``. Fournie par UsersHub-authentification-module.
+* ``utilisateurs-samples`` : Insert des données d’exemples (utilisateurs, groupes) dans le schéma ``utilisateurs``. Fournie par UsersHub-authentification-module. Requière la branche ``utilisateurs``.
+* ``usershub`` : Déclare l’application UsersHub dans la liste des applications. Fournie par UsersHub. Requière la branche ``utilisateurs``.
+* ``usershub-samples`` : Associe le groupe « Grp_admin » issue des données d’exemple à l’application UsersHub et au profil « Administrateur » permettant aux utilisateurs du groupe de se connecter à UsersHub. Fournie par UsersHub. Requière les branches ``usershub`` et ``utilisateurs-samples``.
+* ``ref_geo_inpn_grids_1`` : Insert les mailles 1×1 km (INPN) dans le référentiel géographique (type de zone ``M1``). Requière la branche ``geonature``.
+* ``ref_geo_inpn_grids_5`` : Insert les mailles 5×5 km (INPN) dans le référentiel géographique (type de zone ``M5``). Requière la branche ``geonature``.
+* ``ref_geo_inpn_grids_10`` : Insert les mailles 10×10 km (INPN) dans le référentiel géographique (type de zone ``M10``). Requière la branche ``geonature``.
+* ``ref_geo_fr_municipalities`` : Insert les municipalités française (IGN février 2020) dans le référentiel géographique (type de zone ``COM``). Requière la branche ``geonature``.
+* ``ref_geo_fr_departments`` : Insert les départements français (IGN février 2020) dans le référentiel géographique (type de zone ``DEP``). Requière la branche ``geonature``.
 
 
 Gestion des droits

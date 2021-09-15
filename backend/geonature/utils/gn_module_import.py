@@ -322,7 +322,6 @@ def add_application_db(app, module_code, url, enable_frontend, enable_backend):
     from geonature.core.gn_commons.models import TModules
 
     new_module = True
-    id_application_geonature = config["ID_APPLICATION_GEONATURE"]
     # remove / at the end and at the beginning
     if url[0] == "/":
         url = url[1:]

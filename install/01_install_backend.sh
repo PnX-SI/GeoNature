@@ -113,8 +113,8 @@ pip install --editable "${BASE_DIR}"
 
 
 echo "Installation du service-file systemd…"
-envsubst '${USER} ${BASE_DIR}' < ${BASE_DIR}/install/assets/geonature2.service | sudo tee /etc/systemd/system/geonature2.service && sudo systemctl daemon-reload || exit 1
+envsubst '${USER} ${BASE_DIR}' < ${BASE_DIR}/install/assets/geonature.service | sudo tee /etc/systemd/system/geonature.service && sudo systemctl daemon-reload || exit 1
 if [[ "${MODE}" != "dev" ]]; then
-  echo "Activation de geonature2 au démarrage…"
-  sudo systemctl enable geonature2 || exit 1
+  echo "Activation de geonature au démarrage…"
+  sudo systemctl enable geonature || exit 1
 fi
