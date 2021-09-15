@@ -105,6 +105,7 @@ geonature db autoupgrade -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
 
 geonature db exec "DO 'BEGIN ASSERT EXISTS (SELECT 1 FROM taxonomie.taxref); END'" 2>/dev/null || if [ "$install_bdc_statuts" = true ];
 then
+    geonature db upgrade ref_geo_fr_departments@head |& tee -a "${LOG_FILE}"
     geonature taxref import-v15
 else
     geonature taxref import-v15 --skip-bdc-statuts

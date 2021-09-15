@@ -627,6 +627,10 @@ export class DataFormService {
       );
   }
 
+  getStatusValues(statusType: String) {
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/bdc_statuts/status_values/${statusType}`);
+  }
+
   getProfile(cdRef) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`);
   }
@@ -640,8 +644,8 @@ export class DataFormService {
   }
 
   /* A partir d'un id synthese, retourne si l'observation match avec les différents
-   critère d'un profil
-  */
+ critère d'un profil
+*/
   getProfileConsistancyData(idSynthese) {
     return this._http.get<any>(
       `${AppConfig.API_ENDPOINT}/gn_profiles/consistancy_data/${idSynthese}`
@@ -650,5 +654,15 @@ export class DataFormService {
 
   controlProfile(data) {
     return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/check_observation`, data);
+  }
+
+  getStatusType(statusTypes: String[]) {
+    let queryString: HttpParams = new HttpParams();
+    if (statusTypes) {
+      queryString = queryString.set('codes', statusTypes.join(','));
+    }
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/bdc_statuts/status_types`, {
+      params: queryString,
+    });
   }
 }

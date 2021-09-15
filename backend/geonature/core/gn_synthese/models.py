@@ -130,6 +130,16 @@ class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
 
 
 @serializable
+class CorAreaSynthese(DB.Model):
+    __tablename__ = "cor_area_synthese"
+    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
+    id_synthese = DB.Column(
+        DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True
+    )
+    id_area = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True)
+
+
+@serializable
 @geoserializable(geoCol="the_geom_4326", idCol="id_synthese")
 @shapeserializable
 class Synthese(DB.Model):
@@ -333,16 +343,6 @@ class Synthese(DB.Model):
             return self.dataset.has_instance_permission(scope)
         elif scope == 3:
             return True
-
-
-@serializable
-class CorAreaSynthese(DB.Model):
-    __tablename__ = "cor_area_synthese"
-    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
-    id_synthese = DB.Column(
-        DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True
-    )
-    id_area = DB.Column(DB.Integer, ForeignKey(LAreas.id_area), primary_key=True)
 
 
 @serializable

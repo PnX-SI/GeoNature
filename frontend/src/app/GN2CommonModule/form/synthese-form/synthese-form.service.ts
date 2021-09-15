@@ -1,10 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl, ValidatorFn } from '@angular/forms';
-import { AppConfig } from '@geonature_config/app.config';
+
 import { stringify } from 'wellknown';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
+
+import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
 import { DYNAMIC_FORM_DEF } from '@geonature_common/form/synthese-form/dynamicFormConfig';
+import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 
 @Injectable()
 export class SyntheseFormService {
@@ -14,8 +16,15 @@ export class SyntheseFormService {
   public selectedCdRefFromTree = [];
   public selectedTaxonFromRankInput = [];
   public dynamycFormDef: Array<any>;
+  public areasFilters;
+  public statusFilters;
+  public selectedStatus = [];
+  public redListsFilters;
+  public selectedRedLists = [];
+  public selectedTaxRefAttributs = [];
 
   constructor(
+    @Inject(APP_CONFIG_TOKEN) private cfg,
     private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter,
     private _periodFormatter: NgbDatePeriodParserFormatter
@@ -47,17 +56,36 @@ export class SyntheseFormService {
     });
 
     this.searchForm.setValidators([this.periodValidator()]);
-    AppConfig.SYNTHESE.AREA_FILTERS.forEach((area) => {
-      const control_name = 'area_' + area['type_code'];
+
+    // Add protection status filters defined in configuration parameters
+    this.statusFilters = Object.assign([], this.cfg.SYNTHESE.STATUS_FILTERS);
+    this.statusFilters.forEach((status) => {
+      const control_name = `${status.id}_status`;
       this.searchForm.addControl(control_name, new FormControl(new Array()));
-      const control = this.searchForm.controls[control_name];
-      area['control'] = control;
+      status['control_name'] = control_name;
+      status['control'] = this.searchForm.controls[control_name];
     });
 
-    // init the dynamic form with the user parameters
+    // Add red lists filters defined in configuration parameters
+    this.redListsFilters = Object.assign([], this.cfg.SYNTHESE.RED_LISTS_FILTERS);
+    this.redListsFilters.forEach((redList) => {
+      const control_name = `${redList.id}_red_lists`;
+      this.searchForm.addControl(control_name, new FormControl(new Array()));
+      redList['control'] = this.searchForm.controls[control_name];
+    });
+
+    // Add areas filters defined in configuration parameters
+    this.areasFilters = Object.assign([], this.cfg.SYNTHESE.AREA_FILTERS);
+    this.cfg.SYNTHESE.AREA_FILTERS.forEach((area) => {
+      const control_name = 'area_' + area['type_code'];
+      this.searchForm.addControl(control_name, new FormControl(new Array()));
+      area['control'] = this.searchForm.controls[control_name];
+    });
+
+    // Init the dynamic form with the user parameters
     // remove the filters which are in AppConfig.SYNTHESE.EXCLUDED_COLUMNS
     this.dynamycFormDef = DYNAMIC_FORM_DEF.filter((formDef) => {
-      return AppConfig.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
+      return this.cfg.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
     });
     this.formBuilded = true;
   }
@@ -138,5 +166,34 @@ export class SyntheseFormService {
       }
       return null;
     };
+  }
+
+  haveAdvancedFormValues(): Boolean {
+    if (this.selectedTaxonFromRankInput.length > 0) {
+      return true;
+    } else if (this.selectedCdRefFromTree.length > 0) {
+      return true;
+    } else if (this.selectedStatus.length > 0) {
+      return true;
+    } else if (this.selectedRedLists.length > 0) {
+      return true;
+    } else if (this.selectedTaxRefAttributs.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  getSelectedTaxonsSummary(): String {
+    let summary = [];
+    if (this.selectedTaxonFromRankInput.length > 0) {
+      summary.push(
+        'Rangs : ' + this.selectedTaxonFromRankInput.map((e) => e.lb_nom).join(', ') + '.'
+      );
+    }
+    if (this.selectedCdRefFromTree.length > 0) {
+      summary.push('Arbre taxo : ' + this.selectedCdRefFromTree.length + ' taxons.');
+    }
+    return summary.join(' ');
   }
 }

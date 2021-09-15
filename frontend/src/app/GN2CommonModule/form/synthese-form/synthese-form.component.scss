@@ -55,11 +55,15 @@ legend {
 }
 
 .taxon-list {
-  padding-left: 0;
-  margin-bottom: 0;
+  margin-bottom: 0px;
   font-size: 12px;
 }
-.taxon-alert {
+
+.taxon-list li:hover {
+  background-color: rgba(#FFF, .5)
+}
+
+.search-alert {
   margin-top: 5px;
   padding: 2px;
   margin-bottom: 5px;
@@ -99,11 +103,11 @@ legend {
   position: relative;
 }
 
-:host ::ng-deep ngb-typeahead-window > button > span {
+:host ::ng-deep ngb-typeahead-window>button>span {
   font-size: 12px !important;
   cursor: pointer;
 }
 
-:host ::ng-deep ngb-typeahead-window > button {
+:host ::ng-deep ngb-typeahead-window>button {
   padding-left: 5px;
 }

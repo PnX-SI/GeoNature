@@ -1,11 +1,13 @@
-import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterContentInit, Inject } from '@angular/core';
+import { FormGroup } from '@angular/forms';
+
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { TreeNode, TreeComponent, IActionMapping } from '@circlon/angular-tree-component';
-import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
+
+import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
-import { FormGroup } from '@angular/forms';
+import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
-import { AppConfig } from '@geonature_config/app.config';
 
 @Component({
   selector: 'pnx-validation-taxon-advanced',
@@ -16,8 +18,7 @@ import { AppConfig } from '@geonature_config/app.config';
 export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   @ViewChild('tree', { static: true })
   public treeComponent: TreeComponent;
-  public AppConfig = AppConfig;
-  public URL_AUTOCOMPLETE = AppConfig.API_TAXHUB + '/taxref/search/lb_nom';
+  public URL_AUTOCOMPLETE;
   public taxonsTree;
   public treeOptions;
   public selectedNodes = [];
@@ -29,10 +30,14 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   public showTree = false;
 
   constructor(
+    @Inject(APP_CONFIG_TOKEN) private cfg,
     public activeModal: NgbActiveModal,
     public formService: SyntheseFormService,
     public storeService: TaxonAdvancedStoreService
   ) {
+    // Set config parameters
+    this.URL_AUTOCOMPLETE = this.cfg.API_TAXHUB + '/taxref/search/lb_nom';
+
     const actionMapping: IActionMapping = {
       mouse: {
         click: (tree, node, $event) => {},
@@ -53,7 +58,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
 
   ngOnInit() {
     // if the modal has already been open, reload the former state of the taxon tree
-    if (this.storeService.taxonTreeState) {
+    if (this.storeService.displayTaxonTree && this.storeService.taxonTreeState) {
       this.storeService.treeModel.setState(this.storeService.taxonTreeState);
     }
   }
@@ -90,6 +95,51 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
     this.formService.searchForm.controls.taxon_rank.reset();
   }
 
+  onStatusCheckboxChanged(event) {
+    if (event.target.checked == true) {
+      this.formService.selectedStatus.push(event.target.value);
+    } else if (event.target.checked == false) {
+      this.formService.selectedStatus.splice(
+        this.formService.selectedStatus.indexOf(event.target.value),
+        1
+      );
+      // Reset input checkbox Reactive From to not send "False"
+      this.formService.searchForm.controls[event.target.id].reset();
+    }
+  }
+
+  onStatusSelected(event) {
+    this.formService.selectedStatus.push(event.cd_type_statut);
+  }
+
+  onStatusDeleted(event) {
+    this.formService.selectedStatus.splice(
+      this.formService.selectedStatus.indexOf(event.value.cd_type_statut),
+      1
+    );
+  }
+
+  onRedListsSelected(event) {
+    let key = `${event.statusType} [${event.code_statut}]`;
+    this.formService.selectedRedLists.push(key);
+  }
+
+  onRedListsDeleted(event) {
+    let key = `${event.statusType} [${event.value.code}]`;
+    this.formService.selectedRedLists.splice(this.formService.selectedRedLists.indexOf(key), 1);
+  }
+
+  onTaxRefAttributsSelected(event) {
+    this.formService.selectedTaxRefAttributs.push(event);
+  }
+
+  onTaxRefAttributsDeleted(event) {
+    this.formService.selectedTaxRefAttributs.splice(
+      this.formService.selectedTaxRefAttributs.indexOf(event),
+      1
+    );
+  }
+
   // algo recursif pour retrouver tout les cd_ref sélectionné à partir de l'arbre
   searchSelectedId(node, depth): Array<any> {
     if (node.children) {
@@ -106,7 +156,9 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   ngAfterContentInit() {
-    this.storeService.treeModel = this.treeComponent.treeModel;
+    if (this.storeService.displayTaxonTree) {
+      this.storeService.treeModel = this.treeComponent.treeModel;
+    }
   }
 
   catchEvent(event) {
@@ -132,7 +184,9 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   onCloseModal() {
-    this.storeService.taxonTreeState = this.storeService.treeModel.getState();
+    if (this.storeService.displayTaxonTree) {
+      this.storeService.taxonTreeState = this.storeService.treeModel.getState();
+    }
     this.activeModal.close();
   }
 
