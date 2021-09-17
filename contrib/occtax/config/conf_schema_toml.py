@@ -154,7 +154,7 @@ default_media_fields_details = ['title_fr', 'description_fr', 'id_nomenclature_m
 
 
 class GnModuleSchemaConf(Schema):
-    form_fields = fields.Nested(FormConfig, load_default=dict())
+    form_fields = fields.Nested(FormConfig, load_default=FormConfig().load({}))
     observers_txt = fields.Boolean(load_default=False)
     export_view_name = fields.String(load_default="v_export_occtax")
     export_geom_columns_name = fields.String(load_default="geom_4326")
