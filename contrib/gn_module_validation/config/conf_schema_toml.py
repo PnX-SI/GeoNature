@@ -22,6 +22,7 @@ MANDATORY_COLUMNS = [
     {"column_name": "nom_vern", "column_label": "nom_vern"},
     {"column_name": "lb_nom", "column_label": "lb_nom"},
     {"column_name": "validation_date", "column_label": "Date de validation"},
+    {"column_name": "score", "column_label": "Score"},
 ]
 
 

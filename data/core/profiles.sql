@@ -19,148 +19,71 @@ CREATE SCHEMA gn_profiles;
 --FUNCTIONS--
 -------------
 
-
-CREATE FUNCTION gn_profiles.check_profile_altitudes(synthese row, profil row) RETURNS boolean
+CREATE FUNCTION gn_profiles.check_profile_altitudes(
+  in_alt_min integer, 
+  in_alt_max integer, 
+  profil_altitude_min integer,
+   profil_altitude_max integer
+) RETURNS boolean
     LANGUAGE plpgsql IMMUTABLE
     AS $$
-    return synthese.altitude_min >= profil.altitude_min AND 
-      synthese.altitude_max <= profil.altitude_max 
+   BEGIN
+    RETURN in_alt_min >= profil_altitude_min AND 
+      in_alt_max <= profil_altitude_max;
   END;
 $$;
 
-
-CREATE FUNCTION gn_profiles.check_profile_distribution(synthese gn_synthese.synthese, profil gn_profiles.vm_valid_profiles) RETURNS boolean
+CREATE FUNCTION gn_profiles.check_profile_distribution(
+  in_geom geometry, 
+  profil_geom geometry
+  ) RETURNS boolean
     LANGUAGE plpgsql IMMUTABLE
     AS $$
 --fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que sa 
 --localisation est totalement incluse dans l'aire d'occurrences valide définie par le profil du
 --taxon en question
   BEGIN
-     RETURN ST_Contains(profil.valid_distribution, synthese.the_geom_local);
+     RETURN ST_Contains(profil_geom, in_geom);
   END;
 $$;
 
 
-
-CREATE FUNCTION gn_profiles.check_profile_phenology(my_id_synthese integer) RETURNS boolean
-    LANGUAGE plpgsql IMMUTABLE
-    AS $$
---fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que 
--- sa phénologie (dates, altitude, stade de vie selon les paramètres) 
---correspond bien à la phénologie valide définie par le profil du taxon en question
---La fonction renvoie 'false' pour les données trop imprécises (durée d'observation supérieure à 
--- la précision temporelle définie dans les paramètres des profils).
-  BEGIN
-   IF EXISTS(
-  WITH myphenology AS (
-     SELECT DISTINCT
-    t.cd_ref AS cd_ref,
-    unnest(
-     ARRAY[ceiling(EXTRACT(DOY FROM s.date_min)/p.temporal_precision_days)::integer, 
-     ceiling(EXTRACT(DOY FROM s.date_max)/p.temporal_precision_days)::integer]
-    ) AS period,
-    CASE 
-     WHEN p.active_life_stage=true THEN s.id_nomenclature_life_stage
-     ELSE NULL
-     END AS id_nomenclature_life_stage,
-    s.altitude_min,
-    s.altitude_max
-   FROM gn_synthese.synthese s
-   LEFT JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
-   CROSS JOIN gn_profiles.get_parameters(s.cd_nom) p
-   WHERE s.id_synthese=my_id_synthese
-    AND p.temporal_precision_days IS NOT NULL 
-    AND p.spatial_precision  IS NOT NULL
-    AND p.active_life_stage IS NOT NULL
-    AND DATE_part('day', s.date_max-s.date_min)<p.temporal_precision_days
-        AND ST_MaxDistance(ST_centroid(s.the_geom_local), s.the_geom_local)<p.spatial_precision 
-   GROUP BY t.cd_ref, period, 
-   CASE 
-    WHEN p.active_life_stage=true THEN s.id_nomenclature_life_stage 
-    ELSE NULL 
-   END,
-   altitude_min,
-   altitude_max)
-  SELECT * 
-  FROM myphenology mp, gn_profiles.vm_cor_taxon_phenology ctp
-  WHERE ctp.cd_ref=mp.cd_ref
-  AND mp.period=ctp.period
-  AND mp.altitude_min >= ctp.calculated_altitude_min
-  AND mp.altitude_max <= ctp.calculated_altitude_max
-  AND (ctp.id_nomenclature_life_stage=mp.id_nomenclature_life_stage 
-  OR (ctp.id_nomenclature_life_stage IS NULL AND mp.id_nomenclature_life_stage IS NULL))
-  )
- THEN
-      RETURN true;
-    ELSE
-      RETURN false;
-    END IF;
-  END;
-$$;
-
-
-
-CREATE FUNCTION gn_profiles.check_profile_phenology_bis(
-  synthese gn_synthese.synthese, 
-  profil gn_profiles.vm_valid_profiles,
-  cor_pheno gn_profiles.vm_cor_taxon_phenology
-
+CREATE FUNCTION gn_profiles.check_profile_phenology(
+    in_cd_ref integer, 
+    in_date_min date, 
+    in_date_max date, 
+    in_altitude_min integer, 
+    in_altitude_max integer, 
+    in_id_nomenclature_life_stage integer,
+    check_life_stage boolean
 ) RETURNS boolean
     LANGUAGE plpgsql IMMUTABLE
     AS $$
---fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que 
--- sa phénologie (dates, altitude, stade de vie selon les paramètres) 
---correspond bien à la phénologie valide définie par le profil du taxon en question
---La fonction renvoie 'false' pour les données trop imprécises (durée d'observation supérieure à 
--- la précision temporelle définie dans les paramètres des profils).
   BEGIN
-   IF EXISTS(
-  WITH myphenology AS (
-     SELECT DISTINCT
-    t.cd_ref AS cd_ref,
-    unnest(
-     ARRAY[ceiling(EXTRACT(DOY FROM s.date_min)/p.temporal_precision_days)::integer, 
-     ceiling(EXTRACT(DOY FROM s.date_max)/p.temporal_precision_days)::integer]
-    ) AS period,
-    CASE 
-     WHEN p.active_life_stage=true THEN s.id_nomenclature_life_stage
-     ELSE NULL
-     END AS id_nomenclature_life_stage,
-    s.altitude_min,
-    s.altitude_max
-   FROM gn_synthese.synthese s
-   LEFT JOIN taxonomie.taxref t ON s.cd_nom=t.cd_nom
-   CROSS JOIN gn_profiles.get_parameters(s.cd_nom) p
-   WHERE s.id_synthese=my_id_synthese
-    AND p.temporal_precision_days IS NOT NULL 
-    AND p.spatial_precision  IS NOT NULL
-    AND p.active_life_stage IS NOT NULL
-    AND DATE_part('day', s.date_max-s.date_min)<p.temporal_precision_days
-        AND ST_MaxDistance(ST_centroid(s.the_geom_local), s.the_geom_local)<p.spatial_precision 
-   GROUP BY t.cd_ref, period, 
-   CASE 
-    WHEN p.active_life_stage=true THEN s.id_nomenclature_life_stage 
-    ELSE NULL 
-   END,
-   altitude_min,
-   altitude_max)
-  SELECT * 
-  FROM myphenology mp, gn_profiles.vm_cor_taxon_phenology ctp
-  WHERE ctp.cd_ref=mp.cd_ref
-  AND mp.period=ctp.period
-  AND mp.altitude_min >= ctp.calculated_altitude_min
-  AND mp.altitude_max <= ctp.calculated_altitude_max
-  AND (ctp.id_nomenclature_life_stage=mp.id_nomenclature_life_stage 
-  OR (ctp.id_nomenclature_life_stage IS NULL AND mp.id_nomenclature_life_stage IS NULL))
-  )
- THEN
-      RETURN true;
-    ELSE
-      RETURN false;
-    END IF;
+  IF check_life_stage THEN
+    RETURN EXISTS (
+        SELECT * 
+        FROM gn_profiles.vm_cor_taxon_phenology c
+        WHERE in_cd_ref = c.cd_ref 
+            AND date_part('doy', in_date_min) >= c.doy_min 
+            AND date_part('doy', in_date_max) <= c.doy_max 
+            AND in_altitude_min >= calculated_altitude_min
+            AND in_altitude_max <= calculated_altitude_max
+    );
+  ELSE 
+      RETURN EXISTS (
+        SELECT * 
+        FROM gn_profiles.vm_cor_taxon_phenology c
+        WHERE in_cd_ref = c.cd_ref 
+            AND date_part('doy', in_date_min) >= c.doy_min 
+            AND date_part('doy', in_date_max) <= c.doy_max 
+            AND in_altitude_min >= calculated_altitude_min
+            AND in_altitude_max <= calculated_altitude_max
+            AND in_id_nomenclature_life_stage = c.id_nomenclature_life_stage
+    );
+   END IF;
   END;
 $$;
-
 
 CREATE FUNCTION gn_profiles.get_parameters(my_cd_nom integer) RETURNS TABLE(cd_ref integer, spatial_precision integer, temporal_precision_days integer, active_life_stage boolean, distance smallint)
     LANGUAGE plpgsql IMMUTABLE
@@ -311,10 +234,12 @@ CREATE VIEW gn_profiles.v_consistancy_data AS
     s.unique_id_sinp AS id_sinp,
     t.cd_ref,
     t.lb_nom AS valid_name,
-    gn_profiles.check_profile_distribution(s.*, p.*) AS valid_distribution,
-    gn_profiles.check_profile_phenology(s.id_synthese) AS valid_phenology,
-    gn_profiles.check_profile_altitudes(s.*, p.*) AS valid_altitude,
-    --gn_profiles.get_profile_score(s.id_synthese) AS score,
+    gn_profiles.check_profile_distribution(s.the_geom_local, p.valid_distribution) AS valid_distribution,
+    gn_profiles.check_profile_phenology(
+      t.cd_ref, s.date_min::date, s.date_max::date, s.altitude_min, s.altitude_max, s.id_nomenclature_life_stage, p.active_life_stage
+    ) AS valid_phenology,
+    gn_profiles.check_profile_altitudes(
+    s.altitude_min, s.altitude_max, p.altitude_min, p.altitude_max) AS valid_altitude,
     n.label_default AS valid_status
    FROM gn_synthese.synthese s
     JOIN gn_profiles.vm_valid_profiles p ON p.cd_ref = s.cd_nom
@@ -380,57 +305,84 @@ COMMENT ON VIEW gn_profiles.v_synthese_for_profiles IS 'View containing synthese
  WHERE clauses have to apply your t_parameters filters (valid_status)';
 
 
-CREATE MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology AS
- WITH classified_data AS (
-         SELECT DISTINCT vsfp.cd_ref,
-            unnest(ARRAY[(ceiling((date_part('doy'::text, vsfp.date_min) / (p.temporal_precision_days)::double precision)))::integer, (ceiling((date_part('doy'::text, vsfp.date_max) / (p.temporal_precision_days)::double precision)))::integer]) AS period,
-                CASE
-                    WHEN (p.active_life_stage = true) THEN vsfp.id_nomenclature_life_stage
-                    ELSE NULL::integer
-                END AS id_nomenclature_life_stage,
-            count(vsfp.*) AS count_valid_data,
-            min(vsfp.altitude_min) AS extreme_altitude_min,
-            array_agg(vsfp.altitude_min ORDER BY vsfp.altitude_min) AS my_alt_min,
-            max(vsfp.altitude_max) AS extreme_altitude_max,
-            array_agg(vsfp.altitude_max ORDER BY vsfp.altitude_max DESC) AS my_alt_max
-           FROM (gn_profiles.v_synthese_for_profiles vsfp
-             CROSS JOIN LATERAL gn_profiles.get_parameters(vsfp.cd_nom) p(cd_ref, spatial_precision, temporal_precision_days, active_life_stage, distance))
-          WHERE ((p.temporal_precision_days IS NOT NULL) AND (p.spatial_precision IS NOT NULL) AND (p.active_life_stage IS NOT NULL) AND (date_part('day'::text, (vsfp.date_max - vsfp.date_min)) < (p.temporal_precision_days)::double precision) AND (vsfp.altitude_min IS NOT NULL) AND (vsfp.altitude_max IS NOT NULL))
-          GROUP BY vsfp.cd_ref, (unnest(ARRAY[(ceiling((date_part('doy'::text, vsfp.date_min) / (p.temporal_precision_days)::double precision)))::integer, (ceiling((date_part('doy'::text, vsfp.date_max) / (p.temporal_precision_days)::double precision)))::integer])),
-                CASE
-                    WHEN (p.active_life_stage = true) THEN vsfp.id_nomenclature_life_stage
-                    ELSE NULL::integer
-                END
-        )
+CREATE MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology
+TABLESPACE pg_default
+AS WITH classified_data AS (
+ SELECT DISTINCT vsfp.cd_ref,
+ unnest(
+ 	ARRAY[
+ 		ceiling(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision)* p.temporal_precision_days::integer,
+ 		ceiling(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision)* p.temporal_precision_days::integer
+ 	]
+ ) as doy_min,
+  unnest(
+ 	ARRAY[
+ 		ceiling(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision)* p.temporal_precision_days + p.temporal_precision_days::integer,
+ 		ceiling(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision)* p.temporal_precision_days + p.temporal_precision_days::integer
+ 	]
+ ) doy_max,                
+ CASE
+    WHEN p.active_life_stage = true THEN vsfp.id_nomenclature_life_stage
+            ELSE NULL::integer
+        END AS id_nomenclature_life_stage,
+ count(vsfp.*) AS count_valid_data,
+ min(vsfp.altitude_min) AS extreme_altitude_min,
+ array_agg(vsfp.altitude_min ORDER BY vsfp.altitude_min) AS my_alt_min,
+ max(vsfp.altitude_max) AS extreme_altitude_max,
+ array_agg(vsfp.altitude_max ORDER BY vsfp.altitude_max DESC) AS my_alt_max
+ FROM gn_profiles.v_synthese_for_profiles vsfp
+ CROSS JOIN LATERAL gn_profiles.get_parameters(vsfp.cd_nom) p(cd_ref, spatial_precision, temporal_precision_days, active_life_stage, distance)
+ WHERE p.temporal_precision_days IS NOT NULL 
+       AND p.spatial_precision IS NOT NULL AND p.active_life_stage IS NOT NULL 
+       AND date_part('day'::text, vsfp.date_max - vsfp.date_min) < p.temporal_precision_days::double precision 
+       AND vsfp.altitude_min IS NOT NULL AND vsfp.altitude_max IS NOT NULL
+ GROUP BY vsfp.cd_ref, 
+  unnest(
+ 	ARRAY[
+ 		ceiling(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision)* p.temporal_precision_days::integer,
+ 		ceiling(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision)* p.temporal_precision_days::integer
+ 	]
+ ),
+  unnest(
+ 	ARRAY[
+ 		ceiling(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision)* p.temporal_precision_days + p.temporal_precision_days::integer,
+ 		ceiling(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision)* p.temporal_precision_days + p.temporal_precision_days::integer
+ 	]
+ ),
+    CASE
+        WHEN p.active_life_stage = true THEN vsfp.id_nomenclature_life_stage
+        ELSE NULL::integer
+    end
+  )  
  SELECT classified_data.cd_ref,
-    classified_data.period,
+    classified_data.doy_min,
+    classified_data.doy_max,
     classified_data.id_nomenclature_life_stage,
     classified_data.count_valid_data,
     classified_data.extreme_altitude_min,
         CASE
-            WHEN (((classified_data.count_valid_data)::double precision * ( SELECT ((1)::double precision - (((t_parameters.value)::integer)::double precision / (100)::double precision))
+            WHEN (classified_data.count_valid_data::double precision * (( SELECT 1::double precision - t_parameters.value::integer::double precision / 100::double precision
                FROM gn_profiles.t_parameters
-              WHERE ((t_parameters.name)::text = 'proportion_kept_data'::text))) >= ((classified_data.count_valid_data)::double precision * ( SELECT (((t_parameters.value)::integer)::double precision / (100)::double precision)
+              WHERE t_parameters.name::text = 'proportion_kept_data'::text))) >= (classified_data.count_valid_data::double precision * (( SELECT t_parameters.value::integer::double precision / 100::double precision
                FROM gn_profiles.t_parameters
-              WHERE ((t_parameters.name)::text = 'proportion_kept_data'::text)))) THEN NULL::integer
-            ELSE classified_data.my_alt_min[round(((classified_data.count_valid_data)::double precision * ( SELECT (((1)::double precision - (((t_parameters.value)::integer)::double precision / (100)::double precision)) / (2)::double precision)
+              WHERE t_parameters.name::text = 'proportion_kept_data'::text))) THEN NULL::integer
+            ELSE classified_data.my_alt_min[round(classified_data.count_valid_data::double precision * (( SELECT (1::double precision - t_parameters.value::integer::double precision / 100::double precision) / 2::double precision
                FROM gn_profiles.t_parameters
-              WHERE ((t_parameters.name)::text = 'proportion_kept_data'::text))))]
+              WHERE t_parameters.name::text = 'proportion_kept_data'::text)))]
         END AS calculated_altitude_min,
     classified_data.extreme_altitude_max,
         CASE
-            WHEN (((classified_data.count_valid_data)::double precision * ( SELECT ((1)::double precision - (((t_parameters.value)::integer)::double precision / (100)::double precision))
+            WHEN (classified_data.count_valid_data::double precision * (( SELECT 1::double precision - t_parameters.value::integer::double precision / 100::double precision
                FROM gn_profiles.t_parameters
-              WHERE ((t_parameters.name)::text = 'proportion_kept_data'::text))) >= ((classified_data.count_valid_data)::double precision * ( SELECT (((t_parameters.value)::integer)::double precision / (100)::double precision)
+              WHERE t_parameters.name::text = 'proportion_kept_data'::text))) >= (classified_data.count_valid_data::double precision * (( SELECT t_parameters.value::integer::double precision / 100::double precision
                FROM gn_profiles.t_parameters
-              WHERE ((t_parameters.name)::text = 'proportion_kept_data'::text)))) THEN NULL::integer
-            ELSE classified_data.my_alt_max[round(((classified_data.count_valid_data)::double precision * ( SELECT (((1)::double precision - (((t_parameters.value)::integer)::double precision / (100)::double precision)) / (2)::double precision)
+              WHERE t_parameters.name::text = 'proportion_kept_data'::text))) THEN NULL::integer
+            ELSE classified_data.my_alt_max[round(classified_data.count_valid_data::double precision * (( SELECT (1::double precision - t_parameters.value::integer::double precision / 100::double precision) / 2::double precision
                FROM gn_profiles.t_parameters
-              WHERE ((t_parameters.name)::text = 'proportion_kept_data'::text))))]
+              WHERE t_parameters.name::text = 'proportion_kept_data'::text)))]
         END AS calculated_altitude_max
    FROM classified_data
-   WITH DATA;
-
+WITH DATA;
 
 
 COMMENT ON MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology IS 'View containing phenological combinations and corresponding valid data for each taxa';
@@ -443,7 +395,8 @@ CREATE MATERIALIZED VIEW gn_profiles.vm_valid_profiles AS
     max(vsfp.altitude_max) AS altitude_max,
     min(vsfp.date_min) AS first_valid_data,
     max(vsfp.date_max) AS last_valid_data,
-    count(vsfp.*) AS count_valid_data
+    count(vsfp.*) AS count_valid_data,
+    p.active_life_stage
    FROM (gn_profiles.v_synthese_for_profiles vsfp
      CROSS JOIN LATERAL gn_profiles.get_parameters(vsfp.cd_nom) p(cd_ref, spatial_precision, temporal_precision_days, active_life_stage, distance))
   GROUP BY vsfp.cd_ref
@@ -466,8 +419,10 @@ ALTER TABLE ONLY gn_profiles.cor_taxons_parameters
 -----------
 CREATE INDEX index_vm_cor_taxon_phenology_cd_ref ON gn_profiles.vm_cor_taxon_phenology USING btree (cd_ref);
 CREATE INDEX index_vm_valid_profiles_cd_ref ON gn_profiles.vm_valid_profiles USING btree (cd_ref);
-CREATE UNIQUE INDEX vm_cor_taxon_phenology_cd_ref_period_id_nomenclature_life_s_idx ON gn_profiles.vm_cor_taxon_phenology USING btree (cd_ref, period, id_nomenclature_life_stage);
-CREATE UNIQUE INDEX vm_valid_profiles_cd_ref_idx ON gn_profiles.vm_valid_profiles USING btree (cd_ref);
+
+CREATE INDEX index_vm_cor_taxon_phenology_cd_ref ON gn_profiles.vm_cor_taxon_phenology USING btree (cd_ref);
+CREATE UNIQUE INDEX vm_cor_taxon_phenology_cd_ref_period_id_nomenclature_life_s_idx ON gn_profiles.vm_cor_taxon_phenology USING btree (cd_ref, doy_min, doy_max, id_nomenclature_life_stage);
+
 
 
 -----------------

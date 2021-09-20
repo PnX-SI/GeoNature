@@ -8,6 +8,8 @@ from geonature.core.gn_commons.models.base import TValidations
 from sqlalchemy import select, func
 from flask import Blueprint, request
 from geojson import FeatureCollection
+from sqlalchemy.sql.expression import cast
+from sqlalchemy.sql.sqltypes import Integer
 
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla.serializers import SERIALIZERS
@@ -69,7 +71,7 @@ def get_synthese_data(info_role):
         result_limit = filters.pop("limit")
     else:
         result_limit = blueprint.config["NB_MAX_OBS_MAP"]
-
+    result_limit = 100
     # Construction de la requête select
     # Les champs correspondent aux champs obligatoires
     #       + champs définis par l'utilisateur
@@ -107,7 +109,13 @@ def get_synthese_data(info_role):
                 serializer[column_config["column_name"]] = SERIALIZERS.get(
                     col.type.__class__.__name__.lower(), lambda x: x
                 )
-
+    # add profiles columns
+    columns_profile = ["valid_distribution", "valid_phenology", "valid_altitude"]
+    for col in columns_profile:
+        select_columns.append(
+            getattr(VConsistancyData, col)
+        )
+        serializer[col] = lambda x : x
     # Construction de la requête avec SyntheseQuery
     #   Pour profiter des opérations CRUVED
     query = (
@@ -115,16 +123,38 @@ def get_synthese_data(info_role):
         .where(VSyntheseValidation.the_geom_4326.isnot(None))
         .order_by(VSyntheseValidation.date_min.desc())
     )
+    score = None
+    if "score" in filters :
+        score = filters.pop("score")
+
     validation_query_class = SyntheseQuery(VSyntheseValidation, query, filters)
+    validation_query_class.add_join(
+        VConsistancyData, VConsistancyData.id_synthese,
+        VSyntheseValidation.id_synthese, join_type="left"
+    )
+
+    #filter with profile
+    if score:
+        validation_query_class.query = validation_query_class.query.where(
+            VConsistancyData.valid_phenology.cast(Integer)+ 
+            VConsistancyData.valid_altitude.cast(Integer) + 
+            VConsistancyData.valid_distribution.cast(Integer)
+             == score
+        )
+
     validation_query_class.filter_query_all_filters(info_role)
-    result = DB.engine.execute(validation_query_class.query.limit(result_limit))
-    # TODO nb_total factice
+    print(validation_query_class.query)
+    result = DB.engine.execute(validation_query_class.query.limit(100))
     nb_total = 0
     geojson_features = []
     properties = {}
     # TODO : add join on VConsistency data
-    for r in result:    
+    for r in result:
         properties = {k: serializer[k](r[k]) for k in serializer.keys()}
+        properties["score"] = (
+            r["valid_distribution"] or 0) + (
+                r["valid_phenology"] or 0) + (
+                    r["valid_altitude"] or 0)
         properties["nom_vern_or_lb_nom"] = (
             r["nom_vern"] if r["nom_vern"] else r["lb_nom"]
         )

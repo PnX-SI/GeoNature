@@ -21,21 +21,35 @@
 
     <div
       id="modif"
-      [formGroup]="formService.searchForm"
       class="form-check"
     >
       <input
         id="modif_checkbox"
         class="form-check-input"
         value="true"
-        formControlName="modif_since_validation"
+        [formControl]="formService.searchForm.get('modif_since_validation')"
         type="checkbox"
         checked
       />
       <label
         for="modif_checkbox"
         class="form-check-label"
-      > <small>Données modifiées depuis la dernière validation</small> </label>
+      > 
+        <small>Données modifiées depuis la dernière validation</small> 
+      </label>
+    </div>
+    <small> Score</small>
+    <div class="input-group">
+      <select 
+        class="form-control form-control-sm" 
+        [formControl]="formService.searchForm.get('score')"
+        name="score"
+      >
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+      </select>
     </div>
 
   </fieldset>

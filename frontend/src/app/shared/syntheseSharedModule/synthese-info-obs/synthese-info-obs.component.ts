@@ -145,9 +145,8 @@ export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
   }
 
 
-  changeTab() {
+  changeTab() {    
     this.showValidation = true;
-    
     setTimeout(() => {
       this._mapService.map.invalidateSize();
     }, 100);

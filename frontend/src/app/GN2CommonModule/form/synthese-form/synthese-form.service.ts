@@ -29,6 +29,7 @@ export class SyntheseFormService {
       id_acquisition_framework: null,
       id_nomenclature_valid_status: null,
       modif_since_validation: [false, null],
+      score: null,
       date_min: null,
       date_max: null,
       period_start: null,
@@ -70,6 +71,8 @@ export class SyntheseFormService {
 
   formatParams() {
     const params = Object.assign({}, this.searchForm.value);
+    console.log(params);
+    
     const updatedParams = {};
     // tslint:disable-next-line:forin
 

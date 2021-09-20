@@ -189,14 +189,18 @@ button:active {
 
 .chip-alert {
   background: red;
+  color: white!important;
+
 }
 
 .chip-warning {
-  background: orange;
+  background: rgb(255, 123, 0);
+  color: white!important;
 }
 
 .chip-success {
-  background: rgba(88, 146, 1, 0.0);
+  background: green;
+  color: white!important;
   }
 
 .mat-chip {
