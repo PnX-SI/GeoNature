@@ -30,6 +30,9 @@ export class SyntheseFormService {
       id_nomenclature_valid_status: null,
       modif_since_validation: [false, null],
       score: null,
+      valid_distribution: null,
+      valid_altitude: null,
+      valid_phenology: null,
       date_min: null,
       date_max: null,
       period_start: null,
@@ -70,9 +73,7 @@ export class SyntheseFormService {
   }
 
   formatParams() {
-    const params = Object.assign({}, this.searchForm.value);
-    console.log(params);
-    
+    const params = Object.assign({}, this.searchForm.value);    
     const updatedParams = {};
     // tslint:disable-next-line:forin
 
@@ -102,7 +103,8 @@ export class SyntheseFormService {
         } else {
           updatedParams['geoIntersection'] = stringify(params['geoIntersection']);
         }
-      } else if (params[key]) {
+        // remove null/undefined but not zero (use for boolean)
+      } else if (params[key] != null || params[key] != undefined) {
         // if its an Array push only if > 0
         if (Array.isArray(params[key]) && params[key].length > 0) {
           updatedParams[key] = params[key];

@@ -69,6 +69,8 @@ CREATE FUNCTION gn_profiles.check_profile_phenology(
             AND date_part('doy', in_date_max) <= c.doy_max 
             AND in_altitude_min >= calculated_altitude_min
             AND in_altitude_max <= calculated_altitude_max
+            AND in_id_nomenclature_life_stage = c.id_nomenclature_life_stage
+
     );
   ELSE 
       RETURN EXISTS (
@@ -79,7 +81,6 @@ CREATE FUNCTION gn_profiles.check_profile_phenology(
             AND date_part('doy', in_date_max) <= c.doy_max 
             AND in_altitude_min >= calculated_altitude_min
             AND in_altitude_max <= calculated_altitude_max
-            AND in_id_nomenclature_life_stage = c.id_nomenclature_life_stage
     );
    END IF;
   END;

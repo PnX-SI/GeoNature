@@ -23,6 +23,9 @@ MANDATORY_COLUMNS = [
     {"column_name": "lb_nom", "column_label": "lb_nom"},
     {"column_name": "validation_date", "column_label": "Date de validation"},
     {"column_name": "score", "column_label": "Score"},
+    {"column_name": "valid_phenology", "column_label": "valid_phenology"},
+    {"column_name": "valid_altitude", "column_label": "valid_altitude"},
+    {"column_name": "valid_distribution", "column_label": "valid_distribution"},
 ]
 
 
