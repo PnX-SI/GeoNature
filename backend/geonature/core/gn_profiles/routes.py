@@ -84,6 +84,7 @@ def get_observation_score():
     data = request.get_json()
     try:
         cd_ref = data["cd_ref"]
+        print("CD8REF", cd_ref)
     except AttributeError:
         raise BadRequest("No cd_ref provided")
 
@@ -92,14 +93,10 @@ def get_observation_score():
     profile = (
         DB.session.query(VmValidProfiles).filter(VmValidProfiles.cd_ref == cd_ref).one_or_none()
     )
-    taxon_parameter_r = DB.session.query(func.gn_profiles.get_parameters(cd_ref)).one_or_none()
-    check_life_stage = False
-    if taxon_parameter_r:
-        check_life_stage = bool(taxon_parameter_r[0][3])
-        
     if not profile:
         return None
-
+    check_life_stage = profile.active_life_stage
+        
     result = {
         "valid_distribution": False,
         "valid_altitude": False,
@@ -113,9 +110,7 @@ def get_observation_score():
         
     # Récupération du paramètre "période" attribué au taxon
     sql = text("""select temporal_precision_days from gn_profiles.get_parameters(:cd_ref)""")
-    temporal_precision_days = (
-        DB.engine.execute(sql, cd_ref=cd_ref).fetchone().temporal_precision_days
-    )
+
 
     # Calcul de la période correspondant à la date
     if "date_min" in data and "date_max" in data:
@@ -124,18 +119,18 @@ def get_observation_score():
         # Calcul du numéro du jour pour les dates min et max
         doy_min = date_min.timetuple().tm_yday
         doy_max = date_max.timetuple().tm_yday
-        # Si la précision temporelle de la donnée est suffisante, on calcule ses périodes phénologiques
-        if doy_max - doy_min < temporal_precision_days:
-            """ 2- Détermination de la période correspondant à date_min"""
-            min_periode = math.ceil(doy_min / temporal_precision_days)
-            """ 3- Détermination de la période correspondant à date_max"""
-            max_periode = math.ceil(doy_max / temporal_precision_days)
+        print("DOY_MIN", doy_min)
+        print("DOY_MAX", doy_max)
+    else:
+        raise BadRequest("Missing date min or date max")
+
 
     # Récupération des altitudes
     if "altitude_min" in data and "altitude_max" in data:
         altitude_min = data["altitude_min"]
         altitude_max = data["altitude_max"]
-
+    else:
+        raise BadRequest('Missing altitude')
     # Check de la répartition
     if "geom" in data:
         check_geom = DB.session.query(
@@ -164,45 +159,55 @@ def get_observation_score():
         # check de la periode
         q_pheno = DB.session.query(VmCorTaxonPhenology.id_nomenclature_life_stage).distinct()
         q_pheno = q_pheno.filter(VmCorTaxonPhenology.cd_ref == cd_ref)
-        q_pheno = q_pheno.filter(VmCorTaxonPhenology.period.between(min_periode, max_periode))
+        q_pheno = q_pheno.filter(
+            VmCorTaxonPhenology.doy_min <= doy_min
+        ).filter(
+            VmCorTaxonPhenology.doy_max >= doy_max
+        )
 
         period_result = q_pheno.all()
         if len(period_result) > 0:
-            result["valid_phenology"] = True
+            result["valid_phenology"] =  True
         else:
             result["valid_phenology"] =  False
             result["errors"].append({
                  "type": "period",
-                "value": "Le taxon n'a jamais été observé à cette periode"
+                 "value": "Le taxon n'a jamais été observé à cette periode"
             })
 
         # check de l'altitude
-        if altitude_min and altitude_max:
-            if altitude_max > profile.altitude_max or altitude_min < profile.altitude_min:
-                result["valid_altitude"] = False
-                result["errors"].append({
-                 "type": "altitude",
-                 "value": f"Le taxon n'a déjà été observé entre {altitude_min}m et {altitude_max}m d'altitude"
-                })
-            # check de l'altitude pour la période donnée
+        if altitude_max > profile.altitude_max or altitude_min < profile.altitude_min:
+            result["valid_altitude"] = False
+            result["errors"].append({
+            "type": "altitude",
+            "value": f"Le taxon n'a déjà été observé entre {altitude_min}m et {altitude_max}m d'altitude"
+            })
+        # check de l'altitude pour la période donnée
+        else:
+            peridod_and_altitude = q_pheno.filter(VmCorTaxonPhenology.calculated_altitude_min <= altitude_min)
+            peridod_and_altitude = q_pheno.filter(VmCorTaxonPhenology.calculated_altitude_max >= altitude_max)
+            peridod_and_altitude_r = peridod_and_altitude.all()
+            if len(peridod_and_altitude_r) > 0:
+                result["valid_altitude"] = True
+                result["valid_phenology"] = True 
+                for row in peridod_and_altitude_r:
+                    # Construction de la liste des stade de vie potentielle
+                    if row.id_nomenclature_life_stage:
+                        result["life_stage_accepted"].append(row.id_nomenclature_life_stage)
             else:
-                peridod_and_altitude = q_pheno.filter(VmCorTaxonPhenology.calculated_altitude_min <= altitude_min)
-                peridod_and_altitude = q_pheno.filter(VmCorTaxonPhenology.calculated_altitude_max >= altitude_max)
-                peridod_and_altitude_r = peridod_and_altitude.all()
-                if len(peridod_and_altitude_r) > 0:
-                    result["valid_altitude"] = True 
-                    for row in peridod_and_altitude_r:
-                        """Construction de la liste des stade de vie potentielle"""
-                        if row.id_nomenclature_life_stage:
-                            result["life_stage_accepted"].append(row.id_nomenclature_life_stage)
-                else:
-                    result["valid_altitude"] = False
-                    result["valid_phenology"] = False
-                    if altitude_max <= profile.altitude_max and altitude_min >= altitude_min:
-                        result["errors"].append({
-                            "type": "period",
-                            "value": f"Le taxon a déjà été observé entre {altitude_min} et {altitude_max}m d'altitude mais pas à cette periode de l'année"
-                        })
+                result["valid_altitude"] = False
+                result["valid_phenology"] = False
+                if altitude_max <= profile.altitude_max and altitude_min >= altitude_min:
+                    result["errors"].append({
+                        "type": "period",
+                        "value": f"Le taxon a déjà été observé entre {altitude_min} et {altitude_max}m d'altitude mais pas à cette periode de l'année"
+                    })
+                if result["valid_phenology"]:
+                    result["errors"].append({
+                        "type": "period",
+                        "value": f"Le taxon a déjà été observé à cette periode de l'année mais pas entre {altitude_min} et {altitude_max}m d'altitude"
+                    })
+
         # check du stade de vie pour la periode donnée
         if check_life_stage and "life_stages" in data:
             if type(data["life_stages"]) is not list:

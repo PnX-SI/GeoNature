@@ -15,7 +15,8 @@ class VmCorTaxonPhenology(DB.Model):
     __tablename__ = "vm_cor_taxon_phenology"
     __table_args__ = {"schema": "gn_profiles"}
     cd_ref = DB.Column(DB.Integer, primary_key=True)
-    period = DB.Column(DB.Integer, primary_key=True)
+    doy_min = DB.Column(DB.Integer, primary_key=True)
+    doy_max = DB.Column(DB.Integer, primary_key=True)
     id_nomenclature_life_stage = DB.Column(
         DB.Integer, 
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
@@ -42,6 +43,7 @@ class VmValidProfiles(DB.Model):
     first_valid_data = DB.Column(DB.DateTime)
     last_valid_data = DB.Column(DB.DateTime)
     count_valid_data = DB.Column(DB.Integer)
+    active_life_stage = DB.Column(DB.Boolean)
 
     def get_geofeature(self, recursif=False, columns=()):
         return self.as_geofeature("valid_distribution", "cd_ref", recursif, columns=columns)
