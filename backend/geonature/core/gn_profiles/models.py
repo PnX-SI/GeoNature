@@ -61,8 +61,9 @@ class VConsistancyData(DB.Model):
     # score = DB.Column(DB.Integer)
     valid_status = DB.Column(DB.Unicode)
 
-    def as_dict(data):
+    def as_dict(self, data):
         score = (data["valid_distribution"] or 0) + (
                 data["valid_altitude"] or 0
                 ) + (data["valid_phenology"] or 0)
-        return data.update({"score":score})
+        data.update({"score":score})
+        return data

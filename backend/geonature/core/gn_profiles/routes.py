@@ -22,7 +22,6 @@ routes = Blueprint("gn_profiles", __name__)
 def get_phenology(cd_ref):
     filters=request.args
     # parameter=DB.session.query(func.gn_profiles.get_parameters(cd_ref)).one_or_none()
-
     query = DB.session.query(VmCorTaxonPhenology).filter(VmCorTaxonPhenology.cd_ref == cd_ref)
     if "id_nomenclature_life_stage" in filters:
         dbquery=text("SELECT active_life_stage FROM gn_profiles.get_parameters(:cd_ref)")
@@ -42,13 +41,8 @@ def get_phenology(cd_ref):
                         VmCorTaxonPhenology.id_nomenclature_life_stage == filters["id_nomenclature_life_stage"]
                     )
 
-    print(query)
     data = query.all()
     if data:
-        # result=[]
-        # for row in data :
-        #     result.append(row.as_dict())
-        # return result
         return [row.as_dict() for row in data]
     return None
 
@@ -56,6 +50,9 @@ def get_phenology(cd_ref):
 @routes.route("/valid_profile/<int:cd_ref>", methods=["GET"])
 @json_resp
 def get_profile(cd_ref):
+    """
+    Return the profile for a cd_ref
+    """
     data = (
         DB.session.query(
             func.st_asgeojson(func.st_transform(VmValidProfiles.valid_distribution, 4326)),
@@ -72,6 +69,9 @@ def get_profile(cd_ref):
 @routes.route("/consistancy_data/<id_synthese>", methods=["GET"])
 @json_resp
 def get_consistancy_data(id_synthese):
+    """
+    Return the validation score for a synthese data
+    """
     data = DB.session.query(VConsistancyData).get(id_synthese)
     if data:
         return data.as_dict()
