@@ -27,15 +27,18 @@
   </span>
   {{ selectedObsTaxonDetail?.nom_valide }}
 
+  <a 
+    [routerLink]="['/synthese/taxon', selectedObsTaxonDetail?.cd_ref]"
+    target="_blank"  
+  >
   <button 
-    [routerLink]="['/synthese/taxon', selectedObsTaxonDetail?.cd_ref]" 
-    (click)="activeModal.dismiss('Cross click')"
     mat-stroked-button
     color="primary"
     class="mr-1"
   >
     Fiche GeoNature
-  </button>
+  </button>  </a>
+
   <a
     target="_blank "
     href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }} "

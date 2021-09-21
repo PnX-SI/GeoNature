@@ -266,12 +266,14 @@
       {{err.value}}
   </li>
   </ul>
-  <button 
+  <a 
+    target="_blank"
     [routerLink]="['/synthese/taxon', occtaxFormOccurrenceService.currentTaxon?.cd_ref]" 
-    mat-raised-button
-  >
-    Voir la fiche profil du taxon
-  </button>
+    >    
+    <button mat-raised-button>
+      Voir la fiche profil du taxon
+    </button>
+  </a>
 </div>
 <ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence|async); else modifButton">
   <button mat-raised-button id="add-occ" class="button-success uppercase" matTooltip="Enregistrer ce taxon"
