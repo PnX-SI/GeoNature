@@ -30,13 +30,16 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
-* Passage à systemd :
+* Passage à ``systemd`` :
 
   * Stopper GeoNature : ``sudo supervisorctl stop geonature2``
   * Supprimer le fichier de configuration de supervisor ``/etc/supervisor/conf.d/geonature-service.conf``
-  * Si supervisor n’est plus utilisé par aucun service, il peut être désinstallé
-  * Copier et adapter ``install/assets/geonature.service`` dans ``/etc/systemd/system``
+  * Si supervisor n’est plus utilisé par aucun service (répertoire ``conf.d`` vide), il peut être désinstallé : ``sudo apt remove supervisor``)
+  * Copier ``install/assets/geonature.service`` dans ``/etc/systemd/system/``
+  * Éditer ``/etc/systemd/system/geonature.service`` et remplacer les variables ``${USER}`` et ``${BASE_DIR}`` par les valeurs appropriées
   * Lancer la commande ``sudo systemctl daemon-reload``
+  * Pour démarrer GeoNature: ``sudo systemctl start geonature``
+  * Pour activer GeoNature au démarrage : ``sudo systemctl enable geonature``
 
 * Correction de la configuration apache : si vous servez GeoNature sur un prefix (typiquement ``/geonature/api``), assurez vous que celui-ci figure bien également à la fin des directives ProxyPass et ProxyPassReverse comme c’est le cas dans le fichier d’exemple ``install/assets/geonature_apache.conf``.
 * Si vous avez UsersHub d’installé, ajoutez dans votre configuration GeoNature la section suivante :
