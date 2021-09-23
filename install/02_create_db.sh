@@ -180,15 +180,15 @@ geonature db upgrade geonature@head  # upgrade schema to last revision
 
 if [ "$install_sig_layers" = true ];
 then
-    geonature db upgrade ref_geo_fr_departments -x geo-data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
-    geonature db upgrade ref_geo_fr_municipalities -x geo-data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
+    geonature db upgrade ref_geo_fr_departments -x data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
+    geonature db upgrade ref_geo_fr_municipalities -x data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
 fi
 
 if [ "$install_grid_layer" = true ];
 then
-    geonature db upgrade ref_geo_inpn_grids_1 -x geo-data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
-    geonature db upgrade ref_geo_inpn_grids_5 -x geo-data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
-    geonature db upgrade ref_geo_inpn_grids_10 -x geo-data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
+    geonature db upgrade ref_geo_inpn_grids_1 -x data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
+    geonature db upgrade ref_geo_inpn_grids_5 -x data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
+    geonature db upgrade ref_geo_inpn_grids_10 -x data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
 fi
 
 if  [ "$install_default_dem" = true ];
