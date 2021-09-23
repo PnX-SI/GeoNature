@@ -23,7 +23,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-mkdir tmp
+mkdir -p tmp
 mkdir -p var/log
 
 
@@ -109,7 +109,7 @@ if [ "$install_usershub_schema" = true ];
 fi
 
 geonature db upgrade taxonomie_inpn_data@head -x data-directory=tmp/
-geonature db upgrade nomenclature_taxonomie_inpn_data@head -x data-directory=tmp/
+geonature db upgrade nomenclatures_taxonomie_inpn_data@head -x data-directory=tmp/
 
 write_log "Creating 'gn_commons' schema..."
 cp data/core/commons.sql tmp/commons.sql || exit 1

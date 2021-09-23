@@ -102,10 +102,11 @@ source venv/bin/activate
 
 echo "Installation des dépendances Python..."
 pip install --upgrade pip
-pip install -r requirements.txt
 if [[ "${MODE}" == "dev" ]]; then
   echo "Installation des dépendances Python de l'environnement de DEV..."
-  pip install -r requirements-dev.txt -r requirements-submodules.txt
+  pip install -r requirements-common.txt -r requirements-submodules.txt
+else
+  pip install -r requirements.txt
 fi
 
 echo "Installation du backend geonature..."
