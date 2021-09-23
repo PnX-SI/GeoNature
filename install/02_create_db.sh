@@ -23,11 +23,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-mkdir -p tmp/geonature
-mkdir -p tmp/taxhub
-mkdir -p tmp/nomenclatures
-mkdir -p tmp/usershub
-mkdir -p tmp/habref
+mkdir tmp
 mkdir -p var/log
 
 
@@ -103,122 +99,39 @@ function gn_psql() {
   PGPASSWORD=$user_pg_pass psql -h $db_host -U $user_pg -d $db_name -v ON_ERROR_STOP=ON $* |& tee -a "${LOG_FILE}" || exit 1
 }
 
-
-
-write_log "Creating 'public' functions..."
-gn_psql -f data/core/public.sql
+geonature db upgrade sql_utils@head
 
 if [ "$install_usershub_schema" = true ];
  then
     geonature db upgrade utilisateurs-samples@head
     write_log "Insertion of data for usershub..."
-    # First insert TaxHub data for UsersHub
-    wget -nc https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/adds_for_usershub.sql -P tmp/taxhub || exit 1
-    gn_psql -f tmp/taxhub/adds_for_usershub.sql
-    # Insert GeoNature data for UsersHub
     gn_psql -f data/utilisateurs/adds_for_usershub.sql
 fi
 
-echo "Download and extract Taxref file..."
-
-wget -nc https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/inpn/data_inpn_taxhub.sql -P tmp/taxhub || exit 1
-
-# sed to replace /tmp/taxhub to ~/<geonature_dir>/tmp.taxhub
-sed -i "s#FROM .*/tmp/taxhub\(.*\)'#FROM '${BASE_DIR}/tmp/taxhub\1'#g" tmp/taxhub/data_inpn_taxhub.sql || exit 1
-
-array=( TAXREF_v14_2020.zip ESPECES_REGLEMENTEES_v11.zip LR_FRANCE_20160000.zip BDC-Statuts-v14.zip )
-for i in "${array[@]}"
-do
-  if [ ! -f 'tmp/taxhub/'$i ]
-  then
-      wget -nc http://geonature.fr/data/inpn/taxonomie/$i -P tmp/taxhub || exit 1
-  else
-      echo $i exists
-  fi
-  unzip -u tmp/taxhub/$i -d tmp/taxhub || exit 1
-done
-
-echo "Getting 'taxonomie' schema creation scripts..."
-wget -nc https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdb.sql -P tmp/taxhub || exit 1
-wget -nc https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata.sql -P tmp/taxhub || exit 1
-wget -nc https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_atlas.sql -P tmp/taxhub || exit 1
-wget -nc https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/materialized_views.sql -P tmp/taxhub || exit 1
-wget -nc https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/generic_drop_and_restore_deps_views.sql -P tmp/taxhub || exit 1
-
-write_log "Creating 'taxonomie' schema..."
-gn_psql -f tmp/taxhub/taxhubdb.sql
-write_log "Inserting INPN taxonomic data... (This may take a few minutes)"
-sudo -u postgres -s psql -d $db_name -v ON_ERROR_STOP=ON -f tmp/taxhub/data_inpn_taxhub.sql |& tee -a "${LOG_FILE}" || exit 1  # FIXME remove sudo
-#gn_psql -f tmp/taxhub/data_inpn_taxhub.sql &>> var/log/install_db.log
-
-write_log "Creating database views utils fonctions..."
-gn_psql -f tmp/taxhub/generic_drop_and_restore_deps_views.sql
-
-write_log "Creating dictionaries data for taxonomic schema..."
-
-gn_psql -f tmp/taxhub/taxhubdata.sql
-
-write_log "Inserting sample dataset - atlas attributes...."
-gn_psql -f tmp/taxhub/taxhubdata_atlas.sql
-
-write_log "Creating a view that represents the taxonomic hierarchy..."
-gn_psql -f tmp/taxhub/materialized_views.sql
-
-echo "Download and extract Habref file..."
-wget -nc https://geonature.fr/data/inpn/habitats/HABREF_50.zip -P tmp/habref || exit 1
-unzip -u tmp/habref/HABREF_50.zip -d tmp/habref || exit 1
-
-wget -nc https://raw.githubusercontent.com/PnX-SI/Habref-api-module/$habref_api_release/src/pypn_habref_api/data/habref.sql -P tmp/habref || exit 1
-wget -nc https://raw.githubusercontent.com/PnX-SI/Habref-api-module/$habref_api_release/src/pypn_habref_api/data/data_inpn_habref.sql -P tmp/habref || exit 1
-
-# sed to replace /tmp/taxhub to ~/<geonature_dir>/tmp.taxhub
-sed -i "s#FROM .*/tmp/habref\(.*\)'#FROM '${BASE_DIR}/tmp/habref\1'#g" tmp/habref/data_inpn_habref.sql || exit 1
-
-write_log "Creating 'ref_habitat' schema..."
-gn_psql -f tmp/habref/habref.sql
-
-write_log "Inserting INPN habitat data..."
-sudo -u postgres -s psql -d $db_name -v ON_ERROR_STOP=ON -f tmp/habref/data_inpn_habref.sql |& tee -a "${LOG_FILE}" || exit 1  # FIXME remove sudo
-
-
-echo "Getting 'ref_nomenclature' schema creation scripts..."
-wget -nc https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/nomenclatures.sql -P tmp/nomenclatures || exit 1
-wget -nc https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/data_nomenclatures.sql -P tmp/nomenclatures || exit 1
-wget -nc https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/nomenclatures_taxonomie.sql -P tmp/nomenclatures || exit 1
-wget -nc https://raw.githubusercontent.com/PnX-SI/Nomenclature-api-module/$nomenclature_release/data/data_nomenclatures_taxonomie.sql -P tmp/nomenclatures || exit 1
-
-write_log "Creating 'ref_nomenclatures' schema"
-
-gn_psql -f tmp/nomenclatures/nomenclatures.sql
-gn_psql -f tmp/nomenclatures/nomenclatures_taxonomie.sql
-
-write_log "Inserting 'ref_nomenclatures' data..."
-
-sed -i "s/MYDEFAULTLANGUAGE/$default_language/g" tmp/nomenclatures/data_nomenclatures.sql
-gn_psql -f tmp/nomenclatures/data_nomenclatures.sql
-gn_psql -f tmp/nomenclatures/data_nomenclatures_taxonomie.sql
+geonature db upgrade taxonomie_inpn_data@head -x data-directory=tmp/
+geonature db upgrade nomenclature_taxonomie_inpn_data@head -x data-directory=tmp/
 
 write_log "Creating 'gn_commons' schema..."
-cp data/core/commons.sql tmp/geonature/commons.sql || exit 1
-sed -i "s/MYLOCALSRID/$srid_local/g" tmp/geonature/commons.sql || exit 1
-gn_psql -f tmp/geonature/commons.sql
+cp data/core/commons.sql tmp/commons.sql || exit 1
+sed -i "s/MYLOCALSRID/$srid_local/g" tmp/commons.sql || exit 1
+gn_psql -f tmp/commons.sql
 
 write_log "Creating 'gn_meta' schema..."
 
 gn_psql -f data/core/meta.sql
 
 write_log "Creating 'ref_geo' schema..."
-cp data/core/ref_geo.sql tmp/geonature/ref_geo.sql || exit 1
-sed -i "s/MYLOCALSRID/$srid_local/g" tmp/geonature/ref_geo.sql || exit 1
-gn_psql -f tmp/geonature/ref_geo.sql
+cp data/core/ref_geo.sql tmp/ref_geo.sql || exit 1
+sed -i "s/MYLOCALSRID/$srid_local/g" tmp/ref_geo.sql || exit 1
+gn_psql -f tmp/ref_geo.sql
 
 write_log "Creating 'gn_imports' schema..."
 gn_psql -f data/core/imports.sql
 
 write_log "Creating 'gn_synthese' schema..."
-cp data/core/synthese.sql tmp/geonature/synthese.sql
-sed -i "s/MYLOCALSRID/$srid_local/g" tmp/geonature/synthese.sql
-gn_psql -f tmp/geonature/synthese.sql
+cp data/core/synthese.sql tmp/synthese.sql
+sed -i "s/MYLOCALSRID/$srid_local/g" tmp/synthese.sql
+gn_psql -f tmp/synthese.sql
 gn_psql -f data/core/synthese_default_values.sql
 
 write_log "Creating 'gn_exports' schema..."
@@ -237,17 +150,17 @@ gn_psql -f data/core/sensitivity.sql
 
 write_log "Insert 'gn_sensitivity' data"
 echo "--------------------"
-if [ ! -f 'tmp/geonature/referentiel_donnees_sensibles_v13.csv' ]
+if [ ! -f 'tmp/referentiel_donnees_sensibles_v13.csv' ]
     then
-        wget -nc https://geonature.fr/data/inpn/sensitivity/referentiel_donnees_sensibles_v13.csv -P tmp/geonature/ || exit 1
-        mv tmp/geonature/referentiel_donnees_sensibles_v13.csv tmp/geonature/referentiel_donnees_sensibles.csv || exit 1
+        wget -nc https://geonature.fr/data/inpn/sensitivity/referentiel_donnees_sensibles_v13.csv -P tmp/ || exit 1
+        mv tmp/referentiel_donnees_sensibles_v13.csv tmp/referentiel_donnees_sensibles.csv || exit 1
     else
-        echo "tmp/geonature/referentiel_donnees_sensibles.csv already exist"
+        echo "tmp/referentiel_donnees_sensibles.csv already exist"
 fi
-cp data/core/sensitivity_data.sql tmp/geonature/sensitivity_data.sql || exit 1
-sed -i "s#FROM .*/tmp/geonature\(.*\)'#FROM '${BASE_DIR}/tmp/geonature\1'#g" tmp/geonature/sensitivity_data.sql || exit 1
+cp data/core/sensitivity_data.sql tmp/sensitivity_data.sql || exit 1
+sed -i "s#FROM .*/tmp/geonature\(.*\)'#FROM '${BASE_DIR}/tmp\1'#g" tmp/sensitivity_data.sql || exit 1
 echo "Insert 'gn_sensitivity' data... (This may take a few minutes)"
-sudo -u postgres -s psql -d $db_name -v ON_ERROR_STOP=ON -f tmp/geonature/sensitivity_data.sql |& tee -a "${LOG_FILE}" || exit 1  # FIXME remove sudo
+sudo -u postgres -s psql -d $db_name -v ON_ERROR_STOP=ON -f tmp/sensitivity_data.sql |& tee -a "${LOG_FILE}" || exit 1  # FIXME remove sudo
 
 write_log "Creating table and FK depending of other schema"
 gn_psql -f data/core/commons_after.sql
@@ -259,40 +172,36 @@ then
     gn_psql -f data/core/meta_data.sql
 
     write_log "Inserting sample dataset of taxons for taxonomic schema..."
-
-    wget -nc https://raw.githubusercontent.com/PnX-SI/TaxHub/$taxhub_release/data/taxhubdata_taxons_example.sql -P tmp/taxhub || exit 1
-    gn_psql -f tmp/taxhub/taxhubdata_taxons_example.sql
+    geonature db upgrade taxonomie_taxons_example@head
 fi
-
 
 geonature db stamp f06cc80cc8ba  # mark schema as in version 2.7.5
 geonature db upgrade geonature@head  # upgrade schema to last revision
 
-
 if [ "$install_sig_layers" = true ];
 then
-    geonature db upgrade ref_geo_fr_departments -x geo-data-directory=tmp/geonature |& tee -a "${LOG_FILE}" || exit 1
-    geonature db upgrade ref_geo_fr_municipalities -x geo-data-directory=tmp/geonature |& tee -a "${LOG_FILE}" || exit 1
+    geonature db upgrade ref_geo_fr_departments -x geo-data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
+    geonature db upgrade ref_geo_fr_municipalities -x geo-data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
 fi
 
 if [ "$install_grid_layer" = true ];
 then
-    geonature db upgrade ref_geo_inpn_grids_1 -x geo-data-directory=tmp/geonature |& tee -a "${LOG_FILE}" || exit 1
-    geonature db upgrade ref_geo_inpn_grids_5 -x geo-data-directory=tmp/geonature |& tee -a "${LOG_FILE}" || exit 1
-    geonature db upgrade ref_geo_inpn_grids_10 -x geo-data-directory=tmp/geonature |& tee -a "${LOG_FILE}" || exit 1
+    geonature db upgrade ref_geo_inpn_grids_1 -x geo-data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
+    geonature db upgrade ref_geo_inpn_grids_5 -x geo-data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
+    geonature db upgrade ref_geo_inpn_grids_10 -x geo-data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
 fi
 
 if  [ "$install_default_dem" = true ];
 then
     write_log "Insert default French DEM (IGN 250m BD alti). (This may takes a few minutes)"
-    if [ ! -f 'tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip' ]
+    if [ ! -f 'tmp/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip' ]
     then
-        wget --cache=off http://geonature.fr/data/ign/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -P tmp/geonature
+        wget --cache=off http://geonature.fr/data/ign/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -P tmp
     else
-        echo "tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip already exist"
+        echo "tmp/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip already exist"
     fi
-          unzip -u tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d tmp/geonature
-    export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d -t 5x5 tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name  &>> var/log/install_db.log
+          unzip -u tmp/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d tmp
+    export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d -t 5x5 tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name  &>> var/log/install_db.log
 	#echo "Refresh DEM spatial index. This may take a few minutes..."
     gn_psql -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;" &>> var/log/install_db.log
     if [ "$vectorise_dem" = true ];
@@ -312,16 +221,8 @@ echo "Cleaning files..."
 
 if [ "$install_default_dem" = true ];
 then
-    rm tmp/geonature/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
-    rm tmp/geonature/IGNF_BDALTIr_2-0_ASC_250M_LAMB93_IGN69_FRANCE.html
+    rm tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
+    rm tmp/IGNF_BDALTIr_2-0_ASC_250M_LAMB93_IGN69_FRANCE.html
 fi
 
-rm -f tmp/geonature/*.sql
-rm -f tmp/usershub/*.sql
-rm -rf tmp/taxhub/TAXREF_INPN_v13
-rm -f tmp/taxhub/*.csv
-rm -f tmp/taxhub/*.sql
-rm -f tmp/habref/*.csv
-rm -f tmp/habref/*.pdf
-rm -f tmp/habref/*.sql
-rm -f tmp/nomenclatures/*.sql
+rm -f tmp/*.sql

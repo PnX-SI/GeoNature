@@ -15,6 +15,7 @@ from flask_sqlalchemy import before_models_committed
 from werkzeug.middleware.proxy_fix import ProxyFix
 from psycopg2.errors import UndefinedTable
 from sqlalchemy.exc import ProgrammingError
+from sqlalchemy.orm.exc import NoResultFound
 
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
@@ -112,7 +113,7 @@ def create_app(with_external_mods=True):
     with app.app_context():
         try:
             gn_app = Application.query.filter_by(code_application='GN').one()
-        except ProgrammingError:
+        except (ProgrammingError, NoResultFound):
             logging.warning("Warning: unable to find GeoNature application, database not yet initialized?")
         else:
             app.config["ID_APP"] = app.config["ID_APPLICATION_GEONATURE"] = gn_app.id_application
