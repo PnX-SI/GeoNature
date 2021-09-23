@@ -8,13 +8,12 @@ from alembic import op
 from shutil import copyfileobj
 
 from geonature.migrations.ref_geo_utils import (
-    logger,
     schema,
     create_temporary_grids_table,
-    open_geofile,
     delete_area_with_type,
     insert_grids_and_drop_temporary_table
 )
+from utils_flask_sqla.migrations.utils import logger, open_remote_file
 
 
 # revision identifiers, used by Alembic.
@@ -32,7 +31,7 @@ area_type = 'M5'
 def upgrade():
     create_temporary_grids_table(schema, temp_table_name)
     cursor = op.get_bind().connection.cursor()
-    with open_geofile(base_url, filename) as geofile:
+    with open_remote_file(base_url, filename) as geofile:
         logger.info("Inserting grids data in temporary table…")
         cursor.copy_expert(f'COPY {schema}.{temp_table_name} FROM STDIN', geofile)
     insert_grids_and_drop_temporary_table(schema, temp_table_name, area_type)
