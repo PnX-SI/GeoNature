@@ -110,24 +110,6 @@ CREATE FUNCTION gn_profiles.get_parameters(my_cd_nom integer) RETURNS TABLE(cd_r
 $$;
 
 
-CREATE FUNCTION gn_profiles.get_profile_score(my_id_synthese integer) RETURNS integer
-    LANGUAGE plpgsql IMMUTABLE
-    AS $$
--- fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant 
--- que sa localisation est totalement incluse dans l'aire d'occurrences valide définie par le 
--- profil du taxon en question
-  DECLARE 
-   score integer;
-    BEGIN 
-      SELECT INTO score gn_profiles.check_profile_distribution(my_id_synthese)::int + 
-   gn_profiles.check_profile_phenology(my_id_synthese)::int + 
-   gn_profiles.check_profile_altitudes(my_id_synthese)::int;
-      RETURN score;
-  END;
-$$;
-
-
-
 CREATE FUNCTION gn_profiles.refresh_profiles() RETURNS void
     LANGUAGE plpgsql
     AS $$
@@ -229,37 +211,6 @@ VALUES (
 -----------------------------------
 -----VIEW AND MATERIALIZED VIEW----
 -----------------------------------
-
-CREATE VIEW gn_profiles.v_consistancy_data AS
- SELECT s.id_synthese,
-    s.unique_id_sinp AS id_sinp,
-    t.cd_ref,
-    t.lb_nom AS valid_name,
-    gn_profiles.check_profile_distribution(s.the_geom_local, p.valid_distribution) AS valid_distribution,
-    gn_profiles.check_profile_phenology(
-      t.cd_ref, s.date_min::date, s.date_max::date, s.altitude_min, s.altitude_max, s.id_nomenclature_life_stage, p.active_life_stage
-    ) AS valid_phenology,
-    gn_profiles.check_profile_altitudes(
-    s.altitude_min, s.altitude_max, p.altitude_min, p.altitude_max) AS valid_altitude,
-    n.label_default AS valid_status
-   FROM gn_synthese.synthese s
-    JOIN gn_profiles.vm_valid_profiles p ON p.cd_ref = s.cd_nom
-     LEFT JOIN ref_nomenclatures.t_nomenclatures n ON s.id_nomenclature_valid_status = n.id_nomenclature
-     LEFT JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom;
-
-CREATE VIEW gn_profiles.v_consistancy_data AS
- SELECT s.id_synthese,
-    s.unique_id_sinp AS id_sinp,
-    t.cd_ref,
-    t.lb_nom AS valid_name,
-
-    n.label_default AS valid_status
-   FROM gn_synthese.synthese s
-   JOIN gn_profiles.vm_valid_profiles p ON p.cd_ref = s.cd_nom
-     LEFT JOIN ref_nomenclatures.t_nomenclatures n ON s.id_nomenclature_valid_status = n.id_nomenclature
-     LEFT JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom;
-
-
 
 CREATE VIEW gn_profiles.v_decode_profiles_parameters AS
  SELECT t.cd_ref,
@@ -400,8 +351,27 @@ CREATE MATERIALIZED VIEW gn_profiles.vm_valid_profiles AS
     p.active_life_stage
    FROM (gn_profiles.v_synthese_for_profiles vsfp
      CROSS JOIN LATERAL gn_profiles.get_parameters(vsfp.cd_nom) p(cd_ref, spatial_precision, temporal_precision_days, active_life_stage, distance))
-  GROUP BY vsfp.cd_ref
+  GROUP BY vsfp.cd_ref, p.active_life_stage
   WITH DATA;
+
+
+
+CREATE VIEW gn_profiles.v_consistancy_data AS
+ SELECT s.id_synthese,
+    s.unique_id_sinp AS id_sinp,
+    t.cd_ref,
+    t.lb_nom AS valid_name,
+    gn_profiles.check_profile_distribution(s.the_geom_local, p.valid_distribution) AS valid_distribution,
+    gn_profiles.check_profile_phenology(
+      t.cd_ref, s.date_min::date, s.date_max::date, s.altitude_min, s.altitude_max, s.id_nomenclature_life_stage, p.active_life_stage
+    ) AS valid_phenology,
+    gn_profiles.check_profile_altitudes(
+    s.altitude_min, s.altitude_max, p.altitude_min, p.altitude_max) AS valid_altitude,
+    n.label_default AS valid_status
+   FROM gn_synthese.synthese s
+    JOIN gn_profiles.vm_valid_profiles p ON p.cd_ref = s.cd_nom
+     LEFT JOIN ref_nomenclatures.t_nomenclatures n ON s.id_nomenclature_valid_status = n.id_nomenclature
+     LEFT JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom;
 
 
 ---------------
@@ -418,9 +388,7 @@ ALTER TABLE ONLY gn_profiles.cor_taxons_parameters
 -----------
 -- INDEX --
 -----------
-CREATE INDEX index_vm_cor_taxon_phenology_cd_ref ON gn_profiles.vm_cor_taxon_phenology USING btree (cd_ref);
 CREATE INDEX index_vm_valid_profiles_cd_ref ON gn_profiles.vm_valid_profiles USING btree (cd_ref);
-
 CREATE INDEX index_vm_cor_taxon_phenology_cd_ref ON gn_profiles.vm_cor_taxon_phenology USING btree (cd_ref);
 CREATE UNIQUE INDEX vm_cor_taxon_phenology_cd_ref_period_id_nomenclature_life_s_idx ON gn_profiles.vm_cor_taxon_phenology USING btree (cd_ref, doy_min, doy_max, id_nomenclature_life_stage);
 

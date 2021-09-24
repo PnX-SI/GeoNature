@@ -344,7 +344,7 @@ Plusieurs fonctions permettent de vérifier si une donnée de la synthèse est c
 - ``gn_profiles.check_profile_distribution`` : permet de vérifier si la donnée testée est totalement incluse dans l'aire d'occurrences déjà connue pour son taxon.
 - ``gn_profiles.check_profile_phenology`` : permet de vérifier si la phénologie d'une donnée (période, stade de vie, altitudes) est une combinaison déjà connue dans le profil du taxon
 - ``gn_profiles.check_profile_altitudes`` : permet de vérifier si une donnée est bien située dans la fourchette d'altitudes connue pour le taxon en question
-- ``gn_profiles.get_profile_score`` : synthétise les vérifications précédentes sous forme de score, se traduisant par une note sur 3.
+
 
 
 **Configuration et paramétrage**
@@ -554,14 +554,25 @@ La base de données contient de nombreuses fonctions.
 
 .. code:: sql
 
-  gn_profiles.check_profile_distribution(myidsynthese integer)
+  gn_profiles.check_profile_distribution(
+      in_geom geometry, 
+      profil_geom geometry
+  )
   RETURNS boolean
   --fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que sa localisation est totalement incluse dans l'aire d'occurrences valide définie par le profil du taxon en question
 
 
 .. code:: sql
 
-  gn_profiles.check_profile_phenology(myidsynthese integer)
+  gn_profiles.check_profile_phenology(
+      in_cd_ref integer, 
+      in_date_min date, 
+      in_date_max date, 
+      in_altitude_min integer, 
+      in_altitude_max integer, 
+      in_id_nomenclature_life_stage integer,
+      check_life_stage boolean
+  )
   RETURNS boolean
   --fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que sa phénologie (dates, altitude, stade de vie selon les paramètres) correspond bien à la phénologie valide définie par le profil du taxon en question
   --La fonction renvoie 'false' pour les données trop imprécises (durée d'observation supérieure à la précision temporelle définie dans les paramètres des profils).
@@ -569,19 +580,16 @@ La base de données contient de nombreuses fonctions.
 
 .. code:: sql
 
-  gn_profiles.check_profile_altitudes(myidsynthese integer)
+  gn_profiles.check_profile_altitudes(
+    in_alt_min integer, 
+    in_alt_max integer, 
+    profil_altitude_min integer,
+    profil_altitude_max integer
+  )
   RETURNS boolean
   --fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que son altitude se trouve entièrement comprise dans la fourchette altitudinale valide du taxon en question
 
 
-.. code:: sql
-
-  gn_profiles.get_profile_score(myidsynthese integer)
-  RETURNS integer
-  --fonction permettant de calculer le "score" de la cohérence d'une donnée en cumulant le nombre de "checks" validés (parmi distribution, phénologie et altitudes)
-
-
-TODO : A compléter... A voir si on mentionne les triggers ou pas...
 
 Tables transversales
 """"""""""""""""""""
