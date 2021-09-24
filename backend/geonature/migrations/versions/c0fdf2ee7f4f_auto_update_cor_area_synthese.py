@@ -33,7 +33,7 @@ def upgrade():
       DECLARE
       BEGIN
       -- Intersection de toutes les observations avec les nouvelles zones et écriture dans cor_area_synthese
-          INSERT INTO gn_synthese.cor_area_synthese
+          INSERT INTO gn_synthese.cor_area_synthese (id_area, id_synthese)
             SELECT
               new_areas.id_area AS id_area,
               s.id_synthese as id_synthese
