@@ -18,7 +18,7 @@ from utils_flask_sqla.migrations.utils import logger, open_remote_file
 revision = '0dfdbfbccd63'
 down_revision = None
 branch_labels = ('ref_geo_fr_municipalities',)
-depends_on = 'f06cc80cc8ba'
+depends_on = '6afe74833ed0'  # ref_geo
 
 filename = 'communes_fr_2020-02.csv.xz'
 base_url = 'http://geonature.fr/data/ign/'

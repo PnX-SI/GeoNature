@@ -26,7 +26,7 @@ CREATE TABLE t_base_sites
   base_site_code character varying(25) DEFAULT NULL::character varying,
   first_use_date date,
   geom public.geometry(Geometry,4326) NOT NULL,
-  geom_local public.geometry(Geometry, :MYLOCALSRID),
+  geom_local public.geometry(Geometry, :local_srid),
   altitude_min integer,
   altitude_max integer,
   uuid_base_site uuid DEFAULT public.uuid_generate_v4(),

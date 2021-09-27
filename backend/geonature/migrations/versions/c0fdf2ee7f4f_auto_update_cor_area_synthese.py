@@ -1,7 +1,7 @@
 """auto update cor_area_synthese
 
 Revision ID: c0fdf2ee7f4f
-Revises: e0ac4c9f5c0a
+Revises: f06cc80cc8ba
 Create Date: 2021-09-14 17:18:11.606752
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'c0fdf2ee7f4f'
-down_revision = 'e0ac4c9f5c0a'
+down_revision = 'f06cc80cc8ba'
 branch_labels = None
 depends_on = None
 

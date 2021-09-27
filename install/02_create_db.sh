@@ -99,84 +99,17 @@ function gn_psql() {
   PGPASSWORD=$user_pg_pass psql -h $db_host -U $user_pg -d $db_name -v ON_ERROR_STOP=ON $* |& tee -a "${LOG_FILE}" || exit 1
 }
 
-geonature db upgrade sql_utils@head
-
-if [ "$install_usershub_schema" = true ];
- then
-    geonature db upgrade utilisateurs-samples@head
-    write_log "Insertion of data for usershub..."
-    gn_psql -f data/utilisateurs/adds_for_usershub.sql
-fi
-
-geonature db upgrade taxonomie_inpn_data@head -x data-directory=tmp/
-geonature db upgrade nomenclatures_taxonomie_inpn_data@head -x data-directory=tmp/
-
-write_log "Creating 'gn_commons' schema..."
-cp data/core/commons.sql tmp/commons.sql || exit 1
-sed -i "s/MYLOCALSRID/$srid_local/g" tmp/commons.sql || exit 1
-gn_psql -f tmp/commons.sql
-
-write_log "Creating 'gn_meta' schema..."
-
-gn_psql -f data/core/meta.sql
-
-write_log "Creating 'ref_geo' schema..."
-cp data/core/ref_geo.sql tmp/ref_geo.sql || exit 1
-sed -i "s/MYLOCALSRID/$srid_local/g" tmp/ref_geo.sql || exit 1
-gn_psql -f tmp/ref_geo.sql
-
-write_log "Creating 'gn_imports' schema..."
-gn_psql -f data/core/imports.sql
-
-write_log "Creating 'gn_synthese' schema..."
-cp data/core/synthese.sql tmp/synthese.sql
-sed -i "s/MYLOCALSRID/$srid_local/g" tmp/synthese.sql
-gn_psql -f tmp/synthese.sql
-gn_psql -f data/core/synthese_default_values.sql
-
-write_log "Creating 'gn_exports' schema..."
-gn_psql -f data/core/exports.sql
-
-write_log "Creating 'gn_monitoring' schema..."
-gn_psql -v MYLOCALSRID=$srid_local -f data/core/monitoring.sql
-
-write_log "Creating 'gn_permissions' schema"
-gn_psql -f data/core/permissions.sql
-
-write_log "Insert 'gn_permissions' data"
-gn_psql -f data/core/permissions_data.sql
-
-gn_psql -f data/core/sensitivity.sql
-
-write_log "Insert 'gn_sensitivity' data"
-echo "--------------------"
-if [ ! -f 'tmp/referentiel_donnees_sensibles_v13.csv' ]
-    then
-        wget -nc https://geonature.fr/data/inpn/sensitivity/referentiel_donnees_sensibles_v13.csv -P tmp/ || exit 1
-        mv tmp/referentiel_donnees_sensibles_v13.csv tmp/referentiel_donnees_sensibles.csv || exit 1
-    else
-        echo "tmp/referentiel_donnees_sensibles.csv already exist"
-fi
-cp data/core/sensitivity_data.sql tmp/sensitivity_data.sql || exit 1
-sed -i "s#FROM .*/tmp/geonature\(.*\)'#FROM '${BASE_DIR}/tmp\1'#g" tmp/sensitivity_data.sql || exit 1
-echo "Insert 'gn_sensitivity' data... (This may take a few minutes)"
-sudo -u postgres -s psql -d $db_name -v ON_ERROR_STOP=ON -f tmp/sensitivity_data.sql |& tee -a "${LOG_FILE}" || exit 1  # FIXME remove sudo
-
-write_log "Creating table and FK depending of other schema"
-gn_psql -f data/core/commons_after.sql
+geonature db upgrade geonature@head -x data-directory=tmp/ -x local-srid=$srid_local
 
 # Installation des données exemples
 if [ "$add_sample_data" = true ];
 then
     write_log "Inserting sample datasets..."
-    gn_psql -f data/core/meta_data.sql
+    geonature db upgrade geonature-samples@head |& tee -a "${LOG_FILE}" || exit 1
 
     write_log "Inserting sample dataset of taxons for taxonomic schema..."
-    geonature db upgrade taxonomie_taxons_example@head
+    geonature db upgrade taxonomie_taxons_example@head |& tee -a "${LOG_FILE}" || exit 1
 fi
-
-geonature db stamp f06cc80cc8ba  # mark schema as in version 2.7.5
-geonature db upgrade geonature@head  # upgrade schema to last revision
 
 if [ "$install_sig_layers" = true ];
 then

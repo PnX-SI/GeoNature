@@ -1,7 +1,7 @@
 """add indexes on FK referencing l_areas.id_area
 
 Revision ID: e0ac4c9f5c0a
-Revises: f06cc80cc8ba
+Revises: 6afe74833ed0
 Create Date: 2021-09-15 09:26:08.125615
 
 """
@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = 'e0ac4c9f5c0a'
-down_revision = 'f06cc80cc8ba'
+down_revision = '6afe74833ed0'
 branch_labels = None
 depends_on = None
 

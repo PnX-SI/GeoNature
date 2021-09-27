@@ -20,7 +20,7 @@ from utils_flask_sqla.migrations.utils import logger, open_remote_file
 revision = 'ede150d9afd9'
 down_revision = None
 branch_labels = ('ref_geo_inpn_grids_10',)
-depends_on = 'f06cc80cc8ba'
+depends_on = '6afe74833ed0'  # ref_geo
 
 filename = 'inpn_grids_10.csv.xz'
 base_url = 'http://geonature.fr/data/inpn/layers/2020/'
