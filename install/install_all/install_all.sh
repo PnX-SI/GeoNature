@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -e
+
 . install_all.ini
 . /etc/os-release
 OS_NAME=$ID
@@ -139,7 +142,7 @@ sudo a2ensite geonature && sudo systemctl reload apache2 || exit 1
 # Installing TaxHub with current user
 if [ ! -d "${TAXHUB_DIR}" ]; then
     echo "Téléchargement et installation de TaxHub ..."
-	cd "${HOME}"
+    cd "${HOME}"
     if [ "${mode}" = "dev" ]; then
         git clone https://github.com/PnX-SI/TaxHub "${TAXHUB_DIR}" || exit 1
         cd "${TAXHUB_DIR}"
@@ -178,7 +181,11 @@ sed -i "s/https_key_path=.*$/https_key_path=$enable_https/g" settings.ini
 # Installation of TaxHub
 # lance install_app en le sourcant pour que la commande NVM soit disponible
 ./install_app.sh || exit 1
-# Note: on ne lance pas install_db car celle-ci a déjà été créé par le processus d’installation de GeoNature
+
+source "${GEONATURE_DIR}/backend/venv/bin/activate"
+geonature db upgrade taxhub-admin@head
+deactivate
+
 
 sudo systemctl start taxhub || exit 1
 if [ "${mode}" != "dev" ]; then
@@ -190,12 +197,12 @@ if [ "$install_usershub_app" = true ]; then
     if [ ! -d "${USERSHUB_DIR}" ]; then
         echo "Installation de l'application Usershub"
         cd "${HOME}"
-        if [ "${mode}" = "dev" ]; then
-            git clone https://github.com/PnX-SI/UsersHub "${USERSHUB_DIR}"
+        if [ "${mode}" = "dev" ]; then
+            git clone https://github.com/PnX-SI/UsersHub "${USERSHUB_DIR}" || exit 1
             cd "${USERSHUB_DIR}"
-            git checkout "$usershub_release"
-            git submodule init
-            git submodule update
+            git checkout "$usershub_release" || exit 1
+            git submodule init || exit 1
+            git submodule update || exit 1
         else
             wget https://github.com/PnX-SI/UsersHub/archive/$usershub_release.zip -O UsersHub-$usershub_release.zip || exit 1
             unzip UsersHub-$usershub_release.zip || exit 1
