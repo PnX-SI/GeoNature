@@ -126,36 +126,9 @@ fi
 
 if  [ "$install_default_dem" = true ];
 then
-    write_log "Insert default French DEM (IGN 250m BD alti). (This may takes a few minutes)"
-    if [ ! -f 'tmp/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip' ]
-    then
-        wget --cache=off http://geonature.fr/data/ign/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -P tmp
-    else
-        echo "tmp/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip already exist"
-    fi
-          unzip -u tmp/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d tmp
-    export PGPASSWORD=$user_pg_pass;raster2pgsql -s $srid_local -c -C -I -M -d -t 5x5 tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc ref_geo.dem|psql -h $db_host -U $user_pg -d $db_name  &>> var/log/install_db.log
-	#echo "Refresh DEM spatial index. This may take a few minutes..."
-    gn_psql -c "REINDEX INDEX ref_geo.dem_st_convexhull_idx;" &>> var/log/install_db.log
+    geonature db upgrade ign_bd_alti@head -x local-srid=$srid_local -x data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
     if [ "$vectorise_dem" = true ];
     then
-        write_log "Vectorisation of DEM raster. This may take a few minutes..."
-        gn_psql -c "INSERT INTO ref_geo.dem_vector (geom, val) SELECT (ST_DumpAsPolygons(rast)).* FROM ref_geo.dem;" &>> var/log/install_db.log
-
-        write_log "Refresh DEM vector spatial index. This may take a few minutes..."
-        gn_psql -c "REINDEX INDEX ref_geo.index_dem_vector_geom;" &>> var/log/install_db.log
+        geonature db upgrade ign_bd_alti_vector@head -x data-directory=tmp |& tee -a "${LOG_FILE}" || exit 1
     fi
 fi
-
-
-
-# Suppression des fichiers : on ne conserve que les fichiers compressés
-echo "Cleaning files..."
-
-if [ "$install_default_dem" = true ];
-then
-    rm tmp/BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc
-    rm tmp/IGNF_BDALTIr_2-0_ASC_250M_LAMB93_IGN69_FRANCE.html
-fi
-
-rm -f tmp/*.sql
