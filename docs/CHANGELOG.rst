@@ -7,12 +7,21 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
+* Support de Debian 11 / Python 3.9
 * Passage de ``supervisor`` à ``systemd``
-* Gestion des évolutions de la base de données avec Alembic ; l’installation se fait partiellement avec Alembic (voir documentation)
+* Gestion des évolutions de la base de données avec Alembic
 * Mise-à-jour de la procédure d’installation afin d’utiliser Alembic
 * Passage à Marshmallow 3
 * Suppression du paramètre ``ID_APP``, celui-ci est automatiquement déterminé à partir de la base de données et du code de l’application
 * Ajout d’un index sur ``ref_geo.l_areas.id_area``
+* Mise-à-jour des dépendances
+
+  * TaxHub
+  * UsersHub-authentification-module
+  * Nomenclature-api-module
+  * Habref-api-module
+  * Utils-Flask-SQLAlchemy
+  * Utils-Flask-SQLAlchemy-Geo
 
 **🐛 Corrections**
 
@@ -30,6 +39,7 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
+* Mettre préalablement UsersHub et TaxHub à jour si vous les utilisez.
 * Passage à ``systemd`` :
 
   * Stopper GeoNature : ``sudo supervisorctl stop geonature2``
@@ -42,14 +52,32 @@ CHANGELOG
   * Pour activer GeoNature au démarrage : ``sudo systemctl enable geonature``
 
 * Correction de la configuration apache : si vous servez GeoNature sur un prefix (typiquement ``/geonature/api``), assurez vous que celui-ci figure bien également à la fin des directives ProxyPass et ProxyPassReverse comme c’est le cas dans le fichier d’exemple ``install/assets/geonature_apache.conf``.
-* Si vous avez UsersHub d’installé, ajoutez dans votre configuration GeoNature la section suivante :
 
-.. code-block::
+* Passage à Alembic :
 
-    [ALEMBIC]
-    VERSION_LOCATIONS = '/path/to/usershub/app/migrations/versions'
+  * S’assurer d’avoir une base de données de GeoNature en version 2.7.5
+  * Si vous avez UsersHub d’installé, ajoutez dans votre configuration GeoNature la section suivante :
 
-* Passage à Alembic : reportez-vous à la documentation de GeoNature, section administration de la base de données avec Alembic.
+  .. code-block::
+
+      [ALEMBIC]
+      VERSION_LOCATIONS = '/path/to/usershub/app/migrations/versions'
+
+  * Entrer dans le virtualenv afin d’avoir la commande ``geonature`` disponible : ``source backend/venv/bin/activate``
+  * Indiquer à Alembic l’état de votre base de données :
+
+    * Indiquer que la base est en version 2.7.5 : ``geonature db stamp f06cc80cc8ba``
+    * Si la base contient le référentiel géographique des communes : ``geonature db stamp 0dfdbfbccd63``
+    * Si la base contient le référentiel géographique des départements : ``geonature db stamp 3fdaa1805575``
+    * Si la base contient le référentiel géographique des mailles 1×1 : ``geonature db stamp 586613e2faeb``
+    * Si la base contient le référentiel géographique des mailles 5×5 : ``geonature db stamp 7d6e98441e4c``
+    * Si la base contient le référentiel géographique des mailles 10×10 : ``geonature db stamp ede150d9afd9``
+    * Si la base contient le DEM de l’IGN : ``geonature db stamp 1715cf31a75d``
+    * Si la base contient le DEM de l’IGN vectorisé : ``geonature db stamp 87651375c2e8``
+
+  * Mettre sa base de données à jour avec Alembic : ``geonature db upgrade geonature@head``
+
+  Pour plus d’information sur l’utilisation d’Alembic, voir la `documentation administrateur de GeoNature <https://docs.geonature.fr/admin-manual.html#administration-avec-alembic>`_.
 
 
 2.7.5 (2021-07-28)
