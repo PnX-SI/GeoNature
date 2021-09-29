@@ -5,16 +5,30 @@ CHANGELOG
 2.8.0
 -----
 
+Profils de taxons et gestion de la BDD par Alembic
+
+**TODO**
+
+- Faire un install_all 2.7.5 et tester toutes les MAJ, puis recette fonctionnelle
+- Compare / https://github.com/PnX-SI/GeoNature/compare/develop
+- Check PR / https://github.com/PnX-SI/GeoNature/pulls
+- Indiquer Debian 11 dans la doc d'installation ?
+- Revoir migrate.sh pour qu'il applique les migrations Alembic ?
+- Lancer la mise à jour de cor_area_synthese pour être certain qu'elle ait bien en cohérence avec les zonages existants
+- Conséquences de Marshmallow 3 sur les modules ?
+- Template de module à revoir ?
+
 **🚀 Nouveautés**
 
 * Support de Debian 11 / Python 3.9
 * Passage de ``supervisor`` à ``systemd``
 * Gestion des évolutions de la base de données avec Alembic
-* Mise-à-jour de la procédure d’installation afin d’utiliser Alembic
+* Mise à jour de la procédure d’installation afin d’utiliser Alembic
+* Révision et réorganisation des scripts et de la documentation d'installation
 * Passage à Marshmallow 3
 * Suppression du paramètre ``ID_APP``, celui-ci est automatiquement déterminé à partir de la base de données et du code de l’application
-* Ajout d’un index sur ``ref_geo.l_areas.id_area``
-* Mise-à-jour des dépendances
+* Ajout d’un index sur le champs ``ref_geo.l_areas.id_area``
+* Mise à jour des dépendances
 
   * TaxHub
   * UsersHub-authentification-module
@@ -25,38 +39,39 @@ CHANGELOG
 
 **🐛 Corrections**
 
-* Mise-à-jour de ``cor_area_synthese`` lors de l’ajout de nouvelles zones via un trigger sur ``l_areas`` (#1433)
-* Jeu de données : correction de l’affichage des imports sources
-* Correction de la configuration apache et de la gestion par flask d’un GeoNature accessible sur un préfix (e.g. ``/geonature``)
+* Mise à jour de la table ``cor_area_synthese`` lors de l’ajout de nouvelles zones via un trigger sur la table ``l_areas`` (#1433)
+* Correction de l'export PDF des fiches de métadonnées (#1449)
+* Jeux de données : correction de l’affichage des imports sources
+* Correction de la configuration Apache et de la gestion par flask d’un GeoNature accessible sur un préfix (e.g. ``/geonature``) (#1463)
 * Correction de la commande ``install_packaged_gn_module``
-* Correction des boutons radios (champs additionnels)
+* Correction des champs additionnels de type boutons radios (#1464 et #1472)
 
 **💻 Développement**
 
-* Mise-à-jour de plusieurs dépendances
+* Mise à jour de plusieurs dépendances
 * L’utilisateur connecté est maintenant accessible via ``g.current_user``
 * Nettoyage et refactoring divers
 
 **⚠️ Notes de version**
 
-* Mettre préalablement UsersHub et TaxHub à jour si vous les utilisez.
+* Mettre préalablement UsersHub et TaxHub à jour si vous les utilisez
 * Passage à ``systemd`` :
 
   * Stopper GeoNature : ``sudo supervisorctl stop geonature2``
   * Supprimer le fichier de configuration de supervisor ``/etc/supervisor/conf.d/geonature-service.conf``
-  * Si supervisor n’est plus utilisé par aucun service (répertoire ``conf.d`` vide), il peut être désinstallé : ``sudo apt remove supervisor``)
-  * Copier ``install/assets/geonature.service`` dans ``/etc/systemd/system/``
-  * Éditer ``/etc/systemd/system/geonature.service`` et remplacer les variables ``${USER}`` et ``${BASE_DIR}`` par les valeurs appropriées
+  * Si supervisor n’est plus utilisé par aucun service (répertoire ``conf.d`` vide), il peut être désinstallé (``sudo apt remove supervisor``)
+  * Copier le fichier ``install/assets/geonature.service`` dans ``/etc/systemd/system/``
+  * Éditer ``/etc/systemd/system/geonature.service`` et remplacer les variables ``${USER}`` (votre utilisateur linux courant) et ``${BASE_DIR}`` (chemin absolu du répertoire de GeoNature) par les valeurs appropriées
   * Lancer la commande ``sudo systemctl daemon-reload``
-  * Pour démarrer GeoNature: ``sudo systemctl start geonature``
-  * Pour activer GeoNature au démarrage : ``sudo systemctl enable geonature``
+  * Pour démarrer GeoNature : ``sudo systemctl start geonature``
+  * Pour lancer GeoNature automatiquement au démarrage du serveur : ``sudo systemctl enable geonature``
 
-* Correction de la configuration apache : si vous servez GeoNature sur un prefix (typiquement ``/geonature/api``), assurez vous que celui-ci figure bien également à la fin des directives ProxyPass et ProxyPassReverse comme c’est le cas dans le fichier d’exemple ``install/assets/geonature_apache.conf``.
+* Correction de la configuration Apache de GeoNature : si vous servez GeoNature sur un préfixe (typiquement ``/geonature/api``), assurez vous que celui-ci figure bien également à la fin des directives ProxyPass et ProxyPassReverse comme c’est le cas dans le fichier d’exemple ``install/assets/geonature_apache.conf``.
 
 * Passage à Alembic :
 
   * S’assurer d’avoir une base de données de GeoNature en version 2.7.5
-  * Si vous avez UsersHub d’installé, ajoutez dans votre configuration GeoNature la section suivante :
+  * Si vous avez UsersHub installé, ajoutez dans votre configuration GeoNature la section suivante (en adaptant le chemin) :
 
   .. code-block::
 
@@ -72,13 +87,14 @@ CHANGELOG
     * Si la base contient le référentiel géographique des mailles 1×1 : ``geonature db stamp 586613e2faeb``
     * Si la base contient le référentiel géographique des mailles 5×5 : ``geonature db stamp 7d6e98441e4c``
     * Si la base contient le référentiel géographique des mailles 10×10 : ``geonature db stamp ede150d9afd9``
-    * Si la base contient le DEM de l’IGN : ``geonature db stamp 1715cf31a75d``
-    * Si la base contient le DEM de l’IGN vectorisé : ``geonature db stamp 87651375c2e8``
+    * Si la base contient le MNT de l’IGN : ``geonature db stamp 1715cf31a75d``
+    * Si la base contient le MNT de l’IGN vectorisé : ``geonature db stamp 87651375c2e8``
 
   * Mettre sa base de données à jour avec Alembic : ``geonature db upgrade geonature@head``
 
   Pour plus d’information sur l’utilisation d’Alembic, voir la `documentation administrateur de GeoNature <https://docs.geonature.fr/admin-manual.html#administration-avec-alembic>`_.
 
+  * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 
 2.7.5 (2021-07-28)
 ------------------
