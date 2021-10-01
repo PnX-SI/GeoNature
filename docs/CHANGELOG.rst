@@ -22,7 +22,7 @@ CHANGELOG
 
   * `TaxHub 1.9.0 <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__
   * `UsersHub-authentification-module 1.5.3 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.3>`__
-  * `Nomenclature-api-module <https://github.com/PnX-SI/Nomenclature-api-module/releases/tag/1.4.0>`__
+  * `Nomenclature-api-module 1.4.1 <https://github.com/PnX-SI/Nomenclature-api-module/releases/tag/1.4.1>`__
   * `Habref-api-module 0.2.0 <https://github.com/PnX-SI/Habref-api-module/releases/tag/0.2.0>`__
   * `Utils-Flask-SQLAlchemy 0.2.4 <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/releases/tag/0.2.4>`__
   * `Utils-Flask-SQLAlchemy-Geo 0.2.1 <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/releases/tag/0.2.1>`__
