@@ -1,4 +1,4 @@
--- Création du schéma "gn_commons" en version 2.8.5
+-- Création du schéma "gn_commons" en version 2.7.5
 -- A partir de la version 2.8.0, les évolutions de la BDD sont gérées dans des migrations Alembic
 
 
