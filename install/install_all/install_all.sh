@@ -125,18 +125,15 @@ echo "Installation des modules GeoNature"
 ./03_install_gn_modules.sh || exit 1
 echo "Installation du frontend GeoNature"
 ./04_install_frontend.sh || exit 1
+echo "Installation de la config apache pour GeoNature"
+./05_configure_apache.sh || exit 1
+
+sudo a2enconf geonature || exit 1
 
 sudo systemctl start geonature || exit 1
 if [ "${mode}" != dev ]; then
     sudo systemctl enable geonature || exit 1
 fi
-
-cd "${GEONATURE_DIR}"
-
-# Apache configuration of GeoNature
-envsubst '${DOMAIN_NAME} ${GEONATURE_DIR}' < "${GEONATURE_DIR}/install/assets/geonature_apache.conf" | sudo tee /etc/apache2/sites-available/geonature.conf || exit 1
-envsubst '${DOMAIN_NAME} ${GEONATURE_DIR}' < "${GEONATURE_DIR}/install/assets/geonature_apache_maintenance.conf" | sudo tee /etc/apache2/sites-available/geonature_maintenance.conf || exit 1
-sudo a2ensite geonature && sudo systemctl reload apache2 || exit 1
 
 
 # Installing TaxHub with current user
@@ -186,6 +183,7 @@ source "${GEONATURE_DIR}/backend/venv/bin/activate"
 geonature db upgrade taxhub-admin@head
 deactivate
 
+sudo a2enconf taxhub || exit 1
 
 sudo systemctl start taxhub || exit 1
 if [ "${mode}" != "dev" ]; then
@@ -229,11 +227,19 @@ if [ "$install_usershub_app" = true ]; then
     geonature db upgrade usershub-samples@head
     deactivate
 
+    sudo a2enconf usershub || exit 1
+
     sudo systemctl start usershub || exit 1
     if [ "${mode}" != "dev" ]; then
         sudo systemctl enable usershub || exit 1
     fi
 fi
 
+
+# Apache vhost for GeoNature, TaxHub and UsersHub
+envsubst '${DOMAIN_NAME}' < "${GEONATURE_DIR}/install/assets/vhost_apache.conf" | sudo tee /etc/apache2/sites-available/geonature.conf || exit 1
+envsubst '${DOMAIN_NAME}' < "${GEONATURE_DIR}/install/assets/vhost_apache_maintenance.conf" | sudo tee /etc/apache2/sites-available/geonature_maintenance.conf || exit 1
+sudo a2ensite geonature || exit 1
+sudo systemctl reload apache2 || exit 1
 
 echo "L'installation est terminée!"
