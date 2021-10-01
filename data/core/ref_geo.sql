@@ -1,4 +1,4 @@
--- Compléments du schéma "ref_geo" en version 2.7.5
+-- Création du schéma "ref_geo" en version 2.7.5
 -- A partir de la version 2.8.0, les évolutions de la BDD sont gérées dans des migrations Alembic
 
 SET statement_timeout = 0;
