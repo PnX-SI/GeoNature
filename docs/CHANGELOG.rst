@@ -46,7 +46,7 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
-* Mettre à jour `UsersHub en version 2.2.1 <https://github.com/PnX-SI/UsersHub/releases/tag/2.2.1>`__ et `TaxHub en version 1.9.0 <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__ (si vous les utilisez) **en sautant l’étape de passage à Alembic**, car la mise à jour de GeoNature se charge désormais de mettre à jour aussi les schémas ``taxonomie`` et ``utilisateurs``
+* Mettre à jour `UsersHub en version 2.2.1 <https://github.com/PnX-SI/UsersHub/releases/tag/2.2.1>`__ et `TaxHub en version 1.9.0 <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__ (si vous les utilisez) **en sautant l’étape de passage à Alembic** (car la mise à jour de GeoNature se charge désormais de mettre à jour aussi les schémas ``taxonomie`` et ``utilisateurs``)
 * Suppression de ``supervisor`` :
 
   * Stopper GeoNature : ``sudo supervisorctl stop geonature2``
