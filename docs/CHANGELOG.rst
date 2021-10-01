@@ -13,8 +13,8 @@ CHANGELOG
 
 * Support de Debian 11 / Python 3.9
 * Passage de ``supervisor`` à ``systemd``
-* Gestion de la base de données et de ses évolutions avec Alembic
-* Mise à jour de la procédure d’installation afin d’utiliser Alembic
+* Gestion de la base de données et de ses évolutions avec Alembic (#880)
+* Mise à jour de la procédure d’installation afin d’utiliser Alembic (#880)
 * Révision et réorganisation des scripts et de la documentation d'installation
 * Passage à la version 3 de Marshmallow
 * Suppression du paramètre ``ID_APP``, celui-ci est automatiquement déterminé à partir de la base de données et du code de l’application
