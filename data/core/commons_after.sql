@@ -1,5 +1,9 @@
+-- Complément du schéma "gn_commons" en version 2.8.5
+-- A partir de la version 2.8.0, les évolutions de la BDD sont gérées dans des migrations Alembic
 
--- vue validation de gn_commons necessitant le schéma synthese
+
+-- Vue validation de gn_commons necessitant le schéma synthese
+
 CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp
     WITH (security_barrier=false)
     AS
