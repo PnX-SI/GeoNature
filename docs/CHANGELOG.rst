@@ -2,21 +2,11 @@
 CHANGELOG
 =========
 
-2.8.0
------
+2.8.0-rc1 (2021-10-01)
+----------------------
 
-Profils de taxons et gestion de la BDD par Alembic
-
-**TODO**
-
-- Faire un install_all 2.7.5 et tester toutes les MAJ, puis recette fonctionnelle
-- Compare / https://github.com/PnX-SI/GeoNature/compare/develop
-- Check PR / https://github.com/PnX-SI/GeoNature/pulls
-- Indiquer Debian 11 dans la doc d'installation ?
-- Revoir migrate.sh pour qu'il applique les migrations Alembic ?
-- Lancer la mise à jour de cor_area_synthese pour être certain qu'elle ait bien en cohérence avec les zonages existants
-- Conséquences de Marshmallow 3 sur les modules ?
-- Template de module à revoir ?
+* Gestion de la base de données avec Alembic
+* ⚠️ Le passage à la version 3 de Marshmallow nécessite une version compatible des modules (Import, Export, Dashboard...) non disponibles à la date de sortie de cette version.
 
 **🚀 Nouveautés**
 
@@ -25,7 +15,7 @@ Profils de taxons et gestion de la BDD par Alembic
 * Gestion des évolutions de la base de données avec Alembic
 * Mise à jour de la procédure d’installation afin d’utiliser Alembic
 * Révision et réorganisation des scripts et de la documentation d'installation
-* Passage à Marshmallow 3
+* Passage à la version 3 de Marshmallow
 * Suppression du paramètre ``ID_APP``, celui-ci est automatiquement déterminé à partir de la base de données et du code de l’application
 * Ajout d’un index sur le champs ``ref_geo.l_areas.id_area``
 * Mise à jour des dépendances
@@ -39,6 +29,7 @@ Profils de taxons et gestion de la BDD par Alembic
 
 **🐛 Corrections**
 
+* Correction de l'envoi d'email lors de la récupération du mot de passe (#1471)
 * Mise à jour de la table ``cor_area_synthese`` lors de l’ajout de nouvelles zones via un trigger sur la table ``l_areas`` (#1433)
 * Correction de l'export PDF des fiches de métadonnées (#1449)
 * Jeux de données : correction de l’affichage des imports sources
@@ -54,7 +45,7 @@ Profils de taxons et gestion de la BDD par Alembic
 
 **⚠️ Notes de version**
 
-* Mettre-à-jour `UsersHub en version 2.2.1 <https://github.com/PnX-SI/UsersHub/releases/tag/2.2.1>`__ et `TaxHub en version <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__ (si vous les utilisez) **en sautant l’étape de passage à Alembic**
+* Mettre à jour `UsersHub en version 2.2.1 <https://github.com/PnX-SI/UsersHub/releases/tag/2.2.1>`__ et `TaxHub en version <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__ (si vous les utilisez) **en sautant l’étape de passage à Alembic** car la mise à jour de GeoNature se charge désormais de mettre à jour aussi les schémas ``taxonomie`` et ``utilisateurs``
 * Suppression de ``supervisor`` :
 
   * Stopper GeoNature : ``sudo supervisorctl stop geonature2``
