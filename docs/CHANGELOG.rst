@@ -54,12 +54,16 @@ Profils de taxons et gestion de la BDD par Alembic
 
 **⚠️ Notes de version**
 
-* Mettre préalablement UsersHub et TaxHub à jour si vous les utilisez
-* Passage à ``systemd`` :
+* Mettre-à-jour `UsersHub en version 2.2.1 <https://github.com/PnX-SI/UsersHub/releases/tag/2.2.1>`__ et `TaxHub en version <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__ (si vous les utilisez) **en sautant l’étape de passage à Alembic**
+* Suppression de ``supervisor`` :
 
   * Stopper GeoNature : ``sudo supervisorctl stop geonature2``
-  * Supprimer le fichier de configuration de supervisor ``/etc/supervisor/conf.d/geonature-service.conf``
-  * Si supervisor n’est plus utilisé par aucun service (répertoire ``conf.d`` vide), il peut être désinstallé (``sudo apt remove supervisor``)
+  * Supprimer le fichier de configuration supervisor de GeoNature : ``sudo rm /etc/supervisor/conf.d/geonature-service.conf``
+  * Si supervisor n’est plus utilisé par aucun service (répertoire ``/etc/supervisor/conf.d/`` vide), il peut être désinstallé (``sudo apt remove supervisor``)
+
+* Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+* Passage à ``systemd`` :
+
   * Copier le fichier ``install/assets/geonature.service`` dans ``/etc/systemd/system/``
   * Éditer ``/etc/systemd/system/geonature.service`` et remplacer les variables ``${USER}`` (votre utilisateur linux courant) et ``${BASE_DIR}`` (chemin absolu du répertoire de GeoNature) par les valeurs appropriées
   * Lancer la commande ``sudo systemctl daemon-reload``
@@ -67,7 +71,6 @@ Profils de taxons et gestion de la BDD par Alembic
   * Pour lancer GeoNature automatiquement au démarrage du serveur : ``sudo systemctl enable geonature``
 
 * Correction de la configuration Apache de GeoNature : si vous servez GeoNature sur un préfixe (typiquement ``/geonature/api``), assurez vous que celui-ci figure bien également à la fin des directives ProxyPass et ProxyPassReverse comme c’est le cas dans le fichier d’exemple ``install/assets/geonature_apache.conf``.
-
 * Passage à Alembic :
 
   * S’assurer d’avoir une base de données de GeoNature en version 2.7.5
@@ -93,8 +96,6 @@ Profils de taxons et gestion de la BDD par Alembic
   * Mettre sa base de données à jour avec Alembic : ``geonature db upgrade geonature@head``
 
   Pour plus d’information sur l’utilisation d’Alembic, voir la `documentation administrateur de GeoNature <https://docs.geonature.fr/admin-manual.html#administration-avec-alembic>`_.
-
-  * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 
 2.7.5 (2021-07-28)
 ------------------
