@@ -101,7 +101,7 @@ source venv/bin/activate
 
 
 echo "Installation des dépendances Python..."
-pip install --upgrade pip
+pip install --upgrade "pip>=19.3"  # https://www.python.org/dev/peps/pep-0440/#direct-references
 if [[ "${MODE}" == "dev" ]]; then
   echo "Installation des dépendances Python de l'environnement de DEV..."
   pip install -r requirements-common.txt -r requirements-submodules.txt
