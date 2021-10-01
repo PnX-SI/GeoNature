@@ -61,7 +61,16 @@ CHANGELOG
   * Pour démarrer GeoNature : ``sudo systemctl start geonature``
   * Pour lancer GeoNature automatiquement au démarrage du serveur : ``sudo systemctl enable geonature``
 
-* Correction de la configuration Apache de GeoNature : si vous servez GeoNature sur un préfixe (typiquement ``/geonature/api``), assurez vous que celui-ci figure bien également à la fin des directives ProxyPass et ProxyPassReverse comme c’est le cas dans le fichier d’exemple ``install/assets/geonature_apache.conf``.
+* Correction de la configuration Apache :
+
+  * Installer le fichier de configuration d’apache d’exemple permettant de servir GeoNature sur le préfixe ``/geonature`` : ``cp install/assets/geonature_apache.conf /etc/apache2/conf-available/geonature.conf``
+  * Remplacer dans ``/etc/apache2/conf-available/geonature.conf`` la variable ``${GEONATURE_DIR}`` par la valeur approprié (*e.g.* ``/home/geonatureadmin/geonature``)
+  * Vous pouvez décider d’utiliser ce fichier d’exemple en l’activant (``sudo a2enconf geonature``)
+  * Ou vous pouvez l’inclure dans votre propre vhost avec la directive suivante : ``Include /etc/apache2/conf-available/geonature.conf``
+  * Si vous gardez votre propre fichier de configuration et que vous servez GeoNature sur un préfixe (typiquement ``/geonature/api``), assurez vous que ce préfixe figure bien également à la fin des directives ``ProxyPass`` et ``ProxyPassReverse`` comme c’est le cas dans le fichier d’exemple ``install/assets/geonature_apache.conf``
+  * Si vous décidez d’utiliser le fichier fourni, pensez à supprimer votre ancienne configuration apache (*e.g.* ``sudo a2dissite geonature && sudo rm /etc/apache2/sites-available/geonature.conf``).
+  * Si vous souhaitez isoler GeoNature dans un vhost, vous pouvez vous inspirer du fichier ``install/assets/vhost_apache.conf``
+
 * Passage à Alembic :
 
   * S’assurer d’avoir une base de données de GeoNature en version 2.7.5
