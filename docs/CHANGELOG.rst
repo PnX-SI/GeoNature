@@ -5,14 +5,15 @@ CHANGELOG
 2.8.0-rc1 (2021-10-01)
 ----------------------
 
-* Gestion de la base de données avec Alembic
-* ⚠️ Le passage à la version 3 de Marshmallow nécessite une version compatible des modules (Import, Export, Dashboard...) non disponibles à la date de sortie de cette version.
+**Gestion de la base de données avec Alembic**
+
+⚠️ Le passage à la version 3 de Marshmallow nécessite une version compatible des modules (Import, Export, Dashboard...) non disponibles à la date de sortie de cette version.
 
 **🚀 Nouveautés**
 
 * Support de Debian 11 / Python 3.9
 * Passage de ``supervisor`` à ``systemd``
-* Gestion des évolutions de la base de données avec Alembic
+* Gestion de la base de données et de ses évolutions avec Alembic
 * Mise à jour de la procédure d’installation afin d’utiliser Alembic
 * Révision et réorganisation des scripts et de la documentation d'installation
 * Passage à la version 3 de Marshmallow
@@ -45,14 +46,14 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
-* Mettre à jour `UsersHub en version 2.2.1 <https://github.com/PnX-SI/UsersHub/releases/tag/2.2.1>`__ et `TaxHub en version <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__ (si vous les utilisez) **en sautant l’étape de passage à Alembic** car la mise à jour de GeoNature se charge désormais de mettre à jour aussi les schémas ``taxonomie`` et ``utilisateurs``
+* Mettre à jour `UsersHub en version 2.2.1 <https://github.com/PnX-SI/UsersHub/releases/tag/2.2.1>`__ et `TaxHub en version 1.9.0 <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__ (si vous les utilisez) **en sautant l’étape de passage à Alembic**, car la mise à jour de GeoNature se charge désormais de mettre à jour aussi les schémas ``taxonomie`` et ``utilisateurs``
 * Suppression de ``supervisor`` :
 
   * Stopper GeoNature : ``sudo supervisorctl stop geonature2``
   * Supprimer le fichier de configuration supervisor de GeoNature : ``sudo rm /etc/supervisor/conf.d/geonature-service.conf``
   * Si supervisor n’est plus utilisé par aucun service (répertoire ``/etc/supervisor/conf.d/`` vide), il peut être désinstallé (``sudo apt remove supervisor``)
 
-* Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+* Suivre la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * Passage à ``systemd`` :
 
   * Copier le fichier ``install/assets/geonature.service`` dans ``/etc/systemd/system/``
@@ -63,7 +64,7 @@ CHANGELOG
 
 * Correction de la configuration Apache :
 
-  * Installer le fichier de configuration d’apache d’exemple permettant de servir GeoNature sur le préfixe ``/geonature`` : ``cp install/assets/geonature_apache.conf /etc/apache2/conf-available/geonature.conf``
+  * Installer le fichier de configuration Apache d’exemple permettant de servir GeoNature sur le préfixe ``/geonature`` : ``cp install/assets/geonature_apache.conf /etc/apache2/conf-available/geonature.conf``
   * Remplacer dans ``/etc/apache2/conf-available/geonature.conf`` la variable ``${GEONATURE_DIR}`` par la valeur approprié (*e.g.* ``/home/geonatureadmin/geonature``)
   * Vous pouvez décider d’utiliser ce fichier d’exemple en l’activant (``sudo a2enconf geonature``)
   * Ou vous pouvez l’inclure dans votre propre vhost avec la directive suivante : ``Include /etc/apache2/conf-available/geonature.conf``
