@@ -295,11 +295,23 @@ LEFT join ref_nomenclatures.t_nomenclatures nom4 on nom4.id_nomenclature = h.id_
 
 
 INSERT INTO pr_occhab.defaults_nomenclatures_value (mnemonique_type, id_organism, id_nomenclature) VALUES
-('METHOD_CALCUL_SURFACE',0, ref_nomenclatures.get_id_nomenclature('METHOD_CALCUL_SURFACE', 'sig')),
-('NAT_OBJ_GEO',0, ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP')),
-('DETERMINATION_TYP_HAB',0, ref_nomenclatures.get_id_nomenclature('DETERMINATION_TYP_HAB', '1')),
-('TECHNIQUE_COLLECT_HAB',0, ref_nomenclatures.get_id_nomenclature('TECHNIQUE_COLLECT_HAB', '1'))
-;
+(
+    'METHOD_CALCUL_SURFACE',
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),
+    ref_nomenclatures.get_id_nomenclature('METHOD_CALCUL_SURFACE', 'sig')
+),(
+    'NAT_OBJ_GEO',
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),
+    ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP')
+),(
+    'DETERMINATION_TYP_HAB',
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),
+    ref_nomenclatures.get_id_nomenclature('DETERMINATION_TYP_HAB', '1')
+),(
+    'TECHNIQUE_COLLECT_HAB',
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),
+    ref_nomenclatures.get_id_nomenclature('TECHNIQUE_COLLECT_HAB', '1')
+);
 
 INSERT INTO gn_commons.bib_tables_location (table_desc, schema_name, table_name, pk_field, uuid_field_name) VALUES
 ('occurence d''habitat du module OccHab', 'pr_occhab', 't_habitats', 'id_habitat', 'unique_id_sinp_hab')
