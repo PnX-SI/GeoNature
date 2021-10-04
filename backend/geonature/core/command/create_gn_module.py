@@ -59,7 +59,7 @@ log = logging.getLogger(__name__)
 @click.option("--build", type=bool, required=False, default=True)
 def install_packaged_gn_module(module_path, module_code, build):
     # install python package and dependencies
-    subprocess.run(f"pip install -e {module_path}", shell=True, check=True)
+    subprocess.run(f"pip install -e '{module_path}'", shell=True, check=True)
 
     # load python package
     module_dist = get_dist_from_code(module_code)
@@ -88,14 +88,23 @@ def install_packaged_gn_module(module_path, module_code, build):
         db.session.add(module_object)
     db.session.commit()
 
-    db_upgrade(revision=module_code.lower())
+    try:
+        load_entry_point(module_dist, 'gn_module', 'migrations')
+    except ImportError:
+        log.info("Module do not provide any migration files, skipping database upgrade.")
+    else:
+        try:
+            alembic_branch = load_entry_point(module_dist, 'gn_module', 'alembic_branch')
+        except ImportError:
+            alembic_branch = module_code.lower()
+        db_upgrade(revision=module_code.lower())
 
     # symlink module in exernal module directory
     module_symlink = GN_EXTERNAL_MODULE / module_code.lower()
     if os.path.exists(module_symlink):
         target = os.readlink(module_symlink)
-        if os.path.abspath(module_path) != target:
-            raise ClickException(f"Module symlink has wrong target '{target}'")
+        if os.path.realpath(module_path) != os.path.realpath(target):
+            raise ClickException(f"Module symlink has wrong target: '{target}'")
     else:
         os.symlink(os.path.abspath(module_path), module_symlink)
 
