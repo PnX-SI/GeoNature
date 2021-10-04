@@ -37,7 +37,7 @@ export class MunicipalitiesComponent implements OnInit {
         },
         err => {
           if (err.status === 404) {
-            this.municipalities = [{ nom_com: 'No data to display' }];
+            this.municipalities = [{ nom_com_dept: 'No data to display' }];
           } else {
             this.municipalities = [];
             this._commonService.translateToaster('error', 'ErrorMessage');
