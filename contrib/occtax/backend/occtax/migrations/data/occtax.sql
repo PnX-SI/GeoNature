@@ -8,7 +8,7 @@ SET client_min_messages = warning;
 CREATE SCHEMA pr_occtax;
 
 
-SET search_path = pr_occtax, pg_catalog;
+SET search_path = pr_occtax, pg_catalog, public;
 SET default_with_oids = false;
 
 
@@ -275,7 +275,7 @@ CREATE TABLE t_releves_occtax (
     place_name character varying(500),
     meta_device_entry character varying(20),
     comment text,
-    geom_local public.geometry(Geometry,:MYLOCALSRID),
+    geom_local public.geometry(Geometry,:local_srid),
     geom_4326 public.geometry(Geometry,4326),
     id_nomenclature_geo_object_nature integer,
     precision integer,
@@ -283,7 +283,7 @@ CREATE TABLE t_releves_occtax (
     CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
     CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
     CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
-    CONSTRAINT enforce_srid_geom_local CHECK ((public.st_srid(geom_local) = :MYLOCALSRID))
+    CONSTRAINT enforce_srid_geom_local CHECK ((public.st_srid(geom_local) = :local_srid))
 );
 COMMENT ON COLUMN t_releves_occtax.id_nomenclature_tech_collect_campanule IS 'Correspondance nomenclature CAMPANULE = technique_obs';
 COMMENT ON COLUMN t_releves_occtax.id_nomenclature_grp_typ IS 'Correspondance nomenclature INPN = Type de regroupement';
@@ -1160,23 +1160,23 @@ ON CONFLICT DO NOTHING
 
 
 INSERT INTO pr_occtax.defaults_nomenclatures_value (mnemonique_type, id_organism, regne, group2_inpn, id_nomenclature) VALUES
-('METH_OBS',0,0,0, ref_nomenclatures.get_id_nomenclature('METH_OBS', '0'))
-,('ETA_BIO',0,0,0, ref_nomenclatures.get_id_nomenclature('ETA_BIO', '2'))
-,('STATUT_BIO',0,0,0, ref_nomenclatures.get_id_nomenclature('STATUT_BIO', '1'))
-,('NATURALITE',0,0,0, ref_nomenclatures.get_id_nomenclature('NATURALITE', '1'))
-,('PREUVE_EXIST',0,0,0, ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST', '0'))
-,('METH_DETERMIN',0,0,0, ref_nomenclatures.get_id_nomenclature('METH_DETERMIN', '1'))
-,('STADE_VIE',0,0,0, ref_nomenclatures.get_id_nomenclature('STADE_VIE', '0'))
-,('SEXE',0,0,0, ref_nomenclatures.get_id_nomenclature('SEXE', '6'))
-,('OBJ_DENBR',0,0,0, ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'))
-,('TYP_DENBR',0,0,0, ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'))
-,('STATUT_OBS',0,0,0, ref_nomenclatures.get_id_nomenclature('STATUT_OBS', 'Pr'))
-,('DEE_FLOU',0,0,0, ref_nomenclatures.get_id_nomenclature('DEE_FLOU', 'NON'))
-,('TYP_GRP',0,0,0, ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'NSP'))
-,('TECHNIQUE_OBS',0,0,0, ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'))
-,('STATUT_SOURCE',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'))
-,('NAT_OBJ_GEO',0, 0, 0,  ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP'))
-,('OCC_COMPORTEMENT',0, 0, 0, ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
+('METH_OBS',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL') ,0,0, ref_nomenclatures.get_id_nomenclature('METH_OBS', '0'))
+,('ETA_BIO',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('ETA_BIO', '2'))
+,('STATUT_BIO',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('STATUT_BIO', '1'))
+,('NATURALITE',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('NATURALITE', '1'))
+,('PREUVE_EXIST',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('PREUVE_EXIST', '0'))
+,('METH_DETERMIN',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('METH_DETERMIN', '1'))
+,('STADE_VIE',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('STADE_VIE', '0'))
+,('SEXE',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('SEXE', '6'))
+,('OBJ_DENBR',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'))
+,('TYP_DENBR',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('TYP_DENBR', 'NSP'))
+,('STATUT_OBS',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('STATUT_OBS', 'Pr'))
+,('DEE_FLOU',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('DEE_FLOU', 'NON'))
+,('TYP_GRP',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('TYP_GRP', 'NSP'))
+,('TECHNIQUE_OBS',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'))
+,('STATUT_SOURCE',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('STATUT_SOURCE', 'Te'))
+,('NAT_OBJ_GEO',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO', 'NSP'))
+,('OCC_COMPORTEMENT',(SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),0,0, ref_nomenclatures.get_id_nomenclature('OCC_COMPORTEMENT', '0'))
 ;
 
 -- Creation d'une liste 'observateur occtax'

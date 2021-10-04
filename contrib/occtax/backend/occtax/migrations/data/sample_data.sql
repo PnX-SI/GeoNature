@@ -5,6 +5,9 @@ SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
 
+
+SET search_path = pr_occtax, pg_catalog, public;
+
 ---------
 --DATAS--
 ---------
@@ -134,47 +137,90 @@ INSERT INTO gn_meta.cor_acquisition_framework_objectif (id_acquisition_framework
 ;
 
 INSERT INTO gn_meta.cor_acquisition_framework_actor (id_acquisition_framework, id_role, id_organism, id_nomenclature_actor_role) VALUES
-((SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5')
-  , NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1'))
-,((SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5')
-  , NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
-,((SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5')
-  , NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
-;
+(
+    (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'),
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ma structure test'),
+    ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1')
+),(
+    (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'),
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ma structure test'),
+    ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6')
+),(
+    (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'),
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ma structure test'),
+    ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8')
+);
 
 INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nomenclature_actor_role) VALUES
-((SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2')
-  , NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1'))
-,((SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2')
-  , NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
-,((SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2')
-  , 3, NULL, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
-,((SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8')
-  , NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1'))
-,((SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8')
-  , NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
-,((SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8')
-  , 3, NULL, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8'))
-,((SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8')
-  , 2, NULL, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '5'))
-,((SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2')
-  , NULL, -1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
-,((SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8')
-  , NULL, -1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6'))
-;
+(
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ma structure test'),
+    ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1')
+),(
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ma structure test'),
+    ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6')
+),(
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
+    (SELECT id_role FROM utilisateurs.t_roles WHERE identifiant='partenaire'),
+    NULL,
+    ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8')
+),(
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8'),
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ma structure test'),
+    ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1')
+),(
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8'),
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ma structure test'),
+    ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6')
+),(
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8'),
+    (SELECT id_role FROM utilisateurs.t_roles WHERE identifiant='partenaire'),
+    NULL,
+    ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '8')
+),(
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8'),
+    (SELECT id_role FROM utilisateurs.t_roles WHERE identifiant='agent'),
+    NULL,
+    ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '5')
+),(
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'Autre'),
+    ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6')
+),(
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8'),
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'Autre'),
+    ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '6')
+);
 
 INSERT INTO gn_meta.cor_dataset_territory (id_dataset, id_nomenclature_territory, territory_desc) VALUES
-((SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2')
-  , ref_nomenclatures.get_id_nomenclature('TERRITOIRE', 'METROP'),'Territoire du parc national des Ecrins et de ses environs immédiats')
-,((SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8')
-  ,ref_nomenclatures.get_id_nomenclature('TERRITOIRE', 'METROP'),'Réserve intégrale de lauvitel')
-;
+(
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
+    ref_nomenclatures.get_id_nomenclature('TERRITOIRE', 'METROP'),
+    'Territoire du parc national des Ecrins et de ses environs immédiats'
+),(
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8'),
+    ref_nomenclatures.get_id_nomenclature('TERRITOIRE', 'METROP'),
+    'Réserve intégrale de lauvitel'
+);
 
 INSERT INTO gn_meta.cor_dataset_protocol (id_dataset, id_protocol) VALUES
-((SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),0)
-,((SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8'),0)
-;
-SELECT pg_catalog.setval('gn_meta.sinp_datatype_protocols_id_protocol_seq', (SELECT max(id_protocol)+1 FROM gn_meta.cor_dataset_protocol), true);
+(
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
+    (SELECT id_protocol FROM gn_meta.sinp_datatype_protocols WHERE protocol_name='hors protocole')
+),(
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='dadab32d-5f9e-4dba-aa1f-c06487d536e8'),
+    (SELECT id_protocol FROM gn_meta.sinp_datatype_protocols WHERE protocol_name='hors protocole')
+);
 
 INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset)
 SELECT gn_commons.get_id_module_bycode('OCCTAX'), id_dataset
@@ -184,7 +230,7 @@ WHERE active;
 -- Insérer 2 relevés d'exemple dans Occtax
 
 INSERT INTO pr_occtax.t_releves_occtax (
-  id_releve_occtax,
+  unique_id_sinp_grp,
   id_dataset,
   id_digitiser,
   id_nomenclature_tech_collect_campanule,
@@ -202,9 +248,9 @@ INSERT INTO pr_occtax.t_releves_occtax (
   geom_4326,
   precision
   ) VALUES (
-      1,
+      '4f784326-2511-11ec-9fdd-23b0fb947058',
       (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
-      1,
+      (SELECT id_role from utilisateurs.t_roles WHERE identifiant='admin'),
       ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
       ref_nomenclatures.get_id_nomenclature('TYP_GRP','OBS'),
       ref_nomenclatures.get_id_nomenclature('NAT_OBJ_GEO','In'), -- ?
@@ -218,9 +264,9 @@ INSERT INTO pr_occtax.t_releves_occtax (
       'Exemple test',
       '01010000206A0800002E988D737BCC2D41ECFA38A659805841',
       '0101000020E61000000000000000001A40CDCCCCCCCC6C4640',
-      10),
-      (
-      2,
+      10
+),(
+      '4fa06f7c-2511-11ec-93a1-eb4838107091',
       (SELECT id_dataset FROM gn_meta.t_datasets WHERE unique_dataset_id='4d331cae-65e4-4948-b0b2-a11bc5bb46c2'),
       1,
       ref_nomenclatures.get_id_nomenclature('TECHNIQUE_OBS', '133'),
@@ -238,12 +284,11 @@ INSERT INTO pr_occtax.t_releves_occtax (
       '0101000020E61000000000000000001A40CDCCCCCCCC6C4640',
       100
   );
-SELECT pg_catalog.setval('pr_occtax.t_releves_occtax_id_releve_occtax_seq', (SELECT max(id_releve_occtax)+1 FROM pr_occtax.t_releves_occtax), true);
 
 -- Insérer 3 occurrences dans les 2 relevés Occtax
 
 INSERT INTO pr_occtax.t_occurrences_occtax  (
-    id_occurrence_occtax,
+    unique_id_occurence_occtax,
     id_releve_occtax,
     id_nomenclature_obs_technique,
     id_nomenclature_bio_condition,
@@ -264,8 +309,8 @@ INSERT INTO pr_occtax.t_occurrences_occtax  (
   )
 VALUES
   (
-    1,
-    1,
+    'f303683c-2510-11ec-b93a-67b44043fe7d',
+    (SELECT id_releve_occtax FROM pr_occtax.t_releves_occtax WHERE unique_id_sinp_grp='4f784326-2511-11ec-9fdd-23b0fb947058'),
     ref_nomenclatures.get_id_nomenclature('METH_OBS', '23'),
     ref_nomenclatures.get_id_nomenclature('ETA_BIO', '1'),
     ref_nomenclatures.get_id_nomenclature('STATUT_BIO', '1'),
@@ -285,8 +330,8 @@ VALUES
     'Test'
   ),
   (
-    2,
-    1,
+    'fb106f34-2510-11ec-a3ff-6fb52354595c',
+    (SELECT id_releve_occtax FROM pr_occtax.t_releves_occtax WHERE unique_id_sinp_grp='4f784326-2511-11ec-9fdd-23b0fb947058'),
     ref_nomenclatures.get_id_nomenclature('METH_OBS', '23'),
     ref_nomenclatures.get_id_nomenclature('ETA_BIO', '1'),
     ref_nomenclatures.get_id_nomenclature('STATUT_BIO', '1') ,
@@ -306,8 +351,8 @@ VALUES
     'Autre test'
   ),
   (
-    3,
-    2,
+    'fcdf2c24-2510-11ec-9995-fb27008e2817',
+    (SELECT id_releve_occtax FROM pr_occtax.t_releves_occtax WHERE unique_id_sinp_grp='4fa06f7c-2511-11ec-93a1-eb4838107091'),
     ref_nomenclatures.get_id_nomenclature('METH_OBS', '23'),
     ref_nomenclatures.get_id_nomenclature('ETA_BIO', '1'),
     ref_nomenclatures.get_id_nomenclature('STATUT_BIO', '1'),
@@ -326,13 +371,17 @@ VALUES
   'Poils de plumes',
   'Troisieme test'
   );
-SELECT pg_catalog.setval('pr_occtax.t_occurrences_occtax_id_occurrence_occtax_seq', (SELECT max(id_occurrence_occtax)+1 FROM pr_occtax.t_occurrences_occtax), true);
 
 -- Insérer 1 observateur pour chacun des 2 relevés Occtax
 
 INSERT INTO pr_occtax.cor_role_releves_occtax (id_releve_occtax, id_role) VALUES
-(1,1)
-,(2,1);
+(
+    (SELECT id_releve_occtax FROM pr_occtax.t_releves_occtax WHERE unique_id_sinp_grp='4f784326-2511-11ec-9fdd-23b0fb947058'),
+    (SELECT id_role from utilisateurs.t_roles WHERE identifiant='admin')
+),(
+    (SELECT id_releve_occtax FROM pr_occtax.t_releves_occtax WHERE unique_id_sinp_grp='4fa06f7c-2511-11ec-93a1-eb4838107091'),
+    (SELECT id_role from utilisateurs.t_roles WHERE identifiant='admin')
+);
 
 -- Insérer 3 dénombrements dans les 3 occurrences
 
@@ -347,7 +396,7 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
   )
   VALUES
   (
-    1,
+    (SELECT id_occurrence_occtax FROM pr_occtax.t_occurrences_occtax WHERE unique_id_occurence_occtax='f303683c-2510-11ec-b93a-67b44043fe7d'),
     ref_nomenclatures.get_id_nomenclature('STADE_VIE', '2') ,
     ref_nomenclatures.get_id_nomenclature('SEXE', '2') ,
     ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
@@ -356,7 +405,7 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
     5
   ),
   (
-    2,
+    (SELECT id_occurrence_occtax FROM pr_occtax.t_occurrences_occtax WHERE unique_id_occurence_occtax='fb106f34-2510-11ec-a3ff-6fb52354595c'),
     ref_nomenclatures.get_id_nomenclature('STADE_VIE', '4') ,
     ref_nomenclatures.get_id_nomenclature('SEXE', '2'),
     ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
@@ -365,7 +414,7 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
     1
   ),
   (
-    3,
+    (SELECT id_occurrence_occtax FROM pr_occtax.t_occurrences_occtax WHERE unique_id_occurence_occtax='fcdf2c24-2510-11ec-9995-fb27008e2817'),
     ref_nomenclatures.get_id_nomenclature('STADE_VIE', '3') ,
     ref_nomenclatures.get_id_nomenclature('SEXE', '2'),
     ref_nomenclatures.get_id_nomenclature('OBJ_DENBR', 'IND'),
@@ -374,6 +423,3 @@ INSERT INTO  pr_occtax.cor_counting_occtax (
     1
   )
 ;
-
-
-SELECT pg_catalog.setval('pr_occtax.cor_counting_occtax_id_counting_occtax_seq', (SELECT max(id_counting_occtax)+1 FROM pr_occtax.cor_counting_occtax), true);
