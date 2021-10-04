@@ -137,19 +137,25 @@ pip install -r requirements.txt
 for D in $(find ../external_modules  -type l | xargs readlink) ; do
     # si le lien symbolique exisite
     if [ -e "$D" ] ; then
-        cd ${D}
-        cd backend   
-        if [ -f 'requirements.txt' ]
+        cd "${D}"
+        if [ -f 'setup.py' ]
         then
-            pip install -r requirements.txt
+            pip install -e .
+        else
+            cd backend
+            if [ -f 'requirements.txt' ]
+            then
+                pip install -r requirements.txt
+            fi
+            cd ..
         fi
-        cd ../frontend 
+        cd frontend
         if [ -f 'package.json' ]
         then
           cd /home/`whoami`/geonature/frontend 
           npm install $D/frontend --no-save
         fi
-
+        cd ..
     fi
 done
 
