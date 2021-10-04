@@ -21,8 +21,8 @@ from marshmallow import ValidationError
 
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
-from geonature.utils.env import DB, ROOT_DIR
-from pypnusershub.db.models import User
+from geonature.utils.env import DB, db, ROOT_DIR
+from pypnusershub.db.models import User, Organisme
 from utils_flask_sqla_geo.generic import GenericTableGeo
 
 from geonature.utils import filemanager
@@ -683,7 +683,7 @@ def getDefaultNomenclatures():
     params = request.args
     group2_inpn = "0"
     regne = "0"
-    organism = 0
+    organism = db.session.query(Organisme.id_organisme).filter(Organisme.nom_organisme == 'ALL').scalar()
     if "group2_inpn" in params:
         group2_inpn = params["group2_inpn"]
     if "regne" in params:
@@ -692,7 +692,7 @@ def getDefaultNomenclatures():
         organism = params["organism"]
     types = request.args.getlist("id_type")
 
-    q = DB.session.query(
+    q = db.session.query(
         distinct(DefaultNomenclaturesValue.mnemonique_type),
         func.pr_occtax.get_default_nomenclature_value(
             DefaultNomenclaturesValue.mnemonique_type, organism, regne, group2_inpn
