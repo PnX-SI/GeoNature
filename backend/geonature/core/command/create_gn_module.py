@@ -97,16 +97,15 @@ def install_packaged_gn_module(module_path, module_code, build):
         db.session.add(module_object)
     db.session.commit()
 
-    try:
-        load_entry_point(module_dist, 'gn_module', 'migrations')
-    except ImportError:
-        log.info("Module do not provide any migration files, skipping database upgrade.")
-    else:
+    info = get_entry_info(module_dist, 'gn_module', 'migrations')
+    if info is not None:
         try:
             alembic_branch = load_entry_point(module_dist, 'gn_module', 'alembic_branch')
         except ImportError:
             alembic_branch = module_code.lower()
-        db_upgrade(revision=module_code.lower())
+        db_upgrade(revision=alembic_branch)
+    else:
+        log.info("Module do not provide any migration files, skipping database upgrade.")
 
     # symlink module in exernal module directory
     module_symlink = GN_EXTERNAL_MODULE / module_code.lower()
