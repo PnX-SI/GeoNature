@@ -11,7 +11,11 @@ import os
 import sys
 import logging
 import subprocess
-from pkg_resources import load_entry_point
+import site
+import importlib
+import pkg_resources
+from pkg_resources import load_entry_point, get_entry_info
+from importlib import invalidate_caches
 from pathlib import Path
 import sqlalchemy.orm.exc as sa_exc
 
@@ -60,6 +64,11 @@ log = logging.getLogger(__name__)
 def install_packaged_gn_module(module_path, module_code, build):
     # install python package and dependencies
     subprocess.run(f"pip install -e '{module_path}'", shell=True, check=True)
+
+    # refresh list of entry points
+    importlib.reload(site)
+    for entry in sys.path:
+        pkg_resources.working_set.add_entry(entry)
 
     # load python package
     module_dist = get_dist_from_code(module_code)
