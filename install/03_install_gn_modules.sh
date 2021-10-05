@@ -11,6 +11,10 @@ source backend/venv/bin/activate
 
 
 geonature install_packaged_gn_module "${BASE_DIR}/contrib/occtax" OCCTAX --build=false
+if [ "$add_sample_data" = true ];
+then
+    geonature upgrade occtax-samples@head
+fi
 
 if [ "$install_module_occhab" = true ]; then
   geonature install_gn_module "${BASE_DIR}/contrib/gn_module_occhab" /occhab --build=false
