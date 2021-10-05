@@ -99,7 +99,9 @@ function gn_psql() {
   PGPASSWORD=$user_pg_pass psql -h $db_host -U $user_pg -d $db_name -v ON_ERROR_STOP=ON $* |& tee -a "${LOG_FILE}" || exit 1
 }
 
-geonature db upgrade geonature@head -x data-directory=tmp/ -x local-srid=$srid_local
+for branch in geonature utilisateurs nomenclatures taxonomie nomenclatures_taxonomie habitats ref_geo; do
+    geonature db upgrade $branch@head -x data-directory=tmp/ -x local-srid=$srid_local
+done
 
 # Installation des données exemples
 if [ "$add_sample_data" = true ];
