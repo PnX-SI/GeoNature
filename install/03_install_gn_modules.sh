@@ -21,7 +21,7 @@ if [ "$install_module_occhab" = true ]; then
 fi
 
 if [ "$install_module_validation" = true ]; then
-    geonature install_gn_module "${BASE_DIR}/contrib/gn_module_validation" /validation --build=false
+    geonature install_packaged_gn_module "${BASE_DIR}/contrib/gn_module_validation" VALIDATION --build=false
 fi
 
 echo "Désactivation du virtual env"

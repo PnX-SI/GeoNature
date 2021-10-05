@@ -1,0 +1,2 @@
+MODULE_CODE = 'VALIDATION'
+MODULE_PICTO = 'fa-check'
