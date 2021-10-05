@@ -4,7 +4,8 @@ BEGIN;
 
 -- View "gn_synthese.v_synthese_for_export"
 -- For data blurring, must contains id_nomenclature_sensitivity and id_nomenclature_diffusion_level.
-CREATE OR REPLACE VIEW gn_synthese.v_synthese_for_export AS
+DROP VIEW IF EXISTS gn_synthese.v_synthese_for_export;
+CREATE VIEW gn_synthese.v_synthese_for_export AS
     SELECT 
         s.id_synthese AS id_synthese,
         s.date_min::date AS date_debut,
