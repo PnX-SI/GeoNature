@@ -22,7 +22,6 @@ setuptools.setup(
     url='https://github.com/PnX-SI/GeoNature',
     packages=setuptools.find_packages('backend'),
     package_dir={'': 'backend'},
-    package_data={'occtax.migrations': ['data/*.sql']},
     install_requires=requirements,
     entry_points={
         'gn_module': [

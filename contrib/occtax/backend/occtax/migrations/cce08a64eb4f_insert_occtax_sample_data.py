@@ -16,7 +16,6 @@ revision = 'cce08a64eb4f'
 down_revision = None
 branch_labels = ('occtax-samples',)
 depends_on = (
-    '72f227e37bdf',  # utilisateurs samples data
     '3d0bf4ee67d1',  # geonature samples data
     'addb71d8efad',  # occtax
 )
@@ -28,12 +27,6 @@ def upgrade():
 
 
 def downgrade():
-    # gn_meta.cor_dataset_protocol
-    # gn_meta.cor_dataset_territory
-    # gn_meta.cor_dataset_actor
-    # gn_meta.cor_acquisition_framework_actor
-    # gn_meta.cor_acquisition_framework_objectif
-    # gn_meta.cor_acquisition_framework_voletsinp
     op.execute("""
     DELETE FROM pr_occtax.cor_counting_occtax cco
     USING pr_occtax.t_occurrences_occtax too
