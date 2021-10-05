@@ -1,13 +1,4 @@
-BEGIN;
-
-DELETE FROM ref_habitats.bib_list_habitat WHERE list_name = 'Liste test occhab';
 INSERT INTO ref_habitats.bib_list_habitat(list_name) VALUES ('Liste test occhab');
-SELECT pg_catalog.setval('ref_habitats.bib_list_habitat_id_list_seq', (SELECT max(id_list)+1 FROM ref_habitats.bib_list_habitat), true);
-
-DELETE FROM ref_habitats.cor_list_habitat 
-WHERE id_list IN (
-  select id_list FROM ref_habitats.bib_list_habitat WHERE list_name = 'Liste test occhab'
-  );
 
 -- ajout de tout habref dans cette liste
 INSERT INTO ref_habitats.cor_list_habitat(id_list, cd_hab) 
@@ -94,21 +85,18 @@ INSERT INTO gn_meta.t_datasets (
     )
 ;
 
-COMMIT;
-
 -- Renseignement des tables de correspondance
 
-BEGIN;
-
 INSERT INTO gn_meta.cor_dataset_actor (id_dataset, id_role, id_organism, id_nomenclature_actor_role) VALUES
-((SELECT id_dataset FROM gn_meta.t_datasets WHERE dataset_name='Carto d''habitat X' LIMIT 1)
-  , NULL, 1, ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1'))
-;
+(
+    (SELECT id_dataset FROM gn_meta.t_datasets WHERE dataset_name='Carto d''habitat X' LIMIT 1),
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ma structure test'),
+    ref_nomenclatures.get_id_nomenclature('ROLE_ACTEUR', '1')
+);
 
 
 INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset)
 SELECT gn_commons.get_id_module_bycode('OCCHAB'), id_dataset
 FROM gn_meta.t_datasets
 WHERE dataset_name='Carto d''habitat X';
-
-COMMIT;

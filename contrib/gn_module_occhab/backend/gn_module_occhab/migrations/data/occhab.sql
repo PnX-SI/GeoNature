@@ -1,7 +1,7 @@
 DROP SCHEMA IF EXISTS pr_occhab CASCADE;
 CREATE SCHEMA pr_occhab;
 
-SET search_path = pr_occhab, pg_catalog;
+SET search_path = pr_occhab, pg_catalog, public;
 
 
 
@@ -51,7 +51,7 @@ CREATE TABLE pr_occhab.t_stations(
   area bigint,
   id_nomenclature_area_surface_calculation integer,
   comment text,
-  geom_local public.geometry(Geometry, :MYLOCALSRID),
+  geom_local public.geometry(Geometry, :local_srid),
   geom_4326 public.geometry(Geometry,4326) NOT NULL,
   precision integer,
   id_digitiser integer,
@@ -60,7 +60,7 @@ CREATE TABLE pr_occhab.t_stations(
   CONSTRAINT enforce_dims_geom_4326 CHECK ((public.st_ndims(geom_4326) = 2)),
   CONSTRAINT enforce_dims_geom_local CHECK ((public.st_ndims(geom_local) = 2)),
   CONSTRAINT enforce_srid_geom_4326 CHECK ((public.st_srid(geom_4326) = 4326)),
-  CONSTRAINT enforce_srid_geom_local CHECK ((public.st_srid(geom_local) = :MYLOCALSRID))
+  CONSTRAINT enforce_srid_geom_local CHECK ((public.st_srid(geom_local) = :local_srid))
 );
 
 COMMENT ON COLUMN t_stations.id_nomenclature_exposure IS 'Correspondance nomenclature INPN = exposition d''un terrain, REF_NOMENCLATURES = EXPOSITION';

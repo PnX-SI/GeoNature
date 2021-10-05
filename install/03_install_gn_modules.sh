@@ -17,7 +17,11 @@ then
 fi
 
 if [ "$install_module_occhab" = true ]; then
-  geonature install_gn_module "${BASE_DIR}/contrib/gn_module_occhab" /occhab --build=false
+    geonature install_packaged_gn_module "${BASE_DIR}/contrib/gn_module_occhab" OCCHAB --build=false
+    if [ "$add_sample_data" = true ];
+    then
+        geonature db upgrade occhab-samples@head
+    fi
 fi
 
 if [ "$install_module_validation" = true ]; then
