@@ -925,13 +925,9 @@ def updateAcquisitionFramework(id_acquisition_framework, info_role):
     if not acquisition_framework:
         return {"message": "not found"}, 404
 
-    try:
-        return AcquisitionFrameworkSchema().dump(
-            acquisitionFrameworkHandler(request=request, acquisition_framework=acquisition_framework, info_role=info_role)
-        )
-    except Exception as e:
-        # retourne les erreurs levées en erreur 422
-        return e.args
+    return AcquisitionFrameworkSchema().dump(
+        acquisitionFrameworkHandler(request=request, acquisition_framework=acquisition_framework, info_role=info_role)
+    )
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>/stats", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="METADATA")
