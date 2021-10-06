@@ -15,7 +15,8 @@ CHANGELOG
 **🐛 Corrections**
 
 * Correction de la commande ``install_packaged_gn_module`` : rechargement des entry points après installation avec pip d’un module paquagé
-* **TODO :** Correction d’un bug lors de la saisie d’un cadre d’acquisition
+* Correction d’un bug lors de l’ajout d’un cadre d’acquisition
+* **TODO :** Correction d’un bug lors de la modification d’un cadre d’acquisition
 
 **⚠️ Notes de version**
 
