@@ -40,7 +40,7 @@ def upgrade():
             FROM gn_synthese.defaults_nomenclatures_value n
             JOIN utilisateurs.bib_organismes o
             ON o.id_organisme = n.id_organism
-            WHERE mnemonique_type = mytype
+            WHERE mnemonique_type = myidtype
             AND (n.id_organism = myidorganism OR n.id_organism = NULL OR o.nom_organisme = 'ALL')
             AND (regne = myregne OR regne = '0')
             AND (group2_inpn = mygroup2inpn OR group2_inpn = '0')
