@@ -2,6 +2,28 @@
 CHANGELOG
 =========
 
+2.8.0-rc2 (unreleased)
+----------------------
+
+**🚀 Nouveautés**
+
+* Packaging des modules GeoNature OccTax, OccHab et validation
+* Mise à jour des dépendances
+  * `UsersHub-authentification-module 1.5.4 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.4>`__
+  * `Nomenclature-api-module 1.4.3 <https://github.com/PnX-SI/Nomenclature-api-module/releases/tag/1.4.3>`__
+
+**🐛 Corrections**
+
+* Correction de la commande ``install_packaged_gn_module`` : rechargement des entry points après installation avec pip d’un module paquagé
+* **TODO :** Correction d’un bug lors de la saisie d’un cadre d’acquisition
+
+**⚠️ Notes de version**
+
+* Si vous aviez déjà intallé certains modules, vous devez l’indiquer à Alembic :
+
+  * Module *OccTax* : ``geonature db stamp f57107d2d0ad``
+  * Module *OccHab* : ``geonature db stamp 2984569d5df6``
+
 2.8.0-rc1 (2021-10-01)
 ----------------------
 
