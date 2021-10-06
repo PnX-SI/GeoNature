@@ -21,8 +21,8 @@ function __geonature_commands() {
 		activate_gn_module deactivate_gn_module dev_back
 		dev_front frontend_build generate_frontend_config generate_frontend_modules_route
 		generate_frontend_tsconfig generate_frontend_tsconfig_app
-		install_gn_module start_gunicorn supervisor test update_configuration
-		update_module_configuration'
+		install_gn_module install_packaged_gn_module start_gunicorn supervisor
+		test update_configuration update_module_configuration'
 
 	case "${current_word}" in
 		-*) __gn_options ;;
@@ -52,6 +52,8 @@ function __gn_options() {
 			OPTIONS="--conf-file --build --prod" ;;
 		update_module_configuration)
 			OPTIONS="--build --prod" ;;
+		install_packaged_gn_module)
+			OPTIONS="--build" ;;
 		*)
 			OPTIONS="" ;;
 	esac
