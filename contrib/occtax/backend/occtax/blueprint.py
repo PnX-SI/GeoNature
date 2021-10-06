@@ -680,16 +680,9 @@ def getDefaultNomenclatures():
     :returns: dict: {'MODULE_CODE': 'ID_NOMENCLATURE'}
 
     """
-    params = request.args
-    group2_inpn = "0"
-    regne = "0"
-    organism = db.session.query(Organisme.id_organisme).filter(Organisme.nom_organisme == 'ALL').scalar()
-    if "group2_inpn" in params:
-        group2_inpn = params["group2_inpn"]
-    if "regne" in params:
-        regne = params["regne"]
-    if "organism" in params:
-        organism = params["organism"]
+    organism = request.args.get("organism")
+    regne = request.args.get("regne", '0')
+    group2_inpn = request.args.get("group2_inpn", '0')
     types = request.args.getlist("id_type")
 
     q = db.session.query(
