@@ -105,6 +105,37 @@ ALTER TABLE gn_permissions.cor_role_action_filter_module_object
 
 
 -- -------------------------------------------------------------------------------------------------
+-- Rename filter "SENSITIVITY" to "PRECISION" and update others. See #1062.
+UPDATE gn_permissions.bib_filters_type 
+SET 
+    label_filter_type = 'Filtre d''appartenance',
+    description_filter_type = E'Permissions limitées par le type d''appartenances des données.\n'
+        'Accès à : aucune (=0), les miennes (=1), celles de mon organisme (=2), toutes (=3).'
+WHERE code_filter_type = 'SCOPE' ;
+
+UPDATE gn_permissions.bib_filters_type 
+SET 
+    label_filter_type = 'Filtre géographique',
+    description_filter_type = E'Permissions limitées par zones géographiques.\n'
+        'Utiliser des id_area séparés par des virgules.'
+WHERE code_filter_type = 'GEOGRAPHIC' ;
+
+UPDATE gn_permissions.bib_filters_type 
+SET 
+    label_filter_type = 'Filtre taxonomique',
+    description_filter_type = E'Permissions limitées par des taxons.\n'
+        'Utiliser des cd_nom séparés par des virgules.'
+WHERE code_filter_type = 'TAXONOMIC' ;
+
+UPDATE gn_permissions.bib_filters_type 
+SET 
+    code_filter_type = 'PRECISION',
+    label_filter_type = 'Filtre de précision',
+    description_filter_type = 'Active (=fuzzy) ou désactive (=exact) le floutage des données (sensibles ou privées).'
+WHERE code_filter_type = 'SENSITIVITY' ;
+
+
+-- -------------------------------------------------------------------------------------------------
 -- Add sequence for new table "bib_filters_values" primary key
 DROP SEQUENCE IF EXISTS gn_permissions.bib_filters_values_id_filter_value_seq CASCADE ;
 
@@ -490,37 +521,6 @@ INSERT INTO gn_permissions.t_objects (code_object, description_object)
         FROM gn_permissions.t_objects AS o
         WHERE o.code_object = 'SENSITIVE_OBSERVATION'
     ) ;
-
-
--- -------------------------------------------------------------------------------------------------
--- Rename filter "SENSITIVITY" to "PRECISION" and update others. See #1062.
-UPDATE gn_permissions.bib_filters_type 
-SET 
-    label_filter_type = 'Filtre d''appartenance',
-    description_filter_type = E'Permissions limitées par le type d''appartenances des données.\n'
-        'Accès à : aucune (=0), les miennes (=1), celles de mon organisme (=2), toutes (=3).'
-WHERE code_filter_type = 'SCOPE' ;
-
-UPDATE gn_permissions.bib_filters_type 
-SET 
-    label_filter_type = 'Filtre géographique',
-    description_filter_type = E'Permissions limitées par zones géographiques.\n'
-        'Utiliser des id_area séparés par des virgules.'
-WHERE code_filter_type = 'GEOGRAPHIC' ;
-
-UPDATE gn_permissions.bib_filters_type 
-SET 
-    label_filter_type = 'Filtre taxonomique',
-    description_filter_type = E'Permissions limitées par des taxons.\n'
-        'Utiliser des cd_nom séparés par des virgules.'
-WHERE code_filter_type = 'TAXONOMIC' ;
-
-UPDATE gn_permissions.bib_filters_type 
-SET 
-    code_filter_type = 'PRECISION',
-    label_filter_type = 'Filtre de précision',
-    description_filter_type = 'Active (=fuzzy) ou désactive (=exact) le floutage des données (sensibles ou privées).'
-WHERE code_filter_type = 'SENSITIVITY' ;
 
 
 -- -------------------------------------------------------------------------------------------------
