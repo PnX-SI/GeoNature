@@ -107,13 +107,6 @@ export class AfFormComponent implements OnInit {
         af.acquisition_framework_end_date
       );
     }
-    // clean actors -> remove id_cda (not use for AF)
-    af.cor_af_actor.forEach(actor => {
-      delete actor.id_cda
-    });
-    console.log(af);
-    
-    
     //UPDATE
     if (this.afFormS.acquisition_framework.getValue() !== null) {
       //si modification on assign les valeurs du formulaire au dataset modifié

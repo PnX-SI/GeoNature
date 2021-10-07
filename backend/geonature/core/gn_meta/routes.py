@@ -29,7 +29,7 @@ from sqlalchemy.sql import text, exists, select, update
 from sqlalchemy.sql.functions import func
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 from werkzeug.datastructures import Headers
-from marshmallow import ValidationError
+from marshmallow import ValidationError, EXCLUDE
 
 
 from geonature.utils.env import DB, BACKEND_DIR
@@ -523,7 +523,7 @@ def datasetHandler(request, *, dataset, info_role):
             )
     else: 
         dataset.id_digitizer = info_role.id_role
-    datasetSchema = DatasetSchema()
+    datasetSchema = DatasetSchema(unknown=EXCLUDE)
     try:
         dataset = datasetSchema.load(request.get_json(), instance=dataset)
     except ValidationError as error:
@@ -889,7 +889,7 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework, info_role):
     else:
         acquisition_framework.id_digitizer = info_role.id_role
 
-    acquisitionFrameworkSchema = AcquisitionFrameworkSchema()
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(unknown=EXCLUDE)
     try:
         acquisition_framework = acquisitionFrameworkSchema.load(request.get_json(), instance=acquisition_framework)
     except ValidationError as error:
