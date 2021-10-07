@@ -1,8 +1,8 @@
-"""clean synthese data (bug in occtax trigger)
+"""update synthese data (bug occtax trigger)
 
-Revision ID: 6b11f29dc1b5
-Revises: 5f4c4b644844
-Create Date: 2021-10-07 16:09:57.024876
+Revision ID: 944072911ff7
+Revises: 494cb2245a43
+Create Date: 2021-10-07 16:24:09.029496
 
 """
 from alembic import op
@@ -10,10 +10,11 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '6b11f29dc1b5'
-down_revision = '5f4c4b644844'
+revision = '944072911ff7'
+down_revision = '494cb2245a43'
 branch_labels = None
 depends_on = None
+
 
 
 def upgrade():
