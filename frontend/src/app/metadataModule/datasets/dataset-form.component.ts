@@ -75,7 +75,11 @@ export class DatasetFormComponent implements OnInit {
   }
 
   mergeActors(dataset, genericActors) {
-    dataset.cor_dataset_actor = dataset.cor_dataset_actor.concat(genericActors)
+    const updateActors = genericActors.map(actor => {
+      delete actor.id_cafa;
+      return actor
+    }); 
+    dataset.cor_dataset_actor = dataset.cor_dataset_actor.concat(updateActors)
   }
 
   postDataset() {

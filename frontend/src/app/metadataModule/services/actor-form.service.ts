@@ -64,8 +64,8 @@ export class ActorFormService {
       id_nomenclature_actor_role: [null, Validators.required],
       id_organism: null,
       id_role: null,
-      //id_cda: null, /* pour mise à jours des dataset actors */
-      //id_cafa: null /* pour mise à jours des afs actors */
+      id_cda: null, /* pour mise à jours des dataset actors */
+      id_cafa: null /* pour mise à jours des afs actors */
     });
     form.setValidators([this.actorRequired]);
  

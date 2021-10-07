@@ -829,8 +829,11 @@ def get_acquisition_framework(info_role, id_acquisition_framework):
     :param type: int
     :returns: dict<TAcquisitionFramework>
     """
-    acquisitionFrameworkSchema = AcquisitionFrameworkSchema()
-    
+    exclude = request.args.getlist("exclude")
+    try:
+        acquisitionFrameworkSchema = AcquisitionFrameworkSchema(exclude=exclude)
+    except ValueError as e:
+        raise BadRequest(str(e))
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role, module_code="METADATA",
     )[0]

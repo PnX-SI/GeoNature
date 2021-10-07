@@ -45,7 +45,7 @@ export class AfFormComponent implements OnInit {
     this._route.params
       .pipe(
         switchMap((params) => {
-          return params['id'] ? this.getAcquisitionFramework(params['id']) : of(null);
+          return params['id'] ? this.getAcquisitionFramework(params['id'], {"exclude": ["t_datasets"]}) : of(null);
         })
       )
       .subscribe(af => this.afFormS.acquisition_framework.next(af));
@@ -61,8 +61,10 @@ export class AfFormComponent implements OnInit {
 
   }
 
-  getAcquisitionFramework(id_af) {
-    return this._dfs.getAcquisitionFramework(id_af)
+  getAcquisitionFramework(id_af, param) {
+    console.log("lalala", param);
+    
+    return this._dfs.getAcquisitionFramework(id_af, param)
       .pipe(
         map((af: any) => {
           af.acquisition_framework_start_date = this.dateParser.parse(
@@ -105,7 +107,13 @@ export class AfFormComponent implements OnInit {
         af.acquisition_framework_end_date
       );
     }
-
+    // clean actors -> remove id_cda (not use for AF)
+    af.cor_af_actor.forEach(actor => {
+      delete actor.id_cda
+    });
+    console.log(af);
+    
+    
     //UPDATE
     if (this.afFormS.acquisition_framework.getValue() !== null) {
       //si modification on assign les valeurs du formulaire au dataset modifié
