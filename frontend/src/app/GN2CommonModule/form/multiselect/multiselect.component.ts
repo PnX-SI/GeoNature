@@ -80,7 +80,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
    * L'API qui renvoit séléctionnées au formulaire doit être un tableau
    * d'entier et non un tableau d'items
    */
-  @Input() bindAllItem: false;
+  @Input() bindAllItem: boolean = false;
   /** Temps en millisecondes avant lancement d'une recherche avec les
    * caractères saisis dans la zone de recherche.
    *
@@ -120,10 +120,11 @@ export class MultiSelectComponent implements OnInit, OnChanges {
 
     // Initialize attributes when "values" not change after ngOnInit...
     if (this.values && this.parentFormControl.value) {
-      this.values.forEach(value => {
-        if (this.isInParentFormControl(value)) {
-          this.selectedItems.push(value);
+      this.values.forEach(item => {
+        if (this.isInParentFormControl(item)) {
+          this.selectedItems.push(item);
           // Component Taxa add data here with ngOnInit() when component Areas add with ngOnChange()
+          let value = this.getValueFromItem(item);
           this.formControlValue.push(value);
         }
       });
@@ -216,21 +217,14 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       return;
     }
     // Set the item for the formControl
-    // if bindAllItem -> push the whole object
-    // else push only the key of the object( @Input keyValue)
-    let updateItem;
-    if (this.bindAllItem) {
-      updateItem = item;
-    } else {
-      updateItem = item[this.keyValue];
-    }
+    let value = this.getValueFromItem(item);
     this.selectedItems.push(item);
-    this.formControlValue.push(updateItem);
+    this.formControlValue.push(value);
     // Set the item for the formControl
     this.parentFormControl.patchValue(this.formControlValue);
 
     this.searchControl.reset();
-    this.onChange.emit(updateItem);
+    this.onChange.emit(value);
   }
 
   removeItem($event, item) {
@@ -246,39 +240,21 @@ export class MultiSelectComponent implements OnInit, OnChanges {
     this.selectedItems = this.selectedItems.filter(curItem => {
       return curItem[this.keyLabel] !== item[this.keyLabel];
     });
-    if (this.bindAllItem) {
-      this.formControlValue = this.parentFormControl.value.filter(el => {
-        return el !== item;
-      });
-    } else {
-      this.formControlValue = this.parentFormControl.value.filter(el => {
-        return el !== item[this.keyValue];
-      });
-    }
+
+    let value = this.getValueFromItem(item);
+    this.formControlValue = this.parentFormControl.value.filter(el => {
+      return el !== value;
+    });
+
     this.parentFormControl.patchValue(this.formControlValue);
 
     this.onDelete.emit(item);
   }
 
-  removeDoublon() {
-    if (this.values && this.formControlValue) {
-      this.values = this.values.filter(v => {
-        let isInArray = false;
-
-        this.formControlValue.forEach(element => {
-          if (this.bindAllItem) {
-            if (v[this.keyValue] === element[this.keyValue]) {
-              isInArray = true;
-            }
-          } else {
-            if (v[this.keyValue] === element) {
-              isInArray = true;
-            }
-          }
-        });
-        return !isInArray;
-      });
-    }
+  private getValueFromItem(item) {
+    // if bindAllItem -> push the whole object
+    // else push only the key of the object( @Input keyValue)
+    return (this.bindAllItem) ? item : item[this.keyValue];
   }
 
   onButtonInputClick() {
@@ -355,7 +331,6 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   ngOnChanges(changes) {
     if (changes.values && changes.values.currentValue) {
       this.savedValues = changes.values.currentValue;
-
       if (this.parentFormControl.value) {
         this.parentFormControl.setValue(this.parentFormControl.value);
       }
@@ -365,6 +340,28 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       setTimeout(() => {
         this.removeDoublon();
       }, 2000);
+    }
+  }
+
+  removeDoublon() {
+    if (this.values && this.formControlValue) {
+      this.values = this.values.filter(v => {
+        let isInArray = false;
+
+        this.formControlValue.forEach(element => {
+          if (this.bindAllItem) {
+            if (v[this.keyValue] === element[this.keyValue]) {
+              isInArray = true;
+            }
+          } else {
+            if (v[this.keyValue] === element) {
+              isInArray = true;
+            }
+          }
+        });
+
+        return !isInArray;
+      });
     }
   }
 }
