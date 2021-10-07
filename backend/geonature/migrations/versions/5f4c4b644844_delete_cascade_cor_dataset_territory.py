@@ -33,7 +33,6 @@ def upgrade():
 
 
 def downgrade():
-    # op.drop_constraint(u'fk_cor_dataset_territory_id_dataset', 'gn_meta.cor_dataset_territory', type_='foreignkey')
     op.execute(
         """
         ALTER TABLE gn_meta.cor_dataset_territory 
