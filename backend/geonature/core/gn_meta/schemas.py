@@ -65,7 +65,8 @@ class DatasetSchema(MetadataSchema):
     nomenclature_resource_type = MA.Nested(NomenclatureSchema, dump_only=True)
     cor_territories = MA.Nested(
         NomenclatureSchema,
-        many=True
+        many=True,
+        unknown=EXCLUDE
     )
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", exclude=("t_datasets",), dump_only=True)
 
@@ -143,10 +144,12 @@ class AcquisitionFrameworkSchema(MetadataSchema):
     cor_volets_sinp = MA.Nested(
         NomenclatureSchema,
         many=True,
+        unknown=EXCLUDE
     )
     cor_objectifs = MA.Nested(
         NomenclatureSchema,
-        many=True
+        many=True,
+        unknown=EXCLUDE
     )
     cor_territories = MA.Nested(
         NomenclatureSchema,

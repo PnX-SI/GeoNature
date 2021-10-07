@@ -58,11 +58,9 @@ export class AfFormComponent implements OnInit {
         this.acquisitionFrameworkParents = afParent;
       });
 
-
   }
 
   getAcquisitionFramework(id_af, param) {
-    console.log("lalala", param);
     
     return this._dfs.getAcquisitionFramework(id_af, param)
       .pipe(
