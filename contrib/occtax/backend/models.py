@@ -1,21 +1,22 @@
-from flask import current_app
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey, not_
 from sqlalchemy.sql import select, func, and_
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.dialects.postgresql import UUID, JSONB
+from werkzeug.exceptions import Forbidden
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
+from pypn_habref_api.models import Habref
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
-from pypn_habref_api.models import Habref
 from geonature.core.taxonomie.models import Taxref
 from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.env import DB
-from werkzeug.exceptions import Forbidden
+from geonature.utils.config import config
+
 
 
 class ReleveModel(DB.Model):
@@ -226,7 +227,7 @@ class TRelevesOccurrence(ReleveModel):
     comment = DB.Column(DB.Unicode)
     place_name = DB.Column(DB.Unicode)
     geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
-    geom_local = DB.Column(Geometry("GEOMETRY", current_app.config["LOCAL_SRID"]))
+    geom_local = DB.Column(Geometry("GEOMETRY", config["LOCAL_SRID"]))
     cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
     precision = DB.Column(DB.Integer)
 

@@ -5,7 +5,7 @@ import math
 from flask import Blueprint, request
 from geoalchemy2.shape import to_shape
 from geojson import Feature
-from sqlalchemy.sql import func, text
+from sqlalchemy.sql import func, text, select
 from werkzeug.exceptions import BadRequest
 from utils_flask_sqla.response import json_resp
 
@@ -21,25 +21,27 @@ routes = Blueprint("gn_profiles", __name__)
 @json_resp
 def get_phenology(cd_ref):
     filters=request.args
-    # parameter=DB.session.query(func.gn_profiles.get_parameters(cd_ref)).one_or_none()
     query = DB.session.query(VmCorTaxonPhenology).filter(VmCorTaxonPhenology.cd_ref == cd_ref)
     if "id_nomenclature_life_stage" in filters:
-        dbquery=text("SELECT active_life_stage FROM gn_profiles.get_parameters(:cd_ref)")
-        parameter=DB.engine.execute(dbquery,cd_ref=cd_ref).fetchone()
-        if parameter :
-            if parameter[0] == False :
+        active_life_stage = DB.session.execute(select().column(
+            text('active_life_stage')
+            ).select_from(
+                func.gn_profiles.get_parameters(cd_ref)
+                )
+            ).scalar()
+        if active_life_stage :
+            if filters['id_nomenclature_life_stage'].strip() == 'null':
                 query = query.filter(
                     VmCorTaxonPhenology.id_nomenclature_life_stage == None
                 )
             else :
-                if filters['id_nomenclature_life_stage'].strip() == 'null':
-                    query = query.filter(
-                        VmCorTaxonPhenology.id_nomenclature_life_stage == None
-                    )
-                else :
-                    query = query.filter(
-                        VmCorTaxonPhenology.id_nomenclature_life_stage == filters["id_nomenclature_life_stage"]
-                    )
+                query = query.filter(
+                    VmCorTaxonPhenology.id_nomenclature_life_stage == filters["id_nomenclature_life_stage"]
+                )
+        else:
+            query = query.filter(
+                VmCorTaxonPhenology.id_nomenclature_life_stage == None
+            )
 
     data = query.all()
     if data:
