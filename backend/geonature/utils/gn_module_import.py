@@ -258,7 +258,7 @@ def create_external_assets_symlink(module_path, module_code):
     Create a symlink for the module assets
     return True if module have a frontend. False otherwise
     """
-    module_assets_dir = os.path.join(module_path, "frontend/assets")
+    module_assets_dir = os.path.join(os.path.abspath(module_path), "frontend/assets")
 
     # test if module have frontend
     if not Path(module_assets_dir).is_dir():
@@ -322,7 +322,6 @@ def add_application_db(app, module_code, url, enable_frontend, enable_backend):
     from geonature.core.gn_commons.models import TModules
 
     new_module = True
-    id_application_geonature = config["ID_APPLICATION_GEONATURE"]
     # remove / at the end and at the beginning
     if url[0] == "/":
         url = url[1:]

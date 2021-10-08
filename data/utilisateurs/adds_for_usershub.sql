@@ -1,3 +1,5 @@
+-- Compléments du schéma "utilisateurs" en version 2.7.5
+-- A partir de la version 2.8.0, les évolutions de la BDD sont gérées dans des migrations Alembic
 
 SET search_path = utilisateurs, pg_catalog;
 
@@ -9,14 +11,26 @@ SELECT pg_catalog.setval('t_applications_id_application_seq', (SELECT max(id_app
 
 -- Association du profil Lecteur à GeoNature, necessaire pour donner l'accès à des rôles à GeoNature
 INSERT INTO cor_profil_for_app (id_profil, id_application) VALUES
-(1, (SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'GN'))
+(
+    (SELECT id_profil FROM utilisateurs.t_profils WHERE code_profil = '1'),
+    (SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'GN')
+)
 ;
 
 --Accès du GRP_admin et du GRP_en_poste à GeoNature en l'associant au profil Lecteur 
 -- Les permissions applicatives (CRUVED) sont gérées dans l'admin GeoNature
 INSERT INTO cor_role_app_profil (id_role, id_application, id_profil, is_default_group_for_app) VALUES
-(9, (SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'GN'), 1, false)
-,(7, (SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'GN'), 1, true)
+(
+    (SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'),
+    (SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'GN'),
+    (SELECT id_profil FROM utilisateurs.t_profils WHERE code_profil = '1'),
+    false
+),(
+    (SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'),
+    (SELECT id_application FROM utilisateurs.t_applications WHERE code_application = 'GN'),
+    (SELECT id_profil FROM utilisateurs.t_profils WHERE code_profil = '1'),
+    true
+)
 ;
 
 

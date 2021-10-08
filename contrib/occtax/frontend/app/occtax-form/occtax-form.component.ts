@@ -74,6 +74,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
   }
 
   setCurrentTabAndIdReleve(url) {    
+<<<<<<< HEAD
     let urlSegments = url.split("/");    
     if(urlSegments.length > 0 && urlSegments[1] == "occtax") {
       if (urlSegments[urlSegments.length - 1] === "taxons") {
@@ -96,6 +97,29 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
         }else {        
           this.occtaxFormService.id_releve_occtax.next(null);
         }
+=======
+    let urlSegments = url.split("/");
+    if (urlSegments[urlSegments.length - 1] === "taxons") {
+      const idReleve = urlSegments[urlSegments.length - 2];      
+      if (idReleve && Number.isInteger(Number(idReleve)))  {
+        this.occtaxFormService.disabled = false;
+        this.occtaxFormService.id_releve_occtax.next(idReleve)
+      } else {        
+        // if no idReleve on taxon tab -> redirect
+        this._router.navigate(["occtax/form/releve"]);
+        this.occtaxFormService.id_releve_occtax.next(null)
+        
+      }
+      this.occtaxFormService.currentTab = <"releve" | "taxons">urlSegments.pop();
+    } else {
+      this.occtaxFormService.currentTab = "releve";
+      const idReleve = urlSegments[urlSegments.length - 1];      
+      if (idReleve && Number.isInteger(Number(idReleve)))  {
+        this.occtaxFormService.disabled = false;
+        this.occtaxFormService.id_releve_occtax.next(idReleve)
+      }else {
+        this.occtaxFormService.id_releve_occtax.next(null);
+>>>>>>> origin/develop
       }
     }
   }

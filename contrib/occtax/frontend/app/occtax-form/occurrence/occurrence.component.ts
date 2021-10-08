@@ -91,14 +91,16 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     const sub = this.occurrenceForm
     .get("id_nomenclature_exist_proof")
     this.initTaxrefSearch();
-    
   }
 
   ngAfterViewInit() {
+    
     //a chaque reinitialisation du formulaire on place le focus sur la zone de saisie du taxon
-    const taxonInput: HTMLElement = document.getElementById("taxonInput");
+    const taxonInput = document.getElementById("taxonInput");    
+    taxonInput.focus();
+
     this.occtaxFormOccurrenceService.occurrence.subscribe(() =>
-    taxonInput.focus()
+       taxonInput.focus()
     );
 
     //Pour gérer l'affichage de l'erreur required quand le focus est présent dans l'input
@@ -214,6 +216,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   }
 
   submitOccurrenceForm() {
+    document.getElementById("taxonInput").focus();
     if (this.occtaxFormOccurrenceService.form.valid) {
       this.occtaxFormOccurrenceService.submitOccurrence();
     }

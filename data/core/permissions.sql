@@ -1,3 +1,6 @@
+-- Création du schéma "gn_permissions" en version 2.7.5
+-- A partir de la version 2.8.0, les évolutions de la BDD sont gérées dans des migrations Alembic
+
 SET statement_timeout
 = 0;
 SET lock_timeout
@@ -63,7 +66,7 @@ DECLARE
 -- the function return the max accessible extend of data the given user can access in the requested module
 -- warning: NO heritage between parent and child module
 -- USAGE : SELECT gn_permissions.user_max_accessible_data_level_in_module(requested_userid,requested_actionid,requested_moduleid);
--- SAMPLE :SELECT gn_permissions.user_max_accessible_data_level_in_module(2,'U','GEONATURE');
+-- SAMPLE : SELECT gn_permissions.user_max_accessible_data_level_in_module(2,'U','GEONATURE');
 BEGIN
     SELECT max(value_filter::int)
     INTO themaxscopelevel

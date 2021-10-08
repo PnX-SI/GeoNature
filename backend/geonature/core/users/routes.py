@@ -17,7 +17,13 @@ from geonature.core.users.models import (
 )
 from geonature.utils.config import config
 from pypnusershub.db.models import Organisme as BibOrganismes
-from geonature.core.users.register_post_actions import function_dict
+from geonature.core.users.register_post_actions import (
+    validate_temp_user,
+    execute_actions_after_validation,
+    send_email_for_recovery
+)
+
+from pypnusershub.env import REGISTER_POST_ACTION_FCT
 from pypnusershub.db.models import User
 from pypnusershub.db.models_register import TempUser
 from pypnusershub.routes_register import bp as user_api
@@ -29,10 +35,13 @@ routes = Blueprint("users", __name__, template_folder="templates")
 log = logging.getLogger()
 s = requests.Session()
 
+
 # configuration of post_request actions for registrations
-
-
-config["after_USERSHUB_request"] = function_dict
+REGISTER_POST_ACTION_FCT.update({
+    "create_temp_user": validate_temp_user,
+    "valid_temp_user": execute_actions_after_validation,
+    "create_cor_role_token": send_email_for_recovery,
+})
 
 
 @routes.route("/menu/<int:id_menu>", methods=["GET"])
@@ -147,7 +156,7 @@ def insert_in_cor_role(id_group=None, id_user=None):
     .. :quickref: User;
 
     :param id_role: the id user
-    :type id_role: int    
+    :type id_role: int
     :param id_group: the id group
     :type id_group: int
         # TODO ajouter test sur les POST de données
@@ -238,7 +247,7 @@ def get_organismes():
 @json_resp
 def get_organismes_jdd(info_role):
     """
-    Get all organisms and the JDD where there are actor and where 
+    Get all organisms and the JDD where there are actor and where
     the current user hase autorization with its cruved
 
     .. :quickref: User;
@@ -294,9 +303,9 @@ def inscription():
 @routes.route("/login/recovery", methods=["POST"])
 def login_recovery():
     """
-        Call UsersHub API to create a TOKEN for a user	
-        A post_action send an email with the user login and a link to reset its password	
-        Work only if 'ENABLE_SIGN_UP' is set to True	
+        Call UsersHub API to create a TOKEN for a user
+        A post_action send an email with the user login and a link to reset its password
+        Work only if 'ENABLE_SIGN_UP' is set to True
     """
     # test des droits
     if not current_app.config.get("ACCOUNT_MANAGEMENT").get("ENABLE_USER_MANAGEMENT", False):
@@ -400,7 +409,7 @@ def update_role(info_role):
 @json_resp
 def change_password(id_role):
     """
-        Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp 
+        Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp
         Fait appel à l'API UsersHub
     """
     if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):

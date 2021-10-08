@@ -26,48 +26,40 @@ def get_hist(uuid_attached_row):
             500,
         )
 
-    try:
-        data = (
-            DB.session.query(
-                TValidations.id_nomenclature_valid_status,
-                TValidations.validation_date,
-                TValidations.validation_comment,
-                User.nom_role+' '+User.prenom_role,
-                TValidations.validation_auto,
-                TNomenclatures.label_default,
-                TNomenclatures.cd_nomenclature,
-            )
-            .join(
-                TNomenclatures,
-                TNomenclatures.id_nomenclature == TValidations.id_nomenclature_valid_status,
-            )
-            .join(User, User.id_role == TValidations.id_validator)
-            .filter(TValidations.uuid_attached_row == uuid_attached_row)
-            .order_by(TValidations.validation_date)
-            .all()
+    data = (
+        DB.session.query(
+            TValidations.id_nomenclature_valid_status,
+            TValidations.validation_date,
+            TValidations.validation_comment,
+            User.nom_role+' '+User.prenom_role,
+            TValidations.validation_auto,
+            TNomenclatures.label_default,
+            TNomenclatures.cd_nomenclature,
         )
-
-        history = []
-        for row in data:
-            line = {}
-            line.update(
-                {
-                    "id_status": str(row[0]),
-                    "date": str(row[1]),
-                    "comment": str(row[2]),
-                    "validator": str(row[3]),
-                    "typeValidation": str(row[4]),
-                    "label_default": str(row[5]),
-                    "cd_nomenclature": str(row[6]),
-                }
-            )
-            history.append(line)
-
-        return history
-
-    except (Exception) as e:
-        log.error(e)
-        return (
-            'INTERNAL SERVER ERROR ("get_hist() error"): contactez l\'administrateur du site',
-            500,
+        .join(
+            TNomenclatures,
+            TNomenclatures.id_nomenclature == TValidations.id_nomenclature_valid_status,
         )
+        .join(User, User.id_role == TValidations.id_validator)
+        .filter(TValidations.uuid_attached_row == uuid_attached_row)
+        .order_by(TValidations.validation_date)
+        .all()
+    )
+
+    history = []
+    for row in data:
+        line = {}
+        line.update(
+            {
+                "id_status": str(row[0]),
+                "date": str(row[1]),
+                "comment": str(row[2]),
+                "validator": str(row[3]),
+                "typeValidation": str(row[4]),
+                "label_default": str(row[5]),
+                "cd_nomenclature": str(row[6]),
+            }
+        )
+        history.append(line)
+
+    return history

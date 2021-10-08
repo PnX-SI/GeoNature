@@ -24,7 +24,7 @@ def validate_temp_user(data):
        Send an email after the action of account creation.
 
        :param admin_validation_required: if True an admin will receive an
-       email to validate the account creation else the user himself 
+       email to validate the account creation else the user himself
        receive the email.
        :type admin_validation_required: bool
     """
@@ -73,7 +73,7 @@ def execute_actions_after_validation(data):
 
 def create_dataset_user(user):
     """
-        After dataset validation, add a personnal AF and JDD so the user 
+        After dataset validation, add a personnal AF and JDD so the user
         can add new user.
     """
     af_desc_and_name = "Cadre d'acquisition personnel de {name} {surname}".format(

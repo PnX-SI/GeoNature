@@ -2,6 +2,125 @@
 CHANGELOG
 =========
 
+2.8.0-rc2 (unreleased)
+----------------------
+
+**🚀 Nouveautés**
+
+* Packaging des modules GeoNature OccTax, OccHab et validation
+* Mise à jour des dépendances
+  * `UsersHub-authentification-module 1.5.4 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.4>`__
+  * `Nomenclature-api-module 1.4.3 <https://github.com/PnX-SI/Nomenclature-api-module/releases/tag/1.4.3>`__
+
+**🐛 Corrections**
+
+* Correction de la commande ``install_packaged_gn_module`` : rechargement des entry points après installation avec pip d’un module paquagé
+* Correction d’un bug lors de l’ajout d’un cadre d’acquisition
+* **TODO :** Correction d’un bug lors de la modification d’un cadre d’acquisition
+
+**⚠️ Notes de version**
+
+* Si vous aviez déjà intallé certains modules, vous devez l’indiquer à Alembic :
+
+  * Module *OccTax* : ``geonature db stamp f57107d2d0ad``
+  * Module *OccHab* : ``geonature db stamp 2984569d5df6``
+
+2.8.0-rc1 (2021-10-01)
+----------------------
+
+**Gestion de la base de données avec Alembic**
+
+⚠️ Le passage à la version 3 de Marshmallow nécessite une version compatible des modules (Import, Export, Dashboard...) non disponibles à la date de sortie de cette version.
+
+**🚀 Nouveautés**
+
+* Support de Debian 11 / Python 3.9
+* Passage de ``supervisor`` à ``systemd``
+* Gestion de la base de données et de ses évolutions avec Alembic (#880)
+* Mise à jour de la procédure d’installation afin d’utiliser Alembic (#880)
+* Révision et réorganisation des scripts et de la documentation d'installation
+* Passage à la version 3 de Marshmallow
+* Suppression du paramètre ``ID_APP``, celui-ci est automatiquement déterminé à partir de la base de données et du code de l’application
+* Ajout d’un index sur le champs ``ref_geo.l_areas.id_area``
+* Mise à jour des dépendances
+
+  * `TaxHub 1.9.0 <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__
+  * `UsersHub-authentification-module 1.5.3 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.3>`__
+  * `Nomenclature-api-module 1.4.1 <https://github.com/PnX-SI/Nomenclature-api-module/releases/tag/1.4.1>`__
+  * `Habref-api-module 0.2.0 <https://github.com/PnX-SI/Habref-api-module/releases/tag/0.2.0>`__
+  * `Utils-Flask-SQLAlchemy 0.2.4 <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/releases/tag/0.2.4>`__
+  * `Utils-Flask-SQLAlchemy-Geo 0.2.1 <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/releases/tag/0.2.1>`__
+
+**🐛 Corrections**
+
+* Correction de l'envoi d'email lors de la récupération du mot de passe (#1471)
+* Mise à jour de la table ``cor_area_synthese`` lors de l’ajout de nouvelles zones via un trigger sur la table ``l_areas`` (#1433)
+* Correction de l'export PDF des fiches de métadonnées (#1449)
+* Jeux de données : correction de l’affichage des imports sources
+* Correction de la configuration Apache et de la gestion par flask d’un GeoNature accessible sur un préfix (e.g. ``/geonature``) (#1463)
+* Correction de la commande ``install_packaged_gn_module``
+* Correction des champs additionnels de type boutons radios (#1464 et #1472)
+
+**💻 Développement**
+
+* Mise à jour de plusieurs dépendances
+* L’utilisateur connecté est maintenant accessible via ``g.current_user``
+* Nettoyage et refactoring divers
+
+**⚠️ Notes de version**
+
+* Mettre à jour `UsersHub en version 2.2.1 <https://github.com/PnX-SI/UsersHub/releases/tag/2.2.1>`__ et `TaxHub en version 1.9.0 <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__ (si vous les utilisez) **en sautant l’étape de passage à Alembic** (car la mise à jour de GeoNature se charge désormais de mettre à jour aussi les schémas ``taxonomie`` et ``utilisateurs``)
+* Suppression de ``supervisor`` :
+
+  * Stopper GeoNature : ``sudo supervisorctl stop geonature2``
+  * Supprimer le fichier de configuration supervisor de GeoNature : ``sudo rm /etc/supervisor/conf.d/geonature-service.conf``
+  * Si supervisor n’est plus utilisé par aucun service (répertoire ``/etc/supervisor/conf.d/`` vide), il peut être désinstallé (``sudo apt remove supervisor``)
+
+* Suivre la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+* Passage à ``systemd`` :
+
+  * Copier le fichier ``install/assets/geonature.service`` dans ``/etc/systemd/system/``
+  * Éditer ``/etc/systemd/system/geonature.service`` et remplacer les variables ``${USER}`` (votre utilisateur linux courant) et ``${BASE_DIR}`` (chemin absolu du répertoire de GeoNature) par les valeurs appropriées
+  * Lancer la commande ``sudo systemctl daemon-reload``
+  * Pour démarrer GeoNature : ``sudo systemctl start geonature``
+  * Pour lancer GeoNature automatiquement au démarrage du serveur : ``sudo systemctl enable geonature``
+
+* Correction de la configuration Apache :
+
+  * Installer le fichier de configuration Apache d’exemple permettant de servir GeoNature sur le préfixe ``/geonature`` : ``cp install/assets/geonature_apache.conf /etc/apache2/conf-available/geonature.conf``
+  * Remplacer dans ``/etc/apache2/conf-available/geonature.conf`` la variable ``${GEONATURE_DIR}`` par la valeur approprié (*e.g.* ``/home/geonatureadmin/geonature``)
+  * Vous pouvez décider d’utiliser ce fichier d’exemple en l’activant (``sudo a2enconf geonature``)
+  * Ou vous pouvez l’inclure dans votre propre vhost avec la directive suivante : ``Include /etc/apache2/conf-available/geonature.conf``
+  * Si vous gardez votre propre fichier de configuration et que vous servez GeoNature sur un préfixe (typiquement ``/geonature/api``), assurez vous que ce préfixe figure bien également à la fin des directives ``ProxyPass`` et ``ProxyPassReverse`` comme c’est le cas dans le fichier d’exemple ``install/assets/geonature_apache.conf``
+  * Si vous décidez d’utiliser le fichier fourni, pensez à supprimer votre ancienne configuration apache (*e.g.* ``sudo a2dissite geonature && sudo rm /etc/apache2/sites-available/geonature.conf``).
+  * Si vous souhaitez isoler GeoNature dans un vhost, vous pouvez vous inspirer du fichier ``install/assets/vhost_apache.conf``
+
+* Passage à Alembic :
+
+  * S’assurer d’avoir une base de données de GeoNature en version 2.7.5
+  * Si vous avez UsersHub installé, ajoutez dans votre configuration GeoNature la section suivante (en adaptant le chemin) :
+
+  .. code-block::
+
+      [ALEMBIC]
+      VERSION_LOCATIONS = '/path/to/usershub/app/migrations/versions'
+
+  * Entrer dans le virtualenv afin d’avoir la commande ``geonature`` disponible : ``source backend/venv/bin/activate``
+  * Indiquer à Alembic l’état de votre base de données :
+
+    * Indiquer que la base est en version 2.7.5 : ``geonature db stamp f06cc80cc8ba``
+    * Si la base contient le référentiel géographique des communes : ``geonature db stamp 0dfdbfbccd63``
+    * Si la base contient le référentiel géographique des départements : ``geonature db stamp 3fdaa1805575``
+    * Si la base contient le référentiel géographique des mailles 1×1 : ``geonature db stamp 586613e2faeb``
+    * Si la base contient le référentiel géographique des mailles 5×5 : ``geonature db stamp 7d6e98441e4c``
+    * Si la base contient le référentiel géographique des mailles 10×10 : ``geonature db stamp ede150d9afd9``
+    * Si la base contient le MNT de l’IGN : ``geonature db stamp 1715cf31a75d``
+    * Si la base contient le MNT de l’IGN vectorisé : ``geonature db stamp 87651375c2e8``
+
+  * Mettre sa base de données à jour avec Alembic : ``geonature db upgrade geonature@head``
+
+  Pour plus d’information sur l’utilisation d’Alembic, voir la `documentation administrateur de GeoNature <https://docs.geonature.fr/admin-manual.html#administration-avec-alembic>`_.
+
 2.7.5 (2021-07-28)
 ------------------
 

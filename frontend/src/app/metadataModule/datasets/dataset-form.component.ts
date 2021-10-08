@@ -75,7 +75,7 @@ export class DatasetFormComponent implements OnInit {
   }
 
   mergeActors(dataset, genericActors) {
-    dataset.cor_dataset_actor = dataset.cor_dataset_actor.concat(genericActors)
+    dataset.cor_dataset_actor = dataset.cor_dataset_actor.concat(genericActors);
   }
 
   postDataset() {

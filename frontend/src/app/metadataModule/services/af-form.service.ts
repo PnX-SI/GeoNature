@@ -100,7 +100,7 @@ export class AcquisitionFrameworkFormService {
           }
         })
       )
-      .subscribe((value: any) => this.form.patchValue(value, {emitEvent: false, onlySelf: true}));
+      .subscribe((value: any) => this.form.patchValue(value));
  
     //gère lactivation/désactivation de la zone de saisie du framework Parent
     this.form.get('is_parent').valueChanges

@@ -9,6 +9,7 @@ import {
 import { AppConfig } from '../../../conf/app.config';
 import { Taxon } from './taxonomy/taxonomy.component';
 import { Observable } from 'rxjs';
+import { isArray } from 'rxjs/internal-compatibility';
 
 /** Interface for queryString parameters*/
 interface ParamsDict {
@@ -348,12 +349,7 @@ export class DataFormService {
     );
   }
 
-  /**
-   *
-   * @param params: dict of paramters
-   * @param orderByName :default true
-   */
-  getAcquisitionFrameworksForSelect(searchTerms = {}) {
+  getAcquisitionFrameworksForSelect(searchTerms = {}) {    
     let queryString: HttpParams = new HttpParams();
     for (let key in searchTerms) {
       queryString = queryString.set(key, searchTerms[key])
@@ -368,10 +364,22 @@ export class DataFormService {
 
   /**
    * @param id_af: id of acquisition_framework
+   * @params params : get parameters
    */
-  getAcquisitionFramework(id_af) {
+  getAcquisitionFramework(id_af, params?: ParamsDict) {    
+    let queryString: HttpParams = new HttpParams();
+    for (let key in params) {
+      if(isArray(params[key])) {
+        params[key].forEach(el => {
+          queryString = queryString.append(key, el)
+        });
+      }else {
+        queryString = queryString.set(key, params[key])
+      }
+    }
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`,
+      { params: queryString }
     );
   }
 

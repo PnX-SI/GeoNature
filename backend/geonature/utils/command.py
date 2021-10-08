@@ -11,6 +11,7 @@ import logging
 import subprocess
 import json
 
+from flask import current_app
 from jinja2 import Template
 from pathlib import Path
 
@@ -31,16 +32,6 @@ from geonature.utils.config import config_frontend
 log = logging.getLogger(__name__)
 
 MSG_OK = "\033[92mok\033[0m\n"
-
-
-def start_gunicorn_cmd(uri, worker):
-    cmd = "gunicorn server:app -w {gun_worker} -b {gun_uri}"
-    subprocess.call(cmd.format(gun_worker=worker, gun_uri=uri).split(" "), cwd=str(BACKEND_DIR))
-
-
-def supervisor_cmd(action, app_name):
-    cmd = "sudo supervisorctl {action} {app}"
-    subprocess.call(cmd.format(action=action, app=app_name).split(" "))
 
 
 def start_geonature_front():
@@ -136,7 +127,10 @@ def create_frontend_config():
 
     with open(str(ROOT_DIR / "frontend/src/conf/app.config.ts.sample"), "r") as input_file:
         template = Template(input_file.read())
-        parameters = json.dumps(config_frontend, indent=True)
+        parameters = json.dumps({
+            **config_frontend,
+            'ID_APPLICATION_GEONATURE': current_app.config['ID_APP'],
+        }, indent=True)
         app_config_template = template.render(parameters=parameters)
 
         with open(str(ROOT_DIR / "frontend/src/conf/app.config.ts"), "w") as output_file:
@@ -145,11 +139,11 @@ def create_frontend_config():
     log.info("...%s\n", MSG_OK)
 
 
-def update_app_configuration(build=True, prod=True):
+def update_app_configuration(build=True):
     log.info("Update app configuration")
-    if prod:
-        subprocess.call(["sudo", "supervisorctl", "reload"])
     create_frontend_config()
     if build:
         subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
     log.info("...%s\n", MSG_OK)
+    log.info("Si vous avez changé des paramtères de configuration nécessaire au backend, "
+             "pensez à également relancer ce dernier.")

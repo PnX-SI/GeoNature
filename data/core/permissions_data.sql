@@ -1,3 +1,6 @@
+-- Compléments du schéma "gn_permissions" en version 2.7.5
+-- A partir de la version 2.8.0, les évolutions de la BDD sont gérées dans des migrations Alembic
+
 SET statement_timeout
 = 0;
 SET lock_timeout
@@ -12,7 +15,7 @@ SET client_min_messages
 = warning;
 
 SET search_path
-= gn_permissions, pg_catalog;
+= gn_permissions, pg_catalog, public;
 SET default_with_oids
 = false;
 
@@ -95,62 +98,62 @@ INSERT INTO cor_role_action_filter_module_object
     )
 VALUES
     -- Groupe Admin
-    (9, 1, 4, 0, 1),
-    (9, 2, 4, 0, 1),
-    (9, 3, 4, 0, 1),
-    (9, 4, 4, 0, 1),
-    (9, 5, 4, 0, 1),
-    (9, 6, 4, 0, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 1, 4, 0, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 2, 4, 0, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 3, 4, 0, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 4, 4, 0, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 5, 4, 0, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 6, 4, 0, 1),
     --Validateur général sur tout GeoNature
-    (5, 4, 4, 0, 1 ),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Validateur'), 4, 4, 0, 1 ),
     --CRUVED du groupe en poste (id=7) sur tout GeoNature 
-    (7, 1, 4, 0, 1),
-    (7, 2, 3, 0, 1),
-    (7, 3, 2, 0, 1),
-    (7, 4, 1, 0, 1),
-    (7, 5, 3, 0, 1),
-    (7, 6, 2, 0, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 1, 4, 0, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 2, 3, 0, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 3, 2, 0, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 4, 1, 0, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 5, 3, 0, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 6, 2, 0, 1),
     -- Groupe admin a tous les droit dans METADATA
-    (9, 1, 4, 2, 1),
-    (9, 2, 4, 2, 1),
-    (9, 3, 4, 2, 1),
-    (9, 4, 4, 2, 1),
-    (9, 5, 4, 2, 1),
-    (9, 6, 4, 2, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 1, 4, 2, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 2, 4, 2, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 3, 4, 2, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 4, 4, 2, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 5, 4, 2, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 6, 4, 2, 1),
     -- Groupe en poste acces limité a dans METADATA
-    (7, 1, 1, 2, 1),
-    (7, 2, 3, 2, 1),
-    (7, 3, 1, 2, 1),
-    (7, 4, 1, 2, 1),
-    (7, 5, 3, 2, 1),
-    (7, 6, 1, 2, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 1, 1, 2, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 2, 3, 2, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 3, 1, 2, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 4, 1, 2, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 5, 3, 2, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 6, 1, 2, 1),
     -- Groupe en poste, n'a pas accès à l'admin
-    (7, 1, 1, 1, 1),
-    (7, 2, 1, 1, 1),
-    (7, 3, 1, 1, 1),
-    (7, 4, 1, 1, 1),
-    (7, 5, 1, 1, 1),
-    (7, 6, 1, 1, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 1, 1, 1, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 2, 1, 1, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 3, 1, 1, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 4, 1, 1, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 5, 1, 1, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_en_poste'), 6, 1, 1, 1),
     -- Groupe en admin a tous les droits sur l'admin
-    (9, 1, 4, 1, 1),
-    (9, 2, 4, 1, 1),
-    (9, 3, 4, 1, 1),
-    (9, 4, 4, 1, 1),
-    (9, 5, 4, 1, 1),
-    (9, 6, 4, 1, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 1, 4, 1, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 2, 4, 1, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 3, 4, 1, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 4, 4, 1, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 5, 4, 1, 1),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 6, 4, 1, 1),
     -- Groupe ADMIN peut gérer les permissions depuis le backoffice
-    (9, 1, 4, 1, 2),
-    (9, 2, 4, 1, 2),
-    (9, 3, 4, 1, 2),
-    (9, 4, 4, 1, 2),
-    (9, 5, 4, 1, 2),
-    (9, 6, 4, 1, 2),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 1, 4, 1, 2),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 2, 4, 1, 2),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 3, 4, 1, 2),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 4, 4, 1, 2),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 5, 4, 1, 2),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 6, 4, 1, 2),
     -- Groupe ADMIN peut gérer les nomenclatures depuis le backoffice
-    (9, 1, 4, 1, 3),
-    (9, 2, 4, 1, 3),
-    (9, 3, 4, 1, 3),
-    (9, 4, 4, 1, 3),
-    (9, 5, 4, 1, 3),
-    (9, 6, 4, 1, 3)
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 1, 4, 1, 3),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 2, 4, 1, 3),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 3, 4, 1, 3),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 4, 4, 1, 3),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 5, 4, 1, 3),
+    ((SELECT id_role FROM utilisateurs.t_roles WHERE nom_role = 'Grp_admin'), 6, 4, 1, 3)
 ;
 

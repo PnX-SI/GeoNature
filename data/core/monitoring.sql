@@ -1,3 +1,6 @@
+-- Création du schéma "gn_monitoring" en version 2.7.5
+-- A partir de la version 2.8.0, les évolutions de la BDD sont gérées dans des migrations Alembic
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -26,7 +29,7 @@ CREATE TABLE t_base_sites
   base_site_code character varying(25) DEFAULT NULL::character varying,
   first_use_date date,
   geom public.geometry(Geometry,4326) NOT NULL,
-  geom_local public.geometry(Geometry, :MYLOCALSRID),
+  geom_local public.geometry(Geometry, :local_srid),
   altitude_min integer,
   altitude_max integer,
   uuid_base_site uuid DEFAULT public.uuid_generate_v4(),

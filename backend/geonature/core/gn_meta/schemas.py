@@ -1,5 +1,5 @@
 from geonature.utils.env import MA
-from marshmallow import pre_load, fields
+from marshmallow import pre_load, fields, EXCLUDE
 from .models import (
     TDatasets,
     TAcquisitionFramework,
@@ -47,7 +47,8 @@ class DatasetSchema(MetadataSchema):
     meta_update_date = fields.DateTime(dump_only=True)
     cor_dataset_actor = MA.Nested(
         DatasetActorSchema,
-        many=True
+        many=True,
+        unknown=EXCLUDE
     )
     modules = MA.Nested(
         ModuleSchema, 
@@ -64,7 +65,8 @@ class DatasetSchema(MetadataSchema):
     nomenclature_resource_type = MA.Nested(NomenclatureSchema, dump_only=True)
     cor_territories = MA.Nested(
         NomenclatureSchema,
-        many=True
+        many=True,
+        unknown=EXCLUDE
     )
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", exclude=("t_datasets",), dump_only=True)
 
@@ -136,19 +138,23 @@ class AcquisitionFrameworkSchema(MetadataSchema):
     )
     cor_af_actor = MA.Nested(
         AcquisitionFrameworkActorSchema,
-        many=True
+        many=True,
+        unknown=EXCLUDE
     )
     cor_volets_sinp = MA.Nested(
         NomenclatureSchema,
         many=True,
+        unknown=EXCLUDE
     )
     cor_objectifs = MA.Nested(
         NomenclatureSchema,
-        many=True
+        many=True,
+        unknown=EXCLUDE
     )
     cor_territories = MA.Nested(
         NomenclatureSchema,
-        many=True
+        many=True,
+        unknown=EXCLUDE
     )
     nomenclature_territorial_level = MA.Nested(NomenclatureSchema, dump_only=True)
     nomenclature_financing_type = MA.Nested(NomenclatureSchema, dump_only=True)

@@ -44,10 +44,8 @@ export class OcctaxFormService {
     private _auth: AuthService,
     private _commonService: CommonService,
     private _dataS: OcctaxDataService,
-    private dataFormService: DataFormService
-
-
-  ) {    
+    private dataFormService: DataFormService,
+  ) {        
     this.currentUser = this._auth.getCurrentUser();
 
     //observation de l'URL

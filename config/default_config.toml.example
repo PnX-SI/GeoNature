@@ -211,7 +211,7 @@ MAIL_ON_ERROR = false
 [[MAPCONFIG.BASEMAP]]
     name = "OpenstreetMap"
     url = "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
-    attributions = "OSM contributors"
+    attribution = "OSM contributors"
 [[MAPCONFIG.BASEMAP]]
     name = "WMS"
     url = "https://mon_flux_wms"
@@ -219,7 +219,7 @@ MAIL_ON_ERROR = false
     layers = 'ma_layer'
     attribution = 'lala'
 [[MAPCONFIG.BASEMAP]]
-    attributions = "GoogleSatellite"
+    attribution = "GoogleSatellite"
     name = "google"
     url = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
     subdomains = ["mt0", "mt1", "mt2", "mt3"]
@@ -499,7 +499,7 @@ MAIL_ON_ERROR = false
     MEDIAS_SIZE_MAX = 10000
 
 # Module métadonnées
-[METADATADA]
+[METADATA]
     # Nombre de cadre d'acquisition affiché sur la liste
     NB_AF_DISPLAYED = 100
     # activer la fonctionalité de dépot/publication

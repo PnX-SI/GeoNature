@@ -1,3 +1,7 @@
+-- Création du schéma "gn_commons" en version 2.7.5
+-- A partir de la version 2.8.0, les évolutions de la BDD sont gérées dans des migrations Alembic
+
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -707,10 +711,10 @@ INSERT INTO bib_tables_location (table_desc, schema_name, table_name, pk_field, 
 ;
 
 INSERT INTO t_parameters (id_organism, parameter_name, parameter_desc, parameter_value, parameter_extra_value) VALUES
-(0,'taxref_version','Version du référentiel taxonomique','Taxref V14.0',NULL)
-,(0,'local_srid','Valeur du SRID local', MYLOCALSRID,NULL)
-,(0,'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
-,(0,'occtaxmobile_area_type', 'Type de zonage pour lequel la couleur des taxons est calculée pour Occtax-mobile', 'M5', NULL)
+((SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),'taxref_version','Version du référentiel taxonomique','Taxref V14.0',NULL)
+,((SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),'local_srid','Valeur du SRID local', :local_srid, NULL)
+,((SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),'annee_ref_commune', 'Année du référentiel géographique des communes utilisé', '2017', NULL)
+,((SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'ALL'),'occtaxmobile_area_type', 'Type de zonage pour lequel la couleur des taxons est calculée pour Occtax-mobile', 'M5', NULL)
 ;
 
 -- Insertion du module parent à tous : GeoNature

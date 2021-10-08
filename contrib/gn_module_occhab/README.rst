@@ -1,7 +1,7 @@
-Module Occhab
+Module OccHab
 =============
 
-Module GeoNature de saisie et de synthese basé sur le standard Occurrence d'habitat du SINP: http://standards-sinp.mnhn.fr/standard-doccurrences-habitats-v1-0/.
+Module GeoNature de saisie et de synthese basé sur le standard Occurrences d'habitats du SINP: http://standards-sinp.mnhn.fr/standard-doccurrences-habitats-v1-0/.
 
 Le module offre les fonctionnalité suivantes:
 

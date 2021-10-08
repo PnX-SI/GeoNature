@@ -126,33 +126,36 @@ then
   sudo rm -rf venv
 fi
 
-if [[ $python_path ]]; then
-  echo "Installation du virtual env..."
-  python3 -m virtualenv -p $python_path venv
-else
-  python3 -m virtualenv venv
-fi
+echo "Installation du virtual env..."
+python3 -m venv venv
 
 source venv/bin/activate
+pip install --upgrade "pip>=19.3"  # https://www.python.org/dev/peps/pep-0440/#direct-references
 pip install -r requirements.txt
 # Installation des dépendances des modules
 # Boucle sur les liens symboliques de external_modules
 for D in $(find ../external_modules  -type l | xargs readlink) ; do
     # si le lien symbolique exisite
     if [ -e "$D" ] ; then
-        cd ${D}
-        cd backend   
-        if [ -f 'requirements.txt' ]
+        cd "${D}"
+        if [ -f 'setup.py' ]
         then
-            pip install -r requirements.txt
+            pip install -e .
+        else
+            cd backend
+            if [ -f 'requirements.txt' ]
+            then
+                pip install -r requirements.txt
+            fi
+            cd ..
         fi
-        cd ../frontend 
+        cd frontend
         if [ -f 'package.json' ]
         then
           cd /home/`whoami`/geonature/frontend 
           npm install $D/frontend --no-save
         fi
-
+        cd ..
     fi
 done
 
@@ -170,6 +173,6 @@ geonature update_module_configuration occhab --build=false
 
 geonature frontend_build
 
-sudo supervisorctl reload
+sudo systemctl restart geonature
 
 deactivate

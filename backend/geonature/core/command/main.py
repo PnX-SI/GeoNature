@@ -6,7 +6,6 @@ import logging
 from os import environ
 
 import click
-from flask import current_app
 from flask.cli import run_command
 
 from geonature.utils.env import (
@@ -14,8 +13,6 @@ from geonature.utils.env import (
     GEONATURE_VERSION,
 )
 from geonature.utils.command import (
-    start_gunicorn_cmd,
-    supervisor_cmd,
     start_geonature_front,
     build_geonature_front,
     create_frontend_config,
@@ -29,7 +26,6 @@ from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actor
 
 # from rq import Queue, Connection, Worker
 # import redis
-from flask import Flask
 from flask.cli import FlaskGroup
 
 
@@ -70,16 +66,6 @@ def generate_frontend_config(build):
 
 
 @main.command()
-@click.option("--uri", default="0.0.0.0:8000")
-@click.option("--worker", default=4)
-def start_gunicorn(uri, worker):
-    """
-        Lance l'api du backend avec gunicorn
-    """
-    start_gunicorn_cmd(uri, worker)
-
-
-@main.command()
 @click.option("--host", default="0.0.0.0")
 @click.option("--port", default=8000)
 @click.pass_context
@@ -96,16 +82,6 @@ def dev_back(ctx, host, port):
     if not environ.get('FLASK_ENV'):
         environ['FLASK_ENV'] = 'development'
     ctx.invoke(run_command, host=host, port=port)
-
-
-@main.command()
-@click.option("--action", default="restart", type=click.Choice(["start", "stop", "restart"]))
-@click.option("--app_name", default="geonature2")
-def supervisor(action, app_name):
-    """
-        Lance les actions du supervisor
-    """
-    supervisor_cmd(action, app_name)
 
 
 @main.command()
@@ -152,8 +128,7 @@ def generate_frontend_tsconfig_app():
 
 @main.command()
 @click.option("--build", type=bool, required=False, default=True)
-@click.option("--prod", type=bool, required=False, default=True)
-def update_configuration(build, prod):
+def update_configuration(build):
     """
         Regénère la configuration de l'application
 
@@ -166,7 +141,7 @@ def update_configuration(build, prod):
     """
     # Recréation du fichier de routing car il dépend de la conf
     frontend_routes_templating()
-    update_app_configuration(build, prod)
+    update_app_configuration(build)
 
 
 @main.command()

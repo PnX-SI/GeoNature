@@ -1,5 +1,8 @@
 ## Fichier de configuration utilisé lors de l'installation de GeoNature
 
+# Set mode to 'dev' to install GeoNature in dev mode
+MODE=prod
+
 # Langue du serveur
 # valeur possible : fr_FR.UTF-8, en_US.utf8 
 # locale -a pour voir la liste des locales disponible
@@ -90,11 +93,6 @@ nomenclature_release=1.3.8
 # laisser vide si vous n'avez pas de proxy
 proxy_http=
 proxy_https=
-
-
-# Configuration python
-###########################
-python_path=/usr/bin/python3
 
 
 #####################

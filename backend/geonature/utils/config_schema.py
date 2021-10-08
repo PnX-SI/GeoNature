@@ -125,6 +125,9 @@ class MediasConfig(Schema):
     MEDIAS_SIZE_MAX = fields.Integer(load_default=50000)
     THUMBNAIL_SIZES = fields.List(fields.Integer, load_default=[200, 50])
 
+class AlembicConfig(Schema):
+    VERSION_LOCATIONS = fields.String()
+
 class AdditionalFields(Schema):
     IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX"])
     IMPLEMENTED_OBJECTS = fields.List(
@@ -183,6 +186,7 @@ class GnPySchemaConf(Schema):
     USERSHUB = fields.Nested(UsersHubConfig, load_default=UsersHubConfig().load({}))
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
+    ALEMBIC = fields.Nested(AlembicConfig, load_default=AlembicConfig().load({}))
 
     @post_load()
     def unwrap_usershub(self, data, **kwargs):
@@ -341,7 +345,6 @@ class GnGeneralSchemaConf(Schema):
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
     LOCAL_SRID = fields.Integer(load_default=2154)
-    ID_APPLICATION_GEONATURE = fields.Integer(load_default=3)
     XML_NAMESPACE = fields.String(load_default="{http://inpn.mnhn.fr/mtd}")
     MTD_API_ENDPOINT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/mtd")
     CAS_PUBLIC = fields.Nested(CasFrontend, load_default=CasFrontend().load({}))

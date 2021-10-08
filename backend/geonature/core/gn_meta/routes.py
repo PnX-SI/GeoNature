@@ -29,6 +29,7 @@ from sqlalchemy.sql import text, exists, select, update
 from sqlalchemy.sql.functions import func
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 from werkzeug.datastructures import Headers
+from marshmallow import ValidationError, EXCLUDE
 
 
 from geonature.utils.env import DB, BACKEND_DIR
@@ -522,11 +523,12 @@ def datasetHandler(request, *, dataset, info_role):
             )
     else: 
         dataset.id_digitizer = info_role.id_role
-    datasetSchema = DatasetSchema()
-    dataset, errors = datasetSchema.load(request.get_json(), instance=dataset)
-    if bool(errors):
-        log.error(errors)
-        raise BadRequest(errors)
+    datasetSchema = DatasetSchema(unknown=EXCLUDE)
+    try:
+        dataset = datasetSchema.load(request.get_json(), instance=dataset)
+    except ValidationError as error:
+        log.exception(error)
+        raise BadRequest(error.messages)
 
     DB.session.add(dataset)
     DB.session.commit()
@@ -827,8 +829,11 @@ def get_acquisition_framework(info_role, id_acquisition_framework):
     :param type: int
     :returns: dict<TAcquisitionFramework>
     """
-    acquisitionFrameworkSchema = AcquisitionFrameworkSchema()
-    
+    exclude = request.args.getlist("exclude")
+    try:
+        acquisitionFrameworkSchema = AcquisitionFrameworkSchema(exclude=exclude)
+    except ValueError as e:
+        raise BadRequest(str(e))
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role, module_code="METADATA",
     )[0]
@@ -884,10 +889,12 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework, info_role):
     else:
         acquisition_framework.id_digitizer = info_role.id_role
 
-    acquisitionFrameworkSchema = AcquisitionFrameworkSchema()
-    acquisition_framework, errors = acquisitionFrameworkSchema.load(request.get_json(), instance=acquisition_framework)
-    if bool(errors):
-        raise BadRequest(errors)
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(unknown=EXCLUDE)
+    try:
+        acquisition_framework = acquisitionFrameworkSchema.load(request.get_json(), instance=acquisition_framework)
+    except ValidationError as error:
+        log.exception(error)
+        raise BadRequest(error.messages)
 
     DB.session.add(acquisition_framework)
     DB.session.commit()
@@ -921,13 +928,9 @@ def updateAcquisitionFramework(id_acquisition_framework, info_role):
     if not acquisition_framework:
         return {"message": "not found"}, 404
 
-    try:
-        return AcquisitionFrameworkSchema().dump(
-            acquisitionFrameworkHandler(request=request, acquisition_framework=acquisition_framework, info_role=info_role)
-        )
-    except Exception as e:
-        # retourne les erreurs levées en erreur 422
-        return e.args
+    return AcquisitionFrameworkSchema().dump(
+        acquisitionFrameworkHandler(request=request, acquisition_framework=acquisition_framework, info_role=info_role)
+    )
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>/stats", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="METADATA")
