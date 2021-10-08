@@ -350,14 +350,14 @@ export class OcctaxFormReleveService {
     }
   }
 
-  getPreviousReleve(previousReleve) {
+  getPreviousReleve(previousReleve) {    
     if (previousReleve && !ModuleConfig.ENABLE_SETTINGS_TOOLS) {
       return {
         "id_dataset": previousReleve.properties.id_dataset,
         "observers": previousReleve.properties.observers,
         "observers_txt": previousReleve.properties.observers_txt,
-        "date_min": this.occtaxFormService.formatDate(previousReleve.properties.date_min),
-        "date_max": this.occtaxFormService.formatDate(previousReleve.properties.date_max),
+        "date_min": previousReleve.properties.date_min,
+        "date_max": previousReleve.properties.date_max,
         "hour_min": previousReleve.properties.hour_min,
         "hour_max": previousReleve.properties.hour_max,
       }
@@ -380,7 +380,7 @@ export class OcctaxFormReleveService {
       .getDefaultValues(this.occtaxFormService.currentUser.id_organisme)
       .pipe(
         map((data) => {          
-          const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);                
+          const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);           
           return {
             // datasetId could be get for get parameters (see releve.component)
             id_dataset: this.datasetId || this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset,
@@ -483,9 +483,10 @@ export class OcctaxFormReleveService {
           }
         );
     } else {
-      if(this.occtaxFormService.chainRecording) {        
-        this.occtaxFormService.previousReleve = JSON.parse(JSON.stringify(this.releveForm.value));
-      }
+      // save previous releve   
+      this.occtaxFormService.previousReleve = JSON.parse(JSON.stringify(this.releveForm.value));
+      console.log("PREVISOUS", this.occtaxFormService.previousReleve);
+      
       //create
       this.occtaxDataService
         .createReleve(this.releveFormValue())
