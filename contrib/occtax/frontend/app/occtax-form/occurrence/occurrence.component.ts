@@ -97,8 +97,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     taxonInput.focus();
 
     this.occtaxFormOccurrenceService.occurrence.subscribe(() =>
-      //  taxonInput.focus()
-      console.log("YEP")
+       taxonInput.focus()
     );
 
     //Pour gérer l'affichage de l'erreur required quand le focus est présent dans l'input
