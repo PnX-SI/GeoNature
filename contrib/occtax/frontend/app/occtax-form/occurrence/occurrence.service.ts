@@ -483,7 +483,7 @@ export class OcctaxFormOccurrenceService {
   }
 
 
-  profilControl(cdRef:number) {
+  profilControl(cdRef:number) {    
     if(!cdRef) {
       return;
     }

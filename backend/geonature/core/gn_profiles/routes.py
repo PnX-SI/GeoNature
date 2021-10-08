@@ -115,20 +115,16 @@ def get_observation_score():
 
 
     # Calcul de la période correspondant à la date
-    if "date_min" in data and "date_max" in data:
+    if data.get("date_min") and data.get("date_max") in data:
         date_min = datetime.datetime.strptime(data["date_min"], "%Y-%m-%d")
         date_max = datetime.datetime.strptime(data["date_max"], "%Y-%m-%d")
         # Calcul du numéro du jour pour les dates min et max
         doy_min = date_min.timetuple().tm_yday
         doy_max = date_max.timetuple().tm_yday
-        print("DOY_MIN", doy_min)
-        print("DOY_MAX", doy_max)
     else:
         raise BadRequest("Missing date min or date max")
-
-
     # Récupération des altitudes
-    if "altitude_min" in data and "altitude_max" in data:
+    if data.get("altitude_min") and data.get("altitude_max"):
         altitude_min = data["altitude_min"]
         altitude_max = data["altitude_max"]
     else:
