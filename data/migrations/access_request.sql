@@ -92,6 +92,20 @@ AS $BODY$
     END;
 $BODY$ ;
 
+CREATE OR REPLACE FUNCTION utilisateurs.get_id_role_by_name(roleName character varying)
+    RETURNS integer
+    LANGUAGE plpgsql
+    IMMUTABLE
+AS $BODY$
+    BEGIN
+        RETURN (
+            SELECT id_role
+            FROM utilisateurs.t_roles
+            WHERE nom_role = roleName
+        );
+    END;
+$BODY$ ;
+
 
 -- -------------------------------------------------------------------------------------------------
 -- Add constraint for "id_module" in table "cor_role_action_filter_module_object"
@@ -102,6 +116,37 @@ ALTER TABLE gn_permissions.cor_role_action_filter_module_object
 	ADD CONSTRAINT fk_cor_r_a_f_m_o_id_module FOREIGN KEY (id_module)
 	REFERENCES gn_commons.t_modules (id_module) MATCH FULL
 	ON UPDATE CASCADE ;
+
+
+-- -------------------------------------------------------------------------------------------------
+-- Rename filter "SENSITIVITY" to "PRECISION" and update others. See #1062.
+UPDATE gn_permissions.bib_filters_type 
+SET 
+    label_filter_type = 'Filtre d''appartenance',
+    description_filter_type = E'Permissions limitées par le type d''appartenances des données.\n'
+        'Accès à : aucune (=0), les miennes (=1), celles de mon organisme (=2), toutes (=3).'
+WHERE code_filter_type = 'SCOPE' ;
+
+UPDATE gn_permissions.bib_filters_type 
+SET 
+    label_filter_type = 'Filtre géographique',
+    description_filter_type = E'Permissions limitées par zones géographiques.\n'
+        'Utiliser des id_area séparés par des virgules.'
+WHERE code_filter_type = 'GEOGRAPHIC' ;
+
+UPDATE gn_permissions.bib_filters_type 
+SET 
+    label_filter_type = 'Filtre taxonomique',
+    description_filter_type = E'Permissions limitées par des taxons.\n'
+        'Utiliser des cd_nom séparés par des virgules.'
+WHERE code_filter_type = 'TAXONOMIC' ;
+
+UPDATE gn_permissions.bib_filters_type 
+SET 
+    code_filter_type = 'PRECISION',
+    label_filter_type = 'Filtre de précision',
+    description_filter_type = 'Active (=fuzzy) ou désactive (=exact) le floutage des données (sensibles ou privées).'
+WHERE code_filter_type = 'SENSITIVITY' ;
 
 
 -- -------------------------------------------------------------------------------------------------
@@ -493,37 +538,6 @@ INSERT INTO gn_permissions.t_objects (code_object, description_object)
 
 
 -- -------------------------------------------------------------------------------------------------
--- Rename filter "SENSITIVITY" to "PRECISION" and update others. See #1062.
-UPDATE gn_permissions.bib_filters_type 
-SET 
-    label_filter_type = 'Filtre d''appartenance',
-    description_filter_type = E'Permissions limitées par le type d''appartenances des données.\n'
-        'Accès à : aucune (=0), les miennes (=1), celles de mon organisme (=2), toutes (=3).'
-WHERE code_filter_type = 'SCOPE' ;
-
-UPDATE gn_permissions.bib_filters_type 
-SET 
-    label_filter_type = 'Filtre géographique',
-    description_filter_type = E'Permissions limitées par zones géographiques.\n'
-        'Utiliser des id_area séparés par des virgules.'
-WHERE code_filter_type = 'GEOGRAPHIC' ;
-
-UPDATE gn_permissions.bib_filters_type 
-SET 
-    label_filter_type = 'Filtre taxonomique',
-    description_filter_type = E'Permissions limitées par des taxons.\n'
-        'Utiliser des cd_nom séparés par des virgules.'
-WHERE code_filter_type = 'TAXONOMIC' ;
-
-UPDATE gn_permissions.bib_filters_type 
-SET 
-    code_filter_type = 'PRECISION',
-    label_filter_type = 'Filtre de précision',
-    description_filter_type = 'Active (=fuzzy) ou désactive (=exact) le floutage des données (sensibles ou privées).'
-WHERE code_filter_type = 'SENSITIVITY' ;
-
-
--- -------------------------------------------------------------------------------------------------
 -- Drop "v_roles_permissions" before alterate "cor_role_action_filter_module_object"
 -- because columns depend on it.
 DROP VIEW IF EXISTS gn_permissions.v_roles_permissions ;
@@ -710,7 +724,7 @@ DROP FUNCTION IF EXISTS gn_permissions.fct_tri_does_user_have_already_scope_filt
 INSERT INTO gn_permissions.cor_role_action_filter_module_object
     (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
     SELECT 
-        9, 
+        utilisateurs.get_id_role_by_name('Grp_admin'), 
         gn_permissions.get_id_action('C'), 
         gn_commons.get_id_module_bycode('ADMIN'), 
         gn_permissions.get_id_object('ACCESS_REQUESTS'), 
@@ -719,7 +733,7 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_role_action_filter_module_object AS cor
-        WHERE cor.id_role = 9
+        WHERE cor.id_role = utilisateurs.get_id_role_by_name('Grp_admin')
             AND cor.id_action = gn_permissions.get_id_action('C')
             AND cor.id_module = gn_commons.get_id_module_bycode('ADMIN')
             AND cor.id_object = gn_permissions.get_id_object('ACCESS_REQUESTS')
@@ -730,7 +744,7 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
 INSERT INTO gn_permissions.cor_role_action_filter_module_object
     (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
     SELECT 
-        9, 
+        utilisateurs.get_id_role_by_name('Grp_admin'), 
         gn_permissions.get_id_action('R'), 
         gn_commons.get_id_module_bycode('ADMIN'), 
         gn_permissions.get_id_object('ACCESS_REQUESTS'), 
@@ -739,7 +753,7 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_role_action_filter_module_object AS cor
-        WHERE cor.id_role = 9
+        WHERE cor.id_role = utilisateurs.get_id_role_by_name('Grp_admin')
             AND cor.id_action = gn_permissions.get_id_action('R')
             AND cor.id_module = gn_commons.get_id_module_bycode('ADMIN')
             AND cor.id_object = gn_permissions.get_id_object('ACCESS_REQUESTS')
@@ -750,7 +764,7 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
 INSERT INTO gn_permissions.cor_role_action_filter_module_object
     (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
     SELECT 
-        9, 
+        utilisateurs.get_id_role_by_name('Grp_admin'), 
         gn_permissions.get_id_action('U'), 
         gn_commons.get_id_module_bycode('ADMIN'), 
         gn_permissions.get_id_object('ACCESS_REQUESTS'), 
@@ -759,7 +773,7 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_role_action_filter_module_object AS cor
-        WHERE cor.id_role = 9
+        WHERE cor.id_role = utilisateurs.get_id_role_by_name('Grp_admin')
             AND cor.id_action = gn_permissions.get_id_action('U')
             AND cor.id_module = gn_commons.get_id_module_bycode('ADMIN')
             AND cor.id_object = gn_permissions.get_id_object('ACCESS_REQUESTS')
@@ -770,7 +784,7 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
 INSERT INTO gn_permissions.cor_role_action_filter_module_object
     (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
     SELECT 
-        9, 
+        utilisateurs.get_id_role_by_name('Grp_admin'), 
         gn_permissions.get_id_action('D'), 
         gn_commons.get_id_module_bycode('ADMIN'), 
         gn_permissions.get_id_object('ACCESS_REQUESTS'), 
@@ -779,7 +793,7 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
     WHERE NOT EXISTS (
         SELECT 'X'
         FROM gn_permissions.cor_role_action_filter_module_object AS cor
-        WHERE cor.id_role = 9
+        WHERE cor.id_role = utilisateurs.get_id_role_by_name('Grp_admin')
             AND cor.id_action = gn_permissions.get_id_action('D')
             AND cor.id_module = gn_commons.get_id_module_bycode('ADMIN')
             AND cor.id_object = gn_permissions.get_id_object('ACCESS_REQUESTS')
