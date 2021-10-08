@@ -93,11 +93,9 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   ngAfterViewInit() {
     
     //a chaque reinitialisation du formulaire on place le focus sur la zone de saisie du taxon
-    const taxonInput = document.getElementById("taxonInput");
-    setTimeout(() => {
-      
-      taxonInput.focus();
-    }, 400);
+    const taxonInput = document.getElementById("taxonInput");    
+    taxonInput.focus();
+
     this.occtaxFormOccurrenceService.occurrence.subscribe(() =>
       //  taxonInput.focus()
       console.log("YEP")
