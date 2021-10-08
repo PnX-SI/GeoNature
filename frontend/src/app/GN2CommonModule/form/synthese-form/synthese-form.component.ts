@@ -84,6 +84,9 @@ export class SyntheseSearchComponent implements OnInit {
     this.formService.selectedtaxonFromComponent = [];
     this.formService.selectedTaxonFromRankInput = [];
     this.formService.selectedCdRefFromTree = [];
+    this.formService.selectedRedLists = [];
+    this.formService.selectedStatus = [];
+    this.formService.selectedTaxRefAttributs = [];
     this.formService.searchForm.reset();
 
     // refresh taxon tree

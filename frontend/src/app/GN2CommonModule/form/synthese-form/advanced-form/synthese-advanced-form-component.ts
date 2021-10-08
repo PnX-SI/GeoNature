@@ -96,7 +96,6 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   onStatusCheckboxChanged(event) {
-    console.log('onStatusCheckboxSelected:', event.target.value, event.target.checked);
     if (event.target.checked == true) {
       this.formService.selectedStatus.push(event.target.value);
     } else if (event.target.checked == false) {
@@ -110,12 +109,10 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   onStatusSelected(event) {
-    console.log('onStatusSelected:', event)
     this.formService.selectedStatus.push(event.code);
   }
 
   onStatusDeleted(event) {
-    console.log('onStatusDeleted:', event)
     this.formService.selectedStatus.splice(
       this.formService.selectedStatus.indexOf(event.value.code),
       1
@@ -123,13 +120,11 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   onRedListsSelected(event) {
-    console.log('onRedListsSelected:', event)
     let key = `${event.statusType} [${event.code}]`;
     this.formService.selectedRedLists.push(key);
   }
 
   onRedListsDeleted(event) {
-    console.log('onRedListsDeleted:', event)
     let key = `${event.statusType} [${event.value.code}]`;
     this.formService.selectedRedLists.splice(
       this.formService.selectedRedLists.indexOf(key),
@@ -138,12 +133,10 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   onTaxRefAttributsSelected(event) {
-    console.log('onTaxRefAttributsSelected:', event)
     this.formService.selectedTaxRefAttributs.push(event);
   }
 
   onTaxRefAttributsDeleted(event) {
-    console.log('onTaxRefAttributssDeleted:', event)
     this.formService.selectedTaxRefAttributs.splice(
       this.formService.selectedTaxRefAttributs.indexOf(event),
       1

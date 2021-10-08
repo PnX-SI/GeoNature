@@ -120,40 +120,91 @@
       (onChange)="formService.getCurrentTaxon($event)"
     >
     </pnx-taxonomy>
-    <div
-      class="alert alert-warning taxon-alert"
-      *ngIf="formService.selectedtaxonFromComponent.length > 0"
-    >
-      <p class="taxon-list">
-        <b> Taxon(s) recherché(s):</b>
-      </p>
-      <li
-        class="taxon-list"
-        *ngFor="let taxon of formService.selectedtaxonFromComponent; let i = index"
-      >
-        {{taxon.nom_valide}}
-        <i
-          (click)="formService.removeTaxon(i, formService.selectedtaxonFromComponent)"
-          class="fa fa-times clickable"
-        ></i>
-      </li>
 
+    <div
+      *ngIf="formService.selectedtaxonFromComponent.length > 0"
+      class="alert alert-warning search-alert mt-2"
+    >
+    <h2 class="h6 mb-1"><small>Taxon(s) recherché(s) :</small></h2>
+      <ul
+        *ngIf="formService.selectedtaxonFromComponent.length > 0"
+        class="list-unstyled search-list"
+      >
+        <li 
+          *ngFor="let taxon of formService.selectedtaxonFromComponent; let i = index"
+          class="d-flex justify-content-between align-items-center"
+        >
+          {{taxon.nom_valide}}
+          <i
+            (click)="formService.removeTaxon(i, formService.selectedtaxonFromComponent)"
+            class="fa fa-times clickable"
+            matTooltip="Retirer « {{taxon.nom_valide}} » des filtres de recherche"
+          ></i>
+        </li>
+      </ul>
     </div>
+
     <button
       (click)="openModal($event, advancedTaxon)"
-      class="btn btn-xs btn-outline-secondary advanced"
-    > Avancé
+      class="btn btn-xs btn-outline-secondary advanced mt-2"
+    >
+      Avancé
     </button>
 
-    <br>
-    <span
-      *ngIf="formService.selectedCdRefFromTree.length > 0 || formService.selectedTaxonFromRankInput.length > 0"
+    <div
+      *ngIf="formService.haveAdvancedFormValues()"
+      class="alert alert-warning search-alert mt-2"
     >
-      <b>
-        {{formService.selectedCdRefFromTree.length  + formService.selectedTaxonFromRankInput.length}}
-        taxons séléctionné(s)</b>
-    </span>
+      <h2 class="h6 mb-1"><small>Champs avancé(s) sélectionné(s) :</small></h2>
+      <ul class="list-unstyled search-list">
+        <li *ngIf="
+            formService.selectedCdRefFromTree.length > 0 || formService.selectedTaxonFromRankInput.length > 0
+          "
+          class="d-flex justify-content-between align-items-center"
+        >
+          {{formService.selectedCdRefFromTree.length  + formService.selectedTaxonFromRankInput.length}}
+          taxons
+          
+          <i class="fa fa-info-circle clickable"
+            [matTooltip]="'Sélection : ' + formService.getSelectedTaxonsSummary()"
+            matTooltipPosition="above"
+          ></i>
+        </li>
+        <li 
+          *ngIf="formService.selectedRedLists.length > 0"
+          class="d-flex justify-content-between align-items-center"
+        >
+          {{formService.selectedRedLists.length}} catégories de listes rouges
+          
+          <i class="fa fa-info-circle clickable"
+            [matTooltip]="'Sélection : ' + formService.selectedRedLists.join(', ')"
+            matTooltipPosition="above"
+          ></i>
+        </li>
+        <li 
+          *ngIf="formService.selectedStatus.length > 0"
+          class="d-flex justify-content-between align-items-center"
+        >
+          {{formService.selectedStatus.length}} statuts de protection
+          
+          <i class="fa fa-info-circle clickable"
+            [matTooltip]="'Sélection : ' + formService.selectedStatus.join(', ')"
+            matTooltipPosition="above"
+          ></i>
+        </li>
+        <li 
+          *ngIf="formService.selectedTaxRefAttributs.length > 0"
+          class="d-flex justify-content-between align-items-center"
+        >
+          {{formService.selectedTaxRefAttributs.length}} attributs TaxRef
 
+          <i class="fa fa-info-circle clickable"
+            [matTooltip]="'Sélection : ' + formService.selectedTaxRefAttributs.join(', ')"
+            matTooltipPosition="above"
+          ></i>
+        </li>
+      </ul>
+    </div>
   </fieldset>
 
   <fieldset>
