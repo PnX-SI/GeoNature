@@ -34,7 +34,6 @@ export class OcctaxFormReleveService {
   public datasetId : number = null;
   public datasetComponent;
   public previousReleve = null;
-  public formDisable = true;
 
   constructor(
     private router: Router,
@@ -134,10 +133,8 @@ export class OcctaxFormReleveService {
         "invalidDepth"
       ),
     ]);
-
-
     //on desactive le form, il sera réactivé si la geom est ok
-    this.propertiesForm.disable();
+    this.occtaxFormService.disabled = true;
     this.occtaxFormService.getAdditionnalFields(
       ["OCCTAX_RELEVE"]
     ).subscribe(addFields => {
@@ -199,7 +196,7 @@ export class OcctaxFormReleveService {
         // re disable the form here
         // Angular bug: when we add additionnal form controls, it enable the form
         if(!values.id_releve_occtax) {
-          this.propertiesForm.disable();          
+          this.occtaxFormService.disabled = true;
         }
         // don't know why we have to patch observer separatly
         // but don't work in an other way
@@ -525,6 +522,6 @@ export class OcctaxFormReleveService {
 
   reset() {
     this.propertiesForm.reset(this.initialValues);
-    this.propertiesForm.disable();
+    this.occtaxFormService.disabled = true;
   }
 }

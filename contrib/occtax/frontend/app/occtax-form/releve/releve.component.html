@@ -1,7 +1,7 @@
 <div
   *ngIf="occtaxFormService.disabled"
   id="overlay"
-  [class.disabled-form]="occtaxFormService.disabled"
+  class="disabled-form"
   (click)="formDisabled()"
 >
 </div>
@@ -29,7 +29,6 @@
         class="form-control form-control-sm"
         type="text"
         [formControl]="propertiesForm.get('place_name')"
-        [disableControl]="propertiesForm.disabled"
       >
     </div>
   </div>
@@ -42,7 +41,6 @@
       *ngIf="!occtaxConfig.observers_txt; else elseBlock"
       [parentFormControl]="propertiesForm.get('observers')"
       [idMenu]="occtaxConfig.id_observers_list"
-      [disabled]="propertiesForm.disabled"
       label="{{ 'Releve.Observers' | translate }}"
       [bindAllItem]="true"
     >
@@ -50,7 +48,6 @@
     <ng-template #elseBlock>
       <pnx-observers-text
         [parentFormControl]="propertiesForm.get('observers_txt')"
-        [disabled]="propertiesForm.disabled"
       >
       </pnx-observers-text>
     </ng-template>
@@ -75,7 +72,6 @@
           #dataset
           label="{{ 'MetaData.Datasets' | translate }}" 
           [parentFormControl]="propertiesForm.get('id_dataset')"
-          [disabled]="propertiesForm.disabled"
           (valueLoaded)="userDatasets = $event.value"
           moduleCode="OCCTAX"
           (onChange)="occtaxFormReleveService.onDatasetChanged($event);">
@@ -94,7 +90,6 @@
       label="{{ 'Releve.MinDate' | translate }}"
       [defaultToday]="occtaxConfig.DATE_FORM_WITH_TODAY"
       [parentFormControl]="propertiesForm.get('date_min')"
-      [disabled]="propertiesForm.disabled"
     >
     </pnx-date>
   </div>
@@ -109,14 +104,12 @@
       [isInvalid]="propertiesForm.hasError('invalidDate') || propertiesForm.get('date_max').invalid"
       label="{{ 'Releve.MaxDate' | translate }} "
       [parentFormControl]="propertiesForm.get('date_max')"
-      [disabled]="propertiesForm.disabled"
     >
     </pnx-date>
   </div>
   <div class="d-flex align-content-end flex-wrap">
     <button
       class="btn btn-sm btn-outline-shadow"
-      [disabled]="propertiesForm.disabled"
       (click)="occtaxFormReleveService.showTime = !occtaxFormReleveService.showTime"
     >
       <i
@@ -153,7 +146,6 @@
         class="form-control form-control-sm"
         type="text"
         placeholder="{{'Releve.HourFormat' | translate }}"
-        [disableControl]="propertiesForm.disabled"
       >
     </div>
   </div>
@@ -174,7 +166,6 @@
         class="form-control form-control-sm"
         type="text"
         placeholder="{{'Releve.HourFormat' | translate }}"
-        [disableControl]="propertiesForm.disabled"
       >
     </div>
   </div>
@@ -200,7 +191,6 @@
       [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidAlt')}"
       type="number"
       [formControl]="propertiesForm.get('altitude_min')"
-      [disableControl]="propertiesForm.disabled"
     >
   </div>
 
@@ -215,7 +205,6 @@
       [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidAlt')}"
       type="number"
       [formControl]="propertiesForm.get('altitude_max')"
-      [disableControl]="propertiesForm.disabled"
     >
   </div>
 
@@ -248,7 +237,6 @@
         type="number"
         [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidDepth')}"
         [formControl]="propertiesForm.get('depth_min')"
-        [disableControl]="propertiesForm.disabled"
       >
     </div>
   </div>
@@ -260,7 +248,6 @@
         type="number"
         [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidDepth')}"
         [formControl]="propertiesForm.get('depth_max')"
-        [disableControl]="propertiesForm.disabled"
       >
     </div>
   </div>
@@ -282,7 +269,6 @@
       label="{{ 'Releve.GroupType' | translate }}"
       [parentFormControl]="propertiesForm.get('id_nomenclature_grp_typ')"
       codeNomenclatureType="TYP_GRP"
-      [disabled]="propertiesForm.disabled"
     >
     </pnx-nomenclature>
   </div>
@@ -304,7 +290,6 @@
       label="{{ 'Releve.GeoObjectNature' | translate }}"
       [parentFormControl]="propertiesForm.get('id_nomenclature_geo_object_nature')"
       codeNomenclatureType="NAT_OBJ_GEO"
-      [disabled]="propertiesForm.disabled"
     >
     </pnx-nomenclature>
   </div>
@@ -321,7 +306,6 @@
       label="{{ 'Releve.TechCollectCampanule' | translate }}"
       [parentFormControl]="propertiesForm.get('id_nomenclature_tech_collect_campanule')"
       codeNomenclatureType="TECHNIQUE_OBS"
-      [disabled]="propertiesForm.disabled"
     >
     </pnx-nomenclature>
   </div>

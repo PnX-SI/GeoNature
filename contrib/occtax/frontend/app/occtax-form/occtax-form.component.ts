@@ -78,7 +78,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     if (urlSegments[urlSegments.length - 1] === "taxons") {
       const idReleve = urlSegments[urlSegments.length - 2];      
       if (idReleve && Number.isInteger(Number(idReleve)))  {
-        
+        this.occtaxFormService.disabled = false;
         this.occtaxFormService.id_releve_occtax.next(idReleve)
       } else {        
         // if no idReleve on taxon tab -> redirect
@@ -90,9 +90,10 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     } else {
       this.occtaxFormService.currentTab = "releve";
       const idReleve = urlSegments[urlSegments.length - 1];      
-      if (idReleve && Number.isInteger(Number(idReleve)))  { 
+      if (idReleve && Number.isInteger(Number(idReleve)))  {
+        this.occtaxFormService.disabled = false;
         this.occtaxFormService.id_releve_occtax.next(idReleve)
-      }else {        
+      }else {
         this.occtaxFormService.id_releve_occtax.next(null);
       }
     }
