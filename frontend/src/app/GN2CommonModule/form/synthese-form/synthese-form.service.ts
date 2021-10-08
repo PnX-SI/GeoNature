@@ -17,8 +17,11 @@ export class SyntheseFormService {
   public selectedTaxonFromRankInput = [];
   public dynamycFormDef: Array<any>;
   public areasFilters;
-  public redListsFilters;
   public statusFilters;
+  public selectedStatus = [];
+  public redListsFilters;
+  public selectedRedLists = [];
+  public selectedTaxRefAttributs = [];
 
   constructor(
     @Inject(APP_CONFIG_TOKEN) private cfg,
@@ -163,5 +166,32 @@ export class SyntheseFormService {
       }
       return null;
     };
+  }
+
+  haveAdvancedFormValues(): Boolean {
+    if (this.selectedTaxonFromRankInput.length > 0) {
+      return true;
+    } else if (this.selectedCdRefFromTree.length > 0) {
+      return true;
+    } else if (this.selectedStatus.length > 0) {
+      return true;
+    } else if (this.selectedRedLists.length > 0) {
+      return true;
+    } else if (this.selectedTaxRefAttributs.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  getSelectedTaxonsSummary(): String {
+    let summary = [];
+    if (this.selectedTaxonFromRankInput.length > 0) {
+      summary.push('Rangs : ' + this.selectedTaxonFromRankInput.map(e => e.lb_nom).join(', ') + '.');
+    }
+    if (this.selectedCdRefFromTree.length > 0) {
+      summary.push('Arbre taxo : ' + this.selectedCdRefFromTree.length + ' taxons.');
+    }
+    return summary.join(' ');
   }
 }

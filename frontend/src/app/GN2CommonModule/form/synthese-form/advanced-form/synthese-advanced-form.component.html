@@ -114,6 +114,7 @@
             class="custom-control-input"
             [formControl]="status.control"
             [value]="status.status_types[0]"
+            (change)="onStatusCheckboxChanged($event)"
           />
           <label [for]="status.control_name" class="custom-control-label">
             <small>{{ status.display_name }}</small>
@@ -151,6 +152,8 @@
         keyLabel="nom_categorie_lr"
         keyValue="id_categorie_france"
         label="Liste rouge UICN"
+        (onChange)="onTaxRefAttributsSelected($event)"
+        (onDelete)="onTaxRefAttributsDeleted($event.id_categorie_france)"
       >
       </pnx-multiselect>
     </div>
