@@ -258,11 +258,20 @@ COMMENT ON VIEW gn_profiles.v_synthese_for_profiles IS 'View containing synthese
 
 
 CREATE MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology
-TABLESPACE pg_default
-AS WITH classified_data AS (
-         SELECT DISTINCT vsfp.cd_ref,
-            unnest(ARRAY[ceiling(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision, ceiling(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision]) AS doy_min,
-            unnest(ARRAY[ceiling(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision, ceiling(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision]) AS doy_max,
+         as with classified_data AS (
+           SELECT DISTINCT vsfp.cd_ref,
+            unnest(
+                ARRAY[
+                    floor(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision, 
+                    floor(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision
+                ]
+            ) AS doy_min,
+            unnest(
+                ARRAY[
+                    floor(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision, 
+                    floor(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision
+                    ]
+                ) AS doy_max,
                 CASE
                     WHEN p.active_life_stage = true THEN vsfp.id_nomenclature_life_stage
                     ELSE NULL::integer
@@ -275,25 +284,37 @@ AS WITH classified_data AS (
            FROM gn_profiles.v_synthese_for_profiles vsfp
              CROSS JOIN LATERAL gn_profiles.get_parameters(vsfp.cd_nom) p(cd_ref, spatial_precision, temporal_precision_days, active_life_stage, distance)
           WHERE p.temporal_precision_days IS NOT NULL AND p.spatial_precision IS NOT NULL AND p.active_life_stage IS NOT NULL AND date_part('day'::text, vsfp.date_max - vsfp.date_min) < p.temporal_precision_days::double precision AND vsfp.altitude_min IS NOT NULL AND vsfp.altitude_max IS NOT NULL
-          GROUP BY vsfp.cd_ref, (unnest(ARRAY[ceiling(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision, ceiling(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision])), (unnest(ARRAY[ceiling(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision, ceiling(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision])), (
-                CASE
-                    WHEN p.active_life_stage = true THEN vsfp.id_nomenclature_life_stage
-                    ELSE NULL::integer
-                END)
-        )
- SELECT classified_data.cd_ref,
-    classified_data.doy_min,
-    classified_data.doy_max,
-    classified_data.id_nomenclature_life_stage,
-    classified_data.count_valid_data,
-    classified_data.extreme_altitude_min,
-    classified_data.my_alt_min[round(1 + classified_data.count_valid_data::double precision * ((1::double precision - parameters.value::double precision / 100::double precision) / 2::double precision))],
-    classified_data.extreme_altitude_max,
-    classified_data.my_alt_max[round(array_length(classified_data.my_alt_max, 1) - (1 + classified_data.count_valid_data::double precision * ((1::double precision - parameters.value::double precision / 100::double precision) / 2::double precision)))]
-   FROM classified_data,
-    gn_profiles.t_parameters parameters
-  WHERE parameters.name::text = 'proportion_kept_data'::text
-WITH DATA;
+          GROUP BY 
+          vsfp.cd_ref, 
+          unnest(
+          	ARRAY[
+          		floor(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision, 
+          		floor(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision
+          	    ]
+          	), 
+          unnest(
+          	ARRAY[
+          		floor(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision, 
+          		floor(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision
+          		]
+          	), 
+            CASE
+                WHEN p.active_life_stage = true THEN vsfp.id_nomenclature_life_stage
+                ELSE NULL::integer
+             end
+       )
+        SELECT classified_data.cd_ref,
+		    classified_data.doy_min,
+		    classified_data.doy_max,
+		    classified_data.id_nomenclature_life_stage,
+		    classified_data.count_valid_data,
+		    classified_data.extreme_altitude_min,
+		    classified_data.my_alt_min[round(1 + classified_data.count_valid_data::double precision * ((1::double precision - parameters.value::double precision / 100::double precision) / 2::double precision))],
+		    classified_data.extreme_altitude_max,
+		    classified_data.my_alt_max[round(array_length(classified_data.my_alt_max, 1) - (1 + classified_data.count_valid_data::double precision * ((1::double precision - parameters.value::double precision / 100::double precision) / 2::double precision)))]
+		 FROM classified_data,
+		    gn_profiles.t_parameters parameters
+		 WHERE parameters.name::text = 'proportion_kept_data'::text
 
 COMMENT ON MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology IS 'View containing phenological combinations and corresponding valid data for each taxa';
 
