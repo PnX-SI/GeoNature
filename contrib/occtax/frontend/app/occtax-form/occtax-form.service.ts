@@ -64,9 +64,7 @@ export class OcctaxFormService {
         filter((id) => id !== null),
         distinctUntilChanged(),
       )
-      .subscribe((id) => {
-        console.log("LOAD ?");
-                             
+      .subscribe((id) => {                             
         this.getOcctaxData(id)
       });
   }
