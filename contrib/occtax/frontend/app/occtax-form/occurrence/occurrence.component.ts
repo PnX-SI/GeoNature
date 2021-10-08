@@ -50,7 +50,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public appConfig = AppConfig;
   public occurrenceForm: FormGroup;
   public taxonForm: FormControl; //control permettant de rechercher un taxon TAXREF
-  public taxonInput: HTMLElement;
   public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required
   private advanced: string = "collapsed";
   public countingStep: number = 0;
@@ -89,22 +88,27 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     );
 
     this.initTaxrefSearch();
-    
   }
 
   ngAfterViewInit() {
+    
     //a chaque reinitialisation du formulaire on place le focus sur la zone de saisie du taxon
-    this.taxonInput = document.getElementById("taxonInput");
+    const taxonInput = document.getElementById("taxonInput");
+    setTimeout(() => {
+      
+      taxonInput.focus();
+    }, 400);
     this.occtaxFormOccurrenceService.occurrence.subscribe(() =>
-      this.taxonInput.focus()
+      //  taxonInput.focus()
+      console.log("YEP")
     );
 
     //Pour gérer l'affichage de l'erreur required quand le focus est présent dans l'input
-    this.taxonInput.addEventListener(
+    taxonInput.addEventListener(
       "focus",
       (event) => (this.taxonFormFocus = true)
     );
-    this.taxonInput.addEventListener(
+    taxonInput.addEventListener(
       "blur",
       (event) => (this.taxonFormFocus = false)
     );
@@ -212,7 +216,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   }
 
   submitOccurrenceForm() {
-    this.taxonInput.focus();
+    document.getElementById("taxonInput").focus();
     if (this.occtaxFormOccurrenceService.form.valid) {
       this.occtaxFormOccurrenceService.submitOccurrence();
     }
