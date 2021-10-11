@@ -27,7 +27,7 @@
   </span>
   {{ selectedObsTaxonDetail?.nom_valide }}
 
-  <a 
+  <a *ngIf="selectedObsTaxonDetail"
     [routerLink]="['/synthese/taxon', selectedObsTaxonDetail?.cd_ref]"
     target="_blank"  
   >
@@ -114,7 +114,7 @@
 </mat-card>
 
 
-<mat-tab-group #tabGroup  class="my-tab-grp">
+<mat-tab-group (selectedTabChange)="setValidationTab($event)" #tabGroup  class="my-tab-grp">
   <mat-tab label="Détail de l'occurrence">
     <table class="font-xs table table-striped table-sm">
       <tr>
@@ -392,11 +392,10 @@
   </mat-tab>
 
 
-  <mat-tab
-    (click)="changeMapSize()"
+  <mat-tab 
   >
   <ng-template mat-tab-label>
-    <span (click)="changeTab()">Validation</span>
+    <span >Validation</span>
   </ng-template>
   <div *ngIf="showValidation">
       <h3>Historique de validation de la donnée</h3>

@@ -7,13 +7,6 @@ import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
-import { Color, BaseChartDirective } from "ng2-charts";
-import { ChartDataSets, ChartOptions, ChartType } from 'chart.js';
-
-
-
-import { MapComponent } from '@geonature_common/map/map.component'
-import { TriStateCheckbox } from 'primeng/primeng';
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -21,7 +14,7 @@ import { TriStateCheckbox } from 'primeng/primeng';
   styleUrls: ['./synthese-info-obs.component.scss'],
   providers: [MapService]
 })
-export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
+export class SyntheseInfoObsComponent implements OnInit {
   @Input() idSynthese: number;
   @Input() header: boolean = false;
   @Input() mailCustomSubject: String;
@@ -30,7 +23,6 @@ export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
   public selectedObs: any;
   public validationHistory: Array<any>;
   public selectedObsTaxonDetail: any;
-  @ViewChild(BaseChartDirective) myChart: BaseChartDirective;
   @ViewChild('tabGroup') tabGroup;
   public APP_CONFIG = AppConfig;
   public selectedGeom;
@@ -140,18 +132,15 @@ export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
     this.loadAllInfo(this.idSynthese);
   }
 
-  ngAfterViewInit() {
-    //this.chart.chart.update();
-  }
 
-
-  changeTab() {    
+  // HACK to display a second map on validation tab
+  setValidationTab(event) {
     this.showValidation = true;
     setTimeout(() => {
       this._mapService.map.invalidateSize();
-    }, 100);
-    
+    }, 100);    
   }
+
 
   loadAllInfo(idSynthese) {
     this.isLoading = true;
@@ -300,7 +289,6 @@ export class SyntheseInfoObsComponent implements OnInit, AfterViewInit {
       mailto = encodeURI(mailto);
       mailto = mailto.replace(/,/g, '%2c');
     }
-    console.log(mailto);
     
     return mailto;
   }
