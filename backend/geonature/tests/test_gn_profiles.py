@@ -120,7 +120,6 @@ class TestGnProfiles:
         assert consitancy_data.valid_altitude is True
         assert consitancy_data.valid_phenology is True
         profile = VmValidProfiles.query.first()
-        print("DISTRIBBB", profile.valid_distribution)
 
         wrong_new_obs = create_synthese_record(
             cd_nom=212,
