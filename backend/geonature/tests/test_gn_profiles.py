@@ -7,9 +7,7 @@ import pytest
 from flask import g, url_for, current_app
 import sqlalchemy as sa
 from sqlalchemy.sql.expression import func
-from geoalchemy2.types import Geometry
 from geoalchemy2.elements import WKTElement
-from pyproj import Proj, transform
 
 from geonature.utils.env import db
 from geonature.core.gn_profiles.models import (
@@ -38,20 +36,15 @@ def create_synthese_record(
         cd_nom = Taxref.query.first().cd_nom
     if not id_dataset:
         id_dataset = TDatasets.query.first().id_dataset
-        
+
     geom_4326 = WKTElement(f'POINT({str(x)} {str(y)})', srid=4326)
-    p4326 = Proj('epsg:4326')
-    local_srid = current_app.config["LOCAL_SRID"]
-    p_local = Proj(f'epsg:{local_srid}')
-    x_local, y_local = transform(p4326, p_local, x, y)
-    geom_local = WKTElement(f'POINT({str(x_local)} {str(y_local)})', srid=local_srid)
-    
+
     return Synthese(
         id_synthese=randint(1, 1000000),#TODO: make the sequence work automaticly ?
         cd_nom=cd_nom,
         date_min=date_min,
         date_max=date_max,
-        the_geom_local=geom_local,
+        the_geom_local=func.st_transform(geom_4326, 2154),
         the_geom_4326=geom_4326,
         altitude_min=altitude_min,
         altitude_max=altitude_max,
@@ -70,6 +63,8 @@ def sample_synthese_records_for_profile(app):
             cd_nom=212,
             x=6.12,
             y=44.85,
+            date_min=datetime(2021, 1, 1),
+            date_max=datetime(2021, 1, 1),
             altitude_min=1000,
             altitude_max=1200,
             id_nomenclature_valid_status=func.ref_nomenclatures.get_id_nomenclature(
@@ -90,7 +85,7 @@ def sample_synthese_records_for_profile(app):
         db.session.execute('REFRESH MATERIALIZED VIEW gn_profiles.vm_valid_profiles')
         db.session.execute('REFRESH MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology')
 
-@pytest.mark.usefixtures("client_class", 
+@pytest.mark.usefixtures("client_class",
 "temporary_transaction", "sample_synthese_records_for_profile"
 )
 class TestGnProfiles:
@@ -100,11 +95,14 @@ class TestGnProfiles:
             - check altitude
             - check phenology
             - check distribution
+        -> test the tree sql associated functions
         """
         valid_new_obs = create_synthese_record(
             cd_nom=212,
             x=6.12,
             y=44.85,
+            date_min=datetime(2021, 1, 1),
+            date_max=datetime(2021, 1, 1),
             altitude_min=1100,
             altitude_max=1100,
             id_nomenclature_life_stage=func.ref_nomenclatures.get_id_nomenclature(
@@ -114,20 +112,15 @@ class TestGnProfiles:
         )
         with db.session.begin_nested():
             db.session.add(valid_new_obs)
-        
+
         # check altitude
         consitancy_data = VConsistancyData.query.filter(VConsistancyData.id_synthese == valid_new_obs.id_synthese).one()
         cor = VmCorTaxonPhenology.query.first()
-        print(cor.cd_ref)
-        print(cor.doy_min)
-        print(cor.doy_max)
-        print(cor.calculated_altitude_min)
-        print(cor.calculated_altitude_max)
         assert consitancy_data.valid_distribution is True
         assert consitancy_data.valid_altitude is True
         assert consitancy_data.valid_phenology is True
-
-        
+        profile = VmValidProfiles.query.first()
+        print("DISTRIBBB", profile.valid_distribution)
 
         wrong_new_obs = create_synthese_record(
             cd_nom=212,
@@ -146,20 +139,113 @@ class TestGnProfiles:
             VConsistancyData.id_synthese == wrong_new_obs.id_synthese
         ).one()
         cor = VmCorTaxonPhenology.query.first()
+
         assert consitancy_data.valid_distribution is False
         assert consitancy_data.valid_altitude is False
-        # assert consitancy_data.valid_phenology is False
+        assert consitancy_data.valid_phenology is False
 
 
-    # def test_get_phenology(self, app):
-    #     response = self.client.get(
-    #         url_for("gn_profiles.get_phenology", cd_ref=212),
-    #         query_string={
-    #             "id_nomenclature_life_stage" : db.session.query(func.ref_nomenclatures.get_id_nomenclature("STADE_VIE","10")).first()[0]
-    #         }
-    #     )
-    #     re = VmCorTaxonPhenology.query.all()
-    #     print('LAAAAAAAAA')
-    #     for r in re: 
-    #         print("oHHHHHHHHH", r)
-    #     assert response.status_code == 200
+    def test_get_phenology(self, app):
+        response = self.client.get(
+            url_for("gn_profiles.get_phenology", cd_ref=212),
+            query_string={
+                "id_nomenclature_life_stage" : db.session.query(func.ref_nomenclatures.get_id_nomenclature("STADE_VIE","10")).first()[0]
+            }
+        )
+
+        assert response.status_code == 200
+        data = response.get_json()
+        first_pheno = data[0]
+        assert first_pheno["doy_min"] == 0
+        assert first_pheno["doy_max"] == 10
+        assert first_pheno["extreme_altitude_min"] == 1000
+        assert first_pheno["extreme_altitude_max"] == 1200
+        assert first_pheno["calculated_altitude_min"] == 1000
+        assert first_pheno["calculated_altitude_max"] == 1200
+
+    def test_valid_profile(self, app):
+        response = self.client.get(
+            url_for("gn_profiles.get_profile", cd_ref=212),
+        )
+        assert response.status_code == 200
+        data = response.get_json()["properties"]
+        assert data["altitude_min"] == 1000
+        assert data["altitude_max"] == 1200
+        assert data["first_valid_data"] == '2021-01-01 00:00:00'
+        assert data["last_valid_data"] == '2021-01-01 00:00:00'
+        assert data["count_valid_data"] == 1
+        assert data["active_life_stage"] == True
+
+    def test_get_consistancy_data(self, app):
+        synthese_record = Synthese.query.first()
+        response = self.client.get(
+            url_for("gn_profiles.get_consistancy_data", id_synthese=synthese_record.id_synthese),
+        )
+        assert response.status_code == 200
+
+
+    def test_get_observation_score(self, app):
+        data = {}
+        response = self.client.post(
+            url_for("gn_profiles.get_observation_score"),
+            json=data
+        )
+        assert response.status_code == 400
+
+        data = {
+            "altitude_min": 500,
+            "altitude_max": 600,
+            "date_min": "2021-01-01",
+            "date_max": "2021-01-01",
+            "cd_ref": 500,
+            "geom": {'coordinates': [6.12, 44.85], 'type': 'Point'}
+        }
+        response = self.client.post(
+            url_for("gn_profiles.get_observation_score"),
+            json=data
+        )
+        assert response.status_code == 404
+
+        data.update({"cd_ref": 212})
+        response = self.client.post(
+            url_for("gn_profiles.get_observation_score"),
+            json=data
+        )
+        assert response.status_code == 200
+        result = response.get_json()
+        assert result["valid_altitude"] == False
+        assert result["valid_phenology"] == False
+        assert result["valid_distribution"] == True
+
+        data.update({
+            "date_min": "2021-10-01",
+            "date_max": "2021-10-01",
+            "altitude_min": 1000,
+            "altitude_min": 1200,
+            })
+        response = self.client.post(
+            url_for("gn_profiles.get_observation_score"),
+            json=data
+        )
+        assert response.status_code == 200
+        result = response.get_json()
+        assert result["valid_altitude"] == True
+        assert result["valid_phenology"] == False
+        assert result["valid_distribution"] == True
+
+        data.update({
+            "date_min": "2021-01-01",
+            "date_max": "2021-01-10", # periode de 10 jour
+            })
+        response = self.client.post(
+            url_for("gn_profiles.get_observation_score"),
+            json=data
+        )
+        assert response.status_code == 200
+        result = response.get_json()
+        assert result["valid_altitude"] == True
+        assert result["valid_phenology"] == True
+        assert result["valid_distribution"] == True
+
+
+
