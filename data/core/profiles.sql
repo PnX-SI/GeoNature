@@ -242,7 +242,7 @@ CREATE VIEW gn_profiles.v_synthese_for_profiles AS
      LEFT JOIN taxonomie.taxref t ON ((s.cd_nom = t.cd_nom)))
      CROSS JOIN LATERAL gn_profiles.get_parameters(s.cd_nom) p(cd_ref, spatial_precision, temporal_precision_days, active_life_stage, distance))
   WHERE ((p.spatial_precision IS NOT NULL) AND (
-	  public.st_maxdistance(public.st_centroid(s.the_geom_local), s.the_geom_local) < (p.spatial_precision)::double precision
+	  public.st_maxdistance(public.st_centroid(s.the_geom_4326), s.the_geom_4326) < (p.spatial_precision)::double precision
 	  ) AND (
 		  s.id_nomenclature_valid_status IN ( SELECT (regexp_split_to_table(t_parameters.value, ','::text))::integer AS regexp_split_to_table
            FROM gn_profiles.t_parameters
@@ -252,7 +252,7 @@ CREATE VIEW gn_profiles.v_synthese_for_profiles AS
           WHERE ((t_parameters.name)::text = 'id_rang_for_profiles'::text))));
 
 COMMENT ON VIEW gn_profiles.v_synthese_for_profiles IS 'View containing synthese data feeding profiles calculation. 
- cd_ref, date_min, date_max, the_geom_local, altitude_min, altitude_max and 
+ cd_ref, date_min, date_max, the_geom_4326, altitude_min, altitude_max and 
  id_nomenclature_life_stage fields are mandatory. 
  WHERE clauses have to apply your t_parameters filters (valid_status)';
 
@@ -309,9 +309,9 @@ CREATE MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology
 		    classified_data.id_nomenclature_life_stage,
 		    classified_data.count_valid_data,
 		    classified_data.extreme_altitude_min,
-		    classified_data.my_alt_min[round(1 + classified_data.count_valid_data::double precision * ((1::double precision - parameters.value::double precision / 100::double precision) / 2::double precision))],
+		    classified_data.my_alt_min[round(1 + classified_data.count_valid_data::double precision * ((1::double precision - parameters.value::double precision / 100::double precision) / 2::double precision))] as calculated_altitude_min,
 		    classified_data.extreme_altitude_max,
-		    classified_data.my_alt_max[round(array_length(classified_data.my_alt_max, 1) - (1 + classified_data.count_valid_data::double precision * ((1::double precision - parameters.value::double precision / 100::double precision) / 2::double precision)))]
+		    classified_data.my_alt_max[round(array_length(classified_data.my_alt_max, 1) - (1 + classified_data.count_valid_data::double precision * ((1::double precision - parameters.value::double precision / 100::double precision) / 2::double precision)))] as calculated_altitude_max
 		 FROM classified_data,
 		    gn_profiles.t_parameters parameters
 		 WHERE parameters.name::text = 'proportion_kept_data'::text
@@ -321,7 +321,7 @@ COMMENT ON MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology IS 'View contain
 
 CREATE MATERIALIZED VIEW gn_profiles.vm_valid_profiles AS
  SELECT DISTINCT vsfp.cd_ref,
-    public.st_union(public.st_buffer(vsfp.the_geom_local, (COALESCE(p.spatial_precision, 1))::double precision)) AS valid_distribution,
+    public.st_union(public.st_buffer(vsfp.the_geom_4326, (COALESCE(p.spatial_precision, 1))::double precision)) AS valid_distribution,
     min(vsfp.altitude_min) AS altitude_min,
     max(vsfp.altitude_max) AS altitude_max,
     min(vsfp.date_min) AS first_valid_data,
@@ -340,7 +340,7 @@ CREATE VIEW gn_profiles.v_consistancy_data AS
     s.unique_id_sinp AS id_sinp,
     t.cd_ref,
     t.lb_nom AS valid_name,
-    gn_profiles.check_profile_distribution(s.the_geom_local, p.valid_distribution) AS valid_distribution,
+    gn_profiles.check_profile_distribution(s.the_geom_4326, p.valid_distribution) AS valid_distribution,
     gn_profiles.check_profile_phenology(
       t.cd_ref, s.date_min::date, s.date_max::date, s.altitude_min, s.altitude_max, s.id_nomenclature_life_stage, p.active_life_stage
     ) AS valid_phenology,
