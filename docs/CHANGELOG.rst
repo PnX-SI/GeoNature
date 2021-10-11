@@ -9,6 +9,7 @@ CHANGELOG
 
 * Packaging des modules GeoNature OccTax, OccHab et validation
 * Mise à jour des dépendances
+
   * `UsersHub-authentification-module 1.5.4 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.4>`__
   * `Nomenclature-api-module 1.4.3 <https://github.com/PnX-SI/Nomenclature-api-module/releases/tag/1.4.3>`__
 
@@ -16,7 +17,6 @@ CHANGELOG
 
 * Correction de la commande ``install_packaged_gn_module`` : rechargement des entry points après installation avec pip d’un module paquagé
 * Correction d’un bug lors de l’ajout d’un cadre d’acquisition
-* **TODO :** Correction d’un bug lors de la modification d’un cadre d’acquisition
 
 **⚠️ Notes de version**
 
@@ -30,7 +30,7 @@ CHANGELOG
 
 **Gestion de la base de données avec Alembic**
 
-⚠️ Le passage à la version 3 de Marshmallow nécessite une version compatible des modules (Import, Export, Dashboard...) non disponibles à la date de sortie de cette version.
+⚠️ Avant de mettre à jour GeoNature, vérifiez que les modules que vous utilisez disposent d'une version compatible avec la 2.8.0, suite au passage à la version 3 de Marshmallow.
 
 **🚀 Nouveautés**
 
@@ -39,7 +39,7 @@ CHANGELOG
 * Gestion de la base de données et de ses évolutions avec Alembic (#880)
 * Mise à jour de la procédure d’installation afin d’utiliser Alembic (#880)
 * Révision et réorganisation des scripts et de la documentation d'installation
-* Passage à la version 3 de Marshmallow
+* Passage à la version 3 de Marshmallow (#1451)
 * Suppression du paramètre ``ID_APP``, celui-ci est automatiquement déterminé à partir de la base de données et du code de l’application
 * Ajout d’un index sur le champs ``ref_geo.l_areas.id_area``
 * Mise à jour des dépendances
@@ -54,16 +54,27 @@ CHANGELOG
 **🐛 Corrections**
 
 * Correction de l'envoi d'email lors de la récupération du mot de passe (#1471)
+* Occtax : Correction du focus sur le champs "taxon" quand on enchaine les taxons (#1462)
+* Occtax : Correction du formulaire de modification quand le relevé est une ligne ou un polygone (#1461)
+* Occtax : Correction de la conservation de la date quand on enchaine les relevés (#1442)
+* Correction de l'affichage des longues listes déroulantes dans les champs additionnels (#1442)
 * Mise à jour de la table ``cor_area_synthese`` lors de l’ajout de nouvelles zones via un trigger sur la table ``l_areas`` (#1433)
 * Correction de l'export PDF des fiches de métadonnées (#1449)
 * Jeux de données : correction de l’affichage des imports sources
 * Correction de la configuration Apache et de la gestion par flask d’un GeoNature accessible sur un préfix (e.g. ``/geonature``) (#1463)
 * Correction de la commande ``install_packaged_gn_module``
 * Correction des champs additionnels de type boutons radios (#1464 et #1472)
+* Occtax : Correction du contrôle des heures quand on est sur 2 mois distincts (#1468)
+* Suppression de nombreux identifiants en dur dans les scripts SQL de création de la BDD
+* Correction du trigger d'Occtax vers la Synthèse pour le champs ``Comportement`` (#1469)
+* Correction des fonctions ``get_default_nomenclature_value``
+* Correction du composant ``multiselect`` (#1488)
+* Métadonnées : Suppression en cascade sur les tables ``gn_meta.cor_dataset_territory`` et ``gn_meta.cor_dataset_protocol`` (#1452)
 
 **💻 Développement**
 
 * Mise à jour de plusieurs dépendances
+* Packetage des modules fournis avec GeoNature
 * L’utilisateur connecté est maintenant accessible via ``g.current_user``
 * Nettoyage et refactoring divers
 
@@ -275,7 +286,7 @@ Nécessite la version 1.8.x de TaxHub.
 **💻 Développement**
 
 * Possibilité d'utiliser la commande ``flask`` (eg ``flask shell``)
-* Préparation de l'utilisation d'alembic pour la gestion des migrations de la structure de la BDD (#880)
+* Préparation de l'utilisation d'Alembic pour la gestion des migrations de la structure de la BDD (#880)
 * Possibilité d'importer des modules packagés (#1272)
 * Réorganisation des fichiers ``requirements`` et installation des branches ``develop`` des dépendances du fichier ``requirements-dev.txt``
 * Simplification de la gestion des erreurs

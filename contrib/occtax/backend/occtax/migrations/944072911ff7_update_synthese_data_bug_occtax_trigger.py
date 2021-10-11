@@ -24,8 +24,9 @@ def upgrade():
         SET id_nomenclature_behaviour = sub.id_nomenclature_behaviour
         FROM (
             SELECT occ.id_nomenclature_behaviour, rel.unique_id_sinp_grp
-            FROM pr_occtax.t_releves_occtax rel 
-            JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = occ.id_releve_occtax
+            FROM pr_occtax.t_releves_occtax rel
+            JOIN pr_occtax.t_occurrences_occtax occ ON occ.id_releve_occtax = rel.id_releve_occtax
+            WHERE NOT id_nomenclature_behaviour IS NULL
         ) sub
         WHERE s.unique_id_sinp_grp = sub.unique_id_sinp_grp
         """
