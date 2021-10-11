@@ -161,6 +161,16 @@ done
 cd $myrootpath/$currentdir/
 pip install --editable .
 
+
+c=$(geonature db current 2>/dev/null | wc -l)
+if [ $c -gt 0 ]; then
+    for branch in geonature utilisateurs nomenclatures taxonomie nomenclatures_taxonomie habitats ref_geo; do
+        geonature db upgrade $branch@head -x data-directory=tmp/ -x local-srid=$srid_local
+    done
+else
+    echo "Alembic not used yet, skipping upgrade. Please read changelog carefully to correctly stamp your database."
+fi
+
 echo "Update configurations"
 geonature update_configuration --build=false
 geonature generate_frontend_modules_route
