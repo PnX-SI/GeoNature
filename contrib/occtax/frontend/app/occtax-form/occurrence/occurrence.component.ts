@@ -250,7 +250,9 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   selectAddOcc(taxon) {
     // save current taxon for calling profil on lifestage change
     this.occtaxFormOccurrenceService.currentTaxon = taxon.item;
-    this.occSingServ.profilControl(taxon.item.cd_ref);
+    if(this.appConfig.FRONTEND.ENABLE_PROFILES) {
+      this.occSingServ.profilControl(taxon.item.cd_ref);
+    }
     setTimeout(() => {
       document.getElementById("add-occ").focus();
     }, 50);

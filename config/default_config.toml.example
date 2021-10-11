@@ -182,10 +182,10 @@ MAIL_ON_ERROR = false
     DISPLAY_EMAIL_DISPLAY_INFO = ["NOM_VERN", "DATE", "COMMUNES", "MEDIAS"]
 
     # Activer l'affichage des informations liées aux profils de taxons
-    DISPLAY_PROFILES = true
+    ENABLE_PROFILES = true
 
     # Activer l'affichage des informations liées aux profils de taxons
-    DISPLAY_PROFILES = true
+    ENABLE_PROFILES = true
 
 # Configuration de l'affichage des cartes dans GeoNature
 [MAPCONFIG]

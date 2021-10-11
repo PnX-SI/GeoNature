@@ -259,10 +259,10 @@
   </div>
 
 </mat-accordion>
-<div *ngIf="occSingServ.profilErrors.length > 0" class="alert alert-warning">
+<div *ngIf="appConfig.FRONTEND.ENABLE_PROFILES &&  occSingServ.profilErrors.length > 0" class="alert alert-warning">
   <h5> <mat-icon>warning</mat-icon> Donnée exceptionnelle</h5>
   <ul>
-    <li *ngFor="let err of occtaxFormOccurrenceService.profilErrors">
+    <li *ngFor="let err of occSingServ.profilErrors">
       {{err.value}}
   </li>
   </ul>

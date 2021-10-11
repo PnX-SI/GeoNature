@@ -504,7 +504,7 @@ Il est possible de désaciver l'ensemble des fonctionnalités liées aux profils
 ::
 
     [FRONTEND]
-      DISPLAY_PROFILES = true/false
+      ENABLE_PROFILES = true/false
 
 
 **Précisions sur calcul des phénologies**

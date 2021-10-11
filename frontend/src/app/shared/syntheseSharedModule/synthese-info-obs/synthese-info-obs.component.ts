@@ -130,6 +130,8 @@ export class SyntheseInfoObsComponent implements OnInit {
 
   ngOnInit() {
     this.loadAllInfo(this.idSynthese);
+    console.log(this.CONFIG);
+    
   }
 
 

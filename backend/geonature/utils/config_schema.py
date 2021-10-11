@@ -232,7 +232,7 @@ class GnFrontEndConf(Schema):
     STAT_BLOC_TTL = fields.Integer(load_default=3600)
     DISPLAY_MAP_LAST_OBS = fields.Boolean(load_default=True)
     MULTILINGUAL = fields.Boolean(load_default=False)
-    DISPLAY_PROFILES = fields.Boolean(load_default=True)
+    ENABLE_PROFILES = fields.Boolean(load_default=True)
 
     # show email on synthese and validation info obs modal
     DISPLAY_EMAIL_INFO_OBS = fields.Boolean(load_default=True)

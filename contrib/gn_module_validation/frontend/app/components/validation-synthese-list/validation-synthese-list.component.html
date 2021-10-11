@@ -130,9 +130,9 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column 
+    *ngIf="appConfig.FRONTEND.ENABLE_PROFILES"
     minWidth="10"
     [maxWidth]="100"
-    *ngIf="appConfig.FRONTEND.DISPLAY_PROFILES"
   >
     <ng-template 
       let-column="column" 
