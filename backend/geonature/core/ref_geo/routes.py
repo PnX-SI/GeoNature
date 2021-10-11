@@ -159,6 +159,22 @@ def get_areas():
 
     q = DB.session.query(LAreas).order_by(LAreas.area_name.asc())
 
+    if "enable" in params:
+        enable_param = params["enable"][0].lower()
+        accepted_enable_values = ["true", "false", "all"]
+        if enable_param not in accepted_enable_values:
+            response = {
+                "message": f"Le paramètre 'enable' accepte seulement les valeurs: {', '.join(accepted_enable_values)}.",
+                "status": "warning"
+            }
+            return response, 400
+        if enable_param == "true":
+            q = q.filter(LAreas.enable == True)
+        elif enable_param == "false":
+            q = q.filter(LAreas.enable == False)
+    else:
+        q = q.filter(LAreas.enable == True)
+
     if "id_type" in params:
         q = q.filter(LAreas.id_type.in_(params["id_type"]))
 
