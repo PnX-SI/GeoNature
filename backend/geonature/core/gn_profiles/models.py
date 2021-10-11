@@ -24,7 +24,6 @@ class VmCorTaxonPhenology(DB.Model):
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         primary_key=True, 
     )
-    count_valid_data = DB.Column(DB.Integer)
     extreme_altitude_min = DB.Column(DB.Integer)
     calculated_altitude_min = DB.Column(DB.Integer)
     extreme_altitude_max = DB.Column(DB.Integer)
