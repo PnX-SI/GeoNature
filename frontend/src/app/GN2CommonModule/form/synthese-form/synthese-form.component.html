@@ -39,6 +39,7 @@
       </label>
     </div>
     <button
+      *ngIf="AppConfig.FRONTEND.ENABLE_PROFILES"
       class="btn btn-sm btn-outline-shadow profile float-right"
       data-toggle="collapse"
       data-target="#collapseScore"
