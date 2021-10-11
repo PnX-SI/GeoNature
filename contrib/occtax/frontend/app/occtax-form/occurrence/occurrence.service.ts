@@ -35,8 +35,6 @@ export class OcctaxFormOccurrenceService {
   public data : any;
   public idDataset : number;
   public profilErrors = [];
-  public idNomenclaturelifeStageProfilErrors = new Set();
-
   public formFieldsStatus: any;
   public currentTaxon: any;
 
@@ -513,7 +511,12 @@ export class OcctaxFormOccurrenceService {
     this._dataS.controlProfile(postData).subscribe(
       data => {        
         this.profilErrors = data["errors"];
-      });
+      },
+      errors => {        
+        this.profilErrors = [];
+        
+      }
+      );
   }
 
 }
