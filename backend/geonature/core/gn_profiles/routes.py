@@ -3,6 +3,7 @@ import datetime
 import math
 
 from flask import Blueprint, request
+from flask.globals import current_app
 from geoalchemy2.shape import to_shape
 from geojson import Feature
 from sqlalchemy.sql import func, text, select
@@ -17,9 +18,15 @@ from geonature.utils.env import DB
 routes = Blueprint("gn_profiles", __name__)
 
 
-@routes.route("/cor_taxon_phenology/<cd_ref>", methods=["GET"])
+@routes.route("/cor_taxon_phenology/<int:cd_ref>", methods=["GET"])
 @json_resp
 def get_phenology(cd_ref):
+    """
+    .. :quickref: Profiles;
+
+    Get phenoliques periods for a given taxon
+    
+    """
     filters=request.args
     query = DB.session.query(VmCorTaxonPhenology).filter(VmCorTaxonPhenology.cd_ref == cd_ref)
     if "id_nomenclature_life_stage" in filters:
@@ -53,6 +60,8 @@ def get_phenology(cd_ref):
 @json_resp
 def get_profile(cd_ref):
     """
+    .. :quickref: Profiles;
+
     Return the profile for a cd_ref
     """
     data = (
@@ -72,6 +81,8 @@ def get_profile(cd_ref):
 @json_resp
 def get_consistancy_data(id_synthese):
     """
+    .. :quickref: Profiles;
+
     Return the validation score for a synthese data
     """
     data = DB.session.query(VConsistancyData).get(id_synthese)
@@ -79,15 +90,19 @@ def get_consistancy_data(id_synthese):
         return data.as_dict()
     return None
 
-
 @routes.route("/check_observation", methods=["POST"])
 @json_resp
 def get_observation_score():
+    """
+    .. :quickref: Profiles;
+
+    Check an observation with the related profile
+    Return alert when the observation do not match the profile
+    """
     data = request.get_json()
     try:
         cd_ref = data["cd_ref"]
-        print("CD8REF", cd_ref)
-    except AttributeError:
+    except KeyError:
         raise BadRequest("No cd_ref provided")
 
     # Récupération du profil du cd_ref
@@ -100,9 +115,9 @@ def get_observation_score():
     check_life_stage = profile.active_life_stage
         
     result = {
-        "valid_distribution": False,
-        "valid_altitude": False,
-        "valid_phenology": False,
+        "valid_distribution": True,
+        "valid_altitude": True,
+        "valid_phenology": True,
         "valid_life_stage": None,
         "life_stage_accepted": [],
         "errors": [],
@@ -110,12 +125,8 @@ def get_observation_score():
         "check_life_stage": check_life_stage
     }
         
-    # Récupération du paramètre "période" attribué au taxon
-    sql = text("""select temporal_precision_days from gn_profiles.get_parameters(:cd_ref)""")
-
-
     # Calcul de la période correspondant à la date
-    if data.get("date_min") and data.get("date_max") in data:
+    if data.get("date_min") and data.get("date_max"):
         date_min = datetime.datetime.strptime(data["date_min"], "%Y-%m-%d")
         date_max = datetime.datetime.strptime(data["date_max"], "%Y-%m-%d")
         # Calcul du numéro du jour pour les dates min et max
@@ -128,15 +139,18 @@ def get_observation_score():
         altitude_min = data["altitude_min"]
         altitude_max = data["altitude_max"]
     else:
-        raise BadRequest('Missing altitude')
+        raise BadRequest('Missing altitude_min or altitude_max')
     # Check de la répartition
     if "geom" in data:
-        check_geom = DB.session.query(
+        print(data["geom"])
+        query = DB.session.query(
             func.ST_Contains(
                 func.ST_Transform(profile.valid_distribution, 4326),
                 func.ST_SetSRID(func.ST_GeomFromGeoJSON(json.dumps(data["geom"])), 4326),
             )
-        ).one_or_none()
+        )
+        
+        check_geom = query.one_or_none()
         if not check_geom:
             result["valid_distribution"] = False
             result["errors"].append(
@@ -164,10 +178,8 @@ def get_observation_score():
         )
 
         period_result = q_pheno.all()
-        if len(period_result) > 0:
-            result["valid_phenology"] =  True
-        else:
-            result["valid_phenology"] =  False
+        if len(period_result) == 0:
+            result["valid_phenology"] = False
             result["errors"].append({
                  "type": "period",
                  "value": "Le taxon n'a jamais été observé à cette periode"
@@ -181,9 +193,9 @@ def get_observation_score():
             "value": f"Le taxon n'a déjà été observé entre {altitude_min}m et {altitude_max}m d'altitude"
             })
         # check de l'altitude pour la période donnée
-        else:
+        if len(period_result) > 0:
             peridod_and_altitude = q_pheno.filter(VmCorTaxonPhenology.calculated_altitude_min <= altitude_min)
-            peridod_and_altitude = q_pheno.filter(VmCorTaxonPhenology.calculated_altitude_max >= altitude_max)
+            peridod_and_altitude = peridod_and_altitude.filter(VmCorTaxonPhenology.calculated_altitude_max >= altitude_max)
             peridod_and_altitude_r = peridod_and_altitude.all()
             if len(peridod_and_altitude_r) > 0:
                 result["valid_altitude"] = True
