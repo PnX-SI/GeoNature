@@ -1547,7 +1547,7 @@ Module Admin
 -------------
 
 Administration des champs additionnels
-**************************************
+""""""""""""""""""""""""""""""""""""""
 
 Certains protocoles nécessitent la saisie de champs qui vont au-delà des standards du SINP sur lesquels GeoNature s'appuie. Les champs additionnels permettent ainsi d'étendre les formulaires en ajoutant des informations spécifiques pour des jeux de données (JDD) ou pour l'ensemble d'un module.
 
@@ -1577,6 +1577,13 @@ Exemples de configuration :
 - Un champs type "html". C'est un champs de type "présentation", aucune valeur ne sera enregistré en base de données pour ce champs :
 .. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/html1.png
 
+Configuration avancée des champs
+********************************
+
+Le champs "Attribut additionnels" permet d'ajouter des éléments de configuration sur les formulaires sour forme de JSON:
+- Ajouter une icone "?" et un tooltip au survol du formulaire : `{"description" : "mon toolitp"}`
+- Ajouter un sous-titre descriptif : `{"help" : "mon sous titre"}`
+- Ajouter des valeurs min/max pour un input `number` : `{"min": 1, "max": 10}`
 
 Module OCCHAB
 -------------
