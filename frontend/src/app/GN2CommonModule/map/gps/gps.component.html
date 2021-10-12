@@ -9,8 +9,8 @@
       <p> Degrés décimaux (WGS84) </p>
       <div class="form-inline">
         <div class="form-group ">
-            <input class="form-control col-sm-4 col-md-4" placeholder="X" [(ngModel)]='x' type="number">
-            <input class="form-control col-sm-4 col-md-4" placeholder="Y" [(ngModel)]='y' type="number">
+            <input class="form-control col-sm-4 col-md-4" placeholder="X" [(ngModel)]='x' type="number" onwheel="this.blur()">
+            <input class="form-control col-sm-4 col-md-4" placeholder="Y" [(ngModel)]='y' type="number" onwheel="this.blur()">
         </div>
       </div>
     </div>

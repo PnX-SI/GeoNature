@@ -14,6 +14,7 @@
     <small>Précision du pointage (m)</small>
     <input
       type="number"
+      onwheel="this.blur()"
       [formControl]="propertiesForm.get('precision')"
       class="form-control form-control-sm"
       placeholder="Précision du pointage"
@@ -190,6 +191,7 @@
       class="form-control form-control-sm"
       [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidAlt')}"
       type="number"
+      onwheel="this.blur()"
       [formControl]="propertiesForm.get('altitude_min')"
     >
   </div>
@@ -204,6 +206,7 @@
       class="form-control form-control-sm"
       [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidAlt')}"
       type="number"
+      onwheel="this.blur()"
       [formControl]="propertiesForm.get('altitude_max')"
     >
   </div>
@@ -235,6 +238,7 @@
       <input
         class="form-control form-control-sm"
         type="number"
+        onwheel="this.blur()"
         [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidDepth')}"
         [formControl]="propertiesForm.get('depth_min')"
       >
@@ -246,6 +250,7 @@
       <input
         class="form-control form-control-sm"
         type="number"
+        onwheel="this.blur()"
         [ngClass]="{'is-invalid' : propertiesForm.hasError('invalidDepth')}"
         [formControl]="propertiesForm.get('depth_max')"
       >

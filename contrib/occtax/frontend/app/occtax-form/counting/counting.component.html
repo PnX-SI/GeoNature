@@ -46,6 +46,7 @@
     <input
       class="form-control form-control-sm"
       type="number"
+      onwheel="this.blur()"
       min="0"
       [ngClass]="{'is-invalid': countingForm.hasError('invalidCount')}"
       [formControl]="countingForm.get('count_min')"
@@ -60,6 +61,7 @@
     <input
       class="form-control form-control-sm"
       type="number"
+      onwheel="this.blur()"
       min="0"
       [ngClass]="{'is-invalid': countingForm.hasError('invalidCount')}"
       [formControl]="countingForm.get('count_max')"
