@@ -53,7 +53,8 @@ class DatasetSchema(MetadataSchema):
     modules = MA.Nested(
         ModuleSchema, 
         many=True, 
-        exclude=("meta_create_date", "meta_update_date")
+        exclude=("meta_create_date", "meta_update_date"),
+        unknown=EXCLUDE
     )
 
     creator = MA.Nested(UserSchema, dump_only=True)
