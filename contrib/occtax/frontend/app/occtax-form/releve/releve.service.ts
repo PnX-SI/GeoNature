@@ -144,8 +144,10 @@ export class OcctaxFormReleveService {
 
   onDatasetChanged(idDataset) {    
     const currentDataset = this._datasetStoreService.datasets.find(d => d.id_dataset == idDataset);
-    if(currentDataset && currentDataset.id_taxa_list) {      
+    if(currentDataset && currentDataset.id_taxa_list) {    
       this.occtaxFormService.idTaxonList = currentDataset.id_taxa_list;
+    } else {
+      this.occtaxFormService.idTaxonList = ModuleConfig.id_taxon_list
     }
     this.occtaxFormService.getAdditionnalFields(  
       ["OCCTAX_RELEVE"],
@@ -485,7 +487,6 @@ export class OcctaxFormReleveService {
     } else {
       // save previous releve   
       this.occtaxFormService.previousReleve = JSON.parse(JSON.stringify(this.releveForm.value));
-      console.log("PREVISOUS", this.occtaxFormService.previousReleve);
       
       //create
       this.occtaxDataService
