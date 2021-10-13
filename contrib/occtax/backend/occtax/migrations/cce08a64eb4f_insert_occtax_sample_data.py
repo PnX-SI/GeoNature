@@ -51,27 +51,31 @@ def downgrade():
     """)
     op.execute("""
     DELETE FROM gn_commons.cor_module_dataset cmd
-    USING gn_meta.t_datasets ds
+    USING gn_meta.t_datasets ds, gn_meta.t_acquisition_frameworks taf
     WHERE cmd.id_dataset = ds.id_dataset
-    AND ds.unique_dataset_id IN ('4d331cae-65e4-4948-b0b2-a11bc5bb46c2', 'dadab32d-5f9e-4dba-aa1f-c06487d536e8')
+    AND ds.id_acquisition_framework = taf.id_acquisition_framework
+    AND taf.unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'
     """)
     op.execute("""
     DELETE FROM gn_meta.cor_dataset_protocol cdp
-    USING gn_meta.t_datasets ds
+    USING gn_meta.t_datasets ds, gn_meta.t_acquisition_frameworks taf
     WHERE cdp.id_dataset = ds.id_dataset
-    AND ds.unique_dataset_id IN ('4d331cae-65e4-4948-b0b2-a11bc5bb46c2', 'dadab32d-5f9e-4dba-aa1f-c06487d536e8')
+    AND ds.id_acquisition_framework = taf.id_acquisition_framework
+    AND taf.unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'
     """)
     op.execute("""
     DELETE FROM gn_meta.cor_dataset_territory cdt
-    USING gn_meta.t_datasets ds
+    USING gn_meta.t_datasets ds, gn_meta.t_acquisition_frameworks taf
     WHERE cdt.id_dataset = ds.id_dataset
-    AND ds.unique_dataset_id IN ('4d331cae-65e4-4948-b0b2-a11bc5bb46c2', 'dadab32d-5f9e-4dba-aa1f-c06487d536e8')
+    AND ds.id_acquisition_framework = taf.id_acquisition_framework
+    AND taf.unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'
     """)
     op.execute("""
     DELETE FROM gn_meta.cor_dataset_actor cda
-    USING gn_meta.t_datasets ds
+    USING gn_meta.t_datasets ds, gn_meta.t_acquisition_frameworks taf
     WHERE cda.id_dataset = ds.id_dataset
-    AND ds.unique_dataset_id IN ('4d331cae-65e4-4948-b0b2-a11bc5bb46c2', 'dadab32d-5f9e-4dba-aa1f-c06487d536e8')
+    AND ds.id_acquisition_framework = taf.id_acquisition_framework
+    AND taf.unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'
     """)
     op.execute("""
     DELETE FROM gn_meta.cor_acquisition_framework_actor cafa
