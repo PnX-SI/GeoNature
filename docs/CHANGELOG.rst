@@ -116,16 +116,17 @@ CHANGELOG
       VERSION_LOCATIONS = '/path/to/usershub/app/migrations/versions'
 
   * Entrer dans le virtualenv afin d’avoir la commande ``geonature`` disponible : ``source backend/venv/bin/activate``
-  * Indiquer à Alembic l’état de votre base de données :
+  * Exécuter les commandes suivantes afin d’indiquer à Alembic l’état de votre base de données :
 
-    * Indiquer que la base est en version 2.7.5 : ``geonature db stamp f06cc80cc8ba``
-    * Si la base contient le référentiel géographique des communes : ``geonature db stamp 0dfdbfbccd63``
-    * Si la base contient le référentiel géographique des départements : ``geonature db stamp 3fdaa1805575``
-    * Si la base contient le référentiel géographique des mailles 1×1 : ``geonature db stamp 586613e2faeb``
-    * Si la base contient le référentiel géographique des mailles 5×5 : ``geonature db stamp 7d6e98441e4c``
-    * Si la base contient le référentiel géographique des mailles 10×10 : ``geonature db stamp ede150d9afd9``
-    * Si la base contient le MNT de l’IGN : ``geonature db stamp 1715cf31a75d``
-    * Si la base contient le MNT de l’IGN vectorisé : ``geonature db stamp 87651375c2e8``
+  .. code-block::
+
+      $ geonature db stamp f06cc80cc8ba  # GeoNature 2.7.5``
+      $ geonature db stamp 0dfdbfbccd63  # référentiel géographique des communes``
+      $ geonature db stamp 3fdaa1805575  # référentiel géographique des départements``
+      $ geonature db stamp 586613e2faeb  # référentiel géographique des mailles 1×1``
+      $ geonature db stamp 7d6e98441e4c  # référentiel géographique des mailles 5×5``
+      $ geonature db stamp ede150d9afd9  # référentiel géographique des mailles 10×10``
+      $ geonature db stamp 1715cf31a75d  # MNT de l’IGN``
 
   * Mettre sa base de données à jour avec Alembic : ``geonature db upgrade geonature@head``
 
