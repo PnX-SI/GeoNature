@@ -112,8 +112,6 @@ def upgrade():
 def downgrade():
     op.execute(f'DROP SCHEMA gn_profiles CASCADE')
     op.execute("""
-    DROP VIEW gn_commons.v_synthese_validation_forwebapp;
-    
     CREATE VIEW gn_commons.v_synthese_validation_forwebapp
     WITH (security_barrier=false)
     AS
