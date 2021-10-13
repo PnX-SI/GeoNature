@@ -10,7 +10,7 @@ CHANGELOG
 * Packaging des modules GeoNature OccTax, OccHab et validation
 * Mise à jour des dépendances
 
-  * `UsersHub-authentification-module 1.5.4 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.4>`__
+  * `UsersHub-authentification-module 1.5.5 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.5>`__
   * `Nomenclature-api-module 1.4.3 <https://github.com/PnX-SI/Nomenclature-api-module/releases/tag/1.4.3>`__
 
 **🐛 Corrections**
