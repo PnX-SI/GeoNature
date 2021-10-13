@@ -754,7 +754,7 @@ def export(info_role):
     additional_col_names = []
     query_add_fields = DB.session.query(TAdditionalFields).filter(
         TAdditionalFields.modules.any(module_code="OCCTAX")
-    )
+    ).filter(TAdditionalFields.exportable == True)
     global_add_fields = query_add_fields.filter(~TAdditionalFields.datasets.any()).all()
     if "id_dataset" in request.args:
         dataset_add_fields = query_add_fields.filter(
