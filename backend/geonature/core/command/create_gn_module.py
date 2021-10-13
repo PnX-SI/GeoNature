@@ -103,7 +103,7 @@ def install_packaged_gn_module(module_path, module_code, build):
             alembic_branch = load_entry_point(module_dist, 'gn_module', 'alembic_branch')
         except ImportError:
             alembic_branch = module_code.lower()
-        db_upgrade(revision=alembic_branch)
+        db_upgrade(revision=alembic_branch + '@head')
     else:
         log.info("Module do not provide any migration files, skipping database upgrade.")
 
