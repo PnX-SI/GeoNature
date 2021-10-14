@@ -116,6 +116,9 @@ def install_packaged_gn_module(module_path, module_code, build):
     else:
         os.symlink(os.path.abspath(module_path), module_symlink)
 
+    # creation du fichier conf_gn_module.toml
+    gn_module_register_config(module_code)
+
     ### Frontend
     # creation du lien symbolique des assets externes
     enable_frontend = create_external_assets_symlink(
