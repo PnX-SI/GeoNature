@@ -75,6 +75,7 @@ available_maplist_column = [
 ]
 
 default_columns_export = [
+    "id_releve_occtax",
     "permId",
     "statObs",
     "nomCite",
