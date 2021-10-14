@@ -764,8 +764,6 @@ def export(info_role):
 
 
     additional_col_names = [field.field_name for field in global_add_fields]
-    print(columns)
-    print(export_col_name_additional_data in columns)
     if export_format == "csv":
         # set additional data col at the end (remove it and inset it ...)
         columns.remove(export_col_name_additional_data)
