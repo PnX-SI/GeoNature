@@ -219,6 +219,95 @@ class SyntheseQuery:
                 self.query = self.query.where(
                     aliased_cor_taxon_attr[taxhub_id_attr].valeur_attribut.in_(value)
                 )
+            elif colname.endswith("_red_lists"):
+                red_list_id = colname.replace("_red_lists", "")
+                all_red_lists_cfg = current_app.config["SYNTHESE"]["RED_LISTS_FILTERS"]
+                red_list_cfg = next(
+                    (item for item in all_red_lists_cfg if item["id"] == red_list_id), None
+                )
+                red_list_cte = (
+                    select([TaxrefBdcStatutTaxon.cd_ref, bdc_statut_cor_text_area.c.id_area])
+                    .select_from(
+                        TaxrefBdcStatutTaxon.__table__.join(
+                            TaxrefBdcStatutCorTextValues,
+                            TaxrefBdcStatutCorTextValues.id_value_text
+                            == TaxrefBdcStatutTaxon.id_value_text,
+                        )
+                        .join(
+                            TaxrefBdcStatutText,
+                            TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextValues.id_text,
+                        )
+                        .join(
+                            TaxrefBdcStatutValues,
+                            TaxrefBdcStatutValues.id_value
+                            == TaxrefBdcStatutCorTextValues.id_value,
+                        )
+                        .join(
+                            bdc_statut_cor_text_area,
+                            bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutText.id_text,
+                        )
+                    )
+                    .where(TaxrefBdcStatutValues.code_statut.in_(value))
+                    .where(TaxrefBdcStatutText.cd_type_statut == red_list_cfg["status_type"])
+                    .where(TaxrefBdcStatutText.enable == True)
+                    .cte(name=f"{red_list_id}_red_list")
+                )
+                # cas_red_list = aliased(CorAreaSynthese)
+                self.add_join(CorAreaSynthese, CorAreaSynthese.id_synthese, self.model.id_synthese)
+                self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
+                self.add_join_multiple_cond(
+                    red_list_cte,
+                    [
+                        red_list_cte.c.cd_ref == Taxref.cd_ref,
+                        red_list_cte.c.id_area == CorAreaSynthese.id_area,
+                    ],
+                )
+
+            elif colname.endswith("_status"):
+                status_id = colname.replace("_status", "")
+                all_status_cfg = current_app.config["SYNTHESE"]["STATUS_FILTERS"]
+                status_cfg = next(
+                    (item for item in all_status_cfg if item["id"] == status_id), None
+                )
+                # Check if a checkbox was used.
+                if (
+                    isinstance(value, list)
+                    and value[0] == True
+                    and len(status_cfg["status_types"]) == 1
+                ):
+                    value = status_cfg["status_types"]
+                status_cte = (
+                    select([TaxrefBdcStatutTaxon.cd_ref, bdc_statut_cor_text_area.c.id_area])
+                    .select_from(
+                        TaxrefBdcStatutTaxon.__table__.join(
+                            TaxrefBdcStatutCorTextValues,
+                            TaxrefBdcStatutCorTextValues.id_value_text
+                            == TaxrefBdcStatutTaxon.id_value_text,
+                        )
+                        .join(
+                            TaxrefBdcStatutText,
+                            TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextValues.id_text,
+                        )
+                        .join(
+                            bdc_statut_cor_text_area,
+                            bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutText.id_text,
+                        )
+                    )
+                    .where(TaxrefBdcStatutText.cd_type_statut.in_(value))
+                    .where(TaxrefBdcStatutText.enable == True)
+                    .distinct()
+                    .cte(name=f"{status_id}_status")
+                )
+                # cas_status = aliased(CorAreaSynthese)
+                self.add_join(CorAreaSynthese, CorAreaSynthese.id_synthese, self.model.id_synthese)
+                self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
+                self.add_join_multiple_cond(
+                    status_cte,
+                    [
+                        status_cte.c.cd_ref == Taxref.cd_ref,
+                        status_cte.c.id_area == CorAreaSynthese.id_area,
+                    ],
+                )
 
         # remove attributes taxhub from filters
         self.filters = {
@@ -350,95 +439,6 @@ class SyntheseQuery:
             if colname.startswith("area"):
                 self.add_join(CorAreaSynthese, CorAreaSynthese.id_synthese, self.model.id_synthese)
                 self.query = self.query.where(CorAreaSynthese.id_area.in_(value))
-            elif colname.endswith("_red_lists"):
-                red_list_id = colname.replace("_red_lists", "")
-                all_red_lists_cfg = current_app.config["SYNTHESE"]["RED_LISTS_FILTERS"]
-                red_list_cfg = next(
-                    (item for item in all_red_lists_cfg if item["id"] == red_list_id), None
-                )
-                red_list_cte = (
-                    select([TaxrefBdcStatutTaxon.cd_ref, bdc_statut_cor_text_area.c.id_area])
-                    .select_from(
-                        TaxrefBdcStatutTaxon.__table__.join(
-                            TaxrefBdcStatutCorTextValues,
-                            TaxrefBdcStatutCorTextValues.id_value_text
-                            == TaxrefBdcStatutTaxon.id_value_text,
-                        )
-                        .join(
-                            TaxrefBdcStatutText,
-                            TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextValues.id_text,
-                        )
-                        .join(
-                            TaxrefBdcStatutValues,
-                            TaxrefBdcStatutValues.id_value
-                            == TaxrefBdcStatutCorTextValues.id_value,
-                        )
-                        .join(
-                            bdc_statut_cor_text_area,
-                            bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutText.id_text,
-                        )
-                    )
-                    .where(TaxrefBdcStatutValues.code_statut.in_(value))
-                    .where(TaxrefBdcStatutText.cd_type_statut == red_list_cfg["status_type"])
-                    .where(TaxrefBdcStatutText.enable == True)
-                    .cte(name=f"{red_list_id}_red_list")
-                )
-                cas_red_list = aliased(CorAreaSynthese)
-                self.add_join(cas_red_list, cas_red_list.id_synthese, self.model.id_synthese)
-                self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
-                self.add_join_multiple_cond(
-                    red_list_cte,
-                    [
-                        red_list_cte.c.cd_ref == Taxref.cd_ref,
-                        red_list_cte.c.id_area == cas_red_list.id_area,
-                    ],
-                )
-
-            elif colname.endswith("_status"):
-                status_id = colname.replace("_status", "")
-                all_status_cfg = current_app.config["SYNTHESE"]["STATUS_FILTERS"]
-                status_cfg = next(
-                    (item for item in all_status_cfg if item["id"] == status_id), None
-                )
-                # Check if a checkbox was used.
-                if (
-                    isinstance(value, list)
-                    and value[0] == True
-                    and len(status_cfg["status_types"]) == 1
-                ):
-                    value = status_cfg["status_types"]
-                status_cte = (
-                    select([TaxrefBdcStatutTaxon.cd_ref, bdc_statut_cor_text_area.c.id_area])
-                    .select_from(
-                        TaxrefBdcStatutTaxon.__table__.join(
-                            TaxrefBdcStatutCorTextValues,
-                            TaxrefBdcStatutCorTextValues.id_value_text
-                            == TaxrefBdcStatutTaxon.id_value_text,
-                        )
-                        .join(
-                            TaxrefBdcStatutText,
-                            TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextValues.id_text,
-                        )
-                        .join(
-                            bdc_statut_cor_text_area,
-                            bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutText.id_text,
-                        )
-                    )
-                    .where(TaxrefBdcStatutText.cd_type_statut.in_(value))
-                    .where(TaxrefBdcStatutText.enable == True)
-                    .distinct()
-                    .cte(name=f"{status_id}_status")
-                )
-                cas_status = aliased(CorAreaSynthese)
-                self.add_join(cas_status, cas_status.id_synthese, self.model.id_synthese)
-                self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
-                self.add_join_multiple_cond(
-                    status_cte,
-                    [
-                        status_cte.c.cd_ref == Taxref.cd_ref,
-                        status_cte.c.id_area == cas_status.id_area,
-                    ],
-                )
             elif colname.startswith("id_"):
                 col = getattr(self.model.__table__.columns, colname)
                 self.query = self.query.where(col.in_(value))
@@ -451,6 +451,16 @@ class SyntheseQuery:
                         self.query = self.query.where(col == value[0])
                 else:
                     self.query = self.query.where(col.ilike("%{}%".format(value[0])))
+
+    def apply_all_filters(self, user):
+        self.filter_query_with_cruved(user)
+        self.filter_taxonomy()
+        self.filter_other_filters()
+
+    def build_query(self):
+        if self.query_joins is not None:
+            self.query = self.query.select_from(self.query_joins)
+        return self.query
 
     def filter_query_all_filters(self, user):
         """High level function to manage query with all filters.
@@ -466,12 +476,6 @@ class SyntheseQuery:
         -------
         sqlalchemy.orm.query.Query.filter
             Combined filter to apply.
-
         """
-
-        self.filter_query_with_cruved(user)
-        self.filter_taxonomy()
-        self.filter_other_filters()
-        if self.query_joins is not None:
-            self.query = self.query.select_from(self.query_joins)
-        return self.query
+        self.apply_all_filters(user)
+        return self.build_query()
