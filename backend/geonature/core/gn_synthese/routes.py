@@ -2,7 +2,7 @@ import logging
 import json
 import datetime
 import time
-
+import re
 from collections import OrderedDict
 from warnings import warn
 
@@ -17,7 +17,7 @@ import sqlalchemy as sa
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo
-
+from werkzeug.exceptions import BadRequest
 
 from geonature.utils import filemanager
 from geonature.utils.env import DB
@@ -27,27 +27,38 @@ from geonature.utils.utilsgeometrytools import export_as_geo_file
 from geonature.core.gn_meta.models import TDatasets
 
 from geonature.core.gn_synthese.models import (
+    CorAreaSynthese,
+    DefaultsNomenclaturesValue,
     Synthese,
     TSources,
-    DefaultsNomenclaturesValue,
     VSyntheseForWebApp,
     VColorAreaTaxon,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
-    Taxref,
     TaxrefProtectionArticles,
     TaxrefProtectionEspeces,
-    VMTaxrefListForautocomplete,
 )
-from geonature.core.ref_geo.models import LAreas, BibAreasTypes
+from geonature.core.ref_geo.models import (
+    CorAreaStatus,
+    BibAreasTypes,
+    LAreas,
+)
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
-
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
-from werkzeug.exceptions import BadRequest
 
+from apptax.taxonomie.models import (
+    CorTaxonAttribut,
+    Taxref,
+    TaxrefBdcStatutCorTextValues,
+    TaxrefBdcStatutTaxon,
+    TaxrefBdcStatutText,
+    TaxrefBdcStatutType,
+    TaxrefBdcStatutValues,
+    VMTaxrefListForautocomplete,
+)
 
 # debug
 # current_app.config['SQLALCHEMY_ECHO'] = True
@@ -503,7 +514,7 @@ def export_metadata(info_role):
     ])
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, q, filters)
     synthese_query_class.add_join(
-        metadata_view.tableDef, 
+        metadata_view.tableDef,
         getattr(
             metadata_view.tableDef.columns,
             current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"],
@@ -529,7 +540,7 @@ def export_status(info_role):
     .. :quickref: Synthese;
 
     Get the CRUVED from 'R' action because we don't give observations X/Y but only statuts
-    and to be constistant with the data displayed in the web interface
+    and to be consistent with the data displayed in the web interface.
 
     Parameters:
         - HTTP-GET: the same that the /synthese endpoint (all the filter in web app)
@@ -542,55 +553,82 @@ def export_status(info_role):
     else:
         filters = {key: request.args.getlist(key) for key, value in request.args.items()}
 
-    # initalize the select object
+    # Initalize the select object
     q = select(
         [
             distinct(VSyntheseForWebApp.cd_nom),
-            Taxref.nom_complet,
             Taxref.cd_ref,
+            Taxref.nom_complet,
             Taxref.nom_vern,
-            TaxrefProtectionArticles.type_protection,
-            TaxrefProtectionArticles.article,
-            TaxrefProtectionArticles.intitule,
-            TaxrefProtectionArticles.arrete,
-            TaxrefProtectionArticles.date_arrete,
-            TaxrefProtectionArticles.url,
+            TaxrefBdcStatutTaxon.rq_statut,
+            TaxrefBdcStatutType.regroupement_type,
+            TaxrefBdcStatutType.lb_type_statut,
+            TaxrefBdcStatutText.cd_sig,
+            TaxrefBdcStatutText.full_citation,
+            TaxrefBdcStatutText.doc_url,
+            TaxrefBdcStatutValues.code_statut,
+            TaxrefBdcStatutValues.label_statut,
         ]
     )
 
-    synthese_query_class = SyntheseQuery(VSyntheseForWebApp, q, filters)
+    # Initialize SyntheseQuery class
+    synthese_query = SyntheseQuery(VSyntheseForWebApp, q, filters)
 
-    # add join
-    synthese_query_class.add_join(Taxref, Taxref.cd_nom, VSyntheseForWebApp.cd_nom)
-    synthese_query_class.add_join(
-        TaxrefProtectionEspeces,
-        TaxrefProtectionEspeces.cd_nom,
-        VSyntheseForWebApp.cd_nom,
+    # Add join
+    synthese_query.add_join(Taxref, Taxref.cd_nom, VSyntheseForWebApp.cd_nom)
+    synthese_query.add_join(
+        CorAreaSynthese,
+        CorAreaSynthese.id_synthese,
+        VSyntheseForWebApp.id_synthese,
     )
-    synthese_query_class.add_join(
-        TaxrefProtectionArticles,
-        TaxrefProtectionArticles.cd_protection,
-        TaxrefProtectionEspeces.cd_protection,
+    synthese_query.add_join(CorAreaStatus, CorAreaStatus.id_area, CorAreaSynthese.id_area)
+    synthese_query.add_join(TaxrefBdcStatutTaxon, TaxrefBdcStatutTaxon.cd_ref, Taxref.cd_ref)
+    synthese_query.add_join(
+        TaxrefBdcStatutCorTextValues,
+        TaxrefBdcStatutCorTextValues.id_value_text,
+        TaxrefBdcStatutTaxon.id_value_text,
     )
-    # filter with all get params
-    q = synthese_query_class.filter_query_all_filters(info_role)
+    synthese_query.add_join_multiple_cond(
+        TaxrefBdcStatutText,
+        [
+            TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextValues.id_text,
+            TaxrefBdcStatutText.cd_sig == CorAreaStatus.cd_sig,
+        ]
+    )
+    synthese_query.add_join(
+        TaxrefBdcStatutType,
+        TaxrefBdcStatutType.cd_type_statut,
+        TaxrefBdcStatutText.cd_type_statut,
+    )
+    synthese_query.add_join(
+        TaxrefBdcStatutValues,
+        TaxrefBdcStatutValues.id_value,
+        TaxrefBdcStatutCorTextValues.id_value,
+    )
 
-    data = DB.engine.execute(q)
+    # Filter with all get params
+    q = synthese_query.filter_query_all_filters(info_role)
+
+    # Set enable status texts filter
+    q = q.where(TaxrefBdcStatutText.enable == True)
 
     protection_status = []
+    data = DB.engine.execute(q)
     for d in data:
         row = OrderedDict(
             [
-                ("nom_complet", d["nom_complet"]),
-                ("nom_vern", d["nom_vern"]),
                 ("cd_nom", d["cd_nom"]),
                 ("cd_ref", d["cd_ref"]),
-                ("type_protection", d["type_protection"]),
-                ("article", d["article"]),
-                ("intitule", d["intitule"]),
-                ("arrete", d["arrete"]),
-                ("date_arrete", d["date_arrete"]),
-                ("url", d["url"]),
+                ("nom_complet", d["nom_complet"]),
+                ("nom_vern", d["nom_vern"]),
+                ("type_regroupement", d["regroupement_type"]),
+                ("type", d["lb_type_statut"]),
+                ("territoire_application", d["cd_sig"]),
+                ("intitule_doc", re.sub('<[^<]+?>', '', d["full_citation"])),
+                ("code_statut", d["code_statut"]),
+                ("intitule_statut", d["label_statut"]),
+                ("remarque", d["rq_statut"]),
+                ("url_doc", d["doc_url"]),
             ]
         )
         protection_status.append(row)
@@ -600,12 +638,14 @@ def export_status(info_role):
         "nom_vern",
         "cd_nom",
         "cd_ref",
-        "type_protection",
-        "article",
-        "intitule",
-        "arrete",
-        "date_arrete",
-        "url",
+        "type_regroupement",
+        "type",
+        "territoire_application",
+        "intitule_doc",
+        "code_statut",
+        "intitule_statut",
+        "remarque",
+        "url_doc",
     ]
 
     return to_csv_resp(
@@ -807,14 +847,14 @@ def get_taxa_count():
     Get taxa count in synthese filtering with generic parameters
 
     .. :quickref: Synthese;
-    
+
     Parameters
     ----------
     id_dataset: `int` (query parameter)
 
     Returns
     -------
-    count: `int`: 
+    count: `int`:
         the number of taxon
     """
     params = request.args
@@ -833,16 +873,16 @@ def get_observation_count():
     Get observations found in a given dataset
 
     .. :quickref: Synthese;
-    
+
     Parameters
     ----------
     id_dataset: `int` (query parameter)
 
     Returns
     -------
-    count: `int`: 
+    count: `int`:
         the number of observation
-    
+
     """
     params = request.args
 
@@ -860,20 +900,20 @@ def get_bbox():
     Get bbbox of observations
 
     .. :quickref: Synthese;
-    
+
     Parameters
     -----------
     id_dataset: int: (query parameter)
 
     Returns
     -------
-        bbox: `geojson`: 
+        bbox: `geojson`:
             the bounding box in geojson
     """
     params = request.args
 
     query = DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
-        
+
     if "id_dataset" in params:
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
     data = query.one()
