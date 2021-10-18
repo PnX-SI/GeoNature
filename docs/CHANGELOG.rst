@@ -114,8 +114,8 @@ CHANGELOG
 
   * Si vous aviez déjà intallé certains modules, vous devez l’indiquer à Alembic :
   
-    * Module *OccTax* : ``geonature db stamp f57107d2d0ad``
-    * Module *OccHab* : ``geonature db stamp 2984569d5df6``
+    * Module *Occtax* : ``geonature db stamp f57107d2d0ad``
+    * Module *Occhab* : ``geonature db stamp 2984569d5df6``
 
   * Mettre sa base de données à jour avec Alembic : ``geonature db autoupgrade``
 
