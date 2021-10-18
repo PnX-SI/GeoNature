@@ -107,8 +107,7 @@ class CorAcquisitionFrameworkActor(DB.Model):
 
     organism = relationship(
         Organisme,
-        lazy="joined",
-        foreign_keys=[id_organism]
+        lazy="select",
     )
 
     @staticmethod
@@ -160,7 +159,7 @@ class CorDatasetActor(DB.Model):
     )
 
     role = DB.relationship(User, lazy="joined")
-    organism = relationship(Organisme, lazy="joined")
+    organism = relationship(Organisme, lazy="select")
 
     nomenclature_actor_role = DB.relationship(
         TNomenclatures,
