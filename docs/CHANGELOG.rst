@@ -9,15 +9,6 @@ CHANGELOG
 
 ⚠️ Avant de mettre à jour GeoNature, vérifiez que les modules que vous utilisez disposent d'une version compatible avec la 2.8.0, suite au passage à la version 3 de Marshmallow.
 
-**TODO ???**
-
-????? A indiquer ??????????
-
-* Si vous aviez déjà intallé certains modules, vous devez l’indiquer à Alembic :
-
-  * Module *Occtax* : ``geonature db stamp f57107d2d0ad``
-  * Module *Occhab* : ``geonature db stamp 2984569d5df6``
-
 **🚀 Nouveautés**
 
 * Support de Debian 11 / Python 3.9
@@ -113,15 +104,20 @@ CHANGELOG
 
   .. code-block::
 
-      $ geonature db stamp f06cc80cc8ba  # GeoNature 2.7.5``
-      $ geonature db stamp 0dfdbfbccd63  # référentiel géographique des communes``
-      $ geonature db stamp 3fdaa1805575  # référentiel géographique des départements``
-      $ geonature db stamp 586613e2faeb  # référentiel géographique des mailles 1×1``
-      $ geonature db stamp 7d6e98441e4c  # référentiel géographique des mailles 5×5``
-      $ geonature db stamp ede150d9afd9  # référentiel géographique des mailles 10×10``
-      $ geonature db stamp 1715cf31a75d  # MNT de l’IGN``
+      geonature db stamp f06cc80cc8ba  # GeoNature 2.7.5
+      geonature db stamp 0dfdbfbccd63  # référentiel géographique des communes
+      geonature db stamp 3fdaa1805575  # référentiel géographique des départements
+      geonature db stamp 586613e2faeb  # référentiel géographique des mailles 1×1
+      geonature db stamp 7d6e98441e4c  # référentiel géographique des mailles 5×5
+      geonature db stamp ede150d9afd9  # référentiel géographique des mailles 10×10
+      geonature db stamp 1715cf31a75d  # MNT de l’IGN
 
-  * Mettre sa base de données à jour avec Alembic : ``geonature db upgrade geonature@head``
+  * Si vous aviez déjà intallé certains modules, vous devez l’indiquer à Alembic :
+  
+    * Module *OccTax* : ``geonature db stamp f57107d2d0ad``
+    * Module *OccHab* : ``geonature db stamp 2984569d5df6``
+
+  * Mettre sa base de données à jour avec Alembic : ``geonature db autoupgrade``
 
   Pour plus d’information sur l’utilisation d’Alembic, voir la `documentation administrateur de GeoNature <https://docs.geonature.fr/admin-manual.html#administration-avec-alembic>`_.
 
