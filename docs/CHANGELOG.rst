@@ -2,7 +2,7 @@
 CHANGELOG
 =========
 
-2.8.0 - Vaccinium myrtillus (unreleased)
+2.8.0 - Vaccinium myrtillus (2021-10-18)
 ----------------------------------------
 
 **Gestion de la base de données avec Alembic**
