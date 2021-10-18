@@ -7,8 +7,16 @@ from os import environ
 
 import click
 from flask.cli import run_command
+import flask_migrate
+from alembic.migration import MigrationContext
+from alembic.context import EnvironmentContext
+from alembic.script import ScriptDirectory
+from flask_migrate.cli import db as db_cli
+from flask.cli import with_appcontext
 
 from geonature.utils.env import (
+    db,
+    migrate,
     DEFAULT_CONFIG_FILE,
     GEONATURE_VERSION,
 )
@@ -151,3 +159,18 @@ def import_jdd_from_mtd(table_name):
     Import les JDD et CA (et acters associé) à partir d'une table (ou vue) listant les UUID des JDD dans MTD
     """
     import_all_dataset_af_and_actors(table_name)
+
+
+@db_cli.command()
+@with_appcontext
+def autoupgrade():
+    config = migrate.get_config()
+    script = ScriptDirectory.from_config(config)
+    with EnvironmentContext(config, script) as env_context:
+        env_context.configure(db.session.connection())
+        heads = set(env_context.get_head_revisions())  # targets
+        migration_context = env_context.get_context()
+        current_heads = set(migration_context.get_current_heads())
+    for head in current_heads - heads:
+        revision = head + '@head'
+        flask_migrate.upgrade(revision=revision)

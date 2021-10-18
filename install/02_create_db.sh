@@ -96,9 +96,8 @@ done
 ##########################
 
 
-for branch in geonature utilisateurs nomenclatures taxonomie nomenclatures_taxonomie habitats ref_geo; do
-    geonature db upgrade $branch@head -x data-directory=tmp/ -x local-srid=$srid_local
-done
+geonature db upgrade geonature@head -x data-directory=tmp/ -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
+geonature db autoupgrade -x data-directory=tmp/ -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
 
 # Installation des données exemples
 if [ "$add_sample_data" = true ];
