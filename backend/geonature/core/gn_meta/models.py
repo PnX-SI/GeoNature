@@ -339,7 +339,7 @@ class TDatasetsQuery(BaseQuery):
             scope = create_scope
         return query.filter_by_scope(scope)
 
-    
+
 
 @serializable(exclude=['user_actors', 'organism_actors'])
 class TDatasets(CruvedMixin, FilterMixin, db.Model):
@@ -729,7 +729,7 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
     @staticmethod
     def get_user_af(user, only_query=False, only_user=False):
         """get the af(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
-            param: 
+            param:
               - user from TRole model
               - only_query: boolean (return the query not the id_datasets allowed if true)
               - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
