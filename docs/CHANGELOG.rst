@@ -2,35 +2,21 @@
 CHANGELOG
 =========
 
-2.8.0-rc2 (unreleased)
-----------------------
-
-**🚀 Nouveautés**
-
-* Packaging des modules GeoNature OccTax, OccHab et validation
-* Mise à jour des dépendances
-
-  * `UsersHub-authentification-module 1.5.5 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.5>`__
-  * `Nomenclature-api-module 1.4.3 <https://github.com/PnX-SI/Nomenclature-api-module/releases/tag/1.4.3>`__
-
-**🐛 Corrections**
-
-* Correction de la commande ``install_packaged_gn_module`` : rechargement des entry points après installation avec pip d’un module paquagé
-* Correction d’un bug lors de l’ajout d’un cadre d’acquisition
-
-**⚠️ Notes de version**
-
-* Si vous aviez déjà intallé certains modules, vous devez l’indiquer à Alembic :
-
-  * Module *OccTax* : ``geonature db stamp f57107d2d0ad``
-  * Module *OccHab* : ``geonature db stamp 2984569d5df6``
-
-2.8.0-rc1 (2021-10-01)
-----------------------
+2.8.0 - Vaccinium myrtillus (unreleased)
+----------------------------------------
 
 **Gestion de la base de données avec Alembic**
 
 ⚠️ Avant de mettre à jour GeoNature, vérifiez que les modules que vous utilisez disposent d'une version compatible avec la 2.8.0, suite au passage à la version 3 de Marshmallow.
+
+**TODO ???**
+
+????? A indiquer ??????????
+
+* Si vous aviez déjà intallé certains modules, vous devez l’indiquer à Alembic :
+
+  * Module *Occtax* : ``geonature db stamp f57107d2d0ad``
+  * Module *Occhab* : ``geonature db stamp 2984569d5df6``
 
 **🚀 Nouveautés**
 
@@ -45,18 +31,21 @@ CHANGELOG
 * Mise à jour des dépendances
 
   * `TaxHub 1.9.0 <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__
-  * `UsersHub-authentification-module 1.5.3 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.3>`__
-  * `Nomenclature-api-module 1.4.1 <https://github.com/PnX-SI/Nomenclature-api-module/releases/tag/1.4.1>`__
+  * `UsersHub-authentification-module 1.5.5 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.5>`__
+  * `Nomenclature-api-module 1.4.3 <https://github.com/PnX-SI/Nomenclature-api-module/releases/tag/1.4.3>`__
   * `Habref-api-module 0.2.0 <https://github.com/PnX-SI/Habref-api-module/releases/tag/0.2.0>`__
   * `Utils-Flask-SQLAlchemy 0.2.4 <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/releases/tag/0.2.4>`__
   * `Utils-Flask-SQLAlchemy-Geo 0.2.1 <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/releases/tag/0.2.1>`__
 
 **🐛 Corrections**
 
+* Corrections et améliorations des formulaires dynamiques et des champs additionnels
 * Correction de l'envoi d'email lors de la récupération du mot de passe (#1471)
 * Occtax : Correction du focus sur le champs "taxon" quand on enchaine les taxons (#1462)
 * Occtax : Correction du formulaire de modification quand le relevé est une ligne ou un polygone (#1461)
 * Occtax : Correction de la conservation de la date quand on enchaine les relevés (#1442)
+* Occtax : Correction du paramètre d'export des champs additionnels (#1440)
+* Synthèse : correction de la recherche par jeu de données (#1494)
 * Correction de l'affichage des longues listes déroulantes dans les champs additionnels (#1442)
 * Mise à jour de la table ``cor_area_synthese`` lors de l’ajout de nouvelles zones via un trigger sur la table ``l_areas`` (#1433)
 * Correction de l'export PDF des fiches de métadonnées (#1449)
@@ -69,7 +58,11 @@ CHANGELOG
 * Correction du trigger d'Occtax vers la Synthèse pour le champs ``Comportement`` (#1469)
 * Correction des fonctions ``get_default_nomenclature_value``
 * Correction du composant ``multiselect`` (#1488)
+* Correction du script ``migrate.sh`` pour récupérer le fichier ``custom.scss`` depuis son nouvel emplacement (#1430)
+* Correction du paramètre ``EXPORT_OBSERVERS_COL``
 * Métadonnées : Suppression en cascade sur les tables ``gn_meta.cor_dataset_territory`` et ``gn_meta.cor_dataset_protocol`` (#1452)
+* Correction de la commande ``install_packaged_gn_module`` : rechargement des entry points après installation avec pip d’un module packagé
+* Correction d’un bug lors de l’ajout d’un cadre d’acquisition
 
 **💻 Développement**
 
