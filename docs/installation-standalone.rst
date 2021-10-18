@@ -19,7 +19,7 @@ Installation de l'application
 
 * Se placer dans le répertoire de l'utilisateur (``/home/geonatureadmin/`` dans notre cas) 
 
-* Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnX-SI/GeoNature/releases>`_). Voir le `tableau de compatibilité <versions-compatibility.rst>`_ des versions de GeoNature avec ses dépendances.
+* Récupérer l'application (``X.Y.Z`` à remplacer par le numéro de la `dernière version stable de GeoNature <https://github.com/PnEcrins/GeoNature/releases>`_). Voir le `tableau de compatibilité <versions-compatibility.rst>`_ des versions de GeoNature avec ses dépendances.
 
   ::
 
@@ -56,6 +56,7 @@ Rendez vous dans le dossier ``install`` et lancez successivement dans l’ordre 
 * ``02_create_db.sh`` : Création du role postgresql, de la base de données, ajout des extensions nécessaires (postgis, …), création des schémas nécessaires à GeoNature et ajout des données métiers.
 * ``03_install_gn_modules.sh`` : Installation des modules OccTax, OccHab et validation (si activé dans le fichier `settings.ini`).
 * ``04_install_frontend.sh`` : Création des dossiers et liens symboliques nécessaires, création des fichier custom à partir des fichiers d’exemple, génération des fichiers de configuration grâce à la commande `geonature`, installation de nvm, npm et node ainsi que toutes les dépendances javascript nécessaires puis build du front.
+* ``05_configure_apache.sh`` : Installation du fichier de configuration Apache ``/etc/apache2/conf-available/geonature.conf`` et activation des modules Apache nécessaires.
 
 Vous pouvez alors démarrer le backend GeoNature : ``sudo systemctl start geonature2``
 

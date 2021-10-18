@@ -14,7 +14,7 @@ GeoNature possède une architecture modulaire et s'appuie sur plusieurs "service
 GeoNature a également une séparation claire entre le backend (API: intéraction avec la base de données) et le frontend (interface utilisateur). Le backend peut être considéré comme un "service" dont se sert le frontend pour récupérer ou poster des données.
 NB : Le backend et le frontend se lancent séparément dans GeoNature.
 
-.. image :: http://geonature.fr/docs/img/admin-manual/design-geonature.png
+.. image :: _static/design-geonature.png
 
 Base de données
 ---------------
@@ -46,11 +46,11 @@ Depuis la version 2.0.0-rc.4, il faut noter que les droits (CRUVED) ont été re
 
 Modèle simplifié de la BDD (2017-12-15) :
 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
+.. image :: _static/2017-12-15-GN2-MCD-simplifie.jpg
 
 Dernière version complète de la base de données (GeoNature 2.1 / 2019-08) :
 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2019-08-GN2-1-MCD.png
+.. image :: _static/2019-08-GN2-1-MCD.png
 
 Les relations complexes entre les schémas ont été grisées pour faciliter la lisibilité.
 
@@ -313,7 +313,7 @@ Récapitulatif :
 - Si un utilisateur n'a aucune action possible sur un module, alors il ne lui sera pas affiché et il ne pourra pas y accéder
 - Il est aussi possible de ne pas utiliser UsersHub pour gérer les utilisateurs et de connecter GeoNature à un CAS (voir configuration). Actuellement ce paramétrage est fonctionnel en se connectant au CAS de l'INPN (MNHN)
 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/schema_cruved.png
+.. image :: _static/schema_cruved.png
 
 A noter que toutes les actions et toutes les portées n'ont pas été implémentées dans tous les modules. Elles le sont en fonction des besoins de chaque module.
 
@@ -837,12 +837,12 @@ Les sauvegardes de la BDD sont à faire avec l'utilisateur ``postgres``. Commenc
 
 .. code-block:: console
 
-    # Créer le répertoire pour stocker les sauvegardes
-    mkdir /home/`whoami`/backup
-    # Ajouter l'utilisateur postgres au groupe de l'utilisateur linux courant pour qu'il ait les droits d'écrire dans les mêmes répertoires
-    sudo adduser postgres `whoami`
-    # ajout de droit aux groupes de l'utilisateur courant sur le répertoire `backup`
-    chmod g+rwx /home/`whoami`/backup
+    $ # Créer le répertoire pour stocker les sauvegardes
+    $ mkdir /home/`whoami`/backup
+    $ # Ajouter l'utilisateur postgres au groupe de l'utilisateur linux courant pour qu'il ait les droits d'écrire dans les mêmes répertoires
+    $ sudo adduser postgres `whoami`
+    $ # ajout de droit aux groupes de l'utilisateur courant sur le répertoire `backup`
+    $ chmod g+rwx /home/`whoami`/backup
 
 Connectez-vous avec l'utilisateur linux ``postgres`` pour lancer une sauvegarde de la BDD :
 
@@ -960,11 +960,11 @@ Le logo affiché dans la barre de navigation de GeoNature peut être modifié da
 
 .. code:: css
 
-  // la balise img affichant l'image a l'id 'logo-structure
+  /* la balise img affichant l'image a l'id 'logo-structure */
   #logo-structure {
-        height: 50px;
-        width: 80px;
-    }
+      height: 50px;
+      width: 80px;
+  }
 
 Relancez la construction de l’interface :
 
@@ -1358,7 +1358,7 @@ Les surcouches de configuration doivent être faites dans le fichier ``conf_gn_m
 Après toute modification de la configuration d'un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : `Configuration d'un gn_module`_
 
 Afficher/masquer des champs du formulaire
-*****************************************
+`````````````````````````````````````````
 
 La quasi-totalité des champs du standard Occurrences de taxons sont présents dans la base de données, et peuvent donc être saisis à partir du formulaire.
 
@@ -1569,16 +1569,20 @@ Un champ additionnel est définit par:
 Exemples de configuration :
 
 - Un champs type "select" :
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/select_exemple.png
+
+.. image :: _static/select_exemple.png
 
 - Un champs type "multiselect" (la clé "value" est obligatoire dans le dictionnaire de valeurs) : 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/multiselect3.png
+
+.. image :: _static/multiselect3.png
 
 - Un champs type "html". C'est un champs de type "présentation", aucune valeur ne sera enregistré en base de données pour ce champs :
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/html1.png
+
+.. image :: _static/html1.png
+
 
 Configuration avancée des champs
-********************************
+````````````````````````````````
 
 Le champs "Attribut additionnels" permet d'ajouter des éléments de configuration sur les formulaires sour forme de JSON:
 - Ajouter une icone "?" et un tooltip au survol du formulaire : `{"description" : "mon toolitp"}`
@@ -1617,7 +1621,7 @@ Après toute modification de la configuration d'un module, il faut regénérer l
 
 
 Formulaire
-***********
+``````````
 
 - La liste des habitats fournit pour la saisie est basé sur une liste définit en base de données (table ``ref_habitat.cor_list_habitat`` et ``ref_habitat.bib_list_habitat``). Il est possible d'éditer cette liste directement den base de données, d'en créer une autre et de changer la liste utiliser par le module. Editer alors ce paramètre:
 
@@ -1865,7 +1869,7 @@ Après toute modification de la configuration d'un module, il faut regénérer l
 
 
 Liste des champs visibles
-*************************
+`````````````````````````
 
 La configuration des champs de la liste se fait via deux paramètres:
 
@@ -1905,7 +1909,7 @@ Gestion de l'affichage des colonnes de la liste
 
 
 Mail
-****
+````
 
 Il est possible de personnaliser le message du mail envoyé aux observateurs.
 Pour ce faire il faut modifier les  paramètres ``MAIL_BODY`` et ``MAIL_SUBJECT``
