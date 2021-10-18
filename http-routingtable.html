@@ -1,38 +1,20 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HTTP Routing Table &mdash; GeoNature 2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
  
@@ -44,36 +26,17 @@
 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> GeoNature
-          
-
-          
-            
             <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 2.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -81,21 +44,9 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="installation-all.html">INSTALLATION GLOBALE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation-standalone.html">INSTALLATION AUTONOME</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation-mtes.html">SPECIFICITES DEPOBIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">INSTALLATION</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="import-level-1.html">IMPORT NIVEAU 1</a></li>
@@ -109,89 +60,194 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">GeoNature</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>HTTP Routing Table</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
 
    <h1>HTTP Routing Table</h1>
 
    <div class="modindex-jumpbox">
+   <a href="#cap-/admin"><strong>/admin</strong></a> | 
    <a href="#cap-/config"><strong>/config</strong></a> | 
    <a href="#cap-/geo"><strong>/geo</strong></a> | 
    <a href="#cap-/gn_auth"><strong>/gn_auth</strong></a> | 
    <a href="#cap-/gn_commons"><strong>/gn_commons</strong></a> | 
    <a href="#cap-/gn_monitoring"><strong>/gn_monitoring</strong></a> | 
    <a href="#cap-/habref"><strong>/habref</strong></a> | 
-   <a href="#cap-/import"><strong>/import</strong></a> | 
    <a href="#cap-/meta"><strong>/meta</strong></a> | 
    <a href="#cap-/nomenclatures/nomenclature"><strong>/nomenclatures/nomenclature</strong></a> | 
    <a href="#cap-/nomenclatures/nomenclatures"><strong>/nomenclatures/nomenclatures</strong></a> | 
-   <a href="#cap-/occhab"><strong>/occhab</strong></a> | 
-   <a href="#cap-/occtax"><strong>/occtax</strong></a> | 
    <a href="#cap-/permissions"><strong>/permissions</strong></a> | 
    <a href="#cap-/permissions_backoffice"><strong>/permissions_backoffice</strong></a> | 
    <a href="#cap-/pypn"><strong>/pypn</strong></a> | 
    <a href="#cap-/synthese"><strong>/synthese</strong></a> | 
-   <a href="#cap-/users"><strong>/users</strong></a> | 
-   <a href="#cap-/validation"><strong>/validation</strong></a>
+   <a href="#cap-/users"><strong>/users</strong></a>
    </div>
 
    <table class="indextable modindextable">
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/admin"><td></td><td>
+       <strong>/admin</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--admin-bibnomenclaturestypesadmin-"><code class="xref">GET /admin/bibnomenclaturestypesadmin/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--admin-bibnomenclaturestypesadmin-details-"><code class="xref">GET /admin/bibnomenclaturestypesadmin/details/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--admin-bibnomenclaturestypesadmin-edit-"><code class="xref">GET /admin/bibnomenclaturestypesadmin/edit/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--admin-bibnomenclaturestypesadmin-new-"><code class="xref">GET /admin/bibnomenclaturestypesadmin/new/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--admin-static-(path-filename)"><code class="xref">GET /admin/static/(path:filename)</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--admin-tadditionalfields-"><code class="xref">GET /admin/tadditionalfields/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--admin-tadditionalfields-details-"><code class="xref">GET /admin/tadditionalfields/details/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--admin-tadditionalfields-edit-"><code class="xref">GET /admin/tadditionalfields/edit/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--admin-tadditionalfields-new-"><code class="xref">GET /admin/tadditionalfields/new/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--admin-tnomenclaturesadmin-"><code class="xref">GET /admin/tnomenclaturesadmin/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--admin-tnomenclaturesadmin-details-"><code class="xref">GET /admin/tnomenclaturesadmin/details/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--admin-tnomenclaturesadmin-edit-"><code class="xref">GET /admin/tnomenclaturesadmin/edit/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#get--admin-tnomenclaturesadmin-new-"><code class="xref">GET /admin/tnomenclaturesadmin/new/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--admin-bibnomenclaturestypesadmin-action-"><code class="xref">POST /admin/bibnomenclaturestypesadmin/action/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--admin-bibnomenclaturestypesadmin-ajax-update-"><code class="xref">POST /admin/bibnomenclaturestypesadmin/ajax/update/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--admin-bibnomenclaturestypesadmin-delete-"><code class="xref">POST /admin/bibnomenclaturestypesadmin/delete/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--admin-bibnomenclaturestypesadmin-edit-"><code class="xref">POST /admin/bibnomenclaturestypesadmin/edit/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--admin-bibnomenclaturestypesadmin-new-"><code class="xref">POST /admin/bibnomenclaturestypesadmin/new/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--admin-tadditionalfields-action-"><code class="xref">POST /admin/tadditionalfields/action/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--admin-tadditionalfields-ajax-update-"><code class="xref">POST /admin/tadditionalfields/ajax/update/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--admin-tadditionalfields-delete-"><code class="xref">POST /admin/tadditionalfields/delete/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--admin-tadditionalfields-edit-"><code class="xref">POST /admin/tadditionalfields/edit/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--admin-tadditionalfields-new-"><code class="xref">POST /admin/tadditionalfields/new/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--admin-tnomenclaturesadmin-action-"><code class="xref">POST /admin/tnomenclaturesadmin/action/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--admin-tnomenclaturesadmin-ajax-update-"><code class="xref">POST /admin/tnomenclaturesadmin/ajax/update/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--admin-tnomenclaturesadmin-delete-"><code class="xref">POST /admin/tnomenclaturesadmin/delete/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--admin-tnomenclaturesadmin-edit-"><code class="xref">POST /admin/tnomenclaturesadmin/edit/</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="development.html#post--admin-tnomenclaturesadmin-new-"><code class="xref">POST /admin/tnomenclaturesadmin/new/</code></a></td><td>
+       <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-/config"><td></td><td>
        <strong>/config</strong></td><td></td></tr>
@@ -356,104 +412,6 @@
        <a href="development.html#get--habref-typo"><code class="xref">GET /habref/typo</code></a></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-/import"><td></td><td>
-       <strong>/import</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--import"><code class="xref">GET /import</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--import-bibFields"><code class="xref">GET /import/bibFields</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--import-columns_import-(int-id_import)"><code class="xref">GET /import/columns_import/(int:id_import)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--import-content_mappings-(id_mapping)"><code class="xref">GET /import/content_mappings/(id_mapping)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)"><code class="xref">GET /import/data_checker/(import_id)/field_mapping/(int:id_field_mapping)/content_mapping/(int:id_content_mapping)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--import-field_mappings-(id_mapping)"><code class="xref">GET /import/field_mappings/(id_mapping)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)"><code class="xref">GET /import/getNomencInfo/(int:id_import)/field_mapping/(int:id_field_mapping)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--import-get_errors-(import_id)"><code class="xref">GET /import/get_errors/(import_id)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--import-importData-(import_id)"><code class="xref">GET /import/importData/(import_id)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--import-mappings-(mapping_type)"><code class="xref">GET /import/mappings/(mapping_type)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--import-update_content_mapping-(int-id_mapping)"><code class="xref">GET /import/update_content_mapping/(int:id_mapping)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--import-create_or_update_field_mapping-(int-id_mapping)"><code class="xref">POST /import/create_or_update_field_mapping/(int:id_mapping)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--import-data_checker-(import_id)-field_mapping-(int-id_field_mapping)-content_mapping-(int-id_content_mapping)"><code class="xref">POST /import/data_checker/(import_id)/field_mapping/(int:id_field_mapping)/content_mapping/(int:id_content_mapping)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--import-getNomencInfo-(int-id_import)-field_mapping-(int-id_field_mapping)"><code class="xref">POST /import/getNomencInfo/(int:id_import)/field_mapping/(int:id_field_mapping)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--import-get_errors-(import_id)"><code class="xref">POST /import/get_errors/(import_id)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--import-importData-(import_id)"><code class="xref">POST /import/importData/(import_id)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--import-mapping"><code class="xref">POST /import/mapping</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--import-update_content_mapping-(int-id_mapping)"><code class="xref">POST /import/update_content_mapping/(int:id_mapping)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#delete--import-mapping-(int-id_mapping)"><code class="xref">DELETE /import/mapping/(int:id_mapping)</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-/meta"><td></td><td>
        <strong>/meta</strong></td><td></td></tr>
      <tr>
@@ -596,117 +554,6 @@
        <td></td>
        <td>
        <a href="development.html#get--nomenclatures-nomenclatures"><code class="xref">GET /nomenclatures/nomenclatures</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-/occhab"><td></td><td>
-       <strong>/occhab</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--occhab-defaultNomenclatures"><code class="xref">GET /occhab/defaultNomenclatures</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--occhab-station-(int-id_station)"><code class="xref">GET /occhab/station/(int:id_station)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--occhab-stations"><code class="xref">GET /occhab/stations</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--occhab-export_stations-(export_format)"><code class="xref">POST /occhab/export_stations/(export_format)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--occhab-station"><code class="xref">POST /occhab/station</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#delete--occhab-station-(int-id_station)"><code class="xref">DELETE /occhab/station/(int:id_station)</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-/occtax"><td></td><td>
-       <strong>/occtax</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--occtax-counting-(int-id_counting)"><code class="xref">GET /occtax/counting/(int:id_counting)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--occtax-defaultNomenclatures"><code class="xref">GET /occtax/defaultNomenclatures</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--occtax-export"><code class="xref">GET /occtax/export</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--occtax-occurrences"><code class="xref">GET /occtax/occurrences</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--occtax-releve-(int-id_releve)"><code class="xref">GET /occtax/releve/(int:id_releve)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--occtax-releves"><code class="xref">GET /occtax/releves</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--occtax-vreleveocctax"><code class="xref">GET /occtax/vreleveocctax</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--occtax-occurrence-(int-id_occurrence)"><code class="xref">POST /occtax/occurrence/(int:id_occurrence)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--occtax-only-releve"><code class="xref">POST /occtax/only/releve</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--occtax-only-releve-(int-id_releve)"><code class="xref">POST /occtax/only/releve/(int:id_releve)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--occtax-releve"><code class="xref">POST /occtax/releve</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--occtax-releve-(int-id_releve)-occurrence"><code class="xref">POST /occtax/releve/(int:id_releve)/occurrence</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#delete--occtax-occurrence-(int-id_occ)"><code class="xref">DELETE /occtax/occurrence/(int:id_occ)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#delete--occtax-releve-(int-id_releve)"><code class="xref">DELETE /occtax/releve/(int:id_releve)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#delete--occtax-releve-occurrence_counting-(int-id_count)"><code class="xref">DELETE /occtax/releve/occurrence_counting/(int:id_count)</code></a></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-/permissions"><td></td><td>
@@ -1003,69 +850,34 @@
        <td>
        <a href="development.html#put--users-role"><code class="xref">PUT /users/role</code></a></td><td>
        <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-/validation"><td></td><td>
-       <strong>/validation</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--validation"><code class="xref">GET /validation</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--validation-date-(uuid)"><code class="xref">GET /validation/date/(uuid)</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#get--validation-definitions"><code class="xref">GET /validation/definitions</code></a></td><td>
-       <em></em></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="development.html#post--validation"><code class="xref">POST /validation</code></a></td><td>
-       <em></em></td></tr>
    </table>
 
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2018-2019, PnE, PnC
-
-    </p>
+    <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

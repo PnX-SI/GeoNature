@@ -1,5 +1,5 @@
-SPECIFICITES DEPOBIO
-====================
+Spécificités DEPOBIO
+********************
 
 Cette documentation mentionne les spécificités et la configuration de l'installation de l'instance nationale du Ministère de la Transition Ecologique et Solidaire (MTES), dans le cadre du projet de Depôt Légal des données de biodiversité (https://depot-legal-biodiversite.naturefrance.fr/).
 
@@ -73,25 +73,27 @@ Editer le fichier de configuration de GeoNature pour surcoucher ces variables :
 Ci-dessous, les paramètres de configuration pour l'instance de production.
 
 
-
 Configuration globale de l'application
-**************************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-# code EPSG de la projection de la base
-LOCAL_SRID = '2154'
+::
 
-DEFAULT_LANGUAGE='fr'
+    # code EPSG de la projection de la base
+    LOCAL_SRID = '2154'
+    
+    DEFAULT_LANGUAGE='fr'
+    
+    # url de l'application métadonnée
+    MTD_API_ENDPOINT = 'http://inpn.mnhn.fr/mtd'
+    
+    # Nom de l'application sur la page d'acceuil
+    appName = 'Depôt légal de biodiviersité - saisie'
+    
+    ID_APPLICATION_GEONATURE = 14
 
-# url de l'application métadonnée
-MTD_API_ENDPOINT = 'http://inpn.mnhn.fr/mtd'
-
-# Nom de l'application sur la page d'acceuil
-appName = 'Depôt légal de biodiviersité - saisie'
-
-ID_APPLICATION_GEONATURE = 14
 
 Configuration des URLS pour le CAS
-***********************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Les URLS doivent correspondre aux informations renseignées dans la
 configuration Apache et au Load Balancer. Elle ne doivent pas contenir
@@ -112,7 +114,7 @@ configuration Apache en conséquence.
 
 
 Clé secrète
-***********
+^^^^^^^^^^^
 
 Mettre un clé secrète personnalisée
 
@@ -122,7 +124,7 @@ Mettre un clé secrète personnalisée
 
 
 Configuration BDD liée à la connexion au CAS
-********************************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -133,7 +135,7 @@ Configuration BDD liée à la connexion au CAS
     ID_USER_SOCLE_2 = 20001
 
 Connexion au CAS INPN - gestion centralisée des utilisateurs
-************************************************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Bien changer les variables ID et PASSWORD avec les bonnes valeurs.
 
@@ -157,7 +159,7 @@ NB : pour la pré-prod, utiliser ``https://preprod-inpn.mnhn.fr``
     PASSWORD = '<THE_INPN_PASSWORD>'
 
 Configuration du frontend
-**************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Pour l'instance de pré-prod, rajouter "instance de démo" à la variable
 ``appName``.
@@ -176,7 +178,7 @@ Pour l'instance de pré-prod, rajouter "instance de démo" à la variable
 
 
 Configuration de la cartographie
-********************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 ::
 
@@ -209,7 +211,7 @@ Depuis le répertoire ``backend`` de GeoNature
 
 
 Configuration du module Occurrence de taxon: OCCTAX
-***************************************************
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Le fichier de configuration du module Occtax se trouve dans le fichier
 ``<GEONATURE_DIRECTORY>/external_modules/occtax/config/conf_gn_module.toml``.

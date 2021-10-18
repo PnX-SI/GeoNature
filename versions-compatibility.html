@@ -1,74 +1,37 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>COMPATIBILITE &mdash; GeoNature 2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="CONFIGURATION APACHE" href="conf-apache.html" />
     <link rel="prev" title="DEVELOPPEMENT" href="development.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> GeoNature
-          
-
-          
-            
             <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 2.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,27 +39,19 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation-all.html">INSTALLATION GLOBALE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation-standalone.html">INSTALLATION AUTONOME</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation-mtes.html">SPECIFICITES DEPOBIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">INSTALLATION</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="import-level-1.html">IMPORT NIVEAU 1</a></li>
 <li class="toctree-l1"><a class="reference internal" href="import-level-2.html">IMPORT NIVEAU 2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">COMPATIBILITE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#geonature-2-8-0">GeoNature 2.8.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#geonature-2-7-5">GeoNature 2.7.5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#geonature-2-7-4">GeoNature 2.7.4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#geonature-2-7-3">GeoNature 2.7.3</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#geonature-2-7-2">GeoNature 2.7.2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#geonature-2-7-1">GeoNature 2.7.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#geonature-2-7-0">GeoNature 2.7.0</a></li>
@@ -136,73 +91,165 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">GeoNature</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>COMPATIBILITE</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/versions-compatibility.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="compatibilite">
-<h1>COMPATIBILITE<a class="headerlink" href="#compatibilite" title="Permalink to this headline">¶</a></h1>
+<h1>COMPATIBILITE<a class="headerlink" href="#compatibilite" title="Permalink to this headline"></a></h1>
 <p>Versions fournies et testées des dépendances</p>
+<div class="section" id="geonature-2-8-0">
+<h2>GeoNature 2.8.0<a class="headerlink" href="#geonature-2-8-0" title="Permalink to this headline"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 76%" />
+<col style="width: 24%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Application / Module</p></th>
+<th class="head"><p>Version</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>TaxHub</p></td>
+<td><p>1.9.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>UsersHub</p></td>
+<td><p>2.2.1</p></td>
+</tr>
+<tr class="row-even"><td><p>Nomenclature-Api</p></td>
+<td><p>1.4.4</p></td>
+</tr>
+<tr class="row-odd"><td><p>Authentification-Api</p></td>
+<td><p>1.5.6</p></td>
+</tr>
+<tr class="row-even"><td><p>Habref-Api</p></td>
+<td><p>0.2.0</p></td>
+</tr>
+<tr class="row-odd"><td><p>Utils-Flask-SQLAlchemy</p></td>
+<td><p>0.2.4</p></td>
+</tr>
+<tr class="row-even"><td><p>Utils-Flask-SQLAlchemy-Geo</p></td>
+<td><p>0.2.1</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="geonature-2-7-5">
+<h2>GeoNature 2.7.5<a class="headerlink" href="#geonature-2-7-5" title="Permalink to this headline"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 69%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Application / Module</p></th>
+<th class="head"><p>Version</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>TaxHub</p></td>
+<td><p>1.8.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>UsersHub</p></td>
+<td><p>2.1.3</p></td>
+</tr>
+<tr class="row-even"><td><p>Nomenclature-Api</p></td>
+<td><p>1.3.8</p></td>
+</tr>
+<tr class="row-odd"><td><p>Authentification-Api</p></td>
+<td><p>1.4.7</p></td>
+</tr>
+<tr class="row-even"><td><p>Habref-Api</p></td>
+<td><p>0.1.6</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="geonature-2-7-4">
+<h2>GeoNature 2.7.4<a class="headerlink" href="#geonature-2-7-4" title="Permalink to this headline"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 69%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Application / Module</p></th>
+<th class="head"><p>Version</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>TaxHub</p></td>
+<td><p>1.8.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>UsersHub</p></td>
+<td><p>2.1.3</p></td>
+</tr>
+<tr class="row-even"><td><p>Nomenclature-Api</p></td>
+<td><p>1.3.8</p></td>
+</tr>
+<tr class="row-odd"><td><p>Authentification-Api</p></td>
+<td><p>1.4.7</p></td>
+</tr>
+<tr class="row-even"><td><p>Habref-Api</p></td>
+<td><p>0.1.6</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="geonature-2-7-3">
+<h2>GeoNature 2.7.3<a class="headerlink" href="#geonature-2-7-3" title="Permalink to this headline"></a></h2>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 69%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Application / Module</p></th>
+<th class="head"><p>Version</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>TaxHub</p></td>
+<td><p>1.8.1</p></td>
+</tr>
+<tr class="row-odd"><td><p>UsersHub</p></td>
+<td><p>2.1.3</p></td>
+</tr>
+<tr class="row-even"><td><p>Nomenclature-Api</p></td>
+<td><p>1.3.8</p></td>
+</tr>
+<tr class="row-odd"><td><p>Authentification-Api</p></td>
+<td><p>1.4.7</p></td>
+</tr>
+<tr class="row-even"><td><p>Habref-Api</p></td>
+<td><p>0.1.6</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 <div class="section" id="geonature-2-7-2">
-<h2>GeoNature 2.7.2<a class="headerlink" href="#geonature-2-7-2" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.7.2<a class="headerlink" href="#geonature-2-7-2" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -233,7 +280,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-7-1">
-<h2>GeoNature 2.7.1<a class="headerlink" href="#geonature-2-7-1" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.7.1<a class="headerlink" href="#geonature-2-7-1" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -264,7 +311,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-7-0">
-<h2>GeoNature 2.7.0<a class="headerlink" href="#geonature-2-7-0" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.7.0<a class="headerlink" href="#geonature-2-7-0" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -295,7 +342,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-6-2">
-<h2>GeoNature 2.6.2<a class="headerlink" href="#geonature-2-6-2" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.6.2<a class="headerlink" href="#geonature-2-6-2" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -326,7 +373,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-6-1">
-<h2>GeoNature 2.6.1<a class="headerlink" href="#geonature-2-6-1" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.6.1<a class="headerlink" href="#geonature-2-6-1" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -357,7 +404,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-6-0">
-<h2>GeoNature 2.6.0<a class="headerlink" href="#geonature-2-6-0" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.6.0<a class="headerlink" href="#geonature-2-6-0" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -388,7 +435,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-5-5">
-<h2>GeoNature 2.5.5<a class="headerlink" href="#geonature-2-5-5" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.5.5<a class="headerlink" href="#geonature-2-5-5" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -419,7 +466,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-5-4">
-<h2>GeoNature 2.5.4<a class="headerlink" href="#geonature-2-5-4" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.5.4<a class="headerlink" href="#geonature-2-5-4" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -450,7 +497,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-5-3">
-<h2>GeoNature 2.5.3<a class="headerlink" href="#geonature-2-5-3" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.5.3<a class="headerlink" href="#geonature-2-5-3" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -481,7 +528,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-5-2">
-<h2>GeoNature 2.5.2<a class="headerlink" href="#geonature-2-5-2" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.5.2<a class="headerlink" href="#geonature-2-5-2" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -512,7 +559,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-5-1">
-<h2>GeoNature 2.5.1<a class="headerlink" href="#geonature-2-5-1" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.5.1<a class="headerlink" href="#geonature-2-5-1" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -543,7 +590,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-5-0">
-<h2>GeoNature 2.5.0<a class="headerlink" href="#geonature-2-5-0" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.5.0<a class="headerlink" href="#geonature-2-5-0" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -574,7 +621,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-4-1">
-<h2>GeoNature 2.4.1<a class="headerlink" href="#geonature-2-4-1" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.4.1<a class="headerlink" href="#geonature-2-4-1" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -605,7 +652,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-4-0">
-<h2>GeoNature 2.4.0<a class="headerlink" href="#geonature-2-4-0" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.4.0<a class="headerlink" href="#geonature-2-4-0" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -636,7 +683,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-3-2">
-<h2>GeoNature 2.3.2<a class="headerlink" href="#geonature-2-3-2" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.3.2<a class="headerlink" href="#geonature-2-3-2" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -667,7 +714,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-3-1">
-<h2>GeoNature 2.3.1<a class="headerlink" href="#geonature-2-3-1" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.3.1<a class="headerlink" href="#geonature-2-3-1" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -698,7 +745,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-3-0">
-<h2>GeoNature 2.3.0<a class="headerlink" href="#geonature-2-3-0" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.3.0<a class="headerlink" href="#geonature-2-3-0" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -729,7 +776,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-2-0">
-<h2>GeoNature 2.2.0<a class="headerlink" href="#geonature-2-2-0" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.2.0<a class="headerlink" href="#geonature-2-2-0" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -760,7 +807,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-1-2">
-<h2>GeoNature 2.1.2<a class="headerlink" href="#geonature-2-1-2" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.1.2<a class="headerlink" href="#geonature-2-1-2" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -791,7 +838,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-1-1">
-<h2>GeoNature 2.1.1<a class="headerlink" href="#geonature-2-1-1" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.1.1<a class="headerlink" href="#geonature-2-1-1" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -822,7 +869,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-1-0">
-<h2>GeoNature 2.1.0<a class="headerlink" href="#geonature-2-1-0" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.1.0<a class="headerlink" href="#geonature-2-1-0" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -853,7 +900,7 @@
 </table>
 </div>
 <div class="section" id="geonature-2-0-0">
-<h2>GeoNature 2.0.0<a class="headerlink" href="#geonature-2-0-0" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature 2.0.0<a class="headerlink" href="#geonature-2-0-0" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -884,7 +931,7 @@
 </table>
 </div>
 <div class="section" id="geonature2-rc4-2">
-<h2>GeoNature2 RC4.2<a class="headerlink" href="#geonature2-rc4-2" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature2 RC4.2<a class="headerlink" href="#geonature2-rc4-2" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -915,7 +962,7 @@
 </table>
 </div>
 <div class="section" id="geonature2-rc4-1">
-<h2>GeoNature2 RC4.1<a class="headerlink" href="#geonature2-rc4-1" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature2 RC4.1<a class="headerlink" href="#geonature2-rc4-1" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -946,7 +993,7 @@
 </table>
 </div>
 <div class="section" id="geonature2-rc4">
-<h2>GeoNature2 RC4<a class="headerlink" href="#geonature2-rc4" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature2 RC4<a class="headerlink" href="#geonature2-rc4" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -977,7 +1024,7 @@
 </table>
 </div>
 <div class="section" id="geonature2-rc3">
-<h2>GeoNature2 RC3<a class="headerlink" href="#geonature2-rc3" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature2 RC3<a class="headerlink" href="#geonature2-rc3" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -1008,7 +1055,7 @@
 </table>
 </div>
 <div class="section" id="geonature2-rc2">
-<h2>GeoNature2 RC2<a class="headerlink" href="#geonature2-rc2" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature2 RC2<a class="headerlink" href="#geonature2-rc2" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -1039,7 +1086,7 @@
 </table>
 </div>
 <div class="section" id="geonature2-rc1">
-<h2>GeoNature2 RC1<a class="headerlink" href="#geonature2-rc1" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature2 RC1<a class="headerlink" href="#geonature2-rc1" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -1070,7 +1117,7 @@
 </table>
 </div>
 <div class="section" id="geonature2-beta5">
-<h2>GeoNature2 Beta5<a class="headerlink" href="#geonature2-beta5" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature2 Beta5<a class="headerlink" href="#geonature2-beta5" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -1101,7 +1148,7 @@
 </table>
 </div>
 <div class="section" id="geonature2-beta4">
-<h2>GeoNature2 Beta4<a class="headerlink" href="#geonature2-beta4" title="Permalink to this headline">¶</a></h2>
+<h2>GeoNature2 Beta4<a class="headerlink" href="#geonature2-beta4" title="Permalink to this headline"></a></h2>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 69%" />
@@ -1135,51 +1182,33 @@
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="conf-apache.html" class="btn btn-neutral float-right" title="CONFIGURATION APACHE" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="development.html" class="btn btn-neutral float-left" title="DEVELOPPEMENT" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="development.html" class="btn btn-neutral float-left" title="DEVELOPPEMENT" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="conf-apache.html" class="btn btn-neutral float-right" title="CONFIGURATION APACHE" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2018-2019, PnE, PnC
-
-    </p>
+    <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

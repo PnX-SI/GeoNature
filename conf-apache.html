@@ -1,74 +1,37 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CONFIGURATION APACHE &mdash; GeoNature 2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="HTTPS" href="https.html" />
     <link rel="prev" title="COMPATIBILITE" href="versions-compatibility.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> GeoNature
-          
-
-          
-            
             <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 2.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,21 +39,9 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation-all.html">INSTALLATION GLOBALE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation-standalone.html">INSTALLATION AUTONOME</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation-mtes.html">SPECIFICITES DEPOBIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">INSTALLATION</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="import-level-1.html">IMPORT NIVEAU 1</a></li>
@@ -113,75 +64,37 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">GeoNature</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>CONFIGURATION APACHE</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/conf-apache.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="configuration-apache">
-<h1>CONFIGURATION APACHE<a class="headerlink" href="#configuration-apache" title="Permalink to this headline">¶</a></h1>
+<h1>CONFIGURATION APACHE<a class="headerlink" href="#configuration-apache" title="Permalink to this headline"></a></h1>
 <p>La présente documentation décrit les configurations Apache des différentes applications, dans le cas où chaque application possède son propre sous-domaine, avec ou sans utilisation de la certification HTTPS.</p>
 <p>Les sous-domaines doivent préalablement être déclarés dans la zone DNS du serveur.</p>
 <p><strong>Configuration de sous-domaines sans https</strong></p>
 <div class="section" id="mise-a-jour-des-configurations-apache">
-<h2>Mise à jour des configurations Apache<a class="headerlink" href="#mise-a-jour-des-configurations-apache" title="Permalink to this headline">¶</a></h2>
+<h2>Mise à jour des configurations Apache<a class="headerlink" href="#mise-a-jour-des-configurations-apache" title="Permalink to this headline"></a></h2>
 <p>Afin de rendre chaque application disponible sur un sous-domaine qui lui est propre, adapter la configuration Apache des différentes applications comme suit :</p>
 <p>Pour TaxHub, modifier le fichier de configuration Apache <code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/taxhub.conf</span></code> et remplacer son contenu par :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configuration TaxHub sur sous-domaine</span>
@@ -189,8 +102,8 @@
             <span class="n">ServerName</span> <span class="n">taxhub</span><span class="o">.</span><span class="n">mondomaine</span><span class="o">.</span><span class="n">fr</span>
 
             <span class="o">&lt;</span><span class="n">Location</span> <span class="o">/&gt;</span>
-                    <span class="n">ProxyPass</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">5000</span><span class="o">/</span>
-                    <span class="n">ProxyPassReverse</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">5000</span><span class="o">/</span>
+                    <span class="n">ProxyPass</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">5000</span><span class="o">/</span>
+                    <span class="n">ProxyPassReverse</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">5000</span><span class="o">/</span>
             <span class="o">&lt;/</span><span class="n">Location</span><span class="o">&gt;</span>
     <span class="o">&lt;/</span><span class="n">VirtualHost</span><span class="o">&gt;</span>
 <span class="c1"># Fin de configuration de TaxHub</span>
@@ -201,8 +114,8 @@
     <span class="o">&lt;</span><span class="n">VirtualHost</span> <span class="o">*</span><span class="p">:</span><span class="mi">80</span><span class="o">&gt;</span>
             <span class="n">ServerName</span> <span class="n">usershub</span><span class="o">.</span><span class="n">mondomaine</span><span class="o">.</span><span class="n">fr</span>
             <span class="o">&lt;</span><span class="n">Location</span> <span class="o">/&gt;</span>
-                    <span class="n">ProxyPass</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">5001</span><span class="o">/</span>
-                    <span class="n">ProxyPassReverse</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">5001</span><span class="o">/</span>
+                    <span class="n">ProxyPass</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">5001</span><span class="o">/</span>
+                    <span class="n">ProxyPassReverse</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">5001</span><span class="o">/</span>
         <span class="o">&lt;/</span><span class="n">Location</span><span class="o">&gt;</span>
     <span class="o">&lt;/</span><span class="n">VirtualHost</span><span class="o">&gt;</span>
 <span class="c1"># Fin de configuration de UsersHub</span>
@@ -219,8 +132,8 @@
             <span class="o">&lt;/</span><span class="n">Directory</span><span class="o">&gt;</span>
 
             <span class="o">&lt;</span><span class="n">Location</span> <span class="o">/</span><span class="n">api</span><span class="o">&gt;</span>
-                    <span class="n">ProxyPass</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">8000</span>
-                    <span class="n">ProxyPassReverse</span>  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0</span><span class="o">.</span><span class="mf">0.1</span><span class="p">:</span><span class="mi">8000</span>
+                    <span class="n">ProxyPass</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">8000</span>
+                    <span class="n">ProxyPassReverse</span>  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">8000</span>
             <span class="o">&lt;/</span><span class="n">Location</span><span class="o">&gt;</span>
     <span class="o">&lt;/</span><span class="n">VirtualHost</span><span class="o">&gt;</span>
 <span class="c1"># Fin de configuration de GeoNature</span>
@@ -229,7 +142,7 @@
 <p>Pensez à modifier également <code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/geonature_maintenance.conf</span></code> pour le mode maintenance.</p>
 </div>
 <div class="section" id="application-des-nouvelles-configurations-apache">
-<h2>Application des nouvelles configurations Apache<a class="headerlink" href="#application-des-nouvelles-configurations-apache" title="Permalink to this headline">¶</a></h2>
+<h2>Application des nouvelles configurations Apache<a class="headerlink" href="#application-des-nouvelles-configurations-apache" title="Permalink to this headline"></a></h2>
 <p>Activer les modules <code class="docutils literal notranslate"><span class="pre">ssl</span></code>, <code class="docutils literal notranslate"><span class="pre">headers</span></code> et <code class="docutils literal notranslate"><span class="pre">rewrite</span></code> puis redémarrer Apache :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">ssl</span>
 <span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">rewrite</span>
@@ -239,7 +152,7 @@
 </div>
 </div>
 <div class="section" id="mise-a-jour-de-l-application-geonature">
-<h2>Mise à jour de l’application GeoNature<a class="headerlink" href="#mise-a-jour-de-l-application-geonature" title="Permalink to this headline">¶</a></h2>
+<h2>Mise à jour de l’application GeoNature<a class="headerlink" href="#mise-a-jour-de-l-application-geonature" title="Permalink to this headline"></a></h2>
 <p>Il est également nécessaire de mettre à jour le fichier de configuration <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code> situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">config</span></code></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">URL_APPLICATION</span> <span class="o">=</span> <span class="s1">&#39;http://geonature.mondomaine.fr&#39;</span>
     <span class="n">API_ENDPOINT</span> <span class="o">=</span> <span class="s1">&#39;http://geonature.mondomaine.fr/api&#39;</span>
@@ -258,7 +171,7 @@
 <p>Pour voir la procédure de certification dans son ensemble, consulter la documentation HTTPS.</p>
 </div>
 <div class="section" id="certifier-chaque-sous-domaine">
-<h2>Certifier chaque sous-domaine<a class="headerlink" href="#certifier-chaque-sous-domaine" title="Permalink to this headline">¶</a></h2>
+<h2>Certifier chaque sous-domaine<a class="headerlink" href="#certifier-chaque-sous-domaine" title="Permalink to this headline"></a></h2>
 <p>Une fois cerbot installé, il faut produire un certificat pour chacun des sous-domaines créés. Lancer la commande suivante pour générer des certificats et des clés pour l’ensemble des noms de domaines que vous souhaitez mettre en HTTPS.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">certbot</span> <span class="n">certonly</span> <span class="o">--</span><span class="n">webroot</span> <span class="o">--</span><span class="n">webroot</span><span class="o">-</span><span class="n">path</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span> <span class="o">--</span><span class="n">domain</span> <span class="n">geonature</span><span class="o">.</span><span class="n">mondomaine</span><span class="o">.</span><span class="n">fr</span> <span class="o">--</span><span class="n">email</span> <span class="n">monemail</span><span class="nd">@domaine</span><span class="o">.</span><span class="n">fr</span>
 <span class="n">sudo</span> <span class="n">certbot</span> <span class="n">certonly</span> <span class="o">--</span><span class="n">webroot</span> <span class="o">--</span><span class="n">webroot</span><span class="o">-</span><span class="n">path</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span> <span class="o">--</span><span class="n">domain</span> <span class="n">taxhub</span><span class="o">.</span><span class="n">mondomaine</span><span class="o">.</span><span class="n">fr</span> <span class="o">--</span><span class="n">email</span> <span class="n">monemail</span><span class="nd">@domaine</span><span class="o">.</span><span class="n">fr</span>
@@ -275,7 +188,7 @@
 <p>Les certificats obtenus se trouvent dans les dossiers <code class="docutils literal notranslate"><span class="pre">/etc/letsencrypt/live/geonature.mondomaine.fr/</span></code>, <code class="docutils literal notranslate"><span class="pre">/etc/letsencrypt/live/taxhub.mondomaine.fr/</span></code> et <code class="docutils literal notranslate"><span class="pre">/etc/letsencrypt/live/usershub.mondomaine.fr/</span></code>.</p>
 </div>
 <div class="section" id="mettre-a-jour-les-configurations-apache-de-chaque-application">
-<h2>Mettre à jour les configurations Apache de chaque application<a class="headerlink" href="#mettre-a-jour-les-configurations-apache-de-chaque-application" title="Permalink to this headline">¶</a></h2>
+<h2>Mettre à jour les configurations Apache de chaque application<a class="headerlink" href="#mettre-a-jour-les-configurations-apache-de-chaque-application" title="Permalink to this headline"></a></h2>
 <p>Les fichiers de configuration Apache des différentes applications ainsi que la configuration de l’application GeoNature doivent être mis à jour en conséquence. Dans chaque configuration, le premier VirtualHost (<code class="docutils literal notranslate"><span class="pre">*:80</span></code>) sert à faire la redirection du http vers le https. Le second (<code class="docutils literal notranslate"><span class="pre">*:443</span></code>) est la configuration du https. Pensez à remplacer “mondomaine” et les chemins des fichiers de certification SSLCertificate.</p>
 <p>Modifier le fichier de configuration de GeoNature <code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/geonature.conf</span></code> et remplacer son contenu par :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Configuration originale de GeoNature
@@ -415,7 +328,7 @@
 </div>
 </div>
 <div class="section" id="prise-en-compte-des-nouvelles-configurations-apache">
-<h2>Prise en compte des nouvelles configurations Apache<a class="headerlink" href="#prise-en-compte-des-nouvelles-configurations-apache" title="Permalink to this headline">¶</a></h2>
+<h2>Prise en compte des nouvelles configurations Apache<a class="headerlink" href="#prise-en-compte-des-nouvelles-configurations-apache" title="Permalink to this headline"></a></h2>
 <p>Activer les modules <code class="docutils literal notranslate"><span class="pre">ssl</span></code>, <code class="docutils literal notranslate"><span class="pre">headers</span></code> et <code class="docutils literal notranslate"><span class="pre">rewrite</span></code> puis redémarrer Apache :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">ssl</span>
 <span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">rewrite</span>
@@ -426,7 +339,7 @@
 <p>La configuration de l’application GeoNature doit également être mise à jour.</p>
 </div>
 <div class="section" id="configuration-de-l-application-geonature">
-<h2>Configuration de l’application GeoNature<a class="headerlink" href="#configuration-de-l-application-geonature" title="Permalink to this headline">¶</a></h2>
+<h2>Configuration de l’application GeoNature<a class="headerlink" href="#configuration-de-l-application-geonature" title="Permalink to this headline"></a></h2>
 <p>Il est nécessaire de mettre à jour le fichier de configuration geonature_config.toml situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/config</span></code> :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span><span class="o">/</span><span class="n">config</span>
 <span class="n">nano</span> <span class="n">geonature_config</span><span class="o">.</span><span class="n">toml</span>
@@ -451,51 +364,33 @@
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="https.html" class="btn btn-neutral float-right" title="HTTPS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="versions-compatibility.html" class="btn btn-neutral float-left" title="COMPATIBILITE" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="versions-compatibility.html" class="btn btn-neutral float-left" title="COMPATIBILITE" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="https.html" class="btn btn-neutral float-right" title="HTTPS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2018-2019, PnE, PnC
-
-    </p>
+    <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

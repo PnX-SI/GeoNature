@@ -4,9 +4,7 @@ Bienvenue dans la documentation de GeoNature
 .. toctree::
    :maxdepth: 2
    
-   installation-all
-   installation-standalone
-   installation-mtes
+   installation
    user-manual
    admin-manual
    import-level-1

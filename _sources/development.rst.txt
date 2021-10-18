@@ -16,7 +16,9 @@ Mainteneurs :
 - Theo LECHEMIA (PnEcrins) : Frontend / Angular
 - Camille MONCHICOURT (PnEcrins) : Documentation / Gestion du projet
 
-.. image :: http://geonature.fr/docs/img/developpement/geonature-techno.png
+.. image :: _static/geonature-techno.png
+
+.. _api:
 
 API
 ---
@@ -28,18 +30,18 @@ GeoNature utilise :
 - l'API du sous-module d'authentification de UsersHub (login/logout, récupération du CRUVED d'un utilisateur)
 - l'API de GeoNature (get, post, update des données des différents modules, métadonnées, intersections géographiques, exports...)
 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/api_services.png
+.. image :: _static/api_services.png
 
 Liste des routes
 *****************
 
-.. qrefflask:: geonature:create_app(with_flask_admin=False)
+.. qrefflask:: geonature:create_app()
   :undoc-static:
 
 Documentation des routes
 ************************
 
-.. autoflask:: geonature:create_app(with_flask_admin=False)
+.. autoflask:: geonature:create_app()
   :undoc-static:
 
 
@@ -49,6 +51,7 @@ Release
 Pour sortir une nouvelle version de GeoNature :
 
 - Faites les éventuelles Releases des dépendances (UsersHub, TaxHub, UsersHub-authentification-module, Nomenclature-api-module, GeoNature-atlas)
+- Assurez-vous que les sous-modules git de GeoNature pointent sur les bonnes versions des dépendances
 - Mettez à jour la version de GeoNature et éventuellement des dépendances dans ``install/install_all/install_all.ini``, ``config/settings.ini.sample``, ``backend/requirements.txt``
 - Complétez le fichier ``docs/CHANGELOG.rst`` (en comparant les branches https://github.com/PnX-SI/GeoNature/compare/develop) et dater la version à sortir
 - Mettez à jour le fichier ``VERSION``
@@ -65,7 +68,7 @@ Mettre à jour le ``ref_geo`` à partir des données IGN scan express :
 - Télécharger le dernier millesime : http://professionnels.ign.fr/adminexpress
 - Intégrer le fichier Shape dans la BDD grâce à QGIS dans une table nommée ``ref_geo.temp_fr_municipalities``
 - Générer le SQL de création de la table : ``pg_dump --table=ref_geo.temp_fr_municipalities --column-inserts -U <MON_USER> -h <MON_HOST> -d <MA_BASE> > fr_municipalities.sql``. Le fichier en sortie doit s'appeler ``fr_municipalities.sql``
-- Zipper le fichier SQL et le mettre sur le serveur http://geonature.fr/data
+- Zipper le fichier SQL et le mettre sur le serveur https://geonature.fr/data
 - Adapter le script ``install_db.sh`` pour récupérer le nouveau fichier zippé
 
 Pratiques et règles de developpement
@@ -89,7 +92,8 @@ Backend
 
 - Une fonction ou classe doit contenir une docstring en français. Les doctrings doivent suivre le modèle NumPy/SciPy (voir https://numpydoc.readthedocs.io/en/latest/format.html et https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example)
 - Les commentaires dans le codes doivent être en anglais (ne pas s'empêcher de mettre un commentaire en français sur une partie du code complexe !)
-- Installer les requirements-dev (``pip install -r backend/requirements-dev.txt``) qui contiennent une série d'outils indispensables au développement dans GeoNature.
+- Assurez-vous d’avoir récupérer les dépendances dans les sous-modules git : ``git submodule init && git submodule update``
+- Installer les requirements-dev (``cd backend && pip install -r requirements-dev.txt``) qui contiennent une série d'outils indispensables au développement dans GeoNature.
 - Utiliser *blake* comme formateur de texte et activer l'auto-formatage dans son éditeur de texte (Tuto pour VsCode : https://medium.com/@marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00)
 - Utiliser *pylint* comme formatteur de code 
 - Respecter la norme PEP8 (assurée par les deux outils précédents)
@@ -213,7 +217,7 @@ modèle de données).
 
 L'API du coeur permet d'interroger les schémas de la base de données "coeur"
 de GeoNature. Une documentation complète de l'API est disponible dans la
-rubrique 'Documentation API Backend'_.
+rubrique :ref:`API`.
 
 Du côté interface utilisateur, GeoNature met à disposition un ensemble de
 composants Angular réutilisables
@@ -331,15 +335,17 @@ Pour installer un module, rendez vous dans le dossier ``backend`` de GeoNature.
 
 Activer ensuite le virtualenv pour rendre disponible les commandes GeoNature 
 
-::
+.. code-block::
 
     source venv/bin/activate
 
+
 Lancez ensuite la commande 
 
-::
+.. code-block::
 
     geonature install_gn_module <mon_chemin_absolu_vers_le_module> <url_api>
+
 
 Le premier paramètre est l'emplacement absolu du module sur votre machine et
 le 2ème le chemin derrière lequel on retrouvera les routes de l'API du module.
@@ -461,17 +467,21 @@ La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison ex
         ...
 
 
-  Fichier utilisation modèle::
+  Fichier utilisation modèle :
 
-    # utilisation de as_shape()
-    data = DB.session.query(MyShapeserializableClass).all()
-    MyShapeserializableClass.as_shape(
-        geom_col='geom_4326',
-        srid=4326,
-        data=data,
-        dir_path=str(ROOT_DIR / 'backend/static/shapefiles'),
-        file_name=file_name
-    )
+  .. code-block::
+  
+      # utilisation de as_shape()
+      data = DB.session.query(MyShapeserializableClass).all()
+      MyShapeserializableClass.as_shape(
+          geom_col='geom_4326',
+          srid=4326,
+          data=data,
+          dir_path=str(ROOT_DIR / 'backend/static/shapefiles'),
+          file_name=file_name,
+      )
+
+
 
 - ``utils_flask_sqla_geo.utilsgeometry.FionaShapeService``
 
@@ -545,10 +555,10 @@ De nombreux paramètres sont néammoins passés à l'application via un schéma
 Marshmallow (voir fichier ``backend/geonature/utils/config_schema.py``).
 
 Dans l'application flask, l'ensemble des paramètres de configuration sont
-utilisables via le dictionnaire ``config`` de l'application Flask ::
+utilisables via le dictionnaire ``config`` ::
 
-    from flask import current_app
-    MY_PARAMETER = current_app.config['MY_PARAMETER']
+    from geonature.utils.config import config
+    MY_PARAMETER = config['MY_PARAMETER']
 
 Chaque module GeoNature dispose de son propre fichier de configuration,
 (``module/config/cong_gn_module.toml``) contrôlé de la même manière par un
@@ -845,22 +855,22 @@ service :
 
                         Type: ``string``
 
-
         Exemple d'utilisation avec une liste simple :
         
-        ::
+.. code-block::
 
-                <pnx-map-list
-                        idName="id_releve_occtax"
-                        height="80vh">
-                </pnx-map-list>
-                <table>
-                        <tr ngFor="let row of mapListService.tableData" [ngClass]=" {'selected': mapListService.selectedRow[0]} == row.id ">
-                                <td (click)="mapListService.onRowSelect(row.id)"> Zoom on map </td>
-                                <td > {{row.observers}} </td>
-                                <td > {{row.date}} </td>
-                        </tr>
-                </table>
+    <pnx-map-list
+            idName="id_releve_occtax"
+            height="80vh">
+    </pnx-map-list>
+    <table>
+            <tr ngFor="let row of mapListService.tableData" [ngClass]=" {'selected': mapListService.selectedRow[0]} == row.id ">
+                    <td (click)="mapListService.onRowSelect(row.id)"> Zoom on map </td>
+                    <td > {{row.observers}} </td>
+                    <td > {{row.date}} </td>
+            </tr>
+    </table>
+
 
 
 Outils d'aide à la qualité du code
@@ -936,5 +946,6 @@ par les tests.
 
         cd backend
         pytest --cov=geonature --cov-report=html
+
 
 Ceci génénère un rapport html disponible dans  ``backend/htmlcov/index.html``.

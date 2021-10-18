@@ -1,74 +1,37 @@
-
-
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HTTPS &mdash; GeoNature 2.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
   
-
-  
-  
-  
-  
-
-  
-  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="FAQ" href="FAQ.html" />
     <link rel="prev" title="CONFIGURATION APACHE" href="conf-apache.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search"  style="background: white" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> GeoNature
-          
-
-          
-            
             <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 2.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -76,21 +39,9 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="installation-all.html">INSTALLATION GLOBALE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation-standalone.html">INSTALLATION AUTONOME</a></li>
-<li class="toctree-l1"><a class="reference internal" href="installation-mtes.html">SPECIFICITES DEPOBIO</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">INSTALLATION</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="import-level-1.html">IMPORT NIVEAU 1</a></li>
@@ -112,70 +63,32 @@
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">GeoNature</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html">Docs</a> &raquo;</li>
-        
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>HTTPS</li>
-    
-    
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/https.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <div class="section" id="https">
-<h1>HTTPS<a class="headerlink" href="#https" title="Permalink to this headline">¶</a></h1>
+<h1>HTTPS<a class="headerlink" href="#https" title="Permalink to this headline"></a></h1>
 <p>La présente documentation décrit la procédure de certification HTTPS et l’adaptation de la configuration Apache par défaut du serveur, sans utilisation de sous-domaine. Pour la mise en place de sous-domaines, voir la documentation “Configuration Apache”.</p>
 <p><strong>Mise en place du  HTTPS</strong></p>
 <p>La procédure décrit la certification HTTPS de votre domaine pour l’ensemble des applications de l’install_all, grâce au service <a class="reference external" href="https://letsencrypt.org/">Let’s Encrypt</a>. Les manipulations ont été effectuées sur un serveur Debian 9 avec Apache2 installé, et un utilisateur bénéficiant des droits sudo.</p>
@@ -185,13 +98,13 @@
 <li><p><a class="reference external" href="https://korben.info/securiser-facilement-gratuitement-site-https.html">https://korben.info/securiser-facilement-gratuitement-site-https.html</a></p></li>
 </ul>
 <div class="section" id="installer-certbot">
-<h2>Installer certbot<a class="headerlink" href="#installer-certbot" title="Permalink to this headline">¶</a></h2>
+<h2>Installer certbot<a class="headerlink" href="#installer-certbot" title="Permalink to this headline"></a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">certbot</span><span class="o">-</span><span class="n">apache</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="lancer-la-commande-cerbot">
-<h2>Lancer la commande cerbot<a class="headerlink" href="#lancer-la-commande-cerbot" title="Permalink to this headline">¶</a></h2>
+<h2>Lancer la commande cerbot<a class="headerlink" href="#lancer-la-commande-cerbot" title="Permalink to this headline"></a></h2>
 <p>Lancer la commande suivant pour générer des certificats et des clés pour le nom de domaine que vous souhaitez mettre en HTTPS.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">certbot</span> <span class="n">certonly</span> <span class="o">--</span><span class="n">webroot</span> <span class="o">--</span><span class="n">webroot</span><span class="o">-</span><span class="n">path</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span> <span class="o">--</span><span class="n">domain</span> <span class="n">mondomaine</span><span class="o">.</span><span class="n">fr</span> <span class="o">--</span><span class="n">email</span> <span class="n">monemail</span><span class="nd">@mondomaine</span><span class="o">.</span><span class="n">fr</span>
 </pre></div>
@@ -205,7 +118,7 @@
 </ul>
 </div>
 <div class="section" id="les-certificats-obtenus">
-<h2>Les certificats obtenus<a class="headerlink" href="#les-certificats-obtenus" title="Permalink to this headline">¶</a></h2>
+<h2>Les certificats obtenus<a class="headerlink" href="#les-certificats-obtenus" title="Permalink to this headline"></a></h2>
 <p>Le certificat se trouve dans le répertoire <code class="docutils literal notranslate"><span class="pre">/etc/letsencrypt/live/mondomaine.fr/</span></code>.</p>
 <p>Il est constitué de 4 fichiers :</p>
 <ul class="simple">
@@ -216,7 +129,7 @@
 </ul>
 </div>
 <div class="section" id="automatiser-le-renouvellement-du-certificat">
-<h2>Automatiser le renouvellement du certificat<a class="headerlink" href="#automatiser-le-renouvellement-du-certificat" title="Permalink to this headline">¶</a></h2>
+<h2>Automatiser le renouvellement du certificat<a class="headerlink" href="#automatiser-le-renouvellement-du-certificat" title="Permalink to this headline"></a></h2>
 <p>Le certificat fourni par Let’s Encrypt n’est valable que 3 mois. Il faut donc mettre en place un renouvellement automatique.
 Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le certificat :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">crontab</span> <span class="o">-</span><span class="n">e</span>
@@ -260,7 +173,7 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
 </div>
 </div>
 <div class="section" id="prise-en-compte-des-nouvelles-configurations-apache">
-<h2>Prise en compte des nouvelles configurations Apache<a class="headerlink" href="#prise-en-compte-des-nouvelles-configurations-apache" title="Permalink to this headline">¶</a></h2>
+<h2>Prise en compte des nouvelles configurations Apache<a class="headerlink" href="#prise-en-compte-des-nouvelles-configurations-apache" title="Permalink to this headline"></a></h2>
 <p>Activer les modules <code class="docutils literal notranslate"><span class="pre">ssl</span></code>, <code class="docutils literal notranslate"><span class="pre">headers</span></code> et <code class="docutils literal notranslate"><span class="pre">rewrite</span></code> puis redémarrer Apache :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">ssl</span>
 <span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">rewrite</span>
@@ -271,7 +184,7 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
 <p>Les fichiers de configuration des sites TaxHub et UsersHub ne sont pas à modifier, ils seront automatiquement associés à la configuration HTTPS. En revanche, la configuration de GeoNature doit être mise à jour.</p>
 </div>
 <div class="section" id="configuration-de-l-application-geonature">
-<h2>Configuration de l’application GeoNature<a class="headerlink" href="#configuration-de-l-application-geonature" title="Permalink to this headline">¶</a></h2>
+<h2>Configuration de l’application GeoNature<a class="headerlink" href="#configuration-de-l-application-geonature" title="Permalink to this headline"></a></h2>
 <p>Il est nécessaire de mettre à jour le fichier de configuration <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code> situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/config</span></code> :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span><span class="o">/</span><span class="n">config</span>
 <span class="n">nano</span> <span class="n">geonature_config</span><span class="o">.</span><span class="n">toml</span>
@@ -296,51 +209,33 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="FAQ.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="conf-apache.html" class="btn btn-neutral float-left" title="CONFIGURATION APACHE" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="conf-apache.html" class="btn btn-neutral float-left" title="CONFIGURATION APACHE" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="FAQ.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2018-2019, PnE, PnC
-
-    </p>
+    <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

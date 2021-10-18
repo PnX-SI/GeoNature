@@ -2,6 +2,176 @@
 CHANGELOG
 =========
 
+2.8.0 - Vaccinium myrtillus (unreleased)
+----------------------------------------
+
+**Gestion de la base de données avec Alembic**
+
+⚠️ Avant de mettre à jour GeoNature, vérifiez que les modules que vous utilisez disposent d'une version compatible avec la 2.8.0, suite au passage à la version 3 de Marshmallow.
+
+**🚀 Nouveautés**
+
+* Support de Debian 11 / Python 3.9
+* Passage de ``supervisor`` à ``systemd``
+* Gestion de la base de données et de ses évolutions avec Alembic (#880)
+* Mise à jour de la procédure d’installation afin d’utiliser Alembic (#880)
+* Révision et réorganisation des scripts et de la documentation d'installation
+* Passage à la version 3 de Marshmallow (#1451)
+* Suppression du paramètre ``ID_APP``, celui-ci est automatiquement déterminé à partir de la base de données et du code de l’application
+* Ajout d’un index sur le champs ``ref_geo.l_areas.id_area``
+* Mise à jour des dépendances
+
+  * `TaxHub 1.9.0 <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__
+  * `UsersHub-authentification-module 1.5.6 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.6>`__
+  * `Nomenclature-api-module 1.4.4 <https://github.com/PnX-SI/Nomenclature-api-module/releases/tag/1.4.4>`__
+  * `Habref-api-module 0.2.0 <https://github.com/PnX-SI/Habref-api-module/releases/tag/0.2.0>`__
+  * `Utils-Flask-SQLAlchemy 0.2.4 <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/releases/tag/0.2.4>`__
+  * `Utils-Flask-SQLAlchemy-Geo 0.2.1 <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/releases/tag/0.2.1>`__
+
+**🐛 Corrections**
+
+* Corrections et améliorations des formulaires dynamiques et des champs additionnels
+* Correction de l'envoi d'email lors de la récupération du mot de passe (#1471)
+* Occtax : Correction du focus sur le champs "taxon" quand on enchaine les taxons (#1462)
+* Occtax : Correction du formulaire de modification quand le relevé est une ligne ou un polygone (#1461)
+* Occtax : Correction de la conservation de la date quand on enchaine les relevés (#1442)
+* Occtax : Correction du paramètre d'export des champs additionnels (#1440)
+* Synthèse : correction de la recherche par jeu de données (#1494)
+* Correction de l'affichage des longues listes déroulantes dans les champs additionnels (#1442)
+* Mise à jour de la table ``cor_area_synthese`` lors de l’ajout de nouvelles zones via un trigger sur la table ``l_areas`` (#1433)
+* Correction de l'export PDF des fiches de métadonnées (#1449)
+* Jeux de données : correction de l’affichage des imports sources
+* Correction de la configuration Apache et de la gestion par flask d’un GeoNature accessible sur un préfix (e.g. ``/geonature``) (#1463)
+* Correction de la commande ``install_packaged_gn_module``
+* Correction des champs additionnels de type boutons radios (#1464 et #1472)
+* Occtax : Correction du contrôle des heures quand on est sur 2 mois distincts (#1468)
+* Suppression de nombreux identifiants en dur dans les scripts SQL de création de la BDD
+* Correction du trigger d'Occtax vers la Synthèse pour le champs ``Comportement`` (#1469)
+* Correction des fonctions ``get_default_nomenclature_value``
+* Correction du composant ``multiselect`` (#1488)
+* Correction du script ``migrate.sh`` pour récupérer le fichier ``custom.scss`` depuis son nouvel emplacement (#1430)
+* Correction du paramètre ``EXPORT_OBSERVERS_COL``
+* Métadonnées : Suppression en cascade sur les tables ``gn_meta.cor_dataset_territory`` et ``gn_meta.cor_dataset_protocol`` (#1452)
+* Correction de la commande ``install_packaged_gn_module`` : rechargement des entry points après installation avec pip d’un module packagé
+* Correction d’un bug lors de l’ajout d’un cadre d’acquisition
+
+**💻 Développement**
+
+* Mise à jour de plusieurs dépendances
+* Packetage des modules fournis avec GeoNature
+* L’utilisateur connecté est maintenant accessible via ``g.current_user``
+* Nettoyage et refactoring divers
+
+**⚠️ Notes de version**
+
+* Mettre à jour `UsersHub en version 2.2.1 <https://github.com/PnX-SI/UsersHub/releases/tag/2.2.1>`__ et `TaxHub en version 1.9.0 <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__ (si vous les utilisez) **en sautant l’étape de passage à Alembic** (car la mise à jour de GeoNature se charge désormais de mettre à jour aussi les schémas ``taxonomie`` et ``utilisateurs``)
+* Suppression de ``supervisor`` :
+
+  * Stopper GeoNature : ``sudo supervisorctl stop geonature2``
+  * Supprimer le fichier de configuration supervisor de GeoNature : ``sudo rm /etc/supervisor/conf.d/geonature-service.conf``
+  * Si supervisor n’est plus utilisé par aucun service (répertoire ``/etc/supervisor/conf.d/`` vide), il peut être désinstallé (``sudo apt remove supervisor``)
+
+* Suivre la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+* Passage à ``systemd`` :
+
+  * Copier le fichier ``install/assets/geonature.service`` dans ``/etc/systemd/system/``
+  * Éditer ``/etc/systemd/system/geonature.service`` et remplacer les variables ``${USER}`` (votre utilisateur linux courant) et ``${BASE_DIR}`` (chemin absolu du répertoire de GeoNature) par les valeurs appropriées
+  * Lancer la commande ``sudo systemctl daemon-reload``
+  * Pour démarrer GeoNature : ``sudo systemctl start geonature``
+  * Pour lancer GeoNature automatiquement au démarrage du serveur : ``sudo systemctl enable geonature``
+
+* Correction de la configuration Apache : si vous servez GeoNature sur un préfixe (typiquement ``/geonature/api``), assurez vous que ce préfixe figure bien également à la fin des directives ``ProxyPass`` et ``ProxyPassReverse`` comme dans l’exemple suivant :
+
+  .. code-block::
+
+    <Location /geonature/api>
+        ProxyPass http://127.0.0.1:8000/geonature/api
+        ProxyPassReverse  http://127.0.0.1:8000/geonature/api
+    </Location>
+
+* Passage à Alembic :
+
+  * S’assurer d’avoir une base de données de GeoNature en version 2.7.5
+  * Si vous avez UsersHub installé, ajoutez dans votre configuration GeoNature la section suivante (en adaptant le chemin) :
+
+  .. code-block::
+
+      [ALEMBIC]
+      VERSION_LOCATIONS = '/path/to/usershub/app/migrations/versions'
+
+  * Entrer dans le virtualenv afin d’avoir la commande ``geonature`` disponible : ``source backend/venv/bin/activate``
+  * Exécuter les commandes suivantes afin d’indiquer à Alembic l’état de votre base de données :
+
+  .. code-block::
+
+      geonature db stamp f06cc80cc8ba  # GeoNature 2.7.5
+      geonature db stamp 0dfdbfbccd63  # référentiel géographique des communes
+      geonature db stamp 3fdaa1805575  # référentiel géographique des départements
+      geonature db stamp 586613e2faeb  # référentiel géographique des mailles 1×1
+      geonature db stamp 7d6e98441e4c  # référentiel géographique des mailles 5×5
+      geonature db stamp ede150d9afd9  # référentiel géographique des mailles 10×10
+      geonature db stamp 1715cf31a75d  # MNT de l’IGN
+
+  * Si vous aviez déjà intallé certains modules, vous devez l’indiquer à Alembic :
+  
+    * Module *Occtax* : ``geonature db stamp f57107d2d0ad``
+    * Module *Occhab* : ``geonature db stamp 2984569d5df6``
+
+  * Mettre sa base de données à jour avec Alembic : ``geonature db autoupgrade``
+
+  Pour plus d’information sur l’utilisation d’Alembic, voir la `documentation administrateur de GeoNature <https://docs.geonature.fr/admin-manual.html#administration-avec-alembic>`_.
+
+2.7.5 (2021-07-28)
+------------------
+
+**🐛 Corrections**
+
+* Compatibilité avec Occtax-mobile 1.3. Possibilité d'ajouter la query string ``fields`` sur la route ``meta/datasets`` pour choisir les champs renvoyés par l'API 
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
+
+2.7.4 (2021-07-23)
+------------------
+
+**🐛 Corrections**
+
+* Correction d'un import manquant entrainant un problème de compilation du frontend (#1424)
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
+
+2.7.3 (2021-07-22)
+------------------
+
+**🚀 Nouveautés**
+
+* Métadonnées : ajout des paramètres ``CD_NOMENCLATURE_ROLE_TYPE_DS`` et ``CD_NOMENCLATURE_ROLE_TYPE_AF`` pour limiter les rôles utilisables au niveau des jeux de données et des cadres d'acquisition (#1417)
+* Ajout de la commande ``mtd_sync`` qui permet de synchroniser les métadonnées de toute une instance depuis le flux MTD du SINP
+
+**🐛 Corrections**
+
+* Correction de l'affichage des jeux de données sur les fiches des cadres d'acquisition (#1410)
+* Doc : Précision des OS supportés (Debian 10 uniquement en production)
+
+**💻 Développement**
+
+* Support des commandes Flask au niveau de la commande ``geonature`` (``run``, ``db``, ``routes``, ``shell``...)
+* Ajout des sous-modules en tant que dépendances
+* Ajout d'une commande ``install_packaged_gn_module``
+
+**⚠️ Notes de version**
+
+Si vous mettez à jour GeoNature :
+
+* Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
+
 2.7.2 (2021-07-05)
 ------------------
 
@@ -105,7 +275,7 @@ Nécessite la version 1.8.x de TaxHub.
 **💻 Développement**
 
 * Possibilité d'utiliser la commande ``flask`` (eg ``flask shell``)
-* Préparation de l'utilisation d'alembic pour la gestion des migrations de la structure de la BDD (#880)
+* Préparation de l'utilisation d'Alembic pour la gestion des migrations de la structure de la BDD (#880)
 * Possibilité d'importer des modules packagés (#1272)
 * Réorganisation des fichiers ``requirements`` et installation des branches ``develop`` des dépendances du fichier ``requirements-dev.txt``
 * Simplification de la gestion des erreurs
@@ -236,7 +406,6 @@ Si vous mettez à jour GeoNature :
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * Si vous utilisez Occtax-mobile, vous pouvez modifier la valeur du nouveau paramètre ``gn_commons.t_parameters.occtaxmobile_area_type`` pour lui indiquer le code du type de zonage que vous utilisez pour les unités géographiques (mailles de 5km par défaut)
 * Si vous disposez du module d'import, vous devez le mettre à jour en version 1.1.1
->>>>>>> develop
 
 2.5.5 (2020-11-19)
 ------------------
