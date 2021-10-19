@@ -102,10 +102,8 @@ def filter_taxonomy(model, q, filters):
     if "cd_ref_parent" in filters:
         # find all taxon child from cd_ref parent
         cd_ref_parent_int = list(map(lambda x: int(x), filters.pop("cd_ref_parent")))
-        sql = text(
-            """SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_children(:id_parent)"""
-        )
-        result = DB.engine.execute(sql, id_parent=cd_ref_parent_int)
+        sql = text("SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_children(:id_parent)")
+        result = DB.session.execute(sql, {"id_parent":cd_ref_parent_int})
         if result:
             cd_ref_childs = [r[0] for r in result]
 

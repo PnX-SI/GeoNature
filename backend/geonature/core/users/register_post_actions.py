@@ -37,18 +37,24 @@ def validate_temp_user(data):
             "msg": "{token}: ce token n'est pas associé à un compte temporaire".format(token=token)
         }
     user_dict = user.as_dict()
-    subject = "Demande de création de compte GeoNature"
+    subject = f"Demande création compte GeoNature - {token[:7]}"
     if current_app.config["ACCOUNT_MANAGEMENT"]["AUTO_ACCOUNT_CREATION"]:
         template = "email_self_validate_account.html"
         recipients = [user.email]
     else:
         template = "email_admin_validate_account.html"
-        recipients = [current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]]
+        recipients = current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]
     url_validation = url_for("users.confirmation", token=user.token_role, _external=True)
+    
+    if current_app.config["URL_USERSHUB"]:
+        url_usershub=current_app.config.get("URL_USERSHUB") + "/temp_users/list"
+    else:
+        url_usershub=None
 
     msg_html = render_template(
         template,
         url_validation=url_validation,
+        url_usershub=url_usershub,
         user=user_dict,
         additional_fields=[
             {"key": key, "value": value}
