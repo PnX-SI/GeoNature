@@ -91,6 +91,12 @@ $BODY$ ;
 
 
 -- -------------------------------------------------------------------------------------------------
+-- Clean-up old permissions of removed modules
+DELETE FROM gn_permissions.cor_role_action_filter_module_object p
+WHERE NOT EXISTS (
+        SELECT FROM gn_commons.t_modules m
+        WHERE m.id_module = p.id_module
+    );
 -- Add constraint for "id_module" in table "cor_role_action_filter_module_object"
 ALTER TABLE gn_permissions.cor_role_action_filter_module_object
 	ADD CONSTRAINT fk_cor_r_a_f_m_o_id_module FOREIGN KEY (id_module)
