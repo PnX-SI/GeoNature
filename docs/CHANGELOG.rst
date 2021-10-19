@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.8.1 (2021-10-17)
+------------------
+
+**🐛 Corrections**
+
+* Mise-à-jour corrective de `UsersHub-authentification-module 1.5.7 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.7>`__
+
 2.8.0 - Vaccinium myrtillus (2021-10-18)
 ----------------------------------------
 

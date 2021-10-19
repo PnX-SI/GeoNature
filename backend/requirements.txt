@@ -1,6 +1,6 @@
 -r requirements-common.txt
 
-pypnusershub@https://github.com/PnX-SI/UsersHub-authentification-module/archive/1.5.6.tar.gz
+pypnusershub@https://github.com/PnX-SI/UsersHub-authentification-module/archive/1.5.7.tar.gz
 pypnnomenclature@https://github.com/PnX-SI/Nomenclature-api-module/archive/1.4.4.tar.gz
 pypn_habref_api@https://github.com/PnX-SI/Habref-api-module/archive/0.2.0.tar.gz
 utils-flask-sqlalchemy-geo@https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/archive/0.2.1.zip
