@@ -125,7 +125,6 @@ def create_app(with_external_mods=True):
                 ('pypnnomenclature.routes:routes', '/nomenclatures'),
                 ('geonature.core.gn_commons.routes:routes', '/gn_commons'),
                 ('geonature.core.gn_permissions.routes:routes', '/permissions'),
-                ('geonature.core.gn_permissions.backoffice.views:routes', '/permissions_backoffice'),
                 ('geonature.core.routes:routes', '/'),
                 ('geonature.core.users.routes:routes', '/users'),
                 ('geonature.core.gn_synthese.routes:routes', '/synthese'),

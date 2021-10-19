@@ -97,7 +97,7 @@ class MailConfig(Schema):
 
 
 class AccountManagement(Schema):
-    # Config for sign-up
+    # Configuration parameters for sign-up
     ENABLE_SIGN_UP = fields.Boolean(load_default=False)
     ENABLE_USER_MANAGEMENT = fields.Boolean(load_default=False)
     AUTO_ACCOUNT_CREATION = fields.Boolean(load_default=True)
@@ -105,6 +105,21 @@ class AccountManagement(Schema):
     VALIDATOR_EMAIL = EmailStrOrListOfEmailStrField(load_default=None)
     ACCOUNT_FORM = fields.List(fields.Dict(), load_default=[])
     ADDON_USER_EMAIL = fields.String(load_default="")
+
+class PermissionManagement(Schema):
+    # Configuration parameters for permissions managment and access request
+    ENABLE_ACCESS_REQUEST = fields.Boolean(missing=False)
+    AREA_TYPES = fields.List(fields.Integer(), missing=[25, 26])
+    ENABLE_SENSITIVE_ACCESS = fields.Boolean(missing=True)
+    DATA_ACCESS_RULES_LINK = fields.String(missing=None)
+    DEFAULT_ACCESS_DURATION = fields.Integer(missing=None)
+    MAX_ACCESS_DURATION = fields.Integer(missing=365)
+    VALIDATOR_EMAIL = EmailStrOrListOfEmailStrField(missing=None)
+    REQUEST_FORM_TITLE = fields.String(missing=None)
+    REQUEST_FORM = fields.List(fields.Dict(), missing=[])
+    ENABLE_CONVENTION = fields.Boolean(missing=False)
+    CONVENTION_TITLE = fields.String(missing=None)
+    CONVENTION_VALIDATE = fields.String(missing=None)
 
 
 class UsersHubConfig(Schema):
@@ -153,9 +168,7 @@ class MetadataConfig(Schema):
     CD_NOMENCLATURE_ROLE_TYPE_DS = fields.List(fields.Str(), load_default=[])
     CD_NOMENCLATURE_ROLE_TYPE_AF = fields.List(fields.Str(), load_default=[])
 
-# class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
-
-
+# Class to use for parameters you NOT want to pass to frontend
 class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
@@ -183,6 +196,7 @@ class GnPySchemaConf(Schema):
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     ADMIN_APPLICATION_LOGIN = fields.String()
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
+    PERMISSION_MANAGEMENT = fields.Nested(PermissionManagement, missing=PermissionManagement().load({}))
     USERSHUB = fields.Nested(UsersHubConfig, load_default=UsersHubConfig().load({}))
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
@@ -289,6 +303,39 @@ class Synthese(Schema):
     # Display email on synthese and validation info obs modal
     DISPLAY_EMAIL = fields.Boolean(load_default=True)
 
+class DataBlurringManagement(Schema):
+    # Configuration parameters for blurring geo data based on diffusion_level, sensitivity
+    # and user permissions
+    
+    # Enable blurring results based on diffusion_level and user permissions
+    # By default, data blurring is disable
+    ENABLE_DATA_BLURRING = fields.Boolean(load_default=False)
+    # Type of area use to display data for each diffusion level
+    AREA_TYPE_FOR_DIFFUSION_LEVELS = fields.List(fields.Dict, load_default=[
+        {"level": "0", "area": "COM"},
+        {"level": "1", "area": "COM"},
+        {"level": "2", "area": "M10"},
+        {"level": "3", "area": "DEP"},
+    ])
+    # Type of area use to display data for each sensitivity level
+    AREA_TYPE_FOR_SENSITIVITY_LEVELS = fields.List(fields.Dict, load_default=[
+        {"level": "1", "area": "COM"},
+        {"level": "2", "area": "M10"},
+        {"level": "3", "area": "DEP"},
+    ])
+    # Nom de la colonne du niveau de sensibilité dans la vue gn_synthese.v_synthese_for_export
+    # Colonne obligatoire pour les téléchargements de la Synthese
+    EXPORT_SENSITIVITY_COL = fields.String(load_default="id_nomenclature_sensitivity")
+    # Nom de la colonne du niveau de diffusion dans la vue gn_synthese.v_synthese_for_export
+    # Colonne obligatoire pour les téléchargements de la Synthese
+    EXPORT_DIFFUSION_COL = fields.String(load_default="id_nomenclature_diffusion_level")
+    # Nom des champs à vider dans les téléchargements de la Synthese 
+    # lorsqu'une observation doit être floutée
+    EXPORT_FIELDS_TO_BLURRE = fields.List(fields.String, load_default=[
+        "geometrie_wkt_4326", 
+        "x_centroid_4326", "y_centroid_4326",
+        "geojson_4326", "geojson_local",
+    ])
 
 # Map configuration
 BASEMAP = [
@@ -351,6 +398,8 @@ class GnGeneralSchemaConf(Schema):
     BDD = fields.Nested(BddConfig, load_default=BddConfig().load({}))
     URL_USERSHUB = fields.Url(required=False)
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
+    PERMISSION_MANAGEMENT = fields.Nested(PermissionManagement, load_default=PermissionManagement().load({}))
+    DATA_BLURRING = fields.Nested(DataBlurringManagement, load_default=DataBlurringManagement().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     UPLOAD_FOLDER = fields.String(load_default="static/medias")
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))

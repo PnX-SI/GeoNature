@@ -9,6 +9,7 @@ from collections import OrderedDict
 from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
+from sqlalchemy.sql.expression import delete
 from geojson import FeatureCollection, Feature
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
@@ -42,12 +43,11 @@ from geonature.core.taxonomie.models import (
 from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 from geonature.core.gn_synthese.utils import query as synthese_query
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
-
+from geonature.core.gn_synthese.utils.blurring import DataBlurring
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from werkzeug.exceptions import BadRequest
-
 
 # debug
 # current_app.config['SQLALCHEMY_ECHO'] = True
@@ -68,9 +68,9 @@ def current_milli_time():
 
 
 @routes.route("/for_web", methods=["GET", "POST"])
-@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
+@permissions.check_permissions(module_code="SYNTHESE", action_code="R")
 @json_resp
-def get_observations_for_web(info_role):
+def get_observations_for_web(auth, permissions):
     """Optimized route to serve data for the frontend with all filters.
 
     .. :quickref: Synthese; Get filtered observations
@@ -93,7 +93,12 @@ def get_observations_for_web(info_role):
         geojson = ast.literal_eval(r["st_asgeojson"])
         geojson["properties"] = properties
 
-    :param str info_role: Role used to get the associated filters, **TBC**
+    :param str auth: autorisation contenant des informations sur 
+        l'utilisateur et la permissions permettant l'accés au web service.
+        Utiliser pour configurer les filtres, **TBC**.
+    :param str permissions: listes de toutes les permissions NON applaties
+        en lien avec la permission d'accès. Seul l'héritage des groupes est appliqué.
+        Utiliser pour configurer les filtres, **TBC**.
     :qparam str limit: Limit number of synthese returned. Defaults to NB_MAX_OBS_MAP.
     :qparam str cd_ref: Filter by TAXREF cd_ref attribute
     :qparam str taxonomy_group2_inpn: Filter by TAXREF group2_inpn attribute
@@ -127,32 +132,41 @@ def get_observations_for_web(info_role):
     else:
         result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
 
+    columns = [
+        VSyntheseForWebApp.id_synthese,
+        VSyntheseForWebApp.date_min,
+        VSyntheseForWebApp.lb_nom,
+        VSyntheseForWebApp.cd_nom,
+        VSyntheseForWebApp.nom_vern,
+        VSyntheseForWebApp.count_min,
+        VSyntheseForWebApp.count_max,
+        VSyntheseForWebApp.st_asgeojson,
+        VSyntheseForWebApp.observers,
+        VSyntheseForWebApp.dataset_name,
+        VSyntheseForWebApp.url_source,
+        VSyntheseForWebApp.entity_source_pk_value,
+        VSyntheseForWebApp.unique_id_sinp,
+    ]
+
+    if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
+        columns.append(VSyntheseForWebApp.id_nomenclature_sensitivity)
+        columns.append(VSyntheseForWebApp.id_nomenclature_diffusion_level)
+
     query = (
-        select(
-            [
-                VSyntheseForWebApp.id_synthese,
-                VSyntheseForWebApp.date_min,
-                VSyntheseForWebApp.lb_nom,
-                VSyntheseForWebApp.cd_nom,
-                VSyntheseForWebApp.nom_vern,
-                VSyntheseForWebApp.count_min,
-                VSyntheseForWebApp.count_max,
-                VSyntheseForWebApp.st_asgeojson,
-                VSyntheseForWebApp.observers,
-                VSyntheseForWebApp.dataset_name,
-                VSyntheseForWebApp.url_source,
-                VSyntheseForWebApp.entity_source_pk_value,
-                VSyntheseForWebApp.unique_id_sinp,
-            ]
-        )
+        select(columns)
         .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
         .order_by(VSyntheseForWebApp.date_min.desc())
     )
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
-    synthese_query_class.filter_query_all_filters(info_role)
-    result = DB.engine.execute(synthese_query_class.query.limit(result_limit))
+    synthese_query_class.filter_query_all_filters(auth)
+    results = DB.session.execute(synthese_query_class.query.limit(result_limit))
+
+    if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
+        data_blurring = DataBlurring(permissions)
+        results = data_blurring.blurSeveralObs(results)
+
     geojson_features = []
-    for r in result:
+    for r in results:
         properties = {
             "id": r["id_synthese"],
             "date_min": str(r["date_min"]),
@@ -169,6 +183,7 @@ def get_observations_for_web(info_role):
         geojson = ast.literal_eval(r["st_asgeojson"])
         geojson["properties"] = properties
         geojson_features.append(geojson)
+
     return {
         "data": FeatureCollection(geojson_features),
         "nb_total": len(geojson_features),
@@ -178,9 +193,9 @@ def get_observations_for_web(info_role):
 
 
 @routes.route("", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
+@permissions.check_permissions(module_code="SYNTHESE", action_code="R")
 @json_resp
-def get_synthese(info_role):
+def get_synthese(auth, permissions):
     """Return synthese row(s) filtered by form params. NOT USED ANY MORE FOR PERFORMANCE ISSUES
 
     .. :quickref: Synthese; Deprecated
@@ -190,7 +205,12 @@ def get_synthese(info_role):
 
     Params must have same synthese fields names
 
-    :parameter str info_role: Role used to get the associated filters
+    :param str auth: autorisation contenant des informations sur 
+        l'utilisateur et la permissions permettant l'accés au web service.
+        Utiliser pour configurer les filtres, **TBC**.
+    :param str permissions: listes de toutes les permissions NON applaties
+        en lien avec la permission d'accès. Seul l'héritage des groupes est appliqué.
+        Utiliser pour configurer les filtres, **TBC**.
     :returns dict[dict, int, bool]: See description above
     """
     # change all args in a list of value
@@ -202,11 +222,11 @@ def get_synthese(info_role):
 
     query = select([VSyntheseForWebApp]).order_by(VSyntheseForWebApp.date_min.desc())
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
-    synthese_query_class.filter_query_all_filters(info_role)
-    data = DB.engine.execute(synthese_query_class.query.limit(result_limit))
+    synthese_query_class.filter_query_all_filters(auth)
+    data = DB.session.execute(synthese_query_class.query.limit(result_limit))
 
 
-    # q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role)
+    # q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, auth)
 
     # data = q.limit(result_limit)
     columns = current_app.config["SYNTHESE"]["COLUMNS_API_SYNTHESE_WEB_APP"] + MANDATORY_COLUMNS
@@ -225,7 +245,9 @@ def get_synthese(info_role):
 
 
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
-def get_one_synthese(id_synthese):
+@permissions.check_permissions(module_code="SYNTHESE", action_code="R")
+@json_resp
+def get_one_synthese(auth, permissions, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature
 
     .. :quickref: Synthese; Get one synthese
@@ -267,6 +289,9 @@ def get_one_synthese(id_synthese):
         )
 
         synthese_as_dict["actors"] = data[1]
+        if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
+            data_blurring = DataBlurring(permissions)
+            synthese_as_dict = data_blurring.blurOneObsAreas(synthese_as_dict)
         return jsonify(synthese_as_dict)
     except exc.NoResultFound:
         return None
@@ -356,8 +381,8 @@ def export_taxon_web(info_role):
 
 
 @routes.route("/export_observations", methods=["POST"])
-@permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
-def export_observations_web(info_role):
+@permissions.check_permissions(module_code="SYNTHESE", action_code="E")
+def export_observations_web(auth, permissions):
     """Optimized route for observations web export.
 
     .. :quickref: Synthese;
@@ -376,7 +401,7 @@ def export_observations_web(info_role):
     if not export_format in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
         raise BadRequest("Unsupported format")
 
-    # set default to csv
+    # Set default to csv
     export_view = GenericTableGeo(
         tableName="v_synthese_for_export",
         schemaName="gn_synthese",
@@ -385,12 +410,12 @@ def export_observations_web(info_role):
         srid=current_app.config["LOCAL_SRID"],
     )
 
-    # get list of id synthese from POST
+    # Get list of id synthese from POST
     id_list = request.get_json()
 
     db_cols_for_shape = []
     columns_to_serialize = []
-    # loop over synthese config to get the columns for export
+    # Loop over synthese config to get the columns for export
     for db_col in export_view.db_cols:
         if db_col.key in current_app.config["SYNTHESE"]["EXPORT_COLUMNS"]:
             db_cols_for_shape.append(db_col)
@@ -401,29 +426,66 @@ def export_observations_web(info_role):
             id_list
         )
     )
+    columns_options = {
+        "id_synthese_column": current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"],
+        "id_dataset_column": current_app.config["SYNTHESE"]["EXPORT_ID_DATASET_COL"],
+        "observers_column": current_app.config["SYNTHESE"]["EXPORT_OBSERVERS_COL"],
+        "id_digitiser_column": current_app.config["SYNTHESE"]["EXPORT_ID_DIGITISER_COL"],
+    }
+    if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
+        columns_options["sensitivity_column"] = current_app.config["DATA_BLURRING"]["EXPORT_SENSITIVITY_COL"]
+        columns_options["diffusion_column"] = current_app.config["DATA_BLURRING"]["EXPORT_DIFFUSION_COL"]
+
     synthese_query_class = SyntheseQuery(
         export_view.tableDef,
         query,
         {},
-        id_synthese_column=current_app.config["SYNTHESE"]["EXPORT_ID_SYNTHESE_COL"],
-        id_dataset_column=current_app.config["SYNTHESE"]["EXPORT_ID_DATASET_COL"],
-        observers_column=current_app.config["SYNTHESE"]["EXPORT_OBSERVERS_COL"],
-        id_digitiser_column=current_app.config["SYNTHESE"]["EXPORT_ID_DIGITISER_COL"],
         with_generic_table=True,
+        **columns_options,
     )
-    # check R and E CRUVED to know if we filter with cruved
-    cruved = cruved_scope_for_user_in_module(info_role.id_role, module_code="SYNTHESE")[0]
+    # Check R and E CRUVED to know if we filter with cruved
+    cruved = cruved_scope_for_user_in_module(auth.id_role, module_code="SYNTHESE")[0]
     if cruved["R"] > cruved["E"]:
-        synthese_query_class.filter_query_with_cruved(info_role)
+        synthese_query_class.filter_query_with_cruved(auth)
     results = DB.session.execute(synthese_query_class.query.limit(
         current_app.config["SYNTHESE"]["NB_MAX_OBS_EXPORT"])
     )
+
+    if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
+        data_blurring = DataBlurring(
+            permissions, 
+            sensitivity_column=current_app.config["DATA_BLURRING"]["EXPORT_SENSITIVITY_COL"],
+            diffusion_column=current_app.config["DATA_BLURRING"]["EXPORT_DIFFUSION_COL"],
+            result_to_dict=False,
+            fields_to_erase=current_app.config["DATA_BLURRING"]["EXPORT_FIELDS_TO_BLURRE"],
+            geom_fields=[
+               {
+                    "output_field": current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"],
+                    "area_field": "geojson_4326",
+                },
+                {
+                    "output_field": current_app.config["SYNTHESE"]["EXPORT_GEOJSON_LOCAL_COL"],
+                    "area_field": "geom",
+                    "compute": "asgeojson",
+                    "srid": current_app.config["LOCAL_SRID"],
+                },
+                {
+                    "output_field": 'x_centroid_4326',
+                    "compute": "x",
+                },
+                {
+                    "output_field": 'y_centroid_4326',
+                    "compute": "y",
+                },
+            ]
+        )
+        results = data_blurring.blurSeveralObs(results)
 
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
 
     if export_format == "csv":
-        formated_data = [export_view.as_dict(d, columns=columns_to_serialize) for d in results]
+        formated_data = [export_view.as_dict(d, fields=columns_to_serialize) for d in results]
         return to_csv_resp(file_name, formated_data, separator=";", columns=columns_to_serialize)
 
     elif export_format == "geojson":
@@ -434,7 +496,7 @@ def export_observations_web(info_role):
             )
             feature = Feature(
                 geometry=geometry,
-                properties=export_view.as_dict(r, columns=columns_to_serialize),
+                properties=export_view.as_dict(r, fields=columns_to_serialize),
             )
             features.append(feature)
         results = FeatureCollection(features)
@@ -507,7 +569,7 @@ def export_metadata(info_role):
     )
     synthese_query_class.filter_query_all_filters(info_role)
 
-    data = DB.engine.execute(synthese_query_class.query)
+    data = DB.session.execute(synthese_query_class.query)
     return to_csv_resp(
         datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S"),
         data=[metadata_view.as_dict(d) for d in data],
@@ -570,7 +632,7 @@ def export_status(info_role):
     # filter with all get params
     q = synthese_query_class.filter_query_all_filters(info_role)
 
-    data = DB.engine.execute(q)
+    data = DB.session.execute(q)
 
     protection_status = []
     for d in data:
@@ -956,7 +1018,7 @@ def get_taxa_distribution():
 #         s_as_dict["id_synthese"] = random.randint(1500, 999999999)
 
 #         # with random cd_nom
-#         random_cd_nom = DB.engine.execute(
+#         random_cd_nom = DB.session.execute(
 #             """
 #         SELECT cd_nom FROM taxonomie.bib_noms OFFSET random() * (select count(*) from taxonomie.bib_noms) limit 1 ;"""
 #         )

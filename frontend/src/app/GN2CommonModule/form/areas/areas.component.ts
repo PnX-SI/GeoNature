@@ -55,10 +55,11 @@ export class AreasComponent implements OnInit {
           this.formatAreas(data);
         },
         err => {
+          this.areas = [];
           if (err.status === 404) {
-            this.areas = [{ area_name: 'No data to display' }];
+            let msg = "Aucune zone géographique ne correspond à vos critères de recherche."
+            this._commonService.translateToaster('warning', msg);
           } else {
-            this.areas = [];
             this._commonService.translateToaster('error', 'ErrorMessage');
           }
         }

@@ -16,12 +16,12 @@ export class CruvedStoreService {
 
   fetchCruved(){
       // The cruved service is deprecated (doublon of moduleService which provice cruved)
-      // for retrocompat, it return the modules from modules service      
+      // for retrocompat, it return the modules from modules service
        this._moduleService.modules.forEach(mod => {
-          this.cruved[mod.module_code] = mod;     
-        });        
+          this.cruved[mod.module_code] = mod;
+        });
       return of(this.cruved);
-    
+
   }
 
   clearCruved(): void {
