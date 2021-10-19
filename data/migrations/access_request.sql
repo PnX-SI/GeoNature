@@ -625,7 +625,7 @@ DROP FUNCTION gn_permissions.fct_tri_does_user_have_already_scope_filter ;
 INSERT INTO gn_permissions.cor_role_action_filter_module_object (
     id_role, id_action, id_module, id_object, id_filter_type, value_filter
 ) VALUES (
-    utilisateurs.get_id_role_by_name('Grp_admin'),
+    utilisateurs.get_id_role_by_name(:admin_role),
     gn_permissions.get_id_action('C'), 
     gn_commons.get_id_module_bycode('ADMIN'), 
     gn_permissions.get_id_object('ACCESS_REQUESTS'), 
@@ -637,7 +637,7 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object (
 INSERT INTO gn_permissions.cor_role_action_filter_module_object (
     id_role, id_action, id_module, id_object, id_filter_type, value_filter
 ) VALUES (
-    utilisateurs.get_id_role_by_name('Grp_admin'),
+    utilisateurs.get_id_role_by_name(:admin_role),
     gn_permissions.get_id_action('R'), 
     gn_commons.get_id_module_bycode('ADMIN'), 
     gn_permissions.get_id_object('ACCESS_REQUESTS'), 
@@ -649,7 +649,7 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object (
 INSERT INTO gn_permissions.cor_role_action_filter_module_object (
     id_role, id_action, id_module, id_object, id_filter_type, value_filter
 ) VALUES (
-    utilisateurs.get_id_role_by_name('Grp_admin'),
+    utilisateurs.get_id_role_by_name(:admin_role),
     gn_permissions.get_id_action('U'), 
     gn_commons.get_id_module_bycode('ADMIN'), 
     gn_permissions.get_id_object('ACCESS_REQUESTS'), 
@@ -661,7 +661,7 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object (
 INSERT INTO gn_permissions.cor_role_action_filter_module_object (
     id_role, id_action, id_module, id_object, id_filter_type, value_filter
 ) VALUES (
-    utilisateurs.get_id_role_by_name('Grp_admin'),
+    utilisateurs.get_id_role_by_name(:admin_role),
     gn_permissions.get_id_action('D'), 
     gn_commons.get_id_module_bycode('ADMIN'), 
     gn_permissions.get_id_object('ACCESS_REQUESTS'), 
