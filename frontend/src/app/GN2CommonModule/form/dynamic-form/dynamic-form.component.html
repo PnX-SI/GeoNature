@@ -57,6 +57,8 @@
       id="{{formDefComp.attribut_name}}_{{rand}}"
       type="number"
       onwheel="this.blur()"
+      min="{{formDefComp.min}}"
+      max="{{formDefComp.max}}"
     >
 
     <textarea
@@ -71,12 +73,12 @@
 
     <select
       *ngSwitchCase="'select'"
-      class="form-control"
+      class="form-control form-control-sm"
       id="{{formDefComp.attribut_name}}_{{rand}}"
       [formControl]="form.get(formDefComp.attribut_name)"
     >
       <option
-        [value]="null"
+        [ngValue]="null"
         *ngIf="!formDefComp.noNullOption"
       >
         -
@@ -115,12 +117,12 @@
       <div
         class="custom-control custom-checkbox"
         *ngIf="formDefComp.values.length == 1; else elseBlock"
+        [ngClass]="{'ng-invalid': form.get(formDefComp.attribut_name).invalid}"
       >
         <input
           type="checkbox"
           id="{{formDefComp.attribut_name}}_{{rand}}"
           class="custom-control-input"
-          [ngClass]="{'is-invalid': form.get(formDefComp.attribut_name).invalid}"
           [name]="formDefComp.attribut_name"
           [value]="formDefComp.values[0]"
           (change)="onCheckChange($event, form.get(formDefComp.attribut_name))"
@@ -136,10 +138,11 @@
         <div
           *ngFor="let val of formDefComp.values; let index=index"
           class="custom-control custom-checkbox"
+          [ngClass]="{'ng-invalid': form.get(formDefComp.attribut_name).invalid}"
+
         >
           <input
             class="custom-control-input"
-            [ngClass]="{'is-invalid': form.get(formDefComp.attribut_name).invalid}"
             type="checkbox"
             id="{{val}}_{{rand}}"
             [name]="formDefComp.attribut_name"
@@ -180,6 +183,7 @@
       <div
         *ngFor="let val of formDefComp.values"
         class="custom-control custom-radio"
+        [ngClass]="{'ng-invalid': form.get(formDefComp.attribut_name).invalid}"
       >
         <input
           type="radio"
@@ -203,6 +207,7 @@
       <div
         class="custom-control custom-radio"
         *ngFor="let val of formDefComp.values; index as i"
+        [ngClass]="{'ng-invalid': form.get(formDefComp.attribut_name).invalid}"
       >
         <input
           type="radio"
@@ -250,6 +255,8 @@
       [codeNomenclatureType]="formDefComp.code_nomenclature_type"
       [multiSelect]="formDefComp.multi_select"
       [keyValue]="formDefComp.key_value"
+      [group2Inpn]="formDef.group2inpn"
+      [regne]="formDef.regne"
     >
     </pnx-nomenclature>
 
@@ -293,6 +300,7 @@
       *ngSwitchCase="'municipalities'"
       [label]="formDefComp.attribut_label"
       [parentFormControl]="form.get(formDefComp.attribut_name)"
+      [searchBar]=True
     >
     </pnx-municipalities>
 

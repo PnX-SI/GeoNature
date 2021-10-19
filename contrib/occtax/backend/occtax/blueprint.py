@@ -754,7 +754,7 @@ def export(info_role):
     additional_col_names = []
     query_add_fields = DB.session.query(TAdditionalFields).filter(
         TAdditionalFields.modules.any(module_code="OCCTAX")
-    )
+    ).filter(TAdditionalFields.exportable == True)
     global_add_fields = query_add_fields.filter(~TAdditionalFields.datasets.any()).all()
     if "id_dataset" in request.args:
         dataset_add_fields = query_add_fields.filter(
@@ -765,8 +765,10 @@ def export(info_role):
 
     additional_col_names = [field.field_name for field in global_add_fields]
     if export_format == "csv":
-        # serialize data with additional cols or not
+        # set additional data col at the end (remove it and inset it ...)
+        columns.remove(export_col_name_additional_data)
         columns = columns + additional_col_names
+        columns.append(export_col_name_additional_data)
         if additional_col_names:
             serialize_result = [
                 as_dict_with_add_cols(

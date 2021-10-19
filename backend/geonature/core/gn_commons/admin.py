@@ -1,7 +1,7 @@
 from flask import current_app
 
 from flask_admin.contrib.sqla import ModelView
-from geonature.core.gn_commons.models import TAdditionalFields, TModules
+from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions.models import TObjects
 from geonature.utils.env import DB
 
@@ -14,6 +14,7 @@ class BibFieldAdmin(ModelView):
          "bib_nomenclature_type", "id_list", 
          "additional_attributes"
     )
+    column_exclude_list = ("field_values", "additional_attributes", "key_label", "key_value", "multiselect", "api", "id_list", "unity" )
 
     column_display_all_relations = True
     form_args = {

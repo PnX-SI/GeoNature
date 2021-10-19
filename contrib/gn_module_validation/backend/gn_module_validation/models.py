@@ -73,7 +73,6 @@ class VSyntheseValidation(DB.Model):
     id_nomenclature_observation_status = DB.Column(DB.Integer)
     id_nomenclature_blurring = DB.Column(DB.Integer)
     id_nomenclature_source_status = DB.Column(DB.Integer)
-    id_nomenclature_source_status = DB.Column(DB.Integer)
     id_nomenclature_valid_status = DB.Column(DB.Integer)
     mnemonique = DB.Column(DB.Unicode)
     cd_nomenclature_validation_status = DB.Column(DB.Unicode)

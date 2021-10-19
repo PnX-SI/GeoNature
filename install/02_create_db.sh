@@ -81,6 +81,7 @@ sudo -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS hstore;"
 sudo -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';" |& tee -a "${LOG_FILE}"
 sudo -u postgres -s psql -d $db_name -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";' |& tee -a "${LOG_FILE}"
 sudo -u postgres -s psql -d $db_name -c "CREATE EXTENSION IF NOT EXISTS pg_trgm WITH SCHEMA pg_catalog;" |& tee -a "${LOG_FILE}"
+sudo -u postgres -s psql -d $db_name -c 'CREATE EXTENSION IF NOT EXISTS "unaccent";' |& tee -a "${LOG_FILE}"
 
 
 # Mise en place de la structure de la BDD et des données permettant son fonctionnement avec l'application
@@ -95,9 +96,8 @@ done
 ##########################
 
 
-for branch in geonature utilisateurs nomenclatures taxonomie nomenclatures_taxonomie habitats ref_geo; do
-    geonature db upgrade $branch@head -x data-directory=tmp/ -x local-srid=$srid_local
-done
+geonature db upgrade geonature@head -x data-directory=tmp/ -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
+geonature db autoupgrade -x data-directory=tmp/ -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
 
 # Installation des données exemples
 if [ "$add_sample_data" = true ];
@@ -111,15 +111,15 @@ fi
 
 if [ "$install_sig_layers" = true ];
 then
-    geonature db upgrade ref_geo_fr_departments -x data-directory=tmp |& tee -a "${LOG_FILE}"
-    geonature db upgrade ref_geo_fr_municipalities -x data-directory=tmp |& tee -a "${LOG_FILE}"
+    geonature db upgrade ref_geo_fr_departments@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
+    geonature db upgrade ref_geo_fr_municipalities@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
 fi
 
 if [ "$install_grid_layer" = true ];
 then
-    geonature db upgrade ref_geo_inpn_grids_1 -x data-directory=tmp |& tee -a "${LOG_FILE}"
-    geonature db upgrade ref_geo_inpn_grids_5 -x data-directory=tmp |& tee -a "${LOG_FILE}"
-    geonature db upgrade ref_geo_inpn_grids_10 -x data-directory=tmp |& tee -a "${LOG_FILE}"
+    geonature db upgrade ref_geo_inpn_grids_1@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
+    geonature db upgrade ref_geo_inpn_grids_5@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
+    geonature db upgrade ref_geo_inpn_grids_10@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
 fi
 
 if  [ "$install_default_dem" = true ];

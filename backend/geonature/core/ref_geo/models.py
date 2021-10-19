@@ -9,6 +9,7 @@ from utils_flask_sqla_geo.serializers import geoserializable
 from geonature.utils.env import DB
 from geonature.utils.config import config
 
+from sqlalchemy.ext.hybrid import hybrid_property
 
 @serializable
 class BibAreasTypes(DB.Model):
@@ -66,3 +67,7 @@ class LiMunicipalities(DB.Model):
     insee_commune_nouvelle = DB.Column(DB.Unicode)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
+
+    @hybrid_property
+    def nom_com_dept(self):
+        return '{} ({})'.format(self.nom_com, self.insee_dep)

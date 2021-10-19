@@ -2,31 +2,8 @@
 CHANGELOG
 =========
 
-2.8.0-rc2 (unreleased)
-----------------------
-
-**🚀 Nouveautés**
-
-* Packaging des modules GeoNature OccTax, OccHab et validation
-* Mise à jour des dépendances
-
-  * `UsersHub-authentification-module 1.5.4 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.4>`__
-  * `Nomenclature-api-module 1.4.3 <https://github.com/PnX-SI/Nomenclature-api-module/releases/tag/1.4.3>`__
-
-**🐛 Corrections**
-
-* Correction de la commande ``install_packaged_gn_module`` : rechargement des entry points après installation avec pip d’un module paquagé
-* Correction d’un bug lors de l’ajout d’un cadre d’acquisition
-
-**⚠️ Notes de version**
-
-* Si vous aviez déjà intallé certains modules, vous devez l’indiquer à Alembic :
-
-  * Module *OccTax* : ``geonature db stamp f57107d2d0ad``
-  * Module *OccHab* : ``geonature db stamp 2984569d5df6``
-
-2.8.0-rc1 (2021-10-01)
-----------------------
+2.8.0 - Vaccinium myrtillus (2021-10-18)
+----------------------------------------
 
 **Gestion de la base de données avec Alembic**
 
@@ -45,18 +22,21 @@ CHANGELOG
 * Mise à jour des dépendances
 
   * `TaxHub 1.9.0 <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__
-  * `UsersHub-authentification-module 1.5.3 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.3>`__
-  * `Nomenclature-api-module 1.4.1 <https://github.com/PnX-SI/Nomenclature-api-module/releases/tag/1.4.1>`__
+  * `UsersHub-authentification-module 1.5.6 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.6>`__
+  * `Nomenclature-api-module 1.4.4 <https://github.com/PnX-SI/Nomenclature-api-module/releases/tag/1.4.4>`__
   * `Habref-api-module 0.2.0 <https://github.com/PnX-SI/Habref-api-module/releases/tag/0.2.0>`__
   * `Utils-Flask-SQLAlchemy 0.2.4 <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/releases/tag/0.2.4>`__
   * `Utils-Flask-SQLAlchemy-Geo 0.2.1 <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/releases/tag/0.2.1>`__
 
 **🐛 Corrections**
 
+* Corrections et améliorations des formulaires dynamiques et des champs additionnels
 * Correction de l'envoi d'email lors de la récupération du mot de passe (#1471)
 * Occtax : Correction du focus sur le champs "taxon" quand on enchaine les taxons (#1462)
 * Occtax : Correction du formulaire de modification quand le relevé est une ligne ou un polygone (#1461)
 * Occtax : Correction de la conservation de la date quand on enchaine les relevés (#1442)
+* Occtax : Correction du paramètre d'export des champs additionnels (#1440)
+* Synthèse : correction de la recherche par jeu de données (#1494)
 * Correction de l'affichage des longues listes déroulantes dans les champs additionnels (#1442)
 * Mise à jour de la table ``cor_area_synthese`` lors de l’ajout de nouvelles zones via un trigger sur la table ``l_areas`` (#1433)
 * Correction de l'export PDF des fiches de métadonnées (#1449)
@@ -69,7 +49,11 @@ CHANGELOG
 * Correction du trigger d'Occtax vers la Synthèse pour le champs ``Comportement`` (#1469)
 * Correction des fonctions ``get_default_nomenclature_value``
 * Correction du composant ``multiselect`` (#1488)
+* Correction du script ``migrate.sh`` pour récupérer le fichier ``custom.scss`` depuis son nouvel emplacement (#1430)
+* Correction du paramètre ``EXPORT_OBSERVERS_COL``
 * Métadonnées : Suppression en cascade sur les tables ``gn_meta.cor_dataset_territory`` et ``gn_meta.cor_dataset_protocol`` (#1452)
+* Correction de la commande ``install_packaged_gn_module`` : rechargement des entry points après installation avec pip d’un module packagé
+* Correction d’un bug lors de l’ajout d’un cadre d’acquisition
 
 **💻 Développement**
 
@@ -96,15 +80,14 @@ CHANGELOG
   * Pour démarrer GeoNature : ``sudo systemctl start geonature``
   * Pour lancer GeoNature automatiquement au démarrage du serveur : ``sudo systemctl enable geonature``
 
-* Correction de la configuration Apache :
+* Correction de la configuration Apache : si vous servez GeoNature sur un préfixe (typiquement ``/geonature/api``), assurez vous que ce préfixe figure bien également à la fin des directives ``ProxyPass`` et ``ProxyPassReverse`` comme dans l’exemple suivant :
 
-  * Installer le fichier de configuration Apache d’exemple permettant de servir GeoNature sur le préfixe ``/geonature`` : ``cp install/assets/geonature_apache.conf /etc/apache2/conf-available/geonature.conf``
-  * Remplacer dans ``/etc/apache2/conf-available/geonature.conf`` la variable ``${GEONATURE_DIR}`` par la valeur approprié (*e.g.* ``/home/geonatureadmin/geonature``)
-  * Vous pouvez décider d’utiliser ce fichier d’exemple en l’activant (``sudo a2enconf geonature``)
-  * Ou vous pouvez l’inclure dans votre propre vhost avec la directive suivante : ``Include /etc/apache2/conf-available/geonature.conf``
-  * Si vous gardez votre propre fichier de configuration et que vous servez GeoNature sur un préfixe (typiquement ``/geonature/api``), assurez vous que ce préfixe figure bien également à la fin des directives ``ProxyPass`` et ``ProxyPassReverse`` comme c’est le cas dans le fichier d’exemple ``install/assets/geonature_apache.conf``
-  * Si vous décidez d’utiliser le fichier fourni, pensez à supprimer votre ancienne configuration apache (*e.g.* ``sudo a2dissite geonature && sudo rm /etc/apache2/sites-available/geonature.conf``).
-  * Si vous souhaitez isoler GeoNature dans un vhost, vous pouvez vous inspirer du fichier ``install/assets/vhost_apache.conf``
+  .. code-block::
+
+    <Location /geonature/api>
+        ProxyPass http://127.0.0.1:8000/geonature/api
+        ProxyPassReverse  http://127.0.0.1:8000/geonature/api
+    </Location>
 
 * Passage à Alembic :
 
@@ -117,18 +100,24 @@ CHANGELOG
       VERSION_LOCATIONS = '/path/to/usershub/app/migrations/versions'
 
   * Entrer dans le virtualenv afin d’avoir la commande ``geonature`` disponible : ``source backend/venv/bin/activate``
-  * Indiquer à Alembic l’état de votre base de données :
+  * Exécuter les commandes suivantes afin d’indiquer à Alembic l’état de votre base de données :
 
-    * Indiquer que la base est en version 2.7.5 : ``geonature db stamp f06cc80cc8ba``
-    * Si la base contient le référentiel géographique des communes : ``geonature db stamp 0dfdbfbccd63``
-    * Si la base contient le référentiel géographique des départements : ``geonature db stamp 3fdaa1805575``
-    * Si la base contient le référentiel géographique des mailles 1×1 : ``geonature db stamp 586613e2faeb``
-    * Si la base contient le référentiel géographique des mailles 5×5 : ``geonature db stamp 7d6e98441e4c``
-    * Si la base contient le référentiel géographique des mailles 10×10 : ``geonature db stamp ede150d9afd9``
-    * Si la base contient le MNT de l’IGN : ``geonature db stamp 1715cf31a75d``
-    * Si la base contient le MNT de l’IGN vectorisé : ``geonature db stamp 87651375c2e8``
+  .. code-block::
 
-  * Mettre sa base de données à jour avec Alembic : ``geonature db upgrade geonature@head``
+      geonature db stamp f06cc80cc8ba  # GeoNature 2.7.5
+      geonature db stamp 0dfdbfbccd63  # référentiel géographique des communes
+      geonature db stamp 3fdaa1805575  # référentiel géographique des départements
+      geonature db stamp 586613e2faeb  # référentiel géographique des mailles 1×1
+      geonature db stamp 7d6e98441e4c  # référentiel géographique des mailles 5×5
+      geonature db stamp ede150d9afd9  # référentiel géographique des mailles 10×10
+      geonature db stamp 1715cf31a75d  # MNT de l’IGN
+
+  * Si vous aviez déjà intallé certains modules, vous devez l’indiquer à Alembic :
+  
+    * Module *Occtax* : ``geonature db stamp f57107d2d0ad``
+    * Module *Occhab* : ``geonature db stamp 2984569d5df6``
+
+  * Mettre sa base de données à jour avec Alembic : ``geonature db autoupgrade``
 
   Pour plus d’information sur l’utilisation d’Alembic, voir la `documentation administrateur de GeoNature <https://docs.geonature.fr/admin-manual.html#administration-avec-alembic>`_.
 

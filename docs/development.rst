@@ -16,7 +16,9 @@ Mainteneurs :
 - Theo LECHEMIA (PnEcrins) : Frontend / Angular
 - Camille MONCHICOURT (PnEcrins) : Documentation / Gestion du projet
 
-.. image :: https://geonature.fr/docs/img/developpement/geonature-techno.png
+.. image :: _static/geonature-techno.png
+
+.. _api:
 
 API
 ---
@@ -28,18 +30,18 @@ GeoNature utilise :
 - l'API du sous-module d'authentification de UsersHub (login/logout, récupération du CRUVED d'un utilisateur)
 - l'API de GeoNature (get, post, update des données des différents modules, métadonnées, intersections géographiques, exports...)
 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/api_services.png
+.. image :: _static/api_services.png
 
 Liste des routes
 *****************
 
-.. qrefflask:: geonature:create_app(with_flask_admin=False)
+.. qrefflask:: geonature:create_app()
   :undoc-static:
 
 Documentation des routes
 ************************
 
-.. autoflask:: geonature:create_app(with_flask_admin=False)
+.. autoflask:: geonature:create_app()
   :undoc-static:
 
 
@@ -215,7 +217,7 @@ modèle de données).
 
 L'API du coeur permet d'interroger les schémas de la base de données "coeur"
 de GeoNature. Une documentation complète de l'API est disponible dans la
-rubrique 'Documentation API Backend'_.
+rubrique :ref:`API`.
 
 Du côté interface utilisateur, GeoNature met à disposition un ensemble de
 composants Angular réutilisables
@@ -333,15 +335,17 @@ Pour installer un module, rendez vous dans le dossier ``backend`` de GeoNature.
 
 Activer ensuite le virtualenv pour rendre disponible les commandes GeoNature 
 
-::
+.. code-block::
 
     source venv/bin/activate
 
+
 Lancez ensuite la commande 
 
-::
+.. code-block::
 
     geonature install_gn_module <mon_chemin_absolu_vers_le_module> <url_api>
+
 
 Le premier paramètre est l'emplacement absolu du module sur votre machine et
 le 2ème le chemin derrière lequel on retrouvera les routes de l'API du module.
@@ -463,17 +467,21 @@ La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison ex
         ...
 
 
-  Fichier utilisation modèle::
+  Fichier utilisation modèle :
 
-    # utilisation de as_shape()
-    data = DB.session.query(MyShapeserializableClass).all()
-    MyShapeserializableClass.as_shape(
-        geom_col='geom_4326',
-        srid=4326,
-        data=data,
-        dir_path=str(ROOT_DIR / 'backend/static/shapefiles'),
-        file_name=file_name
-    )
+  .. code-block::
+  
+      # utilisation de as_shape()
+      data = DB.session.query(MyShapeserializableClass).all()
+      MyShapeserializableClass.as_shape(
+          geom_col='geom_4326',
+          srid=4326,
+          data=data,
+          dir_path=str(ROOT_DIR / 'backend/static/shapefiles'),
+          file_name=file_name,
+      )
+
+
 
 - ``utils_flask_sqla_geo.utilsgeometry.FionaShapeService``
 
@@ -847,22 +855,22 @@ service :
 
                         Type: ``string``
 
-
         Exemple d'utilisation avec une liste simple :
         
-        ::
+.. code-block::
 
-                <pnx-map-list
-                        idName="id_releve_occtax"
-                        height="80vh">
-                </pnx-map-list>
-                <table>
-                        <tr ngFor="let row of mapListService.tableData" [ngClass]=" {'selected': mapListService.selectedRow[0]} == row.id ">
-                                <td (click)="mapListService.onRowSelect(row.id)"> Zoom on map </td>
-                                <td > {{row.observers}} </td>
-                                <td > {{row.date}} </td>
-                        </tr>
-                </table>
+    <pnx-map-list
+            idName="id_releve_occtax"
+            height="80vh">
+    </pnx-map-list>
+    <table>
+            <tr ngFor="let row of mapListService.tableData" [ngClass]=" {'selected': mapListService.selectedRow[0]} == row.id ">
+                    <td (click)="mapListService.onRowSelect(row.id)"> Zoom on map </td>
+                    <td > {{row.observers}} </td>
+                    <td > {{row.date}} </td>
+            </tr>
+    </table>
+
 
 
 Outils d'aide à la qualité du code
@@ -938,5 +946,6 @@ par les tests.
 
         cd backend
         pytest --cov=geonature --cov-report=html
+
 
 Ceci génénère un rapport html disponible dans  ``backend/htmlcov/index.html``.
