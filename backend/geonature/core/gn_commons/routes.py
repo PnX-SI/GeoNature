@@ -44,7 +44,7 @@ def get_modules(info_role):
     """
     params = request.args
     q = DB.session.query(TModules).options(
-        joinedload(TModules.objects)
+        joinedload(TModules.available_permissions)   
     )
     if "exclude" in params:
         q = q.filter(TModules.module_code.notin_(params.getlist("exclude")))
@@ -56,7 +56,7 @@ def get_modules(info_role):
             id_role=info_role.id_role, module_code=mod.module_code, 
         )[0]
         if app_cruved["R"] != "0":
-            module = mod.as_dict(fields=["objects"])
+            module = mod.as_dict(fields=["available_permissions"])
             module["cruved"] = app_cruved
             if mod.active_frontend:
                 # try to get module url from conf for new modules
@@ -71,8 +71,16 @@ def get_modules(info_role):
             else:
                 module["module_url"] = mod.module_external_url
             module_objects_as_dict = {}
-            # # get cruved for each object
-            for _object in module.get("objects", []):
+            
+            # get cruved for each object
+            objects_list = []
+            if mod.available_permissions:
+                for item in mod.available_permissions:
+                    item = item.cor_object.as_dict()
+                    if item not in objects_list:
+                        objects_list.append(item)
+            
+            for _object in objects_list:
                 object_cruved, herited = cruved_scope_for_user_in_module(
                     id_role=info_role.id_role,
                     module_code=module["module_code"],

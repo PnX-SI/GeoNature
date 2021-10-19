@@ -26,7 +26,7 @@ export class CruvedStoreService {
         map((modules: any[]): any => {
           const cruved = [];
           modules.forEach(mod => {
-            cruved[mod.module_code] = mod;     
+            cruved[mod.module_code] = mod;
           })
           return cruved;
         })

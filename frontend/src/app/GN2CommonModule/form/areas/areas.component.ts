@@ -67,4 +67,5 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
 
     return data;
   }
+
 }
