@@ -38,12 +38,20 @@ def downgrade():
     WHERE code_object LIKE 'OCCTAX_%'
     """)
     op.execute("""
-    DELETE FROM gn_permissions.cor_object_module com
-    USING gn_permissions.t_objects o, gn_commons.t_modules m
-    WHERE com.id_object = o.id_object
-    AND com.id_module = m.id_module
-    AND code_object = 'TDatasets'
-    AND module_code = 'OCCTAX'
+    DO $$ BEGIN
+        IF EXISTS (
+           SELECT FROM information_schema.tables
+           WHERE  table_schema = 'gn_permissions'
+           AND    table_name   = 'cor_object_module'
+        ) THEN
+            DELETE FROM gn_permissions.cor_object_module com
+            USING gn_permissions.t_objects o, gn_commons.t_modules m
+            WHERE com.id_object = o.id_object
+            AND com.id_module = m.id_module
+            AND code_object = 'TDatasets'
+            AND module_code = 'OCCTAX';
+        END IF;
+    END $$;
     """)
     op.execute("""
     DELETE FROM gn_synthese.t_sources
