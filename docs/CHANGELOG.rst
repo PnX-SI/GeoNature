@@ -5,6 +5,11 @@ CHANGELOG
 2.8.1 (2021-10-17)
 ------------------
 
+**🚀 Nouveautés**
+
+* Ajout de l’indication du département au formulaire des communes (#1480)
+* Ajout des champs ``group2inpn`` et ``regne`` au formulaire des nomenclatures (#1481)
+
 **🐛 Corrections**
 
 * Correction de la commande ``geonature db autoupgrade``
