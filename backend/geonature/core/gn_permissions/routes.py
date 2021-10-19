@@ -24,9 +24,7 @@ from geonature.core.gn_permissions.repositories import PermissionRepository
 from geonature.utils.env import DB
 
 
-# TODO : see how to define locale globaly => bug with python 3.7?
-print(f"Current locale: {locale.getlocale(locale.LC_TIME)}")
-locale.setlocale(locale.LC_TIME, "fr_FR.UTF-8")
+locale.setlocale(locale.LC_TIME, '')
 
 log = logging.getLogger(__name__)
 

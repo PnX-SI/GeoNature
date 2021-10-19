@@ -1,6 +1,3 @@
--- Add tables to store permissions requests and alter permissions tables
-BEGIN ;
-
 -- -------------------------------------------------------------------------------------------------
 -- Add comments on existing tables, columns and primary key sequences
 
@@ -64,7 +61,7 @@ COMMENT ON SEQUENCE gn_permissions.t_objects_id_object_seq IS
 
 -- -------------------------------------------------------------------------------------------------
 -- Add new utilities functions
-CREATE OR REPLACE FUNCTION gn_permissions.get_id_action(actionCode character varying)
+CREATE FUNCTION gn_permissions.get_id_action(actionCode character varying)
     RETURNS integer
     LANGUAGE plpgsql
     IMMUTABLE
@@ -78,7 +75,7 @@ AS $BODY$
     END;
 $BODY$ ;
 
-CREATE OR REPLACE FUNCTION gn_permissions.get_id_filter_type(filterTypeCode character varying)
+CREATE FUNCTION gn_permissions.get_id_filter_type(filterTypeCode character varying)
     RETURNS integer
     LANGUAGE plpgsql
     IMMUTABLE
@@ -92,26 +89,9 @@ AS $BODY$
     END;
 $BODY$ ;
 
-CREATE OR REPLACE FUNCTION utilisateurs.get_id_role_by_name(roleName character varying)
-    RETURNS integer
-    LANGUAGE plpgsql
-    IMMUTABLE
-AS $BODY$
-    BEGIN
-        RETURN (
-            SELECT id_role
-            FROM utilisateurs.t_roles
-            WHERE nom_role = roleName
-        );
-    END;
-$BODY$ ;
-
 
 -- -------------------------------------------------------------------------------------------------
 -- Add constraint for "id_module" in table "cor_role_action_filter_module_object"
-ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-	DROP CONSTRAINT IF EXISTS fk_cor_r_a_f_m_o_id_module CASCADE ;
-
 ALTER TABLE gn_permissions.cor_role_action_filter_module_object
 	ADD CONSTRAINT fk_cor_r_a_f_m_o_id_module FOREIGN KEY (id_module)
 	REFERENCES gn_commons.t_modules (id_module) MATCH FULL
@@ -119,40 +99,7 @@ ALTER TABLE gn_permissions.cor_role_action_filter_module_object
 
 
 -- -------------------------------------------------------------------------------------------------
--- Rename filter "SENSITIVITY" to "PRECISION" and update others. See #1062.
-UPDATE gn_permissions.bib_filters_type 
-SET 
-    label_filter_type = 'Filtre d''appartenance',
-    description_filter_type = E'Permissions limitées par le type d''appartenances des données.\n'
-        'Accès à : aucune (=0), les miennes (=1), celles de mon organisme (=2), toutes (=3).'
-WHERE code_filter_type = 'SCOPE' ;
-
-UPDATE gn_permissions.bib_filters_type 
-SET 
-    label_filter_type = 'Filtre géographique',
-    description_filter_type = E'Permissions limitées par zones géographiques.\n'
-        'Utiliser des id_area séparés par des virgules.'
-WHERE code_filter_type = 'GEOGRAPHIC' ;
-
-UPDATE gn_permissions.bib_filters_type 
-SET 
-    label_filter_type = 'Filtre taxonomique',
-    description_filter_type = E'Permissions limitées par des taxons.\n'
-        'Utiliser des cd_nom séparés par des virgules.'
-WHERE code_filter_type = 'TAXONOMIC' ;
-
-UPDATE gn_permissions.bib_filters_type 
-SET 
-    code_filter_type = 'PRECISION',
-    label_filter_type = 'Filtre de précision',
-    description_filter_type = 'Active (=fuzzy) ou désactive (=exact) le floutage des données (sensibles ou privées).'
-WHERE code_filter_type = 'SENSITIVITY' ;
-
-
--- -------------------------------------------------------------------------------------------------
 -- Add sequence for new table "bib_filters_values" primary key
-DROP SEQUENCE IF EXISTS gn_permissions.bib_filters_values_id_filter_value_seq CASCADE ;
-
 CREATE SEQUENCE gn_permissions.bib_filters_values_id_filter_value_seq
 	INCREMENT BY 1
 	MINVALUE 0
@@ -161,27 +108,21 @@ CREATE SEQUENCE gn_permissions.bib_filters_values_id_filter_value_seq
 	CACHE 1
 	NO CYCLE ;
 
--- ALTER SEQUENCE gn_permissions.bib_filters_values_id_filter_value_seq OWNER TO geonatadmin;
-
 COMMENT ON SEQUENCE gn_permissions.bib_filters_values_id_filter_value_seq IS 
     E'Auto-incrément de la clé primaire de la table bib_filters_values.' ;
 
 -- -------------------------------------------------------------------------------------------------
 -- Create request states enum 
-DROP TYPE IF EXISTS filter_value_formats CASCADE ;
-
-CREATE TYPE filter_value_formats AS ENUM ('string', 'integer', 'boolean', 'geometry', 'csvint') ;
+CREATE TYPE gn_permissions.filter_value_formats AS ENUM ('string', 'integer', 'boolean', 'geometry', 'csvint') ;
 
 
 -- -------------------------------------------------------------------------------------------------
 -- Create filters values types table 
-DROP TABLE IF EXISTS gn_permissions.bib_filters_values CASCADE ;
-
 CREATE TABLE gn_permissions.bib_filters_values (
 	id_filter_value integer NOT NULL 
         DEFAULT nextval('gn_permissions.bib_filters_values_id_filter_value_seq'::regclass),
 	id_filter_type integer,
-    value_format filter_value_formats NOT NULL,
+    value_format gn_permissions.filter_value_formats NOT NULL,
     predefined boolean NOT NULL,
     value_or_field varchar(50) NOT NULL,
     label varchar(255) NOT NULL,
@@ -214,9 +155,6 @@ COMMENT ON COLUMN gn_permissions.bib_filters_values.description IS
 
 -- -------------------------------------------------------------------------------------------------
 -- Constraints for table "bib_filters_values"
-ALTER TABLE gn_permissions.bib_filters_values 
-    DROP CONSTRAINT IF EXISTS fk_bib_filters_values_id_filter_type CASCADE ;
-
 ALTER TABLE gn_permissions.bib_filters_values 
     ADD CONSTRAINT fk_bib_filters_values_id_filter_type FOREIGN KEY (id_filter_type)
     REFERENCES gn_permissions.bib_filters_type (id_filter_type) MATCH FULL
@@ -369,8 +307,6 @@ INSERT INTO gn_permissions.bib_filters_values (
 
 -- -------------------------------------------------------------------------------------------------
 -- Add sequence for new table "t_requests" primary key
-DROP SEQUENCE IF EXISTS gn_permissions.t_requests_id_request_seq CASCADE ;
-
 CREATE SEQUENCE gn_permissions.t_requests_id_request_seq
 	INCREMENT BY 1
 	MINVALUE 0
@@ -379,29 +315,23 @@ CREATE SEQUENCE gn_permissions.t_requests_id_request_seq
 	CACHE 1
 	NO CYCLE ;
 
--- ALTER SEQUENCE gn_permissions.t_requests_id_request_seq OWNER TO geonatadmin;
-
 COMMENT ON SEQUENCE gn_permissions.t_requests_id_request_seq IS 
     E'Auto-incrément de la clé primaire de la table t_requests.' ;
 
 
 -- -------------------------------------------------------------------------------------------------
 -- Create request states enum 
-DROP TYPE IF EXISTS request_states CASCADE ;
-
-CREATE TYPE request_states AS ENUM ('pending', 'refused', 'accepted') ;
+CREATE TYPE gn_permissions.request_states AS ENUM ('pending', 'refused', 'accepted') ;
 
 
 -- -------------------------------------------------------------------------------------------------
 -- Create requests table 
-DROP TABLE IF EXISTS gn_permissions.t_requests CASCADE ;
-
 CREATE TABLE gn_permissions.t_requests (
 	id_request integer NOT NULL DEFAULT nextval('gn_permissions.t_requests_id_request_seq'::regclass),
 	id_role integer,
     token uuid NOT NULL DEFAULT public.uuid_generate_v4(),
     end_date date,
-	processed_state request_states NOT NULL DEFAULT 'pending',
+	processed_state gn_permissions.request_states NOT NULL DEFAULT 'pending',
     processed_date timestamp,
     processed_by integer,
     refusal_reason varchar(1000),
@@ -452,23 +382,13 @@ COMMENT ON COLUMN gn_permissions.t_requests.meta_update_date IS
 	E'Date de mise à jour de l''enregistrement. '
      'À la création de l''enregistrement, correspond à la date et heure de création.';
 
--- ALTER TABLE gn_permissions.t_requests OWNER TO geonatadmin ;
-
-
 -- -------------------------------------------------------------------------------------------------
 -- Constraints for table "t_requests"
-ALTER TABLE gn_permissions.t_requests 
-    DROP CONSTRAINT IF EXISTS fk_t_requests_id_role CASCADE ;
-
 ALTER TABLE gn_permissions.t_requests 
     ADD CONSTRAINT fk_t_requests_id_role FOREIGN KEY (id_role)
     REFERENCES utilisateurs.t_roles (id_role) MATCH FULL
     ON UPDATE CASCADE 
     ON DELETE CASCADE ;
-
-
-ALTER TABLE gn_permissions.t_requests 
-    DROP CONSTRAINT IF EXISTS fk_t_requests_processed_by CASCADE ;
 
 ALTER TABLE gn_permissions.t_requests 
     ADD CONSTRAINT fk_t_requests_processed_by FOREIGN KEY (processed_by)
@@ -479,7 +399,7 @@ ALTER TABLE gn_permissions.t_requests
 
 -- -------------------------------------------------------------------------------------------------
 -- Triggers
-CREATE OR REPLACE FUNCTION gn_permissions.tri_func_modify_meta_update_date()
+CREATE FUNCTION gn_permissions.tri_func_modify_meta_update_date()
     RETURNS trigger
     LANGUAGE plpgsql
 AS $BODY$
@@ -488,10 +408,6 @@ BEGIN
     RETURN NEW;
 END;
 $BODY$ ;
-
-
-DROP TRIGGER IF EXISTS tri_modify_meta_update_date_t_requests 
-    ON gn_permissions.t_requests;
 
 CREATE TRIGGER tri_modify_meta_update_date_t_requests
     AFTER UPDATE
@@ -538,126 +454,111 @@ INSERT INTO gn_permissions.t_objects (code_object, description_object)
 
 
 -- -------------------------------------------------------------------------------------------------
--- Drop "v_roles_permissions" before alterate "cor_role_action_filter_module_object"
--- because columns depend on it.
-DROP VIEW IF EXISTS gn_permissions.v_roles_permissions ;
+-- Rename filter "SENSITIVITY" to "PRECISION" and update others. See #1062.
+UPDATE gn_permissions.bib_filters_type 
+SET 
+    label_filter_type = 'Filtre d''appartenance',
+    description_filter_type = E'Permissions limitées par le type d''appartenances des données.\n'
+        'Accès à : aucune (=0), les miennes (=1), celles de mon organisme (=2), toutes (=3).'
+WHERE code_filter_type = 'SCOPE' ;
+
+UPDATE gn_permissions.bib_filters_type 
+SET 
+    label_filter_type = 'Filtre géographique',
+    description_filter_type = E'Permissions limitées par zones géographiques.\n'
+        'Utiliser des id_area séparés par des virgules.'
+WHERE code_filter_type = 'GEOGRAPHIC' ;
+
+UPDATE gn_permissions.bib_filters_type 
+SET 
+    label_filter_type = 'Filtre taxonomique',
+    description_filter_type = E'Permissions limitées par des taxons.\n'
+        'Utiliser des cd_nom séparés par des virgules.'
+WHERE code_filter_type = 'TAXONOMIC' ;
+
+UPDATE gn_permissions.bib_filters_type 
+SET 
+    code_filter_type = 'PRECISION',
+    label_filter_type = 'Filtre de précision',
+    description_filter_type = 'Active (=fuzzy) ou désactive (=exact) le floutage des données (sensibles ou privées).'
+WHERE code_filter_type = 'SENSITIVITY' ;
 
 
 -- -------------------------------------------------------------------------------------------------
--- Drop trigger before migrate, recreate it after migrate
-DROP TRIGGER IF EXISTS tri_check_no_multiple_filter_type 
-    ON gn_permissions.cor_role_action_filter_module_object ;
+-- Drop "v_roles_permissions" before alterate "cor_role_action_filter_module_object"
+-- because columns depend on it.
+DROP VIEW gn_permissions.v_roles_permissions ;
 
 
 -- -------------------------------------------------------------------------------------------------
 -- Migrate "t_filters" entries in updated cor_role_action_filter_module_object table.
--- TODO: see why this update can be blocked by trigger gn_permissions.fct_tri_only_one_filter_type_by_permission()
-DO
-$$
-DECLARE
-    tablesFoundCount INTEGER := 0;
-BEGIN
-    RAISE NOTICE 'Migrate data if tables t_filters, cor_object_module, cor_filter_type_module exist' ;
-    
-    SELECT COUNT(*) INTO tablesFoundCount
-    FROM information_schema.tables 
-    WHERE table_schema = 'gn_permissions' 
-        AND table_name IN ('t_filters', 'cor_object_module', 'cor_filter_type_module') ;
-
-    IF tablesFoundCount = 3 THEN
-        RAISE NOTICE 'Tables exist ! Let''s start to migrate data...' ;
-        
-        -- -------------------------------------------------------------------------------------------------
-        -- Alter table "cor_role_action_filter_module_object" to group permissions,
-        -- manage permissions timing, store value of filters.
-        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-            DROP COLUMN IF EXISTS gathering,
-            DROP COLUMN IF EXISTS end_date,
-            DROP COLUMN IF EXISTS id_filter_type,
-            DROP COLUMN IF EXISTS value_filter,
-            DROP COLUMN IF EXISTS id_request ;
+ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+    ADD COLUMN gathering uuid DEFAULT public.uuid_generate_v4(),
+    ADD COLUMN end_date timestamp NULL,
+    ADD COLUMN id_filter_type int4 NULL,
+    -- TODO: not used today. Remove ? See if really usefull or not !
+    -- ADD COLUMN id_filter_value int4 NULL,
+    ADD COLUMN value_filter text NULL,
+    ADD COLUMN id_request int4 NULL ;
 
 
-        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-            ADD COLUMN gathering uuid DEFAULT public.uuid_generate_v4(),
-            ADD COLUMN end_date timestamp NULL,
-            ADD COLUMN id_filter_type int4 NULL,
-            -- TODO: not used today. Remove ? See if really usefull or not !
-            -- ADD COLUMN id_filter_value int4 NULL,
-            ADD COLUMN value_filter text NULL,
-            ADD COLUMN id_request int4 NULL ;
+COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.gathering IS 
+    E'Groupe les permissions. Toutes les permissions possédant le même UUID sont à rassembler.'
+    'Permet ainsi de cummuler plusieurs filtres distincts.' ;
+COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.end_date IS 
+    E'Indique la date à laquelle la permission prend fin la permission. '
+    'Répéter cette date pour toutes les permissions d''un même groupe.' ;
+COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_filter_type IS 
+    E'Identifiant du type de filtre de la permission.' ;
+-- TODO: not used today. Remove ?
+-- COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_filter_value IS 
+-- 	E'Identifiant du type de valeur du filtre de la permission.'
+--   'Utile pour les filtres non prédéfini pouvant posséder plusieurs types de valeurs.' ;
+COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.value_filter IS 
+    E'Contient les valeurs du filtre à appliquer. '
+    'Voir la description du type de filtre pour les valeurs possibles.' ;
+COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_request IS 
+    E'Identifiant de la requête à l''origine de la création de la permission'
+    'Si la permission n''est pas liée à une demande d''accès contient NULL.' ;
 
+ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+    ADD CONSTRAINT fk_cor_r_a_f_m_o_id_filter_type FOREIGN KEY (id_filter_type)
+    REFERENCES gn_permissions.bib_filters_type (id_filter_type) MATCH FULL
+    ON UPDATE CASCADE ;
 
-        COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.gathering IS 
-            E'Groupe les permissions. Toutes les permissions possédant le même UUID sont à rassembler.'
-            'Permet ainsi de cummuler plusieurs filtres distincts.' ;
-        COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.end_date IS 
-            E'Indique la date à laquelle la permission prend fin la permission. '
-            'Répéter cette date pour toutes les permissions d''un même groupe.' ;
-        COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_filter_type IS 
-            E'Identifiant du type de filtre de la permission.' ;
-        -- TODO: not used today. Remove ?
-        -- COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_filter_value IS 
-        -- 	E'Identifiant du type de valeur du filtre de la permission.'
-        --   'Utile pour les filtres non prédéfini pouvant posséder plusieurs types de valeurs.' ;
-        COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.value_filter IS 
-            E'Contient les valeurs du filtre à appliquer. '
-            'Voir la description du type de filtre pour les valeurs possibles.' ;
-        COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_request IS 
-            E'Identifiant de la requête à l''origine de la création de la permission'
-            'Si la permission n''est pas liée à une demande d''accès contient NULL.' ;
+ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+    ADD CONSTRAINT fk_cor_r_a_f_m_o_id_request FOREIGN KEY (id_request)
+    REFERENCES gn_permissions.t_requests (id_request) MATCH FULL
+    ON UPDATE CASCADE ;
 
+-- -------------------------------------------------------------------------------------------------
+-- Migrate "t_filters" entries
+UPDATE gn_permissions.cor_role_action_filter_module_object AS c
+SET 
+    id_filter_type = f.id_filter_type,
+    value_filter = f.value_filter
+FROM gn_permissions.t_filters AS f
+WHERE c.id_filter = f.id_filter 
+    AND c.id_filter_type IS NULL
+    AND c.value_filter IS NULL ;
 
-        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-            DROP CONSTRAINT IF EXISTS fk_cor_r_a_f_m_o_id_filter_type CASCADE ;
+-- -------------------------------------------------------------------------------------------------
+-- Re-alter table "cor_role_action_filter_module_object" to set NOT NULL on columns after migrate
+ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+    ALTER COLUMN id_filter_type SET NOT NULL,
+    ALTER COLUMN value_filter SET NOT NULL ;
 
-        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-            ADD CONSTRAINT fk_cor_r_a_f_m_o_id_filter_type FOREIGN KEY (id_filter_type)
-            REFERENCES gn_permissions.bib_filters_type (id_filter_type) MATCH FULL
-            ON UPDATE CASCADE ;
-
-        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-            DROP CONSTRAINT IF EXISTS fk_cor_r_a_f_m_o_id_request CASCADE ;
-
-        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-            ADD CONSTRAINT fk_cor_r_a_f_m_o_id_request FOREIGN KEY (id_request)
-            REFERENCES gn_permissions.t_requests (id_request) MATCH FULL
-            ON UPDATE CASCADE ;
-
-        -- -------------------------------------------------------------------------------------------------
-        -- Migrate "t_filters" entries
-        UPDATE gn_permissions.cor_role_action_filter_module_object AS c
-        SET 
-            id_filter_type = f.id_filter_type,
-            value_filter = f.value_filter
-        FROM gn_permissions.t_filters AS f
-        WHERE c.id_filter = f.id_filter 
-            AND c.id_filter_type IS NULL
-            AND c.value_filter IS NULL ;
-
-        -- -------------------------------------------------------------------------------------------------
-        -- Re-alter table "cor_role_action_filter_module_object" to set NOT NULL on columns after migrate
-        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-            ALTER COLUMN id_filter_type SET NOT NULL,
-            ALTER COLUMN value_filter SET NOT NULL ;
-
-        -- -------------------------------------------------------------------------------------------------
-        -- Remove useless column from cor_role_action_filter_module_object
-        ALTER TABLE gn_permissions.cor_role_action_filter_module_object
-            DROP COLUMN IF EXISTS id_filter, 
-            DROP CONSTRAINT IF EXISTS fk_cor_r_a_f_m_o_id_filter CASCADE ;
-
-    ELSE
-        RAISE NOTICE 'Tables NOT exist. Founded tables : %. Migration already passed ?', tablesFoundCount ;
-    END IF ;
-END ;
-$$ ;
-
+-- -------------------------------------------------------------------------------------------------
+-- Remove useless column from cor_role_action_filter_module_object
+ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+    DROP CONSTRAINT fk_cor_r_a_f_m_o_id_filter;
+ALTER TABLE gn_permissions.cor_role_action_filter_module_object
+    DROP COLUMN id_filter;
 
 -- -------------------------------------------------------------------------------------------------
 -- Rename and update trigger to force only one filter type by permission (gathering)
 -- TODO: can we replace this trigger by unique index ?
-CREATE OR REPLACE FUNCTION gn_permissions.fct_tri_only_one_filter_type_by_permission()
+CREATE FUNCTION gn_permissions.fct_tri_only_one_filter_type_by_permission()
 RETURNS trigger AS
 $BODY$
     -- Check if a role has not already the same filter type for a permission (= module-action-object).
@@ -711,95 +612,62 @@ CREATE TRIGGER tri_check_no_multiple_filter_type
     EXECUTE PROCEDURE gn_permissions.fct_tri_only_one_filter_type_by_permission() ;
 
 -- Remove old trigger and function (old names)
-DROP TRIGGER IF EXISTS tri_check_no_multiple_scope_perm 
+DROP TRIGGER tri_check_no_multiple_scope_perm 
     ON gn_permissions.cor_role_action_filter_module_object ;
 
-DROP FUNCTION IF EXISTS gn_permissions.fct_tri_does_user_have_already_scope_filter ;
+DROP FUNCTION gn_permissions.fct_tri_does_user_have_already_scope_filter ;
 
 
 -- -------------------------------------------------------------------------------------------------
 -- Insert new permissions on ACCESS_REQUESTS object for ADMIN module for "group_admin"
 -- CRU--D
 -- C
-INSERT INTO gn_permissions.cor_role_action_filter_module_object
-    (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
-    SELECT 
-        utilisateurs.get_id_role_by_name('Grp_admin'), 
-        gn_permissions.get_id_action('C'), 
-        gn_commons.get_id_module_bycode('ADMIN'), 
-        gn_permissions.get_id_object('ACCESS_REQUESTS'), 
-        gn_permissions.get_id_filter_type('SCOPE'), 
-        '3'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_role_action_filter_module_object AS cor
-        WHERE cor.id_role = utilisateurs.get_id_role_by_name('Grp_admin')
-            AND cor.id_action = gn_permissions.get_id_action('C')
-            AND cor.id_module = gn_commons.get_id_module_bycode('ADMIN')
-            AND cor.id_object = gn_permissions.get_id_object('ACCESS_REQUESTS')
-            AND cor.id_filter_type = gn_permissions.get_id_filter_type('SCOPE')
-            AND cor.value_filter = '3'
-    ) ;
+INSERT INTO gn_permissions.cor_role_action_filter_module_object (
+    id_role, id_action, id_module, id_object, id_filter_type, value_filter
+) VALUES (
+    utilisateurs.get_id_role_by_name('Grp_admin'),
+    gn_permissions.get_id_action('C'), 
+    gn_commons.get_id_module_bycode('ADMIN'), 
+    gn_permissions.get_id_object('ACCESS_REQUESTS'), 
+    gn_permissions.get_id_filter_type('SCOPE'), 
+    '3'
+);
+
 -- R
-INSERT INTO gn_permissions.cor_role_action_filter_module_object
-    (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
-    SELECT 
-        utilisateurs.get_id_role_by_name('Grp_admin'), 
-        gn_permissions.get_id_action('R'), 
-        gn_commons.get_id_module_bycode('ADMIN'), 
-        gn_permissions.get_id_object('ACCESS_REQUESTS'), 
-        gn_permissions.get_id_filter_type('SCOPE'), 
-        '3'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_role_action_filter_module_object AS cor
-        WHERE cor.id_role = utilisateurs.get_id_role_by_name('Grp_admin')
-            AND cor.id_action = gn_permissions.get_id_action('R')
-            AND cor.id_module = gn_commons.get_id_module_bycode('ADMIN')
-            AND cor.id_object = gn_permissions.get_id_object('ACCESS_REQUESTS')
-            AND cor.id_filter_type = gn_permissions.get_id_filter_type('SCOPE')
-            AND cor.value_filter = '3'
-    ) ;
+INSERT INTO gn_permissions.cor_role_action_filter_module_object (
+    id_role, id_action, id_module, id_object, id_filter_type, value_filter
+) VALUES (
+    utilisateurs.get_id_role_by_name('Grp_admin'),
+    gn_permissions.get_id_action('R'), 
+    gn_commons.get_id_module_bycode('ADMIN'), 
+    gn_permissions.get_id_object('ACCESS_REQUESTS'), 
+    gn_permissions.get_id_filter_type('SCOPE'), 
+    '3'
+);
+
 -- U
-INSERT INTO gn_permissions.cor_role_action_filter_module_object
-    (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
-    SELECT 
-        utilisateurs.get_id_role_by_name('Grp_admin'), 
-        gn_permissions.get_id_action('U'), 
-        gn_commons.get_id_module_bycode('ADMIN'), 
-        gn_permissions.get_id_object('ACCESS_REQUESTS'), 
-        gn_permissions.get_id_filter_type('SCOPE'), 
-        '3'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_role_action_filter_module_object AS cor
-        WHERE cor.id_role = utilisateurs.get_id_role_by_name('Grp_admin')
-            AND cor.id_action = gn_permissions.get_id_action('U')
-            AND cor.id_module = gn_commons.get_id_module_bycode('ADMIN')
-            AND cor.id_object = gn_permissions.get_id_object('ACCESS_REQUESTS')
-            AND cor.id_filter_type = gn_permissions.get_id_filter_type('SCOPE')
-            AND cor.value_filter = '3'
-    ) ;
+INSERT INTO gn_permissions.cor_role_action_filter_module_object (
+    id_role, id_action, id_module, id_object, id_filter_type, value_filter
+) VALUES (
+    utilisateurs.get_id_role_by_name('Grp_admin'),
+    gn_permissions.get_id_action('U'), 
+    gn_commons.get_id_module_bycode('ADMIN'), 
+    gn_permissions.get_id_object('ACCESS_REQUESTS'), 
+    gn_permissions.get_id_filter_type('SCOPE'), 
+    '3'
+);
+
 -- D
-INSERT INTO gn_permissions.cor_role_action_filter_module_object
-    (id_role, id_action, id_module, id_object, id_filter_type, value_filter)
-    SELECT 
-        utilisateurs.get_id_role_by_name('Grp_admin'), 
-        gn_permissions.get_id_action('D'), 
-        gn_commons.get_id_module_bycode('ADMIN'), 
-        gn_permissions.get_id_object('ACCESS_REQUESTS'), 
-        gn_permissions.get_id_filter_type('SCOPE'), 
-        '3'
-    WHERE NOT EXISTS (
-        SELECT 'X'
-        FROM gn_permissions.cor_role_action_filter_module_object AS cor
-        WHERE cor.id_role = utilisateurs.get_id_role_by_name('Grp_admin')
-            AND cor.id_action = gn_permissions.get_id_action('D')
-            AND cor.id_module = gn_commons.get_id_module_bycode('ADMIN')
-            AND cor.id_object = gn_permissions.get_id_object('ACCESS_REQUESTS')
-            AND cor.id_filter_type = gn_permissions.get_id_filter_type('SCOPE')
-            AND cor.value_filter = '3'
-    ) ;
+INSERT INTO gn_permissions.cor_role_action_filter_module_object (
+    id_role, id_action, id_module, id_object, id_filter_type, value_filter
+) VALUES (
+    utilisateurs.get_id_role_by_name('Grp_admin'),
+    gn_permissions.get_id_action('D'), 
+    gn_commons.get_id_module_bycode('ADMIN'), 
+    gn_permissions.get_id_object('ACCESS_REQUESTS'), 
+    gn_permissions.get_id_filter_type('SCOPE'), 
+    '3'
+);
 
 
 -- -------------------------------------------------------------------------------------------------
@@ -840,27 +708,9 @@ INSERT INTO gn_permissions.cor_role_action_filter_module_object
 
 
 -- -------------------------------------------------------------------------------------------------
--- Add sequence for new table "cor_module_action_object_filter" primary key
-DROP SEQUENCE IF EXISTS gn_permissions.cor_module_action_object_filter_id_permission_available_seq CASCADE ;
-
-CREATE SEQUENCE gn_permissions.cor_module_action_object_filter_id_permission_available_seq
-	INCREMENT BY 1
-	MINVALUE 0
-	MAXVALUE 2147483647
-	START WITH 1
-	CACHE 1
-	NO CYCLE ;
-
-COMMENT ON SEQUENCE gn_permissions.cor_module_action_object_filter_id_permission_available_seq IS 
-    E'Auto-incrément de la clé primaire de la table cor_module_action_object_filter.' ;
-
-
--- -------------------------------------------------------------------------------------------------
 -- Add new table "cor_module_action_object_filter" (AKA "t_permissions_available")
-DROP TABLE IF EXISTS gn_permissions.cor_module_action_object_filter CASCADE ;
-
 CREATE TABLE gn_permissions.cor_module_action_object_filter (
-	id_permission_available integer NOT NULL DEFAULT nextval('gn_permissions.cor_module_action_object_filter_id_permission_available_seq'::regclass),
+	id_permission_available SERIAL,
 	id_module integer NOT NULL,
 	id_action integer NOT NULL,
 	id_object integer NOT NULL,
@@ -900,34 +750,19 @@ COMMENT ON COLUMN gn_permissions.cor_module_action_object_filter.description IS
 -- -------------------------------------------------------------------------------------------------
 -- Constraints for table "cor_module_action_object_filter"
 ALTER TABLE gn_permissions.cor_module_action_object_filter
-	DROP CONSTRAINT IF EXISTS fk_cor_module_action_object_filter_id_module CASCADE ;
-
-ALTER TABLE gn_permissions.cor_module_action_object_filter
 	ADD CONSTRAINT fk_cor_module_action_object_filter_id_module FOREIGN KEY (id_module)
 	REFERENCES gn_commons.t_modules (id_module) MATCH FULL
 	ON UPDATE CASCADE ;
-
-
-ALTER TABLE gn_permissions.cor_module_action_object_filter
-	DROP CONSTRAINT IF EXISTS fk_cor_module_action_object_filter_id_action CASCADE ;
 
 ALTER TABLE gn_permissions.cor_module_action_object_filter
 	ADD CONSTRAINT fk_cor_module_action_object_filter_id_action FOREIGN KEY (id_action)
 	REFERENCES gn_permissions.t_actions (id_action) MATCH FULL
 	ON UPDATE CASCADE ;
 
-
-ALTER TABLE gn_permissions.cor_module_action_object_filter
-	DROP CONSTRAINT IF EXISTS fk_cor_module_action_object_filter_id_object CASCADE ;
-
 ALTER TABLE gn_permissions.cor_module_action_object_filter
 	ADD CONSTRAINT fk_cor_module_action_object_filter_id_object FOREIGN KEY (id_object)
 	REFERENCES gn_permissions.t_objects (id_object) MATCH FULL
 	ON UPDATE CASCADE ;
-
-
-ALTER TABLE gn_permissions.cor_module_action_object_filter
-	DROP CONSTRAINT IF EXISTS fk_cor_module_action_object_filter_id_filter_type CASCADE ;
 
 ALTER TABLE gn_permissions.cor_module_action_object_filter
 	ADD CONSTRAINT fk_cor_module_action_object_filter_id_filter_type FOREIGN KEY (id_filter_type)
@@ -947,41 +782,25 @@ ALTER TABLE gn_permissions.cor_module_action_object_filter
 -- UNIQUE INDEXES
 
 -- bib_filters_type
-DROP INDEX IF EXISTS gn_permissions.unique_bib_filters_type_code ;
-
 CREATE UNIQUE INDEX unique_bib_filters_type_code ON gn_permissions.bib_filters_type
     USING btree(UPPER(code_filter_type)) ;
 
-
 -- bib_filters_values
-DROP INDEX IF EXISTS gn_permissions.unique_bib_filters_values ;
-
 CREATE UNIQUE INDEX unique_bib_filters_values ON gn_permissions.bib_filters_values 
     USING btree(id_filter_type, UPPER(value_or_field)) ;
 
-
 -- cor_module_action_object_filter
-DROP INDEX IF EXISTS gn_permissions.unique_cor_m_a_o_f_ids ;
-
 CREATE UNIQUE INDEX unique_cor_m_a_o_f_ids ON gn_permissions.cor_module_action_object_filter 
     USING btree(id_module, id_action, id_object, id_filter_type) ;
-
-DROP INDEX IF EXISTS gn_permissions.unique_cor_m_a_o_f_code ;
 
 CREATE UNIQUE INDEX unique_cor_m_a_o_f_code ON gn_permissions.cor_module_action_object_filter 
     USING btree(UPPER(code)) ;
 
-
 -- t_actions
-DROP INDEX IF EXISTS gn_permissions.unique_t_actions_code ;
-
 CREATE UNIQUE INDEX unique_t_actions_code ON gn_permissions.t_actions 
     USING btree(UPPER(code_action)) ;
 
-
 -- t_objects
-DROP INDEX IF EXISTS gn_permissions.unique_t_objects_code ;
-
 CREATE UNIQUE INDEX unique_t_objects_code ON gn_permissions.t_objects 
     USING btree(UPPER(code_object)) ;
 
@@ -1109,8 +928,6 @@ FROM all_user_permission AS v
         )
 -- TODO: check performance issues with order by
 ORDER BY nom_role, prenom_role, module_code, gathering, id_action, code_object, code_filter_type, end_date ;
-
-
 
 -- -------------------------------------------------------------------------------------------------
 -- Helper query to see all distinct permissions used
@@ -1964,253 +1781,16 @@ INSERT INTO gn_permissions.cor_module_action_object_filter (
         WHERE cmaof.code = 'SYNTHESE-E-SENSITIVE_OBSERVATION-TAXONOMIC'
     ) ;
 
-DO
-$$
-BEGIN
-    RAISE NOTICE 'Add Validation available permissions if module installed' ;
-
-    IF EXISTS (SELECT 1 FROM gn_commons.t_modules WHERE UPPER(module_code) = 'VALIDATION') THEN
-        RAISE NOTICE 'Validation module installed - Adding available permissions...' ;
-
-        -- ----------------------------------------------------------------------
-        -- VALIDATION - CR---- - ALL - SCOPE
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('C'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'VALIDATION-C-ALL-SCOPE',
-                'Créer des données',
-                'Créer des données dans le module Validation en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-C-ALL-SCOPE'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('VALIDATION'),
-                gn_permissions.get_id_action('R'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'VALIDATION-R-ALL-SCOPE',
-                'Lire des données',
-                'Lire des données dans le module Validation en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'VALIDATION-R-ALL-SCOPE'
-            ) ;
-
-    ELSE
-        RAISE NOTICE 'Validation module NOT installed.' ;
-    END IF;
-END ;
-$$ ;
-
--- ----------------------------------------------------------------------
--- OCCTAX - CRU-ED - ALL - SCOPE
-DO
-$$
-BEGIN
-    RAISE NOTICE 'Add OccTax available permissions if module installed' ;
-
-    IF EXISTS (SELECT 1 FROM gn_commons.t_modules WHERE UPPER(module_code) = 'OCCTAX') THEN
-        RAISE NOTICE 'OccTax module installed - Adding available permissions...' ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('OCCTAX'),
-                gn_permissions.get_id_action('C'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'OCCTAX-C-ALL-SCOPE',
-                'Créer des données',
-                'Créer des données dans OccTax en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'OCCTAX-C-ALL-SCOPE'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('OCCTAX'),
-                gn_permissions.get_id_action('R'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'OCCTAX-R-ALL-SCOPE',
-                'Lire les données',
-                'Lire les données dans OccTax limitées en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'OCCTAX-R-ALL-SCOPE'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('OCCTAX'),
-                gn_permissions.get_id_action('U'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'OCCTAX-U-ALL-SCOPE',
-                'Mettre à jour des données',
-                'Mettre à jour des données dans OccTax en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'OCCTAX-U-ALL-SCOPE'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('OCCTAX'),
-                gn_permissions.get_id_action('E'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'OCCTAX-E-ALL-SCOPE',
-                'Exporter des données',
-                'Exporter des données dans OccTax en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'OCCTAX-E-ALL-SCOPE'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('OCCTAX'),
-                gn_permissions.get_id_action('D'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'OCCTAX-D-ALL-SCOPE',
-                'Supprimer des données',
-                'Supprimer des données dans OccTax en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'OCCTAX-D-ALL-SCOPE'
-            ) ;
-    ELSE
-        RAISE NOTICE 'OccTax module NOT installed.' ;
-    END IF;
-END ;
-$$ ;
-
--- ----------------------------------------------------------------------
--- OCCHAB - CR--ED - ALL - SCOPE
-DO
-$$
-BEGIN
-    RAISE NOTICE 'Add OccHab available permissions if module installed' ;
-
-    IF EXISTS (SELECT 1 FROM gn_commons.t_modules WHERE UPPER(module_code) = 'OCCHAB') THEN
-        RAISE NOTICE 'OccHab module installed - Adding available permissions...' ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('OCCHAB'),
-                gn_permissions.get_id_action('C'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'OCCHAB-C-ALL-SCOPE',
-                'Créer des données',
-                'Créer des données dans OccHab en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'OCCHAB-C-ALL-SCOPE'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('OCCHAB'),
-                gn_permissions.get_id_action('R'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'OCCHAB-R-ALL-SCOPE',
-                'Lire les données',
-                'Lire les données dans OccHab limitées en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'OCCHAB-R-ALL-SCOPE'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('OCCHAB'),
-                gn_permissions.get_id_action('E'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'OCCHAB-E-ALL-SCOPE',
-                'Exporter des données',
-                'Exporter des données dans OccHab en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'OCCHAB-E-ALL-SCOPE'
-            ) ;
-
-        INSERT INTO gn_permissions.cor_module_action_object_filter (
-            id_module, id_action, id_object, id_filter_type, code, label, description
-        ) 
-            SELECT
-                gn_commons.get_id_module_bycode('OCCHAB'),
-                gn_permissions.get_id_action('D'),
-                gn_permissions.get_id_object('ALL'),
-                gn_permissions.get_id_filter_type('SCOPE'),
-                'OCCHAB-D-ALL-SCOPE',
-                'Supprimer des données',
-                'Supprimer des données dans OccHab en étant limité par l''appartenance.'
-            WHERE NOT EXISTS (
-                SELECT 'X'
-                FROM gn_permissions.cor_module_action_object_filter AS cmaof
-                WHERE cmaof.code = 'OCCHAB-D-ALL-SCOPE'
-            ) ;
-    ELSE
-        RAISE NOTICE 'OccHab module NOT installed.' ;
-    END IF;
-END ;
-$$ ;
-
-
 -- -------------------------------------------------------------------------------------------------
 -- Remove table "t_filters"
-DROP TABLE IF EXISTS gn_permissions.t_filters ;
+DROP TABLE gn_permissions.t_filters ;
 
 
 -- -------------------------------------------------------------------------------------------------
 -- Remove table "cor_object_module"
-DROP TABLE IF EXISTS gn_permissions.cor_object_module ;
+DROP TABLE gn_permissions.cor_object_module ;
 
 
 -- -------------------------------------------------------------------------------------------------
 -- Remove table "cor_filter_type_module"
-DROP TABLE IF EXISTS gn_permissions.cor_filter_type_module ;
-
-
-COMMIT ;
+DROP TABLE gn_permissions.cor_filter_type_module ;
