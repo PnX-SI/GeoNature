@@ -7,8 +7,9 @@ Create Date: 2021-10-07 12:39:39.834674
 """
 import importlib
 
-from alembic import op
+from alembic import op, context
 import sqlalchemy as sa
+from sqlalchemy.sql import text
 
 
 # revision identifiers, used by Alembic.
@@ -21,9 +22,12 @@ depends_on = (
 
 
 def upgrade():
+    bindparams = {
+        'admin_role': context.get_x_argument(as_dictionary=True).get('admin-role', 'Grp_admin'),
+    }
     package = 'geonature.migrations.data.migrations'
     resource = 'access_request.sql'
-    op.execute(importlib.resources.read_text(package, resource))
+    op.get_bind().execute(text(importlib.resources.read_text(package, resource)), bindparams)
 
 
 def downgrade():
