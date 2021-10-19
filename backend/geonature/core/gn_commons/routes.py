@@ -44,7 +44,7 @@ def list_modules():
     """
     params = request.args
     q = TModules.query.options(
-        joinedload(TModules.objects)
+        joinedload(TModules.available_permissions)
     )
     if "exclude" in params:
         q = q.filter(TModules.module_code.notin_(params.getlist("exclude")))
@@ -54,7 +54,7 @@ def list_modules():
     for module in modules:
         cruved = get_scopes_by_action(module_code=module.module_code)
         if cruved["R"] > 0:
-            module_dict = module.as_dict(fields=["objects"])
+            module_dict = module.as_dict(fields=["available_permissions"])
             module_dict["cruved"] = cruved
             if module.active_frontend:
                 try:
@@ -69,8 +69,16 @@ def list_modules():
             else:
                 module_dict["module_url"] = module.module_external_url
             module_dict["module_objects"] = {}
+
             # get cruved for each object
-            for obj_dict in module_dict["objects"]:
+            objects_list = []
+            if module.available_permissions:
+                for item in module.available_permissions:
+                    item = item.cor_object.as_dict()
+                    if item not in objects_list:
+                        objects_list.append(item)
+
+            for obj_dict in objects_list:
                 obj_code = obj_dict["code_object"]
                 obj_dict["cruved"] = get_scopes_by_action(
                     module_code=module.module_code,
@@ -133,7 +141,7 @@ def get_additional_fields():
         if len(params["module_code"].split(",")) > 1:
 
             ors = [
-                TAdditionalFields.modules.any(module_code=module_code) 
+                TAdditionalFields.modules.any(module_code=module_code)
                 for module_code in params["module_code"].split(",")
                 ]
 

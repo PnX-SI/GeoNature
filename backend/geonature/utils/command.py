@@ -1,9 +1,9 @@
-"""   
+"""
     Fichier de création des commandes geonature
     Ce module ne doit en aucun cas faire appel à des models ou au coeur de geonature
     dans les imports d'entête de fichier pour garantir un bon fonctionnement des fonctions
-    d'administration de l'application GeoNature (génération des fichiers de configuration, des 
-    fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si 
+    d'administration de l'application GeoNature (génération des fichiers de configuration, des
+    fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si
     un paquet PIP du requirement GeoNature n'a pas été bien installé
 """
 import sys
@@ -68,10 +68,15 @@ def frontend_routes_templating(app=None):
                     routes.append({"path": path, "location": location, "module_code": module_object.module_code})
 
                 # TODO test if two modules with the same name is okay for Angular
+
+            enable_user_management = configs_gn["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT")
+            enable_sign_up = configs_gn["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP")
+            enable_access_request = configs_gn["PERMISSION_MANAGEMENT"].get("ENABLE_ACCESS_REQUEST")
             route_template = template.render(
                 routes=routes,
-                enable_user_management=configs_gn["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT"),
-                enable_sign_up=configs_gn["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP"),
+                enable_user_management=enable_user_management,
+                enable_sign_up=enable_sign_up,
+                enable_access_request=enable_access_request,
             )
 
             with open(

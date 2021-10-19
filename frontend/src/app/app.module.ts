@@ -101,7 +101,7 @@ export function get_modules(moduleService: ModuleService) {
     NewPasswordComponent,
     NavHomeComponent,
     FooterComponent,
-    IntroductionComponent
+    IntroductionComponent,
   ],
   providers: [
     AuthService,

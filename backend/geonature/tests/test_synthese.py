@@ -106,7 +106,7 @@ class TestSynthese:
 
     def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
         set_logged_user_cookie(self.client, users['self_user'])
-        
+
         response = self.client.get(url_for("gn_synthese.get_observations_for_web"), query_string={'limit': 100})
         data = response.get_json()
 
@@ -297,7 +297,7 @@ class TestSynthese:
         response = self.client.get(url_for('gn_synthese.get_observation_count'))
 
         assert response.json >= nb_observations
-    
+
     def test_get_observation_count_id_dataset(self, synthese_data, datasets, unexisted_id):
         id_dataset = datasets['own_dataset'].id_dataset
         nb_observations = len(synthese_data)
@@ -319,7 +319,7 @@ class TestSynthese:
 
         assert response.status_code == 200
         assert response.json["type"] in ["Point", "Polygon"]
-    
+
     def test_get_bbox_id_dataset(self, synthese_data, datasets, unexisted_id):
         id_dataset = datasets['own_dataset'].id_dataset
         # In synthese, all entries are located at the same point
@@ -338,7 +338,7 @@ class TestSynthese:
                                          query_string={'id_dataset': unexisted_id})
         assert response_empty.status_code == 204
         assert response_empty.get_data(as_text=True) == ''
-    
+
     def test_observation_count_per_column(self, synthese_data):
         column_name_dataset = 'id_dataset'
         column_name_cd_nom = 'cd_nom'
@@ -351,11 +351,11 @@ class TestSynthese:
         resp_json = response_dataset.json
         assert len(resp_json) == len(id_dataset_set)
         assert [resp['count'] for resp in resp_json] == [id_datasets.count(ds) for ds in id_dataset_set]
-       
+
         resp_json = response_cd_nom.json
         assert len(resp_json) == len(set(synt.cd_nom for synt in synthese_data))
         assert response_cd_nom.json
-    
+
     def test_get_autocomplete_taxons_synthese(self, synthese_data):
         seach_name = synthese_data[0].nom_cite
 
@@ -364,4 +364,4 @@ class TestSynthese:
 
         assert response.status_code == 200
         assert response.json[0]['cd_nom'] == synthese_data[0].cd_nom
-        
+

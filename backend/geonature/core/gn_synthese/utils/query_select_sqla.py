@@ -46,14 +46,16 @@ class SyntheseQuery:
             query_joins = SQLA Join object
     """
 
-    def __init__(self, 
-        model, 
-        query, 
-        filters, 
+    def __init__(self,
+        model,
+        query,
+        filters,
         id_synthese_column="id_synthese",
         id_dataset_column="id_dataset",
         observers_column="observers",
         id_digitiser_column="id_digitiser",
+        sensitivity_column="id_nomenclature_sensitivity",
+        diffusion_column="id_nomenclature_diffusion_level",
         with_generic_table=False,
         query_joins=None,
     ):
@@ -83,9 +85,13 @@ class SyntheseQuery:
             self.model_id_dataset_column = getattr(model_temp, id_dataset_column)
             self.model_observers_column = getattr(model_temp, observers_column)
             self.model_id_digitiser_column = getattr(model_temp, id_digitiser_column)
+
+            if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
+                self.model_sensitivity_column = getattr(model_temp, sensitivity_column)
+                self.model_diffusion_column = getattr(model_temp, diffusion_column)
         except AttributeError as e:
             raise GeonatureApiError(
-                """the {model} table     does not have a column {e}
+                """the {model} table does not have a column {e}
                 If you change the {model} table, please edit your synthese config (cf EXPORT_***_COL)
                 """.format(
                     e=e, model=model
@@ -122,22 +128,32 @@ class SyntheseQuery:
                 # push the joined table in _already_joined_table list
                 self._already_joined_table.append(right_table)
 
-    def filter_query_with_cruved(self, user):
+    def filter_query_with_cruved(self, auth):
         """
         Filter the query with the cruved authorization of a user
         """
-        scope = int(user.value_filter)
+        scope = int(auth.value_filter)
         if scope in (1, 2):
-            # get id synthese where user is observer
+            # Get id synthese where user authenticated is observer and ...
             subquery_observers = (
                 select([CorObserverSynthese.id_synthese])
                 .select_from(CorObserverSynthese)
-                .where(CorObserverSynthese.id_role == user.id_role)
+                .where(CorObserverSynthese.id_role == auth.id_role)
             )
+
+            # ... if user authenticated id is observer or digitiser
             ors_filters = [
                 self.model_id_syn_col.in_(subquery_observers),
-                self.model_id_digitiser_column == user.id_role,
+                self.model_id_digitiser_column == auth.id_role,
             ]
+
+            # ... if user authenticated firstname and lastname combinaisons are
+            # in observers plain text column
+            if current_app.config["SYNTHESE"]["CRUVED_SEARCH_WITH_OBSERVER_AS_TXT"]:
+                user_fullname = f"{auth.nom_role} {auth.prenom_role}%"
+                user_fullname_alernative = f"{auth.prenom_role} {auth.nom_role}%"
+                ors_filters.append(self.model_observers_column.ilike(user_fullname))
+                ors_filters.append(self.model_observers_column.ilike(user_fullname_alernative))
 
             allowed_datasets = [d.id_dataset for d in TDatasets.query.filter_by_scope(scope).all()]
             ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
@@ -157,10 +173,8 @@ class SyntheseQuery:
         if "cd_ref_parent" in self.filters:
             # find all taxon child from cd_ref parent
             cd_ref_parent_int = list(map(lambda x: int(x), self.filters.pop("cd_ref_parent")))
-            sql = text(
-                """SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_children(:id_parent)"""
-            )
-            result = DB.engine.execute(sql, id_parent=cd_ref_parent_int)
+            sql = text("SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_children(:id_parent)")
+            result = DB.session.execute(sql, {"id_parent":cd_ref_parent_int})
             if result:
                 cd_ref_childs = [r[0] for r in result]
 
@@ -341,7 +355,7 @@ class SyntheseQuery:
                 else:
                     self.query = self.query.where(col.ilike("%{}%".format(value[0])))
 
-    def filter_query_all_filters(self, user):
+    def filter_query_all_filters(self, auth):
         """High level function to manage query with all filters.
 
         Apply CRUVED, toxonomy and other filters.
@@ -357,10 +371,10 @@ class SyntheseQuery:
             Combined filter to apply.
 
         """
-
-        self.filter_query_with_cruved(user)
+        self.filter_query_with_cruved(auth)
         self.filter_taxonomy()
         self.filter_other_filters()
         if self.query_joins is not None:
             self.query = self.query.select_from(self.query_joins)
+
         return self.query
