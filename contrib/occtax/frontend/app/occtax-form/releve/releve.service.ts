@@ -1,8 +1,8 @@
 import { Injectable, ChangeDetectorRef} from "@angular/core";
 import { FormBuilder, FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router, ActivatedRoute } from "@angular/router";
-import { Observable, Subscription, of } from "rxjs";
-import { filter, map, switchMap, tap, skip, concatMap } from "rxjs/operators";
+import { Observable, Subscription, of, combineLatest } from "rxjs";
+import { filter, map, switchMap, tap, skip, concatMap, distinctUntilChanged, pairwise } from "rxjs/operators";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { GeoJSON } from "leaflet";
 import { ModuleConfig } from "../../module.config";
@@ -18,7 +18,7 @@ import { DatasetStoreService } from '@geonature_common/form/datasets/dataset.ser
 @Injectable()
 export class OcctaxFormReleveService {
   public userReleveRigth: any;
-  public $_autocompleteDate: Subscription = new Subscription();
+  // public $_autocompleteDate: Subscription = new Subscription();
 
   public propertiesForm: FormGroup;
   public habitatForm = new FormControl();
@@ -176,22 +176,11 @@ export class OcctaxFormReleveService {
                  
           //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
           return editionMode ? this.releveValues : this.defaultValues;
-        })
+        }),
+        //display showTime management
+        tap((values) => this.showTime = !(JSON.stringify(values.date_min) === JSON.stringify(values.date_max)))
       )
-      .subscribe((values) => {  
-        const editionMode = this.occtaxFormService.editionMode.getValue()
-        // gestion de l'autocomplétion de la date ou non.
-        this.$_autocompleteDate.unsubscribe();
-        
-        // autocomplete si mode création ou si mode edition et date_min = date_max
-        if (!editionMode || (editionMode && JSON.stringify(values.date_min) === JSON.stringify(values.date_max))) {
-
-          this.$_autocompleteDate = this.coreFormService.autoCompleteDate(
-            this.propertiesForm as FormGroup,
-            "date_min",
-            "date_max"
-          );
-        }    
+      .subscribe((values) => {    
         if(!values.additional_fields) {
           values.additional_fields = {};
         }
@@ -226,6 +215,30 @@ export class OcctaxFormReleveService {
       )
       .subscribe((geojson) => (this.geojson = geojson));
 
+    /* gestion de l'autocomplétion de la date ou non.
+     * autocomplete si date_max non renseignée (creation) ou si date_min = date_max (creation ou edition)
+     */
+    //date_min part : if date_max is empty or date_min == date_max
+    this.propertiesForm.get("date_min").valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        pairwise(),
+        filter(([date_min_prev, date_min_new]) => 
+          this.propertiesForm.get("date_max").value === null ||
+          JSON.stringify(date_min_prev) === JSON.stringify(this.propertiesForm.get("date_max").value)
+        ),
+        map(([date_min_prev, date_min_new]) => date_min_new)
+      )
+      .subscribe((date_min) => this.propertiesForm.get("date_max").setValue(date_min));
+
+    //date_max part : only if date_min is empty
+    this.propertiesForm.get("date_max").valueChanges
+      .pipe(
+        distinctUntilChanged(),
+        filter(() => this.propertiesForm.get("date_min").value === null)
+      )
+      .subscribe((date_max) => this.propertiesForm.get("date_min").setValue(date_max));
+
     // AUTOCORRECTION de hour
     // si le champ est une chaine vide ('') on reset la valeur null
     this.propertiesForm
@@ -248,8 +261,9 @@ export class OcctaxFormReleveService {
       .valueChanges.pipe(
         filter(
           (hour) =>
-            !this.occtaxFormService.editionMode.getValue() && hour != null
-        )
+            (!this.occtaxFormService.editionMode.getValue() && hour != null)
+        ),
+        tap(hour=> console.log(hour))
       )
       .subscribe((hour) => {
         if (
@@ -267,32 +281,15 @@ export class OcctaxFormReleveService {
     return this.occtaxFormService.occtaxData.pipe(
       tap(() => this.habitatForm.setValue(null)),
       filter(data => data && data.releve.properties),
-      map(data => {                        
-        const copied_data = Object.assign({}, data)
-        const releve = copied_data.releve.properties;
+      map((data) => data.releve.properties),
+      map(releve => {  
         //Parfois il passe 2 fois ici, et la seconde fois la date est déja formattée en objet, si c'est le cas, on saute
-        if(typeof releve.date_min !== "object"){
-          // on affiche la date_max si date_min != date_max
-          if (releve.date_min != releve.date_max) {
-            this.showTime = true;
-          }
-          // si les date sont égales, on active l'autocomplete pour garder la correlation
-          else {
-            this.$_autocompleteDate.unsubscribe()
-            this.$_autocompleteDate = this.coreFormService.autoCompleteDate(
-              this.propertiesForm as FormGroup,
-              "date_min",
-              "date_max"
-            );
-          }
-
+        if(typeof releve.date_min !== "object"){ 
           releve.date_min = this.occtaxFormService.formatDate(releve.date_min);
+        } 
+        if(typeof releve.date_max !== "object"){ 
           releve.date_max = this.occtaxFormService.formatDate(releve.date_max);
-        } else {
-          if (releve.date_min.year != releve.date_max.year || releve.date_min.month != releve.date_max.month || releve.date_min.day != releve.date_max.day) {
-            this.showTime = true;
-          }
-        }
+        }           
 
         // set habitat form value from
         if (releve.habitat) {
@@ -308,7 +305,8 @@ export class OcctaxFormReleveService {
         return this.occtaxFormService.getAdditionnalFields(
           ["OCCTAX_RELEVE"],
           releve.id_dataset
-        ).map(additionalFields => {                        
+        ).map(additionalFields => {   
+          console.log(additionalFields);                   
           // remove old dataset addField from globalAddFields
           this.occtaxFormService.globalReleveAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
             this.occtaxFormService.globalReleveAddFields,
