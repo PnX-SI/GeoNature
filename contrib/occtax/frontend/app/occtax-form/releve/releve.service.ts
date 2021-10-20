@@ -291,14 +291,16 @@ export class OcctaxFormReleveService {
           releve.date_max = this.occtaxFormService.formatDate(releve.date_max);
         }           
 
+        return releve;
+      }),
+      tap((releve) => {
         // set habitat form value from
         if (releve.habitat) {
           const habitatFormValue = releve.habitat;
           // set search_name properties to the form
           habitatFormValue["search_name"] = habitatFormValue.lb_code + " - " + habitatFormValue.lb_hab_fr;
-          this.habitatForm.setValue(habitatFormValue)
-        }        
-        return releve;
+          this.habitatForm.setValue(habitatFormValue);
+        }   
       }),
       // load additional fields
       concatMap(releve => {
