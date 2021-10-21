@@ -104,14 +104,9 @@ export class OcctaxFormService {
       }
     );
   }
-  getAdditionnalFields(object_code: Array<string>, idDataset?): Observable<any> {        
-    
-    let _idDataset = "null";
-    if(idDataset) {
-      _idDataset = idDataset
-    }    
+  getAdditionnalFields(object_code: Array<string>, idDataset: string?): Observable<any> {          
     return this.dataFormService.getadditionalFields({
-      'id_dataset':  _idDataset,
+      'id_dataset':  idDataset || "null",
       'module_code': ['OCCTAX'],
       'object_code': object_code
     }).catch(() => {    
