@@ -166,7 +166,7 @@ def get_observations_for_web(info_role):
             "unique_id_sinp": str(r["unique_id_sinp"]),
             "entity_source_pk_value": r["entity_source_pk_value"],
         }
-        geojson = ast.literal_eval(r["st_asgeojson"])
+        geojson = json.loads(r["st_asgeojson"])
         geojson["properties"] = properties
         geojson_features.append(geojson)
     return {
