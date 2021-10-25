@@ -18,12 +18,14 @@ import { FormService } from "@geonature_common/form/form.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { MatDialog } from "@angular/material";
+import {OccurrenceSingletonService} from "./occurrence.singleton.service"
 
 
 @Component({
   selector: "pnx-occtax-form-occurrence",
   templateUrl: "./occurrence.component.html",
   styleUrls: ["./occurrence.component.scss"],
+  providers: [OccurrenceSingletonService],
   animations: [
     trigger("detailExpand", [
       state(
@@ -60,15 +62,17 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
 
   constructor(
     public fs: OcctaxFormService,
-    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private _coreFormService: FormService,
     private _occtaxTaxaListService: OcctaxTaxaListService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    public occSingServ: OccurrenceSingletonService
+
   ) { }
 
-  ngOnInit() {
-    this.occurrenceForm = this.occtaxFormOccurrenceService.form;
 
+  ngOnInit() {    
+    this.occurrenceForm = this.occtaxFormOccurrenceService.form;
     //gestion de l'affichage des preuves d'existence selon si Preuve = 'Oui' ou non.
     this._subscriptions.push(
       this.occurrenceForm
@@ -87,6 +91,8 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
         )
     );
 
+    const sub = this.occurrenceForm
+    .get("id_nomenclature_exist_proof")
     this.initTaxrefSearch();
   }
 
@@ -227,6 +233,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.resetOccurrenceForm();
     this._subscriptions.forEach(s => { s.unsubscribe(); });
+
   }
 
   addCounting() {    
@@ -240,7 +247,12 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   }
 
   /** A la selection d'un taxon, focus sur le bouton ajouter */
-  selectAddOcc() {
+  selectAddOcc(taxon) {
+    // save current taxon for calling profil on lifestage change
+    this.occtaxFormOccurrenceService.currentTaxon = taxon.item;
+    if(this.appConfig.FRONTEND.ENABLE_PROFILES) {
+      this.occSingServ.profilControl(taxon.item.cd_ref);
+    }
     setTimeout(() => {
       document.getElementById("add-occ").focus();
     }, 50);
@@ -249,5 +261,4 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   collapse() {
     this.advanced = this.advanced === "collapsed" ? "expanded" : "collapsed";
   }
-
 }

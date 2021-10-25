@@ -80,6 +80,9 @@ class VSyntheseValidation(DB.Model):
     validation_auto = DB.Column(DB.Boolean)
     validation_date = DB.Column(DB.DateTime)
     geojson = DB.Column(DB.Unicode)
+    valid_distribution = DB.Column(DB.Boolean)
+    valid_phenology = DB.Column(DB.Boolean)
+    valid_altitude = DB.Column(DB.Boolean)
 
     has_medias = column_property(
         exists([TMedias.id_media]).\

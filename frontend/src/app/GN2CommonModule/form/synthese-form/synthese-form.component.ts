@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ViewEncapsulation } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -13,7 +13,8 @@ import { ActivatedRoute } from "@angular/router";
   selector: 'pnx-synthese-search',
   templateUrl: 'synthese-form.component.html',
   styleUrls: ['synthese-form.component.scss'],
-  providers: []
+  providers: [],
+  encapsulation: ViewEncapsulation.None
 })
 export class SyntheseSearchComponent implements OnInit {
   public AppConfig = AppConfig;

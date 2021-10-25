@@ -2,6 +2,33 @@
 CHANGELOG
 =========
 
+2.9.0 (unreleased)
+------------------
+
+**🚀 Nouveautés**
+
+* Construction d'une fiche d'identité (profil) par taxon grâce aux observations présente en base de données (altitude min/max, distribution spatiale, date de premiere/dernière observation, nombre de données valides, phénologie)
+* [OCCTAX] Contrôle de la cohérence des nouvelles données saisies par rapport au profil
+* [SYNTHESE] Création d'une "fiche taxon" à partir des informations décrites plus haut
+* [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
+
+Note de version : 
+
+Les nouvelles fonctionnalités liés aux profiles necessite de raffraichir des vues materialisées à intervales réguliers et donc de créer une tâche planfiée (cron):
+
+::
+
+      sudo su postgres
+      crontab -e
+
+Ajouter la ligne suivante en prenant changeant <MY_DB_NAME> par le nom de votre base de donnée GeoNature :
+
+::
+
+    0 * * * * psql -d <MY_DB_NAME>   -c "SELECT gn_profiles.refresh_profiles()"
+
+Cet exemple lance la tâche toute les nuits à minuit. Pour une autre fréquence voir la syntaxe cron : https://crontab.guru/
+
 2.8.1 (2021-10-17)
 ------------------
 

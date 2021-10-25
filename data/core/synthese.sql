@@ -419,7 +419,6 @@ ALTER TABLE ONLY defaults_nomenclatures_value
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text) NOT VALID;
 
-
 ----------------------
 --MATERIALIZED VIEWS--
 ----------------------
@@ -1211,8 +1210,6 @@ BEGIN
 $function$
 ;
 
-    -- Import dans la synthese, ajout de limit et offset 
-    -- pour pouvoir boucler et traiter des quantités raisonnables de données
 CREATE OR REPLACE FUNCTION gn_synthese.import_row_from_table(
         select_col_name character varying,
         select_col_val character varying,

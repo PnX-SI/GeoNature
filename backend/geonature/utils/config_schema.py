@@ -232,6 +232,8 @@ class GnFrontEndConf(Schema):
     STAT_BLOC_TTL = fields.Integer(load_default=3600)
     DISPLAY_MAP_LAST_OBS = fields.Boolean(load_default=True)
     MULTILINGUAL = fields.Boolean(load_default=False)
+    ENABLE_PROFILES = fields.Boolean(load_default=True)
+
     # show email on synthese and validation info obs modal
     DISPLAY_EMAIL_INFO_OBS = fields.Boolean(load_default=True)
     DISPLAY_EMAIL_DISPLAY_INFO = fields.List(fields.String(), load_default=["NOM_VERN"])
@@ -327,6 +329,10 @@ class MapConfig(Schema):
     ZOOM_ON_CLICK = fields.Integer(load_default=18)
 
 
+class TaxHub(Schema):
+    ID_TYPE_MAIN_PHOTO = fields.Integer(missing=1)
+
+
 # class a utiliser pour les paramètres que l'on veut passer au frontend
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(load_default="GeoNature2")
@@ -358,6 +364,7 @@ class GnGeneralSchemaConf(Schema):
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS = fields.Nested(PublicAccess, load_default=PublicAccess().load({}))
+    TAXHUB = fields.Nested(TaxHub, load_default=TaxHub().load({}))
 
     @validates_schema
     def validate_enable_sign_up(self, data, **kwargs):

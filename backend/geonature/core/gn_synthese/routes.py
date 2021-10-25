@@ -10,6 +10,8 @@ from flask import Blueprint, request, current_app, send_from_directory, render_t
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
+from geoalchemy2.shape import to_shape
+from shapely import wkt
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
@@ -261,13 +263,49 @@ def get_one_synthese(id_synthese):
         )
     )
     try:
+        
         data = q.one()
-        synthese_as_dict = data[0].as_dict(
+        geojson = data[0].as_geofeature(
+            "the_geom_4326", "id_synthese",
             depth=2,
-        )
+            # fields=[
+            #     "unique_id_sinpsource", 
+            #     "areas", 
+            #     "areas.area_type",               
+            #     "datasets", 
+            #     "acquisition_framework", 
+            #     "cor_observers", 
+            #     "validations", 
+            #     "medias",
+            #     "nat_obj_geo",
+            #     "grp_typ",
+            #     "obs_technique",
+            #     "bio_status",
+            #     "bio_condition",
+            #     "naturalness",
+            #     "exist_proof",
+            #     "valid_status",
+            #     "diffusion_level",
+            #     "life_stage",
+            #     "sex",
+            #     "obj_count",
+            #     "type_count",
+            #     "sensitivity",
+            #     "observation_status",
+            #     "blurring",
+            #     "source_status",
+            #     "occ_behaviour",
+            #     "occ_stat_biogeo"
+            # ]
+            )
+        geojson["properties"]["actors"] = data[1]
+        # synthese_as_dict = data[0].as_dict(
+        #     depth=2,
+        # )
 
-        synthese_as_dict["actors"] = data[1]
-        return jsonify(synthese_as_dict)
+        # synthese_as_dict["actors"] = data[1]
+        # return jsonify(synthese_as_dict)
+        return jsonify(geojson)
     except exc.NoResultFound:
         return None
 

@@ -8,6 +8,8 @@ from geonature.core.gn_commons.models.base import TValidations
 from sqlalchemy import select, func
 from flask import Blueprint, request
 from geojson import FeatureCollection
+from sqlalchemy.sql.expression import cast
+from sqlalchemy.sql.sqltypes import Integer
 
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla.serializers import SERIALIZERS
@@ -22,6 +24,7 @@ from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_commons.schemas import TValidationSchema
 
 from werkzeug.exceptions import BadRequest
+from geonature.core.gn_commons.models import TValidations
 
 from .models import VSyntheseValidation
 
@@ -67,7 +70,6 @@ def get_synthese_data(info_role):
         result_limit = filters.pop("limit")
     else:
         result_limit = blueprint.config["NB_MAX_OBS_MAP"]
-
     # Construction de la requête select
     # Les champs correspondent aux champs obligatoires
     #       + champs définis par l'utilisateur
@@ -105,23 +107,53 @@ def get_synthese_data(info_role):
                 serializer[column_config["column_name"]] = SERIALIZERS.get(
                     col.type.__class__.__name__.lower(), lambda x: x
                 )
-
     # Construction de la requête avec SyntheseQuery
-    #   Pour profiter des opérations CRUVED
+    #  Pour profiter des opérations CRUVED
     query = (
         select(select_columns)
         .where(VSyntheseValidation.the_geom_4326.isnot(None))
         .order_by(VSyntheseValidation.date_min.desc())
     )
+    valid_distribution = filters.pop("valid_distribution", None)
+    valid_altitude = filters.pop("valid_altitude", None)
+    valid_phenology = filters.pop("valid_phenology", None)
+    score = filters.pop("score", None)
     validation_query_class = SyntheseQuery(VSyntheseValidation, query, filters)
+
+    #filter with profile
+    if score:
+        validation_query_class.query = validation_query_class.query.where(
+            VSyntheseValidation.valid_phenology.cast(Integer)+ 
+            VSyntheseValidation.valid_altitude.cast(Integer) + 
+            VSyntheseValidation.valid_distribution.cast(Integer)
+             == score
+        )
+
+    if valid_distribution is not None:
+        validation_query_class.query = validation_query_class.query.where(
+            VSyntheseValidation.valid_distribution.is_(valid_distribution)
+        )
+    if valid_altitude is not None:
+        validation_query_class.query = validation_query_class.query.where(
+            VSyntheseValidation.valid_altitude.is_(valid_altitude)
+        )
+    if valid_phenology is not None:
+        validation_query_class.query = validation_query_class.query.where(
+            VSyntheseValidation.valid_phenology.is_(valid_phenology)
+        )
+
     validation_query_class.filter_query_all_filters(info_role)
     result = DB.engine.execute(validation_query_class.query.limit(result_limit))
-    # TODO nb_total factice
     nb_total = 0
     geojson_features = []
     properties = {}
-    for r in result:    
+    # TODO : add join on VConsistency data
+    for r in result:
         properties = {k: serializer[k](r[k]) for k in serializer.keys()}
+        properties["score"] = (
+            r["valid_distribution"] or 0) + (
+                r["valid_phenology"] or 0) + (
+                    r["valid_altitude"] or 0)
         properties["nom_vern_or_lb_nom"] = (
             r["nom_vern"] if r["nom_vern"] else r["lb_nom"]
         )
