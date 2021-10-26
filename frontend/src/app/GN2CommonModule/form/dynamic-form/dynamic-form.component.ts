@@ -32,10 +32,10 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   constructor(private _dynformService: DynamicFormService) { }
 
   ngOnInit() {
-    this.setFormDefComp(true);
+    this.setFormDefComp();
   }
 
-  setFormDefComp(withDefaultValue=false) {
+  setFormDefComp() {
     this.formDefComp = {};
     for (const key of Object.keys(this.formDef)) {
       this.formDefComp[key] = this._dynformService.getFormDefValue(
@@ -49,7 +49,6 @@ export class DynamicFormComponent implements OnInit, OnChanges {
       this._dynformService.setControl(
         this.form.controls[this.formDef.attribut_name],
         this.formDefComp,
-        withDefaultValue? this.formDef.default_value: null
       );
     }
   }

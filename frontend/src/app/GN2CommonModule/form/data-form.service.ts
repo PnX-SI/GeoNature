@@ -611,7 +611,7 @@ export class DataFormService {
           "type_widget": data.type_widget.widget_name,
           "multi_select": null,
           "values": data.field_values,
-          "default_value": data.default_value,
+          "value": data.default_value,
           "id_list": data.id_list,
           "objects": data.objects,
           "modules": data.modules,
