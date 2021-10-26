@@ -32,10 +32,10 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   constructor(private _dynformService: DynamicFormService) { }
 
   ngOnInit() {
-    this.setFormDefComp();
+    this.setFormDefComp(true);
   }
 
-  setFormDefComp() {
+  setFormDefComp(withDefaultValue=false) {
     this.formDefComp = {};
     for (const key of Object.keys(this.formDef)) {
       this.formDefComp[key] = this._dynformService.getFormDefValue(
