@@ -25,7 +25,9 @@ import {
   MatTabsModule,
   MatToolbarModule,
   MatTooltipModule,
+  MAT_HAMMER_OPTIONS
 } from '@angular/material';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
@@ -207,6 +209,10 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
     NgbDatePeriodParserFormatter,
     SyntheseDataService,
     TranslateService,
+    {
+      provide : MAT_HAMMER_OPTIONS,
+      useValue: { cssProps: { userSelect: true } }
+    } // change tooltip select behavior see https://github.com/angular/components/issues/7097
   ],
   entryComponents: [
     ConfirmationDialog,
