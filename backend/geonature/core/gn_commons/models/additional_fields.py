@@ -46,6 +46,7 @@ class TAdditionalFields(DB.Model):
     key_label = DB.Column(DB.String)
     key_value = DB.Column(DB.String)
     api = DB.Column(DB.String)
+    default_value = DB.Column(DB.String)
     modules = DB.relationship(
         "TModules",
         secondary=cor_field_module,
