@@ -241,7 +241,7 @@
                   <ng-container *ngFor="let dynamiqueField of occurrenceAddFields ">
                     <div>
                       <div class="label"> {{dynamiqueField.attribut_label}} : </div>
-                      <div> 
+                      <div class="value"> 
                         {{(displayOccurrence|async)?.additional_fields[dynamiqueField.attribut_name]}}
                       </div>
                     </div>
