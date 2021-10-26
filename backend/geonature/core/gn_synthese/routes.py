@@ -292,7 +292,7 @@ def get_one_synthese(auth, permissions, id_synthese):
         if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
             data_blurring = DataBlurring(permissions)
             synthese_as_dict = data_blurring.blurOneObsAreas(synthese_as_dict)
-        return jsonify(synthese_as_dict)
+        return synthese_as_dict
     except exc.NoResultFound:
         return None
 
