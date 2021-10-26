@@ -1,4 +1,4 @@
-import { Injectable, ComponentRef, ViewContainerRef } from "@angular/core";
+import { Injectable } from "@angular/core";
 import {
   FormBuilder,
   FormGroup,
@@ -8,7 +8,7 @@ import {
   ValidationErrors,
   AbstractControl,
 } from "@angular/forms";
-import { BehaviorSubject, Observable, of } from "rxjs";
+import { BehaviorSubject, Observable, of, forkJoin, combineLatest } from "rxjs";
 import { map, filter, switchMap, tap, pairwise, retry, mergeMap, distinctUntilChanged, first } from "rxjs/operators";
 import { CommonService } from "@geonature_common/service/common.service";
 import { OcctaxFormService } from "../occtax-form.service";
@@ -25,16 +25,15 @@ export class OcctaxFormOccurrenceService {
   public form: FormGroup;
   public taxref: BehaviorSubject<any> = new BehaviorSubject(null);
   public occurrence: BehaviorSubject<any> = new BehaviorSubject(null);
-  public currentReleve: any;
   public existProof_DATA: Array<any> = [];
   public saveWaiting: boolean = false;
-  public additionalFormLoaded: boolean = false;
   
-  componentRefOccurence: ComponentRef<any>;
-  public dynamicContainerOccurence: ViewContainerRef;
   public data : any;
   public idDataset : number;
 
+  private globalOccAddFields: BehaviorSubject<any[]> = new BehaviorSubject([]);
+  private datasetOccAddFields: BehaviorSubject<any[]> = new BehaviorSubject([]);
+  public additionalFieldsForm: any[] = [];
 
   public formFieldsStatus: any;
 
@@ -51,12 +50,12 @@ export class OcctaxFormOccurrenceService {
     this.initForm();
     this.setObservables();
     // load global additional fields (not related to a dataset)
-    this.occtaxFormService.getAdditionnalFields(["OCCTAX_OCCURENCE"])
-    .pipe(first())
-    .subscribe(
-      addFields => {                
-        this.occtaxFormService.globalOccurrenceAddFields = addFields;
-      });
+    // this.occtaxFormService.getAdditionnalFields(["OCCTAX_OCCURENCE"])
+    // .pipe(first())
+    // .subscribe(
+    //   addFields => {                
+    //     this.occtaxFormService.globalOccurrenceAddFields = addFields;
+    //   });
 
   }
 
@@ -98,11 +97,44 @@ export class OcctaxFormOccurrenceService {
           this.clearFormArray(
             this.form.get("cor_counting_occtax") as FormArray
           );
+          //clean global additional fields
+          this.globalOccAddFields.next([]);
         }),
         switchMap((occurrence) => {
           //on oriente la source des données pour patcher le formulaire
           return occurrence ? this.occurrence : this.defaultValues;
         }),
+        //get additional global fields from occurrence, datasaet fields are taken by occtax-form.service > occtaxData observable
+        switchMap((occurrence) => {
+          return forkJoin(
+                   of(occurrence),
+                   this.occtaxFormService.getAdditionnalFields(
+                     ["OCCTAX_OCCURENCE"],
+                   )
+                );
+        }),
+        map(([occurrence, additional_fields]) => {
+          additional_fields.forEach(field => {
+            //Formattage des dates
+            if(field.type_widget == "date"){
+              //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
+              if(typeof occurrence.additional_fields[field.attribut_name] !== "object"){
+                occurrence.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(occurrence.additional_fields[field.attribut_name]);
+              }
+            }
+
+            //set value of field (eq patchValue)
+            if (occurrence.additional_fields[field.attribut_name] !== undefined) {
+              field.value = occurrence.additional_fields[field.attribut_name];
+            }
+          })
+
+          return [occurrence, additional_fields];
+        }),
+        //set the additional Fields Form
+        tap(([occurrence, additional_fields]) => this.globalOccAddFields.next(additional_fields)),
+        //map for return occurrence data only
+        map(([occurrence, additional_fields]) => occurrence),
         tap((occurrence) => {
           //mise en place des countingForm
           if (
@@ -119,26 +151,56 @@ export class OcctaxFormOccurrenceService {
           }
         }),
       )
-      .subscribe((occurrenceValue) => {                
-          this.getReleveDataAndGetAddFields(
-            ['OCCTAX_OCCURENCE', 'OCCTAX_DENOMBREMENT'],
-          ).subscribe(
-            additionalFields => {                                
-              const occValueWithAddFields = this.setAddFieldinOccValue(occurrenceValue, additionalFields);                          
-              this.form.patchValue(occValueWithAddFields);
-            },
-          (error) => {                        
-            // not additional fields for the dataset
-            // set global addfields
-            const occValueWithAddFields = this.setAddFieldinOccValue(
-              occurrenceValue, 
-              this.occtaxFormService.globalOccurrenceAddFields.concat(this.occtaxFormService.globalCountingAddFields)
-            );                    
-            this.form.patchValue(occValueWithAddFields);          
-          })
+      .subscribe((occurrenceValue) => {       
+        this.form.patchValue(occurrenceValue);           
+          // this.getReleveDataAndGetAddFields(
+          //   ['OCCTAX_OCCURENCE', 'OCCTAX_DENOMBREMENT'],
+          // ).subscribe(
+          //   additionalFields => {                                
+          //     const occValueWithAddFields = this.setAddFieldinOccValue(occurrenceValue, additionalFields);                          
+          //     this.form.patchValue(occValueWithAddFields);
+          //   },
+          // (error) => {                        
+          //   // not additional fields for the dataset
+          //   // set global addfields
+          //   const occValueWithAddFields = this.setAddFieldinOccValue(
+          //     occurrenceValue, 
+          //     this.occtaxFormService.globalOccurrenceAddFields.concat(this.occtaxFormService.globalCountingAddFields)
+          //   );                    
+          //   this.form.patchValue(occValueWithAddFields);          
+          // })
 
 
       });
+
+    /**
+     * Get dataset additional fields
+     */
+    this.occtaxFormService.occtaxData.asObservable()
+      .pipe(
+        tap(() => this.datasetOccAddFields.next([])),
+        map((data) => (((data || {}).releve || {}).properties || {}).id_dataset),
+        filter(id_dataset => id_dataset !== undefined && id_dataset !== null),
+        switchMap(id_dataset => {
+          return this.occtaxFormService.getAdditionnalFields(
+            ["OCCTAX_OCCURENCE"],
+            id_dataset
+          );
+        }),
+        tap(val => console.log(val))
+      )
+      .subscribe((fields: any[]) => this.datasetOccAddFields.next(fields));
+
+    //observ global and dataset additional fields to set additionalFieldsForm only one time on each change (optimise memory usage)
+    combineLatest(
+      this.globalOccAddFields.asObservable(),
+      this.datasetOccAddFields.asObservable(),
+    )
+      .pipe(
+        map(([globalField, datasetField]): any[] => [].concat(globalField, datasetField))
+      )
+      .subscribe((additionalFields: any[]) => this.additionalFieldsForm = additionalFields);
+
 
 
     //Gestion des erreurs pour les preuves d'existence
@@ -207,71 +269,71 @@ export class OcctaxFormOccurrenceService {
 
 
 
-  setAddFieldinOccValue(occurrenceValue, addFields) {
+  // setAddFieldinOccValue(occurrenceValue, addFields) {
     
-    const occurrenceCopy = Object.assign({}, occurrenceValue)
-    const {datasetOccAddFieds, datasetCountAddFields} = this.orderNewAdditionalFields(addFields);
-    // if create and datasetfields has changes: reload it
-    if(!occurrenceCopy.id_occurrence_occtax) {
-      if (this.occtaxFormService.datasetOccurrenceAddFields.length == 0 || JSON.stringify(datasetOccAddFieds) != JSON.stringify(this.occtaxFormService.datasetOccurrenceAddFields)) {        
-        let globalOccurrenceAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
-          this.occtaxFormService.globalOccurrenceAddFields,
-          this.occtaxFormService.datasetOccurrenceAddFields,
-        );
-        this.occtaxFormService.datasetOccurrenceAddFields = datasetOccAddFieds;
-        this.occtaxFormService.globalOccurrenceAddFields = globalOccurrenceAddFields.concat(
-          this.occtaxFormService.datasetOccurrenceAddFields
-        );                
-      }
-      if (this.occtaxFormService.datasetCountingAddFields.length == 0 || JSON.stringify(datasetCountAddFields) != JSON.stringify(this.occtaxFormService.datasetCountingAddFields)) {          
-        let globalCountingAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
-          this.occtaxFormService.globalCountingAddFields,
-          this.occtaxFormService.datasetCountingAddFields,
-        );
-        this.occtaxFormService.datasetCountingAddFields = datasetCountAddFields
-        this.occtaxFormService.globalCountingAddFields = globalCountingAddFields.concat(
-          this.occtaxFormService.datasetCountingAddFields
-        )
-      }
+  //   const occurrenceCopy = Object.assign({}, occurrenceValue)
+  //   const {datasetOccAddFieds, datasetCountAddFields} = this.orderNewAdditionalFields(addFields);
+  //   // if create and datasetfields has changes: reload it
+  //   if(!occurrenceCopy.id_occurrence_occtax) {
+  //     if (this.occtaxFormService.datasetOccurrenceAddFields.length == 0 || JSON.stringify(datasetOccAddFieds) != JSON.stringify(this.occtaxFormService.datasetOccurrenceAddFields)) {        
+  //       let globalOccurrenceAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
+  //         this.occtaxFormService.globalOccurrenceAddFields,
+  //         this.occtaxFormService.datasetOccurrenceAddFields,
+  //       );
+  //       this.occtaxFormService.datasetOccurrenceAddFields = datasetOccAddFieds;
+  //       this.occtaxFormService.globalOccurrenceAddFields = globalOccurrenceAddFields.concat(
+  //         this.occtaxFormService.datasetOccurrenceAddFields
+  //       );                
+  //     }
+  //     if (this.occtaxFormService.datasetCountingAddFields.length == 0 || JSON.stringify(datasetCountAddFields) != JSON.stringify(this.occtaxFormService.datasetCountingAddFields)) {          
+  //       let globalCountingAddFields = this.occtaxFormService.clearFormerAdditonnalFields(
+  //         this.occtaxFormService.globalCountingAddFields,
+  //         this.occtaxFormService.datasetCountingAddFields,
+  //       );
+  //       this.occtaxFormService.datasetCountingAddFields = datasetCountAddFields
+  //       this.occtaxFormService.globalCountingAddFields = globalCountingAddFields.concat(
+  //         this.occtaxFormService.datasetCountingAddFields
+  //       )
+  //     }
       
-      // if update
-    }
+  //     // if update
+  //   }
         
-      return occurrenceCopy;
-  }
+  //     return occurrenceCopy;
+  // }
 
-  orderNewAdditionalFields(additionalFields) {
-    const datasetOccAddFieds = [];
-    const datasetCountAddFields = [];
-    additionalFields.forEach(field => {
-      field.objects.forEach(object => {
-        if (object.code_object == "OCCTAX_OCCURENCE") {              
-          datasetOccAddFieds.push(field);
-        }
-        if (object.code_object == "OCCTAX_DENOMBREMENT") {
-          datasetCountAddFields.push(field);
-        }            
-      });
+  // orderNewAdditionalFields(additionalFields) {
+  //   const datasetOccAddFieds = [];
+  //   const datasetCountAddFields = [];
+  //   additionalFields.forEach(field => {
+  //     field.objects.forEach(object => {
+  //       if (object.code_object == "OCCTAX_OCCURENCE") {              
+  //         datasetOccAddFieds.push(field);
+  //       }
+  //       if (object.code_object == "OCCTAX_DENOMBREMENT") {
+  //         datasetCountAddFields.push(field);
+  //       }            
+  //     });
 
-    });
-    return {
-      "datasetOccAddFieds": datasetOccAddFieds,
-      "datasetCountAddFields": datasetCountAddFields
-    }
-  }
+  //   });
+  //   return {
+  //     "datasetOccAddFieds": datasetOccAddFieds,
+  //     "datasetCountAddFields": datasetCountAddFields
+  //   }
+  // }
 
-  getReleveDataAndGetAddFields(objectCode: Array<string>): Observable<any> {    
-    return this.occtaxFormService.occtaxData.pipe(
-      distinctUntilChanged(),
-      filter(releveData => releveData && releveData.releve.properties),
-      mergeMap(releveData => {                   
-        return this.occtaxFormService.getAdditionnalFields(
-          objectCode,
-          releveData.releve.properties.id_dataset,
-        )
-      })
-    )
-  }
+  // getReleveDataAndGetAddFields(objectCode: Array<string>): Observable<any> {    
+  //   return this.occtaxFormService.occtaxData.pipe(
+  //     distinctUntilChanged(),
+  //     filter(releveData => releveData && releveData.releve.properties),
+  //     mergeMap(releveData => {                   
+  //       return this.occtaxFormService.getAdditionnalFields(
+  //         objectCode,
+  //         releveData.releve.properties.id_dataset,
+  //       )
+  //     })
+  //   )
+  // }
   
 
 
@@ -325,6 +387,7 @@ export class OcctaxFormOccurrenceService {
               this.occtaxParamS.get(
                 "occurrence.id_nomenclature_behaviour"
               ) || DATA["OCC_COMPORTEMENT"],
+            additional_fields: {},
           };
         })
       );
@@ -352,7 +415,7 @@ export class OcctaxFormOccurrenceService {
   submitOccurrence() {
     let formValue = Object.assign({}, this.form.value)
     
-    formValue = this.transformDynamicFormValues(formValue);
+    formValue = this.occurrenceFormValue();
 
     let id_releve = this.occtaxFormService.id_releve_occtax.getValue();
     let TEMP_ID_OCCURRENCE = this.uuidv4();
@@ -364,52 +427,52 @@ export class OcctaxFormOccurrenceService {
         : this.form.value //pour gerer la modification si erreur
     );
 
+    let api: Observable<any>;
+
     if (
       this.occurrence.getValue() &&
       this.occurrence.getValue().id_occurrence_occtax
     ) {
       //update
-      this.occtaxDataService
+      api = this.occtaxDataService
         .updateOccurrence(
           this.occurrence.getValue().id_occurrence_occtax,
           this.form.value
         )
-        .pipe(retry(3))
-        .subscribe(
-          (occurrence) => {
-            this.occtaxTaxaListService.removeOccurrenceInProgress(
-              TEMP_ID_OCCURRENCE
-            );
-            this.commonService.translateToaster("info", "Taxon.UpdateDone");
+        .pipe(
+          retry(3),
+          tap((occurrence) => {
+            this.commonService.translateToaster("info", "Taxon.UpdateDone")
             this.occtaxFormService.replaceOccurrenceData(occurrence);
-          },
-          (error) => {
-            this.commonService.translateToaster("error", "ErrorMessage");
-            this.occtaxTaxaListService.errorOccurrenceInProgress(
-              TEMP_ID_OCCURRENCE
-            );
-          }
+          }),
         );
     } else {
       //create      
-      this.occtaxDataService
+      api = this.occtaxDataService
         .createOccurrence(id_releve, formValue)
-        .subscribe(
-          (occurrence) => {                        
-            this.occtaxTaxaListService.removeOccurrenceInProgress(
-              TEMP_ID_OCCURRENCE
-            );
+        .pipe(
+          tap((occurrence) => {
             this.commonService.translateToaster("info", "Taxon.CreateDone");
             this.occtaxFormService.addOccurrenceData(occurrence);
-          },
-          (error) => {
-            this.commonService.translateToaster("error", "ErrorMessage");
-            this.occtaxTaxaListService.errorOccurrenceInProgress(
-              TEMP_ID_OCCURRENCE
-            );
-          }
+          }),
         );
     }
+
+    api
+      .subscribe(
+        (occurrence) => {                        
+          this.occtaxTaxaListService.removeOccurrenceInProgress(
+            TEMP_ID_OCCURRENCE
+          );
+        },
+        (error) => {
+          this.commonService.translateToaster("error", "ErrorMessage");
+          this.occtaxTaxaListService.errorOccurrenceInProgress(
+            TEMP_ID_OCCURRENCE
+          );
+        }
+      );
+
     //vide le formulaire
     this.reset();
   }
@@ -430,33 +493,49 @@ export class OcctaxFormOccurrenceService {
       );
   }
 
-  /**
-   * Transform formValue in order to post it or to edit it
-   * If edit = true: Transform nomenclature from label to ID
-   * If edit = false: Transform nomenclature from ID to label
-   * @param formValue 
-   * @param edit 
-   * @returns 
-   */
-  transformDynamicFormValues(formValue, edit = true){
-    //Mise en forme des champs additionnels
-    this.occtaxFormService.globalOccurrenceAddFields.forEach((field) => {
-      })
-      const countingAddFields = [
-        ...this.occtaxFormService.globalCountingAddFields,
-        ...this.occtaxFormService.datasetCountingAddFields
-      ]
-      countingAddFields.forEach(field => {
-        if(field.type_widget == "date"){
-          formValue.cor_counting_occtax.forEach(counting => {
-            counting.additional_fields[field.attribut_name] = this.dateParser.format(
-              counting.additional_fields[field.attribut_name]
-            );
-          })
-        }
-      })
-    return formValue
+  occurrenceFormValue() {
+    let value = JSON.parse(JSON.stringify(this.form.value))
+
+    /* Champs additionnels - formatter les dates et les nomenclatures */
+    this.additionalFieldsForm.forEach((fieldForm: any) => {
+      if(fieldForm.type_widget == "date"){
+        value.properties.additional_fields[fieldForm.attribut_name] = this.dateParser.format(
+          value.properties.additional_fields[fieldForm.attribut_name]
+        );
+      }
+    })
+
+    //TODO: recuperer les info des counting à partir du counting.service
+    return value;
   }
+
+  // /**
+  //  * Transform formValue in order to post it or to edit it
+  //  * If edit = true: Transform nomenclature from label to ID
+  //  * If edit = false: Transform nomenclature from ID to label
+  //  * @param formValue 
+  //  * @param edit 
+  //  * @returns 
+  //  */
+  // transformDynamicFormValues(formValue, edit = true){
+  //   //Mise en forme des champs additionnels
+  //   this.occtaxFormService.globalOccurrenceAddFields.forEach((field) => {
+  //     })
+  //     const countingAddFields = [
+  //       ...this.occtaxFormService.globalCountingAddFields,
+  //       ...this.occtaxFormService.datasetCountingAddFields
+  //     ]
+  //     countingAddFields.forEach(field => {
+  //       if(field.type_widget == "date"){
+  //         formValue.cor_counting_occtax.forEach(counting => {
+  //           counting.additional_fields[field.attribut_name] = this.dateParser.format(
+  //             counting.additional_fields[field.attribut_name]
+  //           );
+  //         })
+  //       }
+  //     })
+  //   return formValue
+  // }
 
   reset() {
     this.form.reset();

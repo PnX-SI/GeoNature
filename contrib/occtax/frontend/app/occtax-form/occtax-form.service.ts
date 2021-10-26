@@ -27,9 +27,9 @@ export class OcctaxFormService {
   public stayOnFormInterface = new FormControl(false);
   public currentIdDataset:any;
   public previousReleve = null;
-  public globalOccurrenceAddFields: Array<any>= [];
+  // public globalOccurrenceAddFields: Array<any>= [];
   public globalCountingAddFields: Array<any>= [];
-  public datasetOccurrenceAddFields: Array<any>= [];
+  // public datasetOccurrenceAddFields: Array<any>= [];
   public datasetCountingAddFields: Array<any>= [];
   public idTaxonList: number;
   public currentTab: "releve" | "taxons";

@@ -25,7 +25,6 @@ export class OcctaxFormReleveService {
   public releveForm: FormGroup;
   //custom additional fields
   public additionalFieldsForm: Array<any> = [];
-  public datasetReleveAddFields: Array<any>= [];
 
   public showTime: boolean = false; //gestion de l'affichage des infos complémentaires de temps
   public waiting: boolean = false;

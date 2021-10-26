@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ComponentRef } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import {
   animate,
   state,
@@ -52,11 +52,10 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public taxonForm: FormControl; //control permettant de rechercher un taxon TAXREF
   public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required
   private advanced: string = "collapsed";
-  public countingStep: number = 0;
   private _subscriptions: Subscription[] = [];
   public displayProofFromElements: boolean = false;
-  public data : any;
-  public componentRefOccurence: ComponentRef<any>;
+
+  get additionalFieldsForm(): any[] { return this.occtaxFormOccurrenceService.additionalFieldsForm; }
 
   constructor(
     public fs: OcctaxFormService,
