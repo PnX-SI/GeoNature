@@ -129,6 +129,9 @@ Cet exemple lance la tâche toute les nuits à minuit. Pour une autre fréquence
         ProxyPassReverse  http://127.0.0.1:8000/geonature/api
     </Location>
 
+
+  Pensez à recharger Apache si vous êtes amené à en changer la configuration : ``sudo systemctl reload apache2``
+
 * Passage à Alembic :
 
   * S’assurer d’avoir une base de données de GeoNature en version 2.7.5
