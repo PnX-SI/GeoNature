@@ -12,6 +12,8 @@ import {
   QueryList,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import { BehaviorSubject, combineLatest } from 'rxjs';
+import { tap, distinctUntilChanged, filter, map, startWith, pairwise } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
 export enum KEY_CODE {
@@ -43,16 +45,36 @@ export enum KEY_CODE {
   styleUrls: ['./multiselect.component.scss']
 })
 export class MultiSelectComponent implements OnInit, OnChanges {
-  public selectedItems = [];
   public searchControl = new FormControl();
   public formControlValue = [];
   public savedValues = [];
 
   @Input() parentFormControl: FormControl;
-  /** Valeurs à afficher dans la liste déroulante. Doit être un tableau
-   * de dictionnaire.
+  /** Valeurs brute transmise au component */
+  private _values: BehaviorSubject<any[]> = new BehaviorSubject([]);
+  @Input() 
+  set values(val) { this._values.next(val); };
+  get values(): any[] { return this._values.getValue(); };
+
+  /** 
+   * Valeurs affichées dans la liste déroulante. 
+   * Correspond au contenu de this.value moins les valeurs filtrées par this.searchControl moins les valeurs déjà selectionnées présente dans this.selectedItems
    */
-  @Input() values: Array<any>;
+  public displayListValues: any[] = [];
+  /** 
+   * Filtre this.values selon le contenu de this.parentFormControl
+   */
+  public get selectedItems(): any[] { 
+    if (this.parentFormControl.value === null) {
+      return [];
+    }
+
+    return this.values.filter(elem => {
+      return (this.bindAllItem ? this.parentFormControl.value.map(e => e[this.keyValue]) : this.parentFormControl.value)
+                .includes(elem[this.keyValue]);
+    });
+  };
+
   /** Clé du dictionnaire de valeur que le composant doit prendre pour
    * l'affichage de la liste déroulante.
    */
@@ -62,11 +84,11 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   /** Est-ce que le composant doit afficher l'item "tous" dans les
    * options du select ?
    */
-  @Input() displayAll: boolean;
+  @Input() displayAll: boolean = false;
   /** Affiche la barre de recherche (=true). */
-  @Input() searchBar: boolean;
+  @Input() searchBar: boolean = false;
  /** Désactive le contrôle de formulaire. */
-  @Input() disabled: boolean;
+  @Input() disabled: boolean = false;
   /** Initutlé du contrôle de formulaire. */
   @Input() label: any;
   /**
@@ -86,7 +108,7 @@ export class MultiSelectComponent implements OnInit, OnChanges {
    *
    * Par défaut, 100 millisecondes.
    */
-  @Input() debounceTime: number;
+  @Input() debounceTime: number = 100;
   /** Indique (=true) que le contenu de la liste doit être conscidéré
    * comme du HTML sûr.
    */
@@ -113,22 +135,19 @@ export class MultiSelectComponent implements OnInit, OnChanges {
   // you can pass whatever callback to the onSearch output, to trigger
   // database research or simple search on an array
   ngOnInit() {
-    this.debounceTime = this.debounceTime || 100;
-    this.disabled = this.disabled || false;
-    this.searchBar = this.searchBar || false;
-    this.displayAll = this.displayAll || false;
+    this.setObservables();
 
-    // Initialize attributes when "values" not change after ngOnInit...
-    if (this.values && this.parentFormControl.value) {
-      this.values.forEach(item => {
-        if (this.isInParentFormControl(item)) {
-          this.selectedItems.push(item);
-          // Component Taxa add data here with ngOnInit() when component Areas add with ngOnChange()
-          let value = this.getValueFromItem(item);
-          this.formControlValue.push(value);
-        }
-      });
-    }
+    // // Initialize attributes when "values" not change after ngOnInit...
+    // if (this.values && this.parentFormControl.value) {
+    //   this.values.forEach(item => {
+    //     if (this.isInParentFormControl(item)) {
+    //       this.selectedItems.push(item);
+    //       // Component Taxa add data here with ngOnInit() when component Areas add with ngOnChange()
+    //       let value = this.getValueFromItem(item);
+    //       this.formControlValue.push(value);
+    //     }
+    //   });
+    // }
 
     // Subscribe and output on the search bar
     this.searchControl.valueChanges
@@ -137,53 +156,65 @@ export class MultiSelectComponent implements OnInit, OnChanges {
       .subscribe(value => {
         this.onSearch.emit(value);
       });
-
-    // When data his push via 'patchValue' (API POST data for example)
-    this.parentFormControl.valueChanges.subscribe(value => {
-      if (this.values && this.values.length < 1) {
-        return;
-      }
-      // If the new value is null
-      // refresh selectedItems, formcontrolValue and values to display
-      if (value === null) {
-        this.selectedItems = [];
-        this.formControlValue = [];
-        this.values = this.savedValues;
-      } else {
-        // When patch value when init the component
-        // push the item only if selected items == 0 (to not push twice
-        // the object when the formControl is patch)
-        if (this.selectedItems.length === 0) {
-          value.forEach(item => {
-            if (this.bindAllItem) {
-              this.addItem(item, false);
-            } else {
-              // If not bind all item (the formControl send an integer)
-              // we must find in the values array the current item
-              for (let i = 0; i < (this.values || []).length; i++) {
-                if (this.values[i][this.keyValue] === item) {
-                  this.addItem(this.values[i], false);
-                  break;
-                }
-              }
-            }
-          });
-        }
-      }
-    });
   }
 
-  private isInParentFormControl(value) {
-    if (this.bindAllItem) {
-      return (
-        this.parentFormControl.value
-          .map(item => item[this.keyValue])
-          .indexOf(value[this.keyValue])
-        !== -1
-      );
-    } else {
-      return (this.parentFormControl.value.indexOf(value[this.keyValue]) !== -1)
-    }
+  private setObservables() {
+
+    combineLatest(
+      this.parentFormControl.valueChanges
+        .pipe(
+          startWith([]),
+          distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+          filter((formValue: any[]|number[]) => formValue !== null),
+          //return transform formValue to id key array
+          map((formValue:any[]|number[]): number[] => this.bindAllItem ? formValue.map(e => e[this.keyValue]) : formValue)
+        ),
+      this._values.asObservable()
+        .pipe(
+          distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
+          filter((val: any[]) => val !== undefined && val.length),
+          // pairwise(),
+        )
+    )
+      .pipe(
+        // //La manière de fonctionnement du searchInput (qui filtre en dehor du component) oblige à gérer le maintient des valeur du form dans la liste des valeurs.
+        // map(([formValue, [_prev, _new]]: [number[], any[]]) => {
+        //   console.log(formValue, _prev, _new);
+        //   //item from _previous list
+        //   const formItems = _prev.filter(elem => formValue.includes(elem[this.keyValue]))
+        //                       //diff with new list to keep missing values
+        //                      .filter(elem => !_new.includes(elem));
+        //     console.log(formItems);
+        //   return [formValue, _new.concat(formItems)];
+        // }),
+        //suppression des valeur selectionnées de la liste
+        map(([formValue, values]: [number[], any[]]) => {
+          return values.filter(elem => !(formValue.includes(elem[this.keyValue])));
+        })
+      )
+      .subscribe((values) => this.displayListValues = values);
+
+  }
+
+  // private isInParentFormControl(value) {
+  //   if (this.bindAllItem) {
+  //     return (
+  //       this.parentFormControl.value
+  //         .map(item => item[this.keyValue])
+  //         .indexOf(value[this.keyValue])
+  //       !== -1
+  //     );
+  //   } else {
+  //     return (this.parentFormControl.value.indexOf(value[this.keyValue]) !== -1)
+  //   }
+  // }
+
+  /**
+   * Ajoute tous les éléments courant au formControl (l'oject complet si
+   * bindAllItems=True, sinon seulement l'id (keyValue)).
+   */
+  onSelectAll(): void {
+    this.displayListValues.forEach(elem => this.addItem(elem));
   }
 
   /**
@@ -192,63 +223,38 @@ export class MultiSelectComponent implements OnInit, OnChanges {
    * Filtre la liste pour ne pas afficher de doublon.
    * @param item : l'objet complet (pas l'id).
    */
-  addItem(item, markDirty = true) {
-    // Mark dirty only if its an user action
-    if (markDirty) {
-      this.parentFormControl.markAsDirty();
-    }
-
-    // Remove element from the items list to avoid doublon
-    if (this.values) {
-      this.values = this.values.filter(curItem => {
-        return curItem[this.keyLabel] !== item[this.keyLabel];
-      });
-    }
-
-    if (item === 'all') {
-      this.selectedItems = [];
-      this._translate.get('AllItems', { value: 'AllItems' }).subscribe(value => {
-        const objAll = {};
-        objAll[this.keyLabel] = value;
-        this.selectedItems.push(objAll);
-      });
-      this.formControlValue = [];
-      this.parentFormControl.patchValue([]);
-      return;
-    }
-    // Set the item for the formControl
-    let value = this.getValueFromItem(item);
-    this.selectedItems.push(item);
-    this.formControlValue.push(value);
-    // Set the item for the formControl
-    this.parentFormControl.patchValue(this.formControlValue);
-
+  onSelectItem(item) {
+    this.addItem(item);
     this.searchControl.reset();
-    this.onChange.emit(value);
+    this.onChange.emit(this.getValueFromItem(item));
   }
 
-  removeItem($event, item) {
-    this.parentFormControl.markAsDirty();
-    // Remove element from the items list to avoid doublon
-    this.values = this.values.filter(curItem => {
-      return curItem[this.keyLabel] !== item[this.keyLabel];
-    });
-    // Disable event propagation
-    $event.stopPropagation();
-    // Push the element in the items list
-    this.values.push(item);
-    this.selectedItems = this.selectedItems.filter(curItem => {
-      return curItem[this.keyLabel] !== item[this.keyLabel];
-    });
+  /**
+   * Ajoute l'élément courant au formControl (l'oject complet si
+   * bindAllItems=True, sinon seulement l'id (keyValue)).
+   * Filtre la liste pour ne pas afficher de doublon.
+   * @param item : l'objet complet (pas l'id).
+   */
+  private addItem(item, markDirty = true): void {
+    if ( this.parentFormControl.value === null ) {
+      this.parentFormControl.setValue([]);
+    }
+    const formValue = [...this.parentFormControl.value];
+    formValue.push(this.getValueFromItem(item));
+    this.parentFormControl.setValue(formValue);
+  }
 
-    let value = this.getValueFromItem(item);
-    this.formControlValue = this.parentFormControl.value.filter(el => {
-      return el !== value;
-    });
+  onRemoveItem(item): void {
+    const idx = (this.bindAllItem ? this.parentFormControl.value.map(e => e[this.keyValue]) : this.parentFormControl.value)
+                .findIndex(elem => elem === item[this.keyValue]);
 
-    this.parentFormControl.patchValue(this.formControlValue);
-
-    this.onDelete.emit(item);
+    if (idx !== -1) {
+      //copy is necessary for set new distinct value to formControl
+      const formValue = [...this.parentFormControl.value];
+      formValue.splice(idx, 1);
+      this.parentFormControl.setValue(formValue);
+      this.onDelete.emit(item);
+    }
   }
 
   private getValueFromItem(item) {
@@ -325,43 +331,6 @@ export class MultiSelectComponent implements OnInit, OnChanges {
           (element as HTMLElement).focus();
         }
       }
-    }
-  }
-
-  ngOnChanges(changes) {
-    if (changes.values && changes.values.currentValue) {
-      this.savedValues = changes.values.currentValue;
-      if (this.parentFormControl.value) {
-        this.parentFormControl.setValue(this.parentFormControl.value);
-      }
-      // Remove doublon in the dropdown lists
-      // @FIXME: timeout to wait for the formcontrol to be updated
-      // the data from formControl can came in AJAX, so we wait for it...
-      setTimeout(() => {
-        this.removeDoublon();
-      }, 2000);
-    }
-  }
-
-  removeDoublon() {
-    if (this.values && this.formControlValue) {
-      this.values = this.values.filter(v => {
-        let isInArray = false;
-
-        this.formControlValue.forEach(element => {
-          if (this.bindAllItem) {
-            if (v[this.keyValue] === element[this.keyValue]) {
-              isInArray = true;
-            }
-          } else {
-            if (v[this.keyValue] === element) {
-              isInArray = true;
-            }
-          }
-        });
-
-        return !isInArray;
-      });
     }
   }
 }

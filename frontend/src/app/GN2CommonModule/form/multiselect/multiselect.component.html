@@ -31,7 +31,7 @@
 
       <span
         *ngIf="!disabled"
-        (click)="removeItem($event, item)"
+        (click)="onRemoveItem(item)"
         class="fa fa-times clickable remove-button"
       > </span>
     </span>
@@ -56,18 +56,18 @@
     <ul>
       <li
         *ngIf="displayAll"
-        (click)="addItem('all')"
+        (click)="onSelectAll()"
         class="clickable li-dropdown li-label padded-multiline"
         #dropdownItem
       >
         {{'AllItems' | translate}}
       </li>
       <li
-        *ngFor="let val of values"
+        *ngFor="let val of displayListValues"
         tabindex="0"
         (focus)="setValSave(val)"
         (blur)="setValSave()"
-        (click)="addItem(val)"
+        (click)="onSelectItem(val)"
         class="clickable li-dropdown padded-multiline"
         #dropdownItem
       >
