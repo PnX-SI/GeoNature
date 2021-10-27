@@ -66,7 +66,7 @@ export class NomenclatureComponent extends GenericFormComponent
    * Attribut de l'objet nomenclature renvoyé au formControl (facultatif, par défaut ``id_nomenclature``).
    * Valeur possible: n'importequel attribut de l'objet ``nomenclature`` renvoyé par l'API
    */
-  @Input() keyValue;
+  @Input() keyValue = 'id_nomenclature';
   @Input() bindAllItem: false;
   @Output() labelsLoaded = new EventEmitter<Array<any>>();
 
@@ -75,7 +75,6 @@ export class NomenclatureComponent extends GenericFormComponent
   }
 
   ngOnInit() {
-    this.keyValue = this.keyValue || 'id_nomenclature';
     this.labelLang = 'label_' + this._translate.currentLang;
     this.definitionLang = 'definition_' + this._translate.currentLang;
     // load the data

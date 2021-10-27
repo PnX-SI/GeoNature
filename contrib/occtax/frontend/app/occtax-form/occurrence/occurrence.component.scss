@@ -19,6 +19,7 @@ button .mat-spinner {
 // visible
 .mat-expansion-panel {
   overflow: auto;
+  margin-right: 50px !important;
 }
 
 .form-nom-complet {
@@ -45,9 +46,10 @@ button .mat-spinner {
   color: #d40303;
 }
 
-.mat-expansion-panel {
-  margin-right: 50px !important;
+pnx-dynamic-form-releve {
+  width: 100%;
 }
+
 pnx-dynamic-form-releve {
   width: 100%;
 }
