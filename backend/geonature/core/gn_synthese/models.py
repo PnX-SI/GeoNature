@@ -264,7 +264,7 @@ class Synthese(DB.Model):
                                    uselist=False,
                                    viewonly=True)
     medias = relationship(
-        TMedias, 
+        TMedias,
         primaryjoin=(TMedias.uuid_attached_row==foreign(unique_id_sinp)),
         uselist=True
     )
