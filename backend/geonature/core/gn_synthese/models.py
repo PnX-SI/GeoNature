@@ -86,12 +86,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
 class Synthese(DB.Model):
     __tablename__ = "synthese"
     __table_args__ = {"schema": "gn_synthese"}
-    id_synthese = DB.Column(
-        DB.Integer, 
-        primary_key=True, 
-        nullable=False, 
-        autoincrement=True,
-    )
+    id_synthese = DB.Column(DB.Integer, primary_key=True)
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
     id_source = DB.Column(DB.Integer, ForeignKey(TSources.id_source))
@@ -324,9 +319,7 @@ def synthese_export_serialization(cls):
             geometry = {"type": "Point", "coordinates": [0, 0]}
 
         feature = Feature(
-            id=str(getattr(self, idCol)),
-            geometry=geometry,
-            properties=self.as_dict_ordered(),
+            id=str(getattr(self, idCol)), geometry=geometry, properties=self.as_dict_ordered(),
         )
         return feature
 
@@ -351,25 +344,17 @@ class SyntheseOneRecord(VSyntheseDecodeNomenclatures):
     )
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     id_source = DB.Column(DB.Integer, ForeignKey(TSources.id_source))
-    id_dataset = DB.Column(DB.Integer)
+    id_dataset = DB.Column(DB.Integer, ForeignKey(TDatasets.id_dataset))
     cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
 
     habitat = DB.relationship(Habref, lazy="joined")
 
-    source = DB.relationship(
-        "TSources",
-        primaryjoin=(TSources.id_source == id_source),
-        foreign_keys=[id_source],
-    )
+    source = DB.relationship(TSources)
     areas = DB.relationship(
         "LAreas",
         secondary=corAreaSynthese,
     )
-    datasets = DB.relationship(
-        "TDatasets",
-        primaryjoin=(TDatasets.id_dataset == id_dataset),
-        foreign_keys=[id_dataset],
-    )
+    datasets = DB.relationship(TDatasets)
     acquisition_framework = DB.relationship(
         "TAcquisitionFramework",
         uselist=False,

@@ -1,3 +1,5 @@
+import datetime
+
 from flask import g
 from flask_sqlalchemy import BaseQuery
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
@@ -171,7 +173,7 @@ class CorDatasetActor(DB.Model):
     nomenclature_actor_role = DB.relationship(
         TNomenclatures,
         lazy="joined",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role),
+        foreign_keys=[id_nomenclature_actor_role],
     )
 
     @staticmethod
@@ -451,34 +453,32 @@ class TDatasets(CruvedHelper):
     nomenclature_data_type = DB.relationship(
         TNomenclatures,
         lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_data_type),
+        foreign_keys=[id_nomenclature_data_type],
     )
     nomenclature_dataset_objectif = DB.relationship(
         TNomenclatures,
         lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_dataset_objectif),
+        foreign_keys=[id_nomenclature_dataset_objectif],
     )
     nomenclature_collecting_method = DB.relationship(
         TNomenclatures,
         lazy="select",
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == id_nomenclature_collecting_method
-        ),
+        foreign_keys=[id_nomenclature_collecting_method],
     )
     nomenclature_data_origin = DB.relationship(
         TNomenclatures,
         lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_data_origin),
+        foreign_keys=[id_nomenclature_data_origin],
     )
     nomenclature_source_status = DB.relationship(
         TNomenclatures,
         lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_source_status),
+        foreign_keys=[id_nomenclature_source_status],
     )
     nomenclature_resource_type = DB.relationship(
         TNomenclatures,
         lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_resource_type),
+        foreign_keys=[id_nomenclature_resource_type],
     )
 
     cor_territories = DB.relationship(
@@ -577,7 +577,7 @@ class TAcquisitionFramework(CruvedHelper):
     opened = DB.Column(DB.Boolean, default=True)
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
 
-    acquisition_framework_start_date = DB.Column(DB.Date)
+    acquisition_framework_start_date = DB.Column(DB.Date, default=datetime.datetime.utcnow)
     acquisition_framework_end_date = DB.Column(DB.Date)
 
     meta_create_date = DB.Column(DB.DateTime)
@@ -733,51 +733,37 @@ class TAcquisitionFramework(CruvedHelper):
         data = q.all()
         return list(set([d.id_acquisition_framework for d in data]))
 
+
 @serializable
 class TDatasetDetails(TDatasets):
-    """
-    Class which extends TDatasets with nomenclatures relationships
-    """
-
     data_type = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_data_type),
+        foreign_keys=[TDatasets.id_nomenclature_data_type],
     )
     dataset_objectif = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_dataset_objectif),
+        foreign_keys=[TDatasets.id_nomenclature_dataset_objectif],
     )
     collecting_method = DB.relationship(
         TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_collecting_method
-        ),
+        foreign_keys=[TDatasets.id_nomenclature_collecting_method],
     )
     data_origin = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_data_origin),
+        foreign_keys=[TDatasets.id_nomenclature_data_origin],
     )
     source_status = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_source_status),
+        foreign_keys=[TDatasets.id_nomenclature_source_status],
     )
     resource_type = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_resource_type),
+        foreign_keys=[TDatasets.id_nomenclature_resource_type],
     )
-    # acquisition_framework = DB.relationship(
-    #     TAcquisitionFramework,
-    #     primaryjoin=(
-    #         TAcquisitionFramework.id_acquisition_framework == TDatasets.id_acquisition_framework
-    #     ),
-    # )
     additional_fields = DB.relationship(
         "TAdditionalFields",
         secondary=cor_field_dataset
     )
-
-        
- 
 
 
 @serializable
@@ -785,19 +771,12 @@ class TAcquisitionFrameworkDetails(TAcquisitionFramework):
     """
     Class which extends TAcquisitionFramework with nomenclatures relationships
     """
-
-    #datasets = DB.relationship(TDatasetDetails, lazy="joined")
     nomenclature_territorial_level = DB.relationship(
         TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature
-            == TAcquisitionFramework.id_nomenclature_territorial_level
-        ),
+        foreign_keys=[TAcquisitionFramework.id_nomenclature_territorial_level],
     )
 
     nomenclature_financing_type = DB.relationship(
         TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == TAcquisitionFramework.id_nomenclature_financing_type
-        ),
+        foreign_keys=[TAcquisitionFramework.id_nomenclature_financing_type],
     )
