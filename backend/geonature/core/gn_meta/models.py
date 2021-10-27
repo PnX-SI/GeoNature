@@ -146,9 +146,14 @@ class CorDatasetActor(DB.Model):
     __tablename__ = "cor_dataset_actor"
     __table_args__ = {"schema": "gn_meta"}
     id_cda = DB.Column(DB.Integer, primary_key=True)
+
     id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
+
     id_role = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    role = DB.relationship(User, lazy="joined")
+
     id_organism = DB.Column(DB.Integer, ForeignKey(Organisme.id_organisme))
+    organism = relationship(Organisme, lazy="select")
 
     id_nomenclature_actor_role = DB.Column(
         DB.Integer,
@@ -506,7 +511,7 @@ class TDatasets(CruvedMixin, FilterMixin, db.Model):
         uuid = kwargs.get('uuid')
         if uuid is not None:
             try:
-                uuid = UUID(uuid.strip())
+                uuid = UUIDType(uuid.strip())
             except TypeError:
                 pass
             else:
@@ -766,7 +771,7 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
         uuid = kwargs.get('uuid')
         if uuid is not None:
             try:
-                uuid = UUID(uuid.strip())
+                uuid = UUIDType(uuid.strip())
             except TypeError:
                 pass
             else:

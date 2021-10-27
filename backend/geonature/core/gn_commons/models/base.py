@@ -110,7 +110,7 @@ class TMedias(DB.Model):
         DB.Integer, ForeignKey("gn_commons.bib_tables_location.id_table_location")
     )
     unique_id_media = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
-    uuid_attached_row = DB.Column(UUID(as_uuid=True))
+    uuid_attached_row = DB.Column(UUID(as_uuid=True), ForeignKey("gn_synthese.synthese.unique_id_sinp"))
     title_fr = DB.Column(DB.Unicode)
     title_en = DB.Column(DB.Unicode)
     title_it = DB.Column(DB.Unicode)
@@ -202,7 +202,6 @@ class TValidations(DB.Model):
     validation_date = DB.Column(DB.TIMESTAMP)
     validation_auto = DB.Column(DB.Boolean)
     validation_label = DB.relationship(TNomenclatures)
-
 
 last_validation_query = (
     select([TValidations])
