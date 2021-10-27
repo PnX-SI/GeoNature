@@ -90,14 +90,24 @@ export class OcctaxFormOccurrenceService {
                     return occurrence ? this.occurrence : this.defaultValues;
                   }),
                   //get additional global fields from occurrence, datasaet fields are taken by occtax-form.service > occtaxData observable
-                  switchMap((occurrence) => {
+                  switchMap((occurrence): Observable<[any, [any[], any[]]]> => {
+                    //observable : get occurrence & countinf filed in same array, explode for separate into double array (occ array & couting array) 
+                    const $_globalFieldsObservable = this.occtaxFormService.getAdditionnalFields(
+                               ["OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"],
+                             )
+                              .pipe(
+                                catchError(() => of([])),
+                                map((fields: any[]): [any[], any[]] => {
+                                  return [
+                                    fields.filter(elem => elem.objects.map(o => o.code_object).includes("OCCTAX_OCCURENCE")),
+                                    fields.filter(elem => elem.objects.map(o => o.code_object).includes("OCCTAX_DENOMBREMENT")),
+                                  ]
+                                })
+                              )
+
                     return forkJoin(
                              of(occurrence),
-                             this.occtaxFormService.getAdditionnalFields(
-                               ["OCCTAX_OCCURENCE"],
-                             ).pipe(
-                               catchError(() => of([]))
-                              )
+                             $_globalFieldsObservable
                           );
                   })
                 );
@@ -111,13 +121,20 @@ export class OcctaxFormOccurrenceService {
                   // tap(() => this.datasetOccAddFields.next([])),
                   map((data) => (((data || {}).releve || {}).properties || {}).id_dataset),
                   filter(id_dataset => id_dataset !== undefined && id_dataset !== null),
-                  switchMap(id_dataset => {
+                  switchMap((id_dataset): Observable<[any[], any[]]> => {
                     return this.occtaxFormService.getAdditionnalFields(
-                      ["OCCTAX_OCCURENCE"],
+                      ["OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"],
                       id_dataset
-                    ).pipe(
-                       catchError(() => of([]))
-                      )
+                    )
+                    .pipe(
+                      catchError(() => of([])),
+                      map((fields: any[]): [any[], any[]] => {
+                        return [
+                          fields.filter(elem => elem.objects.map(o => o.code_object).includes("OCCTAX_OCCURENCE")),
+                          fields.filter(elem => elem.objects.map(o => o.code_object).includes("OCCTAX_DENOMBREMENT")),
+                        ]
+                      })
+                    )
                   }),
                 );
 
@@ -134,12 +151,14 @@ export class OcctaxFormOccurrenceService {
             this.form.get("cor_counting_occtax") as FormArray
           );
         }),
-        map(([[occurrence, global_fields], datasetFields]) => {
-          const additional_fields = [].concat(global_fields, datasetFields);
-          return [occurrence, additional_fields];
+        map(([[occurrence, [global_occ_f, global_counting_f]], [dataset_occ_f, dataset_counting_f]]) => {
+          const occ_additional_fields = [].concat(global_occ_f, dataset_occ_f);
+          const counting_additional_fields = [].concat(global_counting_f, dataset_counting_f);
+          return [occurrence, occ_additional_f, counting_additional_f];
         }),
-        tap(([occurrence, additional_fields]) => {
-          additional_fields.forEach(field => {
+        tap(([occurrence, occ_additional_f, counting_additional_f]) => {
+          //manage occ_additional_f
+          occ_additional_f.forEach(field => {
             //Formattage des dates
             if(field.type_widget == "date"){
               //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
@@ -153,6 +172,25 @@ export class OcctaxFormOccurrenceService {
               field.value = occurrence.additional_fields[field.attribut_name];
             }
           })
+
+          // //manage counting_additional_f
+          // counting_additional_f.forEach(field => {
+          //   //Formattage des dates
+          //   if(field.type_widget == "date"){
+          //     //loop on counting
+          //     occurrence.cor_counting_occtax.forEach(counting => {
+          //       //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
+          //       if(typeof counting.additional_fields[field.attribut_name] !== "object"){
+          //         counting.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(counting.additional_fields[field.attribut_name]);
+          //       }
+          //     });
+          //   }
+
+          //   //set value of field (eq patchValue)
+          //   if (occurrence.additional_fields[field.attribut_name] !== undefined) {
+          //     field.value = occurrence.additional_fields[field.attribut_name];
+          //   }
+          // })
           return [occurrence, additional_fields];
         }),
         tap(([occurrence, additional_fields]) => this.additionalFieldsForm = additional_fields),

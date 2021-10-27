@@ -36,6 +36,10 @@ export class OcctaxFormCountingService {
       });
   }
 
+  /**
+   * Génére un formulaire vide
+   * Cette fonction est appelée par occurrence.service
+   */
   createForm(patchWithDefaultValues: boolean = false): FormGroup {    
     const form = this.fb.group({
       id_counting_occtax: null,
@@ -98,6 +102,7 @@ export class OcctaxFormCountingService {
             id_nomenclature_valid_status:
               this.occtaxParamS.get("counting.id_nomenclature_valid_status") ||
               DATA["STATUT_VALID"],
+            additional_fields: {}
           };
         })
       );
