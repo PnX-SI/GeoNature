@@ -104,39 +104,39 @@
     <table class="font-xs table table-striped table-sm">
       <tr>
         <td> Statut de l'observation </td>
-        <td> {{selectedObs?.observation_status}} </td>
+        <td> {{selectedObs?.nomenclature_observation_status?.label_default}} </td>
       </tr>
       <tr>
         <td> Technique d'observation </td>
-        <td> {{selectedObs?.obs_technique}} </td>
+        <td> {{selectedObs?.nomenclature_obs_technique?.label_default}} </td>
       </tr>
       <tr>
         <td> Etat biologique </td>
-        <td> {{selectedObs?.bio_condition}} </td>
+        <td> {{selectedObs?.nomenclature_bio_condition?.label_default}} </td>
       </tr>
 
       <tr>
         <td> Statut biologique </td>
-        <td> {{selectedObs?.bio_status}} </td>
+        <td> {{selectedObs?.nomenclature_bio_status?.label_default}} </td>
       </tr>
 
       <tr>
         <td> Statut biogéographique </td>
-        <td> {{selectedObs?.occ_stat_biogeo}} </td>
+        <td> {{selectedObs?.nomenclature_biogeo_status?.label_default}} </td>
       </tr>
 
       <tr>
         <td> Comportement </td>
-        <td> {{selectedObs?.occ_behaviour}} </td>
+        <td> {{selectedObs?.nomenclature_behaviour?.label_default}} </td>
       </tr>
 
       <tr>
         <td> Sexe </td>
-        <td> {{selectedObs?.sex}} </td>
+        <td> {{selectedObs?.nomenclature_sex?.label_default}} </td>
       </tr>
       <tr>
         <td> Stade de vie </td>
-        <td> {{selectedObs?.life_stage}} </td>
+        <td> {{selectedObs?.nomenclature_life_stage?.label_default}} </td>
       </tr>
       <tr>
         <td> Denombrement min </td>
@@ -148,16 +148,16 @@
       </tr>
       <tr>
         <td> Type de dénombrement </td>
-        <td> {{selectedObs?.type_count}} </td>
+        <td> {{selectedObs?.nomenclature_type_count?.label_default}} </td>
       </tr>
       <tr>
         <td> Objet du dénombrement </td>
-        <td> {{selectedObs?.obj_count}} </td>
+        <td> {{selectedObs?.nomenclature_obj_count?.label_default}} </td>
       </tr>
       <tr>
       <tr>
         <td> Naturalité </td>
-        <td> {{selectedObs?.naturalness}} </td>
+        <td> {{selectedObs?.nomenclature_naturalness?.label_default}} </td>
       </tr>
 
       <tr>
@@ -175,7 +175,7 @@
       </tr>
       <tr>
         <td> Preuve d'existence </td>
-        <td> {{selectedObs?.exist_proof}} </td>
+        <td> {{selectedObs?.nomenclature_exist_proof?.label_default}} </td>
       </tr>
       <tr>
         <td> Preuve numérique </td>
@@ -193,7 +193,7 @@
 
       <tr>
         <td> Type de regroupement </td>
-        <td> {{selectedObs?.grp_typ}} </td>
+        <td> {{selectedObs?.nomenclature_grp_typ?.label_default}} </td>
       </tr>
 
       <tr>
@@ -203,29 +203,29 @@
 
       <tr>
         <td> Source de la donnée </td>
-        <td> {{selectedObs?.source_status}} </td>
+        <td> {{selectedObs?.nomenclature_source_status?.label_default}} </td>
       </tr>
 
       <tr>
         <td> Statut de validation </td>
-        <td> {{selectedObs?.valid_status}} </td>
+        <td> {{selectedObs?.nomenclature_valid_status?.label_default}} </td>
       </tr>
 
       <tr>
         <td> Sensibilité </td>
-        <td> {{selectedObs?.sensitivity}} </td>
+        <td> {{selectedObs?.nomenclature_sensitivity?.label_default}} </td>
       </tr>
       <tr>
         <td> Niveau de diffusion </td>
-        <td> {{selectedObs?.diffusion_level}} </td>
+        <td> {{selectedObs?.nomenclature_diffusion_level?.label_default}} </td>
       </tr>
       <tr>
         <td> Nature de l'objet géographique </td>
-        <td> {{selectedObs?.nat_obj_geo}} </td>
+        <td> {{selectedObs?.nomenclature_geo_object_nature?.label_default}} </td>
       </tr>
       <tr>
         <td> Floutage </td>
-        <td> {{selectedObs?.blurring}} </td>
+        <td> {{selectedObs?.nomenclature_blurring?.label_default}} </td>
       </tr>
       <tr>
         <td> Identifiant unique SINP </td>
@@ -241,11 +241,11 @@
     <table class="font-xs table table-striped table-sm">
       <tr>
         <td> Jeu de données </td>
-        <td> {{selectedObs?.datasets?.dataset_name}} </td>
+        <td> {{selectedObs?.dataset.dataset_name}} </td>
       </tr>
       <tr>
         <td> Cadre d'acquisition </td>
-        <td> {{selectedObs?.acquisition_framework.acquisition_framework_name}} </td>
+        <td> {{selectedObs?.dataset.acquisition_framework.acquisition_framework_name}}</td>
       </tr>
       <tr>
         <td>
@@ -253,8 +253,8 @@
         </td>
         <td>
           <ul>
-            <li *ngFor="let act of selectedObs?.actors">
-              {{act}}
+            <li *ngFor="let actor of selectedObs?.dataset.cor_dataset_actor">
+              {{actor.display}}
             </li>
           </ul>
         </td>

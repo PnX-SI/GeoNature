@@ -271,7 +271,6 @@ class Synthese(Schema):
     EXPORT_GEOJSON_4326_COL = fields.String(load_default="geojson_4326")
     EXPORT_GEOJSON_LOCAL_COL = fields.String(load_default="geojson_local")
     EXPORT_METADATA_ID_DATASET_COL = fields.String(load_default="jdd_id")
-    EXPORT_METADATA_ACTOR_COL = fields.String(load_default="acteurs")
     # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
     EXPORT_FORMAT = fields.List(fields.String(), load_default=["csv", "geojson", "shapefile"])
     # Nombre de résultat à afficher pour la rechercher autocompleté de taxon

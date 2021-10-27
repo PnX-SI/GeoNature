@@ -9,7 +9,6 @@ from collections import OrderedDict
 from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
-from sqlalchemy.sql.expression import delete
 from geojson import FeatureCollection, Feature
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
@@ -28,7 +27,6 @@ from geonature.core.gn_synthese.models import (
     Synthese,
     TSources,
     DefaultsNomenclaturesValue,
-    SyntheseOneRecord,
     VSyntheseForWebApp,
     VColorAreaTaxon,
 )
@@ -244,6 +242,7 @@ def get_synthese(auth, permissions):
     synthese_query_class.filter_query_all_filters(auth)
     data = DB.session.execute(synthese_query_class.query.limit(result_limit))
 
+
     # q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, auth)
 
     # data = q.limit(result_limit)
@@ -264,7 +263,6 @@ def get_synthese(auth, permissions):
 
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
 @permissions.check_permissions(module_code="SYNTHESE", action_code="R")
-@json_resp
 def get_one_synthese(auth, permissions, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature
 
@@ -279,40 +277,46 @@ def get_one_synthese(auth, permissions, id_synthese):
     :param int id_synthese:Synthese to be queried
     :>jsonarr array synthese_as_dict: One synthese with geojson key, see above
     """
-    metadata_view = GenericTable(
-        tableName="v_metadata_for_export", schemaName="gn_synthese", engine=DB.engine
-    )
-    q = (
-        DB.session.query(
-            SyntheseOneRecord,
-            getattr(
-                metadata_view.tableDef.columns,
-                current_app.config["SYNTHESE"]["EXPORT_METADATA_ACTOR_COL"],
-            ),
-        )
-            .filter(SyntheseOneRecord.id_synthese == id_synthese)
-            .outerjoin(
-            metadata_view.tableDef,
-            getattr(
-                metadata_view.tableDef.columns,
-                current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"],
-            )
-            == SyntheseOneRecord.id_dataset,
-        )
-    )
-    try:
-        data = q.one()
-        synthese_as_dict = data[0].as_dict(
-            depth=2,
-        )
-
-        synthese_as_dict["actors"] = data[1]
-        if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
-            data_blurring = DataBlurring(permissions)
-            synthese_as_dict = data_blurring.blurOneObsAreas(synthese_as_dict)
-        return synthese_as_dict
-    except exc.NoResultFound:
-        return None
+    synthese = Synthese.query.get_or_404(id_synthese)
+    if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
+        data_blurring = DataBlurring(permissions)
+        synthese = data_blurring.blurOneObsAreas(synthese)
+    return jsonify(synthese.as_geofeature(
+        "the_geom_4326", "id_synthese",
+        fields=[
+            'dataset',
+            'dataset.acquisition_framework',
+            'dataset.acquisition_framework.bibliographical_references',
+            'dataset.acquisition_framework.cor_af_actor',
+            'dataset.acquisition_framework.cor_objectifs',
+            'dataset.acquisition_framework.cor_territories',
+            'dataset.acquisition_framework.cor_volets_sinp',
+            'dataset.acquisition_framework.creator',
+            'dataset.acquisition_framework.nomenclature_territorial_level',
+            'dataset.acquisition_framework.nomenclature_financing_type',
+            'dataset.cor_dataset_actor',
+            'dataset.cor_dataset_actor.role',
+            'dataset.cor_dataset_actor.organism',
+            'dataset.cor_territories',
+            'dataset.nomenclature_source_status',
+            'dataset.nomenclature_resource_type',
+            'dataset.nomenclature_dataset_objectif',
+            'dataset.nomenclature_data_type',
+            'dataset.nomenclature_data_origin',
+            'dataset.nomenclature_collecting_method',
+            'dataset.creator',
+            'dataset.modules',
+            'validations',
+            'validations.validation_label',
+            'validations.validator_role',
+            'cor_observers',
+            'cor_observers.nom_complet',
+            'cor_observers.organisme',
+            'source',
+            'habitat',
+            'medias',
+            'areas',
+        ]))
 
 
 ################################
@@ -371,8 +375,8 @@ def export_taxon_web(info_role):
             func.min(VSyntheseForWebApp.date_min).label("date_min"),
             func.max(VSyntheseForWebApp.date_max).label("date_max")
         ])
-            .where(VSyntheseForWebApp.id_synthese.in_(id_list))
-            .group_by(VSyntheseForWebApp.cd_ref)
+        .where(VSyntheseForWebApp.id_synthese.in_(id_list))
+        .group_by(VSyntheseForWebApp.cd_ref)
     )
 
     synthese_query_class = SyntheseQuery(
@@ -1011,6 +1015,7 @@ def get_taxa_distribution():
 
     data = query.group_by(rank).all()
     return [{"count": d[0], "group": d[1]} for d in data]
+
 
 # @routes.route("/test", methods=["GET"])
 # @json_resp

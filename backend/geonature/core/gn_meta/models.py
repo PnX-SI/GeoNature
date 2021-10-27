@@ -3,6 +3,7 @@ import datetime
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship, exc
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.dialects.postgresql import UUID
 from werkzeug.exceptions import NotFound
 
@@ -150,24 +151,32 @@ class CorDatasetActor(DB.Model):
     __tablename__ = "cor_dataset_actor"
     __table_args__ = {"schema": "gn_meta"}
     id_cda = DB.Column(DB.Integer, primary_key=True)
+
     id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
+
     id_role = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    role = DB.relationship(User, lazy="joined")
+
     id_organism = DB.Column(DB.Integer, ForeignKey(Organisme.id_organisme))
+    organism = relationship(Organisme, lazy="select")
 
     id_nomenclature_actor_role = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("ROLE_ACTEUR"),
     )
-
-    role = DB.relationship(User, lazy="joined")
-    organism = relationship(Organisme, lazy="select")
-
     nomenclature_actor_role = DB.relationship(
         TNomenclatures,
         lazy="joined",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role),
     )
+
+    @hybrid_property
+    def display(self):
+        if self.role:
+            r = self.role.nom_complet
+        else:
+            r = self.organism.nom_organisme
+        return '{} ({})'.format(r, self.nomenclature_actor_role.label_default)
 
     @staticmethod
     def get_actor(id_dataset, id_nomenclature_actor_role, id_role=None, id_organism=None):
