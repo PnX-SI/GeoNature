@@ -11,7 +11,7 @@ from utils_flask_sqla.serializers import serializable
 from pypnusershub.db.models import User
 
 from geonature.core.gn_commons.models import TModules
-from geonature.utils.env import DB
+from geonature.utils.env import DB, db
 
 
 @serializable
@@ -77,7 +77,8 @@ class BibFiltersValues(DB.Model):
     __tablename__ = "bib_filters_values"
     __table_args__ = {"schema": "gn_permissions"}
     id_filter_value = DB.Column(DB.Integer, primary_key=True)
-    id_filter_type = DB.Column(DB.Integer)
+    id_filter_type = DB.Column(DB.Integer, ForeignKey(BibFiltersType.id_filter_type))
+    filter_type = db.relationship(BibFiltersType, backref='values')
     value_format = DB.Column(DB.Enum(FilterValueFormats))
     predefined = DB.Column(DB.Boolean)
     value_or_field = DB.Column(DB.Unicode(length=50))
@@ -124,6 +125,7 @@ class CorRoleActionFilterModuleObject(DB.Model):
         DB.Integer,
         ForeignKey("gn_permissions.bib_filters_type.id_filter_type"),
     )
+    filter_type = db.relationship(BibFiltersType)
     value_filter = DB.Column(DB.Unicode)
     id_request = DB.Column(
         DB.Integer,

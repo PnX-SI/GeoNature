@@ -1,3 +1,5 @@
+import datetime
+
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship, exc
@@ -511,7 +513,7 @@ class TAcquisitionFramework(CruvedHelper):
     opened = DB.Column(DB.Boolean, default=True)
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
 
-    acquisition_framework_start_date = DB.Column(DB.Date)
+    acquisition_framework_start_date = DB.Column(DB.Date, default=datetime.datetime.utcnow)
     acquisition_framework_end_date = DB.Column(DB.Date)
 
     meta_create_date = DB.Column(DB.DateTime)
