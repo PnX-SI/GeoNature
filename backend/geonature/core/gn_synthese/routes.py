@@ -9,7 +9,6 @@ from flask import Blueprint, request, current_app, send_from_directory, render_t
 from werkzeug.exceptions import Forbidden, NotFound
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
-from sqlalchemy.sql.expression import delete
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 
@@ -243,6 +242,7 @@ def get_synthese(auth, permissions):
     synthese_query_class.filter_query_all_filters(auth)
     data = DB.session.execute(synthese_query_class.query.limit(result_limit))
 
+
     # q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, auth)
 
     # data = q.limit(result_limit)
@@ -263,7 +263,6 @@ def get_synthese(auth, permissions):
 
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
 @permissions.check_permissions(module_code="SYNTHESE", action_code="R")
-@json_resp
 def get_one_synthese(auth, permissions, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature
     """
@@ -369,8 +368,8 @@ def export_taxon_web(info_role):
             func.min(VSyntheseForWebApp.date_min).label("date_min"),
             func.max(VSyntheseForWebApp.date_max).label("date_max")
         ])
-            .where(VSyntheseForWebApp.id_synthese.in_(id_list))
-            .group_by(VSyntheseForWebApp.cd_ref)
+        .where(VSyntheseForWebApp.id_synthese.in_(id_list))
+        .group_by(VSyntheseForWebApp.cd_ref)
     )
 
     synthese_query_class = SyntheseQuery(
