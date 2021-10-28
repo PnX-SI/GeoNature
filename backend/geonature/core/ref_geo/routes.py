@@ -53,7 +53,7 @@ def getGeoInfo():
     """
     From a posted geojson, the route return the municipalities intersected
     and the altitude min/max
-    
+
     .. :quickref: Ref Geo;
     """
     if request.json is None:
