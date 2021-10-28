@@ -243,11 +243,7 @@ def getViewReleveOccurrence(info_role):
 
         q = q.order_by(orderCol)
 
-    try:
-        data = q.limit(limit).offset(page * limit).all()
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    data = q.limit(limit).offset(page * limit).all()
 
     user = info_role
     user_cruved = get_or_fetch_user_cruved(
@@ -515,11 +511,7 @@ def updateReleve(id_releve, info_role):
 
 def occurrenceHandler(request, *, occurrence, info_role):
 
-    try:
-        releve = DB.session.query(TRelevesOccurrence).get(occurrence.id_releve_occtax)
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    releve = DB.session.query(TRelevesOccurrence).get(occurrence.id_releve_occtax)
 
     if not releve:
         raise NotFound
@@ -575,11 +567,7 @@ def updateOccurrence(id_occurrence, info_role):
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
     """
-    try:
-        occurrence = DB.session.query(TOccurrencesOccurrence).get(id_occurrence)
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    occurrence = DB.session.query(TOccurrencesOccurrence).get(id_occurrence)
 
     if not occurrence:
         return {"message": "not found"}, 404
@@ -619,21 +607,13 @@ def deleteOneOccurence(id_occ):
     """
     q = DB.session.query(TOccurrencesOccurrence)
 
-    try:
-        data = q.get(id_occ)
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    data = q.get(id_occ)
 
     if not data:
         return {"message": "not found"}, 404
 
-    try:
-        DB.session.delete(data)
-        DB.session.commit()
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    DB.session.delete(data)
+    DB.session.commit()
 
     return {"message": "delete with success"}
 
@@ -651,21 +631,13 @@ def deleteOneOccurenceCounting(id_count):
     """
     q = DB.session.query(CorCountingOccurrence)
 
-    try:
-        data = q.get(id_count)
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    data = q.get(id_count)
 
     if not data:
         return {"message": "not found"}, 404
 
-    try:
-        DB.session.delete(data)
-        DB.session.commit()
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    DB.session.delete(data)
+    DB.session.commit()
 
     return {"message": "delete with success"}
 
