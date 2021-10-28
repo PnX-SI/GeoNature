@@ -4,7 +4,6 @@ import {
   Input,
   EventEmitter,
   Output,
-  OnChanges,
   ElementRef,
   ViewChild,
   HostListener,
@@ -44,7 +43,7 @@ export enum KEY_CODE {
   templateUrl: './multiselect.component.html',
   styleUrls: ['./multiselect.component.scss']
 })
-export class MultiSelectComponent implements OnInit, OnChanges {
+export class MultiSelectComponent implements OnInit {
   public searchControl = new FormControl();
   public formControlValue = [];
   public savedValues = [];
@@ -167,12 +166,14 @@ export class MultiSelectComponent implements OnInit, OnChanges {
           distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
           filter((formValue: any[]|number[]) => formValue !== null),
           //return transform formValue to id key array
-          map((formValue:any[]|number[]): number[] => this.bindAllItem ? formValue.map(e => e[this.keyValue]) : formValue)
+          map((formValue: any[]|number[]): number[] => {
+            return this.bindAllItem ? (formValue as any[]).map((e: any): number => e[this.keyValue]) : formValue as number[];
+          })
         ),
       this._values.asObservable()
         .pipe(
           distinctUntilChanged((a, b) => JSON.stringify(a) === JSON.stringify(b)),
-          filter((val: any[]) => val !== undefined && val.length),
+          filter((val: any[]) => val !== undefined && val.length > 0),
           // pairwise(),
         )
     )
