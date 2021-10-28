@@ -46,7 +46,18 @@ export class SyntheseComponent implements OnInit {
           modalRef.componentInstance.queryString = this.searchService.buildQueryUrl(formatedParams);
           modalRef.componentInstance.tooManyObs = true;
         }
-        this._mapListService.geojsonData = result['data'];
+        let geojsonlist = []
+        for (let feature of result["data"].features) {
+          let item  = (({ type, coordinates }) => ({ type, coordinates }))(feature)
+          item["properties"] = {"id": null}
+          item["properties"]["id"] = feature["properties"]["id"]
+          geojsonlist.push(item)
+        }
+        let geoJsonData = {
+          "type": "FeatureCollection",
+          "features": geojsonlist
+        }
+        this._mapListService.geojsonData = geoJsonData;
         this._mapListService.tableData = result['data'];
         this._mapListService.loadTableData(result['data']);
         this._mapListService.idName = 'id';
