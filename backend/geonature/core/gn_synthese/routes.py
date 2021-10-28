@@ -16,7 +16,6 @@ from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo
 
-
 from geonature.utils import filemanager
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
@@ -93,7 +92,7 @@ def get_observations_for_web(auth, permissions):
         geojson = ast.literal_eval(r["st_asgeojson"])
         geojson["properties"] = properties
 
-    :param str auth: autorisation contenant des informations sur 
+    :param str auth: autorisation contenant des informations sur
         l'utilisateur et la permissions permettant l'accés au web service.
         Utiliser pour configurer les filtres, **TBC**.
     :param str permissions: listes de toutes les permissions NON applaties
@@ -154,8 +153,8 @@ def get_observations_for_web(auth, permissions):
 
     query = (
         select(columns)
-        .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
-        .order_by(VSyntheseForWebApp.date_min.desc())
+            .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
+            .order_by(VSyntheseForWebApp.date_min.desc())
     )
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
     synthese_query_class.filter_query_all_filters(auth)
@@ -165,30 +164,47 @@ def get_observations_for_web(auth, permissions):
         data_blurring = DataBlurring(permissions)
         results = data_blurring.blurSeveralObs(results)
 
+    # Group results by geometry
+    seen_geoms = {}
+    grouped_results = []
+    for result in results:
+        result = dict(result)
+        for key in result.keys():
+            if key != "st_asgeojson":
+                result[key] = [result[key]]
+        if not result["st_asgeojson"] in seen_geoms.keys():
+            seen_geoms[result["st_asgeojson"]] = len(grouped_results)
+            grouped_results.append(result)
+        else:
+            for key in result.keys():
+                if key != "st_asgeojson":
+                    grouped_results[seen_geoms[result["st_asgeojson"]]][key].extend(result[key])
     geojson_features = []
-    for r in results:
+    for r in grouped_results:
         properties = {
             "id": r["id_synthese"],
-            "date_min": str(r["date_min"]),
+            "date_min": [str(date) for date in r["date_min"]],
             "cd_nom": r["cd_nom"],
-            "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
+            "nom_vern_or_lb_nom": [r["nom_vern"][i] if r["nom_vern"][i] else r["lb_nom"][i] for i in
+                                   range(len(r["lb_nom"]))],
             "lb_nom": r["lb_nom"],
-            "count_min_max": '{} - {}'.format(r["count_min"], r["count_max"]) if r["count_min"] != r["count_max"] else str(r["count_min"] or ''),
+            "count_min_max": [
+                '{} - {}'.format(r["count_min"][i], r["count_max"][i]) if r["count_min"][i] != r["count_max"][
+                    i] else str(r["count_min"][i] or '') for i in range(len(r["count_max"]))],
             "dataset_name": r["dataset_name"],
             "observers": r["observers"],
             "url_source": r["url_source"],
             "unique_id_sinp": str(r["unique_id_sinp"]),
             "entity_source_pk_value": r["entity_source_pk_value"],
         }
-        geojson = ast.literal_eval(r["st_asgeojson"])
+        geojson = json.loads(r["st_asgeojson"])
         geojson["properties"] = properties
         geojson_features.append(geojson)
-
     return {
         "data": FeatureCollection(geojson_features),
         "nb_total": len(geojson_features),
         "nb_obs_limited": len(geojson_features)
-        == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
+                          == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
     }
 
 
@@ -205,7 +221,7 @@ def get_synthese(auth, permissions):
 
     Params must have same synthese fields names
 
-    :param str auth: autorisation contenant des informations sur 
+    :param str auth: autorisation contenant des informations sur
         l'utilisateur et la permissions permettant l'accés au web service.
         Utiliser pour configurer les filtres, **TBC**.
     :param str permissions: listes de toutes les permissions NON applaties
@@ -224,7 +240,6 @@ def get_synthese(auth, permissions):
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
     synthese_query_class.filter_query_all_filters(auth)
     data = DB.session.execute(synthese_query_class.query.limit(result_limit))
-
 
     # q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, auth)
 
@@ -272,8 +287,8 @@ def get_one_synthese(auth, permissions, id_synthese):
                 current_app.config["SYNTHESE"]["EXPORT_METADATA_ACTOR_COL"],
             ),
         )
-        .filter(SyntheseOneRecord.id_synthese == id_synthese)
-        .outerjoin(
+            .filter(SyntheseOneRecord.id_synthese == id_synthese)
+            .outerjoin(
             metadata_view.tableDef,
             getattr(
                 metadata_view.tableDef.columns,
@@ -353,8 +368,8 @@ def export_taxon_web(info_role):
             func.min(VSyntheseForWebApp.date_min).label("date_min"),
             func.max(VSyntheseForWebApp.date_max).label("date_max")
         ])
-        .where(VSyntheseForWebApp.id_synthese.in_(id_list))
-        .group_by(VSyntheseForWebApp.cd_ref)
+            .where(VSyntheseForWebApp.id_synthese.in_(id_list))
+            .group_by(VSyntheseForWebApp.cd_ref)
     )
 
     synthese_query_class = SyntheseQuery(
@@ -453,13 +468,13 @@ def export_observations_web(auth, permissions):
 
     if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
         data_blurring = DataBlurring(
-            permissions, 
+            permissions,
             sensitivity_column=current_app.config["DATA_BLURRING"]["EXPORT_SENSITIVITY_COL"],
             diffusion_column=current_app.config["DATA_BLURRING"]["EXPORT_DIFFUSION_COL"],
             result_to_dict=False,
             fields_to_erase=current_app.config["DATA_BLURRING"]["EXPORT_FIELDS_TO_BLURRE"],
             geom_fields=[
-               {
+                {
                     "output_field": current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"],
                     "area_field": "geojson_4326",
                 },
@@ -560,12 +575,12 @@ def export_metadata(info_role):
     ])
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, q, filters)
     synthese_query_class.add_join(
-        metadata_view.tableDef, 
+        metadata_view.tableDef,
         getattr(
             metadata_view.tableDef.columns,
             current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"],
         ),
-         VSyntheseForWebApp.id_dataset
+        VSyntheseForWebApp.id_dataset
     )
     synthese_query_class.filter_query_all_filters(info_role)
 
@@ -748,8 +763,8 @@ def get_autocomplete_taxons_synthese():
                 "idx_trgm"
             ),
         )
-        .distinct()
-        .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
+            .distinct()
+            .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
     )
     search_name = search_name.replace(" ", "%")
     q = q.filter(VMTaxrefListForautocomplete.search_name.ilike("%" + search_name + "%"))
@@ -859,14 +874,14 @@ def get_taxa_count():
     Get taxa count in synthese filtering with generic parameters
 
     .. :quickref: Synthese;
-    
+
     Parameters
     ----------
     id_dataset: `int` (query parameter)
 
     Returns
     -------
-    count: `int`: 
+    count: `int`:
         the number of taxon
     """
     params = request.args
@@ -885,16 +900,16 @@ def get_observation_count():
     Get observations found in a given dataset
 
     .. :quickref: Synthese;
-    
+
     Parameters
     ----------
     id_dataset: `int` (query parameter)
 
     Returns
     -------
-    count: `int`: 
+    count: `int`:
         the number of observation
-    
+
     """
     params = request.args
 
@@ -913,26 +928,27 @@ def get_bbox():
     Get bbbox of observations
 
     .. :quickref: Synthese;
-    
+
     Parameters
     -----------
     id_dataset: int: (query parameter)
 
     Returns
     -------
-        bbox: `geojson`: 
+        bbox: `geojson`:
             the bounding box in geojson
     """
     params = request.args
 
     query = DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
-        
+
     if "id_dataset" in params:
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
     data = query.one()
     if data and data[0]:
         return json.loads(data[0])
     return None
+
 
 @routes.route("/observation_count_per_column/<column>", methods=["GET"])
 @json_resp
@@ -945,9 +961,9 @@ def observation_count_per_column(column):
         return f'No column name {column} in Synthese', 500
     query = DB.session.query(
         func.count(Synthese.id_synthese), model_column
-        ).select_from(
-            Synthese
-        ).group_by(model_column)
+    ).select_from(
+        Synthese
+    ).group_by(model_column)
     data = []
     for d in query.all():
         temp = {}
@@ -978,8 +994,8 @@ def get_taxa_distribution():
 
     query = (
         DB.session.query(func.count(distinct(Synthese.cd_nom)), rank)
-        .select_from(Synthese)
-        .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+            .select_from(Synthese)
+            .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
     )
 
     if id_dataset:
@@ -992,7 +1008,6 @@ def get_taxa_distribution():
 
     data = query.group_by(rank).all()
     return [{"count": d[0], "group": d[1]} for d in data]
-
 
 # @routes.route("/test", methods=["GET"])
 # @json_resp
