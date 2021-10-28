@@ -12,8 +12,6 @@ import { distinctUntilChanged, debounceTime, switchMap, tap, catchError, map } f
 export class AreasComponent extends GenericFormComponent implements OnInit {
   public cachedAreas: any;
   @Input() typeCodes: Array<string> = []; // Areas type_code
-
-
   areas_input$ = new Subject<string>();
   areas: Observable<any>;
   loading = false;

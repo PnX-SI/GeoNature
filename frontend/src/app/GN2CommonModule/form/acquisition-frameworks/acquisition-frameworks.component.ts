@@ -9,7 +9,6 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
  * @example
  * <pnx-acquisition-frameworks
  * [multiSelect]='true'
- * [displayAll]="true"
  * [parentFormControl]="formService.searchForm.controls.id_acquisition_frameworks"
  * label="{{ 'MetaData.AcquisitionFramework' | translate}}"
  * </pnx-acquisition-frameworks>

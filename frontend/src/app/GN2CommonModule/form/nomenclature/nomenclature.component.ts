@@ -67,6 +67,9 @@ export class NomenclatureComponent extends GenericFormComponent
    * Valeur possible: n'importequel attribut de l'objet ``nomenclature`` renvoyé par l'API
    */
   @Input() keyValue = 'id_nomenclature';
+    /**
+ * @deprecated Do not use this input
+ */
   @Input() bindAllItem: false;
   @Output() labelsLoaded = new EventEmitter<Array<any>>();
 
