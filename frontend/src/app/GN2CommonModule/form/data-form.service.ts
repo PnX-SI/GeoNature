@@ -311,11 +311,11 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/municipalities`, { params: params });
   }
 
-  getAreas(area_type_list: Array<number>, area_name?) {
+  getAreas(area_type_list: Array<string>, area_name?) {
     let params: HttpParams = new HttpParams();
 
     area_type_list.forEach(id_type => {
-      params = params.append('id_type', id_type.toString());
+      params = params.append('type_code', id_type.toString());
     });
 
     if (area_name) {

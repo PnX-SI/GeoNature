@@ -12,7 +12,25 @@ CHANGELOG
 * [SYNTHESE] Création d'une "fiche taxon" à partir des informations décrites plus haut
 * [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
 * Passage à la librairie 'select2' pour les composants multiselects (@jbrieuclp)
+
+[DEV]
+* Factorisation du composant "pnx-municipality" avec "pnx-area" 
+
 Note de version : 
+
+Si vous avez surcouché le paramètre `AREA_FILTERS` de la section `[SYNTHESE]`, veuillez remplacer le `id_type` par le `type_code` (voir `ref_geo.bib_areas_types`)
+::
+
+    AREA_FILTERS = [
+        { label = "Communes", id_type = 25 }
+    ]
+devient 
+
+::
+
+    AREA_FILTERS = [
+        { label = "Communes", type_code = "COM" }
+    ]
 
 Les nouvelles fonctionnalités liés aux profiles necessite de raffraichir des vues materialisées à intervales réguliers et donc de créer une tâche planfiée (cron):
 

@@ -1,7 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DataFormService } from '../data-form.service';
-import { FormControl } from '@angular/forms';
-import { CommonService } from '@geonature_common/service/common.service';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { AppConfig } from '@geonature_config/app.config';
 import { Subject, Observable, of, concat } from 'rxjs';
@@ -13,7 +11,8 @@ import { distinctUntilChanged, debounceTime, switchMap, tap, catchError, map } f
 })
 export class AreasComponent extends GenericFormComponent implements OnInit {
   public cachedAreas: any;
-  @Input() idTypes: Array<number>; // Areas id_type
+  @Input() typeCodes: Array<string> = []; // Areas type_code
+
 
   areas_input$ = new Subject<string>();
   areas: Observable<any>;
@@ -21,25 +20,24 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
 
   constructor(
     private _dfs: DataFormService, 
-    private _commonService: CommonService
   ) {
     super();
   }
 
-  ngOnInit() {
+  ngOnInit() {    
     this.getAreas();
   }
 
   getAreas() { 
     this.areas = concat(
-        this._dfs.getAreas(this.idTypes).pipe(map(data=>this.formatAreas(data))), // default items
+        this._dfs.getAreas(this.typeCodes).pipe(map(data=>this.formatAreas(data))), // default items
         this.areas_input$.pipe(
             debounceTime(200),
             distinctUntilChanged(),
             tap(() => this.loading = true),
             switchMap(term => {
               return term.length >= 2 ?
-                this._dfs.getAreas(this.idTypes, term).pipe(
+                this._dfs.getAreas(this.typeCodes, term).pipe(
                   map(data=>this.formatAreas(data)),
                   catchError(() => of([])), // empty list on error
                   tap(() => this.loading = false)

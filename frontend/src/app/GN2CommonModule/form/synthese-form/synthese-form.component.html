@@ -111,6 +111,10 @@
   </fieldset>
   <fieldset>
     <legend> Quoi ?</legend>
+    <pnx-municipalities
+      label="test"
+      [parentFormControl]="formService.searchForm.controls.cd_nom" 
+    ></pnx-municipalities>
     <pnx-taxonomy
       label="{{'Taxon.Taxon' | translate }} "
       [parentFormControl]="formService.searchForm.controls.cd_nom"
@@ -229,7 +233,7 @@
           [searchBar]="true"
           [parentFormControl]="area.control"
           [label]="area.label"
-          [idTypes]="area.id_type_array"
+          [typeCodes]="area.type_code_array"
         >
         </pnx-areas>
       </div>

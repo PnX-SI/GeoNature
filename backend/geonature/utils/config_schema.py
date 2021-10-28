@@ -241,7 +241,7 @@ class GnFrontEndConf(Schema):
 
 class Synthese(Schema):
     AREA_FILTERS = fields.List(
-        fields.Dict, load_default=[{"label": "Communes", "id_type": DEFAULT_ID_MUNICIPALITY}]
+        fields.Dict, load_default=[{"label": "Communes", "type_code": "COM"}]
     )
     # Listes des champs renvoyés par l'API synthese '/synthese'
     # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
