@@ -42,6 +42,7 @@ export class ObserversComponent extends GenericFormComponent {
   }
 
   ngOnInit() {
+    this.multiSelect = this.multiSelect || true;
     // uniformise as IdList the id of list
     // retrocompat: keep idMenu
     if(this.idList) {
