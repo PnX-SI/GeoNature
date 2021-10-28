@@ -19,7 +19,6 @@ from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo
 
-
 from geonature.utils import filemanager
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
@@ -154,8 +153,8 @@ def get_observations_for_web(auth, permissions):
 
     query = (
         select(columns)
-        .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
-        .order_by(VSyntheseForWebApp.date_min.desc())
+            .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
+            .order_by(VSyntheseForWebApp.date_min.desc())
     )
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
     synthese_query_class.filter_query_all_filters(auth)
@@ -165,15 +164,33 @@ def get_observations_for_web(auth, permissions):
         data_blurring = DataBlurring(permissions)
         results = data_blurring.blurSeveralObs(results)
 
+    # Group results by geometry
+    seen_geoms = {}
+    grouped_results = []
+    for result in results:
+        result = dict(result)
+        for key in result.keys():
+            if key != "st_asgeojson":
+                result[key] = [result[key]]
+        if not result["st_asgeojson"] in seen_geoms.keys():
+            seen_geoms[result["st_asgeojson"]] = len(grouped_results)
+            grouped_results.append(result)
+        else:
+            for key in result.keys():
+                if key != "st_asgeojson":
+                    grouped_results[seen_geoms[result["st_asgeojson"]]][key].extend(result[key])
     geojson_features = []
-    for r in results:
+    for r in grouped_results:
         properties = {
             "id": r["id_synthese"],
-            "date_min": str(r["date_min"]),
+            "date_min": [str(date) for date in r["date_min"]],
             "cd_nom": r["cd_nom"],
-            "nom_vern_or_lb_nom": r["nom_vern"] if r["nom_vern"] else r["lb_nom"],
+            "nom_vern_or_lb_nom": [r["nom_vern"][i] if r["nom_vern"][i] else r["lb_nom"][i] for i in
+                                   range(len(r["lb_nom"]))],
             "lb_nom": r["lb_nom"],
-            "count_min_max": '{} - {}'.format(r["count_min"], r["count_max"]) if r["count_min"] != r["count_max"] else str(r["count_min"] or ''),
+            "count_min_max": [
+                '{} - {}'.format(r["count_min"][i], r["count_max"][i]) if r["count_min"][i] != r["count_max"][
+                    i] else str(r["count_min"][i] or '') for i in range(len(r["count_max"]))],
             "dataset_name": r["dataset_name"],
             "observers": r["observers"],
             "url_source": r["url_source"],
@@ -183,7 +200,6 @@ def get_observations_for_web(auth, permissions):
         geojson = json.loads(r["st_asgeojson"])
         geojson["properties"] = properties
         geojson_features.append(geojson)
-
     return {
         "data": FeatureCollection(geojson_features),
         "nb_total": len(geojson_features),
@@ -225,7 +241,6 @@ def get_synthese(auth, permissions):
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
     synthese_query_class.filter_query_all_filters(auth)
     data = DB.session.execute(synthese_query_class.query.limit(result_limit))
-
 
     # q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, auth)
 
@@ -353,8 +368,8 @@ def export_taxon_web(info_role):
             func.min(VSyntheseForWebApp.date_min).label("date_min"),
             func.max(VSyntheseForWebApp.date_max).label("date_max")
         ])
-        .where(VSyntheseForWebApp.id_synthese.in_(id_list))
-        .group_by(VSyntheseForWebApp.cd_ref)
+            .where(VSyntheseForWebApp.id_synthese.in_(id_list))
+            .group_by(VSyntheseForWebApp.cd_ref)
     )
 
     synthese_query_class = SyntheseQuery(
@@ -459,7 +474,7 @@ def export_observations_web(auth, permissions):
             result_to_dict=False,
             fields_to_erase=current_app.config["DATA_BLURRING"]["EXPORT_FIELDS_TO_BLURRE"],
             geom_fields=[
-               {
+                {
                     "output_field": current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"],
                     "area_field": "geojson_4326",
                 },
@@ -565,7 +580,7 @@ def export_metadata(info_role):
             metadata_view.tableDef.columns,
             current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"],
         ),
-         VSyntheseForWebApp.id_dataset
+        VSyntheseForWebApp.id_dataset
     )
     synthese_query_class.filter_query_all_filters(info_role)
 
@@ -748,8 +763,8 @@ def get_autocomplete_taxons_synthese():
                 "idx_trgm"
             ),
         )
-        .distinct()
-        .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
+            .distinct()
+            .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
     )
     search_name = search_name.replace(" ", "%")
     q = q.filter(VMTaxrefListForautocomplete.search_name.ilike("%" + search_name + "%"))
@@ -938,6 +953,7 @@ def get_bbox():
         return Response(data[0], mimetype='application/json')
     return '', 204
 
+
 @routes.route("/observation_count_per_column/<column>", methods=["GET"])
 def observation_count_per_column(column):
     """Get observations count group by a given column"""
@@ -980,8 +996,8 @@ def get_taxa_distribution():
 
     query = (
         DB.session.query(func.count(distinct(Synthese.cd_nom)), rank)
-        .select_from(Synthese)
-        .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+            .select_from(Synthese)
+            .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
     )
 
     if id_dataset:

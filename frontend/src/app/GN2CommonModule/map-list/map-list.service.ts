@@ -293,7 +293,17 @@ export class MapListService {
       });
     } else {
       data.features.forEach(feature => {
-        this.tableData.push(feature.properties);
+        for (let i = 0; i < feature.properties.id.length; i++) {
+          let item = {}
+          for (let data_prop in feature.properties) {
+            if (data_prop !== "geojson") {
+              item[data_prop] = feature.properties[data_prop][i]
+              item["selected"] = false
+            }
+          }
+          item["geojson"] = feature.properties["geojson"]
+          this.tableData.push(item);
+        }
       });
     }
     this.tableData = [...this.tableData];
