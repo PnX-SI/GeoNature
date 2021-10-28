@@ -40,6 +40,8 @@ from apptax.taxonomie.models import (
     TaxrefBdcStatutText,
     TaxrefBdcStatutValues,
 )
+from ref_geo.models import LAreas, BibAreasTypes
+
 
 class SyntheseQuery:
     """
@@ -65,6 +67,7 @@ class SyntheseQuery:
         diffusion_column="id_nomenclature_diffusion_level",
         with_generic_table=False,
         query_joins=None,
+        areas_type=None,
     ):
         self.query = query
 
@@ -80,6 +83,7 @@ class SyntheseQuery:
         self.model = model
         self._already_joined_table = []
         self.query_joins = query_joins
+        self.areas_type = areas_type
 
         if with_generic_table:
             model_temp = model.columns
@@ -431,6 +435,16 @@ class SyntheseQuery:
             self.query = self.query.select_from(self.query_joins)
         return self.query
 
+    def transform_to_areas(self):
+        if "with_areas" in self.filters and self.areas_type:
+            with_areas = self.filters["with_areas"][0]
+            if with_areas in ["1", "true"] or with_areas == True:
+                cas = aliased(CorAreaSynthese)
+                self.add_join(cas, cas.id_synthese, self.model.id_synthese)
+                self.add_join(LAreas, LAreas.id_area, cas.id_area)
+                self.add_join(BibAreasTypes, BibAreasTypes.id_type, LAreas.id_type)
+                self.query = self.query.where(BibAreasTypes.type_code == self.areas_type)
+
     def filter_query_all_filters(self, user):
         """High level function to manage query with all filters.
 
@@ -447,5 +461,5 @@ class SyntheseQuery:
             Combined filter to apply.
         """
         self.apply_all_filters(user)
+        self.transform_to_areas()
         return self.build_query()
-

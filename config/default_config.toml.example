@@ -250,7 +250,7 @@ MAIL_ON_ERROR = false
 
     # Colonne à afficher par défaut sur la liste des résultats de la synthese
     # Choisir le champ 'prop' parmis les colonnes suivantes :
-    # id_synthese, date_min, cd_nom, lb_nom, nom_vern_or_lb_nom, st_asgeojson,
+    # id (=id_synthese), date_min, cd_nom, lb_nom, nom_vern_or_lb_nom,
     # observers, dataset_name, url_source, count_min_max
     LIST_COLUMNS_FRONTEND = [
         { prop = "nom_vern_or_lb_nom", name = "Taxon" },
@@ -405,6 +405,24 @@ MAIL_ON_ERROR = false
         { "id" = "invasive", "show" = true, "display_name" = "Espèces envahissantes", "status_types" = ["REGLLUTTE"] },
         { "id" = "znief", "show" = true, "display_name" = "Espèces déterminantes ZNIEFF", "status_types" = ["ZDET"] },
     ]
+
+    # Enable areas vizualisation with toggle slide
+    ENABLE_AREA_AGGREGATION = fields.Boolean(load_default=True)
+    # Choose size of areas
+    AREA_AGGREGATION_TYPE = fields.String(load_default="M10")
+    # Activate areas mode by default
+    AREA_AGGREGATION_BY_DEFAULT = fields.Boolean(load_default=False)
+    # Areas legend classes to use
+    AREA_AGGREGATION_LEGEND_CLASSES = fields.List(fields.Dict(), load_default=[
+        {"min": 100, "color": "#800026"},
+        {"min": 50, "color": "#BD0026"},
+        {"min": 20, "color": "#E31A1C"},
+        {"min": 10, "color": "#FC4E2A"},
+        {"min": 5, "color": "#FD8D3C"},
+        {"min": 2, "color": "#FEB24C"},
+        {"min": 1, "color": "#FED976"},
+        {"min": 0, "color": "#FFEDA0"},
+    ])
 
 # Configuration de l'accès sans authentication
 [PUBLIC_ACCESS]

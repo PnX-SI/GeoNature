@@ -366,6 +366,27 @@ class Synthese(Schema):
     # Display email on synthese and validation info obs modal
     DISPLAY_EMAIL = fields.Boolean(load_default=True)
 
+    # Enable areas vizualisation with toggle slide
+    ENABLE_AREA_AGGREGATION = fields.Boolean(load_default=True)
+    # Choose size of areas
+    AREA_AGGREGATION_TYPE = fields.String(load_default="M10")
+    # Activate areas mode by default
+    AREA_AGGREGATION_BY_DEFAULT = fields.Boolean(load_default=False)
+    # Areas legend classes to use
+    AREA_AGGREGATION_LEGEND_CLASSES = fields.List(
+        fields.Dict(),
+        load_default=[
+            {"min": 100, "color": "#800026"},
+            {"min": 50, "color": "#BD0026"},
+            {"min": 20, "color": "#E31A1C"},
+            {"min": 10, "color": "#FC4E2A"},
+            {"min": 5, "color": "#FD8D3C"},
+            {"min": 2, "color": "#FEB24C"},
+            {"min": 1, "color": "#FED976"},
+            {"min": 0, "color": "#FFEDA0"},
+        ],
+    )
+
 class DataBlurringManagement(Schema):
     # Configuration parameters for blurring geo data based on diffusion_level, sensitivity
     # and user permissions

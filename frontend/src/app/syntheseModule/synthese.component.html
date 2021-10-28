@@ -38,8 +38,10 @@
       ></i>
     </button>
     <div class="col-sm-12 col-md-7 padding-sm">
-
-      <pnx-synthese-carte [inputSyntheseData]="_mapListService.geojsonData"></pnx-synthese-carte>
+      <pnx-synthese-carte
+      (onAreasToggle)="loadAndStoreData($event)"
+      [inputSyntheseData]="_mapListService.geojsonData"
+      ></pnx-synthese-carte>
     </div>
     <div class="col-sm-12 col-md-5 padding-sm">
       <pnx-synthese-list

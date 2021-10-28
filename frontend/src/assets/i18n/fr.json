@@ -231,7 +231,10 @@
     "ObsStatBiogeo": "Statut biogéographique",
     "ObsBehav": "Comportement",
     "ObsSex": "Sexe",
-    "ObsLifeStep": "Stade de vie"
+    "ObsLifeStep": "Stade de vie",
+    "Map": {
+      "AreasToggleBtn": "Mailles"
+    }
   },
   "Validation": {
     "noData": "Aucune données à afficher",

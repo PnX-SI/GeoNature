@@ -130,11 +130,11 @@ export class HomeContentComponent implements OnInit {
       click: () => {
         // Open popup
         let popup = `<div style="max-height: 300px; overflow: scroll;"> `;
-        for (let i = 0; i<feature.properties.nom_vern_or_lb_nom.length; i++) {
+        for (let i = 0; i < feature.properties.observations.length; i++) {
           popup = popup + `
-          ${feature.properties.nom_vern_or_lb_nom[i]} <br>
-          <b> Observé le: </b> ${feature.properties.date_min[i]} <br>
-          <b> Par</b>:  ${feature.properties.observers[i]}<br><br>
+          ${feature.properties.observations[i].nom_vern_or_lb_nom} <br>
+          <b> Observé le: </b> ${feature.properties.observations[i].date_min} <br>
+          <b> Par</b>:  ${feature.properties.observations[i].observers}<br><br>
         `;
         }
         popup = popup + `<\div>`;

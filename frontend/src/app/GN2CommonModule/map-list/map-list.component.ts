@@ -45,8 +45,8 @@ export class MapListComponent implements OnInit, AfterViewInit {
         // observable
         this.mapListService.mapSelected.next(feature.id);
         // open popup
-        if (feature.properties.leaflet_popup) {
-          layer.bindPopup(feature.properties.leaflet_popup).openPopup();
+        if (feature.properties.observations.leaflet_popup) {
+          layer.bindPopup(feature.properties.observations.leaflet_popup).openPopup();
         }
       }
     });
