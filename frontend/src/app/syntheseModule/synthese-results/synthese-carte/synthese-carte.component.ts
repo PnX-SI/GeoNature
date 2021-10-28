@@ -76,9 +76,11 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     this.mapListService.selectedLayer.setStyle(this.selectedStyle);
   }
 
-  eventOnEachFeature(id: number, layer): void {
+  eventOnEachFeature(id, layer): void {
     // event from the map
-    this.mapListService.layerDict[id] = layer;
+    for (let id_ of id) {
+      this.mapListService.layerDict[id_] = layer;
+    }
     layer.on({
       click: (e) => {
         // toggle style
