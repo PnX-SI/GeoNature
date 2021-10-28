@@ -11,7 +11,7 @@ CHANGELOG
 * [OCCTAX] Contrôle de la cohérence des nouvelles données saisies par rapport au profil
 * [SYNTHESE] Création d'une "fiche taxon" à partir des informations décrites plus haut
 * [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
-
+* Passage à la librairie 'select2' pour les composants multiselects (@jbrieuclp)
 Note de version : 
 
 Les nouvelles fonctionnalités liés aux profiles necessite de raffraichir des vues materialisées à intervales réguliers et donc de créer une tâche planfiée (cron):
