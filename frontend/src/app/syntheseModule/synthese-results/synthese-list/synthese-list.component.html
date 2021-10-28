@@ -13,6 +13,7 @@
   [count]="mapListService.tableData.length"
   [limit]="rowNumber"
   [rowClass]="getRowClass"
+  [reorderable]="true"
   (select)="mapListService.onRowSelect($event)"
 >
   <ngx-datatable-column [maxWidth]="5">

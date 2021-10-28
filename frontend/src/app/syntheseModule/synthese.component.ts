@@ -48,7 +48,8 @@ export class SyntheseComponent implements OnInit {
           modalRef.componentInstance.queryString = this.searchService.buildQueryUrl(formatedParams);
           modalRef.componentInstance.tooManyObs = true;
         }
-        this._mapListService.geojsonData = data;
+
+        this._mapListService.geojsonData = this.simplifyGeoJson(data);
         this._mapListService.tableData = data;
         this._mapListService.loadTableData(data);
         this._mapListService.idName = 'id';
@@ -74,6 +75,25 @@ export class SyntheseComponent implements OnInit {
       );
     }
     this.firstLoad = false;
+  }
+
+  private simplifyGeoJson(geojson) {
+    let geojsonList = []
+    for (let feature of geojson.features) {
+      let item = (({ type, coordinates }) => ({ type, coordinates }))(feature);
+      item['properties'] = { 'id': [] };
+      for (let obs of Object.values(feature['properties'])) {
+        if (obs['id']) {
+          item['properties']['id'].push(obs['id']);
+        }
+      }
+      geojsonList.push(item);
+    }
+    let geoJsonData = {
+      type: 'FeatureCollection',
+      features: geojsonList,
+    }
+    return geoJsonData;
   }
 
   ngOnInit() {
