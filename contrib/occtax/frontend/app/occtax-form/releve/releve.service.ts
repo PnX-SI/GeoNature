@@ -186,7 +186,7 @@ export class OcctaxFormReleveService {
         tap((values) => this.showTime = !(JSON.stringify(values.date_min) === JSON.stringify(values.date_max))),
         //get additional fidlds from releve
         switchMap((releve) => {
-          const additionnalFieldsObservable: Observable<any>;
+          let additionnalFieldsObservable: Observable<any>;
           //if releve.id_dataset is empty, get GlobalAdditionnalFields only
           if ( releve.id_dataset === null ) {
             additionnalFieldsObservable = this.occtaxFormService.getAdditionnalFields(

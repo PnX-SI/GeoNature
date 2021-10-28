@@ -1,49 +1,58 @@
-import { Component, OnInit, Input } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { Component, OnInit, Input, OnDestroy } from "@angular/core";
+import { FormGroup, FormArray } from "@angular/forms";
+
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
 import { AppConfig } from "@geonature_config/app.config";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxFormCountingService } from "./counting.service";
+import { OcctaxFormCountingsService } from "./countings.service";
 
 @Component({
   selector: "pnx-occtax-form-counting",
   templateUrl: "./counting.component.html",
-  styleUrls: ["./counting.component.scss"]
+  styleUrls: ["./counting.component.scss"],
+  providers: [OcctaxFormCountingService]
 })
-export class OcctaxFormCountingComponent implements OnInit {
+export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
 
   public occtaxConfig = ModuleConfig;
   public appConfig = AppConfig;
   public data : any;
 
-  @Input('form') countingForm: FormGroup;
+  @Input('value') 
+  set counting(value: any) { this.occtaxFormCountingService.counting.next(value); };
 
+  form: FormGroup;
+  get additionalFieldsForm(): any[] { return this.occtaxFormCountingService.additionalFieldsForm; };
 
   constructor(
-    public fs: OcctaxFormService,
+    public occtaxFormService: OcctaxFormService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private occtaxFormCountingService: OcctaxFormCountingService,
-
+    private occtaxFormCountingsService: OcctaxFormCountingsService,
   ) { }
 
   ngOnInit() {
-    this.occtaxFormCountingService.form = this.countingForm;
-  
+    this.form = this.occtaxFormCountingService.form;
   }
 
-
-
+  ngOnDestroy() {
+    //delete elem from form.get('cor_counting_occtax')
+    const idx = (this.occtaxFormOccurrenceService.form.get('cor_counting_occtax') as FormArray).controls
+                  .findIndex(elem => elem === this.form);
+    if (idx !== -1) {
+      (this.occtaxFormOccurrenceService.form.get('cor_counting_occtax') as FormArray).removeAt(idx);
+    }
+  }
 
   taxref() {
     const taxref = this.occtaxFormOccurrenceService.taxref.getValue();
     return taxref;
   }
 
-
-
   defaultsMedia() {
-    const occtaxData = this.fs.occtaxData.getValue();
+    const occtaxData = this.occtaxFormService.occtaxData.getValue();
     const taxref = this.occtaxFormOccurrenceService.taxref.getValue();
 
     if (!(occtaxData && taxref)) {

@@ -12,7 +12,7 @@ import { BehaviorSubject, Observable, of, forkJoin, combineLatest } from "rxjs";
 import { map, filter, switchMap, tap, pairwise, retry, mergeMap, distinctUntilChanged, first, catchError } from "rxjs/operators";
 import { CommonService } from "@geonature_common/service/common.service";
 import { OcctaxFormService } from "../occtax-form.service";
-import { OcctaxFormCountingService } from "../counting/counting.service";
+import { OcctaxFormCountingsService } from "../counting/countings.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
@@ -25,15 +25,15 @@ export class OcctaxFormOccurrenceService {
   public form: FormGroup;
   public taxref: BehaviorSubject<any> = new BehaviorSubject(null);
   public occurrence: BehaviorSubject<any> = new BehaviorSubject(null);
+  // public countings: any[];
   public existProof_DATA: Array<any> = [];
   public saveWaiting: boolean = false;
   
   public data : any;
   public idDataset : number;
 
-  private globalOccAddFields: BehaviorSubject<any[]> = new BehaviorSubject([]);
-  private datasetOccAddFields: BehaviorSubject<any[]> = new BehaviorSubject([]);
   public additionalFieldsForm: any[] = [];
+  public countingAdditionalFieldsForm: any[] = [];
 
   public formFieldsStatus: any;
 
@@ -41,7 +41,7 @@ export class OcctaxFormOccurrenceService {
     private fb: FormBuilder,
     private commonService: CommonService,
     private occtaxFormService: OcctaxFormService,
-    private occtaxFormCountingService: OcctaxFormCountingService,
+    private occtaxFormCountingsService: OcctaxFormCountingsService,
     private occtaxDataService: OcctaxDataService,
     private occtaxParamS: OcctaxFormParamService,
     private occtaxTaxaListService: OcctaxTaxaListService,
@@ -89,20 +89,15 @@ export class OcctaxFormOccurrenceService {
                     //on oriente la source des données pour patcher le formulaire
                     return occurrence ? this.occurrence : this.defaultValues;
                   }),
+                  tap((occurrence) => this.occtaxFormCountingsService.countings = occurrence.cor_counting_occtax),
                   //get additional global fields from occurrence, datasaet fields are taken by occtax-form.service > occtaxData observable
-                  switchMap((occurrence): Observable<[any, [any[], any[]]]> => {
+                  switchMap((occurrence): Observable<any[]> => {
                     //observable : get occurrence & countinf filed in same array, explode for separate into double array (occ array & couting array) 
                     const $_globalFieldsObservable = this.occtaxFormService.getAdditionnalFields(
-                               ["OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"],
+                               ["OCCTAX_OCCURENCE"],
                              )
                               .pipe(
                                 catchError(() => of([])),
-                                map((fields: any[]): [any[], any[]] => {
-                                  return [
-                                    fields.filter(elem => elem.objects.map(o => o.code_object).includes("OCCTAX_OCCURENCE")),
-                                    fields.filter(elem => elem.objects.map(o => o.code_object).includes("OCCTAX_DENOMBREMENT")),
-                                  ]
-                                })
                               )
 
                     return forkJoin(
@@ -121,19 +116,13 @@ export class OcctaxFormOccurrenceService {
                   // tap(() => this.datasetOccAddFields.next([])),
                   map((data) => (((data || {}).releve || {}).properties || {}).id_dataset),
                   filter(id_dataset => id_dataset !== undefined && id_dataset !== null),
-                  switchMap((id_dataset): Observable<[any[], any[]]> => {
+                  switchMap((id_dataset): Observable<any[]> => {
                     return this.occtaxFormService.getAdditionnalFields(
-                      ["OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"],
+                      ["OCCTAX_OCCURENCE"],
                       id_dataset
                     )
                     .pipe(
                       catchError(() => of([])),
-                      map((fields: any[]): [any[], any[]] => {
-                        return [
-                          fields.filter(elem => elem.objects.map(o => o.code_object).includes("OCCTAX_OCCURENCE")),
-                          fields.filter(elem => elem.objects.map(o => o.code_object).includes("OCCTAX_DENOMBREMENT")),
-                        ]
-                      })
                     )
                   }),
                 );
@@ -145,20 +134,13 @@ export class OcctaxFormOccurrenceService {
       $_datasetSub,
     )
       .pipe(
-        tap(() => {
-          //On vide préalablement le FormArray //.clear() existe en angular 8
-          this.clearFormArray(
-            this.form.get("cor_counting_occtax") as FormArray
-          );
+        map(([[occurrence, global_additional_fields], dataset_additional_fields]) => {
+          const additional_fields = [].concat(global_additional_fields, dataset_additional_fields);
+          return [occurrence, additional_fields];
         }),
-        map(([[occurrence, [global_occ_f, global_counting_f]], [dataset_occ_f, dataset_counting_f]]) => {
-          const occ_additional_fields = [].concat(global_occ_f, dataset_occ_f);
-          const counting_additional_fields = [].concat(global_counting_f, dataset_counting_f);
-          return [occurrence, occ_additional_f, counting_additional_f];
-        }),
-        tap(([occurrence, occ_additional_f, counting_additional_f]) => {
+        tap(([occurrence, additional_fields]) => {
           //manage occ_additional_f
-          occ_additional_f.forEach(field => {
+          additional_fields.forEach(field => {
             //Formattage des dates
             if(field.type_widget == "date"){
               //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
@@ -173,44 +155,13 @@ export class OcctaxFormOccurrenceService {
             }
           })
 
-          // //manage counting_additional_f
-          // counting_additional_f.forEach(field => {
-          //   //Formattage des dates
-          //   if(field.type_widget == "date"){
-          //     //loop on counting
-          //     occurrence.cor_counting_occtax.forEach(counting => {
-          //       //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
-          //       if(typeof counting.additional_fields[field.attribut_name] !== "object"){
-          //         counting.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(counting.additional_fields[field.attribut_name]);
-          //       }
-          //     });
-          //   }
-
-          //   //set value of field (eq patchValue)
-          //   if (occurrence.additional_fields[field.attribut_name] !== undefined) {
-          //     field.value = occurrence.additional_fields[field.attribut_name];
-          //   }
-          // })
           return [occurrence, additional_fields];
         }),
-        tap(([occurrence, additional_fields]) => this.additionalFieldsForm = additional_fields),
-        //map for return occurrence data only
-        map(([occurrence, additional_fields]): any[] => occurrence),
-        tap((occurrence) => {
-          //mise en place des countingForm
-          if (
-            !occurrence.id_occurrence_occtax ||
-            !occurrence.cor_counting_occtax ||
-            occurrence.cor_counting_occtax.length === 0
-          ) {
-            //si nouvelle occurrence ou si absence de dénombrement on ajoute par defaut un form de denombrement
-            this.addCountingForm(true); //true => on patch le form avec les valeurs par defauts
-          } else {
-            occurrence.cor_counting_occtax.forEach((c, i) => {
-              this.addCountingForm(false); //false => on ne patch pas le form avec les valeurs par defauts
-            });
-          }
+        tap(([occurrence, additional_fields]) => {
+          this.additionalFieldsForm = additional_fields;
         }),
+        //map for return occurrence data only
+        map(([occurrence, additional_fields]): any => occurrence),
       )
       .subscribe((occurrence: any) => this.form.patchValue(occurrence));
 
@@ -331,15 +282,14 @@ export class OcctaxFormOccurrenceService {
                 "occurrence.id_nomenclature_behaviour"
               ) || DATA["OCC_COMPORTEMENT"],
             additional_fields: {},
+            cor_counting_occtax: [{}],
           };
         })
       );
   }
 
-  addCountingForm(patchWithDefaultValue: boolean = false): void {
-    (this.form.get("cor_counting_occtax") as FormArray).push(
-      this.occtaxFormCountingService.createForm(patchWithDefaultValue)
-    );
+  addCountingForm(form: FormGroup): void {
+    (this.form.get("cor_counting_occtax") as FormArray).push(form);
   }
 
   getCdNomenclatureById(IdNomenclature, DATA) {

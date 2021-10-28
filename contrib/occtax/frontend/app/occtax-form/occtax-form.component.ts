@@ -16,7 +16,7 @@ import { OcctaxFormReleveService } from "./releve/releve.service";
 import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
-import { OcctaxFormCountingService } from "./counting/counting.service";
+import { OcctaxFormCountingsService } from "./counting/countings.service";
 import { OcctaxFormMapService } from "./map/map.service";
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import { filter } from "rxjs/operators";
@@ -31,7 +31,7 @@ import { filter } from "rxjs/operators";
     OcctaxFormReleveService,
     OcctaxFormOccurrenceService,
     OcctaxTaxaListService,
-    OcctaxFormCountingService,
+    OcctaxFormCountingsService,
     OcctaxFormMapService,
   ],
 })

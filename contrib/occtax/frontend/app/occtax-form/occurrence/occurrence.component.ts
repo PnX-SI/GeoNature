@@ -13,6 +13,7 @@ import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
 import { AppConfig } from "@geonature_config/app.config";
 import { OcctaxFormOccurrenceService } from "./occurrence.service";
+import { OcctaxFormCountingsService } from "../counting/countings.service";
 import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { FormService } from "@geonature_common/form/form.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
@@ -60,6 +61,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   constructor(
     public fs: OcctaxFormService,
     private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    private occtaxFormCountingsService: OcctaxFormCountingsService,
     private _coreFormService: FormService,
     private _occtaxTaxaListService: OcctaxTaxaListService,
     public dialog: MatDialog
@@ -206,9 +208,8 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     );
   }
 
-  get countingControls() {
-    return (this.occurrenceForm.get("cor_counting_occtax") as FormArray)
-      .controls;
+  get countings() {
+    return this.occtaxFormCountingsService.countings || [];
   }
 
   submitOccurrenceForm() {
@@ -229,13 +230,11 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   }
 
   addCounting() {    
-    this.occtaxFormOccurrenceService.addCountingForm(true); //patchwithdefaultvalue
+    this.occtaxFormCountingsService.countings.push({});
   }
 
   removeCounting(index) {
-    (this.occurrenceForm.get("cor_counting_occtax") as FormArray).removeAt(
-      index
-    );
+    this.occtaxFormCountingsService.countings.splice(index, 1);
   }
 
   /** A la selection d'un taxon, focus sur le bouton ajouter */
