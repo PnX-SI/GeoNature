@@ -58,8 +58,8 @@ calcul de la sensibilité.
 La fonction ``get_id_nomenclature_sensitivity`` calcule le niveau de
 sensibilité en fonction de l'espèce, du type de sensibilité, de la durée
 de validité, de la période d'observation et du statut biologique.
-La fonction ``calculate_cd_diffusion_level`` permet une simple conversion
-dans le modèle de données de GeoNature.
+La fonction ``calculate_cd_diffusion_level`` calcule le niveau de diffusion. 
+Actuellement, ce calcul est une simple copie du niveau de sensibilité.
 
 Schéma gn_sensitivity
 ^^^^^^^^^^^^^^^^^^^^^
@@ -92,8 +92,9 @@ Sensibilité de l'espèce toute observation confondue
 #. Dans ``gn_sensitivity.t_sensitivity_rules`` : Changez le niveau de
    sensibilité ``id_nomenclature_sensitivity`` par celui désiré. Pour la
    valeur à entrer, voir dans ``t_nomenclature`` en filtrant avec
-   ``id_type=16``. En général l'index varie entre 65 (non sensible) et 69
-   (aucune diffusion).
+   ``id_type=ref_nomenclatures.get_id_nomenclature_type('SENSIBILITE')``. En général l'index varie entre 65 (non sensible) et 69
+   (aucune diffusion). Attention ces indices peuvent varier en fonction de 
+   votre installation.
 #. Dans ``cor_sensitivity_criteria`` : s'il y a une correspondance
    d'``id_sensitivity`` avec ``t_sensitivity_rules``, supprimez cette ligne.
 #. Lancez la commande SQL suivante :
@@ -124,7 +125,7 @@ cet ``UPDATE`` sinon le trigger ne se déclenchera pas.
 le ``WHERE`` avec un ``IN`` ainsi qu'un ``ARRAY`` contenant tous les cd_nom
 de vos espèces.
 
-Normalement, les valeurs dans la colonne
-``id_nomenclature_diffusion_level`` de la table ``gn_synthese.synthese`` ont
+Normalement, les valeurs dans les colonnes
+``id_nomenclature_diffusion_level`` et ``id_nomenclature_sensitivity`` de la table ``gn_synthese.synthese`` ont
 changé. Vous pouvez le vérifier en navigant dans le module synthèse
 puis dans les détails d'une observation de votre/vos espèce(s).
