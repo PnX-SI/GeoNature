@@ -21,10 +21,17 @@ export class GenericFormComponent implements OnInit, OnChanges, AfterViewInit, O
   @Input() parentFormControl: FormControl;
   @Input() label: string;
   @Input() class: string = "auto"; 
+
   @Input() disabled: boolean = false;
+    /**
+ * @deprecated Do not use this input
+ */
   @Input() debounceTime: number;
   @Input() multiSelect: boolean = false;
   @Input() clearable: boolean = true;
+    /**
+ * @deprecated Do not use this input
+ */
   @Input() searchBar: boolean = false;
   @Input() displayAll: boolean = false; // param to display the field 'all' in the list, default at false
   @Output() onChange = new EventEmitter<any>();

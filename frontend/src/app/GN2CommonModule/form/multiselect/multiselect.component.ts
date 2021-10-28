@@ -62,7 +62,11 @@ export class MultiSelectComponent implements OnInit {
    * options du select ?
    */
   @Input() displayAll: boolean;
+  
   /** Affiche la barre de recherche (=true). */
+    /**
+   * @deprecated Do not use this input
+   */
   @Input() searchBar: boolean;
  /** Désactive le contrôle de formulaire. */
   @Input() disabled: boolean;

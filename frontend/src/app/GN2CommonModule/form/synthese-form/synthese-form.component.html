@@ -11,7 +11,6 @@
         keyValue="id_nomenclature"
         [label]="label"
         debounceTime="500"
-        [searchBar]="searchBar"
         [disabled]="disabled"
         [displayAll]="displayAll"
         [bindAllItem]="bindAllItem"
@@ -227,7 +226,6 @@
       <div *ngFor="let area of areaFilters; let i = index;">
         {{areas}}
         <pnx-areas
-          [searchBar]="true"
           [parentFormControl]="area.control"
           [label]="area.label"
           [typeCodes]="area.type_code_array"
@@ -269,7 +267,6 @@
       keyValue="id_organisme"
       [label]="'Form.Organism' | translate"
       debounceTime="500"
-      [searchBar]="false"
       [disabled]="disabled"
     >
     </pnx-multiselect>
@@ -283,7 +280,6 @@
     <pnx-acquisition-frameworks
       [multiSelect]='true'
       [displayAll]="true"
-      [searchBar]="true"
       [parentFormControl]="formService.searchForm.controls.id_acquisition_framework"
       label="{{ 'MetaData.AcquisitionFramework' | translate}}"
     >
@@ -295,7 +291,6 @@
       [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_framework.value"
       [multiSelect]='true'
       [displayAll]="true"
-      [searchBar]="true"
       [parentFormControl]="formService.searchForm.controls.id_dataset"
       label="{{ 'MetaData.Datasets' | translate}}"
     >
