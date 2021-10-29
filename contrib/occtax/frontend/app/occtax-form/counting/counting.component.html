@@ -36,7 +36,10 @@
 
 <div class="row">
 
-  <div *ngIf="occtaxConfig.form_fields.count_min" class="col-3">
+  <div 
+    *ngIf="occtaxConfig.form_fields.count_min" 
+    class="col-3"
+  >
     <small> {{ 'Counting.NumberMin' | translate }} </small>
     <input
       class="form-control form-control-sm"
@@ -47,7 +50,10 @@
     >
   </div>
 
-  <div *ngIf="occtaxConfig.form_fields.count_max" class="col-3">
+  <div 
+    *ngIf="occtaxConfig.form_fields.count_max" 
+    class="col-3"
+  >
     <small> {{ 'Counting.NumberMax' | translate }} </small>
     <input
       class="form-control form-control-sm"
@@ -115,7 +121,11 @@
 </div>
 
 <div class="row">
-  <div id='occurrence-medias' *ngIf="occtaxConfig.ENABLE_MEDIAS" class="col-sm-12">
+  <div 
+    id='occurrence-medias' 
+    *ngIf="occtaxConfig.ENABLE_MEDIAS" 
+    class="col-sm-12"
+  >
 
     <h6 style="margin-top: 15px;">
       <span
