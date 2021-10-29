@@ -8,10 +8,9 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { CommonService } from "@geonature_common/service/common.service";
-import { DataFormService } from "@geonature_common/form/data-form.service";
+import {DataFormService} from "@geonature_common/form/data-form.service"
 
 import { OcctaxDataService } from "../services/occtax-data.service";
-
 
 @Injectable()
 export class OcctaxFormService {
@@ -33,6 +32,7 @@ export class OcctaxFormService {
   public datasetCountingAddFields: Array<any>= [];
   public idTaxonList: number;
   public currentTab: "releve" | "taxons";
+
 
 
 
@@ -192,5 +192,7 @@ export class OcctaxFormService {
 
       return inter;
   }
+
+
 
 }

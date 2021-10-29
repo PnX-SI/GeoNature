@@ -1,6 +1,6 @@
 import { Injectable} from "@angular/core";
-import { Observable, combineLatest, BehaviorSubject } from 'rxjs';
-import { catchError, map, filter, switchMap, tap } from 'rxjs/operators';
+import { Observable, combineLatest, BehaviorSubject, of } from 'rxjs';
+import { catchError, map, filter, switchMap } from 'rxjs/operators';
 
 import { OcctaxFormService } from "../occtax-form.service";
 

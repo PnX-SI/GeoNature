@@ -125,7 +125,7 @@ def install_packaged_gn_module(module_path, module_code, build):
         module_path, module_code.lower()
     )
 
-    install_frontend_dependencies(module_path)
+    install_frontend_dependencies(os.path.abspath(module_path))
     # generation du fichier tsconfig.app.json
     tsconfig_app_templating(app=current_app)
     # generation du routing du frontend

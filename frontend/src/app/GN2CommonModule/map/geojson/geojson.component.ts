@@ -36,7 +36,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
   /** Observable pour retourner les données geojson passées au composant */
   public currentGeoJson$: Observable<L.GeoJSON> = this.geojsonCharged.asObservable();
 
-  constructor(public mapservice: MapService) {}
+  constructor(public mapservice: MapService) { }
 
   ngOnInit() {
     this.map = this.mapservice.map;
@@ -52,12 +52,11 @@ export class GeojsonComponent implements OnInit, OnChanges {
         return;
       }
 
-      let bounds = curLayerGroup.getBounds();
+      const bounds = curLayerGroup.getBounds();
       if (!Object.keys(bounds).length) {
         return;
-      }
-
-      map.fitBounds(curLayerGroup.getBounds());
+      }      
+      map.fitBounds(bounds);
     }, 200);
   }
 
@@ -72,6 +71,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
     this.mapservice.layerGroup = new L.FeatureGroup();
     this.mapservice.map.addLayer(this.mapservice.layerGroup);
     this.mapservice.layerGroup.addLayer(this.currentGeojson);
+
     if (zoom) {
       this.zoom(this.mapservice.layerGroup);
     }

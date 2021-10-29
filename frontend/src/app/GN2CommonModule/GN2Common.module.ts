@@ -25,7 +25,9 @@ import {
   MatTabsModule,
   MatToolbarModule,
   MatTooltipModule,
+  MAT_HAMMER_OPTIONS
 } from '@angular/material';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
@@ -34,6 +36,7 @@ import 'rxjs/Rx';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AutoCompleteModule } from 'primeng/primeng';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { TreeModule } from 'angular-tree-component';
 
 // Components
@@ -137,6 +140,7 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
     NgxMatSelectSearchModule,
     ReactiveFormsModule,
     NgxDatatableModule,
+    NgSelectModule,
     RouterModule,
     TranslateModule.forChild(),
     TreeModule,
@@ -207,6 +211,10 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
     NgbDatePeriodParserFormatter,
     SyntheseDataService,
     TranslateService,
+    {
+      provide : MAT_HAMMER_OPTIONS,
+      useValue: { cssProps: { userSelect: true } }
+    } // change tooltip select behavior see https://github.com/angular/components/issues/7097
   ],
   entryComponents: [
     ConfirmationDialog,
@@ -260,6 +268,7 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
     MatListModule,
     MatMenuModule,
     MatPaginatorModule,
+    NgSelectModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatSelectModule,

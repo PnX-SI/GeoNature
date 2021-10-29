@@ -8,8 +8,7 @@
       codeNomenclatureType="OBJ_DENBR"
       [parentFormControl]="form.get('id_nomenclature_obj_count')"
       [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne"
-      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn"
-    >
+      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
     </pnx-nomenclature>
   </div>
   <div
@@ -22,8 +21,7 @@
       codeNomenclatureType="TYP_DENBR"
       [parentFormControl]="form.get('id_nomenclature_type_count')"
       [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne"
-      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn"
-    >
+      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
     </pnx-nomenclature>
   </div>
 
@@ -38,10 +36,7 @@
 
 <div class="row">
 
-  <div
-    *ngIf="occtaxConfig.form_fields.count_min"
-    class="col-3"
-  >
+  <div *ngIf="occtaxConfig.form_fields.count_min" class="col-3">
     <small> {{ 'Counting.NumberMin' | translate }} </small>
     <input
       class="form-control form-control-sm"
@@ -52,10 +47,7 @@
     >
   </div>
 
-  <div
-    *ngIf="occtaxConfig.form_fields.count_max"
-    class="col-3"
-  >
+  <div *ngIf="occtaxConfig.form_fields.count_max" class="col-3">
     <small> {{ 'Counting.NumberMax' | translate }} </small>
     <input
       class="form-control form-control-sm"
@@ -82,8 +74,7 @@
       codeNomenclatureType="STADE_VIE"
       [parentFormControl]="form.get('id_nomenclature_life_stage')"
       [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne"
-      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn"
-    >
+      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
     </pnx-nomenclature>
     <small
       *ngIf="form.get('id_nomenclature_life_stage').hasError('required') && form.get('id_nomenclature_life_stage').touched"
@@ -102,8 +93,7 @@
       codeNomenclatureType="SEXE"
       [parentFormControl]="form.get('id_nomenclature_sex')"
       [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne"
-      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn"
-    >
+      [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
     </pnx-nomenclature>
     <small
       *ngIf="form.get('id_nomenclature_sex').hasError('required') && form.get('id_nomenclature_sex').touched"
@@ -125,11 +115,7 @@
 </div>
 
 <div class="row">
-  <div
-    id='occurrence-medias'
-    *ngIf="occtaxConfig.ENABLE_MEDIAS"
-    class="col-sm-12"
-  >
+  <div id='occurrence-medias' *ngIf="occtaxConfig.ENABLE_MEDIAS" class="col-sm-12">
 
     <h6 style="margin-top: 15px;">
       <span
@@ -146,9 +132,8 @@
       [sizeMax]="appConfig.MEDIAS.MEDIAS_SIZE_MAX"
       [default]="defaultsMedia()"
       [details]="occtaxConfig.MEDIA_FIELDS_DETAILS"
-      [disabled]="!taxref()"
+      [disabled]="!taxref"
       disabledTxt="Veuillez choisir un taxon avant de renseigner les médias"
     ></pnx-medias>
   </div>
-
 </div>

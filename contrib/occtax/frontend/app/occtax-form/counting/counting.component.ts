@@ -1,5 +1,6 @@
-import { Component, OnInit, Input, OnDestroy } from "@angular/core";
+import { Component, OnInit, Input, OnDestroy, Output, EventEmitter  } from "@angular/core";
 import { FormGroup, FormArray } from "@angular/forms";
+import { Subscription } from "rxjs";
 
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
@@ -22,6 +23,8 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
 
   @Input('value') 
   set counting(value: any) { this.occtaxFormCountingService.counting.next(value); };
+  public sub: Subscription
+  @Output() lifeStageChange = new EventEmitter();
 
   form: FormGroup;
   get additionalFieldsForm(): any[] { return this.occtaxFormCountingService.additionalFieldsForm; };
@@ -35,6 +38,11 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.form = this.occtaxFormCountingService.form;
+    this.sub = this.form.get("id_nomenclature_life_stage").valueChanges
+      .filter(idNomenclatureLifeStage => idNomenclatureLifeStage)
+      .subscribe(idNomenclatureLifeStage => {      
+        this.lifeStageChange.emit(idNomenclatureLifeStage);
+      });
   }
 
   ngOnDestroy() {
@@ -46,7 +54,7 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
     }
   }
 
-  taxref() {
+  get taxref() {
     const taxref = this.occtaxFormOccurrenceService.taxref.getValue();
     return taxref;
   }

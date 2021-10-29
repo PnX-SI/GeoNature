@@ -2,6 +2,51 @@
 CHANGELOG
 =========
 
+2.9.0 (unreleased)
+------------------
+
+**🚀 Nouveautés**
+
+* Construction d'une fiche d'identité (profil) par taxon grâce aux observations présente en base de données (altitude min/max, distribution spatiale, date de premiere/dernière observation, nombre de données valides, phénologie)
+* [OCCTAX] Contrôle de la cohérence des nouvelles données saisies par rapport au profil
+* [SYNTHESE] Création d'une "fiche taxon" à partir des informations décrites plus haut
+* [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
+* Passage à la librairie 'select2' pour les composants multiselects (@jbrieuclp)
+
+[DEV]
+* Factorisation du composant "pnx-municipality" avec "pnx-area" 
+
+Note de version : 
+
+Si vous avez surcouché le paramètre `AREA_FILTERS` de la section `[SYNTHESE]`, veuillez remplacer le `id_type` par le `type_code` (voir `ref_geo.bib_areas_types`)
+::
+
+    AREA_FILTERS = [
+        { label = "Communes", id_type = 25 }
+    ]
+devient 
+
+::
+
+    AREA_FILTERS = [
+        { label = "Communes", type_code = "COM" }
+    ]
+
+Les nouvelles fonctionnalités liés aux profiles necessite de raffraichir des vues materialisées à intervales réguliers et donc de créer une tâche planfiée (cron):
+
+::
+
+      sudo su postgres
+      crontab -e
+
+Ajouter la ligne suivante en prenant changeant <MY_DB_NAME> par le nom de votre base de donnée GeoNature :
+
+::
+
+    0 * * * * psql -d <MY_DB_NAME>   -c "SELECT gn_profiles.refresh_profiles()"
+
+Cet exemple lance la tâche toute les nuits à minuit. Pour une autre fréquence voir la syntaxe cron : https://crontab.guru/
+
 2.8.1 (2021-10-17)
 ------------------
 
@@ -101,6 +146,9 @@ CHANGELOG
         ProxyPass http://127.0.0.1:8000/geonature/api
         ProxyPassReverse  http://127.0.0.1:8000/geonature/api
     </Location>
+
+
+  Pensez à recharger Apache si vous êtes amené à en changer la configuration : ``sudo systemctl reload apache2``
 
 * Passage à Alembic :
 

@@ -1,12 +1,7 @@
-<pnx-multiselect
-  [values]="municipalities"
-  [parentFormControl]="parentFormControl"
-  keyLabel="nom_com_dept"
-  keyValue="insee_com"
-  [label]="'Geo.Municipalities' | translate"
-  debounceTime="500"
-  [searchBar]="searchBar"
-  (onSearch)="refreshMunicipalities($event)"
-  [disabled]="disabled"
+<pnx-areas
+[parentFormControl]="parentFormControl"
+[label]="'Geo.Municipalities' | translate"
+[typeCodes]="['COM']"
+[disabled]="disabled"
 >
-</pnx-multiselect>
+</pnx-areas>

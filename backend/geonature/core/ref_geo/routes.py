@@ -1,4 +1,5 @@
 from flask import Blueprint, request, current_app
+from flask.json import jsonify
 from sqlalchemy.sql import text
 
 from geonature.utils.env import DB
@@ -22,13 +23,9 @@ def getGeoInfo():
         """SELECT (ref_geo.fct_get_area_intersection(
         st_setsrid(ST_GeomFromGeoJSON(:geom),4326), :id_type)).*"""
     )
-    try:
-        result = DB.engine.execute(
-            sql, geom=str(data["geometry"]), id_type=data.get("id_type", None),
-        )
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    result = DB.engine.execute(
+        sql, geom=str(data["geometry"]), id_type=data.get("id_type", None),
+    )
 
     municipality = []
     for row in result:
@@ -41,11 +38,7 @@ def getGeoInfo():
         st_setsrid(ST_GeomFromGeoJSON(:geom),4326))).*
         """
     )
-    try:
-        result = DB.engine.execute(sql, geom=str(data["geometry"]))
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    result = DB.engine.execute(sql, geom=str(data["geometry"]))
     alt = {}
     for row in result:
         alt = {"altitude_min": row[0], "altitude_max": row[1]}
@@ -68,11 +61,7 @@ def getaltitide():
         st_setsrid(ST_GeomFromGeoJSON(:geom),4326))).*
         """
     )
-    try:
-        result = DB.engine.execute(sql, geom=str(data["geometry"]))
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    result = DB.engine.execute(sql, geom=str(data["geometry"]))
     alt = {}
     for row in result:
         alt = {"altitude_min": row[0], "altitude_max": row[1]}
@@ -100,11 +89,7 @@ def getAreasIntersection():
         st_setsrid(ST_GeomFromGeoJSON(:geom),4326),:type)).*"""
     )
 
-    try:
-        result = DB.engine.execute(sql, geom=str(data["geometry"]), type=id_type)
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    result = DB.engine.execute(sql, geom=str(data["geometry"]), type=id_type)
 
     areas = []
     for row in result:
@@ -113,13 +98,9 @@ def getAreasIntersection():
         )
 
     bibtypesliste = [a["id_type"] for a in areas]
-    try:
-        bibareatype = (
-            DB.session.query(BibAreasTypes).filter(BibAreasTypes.id_type.in_(bibtypesliste)).all()
-        )
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    bibareatype = (
+        DB.session.query(BibAreasTypes).filter(BibAreasTypes.id_type.in_(bibtypesliste)).all()
+    )
     data = {}
     for b in bibareatype:
         data[b.id_type] = b.as_dict(fields=("type_name", "type_code"))
@@ -148,7 +129,6 @@ def get_municipalities():
 
 
 @routes.route("/areas", methods=["GET"])
-@json_resp
 def get_areas():
     """
         Return the areas of ref_geo.l_areas
@@ -178,13 +158,17 @@ def get_areas():
     if "id_type" in params:
         q = q.filter(LAreas.id_type.in_(params["id_type"]))
 
+    if "type_code" in params:
+        q = q.join(BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type)
+        q = q.filter(BibAreasTypes.type_code.in_(params["type_code"]))
+
     if "area_name" in params:
         q = q.filter(LAreas.area_name.ilike("%{}%".format(params.get("area_name")[0])))
 
     limit = int(params.get("limit")[0]) if params.get("limit") else 100
 
     data = q.limit(limit)
-    return [d.as_dict() for d in data]
+    return jsonify([d.as_dict() for d in data])
 
 
 @routes.route("/area_size", methods=["Post"])
