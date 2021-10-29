@@ -585,24 +585,16 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
     )
     acquisition_framework_name = DB.Column(DB.Unicode(255))
     acquisition_framework_desc = DB.Column(DB.Unicode)
-    id_nomenclature_territorial_level = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("NIVEAU_TERRITORIAL"),
-    )
     territory_desc = DB.Column(DB.Unicode)
     keywords = DB.Column(DB.Unicode)
-    id_nomenclature_financing_type = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("TYPE_FINANCEMENT"),
-    )
     target_description = DB.Column(DB.Unicode)
     ecologic_or_geologic_target = DB.Column(DB.Unicode)
     acquisition_framework_parent_id = DB.Column(DB.Integer)
     is_parent = DB.Column(DB.Boolean)
     opened = DB.Column(DB.Boolean, default=True)
+
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    creator = DB.relationship(User, foreign_keys=[id_digitizer], lazy="joined")  # = digitizer
 
     acquisition_framework_start_date = DB.Column(DB.Date, default=datetime.datetime.utcnow)
     acquisition_framework_end_date = DB.Column(DB.Date)
@@ -611,17 +603,24 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
     meta_update_date = DB.Column(DB.DateTime)
     initial_closing_date = DB.Column(DB.DateTime)
 
-    creator = DB.relationship(User, lazy="joined")  # = digitizer
+    id_nomenclature_territorial_level = DB.Column(
+        DB.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
+        default=lambda: TNomenclatures.get_default_nomenclature("NIVEAU_TERRITORIAL"))
     nomenclature_territorial_level = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_territorial_level),
-    )
+        foreign_keys=[id_nomenclature_territorial_level],
+        lazy='joined')
+
+    id_nomenclature_financing_type = DB.Column(
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=lambda: TNomenclatures.get_default_nomenclature("TYPE_FINANCEMENT"))
     nomenclature_financing_type = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_financing_type),
-    )
+        foreign_keys=[id_nomenclature_financing_type],
+        lazy='joined')
+
     cor_af_actor = relationship(
         CorAcquisitionFrameworkActor,
         lazy="joined",
@@ -788,7 +787,34 @@ class TDatasetDetails(TDatasets):
         TNomenclatures,
         foreign_keys=[TDatasets.id_nomenclature_data_type],
     )
-    dataset_objectif = DB.relationship(
+    acquisition_framework = relationship(TAcquisitionFramework, lazy='select',
+                                         backref=DB.backref('datasets', lazy='select', uselist=True))
+    dataset_name = DB.Column(DB.Unicode)
+    dataset_shortname = DB.Column(DB.Unicode)
+    dataset_desc = DB.Column(DB.Unicode)
+    keywords = DB.Column(DB.Unicode)
+    marine_domain = DB.Column(DB.Boolean)
+    terrestrial_domain = DB.Column(DB.Boolean)
+    bbox_west = DB.Column(DB.Float)
+    bbox_east = DB.Column(DB.Float)
+    bbox_south = DB.Column(DB.Float)
+    bbox_north = DB.Column(DB.Float)
+
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+    active = DB.Column(DB.Boolean, default=True)
+    validable = DB.Column(DB.Boolean)
+
+    id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    creator = DB.relationship(User, foreign_keys=[id_digitizer], lazy="joined")  # = digitizer
+
+    id_taxa_list = DB.Column(DB.Integer)
+
+    id_nomenclature_data_type = DB.Column(
+        DB.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
+        default=lambda: TNomenclatures.get_default_nomenclature("DATA_TYP"))
+    nomenclature_data_type = DB.relationship(
         TNomenclatures,
         foreign_keys=[TDatasets.id_nomenclature_dataset_objectif],
     )
@@ -815,9 +841,9 @@ class TDatasetDetails(TDatasets):
 
 
 @serializable
-class TAcquisitionFrameworkDetails(TAcquisitionFramework):
+class TDatasetDetails(TDatasets):
     """
-    Class which extends TAcquisitionFramework with nomenclatures relationships
+    Class which extends TDatasets with nomenclatures relationships
     """
     nomenclature_territorial_level = DB.relationship(
         TNomenclatures,
