@@ -220,7 +220,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     }
   }
 
-
   resetOccurrenceForm() {
     this.occtaxFormOccurrenceService.reset();
   }

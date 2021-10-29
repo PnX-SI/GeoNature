@@ -390,43 +390,54 @@
 
 <pnx-occtax-profiles *ngIf="appConfig.FRONTEND.ENABLE_PROFILES"></pnx-occtax-profiles>
 
-<ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence|async); else modifButton">
-  <button 
-    mat-raised-button id="add-occ" 
-    class="button-success uppercase" 
-    matTooltip="Enregistrer ce taxon"
-    [disabled]="occtaxFormOccurrenceService.form.invalid" 
-    (click)="submitOccurrenceForm()"
-  >
-    <mat-spinner 
-      *ngIf="occtaxFormOccurrenceService.saveWaiting" 
-      diameter="25" 
-      strokeWidth="2"
+<div class="bloc-button">
+  <ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence|async); else modifButton">
+    <button 
+      mat-raised-button
+      class="button-success uppercase" 
+      matTooltip="Enregistrer ce taxon"
+      [disabled]="occtaxFormOccurrenceService.form.invalid" 
+      (click)="submitOccurrenceForm()"
     >
-    </mat-spinner>
-    Enregistrer ce taxon
-    <mat-icon style="vertical-align: middle;">save</mat-icon>
-  </button>
-</ng-container>
-<ng-template #modifButton>
-  <button 
-    id="add-occ" 
-    class="button-success uppercase add-occ" 
-    mat-raised-button
-    matTooltip="Modifier et enregistrer ce taxon" 
-    [disabled]="occtaxFormOccurrenceService.form.invalid"
-    (click)="submitOccurrenceForm()"
-  >
-    <mat-spinner 
-      *ngIf="occtaxFormOccurrenceService.saveWaiting" 
-      diameter="25" 
-      strokeWidth="2"
+      <mat-spinner 
+        *ngIf="occtaxFormOccurrenceService.saveWaiting" 
+        diameter="25" 
+        strokeWidth="2"
+      >
+      </mat-spinner>
+      Enregistrer ce taxon
+      <mat-icon style="vertical-align: middle;">save</mat-icon>
+    </button>
+  </ng-container>
+  <ng-template #modifButton>
+    <button 
+      class="uppercase" 
+      style="margin-right: 20px; background-color: #f88e86;"
+      color="warn"
+      mat-raised-button
+      matTooltip="Annuler les modifications sur ce taxon"
+      (click)="resetOccurrenceForm()"
     >
-    </mat-spinner>
-    Modifier ce taxon
-    <mat-icon style="vertical-align: middle;">save</mat-icon>
-  </button>
-</ng-template>
+      Annuler
+    </button>
+    <button 
+      class="button-success uppercase" 
+      mat-raised-button
+      matTooltip="Modifier et enregistrer ce taxon" 
+      [disabled]="occtaxFormOccurrenceService.form.invalid"
+      (click)="submitOccurrenceForm()"
+    >
+      <mat-spinner 
+        *ngIf="occtaxFormOccurrenceService.saveWaiting" 
+        diameter="25" 
+        strokeWidth="2"
+      >
+      </mat-spinner>
+      Modifier ce taxon
+      <mat-icon style="vertical-align: middle;">save</mat-icon>
+    </button>
+  </ng-template>
+</div>
 
 <div class="text-center" style="margin-top: 10px;">
   <!-- <button 
