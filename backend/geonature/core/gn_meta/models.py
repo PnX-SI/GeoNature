@@ -305,94 +305,287 @@ class TBibliographicReference(CruvedHelper):
 
 
 @serializable
+class TAcquisitionFramework(CruvedHelper):
+    __tablename__ = "t_acquisition_frameworks"
+    __table_args__ = {"schema": "gn_meta"}
+    id_acquisition_framework = DB.Column(DB.Integer, primary_key=True)
+    unique_acquisition_framework_id = DB.Column(
+        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
+    )
+    acquisition_framework_name = DB.Column(DB.Unicode)
+    acquisition_framework_desc = DB.Column(DB.Unicode)
+    territory_desc = DB.Column(DB.Unicode)
+    keywords = DB.Column(DB.Unicode)
+    target_description = DB.Column(DB.Unicode)
+    ecologic_or_geologic_target = DB.Column(DB.Unicode)
+    acquisition_framework_parent_id = DB.Column(DB.Integer)
+    is_parent = DB.Column(DB.Boolean)
+    opened = DB.Column(DB.Boolean, default=True)
+
+    id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    creator = DB.relationship(User, foreign_keys=[id_digitizer], lazy="joined")  # = digitizer
+
+    acquisition_framework_start_date = DB.Column(DB.Date, default=datetime.datetime.utcnow)
+    acquisition_framework_end_date = DB.Column(DB.Date)
+
+    meta_create_date = DB.Column(DB.DateTime)
+    meta_update_date = DB.Column(DB.DateTime)
+    initial_closing_date = DB.Column(DB.DateTime)
+
+    id_nomenclature_territorial_level = DB.Column(
+        DB.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
+        default=lambda: TNomenclatures.get_default_nomenclature("NIVEAU_TERRITORIAL"))
+    nomenclature_territorial_level = DB.relationship(
+        TNomenclatures,
+        foreign_keys=[id_nomenclature_territorial_level],
+        lazy='joined')
+
+    id_nomenclature_financing_type = DB.Column(
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=lambda: TNomenclatures.get_default_nomenclature("TYPE_FINANCEMENT"))
+    nomenclature_financing_type = DB.relationship(
+        TNomenclatures,
+        foreign_keys=[id_nomenclature_financing_type],
+        lazy='joined')
+
+    cor_af_actor = relationship(
+        CorAcquisitionFrameworkActor,
+        lazy="joined",
+        #cascade="save-update, merge, delete, delete-orphan",
+        cascade="all,delete-orphan",
+        uselist=True,
+        backref=DB.backref("actor_af", lazy="select")
+    )
+
+    cor_objectifs = DB.relationship(
+        TNomenclatures,
+        lazy="select",
+        secondary=CorAcquisitionFrameworkObjectif.__table__,
+        primaryjoin=(
+            CorAcquisitionFrameworkObjectif.id_acquisition_framework == id_acquisition_framework
+        ),
+        secondaryjoin=(
+            CorAcquisitionFrameworkObjectif.id_nomenclature_objectif
+            == TNomenclatures.id_nomenclature
+        ),
+        foreign_keys=[
+            CorAcquisitionFrameworkObjectif.id_acquisition_framework,
+            CorAcquisitionFrameworkObjectif.id_nomenclature_objectif,
+        ],
+        backref=DB.backref("objectif_af", lazy="select")
+    )
+
+    cor_volets_sinp = DB.relationship(
+        TNomenclatures,
+        lazy="select",
+        secondary=CorAcquisitionFrameworkVoletSINP.__table__,
+        primaryjoin=(CorAcquisitionFrameworkVoletSINP.id_acquisition_framework == id_acquisition_framework),
+        secondaryjoin=(CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp == TNomenclatures.id_nomenclature),
+        foreign_keys=[
+            CorAcquisitionFrameworkVoletSINP.id_acquisition_framework,
+            CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp,
+        ],
+        backref=DB.backref("volet_sinp_af", lazy="select")
+    )
+
+    cor_territories = DB.relationship(
+        TNomenclatures,
+        lazy="select",
+        secondary=CorAcquisitionFrameworkTerritory.__table__,
+        primaryjoin=(CorAcquisitionFrameworkTerritory.id_acquisition_framework == id_acquisition_framework),
+        secondaryjoin=(CorAcquisitionFrameworkTerritory.id_nomenclature_territory == TNomenclatures.id_nomenclature),
+        foreign_keys=[
+            CorAcquisitionFrameworkTerritory.id_acquisition_framework,
+            CorAcquisitionFrameworkTerritory.id_nomenclature_territory,
+        ],
+        backref=DB.backref("territory_af", lazy="select")
+    )
+
+    bibliographical_references = DB.relationship(
+        "TBibliographicReference",
+        lazy="select",
+        cascade="all,delete-orphan",
+        uselist=True,
+        backref=DB.backref("acquisition_framework", lazy="select"),
+    )
+
+    t_datasets = DB.relationship(
+        "TDatasets",
+        lazy="select",
+        cascade="all,delete-orphan",
+        uselist=True,
+    )
+
+    def get_object_cruved(
+        self, info_role, user_cruved
+    ):
+        """
+        Return the user's cruved for a Model instance.
+        Use in the map-list interface to allow or not an action
+        params:
+            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
+            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
+            - id_role: identifiant de la personne qui demande la route
+            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
+            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
+
+        Return: dict {'C': True, 'R': False ...}
+        """
+        return {
+            action: self.user_is_allowed_to(self.cor_af_actor, info_role, level)
+            for action, level in user_cruved.items()
+        }
+
+    @staticmethod
+    def get_id(uuid_af):
+        """
+            return the acquisition framework's id
+            from its UUID if exist or None
+        """
+        a_f = (
+            DB.session.query(TAcquisitionFramework.id_acquisition_framework)
+            .filter(TAcquisitionFramework.unique_acquisition_framework_id == uuid_af)
+            .first()
+        )
+        if a_f:
+            return a_f[0]
+        return a_f
+
+    @staticmethod
+    def get_user_af(user, only_query=False, only_user=False):
+        """get the af(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
+            param: 
+              - user from TRole model
+              - only_query: boolean (return the query not the id_datasets allowed if true)
+              - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
+
+            return: a list of id_dataset or a query"""
+        q = DB.session.query(TAcquisitionFramework.id_acquisition_framework).outerjoin(
+            CorAcquisitionFrameworkActor,
+            CorAcquisitionFrameworkActor.id_acquisition_framework
+            == TAcquisitionFramework.id_acquisition_framework,
+        )
+        if user.id_organisme is None or only_user:
+            q = q.filter(
+                or_(
+                    CorAcquisitionFrameworkActor.id_role == user.id_role,
+                    TAcquisitionFramework.id_digitizer == user.id_role,
+                )
+            )
+        else:
+            q = q.filter(
+                or_(
+                    CorAcquisitionFrameworkActor.id_organism == user.id_organisme,
+                    CorAcquisitionFrameworkActor.id_role == user.id_role,
+                    TAcquisitionFramework.id_digitizer == user.id_role,
+                )
+            )
+        if only_query:
+            return q
+        data = q.all()
+        return list(set([d.id_acquisition_framework for d in data]))
+
+
+@serializable
+class TAcquisitionFrameworkDetails(TAcquisitionFramework):
+    """
+    Class which extends TAcquisitionFramework with nomenclatures relationships
+    """
+    pass
+
+
+@serializable
 class TDatasets(CruvedHelper):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
     id_dataset = DB.Column(DB.Integer, primary_key=True)
     unique_dataset_id = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
     id_acquisition_framework = DB.Column(
-        DB.Integer, ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
+        DB.Integer, ForeignKey(TAcquisitionFramework.id_acquisition_framework),
     )
+    acquisition_framework = relationship(TAcquisitionFramework, lazy='select',
+                                         backref=DB.backref('datasets', lazy='select', uselist=True))
     dataset_name = DB.Column(DB.Unicode)
     dataset_shortname = DB.Column(DB.Unicode)
     dataset_desc = DB.Column(DB.Unicode)
-    id_nomenclature_data_type = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("DATA_TYP"),
-    )
     keywords = DB.Column(DB.Unicode)
     marine_domain = DB.Column(DB.Boolean)
     terrestrial_domain = DB.Column(DB.Boolean)
-    id_nomenclature_dataset_objectif = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("JDD_OBJECTIFS"),
-    )
     bbox_west = DB.Column(DB.Float)
     bbox_east = DB.Column(DB.Float)
     bbox_south = DB.Column(DB.Float)
     bbox_north = DB.Column(DB.Float)
-    id_nomenclature_collecting_method = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("METHO_RECUEIL"),
-    )
-    id_nomenclature_data_origin = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("DS_PUBLIQUE"),
-    )
-    id_nomenclature_source_status = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("STATUT_SOURCE"),
-    )
-    id_nomenclature_resource_type = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("RESOURCE_TYP"),
-    )
+
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
-    id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
-    id_taxa_list = DB.Column(DB.Integer)
-    modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
-    creator = DB.relationship(User, lazy="joined")  # = digitizer
+    id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    creator = DB.relationship(User, foreign_keys=[id_digitizer], lazy="joined")  # = digitizer
+
+    id_taxa_list = DB.Column(DB.Integer)
+
+    id_nomenclature_data_type = DB.Column(
+        DB.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
+        default=lambda: TNomenclatures.get_default_nomenclature("DATA_TYP"))
     nomenclature_data_type = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_data_type),
-    )
+        foreign_keys=[id_nomenclature_data_type],
+        lazy="joined")
+
+    id_nomenclature_dataset_objectif = DB.Column(
+        DB.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
+        default=lambda: TNomenclatures.get_default_nomenclature("JDD_OBJECTIFS"))
     nomenclature_dataset_objectif = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_dataset_objectif),
-    )
+        foreign_keys=[id_nomenclature_dataset_objectif],
+        lazy="joined")
+
+    id_nomenclature_collecting_method = DB.Column(
+        DB.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
+        default=lambda: TNomenclatures.get_default_nomenclature("METHO_RECUEIL"))
     nomenclature_collecting_method = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == id_nomenclature_collecting_method
-        ),
-    )
+        foreign_keys=[id_nomenclature_collecting_method],
+        lazy="joined")
+
+    id_nomenclature_data_origin = DB.Column(
+        DB.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
+        default=lambda: TNomenclatures.get_default_nomenclature("DS_PUBLIQUE"))
     nomenclature_data_origin = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_data_origin),
-    )
+        foreign_keys=[id_nomenclature_data_origin],
+        lazy="select")
+
+    id_nomenclature_source_status = DB.Column(
+        DB.Integer,
+        ForeignKey(TNomenclatures.id_nomenclature),
+        default=lambda: TNomenclatures.get_default_nomenclature("STATUT_SOURCE"))
     nomenclature_source_status = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_source_status),
-    )
+        foreign_keys=[id_nomenclature_source_status],
+        lazy="select")
+
+    id_nomenclature_resource_type = DB.Column(
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=lambda: TNomenclatures.get_default_nomenclature("RESOURCE_TYP"))
     nomenclature_resource_type = DB.relationship(
         TNomenclatures,
-        lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_resource_type),
+        foreign_keys=[id_nomenclature_resource_type],
+        lazy="select")
+
+    modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
+    additional_fields = DB.relationship(
+        "TAdditionalFields",
+        secondary=cor_field_dataset
     )
 
     cor_territories = DB.relationship(
@@ -494,255 +687,8 @@ class TDatasets(CruvedHelper):
 
 
 @serializable
-class TAcquisitionFramework(CruvedHelper):
-    __tablename__ = "t_acquisition_frameworks"
-    __table_args__ = {"schema": "gn_meta"}
-    id_acquisition_framework = DB.Column(DB.Integer, primary_key=True)
-    unique_acquisition_framework_id = DB.Column(
-        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
-    )
-    acquisition_framework_name = DB.Column(DB.Unicode)
-    acquisition_framework_desc = DB.Column(DB.Unicode)
-    id_nomenclature_territorial_level = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("NIVEAU_TERRITORIAL"),
-    )
-    territory_desc = DB.Column(DB.Unicode)
-    keywords = DB.Column(DB.Unicode)
-    id_nomenclature_financing_type = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("TYPE_FINANCEMENT"),
-    )
-    target_description = DB.Column(DB.Unicode)
-    ecologic_or_geologic_target = DB.Column(DB.Unicode)
-    acquisition_framework_parent_id = DB.Column(DB.Integer)
-    is_parent = DB.Column(DB.Boolean)
-    opened = DB.Column(DB.Boolean, default=True)
-    id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
-
-    acquisition_framework_start_date = DB.Column(DB.Date, default=datetime.datetime.utcnow)
-    acquisition_framework_end_date = DB.Column(DB.Date)
-
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
-    initial_closing_date = DB.Column(DB.DateTime)
-
-    creator = DB.relationship(User, lazy="joined")  # = digitizer
-    nomenclature_territorial_level = DB.relationship(
-        TNomenclatures,
-        lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_territorial_level),
-    )
-    nomenclature_financing_type = DB.relationship(
-        TNomenclatures,
-        lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_financing_type),
-    )
-    cor_af_actor = relationship(
-        CorAcquisitionFrameworkActor,
-        lazy="joined",
-        #cascade="save-update, merge, delete, delete-orphan",
-        cascade="all,delete-orphan",
-        uselist=True,
-        backref=DB.backref("actor_af", lazy="select")
-    )
-
-    cor_objectifs = DB.relationship(
-        TNomenclatures,
-        lazy="select",
-        secondary=CorAcquisitionFrameworkObjectif.__table__,
-        primaryjoin=(
-            CorAcquisitionFrameworkObjectif.id_acquisition_framework == id_acquisition_framework
-        ),
-        secondaryjoin=(
-            CorAcquisitionFrameworkObjectif.id_nomenclature_objectif
-            == TNomenclatures.id_nomenclature
-        ),
-        foreign_keys=[
-            CorAcquisitionFrameworkObjectif.id_acquisition_framework,
-            CorAcquisitionFrameworkObjectif.id_nomenclature_objectif,
-        ],
-        backref=DB.backref("objectif_af", lazy="select")
-    )
-
-    cor_volets_sinp = DB.relationship(
-        TNomenclatures,
-        lazy="select",
-        secondary=CorAcquisitionFrameworkVoletSINP.__table__,
-        primaryjoin=(CorAcquisitionFrameworkVoletSINP.id_acquisition_framework == id_acquisition_framework),
-        secondaryjoin=(CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp == TNomenclatures.id_nomenclature),
-        foreign_keys=[
-            CorAcquisitionFrameworkVoletSINP.id_acquisition_framework,
-            CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp,
-        ],
-        backref=DB.backref("volet_sinp_af", lazy="select")
-    )
-
-    cor_territories = DB.relationship(
-        TNomenclatures,
-        lazy="select",
-        secondary=CorAcquisitionFrameworkTerritory.__table__,
-        primaryjoin=(CorAcquisitionFrameworkTerritory.id_acquisition_framework == id_acquisition_framework),
-        secondaryjoin=(CorAcquisitionFrameworkTerritory.id_nomenclature_territory == TNomenclatures.id_nomenclature),
-        foreign_keys=[
-            CorAcquisitionFrameworkTerritory.id_acquisition_framework,
-            CorAcquisitionFrameworkTerritory.id_nomenclature_territory,
-        ],
-        backref=DB.backref("territory_af", lazy="select")
-    )
-
-    bibliographical_references = DB.relationship(
-        "TBibliographicReference",
-        lazy="select",
-        cascade="all,delete-orphan",
-        uselist=True,
-        backref=DB.backref("acquisition_framework", lazy="select"),
-    )
-
-    t_datasets = DB.relationship(
-        "TDatasets",
-        lazy="select",
-        cascade="all,delete-orphan",
-        uselist=True,
-        backref=DB.backref("acquisition_framework", lazy="select"),
-    )
-
-    def get_object_cruved(
-        self, info_role, user_cruved
-    ):
-        """
-        Return the user's cruved for a Model instance.
-        Use in the map-list interface to allow or not an action
-        params:
-            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
-            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
-            - id_role: identifiant de la personne qui demande la route
-            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
-            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
-
-        Return: dict {'C': True, 'R': False ...}
-        """
-        return {
-            action: self.user_is_allowed_to(self.cor_af_actor, info_role, level)
-            for action, level in user_cruved.items()
-        }
-
-    @staticmethod
-    def get_id(uuid_af):
-        """
-            return the acquisition framework's id
-            from its UUID if exist or None
-        """
-        a_f = (
-            DB.session.query(TAcquisitionFramework.id_acquisition_framework)
-            .filter(TAcquisitionFramework.unique_acquisition_framework_id == uuid_af)
-            .first()
-        )
-        if a_f:
-            return a_f[0]
-        return a_f
-
-    @staticmethod
-    def get_user_af(user, only_query=False, only_user=False):
-        """get the af(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
-            param: 
-              - user from TRole model
-              - only_query: boolean (return the query not the id_datasets allowed if true)
-              - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
-
-            return: a list of id_dataset or a query"""
-        q = DB.session.query(TAcquisitionFramework.id_acquisition_framework).outerjoin(
-            CorAcquisitionFrameworkActor,
-            CorAcquisitionFrameworkActor.id_acquisition_framework
-            == TAcquisitionFramework.id_acquisition_framework,
-        )
-        if user.id_organisme is None or only_user:
-            q = q.filter(
-                or_(
-                    CorAcquisitionFrameworkActor.id_role == user.id_role,
-                    TAcquisitionFramework.id_digitizer == user.id_role,
-                )
-            )
-        else:
-            q = q.filter(
-                or_(
-                    CorAcquisitionFrameworkActor.id_organism == user.id_organisme,
-                    CorAcquisitionFrameworkActor.id_role == user.id_role,
-                    TAcquisitionFramework.id_digitizer == user.id_role,
-                )
-            )
-        if only_query:
-            return q
-        data = q.all()
-        return list(set([d.id_acquisition_framework for d in data]))
-
-@serializable
 class TDatasetDetails(TDatasets):
     """
     Class which extends TDatasets with nomenclatures relationships
     """
-
-    data_type = DB.relationship(
-        TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_data_type),
-    )
-    dataset_objectif = DB.relationship(
-        TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_dataset_objectif),
-    )
-    collecting_method = DB.relationship(
-        TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_collecting_method
-        ),
-    )
-    data_origin = DB.relationship(
-        TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_data_origin),
-    )
-    source_status = DB.relationship(
-        TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_source_status),
-    )
-    resource_type = DB.relationship(
-        TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_resource_type),
-    )
-    # acquisition_framework = DB.relationship(
-    #     TAcquisitionFramework,
-    #     primaryjoin=(
-    #         TAcquisitionFramework.id_acquisition_framework == TDatasets.id_acquisition_framework
-    #     ),
-    # )
-    additional_fields = DB.relationship(
-        "TAdditionalFields",
-        secondary=cor_field_dataset
-    )
-
-        
- 
-
-
-@serializable
-class TAcquisitionFrameworkDetails(TAcquisitionFramework):
-    """
-    Class which extends TAcquisitionFramework with nomenclatures relationships
-    """
-
-    #datasets = DB.relationship(TDatasetDetails, lazy="joined")
-    nomenclature_territorial_level = DB.relationship(
-        TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature
-            == TAcquisitionFramework.id_nomenclature_territorial_level
-        ),
-    )
-
-    nomenclature_financing_type = DB.relationship(
-        TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == TAcquisitionFramework.id_nomenclature_financing_type
-        ),
-    )
+    pass
