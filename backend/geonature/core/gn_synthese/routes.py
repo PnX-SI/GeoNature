@@ -45,6 +45,7 @@ from geonature.core.gn_synthese.utils.blurring import DataBlurring
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from werkzeug.exceptions import BadRequest
+from itertools import groupby
 
 # debug
 # current_app.config['SQLALCHEMY_ECHO'] = True
@@ -163,20 +164,22 @@ def get_observations_for_web(auth, permissions):
         results = data_blurring.blurSeveralObs(results)
 
     # Group results by geometry
-    seen_geoms = {}
     grouped_results = []
-    for result in results:
-        result = dict(result)
-        for key in result.keys():
-            if key != "st_asgeojson":
-                result[key] = [result[key]]
-        if not result["st_asgeojson"] in seen_geoms.keys():
-            seen_geoms[result["st_asgeojson"]] = len(grouped_results)
-            grouped_results.append(result)
-        else:
-            for key in result.keys():
-                if key != "st_asgeojson":
-                    grouped_results[seen_geoms[result["st_asgeojson"]]][key].extend(result[key])
+    results = sorted(results, key=lambda x: x["st_asgeojson"])
+    grouped_data = groupby(results, lambda x: x["st_asgeojson"])
+
+    for geojson, data in grouped_data:
+        grouped_result = {}
+        grouped_result["st_asgeojson"] = geojson
+
+        for d in list(data):
+            for key, value in d.items():
+                try:
+                    if key != "st_asgeojson":
+                        grouped_result[key].append(value)
+                except KeyError:
+                    grouped_result[key] = [value]
+        grouped_results.append(grouped_result)
     geojson_features = []
     for r in grouped_results:
         properties = {
