@@ -19,14 +19,12 @@ import { FormService } from "@geonature_common/form/form.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { MatDialog } from "@angular/material";
-import {OccurrenceSingletonService} from "./occurrence.singleton.service"
 
 
 @Component({
   selector: "pnx-occtax-form-occurrence",
   templateUrl: "./occurrence.component.html",
   styleUrls: ["./occurrence.component.scss"],
-  providers: [OccurrenceSingletonService],
   animations: [
     trigger("detailExpand", [
       state(
@@ -58,6 +56,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   private _subscriptions: Subscription[] = [];
   public displayProofFromElements: boolean = false;
 
+  get taxref(): any { return this.occtaxFormOccurrenceService.taxref.getValue(); };
   get additionalFieldsForm(): any[] { return this.occtaxFormOccurrenceService.additionalFieldsForm; }
 
   constructor(
@@ -67,8 +66,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     private _coreFormService: FormService,
     private _occtaxTaxaListService: OcctaxTaxaListService,
     public dialog: MatDialog,
-    public occSingServ: OccurrenceSingletonService
-
   ) { }
 
 
@@ -92,8 +89,6 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
         )
     );
 
-    const sub = this.occurrenceForm
-    .get("id_nomenclature_exist_proof")
     this.initTaxrefSearch();
   }
 
@@ -245,12 +240,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   }
 
   /** A la selection d'un taxon, focus sur le bouton ajouter */
-  selectAddOcc(taxon) {
-    // save current taxon for calling profil on lifestage change
-    this.occtaxFormOccurrenceService.currentTaxon = taxon.item;
-    if(this.appConfig.FRONTEND.ENABLE_PROFILES) {
-      this.occSingServ.profilControl(taxon.item.cd_ref);
-    }
+  selectAddOcc(event) {
     setTimeout(() => {
       document.getElementById("add-occ").focus();
     }, 50);

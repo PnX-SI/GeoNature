@@ -36,7 +36,6 @@ export class OcctaxFormOccurrenceService {
   public profilErrors = [];
 
   public formFieldsStatus: any;
-  public currentTaxon: any;
 
   constructor(
     private fb: FormBuilder,
