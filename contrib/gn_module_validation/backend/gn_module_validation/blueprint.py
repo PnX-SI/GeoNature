@@ -1,4 +1,3 @@
-import ast
 import logging
 import datetime
 import json
@@ -157,7 +156,7 @@ def get_synthese_data(info_role):
         properties["nom_vern_or_lb_nom"] = (
             r["nom_vern"] if r["nom_vern"] else r["lb_nom"]
         )
-        geojson = ast.literal_eval(r["geojson"])
+        geojson = json.loads(r["geojson"])
         geojson["properties"] = properties
         geojson["id"] = r["id_synthese"]
         geojson_features.append(geojson)
