@@ -3,7 +3,6 @@
     REMARQUE : TODO A SUPPRIMER
     Car intégré dans flask-sqla-geo
 """
-import ast
 import datetime
 import logging
 import zipfile
@@ -186,7 +185,7 @@ class FionaShapeService:
                 cls.write_a_feature(feature, geom_wkt)
         else:
             for d in data:
-                geom_geojson = ast.literal_eval(getattr(d, geojson_col))
+                geom_geojson = json.loads(getattr(d, geojson_col))
                 feature = {
                     "geometry": geom_geojson,
                     "properties": view.as_dict(d, columns=cls.columns),
