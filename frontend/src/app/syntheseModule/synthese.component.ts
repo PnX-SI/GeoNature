@@ -63,10 +63,11 @@ export class SyntheseComponent implements OnInit {
         this._mapListService.loadTableData(result['data']);
         this._mapListService.idName = 'id';
         this.searchService.dataLoaded = true;
-        // store the list of id_synthese for exports
-        this._syntheseStore.idSyntheseList = result['data']['features'].map(row => {
-          return row['properties']['id'];
-        });
+        // store the list of id_synthese for exports, make a 1D array
+        this._syntheseStore.idSyntheseList = []
+        for (let ids of result['data']['features']) {
+          this._syntheseStore.idSyntheseList.push(...ids["properties"]["id"])
+        }
       },
       error => {
         this.searchService.dataLoaded = true;
