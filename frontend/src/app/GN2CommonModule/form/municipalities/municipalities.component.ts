@@ -17,6 +17,8 @@ export class MunicipalitiesComponent implements OnInit {
  */
   @Input() searchBar = false;
   @Input() disabled: boolean;
+  @Input() valueFieldName: string = 'id_area'; // Field name for value (default : id_area)
+
 /**
  * @deprecated Do not use this input
  */
