@@ -2,7 +2,7 @@ import logging
 import datetime
 
 from flask import current_app
-from werkzeug.exceptions import Unauthorized
+from werkzeug.exceptions import Unauthorized, Forbidden
 from werkzeug.routing import RequestRedirect
 
 
@@ -800,7 +800,7 @@ class PermissionsManager:
 
         Raises
         ------
-        InsufficientRightsError
+        Forbidden
             Exception levée si l'utilisateur n'a pas les permissions d'accès
             nécessaires.
 
@@ -819,7 +819,7 @@ class PermissionsManager:
                 message = f"User {self._id_role} cannot {self._action_code} {self._object_code}"
             else:
                 message = f"User {self._id_role} cannot {self._action_code} in {self._module_code}"
-            raise InsufficientRightsError(message, 403)
+            raise Forbidden(message)
         else:
             return True
 
