@@ -107,67 +107,67 @@ class Synthese(DB.Model):
     grp_method = DB.Column(DB.Unicode(length=255))
 
     id_nomenclature_geo_object_nature = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_geo_object_nature = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_geo_object_nature])
+    nomenclature_geo_object_nature = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_geo_object_nature], lazy='joined')
 
     id_nomenclature_grp_typ = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_grp_typ = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_grp_typ])
+    nomenclature_grp_typ = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_grp_typ], lazy='joined')
 
     id_nomenclature_obs_technique = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_obs_technique = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_obs_technique])
+    nomenclature_obs_technique = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_obs_technique], lazy='joined')
 
     id_nomenclature_bio_status = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_bio_status = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_bio_status])
+    nomenclature_bio_status = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_bio_status], lazy='joined')
 
     id_nomenclature_bio_condition = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_bio_condition = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_bio_condition])
+    nomenclature_bio_condition = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_bio_condition], lazy='joined')
 
     id_nomenclature_naturalness = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_naturalness = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_naturalness])
+    nomenclature_naturalness = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_naturalness], lazy='joined')
 
     id_nomenclature_exist_proof = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_exist_proof = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_exist_proof])
+    nomenclature_exist_proof = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_exist_proof], lazy='joined')
 
     id_nomenclature_valid_status = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_valid_status = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_valid_status])
+    nomenclature_valid_status = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_valid_status], lazy='joined')
 
     id_nomenclature_diffusion_level = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_diffusion_level = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_diffusion_level])
+    nomenclature_diffusion_level = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_diffusion_level], lazy='joined')
 
     id_nomenclature_life_stage = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_life_stage = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_life_stage])
+    nomenclature_life_stage = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_life_stage], lazy='joined')
 
     id_nomenclature_sex = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_sex = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_sex])
+    nomenclature_sex = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_sex], lazy='joined')
 
     id_nomenclature_obj_count = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_obj_count = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_obj_count])
+    nomenclature_obj_count = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_obj_count], lazy='joined')
 
     id_nomenclature_type_count = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_type_count = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_type_count])
+    nomenclature_type_count = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_type_count], lazy='joined')
 
     id_nomenclature_sensitivity = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_sensitivity = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_sensitivity])
+    nomenclature_sensitivity = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_sensitivity], lazy='joined')
 
     id_nomenclature_observation_status = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_observation_status = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_observation_status])
+    nomenclature_observation_status = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_observation_status], lazy='joined')
 
     id_nomenclature_blurring = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_blurring = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_blurring])
+    nomenclature_blurring = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_blurring], lazy='joined')
 
     id_nomenclature_source_status = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_source_status = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_source_status])
+    nomenclature_source_status = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_source_status], lazy='joined')
 
     id_nomenclature_info_geo_type = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_info_geo_type = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_info_geo_type])
+    nomenclature_info_geo_type = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_info_geo_type], lazy='joined')
 
     id_nomenclature_behaviour = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_behaviour = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_behaviour])
+    nomenclature_behaviour = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_behaviour], lazy='joined')
 
     id_nomenclature_biogeo_status = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_biogeo_status = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_biogeo_status])
+    nomenclature_biogeo_status = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_biogeo_status], lazy='joined')
 
     id_nomenclature_determination_method = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_determination_method = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_determination_method])
+    nomenclature_determination_method = DB.relationship(TNomenclatures, foreign_keys=[id_nomenclature_determination_method], lazy='joined')
 
     reference_biblio = DB.Column(DB.Unicode(length=5000))
     count_min = DB.Column(DB.Integer)
