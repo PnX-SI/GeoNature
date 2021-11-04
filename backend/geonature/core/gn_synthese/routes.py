@@ -10,7 +10,7 @@ from flask import Blueprint, request, Response, current_app, \
                   send_from_directory, render_template, jsonify
 from werkzeug.exceptions import Forbidden, NotFound
 from sqlalchemy import distinct, func, desc, select, text
-from sqlalchemy.orm import exc
+from sqlalchemy.orm import exc, joinedload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 
@@ -268,7 +268,16 @@ def get_synthese(auth, permissions):
 def get_one_synthese(auth, permissions, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature
     """
-    synthese = Synthese.query.join_nomenclatures().get_or_404(id_synthese)
+    synthese = Synthese.query.options(
+        joinedload('source'),
+        joinedload('dataset'),
+        joinedload('dataset.acquisition_framework'),
+        joinedload('habitat'),
+        joinedload('medias'),
+        joinedload('areas'),
+        joinedload('validations'),
+        joinedload('cor_observers'),
+    ).join_nomenclatures().get_or_404(id_synthese)
     if not synthese.has_instance_permission(scope=auth["scope"]):
         raise Forbidden()
     geojson = synthese.as_geofeature(
