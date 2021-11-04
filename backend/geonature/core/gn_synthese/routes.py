@@ -8,7 +8,7 @@ from collections import OrderedDict
 
 from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify
 from sqlalchemy import distinct, func, desc, select, text
-from sqlalchemy.orm import exc
+from sqlalchemy.orm import exc, joinedload
 from geojson import FeatureCollection, Feature
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
@@ -277,7 +277,16 @@ def get_one_synthese(auth, permissions, id_synthese):
     :param int id_synthese:Synthese to be queried
     :>jsonarr array synthese_as_dict: One synthese with geojson key, see above
     """
-    synthese = Synthese.query.get_or_404(id_synthese)
+    synthese = Synthese.query.options(
+                    joinedload('source'),
+                    joinedload('dataset'),
+                    joinedload('dataset.acquisition_framework'),
+                    joinedload('habitat'),
+                    joinedload('medias'),
+                    joinedload('areas'),
+                    joinedload('validations'),
+                    joinedload('cor_observers'),
+               ).get_or_404(id_synthese)
     geofeature = synthese.as_geofeature(
         "the_geom_4326", "id_synthese",
         fields=[
