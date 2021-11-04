@@ -413,8 +413,6 @@ class DataBlurring:
     
 
     def blurOneObsAreas(self, obs):
-        DataBlurring._checkObsFields(obs)
-        
         # Get area blurred types
         blurred_areas_types = []
         id_synthese = obs["id_synthese"]
@@ -452,17 +450,6 @@ class DataBlurring:
             obs["areas"][:] = [area for area in obs["areas"] if DataBlurring._checkAreaSize(area, more_restrictive_size)]
         
         return obs
-
-    def _checkObsFields(obs):
-        mandatory_fields = [
-            "id_synthese", 
-            "id_nomenclature_diffusion_level", 
-            "id_nomenclature_sensitivity",
-        ]
-        for field in mandatory_fields:
-            if not field in obs:
-                msg = f"Field '{field}' must be present in observation data."
-                raise RuntimeError(msg)
 
     def _get_areas_size_hierarchy(self, areas_types):
         query = (
