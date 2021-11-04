@@ -278,10 +278,7 @@ def get_one_synthese(auth, permissions, id_synthese):
     :>jsonarr array synthese_as_dict: One synthese with geojson key, see above
     """
     synthese = Synthese.query.get_or_404(id_synthese)
-    if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
-        data_blurring = DataBlurring(permissions)
-        synthese = data_blurring.blurOneObsAreas(synthese)
-    return jsonify(synthese.as_geofeature(
+    geofeature = synthese.as_geofeature(
         "the_geom_4326", "id_synthese",
         fields=[
             'dataset',
@@ -316,7 +313,11 @@ def get_one_synthese(auth, permissions, id_synthese):
             'habitat',
             'medias',
             'areas',
-        ]))
+        ])
+    if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
+        data_blurring = DataBlurring(permissions)
+        geofeature = data_blurring.blurOneObsAreas(geofeature)
+    return jsonify(geofeature)
 
 
 ################################
