@@ -698,7 +698,9 @@ class PermissionsManager:
         VUsersPermissions | None
             Retourne la permission permettant à l'utilisateur d'accès 
         """
-        return self._get_current_access_permission_infos()["higher_perm"]
+        infos = self._get_current_access_permission_infos()
+        if infos:
+            return infos["higher_perm"]
 
     def get_full_access_permission(self):
         """Retourne la permission d'accès, les infos d'héritage et les 
