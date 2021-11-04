@@ -582,6 +582,7 @@ class DataBlurring:
         
         return permissions_ors
 
+    @staticmethod
     def _checkAreaSize(area, more_restrictive_size):
         current_size = area['area_type']['size_hierarchy']
         return (False if current_size != None and current_size < more_restrictive_size else True)
