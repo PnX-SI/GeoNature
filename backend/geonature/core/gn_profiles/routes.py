@@ -12,7 +12,7 @@ from utils_flask_sqla.response import json_resp
 
 from pypnnomenclature.models import TNomenclatures
 from geonature.core.gn_profiles.models import VmCorTaxonPhenology, VmValidProfiles, VConsistancyData
-from geonature.core.taxonomie.models import Taxref, VMTaxrefListForautocomplete
+from apptax.taxonomie.models import Taxref, VMTaxrefListForautocomplete
 from geonature.utils.env import DB
 
 routes = Blueprint("gn_profiles", __name__, cli_group='profiles')

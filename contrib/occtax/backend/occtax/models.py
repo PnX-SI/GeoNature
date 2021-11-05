@@ -178,10 +178,10 @@ class TOccurrencesOccurrence(DB.Model):
     digital_proof = DB.Column(DB.Unicode)
     non_digital_proof = DB.Column(DB.Unicode)
     comment = DB.Column(DB.Unicode)
-    
+
     #additional fields dans occtax MET 28/09/2020
     additional_fields = DB.Column(JSONB)
-    
+
     unique_id_occurence_occtax = DB.Column(
         UUID(as_uuid=True),
         default=select([func.uuid_generate_v4()]),
@@ -320,4 +320,4 @@ class DefaultNomenclaturesValue(DB.Model):
     mnemonique_type = DB.Column(DB.Integer, primary_key=True)
     id_organism = DB.Column(DB.Integer, primary_key=True)
     id_nomenclature = DB.Column(DB.Integer, primary_key=True)
-	
+
