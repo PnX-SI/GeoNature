@@ -109,18 +109,18 @@ class AccountManagement(Schema):
 
 class PermissionManagement(Schema):
     # Configuration parameters for permissions managment and access request
-    ENABLE_ACCESS_REQUEST = fields.Boolean(missing=False)
-    AREA_TYPES = fields.List(fields.Integer(), missing=[25, 26])
-    ENABLE_SENSITIVE_ACCESS = fields.Boolean(missing=True)
-    DATA_ACCESS_RULES_LINK = fields.String(missing=None)
-    DEFAULT_ACCESS_DURATION = fields.Integer(missing=None)
-    MAX_ACCESS_DURATION = fields.Integer(missing=365)
-    VALIDATOR_EMAIL = EmailStrOrListOfEmailStrField(missing=None)
-    REQUEST_FORM_TITLE = fields.String(missing=None)
-    REQUEST_FORM = fields.List(fields.Dict(), missing=[])
-    ENABLE_CONVENTION = fields.Boolean(missing=False)
-    CONVENTION_TITLE = fields.String(missing=None)
-    CONVENTION_VALIDATE = fields.String(missing=None)
+    ENABLE_ACCESS_REQUEST = fields.Boolean(load_default=False)
+    AREA_TYPES = fields.List(fields.Integer(), load_default=[25, 26])
+    ENABLE_SENSITIVE_ACCESS = fields.Boolean(load_default=True)
+    DATA_ACCESS_RULES_LINK = fields.String(load_default=None)
+    DEFAULT_ACCESS_DURATION = fields.Integer(load_default=None)
+    MAX_ACCESS_DURATION = fields.Integer(load_default=365)
+    VALIDATOR_EMAIL = EmailStrOrListOfEmailStrField(load_default=None)
+    REQUEST_FORM_TITLE = fields.String(load_default=None)
+    REQUEST_FORM = fields.List(fields.Dict(), load_default=[])
+    ENABLE_CONVENTION = fields.Boolean(load_default=False)
+    CONVENTION_TITLE = fields.String(load_default=None)
+    CONVENTION_VALIDATE = fields.String(load_default=None)
 
 
 class UsersHubConfig(Schema):
@@ -197,7 +197,7 @@ class GnPySchemaConf(Schema):
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     ADMIN_APPLICATION_LOGIN = fields.String()
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
-    PERMISSION_MANAGEMENT = fields.Nested(PermissionManagement, missing=PermissionManagement().load({}))
+    PERMISSION_MANAGEMENT = fields.Nested(PermissionManagement, load_default=PermissionManagement().load({}))
     USERSHUB = fields.Nested(UsersHubConfig, load_default=UsersHubConfig().load({}))
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
