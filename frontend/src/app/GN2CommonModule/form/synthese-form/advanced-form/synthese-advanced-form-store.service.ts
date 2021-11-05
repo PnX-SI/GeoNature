@@ -17,7 +17,6 @@ export class TaxonAdvancedStoreService {
   public taxonTreeState: any;
   public taxhubAttributes: any;
   public formBuilded: boolean;
-  public taxonomyLR: Array<any>;
   public taxonomyHab: Array<any>;
   public taxonomyGroup2Inpn: Array<any>;
   public redListsValues: any = {};
@@ -73,11 +72,7 @@ export class TaxonAdvancedStoreService {
           });
         this.formBuilded = true;
       });
-      // Load LR,  habitat and group2inpn
-      this._dataService.getTaxonomyLR().subscribe((data) => {
-        this.taxonomyLR = data;
-      });
-
+      // Load habitat and group2inpn
       this._dataService.getTaxonomyHabitat().subscribe((data) => {
         this.taxonomyHab = data;
       });

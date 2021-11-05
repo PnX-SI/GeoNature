@@ -16,7 +16,6 @@ from geonature.core.gn_profiles.models import (
     VmValidProfiles,
     VConsistancyData,
 )
-from geonature.core.taxonomie.models import Taxref, VMTaxrefListForautocomplete
 from geonature.utils.env import DB
 
 routes = Blueprint("gn_profiles", __name__, cli_group="profiles")
@@ -249,7 +248,7 @@ def get_observation_score():
                                 {
                                     "type": "life_stage",
                                     "value": f"""
-                                Le taxon n'a jamais été observé à cette periode et à cette altitude ({altitude_min}-{altitude_max}m) 
+                                Le taxon n'a jamais été observé à cette periode et à cette altitude ({altitude_min}-{altitude_max}m)
                                 pour le stade de vie {life_stage_value.label_default}""",
                                 }
                             )

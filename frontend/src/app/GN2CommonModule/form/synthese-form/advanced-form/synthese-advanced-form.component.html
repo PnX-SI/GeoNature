@@ -165,18 +165,6 @@
 
   <div *ngIf="storeService.formBuilded">
     <h5>Attributs TaxRef</h5>
-    <div class="form-group">
-      <pnx-multiselect
-        [values]="storeService.taxonomyLR"
-        [parentFormControl]="formService.searchForm.controls.taxonomy_lr"
-        keyLabel="nom_categorie_lr"
-        keyValue="id_categorie_france"
-        label="Liste rouge UICN"
-        (onChange)="onTaxRefAttributsSelected($event)"
-        (onDelete)="onTaxRefAttributsDeleted($event.id_categorie_france)"
-      >
-      </pnx-multiselect>
-    </div>
 
     <div class="form-group">
       <pnx-multiselect

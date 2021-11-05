@@ -19,7 +19,7 @@ from geonature.core.gn_profiles.models import (
     VSyntheseForProfiles,
 )
 from geonature.core.gn_synthese.models import Synthese
-from geonature.core.taxonomie.models import Taxref
+from apptax.taxonomie.models import Taxref
 
 
 from .fixtures import *
