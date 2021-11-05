@@ -13,8 +13,6 @@ COMMENT ON COLUMN gn_permissions.bib_filters_type.label_filter_type IS
 COMMENT ON COLUMN gn_permissions.bib_filters_type.description_filter_type IS 
     E'Description du type de filtre en français. '
      'Décrire l''objet de la limitation, les valeurs possibles.';
-COMMENT ON SEQUENCE gn_permissions.bib_filters_type_id_filter_type_seq IS 
-    E'Séquence de la clé primaire de la table "bib_filters_type".' ;
 
 -- Table "cor_role_action_filter_module_object"
 COMMENT ON TABLE gn_permissions.cor_role_action_filter_module_object IS 
@@ -29,8 +27,6 @@ COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_module 
 	E'Identifiant du module de la permission.' ;
 COMMENT ON COLUMN gn_permissions.cor_role_action_filter_module_object.id_object IS 
 	E'Identifiant de l''objet de la permission.' ;
-COMMENT ON SEQUENCE gn_permissions.cor_role_action_filter_module_object_id_permission_seq IS
-    E'Séquence de la clé primaire de la table "cor_role_action_filter_module_object".' ;
 
 -- Table "t_actions"
 COMMENT ON TABLE gn_permissions.t_actions IS 
@@ -41,8 +37,6 @@ COMMENT ON COLUMN gn_permissions.t_actions.code_action IS
     E'Code de l''action. Si possible une lettre en anglais et en majuscule.';
 COMMENT ON COLUMN gn_permissions.t_actions.description_action IS 
     E'Description de l''action en français.';
-COMMENT ON SEQUENCE gn_permissions.t_actions_id_action_seq IS
-    E'Séquence de la clé primaire de la table "t_actions".' ;
 
 -- Table "t_objects"
 COMMENT ON TABLE gn_permissions.t_objects IS 
@@ -55,8 +49,6 @@ COMMENT ON COLUMN gn_permissions.t_objects.code_object IS
      'avec le tiret bas ("_") comme séparateur de mots.';
 COMMENT ON COLUMN gn_permissions.t_objects.description_object IS 
     E'Description détaillée de l''objet en français.';
-COMMENT ON SEQUENCE gn_permissions.t_objects_id_object_seq IS
-    E'Séquence de la clé primaire de la table "t_objects".' ;
 
 
 -- -------------------------------------------------------------------------------------------------
@@ -103,20 +95,6 @@ ALTER TABLE gn_permissions.cor_role_action_filter_module_object
 	REFERENCES gn_commons.t_modules (id_module) MATCH FULL
 	ON UPDATE CASCADE ;
 
-
--- -------------------------------------------------------------------------------------------------
--- Add sequence for new table "bib_filters_values" primary key
-CREATE SEQUENCE gn_permissions.bib_filters_values_id_filter_value_seq
-	INCREMENT BY 1
-	MINVALUE 0
-	MAXVALUE 2147483647
-	START WITH 1
-	CACHE 1
-	NO CYCLE ;
-
-COMMENT ON SEQUENCE gn_permissions.bib_filters_values_id_filter_value_seq IS 
-    E'Auto-incrément de la clé primaire de la table bib_filters_values.' ;
-
 -- -------------------------------------------------------------------------------------------------
 -- Create request states enum 
 CREATE TYPE gn_permissions.filter_value_formats AS ENUM ('string', 'integer', 'boolean', 'geometry', 'csvint') ;
@@ -125,8 +103,7 @@ CREATE TYPE gn_permissions.filter_value_formats AS ENUM ('string', 'integer', 'b
 -- -------------------------------------------------------------------------------------------------
 -- Create filters values types table 
 CREATE TABLE gn_permissions.bib_filters_values (
-	id_filter_value integer NOT NULL 
-        DEFAULT nextval('gn_permissions.bib_filters_values_id_filter_value_seq'::regclass),
+	id_filter_value serial,
 	id_filter_type integer,
     value_format gn_permissions.filter_value_formats NOT NULL,
     predefined boolean NOT NULL,
@@ -312,20 +289,6 @@ INSERT INTO gn_permissions.bib_filters_values (
 
 
 -- -------------------------------------------------------------------------------------------------
--- Add sequence for new table "t_requests" primary key
-CREATE SEQUENCE gn_permissions.t_requests_id_request_seq
-	INCREMENT BY 1
-	MINVALUE 0
-	MAXVALUE 2147483647
-	START WITH 1
-	CACHE 1
-	NO CYCLE ;
-
-COMMENT ON SEQUENCE gn_permissions.t_requests_id_request_seq IS 
-    E'Auto-incrément de la clé primaire de la table t_requests.' ;
-
-
--- -------------------------------------------------------------------------------------------------
 -- Create request states enum 
 CREATE TYPE gn_permissions.request_states AS ENUM ('pending', 'refused', 'accepted') ;
 
@@ -333,7 +296,7 @@ CREATE TYPE gn_permissions.request_states AS ENUM ('pending', 'refused', 'accept
 -- -------------------------------------------------------------------------------------------------
 -- Create requests table 
 CREATE TABLE gn_permissions.t_requests (
-	id_request integer NOT NULL DEFAULT nextval('gn_permissions.t_requests_id_request_seq'::regclass),
+	id_request serial,
 	id_role integer,
     token uuid NOT NULL DEFAULT public.uuid_generate_v4(),
     end_date date,
