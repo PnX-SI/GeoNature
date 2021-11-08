@@ -2,6 +2,7 @@ import json
 
 from flask import url_for, current_app
 from werkzeug.http import dump_cookie
+from werkzeug.datastructures import Headers
 
 from pypnusershub.db.tools import user_to_token
 
@@ -26,9 +27,9 @@ def post_json(client, url, json_dict, query_string=None):
     )
 
 
-def logged_user_headers(user, headers={}):
+def logged_user_headers(user, headers=Headers()):
     cookie = dump_cookie('token', user_to_token(user))
-    headers.update({
-        'COOKIE': cookie,
+    headers.extend({
+        'Cookie': cookie,
     })
     return headers

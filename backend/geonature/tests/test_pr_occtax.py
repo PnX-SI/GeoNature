@@ -4,7 +4,7 @@ from flask import url_for, current_app
 from werkzeug.exceptions import Forbidden
 
 from . import login, temporary_transaction, post_json
-from .fixtures import sample_data, releve_data, datasets, users
+from .fixtures import releve_data, datasets, users
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "users", "datasets")

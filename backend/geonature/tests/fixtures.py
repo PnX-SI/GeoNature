@@ -1,17 +1,25 @@
 import json
-import pkg_resources
+import datetime
 
 import pytest
 from flask import testing, url_for
 from werkzeug.datastructures import Headers
+from sqlalchemy import func
+from shapely.geometry import Point
+from geoalchemy2.shape import from_shape
 
 from geonature import create_app
 from geonature.utils.env import DB as db
-from geonature.core.gn_permissions.models import TActions, TFilters, CorRoleActionFilterModuleObject
+from geonature.core.gn_permissions.models import TActions, BibFiltersType, CorRoleActionFilterModuleObject
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets
+from geonature.core.gn_synthese.models import TSources, Synthese
 
 from pypnusershub.db.models import User, Organisme, Application, Profils as Profil, UserApplicationRight
+
+
+__all__ = ['app', 'users', 'acquisition_frameworks', 'datasets',
+           'temporary_transaction', 'synthese_data']
 
 
 class JSONClient(testing.FlaskClient):
@@ -56,16 +64,14 @@ def users(app):  # an app context is required
     app = Application.query.filter(Application.code_application=='GN').one()
     profil = Profil.query.filter(Profil.nom_profil=='Lecteur').one()
 
-    modules = TModules.query.filter(TModules.module_code.in_(["IMPORT", "OCCTAX"])).all()
+    modules_codes = ["GEONATURE", "SYNTHESE", "IMPORT", "OCCTAX"]
+    modules = TModules.query.filter(TModules.module_code.in_(modules_codes)).all()
 
     actions = { code: TActions.query.filter(TActions.code_action == code).one()
                 for code in 'CRUVED' }
-    filters = [
-        TFilters.query.filter(TFilters.value_filter == str(scope)).one()
-        for scope in [ 0, 1, 2, 3 ]
-    ]
+    scope = BibFiltersType.query.filter_by(code_filter_type='SCOPE').one()
 
-    def create_user(username, organisme=None, scope=None):
+    def create_user(username, organisme=None, scope_value=None):
         # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
         with db.session.begin_nested():
             user = User(groupe=False, active=True, organisme=organisme,
@@ -78,16 +84,17 @@ def users(app):  # an app context is required
                                          id_application=app.id_application,
                                          id_profil=profil.id_profil)
             db.session.add(right)
-            if scope:
+            if scope_value:
                 for action in actions.values():
                     for module in modules:
                         permission = CorRoleActionFilterModuleObject(
                                             role=user,
                                             action=action,
-                                            filter=scope,
+                                            filter_type=scope,
+                                            value_filter=scope_value,
                                             module=module
                                     )
-                    db.session.add(permission)
+                        db.session.add(permission)
             return user
 
     users = {}
@@ -96,12 +103,12 @@ def users(app):  # an app context is required
     db.session.add(organisme)
 
     users_to_create = [
-        ('noright_user', organisme, filters[0]),
+        ('noright_user', organisme, '0'),
         ('stranger_user',),
         ('associate_user', organisme),
-        ('self_user', organisme, filters[1]),
-        ('user', organisme, filters[2]),
-        ('admin_user', organisme, filters[3]),
+        ('self_user', organisme, '1'),
+        ('user', organisme, '2'),
+        ('admin_user', organisme, '3'),
     ]
 
     for username, *args in users_to_create:
@@ -111,8 +118,26 @@ def users(app):  # an app context is required
 
 
 @pytest.fixture(scope='class')
-def datasets(users):
-    af = TAcquisitionFramework.query.first()
+def acquisition_frameworks(users):
+    def create_af(creator=None):
+        with db.session.begin_nested():
+            af = TAcquisitionFramework(
+                            acquisition_framework_name='test',
+                            acquisition_framework_desc='test',
+                            creator=creator)
+            db.session.add(af)
+        return af
+    return {
+        'own_af': create_af(creator=users['user']),
+        'associate_af': create_af(creator=users['associate_user']),
+        'stranger_af': create_af(creator=users['stranger_user']),
+        'orphan_af': create_af(),
+    }
+
+
+@pytest.fixture(scope='class')
+def datasets(users, acquisition_frameworks):
+    af = acquisition_frameworks['orphan_af']
     def create_dataset(digitizer=None):
         with db.session.begin_nested():
             dataset = TDatasets(
@@ -131,16 +156,6 @@ def datasets(users):
         'stranger_dataset': create_dataset(digitizer=users['stranger_user']),
         'orphan_dataset': create_dataset(),
     }
-
-
-
-@pytest.fixture(scope='class')
-def sample_data(app):
-    with db.session.begin_nested():
-        for sql_file in ['delete_sample_data.sql', 'sample_data.sql']:
-            operations = pkg_resources.resource_string("geonature.tests", f"data/{sql_file}") \
-                                      .decode('utf-8')
-            db.session.execute(operations)
 
 
 @pytest.fixture(scope='function')
@@ -205,3 +220,24 @@ def releve_data(client, datasets):
     }
 
     return data
+
+
+@pytest.fixture()
+def synthese_data(datasets):
+    with db.session.begin_nested():
+        source = TSources(name_source='Fixture',
+                          desc_source='Synthese data from fixture')
+        db.session.add(source)
+    now = datetime.datetime.now()
+    geom_4326 = from_shape(Point(3.63492965698242, 44.3999389306734), srid=4326)
+    with db.session.begin_nested():
+        s = Synthese(id_source=source.id_source,
+                     id_dataset=datasets['own_dataset'].id_dataset,
+                     nom_cite='chenille',
+                     the_geom_4326=geom_4326,
+                     the_geom_point=geom_4326,
+                     the_geom_local=func.st_transform(geom_4326, 2154),
+                     date_min=now,
+                     date_max=now)
+        db.session.add(s)
+    return [s]

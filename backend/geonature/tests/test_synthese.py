@@ -1,12 +1,16 @@
 import pytest
 
 from flask import url_for, current_app
+from sqlalchemy import func
 
-from . import login, temporary_transaction
-from .fixtures import sample_data
+from geonature.utils.env import db
+
+from pypnusershub.db.tools import user_to_token
+
+from . import *
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "sample_data")
+@pytest.mark.usefixtures("client_class", "temporary_transaction")#, "sample_data")
 class TestSynthese:
     def test_list_sources(self):
         response = self.client.get(url_for("gn_synthese.get_sources"))
@@ -149,12 +153,52 @@ class TestSynthese:
 
         assert response.status_code == 200
 
-    def test_get_one_synthese_reccord(self):
-        login(self.client)
+    def test_get_one_synthese_record(self, app, users, synthese_data):
+        from geonature.core.gn_synthese.models import Synthese
 
-        response = self.client.get(url_for("gn_synthese.get_one_synthese", id_synthese=2))
+        response = self.client.get(
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
+        assert response.status_code == 401
 
+        self.client.set_cookie('*', 'token', user_to_token(users['noright_user']))
+        response = self.client.get(
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
+        assert response.status_code == 403
+
+        self.client.set_cookie('*', 'token', user_to_token(users['admin_user']))
+        not_existing = db.session.query(func.max(Synthese.id_synthese)).scalar() + 1
+        response = self.client.get(
+            url_for("gn_synthese.get_one_synthese", id_synthese=not_existing))
+        assert response.status_code == 404
+
+        self.client.set_cookie('*', 'token', user_to_token(users['admin_user']))
+        response = self.client.get(
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
         assert response.status_code == 200
+
+        self.client.set_cookie('*', 'token', user_to_token(users['self_user']))
+        response = self.client.get(
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
+        assert response.status_code == 200
+        print(len(response.json['properties']['areas']))
+
+        self.client.set_cookie('*', 'token', user_to_token(users['user']))
+        response = self.client.get(
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
+        assert response.status_code == 200
+        print(len(response.json['properties']['areas']))
+
+        self.client.set_cookie('*', 'token', user_to_token(users['associate_user']))
+        response = self.client.get(
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
+        assert response.status_code == 200
+        print(len(response.json['properties']['areas']))
+
+        self.client.set_cookie('*', 'token', user_to_token(users['stranger_user']))
+        response = self.client.get(
+            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
+        assert response.status_code == 200
+        print(len(response.json['properties']['areas']))
 
     def test_color_taxon(self):
         response = self.client.get(url_for("gn_synthese.get_color_taxon"))

@@ -16,7 +16,7 @@ from pypnnomenclature.models import TNomenclatures
 
 
 
-from . import app, temporary_transaction, datasets, users, login
+from . import app, temporary_transaction, acquisition_frameworks, datasets, users, login, synthese_data
 
 @pytest.fixture(scope='class')
 def create_aditional_fields(app, datasets):
@@ -66,9 +66,9 @@ class TestCommons:
             for d in f["datasets"]:
                 assert d["dataset_name"] == "test"
 
-    def test_add_validation_status(self):
+    def test_add_validation_status(self, synthese_data):
         login(self.client)
-        synthese = DB.session.query(Synthese).filter(Synthese.unique_id_sinp != None).order_by(Synthese.id_synthese.desc()).first()
+        synthese = next(synthese_data)
         id_nomenclature_valid_status = DB.session.query(TNomenclatures).filter(and_(
             TNomenclatures.cd_nomenclature == "1",
             TNomenclatures.nomenclature_type.has(mnemonique="STATUT_VALID")
