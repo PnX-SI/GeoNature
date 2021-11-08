@@ -1,7 +1,6 @@
 import logging
 import json
 import datetime
-import ast
 import time
 
 from collections import OrderedDict
@@ -92,7 +91,7 @@ def get_observations_for_web(info_role):
             "unique_id_sinp": r["unique_id_sinp"],
             "entity_source_pk_value": r["entity_source_pk_value"],
         }
-        geojson = ast.literal_eval(r["st_asgeojson"])
+        geojson = json.loads(r["st_asgeojson"])
         geojson["properties"] = properties
 
     :param str info_role: Role used to get the associated filters, **TBC**
@@ -467,7 +466,7 @@ def export_observations_web(info_role):
     elif export_format == "geojson":
         features = []
         for r in results:
-            geometry = ast.literal_eval(
+            geometry = json.loads(
                 getattr(r, current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"])
             )
             feature = Feature(

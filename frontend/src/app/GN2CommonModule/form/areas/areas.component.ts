@@ -12,21 +12,23 @@ import { distinctUntilChanged, debounceTime, switchMap, tap, catchError, map } f
 export class AreasComponent extends GenericFormComponent implements OnInit {
   public cachedAreas: any;
   @Input() typeCodes: Array<string> = []; // Areas type_code
+  @Input() valueFieldName: string = 'id_area'; // Field name for value (default : id_area)
   areas_input$ = new Subject<string>();
   areas: Observable<any>;
   loading = false;
 
+
   constructor(
-    private _dfs: DataFormService, 
+    private _dfs: DataFormService,
   ) {
     super();
   }
 
-  ngOnInit() {    
+  ngOnInit() {
     this.getAreas();
   }
 
-  getAreas() { 
+  getAreas() {
     this.areas = concat(
         this._dfs.getAreas(this.typeCodes).pipe(map(data=>this.formatAreas(data))), // default items
         this.areas_input$.pipe(
@@ -40,7 +42,7 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
                   catchError(() => of([])), // empty list on error
                   tap(() => this.loading = false)
                 ) : [];
-            }) 
+            })
         )
     );
   }
@@ -55,7 +57,7 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
         element['area_name'] = `${element['area_name']} (${element.area_code.substr(0, 2)}) `;
         return element;
       });
-    } 
+    }
 
     return data;
   }
