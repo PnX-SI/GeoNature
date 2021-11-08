@@ -38,14 +38,18 @@ Les nouvelles fonctionnalités liés aux profiles necessite de raffraichir des v
 
 ::
 
-      sudo su postgres
-      crontab -e
+      sudo nano /etc/cron.d/update_profile
 
-Ajouter la ligne suivante en prenant changeant <MY_DB_NAME> par le nom de votre base de donnée GeoNature :
+Ajouter la ligne suivante en prenant changeant <CHEMIN_ABSOLUE_VERS_VENV> par le chemin absolue vers me virtualenv GeoNature et <GEONATURE_USER> par l'utilisateur linux de GeoNature:
 
 ::
 
-    0 * * * * psql -d <MY_DB_NAME>   -c "SELECT gn_profiles.refresh_profiles()"
+    0 * * * * <GEONATURE_USER> source <CHEMIN_ABSOLUE_VERS_VENV> && geonature profiles update_vms
+
+Exemple : 
+::
+
+    0 * * * * geonatadmin source /home/user/geonature/backend/venv/bin/activate && geonature profiles update_vms
 
 Cet exemple lance la tâche toute les nuits à minuit. Pour une autre fréquence voir la syntaxe cron : https://crontab.guru/
 
