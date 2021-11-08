@@ -54,8 +54,8 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
         unknown=EXCLUDE
     )
     modules = MA.Nested(
-        ModuleSchema, 
-        many=True, 
+        ModuleSchema,
+        many=True,
         exclude=("meta_create_date", "meta_update_date"),
         unknown=EXCLUDE
     )
