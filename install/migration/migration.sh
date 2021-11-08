@@ -28,15 +28,14 @@ cp $myrootpath/geonature_old/config/geonature_config.toml config/geonature_confi
 # Handle frontend custom components
 echo "Copie des fichiers existant des composants personnalisables du frontend..."
 cp -r $myrootpath/geonature_old/frontend/src/custom/* frontend/src/custom/
-if [ ! -f $myrootpath/geonature/frontend/src/assets/custom.css ]
+
+if [ ! -f $myrootpath/geonature_old/frontend/src/assets/custom.css ]
 then
   cp $myrootpath/geonature_old/frontend/src/custom/custom.scss $myrootpath/geonature/frontend/src/assets/custom.css
+else 
+  cp $myrootpath/geonature_old/frontend/src/assets/custom.css $myrootpath/geonature/frontend/src/assets/custom.css
 fi
 
-if [ -f $myrootpath/geonature/frontend/src/custom/custom.scss ]
-then 
-  rm $myrootpath/geonature/frontend/src/custom/custom.scss
-fi
 
 
 echo "Création des fichiers des nouveaux composants personnalisables du frontend..."
@@ -126,38 +125,44 @@ then
   sudo rm -rf venv
 fi
 
-if [[ $python_path ]]; then
-  echo "Installation du virtual env..."
-  python3 -m virtualenv -p $python_path venv
-else
-  python3 -m virtualenv venv
-fi
+echo "Installation du virtual env..."
+python3 -m venv venv
 
 source venv/bin/activate
+pip install --upgrade "pip>=19.3"  # https://www.python.org/dev/peps/pep-0440/#direct-references
 pip install -r requirements.txt
 # Installation des dépendances des modules
 # Boucle sur les liens symboliques de external_modules
 for D in $(find ../external_modules  -type l | xargs readlink) ; do
     # si le lien symbolique exisite
     if [ -e "$D" ] ; then
-        cd ${D}
-        cd backend   
-        if [ -f 'requirements.txt' ]
+        cd "${D}"
+        if [ -f 'setup.py' ]
         then
-            pip install -r requirements.txt
+            pip install -e .
+        else
+            cd backend
+            if [ -f 'requirements.txt' ]
+            then
+                pip install -r requirements.txt
+            fi
+            cd ..
         fi
-        cd ../frontend 
+        cd frontend
         if [ -f 'package.json' ]
         then
           cd /home/`whoami`/geonature/frontend 
           npm install $D/frontend --no-save
         fi
-
+        cd ..
     fi
 done
 
 cd $myrootpath/$currentdir/
 pip install --editable .
+
+
+geonature db autoupgrade -x data-directory=tmp/ -x local-srid=$srid_local
 
 echo "Update configurations"
 geonature update_configuration --build=false
@@ -170,6 +175,6 @@ geonature update_module_configuration occhab --build=false
 
 geonature frontend_build
 
-sudo supervisorctl reload
+sudo systemctl restart geonature
 
 deactivate

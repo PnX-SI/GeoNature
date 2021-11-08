@@ -1,3 +1,5 @@
+-- Compléments du schéma "gn_sensitivity" en version 2.7.5
+-- A partir de la version 2.8.0, les évolutions de la BDD sont gérées dans des migrations Alembic
 
 CREATE SCHEMA IF NOT EXISTS gn_sensitivity;
 

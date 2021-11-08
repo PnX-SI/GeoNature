@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, AfterViewInit } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { MapService } from '@geonature_common/map/map.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
@@ -10,7 +11,8 @@ import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'pnx-synthese-info-obs',
   templateUrl: 'synthese-info-obs.component.html',
-  styleUrls: ['./synthese-info-obs.component.scss']
+  styleUrls: ['./synthese-info-obs.component.scss'],
+  providers: [MapService]
 })
 export class SyntheseInfoObsComponent implements OnInit {
   @Input() idSynthese: number;
@@ -21,6 +23,84 @@ export class SyntheseInfoObsComponent implements OnInit {
   public selectedObs: any;
   public validationHistory: Array<any>;
   public selectedObsTaxonDetail: any;
+  @ViewChild('tabGroup') tabGroup;
+  public APP_CONFIG = AppConfig;
+  public selectedGeom;
+  // public chartType = 'line';
+  public profileDataChecks: any;
+  public showValidation = false
+
+
+  // public results: ChartDataSets[] = [
+  //   { data: [], label: 'Altitude minimale extrême' },
+  //   { data: [], label: 'Altitude minimale valide' },
+  //   { data: [], label: 'Altitude maximale extrême' },
+  //   { data: [], label: 'Altitude maximale valide' }
+  // ]
+
+  // public lineChartLabels: Label[] = [];
+
+  // public lineChartOptions: (ChartOptions & { annotation: any }) = {
+  //   responsive: true,
+  //   scales: {
+  //     // We use this empty structure as a placeholder for dynamic theming.
+  //     xAxes: [{}],
+  //     yAxes: [
+  //       {
+  //         id: 'y-axis-0',
+  //         position: 'left',
+  //       }
+  //     ]
+  //   },
+  //   annotation: {
+  //     annotations: [
+  //       {
+  //         type: 'line',
+  //         mode: 'vertical',
+  //         scaleID: 'x-axis-0',
+  //         value: 'March',
+  //         borderColor: 'orange',
+  //         borderWidth: 2,
+  //         label: {
+  //           enabled: true,
+  //           fontColor: 'orange',
+  //           content: 'LineAnno'
+  //         }
+  //       },
+  //     ],
+  //   },
+  // };
+
+  // public lineChartColors: Color[] = [
+  //   { // grey
+  //     backgroundColor: 'rgba(148,159,177,0.2)',
+  //     borderColor: 'rgba(148,159,177,1)',
+  //     pointBackgroundColor: 'rgba(148,159,177,1)',
+  //     pointBorderColor: '#fff',
+  //     pointHoverBackgroundColor: '#fff',
+  //     pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+  //   },
+  //   { // dark grey
+  //     backgroundColor: 'rgba(77,83,96,0.2)',
+  //     borderColor: 'rgba(77,83,96,1)',
+  //     pointBackgroundColor: 'rgba(77,83,96,1)',
+  //     pointBorderColor: '#fff',
+  //     pointHoverBackgroundColor: '#fff',
+  //     pointHoverBorderColor: 'rgba(77,83,96,1)'
+  //   },
+  //   { // red
+  //     backgroundColor: null,
+  //     borderColor: 'red',
+  //     pointBackgroundColor: 'rgba(148,159,177,1)',
+  //     pointBorderColor: '#fff',
+  //     pointHoverBackgroundColor: '#fff',
+  //     pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+  //   }
+  // ];
+  // public lineChartLegend = true;
+  // public lineChartType: ChartType = 'line';
+  // @ViewChild(BaseChartDirective) chart: BaseChartDirective;
+
   public selectObsTaxonInfo;
   public formatedAreas = [];
   public CONFIG = AppConfig;
@@ -28,8 +108,8 @@ export class SyntheseInfoObsComponent implements OnInit {
   public email;
   public mailto: String;
 
-  public APP_CONFIG = AppConfig;
-
+  public profile: any;
+  public phenology: any[];
   public validationColor = {
     '0': '#FFFFFF',
     '1': '#8BC34A',
@@ -44,21 +124,27 @@ export class SyntheseInfoObsComponent implements OnInit {
     private _dataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
     public mediaService: MediaService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _mapService: MapService
   ) { }
 
   ngOnInit() {
-    this.loadOneSyntheseReleve(this.idSynthese);
+    this.loadAllInfo(this.idSynthese);
+    console.log(this.CONFIG);
+    
   }
 
-  ngOnChanges(changes) {
-    // load releve only after first init
-    if (changes.idSynthese && changes.idSynthese.currentValue && !changes.idSynthese.firstChange) {
-      this.loadOneSyntheseReleve(this.idSynthese);
-    }
+
+  // HACK to display a second map on validation tab
+  setValidationTab(event) {
+    this.showValidation = true;
+    setTimeout(() => {
+      this._mapService.map.invalidateSize();
+    }, 100);    
   }
 
-  loadOneSyntheseReleve(idSynthese) {
+
+  loadAllInfo(idSynthese) {
     this.isLoading = true;
     this._dataService
       .getOneSyntheseObservation(idSynthese)
@@ -68,7 +154,8 @@ export class SyntheseInfoObsComponent implements OnInit {
         })
       )
       .subscribe(data => {
-        this.selectedObs = data;
+        this.selectedObs = data["properties"];
+        this.selectedGeom = data;
         this.selectedObs['municipalities'] = [];
         this.selectedObs['other_areas'] = [];
         this.selectedObs['actors'] = this.selectedObs['actors'].split('|');
@@ -97,21 +184,48 @@ export class SyntheseInfoObsComponent implements OnInit {
         }
 
         this._gnDataService
-          .getTaxonAttributsAndMedia(data.cd_nom, AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB)
+          .getTaxonAttributsAndMedia(this.selectedObs.cd_nom, AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB)
           .subscribe(taxAttr => {
             this.selectObsTaxonInfo = taxAttr;
           });
 
         this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
-        this._gnDataService.getTaxonInfo(data.cd_nom).subscribe(taxInfo => {
+        this._gnDataService.getTaxonInfo(this.selectedObs['cd_nom']).subscribe(taxInfo => {
           this.selectedObsTaxonDetail = taxInfo;
           if (this.selectedObs.cor_observers) {
             this.email = this.selectedObs.cor_observers.map(el => el.email).join();
             this.mailto = this.formatMailContent(this.email);
             
           }
+
+          this._gnDataService.getProfile(taxInfo.cd_ref).subscribe(profile => {
+            
+            this.profile = profile;
+          });
+
+          // this._gnDataService.getPhenology(taxInfo.cd_ref, this.selectedObs.id_nomenclature_life_stage).subscribe(phenology => {
+          //   this.phenology = phenology;
+          //   for (let i = 0; i <= phenology.length - 1; i++) {
+          //     console.log(this.phenology[i])
+          //     this.results[0].data.push(this.phenology[i].extreme_altitude_min)
+          //     this.results[1].data.push(this.phenology[i].calculated_altitude_min)
+          //     this.results[2].data.push(this.phenology[i].extreme_altitude_max)
+          //     this.results[3].data.push(this.phenology[i].calculated_altitude_max)
+          //     this.lineChartLabels.push(this.phenology[i].period)
+          //   }
+          //   //this.myChart.chart.update();
+          //   // [
+          //   // { data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A' },
+          //   // { data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B' },
+          //   // { data: [180, 480, 770, 90, 1000, 270, 400], label: 'Series C', yAxisID: 'y-axis-1' }
+          //   // ]
+          // });
         });
       });
+
+    this._gnDataService.getProfileConsistancyData(this.idSynthese).subscribe(dataChecks => {
+      this.profileDataChecks = dataChecks;
+    })
   }
 
   formatMailContent(email) {
@@ -177,7 +291,6 @@ export class SyntheseInfoObsComponent implements OnInit {
       mailto = encodeURI(mailto);
       mailto = mailto.replace(/,/g, '%2c');
     }
-    console.log(mailto);
     
     return mailto;
   }
@@ -216,6 +329,60 @@ export class SyntheseInfoObsComponent implements OnInit {
       }
     );
   }
+
+  loadProfile(cdRef) {
+    this._gnDataService.getProfile(cdRef).subscribe(
+      data => {
+        this.profile = data;
+
+      },
+      err => {
+        console.log(err);
+        if (err.status === 404) {
+          this._commonService.translateToaster('warning', 'Aucun profile');
+        } else if (err.statusText === 'Unknown Error') {
+          // show error message if no connexion
+          this._commonService.translateToaster(
+            'error',
+            'ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)'
+          );
+        } else {
+          // show error message if other server error
+          this._commonService.translateToaster('error', err.error);
+        }
+      },
+      () => {
+        //console.log(this.statusNames);
+      }
+    );
+  }
+
+  /*loadProfile(cdRef) {
+    this._gnDataService.getProfile(cdRef).subscribe(
+      data => {
+        this.profile = data;
+
+      },
+      err => {
+        console.log(err);
+        if (err.status === 404) {
+          this._commonService.translateToaster('warning', 'Aucun profile');
+        } else if (err.statusText === 'Unknown Error') {
+          // show error message if no connexion
+          this._commonService.translateToaster(
+            'error',
+            'ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)'
+          );
+        } else {
+          // show error message if other server error
+          this._commonService.translateToaster('error', err.error);
+        }
+      },
+      () => {
+        //console.log(this.statusNames);
+      }
+    );
+  }*/
 
   backToModule(url_source, id_pk_source) {
     window.open(url_source + '/' + id_pk_source, '_blank');

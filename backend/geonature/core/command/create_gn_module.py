@@ -11,8 +11,13 @@ import os
 import sys
 import logging
 import subprocess
-from pkg_resources import load_entry_point
+import site
+import importlib
+import pkg_resources
+from pkg_resources import load_entry_point, get_entry_info
+from importlib import invalidate_caches
 from pathlib import Path
+import sqlalchemy.orm.exc as sa_exc
 
 import click
 from click import ClickException
@@ -58,7 +63,12 @@ log = logging.getLogger(__name__)
 @click.option("--build", type=bool, required=False, default=True)
 def install_packaged_gn_module(module_path, module_code, build):
     # install python package and dependencies
-    subprocess.run(f"pip install -e {module_path}", shell=True, check=True)
+    subprocess.run(f"pip install -e '{module_path}'", shell=True, check=True)
+
+    # refresh list of entry points
+    importlib.reload(site)
+    for entry in sys.path:
+        pkg_resources.working_set.add_entry(entry)
 
     # load python package
     module_dist = get_dist_from_code(module_code)
@@ -70,8 +80,11 @@ def install_packaged_gn_module(module_path, module_code, build):
         module_picto = load_entry_point(module_dist, 'gn_module', 'picto')
     except ImportError:
         module_picto = "fa-puzzle-piece"
-    module_object = TModules.query.filter_by(module_code=module_code).one()
-    if not module_object:
+    try:
+        module_object = TModules.query.filter_by(module_code=module_code).one()
+        module_object.module_picto=module_picto
+        db.session.merge(module_object)
+    except sa_exc.NoResultFound:
         module_object = TModules(
                 module_code=module_code,
                 module_label=module_code.lower(),
@@ -82,21 +95,29 @@ def install_packaged_gn_module(module_path, module_code, build):
                 active_backend=True,
         )
         db.session.add(module_object)
-    else:
-        module_object.module_picto=module_picto
-        db.session.merge(module_object)
     db.session.commit()
 
-    db_upgrade(revision=module_code.lower())
+    info = get_entry_info(module_dist, 'gn_module', 'migrations')
+    if info is not None:
+        try:
+            alembic_branch = load_entry_point(module_dist, 'gn_module', 'alembic_branch')
+        except ImportError:
+            alembic_branch = module_code.lower()
+        db_upgrade(revision=alembic_branch + '@head')
+    else:
+        log.info("Module do not provide any migration files, skipping database upgrade.")
 
     # symlink module in exernal module directory
     module_symlink = GN_EXTERNAL_MODULE / module_code.lower()
     if os.path.exists(module_symlink):
         target = os.readlink(module_symlink)
-        if os.path.abspath(module_path) != target:
-            raise ClickException(f"Module symlink has wrong target '{target}'")
+        if os.path.realpath(module_path) != os.path.realpath(target):
+            raise ClickException(f"Module symlink has wrong target: '{target}'")
     else:
         os.symlink(os.path.abspath(module_path), module_symlink)
+
+    # creation du fichier conf_gn_module.toml
+    gn_module_register_config(module_code)
 
     ### Frontend
     # creation du lien symbolique des assets externes
@@ -104,7 +125,7 @@ def install_packaged_gn_module(module_path, module_code, build):
         module_path, module_code.lower()
     )
 
-    install_frontend_dependencies(module_path)
+    install_frontend_dependencies(os.path.abspath(module_path))
     # generation du fichier tsconfig.app.json
     tsconfig_app_templating(app=current_app)
     # generation du routing du frontend

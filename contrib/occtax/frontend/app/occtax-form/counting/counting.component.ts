@@ -1,10 +1,11 @@
-import { Component, OnInit, Input } from "@angular/core";
+import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
 import { AppConfig } from "@geonature_config/app.config";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxFormCountingService } from "./counting.service";
+import { Subscription } from "rxjs";
 
 @Component({
   selector: "pnx-occtax-form-counting",
@@ -16,8 +17,9 @@ export class OcctaxFormCountingComponent implements OnInit {
   public occtaxConfig = ModuleConfig;
   public appConfig = AppConfig;
   public data : any;
-
+  public sub: Subscription
   @Input('form') countingForm: FormGroup;
+  @Output() lifeStageChange = new EventEmitter();
 
 
   constructor(
@@ -28,14 +30,15 @@ export class OcctaxFormCountingComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.occtaxFormCountingService.form = this.countingForm;
-  
+    this.occtaxFormCountingService.form = this.countingForm;    
+    this.sub = this.countingForm.get("id_nomenclature_life_stage").valueChanges
+    .filter(idNomenclatureLifeStage => idNomenclatureLifeStage)
+    .subscribe(idNomenclatureLifeStage => {      
+      this.lifeStageChange.emit(idNomenclatureLifeStage);
+    });
   }
 
-
-
-
-  taxref() {
+  get taxref() {
     const taxref = this.occtaxFormOccurrenceService.taxref.getValue();
     return taxref;
   }

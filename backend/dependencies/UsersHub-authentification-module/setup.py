@@ -27,7 +27,7 @@ setuptools.setup(
     install_requires=requirements,
     entry_points={
         'alembic': [
-            'migrations = pypnusershub:migrations',
+            'migrations = pypnusershub.migrations:versions',
         ],
     },
     classifiers=['Development Status :: 1 - Planning',

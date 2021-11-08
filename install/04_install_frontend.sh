@@ -1,9 +1,51 @@
 #!/bin/bash
 
+# DESC: Usage help
+# ARGS: None
+# OUTS: None
+function printScriptUsage() {
+  cat << EOF
+Usage: ./$(basename $BASH_SOURCE)[options]
+     -h | --help: display this help
+     -v | --verbose: display more infos
+     -x | --debug: display debug script infos
+     -d | --dev: use GeoNature in development mode.
+EOF
+  exit 0
+}
+
+# DESC: Parameter parser
+# ARGS: $@ (optional): Arguments provided to the script
+# OUTS: Variables indicating command-line parameters and options
+function parseScriptOptions() {
+  # Transform long options to short ones
+  for arg in "${@}"; do
+    shift
+    case "${arg}" in
+      "--help") set -- "${@}" "-h" ;;
+      "--verbose") set -- "${@}" "-v" ;;
+      "--debug") set -- "${@}" "-x" ;;
+      "--dev") set -- "${@}" "-d" ;;
+      "--"*) exitScript "ERROR : parameter '${arg}' invalid ! Use -h option to know more." 1 ;;
+      *) set -- "${@}" "${arg}"
+    esac
+  done
+
+  while getopts "hvxd" option; do
+    case "${option}" in
+      "h") printScriptUsage ;;
+      "v") readonly VERBOSE=true ;;
+      "x") readonly DEBUG=true; set -x ;;
+      "d") readonly MODE="dev" ;;
+      *) exitScript "ERROR : parameter invalid ! Use -h option to know more." 1 ;;
+    esac
+  done
+}
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 . "${SCRIPT_DIR}/utils"
 
+parseScriptOptions "${@}"
 
 write_log "Préparation du frontend..."
 
@@ -64,8 +106,7 @@ echo "Installation des paquets Npm"
 npm ci --only=prod || exit 1
 
 
-if [[ $MODE != "dev" ]]
-then
+if [[ "${MODE}" != "dev" ]]; then
   echo "Build du frontend..."
   cd "${BASE_DIR}/frontend"
   npm rebuild node-sass --force || exit 1

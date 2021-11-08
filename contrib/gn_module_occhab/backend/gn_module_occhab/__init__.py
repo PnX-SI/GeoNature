@@ -1,0 +1,2 @@
+MODULE_CODE = 'OCCHAB'
+MODULE_PICTO = 'fa-leaf'

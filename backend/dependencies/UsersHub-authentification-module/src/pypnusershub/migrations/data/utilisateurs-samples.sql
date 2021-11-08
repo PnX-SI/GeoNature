@@ -19,12 +19,72 @@ INSERT INTO t_roles (groupe, identifiant, nom_role, prenom_role, desc_role, pass
 ;
 -- Insertion de roles de type UTILISATEUR pour GeoNature
 INSERT INTO t_roles (groupe, identifiant, nom_role, prenom_role, desc_role, pass, email, date_insert, date_update, id_organisme, remarques, pass_plus) VALUES 
-(false, 'admin', 'Administrateur', 'test', NULL, '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, NULL, -1, 'utilisateur test à modifier', '$2y$13$TMuRXgvIg6/aAez0lXLLFu0lyPk4m8N55NDhvLoUHh/Ar3rFzjFT.')
-,(false, 'agent', 'Agent', 'test', NULL, 'b33aed8f3134996703dc39f9a7c95783', NULL, NULL, NULL, -1, 'utilisateur test à modifier ou supprimer', NULL)
-,(false, 'partenaire', 'Partenaire', 'test', NULL, '5bd40a8524882d75f3083903f2c912fc', NULL, NULL, NULL, -1, 'utilisateur test à modifier ou supprimer', NULL)
-,(false, 'pierre.paul', 'Paul', 'Pierre', NULL, '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, NULL, -1, 'utilisateur test à modifier ou supprimer', NULL)
-,(false, 'validateur', 'Validateur', 'test', NULL, '21232f297a57a5a743894a0e4a801fc3', NULL, NULL, NULL, -1, 'utilisateur test à modifier ou supprimer', NULL)
-;
+(
+    false,
+    'admin',
+    'Administrateur',
+    'test',
+    NULL,
+    '21232f297a57a5a743894a0e4a801fc3',
+    NULL,
+    NULL,
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'Autre'),
+    'utilisateur test à modifier',
+    '$2y$13$TMuRXgvIg6/aAez0lXLLFu0lyPk4m8N55NDhvLoUHh/Ar3rFzjFT.'
+),(
+    false,
+    'agent',
+    'Agent',
+    'test',
+    NULL,
+    'b33aed8f3134996703dc39f9a7c95783',
+    NULL,
+    NULL,
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'Autre'),
+    'utilisateur test à modifier ou supprimer',
+    NULL
+),(
+    false,
+    'partenaire',
+    'Partenaire',
+    'test',
+    NULL,
+    '5bd40a8524882d75f3083903f2c912fc',
+    NULL,
+    NULL,
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'Autre'),
+    'utilisateur test à modifier ou supprimer',
+    NULL
+),(
+    false,
+    'pierre.paul',
+    'Paul',
+    'Pierre',
+    NULL,
+    '21232f297a57a5a743894a0e4a801fc3',
+    NULL,
+    NULL,
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'Autre'),
+    'utilisateur test à modifier ou supprimer',
+    NULL
+),(
+    false,
+    'validateur',
+    'Validateur',
+    'test',
+    NULL,
+    '21232f297a57a5a743894a0e4a801fc3',
+    NULL,
+    NULL,
+    NULL,
+    (SELECT id_organisme FROM utilisateurs.bib_organismes WHERE nom_organisme = 'Autre'),
+    'utilisateur test à modifier ou supprimer',
+    NULL
+);
 
 -- Affectation des utilisateurs exemple dans des groupes
 INSERT INTO cor_roles (id_role_groupe, id_role_utilisateur) VALUES 

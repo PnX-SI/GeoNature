@@ -1,4 +1,5 @@
--- DROP SCHEMA IF EXISTS ref_geo CASCADE;
+-- Création du schéma "ref_geo" en version 2.7.5
+-- A partir de la version 2.8.0, les évolutions de la BDD sont gérées dans des migrations Alembic
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -8,9 +9,9 @@ SET check_function_bodies = false;
 SET client_min_messages = warning;
 
 
-CREATE SCHEMA IF NOT EXISTS ref_geo;
+CREATE SCHEMA ref_geo;
 
-SET search_path = ref_geo, pg_catalog;
+SET search_path = ref_geo, pg_catalog, public;
 
 
 -------------
@@ -98,7 +99,7 @@ $BODY$
   ROWS 1000;
 
 
-CREATE OR REPLACE FUNCTION fct_get_area_intersection(
+CREATE OR REPLACE FUNCTION ref_geo.fct_get_area_intersection(
   IN mygeom public.geometry,
   IN myidtype integer DEFAULT NULL::integer)
 RETURNS TABLE(id_area integer, id_type integer, area_code character varying, area_name character varying) AS
@@ -229,8 +230,8 @@ CREATE TABLE l_areas (
     id_type integer NOT NULL,
     area_name character varying(250),
     area_code character varying(25),
-    geom public.geometry(MultiPolygon,MYLOCALSRID),
-    centroid public.geometry(Point,MYLOCALSRID),
+    geom public.geometry(MultiPolygon, :local_srid),
+    centroid public.geometry(Point, :local_srid),
     geojson_4326 character varying,
     source character varying(250),
     comment text,
@@ -239,9 +240,9 @@ CREATE TABLE l_areas (
     meta_create_date timestamp without time zone,
     meta_update_date timestamp without time zone,
     CONSTRAINT enforce_geotype_l_areas_geom CHECK (((public.geometrytype(geom) = 'MULTIPOLYGON'::text) OR (geom IS NULL))),
-    CONSTRAINT enforce_srid_l_areas_geom CHECK ((public.st_srid(geom) = MYLOCALSRID)),
+    CONSTRAINT enforce_srid_l_areas_geom CHECK ((public.st_srid(geom) = :local_srid)),
     CONSTRAINT enforce_geotype_l_areas_centroid CHECK (((public.geometrytype(centroid) = 'POINT'::text) OR (centroid IS NULL))),
-    CONSTRAINT enforce_srid_l_areas_centroid CHECK ((public.st_srid(centroid) = MYLOCALSRID))
+    CONSTRAINT enforce_srid_l_areas_centroid CHECK ((public.st_srid(centroid) = :local_srid))
 );
 ALTER SEQUENCE l_areas_id_area_seq OWNED BY l_areas.id_area;
 ALTER TABLE ONLY l_areas ALTER COLUMN id_area SET DEFAULT nextval('l_areas_id_area_seq'::regclass);
@@ -293,7 +294,7 @@ CREATE TABLE dem
 CREATE TABLE dem_vector
 (
   gid serial NOT NULL,
-  geom public.geometry(Geometry,MYLOCALSRID),
+  geom public.geometry(Geometry, :local_srid),
   val double precision
 );
 
@@ -346,8 +347,6 @@ CREATE INDEX index_l_areas_centroid ON l_areas USING gist (centroid);
 CREATE INDEX index_dem_vector_geom ON dem_vector USING gist (geom);
 CREATE UNIQUE INDEX i_unique_l_areas_id_type_area_code ON l_areas (id_type, area_code);
 CREATE UNIQUE INDEX i_unique_bib_areas_types_type_code ON bib_areas_types(type_code);
-CREATE INDEX index_li_grids_id_area ON ref_geo.li_grids (id_area);
-CREATE INDEX index_li_municipalities_id_area ON ref_geo.li_municipalities (id_area);
 
 ------------
 --TRIGGERS--

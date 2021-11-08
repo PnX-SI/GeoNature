@@ -34,7 +34,6 @@ export class OcctaxFormReleveService {
   public datasetId : number = null;
   public datasetComponent;
   public previousReleve = null;
-  public formDisable = true;
 
   constructor(
     private router: Router,
@@ -134,10 +133,8 @@ export class OcctaxFormReleveService {
         "invalidDepth"
       ),
     ]);
-
-
     //on desactive le form, il sera réactivé si la geom est ok
-    this.propertiesForm.disable();
+    this.occtaxFormService.disabled = true;
     this.occtaxFormService.getAdditionnalFields(
       ["OCCTAX_RELEVE"]
     ).subscribe(addFields => {
@@ -147,8 +144,10 @@ export class OcctaxFormReleveService {
 
   onDatasetChanged(idDataset) {    
     const currentDataset = this._datasetStoreService.datasets.find(d => d.id_dataset == idDataset);
-    if(currentDataset && currentDataset.id_taxa_list) {      
+    if(currentDataset && currentDataset.id_taxa_list) {    
       this.occtaxFormService.idTaxonList = currentDataset.id_taxa_list;
+    } else {
+      this.occtaxFormService.idTaxonList = ModuleConfig.id_taxon_list
     }
     this.occtaxFormService.getAdditionnalFields(  
       ["OCCTAX_RELEVE"],
@@ -199,7 +198,7 @@ export class OcctaxFormReleveService {
         // re disable the form here
         // Angular bug: when we add additionnal form controls, it enable the form
         if(!values.id_releve_occtax) {
-          this.propertiesForm.disable();          
+          this.occtaxFormService.disabled = true;
         }
         // don't know why we have to patch observer separatly
         // but don't work in an other way
@@ -353,14 +352,14 @@ export class OcctaxFormReleveService {
     }
   }
 
-  getPreviousReleve(previousReleve) {
+  getPreviousReleve(previousReleve) {    
     if (previousReleve && !ModuleConfig.ENABLE_SETTINGS_TOOLS) {
       return {
         "id_dataset": previousReleve.properties.id_dataset,
         "observers": previousReleve.properties.observers,
         "observers_txt": previousReleve.properties.observers_txt,
-        "date_min": this.occtaxFormService.formatDate(previousReleve.properties.date_min),
-        "date_max": this.occtaxFormService.formatDate(previousReleve.properties.date_max),
+        "date_min": previousReleve.properties.date_min,
+        "date_max": previousReleve.properties.date_max,
         "hour_min": previousReleve.properties.hour_min,
         "hour_max": previousReleve.properties.hour_max,
       }
@@ -383,7 +382,7 @@ export class OcctaxFormReleveService {
       .getDefaultValues(this.occtaxFormService.currentUser.id_organisme)
       .pipe(
         map((data) => {          
-          const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);                
+          const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);           
           return {
             // datasetId could be get for get parameters (see releve.component)
             id_dataset: this.datasetId || this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset,
@@ -486,9 +485,9 @@ export class OcctaxFormReleveService {
           }
         );
     } else {
-      if(this.occtaxFormService.chainRecording) {        
-        this.occtaxFormService.previousReleve = JSON.parse(JSON.stringify(this.releveForm.value));
-      }
+      // save previous releve   
+      this.occtaxFormService.previousReleve = JSON.parse(JSON.stringify(this.releveForm.value));
+      
       //create
       this.occtaxDataService
         .createReleve(this.releveFormValue())
@@ -525,6 +524,6 @@ export class OcctaxFormReleveService {
 
   reset() {
     this.propertiesForm.reset(this.initialValues);
-    this.propertiesForm.disable();
+    this.occtaxFormService.disabled = true;
   }
 }

@@ -27,7 +27,6 @@ from pypnusershub.db.tools import (
     user_from_token,
     UnreadableAccessRightsError,
     AccessRightsExpiredError,
-    InsufficientRightsError,
 )
 
 
@@ -170,7 +169,7 @@ def login():
     try:
         user_data = request.json
         try:
-            id_app = user_data['id_application']
+            id_app = user_data.get('id_application', current_app.config['ID_APP'])
             login = user_data['login']
 
             user = (models.AppUser

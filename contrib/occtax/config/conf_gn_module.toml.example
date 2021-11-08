@@ -102,7 +102,7 @@ export_columns =  [
   "idOrigine",
   "jddId",
   "refBiblio",
-  "obsTech,
+  "obsTech",
   "ocEtatBio",
   "ocNat",
   "ocSex",
@@ -128,7 +128,7 @@ export_columns =  [
   "orgGestDat",
   "WKT",
   "natObjGeo",
-  "nomLieu
+  "nomLieu"
  ]
 
 # afficher l'outil pour pointer un marker à partir des coordonnées X/Y

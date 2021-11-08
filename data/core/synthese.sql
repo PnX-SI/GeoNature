@@ -1,3 +1,6 @@
+-- Création du schéma "gn_synthese" en version 2.7.5
+-- A partir de la version 2.8.0, les évolutions de la BDD sont gérées dans des migrations Alembic
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -142,7 +145,7 @@ CREATE TABLE synthese (
     place_name character varying(500),
     the_geom_4326 public.geometry(Geometry,4326),
     the_geom_point public.geometry(Point,4326),
-    the_geom_local public.geometry(Geometry,MYLOCALSRID),
+    the_geom_local public.geometry(Geometry,:local_srid),
     precision integer,
     id_area_attachment integer,
     date_min timestamp without time zone NOT NULL,
@@ -165,7 +168,7 @@ CREATE TABLE synthese (
     CONSTRAINT enforce_dims_the_geom_point CHECK ((public.st_ndims(the_geom_point) = 2)),
     CONSTRAINT enforce_geotype_the_geom_point CHECK (((public.geometrytype(the_geom_point) = 'POINT'::text) OR (the_geom_point IS NULL))),
     CONSTRAINT enforce_srid_the_geom_4326 CHECK ((public.st_srid(the_geom_4326) = 4326)),
-    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = MYLOCALSRID)),
+    CONSTRAINT enforce_srid_the_geom_local CHECK ((public.st_srid(the_geom_local) = :local_srid)),
     CONSTRAINT enforce_srid_the_geom_point CHECK ((public.st_srid(the_geom_point) = 4326))
 );
 COMMENT ON TABLE synthese IS 'Table de synthèse destinée à recevoir les données de tous les protocoles. Pour consultation uniquement';
@@ -314,7 +317,7 @@ ALTER TABLE ONLY cor_area_synthese
     ADD CONSTRAINT fk_cor_area_synthese_id_synthese FOREIGN KEY (id_synthese) REFERENCES synthese(id_synthese) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY cor_area_synthese
-    ADD CONSTRAINT fk_cor_area_synthese_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE ON DELETE CASCADE;
+    ADD CONSTRAINT fk_cor_area_synthese_id_area FOREIGN KEY (id_area) REFERENCES ref_geo.l_areas(id_area) ON UPDATE CASCADE;
 
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT fk_gn_synthese_defaults_nomenclatures_value_mnemonique_type FOREIGN KEY (mnemonique_type) REFERENCES ref_nomenclatures.bib_nomenclatures_types(mnemonique) ON UPDATE CASCADE;
@@ -416,7 +419,6 @@ ALTER TABLE ONLY defaults_nomenclatures_value
 ALTER TABLE ONLY defaults_nomenclatures_value
     ADD CONSTRAINT check_gn_synthese_defaults_nomenclatures_value_isregne CHECK (taxonomie.check_is_regne(regne::text) OR regne::text = '0'::text) NOT VALID;
 
-
 ----------------------
 --MATERIALIZED VIEWS--
 ----------------------
@@ -433,7 +435,7 @@ s as (
 ,loc AS (
   SELECT cd_ref,
 	count(*) AS nbobs,
-	public.ST_Transform(public.ST_SetSRID(public.box2d(public.ST_extent(s.the_geom_local))::geometry,MYLOCALSRID), 4326) AS bbox4326
+	public.ST_Transform(public.ST_SetSRID(public.box2d(public.ST_extent(s.the_geom_local))::geometry,:local_srid), 4326) AS bbox4326
   FROM  s
   GROUP BY cd_ref
 )
@@ -582,31 +584,6 @@ $BODY$
   $BODY$
   LANGUAGE plpgsql VOLATILE
   COST 100;
-
-CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_l_areas_insert_cor_area_synthese_on_each_statement()
- RETURNS trigger
- LANGUAGE plpgsql
-AS $function$
-  DECLARE
-  BEGIN
-  -- Intersection de toutes les observations avec les nouvelles zones et écriture dans cor_area_synthese
-      INSERT INTO gn_synthese.cor_area_synthese
-        SELECT
-          new_areas.id_area AS id_area,
-          s.id_synthese as id_synthese
-        FROM NEW as new_areas
-        join gn_synthese.synthese s
-          ON public.ST_INTERSECTS(s.the_geom_local, new_areas.geom)
-        WHERE new_areas.enable IS true
-            AND (
-                       ST_GeometryType(s.the_geom_local) = 'ST_Point'
-                   OR
-                       NOT public.ST_TOUCHES(s.the_geom_local, new_areas.geom)
-                   );
-  RETURN NULL;
-  END;
-  $function$
-;
 
 
 CREATE OR REPLACE FUNCTION gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement() RETURNS TRIGGER
@@ -1059,12 +1036,6 @@ CREATE TRIGGER tri_update_cor_area_synthese
   FOR EACH ROW
   EXECUTE PROCEDURE gn_synthese.fct_trig_update_in_cor_area_synthese();
 
-CREATE TRIGGER tri_insert_cor_area_synthese
-  AFTER INSERT ON ref_geo.l_areas
-  REFERENCING NEW TABLE AS NEW
-  FOR EACH STATEMENT
-  EXECUTE PROCEDURE gn_synthese.fct_trig_l_areas_insert_cor_area_synthese_on_each_statement();
-
 CREATE TRIGGER tri_insert_calculate_sensitivity
   AFTER INSERT ON gn_synthese.synthese
   REFERENCING NEW TABLE AS NEW
@@ -1239,8 +1210,6 @@ BEGIN
 $function$
 ;
 
-    -- Import dans la synthese, ajout de limit et offset 
-    -- pour pouvoir boucler et traiter des quantités raisonnables de données
 CREATE OR REPLACE FUNCTION gn_synthese.import_row_from_table(
         select_col_name character varying,
         select_col_val character varying,

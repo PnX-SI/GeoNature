@@ -8,10 +8,9 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { CommonService } from "@geonature_common/service/common.service";
-import { DataFormService } from "@geonature_common/form/data-form.service";
+import {DataFormService} from "@geonature_common/form/data-form.service"
 
 import { OcctaxDataService } from "../services/occtax-data.service";
-
 
 @Injectable()
 export class OcctaxFormService {
@@ -38,6 +37,7 @@ export class OcctaxFormService {
 
 
 
+
   constructor(
     private _http: HttpClient,
     private _router: Router,
@@ -45,9 +45,7 @@ export class OcctaxFormService {
     private _commonService: CommonService,
     private _dataS: OcctaxDataService,
     private dataFormService: DataFormService,
-
-
-  ) {    
+  ) {        
     this.currentUser = this._auth.getCurrentUser();
 
     //observation de l'URL
@@ -64,9 +62,7 @@ export class OcctaxFormService {
         filter((id) => id !== null),
         distinctUntilChanged(),
       )
-      .subscribe((id) => {
-        console.log("LOAD ?");
-                             
+      .subscribe((id) => {                             
         this.getOcctaxData(id)
       });
   }
@@ -202,5 +198,7 @@ export class OcctaxFormService {
 
       return inter;
   }
+
+
 
 }

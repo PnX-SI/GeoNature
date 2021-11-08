@@ -2,12 +2,203 @@
 CHANGELOG
 =========
 
+2.9.0 (unreleased)
+------------------
+
+**🚀 Nouveautés**
+
+* Construction d'une fiche d'identité (profil) par taxon grâce aux observations présente en base de données (altitude min/max, distribution spatiale, date de premiere/dernière observation, nombre de données valides, phénologie)
+* [OCCTAX] Contrôle de la cohérence des nouvelles données saisies par rapport au profil
+* [SYNTHESE] Création d'une "fiche taxon" à partir des informations décrites plus haut
+* [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
+* Passage à la librairie 'select2' pour les composants multiselects (@jbrieuclp)
+
+[DEV]
+* Factorisation du composant "pnx-municipalities" avec "pnx-areas"
+* Ajout de "pnx-areas" dans dynamic-form
+* Ajout d'un input "valueFieldName" pour "pnx-areas" et "pnx-municipalities"
+
+Note de version :
+
+Si vous avez surcouché le paramètre `AREA_FILTERS` de la section `[SYNTHESE]`, veuillez remplacer le `id_type` par le `type_code` (voir `ref_geo.bib_areas_types`)
+::
+
+    AREA_FILTERS = [
+        { label = "Communes", id_type = 25 }
+    ]
+devient
+
+::
+
+    AREA_FILTERS = [
+        { label = "Communes", type_code = "COM" }
+    ]
+
+Les nouvelles fonctionnalités liés aux profiles necessite de raffraichir des vues materialisées à intervales réguliers et donc de créer une tâche planfiée (cron):
+
+::
+
+      sudo su postgres
+      crontab -e
+
+Ajouter la ligne suivante en prenant changeant <MY_DB_NAME> par le nom de votre base de donnée GeoNature :
+
+::
+
+    0 * * * * psql -d <MY_DB_NAME>   -c "SELECT gn_profiles.refresh_profiles()"
+
+Cet exemple lance la tâche toute les nuits à minuit. Pour une autre fréquence voir la syntaxe cron : https://crontab.guru/
+
+Pour ceux qui utilisent le composant "pnx-municipalities" l'idéal serait de traduire les données et les modèle et de passer du ``code_insee`` a ``id_area``
+* la correspondance est immédiate (``area_code`` = ``code_insee``)
+
+Cependant, pour garder la retrocompatibilité du composant "pnx-municipalities" veuillez ajouter
+
+* dans les templates : ``[valueFieldName]="'area_code'`` dans les temaplte
+* dans les config (js, ts ou json) (attention à la casse): ``"value_field_name": "area_code"``
+* dans le module monitoring ajouter aussi ``"type_util": "area"``
+
+2.8.1 (2021-10-17)
+------------------
+
+**🚀 Nouveautés**
+
+* Ajout de l’indication du département au formulaire des communes (#1480)
+* Ajout des champs ``group2inpn`` et ``regne`` au formulaire des nomenclatures (#1481)
+
+**🐛 Corrections**
+
+* Correction de la commande ``geonature db autoupgrade``
+* Mise-à-jour corrective de `UsersHub-authentification-module 1.5.7 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.7>`__
+
+2.8.0 - Vaccinium myrtillus (2021-10-18)
+----------------------------------------
+
+**Gestion de la base de données avec Alembic**
+
+⚠️ Avant de mettre à jour GeoNature, vérifiez que les modules que vous utilisez disposent d'une version compatible avec la 2.8.0, suite au passage à la version 3 de Marshmallow.
+
+**🚀 Nouveautés**
+
+* Support de Debian 11 / Python 3.9
+* Passage de ``supervisor`` à ``systemd``
+* Gestion de la base de données et de ses évolutions avec Alembic (#880)
+* Mise à jour de la procédure d’installation afin d’utiliser Alembic (#880)
+* Révision et réorganisation des scripts et de la documentation d'installation
+* Passage à la version 3 de Marshmallow (#1451)
+* Suppression du paramètre ``ID_APP``, celui-ci est automatiquement déterminé à partir de la base de données et du code de l’application
+* Ajout d’un index sur le champs ``ref_geo.l_areas.id_area``
+* Mise à jour des dépendances
+
+  * `TaxHub 1.9.0 <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__
+  * `UsersHub-authentification-module 1.5.6 <https://github.com/PnX-SI/UsersHub-authentification-module/releases/tag/1.5.6>`__
+  * `Nomenclature-api-module 1.4.4 <https://github.com/PnX-SI/Nomenclature-api-module/releases/tag/1.4.4>`__
+  * `Habref-api-module 0.2.0 <https://github.com/PnX-SI/Habref-api-module/releases/tag/0.2.0>`__
+  * `Utils-Flask-SQLAlchemy 0.2.4 <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/releases/tag/0.2.4>`__
+  * `Utils-Flask-SQLAlchemy-Geo 0.2.1 <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/releases/tag/0.2.1>`__
+
+**🐛 Corrections**
+
+* Corrections et améliorations des formulaires dynamiques et des champs additionnels
+* Correction de l'envoi d'email lors de la récupération du mot de passe (#1471)
+* Occtax : Correction du focus sur le champs "taxon" quand on enchaine les taxons (#1462)
+* Occtax : Correction du formulaire de modification quand le relevé est une ligne ou un polygone (#1461)
+* Occtax : Correction de la conservation de la date quand on enchaine les relevés (#1442)
+* Occtax : Correction du paramètre d'export des champs additionnels (#1440)
+* Synthèse : correction de la recherche par jeu de données (#1494)
+* Correction de l'affichage des longues listes déroulantes dans les champs additionnels (#1442)
+* Mise à jour de la table ``cor_area_synthese`` lors de l’ajout de nouvelles zones via un trigger sur la table ``l_areas`` (#1433)
+* Correction de l'export PDF des fiches de métadonnées (#1449)
+* Jeux de données : correction de l’affichage des imports sources
+* Correction de la configuration Apache et de la gestion par flask d’un GeoNature accessible sur un préfix (e.g. ``/geonature``) (#1463)
+* Correction de la commande ``install_packaged_gn_module``
+* Correction des champs additionnels de type boutons radios (#1464 et #1472)
+* Occtax : Correction du contrôle des heures quand on est sur 2 mois distincts (#1468)
+* Suppression de nombreux identifiants en dur dans les scripts SQL de création de la BDD
+* Correction du trigger d'Occtax vers la Synthèse pour le champs ``Comportement`` (#1469)
+* Correction des fonctions ``get_default_nomenclature_value``
+* Correction du composant ``multiselect`` (#1488)
+* Correction du script ``migrate.sh`` pour récupérer le fichier ``custom.scss`` depuis son nouvel emplacement (#1430)
+* Correction du paramètre ``EXPORT_OBSERVERS_COL``
+* Métadonnées : Suppression en cascade sur les tables ``gn_meta.cor_dataset_territory`` et ``gn_meta.cor_dataset_protocol`` (#1452)
+* Correction de la commande ``install_packaged_gn_module`` : rechargement des entry points après installation avec pip d’un module packagé
+* Correction d’un bug lors de l’ajout d’un cadre d’acquisition
+
+**💻 Développement**
+
+* Mise à jour de plusieurs dépendances
+* Packetage des modules fournis avec GeoNature
+* L’utilisateur connecté est maintenant accessible via ``g.current_user``
+* Nettoyage et refactoring divers
+
+**⚠️ Notes de version**
+
+* Mettre à jour `UsersHub en version 2.2.1 <https://github.com/PnX-SI/UsersHub/releases/tag/2.2.1>`__ et `TaxHub en version 1.9.0 <https://github.com/PnX-SI/TaxHub/releases/tag/1.9.0>`__ (si vous les utilisez) **en sautant leur étape de passage à Alembic** (car la mise à jour de GeoNature se charge désormais de mettre à jour aussi les schémas ``taxonomie`` et ``utilisateurs``)
+* Suppression de ``supervisor`` :
+
+  * Stopper GeoNature : ``sudo supervisorctl stop geonature2``
+  * Supprimer le fichier de configuration supervisor de GeoNature : ``sudo rm /etc/supervisor/conf.d/geonature-service.conf``
+  * Si supervisor n’est plus utilisé par aucun service (répertoire ``/etc/supervisor/conf.d/`` vide), il peut être désinstallé (``sudo apt remove supervisor``)
+
+* Suivre la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
+* Passage à ``systemd`` :
+
+  * Copier le fichier ``install/assets/geonature.service`` dans ``/etc/systemd/system/``
+  * Éditer ``/etc/systemd/system/geonature.service`` et remplacer les variables ``${USER}`` (votre utilisateur linux courant) et ``${BASE_DIR}`` (chemin absolu du répertoire de GeoNature) par les valeurs appropriées
+  * Lancer la commande ``sudo systemctl daemon-reload``
+  * Pour démarrer GeoNature : ``sudo systemctl start geonature``
+  * Pour lancer GeoNature automatiquement au démarrage du serveur : ``sudo systemctl enable geonature``
+
+* Correction de la configuration Apache : si vous servez GeoNature sur un préfixe (typiquement ``/geonature/api``), assurez vous que ce préfixe figure bien également à la fin des directives ``ProxyPass`` et ``ProxyPassReverse`` comme dans l’exemple suivant :
+
+  .. code-block::
+
+    <Location /geonature/api>
+        ProxyPass http://127.0.0.1:8000/geonature/api
+        ProxyPassReverse  http://127.0.0.1:8000/geonature/api
+    </Location>
+
+
+  Pensez à recharger Apache si vous êtes amené à en changer la configuration : ``sudo systemctl reload apache2``
+
+* Passage à Alembic :
+
+  * S’assurer d’avoir une base de données de GeoNature en version 2.7.5
+  * Si vous avez UsersHub installé, ajoutez dans votre configuration GeoNature la section suivante (en adaptant le chemin) :
+
+  .. code-block::
+
+      [ALEMBIC]
+      VERSION_LOCATIONS = '/path/to/usershub/app/migrations/versions'
+
+  * Entrer dans le virtualenv afin d’avoir la commande ``geonature`` disponible : ``source backend/venv/bin/activate``
+  * Exécuter les commandes suivantes afin d’indiquer à Alembic l’état de votre base de données :
+
+  .. code-block::
+
+      geonature db stamp f06cc80cc8ba  # GeoNature 2.7.5
+      geonature db stamp 0dfdbfbccd63  # référentiel géographique des communes
+      geonature db stamp 3fdaa1805575  # référentiel géographique des départements
+      geonature db stamp 586613e2faeb  # référentiel géographique des mailles 1×1
+      geonature db stamp 7d6e98441e4c  # référentiel géographique des mailles 5×5
+      geonature db stamp ede150d9afd9  # référentiel géographique des mailles 10×10
+      geonature db stamp 1715cf31a75d  # MNT de l’IGN
+
+  * Si vous aviez déjà intallé certains modules, vous devez l’indiquer à Alembic :
+
+    * Module *Occtax* : ``geonature db stamp f57107d2d0ad``
+    * Module *Occhab* : ``geonature db stamp 2984569d5df6``
+
+  * Mettre sa base de données à jour avec Alembic : ``geonature db autoupgrade``
+
+  Pour plus d’information sur l’utilisation d’Alembic, voir la `documentation administrateur de GeoNature <https://docs.geonature.fr/admin-manual.html#administration-avec-alembic>`_.
+
 2.7.5 (2021-07-28)
 ------------------
 
 **🐛 Corrections**
 
-* Compatibilité avec Occtax-mobile 1.3. Possibilité d'ajouter la query string ``fields`` sur la route ``meta/datasets`` pour choisir les champs renvoyés par l'API 
+* Compatibilité avec Occtax-mobile 1.3. Possibilité d'ajouter la query string ``fields`` sur la route ``meta/datasets`` pour choisir les champs renvoyés par l'API
 
 **⚠️ Notes de version**
 
@@ -104,14 +295,14 @@ Nécessite la version 1.8.x de TaxHub.
 * Occtax : Par défaut la recherche de taxon n'interroge pas une liste mais tout Taxref, si aucune liste de taxons n'a été spécifiée dans la configuration du module Occtax (voir notes de version) (#1315)
 * Occtax/Metadonnées : possibilité d'associer une liste de taxons à un JDD (implémenté uniquement dans Occtax) (#1315)
 * Occtax : Possibilité d'ajouter les infos sur les médias dans les exports (paramètre ``ADD_MEDIA_IN_EXPORT``) (#1326)
-* Occtax : Possibilité de paramétrer l'affichage des champs du composant MEDIA dans OCCTAX (paramètre ``MEDIA_FIELDS_DETAILS`` - #1287) 
+* Occtax : Possibilité de paramétrer l'affichage des champs du composant MEDIA dans OCCTAX (paramètre ``MEDIA_FIELDS_DETAILS`` - #1287)
 * Occtax : Possibilité de filtrer la liste des habitats du formulaire avec les nouveaux paramètres ``ID_LIST_HABITAT`` et ``CD_TYPO_HABITAT``
 * Occtax : Possibilité d'ouvrir le module avec un JDD pré-selectionné en passant le paramètre ``id_dataset`` dans l'URL (#1071)
 * Accueil : Réorganisation des blocs (#1375)
 * Accueil : Ajout d'un paramètre controlant la fréquence de MAJ du cache des statistiques de la page d'accueil (``STAT_BLOC_TTL``, par défaut 1h: 3600 secondes) (#1320)
 * Amélioration des performances de récupération des modules et du CRUVED
 * Monitoring : Ajout d'un trigger garantissant la cohérence entre ``date_min`` et ``date_max`` et historisation de la table ``gn_monitoring.cor_visit_observer`` (#1247)
-* La page d'authentification affiche désormais le nom de l'application (``appName``) défini dans la configuration de GeoNature (#1277) 
+* La page d'authentification affiche désormais le nom de l'application (``appName``) défini dans la configuration de GeoNature (#1277)
 * Possibilité d'ouvrir l'accès à GeoNature sans authentification (voir documentation d'administration) (#1323)
 * Métadonnées : Optimisation du temps de chargement des listes des CA et JDD (#1291)
 * Métadonnées : Passage de la version 1.3.9 du standard SINP à la version 1.3.10 et ajout des champs liés dans les formulaires (#1291)
@@ -156,7 +347,7 @@ Nécessite la version 1.8.x de TaxHub.
 **💻 Développement**
 
 * Possibilité d'utiliser la commande ``flask`` (eg ``flask shell``)
-* Préparation de l'utilisation d'alembic pour la gestion des migrations de la structure de la BDD (#880)
+* Préparation de l'utilisation d'Alembic pour la gestion des migrations de la structure de la BDD (#880)
 * Possibilité d'importer des modules packagés (#1272)
 * Réorganisation des fichiers ``requirements`` et installation des branches ``develop`` des dépendances du fichier ``requirements-dev.txt``
 * Simplification de la gestion des erreurs
@@ -179,7 +370,7 @@ Si vous mettez à jour GeoNature :
 * Le fichier de customisation CSS a été déplacé de ``frontend/src/custom/custom.scss`` vers ``frontend/src/assets/custom.css`` pour pouvoir être modifier sans devoir rebuilder l'application. Son déplacement est fait automatiquement lors de la mise à jour de GeoNature. Si vous avez customisé les styles dans ce fichier et notamment fait référence à d'autres fichiers, vérifiez ou adaptez leurs chemins
 * Si vous aviez renseigner un des deux paramètres ``LIST_COLUMNS_FRONTEND``, ``COLUMNS_API_VALIDATION_WEB_APP`` dans le module Validation, il est nécessaire de les remplacer par le nouveau paramètre ``COLUMN_LIST``. Voir le fichier ``contrib/gn_module_validation/config/conf_gn_module.toml.example``
 * Modifier dans le fichier ``/etc/supervisor/conf.d/geonature-service.conf``, remplacer ``gn_errors.log`` par ``supervisor.log`` dans la variable ``stdout_logfile`` :
- 
+
 ::
 
     sudo sed -i 's|\(stdout_logfile = .*\)/gn_errors.log|\1/supervisor.log|' /etc/supervisor/conf.d/geonature-service.conf
@@ -429,13 +620,13 @@ Occtax v2 et médias
   - Renommage du champs "Méthode d'observation" en "Technique d'observation"
   - Suppression du champs "Technique d'observation" actuel de la synthèse
   - Renommage du champs "Technique d'observation" actuel d'Occtax en "Technique de collecte Campanule"
-  - Ajout et mise à jour de quelques nomenclatures 
+  - Ajout et mise à jour de quelques nomenclatures
   - Ajout d'un document de suivi de l'implémentation du standard Occurrences de taxon dans GeoNature (``docs/implementation_gn_standard_occtax2.0.ods``) (#516)
 
 * Passage de la version 1.3.9 à la version 1.3.10 du standard de Métadonnées. Mise à jour des nomenclatures "CA_OBJECTIFS" et mise à jour des métadonnées existantes en conséquence (par @DonovanMaillard)
 * Ajout d'un champs ``addtional_data`` de type ``jsonb`` dans la table ``gn_synthese.synthese``, en prévision de l'ajout des champs additionnels dans Occtax et Synthèse (#1007)
 * Mise en place de la gestion transversale et générique des médias (images, audios, vidéos, PDF...) dans ``gn_commons.t_medias`` et le Dynamic-Form (#336) et implémentation dans le module Occtax (désactivables avec le paramètre ``ENABLE_MEDIAS``) (#620 par @joelclems)
-* Mise en place de miniatures et d'aperçus des médias, ainsi que de nombreux contrôles des fichiers et de leurs formats 
+* Mise en place de miniatures et d'aperçus des médias, ainsi que de nombreux contrôles des fichiers et de leurs formats
 * Affichage des médias dans les fiches d'information des modules de saisie, ainsi que dans les modules Synthèse et Validation
 * Ajout de la fonctionnalité "Mes lieux" (``gn_commons.t_places``), permettant de stocker la géométrie de ieux individuels fréquemment utilisés, implémentée dans le module cartographique d'Occtax (désactivable avec le paramètre ``ENABLE_MY_PLACES``) (#246 par @metourneau)
 * Tri de l'ordre des modules dans le menu latéral par ordre alphabétique par défaut et possibilité de les ordonner avec le nouveau champs ``gn_commons.t_modules.module_order`` (#787 par @alainlaupinmnhn)
@@ -492,9 +683,9 @@ Si vous mettez à jour GeoNature :
 * Suivez la procédure classique de mise à jour de GeoNature (http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application)
 * A noter, quelques changements dans les paramètres du module Occtax. Les paramètres d'affichage/masquage des champs du formulaire ont évolué ainsi :
 
-  - ``obs_meth`` devient ``obs_tech`` 
+  - ``obs_meth`` devient ``obs_tech``
   - ``obs_technique`` devient ``tech_collect``
-  
+
 * A noter aussi que cette version de GeoNature est compatible avec la version 1.1.0 minimum d'Occtax-mobile (du fait de la mise du standard Occurrence de taxons)
 
 
@@ -577,7 +768,7 @@ Si vous mettez à jour GeoNature.
 * Vous devez d'abord mettre à jour TaxHub en version 1.7.0
 * Si vous mettez à jour TaxHub, vous pouvez mettre à jour Taxref en version 13. Il est aussi possible de le faire en différé, plus tard
 * Vous pouvez mettre à jour UsersHub en version 2.1.2
-* Exécuter le script SQL de mise à jour des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.2to1.3.3.sql). 
+* Exécuter le script SQL de mise à jour des nomenclatures (https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update1.3.2to1.3.3.sql).
 * Si vous avez mis à jour Taxref en version 13, répercutez les évolutions au niveau des nomenclatures avec le script SQL https://github.com/PnX-SI/Nomenclature-api-module/blob/master/data/update_taxref_v13.sql. Sinon vous devrez l'exécuter plus tard, après avoir mis à jour Taxref en version 13. Après avoir mis à jour Taxref en version 13, pensez à mettre à jour le paramètre ``taxref_version`` dans la table ``gn_commons.t_parameters``.
 * Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.3.2to2.4.0.sql)
 * Installer les dépendances de la librairie Python WeasyPrint :
@@ -590,7 +781,7 @@ Si vous mettez à jour GeoNature.
     sudo apt-get install -y libgdk-pixbuf2.0-0
     sudo apt-get install -y libffi-dev
     sudo apt-get install -y shared-mime-info
-    
+
 * Corriger l'utilisation des paramètres du proxy (#944) dans le fichier ``backend/gunicorn_start.sh`` en remplaçant les 2 lignes :
 
 ::

@@ -6,3 +6,4 @@ requests
 sqlalchemy
 utils-flask-sqlalchemy
 flask-marshmallow
+marshmallow-sqlalchemy

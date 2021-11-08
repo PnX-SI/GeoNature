@@ -20,7 +20,6 @@ import { DatasetStoreService } from "./dataset.service";
  * <pnx-datasets
  * [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_frameworks.value"
  * [multiSelect]='true'
- *  [displayAll]="true"
  * [parentFormControl]="formService.searchForm.controls.id_dataset"
  * label="{{ 'MetaData.Datasets' | translate}}"
  * </pnx-datasets>
@@ -41,9 +40,6 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
    *  Utiliser cet Input lorsque le composant ``pnx-acquisition-framework`` est en mode select simple.
    */
   @Input() idAcquisitionFramework: number;
-  /**
-   * Est-ce que le composant doit afficher l'item "tous" dans les options du select ? (facultatif)
-   */
   @Input() bindAllItem: boolean = false;
   /**
    * Booléan qui controle si on affiche seulement les JDD actifs ou également ceux qui sont inatif
@@ -54,6 +50,8 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
    * code du module pour n'afficher que les JDD associés au module
    */
   @Input() moduleCode: string;
+  @Input() bindValue: string = "id_dataset";
+
 
   constructor(
     private _dfs: DataFormService,
@@ -66,6 +64,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   }
 
   ngOnInit() {
+    this.bindValue = this.bindAllItem ? null : this.bindValue;
     this.getDatasets();
   }
 

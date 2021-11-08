@@ -1,14 +1,14 @@
 ###############################################################################
 # Liste complète des paramètres et de leurs valeurs par défaut
-# 
-# UTILISATION : piochez les paramètres que vous souhaitez surcoucher dans ce 
+#
+# UTILISATION : piochez les paramètres que vous souhaitez surcoucher dans ce
 #     fichier et intégrez les au fichier 'config/geonature_config.toml'.
 #
-# ATTENTION : Les paramètres qui ne sont pas dans une section (entre crochets) 
+# ATTENTION : Les paramètres qui ne sont pas dans une section (entre crochets)
 #     doivent être au début du fichier !
 #     Les paramètres dans une section doivent être maintenus dans leur section.
 #
-# NOTES : après toute modification dans ce fichier, il est nécessaire de 
+# NOTES : après toute modification dans ce fichier, il est nécessaire de
 #     mettre à jour GeoNature à l'aide de la commande :
 #     `geonature update_configuration`
 ###############################################################################
@@ -111,12 +111,12 @@ MAIL_ON_ERROR = false
     MAIL_ASCII_ATTACHMENTS = false
     # Email(s) où envoyer les erreurs générées par le backend de GeoNature.
     # Deux syntaxes alternatives sont autorisées pour ce paramètre :
-    # - une chaine contenant un ou plusieurs emails séparés par des 
+    # - une chaine contenant un ou plusieurs emails séparés par des
     #   virgules (exemple ci-dessous).
     # - une liste de chaine contenant un email.
     # Un email encadré par des chevrons (<>) peut être précédé par un
     # libellé qui sera utilisé lors de l'envoi.
-    # Les espaces présents en début et fin de chaine ainsi qu'avant et 
+    # Les espaces présents en début et fin de chaine ainsi qu'avant et
     # après les virgules sont ignorés.
     ERROR_MAIL_TO = ["Prénom NOM <email@email.com>", "email2@email.com"]
 
@@ -163,7 +163,7 @@ MAIL_ON_ERROR = false
 
     # Affiche un bloc de stat sur la page d'accueil
     DISPLAY_STAT_BLOC = true
-    # Périodicité du renouvellement du cache des stats (local storage) 
+    # Périodicité du renouvellement du cache des stats (local storage)
     # dans le navigateur en secondes. Défaut : 3600s (= 1h)
     STAT_BLOC_TTL = 3600
 
@@ -172,14 +172,20 @@ MAIL_ON_ERROR = false
 
     # Passe le frontend en mode multilingue (non implémenté pour l'instant)
     MULTILINGUAL = false
-    
+
     #Affiche les emails des observateurs dans les modules Synthese et Validation
     DISPLAY_EMAIL_INFO_OBS = true
 
     # Ajoute du contenu à l'email validation / synthèse
 
-    #Information de l'observation à mettre dans l'email 
+    #Information de l'observation à mettre dans l'email
     DISPLAY_EMAIL_DISPLAY_INFO = ["NOM_VERN", "DATE", "COMMUNES", "MEDIAS"]
+
+    # Activer l'affichage des informations liées aux profils de taxons
+    ENABLE_PROFILES = true
+
+    # Activer l'affichage des informations liées aux profils de taxons
+    ENABLE_PROFILES = true
 
 # Configuration de l'affichage des cartes dans GeoNature
 [MAPCONFIG]
@@ -200,12 +206,12 @@ MAIL_ON_ERROR = false
 
 # Liste des fonds de carte proposés sur les cartes de GeoNature
 # chaque section [[MAPCONFIG.BASEMAP]] définit un fond de carte
-# l'option service est obligatoire uniquement pour les wms 
+# l'option service est obligatoire uniquement pour les wms
 # l'ensemble des paramètre WMS peuvent être passé dans cette section
 [[MAPCONFIG.BASEMAP]]
     name = "OpenstreetMap"
     url = "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
-    attributions = "OSM contributors"
+    attribution = "OSM contributors"
 [[MAPCONFIG.BASEMAP]]
     name = "WMS"
     url = "https://mon_flux_wms"
@@ -213,7 +219,7 @@ MAIL_ON_ERROR = false
     layers = 'ma_layer'
     attribution = 'lala'
 [[MAPCONFIG.BASEMAP]]
-    attributions = "GoogleSatellite"
+    attribution = "GoogleSatellite"
     name = "google"
     url = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
     subdomains = ["mt0", "mt1", "mt2", "mt3"]
@@ -221,12 +227,12 @@ MAIL_ON_ERROR = false
 # Configuration du module Synthese
 [SYNTHESE]
     # Liste des entités géographiques sur lesquelles les filtres
-    # géographiques de la synthese s'appuient 
+    # géographiques de la synthese s'appuient
     # (id_area = id de l'entité géo, table ref_geo.bib_areas_types).
     # ATTENTION : Si de nouveaux types d'entités géographiques sont intégrés
-    # dans la table ref_geo.l_areas, il faut bien recalculer les valeurs de 
-    # la table gn_synthese.cor_area_synthese en conséquence pour que 
-    # les données déjà présentes dans la synthèse soient associées à 
+    # dans la table ref_geo.l_areas, il faut bien recalculer les valeurs de
+    # la table gn_synthese.cor_area_synthese en conséquence pour que
+    # les données déjà présentes dans la synthèse soient associées à
     # ces nouvelles géométries.
     AREA_FILTERS = [
         { label = "Communes", id_type = 25 }
@@ -234,7 +240,7 @@ MAIL_ON_ERROR = false
 
     # Colonne à afficher par défaut sur la liste des résultats de la synthese
     # Choisir le champ 'prop' parmis les colonnes suivantes :
-    # id_synthese, date_min, cd_nom, lb_nom, nom_vern_or_lb_nom, st_asgeojson, 
+    # id_synthese, date_min, cd_nom, lb_nom, nom_vern_or_lb_nom, st_asgeojson,
     # observers, dataset_name, url_source, count_min_max
     LIST_COLUMNS_FRONTEND = [
         { prop = "nom_vern_or_lb_nom", name = "Taxon" },
@@ -242,27 +248,27 @@ MAIL_ON_ERROR = false
         { prop = "observers", name = "Observateurs" },
         { prop = "dataset_name", name = "Jeu de données" }
     ]
-    
+
     # Nombre de résultats à afficher pour la recherche autocompletée de taxon
     TAXON_RESULT_NUMBER = 20
 
     # Liste de 'id_attribut' TaxHub à afficher dans :
-    # - la modale du détail d'une observation 
+    # - la modale du détail d'une observation
     # - les filtres taxonomique avancés
     ID_ATTRIBUT_TAXHUB = [102, 103]
 
     # Colonne de la table `gn_synthese.synthese` à masquer dans les filtres
-    # du formulaire 'occurrence avancé'. Par défaut, c'est un tableau vide. 
+    # du formulaire 'occurrence avancé'. Par défaut, c'est un tableau vide.
     # Exemple : pour enlever le filtre 'preuve non numérique'
     EXCLUDED_COLUMNS = ["non_digital_proof"]
 
-    # Affiche (=true) ou masque (=false) l'arbre de recherche taxonomique 
+    # Affiche (=true) ou masque (=false) l'arbre de recherche taxonomique
     # dans la recherche taxonomique avancée.
     # Cette fonctionnalité n'est pas actuallement stable sur un grand nombre de taxons.
     # Passer à 'false' si le temps de chargement est trop long.
     DISPLAY_TAXON_TREE = true
 
-    # Active (=true) ou pas (=false) le fait de rechercher sur le nom d'observateur 
+    # Active (=true) ou pas (=false) le fait de rechercher sur le nom d'observateur
     # en 'ILIKE' sur les portées 1 et 2 du CRUVED
     CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = false
 
@@ -272,7 +278,7 @@ MAIL_ON_ERROR = false
     ID_SEARCH_OBSERVER_LIST = 1
 
     # Activer (=true) ou pas (=false) la clusterisation des objets sur la carte
-    # Si 'false', passez le NB_MAX_OBS_MAP à 10000 pour éviter 
+    # Si 'false', passez le NB_MAX_OBS_MAP à 10000 pour éviter
     # de surcharger les navigateurs des clients (question de performances).
     ENABLE_LEAFLET_CLUSTER = true
 
@@ -280,7 +286,7 @@ MAIL_ON_ERROR = false
     NB_MAX_OBS_MAP = 50000
 
     # Nombre des dernières observations affichées par défaut
-    # sur la page d'accueil de la Synthèse 
+    # sur la page d'accueil de la Synthèse
     NB_LAST_OBS = 100
 
     # Nombre max d'observations dans les exports
@@ -290,10 +296,10 @@ MAIL_ON_ERROR = false
     EXPORT_ID_SYNTHESE_COL = "id_synthese"
     EXPORT_ID_DATASET_COL = "jdd_id"
     EXPORT_ID_DIGITISER_COL = "id_digitiser"
-    EXPORT_OBSERVERS_COL = "observateur"
+    EXPORT_OBSERVERS_COL = "observateurs"
     EXPORT_GEOJSON_4326_COL = "geojson_4326"
     EXPORT_GEOJSON_LOCAL_COL = "geojson_local"
-    
+
     # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
     EXPORT_FORMAT = ["csv", "geojson", "shapefile"]
 
@@ -301,7 +307,7 @@ MAIL_ON_ERROR = false
     EXPORT_METADATA_ID_DATASET_COL = "jdd_id"
     EXPORT_METADATA_ACTOR_COL = "acteurs"
 
-    # Champs à afficher dans l'export 
+    # Champs à afficher dans l'export
     # Voir les noms des champs de la ``vue gn_synthese.v_synthese_for_export``
     EXPORT_COLUMNS   = [
         "date_debut",
@@ -386,7 +392,7 @@ MAIL_ON_ERROR = false
     # Utilisée par GN2PG  
     LOG_API = true
 
-# Configuration de l'accès sans authentication 
+# Configuration de l'accès sans authentication
 [PUBLIC_ACCESS]
     PUBLIC_LOGIN = "admin"
     PUBLIC_PASSWORD = "admin"
@@ -397,11 +403,11 @@ MAIL_ON_ERROR = false
     # Activer l'affichage du lien vers le formulaire d'inscription
     ENABLE_SIGN_UP = true
 
-    # Activer l'affichage de l'onglet de gestion des demandes de compte 
+    # Activer l'affichage de l'onglet de gestion des demandes de compte
     # utilisateur
     ENABLE_USER_MANAGEMENT = false
 
-    # Valider automatiquement la demande de création de compte (=true), 
+    # Valider automatiquement la demande de création de compte (=true),
     # sinon nécessite une validation (=false)
     AUTO_ACCOUNT_CREATION = false
 
@@ -411,12 +417,12 @@ MAIL_ON_ERROR = false
 
     # Email du validateur si auto_account_creation = false.
     # Deux syntaxes alternatives sont autorisées pour ce paramètre :
-    # - une chaine contenant un ou plusieurs emails séparés par des 
+    # - une chaine contenant un ou plusieurs emails séparés par des
     #   virgules (exemple ci-dessous).
     # - une liste de chaine contenant un email.
     # Un email encadré par des chevrons (<>) peut être précédé par un
     # libellé qui sera utilisé lors de l'envoi.
-    # Les espaces présents en début et fin de chaine ainsi qu'avant et 
+    # Les espaces présents en début et fin de chaine ainsi qu'avant et
     # après les virgules sont ignorés.
     VALIDATOR_EMAIL = """
         Théo LECHEMIA <theo.lechemia@ecrins-parcnational.fr>,
@@ -432,7 +438,7 @@ MAIL_ON_ERROR = false
         </p>"""
 
     # Configuration de la customisation du formulaire d'inscription
-    # Chaque section [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]] correspond à un 
+    # Chaque section [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]] correspond à un
     # champ (de type checkbox, select etc...)
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "checkbox"
@@ -441,7 +447,7 @@ MAIL_ON_ERROR = false
                 J'ai lu et j'accepte la charte
             </a>"""
         attribut_name = "validate_charte"
-        values = [true] 
+        values = [true]
         required = true
     [[ACCOUNT_MANAGEMENT.ACCOUNT_FORM]]
         type_widget = "text"
@@ -480,9 +486,9 @@ MAIL_ON_ERROR = false
         class = "alert alert-primary"
         # Contenu HTML à insérer dans la balise DIV
         html = """
-            <p>Merci pour votre demande d’inscription. Après 
-            <strong>validation de l’administrateur</strong>, vous 
-            pourrez accéder aux observations publiques avec leur 
+            <p>Merci pour votre demande d’inscription. Après
+            <strong>validation de l’administrateur</strong>, vous
+            pourrez accéder aux observations publiques avec leur
             précision de géolocalisation maximale.</p>"""
 
 [SERVER]
@@ -497,7 +503,7 @@ MAIL_ON_ERROR = false
     MEDIAS_SIZE_MAX = 10000
 
 # Module métadonnées
-[METADATADA]
+[METADATA]
     # Nombre de cadre d'acquisition affiché sur la liste
     NB_AF_DISPLAYED = 100
     # activer la fonctionalité de dépot/publication

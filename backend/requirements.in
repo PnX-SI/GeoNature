@@ -12,6 +12,7 @@ pillow
 weasyprint<53
 lxml
 xmltodict
+sqlalchemy<1.4
 
 utils-flask-sqlalchemy
 utils-flask-sqlalchemy-geo

@@ -27,6 +27,7 @@ from flask import (
 from functools import wraps
 
 from .db.models import Application, UserApplicationRight, AppUser, db
+from .env import REGISTER_POST_ACTION_FCT
 
 from flask import current_app
 
@@ -205,14 +206,12 @@ def post_usershub(type_action):
 
 def after_request(type_action, data, *args, **kwargs):
     '''
-        lorsqu'une fonction est definie dans config['after_USERSHUB_request'][type_action]
+        lorsqu'une fonction est definie dans REGISTER_POST_ACTION_FCT[type_action]
         elle est executée avec les données fournies en retour de la requete USERSHUB
     '''
-    after_request_dict = current_app.config.get('after_USERSHUB_request', None)
-
-    if not after_request_dict:
+    if not REGISTER_POST_ACTION_FCT:
         return 0
-    f = after_request_dict.get(type_action, None)
+    f = REGISTER_POST_ACTION_FCT.get(type_action, None)
 
     if not f:
         return 0

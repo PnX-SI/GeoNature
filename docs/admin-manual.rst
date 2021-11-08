@@ -14,7 +14,7 @@ GeoNature possède une architecture modulaire et s'appuie sur plusieurs "service
 GeoNature a également une séparation claire entre le backend (API: intéraction avec la base de données) et le frontend (interface utilisateur). Le backend peut être considéré comme un "service" dont se sert le frontend pour récupérer ou poster des données.
 NB : Le backend et le frontend se lancent séparément dans GeoNature.
 
-.. image :: http://geonature.fr/docs/img/admin-manual/design-geonature.png
+.. image :: _static/design-geonature.png
 
 Base de données
 ---------------
@@ -46,11 +46,11 @@ Depuis la version 2.0.0-rc.4, il faut noter que les droits (CRUVED) ont été re
 
 Modèle simplifié de la BDD (2017-12-15) :
 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2017-12-15-GN2-MCD-simplifie.jpg
+.. image :: _static/2017-12-15-GN2-MCD-simplifie.jpg
 
 Dernière version complète de la base de données (GeoNature 2.1 / 2019-08) :
 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/2019-08-GN2-1-MCD.png
+.. image :: _static/2019-08-GN2-1-MCD.png
 
 Les relations complexes entre les schémas ont été grisées pour faciliter la lisibilité.
 
@@ -75,6 +75,13 @@ Il est possible pour n’importe quelle dépendance ou module GeoNature de fourn
         …
     )
 
+Il est également possible de spécifier l’emplacement de révisions Alembic manuellement dans la configuration de GeoNature. Cela est nécessaire entre autre pour UsersHub afin de pouvoir manipuler son schéma alors que UsersHub n’est usuellemment pas installé dans le venv de GeoNature (seul UsersHub-authentification-module l’est) :
+
+.. code-block::
+
+    [ALEMBIC]
+    VERSION_LOCATIONS = '/path/to/usershub/app/migrations/versions'
+
 Les commandes Alembic sont disponible grâce à la sous-commande ``db`` de la commande ``geonature`` :
 
 .. code-block::
@@ -84,55 +91,114 @@ Les commandes Alembic sont disponible grâce à la sous-commande ``db`` de la co
 Chaque fichier de migration est caractérisé par :
 
 * un identifiant, `e.g.` ``f06cc80cc8ba``
-* une branche : Les branches permettent de séparer les fichiers de migrations afin de pouvoir les appliquer séparement. Par exemple, pour un déploiement de TaxHub dans GeoNature, il peut être intéressant de créer le schéma ``taxonomie`` sans créer les schémas de GeoNature, et ainsi gérer indépendamment les migrations de chaque schéma.
-* un ancêtre : Lorsqu’un fichier de migration représente l’évolution d’un état antérieur de la base de données, l’ancêtre indique dans quelle version la base de données doit se trouver avant d’appliquer le-dis ficheir de migration.
-* des dépendances : Il est possible d’indiquer qu’une migration nécessite que une ou plusieurs autres migrations aient été préalablement appliquées. Par exemple, ceci permet d’indiquer que le schéma de GeoNature nécessite les schémas ``taxonomie`` et ``utilisateurs``.
+* une branche : Les branches permettent de séparer les fichiers de migrations afin de pouvoir les appliquer séparement. Par exemple, pour un déploiement de TaxHub sans GeoNature, il peut être intéressant de créer le schéma ``taxonomie`` sans créer les schémas de GeoNature, et ainsi gérer indépendamment les migrations de chaque schéma.
+* un ancêtre : Lorsqu’un fichier de migration représente l’évolution d’un état antérieur de la base de données, l’ancêtre indique dans quelle version la base de données doit se trouver avant d’appliquer le-dis fichier de migration.
+* des dépendances : Il est possible d’indiquer qu’une migration nécessite qu’une ou plusieurs autres migrations aient été préalablement appliquées. Par exemple, ceci permet d’indiquer que le schéma de GeoNature nécessite les schémas ``taxonomie`` et ``utilisateurs``.
 
-La commande ``history`` permet de lister l’ensemble des fichiers de migration disponible :
+La commande ``heads`` permet de lister l’ensemble des branches disponibles, ainsi que la dernière révision disponible pour chaque branche :
 
 .. code-block::
 
-    $ geonature db history
-    <base> (f06cc80cc8ba) -> 586613e2faeb (ref_geo_inpn_grids_1) (head), Insert INPN 1×1 grids in ref_geo
-    <base> (f06cc80cc8ba) -> 0dfdbfbccd63 (ref_geo_fr_municipalities) (head), Insert French municipalities in ref_geo
-    <base> (f06cc80cc8ba) -> 7d6e98441e4c (ref_geo_inpn_grids_5) (head), Insert INPN 5×5 grids in ref_geo
-    <base> (f06cc80cc8ba) -> 3fdaa1805575 (ref_geo_fr_departments) (head), Insert French departments in ref_geo
-    <base> (f06cc80cc8ba) -> ede150d9afd9 (ref_geo_inpn_grids_10) (head), Insert INPN 10×10 grids in ref_geo
-    <base> -> e04a349457e4 (psdrf) (head), create_pr_psdrf_schema
-    <base> -> f06cc80cc8ba (geonature), 2.7.5
+    $ geonature db heads
+    e0ac4c9f5c0a (ref_geo) (effective head)
+    7077aa76da3d (geonature) (head)
+    586613e2faeb (ref_geo_inpn_grids_1) (head)
+    1715cf31a75d (ign_bd_alti) (effective head)
+    3d0bf4ee67d1 (geonature-samples) (head)
+    0dfdbfbccd63 (ref_geo_fr_municipalities) (head)
+    7d6e98441e4c (ref_geo_inpn_grids_5) (head)
+    87651375c2e8 (ign_bd_alti_vector) (head)
+    3fdaa1805575 (ref_geo_fr_departments) (effective head)
+    ede150d9afd9 (ref_geo_inpn_grids_10) (head)
+    3842a6d800a0 (sql_utils) (effective head)
+    951b8270a1cf (utilisateurs) (effective head)
+    72f227e37bdf (utilisateurs-samples) (effective head)
+    f5436084bf17 (nomenclatures_taxonomie) (effective head)
+    6015397d686a (nomenclatures) (effective head)
+    96a713739fdd (nomenclatures_inpn_data) (effective head)
+    a763fb554ff2 (nomenclatures_taxonomie_inpn_data) (effective head)
+    4fb7e197d241 (taxonomie) (effective head)
+    aa7533601e41 (taxonomie_attributes_example) (head)
+    3fe8c07741be (taxhub-admin) (head)
+    8222017dc3f6 (taxonomie_taxons_example) (head)
+    f61f95136ec3 (taxonomie_inpn_data) (effective head)
+    fa5a90853c45 (taxhub) (effective head)
+    46e91e738845 (habitats_inpn_data) (effective head)
+    62e63cd6135d (habitats) (effective head)
 
-Le passage à Alembic nécessite de créer des fichiers de migration pour la création des différents schémas de GeoNature et de ses dépendances. Dans un premier temps, afin de faciliter le passage à Alembic, un unique fichier de migration a été créé, ``f06cc80cc8ba``, appartenant à la branche ``geonature``, non fonctionnel (une exception est levé lorsque celui-ci est joué), afin de représenter l’état du schéma de GeoNature dans sa version 2.7.5. Ainsi, il est pour le moment toujours nécessaire de créer une base de données 2.7.5 grâce au script ``install_db.sh``, ou de mettre à jour une base de données existante jusqu’à la version 2.7.5 en appliquant manuellement les fichiers de migration SQL, avant d’indiquer à Alembic que le schéma se trouve en version 2.7.5 grâce à la commande suivante :
+La commande ``history`` permet de lister l’ensemble de fichier de révisions. Il est également possible de lister les révisions devant être appliqué pour passer d’un état à un autre. Par exemple, voici la liste des révisions à appliquer pour passer d’une base de données vierge (``base``) à une base avec la branche ``nomenclatures_inpn_data`` à jour (``head``) :
+
+.. code-block::
+
+    $ geonature db history -r base:nomenclatures_inpn_data@head
+    <base> (6015397d686a) -> 96a713739fdd (nomenclatures_inpn_data) (effective head), insert inpn data in ref_nomenclatures
+    <base> (fa35dfe5ff27, 3842a6d800a0) -> 6015397d686a (nomenclatures) (effective head), create ref_nomenclature schema 1.3.9
+    <base> -> 3842a6d800a0 (sql_utils) (effective head), Add public shared functions
+    <base> -> fa35dfe5ff27 (utilisateurs), utilisateurs schema 1.4.7 (usershub 2.1.3)
+
+Si vous avez déjà une base de données existante correspondant à une installation de GeoNature en version 2.7.5 et que vous passez à Alembic, vous pouvez l’indiquer grâce à la commande suivante :
 
 .. code-block::
 
     $ geonature db stamp f06cc80cc8ba
 
-Afin de savoir dans quel état se trouve la base de données, il est possible de demander l’affichage des migrations qui ont été appliquées :
+Il est possible que votre base de données contiennent quelques données supplémentaires (référentiel géographique des communes, …), qu’il faut donc indiquer à Alembic aussi.
+Reportez-vous aux notes de versions de la release 2.8.0 de GeoNature afin de consulter la liste des révisions à éventuellement « `stamper` ».
+
+Vous pouvez demander à Alembic dans quel état se trouve votre base de données avec la commande ``current`` :
 
 .. code-block::
 
     $ geonature db current
-    f06cc80cc8ba (head)
+    62e63cd6135d (effective head)
+    f06cc80cc8ba
+    3842a6d800a0 (effective head)
+    9c2c0254aadc
+    72f227e37bdf (effective head)
+    fa35dfe5ff27
+    6015397d686a (effective head)
+    6afe74833ed0
+    a763fb554ff2 (effective head)
+    f5436084bf17 (effective head)
+    46e91e738845 (effective head)
+    f61f95136ec3 (effective head)
+    96a713739fdd (effective head)
 
-À noter que seule la dernière migration appliquée d’une branche est affichée, les migrations qui la précèdent sont implicitement appliquées puisque la dernière en dépend.
+La liste obtenue contient, pour chaque branche, la dernière migration appliqué.
+Notons toutefois que Alembic ne stoque pas l’ensemble de cette liste dans la table ``public.alembic_revision``, mais se restreint uniquement aux migrations dont l’application ne peut être déduit des indications de dépendances.
 
-Il a été également créé des migrations afin d’insérer dans le référentiel géographique les mailles INPN, les départements et les communes françaises.
-Ces migrations sont séparées dans différentes branches afin de pouvoir être appliqué séparément. Elles dépendent en revanche toutes de ``f06cc80cc8ba`` (indiqué entre parenthèse dans l’historique) car la schéma ``ref_geo`` nécessite d’exister, ce qui est bien le cas en 2.7.5.
-Ainsi, si vous souhaitez insérer les grilles 10×10 dans votre référentiel géographique :
+Il est possible que d’afficher les informations liées à une révision avec la commande ``show`` :
 
 .. code-block::
 
-    $ geonature db upgrade ref_geo_inpn_grids_10@head -x geo-data-directory=./tmp_geo
+    $ geonature db show f06cc80cc8ba
+    Rev: f06cc80cc8ba
+    Parent: <base>
+    Also depends on: 72f227e37bdf, a763fb554ff2, 46e91e738845, 6afe74833ed0
+    Branch names: geonature
+    Path: backend/geonature/migrations/versions/f06cc80cc8ba_2_7_5.py
 
-Ici, ``@head`` indique que nous souhaitons appliquer toutes les migrations jusqu’à la dernière de la branche ``ref_geo_inpn_grids_10`` (bien que dans notre cas, cette branche contient une unique migration).
+        geonature schemas 2.7.5
 
-L’argument ``-x`` permet de fournir des variables à usage des fichiers de migrations. Dans le cas des migrations de données de zones géographiques, celles-ci supporte la variable ``geo-data-directory`` permettant de spécifier où doivent être cherché et éventuellement téléchargé les données géographiques. Si l’argument n’est pas spécifié, un dossier temporaire, supprimé à la fin de la procédure, sera utilisé.
+        Revision ID: f06cc80cc8ba
+        Create Date: 2021-08-10 14:23:55.144250
 
-En revanche, si votre installation contient déjà les mailles 10×10, vous pouvez en informer Alembic :
+L’absence de l’indication ``(head)`` à côté du numéro de révision indique qu’il ne s’agit pas de la dernière révision disponible pour la branche ``geonature``.
+Vous pouvez alors mettre à jour cette branche avec la commande ``upgrade`` :
 
 .. code-block::
 
-    $ geonature db stamp ede150d9afd9
+    $ geonature db upgrade geonature@head
+
+Il est possible de monter des branches optionnelles pour, par exemple, bénéficier des mailles 10×10 dans son référentiel géographique :
+
+.. code-block::
+
+    $ geonature db upgrade ref_geo_inpn_grids_10@head -x data-directory=./tmp_geo
+
+L’ensemble des branches disponible est décrit dans la sous-section ci-après.
+
+L’argument ``-x`` permet de fournir des variables à usage des fichiers de migrations. Dans le cas des migrations de données de zones géographiques, celles-ci supporte la variable ``data-directory`` permettant de spécifier où doivent être cherché et éventuellement téléchargé les données géographiques. Si l’argument n’est pas spécifié, un dossier temporaire, supprimé à la fin de la procédure, sera utilisé.
 
 Pour supprimer les mailles 10×10 de son référentiel géographique, on utilisera :
 
@@ -153,6 +219,55 @@ Pour créer un nouveau fichier de migration afin d’y placer ses évolutions de
 
 La `documentation d’Alembic <https://alembic.sqlalchemy.org/en/latest/ops.html>`_ liste les opérations prises en charge.
 Certaines opérations complexes telles que la création de trigger ne sont pas prévu, mais il reste toujours possible d’executer du SQL directement avec l’opérateur ``op.execute``.
+
+
+Description des branches
+````````````````````````
+
+Cette section liste les branches Alembic disponibles et leur impacte sur la base de données.
+
+* ``sql_utils`` : Fournie quelques fonctions SQl utilitaires dans le schéma ``public``. Fournie par Utils-Flask-SQLAlchemy.
+* ``geonature`` : Crée les schémas propres à GeoNature (``gn_commons``, ``gn_synthese``, …).
+* ``geonature-samples`` : Insert quelques données d’exemple en base.
+* ``taxonomie`` : Crée le schéma ``taxonomie``. Fournie par TaxHub.
+* ``taxonomie_inpn_data`` : Insert le référentiel TAXHUBv14 en base. Fournie par TaxHub.
+* ``taxonomie_attributes_example`` : Insert quelques attributs d’exemple en base. Fournie par TaxHub.
+* ``taxonomie_taxons_example`` : Insert quelques taxons d’exemple en base. Fournie par TaxHub.
+* ``nomenclatures`` : Crée le schéma ``ref_nomenclatures``. Fournie par Nomenclature-api-module.
+* ``nomenclatures_inpn_data`` : Insert le référentiel des nomenclatures de l’INPN en base. Fournie par Nomenclature-api-module.
+* ``nomenclatures_taxonomie`` : Complète le schéma ``ref_nomenclatures`` pour accueillir les nomenclatures liées à la taxonomie.
+* ``nomenclatures_taxonomie_inpn_data`` : Insert les nomenclatures liées à la taxonomie en base.
+* ``utilisateurs`` : Installe le schéma ``utilisateurs``. Fournie par UsersHub-authentification-module.
+* ``utilisateurs-samples`` : Insert des données d’exemples (utilisateurs, groupes) dans le schéma ``utilisateurs``. Fournie par UsersHub-authentification-module.
+* ``habitats`` : Crée le schéma ``ref_habitats``. Fournie par Habref-api-module.
+* ``habitats_inpn_data`` : Insert le référentiel HABREF de l’INPN en base. Fournie par Habref-api-module.
+* ``ref_geo`` : Crée le schéma ``ref_geo``.
+
+Si vous utilisez TaxHub, vous pouvez être intéressé par les branches suivantes :
+
+* ``taxhub`` : Déclare l’application TaxHub dans la liste des applications. Fournie par TaxHub.
+* ``taxhub-admin`` : Associe le groupe « Grp_admin » issue des données d’exemple à l’application UsersHub et au profil « Administrateur » permettant aux utilisateurs du groupe de se connecter à TaxHub. Fournie par TaxHub.
+
+Si vous utilisez UsersHub, vous pouvez être intéressé par les branches suivantes :
+
+* ``usershub`` : Déclare l’application UsersHub dans la liste des applications. Fournie par UsersHub.
+* ``usershub-samples`` : Associe le groupe « Grp_admin » issue des données d’exemple à l’application UsersHub et au profil « Administrateur » permettant aux utilisateurs du groupe de se connecter à UsersHub. Fournie par UsersHub.
+
+Les branches ci-après sont totalement optionnelles :
+
+* ``ref_geo_inpn_grids_1`` : Insert les mailles 1×1 km (INPN) dans le référentiel géographique (type de zone ``M1``).
+* ``ref_geo_inpn_grids_5`` : Insert les mailles 5×5 km (INPN) dans le référentiel géographique (type de zone ``M5``).
+* ``ref_geo_inpn_grids_10`` : Insert les mailles 10×10 km (INPN) dans le référentiel géographique (type de zone ``M10``).
+* ``ref_geo_fr_municipalities`` : Insert les municipalités française (IGN février 2020) dans le référentiel géographique (type de zone ``COM``).
+* ``ref_geo_fr_departments`` : Insert les départements français (IGN février 2020) dans le référentiel géographique (type de zone ``DEP``).
+* ``ign_bd_alti`` : Insert le modèle numérique de terrain (MNT) de l’IGN en base.
+* ``ign_bd_alti_vector`` : Vectorise le MNT.
+
+Note : pour plusieurs fichiers de révisions, notamment lié au référentiel géographique ou nécessitant des données INPN, il est nécessaire de télécharger des ressources externes. Il est possible d’enregistrer les données téléchargé (et ne pas les re-télécharger si elles sont déjà présentes) avec ``-x data-directory=…`` :
+
+.. code-block::
+
+    $ geonature db upgrade …@head -x data-directory=./data/
 
 
 Gestion des droits
@@ -198,7 +313,7 @@ Récapitulatif :
 - Si un utilisateur n'a aucune action possible sur un module, alors il ne lui sera pas affiché et il ne pourra pas y accéder
 - Il est aussi possible de ne pas utiliser UsersHub pour gérer les utilisateurs et de connecter GeoNature à un CAS (voir configuration). Actuellement ce paramétrage est fonctionnel en se connectant au CAS de l'INPN (MNHN)
 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/schema_cruved.png
+.. image :: _static/schema_cruved.png
 
 A noter que toutes les actions et toutes les portées n'ont pas été implémentées dans tous les modules. Elles le sont en fonction des besoins de chaque module.
 
@@ -282,6 +397,145 @@ Données SIG
 - La fonction ``ref_geo.fct_get_area_intersection`` permet de renvoyer les zonages intersectés par une observation en fournissant sa géométrie
 - La fonction ``ref_geo.fct_get_altitude_intersection`` permet de renvoyer l'altitude min et max d'une observation en fournissant sa géométrie
 - Les intersections d'une observation avec les zonages sont stockées au niveau de la synthèse (``gn_synthese.cor_area_synthese``) et non au niveau de la donnée source pour alléger et simplifier leur gestion
+
+
+Profils de taxons
+"""""""""""""""""
+
+GeoNature dispose d'un mécanisme permettant de calculer des profils pour chaque taxon en se basant sur les données présentes dans la Synthèse de l'instance.
+
+Ces profils sont stockés dans un schéma dédié ``gn_profiles``, et plus précisément dans les deux vues matérialisées suivantes :
+
+1. La vue matérialisée ``gn_profiles.vm_valid_profiles`` comporte des informations générales sur chaque taxon :
+
+- L'aire d'occurrences
+- Les altitudes extrêmes d'observation du taxon
+- Les dates de première et de dernière observation
+- Le nombre de données valides pour le taxon considéré
+
+2. La vue matérialisée ``gn_profiles.vm_cor_taxon_phenology`` comporte les "combinaisons" d'informations relatives à la phénologie des taxons (voir détail des calculs ci-dessous) :
+
+- La période d'observation
+- Le stade de vie (activable ou non)
+- Les altitudes min et max
+- Les altitudes "fiables" en écartant les valeurs extrêmes
+- Le nombre de données correspondant à cette "combinaison phénologique"
+
+La fonction ``gn_profiles.refresh_profiles()`` permet de rafraichir ces vues matérialisées.
+
+Pour lancer manuellement cette fonction, ouvrez une console SQL et exécutez la requête ``SELECT gn_profiles.refresh_profiles();``.
+
+Pour automatiser l'éxecution de cette fonction (tous les jours à 23h dans cet exemple), ajoutez la dans le crontab de l'utilisateur ``postgres`` :
+
+.. code-block:: console
+
+    sudo su postgres
+    crontab -e
+
+Puis ajouter la ligne suivante en adaptant éventuellement le nom de la base de données :
+
+.. code-block:: console
+
+    0 23 * * * psql -d geonature2db -c "SELECT gn_profiles.refresh_profiles();"
+
+Pour enregistrer et quitter : ``Ctrl + O``, ``ENTER`` puis ``Ctrl + X``.
+
+**Usage**
+
+Pour chaque taxon (cd_ref) disposant de données dans la vue ``gn_profiles.v_synthese_for_profiles`` (vue filtrée basée sur la synthèse de l'instance), un profil est généré. Il comporte l'aire d'occurrence, les limites altitudinales et les combinaisons phénologiques jugées cohérentes sur la base des données disponibles.
+
+Ces profils sont déclinés sur :
+
+- Le module de validation : permet d'attirer l'attention des validateurs sur les données qui sortent du "cadre" déjà connu pour le taxon considéré, et d'apporter des éléments de contexte en complément de la donnée en cours de validation
+- Le module Synthèse (fiche d'information, onglet validation) : permet d'apporter des éléments de contexte en complément des données brutes consultées
+- Le module Occtax : permet d'alerter les utilisateurs lors de la saisie de données qui sortent du "cadre" déjà connu pour un taxon considéré
+
+.. image :: https://github.com/DonovanMaillard/GeoNature-1/blob/dm/profiltaxon/docs/images/validation.png
+.. image :: https://github.com/DonovanMaillard/GeoNature-1/blob/dm/profiltaxon/docs/images/contexte_donnee.png
+
+
+Plusieurs fonctions permettent de vérifier si une donnée de la synthèse est cohérente au regard du profil du taxon en question :
+
+- ``gn_profiles.check_profile_distribution`` : permet de vérifier si la donnée testée est totalement incluse dans l'aire d'occurrences déjà connue pour son taxon.
+- ``gn_profiles.check_profile_phenology`` : permet de vérifier si la phénologie d'une donnée (période, stade de vie, altitudes) est une combinaison déjà connue dans le profil du taxon
+- ``gn_profiles.check_profile_altitudes`` : permet de vérifier si une donnée est bien située dans la fourchette d'altitudes connue pour le taxon en question
+
+
+
+**Configuration et paramétrage**
+
+*Paramètres de calcul des profils* :
+
+Le calcul des profils de taxons repose sur plusieurs variables, paramétrables soit pour tout le mécanisme, soit pour des taxons donnés.
+
+Les paramètres généraux dans la table ``gn_profiles.t_parameters`` :
+
+- Le paramètre ``id_valid_status_for_profiles`` : permet de lister les ``id_nomenclatures`` des statuts de validation à prendre en compte pour les calculs des profils. Par exemple, en ne listant que les identifiants des nomenclatures "Certain -très probable" et "Probable", seules ces données valides seront prises en compte lors du calcul des profils (comportement par défaut). En listant tous les identifiants des nomenclatures des statuts de validation, l'ensemble des données alimenteront les profils de taxons.
+- Le paramètre ``id_rang_for_profiles`` : permet de lister les ``id_rang`` du taxref à prendre en compte pour les calculs des profils. Par défaut, les profils ne sont calculés que pour les cd_ref correspondant à des Genres, Espèces et Sous-espèces.
+- Le paramètre ``proportion_kept_data`` définit le pourcentage de données à conserver lors du calcul des altitudes valides (``gn_profiles.vm_cor_taxon_phenology``), en retirant ainsi les extrêmes. Ce paramètre, définit à 95% par défaut, doit être compris entre 51 et 100% (voir détails ci-après).
+
+Les deux premiers paramètres permettent de filtrer les données dans la vue ``gn_profiles.v_synthese_for_profiles``. Cette vue comporte les données de la synthèse qui répondent aux paramètres et qui alimenteront les profiles de taxons. Les clauses WHERE de cette vue peuvent être adaptées pour filtrer les données sur davantage de critères et répondre aux besoins plus spécifiques, mais sa structure doit rester inchangée.
+
+
+Les paramètres définis par taxon le sont dans la table ``gn_profiles.cor_taxons_profiles_parameters`` :
+
+Les profils peuvent être calculés avec des règles différentes en fonction des taxons. Ceux-ci sont définis au niveau du cd_nom, à n'importe quel rang (espèce, famille, règne etc). Ils seront appliqués de manière récursive à tous les taxons situés "sous" le cd_ref paramétré.
+
+Dans le cas où un taxon hérite de plusieurs règles (une définie pour son ordre et une autre définie pour sa famille par exemple), les paramètres définis au plus proche du taxon considérés seront pris en compte.
+Par exemple, s'il existe des paramètres pour le phylum "Animalia" (cd_nom 183716) et d'autres pour le renard (cd_nom 60585), les paramètres du renard seront appliqués en priorité pour cette espèce, mais les paramètres Animalia s'appliqueront à tous les autres animaux.
+
+Les règles appliquables à chaque taxon sont récupérées par la fonction ``gn_profiles.get_profiles_parameters(cdnom)``.
+
+Pour chaque cd_nom, il est ainsi possible de définir les paramètres suivants :
+
+- ``spatial_precision`` : La précision spatiale utilisée pour calculer les profils. Elle est exprimée selon l'unité de mesure de la projection locale de l'instance GeoNature : mètres pour le Lambert93, degré pour le WGS84 etc. Elle définit à la fois la taille de la zone tampon appliquée autour de chaque observation pour définir l'aire d'occurrences du taxon, ainsi que la distance maximale admise entre le centroïde et les limites d'une observation pour qu'elle soit prise en compte lors du calcul des profils (évite qu'une donnée imprécise valide à elle seule une grande zone).
+- ``temporal_precision_days`` : La précision temporelle en jours utilisée pour calculer les profils. Elle définit à la fois le pas de temps avec lequel la phénologie est calculée, ainsi que la précision temporelle minimale requise (différence entre date début et date fin de l'observation) pour qu'une donnée soit prise en compte dans le calcul des profils. Une précision de 365 jours ou plus permettra de ne pas tenir compte de la période (toutes les données seront dans une unique période de l'année).
+- ``active_life_stage`` : Définit si le stade de vie doit être pris en compte ou non lors du calcul des profils.
+
+Par défaut, une précision spatiale de 2000m et une précision spatiale de 10j (décade) sont paramétrés pour tous les phylums, sans tenir compte des stades de vie.
+
+A terme, d'autres variables pourront compléter ces profils : habitats (habref) ou comportement (nidification, reproduction, migration...) notamment.
+
+
+*Configuration - Activer/désactiver les profils* :
+
+Il est possible de désaciver l'ensemble des fonctionnalités liées aux profils dans l'interface, en utilisant le paramètre suivant dans le fichier ``geonature/config/geonature_config.toml``
+
+::
+
+    [FRONTEND]
+      ENABLE_PROFILES = true/false
+
+
+**Précisions sur calcul des phénologies**
+
+Pour chaque taxon, la phénologie est calculée en croisant dans un premier temps les périodes d'observations et, selon les paramètres, les stades de vie.
+
+Pour chacune des combinaisons obtenues (période x stade de vie), sont alors calculées :
+
+- L'altitude minimale (toutes données comprises)
+- L'altitude maximale (toutes données comprises)
+- L'altitude minimale fiable (en retirant x% de données extrêmes selon le paramètre ``proportion_kept_data``)
+- L'altitude maximale fiable (en retirant x% de données extrêmes selon le paramètre ``proportion_kept_data``)
+- Le nombre de données valides correspondantes
+
+
+*Exclusion des données extrêmes*
+
+Afin que des données exceptionnelles, bien que valides, ne soient pas considérées comme une "norme", les profils permettent d'exclure un certain pourcentage de données extrêmes. Pour ce faire :
+
+- Le nombre de données exclues est systématiquement arrondi à l'entier supérieur, pour les extrêmes "bas" et les extrêmes "hauts"
+- Aucune altitude fiable n'est calculée s'il y a davantage de données exclues que de données conservées
+- Le paramètre ``proportion_kept_data`` doit donc être compris entre 51 et 100% : en dessous de 50%, le nombre de données supprimées est supérieur au nombre de données conservées, aucune altitude fiable ne sera calculée. Si le paramètre est à 100%, les altitudes fiables seront identiques aux altitudes extrêmes observées pour la période (et le stade) donnés
+
+Il faut donc (1/[1- ``proportion_kept_data`` /100])+1 données pour que des altitudes fiables soient calculées, soit :
+
+- 101 données minimum par période/stade si ``proportion_kept_data`` =99
+- 51 données minimum par période/stade si ``proportion_kept_data`` =98
+- 21 données minimum par période/stade si ``proportion_kept_data`` =95
+- 11 données minimum par période/stade si ``proportion_kept_data`` =90
+- 3 données minimum par période/stade si ``proportion_kept_data`` =51
+
 
 Fonctions
 """""""""
@@ -402,7 +656,55 @@ La base de données contient de nombreuses fonctions.
   --Function to return id_nomenclature depending on observation sensitivity
   --USAGE : SELECT ref_nomenclatures.calculate_sensitivity(240,21);
 
-TODO : A compléter...
+
+**gn_profiles**
+
+.. code:: sql
+
+  gn_profiles.get_profiles_parameters(mycdnom integer)
+  RETURNS TABLE (cd_ref integer, spatial_precision integer, temporal_precision_days integer, active_life_stage boolean,  distance smallint)
+  -- fonction permettant de récupérer les paramètres les plus adaptés (définis au plus proche du taxon) pour calculer le profil d'un taxon donné
+  -- par exemple, s'il existe des paramètres pour les "Animalia" des paramètres pour le renard, les paramètres du renard surcoucheront les paramètres Animalia pour cette espèce
+
+
+.. code:: sql
+
+  gn_profiles.check_profile_distribution(
+      in_geom geometry,
+      profil_geom geometry
+  )
+  RETURNS boolean
+  --fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que sa localisation est totalement incluse dans l'aire d'occurrences valide définie par le profil du taxon en question
+
+
+.. code:: sql
+
+  gn_profiles.check_profile_phenology(
+      in_cd_ref integer,
+      in_date_min date,
+      in_date_max date,
+      in_altitude_min integer,
+      in_altitude_max integer,
+      in_id_nomenclature_life_stage integer,
+      check_life_stage boolean
+  )
+  RETURNS boolean
+  --fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que sa phénologie (dates, altitude, stade de vie selon les paramètres) correspond bien à la phénologie valide définie par le profil du taxon en question
+  --La fonction renvoie 'false' pour les données trop imprécises (durée d'observation supérieure à la précision temporelle définie dans les paramètres des profils).
+
+
+.. code:: sql
+
+  gn_profiles.check_profile_altitudes(
+    in_alt_min integer,
+    in_alt_max integer,
+    profil_altitude_min integer,
+    profil_altitude_max integer
+  )
+  RETURNS boolean
+  --fonction permettant de vérifier la cohérence d'une donnée d'occurrence en s'assurant que son altitude se trouve entièrement comprise dans la fourchette altitudinale valide du taxon en question
+
+
 
 Tables transversales
 """"""""""""""""""""
@@ -615,7 +917,8 @@ Voici la liste des commandes disponibles (aussi disponibles en tapant la command
 - generate_frontend_module_route : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installés (Fait automatiquement lors de l'installation d'un module)
 - install_gn_module : Installe un gn_module
 - start_gunicorn : Lance l'API du backend avec gunicorn
-- supervisor : Exécute les commandes supervisor (``supervisor stop <service>``, ``supervisor reload``)
+- supervisor : Exécute les commandes supervisor (``supervisor stop <service>``, ``supervisor reload``) (**avant la 2.8**)
+- systemd : Exécute les commandes systemd et systemctl (``systemctl stop <service>``, ``systemctl restart <service>``)  (**depuis la 2.8**)
 - update_configuration : Met à jour la configuration du cœur de l'application. A exécuter suite à une modification du fichier ``geonature_config.toml``
 - update_module_configuration : Met à jour la configuration d'un module. A exécuter suite à une modification du fichier ``conf_gn_module.toml``.
 
@@ -624,7 +927,7 @@ Effectuez ``geonature <nom_commande> --help`` pour accéder à la documentation 
 Vérification des services
 """""""""""""""""""""""""
 
-Les API de GeoNature et de TaxHub sont lancées par deux serveurs http python indépendants (Gunicorn), eux-mêmes controlés par le supervisor.
+Les API de GeoNature et de TaxHub sont lancées par deux serveurs http python indépendants (Gunicorn), eux-mêmes controlés par le supervisor (ou systemd).
 
 Par défaut :
 
@@ -668,18 +971,24 @@ Supervision des services
 Stopper/Redémarrer les API
 """""""""""""""""""""""""""
 
-Les API de GeoNature et de TaxHub sont gérées par le supervisor pour être lancées automatiquement au démarrage du serveur.
+Les API de GeoNature et de TaxHub sont gérées par le supervisor (ou systemd depuis la 2.8) pour être lancées automatiquement au démarrage du serveur.
 
 Pour les stopper, exécuter les commandes suivantes :
 
-- GeoNature : ``sudo supervisorctl stop geonature2``
-- TaxHub : ``sudo supervisorctl stop taxhub``
+- GeoNature : ``sudo supervisorctl stop geonature2`` ou ``sudo systemctl stop geonature``
+- TaxHub : ``sudo supervisorctl stop taxhub`` ou ``sudo systemctl stop taxhub``
 
 Pour redémarer les API :
 
 .. code-block:: console
 
     sudo supervisorctl reload
+    
+ou pour GeoNature 2.8+
+
+.. code-block:: console
+
+    sudo systemctl restart <service>
 
 Maintenance
 """""""""""
@@ -706,7 +1015,7 @@ Attention : ne pas stopper le backend (des opérations en BDD en cours pourraien
 
 - Redémarrage de PostgreSQL
 
-  Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage des API GeoNature et TaxHub pour que celles-ci continuent de fonctionner. Pour cela, lancez la commande ``sudo supervisorctl reload``.
+  Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage des API GeoNature et TaxHub pour que celles-ci continuent de fonctionner. Pour cela, lancez la commande ``sudo supervisorctl reload`` ou la commandes ``sudo systemctl restart <service>`` (GeoNature 2.8+).
 
   **NB**: Ne pas faire ces manipulations sans avertir les utilisateurs d'une perturbation temporaire des applications.
 
@@ -722,12 +1031,12 @@ Les sauvegardes de la BDD sont à faire avec l'utilisateur ``postgres``. Commenc
 
 .. code-block:: console
 
-    # Créer le répertoire pour stocker les sauvegardes
-    mkdir /home/`whoami`/backup
-    # Ajouter l'utilisateur postgres au groupe de l'utilisateur linux courant pour qu'il ait les droits d'écrire dans les mêmes répertoires
-    sudo adduser postgres `whoami`
-    # ajout de droit aux groupes de l'utilisateur courant sur le répertoire `backup`
-    chmod g+rwx /home/`whoami`/backup
+    $ # Créer le répertoire pour stocker les sauvegardes
+    $ mkdir /home/`whoami`/backup
+    $ # Ajouter l'utilisateur postgres au groupe de l'utilisateur linux courant pour qu'il ait les droits d'écrire dans les mêmes répertoires
+    $ sudo adduser postgres `whoami`
+    $ # ajout de droit aux groupes de l'utilisateur courant sur le répertoire `backup`
+    $ chmod g+rwx /home/`whoami`/backup
 
 Connectez-vous avec l'utilisateur linux ``postgres`` pour lancer une sauvegarde de la BDD :
 
@@ -816,6 +1125,17 @@ Restauration
     cd /<MY_USER>/geonature/frontend
     npm run build
     sudo supervisorctl reload
+    
+    
+ou pour GeoNature 2.8+
+ 
+ 
+  .. code-block:: console
+
+    cd /<MY_USER>/geonature/frontend
+    npm run build
+    sudo systemctl restart geonature
+
 
 Customisation
 -------------
@@ -830,11 +1150,11 @@ Pour cela exécuter la commande suivante depuis le répertoire ``frontend``
 
 L'application est désormais disponible sur un serveur de développement à la même addresse que précédemment, mais sur le port 4200 : http://test.geonature.fr:4200
 
-Ouvrez un nouveau terminal (pour laisser tourner le serveur de développement), puis modifier la variable ``URL_APPLICATION`` dans le fichier ``geonature_config.toml`` en mettant l'adresse ci-dessus et relancer l'application (``sudo supervisorctl restart geonature2``)
+Ouvrez un nouveau terminal (pour laisser tourner le serveur de développement), puis modifier la variable ``URL_APPLICATION`` dans le fichier ``geonature_config.toml`` en mettant l'adresse ci-dessus et relancer l'application (``sudo supervisorctl restart geonature2`` ou ``sudo systemctl restart geonature``)
 
 A chaque modification d'un fichier du frontend, une compilation rapide est relancée et votre navigateur se rafraichit automatiquement en intégrant les dernières modifications.
 
-Une fois les modifications terminées, remodifier le fichier ``geonature_config.toml`` pour remettre l'URL initiale, relancez l'application (``sudo supervisorctl restart geonature2``), puis relancez la compilation du frontend (``npm run build``). Faites enfin un ``ctrl+c`` dans le terminal ou le frontend a été lancé pour stopper le serveur de développement.
+Une fois les modifications terminées, remodifier le fichier ``geonature_config.toml`` pour remettre l'URL initiale, relancez l'application (``sudo supervisorctl restart geonature2`` ou ``sudo systemctl restart geonature``), puis relancez la compilation du frontend (``npm run build``). Faites enfin un ``ctrl+c`` dans le terminal ou le frontend a été lancé pour stopper le serveur de développement.
 
 Si la manipulation vous parait compliquée, vous pouvez suivre la documentation qui suit, qui fait relancer la compilation du frontend à chaque modification.
 
@@ -845,11 +1165,11 @@ Le logo affiché dans la barre de navigation de GeoNature peut être modifié da
 
 .. code:: css
 
-  // la balise img affichant l'image a l'id 'logo-structure
+  /* la balise img affichant l'image a l'id 'logo-structure */
   #logo-structure {
-        height: 50px;
-        width: 80px;
-    }
+      height: 50px;
+      width: 80px;
+  }
 
 Relancez la construction de l’interface :
 
@@ -1243,7 +1563,7 @@ Les surcouches de configuration doivent être faites dans le fichier ``conf_gn_m
 Après toute modification de la configuration d'un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : `Configuration d'un gn_module`_
 
 Afficher/masquer des champs du formulaire
-*****************************************
+`````````````````````````````````````````
 
 La quasi-totalité des champs du standard Occurrences de taxons sont présents dans la base de données, et peuvent donc être saisis à partir du formulaire.
 
@@ -1432,7 +1752,7 @@ Module Admin
 -------------
 
 Administration des champs additionnels
-**************************************
+""""""""""""""""""""""""""""""""""""""
 
 Certains protocoles nécessitent la saisie de champs qui vont au-delà des standards du SINP sur lesquels GeoNature s'appuie. Les champs additionnels permettent ainsi d'étendre les formulaires en ajoutant des informations spécifiques pour des jeux de données (JDD) ou pour l'ensemble d'un module.
 
@@ -1454,14 +1774,25 @@ Un champ additionnel est définit par:
 Exemples de configuration :
 
 - Un champs type "select" :
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/select_exemple.png
+
+.. image :: _static/select_exemple.png
 
 - Un champs type "multiselect" (la clé "value" est obligatoire dans le dictionnaire de valeurs) : 
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/multiselect3.png
+
+.. image :: _static/multiselect3.png
 
 - Un champs type "html". C'est un champs de type "présentation", aucune valeur ne sera enregistré en base de données pour ce champs :
-.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/cc2f86a0fa6d9cd81e1a9926b05c5b5fc3039d2b/docs/images/html1.png
 
+.. image :: _static/html1.png
+
+
+Configuration avancée des champs
+````````````````````````````````
+
+Le champs "Attribut additionnels" permet d'ajouter des éléments de configuration sur les formulaires sour forme de JSON:
+- Ajouter une icone "?" et un tooltip au survol du formulaire : `{"description" : "mon toolitp"}`
+- Ajouter un sous-titre descriptif : `{"help" : "mon sous titre"}`
+- Ajouter des valeurs min/max pour un input `number` : `{"min": 1, "max": 10}`
 
 Module OCCHAB
 -------------
@@ -1495,7 +1826,7 @@ Après toute modification de la configuration d'un module, il faut regénérer l
 
 
 Formulaire
-***********
+``````````
 
 - La liste des habitats fournit pour la saisie est basé sur une liste définit en base de données (table ``ref_habitat.cor_list_habitat`` et ``ref_habitat.bib_list_habitat``). Il est possible d'éditer cette liste directement den base de données, d'en créer une autre et de changer la liste utiliser par le module. Editer alors ce paramètre:
 
@@ -1743,7 +2074,7 @@ Après toute modification de la configuration d'un module, il faut regénérer l
 
 
 Liste des champs visibles
-*************************
+`````````````````````````
 
 La configuration des champs de la liste se fait via deux paramètres:
 
@@ -1783,7 +2114,7 @@ Gestion de l'affichage des colonnes de la liste
 
 
 Mail
-****
+````
 
 Il est possible de personnaliser le message du mail envoyé aux observateurs.
 Pour ce faire il faut modifier les  paramètres ``MAIL_BODY`` et ``MAIL_SUBJECT``

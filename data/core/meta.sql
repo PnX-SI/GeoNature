@@ -1,3 +1,6 @@
+-- Création du schéma "gn_meta" en version 2.7.5
+-- A partir de la version 2.8.0, les évolutions de la BDD sont gérées dans des migrations Alembic
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET client_encoding = 'UTF8';
@@ -25,7 +28,7 @@ SET default_with_oids = false;
 -- );
 -- COMMENT ON TABLE sinp_datatype_actors IS 'Define a SINP datatype Types::ActeurType.';
 -- COMMENT ON COLUMN sinp_datatype_actors.id_actor IS 'Internal value for primary and foreign keys';
--- COMMENT ON COLUMN sinp_datatype_actors.actor_organism IS 'Correspondance standard SINP = organisme :Exemple : Muséum National d''Histoire Naturelle (MNHN) - OBLIGATOIRE CONDITIONNEL : il DOIT être rempli si nomPrenom n''est pas rempli';
+-- COMMENT ON COLUMN sinp_datatype_actors.actor_organism IS 'Correspondance standard SINP = organisme : Exemple : Muséum National d''Histoire Naturelle (MNHN) - OBLIGATOIRE CONDITIONNEL : il DOIT être rempli si nomPrenom n''est pas rempli';
 -- COMMENT ON COLUMN sinp_datatype_actors.actor_fullname IS 'Correspondance standard SINP = nomPrenom : Nom et prénom de la personne à contacter. (Sous la forme NOM Prénom) - OBLIGATOIRE CONDITIONNEL : il DOIT être rempli si organisme n''est pas rempli';
 -- COMMENT ON COLUMN sinp_datatype_actors.actor_mail IS 'Correspondance standard SINP = mail : Adresse mail de contact - RECOMMANDE.';
 -- CREATE SEQUENCE sinp_datatype_actors_id_actor_seq
@@ -49,7 +52,7 @@ CREATE TABLE sinp_datatype_protocols (
 COMMENT ON TABLE sinp_datatype_protocols IS 'Define a SINP datatype Types::ProtocoleType.';
 COMMENT ON COLUMN sinp_datatype_protocols.id_protocol IS 'Internal value for primary and foreign keys';
 COMMENT ON COLUMN sinp_datatype_protocols.unique_protocol_id IS 'Internal value to reference external protocol id value';
-COMMENT ON COLUMN sinp_datatype_protocols.protocol_name IS 'Correspondance standard SINP = libelle :Libellé du protocole : donne le nom du protocole en quelques mots - OBLIGATOIRE';
+COMMENT ON COLUMN sinp_datatype_protocols.protocol_name IS 'Correspondance standard SINP = libelle : Libellé du protocole : donne le nom du protocole en quelques mots - OBLIGATOIRE';
 COMMENT ON COLUMN sinp_datatype_protocols.protocol_desc IS 'Correspondance standard SINP = description : Description du protocole : décrit le contenu du protocole - FACULTATIF.';
 COMMENT ON COLUMN sinp_datatype_protocols.id_nomenclature_protocol_type IS 'Correspondance standard SINP = typeProtocole : Type du protocole, tel que défini dans la nomenclature TypeProtocoleValue - OBLIGATOIRE';
 COMMENT ON COLUMN sinp_datatype_protocols.protocol_url IS 'Correspondance standard SINP = uRL : URL d''accès à un document permettant de décrire le protocole - RECOMMANDE.';

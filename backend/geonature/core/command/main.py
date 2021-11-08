@@ -6,10 +6,17 @@ import logging
 from os import environ
 
 import click
-from flask import current_app
 from flask.cli import run_command
+import flask_migrate
+from alembic.migration import MigrationContext
+from alembic.context import EnvironmentContext
+from alembic.script import ScriptDirectory
+from flask_migrate.cli import db as db_cli
+from flask.cli import with_appcontext
 
 from geonature.utils.env import (
+    db,
+    migrate,
     DEFAULT_CONFIG_FILE,
     GEONATURE_VERSION,
 )
@@ -27,7 +34,6 @@ from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actor
 
 # from rq import Queue, Connection, Worker
 # import redis
-from flask import Flask
 from flask.cli import FlaskGroup
 
 
@@ -153,3 +159,28 @@ def import_jdd_from_mtd(table_name):
     Import les JDD et CA (et acters associé) à partir d'une table (ou vue) listant les UUID des JDD dans MTD
     """
     import_all_dataset_af_and_actors(table_name)
+
+
+@db_cli.command()
+@click.option('-d', '--directory', default=None,
+              help=('Migration script directory (default is "migrations")'))
+@click.option('--sql', is_flag=True,
+              help=('Don\'t emit SQL to database - dump to standard output '
+                    'instead'))
+@click.option('--tag', default=None,
+              help=('Arbitrary "tag" name - can be used by custom env.py '
+                    'scripts'))
+@click.option('-x', '--x-arg', multiple=True,
+              help='Additional arguments consumed by custom env.py scripts')
+@with_appcontext
+def autoupgrade(directory, sql, tag, x_arg):
+    config = migrate.get_config(directory, x_arg)
+    script = ScriptDirectory.from_config(config)
+    heads = set(script.get_heads())
+    migration_context = MigrationContext.configure(db.session.connection())
+    current_heads = migration_context.get_current_heads()
+    # get_current_heads does not return implicit revision through dependecies, get_all_current does
+    current_heads = set(map(lambda rev: rev.revision, script.get_all_current(current_heads)))
+    for head in current_heads - heads:
+        revision = head + '@head'
+        flask_migrate.upgrade(directory, revision, sql, tag, x_arg)

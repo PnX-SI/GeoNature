@@ -125,6 +125,9 @@ class MediasConfig(Schema):
     MEDIAS_SIZE_MAX = fields.Integer(load_default=50000)
     THUMBNAIL_SIZES = fields.List(fields.Integer, load_default=[200, 50])
 
+class AlembicConfig(Schema):
+    VERSION_LOCATIONS = fields.String()
+
 class AdditionalFields(Schema):
     IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX"])
     IMPLEMENTED_OBJECTS = fields.List(
@@ -183,6 +186,7 @@ class GnPySchemaConf(Schema):
     USERSHUB = fields.Nested(UsersHubConfig, load_default=UsersHubConfig().load({}))
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
+    ALEMBIC = fields.Nested(AlembicConfig, load_default=AlembicConfig().load({}))
 
     @post_load()
     def unwrap_usershub(self, data, **kwargs):
@@ -228,6 +232,8 @@ class GnFrontEndConf(Schema):
     STAT_BLOC_TTL = fields.Integer(load_default=3600)
     DISPLAY_MAP_LAST_OBS = fields.Boolean(load_default=True)
     MULTILINGUAL = fields.Boolean(load_default=False)
+    ENABLE_PROFILES = fields.Boolean(load_default=True)
+
     # show email on synthese and validation info obs modal
     DISPLAY_EMAIL_INFO_OBS = fields.Boolean(load_default=True)
     DISPLAY_EMAIL_DISPLAY_INFO = fields.List(fields.String(), load_default=["NOM_VERN"])
@@ -235,7 +241,7 @@ class GnFrontEndConf(Schema):
 
 class Synthese(Schema):
     AREA_FILTERS = fields.List(
-        fields.Dict, load_default=[{"label": "Communes", "id_type": DEFAULT_ID_MUNICIPALITY}]
+        fields.Dict, load_default=[{"label": "Communes", "type_code": "COM"}]
     )
     # Listes des champs renvoyés par l'API synthese '/synthese'
     # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
@@ -325,6 +331,10 @@ class MapConfig(Schema):
     ZOOM_ON_CLICK = fields.Integer(load_default=18)
 
 
+class TaxHub(Schema):
+    ID_TYPE_MAIN_PHOTO = fields.Integer(missing=1)
+
+
 # class a utiliser pour les paramètres que l'on veut passer au frontend
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(load_default="GeoNature2")
@@ -337,7 +347,6 @@ class GnGeneralSchemaConf(Schema):
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
     LOCAL_SRID = fields.Integer(load_default=2154)
-    ID_APPLICATION_GEONATURE = fields.Integer(load_default=3)
     XML_NAMESPACE = fields.String(load_default="{http://inpn.mnhn.fr/mtd}")
     MTD_API_ENDPOINT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/mtd")
     CAS_PUBLIC = fields.Nested(CasFrontend, load_default=CasFrontend().load({}))
@@ -357,6 +366,7 @@ class GnGeneralSchemaConf(Schema):
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS = fields.Nested(PublicAccess, load_default=PublicAccess().load({}))
+    TAXHUB = fields.Nested(TaxHub, load_default=TaxHub().load({}))
 
     @validates_schema
     def validate_enable_sign_up(self, data, **kwargs):

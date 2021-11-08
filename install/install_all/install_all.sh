@@ -1,4 +1,7 @@
 #!/bin/bash
+
+set -e
+
 . install_all.ini
 . /etc/os-release
 OS_NAME=$ID
@@ -65,11 +68,19 @@ sudo systemctl restart apache2 || exit 1
 
 # Installing GeoNature with current user
 if [ ! -d "${GEONATURE_DIR}" ]; then
-	echo "Téléchargement et installation de GeoNature ..."
+    echo "Téléchargement et installation de GeoNature ..."
 	cd "${HOME}"
-	wget https://github.com/PnX-SI/GeoNature/archive/$geonature_release.zip || exit 1
-	unzip $geonature_release.zip || exit 1
-	mv GeoNature-$geonature_release "${GEONATURE_DIR}"
+    if [ "${mode}" = "dev" ]; then
+        git clone https://github.com/PnX-SI/GeoNature "${GEONATURE_DIR}"
+        cd "${GEONATURE_DIR}"
+        git checkout "$geonature_release"
+        git submodule init
+        git submodule update
+    else
+        wget https://github.com/PnX-SI/GeoNature/archive/$geonature_release.zip -O GeoNature-$geonature_release.zip || exit 1
+        unzip GeoNature-$geonature_release.zip || exit 1
+        mv GeoNature-$geonature_release "${GEONATURE_DIR}"
+    fi
 fi
 
 cd "${GEONATURE_DIR}"
@@ -82,6 +93,7 @@ proxy_http="${proxy_http//\//\\/}"
 proxy_https="${proxy_https//\//\\/}"
 
 
+sed -i "s/MODE=.*$/MODE=$mode/g" config/settings.ini
 sed -i "s/my_local=.*$/my_local=$my_local/g" config/settings.ini
 sed -i "s/my_url=.*$/my_url=$my_url/g" config/settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=$drop_geonaturedb/g" config/settings.ini
@@ -113,24 +125,32 @@ echo "Installation des modules GeoNature"
 ./03_install_gn_modules.sh || exit 1
 echo "Installation du frontend GeoNature"
 ./04_install_frontend.sh || exit 1
+echo "Installation de la config apache pour GeoNature"
+./05_configure_apache.sh || exit 1
 
-sudo systemctl start geonature2
+sudo a2enconf geonature || exit 1
 
-cd "${GEONATURE_DIR}"
-
-# Apache configuration of GeoNature
-envsubst '${DOMAIN_NAME} ${GEONATURE_DIR}' < "${GEONATURE_DIR}/install/assets/geonature_apache.conf" | sudo tee /etc/apache2/sites-available/geonature.conf || exit 1
-envsubst '${DOMAIN_NAME} ${GEONATURE_DIR}' < "${GEONATURE_DIR}/install/assets/geonature_apache_maintenance.conf" | sudo tee /etc/apache2/sites-available/geonature_maintenance.conf || exit 1
-sudo a2ensite geonature && sudo systemctl reload apache2 || exit 1
+sudo systemctl start geonature || exit 1
+if [ "${mode}" != dev ]; then
+    sudo systemctl enable geonature || exit 1
+fi
 
 
 # Installing TaxHub with current user
 if [ ! -d "${TAXHUB_DIR}" ]; then
-	echo "Téléchargement et installation de TaxHub ..."
-	cd "${HOME}"
-	wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip
-	unzip $taxhub_release.zip
-	mv TaxHub-$taxhub_release "${TAXHUB_DIR}"
+    echo "Téléchargement et installation de TaxHub ..."
+    cd "${HOME}"
+    if [ "${mode}" = "dev" ]; then
+        git clone https://github.com/PnX-SI/TaxHub "${TAXHUB_DIR}" || exit 1
+        cd "${TAXHUB_DIR}"
+        git checkout "$taxhub_release" || exit 1
+        git submodule init || exit 1
+        git submodule update || exit 1
+    else
+        wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip -O TaxHub-$taxhub_release.zip || exit 1
+        unzip TaxHub-$taxhub_release.zip || exit 1
+        mv TaxHub-$taxhub_release "${TAXHUB_DIR}"
+    fi
 fi
 
 cd "${TAXHUB_DIR}"
@@ -138,6 +158,7 @@ cd "${TAXHUB_DIR}"
 # Setting configuration of TaxHub
 echo "Configuration de l'application TaxHub ..."
 cp settings.ini.sample settings.ini
+sed -i "s/mode=.*$/mode=$mode/g" settings.ini
 sed -i "s/drop_apps_db=.*$/drop_apps_db=false/g" settings.ini
 sed -i "s/db_host=.*$/db_host=$pg_host/g" settings.ini
 sed -i "s/db_port=.*$/db_port=$pg_port/g" settings.ini
@@ -154,38 +175,42 @@ sed -i "s/enable_https=.*$/enable_https=$enable_https/g" settings.ini
 sed -i "s/https_cert_path=.*$/https_cert_path=$enable_https/g" settings.ini
 sed -i "s/https_key_path=.*$/https_key_path=$enable_https/g" settings.ini
 
-# Creation of system files used by TaxHub
-. create_sys_dir.sh
-create_sys_dir || exit 1
-
-# Apache configuration of TaxHub
-envsubst '${TAXHUB_DIR}' < "${GEONATURE_DIR}/install/assets/taxhub_apache.conf" | sudo tee /etc/apache2/conf-available/taxhub.conf || exit 1
-
-sudo a2enconf taxhub || exit 1
-sudo a2enmod proxy || exit 1
-sudo a2enmod proxy_http || exit 1
-
-sudo systemctl restart apache2 || exit 1
-
 # Installation of TaxHub
 # lance install_app en le sourcant pour que la commande NVM soit disponible
 ./install_app.sh || exit 1
-# Note: on ne lance pas install_db car celle-ci a déjà été créé par le processus d’installation de GeoNature
+
+source "${GEONATURE_DIR}/backend/venv/bin/activate"
+geonature db upgrade taxhub-admin@head
+deactivate
+
+sudo a2enconf taxhub || exit 1
 
 sudo systemctl start taxhub || exit 1
+if [ "${mode}" != "dev" ]; then
+    sudo systemctl enable taxhub || exit 1
+fi
 
 # Installation and configuration of UsersHub application (if activated)
 if [ "$install_usershub_app" = true ]; then
-    if [ ! -d "${TAXHUB_DIR}" ]; then
+    if [ ! -d "${USERSHUB_DIR}" ]; then
         echo "Installation de l'application Usershub"
         cd "${HOME}"
-        wget https://github.com/PnX-SI/UsersHub/archive/$usershub_release.zip
-        unzip $usershub_release.zip
-        mv UsersHub-$usershub_release "${USERSHUB_DIR}"
+        if [ "${mode}" = "dev" ]; then
+            git clone https://github.com/PnX-SI/UsersHub "${USERSHUB_DIR}" || exit 1
+            cd "${USERSHUB_DIR}"
+            git checkout "$usershub_release" || exit 1
+            git submodule init || exit 1
+            git submodule update || exit 1
+        else
+            wget https://github.com/PnX-SI/UsersHub/archive/$usershub_release.zip -O UsersHub-$usershub_release.zip || exit 1
+            unzip UsersHub-$usershub_release.zip || exit 1
+            mv UsersHub-$usershub_release "${USERSHUB_DIR}"
+        fi
     fi
     cd "${USERSHUB_DIR}"
     echo "Installation de la base de données et configuration de l'application UsersHub ..."
     cp config/settings.ini.sample config/settings.ini
+    sed -i "s/mode=.*$/mode=$mode/g" config/settings.ini
     sed -i "s/db_host=.*$/db_host=$pg_host/g" config/settings.ini
     sed -i "s/db_name=.*$/db_name=$geonaturedb_name/g" config/settings.ini
     sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
@@ -193,18 +218,28 @@ if [ "$install_usershub_app" = true ]; then
     sed -i 's#url_application=.*#url_application='$my_url'usershub#g' config/settings.ini
 
     # Installation of UsersHub application
-    # lance install_app en le sourcant pour que la commande NVM soit disponible
     ./install_app.sh
 
-    envsubst '${TAXHUB_DIR}' < "${GEONATURE_DIR}/install/assets/usershub_apache.conf" | sudo tee /etc/apache2/conf-available/usershub.conf || exit 1
+    # Installation of UsersHub database through geonature db as UsersHub does not known all revisions
+    # Tell geonature where to find UsersHub alembic revision files
+    grep '\[ALEMBIC\]' "${GEONATURE_DIR}/config/geonature_config.toml" > /dev/null || echo -e "\n[ALEMBIC]\nVERSION_LOCATIONS = '${USERSHUB_DIR}/app/migrations/versions/'" >> "${GEONATURE_DIR}/config/geonature_config.toml"
+    source "${GEONATURE_DIR}/backend/venv/bin/activate"
+    geonature db upgrade usershub-samples@head
+    deactivate
 
-    sudo a2enconf usershub
+    sudo a2enconf usershub || exit 1
 
-    sudo systemctl reload apache2 || exit 1
+    sudo systemctl start usershub || exit 1
+    if [ "${mode}" != "dev" ]; then
+        sudo systemctl enable usershub || exit 1
+    fi
 fi
 
 
-# fix nvm version
-cd "${GEONATURE_DIR}"/frontend
-nvm alias default
+# Apache vhost for GeoNature, TaxHub and UsersHub
+envsubst '${DOMAIN_NAME}' < "${GEONATURE_DIR}/install/assets/vhost_apache.conf" | sudo tee /etc/apache2/sites-available/geonature.conf || exit 1
+envsubst '${DOMAIN_NAME}' < "${GEONATURE_DIR}/install/assets/vhost_apache_maintenance.conf" | sudo tee /etc/apache2/sites-available/geonature_maintenance.conf || exit 1
+sudo a2ensite geonature || exit 1
+sudo systemctl reload apache2 || exit 1
+
 echo "L'installation est terminée!"

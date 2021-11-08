@@ -81,6 +81,7 @@ export class FormService {
     const hourMax = hourMaxControl.value;
     const dateMin = dateMinControl.value;
     const dateMax = dateMaxControl.value;
+    
     // if hour min et pas hour max => set error
     if (hourMin && !hourMax) {
       return true;
@@ -88,12 +89,16 @@ export class FormService {
     } else if (dateMin && dateMax && hourMin && hourMax) {
       const formatedHourMin = hourMin.split(":").map(h => parseInt(h));
       const formatedHourMax = hourMax.split(":").map(h => parseInt(h));
-      const formatedDateMin = new Date(dateMin.year, dateMin.month, dateMin.day);
-      const formatedDateMax = new Date(dateMax.year, dateMax.month, dateMax.day);
+      // Date month are initialized with month index ... 0 = janvier SO -1 .
+      const formatedDateMin = new Date(dateMin.year, dateMin.month -1, dateMin.day);
+      const formatedDateMax = new Date(dateMax.year, dateMax.month -1, dateMax.day);      
+      
       if (dateMin && dateMax) {
         formatedDateMin.setHours(formatedHourMin[0], formatedHourMin[1]);
         formatedDateMax.setHours(formatedHourMax[0], formatedHourMax[1]);
       }
+
+      
       return formatedDateMin > formatedDateMax;
     }
     return null;

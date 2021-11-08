@@ -90,3 +90,8 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+/docs/changelog.html
+
+*.swp
+*.swo

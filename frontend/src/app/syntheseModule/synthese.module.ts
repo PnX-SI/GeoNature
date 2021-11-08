@@ -14,8 +14,11 @@ import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/
 import { SharedSyntheseModule } from '@geonature/shared/syntheseSharedModule/synthese-shared.module';
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
-
-const routes: Routes = [{ path: '', component: SyntheseComponent }];
+import { TaxonSheetComponent } from './taxon-sheet/taxon-sheet.component';
+const routes: Routes = [
+  { path: '', component: SyntheseComponent },
+  { path: 'taxon/:cd_nom', component: TaxonSheetComponent },
+];
 
 @NgModule({
   imports: [
@@ -29,7 +32,8 @@ const routes: Routes = [{ path: '', component: SyntheseComponent }];
     SyntheseComponent,
     SyntheseListComponent,
     SyntheseCarteComponent,
-    SyntheseModalDownloadComponent
+    SyntheseModalDownloadComponent,
+    TaxonSheetComponent
   ],
   entryComponents: [SyntheseInfoObsComponent, SyntheseModalDownloadComponent],
   providers: [

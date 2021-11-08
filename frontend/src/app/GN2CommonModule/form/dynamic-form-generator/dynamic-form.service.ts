@@ -40,14 +40,14 @@ export class DynamicFormService {
    *
    */
   getFormDefValue(formDef, key, value) {
-    const def = formDef[key];
+    
+    const def = formDef[key];    
     return typeof def === 'function'
       ? def({ value, meta: formDef.meta, attribut_name: formDef.attribut_name })
       : def;
   }
 
   setControl(control: AbstractControl, formDef, value = null) {
-
     if (formDef.type_widget === 'html') {
       return;
     }

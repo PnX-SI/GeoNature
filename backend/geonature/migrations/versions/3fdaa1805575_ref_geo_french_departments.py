@@ -8,18 +8,17 @@ from alembic import op
 from shutil import copyfileobj
 
 from geonature.migrations.ref_geo_utils import (
-    logger,
     schema,
-    open_geofile,
     delete_area_with_type,
 )
+from utils_flask_sqla.migrations.utils import logger, open_remote_file
 
 
 # revision identifiers, used by Alembic.
 revision = '3fdaa1805575'
 down_revision = None
 branch_labels = ('ref_geo_fr_departments',)
-depends_on = 'f06cc80cc8ba'
+depends_on = '6afe74833ed0'  # ref_geo
 
 filename = 'departements_fr_2020-02.csv.xz'
 base_url = 'http://geonature.fr/data/ign/'
@@ -46,7 +45,7 @@ def upgrade():
             ADD CONSTRAINT {temp_table_name}_pkey PRIMARY KEY (gid)
     """)
     cursor = op.get_bind().connection.cursor()
-    with open_geofile(base_url, filename) as geofile:
+    with open_remote_file(base_url, filename) as geofile:
         logger.info("Inserting departments data in temporary table…")
         cursor.copy_expert(f'COPY {schema}.{temp_table_name} FROM STDIN', geofile)
     logger.info("Copy departments data in l_areas…")

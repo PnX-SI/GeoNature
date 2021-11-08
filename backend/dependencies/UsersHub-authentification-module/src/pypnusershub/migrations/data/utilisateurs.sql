@@ -71,7 +71,6 @@ CREATE TABLE IF NOT EXISTS bib_organismes (
     email_organisme character varying(100),
     url_organisme character varying(255),
     url_logo character varying(255),
-    additional_data jsonb,
     id_parent integer
 );
 
@@ -400,7 +399,7 @@ SELECT a.groupe,
             c.id_application
            FROM utilisateurs.t_roles u
              JOIN utilisateurs.cor_role_app_profil c ON c.id_role = u.id_role
-             LEFT JOIN utilisateurs.bib_organismes o ON o.id_organisme = u.id_organisme
+             JOIN utilisateurs.bib_organismes o ON o.id_organisme = u.id_organisme
         UNION
          SELECT u.groupe,
             u.id_role,

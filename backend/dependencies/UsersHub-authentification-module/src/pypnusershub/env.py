@@ -18,3 +18,8 @@ if marsmallow_path:
     MA = getattr(ma_module, ma_object_name)
 else:
     MA = Marshmallow()
+
+# Dictionnaire des post actions
+#  Fonctions qui sont lancées lors de l'appel
+#  à la route post_usershub/<mon_action>
+REGISTER_POST_ACTION_FCT = {}
