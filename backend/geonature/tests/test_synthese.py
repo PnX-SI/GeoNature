@@ -180,25 +180,21 @@ class TestSynthese:
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
         assert response.status_code == 200
-        print(len(response.json['properties']['areas']))
 
         self.client.set_cookie('*', 'token', user_to_token(users['user']))
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
         assert response.status_code == 200
-        print(len(response.json['properties']['areas']))
 
         self.client.set_cookie('*', 'token', user_to_token(users['associate_user']))
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
         assert response.status_code == 200
-        print(len(response.json['properties']['areas']))
 
         self.client.set_cookie('*', 'token', user_to_token(users['stranger_user']))
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
         assert response.status_code == 200
-        print(len(response.json['properties']['areas']))
 
     def test_color_taxon(self):
         response = self.client.get(url_for("gn_synthese.get_color_taxon"))

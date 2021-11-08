@@ -287,8 +287,7 @@ def get_one_synthese(auth, permissions, id_synthese):
                     joinedload('validations'),
                     joinedload('cor_observers'),
                ).get_or_404(id_synthese)
-    geofeature = synthese.as_geofeature(
-        "the_geom_4326", "id_synthese",
+    s = synthese.as_dict(
         fields=[
             'dataset',
             'dataset.acquisition_framework',
@@ -322,11 +321,12 @@ def get_one_synthese(auth, permissions, id_synthese):
             'habitat',
             'medias',
             'areas',
+            'areas.area_type',
         ])
     if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
         data_blurring = DataBlurring(permissions)
-        geofeature = data_blurring.blurOneObsAreas(geofeature)
-    return jsonify(geofeature)
+        s = data_blurring.blurOneObsAreas(s)
+    return jsonify(s)
 
 
 ################################
