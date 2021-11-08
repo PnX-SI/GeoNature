@@ -11,7 +11,7 @@ from geoalchemy2.shape import from_shape
 
 from geonature import create_app
 from geonature.utils.env import db
-from geonature.core.gn_permissions.models import TActions, TFilters, CorRoleActionFilterModuleObject
+from geonature.core.gn_permissions.models import TActions, BibFiltersType, CorRoleActionFilterModuleObject
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets, \
                                           CorDatasetActor, CorAcquisitionFrameworkActor
@@ -23,7 +23,24 @@ from apptax.taxonomie.models import Taxref
 from utils_flask_sqla.tests.utils import JSONClient
 
 
-__all__ = ['datasets', 'acquisition_frameworks', 'synthese_data']
+__all__ = ['app', 'users', 'acquisition_frameworks', 'datasets',
+           'temporary_transaction', 'synthese_data']
+
+
+class JSONClient(testing.FlaskClient):
+    def open(self, *args, **kwargs):
+        headers = kwargs.pop('headers', Headers())
+        if 'Accept' not in headers:
+            headers.extend(Headers({
+                'Accept': 'application/json, text/plain, */*',
+            }))
+        if 'Content-Type' not in headers and 'data' in kwargs:
+            kwargs['data'] = json.dumps(kwargs['data'])
+            headers.extend(Headers({
+                'Content-Type': 'application/json',
+            }))
+        kwargs['headers'] = headers
+        return super().open(*args, **kwargs)
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -57,12 +74,9 @@ def users(app):
 
     actions = { code: TActions.query.filter(TActions.code_action == code).one()
                 for code in 'CRUVED' }
-    scope_filters = {
-        scope: TFilters.query.filter(TFilters.value_filter == str(scope)).one()
-        for scope in [ 0, 1, 2, 3 ]
-    }
+    scope = BibFiltersType.query.filter_by(code_filter_type='SCOPE').one()
 
-    def create_user(username, organisme=None, scope=None):
+    def create_user(username, organisme=None, scope_value=None):
         # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
         with db.session.begin_nested():
             user = User(groupe=False, active=True, organisme=organisme,
@@ -75,17 +89,18 @@ def users(app):
                                          id_application=app.id_application,
                                          id_profil=profil.id_profil)
             db.session.add(right)
-            if scope:
+            if scope_value:
                 for action in actions.values():
                     for module in modules:
                         permission = CorRoleActionFilterModuleObject(
                                             role=user,
                                             action=action,
-                                            filter=scope,
+                                            filter_type=scope,
+                                            value_filter=scope_value,
                                             module=module
                                     )
                         db.session.add(permission)
-        return user
+            return user
 
     users = {}
 
@@ -93,12 +108,12 @@ def users(app):
     db.session.add(organisme)
 
     users_to_create = [
-        ('noright_user', organisme, scope_filters[0]),
+        ('noright_user', organisme, '0'),
         ('stranger_user',),
-        ('associate_user', organisme, scope_filters[2]),
-        ('self_user', organisme, scope_filters[1]),
-        ('user', organisme, scope_filters[2]),
-        ('admin_user', organisme, scope_filters[3]),
+        ('associate_user', organisme),
+        ('self_user', organisme, '1'),
+        ('user', organisme, '2'),
+        ('admin_user', organisme, '3'),
     ]
 
     for username, *args in users_to_create:
@@ -176,6 +191,23 @@ def datasets(users, acquisition_frameworks):
     return datasets
 
 
+@pytest.fixture(scope='function')
+def temporary_transaction(app):
+    """
+    We start two nested transaction (SAVEPOINT):
+        - The outer one will be used to rollback all changes made by the current test function.
+        - The inner one will be used to catch all commit() / rollback() made in tested code.
+          After starting the inner transaction, we install a listener on transaction end events,
+          and each time the inner transaction is closed, we restart a new transaction to catch
+          potential new commit() / rollback().
+    Note: When we rollback the inner transaction at the end of the test, we actually rollback
+    only the last inner transaction but previous inner transaction may have been committed by the
+    tested code! This is why we need an outer transaction to rollback all changes made by the test.
+    """
+    outer_transaction = db.session.begin_nested()
+    inner_transaction = db.session.begin_nested()
+
+
 
 #@pytest.fixture(scope='class')
 #def sample_data(app):
@@ -227,3 +259,24 @@ def synthese_data(users, datasets):
     data = [s]
 
     return data
+
+
+@pytest.fixture()
+def synthese_data(datasets):
+    with db.session.begin_nested():
+        source = TSources(name_source='Fixture',
+                          desc_source='Synthese data from fixture')
+        db.session.add(source)
+    now = datetime.datetime.now()
+    geom_4326 = from_shape(Point(3.63492965698242, 44.3999389306734), srid=4326)
+    with db.session.begin_nested():
+        s = Synthese(id_source=source.id_source,
+                     id_dataset=datasets['own_dataset'].id_dataset,
+                     nom_cite='chenille',
+                     the_geom_4326=geom_4326,
+                     the_geom_point=geom_4326,
+                     the_geom_local=func.st_transform(geom_4326, 2154),
+                     date_min=now,
+                     date_max=now)
+        db.session.add(s)
+    return [s]

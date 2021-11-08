@@ -215,6 +215,7 @@ class TestSynthese:
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
         assert response.status_code == 200
+        print(len(response.json['properties']['areas']))
 
         set_logged_user_cookie(self.client, users['stranger_user'])
         response = self.client.get(

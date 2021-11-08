@@ -1,7 +1,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-import pytest 
+import pytest
 from flask import url_for
 from werkzeug.exceptions import Unauthorized, Forbidden, NotFound, Conflict
 from sqlalchemy import func
@@ -22,6 +22,7 @@ from . import *
 from .fixtures import *
 from .utils import set_logged_user_cookie
 
+from . import app, temporary_transaction, acquisition_frameworks, datasets, users, login, synthese_data
 
 @pytest.fixture(scope='function')
 def place(users):
@@ -80,15 +81,15 @@ class TestCommons:
         )
         geofeature = place.as_geofeature()
 
-        response = self.client.post(url_for("gn_commons.add_place")) 
+        response = self.client.post(url_for("gn_commons.add_place"))
         assert response.status_code == Unauthorized.code
 
         set_logged_user_cookie(self.client, users['noright_user'])
-        response = self.client.post(url_for("gn_commons.add_place")) 
+        response = self.client.post(url_for("gn_commons.add_place"))
         assert response.status_code == Forbidden.code
 
         set_logged_user_cookie(self.client, users['user'])
-        response = self.client.post(url_for("gn_commons.add_place"), data=geofeature) 
+        response = self.client.post(url_for("gn_commons.add_place"), data=geofeature)
         assert response.status_code == 200
         assert db.session.query(
             TPlaces.query
@@ -97,7 +98,7 @@ class TestCommons:
         ).scalar()
 
         set_logged_user_cookie(self.client, users['user'])
-        response = self.client.post(url_for("gn_commons.add_place"), data=geofeature) 
+        response = self.client.post(url_for("gn_commons.add_place"), data=geofeature)
         assert response.status_code == Conflict.code
 
     def test_delete_place(self, place, users):
@@ -141,4 +142,24 @@ class TestCommons:
         addi_one = data[0]
         assert "type_widget" in addi_one
         assert "bib_nomenclature_type" in addi_one
-        
+
+    def test_add_validation_status(self, synthese_data):
+        login(self.client)
+        synthese = next(synthese_data)
+        id_nomenclature_valid_status = DB.session.query(TNomenclatures).filter(and_(
+            TNomenclatures.cd_nomenclature == "1",
+            TNomenclatures.nomenclature_type.has(mnemonique="STATUT_VALID")
+        )).one()
+
+        data = {
+            "statut": id_nomenclature_valid_status.id_nomenclature,
+            "comment": "lala",
+            "validation_date": str(datetime.now()),
+            "validation_auto": True
+        }
+        response = self.client.post(
+            url_for("validation.post_status", id_synthese=synthese.id_synthese),
+            data=data
+        )
+        assert response.status_code == 200
+

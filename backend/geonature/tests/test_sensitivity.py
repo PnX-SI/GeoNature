@@ -27,6 +27,8 @@ def clean_all_sensitivity_rules():
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "clean_all_sensitivity_rules")
 class TestSensitivity:
     def test_get_id_nomenclature_sensitivity(self, app):
+        db.session.execute(sa.delete(cor_sensitivity_area))
+        SensitivityRule.query.delete()  # clear all sensitivity rules
         taxon = Taxref.query.first()
         geom = WKTElement('POINT(6.15 44.85)', srid=4326)
         date_obs = datetime.now() - timedelta(days=365 *  10)
