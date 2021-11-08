@@ -3,7 +3,7 @@
   [ngClass]="class"
 	[items]="datasetStore.datasets"
 	bindLabel="dataset_name"
-	bindValue="id_dataset"
+	[bindValue]="bindValue"
 	placeholder="Jeux de données"
 	[multiple]="multiSelect"
 	[clearable]="clearable"

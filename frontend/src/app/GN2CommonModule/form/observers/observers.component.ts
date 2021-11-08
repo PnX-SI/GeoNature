@@ -30,9 +30,6 @@ export class ObserversComponent extends GenericFormComponent {
   @Input() idMenu: number;
   @Input() idList: number;
   @Input() codeList: string;
-  /**
-  * @deprecated Do not use this input
-  */
   @Input() bindAllItem = false;
   @Input() bindValue: string = null;
   public observers: Observable<Array<any>>;
@@ -42,6 +39,7 @@ export class ObserversComponent extends GenericFormComponent {
   }
 
   ngOnInit() {
+    this.bindValue = this.bindAllItem ? null : this.bindValue;
     this.multiSelect = this.multiSelect || true;
     // uniformise as IdList the id of list
     // retrocompat: keep idMenu

@@ -40,10 +40,6 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
    *  Utiliser cet Input lorsque le composant ``pnx-acquisition-framework`` est en mode select simple.
    */
   @Input() idAcquisitionFramework: number;
-
-  /**
- * @deprecated Do not use this input
- */
   @Input() bindAllItem: boolean = false;
   /**
    * Booléan qui controle si on affiche seulement les JDD actifs ou également ceux qui sont inatif
@@ -54,6 +50,8 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
    * code du module pour n'afficher que les JDD associés au module
    */
   @Input() moduleCode: string;
+  @Input() bindValue: string = "id_dataset";
+
 
   constructor(
     private _dfs: DataFormService,
@@ -66,6 +64,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   }
 
   ngOnInit() {
+    this.bindValue = this.bindAllItem ? null : this.bindValue;
     this.getDatasets();
   }
 

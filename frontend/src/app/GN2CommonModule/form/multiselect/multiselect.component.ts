@@ -101,9 +101,9 @@ export class MultiSelectComponent implements OnInit {
   // you can pass whatever callback to the onSearch output, to trigger
   // database research or simple search on an array
   ngOnInit() {
+    this.keyValue = this.bindAllItem ? null : this.keyValue;
     this.debounceTime = this.debounceTime || 100;
     this.disabled = this.disabled || false;
-    this.searchBar = this.searchBar || false;
     this.displayAll = this.displayAll || false;
 
   }
