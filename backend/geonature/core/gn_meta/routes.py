@@ -1,5 +1,5 @@
 """
-    Routes for gn_meta 
+    Routes for gn_meta
 """
 import datetime as dt
 import json
@@ -62,6 +62,7 @@ from geonature.core.gn_meta.repositories import (
 )
 from geonature.core.gn_meta.schemas import (
     AcquisitionFrameworkSchema,
+    AcquisitionFrameworkRelationshipsSchema,
     DatasetSchema,
 )
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
@@ -99,7 +100,7 @@ if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
 def get_datasets():
     """
     Get datasets list
-    
+
     .. :quickref: Metadata;
 
     :param info_role: add with kwargs
@@ -577,10 +578,10 @@ def get_acquisition_frameworks(info_role):
 @permissions.check_cruved_scope("R", True, module_code="METADATA")
 def get_acquisition_frameworks_list(info_role):
     """
-    Get all AF with their datasets 
+    Get all AF with their datasets
     Use in metadata module for list of AF and DS
     Add the CRUVED permission for each row (Dataset and AD)
-    
+
     .. :quickref: Metadata;
 
     :param info_role: add with kwargs
@@ -598,15 +599,23 @@ def get_acquisition_frameworks_list(info_role):
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role, module_code="METADATA",
     )[0]
-    nested_serialization = params.get("nested", False)
-    nested_serialization = True if nested_serialization == "true" else False
+    nested_serialization = True if params.get("nested") == "true" else False
+    if nested_serialization:
+        schema_class = AcquisitionFrameworkRelationshipsSchema
+    else:
+        schema_class = AcquisitionFrameworkSchema
+
     exclude_fields = []
     if "excluded_fields" in params:
         exclude_fields = params.get("excluded_fields").split(',')
 
-    if not nested_serialization:
-        # exclude all relationships from serialization if nested = false
-        exclude_fields = [db_rel.key for db_rel in inspect(TAcquisitionFramework).relationships]
+    try:
+        acquisitionFrameworkSchema = schema_class(
+            exclude=exclude_fields,
+            context = {'info_role': info_role, 'user_cruved': user_cruved},
+        )
+    except ValueError as e:
+        raise BadRequest(str(e))
 
     acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
         exclude=exclude_fields
@@ -959,7 +968,7 @@ def publish_acquisition_framework_mail(af, info_role):
     <br>
     Le cadre d'acquisition <i> "{af.acquisition_framework_name}" </i> dont l’identifiant est
     "{str(af.unique_acquisition_framework_id).upper()}" que vous nous avez transmis a été déposé"""
-    
+
 
     mail_content_additions = current_app.config["METADATA"]["MAIL_CONTENT_AF_CLOSED_ADDITION"]
     mail_content_pdf = current_app.config['METADATA']["MAIL_CONTENT_AF_CLOSED_PDF"]
