@@ -56,7 +56,7 @@ def users(app):  # an app context is required
     app = Application.query.filter(Application.code_application=='GN').one()
     profil = Profil.query.filter(Profil.nom_profil=='Lecteur').one()
 
-    modules = TModules.query.filter(TModules.module_code.in_(["IMPORT", "OCCTAX"])).all()
+    modules = TModules.query.filter(TModules.module_code.in_(["IMPORT", "OCCTAX", "METADATA"])).all()
 
     actions = { code: TActions.query.filter(TActions.code_action == code).one()
                 for code in 'CRUVED' }
@@ -87,8 +87,8 @@ def users(app):  # an app context is required
                                             filter=scope,
                                             module=module
                                     )
-                    db.session.add(permission)
-            return user
+                        db.session.add(permission)
+        return user
 
     users = {}
 
