@@ -6,12 +6,14 @@ https://docs.sqlalchemy.org/en/latest/core/tutorial.html#selecting
 much more efficient
 """
 import datetime
+import uuid
 
 from flask import current_app, request
 from sqlalchemy import func, or_, and_, select, join
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
 from shapely.wkt import loads
+from werkzeug.exceptions import BadRequest
 from geoalchemy2.shape import from_shape
 
 from utils_flask_sqla_geo.utilsgeometry import circle_from_point
@@ -30,7 +32,6 @@ from geonature.core.gn_meta.models import (
     TDatasets,
 )
 from geonature.utils.errors import GeonatureApiError
-
 
 
 class SyntheseQuery:
@@ -319,7 +320,12 @@ class SyntheseQuery:
         if "modif_since_validation" in self.filters:
             self.query = self.query.where(self.model.meta_update_date > self.model.validation_date)
             self.filters.pop("modif_since_validation")
-
+        if "unique_id_sinp" in self.filters:
+            try:
+                uuid_filter = uuid.UUID(self.filters.pop("unique_id_sinp")[0])
+            except ValueError as e:
+                raise BadRequest(str(e))
+            self.query = self.query.where(self.model.unique_id_sinp == uuid_filter)
         # generic filters
         for colname, value in self.filters.items():
             if colname.startswith("area"):

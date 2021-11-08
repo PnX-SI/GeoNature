@@ -10,6 +10,7 @@ CHANGELOG
 * Construction d'une fiche d'identité (profil) par taxon grâce aux observations présente en base de données (altitude min/max, distribution spatiale, date de premiere/dernière observation, nombre de données valides, phénologie)
 * [OCCTAX] Contrôle de la cohérence des nouvelles données saisies par rapport au profil
 * [SYNTHESE] Création d'une "fiche taxon" à partir des informations décrites plus haut
+* [SYNTHESE] Filtre par UUID
 * [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
 * Passage à la librairie 'select2' pour les composants multiselects (@jbrieuclp)
 

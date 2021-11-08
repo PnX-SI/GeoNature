@@ -242,5 +242,11 @@ export const DYNAMIC_FORM_DEF = [
     attribut_label: 'Déterminateur',
     attribut_name: 'determiner',
     required: false
+  },
+  {
+    type_widget: 'text',
+    attribut_label: 'UUID observation (unique_id_sinp)',
+    attribut_name: 'unique_id_sinp',
+    required: false
   }
 ];
