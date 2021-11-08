@@ -917,7 +917,8 @@ Voici la liste des commandes disponibles (aussi disponibles en tapant la command
 - generate_frontend_module_route : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installés (Fait automatiquement lors de l'installation d'un module)
 - install_gn_module : Installe un gn_module
 - start_gunicorn : Lance l'API du backend avec gunicorn
-- supervisor : Exécute les commandes supervisor (``supervisor stop <service>``, ``supervisor reload``)
+- supervisor : Exécute les commandes supervisor (``supervisor stop <service>``, ``supervisor reload``) (**avant la 2.8**)
+- systemd : Exécute les commandes systemd et systemctl (``systemctl stop <service>``, ``systemctl restart <service>``)  (**depuis la 2.8**)
 - update_configuration : Met à jour la configuration du cœur de l'application. A exécuter suite à une modification du fichier ``geonature_config.toml``
 - update_module_configuration : Met à jour la configuration d'un module. A exécuter suite à une modification du fichier ``conf_gn_module.toml``.
 
@@ -926,7 +927,7 @@ Effectuez ``geonature <nom_commande> --help`` pour accéder à la documentation 
 Vérification des services
 """""""""""""""""""""""""
 
-Les API de GeoNature et de TaxHub sont lancées par deux serveurs http python indépendants (Gunicorn), eux-mêmes controlés par le supervisor.
+Les API de GeoNature et de TaxHub sont lancées par deux serveurs http python indépendants (Gunicorn), eux-mêmes controlés par le supervisor (ou systemd).
 
 Par défaut :
 
@@ -970,18 +971,24 @@ Supervision des services
 Stopper/Redémarrer les API
 """""""""""""""""""""""""""
 
-Les API de GeoNature et de TaxHub sont gérées par le supervisor pour être lancées automatiquement au démarrage du serveur.
+Les API de GeoNature et de TaxHub sont gérées par le supervisor (ou systemd depuis la 2.8) pour être lancées automatiquement au démarrage du serveur.
 
 Pour les stopper, exécuter les commandes suivantes :
 
-- GeoNature : ``sudo supervisorctl stop geonature2``
-- TaxHub : ``sudo supervisorctl stop taxhub``
+- GeoNature : ``sudo supervisorctl stop geonature2`` ou ``sudo systemctl stop geonature``
+- TaxHub : ``sudo supervisorctl stop taxhub`` ou ``sudo systemctl stop taxhub``
 
 Pour redémarer les API :
 
 .. code-block:: console
 
     sudo supervisorctl reload
+    
+ou pour GeoNature 2.8+
+
+.. code-block:: console
+
+    sudo systemctl restart <service>
 
 Maintenance
 """""""""""
@@ -1008,7 +1015,7 @@ Attention : ne pas stopper le backend (des opérations en BDD en cours pourraien
 
 - Redémarrage de PostgreSQL
 
-  Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage des API GeoNature et TaxHub pour que celles-ci continuent de fonctionner. Pour cela, lancez la commande ``sudo supervisorctl reload``.
+  Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage des API GeoNature et TaxHub pour que celles-ci continuent de fonctionner. Pour cela, lancez la commande ``sudo supervisorctl reload`` ou la commandes ``sudo systemctl restart <service>`` (GeoNature 2.8+).
 
   **NB**: Ne pas faire ces manipulations sans avertir les utilisateurs d'une perturbation temporaire des applications.
 
@@ -1118,6 +1125,17 @@ Restauration
     cd /<MY_USER>/geonature/frontend
     npm run build
     sudo supervisorctl reload
+    
+    
+ou pour GeoNature 2.8+
+ 
+ 
+  .. code-block:: console
+
+    cd /<MY_USER>/geonature/frontend
+    npm run build
+    sudo systemctl restart geonature
+
 
 Customisation
 -------------
@@ -1132,11 +1150,11 @@ Pour cela exécuter la commande suivante depuis le répertoire ``frontend``
 
 L'application est désormais disponible sur un serveur de développement à la même addresse que précédemment, mais sur le port 4200 : http://test.geonature.fr:4200
 
-Ouvrez un nouveau terminal (pour laisser tourner le serveur de développement), puis modifier la variable ``URL_APPLICATION`` dans le fichier ``geonature_config.toml`` en mettant l'adresse ci-dessus et relancer l'application (``sudo supervisorctl restart geonature2``)
+Ouvrez un nouveau terminal (pour laisser tourner le serveur de développement), puis modifier la variable ``URL_APPLICATION`` dans le fichier ``geonature_config.toml`` en mettant l'adresse ci-dessus et relancer l'application (``sudo supervisorctl restart geonature2`` ou ``sudo systemctl restart geonature``)
 
 A chaque modification d'un fichier du frontend, une compilation rapide est relancée et votre navigateur se rafraichit automatiquement en intégrant les dernières modifications.
 
-Une fois les modifications terminées, remodifier le fichier ``geonature_config.toml`` pour remettre l'URL initiale, relancez l'application (``sudo supervisorctl restart geonature2``), puis relancez la compilation du frontend (``npm run build``). Faites enfin un ``ctrl+c`` dans le terminal ou le frontend a été lancé pour stopper le serveur de développement.
+Une fois les modifications terminées, remodifier le fichier ``geonature_config.toml`` pour remettre l'URL initiale, relancez l'application (``sudo supervisorctl restart geonature2`` ou ``sudo systemctl restart geonature``), puis relancez la compilation du frontend (``npm run build``). Faites enfin un ``ctrl+c`` dans le terminal ou le frontend a été lancé pour stopper le serveur de développement.
 
 Si la manipulation vous parait compliquée, vous pouvez suivre la documentation qui suit, qui fait relancer la compilation du frontend à chaque modification.
 
