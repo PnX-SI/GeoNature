@@ -154,7 +154,7 @@ INSERT INTO gn_permissions.bib_filters_values (
         'integer',
         true,
         '0',
-        'À personne',
+        'Aucune donnée',
         'Aucune appartenance. Cette valeur empèche l''accès aux objets.'
     WHERE NOT EXISTS (
         SELECT 'X'
@@ -171,7 +171,7 @@ INSERT INTO gn_permissions.bib_filters_values (
         'integer',
         true,
         '1',
-        'À moi',
+        'Mes données',
         'Appartenant à l''utilisateur. '
         'Indique un accès restreint aux objets créés/associés '
         'à l''utilisateur connecté.'
@@ -190,7 +190,7 @@ INSERT INTO gn_permissions.bib_filters_values (
         'integer',
         true,
         '2',
-        'À mon organisme',
+        'Les données de mon organisme',
         'Appartenant à l''ogranisme de l''utilisateur. '
         'Indique un accès restreint aux objets créés/associés à des utilisateurs '
         'du même organisme que l''utilisateur actuellement connecté.'
@@ -209,7 +209,7 @@ INSERT INTO gn_permissions.bib_filters_values (
         'integer',
         true,
         '3',
-        'À tout le monde',
+        'Toutes les données',
         'Appartenant à tout le monde. '
         'Indique un accès à tous non restreint par l''appartenance des objets.'
     WHERE NOT EXISTS (
