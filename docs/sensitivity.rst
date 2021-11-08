@@ -1,20 +1,17 @@
-Gestion de la sensibilité dans GeoNature
-========================================
+Gestion de la sensibilité
+=========================
 
 Introduction
 ------------
 
-Les régles de sensibilité définies par défaut sont issues des règles
-du SINP.
-Elles dépendent de l'espèce et de l'observation. C'est à dire que
-pour une observation donnée, plusieurs niveaux de sensibilité sont
-possibles pour une même espèce.
+Les régles de sensibilité définies par défaut sont issues des règles du SINP.
+Elles dépendent de l'espèce et de l'observation. C'est-à-dire que pour une observation donnée, 
+plusieurs niveaux de sensibilité sont possibles pour une même espèce.
 
 Niveaux de sensibilité
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Voici les 5 niveaux de sensibilités définis par le SINP :
-
+Voici les 5 niveaux de sensibilité définis par le SINP :
 
 * Sensible - Aucune diffusion
 * Sensible - Diffusion au département
@@ -31,16 +28,15 @@ Pour plus d'informations
 
 Vous pouvez consulter :
 
-   - La page du site du `MNHN traitant de la sensibilité <https://inpn.mnhn.fr/programme/donnees-observations-especes/references/sensibilite>`_.
-   - Le rapport sur `La sensibilité des données du système  d’information  de l’inventaire  du  patrimoine naturel : méthodes, pratiques et usages (J. Ichter et S. Robert) <https://inpn.mnhn.fr/docs-web/docs/download/355449>`_. 
+- La page du site du `MNHN traitant de la sensibilité <https://inpn.mnhn.fr/programme/donnees-observations-especes/references/sensibilite>`_.
+- Le rapport de 2020 sur `La sensibilité des données du système  d’information  de l’inventaire  du  patrimoine naturel : méthodes, pratiques et usages (J. Ichter et S. Robert) <https://inpn.mnhn.fr/docs-web/docs/download/355449>`_. 
 
 Attention
 ---------
 
 L'objectif de ce document n'est pas de transgresser les règles établies par
-le SINP. Il est donc conseillé dans la mesure du possible de respecter ces 
-règles au niveau communal et régional et donc de ne pas ajouter de règles 
-locales.
+le SINP. Il est donc conseillé de respecter ces règles définies au niveau 
+régional et national et donc de ne pas ajouter de règles locales.
 
 Intégration dans GeoNature
 --------------------------
@@ -51,7 +47,7 @@ Schéma gn_synthese
 A chaque insertion d'une donnée dans la table ``gn_synthese.synthese``,
 un trigger (``tri_insert_calculate_sensitivity``) fait appel à une
 fonction (``fct_tri_cal_sensi_diff_level_on_each_statement``) qui appelle
-elle même les fonctions (``get_id_nomenclature_sensitivity`` et
+elle-même les fonctions (``get_id_nomenclature_sensitivity`` et
 ``calculate_cd_diffusion_level``) du schéma ``gn_sensitivity`` pour le
 calcul de la sensibilité.
 
@@ -79,15 +75,14 @@ S'il n'y a aucune entrée dans ``cor_sensitivity_criteria``, le niveau de
 sensibilité défini dans ``t_sensitivity_rules`` est directement appliqué.
 
 
-Personalisation
----------------
+Personnalisation
+----------------
 
 Pour l'instant, seule la personnalisation de la sensibilité pour
 une espèce donnée (peu importe l'observation) est abordée ici.
 
 Sensibilité de l'espèce toute observation confondue
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 
 #. Dans ``gn_sensitivity.t_sensitivity_rules`` : Changez le niveau de
    sensibilité ``id_nomenclature_sensitivity`` par celui désiré. Pour la
@@ -118,10 +113,10 @@ Sensibilité de l'espèce toute observation confondue
        SET cd_nom=cd_nom
        WHERE cd_nom=:cd_nom_de_votre_espece;
 
-**Note** : Il n'est pas possible de set la sensibilité à *NULL* dans
+**Note** : Il n'est pas possible de définir la sensibilité à *NULL* dans
 cet ``UPDATE`` sinon le trigger ne se déclenchera pas.
 
-**Note 2**: Si vous avez modifié plusieurs espèces à la fois, modifiez
+**Note 2** : Si vous avez modifié plusieurs espèces à la fois, modifiez
 le ``WHERE`` avec un ``IN`` ainsi qu'un ``ARRAY`` contenant tous les cd_nom
 de vos espèces.
 
