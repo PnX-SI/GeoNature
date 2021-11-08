@@ -5,6 +5,7 @@ from werkzeug.exceptions import Forbidden
 
 from .utils import set_logged_user_cookie
 from .fixtures import *
+from . import temporary_transaction
 
 occtax = pytest.importorskip("occtax")
 
