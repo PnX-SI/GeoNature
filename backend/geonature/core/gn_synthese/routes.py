@@ -282,7 +282,7 @@ def get_one_synthese(auth, permissions, id_synthese):
         raise Forbidden()
     geojson = synthese.as_geofeature(
         "the_geom_4326", "id_synthese",
-        fields=Synthese.nomenclature_fields + [
+        fields=Synthese.nomenclatures_fields + [
             'dataset',
             'dataset.acquisition_framework',
             'dataset.acquisition_framework.bibliographical_references',

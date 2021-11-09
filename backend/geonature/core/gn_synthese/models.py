@@ -5,6 +5,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, column_property, foreign, joinedload, contains_eager
 from sqlalchemy.sql import select, func, exists
 from sqlalchemy.dialects.postgresql import UUID, JSONB
+from flask_sqlalchemy import BaseQuery
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 
@@ -96,7 +97,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
 
 class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
     def join_nomenclatures(self):
-        return self.options(*[joinedload(n) for n in Synthese.nomenclature_fields])
+        return self.options(*[joinedload(n) for n in Synthese.nomenclatures_fields])
 
     def lateraljoin_last_validation(self):
         subquery = (
@@ -138,7 +139,7 @@ class Synthese(DB.Model):
     __tablename__ = "synthese"
     __table_args__ = {"schema": "gn_synthese"}
     query_class = SyntheseQuery
-    nomenclature_fields = [
+    nomenclatures_fields = [
         'nomenclature_geo_object_nature',
         'nomenclature_grp_typ',
         'nomenclature_obs_technique',
