@@ -25,6 +25,7 @@ export class SyntheseSearchComponent implements OnInit {
   private params: any;
   @Input() displayValidation = false;
   @Output() searchClicked = new EventEmitter();
+
   constructor(
     public dataService: SyntheseDataService,
     public formService: SyntheseFormService,

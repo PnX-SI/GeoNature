@@ -33,8 +33,8 @@
       <label
         for="modif_checkbox"
         class="form-check-label"
-      > 
-        <small>Données modifiées depuis la dernière validation</small> 
+      >
+        <small>Données modifiées depuis la dernière validation</small>
       </label>
     </div>
     <button
@@ -50,64 +50,64 @@
       ></i>
     </button>
     <div class="advanded-score collapse" id="collapseScore">
-          <small> Score</small>
-          <div class="input-group">
-            <select 
-              class="form-control form-control-sm" 
-              [formControl]="formService.searchForm.get('score')"
-              name="score"
-            >
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-          </div>
-          <small> Localisation valide 
-            <mat-icon class="small-icon" matTooltip="La localisation est-elle dans l'aire de répartition connue du taxon ?" >info</mat-icon> 
-          </small>
-          <div class="input-group">
-            <select 
-              class="form-control form-control-sm" 
-              [formControl]="formService.searchForm.get('valid_distribution')"
-              name="score"
-            >
+      <small> Score</small>
+        <div class="input-group">
+          <select
+            class="form-control form-control-sm"
+            [formControl]="formService.searchForm.get('score')"
+            name="score"
+          >
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+        <small> Localisation valide
+          <mat-icon class="small-icon" matTooltip="La localisation est-elle dans l'aire de répartition connue du taxon ?" >info</mat-icon>
+        </small>
+        <div class="input-group">
+          <select
+            class="form-control form-control-sm"
+            [formControl]="formService.searchForm.get('valid_distribution')"
+            name="score"
+          >
+          <option [ngValue]="null"> -- aucun filtre --</option>
+          <option [ngValue]="true">Valide</option>
+          <option [ngValue]="false">Invalide</option>
+          </select>
+        </div>
+        <small> Altitude valide
+          <mat-icon class="small-icon" matTooltip="L'altitude de l'observation est-elle dans la plage d'altitude connue du taxon ?" >info</mat-icon>
+        </small>
+        <div class="input-group">
+          <select
+            class="form-control form-control-sm"
+            [formControl]="formService.searchForm.get('valid_altitude')"
+            name="score"
+          >
             <option [ngValue]="null"> -- aucun filtre --</option>
             <option [ngValue]="true">Valide</option>
             <option [ngValue]="false">Invalide</option>
-            </select>
-          </div>
-          <small> Altitude valide 
-            <mat-icon class="small-icon" matTooltip="L'altitude de l'observation est-elle dans la plage d'altitude connue du taxon ?" >info</mat-icon> 
-          </small>
-          <div class="input-group">
-            <select 
-              class="form-control form-control-sm" 
-              [formControl]="formService.searchForm.get('valid_altitude')"
-              name="score"
-            >
-              <option [ngValue]="null"> -- aucun filtre --</option>
-              <option [ngValue]="true">Valide</option>
-              <option [ngValue]="false">Invalide</option>
-            </select>
-          </div>
-          <small> Phénologie valide 
-            <mat-icon class="small-icon" matTooltip="La date et l'altitude de l'observation sont-elle conforme à la phénologie connue du taxon ?" >info</mat-icon> 
-          </small>
-          <div class="input-group">
-            <select 
-              class="form-control form-control-sm" 
-              [formControl]="formService.searchForm.get('valid_phenology')"
-              name="score"
-            >
-              <option [ngValue]="null"> -- aucun filtre --</option>
-              <option [ngValue]="true">Valide</option>
-              <option [ngValue]="false">Invalide</option>
-            </select>
-          </div>
-      </div>
-
+          </select>
+        </div>
+        <small> Phénologie valide
+          <mat-icon class="small-icon" matTooltip="La date et l'altitude de l'observation sont-elle conforme à la phénologie connue du taxon ?" >info</mat-icon>
+        </small>
+        <div class="input-group">
+          <select
+            class="form-control form-control-sm"
+            [formControl]="formService.searchForm.get('valid_phenology')"
+            name="score"
+          >
+            <option [ngValue]="null"> -- aucun filtre --</option>
+            <option [ngValue]="true">Valide</option>
+            <option [ngValue]="false">Invalide</option>
+          </select>
+        </div>
+    </div>
   </fieldset>
+
   <fieldset>
     <legend> Quoi ?</legend>
 
@@ -120,6 +120,7 @@
       (onChange)="formService.getCurrentTaxon($event)"
     >
     </pnx-taxonomy>
+
     <div
       class="alert alert-warning taxon-alert"
       *ngIf="formService.selectedtaxonFromComponent.length > 0"
@@ -127,17 +128,19 @@
       <p class="taxon-list">
         <b> Taxon(s) recherché(s):</b>
       </p>
-      <li
-        class="taxon-list"
-        *ngFor="let taxon of formService.selectedtaxonFromComponent; let i = index"
-      >
-        {{taxon.nom_valide}}
-        <i
-          (click)="formService.removeTaxon(i, formService.selectedtaxonFromComponent)"
-          class="fa fa-times clickable"
-        ></i>
-      </li>
-
+      <ul class="taxon-list">
+        <li
+          *ngFor="let taxon of formService.selectedtaxonFromComponent; let i = index"
+          class="d-flex justify-content-between align-items-center"
+        >
+          {{taxon.nom_valide}}
+          <i
+            (click)="formService.removeTaxon(i, formService.selectedtaxonFromComponent)"
+            class="fa fa-times clickable"
+            matTooltip="Retirer « {{taxon.nom_valide}} » des filtres de recherche"
+          ></i>
+        </li>
+      </ul>
     </div>
     <button
       (click)="openModal($event, advancedTaxon)"
@@ -149,11 +152,51 @@
     <span
       *ngIf="formService.selectedCdRefFromTree.length > 0 || formService.selectedTaxonFromRankInput.length > 0"
     >
-      <b>
-        {{formService.selectedCdRefFromTree.length  + formService.selectedTaxonFromRankInput.length}}
-        taxons séléctionné(s)</b>
-    </span>
+      <h2 class="h6 mb-1"><small>Champs avancé(s) sélectionné(s) :</small></h2>
+      <ul class="list-unstyled search-list">
+        <li *ngIf="
+            formService.selectedCdRefFromTree.length > 0 || formService.selectedTaxonFromRankInput.length > 0
+          "
+          class="d-flex justify-content-between align-items-center"
+        >
+          {{formService.selectedCdRefFromTree.length + formService.selectedTaxonFromRankInput.length}}
+          taxons
 
+          <i class="fa fa-info-circle clickable"
+            [matTooltip]="'Sélection : ' + formService.getSelectedTaxonsSummary()"
+            matTooltipPosition="above"
+          ></i>
+        </li>
+        <li
+          *ngIf="formService.selectedRedLists.length > 0"
+          class="d-flex justify-content-between align-items-center"
+        >
+          {{formService.selectedRedLists.length}} catégories de listes rouges
+
+          <i class="fa fa-info-circle clickable"
+            [matTooltip]="'Sélection : ' + formService.selectedRedLists.join(', ')"
+            matTooltipPosition="above"
+          ></i>
+        </li>
+        <li
+          *ngIf="formService.selectedStatus.length > 0"
+          class="d-flex justify-content-between align-items-center"
+        >
+          {{formService.selectedStatus.length}} statuts de protection
+
+          <i class="fa fa-info-circle clickable"
+            [matTooltip]="'Sélection : ' + formService.selectedStatus.join(', ')"
+            matTooltipPosition="above"
+          ></i>
+        </li>
+        <li
+          *ngIf="formService.selectedTaxRefAttributs.length > 0"
+          class="d-flex justify-content-between align-items-center"
+        >
+          {{formService.selectedTaxRefAttributs.length}} attributs TaxRef
+        </li>
+      </ul>
+    </span>
   </fieldset>
 
   <fieldset>
