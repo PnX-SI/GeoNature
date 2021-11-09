@@ -92,8 +92,8 @@ def users(app):
 
     users_to_create = [
         ('noright_user', organisme, '0'),
-        ('stranger_user',),
-        ('associate_user', organisme),
+        ('stranger_user', None, '2'),
+        ('associate_user', organisme, '2'),
         ('self_user', organisme, '1'),
         ('user', organisme, '2'),
         ('admin_user', organisme, '3'),
@@ -252,7 +252,7 @@ def synthese_data(users, datasets, source):
 
 
 @pytest.fixture()
-def synthese_data(datasets):
+def synthese_data(users, datasets):
     with db.session.begin_nested():
         source = TSources(name_source='Fixture',
                           desc_source='Synthese data from fixture')
@@ -261,7 +261,8 @@ def synthese_data(datasets):
     geom_4326 = from_shape(Point(3.63492965698242, 44.3999389306734), srid=4326)
     with db.session.begin_nested():
         s = Synthese(id_source=source.id_source,
-                     id_dataset=datasets['own_dataset'].id_dataset,
+                     dataset=datasets['own_dataset'],
+                     digitiser=users['self_user'],
                      nom_cite='chenille',
                      the_geom_4326=geom_4326,
                      the_geom_point=geom_4326,
