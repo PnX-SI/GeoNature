@@ -57,11 +57,12 @@ class TestSynthese:
         set_logged_user_cookie(self.client, users['self_user'])
 
         # test on synonymy and taxref attrs
+        s = synthese_data[0]
         query_string = {
             "cd_ref": taxon_attribut.bib_nom.cd_ref,
             "taxhub_attribut_{}".format(taxon_attribut.bib_attribut.id_attribut): taxon_attribut.valeur_attribut,
             "taxonomy_group2_inpn": "Insectes",
-            "taxonomy_id_hab": 3,
+            "taxonomy_id_hab": s.habitat.cd_hab,
         }
         response = self.client.get(
             url_for("gn_synthese.get_observations_for_web"), query_string=query_string
@@ -74,7 +75,7 @@ class TestSynthese:
         assert "id" in data["data"]["features"][0]["properties"]
         assert "url_source" in data["data"]["features"][0]["properties"]
         assert "entity_source_pk_value" in data["data"]["features"][0]["properties"]
-        assert data["data"]["features"][0]["properties"]["cd_nom"] == 713776
+        assert data["data"]["features"][0]["properties"]["cd_nom"] == s.cd_nom
 
         # test geometry filters
         key_municipality = "area_" + str(current_app.config["BDD"]["id_area_type_municipality"])

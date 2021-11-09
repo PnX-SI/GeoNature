@@ -260,10 +260,13 @@ def synthese_data(users, datasets):
     now = datetime.datetime.now()
     geom_4326 = from_shape(Point(3.63492965698242, 44.3999389306734), srid=4326)
     with db.session.begin_nested():
+        taxon = Taxref.query.filter_by(cd_nom=713776).one()
         s = Synthese(id_source=source.id_source,
                      dataset=datasets['own_dataset'],
                      digitiser=users['self_user'],
-                     nom_cite='chenille',
+                     nom_cite='Ashmeadopria Kieffer',
+                     cd_nom=taxon.cd_nom,
+                     cd_hab=3,
                      the_geom_4326=geom_4326,
                      the_geom_point=geom_4326,
                      the_geom_local=func.st_transform(geom_4326, 2154),
