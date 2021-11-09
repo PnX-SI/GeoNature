@@ -18,6 +18,7 @@ from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable, SERIALIZERS
 from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
 from pypn_habref_api.models import Habref
+from apptax.taxonomie.models import Taxref
 
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.ref_geo.models import LAreas
@@ -132,7 +133,7 @@ class Synthese(DB.Model):
     id_source = DB.Column(DB.Integer, ForeignKey(TSources.id_source))
     source = relationship(TSources)
     id_module = DB.Column(DB.Integer, ForeignKey(TModules.id_module))
-    module = DB.relationship(TModules)
+    module = relationship(TModules)
     entity_source_pk_value = DB.Column(DB.Integer)  # FIXME varchar in db!
     id_dataset = DB.Column(DB.Integer, ForeignKey(TDatasets.id_dataset))
     dataset = relationship(TDatasets)
@@ -204,7 +205,8 @@ class Synthese(DB.Model):
     reference_biblio = DB.Column(DB.Unicode(length=5000))
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
-    cd_nom = DB.Column(DB.Integer)
+    cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom), primary_key=True)
+    taxref = relationship(Taxref)
     cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
     habitat = relationship(Habref)
     nom_cite = DB.Column(DB.Unicode(length=1000), nullable=False)

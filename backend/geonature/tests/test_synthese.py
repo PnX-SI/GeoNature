@@ -24,28 +24,30 @@ class TestSynthese:
         response = self.client.get(url_for("gn_synthese.getDefaultsNomenclatures"))
         assert response.status_code == 200
 
-    def test_get_synthese_data(self):
+    def test_get_synthese_data(self, synthese_data):
         login(self.client)
         # test on synonymy and taxref attrs
+        s = synthese_data[0]
         query_string = {
-            "cd_ref": 209902,
-            "taxhub_attribut_102": "eau",
+            "cd_ref": s.taxref.cd_ref,
+            #"taxhub_attribut_102": "eau",
             "taxonomy_group2_inpn": "Insectes",
-            "taxonomy_id_hab": 3,
+            "taxonomy_id_hab": s.habitat.cd_hab,
         }
         response = self.client.get(
             url_for("gn_synthese.get_observations_for_web"), query_string=query_string
         )
         assert response.status_code == 200
         data = response.get_json()
-        print(data)
+        assert 'nb_total' in data
+        assert data['nb_total'] > 0
         assert len(data["data"]["features"]) == 1
         # clés obligatoire pour le fonctionnement du front
         assert "cd_nom" in data["data"]["features"][0]["properties"]
         assert "id" in data["data"]["features"][0]["properties"]
         assert "url_source" in data["data"]["features"][0]["properties"]
         assert "entity_source_pk_value" in data["data"]["features"][0]["properties"]
-        assert data["data"]["features"][0]["properties"]["cd_nom"] == 713776
+        assert data["data"]["features"][0]["properties"]["cd_nom"] == s.cd_nom
 
         # test geometry filters
         key_municipality = "area_" + str(current_app.config["BDD"]["id_area_type_municipality"])
@@ -97,11 +99,10 @@ class TestSynthese:
         # le requete doit etre OK marlgré la geom NULL
         assert response.status_code == 200
 
-    def test_export(self):
+    def test_export(self, users):
         # Set config param because "shapefile" is not set by default
         current_app.config["SYNTHESE"]["EXPORT_FORMAT"] = ["csv", "geojson", "shapefile", "gpkg"]
-        token = get_token(self.client, login="admin", password="admin")
-        self.client.set_cookie("/", "token", token)
+        set_logged_user_cookie(self.client, users['admin_user'])
 
         # csv
         response = self.client.post(
