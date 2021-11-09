@@ -1,10 +1,12 @@
 from collections import OrderedDict
 
+from sqlalchemy.orm import joinedload
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, column_property
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql import select, func, exists
 from sqlalchemy.dialects.postgresql import UUID, JSONB
+from flask_sqlalchemy import BaseQuery
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
 from geojson import Feature
@@ -88,12 +90,42 @@ class VSyntheseDecodeNomenclatures(DB.Model):
     occ_stat_biogeo = DB.Column(DB.Unicode)
 
 
+class SyntheseQuery(BaseQuery):
+    def with_nomenclatures(self):
+        return self.options(*[joinedload(n) for n in Synthese.nomenclatures_fields])
+
+
 @serializable
 @geoserializable
 @shapeserializable
 class Synthese(DB.Model):
     __tablename__ = "synthese"
     __table_args__ = {"schema": "gn_synthese"}
+    query_class = SyntheseQuery
+    nomenclatures_fields = [
+        'nomenclature_geo_object_nature',
+        'nomenclature_grp_typ',
+        'nomenclature_obs_technique',
+        'nomenclature_bio_status',
+        'nomenclature_bio_condition',
+        'nomenclature_naturalness',
+        'nomenclature_exist_proof',
+        'nomenclature_valid_status',
+        'nomenclature_diffusion_level',
+        'nomenclature_life_stage',
+        'nomenclature_sex',
+        'nomenclature_obj_count',
+        'nomenclature_type_count',
+        'nomenclature_sensitivity',
+        'nomenclature_observation_status',
+        'nomenclature_blurring',
+        'nomenclature_source_status',
+        'nomenclature_info_geo_type',
+        'nomenclature_behaviour',
+        'nomenclature_biogeo_status',
+        'nomenclature_determination_method',
+    ]
+
     id_synthese = DB.Column(DB.Integer, primary_key=True)
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
     unique_id_sinp_grp = DB.Column(UUID(as_uuid=True))
@@ -196,7 +228,8 @@ class Synthese(DB.Model):
     validation_comment = DB.Column(DB.Unicode)
     observers = DB.Column(DB.Unicode(length=1000))
     determiner = DB.Column(DB.Unicode(length=1000))
-    id_digitiser = DB.Column(DB.Integer)
+    id_digitiser = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    digitiser = relationship(User, backref='synthese_records')
     comment_context = DB.Column(DB.UnicodeText)
     comment_description = DB.Column(DB.UnicodeText)
     additional_data = DB.Column(JSONB)

@@ -4,7 +4,9 @@ from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship, exc
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.associationproxy import association_proxy
 from sqlalchemy.dialects.postgresql import UUID
+
 from werkzeug.exceptions import NotFound
 
 from pypnnomenclature.models import TNomenclatures
@@ -146,7 +148,7 @@ class CorAcquisitionFrameworkActor(DB.Model):
             return None
 
 
-@serializable
+@serializable(exclude=['actor'])
 class CorDatasetActor(DB.Model):
     __tablename__ = "cor_dataset_actor"
     __table_args__ = {"schema": "gn_meta"}
@@ -171,12 +173,18 @@ class CorDatasetActor(DB.Model):
     )
 
     @hybrid_property
+    def actor(self):
+        if self.role is not None:
+            return self.role
+        return self.organism
+
+    @hybrid_property
     def display(self):
         if self.role:
-            r = self.role.nom_complet
+            actor = self.role.nom_complet
         else:
-            r = self.organism.nom_organisme
-        return '{} ({})'.format(r, self.nomenclature_actor_role.label_default)
+            actor = self.organism.nom_organisme
+        return '{} ({})'.format(actor, self.nomenclature_actor_role.label_default)
 
     @staticmethod
     def get_actor(id_dataset, id_nomenclature_actor_role, id_role=None, id_organism=None):
@@ -606,8 +614,13 @@ class TDatasets(CruvedHelper):
         CorDatasetActor,
         lazy="joined",
         cascade="save-update, merge, delete, delete-orphan",
-        backref=DB.backref("actor_dataset", lazy="select")
+        backref=DB.backref("datasets", lazy="select")
     )
+
+    users_actors = association_proxy('cor_dataset_actor', 'user',
+                        creator=lambda user: CorDatasetActor(user=user))
+    organisms_actors = association_proxy('cor_dataset_actor', 'organism',
+                        creator=lambda organism: CorDatasetActor(organism=organism))
 
     def __str__(self):
         return self.dataset_name
