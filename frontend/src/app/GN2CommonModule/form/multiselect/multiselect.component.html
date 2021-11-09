@@ -9,6 +9,8 @@
   [clearable]="clearable"
   [virtualScroll]="true"
   [formControl]="parentFormControl"
+  (change)="onChange.emit($event)"
+  (remove)="onDelete.emit($event)"
 >
   <ng-template 
 	ng-option-tmp 
