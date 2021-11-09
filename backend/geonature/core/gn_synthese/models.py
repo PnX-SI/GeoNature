@@ -170,7 +170,7 @@ class Synthese(DB.Model):
     id_source = DB.Column(DB.Integer, ForeignKey(TSources.id_source))
     source = relationship(TSources)
     id_module = DB.Column(DB.Integer, ForeignKey(TModules.id_module))
-    module = DB.relationship(TModules)
+    module = relationship(TModules)
     entity_source_pk_value = DB.Column(DB.Integer)  # FIXME varchar in db!
     id_dataset = DB.Column(DB.Integer, ForeignKey(TDatasets.id_dataset))
     dataset = DB.relationship(TDatasets, backref=DB.backref('synthese_records', lazy='dynamic'))

@@ -26,23 +26,6 @@ from utils_flask_sqla.tests.utils import JSONClient
 __all__ = ['app', 'users', 'acquisition_frameworks', 'datasets',
            'temporary_transaction', 'synthese_data']
 
-
-class JSONClient(testing.FlaskClient):
-    def open(self, *args, **kwargs):
-        headers = kwargs.pop('headers', Headers())
-        if 'Accept' not in headers:
-            headers.extend(Headers({
-                'Accept': 'application/json, text/plain, */*',
-            }))
-        if 'Content-Type' not in headers and 'data' in kwargs:
-            kwargs['data'] = json.dumps(kwargs['data'])
-            headers.extend(Headers({
-                'Content-Type': 'application/json',
-            }))
-        kwargs['headers'] = headers
-        return super().open(*args, **kwargs)
-
-
 @pytest.fixture(scope='session', autouse=True)
 def app():
     app = create_app()
@@ -270,10 +253,13 @@ def synthese_data(users, datasets):
     now = datetime.datetime.now()
     geom_4326 = from_shape(Point(3.63492965698242, 44.3999389306734), srid=4326)
     with db.session.begin_nested():
+        taxon = Taxref.query.filter_by(cd_nom=713776).one()
         s = Synthese(id_source=source.id_source,
                      dataset=datasets['own_dataset'],
                      digitiser=users['self_user'],
-                     nom_cite='chenille',
+                     nom_cite='Ashmeadopria Kieffer',
+                     cd_nom=taxon.cd_nom,
+                     cd_hab=3,
                      the_geom_4326=geom_4326,
                      the_geom_point=geom_4326,
                      the_geom_local=func.st_transform(geom_4326, 2154),
