@@ -2,12 +2,14 @@ import pytest
 
 from flask import url_for, current_app
 from sqlalchemy import func
+from werkzeug.exceptions import Forbidden
 
 from geonature.utils.env import db
 
 from pypnusershub.db.tools import user_to_token
 
 from . import *
+from .utils import set_logged_user_cookie
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")#, "sample_data")
@@ -160,41 +162,41 @@ class TestSynthese:
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
         assert response.status_code == 401
 
-        self.client.set_cookie('*', 'token', user_to_token(users['noright_user']))
+        set_logged_user_cookie(self.client, users['noright_user'])
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
         assert response.status_code == 403
 
-        self.client.set_cookie('*', 'token', user_to_token(users['admin_user']))
+        set_logged_user_cookie(self.client, users['admin_user'])
         not_existing = db.session.query(func.max(Synthese.id_synthese)).scalar() + 1
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=not_existing))
         assert response.status_code == 404
 
-        self.client.set_cookie('*', 'token', user_to_token(users['admin_user']))
+        set_logged_user_cookie(self.client, users['admin_user'])
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
         assert response.status_code == 200
 
-        self.client.set_cookie('*', 'token', user_to_token(users['self_user']))
+        set_logged_user_cookie(self.client, users['self_user'])
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
         assert response.status_code == 200
 
-        self.client.set_cookie('*', 'token', user_to_token(users['user']))
+        set_logged_user_cookie(self.client, users['user'])
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
         assert response.status_code == 200
 
-        self.client.set_cookie('*', 'token', user_to_token(users['associate_user']))
+        set_logged_user_cookie(self.client, users['associate_user'])
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
         assert response.status_code == 200
 
-        self.client.set_cookie('*', 'token', user_to_token(users['stranger_user']))
+        set_logged_user_cookie(self.client, users['stranger_user'])
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
-        assert response.status_code == 200
+        assert response.status_code == Forbidden.code
 
     def test_color_taxon(self):
         response = self.client.get(url_for("gn_synthese.get_color_taxon"))

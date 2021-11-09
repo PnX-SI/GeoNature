@@ -12,10 +12,11 @@ from geonature import create_app
 from geonature.utils.env import DB as db
 from geonature.core.gn_permissions.models import TActions, BibFiltersType, CorRoleActionFilterModuleObject
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets
+from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets, CorDatasetActor
 from geonature.core.gn_synthese.models import TSources, Synthese
 
 from pypnusershub.db.models import User, Organisme, Application, Profils as Profil, UserApplicationRight
+from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 
 __all__ = ['app', 'users', 'acquisition_frameworks', 'datasets',
@@ -104,8 +105,8 @@ def users(app):  # an app context is required
 
     users_to_create = [
         ('noright_user', organisme, '0'),
-        ('stranger_user',),
-        ('associate_user', organisme),
+        ('stranger_user', None, '2'),
+        ('associate_user', organisme, '2'),
         ('self_user', organisme, '1'),
         ('user', organisme, '2'),
         ('admin_user', organisme, '3'),
@@ -138,6 +139,9 @@ def acquisition_frameworks(users):
 @pytest.fixture(scope='class')
 def datasets(users, acquisition_frameworks):
     af = acquisition_frameworks['orphan_af']
+    principal_actor_role = TNomenclatures.query.filter(
+                                BibNomenclaturesTypes.mnemonique=='ROLE_ACTEUR',
+                                TNomenclatures.mnemonique=='Contact principal').one()
     def create_dataset(digitizer=None):
         with db.session.begin_nested():
             dataset = TDatasets(
@@ -149,6 +153,11 @@ def datasets(users, acquisition_frameworks):
                             terrestrial_domain=True,
                             id_digitizer=digitizer.id_role if digitizer else None)
             db.session.add(dataset)
+            if digitizer and digitizer.organisme:
+                actor = CorDatasetActor(
+                            organism=digitizer.organisme,
+                            nomenclature_actor_role=principal_actor_role)
+                dataset.cor_dataset_actor.append(actor)
         return dataset
     return {
         'own_dataset': create_dataset(digitizer=users['user']),
@@ -223,7 +232,7 @@ def releve_data(client, datasets):
 
 
 @pytest.fixture()
-def synthese_data(datasets):
+def synthese_data(users, datasets):
     with db.session.begin_nested():
         source = TSources(name_source='Fixture',
                           desc_source='Synthese data from fixture')
@@ -232,7 +241,8 @@ def synthese_data(datasets):
     geom_4326 = from_shape(Point(3.63492965698242, 44.3999389306734), srid=4326)
     with db.session.begin_nested():
         s = Synthese(id_source=source.id_source,
-                     id_dataset=datasets['own_dataset'].id_dataset,
+                     dataset=datasets['own_dataset'],
+                     digitiser=users['self_user'],
                      nom_cite='chenille',
                      the_geom_4326=geom_4326,
                      the_geom_point=geom_4326,
