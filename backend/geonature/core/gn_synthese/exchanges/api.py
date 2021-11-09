@@ -31,7 +31,7 @@ routes = Blueprint("gn_exchanges", __name__)
 
 @routes.route("/synthese/<int:id_synthese>", methods=["GET"], defaults={'unique_id_sinp':None, 'id_source':None, 'entity_source_pk_value':None})
 @routes.route("/synthese/<string:unique_id_sinp>", methods=["GET"], defaults={'id_synthese':None, 'id_source':None, 'entity_source_pk_value':None})
-@routes.route("/synthese/<int:id_source>/<int:entity_source_pk_value>", methods=["GET"], defaults={'id_synthese':None, 'unique_id_sinp':None})
+@routes.route("/synthese/<int:id_source>/<entity_source_pk_value>", methods=["GET"], defaults={'id_synthese':None, 'unique_id_sinp':None})
 @permissions.check_cruved_scope("R", module_code="SYNTHESE")
 @json_resp
 def get_exchanges_synthese(id_synthese, unique_id_sinp, id_source, entity_source_pk_value):
@@ -104,7 +104,7 @@ def post_exchanges_synthese():
 
 # @routes.route("/synthese/<int:id_synthese>", methods=["PATCH", 'PUT'], defaults={'unique_id_sinp':None, 'id_source':None, 'entity_source_pk_value':None})
 # @routes.route("/synthese/<string:unique_id_sinp>", methods=["PATCH", 'PUT'], defaults={'id_synthese':None, 'id_source':None, 'entity_source_pk_value':None})
-@routes.route("/synthese/<int:id_source>/<int:entity_source_pk_value>", methods=["PATCH", 'PUT'], defaults={'id_synthese':None, 'unique_id_sinp':None})
+@routes.route("/synthese/<int:id_source>/<entity_source_pk_value>", methods=["PATCH", 'PUT'], defaults={'id_synthese':None, 'unique_id_sinp':None})
 @permissions.check_cruved_scope("U", module_code="SYNTHESE")
 @json_resp
 def patch_exchanges_synthese(id_synthese, unique_id_sinp, id_source, entity_source_pk_value):
@@ -117,7 +117,7 @@ def patch_exchanges_synthese(id_synthese, unique_id_sinp, id_source, entity_sour
 
 # @routes.route("/synthese/<int:id_synthese>", methods=["DELETE"], defaults={'unique_id_sinp':None, 'id_source':None, 'entity_source_pk_value':None})
 # @routes.route("/synthese/<string:unique_id_sinp>", methods=["DELETE"], defaults={'id_synthese':None, 'id_source':None, 'entity_source_pk_value':None})
-@routes.route("/synthese/<int:id_source>/<int:entity_source_pk_value>", methods=["DELETE"], defaults={'id_synthese':None, 'unique_id_sinp':None})
+@routes.route("/synthese/<int:id_source>/<entity_source_pk_value>", methods=["DELETE"], defaults={'id_synthese':None, 'unique_id_sinp':None})
 @permissions.check_cruved_scope("D", module_code="SYNTHESE")
 @json_resp
 def delete_exchanges_synthese(id_synthese, unique_id_sinp, id_source, entity_source_pk_value):
