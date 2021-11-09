@@ -205,7 +205,7 @@ class Synthese(DB.Model):
     reference_biblio = DB.Column(DB.Unicode(length=5000))
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
-    cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom), primary_key=True)
+    cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom))
     taxref = relationship(Taxref)
     cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
     habitat = relationship(Habref)
