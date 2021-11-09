@@ -6,9 +6,10 @@ import time
 
 from collections import OrderedDict
 
-from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify
+from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify, g
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc, joinedload
+from werkzeug.exceptions import Forbidden
 from geojson import FeatureCollection, Feature
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
@@ -277,7 +278,7 @@ def get_one_synthese(auth, permissions, id_synthese):
     :param int id_synthese:Synthese to be queried
     :>jsonarr array synthese_as_dict: One synthese with geojson key, see above
     """
-    synthese = Synthese.query.options(
+    synthese = Synthese.query.with_nomenclatures().options(
                     joinedload('source'),
                     joinedload('dataset'),
                     joinedload('dataset.acquisition_framework'),
@@ -287,8 +288,19 @@ def get_one_synthese(auth, permissions, id_synthese):
                     joinedload('validations'),
                     joinedload('cor_observers'),
                ).get_or_404(id_synthese)
+    scope_level = auth.value_filter
+    if not (
+                scope_level == '3' \
+                or g.current_user == synthese.digitiser \
+                or g.current_user in synthese.cor_observers \
+                or (
+                    scope_level == '2' \
+                    and g.current_user.organisme in synthese.dataset.organisms_actors
+                )
+            ):
+        raise Forbidden()
     s = synthese.as_dict(
-        fields=[
+        fields=Synthese.nomenclatures_fields + [
             'dataset',
             'dataset.acquisition_framework',
             'dataset.acquisition_framework.bibliographical_references',
