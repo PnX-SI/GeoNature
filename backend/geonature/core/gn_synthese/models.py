@@ -97,7 +97,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
 
 
 class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
-    def join_nomenclatures(self):
+    def with_nomenclatures(self):
         return self.options(*[joinedload(n) for n in Synthese.nomenclatures_fields])
 
     def lateraljoin_last_validation(self):

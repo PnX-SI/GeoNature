@@ -266,7 +266,7 @@ def get_synthese(auth, permissions):
 def get_one_synthese(auth, permissions, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature
     """
-    synthese = Synthese.query.options(
+    synthese = Synthese.query.with_nomenclatures().options(
         joinedload('source'),
         joinedload('dataset'),
         joinedload('dataset.acquisition_framework'),
@@ -275,11 +275,19 @@ def get_one_synthese(auth, permissions, id_synthese):
         joinedload('areas'),
         joinedload('validations'),
         joinedload('cor_observers'),
-    ).join_nomenclatures().get_or_404(id_synthese)
-    if not synthese.has_instance_permission(scope=int(info_role.value_filter)):
+    ).get_or_404(id_synthese)
+    scope_level = auth.value_filter
+    if not (
+        scope_level == '3' \
+        or g.current_user == synthese.digitiser \
+        or g.current_user in synthese.cor_observers \
+        or (
+            scope_level == '2' \
+            and g.current_user.organisme in synthese.dataset.organisms_actors
+        )
+    ):
         raise Forbidden()
-    geojson = synthese.as_geofeature(
-        "the_geom_4326", "id_synthese",
+    s = synthese.as_dict(
         fields=Synthese.nomenclatures_fields + [
             'dataset',
             'dataset.acquisition_framework',
@@ -317,8 +325,8 @@ def get_one_synthese(auth, permissions, id_synthese):
     # TODO: see if it work again after REBASE to 2.9.0 !
     if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
         data_blurring = DataBlurring(permissions)
-        geojson = data_blurring.blurOneObsAreas(geojson)
-    return jsonify(geojson)
+        s = data_blurring.blurOneObsAreas(s)
+    return jsonify(s)
 
 
 ################################
