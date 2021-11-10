@@ -522,7 +522,7 @@ class DataBlurring:
         have_access = False
         (exact_filters, see_all) = self._compute_exact_filters()
 
-        if see_all["PRIVATE_OBSERVATION"]:
+        if see_all["SENSITIVE_OBSERVATION"]:
             have_access = True
         elif (
             "SENSITIVE_OBSERVATION" in exact_filters 
