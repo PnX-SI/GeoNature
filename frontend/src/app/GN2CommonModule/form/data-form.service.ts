@@ -76,31 +76,6 @@ export class DataFormService {
     });
   }
 
-  getDatasets(params?: ParamsDict, orderByName = true, fields = []) {
-    let queryString: HttpParams = new HttpParams();
-    queryString = this.addOrderBy(queryString, 'dataset_name');
-    fields.forEach(f => {
-      queryString = queryString.append('fields', f)
-    })
-
-    if (params) {
-      for (const key in params) {
-        if (key === 'idOrganism') {
-          queryString = queryString.set('organisme', params[key]);
-          // is its an array of id_af
-        } else if (key === 'id_acquisition_frameworks') {
-          params[key].forEach(id_af => {
-            queryString = queryString.append('id_acquisition_framework', id_af);
-          });
-        } else {
-          queryString = queryString.set(key, params[key].toString());
-        }
-      }
-    }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/datasets`, {
-      params: queryString
-    });
-  }
 
   /**
    * Get dataset list for metadata modules

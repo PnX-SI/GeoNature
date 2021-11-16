@@ -7,7 +7,7 @@ import {
   IterableDiffers,
   IterableDiffer
 } from '@angular/core';
-import { DataFormService } from '../data-form.service';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { AppConfig } from '../../../../conf/app.config';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { CommonService } from '../../service/common.service';
@@ -51,10 +51,11 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
    */
   @Input() moduleCode: string;
   @Input() bindValue: string = "id_dataset";
+  @Input() apiEndPoint: string= "meta/datasets"
 
 
   constructor(
-    private _dfs: DataFormService,
+    private _http: HttpClient,
     private _commonService: CommonService,
     private _iterableDiffers: IterableDiffers,
     public datasetStore: DatasetStoreService
@@ -69,22 +70,22 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   }
 
   getDatasets(params?) {
-    const filter_param = {};
+    let parameters = params || {};
     if (this.displayOnlyActive) {
-      filter_param['active'] = true;
+      parameters['active'] = true;
     }
     if (this.moduleCode) {
-      filter_param['module_code'] = this.moduleCode;
+      parameters['module_code'] = this.moduleCode;
     }
-    this._dfs.getDatasets((params = filter_param)).subscribe(
-      res => {
-        this.datasetStore.filteredDataSets = res.data;
-        this.datasetStore.datasets = res.data;        
-        this.valueLoaded.emit({ value: this.datasetStore.datasets });
-        if (res['with_mtd_errors']) {
-          this._commonService.translateToaster('error', 'MetaData.JddErrorMTD');
-        }
-      },
+    const queryString : HttpParams = this.formatQueryString(parameters);
+    this._http.get<any>(`${AppConfig.API_ENDPOINT}/${this.apiEndPoint}`, {params:queryString}).subscribe(res => {
+      this.datasetStore.filteredDataSets = res.data;
+      this.datasetStore.datasets = res.data;        
+      this.valueLoaded.emit({ value: this.datasetStore.datasets });
+      if (res['with_mtd_errors']) {
+        this._commonService.translateToaster('error', 'MetaData.JddErrorMTD');
+      }
+    },
       error => {
         if (error.status === 500) {
           this._commonService.translateToaster('error', 'MetaData.JddError');
@@ -97,6 +98,27 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
         }
       }
     );
+  }
+
+  formatQueryString(params){
+    let queryString: HttpParams = new HttpParams();
+    queryString = queryString.append('order_by', 'dataset_name');
+
+    if (params) {
+      for (const key in params) {
+        if (key === 'idOrganism') {
+          queryString = queryString.set('organisme', params[key]);
+          // is its an array of id_af
+        } else if (key === 'id_acquisition_frameworks') {
+          params[key].forEach(id_af => {
+            queryString = queryString.append('id_acquisition_framework', id_af);
+          });
+        } else {
+          queryString = queryString.set(key, params[key].toString());
+        }
+      }
+    }
+    return queryString;
   }
 
   filterItems(event) {

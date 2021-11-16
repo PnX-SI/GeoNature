@@ -60,12 +60,8 @@ log = logging.getLogger(__name__)
 @blueprint.route("/create/datasets", methods=["GET"])
 @permissions.check_cruved_scope("C", True, module_code="OCCTAX")
 def get_ds_for_create(info_role):
-    return jsonify(
-        get_datasets_cruved(
-            info_role,
-            params=request.args.to_dict()
-        )
-    )
+    datasets = get_datasets_cruved(info_role, params=request.args.to_dict())
+    return jsonify({"data":datasets})
 
 
 
