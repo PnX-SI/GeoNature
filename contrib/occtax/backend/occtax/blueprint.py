@@ -9,6 +9,7 @@ from flask import (
     send_from_directory,
     render_template,
 )
+from flask.json import jsonify
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Unauthorized
 from geonature.core.gn_commons.models import TAdditionalFields
 from sqlalchemy import or_, func, distinct, case
@@ -45,12 +46,27 @@ from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
 from geonature.core.users.models import UserRigth
+from geonature.core.gn_meta.repositories import get_datasets_cruved
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 
 
 blueprint = Blueprint("pr_occtax", __name__)
 log = logging.getLogger(__name__)
+
+
+
+
+@blueprint.route("/create/datasets", methods=["GET"])
+@permissions.check_cruved_scope("C", True, module_code="OCCTAX")
+def get_ds_for_create(info_role):
+    return jsonify(
+        get_datasets_cruved(
+            info_role,
+            params=request.args.to_dict()
+        )
+    )
+
 
 
 @blueprint.route("/releves", methods=["GET"])
