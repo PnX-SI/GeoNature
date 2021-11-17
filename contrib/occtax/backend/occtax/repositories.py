@@ -97,8 +97,10 @@ class ReleveRepository:
 
     def filter_query_with_autorization(self, user):
         q = DB.session.query(self.model)
+        allowed_datasets = [
+            d.id_dataset for d in TDatasets.query.filter_by_scope(int(user.value_filter)).all()
+        ]
         if user.value_filter == "2":
-            allowed_datasets = TDatasets.get_user_datasets(user)
             q = q.filter(
                 or_(
                     self.model.id_dataset.in_(tuple(allowed_datasets)),
@@ -109,6 +111,7 @@ class ReleveRepository:
         elif user.value_filter == "1":
             q = q.filter(
                 or_(
+                    self.model.id_dataset.in_(tuple(allowed_datasets)),
                     self.model.observers.any(id_role=user.id_role),
                     self.model.id_digitiser == user.id_role,
                 )
@@ -120,6 +123,9 @@ class ReleveRepository:
         Return a prepared query filter with cruved authorization
         from a generic_table (a view)
         """
+        allowed_datasets = [
+            d.id_dataset for d in TDatasets.query.filter_by_scope(int(user.value_filter)).all()
+        ]
         q = DB.session.query(self.model.tableDef)
         if user.value_filter in ("1", "2"):
             q = q.outerjoin(
@@ -128,7 +134,6 @@ class ReleveRepository:
                 == corRoleRelevesOccurrence.id_releve_occtax,
             )
             if user.value_filter == "2":
-                allowed_datasets = TDatasets.get_user_datasets(user)
                 q = q.filter(
                     or_(
                         self.model.tableDef.columns.id_dataset.in_(tuple(allowed_datasets)),
@@ -139,6 +144,7 @@ class ReleveRepository:
             elif user.value_filter == "1":
                 q = q.filter(
                     or_(
+                        self.model.tableDef.columns.id_dataset.in_(tuple(allowed_datasets)),
                         corRoleRelevesOccurrence.id_role == user.id_role,
                         self.model.tableDef.columns.id_digitiser == user.id_role,
                     )

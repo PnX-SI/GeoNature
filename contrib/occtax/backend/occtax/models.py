@@ -33,9 +33,9 @@ class ReleveModel(DB.Model):
         return user.id_role == self.id_digitiser or user.id_role in observers
 
     def user_is_in_dataset_actor(self, user):
-        only_user = user.value_filter == "1"
-        return self.id_dataset in TDatasets.get_user_datasets(user, only_user=only_user)
-
+        return self.id_dataset in (
+            d.id_dataset for d in TDatasets.query.filter_by_scope(int(user.value_filter)).all()
+        )
     def user_is_allowed_to(self, user, level):
         """
             Fonction permettant de dire si un utilisateur

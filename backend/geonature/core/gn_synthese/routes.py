@@ -23,7 +23,6 @@ from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_meta.repositories import get_datasets_cruved
 
 from geonature.core.gn_synthese.models import (
     Synthese,
@@ -41,7 +40,6 @@ from geonature.core.taxonomie.models import (
     VMTaxrefListForautocomplete,
 )
 from geonature.core.ref_geo.models import LAreas, BibAreasTypes
-from geonature.core.gn_synthese.utils import query as synthese_query
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 
@@ -666,7 +664,7 @@ def general_stats(info_role):
         - nb of distinct observer
         - nb of datasets
     """
-    allowed_datasets = get_datasets_cruved(info_role)
+    allowed_datasets = TDatasets.query.filter_by_readable().all()
     q = select(
         [
             func.count(Synthese.id_synthese),

@@ -11,6 +11,8 @@ import click
 from pathlib import Path
 from binascii import a2b_base64
 from flask.json import jsonify
+from geonature.utils.config import config
+from pypnusershub.routes import check_auth
 from werkzeug.utils import secure_filename
 
 from lxml import etree as ET
@@ -23,6 +25,7 @@ from flask import (
     send_from_directory,
     copy_current_request_context,
     Response,
+    g
 )
 from sqlalchemy import inspect
 from sqlalchemy.sql import text, exists, select, update
@@ -59,7 +62,6 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkVoletSINP,
 )
 from geonature.core.gn_meta.repositories import (
-    get_datasets_cruved,
     get_metadata_list,
 )
 from geonature.core.gn_meta.schemas import (
@@ -69,7 +71,7 @@ from geonature.core.gn_meta.schemas import (
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, get_or_fetch_user_cruved
 from geonature.core.gn_meta.mtd import mtd_utils
 from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 import geonature.utils.filemanager as fm
@@ -85,7 +87,6 @@ routes = Blueprint("gn_meta", __name__, cli_group='metadata')
 log = logging.getLogger()
 
 
-
 @routes.route("/list/datasets", methods=["GET"])
 @json_resp
 def get_datasets_list():
@@ -94,12 +95,21 @@ def get_datasets_list():
     return [d.as_dict(fields=["id_dataset", "dataset_name"]) for d in data]
 
 
-# TODO: quel cruved on recupère sur une route comme celle là
-# celui du module admin (meta) ou celui de geonature (route utilisé dans tous les modules...)
+if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
+    @routes.before_request
+    def synchronize_mtd():
+        if request.endpoint == "gn_meta.get_datasets":
+            try:
+                mtd_utils.post_jdd_from_user(
+                    id_user=g.current_user.id_role, id_organism=g.current_user.id_organisme
+                )
+            except Exception as e:
+                log.exception("Error while get JDD via MTD")
+
+
 @routes.route("/datasets", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
-@json_resp
-def get_datasets(info_role):
+@check_auth(1)
+def get_datasets():
     """
     Get datasets list
     
@@ -109,29 +119,20 @@ def get_datasets(info_role):
     :type info_role: TRole
     :query boolean active: filter on active fiel
     :query int id_acquisition_framework: get only dataset of given AF
-    :returns:  `dict{'data':list<TDatasets>, 'with_erros': <boolean>}`
+    :returns:  `list<TDatasets>`
     """
-    with_mtd_error = False
-    if current_app.config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
-        # synchronise the CA and JDD from the MTD WS
-        try:
-            mtd_utils.post_jdd_from_user(
-                id_user=info_role.id_role, id_organism=info_role.id_organisme
-            )
-        except Exception as e:
-            log.error(e)
-            with_mtd_error = True
     params = request.args.to_dict()
     fields = params.get("fields", None)
     if fields:
         fields = fields.split(',')
-    datasets = get_datasets_cruved(info_role, params, fields=fields)
-    datasets_resp = {"data": datasets}
-    if with_mtd_error:
-        datasets_resp["with_mtd_errors"] = True
-    if not datasets:
-        return datasets_resp, 404
-    return datasets_resp
+    if "create" in params:
+        query = TDatasets.query.filter_by_creatable(params.pop("create"))
+    else:
+        query = TDatasets.query.filter_by_readable()
+    query = query.filter_by_generic_params(params)
+    return jsonify(
+        [d.as_dict(fields=fields) for d in query.all()]
+    )
 
 
 def is_dataset_deletable(id_dataset):
@@ -217,9 +218,9 @@ def delete_dataset(info_role, ds_id):
             "La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse",
             406,
         )
-    user_actor = TDatasets.get_user_datasets(info_role)
+    deletable_datasets = [d.id_dataset for d in TDatasets.query.filter_by_scope(int(info_role.value_filter)).all()]
     dataset = TDatasets.query.get(ds_id)
-    allowed = dataset.user_is_allowed_to(user_actor, info_role, info_role.value_filter)
+    allowed = dataset.user_is_allowed_to(deletable_datasets, info_role, info_role.value_filter)
     if not allowed:
         raise Forbidden(f"User {info_role.id_role} cannot delete dataset {dataset.id_dataset}")
     
