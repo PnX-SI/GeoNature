@@ -23,7 +23,6 @@ from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_meta.repositories import get_datasets_cruved
 
 from geonature.core.gn_synthese.models import (
     Synthese,
@@ -666,7 +665,7 @@ def general_stats(info_role):
         - nb of distinct observer
         - nb of datasets
     """
-    allowed_datasets = get_datasets_cruved(info_role)
+    allowed_datasets = TDatasets.query.read_allowed(info_role.value_filter)
     q = select(
         [
             func.count(Synthese.id_synthese),

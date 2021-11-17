@@ -180,66 +180,6 @@ def get_metadata_list(info_role, args, exclude_cols):
     return query
 
 
-def get_datasets_cruved(info_role, params=dict(), as_model=False, fields=[], lazyloaded=[]):
-    """
-        Return the datasets filtered with cruved
-
-        Params:
-            params (dict): parameter to add where clause
-            as_model (boolean): default false, if truereturn an array of model
-                                instead of an array of dict
-            depth (integer): serialization recursion depth
-            lazyloaded (iterable): list of relationships property to lazyload
-    """
-    q = DB.session.query(TDatasets).distinct()
-    if lazyloaded:
-        for rel in lazyloaded:
-            q = q.options(joinedload(rel))
-
-    # filter with modules
-    if "module_code" in params:
-        q = q.filter(TDatasets.modules.any(module_code=params["module_code"]))
-
-    # filters with cruved
-    if info_role.value_filter in ("1", "2"):
-        q = cruved_filter(q, TDatasets, info_role)
-    # filters query string
-    if "active" in request.args:
-        q = q.filter(TDatasets.active == bool(request.args["active"]))
-        params.pop("active")
-    if "id_acquisition_framework" in params:
-        if type(request.args["id_acquisition_framework"]) is list:
-            q = q.filter(
-                TDatasets.id_acquisition_framework.in_(
-                    [int(id_af) for id_af in params["id_acquisition_framework"]]
-                )
-            )
-        else:
-            q = q.filter(
-                TDatasets.id_acquisition_framework == int(request.args["id_acquisition_framework"])
-            )
-
-        params.pop("id_acquisition_framework")
-    table_columns = TDatasets.__table__.columns
-    # Generic Filters
-    for param in params:
-        if param in table_columns:
-            col = getattr(table_columns, param)
-            testT = testDataType(params[param], col.type, param)
-            if testT:
-                raise GeonatureApiError(message=testT)
-            q = q.filter(col == params[param])
-    if "orderby" in params:
-        try:
-            orderCol = getattr(TDatasets.__table__.columns, params["orderby"])
-            q = q.order_by(orderCol)
-        except AttributeError:
-            log.error("the attribute to order on does not exist")
-    data = q.all()
-    if as_model:
-        return data
-    return [d.as_dict(fields=fields) for d in data]
-
 
 def filtered_ds_query(info_role, args):
 

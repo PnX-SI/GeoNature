@@ -23,6 +23,7 @@ from flask import (
     send_from_directory,
     copy_current_request_context,
     Response,
+    session
 )
 from sqlalchemy import inspect
 from sqlalchemy.sql import text, exists, select, update
@@ -59,7 +60,6 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkVoletSINP,
 )
 from geonature.core.gn_meta.repositories import (
-    get_datasets_cruved,
     get_metadata_list,
 )
 from geonature.core.gn_meta.schemas import (
@@ -69,7 +69,7 @@ from geonature.core.gn_meta.schemas import (
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, get_or_fetch_user_cruved
 from geonature.core.gn_meta.mtd import mtd_utils
 from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 import geonature.utils.filemanager as fm
@@ -85,6 +85,12 @@ routes = Blueprint("gn_meta", __name__, cli_group='metadata')
 log = logging.getLogger()
 
 
+@routes.route("/test", methods=["GET"])
+@permissions.check_cruved_scope("R", True)
+def test(info_role):
+    ds = TDatasets.query.allowed_datasets()
+    # print(r)
+    return jsonify([d.as_dict() for d in ds])
 
 @routes.route("/list/datasets", methods=["GET"])
 @json_resp
@@ -98,7 +104,6 @@ def get_datasets_list():
 # celui du module admin (meta) ou celui de geonature (route utilisé dans tous les modules...)
 @routes.route("/datasets", methods=["GET"])
 @permissions.check_cruved_scope("R", True)
-@json_resp
 def get_datasets(info_role):
     """
     Get datasets list
@@ -125,13 +130,22 @@ def get_datasets(info_role):
     fields = params.get("fields", None)
     if fields:
         fields = fields.split(',')
-    datasets = get_datasets_cruved(info_role, params, fields=fields)
-    datasets_resp = {"data": datasets}
+    if "create" in params:
+        cruved, herited = cruved_scope_for_user_in_module(
+            id_role=info_role.id_role,
+            module_code=params["create"]
+        )
+        datasets = TDatasets.query.create_allowed(
+            module_code=params["create"],
+            read_scope=int(info_role.value_filter),
+            create_scope=int(cruved["C"])
+        )
+    else:
+        datasets = TDatasets.query.read_allowed(int(info_role.value_filter))
+    datasets_resp = {"data": [d.as_dict() for d in datasets]}
     if with_mtd_error:
         datasets_resp["with_mtd_errors"] = True
-    if not datasets:
-        return datasets_resp, 404
-    return datasets_resp
+    return jsonify(datasets_resp)
 
 
 def is_dataset_deletable(id_dataset):

@@ -1,8 +1,12 @@
+from flask import g
+from flask_sqlalchemy import BaseQuery
+from geonature.utils.errors import GeonatureApiError
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship, exc
 from sqlalchemy.dialects.postgresql import UUID
-from werkzeug.exceptions import NotFound
+from utils_flask_sqla.generic import testDataType
+from werkzeug.exceptions import BadRequest, NotFound
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User, Organisme
@@ -294,10 +298,78 @@ class TBibliographicReference(CruvedHelper):
     publication_reference = DB.Column(DB.Unicode)
 
 
+
+class TDatasetsQuery(BaseQuery):
+
+    def _filter_by_scope(self, scope):
+        if scope in (1, 2):
+            ors = [
+                "id_digitizer" == g.user.id_role,
+                TDatasets.cor_dataset_actor.any(id_role=g.user.id_role)
+            ]
+            # if organism is None => do not filter on id_organism even if level = 2
+            if g.user.value_filter == 2 and g.user.id_organisme is not None:
+                ors.append(CorDatasetActor.id_organism == g.user.id_organisme)
+            self = self.filter(or_(*ors))
+        return self
+    
+    def _filter_other_params(self, params={}):
+        if "active" in params:
+            self = self.filter(TDatasets.active == bool(params["active"]))
+            params.pop("active")
+        if "id_acquisition_framework" in params:
+            if type(params["id_acquisition_framework"]) is list:
+                self = self.filter(
+                    TDatasets.id_acquisition_framework.in_(
+                        [int(id_af) for id_af in params["id_acquisition_framework"]]
+                    )
+                )
+            else:
+                self = self.filter(
+                    TDatasets.id_acquisition_framework == int(params["id_acquisition_framework"])
+                )
+            table_columns = TDatasets.__table__.columns
+            # Generic Filters
+            for param in params:
+                if param in table_columns:
+                    col = getattr(table_columns, param)
+                    testT = testDataType(params[param], col.type, param)
+                    if testT:
+                        raise GeonatureApiError(message=testT)
+                    q = q.filter(col == params[param])
+            if "orderby" in params:
+                try:
+                    orderCol = getattr(TDatasets.__table__.columns, params["orderby"])
+                    q = q.order_by(orderCol)
+                except AttributeError:
+                    raise BadRequest("the attribute to order on does not exist")
+
+    def read_allowed(self, scope, params={}):
+        """
+            Return the datasets where the user has autorization via its CRUVED
+        """
+        self = self._filter_other_params(params)
+        return self._filter_by_scope(scope).all()
+
+    def create_allowed(self, module_code, read_scope, create_scope, params={}):
+        """
+        Return all dataset where user have read rights minus those who user to not have
+        create rigth
+        """
+        self = self._filter_other_params(params)
+        self = self._filter_by_scope(read_scope)
+        self = self.filter(TDatasets.modules.any(module_code=module_code))
+        if create_scope < read_scope:
+            self = self._filter_by_scope(create_scope)
+        print(self)
+        return self.all()
+    
+
 @serializable
 class TDatasets(CruvedHelper):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
+    query_class = TDatasetsQuery
     id_dataset = DB.Column(DB.Integer, primary_key=True)
     unique_dataset_id = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
     id_acquisition_framework = DB.Column(
