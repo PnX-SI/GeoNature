@@ -1,8 +1,14 @@
+from flask import g
+from flask_sqlalchemy import BaseQuery
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.utils.errors import GeonatureApiError
+import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship, exc
 from sqlalchemy.dialects.postgresql import UUID
-from werkzeug.exceptions import NotFound
+from utils_flask_sqla.generic import testDataType
+from werkzeug.exceptions import BadRequest, NotFound
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User, Organisme
@@ -250,9 +256,8 @@ class CruvedHelper(DB.Model):
             peu ou non agir sur une donnée
 
             Params:
+                object_actors: liste d'id dataset sur lequel l'utilisateur a des droits
                 id_role: identifiant de la personne qui demande la route
-                id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
-                id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
 
             Return: boolean
         """
@@ -294,10 +299,101 @@ class TBibliographicReference(CruvedHelper):
     publication_reference = DB.Column(DB.Unicode)
 
 
+
+class TDatasetsQuery(BaseQuery):
+    def _get_read_scope(self, user=None):
+        if user is None:
+            user = g.current_user
+        cruved, herited = cruved_scope_for_user_in_module(
+            id_role=user.id_role,
+            module_code="GEONATURE"
+        )
+        return int(cruved['R'])
+
+    def _get_create_scope(self, module_code, user=None):
+        if user is None:
+            user = g.current_user
+        cruved, herited = cruved_scope_for_user_in_module(
+            id_role=user.id_role,
+            module_code=module_code
+        )
+        return int(cruved["C"])
+
+    def filter_by_scope(self, scope, user=None):
+        if user is None:
+            user = g.current_user
+        if scope == 0:
+            self = self.filter(sa.false())
+        elif scope in (1, 2):
+            ors = [
+                TDatasets.id_digitizer == user.id_role,
+                TDatasets.cor_dataset_actor.any(id_role=user.id_role)
+            ]
+            # if organism is None => do not filter on id_organism even if level = 2
+            if scope == 2 and user.id_organisme is not None:
+                ors.append(CorDatasetActor.id_organism == g.current_user.id_organisme)
+            self = self.filter(or_(*ors))
+        return self
+
+    def filter_by_generic_params(self, params={}):
+        if "active" in params:
+            self = self.filter(TDatasets.active == bool(params["active"]))
+            params.pop("active")
+        if "id_acquisition_framework" in params:
+            if type(params["id_acquisition_framework"]) is list:
+                self = self.filter(
+                    TDatasets.id_acquisition_framework.in_(
+                        [int(id_af) for id_af in params["id_acquisition_framework"]]
+                    )
+                )
+            else:
+                self = self.filter(
+                    TDatasets.id_acquisition_framework == int(params["id_acquisition_framework"])
+                )
+        table_columns = TDatasets.__table__.columns
+        if "orderby" in params:
+            try:
+                orderCol = getattr(table_columns, params.pop("orderby"))
+                self = self.order_by(orderCol)
+            except AttributeError:
+                raise BadRequest("the attribute to order on does not exist")
+        # Generic Filters
+        for param in params:
+            if param in table_columns:
+                col = getattr(table_columns, param)
+                testT = testDataType(params[param], col.type, param)
+                if testT:
+                    raise BadRequest(testT)
+                q = q.filter(col == params[param])
+        return self
+
+    def filter_by_readable(self):
+        """
+            Return the datasets where the user has autorization via its CRUVED
+        """
+        return self.filter_by_scope(
+            self._get_read_scope()
+        )
+
+    def filter_by_creatable(self, module_code):
+        """
+        Return all dataset where user have read rights minus those who user to not have
+        create rigth
+        """
+        query = self.filter(TDatasets.modules.any(module_code=module_code))
+        scope = self._get_read_scope()
+        create_scope = self._get_create_scope(module_code)
+        if create_scope < scope:
+            scope = create_scope
+        return query.filter_by_scope(scope)
+
+    
+
 @serializable
 class TDatasets(CruvedHelper):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
+    query_class = TDatasetsQuery
     id_dataset = DB.Column(DB.Integer, primary_key=True)
     unique_dataset_id = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
     id_acquisition_framework = DB.Column(
@@ -450,37 +546,6 @@ class TDatasets(CruvedHelper):
         if uuid_dataset:
             return uuid_dataset[0]
         return uuid_dataset
-
-    @staticmethod
-    def get_user_datasets(user, only_query=False, only_user=False):
-        """get the dataset(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
-            param: 
-              - user from TRole model
-              - only_query: boolean (return the query not the id_datasets allowed if true)
-              - only_user: boolean: return only the dataset where user himself is actor (not with its organism)
-
-            return: a list of id_dataset or a query"""
-        q = DB.session.query(TDatasets).outerjoin(
-            CorDatasetActor, CorDatasetActor.id_dataset == TDatasets.id_dataset
-        )
-        if user.id_organisme is None or only_user:
-            q = q.filter(
-                or_(
-                    CorDatasetActor.id_role == user.id_role,
-                    TDatasets.id_digitizer == user.id_role,
-                )
-            )
-        else:
-            q = q.filter(
-                or_(
-                    CorDatasetActor.id_organism == user.id_organisme,
-                    CorDatasetActor.id_role == user.id_role,
-                    TDatasets.id_digitizer == user.id_role,
-                )
-            )
-        if only_query:
-            return q
-        return list(set([d.id_dataset for d in q.all()]))
 
 
 @serializable
