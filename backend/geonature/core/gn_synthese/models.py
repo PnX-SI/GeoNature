@@ -93,7 +93,8 @@ class Synthese(DB.Model):
     source = relationship(TSources)
     id_module = DB.Column(DB.Integer)
     entity_source_pk_value = DB.Column(DB.Integer)  # FIXME varchar in db!
-    id_dataset = DB.Column(DB.Integer)
+    id_dataset = DB.Column(DB.Integer, ForeignKey(TDatasets.id_dataset))
+    dataset = DB.relationship(TDatasets, backref=DB.backref('synthese_records', lazy='dynamic'))
     id_nomenclature_geo_object_nature = DB.Column(DB.Integer)
     id_nomenclature_grp_typ = DB.Column(DB.Integer)
     grp_method = DB.Column(DB.Unicode(length=255))

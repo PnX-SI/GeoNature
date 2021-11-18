@@ -14,6 +14,7 @@ from flask.json import jsonify
 from geonature.utils.config import config
 from pypnusershub.routes import check_auth
 from werkzeug.utils import secure_filename
+from werkzeug.exceptions import Conflict
 
 from lxml import etree as ET
 
@@ -135,13 +136,6 @@ def get_datasets():
     )
 
 
-def is_dataset_deletable(id_dataset):
-    datas = DB.session.query(Synthese.id_synthese).filter(Synthese.id_dataset == id_dataset).all()
-    if datas:
-        return False
-    return True
-
-
 def is_af_deletable(id_af):
     datasets = (
         DB.session.query(TDatasets.id_dataset)
@@ -213,21 +207,14 @@ def delete_dataset(info_role, ds_id):
     .. :quickref: Metadata;
     """
 
-    if not is_dataset_deletable(ds_id):
-        raise GeonatureApiError(
-            "La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse",
-            406,
-        )
-    deletable_datasets = [d.id_dataset for d in TDatasets.query.filter_by_scope(int(info_role.value_filter)).all()]
-    dataset = TDatasets.query.get(ds_id)
-    allowed = dataset.user_is_allowed_to(deletable_datasets, info_role, info_role.value_filter)
-    if not allowed:
-        raise Forbidden(f"User {info_role.id_role} cannot delete dataset {dataset.id_dataset}")
-    
-    DB.session.query(TDatasets).filter(TDatasets.id_dataset == ds_id).delete()
-
+    dataset = TDatasets.query.get_or_404(ds_id)
+    if not dataset.has_instance_permission(int(info_role.value_filter)):
+        raise Forbidden(f"User {g.current_user} cannot delete dataset {dataset.id_dataset}")
+    if not dataset.is_deletable():
+        raise Conflict("La suppression du jeu de données n'est pas possible "
+                       "car des données y sont rattachées dans la Synthèse")
+    DB.session.delete(dataset)
     DB.session.commit()
-
     return '', 204
 
 

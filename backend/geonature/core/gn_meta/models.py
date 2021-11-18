@@ -6,7 +6,7 @@ from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from geonature.utils.errors import GeonatureApiError
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_
-from sqlalchemy.sql import select, func
+from sqlalchemy.sql import select, func, exists
 from sqlalchemy.orm import relationship, exc
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -517,6 +517,29 @@ class TDatasets(CruvedHelper):
         cascade="save-update, merge, delete, delete-orphan",
         backref=DB.backref("actor_dataset", lazy="select")
     )
+
+    @hybrid_property
+    def user_actors(self):
+        return [ actor.role for actor in self.cor_dataset_actor if actor.role is not None ]
+
+    @hybrid_property
+    def organism_actors(self):
+        return [ actor.organism for actor in self.cor_dataset_actor if actor.organism is not None ]
+
+    def is_deletable(self):
+        return not DB.session.query(self.synthese_records.exists()).scalar()
+
+    def has_instance_permission(self, scope):
+        if scope == 0:
+            return False
+        elif scope in (1, 2):
+            if g.current_user == self.digitizer or g.current_user in self.user_actors:
+                return True
+            if scope == 2 and g.current_user.organisme in self.organism_actors:
+                return True
+            return False
+        elif scope == 3:
+            return True
 
     def __str__(self):
         return self.dataset_name
