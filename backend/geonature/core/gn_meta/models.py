@@ -9,6 +9,7 @@ from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func
 from sqlalchemy.orm import relationship, exc
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.ext.hybrid import hybrid_property
 from utils_flask_sqla.generic import testDataType
 from werkzeug.exceptions import BadRequest, NotFound
 
@@ -152,7 +153,7 @@ class CorAcquisitionFrameworkActor(DB.Model):
             return None
 
 
-@serializable
+@serializable(exclude=['actor'])
 class CorDatasetActor(DB.Model):
     __tablename__ = "cor_dataset_actor"
     __table_args__ = {"schema": "gn_meta"}
@@ -175,6 +176,21 @@ class CorDatasetActor(DB.Model):
         lazy="joined",
         foreign_keys=[id_nomenclature_actor_role],
     )
+
+    @hybrid_property
+    def actor(self):
+        if self.role is not None:
+            return self.role
+        else:
+            return self.organisme
+
+    @hybrid_property
+    def display(self):
+        if self.role:
+            actor = self.role.nom_complet
+        else:
+            actor = self.organism.nom_organisme
+        return '{} ({})'.format(actor, self.nomenclature_actor_role.label_default)
 
     @staticmethod
     def get_actor(id_dataset, id_nomenclature_actor_role, id_role=None, id_organism=None):
