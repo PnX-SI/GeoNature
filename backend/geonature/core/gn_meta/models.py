@@ -407,11 +407,12 @@ class TDatasetsQuery(BaseQuery):
 
     
 
-@serializable
+@serializable(exclude=['user_actors', 'organism_actors'])
 class TDatasets(CruvedHelper):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
     query_class = TDatasetsQuery
+
     id_dataset = DB.Column(DB.Integer, primary_key=True)
     unique_dataset_id = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
     id_acquisition_framework = DB.Column(
