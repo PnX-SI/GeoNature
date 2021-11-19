@@ -110,14 +110,11 @@ class CorAcquisitionFrameworkActor(DB.Model):
     role = DB.relationship(
         User,
         lazy="joined",
-        primaryjoin=(User.id_role == id_role),
-        foreign_keys=[id_role]
     )
 
     organism = relationship(
         Organisme,
         lazy="joined",
-        foreign_keys=[id_organism]
     )
 
     @staticmethod
@@ -349,7 +346,7 @@ class TDatasetsQuery(BaseQuery):
             ]
             # if organism is None => do not filter on id_organism even if level = 2
             if scope == 2 and user.id_organisme is not None:
-                ors.append(CorDatasetActor.id_organism == g.current_user.id_organisme)
+                ors.append(TDatasets.cor_dataset_actor.any(id_organism=g.current_user.id_organisme))
             self = self.filter(or_(*ors))
         return self
 
@@ -463,6 +460,7 @@ class TDatasets(CruvedHelper):
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    digitizer = DB.relationship(User)
     id_taxa_list = DB.Column(DB.Integer)
     modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
