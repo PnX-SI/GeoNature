@@ -12,7 +12,7 @@ from pathlib import Path
 from binascii import a2b_base64
 from flask.json import jsonify
 from geonature.utils.config import config
-from pypnusershub.routes import check_auth
+from geonature.core.gn_permissions.decorators import login_required
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import Conflict
 
@@ -101,7 +101,7 @@ if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
 
 
 @routes.route("/datasets", methods=["GET"])
-@check_auth(1)
+@login_required
 def get_datasets():
     """
     Get datasets list
