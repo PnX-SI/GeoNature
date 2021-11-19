@@ -586,10 +586,55 @@ class TDatasets(CruvedHelper):
         return uuid_dataset
 
 
+
+class TAcquisitionFrameworkQuery(BaseQuery):
+    def _get_read_scope(self):
+        cruved, herited = cruved_scope_for_user_in_module(
+            id_role=g.current_user.id_role,
+            module_code="GEONATURE"
+        )
+        return int(cruved['R'])
+
+    def filter_by_scope(self, scope, user=None):
+        if user is None:
+            user = g.current_user
+        if scope == 0:
+            self = self.filter(sa.false())
+        elif scope in (1, 2):
+            ors = [
+                TAcquisitionFramework.id_digitizer == user.id_role,
+                TAcquisitionFramework.cor_af_actor.any(id_role=user.id_role),
+                TAcquisitionFramework.t_datasets.any(id_digitizer=user.id_role),
+                TAcquisitionFramework.t_datasets.any(
+                    TDatasets.cor_dataset_actor.any(id_role=user.id_role)
+                ),  # TODO test coverage
+            ]
+            # if organism is None => do not filter on id_organism even if level = 2
+            if scope == 2 and user.id_organisme is not None:
+                ors += [
+                    TAcquisitionFramework.cor_af_actor.any(id_organism=user.id_organisme),
+                    TAcquisitionFramework.t_datasets.any(
+                        TDatasets.cor_dataset_actor.any(id_organism=user.id_organisme)
+                    ),  # TODO test coverage
+                ]
+            self = self.filter(or_(*ors))
+        return self
+
+    def filter_by_readable(self):
+        """
+            Return the afs where the user has autorization via its CRUVED
+        """
+        return self.filter_by_scope(
+            self._get_read_scope()
+        )
+
+
 @serializable
 class TAcquisitionFramework(CruvedHelper):
     __tablename__ = "t_acquisition_frameworks"
     __table_args__ = {"schema": "gn_meta"}
+    query_class = TAcquisitionFrameworkQuery
+
     id_acquisition_framework = DB.Column(DB.Integer, primary_key=True)
     unique_acquisition_framework_id = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
@@ -701,6 +746,27 @@ class TAcquisitionFramework(CruvedHelper):
         uselist=True,
         backref=DB.backref("acquisition_framework", lazy="select"),
     )
+
+    @hybrid_property
+    def user_actors(self):
+        return [ actor.role for actor in self.cor_af_actor if actor.role is not None ]
+
+    @hybrid_property
+    def organism_actors(self):
+        return [ actor.organism for actor in self.cor_af_actor if actor.organism is not None ]
+
+    def has_instance_permission(self, scope):
+        if scope == 0:
+            return False
+        elif scope in (1, 2):
+            if g.current_user == self.creator or g.current_user in self.user_actors:
+                return True
+            if scope == 2 and g.current_user.organisme in self.organism_actors:
+                return True
+            # rights on DS give rights on AF!
+            return any(map(lambda ds: ds.has_instance_permission(scope), self.t_datasets))
+        elif scope == 3:
+            return True
 
     def get_object_cruved(
         self, info_role, user_cruved
