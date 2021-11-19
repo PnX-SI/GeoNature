@@ -1,3 +1,4 @@
+from sqlalchemy import inspect
 from geonature.utils.env import MA
 from marshmallow import pre_load, fields, EXCLUDE
 from .models import (
@@ -19,6 +20,14 @@ class CruvedSchemaMixin:
         if 'info_role' in self.context and 'user_cruved' in self.context:
             return obj.get_object_cruved(self.context['info_role'], self.context['user_cruved'])
         return None
+
+
+class ForeignKeySchemaMixin:
+    def __init__(self, *args, **kwargs):
+        if not kwargs.pop('include_fk', True):
+            mapper = inspect(self.Meta.model)
+            kwargs['exclude'] = set(kwargs.get('exclude', [])) | set(mapper.relationships.keys())
+        return super().__init__(*args, **kwargs)
 
 
 class DatasetActorSchema(MA.SQLAlchemyAutoSchema):
@@ -106,7 +115,7 @@ class AcquisitionFrameworkActorSchema(MA.SQLAlchemyAutoSchema):
         return data
 
 
-class AcquisitionFrameworkSchema(CruvedSchemaMixin, MA.SQLAlchemyAutoSchema):
+class AcquisitionFrameworkSchema(ForeignKeySchemaMixin, CruvedSchemaMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
         model = TAcquisitionFramework
         load_instance = True

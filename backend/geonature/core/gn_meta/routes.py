@@ -605,9 +605,7 @@ def get_acquisition_frameworks(info_role):
     """
     params = request.args.to_dict()
     exclude_fields = [db_rel.key for db_rel in inspect(TAcquisitionFramework).relationships]
-    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
-        exclude=exclude_fields
-    )
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(include_fk=False)
     return acquisitionFrameworkSchema.jsonify(
         get_metadata_list(info_role, params, exclude_fields).all(),
         many=True
