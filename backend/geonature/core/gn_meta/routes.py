@@ -502,15 +502,13 @@ def datasetHandler(dataset, data):
 @routes.route("/dataset", methods=["POST"])
 @permissions.check_cruved_scope("C", module_code="METADATA")
 def create_dataset():
-   """
-   Post one Dataset data
-   .. :quickref: Metadata;
-   """
-
-   # create new dataset
-   return DatasetSchema().jsonify(
-       datasetHandler(dataset=TDatasets(id_digitizer=g.current_user.id_role), data=request.get_json())
-   )
+    """
+    Post one Dataset data
+    .. :quickref: Metadata;
+    """
+    return DatasetSchema().jsonify(
+        datasetHandler(dataset=TDatasets(id_digitizer=g.current_user.id_role), data=request.get_json())
+    )
 
 
 @routes.route("/dataset/<int:id_dataset>", methods=["POST", "PATCH"])
