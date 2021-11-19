@@ -6,10 +6,11 @@ from flask import testing, url_for
 from werkzeug.datastructures import Headers
 
 from geonature import create_app
-from geonature.utils.env import DB as db
+from geonature.utils.env import db
 from geonature.core.gn_permissions.models import TActions, TFilters, CorRoleActionFilterModuleObject
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets, CorDatasetActor
+from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets, \
+                                          CorDatasetActor, CorAcquisitionFrameworkActor
 
 from pypnusershub.db.models import User, Organisme, Application, Profils as Profil, UserApplicationRight
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
@@ -114,6 +115,9 @@ def users(app):  # an app context is required
 
 @pytest.fixture(scope='class')
 def acquisition_frameworks(users):
+    principal_actor_role = TNomenclatures.query.filter(
+                                BibNomenclaturesTypes.mnemonique=='ROLE_ACTEUR',
+                                TNomenclatures.mnemonique=='Contact principal').one()
     def create_af(creator=None):
         with db.session.begin_nested():
             af = TAcquisitionFramework(
@@ -121,6 +125,11 @@ def acquisition_frameworks(users):
                             acquisition_framework_desc='test',
                             creator=creator)
             db.session.add(af)
+            if creator and creator.organisme:
+                actor = CorAcquisitionFrameworkActor(
+                            organism=creator.organisme,
+                            nomenclature_actor_role=principal_actor_role)
+                af.cor_af_actor.append(actor)
         return af
     return {
         'own_af': create_af(creator=users['user']),

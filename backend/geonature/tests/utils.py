@@ -37,7 +37,11 @@ def set_logged_user_cookie(client, user):
 
 
 def logged_user_headers(user, headers=Headers()):
-    cookie = dump_cookie('token', user_to_token(user))
+    app_user = AppUser.query.filter_by(
+                                id_role=user.id_role,
+                                id_application=current_app.config['ID_APP'],
+    ).one()
+    cookie = dump_cookie('token', user_to_token(app_user))
     headers.extend({
         'Cookie': cookie,
     })
