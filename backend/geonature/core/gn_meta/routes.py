@@ -88,14 +88,6 @@ routes = Blueprint("gn_meta", __name__, cli_group='metadata')
 log = logging.getLogger()
 
 
-@routes.route("/list/datasets", methods=["GET"])
-@json_resp
-def get_datasets_list():
-    q = DB.session.query(TDatasets)
-    data = q.all()
-    return [d.as_dict(fields=["id_dataset", "dataset_name"]) for d in data]
-
-
 if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
     @routes.before_request
     def synchronize_mtd():
