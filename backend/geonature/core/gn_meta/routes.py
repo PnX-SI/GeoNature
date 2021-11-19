@@ -486,26 +486,10 @@ def update_sensitivity_query(id_syntheses):
     return "OK"
 
 
-def datasetHandler(request, *, dataset, info_role):
-    # Test des droits d'édition du dataset si modification
-    if dataset.id_dataset is not None:
-        user_cruved = cruved_scope_for_user_in_module(
-            id_role=info_role.id_role, module_code="METADATA",
-        )[0]
-        dataset_cruved = dataset.get_object_cruved(info_role, user_cruved)
-        #verification des droits d'édition pour le dataset
-        if not dataset_cruved['U']:
-            raise InsufficientRightsError(
-                "User {} has no right in dataset {}".format(
-                    info_role.id_role, dataset.id_dataset
-                ),
-                403,
-            )
-    else: 
-        dataset.id_digitizer = info_role.id_role
+def datasetHandler(dataset, data):
     datasetSchema = DatasetSchema(unknown=EXCLUDE)
     try:
-        dataset = datasetSchema.load(request.get_json(), instance=dataset)
+        dataset = datasetSchema.load(data, instance=dataset)
     except ValidationError as error:
         log.exception(error)
         raise BadRequest(error.messages)
@@ -516,8 +500,8 @@ def datasetHandler(request, *, dataset, info_role):
 
 
 @routes.route("/dataset", methods=["POST"])
-@permissions.check_cruved_scope("C", True, module_code="METADATA")
-def create_dataset(info_role):
+@permissions.check_cruved_scope("C", module_code="METADATA")
+def create_dataset():
    """
    Post one Dataset data
    .. :quickref: Metadata;
@@ -525,7 +509,7 @@ def create_dataset(info_role):
 
    # create new dataset
    return DatasetSchema().jsonify(
-       datasetHandler(request=request, dataset=TDatasets(), info_role=info_role)
+       datasetHandler(dataset=TDatasets(id_digitizer=g.current_user.id_role), data=request.get_json())
    )
 
 
@@ -537,14 +521,12 @@ def update_dataset(id_dataset, info_role):
     .. :quickref: Metadata;
     """
 
-    dataset = DB.session.query(TDatasets).get(id_dataset)
-
-
-    if not dataset:
-        return {"message": "not found"}, 404
+    dataset = TDatasets.query.filter_by_readable().get_or_404(id_dataset)
+    if not dataset.has_instance_permission(scope=int(info_role.value_filter)):
+        raise Forbidden(f"User {g.current_user} cannot update dataset {dataset.id_dataset}")
 
     return DatasetSchema().jsonify(
-        datasetHandler(request=request, dataset=dataset, info_role=info_role)
+        datasetHandler(dataset=dataset, data=request.get_json())
     )
 
 

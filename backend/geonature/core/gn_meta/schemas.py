@@ -12,7 +12,7 @@ from pypnnomenclature.schemas import NomenclatureSchema
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_commons.schemas import ModuleSchema
 
-class MetadataSchema(MA.SQLAlchemyAutoSchema):
+class CruvedSchemaMixin:
     cruved = fields.Method("get_user_cruved")
 
     def get_user_cruved(self, obj):
@@ -37,7 +37,7 @@ class DatasetActorSchema(MA.SQLAlchemyAutoSchema):
             data.pop("id_cda", None)
         return data
 
-class DatasetSchema(MetadataSchema):
+class DatasetSchema(CruvedSchemaMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
         model = TDatasets
         load_instance = True
@@ -72,7 +72,7 @@ class DatasetSchema(MetadataSchema):
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", exclude=("t_datasets",), dump_only=True)
 
 
-class BibliographicReferenceSchema(MetadataSchema):
+class BibliographicReferenceSchema(CruvedSchemaMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
         model = TBibliographicReference
         load_instance = True
@@ -106,7 +106,7 @@ class AcquisitionFrameworkActorSchema(MA.SQLAlchemyAutoSchema):
         return data
 
 
-class AcquisitionFrameworkSchema(MetadataSchema):
+class AcquisitionFrameworkSchema(CruvedSchemaMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
         model = TAcquisitionFramework
         load_instance = True
