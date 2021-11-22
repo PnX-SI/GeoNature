@@ -266,6 +266,7 @@ def get_one_synthese(info_role, id_synthese):
             'habitat',
             'medias',
             'areas',
+            'areas.area_type',
         ])
     return jsonify(geojson)
 
