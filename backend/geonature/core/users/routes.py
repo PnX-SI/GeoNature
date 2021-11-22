@@ -335,7 +335,7 @@ def confirmation():
     if token is None:
         return {"message": "Token introuvable"}, 404
 
-    data = {"token": token, "id_application": config["ID_APPLICATION_GEONATURE"]}
+    data = {"token": token, "id_application": current_app.config["ID_APPLICATION_GEONATURE"]}
 
     r = s.post(
         url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/valid_temp_user", json=data,
