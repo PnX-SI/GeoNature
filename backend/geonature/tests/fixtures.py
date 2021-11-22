@@ -1,9 +1,13 @@
 import json
 import pkg_resources
+import datetime
 
 import pytest
 from flask import testing, url_for
 from werkzeug.datastructures import Headers
+from sqlalchemy import func
+from shapely.geometry import Point
+from geoalchemy2.shape import from_shape
 
 from geonature import create_app
 from geonature.utils.env import db
@@ -11,9 +15,11 @@ from geonature.core.gn_permissions.models import TActions, TFilters, CorRoleActi
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets, \
                                           CorDatasetActor, CorAcquisitionFrameworkActor
+from geonature.core.gn_synthese.models import TSources, Synthese
 
 from pypnusershub.db.models import User, Organisme, Application, Profils as Profil, UserApplicationRight
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
+from apptax.taxonomie.models import Taxref
 
 
 class JSONClient(testing.FlaskClient):
@@ -101,7 +107,7 @@ def users(app):  # an app context is required
     users_to_create = [
         ('noright_user', organisme, filters[0]),
         ('stranger_user',),
-        ('associate_user', organisme),
+        ('associate_user', organisme, filters[2]),
         ('self_user', organisme, filters[1]),
         ('user', organisme, filters[2]),
         ('admin_user', organisme, filters[3]),
@@ -242,3 +248,28 @@ def releve_data(client, datasets):
     }
 
     return data
+
+
+@pytest.fixture()
+def synthese_data(users, datasets):
+    with db.session.begin_nested():
+        source = TSources(name_source='Fixture',
+                          desc_source='Synthese data from fixture')
+        db.session.add(source)
+    now = datetime.datetime.now()
+    geom_4326 = from_shape(Point(3.63492965698242, 44.3999389306734), srid=4326)
+    with db.session.begin_nested():
+        taxon = Taxref.query.filter_by(cd_nom=713776).one()
+        s = Synthese(id_source=source.id_source,
+                     dataset=datasets['own_dataset'],
+                     digitiser=users['self_user'],
+                     nom_cite='Ashmeadopria Kieffer',
+                     cd_nom=taxon.cd_nom,
+                     cd_hab=3,
+                     the_geom_4326=geom_4326,
+                     the_geom_point=geom_4326,
+                     the_geom_local=func.st_transform(geom_4326, 2154),
+                     date_min=now,
+                     date_max=now)
+        db.session.add(s)
+    return [s]

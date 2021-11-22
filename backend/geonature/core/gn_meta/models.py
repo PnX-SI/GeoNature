@@ -164,15 +164,14 @@ class CorDatasetActor(DB.Model):
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("ROLE_ACTEUR"),
     )
-
-    role = DB.relationship(User, lazy="joined")
-    organism = relationship(Organisme, lazy="joined")
-
     nomenclature_actor_role = DB.relationship(
         TNomenclatures,
         lazy="joined",
         foreign_keys=[id_nomenclature_actor_role],
     )
+
+    role = DB.relationship(User, lazy="joined")
+    organism = relationship(Organisme, lazy="joined")
 
     @hybrid_property
     def actor(self):
