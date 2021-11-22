@@ -485,21 +485,20 @@
             </table>
           </div>
         </div>
-      </div>
 
-      <h5>Aire de répartition des observations valides</h5>
-      <div class="mb-3 border border-secondary">
-        <pnx-map height="40vh">
-          <pnx-geojson
-            [geojson]="selectedGeom"
-            [style]="{color: 'red'}">
-          </pnx-geojson>
-          <pnx-geojson
-            *ngIf="CONFIG.FRONTEND.ENABLE_PROFILES"
-            [geojson]="profile"
-            [zoomOnFirstTime]="true">
-          </pnx-geojson>
-        </pnx-map>
+        <h5>Aire de répartition des observations valides</h5>
+        <div class="mb-3 border border-secondary">
+          <pnx-map height="40vh">
+            <pnx-geojson
+              [geojson]="selectedGeom"
+              [style]="{color: 'red'}">
+            </pnx-geojson>
+            <pnx-geojson
+              [geojson]="profile"
+              [zoomOnFirstTime]="true">
+            </pnx-geojson>
+          </pnx-map>
+        </div>
       </div>
     </div>
   </mat-tab>
