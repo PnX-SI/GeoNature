@@ -59,11 +59,10 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.loadAllInfo(this.idSynthese);
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-      if(changes.idSynthese && changes.idSynthese.currentValue) {
+      if (changes.idSynthese && changes.idSynthese.currentValue) {
         this.loadAllInfo(changes.idSynthese.currentValue)
       }
   }
@@ -72,7 +71,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   // HACK to display a second map on validation tab
   setValidationTab(event) {
     this.showValidation = true;
-    if(this._mapService.map){
+    if (this._mapService.map){
       setTimeout(() => {
         this._mapService.map.invalidateSize();
       }, 100);
@@ -125,12 +124,13 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           });
 
         this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
-        this._gnDataService.getTaxonInfo(this.selectedObs['cd_nom']).subscribe(taxInfo => {
+        let cdNom = this.selectedObs['cd_nom'];
+        let areasStatus = this.selectedObs['areas_status'];
+        this._gnDataService.getTaxonInfo(cdNom, areasStatus).subscribe(taxInfo => {
           this.selectedObsTaxonDetail = taxInfo;
           if (this.selectedObs.cor_observers) {
             this.email = this.selectedObs.cor_observers.map(el => el.email).join();
             this.mailto = this.formatMailContent(this.email);
-
           }
 
           this._gnDataService.getProfile(taxInfo.cd_ref).subscribe(profile => {
@@ -208,7 +208,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       mailto = encodeURI(mailto);
       mailto = mailto.replace(/,/g, '%2c');
     }
-
     return mailto;
   }
 
