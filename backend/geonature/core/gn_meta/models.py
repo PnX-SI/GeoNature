@@ -378,7 +378,7 @@ class TDatasetsQuery(BaseQuery):
                 testT = testDataType(params[param], col.type, param)
                 if testT:
                     raise BadRequest(testT)
-                q = q.filter(col == params[param])
+                self = self.filter(col == params[param])
         return self
 
     def filter_by_readable(self):
