@@ -629,7 +629,7 @@ class TAcquisitionFrameworkQuery(BaseQuery):
         )
 
 
-@serializable
+@serializable(exclude=['user_actors', 'organism_actors'])
 class TAcquisitionFramework(CruvedHelper):
     __tablename__ = "t_acquisition_frameworks"
     __table_args__ = {"schema": "gn_meta"}
