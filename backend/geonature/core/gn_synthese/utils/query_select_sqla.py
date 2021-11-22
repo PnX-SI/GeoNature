@@ -336,7 +336,13 @@ class SyntheseQuery:
                 self.query = self.query.where(col.in_(value))
             elif hasattr(self.model.__table__.columns, colname):
                 col = getattr(self.model.__table__.columns, colname)
-                self.query = self.query.where(col.ilike("%{}%".format(value[0])))
+                if str(col.type) == "INTEGER":
+                    if colname in ["precision"]:
+                        self.query = self.query.where(col <= value[0])
+                    else:
+                        self.query = self.query.where(col == value[0])
+                else:
+                    self.query = self.query.where(col.ilike("%{}%".format(value[0])))
 
     def filter_query_all_filters(self, user):
         """High level function to manage query with all filters.
@@ -356,10 +362,8 @@ class SyntheseQuery:
         """
 
         self.filter_query_with_cruved(user)
-
         self.filter_taxonomy()
         self.filter_other_filters()
-
         if self.query_joins is not None:
             self.query = self.query.select_from(self.query_joins)
         return self.query
