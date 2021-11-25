@@ -846,7 +846,6 @@ def get_observation_count():
 
 
 @routes.route("/observations_bbox", methods=["GET"])
-@json_resp
 def get_bbox():
     """
     Get bbbox of observations
@@ -870,8 +869,8 @@ def get_bbox():
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
     data = query.one()
     if data and data[0]:
-        return json.loads(data[0])
-    return None
+        return data[0]
+    return '', 204
 
 @routes.route("/observation_count_per_column/<column>", methods=["GET"])
 def observation_count_per_column(column):
