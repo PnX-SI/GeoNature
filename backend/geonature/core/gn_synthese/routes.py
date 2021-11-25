@@ -6,7 +6,8 @@ import time
 from collections import OrderedDict
 
 from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify
-from sqlalchemy import distinct, func, desc, select, or_
+from werkzeug.exceptions import Forbidden
+from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
 from geoalchemy2.shape import to_shape
@@ -24,13 +25,11 @@ from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_meta.repositories import get_datasets_cruved
 
 from geonature.core.gn_synthese.models import (
     Synthese,
     TSources,
     DefaultsNomenclaturesValue,
-    SyntheseOneRecord,
     VSyntheseForWebApp,
     VColorAreaTaxon,
     TLogSynthese,
@@ -43,7 +42,6 @@ from geonature.core.taxonomie.models import (
     VMTaxrefListForautocomplete,
 )
 from geonature.core.ref_geo.models import LAreas, BibAreasTypes
-from geonature.core.gn_synthese.utils import query as synthese_query
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 
@@ -229,87 +227,51 @@ def get_synthese(info_role):
 
 
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
-def get_one_synthese(id_synthese):
+@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
+def get_one_synthese(info_role, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature
-
-    .. :quickref: Synthese; Get one synthese
-
-    It returns a dict composed of the following::
-
-        'data' dict: Array of dict (with geojson key)
-        'nb_total' int: Number of observations
-        'nb_obs_limited' bool: Is number of observations capped
-
-    :param int id_synthese:Synthese to be queried
-    :>jsonarr array synthese_as_dict: One synthese with geojson key, see above
     """
-    metadata_view = GenericTable(
-        tableName="v_metadata_for_export", schemaName="gn_synthese", engine=DB.engine
-    )
-    q = (
-        DB.session.query(
-            SyntheseOneRecord,
-            getattr(
-                metadata_view.tableDef.columns,
-                current_app.config["SYNTHESE"]["EXPORT_METADATA_ACTOR_COL"],
-            ),
-        )
-        .filter(SyntheseOneRecord.id_synthese == id_synthese)
-        .outerjoin(
-            metadata_view.tableDef,
-            getattr(
-                metadata_view.tableDef.columns,
-                current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"],
-            )
-            == SyntheseOneRecord.id_dataset,
-        )
-    )
-    try:
-        
-        data = q.one()
-        geojson = data[0].as_geofeature(
-            "the_geom_4326", "id_synthese",
-            depth=2,
-            # fields=[
-            #     "unique_id_sinpsource", 
-            #     "areas", 
-            #     "areas.area_type",               
-            #     "datasets", 
-            #     "acquisition_framework", 
-            #     "cor_observers", 
-            #     "validations", 
-            #     "medias",
-            #     "nat_obj_geo",
-            #     "grp_typ",
-            #     "obs_technique",
-            #     "bio_status",
-            #     "bio_condition",
-            #     "naturalness",
-            #     "exist_proof",
-            #     "valid_status",
-            #     "diffusion_level",
-            #     "life_stage",
-            #     "sex",
-            #     "obj_count",
-            #     "type_count",
-            #     "sensitivity",
-            #     "observation_status",
-            #     "blurring",
-            #     "source_status",
-            #     "occ_behaviour",
-            #     "occ_stat_biogeo"
-            # ]
-            )
-        geojson["properties"]["actors"] = data[1]
-        # synthese_as_dict = data[0].as_dict(
-        #     depth=2,
-        # )
-
-        # synthese_as_dict["actors"] = data[1]
-        # return jsonify(synthese_as_dict)
-        return jsonify(geojson)
-    except exc.NoResultFound:
-        return None
+    synthese = Synthese.query.get_or_404(id_synthese)
+    if not synthese.has_instance_permission(scope=int(info_role.value_filter)):
+        raise Forbidden()
+    geojson = synthese.as_geofeature(
+        "the_geom_4326", "id_synthese",
+        fields=Synthese.nomenclature_fields + [
+            'dataset',
+            'dataset.acquisition_framework',
+            'dataset.acquisition_framework.bibliographical_references',
+            'dataset.acquisition_framework.cor_af_actor',
+            'dataset.acquisition_framework.cor_objectifs',
+            'dataset.acquisition_framework.cor_territories',
+            'dataset.acquisition_framework.cor_volets_sinp',
+            'dataset.acquisition_framework.creator',
+            'dataset.acquisition_framework.nomenclature_territorial_level',
+            'dataset.acquisition_framework.nomenclature_financing_type',
+            'dataset.cor_dataset_actor',
+            'dataset.cor_dataset_actor.role',
+            'dataset.cor_dataset_actor.organism',
+            'dataset.cor_territories',
+            'dataset.nomenclature_source_status',
+            'dataset.nomenclature_resource_type',
+            'dataset.nomenclature_dataset_objectif',
+            'dataset.nomenclature_data_type',
+            'dataset.nomenclature_data_origin',
+            'dataset.nomenclature_collecting_method',
+            'dataset.creator',
+            'dataset.modules',
+            'validations',
+            'validations.validation_label',
+            'validations.validator_role',
+            'cor_observers',
+            'cor_observers.nom_complet',
+            'cor_observers.organisme',
+            'source',
+            'habitat',
+            'medias',
+            'areas',
+            'areas.area_type',
+        ])
+    return jsonify(geojson)
 
 
 ################################
@@ -669,7 +631,7 @@ def general_stats(info_role):
         - nb of distinct observer
         - nb of datasets
     """
-    allowed_datasets = get_datasets_cruved(info_role)
+    allowed_datasets = TDatasets.query.filter_by_readable().all()
     q = select(
         [
             func.count(Synthese.id_synthese),

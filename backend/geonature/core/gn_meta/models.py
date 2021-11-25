@@ -1,8 +1,17 @@
+import datetime
+
+from flask import g
+from flask_sqlalchemy import BaseQuery
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.utils.errors import GeonatureApiError
+import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_
-from sqlalchemy.sql import select, func
+from sqlalchemy.sql import select, func, exists
 from sqlalchemy.orm import relationship, exc
 from sqlalchemy.dialects.postgresql import UUID
-from werkzeug.exceptions import NotFound
+from sqlalchemy.ext.hybrid import hybrid_property
+from utils_flask_sqla.generic import testDataType
+from werkzeug.exceptions import BadRequest, NotFound
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User, Organisme
@@ -101,14 +110,11 @@ class CorAcquisitionFrameworkActor(DB.Model):
     role = DB.relationship(
         User,
         lazy="joined",
-        primaryjoin=(User.id_role == id_role),
-        foreign_keys=[id_role]
     )
 
     organism = relationship(
         Organisme,
         lazy="joined",
-        foreign_keys=[id_organism]
     )
 
     @staticmethod
@@ -144,7 +150,7 @@ class CorAcquisitionFrameworkActor(DB.Model):
             return None
 
 
-@serializable
+@serializable(exclude=['actor'])
 class CorDatasetActor(DB.Model):
     __tablename__ = "cor_dataset_actor"
     __table_args__ = {"schema": "gn_meta"}
@@ -158,15 +164,29 @@ class CorDatasetActor(DB.Model):
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("ROLE_ACTEUR"),
     )
+    nomenclature_actor_role = DB.relationship(
+        TNomenclatures,
+        lazy="joined",
+        foreign_keys=[id_nomenclature_actor_role],
+    )
 
     role = DB.relationship(User, lazy="joined")
     organism = relationship(Organisme, lazy="joined")
 
-    nomenclature_actor_role = DB.relationship(
-        TNomenclatures,
-        lazy="joined",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_actor_role),
-    )
+    @hybrid_property
+    def actor(self):
+        if self.role is not None:
+            return self.role
+        else:
+            return self.organisme
+
+    @hybrid_property
+    def display(self):
+        if self.role:
+            actor = self.role.nom_complet
+        else:
+            actor = self.organism.nom_organisme
+        return '{} ({})'.format(actor, self.nomenclature_actor_role.label_default)
 
     @staticmethod
     def get_actor(id_dataset, id_nomenclature_actor_role, id_role=None, id_organism=None):
@@ -250,9 +270,8 @@ class CruvedHelper(DB.Model):
             peu ou non agir sur une donnée
 
             Params:
+                object_actors: liste d'id dataset sur lequel l'utilisateur a des droits
                 id_role: identifiant de la personne qui demande la route
-                id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
-                id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
 
             Return: boolean
         """
@@ -294,10 +313,102 @@ class TBibliographicReference(CruvedHelper):
     publication_reference = DB.Column(DB.Unicode)
 
 
-@serializable
+
+class TDatasetsQuery(BaseQuery):
+    def _get_read_scope(self, user=None):
+        if user is None:
+            user = g.current_user
+        cruved, herited = cruved_scope_for_user_in_module(
+            id_role=user.id_role,
+            module_code="GEONATURE"
+        )
+        return int(cruved['R'])
+
+    def _get_create_scope(self, module_code, user=None):
+        if user is None:
+            user = g.current_user
+        cruved, herited = cruved_scope_for_user_in_module(
+            id_role=user.id_role,
+            module_code=module_code
+        )
+        return int(cruved["C"])
+
+    def filter_by_scope(self, scope, user=None):
+        if user is None:
+            user = g.current_user
+        if scope == 0:
+            self = self.filter(sa.false())
+        elif scope in (1, 2):
+            ors = [
+                TDatasets.id_digitizer == user.id_role,
+                TDatasets.cor_dataset_actor.any(id_role=user.id_role)
+            ]
+            # if organism is None => do not filter on id_organism even if level = 2
+            if scope == 2 and user.id_organisme is not None:
+                ors.append(TDatasets.cor_dataset_actor.any(id_organism=g.current_user.id_organisme))
+            self = self.filter(or_(*ors))
+        return self
+
+    def filter_by_generic_params(self, params={}):
+        if "active" in params:
+            self = self.filter(TDatasets.active == bool(params["active"]))
+            params.pop("active")
+        if "id_acquisition_framework" in params:
+            if type(params["id_acquisition_framework"]) is list:
+                self = self.filter(
+                    TDatasets.id_acquisition_framework.in_(
+                        [int(id_af) for id_af in params["id_acquisition_framework"]]
+                    )
+                )
+            else:
+                self = self.filter(
+                    TDatasets.id_acquisition_framework == int(params["id_acquisition_framework"])
+                )
+        table_columns = TDatasets.__table__.columns
+        if "orderby" in params:
+            try:
+                orderCol = getattr(table_columns, params.pop("orderby"))
+                self = self.order_by(orderCol)
+            except AttributeError:
+                raise BadRequest("the attribute to order on does not exist")
+        # Generic Filters
+        for param in params:
+            if param in table_columns:
+                col = getattr(table_columns, param)
+                testT = testDataType(params[param], col.type, param)
+                if testT:
+                    raise BadRequest(testT)
+                self = self.filter(col == params[param])
+        return self
+
+    def filter_by_readable(self):
+        """
+            Return the datasets where the user has autorization via its CRUVED
+        """
+        return self.filter_by_scope(
+            self._get_read_scope()
+        )
+
+    def filter_by_creatable(self, module_code):
+        """
+        Return all dataset where user have read rights minus those who user to not have
+        create rigth
+        """
+        query = self.filter(TDatasets.modules.any(module_code=module_code))
+        scope = self._get_read_scope()
+        create_scope = self._get_create_scope(module_code)
+        if create_scope < scope:
+            scope = create_scope
+        return query.filter_by_scope(scope)
+
+    
+
+@serializable(exclude=['user_actors', 'organism_actors'])
 class TDatasets(CruvedHelper):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
+    query_class = TDatasetsQuery
+
     id_dataset = DB.Column(DB.Integer, primary_key=True)
     unique_dataset_id = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
     id_acquisition_framework = DB.Column(
@@ -348,6 +459,7 @@ class TDatasets(CruvedHelper):
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean)
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    digitizer = DB.relationship(User)
     id_taxa_list = DB.Column(DB.Integer)
     modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
@@ -355,34 +467,32 @@ class TDatasets(CruvedHelper):
     nomenclature_data_type = DB.relationship(
         TNomenclatures,
         lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_data_type),
+        foreign_keys=[id_nomenclature_data_type],
     )
     nomenclature_dataset_objectif = DB.relationship(
         TNomenclatures,
         lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_dataset_objectif),
+        foreign_keys=[id_nomenclature_dataset_objectif],
     )
     nomenclature_collecting_method = DB.relationship(
         TNomenclatures,
         lazy="select",
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == id_nomenclature_collecting_method
-        ),
+        foreign_keys=[id_nomenclature_collecting_method],
     )
     nomenclature_data_origin = DB.relationship(
         TNomenclatures,
         lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_data_origin),
+        foreign_keys=[id_nomenclature_data_origin],
     )
     nomenclature_source_status = DB.relationship(
         TNomenclatures,
         lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_source_status),
+        foreign_keys=[id_nomenclature_source_status],
     )
     nomenclature_resource_type = DB.relationship(
         TNomenclatures,
         lazy="select",
-        primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_resource_type),
+        foreign_keys=[id_nomenclature_resource_type],
     )
 
     cor_territories = DB.relationship(
@@ -405,6 +515,29 @@ class TDatasets(CruvedHelper):
         cascade="save-update, merge, delete, delete-orphan",
         backref=DB.backref("actor_dataset", lazy="select")
     )
+
+    @hybrid_property
+    def user_actors(self):
+        return [ actor.role for actor in self.cor_dataset_actor if actor.role is not None ]
+
+    @hybrid_property
+    def organism_actors(self):
+        return [ actor.organism for actor in self.cor_dataset_actor if actor.organism is not None ]
+
+    def is_deletable(self):
+        return not DB.session.query(self.synthese_records.exists()).scalar()
+
+    def has_instance_permission(self, scope):
+        if scope == 0:
+            return False
+        elif scope in (1, 2):
+            if g.current_user == self.digitizer or g.current_user in self.user_actors:
+                return True
+            if scope == 2 and g.current_user.organisme in self.organism_actors:
+                return True
+            return False
+        elif scope == 3:
+            return True
 
     def __str__(self):
         return self.dataset_name
@@ -451,42 +584,56 @@ class TDatasets(CruvedHelper):
             return uuid_dataset[0]
         return uuid_dataset
 
-    @staticmethod
-    def get_user_datasets(user, only_query=False, only_user=False):
-        """get the dataset(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
-            param: 
-              - user from TRole model
-              - only_query: boolean (return the query not the id_datasets allowed if true)
-              - only_user: boolean: return only the dataset where user himself is actor (not with its organism)
 
-            return: a list of id_dataset or a query"""
-        q = DB.session.query(TDatasets).outerjoin(
-            CorDatasetActor, CorDatasetActor.id_dataset == TDatasets.id_dataset
+
+class TAcquisitionFrameworkQuery(BaseQuery):
+    def _get_read_scope(self):
+        cruved, herited = cruved_scope_for_user_in_module(
+            id_role=g.current_user.id_role,
+            module_code="GEONATURE"
         )
-        if user.id_organisme is None or only_user:
-            q = q.filter(
-                or_(
-                    CorDatasetActor.id_role == user.id_role,
-                    TDatasets.id_digitizer == user.id_role,
-                )
-            )
-        else:
-            q = q.filter(
-                or_(
-                    CorDatasetActor.id_organism == user.id_organisme,
-                    CorDatasetActor.id_role == user.id_role,
-                    TDatasets.id_digitizer == user.id_role,
-                )
-            )
-        if only_query:
-            return q
-        return list(set([d.id_dataset for d in q.all()]))
+        return int(cruved['R'])
+
+    def filter_by_scope(self, scope, user=None):
+        if user is None:
+            user = g.current_user
+        if scope == 0:
+            self = self.filter(sa.false())
+        elif scope in (1, 2):
+            ors = [
+                TAcquisitionFramework.id_digitizer == user.id_role,
+                TAcquisitionFramework.cor_af_actor.any(id_role=user.id_role),
+                TAcquisitionFramework.t_datasets.any(id_digitizer=user.id_role),
+                TAcquisitionFramework.t_datasets.any(
+                    TDatasets.cor_dataset_actor.any(id_role=user.id_role)
+                ),  # TODO test coverage
+            ]
+            # if organism is None => do not filter on id_organism even if level = 2
+            if scope == 2 and user.id_organisme is not None:
+                ors += [
+                    TAcquisitionFramework.cor_af_actor.any(id_organism=user.id_organisme),
+                    TAcquisitionFramework.t_datasets.any(
+                        TDatasets.cor_dataset_actor.any(id_organism=user.id_organisme)
+                    ),  # TODO test coverage
+                ]
+            self = self.filter(or_(*ors))
+        return self
+
+    def filter_by_readable(self):
+        """
+            Return the afs where the user has autorization via its CRUVED
+        """
+        return self.filter_by_scope(
+            self._get_read_scope()
+        )
 
 
-@serializable
+@serializable(exclude=['user_actors', 'organism_actors'])
 class TAcquisitionFramework(CruvedHelper):
     __tablename__ = "t_acquisition_frameworks"
     __table_args__ = {"schema": "gn_meta"}
+    query_class = TAcquisitionFrameworkQuery
+
     id_acquisition_framework = DB.Column(DB.Integer, primary_key=True)
     unique_acquisition_framework_id = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
@@ -512,7 +659,7 @@ class TAcquisitionFramework(CruvedHelper):
     opened = DB.Column(DB.Boolean, default=True)
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
 
-    acquisition_framework_start_date = DB.Column(DB.Date)
+    acquisition_framework_start_date = DB.Column(DB.Date, default=datetime.datetime.utcnow)
     acquisition_framework_end_date = DB.Column(DB.Date)
 
     meta_create_date = DB.Column(DB.DateTime)
@@ -599,6 +746,27 @@ class TAcquisitionFramework(CruvedHelper):
         backref=DB.backref("acquisition_framework", lazy="select"),
     )
 
+    @hybrid_property
+    def user_actors(self):
+        return [ actor.role for actor in self.cor_af_actor if actor.role is not None ]
+
+    @hybrid_property
+    def organism_actors(self):
+        return [ actor.organism for actor in self.cor_af_actor if actor.organism is not None ]
+
+    def has_instance_permission(self, scope):
+        if scope == 0:
+            return False
+        elif scope in (1, 2):
+            if g.current_user == self.creator or g.current_user in self.user_actors:
+                return True
+            if scope == 2 and g.current_user.organisme in self.organism_actors:
+                return True
+            # rights on DS give rights on AF!
+            return any(map(lambda ds: ds.has_instance_permission(scope), self.t_datasets))
+        elif scope == 3:
+            return True
+
     def get_object_cruved(
         self, info_role, user_cruved
     ):
@@ -668,51 +836,37 @@ class TAcquisitionFramework(CruvedHelper):
         data = q.all()
         return list(set([d.id_acquisition_framework for d in data]))
 
+
 @serializable
 class TDatasetDetails(TDatasets):
-    """
-    Class which extends TDatasets with nomenclatures relationships
-    """
-
     data_type = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_data_type),
+        foreign_keys=[TDatasets.id_nomenclature_data_type],
     )
     dataset_objectif = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_dataset_objectif),
+        foreign_keys=[TDatasets.id_nomenclature_dataset_objectif],
     )
     collecting_method = DB.relationship(
         TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_collecting_method
-        ),
+        foreign_keys=[TDatasets.id_nomenclature_collecting_method],
     )
     data_origin = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_data_origin),
+        foreign_keys=[TDatasets.id_nomenclature_data_origin],
     )
     source_status = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_source_status),
+        foreign_keys=[TDatasets.id_nomenclature_source_status],
     )
     resource_type = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature == TDatasets.id_nomenclature_resource_type),
+        foreign_keys=[TDatasets.id_nomenclature_resource_type],
     )
-    # acquisition_framework = DB.relationship(
-    #     TAcquisitionFramework,
-    #     primaryjoin=(
-    #         TAcquisitionFramework.id_acquisition_framework == TDatasets.id_acquisition_framework
-    #     ),
-    # )
     additional_fields = DB.relationship(
         "TAdditionalFields",
         secondary=cor_field_dataset
     )
-
-        
- 
 
 
 @serializable
@@ -720,19 +874,12 @@ class TAcquisitionFrameworkDetails(TAcquisitionFramework):
     """
     Class which extends TAcquisitionFramework with nomenclatures relationships
     """
-
-    #datasets = DB.relationship(TDatasetDetails, lazy="joined")
     nomenclature_territorial_level = DB.relationship(
         TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature
-            == TAcquisitionFramework.id_nomenclature_territorial_level
-        ),
+        foreign_keys=[TAcquisitionFramework.id_nomenclature_territorial_level],
     )
 
     nomenclature_financing_type = DB.relationship(
         TNomenclatures,
-        primaryjoin=(
-            TNomenclatures.id_nomenclature == TAcquisitionFramework.id_nomenclature_financing_type
-        ),
+        foreign_keys=[TAcquisitionFramework.id_nomenclature_financing_type],
     )

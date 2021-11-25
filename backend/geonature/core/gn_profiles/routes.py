@@ -15,7 +15,7 @@ from geonature.core.gn_profiles.models import VmCorTaxonPhenology, VmValidProfil
 from geonature.core.taxonomie.models import Taxref, VMTaxrefListForautocomplete
 from geonature.utils.env import DB
 
-routes = Blueprint("gn_profiles", __name__)
+routes = Blueprint("gn_profiles", __name__, cli_group='profiles')
 
 
 @routes.route("/cor_taxon_phenology/<int:cd_ref>", methods=["GET"])
@@ -251,3 +251,8 @@ def get_observation_score():
                                 {altitude_min} et {altitude_max}m d'altitude pour le stade de vie {life_stage_value.label_default}"""
                             })
         return result
+
+
+@routes.cli.command()
+def update_vms():
+    DB.session.query(func.gn_profiles.refresh_profiles()).scalar()

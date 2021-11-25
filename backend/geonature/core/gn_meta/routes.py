@@ -11,7 +11,10 @@ import click
 from pathlib import Path
 from binascii import a2b_base64
 from flask.json import jsonify
+from geonature.utils.config import config
+from geonature.core.gn_permissions.decorators import login_required
 from werkzeug.utils import secure_filename
+from werkzeug.exceptions import Conflict
 
 from lxml import etree as ET
 
@@ -23,6 +26,7 @@ from flask import (
     send_from_directory,
     copy_current_request_context,
     Response,
+    g
 )
 from sqlalchemy import inspect
 from sqlalchemy.sql import text, exists, select, update
@@ -59,7 +63,6 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkVoletSINP,
 )
 from geonature.core.gn_meta.repositories import (
-    get_datasets_cruved,
     get_metadata_list,
 )
 from geonature.core.gn_meta.schemas import (
@@ -69,7 +72,7 @@ from geonature.core.gn_meta.schemas import (
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, get_or_fetch_user_cruved
 from geonature.core.gn_meta.mtd import mtd_utils
 from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 import geonature.utils.filemanager as fm
@@ -85,21 +88,21 @@ routes = Blueprint("gn_meta", __name__, cli_group='metadata')
 log = logging.getLogger()
 
 
+if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
+    @routes.before_request
+    def synchronize_mtd():
+        if request.endpoint == "gn_meta.get_datasets":
+            try:
+                mtd_utils.post_jdd_from_user(
+                    id_user=g.current_user.id_role, id_organism=g.current_user.id_organisme
+                )
+            except Exception as e:
+                log.exception("Error while get JDD via MTD")
 
-@routes.route("/list/datasets", methods=["GET"])
-@json_resp
-def get_datasets_list():
-    q = DB.session.query(TDatasets)
-    data = q.all()
-    return [d.as_dict(fields=["id_dataset", "dataset_name"]) for d in data]
 
-
-# TODO: quel cruved on recupère sur une route comme celle là
-# celui du module admin (meta) ou celui de geonature (route utilisé dans tous les modules...)
 @routes.route("/datasets", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
-@json_resp
-def get_datasets(info_role):
+@login_required
+def get_datasets():
     """
     Get datasets list
     
@@ -109,36 +112,20 @@ def get_datasets(info_role):
     :type info_role: TRole
     :query boolean active: filter on active fiel
     :query int id_acquisition_framework: get only dataset of given AF
-    :returns:  `dict{'data':list<TDatasets>, 'with_erros': <boolean>}`
+    :returns:  `list<TDatasets>`
     """
-    with_mtd_error = False
-    if current_app.config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
-        # synchronise the CA and JDD from the MTD WS
-        try:
-            mtd_utils.post_jdd_from_user(
-                id_user=info_role.id_role, id_organism=info_role.id_organisme
-            )
-        except Exception as e:
-            log.error(e)
-            with_mtd_error = True
     params = request.args.to_dict()
     fields = params.get("fields", None)
     if fields:
         fields = fields.split(',')
-    datasets = get_datasets_cruved(info_role, params, fields=fields)
-    datasets_resp = {"data": datasets}
-    if with_mtd_error:
-        datasets_resp["with_mtd_errors"] = True
-    if not datasets:
-        return datasets_resp, 404
-    return datasets_resp
-
-
-def is_dataset_deletable(id_dataset):
-    datas = DB.session.query(Synthese.id_synthese).filter(Synthese.id_dataset == id_dataset).all()
-    if datas:
-        return False
-    return True
+    if "create" in params:
+        query = TDatasets.query.filter_by_creatable(params.pop("create"))
+    else:
+        query = TDatasets.query.filter_by_readable()
+    query = query.filter_by_generic_params(params)
+    return jsonify(
+        [d.as_dict(fields=fields) for d in query.all()]
+    )
 
 
 def is_af_deletable(id_af):
@@ -212,21 +199,14 @@ def delete_dataset(info_role, ds_id):
     .. :quickref: Metadata;
     """
 
-    if not is_dataset_deletable(ds_id):
-        raise GeonatureApiError(
-            "La suppression du jeu de données n'est pas possible car des données y sont rattachées dans la Synthèse",
-            406,
-        )
-    user_actor = TDatasets.get_user_datasets(info_role)
-    dataset = TDatasets.query.get(ds_id)
-    allowed = dataset.user_is_allowed_to(user_actor, info_role, info_role.value_filter)
-    if not allowed:
-        raise Forbidden(f"User {info_role.id_role} cannot delete dataset {dataset.id_dataset}")
-    
-    DB.session.query(TDatasets).filter(TDatasets.id_dataset == ds_id).delete()
-
+    dataset = TDatasets.query.get_or_404(ds_id)
+    if not dataset.has_instance_permission(int(info_role.value_filter)):
+        raise Forbidden(f"User {g.current_user} cannot delete dataset {dataset.id_dataset}")
+    if not dataset.is_deletable():
+        raise Conflict("La suppression du jeu de données n'est pas possible "
+                       "car des données y sont rattachées dans la Synthèse")
+    DB.session.delete(dataset)
     DB.session.commit()
-
     return '', 204
 
 
@@ -506,26 +486,10 @@ def update_sensitivity_query(id_syntheses):
     return "OK"
 
 
-def datasetHandler(request, *, dataset, info_role):
-    # Test des droits d'édition du dataset si modification
-    if dataset.id_dataset is not None:
-        user_cruved = cruved_scope_for_user_in_module(
-            id_role=info_role.id_role, module_code="METADATA",
-        )[0]
-        dataset_cruved = dataset.get_object_cruved(info_role, user_cruved)
-        #verification des droits d'édition pour le dataset
-        if not dataset_cruved['U']:
-            raise InsufficientRightsError(
-                "User {} has no right in dataset {}".format(
-                    info_role.id_role, dataset.id_dataset
-                ),
-                403,
-            )
-    else: 
-        dataset.id_digitizer = info_role.id_role
+def datasetHandler(dataset, data):
     datasetSchema = DatasetSchema(unknown=EXCLUDE)
     try:
-        dataset = datasetSchema.load(request.get_json(), instance=dataset)
+        dataset = datasetSchema.load(data, instance=dataset)
     except ValidationError as error:
         log.exception(error)
         raise BadRequest(error.messages)
@@ -536,17 +500,15 @@ def datasetHandler(request, *, dataset, info_role):
 
 
 @routes.route("/dataset", methods=["POST"])
-@permissions.check_cruved_scope("C", True, module_code="METADATA")
-def create_dataset(info_role):
-   """
-   Post one Dataset data
-   .. :quickref: Metadata;
-   """
-
-   # create new dataset
-   return DatasetSchema().jsonify(
-       datasetHandler(request=request, dataset=TDatasets(), info_role=info_role)
-   )
+@permissions.check_cruved_scope("C", module_code="METADATA")
+def create_dataset():
+    """
+    Post one Dataset data
+    .. :quickref: Metadata;
+    """
+    return DatasetSchema().jsonify(
+        datasetHandler(dataset=TDatasets(id_digitizer=g.current_user.id_role), data=request.get_json())
+    )
 
 
 @routes.route("/dataset/<int:id_dataset>", methods=["POST", "PATCH"])
@@ -557,14 +519,12 @@ def update_dataset(id_dataset, info_role):
     .. :quickref: Metadata;
     """
 
-    dataset = DB.session.query(TDatasets).get(id_dataset)
-
-
-    if not dataset:
-        return {"message": "not found"}, 404
+    dataset = TDatasets.query.filter_by_readable().get_or_404(id_dataset)
+    if not dataset.has_instance_permission(scope=int(info_role.value_filter)):
+        raise Forbidden(f"User {g.current_user} cannot update dataset {dataset.id_dataset}")
 
     return DatasetSchema().jsonify(
-        datasetHandler(request=request, dataset=dataset, info_role=info_role)
+        datasetHandler(dataset=dataset, data=request.get_json())
     )
 
 
@@ -645,9 +605,7 @@ def get_acquisition_frameworks(info_role):
     """
     params = request.args.to_dict()
     exclude_fields = [db_rel.key for db_rel in inspect(TAcquisitionFramework).relationships]
-    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
-        exclude=exclude_fields
-    )
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(include_fk=False)
     return acquisitionFrameworkSchema.jsonify(
         get_metadata_list(info_role, params, exclude_fields).all(),
         many=True
