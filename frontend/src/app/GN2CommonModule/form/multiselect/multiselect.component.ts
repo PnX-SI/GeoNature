@@ -1,24 +1,11 @@
 import {
   Component,
   OnInit,
-  Input,
-  EventEmitter,
+  Input, 
   Output,
-  OnChanges,
-  ElementRef,
-  ViewChild,
-  HostListener,
-  ViewChildren,
-  QueryList,
+  EventEmitter
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { TranslateService } from '@ngx-translate/core';
-
-export enum KEY_CODE {
-  ENTER = 'Enter',
-  ARROW_DOWN = 'ArrowDown',
-  ARROW_UP = 'ArrowUp',
-}
 
 /**
  * Ce composant permet d'afficher un input de type multiselect à partir
@@ -94,12 +81,10 @@ export class MultiSelectComponent implements OnInit {
    * comme du HTML sûr.
    */
   @Input() isHtml: boolean = false;
+  @Output() onChange = new EventEmitter<any>();
+  @Output() onDelete = new EventEmitter<any>();
+  constructor() {}
 
-  /** @ignore */
-  constructor(private _translate: TranslateService) {}
-
-  // you can pass whatever callback to the onSearch output, to trigger
-  // database research or simple search on an array
   ngOnInit() {
     this.keyValue = this.bindAllItem ? null : this.keyValue;
     this.debounceTime = this.debounceTime || 100;

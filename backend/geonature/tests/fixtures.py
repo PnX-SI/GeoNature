@@ -1,17 +1,25 @@
 import json
 import pkg_resources
+import datetime
 
 import pytest
 from flask import testing, url_for
 from werkzeug.datastructures import Headers
+from sqlalchemy import func
+from shapely.geometry import Point
+from geoalchemy2.shape import from_shape
 
 from geonature import create_app
-from geonature.utils.env import DB as db
+from geonature.utils.env import db
 from geonature.core.gn_permissions.models import TActions, TFilters, CorRoleActionFilterModuleObject
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets
+from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets, \
+                                          CorDatasetActor, CorAcquisitionFrameworkActor
+from geonature.core.gn_synthese.models import TSources, Synthese
 
 from pypnusershub.db.models import User, Organisme, Application, Profils as Profil, UserApplicationRight
+from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
+from apptax.taxonomie.models import Taxref
 
 
 class JSONClient(testing.FlaskClient):
@@ -56,7 +64,8 @@ def users(app):  # an app context is required
     app = Application.query.filter(Application.code_application=='GN').one()
     profil = Profil.query.filter(Profil.nom_profil=='Lecteur').one()
 
-    modules = TModules.query.filter(TModules.module_code.in_(["IMPORT", "OCCTAX"])).all()
+    modules_codes = ["GEONATURE", "SYNTHESE", "IMPORT", "OCCTAX", "METADATA"]
+    modules = TModules.query.filter(TModules.module_code.in_(modules_codes)).all()
 
     actions = { code: TActions.query.filter(TActions.code_action == code).one()
                 for code in 'CRUVED' }
@@ -87,8 +96,8 @@ def users(app):  # an app context is required
                                             filter=scope,
                                             module=module
                                     )
-                    db.session.add(permission)
-            return user
+                        db.session.add(permission)
+        return user
 
     users = {}
 
@@ -98,7 +107,7 @@ def users(app):  # an app context is required
     users_to_create = [
         ('noright_user', organisme, filters[0]),
         ('stranger_user',),
-        ('associate_user', organisme),
+        ('associate_user', organisme, filters[2]),
         ('self_user', organisme, filters[1]),
         ('user', organisme, filters[2]),
         ('admin_user', organisme, filters[3]),
@@ -111,8 +120,37 @@ def users(app):  # an app context is required
 
 
 @pytest.fixture(scope='class')
-def datasets(users):
-    af = TAcquisitionFramework.query.first()
+def acquisition_frameworks(users):
+    principal_actor_role = TNomenclatures.query.filter(
+                                BibNomenclaturesTypes.mnemonique=='ROLE_ACTEUR',
+                                TNomenclatures.mnemonique=='Contact principal').one()
+    def create_af(creator=None):
+        with db.session.begin_nested():
+            af = TAcquisitionFramework(
+                            acquisition_framework_name='test',
+                            acquisition_framework_desc='test',
+                            creator=creator)
+            db.session.add(af)
+            if creator and creator.organisme:
+                actor = CorAcquisitionFrameworkActor(
+                            organism=creator.organisme,
+                            nomenclature_actor_role=principal_actor_role)
+                af.cor_af_actor.append(actor)
+        return af
+    return {
+        'own_af': create_af(creator=users['user']),
+        'associate_af': create_af(creator=users['associate_user']),
+        'stranger_af': create_af(creator=users['stranger_user']),
+        'orphan_af': create_af(),
+    }
+
+
+@pytest.fixture(scope='class')
+def datasets(users, acquisition_frameworks):
+    af = acquisition_frameworks['orphan_af']
+    principal_actor_role = TNomenclatures.query.filter(
+                                BibNomenclaturesTypes.mnemonique=='ROLE_ACTEUR',
+                                TNomenclatures.mnemonique=='Contact principal').one()
     def create_dataset(digitizer=None):
         with db.session.begin_nested():
             dataset = TDatasets(
@@ -124,6 +162,11 @@ def datasets(users):
                             terrestrial_domain=True,
                             id_digitizer=digitizer.id_role if digitizer else None)
             db.session.add(dataset)
+            if digitizer and digitizer.organisme:
+                actor = CorDatasetActor(
+                            organism=digitizer.organisme,
+                            nomenclature_actor_role=principal_actor_role)
+                dataset.cor_dataset_actor.append(actor)
         return dataset
     return {
         'own_dataset': create_dataset(digitizer=users['user']),
@@ -205,3 +248,28 @@ def releve_data(client, datasets):
     }
 
     return data
+
+
+@pytest.fixture()
+def synthese_data(users, datasets):
+    with db.session.begin_nested():
+        source = TSources(name_source='Fixture',
+                          desc_source='Synthese data from fixture')
+        db.session.add(source)
+    now = datetime.datetime.now()
+    geom_4326 = from_shape(Point(3.63492965698242, 44.3999389306734), srid=4326)
+    with db.session.begin_nested():
+        taxon = Taxref.query.filter_by(cd_nom=713776).one()
+        s = Synthese(id_source=source.id_source,
+                     dataset=datasets['own_dataset'],
+                     digitiser=users['self_user'],
+                     nom_cite='Ashmeadopria Kieffer',
+                     cd_nom=taxon.cd_nom,
+                     cd_hab=3,
+                     the_geom_4326=geom_4326,
+                     the_geom_point=geom_4326,
+                     the_geom_local=func.st_transform(geom_4326, 2154),
+                     date_min=now,
+                     date_max=now)
+        db.session.add(s)
+    return [s]

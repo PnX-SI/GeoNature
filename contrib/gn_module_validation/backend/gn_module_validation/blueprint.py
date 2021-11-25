@@ -9,6 +9,7 @@ from flask import Blueprint, request
 from geojson import FeatureCollection
 from sqlalchemy.sql.expression import cast
 from sqlalchemy.sql.sqltypes import Integer
+from marshmallow import ValidationError
 
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla.serializers import SERIALIZERS
@@ -231,13 +232,14 @@ def post_status(info_role, id_synthese):
         }
         # insert values in t_validations
         validationSchema = TValidationSchema()
-        validation, errors = validationSchema.load(
-            val_dict, instance=TValidations(),
-            session=DB.session
-            )
-        if bool(errors):
-            log.error(errors)
-            raise BadRequest(errors)
+        try:
+            validation = validationSchema.load(
+                val_dict, instance=TValidations(),
+                session=DB.session
+                )
+        except ValidationError as error:
+            log.exception(error)
+            raise BadRequest(error.messages)
         DB.session.add(validation)
         DB.session.commit()
 

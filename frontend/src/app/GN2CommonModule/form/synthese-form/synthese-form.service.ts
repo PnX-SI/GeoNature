@@ -21,7 +21,7 @@ export class SyntheseFormService {
     private _periodFormatter: NgbDatePeriodParserFormatter
   ) {
     this.searchForm = this._fb.group({
-      cd_nom: [{value: null, disabled: true}],
+      cd_nom: null,
       observers: null,
       observers_list: null,
       id_organism: null,

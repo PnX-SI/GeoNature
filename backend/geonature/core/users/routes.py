@@ -9,7 +9,6 @@ from sqlalchemy.sql import distinct, and_
 from geonature.utils.env import DB
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
-from geonature.core.gn_meta.repositories import get_datasets_cruved
 from geonature.core.users.models import (
     VUserslistForallMenu,
     CorRole,
@@ -254,7 +253,7 @@ def get_organismes_jdd(info_role):
     """
     params = request.args.to_dict()
 
-    datasets = [dataset["id_dataset"] for dataset in get_datasets_cruved(info_role)]
+    datasets = [d.id_dataset for d in TDatasets.query.filter_by_readable()]
     q = (
         DB.session.query(BibOrganismes)
         .join(CorDatasetActor, BibOrganismes.id_organisme == CorDatasetActor.id_organism)
@@ -336,7 +335,7 @@ def confirmation():
     if token is None:
         return {"message": "Token introuvable"}, 404
 
-    data = {"token": token, "id_application": config["ID_APPLICATION_GEONATURE"]}
+    data = {"token": token, "id_application": current_app.config["ID_APPLICATION_GEONATURE"]}
 
     r = s.post(
         url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/valid_temp_user", json=data,

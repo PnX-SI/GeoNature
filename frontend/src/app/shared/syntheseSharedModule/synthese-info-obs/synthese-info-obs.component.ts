@@ -158,7 +158,6 @@ export class SyntheseInfoObsComponent implements OnInit {
         this.selectedGeom = data;
         this.selectedObs['municipalities'] = [];
         this.selectedObs['other_areas'] = [];
-        this.selectedObs['actors'] = this.selectedObs['actors'].split('|');
         const date_min = new Date(this.selectedObs.date_min);
         this.selectedObs.date_min = date_min.toLocaleDateString('fr-FR');
         const date_max = new Date(this.selectedObs.date_max);

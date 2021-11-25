@@ -154,3 +154,11 @@ class CorRoleActionFilterModuleObject(DB.Model):
             .filter(BibFiltersType.id_filter_type == id_filter_type)
             .first()
         )
+
+    def __str__(self):
+        return f'Permission(' \
+                    f'id_role={self.id_role},' \
+                    f'action={self.action},' \
+                    f'filter={self.filter},' \
+                    f'module={self.module},' \
+                    f'object={self.object})'

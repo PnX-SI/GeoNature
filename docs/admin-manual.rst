@@ -271,38 +271,54 @@ Note : pour plusieurs fichiers de révisions, notamment lié au référentiel g�
 
 
 Gestion des droits
-""""""""""""""""""
+------------------
+
+Accès à GeoNature et CRUVED
+"""""""""""""""""""""""""""
 
 Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l'application GeoNature est géré de manière centralisée dans UsersHub. Pour qu'un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de "Lecteur" dans l'application GeoNature, grâce à l'application UsersHub.
 
-La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (``gn_permissions``) et un module de GeoNature dédié. Les permissions des groupes et utilisateurs peuvent en effet être administrées dans le module "Admin / Administration des permissions" de GeoNature.
+La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (``gn_permissions``) et un module de GeoNature dédié. 
+
+Les permissions des groupes et utilisateurs peuvent en effet être administrées dans le module "Admin / Administration des permissions" de GeoNature.
 Dans la version 1 de GeoNature, il était possible d'attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d'attribution de droits et les rendre plus génériques.
 
 La gestion des droits dans GeoNature, comme dans beaucoup d'applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l'application nous avons rajouté deux actions : "Valider" et "Exporter", ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.
 
-Sur ces actions, on va pouvoir appliquer des filtres de manière générique.
+Sur ces actions, on peut appliquer des "portées":
 
-Le filtre le plus courant est celui de la "portée". On autorise des actions à un utilisateur sur une portée : "Ses données", "Les données de son organisme", "Toutes les données".
+- Portée 1 = "Mes données". Cela concerne les données sur lesquels je suis :
+   - observateur 
+   - personne ayant effectuée la saisie de la données
+   - personnelement acteur du jeu de données de la donnée
+   - personne ayant saisi le JDD de la donnée
+- Portée 2 = Les données de mon organisme. Portée 1 + :
+   - les données sur lesquels mon organisme est acteur du JDD de la donnée
+- Portée 3 = Toute les données
+   - Toute les données : aucun filtre n'est appliqué
+
 
 Exemple :
 
 - Utilisateur 1 peut effectuer l'action "DELETE" sur la portée "SES DONNEES"
 - Utilisateur Admin peut effectuer l'action "UPDATE" sur la portée "TOUTES LES DONNEES"
 
-Les autres filtres possibles sont liés à la précisions des données, les groupes taxonomiques ou des entités géographiques :
-
-Exemple :
-
-- Utilisateur 1 peut effectuer l'action "READ" sur "LES DONNES DEGRADEES"
-- Utilisateur admin peut effectuer l'action "READ" sur "LES DONNES PRECISES"
-
 Enfin ces permissions vont pouvoir s'attribuer à l'ensemble de l'application GeoNature et/ou à un module.
 
-On a donc le quatriptique : Un utilisateur / Une action / Un filtre / Un module
+On a donc le quatriptique : Un utilisateur / Une action / Une portée / Un module
 
-Pour l'instant les filtres de type groupe taxonomique, précisions et géographique existent dans la base de données mais ne sont pas implémentés au niveau de l'application GeoNature, donc ils n'ont aucun effet.
+**NB** : certains objets comme les JDD et CA sont transversal à tout GeoNature (ils sont utilisés dans tous les modules: saisie, synthese, métadonnées, dashbord), il sont donc contrôlé par les permissions du "module" GeoNature
 
-Récapitulatif :
+Cas particulier de l'action "C"
+"""""""""""""""""""""""""""""""""
+
+| Dans les modules de saisie, on veut que des utilisateurs puissent saisir uniquement dans certains JDD.
+| La liste des JDD ouvert à la saisie est contrôlée par l'action "CREATE" du module dans lequel on se trouve. 
+| Comme il n'est pas "normal" de pouvoir saisir dans des JDD sur lesquels on n'a pas les droit de lecture, la portée de l'action "CREATE" vient simplement réduire la liste des JDD surlesquels on a les droits de lecture ("READ").
+| Même si la portée de l'action "CREATE" sur le module est supérieure à l'action "READ", l'utilisateur ne vera que les JDD surlesquels il a des droits de lecture
+
+Récapitulatif
+"""""""""""""
 
 - Dans GeoNature V2 on peut attribuer à un role des actions possibles, sur lesquels on peut ajouter des filtres, dans un module ou sur toute l'application GeoNature (définis dans ``gn_permissions.cor_role_action_filter_module_object``).
 - 6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).
@@ -321,7 +337,7 @@ TODO : Lister les permissions implémentées dans chaque module.
 
 
 Accès public
-""""""""""""
+------------
 
 Cette section de la documentation concerne l'implémentation d'un utilisateur-lecteur pour votre instance GeoNature, permettant d'y donner accès sans authentification.
 

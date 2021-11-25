@@ -117,7 +117,7 @@
       [charNumber]="3"
       [listLength]="AppConfig.SYNTHESE.TAXON_RESULT_NUMBER"
       [apiEndPoint]="taxonApiEndPoint"
-      (onChange)=formService.getCurrentTaxon($event)
+      (onChange)="formService.getCurrentTaxon($event)"
     >
     </pnx-taxonomy>
     <div
@@ -224,7 +224,6 @@
 
     <div *ngIf="formService.formBuilded">
       <div *ngFor="let area of areaFilters; let i = index;">
-        {{areas}}
         <pnx-areas
           [parentFormControl]="area.control"
           [label]="area.label"

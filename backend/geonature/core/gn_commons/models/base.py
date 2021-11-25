@@ -190,22 +190,18 @@ class TValidations(DB.Model):
     __table_args__ = {"schema": "gn_commons"}
 
     id_validation = DB.Column(DB.Integer, primary_key=True)
-    uuid_attached_row = DB.Column(UUID(as_uuid=True))
+    uuid_attached_row = DB.Column(UUID(as_uuid=True), ForeignKey("gn_synthese.synthese.unique_id_sinp"))
     id_nomenclature_valid_status = DB.Column(
         DB.Integer,
         ForeignKey(TNomenclatures.id_nomenclature)
     )
-    id_validator = DB.Column(DB.Integer)
+    id_validator = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    validator_role = DB.relationship(User)
     validation_auto = DB.Column(DB.Boolean)
     validation_comment = DB.Column(DB.Unicode)
     validation_date = DB.Column(DB.TIMESTAMP)
     validation_auto = DB.Column(DB.Boolean)
     validation_label = DB.relationship(TNomenclatures)
-    validator_role = DB.relationship(
-        User,    
-        primaryjoin=(User.id_role == id_validator), 
-        foreign_keys=[id_validator]
-    )
 
 
 

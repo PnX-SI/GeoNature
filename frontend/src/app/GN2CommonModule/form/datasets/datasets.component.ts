@@ -50,6 +50,11 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
    * code du module pour n'afficher que les JDD associés au module
    */
   @Input() moduleCode: string;
+  /**
+   * Si on veux uniquement les JDD surlequels l'utilisateur a des droits de création
+   * fournir le code du module
+   */
+  @Input() creatableInModule : string
   @Input() bindValue: string = "id_dataset";
 
 
@@ -69,21 +74,22 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   }
 
   getDatasets(params?) {
-    const filter_param = {};
+    const filter_param = params || {};
     if (this.displayOnlyActive) {
       filter_param['active'] = true;
     }
     if (this.moduleCode) {
       filter_param['module_code'] = this.moduleCode;
     }
+    if(this.creatableInModule) {
+      filter_param['create'] = this.creatableInModule;
+
+    }
     this._dfs.getDatasets((params = filter_param)).subscribe(
       res => {
-        this.datasetStore.filteredDataSets = res.data;
-        this.datasetStore.datasets = res.data;        
+        this.datasetStore.filteredDataSets = res;
+        this.datasetStore.datasets = res;        
         this.valueLoaded.emit({ value: this.datasetStore.datasets });
-        if (res['with_mtd_errors']) {
-          this._commonService.translateToaster('error', 'MetaData.JddErrorMTD');
-        }
       },
       error => {
         if (error.status === 500) {
