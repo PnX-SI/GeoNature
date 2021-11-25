@@ -330,7 +330,7 @@ class MapConfig(Schema):
 
 
 class TaxHub(Schema):
-    ID_TYPE_MAIN_PHOTO = fields.Integer(missing=1)
+    ID_TYPE_MAIN_PHOTO = fields.Integer(load_default=1)
 
 
 # class a utiliser pour les paramètres que l'on veut passer au frontend
