@@ -491,7 +491,6 @@ def datasetHandler(dataset, data):
     try:
         dataset = datasetSchema.load(data, instance=dataset)
     except ValidationError as error:
-        log.exception(error)
         raise BadRequest(error.messages)
 
     DB.session.add(dataset)
