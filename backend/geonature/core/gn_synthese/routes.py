@@ -6,7 +6,7 @@ import time
 from collections import OrderedDict
 
 from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify
-from werkzeug.exceptions import Forbidden
+from werkzeug.exceptions import Forbidden, NotFound
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
@@ -719,7 +719,6 @@ def get_sources():
 
 
 @routes.route("/defaultsNomenclatures", methods=["GET"])
-@json_resp
 def getDefaultsNomenclatures():
     """Get default nomenclatures
 
@@ -751,8 +750,8 @@ def getDefaultsNomenclatures():
         q = q.filter(DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
     data = q.all()
     if not data:
-        return {"message": "not found"}, 404
-    return {d[0]: d[1] for d in data}
+        raise NotFound
+    return jsonify(dict(data))
 
 
 @routes.route("/color_taxon", methods=["GET"])

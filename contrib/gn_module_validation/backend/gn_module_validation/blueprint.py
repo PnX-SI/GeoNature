@@ -198,11 +198,14 @@ def get_statusNames(info_role):
 @permissions.check_cruved_scope("C", True, module_code="VALIDATION")
 def post_status(info_role, id_synthese):
     data = dict(request.get_json())
-    id_validation_status = data["statut"]
-    validation_comment = data["comment"]
-
-    if id_validation_status == "":
-        return "Aucun statut de validation n'est sélectionné", 400
+    try:
+        id_validation_status = data["statut"]
+    except KeyError:
+        raise BadRequest("Aucun statut de validation n'est sélectionné")
+    try:
+        validation_comment = data["comment"]
+    except KeyError:
+        raise BadRequest("Missing 'comment'")
 
     id_synthese = id_synthese.split(",")
 
@@ -238,7 +241,6 @@ def post_status(info_role, id_synthese):
                 session=DB.session
                 )
         except ValidationError as error:
-            log.exception(error)
             raise BadRequest(error.messages)
         DB.session.add(validation)
         DB.session.commit()

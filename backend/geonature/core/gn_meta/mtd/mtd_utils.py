@@ -168,8 +168,6 @@ def post_acquisition_framework(uuid=None, id_user=None, id_organism=None):
             DB.session.commit()
         # TODO catch db error ?
         except SQLAlchemyError as e:
-            DB.session.flush()
-            DB.session.rollback()
             error_msg = "Error posting an aquisition framework\nTrace:\n{} \n\n ".format(e)
             log.error(error_msg)
 
@@ -261,8 +259,6 @@ def post_jdd_from_user(id_user=None, id_organism=None):
                 DB.session.commit()
             # TODO catch db error ?
             except SQLAlchemyError as e:
-                DB.session.flush()
-                DB.session.rollback()
                 error_msg = "Error posting a dataset\nTrace:\n{} \n\n ".format(e)
                 log.error(error_msg)
 
@@ -347,8 +343,6 @@ def import_all_dataset_af_and_actors(table_name):
                         DB.session.commit()
                     # TODO catch db error ?
                     except SQLAlchemyError as e:
-                        DB.session.flush()
-                        DB.session.rollback()
                         error_msg = "Error posting a dataset\nTrace:\n{} \n\n ".format(e)
                         print(error_msg)
                 else:
