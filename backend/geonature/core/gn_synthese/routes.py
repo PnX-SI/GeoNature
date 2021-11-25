@@ -12,7 +12,6 @@ from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
 from geoalchemy2.shape import to_shape
 from shapely import wkt
-import sqlalchemy as sa
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
@@ -870,24 +869,30 @@ def get_bbox():
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
     data = query.one()
     if data and data[0]:
-        return data[0]
-    return '', 204
+        return json.loads(data[0])
+    return None
 
 @routes.route("/observation_count_per_column/<column>", methods=["GET"])
+@json_resp
 def observation_count_per_column(column):
     """Get observations count group by a given column"""
-    if column not in sa.inspect(Synthese).column_attrs:
-        raise BadRequest(f'No column name {column} in Synthese')
-    synthese_column = getattr(Synthese, column)
-    stmt = DB.session.query(
-               func.count(Synthese.id_synthese).label("count"),
-               synthese_column.label(column),
-           ).select_from(
-               Synthese
-           ).group_by(
-               synthese_column
-           )
-    return jsonify(DB.session.execute(stmt).fetchall())
+    params = request.args
+    try:
+        model_column = getattr(Synthese, column)
+    except Exception:
+        return f'No column name {column} in Synthese', 500
+    query = DB.session.query(
+        func.count(Synthese.id_synthese), model_column
+        ).select_from(
+            Synthese
+        ).group_by(model_column)
+    data = []
+    for d in query.all():
+        temp = {}
+        temp[column] = d[1]
+        temp['count'] = d[0]
+        data.append(temp)
+    return data
 
 
 @routes.route("/taxa_distribution", methods=["GET"])

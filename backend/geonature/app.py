@@ -9,7 +9,6 @@ from urllib.parse import urlsplit
 from importlib import import_module
 
 from flask import Flask, g, request, current_app
-from flask.json import JSONEncoder
 from flask_mail import Message
 from flask_cors import CORS
 from flask_sqlalchemy import before_models_committed
@@ -17,7 +16,6 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from psycopg2.errors import UndefinedTable
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.engine import RowProxy
 
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
@@ -58,13 +56,6 @@ if config.get('SENTRY_DSN'):
     )
 
 
-class MyJSONEncoder(JSONEncoder):
-    def default(self, o):
-        if isinstance(o, RowProxy):
-            return dict(o)
-        return super().default(o)
-
-
 def create_app(with_external_mods=True):
     app = Flask(__name__, static_folder="../static")
 
@@ -80,8 +71,6 @@ def create_app(with_external_mods=True):
 
     # set from headers HTTP_HOST, SERVER_NAME, and SERVER_PORT
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
-
-    app.json_encoder = MyJSONEncoder
 
     # set logging config
     config_loggers(app.config)
