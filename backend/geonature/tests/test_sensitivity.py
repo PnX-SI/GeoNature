@@ -16,8 +16,6 @@ from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 from apptax.taxonomie.models import Taxref
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
-from . import temporary_transaction
-
 
 @pytest.fixture(scope="class")
 def clean_all_sensitivity_rules():

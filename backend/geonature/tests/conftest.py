@@ -1,2 +1,2 @@
-# force discovery of app fixture
-from . import app
+# force discovery of some fixtures
+from .fixtures import app, users, temporary_transaction

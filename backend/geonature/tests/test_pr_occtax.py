@@ -3,8 +3,11 @@ import pytest
 from flask import url_for, current_app
 from werkzeug.exceptions import Forbidden
 
-from . import login, temporary_transaction, post_json
-from .fixtures import sample_data, releve_data, datasets, users
+from . import *
+from .fixtures import *
+
+
+occtax = pytest.importorskip("occtax")
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "users", "datasets")
@@ -29,4 +32,6 @@ class TestOcctax:
 
         #TODO : test update, test post occurrence
 
-
+    def test_get_defaut_nomenclatures(self):
+        response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures"))
+        assert response.status_code == 200

@@ -1,12 +1,12 @@
 import pytest
 
-from flask import g, url_for, current_app
+from flask import g, url_for
 
 from geonature.utils.env import db
 
 from pypnusershub.db.models import User, Application, AppUser, UserApplicationRight, ProfilsForApp
 
-from . import login, temporary_transaction
+from . import *
 from .utils import logged_user_headers
 
 

@@ -22,6 +22,10 @@ from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 from apptax.taxonomie.models import Taxref
 
 
+__all__ = ['datasets', 'acquisition_frameworks',
+           'releve_data', 'synthese_data']
+
+
 class JSONClient(testing.FlaskClient):
     def open(self, *args, **kwargs):
         headers = kwargs.pop('headers', Headers())
@@ -59,8 +63,9 @@ def app():
         transaction.rollback()  # rollback all database changes
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='session')
 def users(app):  # an app context is required
+    print("create users")
     app = Application.query.filter(Application.code_application=='GN').one()
     profil = Profil.query.filter(Profil.nom_profil=='Lecteur').one()
 
@@ -137,12 +142,15 @@ def acquisition_frameworks(users):
                             nomenclature_actor_role=principal_actor_role)
                 af.cor_af_actor.append(actor)
         return af
-    return {
+
+    afs = {
         'own_af': create_af(creator=users['user']),
         'associate_af': create_af(creator=users['associate_user']),
         'stranger_af': create_af(creator=users['stranger_user']),
         'orphan_af': create_af(),
     }
+
+    return afs
 
 
 @pytest.fixture(scope='class')
@@ -168,22 +176,25 @@ def datasets(users, acquisition_frameworks):
                             nomenclature_actor_role=principal_actor_role)
                 dataset.cor_dataset_actor.append(actor)
         return dataset
-    return {
+
+    datasets = {
         'own_dataset': create_dataset(digitizer=users['user']),
         'associate_dataset': create_dataset(digitizer=users['associate_user']),
         'stranger_dataset': create_dataset(digitizer=users['stranger_user']),
         'orphan_dataset': create_dataset(),
     }
 
+    return datasets
 
 
-@pytest.fixture(scope='class')
-def sample_data(app):
-    with db.session.begin_nested():
-        for sql_file in ['delete_sample_data.sql', 'sample_data.sql']:
-            operations = pkg_resources.resource_string("geonature.tests", f"data/{sql_file}") \
-                                      .decode('utf-8')
-            db.session.execute(operations)
+
+#@pytest.fixture(scope='class')
+#def sample_data(app):
+#    with db.session.begin_nested():
+#        for sql_file in ['delete_sample_data.sql', 'sample_data.sql']:
+#            operations = pkg_resources.resource_string("geonature.tests", f"data/{sql_file}") \
+#                                      .decode('utf-8')
+#            db.session.execute(operations)
 
 
 @pytest.fixture(scope='function')
@@ -224,7 +235,7 @@ def releve_data(client, datasets):
         Releve associated with dataset created by "user"
     """
     id_dataset = datasets["own_dataset"].id_dataset
-    response = client.get(url_for("pr_occtax.getDefaultNomenclatures"))
+    response = client.get(url_for("pr_occtax.getDefaultNomenclatures"))  # TODO probably better to query nomenclatures directly
     default_nomenclatures = response.get_json()
     data = {
         "depth": 2,
@@ -240,7 +251,6 @@ def releve_data(client, datasets):
             "altitude_max": None,
             "meta_device_entry": "web",
             "comment": None,
-            "id_nomenclature_obs_technique": default_nomenclatures["TECHNIQUE_OBS"],
             "observers": [1],
             "observers_txt": "tatatato",
             "id_nomenclature_grp_typ": default_nomenclatures["TYP_GRP"],
@@ -261,6 +271,7 @@ def synthese_data(users, datasets):
     with db.session.begin_nested():
         taxon = Taxref.query.filter_by(cd_nom=713776).one()
         s = Synthese(id_source=source.id_source,
+                     unique_id_sinp=func.uuid_generate_v4(),
                      dataset=datasets['own_dataset'],
                      digitiser=users['self_user'],
                      nom_cite='Ashmeadopria Kieffer',
@@ -272,4 +283,7 @@ def synthese_data(users, datasets):
                      date_min=now,
                      date_max=now)
         db.session.add(s)
-    return [s]
+
+    data = [s]
+
+    return data

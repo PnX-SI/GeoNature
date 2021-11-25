@@ -8,7 +8,7 @@ from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 
 from pypnusershub.db.tools import user_to_token
 
-from . import users, acquisition_frameworks, datasets, temporary_transaction
+from .fixtures import acquisition_frameworks, datasets
 from .utils import set_logged_user_cookie, logged_user_headers
 
 

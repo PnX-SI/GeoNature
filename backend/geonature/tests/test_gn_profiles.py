@@ -16,8 +16,6 @@ from geonature.core.gn_profiles.models import (
 from geonature.core.gn_synthese.models import Synthese
 from geonature.core.taxonomie.models import Taxref
 
-from . import temporary_transaction
-
 
 def create_synthese_record(
     cd_nom=None,
@@ -203,7 +201,7 @@ class TestGnProfiles:
             url_for("gn_profiles.get_observation_score"),
             json=data
         )
-        assert response.status_code == 404
+        assert response.status_code == 204  # No content
 
         data.update({"cd_ref": 212})
         response = self.client.post(
