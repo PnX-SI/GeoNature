@@ -1,9 +1,11 @@
 import {
   Component,
   OnInit,
+  OnDestroy,
   HostListener,
   AfterViewInit,
 } from "@angular/core";
+import { Subscription } from "rxjs"
 import { MatDialog } from "@angular/material";
 import { Router, NavigationEnd } from "@angular/router";
 import { CommonService } from "@geonature_common/service/common.service"
@@ -35,10 +37,11 @@ import { filter } from "rxjs/operators";
     OcctaxFormMapService,
   ],
 })
-export class OcctaxFormComponent implements OnInit, AfterViewInit {
+export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
   public occtaxConfig = ModuleConfig;
   public id;
   public disableCancel = false;
+  public urlSub: Subscription ;
   releveUrl: string = null;
   cardHeight: number;
   cardContentHeight: any;
@@ -65,10 +68,10 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
     this.setCurrentTabAndIdReleve(this._router.routerState.snapshot.url);
     // set id_releve and tab on tab navigation
     // when come from map list both are trigger. Manage by distinctUntilChanged on getOcctaxData
-    this._router.events
+    this.urlSub = this._router.events
     .pipe(
       filter(event => event instanceof NavigationEnd),
-    ).subscribe((event:any) => {          
+    ).subscribe((event:any) => {       
       this.setCurrentTabAndIdReleve(event.url);
     })
   }
@@ -89,7 +92,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
       this.occtaxFormService.currentTab = <"releve" | "taxons">urlSegments.pop();
     } else {
       this.occtaxFormService.currentTab = "releve";
-      const idReleve = urlSegments[urlSegments.length - 1];      
+      const idReleve = urlSegments[urlSegments.length - 1];            
       if (idReleve && Number.isInteger(Number(idReleve)))  {
         this.occtaxFormService.disabled = false;
         this.occtaxFormService.id_releve_occtax.next(idReleve)
@@ -217,6 +220,10 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit {
         .deleteReleve(this.occtaxFormService.id_releve_occtax.getValue())
         .subscribe((d) => { });
     }
+  }
+
+  ngOnDestroy() {
+    this.urlSub.unsubscribe();
   }
 
   

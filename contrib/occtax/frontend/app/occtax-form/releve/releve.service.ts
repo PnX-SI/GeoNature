@@ -178,20 +178,18 @@ export class OcctaxFormReleveService {
           //on desactive le form, il sera réactivé si la geom est ok
           this.occtaxFormService.disabled = true;
         }),
-        switchMap((editionMode: boolean) => {   
+        switchMap((editionMode: boolean) => {           
           //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
           return editionMode ? this.releveValues : this.defaultValues;
         }),
         //display showTime management
         tap((values) => this.showTime = !(JSON.stringify(values.date_min) === JSON.stringify(values.date_max))),
         //get additional fidlds from releve
-        switchMap((releve) => {
+        switchMap((releve) => {          
           let additionnalFieldsObservable: Observable<any>;
           //if releve.id_dataset is empty, get GlobalAdditionnalFields only
           if ( releve.id_dataset === null ) {
-            additionnalFieldsObservable = this.occtaxFormService.getAdditionnalFields(
-                                            ["OCCTAX_RELEVE"],
-                                          );
+            additionnalFieldsObservable = this.occtaxFormService.getAdditionnalFields(["OCCTAX_RELEVE"]);
           } else {
             //set 2 request for get global & dataset additional field together
             additionnalFieldsObservable = forkJoin(
@@ -215,7 +213,7 @@ export class OcctaxFormReleveService {
                    additionnalFieldsObservable
                 );
         }),
-        map(([releve, additional_fields]) => {
+        map(([releve, additional_fields]) => {          
           additional_fields.forEach(field => {
             //Formattage des dates
             if(field.type_widget == "date"){
@@ -237,9 +235,10 @@ export class OcctaxFormReleveService {
         tap(([releve, additional_fields]) => this.additionalFieldsForm = additional_fields),
         //map for return releve data only
         map(([releve, additional_fields]) => releve),
-        distinctUntilChanged()
       )
-      .subscribe((releve) => this.propertiesForm.patchValue(releve));
+      .subscribe((releve) => {        
+        this.propertiesForm.patchValue(releve)
+      });
 
 
 
@@ -247,12 +246,12 @@ export class OcctaxFormReleveService {
     this.occtaxFormMapService.geojson
       .pipe(
         distinctUntilChanged(),
-        filter((geojson) => geojson !== null),
+        filter((geojson) => geojson !== null && !this.occtaxFormService.editionMode.getValue()),
         tap(() => {
           this.occtaxFormService.disabled = false;
           this.propertiesForm.enable(); //active le form
         }),
-        switchMap((geojson) => this.dataFormService.getAltitudes(geojson))
+        switchMap((geojson) => this.dataFormService.getAltitudes(geojson)),
       )
       .subscribe((altitude) => this.propertiesForm.patchValue(altitude));
 
@@ -270,7 +269,9 @@ export class OcctaxFormReleveService {
         ),
         map(([date_min_prev, date_min_new]) => date_min_new)
       )
-      .subscribe((date_min) => this.propertiesForm.get("date_max").setValue(date_min));
+      .subscribe((date_min) =>  this.propertiesForm.get("date_max").setValue(date_min));
+      
+
 
     //date_max part : only if date_min is empty
     this.propertiesForm.get("date_max").valueChanges
@@ -318,7 +319,7 @@ export class OcctaxFormReleveService {
   }
 
   /** Get occtax data in order to patch value to the form */
-  private get releveValues(): Observable<any> {    
+  private get releveValues(): Observable<any> {        
     return this.occtaxFormService.occtaxData.pipe(
       tap(() => this.habitatForm.setValue(null)),
       filter(data => data && data.releve.properties),
@@ -389,7 +390,7 @@ export class OcctaxFormReleveService {
       .getDefaultValues(this.occtaxFormService.currentUser.id_organisme)
       .pipe(
         map((data) => {          
-          const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);           
+          const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);              
           return {
             // datasetId could be get for get parameters (see releve.component)
             id_dataset: this.datasetId || this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset,

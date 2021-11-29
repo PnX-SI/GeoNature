@@ -50,7 +50,7 @@ export class OcctaxFormService {
     this.id_releve_occtax
       .pipe(
         skip(1), // skip initilization value (null)
-        tap((id) =>{ 
+        tap((id) =>{           
           if(id == null) {            
             this.editionMode.next(false);
           } else {
@@ -60,7 +60,7 @@ export class OcctaxFormService {
         filter((id) => id !== null),
         distinctUntilChanged(),
       )
-      .subscribe((id) => {                             
+      .subscribe((id) => {                               
         this.getOcctaxData(id)
       });
   }

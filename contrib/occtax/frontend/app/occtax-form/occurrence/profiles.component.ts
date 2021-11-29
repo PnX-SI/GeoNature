@@ -1,5 +1,7 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { filter, tap, map, switchMap, distinctUntilChanged } from "rxjs/operators";
+import { FormArray } from "@angular/forms";
+import { Observable } from "rxjs";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppConfig } from "@geonature_config/app.config";
