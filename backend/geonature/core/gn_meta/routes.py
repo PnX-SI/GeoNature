@@ -545,7 +545,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
     if not dataset:
         raise NotFound('Dataset "{}" does not exist'.format(id_dataset))
 
-    dataset = json.loads((datasetSchema.dumps(dataset)).data)
+    dataset = json.loads((datasetSchema.dumps(dataset)))
 
     #test du droit d'export de l'utilisateur
     if not dataset.get('cruved').get('E'):
