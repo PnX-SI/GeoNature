@@ -16,6 +16,7 @@ import { OcctaxFormReleveComponent } from "./occtax-form/releve/releve.component
 import { OcctaxFormOccurrenceComponent } from "./occtax-form/occurrence/occurrence.component";
 import { OcctaxFormTaxaListComponent } from "./occtax-form/taxa-list/taxa-list.component";
 import { OcctaxFormCountingComponent } from "./occtax-form/counting/counting.component";
+import { OcctaxProfilesComponent } from "./occtax-form/occurrence/profiles.component";
 import { OcctaxFormParamDialog } from "./occtax-form/form-param/form-param.dialog";
 
 // Service
@@ -75,6 +76,7 @@ const routes: Routes = [
     OcctaxFormOccurrenceComponent,
     OcctaxFormTaxaListComponent,
     OcctaxFormCountingComponent,
+    OcctaxProfilesComponent,
     OcctaxFormParamDialog,
   ],
   providers: [
