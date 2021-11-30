@@ -47,8 +47,6 @@ def upgrade():
     active = context.get_x_argument(as_dictionary=True).get('active')
     if active is not None:
         active = bool(strtobool(active))
-    else:
-        active = True
     conn = op.get_bind()
     metadata = sa.MetaData(bind=conn)
     sensitivity_rule = sa.Table('t_sensitivity_rules', metadata, schema='gn_sensitivity', autoload_with=conn)
@@ -71,6 +69,10 @@ def upgrade():
                 duration = int(row['duree'])
             else:
                 duration = 10000
+            if active is not None:
+                _active = active
+            else:
+                _active = row['perimetre'] == "France métropolitaine"
             rule = {
                 'cd_nom': int(row['cd_nom']),
                 'nom_cite': row['nom_cite'],
@@ -82,7 +84,7 @@ def upgrade():
                 'comments': row['autre'],
                 'date_min': row['date_min'] if row['date_min'] else None,
                 'date_max': row['date_max'] if row['date_max'] else None,
-                'active': active,
+                'active': _active,
             }
             if row['cd_occ_statut_biologique']:
                 nomenc_value = row['cd_occ_statut_biologique']
