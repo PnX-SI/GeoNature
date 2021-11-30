@@ -13,20 +13,34 @@ CHANGELOG
 * [SYNTHESE] Filtre par UUID
 * [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
 * Passage à la librairie 'select2' pour les composants multiselects (@jbrieuclp)
+* Ajout d’un référentiel des régions ainsi que des anciennes régions (1970-2016)
+* Ajout du référentiel de sensibilité (règles nationales et régionales)
 
-[DEV]
+**💻 Développement**
+
 * Factorisation du composant "pnx-municipalities" avec "pnx-areas"
 * Ajout de "pnx-areas" dans dynamic-form
 * Ajout d'un input "valueFieldName" pour "pnx-areas" et "pnx-municipalities"
 
-Note de version :
+Pour ceux qui utilisent le composant "pnx-municipalities" l'idéal serait de traduire les données et les modèle et de passer du ``code_insee`` a ``id_area``
+* la correspondance est immédiate (``area_code`` = ``code_insee``)
 
-Si vous avez surcouché le paramètre `AREA_FILTERS` de la section `[SYNTHESE]`, veuillez remplacer le `id_type` par le `type_code` (voir `ref_geo.bib_areas_types`)
+Cependant, pour garder la retrocompatibilité du composant "pnx-municipalities" veuillez ajouter
+
+* dans les templates : ``[valueFieldName]="'area_code'`` dans les template
+* dans les config (js, ts ou json) (attention à la casse): ``"value_field_name": "area_code"``
+* dans le module monitoring ajouter aussi ``"type_util": "area"``
+
+**⚠️ Notes de version**
+
+* Si vous avez surcouché le paramètre de configuration `AREA_FILTERS` de la section `[SYNTHESE]`, veuillez remplacer `id_type` par `type_code` (voir `ref_geo.bib_areas_types`)
+
 ::
 
     AREA_FILTERS = [
         { label = "Communes", id_type = 25 }
     ]
+
 devient
 
 ::
@@ -35,13 +49,13 @@ devient
         { label = "Communes", type_code = "COM" }
     ]
 
-Les nouvelles fonctionnalités liés aux profiles necessite de raffraichir des vues materialisées à intervales réguliers et donc de créer une tâche planfiée (cron):
+* Les nouvelles fonctionnalités liés aux profiles necessite de raffraichir des vues materialisées à intervales réguliers et donc de créer une tâche planfiée (cron):
 
 ::
 
       sudo nano /etc/cron.d/update_profile
 
-Ajouter la ligne suivante en prenant changeant <CHEMIN_ABSOLUE_VERS_VENV> par le chemin absolue vers me virtualenv GeoNature et <GEONATURE_USER> par l'utilisateur linux de GeoNature:
+Ajouter la ligne suivante en prenant changeant <CHEMIN_ABSOLUE_VERS_VENV> par le chemin absolue vers me virtualenv GeoNature et <GEONATURE_USER> par l'utilisateur Linux de GeoNature:
 
 ::
 
@@ -54,14 +68,28 @@ Exemple :
 
 Cet exemple lance la tâche toute les nuits à minuit. Pour une autre fréquence voir la syntaxe cron : https://crontab.guru/
 
-Pour ceux qui utilisent le composant "pnx-municipalities" l'idéal serait de traduire les données et les modèle et de passer du ``code_insee`` a ``id_area``
-* la correspondance est immédiate (``area_code`` = ``code_insee``)
+* Les régions sont maintenant disponible via des migrations Alembic. Si vous possédez déjà les régions, vous pouvez l’indiquer à Alembic :
 
-Cependant, pour garder la retrocompatibilité du composant "pnx-municipalities" veuillez ajouter
+::
 
-* dans les templates : ``[valueFieldName]="'area_code'`` dans les temaplte
-* dans les config (js, ts ou json) (attention à la casse): ``"value_field_name": "area_code"``
-* dans le module monitoring ajouter aussi ``"type_util": "area"``
+    geonature db upgrade ref_geo@head
+    geonature db stamp d02f4563bebe
+
+* Le référentiel de sensibilité est désormais disponible via une migration Alembic. Celui-ci nécessite le référentiel des régions (branche Alembic ``ref_geo_fr_regions``), ainsi que le référentiel des anciennes régions (branche Alembic ``ref_geo_fr_regions_1970``) – l’installation de ces référentiels est automatique avec l’installation des règles de sensibilité.
+
+Si vous possédez déjà le référentiel, vous pouvez l’indiquer à Alembic :
+
+::
+
+    geonature db stamp 7dfd0a813f86
+
+Si vous avez installé GeoNature 2.8.X, le référentiel de sensibilité n’a pas été installé automatiquement. Vous pouvez l’installer manuellement :
+
+::
+
+    geonature db upgrade ref_sensitivity_inpn@head
+
+Par défaut, seule les règles nationales sont activés, vous laissant le soin d’activer vos règles locales en base vous même. Vous pouvez également demander, lors de l’installation du référentiel, à activer (resp. désactiver) toutes les règles en ajout à la commande Alembic l’option ``-x active=true`` (resp. ``-x active=false``).
 
 2.8.1 (2021-10-17)
 ------------------
