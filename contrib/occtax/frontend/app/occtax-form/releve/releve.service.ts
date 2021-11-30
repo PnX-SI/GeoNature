@@ -4,17 +4,16 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { Observable, Subscription, of, combineLatest, forkJoin } from "rxjs";
 import { filter, map, switchMap, tap, skip, concatMap, distinctUntilChanged, pairwise } from "rxjs/operators";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
-import { GeoJSON } from "leaflet";
 import { ModuleConfig } from "../../module.config";
 import { CommonService } from "@geonature_common/service/common.service";
 import { FormService } from "@geonature_common/form/form.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcctaxFormService } from "../occtax-form.service";
-import { OcctaxFormMapService } from "../map/map.service";
+import { OcctaxFormMapService } from "../map/occtax-map.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { DatasetStoreService } from '@geonature_common/form/datasets/dataset.service';
-
+import { MapService } from "@geonature_common/map/map.service.ts"
 @Injectable()
 export class OcctaxFormReleveService {
   public userReleveRigth: any;
@@ -35,7 +34,7 @@ export class OcctaxFormReleveService {
   public datasetId : number = null;
   public previousReleve = null;
 
-  constructor(
+  constructor(  
     private router: Router,
     private fb: FormBuilder,
     private _commonService: CommonService,
@@ -47,7 +46,8 @@ export class OcctaxFormReleveService {
     private occtaxDataService: OcctaxDataService,
     private occtaxParamS: OcctaxFormParamService,
     private _datasetStoreService: DatasetStoreService,
-    private _cd: ChangeDetectorRef
+    private _cd: ChangeDetectorRef,
+    private _mapService: MapService
   ) {
     this.initPropertiesForm();
     this.setObservables();
@@ -175,8 +175,6 @@ export class OcctaxFormReleveService {
         //initialisation
         tap(() => {
           this.additionalFieldsForm = [];
-          //on desactive le form, il sera réactivé si la geom est ok
-          this.occtaxFormService.disabled = true;
         }),
         switchMap((editionMode: boolean) => {           
           //Le switch permet, selon si édition ou creation, de récuperer les valeur par defaut ou celle de l'API
@@ -185,7 +183,10 @@ export class OcctaxFormReleveService {
         //display showTime management
         tap((values) => this.showTime = !(JSON.stringify(values.date_min) === JSON.stringify(values.date_max))),
         //get additional fidlds from releve
-        switchMap((releve) => {          
+        switchMap((releve) => {  
+          
+          console.log("BEGIN", releve);
+          
           let additionnalFieldsObservable: Observable<any>;
           //if releve.id_dataset is empty, get GlobalAdditionnalFields only
           if ( releve.id_dataset === null ) {
@@ -236,24 +237,30 @@ export class OcctaxFormReleveService {
         //map for return releve data only
         map(([releve, additional_fields]) => releve),
       )
-      .subscribe((releve) => {        
+      .subscribe((releve) => {
+        console.log("FINALLY", releve);
+            
         this.propertiesForm.patchValue(releve)
       });
 
 
 
     //Observation de la geometry pour récupere les info d'altitudes
-    this.occtaxFormMapService.geojson
+    // cet evenement est émit uniquement lors de changement sur la carte
+    // pas à partir d'un patch de l'API
+    this._mapService.gettingGeojson$
       .pipe(
         distinctUntilChanged(),
-        filter((geojson) => geojson !== null && !this.occtaxFormService.editionMode.getValue()),
-        tap(() => {
-          this.occtaxFormService.disabled = false;
-          this.propertiesForm.enable(); //active le form
+        filter((geojson) => geojson !== null),
+        tap((geojson) => {          
         }),
         switchMap((geojson) => this.dataFormService.getAltitudes(geojson)),
       )
-      .subscribe((altitude) => this.propertiesForm.patchValue(altitude));
+      .subscribe((altitude) => {
+        console.log("PATCH ALTI");
+        
+        this.propertiesForm.patchValue(altitude)
+      });
 
     /* gestion de l'autocomplétion de la date ou non.
      * autocomplete si date_max non renseignée (creation) ou si date_min = date_max (creation ou edition)
@@ -397,7 +404,7 @@ export class OcctaxFormReleveService {
             date_min: this.occtaxParamS.get("releve.date_min") ||
               previousReleve.date_min ||
               this.defaultDateWithToday(),
-            date_max: this.occtaxParamS.get("releve.date_max") || previousReleve.date_max,
+            date_max: this.occtaxParamS.get("releve.date_max") || previousReleve.date_max || this.defaultDateWithToday(),
             hour_min: this.occtaxParamS.get("releve.hour_min") || previousReleve.hour_min,
             hour_max: this.occtaxParamS.get("releve.hour_max") || previousReleve.hour_max,
             altitude_min: this.occtaxParamS.get("releve.altitude_min"),
@@ -459,6 +466,8 @@ export class OcctaxFormReleveService {
     this.waiting = true;
     if (this.occtaxFormService.id_releve_occtax.getValue()) {
       //update
+      console.log("LAA", this.releveFormValue());
+      
       this.occtaxDataService
         .updateReleve(
           this.occtaxFormService.id_releve_occtax.getValue(),

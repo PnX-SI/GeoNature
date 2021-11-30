@@ -71,7 +71,6 @@ export class OcctaxFormService {
         this.occtaxData.next(data);
         this.editionMode.next(true);
         // set taxa list
-
         if(data.releve.properties.dataset.id_taxa_list) {
           this.idTaxonList = data.releve.properties.dataset.id_taxa_list;
         }

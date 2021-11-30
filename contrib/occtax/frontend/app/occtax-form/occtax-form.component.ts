@@ -19,7 +19,7 @@ import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
 import { OcctaxFormCountingsService } from "./counting/countings.service";
-import { OcctaxFormMapService } from "./map/map.service";
+import { OcctaxFormMapService } from "./map/occtax-map.service";
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import { filter } from "rxjs/operators";
 

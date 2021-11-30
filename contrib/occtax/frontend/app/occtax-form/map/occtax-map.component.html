@@ -3,14 +3,14 @@
   class="map-card"
 >
   <pnx-marker
-    [coordinates]="coordinates"
+    [coordinates]="ms.markerCoordinates"
     [zoomLevel]="occtaxConfig.releve_map_zoom_level"
     (markerChanged)="sendGeoInfo($event)"
   >
   </pnx-marker>
 
   <pnx-leaflet-draw
-    [geojson]="geometry"
+    [geojson]="ms.leafletDrawGeoJson"
     [options]="leafletDrawOptions"
     [zoomLevel]="occtaxConfig.releve_map_zoom_level"
     (layerDrawed)="sendGeoInfo($event)"

@@ -9,7 +9,7 @@ import { CommonService } from "@geonature_common/service/common.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormReleveService } from "./releve.service";
-import { OcctaxFormMapService } from "../map/map.service";
+import { OcctaxFormMapService } from "../map/occtax-map.service";
 import { AppConfig } from "@geonature_config/app.config";
 
 @Component({
