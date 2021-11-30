@@ -393,6 +393,7 @@
 <div class="bloc-button">
   <ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence|async); else modifButton">
     <button 
+      id="add-occ"
       mat-raised-button
       class="button-success uppercase" 
       matTooltip="Enregistrer ce taxon"
@@ -421,6 +422,7 @@
       Annuler
     </button>
     <button 
+      id="add-occ"
       class="button-success uppercase" 
       mat-raised-button
       matTooltip="Modifier et enregistrer ce taxon" 
