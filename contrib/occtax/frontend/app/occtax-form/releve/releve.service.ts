@@ -183,10 +183,7 @@ export class OcctaxFormReleveService {
         //display showTime management
         tap((values) => this.showTime = !(JSON.stringify(values.date_min) === JSON.stringify(values.date_max))),
         //get additional fidlds from releve
-        switchMap((releve) => {  
-          
-          console.log("BEGIN", releve);
-          
+        switchMap((releve) => {            
           let additionnalFieldsObservable: Observable<any>;
           //if releve.id_dataset is empty, get GlobalAdditionnalFields only
           if ( releve.id_dataset === null ) {
@@ -237,9 +234,7 @@ export class OcctaxFormReleveService {
         //map for return releve data only
         map(([releve, additional_fields]) => releve),
       )
-      .subscribe((releve) => {
-        console.log("FINALLY", releve);
-            
+      .subscribe((releve) => {            
         this.propertiesForm.patchValue(releve)
       });
 
@@ -256,9 +251,7 @@ export class OcctaxFormReleveService {
         }),
         switchMap((geojson) => this.dataFormService.getAltitudes(geojson)),
       )
-      .subscribe((altitude) => {
-        console.log("PATCH ALTI");
-        
+      .subscribe((altitude) => {        
         this.propertiesForm.patchValue(altitude)
       });
 
