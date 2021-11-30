@@ -1,4 +1,4 @@
-"""Insert INPN national rules in sensitivity referential
+"""Insert INPN rules in sensitivity referential
 
 Revision ID: 7dfd0a813f86
 Create Date: 2021-11-22
@@ -26,13 +26,16 @@ lzmaopen = partial(lzmaopen, mode='rt')
 # revision identifiers, used by Alembic.
 revision = '7dfd0a813f86'
 down_revision = None
-branch_labels = ('inpn_ref_sensitivity_national',)
-depends_on = 'f06cc80cc8ba'  # geonature
+branch_labels = ('ref_sensitivity_inpn',)
+depends_on = (
+    '05a0ae652c13',  # regions 1970
+    'd02f4563bebe',  # regions 2016
+)
 
 
 source = 'Référentiel sensibilité TAXREF v13 2020'
 base_url = 'https://geonature.fr/data/inpn/sensitivity/'
-filename = 'referentiel_donnees_sensibles_national_v13.csv.xz'
+filename = 'referentiel_donnees_sensibles_v13.csv.xz'
 
 
 @lru_cache(maxsize=32)
@@ -52,7 +55,6 @@ def upgrade():
     cor_sensitivity_criteria = sa.Table('cor_sensitivity_criteria', metadata, schema='gn_sensitivity', autoload_with=conn)
     nomenclature = sa.Table('t_nomenclatures', metadata, schema='ref_nomenclatures', autoload_with=conn)
     nomenclature_type = sa.Table('bib_nomenclatures_types', metadata, schema='ref_nomenclatures', autoload_with=conn)
-    statut_biologique_nomenclature_type_id = conn.execute(func.ref_nomenclatures.get_id_nomenclature_type('STATUT_BIO')).scalar()
     statut_biologique_nomenclatures = list(chain.from_iterable(conn.execute(
             sa.select([nomenclature.c.cd_nomenclature]) \
             .select_from(
@@ -64,7 +66,6 @@ def upgrade():
     with open_remote_file(base_url, filename, open_fct=lzmaopen) as csvfile:
         reader = csv.DictReader(csvfile, delimiter=',')
         for row in reader:
-            assert(row['perimetre'] == 'France métropolitaine')
             id_nomenc = get_id_from_cd(row['codage'])
             if row['duree']:
                 duration = int(row['duree'])
@@ -84,25 +85,50 @@ def upgrade():
                 'active': active,
             }
             if row['cd_occ_statut_biologique']:
-                if row['cd_occ_statut_biologique'] in statut_biologique_nomenclatures:
-                    criterias.append((len(rules), row['cd_occ_statut_biologique']))
-                    rules.append(rule)
+                nomenc_value = row['cd_occ_statut_biologique']
+                if nomenc_value in statut_biologique_nomenclatures:
+                    nomenc_type = 'STATUT_BIO'
+                elif nomenc_value in ('6', '7', '8', '10', '11', '12'):
+                    nomenc_type = 'OCC_COMPORTEMENT'
                 else:
-                    # We ignore this rule with outdated nomenclature
-                    logger.warn("Ignore rule {} with unknown nomenclature {}".format(row['cd_sens'], row['cd_occ_statut_biologique']))
-            else:
-                rules.append(rule)
+                    raise Exception("Unknown statut biologique '{}'".format(nomenc_value))
+                criterias.append((len(rules), nomenc_type, nomenc_value))
+            rules.append(rule)
     results = conn.execute(sensitivity_rule \
                                 .insert() \
                                 .values(rules) \
                                 .returning(sensitivity_rule.c.id_sensitivity))
-    rules_indexes = [ rule_index for rule_index, in results ]
+    rules_id = [ rule_id for rule_id, in results ]
     conn.execute(cor_sensitivity_criteria.insert().values([
                             {
-                                'id_sensitivity': rules_indexes[rule_idx],
-                                'id_criteria': func.ref_nomenclatures.get_id_nomenclature('STATUT_BIO', occ),
-                                'id_type_nomenclature': statut_biologique_nomenclature_type_id,
-                            } for rule_idx, occ in criterias ]))
+                                'id_sensitivity': rules_id[rule_index],
+                                'id_criteria': func.ref_nomenclatures.get_id_nomenclature(nomenc_type, nomenc_value),
+                                'id_type_nomenclature': func.ref_nomenclatures.get_id_nomenclature_type(nomenc_type),
+                            } for rule_index, nomenc_type, nomenc_value in criterias ]))
+
+    # We are looking codes in both actual and old regions but keep only the most recent one
+    conn.execute("""
+    INSERT INTO gn_sensitivity.cor_sensitivity_area
+        SELECT DISTINCT ON (id_sensitivity) s.id_sensitivity, a.id_area
+        FROM gn_sensitivity.t_sensitivity_rules s
+        JOIN ref_geo.l_areas a
+            ON REPLACE(s.id_territory, 'INSEER', '') = a.area_code
+        JOIN ref_geo.bib_areas_types t
+        	ON t.id_type = a.id_type AND t.type_code IN ('REG', 'REG_1970')
+        WHERE s.sensitivity_territory = 'Région'
+        ORDER BY
+        	s.id_sensitivity,
+        	array_position(ARRAY['REG','REG_1970'], t.type_code::text)
+    """)
+
+    conn.execute("""
+    INSERT INTO gn_sensitivity.cor_sensitivity_area
+        SELECT DISTINCT id_sensitivity, id_area
+        FROM gn_sensitivity.t_sensitivity_rules   s
+        JOIN ref_geo.l_areas
+            ON REPLACE(id_territory, 'INSEED', '') = area_code AND  id_type = (SELECT id_type FROM ref_geo.bib_areas_types  WHERE type_code ='DEP')
+        WHERE sensitivity_territory = 'Département'
+    """)
 
     op.execute("REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref")
 
