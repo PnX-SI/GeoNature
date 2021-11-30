@@ -138,27 +138,6 @@ $BODY$
   COST 100;
 
 
-CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_alt_minmax()
-  RETURNS trigger AS
-$BODY$
-DECLARE
-	the4326geomcol text := quote_ident(TG_ARGV[0]);
-  thelocalsrid int;
-BEGIN
-	-- si c'est un insert ou que c'est un UPDATE ET que le geom_4326 a été modifié
-	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT public.ST_EQUALS(hstore(OLD)-> the4326geomcol, hstore(NEW)-> the4326geomcol))) THEN
-		--récupérer le srid local
-		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
-		--Calcul de l'altitude
-        SELECT (ref_geo.fct_get_altitude_intersection(st_transform(hstore(NEW)-> the4326geomcol,thelocalsrid))).*  INTO NEW.altitude_min, NEW.altitude_max ;
-
-	END IF;
-  RETURN NEW;
-END;
-$BODY$
-  LANGUAGE plpgsql VOLATILE
-  COST 100;
-
 
 CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_alt_minmax()
  RETURNS trigger

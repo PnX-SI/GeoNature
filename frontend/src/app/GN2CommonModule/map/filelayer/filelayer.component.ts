@@ -112,7 +112,6 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
                 this.previousCurrentLayer = layer;
 
                 // sent geojson observable
-                this.mapService.firstLayerFromMap = false;
                 this.onGeomChange.emit((layer as any).feature);
                 this.mapService.setGeojsonCoord((layer as any).feature);
               });

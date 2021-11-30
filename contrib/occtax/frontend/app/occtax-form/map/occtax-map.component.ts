@@ -1,22 +1,19 @@
 import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
-import { Subscription } from "rxjs";
-import { filter, map, distinctUntilChanged } from "rxjs/operators";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { CommonService } from "@geonature_common/service/common.service";
 import { ModuleConfig } from "../../module.config";
 import { MapService } from '@geonature_common/map/map.service';
-import { OcctaxFormMapService } from "./map.service";
+import { OcctaxFormMapService } from "./occtax-map.service";
 import { OcctaxFormService } from "../occtax-form.service";
 
 @Component({
   selector: "pnx-occtax-form-map",
-  templateUrl: "map.component.html",
+  templateUrl: "occtax-map.component.html",
 })
 export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy {
   public leafletDrawOptions: any;
   public firstFileLayerMessage = true;
   public occtaxConfig = ModuleConfig;
-  private _subscriptions: Subscription[] = [];
 
   public coordinates = null;
   public geometry = null;
@@ -38,34 +35,6 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
     leafletDrawOption.draw.polyline = true;
     leafletDrawOption.edit.remove = false;
     this.leafletDrawOptions = leafletDrawOption;
-    // set the input for the marker component
-    // set the coord only when load data and when its edition mode (id_releve)
-    // after the marker component does it by itself whith the ouput
-    // when modifie the coordinates innput, it create twice the marker
-    this._subscriptions.push(
-      this.ms.geojson
-        .pipe(
-          filter((geojson) => geojson !== null),
-          distinctUntilChanged(),
-          map((geojson) => geojson.geometry)
-        )
-        .subscribe((geometry) => {
-          if (geometry.type == "Point") {
-            this.coordinates = geometry.coordinates;
-          } else {
-            // set the input for leafletdraw component
-            this.geometry = geometry;
-          }
-        })
-    );
-
-    // to get geometry from filelayer
-    this._subscriptions.push(
-      this._mapService.gettingGeojson$
-        .subscribe(geojson => {
-          this.ms.geometry = geojson;
-        })
-    );
   }
 
   ngAfterViewInit() {
@@ -104,6 +73,5 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
 
   ngOnDestroy() {
     this.ms.reset();
-    this._subscriptions.forEach(s => { s.unsubscribe(); });
   }
 }

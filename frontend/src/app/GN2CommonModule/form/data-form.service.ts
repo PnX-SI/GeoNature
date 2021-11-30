@@ -645,7 +645,7 @@ export class DataFormService {
   }
 
   controlProfile(data) {
-    return this._http.post(
+    return this._http.post<any>(
       `${AppConfig.API_ENDPOINT}/gn_profiles/check_observation`,
       data
     );

@@ -512,7 +512,7 @@ def updateReleve(id_releve, info_role):
 
 def occurrenceHandler(request, *, occurrence, info_role):
 
-    TRelevesOccurrence.query.get_or_404(occurrence.id_releve_occtax)
+    releve = TRelevesOccurrence.query.get_or_404(occurrence.id_releve_occtax)
 
     # Test des droits d'édition du relevé si modification
     if occurrence.id_occurrence_occtax is not None:

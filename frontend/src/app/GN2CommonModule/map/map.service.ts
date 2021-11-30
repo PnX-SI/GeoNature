@@ -28,10 +28,6 @@ export class MapService {
   private _isEditingMarker = new Subject<boolean>();
   public isMarkerEditing$: Observable<any> = this._isEditingMarker.asObservable();
   public layerGroup: any;
-  // boolean to control if gettingGeojsonCoord$ observable is fire
-  // this observable must be fired only after a map event
-  // not from data sended by API (to avoid recalculate altitude for exemple)
-  public firstLayerFromMap = true;
   public layerControl: L.Control.Layers;
   // Leaflet reference for external module
   public L = L;
@@ -74,9 +70,7 @@ export class MapService {
   }
 
   setGeojsonCoord(geojsonCoord) {
-    if (!this.firstLayerFromMap) {
       this._geojsonCoord.next(geojsonCoord);
-    }
   }
 
   zoomOnMarker(coordinates, zoomLevel = 15) {

@@ -13,13 +13,13 @@
   (remove)="onDelete.emit($event)"
 >
   <ng-template 
-	ng-option-tmp 
-	let-item="item" 
-	let-index="index" 
-	let-search="searchTerm"
+  ng-option-tmp 
+  let-item="item" 
+  let-index="index" 
+  let-search="searchTerm"
   >
   <div [matTooltip]="item[keyLabel]">
-	  <span class="pre-wrap">{{item[keyLabel]}}</span>
+    <span class="pre-wrap">{{item[keyLabel]}}</span>
   </div>
   </ng-template>
 </ng-select>

@@ -55,7 +55,7 @@ export class MarkerComponent implements OnInit, OnChanges {
       .pipe(filter(coords => this.map !== undefined && coords != null))
       .subscribe(coords => {        
         this.previousCoord = coords;
-        this.generateMarkerAndEvent(coords[0], coords[1]);
+        this.generateMarkerAndEvent(coords[0], coords[1], false);
       });
   }
 
@@ -77,8 +77,6 @@ export class MarkerComponent implements OnInit, OnChanges {
 
   enableMarkerOnClick() {
     this.map.on('click', (e: any) => {
-      // the boolean change MUST be before the output fire (emit)
-      this.mapservice.firstLayerFromMap = false;
       // check zoom level
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
@@ -87,7 +85,7 @@ export class MarkerComponent implements OnInit, OnChanges {
       }
     });
   }
-  generateMarkerAndEvent(x, y) {
+  generateMarkerAndEvent(x, y, withEvents=true) {    
     if (this.mapservice.marker !== undefined) {
       this.mapservice.marker.remove();
       this.mapservice.marker = this.mapservice.createMarker(x, y, true).addTo(this.map);
@@ -98,11 +96,13 @@ export class MarkerComponent implements OnInit, OnChanges {
       this.markerMoveEvent(this.mapservice.marker);
     }
     // observable to send geojson
-    this.mapservice.firstLayerFromMap = false;
+    // this.mapservice.firstLayerFromMap = false;
 
     const geojsonMarker = this.markerToGeojson(this.mapservice.marker.getLatLng());
-    this.mapservice.setGeojsonCoord(geojsonMarker);
-    this.markerChanged.emit(geojsonMarker);
+    if (withEvents) {
+      this.mapservice.setGeojsonCoord(geojsonMarker);
+      this.markerChanged.emit(geojsonMarker);
+    }
   }
 
   markerMoveEvent(marker: Marker) {
