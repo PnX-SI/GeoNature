@@ -48,13 +48,13 @@ def getGeoInfo():
 
 @routes.route("/altitude", methods=["POST"])
 @json_resp
-def getaltitide():
+def getAltitude():
     """
     From a posted geojson get the altitude min/max
 
     .. :quickref: Ref Geo;
     """
-    data = dict(request.get_json())
+    data = request.get_json()
 
     sql = text(
         """SELECT (ref_geo.fct_get_altitude_intersection(
