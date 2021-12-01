@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
-import { MatDialog } from "@angular/material";
+import { MatDialog } from '@angular/material/dialog';
 
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { AppConfig } from '../../../conf/app.config';
@@ -66,7 +66,7 @@ export class ActorComponent implements OnInit {
 
   //Pour switcher l'affichage du formulaire avec la liste organisme seule, role seul ou les deux.
   _toggleButtonValue: BehaviorSubject<string> = new BehaviorSubject("organism");
-  get toggleButtonValue() { return this._toggleButtonValue.getValue(); };
+  public get toggleButtonValue() { return this._toggleButtonValue.getValue(); };
 
   @Input() parentFormArray: FormArray;
 

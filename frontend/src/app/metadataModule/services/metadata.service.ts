@@ -3,18 +3,18 @@ import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin, Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import { tap, map, startWith, distinctUntilChanged, debounceTime, filter, pairwise  } from 'rxjs/operators';
-import { PageEvent, MatPaginator } from '@angular/material';
- 
+import { PageEvent, MatPaginator } from '@angular/material/paginator';
+
 import { AppConfig } from '@geonature_config/app.config';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
- 
+
 @Injectable()
 export class MetadataService {
- 
+
   public form: FormGroup;
   public rapidSearchControl: FormControl = new FormControl();
- 
+
   /* données receptionnées par l'API */
   private _acquisitionFrameworks: BehaviorSubject<any[]> = new BehaviorSubject([]);
   /* getter this._acquisitionFrameworks */
@@ -24,22 +24,22 @@ export class MetadataService {
 
   /* resultat du filtre sur _acquisitionFrameworks */
   public filteredAcquisitionFrameworks: Observable<any[]>;
- 
+
   public isLoading: boolean = false;
   public expandAccordions: boolean = false;
- 
+
   pageSizeOptions: number[] = [10, 25, 50, 100];
   pageSize: BehaviorSubject<number> = new BehaviorSubject(AppConfig.METADATA.NB_AF_DISPLAYED);
   pageIndex: BehaviorSubject<number> = new BehaviorSubject(0);
   activePage: BehaviorSubject<number> = new BehaviorSubject(0);
- 
+
   constructor(
-    private _fb: FormBuilder, 
+    private _fb: FormBuilder,
     public dateParser: NgbDateParserFormatter,
     private dataFormService: DataFormService,
     private _syntheseDataService: SyntheseDataService
   ) {
- 
+
     this.form = this._fb.group({
       'selector': 'ds',
       'uuid': null,
@@ -48,7 +48,7 @@ export class MetadataService {
       'organism': null,
       'person': null
     })
- 
+
     this.getMetadata();
 
     // rapid search event
@@ -78,7 +78,7 @@ export class MetadataService {
       //filtre des éléments selon le texte, retourne les AF filtrés
       map(([term, afs]: [string, any[]]): any[] => term === '' ? afs : this._filterAcquisitionFrameworks(term))
     );
- 
+
     //retour à la premiere page du tableau pour voir les résultats du filtre rapide
     this.rapidSearchControl.valueChanges
       .pipe(
@@ -87,16 +87,16 @@ export class MetadataService {
       )
       .subscribe(() => this.pageIndex.next(0));
   }
- 
+
   //recuperation cadres d'acquisition
-  
+
   getMetadata(params={}) {
     params['datasets'] = 1;
     params['creator'] = 1;
     params['actors'] = 1;
     this.isLoading = true;
     this._acquisitionFrameworks.next([]);
- 
+
     //forkJoin pour lancer les 2 requetes simultanément
     forkJoin({
       afs: this.dataFormService.getAcquisitionFrameworksList(params),
@@ -119,15 +119,15 @@ export class MetadataService {
         err => this.isLoading = false
       );
   }
- 
+
     /**
    *  Filtre les éléments CA et JDD selon la valeur de la barre de recherche
    **/
   private _filterAcquisitionFrameworks(filterValue) {
     return this.acquisitionFrameworks.filter(af => {
- 
+
       //recherche des cadres d'acquisition qui matchent
-      if ( 
+      if (
         af.id_acquisition_framework == filterValue
         || this._removeAccentAndLower(af.unique_acquisition_framework_id) == filterValue
         || this._removeAccentAndLower(af.acquisition_framework_name).includes(filterValue)
@@ -150,18 +150,18 @@ export class MetadataService {
       return false;
     });
   }
- 
+
   private setDsObservationCount(datasets, dsNbObs) {
     datasets.forEach(ds=> {
       let idx = dsNbObs.findIndex(e => e.id_dataset == ds.id_dataset)
       ds.observation_count = (idx > -1 ? dsNbObs[idx]['count'] : 0);
     })
   }
- 
+
   private _removeAccentAndLower(value): string {
     return ((String(value).toLocaleLowerCase()).trim()).normalize("NFD").replace(/[\u0300-\u036f]/g, "")
   }
- 
+
   formatFormValue(formValue) {
     const formatedForm = {}
     Object.keys(formValue).forEach(key => {
@@ -173,11 +173,11 @@ export class MetadataService {
     })
     return formatedForm;
   }
- 
+
   resetForm() {
     this.form.reset();
     this.form.patchValue({ 'selector': 'ds' });
     this.expandAccordions = false;
   }
- 
+
 }

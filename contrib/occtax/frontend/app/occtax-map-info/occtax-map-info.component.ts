@@ -159,14 +159,11 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
                   "OCCTAX_OCCURENCE": this.occurrenceAddFields,
                   "OCCTAX_DENOMBREMENT": this.countingAddFields,
                 }
-                if(field.type_widget != "html") {
-                  field.objects.forEach(object => {                  
-                    if (object.code_object in map) {
-                      map[object.code_object].push(field);
-                    }
-                  });
-                }
-                
+                field.objects.forEach(object => {
+                  if (object.code_object in map) {
+                    map[object.code_object].push(field);
+                  }
+                });
 
               });
             })

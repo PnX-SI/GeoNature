@@ -40,7 +40,7 @@ export class SyntheseFormService {
     this.searchForm.setValidators([this.periodValidator()]);
 
     AppConfig.SYNTHESE.AREA_FILTERS.forEach(area => {
-      const control_name = 'area_' + area.type_code;
+      const control_name = 'area_' + area.id_type;
       this.searchForm.addControl(control_name, new FormControl(new Array()));
       const control = this.searchForm.controls[control_name];
       area['control'] = control;
@@ -68,7 +68,7 @@ export class SyntheseFormService {
     // before build url query string
     const params = Object.assign({}, this.searchForm.value);
     const updatedParams = {};
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (let key in params) {
       if ((key === 'date_min' && params.date_min) || (key === 'date_max' && params.date_max)) {
         updatedParams[key] = this._dateParser.format(params[key]);

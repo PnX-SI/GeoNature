@@ -3,8 +3,8 @@ import { Map } from 'leaflet';
 import { MapService } from '../map.service';
 import * as L from 'leaflet';
 import { Observable } from 'rxjs';
-import { Subject } from 'rxjs/Subject';
-import { GeoJSON } from 'togeojson';
+import { Subject } from 'rxjs';
+import { GeoJSON } from '@tmcw/togeojson';
 
 /**
  *         Affiche sur la carte les geojson passé en *input*
@@ -36,7 +36,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
   /** Observable pour retourner les données geojson passées au composant */
   public currentGeoJson$: Observable<L.GeoJSON> = this.geojsonCharged.asObservable();
 
-  constructor(public mapservice: MapService) { }
+  constructor(public mapservice: MapService) {}
 
   ngOnInit() {
     this.map = this.mapservice.map;
@@ -52,11 +52,12 @@ export class GeojsonComponent implements OnInit, OnChanges {
         return;
       }
 
-      const bounds = curLayerGroup.getBounds();
+      let bounds = curLayerGroup.getBounds();
       if (!Object.keys(bounds).length) {
         return;
-      }      
-      map.fitBounds(bounds);
+      }
+
+      map.fitBounds(curLayerGroup.getBounds());
     }, 200);
   }
 
@@ -71,7 +72,6 @@ export class GeojsonComponent implements OnInit, OnChanges {
     this.mapservice.layerGroup = new L.FeatureGroup();
     this.mapservice.map.addLayer(this.mapservice.layerGroup);
     this.mapservice.layerGroup.addLayer(this.currentGeojson);
-
     if (zoom) {
       this.zoom(this.mapservice.layerGroup);
     }

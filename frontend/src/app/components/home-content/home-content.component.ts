@@ -10,6 +10,7 @@ import { SideNavService } from '../sidenav-items/sidenav-service';
 import { GlobalSubService } from '../../services/global-sub.service';
 import { ModuleService } from '../../services/module.service';
 import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'pnx-home-content',
@@ -81,18 +82,19 @@ export class HomeContentComponent implements OnInit {
 
     if (needToRefreshStats) {
       // Get general stats from Server
+      console.log(this._syntheseApi.getSyntheseGeneralStat());
       this._syntheseApi
         .getSyntheseGeneralStat()
-        .map(stat => {
-          // tslint:disable-next-line:forin
-          for (const key in stat) {
-            // Pretty the number with spaces
-            if (stat[key]) {
-              stat[key] = stat[key].toLocaleString('fr-FR');
-            }
-          }
-          return stat;
-        })
+        // .map(stat => {
+        //   // eslint-disable-next-line guard-for-in
+        //   for (const key in stat) {
+        //     // Pretty the number with spaces
+        //     if (stat[key]) {
+        //       stat[key] = stat[key].toLocaleString('fr-FR');
+        //     }
+        //   }
+        //   return stat;
+        // })
         .subscribe(stats => {
           stats['createdDate'] = new Date().toUTCString();
           localStorage.setItem('homePage.stats', JSON.stringify(stats));
@@ -105,7 +107,7 @@ export class HomeContentComponent implements OnInit {
     this.locale = this.translateService.currentLang;
     // don't forget to unsubscribe!
     this.translateService.onLangChange
-      .takeUntil(this.destroy$)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((langChangeEvent: LangChangeEvent) => {
         this.locale = langChangeEvent.lang;
       });

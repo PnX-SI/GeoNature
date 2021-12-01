@@ -10,7 +10,7 @@ import {
 import { GeoJSON } from 'leaflet';
 import { AppConfig } from '@geonature_config/app.config';
 import { isArray } from 'util';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 import { Observable } from 'rxjs';
 
@@ -149,7 +149,7 @@ export class SyntheseDataService {
 
   downloadUuidReport(filename: string, args: { [key: string]: string }) {
     let queryString: HttpParams = new HttpParams();
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (const key in args) {
       queryString = queryString.set(key, args[key].toString());
     }
@@ -165,7 +165,7 @@ export class SyntheseDataService {
 
   downloadSensiReport(filename: string, args: { [key: string]: string }) {
     let queryString: HttpParams = new HttpParams();
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (const key in args) {
       queryString = queryString.set(key, args[key].toString());
     }

@@ -1,12 +1,10 @@
 import {
   Component,
   OnInit,
-  OnDestroy,
   HostListener,
   AfterViewInit,
 } from "@angular/core";
-import { Subscription } from "rxjs"
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { Router, NavigationEnd } from "@angular/router";
 import { CommonService } from "@geonature_common/service/common.service"
 import { ModuleConfig } from "../module.config";
@@ -18,8 +16,8 @@ import { OcctaxFormReleveService } from "./releve/releve.service";
 import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
-import { OcctaxFormCountingsService } from "./counting/countings.service";
-import { OcctaxFormMapService } from "./map/occtax-map.service";
+import { OcctaxFormCountingService } from "./counting/counting.service";
+import { OcctaxFormMapService } from "./map/map.service";
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
 import { filter } from "rxjs/operators";
 
@@ -33,15 +31,14 @@ import { filter } from "rxjs/operators";
     OcctaxFormReleveService,
     OcctaxFormOccurrenceService,
     OcctaxTaxaListService,
-    OcctaxFormCountingsService,
+    OcctaxFormCountingService,
     OcctaxFormMapService,
   ],
 })
-export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
+export class OcctaxFormComponent implements OnInit, AfterViewInit {
   public occtaxConfig = ModuleConfig;
   public id;
   public disableCancel = false;
-  public urlSub: Subscription ;
   releveUrl: string = null;
   cardHeight: number;
   cardContentHeight: any;
@@ -52,9 +49,9 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     public occtaxFormService: OcctaxFormService,
     private _mapService: MapService,
     public occtaxFormParamService: OcctaxFormParamService,
-    private occtaxFormReleveService: OcctaxFormReleveService,
-    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
-    private occtaxTaxaListService: OcctaxTaxaListService,
+    public occtaxFormReleveService: OcctaxFormReleveService,
+    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    public occtaxTaxaListService: OcctaxTaxaListService,
     private _ds: OcctaxDataService,
     private _commonService: CommonService,
     private _modalService: NgbModal
@@ -68,10 +65,10 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.setCurrentTabAndIdReleve(this._router.routerState.snapshot.url);
     // set id_releve and tab on tab navigation
     // when come from map list both are trigger. Manage by distinctUntilChanged on getOcctaxData
-    this.urlSub = this._router.events
+    this._router.events
     .pipe(
       filter(event => event instanceof NavigationEnd),
-    ).subscribe((event:any) => {       
+    ).subscribe((event:any) => {      
       this.setCurrentTabAndIdReleve(event.url);
     })
   }
@@ -92,7 +89,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
       this.occtaxFormService.currentTab = <"releve" | "taxons">urlSegments.pop();
     } else {
       this.occtaxFormService.currentTab = "releve";
-      const idReleve = urlSegments[urlSegments.length - 1];            
+      const idReleve = urlSegments[urlSegments.length - 1];      
       if (idReleve && Number.isInteger(Number(idReleve)))  {
         this.occtaxFormService.disabled = false;
         this.occtaxFormService.id_releve_occtax.next(idReleve)
@@ -221,10 +218,4 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
         .subscribe((d) => { });
     }
   }
-
-  ngOnDestroy() {
-    this.urlSub.unsubscribe();
-  }
-
-  
 }

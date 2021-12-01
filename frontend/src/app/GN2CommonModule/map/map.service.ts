@@ -8,7 +8,7 @@ import 'leaflet.markercluster';
 import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../service/common.service';
 import { Feature } from 'geojson';
-
+import {CustomIcon} from  '@geonature/utils/leaflet-icon'
 @Injectable()
 export class MapService {
   public map: Map;
@@ -28,6 +28,10 @@ export class MapService {
   private _isEditingMarker = new Subject<boolean>();
   public isMarkerEditing$: Observable<any> = this._isEditingMarker.asObservable();
   public layerGroup: any;
+  // boolean to control if gettingGeojsonCoord$ observable is fire
+  // this observable must be fired only after a map event
+  // not from data sended by API (to avoid recalculate altitude for exemple)
+  public firstLayerFromMap = true;
   public layerControl: L.Control.Layers;
   // Leaflet reference for external module
   public L = L;
@@ -70,7 +74,9 @@ export class MapService {
   }
 
   setGeojsonCoord(geojsonCoord) {
+    if (!this.firstLayerFromMap) {
       this._geojsonCoord.next(geojsonCoord);
+    }
   }
 
   zoomOnMarker(coordinates, zoomLevel = 15) {
@@ -141,7 +147,7 @@ export class MapService {
   createMarker(x, y, isDraggable) {
     return L.marker([y, x], {
       icon: L.icon({
-        iconUrl: require<any>('../../../../node_modules/leaflet/dist/images/marker-icon.png'),
+        iconUrl: CustomIcon.iconUrl,
         iconSize: [24, 36],
         iconAnchor: [12, 36]
       }),

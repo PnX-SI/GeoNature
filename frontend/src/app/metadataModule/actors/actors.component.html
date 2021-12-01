@@ -1,6 +1,6 @@
 <div >
   <mat-button-toggle-group
-    [(value)] = "toggleButtonValue"
+    [value] = "toggleButtonValue"
     #group="matButtonToggleGroup"
     appearance="legacy"
   >
@@ -40,81 +40,58 @@
   <form [formGroup]="actorForm">
     <ng-container *ngIf="!isMainContact">
       <small> Type de role </small>
-      <ng-select 
-        class="auto"
-        [items]="role_types"
-        bindLabel="label_default"
-        bindValue="id_nomenclature"
-        placeholder="Type de role"
-        [multiple]="false"
-        [clearable]="false"
-        formControlName="id_nomenclature_actor_role"
-      >
-        <ng-template 
-          ng-option-tmp 
-          let-item="item" 
-          let-index="index" 
-          let-search="searchTerm"
+      <div>
+        <select
+          class="form-control form-control-sm"
+          formControlName="id_nomenclature_actor_role"
         >
-          <div [matTooltip]="item.label_default">
-            <span class="pre-wrap">{{item.label_default}}</span>
-          </div>
-        </ng-template>
-      </ng-select>
+          <option [ngValue]="null"></option>
+          <option
+            *ngFor="let role_type of role_types"
+            [ngValue]="role_type.id_nomenclature"
+          >
+            {{ role_type.definition_default }}
+          </option>
+        </select>
+      </div>
     </ng-container>
 
     <!-- Organismes -->
     <ng-container *ngIf="group.value == 'organism' || group.value == 'all'">
       <small> Organisme </small>
-      <ng-select 
-        class="auto"
-        [items]="organisms"
-        bindLabel="nom_organisme"
-        bindValue="id_organisme"
-        placeholder="Organisme"
-        [multiple]="false"
-        [clearable]="false"
-        [virtualScroll]="true"
-        formControlName="id_organism"
-      >
-        <ng-template 
-          ng-option-tmp 
-          let-item="item" 
-          let-index="index" 
-          let-search="searchTerm"
+      <div>
+        <select
+          class="form-control form-control-sm"
+          formControlName="id_organism"
         >
-          <div [matTooltip]="item.nom_organisme">
-            <span class="pre-wrap">{{item.nom_organisme}}</span>
-          </div>
-        </ng-template>
-      </ng-select>
+          <option [ngValue]="null"></option>
+          <option
+            *ngFor="let org of organisms"
+            [ngValue]="org.id_organisme"
+          >
+            {{org.nom_organisme}}
+          </option>
+        </select>
+      </div>
     </ng-container>
 
     <!-- Personnes -->
     <ng-container *ngIf="group.value == 'person' || group.value == 'all'">
       <small> Personne </small>
-      <ng-select 
-        class="auto"
-        [items]="roles"
-        bindLabel="nom_complet"
-        bindValue="id_role"
-        placeholder="Personne"
-        [multiple]="false"
-        [clearable]="false"
-        [virtualScroll]="true"
-        formControlName="id_organism"
-      >
-        <ng-template 
-          ng-option-tmp 
-          let-item="item" 
-          let-index="index" 
-          let-search="searchTerm"
+      <div>
+        <select
+          class="form-control form-control-sm"
+          formControlName="id_role"
         >
-          <div [matTooltip]="item.nom_complet">
-            <span class="pre-wrap">{{item.nom_complet}}</span>
-          </div>
-        </ng-template>
-      </ng-select>
+          <option [ngValue]="null"></option>
+          <option
+            *ngFor="let role of roles"
+            [ngValue]="role.id_role"
+          >
+            {{ role.nom_complet }}
+          </option>
+        </select>
+      </div>
     </ng-container>
 
   </form>

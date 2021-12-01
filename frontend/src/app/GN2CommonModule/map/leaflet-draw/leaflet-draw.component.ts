@@ -5,18 +5,15 @@ import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../../service/common.service';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
-import { GeoJSON } from 'togeojson';
+import { GeoJSON } from '@tmcw/togeojson';
+import {CustomIcon} from '@geonature/utils/leaflet-icon';
 
 import 'leaflet-draw';
 import * as L from 'leaflet';
 
 delete L.Icon.Default.prototype['_getIconUrl'];
 
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
-});
+L.Icon.Default.mergeOptions(CustomIcon);
 
 /**
  * Ce composant permet d'activer le `plugin leaflet-draw <https://github.com/Leaflet/Leaflet.draw>`_
@@ -112,6 +109,9 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this.currentLayerType = (e as any).layerType;
         this.mapservice.leafletDrawFeatureGroup.addLayer(this._currentDraw);
         const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
+        // set firLayerFromMap = false because we just draw a layer
+        // the boolean change MUST be before the output fire (emit)
+        this.mapservice.firstLayerFromMap = false;
         this.mapservice.setGeojsonCoord(geojson);
         this.layerDrawed.emit(geojson);
       }
@@ -120,6 +120,9 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     // on draw edited
     this.mapservice.map.on(this._Le.Draw.Event.EDITED, e => {
       const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
+      // set firLayerFromMap = false because we just edit a layer
+      // the boolean change MUST be before the output fire (emit)
+      this.mapservice.firstLayerFromMap = false;
       this.mapservice.setGeojsonCoord(geojson);
       this.layerDrawed.emit(geojson);
 
@@ -152,8 +155,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   }
 
   loadDrawfromGeoJson(geojson) {
-    // load leaflet draw from an existing geojson
-    // no refire events
     let layer;
     if (geojson.type === 'LineString' || geojson.type === 'MultiLineString') {
       const latLng = L.GeoJSON.coordsToLatLngs(
@@ -195,6 +196,10 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     }
     // disable point event on the map
     this.mapservice.setEditingMarker(false);
+    // send observable
+    let new_geojson = this.mapservice.leafletDrawFeatureGroup.toGeoJSON();
+    new_geojson = (new_geojson as any).features[0];
+    this.mapservice.setGeojsonCoord(new_geojson);
   }
 
   // cache le draw control

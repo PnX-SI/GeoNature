@@ -11,7 +11,8 @@
         keyValue="id_nomenclature"
         [label]="label"
         debounceTime="500"
-        [disabled]="disabled"
+        [searchBar]="searchBar"
+        [disabled]="false"
         [displayAll]="displayAll"
         [bindAllItem]="bindAllItem"
       >
@@ -20,107 +21,35 @@
 
     <div
       id="modif"
+      [formGroup]="formService.searchForm"
       class="form-check"
     >
       <input
         id="modif_checkbox"
         class="form-check-input"
         value="true"
-        [formControl]="formService.searchForm.get('modif_since_validation')"
+        formControlName="modif_since_validation"
         type="checkbox"
         checked
       />
       <label
         for="modif_checkbox"
         class="form-check-label"
-      >
-        <small>Données modifiées depuis la dernière validation</small>
-      </label>
+      > <small>Données modifiées depuis la dernière validation</small> </label>
     </div>
-    <button
-      *ngIf="AppConfig.FRONTEND.ENABLE_PROFILES"
-      class="btn btn-sm btn-outline-shadow profile float-right"
-      data-toggle="collapse"
-      data-target="#collapseScore"
-      matTooltip="Filtrer selon le profil du taxon"
-    >
-      <i
-        class="fa fa-cog"
-        aria-hidden="true"
-      ></i>
-    </button>
-    <div class="advanded-score collapse" id="collapseScore">
-      <small> Score</small>
-        <div class="input-group">
-          <select
-            class="form-control form-control-sm"
-            [formControl]="formService.searchForm.get('score')"
-            name="score"
-          >
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
-        </div>
-        <small> Localisation valide
-          <mat-icon class="small-icon" matTooltip="La localisation est-elle dans l'aire de répartition connue du taxon ?" >info</mat-icon>
-        </small>
-        <div class="input-group">
-          <select
-            class="form-control form-control-sm"
-            [formControl]="formService.searchForm.get('valid_distribution')"
-            name="score"
-          >
-          <option [ngValue]="null"> -- aucun filtre --</option>
-          <option [ngValue]="true">Valide</option>
-          <option [ngValue]="false">Invalide</option>
-          </select>
-        </div>
-        <small> Altitude valide
-          <mat-icon class="small-icon" matTooltip="L'altitude de l'observation est-elle dans la plage d'altitude connue du taxon ?" >info</mat-icon>
-        </small>
-        <div class="input-group">
-          <select
-            class="form-control form-control-sm"
-            [formControl]="formService.searchForm.get('valid_altitude')"
-            name="score"
-          >
-            <option [ngValue]="null"> -- aucun filtre --</option>
-            <option [ngValue]="true">Valide</option>
-            <option [ngValue]="false">Invalide</option>
-          </select>
-        </div>
-        <small> Phénologie valide
-          <mat-icon class="small-icon" matTooltip="La date et l'altitude de l'observation sont-elle conforme à la phénologie connue du taxon ?" >info</mat-icon>
-        </small>
-        <div class="input-group">
-          <select
-            class="form-control form-control-sm"
-            [formControl]="formService.searchForm.get('valid_phenology')"
-            name="score"
-          >
-            <option [ngValue]="null"> -- aucun filtre --</option>
-            <option [ngValue]="true">Valide</option>
-            <option [ngValue]="false">Invalide</option>
-          </select>
-        </div>
-    </div>
-  </fieldset>
 
+  </fieldset>
   <fieldset>
     <legend> Quoi ?</legend>
-
     <pnx-taxonomy
       label="{{'Taxon.Taxon' | translate }} "
       [parentFormControl]="formService.searchForm.controls.cd_nom"
       [charNumber]="3"
       [listLength]="AppConfig.SYNTHESE.TAXON_RESULT_NUMBER"
       [apiEndPoint]="taxonApiEndPoint"
-      (onChange)="formService.getCurrentTaxon($event)"
+      (onChange)=formService.getCurrentTaxon($event)
     >
     </pnx-taxonomy>
-
     <div
       class="alert alert-warning taxon-alert"
       *ngIf="formService.selectedtaxonFromComponent.length > 0"
@@ -128,22 +57,20 @@
       <p class="taxon-list">
         <b> Taxon(s) recherché(s):</b>
       </p>
-      <ul class="taxon-list">
-        <li
-          *ngFor="let taxon of formService.selectedtaxonFromComponent; let i = index"
-          class="d-flex justify-content-between align-items-center"
-        >
-          {{taxon.nom_valide}}
-          <i
-            (click)="formService.removeTaxon(i, formService.selectedtaxonFromComponent)"
-            class="fa fa-times clickable"
-            matTooltip="Retirer « {{taxon.nom_valide}} » des filtres de recherche"
-          ></i>
-        </li>
-      </ul>
+      <li
+        class="taxon-list"
+        *ngFor="let taxon of formService.selectedtaxonFromComponent; let i = index"
+      >
+        {{taxon.nom_valide}}
+        <i
+          (click)="formService.removeTaxon(i, formService.selectedtaxonFromComponent)"
+          class="fa fa-times clickable"
+        ></i>
+      </li>
+
     </div>
     <button
-      (click)="openModal($event, advancedTaxon)"
+      (click)="openModal()"
       class="btn btn-xs btn-outline-secondary advanced"
     > Avancé
     </button>
@@ -211,6 +138,7 @@
         </li>
       </ul>
     </span>
+
   </fieldset>
 
   <fieldset>
@@ -245,7 +173,7 @@
       ></i>
     </button>
     <div
-      class="collapse"
+      class="collapse "
       id="collapsePeriod"
     >
       <div class="row row-sm">
@@ -281,10 +209,12 @@
 
     <div *ngIf="formService.formBuilded">
       <div *ngFor="let area of areaFilters; let i = index;">
+        {{areas}}
         <pnx-areas
+          [searchBar]="true"
           [parentFormControl]="area.control"
           [label]="area.label"
-          [typeCodes]="area.type_code_array"
+          [idTypes]="area.id_type_array"
         >
         </pnx-areas>
       </div>
@@ -299,7 +229,6 @@
 
     <ng-container *ngIf="AppConfig.SYNTHESE.SEARCH_OBSERVER_WITH_LIST; else observersTxtBlock">
       <pnx-observers
-        [multiSelect]="true"
         [parentFormControl]="formService.searchForm.get('observers_list')"
         [idMenu]="AppConfig.SYNTHESE.ID_SEARCH_OBSERVER_LIST"
         [label]="'Releve.Observers' | translate"
@@ -316,6 +245,7 @@
       </pnx-observers-text>
     </ng-template>
 
+
     <pnx-multiselect
       [values]="organisms"
       [parentFormControl]="formService.searchForm.controls.id_organism"
@@ -323,7 +253,8 @@
       keyValue="id_organisme"
       [label]="'Form.Organism' | translate"
       debounceTime="500"
-      [disabled]="disabled"
+      [searchBar]="false"
+      [disabled]="false"
     >
     </pnx-multiselect>
 
@@ -336,6 +267,7 @@
     <pnx-acquisition-frameworks
       [multiSelect]='true'
       [displayAll]="true"
+      [searchBar]="true"
       [parentFormControl]="formService.searchForm.controls.id_acquisition_framework"
       label="{{ 'MetaData.AcquisitionFramework' | translate}}"
     >
@@ -347,6 +279,7 @@
       [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_framework.value"
       [multiSelect]='true'
       [displayAll]="true"
+      [searchBar]="true"
       [parentFormControl]="formService.searchForm.controls.id_dataset"
       label="{{ 'MetaData.Datasets' | translate}}"
     >

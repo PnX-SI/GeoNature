@@ -62,13 +62,10 @@ export class MapComponent implements OnInit {
   @Input() zoom: number = AppConfig.MAPCONFIG.ZOOM_LEVEL;
   /** Hauteur de la carte (obligatoire) */
   @Input() height: string;
-
-  /*@Input() mapContainer: string = 'map';*/
-
   /** Activer la barre de recherche */
   @Input() searchBar: boolean = true;
 
-  @ViewChild('mapDiv') mapContainer;
+  @ViewChild('mapDiv', { static: true }) mapContainer;
   searchLocation: string;
   public searching = false;
   public searchFailed = false;
@@ -177,7 +174,7 @@ export class MapComponent implements OnInit {
   }
 
   /** Retrocompatibility hack to format map config to the expected format:
-   * 
+   *
    {
     name: string,
     url: string,
@@ -191,7 +188,7 @@ export class MapComponent implements OnInit {
   }
    */
   formatBaseMapConfig(baseMap) {
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (let attr in baseMap) {
       if (attr === 'layer') {
         baseMap['url'] = baseMap[attr];

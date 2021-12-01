@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, ComponentRef } from "@angular/core";
 import {
   animate,
   state,
@@ -13,12 +13,11 @@ import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
 import { AppConfig } from "@geonature_config/app.config";
 import { OcctaxFormOccurrenceService } from "./occurrence.service";
-import { OcctaxFormCountingsService } from "../counting/countings.service";
 import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { FormService } from "@geonature_common/form/form.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 
 
 @Component({
@@ -52,25 +51,24 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public occurrenceForm: FormGroup;
   public taxonForm: FormControl; //control permettant de rechercher un taxon TAXREF
   public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required
-  private advanced: string = "collapsed";
+  public advanced: string = "collapsed";
+  public countingStep: number = 0;
   private _subscriptions: Subscription[] = [];
   public displayProofFromElements: boolean = false;
-
-  get taxref(): any { return this.occtaxFormOccurrenceService.taxref.getValue(); };
-  get additionalFieldsForm(): any[] { return this.occtaxFormOccurrenceService.additionalFieldsForm; }
+  public data : any;
+  public componentRefOccurence: ComponentRef<any>;
 
   constructor(
     public fs: OcctaxFormService,
-    private occtaxFormCountingsService: OcctaxFormCountingsService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     private _coreFormService: FormService,
     private _occtaxTaxaListService: OcctaxTaxaListService,
-    public dialog: MatDialog,
+    public dialog: MatDialog
   ) { }
 
-
-  ngOnInit() {    
+  ngOnInit() {
     this.occurrenceForm = this.occtaxFormOccurrenceService.form;
+
     //gestion de l'affichage des preuves d'existence selon si Preuve = 'Oui' ou non.
     this._subscriptions.push(
       this.occurrenceForm
@@ -209,8 +207,9 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     );
   }
 
-  get countings() {
-    return this.occtaxFormCountingsService.countings || [];
+  get countingControls() {
+    return (this.occurrenceForm.get("cor_counting_occtax") as FormArray)
+      .controls;
   }
 
   submitOccurrenceForm() {
@@ -220,6 +219,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
     }
   }
 
+
   resetOccurrenceForm() {
     this.occtaxFormOccurrenceService.reset();
   }
@@ -227,19 +227,20 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.resetOccurrenceForm();
     this._subscriptions.forEach(s => { s.unsubscribe(); });
-
   }
 
   addCounting() {    
-    this.occtaxFormCountingsService.countings.push({});
+    this.occtaxFormOccurrenceService.addCountingForm(true); //patchwithdefaultvalue
   }
 
   removeCounting(index) {
-    this.occtaxFormCountingsService.countings.splice(index, 1);
+    (this.occurrenceForm.get("cor_counting_occtax") as FormArray).removeAt(
+      index
+    );
   }
 
   /** A la selection d'un taxon, focus sur le bouton ajouter */
-  selectAddOcc(event) {
+  selectAddOcc() {
     setTimeout(() => {
       document.getElementById("add-occ").focus();
     }, 50);
@@ -248,4 +249,5 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   collapse() {
     this.advanced = this.advanced === "collapsed" ? "expanded" : "collapsed";
   }
+
 }

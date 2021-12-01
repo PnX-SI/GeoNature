@@ -69,7 +69,7 @@
             >
               <option [ngValue]="null"></option>
               <option
-                *ngFor="let ac of acquisitionFrameworks"
+                *ngFor="let ac of metadataS.acquisitionFrameworks"
                 [ngValue]="ac.id_acquisition_framework"
               >
                 {{ac.acquisition_framework_name}}
@@ -83,7 +83,6 @@
             [parentFormControl]="form.get('cor_territories')"
             codeNomenclatureType="TERRITOIRE"
             [bindAllItem]="true"
-            [keyValue]="null"
           >
           </pnx-nomenclature>
 
@@ -110,7 +109,6 @@
             [parentFormControl]="form.get('cor_objectifs')"
             codeNomenclatureType="CA_OBJECTIFS"
             [bindAllItem]="true"
-            [keyValue]="null"
           >
           </pnx-nomenclature>
 
@@ -120,7 +118,6 @@
             [parentFormControl]="form.get('cor_volets_sinp')"
             codeNomenclatureType="VOLET_SINP"
             [bindAllItem]="true"
-            [keyValue]="null"
           >
           </pnx-nomenclature>
 
@@ -180,7 +177,7 @@
           <div>
             <h6>Référence(s) bibliographique(s)</h6>
 
-            <ng-container *ngFor="let bibliograpicReferenceForm of form.get('bibliographical_references').controls; let idx = index; let last = last">
+            <ng-container *ngFor="let bibliograpicReferenceForm of form.get('bibliographical_references')['controls']; let idx = index; let last = last">
               <div class="row">
                 <div class="col-1">
                   <button
@@ -221,7 +218,7 @@
               <mat-divider style="margin-top:10px;" *ngIf="!last"></mat-divider>
             </ng-container>
             <div>
-              <ng-container *ngIf="!form.get('bibliographical_references').controls.length; else roundButton">
+              <ng-container *ngIf="!form.get('bibliographical_references')['controls'] .length; else roundButton">
                 <button
                   type="button"
                   mat-raised-button
@@ -284,7 +281,7 @@
           <h3 class="main-color"> Autre(s) acteur(s) </h3>
         </div>
         <div class="card-body">
-          <ng-container *ngFor="let actorForm of afFormS.actors.controls; let idx = index"> 
+          <ng-container *ngFor="let actorForm of afFormS.actors.controls; let idx = index">
 
           <pnx-metadata-actor
             *ngIf="!afFormS.isMainContact(actorForm)"
