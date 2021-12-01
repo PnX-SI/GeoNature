@@ -2,7 +2,7 @@ from flask import Blueprint, request, current_app
 from flask.json import jsonify
 from sqlalchemy.sql import text
 
-from geonature.utils.env import DB
+from geonature.utils.env import db
 from utils_flask_sqla.response import json_resp
 from geonature.core.ref_geo.models import BibAreasTypes, LiMunicipalities, LAreas
 
@@ -23,7 +23,7 @@ def getGeoInfo():
         """SELECT (ref_geo.fct_get_area_intersection(
         st_setsrid(ST_GeomFromGeoJSON(:geom),4326), :id_type)).*"""
     )
-    result = DB.engine.execute(
+    result = db.session.execute(
         sql, geom=str(data["geometry"]), id_type=data.get("id_type", None),
     )
 
@@ -38,7 +38,7 @@ def getGeoInfo():
         st_setsrid(ST_GeomFromGeoJSON(:geom),4326))).*
         """
     )
-    result = DB.engine.execute(sql, geom=str(data["geometry"]))
+    result = db.session.execute(sql, geom=str(data["geometry"]))
     alt = {}
     for row in result:
         alt = {"altitude_min": row[0], "altitude_max": row[1]}
@@ -61,7 +61,7 @@ def getAltitude():
         st_setsrid(ST_GeomFromGeoJSON(:geom),4326))).*
         """
     )
-    result = DB.engine.execute(sql, geom=str(data["geometry"]))
+    result = db.session.execute(sql, geom=str(data["geometry"]))
     alt = {}
     for row in result:
         alt = {"altitude_min": row[0], "altitude_max": row[1]}
@@ -89,7 +89,7 @@ def getAreasIntersection():
         st_setsrid(ST_GeomFromGeoJSON(:geom),4326),:type)).*"""
     )
 
-    result = DB.engine.execute(sql, geom=str(data["geometry"]), type=id_type)
+    result = db.session.execute(sql, geom=str(data["geometry"]), type=id_type)
 
     areas = []
     for row in result:
@@ -99,7 +99,7 @@ def getAreasIntersection():
 
     bibtypesliste = [a["id_type"] for a in areas]
     bibareatype = (
-        DB.session.query(BibAreasTypes).filter(BibAreasTypes.id_type.in_(bibtypesliste)).all()
+        db.session.query(BibAreasTypes).filter(BibAreasTypes.id_type.in_(bibtypesliste)).all()
     )
     data = {}
     for b in bibareatype:
@@ -118,7 +118,7 @@ def get_municipalities():
     """
     parameters = request.args
 
-    q = DB.session.query(LiMunicipalities).order_by(LiMunicipalities.nom_com.asc())
+    q = db.session.query(LiMunicipalities).order_by(LiMunicipalities.nom_com.asc())
 
     if "nom_com" in parameters:
         q = q.filter(LiMunicipalities.nom_com.ilike("{}%".format(parameters.get("nom_com"))))
@@ -137,7 +137,7 @@ def get_areas():
     # change all args in a list of value
     params = {key: request.args.getlist(key) for key, value in request.args.items()}
 
-    q = DB.session.query(LAreas).order_by(LAreas.area_name.asc())
+    q = db.session.query(LAreas).order_by(LAreas.area_name.asc())
 
     if "enable" in params:
         enable_param = params["enable"][0].lower()
@@ -196,7 +196,7 @@ def get_area_size():
     """
     )
 
-    result = DB.engine.execute(
+    result = db.session.execute(
         query, geojson=str(geojson["geometry"]), local_srid=current_app.config["LOCAL_SRID"],
     )
     area = None
