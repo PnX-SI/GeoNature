@@ -18,7 +18,7 @@ export class SideNavService {
     this.opened = false;
   }
 
-  setSideNav(sidenav) {
+  setSideNav(sidenav: MatSidenav) {
     this.sidenav = sidenav;
   }
 

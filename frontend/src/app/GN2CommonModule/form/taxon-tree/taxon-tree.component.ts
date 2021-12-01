@@ -1,15 +1,5 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
-  AfterContentInit,
-  ViewChild
-} from '@angular/core';
-import { TreeModel } from 'angular-tree-component';
-import { TreeNode, TreeComponent, IActionMapping } from 'angular-tree-component';
-
+import { AfterContentInit, Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { IActionMapping, TreeComponent, TreeModel, TreeNode } from '@circlon/angular-tree-component';
 /** Generic component for display taxon tree. Not use yet */
 @Component({
   selector: 'pnx-tree',
@@ -26,7 +16,7 @@ export class TaxonTreeComponent implements OnInit, AfterContentInit {
   @Input() treeOptions;
   @Output() onReset = new EventEmitter<any>();
   @Output() onEvent = new EventEmitter<any>();
-  @ViewChild('tree') treeComponent: TreeComponent;
+  @ViewChild('tree', { static: false }) treeComponent: TreeComponent;
 
   constructor() {
     const actionMapping: IActionMapping = {

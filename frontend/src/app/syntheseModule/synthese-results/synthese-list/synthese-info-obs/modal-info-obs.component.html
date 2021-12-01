@@ -2,13 +2,13 @@
 </div>
 
 <div class="modal-header padding-md-all">
-  <h5 style="padding-top:10px; padding-right:10px">
-    {{ selectedObsTaxonDetail?.nom_vern }} - {{ selectedObsTaxonDetail?.nom_valide }}
-  </h5>
-  <a target="_blank " href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }} ">
-    <button class="btn btn-outline-dark"> Voir la fiche INPN du taxon </button>
-  </a>
-  <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+    <h5 style="padding-top:10px; padding-right:10px">
+        {{ selectedObsTaxonDetail?.nom_vern }} - {{ selectedObsTaxonDetail?.nom_valide }}
+    </h5>
+    <a target="_blank " href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }} ">
+      <button class="btn btn-outline-dark"> Voir la fiche INPN du taxon </button>
+    </a>
+  <button  type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
     <span aria-hidden="true">&times;</span>
   </button>
 
@@ -42,16 +42,14 @@
             <br>
           </span>
           <span *ngIf="selectedObs?.depth_min || selectedObs?.depth_max">
-            <b> Profondeur min </b> : {{selectedObs?.depth_min}} m - <b> Profondeur max : </b>
-            {{selectedObs?.depth_max}} m
+            <b> Profondeur min </b> : {{selectedObs?.depth_min}} m -  <b> Profondeur max : </b> {{selectedObs?.depth_max}} m
             <br>
           </span>
           <b> UUID observation : </b> {{selectedObs?.unique_id_sinp}}
           <br>
           <b> Habitat associé</b>: {{selectedObs?.habitat?.lb_hab_fr}} - {{selectedObs?.habitat?.lb_code}}
           <br>
-          <button *ngIf="syntheseObs?.url_source" class="btn btn-sm btn-primary"
-            (click)="backToModule(syntheseObs?.url_source, syntheseObs?.entity_source_pk_value)">
+          <button *ngIf="syntheseObs?.url_source" class="btn btn-sm btn-primary" (click)="backToModule(syntheseObs?.url_source, syntheseObs?.entity_source_pk_value)">
             <i class="fa fa-file-text" aria-hidden="true"></i> <small>Voir l'observation dans le module de saisie
             </small>
           </button>
@@ -67,18 +65,15 @@
   </div>
 
   <ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item">
-      <a class="nav-link active" id="home-tab" data-toggle="tab" href="#infoObs" role="tab" aria-controls="home"
-        aria-selected="true">Information observation</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#area" role="tab" aria-controls="profile"
-        aria-selected="false">Zonages</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" id="profile-tab" data-toggle="tab" href="#historic" role="tab" aria-controls="profile"
-        aria-selected="false">Historique de validation</a>
-    </li>
+      <li class="nav-item">
+        <a class="nav-link active" id="home-tab" data-toggle="tab" href="#infoObs" role="tab" aria-controls="home" aria-selected="true">Information observation</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#area" role="tab" aria-controls="profile" aria-selected="false">Zonages</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="profile-tab" data-toggle="tab" href="#historic" role="tab" aria-controls="profile" aria-selected="false">Historique de validation</a>
+      </li>
   </ul>
     <div class="tab-content" id="myTabContent">
       <div class="tab-pane fade show active" id="infoObs" role="tabpanel" aria-labelledby="home-tab">
@@ -335,70 +330,69 @@
                 <param name="pluginspage" value="http://www.adobe.com/svg/viewer/install/">
               </object> -->
 
-        </div>
+              </div>
 
 
+            </div>
       </div>
-    </div>
-    <div class="tab-pane fade" id="historic" role="tabpanel" aria-labelledby="profile-tab">
+      <div class="tab-pane fade" id="historic" role="tabpanel" aria-labelledby="profile-tab">
 
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th class="table_date"> Date de validation </th>
-            <th class="table_status"> Statut </th>
-            <th class="table_comment"> Validateur </th>
-            <th class="table_comment"> Commentaire </th>
-          </tr>
-        </thead>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                  <th class="table_date"> Date de validation </th>
+                  <th class="table_status"> Statut </th>
+                  <th class="table_comment"> Validateur </th>
+                  <th class="table_comment"> Commentaire </th>
+                </tr>
+              </thead>
 
-        <tbody>
-          <tr *ngFor="let row of selectedObs?.validations">
-            <td> {{row.validation_date | date:'dd-MM-yyyy'}} </td>
-            <td> {{row.validation_label.label_default}} </td>
-            <td> <span *ngIf="row.validator_role; else elseBlock">
-                {{row.validator_role.prenom_role}} {{row.validator_role.nom_role}}
-              </span>
-              <ng-template #elseBlock> Validation automatique </ng-template>
-            </td>
-            <td> {{row.validation_comment}} </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="tab-pane fade" id="area" role="tabpanel" aria-labelledby="profile-tab">
+              <tbody>
+                <tr *ngFor="let row of selectedObs?.validations">
+                  <td> {{row.validation_date | date:'dd-MM-yyyy'}} </td>
+                  <td> {{row.validation_label.label_default}} </td>
+                  <td> <span *ngIf="row.validator_role; else elseBlock">
+                      {{row.validator_role.prenom_role}} {{row.validator_role.nom_role}}
+                      </span>
+                    <ng-template #elseBlock> Validation automatique </ng-template>
+                  </td>
+                  <td> {{row.validation_comment}} </td>
+                </tr>
+              </tbody>
+        </table>
+      </div>
+      <div class="tab-pane fade" id="area" role="tabpanel" aria-labelledby="profile-tab">
 
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th class="table_date"> Type de zonage </th>
-            <th class="table_comment"> Zones </th>
-          </tr>
-        </thead>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                  <th class="table_date"> Type de zonage </th>
+                  <th class="table_comment"> Zones </th>
+                </tr>
+              </thead>
 
-        <tbody>
-          <tr *ngFor="let area_type of formatedAreas">
-            <td>
-              {{ area_type.area_type }}
-            </td>
-            <td>
-              <span *ngFor="let area of area_type.areas; let index = index">
-                {{area.area_name}}<span *ngIf="index < area_type.areas.length -1 ">,</span>
-              </span>
+              <tbody>
+                <tr *ngFor="let area_type of formatedAreas">
+                  <td>
+                    {{ area_type.area_type }}
+                  </td>
+                  <td>
+                      <span *ngFor="let area of area_type.areas; let index = index">
+                          {{area.area_name}}<span *ngIf="index < area_type.areas.length -1 ">,</span>
+                      </span>
 
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- <b> Commune(s) </b> :
+                  </td>
+                </tr>
+              </tbody>
+        </table>
+      </div>
+      <!-- <b> Commune(s) </b> :
       <span *ngFor="let mun of selectedObs?.municipalities; let i = index">
         {{ mun.area_name}} <span *ngIf="i !== selectedObs?.municipalities.length -1"> - </span>
       </span>
       <br> -->
 
-  </div>
+    </div>
 
 
 

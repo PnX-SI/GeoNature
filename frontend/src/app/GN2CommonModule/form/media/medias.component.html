@@ -44,7 +44,7 @@
                   >settings</mat-icon>
                   <pnx-display-medias
                     *ngIf='media.sent'
-                    [medias]="[media]"
+                    [medias]="[parentFormControl.value[i]]"
                     index="0"
                     display="mini"
                   ></pnx-display-medias>
@@ -68,7 +68,7 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <pnx-media
-            [(media)]="media"
+            [(media)]="parentFormControl.value[i]"
             (mediaChange)="onMediaChange()"
             [schemaDotTable]="schemaDotTable"
             [sizeMax]="sizeMax"

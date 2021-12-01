@@ -48,6 +48,7 @@ export class SyntheseComponent implements OnInit {
         }
         this._mapListService.geojsonData = result['data'];
         this._mapListService.tableData = result['data'];
+        console.log(result["data"]);
         this._mapListService.loadTableData(result['data']);
         this._mapListService.idName = 'id';
         this.searchService.dataLoaded = true;
@@ -58,11 +59,7 @@ export class SyntheseComponent implements OnInit {
       },
       error => {
         this.searchService.dataLoaded = true;
-        console.log(error);
-        
-        if(error.status == 400) {
-          this._commonService.regularToaster('error', error.error.description)
-        } else {
+        if (error.status !== 403) {
           this._commonService.translateToaster('error', 'ErrorMessage');
         }
       }

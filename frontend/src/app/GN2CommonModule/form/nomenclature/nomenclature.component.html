@@ -1,5 +1,5 @@
 <small> {{ label }} </small>
-<ng-select 
+<ng-select
   [ngClass]="class"
 	[items]="labels"
 	[multiple]="multiSelect"
@@ -9,10 +9,10 @@
 	[virtualScroll]="true"
 	[formControl]="parentFormControl"
 >
-	<ng-template 
-    ng-option-tmp 
-    let-item="item" 
-    let-index="index" 
+	<ng-template
+    ng-option-tmp
+    let-item="item"
+    let-index="index"
     let-search="searchTerm"
   >
     <div matTooltip="{{item[definitionLang]}}">

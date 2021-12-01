@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { TreeNode, TreeComponent, IActionMapping } from 'angular-tree-component';
+import { TreeNode, TreeComponent, IActionMapping } from '@circlon/angular-tree-component';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
 import { FormGroup } from '@angular/forms';
@@ -14,7 +14,7 @@ import { AppConfig } from '@geonature_config/app.config';
   styleUrls: ['./synthese-advanced-form.component.scss']
 })
 export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
-  @ViewChild('tree') treeComponent: TreeComponent;
+  @ViewChild('tree', { static: false }) treeComponent: TreeComponent;
   public AppConfig = AppConfig;
   public URL_AUTOCOMPLETE = AppConfig.API_TAXHUB + '/taxref/search/lb_nom';
   public taxonsTree;

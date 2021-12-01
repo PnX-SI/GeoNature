@@ -136,10 +136,4 @@ export const FILTERSLIST = [
     code_nomenclature_type: "TYP_DENBR",
     required: false,
   },
-  {
-    type_widget: "number",
-    attribut_label: "Identifiant du relevé",
-    attribut_name: "id_releve_occtax",
-    required: false,
-  },
 ];

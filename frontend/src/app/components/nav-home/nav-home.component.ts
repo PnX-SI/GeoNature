@@ -25,7 +25,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   public appConfig: any;
   public currentDocUrl: string;
   public locale: string;
-  @ViewChild('sidenav') public sidenav: MatSidenav;
+  @ViewChild('sidenav', {static: true}) public sidenav: MatSidenav;
 
   constructor(
     private translateService: TranslateService,

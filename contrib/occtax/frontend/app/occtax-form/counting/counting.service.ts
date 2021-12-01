@@ -10,18 +10,15 @@ import { map, filter, tap, switchMap, pairwise } from "rxjs/operators";
 import _ from 'lodash';
 
 import { OcctaxFormService } from "../occtax-form.service";
-import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { MediaService } from '@geonature_common/service/media.service';
 import { DataFormService } from "@geonature_common/form/data-form.service";
-import { OcctaxFormCountingsService } from "./countings.service";
 
 @Injectable()
 export class OcctaxFormCountingService {
-
-  counting: Subject<any[]> = new Subject();
+  // public form: FormGroup;
+  counting: any;
   synchroCountSub: Subscription;
-  additionalFieldsForm: any[] = [];
   public form: FormGroup;
   public data : any;
 
@@ -29,22 +26,16 @@ export class OcctaxFormCountingService {
     public dataFormService: DataFormService,
     private fb: FormBuilder,
     private occtaxFormService: OcctaxFormService,
-    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
-    private occtaxFormCountingsService: OcctaxFormCountingsService,
     private occtaxParamS: OcctaxFormParamService,
     private mediaService: MediaService,
   ) {
     this.initForm();
-    this.setObservables();    
+    this.setObservables();
+
   }
 
-  /**
-   * Génére un formulaire vide
-   * Cette fonction est appelée par occurrence.service
-   */
-  initForm(): void {
-
-    this.form = this.fb.group({
+  createForm(patchWithDefaultValues: boolean = false): FormGroup {    
+    const form = this.fb.group({
       id_counting_occtax: null,
       id_nomenclature_life_stage: [null, Validators.required],
       id_nomenclature_sex: [null, Validators.required],
@@ -56,49 +47,18 @@ export class OcctaxFormCountingService {
       additional_fields: this.fb.group({})
     }); 
 
-    this.form.setValidators([this.countingValidator]);
-    this.occtaxFormOccurrenceService.addCountingForm(this.form);
-  }
+    form.setValidators([this.countingValidator]);
 
-  private setObservables() {
-
-    /**
-     * patch form with eventual additional fields
-     */
-    combineLatest(
-      this.counting
-        .pipe(
-          switchMap((counting) => !_.isEmpty(counting) ? of(counting) : this.defaultValues),
-        ),
-      this.occtaxFormCountingsService.additionalFields.asObservable()
-    )
-      .pipe(
-        tap(([counting, additional_fields]) => {
-          //manage additional_fields
-          additional_fields.forEach(field => {
-            //Formattage des dates
-            if(field.type_widget == "date"){
-              //On peut passer plusieurs fois ici, donc on vérifie que la date n'est pas déja formattée
-              if(typeof counting.additional_fields[field.attribut_name] !== "object"){
-                counting.additional_fields[field.attribut_name] = this.occtaxFormService.formatDate(counting.additional_fields[field.attribut_name]);
-              }
-            }
-
-            //set value of field (eq patchValue)
-            if (counting.additional_fields[field.attribut_name] !== undefined) {
-              field.value = counting.additional_fields[field.attribut_name];
-            }
-          })
-
-          return [counting, additional_fields];
-        }),
-        tap(([counting, additional_fields]) => {
-          this.additionalFieldsForm = additional_fields;
-        }),
-        //map for return occurrence data only
-        map(([counting, additional_fields]): any => counting)
-      )
-      .subscribe(counting => this.form.patchValue(counting));
+    if (patchWithDefaultValues) {
+      this.defaultValues.subscribe((DATA) => form.patchValue(DATA));
+      form
+        .get("count_min")
+        .valueChanges.pipe(
+          filter(() => form.get("count_max").dirty === false) //tant que count_max n'a pas été modifié
+        )
+        .subscribe((count_min) => form.get("count_max").setValue(count_min));
+    }
+    // load global additional fields (not related to a dataset)
 
     this.form.get("count_min").valueChanges
       .pipe(
@@ -108,8 +68,8 @@ export class OcctaxFormCountingService {
          }),
       map(([count_min_prev, count_min_new]) => count_min_new)
       ).subscribe((count_min) => this.form.get("count_max").setValue(count_min))
+    return form;
   }
-
 
   countingValidator(countForm: AbstractControl): { [key: string]: boolean } {
     const countMin = countForm.get("count_min").value;
@@ -144,7 +104,6 @@ export class OcctaxFormCountingService {
             id_nomenclature_valid_status:
               this.occtaxParamS.get("counting.id_nomenclature_valid_status") ||
               DATA["STATUT_VALID"],
-            additional_fields: {}
           };
         })
       );

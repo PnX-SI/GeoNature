@@ -39,7 +39,7 @@ import { IntroductionComponent } from '../custom/components/introduction/introdu
 // Service
 import { AuthService } from './components/auth/auth.service';
 import { CookieService } from 'ng2-cookies';
-import { ChartsModule } from 'ng2-charts/ng2-charts';
+import { ChartsModule } from 'ng2-charts';
 import {
   AuthGuard,
   ModuleGuardService,
@@ -64,7 +64,7 @@ import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
 
 
 export function get_modules(moduleService: ModuleService) {
-    return () => { return moduleService.fetchModules().toPromise(); };
+    return () => {return moduleService.fetchModules().toPromise(); };
 }
 
 

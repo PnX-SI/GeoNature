@@ -3,7 +3,7 @@ import { ActivatedRoute, Router, NavigationExtras } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 import { BehaviorSubject } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { TranslateService } from "@ngx-translate/core";
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
@@ -30,7 +30,7 @@ export class DatasetCardComponent implements OnInit {
   public imports: any = [];
   public taxs;
 
-  @ViewChild(BaseChartDirective) public chart: BaseChartDirective;
+  @ViewChild(BaseChartDirective, { static: false }) public chart: BaseChartDirective;
 
   // Type de graphe
   public pieChartType = 'doughnut';
@@ -155,7 +155,7 @@ export class DatasetCardComponent implements OnInit {
 
   getPdf() {
     const url = `${AppConfig.API_ENDPOINT}/meta/dataset/export_pdf/${this.id_dataset}`;
-    const dataUrl = this.chart ? this.chart.ctx.canvas.toDataURL('image/png') : '';
+    const dataUrl = this.chart ? this.chart.ctx['canvas'].toDataURL('image/png') : '';
     this._dfs.uploadCanvas(dataUrl).subscribe(data => {
       window.open(url);
     });

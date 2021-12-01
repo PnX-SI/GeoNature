@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { PageEvent, MatPaginator } from '@angular/material';
+import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { Router, NavigationExtras } from "@angular/router";
@@ -21,7 +21,7 @@ import { MetadataService } from './services/metadata.service';
 })
 export class MetadataComponent implements OnInit {
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
   /* getter this.metadataService.filteredAcquisitionFrameworks */
   acquisitionFrameworks: Observable<any[]>;
@@ -47,7 +47,7 @@ export class MetadataComponent implements OnInit {
   pageSize: number;
   pageIndex: number;
 
-  
+
 
   constructor(
     public _cruvedStore: CruvedStoreService,
@@ -85,7 +85,7 @@ export class MetadataComponent implements OnInit {
 
   setDsObservationCount(datasets, dsNbObs) {
     datasets.forEach(ds=> {
-      let foundDS = dsNbObs.find(d => {                
+      let foundDS = dsNbObs.find(d => {
         return d.id_dataset == ds.id_dataset
       })
       if (foundDS) {
@@ -159,7 +159,7 @@ export class MetadataComponent implements OnInit {
             'error', "Une erreur s'est produite lors de la fermeture du cadre d'acquisition. Contactez l'administrateur"
             )
         }
-        
+
 
     }
     )

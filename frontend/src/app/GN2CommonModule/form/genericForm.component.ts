@@ -5,35 +5,24 @@ import {
   Output,
   EventEmitter,
   AfterViewInit,
-  OnChanges,
-  SimpleChanges, 
-  SimpleChange,
   OnDestroy
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'pnx-generic-form',
   template: ''
 })
-export class GenericFormComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
+export class GenericFormComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() parentFormControl: FormControl;
   @Input() label: string;
-  @Input() class: string = "auto"; 
-
-  @Input() disabled: boolean = false;
-    /**
- * @deprecated Do not use this input
- */
+  @Input() disabled: false;
   @Input() debounceTime: number;
-  @Input() multiSelect: boolean = false;
-  @Input() clearable: boolean = true;
-    /**
- * @deprecated Do not use this input
- */
-  @Input() searchBar: boolean = false;
-  @Input() displayAll: boolean = false; // param to display the field 'all' in the list, default at false
+  @Input() multiSelect: false;
+  @Input() searchBar: false;
+  @Input() displayAll: false; // param to display the field 'all' in the list, default at false
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
   @Output() valueLoaded = new EventEmitter<any>();
@@ -45,18 +34,9 @@ export class GenericFormComponent implements OnInit, OnChanges, AfterViewInit, O
     this.debounceTime = this.debounceTime || 0;
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    const disabled: SimpleChange = changes.disabled;
-    if (disabled !== undefined && disabled.previousValue !== disabled.currentValue) {
-      this.setDisabled();
-    }
-  }
-
   ngAfterViewInit() {
-    this.setDisabled();
     this.sub = this.parentFormControl.valueChanges
-      .distinctUntilChanged()
-      .debounceTime(this.debounceTime)
+      .pipe(distinctUntilChanged(), debounceTime(this.debounceTime))
       .subscribe(value => {
         if (!value || (value && (value.length === 0 || value === ''))) {
           this.onDelete.emit();
@@ -64,10 +44,6 @@ export class GenericFormComponent implements OnInit, OnChanges, AfterViewInit, O
           this.onChange.emit(value);
         }
       });
-  }
-
-  setDisabled() {
-    this.disabled ? this.parentFormControl.disable() : this.parentFormControl.enable();
   }
 
   filterItems(event, savedItems, itemKey) {

@@ -4,6 +4,7 @@ import { AuthService } from '../auth/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { similarValidator } from '@geonature/services/validators';
 import { Router, ActivatedRoute } from '@angular/router';
+import { AppConfig } from '../../../conf/app.config';
 
 @Component({
   selector: 'pnx-new-password',
@@ -13,6 +14,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 export class NewPasswordComponent implements OnInit {
   token: string;
   form: FormGroup;
+  public casLogin
 
   constructor(
     private _authService: AuthService,
@@ -28,6 +30,7 @@ export class NewPasswordComponent implements OnInit {
       }
       this.token = token;
     });
+    this.casLogin = AppConfig.PUBLIC_ACCESS.ENABLE_PUBLIC_ACCESS;
   }
 
   ngOnInit() {
