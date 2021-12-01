@@ -62,6 +62,9 @@ vectorise_dem=false
 # Insert sample data (available only in Mainland France with srid_local=2154 ; false otherwise)
 add_sample_data=true
 
+# Insert INPN sensitivity referential (will force installation of departments and regions)
+install_ref_sensitivity=true
+
 #### Modules GeoNature ####
 
 # Installer le module validation

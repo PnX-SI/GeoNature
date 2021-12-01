@@ -122,6 +122,11 @@ then
     geonature db upgrade ref_geo_inpn_grids_10@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
 fi
 
+if [ "$install_ref_sensitivity" = true ];
+then
+    geonature db upgrade ref_sensitivity_inpn@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
+fi
+
 if  [ "$install_default_dem" = true ];
 then
     geonature db upgrade ign_bd_alti@head -x local-srid=$srid_local -x data-directory=tmp |& tee -a "${LOG_FILE}"
