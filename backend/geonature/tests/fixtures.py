@@ -65,7 +65,6 @@ def app():
 
 @pytest.fixture(scope='session')
 def users(app):  # an app context is required
-    print("create users")
     app = Application.query.filter(Application.code_application=='GN').one()
     profil = Profil.query.filter(Profil.nom_profil=='Lecteur').one()
 
