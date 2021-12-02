@@ -25,6 +25,12 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
   }
 
   ngOnInit() {
+    // patch pour bien avoir 'id_area' en valeur par defaut
+    // si l'input est defini dans le html mais que sa valeur est undefined
+    this.valueFieldName = this.valueFieldName == undefined
+      ? 'id_area'
+      : this.valueFieldName;
+
     this.getAreas();
   }
 
