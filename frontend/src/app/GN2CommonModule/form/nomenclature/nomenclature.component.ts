@@ -76,7 +76,9 @@ export class NomenclatureComponent extends GenericFormComponent
   }
 
   ngOnInit() {
-    this.keyValue = this.bindAllItem ? null : this.keyValue;
+    this.keyValue = this.bindAllItem
+      ? null
+      : this.keyValue || 'id_nomenclature'; // patch pour les cas ou this.keyValue == undefined
     this.labelLang = 'label_' + this._translate.currentLang;
     this.definitionLang = 'definition_' + this._translate.currentLang;
     // load the data
