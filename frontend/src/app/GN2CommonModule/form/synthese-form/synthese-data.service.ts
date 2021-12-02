@@ -9,7 +9,6 @@ import {
 } from '@angular/common/http';
 import { GeoJSON } from 'leaflet';
 import { AppConfig } from '@geonature_config/app.config';
-import { isArray } from 'util';
 import { BehaviorSubject } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 import { Observable } from 'rxjs';
@@ -33,7 +32,7 @@ export class SyntheseDataService {
   buildQueryUrl(params): HttpParams {
     let queryUrl = new HttpParams();
     for (let key in params) {
-      if (isArray(params[key])) {
+      if (Array.isArray(params[key])) {
         params[key].forEach(value => {
           queryUrl = queryUrl.append(key, value);
         });
