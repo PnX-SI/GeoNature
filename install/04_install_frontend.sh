@@ -86,20 +86,10 @@ geonature generate_frontend_modules_route
 echo "Désactivation du venv..."
 deactivate
 
-echo "Installation de nvm"
-wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-
-. ~/.nvm/nvm.sh  # load nvm
-
 # Frontend installation
 echo "Installation de Node et Npm"
-nvm install || exit 1
-nvm use || exit 1
+npm install || exit 1
 
-# TODO: @angular-devkit/build-angular 0.13.10 requière node-gyp 3.8 qui est compatible python2.7 uniquement
-# il faut donc mettre à jour @angular-devkit/build-angular avant de pouvoir se passer de l’installation de python2
-# rappelons que python2 n’est plus supporté depuis le 1er janvier 2020…
-#npm config set python /bin/python3
  
 echo " ############"
 echo "Installation des paquets Npm"
