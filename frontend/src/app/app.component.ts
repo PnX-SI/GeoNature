@@ -28,5 +28,6 @@ export class AppComponent implements OnInit {
     translate.use(AppConfig.DEFAULT_LANGUAGE);
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 }

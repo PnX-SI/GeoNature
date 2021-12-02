@@ -78,7 +78,6 @@
     "to-regex": "^3.0.2",
     "tree-kill": "^1.2.2",
     "tslib": "^2.3.1",
-    "util": "^0.12.4",
     "wellknown": "^0.5.0",
     "y18n": "^4.0.3",
     "zone.js": "^0.11.4"
@@ -107,7 +106,7 @@
     "karma-jasmine": "~2.0.1",
     "karma-jasmine-html-reporter": "^1.4.0",
     "npm-force-resolutions": "0.0.10",
-    "prettier": "^1.16.4",
+    "prettier": "^2.5.0",
     "process": "^0.11.10",
     "protractor": "~5.4.2",
     "raw-loader": "^4.0.2",
