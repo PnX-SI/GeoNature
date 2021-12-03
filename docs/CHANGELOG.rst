@@ -5,16 +5,50 @@ CHANGELOG
 2.9.0 (unreleased)
 ------------------
 
+Profils de taxons
+
+**TO CHECK :**
+
+- Virer les tables et fonctions de Gil qui calculaient des profils de taxon inutilisés ?
+- Fiches taxons et valeurs d'altitudes nulles
+- Fiches taxons sans données ne sont pas claires
+- Profils - Bien indiquer que le calcul se base que sur les données validées
+- Profils - Indiquer quelles données sont prises en compte et comment modifier les statuts utilisés
+- Fonction update_configuration et restart (message dans terminal et documentation ?)
+- Nom des modules par défaut lors de l'installation, ajouter majuscules
+- Filtres par score profil dans Validation ? https://github.com/PnX-SI/GeoNature/issues/1105#issuecomment-922791784
+
+**BUGS**
+
+- Dans le module VALIDATION, quand j'ouvre le détail d'une observation : 
+  - Le bouton Précédent/Suivant en bas de la modale ne fonctionne pas (ERROR TypeError: n is undefined)
+  - J'essaie de modifier le statut de validation d'une observation. Cela ne fonctionne pas (ERROR Error: Uncaught (in promise): Error: Parameter "key" required)
+- L'attribution d'un statut de validation depuis la liste fonctionne par contre
+- Par contre, si j'attribue une statut de validation à une observation depuis la liste, ça l'attribue bien. Quand j'ouvre sa fiche, l'info est bien dans l'onglet "Validation", bien dans l'onglet "Détail de l'occurrence", mais pas mis à jour dans le champs en haut de la fiche "Statut de validation actuel"
+- La recherche est buggée aussi dans le module Validation. Je cherche un "Statut de validation", ça fonctionne, j'en ajoute un second, c'est OK. Mais si je coche le filtre "Données modifiées depuis la dernière validation", il fonctionne, mais quand je le décoche, il semble encore actif...
+- Le filtre commune dans "Validation" et "Synthèse" affiche "Communes id_area " au lieu de "Communes"
+- Bug des médias dans Occtax, à cause du type ?
+- Enchainer des relevés avec un GPX ne permet de selectionner un autre objet du GPX au second relevé
+
 **🚀 Nouveautés**
 
-* Construction d'une fiche d'identité (profil) par taxon grâce aux observations présente en base de données (altitude min/max, distribution spatiale, date de premiere/dernière observation, nombre de données valides, phénologie)
+* Construction automatique d'une fiche d'identité (profil) par taxon grâce aux observations validées présentes dans la base de données (altitude min/max, distribution spatiale, date de première/dernière observation, nombre de données valides, phénologie) (#917)
+  - Intégration SQL (#1103)
+  - Backend (#1104)
+  - Frontend (#1105)
+  - Améliorations JPM (#1531)
 * [OCCTAX] Contrôle de la cohérence des nouvelles données saisies par rapport au profil
-* [SYNTHESE] Création d'une "fiche taxon" à partir des informations décrites plus haut
-* [SYNTHESE] Filtre par UUID
 * [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
-* Passage à la librairie 'select2' pour les composants multiselects (@jbrieuclp)
-* Ajout d’un référentiel des régions ainsi que des anciennes régions (1970-2016)
+* [SYNTHESE et VALIDATION] Enrichissement de l'onglet "Validation" en y ajoutant les informations du profil du taxon observé
+* [SYNTHESE] Filtre par UUID
+* [OCCTAX] - Taxon : annuler modification #1508
+* Amélioration des listes déroulantes en passant à la librairie 'ng-select2' pour les composants multiselects (#616 @jbrieuclp)
+* Ajout d'un référentiel des régions ainsi que des anciennes régions (1970-2016), inactives par défaut, mais utiles pour les règles régionales de sensibilité
 * Ajout du référentiel de sensibilité (règles nationales et régionales)
+
+**Corrections**
+
+* Problème sur les enregistrements dans la synthèse (#1479) / Voir si on fait update des données ?
 
 **💻 Développement**
 
@@ -49,26 +83,27 @@ devient
         { label = "Communes", type_code = "COM" }
     ]
 
-* Les nouvelles fonctionnalités liés aux profiles necessite de raffraichir des vues materialisées à intervales réguliers et donc de créer une tâche planfiée (cron):
+* Les nouvelles fonctionnalités liées aux profils de taxons nécessitent de rafraichir des vues materialisées à intervales réguliers et donc de créer une tâche planfiée (cron):
 
 ::
 
       sudo nano /etc/cron.d/update_profile
 
-Ajouter la ligne suivante en prenant changeant <CHEMIN_ABSOLUE_VERS_VENV> par le chemin absolue vers me virtualenv GeoNature et <GEONATURE_USER> par l'utilisateur Linux de GeoNature:
+Ajouter la ligne suivante en changeant <CHEMIN_ABSOLUE_VERS_VENV> par le chemin absolu vers le virtualenv de GeoNature et <GEONATURE_USER> par l'utilisateur Linux de GeoNature:
 
 ::
 
     0 * * * * <GEONATURE_USER> source <CHEMIN_ABSOLUE_VERS_VENV> && geonature profiles update_vms
 
 Exemple : 
+
 ::
 
     0 * * * * geonatadmin source /home/user/geonature/backend/venv/bin/activate && geonature profiles update_vms
 
-Cet exemple lance la tâche toute les nuits à minuit. Pour une autre fréquence voir la syntaxe cron : https://crontab.guru/
+Cet exemple lance la tâche toutes les nuits à minuit. Pour une autre fréquence, voir la syntaxe cron : https://crontab.guru/
 
-* Les régions sont maintenant disponible via des migrations Alembic. Si vous possédez déjà les régions, vous pouvez l’indiquer à Alembic :
+* Les régions sont maintenant disponibles via des migrations Alembic. Si vous possédez déjà les régions, vous pouvez l’indiquer à Alembic :
 
 ::
 
@@ -89,7 +124,7 @@ Si vous avez installé GeoNature 2.8.X, le référentiel de sensibilité n’a p
 
     geonature db upgrade ref_sensitivity_inpn@head
 
-Par défaut, seule les règles nationales sont activés, vous laissant le soin d’activer vos règles locales en base vous même. Vous pouvez également demander, lors de l’installation du référentiel, à activer (resp. désactiver) toutes les règles en ajout à la commande Alembic l’option ``-x active=true`` (resp. ``-x active=false``).
+Par défaut, seule les règles nationales sont activées, vous laissant le soin d’activer vos règles locales en base vous-même. Vous pouvez également demander, lors de l’installation du référentiel, à activer (resp. désactiver) toutes les règles en ajout à la commande Alembic l’option ``-x active=true`` (resp. ``-x active=false``).
 
 2.8.1 (2021-10-17)
 ------------------
