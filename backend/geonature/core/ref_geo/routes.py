@@ -1,4 +1,5 @@
 from itertools import groupby
+import json
 
 from flask import Blueprint, request, current_app
 from flask.json import jsonify
@@ -61,8 +62,10 @@ def getGeoInfo():
         geojson = request.json['geometry']
     except KeyError:
         raise BadRequest("Missing 'geometry' in request payload")
+    geojson = json.dumps(geojson)
 
-    areas = LAreas.query.filter_by(enable=True).filter(geojson_intersect_filter.params(geojson=geojson))
+    areas = LAreas.query.filter_by(enable=True) \
+                        .filter(geojson_intersect_filter.params(geojson=geojson))
     if 'area_type' in request.json:
         areas = areas.join(BibAreasTypes).filter_by(type_code=request.json['area_type'])
     elif 'id_type' in request.json:
@@ -96,6 +99,7 @@ def getAltitude():
         geojson = request.json['geometry']
     except KeyError:
         raise BadRequest("Missing 'geometry' in request payload")
+    geojson = json.dumps(geojson)
 
     altitude = db.session.execute(altitude_stmt, params={'geojson': geojson}).fetchone()
     return jsonify(altitude)
@@ -114,7 +118,10 @@ def getAreasIntersection():
         geojson = request.json['geometry']
     except KeyError:
         raise BadRequest("Missing 'geometry' in request payload")
-    areas = LAreas.query.filter_by(enable=True).filter(geojson_intersect_filter.params(geojson=geojson))
+    geojson = json.dumps(geojson)
+
+    areas = LAreas.query.filter_by(enable=True) \
+                        .filter(geojson_intersect_filter.params(geojson=geojson))
     if 'area_type' in request.json:
         areas = areas.join(BibAreasTypes).filter_by(type_code=request.json['area_type'])
     elif 'id_type' in request.json:
@@ -221,6 +228,7 @@ def get_area_size():
         geojson = request.json['geometry']
     except KeyError:
         raise BadRequest("Missing 'geometry' in request payload")
+    geojson = json.dumps(geojson)
 
     query = db.session.query(area_size_func.params(geojson=geojson))
 

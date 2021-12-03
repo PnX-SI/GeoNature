@@ -58,7 +58,7 @@ class TestRefGeo:
 
     def test_get_geo_info(self):
         response = self.client.post(url_for("ref_geo.getGeoInfo"), json={
-            'geometry': json.dumps(polygon),
+            'geometry': polygon,
             'area_type': 'COM',
         })
         assert response.status_code == 200
@@ -68,14 +68,14 @@ class TestRefGeo:
 
     def test_get_altitude(self):
         response = self.client.post(url_for("ref_geo.getAltitude"), json={
-            'geometry': json.dumps(polygon),
+            'geometry': polygon,
         })
         assert response.status_code == 200
         assert response.json == self.expected_altitude
 
     def test_get_area_intersection(self):
         response = self.client.post(url_for("ref_geo.getAreasIntersection"), json={
-            'geometry': json.dumps(polygon),
+            'geometry': polygon,
         })
         assert response.status_code == 200
         validate_json(instance=response.json, schema={
@@ -119,7 +119,7 @@ class TestRefGeo:
 
     def test_get_area_size(self):
         response = self.client.post(url_for("ref_geo.get_area_size"), json={
-            'geometry': json.dumps(polygon),
+            'geometry': polygon,
         })
         assert response.status_code == 200
         assert response.json == pytest.approx(30526916, rel=1e-3)
