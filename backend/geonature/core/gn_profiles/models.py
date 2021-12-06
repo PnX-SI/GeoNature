@@ -1,5 +1,6 @@
 from flask import current_app
 from geoalchemy2 import Geometry
+import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql.schema import ForeignKey
@@ -65,9 +66,18 @@ class VConsistancyData(DB.Model):
     # score = DB.Column(DB.Integer)
     valid_status = DB.Column(DB.Unicode)
 
-    def as_dict(self, data):
-        score = (data["valid_distribution"] or 0) + (
-                data["valid_altitude"] or 0
-                ) + (data["valid_phenology"] or 0)
-        data.update({"score":score})
-        return data
+    @hybrid_property
+    def score(self):
+        return (
+            self.valid_distribution
+            + self.valid_phenology
+            + self.valid_altitude
+        )
+
+    @score.expression
+    def score(cls):
+        return (
+            cls.valid_distribution.cast(sa.Integer)
+            + cls.valid_phenology.cast(sa.Integer)
+            + cls.valid_altitude.cast(sa.Integer)
+        )
