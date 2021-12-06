@@ -5,7 +5,7 @@ import os
 
 from flask import current_app
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, aliased
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
@@ -209,6 +209,13 @@ class TValidations(DB.Model):
     validation_auto = DB.Column(DB.Boolean)
     validation_label = DB.relationship(TNomenclatures)
 
+
+last_validation_query = (
+    select([TValidations])
+    .order_by(TValidations.validation_date.desc())
+    .limit(1)
+)
+last_validation = aliased(TValidations, last_validation_query)
 
 
 @serializable

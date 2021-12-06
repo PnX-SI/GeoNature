@@ -1,11 +1,13 @@
 from collections import OrderedDict
 
+import sqlalchemy as sa
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, column_property, foreign
+from sqlalchemy.orm import relationship, column_property, foreign, joinedload, contains_eager
 from sqlalchemy.sql import select, func, exists
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
+
 from geojson import Feature
 from flask import g
 from flask_sqlalchemy import BaseQuery
@@ -21,7 +23,8 @@ from pypn_habref_api.models import Habref
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.ref_geo.models import LAreas
 from geonature.core.ref_geo.models import LiMunicipalities
-from geonature.core.gn_commons.models import THistoryActions, TValidations, TMedias, TModules
+from geonature.core.gn_commons.models import THistoryActions, TValidations, last_validation, \
+                                             TMedias, TModules
 from geonature.utils.env import DB, db
 from geonature.utils.config import config
 
@@ -93,6 +96,15 @@ class VSyntheseDecodeNomenclatures(DB.Model):
 class SyntheseQuery(BaseQuery):
     def join_nomenclatures(self):
         return self.options(*[joinedload(n) for n in Synthese.nomenclature_fields])
+
+    def lateraljoin_last_validation(self):
+        subquery = TValidations.query \
+                        .filter(TValidations.uuid_attached_row==Synthese.unique_id_sinp) \
+                        .limit(1) \
+                        .subquery() \
+                        .lateral('last_validation')
+        return self.outerjoin(subquery, sa.true()) \
+                   .options(contains_eager(Synthese.last_validation, alias=subquery))
 
 
 @serializable
@@ -222,6 +234,9 @@ class Synthese(DB.Model):
 
     areas = relationship('LAreas', secondary=corAreaSynthese)
     validations = relationship(TValidations, backref='attached_row')
+    last_validation = relationship(last_validation,
+                                   uselist=False,
+                                   viewonly=True)
     medias = relationship(TMedias, primaryjoin=(TMedias.uuid_attached_row==foreign(unique_id_sinp)))
 
     cor_observers = DB.relationship(User, secondary=cor_observer_synthese)
