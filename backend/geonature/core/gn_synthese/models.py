@@ -18,6 +18,7 @@ from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable, SERIALIZERS
 from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
+from utils_flask_sqla_geo.mixins import GeoFeatureCollectionMixin
 from pypn_habref_api.models import Habref
 
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
@@ -93,7 +94,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
     occ_stat_biogeo = DB.Column(DB.Unicode)
 
 
-class SyntheseQuery(BaseQuery):
+class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
     def join_nomenclatures(self):
         return self.options(*[joinedload(n) for n in Synthese.nomenclature_fields])
 
