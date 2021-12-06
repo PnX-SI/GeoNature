@@ -17,6 +17,9 @@ Profils de taxons
 - Fonction update_configuration et restart (message dans terminal et documentation ?)
 - Nom des modules par défaut lors de l'installation, ajouter majuscules
 - Filtres par score profil dans Validation ? https://github.com/PnX-SI/GeoNature/issues/1105#issuecomment-922791784
+- PR Joel pour Monitoring
+- Conf Apache sur sous-domaine (voir retour Gil)
+- PR de Jean-Brieuc et MAJ des données à tester et automatiser ou documenter ?
 
 **BUGS**
 
