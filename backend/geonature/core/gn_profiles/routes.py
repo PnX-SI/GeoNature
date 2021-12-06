@@ -2,7 +2,7 @@ import json
 import datetime
 import math
 
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask.globals import current_app
 from geoalchemy2.shape import to_shape
 from geojson import Feature
@@ -78,17 +78,14 @@ def get_profile(cd_ref):
 
 
 @routes.route("/consistancy_data/<id_synthese>", methods=["GET"])
-@json_resp
 def get_consistancy_data(id_synthese):
     """
     .. :quickref: Profiles;
 
     Return the validation score for a synthese data
     """
-    data = DB.session.query(VConsistancyData).get(id_synthese)
-    if data:
-        return data.as_dict()
-    return None
+    data = VConsistancyData.query.get_or_404(id_synthese)
+    return jsonify(data.as_dict())
 
 @routes.route("/check_observation", methods=["POST"])
 @json_resp
