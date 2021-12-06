@@ -91,7 +91,7 @@ class VSyntheseDecodeNomenclatures(DB.Model):
 
 
 class SyntheseQuery(BaseQuery):
-    def with_nomenclatures(self):
+    def join_nomenclatures(self):
         return self.options(*[joinedload(n) for n in Synthese.nomenclature_fields])
 
 

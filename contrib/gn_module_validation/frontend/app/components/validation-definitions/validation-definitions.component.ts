@@ -23,7 +23,7 @@ export class ValidationDefinitionsComponent {
 
   getDefinitions(param) {
     this.showDefinitions = !this.showDefinitions;
-    this.searchService.getDefinitionData().subscribe(
+    this.searchService.getStatusNames().subscribe(
       result => {
         this.definitions = result;
       },

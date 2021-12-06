@@ -36,12 +36,6 @@ export class ValidationDataService {
     return this._http.post<any>(urlStatus, data);
   }
 
-  getDefinitionData() {
-    return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/validation/definitions`
-    );
-  }
-
   getValidationDate(uuid) {
     return this._http.get<any>(
       `${AppConfig.API_ENDPOINT}/validation/date/${uuid}`

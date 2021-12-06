@@ -230,7 +230,7 @@ def get_synthese(info_role):
 def get_one_synthese(info_role, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature
     """
-    synthese = Synthese.query.get_or_404(id_synthese)
+    synthese = Synthese.query.join_nomenclatures().get_or_404(id_synthese)
     if not synthese.has_instance_permission(scope=int(info_role.value_filter)):
         raise Forbidden()
     geojson = synthese.as_geofeature(
