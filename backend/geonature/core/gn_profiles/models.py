@@ -4,12 +4,14 @@ import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy.orm import relationship
 
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.utils.env import DB
 from geonature.utils.config import config
+from geonature.core.gn_synthese.models import Synthese
 
 
 
@@ -56,7 +58,10 @@ class VmValidProfiles(DB.Model):
 class VConsistancyData(DB.Model):
     __tablename__ = "v_consistancy_data"
     __table_args__ = {"schema": "gn_profiles"}
-    id_synthese = DB.Column(DB.Integer, primary_key=True)
+    id_synthese = DB.Column(DB.Integer,
+                            ForeignKey(Synthese.id_synthese),
+                            primary_key=True)
+    synthese = relationship(Synthese, backref='profile')
     id_sinp = DB.Column(UUID(as_uuid=True))
     cd_ref = DB.Column(DB.Integer)
     valid_name = DB.Column(DB.Unicode)
