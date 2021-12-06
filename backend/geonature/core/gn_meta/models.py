@@ -10,6 +10,7 @@ from sqlalchemy.sql import select, func, exists
 from sqlalchemy.orm import relationship, exc
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.schema import FetchedValue
 from utils_flask_sqla.generic import testDataType
 from werkzeug.exceptions import BadRequest, NotFound
 
@@ -457,7 +458,7 @@ class TDatasets(CruvedHelper):
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
     active = DB.Column(DB.Boolean, default=True)
-    validable = DB.Column(DB.Boolean)
+    validable = DB.Column(DB.Boolean, server_default=FetchedValue())
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
     digitizer = DB.relationship(User)
     id_taxa_list = DB.Column(DB.Integer)
