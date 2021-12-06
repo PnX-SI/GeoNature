@@ -18,7 +18,7 @@ export class ValidationComponent implements OnInit {
 
   constructor(
     public _ds: ValidationDataService,
-    private _mapListService: MapListService,
+    public _mapListService: MapListService,
     private _commonService: CommonService,
     private _fs: SyntheseFormService
   ) { }
