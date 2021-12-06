@@ -5,6 +5,7 @@ import os
 
 from flask import current_app
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
@@ -193,7 +194,12 @@ class TValidations(DB.Model):
     uuid_attached_row = DB.Column(UUID(as_uuid=True), ForeignKey("gn_synthese.synthese.unique_id_sinp"))
     id_nomenclature_valid_status = DB.Column(
         DB.Integer,
-        ForeignKey(TNomenclatures.id_nomenclature)
+        ForeignKey(TNomenclatures.id_nomenclature),
+    )
+    nomenclature_valid_status = relationship(
+        TNomenclatures,
+        foreign_keys=[id_nomenclature_valid_status],
+        lazy='joined',
     )
     id_validator = DB.Column(DB.Integer, ForeignKey(User.id_role))
     validator_role = DB.relationship(User)
