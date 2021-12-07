@@ -214,6 +214,7 @@ last_validation_query = (
     select([TValidations])
     .order_by(TValidations.validation_date.desc())
     .limit(1)
+    .alias('last_validation')
 )
 last_validation = aliased(TValidations, last_validation_query)
 
