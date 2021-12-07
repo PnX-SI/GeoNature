@@ -13,12 +13,11 @@ Profils de taxons
 - Fiches taxons et valeurs d'altitudes nulles
 - Fiches taxons sans données ne sont pas claires
 - Profils - Bien indiquer que le calcul se base que sur les données validées
-- Profils - Indiquer quelles données sont prises en compte et comment modifier les statuts utilisés
-- Fonction update_configuration et restart (message dans terminal et documentation ?)
+- Profils - Indiquer quelles données sont prises en compte et comment modifier les statuts utilisés / Renvoyer à la nouvelle doc
+- Fonction update_configuration et restart (message dans terminal et documentation ?) A indiquer ici par exemple avec la commande systemd : https://docs.geonature.fr/admin-manual.html#configuration-generale-de-l-application
 - Nom des modules par défaut lors de l'installation, ajouter majuscules
-- Filtres par score profil dans Validation ? https://github.com/PnX-SI/GeoNature/issues/1105#issuecomment-922791784
 - PR Joel pour Monitoring
-- Conf Apache sur sous-domaine (voir retour Gil)
+- Conf Apache sur sous-domaine (voir retour Gil) - Ajouter documentation
 - PR de Jean-Brieuc et MAJ des données à tester et automatiser ou documenter ?
 
 **BUGS**
@@ -28,7 +27,7 @@ Profils de taxons
   - J'essaie de modifier le statut de validation d'une observation. Cela ne fonctionne pas (ERROR Error: Uncaught (in promise): Error: Parameter "key" required)
 - L'attribution d'un statut de validation depuis la liste fonctionne par contre
 - Par contre, si j'attribue une statut de validation à une observation depuis la liste, ça l'attribue bien. Quand j'ouvre sa fiche, l'info est bien dans l'onglet "Validation", bien dans l'onglet "Détail de l'occurrence", mais pas mis à jour dans le champs en haut de la fiche "Statut de validation actuel"
-- La recherche est buggée aussi dans le module Validation. Je cherche un "Statut de validation", ça fonctionne, j'en ajoute un second, c'est OK. Mais si je coche le filtre "Données modifiées depuis la dernière validation", il fonctionne, mais quand je le décoche, il semble encore actif...
+- La recherche est buggée aussi dans le module Validation. Je cherche un "Statut de validation", ça fonctionne, j'en ajoute un second, c'est OK. Mais si je coche le filtre "Données modifiées depuis la dernière validation", il fonctionne, mais quand je le décoche, il semble encore actif... Idem pour les scores ?
 - Le filtre commune dans "Validation" et "Synthèse" affiche "Communes id_area " au lieu de "Communes"
 - Bug des médias dans Occtax, à cause du type ?
 - Enchainer des relevés avec un GPX ne permet de selectionner un autre objet du GPX au second relevé
@@ -40,6 +39,7 @@ Profils de taxons
   - Backend (#1104)
   - Frontend (#1105)
   - Améliorations JPM (#1531)
+  - Statuts pris en compte paramétrables
 * [OCCTAX] Contrôle de la cohérence des nouvelles données saisies par rapport au profil
 * [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
 * [SYNTHESE et VALIDATION] Enrichissement de l'onglet "Validation" en y ajoutant les informations du profil du taxon observé
