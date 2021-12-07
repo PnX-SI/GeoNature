@@ -246,5 +246,13 @@ def get_validation_date(uuid):
     Retourne la date de validation
     pour l'observation uuid
     """
-    v = VSyntheseValidation.query.filter_by(unique_id_sinp=uuid).first_or_404()
-    return jsonify(str(v.validation_date))
+    s = (
+        Synthese.query
+        .filter_by(unique_id_sinp=uuid)
+        .lateraljoin_last_validation()
+        .first_or_404()
+    )
+    if s.last_validation:
+        return jsonify(str(s.last_validation.validation_date))
+    else:
+        return '', 204
