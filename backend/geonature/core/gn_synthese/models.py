@@ -100,13 +100,36 @@ class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
         return self.options(*[joinedload(n) for n in Synthese.nomenclature_fields])
 
     def lateraljoin_last_validation(self):
-        subquery = TValidations.query \
-                        .filter(TValidations.uuid_attached_row==Synthese.unique_id_sinp) \
-                        .limit(1) \
-                        .subquery() \
-                        .lateral('last_validation')
+        subquery = (
+            TValidations.query
+            .filter(TValidations.uuid_attached_row==Synthese.unique_id_sinp)
+            .limit(1)
+            .subquery()
+            .lateral('last_validation')
+        )
         return self.outerjoin(subquery, sa.true()) \
                    .options(contains_eager(Synthese.last_validation, alias=subquery))
+
+    def filter_by_scope(self, scope, user=None):
+        if user is None:
+            user = g.current_user
+        if scope == 0:
+            self = self.filter(sa.false())
+        elif scope in (1, 2):
+            ors = [
+            ]
+            datasets = (
+                TDatasets.query
+                .filter_by_scope(scope, user)
+                .with_entities(TDatasets.id_dataset)
+                .all()
+            )
+            self = self.filter(or_(
+                Synthese.id_digitizer == user.id_role,
+                Synthese.cor_observers.any(id_role=user.id_role),
+                Synthese.id_dataset.in_([ds.id_dataset for ds in datasets]),
+            ))
+        return self
 
 
 @serializable
