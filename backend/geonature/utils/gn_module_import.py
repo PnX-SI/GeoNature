@@ -303,7 +303,7 @@ def install_frontend_dependencies(module_path):
             )
             assert (
                 subprocess.call(
-                    ["npm", "install", str(frontend_module_path), "--no-save"],
+                    ["npm", "install", str(frontend_module_path), "--no-save", "--legacy-peer-deps"],
                     cwd=str(ROOT_DIR / "frontend"),
                 )
                 == 0

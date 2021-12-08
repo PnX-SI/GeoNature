@@ -86,14 +86,13 @@ geonature generate_frontend_modules_route
 echo "Désactivation du venv..."
 deactivate
 
-# Frontend installation
-echo "Installation de Node et Npm"
-npm install || exit 1
+# Frontend installation"
+
 
  
 echo " ############"
 echo "Installation des paquets Npm"
-npm ci --only=prod || exit 1
+npm ci --only=prod --legacy-peer-deps || exit 1
 
 
 if [[ "${MODE}" != "dev" ]]; then
