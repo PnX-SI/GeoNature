@@ -8,13 +8,27 @@ from jsonschema import validate as validate_json
 
 from geonature.utils.env import db
 from geonature.core.ref_geo.models import LAreas
+from geonature.core.gn_synthese.models import Synthese
 
 from . import *
 from .fixtures import *
+from .fixtures import taxon_attribut
+from .utils import logged_user_headers
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestSynthese:
+    def test_synthese_scope_filtering(self, app, users, synthese_data):
+        all_ids = { s.id_synthese for s in synthese_data }
+        sq = (
+            Synthese.query
+            .with_entities(Synthese.id_synthese)
+            .filter(Synthese.id_synthese.in_(all_ids))
+        )
+        with app.test_request_context(headers=logged_user_headers(users['user'])):
+            app.preprocess_request()
+            assert sq.filter_by_scope(0).all() == []
+
     def test_list_sources(self):
         response = self.client.get(url_for("gn_synthese.get_sources"))
         assert response.status_code == 200
@@ -25,13 +39,13 @@ class TestSynthese:
         response = self.client.get(url_for("gn_synthese.getDefaultsNomenclatures"))
         assert response.status_code == 200
 
-    @pytest.mark.skip()
-    def test_get_synthese_data(self):
+    #@pytest.mark.skip()
+    def test_get_synthese_data(self, taxon_attribut):
         login(self.client)
         # test on synonymy and taxref attrs
         query_string = {
-            "cd_ref": 209902,
-            "taxhub_attribut_102": "eau",
+            "cd_ref": taxon_attribut.bib_nom.cd_ref,
+            "taxhub_attribut_{}".format(taxon_attribut.bib_attribut.id_attribut): taxon_attribut.valeur_attribut,
             "taxonomy_group2_inpn": "Insectes",
             "taxonomy_id_hab": 3,
         }
@@ -150,8 +164,6 @@ class TestSynthese:
         assert response.status_code == 200
 
     def test_get_one_synthese_record(self, app, users, synthese_data):
-        from geonature.core.gn_synthese.models import Synthese
-
         response = self.client.get(
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
         assert response.status_code == 401

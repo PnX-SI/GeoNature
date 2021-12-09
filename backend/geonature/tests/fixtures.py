@@ -73,10 +73,10 @@ def users(app):  # an app context is required
 
     actions = { code: TActions.query.filter(TActions.code_action == code).one()
                 for code in 'CRUVED' }
-    filters = [
-        TFilters.query.filter(TFilters.value_filter == str(scope)).one()
+    scope_filters = {
+        scope: TFilters.query.filter(TFilters.value_filter == str(scope)).one()
         for scope in [ 0, 1, 2, 3 ]
-    ]
+    }
 
     def create_user(username, organisme=None, scope=None):
         # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
@@ -109,12 +109,12 @@ def users(app):  # an app context is required
     db.session.add(organisme)
 
     users_to_create = [
-        ('noright_user', organisme, filters[0]),
+        ('noright_user', organisme, scope_filters[0]),
         ('stranger_user',),
-        ('associate_user', organisme, filters[2]),
-        ('self_user', organisme, filters[1]),
-        ('user', organisme, filters[2]),
-        ('admin_user', organisme, filters[3]),
+        ('associate_user', organisme, scope_filters[2]),
+        ('self_user', organisme, scope_filters[1]),
+        ('user', organisme, scope_filters[2]),
+        ('admin_user', organisme, scope_filters[3]),
     ]
 
     for username, *args in users_to_create:
@@ -257,6 +257,20 @@ def releve_data(client, datasets):
     }
 
     return data
+
+
+@pytest.fixture()
+def taxon_attribut():
+    from apptax.taxonomie.models import BibAttributs, BibNoms, CorTaxonAttribut
+    nom = BibNoms.query.filter_by(cd_ref=209902).one()
+    attribut = BibAttributs.query.filter_by(nom_attribut='atlas_milieu').one()
+    with db.session.begin_nested():
+        c = CorTaxonAttribut(
+                bib_nom=nom,
+                bib_attribut=attribut,
+                valeur_attribut='eau')
+        db.session.add(c)
+    return c
 
 
 @pytest.fixture()
