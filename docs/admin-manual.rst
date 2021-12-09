@@ -418,7 +418,7 @@ Données SIG
 Profils de taxons
 """""""""""""""""
 
-GeoNature dispose d'un mécanisme permettant de calculer des profils pour chaque taxon en se basant sur les données présentes dans la Synthèse de l'instance.
+GeoNature dispose d'un mécanisme permettant de calculer des profils pour chaque taxon en se basant sur les données validées présentes dans la Synthèse de l'instance.
 
 Ces profils sont stockés dans un schéma dédié ``gn_profiles``, et plus précisément dans les deux vues matérialisées suivantes :
 
@@ -441,20 +441,25 @@ La fonction ``gn_profiles.refresh_profiles()`` permet de rafraichir ces vues mat
 
 Pour lancer manuellement cette fonction, ouvrez une console SQL et exécutez la requête ``SELECT gn_profiles.refresh_profiles();``.
 
-Pour automatiser l'éxecution de cette fonction (tous les jours à 23h dans cet exemple), ajoutez la dans le crontab de l'utilisateur ``postgres`` :
+Cette fonction est aussi diponible en tant que fonction GeoNature qu'il est préférable d'utiliser : ``source /home/user/geonature/backend/venv/bin/activate && geonature profiles update_vms``
 
-.. code-block:: console
+Pour automatiser l'éxecution de cette fonction (tous les jours à minuit dans cet exemple), créer une tâche planfiée (cron) :
 
-    sudo su postgres
-    crontab -e
+::
 
-Puis ajouter la ligne suivante en adaptant éventuellement le nom de la base de données :
+      sudo nano /etc/cron.d/update_profile
 
-.. code-block:: console
+Ajouter la ligne suivante en changeant <CHEMIN_ABSOLU_VERS_VENV> par le chemin absolu vers le virtualenv de GeoNature et <GEONATURE_USER> par l'utilisateur Linux de GeoNature :
 
-    0 23 * * * psql -d geonature2db -c "SELECT gn_profiles.refresh_profiles();"
+::
 
-Pour enregistrer et quitter : ``Ctrl + O``, ``ENTER`` puis ``Ctrl + X``.
+    0 * * * * <GEONATURE_USER> source <CHEMIN_ABSOLU_VERS_VENV> && geonature profiles update_vms
+
+Exemple : 
+
+::
+
+    0 * * * * geonatadmin source /home/user/geonature/backend/venv/bin/activate && geonature profiles update_vms
 
 **Usage**
 
@@ -462,21 +467,18 @@ Pour chaque taxon (cd_ref) disposant de données dans la vue ``gn_profiles.v_syn
 
 Ces profils sont déclinés sur :
 
-- Le module de validation : permet d'attirer l'attention des validateurs sur les données qui sortent du "cadre" déjà connu pour le taxon considéré, et d'apporter des éléments de contexte en complément de la donnée en cours de validation
-- Le module Synthèse (fiche d'information, onglet validation) : permet d'apporter des éléments de contexte en complément des données brutes consultées
-- Le module Occtax : permet d'alerter les utilisateurs lors de la saisie de données qui sortent du "cadre" déjà connu pour un taxon considéré
+- Le module de validation permet d'attirer l'attention des validateurs sur les données qui sortent du "cadre" déjà connu pour le taxon considéré, et d'apporter des éléments de contexte en complément de la donnée en cours de validation
+- Le module Synthèse (fiche d'information, onglet validation) permet d'apporter des éléments de contexte en complément des données brutes consultées
+- Le module Occtax permet d'alerter les utilisateurs lors de la saisie de données qui sortent du "cadre" déjà connu pour un taxon considéré
 
-.. image :: https://github.com/DonovanMaillard/GeoNature-1/blob/dm/profiltaxon/docs/images/validation.png
-.. image :: https://github.com/DonovanMaillard/GeoNature-1/blob/dm/profiltaxon/docs/images/contexte_donnee.png
-
+.. image :: https://github.com/PnX-SI/GeoNature/blob/develop/docs/images/validation.png
+.. image :: https://github.com/PnX-SI/GeoNature/blob/develop/docs/images/contexte_donnee.png
 
 Plusieurs fonctions permettent de vérifier si une donnée de la synthèse est cohérente au regard du profil du taxon en question :
 
 - ``gn_profiles.check_profile_distribution`` : permet de vérifier si la donnée testée est totalement incluse dans l'aire d'occurrences déjà connue pour son taxon.
 - ``gn_profiles.check_profile_phenology`` : permet de vérifier si la phénologie d'une donnée (période, stade de vie, altitudes) est une combinaison déjà connue dans le profil du taxon
 - ``gn_profiles.check_profile_altitudes`` : permet de vérifier si une donnée est bien située dans la fourchette d'altitudes connue pour le taxon en question
-
-
 
 **Configuration et paramétrage**
 
@@ -487,17 +489,17 @@ Le calcul des profils de taxons repose sur plusieurs variables, paramétrables s
 Les paramètres généraux dans la table ``gn_profiles.t_parameters`` :
 
 - Le paramètre ``id_valid_status_for_profiles`` : permet de lister les ``id_nomenclatures`` des statuts de validation à prendre en compte pour les calculs des profils. Par exemple, en ne listant que les identifiants des nomenclatures "Certain -très probable" et "Probable", seules ces données valides seront prises en compte lors du calcul des profils (comportement par défaut). En listant tous les identifiants des nomenclatures des statuts de validation, l'ensemble des données alimenteront les profils de taxons.
-- Le paramètre ``id_rang_for_profiles`` : permet de lister les ``id_rang`` du taxref à prendre en compte pour les calculs des profils. Par défaut, les profils ne sont calculés que pour les cd_ref correspondant à des Genres, Espèces et Sous-espèces.
+- Le paramètre ``id_rang_for_profiles`` : permet de lister les ``id_rang`` de Taxref à prendre en compte pour les calculs des profils. Par défaut, les profils ne sont calculés que pour les cd_ref correspondant à des Genres, Espèces et Sous-espèces.
 - Le paramètre ``proportion_kept_data`` définit le pourcentage de données à conserver lors du calcul des altitudes valides (``gn_profiles.vm_cor_taxon_phenology``), en retirant ainsi les extrêmes. Ce paramètre, définit à 95% par défaut, doit être compris entre 51 et 100% (voir détails ci-après).
 
-Les deux premiers paramètres permettent de filtrer les données dans la vue ``gn_profiles.v_synthese_for_profiles``. Cette vue comporte les données de la synthèse qui répondent aux paramètres et qui alimenteront les profiles de taxons. Les clauses WHERE de cette vue peuvent être adaptées pour filtrer les données sur davantage de critères et répondre aux besoins plus spécifiques, mais sa structure doit rester inchangée.
-
+Les deux premiers paramètres permettent de filtrer les données dans la vue ``gn_profiles.v_synthese_for_profiles``. Cette vue comporte les données de la synthèse qui répondent aux paramètres et qui alimenteront les profils de taxons. Les clauses WHERE de cette vue peuvent être adaptées pour filtrer les données sur davantage de critères et répondre aux besoins plus spécifiques, mais sa structure doit rester inchangée.
 
 Les paramètres définis par taxon le sont dans la table ``gn_profiles.cor_taxons_profiles_parameters`` :
 
 Les profils peuvent être calculés avec des règles différentes en fonction des taxons. Ceux-ci sont définis au niveau du cd_nom, à n'importe quel rang (espèce, famille, règne etc). Ils seront appliqués de manière récursive à tous les taxons situés "sous" le cd_ref paramétré.
 
-Dans le cas où un taxon hérite de plusieurs règles (une définie pour son ordre et une autre définie pour sa famille par exemple), les paramètres définis au plus proche du taxon considérés seront pris en compte.
+Dans le cas où un taxon hérite de plusieurs règles (une définie pour son ordre et une autre définie pour sa famille par exemple), les paramètres définis au plus proche du taxon considéré seront pris en compte.
+
 Par exemple, s'il existe des paramètres pour le phylum "Animalia" (cd_nom 183716) et d'autres pour le renard (cd_nom 60585), les paramètres du renard seront appliqués en priorité pour cette espèce, mais les paramètres Animalia s'appliqueront à tous les autres animaux.
 
 Les règles appliquables à chaque taxon sont récupérées par la fonction ``gn_profiles.get_profiles_parameters(cdnom)``.
@@ -512,10 +514,9 @@ Par défaut, une précision spatiale de 2000m et une précision spatiale de 10j 
 
 A terme, d'autres variables pourront compléter ces profils : habitats (habref) ou comportement (nidification, reproduction, migration...) notamment.
 
-
 *Configuration - Activer/désactiver les profils* :
 
-Il est possible de désaciver l'ensemble des fonctionnalités liées aux profils dans l'interface, en utilisant le paramètre suivant dans le fichier ``geonature/config/geonature_config.toml``
+Il est possible de désactiver l'ensemble des fonctionnalités liées aux profils dans l'interface, en utilisant le paramètre suivant dans le fichier ``geonature/config/geonature_config.toml``
 
 ::
 
@@ -523,7 +524,7 @@ Il est possible de désaciver l'ensemble des fonctionnalités liées aux profils
       ENABLE_PROFILES = true/false
 
 
-**Précisions sur calcul des phénologies**
+**Précisions sur le calcul des phénologies**
 
 Pour chaque taxon, la phénologie est calculée en croisant dans un premier temps les périodes d'observations et, selon les paramètres, les stades de vie.
 
@@ -534,7 +535,6 @@ Pour chacune des combinaisons obtenues (période x stade de vie), sont alors cal
 - L'altitude minimale fiable (en retirant x% de données extrêmes selon le paramètre ``proportion_kept_data``)
 - L'altitude maximale fiable (en retirant x% de données extrêmes selon le paramètre ``proportion_kept_data``)
 - Le nombre de données valides correspondantes
-
 
 *Exclusion des données extrêmes*
 
@@ -551,7 +551,6 @@ Il faut donc (1/[1- ``proportion_kept_data`` /100])+1 données pour que des alti
 - 21 données minimum par période/stade si ``proportion_kept_data`` =95
 - 11 données minimum par période/stade si ``proportion_kept_data`` =90
 - 3 données minimum par période/stade si ``proportion_kept_data`` =51
-
 
 Fonctions
 """""""""
