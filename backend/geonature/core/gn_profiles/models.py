@@ -4,7 +4,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
@@ -61,7 +61,7 @@ class VConsistancyData(DB.Model):
     id_synthese = DB.Column(DB.Integer,
                             ForeignKey(Synthese.id_synthese),
                             primary_key=True)
-    synthese = relationship(Synthese, backref='profile')
+    synthese = relationship(Synthese, backref=backref('profile', uselist=False))
     id_sinp = DB.Column(UUID(as_uuid=True))
     cd_ref = DB.Column(DB.Integer)
     valid_name = DB.Column(DB.Unicode)
