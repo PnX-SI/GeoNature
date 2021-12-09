@@ -76,7 +76,7 @@ def get_synthese_data(info_role):
     fields |= { col['column_name']
                for col in blueprint.config["COLUMN_LIST"] }
 
-    filters = request.json
+    filters = request.json or {}
 
     result_limit = filters.pop("limit", blueprint.config["NB_MAX_OBS_MAP"])
 

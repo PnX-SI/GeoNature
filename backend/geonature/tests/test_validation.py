@@ -21,10 +21,10 @@ class TestValidation:
     def test_get_synthese_data(self, users, synthese_data):
         response = self.client.get(url_for("validation.get_synthese_data"))
         assert response.status_code == Unauthorized.code
-        set_logged_user_cookie(self.client, users['user'])
+        set_logged_user_cookie(self.client, users['self_user'])
         response = self.client.get(url_for("validation.get_synthese_data"))
         assert response.status_code == 200
-        assert response.json['nb_total'] >= len(synthese_data)
+        assert len(response.json['features']) >= len(synthese_data)
 
     def test_get_status_names(self, users, synthese_data):
         response = self.client.get(url_for("validation.get_statusNames"))
