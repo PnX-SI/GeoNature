@@ -9,10 +9,10 @@ Profils de taxons
 
 **TO CHECK :**
 
-- Virer les tables et fonctions de Gil qui calculaient des profils de taxon inutilisés ?
+- Virer les tables et fonctions de Gil qui calculaient des profils de taxon inutilisés ? https://github.com/PnX-SI/GeoNature/blob/develop/data/core/synthese.sql#L426 / https://github.com/PnX-SI/GeoNature/blob/develop/data/core/synthese.sql#L498
 - Fiches taxons et valeurs d'altitudes nulles
 - Fiches taxons sans données ne sont pas claires
-- Profils - Bien indiquer que le calcul se base que sur les données validées
+- Profils - Bien indiquer que le calcul se base que sur les données considérées comme validées
 - Profils - Indiquer quelles données sont prises en compte et comment modifier les statuts utilisés / Renvoyer à la nouvelle doc
 - Fonction update_configuration et restart (message dans terminal et documentation ?) A indiquer ici par exemple avec la commande systemd : https://docs.geonature.fr/admin-manual.html#configuration-generale-de-l-application
 - Nom des modules par défaut lors de l'installation, ajouter majuscules
@@ -24,13 +24,24 @@ Profils de taxons
 
 - Dans le module VALIDATION, quand j'ouvre le détail d'une observation : 
   - Le bouton Précédent/Suivant en bas de la modale ne fonctionne pas (ERROR TypeError: n is undefined)
-  - J'essaie de modifier le statut de validation d'une observation. Cela ne fonctionne pas (ERROR Error: Uncaught (in promise): Error: Parameter "key" required)
 - L'attribution d'un statut de validation depuis la liste fonctionne par contre
-- Par contre, si j'attribue une statut de validation à une observation depuis la liste, ça l'attribue bien. Quand j'ouvre sa fiche, l'info est bien dans l'onglet "Validation", bien dans l'onglet "Détail de l'occurrence", mais pas mis à jour dans le champs en haut de la fiche "Statut de validation actuel"
+- Si j'attribue un statut de validation à une observation depuis la liste, ça l'attribue bien. Quand j'ouvre sa fiche, l'info est bien dans l'onglet "Validation", bien dans l'onglet "Détail de l'occurrence", mais pas mis à jour dans le champs en haut de la fiche "Statut de validation actuel"
+- Si j'attribue un statut de validation depuis la fiche d'une observation, ça l'attribue bien, mais ça ne modifie pas le "Statut de validation actuel", ni le statut de validation dans l'onglet "Détail de l'occurrence", ni ne l'ajoute dans l'onglet "Validation".
 - La recherche est buggée aussi dans le module Validation. Je cherche un "Statut de validation", ça fonctionne, j'en ajoute un second, c'est OK. Mais si je coche le filtre "Données modifiées depuis la dernière validation", il fonctionne, mais quand je le décoche, il semble encore actif... Idem pour les scores ?
 - Le filtre commune dans "Validation" et "Synthèse" affiche "Communes id_area " au lieu de "Communes"
-- Bug des médias dans Occtax, à cause du type ?
-- Enchainer des relevés avec un GPX ne permet de selectionner un autre objet du GPX au second relevé
+- Bug d'ajout d'un média dans Occtax, à cause du type qui est affiché sous forme d'id ?
+- Enchainer des relevés avec un GPX ne permet pas de selectionner un autre objet du GPX au second relevé
+- Occtax : Je déplace un point en le glissant, l'altitude n'est pas recalculée, si je clique un nouveau point elle l'est
+- Occtax : Je dessine un polygone, je le modifie, l'altitude n'est pas recalculée et le précédent polygone reste affiché sur la carte...
+- MTD : Je créé un JDD, erreur 500 au moment d'enregistrer sur /geonature/api/meta/dataset:1
+- Validation, j'ajoute un filtre avancé (preuve existence = oui), la recherche plante / POST http://51.254.242.82/geonature/api/validation 500 (INTERNAL SERVER ERROR) - ERROR Error: Parameter "key" required
+- Idem dans la Synthèse mais avec erreur différente :  Failed to load resource: the server responded with a status of 500 (INTERNAL SERVER ERROR) - /geonature/api/synthese/for_web:1 
+- Dans la synthèse idem quand je cherche sur un organisme
+- Synthèse : Recherche avancée - Groupes OK, mais si je choisis un rang (Plantae), erreur
+- Idem sur Arbre taxonomique
+- Synthèse - J'ouvre une fiche info / Pas mal d'erreurs sur les profils
+- Fiche info synthèse : Score vide quand nul ?
+- Profil : Des croix partout quand pas de données validées pour ce taxon...
 
 **🚀 Nouveautés**
 
@@ -39,7 +50,9 @@ Profils de taxons
   - Backend (#1104)
   - Frontend (#1105)
   - Améliorations JPM (#1531)
+  - Paramètres modifiables
   - Statuts pris en compte paramétrables
+  - Documentation
 * [OCCTAX] Contrôle de la cohérence des nouvelles données saisies par rapport au profil
 * [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
 * [SYNTHESE et VALIDATION] Enrichissement de l'onglet "Validation" en y ajoutant les informations du profil du taxon observé
@@ -86,17 +99,17 @@ devient
         { label = "Communes", type_code = "COM" }
     ]
 
-* Les nouvelles fonctionnalités liées aux profils de taxons nécessitent de rafraichir des vues materialisées à intervales réguliers et donc de créer une tâche planfiée (cron):
+* Les nouvelles fonctionnalités liées aux profils de taxons nécessitent de rafraichir des vues materialisées à intervalles réguliers et donc de créer une tâche planfiée (cron) :
 
 ::
 
       sudo nano /etc/cron.d/update_profile
 
-Ajouter la ligne suivante en changeant <CHEMIN_ABSOLUE_VERS_VENV> par le chemin absolu vers le virtualenv de GeoNature et <GEONATURE_USER> par l'utilisateur Linux de GeoNature:
+Ajouter la ligne suivante en changeant <CHEMIN_ABSOLU_VERS_VENV> par le chemin absolu vers le virtualenv de GeoNature et <GEONATURE_USER> par l'utilisateur Linux de GeoNature :
 
 ::
 
-    0 * * * * <GEONATURE_USER> source <CHEMIN_ABSOLUE_VERS_VENV> && geonature profiles update_vms
+    0 * * * * <GEONATURE_USER> source <CHEMIN_ABSOLU_VERS_VENV> && geonature profiles update_vms
 
 Exemple : 
 
