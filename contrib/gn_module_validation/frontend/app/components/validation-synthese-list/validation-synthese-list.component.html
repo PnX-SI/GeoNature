@@ -49,12 +49,12 @@
       ngx-datatable-cell-template
     >
       <div class="modified_data">
-        <span *ngIf="row.meta_update_date > row.validation_date">
+        <span *ngIf="row.last_validation && row.meta_update_date > row.last_validation.validation_date">
           <i class="material-icons">warning</i>
         </span>
         <span
           [ngStyle]="{'background': 'white'}"
-          *ngIf="row.meta_update_date > row.validation_date"
+          *ngIf="row.last_validation && row.meta_update_date > row.last_validation.validation_date"
           class="modif_data"
         >{{modif_text}}</span>
       </div>
@@ -78,7 +78,7 @@
         (click)="openInfoModal(row)"
         class="btn btn-info fa fa-info-circle"
         title="details"
-        [disabled]="row.unique_id_sinp == 'None'"
+        [disabled]="row.unique_id_sinp == null"
       >
       </button>
     </ng-template>
@@ -99,7 +99,7 @@
             'meta_validation_date',
             'meta_create_date',
             'meta_update_date',
-            'validation_date'
+            'last_validation.validation_date'
           ].includes(col.column_name)"
       let-row="row"
       ngx-datatable-cell-template
@@ -114,15 +114,15 @@
       <div class="statusContent">
         <span
           class="validationCircle"
-          [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}"
+          [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
         >
-          <i class="material-icons">{{row.validation_auto}}</i></span>
+          <i class="material-icons">{{row.last_validation.validation_auto}}</i></span>
         <div
-          [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.cd_nomenclature_validation_status]?.color}"
+          [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
           class="statusName"
         >
-          <span>{{getValidationStatusMnemonique(row.cd_nomenclature_validation_status)}}</span><span
-            *ngIf="row.validation_auto"
+          <span>{{row.nomenclature_valid_status.mnemonique}}</span><span
+            *ngIf="row.last_validation.validation_auto"
           > (automatique)</span>
         </div>
       </div>
@@ -144,7 +144,7 @@
       let-row="row"
       ngx-datatable-cell-template
     >
-      <div [ngSwitch]="row.score">
+      <div *ngIf="row.profile" [ngSwitch]="row.profile.score">
         <mat-chip
           *ngSwitchCase="'0'"
           class="chip-alert"
@@ -153,7 +153,7 @@
           [popoverTitle]="popTitle"
           container="body"
           placement="left"
-          > {{row.score}}/3 
+          > {{row.profile.score}}/3 
         </mat-chip>
         <mat-chip
           *ngSwitchCase="'3'"
@@ -163,7 +163,7 @@
           [popoverTitle]="popTitle"
           container="body"
           placement="left"
-          > {{row.score}}/3 
+          > {{row.profile.score}}/3 
         </mat-chip>
         <mat-chip
           *ngSwitchDefault
@@ -173,23 +173,30 @@
           [popoverTitle]="popTitle"
           container="body"
           placement="left"
-          >  {{row.score}}/3 
+          >  {{row.profile.score}}/3 
         </mat-chip>
-
-        
       </div>
+      <div *ngIf="!row.profile">
+        <mat-chip
+          class= "chip-disabled"
+          container="body"
+          placement="left"
+          > –
+        </mat-chip>
+      </div>
+
       <ng-template #popTitle> Cohérence par rapport au profil</ng-template>
 
       <ng-template #popContent>
         <table class="table table-sm font-xs table-striped">
             <tr>
               <td>Aire de répartition </td>
-              <td *ngIf="row.valid_distribution">
+              <td *ngIf="row.profile.valid_distribution">
                 <mat-icon
                   class="success"
                 > check </mat-icon>
               </td>
-              <td *ngIf="!row.valid_distribution">
+              <td *ngIf="!row.profile.valid_distribution">
                 <mat-icon
                   class="error"
                 > close </mat-icon>
@@ -197,12 +204,12 @@
             </tr>
           <tr>
             <td>Phénologie </td>
-            <td *ngIf="row.valid_phenology">
+            <td *ngIf="row.profile.valid_phenology">
               <mat-icon
                 class="success"
               > check </mat-icon>
             </td>
-            <td *ngIf="!row.valid_phenology">
+            <td *ngIf="!row.profile.valid_phenology">
               <mat-icon
                 class="error"
               > close </mat-icon>
@@ -210,12 +217,12 @@
           </tr>
           <tr>
             <td> Altitudes</td>
-            <td *ngIf="row.valid_altitude">
+            <td *ngIf="row.profile.valid_altitude">
               <mat-icon
                 class="success"
               > check </mat-icon>
             </td>
-            <td *ngIf="!row.valid_altitude">
+            <td *ngIf="!row.profile.valid_altitude">
               <mat-icon
                 class="error"
               > close </mat-icon>

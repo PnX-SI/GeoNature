@@ -1,27 +1,29 @@
 import logging
 import datetime
 import json
+from geojson import FeatureCollection
+
+from flask import Blueprint, request, jsonify
 from flask.globals import session
 from flask.json import jsonify
-from geonature.core.gn_commons.models.base import TValidations
+import sqlalchemy as sa
 from sqlalchemy import select, func
-from flask import Blueprint, request, jsonify
-from geojson import FeatureCollection
-from sqlalchemy.sql.expression import cast
+from sqlalchemy.sql.expression import cast, outerjoin
 from sqlalchemy.sql.sqltypes import Integer
+from sqlalchemy.orm import aliased, joinedload, contains_eager
 from marshmallow import ValidationError
 
 from utils_flask_sqla.response import json_resp
 from utils_flask_sqla.serializers import SERIALIZERS
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
-
-from geonature.utils.env import DB
+from geonature.utils.env import DB, db
 from geonature.utils.utilssqlalchemy import test_is_uuid
 from geonature.core.gn_synthese.models import Synthese
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_commons.schemas import TValidationSchema
+from geonature.core.gn_commons.models.base import TValidations
 
 from werkzeug.exceptions import BadRequest
 from geonature.core.gn_commons.models import TValidations
@@ -34,7 +36,6 @@ log = logging.getLogger()
 
 @blueprint.route("", methods=["GET", "POST"])
 @permissions.check_cruved_scope("R", True, module_code="VALIDATION")
-@json_resp
 def get_synthese_data(info_role):
     """
     Return synthese and t_validations data filtered by form params
@@ -49,124 +50,122 @@ def get_synthese_data(info_role):
 
     Returns
     -------
-    dict
-        {
-        "data": FeatureCollection
-        "nb_obs_limited": int est-ce que le nombre de données retournée est > au nb limites
-        "nb_total": nb_total,
-        }
+    FeatureCollection
+    """
+
+    fields = {
+        'id_synthese',
+        'unique_id_sinp',
+        'entity_source_pk_value',
+        'meta_update_date',
+        'id_nomenclature_valid_status',
+        'nomenclature_valid_status.cd_nomenclature',
+        'nomenclature_valid_status.mnemonique',
+        'nomenclature_valid_status.label_default',
+        'last_validation.validation_date',
+        'last_validation.validation_auto',
+        'taxref.cd_nom',
+        'taxref.nom_vern',
+        'taxref.lb_nom',
+        'taxref.nom_vern_or_lb_nom',
+        'profile.score',
+        'profile.valid_phenology',
+        'profile.valid_altitude',
+        'profile.valid_distribution',
+    }
+    fields |= { col['column_name']
+               for col in blueprint.config["COLUMN_LIST"] }
+
+    filters = request.json
+
+    result_limit = filters.pop("limit", blueprint.config["NB_MAX_OBS_MAP"])
 
     """
-    if request.json:
-        filters = request.json
-    elif request.data:
-        #  decode byte to str - compat python 3.5
-        filters = json.loads(request.data.decode("utf-8"))
-    else:
-        filters = {key: request.args.get(key) for key, value in request.args.items()}
+    1) We start creating the query with SQLAlchemy ORM.
+    2) We convert this query to SQLAlchemy Core in order to use
+       SyntheseQuery utility class to apply user filters.
+    3) We get back the results in the ORM through from_statement.
+       We populate relationships with contains_eager.
 
-
-    if "limit" in filters:
-        result_limit = filters.pop("limit")
-    else:
-        result_limit = blueprint.config["NB_MAX_OBS_MAP"]
-    # Construction de la requête select
-    # Les champs correspondent aux champs obligatoires
-    #       + champs définis par l'utilisateur
-    columns = (
-        blueprint.config["COLUMN_LIST"]
-        + blueprint.config["MANDATORY_COLUMNS"]
+    We create a lot of aliases, that are selected at step 1, 
+    and given to contains_eager at step 3 to correctly identify columns
+    to use to populate relationships models.
+    """
+    last_validation_subquery = (
+        TValidations.query
+        .filter(TValidations.uuid_attached_row==Synthese.unique_id_sinp)
+        .order_by(TValidations.validation_date.desc())
+        .limit(1)
+        .subquery()
+        .lateral('last_validation')
     )
-    # remove doublon
-    columns = list({v['column_name']:v for v in columns}.values())
-    select_columns = []
-    serializer = {}
-    for column_config in columns:
-        try:
-            if "func" in column_config:
-                col = getattr(VSyntheseValidation, column_config["id_nomenclature_field"])
-            else:
-                col = getattr(VSyntheseValidation, column_config["column_name"])
-        except AttributeError as error:
-            log.error("Validation : colonne {} inexistante".format(col))
-        else:
-            if "func" in column_config:
-                label = column_config.get("column_name")
-                if column_config["func"] == "cd_nomenclature":
-                    select_columns.append(
-                        func.ref_nomenclatures.get_cd_nomenclature(col).label(label)
-                    )
-                else:
-                    select_columns.append(
-                        func.ref_nomenclatures.get_nomenclature_label(col).label(label)
-                    )
+    last_validation = aliased(TValidations, last_validation_subquery)
+    relationships = list({
+        field.split('.', 1)[0]
+        for field in fields
+        if '.' in field and not field.startswith('last_validation.')
+    })
+    profile_index = relationships.index('profile')
+    relationships = [ getattr(Synthese, rel) for rel in relationships ]
+    aliases = [
+        aliased(rel.property.mapper.class_)
+        for rel in relationships
+    ]
+    profile_alias = aliases[profile_index]  # for later use in filters
 
-                serializer[label] = lambda x: x
-            else:
-                select_columns.append(col)
-                serializer[column_config["column_name"]] = SERIALIZERS.get(
-                    col.type.__class__.__name__.lower(), lambda x: x
-                )
-    # Construction de la requête avec SyntheseQuery
-    #  Pour profiter des opérations CRUVED
     query = (
-        select(select_columns)
-        .where(VSyntheseValidation.the_geom_4326.isnot(None))
-        .order_by(VSyntheseValidation.date_min.desc())
+        db.session.query(
+            Synthese,
+            *aliases,
+            last_validation,
+        )
     )
-    valid_distribution = filters.pop("valid_distribution", None)
-    valid_altitude = filters.pop("valid_altitude", None)
-    valid_phenology = filters.pop("valid_phenology", None)
+    for rel, alias in zip(relationships, aliases):
+        query = query.outerjoin(rel.of_type(alias))
+    query = (
+        query
+        .outerjoin(last_validation, sa.true())
+        .filter(Synthese.the_geom_4326.isnot(None))
+        .order_by(Synthese.date_min.desc())
+    )
+
+    # filter with profile
     score = filters.pop("score", None)
-    validation_query_class = SyntheseQuery(VSyntheseValidation, query, filters)
-
-    #filter with profile
-    if score:
-        validation_query_class.query = validation_query_class.query.where(
-            VSyntheseValidation.valid_phenology.cast(Integer)+ 
-            VSyntheseValidation.valid_altitude.cast(Integer) + 
-            VSyntheseValidation.valid_distribution.cast(Integer)
-             == score
-        )
-
+    if score is not None:
+        query = query.filter(profile_alias.score==score)
+    valid_distribution = filters.pop("valid_distribution", None)
     if valid_distribution is not None:
-        validation_query_class.query = validation_query_class.query.where(
-            VSyntheseValidation.valid_distribution.is_(valid_distribution)
-        )
+        query = query.filter(profile_alias.valid_distribution.is_(valid_distribution))
+    valid_altitude = filters.pop("valid_altitude", None)
     if valid_altitude is not None:
-        validation_query_class.query = validation_query_class.query.where(
-            VSyntheseValidation.valid_altitude.is_(valid_altitude)
-        )
+        query = query.filter(profile_alias.valid_altitude.is_(valid_altitude))
+    valid_phenology = filters.pop("valid_phenology", None)
     if valid_phenology is not None:
-        validation_query_class.query = validation_query_class.query.where(
-            VSyntheseValidation.valid_phenology.is_(valid_phenology)
-        )
+        query = query.filter(profile_alias.valid_phenology.is_(valid_phenology))
+    if filters.pop("modif_since_validation", None):
+        query = query.filter(Synthese.meta_update_date > last_validation.validation_date)
 
-    validation_query_class.filter_query_all_filters(info_role)
-    result = DB.engine.execute(validation_query_class.query.limit(result_limit))
-    nb_total = 0
-    geojson_features = []
-    properties = {}
-    # TODO : add join on VConsistency data
-    for r in result:
-        properties = {k: serializer[k](r[k]) for k in serializer.keys()}
-        properties["score"] = (
-            r["valid_distribution"] or 0) + (
-                r["valid_phenology"] or 0) + (
-                    r["valid_altitude"] or 0)
-        properties["nom_vern_or_lb_nom"] = (
-            r["nom_vern"] if r["nom_vern"] else r["lb_nom"]
-        )
-        geojson = json.loads(r["geojson"])
-        geojson["properties"] = properties
-        geojson["id"] = r["id_synthese"]
-        geojson_features.append(geojson)
+    # Step 2: give SyntheseQuery the Core selectable from ORM query
+    assert(len(query.selectable.froms) == 1)
+    query = (
+        SyntheseQuery(Synthese, query.selectable, filters,
+                      query_joins=query.selectable.froms[0])
+        .filter_query_all_filters(info_role)
+        .limit(result_limit)
+    )
 
-    return {
-        "data": FeatureCollection(geojson_features),
-        "nb_obs_limited": nb_total == blueprint.config["NB_MAX_OBS_MAP"],
-        "nb_total": nb_total,
-    }
+    # Step 3: Construct Synthese model from query result
+    query = (
+        Synthese.query
+        .options(*[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)])
+        .options(contains_eager(Synthese.last_validation, alias=last_validation))
+        .from_statement(query)
+    )
+
+    # The raise option ensure that we have correctly retrived relationships data at step 3
+    return jsonify(
+        query.as_geofeaturecollection(fields=fields, unloaded='raise')
+    )
 
 
 @blueprint.route("/statusNames", methods=["GET"])

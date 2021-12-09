@@ -54,7 +54,8 @@ class SyntheseQuery:
         id_dataset_column="id_dataset",
         observers_column="observers",
         id_digitiser_column="id_digitiser",
-        with_generic_table=False
+        with_generic_table=False,
+        query_joins=None,
     ):
         self.query = query
 
@@ -66,10 +67,10 @@ class SyntheseQuery:
                 filters[k] = [filters[k]]
 
         self.filters = filters
-        self.first = True
+        self.first = query_joins is None
         self.model = model
         self._already_joined_table = []
-        self.query_joins = None
+        self.query_joins = query_joins
 
         if with_generic_table:
             model_temp = model.columns
@@ -275,11 +276,19 @@ class SyntheseQuery:
             self.query = self.query.where(self.model.date_max <= date_max)
 
         if "id_acquisition_framework" in self.filters:
-            self.query = self.query.where(
-                self.model.id_acquisition_framework.in_(
-                    self.filters.pop("id_acquisition_framework")
+            if hasattr(self.model, 'id_acquisition_framework'):
+                self.query = self.query.where(
+                    self.model.id_acquisition_framework.in_(
+                        self.filters.pop("id_acquisition_framework")
+                    )
                 )
-            )
+            else:
+                self.add_join(TDatasets, self.model.id_dataset, TDatasets.id_dataset)
+                self.query = self.query.where(
+                    TDatasets.id_acquisition_framework.in_(
+                        self.filters.pop("id_acquisition_framework")
+                    )
+                )
 
         if "geoIntersection" in self.filters:
             # Insersect with the geom send from the map
@@ -316,10 +325,6 @@ class SyntheseQuery:
                     ),
                 )
             )
-        #  use for validation module since the class is factorized
-        if "modif_since_validation" in self.filters:
-            self.query = self.query.where(self.model.meta_update_date > self.model.validation_date)
-            self.filters.pop("modif_since_validation")
         if "unique_id_sinp" in self.filters:
             try:
                 uuid_filter = uuid.UUID(self.filters.pop("unique_id_sinp")[0])

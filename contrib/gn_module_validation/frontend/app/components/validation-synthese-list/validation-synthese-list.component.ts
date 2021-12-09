@@ -297,14 +297,4 @@ export class ValidationSyntheseListComponent
       this.mapListService.selectedRow = [...this.mapListService.selectedRow];
     });
   }
-
-  getValidationStatusMnemonique(code) {
-    var statusF = this.validationStatus.filter((st) => st.cd_nomenclature == code);
-    if (statusF.length > 0) {
-      return statusF[0].mnemonique;
-    }
-    else {
-      return null;
-    }
-  }
 }
