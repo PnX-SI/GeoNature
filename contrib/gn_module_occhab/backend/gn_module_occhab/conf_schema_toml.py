@@ -30,7 +30,7 @@ class FormConfig(Schema):
 
 
 class GnModuleSchemaConf(Schema):
-    ID_LIST_HABITAT = fields.Integer(load_default=1)
+    ID_LIST_HABITAT = fields.Integer(load_default=None)
     OBSERVER_AS_TXT = fields.Boolean(load_default=False)
     OBSERVER_LIST_ID = fields.Integer(load_default=1)
     formConfig = fields.Nested(FormConfig, load_default=dict())
