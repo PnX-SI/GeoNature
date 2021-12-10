@@ -19,6 +19,8 @@ Profils de taxons
 - PR Joel pour Monitoring
 - Conf Apache sur sous-domaine (voir retour Gil) - Ajouter documentation
 - PR de Jean-Brieuc et MAJ des données à tester et automatiser ou documenter ?
+- Documenter évolutions conf validation et si certains avaient modifié la vue ?
+- Dans Occtax, en survolant les nomenclatures, avant on affichait la description, désormais le label...
 
 **BUGS**
 
@@ -33,6 +35,7 @@ Profils de taxons
 - Enchainer des relevés avec un GPX ne permet pas de selectionner un autre objet du GPX au second relevé
 - Occtax : Je déplace un point en le glissant, l'altitude n'est pas recalculée, si je clique un nouveau point elle l'est
 - Occtax : Je dessine un polygone, je le modifie, l'altitude n'est pas recalculée et le précédent polygone reste affiché sur la carte...
+- Occtax : Je modifie un taxon qui avait un dénombrement où min différent de max, il me remet max = min
 - MTD : Je créé un JDD, erreur 500 au moment d'enregistrer sur /geonature/api/meta/dataset:1
 - Validation, j'ajoute un filtre avancé (preuve existence = oui), la recherche plante / POST http://51.254.242.82/geonature/api/validation 500 (INTERNAL SERVER ERROR) - ERROR Error: Parameter "key" required
 - Idem dans la Synthèse mais avec erreur différente :  Failed to load resource: the server responded with a status of 500 (INTERNAL SERVER ERROR) - /geonature/api/synthese/for_web:1 
