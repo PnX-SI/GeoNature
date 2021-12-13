@@ -29,22 +29,21 @@ Profils de taxons
 - L'attribution d'un statut de validation depuis la liste fonctionne par contre
 - Si j'attribue un statut de validation à une observation depuis la liste, ça l'attribue bien. Quand j'ouvre sa fiche, l'info est bien dans l'onglet "Validation", bien dans l'onglet "Détail de l'occurrence", mais pas mis à jour dans le champs en haut de la fiche "Statut de validation actuel"
 - Si j'attribue un statut de validation depuis la fiche d'une observation, ça l'attribue bien, mais ça ne modifie pas le "Statut de validation actuel", ni le statut de validation dans l'onglet "Détail de l'occurrence", ni ne l'ajoute dans l'onglet "Validation".
-- La recherche est buggée aussi dans le module Validation. Je cherche un "Statut de validation", ça fonctionne, j'en ajoute un second, c'est OK. Mais si je coche le filtre "Données modifiées depuis la dernière validation", il fonctionne, mais quand je le décoche, il semble encore actif... Idem pour les scores ?
-- Le filtre commune dans "Validation" et "Synthèse" affiche "Communes id_area " au lieu de "Communes"
 - Bug d'ajout d'un média dans Occtax, à cause du type qui est affiché sous forme d'id ?
 - Enchainer des relevés avec un GPX ne permet pas de selectionner un autre objet du GPX au second relevé
 - Occtax : Je déplace un point en le glissant, l'altitude n'est pas recalculée, si je clique un nouveau point elle l'est
 - Occtax : Je dessine un polygone, je le modifie, l'altitude n'est pas recalculée et le précédent polygone reste affiché sur la carte...
 - Occtax : Je modifie un taxon qui avait un dénombrement où min différent de max, il me remet max = min
+- Occtax : liste des habitats masquée, exemple : ville
 - MTD : Je créé un JDD, erreur 500 au moment d'enregistrer sur /geonature/api/meta/dataset:1
 - Validation, j'ajoute un filtre avancé (preuve existence = oui), la recherche plante / POST http://51.254.242.82/geonature/api/validation 500 (INTERNAL SERVER ERROR) - ERROR Error: Parameter "key" required
 - Idem dans la Synthèse mais avec erreur différente :  Failed to load resource: the server responded with a status of 500 (INTERNAL SERVER ERROR) - /geonature/api/synthese/for_web:1 
 - Dans la synthèse idem quand je cherche sur un organisme
-- Synthèse : Recherche avancée - Groupes OK, mais si je choisis un rang (Plantae), erreur
-- Idem sur Arbre taxonomique
+- Synthèse : Recherche avancée - Groupes OK mais non affiché, et si je choisis un rang (Plantae), ça filtre la carte mais pas la liste...
+- Idem sur Arbre taxonomique (dont les valeurs ne se mettent pas à jour en fonction des données ?)
 - Synthèse - J'ouvre une fiche info / Pas mal d'erreurs sur les profils
 - Fiche info synthèse : Score vide quand nul ?
-- Profil : Des croix partout quand pas de données validées pour ce taxon...
+- Fiche info synthèse et profil : Des croix partout quand pas de données validées pour ce taxon...
 
 **🚀 Nouveautés**
 
