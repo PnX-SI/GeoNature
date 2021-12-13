@@ -346,7 +346,7 @@ class TDatasetsQuery(BaseQuery):
             ]
             # if organism is None => do not filter on id_organism even if level = 2
             if scope == 2 and user.id_organisme is not None:
-                ors.append(TDatasets.cor_dataset_actor.any(id_organism=g.current_user.id_organisme))
+                ors.append(TDatasets.cor_dataset_actor.any(id_organism=user.id_organisme))
             self = self.filter(or_(*ors))
         return self
 
@@ -382,22 +382,22 @@ class TDatasetsQuery(BaseQuery):
                 self = self.filter(col == params[param])
         return self
 
-    def filter_by_readable(self):
+    def filter_by_readable(self, user=None):
         """
             Return the datasets where the user has autorization via its CRUVED
         """
         return self.filter_by_scope(
-            self._get_read_scope()
+            self._get_read_scope(user)
         )
 
-    def filter_by_creatable(self, module_code):
+    def filter_by_creatable(self, module_code, user=None):
         """
         Return all dataset where user have read rights minus those who user to not have
         create rigth
         """
         query = self.filter(TDatasets.modules.any(module_code=module_code))
-        scope = self._get_read_scope()
-        create_scope = self._get_create_scope(module_code)
+        scope = self._get_read_scope(user)
+        create_scope = self._get_create_scope(module_code, user=user)
         if create_scope < scope:
             scope = create_scope
         return query.filter_by_scope(scope)

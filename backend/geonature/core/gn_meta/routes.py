@@ -881,9 +881,7 @@ def updateAcquisitionFramework(id_acquisition_framework, info_role):
     Post one AcquisitionFramework data for update acquisition_framework
     .. :quickref: Metadata;
     """
-    acquisition_framework = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
-    if not acquisition_framework:
-        return {"message": "not found"}, 404
+    acquisition_framework = TAcquisitionFramework.query.get_or_404(id_acquisition_framework)
 
     return AcquisitionFrameworkSchema().dump(
         acquisitionFrameworkHandler(request=request, acquisition_framework=acquisition_framework, info_role=info_role)
@@ -1059,14 +1057,8 @@ def publish_acquisition_framework(info_role, af_id):
 
     # first commit before sending mail
     DB.session.commit()
-    try:
-        # We send a mail to notify the AF publication
-        publish_acquisition_framework_mail(af, info_role)
-    except Exception:
-        return {
-            'error': 'error while sending mail',
-            'name': 'mailError'
-            }, 500
+    # We send a mail to notify the AF publication
+    publish_acquisition_framework_mail(af, info_role)
 
     return af.as_dict()
 
