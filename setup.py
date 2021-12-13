@@ -29,7 +29,7 @@ setuptools.setup(
     },
     install_requires=list(open('backend/requirements.in', 'r')),
     extras_require={
-        'tests': ['pytest', 'pytest-flask'],
+        'tests': ['pytest', 'pytest-flask', 'jsonschema'],
     },
     classifiers=[
         "Framework :: Flask",
