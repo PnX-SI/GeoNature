@@ -180,8 +180,8 @@ class SyntheseQuery:
         cd_ref_childs.extend(cd_ref_selected)
 
         if len(cd_ref_childs) > 0:
-            sub_query_synonym = select([Taxref.cd_nom]).where(Taxref.cd_ref.in_(cd_ref_childs))
-            self.query = self.query.where(self.model.cd_nom.in_(sub_query_synonym))
+            self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
+            self.query = self.query.where(Taxref.cd_ref.in_(cd_ref_childs))
         if "taxonomy_group2_inpn" in self.filters:
             self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
             self.query = self.query.where(
