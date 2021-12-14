@@ -116,26 +116,26 @@
           class="validationCircle"
           [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
         >
-          <i class="material-icons">{{row.last_validation.validation_auto}}</i></span>
+          <i *ngIf="row.last_validation"  class="material-icons">{{row.last_validation.validation_auto}}</i>
+        </span>
         <div
           [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
           class="statusName"
         >
-          <span>{{row.nomenclature_valid_status.mnemonique}}</span><span
-            *ngIf="row.last_validation.validation_auto"
-          > (automatique)</span>
+          <span>{{row.nomenclature_valid_status.mnemonique}}</span>
+          <span *ngIf="row.last_validation?.validation_auto">(automatique)</span>
         </div>
       </div>
     </ng-template>
   </ngx-datatable-column>
 
-  <ngx-datatable-column 
+  <ngx-datatable-column
     *ngIf="appConfig.FRONTEND.ENABLE_PROFILES"
     minWidth="10"
     [maxWidth]="100"
   >
-    <ng-template 
-      let-column="column" 
+    <ng-template
+      let-column="column"
       ngx-datatable-header-template
     >
     <span>Score</span>
@@ -153,7 +153,7 @@
           [popoverTitle]="popTitle"
           container="body"
           placement="left"
-          > {{row.profile.score}}/3 
+          > {{row.profile.score}}/3
         </mat-chip>
         <mat-chip
           *ngSwitchCase="'3'"
@@ -163,7 +163,7 @@
           [popoverTitle]="popTitle"
           container="body"
           placement="left"
-          > {{row.profile.score}}/3 
+          > {{row.profile.score}}/3
         </mat-chip>
         <mat-chip
           *ngSwitchDefault
@@ -173,7 +173,7 @@
           [popoverTitle]="popTitle"
           container="body"
           placement="left"
-          >  {{row.profile.score}}/3 
+          >  {{row.profile.score}}/3
         </mat-chip>
       </div>
       <div *ngIf="!row.profile">
@@ -233,15 +233,15 @@
 
     </ng-template>
   </ngx-datatable-column>
-  
+
 
   <ngx-datatable-footer>
     <ng-template
       ngx-datatable-footer-template
       let-rowCount="rowCount"
-      let-pageSize="pageSize" 
+      let-pageSize="pageSize"
       let-selectedCount="selectedCount",
-      let-curPage="curPage", 
+      let-curPage="curPage",
       let-offset="offset"
     >
 
