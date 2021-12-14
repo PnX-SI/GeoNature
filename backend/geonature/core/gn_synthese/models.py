@@ -120,7 +120,7 @@ class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
             ]
             datasets = (
                 TDatasets.query
-                .filter_by_scope(scope, user)
+                .filter_by_readable(user)
                 .with_entities(TDatasets.id_dataset)
                 .all()
             )
