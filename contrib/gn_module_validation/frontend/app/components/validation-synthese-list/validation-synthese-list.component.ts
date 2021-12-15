@@ -252,9 +252,6 @@ export class ValidationSyntheseListComponent
   }
 
   openInfoModal(row) {
-    console.log(row.nomenclature_valid_status);
-    
-    
     this.oneSyntheseObs = row;
     const modalRef = this.ngbModal.open(ValidationModalInfoObsComponent, {
       size: "lg",
