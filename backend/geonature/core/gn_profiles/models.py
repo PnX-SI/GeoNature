@@ -73,10 +73,10 @@ class VConsistancyData(DB.Model):
 
     @hybrid_property
     def score(self):
-        return (
-            self.valid_distribution
-            + self.valid_phenology
-            + self.valid_altitude
+        return int(
+            self.valid_distribution if self.valid_distribution else False
+            + self.valid_phenology if self.valid_phenology else False
+            + self.valid_altitude if self.valid_altitude else False
         )
 
     @score.expression
