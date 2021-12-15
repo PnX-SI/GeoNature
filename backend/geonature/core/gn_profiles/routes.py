@@ -7,7 +7,7 @@ from flask.globals import current_app
 from geoalchemy2.shape import to_shape
 from geojson import Feature
 from sqlalchemy.sql import func, text, select
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, abort
 from utils_flask_sqla.response import json_resp
 
 from pypnnomenclature.models import TNomenclatures
@@ -57,7 +57,6 @@ def get_phenology(cd_ref):
 
 
 @routes.route("/valid_profile/<int:cd_ref>", methods=["GET"])
-@json_resp
 def get_profile(cd_ref):
     """
     .. :quickref: Profiles;
@@ -73,8 +72,8 @@ def get_profile(cd_ref):
     )
     data = data.one_or_none()
     if data:
-        return Feature(geometry=json.loads(data[0]), properties=data[1].as_dict())
-    return None
+        return jsonify(Feature(geometry=json.loads(data[0]), properties=data[1].as_dict()))
+    abort(404)
 
 
 @routes.route("/consistancy_data/<id_synthese>", methods=["GET"])
