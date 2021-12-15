@@ -223,8 +223,23 @@ CREATE VIEW gn_profiles.v_decode_profiles_parameters AS
      LEFT JOIN taxonomie.taxref t ON ((p.cd_nom = t.cd_nom)));
 
 
-CREATE VIEW gn_profiles.v_synthese_for_profiles AS
- SELECT s.id_synthese,
+CREATE OR REPLACE VIEW gn_profiles.v_synthese_for_profiles AS
+with percentil_by_cd_ref as (
+select 
+t.cd_ref,
+percentile_disc(1 - (parameters.value::float / 100))  WITHIN GROUP (ORDER BY date_part('doy', date_min)) as percentile_date_min,
+percentile_disc(parameters.value::float / 100)  WITHIN GROUP (ORDER BY date_part('doy', date_max)) as percentile_date_max,
+percentile_disc(1 - (parameters.value::float / 100))  WITHIN GROUP (ORDER BY altitude_min) as percentile_alti_min,
+percentile_disc(parameters.value::float / 100)  WITHIN GROUP (ORDER BY altitude_max) as percentile_alti_max
+from gn_profiles.t_parameters parameters, gn_synthese.synthese s
+join taxonomie.taxref t on t.cd_ref = taxonomie.find_cdref(s.cd_nom)
+where parameters.name = 'proportion_kept_data'
+group by t.cd_ref, parameters.value
+)
+SELECT 
+   per.percentile_date_min,
+   date_part('doy', s.date_min),
+   s.id_synthese,
     s.cd_nom,
     s.nom_cite,
     t.cd_ref,
@@ -238,83 +253,72 @@ CREATE VIEW gn_profiles.v_synthese_for_profiles AS
     s.altitude_max,
     s.id_nomenclature_life_stage,
     s.id_nomenclature_valid_status
-   FROM ((gn_synthese.synthese s
-     LEFT JOIN taxonomie.taxref t ON ((s.cd_nom = t.cd_nom)))
-     CROSS JOIN LATERAL gn_profiles.get_parameters(s.cd_nom) p(cd_ref, spatial_precision, temporal_precision_days, active_life_stage, distance))
-  WHERE ((p.spatial_precision IS NOT NULL) AND (
-	  public.st_maxdistance(public.st_centroid(s.the_geom_local), s.the_geom_local) < (p.spatial_precision)::double precision
-	  ) AND (
-		  s.id_nomenclature_valid_status IN ( SELECT (regexp_split_to_table(t_parameters.value, ','::text))::integer AS regexp_split_to_table
+   FROM gn_synthese.synthese s
+     LEFT JOIN taxonomie.taxref t ON s.cd_nom = t.cd_nom
+     join percentil_by_cd_ref per on t.cd_ref = per.cd_ref
+     CROSS JOIN LATERAL gn_profiles.get_parameters(s.cd_nom) p(cd_ref, spatial_precision, temporal_precision_days, active_life_stage, distance)
+  WHERE 
+  	p.spatial_precision IS NOT NULL 
+  	AND st_maxdistance(st_centroid(s.the_geom_local), s.the_geom_local) < p.spatial_precision::double precision
+  	AND (s.id_nomenclature_valid_status IN (
+  		SELECT regexp_split_to_table(t_parameters.value, ','::text)::integer AS regexp_split_to_table
            FROM gn_profiles.t_parameters
-          WHERE ((t_parameters.name)::text = 'id_valid_status_for_profiles'::text))
-		) AND ((t.id_rang)::text IN ( SELECT regexp_split_to_table(t_parameters.value, ','::text) AS regexp_split_to_table
+          WHERE t_parameters.name::text = 'id_valid_status_for_profiles'::text
+          )) 
+     AND (t.id_rang::text IN ( SELECT regexp_split_to_table(t_parameters.value, ','::text) AS regexp_split_to_table
+     
            FROM gn_profiles.t_parameters
-          WHERE ((t_parameters.name)::text = 'id_rang_for_profiles'::text))));
+          WHERE t_parameters.name::text = 'id_rang_for_profiles'::text)
+         )  
+    and date_part('doy', s.date_min ) >= per.percentile_date_min
+    and date_part('doy', s.date_max ) <= per.percentile_date_max
+    and s.altitude_min >= per.percentile_alti_min
+    and s.altitude_max >= per.percentile_alti_max;
 
 COMMENT ON VIEW gn_profiles.v_synthese_for_profiles IS 'View containing synthese data feeding profiles calculation. 
  cd_ref, date_min, date_max, the_geom_local, altitude_min, altitude_max and 
  id_nomenclature_life_stage fields are mandatory. 
+ Exclude extreme value and not validated date (customisable)
  WHERE clauses have to apply your t_parameters filters (valid_status)';
 
 
 CREATE MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology
-         as with classified_data AS (
-           SELECT DISTINCT vsfp.cd_ref,
-            unnest(
-                ARRAY[
-                    floor(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision, 
-                    floor(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision
-                ]
-            ) AS doy_min,
-            unnest(
-                ARRAY[
-                    floor(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision, 
-                    floor(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision
-                    ]
-                ) AS doy_max,
+TABLESPACE pg_default
+AS(
+         SELECT DISTINCT 
+          vsfp.cd_ref,
+            unnest(ARRAY[floor(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision, floor(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision]) AS doy_min,
+            unnest(ARRAY[floor(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision, floor(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision]) AS doy_max,
                 CASE
                     WHEN p.active_life_stage = true THEN vsfp.id_nomenclature_life_stage
                     ELSE NULL::integer
                 END AS id_nomenclature_life_stage,
             count(vsfp.*) AS count_valid_data,
-            min(vsfp.altitude_min) AS extreme_altitude_min,
-            array_agg(vsfp.altitude_min ORDER BY vsfp.altitude_min) AS my_alt_min,
-            max(vsfp.altitude_max) AS extreme_altitude_max,
-            array_agg(vsfp.altitude_max ORDER BY vsfp.altitude_max DESC) AS my_alt_max
-           FROM gn_profiles.v_synthese_for_profiles vsfp
+            min(vsfp.altitude_min) AS calculated_altitude_min,
+            min(sy.altitude_min) as extreme_altitude_min,
+            max(vsfp.altitude_max) AS calculated_altitude_max,
+            max(sy.altitude_max) AS extreme_altitude_max
+           FROM  gn_profiles.t_parameters parameters, gn_profiles.v_synthese_for_profiles vsfp
              CROSS JOIN LATERAL gn_profiles.get_parameters(vsfp.cd_nom) p(cd_ref, spatial_precision, temporal_precision_days, active_life_stage, distance)
-          WHERE p.temporal_precision_days IS NOT NULL AND p.spatial_precision IS NOT NULL AND p.active_life_stage IS NOT NULL AND date_part('day'::text, vsfp.date_max - vsfp.date_min) < p.temporal_precision_days::double precision AND vsfp.altitude_min IS NOT NULL AND vsfp.altitude_max IS NOT NULL
+             join gn_synthese.synthese sy on sy.id_synthese = vsfp.id_synthese 
+          WHERE p.temporal_precision_days IS NOT NULL 
+          AND p.spatial_precision IS NOT NULL 
+          AND p.active_life_stage IS NOT NULL 
+          AND date_part('day'::text, vsfp.date_max - vsfp.date_min) < p.temporal_precision_days::double precision 
+          AND vsfp.altitude_min IS NOT NULL 
+          AND vsfp.altitude_max IS NOT null
+          AND parameters.name = 'proportion_kept_data'
           GROUP BY 
           vsfp.cd_ref, 
-          unnest(
-          	ARRAY[
-          		floor(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision, 
-          		floor(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision
-          	    ]
-          	), 
-          unnest(
-          	ARRAY[
-          		floor(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision, 
-          		floor(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision
-          		]
-          	), 
-            CASE
-                WHEN p.active_life_stage = true THEN vsfp.id_nomenclature_life_stage
-                ELSE NULL::integer
-             end
-       )
-        SELECT classified_data.cd_ref,
-		    classified_data.doy_min,
-		    classified_data.doy_max,
-		    classified_data.id_nomenclature_life_stage,
-		    classified_data.count_valid_data,
-		    classified_data.extreme_altitude_min,
-		    classified_data.my_alt_min[round(1 + classified_data.count_valid_data::double precision * ((1::double precision - parameters.value::double precision / 100::double precision) / 2::double precision))] as calculated_altitude_min,
-		    classified_data.extreme_altitude_max,
-		    classified_data.my_alt_max[round(array_length(classified_data.my_alt_max, 1) - (1 + classified_data.count_valid_data::double precision * ((1::double precision - parameters.value::double precision / 100::double precision) / 2::double precision)))] as calculated_altitude_max
-		 FROM classified_data,
-		    gn_profiles.t_parameters parameters
-		 WHERE parameters.name::text = 'proportion_kept_data'::text;
+          	parameters.value, 
+          	(unnest(ARRAY[floor(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision, floor(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision])), 
+          	(unnest(ARRAY[floor(date_part('doy'::text, vsfp.date_min) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision, floor(date_part('doy'::text, vsfp.date_max) / p.temporal_precision_days::double precision) * p.temporal_precision_days::double precision + p.temporal_precision_days::double precision])),
+               CASE
+                    WHEN p.active_life_stage = true THEN vsfp.id_nomenclature_life_stage
+                    ELSE NULL::integer
+                END 
+               
+          );
 
 COMMENT ON MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology IS 'View containing phenological combinations and corresponding valid data for each taxa';
 
