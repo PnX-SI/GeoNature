@@ -235,8 +235,7 @@ def post_status(info_role, id_synthese):
             raise BadRequest(error.messages)
         DB.session.add(validation)
         DB.session.commit()
-
-    return jsonify(data)
+    return TNomenclatures.query.get(id_validation_status).as_dict()
 
 
 @blueprint.route("/date/<uuid:uuid>", methods=["GET"])

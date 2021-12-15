@@ -6,7 +6,6 @@
   <button type="button" class="close" aria-label="Close" (click)="closeModal()">
     <span aria-hidden="true">&times;</span>
   </button>
-
 </div>
 
 <!-- MODAL BODY -->
@@ -47,12 +46,8 @@
   </div>
 
   <span class="font-xs">
-
-
     <b> Statut de validation actuel : </b>
-    <span *ngIf="!selectedObs?.valid_status">
-      En attente de validation
-    </span> {{selectedObs?.valid_status}}
+    {{currentValidationStatus.label_default}}
     <button class="edit btn btn-sm btn-primary" (click)="getStatusNames()" [disabled]=edit>
       Modifier le statut de validation <mat-icon> edit </mat-icon>
     </button>

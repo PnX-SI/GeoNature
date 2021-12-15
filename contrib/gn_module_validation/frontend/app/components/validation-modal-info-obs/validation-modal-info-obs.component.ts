@@ -1,14 +1,11 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { ValidationDataService } from "../../services/data.service";
-import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
-import { DataFormService } from "@geonature_common/form/data-form.service";
-import { AppConfig } from "@geonature_config/app.config";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { ModuleConfig } from "../../module.config";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
-
+import { ValidationService } from "../../services/validation.service";
 @Component({
   selector: "pnx-validation-modal-info-obs",
   templateUrl: "validation-modal-info-obs.component.html",
@@ -28,6 +25,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   public MapListService;
   public validationDate;
   public currentCdNomenclature;
+  public currentValidationStatus;
 
   @Input() id_synthese: any;
   @Input() uuidSynthese: any;
@@ -40,6 +38,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private _fb: FormBuilder,
     private _commonService: CommonService,
+    private _validService : ValidationService
   ) {
     // form used for changing validation status
     this.statusForm = this._fb.group({
@@ -107,6 +106,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     this.id_synthese = this.filteredIds[
       this.filteredIds.indexOf(this.id_synthese) + 1
     ];
+    
     const syntheseRow = this.mapListService.tableData[this.position];
     this.uuidSynthese = syntheseRow.unique_id_sinp;
     this.statusForm.reset();
@@ -125,89 +125,21 @@ export class ValidationModalInfoObsComponent implements OnInit {
     link.click();
   }
 
-  onSubmit(value) {
+  onSubmit(value) {    
     // post validation status form ('statusForm') for the current observation
-    return this._validatioDataService
-      .postStatus(value, this.id_synthese)
-      .toPromise()
-      .then(data => {
-        /** TODO à virer ? ** this.promiseResult = data as JSON; **/
-        //console.log('retour du post : ', this.promiseResult);
-        return new Promise((resolve, reject) => {
-          // show success message indicating the number of observation(s) with modified validation status
-          this._commonService.translateToaster(
-            "success",
-            "Nouveau statut de validation enregistré"
-          );
-          this.update_status();
-          this.getValidationDate(this.uuidSynthese);
-
-          // bind statut value with validation-synthese-list component
+    this._validService
+      .postNewValidStatusAndUpdateUI(value, [this.id_synthese])
+      .subscribe(newValidationStatus => {             
+          this.currentValidationStatus = newValidationStatus;     
           this.statusForm.reset();
-          resolve("data updated");
-        });
       })
-      .catch(err => {
-        if (err.statusText === "Unknown Error") {
-          // show error message if no connexion
-          this._commonService.translateToaster(
-            "error",
-            "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)"
-          );
-        } else {
-          // show error message if other server error
-          this._commonService.translateToaster("error", err.error);
-        }
-        Promise.reject();
-      })
-      .then(data => {
-        //console.log(data);
-        return new Promise((resolve, reject) => {
-          // close validation status popup
-          this.edit = false;
-          resolve("process finished");
-        });
-      })
-      .then(data => {
-        //console.log(data);
-      });
+      
   }
 
-  update_status() {
-    // send valstatus value to validation-synthese-list component
-    this.modifiedStatus.emit({
-      id_synthese: this.id_synthese,
-      new_status: this.currentCdNomenclature
-    });
-  }
 
   cancel() {
     this.statusForm.reset();
     this.edit = false;
-  }
-
-  getValidationDate(uuid) {
-    this._validatioDataService.getValidationDate(uuid).subscribe(
-      result => {
-        // get status names
-        this.validationDate = result;
-      },
-      err => {
-        if (err.statusText === "Unknown Error") {
-          // show error message if no connexion
-          this._commonService.translateToaster(
-            "error",
-            "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)"
-          );
-        } else {
-          // show error message if other server error
-          this._commonService.translateToaster("error", err.error);
-        }
-      },
-      () => {
-        this.valDate.emit(this.validationDate);
-      }
-    );
   }
 
   activateNextPrevButton(position) {

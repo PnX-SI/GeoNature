@@ -20,8 +20,7 @@ import { DynamicFormService } from "@geonature_common/form/dynamic-form-generato
 import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
 import { TaxonAdvancedStoreService } from "@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service";
-import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component'
-
+import { ValidationService } from "./services/validation.service";
 // my module routing
 const routes: Routes = [{ path: "", component: ValidationComponent }];
 
@@ -50,7 +49,7 @@ const routes: Routes = [{ path: "", component: ValidationComponent }];
     ValidationDataService,
     SyntheseFormService,
     DynamicFormService,
-    // NomenclatureComponent,
+    ValidationService,
     TaxonAdvancedStoreService
   ],
 

@@ -8,7 +8,7 @@ import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { Router } from "@angular/router";
 import { ValidationDataService } from "../../services/data.service";
 import { CommonService } from "@geonature_common/service/common.service";
- 
+import { ValidationService } from "../../services/validation.service";
  
 @Component({
   selector: "pnx-validation-popup",
@@ -37,16 +37,13 @@ export class ValidationPopupComponent {
   @Input() currentPage : any;
   @Input() validation : any;
   @Output() valStatus = new EventEmitter();
-  @Output() valDate = new EventEmitter();
  
   constructor(
     private modalService: NgbModal,
-    private _dateParser: NgbDateParserFormatter,
-    private _router: Router,
     private _fb: FormBuilder,
     public dataService: ValidationDataService,
     private _commonService: CommonService,
-    private mapListService: MapListService
+    private _validService : ValidationService
     ) {
       // form used for changing validation status
       this.statusForm = this._fb.group({
@@ -57,47 +54,9 @@ export class ValidationPopupComponent {
    
  
   onSubmit(value) {
-    // post validation status form ('statusForm') for one or several observation(s) to backend/routes
-     
-    return this.dataService.postStatus(value, this.observations).toPromise()
-    .then(
-      data => {
-        return new Promise((resolve, reject) => {
-            // show success message indicating the number of observation(s) with modified validation status
-            this._commonService.translateToaster("success", "Vous avez modifié le statut de validation de " + this.observations.length + " observation(s)");
-            // bind statut value with validation-synthese-list component
-            this.update_status();
-            // emit the date of today in output to update the validation date on maplist
-            this.valDate.emit(new Date());
-            //this.getValidationDate(this.observations[0]);
-            resolve('data updated');
-        })
-      })
-    .catch(
-      err => {
-        if (err.statusText === 'Unknown Error') {
-          // show error message if no connexion
-          this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)");
-        } else {
-          // show error message if other server error
-          this._commonService.translateToaster("error", err.error);
-        }
-        Promise.reject()
-      }
-    )
-    .then(
-      data => {
-        return new Promise((resolve, reject) => {
-          // close validation status popup
-          this.closeModal();
-          resolve('process finished');
-      })
-    })
-    .then(
-      data => {
-        //console.log(data);
-      }
-    );
+    this._validService.postNewValidStatusAndUpdateUI(value, this.observations).subscribe(data => {
+      this.closeModal();
+    });
   }
  
   setCurrentCdNomenclature(item) {
@@ -105,10 +64,6 @@ export class ValidationPopupComponent {
  
   }
  
-  update_status() {
-    // send cd_nomenclature value to validation-synthese-list component
-    this.valStatus.emit(this.currentCdNomenclature);
-  }
  
  
   definePlurielObservations() {
@@ -161,26 +116,5 @@ export class ValidationPopupComponent {
     this.modalRef.close();
   }
  
-  getValidationDate(uuid) {
-    this.dataService.getValidationDate(uuid).subscribe(
-      result => {
-        // get status names
-        this.validationDate = result;
-      },
-      err => {
-        if (err.statusText === 'Unknown Error') {
-          // show error message if no connexion
-          this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)");
-        } else {
-          // show error message if other server error
-          this._commonService.translateToaster("error", err.error);
-        }
-      },
-      () => {
-        // emit date of today 
-        this.valDate.emit(this.validationDate);
-      }
-    );
-  }
 
 }
