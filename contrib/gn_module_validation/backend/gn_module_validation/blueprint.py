@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy import select, func
 from sqlalchemy.sql.expression import cast, outerjoin
 from sqlalchemy.sql.sqltypes import Integer
-from sqlalchemy.orm import aliased, joinedload, contains_eager
+from sqlalchemy.orm import aliased, joinedload, contains_eager, relation
 from marshmallow import ValidationError
 
 from utils_flask_sqla.response import json_resp
@@ -20,6 +20,7 @@ from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 from geonature.utils.env import DB, db
 from geonature.utils.utilssqlalchemy import test_is_uuid
 from geonature.core.gn_synthese.models import Synthese
+from geonature.core.gn_profiles.models import VConsistancyData
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_commons.schemas import TValidationSchema
@@ -87,7 +88,7 @@ def get_synthese_data(info_role):
     3) We get back the results in the ORM through from_statement.
        We populate relationships with contains_eager.
 
-    We create a lot of aliases, that are selected at step 1, 
+    We create a lot of aliases, that are selected at step 1,
     and given to contains_eager at step 3 to correctly identify columns
     to use to populate relationships models.
     """
@@ -100,53 +101,74 @@ def get_synthese_data(info_role):
         .lateral('last_validation')
     )
     last_validation = aliased(TValidations, last_validation_subquery)
+
+
+    profile_subquery = (
+        VConsistancyData
+        .query
+        .filter(VConsistancyData.id_synthese==Synthese.id_synthese)
+        .limit(result_limit)
+        .subquery()
+        .lateral('profile')
+    )
+
+    profile = aliased(VConsistancyData, profile_subquery)
+
     relationships = list({
         field.split('.', 1)[0]
         for field in fields
-        if '.' in field and not field.startswith('last_validation.')
+        if '.' in field
+            and not (
+                field.startswith('last_validation.')
+                or
+                field.startswith('profile.')
+            )
     })
-    profile_index = relationships.index('profile')
-    relationships = [ getattr(Synthese, rel) for rel in relationships ]
+
+    relationships = [getattr(Synthese, rel) for rel in relationships]
     aliases = [
         aliased(rel.property.mapper.class_)
         for rel in relationships
     ]
-    profile_alias = aliases[profile_index]  # for later use in filters
 
     query = (
         db.session.query(
             Synthese,
             *aliases,
             last_validation,
+            profile
         )
     )
+
     for rel, alias in zip(relationships, aliases):
         query = query.outerjoin(rel.of_type(alias))
+
     query = (
         query
         .outerjoin(last_validation, sa.true())
+        .outerjoin(profile, sa.true())
         .filter(Synthese.the_geom_4326.isnot(None))
         .order_by(Synthese.date_min.desc())
     )
-
     # filter with profile
     score = filters.pop("score", None)
     if score is not None:
-        query = query.filter(profile_alias.score==score)
+        query = query.filter(profile.score==score)
     valid_distribution = filters.pop("valid_distribution", None)
     if valid_distribution is not None:
-        query = query.filter(profile_alias.valid_distribution.is_(valid_distribution))
+        query = query.filter(profile.valid_distribution.is_(valid_distribution))
     valid_altitude = filters.pop("valid_altitude", None)
     if valid_altitude is not None:
-        query = query.filter(profile_alias.valid_altitude.is_(valid_altitude))
+        query = query.filter(profile.valid_altitude.is_(valid_altitude))
     valid_phenology = filters.pop("valid_phenology", None)
     if valid_phenology is not None:
-        query = query.filter(profile_alias.valid_phenology.is_(valid_phenology))
+        query = query.filter(profile.valid_phenology.is_(valid_phenology))
     if filters.pop("modif_since_validation", None):
         query = query.filter(Synthese.meta_update_date > last_validation.validation_date)
 
     # Step 2: give SyntheseQuery the Core selectable from ORM query
     assert(len(query.selectable.froms) == 1)
+
     query = (
         SyntheseQuery(Synthese, query.selectable, filters,
                       query_joins=query.selectable.froms[0])
@@ -159,6 +181,7 @@ def get_synthese_data(info_role):
         Synthese.query
         .options(*[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)])
         .options(contains_eager(Synthese.last_validation, alias=last_validation))
+        .options(contains_eager(Synthese.profile, alias=profile))
         .from_statement(query)
     )
 
