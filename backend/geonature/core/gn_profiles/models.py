@@ -23,9 +23,9 @@ class VmCorTaxonPhenology(DB.Model):
     doy_min = DB.Column(DB.Integer, primary_key=True)
     doy_max = DB.Column(DB.Integer, primary_key=True)
     id_nomenclature_life_stage = DB.Column(
-        DB.Integer, 
+        DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        primary_key=True, 
+        primary_key=True,
     )
     extreme_altitude_min = DB.Column(DB.Integer)
     calculated_altitude_min = DB.Column(DB.Integer)
@@ -43,7 +43,7 @@ class VmValidProfiles(DB.Model):
     __table_args__ = {"schema": "gn_profiles"}
     cd_ref = DB.Column(DB.Integer, primary_key=True)
     valid_distribution = DB.Column(Geometry("GEOMETRY", config["LOCAL_SRID"]))
-    altitude_min = DB.Column(DB.Integer) 
+    altitude_min = DB.Column(DB.Integer)
     altitude_max = DB.Column(DB.Integer)
     first_valid_data = DB.Column(DB.DateTime)
     last_valid_data = DB.Column(DB.DateTime)
@@ -74,9 +74,9 @@ class VConsistancyData(DB.Model):
     @hybrid_property
     def score(self):
         return int(
-            self.valid_distribution if self.valid_distribution else False
-            + self.valid_phenology if self.valid_phenology else False
-            + self.valid_altitude if self.valid_altitude else False
+            int(self.valid_distribution is True)
+            + int(self.valid_phenology is True)
+            + int(self.valid_altitude is True)
         )
 
     @score.expression
