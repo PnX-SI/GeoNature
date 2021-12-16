@@ -29,12 +29,18 @@ def get_config():
     """
     app_name = request.args.get("app", "base_app")
     vue_name = request.args.getlist("vue")
+
+    conf_path = os.path.abspath(
+            os.path.join(current_app.config["BASE_DIR"], "static", "configs", app_name, *vue_name)
+    )
+    # Add test : file inside config folder
+    if not conf_path.startswith(os.path.abspath(os.path.join(current_app.static_folder, "config"))):
+        return "Not a valid config path", 404
+
     if not vue_name:
         vue_name = ["default"]
     filename = "{}.toml".format(
-        os.path.abspath(
-            os.path.join(current_app.config["BASE_DIR"], "static", "configs", app_name, *vue_name)
-        )
+        conf_path
     )
     config_file = generate_config(filename)
     return jsonify(config_file)
