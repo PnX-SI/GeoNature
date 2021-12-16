@@ -3,7 +3,7 @@ import datetime
 import json
 from geojson import FeatureCollection
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from flask.globals import session
 from flask.json import jsonify
 import sqlalchemy as sa
@@ -54,6 +54,7 @@ def get_synthese_data(info_role):
     FeatureCollection
     """
 
+    enable_profile = current_app.config["FRONTEND"]["ENABLE_PROFILES"]
     fields = {
         'id_synthese',
         'unique_id_sinp',
@@ -68,19 +69,23 @@ def get_synthese_data(info_role):
         'taxref.cd_nom',
         'taxref.nom_vern',
         'taxref.lb_nom',
-        'taxref.nom_vern_or_lb_nom',
+        'taxref.nom_vern_or_lb_nom'
+    }
+
+    profil_fields = {
         'profile.score',
         'profile.valid_phenology',
         'profile.valid_altitude',
         'profile.valid_distribution',
     }
+
     fields |= { col['column_name']
                for col in blueprint.config["COLUMN_LIST"] }
 
     filters = request.json or {}
 
     result_limit = filters.pop("limit", blueprint.config["NB_MAX_OBS_MAP"])
-
+    lateral_join = {}
     """
     1) We start creating the query with SQLAlchemy ORM.
     2) We convert this query to SQLAlchemy Core in order to use
@@ -101,18 +106,25 @@ def get_synthese_data(info_role):
         .lateral('last_validation')
     )
     last_validation = aliased(TValidations, last_validation_subquery)
+    lateral_join = { last_validation : Synthese.last_validation}
 
+    if enable_profile:
+        fields = {
+            *fields,
+            *profil_fields
+        }
 
-    profile_subquery = (
-        VConsistancyData
-        .query
-        .filter(VConsistancyData.id_synthese==Synthese.id_synthese)
-        .limit(result_limit)
-        .subquery()
-        .lateral('profile')
-    )
+        profile_subquery = (
+            VConsistancyData
+            .query
+            .filter(VConsistancyData.id_synthese==Synthese.id_synthese)
+            .limit(result_limit)
+            .subquery()
+            .lateral('profile')
+        )
 
-    profile = aliased(VConsistancyData, profile_subquery)
+        profile = aliased(VConsistancyData, profile_subquery)
+        lateral_join[profile] = Synthese.profile
 
     relationships = list({
         field.split('.', 1)[0]
@@ -135,33 +147,34 @@ def get_synthese_data(info_role):
         db.session.query(
             Synthese,
             *aliases,
-            last_validation,
-            profile
+            *lateral_join.keys()
         )
     )
 
     for rel, alias in zip(relationships, aliases):
         query = query.outerjoin(rel.of_type(alias))
 
+    for alias in lateral_join.keys():
+        query = query.outerjoin(alias, sa.true())
+
     query = (
         query
-        .outerjoin(last_validation, sa.true())
-        .outerjoin(profile, sa.true())
         .filter(Synthese.the_geom_4326.isnot(None))
         .order_by(Synthese.date_min.desc())
     )
+
     # filter with profile
     score = filters.pop("score", None)
-    if score is not None:
+    if score is not None and enable_profile:
         query = query.filter(profile.score==score)
     valid_distribution = filters.pop("valid_distribution", None)
-    if valid_distribution is not None:
+    if valid_distribution is not None and enable_profile:
         query = query.filter(profile.valid_distribution.is_(valid_distribution))
     valid_altitude = filters.pop("valid_altitude", None)
-    if valid_altitude is not None:
+    if valid_altitude is not None and enable_profile:
         query = query.filter(profile.valid_altitude.is_(valid_altitude))
     valid_phenology = filters.pop("valid_phenology", None)
-    if valid_phenology is not None:
+    if valid_phenology is not None and enable_profile:
         query = query.filter(profile.valid_phenology.is_(valid_phenology))
     if filters.pop("modif_since_validation", None):
         query = query.filter(Synthese.meta_update_date > last_validation.validation_date)
@@ -180,8 +193,7 @@ def get_synthese_data(info_role):
     query = (
         Synthese.query
         .options(*[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)])
-        .options(contains_eager(Synthese.last_validation, alias=last_validation))
-        .options(contains_eager(Synthese.profile, alias=profile))
+        .options(*[contains_eager(lateral_join[alias], alias=alias) for alias in lateral_join.keys()])
         .from_statement(query)
     )
 
