@@ -29,12 +29,12 @@ def get_config():
     app_name = request.args.get("app", "base_app")
     vue_name = request.args.getlist("vue")
 
+    base_path = os.path.abspath(os.path.join(current_app.static_folder, "configs"))
     conf_path = os.path.abspath(
-            os.path.join(current_app.config["BASE_DIR"], "static", "configs", app_name, *vue_name)
+            os.path.join(base_path, app_name, *vue_name)
     )
-
-    # Add test : file inside config folder
-    if not conf_path.startswith(os.path.abspath(os.path.join(current_app.static_folder, "config"))):
+    # test : file inside config folder
+    if not conf_path.startswith(base_path):
         return "Not a valid config path", 404
 
     if not vue_name:
