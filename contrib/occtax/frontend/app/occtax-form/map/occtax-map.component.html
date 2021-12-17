@@ -5,7 +5,6 @@
   <pnx-marker
     [coordinates]="ms.markerCoordinates"
     [zoomLevel]="occtaxConfig.releve_map_zoom_level"
-    (markerChanged)="sendGeoInfo($event)"
   >
   </pnx-marker>
 
@@ -13,7 +12,6 @@
     [geojson]="ms.leafletDrawGeoJson"
     [options]="leafletDrawOptions"
     [zoomLevel]="occtaxConfig.releve_map_zoom_level"
-    (layerDrawed)="sendGeoInfo($event)"
   >
   </pnx-leaflet-draw>
 
@@ -21,27 +19,22 @@
     *ngIf="occtaxConfig.ENABLE_UPLOAD_TOOL"
     [editMode]="true"
     (onLoad)="infoMessageFileLayer()"
-    (onGeomChange)="sendGeoInfo($event)"
     [style]="{'color': 'green'}"
   >
   </pnx-leaflet-filelayer>
 
   <pnx-gps
     *ngIf="occtaxConfig.ENABLE_GPS_TOOL"
-    (markerChanged)="sendGeoInfo($event)"
   >
   </pnx-gps>
 
   <pnx-places
     *ngIf="occtaxConfig.ENABLE_MY_PLACES"
-    (markerChanged)="sendGeoInfo($event)"
   >
   </pnx-places>
 
   <pnx-placesList
     *ngIf="occtaxConfig.ENABLE_MY_PLACES"
-    (markerChanged)="sendGeoInfo($event)"
-    (layerDrawed)="sendGeoInfo($event)"
   >
   </pnx-placesList>
 

@@ -248,11 +248,14 @@ export class OcctaxFormReleveService {
         distinctUntilChanged(),
         filter((geojson) => geojson !== null),
         tap((geojson) => {          
+          this.occtaxFormService.disabled = false;
+          this.occtaxFormMapService.geometry = geojson;
         }),
         switchMap((geojson) => this.dataFormService.getAltitudes(geojson)),
       )
-      .subscribe((altitude) => {        
-        this.propertiesForm.patchValue(altitude)
+      .subscribe((altitude) => {
+        this.propertiesForm.patchValue(altitude);
+
       });
 
     /* gestion de l'autocomplétion de la date ou non.
