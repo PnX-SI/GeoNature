@@ -10,11 +10,11 @@ Profils de taxons
 **TO CHECK :**
 
 - Virer les tables et fonctions de Gil qui calculaient des profils de taxon inutilisés ? https://github.com/PnX-SI/GeoNature/blob/develop/data/core/synthese.sql#L426 / https://github.com/PnX-SI/GeoNature/blob/develop/data/core/synthese.sql#L498
-- Fiches taxons et valeurs d'altitudes nulles
-- Fiches taxons sans données ne sont pas claires
-- Profils - Bien indiquer que le calcul se base que sur les données considérées comme validées
+- Fiches taxons et valeurs d'altitudes nulles : Les percentiles sont appliqués sur les altitudes
+- Fiches taxons sans données ne sont pas claires : fait
+- Profils - Bien indiquer que le calcul se base que sur les données considérées comme validées : fait
 - Profils - Indiquer quelles données sont prises en compte et comment modifier les statuts utilisés / Renvoyer à la nouvelle doc
-- Fonction update_configuration et restart (message dans terminal et documentation ?) A indiquer ici par exemple avec la commande systemd : https://docs.geonature.fr/admin-manual.html#configuration-generale-de-l-application
+- Fonction update_configuration et restart (message dans terminal et documentation ?) A indiquer ici par exemple avec la commande systemd : https://docs.geonature.fr/admin-manual.html#configuration-generale-de-l-application : fait
 - Nom des modules par défaut lors de l'installation, ajouter majuscules
 - PR Joel pour Monitoring
 - Conf Apache sur sous-domaine (voir retour Gil) - Ajouter documentation
@@ -26,12 +26,12 @@ Profils de taxons
 
 - Dans le module VALIDATION :
 - L'attribution d'un statut de validation depuis la liste fonctionne par contre
-- Si j'attribue un statut de validation depuis la fiche d'une observation, ça l'attribue bien, et ça modifie le "Statut de validation actuel", mais pas le statut de validation dans l'onglet "Détail de l'occurrence", ni ne l'ajoute dans l'onglet "Validation".
-- Bug d'ajout d'un média dans Occtax, à cause du type qui est affiché sous forme d'id ?
-- Enchainer des relevés avec un GPX ne permet pas de selectionner un autre objet du GPX au second relevé
-- Occtax : Je déplace un point en le glissant, l'altitude n'est pas recalculée, si je clique un nouveau point elle l'est
-- Occtax : Je dessine un polygone, je le modifie, l'altitude n'est pas recalculée et le précédent polygone reste affiché sur la carte...
-- Occtax : Je modifie un taxon qui avait un dénombrement où min différent de max, il me remet max = min
+- Si j'attribue un statut de validation depuis la fiche d'une observation, ça l'attribue bien, et ça modifie le "Statut de validation actuel", mais pas le statut de validation dans l'onglet "Détail de l'occurrence", ni ne l'ajoute dans l'onglet "Validation". : fait sauf pour le statut dans le tableau et l'onglet validation : il faudrait recharger les données...
+- Bug d'ajout d'un média dans Occtax, à cause du type qui est affiché sous forme d'id ? : OK
+- Enchainer des relevés avec un GPX ne permet pas de selectionner un autre objet du GPX au second relevé : OK
+- Occtax : Je déplace un point en le glissant, l'altitude n'est pas recalculée, si je clique un nouveau point elle l'est: OK
+- Occtax : Je dessine un polygone, je le modifie, l'altitude n'est pas recalculée et le précédent polygone reste affiché sur la carte... OK
+- Occtax : Je modifie un taxon qui avait un dénombrement où min différent de max, il me remet max = min : OK
 - Occtax : liste des habitats masquée, exemple : ville
 - MTD : Je créé un JDD, erreur 500 au moment d'enregistrer sur /geonature/api/meta/dataset:1
 - Synthèse : la recherche par organisme ne fonctionne pas ?

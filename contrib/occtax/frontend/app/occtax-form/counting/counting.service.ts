@@ -6,7 +6,7 @@ import {
   AbstractControl,
 } from "@angular/forms";
 import { Observable, Subscription, Subject, combineLatest, of } from "rxjs";
-import { map, filter, tap, switchMap, skip } from "rxjs/operators";
+import { map, filter, tap, switchMap, pairwise } from "rxjs/operators";
 import _ from 'lodash';
 
 import { OcctaxFormService } from "../occtax-form.service";
@@ -102,9 +102,12 @@ export class OcctaxFormCountingService {
 
     this.form.get("count_min").valueChanges
       .pipe(
-        filter(() => this.form.get("count_max").dirty === false) //tant que count_max n'a pas été modifié
-      )
-      .subscribe((count_min) => this.form.get("count_max").setValue(count_min));
+        pairwise(),
+        filter(([count_min_prev, count_min_new]) => {
+           return count_min_prev == this.form.value.count_max
+         }),
+      map(([count_min_prev, count_min_new]) => count_min_new)
+      ).subscribe((count_min) => this.form.get("count_max").setValue(count_min))
   }
 
 
