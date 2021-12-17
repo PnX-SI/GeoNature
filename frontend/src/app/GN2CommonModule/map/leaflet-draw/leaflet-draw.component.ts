@@ -108,9 +108,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this.layerDrawed.emit({ geojson: null });
       } else {
         this._currentDraw = (e as any).layer;
-        if ((e as any).layerType !== 'marker') {
-          this._currentDraw = this._currentDraw.setStyle(this.mapservice.searchStyle);
-        }
+
         this.currentLayerType = (e as any).layerType;
         this.mapservice.leafletDrawFeatureGroup.addLayer(this._currentDraw);
         const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
@@ -121,10 +119,10 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
 
     // on draw edited
     this.mapservice.map.on(this._Le.Draw.Event.EDITED, e => {
-      // output
       const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
       this.mapservice.setGeojsonCoord(geojson);
       this.layerDrawed.emit(geojson);
+
     });
 
     // on layer deleted
@@ -136,6 +134,8 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
       if (geojson) {
         this.layerDrawed.emit(geojson);
+        this.mapservice.setGeojsonCoord(geojson);
+
       }
     });
   }

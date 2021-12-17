@@ -1,7 +1,7 @@
-import { Component, OnInit } from "@angular/core";
-import { filter, tap, map, switchMap, distinctUntilChanged } from "rxjs/operators";
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { filter, tap, map, switchMap, distinctUntilChanged, catchError, skip } from "rxjs/operators";
 import { FormArray } from "@angular/forms";
-import { Observable } from "rxjs";
+import { Observable, empty, Subscription } from "rxjs";
 import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 
 import { AppConfig } from "@geonature_config/app.config";
@@ -14,11 +14,12 @@ import { OcctaxFormService } from "../occtax-form.service";
   templateUrl: "./profiles.component.html",
   styleUrls: ["./profiles.component.scss"],
 })
-export class OcctaxProfilesComponent implements OnInit {
+export class OcctaxProfilesComponent implements OnInit, OnDestroy {
 
   private appConfig = AppConfig;
   public profilErrors: any[] = [];
   public taxon: any = null;
+  private _sub: Array<Subscription> = [];
 
   constructor(
     private dateParser: NgbDateParserFormatter,
@@ -27,8 +28,28 @@ export class OcctaxProfilesComponent implements OnInit {
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
   ) { }
 
-  ngOnInit() {    
-    this.occtaxFormOccurrenceService.taxref.asObservable()
+  ngOnInit() {
+
+    const lifeStageObservable = this.occtaxFormOccurrenceService.lifeStage.pipe(
+      distinctUntilChanged(),
+      skip(1),
+      filter(val => val !== null),
+      filter(() => {
+        const taxon = this.occtaxFormOccurrenceService.taxref.getValue()
+        return taxon !== null && taxon.cd_ref 
+      }),
+      map(() => this.occtaxFormOccurrenceService.taxref.getValue().cd_ref),
+      switchMap((cdRef: number) => {
+        return this.getProfiles(cdRef).pipe(
+          catchError(() => {
+            this.profilErrors = []
+            return empty()
+          })
+        )
+      })
+      )
+      
+    const taxonObservable = this.occtaxFormOccurrenceService.taxref.asObservable()
       .pipe(
         //reinitialisation view variable
         tap(() => this.taxon = null),
@@ -43,14 +64,26 @@ export class OcctaxProfilesComponent implements OnInit {
         //filter other cdRef value from previous taxon 
         distinctUntilChanged(),
         //get data profiles from API
-        switchMap((cdRef: number) => this.getProfiles(cdRef))
+        switchMap((cdRef: number) => {
+          return this.getProfiles(cdRef).pipe(
+            catchError(() => {
+              this.profilErrors = []
+              return empty()
+            })
+          )
+        })
       )
-      .subscribe(
-        data => this.profilErrors = data["errors"],
-        errors => this.profilErrors = []
-      );
-  }
+    
+      this._sub.push(taxonObservable.subscribe( data =>this.profilErrors = data["errors"]));
+      this._sub.push(lifeStageObservable.subscribe( data =>this.profilErrors = data["errors"]));
+    }
 
+    ngOnDestroy() {
+      this._sub.forEach(sub => sub.unsubscribe())
+    }
+
+    
+    
   /**
    * Return data profiles from API
    */

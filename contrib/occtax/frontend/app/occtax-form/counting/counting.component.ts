@@ -39,9 +39,9 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.form = this.occtaxFormCountingService.form;
     this.sub = this.form.get("id_nomenclature_life_stage").valueChanges
-      .filter(idNomenclatureLifeStage => idNomenclatureLifeStage)
+      .filter(idNomenclatureLifeStage => idNomenclatureLifeStage !== null)
       .subscribe(idNomenclatureLifeStage => {      
-        this.lifeStageChange.emit(idNomenclatureLifeStage);
+        this.occtaxFormOccurrenceService.lifeStage.next(idNomenclatureLifeStage);
       });
   }
 

@@ -7,7 +7,7 @@ from flask.globals import current_app
 from geoalchemy2.shape import to_shape
 from geojson import Feature
 from sqlalchemy.sql import func, text, select
-from werkzeug.exceptions import BadRequest, abort
+from werkzeug.exceptions import BadRequest, NotFound, abort
 from utils_flask_sqla.response import json_resp
 
 from pypnnomenclature.models import TNomenclatures
@@ -107,7 +107,7 @@ def get_observation_score():
         DB.session.query(VmValidProfiles).filter(VmValidProfiles.cd_ref == cd_ref).one_or_none()
     )
     if not profile:
-        return None
+        raise NotFound("No profile for this cd_ref")
     check_life_stage = profile.active_life_stage
         
     result = {
@@ -138,6 +138,7 @@ def get_observation_score():
         raise BadRequest('Missing altitude_min or altitude_max')
     # Check de la répartition
     if "geom" in data:
+        print("geom ???")
         query = DB.session.query(
             func.ST_Contains(
                 func.ST_Transform(profile.valid_distribution, 4326),
@@ -245,7 +246,7 @@ def get_observation_score():
                                 Le taxon n'a jamais été observé à cette periode entre 
                                 {altitude_min} et {altitude_max}m d'altitude pour le stade de vie {life_stage_value.label_default}"""
                             })
-        return result
+    return result
 
 
 @routes.cli.command()

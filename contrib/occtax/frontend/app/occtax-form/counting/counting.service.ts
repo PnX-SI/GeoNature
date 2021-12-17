@@ -36,6 +36,8 @@ export class OcctaxFormCountingService {
   ) {
     this.initForm();
     this.setObservables();
+    console.log("INIT ??");
+    
   }
 
   /**

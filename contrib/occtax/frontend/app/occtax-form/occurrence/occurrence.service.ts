@@ -24,6 +24,7 @@ import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 export class OcctaxFormOccurrenceService {
   public form: FormGroup;
   public taxref: BehaviorSubject<any> = new BehaviorSubject(null);
+  public lifeStage: BehaviorSubject<any> = new BehaviorSubject(null);
   public occurrence: BehaviorSubject<any> = new BehaviorSubject(null);
   // public countings: any[];
   public existProof_DATA: Array<any> = [];
@@ -422,45 +423,6 @@ export class OcctaxFormOccurrenceService {
         v = c == "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
-  }
-
-
-  profilControl(cdRef:number) {    
-    if(!cdRef) {
-      return;
-    }
-
-    const releve = this.occtaxFormService.occtaxData.getValue().releve;
-    
-    const dateMin = this.dateParser.format(releve.properties.date_min);
-    const dateMax = this.dateParser.format(releve.properties.date_min);
-    // find all distinct id_nomenclature_life_stage if countings
-    let idNomenclaturesLifeStage = new Set();
-    (this.form.get("cor_counting_occtax") as FormArray).controls.forEach(
-      counting => {
-        const control = counting.get("id_nomenclature_life_stage");
-        if(control) {
-          idNomenclaturesLifeStage.add(control.value)
-        }
-      });
-    const postData = {
-      cd_ref: cdRef,
-      date_min: dateMin,
-      date_max: dateMax,
-      altitude_min: releve.properties.altitude_min,
-      altitude_max: releve.properties.altitude_max,
-      geom: releve.geometry,
-      life_stages: Array.from(idNomenclaturesLifeStage)
-    };
-    this._dataS.controlProfile(postData).subscribe(
-      data => {        
-        this.profilErrors = data["errors"];
-      },
-      errors => {        
-        this.profilErrors = [];
-        
-      }
-      );
   }
 
 }
