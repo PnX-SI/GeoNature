@@ -72,12 +72,13 @@ def get_synthese_data(info_role):
         'taxref.nom_vern_or_lb_nom'
     }
 
-    profil_fields = {
-        'profile.score',
-        'profile.valid_phenology',
-        'profile.valid_altitude',
-        'profile.valid_distribution',
-    }
+    if enable_profile:
+        fields |= {
+            'profile.score',
+            'profile.valid_phenology',
+            'profile.valid_altitude',
+            'profile.valid_distribution',
+        }
 
     fields |= { col['column_name']
                for col in blueprint.config["COLUMN_LIST"] }
@@ -109,11 +110,6 @@ def get_synthese_data(info_role):
     lateral_join = { last_validation : Synthese.last_validation}
 
     if enable_profile:
-        fields = {
-            *fields,
-            *profil_fields
-        }
-
         profile_subquery = (
             VConsistancyData
             .query
@@ -164,18 +160,20 @@ def get_synthese_data(info_role):
     )
 
     # filter with profile
-    score = filters.pop("score", None)
-    if score is not None and enable_profile:
-        query = query.filter(profile.score==score)
-    valid_distribution = filters.pop("valid_distribution", None)
-    if valid_distribution is not None and enable_profile:
-        query = query.filter(profile.valid_distribution.is_(valid_distribution))
-    valid_altitude = filters.pop("valid_altitude", None)
-    if valid_altitude is not None and enable_profile:
-        query = query.filter(profile.valid_altitude.is_(valid_altitude))
-    valid_phenology = filters.pop("valid_phenology", None)
-    if valid_phenology is not None and enable_profile:
-        query = query.filter(profile.valid_phenology.is_(valid_phenology))
+    if enable_profile:
+        score = filters.pop("score", None)
+        if score is not None:
+            query = query.filter(profile.score==score)
+        valid_distribution = filters.pop("valid_distribution", None)
+        if valid_distribution is not None:
+            query = query.filter(profile.valid_distribution.is_(valid_distribution))
+        valid_altitude = filters.pop("valid_altitude", None)
+        if valid_altitude is not None:
+            query = query.filter(profile.valid_altitude.is_(valid_altitude))
+        valid_phenology = filters.pop("valid_phenology", None)
+        if valid_phenology is not None:
+            query = query.filter(profile.valid_phenology.is_(valid_phenology))
+
     if filters.pop("modif_since_validation", None):
         query = query.filter(Synthese.meta_update_date > last_validation.validation_date)
 
@@ -193,10 +191,9 @@ def get_synthese_data(info_role):
     query = (
         Synthese.query
         .options(*[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)])
-        .options(*[contains_eager(lateral_join[alias], alias=alias) for alias in lateral_join.keys()])
+        .options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
         .from_statement(query)
     )
-
     # The raise option ensure that we have correctly retrived relationships data at step 3
     return jsonify(
         query.as_geofeaturecollection(fields=fields, unloaded='raise')
