@@ -69,7 +69,8 @@ def get_synthese_data(info_role):
         'taxref.cd_nom',
         'taxref.nom_vern',
         'taxref.lb_nom',
-        'taxref.nom_vern_or_lb_nom'
+        'taxref.nom_vern_or_lb_nom',
+        'dataset.validable'
     }
 
     if enable_profile:
@@ -133,11 +134,14 @@ def get_synthese_data(info_role):
             )
     })
 
+    # Get dataset relationship : filter only validable dataset
+    dataset_index = relationships.index('dataset')
     relationships = [getattr(Synthese, rel) for rel in relationships]
     aliases = [
         aliased(rel.property.mapper.class_)
         for rel in relationships
     ]
+    dataset_alias = aliases[dataset_index]
 
     query = (
         db.session.query(
@@ -176,6 +180,10 @@ def get_synthese_data(info_role):
 
     if filters.pop("modif_since_validation", None):
         query = query.filter(Synthese.meta_update_date > last_validation.validation_date)
+
+    # Filter only validable dataset
+
+    query = query.filter(dataset_alias.validable == True)
 
     # Step 2: give SyntheseQuery the Core selectable from ORM query
     assert(len(query.selectable.froms) == 1)
