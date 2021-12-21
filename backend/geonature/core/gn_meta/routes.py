@@ -36,7 +36,7 @@ from werkzeug.datastructures import Headers
 from marshmallow import ValidationError, EXCLUDE
 
 
-from geonature.utils.env import DB, BACKEND_DIR
+from geonature.utils.env import DB, db, BACKEND_DIR
 from geonature.core.gn_synthese.models import (
     Synthese,
     TSources,
@@ -128,17 +128,6 @@ def get_datasets():
     )
 
 
-def is_af_deletable(id_af):
-    datasets = (
-        DB.session.query(TDatasets.id_dataset)
-        .filter(TDatasets.id_acquisition_framework == id_af)
-        .all()
-    )
-    if datasets:
-        return False
-    return True
-
-
 def get_af_from_id(id_af, af_list):
     found_af = None
     for af in af_list:
@@ -200,7 +189,7 @@ def delete_dataset(info_role, ds_id):
     """
 
     dataset = TDatasets.query.get_or_404(ds_id)
-    if not dataset.has_instance_permission(int(info_role.value_filter)):
+    if not dataset.has_instance_permission(scope=int(info_role.value_filter)):
         raise Forbidden(f"User {g.current_user} cannot delete dataset {dataset.id_dataset}")
     if not dataset.is_deletable():
         raise Conflict("La suppression du jeu de données n'est pas possible "
@@ -805,26 +794,21 @@ def get_acquisition_framework(info_role, id_acquisition_framework):
 
 @routes.route("/acquisition_framework/<int:af_id>", methods=["DELETE"])
 @permissions.check_cruved_scope("D", True, module_code="METADATA")
-@json_resp
 def delete_acquisition_framework(info_role, af_id):
     """
     Delete an acquisition framework
     .. :quickref: Metadata;
     """
+    af = TAcquisitionFramework.query.get_or_404(af_id)
+    if not af.has_instance_permission(scope=int(info_role.value_filter)):
+        raise Forbidden(f"User {g.current_user} cannot delete acquisition framework {af.id_acquisition_framework}")
+    if not af.is_deletable():
+        raise Conflict("La suppression du cadre d’acquisition n'est pas possible "
+                       "car celui-ci contient des jeux de données.")
+    db.session.delete(af)
+    db.session.commit()
 
-    if not is_af_deletable(af_id):
-        raise GeonatureApiError(
-            "La suppression du cadre d'acquisition n'est pas possible car des jeux de données y sont rattachées",
-            500,
-        )
-
-    DB.session.query(TAcquisitionFramework).filter(
-        TAcquisitionFramework.id_acquisition_framework == af_id
-    ).delete()
-
-    DB.session.commit()
-
-    return "OK"
+    return '', 204
 
 
 def acquisitionFrameworkHandler(request, *, acquisition_framework, info_role):
