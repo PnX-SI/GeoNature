@@ -138,7 +138,6 @@ def get_observation_score():
         raise BadRequest('Missing altitude_min or altitude_max')
     # Check de la répartition
     if "geom" in data:
-        print("geom ???")
         query = DB.session.query(
             func.ST_Contains(
                 func.ST_Transform(profile.valid_distribution, 4326),

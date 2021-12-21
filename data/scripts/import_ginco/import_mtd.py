@@ -132,7 +132,6 @@ def insert_sinp_datatype_protocols(cur_protocol_name,cur_protocol_desc,cur_proto
 	INSERT INTO gn_meta.sinp_datatype_protocols (protocol_name,protocol_desc,id_nomenclature_protocol_type,protocol_url)
 	VALUES ({cur_protocol_name}, {cur_protocol_desc} , (SELECT(ref_nomenclatures.get_id_nomenclature('TYPE_PROTOCOLE', '0'))), {cur_protocol_url})
 	"""
-	print(query)
 	cursor.execute(query)
 	conn.commit()
 	print('New protocol imported')

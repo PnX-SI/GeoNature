@@ -461,9 +461,7 @@ export class OcctaxFormReleveService {
   submitReleve() {
     this.waiting = true;
     if (this.occtaxFormService.id_releve_occtax.getValue()) {
-      //update
-      console.log("LAA", this.releveFormValue());
-      
+      //update      
       this.occtaxDataService
         .updateReleve(
           this.occtaxFormService.id_releve_occtax.getValue(),
