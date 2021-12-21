@@ -18,7 +18,7 @@ from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User, Organisme
 from utils_flask_sqla.serializers import serializable
 
-from geonature.utils.env import DB
+from geonature.utils.env import DB, db
 from geonature.core.gn_commons.models import cor_field_dataset, cor_module_dataset
 
 
@@ -754,6 +754,13 @@ class TAcquisitionFramework(CruvedHelper):
     @hybrid_property
     def organism_actors(self):
         return [ actor.organism for actor in self.cor_af_actor if actor.organism is not None ]
+
+    def is_deletable(self):
+        return not db.session.query(
+            TDatasets.query
+            .filter_by(id_acquisition_framework=self.id_acquisition_framework)
+            .exists()
+        ).scalar()
 
     def has_instance_permission(self, scope):
         if scope == 0:

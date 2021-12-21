@@ -1,14 +1,14 @@
 import pytest
 
 from flask import url_for, current_app
-from werkzeug.exceptions import Unauthorized, BadRequest
+from werkzeug.exceptions import Unauthorized, Forbidden, Conflict, BadRequest
 
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 
 from pypnusershub.db.tools import user_to_token
 
-from .fixtures import acquisition_frameworks, datasets
+from .fixtures import acquisition_frameworks, datasets, synthese_data
 from .utils import set_logged_user_cookie, logged_user_headers
 
 
@@ -72,6 +72,43 @@ class TestGNMeta:
             ])
             assert set(qs.filter_by_scope(3).all()) == set(acquisition_frameworks.values())
 
+    def test_acquisition_framework_is_deletable(self, app, acquisition_frameworks, datasets):
+        assert acquisition_frameworks['own_af'].is_deletable() == True
+        assert acquisition_frameworks['orphan_af'].is_deletable() == False  # DS are attached to this AF
+
+    def test_delete_acquisition_framework(self, app, users, acquisition_frameworks, datasets):
+        af_id = acquisition_frameworks['orphan_af'].id_acquisition_framework
+
+        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user_cookie(self.client, users['noright_user'])
+
+        # The user has no rights on METADATA module
+        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
+        assert response.status_code == Forbidden.code
+        assert 'METADATA' in response.json['description']
+
+        set_logged_user_cookie(self.client, users['self_user'])
+
+        # The user has right on METADATA module, but not on this specific AF
+        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
+        assert response.status_code == Forbidden.code
+        assert 'METADATA' not in response.json['description']
+
+        set_logged_user_cookie(self.client, users['admin_user'])
+
+        # The AF can not be deleted due to attached DS
+        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
+        assert response.status_code == Conflict.code
+
+        set_logged_user_cookie(self.client, users['user'])
+        af_id = acquisition_frameworks['own_af'].id_acquisition_framework
+
+        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
+        assert response.status_code == 204
+
+
     def test_get_acquisition_frameworks(self, users):
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks"))
         assert response.status_code == Unauthorized.code
@@ -128,6 +165,42 @@ class TestGNMeta:
                 datasets['associate_dataset'],
             ])
             assert set(qs.filter_by_scope(3).all()) == set(datasets.values())
+
+    def test_dataset_is_deletable(self, app, synthese_data, datasets):
+        assert datasets['own_dataset'].is_deletable() == False  # there are synthese data attached to this DS
+        assert datasets['orphan_dataset'].is_deletable() == True
+
+    def test_delete_dataset(self, app, users, synthese_data, acquisition_frameworks, datasets):
+        ds_id = datasets['own_dataset'].id_dataset
+
+        response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user_cookie(self.client, users['noright_user'])
+
+        # The user has no rights on METADATA module
+        response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
+        assert response.status_code == Forbidden.code
+        assert 'METADATA' in response.json['description']
+
+        set_logged_user_cookie(self.client, users['self_user'])
+
+        # The user has right on METADATA module, but not on this specific DS
+        response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
+        assert response.status_code == Forbidden.code
+        assert 'METADATA' not in response.json['description']
+
+        set_logged_user_cookie(self.client, users['user'])
+
+        # The DS can not be deleted due to attached rows in synthese
+        response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
+        assert response.status_code == Conflict.code
+
+        set_logged_user_cookie(self.client, users['admin_user'])
+        ds_id = datasets['orphan_dataset'].id_dataset
+
+        response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
+        assert response.status_code == 204
 
     def test_get_datasets(self, users):
         response = self.client.get(url_for("gn_meta.get_datasets"))
