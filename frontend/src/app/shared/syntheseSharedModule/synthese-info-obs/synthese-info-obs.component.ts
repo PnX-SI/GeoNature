@@ -72,9 +72,11 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   // HACK to display a second map on validation tab
   setValidationTab(event) {
     this.showValidation = true;
-    setTimeout(() => {
-      this._mapService.map.invalidateSize();
-    }, 100);    
+    if(this._mapService.map){
+      setTimeout(() => {
+        this._mapService.map.invalidateSize();
+      }, 100);
+    }
   }
 
 
