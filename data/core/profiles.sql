@@ -190,7 +190,7 @@ FROM ref_nomenclatures.t_nomenclatures n
 WHERE n.id_type=(
 	SELECT id_type FROM ref_nomenclatures.bib_nomenclatures_types bnt WHERE mnemonique='STATUT_VALID'
 	)
-AND n.cd_nomenclature IN ('0','1','2') -- Commenter pour considérer l'ensemble des données;
+AND n.cd_nomenclature IN ('1','2') -- Commenter pour considérer l'ensemble des données;
 ;
 
 -- Ajout d'un paramètre pour définir le niveau de validatation requis pour que les données alimentent
