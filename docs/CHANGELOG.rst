@@ -24,16 +24,16 @@ Profils de taxons
 - Validation, changement du fonctionnement pour les colonnes de la liste ? Si les gens avaient une vue custom, on leur indique quelque chose ?
 - Doc sensibilité à intégrer
 - Corrections de sécurité dans dépôt dédié. Garder les routes d'Amandine pour le moment en les protégeant comme elle l'a proposé ?
+- Pourquoi pas de statut de validation sur le GN de test ?
 
 **BUGS**
 
 - Dans le module VALIDATION :
-- Le statut de validation ne s'affiche plus dans la liste des observations, car il affiche l'ID de la nomenclature
-- Dans recherche avancée, je cherche "plantae", il ne le trouve pas... Et le champs "Groupe2INPN" est vide
-- Le nombre de résultats n'est plus affiché en bas du tableau
-- Par défaut, la taille de la carte est trop petite ? Modification récente d'Amandine
-- Je filtre sur un JDD, le tableau se ressere à gauche
-- Enchainer des relevés avec un GPX ne permet pas de selectionner un autre objet du GPX au second relevé : OK
+  - Le nombre de résultats n'est plus affiché en bas du tableau
+  - Par défaut, la taille de la carte est trop petite ? Modification récente d'Amandine
+  - Je filtre sur un JDD, le tableau se ressere à gauche
+- Occtax : Enchainer des relevés avec un GPX ne permet pas de selectionner un autre objet du GPX au second relevé : OK
+- J'enchaine les relevés avec un GPX de polygone, quand je reviens sur le relevé, je suis centré sur le monde
 - Occtax : Je déplace un point en le glissant, l'altitude n'est pas recalculée, si je clique un nouveau point elle l'est: NOK, et maintenant si je le glisse, puis enregistre, la nouvelle position n'est pas enregistrée
 - Occtax : Je modifie un polygone, j'enregistre, OK, je le remodifie, ça me garde le précédent.
 - Occtax : Je modifie un relevé point ou polygone, je passe aux taxons, je repasse au relevé, la carte passe sur l'ensemble du monde 
@@ -56,9 +56,9 @@ Profils de taxons
   - Backend (#1104)
   - Frontend (#1105)
   - Améliorations JPM (#1531)
-  - Paramètres modifiables
+  - Paramètres modifiables (nomenclatures de validation utilisées par défaut)
   - Statuts pris en compte paramétrables
-  - Documentation
+  - Documentation (URL)
 * [OCCTAX] Contrôle de la cohérence des nouvelles données saisies par rapport au profil
 * [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
 * [SYNTHESE et VALIDATION] Enrichissement de l'onglet "Validation" en y ajoutant les informations du profil du taxon observé
