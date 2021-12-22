@@ -21,23 +21,31 @@ Profils de taxons
 - PR de Jean-Brieuc et MAJ des données à tester et automatiser ou documenter ?
 - Documenter évolutions conf validation et si certains avaient modifié la vue ?
 - Dans Occtax, en survolant les nomenclatures, avant on affichait la description, désormais le label...
+- Validation, changement du fonctionnement pour les colonnes de la liste ? Si les gens avaient une vue custom, on leur indique quelque chose ?
+- Doc sensibilité à intégrer
+- Corrections de sécurité dans dépôt dédié. Garder les routes d'Amandine pour le moment en les protégeant comme elle l'a proposé ?
 
 **BUGS**
 
 - Dans le module VALIDATION :
-- L'attribution d'un statut de validation depuis la liste fonctionne par contre
-- Si j'attribue un statut de validation depuis la fiche d'une observation, ça l'attribue bien, et ça modifie le "Statut de validation actuel", mais pas le statut de validation dans l'onglet "Détail de l'occurrence", ni ne l'ajoute dans l'onglet "Validation". : fait sauf pour le statut dans le tableau et l'onglet validation : il faudrait recharger les données...
-- Bug d'ajout d'un média dans Occtax, à cause du type qui est affiché sous forme d'id ? : OK
+- Le statut de validation ne s'affiche plus dans la liste des observations, car il affiche l'ID de la nomenclature
+- Dans recherche avancée, je cherche "plantae", il ne le trouve pas... Et le champs "Groupe2INPN" est vide
+- Le nombre de résultats n'est plus affiché en bas du tableau
+- Par défaut, la taille de la carte est trop petite ? Modification récente d'Amandine
+- Je filtre sur un JDD, le tableau se ressere à gauche
 - Enchainer des relevés avec un GPX ne permet pas de selectionner un autre objet du GPX au second relevé : OK
-- Occtax : Je déplace un point en le glissant, l'altitude n'est pas recalculée, si je clique un nouveau point elle l'est: OK
-- Occtax : Je dessine un polygone, je le modifie, l'altitude n'est pas recalculée et le précédent polygone reste affiché sur la carte... OK
+- Occtax : Je déplace un point en le glissant, l'altitude n'est pas recalculée, si je clique un nouveau point elle l'est: NOK, et maintenant si je le glisse, puis enregistre, la nouvelle position n'est pas enregistrée
+- Occtax : Je modifie un polygone, j'enregistre, OK, je le remodifie, ça me garde le précédent.
+- Occtax : Je modifie un relevé point ou polygone, je passe aux taxons, je repasse au relevé, la carte passe sur l'ensemble du monde 
 - Occtax : Je modifie un taxon qui avait un dénombrement où min différent de max, il me remet max = min : OK
 - Occtax : liste des habitats masquée, exemple : ville
 - MTD : Je créé un JDD, erreur 500 au moment d'enregistrer sur /geonature/api/meta/dataset:1
 - Synthèse : la recherche par organisme ne fonctionne pas ?
-- Synthèse : Recherche avancée - Groupes OK mais non affiché, et si je choisis un rang (Plantae), ça filtre la carte mais pas la liste...
-- Idem sur Arbre taxonomique (dont les valeurs ne se mettent pas à jour en fonction des données ?)
-- Synthèse - J'ouvre une fiche info / Pas mal d'erreurs dans la console sur les profils
+- J'ajoute un organisme, je l'associe à un utilisateur dans UsersHub. Je reviens sur la Synthèse, cet organisme n'apparait pas dans la liste des organismes
+- Synthèse : Je charge un GeoJSON de recherche, cela zoome dessus, mais ne recherche pas dans la zone, même si je clique sur RECHERCHER
+- Synthèse : Le lien pour écrire un email ne contient pas le destinataire
+- Les médias ne sont plus affichés dans les fiches observation de Synthèse et Validation
+- Synthèse - J'ouvre une fiche info / Pas mal d'erreurs dans la console sur les profils. Normal quand le taxon n'a pas de profil ?
 - Fiche info synthèse : Score vide quand nul ?
 - Fiche info synthèse et profil : Des croix partout quand pas de données validées pour ce taxon...
 
