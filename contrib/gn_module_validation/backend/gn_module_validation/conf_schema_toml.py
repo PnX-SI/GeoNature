@@ -6,7 +6,7 @@ from marshmallow import Schema, fields
 
 
 COLUMN_LIST = [
-    {"column_name": "id_nomenclature_valid_status", "column_label": "", "max_width": 40},
+    {"column_name": "nomenclature_valid_status.label_default", "column_label": "", "max_width": 40},
     {"column_name": "taxref.nom_vern_or_lb_nom", "column_label": "Taxon", "min_width": 250},
     {"column_name": "date_min", "column_label": "Date obs.", "min_width": 100},
     {"column_name": "dataset.dataset_name", "column_label": "Jeu de donnees", "min_width": 100},
