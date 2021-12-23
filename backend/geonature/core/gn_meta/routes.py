@@ -91,7 +91,8 @@ log = logging.getLogger()
 if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
     @routes.before_request
     def synchronize_mtd():
-        if request.endpoint == "gn_meta.get_datasets":
+        if request.endpoint in ["gn_meta.get_datasets",
+                                "gn_meta.get_acquisition_frameworks_list"]:
             try:
                 mtd_utils.post_jdd_from_user(
                     id_user=g.current_user.id_role, id_organism=g.current_user.id_organisme
@@ -615,14 +616,6 @@ def get_acquisition_frameworks_list(info_role):
     :qparam boolean nested: Default False - serialized relationships. If false: remove add all relationships in excluded_fields
 
     """
-    if current_app.config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
-        # synchronise the CA and JDD from the MTD WS
-        try:
-            mtd_utils.post_jdd_from_user(
-                id_user=info_role.id_role, id_organism=info_role.id_organisme
-            )
-        except Exception as e:
-            log.error(e)
     params = request.args.to_dict()
     params["orderby"] = "acquisition_framework_name"
 
