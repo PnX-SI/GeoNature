@@ -144,18 +144,38 @@ def get_dataset(info_role, id_dataset):
     :param type: int
     :returns: dict<TDataset>
     """
-    datasetSchema = DatasetSchema()
+    dataset = TDatasets.query.get_or_404(id_dataset)
+    if not dataset.has_instance_permission(scope=int(info_role.value_filter)):
+        raise Forbidden(f"User {g.current_user} cannot read dataset {dataset.id_dataset}")
+
+    dataset_schema = DatasetSchema(only=[
+        'creator',
+        'cor_dataset_actor',
+        'cor_dataset_actor.nomenclature_actor_role',
+        'cor_dataset_actor.organism',
+        'cor_dataset_actor.role',
+        'modules',
+        'nomenclature_data_type',
+        'nomenclature_dataset_objectif',
+        'nomenclature_collecting_method',
+        'nomenclature_data_origin',
+        'nomenclature_source_status',
+        'nomenclature_resource_type',
+        'cor_territories',
+        'acquisition_framework',
+        'acquisition_framework.creator',
+        'acquisition_framework.cor_af_actor',
+        'acquisition_framework.cor_af_actor.nomenclature_actor_role',
+        'acquisition_framework.cor_af_actor.organism',
+        'acquisition_framework.cor_af_actor.role',
+    ])
+
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role, module_code="METADATA",
     )[0]
+    dataset_schema.context = {'user_cruved': user_cruved}
 
-    datasetSchema.context = {'user_cruved': user_cruved}
-
-    dataset = DB.session.query(TDatasets).get(id_dataset)
-    if not dataset:
-        raise NotFound('Dataset "{}" does not exist'.format(id_dataset))
-
-    return datasetSchema.jsonify(dataset)
+    return dataset_schema.jsonify(dataset)
 
 
 @routes.route("/upload_canvas", methods=["POST"])
@@ -803,21 +823,43 @@ def get_acquisition_framework(info_role, id_acquisition_framework):
     :param type: int
     :returns: dict<TAcquisitionFramework>
     """
+    af = TAcquisitionFramework.query.get_or_404(id_acquisition_framework)
+    if not af.has_instance_permission(scope=int(info_role.value_filter)):
+        raise Forbidden(f"User {g.current_user} cannot read acquisition "
+                         "framework {af.id_acquisition_framework}")
+
     exclude = request.args.getlist("exclude")
     try:
-        acquisitionFrameworkSchema = AcquisitionFrameworkSchema(exclude=exclude)
+        af_schema = AcquisitionFrameworkSchema(
+            only=[
+                'creator',
+                'nomenclature_territorial_level',
+                'nomenclature_financing_type',
+                'cor_af_actor',
+                'cor_af_actor.nomenclature_actor_role',
+                'cor_af_actor.organism',
+                'cor_af_actor.role',
+                'cor_volets_sinp',
+                'cor_objectifs',
+                'cor_territories',
+                't_datasets',
+                't_datasets.creator',
+                't_datasets.nomenclature_data_type',
+                't_datasets.cor_dataset_actor',
+                't_datasets.cor_dataset_actor.nomenclature_actor_role',
+                't_datasets.cor_dataset_actor.organism',
+                't_datasets.cor_dataset_actor.role',
+            ],
+            exclude=exclude)
     except ValueError as e:
         raise BadRequest(str(e))
+
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role, module_code="METADATA",
     )[0]
+    af_schema.context = {'user_cruved': user_cruved}
 
-    acquisitionFrameworkSchema.context = {'user_cruved': user_cruved}
-
-    acquisition_framework = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
-    if not acquisition_framework:
-        raise NotFound('Acquisition framework "{}" does not exist'.format(id_acquisition_framework))
-    return acquisitionFrameworkSchema.jsonify(acquisition_framework)
+    return af_schema.jsonify(af)
 
 
 @routes.route("/acquisition_framework/<int:af_id>", methods=["DELETE"])
