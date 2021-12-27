@@ -858,10 +858,12 @@ def updateAcquisitionFramework(id_acquisition_framework, info_role):
     Post one AcquisitionFramework data for update acquisition_framework
     .. :quickref: Metadata;
     """
-    acquisition_framework = TAcquisitionFramework.query.get_or_404(id_acquisition_framework)
-
+    af = TAcquisitionFramework.query.get_or_404(id_acquisition_framework)
+    if not af.has_instance_permission(scope=int(info_role.value_filter)):
+        raise Forbidden(f"User {g.current_user} cannot update "
+                         "acquisition framework {af.id_acquisition_framework}")
     return AcquisitionFrameworkSchema().dump(
-        acquisitionFrameworkHandler(request=request, acquisition_framework=acquisition_framework, info_role=info_role)
+        acquisitionFrameworkHandler(request=request, acquisition_framework=af, info_role=info_role)
     )
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>/stats", methods=["GET"])
