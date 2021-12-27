@@ -17,8 +17,8 @@ class CruvedSchemaMixin:
     cruved = fields.Method("get_user_cruved")
 
     def get_user_cruved(self, obj):
-        if 'info_role' in self.context and 'user_cruved' in self.context:
-            return obj.get_object_cruved(self.context['info_role'], self.context['user_cruved'])
+        if 'user_cruved' in self.context:
+            return obj.get_object_cruved(self.context['user_cruved'])
         return None
 
 
