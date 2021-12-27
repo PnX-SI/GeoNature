@@ -277,7 +277,7 @@ class CruvedHelper(DB.Model):
         Return: dict {'C': True, 'R': False ...}
         """
         return {
-            action: self.has_instance_permission(level)
+            action: self.has_instance_permission(int(level))
             for action, level in user_cruved.items()
         }
 
