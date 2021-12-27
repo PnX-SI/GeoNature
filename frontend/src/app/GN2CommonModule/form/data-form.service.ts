@@ -349,7 +349,7 @@ export class DataFormService {
     );
   }
 
-  getAcquisitionFrameworksForSelect(searchTerms = {}) {    
+  getAcquisitionFrameworksList(searchTerms = {}) {
     let queryString: HttpParams = new HttpParams();
     for (let key in searchTerms) {
       queryString = queryString.set(key, searchTerms[key])
