@@ -47,12 +47,13 @@ class TestGNMeta:
             assert af.has_instance_permission(3) == True
 
             nested = db.session.begin_nested()
-            datasets['own_dataset'].acquisition_framework = acquisition_frameworks['own_af']
+            af.t_datasets.remove(datasets['own_dataset'])
             # Now, the AF has no DS on which user is digitizer.
             assert af.has_instance_permission(1) == False
             # But the AF has still DS on which user organism is actor.
             assert af.has_instance_permission(2) == True
             nested.rollback()
+            assert datasets['own_dataset'] in af.t_datasets
 
         with app.test_request_context(headers=logged_user_headers(users['user'])):
             app.preprocess_request()

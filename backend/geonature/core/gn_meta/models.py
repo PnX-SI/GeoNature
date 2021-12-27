@@ -415,6 +415,7 @@ class TDatasets(CruvedHelper):
     id_acquisition_framework = DB.Column(
         DB.Integer, ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
+    acquisition_framework = DB.relationship("TAcquisitionFramework", lazy="joined")  # join AF as required for permissions checks
     dataset_name = DB.Column(DB.Unicode)
     dataset_shortname = DB.Column(DB.Unicode)
     dataset_desc = DB.Column(DB.Unicode)
@@ -460,7 +461,7 @@ class TDatasets(CruvedHelper):
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean, server_default=FetchedValue())
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
-    digitizer = DB.relationship(User)
+    digitizer = DB.relationship(User, lazy="joined")  # joined for permission check
     id_taxa_list = DB.Column(DB.Integer)
     modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
@@ -528,7 +529,10 @@ class TDatasets(CruvedHelper):
     def is_deletable(self):
         return not DB.session.query(self.synthese_records.exists()).scalar()
 
-    def has_instance_permission(self, scope):
+    def has_instance_permission(self, scope, _through_af=True):
+        """
+        _through_af prevent infinite recursion
+        """
         if scope == 0:
             return False
         elif scope in (1, 2):
@@ -536,7 +540,7 @@ class TDatasets(CruvedHelper):
                 return True
             if scope == 2 and g.current_user.organisme in self.organism_actors:
                 return True
-            return False
+            return _through_af and self.acquisition_framework.has_instance_permission(scope, _through_ds=False)
         elif scope == 3:
             return True
 
@@ -741,10 +745,9 @@ class TAcquisitionFramework(CruvedHelper):
 
     t_datasets = DB.relationship(
         "TDatasets",
-        lazy="select",
+        lazy="joined",  # DS required for permissions checks
         cascade="all,delete-orphan",
         uselist=True,
-        backref=DB.backref("acquisition_framework", lazy="select"),
     )
 
     @hybrid_property
@@ -762,7 +765,7 @@ class TAcquisitionFramework(CruvedHelper):
             .exists()
         ).scalar()
 
-    def has_instance_permission(self, scope):
+    def has_instance_permission(self, scope, _through_ds=True):
         if scope == 0:
             return False
         elif scope in (1, 2):
@@ -771,7 +774,7 @@ class TAcquisitionFramework(CruvedHelper):
             if scope == 2 and g.current_user.organisme in self.organism_actors:
                 return True
             # rights on DS give rights on AF!
-            return any(map(lambda ds: ds.has_instance_permission(scope), self.t_datasets))
+            return _through_ds and any(map(lambda ds: ds.has_instance_permission(scope, _through_af=False), self.t_datasets))
         elif scope == 3:
             return True
 
