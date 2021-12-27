@@ -123,7 +123,7 @@ def users(app):  # an app context is required
     return users
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='function')
 def acquisition_frameworks(users):
     principal_actor_role = TNomenclatures.query.filter(
                                 BibNomenclaturesTypes.mnemonique=='ROLE_ACTEUR',
@@ -152,19 +152,19 @@ def acquisition_frameworks(users):
     return afs
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope='function')
 def datasets(users, acquisition_frameworks):
     af = acquisition_frameworks['orphan_af']
     principal_actor_role = TNomenclatures.query.filter(
                                 BibNomenclaturesTypes.mnemonique=='ROLE_ACTEUR',
                                 TNomenclatures.mnemonique=='Contact principal').one()
-    def create_dataset(digitizer=None):
+    def create_dataset(name, digitizer=None):
         with db.session.begin_nested():
             dataset = TDatasets(
                             id_acquisition_framework=af.id_acquisition_framework,
-                            dataset_name='test',
-                            dataset_shortname='test',
-                            dataset_desc='test',
+                            dataset_name=name,
+                            dataset_shortname=name,
+                            dataset_desc=name,
                             marine_domain=True,
                             terrestrial_domain=True,
                             id_digitizer=digitizer.id_role if digitizer else None)
@@ -176,12 +176,13 @@ def datasets(users, acquisition_frameworks):
                 dataset.cor_dataset_actor.append(actor)
         return dataset
 
-    datasets = {
-        'own_dataset': create_dataset(digitizer=users['user']),
-        'associate_dataset': create_dataset(digitizer=users['associate_user']),
-        'stranger_dataset': create_dataset(digitizer=users['stranger_user']),
-        'orphan_dataset': create_dataset(),
-    }
+    datasets = { name: create_dataset(name, digitizer)
+                 for name, digitizer in [
+                     ('own_dataset', users['user']),
+                     ('associate_dataset', users['associate_user']),
+                     ('stranger_dataset', users['stranger_user']),
+                     ('orphan_dataset', None),
+                 ] }
 
     return datasets
 

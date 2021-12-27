@@ -117,9 +117,17 @@ class TestGNMeta:
         set_logged_user_cookie(self.client, users['admin_user'])
 
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks"))
+        response = self.client.get(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            query_string={
+                'datasets': '1',
+                'creator': '1',
+                'actors': '1',
+            },
+        )
         assert response.status_code == 200
 
-    def test_get_acquisition_frameworks_list(self, users):
+    def test_list_acquisition_frameworks(self, users):
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
         assert response.status_code == Unauthorized.code
 
