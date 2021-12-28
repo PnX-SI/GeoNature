@@ -93,6 +93,7 @@ Backend
 - Une fonction ou classe doit contenir une docstring en français. Les doctrings doivent suivre le modèle NumPy/SciPy (voir https://numpydoc.readthedocs.io/en/latest/format.html et https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example)
 - Les commentaires dans le codes doivent être en anglais (ne pas s'empêcher de mettre un commentaire en français sur une partie du code complexe !)
 - Assurez-vous d’avoir récupérer les dépendances dans les sous-modules git : ``git submodule init && git submodule update``
+  - Après un ``git pull``, il faut mettre à jour les sous-modules : ``git submodule update``
 - Installer les requirements-dev (``cd backend && pip install -r requirements-dev.txt``) qui contiennent une série d'outils indispensables au développement dans GeoNature.
 - Utiliser *blake* comme formateur de texte et activer l'auto-formatage dans son éditeur de texte (Tuto pour VsCode : https://medium.com/@marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00)
 - Utiliser *pylint* comme formatteur de code 
@@ -112,23 +113,11 @@ Backend
 BDD 
 ***
 
-- Le noms des tables est préfixé par un "t" pour une table de contenu, de "bib" pour les tables de "dictionnaires" et de "cor" pour les tables de correspondance
+- Le noms des tables est préfixé par un "t" pour une table de contenu, de "bib" pour les tables de "dictionnaires" et de "cor" pour les tables de correspondance (relations N-N)
 - Les schémas du coeur de GeoNature sont préfixés de "gn" 
 - Les schémas des protocoles ou modules GeoNature sont préfixés de "pr"
-- Chaque schéma de BDD dispose de son propre fichier SQL
-- Les scripts SQL sont ordonnés en section dans l'ordre suivant : (voir https://github.com/PnX-SI/GeoNature/blob/master/data/core/synthese.sql)
-
-  - Fonctions
-  - Tables 
-  - Clés primaires 
-  - Clés étrangères 
-  - Contraintes 
-  - Triggers 
-  - Données nécessaires au fonctionnement du schéma
-  
-- Les scripts de données sont écrits dans des fichiers à part
 - Ne rien écrire dans le schéma ``public``
-- Ne pas répeter le nom des tables dans les noms des colonnes (exception faite des colonnes "id)
+- Ne pas répeter le nom des tables dans les noms des colonnes
 
 Typescript
 **********
@@ -211,7 +200,7 @@ constitué d'un ensemble de briques réutilisables.
 
 En base de données, le coeur de GeoNature est constitué de l'ensemble des
 référentiels (utilisateurs, taxonomique, nomenclatures géographique)
-et du schéma ``synthese`` regroupant l'ensemble données saisies dans les
+et du schéma ``gn_synthese`` regroupant l'ensemble données saisies dans les
 différents protocoles (voir doc administrateur pour plus de détail sur le
 modèle de données).
 
@@ -228,8 +217,7 @@ Développer un gn_module
 ***********************
 
 Avant de développer un gn_module, assurez-vous d'avoir GeoNature bien
-installé sur votre machine
-(`voir doc <https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst>`__).
+installé sur votre machine (voir :ref:`installation-standalone`).
 
 Afin de pouvoir connecter ce module au "coeur", il est impératif de suivre
 une arborescence prédéfinie par l'équipe GeoNature.
@@ -928,12 +916,11 @@ Pytest
 Pytest permet de mettre en place des tests fonctionnels et automatisés
 du code Python.
 
-Les fichiers de test sont dans le répertoire ``backend/tests``
+Les fichiers de test sont dans le répertoire ``backend/geonature/tests``
 
-::
+.. code::
 
-        cd backend
-        pytest
+    pytest
 
 
 Coverage
@@ -942,10 +929,9 @@ Coverage
 Coverage permet de donner une indication concernant la couverture du code
 par les tests.
 
-::
+.. code::
 
-        cd backend
-        pytest --cov=geonature --cov-report=html
+    pytest --cov=geonature --cov-report=html
 
 
-Ceci génénère un rapport html disponible dans  ``backend/htmlcov/index.html``.
+Ceci génénère un rapport html disponible dans  ``htmlcov/index.html``.
