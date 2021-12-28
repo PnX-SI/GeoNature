@@ -364,53 +364,167 @@ Développement Backend
 Démarrage du serveur de dev backend
 ***********************************
 
+La commande ``geonature`` fournit la sous-commande ``dev_back`` pour lancer un serveur de test :
+
 ::
 
     (venv)...$ geonature dev_back
 
 
-Base de données
-***************
+Base de données avec Flask-SQLAlchemy
+*************************************
 
-Session sqlalchemy
-""""""""""""""""""
+L’intégration de la base de données à GeoNature repose sur la bibliothèque `Flask-SQLAlchemy <https://flask-sqlalchemy.palletsprojects.com>`_.
+Celle-ci fournit un objet ``db`` à importer comme ceci : ``from geonature.utils.env import db``
 
-- ``geonature.utils.env.DB``
+Cet objet permet d’accéder à la session SQLAlchemy ainsi :
 
+::
 
-Fournit l'instance de connexion SQLAlchemy Python ::
+    from geonature.utils.env import db
+    obj = db.session.query(MyModel).get(1)
 
-    from geonature.utils.env import DB
+Mais il fournit une base déclarative ``db.Model`` permettant d’interroger encore plus simplement les modèles via leur attribut ``query`` :
 
-    result = DB.session.query(MyModel).get(1)
+::
+
+    from geonature.utils.env import db
+    class MyModel(db.Model):
+        …
+
+    obj = MyModel.query.get(1)
+
+L’attribut ``query`` fournit `plusieurs fonctions <https://flask-sqlalchemy.palletsprojects.com/en/2.x/api/#flask_sqlalchemy.BaseQuery>`_ très utiles dont la fonction ``get_or_404`` :
+
+::
+
+    obj = MyModel.query.get_or_404(1)
+
+Ceci est typiquement la première ligne de toute les routes travaillant sur une instance (route de type get/update/delete).
 
 
 Serialisation des modèles
 *************************
 
-La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison externalisée. Voir la doc plus complète: https://github.com/PnX-SI/Utils-Flask-SQLAlchemy
+Avec Marshmallow
+""""""""""""""""
 
-- ``utils_flask_sqla.serializers.serializable``
+La bibliothèque `Marshmallow <https://marshmallow.readthedocs.io/en/stable/>`_ fournit des outils de sérialisation et desérialisation.
 
-  Décorateur pour les modèles SQLA : Ajoute une méthode ``as_dict`` qui
-  retourne un dictionnaire des données de l'objet sérialisable json
+Elle est intégrer à GeoNature par la bibliothèque `Flask-Marshmallow <https://flask-marshmallow.readthedocs.io/en/latest/>`_ qui fournit l’objet ``ma`` à importer comme ceci : ``from geonature.utils.env import ma``
+Cette bibliothèque ajoute notablement une méthode ``jsonify`` aux schémas.
 
-  Fichier définition modèle :
+Les schémas Marshmallow peuvent être facilement créé à partir des modèles SQLAlchemy grâce à la bibliothèque `Marshmallow-SQLAlchemy <https://marshmallow-sqlalchemy.readthedocs.io/en/latest/>`_.
 
-  ::
+::
 
-    from geonature.utils.env import DB
+    from geonature.utils.env import ma
+
+    class MyModelSchema(ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = MyModel
+            include_fk = True
+
+La propriété ``include_fk=True`` concerne les champs de type ``ForeignKey``, mais pas les ``relationships`` en elles-même. Pour ces dernières, il est nécessaire d’ajouter manuellement des champs ``Nested`` à son schéma :
+
+::
+
+    class ParentModelSchema(ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = ParentModel
+            include_fk = True
+
+        childs = ma.Nested("ChildModelSchema", many=True)
+
+    class ChildModelSchema(ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = ChildModel
+            include_fk = True
+
+        parent = ma.Nested(ParentModelSchema)
+
+
+Attention, la sérialisation d’un objet avec un tel schéma va provoquer une récursion infinie, le schéma parent incluant le schéma enfant, et le schéma enfant incluant le schéma parent !
+Il est donc nécessaire de restreindre les champs à inclure avec l’argument ``only`` ou ``exclude`` lors de la création des schémas :
+
+::
+
+    parent_schema = ParentModelSchema(only=['pk', 'childs.pk'])
+
+L’utilisation de ``only`` est lourde puisqu’il faut re-spécifier tous les champs à sérialiser. On est alors tenter d’utiliser l’argument ``exclude`` :
+
+::
+
+    parent_schema = ParentModelSchema(exclude=['childs.parent'])
+
+Cependant, l’utilisation de ``exclude`` est hautement problématique !
+En effet, l’ajout d’un nouveau champs ``Nested`` au schéma nécessiterait de le rajouter dans la liste des exclusions partout où le schéma est utilisé (que ça soit pour éviter une récursion infinie, ou pour éviter un problème n+1 - voir section dédiée).
+
+La bibliothèque Utils-Flask-SQLAlchemy fournit une classe utilitaire ``SmartRelationshipsMixin`` permettant de résoudre ces problématiques.
+Elle permet d’exclure par défaut les champs ``Nested``.
+Pour demander la sérialisation d’un sous-schéma, il faut le spécifier avec ``only``, mais sans nécessité de spécifier tous les champs basiques (non ``Nested``).
+
+
+::
+
+    from utils_flask_sqla.schema import SmartRelationshipsMixin
+
+    class ParentModelSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = ParentModel
+            include_fk = True
+
+        childs = ma.Nested("ChildModelSchema", many=True)
+
+    class ChildModelSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = ChildModel
+            include_fk = True
+
+        parent = ma.Nested(ParentModelSchema)
+
+
+Avec le décorateur ``@serializable``
+""""""""""""""""""""""""""""""""""""
+
+Note : l’utilisation des schémas Marshmallow est probablement plus performante.
+
+La bibliothèque maison `Utils-Flask-SQLAlchemy <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy>`_ fournit le décorateur ``@serializable`` qui ajoute une méthode ``as_dict`` sur les modèles décorés :
+
+::
+
     from utils_flask_sqla.serializers import serializable
 
     @serializable
-    class MyModel(DB.Model):
-        __tablename__ = 'bla'
-        ...
+    class MyModel(db.Model):
+        …
 
-  Fichier utilisation modèle ::
 
-    instance = DB.session.query(MyModel).get(1)
-    result = instance.as_dict()
+    obj = MyModel(…)
+    obj.as_dict()
+
+
+La méthode ``as_dict`` fournit les arguments ``fields`` et ``exclude`` permettant de spécifier les champs que l’on souhaite sérialiser.
+Par défaut, seules les champs qui ne sont pas des relationshisp sont sérialisées (fonctionnalité similaire à celle fournit par ``SmartRelationshipsMixin`` pour Marshmallow).
+Les relations que l’on souhaite voir sérialisées doivent être explicitement déclarées via l’argument ``fields``.
+L’argument ``fields`` supporte la « notation à point » permettant de préciser les champs d’un modèle en relation :
+
+::
+
+    child.as_dict(fields=['parent.pk'])
+
+Les `tests unitaires <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/blob/master/src/utils_flask_sqla/tests/test_serializers.py>`_ fournissent un ensemble d’exemples d’usage du décorateur.
+
+La fonction ``as_dict`` prenait autrefois en argument les paramètres ``recursif`` et ``depth`` qui sont tous les deux obsolètes. Ces derniers différents problèmes :
+- récursion infinie (contourné par un hack qui ne résoud pas tous les problèmes et qu’il serait souhaitable de voir disparaitre)
+- augmentation non prévu des données sérialisées lors de l’ajout d’une nouvelle relationship
+- problème n+1 (voir section dédié)
+
+
+Cas des modèles géographique
+""""""""""""""""""""""""""""
+
+La bibliothèque maison `Utils-Flask-SQLAlchemy-Geo <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo>`_ fournit des décorateurs supplémentaire pour la sérialisation des modèles contenant des champs géographiques.
 
 - ``utils_flask_sqla_geo.serializers.geoserializable``
 
@@ -501,6 +615,82 @@ La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison ex
                 FionaShapeService.save_and_zip_shapefiles()
 
 
+Réponses
+********
+
+Voici quelques conseils sur l’envoie de réponse dans vos routes.
+
+- Privilégier l’envoie du modèle sérialisé (vues de type create/update), ou d’une liste de modèles sérialisées (vues de type list), plutôt que des structures de données non conventionnelles.
+
+  ::
+
+    def get_foo(pk):
+        foo = Foo.query.get_or_404(pk)
+        return jsonify(foo.as_dict(fields=…))
+
+    def get_foo(pk):
+        foo = Foo.query.get_or_404(pk)
+        return FooSchema(only=…).jsonify(foo)
+
+    def list_foo():
+        q = Foo.query.filter(…)
+        return jsonify([foo.as_dict(fields=…) for foo in q.all()])
+
+    def list_foo():
+        q = Foo.query.filter(…)
+        return FooSchema(only=…).jsonify(q.all(), many=True)
+
+- Pour les listes vides, ne pas renvoyer le code d’erreur 404 mais une liste vide !
+
+  ::
+
+    return jsonify([])
+
+- Renvoyer une liste et sa longueur dans une structure de données non conventionnelle est strictement inutile, il est très simple d’accéder à la longueur de la liste en javascript via l’attribut ``length``.
+
+- Traitement des erreurs : utiliser `les exceptions prévues à cet effet <https://werkzeug.palletsprojects.com/en/2.0.x/exceptions/>`_ :
+
+  ::
+
+    from werkzeug.exceptions import Forbidden, BadRequest, NotFound
+
+    def restricted_action(pk):
+        if …:
+            raise Forbidden
+
+    
+  - Penser à utiliser ``get_or_404`` plutôt que de lancer une exception ``NotFound``
+  - Si l’utilisateur n’a pas le droit d’effectuer une action, utiliser l’exception ``Forbidden`` (code HTTP 403), et non l’exception ``Unauthorized`` (code HTTP 401), cette dernière étant réservé aux utilisateurs non authentifié.
+  - Vérifier la validité des données fournit par l’utilisateur (``request.json`` ou ``request.args``) et lever une exception ``BadRequest`` si celles-cis ne sont pas valides (l’utilisateur ne doit pas être en mesure de déclancher une erreur 500 en fournissant une string plutôt qu’un int par exemple !).
+
+    - Marshmallow peut servir à cela :
+
+    ::
+
+        from marshmallow import Schema, fields, ValidationError
+        def my_route():
+            class RequestSchema(Schema):
+                value = fields.Float()
+            try:
+                data = RequestSchema().load(request.json)
+            except ValidationError as error:
+                raise BadRequest(error.messages)
+
+    
+- Pour les réponses vides (exemple : route de type delete), on pourra utiliser le code de retour 204 :
+
+  ::
+
+    return '', 204
+
+  Lorsque par exemple une action est traité mais aucun résultat est à renvoyer, inutile d’envoyer une réponse « OK » ! C’est l’envoie d’une réponse HTTP avec un code égale à 400 ou supérieur qui entrainera le traitement d’une erreur côté frontend, plutôt que de se fonder sur le contenue d’une réponse non normalisée.
+
+
+Le décorateur ``@json_resp``
+""""""""""""""""""""""""""""
+
+Historiquement, beaucoup de vue sont décoré avec le décorateur ``@json_resp``.
+Celui-ci apparait aujourd’hui superflu par rapport à l’usage directement de la fonction ``jsonify`` fournie par Flask.
 
 - ``utils_flask_sqla_geo.serializers.json_resp``
 
@@ -527,6 +717,89 @@ La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison ex
     @json_resp
     def my_err_view():
         return {'result': 'Not OK'}, 400
+
+Problème « n+1 »
+****************
+
+Le problème « n+1 » est un anti-pattern courant des routes de type « liste » (par exemple, récupération de la liste des cadres d’acquisitions).
+
+En effet, on souhaite par exemple afficher la liste des cadres d’acquisitions, et pour chacun d’entre eux, la liste des jeux de données :
+
+::
+
+    af_list = AcquisitionFramwork.query.all()
+
+    # with Marshmallow (and SmartRelationshipsMixin)
+    return AcquisitionFrameworkSchema(only=['datasets']).jsonify(af_list, many=True)
+
+    # with @serializable
+    return jsonify([ af.as_dict(fields=['datasets']) for af in af_list])
+
+Ainsi, lors de la sérialisation de chaque AF, on demande à sérialiser l’attribut ``datasets``, qui est une relationships vers la liste des DS associés :
+
+::
+
+    class AcquisitionFramework(db.Model)
+        datasets = db.relationships(Dataset, uselist=True)
+
+Sans précision, la `stratégie de chargement <https://docs.sqlalchemy.org/en/14/orm/loading_relationships.html>`_ de la relation ``datasets`` est ``select``, c’est-à-dire que l’accès à l’attribut ``datasets`` d’un AF provoque une nouvelle requête select afin de récupérer la liste des DS concernées.
+Ceci est généralement peu grave lorsque l’on manipule un unique objet, mais dans le cas d’une liste d’objet, cela génère 1+n requêtes SQL : une pour récupérer la liste des AF, puis une lors de la sérialisation de chaque AF pour récupérer les DS de ce dernier.
+Cela devient alors un problème de performance notable !
+
+Afin de résoudre ce problème, il nous faut joindre les DS à la requête de récupération des AF.
+Pour cela, plusieurs solutions :
+
+- Le spécifier dans la relationship :
+
+  ::
+
+    class AcquisitionFramework(db.Model)
+        datasets = db.relationships(Dataset, uselist=True, lazy='joined')
+    
+  Cependant, cette stratégie s’appliquera (sauf contre-ordre) dans tous les cas, même lorsque les DS ne sont pas nécessaire, alourdissant potentiellement certaines requêtes qui n’en ont pas usage.
+
+- Le spécifier au moment où la requête est effectuée :
+
+  ::
+
+    from sqlalchemy.orm import joinedload
+
+    af_list = AcquisitionFramework.query.options(joinedload('datasets')).all()
+
+Il est également possible de joindre les relations d’une relations, par exemple le créateur des jeux de données :
+
+::
+
+    af_list = (
+        AcquisitionFramework.query
+        .options(
+            joinedload('datasets').options(
+                joinedload('creator'),
+            ),
+        )
+        .all()
+    )
+
+Afin d’être sûr d’avoir joint toutes les relations nécessaires, il est possible d’utiliser la stratégie ``raise`` par défaut, ce qui va provoquer le lancement d’une exception lors de l’accès à un attribut non pré-chargé, nous incitant à le joindre également :
+
+::
+
+    from sqlalchemy.orm import raiseload, joinedload
+
+    af_list = (
+        AcquisitionFramework.query
+        .options(
+            raiseload('*'),
+            joinedload('datasets'),
+        )
+        .all()
+    )
+
+Pour toutes les requêtes récupérant une liste d’objet, l’utilisation de la stratégie ``raise`` par défaut est grandement encouragé afin de ne pas tomber dans cet anti-pattern !
+
+La méthode ``as_dict`` du décorateur ``@serializable`` accepte l’argument ``unloaded='raise'`` ou ``unloaded='warn'`` pour un résultat similaire (ou un simple warning).
+L’utilisation de ``raiseload``, appartenant au cœur de SQLAlchemy, reste à privilégier.
+
 
 Export des données
 ******************
