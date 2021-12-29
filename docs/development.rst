@@ -11,10 +11,10 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 
 Mainteneurs :
 
-- Gil DELUERMOZ (PnEcrins) : Base de données / SQL / Installation / Mise à jour
-- Amandine SAHL (PnCevennes) : Backend / Python Flask / API
-- Theo LECHEMIA (PnEcrins) : Frontend / Angular
-- Camille MONCHICOURT (PnEcrins) : Documentation / Gestion du projet
+- Elie BOUTTIER (PnEcrins)
+- Theo LECHEMIA (PnEcrins)
+- Amandine SAHL (PnCevennes)
+- Camille MONCHICOURT (PnEcrins)
 
 .. image :: _static/geonature-techno.png
 
@@ -65,7 +65,7 @@ BDD
 
 Mettre à jour le ``ref_geo`` à partir des données IGN scan express :
 
-- Télécharger le dernier millesime : http://professionnels.ign.fr/adminexpress
+- Télécharger le dernier millésime : http://professionnels.ign.fr/adminexpress
 - Intégrer le fichier Shape dans la BDD grâce à QGIS dans une table nommée ``ref_geo.temp_fr_municipalities``
 - Générer le SQL de création de la table : ``pg_dump --table=ref_geo.temp_fr_municipalities --column-inserts -U <MON_USER> -h <MON_HOST> -d <MA_BASE> > fr_municipalities.sql``. Le fichier en sortie doit s'appeler ``fr_municipalities.sql``
 - Zipper le fichier SQL et le mettre sur le serveur https://geonature.fr/data
@@ -123,18 +123,18 @@ Typescript
 **********
 
 - Documenter les fonctions et classes grâce au JSDoc en français (https://jsdoc.app/)
-- Les commentaires dans le codes doivent être en anglais (ne pas s'empecher de mettre un commentaire en français sur une partie du code complexe !)
+- Les commentaires dans le codes doivent être en anglais (ne pas s'empêcher de mettre un commentaire en français sur une partie du code complexe !)
 - Les messages renvoyés aux utilisateurs sont en français 
-- Installer les outils de devéloppement: `npm install --only=dev`
+- Installer les outils de devéloppement : ``npm install --only=dev``
 - Utiliser *prettier* comme formateur de texte et activer l'autoformatage dans son éditeur de texte (VsCode dispose d'une extension Prettier : https://github.com/prettier/prettier-vscode)
-- Utiliser tslint comme linter
+- Utiliser ``tslint`` comme linter
 - La longueur maximale pour une ligne de code est 100 caractères.
 
 Angular
 *******
 
 - Suivre les recommandations définies par le styleguide Angular: https://angular.io/guide/styleguide. C'est une ressources très fournie en cas de question sur les pratiques de développement (principe de séparation des principes, organisation des services et des composants)
-- On privilegira l'utilisation des reactive forms pour la construction des formulaires (https://angular.io/guide/reactive-forms). Ce sont des formulaires piloté par le code, ce qui facilite la lisibilité et le contrôle de ceux-ci.
+- On privilégiera l'utilisation des reactive forms pour la construction des formulaires (https://angular.io/guide/reactive-forms). Ce sont des formulaires pilotés par le code, ce qui facilite la lisibilité et le contrôle de ceux-ci.
 - Pour l'ensemble des composants cartographiques et des formulaires (taxonomie, nomenclatures...), il est conseillé d'utiliser les composants présents dans le module 'GN2CommonModule'.
  
 HTML 
@@ -375,6 +375,7 @@ Base de données avec Flask-SQLAlchemy
 *************************************
 
 L’intégration de la base de données à GeoNature repose sur la bibliothèque `Flask-SQLAlchemy <https://flask-sqlalchemy.palletsprojects.com>`_.
+
 Celle-ci fournit un objet ``db`` à importer comme ceci : ``from geonature.utils.env import db``
 
 Cet objet permet d’accéder à la session SQLAlchemy ainsi :
@@ -400,14 +401,15 @@ L’attribut ``query`` fournit `plusieurs fonctions <https://flask-sqlalchemy.pa
 
     obj = MyModel.query.get_or_404(1)
 
-Ceci est typiquement la première ligne de toute les routes travaillant sur une instance (route de type get/update/delete).
+Ceci est typiquement la première ligne de toutes les routes travaillant sur une instance (route de type get/update/delete).
 
 
 Fonctions de filtrages
 """"""""""""""""""""""
 
 L’attribut ``query`` est une instance de la classe ``flask_sqlalchemy.BaseQuery`` qui peut être sur-chargée afin de définir de nouvelles fonctions de filtrage.
-On pourra ainsi implémenter une fonction pour filtrer les objets auxquels l’utilisateur à accès, ou encore pour implémenter des filtres de recherche.
+
+On pourra ainsi implémenter une fonction pour filtrer les objets auxquels l’utilisateur a accès, ou encore pour implémenter des filtres de recherche.
 
 ::
 
@@ -444,10 +446,11 @@ Avec Marshmallow
 
 La bibliothèque `Marshmallow <https://marshmallow.readthedocs.io/en/stable/>`_ fournit des outils de sérialisation et desérialisation.
 
-Elle est intégrer à GeoNature par la bibliothèque `Flask-Marshmallow <https://flask-marshmallow.readthedocs.io/en/latest/>`_ qui fournit l’objet ``ma`` à importer comme ceci : ``from geonature.utils.env import ma``
+Elle est intégrée à GeoNature par la bibliothèque `Flask-Marshmallow <https://flask-marshmallow.readthedocs.io/en/latest/>`_ qui fournit l’objet ``ma`` à importer comme ceci : ``from geonature.utils.env import ma``.
+
 Cette bibliothèque ajoute notablement une méthode ``jsonify`` aux schémas.
 
-Les schémas Marshmallow peuvent être facilement créé à partir des modèles SQLAlchemy grâce à la bibliothèque `Marshmallow-SQLAlchemy <https://marshmallow-sqlalchemy.readthedocs.io/en/latest/>`_.
+Les schémas Marshmallow peuvent être facilement créés à partir des modèles SQLAlchemy grâce à la bibliothèque `Marshmallow-SQLAlchemy <https://marshmallow-sqlalchemy.readthedocs.io/en/latest/>`_.
 
 ::
 
@@ -477,7 +480,8 @@ La propriété ``include_fk=True`` concerne les champs de type ``ForeignKey``, m
         parent = ma.Nested(ParentModelSchema)
 
 
-Attention, la sérialisation d’un objet avec un tel schéma va provoquer une récursion infinie, le schéma parent incluant le schéma enfant, et le schéma enfant incluant le schéma parent !
+Attention, la sérialisation d’un objet avec un tel schéma va provoquer une récursion infinie, le schéma parent incluant le schéma enfant, et le schéma enfant incluant le schéma parent.
+
 Il est donc nécessaire de restreindre les champs à inclure avec l’argument ``only`` ou ``exclude`` lors de la création des schémas :
 
 ::
@@ -491,12 +495,14 @@ L’utilisation de ``only`` est lourde puisqu’il faut re-spécifier tous les c
     parent_schema = ParentModelSchema(exclude=['childs.parent'])
 
 Cependant, l’utilisation de ``exclude`` est hautement problématique !
+
 En effet, l’ajout d’un nouveau champs ``Nested`` au schéma nécessiterait de le rajouter dans la liste des exclusions partout où le schéma est utilisé (que ça soit pour éviter une récursion infinie, d’alourdir une réponse JSON avec des données inutiles ou pour éviter un problème n+1 - voir section dédiée).
 
 La bibliothèque Utils-Flask-SQLAlchemy fournit une classe utilitaire ``SmartRelationshipsMixin`` permettant de résoudre ces problématiques.
-Elle permet d’exclure par défaut les champs ``Nested``.
-Pour demander la sérialisation d’un sous-schéma, il faut le spécifier avec ``only``, mais sans nécessité de spécifier tous les champs basiques (non ``Nested``).
 
+Elle permet d’exclure par défaut les champs ``Nested``.
+
+Pour demander la sérialisation d’un sous-schéma, il faut le spécifier avec ``only``, mais sans nécessité de spécifier tous les champs basiques (non ``Nested``).
 
 ::
 
@@ -538,8 +544,11 @@ La bibliothèque maison `Utils-Flask-SQLAlchemy <https://github.com/PnX-SI/Utils
 
 
 La méthode ``as_dict`` fournit les arguments ``fields`` et ``exclude`` permettant de spécifier les champs que l’on souhaite sérialiser.
+
 Par défaut, seules les champs qui ne sont pas des relationshisp sont sérialisées (fonctionnalité similaire à celle fournit par ``SmartRelationshipsMixin`` pour Marshmallow).
+
 Les relations que l’on souhaite voir sérialisées doivent être explicitement déclarées via l’argument ``fields``.
+
 L’argument ``fields`` supporte la « notation à point » permettant de préciser les champs d’un modèle en relation :
 
 ::
@@ -548,16 +557,16 @@ L’argument ``fields`` supporte la « notation à point » permettant de préci
 
 Les `tests unitaires <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/blob/master/src/utils_flask_sqla/tests/test_serializers.py>`_ fournissent un ensemble d’exemples d’usage du décorateur.
 
-La fonction ``as_dict`` prenait autrefois en argument les paramètres ``recursif`` et ``depth`` qui sont tous les deux obsolètes. Ces derniers différents problèmes :
-- récursion infinie (contourné par un hack qui ne résoud pas tous les problèmes et qu’il serait souhaitable de voir disparaitre)
-- augmentation non prévu des données sérialisées lors de l’ajout d’une nouvelle relationship
-- problème n+1 (voir section dédié)
+La fonction ``as_dict`` prenait autrefois en argument les paramètres ``recursif`` et ``depth`` qui sont tous les deux obsolètes. Ces derniers ont différents problèmes :
 
+- récursion infinie (contournée par un hack qui ne résoud pas tous les problèmes et qu’il serait souhaitable de voir disparaitre)
+- augmentation non prévue des données sérialisées lors de l’ajout d’une nouvelle relationship
+- problème n+1 (voir section dédiée)
 
-Cas des modèles géographique
-""""""""""""""""""""""""""""
+Cas des modèles géographiques
+"""""""""""""""""""""""""""""
 
-La bibliothèque maison `Utils-Flask-SQLAlchemy-Geo <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo>`_ fournit des décorateurs supplémentaire pour la sérialisation des modèles contenant des champs géographiques.
+La bibliothèque maison `Utils-Flask-SQLAlchemy-Geo <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo>`_ fournit des décorateurs supplémentaires pour la sérialisation des modèles contenant des champs géographiques.
 
 - ``utils_flask_sqla_geo.serializers.geoserializable``
 
@@ -651,9 +660,9 @@ La bibliothèque maison `Utils-Flask-SQLAlchemy-Geo <https://github.com/PnX-SI/U
 Réponses
 ********
 
-Voici quelques conseils sur l’envoie de réponse dans vos routes.
+Voici quelques conseils sur l’envoi de réponse dans vos routes.
 
-- Privilégier l’envoie du modèle sérialisé (vues de type create/update), ou d’une liste de modèles sérialisées (vues de type list), plutôt que des structures de données non conventionnelles.
+- Privilégier l’envoi du modèle sérialisé (vues de type create/update), ou d’une liste de modèles sérialisés (vues de type list), plutôt que des structures de données non conventionnelles.
 
   ::
 
@@ -693,8 +702,8 @@ Voici quelques conseils sur l’envoie de réponse dans vos routes.
 
     
   - Penser à utiliser ``get_or_404`` plutôt que de lancer une exception ``NotFound``
-  - Si l’utilisateur n’a pas le droit d’effectuer une action, utiliser l’exception ``Forbidden`` (code HTTP 403), et non l’exception ``Unauthorized`` (code HTTP 401), cette dernière étant réservé aux utilisateurs non authentifié.
-  - Vérifier la validité des données fournit par l’utilisateur (``request.json`` ou ``request.args``) et lever une exception ``BadRequest`` si celles-cis ne sont pas valides (l’utilisateur ne doit pas être en mesure de déclancher une erreur 500 en fournissant une string plutôt qu’un int par exemple !).
+  - Si l’utilisateur n’a pas le droit d’effectuer une action, utiliser l’exception ``Forbidden`` (code HTTP 403), et non l’exception ``Unauthorized`` (code HTTP 401), cette dernière étant réservée aux utilisateurs non authentifiés.
+  - Vérifier la validité des données fournies par l’utilisateur (``request.json`` ou ``request.args``) et lever une exception ``BadRequest`` si celles-ci ne sont pas valides (l’utilisateur ne doit pas être en mesure de déclencher une erreur 500 en fournissant une string plutôt qu’un int par exemple !).
 
     - Marshmallow peut servir à cela :
 
@@ -716,13 +725,14 @@ Voici quelques conseils sur l’envoie de réponse dans vos routes.
 
     return '', 204
 
-  Lorsque par exemple une action est traité mais aucun résultat est à renvoyer, inutile d’envoyer une réponse « OK » ! C’est l’envoie d’une réponse HTTP avec un code égale à 400 ou supérieur qui entrainera le traitement d’une erreur côté frontend, plutôt que de se fonder sur le contenue d’une réponse non normalisée.
+  Lorsque par exemple une action est traitée mais aucun résultat n'est à renvoyer, inutile d’envoyer une réponse « OK ». C’est l’envoi d’une réponse HTTP avec un code égale à 400 ou supérieur qui entrainera le traitement d’une erreur côté frontend, plutôt que de se fonder sur le contenu d’une réponse non normalisée.
 
 
 Le décorateur ``@json_resp``
 """"""""""""""""""""""""""""
 
-Historiquement, beaucoup de vue sont décoré avec le décorateur ``@json_resp``.
+Historiquement, beaucoup de vues sont décorées avec le décorateur ``@json_resp``.
+
 Celui-ci apparait aujourd’hui superflu par rapport à l’usage directement de la fonction ``jsonify`` fournie par Flask.
 
 - ``utils_flask_sqla_geo.serializers.json_resp``
@@ -754,7 +764,7 @@ Celui-ci apparait aujourd’hui superflu par rapport à l’usage directement de
 Problème « n+1 »
 ****************
 
-Le problème « n+1 » est un anti-pattern courant des routes de type « liste » (par exemple, récupération de la liste des cadres d’acquisitions).
+Le problème « n+1 » est un anti-pattern courant des routes de type « liste » (par exemple, récupération de la liste des cadres d’acquisition).
 
 En effet, on souhaite par exemple afficher la liste des cadres d’acquisitions, et pour chacun d’entre eux, la liste des jeux de données :
 
@@ -775,11 +785,14 @@ Ainsi, lors de la sérialisation de chaque AF, on demande à sérialiser l’att
     class AcquisitionFramework(db.Model)
         datasets = db.relationships(Dataset, uselist=True)
 
-Sans précision, la `stratégie de chargement <https://docs.sqlalchemy.org/en/14/orm/loading_relationships.html>`_ de la relation ``datasets`` est ``select``, c’est-à-dire que l’accès à l’attribut ``datasets`` d’un AF provoque une nouvelle requête select afin de récupérer la liste des DS concernées.
+Sans précision, la `stratégie de chargement <https://docs.sqlalchemy.org/en/14/orm/loading_relationships.html>`_ de la relation ``datasets`` est ``select``, c’est-à-dire que l’accès à l’attribut ``datasets`` d’un AF provoque une nouvelle requête select afin de récupérer la liste des DS concernés.
+
 Ceci est généralement peu grave lorsque l’on manipule un unique objet, mais dans le cas d’une liste d’objet, cela génère 1+n requêtes SQL : une pour récupérer la liste des AF, puis une lors de la sérialisation de chaque AF pour récupérer les DS de ce dernier.
+
 Cela devient alors un problème de performance notable !
 
 Afin de résoudre ce problème, il nous faut joindre les DS à la requête de récupération des AF.
+
 Pour cela, plusieurs solutions :
 
 - Le spécifier dans la relationship :
@@ -789,7 +802,7 @@ Pour cela, plusieurs solutions :
     class AcquisitionFramework(db.Model)
         datasets = db.relationships(Dataset, uselist=True, lazy='joined')
     
-  Cependant, cette stratégie s’appliquera (sauf contre-ordre) dans tous les cas, même lorsque les DS ne sont pas nécessaire, alourdissant potentiellement certaines requêtes qui n’en ont pas usage.
+  Cependant, cette stratégie s’appliquera (sauf contre-ordre) dans tous les cas, même lorsque les DS ne sont pas nécessaires, alourdissant potentiellement certaines requêtes qui n’en ont pas usage.
 
 - Le spécifier au moment où la requête est effectuée :
 
@@ -799,7 +812,7 @@ Pour cela, plusieurs solutions :
 
     af_list = AcquisitionFramework.query.options(joinedload('datasets')).all()
 
-Il est également possible de joindre les relations d’une relations, par exemple le créateur des jeux de données :
+Il est également possible de joindre les relations d’une relation, par exemple le créateur des jeux de données :
 
 ::
 
@@ -828,9 +841,10 @@ Afin d’être sûr d’avoir joint toutes les relations nécessaires, il est po
         .all()
     )
 
-Pour toutes les requêtes récupérant une liste d’objet, l’utilisation de la stratégie ``raise`` par défaut est grandement encouragé afin de ne pas tomber dans cet anti-pattern !
+Pour toutes les requêtes récupérant une liste d’objet, l’utilisation de la stratégie ``raise`` par défaut est grandement encouragée afin de ne pas tomber dans cet anti-pattern.
 
 La méthode ``as_dict`` du décorateur ``@serializable`` accepte l’argument ``unloaded='raise'`` ou ``unloaded='warn'`` pour un résultat similaire (ou un simple warning).
+
 L’utilisation de ``raiseload``, appartenant au cœur de SQLAlchemy, reste à privilégier.
 
 
@@ -845,6 +859,7 @@ Utilisation de la configuration
 
 La configuration globale de l'application est controlée par le fichier
 ``config/geonature_config.toml`` qui contient un nombre limité de paramètres.
+
 De nombreux paramètres sont néammoins passés à l'application via un schéma
 Marshmallow (voir fichier ``backend/geonature/utils/config_schema.py``).
 
@@ -857,6 +872,7 @@ utilisables via le dictionnaire ``config`` ::
 Chaque module GeoNature dispose de son propre fichier de configuration,
 (``module/config/cong_gn_module.toml``) contrôlé de la même manière par un
 schéma Marshmallow (``module/config/conf_schema_toml.py``).
+
 Pour récupérer la configuration du module dans l'application Flask,
 il existe deux méthodes:
 
@@ -906,7 +922,7 @@ Utiliser le décorateur ``@login_required`` :
 Connaitre l’utilisateur actuellement connecté
 """""""""""""""""""""""""""""""""""""""""""""
 
-L’utilisateur courant est stoqué dans l’espace de nom ``g`` :
+L’utilisateur courant est stocké dans l’espace de nom ``g`` :
 
 ::
 
@@ -931,10 +947,10 @@ Vérification des droits des utilisateurs
 
   * action <str:['C','R','U','V','E','D']> type d'action effectuée par la route
     (Create, Read, Update, Validate, Export, Delete)
-  * get_role <bool:False>: si True, ajoute l'id utilisateur aux kwargs de la vue
-  * module_code: <str:None>: Code du module (gn_commons.t_modules) sur lequel on
-    veut récupérer le CRUVED. Si ce paramètre n'est pas passer on vérifie le
-    cruved de GeoNature
+  * get_role <bool:False> : si True, ajoute l'id utilisateur aux kwargs de la vue
+  * module_code: <str:None> : Code du module (gn_commons.t_modules) sur lequel on
+    veut récupérer le CRUVED. Si ce paramètre n'est pas passé, on vérifie le
+    CRUVED de GeoNature
 
 
   ::
@@ -978,7 +994,7 @@ Vérification des droits des utilisateurs
   params :
 
   * id_role <integer:None>
-  * module_code <str:None>: code du module sur lequel on veut avoir le CRUVED
+  * module_code <str:None> : code du module sur lequel on veut avoir le CRUVED
   * object_code <str:'ALL'> : code de l'objet sur lequel on veut avoir le CRUVED
   * get_id <boolean: False> : retourne l'id_filter et non le code_filter si True
 
@@ -988,19 +1004,19 @@ Vérification des droits des utilisateurs
   {'C': '1', 'R':'2', 'U': '1', 'V':'2', 'E':'3', 'D': '3'} ou
   {'C': 2, 'R':3, 'U': 4, 'V':1, 'E':2, 'D': 2} si ``get_id=True``
 
-  A l'indice 1 du tuple: un booléan spécifiant si le CRUVED est hérité depuis
+  A l'indice 1 du tuple: un booléen spécifiant si le CRUVED est hérité depuis
   un module parent ou non.
 
   ::
 
     from pypnusershub.db.tools import cruved_for_user_in_app
 
-    # recuperer le cruved de l'utilisateur 1 dans le module OCCTAX
+    # récupérer le CRUVED de l'utilisateur 1 dans le module OCCTAX
     cruved, herited = cruved_scope_for_user_in_module(
             id_role=1
             module_code='OCCTAX
     )
-    # recupérer le cruved de l'utilisateur 1 sur GeoNature
+    # récupérer le CRUVED de l'utilisateur 1 sur GeoNature
     cruved, herited = cruved_scope_for_user_in_module(id_role=1)
 
 
@@ -1021,13 +1037,12 @@ Un ensemble de composants décrits ci-dessous sont intégrés dans le coeur de G
 
 Voir la `DOCUMENTATION COMPLETE <http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html>`_ sur les composants génériques. 
 
-
-NB: mes composants de type "formulaire" (balise `input` ou `select`) partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs décrit ci dessous. (voir https://github.com/PnX-SI/GeoNature/blob/master/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
+NB : mes composants de type "formulaire" (balise `input` ou `select`) partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs décrit ci dessous. (voir https://github.com/PnX-SI/GeoNature/blob/master/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 
 Une documentation complète des composants générique est
 `disponible ici <http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html>`_
 
-NB: mes composants de type "formulaire" (balise `input` ou `select`) partagent
+NB : mes composants de type "formulaire" (balise `input` ou `select`) partagent
 une logique commune et ont des ``Inputs`` et des ``Outputs`` communs décrit
 ci dessous.
 (voir https://github.com/PnX-SI/GeoNature/blob/master/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
@@ -1054,15 +1069,15 @@ Ces composants peuvent être considérés comme des "dump components" ou
 au composant parent qui l'accueil
 (https://blog.angular-university.io/angular-2-smart-components-vs-presentation-components-whats-the-difference-when-to-use-each-and-why/)
 
-Un ensemble de composant permattant de simplifier l'affichage des cartographies
-leaflet sont disponible. Notamment un composant "map-list" permettant de
-connecter une carte avec une liste d'objet décrit en détail ci dessous.
+Un ensemble de composants permettant de simplifier l'affichage des cartographies
+Leaflet sont disponibles. Notamment un composant "map-list" permettant de
+connecter une carte avec une liste d'objets décrits en détail ci dessous.
 
 - **MapListComponent**
 
-Le composant MapList fournit une carte pouvant être synchronisé
+Le composant MapList fournit une carte pouvant être synchronisée
 avec une liste. La liste, pouvant être spécifique à chaque module,
-elle n'est pas intégré dans le composant et est laissé à la
+elle n'est pas intégrée dans le composant et est laissée à la
 responsabilité du développeur. Le service ``MapListService`` offre
 cependant des fonctions permettant facilement de synchroniser
 les deux éléments.
@@ -1076,7 +1091,7 @@ service :
   permettant de charger les données pour la carte et la liste.
   Cette fonction doit être utilisée dans le composant qui utilise
   le composant ``MapListComponent``. Elle se charge de faire
-  appel à l'API passé en paramètre et de rendre les données
+  appel à l'API passée en paramètre et de rendre les données
   disponibles au service.
 
   Le deuxième paramètre ``params`` est un tableau de paramètre(s)
