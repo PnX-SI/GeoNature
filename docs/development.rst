@@ -403,6 +403,39 @@ L’attribut ``query`` fournit `plusieurs fonctions <https://flask-sqlalchemy.pa
 Ceci est typiquement la première ligne de toute les routes travaillant sur une instance (route de type get/update/delete).
 
 
+Fonctions de filtrages
+""""""""""""""""""""""
+
+L’attribut ``query`` est une instance de la classe ``flask_sqlalchemy.BaseQuery`` qui peut être sur-chargée afin de définir de nouvelles fonctions de filtrage.
+On pourra ainsi implémenter une fonction pour filtrer les objets auxquels l’utilisateur à accès, ou encore pour implémenter des filtres de recherche.
+
+::
+
+    from flask import g
+    import sqlalchemy as sa
+    from flask_sqlalchemy import BaseQuery
+    from geonature.core.gn_permissions import login_required
+
+    class MyModelQuery(BaseQuery):
+        def filter_by_scope(self, scope):
+            if scope == 0:
+                self = self.filter(sa.false())
+            elif scope in (1, 2):
+                filters = [ MyModel.owner==g.current_user ]
+                if scope == 2 and g.current_user.id_organism is not None:
+                    filters.append(MyModel.owner.any(id_organism=g.current_user.id_organism)
+                self = self.filter(sa.or_(*filters))
+            return self
+
+    class MyModel(db.Model):
+        query_class = MyModelQuery
+
+
+    @login_required
+    def list_my_model():
+        obj_list = MyModel.query.filter_by_scope(2).all()
+
+
 Serialisation des modèles
 *************************
 
@@ -451,14 +484,14 @@ Il est donc nécessaire de restreindre les champs à inclure avec l’argument `
 
     parent_schema = ParentModelSchema(only=['pk', 'childs.pk'])
 
-L’utilisation de ``only`` est lourde puisqu’il faut re-spécifier tous les champs à sérialiser. On est alors tenter d’utiliser l’argument ``exclude`` :
+L’utilisation de ``only`` est lourde puisqu’il faut re-spécifier tous les champs à sérialiser. On est alors tenté d’utiliser l’argument ``exclude`` :
 
 ::
 
     parent_schema = ParentModelSchema(exclude=['childs.parent'])
 
 Cependant, l’utilisation de ``exclude`` est hautement problématique !
-En effet, l’ajout d’un nouveau champs ``Nested`` au schéma nécessiterait de le rajouter dans la liste des exclusions partout où le schéma est utilisé (que ça soit pour éviter une récursion infinie, ou pour éviter un problème n+1 - voir section dédiée).
+En effet, l’ajout d’un nouveau champs ``Nested`` au schéma nécessiterait de le rajouter dans la liste des exclusions partout où le schéma est utilisé (que ça soit pour éviter une récursion infinie, d’alourdir une réponse JSON avec des données inutiles ou pour éviter un problème n+1 - voir section dédiée).
 
 La bibliothèque Utils-Flask-SQLAlchemy fournit une classe utilitaire ``SmartRelationshipsMixin`` permettant de résoudre ces problématiques.
 Elle permet d’exclure par défaut les champs ``Nested``.
@@ -853,40 +886,40 @@ il faut utiliser la méthode suivante ::
         ID_MODULE = get_id_module(current_app, 'occtax')
 
 
-Authentification avec pypnusershub
+Authentification et authorisations
 **********************************
+
+Restreindre une route aux utilisateurs connectés
+""""""""""""""""""""""""""""""""""""""""""""""""
+
+Utiliser le décorateur ``@login_required`` :
+
+::
+
+    from geonature.core.gn_permissions.decorators import login_required
+
+    @login_required
+    def my_protected_route():
+        pass
+
+
+Connaitre l’utilisateur actuellement connecté
+"""""""""""""""""""""""""""""""""""""""""""""
+
+L’utilisateur courant est stoqué dans l’espace de nom ``g`` :
+
+::
+
+    from flask import g
+
+    print(g.current_user)
+
+
+Il s’agit d’une instance de ``pypnusershub.db.models.User``.
 
 
 Vérification des droits des utilisateurs
 """"""""""""""""""""""""""""""""""""""""
-
-- ``pypnusershub.routes.check_auth``
-
-  Décorateur pour les routes : vérifie les droits de l'utilisateur et le
-  redirige en cas de niveau insuffisant ou d'informations de session erronés
-  (deprecated) Privilegier `check_cruved_scope`
-
-  params :
-
-  * level <int> : niveau de droits requis pour accéder à la vue
-  * get_role <bool:False> : si True, ajoute l'id utilisateur aux kwargs de la vue
-
-  ::
-
-        from flask import Blueprint
-        from pypnusershub.routes import check_auth
-        from utils_flask_sqla.response import json_resp
-
-        blueprint = Blueprint(__name__)
-
-        @blueprint.route('/myview')
-        @check_auth(
-                1,
-                True,
-                )
-        @json_resp
-        def my_view(id_role):
-                return {'result': 'id_role = {}'.format(id_role)}
 
 - ``geonature.core.gn_permissions.decorators.check_cruved_scope``
 
