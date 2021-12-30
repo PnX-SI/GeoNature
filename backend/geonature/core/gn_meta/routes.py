@@ -610,11 +610,27 @@ def get_acquisition_frameworks(info_role):
     af_list = (
         TAcquisitionFramework.query
         .filter_by_readable()
-        .options(raiseload('*'))
+        .options(
+            Load(TAcquisitionFramework).raiseload('*'),
+            # for permission checks:
+            joinedload('creator'),
+            joinedload('cor_af_actor').options(
+                joinedload('role'),
+                joinedload('organism'),
+            ),
+            joinedload('t_datasets').options(
+                joinedload('digitizer'),
+                joinedload('cor_dataset_actor').options(
+                    joinedload('role'),
+                    joinedload('organism'),
+                ),
+            ),
+        )
     )
     if request.args.get('datasets', default=False, type=int):
-        only.append('t_datasets')
-        af_list = af_list.options(joinedload('t_datasets'))
+        only.extend([
+            't_datasets',
+        ])
     if request.args.get('creator', default=False, type=int):
         only.append('creator')
         af_list = af_list.options(joinedload('creator'))
@@ -628,8 +644,6 @@ def get_acquisition_frameworks(info_role):
         af_list = af_list.options(
             joinedload('cor_af_actor').options(
                 joinedload('nomenclature_actor_role'),
-                joinedload('organism'),
-                joinedload('role'),
             ),
         )
         if request.args.get('datasets', default=False, type=int):
@@ -643,8 +657,6 @@ def get_acquisition_frameworks(info_role):
                 joinedload('t_datasets').options(
                     joinedload('cor_dataset_actor').options(
                         joinedload('nomenclature_actor_role'),
-                        joinedload('organism'),
-                        joinedload('role'),
                     ),
                 ),
             )
