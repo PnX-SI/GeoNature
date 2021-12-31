@@ -3,7 +3,7 @@ import pytest
 from flask import url_for, current_app
 from sqlalchemy import func
 import sqlalchemy as sa
-from werkzeug.exceptions import Forbidden
+from werkzeug.exceptions import Forbidden, BadRequest
 from jsonschema import validate as validate_json
 
 from geonature.utils.env import db
@@ -225,3 +225,37 @@ class TestSynthese:
                 'additionalProperties': False,
             },
         })
+
+    def test_taxa_distribution(self, synthese_data):
+        s = synthese_data[0]
+
+        response = self.client.get(url_for("gn_synthese.get_taxa_distribution"))
+        assert response.status_code == 200
+        assert len(response.json)
+
+        response = self.client.get(
+            url_for("gn_synthese.get_taxa_distribution"),
+            query_string={'taxa_rank': 'not existing'},
+        )
+        assert response.status_code == BadRequest.code
+
+        response = self.client.get(
+            url_for("gn_synthese.get_taxa_distribution"),
+            query_string={'taxa_rank': 'phylum'},
+        )
+        assert response.status_code == 200
+        assert len(response.json)
+
+        response = self.client.get(
+            url_for("gn_synthese.get_taxa_distribution"),
+            query_string={'id_dataset': s.id_dataset},
+        )
+        assert response.status_code == 200
+        assert len(response.json)
+
+        response = self.client.get(
+            url_for("gn_synthese.get_taxa_distribution"),
+            query_string={'id_af': s.dataset.id_acquisition_framework},
+        )
+        assert response.status_code == 200
+        assert len(response.json)
