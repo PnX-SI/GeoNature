@@ -905,6 +905,7 @@ def get_taxa_distribution():
 
     id_dataset = request.args.get("id_dataset")
     id_af = request.args.get("id_af")
+    id_source = request.args.get("id_source")
 
     rank = request.args.get("taxa_rank")
     if not rank:
@@ -927,6 +928,8 @@ def get_taxa_distribution():
         query = query.outerjoin(TDatasets, TDatasets.id_dataset == Synthese.id_dataset).filter(
             TDatasets.id_acquisition_framework == id_af
         )
+    elif id_source is not None:
+        query = query.filter(Synthese.id_source == id_source)
 
     data = query.group_by(rank).all()
     return [{"count": d[0], "group": d[1]} for d in data]
