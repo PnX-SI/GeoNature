@@ -48,6 +48,10 @@ Profils de taxons
 - Synthèse - J'ouvre une fiche info / Pas mal d'erreurs dans la console sur les profils. Normal quand le taxon n'a pas de profil ?
 - Fiche info synthèse : Score vide quand nul ?
 - Fiche info synthèse et profil : Des croix partout quand pas de données validées pour ce taxon...
+- Occhab : Je peux pas créér un relevé, car seulement quelques champs sont affichés
+- Je créé un JDD, je renseigne un TERRITOIRE. Quand je modifie ce JDD, le territoire n'est plus renseigné. 
+- Les acteurs du JDD ne sont pas enregistrés quand je créé un JDD
+- JDD - Export PDF : Internal server error
 
 **🚀 Nouveautés**
 
