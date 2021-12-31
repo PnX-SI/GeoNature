@@ -31,32 +31,32 @@ def place(users):
     return place
 
 
-@pytest.fixture(scope='class')
-def create_additional_fields(app, datasets):
+@pytest.fixture(scope='function')
+def additional_fields(app, datasets):
     module = TModules.query.filter(TModules.module_code == "SYNTHESE").one()
     obj = TObjects.query.filter(TObjects.code_object == "ALL").one()
-    dataset = list(datasets.values())
-    field = {
-        "field_name": "test",
-        "field_label": "Un label",
-        "required": True,
-        "description": "une descrption",
-        "quantitative": False,
-        "unity": "degré C",
-        "field_values": ["la", "li"],
-        "id_widget": 1,
-        "modules": [module],
-        "objects": [obj],
-        "datasets": dataset
-    }
-    add_field = TAdditionalFields(**field)
+    datasets = list(datasets.values())
+    additional_field = TAdditionalFields(
+        field_name="test",
+        field_label="Un label",
+        required=True,
+        description="une descrption",
+        quantitative=False,
+        unity="degré C",
+        field_values=["la", "li"],
+        id_widget=1,
+        modules=[module],
+        objects=[obj],
+        datasets=datasets,
+    )
     with db.session.begin_nested():
-        db.session.add(add_field)
+        db.session.add(additional_field)
+    return additional_field
 
 
 @pytest.mark.usefixtures(
     "client_class", "datasets",
-    "create_additional_fields", "temporary_transaction"
+    "additional_fields", "temporary_transaction"
 )
 class TestCommons:
     def test_list_places(self, place, users):

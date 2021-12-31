@@ -13,6 +13,7 @@ from geonature.utils.env import db
 
 from pypnnomenclature.models import TNomenclatures
 
+
 gn_module_validation = pytest.importorskip("gn_module_validation")
 
 

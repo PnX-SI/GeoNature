@@ -4,10 +4,13 @@ import json
 from flask import url_for, current_app
 from werkzeug.exceptions import Unauthorized, BadRequest
 from jsonschema import validate as validate_json
+from alembic.migration import MigrationContext
+from alembic.script import ScriptDirectory
 
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.ref_geo.models import BibAreasTypes
+from geonature.utils.env import migrate
 
 from pypnusershub.db.tools import user_to_token
 
@@ -51,6 +54,16 @@ polygon = {
   ]
 }
 
+
+def has_french_dem():
+    config = migrate.get_config()
+    script = ScriptDirectory.from_config(config)
+    migration_context = MigrationContext.configure(db.session.connection())
+    current_heads = migration_context.get_current_heads()
+    current_heads = set(map(lambda rev: rev.revision, script.get_all_current(current_heads)))
+    return '1715cf31a75d' in current_heads  # ign bd alti
+
+
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestRefGeo:
     expected_altitude = pytest.approx({'altitude_min': 984, 'altitude_max': 2335}, rel=1e-2)
@@ -64,9 +77,13 @@ class TestRefGeo:
         assert response.status_code == 200
         communes = { area['area_name'] for area in response.json['areas'] }
         assert communes == self.expected_communes
+        if not has_french_dem():
+            pytest.xfail('No French DEM')
         assert response.json['altitude'] == self.expected_altitude
 
     def test_get_altitude(self):
+        if not has_french_dem():
+            pytest.xfail('No French DEM')
         response = self.client.post(url_for("ref_geo.getAltitude"), json={
             'geometry': polygon,
         })
