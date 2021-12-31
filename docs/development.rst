@@ -718,6 +718,25 @@ Voici quelques conseils sur l’envoi de réponse dans vos routes.
             except ValidationError as error:
                 raise BadRequest(error.messages)
 
+    - Cela peut être fait avec *jsonschema* :
+
+    ::
+
+        from from jsonschema import validate as validate_json, ValidationError
+
+        def my_route():
+            request_schema = {
+                "type": "object",
+                "properties": {
+                    "value": { "type": "number", },
+                },
+                "minProperties": 1,
+                "additionalProperties": False,
+            }
+            try:
+                validate_json(request.json, request_schema)
+            except ValidationError as err:
+                raise BadRequest(err.message)
     
 - Pour les réponses vides (exemple : route de type delete), on pourra utiliser le code de retour 204 :
 
