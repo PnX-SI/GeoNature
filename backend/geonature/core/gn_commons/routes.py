@@ -87,10 +87,9 @@ def get_modules(info_role):
 
 
 @routes.route("/module/<module_code>", methods=["GET"])
-@json_resp
 def get_module(module_code):
-    module = DB.session.query(TModules).filter_by(module_code=module_code).one()
-    return module.as_dict()
+    module = TModules.query.filter_by(module_code=module_code).first_or_404()
+    return jsonify(module.as_dict())
 
 
 @routes.route("/list/parameters", methods=["GET"])
