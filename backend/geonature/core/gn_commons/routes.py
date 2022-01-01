@@ -155,7 +155,15 @@ def get_additional_fields():
             q = q.filter(or_(*ors))
         else:
             q = q.filter(TAdditionalFields.objects.any(code_object=params["object_code"]))
-    return jsonify([d.as_dict(depth=1) for d in q.all()])
+    return jsonify([
+        d.as_dict(fields=[
+            'bib_nomenclature_type',
+            'modules',
+            'objects',
+            'datasets',
+        ])
+        for d in q.all()
+    ])
 
 
 
