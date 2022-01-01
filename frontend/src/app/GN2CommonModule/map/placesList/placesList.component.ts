@@ -100,19 +100,15 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
   fetchPlaces() {
     this._dfs.getPlaces().subscribe(
       res => {
-        if (Object.keys(res[0]).length > 0) {
-          this.places = res;
+        this.places = res;
+        if (this.places.length > 0) {
           this.place = this.places[0];
         } else {
-          this.places = null;
           this.place = null;
         }
       },
       err => {
-        if (err.status === 404) {
-          this.places = [];
-          this.place = null;
-        }
+        this.commonService.translateToaster('error', err.error.description);
       }
     );
   }
