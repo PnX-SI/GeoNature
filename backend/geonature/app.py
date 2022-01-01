@@ -142,7 +142,6 @@ def create_app(with_external_mods=True):
                 ('geonature.core.gn_synthese.routes:routes', '/synthese'),
                 ('geonature.core.gn_meta.routes:routes', '/meta'),
                 ('geonature.core.ref_geo.routes:routes', '/geo'),
-                ('geonature.core.gn_exports.routes:routes', '/exports'),
                 ('geonature.core.auth.routes:routes', '/gn_auth'),
                 ('geonature.core.gn_monitoring.routes:routes', '/gn_monitoring'),
                 ('geonature.core.gn_profiles.routes:routes', '/gn_profiles'),
