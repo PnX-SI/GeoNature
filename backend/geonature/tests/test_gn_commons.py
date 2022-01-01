@@ -32,7 +32,7 @@ def place(users):
 
 
 @pytest.fixture(scope='function')
-def additional_fields(app, datasets):
+def additional_field(app, datasets):
     module = TModules.query.filter(TModules.module_code == "SYNTHESE").one()
     obj = TObjects.query.filter(TObjects.code_object == "ALL").one()
     datasets = list(datasets.values())
@@ -55,8 +55,8 @@ def additional_fields(app, datasets):
 
 
 @pytest.mark.usefixtures(
-    "client_class", "datasets",
-    "additional_fields", "temporary_transaction"
+    "client_class",
+    "temporary_transaction"
 )
 class TestCommons:
     def test_list_places(self, place, users):
@@ -119,7 +119,7 @@ class TestCommons:
             TPlaces.query.filter_by(id_place=place.id_place).exists()
         ).scalar()
 
-    def test_additional_data(self, datasets):
+    def test_additional_data(self, datasets, additional_field):
         query_string = {
             "module_code": "SYNTHESE",
             "object_code": "ALL"
