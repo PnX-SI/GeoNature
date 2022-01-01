@@ -571,13 +571,13 @@ export class DataFormService {
   }
   //Ajouter lieu
   addPlace(place) {
-    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place`, place);
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_commons/places`, place);
   }
-
   // Supprimer lieu
   deletePlace(idPlace) {
-    return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place/${idPlace}`);
+    return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/gn_commons/places/${idPlace}`);
   }
+
   deleteAf(af_id) {
     return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${af_id}`);
   }
