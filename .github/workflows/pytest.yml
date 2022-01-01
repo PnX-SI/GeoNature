@@ -5,6 +5,7 @@ on:
     branches:
       - master
       - develop
+      - test/debian11
   pull_request:
     branches:
       - master
@@ -14,14 +15,25 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.7"]
+        include:
+          - name: "Debian 10"
+            python-version: "3.7"
+            postgres-version: 11
+            postgis-version: 2.5
+          - name: "Debian 11"
+            python-version: "3.9"
+            postgres-version: 13
+            postgis-version: 3.2
+
+    name: ${{ matrix.name }}
 
     services:
       postgres:
-        image: postgis/postgis:11-2.5
+        image: postgis/postgis:${{ matrix.postgres-version }}-${{ matrix.postgis-version }}
         env:
           POSTGRES_DB: geonature2db
           POSTGRES_PASSWORD: geonatpasswd
@@ -35,6 +47,12 @@ jobs:
           --health-retries 5
 
     steps:
+    - name: Add postgis_raster database extension
+      if: ${{ matrix.postgis-version >= 3 }}
+      run: |
+        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
+      env:
+        PGPASSWORD: geonatpasswd
     - name: Add database extensions
       run: |
         psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "hstore";'
@@ -43,8 +61,6 @@ jobs:
         psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
       env:
         PGPASSWORD: geonatpasswd
-    - name: Install postgis to provide raster2pgsql
-      run: sudo apt-get install -y postgis
     - uses: actions/checkout@v2
       with:
         submodules: recursive
@@ -52,6 +68,9 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Install GDAL
+      run: |
+        sudo apt install -y libgdal-dev
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -83,6 +102,7 @@ jobs:
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
     - name: Upload coverage to Codecov
+      if: ${{ matrix.name == 'Debian 11' }}
       uses: codecov/codecov-action@v2
       with:
         flags: pytest
