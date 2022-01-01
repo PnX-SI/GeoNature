@@ -903,7 +903,10 @@ def get_taxa_distribution():
     if not rank:
         rank = "regne"
 
-    rank = getattr(Taxref.__table__.columns, rank)
+    try:
+        rank = getattr(Taxref.__table__.columns, rank)
+    except AttributeError:
+        raise BadRequest("Rank does not exist")
 
     Taxref.group2_inpn
 
