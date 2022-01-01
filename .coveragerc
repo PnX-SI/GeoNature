@@ -1,0 +1,4 @@
+[run]
+omit =
+    backend/geonature/tests/*
+    backend/geonature/migrations/*
