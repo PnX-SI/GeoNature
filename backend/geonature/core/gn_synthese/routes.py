@@ -10,8 +10,6 @@ from werkzeug.exceptions import Forbidden, NotFound
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
-from geoalchemy2.shape import to_shape
-from shapely import wkt
 import sqlalchemy as sa
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
