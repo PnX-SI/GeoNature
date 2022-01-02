@@ -105,7 +105,7 @@ jobs:
         GEONATURE_CONFIG_FILE: config/test_config.toml
     - name: Test with pytest
       run: |
-        pytest -s -v backend/geonature/tests/ --cov backend/geonature/ --cov-report xml --cov-config=.coveragerc
+        pytest -v --cov --cov-report xml
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
     - name: Upload coverage to Codecov
