@@ -10,10 +10,9 @@ from geonature.utils.env import db
 from geonature.core.ref_geo.models import LAreas
 from geonature.core.gn_synthese.models import Synthese, TSources
 
-from . import *
 from .fixtures import *
 from .fixtures import taxon_attribut
-from .utils import logged_user_headers
+from .utils import login, logged_user_headers, set_logged_user_cookie
 
 
 @pytest.fixture()

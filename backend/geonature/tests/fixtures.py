@@ -22,8 +22,7 @@ from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 from apptax.taxonomie.models import Taxref
 
 
-__all__ = ['datasets', 'acquisition_frameworks',
-           'releve_data', 'synthese_data']
+__all__ = ['datasets', 'acquisition_frameworks', 'synthese_data']
 
 
 class JSONClient(testing.FlaskClient):
@@ -42,7 +41,7 @@ class JSONClient(testing.FlaskClient):
         return super().open(*args, **kwargs)
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='session', autouse=True)
 def app():
     app = create_app()
     app.testing = True
@@ -64,7 +63,7 @@ def app():
 
 
 @pytest.fixture(scope='session')
-def users(app):  # an app context is required
+def users(app):
     app = Application.query.filter(Application.code_application=='GN').one()
     profil = Profil.query.filter(Profil.nom_profil=='Lecteur').one()
 
@@ -121,6 +120,38 @@ def users(app):  # an app context is required
         users[username] = create_user(username, *args)
 
     return users
+
+
+@pytest.fixture(scope='function', autouse=True)
+def temporary_transaction(app):
+    """
+    We start two nested transaction (SAVEPOINT):
+        - The outer one will be used to rollback all changes made by the current test function.
+        - The inner one will be used to catch all commit() / rollback() made in tested code.
+          After starting the inner transaction, we install a listener on transaction end events,
+          and each time the inner transaction is closed, we restart a new transaction to catch
+          potential new commit() / rollback().
+    Note: When we rollback the inner transaction at the end of the test, we actually rollback
+    only the last inner transaction but previous inner transaction may have been committed by the
+    tested code! This is why we need an outer transaction to rollback all changes made by the test.
+    """
+    outer_transaction = db.session.begin_nested()
+    inner_transaction = db.session.begin_nested()
+
+    def restart_savepoint(session, transaction):
+        nonlocal inner_transaction
+        if transaction == inner_transaction:
+            session.expire_all()
+            inner_transaction = session.begin_nested()
+
+    db.event.listen(db.session, "after_transaction_end", restart_savepoint)
+
+    yield
+
+    db.event.remove(db.session, "after_transaction_end", restart_savepoint)
+
+    inner_transaction.rollback()  # probably rollback not so much
+    outer_transaction.rollback()  # rollback all changes made during this test
 
 
 @pytest.fixture(scope='function')
@@ -195,69 +226,6 @@ def datasets(users, acquisition_frameworks):
 #            operations = pkg_resources.resource_string("geonature.tests", f"data/{sql_file}") \
 #                                      .decode('utf-8')
 #            db.session.execute(operations)
-
-
-@pytest.fixture(scope='function')
-def temporary_transaction(app):
-    """
-    We start two nested transaction (SAVEPOINT):
-        - The outer one will be used to rollback all changes made by the current test function.
-        - The inner one will be used to catch all commit() / rollback() made in tested code.
-          After starting the inner transaction, we install a listener on transaction end events,
-          and each time the inner transaction is closed, we restart a new transaction to catch
-          potential new commit() / rollback().
-    Note: When we rollback the inner transaction at the end of the test, we actually rollback
-    only the last inner transaction but previous inner transaction may have been committed by the
-    tested code! This is why we need an outer transaction to rollback all changes made by the test.
-    """
-    outer_transaction = db.session.begin_nested()
-    inner_transaction = db.session.begin_nested()
-
-    def restart_savepoint(session, transaction):
-        nonlocal inner_transaction
-        if transaction == inner_transaction:
-            session.expire_all()
-            inner_transaction = session.begin_nested()
-
-    db.event.listen(db.session, "after_transaction_end", restart_savepoint)
-
-    yield
-
-    db.event.remove(db.session, "after_transaction_end", restart_savepoint)
-
-    inner_transaction.rollback()  # probably rollback not so much
-    outer_transaction.rollback()  # rollback all changes made during this test
-
-
-@pytest.fixture()
-def releve_data(client, datasets):
-    """
-        Releve associated with dataset created by "user"
-    """
-    id_dataset = datasets["own_dataset"].id_dataset
-    response = client.get(url_for("pr_occtax.getDefaultNomenclatures"))  # TODO probably better to query nomenclatures directly
-    default_nomenclatures = response.get_json()
-    data = {
-        "depth": 2,
-        "geometry": {"type": "Point", "coordinates": [3.428936004638672, 44.276611357355904],},
-        "properties": {
-            "id_dataset": id_dataset,
-            "id_digitiser": 1,
-            "date_min": "2018-03-02",
-            "date_max": "2018-03-02",
-            "hour_min": None,
-            "hour_max": None,
-            "altitude_min": None,
-            "altitude_max": None,
-            "meta_device_entry": "web",
-            "comment": None,
-            "observers": [1],
-            "observers_txt": "tatatato",
-            "id_nomenclature_grp_typ": default_nomenclatures["TYP_GRP"],
-        },
-    }
-
-    return data
 
 
 @pytest.fixture()
