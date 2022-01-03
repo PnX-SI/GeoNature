@@ -1,7 +1,8 @@
 import pytest
 
 from flask import url_for, current_app
-from werkzeug.exceptions import Unauthorized, Forbidden, Conflict, BadRequest
+from werkzeug.exceptions import Unauthorized, Forbidden, Conflict, BadRequest, NotFound
+from sqlalchemy import func
 
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
@@ -47,12 +48,13 @@ class TestGNMeta:
             assert af.has_instance_permission(3) == True
 
             nested = db.session.begin_nested()
-            datasets['own_dataset'].acquisition_framework = acquisition_frameworks['own_af']
+            af.t_datasets.remove(datasets['own_dataset'])
             # Now, the AF has no DS on which user is digitizer.
             assert af.has_instance_permission(1) == False
             # But the AF has still DS on which user organism is actor.
             assert af.has_instance_permission(2) == True
             nested.rollback()
+            assert datasets['own_dataset'] in af.t_datasets
 
         with app.test_request_context(headers=logged_user_headers(users['user'])):
             app.preprocess_request()
@@ -116,9 +118,17 @@ class TestGNMeta:
         set_logged_user_cookie(self.client, users['admin_user'])
 
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks"))
+        response = self.client.get(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            query_string={
+                'datasets': '1',
+                'creator': '1',
+                'actors': '1',
+            },
+        )
         assert response.status_code == 200
 
-    def test_get_acquisition_frameworks_list(self, users):
+    def test_list_acquisition_frameworks(self, users):
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
         assert response.status_code == Unauthorized.code
 
@@ -219,3 +229,23 @@ class TestGNMeta:
 
         response = self.client.post(url_for("gn_meta.create_dataset"))
         assert response.status_code == BadRequest.code
+
+    def test_dataset_pdf_export(self, users, datasets):
+        unexisting_id = db.session.query(func.max(TDatasets.id_dataset)).scalar() + 1
+        ds = datasets['own_dataset']
+
+        response = self.client.get(url_for("gn_meta.get_export_pdf_dataset", id_dataset=ds.id_dataset))
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user_cookie(self.client, users['self_user'])
+
+        response = self.client.get(url_for("gn_meta.get_export_pdf_dataset", id_dataset=unexisting_id))
+        assert response.status_code == NotFound.code
+
+        response = self.client.get(url_for("gn_meta.get_export_pdf_dataset", id_dataset=ds.id_dataset))
+        assert response.status_code == Forbidden.code
+
+        set_logged_user_cookie(self.client, users['user'])
+
+        response = self.client.get(url_for("gn_meta.get_export_pdf_dataset", id_dataset=ds.id_dataset))
+        assert response.status_code == 200

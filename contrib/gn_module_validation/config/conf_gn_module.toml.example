@@ -1,34 +1,30 @@
 [[COLUMN_LIST]]
-column_name = "id_nomenclature_valid_status"
-column_label = "Statut de validation"
-max_width = 20
+column_label = ""
+column_name = "nomenclature_valid_status.label_default"
+max_width = 40
 
 [[COLUMN_LIST]]
-column_name = "nom_vern_or_lb_nom"
 column_label = "Taxon"
+column_name = "taxref.nom_vern_or_lb_nom"
 min_width = 250
-
 
 [[COLUMN_LIST]]
 column_label = "Date obs"
 column_name = "date_min"
 min_width = 100
 
-
 [[COLUMN_LIST]]
-column_label = "Jeu de donnée"
-column_name = "dataset_name"
+column_label = "Jeu de données"
+column_name = "dataset.dataset_name"
 max_width = 100
 
-
 [[COLUMN_LIST]]
-column_name = "observers"
 column_label = "Observateur"
+column_name = "observers"
 min_width = 100
 
-[[COLUMN_LIST]]
-column_name = "label_life_stage"
-column_label = "Stade de vie"
-func = "get_nomenclature_label"
-id_nomenclature_field = "id_nomenclature_life_stage"
-min_width = 50
+# Exemple d’ajout d’une colonne supplémentaire
+#[[COLUMN_LIST]]
+#column_label = "Stade de vie"
+#column_name = "nomenclature_life_stage.label_default"
+#min_width = 50

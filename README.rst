@@ -2,8 +2,12 @@
 GeoNature
 =========
 
-.. image:: https://travis-ci.org/PnX-SI/GeoNature.svg?branch=develop
-    :target: https://travis-ci.org/PnX-SI/GeoNature
+.. image:: https://github.com/PnX-SI/GeoNature/actions/workflows/pytest.yml/badge.svg
+    :target: https://github.com/PnX-SI/GeoNature/actions/workflows/pytest.yml
+
+.. image:: https://codecov.io/gh/PnX-SI/GeoNature/branch/master/graph/badge.svg?token=L4T1TZIX9Z
+    :target: https://codecov.io/gh/PnX-SI/GeoNature
+
 
 GeoNature V2 est une refonte complète de la BDD et changement de technologies :
 

@@ -2094,38 +2094,14 @@ Après toute modification de la configuration d'un module, il faut regénérer l
 Liste des champs visibles
 `````````````````````````
 
-La configuration des champs de la liste se fait via deux paramètres:
 
-- ``COLUMNS_API_VALIDATION_WEB_APP``
-
-Liste des colonnes qui seront récupérées en plus des colonnes obligatoires. Les colonnes disponibles correspondent à celles présentent dans la vue ``v_synthese_validation_forwebapp``
+Gestion de l'affichage des colonnes de la liste via le paramètre ``COLUMN_LIST`` :
 
 ::
 
-    "id_nomenclature_valid_status"
-    "id_synthese"
-    "entity_source_pk_value"
-    "validation_auto"
-    "cd_nom"
-    "meta_update_date"
-    "cd_nomenclature_validation_status"
-    "mnemonique"
-    "label_default"
-    "unique_id_sinp"
-    "geojson"
-    "nom_vern"
-    "lb_nom"
-    "nom_vern_or_lb_nom"
-
-- ``LIST_COLUMNS_FRONTEND``
-
-Gestion de l'affichage des colonnes de la liste
-
-::
-
-    [[LIST_COLUMNS_FRONTEND]]
-    prop = "observers" # Nom de la propriété en base
-    name = "Observateurs" # Titre de la colonne
+    [[COLUMN_LIST]]
+    column_name = "nomenclature_life_stage.label_default" # Champs de la synthèse, éventuellement en suivant des relationships
+    column_name = "Stade de vie" # Titre de la colonne
     min_width = 100 # Taille minimale de la colonne
     max_width = 100 # Taille maximale de la colonne
 

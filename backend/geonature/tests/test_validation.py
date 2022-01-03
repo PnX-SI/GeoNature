@@ -4,14 +4,14 @@ import sqlalchemy as sa
 from flask import url_for
 from werkzeug.exceptions import Unauthorized
 
-from . import *
-from .fixtures import *
-from .utils import set_logged_user_cookie
-
 from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 
 from pypnnomenclature.models import TNomenclatures
+
+from .fixtures import *
+from .utils import set_logged_user_cookie
+
 
 gn_module_validation = pytest.importorskip("gn_module_validation")
 

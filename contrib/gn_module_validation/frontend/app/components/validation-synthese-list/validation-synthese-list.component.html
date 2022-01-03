@@ -116,7 +116,7 @@
           class="validationCircle"
           [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
         >
-          <i *ngIf="row.last_validation"  class="material-icons">{{row.last_validation.validation_auto}}</i>
+          <i *ngIf="row.last_validation?.validation_auto" class="material-icons">computer</i>
         </span>
         <div
           [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
@@ -276,6 +276,3 @@
   (valStatus)="onStatusChange($event)"
 >
 </pnx-validation-popup>
-
-
-

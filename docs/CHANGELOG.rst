@@ -7,39 +7,31 @@ CHANGELOG
 
 Profils de taxons
 
-**TO CHECK :**
-
-- Virer les tables et fonctions de Gil qui calculaient des profils de taxon inutilisés ? https://github.com/PnX-SI/GeoNature/blob/develop/data/core/synthese.sql#L426 / https://github.com/PnX-SI/GeoNature/blob/develop/data/core/synthese.sql#L498
-- Fiches taxons et valeurs d'altitudes nulles : Les percentiles sont appliqués sur les altitudes
-- Fiches taxons sans données ne sont pas claires : fait
-- Profils - Bien indiquer que le calcul se base que sur les données considérées comme validées : fait
-- Profils - Indiquer quelles données sont prises en compte et comment modifier les statuts utilisés / Renvoyer à la nouvelle doc
-- Fonction update_configuration et restart (message dans terminal et documentation ?) A indiquer ici par exemple avec la commande systemd : https://docs.geonature.fr/admin-manual.html#configuration-generale-de-l-application : fait
-- Nom des modules par défaut lors de l'installation, ajouter majuscules
-- PR Joel pour Monitoring
-- Conf Apache sur sous-domaine (voir retour Gil) - Ajouter documentation
-- PR de Jean-Brieuc et MAJ des données à tester et automatiser ou documenter ?
-- Documenter évolutions conf validation et si certains avaient modifié la vue ?
-- Dans Occtax, en survolant les nomenclatures, avant on affichait la description, désormais le label...
-
 **BUGS**
 
 - Dans le module VALIDATION :
-- L'attribution d'un statut de validation depuis la liste fonctionne par contre
-- Si j'attribue un statut de validation depuis la fiche d'une observation, ça l'attribue bien, et ça modifie le "Statut de validation actuel", mais pas le statut de validation dans l'onglet "Détail de l'occurrence", ni ne l'ajoute dans l'onglet "Validation". : fait sauf pour le statut dans le tableau et l'onglet validation : il faudrait recharger les données...
-- Bug d'ajout d'un média dans Occtax, à cause du type qui est affiché sous forme d'id ? : OK
-- Enchainer des relevés avec un GPX ne permet pas de selectionner un autre objet du GPX au second relevé : OK
-- Occtax : Je déplace un point en le glissant, l'altitude n'est pas recalculée, si je clique un nouveau point elle l'est: OK
-- Occtax : Je dessine un polygone, je le modifie, l'altitude n'est pas recalculée et le précédent polygone reste affiché sur la carte... OK
+  - Le nombre de résultats n'est plus affiché en bas du tableau
+  - Par défaut, la taille de la carte est trop petite ? Modification récente d'Amandine
+  - Je filtre sur un JDD, le tableau se ressere à gauche
+- Occtax : Enchainer des relevés avec un GPX ne permet pas de selectionner un autre objet du GPX au second relevé : OK
+- J'enchaine les relevés avec un GPX de polygone, quand je reviens sur le relevé, je suis centré sur le monde
+- Occtax : Je déplace un point en le glissant, l'altitude n'est pas recalculée, si je clique un nouveau point elle l'est: NOK, et maintenant si je le glisse, puis enregistre, la nouvelle position n'est pas enregistrée
+- Occtax : Je modifie un polygone, j'enregistre, OK, je le remodifie, ça me garde le précédent.
+- Occtax : Je modifie un relevé point ou polygone, je passe aux taxons, je repasse au relevé, la carte passe sur l'ensemble du monde 
 - Occtax : Je modifie un taxon qui avait un dénombrement où min différent de max, il me remet max = min : OK
 - Occtax : liste des habitats masquée, exemple : ville
 - MTD : Je créé un JDD, erreur 500 au moment d'enregistrer sur /geonature/api/meta/dataset:1
 - Synthèse : la recherche par organisme ne fonctionne pas ?
-- Synthèse : Recherche avancée - Groupes OK mais non affiché, et si je choisis un rang (Plantae), ça filtre la carte mais pas la liste...
-- Idem sur Arbre taxonomique (dont les valeurs ne se mettent pas à jour en fonction des données ?)
-- Synthèse - J'ouvre une fiche info / Pas mal d'erreurs dans la console sur les profils
+- J'ajoute un organisme, je l'associe à un utilisateur dans UsersHub. Je reviens sur la Synthèse, cet organisme n'apparait pas dans la liste des organismes
+- Synthèse : Je charge un GeoJSON de recherche, cela zoome dessus, mais ne recherche pas dans la zone, même si je clique sur RECHERCHER
+- Synthèse : Le lien pour écrire un email ne contient pas le destinataire
+- Les médias ne sont plus affichés dans les fiches observation de Synthèse et Validation
+- Synthèse - J'ouvre une fiche info / Pas mal d'erreurs dans la console sur les profils. Normal quand le taxon n'a pas de profil ?
 - Fiche info synthèse : Score vide quand nul ?
 - Fiche info synthèse et profil : Des croix partout quand pas de données validées pour ce taxon...
+- Occhab : Je peux pas créér un relevé, car seulement quelques champs sont affichés
+- Je créé un JDD, je renseigne un TERRITOIRE. Quand je modifie ce JDD, le territoire n'est plus renseigné. 
+- Les acteurs du JDD ne sont pas enregistrés quand je créé un JDD
 
 **🚀 Nouveautés**
 
@@ -48,9 +40,9 @@ Profils de taxons
   - Backend (#1104)
   - Frontend (#1105)
   - Améliorations JPM (#1531)
-  - Paramètres modifiables
+  - Paramètres modifiables (nomenclatures de validation utilisées par défaut)
   - Statuts pris en compte paramétrables
-  - Documentation
+  - Documentation (URL)
 * [OCCTAX] Contrôle de la cohérence des nouvelles données saisies par rapport au profil
 * [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
 * [SYNTHESE et VALIDATION] Enrichissement de l'onglet "Validation" en y ajoutant les informations du profil du taxon observé
@@ -70,7 +62,7 @@ Profils de taxons
 * Ajout de "pnx-areas" dans dynamic-form
 * Ajout d'un input "valueFieldName" pour "pnx-areas" et "pnx-municipalities"
 
-Pour ceux qui utilisent le composant "pnx-municipalities" l'idéal serait de traduire les données et les modèle et de passer du ``code_insee`` a ``id_area``
+Pour ceux qui utilisent le composant "pnx-municipalities" l'idéal serait de traduire les données et les modèles et de passer du ``code_insee`` a ``id_area``
 * la correspondance est immédiate (``area_code`` = ``code_insee``)
 
 Cependant, pour garder la retrocompatibilité du composant "pnx-municipalities" veuillez ajouter
@@ -240,6 +232,14 @@ Par défaut, seule les règles nationales sont activées, vous laissant le soin 
         ProxyPassReverse  http://127.0.0.1:8000/geonature/api
     </Location>
 
+  Si vous servez GeoNature sur un sous-domaine, vérifiez ou modifier la configuration Apache :
+
+  .. code-block::
+
+    <Location /api>
+        ProxyPass http://127.0.0.1:8000/api
+        ProxyPassReverse  http://127.0.0.1:8000/api
+    </Location>
 
   Pensez à recharger Apache si vous êtes amené à en changer la configuration : ``sudo systemctl reload apache2``
 

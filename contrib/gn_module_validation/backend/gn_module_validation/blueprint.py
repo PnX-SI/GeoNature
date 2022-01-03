@@ -29,7 +29,6 @@ from geonature.core.gn_commons.models.base import TValidations
 from werkzeug.exceptions import BadRequest
 from geonature.core.gn_commons.models import TValidations
 
-from .models import VSyntheseValidation
 
 blueprint = Blueprint("validation", __name__)
 log = logging.getLogger()

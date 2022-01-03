@@ -40,7 +40,7 @@ class TestSensitivity:
                     .where(TNomenclatures.id_nomenclature==func.gn_sensitivity.get_id_nomenclature_sensitivity(
                             sa.cast(date_obs, sa.types.Date),
                             taxon.cd_ref,
-                            geom,
+                            func.ST_Transform(geom, config['LOCAL_SRID']),
                             sa.cast({'STATUS_BIO': statut_bio_hibernation.id_nomenclature},
                                     sa.dialects.postgresql.JSONB),
                         ))
@@ -124,12 +124,12 @@ class TestSensitivity:
         with db.session.begin_nested():
             rule.areas.append(area_in)
         # l’observation est dans le périmètre d’application, la règle de sensibilité s’applique
-        #assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)  # FIXME this test fail!
+        assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
 
         with db.session.begin_nested():
             rule.areas.append(area_out)
         # l’observation est dans une des zones du périmètre d’application, la règle de sensibilité s’applique
-        #assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)  # FIXME this test fail!
+        assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
 
         with db.session.begin_nested():
             rule.areas.remove(area_in)

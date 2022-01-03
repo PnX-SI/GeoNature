@@ -87,7 +87,7 @@ def install_packaged_gn_module(module_path, module_code, build):
     except sa_exc.NoResultFound:
         module_object = TModules(
                 module_code=module_code,
-                module_label=module_code.lower(),
+                module_label=module_code.capitalize(),
                 module_path=module_code.lower(),
                 module_target="_self",
                 module_picto=module_picto,

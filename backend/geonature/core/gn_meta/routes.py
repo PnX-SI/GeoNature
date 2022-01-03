@@ -5,17 +5,10 @@ import datetime as dt
 import json
 import logging
 import threading
-import click
-
-
 from pathlib import Path
 from binascii import a2b_base64
-from flask.json import jsonify
-from geonature.utils.config import config
-from geonature.core.gn_permissions.decorators import login_required
-from werkzeug.utils import secure_filename
-from werkzeug.exceptions import Conflict
 
+import click
 from lxml import etree as ET
 
 from flask import (
@@ -28,14 +21,18 @@ from flask import (
     Response,
     g
 )
+from flask.json import jsonify
 from sqlalchemy import inspect
 from sqlalchemy.sql import text, exists, select, update
 from sqlalchemy.sql.functions import func
+from sqlalchemy.orm import Load, joinedload, raiseload
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 from werkzeug.datastructures import Headers
+from werkzeug.utils import secure_filename
+from werkzeug.exceptions import Conflict
 from marshmallow import ValidationError, EXCLUDE
 
-
+from geonature.utils.config import config
 from geonature.utils.env import DB, db, BACKEND_DIR
 from geonature.core.gn_synthese.models import (
     Synthese,
@@ -44,12 +41,11 @@ from geonature.core.gn_synthese.models import (
     CorSensitivitySynthese,
 )
 from geonature.core.ref_geo.models import LAreas
+from geonature.core.gn_permissions.decorators import login_required
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
-
-from binascii import a2b_base64
 
 from geonature.core.gn_meta.models import (
     TDatasets,
@@ -74,12 +70,10 @@ from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, get_or_fetch_user_cruved
 from geonature.core.gn_meta.mtd import mtd_utils
-from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
 from geonature.utils.errors import GeonatureApiError
-
-
+from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 
 
 routes = Blueprint("gn_meta", __name__, cli_group='metadata')
@@ -91,7 +85,8 @@ log = logging.getLogger()
 if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
     @routes.before_request
     def synchronize_mtd():
-        if request.endpoint == "gn_meta.get_datasets":
+        if request.endpoint in ["gn_meta.get_datasets",
+                                "gn_meta.get_acquisition_frameworks_list"]:
             try:
                 mtd_utils.post_jdd_from_user(
                     id_user=g.current_user.id_role, id_organism=g.current_user.id_organisme
@@ -149,18 +144,38 @@ def get_dataset(info_role, id_dataset):
     :param type: int
     :returns: dict<TDataset>
     """
-    datasetSchema = DatasetSchema()
+    dataset = TDatasets.query.get_or_404(id_dataset)
+    if not dataset.has_instance_permission(scope=int(info_role.value_filter)):
+        raise Forbidden(f"User {g.current_user} cannot read dataset {dataset.id_dataset}")
+
+    dataset_schema = DatasetSchema(only=[
+        'creator',
+        'cor_dataset_actor',
+        'cor_dataset_actor.nomenclature_actor_role',
+        'cor_dataset_actor.organism',
+        'cor_dataset_actor.role',
+        'modules',
+        'nomenclature_data_type',
+        'nomenclature_dataset_objectif',
+        'nomenclature_collecting_method',
+        'nomenclature_data_origin',
+        'nomenclature_source_status',
+        'nomenclature_resource_type',
+        'cor_territories',
+        'acquisition_framework',
+        'acquisition_framework.creator',
+        'acquisition_framework.cor_af_actor',
+        'acquisition_framework.cor_af_actor.nomenclature_actor_role',
+        'acquisition_framework.cor_af_actor.organism',
+        'acquisition_framework.cor_af_actor.role',
+    ])
+
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role, module_code="METADATA",
     )[0]
+    dataset_schema.context = {'user_cruved': user_cruved}
 
-    datasetSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
-
-    dataset = DB.session.query(TDatasets).get(id_dataset)
-    if not dataset:
-        raise NotFound('Dataset "{}" does not exist'.format(id_dataset))
-
-    return datasetSchema.jsonify(dataset)
+    return dataset_schema.jsonify(dataset)
 
 
 @routes.route("/upload_canvas", methods=["POST"])
@@ -510,7 +525,7 @@ def update_dataset(id_dataset, info_role):
     dataset = TDatasets.query.filter_by_readable().get_or_404(id_dataset)
     if not dataset.has_instance_permission(scope=int(info_role.value_filter)):
         raise Forbidden(f"User {g.current_user} cannot update dataset {dataset.id_dataset}")
-
+    # TODO: specify which fields may be updated
     return DatasetSchema().jsonify(
         datasetHandler(dataset=dataset, data=request.get_json())
     )
@@ -522,30 +537,17 @@ def get_export_pdf_dataset(id_dataset, info_role):
     """
     Get a PDF export of one dataset
     """
-    datasetSchema = DatasetSchema()
-    
-    user_cruved = cruved_scope_for_user_in_module(
-        id_role=info_role.id_role, module_code="METADATA",
-    )[0]
+    dataset =TDatasets.query.get_or_404(id_dataset)
+    if not dataset.has_instance_permission(int(info_role.value_filter)):
+        raise Forbidden("Vous n'avez pas les droits d'exporter ces informations")
 
-    datasetSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
-
-    dataset = DB.session.query(TDatasets).get(id_dataset)
-    if not dataset:
-        raise NotFound('Dataset "{}" does not exist'.format(id_dataset))
-
-    dataset = json.loads((datasetSchema.dumps(dataset)))
-
-    #test du droit d'export de l'utilisateur
-    if not dataset.get('cruved').get('E'):
-        return (
-            render_template(
-                "error.html",
-                error="Vous n'avez pas les droits d'exporter ces informations",
-                redirect=current_app.config["URL_APPLICATION"] + "/#/metadata",
-            ),
-            404,
-        )
+    dataset_schema = DatasetSchema(only=[
+        'nomenclature_data_type',
+        'nomenclature_dataset_objectif',
+        'nomenclature_collecting_method',
+        'acquisition_framework',
+    ])
+    dataset = dataset_schema.dump(dataset)
 
     if len(dataset.get("dataset_desc")) > 240:
         dataset["dataset_desc"] = dataset.get("dataset_desc")[:240] + "..."
@@ -591,13 +593,66 @@ def get_acquisition_frameworks(info_role):
         Use for AF select in form
         Get the GeoNature CRUVED
     """
-    params = request.args.to_dict()
-    exclude_fields = [db_rel.key for db_rel in inspect(TAcquisitionFramework).relationships]
-    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(include_fk=False)
-    return acquisitionFrameworkSchema.jsonify(
-        get_metadata_list(info_role, params, exclude_fields).all(),
-        many=True
+    only = []
+    af_list = (
+        TAcquisitionFramework.query
+        .filter_by_readable()
+        .options(
+            Load(TAcquisitionFramework).raiseload('*'),
+            # for permission checks:
+            joinedload('creator'),
+            joinedload('cor_af_actor').options(
+                joinedload('role'),
+                joinedload('organism'),
+            ),
+            joinedload('t_datasets').options(
+                joinedload('digitizer'),
+                joinedload('cor_dataset_actor').options(
+                    joinedload('role'),
+                    joinedload('organism'),
+                ),
+            ),
+        )
     )
+    if request.args.get('datasets', default=False, type=int):
+        only.extend([
+            't_datasets',
+        ])
+    if request.args.get('creator', default=False, type=int):
+        only.append('creator')
+        af_list = af_list.options(joinedload('creator'))
+    if request.args.get('actors', default=False, type=int):
+        only.extend([
+            'cor_af_actor',
+            'cor_af_actor.nomenclature_actor_role',
+            'cor_af_actor.organism',
+            'cor_af_actor.role',
+        ])
+        af_list = af_list.options(
+            joinedload('cor_af_actor').options(
+                joinedload('nomenclature_actor_role'),
+            ),
+        )
+        if request.args.get('datasets', default=False, type=int):
+            only.extend([
+                't_datasets.cor_dataset_actor',
+                't_datasets.cor_dataset_actor.nomenclature_actor_role',
+                't_datasets.cor_dataset_actor.organism',
+                't_datasets.cor_dataset_actor.role',
+            ])
+            af_list = af_list.options(
+                joinedload('t_datasets').options(
+                    joinedload('cor_dataset_actor').options(
+                        joinedload('nomenclature_actor_role'),
+                    ),
+                ),
+            )
+    af_schema = AcquisitionFrameworkSchema(only=only)
+    user_cruved = cruved_scope_for_user_in_module(
+        id_role=info_role.id_role, module_code="METADATA",
+    )[0]
+    af_schema.context = {'user_cruved': user_cruved}
+    return af_schema.jsonify(af_list.all(), many=True)
 
 @routes.route("/list/acquisition_frameworks", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="METADATA")
@@ -615,14 +670,6 @@ def get_acquisition_frameworks_list(info_role):
     :qparam boolean nested: Default False - serialized relationships. If false: remove add all relationships in excluded_fields
 
     """
-    if current_app.config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
-        # synchronise the CA and JDD from the MTD WS
-        try:
-            mtd_utils.post_jdd_from_user(
-                id_user=info_role.id_role, id_organism=info_role.id_organisme
-            )
-        except Exception as e:
-            log.error(e)
     params = request.args.to_dict()
     params["orderby"] = "acquisition_framework_name"
 
@@ -649,7 +696,7 @@ def get_acquisition_frameworks_list(info_role):
     acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
         exclude=exclude_fields
     )
-    acquisitionFrameworkSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
+    acquisitionFrameworkSchema.context = {'user_cruved': user_cruved}
     return acquisitionFrameworkSchema.jsonify(
         get_metadata_list(info_role, params, exclude_fields).all(),
         many=True
@@ -775,21 +822,43 @@ def get_acquisition_framework(info_role, id_acquisition_framework):
     :param type: int
     :returns: dict<TAcquisitionFramework>
     """
+    af = TAcquisitionFramework.query.get_or_404(id_acquisition_framework)
+    if not af.has_instance_permission(scope=int(info_role.value_filter)):
+        raise Forbidden(f"User {g.current_user} cannot read acquisition "
+                         "framework {af.id_acquisition_framework}")
+
     exclude = request.args.getlist("exclude")
     try:
-        acquisitionFrameworkSchema = AcquisitionFrameworkSchema(exclude=exclude)
+        af_schema = AcquisitionFrameworkSchema(
+            only=[
+                'creator',
+                'nomenclature_territorial_level',
+                'nomenclature_financing_type',
+                'cor_af_actor',
+                'cor_af_actor.nomenclature_actor_role',
+                'cor_af_actor.organism',
+                'cor_af_actor.role',
+                'cor_volets_sinp',
+                'cor_objectifs',
+                'cor_territories',
+                't_datasets',
+                't_datasets.creator',
+                't_datasets.nomenclature_data_type',
+                't_datasets.cor_dataset_actor',
+                't_datasets.cor_dataset_actor.nomenclature_actor_role',
+                't_datasets.cor_dataset_actor.organism',
+                't_datasets.cor_dataset_actor.role',
+            ],
+            exclude=exclude)
     except ValueError as e:
         raise BadRequest(str(e))
+
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role, module_code="METADATA",
     )[0]
+    af_schema.context = {'user_cruved': user_cruved}
 
-    acquisitionFrameworkSchema.context = {'info_role': info_role, 'user_cruved': user_cruved}
-
-    acquisition_framework = DB.session.query(TAcquisitionFramework).get(id_acquisition_framework)
-    if not acquisition_framework:
-        raise NotFound('Acquisition framework "{}" does not exist'.format(id_acquisition_framework))
-    return acquisitionFrameworkSchema.jsonify(acquisition_framework)
+    return af_schema.jsonify(af)
 
 
 @routes.route("/acquisition_framework/<int:af_id>", methods=["DELETE"])
@@ -815,15 +884,14 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework, info_role):
 
     # Test des droits d'édition du acquisition framework si modification
     if acquisition_framework.id_acquisition_framework is not None:
-        user_cruved = cruved_scope_for_user_in_module(
+        user_cruved, _ = cruved_scope_for_user_in_module(
             id_role=info_role.id_role, module_code="METADATA",
-        )[0]
-        af_cruved = acquisition_framework.get_object_cruved(info_role, user_cruved)
+        )
         #verification des droits d'édition pour le acquisition framework
-        if not af_cruved['U']:
+        if not acquisition_framework.has_instance_permission(user_cruved['U']):
             raise InsufficientRightsError(
                 "User {} has no right in acquisition_framework {}".format(
-                    info_role.id_role, acquisition_framework.id_acquisition_framework
+                    g.current_user, acquisition_framework.id_acquisition_framework
                 ),
                 403,
             )
@@ -850,7 +918,7 @@ def create_acquisition_framework(info_role):
     Post one AcquisitionFramework data
     .. :quickref: Metadata;
     """
-
+    # TODO: spécifier only
     # create new acquisition_framework
     return AcquisitionFrameworkSchema().dump(
         acquisitionFrameworkHandler(request=request, acquisition_framework=TAcquisitionFramework(), info_role=info_role)
@@ -865,10 +933,12 @@ def updateAcquisitionFramework(id_acquisition_framework, info_role):
     Post one AcquisitionFramework data for update acquisition_framework
     .. :quickref: Metadata;
     """
-    acquisition_framework = TAcquisitionFramework.query.get_or_404(id_acquisition_framework)
-
+    af = TAcquisitionFramework.query.get_or_404(id_acquisition_framework)
+    if not af.has_instance_permission(scope=int(info_role.value_filter)):
+        raise Forbidden(f"User {g.current_user} cannot update "
+                         "acquisition framework {af.id_acquisition_framework}")
     return AcquisitionFrameworkSchema().dump(
-        acquisitionFrameworkHandler(request=request, acquisition_framework=acquisition_framework, info_role=info_role)
+        acquisitionFrameworkHandler(request=request, acquisition_framework=af, info_role=info_role)
     )
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>/stats", methods=["GET"])

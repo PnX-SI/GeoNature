@@ -68,7 +68,7 @@
         <span *ngFor="let observers of selectedObs?.cor_observers; let i = index">
           {{ observers.email}} <span *ngIf="i != selectedObs?.cor_observers.length -1">, </span>
         </span>
-        <button> <a href="{{mailto}}"><i
+        <button> <a href="{{mailto}}" target="_blank"><i
             class="fa fa-envelope-o"
             aria-hidden="true"
           ></i></a> </button>

@@ -260,46 +260,26 @@ class CruvedHelper(DB.Model):
 
     __abstract__ = True
 
-    def user_is_allowed_to(
-        self,
-        object_actors: list,
-        info_role: list,
-        level: str,
+
+    def get_object_cruved(
+        self, user_cruved
     ):
         """
-            Fonction permettant de dire si un utilisateur
-            peu ou non agir sur une donnée
+        Return the user's cruved for a Model instance.
+        Use in the map-list interface to allow or not an action
+        params:
+            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
+            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
+            - id_role: identifiant de la personne qui demande la route
+            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
+            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
 
-            Params:
-                object_actors: liste d'id dataset sur lequel l'utilisateur a des droits
-                id_role: identifiant de la personne qui demande la route
-
-            Return: boolean
+        Return: dict {'C': True, 'R': False ...}
         """
-        # Si l'utilisateur n'a pas de droit d'accès aux données
-        if level not in ("1", "2", "3"):
-            return False
-
-        # Si l'utilisateur à le droit d'accéder à toutes les données
-        if level == "3":
-            return True
-
-        # Si l'utilisateur est createur de la données
-        if self.id_digitizer == info_role.id_role:
-            return True
-
-        for actor in object_actors :
-            # Si l'utilisateur est indiqué comme role dans la données
-            if actor.id_role == info_role.id_role :
-                return True
-            # Si l'utilisateur appartient à un organisme
-            # qui a un droit sur la données et
-            # que son niveau d'accès est 2 ou 3
-            if actor.id_organism == info_role.id_organisme and level == "2":
-                return True
-
-        return False
-
+        return {
+            action: self.has_instance_permission(int(level))
+            for action, level in user_cruved.items()
+        }
 
 
 @serializable
@@ -415,6 +395,7 @@ class TDatasets(CruvedHelper):
     id_acquisition_framework = DB.Column(
         DB.Integer, ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
+    acquisition_framework = DB.relationship("TAcquisitionFramework", lazy="joined")  # join AF as required for permissions checks
     dataset_name = DB.Column(DB.Unicode)
     dataset_shortname = DB.Column(DB.Unicode)
     dataset_desc = DB.Column(DB.Unicode)
@@ -460,7 +441,7 @@ class TDatasets(CruvedHelper):
     active = DB.Column(DB.Boolean, default=True)
     validable = DB.Column(DB.Boolean, server_default=FetchedValue())
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
-    digitizer = DB.relationship(User)
+    digitizer = DB.relationship(User, lazy="joined")  # joined for permission check
     id_taxa_list = DB.Column(DB.Integer)
     modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
@@ -528,7 +509,10 @@ class TDatasets(CruvedHelper):
     def is_deletable(self):
         return not DB.session.query(self.synthese_records.exists()).scalar()
 
-    def has_instance_permission(self, scope):
+    def has_instance_permission(self, scope, _through_af=True):
+        """
+        _through_af prevent infinite recursion
+        """
         if scope == 0:
             return False
         elif scope in (1, 2):
@@ -536,32 +520,12 @@ class TDatasets(CruvedHelper):
                 return True
             if scope == 2 and g.current_user.organisme in self.organism_actors:
                 return True
-            return False
+            return _through_af and self.acquisition_framework.has_instance_permission(scope, _through_ds=False)
         elif scope == 3:
             return True
 
     def __str__(self):
         return self.dataset_name
-        
-    def get_object_cruved(
-        self, info_role, user_cruved
-    ):
-        """
-        Return the user's cruved for a Model instance.
-        Use in the map-list interface to allow or not an action
-        params:
-            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
-            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
-            - id_role: identifiant de la personne qui demande la route
-            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
-            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
-
-        Return: dict {'C': True, 'R': False ...}
-        """
-        return {
-            action: self.user_is_allowed_to(self.cor_dataset_actor, info_role, level)
-            for action, level in user_cruved.items()
-        }
 
     @staticmethod
     def get_id(uuid_dataset):
@@ -741,10 +705,9 @@ class TAcquisitionFramework(CruvedHelper):
 
     t_datasets = DB.relationship(
         "TDatasets",
-        lazy="select",
+        lazy="joined",  # DS required for permissions checks
         cascade="all,delete-orphan",
         uselist=True,
-        backref=DB.backref("acquisition_framework", lazy="select"),
     )
 
     @hybrid_property
@@ -762,7 +725,7 @@ class TAcquisitionFramework(CruvedHelper):
             .exists()
         ).scalar()
 
-    def has_instance_permission(self, scope):
+    def has_instance_permission(self, scope, _through_ds=True):
         if scope == 0:
             return False
         elif scope in (1, 2):
@@ -771,29 +734,9 @@ class TAcquisitionFramework(CruvedHelper):
             if scope == 2 and g.current_user.organisme in self.organism_actors:
                 return True
             # rights on DS give rights on AF!
-            return any(map(lambda ds: ds.has_instance_permission(scope), self.t_datasets))
+            return _through_ds and any(map(lambda ds: ds.has_instance_permission(scope, _through_af=False), self.t_datasets))
         elif scope == 3:
             return True
-
-    def get_object_cruved(
-        self, info_role, user_cruved
-    ):
-        """
-        Return the user's cruved for a Model instance.
-        Use in the map-list interface to allow or not an action
-        params:
-            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
-            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
-            - id_role: identifiant de la personne qui demande la route
-            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
-            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
-
-        Return: dict {'C': True, 'R': False ...}
-        """
-        return {
-            action: self.user_is_allowed_to(self.cor_af_actor, info_role, level)
-            for action, level in user_cruved.items()
-        }
 
     @staticmethod
     def get_id(uuid_af):

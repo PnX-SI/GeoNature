@@ -5,6 +5,7 @@ from sqlalchemy.ext.associationproxy import association_proxy
 from geonature.utils.env import db
 from geonature.core.ref_geo.models import LAreas
 
+from apptax.taxonomie.models import Taxref
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 
 
@@ -25,7 +26,7 @@ class SensitivityRule(db.Model):
     __table_args__ = {"schema": "gn_sensitivity"}
 
     id = db.Column('id_sensitivity', db.Integer, primary_key=True)
-    cd_nom = db.Column(db.Integer, ForeignKey('taxonomie.taxref.cd_nom'), nullable=False)
+    cd_nom = db.Column(db.Integer, ForeignKey(Taxref.cd_nom), nullable=False)
     nom_cite = db.Column(db.String(length=100))
     id_nomenclature_sensitivity = db.Column(db.Integer,
         ForeignKey('ref_nomenclatures.t_nomenclatures.id_nomenclature'), nullable=False)

@@ -22,8 +22,7 @@ from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 from apptax.taxonomie.models import Taxref
 
 
-__all__ = ['datasets', 'acquisition_frameworks',
-           'releve_data', 'synthese_data']
+__all__ = ['datasets', 'acquisition_frameworks', 'synthese_data']
 
 
 class JSONClient(testing.FlaskClient):
@@ -42,7 +41,7 @@ class JSONClient(testing.FlaskClient):
         return super().open(*args, **kwargs)
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='session', autouse=True)
 def app():
     app = create_app()
     app.testing = True
@@ -64,7 +63,7 @@ def app():
 
 
 @pytest.fixture(scope='session')
-def users(app):  # an app context is required
+def users(app):
     app = Application.query.filter(Application.code_application=='GN').one()
     profil = Profil.query.filter(Profil.nom_profil=='Lecteur').one()
 
@@ -123,80 +122,7 @@ def users(app):  # an app context is required
     return users
 
 
-@pytest.fixture(scope='class')
-def acquisition_frameworks(users):
-    principal_actor_role = TNomenclatures.query.filter(
-                                BibNomenclaturesTypes.mnemonique=='ROLE_ACTEUR',
-                                TNomenclatures.mnemonique=='Contact principal').one()
-    def create_af(creator=None):
-        with db.session.begin_nested():
-            af = TAcquisitionFramework(
-                            acquisition_framework_name='test',
-                            acquisition_framework_desc='test',
-                            creator=creator)
-            db.session.add(af)
-            if creator and creator.organisme:
-                actor = CorAcquisitionFrameworkActor(
-                            organism=creator.organisme,
-                            nomenclature_actor_role=principal_actor_role)
-                af.cor_af_actor.append(actor)
-        return af
-
-    afs = {
-        'own_af': create_af(creator=users['user']),
-        'associate_af': create_af(creator=users['associate_user']),
-        'stranger_af': create_af(creator=users['stranger_user']),
-        'orphan_af': create_af(),
-    }
-
-    return afs
-
-
-@pytest.fixture(scope='class')
-def datasets(users, acquisition_frameworks):
-    af = acquisition_frameworks['orphan_af']
-    principal_actor_role = TNomenclatures.query.filter(
-                                BibNomenclaturesTypes.mnemonique=='ROLE_ACTEUR',
-                                TNomenclatures.mnemonique=='Contact principal').one()
-    def create_dataset(digitizer=None):
-        with db.session.begin_nested():
-            dataset = TDatasets(
-                            id_acquisition_framework=af.id_acquisition_framework,
-                            dataset_name='test',
-                            dataset_shortname='test',
-                            dataset_desc='test',
-                            marine_domain=True,
-                            terrestrial_domain=True,
-                            id_digitizer=digitizer.id_role if digitizer else None)
-            db.session.add(dataset)
-            if digitizer and digitizer.organisme:
-                actor = CorDatasetActor(
-                            organism=digitizer.organisme,
-                            nomenclature_actor_role=principal_actor_role)
-                dataset.cor_dataset_actor.append(actor)
-        return dataset
-
-    datasets = {
-        'own_dataset': create_dataset(digitizer=users['user']),
-        'associate_dataset': create_dataset(digitizer=users['associate_user']),
-        'stranger_dataset': create_dataset(digitizer=users['stranger_user']),
-        'orphan_dataset': create_dataset(),
-    }
-
-    return datasets
-
-
-
-#@pytest.fixture(scope='class')
-#def sample_data(app):
-#    with db.session.begin_nested():
-#        for sql_file in ['delete_sample_data.sql', 'sample_data.sql']:
-#            operations = pkg_resources.resource_string("geonature.tests", f"data/{sql_file}") \
-#                                      .decode('utf-8')
-#            db.session.execute(operations)
-
-
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='function', autouse=True)
 def temporary_transaction(app):
     """
     We start two nested transaction (SAVEPOINT):
@@ -228,35 +154,78 @@ def temporary_transaction(app):
     outer_transaction.rollback()  # rollback all changes made during this test
 
 
-@pytest.fixture()
-def releve_data(client, datasets):
-    """
-        Releve associated with dataset created by "user"
-    """
-    id_dataset = datasets["own_dataset"].id_dataset
-    response = client.get(url_for("pr_occtax.getDefaultNomenclatures"))  # TODO probably better to query nomenclatures directly
-    default_nomenclatures = response.get_json()
-    data = {
-        "depth": 2,
-        "geometry": {"type": "Point", "coordinates": [3.428936004638672, 44.276611357355904],},
-        "properties": {
-            "id_dataset": id_dataset,
-            "id_digitiser": 1,
-            "date_min": "2018-03-02",
-            "date_max": "2018-03-02",
-            "hour_min": None,
-            "hour_max": None,
-            "altitude_min": None,
-            "altitude_max": None,
-            "meta_device_entry": "web",
-            "comment": None,
-            "observers": [1],
-            "observers_txt": "tatatato",
-            "id_nomenclature_grp_typ": default_nomenclatures["TYP_GRP"],
-        },
+@pytest.fixture(scope='function')
+def acquisition_frameworks(users):
+    principal_actor_role = TNomenclatures.query.filter(
+                                BibNomenclaturesTypes.mnemonique=='ROLE_ACTEUR',
+                                TNomenclatures.mnemonique=='Contact principal').one()
+    def create_af(creator=None):
+        with db.session.begin_nested():
+            af = TAcquisitionFramework(
+                            acquisition_framework_name='test',
+                            acquisition_framework_desc='test',
+                            creator=creator)
+            db.session.add(af)
+            if creator and creator.organisme:
+                actor = CorAcquisitionFrameworkActor(
+                            organism=creator.organisme,
+                            nomenclature_actor_role=principal_actor_role)
+                af.cor_af_actor.append(actor)
+        return af
+
+    afs = {
+        'own_af': create_af(creator=users['user']),
+        'associate_af': create_af(creator=users['associate_user']),
+        'stranger_af': create_af(creator=users['stranger_user']),
+        'orphan_af': create_af(),
     }
 
-    return data
+    return afs
+
+
+@pytest.fixture(scope='function')
+def datasets(users, acquisition_frameworks):
+    af = acquisition_frameworks['orphan_af']
+    principal_actor_role = TNomenclatures.query.filter(
+                                BibNomenclaturesTypes.mnemonique=='ROLE_ACTEUR',
+                                TNomenclatures.mnemonique=='Contact principal').one()
+    def create_dataset(name, digitizer=None):
+        with db.session.begin_nested():
+            dataset = TDatasets(
+                            id_acquisition_framework=af.id_acquisition_framework,
+                            dataset_name=name,
+                            dataset_shortname=name,
+                            dataset_desc=name,
+                            marine_domain=True,
+                            terrestrial_domain=True,
+                            id_digitizer=digitizer.id_role if digitizer else None)
+            db.session.add(dataset)
+            if digitizer and digitizer.organisme:
+                actor = CorDatasetActor(
+                            organism=digitizer.organisme,
+                            nomenclature_actor_role=principal_actor_role)
+                dataset.cor_dataset_actor.append(actor)
+        return dataset
+
+    datasets = { name: create_dataset(name, digitizer)
+                 for name, digitizer in [
+                     ('own_dataset', users['user']),
+                     ('associate_dataset', users['associate_user']),
+                     ('stranger_dataset', users['stranger_user']),
+                     ('orphan_dataset', None),
+                 ] }
+
+    return datasets
+
+
+
+#@pytest.fixture(scope='class')
+#def sample_data(app):
+#    with db.session.begin_nested():
+#        for sql_file in ['delete_sample_data.sql', 'sample_data.sql']:
+#            operations = pkg_resources.resource_string("geonature.tests", f"data/{sql_file}") \
+#                                      .decode('utf-8')
+#            db.session.execute(operations)
 
 
 @pytest.fixture()

@@ -10,8 +10,6 @@ from werkzeug.exceptions import Forbidden, NotFound
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
-from geoalchemy2.shape import to_shape
-from shapely import wkt
 import sqlalchemy as sa
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
@@ -898,12 +896,16 @@ def get_taxa_distribution():
 
     id_dataset = request.args.get("id_dataset")
     id_af = request.args.get("id_af")
+    id_source = request.args.get("id_source")
 
     rank = request.args.get("taxa_rank")
     if not rank:
         rank = "regne"
 
-    rank = getattr(Taxref.__table__.columns, rank)
+    try:
+        rank = getattr(Taxref.__table__.columns, rank)
+    except AttributeError:
+        raise BadRequest("Rank does not exist")
 
     Taxref.group2_inpn
 
@@ -920,6 +922,9 @@ def get_taxa_distribution():
         query = query.outerjoin(TDatasets, TDatasets.id_dataset == Synthese.id_dataset).filter(
             TDatasets.id_acquisition_framework == id_af
         )
+    # User can add id_source filter along with id_dataset or id_af
+    if id_source is not None:
+        query = query.filter(Synthese.id_source == id_source)
 
     data = query.group_by(rank).all()
     return [{"count": d[0], "group": d[1]} for d in data]
