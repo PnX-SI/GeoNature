@@ -1,4 +1,30 @@
 {
+  "Download": "Download",
+  "Downloading": "Downloading",
+  "DownloadData": "Download data",
+  "DownloadOverflow": "The number of items is too big to be downloaded, please modify your request or contact your administrator",
+  "Cancel": "Cancel",
+  "Delete": "Delete",
+  "Search": "Search",
+  "List": {
+    "Columns": "Columns",
+    "DisplayColumns": "Columns to display"
+  },
+  "Form": {
+    "RefreshFilters": "Refresh filters",
+    "AdvancedFilters": "Filtres avancés",
+    "OtherFilters": "Other filter",
+    "Organism": "Organism(s)"
+  },
+  "MetaData": {
+    "JddError": "Error while fetching datasets",
+    "JddErrorMTD": "Error while get dataset - MTD",
+    "NoJDD": "No dataset found, contact your administrator",
+    "NoJDDMTD": "No dataset found, first go to the MTD application",
+    "Programs": "Program",
+    "Datasets": "Dataset",
+    "AcquisitionFramework": "Acquisition framework"
+  },
   "Releve": {
     "Releve": "Releve",
     "AddReleve": "Add a releve",
@@ -119,5 +145,23 @@
       "SexRequiredError": "Sex required",
       "CountingObjectRequiredError": "Counting type required"
     }
+  },
+  "Medias": {
+    "Medias": "Medias",
+    "Media": "Media",
+    "add": "Add media",
+    "edit": "Edit media",
+    "valid": "Validate media",
+    "delete": "Delete media",
+    "undo": "Undo changes",
+    "loading": "Loading media",
+    "link": "Link to the media",
+    "diaporama": "Link to the media",
+    "title": "Title",
+    "description": "Description",
+    "author": "Author",
+    "type": "Media Type",
+    "next": "Go to previous media",
+    "previous": "Go to next media"
   }
 }
