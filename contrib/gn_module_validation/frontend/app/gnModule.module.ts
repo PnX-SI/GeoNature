@@ -1,5 +1,8 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { HttpClient } from '@angular/common/http';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -22,6 +25,10 @@ import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthe
 import { TaxonAdvancedStoreService } from "@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service";
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component'
 
+function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './external_assets/validation/i18n/', '.json');
+}
+
 // my module routing
 const routes: Routes = [{ path: "", component: ValidationComponent }];
 
@@ -39,6 +46,14 @@ const routes: Routes = [{ path: "", component: ValidationComponent }];
     GN2CommonModule,
     SharedSyntheseModule,
     RouterModule.forChild(routes),
+    TranslateModule.forChild({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient]
+      },
+      isolate: true,
+    }),
     CommonModule,
     NgbModule,
     TreeModule.forRoot(),
