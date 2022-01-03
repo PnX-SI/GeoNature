@@ -1,0 +1,52 @@
+{
+  "Releve": {
+    "Releve": "Relevé",
+    "AddReleve": "Ajouter un relevé aaa",
+    "Observer": "Observateur",
+    "Observers": "Observateur(s)",
+    "MinDate": "Date début",
+    "MaxDate": "Date fin",
+    "HourMin": "Heure début",
+    "HourMax": "Heure fin",
+    "HourFormat": "hh:mm",
+    "MinAltitude": "Alt min",
+    "MaxAltitude": "Alt max",
+    "MinDepth": "Profondeur min",
+    "MaxDepth": "Profondeur max",
+    "Municipality": "Commune",
+    "Municipalities": "Commune(s)",
+    "Dataset": "Jeu de données",
+    "Comment": "Commentaire",
+    "SaveReleve": "Enregistrer le relevé",
+    "SavedTaxon": "Taxon(s) enregistré(s)",
+    "InfoGeo": "Informations géographiques du relevé",
+    "Edit": "Editer le relevé",
+    "Info": "Informations relevé",
+    "Delete": "Supprimer le relevé",
+    "DeleteSuccessfully": "Le relevé a été supprimé avec succès",
+    "Validate": "Valider le relevé",
+    "UnValidate": "Invalider le relevé",
+    "ObsTechnique": "Technique d'observation",
+    "TechCollectCampanule": "Technique de collecte du relevé (Campanule)",
+    "AddTaxonOnReleve": "Ajouter un taxon sur ce relevé",
+    "CancelTaxon": "Annuler la saisie du taxon",
+    "FillGeometryFirst": "Veuillez saisir un pointage sur la carte avant de remplir le formulaire",
+    "GroupType": "Type de regroupement",
+    "GroupMethod": "Méthode de regroupement",
+    "DoesNotExist": "Ce relevé n'existe pas",
+    "StayOnFormInterface": "Enchainer les relevés sans retourner à l'interface carte/liste",
+    "GeoObjectNature": "Nature de l'objet géographique",
+    "PlaceName": "Nom du lieu",
+    "Precision": "Precision",
+    "Infos": {
+      "ReleveAdded": "Relevé ajouté",
+      "ReleveModified": "Relevé modifié"
+    },
+    "Errors": {
+      "DateMaxError": "La date de début ne peut pas être postérieure à la date de fin",
+      "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min",
+      "DepthError": "La profondeur max ne peut être inférieure à la profondeur min",
+      "HourMaxError": "L'heure de début ne peut pas être supérieure à l'heure de fin"
+    }
+  }
+}

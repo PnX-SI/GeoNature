@@ -7,6 +7,7 @@ import {
   ViewChild,
   Renderer2,
 } from "@angular/core";
+import { TranslateService } from '@ngx-translate/core';
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { MapService } from "@geonature_common/map/map.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
@@ -70,9 +71,12 @@ export class OcctaxMapListComponent
     public globalSub: GlobalSubService,
     private renderer: Renderer2,
     public mediaService: MediaService,
-    private occtaxMapListS: OcctaxMapListService
+    private occtaxMapListS: OcctaxMapListService,
+    private translate: TranslateService
 
-  ) { }
+  ) {
+    translate.use(AppConfig.DEFAULT_LANGUAGE)
+  }
 
   ngOnInit() {
     // set zoom on layer to true

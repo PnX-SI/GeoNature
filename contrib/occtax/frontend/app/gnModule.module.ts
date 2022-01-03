@@ -1,5 +1,8 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { HttpClient } from '@angular/common/http';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -26,6 +29,10 @@ import { OcctaxFormMapService } from "./occtax-form/map/map.service";
 import { OcctaxFormParamService } from "./occtax-form/form-param/form-param.service";
 
 import { MatSlideToggleModule, MatTabsModule } from "@angular/material";
+
+function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './external_assets/occtax/i18n/', '.json');
+}
 
 const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },
@@ -59,6 +66,14 @@ const routes: Routes = [
   imports: [
     RouterModule.forChild(routes),
     GN2CommonModule,
+    TranslateModule.forChild({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient]
+      },
+      isolate: true,
+    }),
     CommonModule,
     MatSlideToggleModule,
     MatTabsModule,
