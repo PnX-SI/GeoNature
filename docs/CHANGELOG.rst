@@ -7,25 +7,6 @@ CHANGELOG
 
 Profils de taxons
 
-**TO CHECK :**
-
-- Virer les tables et fonctions de Gil qui calculaient des profils de taxon inutilisés ? https://github.com/PnX-SI/GeoNature/blob/develop/data/core/synthese.sql#L426 / https://github.com/PnX-SI/GeoNature/blob/develop/data/core/synthese.sql#L498
-- Fiches taxons et valeurs d'altitudes nulles : Les percentiles sont appliqués sur les altitudes
-- Fiches taxons sans données ne sont pas claires : fait
-- Profils - Bien indiquer que le calcul se base que sur les données considérées comme validées : fait
-- Profils - Indiquer quelles données sont prises en compte et comment modifier les statuts utilisés / Renvoyer à la nouvelle doc
-- Fonction update_configuration et restart (message dans terminal et documentation ?) A indiquer ici par exemple avec la commande systemd : https://docs.geonature.fr/admin-manual.html#configuration-generale-de-l-application : fait
-- Nom des modules par défaut lors de l'installation, ajouter majuscules
-- PR Joel pour Monitoring
-- Conf Apache sur sous-domaine (voir retour Gil) - Ajouter documentation
-- PR de Jean-Brieuc et MAJ des données à tester et automatiser ou documenter ?
-- Documenter évolutions conf validation et si certains avaient modifié la vue ?
-- Dans Occtax, en survolant les nomenclatures, avant on affichait la description, désormais le label...
-- Validation, changement du fonctionnement pour les colonnes de la liste ? Si les gens avaient une vue custom, on leur indique quelque chose ?
-- Doc sensibilité à intégrer
-- Corrections de sécurité dans dépôt dédié. Garder les routes d'Amandine pour le moment en les protégeant comme elle l'a proposé ?
-- Pourquoi pas de statut de validation sur le GN de test ?
-
 **BUGS**
 
 - Dans le module VALIDATION :
@@ -51,7 +32,6 @@ Profils de taxons
 - Occhab : Je peux pas créér un relevé, car seulement quelques champs sont affichés
 - Je créé un JDD, je renseigne un TERRITOIRE. Quand je modifie ce JDD, le territoire n'est plus renseigné. 
 - Les acteurs du JDD ne sont pas enregistrés quand je créé un JDD
-- JDD - Export PDF : Internal server error
 
 **🚀 Nouveautés**
 
@@ -82,7 +62,7 @@ Profils de taxons
 * Ajout de "pnx-areas" dans dynamic-form
 * Ajout d'un input "valueFieldName" pour "pnx-areas" et "pnx-municipalities"
 
-Pour ceux qui utilisent le composant "pnx-municipalities" l'idéal serait de traduire les données et les modèle et de passer du ``code_insee`` a ``id_area``
+Pour ceux qui utilisent le composant "pnx-municipalities" l'idéal serait de traduire les données et les modèles et de passer du ``code_insee`` a ``id_area``
 * la correspondance est immédiate (``area_code`` = ``code_insee``)
 
 Cependant, pour garder la retrocompatibilité du composant "pnx-municipalities" veuillez ajouter
@@ -252,6 +232,14 @@ Par défaut, seule les règles nationales sont activées, vous laissant le soin 
         ProxyPassReverse  http://127.0.0.1:8000/geonature/api
     </Location>
 
+  Si vous servez GeoNature sur un sous-domaine, vérifiez ou modifier la configuration Apache :
+
+  .. code-block::
+
+    <Location /api>
+        ProxyPass http://127.0.0.1:8000/api
+        ProxyPassReverse  http://127.0.0.1:8000/api
+    </Location>
 
   Pensez à recharger Apache si vous êtes amené à en changer la configuration : ``sudo systemctl reload apache2``
 
