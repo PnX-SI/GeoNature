@@ -117,3 +117,5 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 .. include:: installation-standalone.rst
 
 .. include:: installation-mtes.rst
+
+.. include:: https.rst

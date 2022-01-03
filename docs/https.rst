@@ -1,5 +1,5 @@
 HTTPS
-=====
+*****
 
 La présente documentation décrit la procédure de certification HTTPS et l'adaptation de la configuration Apache par défaut du serveur, sans utilisation de sous-domaine. Pour la mise en place de sous-domaines, voir la documentation "Configuration Apache".
 
@@ -19,7 +19,7 @@ Installer certbot
 
 ::
  
-    sudo apt-get install python-certbot-apache
+    sudo apt-get install python3-certbot-apache
 
 
 Lancer la commande cerbot
@@ -63,45 +63,6 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
     sudo crontab -e
     1 8 * * Sat certbot renew --renew-hook "service apache2 reload" >> /var/log/certbot.log
 
-
-**Mise à jour de la configuration apache du serveur**
-
-Afin que Apache prenne en compte la certification (redirection de http vers https), il faut modifier la configuration Apache par défaut du serveur : ``/etc/apache2/sites-available/000-default.conf``
-
-
-:: 
-
-	# Redirection de http vers https
-	<VirtualHost *:80>
-	  ServerName mondomaine.fr
-
-	  RewriteEngine on
-	  RewriteCond %{HTTPS} !on
-	  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
-
-	</VirtualHost>
-
-	# Configuration par défaut du serveur sur le port 443 (https)
-	<VirtualHost *:443>
-	        ServerName mondomaine.fr
-
-	        ServerAdmin webmaster@localhost
-	        DocumentRoot /var/www/html/
-
-	         ErrorLog ${APACHE_LOG_DIR}/error.log
-      		 CustomLog ${APACHE_LOG_DIR}/access.log combined
-
-	    SSLEngine on
-	    SSLCertificateFile /etc/letsencrypt/live/mondomaine.fr/cert.pem
-	    SSLCertificateKeyFile /etc/letsencrypt/live/mondomaine.fr/privkey.pem
-	    SSLCertificateChainFile /etc/letsencrypt/live/mondomaine.fr/chain.pem
-	    SSLProtocol all -SSLv2 -SSLv3
-	    SSLHonorCipherOrder on
-	    SSLCompression off
-	    SSLOptions +StrictRequire
-	    SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
-	    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
-	</VirtualHost>
 
 
 Prise en compte des nouvelles configurations Apache
