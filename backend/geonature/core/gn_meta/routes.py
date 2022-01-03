@@ -537,30 +537,17 @@ def get_export_pdf_dataset(id_dataset, info_role):
     """
     Get a PDF export of one dataset
     """
-    datasetSchema = DatasetSchema()
-    
-    user_cruved = cruved_scope_for_user_in_module(
-        id_role=info_role.id_role, module_code="METADATA",
-    )[0]
+    dataset =TDatasets.query.get_or_404(id_dataset)
+    if not dataset.has_instance_permission(int(info_role.value_filter)):
+        raise Forbidden("Vous n'avez pas les droits d'exporter ces informations")
 
-    datasetSchema.context = {'user_cruved': user_cruved}
-
-    dataset = DB.session.query(TDatasets).get(id_dataset)
-    if not dataset:
-        raise NotFound('Dataset "{}" does not exist'.format(id_dataset))
-
-    dataset = json.loads((datasetSchema.dumps(dataset)))
-
-    #test du droit d'export de l'utilisateur
-    if not dataset.get('cruved').get('E'):
-        return (
-            render_template(
-                "error.html",
-                error="Vous n'avez pas les droits d'exporter ces informations",
-                redirect=current_app.config["URL_APPLICATION"] + "/#/metadata",
-            ),
-            404,
-        )
+    dataset_schema = DatasetSchema(only=[
+        'nomenclature_data_type',
+        'nomenclature_dataset_objectif',
+        'nomenclature_collecting_method',
+        'acquisition_framework',
+    ])
+    dataset = dataset_schema.dump(dataset)
 
     if len(dataset.get("dataset_desc")) > 240:
         dataset["dataset_desc"] = dataset.get("dataset_desc")[:240] + "..."
