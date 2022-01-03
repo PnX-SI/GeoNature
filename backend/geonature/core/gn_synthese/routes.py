@@ -928,7 +928,8 @@ def get_taxa_distribution():
         query = query.outerjoin(TDatasets, TDatasets.id_dataset == Synthese.id_dataset).filter(
             TDatasets.id_acquisition_framework == id_af
         )
-    elif id_source is not None:
+    # User can add id_source filter along with id_dataset or id_af
+    if id_source is not None:
         query = query.filter(Synthese.id_source == id_source)
 
     data = query.group_by(rank).all()
