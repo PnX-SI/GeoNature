@@ -220,7 +220,7 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                         # Rebuild the frontend
                         build_geonature_front(rebuild_sass=True)
 
-                    log.info("Pensez à relancer geonature")
+                    log.info("Pensez à relancer geonature (sudo systemctl restart geonature)")
                 except Exception as e:
                     log.error("%s", e)
                     raise GeoNatureError(
@@ -347,5 +347,4 @@ def update_module_configuration(module_code, build):
     app = create_app(with_external_mods=False)
     with app.app_context():
         create_module_config(app, module_code, build=build)
-    log.info("Si vous avez changé des paramtères de configuration nécessaire au backend, "
-             "pensez à également relancer ce dernier.")
+    log.info("Pensez à relancer geonature (sudo systemctl restart geonature)")

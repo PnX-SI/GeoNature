@@ -145,5 +145,4 @@ def update_app_configuration(build=True):
     if build:
         subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
     log.info("...%s\n", MSG_OK)
-    log.info("Si vous avez changé des paramtères de configuration nécessaire au backend, "
-             "pensez à également relancer ce dernier.")
+    log.info("Pensez à relancer geonature (sudo systemctl restart geonature)")

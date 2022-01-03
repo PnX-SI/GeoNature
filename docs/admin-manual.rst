@@ -369,6 +369,7 @@ Etapes :
 
   $ source backend/venv/bin/activate
   $ geonature update_configuration
+  $ sudo systemctl restart geonature
 
 A ce moment-là, cet utilisateur a tous les droits sur GeoNature.
 Il s'agit maintenant de gérer ses permissions dans GeoNature même. 
@@ -877,6 +878,7 @@ Ainsi après chaque modification des fichiers de configuration globale, placez-v
 
     source venv/bin/activate
     geonature update_configuration
+    sudo systemctl restart geonature
     deactivate
 
 Configuration d'un gn_module
@@ -1536,6 +1538,7 @@ Etapes :
 
     $ source backend/venv/bin/activate
     $ geonature update_configuration
+    $ sudo systemctl restart geonature
 ..
 
 A ce moment là, cet utilisateur a tous les droits sur GeoNature.
