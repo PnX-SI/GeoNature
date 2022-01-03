@@ -8,7 +8,7 @@
   [disabled]="!isAccess()"
   (click)="openVerticallyCentered(content)"
 >
-  Attribuer un statut de validation
+  {{ 'Validation.SetStatus' | translate }}
 </button>
 
 <ng-template
@@ -25,7 +25,7 @@
       class="modal-header"
       style="justify-content: center"
     >
-      <h4 class="modal-title">Modification du statut de validation</h4>
+      <h4 class="modal-title">{{ 'Validation.ChangeStatus' | translate }}</h4>
       <button
         type="button"
         class="close"
@@ -43,7 +43,7 @@
     >
       <div>
         <span id="nbObs">{{ this.observations.length }}</span>
-        observation{{ plurielObservations }} sélectionnée{{ plurielObservations }}
+        {{ 'Validation.SelectedObservations' | translate: { plural: plurielObservations } }}
       </div>
       <div
         *ngIf="nbOffPage !== 0"
@@ -55,10 +55,10 @@
         >
           warning
         </i>
-        Attention {{ nbOffPage }} observation{{ plurielNbOffPage }} non-visible{{
-          plurielNbOffPage
+        {{
+          'Validation.WarningHiddenObservations'
+            | translate: { plural: plurielNbOffPage, value: nbOffPage }
         }}
-        (hors de la page courante) sélectionnée{{ plurielNbOffPage }}
       </div>
 
       <br />

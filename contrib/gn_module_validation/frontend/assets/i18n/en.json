@@ -1,0 +1,10 @@
+{
+  "Validation": {
+    "ChangeStatus": "Change of validation status",
+    "noData": "No data to display",
+    "noIdFound": "No results for this ID",
+    "SelectedObservations": "selected observation{{plural}}",
+    "SetStatus": "Set a validation status",
+    "WarningHiddenObservations": "Attention {{value}} non-visible observation{{plural}} (outside the current page) selected"
+  }
+}
