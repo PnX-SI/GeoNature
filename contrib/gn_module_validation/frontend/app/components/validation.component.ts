@@ -109,11 +109,6 @@ export class ValidationComponent implements OnInit {
     );
   }
 
-  // formatDate(unformatedDate) {
-  //   const date = new Date(unformatedDate);
-  //   return date.toLocaleDateString("fr-FR");
-  // }
-
   customColumns(feature) {
     // function pass to the LoadTableData maplist service function to format date
     if (feature.properties.validation_auto === true) {
