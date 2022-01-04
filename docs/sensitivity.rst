@@ -5,8 +5,8 @@ Introduction
 ------------
 
 Les régles de sensibilité définies par défaut sont issues des règles du SINP.
-Elles dépendent de l'espèce et de l'observation. C'est-à-dire que pour une observation donnée, 
-plusieurs niveaux de sensibilité sont possibles pour une même espèce.
+Elles dépendent de l'espèce et de l'observation. C'est-à-dire que pour une espèce donnée, 
+plusieurs niveaux de sensibilité sont possibles selon l'observation.
 
 Niveaux de sensibilité
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -34,7 +34,7 @@ Vous pouvez consulter :
 Attention
 ---------
 
-L'objectif de ce document n'est pas de transgresser les règles établies par
+L'objectif de ce document n'est pas de modifier les règles établies par
 le SINP. Il est donc conseillé de respecter ces règles définies au niveau 
 régional et national et donc de ne pas ajouter de règles locales.
 
@@ -62,7 +62,6 @@ Schéma gn_sensitivity
 
 3 tables sont utilisées par ces fonctions :
 
-
 * ``t_sensitivity_rules`` qui relie notamment une espèce à un niveau de
   sensibilité
 * ``cor_sensitivity_criteria`` qui permet d'appliquer ce niveau de
@@ -86,9 +85,9 @@ Sensibilité de l'espèce toute observation confondue
 
 #. Dans ``gn_sensitivity.t_sensitivity_rules`` : Changez le niveau de
    sensibilité ``id_nomenclature_sensitivity`` par celui désiré. Pour la
-   valeur à entrer, voir dans ``t_nomenclature`` en filtrant avec
-   ``id_type=ref_nomenclatures.get_id_nomenclature_type('SENSIBILITE')``. En général l'index varie entre 65 (non sensible) et 69
-   (aucune diffusion). Attention ces indices peuvent varier en fonction de 
+   valeur à renseigner, voir dans ``t_nomenclature`` en filtrant avec
+   ``id_type=ref_nomenclatures.get_id_nomenclature_type('SENSIBILITE')``. En général l'identifiant varie entre 65 (non sensible) et 69
+   (aucune diffusion). Attention ces identifiants peuvent varier en fonction de 
    votre installation.
 #. Dans ``cor_sensitivity_criteria`` : s'il y a une correspondance
    d'``id_sensitivity`` avec ``t_sensitivity_rules``, supprimez cette ligne.
@@ -122,5 +121,5 @@ de vos espèces.
 
 Normalement, les valeurs dans les colonnes
 ``id_nomenclature_diffusion_level`` et ``id_nomenclature_sensitivity`` de la table ``gn_synthese.synthese`` ont
-changé. Vous pouvez le vérifier en navigant dans le module synthèse
+changé. Vous pouvez le vérifier en navigant dans le module Synthèse
 puis dans les détails d'une observation de votre/vos espèce(s).
