@@ -12,7 +12,7 @@
     [routerLink]="['add']"
     matTooltip="Ajouter une nouvelle station d'habitat"
   >
-    Ajouter
+    {{ 'Add' | translate }}
     <mat-icon>add_circle_outline</mat-icon>
   </button>
   <button
@@ -26,7 +26,7 @@
     [matBadge]="mapListFormService.nbOfFilter()"
     matBadgeColor="warn"
   >
-    Filter
+    {{ 'Filter' | translate }}
     <i
       class="fa fa-sliders"
       aria-hidden="true"
