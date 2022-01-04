@@ -47,7 +47,7 @@ def releve_data(client, datasets):
     return data
 
 
-@pytest.mark.usefixtures("client_class", "datasets")
+@pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets")
 class TestOcctax:
     def test_post_releve(self, users, releve_data):
         # post with cruved = C = 2
