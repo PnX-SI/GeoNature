@@ -20,8 +20,8 @@ export class ValidationComponent implements OnInit {
     public _ds: ValidationDataService,
     private _mapListService: MapListService,
     private _commonService: CommonService,
-    private _fs: SyntheseFormService,
-  ) {}
+    private _fs: SyntheseFormService
+  ) { }
 
   ngOnInit() {
     // reinitialize the form

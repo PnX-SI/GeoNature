@@ -71,7 +71,7 @@ export class OcctaxMapListComponent
     private renderer: Renderer2,
     public mediaService: MediaService,
     private occtaxMapListS: OcctaxMapListService
-  ) {}
+  ) { }
 
   ngOnInit() {
     // set zoom on layer to true

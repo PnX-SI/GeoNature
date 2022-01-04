@@ -40,7 +40,7 @@
 
   </fieldset>
   <fieldset>
-    <legend>{{ 'What' | translate }}?</legend>
+    <legend> Quoi ?</legend>
     <pnx-taxonomy
       label="{{'Taxon.Taxon' | translate }} "
       [parentFormControl]="formService.searchForm.controls.cd_nom"
@@ -87,7 +87,7 @@
   </fieldset>
 
   <fieldset>
-    <legend>{{ 'When' | translate }}?</legend>
+    <legend> Quand ?</legend>
     <div class="row row-sm">
 
       <pnx-date
@@ -150,7 +150,7 @@
   </fieldset>
 
   <fieldset>
-    <legend>{{ 'Where' | translate }}?</legend>
+    <legend> Ou ?</legend>
 
     <div *ngIf="formService.formBuilded">
       <div *ngFor="let area of areaFilters; let i = index;">
@@ -170,7 +170,7 @@
 
 
   <fieldset>
-    <legend>{{ 'Who' | translate }}?</legend>
+    <legend> Qui ?</legend>
 
     <ng-container *ngIf="AppConfig.SYNTHESE.SEARCH_OBSERVER_WITH_LIST; else observersTxtBlock">
       <pnx-observers
@@ -207,7 +207,7 @@
 
 
   <fieldset>
-    <legend>{{ 'How' | translate }}?</legend>
+    <legend> Comment ?</legend>
 
     <pnx-acquisition-frameworks
       [multiSelect]='true'
@@ -233,7 +233,7 @@
   </fieldset>
 
   <fieldset>
-    <legend>{{ 'AdvancedFilters' | translate }}</legend>
+    <legend> Filtres avancés </legend>
     <small> Ajouter un filtre </small>
     <pnx-dynamic-form-generator
       [myFormGroup]="formService.searchForm"
