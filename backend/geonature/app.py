@@ -73,7 +73,7 @@ def create_app(with_external_mods=True):
     app.config['APPLICATION_ROOT'] = api_uri.path
     app.config['PREFERRED_URL_SCHEME'] = api_uri.scheme
     if 'SCRIPT_NAME' not in os.environ:
-        os.environ['SCRIPT_NAME'] = app.config['APPLICATION_ROOT'].lstrip('/')
+        os.environ['SCRIPT_NAME'] = app.config['APPLICATION_ROOT'].rstrip('/')
     app.config['TEMPLATES_AUTO_RELOAD'] = True
     # disable cache for downloaded files (PDF file stat for ex)
     app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
