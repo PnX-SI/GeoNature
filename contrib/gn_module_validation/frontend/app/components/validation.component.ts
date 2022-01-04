@@ -1,8 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from "@angular/core";
-import { TranslateService } from '@ngx-translate/core';
 import { ValidationDataService } from "../services/data.service";
 
-import { AppConfig } from "@geonature_config/app.config";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { ModuleConfig } from "../module.config";
@@ -23,10 +21,7 @@ export class ValidationComponent implements OnInit {
     private _mapListService: MapListService,
     private _commonService: CommonService,
     private _fs: SyntheseFormService,
-    private translate: TranslateService
-  ) {
-    translate.use(AppConfig.DEFAULT_LANGUAGE)
-   }
+  ) {}
 
   ngOnInit() {
     // reinitialize the form

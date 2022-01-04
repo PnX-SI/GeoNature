@@ -1,8 +1,9 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { HttpClient } from '@angular/common/http';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { AppConfig } from "@geonature_config/app.config";
 import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
 import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
@@ -71,4 +72,10 @@ const routes: Routes = [{ path: "", component: ValidationComponent }];
 
   bootstrap: []
 })
-export class GeonatureModule { }
+export class GeonatureModule {
+  constructor(
+    private translate: TranslateService
+  ) {
+    translate.use(AppConfig.DEFAULT_LANGUAGE)
+  }
+}
