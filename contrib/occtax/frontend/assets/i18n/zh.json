@@ -1,0 +1,21 @@
+{
+  "Releve": {
+    "Comment": "评论",
+    "Municipality": "市",
+    "Municipalities": "各市",
+    "Releve": "声明",
+    "SaveReleve": "保存声明"
+  },
+  "Taxon": {
+    "DeterminationMethod": "测定方法",
+    "Determiner": "确定",
+    "ExistProof": "存在证明",
+    "Observation": "意见",
+    "ObservedTaxon": "观察到的红豆杉",
+    "SaveTaxon": "保存分类",
+    "TaxonName": "分类名称"
+  },
+  "Counting": {
+    "ValidationStatus": "法官验证"
+  }
+}
