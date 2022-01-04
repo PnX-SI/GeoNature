@@ -1,0 +1,16 @@
+{
+  "Add": "Ajouter",
+  "Filter": "Filtrer",
+  "Download": "Télécharger",
+  "Releve": {
+    "Observers": "Observateur(s)",
+    "MinDate": "Date début",
+    "MaxDate": "Date fin",
+    "Dataset": "Jeu de données",
+    "DateMaxError": "La date de début ne peut pas être postérieure à la date de fin",
+    "AltitudeError": "L'altitude max ne peut être inférieure à l'altitude min"
+  },
+  "MetaData": {
+    "Datasets": "Jeux de données"
+  }
+}
