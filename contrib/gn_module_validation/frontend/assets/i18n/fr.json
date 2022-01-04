@@ -1,21 +1,3 @@
 {
-  "What": "Quoi ",
-  "When": "Quand ",
-  "Where": "Où ",
-  "Who": "Qui ",
-  "How": "Comment ",
-  "AdvancedFilters": "Filtres avancés ",
-  "MetaData": {
-    "Programs": "Programmes",
-    "Datasets": "Jeux de données",
-    "AcquisitionFramework": "Cadre d'acquisition"
-  },
-  "Releve": {
-    "Releve": "Relevé",
-    "Observer": "Observateur",
-    "Observers": "Observateur(s)"
-  },
-  "Form": {
-    "Organism": "Organisme(s)"
-  }
+  "SetValidationStatus": "Attribuer un statut de validation"
 }

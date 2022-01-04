@@ -1,21 +1,3 @@
 {
-  "What": "What",
-  "When": "When",
-  "Where": "Where",
-  "Who": "Who",
-  "How": "How",
-  "AdvancedFilters": "Advanced filters",
-  "MetaData": {
-    "Programs": "Program",
-    "Datasets": "Dataset",
-    "AcquisitionFramework": "Acquisition framework"
-  },
-  "Releve": {
-    "Releve": "Releve",
-    "Observer": "Observer",
-    "Observers": "Observers"
-  },
-  "Form": {
-    "Organism": "Organism(s)"
-  }
+  "SetValidationStatus": "Set a validation status"
 }
