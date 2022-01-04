@@ -1,0 +1,16 @@
+{
+  "Add": "Add",
+  "Filter": "Filter",
+  "Download": "Download",
+  "Releve": {
+    "Observers": "Observers",
+    "MinDate": "Start date",
+    "MaxDate": "End date",
+    "Dataset": "Dataset",
+    "DateMaxError": "Max date can't be inferior to the min date",
+    "AltitudeError": "Altitude max cannot be smaller than altitude min"
+  },
+  "MetaData": {
+    "Datasets": "Datasets"
+  }
+}
