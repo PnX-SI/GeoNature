@@ -91,21 +91,15 @@ export class MetadataService {
   //recuperation cadres d'acquisition
   
   getMetadata(params={}) {
-    params["excluded_fields"] = [
-      "nomenclature_territorial_level",
-      "nomenclature_financing_type",
-      "cor_volets_sinp",
-      "cor_objectifs",
-      "bibliographical_references",
-      "cor_territories"
-    ]
-    params["nested"] = true;
+    params['datasets'] = 1;
+    params['creator'] = 1;
+    params['actors'] = 1;
     this.isLoading = true;
     this._acquisitionFrameworks.next([]);
  
     //forkJoin pour lancer les 2 requetes simultanément
     forkJoin({
-      afs: this.dataFormService.getAcquisitionFrameworks(params),
+      afs: this.dataFormService.getAcquisitionFrameworksList(params),
       datasetNbObs: this._syntheseDataService.getObsCountByColumn('id_dataset')
     })
       .pipe(

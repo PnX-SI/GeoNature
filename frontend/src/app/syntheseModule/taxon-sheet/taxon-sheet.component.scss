@@ -1,0 +1,52 @@
+// .info>div {
+//     display: flex;
+// }
+
+// .title {
+//     font-size: 20px;
+//     color:#767474;
+// }
+
+// .content{
+//     font-size: 20px;
+//     color: black;
+//     font-weight: bold;
+// }
+
+// mat-icon {
+//     vertical-align: middle;
+//     font-size: 70px;
+// }
+
+.card-deck {
+    text-align: center;
+}
+.card-deck mat-icon {
+    font-size: 40px;
+}
+
+.stat .card {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.title {
+    display: flex;
+}
+.card-columns .card-body {
+    height: 200px;
+    text-align: center;
+    // margin-right: 10px;
+    padding-top: 15%;
+}
+.cover {
+    background-size: cover;
+}
+
+.card-columns {
+    column-count: 5;
+  }
+
+.card-body.image {
+    background-position: center;
+}

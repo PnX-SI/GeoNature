@@ -10,7 +10,7 @@ class BibFieldAdmin(ModelView):
         "field_name", "field_label", "type_widget",  
         "modules", "objects", "datasets",
         "required", "description",
-        "quantitative", "unity", "field_values", "field_order", "exportable",
+        "quantitative", "unity", "field_values", "default_value", "field_order", "exportable",
          "bib_nomenclature_type", "id_list", 
          "additional_attributes"
     )
@@ -25,6 +25,7 @@ class BibFieldAdmin(ModelView):
         "quantitative": {"label":"Quantitatif"},
         "unity": {"label":"Unité"},
         "field_values": {"label":"Valeurs"},
+        "default_value": {"label":"Valeur par défaut"},
         "field_order": {"label":"Ordre"},
         "additional_attributes": {"label":"Attribut additionnels"},
         "modules": {
@@ -45,6 +46,7 @@ class BibFieldAdmin(ModelView):
         "field_label":'Label du champ en interface',
         "field_name":'Nom du champ en base de donnée',
         "field_values":'Obligatoire si widget = select/radio/bool_radio (Format JSON : tableau de valeurs ou tableau clé/valeur. Utilisez des doubles quotes pour les valeurs et les clés)',
+        "default_value": "La valeur par défaut doit être une des valeurs du champs 'Valeurs' ci dessus",
         "id_list":'Identifiant en BDD de la liste (pour Type widget = taxonomy/observers)',
         "field_order":"Numéro d'ordonnancement du champs (si plusieurs champs pour le même module/objet/JDD)",
         "modules":"Module(s) auquel le champs est rattaché. *Obligatoire",

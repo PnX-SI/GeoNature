@@ -5,6 +5,7 @@ import os
 
 from flask import current_app
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import relationship, aliased
 from sqlalchemy.sql import select, func
 from sqlalchemy.dialects.postgresql import UUID
 from geoalchemy2 import Geometry
@@ -190,23 +191,32 @@ class TValidations(DB.Model):
     __table_args__ = {"schema": "gn_commons"}
 
     id_validation = DB.Column(DB.Integer, primary_key=True)
-    uuid_attached_row = DB.Column(UUID(as_uuid=True))
+    uuid_attached_row = DB.Column(UUID(as_uuid=True), ForeignKey("gn_synthese.synthese.unique_id_sinp"))
     id_nomenclature_valid_status = DB.Column(
         DB.Integer,
-        ForeignKey(TNomenclatures.id_nomenclature)
+        ForeignKey(TNomenclatures.id_nomenclature),
     )
-    id_validator = DB.Column(DB.Integer)
+    nomenclature_valid_status = relationship(
+        TNomenclatures,
+        foreign_keys=[id_nomenclature_valid_status],
+        lazy='joined',
+    )
+    id_validator = DB.Column(DB.Integer, ForeignKey(User.id_role))
+    validator_role = DB.relationship(User)
     validation_auto = DB.Column(DB.Boolean)
     validation_comment = DB.Column(DB.Unicode)
     validation_date = DB.Column(DB.TIMESTAMP)
     validation_auto = DB.Column(DB.Boolean)
     validation_label = DB.relationship(TNomenclatures)
-    validator_role = DB.relationship(
-        User,    
-        primaryjoin=(User.id_role == id_validator), 
-        foreign_keys=[id_validator]
-    )
 
+
+last_validation_query = (
+    select([TValidations])
+    .order_by(TValidations.validation_date.desc())
+    .limit(1)
+    .alias('last_validation')
+)
+last_validation = aliased(TValidations, last_validation_query)
 
 
 @serializable
@@ -247,21 +257,16 @@ class TMobileApps(DB.Model):
     version_code = DB.Column(DB.Unicode)
 
 
-#######################################################################################
-# ----------------Geofit additional code  models.py
-#######################################################################################
 @serializable
-@geoserializable
+@geoserializable(geoCol="place_geom", idCol="id_place")
 class TPlaces(DB.Model):
     __tablename__ = "t_places"
     __table_args__ = {"schema": "gn_commons"}
     id_place = DB.Column(DB.Integer, primary_key=True)
     id_role = DB.Column(DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
+    role = relationship(User)
     place_name = DB.Column(DB.String)
     place_geom = DB.Column(Geometry("GEOMETRY", 4326))
-
-    def get_geofeature(self, recursif=True):
-        return self.as_geofeature("place_geom", "place_name", recursif)
 
 @serializable
 class BibWidgets(DB.Model):

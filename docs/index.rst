@@ -5,14 +5,13 @@ Bienvenue dans la documentation de GeoNature
    :maxdepth: 2
    
    installation
+     https
    user-manual
    admin-manual
    import-level-1
    import-level-2
    development
    versions-compatibility
-   conf-apache
-   https
    FAQ
    authors
    CHANGELOG

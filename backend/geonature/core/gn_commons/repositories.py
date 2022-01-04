@@ -115,7 +115,6 @@ class TMediaRepository:
                 self.media_data[k] = getattr(self.media, k)
         except IntegrityError as exp:
             # @TODO A revoir avec les nouvelles contraintes
-            DB.session.rollback()
             if "check_entity_field_exist" in exp.args[0]:
                 raise Exception("{} doesn't exists".format(self.data["id_table_location"]))
             if "fk_t_medias_check_entity_value" in exp.args[0]:

@@ -1,12 +1,12 @@
 import pytest
 
-from flask import g, url_for, current_app
+from flask import g, url_for
 
 from geonature.utils.env import db
 
 from pypnusershub.db.models import User, Application, AppUser, UserApplicationRight, ProfilsForApp
 
-from . import login, temporary_transaction
+from . import *
 from .utils import logged_user_headers
 
 
@@ -25,12 +25,7 @@ class TestUsersLogin:
             db.session.add(right)
         return user
 
-    @pytest.fixture
-    def app_user(self, app, user):
-        return AppUser.query.filter_by(id_role=user.id_role, id_application=app.config['ID_APP']).one()
-
-
-    def test_current_user(self, app, user, app_user):
-        with app.test_request_context(headers=logged_user_headers(app_user)):
+    def test_current_user(self, app, user):
+        with app.test_request_context(headers=logged_user_headers(user)):
             app.preprocess_request()
             assert(g.current_user == user)

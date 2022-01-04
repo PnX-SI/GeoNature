@@ -1,15 +1,54 @@
-from flask import Blueprint, request, current_app
-from sqlalchemy.sql import text
+from itertools import groupby
+import json
 
-from geonature.utils.env import DB
-from utils_flask_sqla.response import json_resp
+from flask import Blueprint, request, current_app
+from flask.json import jsonify
+import sqlalchemy as sa
+from sqlalchemy import func
+from sqlalchemy.sql import text
+from werkzeug.exceptions import BadRequest
+
+from geonature.utils.env import db
+from geonature.utils.config import config
 from geonature.core.ref_geo.models import BibAreasTypes, LiMunicipalities, LAreas
+
+from utils_flask_sqla.response import json_resp
+
 
 routes = Blueprint("ref_geo", __name__)
 
+altitude_stmt = sa.select([
+                    sa.column('altitude_min'),
+                    sa.column('altitude_max'),
+                ]).select_from(
+                    func.ref_geo.fct_get_altitude_intersection(
+                        func.ST_SetSRID(
+                            func.ST_GeomFromGeoJSON(sa.bindparam('geojson')),
+                            4326,
+                        ),
+                    )
+                )
+
+geojson_intersect_filter = func.ST_Intersects(
+    LAreas.geom,
+    func.ST_Transform(
+        func.ST_SetSRID(func.ST_GeomFromGeoJSON(sa.bindparam('geojson')), 4326),
+        config['LOCAL_SRID'],
+    ),
+)
+
+area_size_func = func.ST_Area(
+    func.ST_Transform(
+        func.ST_SetSrid(
+            func.ST_GeomFromGeoJSON(sa.bindparam('geojson')),
+            4326,
+        ),
+        config['LOCAL_SRID'],
+    )
+)
+
 
 @routes.route("/info", methods=["POST"])
-@json_resp
 def getGeoInfo():
     """
     From a posted geojson, the route return the municipalities intersected
@@ -17,115 +56,99 @@ def getGeoInfo():
     
     .. :quickref: Ref Geo;
     """
-    data = dict(request.get_json())
-    sql = text(
-        """SELECT (ref_geo.fct_get_area_intersection(
-        st_setsrid(ST_GeomFromGeoJSON(:geom),4326), :id_type)).*"""
-    )
+    if request.json is None:
+        raise BadRequest("Missing request payload")
     try:
-        result = DB.engine.execute(
-            sql, geom=str(data["geometry"]), id_type=data.get("id_type", None),
-        )
-    except Exception as e:
-        DB.session.rollback()
-        raise
+        geojson = request.json['geometry']
+    except KeyError:
+        raise BadRequest("Missing 'geometry' in request payload")
+    geojson = json.dumps(geojson)
 
-    municipality = []
-    for row in result:
-        municipality.append(
-            {"id_area": row[0], "id_type": row[1], "area_code": row[2], "area_name": row[3],}
-        )
+    areas = LAreas.query.filter_by(enable=True) \
+                        .filter(geojson_intersect_filter.params(geojson=geojson))
+    if 'area_type' in request.json:
+        areas = areas.join(BibAreasTypes).filter_by(type_code=request.json['area_type'])
+    elif 'id_type' in request.json:
+        try:
+            id_type = int(request.json['id_type'])
+        except ValueError:
+            raise BadRequest("Parameter 'id_type' must be an integer")
+        areas = areas.filter_by(id_type=id_type)
 
-    sql = text(
-        """SELECT (ref_geo.fct_get_altitude_intersection(
-        st_setsrid(ST_GeomFromGeoJSON(:geom),4326))).*
-        """
-    )
-    try:
-        result = DB.engine.execute(sql, geom=str(data["geometry"]))
-    except Exception as e:
-        DB.session.rollback()
-        raise
-    alt = {}
-    for row in result:
-        alt = {"altitude_min": row[0], "altitude_max": row[1]}
+    altitude = db.session.execute(altitude_stmt, params={'geojson': geojson}).fetchone()
 
-    return {"areas": municipality, "altitude": alt}
+    return jsonify({
+        "areas": [
+            area.as_dict(fields=['id_area', 'id_type', 'area_code', 'area_name'])
+            for area in areas.all()
+        ],
+        "altitude": altitude,
+    })
 
 
 @routes.route("/altitude", methods=["POST"])
-@json_resp
-def getaltitide():
+def getAltitude():
     """
     From a posted geojson get the altitude min/max
 
     .. :quickref: Ref Geo;
     """
-    data = dict(request.get_json())
-
-    sql = text(
-        """SELECT (ref_geo.fct_get_altitude_intersection(
-        st_setsrid(ST_GeomFromGeoJSON(:geom),4326))).*
-        """
-    )
+    if request.json is None:
+        raise BadRequest("Missing request payload")
     try:
-        result = DB.engine.execute(sql, geom=str(data["geometry"]))
-    except Exception as e:
-        DB.session.rollback()
-        raise
-    alt = {}
-    for row in result:
-        alt = {"altitude_min": row[0], "altitude_max": row[1]}
+        geojson = request.json['geometry']
+    except KeyError:
+        raise BadRequest("Missing 'geometry' in request payload")
+    geojson = json.dumps(geojson)
 
-    return alt
+    altitude = db.session.execute(altitude_stmt, params={'geojson': geojson}).fetchone()
+    return jsonify(altitude)
 
 
 @routes.route("/areas", methods=["POST"])
-@json_resp
 def getAreasIntersection():
     """
     From a posted geojson, the route return all the area intersected
     from l_areas
     .. :quickref: Ref Geo;
     """
-    data = dict(request.get_json())
-
-    if "id_type" in data:
-        id_type = data["id_type"]
-    else:
-        id_type = None
-
-    sql = text(
-        """SELECT (ref_geo.fct_get_area_intersection(
-        st_setsrid(ST_GeomFromGeoJSON(:geom),4326),:type)).*"""
-    )
-
+    if request.json is None:
+        raise BadRequest("Missing request payload")
     try:
-        result = DB.engine.execute(sql, geom=str(data["geometry"]), type=id_type)
-    except Exception as e:
-        DB.session.rollback()
-        raise
+        geojson = request.json['geometry']
+    except KeyError:
+        raise BadRequest("Missing 'geometry' in request payload")
+    geojson = json.dumps(geojson)
 
-    areas = []
-    for row in result:
-        areas.append(
-            {"id_area": row[0], "id_type": row[1], "area_code": row[2], "area_name": row[3],}
-        )
+    areas = LAreas.query.filter_by(enable=True) \
+                        .filter(geojson_intersect_filter.params(geojson=geojson))
+    if 'area_type' in request.json:
+        areas = areas.join(BibAreasTypes).filter_by(type_code=request.json['area_type'])
+    elif 'id_type' in request.json:
+        try:
+            id_type = int(request.json['id_type'])
+        except ValueError:
+            raise BadRequest("Parameter 'id_type' must be an integer")
+        areas = areas.filter_by(id_type=id_type)
+    areas = areas.order_by(LAreas.id_type)
 
-    bibtypesliste = [a["id_type"] for a in areas]
-    try:
-        bibareatype = (
-            DB.session.query(BibAreasTypes).filter(BibAreasTypes.id_type.in_(bibtypesliste)).all()
-        )
-    except Exception as e:
-        DB.session.rollback()
-        raise
-    data = {}
-    for b in bibareatype:
-        data[b.id_type] = b.as_dict(fields=("type_name", "type_code"))
-        data[b.id_type]["areas"] = [a for a in areas if a["id_type"] == b.id_type]
+    response = {}
+    for id_type, _areas in groupby(areas.all(), key=lambda area: area.id_type):
+        _areas = list(_areas)
+        response[id_type] = _areas[0].area_type.as_dict(fields=['type_code', 'type_name'])
+        response[id_type].update({
+            'areas': [
+                area.as_dict(fields=[
+                    'area_code',
+                    'area_name',
+                    'id_area',
+                    'id_type',
+                ])
+                for area in _areas
+            ],
+        })
 
-    return data
+    return jsonify(response)
 
 
 @routes.route("/municipalities", methods=["GET"])
@@ -137,7 +160,7 @@ def get_municipalities():
     """
     parameters = request.args
 
-    q = DB.session.query(LiMunicipalities).order_by(LiMunicipalities.nom_com.asc())
+    q = db.session.query(LiMunicipalities).order_by(LiMunicipalities.nom_com.asc())
 
     if "nom_com" in parameters:
         q = q.filter(LiMunicipalities.nom_com.ilike("{}%".format(parameters.get("nom_com"))))
@@ -148,7 +171,6 @@ def get_municipalities():
 
 
 @routes.route("/areas", methods=["GET"])
-@json_resp
 def get_areas():
     """
         Return the areas of ref_geo.l_areas
@@ -157,7 +179,7 @@ def get_areas():
     # change all args in a list of value
     params = {key: request.args.getlist(key) for key, value in request.args.items()}
 
-    q = DB.session.query(LAreas).order_by(LAreas.area_name.asc())
+    q = db.session.query(LAreas).order_by(LAreas.area_name.asc())
 
     if "enable" in params:
         enable_param = params["enable"][0].lower()
@@ -178,17 +200,20 @@ def get_areas():
     if "id_type" in params:
         q = q.filter(LAreas.id_type.in_(params["id_type"]))
 
+    if "type_code" in params:
+        q = q.join(BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type)
+        q = q.filter(BibAreasTypes.type_code.in_(params["type_code"]))
+
     if "area_name" in params:
         q = q.filter(LAreas.area_name.ilike("%{}%".format(params.get("area_name")[0])))
 
     limit = int(params.get("limit")[0]) if params.get("limit") else 100
 
     data = q.limit(limit)
-    return [d.as_dict() for d in data]
+    return jsonify([d.as_dict() for d in data])
 
 
 @routes.route("/area_size", methods=["Post"])
-@json_resp
 def get_area_size():
     """
         Return the area size from a given geojson
@@ -197,26 +222,14 @@ def get_area_size():
 
         :returns: An area size (int)
     """
+    if request.json is None:
+        raise BadRequest("Missing request payload")
+    try:
+        geojson = request.json['geometry']
+    except KeyError:
+        raise BadRequest("Missing 'geometry' in request payload")
+    geojson = json.dumps(geojson)
 
-    geojson = dict(request.get_json())
-    query = text(
-        """
-    SELECT
-    ST_Area(
-        ST_Transform(
-            ST_SetSrid(
-                ST_GeomFromGeoJSON(:geojson), 4326
-            ),:local_srid
-        )
-    )
-    """
-    )
+    query = db.session.query(area_size_func.params(geojson=geojson))
 
-    result = DB.engine.execute(
-        query, geojson=str(geojson["geometry"]), local_srid=current_app.config["LOCAL_SRID"],
-    )
-    area = None
-    if result:
-        for r in result:
-            return r[0]
-    return None
+    return jsonify(db.session.execute(query).scalar())

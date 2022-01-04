@@ -1,15 +1,16 @@
 import logging
 import json
 import datetime
-import ast
 import time
 
 from collections import OrderedDict
 
 from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify
+from werkzeug.exceptions import Forbidden, NotFound
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
+import sqlalchemy as sa
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
@@ -22,13 +23,11 @@ from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
 from geonature.core.gn_meta.models import TDatasets
-from geonature.core.gn_meta.repositories import get_datasets_cruved
 
 from geonature.core.gn_synthese.models import (
     Synthese,
     TSources,
     DefaultsNomenclaturesValue,
-    SyntheseOneRecord,
     VSyntheseForWebApp,
     VColorAreaTaxon,
 )
@@ -40,7 +39,6 @@ from geonature.core.taxonomie.models import (
     VMTaxrefListForautocomplete,
 )
 from geonature.core.ref_geo.models import LAreas, BibAreasTypes
-from geonature.core.gn_synthese.utils import query as synthese_query
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 
@@ -90,7 +88,7 @@ def get_observations_for_web(info_role):
             "unique_id_sinp": r["unique_id_sinp"],
             "entity_source_pk_value": r["entity_source_pk_value"],
         }
-        geojson = ast.literal_eval(r["st_asgeojson"])
+        geojson = json.loads(r["st_asgeojson"])
         geojson["properties"] = properties
 
     :param str info_role: Role used to get the associated filters, **TBC**
@@ -166,14 +164,15 @@ def get_observations_for_web(info_role):
             "unique_id_sinp": str(r["unique_id_sinp"]),
             "entity_source_pk_value": r["entity_source_pk_value"],
         }
-        geojson = ast.literal_eval(r["st_asgeojson"])
+        geojson = json.loads(r["st_asgeojson"])
         geojson["properties"] = properties
         geojson_features.append(geojson)
     return {
         "data": FeatureCollection(geojson_features),
         "nb_total": len(geojson_features),
-        "nb_obs_limited": len(geojson_features)
-        == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
+        "nb_obs_limited": (
+            len(geojson_features) == int(current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"])
+        ),
     }
 
 
@@ -225,51 +224,51 @@ def get_synthese(info_role):
 
 
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
-def get_one_synthese(id_synthese):
+@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
+def get_one_synthese(info_role, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature
-
-    .. :quickref: Synthese; Get one synthese
-
-    It returns a dict composed of the following::
-
-        'data' dict: Array of dict (with geojson key)
-        'nb_total' int: Number of observations
-        'nb_obs_limited' bool: Is number of observations capped
-
-    :param int id_synthese:Synthese to be queried
-    :>jsonarr array synthese_as_dict: One synthese with geojson key, see above
     """
-    metadata_view = GenericTable(
-        tableName="v_metadata_for_export", schemaName="gn_synthese", engine=DB.engine
-    )
-    q = (
-        DB.session.query(
-            SyntheseOneRecord,
-            getattr(
-                metadata_view.tableDef.columns,
-                current_app.config["SYNTHESE"]["EXPORT_METADATA_ACTOR_COL"],
-            ),
-        )
-        .filter(SyntheseOneRecord.id_synthese == id_synthese)
-        .outerjoin(
-            metadata_view.tableDef,
-            getattr(
-                metadata_view.tableDef.columns,
-                current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"],
-            )
-            == SyntheseOneRecord.id_dataset,
-        )
-    )
-    try:
-        data = q.one()
-        synthese_as_dict = data[0].as_dict(
-            depth=2,
-        )
-
-        synthese_as_dict["actors"] = data[1]
-        return jsonify(synthese_as_dict)
-    except exc.NoResultFound:
-        return None
+    synthese = Synthese.query.join_nomenclatures().get_or_404(id_synthese)
+    if not synthese.has_instance_permission(scope=int(info_role.value_filter)):
+        raise Forbidden()
+    geojson = synthese.as_geofeature(
+        "the_geom_4326", "id_synthese",
+        fields=Synthese.nomenclature_fields + [
+            'dataset',
+            'dataset.acquisition_framework',
+            'dataset.acquisition_framework.bibliographical_references',
+            'dataset.acquisition_framework.cor_af_actor',
+            'dataset.acquisition_framework.cor_objectifs',
+            'dataset.acquisition_framework.cor_territories',
+            'dataset.acquisition_framework.cor_volets_sinp',
+            'dataset.acquisition_framework.creator',
+            'dataset.acquisition_framework.nomenclature_territorial_level',
+            'dataset.acquisition_framework.nomenclature_financing_type',
+            'dataset.cor_dataset_actor',
+            'dataset.cor_dataset_actor.role',
+            'dataset.cor_dataset_actor.organism',
+            'dataset.cor_territories',
+            'dataset.nomenclature_source_status',
+            'dataset.nomenclature_resource_type',
+            'dataset.nomenclature_dataset_objectif',
+            'dataset.nomenclature_data_type',
+            'dataset.nomenclature_data_origin',
+            'dataset.nomenclature_collecting_method',
+            'dataset.creator',
+            'dataset.modules',
+            'validations',
+            'validations.validation_label',
+            'validations.validator_role',
+            'cor_observers',
+            'cor_observers.nom_complet',
+            'cor_observers.organisme',
+            'source',
+            'habitat',
+            'medias',
+            'areas',
+            'areas.area_type',
+        ])
+    return jsonify(geojson)
 
 
 ################################
@@ -429,7 +428,7 @@ def export_observations_web(info_role):
     elif export_format == "geojson":
         features = []
         for r in results:
-            geometry = ast.literal_eval(
+            geometry = json.loads(
                 getattr(r, current_app.config["SYNTHESE"]["EXPORT_GEOJSON_4326_COL"])
             )
             feature = Feature(
@@ -629,7 +628,7 @@ def general_stats(info_role):
         - nb of distinct observer
         - nb of datasets
     """
-    allowed_datasets = get_datasets_cruved(info_role)
+    allowed_datasets = TDatasets.query.filter_by_readable().all()
     q = select(
         [
             func.count(Synthese.id_synthese),
@@ -718,7 +717,6 @@ def get_sources():
 
 
 @routes.route("/defaultsNomenclatures", methods=["GET"])
-@json_resp
 def getDefaultsNomenclatures():
     """Get default nomenclatures
 
@@ -750,8 +748,8 @@ def getDefaultsNomenclatures():
         q = q.filter(DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
     data = q.all()
     if not data:
-        return {"message": "not found"}, 404
-    return {d[0]: d[1] for d in data}
+        raise NotFound
+    return jsonify(dict(data))
 
 
 @routes.route("/color_taxon", methods=["GET"])
@@ -845,7 +843,6 @@ def get_observation_count():
 
 
 @routes.route("/observations_bbox", methods=["GET"])
-@json_resp
 def get_bbox():
     """
     Get bbbox of observations
@@ -869,30 +866,24 @@ def get_bbox():
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
     data = query.one()
     if data and data[0]:
-        return json.loads(data[0])
-    return None
+        return data[0]
+    return '', 204
 
 @routes.route("/observation_count_per_column/<column>", methods=["GET"])
-@json_resp
 def observation_count_per_column(column):
     """Get observations count group by a given column"""
-    params = request.args
-    try:
-        model_column = getattr(Synthese, column)
-    except Exception:
-        return f'No column name {column} in Synthese', 500
-    query = DB.session.query(
-        func.count(Synthese.id_synthese), model_column
-        ).select_from(
-            Synthese
-        ).group_by(model_column)
-    data = []
-    for d in query.all():
-        temp = {}
-        temp[column] = d[1]
-        temp['count'] = d[0]
-        data.append(temp)
-    return data
+    if column not in sa.inspect(Synthese).column_attrs:
+        raise BadRequest(f'No column name {column} in Synthese')
+    synthese_column = getattr(Synthese, column)
+    stmt = DB.session.query(
+               func.count(Synthese.id_synthese).label("count"),
+               synthese_column.label(column),
+           ).select_from(
+               Synthese
+           ).group_by(
+               synthese_column
+           )
+    return jsonify(DB.session.execute(stmt).fetchall())
 
 
 @routes.route("/taxa_distribution", methods=["GET"])
@@ -905,12 +896,16 @@ def get_taxa_distribution():
 
     id_dataset = request.args.get("id_dataset")
     id_af = request.args.get("id_af")
+    id_source = request.args.get("id_source")
 
     rank = request.args.get("taxa_rank")
     if not rank:
         rank = "regne"
 
-    rank = getattr(Taxref.__table__.columns, rank)
+    try:
+        rank = getattr(Taxref.__table__.columns, rank)
+    except AttributeError:
+        raise BadRequest("Rank does not exist")
 
     Taxref.group2_inpn
 
@@ -927,57 +922,9 @@ def get_taxa_distribution():
         query = query.outerjoin(TDatasets, TDatasets.id_dataset == Synthese.id_dataset).filter(
             TDatasets.id_acquisition_framework == id_af
         )
+    # User can add id_source filter along with id_dataset or id_af
+    if id_source is not None:
+        query = query.filter(Synthese.id_source == id_source)
 
     data = query.group_by(rank).all()
     return [{"count": d[0], "group": d[1]} for d in data]
-
-
-# @routes.route("/test", methods=["GET"])
-# @json_resp
-# def test():
-#     from shapely.geometry import asShape
-#     from geoalchemy2.shape import from_shape
-#     from shapely.geometry import Point
-#     import random
-
-#     s = DB.session.query(Synthese).get(2)
-
-#     s_as_dict = s.as_dict()
-#     s_as_dict.pop("unique_id_sinp")
-#     # wkt = asShape(s.the_geom_4326)
-#     # print(wkt)
-#     # releve.geom_4326 = from_shape(shape, srid=4326)
-#     import datetime
-
-#     DB.session.query()
-#     for i in range(1000):
-#         new_point = Point(random.uniform(6.1, 7.5), random.uniform(44.0, 45.2))
-#         wkb = from_shape(new_point, 4326)
-#         s_as_dict["id_synthese"] = random.randint(1500, 999999999)
-
-#         # with random cd_nom
-#         random_cd_nom = DB.engine.execute(
-#             """
-#         SELECT cd_nom FROM taxonomie.bib_noms OFFSET random() * (select count(*) from taxonomie.bib_noms) limit 1 ;"""
-#         )
-#         cd_nom = None
-#         for cd in random_cd_nom:
-#             s_as_dict["cd_nom"] = cd[0]
-#         new_synthese = Synthese(**s_as_dict)
-#         new_synthese.the_geom_4326 = wkb
-#         new_synthese.the_geom_local = func.st_transform(wkb, 2154)
-
-#         new_date = datetime.datetime.now()
-#         new_date = new_date.replace(year=random.randint(2000, 2016))
-#         new_synthese.date_min = new_date
-#         new_synthese.date_max = new_date
-#         print(new_synthese.the_geom_local)
-#         q = DB.session.add(new_synthese)
-#         # DB.session.flush()
-#         DB.session.commit()
-
-#     # s = TSources(name_source="lalala")
-
-#     # DB.session.add(s)
-#     # DB.session.commit()
-#     return "la"

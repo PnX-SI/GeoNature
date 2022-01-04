@@ -1,3 +1,4 @@
+import { AppConfig } from "@geonature_config/app.config";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import {
   Component,
@@ -29,6 +30,7 @@ export class ValidationSyntheseListComponent
   implements OnInit, OnChanges, AfterContentChecked {
   public VALIDATION_CONFIG = ModuleConfig;
   public oneSyntheseObs: any;
+  public appConfig: any;
   selectedObs: Array<number> = []; // list of id_synthese values for selected rows
   selectedIndex: Array<number> = [];
   selectedPages = [];
@@ -61,6 +63,9 @@ export class ValidationSyntheseListComponent
   }
 
   ngOnInit() {
+    // get app config
+    this.appConfig = AppConfig;
+
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;
     this.rowNumber = Math.trunc(h / 37);
@@ -69,6 +74,7 @@ export class ValidationSyntheseListComponent
     this.onMapClick();
     this.onTableClick();
     this.npage = 1;
+
   }
 
   onMapClick() {
@@ -215,23 +221,7 @@ export class ValidationSyntheseListComponent
     }
   }
 
-  onStatusChange(cd_nomenclature) {
-    for (let obs in this.mapListService.selectedRow) {
-      this.mapListService.selectedRow[obs][
-        "cd_nomenclature_validation_status"
-      ] = cd_nomenclature;
 
-      this.mapListService.selectedRow[obs]["validation_auto"] = "";
-    }
-    this.mapListService.selectedRow = [...this.mapListService.selectedRow];
-  }
-
-  onValidationDateChange(date) {
-    for (let obs in this.mapListService.selectedRow) {
-      this.mapListService.selectedRow[obs]["validation_date"] = date;
-    }
-    this.mapListService.selectedRow = [...this.mapListService.selectedRow];
-  }
 
   // update the number of row per page when resize the window
   @HostListener("window:resize", ["$event"])
@@ -271,6 +261,7 @@ export class ValidationSyntheseListComponent
     modalRef.componentInstance.id_synthese = row.id_synthese;
     modalRef.componentInstance.uuidSynthese = row.unique_id_sinp;
     modalRef.componentInstance.validationStatus = this.validationStatus;
+    modalRef.componentInstance.currentValidationStatus = row.nomenclature_valid_status;
     modalRef.componentInstance.mapListService = this.mapListService;
     modalRef.componentInstance.modifiedStatus.subscribe(modifiedStatus => {
       for (let obs in this.mapListService.tableData) {
@@ -290,15 +281,5 @@ export class ValidationSyntheseListComponent
       }
       this.mapListService.selectedRow = [...this.mapListService.selectedRow];
     });
-  }
-
-  getValidationStatusMnemonique(code) {
-    var statusF = this.validationStatus.filter((st) => st.cd_nomenclature == code);
-    if (statusF.length > 0) {
-      return statusF[0].mnemonique;
-    }
-    else {
-      return null;
-    }
   }
 }

@@ -1,9 +1,0 @@
-SQLALCHEMY_DATABASE_URI = "postgresql://db_user:db_pass@test.ecrins-parcnational.net:5432/db_name"
-URL_APPLICATION = 'http://test.ecrins-parcnational.net/geonature'
-API_ENDPOINT = 'http://127.0.0.1:8000'
-API_TAXHUB = 'http://127.0.0.1:5000'
-
-
-SECRET_KEY = 'super secret key'
-
-DEFAULT_LANGUAGE='fr'

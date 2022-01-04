@@ -81,8 +81,6 @@ DEFAULT_EXPORT_COLUMNS = [
     "champs_additionnels"
 ]
 
-
-#
 DEFAULT_COLUMNS_API_SYNTHESE = [
     "id_synthese",
     "date_min",
@@ -91,8 +89,7 @@ DEFAULT_COLUMNS_API_SYNTHESE = [
     "dataset_name",
 ]
 
-# Colonnes renvoyer par l'API synthese qui sont obligatoires pour que les fonctionnalites
-#  front fonctionnent
+# Mandatory columns for the frontend in Synthese API
 MANDATORY_COLUMNS = ["entity_source_pk_value", "url_source", "cd_nom"]
 
 # CONFIG MAP-LIST

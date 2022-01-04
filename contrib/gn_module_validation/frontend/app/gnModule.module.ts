@@ -25,6 +25,7 @@ import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthe
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
 import { TaxonAdvancedStoreService } from "@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service";
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component'
+import { ValidationService } from "./services/validation.service";
 
 function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './external_assets/validation/i18n/', '.json');
@@ -66,7 +67,7 @@ const routes: Routes = [{ path: "", component: ValidationComponent }];
     ValidationDataService,
     SyntheseFormService,
     DynamicFormService,
-    // NomenclatureComponent,
+    ValidationService,
     TaxonAdvancedStoreService
   ],
 

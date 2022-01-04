@@ -8,6 +8,7 @@ from flask import (
     session,
     send_from_directory,
     render_template,
+    jsonify,
 )
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Unauthorized
 from geonature.core.gn_commons.models import TAdditionalFields
@@ -243,11 +244,7 @@ def getViewReleveOccurrence(info_role):
 
         q = q.order_by(orderCol)
 
-    try:
-        data = q.limit(limit).offset(page * limit).all()
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    data = q.limit(limit).offset(page * limit).all()
 
     user = info_role
     user_cruved = get_or_fetch_user_cruved(
@@ -515,14 +512,7 @@ def updateReleve(id_releve, info_role):
 
 def occurrenceHandler(request, *, occurrence, info_role):
 
-    try:
-        releve = DB.session.query(TRelevesOccurrence).get(occurrence.id_releve_occtax)
-    except Exception as e:
-        DB.session.rollback()
-        raise
-
-    if not releve:
-        raise NotFound
+    releve = TRelevesOccurrence.query.get_or_404(occurrence.id_releve_occtax)
 
     # Test des droits d'édition du relevé si modification
     if occurrence.id_occurrence_occtax is not None:
@@ -575,14 +565,7 @@ def updateOccurrence(id_occurrence, info_role):
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
     """
-    try:
-        occurrence = DB.session.query(TOccurrencesOccurrence).get(id_occurrence)
-    except Exception as e:
-        DB.session.rollback()
-        raise
-
-    if not occurrence:
-        return {"message": "not found"}, 404
+    occurrence = TOccurrencesOccurrence.query.get_or_404(id_occurrence)
 
     return OccurrenceSchema().dump(
         occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role)
@@ -608,7 +591,6 @@ def deleteOneReleve(id_releve, info_role):
 
 @blueprint.route("/occurrence/<int:id_occ>", methods=["DELETE"])
 @permissions.check_cruved_scope("D", module_code="OCCTAX")
-@json_resp
 def deleteOneOccurence(id_occ):
     """Delete one occurrence and associated counting
 
@@ -617,30 +599,18 @@ def deleteOneOccurence(id_occ):
     :params int id_occ: ID of the occurrence to delete
 
     """
-    q = DB.session.query(TOccurrencesOccurrence)
+    occ = TOccurrencesOccurrence.query.get_or_404(id_occ)
 
-    try:
-        data = q.get(id_occ)
-    except Exception as e:
-        DB.session.rollback()
-        raise
+    # TODO: check occ ownership!
 
-    if not data:
-        return {"message": "not found"}, 404
+    DB.session.delete(occ)
+    DB.session.commit()
 
-    try:
-        DB.session.delete(data)
-        DB.session.commit()
-    except Exception as e:
-        DB.session.rollback()
-        raise
-
-    return {"message": "delete with success"}
+    return '', 204
 
 
 @blueprint.route("/releve/occurrence_counting/<int:id_count>", methods=["DELETE"])
 @permissions.check_cruved_scope("D", module_code="OCCTAX")
-@json_resp
 def deleteOneOccurenceCounting(id_count):
     """Delete one counting
 
@@ -649,29 +619,14 @@ def deleteOneOccurenceCounting(id_count):
     :params int id_count: ID of the counting to delete
 
     """
-    q = DB.session.query(CorCountingOccurrence)
-
-    try:
-        data = q.get(id_count)
-    except Exception as e:
-        DB.session.rollback()
-        raise
-
-    if not data:
-        return {"message": "not found"}, 404
-
-    try:
-        DB.session.delete(data)
-        DB.session.commit()
-    except Exception as e:
-        DB.session.rollback()
-        raise
-
-    return {"message": "delete with success"}
+    ccc = CorCountingOccurrence.query.get_or_404(id_count)
+    # TODO check ccc ownership!
+    DB.session.delete(data)
+    DB.session.commit()
+    return '', 204
 
 
 @blueprint.route("/defaultNomenclatures", methods=["GET"])
-@json_resp
 def getDefaultNomenclatures():
     """Get default nomenclatures define in occtax module
 
@@ -695,8 +650,8 @@ def getDefaultNomenclatures():
         q = q.filter(DefaultNomenclaturesValue.mnemonique_type.in_(tuple(types)))
     data = q.all()
     if not data:
-        return {"message": "not found"}, 404
-    return {d[0]: d[1] for d in data}
+        raise NotFound
+    return jsonify(dict(data))
 
 
 @blueprint.route("/export", methods=["GET"])
@@ -802,28 +757,19 @@ def export(info_role):
             serialize_result, as_file=True, filename=file_name, indent=4, extension="geojson"
         )
     else:
-        try:
-            db_cols = [
-                db_col for db_col in export_view.db_cols if db_col.key in export_columns
-            ]
-            dir_name, file_name = export_as_geo_file(
-                export_format=export_format,
-                export_view=export_view,
-                db_cols=db_cols,
-                geojson_col=None,
-                data=data,
-                file_name=file_name,
-            )
-            db_cols = [
-                db_col for db_col in export_view.db_cols if db_col.key in export_columns
-            ]
-
-            return send_from_directory(dir_name, file_name, as_attachment=True)
-        except GeonatureApiError as e:
-            message = str(e)
-
-        return render_template(
-            "error.html",
-            error=message,
-            redirect=current_app.config["URL_APPLICATION"] + "/#/occtax",
+        db_cols = [
+            db_col for db_col in export_view.db_cols if db_col.key in export_columns
+        ]
+        dir_name, file_name = export_as_geo_file(
+            export_format=export_format,
+            export_view=export_view,
+            db_cols=db_cols,
+            geojson_col=None,
+            data=data,
+            file_name=file_name,
         )
+        db_cols = [
+            db_col for db_col in export_view.db_cols if db_col.key in export_columns
+        ]
+
+        return send_from_directory(dir_name, file_name, as_attachment=True)

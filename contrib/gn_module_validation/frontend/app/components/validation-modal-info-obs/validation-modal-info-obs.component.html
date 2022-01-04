@@ -3,15 +3,9 @@
 
   <h5> Information sur l'observation</h5>
 
-  <button
-    type="button"
-    class="close"
-    aria-label="Close"
-    (click)="closeModal()"
-  >
+  <button type="button" class="close" aria-label="Close" (click)="closeModal()">
     <span aria-hidden="true">&times;</span>
   </button>
-
 </div>
 
 <!-- MODAL BODY -->
@@ -19,67 +13,32 @@
 <div class="modal-body">
 
 
-  <div
-    *ngIf="edit"
-    id="statusChange"
-  >
+  <div *ngIf="edit" id="statusChange">
 
 
     <form>
       <div>
-        <span
-          *ngFor="let item of validationStatus"
-          id="validButtons"
-        >
-          <label
-            [ngStyle]="{'background-color': VALIDATION_CONFIG.STATUS_INFO[item.cd_nomenclature]?.color}"
-            role="button"
-            class="btn btn-success box-shadow"
-            aria-pressed="true"
-          >
-            <input
-              (click)="setCurrentCdNomenclature(item)"
-              type="radio"
-              [formControl]="statusForm.controls.statut"
-              value="{{item.id_nomenclature}}"
-            >
+        <span *ngFor="let item of validationStatus" id="validButtons">
+          <label [ngStyle]="{'background-color': VALIDATION_CONFIG.STATUS_INFO[item.cd_nomenclature]?.color}"
+            role="button" class="btn btn-success box-shadow" aria-pressed="true">
+            <input (click)="setCurrentCdNomenclature(item)" type="radio" [formControl]="statusForm.controls.statut"
+              value="{{item.id_nomenclature}}">
             {{item.mnemonique}}</label>
         </span>
       </div>
-      <div
-        class="md-form mb-0"
-        style="padding-top:5px;"
-      >
+      <div class="md-form mb-0" style="padding-top:5px;">
         <span> Commentaire : </span>
-        <textarea
-          type="text"
-          rows="1"
-          class="form-control md-textarea"
-          [formControl]="statusForm.controls.comment"
-        > </textarea>
+        <textarea type="text" rows="1" class="form-control md-textarea"
+          [formControl]="statusForm.controls.comment"> </textarea>
       </div>
     </form>
 
     <div style="padding-top:5px;">
-      <button
-        class="btn btn-sm btn-light"
-        type="submit"
-        data-dismiss="modal"
-        (click)="cancel()"
-      >
+      <button class="btn btn-sm btn-light" type="submit" data-dismiss="modal" (click)="cancel()">
         Annuler
       </button>
-      <button
-        id="saveButton"
-        (click)="onSubmit(statusForm.value)"
-        data-toggle="modal"
-        value="Enregistrer"
-        type="button"
-        [disabled]="!this.statusForm.valid"
-        class="btn btn-sm btn-success"
-        data-dismiss="modal"
-        #required
-      >
+      <button id="saveButton" (click)="onSubmit(statusForm.value)" data-toggle="modal" value="Enregistrer" type="button"
+        [disabled]="!this.statusForm.valid" class="btn btn-sm btn-success" data-dismiss="modal" #required>
         Enregistrer
       </button>
     </div>
@@ -87,17 +46,9 @@
   </div>
 
   <span class="font-xs">
-
-
     <b> Statut de validation actuel : </b>
-    <span *ngIf="!selectedObs?.valid_status">
-      En attente de validation
-    </span> {{selectedObs?.valid_status}}
-    <button
-      class="edit btn btn-sm btn-primary"
-      (click)="getStatusNames()"
-      [disabled]=edit
-    >
+    {{currentValidationStatus.label_default}}
+    <button class="edit btn btn-sm btn-primary" (click)="getStatusNames()" [disabled]=edit>
       Modifier le statut de validation <mat-icon> edit </mat-icon>
     </button>
   </span>

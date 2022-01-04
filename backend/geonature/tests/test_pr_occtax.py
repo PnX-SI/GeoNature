@@ -3,30 +3,70 @@ import pytest
 from flask import url_for, current_app
 from werkzeug.exceptions import Forbidden
 
-from . import login, temporary_transaction, post_json
-from .fixtures import sample_data, releve_data, datasets, users
+from .utils import set_logged_user_cookie
+from .fixtures import *
+
+from occtax.models import DefaultNomenclaturesValue
 
 
-@pytest.mark.usefixtures("client_class", "temporary_transaction", "users", "datasets")
+occtax = pytest.importorskip("occtax")
+
+
+@pytest.fixture()
+def releve_data(client, datasets):
+    """
+        Releve associated with dataset created by "user"
+    """
+    id_dataset = datasets["own_dataset"].id_dataset
+    id_nomenclature_grp_typ = (
+        DefaultNomenclaturesValue.query
+        .filter_by(mnemonique_type='TYP_GRP')
+        .with_entities(DefaultNomenclaturesValue.id_nomenclature)
+        .scalar()
+    )
+    data = {
+        "depth": 2,
+        "geometry": {"type": "Point", "coordinates": [3.428936004638672, 44.276611357355904],},
+        "properties": {
+            "id_dataset": id_dataset,
+            "id_digitiser": 1,
+            "date_min": "2018-03-02",
+            "date_max": "2018-03-02",
+            "hour_min": None,
+            "hour_max": None,
+            "altitude_min": None,
+            "altitude_max": None,
+            "meta_device_entry": "web",
+            "comment": None,
+            "observers": [1],
+            "observers_txt": "tatatato",
+            "id_nomenclature_grp_typ": id_nomenclature_grp_typ,
+        },
+    }
+
+    return data
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets")
 class TestOcctax:
-    def test_post_releve(self, releve_data):
+    def test_post_releve(self, users, releve_data):
         # post with cruved = C = 2
-        login(self.client, "user", "user")
+        set_logged_user_cookie(self.client, users['user'])
         response = self.client.post(
             url_for("pr_occtax.createReleve"),
             json=releve_data
         )
         assert response.status_code == 200
 
-        # Post in a dataset where 'self user' has no right
-        login(self.client, "self_user", "self_user")
-        #with pytest.raises(Forbidden):
+        set_logged_user_cookie(self.client, users['noright_user'])
         response = self.client.post(
             url_for("pr_occtax.createReleve"),
             json=releve_data
         )
-        assert response == 403
+        assert response.status_code == Forbidden.code
 
         #TODO : test update, test post occurrence
 
-
+    def test_get_defaut_nomenclatures(self):
+        response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures"))
+        assert response.status_code == 200

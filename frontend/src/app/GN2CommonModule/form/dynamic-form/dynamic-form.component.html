@@ -23,7 +23,7 @@
     >
       help
     </mat-icon>
-  
+
     <!-- Ajout d'un bouton lien externe -->
     <a *ngIf="formDefComp.link_definition && formDefComp.definition" target="_blank" class="link-media" [href]="formDefComp.link_definition"
       ><mat-icon [matTooltip]="formDefComp.definition" matTooltipClass="form-tooltip">info</mat-icon>
@@ -254,8 +254,6 @@
       [codeNomenclatureType]="formDefComp.code_nomenclature_type"
       [multiSelect]="formDefComp.multi_select"
       [keyValue]="formDefComp.key_value"
-      [group2Inpn]="formDef.group2inpn"
-      [regne]="formDef.regne"
     >
     </pnx-nomenclature>
 
@@ -295,11 +293,20 @@
     >
     </pnx-date>
 
+    <pnx-areas
+      *ngSwitchCase="'areas'"
+      [label]="formDefComp.attribut_label"
+      [parentFormControl]="form.get(formDefComp.attribut_name)"
+      [valueFieldName]="formDefComp.value_field_name"
+      [typeCodes]="formDefComp.type_codes"
+    >
+    </pnx-areas>
+
     <pnx-municipalities
       *ngSwitchCase="'municipalities'"
       [label]="formDefComp.attribut_label"
       [parentFormControl]="form.get(formDefComp.attribut_name)"
-      [searchBar]=True
+      [valueFieldName]="formDefComp.value_field_name"
     >
     </pnx-municipalities>
 

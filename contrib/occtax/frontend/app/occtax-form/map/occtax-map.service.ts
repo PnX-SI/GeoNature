@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
 import { isEqual } from "lodash";
 import { BehaviorSubject, Observable, of } from "rxjs";
+import { distinctUntilChanged } from "rxjs/operators";
 import { GeoJSON } from "leaflet";
 import { filter, map, switchMap } from "rxjs/operators";
 import { OcctaxFormService } from "../occtax-form.service";
@@ -11,6 +12,8 @@ import { OcctaxFormParamService } from "../form-param/form-param.service";
 export class OcctaxFormMapService {
   private _geometry: FormControl;
   public geojson: BehaviorSubject<GeoJSON> = new BehaviorSubject(null);
+  public markerCoordinates;
+  public leafletDrawGeoJson;
 
   get geometry() {
     return this._geometry;
@@ -48,16 +51,26 @@ export class OcctaxFormMapService {
             : of(this.occtaxParamS.get("geometry"));
         })
       )
-      .subscribe((geometry) => this._geometry.setValue(geometry));
+      .subscribe((geometry) => {        
+        this._geometry.setValue(geometry)
+      });
 
     //active la saisie si la geometry est valide
+
     this._geometry.valueChanges
       .pipe(
-        map((geometry) =>
-          this._geometry.valid ? { geometry: geometry } : null
-        )
+        distinctUntilChanged(),
+        filter( () => this._geometry.valid),
+        map((geojson) => geojson.geometry ? geojson.geometry : geojson)
       )
-      .subscribe((geojson) => this.geojson.next(geojson));
+      .subscribe((geojson) => {                
+        if (geojson.type == "Point") {
+          this.markerCoordinates = geojson.coordinates;          
+        } else {
+          this.leafletDrawGeoJson = geojson;
+        }
+        this.occtaxFormService.disabled = false;
+      });
   }
 
   private get releveGeojsonValue(): Observable<any> {

@@ -112,7 +112,6 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
                 this.previousCurrentLayer = layer;
 
                 // sent geojson observable
-                this.mapService.firstLayerFromMap = false;
                 this.onGeomChange.emit((layer as any).feature);
                 this.mapService.setGeojsonCoord((layer as any).feature);
               });
@@ -122,8 +121,6 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
         });
         // add the layers to the feature groupe
         this.mapService.fileLayerFeatureGroup.addLayer(newLayer);
-        this.mapService.setGeojsonCoord(geojsonArray);
-        this.onLoad.emit(geojsonArray);
       }
       // remove the previous layer of the map
       if (this.previousLayer) {

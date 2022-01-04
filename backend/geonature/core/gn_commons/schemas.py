@@ -1,4 +1,4 @@
-from marshmallow import pre_load, fields
+from marshmallow import pre_load, fields, EXCLUDE
 
 from pypnnomenclature.schemas import NomenclatureSchema
 from pypnusershub.schemas import UserSchema
@@ -29,6 +29,7 @@ class MediaSchema(MA.SQLAlchemyAutoSchema):
         model = TMedias
         load_instance = True
         include_fk = True
+        unknown = EXCLUDE
 
     meta_create_date = fields.DateTime(dump_only=True)
     meta_update_date = fields.DateTime(dump_only=True)

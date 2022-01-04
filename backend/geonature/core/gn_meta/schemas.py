@@ -1,3 +1,4 @@
+from sqlalchemy import inspect
 from geonature.utils.env import MA
 from marshmallow import pre_load, fields, EXCLUDE
 from .models import (
@@ -7,21 +8,23 @@ from .models import (
     CorDatasetActor,
     TBibliographicReference
 )
-from pypnusershub.schemas import UserSchema, OrganismeSchema
-from pypnnomenclature.schemas import NomenclatureSchema
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_commons.schemas import ModuleSchema
 
-class MetadataSchema(MA.SQLAlchemyAutoSchema):
+from utils_flask_sqla.schema import SmartRelationshipsMixin
+from pypnusershub.schemas import UserSchema, OrganismeSchema
+from pypnnomenclature.schemas import NomenclatureSchema
+
+
+class CruvedSchemaMixin:
     cruved = fields.Method("get_user_cruved")
 
     def get_user_cruved(self, obj):
-        if 'info_role' in self.context and 'user_cruved' in self.context:
-            return obj.get_object_cruved(self.context['info_role'], self.context['user_cruved'])
+        if 'user_cruved' in self.context:
+            return obj.get_object_cruved(self.context['user_cruved'])
         return None
 
-
-class DatasetActorSchema(MA.SQLAlchemyAutoSchema):
+class DatasetActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
         model = CorDatasetActor
         load_instance = True
@@ -37,7 +40,7 @@ class DatasetActorSchema(MA.SQLAlchemyAutoSchema):
             data.pop("id_cda", None)
         return data
 
-class DatasetSchema(MetadataSchema):
+class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
         model = TDatasets
         load_instance = True
@@ -69,26 +72,25 @@ class DatasetSchema(MetadataSchema):
         many=True,
         unknown=EXCLUDE
     )
-    acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", exclude=("t_datasets",), dump_only=True)
+    acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
 
 
-class BibliographicReferenceSchema(MetadataSchema):
+class BibliographicReferenceSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
         model = TBibliographicReference
         load_instance = True
         include_fk = True
 
-    acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", exclude=("bibliographical_references",), dump_only=True)
+    acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
 
     @pre_load
     def make_biblio_ref(self, data, **kwargs):
-        print(data)
         if data.get("id_bibliographic_reference") is None:
             data.pop("id_bibliographic_reference", None)
         return data
 
 
-class AcquisitionFrameworkActorSchema(MA.SQLAlchemyAutoSchema):
+class AcquisitionFrameworkActorSchema(SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
         model = CorAcquisitionFrameworkActor
         load_instance = True
@@ -106,37 +108,15 @@ class AcquisitionFrameworkActorSchema(MA.SQLAlchemyAutoSchema):
         return data
 
 
-class AcquisitionFrameworkSchema(MetadataSchema):
+class AcquisitionFrameworkSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAutoSchema):
     class Meta:
         model = TAcquisitionFramework
         load_instance = True
         include_fk = True
     meta_create_date = fields.DateTime(dump_only=True)
     meta_update_date = fields.DateTime(dump_only=True)
-    t_datasets = MA.Nested(
-        DatasetSchema(
-            exclude=(
-                "acquisition_framework",
-                "modules",
-                "nomenclature_dataset_objectif",
-                "nomenclature_collecting_method",
-                "nomenclature_data_origin",
-                "nomenclature_source_status",
-                "nomenclature_resource_type",
-            ),
-            many=True,
-        ),
-        many=True
-    )
-    bibliographical_references = MA.Nested(
-        BibliographicReferenceSchema(
-            exclude=(
-                "acquisition_framework",
-            ),
-            many=True,
-        )
-        , many=True,
-    )
+    t_datasets = MA.Nested(DatasetSchema, many=True)
+    bibliographical_references = MA.Nested(BibliographicReferenceSchema, many=True)
     cor_af_actor = MA.Nested(
         AcquisitionFrameworkActorSchema,
         many=True,
