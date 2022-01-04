@@ -125,17 +125,6 @@ admin.add_view(
         category="Nomenclatures",
     )
 )
-admin.add_sub_category(name="Links", parent_name="Nomenclatures")
-
-admin.add_link(
-    MenuLink(
-        name='AAA',
-        url=config['URL_APPLICATION'],
-        icon_type="glyph",
-        icon_value="glyphicon-log-out",
-        category="Links",
-    )
-)
 
 admin.add_view(
     ProtectedBibFieldAdmin(
