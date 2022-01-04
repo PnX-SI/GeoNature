@@ -1,7 +1,9 @@
 import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 
 import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { Routes, RouterModule } from '@angular/router';
 import { OccHabFormComponent } from './components/occhab-map-form/occhab-form.component';
@@ -15,8 +17,15 @@ import { OcchabInfoComponent } from './components/occhab-info/occhab-info.compon
 import { ModalDeleteStation } from './components/delete-modal/delete-modal.component';
 import { OccHabDatasetMapOverlayComponent } from './components/occhab-map-form/dataset-map-overlay/dataset-map-overlay.component';
 import { StationResolver } from './resolvers/station.resolver';
+import { ConfigService } from '@geonature/services/config.service';
+import { CustomTranslateLoader } from '@geonature/shared/translate/custom-loader';
+import { I18nService } from '@geonature/shared/translate/i18n-service';
 
-// my module routing
+export function createTranslateLoader(http: HttpClient, config: ConfigService) {
+  return new CustomTranslateLoader(http, config, { moduleName: 'occhab' });
+}
+
+// Module routing
 const routes: Routes = [
   { path: '', component: OccHabMapListComponent },
   { path: 'add', component: OccHabFormComponent },
@@ -42,10 +51,31 @@ const routes: Routes = [
     ModalDeleteStation,
     OccHabDatasetMapOverlayComponent,
   ],
-  imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes), NgbModule],
+  imports: [
+    CommonModule,
+    GN2CommonModule,
+    RouterModule.forChild(routes),
+    TranslateModule.forChild({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: createTranslateLoader,
+        deps: [HttpClient, ConfigService],
+      },
+      isolate: true,
+    }),
+    NgbModule,
+  ],
   entryComponents: [OccHabModalDownloadComponent],
-
   providers: [OccHabDataService, OcchabStoreService, OccHabMapListService, StationResolver],
   bootstrap: [],
 })
-export class GeonatureModule {}
+export class GeonatureModule {
+  constructor(
+    private translateService: TranslateService,
+    private i18nService: I18nService
+  ) {
+    // Workaround to force translation loaded for LazyModule.
+    // See: https://github.com/ngx-translate/core/issues/1302
+    this.i18nService.initializeModuleTranslateService(this.translateService);
+  }
+}
