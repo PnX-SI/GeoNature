@@ -3,6 +3,8 @@
 """
 
 import datetime
+from pypnusershub.db.models import User
+from pypnusershub.schemas import UserSchema
 import xmltodict
 import logging
 from copy import copy
@@ -22,7 +24,7 @@ from flask import (
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from utils_flask_sqla.response import json_resp
 
-from geonature.core.users import routes as users
+from pypnusershub.routes import insert_or_update_organism, insert_or_update_role
 from geonature.utils import utilsrequests
 from geonature.utils.errors import CasAuthentificationError
 
@@ -71,27 +73,6 @@ def loginCas():
             info_user = response.json()
             organism_id = info_user["codeOrganisme"]
             user = insert_user_and_org(info_user)
-            # push the user in the right group
-            try:
-                if not current_app.config["CAS"]["USERS_CAN_SEE_ORGANISM_DATA"]:
-                    # group socle 1
-                    users.insert_in_cor_role(
-                        current_app.config["BDD"]["ID_USER_SOCLE_1"], user["id_role"]
-                    )
-                elif organism_id is None:
-                    # group socle 1
-                    users.insert_in_cor_role(
-                        current_app.config["BDD"]["ID_USER_SOCLE_1"], user["id_role"]
-                    )
-                else:
-                    # group socle 2
-                    users.insert_in_cor_role(
-                        current_app.config["BDD"]["ID_USER_SOCLE_2"], user["id_role"]
-                    )
-                user["id_application"] = current_app.config["ID_APPLICATION_GEONATURE"]
-            except Exception as e:
-                log.info(e)
-                log.error(e)
 
             # creation de la Response
             response = make_response(redirect(current_app.config["URL_APPLICATION"]))
@@ -171,8 +152,16 @@ def insert_user_and_org(info_user):
     # Reconciliation avec base GeoNature
     if organism_id:
         organism = {"id_organisme": organism_id, "nom_organisme": organism_name}
-        resp = users.insert_organism(organism)
+        insert_or_update_organism(organism)
+    if not current_app.config["CAS"]["USERS_CAN_SEE_ORGANISM_DATA"] or organism_id is None:
+        # group socle 1
+        group_id = current_app.config["BDD"]["ID_USER_SOCLE_1"]
+    else:
+        # group socle 2
+        group_id = current_app.config["BDD"]["ID_USER_SOCLE_2"]
 
+    group = User.query.get(group_id)
+    group_as_dict = UserSchema(exclude=["nom_complet"]).dump(group)
     user = {
         "id_role": user_id,
         "identifiant": user_login,
@@ -181,9 +170,10 @@ def insert_user_and_org(info_user):
         "id_organisme": organism_id,
         "email": info_user["email"],
         "active": True,
+        "groups": [group_as_dict]
     }
     try:
-        resp = users.insert_role(user)
+        insert_or_update_role(user)
     except Exception as e:
         log.info(e)
         log.error(e)

@@ -127,14 +127,11 @@ def create_cor_object_actors(actors, new_object):
                     new_object.cor_dataset_actor.append(cor_actor)
 
 
-def post_acquisition_framework(uuid=None, id_user=None, id_organism=None):
+def post_acquisition_framework(uuid=None):
     """ 
         Post an acquisition framwork from MTD XML
         Params:
-            uuid (str): uuid of the acquisition framework
-            id_user (int): the id of the user connected via CAS
-            id_organism (int): the id of the organism user via CAS
-    
+            uuid (str): uuid of the acquisition framework    
     """
     xml_af = None
     xml_af = get_acquisition_framework(uuid)
@@ -185,7 +182,7 @@ def add_dataset_module(dataset):
     )
 
 
-def post_jdd_from_user(id_user=None, id_organism=None):
+def post_jdd_from_user(id_user=None):
     """ Post a jdd from the mtd XML"""
     xml_jdd = None
     xml_jdd = get_jdd_by_user_id(id_user)
@@ -198,8 +195,6 @@ def post_jdd_from_user(id_user=None, id_organism=None):
             if ds["uuid_acquisition_framework"] not in posted_af_uuid:
                 new_af = post_acquisition_framework(
                     uuid=ds["uuid_acquisition_framework"],
-                    id_user=id_user,
-                    id_organism=id_organism,
                 )
                 # build a cached dict like {'<uuid>': 'id_acquisition_framework}
                 posted_af_uuid[ds["uuid_acquisition_framework"]] = new_af[
@@ -262,12 +257,6 @@ def post_jdd_from_user(id_user=None, id_organism=None):
                 error_msg = "Error posting a dataset\nTrace:\n{} \n\n ".format(e)
                 log.error(error_msg)
 
-            #return dataset.as_dict()
-
-        return {"message": "Not found"}, 404
-
-    return {"message": "Not found"}, 404
-
 
 def import_all_dataset_af_and_actors(table_name):
     file_handler = logging.FileHandler('/tmp/uuid_ca.txt')
@@ -289,8 +278,6 @@ def import_all_dataset_af_and_actors(table_name):
                     # prevent to not fetch, post or merge the same acquisition framework multiple times
                     new_af = post_acquisition_framework(
                         uuid=ds["uuid_acquisition_framework"],
-                        id_user=inpn_user.get('id'),
-                        id_organism=inpn_user.get('codeOrganisme'),
                     )
                     # get the id from the uuid
                     ds["id_acquisition_framework"] = new_af['id_acquisition_framework']

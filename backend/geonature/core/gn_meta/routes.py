@@ -89,7 +89,7 @@ if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
                                 "gn_meta.get_acquisition_frameworks_list"]:
             try:
                 mtd_utils.post_jdd_from_user(
-                    id_user=g.current_user.id_role, id_organism=g.current_user.id_organisme
+                    id_user=g.current_user.id_role
                 )
             except Exception as e:
                 log.exception("Error while get JDD via MTD")
@@ -1139,14 +1139,13 @@ def post_acquisition_framework_mtd(uuid=None, id_user=None, id_organism=None):
 
 
 @routes.route("/dataset_mtd/<id_user>", methods=["POST"])
-@routes.route("/dataset_mtd/<id_user>/<id_organism>", methods=["POST"])
 @json_resp
-def post_jdd_from_user_id(id_user=None, id_organism=None):
+def post_jdd_from_user_id(id_user=None):
     """ 
     Post a jdd from the mtd XML
     .. :quickref: Metadata;
     """
-    return mtd_utils.post_jdd_from_user(id_user=id_user, id_organism=id_organism)
+    return mtd_utils.post_jdd_from_user(id_user=id_user)
 
 
 @routes.cli.command()

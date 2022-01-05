@@ -142,37 +142,6 @@ class TestGnMeta:
             and dataset_list["data"][0]["id_dataset"] == 1
         )
 
-    def test_mtd_interraction(self):
-        from geonature.core.gn_meta.mtd.mtd_utils import (
-            post_jdd_from_user
-        )
-
-        """
-        Test du web service MTD
-        A partir d'un utilisateur renvoyé par le CAS
-        on insert l'utilisateur 'demo.geonature' et son organisme s'il existe pas
-        puis on poste les CA et JDD renvoyé à le WS MTD
-        """
-        user = {
-            "id_role": 10991,
-            "identifiant": "test.mtd",
-            "nom_role": "test_mtd",
-            "prenom_role": "test_mtd",
-            "id_organisme": 104,
-        }
-
-        organism = {"id_organisme": 104, "nom_organisme": "test"}
-        resp = users.insert_organism(organism)
-        assert resp.status_code == 200
-
-        resp = users.insert_role(user)
-        # id_role 10 = id_socle 1 in test
-        users.insert_in_cor_role(10, user["id_role"])
-        assert resp.status_code == 200
-
-        jdds = post_jdd_from_user(id_user=10991, id_organism=104)
-        assert len(jdds) >= 1
-
     def test_post_and_update_dataset(self):
         token = get_token(self.client, login="admin", password="admin")
         self.client.set_cookie("/", "token", token)
