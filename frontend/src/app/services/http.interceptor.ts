@@ -2,13 +2,18 @@ import { throwError as observableThrowError, Observable } from 'rxjs';
 import { Injectable, Injector } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { AuthService } from '@geonature/components/auth/auth.service';
+import {ToastrService} from "ngx-toastr";
 import { Router } from '@angular/router';
 
 const WHITE_LIST = ['nominatim.openstreetmap.org'];
 
 @Injectable()
 export class MyCustomInterceptor implements HttpInterceptor {
-  constructor(public inj: Injector, public router: Router) {}
+  constructor(
+    public inj: Injector,
+    public router: Router,
+    private _toastrService:ToastrService
+  ) {}
 
   private handleError(error: Response | any) {
     let errMsg: string;
@@ -19,6 +24,7 @@ export class MyCustomInterceptor implements HttpInterceptor {
     } else {
       errMsg = error.message ? error.message : error.toString();
     }
+    this._toastrService.error(errMsg, "Une erreur est survenue")
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
