@@ -1126,27 +1126,6 @@ def get_cd_nomenclature(id_type, cd_nomenclature):
     return value
 
 
-@routes.route("/aquisition_framework_mtd/<uuid_af>", methods=["POST"])
-@json_resp
-def post_acquisition_framework_mtd(uuid=None, id_user=None, id_organism=None):
-    """ 
-    Post an acquisition framwork from MTD web service in XML
-    .. :quickref: Metadata;
-    """
-    return mtd_utils.post_acquisition_framework(
-        uuid=uuid, id_user=id_user, id_organism=id_organism
-    )
-
-
-@routes.route("/dataset_mtd/<id_user>", methods=["POST"])
-@json_resp
-def post_jdd_from_user_id(id_user=None):
-    """ 
-    Post a jdd from the mtd XML
-    .. :quickref: Metadata;
-    """
-    return mtd_utils.post_jdd_from_user(id_user=id_user)
-
 
 @routes.cli.command()
 def mtd_sync():
