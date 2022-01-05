@@ -1,12 +1,7 @@
 HTTPS
 *****
 
-La présente documentation décrit la procédure de certification HTTPS et l'adaptation de la configuration Apache par défaut du serveur, sans utilisation de sous-domaine. Pour la mise en place de sous-domaines, voir la documentation "Configuration Apache".
-
-
-**Mise en place du  HTTPS**
-
-La procédure décrit la certification HTTPS de votre domaine pour l'ensemble des applications de l'install_all, grâce au service `Let's Encrypt <https://letsencrypt.org/>`_. Les manipulations ont été effectuées sur un serveur Debian 9 avec Apache2 installé, et un utilisateur bénéficiant des droits sudo.
+La procédure décrit une méthode de certification HTTPS de votre domaine, grâce au service `Let's Encrypt <https://letsencrypt.org/>`_. Les manipulations ont été effectuées sur un serveur Debian 9 avec Apache2 installé, et un utilisateur bénéficiant des droits sudo.
 
 Ressources : 
 
@@ -100,7 +95,7 @@ Modifier les éléments suivants :
   API_TAXHUB = 'https://mondomaine.fr/taxhub/api'
 
 
-Pour que ces modifications soient prises en compte, lancer les commandes suivantes depuis le répertoire ``geonature/backend`` :
+Pour que ces modifications soient prises en compte, lancer les commandes suivantes :
 
 ::
 	

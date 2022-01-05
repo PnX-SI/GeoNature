@@ -7,32 +7,6 @@ CHANGELOG
 
 Profils de taxons
 
-**BUGS**
-
-- Dans le module VALIDATION :
-  - Le nombre de résultats n'est plus affiché en bas du tableau
-  - Par défaut, la taille de la carte est trop petite ? Modification récente d'Amandine
-  - Je filtre sur un JDD, le tableau se ressere à gauche
-- Occtax : Enchainer des relevés avec un GPX ne permet pas de selectionner un autre objet du GPX au second relevé : OK
-- J'enchaine les relevés avec un GPX de polygone, quand je reviens sur le relevé, je suis centré sur le monde
-- Occtax : Je déplace un point en le glissant, l'altitude n'est pas recalculée, si je clique un nouveau point elle l'est: NOK, et maintenant si je le glisse, puis enregistre, la nouvelle position n'est pas enregistrée
-- Occtax : Je modifie un polygone, j'enregistre, OK, je le remodifie, ça me garde le précédent.
-- Occtax : Je modifie un relevé point ou polygone, je passe aux taxons, je repasse au relevé, la carte passe sur l'ensemble du monde 
-- Occtax : Je modifie un taxon qui avait un dénombrement où min différent de max, il me remet max = min : OK
-- Occtax : liste des habitats masquée, exemple : ville
-- MTD : Je créé un JDD, erreur 500 au moment d'enregistrer sur /geonature/api/meta/dataset:1
-- Synthèse : la recherche par organisme ne fonctionne pas ?
-- J'ajoute un organisme, je l'associe à un utilisateur dans UsersHub. Je reviens sur la Synthèse, cet organisme n'apparait pas dans la liste des organismes
-- Synthèse : Je charge un GeoJSON de recherche, cela zoome dessus, mais ne recherche pas dans la zone, même si je clique sur RECHERCHER
-- Synthèse : Le lien pour écrire un email ne contient pas le destinataire
-- Les médias ne sont plus affichés dans les fiches observation de Synthèse et Validation
-- Synthèse - J'ouvre une fiche info / Pas mal d'erreurs dans la console sur les profils. Normal quand le taxon n'a pas de profil ?
-- Fiche info synthèse : Score vide quand nul ?
-- Fiche info synthèse et profil : Des croix partout quand pas de données validées pour ce taxon...
-- Occhab : Je peux pas créér un relevé, car seulement quelques champs sont affichés
-- Je créé un JDD, je renseigne un TERRITOIRE. Quand je modifie ce JDD, le territoire n'est plus renseigné. 
-- Les acteurs du JDD ne sont pas enregistrés quand je créé un JDD
-
 **🚀 Nouveautés**
 
 * Construction automatique d'une fiche d'identité (profil) par taxon grâce aux observations validées présentes dans la base de données (altitude min/max, distribution spatiale, date de première/dernière observation, nombre de données valides, phénologie) (#917)
@@ -58,22 +32,23 @@ Profils de taxons
 
 **💻 Développement**
 
+* Doc développeur enrichie (backend)
 * Factorisation du composant "pnx-municipalities" avec "pnx-areas"
 * Ajout de "pnx-areas" dans dynamic-form
 * Ajout d'un input "valueFieldName" pour "pnx-areas" et "pnx-municipalities"
 
-Pour ceux qui utilisent le composant "pnx-municipalities" l'idéal serait de traduire les données et les modèles et de passer du ``code_insee`` a ``id_area``
-* la correspondance est immédiate (``area_code`` = ``code_insee``)
+  Pour ceux qui utilisent le composant "pnx-municipalities" l'idéal serait de traduire les données et les modèles et de passer du ``code_insee`` a ``id_area``
+  * la correspondance est immédiate (``area_code`` = ``code_insee``)
 
-Cependant, pour garder la retrocompatibilité du composant "pnx-municipalities" veuillez ajouter
+  Cependant, pour garder la retrocompatibilité du composant "pnx-municipalities" veuillez ajouter
 
-* dans les templates : ``[valueFieldName]="'area_code'`` dans les template
-* dans les config (js, ts ou json) (attention à la casse): ``"value_field_name": "area_code"``
-* dans le module monitoring ajouter aussi ``"type_util": "area"``
+  * dans les templates : ``[valueFieldName]="'area_code'`` dans les template
+  * dans les config (js, ts ou json) (attention à la casse): ``"value_field_name": "area_code"``
+  * dans le module monitoring ajouter aussi ``"type_util": "area"``
 
 **⚠️ Notes de version**
 
-* Si vous avez surcouché le paramètre de configuration `AREA_FILTERS` de la section `[SYNTHESE]`, veuillez remplacer `id_type` par `type_code` (voir `ref_geo.bib_areas_types`)
+* Si vous avez surcouché le paramètre de configuration ``AREA_FILTERS`` de la section ``[SYNTHESE]``, veuillez remplacer ``id_type`` par ``type_code`` (voir ``ref_geo.bib_areas_types``)
 
 ::
 

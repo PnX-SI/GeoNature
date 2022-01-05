@@ -1,12 +1,14 @@
+from flask import g
+from werkzeug.exceptions import Unauthorized
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.menu import MenuLink
 from flask_admin.contrib.sqla import ModelView
 
-
-from geonature.utils.env import DB
+from geonature.utils.env import db
 from geonature.utils.config import config
 from geonature.core.gn_commons.models import TAdditionalFields
 from geonature.core.gn_commons.admin import BibFieldAdmin
+from geonature.core.gn_permissions.tools import get_scopes_by_action
 
 
 from pypnnomenclature.admin import (
@@ -18,66 +20,118 @@ from pypnnomenclature.admin import (
 
 
 class MyHomeView(AdminIndexView):
-    @expose("/")
-    def index(self):
-        admin_modules = []
-        already_added_categie = []
-        # get all different categories to generate friendly home page
-        for v in self.admin._views:
-            category = {"module_name": None, "module_views": []}
-            if v.category:
-                if v.category not in already_added_categie:
-                    category["module_name"] = v.category
-                    category["module_views"].append(
-                        {"url": config["API_ENDPOINT"] + v.url, "name": v.name,}
-                    )
-                    already_added_categie.append(v.category)
-                else:
-                    for m in admin_modules:
-                        if m["module_name"] == v.category:
-                            m["module_views"].append(
-                                {
-                                    "url": config["API_ENDPOINT"] + v.url,
-                                    "name": v.name,
-                                }
-                            )
-                admin_modules.append(category)
-        return self.render("admin_home.html", admin_modules=admin_modules)
+    def is_accessible(self):
+        if g.current_user is None:
+            raise Unauthorized  # return False leads to Forbidden which is different
+        return True
+
+
+class CruvedProtectedMixin:
+    def is_accessible(self):
+        if g.current_user is None:
+            raise Unauthorized  # return False leads to Forbidden which is different
+        return True
+
+    def _can_action(self, action):
+        scope = get_scopes_by_action(
+            g.current_user.id_role, module_code=self.module_code, object_code=self.object_code
+        )[action]
+        return scope == 3
+
+    @property
+    def can_create(self):
+        return self._can_action("C")
+
+    @property
+    def can_edit(self):
+        return self._can_action("U")
+
+    @property
+    def can_delete(self):
+        return self._can_action("D")
+
+    @property
+    def can_export(self):
+        return self._can_action("E")
+
+
+class ProtectedBibNomenclaturesTypesAdminConfig(
+    CruvedProtectedMixin,
+    BibNomenclaturesTypesAdminConfig,
+):
+    module_code = "ADMIN"
+    object_code = "NOMENCLATURES"
+
+
+class ProtectedTNomenclaturesAdminConfig(
+    CruvedProtectedMixin,
+    TNomenclaturesAdminConfig,
+):
+    module_code = "ADMIN"
+    object_code = "NOMENCLATURES"
+
+
+class ProtectedBibNomenclaturesTypesAdminConfig(
+    CruvedProtectedMixin,
+    BibNomenclaturesTypesAdminConfig,
+):
+    module_code = "ADMIN"
+    object_code = "NOMENCLATURES"
+
+
+class ProtectedBibFieldAdmin(
+    CruvedProtectedMixin,
+    BibFieldAdmin,
+):
+    module_code = "ADMIN"
+    object_code = "ADDITIONAL_FIELDS"
 
 
 admin = Admin(
     template_mode="bootstrap3",
-    url="/admin",
+    name="Administration GeoNature",
     index_view=MyHomeView(
-        name="Backoffice d'administration de GeoNature",
-        url="/admin",
+        name="Accueil",
         menu_icon_type="glyph",
         menu_icon_value="glyphicon-home",
     ),
-    base_template="my_master.html",
 )
 
+
+admin.add_link(
+    MenuLink(
+        name='Retourner à GeoNature',
+        url=config['URL_APPLICATION'],
+        icon_type="glyph",
+        icon_value="glyphicon-log-out",
+    )
+)
+
+
 admin.add_view(
-    BibNomenclaturesTypesAdminConfig(
+    ProtectedBibNomenclaturesTypesAdminConfig(
         BibNomenclaturesTypesAdmin,
-        DB.session,
+        db.session,
         name="Type de nomenclatures",
         category="Nomenclatures",
     )
 )
 
 admin.add_view(
-    TNomenclaturesAdminConfig(
-        TNomenclaturesAdmin, DB.session, name="Items de nomenclatures", category="Nomenclatures",
+    ProtectedTNomenclaturesAdminConfig(
+        TNomenclaturesAdmin,
+        db.session,
+        name="Items de nomenclatures",
+        category="Nomenclatures",
     )
 )
 
 admin.add_view(
-    BibFieldAdmin(
-        TAdditionalFields, 
-        DB.session, 
+    ProtectedBibFieldAdmin(
+        TAdditionalFields,
+        db.session,
         name="Bibliothèque de champs additionnels",
-        category="Champs additionnels"
+        category="Champs additionnels",
     )
 )
 
