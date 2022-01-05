@@ -491,7 +491,10 @@ def update_sensitivity_query(id_syntheses):
 
 
 def datasetHandler(dataset, data):
-    datasetSchema = DatasetSchema(unknown=EXCLUDE)
+    datasetSchema = DatasetSchema(
+        only=["cor_dataset_actor", "modules", "cor_territories"],
+        unknown=EXCLUDE
+    )
     try:
         dataset = datasetSchema.load(data, instance=dataset)
     except ValidationError as error:
@@ -898,7 +901,10 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework, info_role):
     else:
         acquisition_framework.id_digitizer = info_role.id_role
 
-    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(unknown=EXCLUDE)
+    acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
+        only=["cor_af_actor", "cor_volets_sinp", "cor_objectifs", "cor_territories"],
+        unknown=EXCLUDE
+    )
     try:
         acquisition_framework = acquisitionFrameworkSchema.load(request.get_json(), instance=acquisition_framework)
     except ValidationError as error:
@@ -920,7 +926,7 @@ def create_acquisition_framework(info_role):
     """
     # TODO: spécifier only
     # create new acquisition_framework
-    return AcquisitionFrameworkSchema().dump(
+    return AcquisitionFrameworkSchema(only=[]).dump(
         acquisitionFrameworkHandler(request=request, acquisition_framework=TAcquisitionFramework(), info_role=info_role)
     )
 
