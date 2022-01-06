@@ -250,4 +250,5 @@ def get_observation_score():
 
 @routes.cli.command()
 def update_vms():
-    DB.session.query(func.gn_profiles.refresh_profiles()).scalar()
+    DB.session.execute(func.gn_profiles.refresh_profiles())
+    DB.session.commit()
