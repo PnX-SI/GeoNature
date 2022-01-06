@@ -63,7 +63,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
 
     // la
     // event on load success
-    (this.fileLayerControl as any).loader.on('data:loaded', event => {
+    (this.fileLayerControl as any).loader.on('data:loaded', event => {      
       // remove layer from leaflet draw
       this.mapService.removeAllLayers(this.mapService.map, this.mapService.leafletDrawFeatureGroup);
       // set marker editing OFF
@@ -121,6 +121,11 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
         });
         // add the layers to the feature groupe
         this.mapService.fileLayerFeatureGroup.addLayer(newLayer);
+        // if not edition mode fire event (ex use in synthese for search)
+        if(!this.editMode) {
+          this.mapService.setGeojsonCoord(geojsonArray);
+          this.onLoad.emit(geojsonArray); 
+        }
       }
       // remove the previous layer of the map
       if (this.previousLayer) {
