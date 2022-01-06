@@ -160,10 +160,14 @@ export class MapComponent implements OnInit {
 
 
     map.on('moveend', e => {
-      this.mapService.currentExtend = {
-        center: this.map.getCenter(),
-        zoom: this.map.getZoom()
-      };
+      const zoom = this.map.getZoom();
+      // keep current extend only if current zoom != 0
+      if (zoom !== 0) {
+        this.mapService.currentExtend = {
+          center: this.map.getCenter(),
+          zoom: this.map.getZoom()
+        };
+      }
     });
 
     setTimeout(() => {
