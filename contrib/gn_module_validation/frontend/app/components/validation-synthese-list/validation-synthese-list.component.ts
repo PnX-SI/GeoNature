@@ -79,43 +79,19 @@ export class ValidationSyntheseListComponent
 
   onMapClick() {
     this.mapListService.onMapClik$.subscribe(id => {
-      // create list of observation ids having coordinates = to id value
-
-
-      const selected_id_coordinates = this.mapListService.layerDict[id].feature
-        .geometry.coordinates;
-      this.id_same_coordinates = [];
-
-      // for (let obs in this.mapListService.geojsonData.features) {
-      //   console.log(obs);
-
-      //   if (
-      //     JSON.stringify(selected_id_coordinates) ==
-      //     JSON.stringify(
-      //       this.mapListService.geojsonData.features[obs].geometry.coordinates
-      //     )
-      //   ) {
-      //     this.id_same_coordinates.push(
-      //       parseInt(this.mapListService.geojsonData.features[obs].id)
-      //     );
-      //   }
-      // }
-
-      // select rows having id_synthese = to one of the id_same_coordinates values
       this.mapListService.selectedRow = [];
-      for (let i = 0; i < this.mapListService.tableData.length; i++) {
-        if (this.mapListService.tableData[i]["id_synthese"] === id) {
+      const integerId = parseInt(id);
+      let i;
+      for (i = 0; i < this.mapListService.tableData.length; i++) {        
+        if (this.mapListService.tableData[i]["id_synthese"] === integerId) {
           this.mapListService.selectedRow.push(
             this.mapListService.tableData[i]
-          );
+          );          
           break;
         }
-        const page = Math.trunc(i / this.rowNumber);
-
-        this.table.offset = page;
       }
-
-      //this.setSelectedObs();
+      const page = Math.trunc(i / this.rowNumber);
+      this.table.offset = page;
     });
   }
 
