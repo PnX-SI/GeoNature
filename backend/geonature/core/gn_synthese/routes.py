@@ -260,7 +260,6 @@ def get_one_synthese(info_role, id_synthese):
             'validations.validation_label',
             'validations.validator_role',
             'cor_observers',
-            'cor_observers.nom_complet',
             'cor_observers.organisme',
             'source',
             'habitat',
