@@ -45,7 +45,7 @@ DISPLAY_TAXON_TREE = True
 
 ID_ATTRIBUT_TAXHUB = [1, 2]
 
-AREA_FILTERS = [{"label": "Communes", "id_type": 25}]
+AREA_FILTERS = [{"label": "Communes", "type_code": "COM"}]
 MAIL_BODY = """La donnée en date du ${ d.date_min } relative au taxon ${ d.nom_vern } - ${ d.nom_valide } pose question.\n\r
 Merci de contacter la personne en charge de la validation. 
 \n\rCommunes : ${ d.communes }
