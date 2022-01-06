@@ -105,6 +105,7 @@ class AccountManagement(Schema):
     VALIDATOR_EMAIL = EmailStrOrListOfEmailStrField(load_default=None)
     ACCOUNT_FORM = fields.List(fields.Dict(), load_default=[])
     ADDON_USER_EMAIL = fields.String(load_default="")
+    DATASET_MODULES_ASSOCIATION = fields.List(fields.String(), load_default=["OCCTAX"])
 
 
 class UsersHubConfig(Schema):
@@ -214,11 +215,7 @@ class GnPySchemaConf(Schema):
                     "URL_USERSHUB, ADMIN_APPLICATION_LOGIN et ADMIN_APPLICATION_PASSWORD sont necessaires si ENABLE_SIGN_UP=True",
                     "URL_USERSHUB",
                 )
-            if (
-                data["MAIL_CONFIG"].get("MAIL_SERVER", None) is None
-                or data["MAIL_CONFIG"].get("MAIL_USERNAME", None) is None
-                or data["MAIL_CONFIG"].get("MAIL_PASSWORD", None) is None
-            ):
+            if data["MAIL_CONFIG"].get("MAIL_SERVER", None) is None:
                 raise ValidationError(
                     "Veuillez remplir la rubrique MAIL_CONFIG si ENABLE_SIGN_UP=True",
                     "ENABLE_SIGN_UP",
