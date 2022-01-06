@@ -33,7 +33,7 @@ class GnModuleSchemaConf(Schema):
     ID_LIST_HABITAT = fields.Integer(load_default=None)
     OBSERVER_AS_TXT = fields.Boolean(load_default=False)
     OBSERVER_LIST_ID = fields.Integer(load_default=1)
-    formConfig = fields.Nested(FormConfig, load_default=dict())
+    formConfig = fields.Nested(FormConfig, load_default=FormConfig().load({}))
     # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
     EXPORT_FORMAT = fields.List(fields.String(), load_default=["csv", "geojson", "shapefile"])
     NB_MAX_EXPORT = fields.Integer(load_default=50000)
