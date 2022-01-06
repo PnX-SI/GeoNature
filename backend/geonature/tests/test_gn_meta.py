@@ -137,6 +137,21 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
         assert response.status_code == 200
 
+    def test_get_acquisition_framework(self, users, acquisition_frameworks):
+        af_id = acquisition_frameworks['own_af'].id_acquisition_framework
+        get_af_url = url_for("gn_meta.get_acquisition_framework", id_acquisition_framework=af_id)
+
+        response = self.client.get(get_af_url)
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user_cookie(self.client, users['stranger_user'])
+        response = self.client.get(get_af_url)
+        assert response.status_code == Forbidden.code
+
+        set_logged_user_cookie(self.client, users['admin_user'])
+        response = self.client.get(get_af_url)
+        assert response.status_code == 200
+
     def test_datasets_permissions(self, app, datasets, users):
         ds = datasets['own_dataset']
         with app.test_request_context(headers=logged_user_headers(users['user'])):
@@ -212,7 +227,7 @@ class TestGNMeta:
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == 204
 
-    def test_get_datasets(self, users):
+    def test_list_datasets(self, users):
         response = self.client.get(url_for("gn_meta.get_datasets"))
         assert response.status_code == Unauthorized.code
 
@@ -229,6 +244,20 @@ class TestGNMeta:
 
         response = self.client.post(url_for("gn_meta.create_dataset"))
         assert response.status_code == BadRequest.code
+
+    def test_get_dataset(self, users, datasets):
+        ds = datasets['own_dataset']
+
+        response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user_cookie(self.client, users['stranger_user'])
+        response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
+        assert response.status_code == Forbidden.code
+
+        set_logged_user_cookie(self.client, users['associate_user'])
+        response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
+        assert response.status_code == 200
 
     def test_dataset_pdf_export(self, users, datasets):
         unexisting_id = db.session.query(func.max(TDatasets.id_dataset)).scalar() + 1
@@ -248,4 +277,20 @@ class TestGNMeta:
         set_logged_user_cookie(self.client, users['user'])
 
         response = self.client.get(url_for("gn_meta.get_export_pdf_dataset", id_dataset=ds.id_dataset))
+        assert response.status_code == 200
+
+    def test_uuid_report(self, users):
+        response = self.client.get(url_for("gn_meta.uuid_report"))
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user_cookie(self.client, users['user'])
+        response = self.client.get(url_for("gn_meta.uuid_report"))
+        assert response.status_code == 200
+
+    def test_sensi_report(self, users):
+        response = self.client.get(url_for("gn_meta.uuid_report"))
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user_cookie(self.client, users['user'])
+        response = self.client.get(url_for("gn_meta.uuid_report"))
         assert response.status_code == 200
