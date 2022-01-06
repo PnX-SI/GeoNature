@@ -263,7 +263,11 @@ class Synthese(DB.Model):
     last_validation = relationship(last_validation,
                                    uselist=False,
                                    viewonly=True)
-    medias = relationship(TMedias, primaryjoin=(TMedias.uuid_attached_row==foreign(unique_id_sinp)))
+    medias = relationship(
+        TMedias, 
+        primaryjoin=(TMedias.uuid_attached_row==foreign(unique_id_sinp)),
+        uselist=True
+    )
 
     cor_observers = DB.relationship(User, secondary=cor_observer_synthese)
 
