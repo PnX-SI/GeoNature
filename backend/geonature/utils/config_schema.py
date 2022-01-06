@@ -179,7 +179,7 @@ class GnPySchemaConf(Schema):
     )
     CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
-    MAIL_CONFIG = fields.Nested(MailConfig, load_default=None)
+    MAIL_CONFIG = fields.Nested(MailConfig, load_default=MailConfig().load({}))
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     ADMIN_APPLICATION_LOGIN = fields.String()
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
