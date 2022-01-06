@@ -15,15 +15,10 @@ export class UnauthorizedInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(request).catch((err: any) => {
             if (err instanceof HttpErrorResponse
-                    && err.status === 401
-                    && this.router.url != '/') {
+                    && err.status === 401) {
                 this.router.navigate(['/login'], { // TODO: put in config!
                     queryParams: { route: this.router.url, }
                 });
-
-                // this response is handled
-                // stop the chain of handlers by returning empty
-                return Observable.empty();
             }
 
             // rethrow so other error handlers may pick this up
