@@ -2,13 +2,14 @@
 Action triggered after register action (create temp user, change password etc...)
 """
 import datetime
+from warnings import warn
 
 from flask import Markup, render_template, current_app, url_for
 from pypnusershub.db.models import Application, User
 from pypnusershub.db.models_register import TempUser
 from sqlalchemy.sql import func
 
-
+from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import (
     TDatasets,
     TAcquisitionFramework,
@@ -16,7 +17,7 @@ from geonature.core.gn_meta.models import (
     CorAcquisitionFrameworkActor,
 )
 from geonature.utils.utilsmails import send_mail
-from geonature.utils.env import DB
+from geonature.utils.env import db, DB
 
 
 def validate_temp_user(data):
@@ -62,12 +63,9 @@ def validate_temp_user(data):
 
 
 def execute_actions_after_validation(data):
-    try:
-        if current_app.config["ACCOUNT_MANAGEMENT"]["AUTO_DATASET_CREATION"]:
-            create_dataset_user(data)
-        inform_user(data)
-    except Exception as error:
-        return {"msg": ". ".join(error.args)}
+    if current_app.config["ACCOUNT_MANAGEMENT"]["AUTO_DATASET_CREATION"]:
+        create_dataset_user(data)
+    inform_user(data)
     return {"msg": "ok"}
 
 
@@ -99,8 +97,7 @@ def create_dataset_user(user):
 
     new_af.cor_af_actor = [af_productor, af_contact]
 
-    DB.session.add(new_af)
-    DB.session.commit()
+    db.session.add(new_af)
 
     ds_desc_and_name = "Jeu de données personnel de {name} {surname}".format(
         name=user["nom_role"], surname=user["prenom_role"]
@@ -115,7 +112,7 @@ def create_dataset_user(user):
     )
     # add new JDD: terrestrial and marine = True as default
     new_dataset = TDatasets(
-        id_acquisition_framework=new_af.id_acquisition_framework,
+        acquisition_framework=new_af,
         dataset_name=ds_desc_and_name,
         dataset_shortname=ds_desc_and_name + " - auto-créé via la demande de création de compte",
         dataset_desc=ds_desc_and_name,
@@ -123,8 +120,16 @@ def create_dataset_user(user):
         terrestrial_domain=True,
     )
     new_dataset.cor_dataset_actor = [ds_productor, ds_contact]
-    DB.session.add(new_dataset)
-    DB.session.commit()
+    db.session.add(new_dataset)
+
+    for module_code in current_app.config['ACCOUNT_MANAGEMENT']['DATASET_MODULES_ASSOCIATION']:
+        module = TModules.query.filter_by(module_code=module_code).one_or_none()
+        if module is None:
+            warn("Module code '{}' does not exist, can not associate dataset.".format(module_code))
+            continue
+        new_dataset.modules.append(module)
+
+    db.session.commit()
 
 
 def inform_user(user):
