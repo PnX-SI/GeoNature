@@ -46,8 +46,6 @@
 <li class="toctree-l1"><a class="reference internal" href="import-level-2.html">IMPORT NIVEAU 2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="versions-compatibility.html">COMPATIBILITE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="conf-apache.html">CONFIGURATION APACHE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="https.html">HTTPS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
@@ -84,11 +82,9 @@ Si vous souhaitez installer GeoNature avec TaxHub et UsersHub, reportez-vous à 
 <div class="section" id="installation-des-dependances">
 <h2>Installation des dépendances<a class="headerlink" href="#installation-des-dependances" title="Permalink to this headline"></a></h2>
 <p>Installer les paquets suivants :</p>
-<blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt install unzip git postgresql postgis python2 python3-pip python3-venv libgdal-dev libpangocairo-1.0-0 apache2
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt install unzip git postgresql postgis python2 python3-pip python3-venv libgdal-dev libpangocairo-1.0-0 apache2
 </pre></div>
 </div>
-</div></blockquote>
 </div>
 <div class="section" id="installation-de-l-application">
 <h2>Installation de l’application<a class="headerlink" href="#installation-de-l-application" title="Permalink to this headline"></a></h2>
@@ -165,7 +161,7 @@ $ sudo a2enmod proxy_http
 <p>Lors de l’installation de la BDD (<code class="docutils literal notranslate"><span class="pre">02_create_db.sh</span></code>) le schéma <code class="docutils literal notranslate"><span class="pre">utilisateurs</span></code> de UsersHub et le schéma <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code> de TaxHub sont intégrés automatiquement dans la BDD de GeoNature.</p>
 <p>UsersHub n’est pas nécessaire au fonctionnement de GeoNature mais il sera utile pour avoir une interface de gestion des utilisateurs, des groupes et de leurs droits.</p>
 <p>Par contre il est nécessaire d’installer TaxHub (<a class="reference external" href="https://github.com/PnX-SI/TaxHub">https://github.com/PnX-SI/TaxHub</a>) pour que GeoNature fonctionne. En effet, GeoNature utilise l’API de TaxHub. Une fois GeoNature installé, il vous faut donc installer TaxHub en le connectant à la BDD de GeoNature, vu que son schéma <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code> a déjà été installé par le script <code class="docutils literal notranslate"><span class="pre">02_create_db.sh</span></code> de GeoNature. Lors de l’installation de TaxHub, n’installez donc que l’application et pas la BDD.</p>
-<p>Télécharger Taxhub depuis le dépôt github depuis la racine de votre utilisateur:</p>
+<p>Télécharger TaxHub depuis son dépôt Github depuis la racine de votre utilisateur :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~</span>
 <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PnX</span><span class="o">-</span><span class="n">SI</span><span class="o">/</span><span class="n">TaxHub</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
 <span class="n">unzip</span> <span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
@@ -189,39 +185,6 @@ $ sudo a2enmod proxy_http
 <p>Suite à l’execution de ce script, l’application Taxhub a été lancé automatiquement par le superviseur et est disponible à l’adresse <code class="docutils literal notranslate"><span class="pre">127.0.0.1:5000</span></code> (et l’API, à <code class="docutils literal notranslate"><span class="pre">127.0.0.1:5000/api</span></code>)</p>
 <p>Voir la doc d’installation de TaxHub : <a class="reference external" href="http://taxhub.readthedocs.io/">http://taxhub.readthedocs.io/</a></p>
 <p>Voir la doc d’installation de UsersHub : <a class="reference external" href="http://usershub.readthedocs.io/">http://usershub.readthedocs.io/</a></p>
-</div>
-<div class="section" id="mise-a-jour-de-l-application">
-<h2>Mise à jour de l’application<a class="headerlink" href="#mise-a-jour-de-l-application" title="Permalink to this headline"></a></h2>
-<p>Attention, avant chaque mise à jour, il est important de sauvegarder l’application et sa base de données, ou de faire un snapshot du serveur pour pouvoir revenir à son état antérieure avant mise à jour en cas de problème.</p>
-<p>La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans un nouveau répertoire, récupérer les fichiers de configuration et de surcouche depuis la version actuelle et de relancer l’installation dans le répertoire de la nouvelle version.</p>
-<p>La mise à jour doit être réalisée avec votre utilisateur linux courant (<code class="docutils literal notranslate"><span class="pre">geonatureadmin</span></code> par exemple) et non pas le super-utilisateur <code class="docutils literal notranslate"><span class="pre">root</span></code>.</p>
-<ul>
-<li><p>Télécharger la dernière version de GeoNature :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PnX</span><span class="o">-</span><span class="n">SI</span><span class="o">/</span><span class="n">GeoNature</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
-<span class="n">unzip</span> <span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
-<span class="n">rm</span> <span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
-</pre></div>
-</div>
-</li>
-<li><p>Renommer l’ancien repertoire de l’application, ainsi que le nouveau :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mv /home/`whoami`/geonature/ /home/`whoami`/geonature_old/
-mv GeoNature-X.Y.Z /home/`whoami`/geonature/
-cd geonature
-</pre></div>
-</div>
-</li>
-<li><p>Suivez les éventuelles notes de version spécifiques décrites au niveau de chaque version : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/releases">https://github.com/PnX-SI/GeoNature/releases</a>.</p></li>
-</ul>
-<p>⚠️ Si la release inclut des scripts de migration SQL : <em>lancer ces scripts avec l’utilisateur de BDD courant</em> (généralement <code class="docutils literal notranslate"><span class="pre">geonatadmin</span></code>) et non le super-utilisateur <code class="docutils literal notranslate"><span class="pre">postgres</span></code>.</p>
-<p>Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions intermédiaires et notamment les scripts de mise à jour de la base de données à exécuter successivement.</p>
-<ul>
-<li><p>Si vous devez aussi mettre à jour TaxHub et/ou UsersHub, suivez leurs notes de versions mais aussi leur documentation (<a class="reference external" href="https://usershub.readthedocs.io">https://usershub.readthedocs.io</a> et <a class="reference external" href="https://taxhub.readthedocs.io">https://taxhub.readthedocs.io</a>).</p></li>
-<li><p>Lancez le script de <code class="docutils literal notranslate"><span class="pre">migration.sh</span></code> à la racine du dossier <code class="docutils literal notranslate"><span class="pre">geonature</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">install</span><span class="o">/</span><span class="n">migration</span><span class="o">/</span><span class="n">migration</span><span class="o">.</span><span class="n">sh</span>
-</pre></div>
-</div>
-</li>
-</ul>
 </div>
 <div class="section" id="passer-en-mode-developpement">
 <h2>Passer en mode développement<a class="headerlink" href="#passer-en-mode-developpement" title="Permalink to this headline"></a></h2>

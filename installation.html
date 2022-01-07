@@ -57,30 +57,20 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#dependances">Dépendances</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#mise-a-jour-de-l-application">Mise à jour de l’application</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#passer-en-mode-developpement">Passer en mode développement</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#specificites-depobio">Spécificités DEPOBIO</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id5">Configuration Apache</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#configuration-de-l-application">Configuration de l’application</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#configuration-globale-de-l-application">Configuration globale de l’application</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#configuration-des-urls-pour-le-cas">Configuration des URLS pour le CAS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#cle-secrete">Clé secrète</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#configuration-bdd-liee-a-la-connexion-au-cas">Configuration BDD liée à la connexion au CAS</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#connexion-au-cas-inpn-gestion-centralisee-des-utilisateurs">Connexion au CAS INPN - gestion centralisée des utilisateurs</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#configuration-du-frontend">Configuration du frontend</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#configuration-de-la-cartographie">Configuration de la cartographie</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#configuration-du-module-occurrence-de-taxon-occtax">Configuration du module Occurrence de taxon: OCCTAX</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#https">HTTPS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installer-certbot">Installer certbot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lancer-la-commande-cerbot">Lancer la commande cerbot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#les-certificats-obtenus">Les certificats obtenus</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#automatiser-le-renouvellement-du-certificat">Automatiser le renouvellement du certificat</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prise-en-compte-des-nouvelles-configurations-apache">Prise en compte des nouvelles configurations Apache</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-de-l-application-geonature">Configuration de l’application GeoNature</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#referentiel-geographique">Référentiel géographique</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#authentification-cas-inpn">Authentification CAS INPN</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#connexion-et-droits-dans-geonature">Connexion et droits dans GeoNature</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#recuperation-des-jdd">Récupération des JDD</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-synthese">Module Synthese</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#taches-planifiees">Taches planifiées</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#mise-a-jour-de-l-application">Mise à jour de l’application</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
@@ -89,8 +79,6 @@
 <li class="toctree-l1"><a class="reference internal" href="import-level-2.html">IMPORT NIVEAU 2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="versions-compatibility.html">COMPATIBILITE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="conf-apache.html">CONFIGURATION APACHE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="https.html">HTTPS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
@@ -134,8 +122,8 @@
 </ul>
 <p>Deux méthodes d’installation existent :</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#installation-all"><span class="std std-ref">Installation globale</span></a> : Installation de GeoNature, TaxHub et UsersHub.</p></li>
-<li><p><a class="reference internal" href="#installation-standalone"><span class="std std-ref">Installation de GeoNature uniquement</span></a> : TaxHub et UsersHub ne sont pas installé (mais leur schémas sont tous de même créés dans la base de données).</p></li>
+<li><p><a class="reference internal" href="#installation-all"><span class="std std-ref">Installation globale</span></a> : Installation automatisée de GeoNature, TaxHub et UsersHub.</p></li>
+<li><p><a class="reference internal" href="#installation-standalone"><span class="std std-ref">Installation de GeoNature uniquement</span></a> : TaxHub et UsersHub ne sont pas installés (mais leur schémas sont tous de même créés dans la base de données).</p></li>
 </ul>
 <div class="section" id="prerequis">
 <h2>Prérequis<a class="headerlink" href="#prerequis" title="Permalink to this headline"></a></h2>
@@ -210,7 +198,9 @@
 </pre></div>
 </div>
 </li>
-<li><p>Pour la suite du processus d’installation, on utilisera ’utilisateur non privilégié nouvellement créé. Si besoin d’éxecuter des commandes avec les droits d’administrateur, on les précèdera de <code class="docutils literal notranslate"><span class="pre">sudo</span></code>. Il est d’ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec <code class="docutils literal notranslate"><span class="pre">root</span></code>. Voir <a class="reference external" href="https://docs.ovh.com/fr/vps/conseils-securisation-vps/">https://docs.ovh.com/fr/vps/conseils-securisation-vps/</a> pour plus d’informations sur le sécurisation du serveur. Pour passer de l’utilisateur <code class="docutils literal notranslate"><span class="pre">root</span></code> à <code class="docutils literal notranslate"><span class="pre">geonatureadmin</span></code>, vous pouvez aussi utiliser la commande :</p>
+<li><p>Pour la suite du processus d’installation, on utilisera l’utilisateur non privilégié nouvellement créé. Si besoin d’éxecuter des commandes avec les droits d’administrateur, on les précèdera de <code class="docutils literal notranslate"><span class="pre">sudo</span></code>.</p>
+<p>Il est d’ailleurs possible renforcer la sécurité du serveur en bloquant la connexion SSH au serveur avec <code class="docutils literal notranslate"><span class="pre">root</span></code>. Voir <a class="reference external" href="https://docs.ovh.com/fr/vps/conseils-securisation-vps/">https://docs.ovh.com/fr/vps/conseils-securisation-vps/</a> pour plus d’informations sur le sécurisation du serveur.</p>
+<p>Pour passer de l’utilisateur <code class="docutils literal notranslate"><span class="pre">root</span></code> à <code class="docutils literal notranslate"><span class="pre">geonatureadmin</span></code>, vous pouvez aussi utiliser la commande :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># su - geonatureadmin</span>
 </pre></div>
 </div>
@@ -338,11 +328,9 @@ Si vous souhaitez installer GeoNature avec TaxHub et UsersHub, reportez-vous à 
 <div class="section" id="installation-des-dependances">
 <h3>Installation des dépendances<a class="headerlink" href="#installation-des-dependances" title="Permalink to this headline"></a></h3>
 <p>Installer les paquets suivants :</p>
-<blockquote>
-<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt install unzip git postgresql postgis python2 python3-pip python3-venv libgdal-dev libpangocairo-1.0-0 apache2
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo apt install unzip git postgresql postgis python2 python3-pip python3-venv libgdal-dev libpangocairo-1.0-0 apache2
 </pre></div>
 </div>
-</div></blockquote>
 </div>
 <div class="section" id="id1">
 <h3>Installation de l’application<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h3>
@@ -419,7 +407,7 @@ $ sudo a2enmod proxy_http
 <p>Lors de l’installation de la BDD (<code class="docutils literal notranslate"><span class="pre">02_create_db.sh</span></code>) le schéma <code class="docutils literal notranslate"><span class="pre">utilisateurs</span></code> de UsersHub et le schéma <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code> de TaxHub sont intégrés automatiquement dans la BDD de GeoNature.</p>
 <p>UsersHub n’est pas nécessaire au fonctionnement de GeoNature mais il sera utile pour avoir une interface de gestion des utilisateurs, des groupes et de leurs droits.</p>
 <p>Par contre il est nécessaire d’installer TaxHub (<a class="reference external" href="https://github.com/PnX-SI/TaxHub">https://github.com/PnX-SI/TaxHub</a>) pour que GeoNature fonctionne. En effet, GeoNature utilise l’API de TaxHub. Une fois GeoNature installé, il vous faut donc installer TaxHub en le connectant à la BDD de GeoNature, vu que son schéma <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code> a déjà été installé par le script <code class="docutils literal notranslate"><span class="pre">02_create_db.sh</span></code> de GeoNature. Lors de l’installation de TaxHub, n’installez donc que l’application et pas la BDD.</p>
-<p>Télécharger Taxhub depuis le dépôt github depuis la racine de votre utilisateur:</p>
+<p>Télécharger TaxHub depuis son dépôt Github depuis la racine de votre utilisateur :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="o">~</span>
 <span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PnX</span><span class="o">-</span><span class="n">SI</span><span class="o">/</span><span class="n">TaxHub</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
 <span class="n">unzip</span> <span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
@@ -443,39 +431,6 @@ $ sudo a2enmod proxy_http
 <p>Suite à l’execution de ce script, l’application Taxhub a été lancé automatiquement par le superviseur et est disponible à l’adresse <code class="docutils literal notranslate"><span class="pre">127.0.0.1:5000</span></code> (et l’API, à <code class="docutils literal notranslate"><span class="pre">127.0.0.1:5000/api</span></code>)</p>
 <p>Voir la doc d’installation de TaxHub : <a class="reference external" href="http://taxhub.readthedocs.io/">http://taxhub.readthedocs.io/</a></p>
 <p>Voir la doc d’installation de UsersHub : <a class="reference external" href="http://usershub.readthedocs.io/">http://usershub.readthedocs.io/</a></p>
-</div>
-<div class="section" id="mise-a-jour-de-l-application">
-<h3>Mise à jour de l’application<a class="headerlink" href="#mise-a-jour-de-l-application" title="Permalink to this headline"></a></h3>
-<p>Attention, avant chaque mise à jour, il est important de sauvegarder l’application et sa base de données, ou de faire un snapshot du serveur pour pouvoir revenir à son état antérieure avant mise à jour en cas de problème.</p>
-<p>La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans un nouveau répertoire, récupérer les fichiers de configuration et de surcouche depuis la version actuelle et de relancer l’installation dans le répertoire de la nouvelle version.</p>
-<p>La mise à jour doit être réalisée avec votre utilisateur linux courant (<code class="docutils literal notranslate"><span class="pre">geonatureadmin</span></code> par exemple) et non pas le super-utilisateur <code class="docutils literal notranslate"><span class="pre">root</span></code>.</p>
-<ul>
-<li><p>Télécharger la dernière version de GeoNature :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PnX</span><span class="o">-</span><span class="n">SI</span><span class="o">/</span><span class="n">GeoNature</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
-<span class="n">unzip</span> <span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
-<span class="n">rm</span> <span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
-</pre></div>
-</div>
-</li>
-<li><p>Renommer l’ancien repertoire de l’application, ainsi que le nouveau :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mv /home/`whoami`/geonature/ /home/`whoami`/geonature_old/
-mv GeoNature-X.Y.Z /home/`whoami`/geonature/
-cd geonature
-</pre></div>
-</div>
-</li>
-<li><p>Suivez les éventuelles notes de version spécifiques décrites au niveau de chaque version : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/releases">https://github.com/PnX-SI/GeoNature/releases</a>.</p></li>
-</ul>
-<p>⚠️ Si la release inclut des scripts de migration SQL : <em>lancer ces scripts avec l’utilisateur de BDD courant</em> (généralement <code class="docutils literal notranslate"><span class="pre">geonatadmin</span></code>) et non le super-utilisateur <code class="docutils literal notranslate"><span class="pre">postgres</span></code>.</p>
-<p>Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions intermédiaires et notamment les scripts de mise à jour de la base de données à exécuter successivement.</p>
-<ul>
-<li><p>Si vous devez aussi mettre à jour TaxHub et/ou UsersHub, suivez leurs notes de versions mais aussi leur documentation (<a class="reference external" href="https://usershub.readthedocs.io">https://usershub.readthedocs.io</a> et <a class="reference external" href="https://taxhub.readthedocs.io">https://taxhub.readthedocs.io</a>).</p></li>
-<li><p>Lancez le script de <code class="docutils literal notranslate"><span class="pre">migration.sh</span></code> à la racine du dossier <code class="docutils literal notranslate"><span class="pre">geonature</span></code>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">install</span><span class="o">/</span><span class="n">migration</span><span class="o">/</span><span class="n">migration</span><span class="o">.</span><span class="n">sh</span>
-</pre></div>
-</div>
-</li>
-</ul>
 </div>
 <div class="section" id="passer-en-mode-developpement">
 <h3>Passer en mode développement<a class="headerlink" href="#passer-en-mode-developpement" title="Permalink to this headline"></a></h3>
@@ -540,396 +495,137 @@ cd geonature
 <p>Vous pouvez vous connecter à l’application avec l’identifiant <code class="docutils literal notranslate"><span class="pre">admin</span></code> et le mot de passe <code class="docutils literal notranslate"><span class="pre">admin</span></code>.</p>
 </div>
 </div>
-<div class="section" id="specificites-depobio">
-<h2>Spécificités DEPOBIO<a class="headerlink" href="#specificites-depobio" title="Permalink to this headline"></a></h2>
-<p>Cette documentation mentionne les spécificités et la configuration de l’installation de l’instance nationale du Ministère de la Transition Ecologique et Solidaire (MTES), dans le cadre du projet de Depôt Légal des données de biodiversité (<a class="reference external" href="https://depot-legal-biodiversite.naturefrance.fr/">https://depot-legal-biodiversite.naturefrance.fr/</a>).</p>
-<p>Pour l’installation de GeoNature, voir la procédure d’installation de GeoNature et ses dépendances (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-all.rst">https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-all.rst</a>).</p>
-<div class="section" id="id5">
-<h3>Configuration Apache<a class="headerlink" href="#id5" title="Permalink to this headline"></a></h3>
-<p>Editez la configuration Apache de GeoNature et de TaxHub pour l’adapter au
-contexte de production.</p>
-<p>Fichier <code class="docutils literal notranslate"><span class="pre">/etc/apache/site-enabled/geonature.conf</span></code> :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1">#Configuration GeoNature</span>
-
-<span class="n">Alias</span> <span class="o">/</span><span class="n">saisie</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">ecrins</span><span class="o">/</span><span class="n">geonature</span><span class="o">/</span><span class="n">frontend</span><span class="o">/</span><span class="n">dist</span>
-<span class="o">&lt;</span><span class="n">Directory</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">ecrins</span><span class="o">/</span><span class="n">geonature</span><span class="o">/</span><span class="n">frontend</span><span class="o">/</span><span class="n">dist</span><span class="o">&gt;</span>
-    <span class="n">Require</span> <span class="nb">all</span> <span class="n">granted</span>
-<span class="o">&lt;/</span><span class="n">Directory</span><span class="o">&gt;</span>
-
-<span class="o">&lt;</span><span class="n">Location</span> <span class="o">/</span><span class="n">saisie</span><span class="o">/</span><span class="n">api</span><span class="o">&gt;</span>
-    <span class="n">ProxyPass</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">8000</span>
-    <span class="n">ProxyPassReverse</span>  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">8000</span>
-<span class="o">&lt;/</span><span class="n">Location</span><span class="o">&gt;</span>
-</pre></div>
-</div>
-<p>Fichier <code class="docutils literal notranslate"><span class="pre">/etc/apache/site-enabled/taxhub.conf</span></code> :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Configuration TaxHub</span>
-<span class="n">RewriteEngine</span>  <span class="n">on</span>
-<span class="n">RewriteRule</span>    <span class="s2">&quot;taxhub$&quot;</span>  <span class="s2">&quot;taxhub/&quot;</span>  <span class="p">[</span><span class="n">R</span><span class="p">]</span>
-<span class="o">&lt;</span><span class="n">Location</span> <span class="o">/</span><span class="n">saisie</span><span class="o">/</span><span class="n">taxhub</span><span class="o">&gt;</span>
-    <span class="n">ProxyPass</span>  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">5000</span> <span class="n">retry</span><span class="o">=</span><span class="mi">0</span>
-    <span class="n">ProxyPassReverse</span>  <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="mf">127.0.0.1</span><span class="p">:</span><span class="mi">5000</span>
-<span class="o">&lt;/</span><span class="n">Location</span><span class="o">&gt;</span>
-<span class="c1">#FIN Configuration TaxHub</span>
-</pre></div>
-</div>
-<p>Le fichier <code class="docutils literal notranslate"><span class="pre">/etc/apache/site-enabled/000-default.conf</span></code> doit également être
-édité pour faire fonctionner le load balancing (Voir la configuration de la
-pre-prod pour l’adapter au serveur de production).</p>
-</div>
-<div class="section" id="configuration-de-l-application">
-<h3>Configuration de l’application<a class="headerlink" href="#configuration-de-l-application" title="Permalink to this headline"></a></h3>
-<p>Une fois l’installation terminée, il est nécessaire d’adapter les fichiers de
-configuration de l’application pour les besoins spécifiques de
-l’instance nationale.</p>
-<p>Lancer le script pour effectuer automatiquement la configuration
-de l’application :</p>
-<p><code class="docutils literal notranslate"><span class="pre">/home/&lt;my_user&gt;/geonature/install/install_all/configuration_mtes.sh</span></code></p>
-<p>Il est cependant possible de modifier ces configurations.
-Le fichier <code class="docutils literal notranslate"><span class="pre">/home/&lt;my_user&gt;/geonature/config/default_config.toml.example</span></code>
-liste l’ensemble des variables de configuration disponibles ainsi que leurs
-valeurs par défaut.</p>
-<p>Editer le fichier de configuration de GeoNature pour surcoucher ces variables :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>sudo nano /home/&lt;MON_USER&gt;/geonature/config/geonature_config.toml`
-</pre></div>
-</div>
-<p>Ci-dessous, les paramètres de configuration pour l’instance de production.</p>
-<div class="section" id="configuration-globale-de-l-application">
-<h4>Configuration globale de l’application<a class="headerlink" href="#configuration-globale-de-l-application" title="Permalink to this headline"></a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># code EPSG de la projection de la base</span>
-<span class="n">LOCAL_SRID</span> <span class="o">=</span> <span class="s1">&#39;2154&#39;</span>
-
-<span class="n">DEFAULT_LANGUAGE</span><span class="o">=</span><span class="s1">&#39;fr&#39;</span>
-
-<span class="c1"># url de l&#39;application métadonnée</span>
-<span class="n">MTD_API_ENDPOINT</span> <span class="o">=</span> <span class="s1">&#39;http://inpn.mnhn.fr/mtd&#39;</span>
-
-<span class="c1"># Nom de l&#39;application sur la page d&#39;acceuil</span>
-<span class="n">appName</span> <span class="o">=</span> <span class="s1">&#39;Depôt légal de biodiviersité - saisie&#39;</span>
-
-<span class="n">ID_APPLICATION_GEONATURE</span> <span class="o">=</span> <span class="mi">14</span>
+<div class="section" id="https">
+<h2>HTTPS<a class="headerlink" href="#https" title="Permalink to this headline"></a></h2>
+<p>La procédure décrit une méthode de certification HTTPS de votre domaine, grâce au service <a class="reference external" href="https://letsencrypt.org/">Let’s Encrypt</a>. Les manipulations ont été effectuées sur un serveur Debian 9 avec Apache2 installé, et un utilisateur bénéficiant des droits sudo.</p>
+<p>Ressources :</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.memoinfo.fr/tutoriels-linux/configurer-lets-encrypt-apache/">https://www.memoinfo.fr/tutoriels-linux/configurer-lets-encrypt-apache/</a></p></li>
+<li><p><a class="reference external" href="https://korben.info/securiser-facilement-gratuitement-site-https.html">https://korben.info/securiser-facilement-gratuitement-site-https.html</a></p></li>
+</ul>
+<div class="section" id="installer-certbot">
+<h3>Installer certbot<a class="headerlink" href="#installer-certbot" title="Permalink to this headline"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">certbot</span><span class="o">-</span><span class="n">apache</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="configuration-des-urls-pour-le-cas">
-<h4>Configuration des URLS pour le CAS<a class="headerlink" href="#configuration-des-urls-pour-le-cas" title="Permalink to this headline"></a></h4>
-<p>Les URLS doivent correspondre aux informations renseignées dans la
-configuration Apache et au Load Balancer. Elle ne doivent pas contenir
-de <code class="docutils literal notranslate"><span class="pre">/</span></code> final.</p>
-<p>Pour la pré-prod, ajouter le préfixe “pp-” avant <code class="docutils literal notranslate"><span class="pre">saisie</span></code> et <code class="docutils literal notranslate"><span class="pre">taxhub</span></code>
-(naturefrance.fr/pp-saisie, naturefrance.fr/pp-taxhub/api) et adapter la
-configuration Apache en conséquence.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># URL d&#39;accès à l&#39;application</span>
-<span class="n">URL_APPLICATION</span> <span class="o">=</span> <span class="s1">&#39;https://depot-legal-biodiversite.naturefrance.fr/saisie&#39;</span>
-<span class="c1"># URL de l&#39;API de GeoNature</span>
-<span class="n">API_ENDPOINT</span> <span class="o">=</span> <span class="s1">&#39;https://depot-legal-biodiversite.naturefrance.fr/saisie/api&#39;</span>
-<span class="c1"># URL de l&#39;API de Taxhub</span>
-<span class="n">API_TAXHUB</span> <span class="o">=</span> <span class="s1">&#39;https://depot-legal-biodiversite.naturefrance.fr/taxhub/api&#39;</span>
+<div class="section" id="lancer-la-commande-cerbot">
+<h3>Lancer la commande cerbot<a class="headerlink" href="#lancer-la-commande-cerbot" title="Permalink to this headline"></a></h3>
+<p>Lancer la commande suivant pour générer des certificats et des clés pour le nom de domaine que vous souhaitez mettre en HTTPS.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">certbot</span> <span class="n">certonly</span> <span class="o">--</span><span class="n">webroot</span> <span class="o">--</span><span class="n">webroot</span><span class="o">-</span><span class="n">path</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span> <span class="o">--</span><span class="n">domain</span> <span class="n">mondomaine</span><span class="o">.</span><span class="n">fr</span> <span class="o">--</span><span class="n">email</span> <span class="n">monemail</span><span class="nd">@mondomaine</span><span class="o">.</span><span class="n">fr</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">certonly</span></code> : demander la création du certificat uniquement.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--webroot</span></code> : utiliser le plugin webroot qui se contente d’ajouter des fichiers dans le dossier défini via <code class="docutils literal notranslate"><span class="pre">--webroot-path</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--webroot-path</span></code> : le chemin de votre « DocumentRoot » Apache. Certbot placera ses fichiers dans <code class="docutils literal notranslate"><span class="pre">$DocumentRoot/.well-known/</span></code> pour les tests et vérifications</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--domain</span></code> : le nom de domaine à certifier. Mettre tous les sous-domaines à certifier</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">--email</span></code> : l’adresse qui recevra les notifications de Let’s Encrypt. Principalement pour rappeler de renouveler le certificat le moment venu.</p></li>
+</ul>
+</div>
+<div class="section" id="les-certificats-obtenus">
+<h3>Les certificats obtenus<a class="headerlink" href="#les-certificats-obtenus" title="Permalink to this headline"></a></h3>
+<p>Le certificat se trouve dans le répertoire <code class="docutils literal notranslate"><span class="pre">/etc/letsencrypt/live/mondomaine.fr/</span></code>.</p>
+<p>Il est constitué de 4 fichiers :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">privkey.pem</span></code> : La clé privée de votre certificat. A garder confidentielle en toutes circonstances et à ne communiquer à personne quel que soit le prétexte. Vous êtes prévenus !</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cert.pem</span></code> : Le certificat serveur est à préciser pour les versions d’Apache &lt; 2.4.8. Ce qui est notre cas ici.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">chain.pem</span></code> : Les autres certificats, SAUF le certificat serveur. Par exemple les certificats intermédiaires. Là encore pour les versions d’Apache &lt; 2.4.8.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fullchain.pem</span></code> : Logiquement, l’ensemble des certificats. La concaténation du <code class="docutils literal notranslate"><span class="pre">cert.pem</span></code> et du <code class="docutils literal notranslate"><span class="pre">chain.pem</span></code>. A utiliser cette fois-ci pour les versions d’Apache &gt;= 2.4.8.</p></li>
+</ul>
+</div>
+<div class="section" id="automatiser-le-renouvellement-du-certificat">
+<h3>Automatiser le renouvellement du certificat<a class="headerlink" href="#automatiser-le-renouvellement-du-certificat" title="Permalink to this headline"></a></h3>
+<p>Le certificat fourni par Let’s Encrypt n’est valable que 3 mois. Il faut donc mettre en place un renouvellement automatique.
+Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le certificat :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">crontab</span> <span class="o">-</span><span class="n">e</span>
+<span class="mi">1</span> <span class="mi">8</span> <span class="o">*</span> <span class="o">*</span> <span class="n">Sat</span> <span class="n">certbot</span> <span class="n">renew</span> <span class="o">--</span><span class="n">renew</span><span class="o">-</span><span class="n">hook</span> <span class="s2">&quot;service apache2 reload&quot;</span> <span class="o">&gt;&gt;</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">certbot</span><span class="o">.</span><span class="n">log</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="cle-secrete">
-<h4>Clé secrète<a class="headerlink" href="#cle-secrete" title="Permalink to this headline"></a></h4>
-<p>Mettre un clé secrète personnalisée</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="s1">&#39;&lt;MA_CLE_CRYPTEE&gt;&#39;</span>
+<div class="section" id="prise-en-compte-des-nouvelles-configurations-apache">
+<h3>Prise en compte des nouvelles configurations Apache<a class="headerlink" href="#prise-en-compte-des-nouvelles-configurations-apache" title="Permalink to this headline"></a></h3>
+<p>Activer les modules <code class="docutils literal notranslate"><span class="pre">ssl</span></code>, <code class="docutils literal notranslate"><span class="pre">headers</span></code> et <code class="docutils literal notranslate"><span class="pre">rewrite</span></code> puis redémarrer Apache :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">ssl</span>
+<span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">rewrite</span>
+<span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">headers</span>
+<span class="n">sudo</span> <span class="n">apachectl</span> <span class="n">restart</span>
 </pre></div>
 </div>
+<p>Les fichiers de configuration des sites TaxHub et UsersHub ne sont pas à modifier, ils seront automatiquement associés à la configuration HTTPS. En revanche, la configuration de GeoNature doit être mise à jour.</p>
 </div>
-<div class="section" id="configuration-bdd-liee-a-la-connexion-au-cas">
-<h4>Configuration BDD liée à la connexion au CAS<a class="headerlink" href="#configuration-bdd-liee-a-la-connexion-au-cas" title="Permalink to this headline"></a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">BDD</span><span class="p">]</span>
-<span class="c1"># id du groupe dans lequel tous les utilisateurs connectés sont ajoutés</span>
-<span class="c1"># (seul le socle 1 - droit minimum - est utilisé pour l&#39;instance de production)</span>
-<span class="n">ID_USER_SOCLE_1</span> <span class="o">=</span> <span class="mi">20003</span>
-<span class="n">ID_USER_SOCLE_2</span> <span class="o">=</span> <span class="mi">20001</span>
+<div class="section" id="configuration-de-l-application-geonature">
+<h3>Configuration de l’application GeoNature<a class="headerlink" href="#configuration-de-l-application-geonature" title="Permalink to this headline"></a></h3>
+<p>Il est nécessaire de mettre à jour le fichier de configuration <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code> situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/config</span></code> :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span><span class="o">/</span><span class="n">config</span>
+<span class="n">nano</span> <span class="n">geonature_config</span><span class="o">.</span><span class="n">toml</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="connexion-au-cas-inpn-gestion-centralisee-des-utilisateurs">
-<h4>Connexion au CAS INPN - gestion centralisée des utilisateurs<a class="headerlink" href="#connexion-au-cas-inpn-gestion-centralisee-des-utilisateurs" title="Permalink to this headline"></a></h4>
-<p>Bien changer les variables ID et PASSWORD avec les bonnes valeurs.</p>
-<p>NB : pour la pré-prod, utiliser <code class="docutils literal notranslate"><span class="pre">https://preprod-inpn.mnhn.fr</span></code></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">CAS_PUBLIC</span><span class="p">]</span>
-<span class="n">CAS_AUTHENTIFICATION</span> <span class="o">=</span> <span class="n">true</span>
-<span class="n">CAS_URL_LOGIN</span> <span class="o">=</span> <span class="s1">&#39;https://inpn.mnhn.fr/auth/login&#39;</span>
-<span class="n">CAS_URL_LOGOUT</span> <span class="o">=</span> <span class="s1">&#39;https://inpn.mnhn.fr/auth/logout&#39;</span>
-
-<span class="p">[</span><span class="n">CAS</span><span class="p">]</span>
-<span class="n">CAS_URL_VALIDATION</span> <span class="o">=</span> <span class="s1">&#39;https://inpn.mnhn.fr/auth/serviceValidate&#39;</span>
-<span class="c1"># est ce que les utilisateurs connecté peuvent voir les donées de leur organisme</span>
-<span class="n">USERS_CAN_SEE_ORGANISM_DATA</span> <span class="o">=</span> <span class="n">false</span>
-
-<span class="p">[</span><span class="n">CAS</span><span class="o">.</span><span class="n">CAS_USER_WS</span><span class="p">]</span>
-<span class="n">URL</span> <span class="o">=</span> <span class="s1">&#39;https://inpn.mnhn.fr/authentication/information&#39;</span>
-<span class="n">ID</span> <span class="o">=</span> <span class="s1">&#39;&lt;THE_INPN_LOGIN&gt;&#39;</span>
-<span class="n">PASSWORD</span> <span class="o">=</span> <span class="s1">&#39;&lt;THE_INPN_PASSWORD&gt;&#39;</span>
+<p>Modifier les éléments suivants :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">URL_APPLICATION</span> <span class="o">=</span> <span class="s1">&#39;https://mondomaine.fr/geonature&#39;</span>
+<span class="n">API_ENDPOINT</span> <span class="o">=</span> <span class="s1">&#39;https://mondomaine.fr/geonature/api&#39;</span>
+<span class="n">API_TAXHUB</span> <span class="o">=</span> <span class="s1">&#39;https://mondomaine.fr/taxhub/api&#39;</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="configuration-du-frontend">
-<h4>Configuration du frontend<a class="headerlink" href="#configuration-du-frontend" title="Permalink to this headline"></a></h4>
-<p>Pour l’instance de pré-prod, rajouter “instance de démo” à la variable
-<code class="docutils literal notranslate"><span class="pre">appName</span></code>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">FRONTEND</span><span class="p">]</span>
-    <span class="c1"># Compilation du fronend en mode production</span>
-    <span class="n">PROD_MOD</span> <span class="o">=</span> <span class="n">true</span>
-    <span class="c1"># Affichage du footer sur la page d&#39;acceuil</span>
-    <span class="n">DISPLAY_FOOTER</span> <span class="o">=</span> <span class="n">true</span>
-    <span class="c1"># affiche la carte des dernières observations basées sur la synthese</span>
-    <span class="n">DISPLAY_MAP_LAST_OBS</span> <span class="o">=</span> <span class="n">false</span>
-    <span class="c1"># afficheafficher un bloc de stat basé sur la synthese</span>
-    <span class="n">DISPLAY_STAT_BLOC</span> <span class="o">=</span> <span class="n">false</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="configuration-de-la-cartographie">
-<h4>Configuration de la cartographie<a class="headerlink" href="#configuration-de-la-cartographie" title="Permalink to this headline"></a></h4>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">MAPCONFIG</span><span class="p">]</span>
-<span class="n">BASEMAP</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span> <span class="o">=</span> <span class="s2">&quot;IGN-topo&quot;</span><span class="p">,</span> <span class="s2">&quot;layer&quot;</span> <span class="o">=</span> <span class="s2">&quot;https://wxs.ign.fr/i53afxeajwaokg3gxzzhn8un/geoportail/wmts?SERVICE=WMTS&amp;REQUEST=GetTile&amp;VERSION=1.0.0&amp;LAYER=GEOGRAP$</span>
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="o">=</span> <span class="s2">&quot;IGN-Scan Express&quot;</span><span class="p">,</span> <span class="s2">&quot;layer&quot;</span> <span class="o">=</span> <span class="s2">&quot;https://wxs.ign.fr/i53afxeajwaokg3gxzzhn8un/geoportail/wmts?SERVICE=WMTS&amp;REQUEST=GetTile&amp;VERSION=1.0.0&amp;LAYER=$</span>
-    <span class="p">{</span><span class="s2">&quot;name&quot;</span> <span class="o">=</span> <span class="s2">&quot;IGN-Ortho&quot;</span><span class="p">,</span> <span class="s2">&quot;layer&quot;</span> <span class="o">=</span> <span class="s2">&quot;https://wxs.ign.fr/i53afxeajwaokg3gxzzhn8un/geoportail/wmts?SERVICE=WMTS&amp;REQUEST=GetTile&amp;VERSION=1.0.0&amp;LAYER=ORTHOI$</span>
-<span class="p">]</span>
-<span class="c1"># Attention: les coordonnées sont au format [Y, X] - cf leaflet configuration (https://leafletjs.com/reference-1.4.0.html#latlng-l-latlng)</span>
-<span class="n">CENTER</span> <span class="o">=</span> <span class="p">[</span><span class="mf">46.52863469527167</span><span class="p">,</span> <span class="mf">2.43896484375</span><span class="p">]</span>
-<span class="c1"># Zoom par défaut</span>
-<span class="n">ZOOM_LEVEL</span> <span class="o">=</span> <span class="mi">6</span>
-<span class="c1"># Zoom à partir duquel on peut pointer un releve</span>
-<span class="n">ZOOM_LEVEL_RELEVE</span> <span class="o">=</span> <span class="mi">15</span>
-</pre></div>
-</div>
-<p>Après chaque modification du fichier de configuration, lancez les commandes
-suivantes pour mettre à jour l’application (l’opération peut être longue car
-il s’agit de la recompilation du frontend).</p>
-<p>Depuis le répertoire <code class="docutils literal notranslate"><span class="pre">backend</span></code> de GeoNature</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
+<p>Pour que ces modifications soient prises en compte, lancer les commandes suivantes :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span><span class="o">/</span><span class="n">backend</span>
+<span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
 <span class="n">geonature</span> <span class="n">update_configuration</span>
 <span class="n">deactivate</span>
 </pre></div>
 </div>
+<p>Les applications sont désormais accessibles sur votre domaine sécurisé en HTTPS !</p>
 </div>
-<div class="section" id="configuration-du-module-occurrence-de-taxon-occtax">
-<h4>Configuration du module Occurrence de taxon: OCCTAX<a class="headerlink" href="#configuration-du-module-occurrence-de-taxon-occtax" title="Permalink to this headline"></a></h4>
-<p>Le fichier de configuration du module Occtax se trouve dans le fichier
-<code class="docutils literal notranslate"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/external_modules/occtax/config/conf_gn_module.toml</span></code>.</p>
-<p>Le script de configuration spécifique de l’instance nationale remplit ce
-fichier avec les bonnes configuration.</p>
-<p>Voici la configuration fournie pour l’instance de production:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">api_url</span> <span class="o">=</span> <span class="s1">&#39;/occtax&#39;</span>
-
-<span class="c1"># message sur la modale des export pour préciser les consignes pour GINCO</span>
-<span class="n">export_message</span> <span class="o">=</span> <span class="s2">&quot;&lt;p&gt; &lt;b&gt; Attention: &lt;/b&gt; &lt;/br&gt; Vous vous apprêtez à télécharger les données de la &lt;b&gt;recherche courante.&lt;/b&gt; &lt;/br&gt; Pour n&#39;exporter qu&#39;un &lt;b&gt;$</span>
-
-<span class="c1"># format disponible pour l&#39;export</span>
-<span class="n">export_available_format</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;csv&#39;</span><span class="p">,</span> <span class="s1">&#39;geojson&#39;</span><span class="p">]</span>
-
-<span class="c1"># passage du champ observateur du formulaire de saisi en mode &#39;saisie libre&#39;</span>
-<span class="n">observers_txt</span> <span class="o">=</span> <span class="n">true</span>
-
-<span class="c1"># identifiant de la liste des taxon proposé dans le formulaire (voir table taxonomie.bib_listes et taxonomie.cor_nom_liste)</span>
-<span class="n">id_taxon_list</span> <span class="o">=</span> <span class="mi">500</span>
-
-<span class="c1"># niveau de zoom à partir duquel on peut saisir un relevé sur la carte</span>
-<span class="n">releve_map_zoom_level</span> <span class="o">=</span> <span class="mi">15</span>
-
-<span class="c1"># colonnes de la vue pr_occtax.export_occtax_sinp à exporter pour GINCO dépot légal</span>
-<span class="n">export_columns</span> <span class="o">=</span>  <span class="p">[</span>
-    <span class="s2">&quot;permId&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;statObs&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;nomCite&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;dateDebut&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;dateFin&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;heureDebut&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;heureFin&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;altMax&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;altMin&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;cdNom&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;cdRef&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;dateDet&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;comment&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;dSPublique&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;statSource&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;idOrigine&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;refBiblio&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;obsMeth&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ocEtatBio&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ocNat&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ocSex&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ocStade&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ocBiogeo&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ocStatBio&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;preuveOui&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;ocMethDet&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;preuvNum&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;preuvNoNum&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;obsCtx&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;permIdGrp&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;methGrp&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;typGrp&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;denbrMax&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;denbrMin&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;objDenbr&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;typDenbr&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;obsId&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;obsNomOrg&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;detId&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;detNomOrg&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;orgGestDat&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;WKT&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;natObjGeo&quot;</span>
-    <span class="p">]</span>
+</div>
+<div class="section" id="taches-planifiees">
+<h2>Taches planifiées<a class="headerlink" href="#taches-planifiees" title="Permalink to this headline"></a></h2>
+<p>Depuis sa version 2.9.0, GeoNature permet de générer des profils pour chaque taxon à partir des observations existantes et validées.</p>
+<p>Pour automatiser la mise à jour des profils en fonction des nouvelles observations, il est nécessaire de relancer automatiquement la fonction de calcul des profils de taxon en créant une taches planifiée (cron)</p>
+<p>Créer une tache planifiée, exécutée tous les jours à minuit dans cet exemple :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cron</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">update_profile</span>
 </pre></div>
 </div>
-<p>Le fichier
-<code class="docutils literal notranslate"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/external_modules/occtax/config/conf_gn_module.toml.example</span></code>
-liste l’ensemble des variables de configuration du module Occtax ainsi que
-leurs valeurs par défault.</p>
-<p>Après chaque modification du fichier de configuration, lancez les commandes
-suivantes pour mettre à jour l’application (l’opération peut être longue car
-il s’agit de la recompilation du frontend).</p>
-<p>Depuis le répertoire <code class="docutils literal notranslate"><span class="pre">backend</span></code> de GeoNature</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
-<span class="n">geonature</span> <span class="n">update_module_configuration</span> <span class="n">occtax</span>
-<span class="n">deactivate</span>
+<p>Ajouter la ligne suivante en remplaçant “&lt;CHEMIN_ABSOLU_VERS_VENV&gt;” par le chemin absolu vers le virtualenv de GeoNature et “&lt;GEONATURE_USER&gt;” par l’utilisateur Linux de GeoNature :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">&lt;</span><span class="n">GEONATURE_USER</span><span class="o">&gt;</span> <span class="n">source</span> <span class="o">&lt;</span><span class="n">CHEMIN_ABSOLU_VERS_VENV</span><span class="o">&gt;</span> <span class="o">&amp;&amp;</span> <span class="n">geonature</span> <span class="n">profiles</span> <span class="n">update_vms</span>
 </pre></div>
 </div>
-<p>Pour plus d’information sur la configuration du module Occtax, voir la documentation concernant le module (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/docs/admin-manual.rst#module-occtax">https://github.com/PnX-SI/GeoNature/blob/master/docs/admin-manual.rst#module-occtax</a>).</p>
-</div>
-</div>
-<div class="section" id="referentiel-geographique">
-<h3>Référentiel géographique<a class="headerlink" href="#referentiel-geographique" title="Permalink to this headline"></a></h3>
-<p>Sur l’instance nationale on charge dans le référentiel géographique
-l’ensemble des communes du territoire français, ainsi qu’un MNT (modèle
-numérique de terrain) national de résolution 250m (pour le calcul automatique
-des altitudes pour chaque observation).</p>
-<img alt="http://geonature.fr/docs/img/admin-manual/design-geonature-mtes.png" src="http://geonature.fr/docs/img/admin-manual/design-geonature-mtes.png" />
-</div>
-<div class="section" id="authentification-cas-inpn">
-<h3>Authentification CAS INPN<a class="headerlink" href="#authentification-cas-inpn" title="Permalink to this headline"></a></h3>
-<ul class="simple">
-<li><p>Code source : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/core/auth/routes.py">https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/core/auth/routes.py</a></p></li>
-<li><p>Config : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/config/default_config.toml.example#L124-L135">https://github.com/PnX-SI/GeoNature/blob/master/config/default_config.toml.example#L124-L135</a></p></li>
-</ul>
-</div>
-<div class="section" id="connexion-et-droits-dans-geonature">
-<h3>Connexion et droits dans GeoNature<a class="headerlink" href="#connexion-et-droits-dans-geonature" title="Permalink to this headline"></a></h3>
-<ul class="simple">
-<li><p>A chaque connexion via le CAS INPN on récupère l’ID_Utilisateur.
-On ajoute cet utilisateur dans la base de données de GeoNature
-(<code class="docutils literal notranslate"><span class="pre">utilisateurs.t_roles</span></code> et <code class="docutils literal notranslate"><span class="pre">utilisateurs.bib_organisme</span></code>) et on
-lui affecte des droits CRUVED par défaut.</p></li>
-<li><p>On assigne à l’utilisateur le « socle 1 » (C1-R1-V0-E1-D1). Il pourra voir
-seulement les données qu’il a saisi lui-même et les JDD qu’il a
-créé dans MTD.</p></li>
-</ul>
-<p>NB sur la gestion des droits dans GeoNature :</p>
-<ul class="simple">
-<li><p>6 actions sont possibles dans GeoNature :
-Create / Read / Update / Validate / Export / Delete (aka CRUVED).</p></li>
-<li><p>3 portées de ces actions sont possibles :
-Mes données / Les données de mon organisme / Toutes les données.</p></li>
-</ul>
-</div>
-<div class="section" id="recuperation-des-jdd">
-<h3>Récupération des JDD<a class="headerlink" href="#recuperation-des-jdd" title="Permalink to this headline"></a></h3>
-<p>Grâce à l’API de MTD, il est désormais possible d’ajouter les jeux de données
-(et des cadres d’acquisition) créés dans MTD dans la BDD GeoNature.</p>
-<ul class="simple">
-<li><p>On récupère la liste des JDD créés par l’utilisateur grâce à l’API MTD au
-chargement de la liste déroulante des JDD :
-<a class="reference external" href="https://xxxxx/cadre/jdd/export/xml/GetRecordsByUserId">https://xxxxx/cadre/jdd/export/xml/GetRecordsByUserId</a>?id=&lt;ID_USER&gt;</p></li>
-<li><p>On récupère l’UUID du cadre CA associé au JDD dans le XML renvoyé et on fait
-appel au l’API MTD pour récupérer le fichier XML du CA :
-<a class="reference external" href="https://xxxxx/cadre/export/xml/GetRecordById">https://xxxxx/cadre/export/xml/GetRecordById</a>?id=&lt;UUID&gt;</p></li>
-<li><p>On ajoute le CA dans la table <code class="docutils literal notranslate"><span class="pre">gn_meta.t_acquisition_framwork</span></code> et les JDD
-dans la table <code class="docutils literal notranslate"><span class="pre">gn_meta.t_datasets</span></code>. Si le CA ou les JDD sont modifiés dans
-MTD, ils seront également modifiés dans le BDD GeoNature.</p></li>
-<li><p>Dans la table <code class="docutils literal notranslate"><span class="pre">gn_meta.cor_dataset_actor</span></code> on fait le lien entre les
-acteurs et le JDD. On ajoute l’utilisateur qui a créé le JDD comme
-“Point de contact principal” du JDD. Si on dispose de l’ID_Organisme de
-l’utilisateur, on ajoute également l’organisme comme
-“Point de contact principal” du JDD.</p></li>
-<li><p>Pour remplir cette table on ne prend pas les infos renvoyés par le
-XML JDD sous l’intitulé « Acteur » puisque l’ID_Organisme ou l’ID_Acteur
-n’est pas renseigné. (Dans la table <code class="docutils literal notranslate"><span class="pre">gn_meta.cor_dataset_actor</span></code>, il faut
-obligatoirement un ID).</p></li>
-<li><p>La question de la suppresion de JDD et des CA n’est pas résolue. Si un JDD
-est supprimé dans MTD, qu’est-ce qu’on fait des données associées a celui-ci
-dans GeoNature ?</p></li>
-</ul>
-</div>
-<div class="section" id="module-synthese">
-<h3>Module Synthese<a class="headerlink" href="#module-synthese" title="Permalink to this headline"></a></h3>
-<p>Sur l’instance DEPOPBIO le module synthese a été désactivé en mettant un
-CRUVED à 0 au groupe socle 1 et socle 2 pour le module.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="n">INSERT</span> <span class="n">INTO</span> <span class="n">gn_permissions</span><span class="o">.</span><span class="n">cor_role_action_filter_module_object</span>
-  <span class="p">(</span>
-  <span class="n">id_role</span><span class="p">,</span>
-  <span class="n">id_action</span><span class="p">,</span>
-  <span class="n">id_filter</span><span class="p">,</span>
-  <span class="n">id_module</span><span class="p">,</span>
-  <span class="n">id_object</span>
-  <span class="p">)</span>
-  <span class="n">VALUES</span>
-  <span class="o">--</span> <span class="n">synthese</span> <span class="n">pour</span> <span class="n">socle</span> <span class="mi">1</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
- <span class="o">--</span> <span class="n">synthese</span> <span class="n">socle</span> <span class="mi">2</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-<span class="o">--</span> <span class="n">admin</span> <span class="n">socle</span> <span class="mi">2</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-<span class="o">--</span> <span class="n">admin</span> <span class="n">socle</span> <span class="mi">2</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-<span class="o">--</span> <span class="n">meta</span> <span class="n">socle</span> <span class="mi">2</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20003</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-<span class="o">--</span> <span class="n">meta</span> <span class="n">socle</span> <span class="mi">2</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-  <span class="p">(</span><span class="mi">20001</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="p">;</span>
-</pre></div>
-</div>
-<p>Les triggers d’insertion du module Occtax vers le module Synthese ont
-également été désactivés.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ALTER</span> <span class="n">TABLE</span> <span class="n">pr_occtax</span><span class="o">.</span><span class="n">t_releves_occtax</span> <span class="n">DISABLE</span> <span class="n">TRIGGER</span> <span class="n">tri_update_synthese_t_releve_occtax</span><span class="p">;</span>
-<span class="n">ALTER</span> <span class="n">TABLE</span> <span class="n">pr_occtax</span><span class="o">.</span><span class="n">t_releves_occtax</span> <span class="n">DISABLE</span> <span class="n">TRIGGER</span> <span class="n">tri_delete_synthese_t_releve_occtax</span><span class="p">;</span>
-
-<span class="n">ALTER</span> <span class="n">TABLE</span> <span class="n">pr_occtax</span><span class="o">.</span><span class="n">t_occurrences_occtax</span> <span class="n">DISABLE</span> <span class="n">TRIGGER</span> <span class="n">tri_update_synthese_t_occurrence_occtax</span><span class="p">;</span>
-<span class="n">ALTER</span> <span class="n">TABLE</span> <span class="n">pr_occtax</span><span class="o">.</span><span class="n">t_occurrences_occtax</span> <span class="n">DISABLE</span> <span class="n">TRIGGER</span> <span class="n">tri_delete_synthese_t_occurrence_occtax</span><span class="p">;</span>
-
-<span class="n">ALTER</span> <span class="n">TABLE</span> <span class="n">pr_occtax</span><span class="o">.</span><span class="n">cor_counting_occtax</span> <span class="n">DISABLE</span> <span class="n">TRIGGER</span> <span class="n">tri_insert_synthese_cor_counting_occtax</span><span class="p">;</span>
-<span class="n">ALTER</span> <span class="n">TABLE</span> <span class="n">pr_occtax</span><span class="o">.</span><span class="n">cor_counting_occtax</span> <span class="n">DISABLE</span> <span class="n">TRIGGER</span> <span class="n">tri_update_synthese_cor_counting_occtax</span><span class="p">;</span>
-<span class="n">ALTER</span> <span class="n">TABLE</span> <span class="n">pr_occtax</span><span class="o">.</span><span class="n">cor_counting_occtax</span> <span class="n">DISABLE</span> <span class="n">TRIGGER</span> <span class="n">tri_delete_synthese_cor_counting_occtax</span><span class="p">;</span>
+<p>Exemple :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="n">geonatadmin</span> <span class="n">source</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">user</span><span class="o">/</span><span class="n">geonature</span><span class="o">/</span><span class="n">backend</span><span class="o">/</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span> <span class="o">&amp;&amp;</span> <span class="n">geonature</span> <span class="n">profiles</span> <span class="n">update_vms</span>
 </pre></div>
 </div>
 </div>
+<div class="section" id="mise-a-jour-de-l-application">
+<h2>Mise à jour de l’application<a class="headerlink" href="#mise-a-jour-de-l-application" title="Permalink to this headline"></a></h2>
+<p>Attention, avant chaque mise à jour de GeoNature, il est important de sauvegarder l’application et sa base de données, ou de faire un snapshot du serveur pour pouvoir revenir à son état antérieure avant mise à jour en cas de problème.</p>
+<p>La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans un nouveau répertoire, récupérer les fichiers de configuration et de surcouche depuis la version actuelle et de relancer l’installation dans le répertoire de la nouvelle version.</p>
+<p>La mise à jour doit être réalisée avec votre utilisateur linux courant (<code class="docutils literal notranslate"><span class="pre">geonatureadmin</span></code> par exemple) et non pas le super-utilisateur <code class="docutils literal notranslate"><span class="pre">root</span></code>.</p>
+<ul>
+<li><p>Télécharger la dernière version de GeoNature :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">wget</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">PnX</span><span class="o">-</span><span class="n">SI</span><span class="o">/</span><span class="n">GeoNature</span><span class="o">/</span><span class="n">archive</span><span class="o">/</span><span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
+<span class="n">unzip</span> <span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
+<span class="n">rm</span> <span class="n">X</span><span class="o">.</span><span class="n">Y</span><span class="o">.</span><span class="n">Z</span><span class="o">.</span><span class="n">zip</span>
+</pre></div>
+</div>
+</li>
+<li><p>Renommer l’ancien repertoire de l’application, ainsi que le nouveau :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>mv /home/`whoami`/geonature/ /home/`whoami`/geonature_old/
+mv GeoNature-X.Y.Z /home/`whoami`/geonature/
+cd geonature
+</pre></div>
+</div>
+</li>
+<li><p>Suivez les éventuelles notes de version spécifiques décrites au niveau de chaque version : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/releases">https://github.com/PnX-SI/GeoNature/releases</a>.</p></li>
+</ul>
+<p>⚠️ Si la release inclut des scripts de migration SQL : <em>lancer ces scripts avec l’utilisateur de BDD courant</em> (généralement <code class="docutils literal notranslate"><span class="pre">geonatadmin</span></code>) et non le super-utilisateur <code class="docutils literal notranslate"><span class="pre">postgres</span></code>.</p>
+<p>Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions intermédiaires et notamment les scripts de mise à jour de la base de données à exécuter successivement.</p>
+<ul>
+<li><p>Si vous devez aussi mettre à jour TaxHub et/ou UsersHub, suivez leurs notes de versions mais aussi leur documentation (<a class="reference external" href="https://usershub.readthedocs.io">https://usershub.readthedocs.io</a> et <a class="reference external" href="https://taxhub.readthedocs.io">https://taxhub.readthedocs.io</a>).</p></li>
+<li><p>Lancez le script de <code class="docutils literal notranslate"><span class="pre">migration.sh</span></code> à la racine du dossier <code class="docutils literal notranslate"><span class="pre">geonature</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">./</span><span class="n">install</span><span class="o">/</span><span class="n">migration</span><span class="o">/</span><span class="n">migration</span><span class="o">.</span><span class="n">sh</span>
+</pre></div>
+</div>
+</li>
+</ul>
 </div>
 </div>
 

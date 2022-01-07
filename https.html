@@ -16,9 +16,7 @@
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="FAQ" href="FAQ.html" />
-    <link rel="prev" title="CONFIGURATION APACHE" href="conf-apache.html" /> 
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -40,7 +38,7 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul class="current">
+              <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">INSTALLATION</a></li>
 <li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
 <li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
@@ -48,16 +46,6 @@
 <li class="toctree-l1"><a class="reference internal" href="import-level-2.html">IMPORT NIVEAU 2</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a></li>
 <li class="toctree-l1"><a class="reference internal" href="versions-compatibility.html">COMPATIBILITE</a></li>
-<li class="toctree-l1"><a class="reference internal" href="conf-apache.html">CONFIGURATION APACHE</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">HTTPS</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#installer-certbot">Installer certbot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#lancer-la-commande-cerbot">Lancer la commande cerbot</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#les-certificats-obtenus">Les certificats obtenus</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#automatiser-le-renouvellement-du-certificat">Automatiser le renouvellement du certificat</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#prise-en-compte-des-nouvelles-configurations-apache">Prise en compte des nouvelles configurations Apache</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#configuration-de-l-application-geonature">Configuration de l’application GeoNature</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
@@ -89,9 +77,7 @@
              
   <div class="section" id="https">
 <h1>HTTPS<a class="headerlink" href="#https" title="Permalink to this headline"></a></h1>
-<p>La présente documentation décrit la procédure de certification HTTPS et l’adaptation de la configuration Apache par défaut du serveur, sans utilisation de sous-domaine. Pour la mise en place de sous-domaines, voir la documentation “Configuration Apache”.</p>
-<p><strong>Mise en place du  HTTPS</strong></p>
-<p>La procédure décrit la certification HTTPS de votre domaine pour l’ensemble des applications de l’install_all, grâce au service <a class="reference external" href="https://letsencrypt.org/">Let’s Encrypt</a>. Les manipulations ont été effectuées sur un serveur Debian 9 avec Apache2 installé, et un utilisateur bénéficiant des droits sudo.</p>
+<p>La procédure décrit une méthode de certification HTTPS de votre domaine, grâce au service <a class="reference external" href="https://letsencrypt.org/">Let’s Encrypt</a>. Les manipulations ont été effectuées sur un serveur Debian 9 avec Apache2 installé, et un utilisateur bénéficiant des droits sudo.</p>
 <p>Ressources :</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://www.memoinfo.fr/tutoriels-linux/configurer-lets-encrypt-apache/">https://www.memoinfo.fr/tutoriels-linux/configurer-lets-encrypt-apache/</a></p></li>
@@ -99,7 +85,7 @@
 </ul>
 <div class="section" id="installer-certbot">
 <h2>Installer certbot<a class="headerlink" href="#installer-certbot" title="Permalink to this headline"></a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python</span><span class="o">-</span><span class="n">certbot</span><span class="o">-</span><span class="n">apache</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">certbot</span><span class="o">-</span><span class="n">apache</span>
 </pre></div>
 </div>
 </div>
@@ -136,41 +122,6 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
 <span class="mi">1</span> <span class="mi">8</span> <span class="o">*</span> <span class="o">*</span> <span class="n">Sat</span> <span class="n">certbot</span> <span class="n">renew</span> <span class="o">--</span><span class="n">renew</span><span class="o">-</span><span class="n">hook</span> <span class="s2">&quot;service apache2 reload&quot;</span> <span class="o">&gt;&gt;</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">certbot</span><span class="o">.</span><span class="n">log</span>
 </pre></div>
 </div>
-<p><strong>Mise à jour de la configuration apache du serveur</strong></p>
-<p>Afin que Apache prenne en compte la certification (redirection de http vers https), il faut modifier la configuration Apache par défaut du serveur : <code class="docutils literal notranslate"><span class="pre">/etc/apache2/sites-available/000-default.conf</span></code></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span># Redirection de http vers https
-&lt;VirtualHost *:80&gt;
-  ServerName mondomaine.fr
-
-  RewriteEngine on
-  RewriteCond %{HTTPS} !on
-  RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}
-
-&lt;/VirtualHost&gt;
-
-# Configuration par défaut du serveur sur le port 443 (https)
-&lt;VirtualHost *:443&gt;
-        ServerName mondomaine.fr
-
-        ServerAdmin webmaster@localhost
-        DocumentRoot /var/www/html/
-
-         ErrorLog ${APACHE_LOG_DIR}/error.log
-         CustomLog ${APACHE_LOG_DIR}/access.log combined
-
-    SSLEngine on
-    SSLCertificateFile /etc/letsencrypt/live/mondomaine.fr/cert.pem
-    SSLCertificateKeyFile /etc/letsencrypt/live/mondomaine.fr/privkey.pem
-    SSLCertificateChainFile /etc/letsencrypt/live/mondomaine.fr/chain.pem
-    SSLProtocol all -SSLv2 -SSLv3
-    SSLHonorCipherOrder on
-    SSLCompression off
-    SSLOptions +StrictRequire
-    SSLCipherSuite ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-DSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA
-    Header always set Strict-Transport-Security &quot;max-age=31536000; includeSubDomains&quot;
-&lt;/VirtualHost&gt;
-</pre></div>
-</div>
 </div>
 <div class="section" id="prise-en-compte-des-nouvelles-configurations-apache">
 <h2>Prise en compte des nouvelles configurations Apache<a class="headerlink" href="#prise-en-compte-des-nouvelles-configurations-apache" title="Permalink to this headline"></a></h2>
@@ -196,7 +147,7 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
 <span class="n">API_TAXHUB</span> <span class="o">=</span> <span class="s1">&#39;https://mondomaine.fr/taxhub/api&#39;</span>
 </pre></div>
 </div>
-<p>Pour que ces modifications soient prises en compte, lancer les commandes suivantes depuis le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/backend</span></code> :</p>
+<p>Pour que ces modifications soient prises en compte, lancer les commandes suivantes :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span><span class="o">/</span><span class="n">backend</span>
 <span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
 <span class="n">geonature</span> <span class="n">update_configuration</span>
@@ -210,10 +161,7 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="conf-apache.html" class="btn btn-neutral float-left" title="CONFIGURATION APACHE" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="FAQ.html" class="btn btn-neutral float-right" title="FAQ" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 
