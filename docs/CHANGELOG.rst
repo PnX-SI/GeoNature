@@ -18,6 +18,7 @@ Profils de taxons
   - Paramètres modifiables (nomenclatures de validation utilisées par défaut)
   - Statuts pris en compte paramétrables
   - Documentation (URL)
+  - Suppression de la vue matérialisée ``gn_synthese.vm_min_max_for_taxons`` et de la fonction ``gn_synthese.fct_calculate_min_max_for_taxon()`` qui n'étaient pas utilisés
 
 * [OCCTAX] Contrôle de la cohérence des nouvelles données saisies par rapport au profil
 * [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
@@ -29,7 +30,7 @@ Profils de taxons
 * Amélioration des listes déroulantes en passant à la librairie 'ng-select2' pour les composants multiselects (#616 @jbrieuclp)
 * Gestion du référentiel des régions par Alembic (#1475)
 * Ajout des anciennes régions (1970-2016), inactives par défaut, mais utiles pour les règles régionales de sensibilité
-* Gestion du référentiel de sensibilité (règles nationales et régionales) par Alembic
+* Gestion du référentiel de sensibilité (règles nationales et régionales) par Alembic (#1576)
 * Ajout d'une documentation sur le calcul de la sensibilité des observations (par @mvergez)
 * [Synthese] Amélioration de la fenêtre de limite d'affichage atteinte (#1520 par @jpm-cbna)
 * [OCCHAB] Utilisation de tout Habref par défaut si aucune liste d'habitats n'est renseignée dans la configuration du module
@@ -48,11 +49,12 @@ Profils de taxons
 * Performances métadonnées (#1559)
 * [METADONNEES] Correction de la suppression des JDD
 * [METADONNEES] Correction de l'export PDF des JDD (#1544)
-* [METADONNEES] Correction des permissions
+* [METADONNEES] Correction des permissions (#1528)
 * [Synthese] Correction de la recherche sur les champs génériques de type nombre entier (#1519 par @jpm-cbna)
 * [SYNTHESE] Correction des permissions
 * [SYNTHESE] Correction du lien entre les filtres CA et JDD (#1530)
 * Correction de la redirection vers le formulaire de login en cas de cookie corrompu (#1550 par @antoinececchimnhn)
+* [OCCHAB] Correction du chargement de la configuration, des fiches info et de la modification d'une station
 
 **💻 Développement**
 
@@ -61,10 +63,12 @@ Profils de taxons
 * Amélioration de nombreuses routes et fonctions backend
 * Ajouts de tests backend automatisés
 * CI Github Actions (#1568)
+* Mise à jour des dépendances
 * Suppression de vues génériques
 * Sécurisation routes USERS
 * Génération automatique et aléatoire de SECRET_KEY
 * [SYNTHESE] Remplacement de ``as_literal`` par ``json.loads``, plus performant (par @antoinececchimnhn)
+* Possibilité de filter la route ``synthese/taxa_distribution`` par ``id_source`` (#1446 par @mvergez)
 * [VALIDATION] Suppression des vues SQL et optimisation des routes
 * Factorisation du composant "pnx-municipalities" avec "pnx-areas"
 * Ajout de "pnx-areas" dans dynamic-form
