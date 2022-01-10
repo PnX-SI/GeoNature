@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { combineLatest, Subscription } from "rxjs";
 import { filter, map, tap } from "rxjs/operators";
 import { ModuleConfig } from "../../module.config";
-import { OcctaxFormMapService } from "../map/map.service";
+import { OcctaxFormMapService } from "../map/occtax-map.service";
 import { OcctaxFormReleveService } from "../releve/releve.service";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxFormParamService } from "./form-param.service";

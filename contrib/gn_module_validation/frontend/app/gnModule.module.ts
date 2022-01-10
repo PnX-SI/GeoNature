@@ -49,7 +49,8 @@ const routes: Routes = [{path: "", component: ValidationComponent}];
         TreeModule,
     ],
     entryComponents: [ValidationModalInfoObsComponent],
-    providers: [
+
+  providers: [
     SyntheseDataService,
     ValidationDataService,
     SyntheseFormService,
