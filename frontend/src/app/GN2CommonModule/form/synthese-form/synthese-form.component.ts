@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ViewEncapsulation } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -13,7 +13,8 @@ import { ActivatedRoute } from "@angular/router";
   selector: 'pnx-synthese-search',
   templateUrl: 'synthese-form.component.html',
   styleUrls: ['synthese-form.component.scss'],
-  providers: []
+  providers: [],
+  encapsulation: ViewEncapsulation.None
 })
 export class SyntheseSearchComponent implements OnInit {
   public AppConfig = AppConfig;
@@ -24,6 +25,7 @@ export class SyntheseSearchComponent implements OnInit {
   private params: any;
   @Input() displayValidation = false;
   @Output() searchClicked = new EventEmitter();
+
   constructor(
     public dataService: SyntheseDataService,
     public formService: SyntheseFormService,
@@ -46,10 +48,10 @@ export class SyntheseSearchComponent implements OnInit {
 
     // format areas filter
     this.areaFilters = AppConfig.SYNTHESE.AREA_FILTERS.map(area => {
-      if (typeof area.id_type === 'number') {
-        area['id_type_array'] = [area.id_type];
+      if (typeof area['type_code'] === 'string') {
+        area['type_code_array'] = [area['type_code']];
       } else {
-        area['id_type_array'] = area.id_type;
+        area['type_code_array'] = area['type_code'];
       }
       return area;
     });

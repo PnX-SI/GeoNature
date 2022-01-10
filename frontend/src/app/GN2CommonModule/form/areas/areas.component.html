@@ -12,4 +12,15 @@
 	[loading]="loading"
 	[formControl]="parentFormControl"
 >
+	<ng-template
+		ng-option-tmp
+		let-item="item"
+		let-index="index"
+		let-search="searchTerm"
+	>
+    <div matTooltip="{{item.area_name}}">
+    	<span class="pre-wrap">{{item.area_name}}</span>
+    </div>
+  </ng-template>
 </ng-select>
+
