@@ -130,7 +130,7 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column
-    *ngIf="appConfig.FRONTEND.ENABLE_PROFILES"
+    *ngIf="appConfig.FRONTEND['ENABLE_PROFILES']"
     minWidth="10"
     [maxWidth]="100"
   >
@@ -264,6 +264,7 @@
     </ng-template>
 
   </ngx-datatable-footer>
+
 </ngx-datatable>
 
 <pnx-validation-popup
@@ -271,6 +272,5 @@
   [currentPage]="npage"
   [observations]="selectedObs"
   [validationStatus]="validationStatus"
-  (valStatus)="onStatusChange($event)"
 >
 </pnx-validation-popup>

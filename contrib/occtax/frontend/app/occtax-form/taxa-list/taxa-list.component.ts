@@ -22,7 +22,6 @@ export class OcctaxFormTaxaListComponent implements OnInit {
   @ViewChild("tabOccurence") tabOccurence: ElementRef;
 
   public ModuleConfig = ModuleConfig;
-  public alreadyActivatedCountingTab : Array<any> = [];
 
   constructor(
     public ngbModal: NgbModal,
@@ -79,8 +78,6 @@ export class OcctaxFormTaxaListComponent implements OnInit {
 
   editOccurrence(occurrence) {
     this.occtaxFormOccurrenceService.occurrence.next(occurrence);
-    //on redessine la tab au prochain affichage
-    this.alreadyActivatedCountingTab[occurrence.id_occurrence_occtax] = false;
   }
 
   deleteOccurrence(occurrence) {

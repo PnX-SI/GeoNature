@@ -109,9 +109,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
         this.currentLayerType = (e as any).layerType;
         this.mapservice.leafletDrawFeatureGroup.addLayer(this._currentDraw);
         const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
-        // set firLayerFromMap = false because we just draw a layer
-        // the boolean change MUST be before the output fire (emit)
-        this.mapservice.firstLayerFromMap = false;
         this.mapservice.setGeojsonCoord(geojson);
         this.layerDrawed.emit(geojson);
       }
@@ -120,9 +117,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     // on draw edited
     this.mapservice.map.on(this._Le.Draw.Event.EDITED, e => {
       const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
-      // set firLayerFromMap = false because we just edit a layer
-      // the boolean change MUST be before the output fire (emit)
-      this.mapservice.firstLayerFromMap = false;
       this.mapservice.setGeojsonCoord(geojson);
       this.layerDrawed.emit(geojson);
 
@@ -155,6 +149,8 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   }
 
   loadDrawfromGeoJson(geojson) {
+    // load leaflet draw from an existing geojson
+    // no refire events
     let layer;
     if (geojson.type === 'LineString' || geojson.type === 'MultiLineString') {
       const latLng = L.GeoJSON.coordsToLatLngs(
@@ -196,10 +192,6 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     }
     // disable point event on the map
     this.mapservice.setEditingMarker(false);
-    // send observable
-    let new_geojson = this.mapservice.leafletDrawFeatureGroup.toGeoJSON();
-    new_geojson = (new_geojson as any).features[0];
-    this.mapservice.setGeojsonCoord(new_geojson);
   }
 
   // cache le draw control
