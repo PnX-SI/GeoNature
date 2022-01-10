@@ -254,8 +254,6 @@
       [codeNomenclatureType]="formDefComp['code_nomenclature_type']"
       [multiSelect]="formDefComp['multi_select']"
       [keyValue]="formDefComp['key_value']"
-      [group2Inpn]="formDef.group2inpn"
-      [regne]="formDef.regne"
     >
     </pnx-nomenclature>
 
@@ -295,11 +293,20 @@
     >
     </pnx-date>
 
+    <pnx-areas
+      *ngSwitchCase="'areas'"
+      [label]="formDefComp.attribut_label"
+      [parentFormControl]="form.get(formDefComp.attribut_name)"
+      [valueFieldName]="formDefComp.value_field_name"
+      [typeCodes]="formDefComp.type_codes"
+    >
+    </pnx-areas>
+
     <pnx-municipalities
       *ngSwitchCase="'municipalities'"
       [label]="formDefComp['attribut_label']"
       [parentFormControl]="form.get(formDefComp['attribut_name'])"
-      [searchBar]="true"
+      [valueFieldName]="formDefComp['value_field_name']"
     >
     </pnx-municipalities>
 

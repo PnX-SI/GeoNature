@@ -29,7 +29,7 @@ export class TaxonSheetComponent implements OnInit {
                         this.profilArea = profil;
                         this._ds.getTaxonAttributsAndMedia(taxon.cd_ref).subscribe(
                             taxonAttrAndMedias => {
-                                const media = taxonAttrAndMedias.medias.find(m => m.id_type == AppConfig.TAXHUB.ID_TYPE_MAIN_PHOTO);
+                                const media = taxonAttrAndMedias.medias.find(m => m.id_type == AppConfig["TAXHUB"]["ID_TYPE_MAIN_PHOTO"]);
                                 if(media) {
                                     this.mediaUrl = `${AppConfig.API_TAXHUB}tmedias/thumbnail/${media.id_media}?h=300&w300`;
                                 }
@@ -43,7 +43,7 @@ export class TaxonSheetComponent implements OnInit {
                         if(errors.status == 404) {
                             this._commonService.regularToaster("warning", "Aucune donnée pour ce taxon")
                         }
-                        
+
                     }
                     )
                 });

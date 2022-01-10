@@ -18,20 +18,29 @@
         <div class="card-body">
 
           <div>
-            <small>Cadre d'acquisition </small>
-            <select
-              class="form-control form-control-sm"
+            <small>Cadre d'acquisition</small>
+            <ng-select
               [formControl]="form.get('id_acquisition_framework')"
+              [items]="acquisitionFrameworks |async"
+              bindLabel="acquisition_framework_name"
+              bindValue="id_acquisition_framework"
+              [disabled]="true"
             >
-              <option
-                *ngFor="let af of (acquisitionFrameworks | async)"
-                [disabled]="!af.opened"
-                [title]="!af.opened ? 'Cadre cloturé' : af.acquisition_framework_name"
-                [ngValue]="af.id_acquisition_framework"
-              >
-                {{af.acquisition_framework_name}}
-              </option>
-            </select>
+            <ng-template 
+              ng-option-tmp 
+              let-item="item" 
+              let-index="index" 
+              let-search="searchTerm"
+            >
+              <span class="pre-wrap"> 
+                <span *ngIf="!item.opened">
+                  [Cloturé]
+                </span>
+                 {{item.acquisition_framework_name}}
+              </span>
+            </ng-template>
+            
+          </ng-select>
           </div>
 
           <div>
@@ -150,6 +159,7 @@
               [parentFormControl]="form.get('cor_territories')"
               codeNomenclatureType="TERRITOIRE"
               [bindAllItem]="true"
+              [keyValue]="null"
             >
             </pnx-nomenclature>
           </div>
@@ -212,7 +222,7 @@
               [values]="moduleService.modules"
               [parentFormControl]="form.get('modules')"
               keyLabel="module_label"
-              keyValue="id_module"
+              [keyValue]="null"
               label="Module(s) GeoNature associé(s) au jeu de données"
               [bindAllItem]="true"
             >

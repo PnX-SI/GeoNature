@@ -31,6 +31,7 @@ import { RouterModule } from '@angular/router';
 import 'rxjs/Rx';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { TreeModule } from '@circlon/angular-tree-component';
 
@@ -136,6 +137,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     NgxMatSelectSearchModule,
     ReactiveFormsModule,
     NgxDatatableModule,
+    NgSelectModule,
     RouterModule,
     TranslateModule.forChild(),
     TreeModule
@@ -206,7 +208,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     MediaService,
     NgbDatePeriodParserFormatter,
     SyntheseDataService,
-    TranslateService
+    TranslateService,
   ],
   entryComponents: [
     ConfirmationDialog,
@@ -261,6 +263,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     MatListModule,
     MatMenuModule,
     MatPaginatorModule,
+    NgSelectModule,
     MatProgressBarModule,
     MatProgressSpinnerModule,
     MatSelectModule,

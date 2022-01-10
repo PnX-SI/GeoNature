@@ -68,7 +68,6 @@ def frontend_routes_templating(app=None):
                     routes.append({"path": path, "location": location, "module_code": module_object.module_code})
 
                 # TODO test if two modules with the same name is okay for Angular
-            print(routes, "############## routes #####################")
             route_template = template.render(
                 routes=routes,
                 enable_user_management=configs_gn["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT"),

@@ -1,5 +1,6 @@
 import { Component, OnInit, OnChanges, Input, ViewChild, AfterViewInit, SimpleChanges } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
+import { MapService } from '@geonature_common/map/map.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { AppConfig } from '@geonature_config/app.config';
@@ -10,7 +11,8 @@ import { finalize } from 'rxjs/operators';
 @Component({
   selector: 'pnx-synthese-info-obs',
   templateUrl: 'synthese-info-obs.component.html',
-  styleUrls: ['./synthese-info-obs.component.scss']
+  styleUrls: ['./synthese-info-obs.component.scss'],
+  providers: [MapService]
 })
 export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   @Input() idSynthese: number;
@@ -21,12 +23,13 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public selectedObs: any;
   public validationHistory: Array<any>;
   public selectedObsTaxonDetail: any;
-  @ViewChild('tabGroup', { static: false }) tabGroup;
+  @ViewChild('tabGroup') tabGroup;
   public APP_CONFIG = AppConfig;
   public selectedGeom;
   // public chartType = 'line';
   public profileDataChecks: any;
-  public showValidation = false;
+  public showValidation = false
+
   public selectObsTaxonInfo;
   public formatedAreas = [];
   public CONFIG = AppConfig;
@@ -34,7 +37,8 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public email;
   public mailto: String;
 
-
+  public profile: any;
+  public phenology: any[];
   public validationColor = {
     '0': '#FFFFFF',
     '1': '#8BC34A',
@@ -49,16 +53,18 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     private _dataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
     public mediaService: MediaService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    private _mapService: MapService
   ) { }
 
   ngOnInit() {
     this.loadAllInfo(this.idSynthese);
+    
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.idSynthese && changes.idSynthese.currentValue) {
-      this.loadAllInfo(changes.idSynthese.currentValue)
+  ngOnChanges(changes: SimpleChanges): void {    
+      if(changes.idSynthese && changes.idSynthese.currentValue) {        
+        this.loadAllInfo(changes.idSynthese.currentValue)
       }
   }
 
@@ -70,11 +76,11 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       setTimeout(() => {
         this._mapService.map.invalidateSize();
       }, 100);
-
     }
   }
 
-  loadOneSyntheseReleve(idSynthese) {
+
+  loadAllInfo(idSynthese) {
     this.isLoading = true;
     this._dataService
       .getOneSyntheseObservation(idSynthese)
@@ -84,10 +90,10 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         })
       )
       .subscribe(data => {
-        this.selectedObs = data;
+        this.selectedObs = data["properties"];
+        this.selectedGeom = data;
         this.selectedObs['municipalities'] = [];
         this.selectedObs['other_areas'] = [];
-        this.selectedObs['actors'] = this.selectedObs['actors'].split('|');
         const date_min = new Date(this.selectedObs.date_min);
         this.selectedObs.date_min = date_min.toLocaleDateString('fr-FR');
         const date_max = new Date(this.selectedObs.date_max);
@@ -113,26 +119,30 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         }
 
         this._gnDataService
-          .getTaxonAttributsAndMedia(data.cd_nom, AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB)
+          .getTaxonAttributsAndMedia(this.selectedObs.cd_nom, AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB)
           .subscribe(taxAttr => {
             this.selectObsTaxonInfo = taxAttr;
           });
 
         this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
-        this._gnDataService.getTaxonInfo(data.cd_nom).subscribe(taxInfo => {
+        this._gnDataService.getTaxonInfo(this.selectedObs['cd_nom']).subscribe(taxInfo => {
           this.selectedObsTaxonDetail = taxInfo;
           if (this.selectedObs.cor_observers) {
             this.email = this.selectedObs.cor_observers.map(el => el.email).join();
             this.mailto = this.formatMailContent(this.email);
-
+            
           }
-          this._gnDataService.getProfile(taxInfo.cd_ref).subscribe(profile => {
 
+          this._gnDataService.getProfile(taxInfo.cd_ref).subscribe(profile => {
+            
             this.profile = profile;
           });
-
         });
       });
+
+    this._gnDataService.getProfileConsistancyData(this.idSynthese).subscribe(dataChecks => {
+      this.profileDataChecks = dataChecks;
+    })
   }
 
   formatMailContent(email) {
@@ -140,7 +150,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     if (this.mailCustomSubject || this.mailCustomBody) {
 
       // Mise en forme des données
-      let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };
+      let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };      
       if (this.selectedObs.source.url_source) {
         d['data_link'] = [
           this.APP_CONFIG.URL_APPLICATION,
@@ -151,13 +161,13 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       else {
         d['data_link'] = "";
       }
-
+      
       d["communes"] = this.selectedObs.areas.filter(
         area => area.area_type.type_code == 'COM'
       ).map(
         area => area.area_name
       ).join(', ');
-
+      
       let contentMedias = "";
       if (!this.selectedObs.medias) {
         contentMedias = "Aucun media";
@@ -178,7 +188,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           contentMedias += "\n";
         })
       }
-      d["medias"] = contentMedias;
+      d["medias"] = contentMedias;      
       // Construction du mail
       if (this.mailCustomSubject !== undefined) {
         try {
@@ -194,12 +204,11 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           console.log('ERROR : unable to eval mail body');
         }
       }
-
+      
       mailto = encodeURI(mailto);
       mailto = mailto.replace(/,/g, '%2c');
     }
-    console.log(mailto);
-
+    
     return mailto;
   }
 
