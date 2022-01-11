@@ -67,6 +67,14 @@
                   "with": "src/environments/environment.prod.ts"
                 }
               ]
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
             }
           }
         },
@@ -78,6 +86,9 @@
           "configurations": {
             "production": {
               "browserTarget": "geonature:build:production"
+            },
+            "development": {
+              "browserTarget": "geonature:build:development"
             }
           }
         },
