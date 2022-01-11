@@ -20,7 +20,7 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
   public firstGeom = true;
 
   constructor(
-    private ms: OcctaxFormMapService,
+    public ms: OcctaxFormMapService,
     private _commonService: CommonService,
     private _occtaxFormService: OcctaxFormService,
     private _mapService: MapService

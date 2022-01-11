@@ -54,7 +54,7 @@ export class OcctaxProfilesComponent implements OnInit, OnDestroy {
         //reinitialisation view variable
         tap(() => this.taxon = null),
         //filter on param
-        filter(() => this.appConfig.FRONTEND.ENABLE_PROFILES),
+        filter(() => this.appConfig.FRONTEND['ENABLE_PROFILES']),
         //filter on data
         filter(taxon => taxon !== null && taxon.cd_ref),
         //set variable for view usage
