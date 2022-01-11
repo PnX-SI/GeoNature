@@ -27,7 +27,8 @@
 
   <a
     *ngFor="let module of moduleService.getDisplayedModules(); let index = index"
-    href="{{module.module_url}}"
+    [routerLink]="[module.module_url]"
+    [attr.data-qa]="'gn-sidenav-link-'+module.module_code"
     target="_self"
   >
     <mat-list-item
