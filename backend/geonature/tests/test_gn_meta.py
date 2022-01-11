@@ -1,4 +1,5 @@
 import pytest
+import uuid
 
 from flask import url_for, current_app
 from werkzeug.exceptions import Unauthorized, Forbidden, Conflict, BadRequest, NotFound
@@ -6,11 +7,27 @@ from sqlalchemy import func
 
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
+from geonature.core.gn_meta.routes import get_af_from_id
 
 from pypnusershub.db.tools import user_to_token
 
 from .fixtures import acquisition_frameworks, datasets, synthese_data
 from .utils import set_logged_user_cookie, logged_user_headers
+
+
+@pytest.fixture
+def af_list():
+    return  [
+                {
+                    "id_acquisition_framework": 5
+                },
+                {
+                    "id_acquisition_framework": 2
+                },
+                {
+                    "id_acquisition_framework": 1
+                },
+            ]
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -110,7 +127,6 @@ class TestGNMeta:
         response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
         assert response.status_code == 204
 
-
     def test_get_acquisition_frameworks(self, users):
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks"))
         assert response.status_code == Unauthorized.code
@@ -128,7 +144,7 @@ class TestGNMeta:
         )
         assert response.status_code == 200
 
-    def test_list_acquisition_frameworks(self, users):
+    def test_get_acquisition_frameworks_list(self, users):
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
         assert response.status_code == Unauthorized.code
 
@@ -138,13 +154,13 @@ class TestGNMeta:
         assert response.status_code == 200
 
     def test_get_acquisition_framework(self, users, acquisition_frameworks):
-        af_id = acquisition_frameworks['own_af'].id_acquisition_framework
+        af_id = acquisition_frameworks['orphan_af'].id_acquisition_framework
         get_af_url = url_for("gn_meta.get_acquisition_framework", id_acquisition_framework=af_id)
 
         response = self.client.get(get_af_url)
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users['stranger_user'])
+        set_logged_user_cookie(self.client, users['self_user'])
         response = self.client.get(get_af_url)
         assert response.status_code == Forbidden.code
 
@@ -258,6 +274,36 @@ class TestGNMeta:
         set_logged_user_cookie(self.client, users['associate_user'])
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
         assert response.status_code == 200
+    
+    def test_update_dataset(self, users, datasets):
+        new_name = 'thenewname'
+        ds = datasets['own_dataset']
+        set_logged_user_cookie(self.client, users['user'])
+
+        response = self.client.patch(url_for("gn_meta.update_dataset", 
+                                             id_dataset=ds.id_dataset),
+                                     data=dict(dataset_name=new_name))
+        
+        assert response.status_code == 200
+        assert response.json.get('dataset_name') == new_name
+
+    def test_update_dataset_not_found(self, users, datasets):
+        ds = datasets['stranger_dataset']
+        set_logged_user_cookie(self.client, users['user'])
+
+        response = self.client.patch(url_for("gn_meta.update_dataset", 
+                                            id_dataset=ds.id_dataset))
+
+        assert response.status_code == NotFound.code
+
+    def test_update_dataset_forbidden(self, users, datasets):
+        ds = datasets['associate_dataset']
+        set_logged_user_cookie(self.client, users['self_user'])
+
+        response = self.client.patch(url_for("gn_meta.update_dataset", 
+                                            id_dataset=ds.id_dataset))
+
+        assert response.status_code == Forbidden.code
 
     def test_dataset_pdf_export(self, users, datasets):
         unexisting_id = db.session.query(func.max(TDatasets.id_dataset)).scalar() + 1
