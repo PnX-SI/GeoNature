@@ -26,10 +26,9 @@ from sqlalchemy import inspect
 from sqlalchemy.sql import text, exists, select, update
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import Load, joinedload, raiseload
-from werkzeug.exceptions import BadRequest, Forbidden, NotFound
+from werkzeug.exceptions import Conflict, BadRequest, Forbidden, NotFound
 from werkzeug.datastructures import Headers
 from werkzeug.utils import secure_filename
-from werkzeug.exceptions import Conflict
 from marshmallow import ValidationError, EXCLUDE
 
 from geonature.utils.config import config
@@ -132,7 +131,7 @@ def get_datasets():
 def get_af_from_id(id_af, af_list):
     found_af = None
     for af in af_list:
-        if af["id_acquisition_framework"] == id_af:
+        if af.get("id_acquisition_framework", None) == id_af:
             found_af = af
             break
     return found_af
@@ -185,7 +184,6 @@ def get_dataset(info_role, id_dataset):
 
 
 @routes.route("/upload_canvas", methods=["POST"])
-@json_resp
 def upload_canvas():
     """Upload the canvas as a temporary image used while generating the pdf file
     """
@@ -194,10 +192,9 @@ def upload_canvas():
     fm.remove_file(filepath)
     if data:
         binary_data = a2b_base64(data)
-        fd = open(filepath, "wb")
-        fd.write(binary_data)
-        fd.close()
-    return "OK"
+        with open(filepath, "wb") as fd:
+            fd.write(binary_data)
+    return '', 204
 
 
 @routes.route("/dataset/<int:ds_id>", methods=["DELETE"])
@@ -531,7 +528,8 @@ def update_dataset(id_dataset, info_role):
     .. :quickref: Metadata;
     """
 
-    dataset = TDatasets.query.filter_by_readable().get_or_404(id_dataset)
+    dataset = TDatasets.query.filter_by_readable().filter(
+        TDatasets.id_dataset == id_dataset).first_or_404()
     if not dataset.has_instance_permission(scope=int(info_role.value_filter)):
         raise Forbidden(f"User {g.current_user} cannot update dataset {dataset.id_dataset}")
     # TODO: specify which fields may be updated
@@ -1101,14 +1099,7 @@ def publish_acquisition_framework(info_role, af_id):
     datasets = TDatasets.query.filter_by(id_acquisition_framework=af_id).all()
 
     if not datasets:
-        return (
-            render_template(
-                "error.html",
-                error="Le cadre doit contenir des jeux de données",
-                redirect=current_app.config["URL_APPLICATION"] + "/#/metadata",
-            ),
-            404,
-        )
+        raise Conflict("Le cadre doit contenir des jeux de données")
 
     # After publishing an AF, we set it as closed and all its DS as inactive
     for dataset in datasets:
