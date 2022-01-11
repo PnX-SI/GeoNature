@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": ". ~/.nvm/nvm.sh; nvm use; ng serve --poll=2000",
+    "start": ". ~/.nvm/nvm.sh; nvm use; ng serve --poll=2000 --configuration=development",
     "build": ". ~/.nvm/nvm.sh; nvm use; ng build --prod --aot=false --build-optimizer=false",
     "test": "ng test",
     "lint": "ng lint",
