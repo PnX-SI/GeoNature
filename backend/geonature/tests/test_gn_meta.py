@@ -6,6 +6,8 @@ from werkzeug.exceptions import Unauthorized, Forbidden, Conflict, BadRequest, N
 from sqlalchemy import func
 
 from geonature.utils.env import db
+from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_permissions.models import TActions, TFilters, CorRoleActionFilterModuleObject
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.gn_meta.routes import get_af_from_id
 
@@ -298,7 +300,19 @@ class TestGNMeta:
 
     def test_update_dataset_forbidden(self, users, datasets):
         ds = datasets['associate_dataset']
-        set_logged_user_cookie(self.client, users['self_user'])
+        user = users['stranger_user']
+        action = TActions.query.filter_by(code_action='R').one()
+        scope = TFilters.query.filter_by(value_filter='1').one()
+        module = TModules.query.filter_by(module_code='METADATA').one()
+        with db.session.begin_nested():
+            permission = CorRoleActionFilterModuleObject(
+                                role=user,
+                                action=action,
+                                filter=scope,
+                                module=module
+                        )
+            db.session.add(permission)
+        set_logged_user_cookie(self.client, user)
 
         response = self.client.patch(url_for("gn_meta.update_dataset", 
                                             id_dataset=ds.id_dataset))
