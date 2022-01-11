@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 import { Routes, RouterModule } from '@angular/router';
 import { HttpClientXsrfModule } from '@angular/common/http';
-import { MatPaginatorIntl } from '@angular/material';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 
@@ -14,7 +14,7 @@ import { ActorComponent } from './actors/actors.component';
 import { MetadataComponent } from './metadata.component';
 import { MetadataDatasetComponent } from './metadata-dataset.component';
 import { AfCardComponent } from './af/af-card.component';
-import { ChartsModule } from 'ng2-charts/ng2-charts';
+import { ChartsModule } from 'ng2-charts';
 import { ChartModule } from 'angular2-chartjs';
 import { MetadataService } from './services/metadata.service';
 import { MetadataDataService } from './services/metadata-data.service';

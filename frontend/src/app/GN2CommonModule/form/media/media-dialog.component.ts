@@ -8,7 +8,7 @@ import {
   SimpleChanges,
   Inject
 } from '@angular/core';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service';
 

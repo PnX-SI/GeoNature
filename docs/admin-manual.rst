@@ -271,10 +271,10 @@ Note : pour plusieurs fichiers de révisions, notamment lié au référentiel g�
 
 
 Gestion des droits
-------------------
+""""""""""""""""""
 
 Accès à GeoNature et CRUVED
-"""""""""""""""""""""""""""
+```````````````````````````
 
 Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l'application GeoNature est géré de manière centralisée dans UsersHub. Pour qu'un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de "Lecteur" dans l'application GeoNature, grâce à l'application UsersHub.
 
@@ -310,7 +310,7 @@ On a donc le quatriptique : Un utilisateur / Une action / Une portée / Un modul
 **NB** : certains objets comme les JDD et CA sont transversal à tout GeoNature (ils sont utilisés dans tous les modules: saisie, synthese, métadonnées, dashbord), il sont donc contrôlé par les permissions du "module" GeoNature
 
 Cas particulier de l'action "C"
-"""""""""""""""""""""""""""""""""
+```````````````````````````````
 
 | Dans les modules de saisie, on veut que des utilisateurs puissent saisir uniquement dans certains JDD.
 | La liste des JDD ouvert à la saisie est contrôlée par l'action "CREATE" du module dans lequel on se trouve. 
@@ -318,7 +318,7 @@ Cas particulier de l'action "C"
 | Même si la portée de l'action "CREATE" sur le module est supérieure à l'action "READ", l'utilisateur ne vera que les JDD surlesquels il a des droits de lecture
 
 Récapitulatif
-"""""""""""""
+`````````````
 
 - Dans GeoNature V2 on peut attribuer à un role des actions possibles, sur lesquels on peut ajouter des filtres, dans un module ou sur toute l'application GeoNature (définis dans ``gn_permissions.cor_role_action_filter_module_object``).
 - 6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).
@@ -337,7 +337,7 @@ TODO : Lister les permissions implémentées dans chaque module.
 
 
 Accès public
-------------
+""""""""""""
 
 Cette section de la documentation concerne l'implémentation d'un utilisateur-lecteur pour votre instance GeoNature, permettant d'y donner accès sans authentification.
 
@@ -419,6 +419,9 @@ Données SIG
 Profils de taxons
 """""""""""""""""
 
+Introduction
+````````````
+
 GeoNature dispose d'un mécanisme permettant de calculer des profils pour chaque taxon en se basant sur les données validées présentes dans la Synthèse de l'instance.
 
 Ces profils sont stockés dans un schéma dédié ``gn_profiles``, et plus précisément dans les deux vues matérialisées suivantes :
@@ -462,7 +465,8 @@ Exemple :
 
     0 * * * * geonatadmin source /home/user/geonature/backend/venv/bin/activate && geonature profiles update_vms
 
-**Usage**
+Usage
+`````
 
 Pour chaque taxon (cd_ref) disposant de données dans la vue ``gn_profiles.v_synthese_for_profiles`` (vue filtrée basée sur la synthèse de l'instance), un profil est généré. Il comporte l'aire d'occurrence, les limites altitudinales et les combinaisons phénologiques jugées cohérentes sur la base des données disponibles.
 
@@ -481,7 +485,9 @@ Plusieurs fonctions permettent de vérifier si une donnée de la synthèse est c
 - ``gn_profiles.check_profile_phenology`` : permet de vérifier si la phénologie d'une donnée (période, stade de vie, altitudes) est une combinaison déjà connue dans le profil du taxon
 - ``gn_profiles.check_profile_altitudes`` : permet de vérifier si une donnée est bien située dans la fourchette d'altitudes connue pour le taxon en question
 
-**Configuration et paramétrage**
+
+Configuration et paramétrage
+````````````````````````````
 
 *Paramètres de calcul des profils* :
 
@@ -525,7 +531,8 @@ Il est possible de désactiver l'ensemble des fonctionnalités liées aux profil
       ENABLE_PROFILES = true/false
 
 
-**Précisions sur le calcul des phénologies**
+Calcul des phénologies
+``````````````````````
 
 Pour chaque taxon, la phénologie est calculée en croisant dans un premier temps les périodes d'observations et, selon les paramètres, les stades de vie.
 
@@ -552,6 +559,10 @@ Il faut donc (1/[1- ``proportion_kept_data`` /100])+1 données pour que des alti
 - 21 données minimum par période/stade si ``proportion_kept_data`` =95
 - 11 données minimum par période/stade si ``proportion_kept_data`` =90
 - 3 données minimum par période/stade si ``proportion_kept_data`` =51
+
+
+.. include:: sensitivity.rst
+
 
 Fonctions
 """""""""
@@ -834,6 +845,7 @@ Table contenant l’ensemble des id_areas intersectant les enregistrements de la
   - Fonction qui associe une couleur à une durée
   - *Passer les couleurs en paramètres : table  gn_commons.t_parameters ?*
   - *Passer la fonction en immutable*
+
 
 Modularité
 ----------

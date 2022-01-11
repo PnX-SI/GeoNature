@@ -6,7 +6,7 @@ import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
 import * as L from 'leaflet';
 import { CommonService } from '../../service/common.service';
-import { GeoJson } from 'togeojson';
+import { GeoJson } from '@tmcw/togeojson';
 
 /**
  * Ce composant permet d'afficher un marker au clic sur la carte ainsi qu'un controleur permettant d'afficher/désafficher le marker.
@@ -53,7 +53,7 @@ export class MarkerComponent implements OnInit, OnChanges {
     //Observable pour gérer de l'affichage du marker
     this._coordinates
       .pipe(filter(coords => this.map !== undefined && coords != null))
-      .subscribe(coords => {        
+      .subscribe(coords => {
         this.previousCoord = coords;
         this.generateMarkerAndEvent(coords[0], coords[1], false);
       });

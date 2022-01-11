@@ -3,7 +3,7 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
-import { TreeModel } from 'angular-tree-component';
+import { TreeModel } from '@circlon/angular-tree-component';
 import { AppConfig } from '@geonature_config/app.config';
 import { formatTaxonTree } from '@geonature_common/form/taxon-tree/taxon-tree.service';
 
@@ -67,7 +67,7 @@ export class TaxonAdvancedStoreService {
     const all_groups = [];
     this._dataService.getRegneAndGroup2Inpn().subscribe(data => {
       this.taxonomyGroup2Inpn = data;
-      // tslint:disable-next-line:forin
+      // eslint-disable-next-line guard-for-in
       for (let regne in data) {
         data[regne].forEach(group => {
           if (group.length > 0) {

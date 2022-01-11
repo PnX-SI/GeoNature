@@ -55,13 +55,13 @@ ngx-datatable {
   // overflow-y: scroll;
 }
 
-:host /deep/ .ngx-datatable.material .datatable-footer .page-count {
+:host ::ng-deep .ngx-datatable.material .datatable-footer .page-count {
   padding: 5px;
   line-height: 1.2;
   height: 40px;
 }
 
-:host /deep/ .datatable-body-row.active .datatable-row-group {
+:host ::ng-deep .datatable-body-row.active .datatable-row-group {
   background-color: rgb(117, 227, 118) !important;
 }
 
@@ -89,29 +89,29 @@ ngx-datatable {
   margin-left: 5px;
 }
 
-:host /deep/ .dynamic-form-wrapper {
+:host ::ng-deep .dynamic-form-wrapper {
   display: flex;
 }
-:host /deep/ .dynamic-form {
-  display: flex;
-}
-
-:host /deep/ .full-wrapper {
+:host ::ng-deep .dynamic-form {
   display: flex;
 }
 
-:host /deep/ .trash-btn {
+:host ::ng-deep .full-wrapper {
+  display: flex;
+}
+
+:host ::ng-deep.trash-btn {
   position: relative;
   top: 28px;
   left: 5px;
   margin-right: 5px;
 }
 
-:host /deep/ .filter-control {
+:host ::ng-deep .filter-control {
   width: 40%;
 }
 
-:host /deep/ .datatable-row-detail {
+:host ::ng-deep .datatable-row-detail {
   height: auto !important;
   font-size: 0.8em;
 }

@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { MediaDialog } from './media-dialog.component';
 
 export interface MediaDialogData {

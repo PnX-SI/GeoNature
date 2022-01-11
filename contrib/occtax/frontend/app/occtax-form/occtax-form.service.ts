@@ -8,9 +8,10 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { CommonService } from "@geonature_common/service/common.service";
-import {DataFormService} from "@geonature_common/form/data-form.service"
+import { DataFormService } from "@geonature_common/form/data-form.service";
 
 import { OcctaxDataService } from "../services/occtax-data.service";
+
 
 @Injectable()
 export class OcctaxFormService {
@@ -26,13 +27,14 @@ export class OcctaxFormService {
   public stayOnFormInterface = new FormControl(false);
   public currentIdDataset:any;
   public previousReleve = null;
-  // public globalOccurrenceAddFields: Array<any>= [];
+  public globalReleveAddFields: Array<any> = [];
+  public globalOccurrenceAddFields: Array<any>= [];
   public globalCountingAddFields: Array<any>= [];
-  // public datasetOccurrenceAddFields: Array<any>= [];
+  public datasetReleveAddFields: Array<any>= [];
+  public datasetOccurrenceAddFields: Array<any>= [];
   public datasetCountingAddFields: Array<any>= [];
   public idTaxonList: number;
   public currentTab: "releve" | "taxons";
-
 
 
 
@@ -50,7 +52,7 @@ export class OcctaxFormService {
     this.id_releve_occtax
       .pipe(
         skip(1), // skip initilization value (null)
-        tap((id) =>{           
+        tap((id) =>{ 
           if(id == null) {            
             this.editionMode.next(false);
           } else {
@@ -60,7 +62,7 @@ export class OcctaxFormService {
         filter((id) => id !== null),
         distinctUntilChanged(),
       )
-      .subscribe((id) => {                               
+      .subscribe((id) => {                             
         this.getOcctaxData(id)
       });
   }
@@ -71,6 +73,7 @@ export class OcctaxFormService {
         this.occtaxData.next(data);
         this.editionMode.next(true);
         // set taxa list
+
         if(data.releve.properties.dataset.id_taxa_list) {
           this.idTaxonList = data.releve.properties.dataset.id_taxa_list;
         }
@@ -101,10 +104,14 @@ export class OcctaxFormService {
       }
     );
   }
-
-  getAdditionnalFields(object_code: Array<string>, idDataset?: string): Observable<any> {          
+  getAdditionnalFields(object_code: Array<string>, idDataset?): Observable<any> {        
+    
+    let _idDataset = "null";
+    if(idDataset) {
+      _idDataset = idDataset
+    }    
     return this.dataFormService.getadditionalFields({
-      'id_dataset':  idDataset || "null",
+      'id_dataset':  _idDataset,
       'module_code': ['OCCTAX'],
       'object_code': object_code
     }).catch(() => {    
@@ -191,7 +198,5 @@ export class OcctaxFormService {
 
       return inter;
   }
-
-
 
 }

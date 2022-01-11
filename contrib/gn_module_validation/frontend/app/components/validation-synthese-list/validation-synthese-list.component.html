@@ -13,7 +13,7 @@
   [limit]="rowNumber"
   [rowClass]="getRowClass"
   (select)="mapListService.onRowSelect($event)"
-  (activate)="onActivate($event, modal)"
+  (activate)="onActivate($event)"
 >
 
   <ngx-datatable-row-detail rowHeight="100">
@@ -264,13 +264,11 @@
     </ng-template>
 
   </ngx-datatable-footer>
-
 </ngx-datatable>
 
 <pnx-validation-popup
   [selectedPages]="selectedPages"
   [currentPage]="npage"
-  [nbTotalObservation]="nbTotalObservation"
   [observations]="selectedObs"
   [validationStatus]="validationStatus"
   (valStatus)="onStatusChange($event)"

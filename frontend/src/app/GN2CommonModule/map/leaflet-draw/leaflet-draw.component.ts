@@ -5,18 +5,15 @@ import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../../service/common.service';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
-import { GeoJSON } from 'togeojson';
+import { GeoJSON } from '@tmcw/togeojson';
+import {CustomIcon} from '@geonature/utils/leaflet-icon';
 
 import 'leaflet-draw';
 import * as L from 'leaflet';
 
 delete L.Icon.Default.prototype['_getIconUrl'];
 
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
-});
+L.Icon.Default.mergeOptions(CustomIcon);
 
 /**
  * Ce composant permet d'activer le `plugin leaflet-draw <https://github.com/Leaflet/Leaflet.draw>`_

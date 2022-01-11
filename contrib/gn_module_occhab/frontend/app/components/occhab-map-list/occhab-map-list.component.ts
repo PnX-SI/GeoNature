@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, HostListener } from "@angular/core";
 import { OcchabStoreService } from "../../services/store.service";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { OccHabDataService } from "../../services/data.service";
-import { DatatableComponent } from "@swimlane/ngx-datatable/release";
+import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { OccHabModalDownloadComponent } from "./modal-download.component";
 import { NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";

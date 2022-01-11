@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/observable/empty';
 
@@ -22,7 +22,7 @@ export class UnauthorizedInterceptor implements HttpInterceptor {
             }
 
             // rethrow so other error handlers may pick this up
-            return Observable.throw(err);
+            return throwError(err);
         });
     }
 }

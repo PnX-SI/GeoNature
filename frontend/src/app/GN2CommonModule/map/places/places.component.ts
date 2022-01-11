@@ -20,7 +20,7 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
   templateUrl: 'places.component.html'
 })
 export class PlacesComponent extends MarkerComponent implements OnInit, OnDestroy {
-  @ViewChild('modalContent') public modalContent: any;
+  @ViewChild('modalContent', { static: false }) public modalContent: any;
   public placeForm = new FormControl();
   private geojsonSubscription$: Subscription;
   public geojson: GeoJSON.Feature;

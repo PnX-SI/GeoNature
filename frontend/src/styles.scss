@@ -89,10 +89,10 @@ mat-sidenav-content {
 }
 
 /*
- * The /deep/ selector is simply to overcome view encapsulation
+ * The ::ng-deep selector is simply to overcome view encapsulation
  * and be able to select the div.md-sidenav-content generated at runtime
 */
-md-sidenav-layout /deep/ .md-sidenav-content {
+md-sidenav-layout ::ng-deep .md-sidenav-content {
   overflow: hidden;
 }
 
