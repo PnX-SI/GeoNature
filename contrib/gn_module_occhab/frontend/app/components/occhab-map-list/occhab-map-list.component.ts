@@ -16,11 +16,6 @@ import { ModuleConfig } from "../../../../../../external_modules/occhab/frontend
   providers: [NgbActiveModal]
 })
 export class OccHabMapListComponent implements OnInit {
-  public displayedColumns = [
-    { name: "Date", prop: "date_min", width: "100" },
-    { name: "Habitats", prop: "habitats", width: "300" },
-    { name: "Jeu de données", prop: "dataset_name", width: "200" }
-  ];
   @ViewChild("dataTable") dataTable: DatatableComponent;
   public rowNumber: number;
   public dataLoading = true;
