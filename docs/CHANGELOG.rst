@@ -55,6 +55,9 @@ Profils de taxons
 * [SYNTHESE] Correction du lien entre les filtres CA et JDD (#1530)
 * Correction de la redirection vers le formulaire de login en cas de cookie corrompu (#1550 par @antoinececchimnhn)
 * [OCCHAB] Correction du chargement de la configuration, des fiches info et de la modification d'une station
+* [META] Formulaire acteurs pour JDD et CA
+    * correction ralentissments, id_organims et changeTab pris en compte
+    * boutton ajout acteur en disabled si les acteurs ne sont pas tout valides
 
 **💻 Développement**
 

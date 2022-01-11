@@ -68,7 +68,11 @@ from geonature.core.gn_meta.schemas import (
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, get_or_fetch_user_cruved
+from geonature.core.gn_permissions.tools import (
+    cruved_scope_for_user_in_module,
+    get_or_fetch_user_cruved,
+    get_scopes_by_action
+)
 from geonature.core.gn_meta.mtd import mtd_utils
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
@@ -887,9 +891,8 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework, info_role):
 
     # Test des droits d'édition du acquisition framework si modification
     if acquisition_framework.id_acquisition_framework is not None:
-        user_cruved, _ = cruved_scope_for_user_in_module(
-            id_role=info_role.id_role, module_code="METADATA",
-        )
+        user_cruved = get_scopes_by_action(module_code="META_DATA")
+
         #verification des droits d'édition pour le acquisition framework
         if not acquisition_framework.has_instance_permission(user_cruved['U']):
             raise InsufficientRightsError(
