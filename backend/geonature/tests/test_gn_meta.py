@@ -167,7 +167,7 @@ class TestGNMeta:
         set_logged_user_cookie(self.client, users['admin_user'])
         response = self.client.get(get_af_url)
         assert response.status_code == 200
-
+    
     def test_datasets_permissions(self, app, datasets, users):
         ds = datasets['own_dataset']
         with app.test_request_context(headers=logged_user_headers(users['user'])):
@@ -340,3 +340,26 @@ class TestGNMeta:
         set_logged_user_cookie(self.client, users['user'])
         response = self.client.get(url_for("gn_meta.uuid_report"))
         assert response.status_code == 200
+
+    def test_get_af_from_id(self, af_list):
+        id_af = 1
+
+        found_af = get_af_from_id(id_af=id_af, af_list=af_list)
+
+        assert isinstance(found_af, dict)
+        assert found_af.get("id_acquisition_framework") == id_af
+
+    def test_get_af_from_id_not_present(self, af_list):
+        id_af = 12
+
+        found_af = get_af_from_id(id_af=id_af, af_list=af_list)
+
+        assert found_af is None
+
+    def test_get_af_from_id_raise(self):
+        id_af = 1
+        af_list = [
+            {"test": 2}
+            ]
+        
+        found_ad = get_af_from_id(id_af=id_af, af_list=af_list)
