@@ -179,7 +179,7 @@ class CorDatasetActor(DB.Model):
         if self.role is not None:
             return self.role
         else:
-            return self.organisme
+            return self.organism
 
     @hybrid_property
     def display(self):
