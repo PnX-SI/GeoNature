@@ -1,5 +1,6 @@
 import pytest
-import uuid
+from io import StringIO
+import csv
 
 from flask import url_for, current_app
 from werkzeug.exceptions import Unauthorized, Forbidden, Conflict, BadRequest, NotFound
@@ -13,8 +14,10 @@ from geonature.core.gn_meta.routes import get_af_from_id
 
 from pypnusershub.db.tools import user_to_token
 
-from .fixtures import acquisition_frameworks, datasets, synthese_data
+from .fixtures import acquisition_frameworks, datasets, synthese_data, source
 from .utils import set_logged_user_cookie, logged_user_headers
+
+HIGH_ID = 12000
 
 
 @pytest.fixture
@@ -30,6 +33,24 @@ def af_list():
                     "id_acquisition_framework": 1
                 },
             ]
+
+@pytest.fixture
+def synthese_corr():
+    return {
+        "identifiant_gn": "id_synthese",
+        "identifiantPermanent (SINP)": "unique_id_sinp",
+        "nomcite": "nom_cite",
+        "jourDateDebut": "date_min",
+        "jourDatefin": "date_max",
+        "observateurIdentite": "observers"
+    }
+
+
+def get_csv_from_response(data):
+    csv_data = data.decode('utf8')
+    with StringIO(csv_data) as f:
+        for i, row in enumerate(csv.DictReader(f, delimiter=';')):
+            yield i, row
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -155,6 +176,26 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
         assert response.status_code == 200
 
+    def test_get_acquisition_frameworks_list_excluded_fields(self, users,
+    acquisition_frameworks):
+        excluded = ["id_acquisition_framework", "id_digitizer"]
+        set_logged_user_cookie(self.client, users['admin_user'])
+
+        response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"), query_string={"excluded_fields": ','.join(excluded), "nested": "true"})
+
+        for field in excluded:
+            assert all(field not in list(dic.keys()) for dic in response.json)
+
+    def test_get_acquisition_frameworks_list_excluded_fields_not_nested(self, users, acquisition_frameworks):
+        excluded = ["id_acquisition_framework", "id_digitizer"]
+
+        set_logged_user_cookie(self.client, users['admin_user'])
+
+        response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"), query_string={"excluded_fields": ','.join(excluded), "nested": "true"})
+
+        pass # TODO
+
+
     def test_get_acquisition_framework(self, users, acquisition_frameworks):
         af_id = acquisition_frameworks['orphan_af'].id_acquisition_framework
         get_af_url = url_for("gn_meta.get_acquisition_framework", id_acquisition_framework=af_id)
@@ -170,6 +211,22 @@ class TestGNMeta:
         response = self.client.get(get_af_url)
         assert response.status_code == 200
     
+    def test_get_export_pdf_acquisition_frameworks(self, users, acquisition_frameworks):
+        af_id = acquisition_frameworks['own_af'].id_acquisition_framework
+
+        set_logged_user_cookie(self.client, users['user'])
+
+        response = self.client.get(url_for("gn_meta.get_export_pdf_acquisition_frameworks",id_acquisition_framework=af_id))
+
+        assert response.status_code == 200
+
+    def test_get_export_pdf_acquisition_frameworks_unauthorized(self, acquisition_frameworks):
+        af_id = acquisition_frameworks['own_af'].id_acquisition_framework
+
+        response = self.client.get(url_for("gn_meta.get_export_pdf_acquisition_frameworks",id_acquisition_framework=af_id))
+
+        assert response.status_code == Unauthorized.code
+
     def test_datasets_permissions(self, app, datasets, users):
         ds = datasets['own_dataset']
         with app.test_request_context(headers=logged_user_headers(users['user'])):
@@ -290,32 +347,37 @@ class TestGNMeta:
         assert response.json.get('dataset_name') == new_name
 
     def test_update_dataset_not_found(self, users, datasets):
-        ds = datasets['stranger_dataset']
         set_logged_user_cookie(self.client, users['user'])
 
         response = self.client.patch(url_for("gn_meta.update_dataset", 
-                                            id_dataset=ds.id_dataset))
+                                            id_dataset=HIGH_ID))
 
         assert response.status_code == NotFound.code
 
     def test_update_dataset_forbidden(self, users, datasets):
-        ds = datasets['associate_dataset']
+        ds = datasets['own_dataset']
         user = users['stranger_user']
-        action = TActions.query.filter_by(code_action='R').one()
-        scope = TFilters.query.filter_by(value_filter='1').one()
-        module = TModules.query.filter_by(module_code='METADATA').one()
+        actions_scopes = [
+            {'action': 'U', 'scope': '2', 'module': 'METADATA'}
+            ]
         with db.session.begin_nested():
-            permission = CorRoleActionFilterModuleObject(
-                                role=user,
-                                action=action,
-                                filter=scope,
-                                module=module
-                        )
-            db.session.add(permission)
+            for act_scope in actions_scopes:
+                action = TActions.query.filter_by(
+                    code_action=act_scope.get('action', '')
+                    ).one()
+                scope = TFilters.query.filter_by(value_filter=act_scope.get('scope', '')).one()
+                module = TModules.query.filter_by(module_code=act_scope.get('module', '')).one()
+                permission = CorRoleActionFilterModuleObject(
+                                    role=user,
+                                    action=action,
+                                    filter=scope,
+                                    module=module
+                            )
+                db.session.add(permission)
         set_logged_user_cookie(self.client, user)
 
-        response = self.client.patch(url_for("gn_meta.update_dataset", 
-                                            id_dataset=ds.id_dataset))
+        response = self.client.patch(url_for("gn_meta.update_dataset",
+                                             id_dataset=ds.id_dataset))
 
         assert response.status_code == Forbidden.code
 
@@ -339,7 +401,7 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.get_export_pdf_dataset", id_dataset=ds.id_dataset))
         assert response.status_code == 200
 
-    def test_uuid_report(self, users):
+    def test_uuid_report(self, users, synthese_data):
         response = self.client.get(url_for("gn_meta.uuid_report"))
         assert response.status_code == Unauthorized.code
 
@@ -347,13 +409,51 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.uuid_report"))
         assert response.status_code == 200
 
-    def test_sensi_report(self, users):
-        response = self.client.get(url_for("gn_meta.uuid_report"))
+    def test_uuid_report_with_dataset_id(self, synthese_corr, users, datasets, synthese_data):
+        dataset_id = datasets['own_dataset'].id_dataset
+
+        set_logged_user_cookie(self.client, users['user'])
+
+        response = self.client.get(url_for("gn_meta.uuid_report"),
+                                   query_string={'id_dataset': dataset_id})
+        response_empty = self.client.get(url_for("gn_meta.uuid_report"),
+                                   query_string={'id_dataset': HIGH_ID})
+
+        # Since response is a csv in the string format in bytes, we must
+        # convert it and read it
+        for (i, row) in get_csv_from_response(response.data):
+            for key, val in synthese_corr.items():
+                assert row[key] == str(getattr(synthese_data[i], val) or '')
+        
+        assert response.status_code == 200
+
+        for (i, row) in get_csv_from_response(response_empty.data):
+            for key, val in synthese_corr.items():
+                assert getattr(synthese_data[i], val) == ""
+
+        assert response_empty.status_code == 200
+
+    def test_uuid_report_with_module_id(self, source):
+        pass
+        
+    def test_sensi_report(self, users, datasets):
+        dataset_id = datasets['own_dataset'].id_dataset
+        response = self.client.get(url_for("gn_meta.sensi_report"),
+                                   query_string={"id_dataset": dataset_id})
         assert response.status_code == Unauthorized.code
 
         set_logged_user_cookie(self.client, users['user'])
-        response = self.client.get(url_for("gn_meta.uuid_report"))
+
+        response = self.client.get(url_for("gn_meta.sensi_report"),
+                                   query_string={"id_dataset": dataset_id})
         assert response.status_code == 200
+
+    def test_sensi_report_fail(self, users):
+        set_logged_user_cookie(self.client, users['admin_user'])
+
+        response = self.client.get(url_for("gn_meta.sensi_report"))
+        # BadRequest because for now id_dataset query is required
+        assert response.status_code == BadRequest.code
 
     def test_get_af_from_id(self, af_list):
         id_af = 1
