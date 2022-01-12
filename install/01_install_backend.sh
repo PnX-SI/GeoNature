@@ -105,6 +105,12 @@ echo "Installation des dépendances Python..."
 pip install --upgrade "pip>=19.3"  # https://www.python.org/dev/peps/pep-0440/#direct-references
 if [[ "${MODE}" == "dev" ]]; then
   echo "Installation des dépendances Python de l'environnement de DEV..."
+  git submodule status | grep -E "^-" >/dev/null
+  if [ $? -eq 0 ]; then
+      echo "Des sous-modules non initialisés ont été trouvés."
+      echo "Avez-vous lancé 'git submodule init && git submodule update' ?"
+      exit 1
+  fi
   pip install -r requirements-common.txt -r requirements-submodules.txt
 else
   pip install -r requirements.txt
