@@ -914,15 +914,10 @@ Exploitation
 Logs
 """"
 
-Les logs de GeoNature sont dans le répertoire ``<GEONATURE_DIRECTORY>/var/log/`` :
-
-- Logs d'installation de la BDD : ``install_db.log``
-- Logs d'installation de la BDD d'un module : ``install_<nom_module>_schema.log``
-- Logs de l'API : ``gn-errors.log``
-
-Les logs de TaxHub sont dans le répertoire ``/var/log/taxhub``:
-
-- Logs de l'API de TaxHub : ``taxhub-errors.log``
+* Logs d’installation de GeoNature : ``geonature/install/install.log``
+* Logs de GeoNature : ``/var/log/geonature.log``
+* Logs de TaxHub : ``/var/log/taxhub.log``
+* Logs de UsersHub : ``/var/log/usershub.log``
 
 Commandes GeoNature
 """""""""""""""""""
@@ -939,51 +934,27 @@ Le préfixe (venv) se met alors au début de votre invite de commande.
 
 Voici la liste des commandes disponibles (aussi disponibles en tapant la commande ``geonature --help``) :
 
-- activate_gn_module : Active un gn_module installé (Possibilité d'activer seulement le backend ou le frontend)
-- deactivate_gn_module : Désactive gn_un module activé (Possibilté de désactiver seulement le backend ou le frontend)
-- dev_back : Lance le backend en mode développement
-- dev_front : Lance le frontend en mode développement
-- generate_frontend_module_route : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installés (Fait automatiquement lors de l'installation d'un module)
-- install_gn_module : Installe un gn_module
-- start_gunicorn : Lance l'API du backend avec gunicorn
-- supervisor : Exécute les commandes supervisor (``supervisor stop <service>``, ``supervisor reload``) (**avant la 2.8**)
-- systemd : Exécute les commandes systemd et systemctl (``systemctl stop <service>``, ``systemctl restart <service>``)  (**depuis la 2.8**)
-- update_configuration : Met à jour la configuration du cœur de l'application. A exécuter suite à une modification du fichier ``geonature_config.toml``
-- update_module_configuration : Met à jour la configuration d'un module. A exécuter suite à une modification du fichier ``conf_gn_module.toml``.
+- ``activate_gn_module`` : Active un gn_module installé (Possibilité d'activer seulement le backend ou le frontend)
+- ``deactivate_gn_module`` : Désactive gn_un module activé (Possibilté de désactiver seulement le backend ou le frontend)
+- ``dev_back`` : Lance le backend en mode développement
+- ``dev_front`` : Lance le frontend en mode développement
+- ``generate_frontend_module_route`` : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installés (Fait automatiquement lors de l'installation d'un module)
+- ``install_gn_module`` : Installe un gn_module
+- ``start_gunicorn`` : Lance l'API du backend avec gunicorn
+- ``update_configuration`` : Met à jour la configuration du cœur de l'application. A exécuter suite à une modification du fichier ``geonature_config.toml``
+- ``update_module_configuration`` : Met à jour la configuration d'un module. A exécuter suite à une modification du fichier ``conf_gn_module.toml``.
 
 Effectuez ``geonature <nom_commande> --help`` pour accéder à la documentation et à des exemples d'utilisation de chaque commande.
 
-Vérification des services
-"""""""""""""""""""""""""
+Démarrer / arrêter les API
+""""""""""""""""""""""""""
 
-Les API de GeoNature et de TaxHub sont lancées par deux serveurs http python indépendants (Gunicorn), eux-mêmes controlés par le supervisor (ou systemd).
+* Démarrer GeoNature : ``systemctl start geonature``
+* Arrêter GeoNature : ``systemctl stop geonature``
+* Redémarrer GeoNature : ``systemctl restart geonature``
+* Vérifier l’état de GeoNature : ``systemctl status geonature``
 
-Par défaut :
-
-- L'API de GeoNature tourne sur le port 8000
-- L'API de taxhub tourne sur le port 5000
-
-Pour vérifier que les API de GeoNature et de TaxHub sont lancées, exécuter la commande :
-
-.. code-block:: console
-
-    ps -aux |grep gunicorn
-
-La commande doit renvoyer 4 fois la ligne suivante pour GeoNature :
-
-.. code-block:: console
-
-    root      27074  4.6  0.1  73356 23488 ?        S    17:35   0:00       /home/theo/workspace/GN2/GeoNature/backend/venv/bin/python3 /home/theo/workspace/GN2/GeoNature/backend/venv/bin/gunicorn wsgi:app --error-log /var/log/geonature/api_errors.log --pid=geonature2.pid -w 4 -b 0.0.0.0:8000 -n geonature2
-
-et 4 fois la ligne suivante pour TaxHub :
-
-.. code-block:: console
-
-    root      27103 10.0  0.3 546188 63328 ?        Sl   17:35   0:00 /home/theo/workspace/GN2/TaxHub/venv/bin/python3.5 /home/theo/workspace/GN2/TaxHub/venv/bin/gunicorn server:app --access-logfile /var/log/taxhub/taxhub-access.log --error-log /var/log/taxhub/taxhub-errors.log --pid=taxhub.pid -w 4 -b 0.0.0.0:5000 -n taxhub
-
-Chaque ligne correspond à un worker Gunicorn.
-
-Si ces lignes n'apparaissent pas, cela signifie qu'une des deux API n'a pas été lancée ou a connu un problème à son lancement. Voir les logs des API pour plus d'informations.
+Les mêmes commandes sont disponibles pour TaxHub en remplacant ``geonature`` par ``taxhub``.
 
 Supervision des services
 """"""""""""""""""""""""
@@ -996,28 +967,6 @@ Supervision des services
 
 - Vérifier que les fichiers de logs de TaxHub et GeoNature ne sont pas trop volumineux pour la capacité du serveur
 - Vérifier que les services nécessaires au fonctionnement de l'application tournent bien (Apache, PostgreSQL)
-
-Stopper/Redémarrer les API
-"""""""""""""""""""""""""""
-
-Les API de GeoNature et de TaxHub sont gérées par le supervisor (ou systemd depuis la 2.8) pour être lancées automatiquement au démarrage du serveur.
-
-Pour les stopper, exécuter les commandes suivantes :
-
-- GeoNature : ``sudo supervisorctl stop geonature2`` ou ``sudo systemctl stop geonature``
-- TaxHub : ``sudo supervisorctl stop taxhub`` ou ``sudo systemctl stop taxhub``
-
-Pour redémarer les API :
-
-.. code-block:: console
-
-    sudo supervisorctl reload
-    
-ou pour GeoNature 2.8+
-
-.. code-block:: console
-
-    sudo systemctl restart <service>
 
 Maintenance
 """""""""""
@@ -1044,7 +993,7 @@ Attention : ne pas stopper le backend (des opérations en BDD en cours pourraien
 
 - Redémarrage de PostgreSQL
 
-  Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage des API GeoNature et TaxHub pour que celles-ci continuent de fonctionner. Pour cela, lancez la commande ``sudo supervisorctl reload`` ou la commandes ``sudo systemctl restart <service>`` (GeoNature 2.8+).
+  Si vous effectuez des manipulations de PostgreSQL qui nécessitent un redémarrage du SGBD (``sudo service postgresql restart``), il faut impérativement lancer un redémarrage des API GeoNature et TaxHub pour que celles-ci continuent de fonctionner. Pour cela, lancez les commandes ``sudo systemctl restart geonature`` et ``sudo systemctl restart taxhub`` (GeoNature 2.8+).
 
   **NB**: Ne pas faire ces manipulations sans avertir les utilisateurs d'une perturbation temporaire des applications.
 
@@ -1116,10 +1065,9 @@ Restauration
         sudo -n -u postgres -s createdb -O <MON_USER> geonature2db
         sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS postgis;"
         sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS hstore;"
-        sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog; COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';"
         sudo -n -u postgres -s psql -d geonature2db -c 'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
         sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
-        sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS postgis_raster;"
+        sudo -n -u postgres -s psql -d geonature2db -c "CREATE EXTENSION IF NOT EXISTS postgis_raster;"  # postgis>=3.0 (Debian 11)
         
 
   - Restaurer la BDD à partir du backup
@@ -1147,23 +1095,7 @@ Restauration
         cd <GEONATURE_DIRECTORY>/external_modules
         tar -zxvf <MY_BACKUP_DIRECTORY>/201803151036-external_modules.tar.gz
 
-* Relancer l'application :
-
-  .. code-block:: console
-
-    cd /<MY_USER>/geonature/frontend
-    npm run build
-    sudo supervisorctl reload
-    
-    
-ou pour GeoNature 2.8+
- 
- 
-  .. code-block:: console
-
-    cd /<MY_USER>/geonature/frontend
-    npm run build
-    sudo systemctl restart geonature
+* Relancer l’application GeoNature
 
 
 Customisation
@@ -1311,7 +1243,9 @@ GeoNature est fourni avec des données géographiques de base sur la métropôle
 
 * Videz le contenu des tables ``ref_geo.dem`` et éventuellement ``ref_geo.dem_vector``
 * Uploadez le(s) fichier(s) du MNT sur le serveur
-* Suivez la procédure de chargement du MNT en l'adaptant : https://github.com/PnX-SI/GeoNature/blob/master/install/install_db.sh#L295-L299
+* Suivez la procédure de chargement du MNT en l'adaptant :
+  * https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/migrations/versions/1715cf31a75d_insert_ign_250m_bd_alti_in_dem.py
+  * https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/migrations/versions/87651375c2e8_vectorize_ign_bd_alti.py
 
 *TODO : Procédure à améliorer et simplifier : https://github.com/PnX-SI/GeoNature/issues/235*
 
