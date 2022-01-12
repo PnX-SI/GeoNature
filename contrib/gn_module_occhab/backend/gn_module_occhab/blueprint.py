@@ -127,7 +127,9 @@ def get_one_station(id_station, info_role):
     user_cruved = get_or_fetch_user_cruved(
         session=session, id_role=info_role.id_role, module_code="OCCHAB"
     )
-    station_geojson["properties"]["rights"] = station.get_releve_cruved(
+    print(station)
+    print(dir(station))
+    station_geojson["properties"]["rights"] = station.get_model_cruved(
         info_role, user_cruved
     )
     return station_geojson
