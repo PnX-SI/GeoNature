@@ -270,14 +270,6 @@
             >
             </pnx-metadata-actor>
           </ng-container>
-          <ng-container *ngIf="
-          form.get('cor_af_actor').invalid && form.get('cor_af_actor').errors?.mainContactRequired
-          ">
-          <small
-              class="mat-error">
-              Le renseignement d'un contact principal est obligatoire
-            </small>
-          </ng-container>
         </div>
       </div>
 
@@ -296,8 +288,18 @@
             [defaultTab]="(afFormS.acquisition_framework | async)?.id_acquisition_framework ? 'all': 'organism'"
           >
           </pnx-metadata-actor>
+          
+          <ng-container *ngIf="
+            !afFormS.actors.valid
+            && afFormS.actors.errors?.hasDoublons.index == idx
+          ">
+            <small
+              class="mat-error">
+              Cet acteur est déjà présent dans la liste
+            </small>
+          </ng-container>
 
-
+          <p></p>
         </ng-container>
         <button
           class="mt-2 float-right"

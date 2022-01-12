@@ -161,6 +161,7 @@ export class DataFormService {
   }
 
   getTaxaBibList() {
+    return Observable.of([])
     return this._http.get<any>(`${AppConfig.API_TAXHUB}/biblistes`).map(d => d.data);
   }
 

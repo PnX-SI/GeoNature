@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormArray, FormGroup, Validators } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { MatDialog } from "@angular/material";
 
@@ -94,35 +94,46 @@ export class ActorComponent implements OnInit {
     this.setToggleButtonValue();
   }
 
+
+  
   toggleActorOrganismChoiceChange(event) {
     /**
      *  suprime id_organism si on choisi acteur seulement
      *  suprime id_role si on choisi organism seulement
      **/
-    const tab = event.value;
-    this._toggleButtonValue.next(tab);
 
-    if (tab == 'person') {
+    const btn = event.value;
+    this._toggleButtonValue.next(btn);
+
+    if (btn == 'person') {
+      this.actorForm.controls.id_role.setValidators([Validators.required])
+      this.actorForm.controls.id_organism.setValidators([])
       this.actorForm.patchValue({id_organism: null})
     }
 
-    if (tab == 'organism') {
+    if (btn == 'organism') {
+      this.actorForm.controls.id_organism.setValidators([Validators.required])
+      this.actorForm.controls.id_role.setValidators([])
       this.actorForm.patchValue({id_role: null})
+    }
+
+    if (btn == 'all') {
+      this.actorForm.controls.id_organism.setValidators([Validators.required])
+      this.actorForm.controls.id_role.setValidators([Validators.required])
+      this.actorForm.patchValue({})
+
     }
 
   }
 
   setToggleButtonValue() {
-    //selectionne le bon element du toggleButton en fonction de la valeur initiale du formulaire
-    if (this.actorForm.get('id_organism').value && this.actorForm.get('id_role').value) {
-      this._toggleButtonValue.next('all');
-      ;
+    var btn = this.actorForm.get('id_organism').value && this.actorForm.get('id_role').value
+      ? 'all'
+      : this.actorForm.get('id_role').value
+        ? 'person'
+        : 'organism'
 
-    } else if (this.actorForm.get('id_role').value) {
-      this._toggleButtonValue.next('person');
-    } else {
-      this._toggleButtonValue.next('organism');
-    }
+        this.toggleActorOrganismChoiceChange({value: btn});
   }
 
   submitActor() {
