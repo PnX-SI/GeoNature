@@ -150,6 +150,18 @@ class TestGNMeta:
         response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
         assert response.status_code == 204
 
+    def test_update_acquisition_framework(self, users, acquisition_frameworks):
+        new_name = 'thenewname'
+        af = acquisition_frameworks['own_af']
+        set_logged_user_cookie(self.client, users['user'])
+
+        response = self.client.post(url_for("gn_meta.updateAcquisitionFramework", 
+                                             id_acquisition_framework=af.id_acquisition_framework),
+                                     data=dict(acquisition_framework_name=new_name))
+        
+        assert response.status_code == 200
+        assert response.json.get('acquisition_framework_name') == new_name
+
     def test_get_acquisition_frameworks(self, users):
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks"))
         assert response.status_code == Unauthorized.code
@@ -193,8 +205,8 @@ class TestGNMeta:
 
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"), query_string={"excluded_fields": ','.join(excluded), "nested": "true"})
 
-        pass # TODO
-
+        # Test if a relationship is ignored
+        assert all("creator" not in dic for dic in response.json)
 
     def test_get_acquisition_framework(self, users, acquisition_frameworks):
         af_id = acquisition_frameworks['orphan_af'].id_acquisition_framework
