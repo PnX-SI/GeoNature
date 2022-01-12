@@ -172,6 +172,7 @@ export class OcctaxFormReleveService {
     this.occtaxFormService.editionMode
       .pipe(
         skip(1), // skip initilization value (false)
+        // distinctUntilChanged(),
         //initialisation
         tap(() => {
           this.additionalFieldsForm = [];
@@ -203,10 +204,7 @@ export class OcctaxFormReleveService {
               )
                 .pipe(
                   //concatenation for restitute only one additional fields array
-                  map(([globalFields, datasetFields]) => {
-                    console.log("LA", globalFields);
-                    console.log("LA", datasetFields);
-                    
+                  map(([globalFields, datasetFields]) => {                    
                     return [].concat(globalFields, datasetFields)
                   }),
                 );
@@ -217,8 +215,6 @@ export class OcctaxFormReleveService {
                 );
         }),
         map(([releve, additional_fields]) => {    
-          console.log(additional_fields);
-                
           additional_fields.forEach(field => {
             //Formattage des dates
             if(field.type_widget == "date"){
@@ -240,9 +236,15 @@ export class OcctaxFormReleveService {
         tap(([releve, additional_fields]) => this.additionalFieldsForm = additional_fields),
         //map for return releve data only
         map(([releve, additional_fields]) => releve),
+        //transform Array[observers] to Array[id_role] before patchForm
+        map((releve) => {
+          const releve_data = Object.assign({}, releve);
+          releve_data.observers = releve_data.observers.map(obs => obs.id_role);
+          return releve_data;
+        }),
       )
-      .subscribe((releve) => {            
-        this.propertiesForm.patchValue(releve)
+      .subscribe((releve_data) => {            
+        this.propertiesForm.patchValue(releve_data);
       });
 
 
@@ -445,11 +447,6 @@ export class OcctaxFormReleveService {
     value.properties.date_max = this.dateParser.format(
       value.properties.date_max
     );
-    if (!ModuleConfig.observers_txt) {
-      value.properties.observers = value.properties.observers.map(
-        (observer) => observer.id_role
-      );
-    }
     /* Champs additionnels - formatter les dates et les nomenclatures */
     this.additionalFieldsForm.forEach((fieldForm: any) => {
       if(fieldForm.type_widget == "date"){
