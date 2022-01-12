@@ -3,15 +3,16 @@
     <div class="float-btns">
 
       <ng-container *ngIf="userCruved?.C != '0'">
-        <button
+        <a
           mat-raised-button
           color="primary"
+          data-qa="gn-occtax-btn-add-releve"
           class="btn-action hard-shadow button-success uppercase ml-3"
           [routerLink]="['form/releve']"
         >
           {{ 'Releve.AddReleve' | translate }}
           <mat-icon>add_circle_outline</mat-icon>
-        </button>
+        </a>
         <!-- <a [routerLink]="['form']" class="btn btn-success btn-action hard-shadow uppercase">
           {{ 'Releve.AddReleve' | translate }} <i class="fa fa-plus-circle" aria-hidden="true"> </i>
         </a> -->

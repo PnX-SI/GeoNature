@@ -1,3 +1,6 @@
+const path = require('path');
+const fs = require('fs');
+
 /// <reference types="cypress" />
 // ***********************************************************
 // This example plugins/index.js can be used to load plugins
@@ -19,6 +22,20 @@
 module.exports = (on, config) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
+
+  // on('task', {
+  //   getConfiguration (fileName) {
+  //     const pathToConfigFile = path.resolve('./src/conf/app.config.ts');
+  //     const data = fs.readFileSync(pathToConfigFile, 'utf8')
+  //      const content = data;
+  //      console.log("coucou");
+  //      return content;
+
+  //     // console.log(pathToConfigFile);
+  //     // return fs.readJson(pathToConfigFile);
+  //     return "gertConfiguration";
+  //   }
+  // })
 }
 
 

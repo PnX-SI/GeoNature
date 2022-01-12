@@ -99,6 +99,7 @@
     "@typescript-eslint/parser": "^5.4.0",
     "codelyzer": "~6.0.0",
     "cypress": "^9.2.1",
+    "cypress-promise": "^1.1.0",
     "eslint": "^8.3.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jsdoc": "^37.0.3",
