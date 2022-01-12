@@ -89,8 +89,13 @@ export class AcquisitionFrameworkFormService {
         switchMap((af) => af !== null ? this.acquisition_framework.asObservable() : this.initialValues),
         tap((value) => {
           if (value.cor_af_actor) {
-            value.cor_af_actor.forEach(e => {
-              this.addActor(this.actors);
+            var actors = value.cor_af_actor.length > 0
+              ? value.cor_af_actor
+              // si la liste est vide => on va choisir le contact principal
+              : [{id_nomenclature_actor_role: this.actorFormS.getIDRoleTypeByCdNomenclature("1")}]
+            ;
+            actors.forEach(actor => {
+              this.addActor(this.actors, actor);
             });
           }
           if (value.bibliographical_references) {
@@ -168,11 +173,13 @@ export class AcquisitionFrameworkFormService {
     let mainContactNb = 0;
  
     for (let i = 0; i < actors.controls.length; i++) {
-      if (actors.controls[i].get('id_nomenclature_actor_role').value === this.actorFormS.getIDRoleTypeByCdNomenclature("1")) {
+      if (
+        actors.controls[i].get('id_nomenclature_actor_role').value === this.actorFormS.getIDRoleTypeByCdNomenclature("1")
+        && (actors.controls[i].get('id_role').value || actors.controls[i].get('id_organism').value)
+        ) {
         mainContactNb = mainContactNb + 1;
       }
     }
- 
     return mainContactNb == 0 ? { mainContactRequired: true } : null;
   };
  

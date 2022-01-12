@@ -126,7 +126,7 @@ export class DatasetCardComponent implements OnInit {
       }
       // in order to have chart instance
       setTimeout(() => {
-        this.chart.chart.update();
+        this.chart && this.chart.chart.update();
       }, 1000);
     });
 

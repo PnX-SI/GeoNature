@@ -261,6 +261,14 @@
               [defaultTab]="(datasetFormS.dataset | async)?.id_dataset ? 'all': 'organism'"
             >
             </pnx-metadata-actor>
+            <ng-container *ngIf="
+            !datasetFormS.actors.valid && datasetFormS.actors.errors?.mainContactRequired
+          ">
+          <small
+              class="mat-error">
+              Le renseignement d'un contact principal est obligatoire
+            </small>
+          </ng-container>
           </ng-container>
 
               <button
@@ -270,9 +278,11 @@
                 color="primary"
                 matTooltip="Ajouter un autre contact principal"
                 (click)="addMainContact()"
+                [disabled]="!(datasetFormS.genericActorForm.valid && datasetFormS.actors.valid)"
               >
                 <mat-icon>add</mat-icon>
               </button>
+              
         </div>
       </div>
 
@@ -297,6 +307,7 @@
             color="primary"
             matTooltip="Ajouter un autre acteur"
             (click)="addGenericContact()"
+            [disabled]="!(datasetFormS.genericActorForm.valid && datasetFormS.actors.valid)"
           >
             <mat-icon>add</mat-icon>
           </button>

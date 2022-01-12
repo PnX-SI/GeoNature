@@ -263,15 +263,17 @@
             <pnx-metadata-actor
               *ngIf="afFormS.isMainContact(actorForm)"
               [actorForm]="actorForm"
-              [isRemovable]="idx != 0"
               metadataType="af"
+              [isRemovable]="false"
               (actorFormRemove)="afFormS.removeActor(afFormS.actors, idx)"
               [defaultTab]="(afFormS.acquisition_framework | async)?.id_acquisition_framework ? 'all': 'organism'"
             >
             </pnx-metadata-actor>
           </ng-container>
-          <ng-container *ngIf="form.get('cor_af_actor').invalid && form.get('cor_af_actor').errors?.mainContactRequired">
-            <small
+          <ng-container *ngIf="
+          form.get('cor_af_actor').invalid && form.get('cor_af_actor').errors?.mainContactRequired
+          ">
+          <small
               class="mat-error">
               Le renseignement d'un contact principal est obligatoire
             </small>
@@ -304,6 +306,7 @@
           color="primary"
           matTooltip="Ajouter un autre acteur"
           (click)="addContact(afFormS.actors, false)"
+          [disabled]="!afFormS.actors.valid"
         >
           <mat-icon>add</mat-icon>
         </button>

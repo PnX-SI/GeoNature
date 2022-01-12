@@ -21,6 +21,9 @@ export class ActorComponent implements OnInit {
   @Input() metadataType: 'dataset'|'af' = null;
   @Input() defaultTab: 'organism' | 'person' | 'all'
 
+  // pour mettre en cache la liste des nomenclature role_acteur
+  _roleTypes;
+
   //liste des organismes pour peupler le select HTML
   get organisms() { return this.actorFormS.organisms; }
 
@@ -29,7 +32,8 @@ export class ActorComponent implements OnInit {
 
   //liste des types de role pour peupler le select HTML
   get role_types() {
-    return this.actorFormS.role_types
+    if(!this._roleTypes) {
+      this._roleTypes = this.actorFormS.role_types
           .filter(e => {
             if(e.cd_nomenclature == 1) {
               return false
@@ -43,6 +47,8 @@ export class ActorComponent implements OnInit {
             }
             return true;
           });
+    }
+    return this._roleTypes;
   }
 
   //Retourne l'objet organisme à partir de son identifiant issu du formulaire (pour affiche son label en mode edition = false)
@@ -67,6 +73,7 @@ export class ActorComponent implements OnInit {
   //Pour switcher l'affichage du formulaire avec la liste organisme seule, role seul ou les deux.
   _toggleButtonValue: BehaviorSubject<string> = new BehaviorSubject("organism");
   get toggleButtonValue() { return this._toggleButtonValue.getValue(); };
+  get blahtoggleButtonValue() { return 'person'; };
 
   @Input() parentFormArray: FormArray;
 
@@ -85,6 +92,23 @@ export class ActorComponent implements OnInit {
     }
 
     this.setToggleButtonValue();
+  }
+
+  toggleActorOrganismChoiceChange(event) {
+    /**
+     *  suprime id_organism si on choisi acteur seulement
+     *  suprime id_role si on choisi organism seulement
+     **/
+    const tab = event.value;
+    this._toggleButtonValue.next(tab);
+
+    if (tab == 'person') {
+      this.actorForm.patchValue({id_organism: null})
+    }
+
+    if (tab == 'organism') {
+      this.actorForm.patchValue({id_role: null})
+    }
 
   }
 
@@ -92,6 +116,8 @@ export class ActorComponent implements OnInit {
     //selectionne le bon element du toggleButton en fonction de la valeur initiale du formulaire
     if (this.actorForm.get('id_organism').value && this.actorForm.get('id_role').value) {
       this._toggleButtonValue.next('all');
+      ;
+
     } else if (this.actorForm.get('id_role').value) {
       this._toggleButtonValue.next('person');
     } else {
