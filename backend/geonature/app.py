@@ -66,7 +66,7 @@ class MyJSONEncoder(JSONEncoder):
 
 
 def create_app(with_external_mods=True):
-    app = Flask(__name__, static_folder="../static")
+    app = Flask(__name__.split('.')[0], static_folder="../static")
 
     app.config.update(config)
     api_uri = urlsplit(app.config['API_ENDPOINT'])
