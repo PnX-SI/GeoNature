@@ -13,6 +13,7 @@ weasyprint<53
 lxml
 xmltodict
 sqlalchemy<1.4
+gunicorn>=19.8.0
 
 utils-flask-sqlalchemy
 utils-flask-sqlalchemy-geo
