@@ -2,7 +2,7 @@ import datetime
 
 from flask import g
 from flask_sqlalchemy import BaseQuery
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, get_scopes_by_action
 from geonature.utils.errors import GeonatureApiError
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_
@@ -299,20 +299,20 @@ class TDatasetsQuery(BaseQuery):
     def _get_read_scope(self, user=None):
         if user is None:
             user = g.current_user
-        cruved, herited = cruved_scope_for_user_in_module(
+        cruved = get_scopes_by_action(
             id_role=user.id_role,
             module_code="GEONATURE"
         )
-        return int(cruved['R'])
+        return cruved['R']
 
     def _get_create_scope(self, module_code, user=None):
         if user is None:
             user = g.current_user
-        cruved, herited = cruved_scope_for_user_in_module(
+        cruved = get_scopes_by_action(
             id_role=user.id_role,
             module_code=module_code
         )
-        return int(cruved["C"])
+        return cruved["C"]
 
     def filter_by_scope(self, scope, user=None):
         if user is None:
