@@ -137,3 +137,8 @@ class TestCommons:
             for o in f["objects"]:
                 assert o["code_object"] == "ALL"
             assert({ d['id_dataset'] for d in f["datasets"] } == { d.id_dataset for d in datasets.values() })
+        # check mandatory column are here
+        addi_one = data[0]
+        assert "type_widget" in addi_one
+        assert "bib_nomenclature_type" in addi_one
+        

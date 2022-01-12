@@ -203,7 +203,12 @@ export class OcctaxFormReleveService {
               )
                 .pipe(
                   //concatenation for restitute only one additional fields array
-                  map(([globalFields, datasetFields]) => [].concat(globalFields, datasetFields)),
+                  map(([globalFields, datasetFields]) => {
+                    console.log("LA", globalFields);
+                    console.log("LA", datasetFields);
+                    
+                    return [].concat(globalFields, datasetFields)
+                  }),
                 );
           }
           return forkJoin(
@@ -211,7 +216,9 @@ export class OcctaxFormReleveService {
                    additionnalFieldsObservable
                 );
         }),
-        map(([releve, additional_fields]) => {          
+        map(([releve, additional_fields]) => {    
+          console.log(additional_fields);
+                
           additional_fields.forEach(field => {
             //Formattage des dates
             if(field.type_widget == "date"){

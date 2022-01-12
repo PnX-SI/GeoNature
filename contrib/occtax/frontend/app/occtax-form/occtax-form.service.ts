@@ -107,9 +107,9 @@ export class OcctaxFormService {
       'id_dataset':  idDataset || "null",
       'module_code': ['OCCTAX'],
       'object_code': object_code
-    }).catch(() => {    
-      console.error("error while get addional fields");
-      return of({})
+    }).catch((error) => {  
+      console.error("error while get addional fields", error);
+      return of([])
     })
   }
 

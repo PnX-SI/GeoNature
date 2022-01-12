@@ -160,6 +160,7 @@ def get_additional_fields():
             'modules',
             'objects',
             'datasets',
+            'type_widget'
         ])
         for d in q.all()
     ])
