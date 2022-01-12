@@ -3,7 +3,7 @@
 
 export BASE_DIR=$(dirname "${SCRIPT_DIR}")
 export SETTINGS="${BASE_DIR}/config/settings.ini"
-export LOG_FILE="${BASE_DIR}/var/log/install_db.log"
+export LOG_FILE="${BASE_DIR}/install/install.log"
 
 
 # Make sure root isnt running the script
