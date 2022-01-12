@@ -282,11 +282,7 @@ def sensi_report(info_role):
 
     .. :quickref: Metadata;
     """
-    """
-    get the UUID report of a dataset
-
-    .. :quickref: Metadata;
-    """
+    # TODO: put ds_id in /sensi_report/<int: ds_id>
 
     params = request.args
     ds_id = params["id_dataset"]
@@ -528,8 +524,7 @@ def update_dataset(id_dataset, info_role):
     .. :quickref: Metadata;
     """
 
-    dataset = TDatasets.query.filter_by_readable().filter(
-        TDatasets.id_dataset == id_dataset).first_or_404()
+    dataset = TDatasets.query.get_or_404(id_dataset)
     if not dataset.has_instance_permission(scope=int(info_role.value_filter)):
         raise Forbidden(f"User {g.current_user} cannot update dataset {dataset.id_dataset}")
     # TODO: specify which fields may be updated
