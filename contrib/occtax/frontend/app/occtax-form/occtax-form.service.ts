@@ -8,7 +8,7 @@ import { HttpClient, HttpParams } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { CommonService } from "@geonature_common/service/common.service";
-import {DataFormService} from "@geonature_common/form/data-form.service"
+import { DataFormService } from "@geonature_common/form/data-form.service"
 
 import { OcctaxDataService } from "../services/occtax-data.service";
 
@@ -63,19 +63,18 @@ export class OcctaxFormService {
         distinctUntilChanged(),
         switchMap((id) => this._dataS.getOneReleve(id))
       )
-      .subscribe((id) => {                               
-        this.getOcctaxData(id)
-      });
-  }
-
-  getOcctaxData(id) {
-    this._dataS.getOneReleve(id).subscribe(
-      (data) => {        
-        this.occtaxData.next(data);
-        this.editionMode.next(true);
-        // set taxa list
-        if(data.releve.properties.dataset.id_taxa_list) {
-          this.idTaxonList = data.releve.properties.dataset.id_taxa_list;
+      .subscribe(
+        (data) => {        
+          this.occtaxData.next(data);
+          // set taxa list
+          if(data.releve.properties.dataset.id_taxa_list) {
+            this.idTaxonList = data.releve.properties.dataset.id_taxa_list;
+          }
+          
+        },
+        (error) => {
+          this._commonService.translateToaster("error", "Releve.DoesNotExist");
+          this._router.navigate(["occtax/form"]);
         }
     );
   }
