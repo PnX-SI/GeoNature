@@ -8,6 +8,9 @@ GeoNature
 .. image:: https://codecov.io/gh/PnX-SI/GeoNature/branch/master/graph/badge.svg?token=L4T1TZIX9Z
     :target: https://codecov.io/gh/PnX-SI/GeoNature
 
+.. image:: https://img.shields.io/endpoint?url=https://dashboard.cypress.io/badge/simple/r36uo2/master&style=plastic&logo=cypress
+    :target:https://dashboard.cypress.io/projects/r36uo2/runs
+
 
 GeoNature V2 est une refonte complète de la BDD et changement de technologies :
 
