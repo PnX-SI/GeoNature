@@ -30,6 +30,7 @@ backend/run.py
 *.perm
 *.pem
 *.ipynb
+contrib
 
 tsconfig.json
 .angulardoc.json
@@ -103,6 +104,12 @@ instance/
 # Sphinx documentation
 docs/_build/
 #frontend doc
+
+#frontend test
+frontend/cypress/videos
+frontend/cypress/screenshots
+frontend/coverage
+frontend/.nyc_output
 
 # PyBuilder
 target/
