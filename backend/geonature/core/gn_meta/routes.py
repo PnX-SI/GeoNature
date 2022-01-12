@@ -67,11 +67,7 @@ from geonature.core.gn_meta.schemas import (
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import (
-    cruved_scope_for_user_in_module,
-    get_or_fetch_user_cruved,
-    get_scopes_by_action
-)
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, get_scopes_by_action
 from geonature.core.gn_meta.mtd import mtd_utils
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
@@ -687,6 +683,8 @@ def get_acquisition_frameworks_list(info_role):
     if "excluded_fields" in params:
         exclude_fields = params.get("excluded_fields")
         try:
+            # TODO: exclude_fields seems to be alaways a str
+            # No use to try except it
             exclude_fields = exclude_fields.split(',')
         except:
             raise BadRequest("Malformated parameter 'excluded_fields'")
