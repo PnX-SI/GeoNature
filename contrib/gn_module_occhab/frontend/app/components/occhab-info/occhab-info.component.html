@@ -227,7 +227,7 @@
           <tr *ngFor="let cor of habInfo?.correspondances">
             <td> {{cor.habref.lb_code}} {{cor.habref.lb_hab_fr}} </td>
             <td> {{cor.habref.typo.lb_nom_typo}} </td>
-            <td> {{cor.type_rel.lb_rel}} </td>
+            <td> {{cor.type_rel?.lb_rel}} </td>
           </tr>
         </tbody>
       </table>
