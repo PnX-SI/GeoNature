@@ -17,5 +17,5 @@ sqlalchemy<1.4
 utils-flask-sqlalchemy
 utils-flask-sqlalchemy-geo
 pypnnomenclature
-pypnusershub
+pypnusershub>=1.5.9
 pypn_habref_api
