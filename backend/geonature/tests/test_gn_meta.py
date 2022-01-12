@@ -359,7 +359,6 @@ class TestGNMeta:
         afuser = TAcquisitionFramework.get_user_af(user = user, only_user = True)
         afdefault = TAcquisitionFramework.get_user_af(user = user)
 
-        assert isinstance(afquery, BaseQuery)
         assert isinstance(afuser, list)
         assert len(afuser) == 1
         assert isinstance(afdefault, list)
