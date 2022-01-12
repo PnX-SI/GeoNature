@@ -476,8 +476,8 @@ Ces profils sont déclinés sur :
 - Le module Synthèse (fiche d'information, onglet validation) permet d'apporter des éléments de contexte en complément des données brutes consultées
 - Le module Occtax permet d'alerter les utilisateurs lors de la saisie de données qui sortent du "cadre" déjà connu pour un taxon considéré
 
-.. image :: https://github.com/PnX-SI/GeoNature/blob/develop/docs/images/validation.png
-.. image :: https://github.com/PnX-SI/GeoNature/blob/develop/docs/images/contexte_donnee.png
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/validation.png
+.. image :: https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/contexte_donnee.png
 
 Plusieurs fonctions permettent de vérifier si une donnée de la synthèse est cohérente au regard du profil du taxon en question :
 
