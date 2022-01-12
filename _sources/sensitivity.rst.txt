@@ -1,8 +1,8 @@
 Gestion de la sensibilité
-=========================
+"""""""""""""""""""""""""
 
 Introduction
-------------
+````````````
 
 Les régles de sensibilité définies par défaut sont issues des règles du SINP.
 Elles dépendent de l'espèce et de l'observation. C'est-à-dire que pour une espèce donnée, 
@@ -32,14 +32,14 @@ Vous pouvez consulter :
 - Le rapport de 2020 sur `La sensibilité des données du système  d’information  de l’inventaire  du  patrimoine naturel : méthodes, pratiques et usages (J. Ichter et S. Robert) <https://inpn.mnhn.fr/docs-web/docs/download/355449>`_. 
 
 Attention
----------
+`````````
 
 L'objectif de ce document n'est pas de modifier les règles établies par
 le SINP. Il est donc conseillé de respecter ces règles définies au niveau 
 régional et national et donc de ne pas ajouter de règles locales.
 
 Intégration dans GeoNature
---------------------------
+``````````````````````````
 
 Schéma gn_synthese
 ^^^^^^^^^^^^^^^^^^
@@ -75,7 +75,7 @@ sensibilité défini dans ``t_sensitivity_rules`` est directement appliqué.
 
 
 Personnalisation
-----------------
+````````````````
 
 Pour l'instant, seule la personnalisation de la sensibilité pour
 une espèce donnée (peu importe l'observation) est abordée ici.

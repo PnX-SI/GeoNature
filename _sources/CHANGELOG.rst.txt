@@ -9,7 +9,8 @@ Profils de taxons
 
 **🚀 Nouveautés**
 
-* Construction automatique d'une fiche d'identité (profil) par taxon grâce aux observations validées présentes dans la base de données (altitude min/max, distribution spatiale, date de première/dernière observation, nombre de données valides, phénologie) (#917)
+* Construction automatique d'une fiche d'identité (profil) par taxon grâce aux observations validées présentes dans la base de données (altitude min/max, distribution spatiale, date de première/dernière observation, nombre de données valides, phénologie) (#917 par @DonovanMaillard, @lepontois, @Adrien-Pajot, @TheoLechemia, @bouttier, @amandine-sahl, @jpm-cbna)
+  
   - Intégration SQL (#1103)
   - Backend (#1104)
   - Frontend (#1105)
@@ -17,22 +18,61 @@ Profils de taxons
   - Paramètres modifiables (nomenclatures de validation utilisées par défaut)
   - Statuts pris en compte paramétrables
   - Documentation (URL)
+  - Suppression de la vue matérialisée ``gn_synthese.vm_min_max_for_taxons`` et de la fonction ``gn_synthese.fct_calculate_min_max_for_taxon()`` qui n'étaient pas utilisés
+
 * [OCCTAX] Contrôle de la cohérence des nouvelles données saisies par rapport au profil
 * [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
 * [SYNTHESE et VALIDATION] Enrichissement de l'onglet "Validation" en y ajoutant les informations du profil du taxon observé
-* [SYNTHESE] Filtre par UUID
-* [OCCTAX] - Taxon : annuler modification #1508
+* [SYNTHESE] Ajout d'un filtre avancé par UUID d'observation (#973)
+* [OCCTAX] Ajout d'un bouton permettant d'annuler la modification d'un taxon (#1508 par @jbrieuclp)
+* [OCCTAX] Ajout de valeurs par défaut aux champs additionnels (``gn_commons.t_additional_fields.default_value``)
+* Occtax : Ajout d'un filtre avancé par ``id_releve``
 * Amélioration des listes déroulantes en passant à la librairie 'ng-select2' pour les composants multiselects (#616 @jbrieuclp)
-* Ajout d'un référentiel des régions ainsi que des anciennes régions (1970-2016), inactives par défaut, mais utiles pour les règles régionales de sensibilité
-* Ajout du référentiel de sensibilité (règles nationales et régionales)
+* Gestion du référentiel des régions par Alembic (#1475)
+* Ajout des anciennes régions (1970-2016), inactives par défaut, mais utiles pour les règles régionales de sensibilité
+* Gestion du référentiel de sensibilité (règles nationales et régionales) par Alembic (#1576)
+* Ajout d'une documentation sur le calcul de la sensibilité des observations (par @mvergez)
+* [Synthese] Amélioration de la fenêtre de limite d'affichage atteinte (#1520 par @jpm-cbna)
+* [OCCHAB] Utilisation de tout Habref par défaut si aucune liste d'habitats n'est renseignée dans la configuration du module
+* meta: grant rights on DS if user has rights on AF
+* Jeux de données personnel auto-générés non associés à Occtax par défaut (#1555)
 
 **Corrections**
 
-* Problème sur les enregistrements dans la synthèse (#1479) / Voir si on fait update des données ?
+* [OCCTAX] Correction de l'enregistrement des dénombrements lors de l'enchainement des relevés (#1479 par @jbrieuclp)
+* [OCCTAX] Correction du filtre du champs "Habitat" par typologie d'habitat
+* [ADMIN] Correction de l'affichage du module (#1427 par @jbrieuclp)
+* Correction de la création de compte utilisateur (#1527)
+* [VALIDATION] Corrections de la validation (#1485 / #1529)
+* Mise à jour du module Habref-api-module pour corrections certaines données d'Habref
+* [ADMIN] Sécurisation du module (#839)
+* Performances métadonnées (#1559)
+* [METADONNEES] Correction de la suppression des JDD
+* [METADONNEES] Correction de l'export PDF des JDD (#1544)
+* [METADONNEES] Correction des permissions (#1528)
+* [Synthese] Correction de la recherche sur les champs génériques de type nombre entier (#1519 par @jpm-cbna)
+* [SYNTHESE] Correction des permissions
+* [SYNTHESE] Correction du lien entre les filtres CA et JDD (#1530)
+* Correction de la redirection vers le formulaire de login en cas de cookie corrompu (#1550 par @antoinececchimnhn)
+* [OCCHAB] Correction du chargement de la configuration, des fiches info et de la modification d'une station
+* [META] Formulaire acteurs pour JDD et CA
+    * correction ralentissments, id_organims et changeTab pris en compte
+    * boutton ajout acteur en disabled si les acteurs ne sont pas tout valides
 
 **💻 Développement**
 
-* Doc développeur enrichie (backend)
+* Migration vers la librairie ``gn-select2`` pour les listes déroulantes des formulaires (#616 / #1285 par @jbrieuclp)
+* Doc développeur enrichie (backend) (#1559)
+* Amélioration de nombreuses routes et fonctions backend
+* Ajouts de tests backend automatisés
+* CI Github Actions (#1568)
+* Mise à jour des dépendances
+* Suppression de vues génériques
+* Sécurisation routes USERS
+* Génération automatique et aléatoire de SECRET_KEY
+* [SYNTHESE] Remplacement de ``as_literal`` par ``json.loads``, plus performant (par @antoinececchimnhn)
+* Possibilité de filter la route ``synthese/taxa_distribution`` par ``id_source`` (#1446 par @mvergez)
+* [VALIDATION] Suppression des vues SQL et optimisation des routes
 * Factorisation du composant "pnx-municipalities" avec "pnx-areas"
 * Ajout de "pnx-areas" dans dynamic-form
 * Ajout d'un input "valueFieldName" pour "pnx-areas" et "pnx-municipalities"
