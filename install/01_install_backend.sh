@@ -111,13 +111,10 @@ if [[ "${MODE}" == "dev" ]]; then
       echo "Avez-vous lancé 'git submodule init && git submodule update' ?"
       exit 1
   fi
-  pip install -r requirements-common.txt -r requirements-submodules.txt
+  pip install -e "${BASE_DIR}"[tests] -r requirements-common.txt -r requirements-submodules.txt
 else
-  pip install -r requirements.txt
+  pip install -e "${BASE_DIR}" -r requirements.txt
 fi
-
-echo "Installation du backend geonature..."
-pip install --editable "${BASE_DIR}"
 
 
 echo "Installation du service-file systemd…"
