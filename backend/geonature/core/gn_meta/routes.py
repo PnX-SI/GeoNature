@@ -122,9 +122,11 @@ def get_datasets():
     else:
         query = TDatasets.query.filter_by_readable()
     query = query.filter_by_generic_params(params)
-    return jsonify(
-        [d.as_dict(fields=fields) for d in query.all()]
-    )
+    data = [d.as_dict(fields=fields) for d in query.all()]
+    user_agent = request.headers.get('User-Agent')
+    if user_agent and user_agent.split('/')[0].lower() == 'okhttp':  # retro-compatibility for mobile app
+        return jsonify({'data': data})
+    return jsonify(data)
 
 
 def get_af_from_id(id_af, af_list):
