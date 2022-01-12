@@ -211,7 +211,7 @@ export class OcctaxFormReleveService {
                    additionnalFieldsObservable
                 );
         }),
-        map(([releve, additional_fields]) => {          
+        map(([releve, additional_fields]) => { 
           additional_fields.forEach(field => {
             //Formattage des dates
             if(field.type_widget == "date"){
@@ -234,8 +234,8 @@ export class OcctaxFormReleveService {
         //map for return releve data only
         map(([releve, additional_fields]) => releve),
       )
-      .subscribe((releve) => {            
-        this.propertiesForm.patchValue(releve)
+      .subscribe((releve_data) => {            
+        this.propertiesForm.patchValue(releve_data);
       });
 
 
