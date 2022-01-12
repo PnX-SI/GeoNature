@@ -2,7 +2,7 @@ import datetime
 
 from flask import g
 from flask_sqlalchemy import BaseQuery
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, get_scopes_by_action
 from geonature.utils.errors import GeonatureApiError
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_
@@ -118,39 +118,6 @@ class CorAcquisitionFrameworkActor(DB.Model):
         lazy="joined",
     )
 
-    @staticmethod
-    def get_actor(
-        id_acquisition_framework, id_nomenclature_actor_role, id_role=None, id_organism=None,
-    ):
-        """
-            Get CorAcquisitionFrameworkActor from id_dataset, id_actor, and id_role or id_organism.
-            if no object return None
-        """
-        try:
-            if id_role is None:
-                return (
-                    DB.session.query(CorAcquisitionFrameworkActor)
-                    .filter_by(
-                        id_acquisition_framework=id_acquisition_framework,
-                        id_organism=id_organism,
-                        id_nomenclature_actor_role=id_nomenclature_actor_role,
-                    )
-                    .one()
-                )
-            elif id_organism is None:
-                return (
-                    DB.session.query(CorAcquisitionFrameworkActor)
-                    .filter_by(
-                        id_acquisition_framework=id_acquisition_framework,
-                        id_role=id_role,
-                        id_nomenclature_actor_role=id_nomenclature_actor_role,
-                    )
-                    .one()
-                )
-        except exc.NoResultFound:
-            return None
-
-
 @serializable(exclude=['actor'])
 class CorDatasetActor(DB.Model):
     __tablename__ = "cor_dataset_actor"
@@ -188,37 +155,6 @@ class CorDatasetActor(DB.Model):
         else:
             actor = self.organism.nom_organisme
         return '{} ({})'.format(actor, self.nomenclature_actor_role.label_default)
-
-    @staticmethod
-    def get_actor(id_dataset, id_nomenclature_actor_role, id_role=None, id_organism=None):
-        """
-            Get CorDatasetActor from id_dataset, id_actor, and id_role or id_organism.
-            if no object return None
-        """
-        try:
-            if id_role is None:
-                return (
-                    DB.session.query(CorDatasetActor)
-                    .filter_by(
-                        id_dataset=id_dataset,
-                        id_organism=id_organism,
-                        id_nomenclature_actor_role=id_nomenclature_actor_role,
-                    )
-                    .one()
-                )
-            elif id_organism is None:
-                return (
-                    DB.session.query(CorDatasetActor)
-                    .filter_by(
-                        id_dataset=id_dataset,
-                        id_role=id_role,
-                        id_nomenclature_actor_role=id_nomenclature_actor_role,
-                    )
-                    .one()
-                )
-        except exc.NoResultFound:
-            return None
-
 
 @serializable
 class CorDatasetProtocol(DB.Model):
@@ -299,20 +235,20 @@ class TDatasetsQuery(BaseQuery):
     def _get_read_scope(self, user=None):
         if user is None:
             user = g.current_user
-        cruved, herited = cruved_scope_for_user_in_module(
+        cruved= get_scopes_by_action(
             id_role=user.id_role,
             module_code="GEONATURE"
         )
-        return int(cruved['R'])
+        return cruved['R']
 
     def _get_create_scope(self, module_code, user=None):
         if user is None:
             user = g.current_user
-        cruved, herited = cruved_scope_for_user_in_module(
+        cruved = get_scopes_by_action(
             id_role=user.id_role,
             module_code=module_code
         )
-        return int(cruved["C"])
+        return cruved["C"]
 
     def filter_by_scope(self, scope, user=None):
         if user is None:
@@ -529,27 +465,19 @@ class TDatasets(CruvedHelper):
 
     @staticmethod
     def get_id(uuid_dataset):
-        id_dataset = (
+        return(
             DB.session.query(TDatasets.id_dataset)
             .filter(TDatasets.unique_dataset_id == uuid_dataset)
-            .first()
+            .scalar()
         )
-        if id_dataset:
-            return id_dataset[0]
-        return id_dataset
 
     @staticmethod
     def get_uuid(id_dataset):
-        uuid_dataset = (
+        return(
             DB.session.query(TDatasets.unique_dataset_id)
             .filter(TDatasets.id_dataset == id_dataset)
-            .first()
+            .scalar()
         )
-        if uuid_dataset:
-            return uuid_dataset[0]
-        return uuid_dataset
-
-
 
 class TAcquisitionFrameworkQuery(BaseQuery):
     def _get_read_scope(self):
@@ -558,6 +486,7 @@ class TAcquisitionFrameworkQuery(BaseQuery):
             module_code="GEONATURE"
         )
         return int(cruved['R'])
+
 
     def filter_by_scope(self, scope, user=None):
         if user is None:
@@ -744,14 +673,11 @@ class TAcquisitionFramework(CruvedHelper):
             return the acquisition framework's id
             from its UUID if exist or None
         """
-        a_f = (
+        return(
             DB.session.query(TAcquisitionFramework.id_acquisition_framework)
             .filter(TAcquisitionFramework.unique_acquisition_framework_id == uuid_af)
-            .first()
+            .scalar()
         )
-        if a_f:
-            return a_f[0]
-        return a_f
 
     @staticmethod
     def get_user_af(user, only_query=False, only_user=False):
