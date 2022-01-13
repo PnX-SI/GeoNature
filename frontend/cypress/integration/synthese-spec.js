@@ -5,6 +5,7 @@ NodeList.prototype.forEach = Array.prototype.forEach
 beforeEach(() => {
   cy.viewport(1600, 1000)
   cy.visit("/");
+  // login to GN 
   cy.get("#login").type("admin");
   cy.get("#cdk-step-content-0-0 > form > div:nth-child(2) > input").type(
     "admin"
@@ -21,8 +22,8 @@ describe("Tests gn_synthese", () => {
     cy.get("datatable-scroller").children('datatable-row-wrapper');
   });
 
-  /* ==== Test Created with Cypress Studio ==== */
-  it('Taxa search by name', function () { // objectifs : pouvoir rentrer un nom d'espèce dans le filtre, que cela affiche le ou les observations sur la liste correspondant à ce nom
+  it('Taxa search by name', function () {
+    // objectifs : pouvoir rentrer un nom d'espèce dans le filtre, que cela affiche le ou les observations sur la liste correspondant à ce nom
     cy.get('#taxonInput').clear();
     cy.get('#taxonInput').type('lynx');
     cy.get('#ngb-typeahead-0-0').click();
@@ -37,8 +38,8 @@ describe("Tests gn_synthese", () => {
     })
   });
 
-  /* ==== Test Created with Cypress Studio ==== */
-  it('Taxa search by dates', function () { // objectifs : pouvoir changer les dates des filtres, que cela affiche le ou les taxons dans la liste d'observations dans la plage de dates donnée 
+  it('Taxa search by dates', function () {
+    // objectifs : pouvoir changer les dates des filtres, que cela affiche le ou les taxons dans la liste d'observations dans la plage de dates donnée 
     // (prendre deux ou trois observations et vérifier que la date d'obs soit supérieure à date min et inférieure à date max) 
     cy.get(':nth-child(2) > pnx-date > .input-group > .input-group-append > .btn > .fa').click();
     cy.get('[aria-label="Select year"]').select('2017');
@@ -56,8 +57,8 @@ describe("Tests gn_synthese", () => {
     cell.contains(' 01-01-2017 ')
   });
 
-  /* ==== Test Created with Cypress Studio ==== */
-  it('Taxa search by observer', function () { //objectifs : pouvoir entrer un nom d'observateur (ici Admin); 
+  it('Taxa search by observer', function () {
+    //objectifs : pouvoir entrer un nom d'observateur (ici Admin); 
     // cliquer sur rechercher et vérifier que les observations retournées ont bien pour observateur des personnes contenant 'Admin' 
     cy.get(':nth-child(4) > .ng-star-inserted > .input-group > .form-control').clear();
     cy.get(':nth-child(4) > .ng-star-inserted > .input-group > .form-control').type('Admin');
@@ -72,13 +73,11 @@ describe("Tests gn_synthese", () => {
     })
   });
 
-  // /* ==== Test Created with Cypress Studio ==== */
   it('Taxa search by new filter', function () {
     //objectifs : pouvoir ajouter un nouveau filtre, ici comprotement (assert que nouveau filtre est bon) 
     // pouvoir sélectionner une valeur dans ce nouveau champ 
     // pouvoir afficher les observations comportant la valeur du champ sélectionné. ici la migration (dans comportement) d'un albatros (fraichement ajouté) 
     // ceci implique d'avoir une donnée de base avec un comportement défini ou un autre filtre  
-    // cy.get('[href="http://localhost:4200/#/synthese"] > .mat-list-item > .mat-list-item-content > .module-name').click();
     cy.get('pnx-dynamic-form-generator > :nth-child(1) > .input-group > .form-control').select('3: Object');
     cy.get('.ng-star-inserted > .auto > .ng-select-container > .ng-value-container > .ng-input > input').click();
     cy.get("#sidebar > pnx-synthese-search > div.card.search-wrapper > fieldset:nth-child(6) > pnx-dynamic-form-generator > div.full-wrapper.ng-star-inserted > div > pnx-dynamic-form > div > div > pnx-nomenclature > ng-select")
@@ -91,24 +90,19 @@ describe("Tests gn_synthese", () => {
     cy.debug()
   });
 
-  /* ==== Test Created with Cypress Studio ==== */
   // it('Taxa search with dataset', function() {
   //   //objectifs : pouvoir sélectionnner un jeu de données dans la liste déroulante, jeu de données qui existe bien dans les métadonnées (voir si testable)
   //   //cliquer sur rechercher et vérifier que les observations retournées ont bien pour jeu de données le jeu de données sélectionné
-  //   cy.get('[href="http://localhost:4200/#/synthese"] > .mat-list-item > .mat-list-item-content > .module-name').click();
   //   cy.get('pnx-datasets > .auto > .ng-select-container > .ng-value-container > .ng-input > input').click();
   //   cy.get('#ab5b2c6557fb-0 > .mat-tooltip-trigger > .pre-wrap').click();
   //   cy.get('.button-success > .mat-button-wrapper').click();
-  //   /* ==== End Cypress Studio ==== */
   // });
 
   // it('Interaction acquisition framework & dataset', function() {
   //   // objectifs : pouvoir sélectionnner un jeu de données dans la liste déroulante qui soit lié au bon cadre d'acquisition correspondannt, je suis pas sûr que ce soir dans la synthèse --<
   //   // vérifier que la sélection d'un cadre d'acquisition filtre bien les jeux de données 
-  //   /* ==== End Cypress Studio ==== */
   // });
 
-  /* ==== Test Created with Cypress Studio ==== */
   it('Taxa search with acquisition framework and dataset', function () {
     // ce test permet de faire une suite d'actions basées sur la sélection des CA et des JDD
     // l'idéal serait de tester sur plus que la première ligne, ce qui n'est pas le cas au 13/01/22
@@ -124,7 +118,8 @@ describe("Tests gn_synthese", () => {
     cy.get('#mat-tab-content-0-1 > div > table > tr:nth-child(1) > td:nth-child(2)').contains(" ATBI de la réserve intégrale du Lauvitel dans le Parc national des Ecrins ")
   });
 
-  it('La fiche d\'une observation est complète', async () => {
+  it('Observation details pop up is fully functional', async () => {
+    //Objectif : que tout ce qui est dans le "i" fonctionne
     const row = cy.get("body > pnx-root > pnx-nav-home > mat-sidenav-container > mat-sidenav-content > div > div > pnx-synthese > div > div > div.col-sm-12.col-md-5.padding-sm > pnx-synthese-list > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller > datatable-row-wrapper:nth-child(1) > datatable-body-row > div.datatable-row-center.datatable-row-group.ng-star-inserted")
     const data = await promisify(row)
     const taxon = data[0].childNodes[2].innerText
@@ -155,7 +150,9 @@ describe("Tests gn_synthese", () => {
     // cy.get('.font-xs > .mat-focus-indicator > .mat-button-wrapper').click();
     // assert : le relevé ouverte dans occtax correspond bien à celle de départ (UUID ou autre)
   });
-  it('Les fonctionnalités de tris de liste fonctionnent bien', async () => {
+
+  it('Sorting functionalities of the list are working', async () => {
+    // Objectif : vérifier qu'on peut bien trier les données dans chaque colonne
     let table = await promisify(cy.get("body > pnx-root > pnx-nav-home > mat-sidenav-container > mat-sidenav-content > div > div > pnx-synthese > div > div > div.col-sm-12.col-md-5.padding-sm > pnx-synthese-list > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller"))
     const tableDate = []
     table[0].childNodes.forEach(e => {
@@ -180,7 +177,7 @@ describe("Tests gn_synthese", () => {
     cy.get('[title="observateur"] > .datatable-header-cell-template-wrap > .datatable-header-cell-wrapper > .datatable-header-cell-label').click();
     // assert : le tri par observateur s'effectue bien --> pas testé
   });
-  // /* ==== Test Created with Cypress Studio ==== */
+
   // it('L\'icône "page" renvoie bien à l\'observation en question dans occtax', function () {
   //     cy.get(':nth-child(1) > .clickable > .datatable-row-center > :nth-child(2) > .datatable-body-cell-label > .btn > .mat-tooltip-trigger').click();
   //     // assert : l'observation ouverte dans occtax correspond bien à celle de départ (UUID ou autre) 
