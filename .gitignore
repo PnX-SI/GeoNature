@@ -104,6 +104,11 @@ instance/
 docs/_build/
 #frontend doc
 
+#frontend test
+frontend/cypress/videos
+frontend/cypress/screenshots
+frontend/coverage
+
 # PyBuilder
 target/
 
