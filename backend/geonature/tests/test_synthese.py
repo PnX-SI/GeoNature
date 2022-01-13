@@ -15,6 +15,9 @@ from .fixtures import taxon_attribut
 from .utils import login, logged_user_headers, set_logged_user_cookie
 
 
+HIGH_ID = 12000
+
+
 @pytest.fixture()
 def source():
     source = TSources(name_source='test source')
@@ -47,8 +50,9 @@ class TestSynthese:
         assert response.status_code == 200
 
     @pytest.mark.skip()  # FIXME
-    def test_get_synthese_data(self, taxon_attribut):
-        login(self.client)
+    def test_get_synthese_data(self, users, taxon_attribut):
+        set_logged_user_cookie(self.client, users['self_user'])
+
         # test on synonymy and taxref attrs
         query_string = {
             "cd_ref": taxon_attribut.bib_nom.cd_ref,
@@ -97,23 +101,23 @@ class TestSynthese:
         data = response.get_json()
         assert len(data["data"]) >= 2
 
-    @pytest.mark.skip()
-    def test_get_synthese_data_cruved(self):
-        # test cruved
-        login(self.client, username="partenaire", password="admin")
-
-        response = self.client.get(url_for("gn_synthese.get_observations_for_web"))
+    def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
+        set_logged_user_cookie(self.client, users['self_user'])
+        
+        response = self.client.get(url_for("gn_synthese.get_observations_for_web"), query_string={'limit': 100})
         data = response.get_json()
 
+        features = data["data"]["features"]
         assert len(data["data"]["features"]) > 0
+        assert all(feat["properties"]["lb_nom"] in [synt.nom_cite for synt in synthese_data] for feat in features)
         assert response.status_code == 200
 
-    @pytest.mark.skip()  # FIXME
-    def test_filter_cor_observers(self):
+    def test_filter_cor_observers(self, users, synthese_data):
         """
             Test avec un cruved R2 qui join sur cor_synthese_observers
         """
-        login(self.client, username="test_cruved_r2", password="admin")
+        set_logged_user_cookie(self.client, users['self_user'])
+
         response = self.client.get(url_for("gn_synthese.get_observations_for_web"))
         data = response.get_json()
 
@@ -122,9 +126,8 @@ class TestSynthese:
         # le requete doit etre OK marlgré la geom NULL
         assert response.status_code == 200
 
-    @pytest.mark.skip()  # FIXME
-    def test_export(self):
-        login(self.client)
+    def test_export(self, users):
+        set_logged_user_cookie(self.client, users['self_user'])
 
         # csv
         response = self.client.post(
@@ -149,22 +152,22 @@ class TestSynthese:
         )
         assert response.status_code == 200
 
-    def test_export_status(self):
-        login(self.client)
+    def test_export_status(self, users):
+        set_logged_user_cookie(self.client, users['self_user'])
 
         response = self.client.post(url_for("gn_synthese.export_status"))
 
         assert response.status_code == 200
 
-    def test_export_metadata(self):
-        login(self.client)
+    def test_export_metadata(self, users):
+        set_logged_user_cookie(self.client, users['self_user'])
 
         response = self.client.get(url_for("gn_synthese.export_metadata"))
 
         assert response.status_code == 200
 
-    def test_general_stat(self):
-        login(self.client)
+    def test_general_stat(self, users):
+        set_logged_user_cookie(self.client, users['self_user'])
 
         response = self.client.get(url_for("gn_synthese.general_stats"))
 
@@ -211,11 +214,11 @@ class TestSynthese:
             url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
         assert response.status_code == Forbidden.code
 
-    @pytest.mark.xfail(reason='must update color vm')  # FIXME
-    def test_color_taxon(self):
+    def test_color_taxon(self, synthese_data):
         # Note: require grids 5×5!
         response = self.client.get(url_for("gn_synthese.get_color_taxon"))
         assert response.status_code == 200
+
         data = response.get_json()
         validate_json(instance=data, schema={
             'type': 'array',
@@ -267,3 +270,44 @@ class TestSynthese:
         )
         assert response.status_code == 200
         assert len(response.json)
+
+    def test_get_taxa_count(self, synthese_data):
+        response = self.client.get(url_for('gn_synthese.get_taxa_count'))
+
+        assert response.json == len(set(synt.cd_nom for synt in synthese_data))
+
+    def test_get_taxa_count_id_dataset(self, synthese_data, datasets):
+        id_dataset = datasets['own_dataset'].id_dataset
+        url = 'gn_synthese.get_taxa_count'
+
+        response = self.client.get(url_for(url),
+                                   query_string={'id_dataset': id_dataset})
+        response_empty = self.client.get(url_for(url),
+                                   query_string={'id_dataset': HIGH_ID})
+
+        assert response.json == len(set(synt.cd_nom for synt in synthese_data))
+        assert response_empty.json == 0
+
+    def test_get_observation_count(self, synthese_data):
+        nb_observations = len(synthese_data)
+
+        response = self.client.get(url_for('gn_synthese.get_observation_count'))
+
+        assert response.json == nb_observations
+    
+    def test_get_observation_count_id_dataset(self, synthese_data, datasets):
+        id_dataset = datasets['own_dataset'].id_dataset
+        nb_observations = len(synthese_data)
+        url = 'gn_synthese.get_observation_count'
+
+        response = self.client.get(url_for(url),
+                                   query_string={'id_dataset': id_dataset})
+        response_empty = self.client.get(url_for(url),
+                                   query_string={'id_dataset': HIGH_ID})
+
+        assert response.json == nb_observations
+        assert response_empty.json == 0
+
+    def test_get_bbox(self, synthese_data):
+        # In synthese, all entries are located at the same point
+        pass
