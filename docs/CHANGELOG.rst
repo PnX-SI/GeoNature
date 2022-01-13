@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
-2.9.0 (unreleased)
-------------------
+2.9.0 - Actias luna (2022-01-13)
+--------------------------------
 
 **Profils de taxons**
 
@@ -46,6 +46,7 @@ CHANGELOG
 * [METADONNEES] Correction de la suppression des JDD
 * [METADONNEES] Correction de l'export PDF des JDD (#1544)
 * [METADONNEES] Correction des permissions (#1528)
+* [METADONNEES] Correction de la recherche avancée
 * [SYNTHESE] Correction de la recherche sur les champs génériques de type nombre entier (#1519 par @jpm-cbna)
 * [SYNTHESE] Correction des permissions
 * [SYNTHESE] Correction du lien entre les filtres CA et JDD (#1530)
@@ -58,10 +59,10 @@ CHANGELOG
 **💻 Développement**
 
 * Migration vers la librairie ``gn-select2`` pour les listes déroulantes des formulaires (#616 / #1285 par @jbrieuclp)
-* Documentation de développement backend revue et complétée (#1559)
+* Documentation de développement backend revue et complétée (#1559, https://docs.geonature.fr/development.html#developpement-backend)
 * Amélioration de nombreuses routes et fonctions du backend
 * Ajouts de tests automatisés du backend
-* Mise en place d'une intégration continue pour exécuter automatiquement les tests et leur couverture de code avec GitHub Actions, à chaque commit ou pull request dans les branches ``develop`` ou ``master`` (#1568)
+* Mise en place d'une intégration continue pour exécuter automatiquement les tests backend et leur couverture de code avec GitHub Actions, à chaque commit ou pull request dans les branches ``develop`` ou ``master`` (#1568, https://github.com/PnX-SI/GeoNature/actions)
 * [VALIDATION] Suppression des vues SQL et optimisation des routes
 * Génération automatique et aléatoire du paramètre ``SECRET_KEY``
 * [SYNTHESE] Remplacement de ``as_literal`` par ``json.loads``, plus performant (par @antoinececchimnhn)
@@ -73,8 +74,7 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
-* CRUVED liste des JDD sur C
-* CRUVED sur C dans les modules pour la liste des JDD ! Attention à vos permissions à revoir. TICKET A MENTIONNER
+* La liste des JDD dans les modules de saisie (Occtax, Occhab, Monitoring et Import) se base désormais sur le C du CRUVED de l'utilisateur au niveau du module (ou du C du CRUVED de GeoNature si l'utilisateur n'a pas de CRUVED sur le module), au lieu du R de GeoNature jusqu'à présent. Vous devrez donc potentiellement adapter vos permissions à ce changement de comportement (#659)
 
 * Si vous avez surcouché le paramètre de configuration ``AREA_FILTERS`` de la section ``[SYNTHESE]``, veuillez remplacer ``id_type`` par ``type_code`` (voir ``ref_geo.bib_areas_types``)
 
@@ -92,6 +92,8 @@ CHANGELOG
         { label = "Communes", type_code = "COM" }
     ]
 
+* Si vous aviez modifié les colonnes de la liste des observations du module Validation en adaptant la vue ``gn_validation.v_synthese_validation_forwebapp``, celle-ci a été supprimée et il suffit désormais d'indiquer les colonnes souhaitées dans la configuration du module. Voir documentation (http://docs.geonature.fr/admin-manual.html#liste-des-champs-visibles)
+
 * Les nouvelles fonctionnalités liées aux profils de taxons nécessitent de rafraichir des vues materialisées à intervalles réguliers et donc de créer une tâche planfiée (cron). Voir documentation (https://docs.geonature.fr/installation.html#taches-planifiees)
 
 * Les régions sont maintenant disponibles via des migrations Alembic. Si vous possédez déjà les régions, vous pouvez l’indiquer à Alembic :
@@ -103,23 +105,23 @@ CHANGELOG
 
 * Le référentiel de sensibilité est désormais disponible via une migration Alembic. Celui-ci nécessite le référentiel des régions (branche Alembic ``ref_geo_fr_regions``), ainsi que le référentiel des anciennes régions (branche Alembic ``ref_geo_fr_regions_1970``) – l’installation de ces référentiels est automatique avec l'installation des règles de sensibilité.
 
-  Si vous possédez déjà le référentiel, vous pouvez l’indiquer à Alembic :
+  - Si vous possédez déjà le référentiel, vous pouvez l’indiquer à Alembic :
 
-  ::
+    ::
 
-    geonature db stamp 7dfd0a813f86
+      geonature db stamp 7dfd0a813f86
 
-  Si vous avez installé GeoNature 2.8.X, le référentiel de sensibilité n’a pas été installé automatiquement. Vous pouvez l’installer manuellement :
+  - Si vous avez installé GeoNature 2.8.X, le référentiel de sensibilité n’a pas été installé automatiquement. Vous pouvez l’installer manuellement :
 
-  ::
+    ::
 
-    geonature db upgrade ref_sensitivity_inpn@head
+      geonature db upgrade ref_sensitivity_inpn@head
 
   Par défaut, seule les règles nationales sont activées, vous laissant le soin d’activer vos règles locales en base vous-même. Vous pouvez également demander, lors de l’installation du référentiel, à activer (resp. désactiver) toutes les règles en ajout à la commande Alembic l’option ``-x active=true`` (resp. ``-x active=false``).
   
-  * Si vous souhaitez surcoucher les paramètres par défaut de Gunicorn (app_name, timeout...), depuis le passage à ``systemd`` dans la version 2.8.0, c'est désormais à faire dans un fichier ``environ`` à la racine du dossier de votre GeoNature (#1588, URL DOC)
-  
-  * Si vous les utilisez, mettez à jour les modules Import, Export et Monitoring dans leurs dernières versions compatibles avec le version 2.9.0 de GeoNature
+* Si vous souhaitez surcoucher les paramètres par défaut de Gunicorn (app_name, timeout...), depuis le passage à ``systemd`` dans la version 2.8.0, c'est désormais à faire dans un fichier ``environ`` à la racine du dossier de votre GeoNature (#1588, https://docs.geonature.fr/admin-manual.html#parametres-gunicorn)
+
+* Si vous les utilisez, mettez à jour les modules Import, Export et Monitoring dans leurs dernières versions compatibles avec le version 2.9.0 de GeoNature
 
 2.8.1 (2021-10-17)
 ------------------
