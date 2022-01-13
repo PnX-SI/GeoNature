@@ -137,12 +137,14 @@ jobs:
     - name: Cypress run
       uses: cypress-io/github-action@v2
       with:
-        # browser: firefox
-        # record: true
+        browser: firefox
+        record: true
         working-directory: ./frontend
-      # env: 
-      #   CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-      #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        build: npm run buid
+        start: npm run start
+      env: 
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 
 
