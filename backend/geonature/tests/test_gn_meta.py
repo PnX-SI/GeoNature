@@ -1,6 +1,10 @@
+from geoalchemy2.shape import from_shape
 import pytest
 from io import StringIO
 import csv
+
+from geoalchemy2.shape import to_shape
+from geojson import Point
 
 from flask import url_for, current_app
 from werkzeug.exceptions import Unauthorized, Forbidden, Conflict, BadRequest, NotFound
@@ -239,6 +243,40 @@ class TestGNMeta:
 
         assert response.status_code == Unauthorized.code
 
+    def test_get_acquisition_framework_stats(self, users, acquisition_frameworks, datasets, synthese_data):
+        id_af = acquisition_frameworks['orphan_af'].id_acquisition_framework
+        set_logged_user_cookie(self.client, users['user'])
+
+        response = self.client.get(url_for("gn_meta.get_acquisition_framework_stats",
+                        id_acquisition_framework=id_af))
+        data = response.json
+
+        assert response.status_code == 200
+        assert data['nb_dataset'] == len(list(datasets.keys()))
+        assert data['nb_habitats'] == 0
+        assert data['nb_observations'] == len(synthese_data)
+        # Count of taxa : 
+        # Loop all the synthese entries, for each synthese
+        # For each entry, take the max between count_min and count_max. And if 
+        # not provided: count_min and/or count_max is 1. Since one entry in
+        # synthese is at least 1 taxon
+        assert data['nb_taxons'] == sum(max(s.count_min or 1, s.count_max or 1) for s in synthese_data)
+
+    def test_get_acquisition_framework_bbox(self, users, acquisition_frameworks,
+                                            synthese_data):
+        id_af = acquisition_frameworks['orphan_af'].id_acquisition_framework
+        geom = Point(geometry=to_shape(synthese_data[0].the_geom_4326))
+
+        set_logged_user_cookie(self.client, users['user'])
+
+        response = self.client.get(url_for("gn_meta.get_acquisition_framework_bbox",
+                        id_acquisition_framework=id_af))
+        data = response.json
+
+        assert response.status_code == 200
+        assert data['type'] == "Point"
+        assert data['coordinates'] == [pytest.approx(coord, 0.9) for coord in [geom.geometry.x,geom.geometry.y]]
+
     def test_datasets_permissions(self, app, datasets, users):
         ds = datasets['own_dataset']
         with app.test_request_context(headers=logged_user_headers(users['user'])):
@@ -466,6 +504,9 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.sensi_report"))
         # BadRequest because for now id_dataset query is required
         assert response.status_code == BadRequest.code
+
+    def test_update_sensitivity(self):
+        pass
 
     def test_get_af_from_id(self, af_list):
         id_af = 1
