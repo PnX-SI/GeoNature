@@ -1,10 +1,12 @@
 import pytest
+import json
 
 from flask import url_for, current_app
 from sqlalchemy import func
-import sqlalchemy as sa
 from werkzeug.exceptions import Forbidden, BadRequest
 from jsonschema import validate as validate_json
+from geoalchemy2.shape import to_shape
+from geojson import Point
 
 from geonature.utils.env import db
 from geonature.core.ref_geo.models import LAreas
@@ -12,7 +14,7 @@ from geonature.core.gn_synthese.models import Synthese, TSources
 
 from .fixtures import *
 from .fixtures import taxon_attribut
-from .utils import login, logged_user_headers, set_logged_user_cookie
+from .utils import logged_user_headers, set_logged_user_cookie
 
 
 HIGH_ID = 12000
@@ -310,4 +312,61 @@ class TestSynthese:
 
     def test_get_bbox(self, synthese_data):
         # In synthese, all entries are located at the same point
-        pass
+        geom = Point(geometry=to_shape(synthese_data[0].the_geom_4326))
+
+        response = self.client.get(url_for('gn_synthese.get_bbox'))
+        data = json.loads(response.data.decode('utf8'))
+
+        assert response.status_code == 200
+        assert data["type"] == "Point"
+        assert data["coordinates"] == [
+            pytest.approx(coord, 0.9) for coord in [geom.geometry.x, geom.geometry.y]
+        ]
+    
+    def test_get_bbox_id_dataset(self, synthese_data, datasets):
+        id_dataset = datasets['own_dataset'].id_dataset
+        # In synthese, all entries are located at the same point
+        geom = Point(geometry=to_shape(synthese_data[0].the_geom_4326))
+        url = 'gn_synthese.get_bbox'
+
+        response = self.client.get(url_for(url),
+                                   query_string={'id_dataset': id_dataset})
+        response_empty = self.client.get(url_for(url),
+                                         query_string={'id_dataset': HIGH_ID})
+        data = json.loads(response.data.decode('utf8'))
+
+        assert response.status_code == 200
+        assert data["type"] == "Point"
+        assert data["coordinates"] == [
+            pytest.approx(coord, 0.9) for coord in [geom.geometry.x, geom.geometry.y]
+        ]
+
+        assert response_empty.status_code == 204
+        assert response_empty.data.decode('utf8') == ''
+    
+    def test_observation_count_per_column(self, synthese_data):
+        column_name_dataset = 'id_dataset'
+        column_name_cd_nom = 'cd_nom'
+
+        response_dataset = self.client.get(url_for('gn_synthese.observation_count_per_column', column=column_name_dataset))
+        response_cd_nom = self.client.get(url_for('gn_synthese.observation_count_per_column', column=column_name_cd_nom))
+
+        id_datasets = [synt.id_dataset for synt in synthese_data]
+        id_dataset_set = set(id_datasets)
+        resp_json = response_dataset.json
+        assert len(resp_json) == len(id_dataset_set)
+        assert [resp['count'] for resp in resp_json] == [id_datasets.count(ds) for ds in id_dataset_set]
+       
+        resp_json = response_cd_nom.json
+        assert len(resp_json) == len(set(synt.cd_nom for synt in synthese_data))
+        assert response_cd_nom.json
+    
+    def test_get_autocomplete_taxons_synthese(self, synthese_data):
+        seach_name = synthese_data[0].nom_cite
+
+        response = self.client.get(url_for('gn_synthese.get_autocomplete_taxons_synthese'),
+                        query_string={'search_name': seach_name})
+
+        assert response.status_code == 200
+        assert response.json[0]['cd_nom'] == synthese_data[0].cd_nom
+        
