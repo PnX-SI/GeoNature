@@ -133,7 +133,7 @@ Licence
 =======
 
 -   OpenSource - GPL-3.0
--   Copyleft 2014-2019 - Parc National des Écrins - Parc national des
+-   Copyleft 2014-2022 - Parc National des Écrins - Parc national des
     Cévennes
 
 [![image](http://geonature.fr/img/logo-pne.jpg)](http://www.ecrins-parcnational.fr)
