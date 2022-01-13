@@ -242,8 +242,8 @@ def get_observation_score():
                             result["errors"].append({
                                 "type": "life_stage",
                                 "value": f"""
-                                Le taxon n'a jamais été observé à cette periode entre 
-                                {altitude_min} et {altitude_max}m d'altitude pour le stade de vie {life_stage_value.label_default}"""
+                                Le taxon n'a jamais été observé à cette periode et à cette altitude ({altitude_min}-{altitude_max}m) 
+                                pour le stade de vie {life_stage_value.label_default}"""
                             })
     return result
 
