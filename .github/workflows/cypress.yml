@@ -67,10 +67,12 @@ jobs:
         sudo apt install -y libgdal-dev
     
     - name: Install and cache dependencies
-      # uses: actions/setup-python@v2
-      # with:
-      #   python-version: '3.9'
-      #   cache: 'pip'
+      uses: actions/cache@v2
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements-common.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
       run: |
         python -m pip install --upgrade pip
         python -m pip install \
@@ -121,7 +123,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-    - name : install frontend
+    - name: install frontend
       run: |
         cp ./config/settings.ini.sample ./config/settings.ini 
         geonature generate_frontend_config --build=false
@@ -131,10 +133,10 @@ jobs:
         ./install/04_install_frontend.sh --ci
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
-      - name : Cypress run
-        uses: cypress-io/github-action@v2
-        with:
-          browser: firefox
+    - name: Cypress run
+      uses: cypress-io/github-action@v2
+      with:
+        browser: firefox
 
 
 
