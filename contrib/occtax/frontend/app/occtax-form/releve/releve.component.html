@@ -41,7 +41,6 @@
       *ngIf="!occtaxConfig.observers_txt; else elseBlock"
       [parentFormControl]="propertiesForm.get('observers')"
       [multiSelect]="true"
-      bindValue="id_role"
       [idMenu]="occtaxConfig.id_observers_list"
       label="{{ 'Releve.Observers' | translate }}"
     >
