@@ -23,7 +23,7 @@ lxml==4.6.5
 markupsafe==1.1
 marshmallow==3.13.0
 marshmallow-sqlalchemy==0.26.1
-packaging==16.8
+packaging==21.3
 psycopg2==2.8.5
 pillow==8.2.0
 pyparsing==2.2.0
