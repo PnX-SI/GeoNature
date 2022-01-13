@@ -28,21 +28,20 @@ CHANGELOG
 * Gestion du référentiel des régions par Alembic (#1475)
 * Ajout des anciennes régions (1970-2016), inactives par défaut, mais utiles pour les règles régionales de sensibilité
 * Gestion du référentiel de sensibilité (règles nationales et régionales) par Alembic (#1576)
-* Ajout d'une documentation sur le calcul de la sensibilité des observations (https://docs.geonature.fr/admin-manual.html#gestion-de-la-sensibilite par @mvergez)
-* [Synthese] Amélioration de la fenêtre de limite d'affichage atteinte (#1520 par @jpm-cbna)
+* Ajout d'une documentation sur le calcul de la sensibilité des observations (https://docs.geonature.fr/admin-manual.html#gestion-de-la-sensibilite, par @mvergez)
+* [SYNTHESE] Amélioration de la fenêtre de limite d'affichage atteinte (#1520 par @jpm-cbna)
 * [OCCHAB] Utilisation de tout Habref par défaut si aucune liste d'habitats n'est renseignée dans la configuration du module
 * [METADONNEES] Attribuer des droits à un utilisateur sur un JDD si il a des droits sur son cadre d'acquisition
-* Association automatique et paramétrable des jeux de données personnels auto-générés au  Occtax par défaut (#1555)
+* Association automatique et paramétrable des jeux de données personnels auto-générés à des modules (Occtax par défaut) (#1555)
+* Utilisation du C du CRUVED de l'utilisateur pour lister les jeux de données dans lesquels il peut ajouter des données dans les différents modules (et non plus le R du CRUVED sur GeoNature) (#659)
 
 **Corrections**
 
 * [OCCTAX] Correction de l'enregistrement des dénombrements lors de l'enchainement des relevés (#1479 par @jbrieuclp)
 * [OCCTAX] Correction du filtre du champs "Habitat" par typologie d'habitat
 * [ADMIN] Correction de l'affichage du module (#1427 par @jbrieuclp)
-* Correction de la création de compte utilisateur (#1527)
-* [VALIDATION] Corrections de la validation (#1485 / #1529)
-* Mise à jour du module Habref-api-module pour corrections certaines données d'Habref
 * [ADMIN] Sécurisation du module (#839)
+* [VALIDATION] Corrections de la validation des observations (#1485 / #1529)
 * [METADONNEES] Amélioration des performances (#1559)
 * [METADONNEES] Correction de la suppression des JDD
 * [METADONNEES] Correction de l'export PDF des JDD (#1544)
@@ -50,90 +49,77 @@ CHANGELOG
 * [SYNTHESE] Correction de la recherche sur les champs génériques de type nombre entier (#1519 par @jpm-cbna)
 * [SYNTHESE] Correction des permissions
 * [SYNTHESE] Correction du lien entre les filtres CA et JDD (#1530)
-* Correction de la redirection vers le formulaire de login en cas de cookie corrompu (#1550 par @antoinececchimnhn)
 * [OCCHAB] Correction du chargement de la configuration, des fiches info et de la modification d'une station
 * [METADONNEES] Améliorations des performances et des contrôles du formulaire des acteurs pour les JDD et les CA (par @joelclems)
+* Correction de la redirection vers le formulaire de login en cas de cookie corrompu (#1550 par @antoinececchimnhn)
+* Correction de la création de compte utilisateur (#1527)
+* Mise à jour du module Habref-api-module pour corrections de certaines données d'Habref
 
 **💻 Développement**
 
 * Migration vers la librairie ``gn-select2`` pour les listes déroulantes des formulaires (#616 / #1285 par @jbrieuclp)
-* Doc développeur enrichie (backend) (#1559)
-* Amélioration de nombreuses routes et fonctions backend
-* Ajouts de tests backend automatisés
-* CI Github Actions (#1568)
-* Mise à jour des dépendances
-* Suppression de vues génériques
-* Sécurisation routes USERS
-* Génération automatique et aléatoire de SECRET_KEY
+* Documentation de développement backend revue et complétée (#1559)
+* Amélioration de nombreuses routes et fonctions du backend
+* Ajouts de tests automatisés du backend
+* Mise en place d'une intégration continue pour exécuter automatiquement les tests et leur couverture de code avec GitHub Actions, à chaque commit ou pull request dans les branches ``develop`` ou ``master`` (#1568)
+* [VALIDATION] Suppression des vues SQL et optimisation des routes
+* Génération automatique et aléatoire du paramètre ``SECRET_KEY``
 * [SYNTHESE] Remplacement de ``as_literal`` par ``json.loads``, plus performant (par @antoinececchimnhn)
 * Possibilité de filter la route ``synthese/taxa_distribution`` par ``id_source`` (#1446 par @mvergez)
-* [VALIDATION] Suppression des vues SQL et optimisation des routes
-* Factorisation du composant "pnx-municipalities" avec "pnx-areas"
-* Ajout de "pnx-areas" dans dynamic-form
-* Ajout d'un input "valueFieldName" pour "pnx-areas" et "pnx-municipalities". Voir documentation (https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#pnx-municipalities)
+* Factorisation du composant ``pnx-municipalities`` avec le composant ``pnx-areas``
+* Ajout du composant ``pnx-areas`` dans dynamic-form
+* Ajout d'un input ``valueFieldName`` aux composants ``pnx-areas`` et ``pnx-municipalities``. Voir documentation (https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#pnx-municipalities)
+* Mise à jour de nombreuses dépendances
 
 **⚠️ Notes de version**
 
+* CRUVED liste des JDD sur C
+* CRUVED sur C dans les modules pour la liste des JDD ! Attention à vos permissions à revoir. TICKET A MENTIONNER
+
 * Si vous avez surcouché le paramètre de configuration ``AREA_FILTERS`` de la section ``[SYNTHESE]``, veuillez remplacer ``id_type`` par ``type_code`` (voir ``ref_geo.bib_areas_types``)
 
-::
+  ::
 
     AREA_FILTERS = [
         { label = "Communes", id_type = 25 }
     ]
 
-devient
+  devient
 
-::
+  ::
 
     AREA_FILTERS = [
         { label = "Communes", type_code = "COM" }
     ]
 
-* Les nouvelles fonctionnalités liées aux profils de taxons nécessitent de rafraichir des vues materialisées à intervalles réguliers et donc de créer une tâche planfiée (cron) :
-
-::
-
-      sudo nano /etc/cron.d/update_profile
-
-Ajouter la ligne suivante en changeant <CHEMIN_ABSOLU_VERS_VENV> par le chemin absolu vers le virtualenv de GeoNature et <GEONATURE_USER> par l'utilisateur Linux de GeoNature :
-
-::
-
-    0 * * * * <GEONATURE_USER> source <CHEMIN_ABSOLU_VERS_VENV> && geonature profiles update_vms
-
-Exemple : 
-
-::
-
-    0 * * * * geonatadmin source /home/user/geonature/backend/venv/bin/activate && geonature profiles update_vms
-
-Cet exemple lance la tâche toutes les nuits à minuit. Pour une autre fréquence, voir la syntaxe cron : https://crontab.guru/
-
-* CRUVED sur C dans les modules pour la liste des JDD ! Attention à vos permissions à revoir. TICKET A MENTIONNER
+* Les nouvelles fonctionnalités liées aux profils de taxons nécessitent de rafraichir des vues materialisées à intervalles réguliers et donc de créer une tâche planfiée (cron). Voir documentation (https://docs.geonature.fr/installation.html#taches-planifiees)
 
 * Les régions sont maintenant disponibles via des migrations Alembic. Si vous possédez déjà les régions, vous pouvez l’indiquer à Alembic :
 
-::
+  ::
 
     geonature db upgrade ref_geo@head
     geonature db stamp d02f4563bebe
 
-* Le référentiel de sensibilité est désormais disponible via une migration Alembic. Celui-ci nécessite le référentiel des régions (branche Alembic ``ref_geo_fr_regions``), ainsi que le référentiel des anciennes régions (branche Alembic ``ref_geo_fr_regions_1970``) – l’installation de ces référentiels est automatique avec l’installation des règles de sensibilité.
+* Le référentiel de sensibilité est désormais disponible via une migration Alembic. Celui-ci nécessite le référentiel des régions (branche Alembic ``ref_geo_fr_regions``), ainsi que le référentiel des anciennes régions (branche Alembic ``ref_geo_fr_regions_1970``) – l’installation de ces référentiels est automatique avec l'installation des règles de sensibilité.
 
-Si vous possédez déjà le référentiel, vous pouvez l’indiquer à Alembic :
+  Si vous possédez déjà le référentiel, vous pouvez l’indiquer à Alembic :
 
-::
+  ::
 
     geonature db stamp 7dfd0a813f86
 
-Si vous avez installé GeoNature 2.8.X, le référentiel de sensibilité n’a pas été installé automatiquement. Vous pouvez l’installer manuellement :
+  Si vous avez installé GeoNature 2.8.X, le référentiel de sensibilité n’a pas été installé automatiquement. Vous pouvez l’installer manuellement :
 
-::
+  ::
 
     geonature db upgrade ref_sensitivity_inpn@head
 
-Par défaut, seule les règles nationales sont activées, vous laissant le soin d’activer vos règles locales en base vous-même. Vous pouvez également demander, lors de l’installation du référentiel, à activer (resp. désactiver) toutes les règles en ajout à la commande Alembic l’option ``-x active=true`` (resp. ``-x active=false``).
+  Par défaut, seule les règles nationales sont activées, vous laissant le soin d’activer vos règles locales en base vous-même. Vous pouvez également demander, lors de l’installation du référentiel, à activer (resp. désactiver) toutes les règles en ajout à la commande Alembic l’option ``-x active=true`` (resp. ``-x active=false``).
+  
+  * Si vous souhaitez surcoucher les paramètres par défaut de Gunicorn (app_name, timeout...), depuis le passage à ``systemd`` dans la version 2.8.0, c'est désormais à faire dans un fichier ``environ`` à la racine du dossier de votre GeoNature (#1588, URL DOC)
+  
+  * Si vous les utilisez, mettez à jour les modules Import, Export et Monitoring dans leurs dernières versions compatibles avec le version 2.9.0 de GeoNature
 
 2.8.1 (2021-10-17)
 ------------------
