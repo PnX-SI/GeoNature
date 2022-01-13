@@ -527,9 +527,6 @@ class TestGNMeta:
 
         assert response_empty.status_code == 200
 
-    def test_uuid_report_with_module_id(self, source):
-        pass
-
     def test_sensi_report(self, users, datasets):
         dataset_id = datasets["own_dataset"].id_dataset
         response = self.client.get(
