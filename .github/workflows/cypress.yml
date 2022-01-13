@@ -135,7 +135,7 @@ jobs:
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
     - name: run backend
-      run : geonature dev_back
+      run : geonature dev_back &
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
     - name: Cypress run
