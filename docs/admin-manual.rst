@@ -445,7 +445,7 @@ La fonction ``gn_profiles.refresh_profiles()`` permet de rafraichir ces vues mat
 
 Pour lancer manuellement cette fonction, ouvrez une console SQL et exécutez la requête ``SELECT gn_profiles.refresh_profiles();``.
 
-Cette fonction est aussi diponible en tant que fonction GeoNature qu'il est préférable d'utiliser : ``source /home/user/geonature/backend/venv/bin/activate && geonature profiles update_vms``
+Cette fonction est aussi diponible en tant que fonction GeoNature qu'il est préférable d'utiliser : ``geonature profiles update``
 
 Pour automatiser l'éxecution de cette fonction (tous les jours à minuit dans cet exemple), :ref:`créer une tâche planfiée<cron>`.
 
