@@ -135,11 +135,11 @@ jobs:
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
     - name: Cypress run
-      working-directory: ./frontend
       uses: cypress-io/github-action@v2
       with:
         browser: firefox
         record: true
+        working-directory: ./frontend
       env: 
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
