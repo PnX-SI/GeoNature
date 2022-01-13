@@ -505,9 +505,6 @@ class TestGNMeta:
         # BadRequest because for now id_dataset query is required
         assert response.status_code == BadRequest.code
 
-    def test_update_sensitivity(self):
-        pass
-
     def test_get_af_from_id(self, af_list):
         id_af = 1
 
