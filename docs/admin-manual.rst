@@ -997,6 +997,19 @@ Attention : ne pas stopper le backend (des opérations en BDD en cours pourraien
 
   **NB**: Ne pas faire ces manipulations sans avertir les utilisateurs d'une perturbation temporaire des applications.
 
+Paramètres Gunicorn
+"""""""""""""""""""
+
+Voici les paramètres de Gunicorn par défaut :
+
+  * ``GUNICORN_PROC_NAME=geonature``
+  * ``GUNICORN_NUM_WORKERS=4``
+  * ``GUNICORN_HOST=127.0.0.1``
+  * ``GUNICORN_PORT=8000``
+  * ``GUNICORN_TIMEOUT=30``
+
+Pour modifier une de ces variables, créer un fichier ``environ`` à la racine de votre dossier GeoNature, et indiquer la variable d’environnement avec sa valeur modifiée.
+
 Sauvegarde et restauration
 --------------------------
 
@@ -1450,8 +1463,8 @@ Cet espace est activable grâce au paramètre ``ENABLE_USER_MANAGEMENT``. Par d�
         ENABLE_SIGN_UP = true
         ENABLE_USER_MANAGEMENT = true
 
-Rendre GeoNature accessible sans authentification
---------------------------------------------------
+Accès public
+------------
 
 Cette section de la documentation concerne l'implémentation d'un utilisateur-lecteur pour votre instance GeoNature. 
 
