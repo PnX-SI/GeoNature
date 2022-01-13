@@ -1199,6 +1199,15 @@ service :
             </tr>
     </table>
 
+Test end to end
+***************
+
+Pour toute PR ou nouvelle fonctionnalité il est demandé d'écrire des tests.
+Pour les test e2e, la librairie Cypress est utilisé. 
+Des exemples de tests peuvent être trouvé ici : https://github.com/PnX-SI/GeoNature/tree/develop/frontend/cypress/integration
+Les tests sont joués automatiquement sur Github-action lors de commit et PR sur la branch develop et master.
+Pour lancer les tests sur sa machine locale, utilisez la commande ``npm run e2e && npm run e2e:coverage``. Celle-ci lance le serveur de frontend, joue les tests cypress et contrôle la couverture de test. Cette dernière est disponible dans le repertoire `frontend/coverage`.
+
 
 
 Outils d'aide à la qualité du code

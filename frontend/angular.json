@@ -81,6 +81,8 @@
               "sourceMap": true,
               "namedChunks": true,
               "vendorChunk": true,
+              "optimization": false,
+              "buildOptimizer": false,
               "customWebpackConfig": {
                 "path": "./cypress/coverage.webpack.ts"
               }
