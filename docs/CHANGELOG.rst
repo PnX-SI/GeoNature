@@ -5,37 +5,34 @@ CHANGELOG
 2.9.0 (unreleased)
 ------------------
 
-Profils de taxons
+**Profils de taxons**
 
 **🚀 Nouveautés**
 
 * Construction automatique d'une fiche d'identité (profil) par taxon grâce aux observations validées présentes dans la base de données (altitude min/max, distribution spatiale, date de première/dernière observation, nombre de données valides, phénologie) (#917 par @DonovanMaillard, @lepontois, @Adrien-Pajot, @TheoLechemia, @bouttier, @amandine-sahl, @jpm-cbna)
   
-  - Intégration SQL (#1103)
-  - Backend (#1104)
-  - Frontend (#1105)
-  - Améliorations JPM (#1531)
-  - Paramètres modifiables (nomenclatures de validation utilisées par défaut)
-  - Statuts pris en compte paramétrables
-  - Documentation (URL)
-  - Suppression de la vue matérialisée ``gn_synthese.vm_min_max_for_taxons`` et de la fonction ``gn_synthese.fct_calculate_min_max_for_taxon()`` qui n'étaient pas utilisés
+  - Création d'un schéma ``gn_profiles`` dans la BDD contenant les tables, les vues, les fonctions et les paramètres de calcul des profils de taxons (https://github.com/PnX-SI/GeoNature/blob/develop/data/core/profiles.sql) (#1103)
+  - Mise en place de l'API des profils de taxons (#1104)
+  - Affichage des scores de chaque observation par rapport au profil du taxon dans la liste des observations du module Validation, ainsi que dans les fiches détails des observations dans les modules Synthèse et Validation (#1105)
+  - Ajout de filtres des observations par score ou critère des profils de taxon dans le module Validation (#1105)
+  - Ajout d'une alerte de contextualisation d'une observation par rapport au profil de taxon, lors de sa saisie dans le module Occtax 
+  - Mise en place de paramètres pour activer ou non les profils de taxons, paramétrer leurs règles et définir les statut de validation pris en compte pour le calcul des profils ("Certain-très probable" et "Probable" par défaut)
+  - Documentation des profils de taxons et de leur paramètrage (https://docs.geonature.fr/admin-manual.html#profils-de-taxons)
+  - Suppression de la vue matérialisée ``gn_synthese.vm_min_max_for_taxons`` et de la fonction ``gn_synthese.fct_calculate_min_max_for_taxon()`` qui n'étaient pas utilisées
 
-* [OCCTAX] Contrôle de la cohérence des nouvelles données saisies par rapport au profil
-* [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
-* [SYNTHESE et VALIDATION] Enrichissement de l'onglet "Validation" en y ajoutant les informations du profil du taxon observé
-* [SYNTHESE] Ajout d'un filtre avancé par UUID d'observation (#973)
 * [OCCTAX] Ajout d'un bouton permettant d'annuler la modification d'un taxon (#1508 par @jbrieuclp)
 * [OCCTAX] Ajout de valeurs par défaut aux champs additionnels (``gn_commons.t_additional_fields.default_value``)
-* Occtax : Ajout d'un filtre avancé par ``id_releve``
-* Amélioration des listes déroulantes en passant à la librairie 'ng-select2' pour les composants multiselects (#616 @jbrieuclp)
+* [OCCTAX] Ajout d'un filtre avancé par ``id_releve``
+* [SYNTHESE] Ajout d'un filtre avancé par UUID d'observation (#973)
+* Amélioration des listes déroulantes en passant à la librairie ``ng-select2`` pour les composants multiselects (#616 par @jbrieuclp)
 * Gestion du référentiel des régions par Alembic (#1475)
 * Ajout des anciennes régions (1970-2016), inactives par défaut, mais utiles pour les règles régionales de sensibilité
 * Gestion du référentiel de sensibilité (règles nationales et régionales) par Alembic (#1576)
-* Ajout d'une documentation sur le calcul de la sensibilité des observations (par @mvergez)
+* Ajout d'une documentation sur le calcul de la sensibilité des observations (https://docs.geonature.fr/admin-manual.html#gestion-de-la-sensibilite par @mvergez)
 * [Synthese] Amélioration de la fenêtre de limite d'affichage atteinte (#1520 par @jpm-cbna)
 * [OCCHAB] Utilisation de tout Habref par défaut si aucune liste d'habitats n'est renseignée dans la configuration du module
-* meta: grant rights on DS if user has rights on AF
-* Jeux de données personnel auto-générés non associés à Occtax par défaut (#1555)
+* [METADONNEES] Attribuer des droits à un utilisateur sur un JDD si il a des droits sur son cadre d'acquisition
+* Association automatique et paramétrable des jeux de données personnels auto-générés au  Occtax par défaut (#1555)
 
 **Corrections**
 
@@ -46,18 +43,16 @@ Profils de taxons
 * [VALIDATION] Corrections de la validation (#1485 / #1529)
 * Mise à jour du module Habref-api-module pour corrections certaines données d'Habref
 * [ADMIN] Sécurisation du module (#839)
-* Performances métadonnées (#1559)
+* [METADONNEES] Amélioration des performances (#1559)
 * [METADONNEES] Correction de la suppression des JDD
 * [METADONNEES] Correction de l'export PDF des JDD (#1544)
 * [METADONNEES] Correction des permissions (#1528)
-* [Synthese] Correction de la recherche sur les champs génériques de type nombre entier (#1519 par @jpm-cbna)
+* [SYNTHESE] Correction de la recherche sur les champs génériques de type nombre entier (#1519 par @jpm-cbna)
 * [SYNTHESE] Correction des permissions
 * [SYNTHESE] Correction du lien entre les filtres CA et JDD (#1530)
 * Correction de la redirection vers le formulaire de login en cas de cookie corrompu (#1550 par @antoinececchimnhn)
 * [OCCHAB] Correction du chargement de la configuration, des fiches info et de la modification d'une station
-* [META] Formulaire acteurs pour JDD et CA
-    * correction ralentissments, id_organims et changeTab pris en compte
-    * boutton ajout acteur en disabled si les acteurs ne sont pas tout valides
+* [METADONNEES] Améliorations des performances et des contrôles du formulaire des acteurs pour les JDD et les CA (par @joelclems)
 
 **💻 Développement**
 
@@ -75,16 +70,7 @@ Profils de taxons
 * [VALIDATION] Suppression des vues SQL et optimisation des routes
 * Factorisation du composant "pnx-municipalities" avec "pnx-areas"
 * Ajout de "pnx-areas" dans dynamic-form
-* Ajout d'un input "valueFieldName" pour "pnx-areas" et "pnx-municipalities"
-
-  Pour ceux qui utilisent le composant "pnx-municipalities" l'idéal serait de traduire les données et les modèles et de passer du ``code_insee`` a ``id_area``
-  * la correspondance est immédiate (``area_code`` = ``code_insee``)
-
-  Cependant, pour garder la retrocompatibilité du composant "pnx-municipalities" veuillez ajouter
-
-  * dans les templates : ``[valueFieldName]="'area_code'`` dans les template
-  * dans les config (js, ts ou json) (attention à la casse): ``"value_field_name": "area_code"``
-  * dans le module monitoring ajouter aussi ``"type_util": "area"``
+* Ajout d'un input "valueFieldName" pour "pnx-areas" et "pnx-municipalities". Voir documentation (https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#pnx-municipalities)
 
 **⚠️ Notes de version**
 
@@ -123,6 +109,8 @@ Exemple :
     0 * * * * geonatadmin source /home/user/geonature/backend/venv/bin/activate && geonature profiles update_vms
 
 Cet exemple lance la tâche toutes les nuits à minuit. Pour une autre fréquence, voir la syntaxe cron : https://crontab.guru/
+
+* CRUVED sur C dans les modules pour la liste des JDD ! Attention à vos permissions à revoir. TICKET A MENTIONNER
 
 * Les régions sont maintenant disponibles via des migrations Alembic. Si vous possédez déjà les régions, vous pouvez l’indiquer à Alembic :
 
