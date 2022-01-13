@@ -236,12 +236,6 @@ export class OcctaxFormReleveService {
         tap(([releve, additional_fields]) => this.additionalFieldsForm = additional_fields),
         //map for return releve data only
         map(([releve, additional_fields]) => releve),
-        //transform Array[observers] to Array[id_role] before patchForm
-        map((releve) => {
-          const releve_data = Object.assign({}, releve);
-          releve_data.observers = releve_data.observers.map(obs => obs.id_role);
-          return releve_data;
-        }),
       )
       .subscribe((releve_data) => {            
         this.propertiesForm.patchValue(releve_data);
@@ -447,6 +441,11 @@ export class OcctaxFormReleveService {
     value.properties.date_max = this.dateParser.format(
       value.properties.date_max
     );
+    if (!ModuleConfig.observers_txt) {
+      value.properties.observers = value.properties.observers.map(
+        (observer) => observer.id_role
+      );
+    }
     /* Champs additionnels - formatter les dates et les nomenclatures */
     this.additionalFieldsForm.forEach((fieldForm: any) => {
       if(fieldForm.type_widget == "date"){
