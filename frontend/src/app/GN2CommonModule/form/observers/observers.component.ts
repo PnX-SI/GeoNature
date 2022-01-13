@@ -32,6 +32,7 @@ export class ObserversComponent extends GenericFormComponent {
   @Input() codeList: string;
   @Input() bindAllItem = false;
   @Input() bindValue: string = null;
+  @Input() compareWith = (c1, c2) => {return c1.id_role === c2.id_role};
   public observers: Observable<Array<any>>;
 
   constructor(private _dfService: DataFormService) {
