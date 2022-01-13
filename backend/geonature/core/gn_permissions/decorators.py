@@ -30,6 +30,8 @@ def check_cruved_scope(
     object_code=None,
     redirect_on_expiration=None,
     redirect_on_invalid_token=None
+    *,
+    get_scope=True,
 ):
     """
     Decorator to protect routes with SCOPE CRUVED
@@ -68,6 +70,8 @@ def check_cruved_scope(
             # if get_role = True : set info_role as kwargs
             if get_role:
                 kwargs["info_role"] = user_with_highter_perm
+            if get_scope:
+                kwargs["scope"] = int(user_with_highter_perm.value_filter)
             # if no perm or perm = 0 -> raise 403
             if user_with_highter_perm is None or user_with_highter_perm.value_filter == "0":
                 if object_code:
