@@ -41,18 +41,18 @@ jobs:
           --health-retries 5
 
     steps:
-    - name: Add postgis_raster database extension
-      if: ${{ matrix.postgis-version >= 3 }}
-      run: |
-        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
-      env:
-        PGPASSWORD: geonatpasswd
-    - name: Add database extensions
-      run: |
-        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "hstore";'
-        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "uuid-ossp";'
-        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "pg_trgm";'
-        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
+    # - name: Add postgis_raster database extension
+    #   if: ${{ matrix.postgis-version >= 3 }}
+    #   run: |
+    #     psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
+    #   env:
+    #     PGPASSWORD: geonatpasswd
+    # - name: Add database extensions
+    #   run: |
+    #     psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "hstore";'
+    #     psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "uuid-ossp";'
+    #     psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "pg_trgm";'
+    #     psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
       env:
         PGPASSWORD: geonatpasswd
     - uses: actions/checkout@v2
@@ -119,9 +119,11 @@ jobs:
     - name : install frontend
       run: |
         cp ./config/settings.ini.sample ./config/settings.ini 
-        ./install/04_install_frontend.sh --dev
-        cd ./frontend
-        npm run build
+        geonature generate_frontend_config --build=false
+        geonature generate_frontend_tsconfig
+        geonature generate_frontend_tsconfig_app
+        geonature generate_frontend_modules_route
+        ./install/04_install_frontend.sh --ci
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
 

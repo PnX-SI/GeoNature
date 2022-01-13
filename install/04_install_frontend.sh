@@ -10,6 +10,7 @@ Usage: ./$(basename $BASH_SOURCE)[options]
      -v | --verbose: display more infos
      -x | --debug: display debug script infos
      -d | --dev: use GeoNature in development mode.
+     -c | --ci: install for CI needs.
 EOF
   exit 0
 }
@@ -26,26 +27,32 @@ function parseScriptOptions() {
       "--verbose") set -- "${@}" "-v" ;;
       "--debug") set -- "${@}" "-x" ;;
       "--dev") set -- "${@}" "-d" ;;
+      "--ci") set -- "${@}" "-c" ;;
       "--"*) exitScript "ERROR : parameter '${arg}' invalid ! Use -h option to know more." 1 ;;
       *) set -- "${@}" "${arg}"
     esac
   done
 
-  while getopts "hvxd" option; do
+  while getopts "hvxdc" option; do
     case "${option}" in
       "h") printScriptUsage ;;
       "v") readonly VERBOSE=true ;;
       "x") readonly DEBUG=true; set -x ;;
+      "c") readonly CI=true;;
       "d") readonly MODE="dev" ;;
       *) exitScript "ERROR : parameter invalid ! Use -h option to know more." 1 ;;
     esac
   done
 }
 
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 . "${SCRIPT_DIR}/utils"
 
 parseScriptOptions "${@}"
+
+
+
 
 write_log "Préparation du frontend..."
 
@@ -73,31 +80,40 @@ for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
 done
 
 
-echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
-# Generate the app.config.ts
-geonature generate_frontend_config --build=false
-# Generate the tsconfig.json
-geonature generate_frontend_tsconfig
-# Generate the src/tsconfig.app.json
-geonature generate_frontend_tsconfig_app
-# Generate the modules routing file by templating
-geonature generate_frontend_modules_route
+if ! ${CI};then
+  echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
+  # Generate the app.config.ts
+  geonature generate_frontend_config --build=false
+  # Generate the tsconfig.json
+  geonature generate_frontend_tsconfig
+  # Generate the src/tsconfig.app.json
+  geonature generate_frontend_tsconfig_app
+  # Generate the modules routing file by templating
+  geonature generate_frontend_modules_route
+fi
 
-echo "Désactivation du venv..."
-deactivate
+# echo "Désactivation du venv..."
+# deactivate
 
 # Frontend installation"
-
-
  
+cd "${BASE_DIR}/frontend"
 echo " ############"
 echo "Installation des paquets Npm"
-npm ci --only=prod --legacy-peer-deps || exit 1
+
+if [[ "${MODE}" == "dev" ]] || $CI; then
+  npm install --production=false || exit 1
+else 
+  npm ci --only=prod --legacy-peer-deps || exit 1
+fi
 
 
 if [[ "${MODE}" != "dev" ]]; then
   echo "Build du frontend..."
-  cd "${BASE_DIR}/frontend"
   npm rebuild node-sass --force || exit 1
   npm run build || exit 1
+fi
+
+if $CI;then 
+  npm run build 
 fi
