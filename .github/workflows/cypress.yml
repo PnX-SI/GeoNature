@@ -120,5 +120,10 @@ jobs:
       run: |
         cp ./config/settings.ini.sample ./config/settings.ini 
         ./install/04_install_frontend.sh --dev
+        cd ./frontend
         npm run build
+      env:
+        GEONATURE_CONFIG_FILE: config/test_config.toml
+
+
 
