@@ -30,11 +30,12 @@ def upgrade():
             ),
             --exclude last commit on old counting execute with new counting insert
             exclude_history (id_occ, id_history_action) as (
-                SELECT o.id_occ, max(id_history_action)
+                SELECT o.id_occ, max(id_history_action), count((h_c.table_content->>'id_occurrence_occtax')::integer)
                 FROM occ_id o
                 JOIN gn_commons.t_history_actions h_c ON (h_c.table_content->>'id_occurrence_occtax')::integer = o.id_occ
                 JOIN gn_commons.bib_tables_location bt ON bt.id_table_location = h_c.id_table_location AND bt.schema_name = 'pr_occtax' AND bt.table_name = 'cor_counting_occtax'
                 GROUP BY o.id_occ
+                HAVING count((h_c.table_content->>'id_occurrence_occtax')::integer) > 1
             ),
             restauration_occ (id_occ, table_content) as (
                 SELECT DISTINCT ON (id_occ) o.id_occ, h_c.table_content
