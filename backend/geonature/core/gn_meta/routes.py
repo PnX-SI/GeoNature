@@ -171,6 +171,8 @@ def get_dataset(info_role, id_dataset):
         'acquisition_framework.cor_af_actor.role',
     ])
 
+    #TODO: Replace with get_scopes_by_action
+    # check this in front 
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role, module_code="METADATA",
     )[0]
@@ -214,8 +216,8 @@ def delete_dataset(info_role, ds_id):
 
 
 @routes.route("/uuid_report", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="METADATA")
-def uuid_report(info_role):
+@permissions.check_cruved_scope("R", module_code="METADATA")
+def uuid_report():
     """
     get the UUID report of a dataset
 
@@ -271,8 +273,8 @@ def uuid_report(info_role):
 
 
 @routes.route("/sensi_report", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="METADATA")
-def sensi_report(info_role):
+@permissions.check_cruved_scope("R", module_code="METADATA")
+def sensi_report():
     """
     get the UUID report of a dataset
 
@@ -430,15 +432,15 @@ def create_dataset():
 
 
 @routes.route("/dataset/<int:id_dataset>", methods=["POST", "PATCH"])
-@permissions.check_cruved_scope("U", True, module_code="METADATA")
-def update_dataset(id_dataset, info_role):
+@permissions.check_cruved_scope("U", get_scope=True, module_code="METADATA")
+def update_dataset(id_dataset, scope):
     """
     Post one Dataset data for update dataset
     .. :quickref: Metadata;
     """
 
     dataset = TDatasets.query.get_or_404(id_dataset)
-    if not dataset.has_instance_permission(scope=int(info_role.value_filter)):
+    if not dataset.has_instance_permission(scope):
         raise Forbidden(f"User {g.current_user} cannot update dataset {dataset.id_dataset}")
     # TODO: specify which fields may be updated
     return DatasetSchema().jsonify(
@@ -620,8 +622,8 @@ def get_acquisition_frameworks_list(info_role):
     )
 
 @routes.route("/acquisition_frameworks/export_pdf/<id_acquisition_framework>", methods=["GET"])
-@permissions.check_cruved_scope("E", True, module_code="METADATA")
-def get_export_pdf_acquisition_frameworks(id_acquisition_framework, info_role):
+@permissions.check_cruved_scope("E", module_code="METADATA")
+def get_export_pdf_acquisition_frameworks(id_acquisition_framework):
     """
     Get a PDF export of one acquisition
     """
@@ -779,14 +781,14 @@ def get_acquisition_framework(info_role, id_acquisition_framework):
 
 
 @routes.route("/acquisition_framework/<int:af_id>", methods=["DELETE"])
-@permissions.check_cruved_scope("D", True, module_code="METADATA")
-def delete_acquisition_framework(info_role, af_id):
+@permissions.check_cruved_scope("D", get_scope=True, module_code="METADATA")
+def delete_acquisition_framework(scope, af_id):
     """
     Delete an acquisition framework
     .. :quickref: Metadata;
     """
     af = TAcquisitionFramework.query.get_or_404(af_id)
-    if not af.has_instance_permission(scope=int(info_role.value_filter)):
+    if not af.has_instance_permission(scope):
         raise Forbidden(f"User {g.current_user} cannot delete acquisition framework {af.id_acquisition_framework}")
     if not af.is_deletable():
         raise Conflict("La suppression du cadre d’acquisition n'est pas possible "
@@ -797,7 +799,7 @@ def delete_acquisition_framework(info_role, af_id):
     return '', 204
 
 
-def acquisitionFrameworkHandler(request, *, acquisition_framework, info_role):
+def acquisitionFrameworkHandler(request, *, acquisition_framework):
 
     # Test des droits d'édition du acquisition framework si modification
     if acquisition_framework.id_acquisition_framework is not None:
@@ -812,7 +814,7 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework, info_role):
                 403,
             )
     else:
-        acquisition_framework.id_digitizer = info_role.id_role
+        acquisition_framework.id_digitizer = g.current_user.id_role
 
     acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
         only=["cor_af_actor", "cor_volets_sinp", "cor_objectifs", "cor_territories"],
@@ -831,8 +833,8 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework, info_role):
 
 
 @routes.route("/acquisition_framework", methods=["POST"])
-@permissions.check_cruved_scope("C", True, module_code="METADATA")
-def create_acquisition_framework(info_role):
+@permissions.check_cruved_scope("C", module_code="METADATA")
+def create_acquisition_framework():
     """
     Post one AcquisitionFramework data
     .. :quickref: Metadata;
@@ -840,7 +842,7 @@ def create_acquisition_framework(info_role):
     # TODO: spécifier only
     # create new acquisition_framework
     return AcquisitionFrameworkSchema(only=[]).dump(
-        acquisitionFrameworkHandler(request=request, acquisition_framework=TAcquisitionFramework(), info_role=info_role)
+        acquisitionFrameworkHandler(request=request, acquisition_framework=TAcquisitionFramework())
     )
 
 
@@ -857,7 +859,7 @@ def updateAcquisitionFramework(id_acquisition_framework, info_role):
         raise Forbidden(f"User {g.current_user} cannot update "
                          "acquisition framework {af.id_acquisition_framework}")
     return AcquisitionFrameworkSchema().dump(
-        acquisitionFrameworkHandler(request=request, acquisition_framework=af, info_role=info_role)
+        acquisitionFrameworkHandler(request=request, acquisition_framework=af)
     )
 
 @routes.route("/acquisition_framework/<id_acquisition_framework>/stats", methods=["GET"])
@@ -1027,17 +1029,6 @@ def publish_acquisition_framework(info_role, af_id):
     publish_acquisition_framework_mail(af, info_role)
 
     return af.as_dict()
-
-
-def get_cd_nomenclature(id_type, cd_nomenclature):
-    query = "SELECT ref_nomenclatures.get_id_nomenclature(:id_type, :cd_n)"
-    result = DB.engine.execute(text(query), id_type=id_type, cd_n=cd_nomenclature).first()
-    value = None
-    if len(result) >= 1:
-        value = result[0]
-    return value
-
-
 
 @routes.cli.command()
 def mtd_sync():
