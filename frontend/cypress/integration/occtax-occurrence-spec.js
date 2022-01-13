@@ -1,3 +1,5 @@
+import promisify from 'cypress-promise'
+
 describe("Occtax occurrence creation", () => {
     beforeEach(() => {
       cy.visit("http://127.0.0.1:4200");
@@ -8,24 +10,30 @@ describe("Occtax occurrence creation", () => {
       cy.get("#cdk-step-content-0-0 > form > button").click();
     });
 
-    it("should create occurrence", () => {
-      cy.visit('http://127.0.0.1:4200/#/occtax/form/1/taxons');
-      const taxonInput = cy.get("input[data-qa='taxonomy-form-input']");
-      taxonInput.type("canis lupus")
-      const results = cy.get("ngb-typeahead-window")
-      const firstTaxon = results.first().click()
-      console.log(results);
-      const nomValideResult = cy.get("[data-qa='occurrence-nom-valide']");
-      nomValideResult.contains("Canis lupus Linnaeus, 1758")
+    it("should create occurrence",  async () => {
+        cy.visit('http://127.0.0.1:4200/#/occtax/form/1/taxons');
+        // check button sumbit is disabled
+        const submitBtn = cy.get("[data-qa='occurrence-add-btn'][disabled='true']");
+        // get taxon input which must be as required : .ng-invalid
+        const taxonInput = cy.get("input[data-qa='taxonomy-form-input'].ng-invalid");
+        taxonInput.type("canis lupus")
+        const results = cy.get("ngb-typeahead-window")
+        const firstTaxon = results.first().click()
+        console.log(results);
+        const nomValideResult = cy.get("[data-qa='occurrence-nom-valide']");
+        nomValideResult.contains("Canis lupus Linnaeus, 1758")
 
-      /* ==== Generated with Cypress Studio ==== */
-      cy.get('.ng-tns-c206-5 > :nth-child(2) > :nth-child(1) > .form-control').clear();
-      cy.get('.ng-tns-c206-5 > :nth-child(2) > :nth-child(1) > .form-control').type('2');
-      cy.get('.ng-tns-c206-5 > :nth-child(2) > :nth-child(2) > .form-control').clear();
-      cy.get('.ng-tns-c206-5 > :nth-child(2) > :nth-child(2) > .form-control').type('4');
-      cy.get('#mat-expansion-panel-header-2 > .mat-content > .mat-expansion-panel-header-description > .mat-tooltip-trigger').click();
-      cy.get('#mat-expansion-panel-header-2 > .mat-content > .mat-expansion-panel-header-description > .mat-tooltip-trigger').click();
-      /* ==== End Cypress Studio ==== */
-    });
+        // check the button add occurrence is focused
+        cy.focused()
+        .invoke('attr', 'data-qa')
+        .should('eq', 'occurrence-add-btn')
+
+        // chek autocompletion on min/max
+        const count_min = await promisify(cy.get("[data-qa='counting-count-min']"))
+        console.log(count_min);
+        const count_max = await promisify(cy.get("[data-qa='counting-count-max']"))
+
+
+        });
 
 });

@@ -101,7 +101,12 @@ cd "${BASE_DIR}/frontend"
 echo " ############"
 echo "Installation des paquets Npm"
 
-if [[ "${MODE}" == "dev" ]] || $CI; then
+# build and npm install is done by cypress github action
+if $CI; then
+  exit 0
+fi
+
+if [[ "${MODE}" == "dev" ]]; then
   npm install --production=false || exit 1
 else 
   npm ci --only=prod --legacy-peer-deps || exit 1
@@ -112,8 +117,4 @@ if [[ "${MODE}" != "dev" ]]; then
   echo "Build du frontend..."
   npm rebuild node-sass --force || exit 1
   npm run build || exit 1
-fi
-
-if $CI;then 
-  npm run build 
 fi
