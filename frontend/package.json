@@ -68,7 +68,7 @@
     "ngx-datatable": "^1.0.3",
     "ngx-mat-select-search": "^2.2.0",
     "ngx-toastr": "^10.0.2",
-    "node-forge": "^0.10.0",
+    "node-forge": "^1.0.0",
     "package-json-path": "1.0.8",
     "popper.js": "^1.15.0",
     "primeng": "^7.1.0",
