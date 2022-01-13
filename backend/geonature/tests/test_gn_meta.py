@@ -1,6 +1,6 @@
 import pytest
 import uuid
-import random
+from flask_sqlalchemy import BaseQuery
 
 from flask import url_for, current_app
 from werkzeug.exceptions import Unauthorized, Forbidden, Conflict, BadRequest, NotFound
@@ -331,7 +331,6 @@ class TestGNMeta:
         assert id_dataset == dataset.id_dataset
         assert TDatasets.get_id(uuid.uuid4()) is None
 
-
     def test_get_uuid(self, datasets) :
         dataset = datasets['associate_dataset']
         id_dataset = dataset.id_dataset
@@ -350,15 +349,29 @@ class TestGNMeta:
         assert id_af == af.id_acquisition_framework
         assert TAcquisitionFramework.get_id(uuid.uuid4()) is None
 
-
-    def test_get_user_af(self, acquisition_frameworks, users):
-        
+    def test_get_user_af(self, users, acquisition_frameworks):
+        # Test to complete
         user = users['user']
 
         afquery = TAcquisitionFramework.get_user_af(user = user, only_query = True)
         afuser = TAcquisitionFramework.get_user_af(user = user, only_user = True)
         afdefault = TAcquisitionFramework.get_user_af(user = user)
 
+        assert isinstance(afquery, BaseQuery)
         assert isinstance(afuser, list)
         assert len(afuser) == 1
         assert isinstance(afdefault, list)
+        assert len(afdefault) >= 1
+
+    def test_actor(self, users) :
+        user = users['user']
+
+        empty = CorDatasetActor(role = None, organism = None)
+        roleonly = CorDatasetActor(role = user, organism = None)
+        organismonly = CorDatasetActor(role = None, organism = user.organisme)
+        complete = CorDatasetActor(role = user, organism = user.organisme)
+
+        assert empty.actor is None
+        assert roleonly.actor == user
+        assert organismonly.actor == user.organisme
+        assert complete.actor == user
