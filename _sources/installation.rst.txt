@@ -141,13 +141,13 @@ Ajouter la ligne suivante en remplaçant "<CHEMIN_ABSOLU_VERS_VENV>" par le chem
 
 ::
 
-  0 * * * * <GEONATURE_USER> <CHEMIN_ABSOLU_VERS_VENV>/bin/geonature profiles update_vms
+  0 * * * * <GEONATURE_USER> <CHEMIN_ABSOLU_VERS_VENV>/bin/geonature profiles update
   
 Exemple :
 
 ::
 
-  0 * * * * geonatadmin /home/user/geonature/backend/venv/bin/geonature profiles update_vms
+  0 * * * * geonatadmin /home/user/geonature/backend/venv/bin/geonature profiles update
 
 
 Mise à jour de l'application
