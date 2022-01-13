@@ -447,23 +447,7 @@ Pour lancer manuellement cette fonction, ouvrez une console SQL et exécutez la 
 
 Cette fonction est aussi diponible en tant que fonction GeoNature qu'il est préférable d'utiliser : ``source /home/user/geonature/backend/venv/bin/activate && geonature profiles update_vms``
 
-Pour automatiser l'éxecution de cette fonction (tous les jours à minuit dans cet exemple), créer une tâche planfiée (cron) :
-
-::
-
-      sudo nano /etc/cron.d/update_profile
-
-Ajouter la ligne suivante en changeant <CHEMIN_ABSOLU_VERS_VENV> par le chemin absolu vers le virtualenv de GeoNature et <GEONATURE_USER> par l'utilisateur Linux de GeoNature :
-
-::
-
-    0 * * * * <GEONATURE_USER> source <CHEMIN_ABSOLU_VERS_VENV> && geonature profiles update_vms
-
-Exemple : 
-
-::
-
-    0 * * * * geonatadmin source /home/user/geonature/backend/venv/bin/activate && geonature profiles update_vms
+Pour automatiser l'éxecution de cette fonction (tous les jours à minuit dans cet exemple), :ref:`créer une tâche planfiée<cron>`.
 
 Usage
 `````
