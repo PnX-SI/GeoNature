@@ -8,7 +8,6 @@ Parc national des Ecrins
 * Theo Lechemia
 * Elie Bouttier
 * Camille Monchicourt
-* Adrien Pajot
 
 .. image:: http://geonature.fr/img/logo-pne.jpg
     :target: http://www.ecrins-parcnational.fr
