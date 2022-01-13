@@ -144,96 +144,77 @@
 <h1>CHANGELOG<a class="headerlink" href="#changelog" title="Permalink to this headline"></a></h1>
 <div class="section" id="unreleased">
 <h2>2.9.0 (unreleased)<a class="headerlink" href="#unreleased" title="Permalink to this headline"></a></h2>
-<p>Profils de taxons</p>
+<p><strong>Profils de taxons</strong></p>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Construction automatique d’une fiche d’identité (profil) par taxon grâce aux observations validées présentes dans la base de données (altitude min/max, distribution spatiale, date de première/dernière observation, nombre de données valides, phénologie) (#917 par &#64;DonovanMaillard, &#64;lepontois, &#64;Adrien-Pajot, &#64;TheoLechemia, &#64;bouttier, &#64;amandine-sahl, &#64;jpm-cbna)</p>
 <ul>
-<li><p>Intégration SQL (#1103)</p></li>
-<li><p>Backend (#1104)</p></li>
-<li><p>Frontend (#1105)</p></li>
-<li><p>Améliorations JPM (#1531)</p></li>
-<li><p>Paramètres modifiables (nomenclatures de validation utilisées par défaut)</p></li>
-<li><p>Statuts pris en compte paramétrables</p></li>
-<li><p>Documentation (URL)</p></li>
-<li><p>Suppression de la vue matérialisée <code class="docutils literal notranslate"><span class="pre">gn_synthese.vm_min_max_for_taxons</span></code> et de la fonction <code class="docutils literal notranslate"><span class="pre">gn_synthese.fct_calculate_min_max_for_taxon()</span></code> qui n’étaient pas utilisés</p></li>
+<li><p>Création d’un schéma <code class="docutils literal notranslate"><span class="pre">gn_profiles</span></code> dans la BDD contenant les tables, les vues, les fonctions et les paramètres de calcul des profils de taxons (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/data/core/profiles.sql">https://github.com/PnX-SI/GeoNature/blob/develop/data/core/profiles.sql</a>) (#1103)</p></li>
+<li><p>Mise en place de l’API des profils de taxons (#1104)</p></li>
+<li><p>Affichage des scores de chaque observation par rapport au profil du taxon dans la liste des observations du module Validation, ainsi que dans les fiches détails des observations dans les modules Synthèse et Validation (#1105)</p></li>
+<li><p>Ajout de filtres des observations par score ou critère des profils de taxon dans le module Validation (#1105)</p></li>
+<li><p>Ajout d’une alerte de contextualisation d’une observation par rapport au profil de taxon, lors de sa saisie dans le module Occtax</p></li>
+<li><p>Mise en place de paramètres pour activer ou non les profils de taxons, paramétrer leurs règles et définir les statut de validation pris en compte pour le calcul des profils (“Certain-très probable” et “Probable” par défaut)</p></li>
+<li><p>Documentation des profils de taxons et de leur paramètrage (<a class="reference external" href="https://docs.geonature.fr/admin-manual.html#profils-de-taxons">https://docs.geonature.fr/admin-manual.html#profils-de-taxons</a>)</p></li>
+<li><p>Suppression de la vue matérialisée <code class="docutils literal notranslate"><span class="pre">gn_synthese.vm_min_max_for_taxons</span></code> et de la fonction <code class="docutils literal notranslate"><span class="pre">gn_synthese.fct_calculate_min_max_for_taxon()</span></code> qui n’étaient pas utilisées</p></li>
 </ul>
 </li>
-<li><p>[OCCTAX] Contrôle de la cohérence des nouvelles données saisies par rapport au profil</p></li>
-<li><p>[VALIDATION] Aide à la validation grâce à un score de “fiabilité” (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation</p></li>
-<li><p>[SYNTHESE et VALIDATION] Enrichissement de l’onglet “Validation” en y ajoutant les informations du profil du taxon observé</p></li>
-<li><p>[SYNTHESE] Ajout d’un filtre avancé par UUID d’observation (#973)</p></li>
 <li><p>[OCCTAX] Ajout d’un bouton permettant d’annuler la modification d’un taxon (#1508 par &#64;jbrieuclp)</p></li>
 <li><p>[OCCTAX] Ajout de valeurs par défaut aux champs additionnels (<code class="docutils literal notranslate"><span class="pre">gn_commons.t_additional_fields.default_value</span></code>)</p></li>
-<li><p>Occtax : Ajout d’un filtre avancé par <code class="docutils literal notranslate"><span class="pre">id_releve</span></code></p></li>
-<li><p>Amélioration des listes déroulantes en passant à la librairie ‘ng-select2’ pour les composants multiselects (#616 &#64;jbrieuclp)</p></li>
+<li><p>[OCCTAX] Ajout d’un filtre avancé par <code class="docutils literal notranslate"><span class="pre">id_releve</span></code></p></li>
+<li><p>[SYNTHESE] Ajout d’un filtre avancé par UUID d’observation (#973)</p></li>
+<li><p>Amélioration des listes déroulantes en passant à la librairie <code class="docutils literal notranslate"><span class="pre">ng-select2</span></code> pour les composants multiselects (#616 par &#64;jbrieuclp)</p></li>
 <li><p>Gestion du référentiel des régions par Alembic (#1475)</p></li>
 <li><p>Ajout des anciennes régions (1970-2016), inactives par défaut, mais utiles pour les règles régionales de sensibilité</p></li>
 <li><p>Gestion du référentiel de sensibilité (règles nationales et régionales) par Alembic (#1576)</p></li>
-<li><p>Ajout d’une documentation sur le calcul de la sensibilité des observations (par &#64;mvergez)</p></li>
-<li><p>[Synthese] Amélioration de la fenêtre de limite d’affichage atteinte (#1520 par &#64;jpm-cbna)</p></li>
+<li><p>Ajout d’une documentation sur le calcul de la sensibilité des observations (<a class="reference external" href="https://docs.geonature.fr/admin-manual.html#gestion-de-la-sensibilite">https://docs.geonature.fr/admin-manual.html#gestion-de-la-sensibilite</a>, par &#64;mvergez)</p></li>
+<li><p>[SYNTHESE] Amélioration de la fenêtre de limite d’affichage atteinte (#1520 par &#64;jpm-cbna)</p></li>
 <li><p>[OCCHAB] Utilisation de tout Habref par défaut si aucune liste d’habitats n’est renseignée dans la configuration du module</p></li>
-<li><p>meta: grant rights on DS if user has rights on AF</p></li>
-<li><p>Jeux de données personnel auto-générés non associés à Occtax par défaut (#1555)</p></li>
+<li><p>[METADONNEES] Attribuer des droits à un utilisateur sur un JDD si il a des droits sur son cadre d’acquisition</p></li>
+<li><p>Association automatique et paramétrable des jeux de données personnels auto-générés à des modules (Occtax par défaut) (#1555)</p></li>
+<li><p>Utilisation du C du CRUVED de l’utilisateur pour lister les jeux de données dans lesquels il peut ajouter des données dans les différents modules (et non plus le R du CRUVED sur GeoNature) (#659)</p></li>
 </ul>
 <p><strong>Corrections</strong></p>
 <ul class="simple">
 <li><p>[OCCTAX] Correction de l’enregistrement des dénombrements lors de l’enchainement des relevés (#1479 par &#64;jbrieuclp)</p></li>
 <li><p>[OCCTAX] Correction du filtre du champs “Habitat” par typologie d’habitat</p></li>
 <li><p>[ADMIN] Correction de l’affichage du module (#1427 par &#64;jbrieuclp)</p></li>
-<li><p>Correction de la création de compte utilisateur (#1527)</p></li>
-<li><p>[VALIDATION] Corrections de la validation (#1485 / #1529)</p></li>
-<li><p>Mise à jour du module Habref-api-module pour corrections certaines données d’Habref</p></li>
 <li><p>[ADMIN] Sécurisation du module (#839)</p></li>
-<li><p>Performances métadonnées (#1559)</p></li>
+<li><p>[VALIDATION] Corrections de la validation des observations (#1485 / #1529)</p></li>
+<li><p>[METADONNEES] Amélioration des performances (#1559)</p></li>
 <li><p>[METADONNEES] Correction de la suppression des JDD</p></li>
 <li><p>[METADONNEES] Correction de l’export PDF des JDD (#1544)</p></li>
 <li><p>[METADONNEES] Correction des permissions (#1528)</p></li>
-<li><p>[Synthese] Correction de la recherche sur les champs génériques de type nombre entier (#1519 par &#64;jpm-cbna)</p></li>
+<li><p>[SYNTHESE] Correction de la recherche sur les champs génériques de type nombre entier (#1519 par &#64;jpm-cbna)</p></li>
 <li><p>[SYNTHESE] Correction des permissions</p></li>
 <li><p>[SYNTHESE] Correction du lien entre les filtres CA et JDD (#1530)</p></li>
-<li><p>Correction de la redirection vers le formulaire de login en cas de cookie corrompu (#1550 par &#64;antoinececchimnhn)</p></li>
 <li><p>[OCCHAB] Correction du chargement de la configuration, des fiches info et de la modification d’une station</p></li>
-<li><dl class="simple">
-<dt>[META] Formulaire acteurs pour JDD et CA</dt><dd><ul>
-<li><p>correction ralentissments, id_organims et changeTab pris en compte</p></li>
-<li><p>boutton ajout acteur en disabled si les acteurs ne sont pas tout valides</p></li>
-</ul>
-</dd>
-</dl>
-</li>
+<li><p>[METADONNEES] Améliorations des performances et des contrôles du formulaire des acteurs pour les JDD et les CA (par &#64;joelclems)</p></li>
+<li><p>Correction de la redirection vers le formulaire de login en cas de cookie corrompu (#1550 par &#64;antoinececchimnhn)</p></li>
+<li><p>Correction de la création de compte utilisateur (#1527)</p></li>
+<li><p>Mise à jour du module Habref-api-module pour corrections de certaines données d’Habref</p></li>
 </ul>
 <p><strong>💻 Développement</strong></p>
-<ul>
+<ul class="simple">
 <li><p>Migration vers la librairie <code class="docutils literal notranslate"><span class="pre">gn-select2</span></code> pour les listes déroulantes des formulaires (#616 / #1285 par &#64;jbrieuclp)</p></li>
-<li><p>Doc développeur enrichie (backend) (#1559)</p></li>
-<li><p>Amélioration de nombreuses routes et fonctions backend</p></li>
-<li><p>Ajouts de tests backend automatisés</p></li>
-<li><p>CI Github Actions (#1568)</p></li>
-<li><p>Mise à jour des dépendances</p></li>
-<li><p>Suppression de vues génériques</p></li>
-<li><p>Sécurisation routes USERS</p></li>
-<li><p>Génération automatique et aléatoire de SECRET_KEY</p></li>
+<li><p>Documentation de développement backend revue et complétée (#1559)</p></li>
+<li><p>Amélioration de nombreuses routes et fonctions du backend</p></li>
+<li><p>Ajouts de tests automatisés du backend</p></li>
+<li><p>Mise en place d’une intégration continue pour exécuter automatiquement les tests et leur couverture de code avec GitHub Actions, à chaque commit ou pull request dans les branches <code class="docutils literal notranslate"><span class="pre">develop</span></code> ou <code class="docutils literal notranslate"><span class="pre">master</span></code> (#1568)</p></li>
+<li><p>[VALIDATION] Suppression des vues SQL et optimisation des routes</p></li>
+<li><p>Génération automatique et aléatoire du paramètre <code class="docutils literal notranslate"><span class="pre">SECRET_KEY</span></code></p></li>
 <li><p>[SYNTHESE] Remplacement de <code class="docutils literal notranslate"><span class="pre">as_literal</span></code> par <code class="docutils literal notranslate"><span class="pre">json.loads</span></code>, plus performant (par &#64;antoinececchimnhn)</p></li>
 <li><p>Possibilité de filter la route <code class="docutils literal notranslate"><span class="pre">synthese/taxa_distribution</span></code> par <code class="docutils literal notranslate"><span class="pre">id_source</span></code> (#1446 par &#64;mvergez)</p></li>
-<li><p>[VALIDATION] Suppression des vues SQL et optimisation des routes</p></li>
-<li><p>Factorisation du composant “pnx-municipalities” avec “pnx-areas”</p></li>
-<li><p>Ajout de “pnx-areas” dans dynamic-form</p></li>
-<li><p>Ajout d’un input “valueFieldName” pour “pnx-areas” et “pnx-municipalities”</p>
-<p>Pour ceux qui utilisent le composant “pnx-municipalities” l’idéal serait de traduire les données et les modèles et de passer du <code class="docutils literal notranslate"><span class="pre">code_insee</span></code> a <code class="docutils literal notranslate"><span class="pre">id_area</span></code>
-* la correspondance est immédiate (<code class="docutils literal notranslate"><span class="pre">area_code</span></code> = <code class="docutils literal notranslate"><span class="pre">code_insee</span></code>)</p>
-<p>Cependant, pour garder la retrocompatibilité du composant “pnx-municipalities” veuillez ajouter</p>
-<ul class="simple">
-<li><p>dans les templates : <code class="docutils literal notranslate"><span class="pre">[valueFieldName]=&quot;'area_code'</span></code> dans les template</p></li>
-<li><p>dans les config (js, ts ou json) (attention à la casse): <code class="docutils literal notranslate"><span class="pre">&quot;value_field_name&quot;:</span> <span class="pre">&quot;area_code&quot;</span></code></p></li>
-<li><p>dans le module monitoring ajouter aussi <code class="docutils literal notranslate"><span class="pre">&quot;type_util&quot;:</span> <span class="pre">&quot;area&quot;</span></code></p></li>
-</ul>
-</li>
+<li><p>Factorisation du composant <code class="docutils literal notranslate"><span class="pre">pnx-municipalities</span></code> avec le composant <code class="docutils literal notranslate"><span class="pre">pnx-areas</span></code></p></li>
+<li><p>Ajout du composant <code class="docutils literal notranslate"><span class="pre">pnx-areas</span></code> dans dynamic-form</p></li>
+<li><p>Ajout d’un input <code class="docutils literal notranslate"><span class="pre">valueFieldName</span></code> aux composants <code class="docutils literal notranslate"><span class="pre">pnx-areas</span></code> et <code class="docutils literal notranslate"><span class="pre">pnx-municipalities</span></code>. Voir documentation (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#pnx-municipalities">https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#pnx-municipalities</a>)</p></li>
+<li><p>Mise à jour de nombreuses dépendances</p></li>
 </ul>
 <p><strong>⚠️ Notes de version</strong></p>
-<ul class="simple">
-<li><p>Si vous avez surcouché le paramètre de configuration <code class="docutils literal notranslate"><span class="pre">AREA_FILTERS</span></code> de la section <code class="docutils literal notranslate"><span class="pre">[SYNTHESE]</span></code>, veuillez remplacer <code class="docutils literal notranslate"><span class="pre">id_type</span></code> par <code class="docutils literal notranslate"><span class="pre">type_code</span></code> (voir <code class="docutils literal notranslate"><span class="pre">ref_geo.bib_areas_types</span></code>)</p></li>
-</ul>
+<ul>
+<li><p>CRUVED liste des JDD sur C</p></li>
+<li><p>CRUVED sur C dans les modules pour la liste des JDD ! Attention à vos permissions à revoir. TICKET A MENTIONNER</p></li>
+<li><p>Si vous avez surcouché le paramètre de configuration <code class="docutils literal notranslate"><span class="pre">AREA_FILTERS</span></code> de la section <code class="docutils literal notranslate"><span class="pre">[SYNTHESE]</span></code>, veuillez remplacer <code class="docutils literal notranslate"><span class="pre">id_type</span></code> par <code class="docutils literal notranslate"><span class="pre">type_code</span></code> (voir <code class="docutils literal notranslate"><span class="pre">ref_geo.bib_areas_types</span></code>)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AREA_FILTERS</span> <span class="o">=</span> <span class="p">[</span>
     <span class="p">{</span> <span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;Communes&quot;</span><span class="p">,</span> <span class="n">id_type</span> <span class="o">=</span> <span class="mi">25</span> <span class="p">}</span>
 <span class="p">]</span>
@@ -245,31 +226,15 @@
 <span class="p">]</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>Les nouvelles fonctionnalités liées aux profils de taxons nécessitent de rafraichir des vues materialisées à intervalles réguliers et donc de créer une tâche planfiée (cron) :</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cron</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">update_profile</span>
-</pre></div>
-</div>
-<p>Ajouter la ligne suivante en changeant &lt;CHEMIN_ABSOLU_VERS_VENV&gt; par le chemin absolu vers le virtualenv de GeoNature et &lt;GEONATURE_USER&gt; par l’utilisateur Linux de GeoNature :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">&lt;</span><span class="n">GEONATURE_USER</span><span class="o">&gt;</span> <span class="n">source</span> <span class="o">&lt;</span><span class="n">CHEMIN_ABSOLU_VERS_VENV</span><span class="o">&gt;</span> <span class="o">&amp;&amp;</span> <span class="n">geonature</span> <span class="n">profiles</span> <span class="n">update_vms</span>
-</pre></div>
-</div>
-<p>Exemple :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="n">geonatadmin</span> <span class="n">source</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">user</span><span class="o">/</span><span class="n">geonature</span><span class="o">/</span><span class="n">backend</span><span class="o">/</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span> <span class="o">&amp;&amp;</span> <span class="n">geonature</span> <span class="n">profiles</span> <span class="n">update_vms</span>
-</pre></div>
-</div>
-<p>Cet exemple lance la tâche toutes les nuits à minuit. Pour une autre fréquence, voir la syntaxe cron : <a class="reference external" href="https://crontab.guru/">https://crontab.guru/</a></p>
-<ul class="simple">
-<li><p>Les régions sont maintenant disponibles via des migrations Alembic. Si vous possédez déjà les régions, vous pouvez l’indiquer à Alembic :</p></li>
-</ul>
+</li>
+<li><p>Les nouvelles fonctionnalités liées aux profils de taxons nécessitent de rafraichir des vues materialisées à intervalles réguliers et donc de créer une tâche planfiée (cron). Voir documentation (<a class="reference external" href="https://docs.geonature.fr/installation.html#taches-planifiees">https://docs.geonature.fr/installation.html#taches-planifiees</a>)</p></li>
+<li><p>Les régions sont maintenant disponibles via des migrations Alembic. Si vous possédez déjà les régions, vous pouvez l’indiquer à Alembic :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">geonature</span> <span class="n">db</span> <span class="n">upgrade</span> <span class="n">ref_geo</span><span class="nd">@head</span>
 <span class="n">geonature</span> <span class="n">db</span> <span class="n">stamp</span> <span class="n">d02f4563bebe</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>Le référentiel de sensibilité est désormais disponible via une migration Alembic. Celui-ci nécessite le référentiel des régions (branche Alembic <code class="docutils literal notranslate"><span class="pre">ref_geo_fr_regions</span></code>), ainsi que le référentiel des anciennes régions (branche Alembic <code class="docutils literal notranslate"><span class="pre">ref_geo_fr_regions_1970</span></code>) – l’installation de ces référentiels est automatique avec l’installation des règles de sensibilité.</p></li>
-</ul>
+</li>
+<li><p>Le référentiel de sensibilité est désormais disponible via une migration Alembic. Celui-ci nécessite le référentiel des régions (branche Alembic <code class="docutils literal notranslate"><span class="pre">ref_geo_fr_regions</span></code>), ainsi que le référentiel des anciennes régions (branche Alembic <code class="docutils literal notranslate"><span class="pre">ref_geo_fr_regions_1970</span></code>) – l’installation de ces référentiels est automatique avec l’installation des règles de sensibilité.</p>
 <p>Si vous possédez déjà le référentiel, vous pouvez l’indiquer à Alembic :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">geonature</span> <span class="n">db</span> <span class="n">stamp</span> <span class="mi">7</span><span class="n">dfd0a813f86</span>
 </pre></div>
@@ -279,6 +244,12 @@
 </pre></div>
 </div>
 <p>Par défaut, seule les règles nationales sont activées, vous laissant le soin d’activer vos règles locales en base vous-même. Vous pouvez également demander, lors de l’installation du référentiel, à activer (resp. désactiver) toutes les règles en ajout à la commande Alembic l’option <code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">active=true</span></code> (resp. <code class="docutils literal notranslate"><span class="pre">-x</span> <span class="pre">active=false</span></code>).</p>
+<ul class="simple">
+<li><p>Si vous souhaitez surcoucher les paramètres par défaut de Gunicorn (app_name, timeout…), depuis le passage à <code class="docutils literal notranslate"><span class="pre">systemd</span></code> dans la version 2.8.0, c’est désormais à faire dans un fichier <code class="docutils literal notranslate"><span class="pre">environ</span></code> à la racine du dossier de votre GeoNature (#1588, URL DOC)</p></li>
+<li><p>Si vous les utilisez, mettez à jour les modules Import, Export et Monitoring dans leurs dernières versions compatibles avec le version 2.9.0 de GeoNature</p></li>
+</ul>
+</li>
+</ul>
 </div>
 <div class="section" id="id1">
 <h2>2.8.1 (2021-10-17)<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>

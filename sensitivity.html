@@ -159,7 +159,7 @@ votre installation.</p></li>
 <li><p>Dans <code class="docutils literal notranslate"><span class="pre">cor_sensitivity_criteria</span></code> : s’il y a une correspondance
 d’<code class="docutils literal notranslate"><span class="pre">id_sensitivity</span></code> avec <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code>, supprimez cette ligne.</p></li>
 <li><p>Lancez la commande SQL suivante :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">REFRESH</span> <span class="n">MATERIALIZED</span> <span class="k">VIEW</span> <span class="n">gn_sensitivity</span><span class="p">.</span><span class="n">t_sensitivity_rules_cd_ref</span><span class="p">;</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">REFRESH</span><span class="w"> </span><span class="n">MATERIALIZED</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">gn_sensitivity</span><span class="p">.</span><span class="n">t_sensitivity_rules_cd_ref</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Pour rafraîchir la vue materialisée utilisée par les fonctions
@@ -171,9 +171,9 @@ déclenchant le trigger de calcul de la sensibilité. Or ce dernier est
 appelé uniquement lors d’un <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> ou d’un <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code>. Il est alors
 possible de faire un <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code> sans changer les données en lançant la
 commande SQL suivante :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span> <span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span>
-<span class="k">SET</span> <span class="n">cd_nom</span><span class="o">=</span><span class="n">cd_nom</span>
-<span class="k">WHERE</span> <span class="n">cd_nom</span><span class="o">=</span><span class="p">:</span><span class="n">cd_nom_de_votre_espece</span><span class="p">;</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span><span class="w"></span>
+<span class="k">SET</span><span class="w"> </span><span class="n">cd_nom</span><span class="o">=</span><span class="n">cd_nom</span><span class="w"></span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">cd_nom</span><span class="o">=</span><span class="p">:</span><span class="n">cd_nom_de_votre_espece</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
 </li>

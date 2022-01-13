@@ -1056,14 +1056,14 @@ Un ensemble de composants décrits ci-dessous sont intégrés dans le coeur de G
 
 Voir la `DOCUMENTATION COMPLETE <http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html>`_ sur les composants génériques. 
 
-NB : mes composants de type "formulaire" (balise `input` ou `select`) partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs décrit ci dessous. (voir https://github.com/PnX-SI/GeoNature/blob/master/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
+NB : les composants de type "formulaire" (balise `input` ou `select`) partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs, décrits ci-dessous. (voir https://github.com/PnX-SI/GeoNature/blob/master/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 
-Une documentation complète des composants générique est
+Une documentation complète des composants génériques est
 `disponible ici <http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html>`_
 
-NB : mes composants de type "formulaire" (balise `input` ou `select`) partagent
-une logique commune et ont des ``Inputs`` et des ``Outputs`` communs décrit
-ci dessous.
+NB : les composants de type "formulaire" (balise `input` ou `select`) partagent
+une logique commune et ont des ``Inputs`` et des ``Outputs`` communs, décrits
+ci-dessous.
 (voir https://github.com/PnX-SI/GeoNature/blob/master/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 
 - Inputs
@@ -1092,7 +1092,8 @@ Un ensemble de composants permettant de simplifier l'affichage des cartographies
 Leaflet sont disponibles. Notamment un composant "map-list" permettant de
 connecter une carte avec une liste d'objets décrits en détail ci dessous.
 
-- **MapListComponent**
+MapListComponent
+""""""""""""""""
 
 Le composant MapList fournit une carte pouvant être synchronisée
 avec une liste. La liste, pouvant être spécifique à chaque module,
@@ -1104,8 +1105,8 @@ les deux éléments.
 Fonctionnalité et comportement offert par le composant et le
 service :
 
- - Charger les données
-      
+- Charger les données
+  
   Le service expose la fonction ``getData(apiEndPoint, params?)``
   permettant de charger les données pour la carte et la liste.
   Cette fonction doit être utilisée dans le composant qui utilise
@@ -1142,48 +1143,56 @@ service :
   Pour une liste simple sans pagination, seule la propriété 'items'
   est obligatoire.
 
-  - Rafraîchir les données
+- Rafraîchir les données
         
   La fonction ``refreshData(apiEndPoint, method, params?)`` permet de raffrachir les données en fonction de filtres personnalisés.
   Les paramètres ``apiEndPoint`` et ``params`` sont les mêmes que pour la fonction ``getData``. Le paramètre ``method`` permet lui de chosir si on ajoute - ``append``- , ou si on initialise (ou remplace) -``set``- un filtre.
 
-  Exemple 1 : Pour filtrer sur l'observateur 1, puis ajouter un filtre sur l'observateur 2.
+  Exemple 1 : Pour filtrer sur l'observateur 1, puis ajouter un filtre sur l'observateur 2 :
 
-                ``mapListService.refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 1'}])``
+  ::
 
-                puis
+      mapListService.refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 1'}])
 
-                ``refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 2'}])``
+  puis :
 
-                Exemple 2: pour filtrer sur le cd_nom 212, supprimer ce filtre et filtrer sur  le cd_nom 214
+  ::
+    
+      refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 2'}])
 
-                ``mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 1'}])``
+  Exemple 2: pour filtrer sur le cd_nom 212, supprimer ce filtre et filtrer sur  le cd_nom 214
+    
+  ::
+    
+      mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 1'}])
 
-                puis
+  puis :
+    
+  ::
+    
+      mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 2'}])
 
-                ``mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 2'}])``
-
-        - Gestion des évenements :
+- Gestion des évenements :
         
-                - Au clic sur un marker de la carte, le service ``MapListService`` expose la propriété ``selectedRow`` qui est un tableau contenant l'id du marker sélectionné. Il est ainsi possible de surligner l'élément séléctionné dans le liste.
-                - Au clic sur une ligne du tableau, utiliser la fonction ``MapListService.onRowSelected(id)`` (id étant l'id utilisé dans le GeoJson) qui permet de zoomer sur le point séléctionner et de changer la couleur de celui-ci.
+  - Au clic sur un marker de la carte, le service ``MapListService`` expose la propriété ``selectedRow`` qui est un tableau contenant l'id du marker sélectionné. Il est ainsi possible de surligner l'élément séléctionné dans le liste.
+  - Au clic sur une ligne du tableau, utiliser la fonction ``MapListService.onRowSelected(id)`` (id étant l'id utilisé dans le GeoJson) qui permet de zoomer sur le point séléctionner et de changer la couleur de celui-ci.
 
-        La service contient également deux propriétés publiques ``geoJsonData`` (le geojson renvoyé par l'API) et ``tableData`` (le tableau de features du Geojson) qui sont respectivement passées à la carte et à la liste. Ces deux propriétés sont utilisables pour intéragir (ajouter, supprimer) avec les données de la carte et de la liste.
+Le service contient également deux propriétés publiques ``geoJsonData`` (le geojson renvoyé par l'API) et ``tableData`` (le tableau de features du Geojson) qui sont respectivement passées à la carte et à la liste. Ces deux propriétés sont utilisables pour interagir (ajouter, supprimer) avec les données de la carte et de la liste.
 
-        **Selector**: ``pnx-map-list``
+- Selector : ``pnx-map-list``
 
-        **Inputs**:
+- Inputs :
 
-        :``idName``:
+  :``idName``:
                         Libellé de l'id du geojson (id_releve, id)
 
                         Type: ``string``
-        :``height``:
+  :``height``:
                         Taille de l'affichage de la carte Leaflet
 
                         Type: ``string``
 
-        Exemple d'utilisation avec une liste simple :
+Exemple d'utilisation avec une liste simple :
         
 .. code-block::
 
@@ -1199,7 +1208,16 @@ service :
             </tr>
     </table>
 
+Pnx-Municipalities
+""""""""""""""""""
 
+Suite à l'ajout d'un input "valueFieldName" pour "pnx-areas" et "pnx-municipalities" dans la version 2.9.0 de GeoNature, pour ceux qui utilisent le composant ``pnx-municipalities``, l'idéal serait de traduire les données et les modèles et de passer du ``code_insee`` à ``id_area``. La correspondance est immédiate (``area_code`` = ``code_insee``).
+
+Cependant, pour garder la retrocompatibilité du composant ``pnx-municipalities`` veuillez ajouter :
+
+* dans les templates : ``[valueFieldName]="'area_code'`` dans les templates
+* dans les config (js, ts ou json) (attention à la casse) : ``"value_field_name": "area_code"``
+* dans le module Monitoring, ajouter aussi ``"type_util": "area"``
 
 Outils d'aide à la qualité du code
 ----------------------------------
@@ -1274,4 +1292,4 @@ par les tests.
     pytest --cov=geonature --cov-report=html
 
 
-Ceci génénère un rapport html disponible dans  ``htmlcov/index.html``.
+Ceci génénère un rapport html disponible dans ``htmlcov/index.html``.

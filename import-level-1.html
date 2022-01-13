@@ -114,16 +114,16 @@ voir la documentation <a class="reference external" href="https://github.com/PnE
 <h2>Créer les métadonnées<a class="headerlink" href="#creer-les-metadonnees" title="Permalink to this headline"></a></h2>
 <p><strong>1.</strong> Ajouter une source (si elle n’existe pas déjà)</p>
 <p>En l’ajoutant manuellement dans la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.t_sources</span></code> ou en SQL :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">gn_synthese</span><span class="p">.</span><span class="n">t_sources</span><span class="p">(</span><span class="n">name_source</span><span class="p">,</span> <span class="n">desc_source</span><span class="p">)</span>
-<span class="k">VALUES</span>
-<span class="p">(</span><span class="s1">&#39;Historique&#39;</span><span class="p">,</span> <span class="s1">&#39;Données historiques intégrées manuellement dans la BDD&#39;</span><span class="p">)</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">t_sources</span><span class="p">(</span><span class="n">name_source</span><span class="p">,</span><span class="w"> </span><span class="n">desc_source</span><span class="p">)</span><span class="w"></span>
+<span class="k">VALUES</span><span class="w"></span>
+<span class="p">(</span><span class="s1">&#39;Historique&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Données historiques intégrées manuellement dans la BDD&#39;</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 <p><strong>2.</strong> Ajouter un jeu de données (si il n’existe pas déja)</p>
 <p>Avec l’admin de GeoNature, dans la BDD avec pgAdmin ou en SQL. Et avant ça un CA si il n’en existe pas déjà un auquel associer le JDD.</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">gn_meta</span><span class="p">.</span><span class="n">t_datasets</span><span class="p">(</span><span class="n">id_acquisition_framework</span><span class="p">,</span> <span class="n">dataset_name</span><span class="p">,</span> <span class="n">dataset_shortname</span><span class="p">,</span> <span class="n">dataset_desc</span><span class="p">,</span> <span class="n">id_nomenclature_data_type</span><span class="p">,</span> <span class="n">keywords</span><span class="p">,</span> <span class="n">marine_domain</span><span class="p">,</span> <span class="n">terrestrial_domain</span><span class="p">,</span> <span class="n">active</span><span class="p">)</span>
-<span class="k">VALUES</span>
-<span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Données Faune 2008-2010&#39;</span><span class="p">,</span> <span class="s1">&#39;Faune 2008-2010&#39;</span><span class="p">,</span> <span class="s1">&#39;Données faune du PNE entre 2008 et 2010&#39;</span><span class="p">,</span> <span class="mi">326</span><span class="p">,</span> <span class="s1">&#39;Faune, PNE&#39;</span><span class="p">,</span> <span class="k">FALSE</span><span class="p">,</span> <span class="k">TRUE</span><span class="p">,</span> <span class="k">TRUE</span><span class="p">)</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">gn_meta</span><span class="p">.</span><span class="n">t_datasets</span><span class="p">(</span><span class="n">id_acquisition_framework</span><span class="p">,</span><span class="w"> </span><span class="n">dataset_name</span><span class="p">,</span><span class="w"> </span><span class="n">dataset_shortname</span><span class="p">,</span><span class="w"> </span><span class="n">dataset_desc</span><span class="p">,</span><span class="w"> </span><span class="n">id_nomenclature_data_type</span><span class="p">,</span><span class="w"> </span><span class="n">keywords</span><span class="p">,</span><span class="w"> </span><span class="n">marine_domain</span><span class="p">,</span><span class="w"> </span><span class="n">terrestrial_domain</span><span class="p">,</span><span class="w"> </span><span class="n">active</span><span class="p">)</span><span class="w"></span>
+<span class="k">VALUES</span><span class="w"></span>
+<span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Données Faune 2008-2010&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Faune 2008-2010&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Données faune du PNE entre 2008 et 2010&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">326</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;Faune, PNE&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">FALSE</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">,</span><span class="w"> </span><span class="k">TRUE</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Pour retrouver les valeurs d’un type de nomenclature, vous pouvez utiliser les vues qui les rendent plus lisibles.
@@ -134,69 +134,69 @@ en utilisant la fonction <code class="docutils literal notranslate"><span class=
 </div>
 <div class="section" id="insertion-des-donnees-dans-la-synthese">
 <h2>Insertion des données dans la Synthèse<a class="headerlink" href="#insertion-des-donnees-dans-la-synthese" title="Permalink to this headline"></a></h2>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span><span class="p">(</span>
-<span class="n">unique_id_sinp</span><span class="p">,</span>
-<span class="n">id_source</span><span class="p">,</span>
-<span class="n">id_dataset</span><span class="p">,</span>
-<span class="n">id_nomenclature_obs_meth</span><span class="p">,</span>
-<span class="n">count_min</span><span class="p">,</span>
-<span class="n">count_max</span><span class="p">,</span>
-<span class="n">cd_nom</span><span class="p">,</span>
-<span class="n">nom_cite</span><span class="p">,</span>
-<span class="n">altitude_min</span><span class="p">,</span>
-<span class="n">altitude_max</span><span class="p">,</span>
-<span class="n">the_geom_4326</span><span class="p">,</span>
-<span class="n">the_geom_point</span><span class="p">,</span>
-<span class="n">the_geom_local</span><span class="p">,</span>
-<span class="n">date_min</span><span class="p">,</span>
-<span class="n">date_max</span><span class="p">,</span>
-<span class="n">observers</span><span class="p">,</span>
-<span class="n">comments</span><span class="p">,</span>
-<span class="n">last_action</span>
-<span class="p">)</span>
- <span class="k">SELECT</span>
-      <span class="n">uuid_generate_v4</span><span class="p">(),</span> <span class="c1">-- Attention, ne générez un UUID_SINP pour chaque obs que si vous êtes surs qu&#39;elles n&#39;en ont pas déjà un</span>
-      <span class="mi">2</span> <span class="k">AS</span> <span class="n">id_source</span><span class="p">,</span>
-      <span class="mi">3</span> <span class="k">AS</span> <span class="n">id_dataset</span><span class="p">,</span>
-      <span class="k">CASE</span>
-        <span class="k">WHEN</span> <span class="n">critere</span> <span class="o">=</span> <span class="s1">&#39;Vu&#39;</span> <span class="k">THEN</span> <span class="p">(</span><span class="mi">41</span><span class="p">)</span> <span class="c1">-- Ou bien ref_nomencltaure.get_id_nomenclature</span>
-        <span class="k">WHEN</span> <span class="n">critere</span> <span class="o">=</span> <span class="s1">&#39;Entendu&#39;</span> <span class="k">THEN</span> <span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-        <span class="k">ELSE</span> <span class="p">(</span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">get_default_nomenclature_value</span><span class="p">(</span><span class="s1">&#39;METH_OBS&#39;</span><span class="p">))</span>
-      <span class="k">END</span> <span class="k">AS</span> <span class="n">id_nomenclature_obs_meth</span><span class="p">,</span>
-      <span class="n">effectif</span><span class="p">::</span><span class="nb">integer</span><span class="p">,</span>
-      <span class="n">effectif</span><span class="p">::</span><span class="nb">integer</span><span class="p">,</span>
-      <span class="n">cd_nom</span><span class="p">::</span><span class="nb">integer</span><span class="p">,</span>
-      <span class="n">taxon_latin</span><span class="p">,</span>
-      <span class="n">altitude</span><span class="p">::</span><span class="nb">integer</span><span class="p">,</span> <span class="c1">-- On pourrait calculer les valeurs manquantes avec la fonction ref_geo.fct_get_altitude_intersection</span>
-      <span class="n">altitude</span><span class="p">::</span><span class="nb">integer</span><span class="p">,</span>
-      <span class="n">ST_SetSRID</span><span class="p">(</span><span class="n">ST_MakePoint</span><span class="p">(</span><span class="ss">&quot;x_WGS84&quot;</span><span class="p">::</span><span class="nb">numeric</span><span class="p">,</span> <span class="ss">&quot;y_WGS84&quot;</span><span class="p">::</span><span class="nb">numeric</span><span class="p">),</span><span class="mi">4326</span><span class="p">)</span> <span class="k">AS</span> <span class="n">the_geom_4326</span><span class="p">,</span>
-      <span class="n">ST_Centroid</span><span class="p">(</span><span class="n">ST_SetSRID</span><span class="p">(</span><span class="n">ST_MakePoint</span><span class="p">(</span><span class="ss">&quot;x_WGS84&quot;</span><span class="p">::</span><span class="nb">numeric</span><span class="p">,</span> <span class="ss">&quot;y_WGS84&quot;</span><span class="p">::</span><span class="nb">numeric</span><span class="p">),</span><span class="mi">4326</span><span class="p">))</span> <span class="k">AS</span> <span class="n">the_geom_point</span><span class="p">,</span>
-      <span class="n">ST_Transform</span><span class="p">(</span><span class="n">ST_SetSRID</span><span class="p">(</span><span class="n">ST_MakePoint</span><span class="p">(</span><span class="ss">&quot;x_WGS84&quot;</span><span class="p">::</span><span class="nb">numeric</span><span class="p">,</span> <span class="ss">&quot;y_WGS84&quot;</span><span class="p">::</span><span class="nb">numeric</span><span class="p">),</span><span class="mi">4326</span><span class="p">),</span><span class="mi">2154</span><span class="p">)</span> <span class="k">AS</span> <span class="n">the_geom_local</span><span class="p">,</span>
-      <span class="n">dateobs</span><span class="p">::</span><span class="nb">date</span><span class="p">,</span>
-      <span class="n">dateobs</span><span class="p">::</span><span class="nb">date</span><span class="p">,</span>
-      <span class="n">observateurs</span><span class="p">,</span>
-      <span class="n">remarques</span><span class="p">,</span>
-      <span class="s1">&#39;I&#39;</span> <span class="k">AS</span> <span class="n">last_action</span> <span class="c1">-- code de la dernière action effectuée: Valeurs possibiles &#39;I&#39;: insert, &#39;U&#39;: update</span>
- <span class="k">FROM</span> <span class="n">gn_imports</span><span class="p">.</span><span class="n">obs_faune_2008_2010</span>
- <span class="k">ORDER</span> <span class="k">BY</span> <span class="n">dateobs</span>
-<span class="p">;</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span><span class="p">(</span><span class="w"></span>
+<span class="n">unique_id_sinp</span><span class="p">,</span><span class="w"></span>
+<span class="n">id_source</span><span class="p">,</span><span class="w"></span>
+<span class="n">id_dataset</span><span class="p">,</span><span class="w"></span>
+<span class="n">id_nomenclature_obs_meth</span><span class="p">,</span><span class="w"></span>
+<span class="n">count_min</span><span class="p">,</span><span class="w"></span>
+<span class="n">count_max</span><span class="p">,</span><span class="w"></span>
+<span class="n">cd_nom</span><span class="p">,</span><span class="w"></span>
+<span class="n">nom_cite</span><span class="p">,</span><span class="w"></span>
+<span class="n">altitude_min</span><span class="p">,</span><span class="w"></span>
+<span class="n">altitude_max</span><span class="p">,</span><span class="w"></span>
+<span class="n">the_geom_4326</span><span class="p">,</span><span class="w"></span>
+<span class="n">the_geom_point</span><span class="p">,</span><span class="w"></span>
+<span class="n">the_geom_local</span><span class="p">,</span><span class="w"></span>
+<span class="n">date_min</span><span class="p">,</span><span class="w"></span>
+<span class="n">date_max</span><span class="p">,</span><span class="w"></span>
+<span class="n">observers</span><span class="p">,</span><span class="w"></span>
+<span class="n">comments</span><span class="p">,</span><span class="w"></span>
+<span class="n">last_action</span><span class="w"></span>
+<span class="p">)</span><span class="w"></span>
+<span class="w"> </span><span class="k">SELECT</span><span class="w"></span>
+<span class="w">      </span><span class="n">uuid_generate_v4</span><span class="p">(),</span><span class="w"> </span><span class="c1">-- Attention, ne générez un UUID_SINP pour chaque obs que si vous êtes surs qu&#39;elles n&#39;en ont pas déjà un</span>
+<span class="w">      </span><span class="mi">2</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">id_source</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="mi">3</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">id_dataset</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="k">CASE</span><span class="w"></span>
+<span class="w">        </span><span class="k">WHEN</span><span class="w"> </span><span class="n">critere</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Vu&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="p">(</span><span class="mi">41</span><span class="p">)</span><span class="w"> </span><span class="c1">-- Ou bien ref_nomencltaure.get_id_nomenclature</span>
+<span class="w">        </span><span class="k">WHEN</span><span class="w"> </span><span class="n">critere</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Entendu&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="p">(</span><span class="mi">42</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">ELSE</span><span class="w"> </span><span class="p">(</span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">get_default_nomenclature_value</span><span class="p">(</span><span class="s1">&#39;METH_OBS&#39;</span><span class="p">))</span><span class="w"></span>
+<span class="w">      </span><span class="k">END</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">id_nomenclature_obs_meth</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">effectif</span><span class="p">::</span><span class="nb">integer</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">effectif</span><span class="p">::</span><span class="nb">integer</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">cd_nom</span><span class="p">::</span><span class="nb">integer</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">taxon_latin</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">altitude</span><span class="p">::</span><span class="nb">integer</span><span class="p">,</span><span class="w"> </span><span class="c1">-- On pourrait calculer les valeurs manquantes avec la fonction ref_geo.fct_get_altitude_intersection</span>
+<span class="w">      </span><span class="n">altitude</span><span class="p">::</span><span class="nb">integer</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">ST_SetSRID</span><span class="p">(</span><span class="n">ST_MakePoint</span><span class="p">(</span><span class="ss">&quot;x_WGS84&quot;</span><span class="p">::</span><span class="nb">numeric</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;y_WGS84&quot;</span><span class="p">::</span><span class="nb">numeric</span><span class="p">),</span><span class="mi">4326</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">the_geom_4326</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">ST_Centroid</span><span class="p">(</span><span class="n">ST_SetSRID</span><span class="p">(</span><span class="n">ST_MakePoint</span><span class="p">(</span><span class="ss">&quot;x_WGS84&quot;</span><span class="p">::</span><span class="nb">numeric</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;y_WGS84&quot;</span><span class="p">::</span><span class="nb">numeric</span><span class="p">),</span><span class="mi">4326</span><span class="p">))</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">the_geom_point</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">ST_Transform</span><span class="p">(</span><span class="n">ST_SetSRID</span><span class="p">(</span><span class="n">ST_MakePoint</span><span class="p">(</span><span class="ss">&quot;x_WGS84&quot;</span><span class="p">::</span><span class="nb">numeric</span><span class="p">,</span><span class="w"> </span><span class="ss">&quot;y_WGS84&quot;</span><span class="p">::</span><span class="nb">numeric</span><span class="p">),</span><span class="mi">4326</span><span class="p">),</span><span class="mi">2154</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">the_geom_local</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">dateobs</span><span class="p">::</span><span class="nb">date</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">dateobs</span><span class="p">::</span><span class="nb">date</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">observateurs</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="n">remarques</span><span class="p">,</span><span class="w"></span>
+<span class="w">      </span><span class="s1">&#39;I&#39;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">last_action</span><span class="w"> </span><span class="c1">-- code de la dernière action effectuée: Valeurs possibiles &#39;I&#39;: insert, &#39;U&#39;: update</span>
+<span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">gn_imports</span><span class="p">.</span><span class="n">obs_faune_2008_2010</span><span class="w"></span>
+<span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">dateobs</span><span class="w"></span>
+<span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
 <p>A creuser pour calculer les altitudes non renseignées :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="n">id_synthese</span><span class="p">,</span>
-<span class="p">(</span><span class="n">ref_geo</span><span class="p">.</span><span class="n">fct_get_altitude_intersection</span><span class="p">(</span><span class="n">the_geom_local</span><span class="p">)).</span><span class="n">altitude_min</span>
-<span class="p">(</span><span class="n">ref_geo</span><span class="p">.</span><span class="n">fct_get_altitude_intersection</span><span class="p">(</span><span class="n">the_geom_local</span><span class="p">)).</span><span class="n">altitude_max</span>
-<span class="k">FROM</span> <span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span>
-<span class="k">LIMIT</span> <span class="mi">1000</span><span class="p">;</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">id_synthese</span><span class="p">,</span><span class="w"></span>
+<span class="p">(</span><span class="n">ref_geo</span><span class="p">.</span><span class="n">fct_get_altitude_intersection</span><span class="p">(</span><span class="n">the_geom_local</span><span class="p">)).</span><span class="n">altitude_min</span><span class="w"></span>
+<span class="p">(</span><span class="n">ref_geo</span><span class="p">.</span><span class="n">fct_get_altitude_intersection</span><span class="p">(</span><span class="n">the_geom_local</span><span class="p">)).</span><span class="n">altitude_max</span><span class="w"></span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span><span class="w"></span>
+<span class="k">LIMIT</span><span class="w"> </span><span class="mi">1000</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Gil propose de rajouter une PK et de faire un lien entre les données de la table importée et celles dans la synthèse avec <code class="docutils literal notranslate"><span class="pre">entity_source_pk_value</span></code> :</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Clé primaire</span>
-<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">gn_imports</span><span class="p">.</span><span class="n">obs_faune_2008_2010</span>
-   <span class="k">ADD</span> <span class="k">COLUMN</span> <span class="n">gid</span> <span class="nb">serial</span><span class="p">;</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">gn_imports</span><span class="p">.</span><span class="n">obs_faune_2008_2010</span><span class="w"></span>
+<span class="w">   </span><span class="k">ADD</span><span class="w"> </span><span class="k">COLUMN</span><span class="w"> </span><span class="n">gid</span><span class="w"> </span><span class="nb">serial</span><span class="p">;</span><span class="w"></span>
 
-<span class="k">ALTER</span> <span class="k">TABLE</span> <span class="n">gn_imports</span><span class="p">.</span><span class="n">obs_faune_2008_2010</span>
-   <span class="k">ADD</span> <span class="k">CONSTRAINT</span> <span class="n">pk_obs_faune_2008_2010</span> <span class="k">PRIMARY</span> <span class="k">KEY</span><span class="p">(</span><span class="n">gid</span><span class="p">);</span>
+<span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">gn_imports</span><span class="p">.</span><span class="n">obs_faune_2008_2010</span><span class="w"></span>
+<span class="w">   </span><span class="k">ADD</span><span class="w"> </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="n">pk_obs_faune_2008_2010</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">(</span><span class="n">gid</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Ajouter le champ <code class="docutils literal notranslate"><span class="pre">entity_source_pk_value</span></code> dans ton INSERT et <code class="docutils literal notranslate"><span class="pre">gid</span></code> dans le SELECT.</p>
@@ -204,21 +204,21 @@ en utilisant la fonction <code class="docutils literal notranslate"><span class=
 en les faisant correspondre avec leurs <code class="docutils literal notranslate"><span class="pre">id_role</span></code>.</p>
 <p>L’intégration de données dans la Synthèse peut faire apparaitre des nouveaux taxons présents sur le territoire. Si vous souhaitez les proposer à la saisie dans Occtax, il faut les ajouter dans <code class="docutils literal notranslate"><span class="pre">taxonomie.bib_noms</span></code> puis dans la liste “Saisie Occtax”.</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Remplir taxonomie.bib_noms avec les nouveaux noms présents dans la synthèse</span>
-<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">taxonomie</span><span class="p">.</span><span class="n">bib_noms</span> <span class="p">(</span><span class="n">cd_nom</span><span class="p">,</span> <span class="n">cd_ref</span><span class="p">)</span>
-<span class="k">SELECT</span> <span class="k">DISTINCT</span> <span class="n">s</span><span class="p">.</span><span class="n">cd_nom</span><span class="p">,</span> <span class="n">t</span><span class="p">.</span><span class="n">cd_ref</span>
-<span class="k">FROM</span> <span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span> <span class="n">s</span>
-<span class="k">JOIN</span> <span class="n">taxonomie</span><span class="p">.</span><span class="n">taxref</span> <span class="n">t</span>
-<span class="k">ON</span> <span class="n">s</span><span class="p">.</span><span class="n">cd_nom</span> <span class="o">=</span> <span class="n">t</span><span class="p">.</span><span class="n">cd_nom</span>
-<span class="k">WHERE</span> <span class="k">not</span> <span class="n">s</span><span class="p">.</span><span class="n">cd_nom</span> <span class="k">IN</span> <span class="p">(</span><span class="k">SELECT</span> <span class="k">DISTINCT</span> <span class="n">cd_nom</span> <span class="k">FROM</span> <span class="n">taxonomie</span><span class="p">.</span><span class="n">bib_noms</span><span class="p">);</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">taxonomie</span><span class="p">.</span><span class="n">bib_noms</span><span class="w"> </span><span class="p">(</span><span class="n">cd_nom</span><span class="p">,</span><span class="w"> </span><span class="n">cd_ref</span><span class="p">)</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">cd_nom</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">cd_ref</span><span class="w"></span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span><span class="w"> </span><span class="n">s</span><span class="w"></span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">taxonomie</span><span class="p">.</span><span class="n">taxref</span><span class="w"> </span><span class="n">t</span><span class="w"></span>
+<span class="k">ON</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">cd_nom</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">cd_nom</span><span class="w"></span>
+<span class="k">WHERE</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">cd_nom</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">cd_nom</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">taxonomie</span><span class="p">.</span><span class="n">bib_noms</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Il faudrait ensuite les ajouter à la liste “Saisie Occtax”, pour que ces nouveaux noms soient proposés à la saisie dans le module Occtax de GeoNature.</p>
 <p>L’installation de GeoNature intègre les communes de toute la France métropolitaine. Pour alléger la table <code class="docutils literal notranslate"><span class="pre">ref_geo.l_areas</span></code>, il peut être pertinent de supprimer les communes en dehors du territoire de travail. Par exemple, supprimer toutes les communes en dehors du département.</p>
 <p>Pour retrouver le détail de toutes les communes du département Bouches-du-Rhône :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">ref_geo</span><span class="p">.</span><span class="n">l_areas</span> <span class="n">la</span>
-<span class="k">JOIN</span> <span class="n">ref_geo</span><span class="p">.</span><span class="n">bib_areas_types</span> <span class="n">ba</span> <span class="k">ON</span> <span class="n">ba</span><span class="p">.</span><span class="n">id_type</span> <span class="o">=</span> <span class="n">la</span><span class="p">.</span><span class="n">id_type</span>
-<span class="k">JOIN</span> <span class="n">ref_geo</span><span class="p">.</span><span class="n">li_municipalities</span> <span class="n">lm</span> <span class="k">ON</span> <span class="n">lm</span><span class="p">.</span><span class="n">id_area</span> <span class="o">=</span> <span class="n">la</span><span class="p">.</span><span class="n">id_area</span>
-<span class="k">WHERE</span> <span class="n">ba</span><span class="p">.</span><span class="n">type_code</span> <span class="o">=</span> <span class="s1">&#39;COM&#39;</span> <span class="k">AND</span> <span class="n">lm</span><span class="p">.</span><span class="n">insee_dep</span> <span class="o">=</span> <span class="s1">&#39;13&#39;</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ref_geo</span><span class="p">.</span><span class="n">l_areas</span><span class="w"> </span><span class="n">la</span><span class="w"></span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">ref_geo</span><span class="p">.</span><span class="n">bib_areas_types</span><span class="w"> </span><span class="n">ba</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">ba</span><span class="p">.</span><span class="n">id_type</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">la</span><span class="p">.</span><span class="n">id_type</span><span class="w"></span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">ref_geo</span><span class="p">.</span><span class="n">li_municipalities</span><span class="w"> </span><span class="n">lm</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">lm</span><span class="p">.</span><span class="n">id_area</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">la</span><span class="p">.</span><span class="n">id_area</span><span class="w"></span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">ba</span><span class="p">.</span><span class="n">type_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;COM&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="n">lm</span><span class="p">.</span><span class="n">insee_dep</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;13&#39;</span><span class="w"></span>
 </pre></div>
 </div>
 <p>A utiliser dans une requête de suppression, en gérant les cascades entre les tables.</p>
@@ -229,9 +229,9 @@ en les faisant correspondre avec leurs <code class="docutils literal notranslate
 (<a class="reference external" href="https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-basique/01-observations-faune-2008-2010-SHP.zip">https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-basique/01-observations-faune-2008-2010-SHP.zip</a>)</p>
 <p>La seule différence est que la géométrie est calculée lors de l’import de QGIS vers PostGIS.</p>
 <p>Ainsi la partie Géométrie de la requête d’insertion dans la Synthèse serait :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">ST_Transform</span><span class="p">(</span><span class="n">ST_SetSRID</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span><span class="mi">2154</span><span class="p">),</span><span class="mi">4326</span> <span class="k">AS</span> <span class="n">the_geom_4326</span><span class="p">,</span>
-<span class="n">ST_Centroid</span><span class="p">(</span><span class="n">ST_SetSRID</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span><span class="mi">2154</span><span class="p">)</span> <span class="k">AS</span> <span class="n">the_geom_point</span><span class="p">,</span>
-<span class="n">geom</span> <span class="k">AS</span> <span class="n">the_geom_local</span><span class="p">,</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">ST_Transform</span><span class="p">(</span><span class="n">ST_SetSRID</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span><span class="mi">2154</span><span class="p">),</span><span class="mi">4326</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">the_geom_4326</span><span class="p">,</span><span class="w"></span>
+<span class="n">ST_Centroid</span><span class="p">(</span><span class="n">ST_SetSRID</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span><span class="mi">2154</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">the_geom_point</span><span class="p">,</span><span class="w"></span>
+<span class="n">geom</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">the_geom_local</span><span class="p">,</span><span class="w"></span>
 </pre></div>
 </div>
 </div>

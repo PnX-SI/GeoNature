@@ -92,6 +92,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#demarrer-arreter-les-api">Démarrer / arrêter les API</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#supervision-des-services">Supervision des services</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#maintenance">Maintenance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parametres-gunicorn">Paramètres Gunicorn</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#sauvegarde-et-restauration">Sauvegarde et restauration</a><ul>
@@ -118,7 +119,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#espace-utilisateur">Espace utilisateur</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#rendre-geonature-accessible-sans-authentification">Rendre GeoNature accessible sans authentification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">Accès public</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-occtax">Module OCCTAX</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#installer-le-module">Installer le module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#configuration-du-module">Configuration du module</a><ul>
@@ -137,22 +138,22 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-occhab">Module OCCHAB</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2">Installer le module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id3">Base de données</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4">Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Installer le module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Base de données</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Configuration</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#formulaire">Formulaire</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-synthese">Module SYNTHESE</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id5">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Configuration</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-validation">Module VALIDATION</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id6">Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Configuration</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#liste-des-champs-visibles">Liste des champs visibles</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#mail">Mail</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#e-mail">E-mail</a></li>
 </ul>
 </li>
 </ul>
@@ -590,18 +591,7 @@ Il s’agit maintenant de gérer ses permissions dans GeoNature même.</p>
 <p>La fonction <code class="docutils literal notranslate"><span class="pre">gn_profiles.refresh_profiles()</span></code> permet de rafraichir ces vues matérialisées.</p>
 <p>Pour lancer manuellement cette fonction, ouvrez une console SQL et exécutez la requête <code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">gn_profiles.refresh_profiles();</span></code>.</p>
 <p>Cette fonction est aussi diponible en tant que fonction GeoNature qu’il est préférable d’utiliser : <code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">/home/user/geonature/backend/venv/bin/activate</span> <span class="pre">&amp;&amp;</span> <span class="pre">geonature</span> <span class="pre">profiles</span> <span class="pre">update_vms</span></code></p>
-<p>Pour automatiser l’éxecution de cette fonction (tous les jours à minuit dans cet exemple), créer une tâche planfiée (cron) :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">nano</span> <span class="o">/</span><span class="n">etc</span><span class="o">/</span><span class="n">cron</span><span class="o">.</span><span class="n">d</span><span class="o">/</span><span class="n">update_profile</span>
-</pre></div>
-</div>
-<p>Ajouter la ligne suivante en changeant &lt;CHEMIN_ABSOLU_VERS_VENV&gt; par le chemin absolu vers le virtualenv de GeoNature et &lt;GEONATURE_USER&gt; par l’utilisateur Linux de GeoNature :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">&lt;</span><span class="n">GEONATURE_USER</span><span class="o">&gt;</span> <span class="n">source</span> <span class="o">&lt;</span><span class="n">CHEMIN_ABSOLU_VERS_VENV</span><span class="o">&gt;</span> <span class="o">&amp;&amp;</span> <span class="n">geonature</span> <span class="n">profiles</span> <span class="n">update_vms</span>
-</pre></div>
-</div>
-<p>Exemple :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="o">*</span> <span class="n">geonatadmin</span> <span class="n">source</span> <span class="o">/</span><span class="n">home</span><span class="o">/</span><span class="n">user</span><span class="o">/</span><span class="n">geonature</span><span class="o">/</span><span class="n">backend</span><span class="o">/</span><span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span> <span class="o">&amp;&amp;</span> <span class="n">geonature</span> <span class="n">profiles</span> <span class="n">update_vms</span>
-</pre></div>
-</div>
+<p>Pour automatiser l’éxecution de cette fonction (tous les jours à minuit dans cet exemple), <a class="reference internal" href="installation.html#cron"><span class="std std-ref">créer une tâche planfiée</span></a>.</p>
 </div>
 <div class="section" id="usage">
 <h4>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h4>
@@ -612,8 +602,8 @@ Il s’agit maintenant de gérer ses permissions dans GeoNature même.</p>
 <li><p>Le module Synthèse (fiche d’information, onglet validation) permet d’apporter des éléments de contexte en complément des données brutes consultées</p></li>
 <li><p>Le module Occtax permet d’alerter les utilisateurs lors de la saisie de données qui sortent du “cadre” déjà connu pour un taxon considéré</p></li>
 </ul>
-<img alt="https://github.com/PnX-SI/GeoNature/blob/develop/docs/images/validation.png" src="https://github.com/PnX-SI/GeoNature/blob/develop/docs/images/validation.png" />
-<img alt="https://github.com/PnX-SI/GeoNature/blob/develop/docs/images/contexte_donnee.png" src="https://github.com/PnX-SI/GeoNature/blob/develop/docs/images/contexte_donnee.png" />
+<img alt="https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/validation.png" src="https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/validation.png" />
+<img alt="https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/contexte_donnee.png" src="https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/contexte_donnee.png" />
 <p>Plusieurs fonctions permettent de vérifier si une donnée de la synthèse est cohérente au regard du profil du taxon en question :</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">gn_profiles.check_profile_distribution</span></code> : permet de vérifier si la donnée testée est totalement incluse dans l’aire d’occurrences déjà connue pour son taxon.</p></li>
@@ -764,7 +754,7 @@ votre installation.</p></li>
 <li><p>Dans <code class="docutils literal notranslate"><span class="pre">cor_sensitivity_criteria</span></code> : s’il y a une correspondance
 d’<code class="docutils literal notranslate"><span class="pre">id_sensitivity</span></code> avec <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code>, supprimez cette ligne.</p></li>
 <li><p>Lancez la commande SQL suivante :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">REFRESH</span> <span class="n">MATERIALIZED</span> <span class="k">VIEW</span> <span class="n">gn_sensitivity</span><span class="p">.</span><span class="n">t_sensitivity_rules_cd_ref</span><span class="p">;</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">REFRESH</span><span class="w"> </span><span class="n">MATERIALIZED</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">gn_sensitivity</span><span class="p">.</span><span class="n">t_sensitivity_rules_cd_ref</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Pour rafraîchir la vue materialisée utilisée par les fonctions
@@ -776,9 +766,9 @@ déclenchant le trigger de calcul de la sensibilité. Or ce dernier est
 appelé uniquement lors d’un <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> ou d’un <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code>. Il est alors
 possible de faire un <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code> sans changer les données en lançant la
 commande SQL suivante :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span> <span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span>
-<span class="k">SET</span> <span class="n">cd_nom</span><span class="o">=</span><span class="n">cd_nom</span>
-<span class="k">WHERE</span> <span class="n">cd_nom</span><span class="o">=</span><span class="p">:</span><span class="n">cd_nom_de_votre_espece</span><span class="p">;</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span><span class="w"></span>
+<span class="k">SET</span><span class="w"> </span><span class="n">cd_nom</span><span class="o">=</span><span class="n">cd_nom</span><span class="w"></span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">cd_nom</span><span class="o">=</span><span class="p">:</span><span class="n">cd_nom_de_votre_espece</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
 </li>
@@ -831,123 +821,123 @@ d’une observation avec tous les zonages</p></td>
 </tbody>
 </table>
 <p><strong>ref_geo</strong></p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">ref_geo</span><span class="p">.</span><span class="n">fct_get_altitude_intersection</span><span class="p">(</span><span class="k">IN</span> <span class="n">mygeom</span> <span class="n">geometry</span><span class="p">)</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">ref_geo</span><span class="p">.</span><span class="n">fct_get_altitude_intersection</span><span class="p">(</span><span class="k">IN</span><span class="w"> </span><span class="n">mygeom</span><span class="w"> </span><span class="n">geometry</span><span class="p">)</span><span class="w"></span>
 <span class="c1">-- Fonction qui retourne l&#39;altitude min et max de la géométrie passée en paramètre</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">ref_geo</span><span class="p">.</span><span class="n">fct_get_area_intersection</span><span class="p">(</span>
-  <span class="k">IN</span> <span class="n">mygeom</span> <span class="n">geometry</span><span class="p">,</span>
-  <span class="k">IN</span> <span class="n">myidtype</span> <span class="nb">integer</span> <span class="k">DEFAULT</span> <span class="k">NULL</span><span class="p">::</span><span class="nb">integer</span><span class="p">)</span>
-<span class="k">RETURNS</span> <span class="k">TABLE</span><span class="p">(</span><span class="n">id_area</span> <span class="nb">integer</span><span class="p">,</span> <span class="n">id_type</span> <span class="nb">integer</span><span class="p">,</span> <span class="n">area_code</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">,</span> <span class="n">area_name</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">)</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">ref_geo</span><span class="p">.</span><span class="n">fct_get_area_intersection</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="k">IN</span><span class="w"> </span><span class="n">mygeom</span><span class="w"> </span><span class="n">geometry</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="k">IN</span><span class="w"> </span><span class="n">myidtype</span><span class="w"> </span><span class="nb">integer</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">NULL</span><span class="p">::</span><span class="nb">integer</span><span class="p">)</span><span class="w"></span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="k">TABLE</span><span class="p">(</span><span class="n">id_area</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"> </span><span class="n">id_type</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"> </span><span class="n">area_code</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="p">,</span><span class="w"> </span><span class="n">area_name</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="p">)</span><span class="w"></span>
 <span class="c1">-- Fonction qui retourne un tableau des zonages (id_area) intersectant la géométrie passée en paramètre</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">ref_geo</span><span class="p">.</span><span class="n">get_id_area_type</span><span class="p">(</span><span class="n">mytype</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">)</span> <span class="k">RETURNS</span> <span class="nb">integer</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">ref_geo</span><span class="p">.</span><span class="n">get_id_area_type</span><span class="p">(</span><span class="n">mytype</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="p">)</span><span class="w"> </span><span class="k">RETURNS</span><span class="w"> </span><span class="nb">integer</span><span class="w"></span>
 <span class="c1">--Function which return the id_type_area from the type_code of an area type</span>
 </pre></div>
 </div>
 <p><strong>pr_occtax</strong></p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">pr_occtax</span><span class="p">.</span><span class="n">get_id_counting_from_id_releve</span><span class="p">(</span><span class="n">my_id_releve</span> <span class="nb">integer</span><span class="p">)</span> <span class="k">RETURNS</span> <span class="nb">integer</span><span class="p">[]</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">pr_occtax</span><span class="p">.</span><span class="n">get_id_counting_from_id_releve</span><span class="p">(</span><span class="n">my_id_releve</span><span class="w"> </span><span class="nb">integer</span><span class="p">)</span><span class="w"> </span><span class="k">RETURNS</span><span class="w"> </span><span class="nb">integer</span><span class="p">[]</span><span class="w"></span>
 <span class="c1">-- Function which return the id_countings in an array (table pr_occtax.cor_counting_occtax) from the id_releve(integer)</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_default_nomenclature_value</span><span class="p">(</span><span class="n">mytype</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">,</span> <span class="n">myidorganism</span> <span class="nb">integer</span> <span class="k">DEFAULT</span> <span class="mi">0</span><span class="p">,</span> <span class="n">myregne</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="n">mygroup2inpn</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span> <span class="k">DEFAULT</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span> <span class="k">RETURNS</span> <span class="nb">integer</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_default_nomenclature_value</span><span class="p">(</span><span class="n">mytype</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="p">,</span><span class="w"> </span><span class="n">myidorganism</span><span class="w"> </span><span class="nb">integer</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">myregne</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="p">,</span><span class="w"> </span><span class="n">mygroup2inpn</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="s1">&#39;0&#39;</span><span class="p">)</span><span class="w"> </span><span class="k">RETURNS</span><span class="w"> </span><span class="nb">integer</span><span class="w"></span>
 <span class="c1">--Function that return the default nomenclature id with wanteds nomenclature type, organism id, regne, group2_inp  --Return -1 if nothing matche with given parameters</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">pr_occtax</span><span class="p">.</span><span class="n">insert_in_synthese</span><span class="p">(</span><span class="n">my_id_counting</span> <span class="nb">integer</span><span class="p">)</span> <span class="k">RETURNS</span> <span class="nb">integer</span><span class="p">[]</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">pr_occtax</span><span class="p">.</span><span class="n">insert_in_synthese</span><span class="p">(</span><span class="n">my_id_counting</span><span class="w"> </span><span class="nb">integer</span><span class="p">)</span><span class="w"> </span><span class="k">RETURNS</span><span class="w"> </span><span class="nb">integer</span><span class="p">[]</span><span class="w"></span>
 </pre></div>
 </div>
 <p><strong>ref_nomenclatures</strong></p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_id_nomenclature_type</span><span class="p">(</span><span class="n">mytype</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">)</span> <span class="k">RETURNS</span> <span class="nb">integer</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_id_nomenclature_type</span><span class="p">(</span><span class="n">mytype</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="p">)</span><span class="w"> </span><span class="k">RETURNS</span><span class="w"> </span><span class="nb">integer</span><span class="w"></span>
 <span class="c1">--Function which return the id_type from the mnemonique of a nomenclature type</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_default_nomenclature_value</span><span class="p">(</span><span class="n">mytype</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">,</span> <span class="n">myidorganism</span> <span class="nb">integer</span> <span class="k">DEFAULT</span> <span class="mi">0</span><span class="p">)</span> <span class="k">RETURNS</span> <span class="nb">integer</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_default_nomenclature_value</span><span class="p">(</span><span class="n">mytype</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="p">,</span><span class="w"> </span><span class="n">myidorganism</span><span class="w"> </span><span class="nb">integer</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="k">RETURNS</span><span class="w"> </span><span class="nb">integer</span><span class="w"></span>
 <span class="c1">--Function that return the default nomenclature id with wanteds nomenclature type (mnemonique), organism id</span>
 <span class="c1">--Return -1 if nothing matche with given parameters</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">check_nomenclature_type_by_mnemonique</span><span class="p">(</span><span class="n">id</span> <span class="nb">integer</span> <span class="p">,</span> <span class="n">mytype</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">)</span> <span class="k">RETURNS</span> <span class="nb">boolean</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">check_nomenclature_type_by_mnemonique</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="nb">integer</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mytype</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="p">)</span><span class="w"> </span><span class="k">RETURNS</span><span class="w"> </span><span class="nb">boolean</span><span class="w"></span>
 <span class="c1">--Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">check_nomenclature_type_by_cd_nomenclature</span><span class="p">(</span><span class="n">mycdnomenclature</span> <span class="nb">character</span> <span class="nb">varying</span> <span class="p">,</span> <span class="n">mytype</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">)</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">check_nomenclature_type_by_cd_nomenclature</span><span class="p">(</span><span class="n">mycdnomenclature</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="w"> </span><span class="p">,</span><span class="w"> </span><span class="n">mytype</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="p">)</span><span class="w"></span>
 <span class="c1">--Function that checks if an id_nomenclature matches with wanted nomenclature type (use mnemonique type)</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">check_nomenclature_type_by_id</span><span class="p">(</span><span class="n">id</span> <span class="nb">integer</span><span class="p">,</span> <span class="n">myidtype</span> <span class="nb">integer</span><span class="p">)</span> <span class="k">RETURNS</span> <span class="nb">boolean</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">check_nomenclature_type_by_id</span><span class="p">(</span><span class="n">id</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"> </span><span class="n">myidtype</span><span class="w"> </span><span class="nb">integer</span><span class="p">)</span><span class="w"> </span><span class="k">RETURNS</span><span class="w"> </span><span class="nb">boolean</span><span class="w"></span>
 <span class="c1">--Function that checks if an id_nomenclature matches with wanted nomenclature type (use id_type)</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_id_nomenclature</span><span class="p">(</span>
-<span class="n">mytype</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">,</span>
-<span class="n">mycdnomenclature</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">)</span>
-<span class="k">RETURNS</span> <span class="nb">integer</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_id_nomenclature</span><span class="p">(</span><span class="w"></span>
+<span class="n">mytype</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="p">,</span><span class="w"></span>
+<span class="n">mycdnomenclature</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="p">)</span><span class="w"></span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="nb">integer</span><span class="w"></span>
 <span class="c1">--Function which return the id_nomenclature from an mnemonique_type and an cd_nomenclature</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_nomenclature_label</span><span class="p">(</span>
-<span class="n">myidnomenclature</span> <span class="nb">integer</span><span class="p">,</span>
-<span class="n">mylanguage</span> <span class="nb">character</span> <span class="nb">varying</span>
-<span class="p">)</span>
-<span class="k">RETURNS</span> <span class="nb">character</span> <span class="nb">varying</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_nomenclature_label</span><span class="p">(</span><span class="w"></span>
+<span class="n">myidnomenclature</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"></span>
+<span class="n">mylanguage</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="w"></span>
+<span class="p">)</span><span class="w"></span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="w"></span>
 <span class="c1">--Function which return the label from the id_nomenclature and the language</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_cd_nomenclature</span><span class="p">(</span><span class="n">myidnomenclature</span> <span class="nb">integer</span><span class="p">)</span> <span class="k">RETURNS</span> <span class="nb">character</span> <span class="nb">varying</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_cd_nomenclature</span><span class="p">(</span><span class="n">myidnomenclature</span><span class="w"> </span><span class="nb">integer</span><span class="p">)</span><span class="w"> </span><span class="k">RETURNS</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="w"></span>
 <span class="c1">--Function which return the cd_nomenclature from an id_nomenclature</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_filtered_nomenclature</span><span class="p">(</span><span class="n">mytype</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">,</span> <span class="n">myregne</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">,</span> <span class="n">mygroup</span> <span class="nb">character</span> <span class="nb">varying</span><span class="p">)</span>
-<span class="k">RETURNS</span> <span class="k">SETOF</span> <span class="nb">integer</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">get_filtered_nomenclature</span><span class="p">(</span><span class="n">mytype</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="p">,</span><span class="w"> </span><span class="n">myregne</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="p">,</span><span class="w"> </span><span class="n">mygroup</span><span class="w"> </span><span class="nb">character</span><span class="w"> </span><span class="nb">varying</span><span class="p">)</span><span class="w"></span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="k">SETOF</span><span class="w"> </span><span class="nb">integer</span><span class="w"></span>
 <span class="c1">--Function that returns a list of id_nomenclature depending on regne and/or group2_inpn sent with parameters.</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">calculate_sensitivity</span><span class="p">(</span>
-<span class="n">mycdnom</span> <span class="nb">integer</span><span class="p">,</span>
-<span class="n">mynomenclatureid</span> <span class="nb">integer</span><span class="p">)</span>
-<span class="k">RETURNS</span> <span class="nb">integer</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">calculate_sensitivity</span><span class="p">(</span><span class="w"></span>
+<span class="n">mycdnom</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"></span>
+<span class="n">mynomenclatureid</span><span class="w"> </span><span class="nb">integer</span><span class="p">)</span><span class="w"></span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="nb">integer</span><span class="w"></span>
 <span class="c1">--Function to return id_nomenclature depending on observation sensitivity</span>
 <span class="c1">--USAGE : SELECT ref_nomenclatures.calculate_sensitivity(240,21);</span>
 </pre></div>
 </div>
 <p><strong>gn_profiles</strong></p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">gn_profiles</span><span class="p">.</span><span class="n">get_profiles_parameters</span><span class="p">(</span><span class="n">mycdnom</span> <span class="nb">integer</span><span class="p">)</span>
-<span class="k">RETURNS</span> <span class="k">TABLE</span> <span class="p">(</span><span class="n">cd_ref</span> <span class="nb">integer</span><span class="p">,</span> <span class="n">spatial_precision</span> <span class="nb">integer</span><span class="p">,</span> <span class="n">temporal_precision_days</span> <span class="nb">integer</span><span class="p">,</span> <span class="n">active_life_stage</span> <span class="nb">boolean</span><span class="p">,</span>  <span class="n">distance</span> <span class="nb">smallint</span><span class="p">)</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">gn_profiles</span><span class="p">.</span><span class="n">get_profiles_parameters</span><span class="p">(</span><span class="n">mycdnom</span><span class="w"> </span><span class="nb">integer</span><span class="p">)</span><span class="w"></span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="p">(</span><span class="n">cd_ref</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"> </span><span class="n">spatial_precision</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"> </span><span class="n">temporal_precision_days</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"> </span><span class="n">active_life_stage</span><span class="w"> </span><span class="nb">boolean</span><span class="p">,</span><span class="w">  </span><span class="n">distance</span><span class="w"> </span><span class="nb">smallint</span><span class="p">)</span><span class="w"></span>
 <span class="c1">-- fonction permettant de récupérer les paramètres les plus adaptés (définis au plus proche du taxon) pour calculer le profil d&#39;un taxon donné</span>
 <span class="c1">-- par exemple, s&#39;il existe des paramètres pour les &quot;Animalia&quot; des paramètres pour le renard, les paramètres du renard surcoucheront les paramètres Animalia pour cette espèce</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">gn_profiles</span><span class="p">.</span><span class="n">check_profile_distribution</span><span class="p">(</span>
-    <span class="n">in_geom</span> <span class="n">geometry</span><span class="p">,</span>
-    <span class="n">profil_geom</span> <span class="n">geometry</span>
-<span class="p">)</span>
-<span class="k">RETURNS</span> <span class="nb">boolean</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">gn_profiles</span><span class="p">.</span><span class="n">check_profile_distribution</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="n">in_geom</span><span class="w"> </span><span class="n">geometry</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">profil_geom</span><span class="w"> </span><span class="n">geometry</span><span class="w"></span>
+<span class="p">)</span><span class="w"></span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="nb">boolean</span><span class="w"></span>
 <span class="c1">--fonction permettant de vérifier la cohérence d&#39;une donnée d&#39;occurrence en s&#39;assurant que sa localisation est totalement incluse dans l&#39;aire d&#39;occurrences valide définie par le profil du taxon en question</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">gn_profiles</span><span class="p">.</span><span class="n">check_profile_phenology</span><span class="p">(</span>
-    <span class="n">in_cd_ref</span> <span class="nb">integer</span><span class="p">,</span>
-    <span class="n">in_date_min</span> <span class="nb">date</span><span class="p">,</span>
-    <span class="n">in_date_max</span> <span class="nb">date</span><span class="p">,</span>
-    <span class="n">in_altitude_min</span> <span class="nb">integer</span><span class="p">,</span>
-    <span class="n">in_altitude_max</span> <span class="nb">integer</span><span class="p">,</span>
-    <span class="n">in_id_nomenclature_life_stage</span> <span class="nb">integer</span><span class="p">,</span>
-    <span class="n">check_life_stage</span> <span class="nb">boolean</span>
-<span class="p">)</span>
-<span class="k">RETURNS</span> <span class="nb">boolean</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">gn_profiles</span><span class="p">.</span><span class="n">check_profile_phenology</span><span class="p">(</span><span class="w"></span>
+<span class="w">    </span><span class="n">in_cd_ref</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">in_date_min</span><span class="w"> </span><span class="nb">date</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">in_date_max</span><span class="w"> </span><span class="nb">date</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">in_altitude_min</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">in_altitude_max</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">in_id_nomenclature_life_stage</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="n">check_life_stage</span><span class="w"> </span><span class="nb">boolean</span><span class="w"></span>
+<span class="p">)</span><span class="w"></span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="nb">boolean</span><span class="w"></span>
 <span class="c1">--fonction permettant de vérifier la cohérence d&#39;une donnée d&#39;occurrence en s&#39;assurant que sa phénologie (dates, altitude, stade de vie selon les paramètres) correspond bien à la phénologie valide définie par le profil du taxon en question</span>
 <span class="c1">--La fonction renvoie &#39;false&#39; pour les données trop imprécises (durée d&#39;observation supérieure à la précision temporelle définie dans les paramètres des profils).</span>
 </pre></div>
 </div>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">gn_profiles</span><span class="p">.</span><span class="n">check_profile_altitudes</span><span class="p">(</span>
-  <span class="n">in_alt_min</span> <span class="nb">integer</span><span class="p">,</span>
-  <span class="n">in_alt_max</span> <span class="nb">integer</span><span class="p">,</span>
-  <span class="n">profil_altitude_min</span> <span class="nb">integer</span><span class="p">,</span>
-  <span class="n">profil_altitude_max</span> <span class="nb">integer</span>
-<span class="p">)</span>
-<span class="k">RETURNS</span> <span class="nb">boolean</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">gn_profiles</span><span class="p">.</span><span class="n">check_profile_altitudes</span><span class="p">(</span><span class="w"></span>
+<span class="w">  </span><span class="n">in_alt_min</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">in_alt_max</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">profil_altitude_min</span><span class="w"> </span><span class="nb">integer</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="n">profil_altitude_max</span><span class="w"> </span><span class="nb">integer</span><span class="w"></span>
+<span class="p">)</span><span class="w"></span>
+<span class="k">RETURNS</span><span class="w"> </span><span class="nb">boolean</span><span class="w"></span>
 <span class="c1">--fonction permettant de vérifier la cohérence d&#39;une donnée d&#39;occurrence en s&#39;assurant que son altitude se trouve entièrement comprise dans la fourchette altitudinale valide du taxon en question</span>
 </pre></div>
 </div>
@@ -1205,6 +1195,20 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 </li>
 </ul>
 </div>
+<div class="section" id="parametres-gunicorn">
+<h3>Paramètres Gunicorn<a class="headerlink" href="#parametres-gunicorn" title="Permalink to this headline"></a></h3>
+<p>Voici les paramètres de Gunicorn par défaut :</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">GUNICORN_PROC_NAME=geonature</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GUNICORN_NUM_WORKERS=4</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GUNICORN_HOST=127.0.0.1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GUNICORN_PORT=8000</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GUNICORN_TIMEOUT=30</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>Pour modifier une de ces variables, créer un fichier <code class="docutils literal notranslate"><span class="pre">environ</span></code> à la racine de votre dossier GeoNature, et indiquer la variable d’environnement avec sa valeur modifiée.</p>
+</div>
 </div>
 <div class="section" id="sauvegarde-et-restauration">
 <h2>Sauvegarde et restauration<a class="headerlink" href="#sauvegarde-et-restauration" title="Permalink to this headline"></a></h2>
@@ -1318,11 +1322,11 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 <div class="section" id="integrer-son-logo">
 <h3>Intégrer son logo<a class="headerlink" href="#integrer-son-logo" title="Permalink to this headline"></a></h3>
 <p>Le logo affiché dans la barre de navigation de GeoNature peut être modifié dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/frontend/src/custom/images</span></code>. Remplacez alors le fichier <code class="docutils literal notranslate"><span class="pre">logo_structure.png</span></code> par votre propre logo, en conservant ce nom pour le nouveau fichier. Le bandeau fait 50px de hauteur, vous pouvez donc mettre une image faisant cette hauteur. Il est également possible de modifier la taille de l’image en CSS dans le fichier <code class="docutils literal notranslate"><span class="pre">frontend/src/assets/custom.css</span></code> de la manière suivante:</p>
-<div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="c">/* la balise img affichant l&#39;image a l&#39;id &#39;logo-structure */</span>
-<span class="p">#</span><span class="nn">logo-structure</span> <span class="p">{</span>
-    <span class="k">height</span><span class="p">:</span> <span class="mi">50</span><span class="kt">px</span><span class="p">;</span>
-    <span class="k">width</span><span class="p">:</span> <span class="mi">80</span><span class="kt">px</span><span class="p">;</span>
-<span class="p">}</span>
+<div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="c">/* la balise img affichant l&#39;image a l&#39;id &#39;logo-structure */</span><span class="w"></span>
+<span class="p">#</span><span class="nn">logo-structure</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="k">height</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="kt">px</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="k">width</span><span class="p">:</span><span class="w"> </span><span class="mi">80</span><span class="kt">px</span><span class="p">;</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Relancez la construction de l’interface :</p>
@@ -1357,11 +1361,11 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 <h3>Customiser l’aspect esthétique<a class="headerlink" href="#customiser-l-aspect-esthetique" title="Permalink to this headline"></a></h3>
 <p>Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant le fichier <code class="docutils literal notranslate"><span class="pre">custom.css</span></code>, situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/frontend/src/assets</span></code>.</p>
 <p>Pour remplacer la couleur de fond du bandeau de navigation par une image, on peut par exemple apporter la modification suivante :</p>
-<div class="highlight-css notranslate"><div class="highlight"><pre><span></span> <span class="nt">html</span> <span class="nt">body</span> <span class="nt">pnx-root</span> <span class="nt">pnx-nav-home</span> <span class="nt">mat-sidenav-container</span><span class="p">.</span><span class="nc">sidenav-container</span><span class="p">.</span><span class="nc">mat-drawer-container</span><span class="p">.</span><span class="nc">mat-sidenav-container</span> <span class="nt">mat-sidenav-content</span><span class="p">.</span><span class="nc">mat-drawer-content</span><span class="p">.</span><span class="nc">mat-sidenav-content</span> <span class="nt">mat-toolbar</span><span class="p">#</span><span class="nn">app-toolbar</span><span class="p">.</span><span class="nc">row</span><span class="p">.</span><span class="nc">mat-toolbar</span>
-<span class="p">{</span>
-   <span class="k">background</span> <span class="p">:</span>
-   <span class="nb">url</span><span class="p">(</span><span class="sx">bandeau_test.jpg</span><span class="p">)</span>
-<span class="p">}</span>
+<div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="nt">html</span><span class="w"> </span><span class="nt">body</span><span class="w"> </span><span class="nt">pnx-root</span><span class="w"> </span><span class="nt">pnx-nav-home</span><span class="w"> </span><span class="nt">mat-sidenav-container</span><span class="p">.</span><span class="nc">sidenav-container</span><span class="p">.</span><span class="nc">mat-drawer-container</span><span class="p">.</span><span class="nc">mat-sidenav-container</span><span class="w"> </span><span class="nt">mat-sidenav-content</span><span class="p">.</span><span class="nc">mat-drawer-content</span><span class="p">.</span><span class="nc">mat-sidenav-content</span><span class="w"> </span><span class="nt">mat-toolbar</span><span class="p">#</span><span class="nn">app-toolbar</span><span class="p">.</span><span class="nc">row</span><span class="p">.</span><span class="nc">mat-toolbar</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="k">background</span><span class="w"> </span><span class="p">:</span><span class="w"></span>
+<span class="w">   </span><span class="nb">url</span><span class="p">(</span><span class="sx">bandeau_test.jpg</span><span class="p">)</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Dans ce cas, l’image <code class="docutils literal notranslate"><span class="pre">bandeau_test.jpg</span></code> doit se trouver dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/frontend/src</span></code>.</p>
@@ -1376,26 +1380,26 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 <p>Vous pouvez modifier l’intitulé et le pictogramme des modules dans le menu des modules. Pour cela, adaptez le contenu des champs <code class="docutils literal notranslate"><span class="pre">module_label</span></code> et <code class="docutils literal notranslate"><span class="pre">module_picto</span></code> (avec des icones de la librairie Font Awesome - <a class="reference external" href="https://fontawesome.com">https://fontawesome.com</a>) dans la table <code class="docutils literal notranslate"><span class="pre">gn_commons.t_modules</span></code>.</p>
 <p>Exemple :</p>
 <div class="highlight-SQL notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Module Occtax</span>
-<span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_label</span> <span class="o">=</span> <span class="s1">&#39;Occtax&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;OCCTAX&#39;</span><span class="p">;</span>
-<span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_picto</span> <span class="o">=</span> <span class="s1">&#39;fa-map-marker&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;OCCTAX&#39;</span><span class="p">;</span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">module_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Occtax&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">module_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;OCCTAX&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">module_picto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;fa-map-marker&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">module_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;OCCTAX&#39;</span><span class="p">;</span><span class="w"></span>
 <span class="c1">-- Module Occhab</span>
-<span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_label</span> <span class="o">=</span> <span class="s1">&#39;Occhab&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;OCCHAB&#39;</span><span class="p">;</span>
-<span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_picto</span> <span class="o">=</span> <span class="s1">&#39;fa-leaf&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;OCCHAB&#39;</span><span class="p">;</span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">module_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Occhab&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">module_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;OCCHAB&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">module_picto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;fa-leaf&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">module_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;OCCHAB&#39;</span><span class="p">;</span><span class="w"></span>
 <span class="c1">-- Module Import</span>
-<span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_label</span> <span class="o">=</span> <span class="s1">&#39;Import&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;IMPORT&#39;</span><span class="p">;</span>
-<span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_picto</span> <span class="o">=</span> <span class="s1">&#39;fa-upload&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;IMPORT&#39;</span><span class="p">;</span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">module_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Import&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">module_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;IMPORT&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">module_picto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;fa-upload&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">module_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;IMPORT&#39;</span><span class="p">;</span><span class="w"></span>
 <span class="c1">-- Module Export</span>
-<span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_label</span> <span class="o">=</span> <span class="s1">&#39;Export&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;EXPORTS&#39;</span><span class="p">;</span>
-<span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_picto</span> <span class="o">=</span> <span class="s1">&#39;fa-download&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;EXPORTS&#39;</span><span class="p">;</span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">module_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Export&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">module_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;EXPORTS&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">module_picto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;fa-download&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">module_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;EXPORTS&#39;</span><span class="p">;</span><span class="w"></span>
 <span class="c1">-- Module Dashboard</span>
-<span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_label</span> <span class="o">=</span> <span class="s1">&#39;Dashboard&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;DASHBOARD&#39;</span><span class="p">;</span>
-<span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_picto</span> <span class="o">=</span> <span class="s1">&#39;fa-bar-chart&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;DASHBOARD&#39;</span><span class="p">;</span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">module_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Dashboard&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">module_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;DASHBOARD&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">module_picto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;fa-bar-chart&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">module_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;DASHBOARD&#39;</span><span class="p">;</span><span class="w"></span>
 <span class="c1">-- Module Validation</span>
-<span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_label</span> <span class="o">=</span> <span class="s1">&#39;Validation&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;VALIDATION&#39;</span><span class="p">;</span>
-<span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_picto</span> <span class="o">=</span> <span class="s1">&#39;fa-check&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;VALIDATION&#39;</span><span class="p">;</span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">module_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Validation&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">module_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;VALIDATION&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">module_picto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;fa-check&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">module_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;VALIDATION&#39;</span><span class="p">;</span><span class="w"></span>
 <span class="c1">-- Module Monitorings (Suivis)</span>
-<span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_label</span> <span class="o">=</span> <span class="s1">&#39;Suivis&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;MONITORINGS&#39;</span><span class="p">;</span>
-<span class="k">UPDATE</span> <span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span> <span class="k">SET</span> <span class="n">module_picto</span> <span class="o">=</span> <span class="s1">&#39;fa-eye&#39;</span> <span class="k">WHERE</span> <span class="n">module_code</span> <span class="o">=</span> <span class="s1">&#39;MONITORINGS&#39;</span><span class="p">;</span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">module_label</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;Suivis&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">module_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;MONITORINGS&#39;</span><span class="p">;</span><span class="w"></span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_commons</span><span class="p">.</span><span class="n">t_modules</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">module_picto</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;fa-eye&#39;</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">module_code</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;MONITORINGS&#39;</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Depuis la version 2.5.0, il est aussi possible de customiser l’ordre des modules dans le menu, par ordre alphabétique par défaut, en renseignant le champs <code class="docutils literal notranslate"><span class="pre">gn_commons.t_modules.module_order</span></code>.</p>
@@ -1584,8 +1588,8 @@ Vous pouvez utiliser des balises HTML compatibles avec les emails pour ce texte.
 </div>
 </div>
 </div>
-<div class="section" id="rendre-geonature-accessible-sans-authentification">
-<h2>Rendre GeoNature accessible sans authentification<a class="headerlink" href="#rendre-geonature-accessible-sans-authentification" title="Permalink to this headline"></a></h2>
+<div class="section" id="id2">
+<h2>Accès public<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
 <p>Cette section de la documentation concerne l’implémentation d’un utilisateur-lecteur pour votre instance GeoNature.</p>
 <p>Etapes :</p>
 <dl class="simple">
@@ -1699,17 +1703,17 @@ Il est possible de passer ce champ en texte libre en mettant à <code class="doc
 <p>Le paramètre <code class="docutils literal notranslate"><span class="pre">id_taxon_list</span> <span class="pre">=</span> <span class="pre">100</span></code> correspond à un ID de liste de la table <code class="docutils literal notranslate"><span class="pre">taxonomie.bib_listes</span></code> (L’ID 100 correspond à la liste “Saisie Occtax”). Vous pouvez changer ce paramètre avec l’ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.</p>
 <p>Voici les requêtes SQL pour remplir la liste 100 avec tous les taxons de Taxref à partir du rang <code class="docutils literal notranslate"><span class="pre">genre</span></code> :</p>
 <p>Il faut d’abord remplir la table <code class="docutils literal notranslate"><span class="pre">taxonomie.bib_noms</span></code> (table des taxons de sa structure), puis remplir la liste 100, avec l’ensemble des taxons de <code class="docutils literal notranslate"><span class="pre">bib_noms</span></code> :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">DELETE</span> <span class="k">FROM</span> <span class="n">taxonomie</span><span class="p">.</span><span class="n">cor_nom_liste</span><span class="p">;</span>
-<span class="k">DELETE</span> <span class="k">FROM</span> <span class="n">taxonomie</span><span class="p">.</span><span class="n">bib_noms</span><span class="p">;</span>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">taxonomie</span><span class="p">.</span><span class="n">cor_nom_liste</span><span class="p">;</span><span class="w"></span>
+<span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">taxonomie</span><span class="p">.</span><span class="n">bib_noms</span><span class="p">;</span><span class="w"></span>
 
-<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">taxonomie</span><span class="p">.</span><span class="n">bib_noms</span><span class="p">(</span><span class="n">cd_nom</span><span class="p">,</span><span class="n">cd_ref</span><span class="p">,</span><span class="n">nom_francais</span><span class="p">)</span>
-<span class="k">SELECT</span> <span class="n">cd_nom</span><span class="p">,</span> <span class="n">cd_ref</span><span class="p">,</span> <span class="n">nom_vern</span>
-<span class="k">FROM</span> <span class="n">taxonomie</span><span class="p">.</span><span class="n">taxref</span>
-<span class="k">WHERE</span> <span class="n">id_rang</span> <span class="k">NOT</span> <span class="k">IN</span> <span class="p">(</span><span class="s1">&#39;Dumm&#39;</span><span class="p">,</span><span class="s1">&#39;SPRG&#39;</span><span class="p">,</span><span class="s1">&#39;KD&#39;</span><span class="p">,</span><span class="s1">&#39;SSRG&#39;</span><span class="p">,</span><span class="s1">&#39;IFRG&#39;</span><span class="p">,</span><span class="s1">&#39;PH&#39;</span><span class="p">,</span><span class="s1">&#39;SBPH&#39;</span><span class="p">,</span><span class="s1">&#39;IFPH&#39;</span><span class="p">,</span><span class="s1">&#39;DV&#39;</span><span class="p">,</span><span class="s1">&#39;SBDV&#39;</span><span class="p">,</span><span class="s1">&#39;SPCL&#39;</span><span class="p">,</span><span class="s1">&#39;CLAD&#39;</span><span class="p">,</span><span class="s1">&#39;CL&#39;</span><span class="p">,</span>
-  <span class="s1">&#39;SBCL&#39;</span><span class="p">,</span><span class="s1">&#39;IFCL&#39;</span><span class="p">,</span><span class="s1">&#39;LEG&#39;</span><span class="p">,</span><span class="s1">&#39;SPOR&#39;</span><span class="p">,</span><span class="s1">&#39;COH&#39;</span><span class="p">,</span><span class="s1">&#39;OR&#39;</span><span class="p">,</span><span class="s1">&#39;SBOR&#39;</span><span class="p">,</span><span class="s1">&#39;IFOR&#39;</span><span class="p">,</span><span class="s1">&#39;SPFM&#39;</span><span class="p">,</span><span class="s1">&#39;FM&#39;</span><span class="p">,</span><span class="s1">&#39;SBFM&#39;</span><span class="p">,</span><span class="s1">&#39;TR&#39;</span><span class="p">,</span><span class="s1">&#39;SSTR&#39;</span><span class="p">);</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">taxonomie</span><span class="p">.</span><span class="n">bib_noms</span><span class="p">(</span><span class="n">cd_nom</span><span class="p">,</span><span class="n">cd_ref</span><span class="p">,</span><span class="n">nom_francais</span><span class="p">)</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">cd_nom</span><span class="p">,</span><span class="w"> </span><span class="n">cd_ref</span><span class="p">,</span><span class="w"> </span><span class="n">nom_vern</span><span class="w"></span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">taxonomie</span><span class="p">.</span><span class="n">taxref</span><span class="w"></span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">id_rang</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;Dumm&#39;</span><span class="p">,</span><span class="s1">&#39;SPRG&#39;</span><span class="p">,</span><span class="s1">&#39;KD&#39;</span><span class="p">,</span><span class="s1">&#39;SSRG&#39;</span><span class="p">,</span><span class="s1">&#39;IFRG&#39;</span><span class="p">,</span><span class="s1">&#39;PH&#39;</span><span class="p">,</span><span class="s1">&#39;SBPH&#39;</span><span class="p">,</span><span class="s1">&#39;IFPH&#39;</span><span class="p">,</span><span class="s1">&#39;DV&#39;</span><span class="p">,</span><span class="s1">&#39;SBDV&#39;</span><span class="p">,</span><span class="s1">&#39;SPCL&#39;</span><span class="p">,</span><span class="s1">&#39;CLAD&#39;</span><span class="p">,</span><span class="s1">&#39;CL&#39;</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="s1">&#39;SBCL&#39;</span><span class="p">,</span><span class="s1">&#39;IFCL&#39;</span><span class="p">,</span><span class="s1">&#39;LEG&#39;</span><span class="p">,</span><span class="s1">&#39;SPOR&#39;</span><span class="p">,</span><span class="s1">&#39;COH&#39;</span><span class="p">,</span><span class="s1">&#39;OR&#39;</span><span class="p">,</span><span class="s1">&#39;SBOR&#39;</span><span class="p">,</span><span class="s1">&#39;IFOR&#39;</span><span class="p">,</span><span class="s1">&#39;SPFM&#39;</span><span class="p">,</span><span class="s1">&#39;FM&#39;</span><span class="p">,</span><span class="s1">&#39;SBFM&#39;</span><span class="p">,</span><span class="s1">&#39;TR&#39;</span><span class="p">,</span><span class="s1">&#39;SSTR&#39;</span><span class="p">);</span><span class="w"></span>
 
-<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">taxonomie</span><span class="p">.</span><span class="n">cor_nom_liste</span> <span class="p">(</span><span class="n">id_liste</span><span class="p">,</span><span class="n">id_nom</span><span class="p">)</span>
-<span class="k">SELECT</span> <span class="mi">100</span><span class="p">,</span><span class="n">n</span><span class="p">.</span><span class="n">id_nom</span> <span class="k">FROM</span> <span class="n">taxonomie</span><span class="p">.</span><span class="n">bib_noms</span> <span class="n">n</span><span class="p">;</span>
+<span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">taxonomie</span><span class="p">.</span><span class="n">cor_nom_liste</span><span class="w"> </span><span class="p">(</span><span class="n">id_liste</span><span class="p">,</span><span class="n">id_nom</span><span class="p">)</span><span class="w"></span>
+<span class="k">SELECT</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span><span class="n">n</span><span class="p">.</span><span class="n">id_nom</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">taxonomie</span><span class="p">.</span><span class="n">bib_noms</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Il est également possible d’éditer des listes à partir de l’application TaxHub.</p>
@@ -1825,8 +1829,8 @@ Un champ additionnel est définit par:</p>
 </div>
 <div class="section" id="module-occhab">
 <h2>Module OCCHAB<a class="headerlink" href="#module-occhab" title="Permalink to this headline"></a></h2>
-<div class="section" id="id2">
-<h3>Installer le module<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h3>
+<div class="section" id="id3">
+<h3>Installer le module<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h3>
 <p>Le module OCCHAB fait parti du coeur de GeoNature. Son installation est au choix de l’administrateur.</p>
 <p>Pour l’installer, lancer les commande suivante:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd backend</span>
@@ -1835,14 +1839,14 @@ Un champ additionnel est définit par:</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id3">
-<h3>Base de données<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h3>
+<div class="section" id="id4">
+<h3>Base de données<a class="headerlink" href="#id4" title="Permalink to this headline"></a></h3>
 <p>Le module s’appuie sur deux schémas.:
 <code class="docutils literal notranslate"><span class="pre">ref_habitats</span></code>:  Le réferentiel habitat du MNHN
 <code class="docutils literal notranslate"><span class="pre">pr_occhab</span></code>: le schéma qui contient les données d’occurrence d’habitat, basé sur standard du MNHN</p>
 </div>
-<div class="section" id="id4">
-<h3>Configuration<a class="headerlink" href="#id4" title="Permalink to this headline"></a></h3>
+<div class="section" id="id5">
+<h3>Configuration<a class="headerlink" href="#id5" title="Permalink to this headline"></a></h3>
 <p>Le parametrage du module OCCHAB se fait depuis le fichier <code class="docutils literal notranslate"><span class="pre">/home/`whoami`/geonature/contrib/config/conf_gn_module.toml</span></code>
 Après toute modification de la configuration d’un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a></p>
 <div class="section" id="formulaire">
@@ -1886,8 +1890,8 @@ Après toute modification de la configuration d’un module, il faut regénérer
 <div class="section" id="module-synthese">
 <h2>Module SYNTHESE<a class="headerlink" href="#module-synthese" title="Permalink to this headline"></a></h2>
 <p>Le module Synthèse est un module du coeur de GeoNature, fourni par défaut lors de l’installation.</p>
-<div class="section" id="id5">
-<h3>Configuration<a class="headerlink" href="#id5" title="Permalink to this headline"></a></h3>
+<div class="section" id="id6">
+<h3>Configuration<a class="headerlink" href="#id6" title="Permalink to this headline"></a></h3>
 <p>L’ensemble des paramètres de configuration du module se trouve dans le fichier général de configuration de GeoNature <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code> puisqu’il s’agit d’un module du coeur.</p>
 <p><strong>1.</strong> Modifier les filtres géographiques disponibles par défaut dans l’interface de recherche.</p>
 <p>Editer la variable <code class="docutils literal notranslate"><span class="pre">AREA_FILTERS</span></code> en y ajoutant le label et le code du type d’entité géographique que vous souhaitez rajouter. Voir table <code class="docutils literal notranslate"><span class="pre">ref_geo.bib_areas_types</span></code>. Dans l’exemple on ajoute le type ZNIEFF1 (<code class="docutils literal notranslate"><span class="pre">code_type</span> <span class="pre">=</span> <span class="pre">&quot;ZNIEFF1&quot;</span></code>). Attention, dans ce cas les entités géographiques correspondantes au type <cite>ZNIEFF1</cite>, doivent également être présentes dans la table <code class="docutils literal notranslate"><span class="pre">ref_geo.l_areas</span></code>.
@@ -2046,37 +2050,35 @@ Attention : Si des données sont déjà présentes dans la synthèse et que l’
 <p>La vue <code class="docutils literal notranslate"><span class="pre">gn_commons.v_latest_validation</span></code> permet de récupérer le dernier statut de validation d’une occurrence.</p>
 <p>NB : une donnée non présente dans la SYNTHESE, ne remontera pas dans l’interface du module VALIDATION. Cependant rien n’empêche un administrateur avancé d’utiliser la table de validation et son mécanisme pour des données qui ne seraient pas en SYNTHESE (du moment que les données disposent d’un UUID).</p>
 <p>Au niveau de l’interface, le formulaire de recherche est commun avec le module SYNTHESE. Les paramètres de configuration du formulaire sont donc également partagés et administrables depuis le fichier <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code>, rubrique SYNTHESE.</p>
-<div class="section" id="id6">
-<h3>Configuration<a class="headerlink" href="#id6" title="Permalink to this headline"></a></h3>
+<div class="section" id="id7">
+<h3>Configuration<a class="headerlink" href="#id7" title="Permalink to this headline"></a></h3>
 <p>Le parametrage du module VALIDATION se fait depuis le fichier <code class="docutils literal notranslate"><span class="pre">/home/`whoami`/geonature/contrib/gn_module_validation/config/conf_gn_module.toml</span></code>
 Après toute modification de la configuration d’un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a></p>
 <div class="section" id="liste-des-champs-visibles">
 <h4>Liste des champs visibles<a class="headerlink" href="#liste-des-champs-visibles" title="Permalink to this headline"></a></h4>
 <p>Gestion de l’affichage des colonnes de la liste via le paramètre <code class="docutils literal notranslate"><span class="pre">COLUMN_LIST</span></code> :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="n">COLUMN_LIST</span><span class="p">]]</span>
-<span class="n">column_name</span> <span class="o">=</span> <span class="s2">&quot;nomenclature_life_stage.label_default&quot;</span> <span class="c1"># Champs de la synthèse, éventuellement en suivant des relationships</span>
+<span class="n">column_label</span> <span class="o">=</span> <span class="s2">&quot;nomenclature_life_stage.label_default&quot;</span> <span class="c1"># Champs de la synthèse, éventuellement en suivant des relationships</span>
 <span class="n">column_name</span> <span class="o">=</span> <span class="s2">&quot;Stade de vie&quot;</span> <span class="c1"># Titre de la colonne</span>
 <span class="n">min_width</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1"># Taille minimale de la colonne</span>
 <span class="n">max_width</span> <span class="o">=</span> <span class="mi">100</span> <span class="c1"># Taille maximale de la colonne</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="mail">
-<h4>Mail<a class="headerlink" href="#mail" title="Permalink to this headline"></a></h4>
+<div class="section" id="e-mail">
+<h4>E-mail<a class="headerlink" href="#e-mail" title="Permalink to this headline"></a></h4>
 <p>Il est possible de personnaliser le message du mail envoyé aux observateurs.
 Pour ce faire il faut modifier les  paramètres <code class="docutils literal notranslate"><span class="pre">MAIL_BODY</span></code> et <code class="docutils literal notranslate"><span class="pre">MAIL_SUBJECT</span></code></p>
 <p>Pour afficher dans le mail des données relatives à l’observation ou au taxon il faut respecter la syntaxe suivante:
 <code class="docutils literal notranslate"><span class="pre">${</span> <span class="pre">d.NOM_PROPRIETE</span> <span class="pre">}</span></code></p>
-<dl class="simple">
-<dt>Liste des propriétés disponibles :</dt><dd><ul class="simple">
+<p>Liste des propriétés disponibles :</p>
+<ul class="simple">
 <li><p>communes : liste des communes</p></li>
 <li><p>medias : Titre, auteur et lien vers le média associée</p></li>
 <li><p>data_link : lien vers l’observation dans son module de saisie</p></li>
 <li><p>tous les champs de la synthèse (acquisition_framework, altitude_max, altitude_min, bio_status, blurring, cd_hab, cd_nom, comment_context, comment_description, date_min, depth_max, depth_min, determiner, diffusion_level, digital_proof, entity_source_pk_value, exist_proof, grp_method, grp_typ, last_action, life_stage, meta_create_date, meta_update_date, meta_v_taxref, meta_validation_date, nat_obj_geo, naturalness, nom_cite, non_digital_proof, obj_count, obs_technique, observation_status, observers, occ_behaviour, occ_stat_biogeo, place_name, precision, sample_number_proof, sensitivity, sex, source, type_count, unique_id_sinp, unique_id_sinp_grp, valid_status, validation_comment)</p></li>
 <li><p>tous les champs du taxon (cd_nom, cd_ref, cd_sup, cd_taxsup, regne, ordre, classe, famille, group1_inpn, group2_inpn, id_rang, nom_complet, nom_habitat, nom_rang, nom_statut, nom_valide, nom_vern)</p></li>
 </ul>
-</dd>
-</dl>
 </div>
 </div>
 </div>
