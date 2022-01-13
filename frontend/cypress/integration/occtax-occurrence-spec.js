@@ -2,7 +2,7 @@ import promisify from 'cypress-promise'
 
 describe("Occtax occurrence creation", () => {
     beforeEach(() => {
-      cy.visit("http://localhost:4200");
+      cy.visit("http://127.0.0.1:4200");
       cy.get("#login").type("admin");
       cy.get("#cdk-step-content-0-0 > form > div:nth-child(2) > input").type(
         "admin"
@@ -11,7 +11,7 @@ describe("Occtax occurrence creation", () => {
     });
 
     it("should create occurrence",  async () => {
-        cy.visit('http://localhost:4200/#/occtax/form/1/taxons');
+        cy.visit('http://127.0.0.1:4200/#/occtax/form/1/taxons');
         // check button sumbit is disabled
         const submitBtn = cy.get("[data-qa='occurrence-add-btn'][disabled='true']");
         // get taxon input which must be as required : .ng-invalid

@@ -1,5 +1,5 @@
 {
     "experimentalStudio" : true,
-    "projectId": "r36uo2"
-
+    "projectId": "r36uo2",
+    "baseUrl": "http://127.0.0.1:4200"
 }
