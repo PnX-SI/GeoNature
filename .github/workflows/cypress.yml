@@ -143,12 +143,14 @@ jobs:
       run: npm run start &
       working-directory: ./frontend
     - name: Cypress run
-      uses: cypress-io/github-action@v2
+      uses: cypress-io/github-action@v1
       with:
         record: true
         working-directory: ./frontend
         # build: npm run build
         # start: npm run start
+        build: npm run cy:run
+        wait-on: http://127.0.0.1:4200
         headless: true
       env: 
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
