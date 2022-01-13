@@ -40,20 +40,20 @@ jobs:
           --health-retries 5
 
     steps:
-    # - name: Add postgis_raster database extension
-    #   if: ${{ matrix.postgis-version >= 3 }}
-    #   run: |
-    #     psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
-    #   env:
-    #     PGPASSWORD: geonatpasswd
-    # - name: Add database extensions
-    #   run: |
-    #     psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "hstore";'
-    #     psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "uuid-ossp";'
-    #     psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "pg_trgm";'
-    #     psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
-      # env:
-      #   PGPASSWORD: geonatpasswd
+    - name: Add postgis_raster database extension
+      if: ${{ matrix.postgis-version >= 3 }}
+      run: |
+        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
+      env:
+        PGPASSWORD: geonatpasswd
+    - name: Add database extensions
+      run: |
+        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "hstore";'
+        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "uuid-ossp";'
+        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "pg_trgm";'
+        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
+      env:
+        PGPASSWORD: geonatpasswd
     - uses: actions/checkout@v2
       with:
         submodules: recursive
@@ -77,32 +77,32 @@ jobs:
           -e file:backend/dependencies/TaxHub#egg=taxhub \
           -e file:backend/dependencies/Utils-Flask-SQLAlchemy#egg=utils-flask-sqlalchemy \
           -e file:backend/dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo
-    # - name: Install database
-    #   run: |
-    #     geonature db upgrade geonature@head -x local-srid=2154
-    #     geonature db autoupgrade -x local-srid=2154
-    #     geonature db upgrade geonature-samples@head
-    #     geonature db upgrade taxonomie_taxons_example@head
+    - name: Install database
+      run: |
+        geonature db upgrade geonature@head -x local-srid=2154
+        geonature db autoupgrade -x local-srid=2154
+        geonature db upgrade geonature-samples@head
+        geonature db upgrade taxonomie_taxons_example@head
 
-    #   env:
-    #     GEONATURE_CONFIG_FILE: config/test_config.toml
-    # - name: Install core modules
-    #   run: |
-    #     geonature install_packaged_gn_module contrib/occtax OCCTAX --build=false
-    #     geonature install_packaged_gn_module contrib/gn_module_occhab OCCHAB --build=false
-    #     geonature install_packaged_gn_module contrib/gn_module_validation VALIDATION --build=false
-    #   env:
-    #     GEONATURE_CONFIG_FILE: config/test_config.toml
-    # - name: Test with pytest
-    #   run: |
-    #     pytest -v --cov --cov-report xml
-      # env:
-      #   GEONATURE_CONFIG_FILE: config/test_config.toml
-    # - name: Upload coverage to Codecov
-    #   if: ${{ matrix.name == 'Debian 11' }}
-    #   uses: codecov/codecov-action@v2
-    #   with:
-    #     flags: pytest
+      env:
+        GEONATURE_CONFIG_FILE: config/test_config.toml
+    - name: Install core modules
+      run: |
+        geonature install_packaged_gn_module contrib/occtax OCCTAX --build=false
+        geonature install_packaged_gn_module contrib/gn_module_occhab OCCHAB --build=false
+        geonature install_packaged_gn_module contrib/gn_module_validation VALIDATION --build=false
+      env:
+        GEONATURE_CONFIG_FILE: config/test_config.toml
+    - name: Test with pytest
+      run: |
+        pytest -v --cov --cov-report xml
+      env:
+        GEONATURE_CONFIG_FILE: config/test_config.toml
+    - name: Upload coverage to Codecov
+      if: ${{ matrix.name == 'Debian 11' }}
+      uses: codecov/codecov-action@v2
+      with:
+        flags: pytest
       # FRONTEND
     - name: Cache node modules
       uses: actions/cache@v1
