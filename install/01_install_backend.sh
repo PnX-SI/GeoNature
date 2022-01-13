@@ -78,24 +78,6 @@ echo "Création du virtual env…"
 python3 -m venv venv
 
 
-echo "Ajout de l'autocomplétion de la commande GeoNature au virtual env..."
-readonly BIN_VENV_DIR="${BASE_DIR}/backend/venv/bin"
-readonly ACTIVATE_FILE="${BIN_VENV_DIR}/activate"
-readonly ASSETS_INSTALL_DIR="${BASE_DIR}/install/assets"
-readonly SRC_COMPLETION_FILE="${ASSETS_INSTALL_DIR}/geonature_bash_completion.sh"
-readonly COMPLETION_FILE_NAME="geonature_completion"
-if [ ! -f "${BIN_VENV_DIR}/${COMPLETION_FILE_NAME}" ]; then
-  cp "${SRC_COMPLETION_FILE}" "${BIN_VENV_DIR}/${COMPLETION_FILE_NAME}"
-fi
-if ! grep -q "${COMPLETION_FILE_NAME}" "${ACTIVATE_FILE}" ; then
-  cp "${ACTIVATE_FILE}" "${ACTIVATE_FILE}.save-$(date +'%f')"
-  cat >> "${ACTIVATE_FILE}" << EOF
-
-# GeoNature command completion
-source "\${VIRTUAL_ENV}/bin/${COMPLETION_FILE_NAME}"
-EOF
-fi
-
 
 echo "Activation du virtual env..."
 source venv/bin/activate
@@ -114,6 +96,28 @@ if [[ "${MODE}" == "dev" ]]; then
   pip install -e "${BASE_DIR}"[tests] -r requirements-common.txt -r requirements-submodules.txt
 else
   pip install -e "${BASE_DIR}" -r requirements.txt
+fi
+
+
+echo "Modification du script 'activate' du virtual env pour sourcer le fichier d'autocomplétion de la commande GeoNature..."
+readonly BIN_VENV_DIR="${BASE_DIR}/backend/venv/bin"
+readonly ACTIVATE_FILE="${BIN_VENV_DIR}/activate"
+readonly COMPLETION_FILE_NAME="geonature_completion"
+if ! grep -q "${COMPLETION_FILE_NAME}" "${ACTIVATE_FILE}" ; then
+  cp "${ACTIVATE_FILE}" "${ACTIVATE_FILE}.save-$(date +'%f')"
+  cat >> "${ACTIVATE_FILE}" << EOF
+
+# GeoNature command completion
+if [[ -f "\${VIRTUAL_ENV}/bin/${COMPLETION_FILE_NAME}" ]]; then
+  source "\${VIRTUAL_ENV}/bin/${COMPLETION_FILE_NAME}"
+fi
+EOF
+fi
+
+
+echo "Ajout du fichier d'autocomplétion de la commande GeoNature au virtual env..."
+if [ ! -f "${BIN_VENV_DIR}/${COMPLETION_FILE_NAME}" ]; then
+  _GEONATURE_COMPLETE=bash_source geonature > "${BIN_VENV_DIR}/${COMPLETION_FILE_NAME}"
 fi
 
 
