@@ -140,7 +140,7 @@ jobs:
         browser: firefox
         record: true
         working-directory: ./frontend
-        build: npm run buid
+        build: npm run build
         start: npm run start
       env: 
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
