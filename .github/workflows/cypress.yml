@@ -7,7 +7,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -53,8 +52,8 @@ jobs:
     #     psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "uuid-ossp";'
     #     psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "pg_trgm";'
     #     psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
-      env:
-        PGPASSWORD: geonatpasswd
+      # env:
+      #   PGPASSWORD: geonatpasswd
     - uses: actions/checkout@v2
       with:
         submodules: recursive
