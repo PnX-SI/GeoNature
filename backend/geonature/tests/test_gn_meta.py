@@ -122,6 +122,23 @@ class TestGNMeta:
         assert acquisition_frameworks['own_af'].is_deletable() == True
         assert acquisition_frameworks['orphan_af'].is_deletable() == False  # DS are attached to this AF
 
+    def test_create_acquisition_framework(self, users):
+        set_logged_user_cookie(self.client, users['user'])
+
+        # Post with only required attributes
+        response = self.client.post(url_for("gn_meta.create_acquisition_framework"), json={
+            "acquisition_framework_name": "test",
+            "acquisition_framework_desc": "desc"})
+
+        assert response.status_code == 200
+
+    def test_create_acquisition_framework_forbidden(self, users):
+        set_logged_user_cookie(self.client, users['noright_user'])
+
+        response = self.client.post(url_for("gn_meta.create_acquisition_framework"), data={})
+
+        assert response.status_code == Forbidden.code
+
     def test_delete_acquisition_framework(self, app, users, acquisition_frameworks, datasets):
         af_id = acquisition_frameworks['orphan_af'].id_acquisition_framework
 
