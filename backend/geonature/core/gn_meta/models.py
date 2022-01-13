@@ -139,7 +139,7 @@ class CorDatasetActor(DB.Model):
     )
 
     role = DB.relationship(User, lazy="joined")
-    organism = relationship(Organisme, lazy="joined")
+    organism = DB.relationship(Organisme, lazy="joined")
 
     @hybrid_property
     def actor(self):
