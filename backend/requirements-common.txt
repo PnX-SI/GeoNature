@@ -10,7 +10,7 @@ flask-cors==3.0.10
 Flask-Mail==0.9.1
 flask-marshmallow==0.14.0
 flask-migrate==2.7.0
-flask-script==2.0.5
+flask-script==2.0.6
 flask-sqlalchemy==2.4.4
 Flask-WeasyPrint==0.6
 flask==1.1.1
