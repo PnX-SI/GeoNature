@@ -139,9 +139,6 @@ jobs:
       run : geonature dev_back &
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
-    - name: run frontend
-      run: npm run start &
-      working-directory: ./frontend
     - name: Cypress run
       uses: cypress-io/github-action@v1
       with:
