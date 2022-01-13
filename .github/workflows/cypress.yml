@@ -66,13 +66,14 @@ jobs:
       run: |
         sudo apt install -y libgdal-dev
     
-    - name: Install and cache dependencies
+    - name: Cache dependencies
       uses: actions/cache@v2
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements-common.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
+    - name: Install python dependencies
       run: |
         python -m pip install --upgrade pip
         python -m pip install \
