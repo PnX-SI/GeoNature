@@ -1,6 +1,6 @@
 describe("Geonature connection", () => {
     beforeEach(() => {
-      cy.visit("http://127.0.0.1:4200");
+      cy.visit("http://localhost:4200");
       cy.get("#login").type("admin");
       cy.get("#cdk-step-content-0-0 > form > div:nth-child(2) > input").type(
         "admin"
@@ -10,7 +10,7 @@ describe("Geonature connection", () => {
 
     it("should create relevé", () => {
         cy.get(
-          '[href="http://127.0.0.1:4200/#/occtax"] > .sidenav-item > .mat-list-item-content > .module-name'
+          '[href="http://localhost:4200/#/occtax"] > .sidenav-item > .mat-list-item-content > .module-name'
         ).click();
         cy.get(".button-success > .mat-button-wrapper").click();
         cy.get(".leaflet-container").click();
