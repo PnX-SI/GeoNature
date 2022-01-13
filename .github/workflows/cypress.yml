@@ -78,22 +78,22 @@ jobs:
           -e file:backend/dependencies/TaxHub#egg=taxhub \
           -e file:backend/dependencies/Utils-Flask-SQLAlchemy#egg=utils-flask-sqlalchemy \
           -e file:backend/dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo
-    - name: Install database
-      run: |
-        geonature db upgrade geonature@head -x local-srid=2154
-        geonature db autoupgrade -x local-srid=2154
-        geonature db upgrade geonature-samples@head
-        geonature db upgrade taxonomie_taxons_example@head
+    # - name: Install database
+    #   run: |
+    #     geonature db upgrade geonature@head -x local-srid=2154
+    #     geonature db autoupgrade -x local-srid=2154
+    #     geonature db upgrade geonature-samples@head
+    #     geonature db upgrade taxonomie_taxons_example@head
 
-      env:
-        GEONATURE_CONFIG_FILE: config/test_config.toml
-    - name: Install core modules
-      run: |
-        geonature install_packaged_gn_module contrib/occtax OCCTAX --build=false
-        geonature install_packaged_gn_module contrib/gn_module_occhab OCCHAB --build=false
-        geonature install_packaged_gn_module contrib/gn_module_validation VALIDATION --build=false
-      env:
-        GEONATURE_CONFIG_FILE: config/test_config.toml
+    #   env:
+    #     GEONATURE_CONFIG_FILE: config/test_config.toml
+    # - name: Install core modules
+    #   run: |
+    #     geonature install_packaged_gn_module contrib/occtax OCCTAX --build=false
+    #     geonature install_packaged_gn_module contrib/gn_module_occhab OCCHAB --build=false
+    #     geonature install_packaged_gn_module contrib/gn_module_validation VALIDATION --build=false
+    #   env:
+    #     GEONATURE_CONFIG_FILE: config/test_config.toml
     # - name: Test with pytest
     #   run: |
     #     pytest -v --cov --cov-report xml
@@ -118,6 +118,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name : install frontend
       run: |
+        cp ./config/settings.ini.sample ./config/settings.ini 
         ./install/04_install_frontend.sh --dev
         npm run build
 
