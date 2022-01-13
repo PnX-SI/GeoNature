@@ -201,10 +201,10 @@
         "e2e-ci": {
           "builder": "@cypress/schematic:cypress",
           "options": {
-            "browser": "firefox",
             "devServerTarget": "geonature:serve-coverage",
             "headless": true,
-            "watch": false
+            "watch": false,
+            "report": true
           },
           "configurations": {
             "production": {
@@ -224,7 +224,8 @@
           "options": {
             "devServerTarget": "geonature-e2e:serve",
             "watch": true,
-            "headless": false
+            "headless": true,
+            "report": true
           },
           "configurations": {
             "production": {
