@@ -1,25 +1,22 @@
-from geoalchemy2.shape import from_shape
-import pytest
-from io import StringIO
 import csv
+from io import StringIO
 
-from geoalchemy2.shape import to_shape
+import pytest
+from flask import current_app, url_for
+from geoalchemy2.shape import from_shape, to_shape
 from geojson import Point
-
-from flask import url_for, current_app
-from werkzeug.exceptions import Unauthorized, Forbidden, Conflict, BadRequest, NotFound
-from sqlalchemy import func
-
-from geonature.utils.env import db
-from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_permissions.models import TActions, TFilters, CorRoleActionFilterModuleObject
-from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
-from geonature.core.gn_meta.routes import get_af_from_id
-
 from pypnusershub.db.tools import user_to_token
+from sqlalchemy import func
+from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound, Unauthorized
 
-from .fixtures import acquisition_frameworks, datasets, synthese_data, source
-from .utils import set_logged_user_cookie, logged_user_headers
+from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets
+from geonature.core.gn_meta.routes import get_af_from_id
+from geonature.core.gn_permissions.models import CorRoleActionFilterModuleObject, TActions, TFilters
+from geonature.utils.env import db
+
+from .fixtures import acquisition_frameworks, datasets, source, synthese_data
+from .utils import logged_user_headers, set_logged_user_cookie
 
 HIGH_ID = 12000
 
