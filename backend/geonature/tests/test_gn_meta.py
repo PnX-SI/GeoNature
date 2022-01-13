@@ -537,10 +537,12 @@ class TestGNMeta:
 
         assert found_af is None
 
-    def test_get_af_from_id_raise(self):
+    def test_get_af_from_id_none(self):
         id_af = 1
         af_list = [
             {"test": 2}
             ]
         
         found_ad = get_af_from_id(id_af=id_af, af_list=af_list)
+
+        assert found_ad is None
