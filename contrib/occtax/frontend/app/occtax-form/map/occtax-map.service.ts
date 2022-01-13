@@ -2,9 +2,8 @@ import { Injectable } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
 import { isEqual } from "lodash";
 import { BehaviorSubject, Observable, of } from "rxjs";
-import { distinctUntilChanged } from "rxjs/operators";
+import { distinctUntilChanged, tap, filter, map, switchMap } from "rxjs/operators";
 import { GeoJSON } from "leaflet";
-import { filter, map, switchMap } from "rxjs/operators";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 
@@ -51,7 +50,7 @@ export class OcctaxFormMapService {
             : of(this.occtaxParamS.get("geometry"));
         })
       )
-      .subscribe((geometry) => {        
+      .subscribe((geometry) => {
         this._geometry.setValue(geometry)
       });
 
@@ -60,7 +59,11 @@ export class OcctaxFormMapService {
     this._geometry.valueChanges
       .pipe(
         distinctUntilChanged(),
-        filter( () => this._geometry.valid),
+        tap(() => {
+          this.markerCoordinates = null;
+          this.leafletDrawGeoJson = null;
+        }),
+        filter(() => this._geometry.valid),
         map((geojson) => geojson.geometry ? geojson.geometry : geojson)
       )
       .subscribe((geojson) => {                
