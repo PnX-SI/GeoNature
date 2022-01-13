@@ -139,13 +139,16 @@ jobs:
       run : geonature dev_back &
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
+    - name: run frontend
+      run: npm run start &
+      working-directory: ./frontend
     - name: Cypress run
       uses: cypress-io/github-action@v2
       with:
         record: true
         working-directory: ./frontend
-        build: npm run build
-        start: npm run start
+        # build: npm run build
+        # start: npm run start
         headless: true
       env: 
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
