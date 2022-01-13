@@ -108,6 +108,7 @@ docs/_build/
 frontend/cypress/videos
 frontend/cypress/screenshots
 frontend/coverage
+frontend/.nyc_output
 
 # PyBuilder
 target/
