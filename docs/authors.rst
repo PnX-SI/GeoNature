@@ -40,7 +40,7 @@ Contributeurs
 * Sylvain Montagner (Parc naturel régional de Normandie-Maine)
 * Patrick Kappeler (Natural Solutions)
 * Julien Corny (Natural Solutions)
-* Jean-Brieuc Lehébel-Péron (Gretia)
+* Jean-Brieuc Lehébel-Péron (GRETIA)
 * Jean-Baptiste Desbas (Picardie Nature)
 * Romain Baghi (NEO)
 * Sébastien Grimault
@@ -57,4 +57,8 @@ Contributeurs
 * David Michallet (CEN 38)
 * Rhandy Grard (Freelance / Natural Solutions)
 * Maxime Toma (LPO France)
-* Adrien Pajot (Parc national des Ecrins)
+* Adrien Pajot (Natural Solutions)
+* Maxime Vergez (Natural Solutions)
+* Aurélie Jambon (Natural Solutuons)
+* Julien Graziani (Natural Solutions)
+* Ophélie Da Silva (Natural Solutions)
