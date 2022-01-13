@@ -29,8 +29,7 @@ def check_cruved_scope(
     module_code=None,
     object_code=None,
     redirect_on_expiration=None,
-    redirect_on_invalid_token=None
-    *,
+    redirect_on_invalid_token=None,
     get_scope=True,
 ):
     """
