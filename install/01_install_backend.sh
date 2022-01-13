@@ -78,6 +78,11 @@ echo "Création du virtual env…"
 python3 -m venv venv
 
 
+
+echo "Activation du virtual env..."
+source venv/bin/activate
+
+
 echo "Installation des dépendances Python..."
 pip install --upgrade "pip>=19.3"  # https://www.python.org/dev/peps/pep-0440/#direct-references
 if [[ "${MODE}" == "dev" ]]; then
@@ -108,10 +113,6 @@ if [[ -f "\${VIRTUAL_ENV}/bin/${COMPLETION_FILE_NAME}" ]]; then
 fi
 EOF
 fi
-
-
-echo "Activation du virtual env..."
-source venv/bin/activate
 
 
 echo "Ajout du fichier d'autocomplétion de la commande GeoNature au virtual env..."
