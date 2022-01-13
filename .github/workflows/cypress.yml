@@ -144,9 +144,7 @@ jobs:
       with:
         record: true
         working-directory: ./frontend
-        # build: npm run build
-        # start: npm run start
-        build: npm run cy:run
+        command: npm run e2e:ci
         wait-on: http://127.0.0.1:4200
         headless: true
       env: 
