@@ -40,7 +40,15 @@ from flask.cli import FlaskGroup
 log = logging.getLogger()
 
 
-@click.group(cls=FlaskGroup, create_app=create_app)
+def normalize(name):
+    return name.replace("_", "-")
+
+
+@click.group(
+    cls=FlaskGroup,
+    create_app=create_app,
+    context_settings={"token_normalize_func": normalize},
+)
 @click.version_option(version=GEONATURE_VERSION)
 @click.pass_context
 def main(ctx):

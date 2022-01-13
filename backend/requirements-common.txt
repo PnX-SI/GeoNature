@@ -1,7 +1,9 @@
 chardet==3.0.4
-click==6.7
+click==8.0.3
+click-default-group==1.2.2
+click-plugins==1.1.1
 docutils==0.15.2
-fiona==1.8.13.post1
+fiona==1.8.20
 flask_wtf==0.14.3
 Flask-Admin==1.5.6
 flask-cors==3.0.10
