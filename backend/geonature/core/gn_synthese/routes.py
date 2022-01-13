@@ -147,8 +147,8 @@ def get_observations_for_web(info_role):
         .order_by(VSyntheseForWebApp.date_min.desc())
     )
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
-    synthese_query_class.filter_query_all_filters(info_role)
-    result = DB.engine.execute(synthese_query_class.query.limit(result_limit))
+    # synthese_query_class.filter_query_all_filters(info_role)
+    result = DB.session.execute(synthese_query_class.query.limit(result_limit))
     geojson_features = []
     for r in result:
         properties = {
