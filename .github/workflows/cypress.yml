@@ -145,7 +145,7 @@ jobs:
     # - name: run Taxhub
     #   run: flak run &
     #   working-directory: ./backend/dependencies/Taxhub/apptax
-    # - name: Cypress run
+    - name: Cypress run
       uses: cypress-io/github-action@v2
       with:
         record: true
