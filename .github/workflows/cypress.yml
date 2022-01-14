@@ -3,7 +3,10 @@ name: cypress
 on:
   push:
     branches:
-      - gh-test
+      - angular12
+  pull_request:
+    branches:
+      - angular12
 
 jobs:
   build:
@@ -135,12 +138,15 @@ jobs:
         ./install/04_install_frontend.sh --ci
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
-    - name: run backend
+    - name: run GN
       run : geonature dev_back &
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
-    - name: Cypress run
-      uses: cypress-io/github-action@v1
+    # - name: run Taxhub
+    #   run: flak run &
+    #   working-directory: ./backend/dependencies/Taxhub/apptax
+    # - name: Cypress run
+      uses: cypress-io/github-action@v2
       with:
         record: true
         working-directory: ./frontend
