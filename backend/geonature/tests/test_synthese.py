@@ -19,7 +19,7 @@ from .utils import logged_user_headers, set_logged_user_cookie
 
 
 @pytest.fixture()
-def unexited_id():
+def unexisted_id():
     return db.session.query(func.max(TDatasets.id_dataset)).scalar() + 1
 
 
@@ -281,14 +281,14 @@ class TestSynthese:
 
         assert response.json == len(set(synt.cd_nom for synt in synthese_data))
 
-    def test_get_taxa_count_id_dataset(self, synthese_data, datasets, unexited_id):
+    def test_get_taxa_count_id_dataset(self, synthese_data, datasets, unexisted_id):
         id_dataset = datasets['own_dataset'].id_dataset
         url = 'gn_synthese.get_taxa_count'
 
         response = self.client.get(url_for(url),
                                    query_string={'id_dataset': id_dataset})
         response_empty = self.client.get(url_for(url),
-                                   query_string={'id_dataset': unexited_id})
+                                   query_string={'id_dataset': unexisted_id})
 
         assert response.json == len(set(synt.cd_nom for synt in synthese_data))
         assert response_empty.json == 0
@@ -300,7 +300,7 @@ class TestSynthese:
 
         assert response.json == nb_observations
     
-    def test_get_observation_count_id_dataset(self, synthese_data, datasets, unexited_id):
+    def test_get_observation_count_id_dataset(self, synthese_data, datasets, unexisted_id):
         id_dataset = datasets['own_dataset'].id_dataset
         nb_observations = len(synthese_data)
         url = 'gn_synthese.get_observation_count'
@@ -308,7 +308,7 @@ class TestSynthese:
         response = self.client.get(url_for(url),
                                    query_string={'id_dataset': id_dataset})
         response_empty = self.client.get(url_for(url),
-                                   query_string={'id_dataset': unexited_id})
+                                   query_string={'id_dataset': unexisted_id})
 
         assert response.json == nb_observations
         assert response_empty.json == 0
@@ -326,7 +326,7 @@ class TestSynthese:
             pytest.approx(coord, 0.9) for coord in [geom.geometry.x, geom.geometry.y]
         ]
     
-    def test_get_bbox_id_dataset(self, synthese_data, datasets, unexited_id):
+    def test_get_bbox_id_dataset(self, synthese_data, datasets, unexisted_id):
         id_dataset = datasets['own_dataset'].id_dataset
         # In synthese, all entries are located at the same point
         geom = Point(geometry=to_shape(synthese_data[0].the_geom_4326))
@@ -335,7 +335,7 @@ class TestSynthese:
         response = self.client.get(url_for(url),
                                    query_string={'id_dataset': id_dataset})
         response_empty = self.client.get(url_for(url),
-                                         query_string={'id_dataset': unexited_id})
+                                         query_string={'id_dataset': unexisted_id})
         data = json.loads(response.data.decode('utf8'))
 
         assert response.status_code == 200
