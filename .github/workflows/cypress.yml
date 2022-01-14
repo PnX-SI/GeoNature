@@ -3,7 +3,10 @@ name: cypress
 on:
   push:
     branches:
-      - gh-test
+      - angular12
+  pull_request:
+    branches:
+      - angular12
 
 jobs:
   build:

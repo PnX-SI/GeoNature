@@ -1,3 +1,6 @@
+const path = require('path');
+const fs = require('fs');
+
 /// <reference types="cypress" />
 // ***********************************************************
 // This example plugins/index.js can be used to load plugins
@@ -26,4 +29,7 @@ module.exports = (on, config) => {
   // with any changed environment variables
   return config
 }
+
+
+
 
