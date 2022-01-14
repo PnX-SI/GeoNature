@@ -144,7 +144,9 @@ jobs:
       with:
         record: true
         working-directory: ./frontend
-        command: npm run e2e:ci
+        start: npm run start
+        wait-on: "http://127.0.0.1:4200"
+        # command: npm run e2e:ci
         headless: true
       env: 
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
