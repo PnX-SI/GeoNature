@@ -18,7 +18,11 @@ from geonature.utils.env import db
 from .fixtures import acquisition_frameworks, datasets, source, synthese_data
 from .utils import logged_user_headers, set_logged_user_cookie
 
-HIGH_ID = 12000
+
+# TODO: maybe move it to global fixture
+@pytest.fixture()
+def unexisted_id():
+    return db.session.query(func.max(TDatasets.id_dataset)).scalar() + 1
 
 
 @pytest.fixture
@@ -439,10 +443,10 @@ class TestGNMeta:
         assert response.status_code == 200
         assert response.json.get("dataset_name") == new_name
 
-    def test_update_dataset_not_found(self, users, datasets):
+    def test_update_dataset_not_found(self, users, datasets, unexisted_id):
         set_logged_user_cookie(self.client, users["user"])
 
-        response = self.client.patch(url_for("gn_meta.update_dataset", id_dataset=HIGH_ID))
+        response = self.client.patch(url_for("gn_meta.update_dataset", id_dataset=unexisted_id))
 
         assert response.status_code == NotFound.code
 
@@ -501,7 +505,7 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.uuid_report"))
         assert response.status_code == 200
 
-    def test_uuid_report_with_dataset_id(self, synthese_corr, users, datasets, synthese_data):
+    def test_uuid_report_with_dataset_id(self, synthese_corr, users, datasets, synthese_data, unexisted_id):
         dataset_id = datasets["own_dataset"].id_dataset
 
         set_logged_user_cookie(self.client, users["user"])
@@ -510,7 +514,7 @@ class TestGNMeta:
             url_for("gn_meta.uuid_report"), query_string={"id_dataset": dataset_id}
         )
         response_empty = self.client.get(
-            url_for("gn_meta.uuid_report"), query_string={"id_dataset": HIGH_ID}
+            url_for("gn_meta.uuid_report"), query_string={"id_dataset": unexisted_id}
         )
 
         # Since response is a csv in the string format in bytes, we must
