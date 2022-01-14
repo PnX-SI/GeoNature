@@ -394,6 +394,7 @@
   <ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence|async); else modifButton">
     <button 
       id="add-occ"
+      data-qa="occurrence-add-btn"
       mat-raised-button
       class="button-success uppercase" 
       matTooltip="Enregistrer ce taxon"
