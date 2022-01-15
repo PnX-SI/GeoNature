@@ -88,7 +88,7 @@ Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre ad
 
 :Note:
 
-    Par défaut la base de données est accessible uniquement localement par la machine où elle est installée. Pour y accéder depuis une autre machine (pour s'y connecter avec QGIS, pgAdmin ou autre), ouvrez-en les connexions. Voir la documentation https://github.com/PnEcrins/GeoNature-atlas/blob/master/docs/installation.rst#acc%C3%A9der-%C3%A0-votre-bdd. Attention si vous redémarrez PostgreSQL (``sudo service postgresql restart``), il faut ensuite redémarrer les API GeoNature et TaxHub (``sudo supervisorctl reload``).
+    Par défaut et par mesure de sécurité, la base de données est accessible uniquement localement par la machine où elle est installée. Pour y accéder depuis une autre machine (pour s'y connecter avec QGIS, pgAdmin ou autre), ouvrez-en les connexions. Voir la documentation https://github.com/PnEcrins/GeoNature-atlas/blob/master/docs/installation.rst#acc%C3%A9der-%C3%A0-votre-bdd. Attention si vous redémarrez PostgreSQL (``sudo service postgresql restart``), il faut ensuite redémarrer les API GeoNature et TaxHub (``sudo systemctl restart geonature.service``, ``sudo systemctl restart usershub.service`` et ``sudo systemctl restart taxhub.service``). Cependant, exposer la base de données sur internet n'est pas recommandé. Il est préférable de se connecter via un tunnel ssh. Qgis et la plupart des outils d'administration de base de données permettent d'établir une connexion à la base de cette manière.
 
 :Note:
 
