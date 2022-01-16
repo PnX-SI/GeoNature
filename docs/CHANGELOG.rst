@@ -2,6 +2,17 @@
 CHANGELOG
 =========
 
+2.9.1 (unreleased)
+------------------
+
+**🚀 Nouveautés**
+
+* 
+
+**🐛 Corrections**
+
+* Correction des redirections dans la liste des taxons du formulaire des JDD (#1438 par @gildeluermoz)
+
 2.9.0 - Actias luna (2022-01-13)
 --------------------------------
 
@@ -35,7 +46,7 @@ CHANGELOG
 * Association automatique et paramétrable des jeux de données personnels auto-générés à des modules (Occtax par défaut) (#1555)
 * Utilisation du C du CRUVED de l'utilisateur pour lister les jeux de données dans lesquels il peut ajouter des données dans les différents modules (et non plus le R du CRUVED sur GeoNature) (#659)
 
-**Corrections**
+**🐛 Corrections**
 
 * [OCCTAX] Correction de l'enregistrement des dénombrements lors de l'enchainement des relevés (#1479 par @jbrieuclp)
 * [OCCTAX] Correction du filtre du champs "Habitat" par typologie d'habitat
