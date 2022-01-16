@@ -84,7 +84,6 @@ def upgrade():
         unique_id_sinp_grp = rel.unique_id_sinp_grp,
         id_dataset = rel.id_dataset,
         id_digitiser = rel.id_digitiser,
-        id_nomenclature_tech_collect_campanule = rel.id_nomenclature_tech_collect_campanule,
         id_nomenclature_grp_typ = rel.id_nomenclature_grp_typ,
         date_min = date_trunc('day',rel.date_min)+COALESCE(rel.hour_min,'00:00:00'::time),
         date_max = date_trunc('day',rel.date_max)+COALESCE(rel.hour_max,'00:00:00'::time),
@@ -132,7 +131,7 @@ def upgrade():
         INNER JOIN pr_occtax.t_occurrences_occtax occ ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
         INNER JOIN pr_occtax.t_releves_occtax rel ON occ.id_releve_occtax = rel.id_releve_occtax
         LEFT JOIN observers ON rel.id_releve_occtax = observers.id_releve_occtax
-        WHERE s.unique_id_sinp = counting.unique_id_sinp_occtax AND s.cd_nom <> occ.cd_nom;
+        WHERE synthese.unique_id_sinp = counting.unique_id_sinp_occtax AND s.cd_nom <> occ.cd_nom;
     """)
  
     op.execute("""
