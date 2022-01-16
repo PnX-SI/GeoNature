@@ -126,6 +126,7 @@
             <small>Précision du pointage (m)</small>
             <input
               type="number"
+              onwheel="this.blur()"
               class="form-control form-control-sm"
               placeholder="Précision du pointage"
               [formControl]="releveParamForm.get('precision')"
@@ -229,6 +230,7 @@
             <input
               class="form-control form-control-sm"
               type="number"
+              onwheel="this.blur()"
               [formControl]="releveParamForm.get('altitude_min')"
             >
           </div>
@@ -242,6 +244,7 @@
             <input
               class="form-control form-control-sm"
               type="number"
+              onwheel="this.blur()"
               [formControl]="releveParamForm.get('altitude_max')"
             >
           </div>
@@ -256,6 +259,7 @@
             <input
               class="form-control form-control-sm"
               type="number"
+              onwheel="this.blur()"
               [formControl]="releveParamForm.get('depth_min')"
             >
           </div>
@@ -268,6 +272,7 @@
             <input
               class="form-control form-control-sm"
               type="number"
+              onwheel="this.blur()"
               [formControl]="releveParamForm.get('depth_max')"
             >
           </div>
@@ -564,6 +569,7 @@
             <input
               class="form-control form-control-sm"
               type="number"
+              onwheel="this.blur()"
               min="0"
               [formControl]="countingParamForm.get('count_min')"
             >
@@ -577,6 +583,7 @@
             <input
               class="form-control form-control-sm"
               type="number"
+              onwheel="this.blur()"
               min="0"
               [formControl]="countingParamForm.get('count_max')"
             >

@@ -56,6 +56,7 @@
       [formControl]="form.get(formDefComp.attribut_name)"
       id="{{formDefComp.attribut_name}}_{{rand}}"
       type="number"
+      onwheel="this.blur()"
       min="{{formDefComp.min}}"
       max="{{formDefComp.max}}"
     >
