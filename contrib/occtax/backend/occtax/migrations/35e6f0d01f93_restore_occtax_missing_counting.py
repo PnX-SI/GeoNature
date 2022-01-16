@@ -131,7 +131,7 @@ def upgrade():
         INNER JOIN pr_occtax.t_occurrences_occtax occ ON counting.id_occurrence_occtax = occ.id_occurrence_occtax
         INNER JOIN pr_occtax.t_releves_occtax rel ON occ.id_releve_occtax = rel.id_releve_occtax
         LEFT JOIN observers ON rel.id_releve_occtax = observers.id_releve_occtax
-        WHERE synthese.unique_id_sinp = counting.unique_id_sinp_occtax AND s.cd_nom <> occ.cd_nom;
+        WHERE synthese.unique_id_sinp = counting.unique_id_sinp_occtax AND synthese.cd_nom <> occ.cd_nom;
     """)
  
     op.execute("""
