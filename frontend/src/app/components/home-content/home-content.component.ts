@@ -35,9 +35,6 @@ export class HomeContentComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    let gn_module = this._moduleService.getModule('GEONATURE');
-    gn_module.module_label = 'Accueil';
-    this._globalSub.currentModuleSubject.next(gn_module);
     this.getI18nLocale();
 
     this._SideNavService.sidenav.open();
