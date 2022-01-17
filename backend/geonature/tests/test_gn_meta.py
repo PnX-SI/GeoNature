@@ -505,7 +505,9 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.uuid_report"))
         assert response.status_code == 200
 
-    def test_uuid_report_with_dataset_id(self, synthese_corr, users, datasets, synthese_data, unexisted_id):
+    def test_uuid_report_with_dataset_id(
+        self, synthese_corr, users, datasets, synthese_data, unexisted_id
+    ):
         dataset_id = datasets["own_dataset"].id_dataset
 
         set_logged_user_cookie(self.client, users["user"])
