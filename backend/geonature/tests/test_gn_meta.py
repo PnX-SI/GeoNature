@@ -3,11 +3,10 @@ from io import StringIO
 import uuid
 
 import pytest
-from flask import current_app, url_for
+from flask import url_for
 from flask_sqlalchemy import BaseQuery
-from geoalchemy2.shape import from_shape, to_shape
+from geoalchemy2.shape import to_shape
 from geojson import Point
-from pypnusershub.db.tools import user_to_token
 from sqlalchemy import func
 from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound, Unauthorized
 
