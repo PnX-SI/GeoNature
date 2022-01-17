@@ -1,11 +1,13 @@
 import pytest
+import uuid
+from flask_sqlalchemy import BaseQuery
 
 from flask import url_for, current_app
 from werkzeug.exceptions import Unauthorized, Forbidden, Conflict, BadRequest, NotFound
 from sqlalchemy import func
 
 from geonature.utils.env import db
-from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
+from geonature.core.gn_meta.models import CorAcquisitionFrameworkActor, CorDatasetActor, TDatasets, TAcquisitionFramework
 
 from pypnusershub.db.tools import user_to_token
 
@@ -109,7 +111,6 @@ class TestGNMeta:
 
         response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
         assert response.status_code == 204
-
 
     def test_get_acquisition_frameworks(self, users):
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks"))
@@ -294,3 +295,83 @@ class TestGNMeta:
         set_logged_user_cookie(self.client, users['user'])
         response = self.client.get(url_for("gn_meta.uuid_report"))
         assert response.status_code == 200
+
+    def test__get_create_scope(self, users) :
+        
+        modcode = 'METADATA'
+        set_logged_user_cookie(self.client, users['user'])
+        noright = users['noright_user']
+        associate = users['associate_user']
+        admin = users['admin_user']
+
+        create = TDatasets.query._get_create_scope(module_code = modcode)
+        norightcreate = TDatasets.query._get_create_scope(module_code = modcode, user = noright)
+        associatecreate = TDatasets.query._get_create_scope(module_code = modcode, user = associate)
+        admincreate = TDatasets.query._get_create_scope(module_code = modcode, user = admin)
+
+        assert isinstance(create, int)
+        assert isinstance(admincreate, int)
+        assert create == 2
+        assert norightcreate == 0
+        assert associatecreate == 2
+        assert admincreate == 3
+
+    def test___str__(self, datasets) :
+        dataset = datasets['associate_dataset']
+
+        assert isinstance(dataset.__str__(), str)
+        assert dataset.__str__() == dataset.dataset_name
+        
+    def test_get_id_dataset(self, datasets) :
+        dataset = datasets['associate_dataset']
+        uuid_dataset = dataset.unique_dataset_id
+
+        id_dataset = TDatasets.get_id(uuid_dataset)
+
+        assert id_dataset == dataset.id_dataset
+        assert TDatasets.get_id(uuid.uuid4()) is None
+
+    def test_get_uuid(self, datasets) :
+        dataset = datasets['associate_dataset']
+        id_dataset = dataset.id_dataset
+
+        uuid_dataset = TDatasets.get_uuid(id_dataset)
+
+        assert uuid_dataset == dataset.unique_dataset_id
+        assert TDatasets.get_uuid(None) is None
+
+    def test_get_id_acquisition_framework(self, acquisition_frameworks) :
+        af = acquisition_frameworks['associate_af']
+
+        uuid_af = af.unique_acquisition_framework_id
+        id_af = TAcquisitionFramework.get_id(uuid_af)
+        
+        assert id_af == af.id_acquisition_framework
+        assert TAcquisitionFramework.get_id(uuid.uuid4()) is None
+
+    def test_get_user_af(self, users, acquisition_frameworks):
+        # Test to complete
+        user = users['user']
+
+        afquery = TAcquisitionFramework.get_user_af(user = user, only_query = True)
+        afuser = TAcquisitionFramework.get_user_af(user = user, only_user = True)
+        afdefault = TAcquisitionFramework.get_user_af(user = user)
+
+        assert isinstance(afquery, BaseQuery)
+        assert isinstance(afuser, list)
+        assert len(afuser) == 1
+        assert isinstance(afdefault, list)
+        assert len(afdefault) >= 1
+
+    def test_actor(self, users) :
+        user = users['user']
+
+        empty = CorDatasetActor(role = None, organism = None)
+        roleonly = CorDatasetActor(role = user, organism = None)
+        organismonly = CorDatasetActor(role = None, organism = user.organisme)
+        complete = CorDatasetActor(role = user, organism = user.organisme)
+
+        assert empty.actor is None
+        assert roleonly.actor == user
+        assert organismonly.actor == user.organisme
+        assert complete.actor == user
