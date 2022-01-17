@@ -20,7 +20,9 @@ import { Subject } from 'rxjs';
 export class HomeContentComponent implements OnInit {
 
   public appConfig: any;
+  public showLastObsMap: boolean = false;
   public lastObs: any;
+  public showGeneralStat: boolean = false;
   public generalStat: any;
   public locale: string;
   public destroy$: Subject<boolean> = new Subject<boolean>();
@@ -32,7 +34,18 @@ export class HomeContentComponent implements OnInit {
     private _mapService: MapService,
     private _moduleService: ModuleService,
     private translateService: TranslateService,
-  ) {}
+  ) {
+    // this work here thanks to APP_INITIALIZER on ModuleService
+    let synthese_module = this._moduleService.getModule('SYNTHESE');
+    let synthese_read_scope = synthese_module ? synthese_module.cruved['R'] : 0;
+
+    if (AppConfig.FRONTEND.DISPLAY_MAP_LAST_OBS && synthese_read_scope > 0) {
+      this.showLastObsMap = true;
+    }
+    if (AppConfig.FRONTEND.DISPLAY_STAT_BLOC && synthese_read_scope > 0) {
+      this.showGeneralStat = true;
+    }
+  }
 
   ngOnInit() {
     this.getI18nLocale();
@@ -40,13 +53,13 @@ export class HomeContentComponent implements OnInit {
     this._SideNavService.sidenav.open();
     this.appConfig = AppConfig;
 
-    if (AppConfig.FRONTEND.DISPLAY_MAP_LAST_OBS) {
+    if (this.showLastObsMap) {
       this._syntheseApi.getSyntheseData({ limit: 100 }).subscribe(result => {
         this.lastObs = result.data;
       });
     }
 
-    if (AppConfig.FRONTEND.DISPLAY_STAT_BLOC) {
+    if (this.showGeneralStat) {
       this.computeStatsBloc();
     }
   }
