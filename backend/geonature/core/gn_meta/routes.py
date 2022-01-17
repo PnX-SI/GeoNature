@@ -601,13 +601,7 @@ def get_acquisition_frameworks_list(info_role):
     nested_serialization = True if nested_serialization == "true" else False
     exclude_fields = []
     if "excluded_fields" in params:
-        exclude_fields = params.get("excluded_fields")
-        try:
-            # TODO: exclude_fields seems to be alaways a str
-            # No use to try except it
-            exclude_fields = exclude_fields.split(',')
-        except:
-            raise BadRequest("Malformated parameter 'excluded_fields'")
+        exclude_fields = params.get("excluded_fields").split(',')
 
     if not nested_serialization:
         # exclude all relationships from serialization if nested = false
