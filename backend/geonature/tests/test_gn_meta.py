@@ -1,6 +1,6 @@
 import csv
-from io import StringIO
 import uuid
+from io import StringIO
 
 import pytest
 from flask import url_for
@@ -11,11 +11,10 @@ from sqlalchemy import func
 from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound, Unauthorized
 
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets
+from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
 from geonature.core.gn_meta.routes import get_af_from_id
 from geonature.core.gn_permissions.models import CorRoleActionFilterModuleObject, TActions, TFilters
 from geonature.utils.env import db
-from geonature.core.gn_meta.models import CorDatasetActor, TDatasets, TAcquisitionFramework
 
 from .fixtures import acquisition_frameworks, datasets, source, synthese_data
 from .utils import logged_user_headers, set_logged_user_cookie
