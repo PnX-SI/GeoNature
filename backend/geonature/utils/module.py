@@ -23,7 +23,7 @@ def import_legacy_module(module_object):
         module_dir = GN_EXTERNAL_MODULE / module_dist
         manifest_path = module_dir / 'manifest.toml'
         if not manifest_path.is_file():
-            raise NoManifestFound()
+            raise NoManifestFound(f"Can not find manifest.toml for module {module_object.module_code}")
         module_manifest = load_and_validate_toml(manifest_path, ManifestSchemaProdConf)
         module_blueprint = import_module(f'{module_dist}.backend.blueprint').blueprint
         module_config = {

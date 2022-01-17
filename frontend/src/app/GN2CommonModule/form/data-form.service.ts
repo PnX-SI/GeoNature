@@ -161,7 +161,8 @@ export class DataFormService {
   }
 
   getTaxaBibList() {
-    return this._http.get<any>(`${AppConfig.API_TAXHUB}/biblistes`).map(d => d.data);
+    return Observable.of([])
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/biblistes/`).map(d => d.data);
   }
 
   async getTaxonInfoSynchrone(cd_nom: number): Promise<any> {

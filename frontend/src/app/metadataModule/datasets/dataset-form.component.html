@@ -255,12 +255,25 @@
             <pnx-metadata-actor
               *ngIf="datasetFormS.isMainContact(actorForm)"
               [actorForm]="actorForm"
-              [isRemovable]="idx != 0"
+              [isRemovable]="datasetFormS.actors.controls.length > 1"
               metadataType="dataset"
               (actorFormRemove)="datasetFormS.removeActor(datasetFormS.actors, idx)"
               [defaultTab]="(datasetFormS.dataset | async)?.id_dataset ? 'all': 'organism'"
             >
             </pnx-metadata-actor>
+
+            <ng-container *ngIf="
+              !datasetFormS.actors.valid
+              && datasetFormS.actors.errors?.hasDoublons.index == idx
+            ">
+              <small
+                  class="mat-error">
+                  Ce contact principal est déjà présent dans la liste
+                </small>
+            </ng-container>
+            
+            <p></p>
+        
           </ng-container>
 
               <button
@@ -270,9 +283,11 @@
                 color="primary"
                 matTooltip="Ajouter un autre contact principal"
                 (click)="addMainContact()"
+                [disabled]="!(datasetFormS.genericActorForm.valid && datasetFormS.actors.valid)"
               >
                 <mat-icon>add</mat-icon>
               </button>
+              
         </div>
       </div>
 
@@ -289,6 +304,19 @@
             [defaultTab]="(datasetFormS.dataset | async)?.id_dataset ? 'all': 'organism'"
             >
             </pnx-metadata-actor>
+            <ng-container *ngIf="
+              !datasetFormS.genericActorForm.valid
+              && datasetFormS.genericActorForm.errors?.hasDoublons.index == idx
+            ">
+            <small
+              class="mat-error">
+              Cet acteur est déjà présent dans la liste
+              
+            </small>
+          </ng-container>
+          
+          <p></p>
+
           </ng-container>
           <button
             class="mt-2 float-right"
@@ -297,11 +325,13 @@
             color="primary"
             matTooltip="Ajouter un autre acteur"
             (click)="addGenericContact()"
+            [disabled]="!(datasetFormS.genericActorForm.valid && datasetFormS.actors.valid)"
           >
             <mat-icon>add</mat-icon>
           </button>
 
         </div>
+
       </div>
     </div>
   </div>

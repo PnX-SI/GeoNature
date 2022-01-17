@@ -18,7 +18,8 @@ from geonature.core.gn_commons.repositories import get_table_location_id
 from geonature.core.gn_permissions.models import TObjects
 from geonature.utils.env import DB, db, BACKEND_DIR
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.core.gn_permissions.decorators import login_required
+from geonature.core.gn_permissions.tools import get_scopes_by_action
 from shapely.geometry import asShape
 from geoalchemy2.shape import from_shape
 from geonature.utils.errors import (
@@ -34,16 +35,15 @@ from .medias.routes import *
 
 
 @routes.route("/modules", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
-@json_resp
-def get_modules(info_role):
+@login_required
+def list_modules():
     """
     Return the allowed modules of user from its cruved
     .. :quickref: Commons;
 
     """
     params = request.args
-    q = DB.session.query(TModules).options(
+    q = TModules.query.options(
         joinedload(TModules.objects)
     )
     if "exclude" in params:
@@ -51,39 +51,34 @@ def get_modules(info_role):
     q = q.order_by(TModules.module_order.asc()).order_by(TModules.module_label.asc())
     modules = q.all()
     allowed_modules = []
-    for mod in modules:
-        app_cruved = cruved_scope_for_user_in_module(
-            id_role=info_role.id_role, module_code=mod.module_code, 
-        )[0]
-        if app_cruved["R"] != "0":
-            module = mod.as_dict(fields=["objects"])
-            module["cruved"] = app_cruved
-            if mod.active_frontend:
-                # try to get module url from conf for new modules
-                if module['module_code'] in current_app.config:
-                    module_url = current_app.config[module['module_code']].get('MODULE_URL', mod.module_path)
-                else:
+    for module in modules:
+        cruved = get_scopes_by_action(module_code=module.module_code)
+        if cruved["R"] > 0:
+            module_dict = module.as_dict(fields=["objects"])
+            module_dict["cruved"] = cruved
+            if module.active_frontend:
+                try:
+                    # try to get module url from conf for new modules
+                    module_url = current_app.config[module.module_code]['MODULE_URL']
+                except KeyError:
                     # fallback for legacy modules
-                    module_url = mod.module_path
-                module["module_url"] = "{}/#/{}".format(
+                    module_url = module.module_path
+                module_dict["module_url"] = "{}/#/{}".format(
                     current_app.config["URL_APPLICATION"], module_url
                 )
             else:
-                module["module_url"] = mod.module_external_url
-            module_objects_as_dict = {}
-            # # get cruved for each object
-            for _object in module.get("objects", []):
-                object_cruved, herited = cruved_scope_for_user_in_module(
-                    id_role=info_role.id_role,
-                    module_code=module["module_code"],
-                    object_code=_object["code_object"],
+                module_dict["module_url"] = module.module_external_url
+            module_dict["module_objects"] = {}
+            # get cruved for each object
+            for obj_dict in module_dict["objects"]:
+                obj_code = obj_dict["code_object"]
+                obj_dict["cruved"] = get_scopes_by_action(
+                    module_code=module.module_code,
+                    object_code=obj_code,
                 )
-                _object["cruved"] = object_cruved
-                module_objects_as_dict[_object["code_object"]] = _object
-
-                module["module_objects"] = module_objects_as_dict
-            allowed_modules.append(module)
-    return allowed_modules
+                module_dict["module_objects"][obj_code] = obj_dict
+            allowed_modules.append(module_dict)
+    return jsonify(allowed_modules)
 
 
 @routes.route("/module/<module_code>", methods=["GET"])
@@ -160,6 +155,7 @@ def get_additional_fields():
             'modules',
             'objects',
             'datasets',
+            'type_widget'
         ])
         for d in q.all()
     ])

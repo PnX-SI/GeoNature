@@ -137,7 +137,7 @@ export class AfCardComponent implements OnInit {
         }
         
         setTimeout(() => {
-          this.chart.chart.update();
+          this.chart && this.chart.chart.update();
         }, 1000);
       });
   }

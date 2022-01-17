@@ -91,15 +91,3 @@ taxhub_release=1.9.0
 # laisser vide si vous n'avez pas de proxy
 proxy_http=
 proxy_https=
-
-
-#####################
-### Gunicorn settings
-#####################
-
-app_name=geonature2
-venv_dir=venv
-gun_num_workers=4
-gun_host=0.0.0.0
-gun_port=8000
-gun_timeout=30

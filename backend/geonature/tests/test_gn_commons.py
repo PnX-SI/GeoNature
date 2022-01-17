@@ -59,6 +59,20 @@ def additional_field(app, datasets):
     "temporary_transaction"
 )
 class TestCommons:
+    def test_list_modules(self, users):
+        response = self.client.get(url_for("gn_commons.list_modules"))
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user_cookie(self.client, users['noright_user'])
+        response = self.client.get(url_for("gn_commons.list_modules"))
+        assert response.status_code == 200
+        assert len(response.json) == 0
+
+        set_logged_user_cookie(self.client, users['admin_user'])
+        response = self.client.get(url_for("gn_commons.list_modules"))
+        assert response.status_code == 200
+        assert len(response.json) > 0
+
     def test_list_places(self, place, users):
         response = self.client.get(url_for("gn_commons.list_places"))
         assert response.status_code == Unauthorized.code
@@ -137,3 +151,8 @@ class TestCommons:
             for o in f["objects"]:
                 assert o["code_object"] == "ALL"
             assert({ d['id_dataset'] for d in f["datasets"] } == { d.id_dataset for d in datasets.values() })
+        # check mandatory column are here
+        addi_one = data[0]
+        assert "type_widget" in addi_one
+        assert "bib_nomenclature_type" in addi_one
+        

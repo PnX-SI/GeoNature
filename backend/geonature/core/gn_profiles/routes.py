@@ -185,7 +185,7 @@ def get_observation_score():
             result["valid_altitude"] = False
             result["errors"].append({
             "type": "altitude",
-            "value": f"Le taxon n'a déjà été observé entre {altitude_min}m et {altitude_max}m d'altitude"
+            "value": f"Le taxon n'a jamais été observé à cette altitude ({altitude_min}-{altitude_max}m)"
             })
         # check de l'altitude pour la période donnée
         if len(period_result) > 0:
@@ -205,12 +205,12 @@ def get_observation_score():
                 if altitude_max <= profile.altitude_max and altitude_min >= altitude_min:
                     result["errors"].append({
                         "type": "period",
-                        "value": f"Le taxon a déjà été observé entre {altitude_min} et {altitude_max}m d'altitude mais pas à cette periode de l'année"
+                        "value": f"Le taxon a déjà été observé à cette altitude ({altitude_min}-{altitude_max}m), mais pas à cette periode de l'année"
                     })
                 if result["valid_phenology"]:
                     result["errors"].append({
                         "type": "period",
-                        "value": f"Le taxon a déjà été observé à cette periode de l'année mais pas entre {altitude_min} et {altitude_max}m d'altitude"
+                        "value": f"Le taxon a déjà été observé à cette periode de l'année, mais pas à cette altitude ({altitude_min}-{altitude_max}m)"
                     })
 
         # check du stade de vie pour la periode donnée
@@ -242,12 +242,13 @@ def get_observation_score():
                             result["errors"].append({
                                 "type": "life_stage",
                                 "value": f"""
-                                Le taxon n'a jamais été observé à cette periode entre 
-                                {altitude_min} et {altitude_max}m d'altitude pour le stade de vie {life_stage_value.label_default}"""
+                                Le taxon n'a jamais été observé à cette periode et à cette altitude ({altitude_min}-{altitude_max}m) 
+                                pour le stade de vie {life_stage_value.label_default}"""
                             })
     return result
 
 
 @routes.cli.command()
-def update_vms():
-    DB.session.query(func.gn_profiles.refresh_profiles()).scalar()
+def update():
+    DB.session.execute(func.gn_profiles.refresh_profiles())
+    DB.session.commit()

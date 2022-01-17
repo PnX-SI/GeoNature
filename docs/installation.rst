@@ -122,6 +122,7 @@ Commencer la procédure en se connectant au serveur en SSH avec l'utilisateur li
 
 .. include:: https.rst
 
+.. _cron:
 
 Taches planifiées
 *****************
@@ -134,19 +135,19 @@ Créer une tache planifiée, exécutée tous les jours à minuit dans cet exempl
 
 ::
 
-  sudo nano /etc/cron.d/update_profile
+  sudo nano /etc/cron.d/geonature
 
 Ajouter la ligne suivante en remplaçant "<CHEMIN_ABSOLU_VERS_VENV>" par le chemin absolu vers le virtualenv de GeoNature et "<GEONATURE_USER>" par l'utilisateur Linux de GeoNature :
 
 ::
 
-  0 * * * * <GEONATURE_USER> source <CHEMIN_ABSOLU_VERS_VENV> && geonature profiles update_vms
+  0 * * * * <GEONATURE_USER> <CHEMIN_ABSOLU_VERS_VENV>/bin/geonature profiles update
   
 Exemple :
 
 ::
 
-  0 * * * * geonatadmin source /home/user/geonature/backend/venv/bin/activate && geonature profiles update_vms
+  0 * * * * geonatadmin /home/user/geonature/backend/venv/bin/geonature profiles update
 
 
 Mise à jour de l'application

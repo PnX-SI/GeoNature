@@ -1,4 +1,5 @@
 import datetime
+from uuid import UUID
 
 from flask import g
 from flask_sqlalchemy import BaseQuery
@@ -7,8 +8,8 @@ from geonature.utils.errors import GeonatureApiError
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func, exists
-from sqlalchemy.orm import relationship, exc
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship, exc, synonym
+from sqlalchemy.dialects.postgresql import UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
 from utils_flask_sqla.generic import testDataType
@@ -20,6 +21,28 @@ from utils_flask_sqla.serializers import serializable
 
 from geonature.utils.env import DB, db
 from geonature.core.gn_commons.models import cor_field_dataset, cor_module_dataset
+
+
+class FilterMixin:
+    @classmethod
+    def compute_filter(cls, **kwargs):
+        f = sa.true()
+        for key, value in kwargs.items():
+            if '.' in key:
+                rel_name, key = key.split('.', 1)
+                try:
+                    rel = getattr(cls, rel_name)
+                except AttributeError:
+                    continue
+                remote_cls = rel.property.mapper.class_
+                if not hasattr(remote_cls, 'compute_filter'):
+                    continue
+                _f = remote_cls.compute_filter(**{key: value})
+                if rel.property.uselist:
+                    f &= rel.any(_f)
+                else:
+                    f &= rel.has(_f)
+        return f
 
 
 class CorAcquisitionFrameworkObjectif(DB.Model):
@@ -188,15 +211,11 @@ class CorDatasetTerritory(DB.Model):
     )
 
 
-class CruvedHelper(DB.Model):
+class CruvedMixin:
     """
     Classe abstraite permettant d'ajouter des méthodes de
     contrôle d'accès à la donnée des class TDatasets et TAcquisitionFramework
     """
-
-    __abstract__ = True
-
-
     def get_object_cruved(
         self, user_cruved
     ):
@@ -219,7 +238,7 @@ class CruvedHelper(DB.Model):
 
 
 @serializable
-class TBibliographicReference(CruvedHelper):
+class TBibliographicReference(CruvedMixin, db.Model):
     __tablename__ = "t_bibliographical_references"
     __table_args__ = {"schema": "gn_meta"}
     id_bibliographic_reference = DB.Column(DB.Integer, primary_key=True)
@@ -266,7 +285,7 @@ class TDatasetsQuery(BaseQuery):
             self = self.filter(or_(*ors))
         return self
 
-    def filter_by_generic_params(self, params={}):
+    def filter_by_params(self, params={}):
         if "active" in params:
             self = self.filter(TDatasets.active == bool(params["active"]))
             params.pop("active")
@@ -288,6 +307,8 @@ class TDatasetsQuery(BaseQuery):
                 self = self.order_by(orderCol)
             except AttributeError:
                 raise BadRequest("the attribute to order on does not exist")
+        if "module_code" in params:
+            self = self.filter(TDatasets.modules.any(module_code=params["module_code"]))
         # Generic Filters
         for param in params:
             if param in table_columns:
@@ -321,13 +342,13 @@ class TDatasetsQuery(BaseQuery):
     
 
 @serializable(exclude=['user_actors', 'organism_actors'])
-class TDatasets(CruvedHelper):
+class TDatasets(CruvedMixin, FilterMixin, db.Model):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
     query_class = TDatasetsQuery
 
     id_dataset = DB.Column(DB.Integer, primary_key=True)
-    unique_dataset_id = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
+    unique_dataset_id = DB.Column(UUIDType(as_uuid=True), default=select([func.uuid_generate_v4()]))
     id_acquisition_framework = DB.Column(
         DB.Integer, ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
@@ -479,6 +500,23 @@ class TDatasets(CruvedHelper):
             .scalar()
         )
 
+    @classmethod
+    def compute_filter(cls, **kwargs):
+        f = super().compute_filter(**kwargs)
+        uuid = kwargs.get('uuid')
+        if uuid is not None:
+            try:
+                uuid = UUID(uuid.strip())
+            except TypeError:
+                pass
+            else:
+                f &= TDatasets.unique_dataset_id == uuid
+        name = kwargs.get('name')
+        if name is not None:
+            f &= TDatasets.dataset_name.ilike(f'%{name}%')
+        return f
+
+
 class TAcquisitionFrameworkQuery(BaseQuery):
     def _get_read_scope(self):
         cruved, herited = cruved_scope_for_user_in_module(
@@ -521,16 +559,24 @@ class TAcquisitionFrameworkQuery(BaseQuery):
             self._get_read_scope()
         )
 
+    def filter_by_params(self, params={}):
+        # XXX frontend retro-compatibility
+        selector = params.get('selector')
+        if selector == 'ds':
+            params = { f'datasets.{key}': value for key, value in params.items() }
+        f = TAcquisitionFramework.compute_filter(**params)
+        return self.filter(f)
+
 
 @serializable(exclude=['user_actors', 'organism_actors'])
-class TAcquisitionFramework(CruvedHelper):
+class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
     __tablename__ = "t_acquisition_frameworks"
     __table_args__ = {"schema": "gn_meta"}
     query_class = TAcquisitionFrameworkQuery
 
     id_acquisition_framework = DB.Column(DB.Integer, primary_key=True)
     unique_acquisition_framework_id = DB.Column(
-        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
+        UUIDType(as_uuid=True), default=select([func.uuid_generate_v4()])
     )
     acquisition_framework_name = DB.Column(DB.Unicode)
     acquisition_framework_desc = DB.Column(DB.Unicode)
@@ -638,6 +684,7 @@ class TAcquisitionFramework(CruvedHelper):
         cascade="all,delete-orphan",
         uselist=True,
     )
+    datasets = synonym("t_datasets")
 
     @hybrid_property
     def user_actors(self):
@@ -712,6 +759,22 @@ class TAcquisitionFramework(CruvedHelper):
             return q
         data = q.all()
         return list(set([d.id_acquisition_framework for d in data]))
+
+    @classmethod
+    def compute_filter(cls, **kwargs):
+        f = super().compute_filter(**kwargs)
+        uuid = kwargs.get('uuid')
+        if uuid is not None:
+            try:
+                uuid = UUID(uuid.strip())
+            except TypeError:
+                pass
+            else:
+                f &= TAcquisitionFramework.unique_acquisition_framework_id == uuid
+        name = kwargs.get('name')
+        if name is not None:
+            f &= TAcquisitionFramework.acquisition_framework_name.ilike(f'%{name}%')
+        return f
 
 
 @serializable

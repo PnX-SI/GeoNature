@@ -63,8 +63,9 @@ export class AcquisitionFrameworkFormService {
       cor_volets_sinp: [[]],
       cor_territories: [[], Validators.required],
       cor_af_actor: this.fb.array([],[
-        this.mainContactRequired.bind(this), 
-        this.uniqueMainContactvalidator.bind(this),
+        this.actorFormS.mainContactRequired.bind(this.actorFormS),
+        this.actorFormS.uniqueMainContactvalidator.bind(this.actorFormS),
+        this.actorFormS.checkDoublonsValidator.bind(this.actorFormS)
       ]),
       bibliographical_references: this.fb.array([]),
     });
@@ -85,12 +86,16 @@ export class AcquisitionFrameworkFormService {
     //Observable de this.dataset pour adapter le formulaire selon la donnée
     this.acquisition_framework.asObservable()
       .pipe(
-        tap(() => this.reset()),
+        tap(() => this.reset()),  
         switchMap((af) => af !== null ? this.acquisition_framework.asObservable() : this.initialValues),
-        tap((value) => {
+        map((value) => {
           if (value.cor_af_actor) {
-            value.cor_af_actor.forEach(e => {
-              this.addActor(this.actors);
+            if(this.actorFormS.nbMainContact(value.cor_af_actor) == 0) {
+              console.log(value.cor_af_actor)
+              value.cor_af_actor.push({id_nomenclature_actor_role: this.actorFormS.getIDRoleTypeByCdNomenclature("1")});
+            }
+            value.cor_af_actor.forEach(actor => {
+              this.addActor(this.actors, actor);
             });
           }
           if (value.bibliographical_references) {
@@ -98,6 +103,7 @@ export class AcquisitionFrameworkFormService {
               this.addBibliographicalReferences();
             });
           }
+          return value
         })
       )
       .subscribe((value: any) => this.form.patchValue(value));
@@ -163,29 +169,5 @@ export class AcquisitionFrameworkFormService {
       formArray.removeAt(0)
     }
   }
- 
-  private mainContactRequired(actors: FormArray): { [key: string]: boolean } {
-    let mainContactNb = 0;
- 
-    for (let i = 0; i < actors.controls.length; i++) {
-      if (actors.controls[i].get('id_nomenclature_actor_role').value === this.actorFormS.getIDRoleTypeByCdNomenclature("1")) {
-        mainContactNb = mainContactNb + 1;
-      }
-    }
- 
-    return mainContactNb == 0 ? { mainContactRequired: true } : null;
-  };
- 
-  private uniqueMainContactvalidator(actors: FormArray): { [key: string]: boolean } {
-    let mainContactNb = 0;
- 
-    for (let i = 0; i < actors.controls.length; i++) {
-      if (actors.controls[i].get('id_nomenclature_actor_role').value === this.actorFormS.getIDRoleTypeByCdNomenclature("1")) {
-        mainContactNb = mainContactNb + 1;
-      }
-    }
- 
-    return mainContactNb > 1 ? { uniqueMainContactvalidator: true } : null;
-  };
- 
+
 }

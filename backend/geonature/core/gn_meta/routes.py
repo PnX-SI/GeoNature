@@ -68,7 +68,11 @@ from geonature.core.gn_meta.schemas import (
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
 from werkzeug.datastructures import Headers
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, get_or_fetch_user_cruved
+from geonature.core.gn_permissions.tools import (
+    cruved_scope_for_user_in_module,
+    get_or_fetch_user_cruved,
+    get_scopes_by_action
+)
 from geonature.core.gn_meta.mtd import mtd_utils
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
@@ -117,10 +121,12 @@ def get_datasets():
         query = TDatasets.query.filter_by_creatable(params.pop("create"))
     else:
         query = TDatasets.query.filter_by_readable()
-    query = query.filter_by_generic_params(params)
-    return jsonify(
-        [d.as_dict(fields=fields) for d in query.all()]
-    )
+    query = query.filter_by_params(params)
+    data = [d.as_dict(fields=fields) for d in query.all()]
+    user_agent = request.headers.get('User-Agent')
+    if user_agent and user_agent.split('/')[0].lower() == 'okhttp':  # retro-compatibility for mobile app
+        return jsonify({'data': data})
+    return jsonify(data)
 
 
 def get_af_from_id(id_af, af_list):
@@ -600,6 +606,7 @@ def get_acquisition_frameworks(info_role):
     af_list = (
         TAcquisitionFramework.query
         .filter_by_readable()
+        .filter_by_params(request.args.to_dict())
         .options(
             Load(TAcquisitionFramework).raiseload('*'),
             # for permission checks:
@@ -887,9 +894,8 @@ def acquisitionFrameworkHandler(request, *, acquisition_framework, info_role):
 
     # Test des droits d'édition du acquisition framework si modification
     if acquisition_framework.id_acquisition_framework is not None:
-        user_cruved, _ = cruved_scope_for_user_in_module(
-            id_role=info_role.id_role, module_code="METADATA",
-        )
+        user_cruved = get_scopes_by_action(module_code="META_DATA")
+
         #verification des droits d'édition pour le acquisition framework
         if not acquisition_framework.has_instance_permission(user_cruved['U']):
             raise InsufficientRightsError(

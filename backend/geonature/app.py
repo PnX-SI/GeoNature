@@ -66,7 +66,7 @@ class MyJSONEncoder(JSONEncoder):
 
 
 def create_app(with_external_mods=True):
-    app = Flask(__name__, static_folder="../static")
+    app = Flask(__name__.split('.')[0], static_folder="../static")
 
     app.config.update(config)
     api_uri = urlsplit(app.config['API_ENDPOINT'])
@@ -77,6 +77,7 @@ def create_app(with_external_mods=True):
     app.config['TEMPLATES_AUTO_RELOAD'] = True
     # disable cache for downloaded files (PDF file stat for ex)
     app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+    app.config.from_envvar('GEONATURE_SETTINGS', silent=True)  # optional settings
 
     if len(app.config['SECRET_KEY']) < 20:
         raise Exception("The SECRET_KEY config option must have a length "

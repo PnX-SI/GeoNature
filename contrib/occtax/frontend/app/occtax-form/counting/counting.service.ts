@@ -35,9 +35,7 @@ export class OcctaxFormCountingService {
     private mediaService: MediaService,
   ) {
     this.initForm();
-    this.setObservables();
-    console.log("INIT ??");
-    
+    this.setObservables();    
   }
 
   /**
