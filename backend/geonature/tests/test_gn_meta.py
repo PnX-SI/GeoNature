@@ -571,6 +571,5 @@ class TestGNMeta:
         id_af = 1
         af_list = [{"test": 2}]
 
-        found_ad = get_af_from_id(id_af=id_af, af_list=af_list)
-
-        assert found_ad is None
+        with pytest.raises(KeyError):
+            get_af_from_id(id_af=id_af, af_list=af_list)

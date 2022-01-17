@@ -127,7 +127,7 @@ def get_datasets():
 def get_af_from_id(id_af, af_list):
     found_af = None
     for af in af_list:
-        if af.get("id_acquisition_framework", None) == id_af:
+        if af["id_acquisition_framework"] == id_af:
             found_af = af
             break
     return found_af
