@@ -1,4 +1,5 @@
-flask<2.0
+#flask<2.0
+flask
 flask-sqlalchemy
 flask-cors
 flask-mail
@@ -15,9 +16,11 @@ xmltodict
 sqlalchemy<1.4
 gunicorn>=19.8.0
 toml
+click>=7.0
 
 utils-flask-sqlalchemy
 utils-flask-sqlalchemy-geo
 pypnnomenclature
 pypnusershub>=1.5.9
 pypn_habref_api
+taxhub

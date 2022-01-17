@@ -211,22 +211,26 @@ def source():
 def synthese_data(users, datasets, source):
     now = datetime.datetime.now()
     geom_4326 = from_shape(Point(3.63492965698242, 44.3999389306734), srid=4326)
+    data = []
     with db.session.begin_nested():
-        taxon = Taxref.query.filter_by(cd_nom=713776).one()
-        s = Synthese(id_source=source.id_source,
-                     unique_id_sinp=func.uuid_generate_v4(),
-                     dataset=datasets['own_dataset'],
-                     digitiser=users['self_user'],
-                     nom_cite='Ashmeadopria Kieffer',
-                     cd_nom=taxon.cd_nom,
-                     cd_hab=3,
-                     the_geom_4326=geom_4326,
-                     the_geom_point=geom_4326,
-                     the_geom_local=func.st_transform(geom_4326, 2154),
-                     date_min=now,
-                     date_max=now)
-        db.session.add(s)
-
-    data = [s]
+        taxons = [
+            Taxref.query.filter_by(cd_nom=713776).one(),
+            Taxref.query.filter_by(cd_nom=2497).one()
+        ]
+        for taxon in taxons:
+            s = Synthese(id_source=source.id_source,
+                        unique_id_sinp=func.uuid_generate_v4(),
+                        dataset=datasets['own_dataset'],
+                        digitiser=users['self_user'],
+                        nom_cite=taxon.lb_nom,
+                        cd_nom=taxon.cd_nom,
+                        cd_hab=3,
+                        the_geom_4326=geom_4326,
+                        the_geom_point=geom_4326,
+                        the_geom_local=func.st_transform(geom_4326, 2154),
+                        date_min=now,
+                        date_max=now)
+            db.session.add(s)
+            data.append(s)
 
     return data

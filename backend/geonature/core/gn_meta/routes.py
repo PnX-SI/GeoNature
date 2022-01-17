@@ -116,7 +116,7 @@ def get_datasets():
         query = TDatasets.query.filter_by_creatable(params.pop("create"))
     else:
         query = TDatasets.query.filter_by_readable()
-    query = query.filter_by_generic_params(params)
+    query = query.filter_by_params(params)
     data = [d.as_dict(fields=fields) for d in query.all()]
     user_agent = request.headers.get('User-Agent')
     if user_agent and user_agent.split('/')[0].lower() == 'okhttp':  # retro-compatibility for mobile app
@@ -514,6 +514,7 @@ def get_acquisition_frameworks(info_role):
     af_list = (
         TAcquisitionFramework.query
         .filter_by_readable()
+        .filter_by_params(request.args.to_dict())
         .options(
             Load(TAcquisitionFramework).raiseload('*'),
             # for permission checks:
