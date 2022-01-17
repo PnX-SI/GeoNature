@@ -578,19 +578,19 @@ class TestGNMeta:
         with pytest.raises(KeyError):
             get_af_from_id(id_af=id_af, af_list=af_list)
 
-    def test__get_create_scope(self, users) :
-        
-        modcode = 'METADATA'
-        user = users['user']
-        noright = users['noright_user']
-        associate = users['associate_user']
-        admin = users['admin_user']
+    def test__get_create_scope(self, users):
+
+        modcode = "METADATA"
+        user = users["user"]
+        noright = users["noright_user"]
+        associate = users["associate_user"]
+        admin = users["admin_user"]
         set_logged_user_cookie(self.client, user)
 
-        create = TDatasets.query._get_create_scope(module_code = modcode, user=user)
-        norightcreate = TDatasets.query._get_create_scope(module_code = modcode, user = noright)
-        associatecreate = TDatasets.query._get_create_scope(module_code = modcode, user = associate)
-        admincreate = TDatasets.query._get_create_scope(module_code = modcode, user = admin)
+        create = TDatasets.query._get_create_scope(module_code=modcode, user=user)
+        norightcreate = TDatasets.query._get_create_scope(module_code=modcode, user=noright)
+        associatecreate = TDatasets.query._get_create_scope(module_code=modcode, user=associate)
+        admincreate = TDatasets.query._get_create_scope(module_code=modcode, user=admin)
 
         assert isinstance(create, int)
         assert isinstance(admincreate, int)
@@ -599,14 +599,14 @@ class TestGNMeta:
         assert associatecreate == 2
         assert admincreate == 3
 
-    def test___str__(self, datasets) :
-        dataset = datasets['associate_dataset']
+    def test___str__(self, datasets):
+        dataset = datasets["associate_dataset"]
 
         assert isinstance(dataset.__str__(), str)
         assert dataset.__str__() == dataset.dataset_name
-        
-    def test_get_id_dataset(self, datasets) :
-        dataset = datasets['associate_dataset']
+
+    def test_get_id_dataset(self, datasets):
+        dataset = datasets["associate_dataset"]
         uuid_dataset = dataset.unique_dataset_id
 
         id_dataset = TDatasets.get_id(uuid_dataset)
@@ -614,8 +614,8 @@ class TestGNMeta:
         assert id_dataset == dataset.id_dataset
         assert TDatasets.get_id(uuid.uuid4()) is None
 
-    def test_get_uuid(self, datasets) :
-        dataset = datasets['associate_dataset']
+    def test_get_uuid(self, datasets):
+        dataset = datasets["associate_dataset"]
         id_dataset = dataset.id_dataset
 
         uuid_dataset = TDatasets.get_uuid(id_dataset)
@@ -623,22 +623,22 @@ class TestGNMeta:
         assert uuid_dataset == dataset.unique_dataset_id
         assert TDatasets.get_uuid(None) is None
 
-    def test_get_id_acquisition_framework(self, acquisition_frameworks) :
-        af = acquisition_frameworks['associate_af']
+    def test_get_id_acquisition_framework(self, acquisition_frameworks):
+        af = acquisition_frameworks["associate_af"]
 
         uuid_af = af.unique_acquisition_framework_id
         id_af = TAcquisitionFramework.get_id(uuid_af)
-        
+
         assert id_af == af.id_acquisition_framework
         assert TAcquisitionFramework.get_id(uuid.uuid4()) is None
 
     def test_get_user_af(self, users, acquisition_frameworks):
         # Test to complete
-        user = users['user']
+        user = users["user"]
 
-        afquery = TAcquisitionFramework.get_user_af(user = user, only_query = True)
-        afuser = TAcquisitionFramework.get_user_af(user = user, only_user = True)
-        afdefault = TAcquisitionFramework.get_user_af(user = user)
+        afquery = TAcquisitionFramework.get_user_af(user=user, only_query=True)
+        afuser = TAcquisitionFramework.get_user_af(user=user, only_user=True)
+        afdefault = TAcquisitionFramework.get_user_af(user=user)
 
         assert isinstance(afquery, BaseQuery)
         assert isinstance(afuser, list)
@@ -646,13 +646,13 @@ class TestGNMeta:
         assert isinstance(afdefault, list)
         assert len(afdefault) >= 1
 
-    def test_actor(self, users) :
-        user = users['user']
+    def test_actor(self, users):
+        user = users["user"]
 
-        empty = CorDatasetActor(role = None, organism = None)
-        roleonly = CorDatasetActor(role = user, organism = None)
-        organismonly = CorDatasetActor(role = None, organism = user.organisme)
-        complete = CorDatasetActor(role = user, organism = user.organisme)
+        empty = CorDatasetActor(role=None, organism=None)
+        roleonly = CorDatasetActor(role=user, organism=None)
+        organismonly = CorDatasetActor(role=None, organism=user.organisme)
+        complete = CorDatasetActor(role=user, organism=user.organisme)
 
         assert empty.actor is None
         assert roleonly.actor == user
