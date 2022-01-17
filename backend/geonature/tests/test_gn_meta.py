@@ -581,18 +581,19 @@ class TestGNMeta:
 
         modcode = "METADATA"
         user = users["user"]
-        noright = users["noright_user"]
-        associate = users["associate_user"]
-        admin = users["admin_user"]
         set_logged_user_cookie(self.client, user)
 
         create = TDatasets.query._get_create_scope(module_code=modcode, user=user)
-        norightcreate = TDatasets.query._get_create_scope(module_code=modcode, user=noright)
-        associatecreate = TDatasets.query._get_create_scope(module_code=modcode, user=associate)
-        admincreate = TDatasets.query._get_create_scope(module_code=modcode, user=admin)
+        norightcreate = TDatasets.query._get_create_scope(
+            module_code=modcode, user=users["noright_user"]
+        )
+        associatecreate = TDatasets.query._get_create_scope(
+            module_code=modcode, user=users["associate_user"]
+        )
+        admincreate = TDatasets.query._get_create_scope(
+            module_code=modcode, user=users["admin_user"]
+        )
 
-        assert isinstance(create, int)
-        assert isinstance(admincreate, int)
         assert create == 2
         assert norightcreate == 0
         assert associatecreate == 2
