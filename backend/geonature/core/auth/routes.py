@@ -79,7 +79,7 @@ def loginCas():
             cookie_exp = datetime.datetime.utcnow()
             expiration = current_app.config["COOKIE_EXPIRATION"]
             cookie_exp += datetime.timedelta(seconds=expiration)
-            # generation d'un token
+            user["id_application"] = current_app.config["ID_APP"]
             s = Serializer(current_app.config["SECRET_KEY"], expiration)
             token = s.dumps(user)
             response.set_cookie("token", token, expires=cookie_exp)
