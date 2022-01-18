@@ -13,7 +13,7 @@ import { OcctaxFormMapService } from "../map/occtax-map.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { DatasetStoreService } from '@geonature_common/form/datasets/dataset.service';
-import { MapService } from "@geonature_common/map/map.service.ts"
+import { MapService } from "@geonature_common/map/map.service"
 @Injectable()
 export class OcctaxFormReleveService {
   public userReleveRigth: any;

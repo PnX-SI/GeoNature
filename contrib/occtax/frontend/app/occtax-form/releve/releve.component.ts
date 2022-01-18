@@ -33,7 +33,7 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     public occtaxFormService: OcctaxFormService,
-    private occtaxFormReleveService: OcctaxFormReleveService,
+    public occtaxFormReleveService: OcctaxFormReleveService,
     private occtaxFormMapService: OcctaxFormMapService,
     private commonService: CommonService,
     private _dataService: DataFormService

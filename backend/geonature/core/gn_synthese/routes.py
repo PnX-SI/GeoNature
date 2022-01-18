@@ -148,7 +148,7 @@ def get_observations_for_web(info_role):
     )
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
     synthese_query_class.filter_query_all_filters(info_role)
-    result = DB.engine.execute(synthese_query_class.query.limit(result_limit))
+    result = DB.session.execute(synthese_query_class.query.limit(result_limit))
     geojson_features = []
     for r in result:
         properties = {
@@ -615,7 +615,7 @@ def export_status(info_role):
 
 
 @routes.route("/general_stats", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
+@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
 def general_stats(info_role):
     """Return stats about synthese.

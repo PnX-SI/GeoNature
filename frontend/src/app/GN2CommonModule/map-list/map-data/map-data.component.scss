@@ -64,14 +64,14 @@ ngb-toolti-window {
 
 
 
-:host /deep/ .datatable-body-row.active .datatable-row-group {
+:host ::ng-deep .datatable-body-row.active .datatable-row-group {
     background-color: rgb(117, 227, 118) !important;
 }
 
 .card-padding {
     background-color: white;
     padding: 10px;
-    
+
 }
 
 .ngx-datatable.material {

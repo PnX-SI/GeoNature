@@ -112,7 +112,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         }
 
         // for angular tempate we need to convert it into a aray
-        // tslint:disable-next-line:forin
+        // eslint-disable-next-line guard-for-in
         this.formatedAreas = [];
         for (let key in areaDict) {
           this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
@@ -216,7 +216,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     this._gnDataService.getValidationHistory(uuid).subscribe(
       data => {
         this.validationHistory = data;
-        // tslint:disable-next-line:forin
+        // eslint-disable-next-line guard-for-in
         for (let row in this.validationHistory) {
           // format date
           const date = new Date(this.validationHistory[row].date);

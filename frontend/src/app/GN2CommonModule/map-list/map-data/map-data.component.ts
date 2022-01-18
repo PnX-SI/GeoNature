@@ -22,7 +22,7 @@ import { ColumnActions } from '@geonature_common/map-list/map-list.component';
   styleUrls: ['./map-data.component.scss']
 })
 export class MapDataComponent implements OnInit {
-  @ViewChild(DatatableComponent) table: DatatableComponent;
+  @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;
   @Input() apiEndPoint: string;
   @Output() paramChanged = new EventEmitter<any>();
   @Output() pageChanged = new EventEmitter<any>();

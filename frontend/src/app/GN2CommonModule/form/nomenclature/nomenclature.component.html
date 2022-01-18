@@ -1,21 +1,22 @@
 <small> {{ label }} </small>
-<ng-select 
+<ng-select
   [ngClass]="class"
 	[items]="labels"
 	[multiple]="multiSelect"
 	[bindLabel]="labelLang"
 	[bindValue]="keyValue"
-	[placeholder]="placeholder||label"
+	[placeholder]="label"
 	[virtualScroll]="true"
 	[formControl]="parentFormControl"
+  [attr.qa-test]="label"
 >
-	<ng-template 
-    ng-option-tmp 
-    let-item="item" 
-    let-index="index" 
+	<ng-template
+    ng-option-tmp
+    let-item="item"
+    let-index="index"
     let-search="searchTerm"
   >
-    <div matTooltip="{{item[definitionLang]}}">
+    <div matTooltip="{{item[definitionLang]}}" [attr.qa-test]="item[definitionLang]">
       <span class="pre-wrap">{{item[labelLang]}}</span>
     </div>
   </ng-template>

@@ -16,7 +16,7 @@
     let-index="index" 
     let-search="searchTerm"
   >
-    <div matTooltip="{{item.dataset_name}}">
+    <div matTooltip="{{item.dataset_name}}" [attr.qa-test]="item.dataset_name">
       <span class="pre-wrap">{{item.dataset_name}}</span>
     </div>
   </ng-template>

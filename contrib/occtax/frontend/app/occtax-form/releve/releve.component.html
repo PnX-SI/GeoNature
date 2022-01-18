@@ -1,6 +1,7 @@
 <div
   *ngIf="occtaxFormService.disabled"
   id="overlay"
+  data-qa="overlay"
   class="disabled-form"
   (click)="formDisabled()"
 >
@@ -39,6 +40,7 @@
     <!-- OBSERVATEURS -->
     <pnx-observers
       *ngIf="!occtaxConfig.observers_txt; else elseBlock"
+      data-qa="pnx-occtax-releve-form-observers"
       [parentFormControl]="propertiesForm.get('observers')"
       [multiSelect]="true"
       [idMenu]="occtaxConfig.id_observers_list"
@@ -70,6 +72,7 @@
       <ng-template #elseblocDatasetForm>
         <pnx-datasets 
           #dataset
+          data-qa="pnx-occtax-releve-form-datasets"
           label="{{ 'MetaData.Datasets' | translate }}" 
           [parentFormControl]="propertiesForm.get('id_dataset')"
           (valueLoaded)="userDatasets = $event.value"
@@ -364,6 +367,7 @@
     </button>
     <button
       mat-raised-button
+      data-qa="pnx-occtax-releve-submit-btn"
       class="button-success uppercase"
       matTooltip="Enregistrer le relevé et saisir les taxons"
       [disabled]="releveForm.invalid || occtaxFormReleveService.waiting"

@@ -4,14 +4,14 @@
 >
   <pnx-marker
     [coordinates]="ms.markerCoordinates"
-    [zoomLevel]="occtaxConfig.releve_map_zoom_level"
+    [zoomLevel]="occtaxConfig['releve_map_zoom_level']"
   >
   </pnx-marker>
 
   <pnx-leaflet-draw
     [geojson]="ms.leafletDrawGeoJson"
     [options]="leafletDrawOptions"
-    [zoomLevel]="occtaxConfig.releve_map_zoom_level"
+    [zoomLevel]="occtaxConfig['releve_map_zoom_level']"
   >
   </pnx-leaflet-draw>
 

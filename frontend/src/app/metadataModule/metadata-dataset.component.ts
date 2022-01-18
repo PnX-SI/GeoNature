@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { TranslateService } from "@ngx-translate/core";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { BehaviorSubject } from "rxjs";
 import { tap, map } from "rxjs/operators";
 
@@ -21,7 +21,7 @@ export class MetadataDatasetComponent implements OnInit {
   @Input() dataset: any;
   stateChangeSaving: boolean = false;
   moduleImportIsAuthorized: boolean = false;
-  
+
   constructor(
     private _dfs: DataFormService,
     private translate: TranslateService,
@@ -40,7 +40,7 @@ export class MetadataDatasetComponent implements OnInit {
       }
     });
   }
-  
+
 
   switchDatasetState(event) {
     this.stateChangeSaving = true;

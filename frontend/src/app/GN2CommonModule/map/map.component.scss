@@ -25,7 +25,7 @@
   background-color: #dce3e7;
 }
 
-:host /deep/ .dropdown-menu {
+:host ::ng-deep .dropdown-menu {
   z-index: 3000 !important;
 }
 

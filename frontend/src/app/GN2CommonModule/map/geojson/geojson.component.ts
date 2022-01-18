@@ -3,8 +3,8 @@ import { Map } from 'leaflet';
 import { MapService } from '../map.service';
 import * as L from 'leaflet';
 import { Observable } from 'rxjs';
-import { Subject } from 'rxjs/Subject';
-import { GeoJSON } from 'togeojson';
+import { Subject } from 'rxjs';
+import { GeoJSON } from '@tmcw/togeojson';
 
 /**
  *         Affiche sur la carte les geojson passé en *input*

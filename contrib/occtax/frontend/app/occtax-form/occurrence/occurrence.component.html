@@ -36,6 +36,7 @@
   >
     <small> TAXREF - Nom valide </small>
     <span 
+      data-qa="occurrence-nom-valide"
       class="form-control form-control-sm form-nom-complet" 
       [innerHTML]="taxonForm.value?.nom_valide"
     >
@@ -387,12 +388,13 @@
 
 </mat-accordion>
 
-<pnx-occtax-profiles *ngIf="appConfig.FRONTEND.ENABLE_PROFILES"></pnx-occtax-profiles>
+<pnx-occtax-profiles *ngIf="appConfig.FRONTEND['ENABLE_PROFILES']"></pnx-occtax-profiles>
 
 <div class="bloc-button">
   <ng-container *ngIf="!(occtaxFormOccurrenceService.occurrence|async); else modifButton">
     <button 
       id="add-occ"
+      data-qa="occurrence-add-btn"
       mat-raised-button
       class="button-success uppercase" 
       matTooltip="Enregistrer ce taxon"

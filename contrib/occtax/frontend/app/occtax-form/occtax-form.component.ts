@@ -6,7 +6,7 @@ import {
   AfterViewInit,
 } from "@angular/core";
 import { Subscription } from "rxjs"
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 import { Router, NavigationEnd } from "@angular/router";
 import { CommonService } from "@geonature_common/service/common.service"
 import { ModuleConfig } from "../module.config";
@@ -52,9 +52,9 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     public occtaxFormService: OcctaxFormService,
     private _mapService: MapService,
     public occtaxFormParamService: OcctaxFormParamService,
-    private occtaxFormReleveService: OcctaxFormReleveService,
-    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
-    private occtaxTaxaListService: OcctaxTaxaListService,
+    public occtaxFormReleveService: OcctaxFormReleveService,
+    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    public occtaxTaxaListService: OcctaxTaxaListService,
     private _ds: OcctaxDataService,
     private _commonService: CommonService,
     private _modalService: NgbModal
