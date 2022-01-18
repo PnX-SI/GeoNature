@@ -13,7 +13,7 @@
   [limit]="rowNumber"
   [rowClass]="getRowClass"
   (select)="mapListService.onRowSelect($event)"
-  (activate)="onActivate($event, modal)"
+  (activate)="onActivate($event)"
 >
 
   <ngx-datatable-row-detail rowHeight="100">
@@ -84,6 +84,29 @@
     </ng-template>
   </ngx-datatable-column>
 
+  <ngx-datatable-column maxWidth="60">
+    <ng-template
+      let-row="row"
+      ngx-datatable-cell-template
+    >
+      <div class="statusContent">
+        <span
+          class="validationCircle"
+          [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
+        >
+          <i *ngIf="row.last_validation?.validation_auto" class="material-icons">computer</i>
+        </span>
+        <div
+          [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
+          class="statusName"
+        >
+          <span>{{row.nomenclature_valid_status.mnemonique}}</span>
+          <span *ngIf="row.last_validation?.validation_auto"> (automatique)</span>
+        </div>
+      </div>
+    </ng-template>
+  </ngx-datatable-column>
+
 
   <ngx-datatable-column
     *ngFor="let col of VALIDATION_CONFIG.COLUMN_LIST"
@@ -107,7 +130,7 @@
       {{row[col.column_name] | date:'dd-MM-yyyy'}}
     </ng-template>
     <ng-template
-      *ngIf="col.column_name === 'nomenclature_valid_status.label_default'"
+      *ngIf="col.column_name == 'nomenclature_valid_status.label_default'"
       let-row="row"
       ngx-datatable-cell-template
     >
@@ -130,7 +153,7 @@
   </ngx-datatable-column>
 
   <ngx-datatable-column
-    *ngIf="appConfig.FRONTEND.ENABLE_PROFILES"
+    *ngIf="appConfig.FRONTEND['ENABLE_PROFILES']"
     minWidth="10"
     [maxWidth]="100"
   >
@@ -270,9 +293,7 @@
 <pnx-validation-popup
   [selectedPages]="selectedPages"
   [currentPage]="npage"
-  [nbTotalObservation]="nbTotalObservation"
   [observations]="selectedObs"
   [validationStatus]="validationStatus"
-  (valStatus)="onStatusChange($event)"
 >
 </pnx-validation-popup>

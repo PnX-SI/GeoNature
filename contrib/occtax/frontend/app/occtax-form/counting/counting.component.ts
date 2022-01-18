@@ -21,7 +21,7 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
   public appConfig = AppConfig;
   public data : any;
 
-  @Input('value') 
+  @Input('value')
   set counting(value: any) { this.occtaxFormCountingService.counting.next(value); };
   public sub: Subscription
   @Output() lifeStageChange = new EventEmitter();

@@ -66,8 +66,8 @@ export class OcctaxFormParamDialog implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private occtaxFormMapService: OcctaxFormMapService,
-    private occtaxFormReleveService: OcctaxFormReleveService,
-    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    public occtaxFormReleveService: OcctaxFormReleveService,
+    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxFormParamService: OcctaxFormParamService
   ) {
     this.occtaxConfig = ModuleConfig;

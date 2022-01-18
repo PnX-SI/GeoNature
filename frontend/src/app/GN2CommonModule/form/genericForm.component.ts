@@ -12,6 +12,7 @@ import {
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'pnx-generic-form',
@@ -55,8 +56,7 @@ export class GenericFormComponent implements OnInit, OnChanges, AfterViewInit, O
   ngAfterViewInit() {
     this.setDisabled();
     this.sub = this.parentFormControl.valueChanges
-      .distinctUntilChanged()
-      .debounceTime(this.debounceTime)
+      .pipe(distinctUntilChanged(), debounceTime(this.debounceTime))
       .subscribe(value => {
         if (!value || (value && (value.length === 0 || value === ''))) {
           this.onDelete.emit();

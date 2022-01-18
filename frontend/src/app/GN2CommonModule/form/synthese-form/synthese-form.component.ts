@@ -48,10 +48,10 @@ export class SyntheseSearchComponent implements OnInit {
 
     // format areas filter
     this.areaFilters = AppConfig.SYNTHESE.AREA_FILTERS.map(area => {
-      if (typeof area.type_code === 'string') {
-        area['type_code_array'] = [area.type_code];
+      if (typeof area['type_code'] === 'string') {
+        area['type_code_array'] = [area['type_code']];
       } else {
-        area['type_code_array'] = area.type_code;
+        area['type_code_array'] = area['type_code'];
       }
       return area;
     });

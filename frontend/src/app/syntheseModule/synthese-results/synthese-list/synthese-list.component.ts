@@ -15,10 +15,12 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '@geonature_config/app.config';
-import { HttpParams } from '@angular/common/http/src/params';
+import { HttpParams } from '@angular/common/http/';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
-import { DatatableComponent } from '@swimlane/ngx-datatable';
+// import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { DatatableComponent} from '@swimlane/ngx-datatable';
+import {ColumnMode} from '@swimlane/ngx-datatable';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 @Component({
@@ -36,10 +38,11 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   public queyrStringDownload: HttpParams;
   public inpnMapUrl: string;
   public downloadMessage: string;
+  public ColumnMode: ColumnMode;
   //input to resize datatable on searchbar toggle
   @Input() searchBarHidden: boolean;
   @Input() inputSyntheseData: GeoJSON;
-  @ViewChild('table') table: DatatableComponent;
+  @ViewChild('table', { static: true }) table: DatatableComponent;
   private _latestWidth: number;
   constructor(
     public mapListService: MapListService,
@@ -60,7 +63,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     // On map click, select on the list a change the page
     this.mapListService.onMapClik$.subscribe(id => {
       this.mapListService.selectedRow = []; // clear selected list
-
       const integerId = parseInt(id);
       let i;
       for (i = 0; i < this.mapListService.tableData.length; i++) {
@@ -129,6 +131,12 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
 
   getRowClass() {
     return 'row-sm clickable';
+  }
+
+  getDate(date) {
+    function pad(s) { return (s < 10) ? '0' + s : s; }
+    const d = new Date(date);
+    return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('-');
   }
 
   ngOnChanges(changes) {

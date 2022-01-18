@@ -1215,6 +1215,16 @@ Suite à l'ajout d'un input "valueFieldName" pour "pnx-areas" et "pnx-municipali
 
 Cependant, pour garder la retrocompatibilité du composant ``pnx-municipalities`` veuillez ajouter :
 
+Test end to end
+***************
+
+Pour toute PR ou nouvelle fonctionnalité il est demandé d'écrire des tests.
+Pour les test e2e, la librairie Cypress est utilisé. 
+Des exemples de tests peuvent être trouvé ici : https://github.com/PnX-SI/GeoNature/tree/develop/frontend/cypress/integration
+Les tests sont joués automatiquement sur Github-action lors de commit et PR sur la branch develop et master.
+Pour lancer les tests sur sa machine locale, utilisez la commande ``npm run e2e && npm run e2e:coverage``. Celle-ci lance le serveur de frontend, joue les tests cypress et contrôle la couverture de test. Cette dernière est disponible dans le repertoire `frontend/coverage`.
+
+
 * dans les templates : ``[valueFieldName]="'area_code'`` dans les templates
 * dans les config (js, ts ou json) (attention à la casse) : ``"value_field_name": "area_code"``
 * dans le module Monitoring, ajouter aussi ``"type_util": "area"``

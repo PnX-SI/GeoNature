@@ -2,7 +2,8 @@ import { Component, OnInit, ElementRef, ViewChild } from "@angular/core";
 import { combineLatest } from "rxjs";
 import { filter, map } from "rxjs/operators";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { MatDialog, MatTabChangeEvent  } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
+import { MatTabChangeEvent } from "@angular/material/tabs";
 import { TranslateService } from "@ngx-translate/core";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
@@ -27,7 +28,7 @@ export class OcctaxFormTaxaListComponent implements OnInit {
     public dialog: MatDialog,
     private translate: TranslateService,
     private occtaxFormService: OcctaxFormService,
-    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxTaxaListService: OcctaxTaxaListService,
     public ms: MediaService,
   ) {

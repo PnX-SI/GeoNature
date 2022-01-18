@@ -1,9 +1,9 @@
 
-<div *ngIf="values; else loadingBlock">
+<div *ngIf="values; else 'loadingBlock'">
   <mat-form-field style="display: inline-block; width:100%">
     <mat-label>{{ label }}</mat-label>
     <mat-select
-      [formControl]="parentFormControl"
+      [formControl]="loadingBlock"
       [multiple]="multiple"
       [required]="required"
       dense

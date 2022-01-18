@@ -7,6 +7,7 @@ import * as L from 'leaflet';
 import { FormControl } from '@angular/forms';
 import { MapService } from '@geonature_common/map/map.service';
 import { Map } from 'leaflet';
+import { delay, finalize } from 'rxjs/operators';
 
 @Injectable()
 export class MapListService {
@@ -136,13 +137,12 @@ export class MapListService {
     this.isLoading = true;
     return this._http
       .get<any>(`${AppConfig.API_ENDPOINT}/${this.endPoint}`, { params: this.urlQuery })
-      .delay(200)
-      .finally(() => (this.isLoading = false));
+      .pipe(delay(200), finalize(() => (this.isLoading = false)));
   }
 
   loadData() {
     this.dataService().subscribe(
-      data => {        
+      data => {
         this.page.totalElements = data.total;
         this.page.itemPerPage = parseInt(this.urlQuery.get('limit'));
         this.page.pageNumber = data.page;
@@ -287,7 +287,6 @@ export class MapListService {
   }
 
   loadTableData(data, customCallBack?) {
-    
     this.tableData = [];
     if (customCallBack) {
       data.features.forEach(feature => {
@@ -301,7 +300,8 @@ export class MapListService {
       data.features.forEach(feature => {
         this.tableData.push(feature.properties);
       });
-    }    
+    }
+    this.tableData = [...this.tableData];
   }
 }
 

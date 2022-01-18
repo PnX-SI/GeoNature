@@ -2,6 +2,7 @@ import { Component, OnInit, OnChanges, Input, Output, EventEmitter } from '@angu
 import { FormGroup, FormControl } from '@angular/forms';
 import { DynamicFormService } from './dynamic-form.service';
 import * as equal from 'fast-deep-equal/es6';
+import { filter } from 'rxjs/operators';
 
 /**
  * Ce composant permet de créer dynamiquement des formulaire à partir
@@ -50,12 +51,12 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes) {
     // on formdef changes, regenerate the form and UI
-    // Do not load the form at first change: done by ngOnInit which wait for the component to be ready    
-    if(changes.formsDefinition && !changes.formsDefinition.firstChange && changes.formsDefinition.currentValue) {      
+    // Do not load the form at first change: done by ngOnInit which wait for the component to be ready
+    if(changes.formsDefinition && !changes.formsDefinition.firstChange && changes.formsDefinition.currentValue) {
       for (const controlName in this.myFormGroup.controls) {
         this.myFormGroup.removeControl(controlName)
       }
-      this.initDynamicForm();  
+      this.initDynamicForm();
     }
   }
 
@@ -76,7 +77,7 @@ export class GenericFormGeneratorComponent implements OnInit, OnChanges {
 
     } else {
       this.selectControl.valueChanges
-        .filter(value => value !== null)
+        .pipe(filter(value => value !== null))
         .subscribe(formDef => {
           this.addFormControl(formDef);
         });

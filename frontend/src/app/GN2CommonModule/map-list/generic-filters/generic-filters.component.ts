@@ -1,6 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { CommonService } from '@geonature_common/service/common.service';
+import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'pnx-map-list-generic-filter',
@@ -17,9 +18,7 @@ export class MapListGenericFiltersComponent implements OnInit {
 
   ngOnInit() {
     this.mapListService.genericFilterInput.valueChanges
-      .debounceTime(400)
-      .distinctUntilChanged()
-      .filter(value => value !== null)
+      .pipe(distinctUntilChanged(), debounceTime(400), filter(value => value !== null))
       .subscribe(value => {
         if (value !== null && this.mapListService.colSelected.name === '') {
           this._commonService.translateToaster('warning', 'MapList.NoColumnSelected');

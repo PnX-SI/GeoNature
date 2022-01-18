@@ -19,7 +19,7 @@ import { timeStamp } from 'console';
   templateUrl: 'placesList.component.html'
 })
 export class PlacesListComponent extends MarkerComponent implements OnInit {
-  @ViewChild('modalContent') public modalContent: any;
+  @ViewChild('modalContent', { static: false }) public modalContent: any;
   private geojsonSubscription$: Subscription;
   public geojson: any;
   public places: any[];

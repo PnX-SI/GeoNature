@@ -5,8 +5,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { CookieService } from 'ng2-cookies';
 import 'rxjs/add/operator/delay';
-import { forkJoin } from "rxjs/observable/forkJoin";
-
+import { forkJoin } from 'rxjs';
 import { AppConfig } from '../../../conf/app.config';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { ModuleService } from '../../services/module.service';

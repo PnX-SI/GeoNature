@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeZh from '@angular/common/locales/zh';
-
+import { environment } from '../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 
 import { AuthService } from '@geonature/components/auth/auth.service';
@@ -28,5 +28,6 @@ export class AppComponent implements OnInit {
     translate.use(AppConfig.DEFAULT_LANGUAGE);
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 }
