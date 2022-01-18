@@ -14,6 +14,19 @@ CHANGELOG
 * Correction des redirections dans la liste des taxons du formulaire des JDD (#1438 par @gildeluermoz)
 * Correction de l'URL envoyée par email lors d'une demande de réinitialisation de mot de passe (#1620)
 
+**⚠️ Notes de version**
+
+* Passage à angular 12 (développeur), executez les commandes suivantes : 
+  ::
+  
+    # depuis le répertoire frontend
+    nvm use
+    npm install 
+    # depuis le virtualenv
+    geonature generate_frontend_modules_route
+    geonature generate_frontend_tsconfig
+    geonature generate_frontend_tsconfig_app
+
 2.9.0 - Actias luna (2022-01-13)
 --------------------------------
 
