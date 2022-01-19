@@ -144,7 +144,7 @@ jobs:
         GEONATURE_CONFIG_FILE: config/test_config.toml
     - name: run TX backend
       run : flask run &
-      working_directory: ./backend/dependencies/Taxhub/apptax
+      working-directory: ./backend/dependencies/Taxhub/apptax
       env:
         TAXHUB_SETTINGS: config/test_config_taxub.py
     - name: Cypress run
