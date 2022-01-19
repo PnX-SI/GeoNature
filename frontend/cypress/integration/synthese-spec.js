@@ -2,18 +2,14 @@ import promisify from 'cypress-promise'
 
 NodeList.prototype.forEach = Array.prototype.forEach
 
-beforeEach(() => {
-  cy.viewport(1600, 1000)
-  cy.visit("/");
-  // login to GN 
-  cy.get("#login").type("admin");
-  cy.get("#cdk-step-content-0-0 > form > div:nth-child(2) > input").type(
-    "admin"
-  );
-  cy.get("#cdk-step-content-0-0 > form > button").click();
-  // access to synthese
+before(() => {
+  cy.geonatureLogin()
   cy.visit("/#/synthese")
 });
+
+after(() => {
+  cy.geonatureLogout()
+})
 
 describe("Tests gn_synthese", () => {
 
@@ -147,16 +143,17 @@ describe("Tests gn_synthese", () => {
 
     // TODO : à terminer
     // const a_inpn = await promisify(cy.get("body > ngb-modal-window > div > div > pnx-synthese-info-obs > mat-card > div > a"))
-    //cy.get('.d-flex > .mat-focus-indicator > .mat-button-wrapper').click(); 
-    // la page INPN s'ouvre bien 
-    // assert : la fiche correspond bien au CD_nom de l'observation (cd_nom URL)
+    // cy.get('.d-flex > .mat-focus-indicator > .mat-button-wrapper').click(); 
+    // //la page INPN s'ouvre bien 
+    // //assert : la fiche correspond bien au CD_nom de l'observation (cd_nom URL)
     // cy.get('.font-xs > .mat-focus-indicator > .mat-button-wrapper').click();
-    // assert : le relevé ouverte dans occtax correspond bien à celle de départ (UUID ou autre)
+    // // assert : le relevé ouverte dans occtax correspond bien à celle de départ (UUID ou autre)
   });
 
+  // TODO: not working but not prioritary
   // it('Sorting functionalities of the list are working', async () => {
   //   // Objectif : vérifier qu'on peut bien trier les données dans chaque colonne
-  //   let table = await promisify(cy.get("body > pnx-root > pnx-nav-home > mat-sidenav-container > mat-sidenav-content > div > div > pnx-synthese > div > div > div.col-sm-12.col-md-5.padding-sm > pnx-synthese-list > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller"))
+  //   let table = await promisify(cy.get(" pnx-synthese-list > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller"))
   //   const tableDate = []
   //   table[0].childNodes.forEach(e => {
   //     if (e.nodeName === "DATATABLE-ROW-WRAPPER") {
@@ -181,18 +178,18 @@ describe("Tests gn_synthese", () => {
   //   // assert : le tri par observateur s'effectue bien --> pas testé
   // });
 
-  // it('L\'icône "page" renvoie bien à l\'observation en question dans occtax', function () {
-  //     cy.get(':nth-child(1) > .clickable > .datatable-row-center > :nth-child(2) > .datatable-body-cell-label > .btn > .mat-tooltip-trigger').click();
-  //     // assert : l'observation ouverte dans occtax correspond bien à celle de départ (UUID ou autre) 
-  // });
-  // it('Le téléchargement des données au format csv fonctionne', function () {
-  //     cy.get('#taxonInput').clear();
-  //     cy.get('#taxonInput').type('abl');
-  //     cy.get('#ngb-typeahead-0-0 > .ng-star-inserted').click();
-  //     cy.get('.button-success > .mat-button-wrapper').click();
-  //     cy.get('#download-btn > .mat-button-wrapper').click();
-  //     cy.get('div.ng-star-inserted > :nth-child(1) > :nth-child(2) > .mat-button-wrapper').click();
-  //     //assert : le téléchargement du csv s'effectue bien en prenant en compte les résultats du filtre
-  // });
+  it("L'icône 'page' renvoie bien à l'observation en question dans occtax", function () {
+      cy.get(':nth-child(1) > .clickable > .datatable-row-center > :nth-child(2) > .datatable-body-cell-label > .btn > .mat-tooltip-trigger').click({force: true});
+      // assert : l'observation ouverte dans occtax correspond bien à celle de départ (UUID ou autre) 
+  });
+  it('Le téléchargement des données au format csv fonctionne', function () {
+      cy.get('#taxonInput').clear({force: true});
+      cy.get('#taxonInput').type('abl');
+      cy.get('#ngb-typeahead-0-0 > .ng-star-inserted').click({force: true});
+      cy.get('.button-success > .mat-button-wrapper').click({force: true});
+      cy.get('#download-btn > .mat-button-wrapper').click({force: true});
+      cy.get('div.ng-star-inserted > :nth-child(1) > :nth-child(2) > .mat-button-wrapper').click({force: true});
+      //assert : le téléchargement du csv s'effectue bien en prenant en compte les résultats du filtre
+  });
 
 });
