@@ -149,11 +149,6 @@ export class MapListService {
         this.geojsonData = data.items;
         this.loadTableData(data.items, this.customCallBack);
       },
-      err => {
-        if (err.status === 500) {
-          this._commonService.translateToaster('error', 'ErrorMessage');
-        }
-      }
     );
   }
 

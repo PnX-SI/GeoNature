@@ -200,13 +200,6 @@ export class DatasetCardComponent implements OnInit {
           )
           .subscribe(
             () => this._router.navigate(['metadata']),
-            err => {
-              if (err.error.message) {
-                this._commonService.regularToaster("error", err.error.message);
-              } else {
-                this._commonService.translateToaster("error", "ErrorMessage");
-              }
-             }
           );
       }
     });

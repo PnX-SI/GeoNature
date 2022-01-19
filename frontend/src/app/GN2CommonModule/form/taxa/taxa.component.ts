@@ -98,7 +98,6 @@ export class TaxaComponent implements OnInit {
             this.taxa = [{ displayName: 'No data to display' }];
           } else {
             this.taxa = [];
-            this.commonService.translateToaster('error', 'ErrorMessage');
           }
         }
       );

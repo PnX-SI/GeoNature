@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit {
     const userPublic = {
       "username": AppConfig.PUBLIC_ACCESS.PUBLIC_LOGIN,
       "password": AppConfig.PUBLIC_ACCESS.PUBLIC_PASSWORD,
-    } 
+    }
     this._authService.signinUser(userPublic);
   }
 
@@ -63,9 +63,6 @@ export class LoginComponent implements OnInit {
       .subscribe(
         res => {
           this._commonService.translateToaster('info', 'PasswordAndLoginRecovery');
-        },
-        error => {
-          this._toasterService.error(error.error.msg, '');
         }
       )
       .add(() => {

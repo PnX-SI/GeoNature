@@ -71,10 +71,6 @@ export class SignUpComponent implements OnInit {
             this._commonService.translateToaster('info', callbackMessage);
             this._router.navigate(['/login']);
           },
-          // error callback
-          error => {
-            this._toasterService.error(error.error.msg, '');
-          }
         )
         .add(() => {
           this.disableSubmit = false;

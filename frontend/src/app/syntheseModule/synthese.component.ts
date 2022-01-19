@@ -59,12 +59,9 @@ export class SyntheseComponent implements OnInit {
       },
       error => {
         this.searchService.dataLoaded = true;
-        console.log(error);
-        
+
         if(error.status == 400) {
           this._commonService.regularToaster('error', error.error.description)
-        } else {
-          this._commonService.translateToaster('error', 'ErrorMessage');
         }
       }
     );

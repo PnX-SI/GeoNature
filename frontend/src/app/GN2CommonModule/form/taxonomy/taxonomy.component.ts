@@ -146,10 +146,7 @@ export class TaxonomyComponent implements OnInit, OnChanges {
               group2_inpn: this.groupControl.value,
               limit: this.listLength.toString()
             })
-            .catch(err => {
-              if (err.status_code === 500) {
-                this._commonService.translateToaster('error', 'ErrorMessage');
-              }
+            .catch(() => {
               return of([]);
             });
         } else {

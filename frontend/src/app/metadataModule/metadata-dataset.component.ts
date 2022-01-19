@@ -68,13 +68,6 @@ export class MetadataDatasetComponent implements OnInit {
           )
           .subscribe(
             () => this._commonService.translateToaster("success", "MetaData.DatasetRemoved"),
-            err => {
-              if (err.error.message) {
-                this._commonService.regularToaster("error", err.error.message);
-              } else {
-                this._commonService.translateToaster("error", "ErrorMessage");
-              }
-             }
           );
       }
     });
