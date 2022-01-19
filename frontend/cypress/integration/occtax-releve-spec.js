@@ -23,9 +23,10 @@ before('click sur la carte', () => {
    * Test de la carto
    */
   //test si le clic sur le carte apres le zoom désactive l'overlay
-  const plus = cy.get("body > pnx-root > pnx-nav-home > mat-sidenav-container > mat-sidenav-content > div > div > pnx-occtax-form > div > div > div.occtax-form-content.ng-star-inserted > div > div.col-xl-6.col-lg-7.col-sm-6 > pnx-occtax-form-map > pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom > div.leaflet-control-container > div.leaflet-top.leaflet-right > div.leaflet-control-zoom.leaflet-bar.leaflet-control > a.leaflet-control-zoom-in");
-  Array(10).fill(0).forEach(e => plus.wait(1000).click())
-  cy.get('body > pnx-root > pnx-nav-home > mat-sidenav-container > mat-sidenav-content > div > div > pnx-occtax-form > div > div > div.occtax-form-content.ng-star-inserted > div > div.col-xl-6.col-lg-7.col-sm-6 > pnx-occtax-form-map > pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom').click(100, 100);
+  const plus = cy.get("pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom > div.leaflet-control-container > div.leaflet-top.leaflet-right > div.leaflet-control-zoom.leaflet-bar.leaflet-control > a.leaflet-control-zoom-in");
+  Array(10).fill(0).forEach(e => plus.wait(200).click())
+  cy.get('pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom').click(100, 100);
+  // le overlay doit être désactivé
   cy.get("[data-qa='pnx-occtax-releve-form-observers'] #overlay").should("not.exist");
   //TODO: tester le remplacement d'une geometrie, d'un polygone, d'une ligne, d'une édition...
 });
