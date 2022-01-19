@@ -88,13 +88,11 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     this._dfs.getDatasets((params = filter_param)).subscribe(
       res => {
         this.datasetStore.filteredDataSets = res;
-        this.datasetStore.datasets = res;        
+        this.datasetStore.datasets = res;
         this.valueLoaded.emit({ value: this.datasetStore.datasets });
       },
       error => {
-        if (error.status === 500) {
-          this._commonService.translateToaster('error', 'MetaData.JddError');
-        } else if (error.status === 404) {
+         if (error.status === 404) {
           if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
             this._commonService.translateToaster('warning', 'MetaData.NoJDDMTD');
           } else {

@@ -159,10 +159,6 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
             }
           }
           this.initValues(values);
-        },
-        error => {
-          console.log('error', error);
-          this._commonService.regularToaster('error', error.message);
         }
       );
     } else if (this.values) {

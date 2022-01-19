@@ -104,16 +104,14 @@ export class DatasetFormComponent implements OnInit {
         })
       )
       .subscribe(
-        (dataset: any) =>{           
+        (dataset: any) =>{
           this._router.navigate(['/metadata/dataset_detail', dataset.id_dataset])
-          
+
         },
         error => {
           if (error.status === 403) {
             this._commonService.translateToaster('error', 'NotAllowed');
             this._router.navigate(['/metadata/']);
-          } else {
-            this._commonService.translateToaster('error', 'ErrorMessage');
           }
         }
       );

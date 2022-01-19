@@ -128,8 +128,6 @@ export class AfFormComponent implements OnInit {
           if (error.status === 403) {
             this._commonService.translateToaster('error', 'NotAllowed');
             this._router.navigate(['/metadata/']);
-          } else {
-            this._commonService.translateToaster('error', 'ErrorMessage');
           }
         }
       );

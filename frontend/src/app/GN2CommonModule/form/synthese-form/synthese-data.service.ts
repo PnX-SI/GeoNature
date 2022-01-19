@@ -191,7 +191,6 @@ export class SyntheseDataService {
         }
       },
       (e: HttpErrorResponse) => {
-        this._commonService.translateToaster('error', 'ErrorMessage');
         this.isDownloading = false;
       },
       // response OK

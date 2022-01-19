@@ -17,14 +17,16 @@ export class MyCustomInterceptor implements HttpInterceptor {
 
   private handleError(error: Response | any) {
     let errMsg: string;
-    if (error instanceof Response) {
-      const body = error.json() || '';
-      const err = JSON.stringify(body);
-      errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-    } else {
-      errMsg = error.message ? error.message : error.toString();
+    if (error.status !== 404) {
+      if (error instanceof Response) {
+        const body = error.json() || '';
+        const err = JSON.stringify(body);
+        errMsg = `${error.status} - ${error.statusText || ''} ${error['error'].description}`;
+      } else {
+        errMsg = error.message ? error.message : error.toString();
+      }
+      this._toastrService.error(errMsg, error['error'].name)
     }
-    this._toastrService.error(errMsg, "Une erreur est survenue")
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

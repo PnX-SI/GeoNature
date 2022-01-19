@@ -76,9 +76,6 @@ export class PlacesComponent extends MarkerComponent implements OnInit, OnDestro
         this.modalService.dismissAll();
         this.placeForm.reset();
       },
-      err => {
-        this.commonService.translateToaster('error', err.error.description);
-      },
     );
   }
 
