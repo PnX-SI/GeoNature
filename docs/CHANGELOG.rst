@@ -21,7 +21,7 @@ CHANGELOG
   
     # depuis le répertoire frontend
     nvm use
-    npm install 
+    npm install --legacy-peer-deps
     # depuis le virtualenv
     geonature generate_frontend_modules_route
     geonature generate_frontend_tsconfig
