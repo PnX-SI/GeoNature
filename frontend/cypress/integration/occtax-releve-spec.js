@@ -2,12 +2,7 @@ import promisify from 'cypress-promise';
 
 //Geonature connection
 before('Geonature connection', () => {
-  cy.visit("http://127.0.0.1:4200");
-  cy.get("pnx-login form #login").type("admin");
-  cy.get("#cdk-step-content-0-0 > form > div:nth-child(2) > input").type(
-    "admin"
-  );
-  cy.get("pnx-login button[type='submit']").click();
+  cy.geonatureLogin()
   cy.get("[data-qa='gn-sidenav-link-OCCTAX']").click();
   cy.get("[data-qa='gn-occtax-btn-add-releve']").click();
 });
@@ -31,7 +26,11 @@ before('click sur la carte', () => {
   //TODO: tester le remplacement d'une geometrie, d'un polygone, d'une ligne, d'une édition...
 });
 
-describe("Geonature connection", () => {
+after("Logout", () => {
+   cy.geonatureLogout()
+})
+
+describe("Post Occtax", () => {
     it("Test du form observateurs", () => {
       //test si une valeur d'observateur par défaut existe
       cy.get("[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select']")
@@ -108,5 +107,65 @@ describe("Geonature connection", () => {
         .find(".ng-value")
         .should('have.length', 1);
     });
+
+    it("Should submit a new releve", () => {
+      cy.get("[data-qa='pnx-occtax-releve-submit-btn']").click()
+    })
+    it("Occurrence sumbit must be disabled", () => {
+      cy.get("[data-qa='occurrence-add-btn'][disabled='true']");
+    })
+    it("Should focus on taxa input", ()=> {
+      cy.focused()
+      .invoke('attr', 'data-qa')
+      .should('eq', 'taxonomy-form-input')
+    });
+    it("Search and select taxa", ()=> {
+      const taxonInput = cy.get("input[data-qa='taxonomy-form-input'].ng-invalid");
+      taxonInput.type("canis lupus")
+      const results = cy.get("ngb-typeahead-window")
+      const firstTaxon = results.first().click()
+      const nomValideResult = cy.get("[data-qa='occurrence-nom-valide']");
+      nomValideResult.contains("Canis lupus Linnaeus, 1758")
+    })
+
+    it("should focus on sumbit button", ()=> {
+      // check the button add occurrence is focused
+      cy.focused()
+      .invoke('attr', 'data-qa')
+      .should('eq', 'occurrence-add-btn')
+    })
+
+    it("should autocompete count max with count min value", () => {
+      // HACK : must reselect countin min from selector otherwise it clear the wrong input (?!) ...
+      cy.get("[data-qa='counting-count-min']").should("have.value", 1);
+      cy.get("[data-qa='counting-count-max']").should("have.value", 1);
+      // change count min val, count max must be updated with the same value
+      cy.get("[data-qa='counting-count-min']").clear()
+      cy.get("[data-qa='counting-count-min']").type(3);
+      cy.get("[data-qa='counting-count-max']").should("have.value", 3);
+      // change count max val with a lower value than count min - should be invalid
+      cy.get("[data-qa='counting-count-max']").clear();
+      cy.get("[data-qa='counting-count-max']").type(2);
+      // TODO check is invalid // not working
+      // try with this ?
+      //       cy.get('section')
+      // .should('have.class', 'container')
+      // cy.get("[data-qa='counting-count-max'].ng-invalid")
+
+      // change count min - count max should'nt be updated because it's been already change
+      cy.get("[data-qa='counting-count-min']").clear()
+      cy.get("[data-qa='counting-count-min']").type(1)
+      cy.get("[data-qa='counting-count-max']").should("have.value", 2)
+    })
+
+    it("Should submit an occurrence", () => {
+      cy.get("[data-qa='occurrence-add-btn']").click()
+    })
+
+    // TODO : check that the occurrence is in the rigth list
+    // check the taxon input is focused again
+    // test to edit and no autocompletion on counting
+
+
 
 });
