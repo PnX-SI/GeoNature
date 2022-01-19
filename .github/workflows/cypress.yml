@@ -146,9 +146,9 @@ jobs:
       run : flask run &
       working-directory: ./backend/dependencies/Taxhub/apptax
       env:
-        TAXHUB_SETTINGS: config/test_config_taxub.py
+        TAXHUB_SETTINGS: ../test_config.py
     - name: Cypress run
-      uses: cypress-io/github-action@v1
+      uses: cypress-io/github-action@v2
       with:
         record: true
         working-directory: ./frontend
