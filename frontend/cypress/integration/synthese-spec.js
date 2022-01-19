@@ -3,6 +3,7 @@ import promisify from 'cypress-promise'
 NodeList.prototype.forEach = Array.prototype.forEach
 
 before(() => {
+  cy.geonatureLogout()
   cy.geonatureLogin()
   cy.visit("/#/synthese")
 });
