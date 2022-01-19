@@ -138,10 +138,15 @@ jobs:
         ./install/04_install_frontend.sh --ci
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
-    - name: run backend
+    - name: run GN backend
       run : geonature dev_back &
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
+    - name: run TX backend
+      run : flask run &
+      working_directory: ./backend/dependencies/Taxhub/apptax
+      env:
+        TAXHUB_SETTINGS: config/test_config_taxub.py
     - name: Cypress run
       uses: cypress-io/github-action@v1
       with:
