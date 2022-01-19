@@ -40,7 +40,7 @@
           <b>Précision du pointage : </b> {{selectedObs?.precision}}
         </span>
       </div>
-      <b> Observation de : </b> <span qa-test="observateur">{{selectedObs?.observers}}</span>
+      <b> Observation de : </b> <span data-qa="synthese-info-obs-observateur">{{selectedObs?.observers}}</span>
       <span *ngIf="selectedObs?.cor_observers?.length > 0 && CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_OBS">
         (
         <span *ngFor="let observers of selectedObs?.cor_observers; let i = index">
@@ -54,7 +54,7 @@
         <b> Date : </b><span>{{selectedObs?.date_min}} -> {{selectedObs?.date_max}}</span>
       </span>
       <ng-template #elseBlock>
-        <b> Date : </b><span qa-test="date">{{selectedObs?.date_min}}</span>
+        <b> Date : </b><span data-qa="synthese-info-obs-date">{{selectedObs?.date_min}}</span>
       </ng-template>
       <br>
       <span *ngIf="selectedObs?.altitude_min || selectedObs?.altitude_max">
@@ -111,9 +111,9 @@
         <td> Comportement </td>
         <td> {{selectedObs?.nomenclature_behaviour?.label_default}} </td>
       </tr>
-      <tr>
+      <tr >
         <td> Sexe </td>
-        <td> {{selectedObs?.nomenclature_sex?.label_default}} </td>
+        <td data-qa="synthese-info-obs-sexe-value"> {{selectedObs?.nomenclature_sex?.label_default}} </td>
       </tr>
       <tr>
         <td> Stade de vie </td>

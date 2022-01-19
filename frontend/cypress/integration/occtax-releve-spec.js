@@ -109,14 +109,3 @@ describe("Geonature connection", () => {
     });
 
 });
-
-
-
-      // cy.get('.check-box-sub-text').should('not.exist');
-
-
-        // cy.get(".button-success > .mat-button-wrapper").click();
-        // cy.get(".leaflet-container").click();
-        // const plus_button = cy.get(
-        //   "body > pnx-root > pnx-nav-home > mat-sidenav-container > mat-sidenav-content > div > div > pnx-occtax-form > div > div > div.occtax-form-content.ng-star-inserted > div > div.col-xl-6.col-lg-7.col-sm-6 > pnx-occtax-form-map > pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom > div.leaflet-control-container > div.leaflet-top.leaflet-right > div.leaflet-control-zoom.leaflet-bar.leaflet-control > a.leaflet-control-zoom-in"
-        // );
