@@ -2,7 +2,8 @@ import promisify from 'cypress-promise';
 
 //Geonature connection
 before('Geonature connection', () => {
-  cy.geonatureLogin()
+  cy.geonatureLogout();
+  cy.geonatureLogin();
   // cy.get("[data-qa='gn-sidenav-link-OCCTAX']").click();
   cy.visit("/#/occtax")
   cy.get("[data-qa='gn-occtax-btn-add-releve']").click();
