@@ -142,7 +142,6 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
       );
       this.parentFormControl.patchValue(this.multiple ? res : res[0]);
     }
-    console.log(3)
     this.parentFormControl.markAsTouched();
 
   }
@@ -152,7 +151,6 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
     if (!this.values && this.api) {
       this._dfs.getDataList(this.api, this.application, this.params).subscribe(
         data => {
-          console.log("get data")
           let values = data;
           if (this.dataPath) {
             const paths = this.dataPath.split('/');
@@ -161,16 +159,13 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
             }
           }
           this.initValues(values);
-          console.log("get data done")
         },
         error => {
-          console.log('error', error);
           this._commonService.regularToaster('error', error.message);
         }
       );
     } else if (this.values) {
       this.initValues(this.values);
     }
-    console.log("get data done")
   }
 }
