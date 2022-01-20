@@ -157,7 +157,7 @@ jobs:
       with:
         record: true
         working-directory: ./frontend
-        start: npm run start
+        start: npm run start-for-ci
         wait-on: http://127.0.0.1:4200
         headless: true
       env: 
