@@ -242,7 +242,7 @@ def uuid_report():
             TSources.name_source == "Import(id={})".format(id_import)
         )
 
-    data = query.all()
+    data = query.order_by(Synthese.id_synthese).all()
 
     data = [
         {
