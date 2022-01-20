@@ -144,7 +144,7 @@ jobs:
         GEONATURE_CONFIG_FILE: config/test_config.toml
     - name: run TX backend
       run : |
-        nohup flask run --host=0.0.0.0 &
+        gunicorn "app:create_app()" --bind "0.0.0.0:5000" --daemon
       working-directory: ./backend/dependencies/TaxHub/apptax
       env:
         TAXHUB_SETTINGS: ../test_config.py
