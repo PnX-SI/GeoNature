@@ -32,8 +32,8 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
     meta_update_date
     ) VALUES (
     '57b7d0f2-4183-4b7b-8f08-6e105d476dc5', 
-    'Données d''observation de la faune, de la Flore et de la fonge du Parc national des Ecrins',
-    'Données d''observation de la faune, de la Flore et de la fonge du Parc national des Ecrins',
+    'CA-1',
+    'CA-1',
     ref_nomenclatures.get_id_nomenclature('NIVEAU_TERRITORIAL', '4'),
     'Territoire du Parc national des Ecrins correspondant au massif alpin des Ecrins',
     'Ecrins, parc national, faune, flore, fonge',
@@ -78,7 +78,7 @@ INSERT INTO gn_meta.t_datasets (
     (
     '4d331cae-65e4-4948-b0b2-a11bc5bb46c2',
      (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'),
-    'Contact aléatoire tous règnes confondus',
+    'JDD-1',
     'Contact aléatoire',
     'Observations aléatoires de la faune, de la flore ou de la fonge',
     ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1'),
@@ -102,7 +102,7 @@ INSERT INTO gn_meta.t_datasets (
     (
     'dadab32d-5f9e-4dba-aa1f-c06487d536e8',
     (SELECT id_acquisition_framework FROM gn_meta.t_acquisition_frameworks WHERE unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'),
-    'ATBI de la réserve intégrale du Lauvitel dans le Parc national des Ecrins',
+    'JDD-2',
     'ATBI Lauvitel',
     'Inventaire biologique généralisé sur la réserve du Lauvitel',
     ref_nomenclatures.get_id_nomenclature('DATA_TYP', '1'),

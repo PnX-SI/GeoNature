@@ -2,13 +2,10 @@ import promisify from 'cypress-promise';
 
 //Geonature connection
 before('Geonature connection', () => {
-  cy.visit("http://127.0.0.1:4200");
-  cy.get("pnx-login form #login").type("admin");
-  cy.get("#cdk-step-content-0-0 > form > div:nth-child(2) > input").type(
-    "admin"
-  );
-  cy.get("pnx-login button[type='submit']").click();
-  cy.get("[data-qa='gn-sidenav-link-OCCTAX']").click();
+  cy.geonatureLogout();
+  cy.geonatureLogin();
+  // cy.get("[data-qa='gn-sidenav-link-OCCTAX']").click();
+  cy.visit("/#/occtax")
   cy.get("[data-qa='gn-occtax-btn-add-releve']").click();
 });
 
@@ -23,14 +20,19 @@ before('click sur la carte', () => {
    * Test de la carto
    */
   //test si le clic sur le carte apres le zoom désactive l'overlay
-  const plus = cy.get("body > pnx-root > pnx-nav-home > mat-sidenav-container > mat-sidenav-content > div > div > pnx-occtax-form > div > div > div.occtax-form-content.ng-star-inserted > div > div.col-xl-6.col-lg-7.col-sm-6 > pnx-occtax-form-map > pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom > div.leaflet-control-container > div.leaflet-top.leaflet-right > div.leaflet-control-zoom.leaflet-bar.leaflet-control > a.leaflet-control-zoom-in");
-  Array(10).fill(0).forEach(e => plus.wait(1000).click())
-  cy.get('body > pnx-root > pnx-nav-home > mat-sidenav-container > mat-sidenav-content > div > div > pnx-occtax-form > div > div > div.occtax-form-content.ng-star-inserted > div > div.col-xl-6.col-lg-7.col-sm-6 > pnx-occtax-form-map > pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom').click(100, 100);
+  const plus = cy.get("pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom > div.leaflet-control-container > div.leaflet-top.leaflet-right > div.leaflet-control-zoom.leaflet-bar.leaflet-control > a.leaflet-control-zoom-in");
+  Array(10).fill(0).forEach(e => plus.wait(200).click())
+  cy.get('pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom').click(100, 100);
+  // le overlay doit être désactivé
   cy.get("[data-qa='pnx-occtax-releve-form-observers'] #overlay").should("not.exist");
   //TODO: tester le remplacement d'une geometrie, d'un polygone, d'une ligne, d'une édition...
 });
 
-describe("Geonature connection", () => {
+after("Logout", () => {
+   cy.geonatureLogout()
+})
+
+describe("Post Occtax", () => {
     it("Test du form observateurs", () => {
       //test si une valeur d'observateur par défaut existe
       cy.get("[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select']")
@@ -108,15 +110,64 @@ describe("Geonature connection", () => {
         .should('have.length', 1);
     });
 
+    it("Should submit a new releve", () => {
+      cy.get("[data-qa='pnx-occtax-releve-submit-btn']").click()
+    })
+    it("Occurrence sumbit must be disabled", () => {
+      cy.get("[data-qa='occurrence-add-btn'][disabled='true']");
+    })
+    it("Should focus on taxa input", ()=> {
+      cy.focused()
+      .invoke('attr', 'data-qa')
+      .should('eq', 'taxonomy-form-input')
+    });
+    it("Search and select taxa", ()=> {
+      const taxonInput = cy.get("input[data-qa='taxonomy-form-input'].ng-invalid");
+      taxonInput.type("canis lupus")
+      const results = cy.get("ngb-typeahead-window")
+      const firstTaxon = results.first().click()
+      const nomValideResult = cy.get("[data-qa='occurrence-nom-valide']");
+      nomValideResult.contains("Canis lupus Linnaeus, 1758")
+    })
+
+    it("should focus on sumbit button", ()=> {
+      // check the button add occurrence is focused
+      cy.focused()
+      .invoke('attr', 'data-qa')
+      .should('eq', 'occurrence-add-btn')
+    })
+
+    it("should autocompete count max with count min value", () => {
+      // HACK : must reselect countin min from selector otherwise it clear the wrong input (?!) ...
+      cy.get("[data-qa='counting-count-min']").should("have.value", 1);
+      cy.get("[data-qa='counting-count-max']").should("have.value", 1);
+      // change count min val, count max must be updated with the same value
+      cy.get("[data-qa='counting-count-min']").clear()
+      cy.get("[data-qa='counting-count-min']").type(3);
+      cy.get("[data-qa='counting-count-max']").should("have.value", 3);
+      // change count max val with a lower value than count min - should be invalid
+      cy.get("[data-qa='counting-count-max']").clear();
+      cy.get("[data-qa='counting-count-max']").type(2);
+      // TODO check is invalid // not working
+      // try with this ?
+      //       cy.get('section')
+      // .should('have.class', 'container')
+      // cy.get("[data-qa='counting-count-max'].ng-invalid")
+
+      // change count min - count max should'nt be updated because it's been already change
+      cy.get("[data-qa='counting-count-min']").clear()
+      cy.get("[data-qa='counting-count-min']").type(1)
+      cy.get("[data-qa='counting-count-max']").should("have.value", 2)
+    })
+
+    it("Should submit an occurrence", () => {
+      cy.get("[data-qa='occurrence-add-btn']").click()
+    })
+
+    // TODO : check that the occurrence is in the rigth list
+    // check the taxon input is focused again
+    // test to edit and no autocompletion on counting
+
+
+
 });
-
-
-
-      // cy.get('.check-box-sub-text').should('not.exist');
-
-
-        // cy.get(".button-success > .mat-button-wrapper").click();
-        // cy.get(".leaflet-container").click();
-        // const plus_button = cy.get(
-        //   "body > pnx-root > pnx-nav-home > mat-sidenav-container > mat-sidenav-content > div > div > pnx-occtax-form > div > div > div.occtax-form-content.ng-star-inserted > div > div.col-xl-6.col-lg-7.col-sm-6 > pnx-occtax-form-map > pnx-map > div > div.leaflet-container.leaflet-touch.leaflet-fade-anim.leaflet-grab.leaflet-touch-drag.leaflet-touch-zoom > div.leaflet-control-container > div.leaflet-top.leaflet-right > div.leaflet-control-zoom.leaflet-bar.leaflet-control > a.leaflet-control-zoom-in"
-        // );

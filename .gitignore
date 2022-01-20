@@ -30,7 +30,6 @@ backend/run.py
 *.perm
 *.pem
 *.ipynb
-contrib
 
 tsconfig.json
 .angulardoc.json

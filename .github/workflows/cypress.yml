@@ -3,7 +3,7 @@ name: cypress
 on:
   push:
     branches:
-      - angular12
+      - gh-test2
   pull_request:
     branches:
       - angular12
@@ -101,7 +101,7 @@ jobs:
     - name: Install core modules
       run: |
         geonature install_packaged_gn_module contrib/occtax OCCTAX --build=false
-        geonature db upgrade occtax-samples@head
+        geonature db upgrade occtax-samples-test@head
         geonature install_packaged_gn_module contrib/gn_module_occhab OCCHAB --build=false
         geonature install_packaged_gn_module contrib/gn_module_validation VALIDATION --build=false
       env:
@@ -138,16 +138,26 @@ jobs:
         ./install/04_install_frontend.sh --ci
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
-    - name: run backend
+    - name: run GN backend
       run : geonature dev_back &
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
+    - name: run TX backend
+      run : |
+        gunicorn "app:create_app()" --bind "0.0.0.0:5000" --daemon
+      working-directory: ./backend/dependencies/TaxHub/apptax
+      env:
+        TAXHUB_SETTINGS: ../test_config.py
+    - name: curl
+      uses: wei/curl@master
+      with:
+        args: http://127.0.0.1:5000/api/taxref/allnamebylist?offset=10
     - name: Cypress run
-      uses: cypress-io/github-action@v1
+      uses: cypress-io/github-action@v2
       with:
         record: true
         working-directory: ./frontend
-        start: npm run start
+        start: npm run start-for-ci
         wait-on: http://127.0.0.1:4200
         headless: true
       env: 
