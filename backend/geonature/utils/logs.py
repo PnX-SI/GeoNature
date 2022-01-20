@@ -2,7 +2,9 @@ import os
 import warnings
 import smtplib
 import logging
+import flask
 from logging.handlers import SMTPHandler
+from .request import request_id
 
 
 # custom class to send email in SSL and with non ascii character
@@ -38,6 +40,14 @@ class SSLSMTPHandler(SMTPHandler):
         except:
             self.handleError(record)
 
+
+class RequestIdFilter(logging.Filter):
+
+    def filter(self, record):
+        record.request_id = request_id() if flask.has_request_context() else ''
+        return True
+
+
 def config_loggers(config):
     """
         Configuration des niveaux de logging/warnings 
@@ -46,6 +56,7 @@ def config_loggers(config):
     root_logger = logging.getLogger()
     root_logger.addHandler(logging.StreamHandler())
     root_logger.setLevel(config["SERVER"]["LOG_LEVEL"])
+    root_logger.addFilter(RequestIdFilter())
     if config["MAIL_ON_ERROR"] and config["MAIL_CONFIG"]:
         MAIL_CONFIG = config["MAIL_CONFIG"]
         mail_handler = SSLSMTPHandler(
@@ -62,5 +73,3 @@ def config_loggers(config):
     else:
         gunicorn_error_logger = logging.getLogger("gunicorn.error")
         root_logger.handlers.extend(gunicorn_error_logger.handlers)
-
-
