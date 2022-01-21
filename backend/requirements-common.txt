@@ -28,7 +28,7 @@ marshmallow-sqlalchemy==0.26.1
 packaging==21.3
 psycopg2==2.8.5
 pillow==8.2.0
-pyparsing==2.2.0
+pyparsing==3.0.7
 python-dateutil==2.8.2
 requests==2.27.1
 shapely==1.8.0
