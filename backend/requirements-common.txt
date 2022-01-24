@@ -2,7 +2,7 @@ chardet==3.0.4
 click==8.0.3
 click-default-group==1.2.2
 click-plugins==1.1.1
-docutils==0.15.2
+docutils==0.18.1
 fiona==1.8.20
 flask_wtf==0.14.3
 Flask-Admin==1.5.8
@@ -28,7 +28,6 @@ marshmallow-sqlalchemy==0.26.1
 packaging==21.3
 psycopg2==2.8.5
 pillow==8.2.0
-pyparsing==2.2.0
 python-dateutil==2.8.2
 requests==2.27.1
 shapely==1.8.0
