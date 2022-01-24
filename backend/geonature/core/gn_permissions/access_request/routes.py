@@ -87,6 +87,11 @@ def get_permissions_requests():
     UserValidator = aliased(User)
     query = (
         DB.session.query(TRequests, UserAsker, BibOrganismes, UserValidator)
+            .options(
+                Load(UserAsker).load_only("id_role", "email", "nom_role", "prenom_role", "id_organisme").lazyload("*"),
+                Load(BibOrganismes).load_only("id_organisme", "nom_organisme").lazyload("*"),
+                Load(UserValidator).load_only("id_role", "nom_role", "prenom_role").lazyload("*")
+            )
             .join(UserAsker, UserAsker.id_role == TRequests.id_role)
             .outerjoin(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme)
             .outerjoin(UserValidator, UserValidator.id_role == TRequests.processed_by)
@@ -586,6 +591,11 @@ def get_permissions_requests_by_token(token):
     UserValidator = aliased(User)
     query = (
         DB.session.query(TRequests, UserAsker, BibOrganismes, UserValidator)
+            .options(
+                Load(UserAsker).load_only("id_role", "email", "nom_role", "prenom_role", "id_organisme").lazyload("*"),
+                Load(BibOrganismes).load_only("id_organisme", "nom_organisme").lazyload("*"),
+                Load(UserValidator).load_only("id_role", "nom_role", "prenom_role").lazyload("*")
+            )
             .join(UserAsker, UserAsker.id_role == TRequests.id_role)
             .outerjoin(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme)
             .outerjoin(UserValidator, UserValidator.id_role == TRequests.processed_by)
@@ -682,6 +692,11 @@ def patch_permissions_request_by_token(info_role, token):
     UserValidator = aliased(User)
     results = (
         DB.session.query(TRequests, UserAsker, BibOrganismes, UserValidator)
+            .options(
+                Load(UserAsker).load_only("id_role", "email", "nom_role", "prenom_role", "id_organisme").lazyload("*"),
+                Load(BibOrganismes).load_only("id_organisme", "nom_organisme").lazyload("*"),
+                Load(UserValidator).load_only("id_role", "nom_role", "prenom_role").lazyload("*")
+            )
             .join(UserAsker, UserAsker.id_role == TRequests.id_role)
             .outerjoin(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme)
             .outerjoin(UserValidator, UserValidator.id_role == TRequests.processed_by)
