@@ -40,7 +40,7 @@
     "@ng-bootstrap/ng-bootstrap": "10.0.0",
     "@ng-select/ng-select": "^7.4.0",
     "@ngx-translate/core": "^14.0.0",
-    "@ngx-translate/http-loader": "^4.0.0",
+    "@ngx-translate/http-loader": "^6.0.0",
     "@swimlane/ngx-datatable": "^20.0.0",
     "@tmcw/togeojson": "^4.1.0",
     "@types/geojson": "^7946.0.7",
