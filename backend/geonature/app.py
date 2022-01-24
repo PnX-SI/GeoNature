@@ -128,7 +128,7 @@ def create_app(with_external_mods=True):
     # Pass the ID_APP to the submodule to avoid token conflict between app on the same server
     with app.app_context():
         try:
-            gn_app = Application.query.filter_by(code_application='GN').one()
+            gn_app = Application.query.filter_by(code_application=config['CODE_APPLICATION']).one()
         except (ProgrammingError, NoResultFound):
             logging.warning("Warning: unable to find GeoNature application, database not yet initialized?")
         else:
