@@ -4,7 +4,6 @@ import sys
 from flask import current_app, request, json, redirect
 from werkzeug.exceptions import Unauthorized, InternalServerError, HTTPException
 from werkzeug.urls import url_encode
-from geonature.utils.request import request_id
 
 # Unauthorized means disconnected
 # (logged but not allowed to perform an action = Forbidden)
@@ -36,12 +35,11 @@ def handle_unauthenticated_request(e):
 def handle_http_exception(e):
     response = e.get_response()
     if request.accept_mimetypes.best == 'application/json':
-        request_id_ = request_id()
         response.data = json.dumps({
             'code': e.code,
             'name': e.name,
             'description': e.description,
-            'request_id': request_id_
+            'request_id': request.environ['FLASK_REQUEST_ID'],
         })
         response.content_type = 'application/json'
     return response
@@ -60,12 +58,11 @@ def handle_internal_server_error(e):
         description = e.description
     response = e.get_response()
     if request.accept_mimetypes.best == 'application/json':
-        request_id_ = request_id()
         response.data = json.dumps({
             'code': e.code,
             'name': e.name,
             'description': description,
-            'request_id': request_id_
+            'request_id': request.environ['FLASK_REQUEST_ID'],
         })
     return response
 

@@ -24,6 +24,7 @@ from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
 from geonature.utils.module import import_backend_enabled_modules
 from geonature.core.admin.admin import admin
+from geonature.middlewares import RequestID
 
 from pypnusershub.db.tools import user_from_token, UnreadableAccessRightsError, AccessRightsExpiredError
 from pypnusershub.db.models import Application
@@ -85,6 +86,7 @@ def create_app(with_external_mods=True):
 
     # set from headers HTTP_HOST, SERVER_NAME, and SERVER_PORT
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
+    app.wsgi_app = RequestID(app.wsgi_app)
 
     app.json_encoder = MyJSONEncoder
 
@@ -124,9 +126,10 @@ def create_app(with_external_mods=True):
             g.current_user = None
 
     if config.get('SENTRY_DSN'):
-        from sentry_sdk import set_user
+        from sentry_sdk import set_tag, set_user
         @app.before_request
-        def set_current_user():
+        def set_sentry_context():
+            set_tag("request.id", request.environ["FLASK_REQUEST_ID"])
             if g.current_user:
                 set_user({
                     'id': g.current_user.id_role,

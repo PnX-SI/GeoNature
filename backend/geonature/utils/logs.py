@@ -3,14 +3,18 @@ import warnings
 import smtplib
 import logging
 from logging.handlers import SMTPHandler
-from .request import request_id
+from flask import request, has_request_context
+from flask.logging import default_handler
 
 
-class RequestIdFilter(logging.Filter):
+class RequestIdFormatter(logging.Formatter):
 
-    def filter(self, record):
-        record.request_id = request_id() if flask.has_request_context() else ''
-        return True
+    def format(self, record):
+        s = super().format(record)
+        if has_request_context():
+            req_id = request.environ['FLASK_REQUEST_ID']
+            s = f'[{req_id}] {s}'
+        return s
 
 
 def config_loggers(config):
@@ -19,9 +23,10 @@ def config_loggers(config):
         et des hanlers
     """
     root_logger = logging.getLogger()
-    root_logger.addHandler(logging.StreamHandler())
+    formatter = RequestIdFormatter()
+    default_handler.setFormatter(formatter)
+    root_logger.addHandler(default_handler)
     root_logger.setLevel(config["SERVER"]["LOG_LEVEL"])
-    root_logger.addFilter(RequestIdFilter())
     if config["MAIL_ON_ERROR"] and config["MAIL_CONFIG"]:
         MAIL_CONFIG = config["MAIL_CONFIG"]
         mail_handler = SMTPHandler(
