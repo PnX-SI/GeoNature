@@ -123,6 +123,17 @@ def create_app(with_external_mods=True):
         except (KeyError, UnreadableAccessRightsError, AccessRightsExpiredError):
             g.current_user = None
 
+    if config.get('SENTRY_DSN'):
+        from sentry_sdk import set_user
+        @app.before_request
+        def set_current_user():
+            if g.current_user:
+                set_user({
+                    'id': g.current_user.id_role,
+                    'username': g.current_user.identifiant,
+                    'email': g.current_user.email,
+                })
+
     admin.init_app(app)
 
     # Pass the ID_APP to the submodule to avoid token conflict between app on the same server
