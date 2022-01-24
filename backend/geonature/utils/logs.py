@@ -3,6 +3,18 @@ import warnings
 import smtplib
 import logging
 from logging.handlers import SMTPHandler
+from flask import request, has_request_context
+from flask.logging import default_handler
+
+
+class RequestIdFormatter(logging.Formatter):
+
+    def format(self, record):
+        s = super().format(record)
+        if has_request_context():
+            req_id = request.environ['FLASK_REQUEST_ID']
+            s = f'[{req_id}] {s}'
+        return s
 
 
 def config_loggers(config):
@@ -11,7 +23,9 @@ def config_loggers(config):
         et des hanlers
     """
     root_logger = logging.getLogger()
-    root_logger.addHandler(logging.StreamHandler())
+    formatter = RequestIdFormatter()
+    default_handler.setFormatter(formatter)
+    root_logger.addHandler(default_handler)
     root_logger.setLevel(config["SERVER"]["LOG_LEVEL"])
     if config["MAIL_ON_ERROR"] and config["MAIL_CONFIG"]:
         MAIL_CONFIG = config["MAIL_CONFIG"]
@@ -30,5 +44,3 @@ def config_loggers(config):
     else:
         gunicorn_error_logger = logging.getLogger("gunicorn.error")
         root_logger.handlers.extend(gunicorn_error_logger.handlers)
-
-
