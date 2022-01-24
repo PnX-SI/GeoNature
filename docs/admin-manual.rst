@@ -924,7 +924,6 @@ Voici la liste des commandes disponibles (aussi disponibles en tapant la command
 - ``dev_front`` : Lance le frontend en mode développement
 - ``generate_frontend_module_route`` : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installés (Fait automatiquement lors de l'installation d'un module)
 - ``install_gn_module`` : Installe un gn_module
-- ``start_gunicorn`` : Lance l'API du backend avec gunicorn
 - ``update_configuration`` : Met à jour la configuration du cœur de l'application. A exécuter suite à une modification du fichier ``geonature_config.toml``
 - ``update_module_configuration`` : Met à jour la configuration d'un module. A exécuter suite à une modification du fichier ``conf_gn_module.toml``.
 
@@ -993,6 +992,20 @@ Voici les paramètres de Gunicorn par défaut :
   * ``GUNICORN_TIMEOUT=30``
 
 Pour modifier une de ces variables, créer un fichier ``environ`` à la racine de votre dossier GeoNature, et indiquer la variable d’environnement avec sa valeur modifiée.
+
+Si vous souhaitez modifier de manière plus avancé la ligne de commande ``gunicorn``, surcouchez le service systemd :
+
+  * Lancez ``sudo systemctl edit geonature`` ce qui va créer le fichier ``/etc/systemd/system/geonature.service.d/override.conf`` et ouvrir un éditeur pour vous permettre de le modifier
+  * Indiquez :
+  
+    .. code::
+
+      [Service]
+      ExecStart=
+      ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
+
+    Note : le premier ``ExecStart`` permet de réinitialiser la commande de lancement de gunicorn.
+    
 
 Sauvegarde et restauration
 --------------------------
