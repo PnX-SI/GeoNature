@@ -5,12 +5,12 @@ import uuid
 
 from flask import current_app, request, render_template, url_for, redirect
 from sqlalchemy import  or_, exc
-from sqlalchemy.orm import aliased
+from sqlalchemy.orm import aliased, Load
 
 
 
 from pypnusershub.db.models import User
-from utils_flask_sqla.response import json_resp ,json_resp_accept_empty_list
+from utils_flask_sqla.response import json_resp, json_resp_accept_empty_list
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.models import (
@@ -44,14 +44,14 @@ log = logging.getLogger()
 @json_resp_accept_empty_list
 def get_permissions_requests():
     """
-    Retourne toutes les demandes de permissions avec des info sur 
+    Retourne toutes les demandes de permissions avec des info sur
     l'utilisateur ayant fait la demande.
 
     .. :quickref: Permissions;
-    
+
     Params:
     :param state: filtre permetant de récupérer seulement les requêtes
-    acceptées (accepted), refusées (refused), refusées et acceptées 
+    acceptées (accepted), refusées (refused), refusées et acceptées
     (processed) ou en attentes (pending).
     :type state: 'accepted', 'refused', 'processed', 'pending'
 
@@ -60,7 +60,7 @@ def get_permissions_requests():
     """
     # Get params
     params = request.args.to_dict()
-    
+
     # Check if permissions management is enable
     if not current_app.config["PERMISSION_MANAGEMENT"]["ENABLE_ACCESS_REQUEST"]:
         response = {
@@ -91,14 +91,14 @@ def get_permissions_requests():
             .outerjoin(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme)
             .outerjoin(UserValidator, UserValidator.id_role == TRequests.processed_by)
     )
-    
+
     if "state" in params:
         if params["state"] == "processed":
             query = (
                 query.filter(
                     or_(
-                        TRequests.processed_state == RequestStates.accepted, 
-                        TRequests.processed_state == RequestStates.refused, 
+                        TRequests.processed_state == RequestStates.accepted,
+                        TRequests.processed_state == RequestStates.refused,
                     )
                 )
                 .order_by(TRequests.processed_date.desc())
@@ -111,14 +111,14 @@ def get_permissions_requests():
                 query = query.order_by(TRequests.meta_create_date)
     else:
         query = query.order_by(TRequests.meta_create_date)
-    
+
     results = query.all()
 
     requests = []
     for result in results:
         access_request = formatAccessRequest(*result)
         requests.append(access_request)
-        
+
     return prepare_output(requests)
 
 @routes.route("/access_requests", methods=["POST"])
@@ -306,7 +306,6 @@ def manage_access_request_by_link(token, action):
             "status": "error"
         }
         return response, 500
-    
 
     # Redirect to GeoNature app home page
     return redirect(current_app.config["URL_APPLICATION"], code=302)
@@ -336,7 +335,7 @@ def get_status(state):
 def add_permission(request):
     # Build default permissions for access request
     default_permissions = get_access_request_default_permissions(request)
-    
+
     # Add additional data to each permission
     for perm in default_permissions:
         perm["id_request"] = request["id_request"]
@@ -356,24 +355,24 @@ def add_permission(request):
 def get_access_request_default_permissions(request):
     default_permissions = [
         {
-            "module_code": "SYNTHESE", 
-            "action_code": "R", 
+            "module_code": "SYNTHESE",
+            "action_code": "R",
             "object_code": "PRIVATE_OBSERVATION",
         },
         {
-            "module_code": "SYNTHESE", 
-            "action_code": "E", 
+            "module_code": "SYNTHESE",
+            "action_code": "E",
             "object_code": "PRIVATE_OBSERVATION",
         },
     ]
-    
+
     # Add new permissions for sensitive observations
     if (request["sensitive_access"] is True):
         default_sensitive_permissions = copy.deepcopy(default_permissions)
         for permission in default_sensitive_permissions:
-            permission["object_code"] = "SENSITIVE_OBSERVATION" 
+            permission["object_code"] = "SENSITIVE_OBSERVATION"
         default_permissions.extend(default_sensitive_permissions)
-    
+
     return default_permissions
 
 
@@ -415,7 +414,7 @@ def get_permissions_with_filters(request, default_permissions):
         perm.end_date = request["end_date"]
         perm.value_filter = "exact"
         permissions_with_filters.append(perm)
-    
+
     return permissions_with_filters
 
 
@@ -464,7 +463,7 @@ def get_fresh_permission(filter_type_code, module_code, action_code, object_code
         .filter(BibFiltersType.code_filter_type == filter_type_code)
         .one()
     )
-    
+
     # Prepare fresh permission
     permission = CorRoleActionFilterModuleObject(
         id_module=permission_module.id_module,
@@ -472,7 +471,7 @@ def get_fresh_permission(filter_type_code, module_code, action_code, object_code
         id_object=permission_object.id_object,
         id_filter_type=permission_filter_type.id_filter_type,
     )
-    
+
     # Add gathering and id_request only if defined
     if gathering:
         permission.gathering = gathering
@@ -600,7 +599,7 @@ def get_permissions_requests_by_token(token):
             "status": "error"
         }
         return response, 404
-    
+
     response = formatAccessRequest(*results)
     response = prepare_output(response)
     return response, 200
@@ -608,9 +607,9 @@ def get_permissions_requests_by_token(token):
 
 @routes.route("/requests/<token>", methods=["PATCH"])
 @permissions.check_cruved_scope(
-    action="U", 
-    get_role=True, 
-    module_code="ADMIN", 
+    action="U",
+    get_role=True,
+    module_code="ADMIN",
     object_code="ACCESS_REQUESTS",
 )
 @json_resp
@@ -749,9 +748,9 @@ def format_end_access_date_from_string(date):
 # TODO: Delete this route if not used !
 @routes.route("/requests/<token>", methods=["PUT"])
 @permissions.check_cruved_scope(
-    action="U", 
-    get_role=True, 
-    module_code="ADMIN", 
+    action="U",
+    get_role=True,
+    module_code="ADMIN",
     object_code="ACCESS_REQUESTS",
 )
 @json_resp
