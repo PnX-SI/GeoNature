@@ -39,7 +39,7 @@ export class AuthService {
         this.public_access = false;
       }
       
-      if(this.public_access){
+      if(this.public_access && AppConfig.PUBLIC_ACCESS.ENABLE_PUBLIC_ACCESS){
         
         const userPublic = {
           "username": AppConfig.PUBLIC_ACCESS.PUBLIC_LOGIN,
