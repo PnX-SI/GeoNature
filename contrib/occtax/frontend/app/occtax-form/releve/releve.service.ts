@@ -9,13 +9,12 @@ import { CommonService } from "@geonature_common/service/common.service";
 import { FormService } from "@geonature_common/form/form.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcctaxFormService } from "../occtax-form.service";
-import { OcctaxStoreService } from "../../services/occtax-store.service";
 import { OcctaxFormMapService } from "../map/occtax-map.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { DatasetStoreService } from '@geonature_common/form/datasets/dataset.service';
 import { MapService } from "@geonature_common/map/map.service"
-@Injectable()
+@Injectable({providedIn: "root"})
 export class OcctaxFormReleveService {
   public userReleveRigth: any;
 
@@ -31,12 +30,9 @@ export class OcctaxFormReleveService {
   public route: ActivatedRoute;
 
   public currentIdDataset:any;
-
-  public datasetId : number = null;
   public previousReleve = null;
 
   constructor(  
-    public occtaxStoreService: OcctaxStoreService,
     private router: Router,
     private fb: FormBuilder,
     private _commonService: CommonService,
@@ -137,13 +133,7 @@ export class OcctaxFormReleveService {
     ]);
   }
 
-  onDatasetChanged(idDataset) {    
-    // const currentDataset = this._datasetStoreService.datasets.find(d => d.id_dataset == idDataset);
-    // if(currentDataset && currentDataset.id_taxa_list) {    
-    //   this.occtaxFormService.idTaxonList = currentDataset.id_taxa_list;
-    // } else {
-    //   this.occtaxFormService.idTaxonList = ModuleConfig.id_taxon_list
-    // }
+  onDatasetChanged(idDataset) { 
     this.occtaxFormService.getAdditionnalFields(  
       ["OCCTAX_RELEVE"],
       idDataset
@@ -400,9 +390,10 @@ export class OcctaxFormReleveService {
       .pipe(
         map((data) => {          
           const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);              
+          // datasetId could be get store in localStorage via get parameters (see occtax-map-list)
+          const occtaxCustomValues = JSON.parse(localStorage.getItem("occtaxCustomValues"));
           return {
-            // datasetId could be get for get parameters (see releve.component)
-            id_dataset: this.datasetId || this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset,
+            id_dataset: occtaxCustomValues.id_dataset || this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset,
             date_min: this.occtaxParamS.get("releve.date_min") ||
               previousReleve.date_min ||
               this.defaultDateWithToday(),
@@ -481,16 +472,10 @@ export class OcctaxFormReleveService {
               "Releve.Infos.ReleveModified"
             );
             this.occtaxFormService.replaceReleveData(data);
-            this.releveForm.markAsPristine();
-            console.log(this.occtaxStoreService.moduleDatasetId.getValue());
-            
-              const datasetId = this.occtaxStoreService.moduleDatasetId.getValue();
+            this.releveForm.markAsPristine();            
               this.router.navigate(
-                ["occtax/form", data.id, "taxons", {
-                  queryParams: {
-                    "id_dataset": datasetId ? datasetId : ""
-                  }
-                }]);
+                ["occtax/form", data.id, "taxons"]
+              );
 
             
             this.occtaxFormService.currentTab = "taxons";
@@ -518,13 +503,8 @@ export class OcctaxFormReleveService {
             );
 
 
-            const datasetId = this.occtaxStoreService.moduleDatasetId.getValue()
             this.occtaxFormService.currentTab = "taxons";
-            this.router.navigate(["/occtax/form", data.id, "taxons"], {
-              queryParams: {
-                "id_dataset": (datasetId ? datasetId : "")
-              }
-            });
+            this.router.navigate(["/occtax/form", data.id, "taxons"]);
             
           },
           (err) => {

@@ -18,7 +18,6 @@ import { OcctaxFormReleveService } from "./releve/releve.service";
 import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
-import { OcctaxStoreService } from "../services/occtax-store.service";
 import { OcctaxFormCountingsService } from "./counting/countings.service";
 import { OcctaxFormMapService } from "./map/occtax-map.service";
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -57,7 +56,6 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     public occtaxFormReleveService: OcctaxFormReleveService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxTaxaListService: OcctaxTaxaListService,
-    public occtaxStoreService: OcctaxStoreService,
     private _ds: OcctaxDataService,
     private _commonService: CommonService,
     private _modalService: NgbModal,
@@ -70,13 +68,6 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     
     // set id_releve and tab on initalization (refresh page)
     this.setCurrentTabAndIdReleve(this._route.snapshot.url);
-
-    // this._route.url.subscribe(d => {
-    //   console.log("PARAMS?");
-      
-    //   console.log(d);
-      
-    // })
     
     // set id_releve and tab on tab navigation
     // when come from map list both are trigger. Manage by distinctUntilChanged on getOcctaxData
@@ -88,12 +79,8 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     })
   }
 
-  setCurrentTabAndIdReleve(urlSegments: Array<any>) {      
-      console.log(urlSegments);
-      
-    if (urlSegments.find(e => e.path === "taxons")) {
-      console.log("passe la ?");
-      
+  setCurrentTabAndIdReleve(urlSegments: Array<any>) {            
+    if (urlSegments.find(e => e.path === "taxons")) {      
       const idReleve = urlSegments[1].path;
 
       if (idReleve && Number.isInteger(Number(idReleve)))  {        
@@ -122,7 +109,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
   navigate(tab) {    
-    const idReleve = this.occtaxFormService.id_releve_occtax.getValue();        
+    const idReleve = this.occtaxFormService.id_releve_occtax.getValue();  
     if(tab == "releve") {
       if(idReleve) {
         this._router.navigate(
@@ -180,23 +167,13 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
   leaveTheForm(cancel) {
     this.occtaxFormService.disabled = true;
     this.disableCancel = true;
-    let url;
-    console.log(this.occtaxStoreService.moduleDatasetId.getValue());
-    const queryParams = {"id_dataset": this.occtaxStoreService.moduleDatasetId.getValue()}
+    let url;    
     if (this.occtaxFormService.chainRecording) {
-      if(this.occtaxStoreService.moduleDatasetId.getValue()) {
-        url = ["/occtax/form", {queryParams: queryParams}];
-      } else {
         url = ["/occtax/form"];
-      }
     } else {
-      if(this.occtaxStoreService.moduleDatasetId.getValue()) {
-        url = ["/occtax", {queryParams: queryParams}];
-      } else {
-        url = ["/occtax"];
+        url = ["occtax"];
+        this.occtaxFormService.previousReleve = null;
       }
-      this.occtaxFormService.previousReleve = null;
-    }
 
 
     // si le formulair est en cour d'édition
@@ -235,7 +212,6 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
         this.deleteReleveIfNoOcc();
       }
       this._router.navigate(url);
-      console.log(url);
       
       this.occtaxTaxaListService.cleanOccurrenceInProgress();
     }
