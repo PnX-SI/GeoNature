@@ -17,13 +17,17 @@ export class MyCustomInterceptor implements HttpInterceptor {
 
   private handleError(error: Response | any) {
     let errMsg: string;
+    let errName:string;
     if (error.status !== 404) {
       if (error instanceof Response || error['error']) {
-        errMsg = `${error.status} - ${error.statusText || ''} ${error['error'].description}`;
+        errMsg = `${error.status} - ${error.statusText || ''} ${error['error'].description}
+        id requete: ${error['error'].request_id}`;
+        errName = error['error'].name
       } else {
         errMsg = error.message ? error.message : error.toString();
+        errName = 'Une erreur est survenue'
       }
-      this._toastrService.error(errMsg, error['error'].name, {timeOut: 6000})
+      this._toastrService.error(errMsg, errName, {timeOut: 6000})
     }
   }
 
