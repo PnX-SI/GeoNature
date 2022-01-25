@@ -15,6 +15,8 @@ CHANGELOG
 **🐛 Corrections**
 
 * Correction de l'URL de réinitialisation de mot passe envoyée par email (#1620)
+* Correction de l'URL de l'API de TaxHub (slash final manquant) pour l'affichage des photos sur la fiche d'un profil de taxon
+* Occtax : Correction des listes déroulantes masquées dans le bloc dénombrement, en rajoutant un scroll
 * Correction de la génération du token quand on utilise le CAS de l'INPN pour se connecter à GeoNature
 * Ordonnancement de la route ``/color_taxon`` par ``cd_nom`` et ``id_area`` quand elle est interrogée avec une pagination (pour ordonner les résultats paginés utilisés par Occtax-mobile)
 * Utilisation du paramètre ``page`` de Flask à la place du paramètre maison ``offset`` pour la pagination des routes
