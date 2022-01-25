@@ -36,7 +36,14 @@ export class AuthService {
     private cruvedService: CruvedStoreService,
     private _routingService: RoutingService,
     private moduleService: ModuleService
-  ) {}
+  ) {
+    // Allow to use public access via a direct url, with query param "access=public"
+    this.route.queryParams.subscribe((params) => {
+      if ('access' in params && params['access'] == 'public' && AppConfig.PUBLIC_ACCESS_USERNAME) {
+        this.signinPublicUser();
+      }
+    });
+  }
 
   setCurrentUser(user) {
     localStorage.setItem('current_user', JSON.stringify(user));

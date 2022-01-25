@@ -1,38 +1,34 @@
 import {
+  ActivatedRouteSnapshot,
   CanActivate,
   CanActivateChild,
-  ActivatedRouteSnapshot,
+  Router,
   RouterStateSnapshot,
 } from '@angular/router';
 import { Injectable, Injector } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from '@geonature/components/auth/auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild {
   constructor(private _router: Router, private _injector: Injector) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  redirectAuth(route, state) {
     const authService = this._injector.get(AuthService);
+
     if (authService.getToken() === null) {
       this._router.navigate(['/login'], {
-        queryParams: { route: state.url },
+        queryParams: { ...route.queryParams, ...{ route: state.url.split('?')[0] } },
       });
       return false;
-    } else {
-      return true;
     }
+
+    return true;
+  }
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+    return this.redirectAuth(route, state);
   }
 
   canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    const authService = this._injector.get(AuthService);
-    if (authService.getToken() === null) {
-      this._router.navigate(['/login'], {
-        queryParams: { route: state.url },
-      });
-      return false;
-    } else {
-      return true;
-    }
+    return this.redirectAuth(route, state);
   }
 }
