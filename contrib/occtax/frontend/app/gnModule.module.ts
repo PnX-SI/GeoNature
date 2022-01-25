@@ -1,4 +1,4 @@
-import { NgModule, Injectable } from "@angular/core";
+import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
@@ -31,23 +31,17 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatTabsModule } from "@angular/material/tabs";
 const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },
-  { 
-    path: "form", 
-    component: OcctaxFormComponent,
-    children : [
-      {
-        path: "releve",
-        component: OcctaxFormReleveComponent
-      },
-      {
-        path: "releve/:id",
-        component: OcctaxFormReleveComponent
-      },
-      {
-        path: ":id/taxons",
-        component: OcctaxFormOccurrenceComponent
-      }
-    ] 
+  {
+    path: "form/releve",
+    component: OcctaxFormComponent
+  },
+   {
+    path: "form/:id/taxons",
+    component: OcctaxFormComponent
+  },
+  {
+    path: "form/releve/:id",
+    component: OcctaxFormReleveComponent
   },
   { path: "info/:id", component: OcctaxMapInfoComponent, pathMatch: "full" },
   {

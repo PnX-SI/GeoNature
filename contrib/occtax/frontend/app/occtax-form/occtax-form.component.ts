@@ -7,7 +7,7 @@ import {
 } from "@angular/core";
 import { Subscription } from "rxjs"
 import { MatDialog } from "@angular/material/dialog";
-import { Router, NavigationEnd } from "@angular/router";
+import { Router, NavigationEnd, ActivatedRoute, UrlSegment } from "@angular/router";
 import { CommonService } from "@geonature_common/service/common.service"
 import { ModuleConfig } from "../module.config";
 import { OcctaxFormService } from "./occtax-form.service";
@@ -50,6 +50,7 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     public dialog: MatDialog,
     private _router: Router,
+    private _route: ActivatedRoute,
     public occtaxFormService: OcctaxFormService,
     private _mapService: MapService,
     public occtaxFormParamService: OcctaxFormParamService,
@@ -68,35 +69,51 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.occtaxFormService.idTaxonList = ModuleConfig.id_taxon_list;
     
     // set id_releve and tab on initalization (refresh page)
-    this.setCurrentTabAndIdReleve(this._router.routerState.snapshot.url);
+    this.setCurrentTabAndIdReleve(this._route.snapshot.url);
+
+    // this._route.url.subscribe(d => {
+    //   console.log("PARAMS?");
+      
+    //   console.log(d);
+      
+    // })
+    
     // set id_releve and tab on tab navigation
     // when come from map list both are trigger. Manage by distinctUntilChanged on getOcctaxData
     this.urlSub = this._router.events
     .pipe(
       filter(event => event instanceof NavigationEnd),
-    ).subscribe((event:any) => {       
+    ).subscribe((event:any) => {         
       this.setCurrentTabAndIdReleve(event.url);
     })
   }
 
-  setCurrentTabAndIdReleve(url) {    
-    let urlSegments = url.split("/");
-    if (urlSegments[urlSegments.length - 1] === "taxons") {
-      const idReleve = urlSegments[urlSegments.length - 2];      
-      if (idReleve && Number.isInteger(Number(idReleve)))  {
+  setCurrentTabAndIdReleve(urlSegments: Array<any>) {      
+      console.log(urlSegments);
+      
+    if (urlSegments.find(e => e.path === "taxons")) {
+      console.log("passe la ?");
+      
+      const idReleve = urlSegments[1].path;
+
+      if (idReleve && Number.isInteger(Number(idReleve)))  {        
         this.occtaxFormService.disabled = false;
         this.occtaxFormService.id_releve_occtax.next(idReleve)
       } else {        
         // if no idReleve on taxon tab -> redirect
         this._router.navigate(["occtax/form/releve"]);
-        this.occtaxFormService.id_releve_occtax.next(null)
-        
+        this.occtaxFormService.id_releve_occtax.next(null) 
       }
-      this.occtaxFormService.currentTab = <"releve" | "taxons">urlSegments.pop();
+      this.occtaxFormService.currentTab = "taxons"
     } else {
       this.occtaxFormService.currentTab = "releve";
-      const idReleve = urlSegments[urlSegments.length - 1];            
-      if (idReleve && Number.isInteger(Number(idReleve)))  {
+
+      const fragment = urlSegments.find(e => e.path === "releve");
+      let idReleve;
+      if(fragment && fragment.parameters.id) {
+        idReleve = fragment.parameters.id
+      }
+      if (idReleve && Number.isInteger(Number(idReleve))){
         this.occtaxFormService.disabled = false;
         this.occtaxFormService.id_releve_occtax.next(idReleve)
       }else {

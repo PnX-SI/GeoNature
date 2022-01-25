@@ -484,13 +484,14 @@ export class OcctaxFormReleveService {
             this.releveForm.markAsPristine();
             console.log(this.occtaxStoreService.moduleDatasetId.getValue());
             
-            if(this.occtaxStoreService.moduleDatasetId.getValue()) {
-              const queryParams = {"id_dataset": this.occtaxStoreService.moduleDatasetId.getValue()}
-              this.router.navigate(["occtax/form", data.id, "taxons", {queryParams: queryParams}]);
-            }else {
-              this.router.navigate(["occtax/form", data.id, "taxons"]);
+              const datasetId = this.occtaxStoreService.moduleDatasetId.getValue();
+              this.router.navigate(
+                ["occtax/form", data.id, "taxons", {
+                  queryParams: {
+                    "id_dataset": datasetId ? datasetId : ""
+                  }
+                }]);
 
-            }
             
             this.occtaxFormService.currentTab = "taxons";
 
@@ -515,8 +516,15 @@ export class OcctaxFormReleveService {
               "info",
               "Releve.Infos.ReleveAdded"
             );
-            this.router.navigate([data.id, "taxons"], {relativeTo: this.route});
+
+
+            const datasetId = this.occtaxStoreService.moduleDatasetId.getValue()
             this.occtaxFormService.currentTab = "taxons";
+            this.router.navigate(["/occtax/form", data.id, "taxons"], {
+              queryParams: {
+                "id_dataset": (datasetId ? datasetId : "")
+              }
+            });
             
           },
           (err) => {
