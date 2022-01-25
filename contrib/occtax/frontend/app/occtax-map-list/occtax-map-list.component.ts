@@ -7,6 +7,8 @@ import {
   ViewChild,
   Renderer2,
 } from "@angular/core";
+import { Router, ActivatedRoute } from "@angular/router";
+
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { MapService } from "@geonature_common/map/map.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
@@ -24,7 +26,6 @@ import * as moment from "moment";
 import { MediaService } from '@geonature_common/service/media.service';
 import { filter } from 'rxjs/operators';
 import { OcctaxMapListService } from "./occtax-map-list.service";
-import {OcctaxStoreService} from "../services/occtax-store.service"
 
 // /occurrence/occurrence.service";
 
@@ -69,12 +70,28 @@ export class OcctaxMapListComponent
     private renderer: Renderer2,
     public mediaService: MediaService,
     public occtaxMapListS: OcctaxMapListService,
-    public occtaxStoreService: OcctaxStoreService,
+    private _router : Router,
+    private _route : ActivatedRoute,
 
 
   ) { }
 
   ngOnInit() {
+    this._router.routeReuseStrategy.shouldReuseRoute = () => false;
+    
+    // get querystring parameters and save it in localstorage
+    // use for filter by dataset, preselect dataset form and set a "fake" module name
+    const currentRouteQueryParams = this._route.snapshot.queryParams;    
+    const currentModule = currentRouteQueryParams["module_label"] ? currentRouteQueryParams["module_label"] : "Occtax";
+    this.globalSub.currentModuleSubject.next({"module_label": currentModule})
+    const occtaxCustomValues = {
+        "module_label" : currentModule,
+        "id_dataset" : currentRouteQueryParams["id_dataset"]
+    };            
+    localStorage.setItem(
+        "occtaxCustomValues", JSON.stringify(occtaxCustomValues)
+    )
+    
     // refresh forms
     this.refreshForms();
     this.mapListService.refreshUrlQuery();
@@ -86,23 +103,23 @@ export class OcctaxMapListComponent
     this.mapListService.idName = "id_releve_occtax";
     this.apiEndPoint = "occtax/releves";
     // set id_dataset if provided
-    this.occtaxStoreService.moduleDatasetId.subscribe(id => {      
+    let temp = JSON.parse(localStorage.getItem("occtaxCustomValues"));    
+    const idDataset = temp['id_dataset'];
       this.occtaxMapListS.dynamicFormGroup.patchValue({
-        "id_dataset": id
+        "id_dataset": idDataset
       })
       this.calculateNbRow();
       const params = [
         { param: "limit", value: this.occtaxMapListS.rowPerPage },
       ]
-      if(id != null) {
-        params.push({ param : "id_dataset", value: id})
+      if(idDataset) {
+        params.push({ param : "id_dataset", value: idDataset})
       }
       this.mapListService.getData(
         this.apiEndPoint,
         params,
         this.displayLeafletPopupCallback.bind(this) //afin que le this présent dans displayLeafletPopupCallback soit ce component.
       );
-    })
     // get user cruved
     this.moduleSub = this.globalSub.currentModuleSub
       // filter undefined or null

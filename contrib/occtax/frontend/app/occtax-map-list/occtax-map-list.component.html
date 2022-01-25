@@ -9,8 +9,6 @@
           data-qa="gn-occtax-btn-add-releve"
           class="btn-action hard-shadow button-success uppercase ml-3"
           [routerLink]="['form/releve']"
-          [queryParams]="{id_dataset: occtaxStoreService.moduleDatasetId.getValue()}"
-          queryParamsHandling="merge"
         >
           {{ 'Releve.AddReleve' | translate }}
           <mat-icon>add_circle_outline</mat-icon>
@@ -174,8 +172,6 @@
                 <a
                   class="btn btn-outline-shadow btn-no-padding btn-ghost"
                   [routerLink]="['form/releve', row.id_releve_occtax]"
-                  [queryParams]="{id_dataset: 134}"
-                  queryParamsHandling="merge"
                 >
                   <i
                     matTooltip="{{'Releve.Edit' | translate}} {{ row.id_releve_occtax }}"

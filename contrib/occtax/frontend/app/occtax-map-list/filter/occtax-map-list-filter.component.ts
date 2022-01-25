@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { ModuleConfig } from "../../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
@@ -7,7 +8,8 @@ import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FILTERSLIST } from "./filters-list";
 import { HttpParams } from "@angular/common/http";
 import { OcctaxMapListService } from "../occtax-map-list.service";
-import { OcctaxStoreService } from "../../services/occtax-store.service";
+import { GlobalSubService } from '@geonature/services/global-sub.service';
+
 
 @Component({
   selector: "pnx-occtax-map-list-filter",
@@ -30,6 +32,8 @@ export class OcctaxMapListFilterComponent implements OnInit {
     private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter,
     public occtaxMapListService: OcctaxMapListService,
+    private _route : ActivatedRoute,
+    private _globalSub: GlobalSubService,
   ) { }
 
   ngOnInit() {

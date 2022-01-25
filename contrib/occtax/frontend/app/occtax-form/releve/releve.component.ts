@@ -47,17 +47,6 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     this.occtaxFormReleveService.route = this.route;
     this.initHabFormSub();
 
-    // if id_dataset pass as query parameters, pass it to the releve service in the form
-    this._subscriptions.push(
-      this.route.queryParams.subscribe(params => {
-        console.log("PARAMS", params);
-        
-        let datasetId = params["id_dataset"];
-        if (datasetId){
-          this.occtaxFormReleveService.datasetId = datasetId;
-        } 
-      })
-    );
 
   } // END INIT
 
