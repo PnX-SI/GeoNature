@@ -85,7 +85,7 @@ install_usershub_schema=true
 usershub_release=2.2.1
 
 # Définir dans quelle version de TaxHub (release, branche ou tag) prendre le code SQL permettant la création du schéma taxonomie de la base de données de GeoNature
-taxhub_release=1.9.0
+taxhub_release=1.9.4
 
 # Proxy - si le serveur sur lequel se trouve GeoNature se trouve derrière un proxy
 # laisser vide si vous n'avez pas de proxy
