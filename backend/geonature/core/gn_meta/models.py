@@ -254,7 +254,7 @@ class TDatasetsQuery(BaseQuery):
     def _get_read_scope(self, user=None):
         if user is None:
             user = g.current_user
-        cruved= get_scopes_by_action(
+        cruved = get_scopes_by_action(
             id_role=user.id_role,
             module_code="GEONATURE"
         )

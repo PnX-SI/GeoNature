@@ -23,7 +23,7 @@ from apptax.taxonomie.models import Taxref
 from utils_flask_sqla.tests.utils import JSONClient
 
 
-__all__ = ['datasets', 'acquisition_frameworks', 'synthese_data']
+__all__ = ['datasets', 'acquisition_frameworks', 'synthese_data', 'source']
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -199,13 +199,16 @@ def taxon_attribut():
         db.session.add(c)
     return c
 
-
 @pytest.fixture()
-def synthese_data(users, datasets):
+def source():
     with db.session.begin_nested():
         source = TSources(name_source='Fixture',
                           desc_source='Synthese data from fixture')
         db.session.add(source)
+    return source
+
+@pytest.fixture()
+def synthese_data(users, datasets, source):
     now = datetime.datetime.now()
     geom_4326 = from_shape(Point(3.63492965698242, 44.3999389306734), srid=4326)
     data = []
