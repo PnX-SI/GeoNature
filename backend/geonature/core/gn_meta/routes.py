@@ -1,5 +1,5 @@
 """
-    Routes for gn_meta 
+    Routes for gn_meta
 """
 import datetime as dt
 import json
@@ -104,7 +104,7 @@ if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
 def get_datasets():
     """
     Get datasets list
-    
+
     .. :quickref: Metadata;
 
     :param info_role: add with kwargs
@@ -502,6 +502,8 @@ def datasetHandler(dataset, data):
         unknown=EXCLUDE
     )
     try:
+        if (data or {}).get("id_taxa_list", None) == -1:
+            data.pop("id_taxa_list")
         dataset = datasetSchema.load(data, instance=dataset)
     except ValidationError as error:
         raise BadRequest(error.messages)
@@ -668,10 +670,10 @@ def get_acquisition_frameworks(info_role):
 @permissions.check_cruved_scope("R", True, module_code="METADATA")
 def get_acquisition_frameworks_list(info_role):
     """
-    Get all AF with their datasets 
+    Get all AF with their datasets
     Use in metadata module for list of AF and DS
     Add the CRUVED permission for each row (Dataset and AD)
-    
+
     .. :quickref: Metadata;
 
     :param info_role: add with kwargs
@@ -1054,7 +1056,7 @@ def publish_acquisition_framework_mail(af, info_role):
     <br>
     Le cadre d'acquisition <i> "{af.acquisition_framework_name}" </i> dont l’identifiant est
     "{str(af.unique_acquisition_framework_id).upper()}" que vous nous avez transmis a été déposé"""
-    
+
 
     mail_content_additions = current_app.config["METADATA"]["MAIL_CONTENT_AF_CLOSED_ADDITION"]
     mail_content_pdf = current_app.config['METADATA']["MAIL_CONTENT_AF_CLOSED_PDF"]
