@@ -26,6 +26,19 @@ CHANGELOG
     geonature generate_frontend_modules_route
     geonature generate_frontend_tsconfig
     geonature generate_frontend_tsconfig_app
+**A voir**
+
+* Intégrer la correction https://github.com/PnX-SI/GeoNature/pull/1616
+* Et les autres "solved in next release" qui ne sont pas des corrections (https://github.com/PnX-SI/GeoNature/labels/solved%20in%20next%20release) ?
+* Intégrer PR de fix frontend (https://github.com/PnX-SI/GeoNature/pull/1652)
+* Intégrer la PR de correction des données Occtax et Synthèse qui a été testée et approuvée (https://github.com/PnX-SI/GeoNature/pull/1589) ?
+
+**🐛 Corrections**
+
+* Correction de l'URL de réinitialisation de mot passe envoyée par email (#1620)
+* Correction de la génération du token quand on utilise le CAS de l'INPN pour se connecter à GeoNature
+* Ordonnancement de la route ``/color_taxon`` par ``cd_nom`` et ``id_area`` quand elle est interrogée avec une pagination (pour ordonner les résultats paginés utilisés par Occtax-mobile)
+* Utilisation du paramètre ``page`` de Flask à la place du paramètre maison ``offset`` pour la pagination des routes
 
 2.9.0 - Actias luna (2022-01-13)
 --------------------------------
