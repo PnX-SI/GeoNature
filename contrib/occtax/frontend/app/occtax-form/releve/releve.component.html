@@ -78,7 +78,9 @@
           (valueLoaded)="userDatasets = $event.value"
           moduleCode="OCCTAX"
           creatableInModule="OCCTAX"
-          (onChange)="occtaxFormReleveService.onDatasetChanged($event);">
+          (onChange)="occtaxFormReleveService.onDatasetChanged($event);"
+          [compareWith]="compareFn"
+          >
         </pnx-datasets>
       </ng-template>
   </div>

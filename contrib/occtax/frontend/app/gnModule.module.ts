@@ -21,6 +21,7 @@ import { OcctaxFormParamDialog } from "./occtax-form/form-param/form-param.dialo
 
 // Service
 import { OcctaxDataService } from "./services/occtax-data.service";
+import { OcctaxStoreService } from "./services/occtax-store.service";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 
 import { OcctaxFormMapService } from "./occtax-form/map/occtax-map.service";
@@ -30,23 +31,17 @@ import { MatSlideToggleModule } from "@angular/material/slide-toggle";
 import { MatTabsModule } from "@angular/material/tabs";
 const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },
-  { 
-    path: "form", 
-    component: OcctaxFormComponent,
-    children : [
-      {
-        path: "releve",
-        component: OcctaxFormReleveComponent
-      },
-      {
-        path: "releve/:id",
-        component: OcctaxFormReleveComponent
-      },
-      {
-        path: ":id/taxons",
-        component: OcctaxFormOccurrenceComponent
-      }
-    ] 
+  {
+    path: "form/releve",
+    component: OcctaxFormComponent
+  },
+   {
+    path: "form/:id/taxons",
+    component: OcctaxFormComponent
+  },
+  {
+    path: "form/releve/:id",
+    component: OcctaxFormReleveComponent
   },
   { path: "info/:id", component: OcctaxMapInfoComponent, pathMatch: "full" },
   {
@@ -84,6 +79,7 @@ const routes: Routes = [
     MapListService,
     OcctaxFormMapService,
     OcctaxFormParamService,
+    OcctaxStoreService
   ],
 })
 export class GeonatureModule {}
