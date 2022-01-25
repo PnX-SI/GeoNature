@@ -50,6 +50,8 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     // if id_dataset pass as query parameters, pass it to the releve service in the form
     this._subscriptions.push(
       this.route.queryParams.subscribe(params => {
+        console.log("PARAMS", params);
+        
         let datasetId = params["id_dataset"];
         if (datasetId){
           this.occtaxFormReleveService.datasetId = datasetId;
@@ -73,6 +75,16 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
 
   formatter(item) {
     return item.search_name;
+  }
+
+  compareFn(item, selected) {
+    // provided value for pnx-dataset can be a dataset object or an id_dataset (when its provided from url)
+    if (typeof selected === 'object') {
+      return item.id_dataset === selected.id_dataset
+    } else {
+
+      return item.id_dataset === parseInt(selected)
+    }
   }
 
   initHabFormSub() {

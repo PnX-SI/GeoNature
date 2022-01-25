@@ -9,6 +9,7 @@ import { CommonService } from "@geonature_common/service/common.service";
 import { FormService } from "@geonature_common/form/form.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcctaxFormService } from "../occtax-form.service";
+import { OcctaxStoreService } from "../../services/occtax-store.service";
 import { OcctaxFormMapService } from "../map/occtax-map.service";
 import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
@@ -35,6 +36,7 @@ export class OcctaxFormReleveService {
   public previousReleve = null;
 
   constructor(  
+    public occtaxStoreService: OcctaxStoreService,
     private router: Router,
     private fb: FormBuilder,
     private _commonService: CommonService,
@@ -47,7 +49,8 @@ export class OcctaxFormReleveService {
     private occtaxParamS: OcctaxFormParamService,
     private _datasetStoreService: DatasetStoreService,
     private _cd: ChangeDetectorRef,
-    private _mapService: MapService
+    private _mapService: MapService,
+
   ) {
     this.initPropertiesForm();
     this.setObservables();
@@ -479,8 +482,16 @@ export class OcctaxFormReleveService {
             );
             this.occtaxFormService.replaceReleveData(data);
             this.releveForm.markAsPristine();
-                        
-            this.router.navigate(["occtax/form", data.id, "taxons"]);
+            console.log(this.occtaxStoreService.moduleDatasetId.getValue());
+            
+            if(this.occtaxStoreService.moduleDatasetId.getValue()) {
+              const queryParams = {"id_dataset": this.occtaxStoreService.moduleDatasetId.getValue()}
+              this.router.navigate(["occtax/form", data.id, "taxons", {queryParams: queryParams}]);
+            }else {
+              this.router.navigate(["occtax/form", data.id, "taxons"]);
+
+            }
+            
             this.occtaxFormService.currentTab = "taxons";
 
           },

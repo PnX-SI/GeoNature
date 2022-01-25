@@ -18,6 +18,7 @@ import { OcctaxFormReleveService } from "./releve/releve.service";
 import { OcctaxFormOccurrenceService } from "./occurrence/occurrence.service";
 import { OcctaxTaxaListService } from "./taxa-list/taxa-list.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
+import { OcctaxStoreService } from "../services/occtax-store.service";
 import { OcctaxFormCountingsService } from "./counting/countings.service";
 import { OcctaxFormMapService } from "./map/occtax-map.service";
 import {NgbModal} from '@ng-bootstrap/ng-bootstrap';
@@ -55,9 +56,11 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     public occtaxFormReleveService: OcctaxFormReleveService,
     public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxTaxaListService: OcctaxTaxaListService,
+    public occtaxStoreService: OcctaxStoreService,
     private _ds: OcctaxDataService,
     private _commonService: CommonService,
-    private _modalService: NgbModal
+    private _modalService: NgbModal,
+
   ) { }
 
   ngOnInit() {
@@ -161,10 +164,20 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
     this.occtaxFormService.disabled = true;
     this.disableCancel = true;
     let url;
+    console.log(this.occtaxStoreService.moduleDatasetId.getValue());
+    const queryParams = {"id_dataset": this.occtaxStoreService.moduleDatasetId.getValue()}
     if (this.occtaxFormService.chainRecording) {
-      url = ["/occtax/form"];
+      if(this.occtaxStoreService.moduleDatasetId.getValue()) {
+        url = ["/occtax/form", {queryParams: queryParams}];
+      } else {
+        url = ["/occtax/form"];
+      }
     } else {
-      url = ["/occtax"];
+      if(this.occtaxStoreService.moduleDatasetId.getValue()) {
+        url = ["/occtax", {queryParams: queryParams}];
+      } else {
+        url = ["/occtax"];
+      }
       this.occtaxFormService.previousReleve = null;
     }
 
@@ -205,6 +218,8 @@ export class OcctaxFormComponent implements OnInit, AfterViewInit, OnDestroy {
         this.deleteReleveIfNoOcc();
       }
       this._router.navigate(url);
+      console.log(url);
+      
       this.occtaxTaxaListService.cleanOccurrenceInProgress();
     }
   }

@@ -7,6 +7,7 @@ import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FILTERSLIST } from "./filters-list";
 import { HttpParams } from "@angular/common/http";
 import { OcctaxMapListService } from "../occtax-map-list.service";
+import { OcctaxStoreService } from "../../services/occtax-store.service";
 
 @Component({
   selector: "pnx-occtax-map-list-filter",
@@ -28,13 +29,16 @@ export class OcctaxMapListFilterComponent implements OnInit {
     private mapListService: MapListService,
     private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter,
-    public occtaxMapListService: OcctaxMapListService
+    public occtaxMapListService: OcctaxMapListService,
   ) { }
 
   ngOnInit() {
 
-
     this.occtaxConfig = ModuleConfig;
+  }
+
+  compareFn(item, id_dataset) {
+    return item.id_dataset === parseInt(id_dataset)
   }
 
   searchData() {

@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { NgModule, Injectable } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { GN2CommonModule } from "@geonature_common/GN2Common.module";
 import { Routes, RouterModule } from "@angular/router";
@@ -21,6 +21,7 @@ import { OcctaxFormParamDialog } from "./occtax-form/form-param/form-param.dialo
 
 // Service
 import { OcctaxDataService } from "./services/occtax-data.service";
+import { OcctaxStoreService } from "./services/occtax-store.service";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 
 import { OcctaxFormMapService } from "./occtax-form/map/occtax-map.service";
@@ -84,6 +85,7 @@ const routes: Routes = [
     MapListService,
     OcctaxFormMapService,
     OcctaxFormParamService,
+    OcctaxStoreService
   ],
 })
 export class GeonatureModule {}

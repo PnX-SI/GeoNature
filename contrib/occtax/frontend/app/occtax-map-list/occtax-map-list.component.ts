@@ -23,10 +23,8 @@ import { Subscription } from "rxjs/Subscription";
 import * as moment from "moment";
 import { MediaService } from '@geonature_common/service/media.service';
 import { filter } from 'rxjs/operators';
-import { OcctaxFormReleveService } from "../occtax-form/releve/releve.service";
-import { OcctaxFormOccurrenceService } from "../occtax-form/occurrence/occurrence.service";
-import { OcctaxFormService } from "../occtax-form/occtax-form.service";
 import { OcctaxMapListService } from "./occtax-map-list.service";
+import {OcctaxStoreService} from "../services/occtax-store.service"
 
 // /occurrence/occurrence.service";
 
@@ -70,11 +68,16 @@ export class OcctaxMapListComponent
     public globalSub: GlobalSubService,
     private renderer: Renderer2,
     public mediaService: MediaService,
-    public occtaxMapListS: OcctaxMapListService
+    public occtaxMapListS: OcctaxMapListService,
+    public occtaxStoreService: OcctaxStoreService,
+
 
   ) { }
 
   ngOnInit() {
+    // refresh forms
+    this.refreshForms();
+    this.mapListService.refreshUrlQuery();
     // set zoom on layer to true
     // zoom only when search data
     this.mapListService.zoomOnLayer = true;
@@ -82,8 +85,24 @@ export class OcctaxMapListComponent
     this.occtaxConfig = ModuleConfig;
     this.mapListService.idName = "id_releve_occtax";
     this.apiEndPoint = "occtax/releves";
-    // refresh forms
-    this.refreshForms();
+    // set id_dataset if provided
+    this.occtaxStoreService.moduleDatasetId.subscribe(id => {      
+      this.occtaxMapListS.dynamicFormGroup.patchValue({
+        "id_dataset": id
+      })
+      this.calculateNbRow();
+      const params = [
+        { param: "limit", value: this.occtaxMapListS.rowPerPage },
+      ]
+      if(id != null) {
+        params.push({ param : "id_dataset", value: id})
+      }
+      this.mapListService.getData(
+        this.apiEndPoint,
+        params,
+        this.displayLeafletPopupCallback.bind(this) //afin que le this présent dans displayLeafletPopupCallback soit ce component.
+      );
+    })
     // get user cruved
     this.moduleSub = this.globalSub.currentModuleSub
       // filter undefined or null
@@ -99,13 +118,7 @@ export class OcctaxMapListComponent
     this.mapListService.availableColumns = this.occtaxConfig.available_maplist_column;
 
     // FETCH THE DATA
-    this.mapListService.refreshUrlQuery();
-    this.calculateNbRow();
-    this.mapListService.getData(
-      this.apiEndPoint,
-      [{ param: "limit", value: this.occtaxMapListS.rowPerPage }],
-      this.displayLeafletPopupCallback.bind(this) //afin que le this présent dans displayLeafletPopupCallback soit ce component.
-    );
+
     // end OnInit
   }
 
