@@ -23,31 +23,28 @@ depends_on = (
 
 def upgrade():
     operations = importlib.resources.read_text('occtax.migrations.data', 'sample_data_test.sql')
+    # op.execute("SAVEPOINT datasets")
+    # with op.get_bind().begin_nested() as s:
     op.execute(operations)
-
+        # s.commit()
+        
+    # op.execute("RELEASE SAVEPOINT datasets")
+    
 
 def downgrade():
     op.execute("""
-    DELETE FROM pr_occtax.cor_counting_occtax cco
-    USING pr_occtax.t_occurrences_occtax too
-    WHERE cco.id_occurrence_occtax = too.id_occurrence_occtax
-    AND too.unique_id_occurence_occtax = 'f303683c-2510-11ec-b93a-67b44043fe7d'
-    """)
-    op.execute("""
-    DELETE FROM pr_occtax.cor_role_releves_occtax crro
-    USING pr_occtax.t_releves_occtax tro
-    WHERE crro.id_releve_occtax = tro.id_releve_occtax
-    AND tro.unique_id_sinp_grp IN ('4f784326-2511-11ec-9fdd-23b0fb947058', '4fa06f7c-2511-11ec-93a1-eb4838107091')
-    """)
-    op.execute("""
-    DELETE FROM pr_occtax.t_occurrences_occtax too
-    USING pr_occtax.t_releves_occtax tro
-    WHERE too.id_releve_occtax = tro.id_releve_occtax
-    AND tro.unique_id_sinp_grp IN ('4f784326-2511-11ec-9fdd-23b0fb947058', '4fa06f7c-2511-11ec-93a1-eb4838107091')
+    DELETE FROM gn_synthese.synthese s
+    USING gn_meta.t_datasets ds, gn_meta.t_acquisition_frameworks taf
+    WHERE s.id_dataset = ds.id_dataset
+    AND ds.id_acquisition_framework = taf.id_acquisition_framework
+    AND taf.unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'
     """)
     op.execute("""
     DELETE FROM pr_occtax.t_releves_occtax tro
-    WHERE tro.unique_id_sinp_grp IN ('4f784326-2511-11ec-9fdd-23b0fb947058', '4fa06f7c-2511-11ec-93a1-eb4838107091')
+    USING gn_meta.t_datasets ds, gn_meta.t_acquisition_frameworks taf
+    WHERE tro.id_dataset = ds.id_dataset
+    AND ds.id_acquisition_framework = taf.id_acquisition_framework
+    AND taf.unique_acquisition_framework_id='57b7d0f2-4183-4b7b-8f08-6e105d476dc5'    
     """)
     op.execute("""
     DELETE FROM gn_commons.cor_module_dataset cmd
