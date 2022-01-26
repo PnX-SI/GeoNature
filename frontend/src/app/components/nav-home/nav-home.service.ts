@@ -12,10 +12,7 @@ export class NavHomeService {
     
     private onModuleChange() {
         this.globalSubService.currentModuleSub.pipe(
-          ).subscribe(module => {
-              console.log("MODULE ON REFRESH", module);
-                                                          
-            this.globalSubService.clearTheme();
+          ).subscribe(module => {                                                          
             if (module) {
               this.moduleName = module.module_label;
               if (module.module_doc_url) {

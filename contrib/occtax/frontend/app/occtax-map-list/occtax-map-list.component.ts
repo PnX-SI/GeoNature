@@ -83,12 +83,6 @@ export class OcctaxMapListComponent
     // use for filter by dataset, preselect dataset form and set a "fake" module name
     const currentRouteQueryParams = this._route.snapshot.queryParams;    
     const currentModule = this.globalSub.currentModuleSub.getValue();
-    // currentModule.module_label = currentRouteQueryParams["module_label"] ? currentRouteQueryParams["module_label"] : "Occtax";    
-    // this.globalSub.currentModuleSub.next(currentModule)
-    // localStorage.setItem("currentModule", JSON.stringify(currentModule));
-    if("theme" in currentRouteQueryParams) {
-      this.globalSub.currentTheme.next(currentRouteQueryParams.theme)
-    }
     const occtaxCustomValues = {
         "id_dataset" : currentRouteQueryParams["id_dataset"]
     };      
