@@ -56,7 +56,7 @@ export class OcctaxFormReleveService {
     });
   }
 
-  private get initialValues() {
+  private get initialValues() {    
     return {
       id_digitiser: this.occtaxFormService.currentUser.id_role,
       meta_device_entry: "web",

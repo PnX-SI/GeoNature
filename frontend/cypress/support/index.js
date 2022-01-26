@@ -20,3 +20,7 @@ import '@cypress/code-coverage/support'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+beforeEach(() =>{
+    console.log("BEFORE EACH EVERY THING");
+})

@@ -1,5 +1,13 @@
 import promisify from 'cypress-promise';
 
+beforeEach(() => {
+  cy.restoreLocalStorage();
+});
+
+afterEach(() => {
+  cy.saveLocalStorage();
+});
+
 //Geonature connection
 before('Geonature connection', () => {
   cy.geonatureLogout();
