@@ -94,6 +94,7 @@
     type="button" 
     class="btn btn-outline-shadow btn-sm" 
     (click)='collapse()'
+    data-qa="pnx-occtax-taxon-form-advanced"
   >
     <i class="fa fa-cog" aria-hidden="true"></i>
     {{ 'Taxon.Advanced' | translate }}
@@ -111,10 +112,12 @@
       <input 
         class="form-control form-control-sm" 
         [formControl]="occurrenceForm.get('determiner')" 
+        data-qa="pnx-occtax-taxon-form-determinator"
         type="text"
       >
       <small 
         *ngIf="occurrenceForm.get('determiner').hasError('required') && occurrenceForm.get('determiner').touched"
+        data-qa="pnx-occtax-taxon-form-determinator-error"
         class="error" 
         style="color:red"
       >
@@ -338,11 +341,12 @@
   {{'Taxon.Errors.CountingRequiredError' |translate}}
 </div>
 
-<mat-accordion [multi]="true">
+<mat-accordion [multi]="true" data-qa="pnx-occtax-taxon-form-count">
 
   <div
     *ngFor="let counting of countings; index as i"
     class="blc-expansion-panel"
+    [attr.data-qa]='"pnx-occtax-taxon-form-count-"+i'
     displayMouseOver
     selector=".btn-clear"
   >
@@ -374,6 +378,7 @@
       *ngIf="i == countings.length - 1"
       mat-mini-fab
       color="primary"
+      data-qa="pnx-occtax-taxon-form-add-count"
       class="btn-add-counting"
       (click)="addCounting()"
     >
