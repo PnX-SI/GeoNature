@@ -1,0 +1,38 @@
+version: '3.2'
+
+services:
+  flask:
+    build:
+      context: ./
+      dockerfile: docker/backend/Dockerfile
+    env_file:
+      - .env.local
+    volumes:
+      - "$PWD/.:/GeoNature"
+      - "raw-data:/GeoNature/tmp"
+    expose:
+      - "80"
+    networks:
+      web:
+      databases:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.geonature.rule=Host(`localhost`)"
+      - "traefik.http.routers.geonature.entrypoints=web"
+
+  adminer:
+    image: adminer:4.7.5
+    ports:
+      - "8000:8080"
+    networks:
+      databases:
+
+volumes:
+  raw-data:
+    external: true
+
+networks:
+  web:
+    external: true
+  databases:
+    external: true
