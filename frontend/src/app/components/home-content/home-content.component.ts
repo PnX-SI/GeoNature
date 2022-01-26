@@ -11,6 +11,8 @@ import { GlobalSubService } from '../../services/global-sub.service';
 import { ModuleService } from '../../services/module.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { OverlayContainer} from '@angular/cdk/overlay';
+
 
 @Component({
   selector: 'pnx-home-content',
@@ -35,6 +37,7 @@ export class HomeContentComponent implements OnInit {
     private _mapService: MapService,
     private _moduleService: ModuleService,
     private translateService: TranslateService,
+    private _overlay: OverlayContainer
   ) {
     // this work here thanks to APP_INITIALIZER on ModuleService
     let synthese_module = this._moduleService.getModule('SYNTHESE');
@@ -46,6 +49,14 @@ export class HomeContentComponent implements OnInit {
     if (AppConfig.FRONTEND.DISPLAY_STAT_BLOC && synthese_read_scope > 0) {
       this.showGeneralStat = true;
     }
+  }
+
+  test(){
+    console.log("click here");
+    console.log(this._overlay.getContainerElement());
+    
+    this._overlay.getContainerElement().classList.add("green-theme");
+    
   }
 
   ngOnInit() {

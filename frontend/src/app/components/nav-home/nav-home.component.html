@@ -1,6 +1,7 @@
 <mat-sidenav-container class="sidenav-container">
 
   <mat-sidenav
+    color="primary"
     id="app-sidenav"
     #sidenav
     mode="side"
@@ -25,7 +26,7 @@
         <mat-icon aria-label="Ouvrir le menu principal">menu</mat-icon>
       </button>
 
-      <span class="mx-2" data-qa="nav-home-module-name"> {{ moduleName }} </span>
+      <span class="mx-2" data-qa="nav-home-module-name"> {{ navHomeService.moduleName }} </span>
 
       <img
         id="logo-structure"
@@ -127,7 +128,7 @@
         class="mx-2 mat-elevation-z1"
         mat-icon-button
         matTooltip="Ouvrir la documentation"
-        [href]="currentDocUrl"
+        [href]="navHomeService.currentDocUrl"
         target="_blank"
       >
         <mat-icon id="documentation_link">library_books</mat-icon>

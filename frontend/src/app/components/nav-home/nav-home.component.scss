@@ -8,13 +8,12 @@
 }
 #app-toolbar {
   [mat-raised-button], [mat-icon-button] {
-    background-color: white !important;
     outline: none;
   }
   .user-name {
     font-size: 15px;
   }
-  #documentation_link {
-    color: black !important;
-  }
+  // #documentation_link {
+  //   color: black !important;
+  // }
 }

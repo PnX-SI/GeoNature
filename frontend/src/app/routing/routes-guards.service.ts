@@ -26,7 +26,6 @@ export class ModuleGuardService implements CanActivate {
 
     const askedModule = this._moduleService.getModule(moduleName);
     if (askedModule) {
-      this._globalSubService.currentModuleSubject.next(askedModule);
       return true;
     } else {
       this._router.navigate(['/']);

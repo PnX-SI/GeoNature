@@ -17,6 +17,8 @@ import { ChartModule } from 'angular2-chartjs';
 import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { OverlayModule} from '@angular/cdk/overlay';
+
 
 // Modules
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
@@ -82,6 +84,7 @@ export function get_modules(moduleService: ModuleService) {
       tapToDismiss: true,
       timeOut: 3000
     }),
+    OverlayModule,
     GN2CommonModule,
     TranslateModule.forRoot({
       loader: {

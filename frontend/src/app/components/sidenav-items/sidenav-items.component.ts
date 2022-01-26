@@ -27,6 +27,13 @@ export class SidenavItemsComponent implements OnInit {
   }
 
   setHome() {
-    this.globalSub.currentModuleSubject.next(null);
+    this.globalSub.currentModuleSub.next(null);
+  }
+
+  onModuleClick(module) {
+    this.globalSub.currentModuleSub.next(module);
+    delete module.cruved;
+    localStorage.setItem("currentModule", JSON.stringify(module))
+    
   }
 }

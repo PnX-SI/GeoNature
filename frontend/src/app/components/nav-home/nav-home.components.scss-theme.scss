@@ -1,0 +1,27 @@
+@import '~@angular/material/theming';
+@mixin nav-home-component-theme($theme, $background-color) {
+
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+
+  .mat-toolbar{
+    // let's take mat-toolbar's default theme
+    // ref: https://github.com/angular/material2/blob/88601fa51d581f538468a9b63890b0e285e519cb/src/lib/toolbar/_toolbar-theme.scss#L39
+    // background-color: mat-color($background, app-bar);
+    background-color:  $background-color;
+    color: mat-color($primary);
+
+
+    // now, mat-toolbar's colored themes
+    // &[color=primary]{
+    //   @include toolbar-color($primary);
+    // }
+    // &[color=accent]{
+    //   @include toolbar-color($accent);
+    // }
+    // &[color=warn]{
+    //   @include toolbar-color($warn);
+    // }
+  }
+}

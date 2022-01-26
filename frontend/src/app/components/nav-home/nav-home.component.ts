@@ -10,6 +10,7 @@ import { AuthService, User } from '../../components/auth/auth.service';
 import { AppConfig } from '../../../conf/app.config';
 import { GlobalSubService } from '../../services/global-sub.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
+import { NavHomeService } from './nav-home.service';
 
 
 @Component({
@@ -20,7 +21,7 @@ import { SideNavService } from '../sidenav-items/sidenav-service';
 export class NavHomeComponent implements OnInit, OnDestroy {
 
   public moduleName = 'Accueil';
-  private subscription: Subscription;
+  private subscription: Array<Subscription> = [];
   public currentUser: User;
   public appConfig: any;
   public currentDocUrl: string;
@@ -32,8 +33,8 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     private activatedRoute: ActivatedRoute,
     public sideNavService: SideNavService,
-    private globalSubService: GlobalSubService,
     private router: Router,
+    public navHomeService: NavHomeService
   ) {}
 
   ngOnInit() {
@@ -42,9 +43,6 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
     // Subscribe to router event
     this.extractLocaleFromUrl();
-
-    // Set the current module name in the navbar
-    this.onModuleChange();
 
     // Init the sidenav instance in sidebar service
     this.sideNavService.setSideNav(this.sidenav);
@@ -55,14 +53,16 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
 
   private extractLocaleFromUrl() {
-    this.subscription = this.activatedRoute.queryParams.subscribe((param: any) => {
-      const locale = param['locale'];
-      if (locale !== undefined) {
-        this.defineLanguage(locale);
-      } else {
-        this.locale = this.translateService.getDefaultLang();
-      }
-    });
+    this.subscription.push(
+      this.activatedRoute.queryParams.subscribe((param: any) => {
+        const locale = param['locale'];
+        if (locale !== undefined) {
+          this.defineLanguage(locale);
+        } else {
+          this.locale = this.translateService.getDefaultLang();
+        }
+      })
+    )
   }
 
   changeLanguage(lang) {
@@ -79,25 +79,14 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     this.translateService.setDefaultLang(lang);
   }
 
-  private onModuleChange() {
-    this.globalSubService.currentModuleSub.subscribe(module => {
-      if (module) {
-        this.moduleName = module.module_label;
-        if (module.module_doc_url) {
-          this.currentDocUrl = module.module_doc_url;
-        }
-      } else {
-        this.moduleName = 'Accueil';
-      }
-    });
-  }
-
   closeSideBar() {
     this.sideNavService.sidenav.toggle();
   }
 
-  ngOnDestroy() {
+  ngOnDestroy() {    
     // Prevent memory leak by unsubscribing
-    this.subscription.unsubscribe();
+    this.subscription.forEach(s => {
+      s.unsubscribe();
+    })
   }
 }

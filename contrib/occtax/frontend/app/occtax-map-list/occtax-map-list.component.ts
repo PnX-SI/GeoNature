@@ -82,12 +82,16 @@ export class OcctaxMapListComponent
     // get querystring parameters and save it in localstorage
     // use for filter by dataset, preselect dataset form and set a "fake" module name
     const currentRouteQueryParams = this._route.snapshot.queryParams;    
-    const currentModule = currentRouteQueryParams["module_label"] ? currentRouteQueryParams["module_label"] : "Occtax";
-    this.globalSub.currentModuleSubject.next({"module_label": currentModule})
+    const currentModule = this.globalSub.currentModuleSub.getValue();
+    // currentModule.module_label = currentRouteQueryParams["module_label"] ? currentRouteQueryParams["module_label"] : "Occtax";    
+    // this.globalSub.currentModuleSub.next(currentModule)
+    // localStorage.setItem("currentModule", JSON.stringify(currentModule));
+    if("theme" in currentRouteQueryParams) {
+      this.globalSub.currentTheme.next(currentRouteQueryParams.theme)
+    }
     const occtaxCustomValues = {
-        "module_label" : currentModule,
         "id_dataset" : currentRouteQueryParams["id_dataset"]
-    };            
+    };      
     localStorage.setItem(
         "occtaxCustomValues", JSON.stringify(occtaxCustomValues)
     )
@@ -121,12 +125,7 @@ export class OcctaxMapListComponent
         this.displayLeafletPopupCallback.bind(this) //afin que le this présent dans displayLeafletPopupCallback soit ce component.
       );
     // get user cruved
-    this.moduleSub = this.globalSub.currentModuleSub
-      // filter undefined or null
-      .pipe(filter((mod) => mod))
-      .subscribe((mod) => {
-        this.userCruved = mod.cruved;
-      });
+      this.userCruved = currentModule.cruved
 
     // parameters for maplist
     // columns to be default displayed
@@ -274,7 +273,7 @@ export class OcctaxMapListComponent
   }
 
   ngOnDestroy() {
-    this.moduleSub.unsubscribe();
+    // this.moduleSub.unsubscribe();
   }
 
   toggleExpandRow(row) {
