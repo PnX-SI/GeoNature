@@ -63,7 +63,6 @@ from geonature.core.gn_meta.repositories import (
 )
 from geonature.core.gn_meta.schemas import (
     AcquisitionFrameworkSchema,
-    AcquisitionFrameworkRelationshipsSchema,
     DatasetSchema,
 )
 from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
@@ -690,23 +689,19 @@ def get_acquisition_frameworks_list(info_role):
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role, module_code="METADATA",
     )[0]
-    nested_serialization = True if params.get("nested") == "true" else False
-    if nested_serialization:
-        schema_class = AcquisitionFrameworkRelationshipsSchema
-    else:
-        schema_class = AcquisitionFrameworkSchema
-
+    nested_serialization = params.get("nested", False)
+    nested_serialization = True if nested_serialization == "true" else False
     exclude_fields = []
     if "excluded_fields" in params:
-        exclude_fields = params.get("excluded_fields").split(',')
+        exclude_fields = params.get("excluded_fields")
+        try:
+            exclude_fields = exclude_fields.split(',')
+        except:
+            raise BadRequest("Malformated parameter 'excluded_fields'")
 
-    try:
-        acquisitionFrameworkSchema = schema_class(
-            exclude=exclude_fields,
-            context = {'info_role': info_role, 'user_cruved': user_cruved},
-        )
-    except ValueError as e:
-        raise BadRequest(str(e))
+    if not nested_serialization:
+        # exclude all relationships from serialization if nested = false
+        exclude_fields = [db_rel.key for db_rel in inspect(TAcquisitionFramework).relationships]
 
     acquisitionFrameworkSchema = AcquisitionFrameworkSchema(
         exclude=exclude_fields

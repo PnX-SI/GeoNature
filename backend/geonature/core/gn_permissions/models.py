@@ -186,13 +186,6 @@ class CorRoleActionFilterModuleObject(DB.Model):
             .first()
         )
 
-    def __str__(self):
-        return f'Permission(' \
-                    f'id_role={self.id_role},' \
-                    f'action={self.action},' \
-                    f'filter={self.filter},' \
-                    f'module={self.module},' \
-                    f'object={self.object})'
 
 class RequestStates(str, enum.Enum):
     pending: str = "pending"
@@ -254,7 +247,7 @@ class CorModuleActionObjectFilter(DB.Model):
         TModules,
         primaryjoin=(TModules.id_module == id_module),
         foreign_keys=[id_module],
-        back_populates="available_permissions",
+        backref="available_permissions",
     )
     cor_action = DB.relationship(
         TActions,
