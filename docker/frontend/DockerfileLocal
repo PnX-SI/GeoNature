@@ -1,0 +1,21 @@
+FROM node:16
+RUN apt-get update
+RUN apt-get install -y wget
+RUN apt-get install -y python3
+RUN mkdir /GeoNature
+WORKDIR /GeoNature
+
+EXPOSE 4200
+COPY . /GeoNature
+
+RUN chown -R node:node .
+
+RUN chown -R node:node /root
+
+USER node
+
+RUN mkdir /root/.cache
+
+#RUN cd frontend && npm install .
+
+ENTRYPOINT ["sh", "entrypointfront.sh"]
