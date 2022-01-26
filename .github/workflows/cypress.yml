@@ -95,6 +95,7 @@ jobs:
         geonature db autoupgrade -x local-srid=2154
         geonature db upgrade geonature-samples@head
         geonature db upgrade taxonomie_taxons_example@head
+        geonature db upgrade taxhub@head
 
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
