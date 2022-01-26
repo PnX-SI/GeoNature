@@ -87,10 +87,7 @@ class TModules(DB.Model):
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
 
-    available_permissions = DB.relationship(
-        "CorModuleActionObjectFilter",
-        back_populates="cor_module",
-    )
+    # Relationship "available_permissions" set by backref in CorModuleActionObjectFilter
 
     def __str__(self):
         return self.module_label.capitalize()

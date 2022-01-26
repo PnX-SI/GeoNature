@@ -794,34 +794,7 @@ class TDatasetDetails(TDatasets):
         TNomenclatures,
         foreign_keys=[TDatasets.id_nomenclature_data_type],
     )
-    acquisition_framework = relationship(TAcquisitionFramework, lazy='select',
-                                         backref=DB.backref('datasets', lazy='select', uselist=True))
-    dataset_name = DB.Column(DB.Unicode)
-    dataset_shortname = DB.Column(DB.Unicode)
-    dataset_desc = DB.Column(DB.Unicode)
-    keywords = DB.Column(DB.Unicode)
-    marine_domain = DB.Column(DB.Boolean)
-    terrestrial_domain = DB.Column(DB.Boolean)
-    bbox_west = DB.Column(DB.Float)
-    bbox_east = DB.Column(DB.Float)
-    bbox_south = DB.Column(DB.Float)
-    bbox_north = DB.Column(DB.Float)
-
-    meta_create_date = DB.Column(DB.DateTime)
-    meta_update_date = DB.Column(DB.DateTime)
-    active = DB.Column(DB.Boolean, default=True)
-    validable = DB.Column(DB.Boolean)
-
-    id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
-    creator = DB.relationship(User, foreign_keys=[id_digitizer], lazy="joined")  # = digitizer
-
-    id_taxa_list = DB.Column(DB.Integer)
-
-    id_nomenclature_data_type = DB.Column(
-        DB.Integer,
-        ForeignKey(TNomenclatures.id_nomenclature),
-        default=lambda: TNomenclatures.get_default_nomenclature("DATA_TYP"))
-    nomenclature_data_type = DB.relationship(
+    dataset_objectif = DB.relationship(
         TNomenclatures,
         foreign_keys=[TDatasets.id_nomenclature_dataset_objectif],
     )
@@ -846,113 +819,11 @@ class TDatasetDetails(TDatasets):
         secondary=cor_field_dataset
     )
 
-    cor_territories = DB.relationship(
-        TNomenclatures,
-        lazy="select",
-        secondary=CorDatasetTerritory.__table__,
-        primaryjoin=(CorDatasetTerritory.id_dataset == id_dataset),
-        secondaryjoin=(CorDatasetTerritory.id_nomenclature_territory == TNomenclatures.id_nomenclature),
-        foreign_keys=[
-            CorDatasetTerritory.id_dataset,
-            CorDatasetTerritory.id_nomenclature_territory,
-        ],
-        backref=DB.backref("territory_dataset", lazy="select")
-    )
-
-    # because CorDatasetActor could be an User or an Organisme object...
-    cor_dataset_actor = relationship(
-        CorDatasetActor,
-        lazy="joined",
-        cascade="save-update, merge, delete, delete-orphan",
-        backref=DB.backref("datasets", lazy="select")
-    )
-
-    users_actors = association_proxy('cor_dataset_actor', 'user',
-                        creator=lambda user: CorDatasetActor(user=user))
-    organisms_actors = association_proxy('cor_dataset_actor', 'organism',
-                        creator=lambda organism: CorDatasetActor(organism=organism))
-
-    def __str__(self):
-        return self.dataset_name
-
-    def get_object_cruved(
-        self, info_role, user_cruved
-    ):
-        """
-        Return the user's cruved for a Model instance.
-        Use in the map-list interface to allow or not an action
-        params:
-            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
-            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
-            - id_role: identifiant de la personne qui demande la route
-            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
-            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
-
-        Return: dict {'C': True, 'R': False ...}
-        """
-        return {
-            action: self.user_is_allowed_to(self.cor_dataset_actor, info_role, level)
-            for action, level in user_cruved.items()
-        }
-
-    @staticmethod
-    def get_id(uuid_dataset):
-        id_dataset = (
-            DB.session.query(TDatasets.id_dataset)
-            .filter(TDatasets.unique_dataset_id == uuid_dataset)
-            .first()
-        )
-        if id_dataset:
-            return id_dataset[0]
-        return id_dataset
-
-    @staticmethod
-    def get_uuid(id_dataset):
-        uuid_dataset = (
-            DB.session.query(TDatasets.unique_dataset_id)
-            .filter(TDatasets.id_dataset == id_dataset)
-            .first()
-        )
-        if uuid_dataset:
-            return uuid_dataset[0]
-        return uuid_dataset
-
-    @staticmethod
-    def get_user_datasets(user, only_query=False, only_user=False):
-        """get the dataset(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
-            param:
-              - user from TRole model
-              - only_query: boolean (return the query not the id_datasets allowed if true)
-              - only_user: boolean: return only the dataset where user himself is actor (not with its organism)
-
-            return: a list of id_dataset or a query"""
-        q = DB.session.query(TDatasets).outerjoin(
-            CorDatasetActor, CorDatasetActor.id_dataset == TDatasets.id_dataset
-        )
-        if user.id_organisme is None or only_user:
-            q = q.filter(
-                or_(
-                    CorDatasetActor.id_role == user.id_role,
-                    TDatasets.id_digitizer == user.id_role,
-                )
-            )
-        else:
-            q = q.filter(
-                or_(
-                    CorDatasetActor.id_organism == user.id_organisme,
-                    CorDatasetActor.id_role == user.id_role,
-                    TDatasets.id_digitizer == user.id_role,
-                )
-            )
-        if only_query:
-            return q
-        return list(set([d.id_dataset for d in q.all()]))
-
 
 @serializable
-class TDatasetDetails(TDatasets):
+class TAcquisitionFrameworkDetails(TAcquisitionFramework):
     """
-    Class which extends TDatasets with nomenclatures relationships
+    Class which extends TAcquisitionFramework with nomenclatures relationships
     """
     nomenclature_territorial_level = DB.relationship(
         TNomenclatures,
