@@ -2,14 +2,14 @@
 CHANGELOG
 =========
 
-2.9.1 (unreleased)
+2.9.1 (2022-01-27)
 ------------------
 
 **🚀 Nouveautés**
 
 * Utilisation du paramètre ``page`` de Flask à la place du paramètre maison ``offset`` pour la pagination des routes (rétro-compatible)
-* Mise-à-jour de TaxHub en version 1.9.4 (version corrective)
-* Ajout du paramètre de configuration ``CODE_APPLICATION`` (par défaut ``GN``)
+* Installation de TaxHub en version 1.9.4 (version corrective) par défaut
+* Ajout du paramètre de configuration ``CODE_APPLICATION`` (par défaut ``GN``) (#1635)
 
 **🐛 Corrections**
 
@@ -17,11 +17,11 @@ CHANGELOG
 * Correction d’un problème d’authentification avec le CAS
 * Occtax : Correction des listes déroulantes masquées dans le bloc dénombrement, en rajoutant un scroll
 * Correction de l'URL de l'API de TaxHub (slash final manquant) pour l'affichage des photos sur la fiche d'un profil de taxon
-* Correction de la synchronisation des méta-données depuis MTD
+* Correction de la synchronisation des métadonnées depuis MTD
 * Correction de la génération du token quand on utilise le CAS de l'INPN pour se connecter à GeoNature
 * Correction des permissions trop restrictives d’accès aux données de la synthèse
-* Correction de la pagination de la route ``/color_taxon`` en rajoutant un ordonnancement par ``cd_nom`` et ``id_area`` (utilisés par Occtax-mobile)
-* Contournement à un problème de redirection incorrecte par l’API de TaxHub lorsque celui-ci est mal configuré (#1438, #1616)
+* Correction de la pagination de la route ``/color_taxon`` en rajoutant un ordonnancement par ``cd_nom`` et ``id_area`` (utilisé par Occtax-mobile)
+* Contournement d'un problème de redirection incorrecte par l’API de TaxHub lorsque celui-ci est mal configuré (#1438, #1616)
 
 2.9.0 - Actias luna (2022-01-13)
 --------------------------------
