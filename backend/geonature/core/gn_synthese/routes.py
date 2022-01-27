@@ -230,7 +230,7 @@ def get_one_synthese(scope, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature
     """
     synthese = Synthese.query.join_nomenclatures().get_or_404(id_synthese)
-    if not synthese.has_instance_permission(scope=scope)
+    if not synthese.has_instance_permission(scope=scope):
         raise Forbidden()
     geojson = synthese.as_geofeature(
         "the_geom_4326", "id_synthese",
