@@ -5,21 +5,23 @@ CHANGELOG
 2.9.1 (unreleased)
 ------------------
 
-**A voir**
+**🚀 Nouveautés**
 
-* Intégrer la correction https://github.com/PnX-SI/GeoNature/pull/1616
-* Et les autres "solved in next release" qui ne sont pas des corrections (https://github.com/PnX-SI/GeoNature/labels/solved%20in%20next%20release) ?
-* Intégrer PR de fix frontend (https://github.com/PnX-SI/GeoNature/pull/1652)
-* Intégrer la PR de correction des données Occtax et Synthèse qui a été testée et approuvée (https://github.com/PnX-SI/GeoNature/pull/1589) ?
+* Utilisation du paramètre ``page`` de Flask à la place du paramètre maison ``offset`` pour la pagination des routes (rétro-compatible)
+* Mise-à-jour de TaxHub en version 1.9.4 (version corrective)
+* Ajout du paramètre de configuration ``CODE_APPLICATION`` (par défaut ``GN``)
 
 **🐛 Corrections**
 
 * Correction de l'URL de réinitialisation de mot passe envoyée par email (#1620)
-* Correction de l'URL de l'API de TaxHub (slash final manquant) pour l'affichage des photos sur la fiche d'un profil de taxon
+* Correction d’un problème d’authentification avec le CAS
 * Occtax : Correction des listes déroulantes masquées dans le bloc dénombrement, en rajoutant un scroll
+* Correction de l'URL de l'API de TaxHub (slash final manquant) pour l'affichage des photos sur la fiche d'un profil de taxon
+* Correction de la synchronisation des méta-données depuis MTD
 * Correction de la génération du token quand on utilise le CAS de l'INPN pour se connecter à GeoNature
-* Ordonnancement de la route ``/color_taxon`` par ``cd_nom`` et ``id_area`` quand elle est interrogée avec une pagination (pour ordonner les résultats paginés utilisés par Occtax-mobile)
-* Utilisation du paramètre ``page`` de Flask à la place du paramètre maison ``offset`` pour la pagination des routes
+* Correction des permissions trop restrictives d’accès aux données de la synthèse
+* Correction de la pagination de la route ``/color_taxon`` en rajoutant un ordonnancement par ``cd_nom`` et ``id_area`` (utilisés par Occtax-mobile)
+* Contournement à un problème de redirection incorrecte par l’API de TaxHub lorsque celui-ci est mal configuré (#1438, #1616)
 
 2.9.0 - Actias luna (2022-01-13)
 --------------------------------
