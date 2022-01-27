@@ -18,7 +18,7 @@ geoalchemy2==0.4.0
 geog==0.0.2
 geojson==2.5.0
 gunicorn==20.1.0
-idna==2.6
+idna==3.3
 itsdangerous==0.24
 jinja2==2.11.3
 lxml==4.6.5
@@ -26,7 +26,7 @@ markupsafe==1.1
 marshmallow==3.13.0
 marshmallow-sqlalchemy==0.26.1
 packaging==21.3
-psycopg2==2.8.5
+psycopg2==2.9.3
 pillow==8.2.0
 python-dateutil==2.8.2
 requests==2.27.1
