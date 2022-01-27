@@ -1,4 +1,4 @@
-version: '3.2'
+version: '3.7'
 
 services:
   flask:
@@ -19,13 +19,6 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.geonature.rule=Host(`localhost`)"
       - "traefik.http.routers.geonature.entrypoints=web"
-
-  adminer:
-    image: adminer:4.7.5
-    ports:
-      - "8000:8080"
-    networks:
-      databases:
 
 volumes:
   raw-data:
