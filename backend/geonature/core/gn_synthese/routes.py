@@ -4,6 +4,7 @@ import datetime
 import time
 
 from collections import OrderedDict
+from warnings import warn
 
 from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify
 from werkzeug.exceptions import Forbidden, NotFound
@@ -765,7 +766,11 @@ def get_color_taxon():
     """
     params = request.args
     limit = int(params.get("limit", 100))
-    offset = int(params.get("offset", 0))
+    page = params.get("page", 1, int)
+
+    if "offset" in request.args:
+        warn("offset is deprecated, please use page for pagination (start at 1)", DeprecationWarning)
+        page = (int(request.args["offset"]) / limit) + 1
     id_areas_type = params.getlist("code_area_type")
     cd_noms = params.getlist("cd_nom")
     id_areas = params.getlist("id_area")
@@ -780,11 +785,13 @@ def get_color_taxon():
         if not LAreas in [mapper.class_ for mapper in q._join_entities]:
             q = q.join(LAreas, LAreas.id_area == VColorAreaTaxon.id_area)
         q = q.filter(LAreas.id_area.in_(tuple(id_areas)))
+    q = q.order_by(VColorAreaTaxon.cd_nom).order_by(VColorAreaTaxon.id_area)
     if len(cd_noms) > 0:
         q = q.filter(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
-    data = q.limit(limit).offset(offset).all()
+    results = q.paginate(page=page, per_page=limit, error_out=False)
 
-    return jsonify([d.as_dict() for d in data])
+
+    return jsonify([d.as_dict() for d in results.items])
 
 
 @routes.route("/taxa_count", methods=["GET"])

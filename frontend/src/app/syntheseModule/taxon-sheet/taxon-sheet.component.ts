@@ -31,7 +31,7 @@ export class TaxonSheetComponent implements OnInit {
                             taxonAttrAndMedias => {
                                 const media = taxonAttrAndMedias.medias.find(m => m.id_type == AppConfig.TAXHUB.ID_TYPE_MAIN_PHOTO);
                                 if(media) {
-                                    this.mediaUrl = `${AppConfig.API_TAXHUB}tmedias/thumbnail/${media.id_media}?h=300&w300`;
+                                    this.mediaUrl = `${AppConfig.API_TAXHUB}/tmedias/thumbnail/${media.id_media}?h=300&w300`;
                                 }
 
                             }
