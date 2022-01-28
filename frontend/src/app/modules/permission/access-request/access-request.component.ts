@@ -223,23 +223,11 @@ export class AccessRequestComponent implements OnInit {
   private getAccessRequestData() {
     const regularData = Object.assign({}, this.regularFormGrp.value);
     let accessRequestData = {
-      areas: [],
-      taxa: [],
+      areas: regularData.areas.length > 0 ? regularData.areas : [],
+      taxa: regularData.taxa.length > 0 ? regularData.taxa : [],
       end_access_date: regularData.end_access_date,
       sensitive_access: regularData.sensitive_access,
     };
-
-    if (regularData.areas.length > 0) {
-      regularData.areas.forEach(area => {
-        accessRequestData.areas.push(area.id_area);
-      });
-    }
-
-    if (regularData.taxa.length > 0) {
-      regularData.taxa.forEach(taxon => {
-        accessRequestData.taxa.push(taxon.cd_nom);
-      });
-    }
 
     if (this.dynamicFormCfg.length > 0) {
       accessRequestData['additional_data'] = this.dynamicFormGrp.value;
