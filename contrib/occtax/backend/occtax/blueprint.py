@@ -9,7 +9,9 @@ from flask import (
     send_from_directory,
     render_template,
     jsonify,
+    g
 )
+from geonature.core.gn_commons.models.base import TModules
 from werkzeug.exceptions import BadRequest, Forbidden, NotFound, Unauthorized
 from geonature.core.gn_commons.models import TAdditionalFields
 from sqlalchemy import or_, func, distinct, case
@@ -50,10 +52,21 @@ from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
 
 
-blueprint = Blueprint("pr_occtax", __name__)
+blueprint = Blueprint("pr_occtax", __name__, url_prefix="/<module_code>")
 log = logging.getLogger(__name__)
 
 
+
+@blueprint.url_value_preprocessor
+def pull_lang_code(endpoint, values):
+    requested_module = values.pop("module_code", "OCCTAX")
+    g.current_module = TModules.query.filter_by(
+        module_code=requested_module
+    ).one_or_none()
+    if not g.current_module: 
+        raise NotFound(f"No module name {requested_module}")
+
+@blueprint.route("/<module_code>/releves", methods=["GET"])
 @blueprint.route("/releves", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="OCCTAX")
 @json_resp
@@ -135,6 +148,7 @@ def getOccurrences():
     return [n.as_dict() for n in data]
 
 
+@blueprint.route("/<module_code>/counting/<int:id_counting>", methods=["GET"])
 @blueprint.route("/counting/<int:id_counting>", methods=["GET"])
 @json_resp
 def getOneCounting(id_counting):
@@ -171,6 +185,7 @@ def getOneCounting(id_counting):
     return counting
 
 
+@blueprint.route("/<mdodule_code>/releve/<int:id_releve>", methods=["GET"])
 @blueprint.route("/releve/<int:id_releve>", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="OCCTAX")
 def getOneReleve(id_releve, info_role):
@@ -208,6 +223,7 @@ def getOneReleve(id_releve, info_role):
     return releveCruvedSchema.dump(releve_cruved)
 
 
+@blueprint.route("/<module_code>/vreleveocctax", methods=["GET"])
 @blueprint.route("/vreleveocctax", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="OCCTAX")
 @json_resp
@@ -269,6 +285,7 @@ def getViewReleveOccurrence(info_role):
     return {"message": "not found"}, 404
 
 
+@blueprint.route("/<module_code>/releve", methods=["POST"])
 @blueprint.route("/releve", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="OCCTAX")
 @json_resp
@@ -441,6 +458,7 @@ def releveHandler(request, *, releve, info_role):
     return releve
 
 
+@blueprint.route("/<module_code>/only/releve", methods=["POST"])
 @blueprint.route("/only/releve", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="OCCTAX")
 def createReleve(info_role):
@@ -485,6 +503,7 @@ def createReleve(info_role):
     }
 
 
+@blueprint.route("/<module_code>/only/releve/<int:id_releve>", methods=["POST"])
 @blueprint.route("/only/releve/<int:id_releve>", methods=["POST"])
 @permissions.check_cruved_scope("U", True, module_code="OCCTAX")
 def updateReleve(id_releve, info_role):
@@ -542,6 +561,7 @@ def occurrenceHandler(request, *, occurrence, info_role):
     return occurrence
 
 
+@blueprint.route("/<module_code>/releve/<int:id_releve>/occurrence", methods=["POST"])
 @blueprint.route("/releve/<int:id_releve>/occurrence", methods=["POST"])
 @permissions.check_cruved_scope("C", True, module_code="OCCTAX")
 def createOccurrence(id_releve, info_role):
@@ -558,6 +578,7 @@ def createOccurrence(id_releve, info_role):
 
 
 
+@blueprint.route("/<module_code>/occurrence/<int:id_occurrence>", methods=["POST"])
 @blueprint.route("/occurrence/<int:id_occurrence>", methods=["POST"])
 @permissions.check_cruved_scope("U", True, module_code="OCCTAX")
 def updateOccurrence(id_occurrence, info_role):
@@ -572,6 +593,7 @@ def updateOccurrence(id_occurrence, info_role):
     )
 
 
+@blueprint.route("/<module_code>/releve/<int:id_releve>", methods=["DELETE"])
 @blueprint.route("/releve/<int:id_releve>", methods=["DELETE"])
 @permissions.check_cruved_scope("D", True, module_code="OCCTAX")
 @json_resp
@@ -589,6 +611,7 @@ def deleteOneReleve(id_releve, info_role):
     return {"message": "delete with success"}, 200
 
 
+@blueprint.route("/<module_code>/occurrence/<int:id_occ>", methods=["DELETE"])
 @blueprint.route("/occurrence/<int:id_occ>", methods=["DELETE"])
 @permissions.check_cruved_scope("D", module_code="OCCTAX")
 def deleteOneOccurence(id_occ):
@@ -609,6 +632,7 @@ def deleteOneOccurence(id_occ):
     return '', 204
 
 
+@blueprint.route("/<module_code>/releve/occurrence_counting/<int:id_count>", methods=["DELETE"])
 @blueprint.route("/releve/occurrence_counting/<int:id_count>", methods=["DELETE"])
 @permissions.check_cruved_scope("D", module_code="OCCTAX")
 def deleteOneOccurenceCounting(id_count):
@@ -626,6 +650,7 @@ def deleteOneOccurenceCounting(id_count):
     return '', 204
 
 
+@blueprint.route("/<module_code>/defaultNomenclatures", methods=["GET"])
 @blueprint.route("/defaultNomenclatures", methods=["GET"])
 def getDefaultNomenclatures():
     """Get default nomenclatures define in occtax module
@@ -654,6 +679,7 @@ def getDefaultNomenclatures():
     return jsonify(dict(data))
 
 
+@blueprint.route("<module_code>/export", methods=["GET"])
 @blueprint.route("/export", methods=["GET"])
 @permissions.check_cruved_scope(
     "E",
