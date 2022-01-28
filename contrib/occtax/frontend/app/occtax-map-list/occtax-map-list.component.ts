@@ -20,12 +20,11 @@ import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.comp
 import { FormGroup } from "@angular/forms";
 import { GenericFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
 import { AppConfig } from "@geonature_config/app.config";
-import { GlobalSubService } from "@geonature/services/global-sub.service";
 import { Subscription } from "rxjs/Subscription";
 import * as moment from "moment";
 import { MediaService } from '@geonature_common/service/media.service';
-import { filter } from 'rxjs/operators';
 import { OcctaxMapListService } from "./occtax-map-list.service";
+import { ModuleService } from "@geonature/services/module.service"
 
 // /occurrence/occurrence.service";
 
@@ -66,12 +65,12 @@ export class OcctaxMapListComponent
     private _commonService: CommonService,
     private _mapService: MapService,
     public ngbModal: NgbModal,
-    public globalSub: GlobalSubService,
     private renderer: Renderer2,
     public mediaService: MediaService,
     public occtaxMapListS: OcctaxMapListService,
     private _router : Router,
     private _route : ActivatedRoute,
+    private _moduleService: ModuleService
 
 
   ) { }
@@ -82,7 +81,11 @@ export class OcctaxMapListComponent
     // get querystring parameters and save it in localstorage
     // use for filter by dataset, preselect dataset form and set a "fake" module name
     const currentRouteQueryParams = this._route.snapshot.queryParams;    
-    const currentModule = this.globalSub.currentModuleSub.getValue();
+    const currentModule = this._moduleService.currentModule;
+    console.log("LAAA", currentModule);
+    
+    // get user cruved
+      this.userCruved = currentModule.cruved
     const occtaxCustomValues = {
         "id_dataset" : currentRouteQueryParams["id_dataset"]
     };      
@@ -118,8 +121,6 @@ export class OcctaxMapListComponent
         params,
         this.displayLeafletPopupCallback.bind(this) //afin que le this présent dans displayLeafletPopupCallback soit ce component.
       );
-    // get user cruved
-      this.userCruved = currentModule.cruved
 
     // parameters for maplist
     // columns to be default displayed

@@ -1,18 +1,16 @@
 import { Injectable } from '@angular/core';
-import { distinctUntilChanged } from 'rxjs/operators';
-import { GlobalSubService } from '../../services/global-sub.service';
+import { ModuleService } from "@geonature/services/module.service"
 
 @Injectable({providedIn: 'root'})
 export class NavHomeService {
     public moduleName: string;
     public currentDocUrl: string;
-    constructor(private globalSubService: GlobalSubService) { 
+    constructor(private moduleService: ModuleService) { 
         this.onModuleChange()
     }
     
     private onModuleChange() {
-        this.globalSubService.currentModuleSub.pipe(
-          ).subscribe(module => {                                                          
+        this.moduleService.currentModule$.subscribe(module => {    
             if (module) {
               this.moduleName = module.module_label;
               if (module.module_doc_url) {

@@ -8,7 +8,6 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { AuthService, User } from '../../components/auth/auth.service';
 import { AppConfig } from '../../../conf/app.config';
-import { GlobalSubService } from '../../services/global-sub.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
 import { NavHomeService } from './nav-home.service';
 
@@ -34,11 +33,11 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     public sideNavService: SideNavService,
     private router: Router,
-    public navHomeService: NavHomeService
+    public navHomeService: NavHomeService,
   ) {}
 
   ngOnInit() {
-    // Inject App config to use in the template
+      // Inject App config to use in the template
     this.appConfig = AppConfig;
 
     // Subscribe to router event

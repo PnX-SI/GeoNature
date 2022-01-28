@@ -54,7 +54,6 @@ import { SideNavService } from './components/sidenav-items/sidenav-service';
 
 import { MyCustomInterceptor } from './services/http.interceptor';
 import { UnauthorizedInterceptor } from './services/unauthorized.interceptor';
-import { GlobalSubService } from './services/global-sub.service';
 
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -64,9 +63,31 @@ import { UserDataService } from "./userModule/services/user-data.service";
 // Config
 import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
 
+import { tap } from 'rxjs/operators'
+import { Router } from '@angular/router';
 
-export function get_modules(moduleService: ModuleService) {
-    return () => {return moduleService.fetchModules().toPromise(); };
+export function getModulesAndInitRouting(moduleService: ModuleService, router: Router) {
+    return () => {
+      return moduleService.fetchModules().pipe(
+        tap(modules => {
+          const routingConfig = router.config;
+          modules.forEach(module => {
+            if(module.ng_module) {               
+              const moduleConfig ={
+                  path: module.module_path,
+                  loadChildren: () => import("../../../external_modules/"+module.ng_module+ "/frontend/app/gnModule.module").then(m => m.GeonatureModule),
+                  canActivate: [ModuleGuardService],
+                  data: {
+                    module_code: module.module_code
+                  },
+                }
+              // insert at the begining otherwise pagenotfound component is first matched
+              routingConfig[3].children.unshift(moduleConfig)
+            }
+          })          
+          router.resetConfig(routingConfig)          
+        })
+      ).toPromise(); };
 }
 
 
@@ -111,7 +132,6 @@ export function get_modules(moduleService: ModuleService) {
     AuthGuard,
     ModuleService,
     ToastrService,
-    GlobalSubService,
     CookieService,
     HttpClient,
     ModuleGuardService,
@@ -124,7 +144,7 @@ export function get_modules(moduleService: ModuleService) {
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
     // { provide: APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService], multi: true},
-     { provide: APP_INITIALIZER, useFactory: get_modules, deps: [ModuleService], multi: true},
+     { provide: APP_INITIALIZER, useFactory: getModulesAndInitRouting, deps: [ModuleService, Router], multi: true},
   ],
   bootstrap: [AppComponent]
 })

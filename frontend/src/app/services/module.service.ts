@@ -10,6 +10,8 @@ export class ModuleService {
   get modules(): any[] { return this._modules.getValue(); };
   set modules(value: any[]) { this._modules.next(value); };
   get $_modules(): Observable<any[]> { return this._modules.asObservable(); };
+  public currentModule$ = new BehaviorSubject<any>(null);
+  get currentModule(): any { return this.currentModule$.getValue(); };
 
   constructor(private _api: DataFormService) { }
 

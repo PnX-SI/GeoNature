@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 import { AuthService } from '@geonature/components/auth/auth.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { GlobalSubService } from '../services/global-sub.service';
 import { AppConfig } from '@geonature_config/app.config';
 
 @Injectable()
@@ -17,15 +16,14 @@ export class ModuleGuardService implements CanActivate {
   constructor(
     private _router: Router,
     private _moduleService: ModuleService,
-    private _globalSubService: GlobalSubService,
     private _commonService: CommonService
   ) {}
 
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    const moduleName = route.data['module_code'];
-
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {    
+    const moduleName = route.data['module_code'];    
     const askedModule = this._moduleService.getModule(moduleName);
     if (askedModule) {
+      this._moduleService.currentModule$.next(askedModule)
       return true;
     } else {
       this._router.navigate(['/']);
@@ -57,7 +55,8 @@ export class AuthGuard implements CanActivate, CanActivateChild {
     }
   }
 
-  canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+  canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {    
+    
     if (this._authService.getToken() === null) {
       this._router.navigate(['/login'], {
           queryParams: { route: state.url, }

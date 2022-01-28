@@ -29,9 +29,10 @@
       class="auto"
       label="{{ 'Releve.Dataset' | translate }}" 
       [displayAll]="true" 
+      [multiSelect]="true"
       [displayOnlyActive]="false"
       [parentFormControl]="occtaxMapListService.dynamicFormGroup.controls.id_dataset"
-      moduleCode="OCCTAX"
+      [moduleCode]="moduleService.currentModule?.module_code"
       [compareWith]="compareFn"
       >
     </pnx-datasets>

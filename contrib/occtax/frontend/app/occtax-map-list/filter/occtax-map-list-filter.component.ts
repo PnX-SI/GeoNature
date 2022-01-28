@@ -8,7 +8,7 @@ import { NgbDateParserFormatter } from "@ng-bootstrap/ng-bootstrap";
 import { FILTERSLIST } from "./filters-list";
 import { HttpParams } from "@angular/common/http";
 import { OcctaxMapListService } from "../occtax-map-list.service";
-import { GlobalSubService } from '@geonature/services/global-sub.service';
+import { ModuleService } from "@geonature/services/module.service"
 
 
 @Component({
@@ -32,8 +32,8 @@ export class OcctaxMapListFilterComponent implements OnInit {
     private _fb: FormBuilder,
     private _dateParser: NgbDateParserFormatter,
     public occtaxMapListService: OcctaxMapListService,
-    private _route : ActivatedRoute,
-    private _globalSub: GlobalSubService,
+    public moduleService: ModuleService
+
   ) { }
 
   ngOnInit() {

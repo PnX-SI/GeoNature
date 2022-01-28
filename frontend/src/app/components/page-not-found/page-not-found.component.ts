@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'pnx-page-not-found',
@@ -6,7 +7,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./page-not-found.component.scss']
 })
 export class PageNotFoundComponent implements OnInit {
-  constructor() {}
+  constructor(private router: Router) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    console.log("FROM not found", this.router);
+    
+  }
 }
