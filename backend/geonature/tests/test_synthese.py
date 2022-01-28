@@ -277,7 +277,7 @@ class TestSynthese:
     def test_get_taxa_count(self, synthese_data):
         response = self.client.get(url_for('gn_synthese.get_taxa_count'))
 
-        assert response.json > len(set(synt.cd_nom for synt in synthese_data))
+        assert response.json >= len(set(synt.cd_nom for synt in synthese_data))
 
     def test_get_taxa_count_id_dataset(self, synthese_data, datasets, unexisted_id):
         id_dataset = datasets['own_dataset'].id_dataset
@@ -296,7 +296,7 @@ class TestSynthese:
 
         response = self.client.get(url_for('gn_synthese.get_observation_count'))
 
-        assert response.json > nb_observations
+        assert response.json >= nb_observations
     
     def test_get_observation_count_id_dataset(self, synthese_data, datasets, unexisted_id):
         id_dataset = datasets['own_dataset'].id_dataset
