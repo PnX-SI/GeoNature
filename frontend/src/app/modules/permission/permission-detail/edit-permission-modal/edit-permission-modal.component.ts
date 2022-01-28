@@ -33,7 +33,7 @@ export class EditPermissionModal implements OnInit {
   filters: Observable<IFilter[]>;
   availableFilters: string[] = [];
   filtersValues: Record<string, IFilterValue[]>;
-  geographicFilterTypes: Array<Number>;
+  geographicFilterTypes: Array<String>;
   taxonomicFilterRank: string;
   datePickerMin;
   datePickerMax;
@@ -51,8 +51,8 @@ export class EditPermissionModal implements OnInit {
     this.role = data.role;
     this.permission = data.permission;
 
-    // TODO: use code instead of id ! Use config parameter with token Dependency Injection !
-    this.geographicFilterTypes = [25,26];
+    // TODO: use config parameter with token Dependency Injection !
+    this.geographicFilterTypes = ['COM', 'DEP'];
     // TODO: use config parameter with token Dependency Injection !
     this.taxonomicFilterRank = 'GN';
 

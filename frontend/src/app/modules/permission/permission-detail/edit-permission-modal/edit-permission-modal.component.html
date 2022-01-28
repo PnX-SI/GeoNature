@@ -169,11 +169,9 @@
 
           <div class="form-group" *ngIf="availableFilters?.includes('GEOGRAPHIC')">
             <pnx-areas
-              [searchBar]="true"
               [parentFormControl]="formGroup.controls['filters'].controls['geographic']"
               [label]="'Permissions.filters.types.GEOGRAPHIC' | translate"
-              [idTypes]="geographicFilterTypes"
-              [bindAllItem]="true"
+              [typeCodes]="geographicFilterTypes"
               [matTooltip]="'Permissions.filters.tooltips.GEOGRAPHIC' | translate"
               matTooltipPosition="above"
             >

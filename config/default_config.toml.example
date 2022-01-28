@@ -517,28 +517,28 @@ MAIL_ON_ERROR = false
     CD_NOMENCLATURE_ROLE_TYPE_AF = ["3"]
 
 [PERMISSION_MANAGEMENT]
-    # Activer (=true) l'affichage du lien vers le formulaire de demande 
+    # Activer (=true) l'affichage du lien vers le formulaire de demande
     # de permissions. Par défaut : désactivé (=false).
     ENABLE_ACCESS_REQUEST = true
     # Activer la possibilité de demander l'accès aux données sensibles.
     # Affiche une case à cocher dans le formulaire des demandes d'accès.
     ENABLE_SENSITIVE_ACCESS = true
-    # Lien vers les règles d'accès aux observations sensibles/privées 
+    # Lien vers les règles d'accès aux observations sensibles/privées
     # propres à cette instance de GeoNature.
     # Ce lien est ajouté au formulaire de demande d'accès.
     DATA_ACCESS_RULES_LINK = "https://inpn.mnhn.fr/docs/demandes_sinp/Licence_ferme_SINP.pdf"
-    # Liste d'id (table `ref_geo.bib_areas_type`, champ `id_type`) des 
-    # types de zones géographique sélectionnables dans le filtre par 
+    # Liste de codes (table `ref_geo.bib_areas_type`, champ `type_code`) des
+    # types de zones géographique sélectionnables dans le filtre par
     # zones géographiques du formulaire de demande d'accès.
-    # Par défaut : Communes (=25) et Départements (=26).
-    AREA_TYPES = [25, 26]
+    # Par défaut : Communes (="COM") et Départements (="DEP").
+    AREA_TYPES = ["COM", "DEP"]
     # Durée par défaut en jour pendant laquelle l'accès est autorisé.
     # Le champ "Accès jusqu'au" sera automatiquement rempli avec une date
     # correspondant à nombre de jour dans le futur.
     # Par défaut, ce champ n'apparait pas et l'accès est permanent.
     DEFAULT_ACCESS_DURATION = 90
     # Durée maximum en jour pendant laquelle l'accès peut être autorisé.
-    # La date saisie dans le champ "Accès jusqu'au"devra se situé entre 
+    # La date saisie dans le champ "Accès jusqu'au"devra se situé entre
     # le jour courrant et ce nombre de jours dans le futur.
     # Par défaut, la demande d'accès maximum est de 1 ans.
     MAX_ACCESS_DURATION = 365
@@ -558,16 +558,16 @@ MAIL_ON_ERROR = false
 
     # Titre de la section personnalisable du formulaire de demande d'accès
     REQUEST_FORM_TITLE = "Motivations de la demande"
-    # Définition de la section personnalisable du formulaire de demande 
+    # Définition de la section personnalisable du formulaire de demande
     # de permission d'accès.
-    # Si PERMISSION_MANAGEMENT.REQUEST_FORM ne contient rien la partie 
+    # Si PERMISSION_MANAGEMENT.REQUEST_FORM ne contient rien la partie
     # personnalisable du formulaire ne s'affiche pas.
     [[PERMISSION_MANAGEMENT.REQUEST_FORM]]
         type_widget = "html"
         attribut_name = "motivation-intro"
         html = """
             <small class="form-text">
-                Veuillez décrire ci-dessous les motivations à l'origine 
+                Veuillez décrire ci-dessous les motivations à l'origine
                 de votre demande.
             </small>"""
    [[PERMISSION_MANAGEMENT.REQUEST_FORM]]
@@ -575,14 +575,14 @@ MAIL_ON_ERROR = false
         attribut_label = "Description"
         attribut_name = "project-description"
         required = false
-        help = """Préciser le calendrier, la finalité, l'objet de l’étude 
-            scientifique et le cadre réglementaire dans lequel s’inscrit 
+        help = """Préciser le calendrier, la finalité, l'objet de l’étude
+            scientifique et le cadre réglementaire dans lequel s’inscrit
             la demande."""
 
 [DATA_BLURRING]
     # Activer (=true) l'affichage du floutage des données. Par défaut : false.
     ENABLE_DATA_BLURRING = true
-    # Correspondance entre les niveau de diffusion (nomenclaure NIV_PRECIS) 
+    # Correspondance entre les niveau de diffusion (nomenclaure NIV_PRECIS)
     # et un type de zone géographique à utiliser pour le rendu sur les cartes.
     # Pour des questions de performance, préférer les mailles aux types de zone
     # complexes (communes, départements...).
@@ -593,7 +593,7 @@ MAIL_ON_ERROR = false
             {level = "2", area = "M10"},# Maille
             {level = "3", area = "M10"},# Département
         ]
-    # Correspondance entre les niveau de sensibilité (nomenclaure SENSIBILITE) 
+    # Correspondance entre les niveau de sensibilité (nomenclaure SENSIBILITE)
     # et un type de zone géographique à utiliser pour le rendu sur les cartes.
     # Pour des questions de performance, préférer les mailles aux types de zone
     # complexes (communes, départements...).

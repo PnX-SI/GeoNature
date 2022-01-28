@@ -28,7 +28,7 @@ export class AccessRequestComponent implements OnInit {
   public dynamicFormCfg;
   public enableSensitiveAccess;
   public rulesLink;
-  public areaTypes: Array<Number>;
+  public areaTypes: Array<String>;
   public defaultAccessDuration;
   public maxAccessDuration;
   public defaultEndAccess: DateStruc;
