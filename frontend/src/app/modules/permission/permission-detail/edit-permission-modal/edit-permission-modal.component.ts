@@ -277,12 +277,8 @@ export class EditPermissionModal implements OnInit {
       );
   }
 
-  private getPermissionData() {
+  private getPermissionData() {
     const formData = Object.assign({}, this.formGroup.value);
-    // Need to do this to get geographic and taxonomic arrays of objects
-    //formData.filters.geographic = this.formGroup.get('filters.geographic').value;
-    //formData.filters.taxonomic = this.formGroup.get('filters.taxonomic').value;
-    console.log("FormData:", formData)
 
     let permissionData = {
       idRole: this.role.id,
@@ -290,39 +286,16 @@ export class EditPermissionModal implements OnInit {
       action: formData.actionsObjects.actionObject.actionCode,
       object: formData.actionsObjects.actionObject.objectCode,
       filters: {
-        geographic: null,
-        taxonomic: null,
-        scope: null,
-        precision: null,
+        geographic: formData.filters.geographic.length > 0 ? formData.filters.geographic : null,
+        taxonomic: formData.filters.taxonomic.length > 0 ? formData.filters.taxonomic : null,
+        scope: formData.filters.scope ? formData.filters.scope : null,
+        precision: formData.filters.precision ? formData.filters.precision : null,
       },
-      endDate: formData.validating.endDate,
+      endDate: formData.validating.endDate
     };
 
     if (this.updateMode.getValue() && ! this.permission.isInherited) {
       permissionData['gathering'] = this.permission.gathering;
-    }
-
-    // this.formGroup.controls.filters.controls.geographic
-    if (formData.filters.geographic.length > 0) {
-      permissionData.filters.geographic = [];
-      formData.filters.geographic.forEach(area => {
-        permissionData.filters.geographic.push(area.id_area);
-      });
-    }
-
-    if (formData.filters.taxonomic.length > 0) {
-      permissionData.filters.taxonomic = [];
-      formData.filters.taxonomic.forEach(taxa => {
-        permissionData.filters.taxonomic.push(taxa.cd_nom);
-      });
-    }
-
-    if (formData.filters.scope) {
-      permissionData.filters.scope = formData.filters.scope;
-    }
-
-    if (formData.filters.precision) {
-      permissionData.filters.precision = formData.filters.precision;
     }
 
     return permissionData;
