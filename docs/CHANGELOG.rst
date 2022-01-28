@@ -14,6 +14,17 @@ CHANGELOG
 
 * Correction d’une régression sur la récupération de la liste des taxons (#1674)
 * Correction de l’authentification au CAS de l’INPN
+* Correction du calcul de la sensibilité :
+  * gestion correcte de la présence de plusieurs règles avec et sans critère statut biologique
+  * utilisation de la règle la plus sensible quand plusieurs règles s’appliquent
+
+**⚠️ Notes de version**
+
+* La correction du calcul de la sensibilité est suivi d’un recalcule du niveau de sensibilité des données présentes dans la synthèse. Si vous ne souhaitez pas procéder au recalcule, ajoutez le paramètre ``-x recompute-sensitivity=false`` lors de la mise-à-jour de la base de données :
+
+  ::
+
+    (venv)$ geonature db autoupgrade -x recompute-sensitivity=false
 
 
 2.9.1 (2022-01-27)

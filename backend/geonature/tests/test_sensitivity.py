@@ -36,6 +36,11 @@ class TestSensitivity:
                                                                 mnemonique='Hibernation').one()
         statut_bio_reproduction = TNomenclatures.query.filter_by(id_type=statut_bio_type.id_type,
                                                                  mnemonique='Reproduction').one()
+        life_stage_type = BibNomenclaturesTypes.query.filter_by(mnemonique='STADE_VIE').one()
+        # We choose a life stage with the same cd_nomenclature than tested status bio
+        life_stage_conflict = TNomenclatures.query.filter_by(id_type=life_stage_type.id_type,
+                                                             cd_nomenclature=statut_bio_hibernation.cd_nomenclature).one()
+
         query = sa.select([TNomenclatures.mnemonique]) \
                     .where(TNomenclatures.id_nomenclature==func.gn_sensitivity.get_id_nomenclature_sensitivity(
                             sa.cast(date_obs, sa.types.Date),
@@ -140,6 +145,14 @@ class TestSensitivity:
         assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
         transaction.rollback()
 
+        # We add a not matching life stage, but with the same cd_nomenclature than
+        # status bio of the observation, and check that the rule does not apply even so.
+        transaction = db.session.begin_nested()
+        with db.session.begin_nested():
+            rule.criterias.append(life_stage_conflict)
+        assert(db.session.execute(query).scalar() == not_sensitive.mnemonique)
+        transaction.rollback()
+
         # Add a matching area to the rule → the rule still applies
         transaction = db.session.begin_nested()
         with db.session.begin_nested():
@@ -163,6 +176,14 @@ class TestSensitivity:
         assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
         transaction.rollback()
 
+        # Add a matching area but a not matching status bio
+        transaction = db.session.begin_nested()
+        with db.session.begin_nested():
+            rule.areas.append(area_in)
+            rule.criterias.append(statut_bio_reproduction)
+        assert(db.session.execute(query).scalar() == not_sensitive.mnemonique)
+        transaction.rollback()
+
         # Add a second more restrictive rule
         with db.session.begin_nested():
             rule2 = SensitivityRule(cd_nom=taxon.cd_nom,
@@ -174,15 +195,13 @@ class TestSensitivity:
         rule1 = rule
 
         # Verify that the more restrictive rule match
-        # FIXME the sensitivity algorithm does not implement rules priority
-        #assert(db.session.execute(query).scalar() == no_diffusion.mnemonique)
+        assert(db.session.execute(query).scalar() == no_diffusion.mnemonique)
 
         # Add not matching bio status criteria on rule 2, but rule 1 should still apply
         transaction = db.session.begin_nested()
         with db.session.begin_nested():
             rule2.criterias.append(statut_bio_reproduction)  # not matching
-        # FIXME uni-criteria bio status check is broken
-        #assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
+        assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
         transaction.rollback()
 
         # Add not matching area on rule 2, but rule 1 should apply
