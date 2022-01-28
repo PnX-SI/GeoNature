@@ -54,100 +54,158 @@ class TestSensitivity:
         no_diffusion = TNomenclatures.query.filter_by(id_type=sensitivity_nomenc_type.id_type,
                                                       mnemonique='4').one()
 
+        st_intersects = func.ST_Intersects(LAreas.geom, func.ST_Transform(geom, config['LOCAL_SRID']))
+        deps = LAreas.query.join(BibAreasTypes).filter(BibAreasTypes.type_code=='DEP')
+        area_in = deps.filter(st_intersects).first()
+        area_out = deps.filter(sa.not_(st_intersects)).first()
+
         with db.session.begin_nested():
             rule = SensitivityRule(cd_nom=taxon.cd_nom,
-                                   nomenclature_sensitivity=no_diffusion,
+                                   nomenclature_sensitivity=diffusion_maille,
                                    sensitivity_duration=100)
             db.session.add(rule)
         with db.session.begin_nested():
             db.session.execute('REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref')
-        assert(db.session.execute(query).scalar() == no_diffusion.mnemonique)
 
+        # Check the rule apply correctly
+        assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
+
+        # Reduce rule duration and check rule does not apply anymore
+        transaction = db.session.begin_nested()
         with db.session.begin_nested():
             rule.sensitivity_duration = 1
         with db.session.begin_nested():
             db.session.execute('REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref')
         assert(db.session.execute(query).scalar() == not_sensitive.mnemonique)
+        transaction.rollback()  # restore rule duration
+
+        # Change sensitivity to no diffusion
+        transaction = db.session.begin_nested()
         with db.session.begin_nested():
-            rule.sensitivity_duration = 10
-            rule.nomenclature_sensitivity = diffusion_maille
+            rule.nomenclature_sensitivity = no_diffusion
         with db.session.begin_nested():
             db.session.execute('REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref')
-        assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
+        assert(db.session.execute(query).scalar() == no_diffusion.mnemonique)
+        transaction.rollback()  # restore rule sensitivity
 
+        # Set rule validity period excluding observation date
+        transaction = db.session.begin_nested()
         with db.session.begin_nested():
             rule.date_min = date(1900, 4, 1)
             rule.date_max = date(1900, 6, 30)
         with db.session.begin_nested():
             db.session.execute('REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref')
         assert(db.session.execute(query).scalar() == not_sensitive.mnemonique)
+        transaction.rollback()
 
+        # Set rule validity period including observation date
+        transaction = db.session.begin_nested()
         with db.session.begin_nested():
             rule.date_min = date(1900, 2, 1)
             rule.date_max = date(1900, 4, 30)
         with db.session.begin_nested():
             db.session.execute('REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref')
         assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
+        transaction.rollback()
 
+        # Disable the rule
+        transaction = db.session.begin_nested()
         with db.session.begin_nested():
             rule.active = False
         with db.session.begin_nested():
             db.session.execute('REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref')
         assert(db.session.execute(query).scalar() == not_sensitive.mnemonique)
+        transaction.rollback()
 
-        with db.session.begin_nested():
-            rule.active = True
-        with db.session.begin_nested():
-            db.session.execute('REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref')
-
+        # Add a not matching bio status
+        transaction = db.session.begin_nested()
         with db.session.begin_nested():
             rule.criterias.append(statut_bio_reproduction)
         assert(db.session.execute(query).scalar() == not_sensitive.mnemonique)
+        transaction.rollback()
 
+        # Add a matching bio status
+        transaction = db.session.begin_nested()
         with db.session.begin_nested():
             rule.criterias.append(statut_bio_hibernation)
         assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
+        transaction.rollback()
 
+        # Add a matching and a not matching bio status
+        # The rule should match as soon as as least one bio status match
+        transaction = db.session.begin_nested()
         with db.session.begin_nested():
-            rule.criterias.remove(statut_bio_reproduction)
+            rule.criterias.append(statut_bio_reproduction)
+            rule.criterias.append(statut_bio_hibernation)
         assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
+        transaction.rollback()
 
-        with db.session.begin_nested():
-            rule.criterias.remove(statut_bio_hibernation)
-        assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
-
-        f = func.ST_Intersects(LAreas.geom, func.ST_Transform(geom, config['LOCAL_SRID']))
-        deps = LAreas.query.join(BibAreasTypes).filter(BibAreasTypes.type_code=='DEP')
-        area_in = deps.filter(f).first()
-        area_out = deps.filter(sa.not_(f)).first()
-
+        # Add a matching area to the rule → the rule still applies
+        transaction = db.session.begin_nested()
         with db.session.begin_nested():
             rule.areas.append(area_in)
-        # l’observation est dans le périmètre d’application, la règle de sensibilité s’applique
         assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
+        transaction.rollback()
 
+        # Add a not matching area to the rule → the rule does not apply anymore
+        transaction = db.session.begin_nested()
         with db.session.begin_nested():
             rule.areas.append(area_out)
-        # l’observation est dans une des zones du périmètre d’application, la règle de sensibilité s’applique
-        assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
-
-        with db.session.begin_nested():
-            rule.areas.remove(area_in)
-        # l’observation n’est pas dans le périmètre d’application de la règle de sensibilité
         assert(db.session.execute(query).scalar() == not_sensitive.mnemonique)
+        transaction.rollback()
 
+        # Add a matching and a not matching area to the rule
+        # The rule should apply as soon as at least one area match
+        transaction = db.session.begin_nested()
         with db.session.begin_nested():
-            rule.areas.remove(area_out)
-        # the rule has no areas anymore, it applies
+            rule.areas.append(area_in)
+            rule.areas.append(area_out)
         assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
+        transaction.rollback()
 
+        # Add a second more restrictive rule
         with db.session.begin_nested():
             rule2 = SensitivityRule(cd_nom=taxon.cd_nom,
                                     nomenclature_sensitivity=no_diffusion,
                                     sensitivity_duration=100)
             db.session.add(rule2)
-        # we have two rule, the more restrictive one apply
-        #assert(db.session.execute(query).scalar() == no_diffusion.mnemonique)  # FIXME this test fail!
+        with db.session.begin_nested():
+            db.session.execute('REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref')
+        rule1 = rule
+
+        # Verify that the more restrictive rule match
+        # FIXME the sensitivity algorithm does not implement rules priority
+        #assert(db.session.execute(query).scalar() == no_diffusion.mnemonique)
+
+        # Add not matching bio status criteria on rule 2, but rule 1 should still apply
+        transaction = db.session.begin_nested()
+        with db.session.begin_nested():
+            rule2.criterias.append(statut_bio_reproduction)  # not matching
+        # FIXME uni-criteria bio status check is broken
+        #assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
+        transaction.rollback()
+
+        # Add not matching area on rule 2, but rule 1 should apply
+        transaction = db.session.begin_nested()
+        with db.session.begin_nested():
+            rule2.areas.append(area_out)
+        assert(db.session.execute(query).scalar() == diffusion_maille.mnemonique)
+        transaction.rollback()
+
+        # Add not matching area on rule 1, but rule 2 should apply
+        transaction = db.session.begin_nested()
+        with db.session.begin_nested():
+            rule1.areas.append(area_out)
+        assert(db.session.execute(query).scalar() == no_diffusion.mnemonique)
+        transaction.rollback()
+
+        # Add not matching area on rule 1, and not matching bio status on rule 2
+        transaction = db.session.begin_nested()
+        with db.session.begin_nested():
+            rule1.areas.append(area_out)
+            rule2.criterias.append(statut_bio_reproduction)  # not matching
+        assert(db.session.execute(query).scalar() == not_sensitive.mnemonique)
+        transaction.rollback()
 
 
     def test_synthese_sensitivity(self, app):
