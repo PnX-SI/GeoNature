@@ -89,7 +89,7 @@ class TModules(DB.Model):
     active_backend = DB.Column(DB.Boolean)
     module_doc_url = DB.Column(DB.Unicode)
     module_order = DB.Column(DB.Integer)
-    theme = DB.Column(DB.Unicode)
+    ng_module = DB.Column(DB.Unicode)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
 
@@ -98,6 +98,7 @@ class TModules(DB.Model):
         secondary= lambda:_resolve_import_cor_object_module(),
         backref='modules'
     )
+    # relationship datasets add via backref
 
     def __str__(self):
         return self.module_label.capitalize()
