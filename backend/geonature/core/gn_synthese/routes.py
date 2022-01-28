@@ -6,7 +6,8 @@ import time
 from collections import OrderedDict
 from warnings import warn
 
-from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify
+from flask import Blueprint, request, Response, current_app, \
+                  send_from_directory, render_template, jsonify
 from werkzeug.exceptions import Forbidden, NotFound
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
@@ -872,7 +873,7 @@ def get_bbox():
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
     data = query.one()
     if data and data[0]:
-        return data[0]
+        return Response(data[0], mimetype='application/json')
     return '', 204
 
 @routes.route("/observation_count_per_column/<column>", methods=["GET"])
