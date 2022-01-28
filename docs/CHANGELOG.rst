@@ -8,6 +8,7 @@ CHANGELOG
 **🚀 Nouveautés**
 
 * Optimisation du nombres d’informations renvoyées par l’API pour les utilisateurs et les organismes
+* Ajout d’une commande pour relancer le calcule de la sensibilité, utile en cas de modification du référentiel de sensibilité : ``geonature sensitivity update-synthese``
 
 **🐛 Corrections**
 
