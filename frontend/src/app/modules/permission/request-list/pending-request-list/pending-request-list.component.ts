@@ -279,7 +279,6 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
 
     dialogRef.afterClosed().subscribe(request => {
       if (request) {
-        console.log(request)
         this.permissionService.refuseRequest(request).subscribe(
           () => {
             this.loadRequests();

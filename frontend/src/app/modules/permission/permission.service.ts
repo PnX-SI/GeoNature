@@ -47,7 +47,6 @@ export class PermissionService {
     let options = {
       'params': (params ? params : null),
     }
-    console.log("Options: ", options)
     return this.http.get<IRolePermission>(url, options);
   }
 
@@ -63,7 +62,6 @@ export class PermissionService {
 
   getModules(codes: string[] = []): Observable<IModule[]> {
     const url = `${this.cfg.API_ENDPOINT}/permissions/modules`;
-    console.log('Codes:', codes)
     let params = null;
     if (codes.length > 0) {
       params = new HttpParams().set('codes', codes.join(','));

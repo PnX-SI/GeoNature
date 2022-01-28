@@ -66,10 +66,8 @@ export class EditPermissionModal implements OnInit {
   private checkMode() {
     if (this.permission.gathering) {
       this.updateMode.next(true);
-      console.log('In UPDATE Mode:', this.permission)
     } else {
       this.updateMode.next(false);
-      console.log('In CREATE Mode:', this.permission)
     }
   }
 
@@ -77,10 +75,8 @@ export class EditPermissionModal implements OnInit {
     this.permissionService.getModules().subscribe( modules => {
       this.modules = modules;
 
-      console.log("In load modules, mode:", this.updateMode.getValue())
       if (this.updateMode.getValue()) {
         let module = this.getModule(this.permission.module);
-        console.log("In load modules:", module)
         this.formGroup.patchValue({modules: {module: module} });
 
         this.loadActionsObjects(module);
@@ -97,7 +93,7 @@ export class EditPermissionModal implements OnInit {
       // Extract filter type codes and dispatch filter values by filter type code
       this.filtersValues = {};
       for (let prop in fValues) {
-        // Get all value of a sepcific filter type
+        // Get all value of a specific filter type
         let values = fValues[prop];
         // All values inside the object property have the same filter type code.
         let filterCode = values[0].filterTypeCode;
@@ -151,7 +147,6 @@ export class EditPermissionModal implements OnInit {
   }
 
   loadActionsObjects(module: IModule) {
-    console.log(`In loadActionsObjects, value: ${module.code}`, module)
     this.permissionService.getActionsObjects(module.code).subscribe( actionsOjects => {
       this.actionsOjects = actionsOjects;
 
@@ -169,24 +164,19 @@ export class EditPermissionModal implements OnInit {
   }
 
   loadFilters(actionObj: IActionObject) {
-    console.log(`In loadFilters, value: ${actionObj.moduleCode}-${actionObj.actionCode}-${actionObj.objectCode}`, actionObj)
     this.permissionService.getActionsObjectsFilters(actionObj)
       .subscribe( filters => {
-        console.log("Filters received:", filters)
         this.availableFilters = [];
         filters.forEach(filter => {
           this.availableFilters.push(filter.filterTypeCode);
         });
 
         if (this.updateMode.getValue()) {
-          console.log("Permission:", this.permission)
           this.permission.filters.forEach(filter => {
             let filterFormOjbect = {filters: {}};
             filterFormOjbect['filters'][filter.type.toLowerCase()] = this.buildFilterValue(filter);
-            console.log("Filter form object: ", filterFormOjbect)
             this.formGroup.patchValue(filterFormOjbect);
           });
-          console.log("Form group: ", this.formGroup)
         }
       });
   }
@@ -228,12 +218,10 @@ export class EditPermissionModal implements OnInit {
         endDate: endDateObject,
       }
     })
-    console.log("Patch end date:", this.formGroup)
   }
 
   public addPermission() {
     const permissionData = this.getPermissionData();
-    console.log("permissionData:", permissionData);
 
     this.permissionService
       .addPermission(permissionData)
@@ -256,7 +244,6 @@ export class EditPermissionModal implements OnInit {
 
   public updatePermission() {
     const permissionData = this.getPermissionData();
-    console.log("permissionData:", permissionData);
 
     this.permissionService
       .updatePermission(permissionData)
