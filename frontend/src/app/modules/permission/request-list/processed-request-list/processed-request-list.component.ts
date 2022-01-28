@@ -139,7 +139,6 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
     this.locale = translateService.currentLang;
 
     this.permissionService.getAllProcessedRequests().subscribe(data => {
-      console.log(data)
       this.loadingIndicator = false;
       this.rows = data;
       this.filteredData = [...data];
