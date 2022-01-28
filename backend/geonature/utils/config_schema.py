@@ -35,7 +35,7 @@ class EmailStrOrListOfEmailStrField(fields.Field):
             return value
         else:
             raise ValidationError('Field should be str or list of str')
-    
+
     def _check_email(self, value):
         recipients = clean_recipients(value)
         for recipient in recipients:
@@ -110,7 +110,7 @@ class AccountManagement(Schema):
 class PermissionManagement(Schema):
     # Configuration parameters for permissions managment and access request
     ENABLE_ACCESS_REQUEST = fields.Boolean(load_default=False)
-    AREA_TYPES = fields.List(fields.Integer(), load_default=[25, 26])
+    AREA_TYPES = fields.List(fields.String(), load_default=["COM", "DEP"])
     ENABLE_SENSITIVE_ACCESS = fields.Boolean(load_default=True)
     DATA_ACCESS_RULES_LINK = fields.String(load_default=None)
     DEFAULT_ACCESS_DURATION = fields.Integer(load_default=None)
@@ -147,7 +147,7 @@ class AlembicConfig(Schema):
 class AdditionalFields(Schema):
     IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX"])
     IMPLEMENTED_OBJECTS = fields.List(
-        fields.String(), 
+        fields.String(),
         load_default=["OCCTAX_RELEVE",  "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"]
     )
 
@@ -302,7 +302,7 @@ class Synthese(Schema):
 class DataBlurringManagement(Schema):
     # Configuration parameters for blurring geo data based on diffusion_level, sensitivity
     # and user permissions
-    
+
     # Enable blurring results based on diffusion_level and user permissions
     # By default, data blurring is disable
     ENABLE_DATA_BLURRING = fields.Boolean(load_default=False)
@@ -325,10 +325,10 @@ class DataBlurringManagement(Schema):
     # Nom de la colonne du niveau de diffusion dans la vue gn_synthese.v_synthese_for_export
     # Colonne obligatoire pour les téléchargements de la Synthese
     EXPORT_DIFFUSION_COL = fields.String(load_default="id_nomenclature_diffusion_level")
-    # Nom des champs à vider dans les téléchargements de la Synthese 
+    # Nom des champs à vider dans les téléchargements de la Synthese
     # lorsqu'une observation doit être floutée
     EXPORT_FIELDS_TO_BLURRE = fields.List(fields.String, load_default=[
-        "geometrie_wkt_4326", 
+        "geometrie_wkt_4326",
         "x_centroid_4326", "y_centroid_4326",
         "geojson_4326", "geojson_local",
     ])

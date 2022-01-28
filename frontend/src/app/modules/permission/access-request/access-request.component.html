@@ -28,11 +28,9 @@
 
           <div class="form-group">
             <pnx-areas
-              [searchBar]="true"
               [parentFormControl]="this.regularFormGrp.controls['areas']"
               [label]="'Permissions.accessRequest.geoAreaLabel' | translate"
-              [idTypes]="areaTypes"
-              [bindAllItem]="true"
+              [typeCodes]="areaTypes"
               [matTooltip]="'Permissions.accessRequest.geoAreaTooltip' | translate"
               matTooltipPosition="above"
             >
