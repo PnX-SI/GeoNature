@@ -1,4 +1,4 @@
-"""Add id_module in pr_occtacax.t_releves
+"""Add id_module in pr_occtax.t_releves
 
 Revision ID: 86d48653a07b
 Revises: 0d89c5978fa2
@@ -21,7 +21,7 @@ def upgrade():
         """
         AlTER TABLE pr_occtax.t_releves_occtax 
         ADD COLUMN id_module integer;
-        AlTER TABLE pr_occtax.t_releves_occtax 
+        ALTER TABLE pr_occtax.t_releves_occtax 
         ADD CONSTRAINT fk_t_releves_occtax_id_module FOREIGN KEY (id_module)
         REFERENCES gn_commons.t_modules(id_module) ON UPDATE CASCADE
         """
@@ -32,6 +32,13 @@ def upgrade():
         SET id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'OCCTAX')
     """
     )
+    op.execute(
+        """
+        ALTER TABLE pr_occtax.t_releves_occtax 
+        ALTER COLUMN id_module SET NOT NULL
+        """
+    )
+
 
 def downgrade():
     op.execute(
