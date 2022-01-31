@@ -14,6 +14,8 @@ import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { DatasetStoreService } from '@geonature_common/form/datasets/dataset.service';
 import { MapService } from "@geonature_common/map/map.service"
+import { ModuleService } from "@geonature/services/module.service"
+
 @Injectable({providedIn: "root"})
 export class OcctaxFormReleveService {
   public userReleveRigth: any;
@@ -46,6 +48,7 @@ export class OcctaxFormReleveService {
     private _datasetStoreService: DatasetStoreService,
     private _cd: ChangeDetectorRef,
     private _mapService: MapService,
+    private _moduleService: ModuleService
 
   ) {
     this.initPropertiesForm();
@@ -66,6 +69,7 @@ export class OcctaxFormReleveService {
   initPropertiesForm(): void {    
     //FORM
     this.propertiesForm = this.fb.group({
+      id_module: [null],
       id_dataset: [null, Validators.required] ,
       id_digitiser: null,
       date_min: [null, Validators.required],
@@ -390,10 +394,9 @@ export class OcctaxFormReleveService {
       .pipe(
         map((data) => {          
           const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);              
-          // datasetId could be get store in localStorage via get parameters (see occtax-map-list)
-          const occtaxCustomValues = JSON.parse(localStorage.getItem("occtaxCustomValues"));
           return {
-            id_dataset: occtaxCustomValues.id_dataset || this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset,
+            id_module: this._moduleService.currentModule.id_module,
+            id_dataset: this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset,
             date_min: this.occtaxParamS.get("releve.date_min") ||
               previousReleve.date_min ||
               this.defaultDateWithToday(),

@@ -78,21 +78,10 @@ export class OcctaxMapListComponent
   ngOnInit() {
     this._router.routeReuseStrategy.shouldReuseRoute = () => false;
     
-    // get querystring parameters and save it in localstorage
-    // use for filter by dataset, preselect dataset form and set a "fake" module name
-    const currentRouteQueryParams = this._route.snapshot.queryParams;    
     const currentModule = this._moduleService.currentModule;
-    console.log("LAAA", currentModule);
-    
     // get user cruved
       this.userCruved = currentModule.cruved
-    const occtaxCustomValues = {
-        "id_dataset" : currentRouteQueryParams["id_dataset"]
-    };      
-    localStorage.setItem(
-        "occtaxCustomValues", JSON.stringify(occtaxCustomValues)
-    )
-    
+
     // refresh forms
     this.refreshForms();
     this.mapListService.refreshUrlQuery();
@@ -102,7 +91,7 @@ export class OcctaxMapListComponent
     //config
     this.occtaxConfig = ModuleConfig;
     this.mapListService.idName = "id_releve_occtax";
-    this.apiEndPoint = "occtax/releves";
+    this.apiEndPoint = `occtax/${this._moduleService.currentModule.module_code}/releves`;
     // set id_dataset if provided
     let temp = JSON.parse(localStorage.getItem("occtaxCustomValues"));    
     const idDataset = temp['id_dataset'];
@@ -251,7 +240,7 @@ export class OcctaxMapListComponent
     queryString = queryString.delete("offset");
     const url = `${
       AppConfig.API_ENDPOINT
-      }/occtax/export?${queryString.toString()}&format=${format}`;
+      }/occtax/${this._moduleService.currentModule.module_code}export?${queryString.toString()}&format=${format}`;
 
     document.location.href = url;
   }

@@ -132,6 +132,7 @@ def getReleves(info_role):
     }
 
 
+@blueprint.route("/<module_code>/occurrences", methods=["GET"])
 @blueprint.route("/occurrences", methods=["GET"])
 @permissions.check_cruved_scope("R")
 @json_resp
@@ -185,7 +186,7 @@ def getOneCounting(id_counting):
     return counting
 
 
-@blueprint.route("/<mdodule_code>/releve/<int:id_releve>", methods=["GET"])
+@blueprint.route("/<module_code>/releve/<int:id_releve>", methods=["GET"])
 @blueprint.route("/releve/<int:id_releve>", methods=["GET"])
 @permissions.check_cruved_scope("R", True)
 def getOneReleve(id_releve, info_role):
@@ -699,7 +700,6 @@ def export(info_role):
     export_srid = blueprint.config["export_srid"]
     export_format = request.args["format"] if "format" in request.args else "geojson"
     export_col_name_additional_data = blueprint.config["export_col_name_additional_data"]
-
     export_view = GenericTableGeo(
         tableName=export_view_name,
         schemaName="pr_occtax",
@@ -746,7 +746,8 @@ def export(info_role):
     additional_col_names = [field.field_name for field in global_add_fields]
     if export_format == "csv":
         # set additional data col at the end (remove it and inset it ...)
-        columns.remove(export_col_name_additional_data)
+        if export_col_name_additional_data in columns:
+            columns.remove(export_col_name_additional_data)
         columns = columns + additional_col_names
         columns.append(export_col_name_additional_data)
         if additional_col_names:
