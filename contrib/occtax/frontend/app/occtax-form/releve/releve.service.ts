@@ -69,7 +69,6 @@ export class OcctaxFormReleveService {
   initPropertiesForm(): void {    
     //FORM
     this.propertiesForm = this.fb.group({
-      id_module: [null],
       id_dataset: [null, Validators.required] ,
       id_digitiser: null,
       date_min: [null, Validators.required],
@@ -395,7 +394,6 @@ export class OcctaxFormReleveService {
         map((data) => {          
           const previousReleve = this.getPreviousReleve(this.occtaxFormService.previousReleve);              
           return {
-            id_module: this._moduleService.currentModule.id_module,
             id_dataset: this.occtaxParamS.get("releve.id_dataset") || previousReleve.id_dataset,
             date_min: this.occtaxParamS.get("releve.date_min") ||
               previousReleve.date_min ||

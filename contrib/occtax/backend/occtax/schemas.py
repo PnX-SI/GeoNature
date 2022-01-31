@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import current_app
+from flask import current_app, g
 from marshmallow import pre_load, post_load, pre_dump, fields, ValidationError
 from marshmallow_sqlalchemy.convert import ModelConverter as BaseModelConverter
 from shapely.geometry import asShape
@@ -129,6 +129,7 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
 
     @pre_load
     def make_releve(self, data, **kwargs):
+        data["id_module"] = g.current_module.id_module
         if data.get("observers") is None:
             data["observers"] = []
         if data.get("id_releve_occtax") is None:
