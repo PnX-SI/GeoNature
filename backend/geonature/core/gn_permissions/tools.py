@@ -909,6 +909,8 @@ class UserPermissions:
             self.permissions[module_code] = {}
 
         # Build filter labels if necessary
+        # WARNING : filters_values and labels MUST be in same order !
+        # TODO : find a better way to mainter labels and values in same order.
         labels = None
         if filter_type == 'GEOGRAPHIC':
             filter_value = split_value_filter(filter_value)
@@ -957,8 +959,9 @@ class UserPermissions:
 def split_value_filter(data: str):
     if data == None or data == '':
         return []
-    values = data.split(',')
+    values = list(map(int, data.split(',')))
     unduplicated_data = unduplicate_values(values)
+    unduplicated_data.sort()
     return unduplicated_data
 
 def unduplicate_values(data: list) -> list:
@@ -988,10 +991,10 @@ def get_areas_infos(area_ids: [int]):
         )
         .join(LAreas, LAreas.id_type == BibAreasTypes.id_type)
         .filter(LAreas.id_area.in_(tuple(area_ids)))
+        .order_by(LAreas.id_area)
         .all()
     )
     return [row._asdict() for row in data]
-
 
 def format_taxonomic_filter_values(taxa: [int]):
     formated_taxonomic = []
@@ -1007,6 +1010,7 @@ def get_taxons_infos(taxon_ids: [int]):
     data = (DB
         .session.query(Taxref)
         .filter(Taxref.cd_nom.in_(tuple(taxon_ids)))
+        .order_by(Taxref.cd_nom)
         .all()
     )
     return [row.as_dict() for row in data]
