@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { ModuleGuardService } from '../routing/routes-guards.service';
 
 @Injectable()
 export class ModuleService {
@@ -13,13 +15,31 @@ export class ModuleService {
   public currentModule$ = new BehaviorSubject<any>(null);
   get currentModule(): any { return this.currentModule$.getValue(); };
 
-  constructor(private _api: DataFormService) { }
+  constructor(private _api: DataFormService, private _router: Router) { }
 
-  fetchModules(): Observable<any[]> {
+  fetchModulesAndSetRouting(): Observable<any[]> {
     // see CruvedStoreService.fetchCruved comments about the catchError
     return this._api.getModulesList([]).pipe(
       catchError(err => of([])), // TODO: error MUST be handled in case we are logged! (typically, api down)
-      tap((modules) => this.modules = modules),
+      tap((modules) => {
+        const routingConfig = this._router.config;
+        modules.forEach(module => {
+          if(module.ng_module) {                             
+            const moduleConfig ={
+                path: module.module_path,
+                loadChildren: () => import("../../../../external_modules/"+module.ng_module+ "/frontend/app/gnModule.module").then(m => m.GeonatureModule),
+                canActivate: [ModuleGuardService],
+                data: {
+                  module_code: module.module_code
+                },
+              }
+            // insert at the begining otherwise pagenotfound component is first matched
+            routingConfig[3].children.unshift(moduleConfig)
+          }
+        })          
+        this._router.resetConfig(routingConfig)          
+        this.modules = modules
+      }),
     );
   }
 

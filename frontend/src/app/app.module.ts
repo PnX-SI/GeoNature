@@ -63,31 +63,11 @@ import { UserDataService } from "./userModule/services/user-data.service";
 // Config
 import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
 
-import { tap } from 'rxjs/operators'
 import { Router } from '@angular/router';
 
 export function getModulesAndInitRouting(moduleService: ModuleService, router: Router) {
     return () => {
-      return moduleService.fetchModules().pipe(
-        tap(modules => {
-          const routingConfig = router.config;
-          modules.forEach(module => {
-            if(module.ng_module) {               
-              const moduleConfig ={
-                  path: module.module_path,
-                  loadChildren: () => import("../../../external_modules/"+module.ng_module+ "/frontend/app/gnModule.module").then(m => m.GeonatureModule),
-                  canActivate: [ModuleGuardService],
-                  data: {
-                    module_code: module.module_code
-                  },
-                }
-              // insert at the begining otherwise pagenotfound component is first matched
-              routingConfig[3].children.unshift(moduleConfig)
-            }
-          })          
-          router.resetConfig(routingConfig)          
-        })
-      ).toPromise(); };
+      return moduleService.fetchModulesAndSetRouting().toPromise(); };
 }
 
 
