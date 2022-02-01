@@ -22,7 +22,7 @@ def upgrade():
     op.execute("""
     DROP VIEW gn_synthese.v_synthese_for_export;
     CREATE VIEW gn_synthese.v_synthese_for_export AS
-        SELECT 
+        SELECT
             s.id_synthese AS id_synthese,
             s.date_min::date AS date_debut,
             s.date_max::date AS date_fin,
@@ -105,63 +105,63 @@ def upgrade():
             s.id_nomenclature_sensitivity,
             s.id_nomenclature_diffusion_level
         FROM gn_synthese.synthese AS s
-            JOIN taxonomie.taxref AS t 
+            JOIN taxonomie.taxref AS t
                 ON ( t.cd_nom = s.cd_nom )
-            JOIN gn_meta.t_datasets AS d 
+            JOIN gn_meta.t_datasets AS d
                 ON ( d.id_dataset = s.id_dataset )
-            JOIN gn_meta.t_acquisition_frameworks AS af 
+            JOIN gn_meta.t_acquisition_frameworks AS af
                 ON ( d.id_acquisition_framework = af.id_acquisition_framework )
             LEFT OUTER JOIN (
                     SELECT id_synthese, string_agg(DISTINCT area_name, ', ') AS communes
                     FROM gn_synthese.cor_area_synthese cas
                         LEFT OUTER JOIN ref_geo.l_areas a_1 ON cas.id_area = a_1.id_area
                         JOIN ref_geo.bib_areas_types ta ON ta.id_type = a_1.id_type AND ta.type_code ='COM'
-                    GROUP BY id_synthese 
-                ) AS sa 
+                    GROUP BY id_synthese
+                ) AS sa
                 ON ( sa.id_synthese = s.id_synthese )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n1 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n1
                 ON ( s.id_nomenclature_geo_object_nature = n1.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n2 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n2
                 ON ( s.id_nomenclature_grp_typ = n2.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n3 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n3
                 ON ( s.id_nomenclature_obs_technique = n3.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n5 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n5
                 ON ( s.id_nomenclature_bio_status = n5.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n6 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n6
                 ON ( s.id_nomenclature_bio_condition = n6.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n7 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n7
                 ON ( s.id_nomenclature_naturalness = n7.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n8 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n8
                 ON ( s.id_nomenclature_exist_proof = n8.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n9 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n9
                 ON ( s.id_nomenclature_diffusion_level = n9.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n10 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n10
                 ON ( s.id_nomenclature_life_stage = n10.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n11 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n11
                 ON ( s.id_nomenclature_sex = n11.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n12 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n12
                 ON ( s.id_nomenclature_obj_count = n12.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n13 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n13
                 ON ( s.id_nomenclature_type_count = n13.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n14 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n14
                 ON ( s.id_nomenclature_sensitivity = n14.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n15 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n15
                 ON ( s.id_nomenclature_observation_status = n15.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n16 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n16
                 ON ( s.id_nomenclature_blurring = n16.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n17 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n17
                 ON ( s.id_nomenclature_source_status = n17.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n18 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n18
                 ON ( s.id_nomenclature_info_geo_type = n18.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n19 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n19
                 ON ( s.id_nomenclature_determination_method = n19.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n20 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n20
                 ON ( s.id_nomenclature_behaviour = n20.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n21 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n21
                 ON ( s.id_nomenclature_valid_status = n21.id_nomenclature )
-            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n22 
+            LEFT JOIN ref_nomenclatures.t_nomenclatures AS n22
                 ON ( s.id_nomenclature_biogeo_status = n22.id_nomenclature )
-            LEFT JOIN ref_habitats.habref AS hab 
+            LEFT JOIN ref_habitats.habref AS hab
                 ON ( hab.cd_hab = s.cd_hab ) ;
     """)
 
