@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy, ViewChild } from "@angular/core";
 import {
   animate,
   state,
@@ -19,7 +19,7 @@ import { FormService } from "@geonature_common/form/form.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
 import { MatDialog } from "@angular/material/dialog";
-
+import {TaxonomyComponent} from "@geonature_common/form/taxonomy/taxonomy.component"
 
 @Component({
   selector: "pnx-occtax-form-occurrence",
@@ -55,7 +55,8 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public advanced: string = "collapsed";
   private _subscriptions: Subscription[] = [];
   public displayProofFromElements: boolean = false;
-
+  @ViewChild('taxonomyComponent') taxonomyComponent: TaxonomyComponent;
+  
   get taxref(): any { return this.occtaxFormOccurrenceService.taxref.getValue(); };
   get additionalFieldsForm(): any[] { return this.occtaxFormOccurrenceService.additionalFieldsForm; }
 
@@ -93,14 +94,10 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    
     //a chaque reinitialisation du formulaire on place le focus sur la zone de saisie du taxon
-    const taxonInput = document.getElementById("taxonInput");    
-    taxonInput.focus();
+    this.taxonomyComponent.taxonInput.nativeElement.focus();   
 
-    this.occtaxFormOccurrenceService.occurrence.subscribe(() =>
-       taxonInput.focus()
-    );
+    const taxonInput = this.taxonomyComponent.taxonInput.nativeElement;
 
     //Pour gérer l'affichage de l'erreur required quand le focus est présent dans l'input
     taxonInput.addEventListener(

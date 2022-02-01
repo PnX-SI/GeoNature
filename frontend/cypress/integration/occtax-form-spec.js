@@ -12,7 +12,6 @@ afterEach(() => {
 before('Geonature connection', () => {
   cy.geonatureLogout();
   cy.geonatureLogin();
-  // cy.get("[data-qa='gn-sidenav-link-OCCTAX']").click();
   cy.visit("/#/occtax")
   cy.get("[data-qa='gn-occtax-btn-add-releve']").click();
 });

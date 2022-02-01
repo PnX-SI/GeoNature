@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewEncapsulation, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '@geonature_config/app.config';
@@ -71,6 +71,8 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   @Input() displayedLabel = 'nom_valide';
   /** Afficher ou non les filtres par regne et groupe INPN qui controle l'autocomplétion */
   @Input() displayAdvancedFilters = false;
+  @ViewChild('taxon') taxonInput: any;
+
   searchString: any;
   filteredTaxons: any;
   regnes = new Array();

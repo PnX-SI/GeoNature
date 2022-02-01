@@ -76,8 +76,6 @@ export class OcctaxMapListComponent
   ) { }
 
   ngOnInit() {
-    this._router.routeReuseStrategy.shouldReuseRoute = () => false;
-    
     const currentModule = this._moduleService.currentModule;
     // get user cruved
       this.userCruved = currentModule.cruved
@@ -92,19 +90,12 @@ export class OcctaxMapListComponent
     this.occtaxConfig = ModuleConfig;
     this.mapListService.idName = "id_releve_occtax";
     this.apiEndPoint = `occtax/${this._moduleService.currentModule.module_code}/releves`;
-    // set id_dataset if provided
-    let temp = JSON.parse(localStorage.getItem("occtaxCustomValues"));    
-    const idDataset = temp['id_dataset'];
-      this.occtaxMapListS.dynamicFormGroup.patchValue({
-        "id_dataset": idDataset
-      })
+
       this.calculateNbRow();
       const params = [
         { param: "limit", value: this.occtaxMapListS.rowPerPage },
       ]
-      if(idDataset) {
-        params.push({ param : "id_dataset", value: idDataset})
-      }
+      
       this.mapListService.getData(
         this.apiEndPoint,
         params,

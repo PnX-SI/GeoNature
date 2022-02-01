@@ -24,7 +24,7 @@
 </div>
 <small> {{label}} </small>
 <div class="input-group">
-  <input data-qa="taxonomy-form-input" type="text" class="form-control form-control-sm " [ngClass]="{'loading' : isLoading && parentFormControl.value?.length >= 3}"
+  <input #taxon data-qa="taxonomy-form-input" type="text" class="form-control form-control-sm " [ngClass]="{'loading' : isLoading && parentFormControl.value?.length >= 3}"
     id="taxonInput" [formControl]="parentFormControl" [placement]="'bottom-left'" [ngbTypeahead]="searchTaxon"
     [inputFormatter]="formatter" [resultTemplate]="rt" (selectItem)="taxonSelected($event)">
   <div class="input-group-append" *ngIf="displayAdvancedFilters">
