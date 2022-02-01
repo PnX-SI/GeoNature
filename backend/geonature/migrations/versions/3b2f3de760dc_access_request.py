@@ -14,7 +14,7 @@ from sqlalchemy.sql import text
 
 # revision identifiers, used by Alembic.
 revision = '3b2f3de760dc'
-down_revision = '5f4c4b644844'
+down_revision = 'dde31e76ce45'
 branch_labels = None
 depends_on = (
     '10e87bc144cd',  # utilisateurs.get_id_role_by_name()
@@ -46,7 +46,7 @@ def downgrade():
         (id_filter_type, id_module)
     SELECT DISTINCT id_filter_type, id_module
         FROM gn_permissions.cor_module_action_object_filter
-        ORDER BY id_filter_type, id_module; 
+        ORDER BY id_filter_type, id_module;
     """)
     op.execute("""
     CREATE TABLE gn_permissions.cor_object_module (
@@ -67,7 +67,7 @@ def downgrade():
         JOIN gn_permissions.t_objects o
         ON o.id_object = c.id_object
         WHERE o.code_object != 'ALL'
-        ORDER BY id_object, id_module; 
+        ORDER BY id_object, id_module;
     """)
     op.execute("""
     CREATE TABLE gn_permissions.t_filters (
@@ -328,7 +328,7 @@ def downgrade():
         UPDATE gn_permissions.bib_filters_type
         SET
             code_filter_type = :new_code_type,
-            label_filter_type = :label, 
+            label_filter_type = :label,
             description_filter_type = :description
         WHERE code_filter_type = :old_code_type ;
         """)
