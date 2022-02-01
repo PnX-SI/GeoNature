@@ -26,8 +26,7 @@
       "@geonature_common/*" : ["{{geonature_path}}/frontend/src/app/GN2CommonModule/*"],
       "@geonature/*" : ["{{geonature_path}}/frontend/src/app/*"],
       "@geonature_config/*" : ["{{geonature_path}}/frontend/src/conf/*"],
-      "@librairies/*" : ["{{geonature_path}}/frontend/node_modules/*"],
-
+      "@librairies/*" : ["{{geonature_path}}/frontend/node_modules/*"]
     }
   }
 }
