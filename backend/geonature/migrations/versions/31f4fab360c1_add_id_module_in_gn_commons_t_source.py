@@ -28,9 +28,8 @@ def upgrade():
     )
     op.execute(
     """
-        UPDATE gn_synthese.t_sources
-        SET id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'OCCTAX')
-        WHERE name_source ILIKE 'Occtax'
+        UPDATE gn_synthese.t_sources s
+        SET id_module = (SELECT id_module FROM gn_synthese.synthese WHERE id_source = s.id_source LIMIT 1)
     """
     )
 
