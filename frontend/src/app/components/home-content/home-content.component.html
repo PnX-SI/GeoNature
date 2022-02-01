@@ -1,11 +1,11 @@
 <div class="container-fluid">
   <div class="row">
-    <div [className]="showLastObsMap ? 'col-6' : 'col-12'">
+    <div [className]="showLastObsMap ? 'col-xs-12 col-sm-12 col-md-6 col-lg-6' : 'col-12'">
       <pnx-introduction> </pnx-introduction>
 
     </div>
     <div 
-      class="col-6" 
+      class="col-xs-12 col-sm-12 col-md-6 col-lg-6" 
       *ngIf="showLastObsMap"
     >
       <div class="panel panel-default">
