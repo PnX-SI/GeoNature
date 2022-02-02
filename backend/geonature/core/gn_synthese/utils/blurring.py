@@ -16,7 +16,7 @@ from geonature.utils.env import DB
 
 class DataBlurring:
     def __init__(
-        self, 
+        self,
         permissions,
         # TODO: try to not use sensitivity_column and diffusion_column parameters
         sensitivity_column="id_nomenclature_sensitivity",
@@ -57,13 +57,13 @@ class DataBlurring:
             # Need to blurre observations
             # For iterate many times on SQLA ProxyResult
             synthese_results = list(synthese_results)
-            
+
             # If no result return output directly
             if len(synthese_results) == 0:
                 return output
-            
+
             geojson_by_synthese_ids = self._associate_geojson_to_synthese_id(
-                synthese_results, 
+                synthese_results,
                 exact_filters,
                 ignored_object,
             )
@@ -81,7 +81,7 @@ class DataBlurring:
                     # Re-convert to RowProxy object
                     if not self.result_to_dict:
                         result = namedtuple("RowProxy", result.keys())(*result.values())
-                    
+
                 # Remove result with code 4 for sensitivity or diffusion_level
                 if synthese_id not in self.non_diffusable:
                     output.append(result)
@@ -138,7 +138,7 @@ class DataBlurring:
 
         diffusion_level_ids = self._get_diffusion_levels_area_types().keys()
         sensitivity_ids = self._get_sensitivity_area_types().keys()
-        
+
         blurred_obs_queries = []
         for object_type, synthese_by_area_type in sorted_synthese_by_area_type.items():
             obs_geo_queries = []
@@ -170,7 +170,7 @@ class DataBlurring:
                     .where(LAreas.id_type == area_type_id)
                 )
                 obs_geo_queries.append(obs_geo_query)
-            
+
             object_cte = union(*obs_geo_queries).cte(name=object_type)
 
             # Build blurred geom by id_synthese query
@@ -183,17 +183,17 @@ class DataBlurring:
             # Build permissions conditions
             if object_type in exact_filters and exact_filters[object_type] and len(exact_filters[object_type]) > 0 :
                 nomenclature_ids = (
-                    diffusion_level_ids 
-                    if object_type == "PRIVATE_OBSERVATION" 
+                    diffusion_level_ids
+                    if object_type == "PRIVATE_OBSERVATION"
                     else sensitivity_ids
                 )
 
                 permissions_ors = self._get_permissions_where_clause(
-                    exact_filters, 
-                    object_type, 
+                    exact_filters,
+                    object_type,
                     nomenclature_ids,
                 )
-                
+
                 # Build permissions NOT EXISTS clause
                 permissions_cte = (
                     select([object_cte.c.id_synthese])
@@ -210,15 +210,15 @@ class DataBlurring:
                     .select_from(permissions_cte)
                     .where(permissions_cte.c.id_synthese == object_cte.c.id_synthese)
                 )
-            
+
             blurred_obs_queries.append(blurred_obs_query)
-        
+
         # Build final query
         obs_subquery = union(*blurred_obs_queries).alias("obs")
         geom_columns = self._prepare_geom_columns(obs_subquery)
         query = (
             select(
-                [obs_subquery.c.id_synthese, obs_subquery.c.priority, *geom_columns], 
+                [obs_subquery.c.id_synthese, obs_subquery.c.priority, *geom_columns],
                 distinct=obs_subquery.c.id_synthese,
             )
             .select_from(obs_subquery)
@@ -234,7 +234,7 @@ class DataBlurring:
         geojson_by_synthese_ids = {}
         for result in results:
             result = dict(result)
-            synthese_id = result["id_synthese"] 
+            synthese_id = result["id_synthese"]
             del result["id_synthese"]
             geojson_by_synthese_ids[synthese_id] = result
         return geojson_by_synthese_ids
@@ -260,7 +260,7 @@ class DataBlurring:
                 columns.append(geocolumn.label(label))
             else:
                 columns.append(column(label))
-                
+
         return columns
 
     def _sort_synthese_id_by_area_type_id(self, synthese_results, ignored_object):
@@ -270,7 +270,7 @@ class DataBlurring:
         for result in synthese_results:
             if self._remove_non_diffusable(result):
                 continue
-            
+
             if ignored_object != "PRIVATE_OBSERVATION":
                 diffusion_level_id = result[self.diffusion_column]
                 if diffusion_level_id in area_type_by_diffusion_level:
@@ -281,7 +281,7 @@ class DataBlurring:
                         .setdefault((area_type_id, area_type_code), [])
                         .append(result["id_synthese"])
                     )
-            
+
             if ignored_object != "SENSITIVE_OBSERVATION":
                 sensitivity_id = result[self.sensitivity_column]
                 if sensitivity_id in area_type_by_sensitivity:
@@ -304,7 +304,7 @@ class DataBlurring:
         area_types_by_diffusion_levels = self._get_diffusion_level_area_type_codes()
         area_type_codes = list(set(area_types_by_diffusion_levels.values()))
         area_type_ids = self._get_area_types_ids_by_codes(area_type_codes)
-        
+
         area_types_by_diffusion_levels_ids = {}
         for level_code, area_type_code in area_types_by_diffusion_levels.items():
             diffusion_level_id = self.diffusion_levels_ids[level_code]
@@ -352,7 +352,7 @@ class DataBlurring:
         area_types_by_sensitivity = self._get_sensitivity_area_type_codes()
         area_types = list(set(area_types_by_sensitivity.values()))
         area_types_ids = self._get_area_types_ids_by_codes(area_types)
-        
+
         area_types_by_sensitivity_ids = {}
         for level_code, area_type_code in area_types_by_sensitivity.items():
             sensitivity_id = self.sensitivity_ids[level_code]
@@ -373,7 +373,7 @@ class DataBlurring:
             .where(BibAreasTypes.type_code.in_(area_type_codes))
         )
         results = DB.session.execute(query)
-    
+
         area_types_ids = {}
         for (type_id, type_code) in results:
             area_types_ids[type_code] = type_id
@@ -390,7 +390,7 @@ class DataBlurring:
             .where(BibNomenclaturesTypes.mnemonique == "SENSIBILITE")
         )
         results = DB.session.execute(query)
-        
+
         sensitivity_levels = {}
         for (nomenclature_id, nomenclature_code) in results:
             sensitivity_levels[nomenclature_code] = nomenclature_id
@@ -410,46 +410,46 @@ class DataBlurring:
                 if hasattr(record, field):
                     setattr(record, field, None)
         return record
-    
+
 
     def blurOneObsAreas(self, obs):
         # Get area blurred types
         blurred_areas_types = []
-        id_synthese = obs['id_synthese']
+        id_synthese = obs['id']
 
-        current_diffusion_level_id = obs['id_nomenclature_diffusion_level']
+        current_diffusion_level_id = obs['properties']['id_nomenclature_diffusion_level']
         diffusion_levels = self._get_diffusion_levels_area_types()
         if (
-            current_diffusion_level_id != None 
+            current_diffusion_level_id != None
             and current_diffusion_level_id in diffusion_levels
             and not self.haveAccessToDiffusionLevels(id_synthese)
         ):
             (area_id, area_type) = diffusion_levels[current_diffusion_level_id]
             blurred_areas_types.append(area_type)
-        current_sensitivity_id = obs['id_nomenclature_sensitivity']
+        current_sensitivity_id = obs['properties']['id_nomenclature_sensitivity']
         sensitivity_levels = self._get_sensitivity_area_types()
         if (
-            current_sensitivity_id != None 
+            current_sensitivity_id != None
             and current_sensitivity_id in sensitivity_levels
             and not self.haveAccessToSensitivityLevels(id_synthese)
         ):
             (area_id, area_type) = sensitivity_levels[current_sensitivity_id]
             blurred_areas_types.append(area_type)
-        
+
         # Remove duplicates entries
         blurred_areas_types = list(dict.fromkeys(blurred_areas_types))
-        
+
         # Get more restrictive area size
         blurred_areas_sizes = self._get_areas_size_hierarchy(blurred_areas_types)
         more_restrictive_size = None
         for size in blurred_areas_sizes.values():
             if more_restrictive_size == None or more_restrictive_size < size:
                 more_restrictive_size = int(size)
-        
+
         # Remove too precise areas
         if more_restrictive_size != None and "areas" in obs:
             obs["areas"][:] = [area for area in obs["areas"] if DataBlurring._checkAreaSize(area, more_restrictive_size)]
-        
+
         return obs
 
     def _get_areas_size_hierarchy(self, areas_types):
@@ -459,7 +459,7 @@ class DataBlurring:
             .where(BibAreasTypes.type_code.in_(areas_types))
         )
         results = DB.session.execute(query)
-        
+
         areas_hierarchy = {}
         for (type_code, size) in results:
             if size == None:
@@ -476,15 +476,15 @@ class DataBlurring:
         if see_all["PRIVATE_OBSERVATION"]:
             have_access = True
         elif (
-            "PRIVATE_OBSERVATION" in exact_filters 
-            and len(exact_filters["PRIVATE_OBSERVATION"]) > 0 
+            "PRIVATE_OBSERVATION" in exact_filters
+            and len(exact_filters["PRIVATE_OBSERVATION"]) > 0
         ):
             permissions_ors = self._get_permissions_where_clause(
-                exact_filters, 
-                "PRIVATE_OBSERVATION", 
+                exact_filters,
+                "PRIVATE_OBSERVATION",
                 self._get_diffusion_levels_area_types().keys(),
             )
-        
+
             # Build permissions query
             query = (
                 select([Synthese.id_synthese])
@@ -495,11 +495,11 @@ class DataBlurring:
                 .where(or_(*permissions_ors))
                 .where(Synthese.id_synthese == id_synthese)
             )
-            
+
             # DEBUG QUERY:
             #from sqlalchemy.dialects import postgresql
             #print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
-            
+
             results = DB.session.execute(query)
             if results.first() is not None:
                 have_access = True
@@ -513,15 +513,15 @@ class DataBlurring:
         if see_all["SENSITIVE_OBSERVATION"]:
             have_access = True
         elif (
-            "SENSITIVE_OBSERVATION" in exact_filters 
-            and len(exact_filters["SENSITIVE_OBSERVATION"]) > 0 
+            "SENSITIVE_OBSERVATION" in exact_filters
+            and len(exact_filters["SENSITIVE_OBSERVATION"]) > 0
         ):
             permissions_ors = self._get_permissions_where_clause(
-                exact_filters, 
-                "SENSITIVE_OBSERVATION", 
+                exact_filters,
+                "SENSITIVE_OBSERVATION",
                 self._get_sensitivity_area_types().keys(),
             )
-            
+
             # Build permissions query
             query = (
                 select([Synthese.id_synthese])
@@ -532,11 +532,11 @@ class DataBlurring:
                 .where(or_(*permissions_ors))
                 .where(Synthese.id_synthese == id_synthese)
             )
-            
+
             # DEBUG QUERY:
             #from sqlalchemy.dialects import postgresql
             #print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
-            
+
             results = DB.session.execute(query)
             if results.first() is not None:
                 have_access = True
@@ -547,7 +547,7 @@ class DataBlurring:
         permissions_ors = []
         for exact_filter in exact_filters[object_type]:
             conditions = []
-            
+
             if object_type == "PRIVATE_OBSERVATION":
                 conditions.append(Synthese.id_nomenclature_diffusion_level.in_(nomenclature_ids))
             elif object_type == "SENSITIVE_OBSERVATION":
@@ -557,7 +557,7 @@ class DataBlurring:
                 filter_value = exact_filter["GEOGRAPHIC"]
                 splited_values = self._split_value_filter(filter_value)
                 conditions.append(CorAreaSynthese.id_area.in_(splited_values))
-            
+
             if "TAXONOMIC" in exact_filter.keys() and exact_filter["TAXONOMIC"] != "ALL":
                 filter_value = exact_filter["TAXONOMIC"]
                 splited_values = self._split_value_filter(filter_value)
@@ -567,7 +567,7 @@ class DataBlurring:
                 )
                 conditions.append(Taxref.cd_ref.in_(stmt))
             permissions_ors.append(and_(*conditions))
-        
+
         return permissions_ors
 
     @staticmethod
