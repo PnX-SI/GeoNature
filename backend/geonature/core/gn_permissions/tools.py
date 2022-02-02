@@ -24,7 +24,6 @@ from pypnusershub.db.models import (User, AppRole)
 
 from geonature.core.gn_commons.models import TModules
 from geonature.core.taxonomie.models import Taxref
-from geonature.core.users.models import (BibOrganismes, CorRole)
 from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 
 from geonature.core.gn_permissions.models import VUsersPermissions

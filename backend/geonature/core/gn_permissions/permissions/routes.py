@@ -5,7 +5,7 @@ import logging
 from flask import current_app, request
 from sqlalchemy import (and_, distinct, func, or_, exc)
 
-from pypnusershub.db.models import User, AppRole
+from pypnusershub.db.models import AppRole, Organisme, User
 from utils_flask_sqla.response import json_resp
 
 from geonature.core.gn_permissions import decorators as permissions
@@ -18,7 +18,6 @@ from geonature.core.gn_permissions.models import (
     TObjects,
 )
 from geonature.utils.env import DB
-from geonature.core.users.models import BibOrganismes, CorRole
 from geonature.core.gn_commons.models import TModules
 
 
@@ -70,7 +69,7 @@ log = logging.getLogger()
 #     filters = []
 #     for fit in q.all():
 #         filters.append(fit.as_dict())
-    
+
 #     output = prepare_output(filters, remove_in_key="filter_type")
 #     return output
 
@@ -83,7 +82,7 @@ def get_all_filters_values():
 
     .. :quickref: Permissions;
 
-    :returns: un dictionnaire dont les attributs correspondent aux codes 
+    :returns: un dictionnaire dont les attributs correspondent aux codes
     des types de filtres et les valeurs à des tableaux des valeurs des
     filtres correspondantes.
     """
@@ -91,7 +90,7 @@ def get_all_filters_values():
         DB.session
         .query(BibFiltersValues, BibFiltersType.code_filter_type)
         .join(
-            BibFiltersType, 
+            BibFiltersType,
             BibFiltersType.id_filter_type == BibFiltersValues.id_filter_type
         )
         .order_by(
@@ -103,10 +102,10 @@ def get_all_filters_values():
     filters_values = {}
     for item in q.all():
         (bib_filter_value, code) = item
-        
+
         if code not in filters_values.keys():
             filters_values[code] = []
-        
+
         # Prepare filter value
         fvalue = bib_filter_value.as_dict()
         fvalue["filter_type_code"] = code
@@ -116,7 +115,7 @@ def get_all_filters_values():
             fvalue["value"] = fvalue["value_or_field"]
 
         filters_values[code].append(fvalue)
-    
+
     return prepare_output(filters_values, remove_in_key="filter_value")
 
 
@@ -149,7 +148,7 @@ def get_permissions_for_all_roles(info_role):
 
     .. :quickref: Permissions;
 
-    :returns: un tableau de dictionnaire contenant les infos du rôle et 
+    :returns: une liste de dictionnaire contenant les infos du rôle et
     ses permissions.
     """
     # Get params
@@ -158,12 +157,12 @@ def get_permissions_for_all_roles(info_role):
     # Subquery to get only implemented permissions (= link to cor_module_action_object_filter)
     gatherings_for_roles = (
         DB.session.query(
-            CorRoleActionFilterModuleObject.id_role, 
+            CorRoleActionFilterModuleObject.id_role,
             CorRoleActionFilterModuleObject.gathering
         )
         .distinct(CorRoleActionFilterModuleObject.gathering)
         .join(
-            CorModuleActionObjectFilter, 
+            CorModuleActionObjectFilter,
             (CorModuleActionObjectFilter.id_module == CorRoleActionFilterModuleObject.id_module)
             &
             (CorModuleActionObjectFilter.id_action == CorRoleActionFilterModuleObject.id_action)
@@ -178,49 +177,48 @@ def get_permissions_for_all_roles(info_role):
     # Get roles with permissions
     query = (
         DB.session.query(
-                User, 
-                BibOrganismes, 
+                User,
+                Organisme,
                 func.count(distinct(gatherings_for_roles.c.gathering))
             )
             .join(AppRole, AppRole.id_role == User.id_role)
             .outerjoin(gatherings_for_roles, gatherings_for_roles.c.id_role == User.id_role)
-            .outerjoin(BibOrganismes, BibOrganismes.id_organisme == User.id_organisme)
+            .outerjoin(Organisme, Organisme.id_organisme == User.id_organisme)
             .filter(AppRole.id_application == current_app.config["ID_APPLICATION_GEONATURE"])
             .group_by(
                 User.id_role,
-                BibOrganismes.id_organisme
+                Organisme.id_organisme
             )
             .order_by(User.groupe.desc(), User.prenom_role, User.nom_role)
     )
 
     # Filter with user authentified permissions
     if info_role.value_filter == "2":
-        query = query.filter(BibOrganismes.id_organisme == info_role.id_organisme)
+        query = query.filter(Organisme.id_organisme == info_role.id_organisme)
     elif info_role.value_filter == "1":
         query = query.filter(User.id_role == info_role.id_role)
-    
+
     results = query.all()
-    
+
     roles = []
     for result in results:
         (user, organism, permissions_number) = result
-        role = format_role(user, organism)
+        role = format_role(user)
         role["permissions_nbr"] = permissions_number
         roles.append(role)
-    
+
     # Send response
     output = prepare_output(roles)
     return output
-    
 
-def format_role(user, organism):
+
+def format_role(user):
     return {
         "id": user.id_role,
         "user_name": format_role_name(user),
-        "organism_name": (organism.nom_organisme if organism else None),
+        "organism_name": (user.organisme.nom_organisme if user.organisme else None),
         "type": "GROUP" if user.groupe == True else "USER",
     }
-
 
 
 @routes.route("/roles/<int:id_role>", methods=["GET"])
@@ -231,41 +229,35 @@ def get_permissions_by_role_id(id_role):
     Retourne un rôle avec ses permissions.
 
     .. :quickref: Permissions;
-    
+
     Params:
-    :param with-inheritance: booléen indiquant si oui (=true) 
+    :param with-inheritance: booléen indiquant si oui (=true)
     ou non (=false) les permissions héritées doivent être retournée.
-    
+
     :returns: un dictionnaire avec les infos du rôle et ses permissions.
     """
     # Get request parameters
     params = request.args.to_dict()
     user_permissions = UserPermissions(id_role=id_role)
     # Get role infos
-    query = (
-        DB.session
-        .query(User, BibOrganismes)
-        .outerjoin(BibOrganismes, BibOrganismes.id_organisme == User.id_organisme)
-        .filter(User.id_role == id_role)
-    )
-    result = query.first()
+    query = DB.session.query(User).filter(User.id_role == id_role)
+    user = query.first()
 
     # Prepare role infos
-    if not result:
+    if not user:
         response = {
             "message": f"Id de rôle introuvable : {id_role} .",
             "status": "error"
         }
         return response, 404
-    (user, organism) = result
-    role = format_role(user, organism)
+    role = format_role(user)
 
     # Get, prepare and add groups of an user (for permissions inheritance)
     role["groups"] = []
-    for role_group in get_user_groups(id_role):
+    for group in user.groups:
         role["groups"].append({
-            "id": role_group.id_role, 
-            "group_name": format_role_name(role_group), 
+            "id": group.id_role,
+            "group_name": format_role_name(group),
         })
 
     # Prepare permissions
@@ -289,7 +281,7 @@ def get_permissions_by_role_id(id_role):
             filter_value=filter_value,
             is_inherited=False
         )
-    
+
     # return user_permissions.permissions
 
     # Recover inherited permissions if necessary
@@ -328,10 +320,10 @@ def get_permissions_by_role_id(id_role):
                         "action_code": action_code,
                         "object_code": perm.code_object,
                         "gathering": str(perm.gathering),
-                        "label": perm.permission_label, 
-                        "code": perm.permission_code, 
-                        "end_date": perm.end_date, 
-                        "filter_type": perm.code_filter_type, 
+                        "label": perm.permission_label,
+                        "code": perm.permission_code,
+                        "end_date": perm.end_date,
+                        "filter_type": perm.code_filter_type,
                         "filter_value": perm.value_filter,
                         "is_inherited": is_inherited,
                         "inherited_by": prepared_inherited_by,
@@ -339,7 +331,7 @@ def get_permissions_by_role_id(id_role):
 
             # For this module get its related objects
             module_objects = PermissionRepository().get_module_objects(module.id_module)
-            
+
             # For each object get herited permissions for each CRUVED action and filter SCOPE
             for mo in module_objects:
                 # Initialize variables
@@ -362,7 +354,7 @@ def get_permissions_by_role_id(id_role):
                         is_inherited_by_module = perm_infos["is_inherited"]
                         inherited_by = perm_infos["inherited_by"]
                         other_filters_permissions = perm_infos["other_filters"]
-                    
+
                     prepared_inherited_by = prepare_inherited_by(
                         role, max_perm, inherited_by, is_inherited_by_module
                     )
@@ -376,10 +368,10 @@ def get_permissions_by_role_id(id_role):
                             "action_code": action_code,
                             "object_code": object_code,
                             "gathering": str(perm.gathering),
-                            "label": perm.permission_label, 
-                            "code": perm.permission_code, 
-                            "end_date": perm.end_date, 
-                            "filter_type": perm.code_filter_type, 
+                            "label": perm.permission_label,
+                            "code": perm.permission_code,
+                            "end_date": perm.end_date,
+                            "filter_type": perm.code_filter_type,
                             "filter_value": perm.value_filter,
                             "is_inherited": is_inherited,
                             "inherited_by": prepared_inherited_by,
@@ -395,19 +387,19 @@ def get_permissions_by_role_id(id_role):
                     f" {perm}"
                 )
             elif perm["is_inherited"] and perm["module_code"] != "GEONATURE":
-                # WARNING : only add an inherited permission by an object if a 
+                # WARNING : only add an inherited permission by an object if a
                 # corresponding entry was found in cor_module_action_object_filter table
                 object_permission_infos = PermissionRepository().get_permission_available(
-                    module_code=perm["module_code"], 
-                    action_code=perm["action_code"], 
-                    object_code=perm["object_code"], 
+                    module_code=perm["module_code"],
+                    action_code=perm["action_code"],
+                    object_code=perm["object_code"],
                     filter_type_code=perm["filter_type"],
                 )
                 if object_permission_infos:
                     # If it's an inherited permission for a specific object, label and code must be updated
                     perm["label"] = object_permission_infos["label"]
                     perm["code"] = object_permission_infos["code"]
-                    
+
                     user_permissions.append_permission(**perm)
             else:
                 user_permissions.append_permission(**perm)
@@ -419,22 +411,6 @@ def get_permissions_by_role_id(id_role):
 
     # Send response
     return prepare_output(role)
-
-
-def get_user_groups(id_role):
-    """
-    Fournit tous les groupes d'un utilisateur.
-    Parameters:
-        id_role (int): identifiant de l'utilisateur.
-    Return:
-        Array<User>
-    """
-    return (
-        DB.session.query(User)
-            .join(CorRole, User.id_role == CorRole.id_role_groupe)
-            .filter(CorRole.id_role_utilisateur == id_role)
-            .all()
-    )
 
 
 def prepare_inherited_by(role, permission, inherited_by, is_inherited_by_module):
@@ -455,7 +431,7 @@ def prepare_inherited_by(role, permission, inherited_by, is_inherited_by_module)
 
 def is_true(param):
     return True if (param.lower() in ["true", "1"]) else False
-    
+
 
 
 @routes.route("/<gathering>", methods=["DELETE"])
@@ -465,8 +441,8 @@ def delete_permission(gathering):
     """
     Supprime une permissions par son hash de groupement.
 
-    Notes : il est plus simple de supprimer une permission et tous les 
-    filtres qui lui son associé à l'aide du hash de regroupement plutôt 
+    Notes : il est plus simple de supprimer une permission et tous les
+    filtres qui lui son associé à l'aide du hash de regroupement plutôt
     que par une liste d'identifiant.
 
     .. :quickref: Permissions;
@@ -492,7 +468,7 @@ def delete_permission(gathering):
             "status": "error"
         }
         return response, 500
-    
+
     return "", 204
 
 
@@ -526,15 +502,15 @@ def get_availables_actions_objects():
         )
         .distinct()
         .join(
-            TModules, 
+            TModules,
             TModules.id_module == CorModuleActionObjectFilter.id_module
         )
         .join(
-            TActions, 
+            TActions,
             TActions.id_action == CorModuleActionObjectFilter.id_action
         )
         .join(
-            TObjects, 
+            TObjects,
             TObjects.id_object == CorModuleActionObjectFilter.id_object
         )
         .order_by(
@@ -542,7 +518,7 @@ def get_availables_actions_objects():
             CorModuleActionObjectFilter.id_object,
         )
     )
-    
+
     # Manage parameters
     if "module" in params:
         query = query.filter(TModules.module_code == params["module"])
@@ -551,14 +527,14 @@ def get_availables_actions_objects():
     availables = []
     for result in query.all():
         (label, action_code, object_code, module_code) = result
-        
+
         availables.append({
             "module_code": module_code,
             "action_code": action_code,
             "object_code": object_code,
             "label": label,
         })
-    
+
     return prepare_output(availables)
 
 @routes.route("/availables/actions-objects-filters", methods=["GET"])
@@ -598,19 +574,19 @@ def get_availables_actions_objects_filters():
         )
         .distinct()
         .join(
-            TModules, 
+            TModules,
             TModules.id_module == CorModuleActionObjectFilter.id_module
         )
         .join(
-            TActions, 
+            TActions,
             TActions.id_action == CorModuleActionObjectFilter.id_action
         )
         .join(
-            TObjects, 
+            TObjects,
             TObjects.id_object == CorModuleActionObjectFilter.id_object
         )
         .join(
-            BibFiltersType, 
+            BibFiltersType,
             BibFiltersType.id_filter_type == CorModuleActionObjectFilter.id_filter_type
         )
         .order_by(
@@ -619,7 +595,7 @@ def get_availables_actions_objects_filters():
             CorModuleActionObjectFilter.id_filter_type,
         )
     )
-    
+
     # Manage parameters
     if "module" in params:
         query = query.filter(TModules.module_code == params["module"])
@@ -632,7 +608,7 @@ def get_availables_actions_objects_filters():
     availables = []
     for result in query.all():
         (action_code, object_code, filter_type_code, code, description, module_code) = result
-        
+
         availables.append({
             "module_code": module_code,
             "action_code": action_code,
@@ -641,7 +617,7 @@ def get_availables_actions_objects_filters():
             "code": code,
             "description": description,
         })
-    
+
     return prepare_output(availables)
 
 
@@ -658,12 +634,12 @@ def post_permission(info_role):
     gathering = uuid.uuid4()
     data = prepare_input(dict(request.get_json()))
     exp = None
-    
+
     try:
         permission_repo = PermissionRepository()
         # Create permssion
         permission_repo.create_permission(gathering, data)
-        
+
         # Write in database
         DB.session.commit()
         DB.session.flush()
@@ -673,7 +649,7 @@ def post_permission(info_role):
     except Exception as _exp:
         log.error("Error %s", _exp)
         exp = _exp
-    
+
     # Return response
     if exp:
         response = {
@@ -687,7 +663,7 @@ def post_permission(info_role):
             "status": "success"
         }
         code = 200
-    
+
     return response, code
 
 
@@ -703,7 +679,7 @@ def update_permission(info_role, gathering):
     :returns: un dictionnaire avec les infos de la permission modifiée.
     """
     # Transform received data
-    
+
     data = prepare_input(dict(request.get_json()))
     exp = None
 
@@ -724,7 +700,7 @@ def update_permission(info_role, gathering):
         log.error("Error SQLAlchemy %s", exp)
     except Exception as exp:
         log.error("Error %s", exp)
-    
+
     # Return response
     if exp:
         response = {
@@ -738,5 +714,5 @@ def update_permission(info_role, gathering):
             "status": "success"
         }
         code = 200
-    
+
     return response, code
