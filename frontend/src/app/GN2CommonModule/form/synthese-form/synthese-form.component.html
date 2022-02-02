@@ -3,7 +3,7 @@
     <legend> Validation </legend>
 
     <div>
-      <small> Statut de validation</small>
+      <small>Statut de validation</small>
       <pnx-multiselect
         [values]="validationStatus"
         [parentFormControl]="formService.searchForm.controls.id_nomenclature_valid_status"
@@ -43,6 +43,7 @@
       data-toggle="collapse"
       data-target="#collapseScore"
       matTooltip="Filtrer selon le profil du taxon"
+      matTooltipClass="validation-tooltip"
     >
       <i
         class="fa fa-cog"
@@ -63,8 +64,12 @@
             <option value="3">3</option>
           </select>
         </div>
-        <small> Localisation valide
-          <mat-icon class="small-icon" matTooltip="La localisation est-elle dans l'aire de répartition connue du taxon ?" >info</mat-icon>
+        <small
+          matTooltip="La localisation est-elle dans l'aire de répartition connue du taxon ?"
+          matTooltipClass="validation-tooltip"
+        >
+          Localisation valide
+          <mat-icon class="material-icons-outlined" inline="true">info</mat-icon>
         </small>
         <div class="input-group">
           <select
@@ -77,8 +82,12 @@
           <option [ngValue]="false">Invalide</option>
           </select>
         </div>
-        <small> Altitude valide
-          <mat-icon class="small-icon" matTooltip="L'altitude de l'observation est-elle dans la plage d'altitude connue du taxon ?" >info</mat-icon>
+        <small
+          matTooltip="L'altitude de l'observation est-elle dans la plage d'altitude connue du taxon ?"
+          matTooltipClass="validation-tooltip"
+        >
+          Altitude valide
+          <mat-icon class="material-icons-outlined" inline="true">info</mat-icon>
         </small>
         <div class="input-group">
           <select
@@ -91,8 +100,12 @@
             <option [ngValue]="false">Invalide</option>
           </select>
         </div>
-        <small> Phénologie valide
-          <mat-icon class="small-icon" matTooltip="La date et l'altitude de l'observation sont-elle conforme à la phénologie connue du taxon ?" >info</mat-icon>
+        <small
+          matTooltip="La date et l'altitude de l'observation sont-elle conforme à la phénologie connue du taxon ?"
+          matTooltipClass="validation-tooltip"
+        >
+          Phénologie valide
+          <mat-icon class="material-icons-outlined" inline="true">info</mat-icon>
         </small>
         <div class="input-group">
           <select
