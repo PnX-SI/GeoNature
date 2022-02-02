@@ -15,17 +15,17 @@ fieldset {
   font-size: 15px;
 }
 
-// .cdk-overlay-pane {
-//   &.mat-tooltip-panel {
-//     .mat-tooltip {
-//       color: black;
-//       background-color: rgba(231, 228, 228, 0.85);
-//       border-radius: 3px;
-//       font-size: 15px;
-//       padding: 10px;
-//     }
-//   }
-// }
+.cdk-overlay-pane {
+  &.mat-tooltip-panel {
+    .validation-tooltip.mat-tooltip {
+      color: black;
+      background-color: rgba(231, 228, 228, 0.85);
+      border-radius: 3px;
+      font-size: 15px;
+      padding: 10px;
+    }
+  }
+}
 
 .overflow-x-visible {
   overflow-x: visible;
