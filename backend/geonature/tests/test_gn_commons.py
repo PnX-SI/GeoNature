@@ -22,7 +22,6 @@ from . import *
 from .fixtures import *
 from .utils import set_logged_user_cookie
 
-from . import app, temporary_transaction, acquisition_frameworks, datasets, users, login, synthese_data
 
 @pytest.fixture(scope='function')
 def place(users):
