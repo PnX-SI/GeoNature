@@ -5,12 +5,10 @@ from werkzeug.exceptions import Forbidden
 
 from .utils import set_logged_user_cookie
 from .fixtures import *
-from . import temporary_transaction
-
-from occtax.models import DefaultNomenclaturesValue
-
 
 occtax = pytest.importorskip("occtax")
+
+from occtax.models import DefaultNomenclaturesValue
 
 
 @pytest.fixture()
