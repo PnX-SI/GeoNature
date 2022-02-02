@@ -280,7 +280,10 @@ def get_one_synthese(auth, permissions, id_synthese):
     ).get_or_404(id_synthese)
     if not synthese.has_instance_permission(scope=auth["scope"]):
         raise Forbidden()
-    s = synthese.as_dict(
+
+    geofeature = synthese.as_geofeature(
+        'the_geom_4326',
+        'id_synthese',
         fields=Synthese.nomenclatures_fields + [
             'dataset',
             'dataset.acquisition_framework',
@@ -318,8 +321,8 @@ def get_one_synthese(auth, permissions, id_synthese):
     # TODO: see if it work again after REBASE to 2.9.0 !
     if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
         data_blurring = DataBlurring(permissions)
-        s = data_blurring.blurOneObsAreas(s)
-    return jsonify(s)
+        geofeature = data_blurring.blurOneObsAreas(geofeature)
+    return jsonify(geofeature)
 
 
 ################################

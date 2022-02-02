@@ -59,11 +59,10 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.loadAllInfo(this.idSynthese);
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-      if(changes.idSynthese && changes.idSynthese.currentValue) {
+      if (changes.idSynthese && changes.idSynthese.currentValue) {
         this.loadAllInfo(changes.idSynthese.currentValue)
       }
   }
@@ -72,7 +71,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   // HACK to display a second map on validation tab
   setValidationTab(event) {
     this.showValidation = true;
-    if(this._mapService.map){
+    if (this._mapService.map){
       setTimeout(() => {
         this._mapService.map.invalidateSize();
       }, 100);
@@ -90,7 +89,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         })
       )
       .subscribe(data => {
-        this.selectedObs = data["properties"];
+        this.selectedObs = data['properties'];
         this.selectedGeom = data;
         this.selectedObs['municipalities'] = [];
         this.selectedObs['other_areas'] = [];
@@ -130,11 +129,9 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           if (this.selectedObs.cor_observers) {
             this.email = this.selectedObs.cor_observers.map(el => el.email).join();
             this.mailto = this.formatMailContent(this.email);
-
           }
 
           this._gnDataService.getProfile(taxInfo.cd_ref).subscribe(profile => {
-
             this.profile = profile;
           });
         });
@@ -162,19 +159,19 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         d['data_link'] = "";
       }
 
-      d["communes"] = this.selectedObs.areas.filter(
+      d['communes'] = this.selectedObs.areas.filter(
         area => area.area_type.type_code == 'COM'
       ).map(
         area => area.area_name
       ).join(', ');
 
-      let contentMedias = "";
+      let contentMedias = '';
       if (!this.selectedObs.medias) {
-        contentMedias = "Aucun media";
+        contentMedias = 'Aucun media';
       }
       else {
         if (this.selectedObs.medias.length == 0) {
-          contentMedias = "Aucun media";
+          contentMedias = 'Aucun media';
         }
         this.selectedObs.medias.map((media) => {
           contentMedias += "\n\tTitre : " + media.title_fr;
@@ -188,7 +185,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           contentMedias += "\n";
         })
       }
-      d["medias"] = contentMedias;
+      d['medias'] = contentMedias;
       // Construction du mail
       if (this.mailCustomSubject !== undefined) {
         try {
