@@ -4,7 +4,9 @@
 
 import logging
 from os import environ
+from collections import ChainMap
 
+import toml
 import click
 from flask.cli import run_command
 import flask_migrate
@@ -28,6 +30,7 @@ from geonature.utils.command import (
     tsconfig_app_templating,
     update_app_configuration,
 )
+from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
 from geonature import create_app
 from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actors
 
@@ -156,6 +159,25 @@ def import_jdd_from_mtd(table_name):
     Import les JDD et CA (et acters associé) à partir d'une table (ou vue) listant les UUID des JDD dans MTD
     """
     import_all_dataset_af_and_actors(table_name)
+
+
+@main.command()
+def default_config():
+    """
+        Afficher l’ensemble des paramètres et leur valeur par défaut.
+    """
+    required_fields = (
+        'URL_APPLICATION',
+        'API_ENDPOINT',
+        'API_TAXHUB',
+
+        'SECRET_KEY',
+        'SQLALCHEMY_DATABASE_URI',
+    )
+    backend_defaults = GnPySchemaConf().load({}, partial=required_fields)
+    frontend_defaults = GnGeneralSchemaConf().load({}, partial=required_fields)
+    defaults = ChainMap(backend_defaults, frontend_defaults)
+    print(toml.dumps(defaults))
 
 
 @db_cli.command()

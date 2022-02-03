@@ -281,10 +281,7 @@ class Synthese(DB.Model):
                 return True
             if g.current_user in self.cor_observers:
                 return True
-            if scope == 2:
-                if g.current_user.organisme in self.dataset.organism_actors:
-                    return True
-            return False
+            return self.dataset.has_instance_permission(scope)
         elif scope == 3:
             return True
 

@@ -5,6 +5,8 @@ from flask import current_app
 from lxml import etree as ET
 
 from geonature.utils.config import config
+from geonature.core.gn_meta.models import TAcquisitionFramework
+
 
 namespace = config["XML_NAMESPACE"]
 
@@ -74,7 +76,8 @@ def parse_acquisition_framework(ca):
 
     # We extract all the required informations from the different tags of the XML file
     ca_uuid = get_tag_content(ca, "identifiantCadre")
-    ca_name = get_tag_content(ca, "libelle")
+    ca_name_max_length = TAcquisitionFramework.acquisition_framework_name.property.columns[0].type.length
+    ca_name = get_tag_content(ca, "libelle")[:ca_name_max_length-1]
     ca_desc = get_tag_content(ca, "description", default_value="")
     date_info = ca.find(namespace + "ReferenceTemporelle")
     ca_create_date = get_tag_content(ca, "dateCreationMtd", default_value=datetime.datetime.now())

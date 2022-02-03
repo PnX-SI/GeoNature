@@ -6,7 +6,8 @@ import time
 from collections import OrderedDict
 from warnings import warn
 
-from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify
+from flask import Blueprint, request, Response, current_app, \
+                  send_from_directory, render_template, jsonify
 from werkzeug.exceptions import Forbidden, NotFound
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
@@ -225,12 +226,12 @@ def get_synthese(info_role):
 
 
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
-def get_one_synthese(info_role, id_synthese):
+@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+def get_one_synthese(scope, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature
     """
     synthese = Synthese.query.join_nomenclatures().get_or_404(id_synthese)
-    if not synthese.has_instance_permission(scope=int(info_role.value_filter)):
+    if not synthese.has_instance_permission(scope=scope):
         raise Forbidden()
     geojson = synthese.as_geofeature(
         "the_geom_4326", "id_synthese",
@@ -872,7 +873,7 @@ def get_bbox():
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
     data = query.one()
     if data and data[0]:
-        return data[0]
+        return Response(data[0], mimetype='application/json')
     return '', 204
 
 @routes.route("/observation_count_per_column/<column>", methods=["GET"])
