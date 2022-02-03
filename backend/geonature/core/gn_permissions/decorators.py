@@ -49,13 +49,6 @@ def check_cruved_scope(
     def _check_cruved_scope(fn):
         @wraps(fn)
         def __check_cruved_scope(*args, **kwargs):
-            requested_module_code = "GEONATURE"
-            if module_code:
-                requested_module_code = module_code
-            else:
-                requested_module = getattr(g, "current_module", None)
-                if requested_module:
-                    requested_module_code = requested_module.module_code
             user = get_user_from_token_and_raise(
                 request,
                 action,
@@ -67,7 +60,7 @@ def check_cruved_scope(
             user_with_highter_perm = UserCruved(
                 id_role=user["id_role"],
                 code_filter_type="SCOPE",
-                module_code=requested_module_code,
+                module_code=module_code,
                 object_code=object_code,
             ).get_herited_user_cruved_by_action(action)
             if user_with_highter_perm:
