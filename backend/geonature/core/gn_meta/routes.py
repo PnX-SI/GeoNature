@@ -515,6 +515,7 @@ def get_acquisition_frameworks(info_role):
         TAcquisitionFramework.query
         .filter_by_readable()
         .filter_by_params(request.args.to_dict())
+        .order_by(TAcquisitionFramework.acquisition_framework_name)
         .options(
             Load(TAcquisitionFramework).raiseload('*'),
             # for permission checks:
