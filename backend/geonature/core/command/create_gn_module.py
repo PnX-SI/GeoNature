@@ -47,7 +47,6 @@ from geonature.utils.gn_module_import import (
     remove_application_db,
     create_module_config,
     copy_in_external_mods,
-    frontend_routes_templating,
     MSG_OK,
 )
 from geonature.utils.errors import GNModuleInstallError, GeoNatureError
@@ -129,8 +128,6 @@ def install_packaged_gn_module(module_path, module_code, build):
     install_frontend_dependencies(os.path.abspath(module_path))
     # generation du fichier tsconfig.app.json
     tsconfig_app_templating(app=current_app)
-    # generation du routing du frontend
-    frontend_routes_templating(app=current_app)
     # generation du fichier de configuration du frontend
     create_module_config(current_app, module_code, build=False)
     if build:
@@ -209,10 +206,6 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                         install_frontend_dependencies(module_path)
                         # generation du fichier tsconfig.app.json
                         tsconfig_app_templating(
-                            app=app
-                        )
-                        # generation du routing du frontend
-                        frontend_routes_templating(
                             app=app
                         )
                         # generation du fichier de configuration du frontend

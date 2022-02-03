@@ -24,7 +24,6 @@ from geonature.utils.command import (
     start_geonature_front,
     build_geonature_front,
     create_frontend_config,
-    frontend_routes_templating,
     tsconfig_templating,
     tsconfig_app_templating,
     update_app_configuration,
@@ -117,14 +116,6 @@ def frontend_build(build_sass):
     build_geonature_front(build_sass)
 
 
-@main.command()
-def generate_frontend_modules_route():
-    """
-        Génere le fichier de routing du frontend
-        à partir des modules GeoNature activé
-    """
-    frontend_routes_templating()
-
 
 @main.command()
 def generate_frontend_tsconfig():
@@ -155,8 +146,6 @@ def update_configuration(build):
         - geonature update_configuration --build=false (met à jour la configuration sans recompiler le frontend)
 
     """
-    # Recréation du fichier de routing car il dépend de la conf
-    frontend_routes_templating()
     update_app_configuration(build)
 
 
