@@ -120,7 +120,7 @@ class TestOcctax:
         assert response.status_code == 200
         assert len(response.json["items"]["features"]) == 1
         for r in response.json["items"]["features"]:
-            r["properties"]["id_dataset"] == datasets["own_dataset"].id_dataset
+            assert r["properties"]["id_dataset"] == datasets["with_module_1"].id_dataset
 
         # get occtax data of 'Occtax' module must be empty
         response = self.client.get(

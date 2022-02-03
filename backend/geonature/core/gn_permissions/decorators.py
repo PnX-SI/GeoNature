@@ -74,9 +74,9 @@ def check_cruved_scope(
             # if no perm or perm = 0 -> raise 403
             if user_with_highter_perm is None or user_with_highter_perm.value_filter == "0":
                 if object_code:
-                    message = f"""User {user["id_role"]} cannot "{action}" in {requested_module_code} on {object_code}"""
+                    message = f"""User {user["id_role"]} cannot "{action}" in {module_code} on {object_code}"""
                 else:
-                    message = f"""User {user["id_role"]} cannot "{action}" in {requested_module_code}"""
+                    message = f"""User {user["id_role"]} cannot "{action}" in {module_code}"""
                 raise Forbidden(description=message)
             g.user = user_with_highter_perm
             return fn(*args, **kwargs)
