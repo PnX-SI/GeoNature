@@ -1,55 +1,5 @@
-@use '@angular/material' as mat;
-@import '~@angular/material/theming'; 
-
-
-$my-primary: mat.define-palette(mat.$indigo-palette, 500);
-$my-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
-
-// The "warn" palette is optional and defaults to red if not specified.
-$my-warn: mat.define-palette(mat.$red-palette);
-
-$my-theme: mat.define-light-theme((
- color: (
-   primary: $my-primary,
-   accent: $my-accent,
-   warn: $my-warn,
- )
-));
-
-
-
 @import '~@ng-select/ng-select/themes/default.theme.css';
 @import 'conf/names_variables.scss';
-
-
-@include mat-core();
-
-$primary-light: mat-palette($mat-deep-purple);
-$accent-light:  mat-palette($mat-pink, A200, A100, A400);
-$light-theme: mat-light-theme($primary-light, $accent-light);
-
-@include angular-material-theme($light-theme);
-@import 'app/components/nav-home/nav-home.components.scss-theme.scss';
-
-.red-theme {
-  @include nav-home-component-theme($light-theme, red);
-  
-}
-
-
-.green-theme {
-  @include nav-home-component-theme($light-theme, green);
-}
-
-$dark-primary: mat-palette($mat-pink, 700, 500, 900);
-$dark-accent:  mat-palette($mat-blue-grey, A200, A100, A400);
-$dark-warn:    mat-palette($mat-deep-orange);
-
-$dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
-
-.dark-theme {
-  @include angular-material-theme($dark-theme);
-}
 
 html,
 body,
@@ -62,7 +12,7 @@ mat-sidenav-container {
 
 mat-sidenav-content {
   height: 100%;
-  // background-color: $solitude;
+  background-color: $solitude;
 }
 
 .purple {

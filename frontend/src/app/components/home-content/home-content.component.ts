@@ -49,14 +49,6 @@ export class HomeContentComponent implements OnInit {
     }
   }
 
-  test(){
-    console.log("click here");
-    console.log(this._overlay.getContainerElement());
-    
-    this._overlay.getContainerElement().classList.add("green-theme");
-    
-  }
-
   ngOnInit() {
     this.getI18nLocale();
 
