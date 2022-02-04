@@ -14,7 +14,6 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
 from utils_flask_sqla.generic import testDataType
 from werkzeug.exceptions import BadRequest, NotFound
-from sqlalchemy.ext.associationproxy import association_proxy
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User, Organisme
@@ -137,7 +136,7 @@ class CorAcquisitionFrameworkActor(DB.Model):
         lazy="joined",
     )
 
-    organism = relationship(
+    organism = DB.relationship(
         Organisme,
         lazy="joined",
     )
@@ -147,26 +146,20 @@ class CorDatasetActor(DB.Model):
     __tablename__ = "cor_dataset_actor"
     __table_args__ = {"schema": "gn_meta"}
     id_cda = DB.Column(DB.Integer, primary_key=True)
-
     id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
-
     id_role = DB.Column(DB.Integer, ForeignKey(User.id_role))
-    role = DB.relationship(User, lazy="joined")
-
     id_organism = DB.Column(DB.Integer, ForeignKey(Organisme.id_organisme))
-    organism = relationship(Organisme, lazy="select")
-
     id_nomenclature_actor_role = DB.Column(
         DB.Integer,
         ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
         default=lambda: TNomenclatures.get_default_nomenclature("ROLE_ACTEUR"),
     )
+
     nomenclature_actor_role = DB.relationship(
         TNomenclatures,
         lazy="joined",
         foreign_keys=[id_nomenclature_actor_role],
     )
-
     role = DB.relationship(User, lazy="joined")
     organism = DB.relationship(Organisme, lazy="joined")
 
@@ -176,12 +169,6 @@ class CorDatasetActor(DB.Model):
             return self.role
         else:
             return self.organism
-
-    @hybrid_property
-    def actor(self):
-        if self.role is not None:
-            return self.role
-        return self.organism
 
     @hybrid_property
     def display(self):
@@ -518,7 +505,7 @@ class TDatasets(CruvedMixin, FilterMixin, db.Model):
         uuid = kwargs.get('uuid')
         if uuid is not None:
             try:
-                uuid = UUIDType(uuid.strip())
+                uuid = UUID(uuid.strip())
             except TypeError:
                 pass
             else:
@@ -592,8 +579,18 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
     )
     acquisition_framework_name = DB.Column(DB.Unicode(255))
     acquisition_framework_desc = DB.Column(DB.Unicode)
+    id_nomenclature_territorial_level = DB.Column(
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=lambda: TNomenclatures.get_default_nomenclature("NIVEAU_TERRITORIAL"),
+    )
     territory_desc = DB.Column(DB.Unicode)
     keywords = DB.Column(DB.Unicode)
+    id_nomenclature_financing_type = DB.Column(
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
+        default=lambda: TNomenclatures.get_default_nomenclature("TYPE_FINANCEMENT"),
+    )
     target_description = DB.Column(DB.Unicode)
     ecologic_or_geologic_target = DB.Column(DB.Unicode)
     acquisition_framework_parent_id = DB.Column(DB.Integer)
@@ -601,7 +598,6 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
     opened = DB.Column(DB.Boolean, default=True)
 
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
-    creator = DB.relationship(User, foreign_keys=[id_digitizer], lazy="joined")  # = digitizer
 
     acquisition_framework_start_date = DB.Column(DB.Date, default=datetime.datetime.utcnow)
     acquisition_framework_end_date = DB.Column(DB.Date)
@@ -610,19 +606,12 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
     meta_update_date = DB.Column(DB.DateTime)
     initial_closing_date = DB.Column(DB.DateTime)
 
-    id_nomenclature_territorial_level = DB.Column(
-        DB.Integer,
-        ForeignKey(TNomenclatures.id_nomenclature),
-        default=lambda: TNomenclatures.get_default_nomenclature("NIVEAU_TERRITORIAL"))
+    creator = DB.relationship(User, lazy="joined")  # = digitizer
     nomenclature_territorial_level = DB.relationship(
         TNomenclatures,
         foreign_keys=[id_nomenclature_territorial_level],
         lazy='joined')
 
-    id_nomenclature_financing_type = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature"),
-        default=lambda: TNomenclatures.get_default_nomenclature("TYPE_FINANCEMENT"))
     nomenclature_financing_type = DB.relationship(
         TNomenclatures,
         foreign_keys=[id_nomenclature_financing_type],
