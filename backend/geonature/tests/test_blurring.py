@@ -6,12 +6,12 @@ from geonature.utils.env import db
 
 from . import *
 from .utils import set_logged_user_cookie
-
+from .fixtures import acquisition_frameworks, datasets, synthese_data
 
 @pytest.fixture(scope='class')
 def blurring_config(app):
     from geonature.utils.config_schema import DataBlurringManagement
-    app.config.from_mapping({
+    app.config.update({
         'DATA_BLURRING': DataBlurringManagement().load({
             'ENABLE_DATA_BLURRING': True,
             'AREA_TYPE_FOR_DIFFUSION_LEVELS': [
@@ -113,11 +113,22 @@ class TestBlurring:
         set_logged_user_cookie(self.client, blurred_users['blurred_user'])
         nomenc_sensitivity = sensitivity_rule.nomenclature_sensitivity
         response = self.client.get(
-            url_for("gn_synthese.get_one_synthese", id_synthese=synthese_data[0].id_synthese))
+            url_for('gn_synthese.get_one_synthese',
+            id_synthese=synthese_data[0].id_synthese),
+        )
         assert response.status_code == 200
-        assert(response.json['nomenclature_sensitivity']['mnemonique'] == nomenc_sensitivity.mnemonique)
-        assert 'areas' in response.json
-        area_type_codes = { area['area_type']['type_code'] for area in response.json['areas'] }
+
+        assert 'properties' in response.json
+        geoproperties = response.json['properties']
+
+        assert 'nomenclature_sensitivity' in geoproperties
+        sensitivity_nomenclature = geoproperties['nomenclature_sensitivity']
+        assert 'mnemonique' in sensitivity_nomenclature
+        sensitivity_mnemonic = sensitivity_nomenclature['mnemonique']
+        assert(sensitivity_mnemonic == nomenc_sensitivity.mnemonique)
+
+        assert 'areas' in geoproperties
+        area_type_codes = { area['area_type']['type_code'] for area in geoproperties['areas'] }
         from geonature.core.ref_geo.models import BibAreasTypes
         for la in current_app.config['DATA_BLURRING']['AREA_TYPE_FOR_SENSITIVITY_LEVELS']:
             if la['level'] == nomenc_sensitivity.mnemonique:
