@@ -378,14 +378,16 @@ class TestGNMeta:
         # The user has no rights on METADATA module
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == Forbidden.code
-        assert "METADATA" in response.json["description"]
+        json_resp = response.get_json(force=True)
+        assert "METADATA" in json_resp["description"]
 
         set_logged_user_cookie(self.client, users["self_user"])
 
         # The user has right on METADATA module, but not on this specific DS
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == Forbidden.code
-        assert "METADATA" not in response.json["description"]
+        json_resp = response.get_json(force=True)
+        assert "METADATA" in json_resp["description"]
 
         set_logged_user_cookie(self.client, users["user"])
 
