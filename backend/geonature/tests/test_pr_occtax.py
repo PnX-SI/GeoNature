@@ -110,7 +110,7 @@ class TestOcctax:
         assert response.status_code == 200
 
     def test_get_releves(self, users, module, datasets, releve):
-        set_logged_user_cookie(self.client, users['user'])
+        set_logged_user_cookie(self.client, users['admin_user'])
 
         # get occtax data of OCCTAX_DS module
         # must return only releve of dataset of 'own_dataset'

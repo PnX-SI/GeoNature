@@ -168,13 +168,13 @@ def datasets(users, acquisition_frameworks, module):
                             marine_domain=True,
                             terrestrial_domain=True,
                             id_digitizer=digitizer.id_role if digitizer else None)
-            db.session.add(dataset)
             if digitizer and digitizer.organisme:
                 actor = CorDatasetActor(
                             organism=digitizer.organisme,
                             nomenclature_actor_role=principal_actor_role)
                 dataset.cor_dataset_actor.append(actor)
-                [dataset.modules.append(m) for m in modules]
+            [dataset.modules.append(m) for m in modules]
+            db.session.add(dataset)
         return dataset
 
     datasets = { name: create_dataset(name, digitizer)
@@ -184,7 +184,7 @@ def datasets(users, acquisition_frameworks, module):
                      ('stranger_dataset', users['stranger_user']),
                      ('orphan_dataset', None),
                  ] }
-    datasets["with_module_1"] = create_dataset('module_1_dataset')
+    datasets["with_module_1"] = create_dataset('module_1_dataset', modules=[module])
 
     return datasets
 
