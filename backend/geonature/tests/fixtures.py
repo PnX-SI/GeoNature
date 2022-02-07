@@ -184,7 +184,7 @@ def datasets(users, acquisition_frameworks, module):
                      ('stranger_dataset', users['stranger_user']),
                      ('orphan_dataset', None),
                  ] }
-    datasets["with_module_1"] = create_dataset('own_dataset', users['user'], [module])
+    datasets["with_module_1"] = create_dataset('module_1_dataset')
 
     return datasets
 
