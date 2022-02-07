@@ -174,23 +174,6 @@ def datasets(users, acquisition_frameworks):
     return datasets
 
 
-@pytest.fixture(scope='function')
-def temporary_transaction(app):
-    """
-    We start two nested transaction (SAVEPOINT):
-        - The outer one will be used to rollback all changes made by the current test function.
-        - The inner one will be used to catch all commit() / rollback() made in tested code.
-          After starting the inner transaction, we install a listener on transaction end events,
-          and each time the inner transaction is closed, we restart a new transaction to catch
-          potential new commit() / rollback().
-    Note: When we rollback the inner transaction at the end of the test, we actually rollback
-    only the last inner transaction but previous inner transaction may have been committed by the
-    tested code! This is why we need an outer transaction to rollback all changes made by the test.
-    """
-    outer_transaction = db.session.begin_nested()
-    inner_transaction = db.session.begin_nested()
-
-
 
 #@pytest.fixture(scope='class')
 #def sample_data(app):
@@ -225,6 +208,8 @@ def source():
 @pytest.fixture()
 def synthese_data(users, datasets, source):
     now = datetime.datetime.now()
+    # TODO: find a way to be sure that this point is in an actual l_areas geom.
+    # Geom may have been deleted.
     geom_4326 = from_shape(Point(3.63492965698242, 44.3999389306734), srid=4326)
     data = []
     with db.session.begin_nested():
@@ -249,28 +234,3 @@ def synthese_data(users, datasets, source):
             data.append(s)
 
     return data
-
-
-@pytest.fixture()
-def synthese_data(users, datasets):
-    with db.session.begin_nested():
-        source = TSources(name_source='Fixture',
-                          desc_source='Synthese data from fixture')
-        db.session.add(source)
-    now = datetime.datetime.now()
-    geom_4326 = from_shape(Point(3.63492965698242, 44.3999389306734), srid=4326)
-    with db.session.begin_nested():
-        taxon = Taxref.query.filter_by(cd_nom=713776).one()
-        s = Synthese(id_source=source.id_source,
-                     dataset=datasets['own_dataset'],
-                     digitiser=users['self_user'],
-                     nom_cite='Ashmeadopria Kieffer',
-                     cd_nom=taxon.cd_nom,
-                     cd_hab=3,
-                     the_geom_4326=geom_4326,
-                     the_geom_point=geom_4326,
-                     the_geom_local=func.st_transform(geom_4326, 2154),
-                     date_min=now,
-                     date_max=now)
-        db.session.add(s)
-    return [s]
