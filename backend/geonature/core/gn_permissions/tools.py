@@ -106,7 +106,7 @@ class UserCruved:
         elif hasattr(g, 'current_module'):
             self._module_code = g.current_module.module_code
         else:
-            self._module_code = "GEONATURE"
+            self._module_code = self._main_module_code
         self._object_code = object_code
         self._permission_select = self._build_permission_select_list(append_to_select)
 
