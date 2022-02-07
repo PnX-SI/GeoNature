@@ -126,7 +126,8 @@ class SyntheseQuery:
         """
         Filter the query with the cruved authorization of a user
         """
-        if user.value_filter in ("1", "2"):
+        scope = int(user.value_filter)
+        if scope in (1, 2):
             # get id synthese where user is observer
             subquery_observers = (
                 select([CorObserverSynthese.id_synthese])
@@ -143,14 +144,10 @@ class SyntheseQuery:
                 ors_filters.append(self.model_observers_column.ilike(user_fullname1))
                 ors_filters.append(self.model_observers_column.ilike(user_fullname2))
 
-            if user.value_filter == "1":
-                allowed_datasets = [d.id_dataset for d in TDatasets.query.filter_by_scope(1).all()] 
-                ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
-                self.query = self.query.where(or_(*ors_filters))
-            elif user.value_filter == "2":
-                allowed_datasets = [d.id_dataset for d in TDatasets.query.filter_by_scope(2).all()]
-                ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
-                self.query = self.query.where(or_(*ors_filters))
+            allowed_datasets = [d.id_dataset for d in TDatasets.query.filter_by_scope(scope).all()]
+            ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
+
+            self.query = self.query.where(or_(*ors_filters))
 
     def filter_taxonomy(self):
         """

@@ -9,10 +9,10 @@ from geonature.utils.env import db
 from .utils import set_logged_user_cookie
 from .fixtures import *
 
-from occtax.models import DefaultNomenclaturesValue, TRelevesOccurrence
-
 
 occtax = pytest.importorskip("occtax")
+
+from occtax.models import DefaultNomenclaturesValue, TRelevesOccurrence
 
 
 

@@ -254,7 +254,7 @@ class TDatasetsQuery(BaseQuery):
     def _get_read_scope(self, user=None):
         if user is None:
             user = g.current_user
-        cruved= get_scopes_by_action(
+        cruved = get_scopes_by_action(
             id_role=user.id_role,
             module_code="GEONATURE"
         )
@@ -582,7 +582,7 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
     unique_acquisition_framework_id = DB.Column(
         UUIDType(as_uuid=True), default=select([func.uuid_generate_v4()])
     )
-    acquisition_framework_name = DB.Column(DB.Unicode)
+    acquisition_framework_name = DB.Column(DB.Unicode(255))
     acquisition_framework_desc = DB.Column(DB.Unicode)
     id_nomenclature_territorial_level = DB.Column(
         DB.Integer,
