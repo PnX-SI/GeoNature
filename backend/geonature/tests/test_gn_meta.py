@@ -16,7 +16,7 @@ from geonature.core.gn_meta.routes import get_af_from_id
 from geonature.core.gn_permissions.models import CorRoleActionFilterModuleObject, TActions, TFilters
 from geonature.utils.env import db
 
-from .fixtures import acquisition_frameworks, datasets, source, synthese_data
+from .fixtures import *
 from .utils import logged_user_headers, set_logged_user_cookie
 
 
@@ -159,7 +159,10 @@ class TestGNMeta:
         set_logged_user_cookie(self.client, users["self_user"])
 
         # The user has right on METADATA module, but not on this specific AF
-        response = self.client.delete(url_for("gn_meta.delete_acquisition_framework", af_id=af_id))
+        response = self.client.delete(
+            url_for("gn_meta.delete_acquisition_framework", af_id=af_id),
+            json={}
+        )
         assert response.status_code == Forbidden.code
         assert "METADATA" not in response.json["description"]
 
@@ -378,16 +381,13 @@ class TestGNMeta:
         # The user has no rights on METADATA module
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == Forbidden.code
-        json_resp = response.get_json(force=True)
-        assert "METADATA" in json_resp["description"]
+        assert "METADATA" in response.json["description"]
 
         set_logged_user_cookie(self.client, users["self_user"])
 
         # The user has right on METADATA module, but not on this specific DS
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == Forbidden.code
-        json_resp = response.get_json(force=True)
-        assert "METADATA" in json_resp["description"]
 
         set_logged_user_cookie(self.client, users["user"])
 

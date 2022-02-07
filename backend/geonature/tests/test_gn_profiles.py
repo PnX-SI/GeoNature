@@ -17,7 +17,7 @@ from geonature.core.gn_synthese.models import Synthese
 from geonature.core.taxonomie.models import Taxref
 
 
-from .fixtures import acquisition_frameworks, datasets
+from .fixtures import *
 
 
 def create_synthese_record(

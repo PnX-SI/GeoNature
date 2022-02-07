@@ -14,7 +14,7 @@ from geonature.utils.env import migrate
 
 from pypnusershub.db.tools import user_to_token
 
-from .fixtures import acquisition_frameworks, datasets
+from .fixtures import *
 from .utils import set_logged_user_cookie
 
 

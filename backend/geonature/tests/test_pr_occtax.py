@@ -113,7 +113,7 @@ class TestOcctax:
         set_logged_user_cookie(self.client, users['admin_user'])
 
         # get occtax data of OCCTAX_DS module
-        # must return only releve of dataset of 'own_dataset'
+        # must return only releve of dataset associated with
         response = self.client.get(
             url_for("pr_occtax.getReleves", module_code=module.module_code),
         )
