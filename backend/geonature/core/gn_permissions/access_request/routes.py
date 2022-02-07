@@ -22,7 +22,7 @@ from geonature.core.gn_permissions.models import (
     RequestStates,
 )
 from geonature.utils.env import DB
-from geonature.core.users.models import BibOrganismes
+from pypnusershub.db.models import Organisme as Organism
 from geonature.core.gn_commons.models import TModules
 
 from geonature.core.gn_permissions.tools import (
@@ -86,14 +86,14 @@ def get_permissions_requests():
     UserAsker = aliased(User)
     UserValidator = aliased(User)
     query = (
-        DB.session.query(TRequests, UserAsker, BibOrganismes, UserValidator)
+        DB.session.query(TRequests, UserAsker, Organism, UserValidator)
             .options(
                 Load(UserAsker).load_only("id_role", "email", "nom_role", "prenom_role", "id_organisme").lazyload("*"),
-                Load(BibOrganismes).load_only("id_organisme", "nom_organisme").lazyload("*"),
+                Load(Organism).load_only("id_organisme", "nom_organisme").lazyload("*"),
                 Load(UserValidator).load_only("id_role", "nom_role", "prenom_role").lazyload("*")
             )
             .join(UserAsker, UserAsker.id_role == TRequests.id_role)
-            .outerjoin(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme)
+            .outerjoin(Organism, Organism.id_organisme == UserAsker.id_organisme)
             .outerjoin(UserValidator, UserValidator.id_role == TRequests.processed_by)
     )
 
@@ -590,14 +590,14 @@ def get_permissions_requests_by_token(token):
     UserAsker = aliased(User)
     UserValidator = aliased(User)
     query = (
-        DB.session.query(TRequests, UserAsker, BibOrganismes, UserValidator)
+        DB.session.query(TRequests, UserAsker, Organism, UserValidator)
             .options(
                 Load(UserAsker).load_only("id_role", "email", "nom_role", "prenom_role", "id_organisme").lazyload("*"),
-                Load(BibOrganismes).load_only("id_organisme", "nom_organisme").lazyload("*"),
+                Load(Organism).load_only("id_organisme", "nom_organisme").lazyload("*"),
                 Load(UserValidator).load_only("id_role", "nom_role", "prenom_role").lazyload("*")
             )
             .join(UserAsker, UserAsker.id_role == TRequests.id_role)
-            .outerjoin(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme)
+            .outerjoin(Organism, Organism.id_organisme == UserAsker.id_organisme)
             .outerjoin(UserValidator, UserValidator.id_role == TRequests.processed_by)
             .filter(TRequests.token == token)
     )
@@ -691,14 +691,14 @@ def patch_permissions_request_by_token(info_role, token):
     UserAsker = aliased(User)
     UserValidator = aliased(User)
     results = (
-        DB.session.query(TRequests, UserAsker, BibOrganismes, UserValidator)
+        DB.session.query(TRequests, UserAsker, Organism, UserValidator)
             .options(
                 Load(UserAsker).load_only("id_role", "email", "nom_role", "prenom_role", "id_organisme").lazyload("*"),
-                Load(BibOrganismes).load_only("id_organisme", "nom_organisme").lazyload("*"),
+                Load(Organism).load_only("id_organisme", "nom_organisme").lazyload("*"),
                 Load(UserValidator).load_only("id_role", "nom_role", "prenom_role").lazyload("*")
             )
             .join(UserAsker, UserAsker.id_role == TRequests.id_role)
-            .outerjoin(BibOrganismes, BibOrganismes.id_organisme == UserAsker.id_organisme)
+            .outerjoin(Organism, Organism.id_organisme == UserAsker.id_organisme)
             .outerjoin(UserValidator, UserValidator.id_role == TRequests.processed_by)
             .filter(TRequests.token == token)
             .first()

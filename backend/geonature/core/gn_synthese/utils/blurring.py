@@ -415,9 +415,9 @@ class DataBlurring:
     def blurOneObsAreas(self, obs):
         # Get area blurred types
         blurred_areas_types = []
-        id_synthese = obs['id']
+        id_synthese = obs["id"]
 
-        current_diffusion_level_id = obs['properties']['id_nomenclature_diffusion_level']
+        current_diffusion_level_id = obs["properties"]["id_nomenclature_diffusion_level"]
         diffusion_levels = self._get_diffusion_levels_area_types()
         if (
             current_diffusion_level_id != None
@@ -426,7 +426,7 @@ class DataBlurring:
         ):
             (area_id, area_type) = diffusion_levels[current_diffusion_level_id]
             blurred_areas_types.append(area_type)
-        current_sensitivity_id = obs['properties']['id_nomenclature_sensitivity']
+        current_sensitivity_id = obs["properties"]["id_nomenclature_sensitivity"]
         sensitivity_levels = self._get_sensitivity_area_types()
         if (
             current_sensitivity_id != None
@@ -447,8 +447,8 @@ class DataBlurring:
                 more_restrictive_size = int(size)
 
         # Remove too precise areas
-        if more_restrictive_size != None and "areas" in obs:
-            obs["areas"][:] = [area for area in obs["areas"] if DataBlurring._checkAreaSize(area, more_restrictive_size)]
+        if more_restrictive_size != None and "areas" in obs["properties"]:
+            obs["properties"]["areas"][:] = [area for area in obs["properties"]["areas"] if DataBlurring._checkAreaSize(area, more_restrictive_size)]
 
         return obs
 
