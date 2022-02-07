@@ -22,7 +22,7 @@ from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 from apptax.taxonomie.models import Taxref
 from utils_flask_sqla.tests.utils import JSONClient
 
-
+__all__ = ["app", "users", "_session", "acquisition_frameworks", "module", "datasets", "taxon_attribut", "source", "synthese_data"]
 
 @pytest.fixture(scope='session', autouse=True)
 def app():
