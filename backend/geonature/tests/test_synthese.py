@@ -98,7 +98,7 @@ class TestSynthese:
         data = response.get_json()
         assert len(data["data"]) >= 2
 
-    @pytest.mark.skip()
+    @pytest.mark.skip()  # FIXME
     def test_get_synthese_data_cruved(self):
         # test cruved
         login(self.client, username="partenaire", password="admin")
@@ -159,22 +159,22 @@ class TestSynthese:
         )
         assert response.status_code == 200
 
-    def test_export_status(self):
-        login(self.client)
+    def test_export_status(self, users):
+        set_logged_user_cookie(self.client, users['admin_user'])
 
         response = self.client.post(url_for("gn_synthese.export_status"))
 
         assert response.status_code == 200
 
-    def test_export_metadata(self):
-        login(self.client)
+    def test_export_metadata(self, users):
+        set_logged_user_cookie(self.client, users['admin_user'])
 
         response = self.client.get(url_for("gn_synthese.export_metadata"))
 
         assert response.status_code == 200
 
-    def test_general_stat(self):
-        login(self.client)
+    def test_general_stat(self, users):
+        set_logged_user_cookie(self.client, users['admin_user'])
 
         response = self.client.get(url_for("gn_synthese.general_stats"))
 
