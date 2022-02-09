@@ -349,12 +349,11 @@ class TestSynthese:
         id_datasets = [synt.id_dataset for synt in synthese_data]
         id_dataset_set = set(id_datasets)
         resp_json = response_dataset.json
-        assert len(resp_json) == len(id_dataset_set)
-        assert [resp['count'] for resp in resp_json] == [id_datasets.count(ds) for ds in id_dataset_set]
+        assert all(id_dataset in [resp['id_dataset'] for resp in resp_json] for id_dataset in id_dataset_set)
+        assert all(id_datasets.count(ds) in [resp['count'] for resp in resp_json] for ds in id_dataset_set)
        
         resp_json = response_cd_nom.json
-        assert len(resp_json) == len(set(synt.cd_nom for synt in synthese_data))
-        assert response_cd_nom.json
+        assert all(synt.cd_nom in [resp['cd_nom'] for resp in resp_json] for synt in synthese_data)
     
     def test_get_autocomplete_taxons_synthese(self, synthese_data):
         seach_name = synthese_data[0].nom_cite
