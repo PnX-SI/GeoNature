@@ -25,7 +25,6 @@ from apptax.taxonomie.models import Taxref
 
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.ref_geo.models import LAreas
-from geonature.core.ref_geo.models import LiMunicipalities
 from geonature.core.gn_commons.models import THistoryActions, TValidations, last_validation, \
                                              TMedias, TModules
 from geonature.utils.env import DB, db
@@ -283,10 +282,7 @@ class Synthese(DB.Model):
                 return True
             if g.current_user in self.cor_observers:
                 return True
-            if scope == 2:
-                if g.current_user.organisme in self.dataset.organism_actors:
-                    return True
-            return False
+            return self.dataset.has_instance_permission(scope)
         elif scope == 3:
             return True
 
@@ -468,8 +464,8 @@ def synthese_export_serialization(cls):
 class VColorAreaTaxon(DB.Model):
     __tablename__ = "v_color_taxon_area"
     __table_args__ = {"schema": "gn_synthese"}
-    cd_nom = DB.Column(DB.Integer(), ForeignKey("taxonomie.taxref.cd_nom"), primary_key=True)
-    id_area = DB.Column(DB.Integer(), ForeignKey("ref_geo.l_area.id_area"), primary_key=True)
+    cd_nom = DB.Column(DB.Integer(), ForeignKey(Taxref.cd_nom), primary_key=True)
+    id_area = DB.Column(DB.Integer(), ForeignKey(LAreas.id_area), primary_key=True)
     nb_obs = DB.Column(DB.Integer())
     last_date = DB.Column(DB.DateTime())
     color = DB.Column(DB.Unicode())
