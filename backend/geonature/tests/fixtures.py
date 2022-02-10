@@ -11,7 +11,7 @@ from geoalchemy2.shape import from_shape
 
 from geonature import create_app
 from geonature.utils.env import db
-from geonature.core.gn_permissions.models import TActions, TFilters, CorRoleActionFilterModuleObject
+from geonature.core.gn_permissions.models import TActions, TFilters, BibFiltersType, CorRoleActionFilterModuleObject
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets, \
                                           CorDatasetActor, CorAcquisitionFrameworkActor
@@ -23,7 +23,8 @@ from apptax.taxonomie.models import Taxref
 from utils_flask_sqla.tests.utils import JSONClient
 
 
-__all__ = ['datasets', 'acquisition_frameworks', 'synthese_data', 'source']
+__all__ = ['datasets', 'acquisition_frameworks', 'synthese_data', 'source',
+           'filters']
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -199,6 +200,7 @@ def taxon_attribut():
         db.session.add(c)
     return c
 
+
 @pytest.fixture()
 def source():
     with db.session.begin_nested():
@@ -206,6 +208,7 @@ def source():
                           desc_source='Synthese data from fixture')
         db.session.add(source)
     return source
+
 
 @pytest.fixture()
 def synthese_data(users, datasets, source):
@@ -234,3 +237,27 @@ def synthese_data(users, datasets, source):
             data.append(s)
 
     return data
+
+
+@pytest.fixture(scope='function')
+def filters():
+    """
+    Creates one filter per filter type
+    """
+    # Gather all types
+    avail_filter_types = BibFiltersType.query.all()
+    # Init returned filter_dict
+    filters_dict = {}
+    # For each type, generate a Filter
+    with db.session.begin_nested():
+        for i, filter_type in enumerate(avail_filter_types):
+            new_filter = TFilters(
+                label_filter=f"test_{i}",
+                value_filter=f"value_{i}",
+                description_filter="Filtre test",
+                id_filter_type=filter_type.id_filter_type,
+            )
+            filters_dict[filter_type.code_filter_type] = new_filter
+            db.session.add(new_filter)
+    
+    return filters_dict
