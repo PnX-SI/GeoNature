@@ -208,9 +208,13 @@ def source():
     return source
 
 @pytest.fixture()
-def synthese_data(users, datasets, source):
+def synthese_data(app, users, datasets, source):
     now = datetime.datetime.now()
-    geom_4326 = from_shape(Point(3.63492965698242, 44.3999389306734), srid=4326)
+    map_center_point = Point(
+        app.config['MAPCONFIG']['CENTER'][1],
+        app.config['MAPCONFIG']['CENTER'][0],
+    )
+    geom_4326 = from_shape(map_center_point, srid=4326)
     data = []
     with db.session.begin_nested():
         taxons = [
