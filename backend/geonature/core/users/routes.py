@@ -55,7 +55,7 @@ def getRolesByMenuId(id_menu):
     :type id_menu: int
     :query str nom_complet: begenning of complet name of the role
     """
-    q = DB.session.query(VUserslistForallMenu).filter_by(id_menu=id_menu)
+    q = DB.session.query(VUserslistForallMenu).filter_by(id_menu=id_menu).first_or_404()
 
     parameters = request.args
     if parameters.get("nom_complet"):
