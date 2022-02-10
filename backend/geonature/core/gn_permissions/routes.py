@@ -42,7 +42,7 @@ def get_cruved(info_role):
         joinedload(TModules.objects)
     )
     if "module_code" in params:
-        q = q.filter(TModules.module_code.in_(params["module_code"]))
+        q = q.filter(TModules.module_code == params["module_code"])
     modules = q.all()
 
     # for each modules get its cruved
