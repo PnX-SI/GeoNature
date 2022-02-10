@@ -9,17 +9,21 @@
       *ngIf="showLastObsMap"
     >
       <div class="panel panel-default">
-        <div class="panel-heading">
-          Les 100 dernières observations
-          <button 
-            routerLink="/synthese"
-            mat-stroked-button
-            color="primary"
-            class="uppercase ml-1 mt-1 float-right"
-    
-          >
-            Explorer les données
-          </button>
+        <!-- mr-0 and ml-0 since row puts margin-left and right at -15px... -->
+        <div class="panel-heading row mr-0 ml-0">
+          <div class="col-12 col-lg-5 col-xl-7">
+            <span>Les 100 dernières observations</span>
+          </div>
+          <div class="col-12 col-lg-7 col-xl-5">
+            <button
+              routerLink="/synthese"
+              mat-stroked-button
+              color="primary"
+              class="uppercase ml-1 mt-1 float-right"
+            >
+              Explorer les données
+            </button>
+          </div>
        </div>
       
         <div id="map-title">
