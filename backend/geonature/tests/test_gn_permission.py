@@ -5,8 +5,8 @@ from sqlalchemy import func
 from werkzeug.exceptions import Forbidden, Unauthorized
 
 from geonature.core.gn_permissions.models import (
-    VUsersPermissions,
     TFilters,
+    CorRoleActionFilterModuleObject
 )
 from geonature.utils.env import DB
 
@@ -16,9 +16,6 @@ from geonature.core.gn_permissions.tools import (
     get_user_from_token_and_raise,
     cruved_scope_for_user_in_module,
 )
-
-# from geonature.core.gn_permissions.decorators import get_max_perm
-from geonature.core.gn_permissions.models import VUsersPermissions
 
 from .utils import set_logged_user_cookie, logged_user_headers
 from .fixtures import filters
@@ -225,21 +222,24 @@ class TestGnPermissionsView:
 
         assert response.status_code == 302
 
-    # @pytest.mark.usefixtures('deactivate_csrf') Do not work here 
+    # @pytest.mark.usefixtures('deactivate_csrf') seems not working here 
     def test_update_other_perm(self, deactivate_csrf, users, filters):
         admin_user = users["admin_user"]
+        self_user = users['self_user']
         set_logged_user_cookie(self.client, admin_user)
         permission = (
-            DB.session.query(VUsersPermissions).first()
+            DB.session.query(CorRoleActionFilterModuleObject).filter(CorRoleActionFilterModuleObject.id_role==self_user.id_role).first()
         )
-        one_filter = filters[list(filters.keys())[0]]
+        id_permission = permission.id_permission
+        # Take a 
+        one_filter = filters[list(filters.keys())[-1]]
         # change action and filter
-        update_data = {"module": "0", "action": "2", "filter": one_filter.id_filter}
+        update_data = {"module": "1", "action": "1", "filter": one_filter.id_filter}
 
         response = self.client.post(
             url_for(
                 "gn_permissions_backoffice.other_permissions_form",
-                id_role=admin_user.id_role,
+                id_role=self_user.id_role,
                 id_filter_type=one_filter.id_filter_type,
                 id_permission=permission.id_permission,
             ),
@@ -247,22 +247,11 @@ class TestGnPermissionsView:
         )
 
         assert response.status_code == 302
-
-        # update_permission = (
-        #     DB.session.query(VUsersPermissions)
-        #     .filter_by(
-        #         id_role=1,
-        #         module_code="GEONATURE",
-        #         code_object="ALL",
-        #         code_filter_type="TAXONOMIC",
-        #         id_filter=6,
-        #     )
-        #     .one()
-        # )
-        # assert update_permission
+        # TODO: maybe a better way to do this
+        updated_permission = DB.session.query(CorRoleActionFilterModuleObject).get(id_permission)
+        assert updated_permission.id_action == int(update_data['action'])
 
     def test_post_filter(self, deactivate_csrf, users, filters):
-
         admin_user = users["admin_user"]
         set_logged_user_cookie(self.client, admin_user)
         data = {
