@@ -245,7 +245,7 @@ def filters():
     Creates one filter per filter type
     """
     # Gather all types
-    avail_filter_types = BibFiltersType.query.all()
+    avail_filter_types = BibFiltersType.query.order_by(BibFiltersType.id_filter_type).all()
     # Init returned filter_dict
     filters_dict = {}
     # For each type, generate a Filter
