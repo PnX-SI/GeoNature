@@ -7,7 +7,6 @@ from werkzeug.exceptions import Forbidden, Unauthorized
 from geonature.core.gn_permissions.models import (
     VUsersPermissions,
     TFilters,
-    CorRoleActionFilterModuleObject,
 )
 from geonature.utils.env import DB
 
@@ -42,6 +41,13 @@ def captured_templates(app):
 @pytest.fixture
 def unavailable_filter_id():
     return DB.session.query(func.max(TFilters.id_filter)).scalar() + 1
+
+
+@pytest.fixture
+def deactivate_csrf(app):
+    # Deactivate the csrf check on the form otherwise it will appear
+    # with errors on csrf
+    app.config["WTF_CSRF_ENABLED"] = False
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -198,17 +204,14 @@ class TestGnPermissionsView:
         # the post must return a 302 (redirect code)
         response.status_code == 200
 
-    def test_post_other_perm(self, app, users, filters):
+    def test_post_other_perm(self, deactivate_csrf, users, filters):
         """
         Test post/update a permission (no scope)
         """
-        # Deactivate the csrf check on the form otherwise it will appear
-        # with errors on csrf
-        app.config["WTF_CSRF_ENABLED"] = False
 
         admin_user = users["admin_user"]
         set_logged_user_cookie(self.client, admin_user)
-        one_filter = filters[list(filters.keys())[-1]]
+        one_filter = filters[list(filters.keys())[0]]
         valid_data = {"module": "1", "action": "1", "filter": one_filter.id_filter}
 
         response = self.client.post(
@@ -222,16 +225,22 @@ class TestGnPermissionsView:
 
         assert response.status_code == 302
 
-    @pytest.mark.skip(reason="need to define a proper permission to change")
-    def test_update_other_perm(self, users):
+    # @pytest.mark.usefixtures('deactivate_csrf') Do not work here 
+    def test_update_other_perm(self, deactivate_csrf, users, filters):
+        admin_user = users["admin_user"]
+        set_logged_user_cookie(self.client, admin_user)
+        permission = (
+            DB.session.query(VUsersPermissions).first()
+        )
+        one_filter = filters[list(filters.keys())[0]]
         # change action and filter
-        update_data = {"module": "0", "action": "2", "filter": "6"}
+        update_data = {"module": "0", "action": "2", "filter": one_filter.id_filter}
 
         response = self.client.post(
             url_for(
                 "gn_permissions_backoffice.other_permissions_form",
-                id_role=1,
-                id_filter_type=4,
+                id_role=admin_user.id_role,
+                id_filter_type=one_filter.id_filter_type,
                 id_permission=permission.id_permission,
             ),
             data=update_data,
@@ -239,30 +248,20 @@ class TestGnPermissionsView:
 
         assert response.status_code == 302
 
-        update_permission = (
-            DB.session.query(VUsersPermissions)
-            .filter_by(
-                id_role=1,
-                module_code="GEONATURE",
-                code_object="ALL",
-                code_filter_type="TAXONOMIC",
-                id_filter=6,
-            )
-            .one()
-        )
-        assert update_permission
+        # update_permission = (
+        #     DB.session.query(VUsersPermissions)
+        #     .filter_by(
+        #         id_role=1,
+        #         module_code="GEONATURE",
+        #         code_object="ALL",
+        #         code_filter_type="TAXONOMIC",
+        #         id_filter=6,
+        #     )
+        #     .one()
+        # )
+        # assert update_permission
 
-        # delete the perm for the next test
-        perm = DB.session.query(CorRoleActionFilterModuleObject).get(
-            update_permission.id_permission
-        )
-        DB.session.delete(perm)
-        DB.session.commit()
-
-    def test_post_filter(self, app, users, filters):
-        # Deactivate the csrf check on the form otherwise it will appear
-        # with errors on csrf
-        app.config["WTF_CSRF_ENABLED"] = False
+    def test_post_filter(self, deactivate_csrf, users, filters):
 
         admin_user = users["admin_user"]
         set_logged_user_cookie(self.client, admin_user)
@@ -283,11 +282,7 @@ class TestGnPermissionsView:
         assert response.status_code == 302
         
 
-    def test_update_filter(self, app, users, filters):
-        # Deactivate the csrf check on the form otherwise it will appear
-        # with errors on csrf
-        app.config["WTF_CSRF_ENABLED"] = False
-
+    def test_update_filter(self, deactivate_csrf, users, filters):
         admin_user = users["admin_user"]
         set_logged_user_cookie(self.client, admin_user)
         one_filter = filters[list(filters.keys())[0]]
