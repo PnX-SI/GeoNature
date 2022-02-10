@@ -1,24 +1,18 @@
 import pytest
-
-from flask import url_for, request, template_rendered
+from flask import request, template_rendered, url_for
 from sqlalchemy import func
 from werkzeug.exceptions import Forbidden, Unauthorized
 
-from geonature.core.gn_permissions.models import (
-    TFilters,
-    CorRoleActionFilterModuleObject
+from geonature.core.gn_permissions.models import CorRoleActionFilterModuleObject, TFilters
+from geonature.core.gn_permissions.tools import (
+    cruved_scope_for_user_in_module,
+    get_user_from_token_and_raise,
+    get_user_permissions,
 )
 from geonature.utils.env import DB
 
-
-from geonature.core.gn_permissions.tools import (
-    get_user_permissions,
-    get_user_from_token_and_raise,
-    cruved_scope_for_user_in_module,
-)
-
-from .utils import set_logged_user_cookie, logged_user_headers
 from .fixtures import filters
+from .utils import logged_user_headers, set_logged_user_cookie
 
 
 @pytest.fixture
@@ -50,7 +44,7 @@ def deactivate_csrf(app):
 @pytest.mark.usefixtures("client_class")
 class TestGnPermissionsRoutes:
     def test_get_cruved(self, users):
-        admin_user = users['admin_user']
+        admin_user = users["admin_user"]
         set_logged_user_cookie(self.client, admin_user)
 
         response = self.client.get(url_for("gn_permissions.get_cruved"))
@@ -59,14 +53,15 @@ class TestGnPermissionsRoutes:
         assert "GEONATURE" in response.json.keys()
 
     def test_get_cruved_with_module(self, users):
-        admin_user = users['admin_user']
+        admin_user = users["admin_user"]
         set_logged_user_cookie(self.client, admin_user)
 
-        response = self.client.get(url_for("gn_permissions.get_cruved"),
-                                   query_string={'module_code': 'GEONATURE'})
+        response = self.client.get(
+            url_for("gn_permissions.get_cruved"), query_string={"module_code": "GEONATURE"}
+        )
 
         assert response.status_code == 200
-        assert list(response.json.keys()) == ['GEONATURE']
+        assert list(response.json.keys()) == ["GEONATURE"]
 
     def test_logout(self):
         response = self.client.get(url_for("gn_permissions.logout"))
@@ -74,9 +69,10 @@ class TestGnPermissionsRoutes:
         assert response.status_code == 200
         assert response.data == b"Logout"
 
+
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestGnPermissionsTools:
-    """ Test of gn_permissions tools functions"""
+    """Test of gn_permissions tools functions"""
 
     def test_user_from_token_and_raise_fail(self):
         # no cookie
@@ -106,11 +102,13 @@ class TestGnPermissionsTools:
         with pytest.raises(Forbidden):
             get_user_permissions(fake_user, code_action="C", code_filter_type="SCOPE")
         # with module code
-    
+
     def test_cruved_scope_for_user_in_module(self, users):
-        admin_user = users['admin_user']
+        admin_user = users["admin_user"]
         # get cruved for geonature
-        cruved, herited = cruved_scope_for_user_in_module(id_role=admin_user.id_role, module_code="GEONATURE")
+        cruved, herited = cruved_scope_for_user_in_module(
+            id_role=admin_user.id_role, module_code="GEONATURE"
+        )
         assert herited == False
         assert cruved == {"C": "3", "R": "3", "U": "3", "V": "3", "E": "3", "D": "3"}
 
@@ -128,7 +126,7 @@ class TestGnPermissionsView:
         """
         Test get page with all roles
         """
-        set_logged_user_cookie(self.client, users['admin_user'])
+        set_logged_user_cookie(self.client, users["admin_user"])
         response = self.client.get(url_for("gn_permissions_backoffice.users"))
         # test = self.get_context_variable('users')
         assert response.status_code == 200
@@ -139,10 +137,12 @@ class TestGnPermissionsView:
         """
         Test get page with all cruved of a user
         """
-        admin_user = users['admin_user']
+        admin_user = users["admin_user"]
         set_logged_user_cookie(self.client, admin_user)
 
-        response = self.client.get(url_for("gn_permissions_backoffice.user_cruved", id_role=admin_user.id_role))
+        response = self.client.get(
+            url_for("gn_permissions_backoffice.user_cruved", id_role=admin_user.id_role)
+        )
 
         template, context = captured_templates[0]
         assert template.name == "cruved_user.html"
@@ -155,7 +155,7 @@ class TestGnPermissionsView:
         """
         Test get user cruved form page
         """
-        admin_user = users['admin_user']
+        admin_user = users["admin_user"]
         # with user admin
         set_logged_user_cookie(self.client, admin_user)
 
@@ -249,16 +249,18 @@ class TestGnPermissionsView:
 
         assert response.status_code == 302
 
-    # @pytest.mark.usefixtures('deactivate_csrf') seems not working here 
+    # @pytest.mark.usefixtures('deactivate_csrf') seems not working here
     def test_update_other_perm(self, deactivate_csrf, users, filters):
         admin_user = users["admin_user"]
-        self_user = users['self_user']
+        self_user = users["self_user"]
         set_logged_user_cookie(self.client, admin_user)
         permission = (
-            DB.session.query(CorRoleActionFilterModuleObject).filter(CorRoleActionFilterModuleObject.id_role==self_user.id_role).first()
+            DB.session.query(CorRoleActionFilterModuleObject)
+            .filter(CorRoleActionFilterModuleObject.id_role == self_user.id_role)
+            .first()
         )
         id_permission = permission.id_permission
-        # Take a 
+        # Take the last filter so that we cannot have a SCOPE filter type
         one_filter = filters[list(filters.keys())[-1]]
         # change action and filter
         update_data = {"module": "1", "action": "1", "filter": one_filter.id_filter}
@@ -276,7 +278,7 @@ class TestGnPermissionsView:
         assert response.status_code == 302
         # TODO: maybe a better way to do this
         updated_permission = DB.session.query(CorRoleActionFilterModuleObject).get(id_permission)
-        assert updated_permission.id_action == int(update_data['action'])
+        assert updated_permission.id_action == int(update_data["action"])
 
     def test_post_filter(self, deactivate_csrf, users, filters):
         admin_user = users["admin_user"]
@@ -288,15 +290,13 @@ class TestGnPermissionsView:
         }
         one_filter = filters[list(filters.keys())[0]]
         id_filter_type = one_filter.id_filter_type
-        
+
         response = self.client.post(
-            url_for("gn_permissions_backoffice.filter_form", 
-                    id_filter_type=id_filter_type),
-                    data=data,
+            url_for("gn_permissions_backoffice.filter_form", id_filter_type=id_filter_type),
+            data=data,
         )
-        
+
         assert response.status_code == 302
-        
 
     def test_update_filter(self, deactivate_csrf, users, filters):
         admin_user = users["admin_user"]
@@ -306,7 +306,7 @@ class TestGnPermissionsView:
             "label_filter": "Les sonneurs bleus",
             "value_filter": "213",
             "description_filter": "Filtre de validation des sonneurs bleus",
-            "submit": "Valider"
+            "submit": "Valider",
         }
 
         response = self.client.post(
@@ -329,7 +329,7 @@ class TestGnPermissionsView:
         response = self.client.get(
             url_for("gn_permissions_backoffice.filter_list", id_filter_type=id_filter_type)
         )
-        
+
         template, context = captured_templates[0]
         assert template.name == "filter_list.html"
         # Here context["filters"] is of type BaseQuery
@@ -346,7 +346,7 @@ class TestGnPermissionsView:
         )
 
         assert response.status_code == 404
-    
+
     def test_delete_filter(self, users, filters):
         admin_user = users["admin_user"]
         set_logged_user_cookie(self.client, admin_user)
@@ -358,4 +358,9 @@ class TestGnPermissionsView:
 
         # Since there is a redirection : 302
         assert response.status_code == 302
-        assert url_for('gn_permissions_backoffice.filter_list', id_filter_type=one_filter.id_filter_type) in response.location
+        assert (
+            url_for(
+                "gn_permissions_backoffice.filter_list", id_filter_type=one_filter.id_filter_type
+            )
+            in response.location
+        )
