@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.9.2 (unreleased)
+------------------
+
+**🐛 Corrections**
+
+* Correction d’une régression sur la récupération de la liste des taxons (#1674)
+
+
 2.9.1 (2022-01-27)
 ------------------
 
