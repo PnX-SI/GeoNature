@@ -230,41 +230,31 @@ class TestSensitivity:
     def test_synthese_sensitivity(self, app):
         taxon = Taxref.query.first()
         sensitivity_nomenc_type = BibNomenclaturesTypes.query.filter_by(mnemonique='SENSIBILITE').one()
-        nomenc_maille = TNomenclatures.query.filter_by(id_type=sensitivity_nomenc_type.id_type,
-                                                       mnemonique='2').one()
+        nomenc_not_sensitive = TNomenclatures.query.filter_by(id_type=sensitivity_nomenc_type.id_type,
+                                                              mnemonique='0').one()
         nomenc_no_diff = TNomenclatures.query.filter_by(id_type=sensitivity_nomenc_type.id_type,
                                                         mnemonique='4').one()
         with db.session.begin_nested():
-            rule = SensitivityRule(cd_nom=taxon.cd_nom, nomenclature_sensitivity=nomenc_no_diff,
-                                   sensitivity_duration=100)
+            rule = SensitivityRule(
+                cd_nom=taxon.cd_nom,
+                nomenclature_sensitivity=nomenc_no_diff,
+                sensitivity_duration=5,
+            )
             db.session.add(rule)
         with db.session.begin_nested():
             db.session.execute('REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref')
+
         date_obs = datetime.now()
-        geom = WKTElement('POINT(6.12 44.85)', srid=4326)
-
-        query = func.gn_sensitivity.get_id_nomenclature_sensitivity(
-                        sa.cast(date_obs, sa.types.Date),
-                        taxon.cd_ref,
-                        geom,
-                        sa.cast({}, sa.dialects.postgresql.JSONB),
-                    )
-        id_nomenc = db.session.execute(query).scalar()
-        nomenc = TNomenclatures.query.get(id_nomenc)
-        assert(nomenc.mnemonique == nomenc_no_diff.mnemonique)
-
         with db.session.begin_nested():
             s = Synthese(cd_nom=taxon.cd_nom, nom_cite='Sensitive taxon',
-                         date_min=date_obs, date_max=date_obs)#, the_geom_4326=geom)
+                         date_min=date_obs, date_max=date_obs)
             db.session.add(s)
         db.session.refresh(s)
         assert(s.id_nomenclature_sensitivity == nomenc_no_diff.id_nomenclature)
 
-        # verify setting id_nomenclature_sensitivity manually have precedence other sensitivity trigger
+        date_obs -= timedelta(days=365 * 10)
         with db.session.begin_nested():
-            s = Synthese(cd_nom=taxon.cd_nom, nom_cite='Sensitive taxon',
-                         date_min=date_obs, date_max=date_obs,
-                         id_nomenclature_sensitivity=nomenc_maille.id_nomenclature)
-            db.session.add(s)
+            s.date_min = date_obs
+            s.date_max = date_obs
         db.session.refresh(s)
-        assert(s.id_nomenclature_sensitivity == nomenc_maille.id_nomenclature)
+        assert(s.id_nomenclature_sensitivity == nomenc_not_sensitive.id_nomenclature)
