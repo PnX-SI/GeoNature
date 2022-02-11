@@ -8,6 +8,7 @@ from urllib.request import urlopen
 import lzma
 import os, os.path
 
+from geonature.core.gn_commons.models import TParameters
 from utils_flask_sqla.migrations.utils import logger
 
 
@@ -44,9 +45,10 @@ def create_temporary_grids_table(schema, temp_table_name):
 
 def insert_grids_and_drop_temporary_table(schema, temp_table_name, area_type):
     logger.info("Copy grids in l_areas…")
+    local_srid = get_local_srid()
     op.execute(f"""
         INSERT INTO {schema}.l_areas (id_type, area_code, area_name, geom, geojson_4326)
-        SELECT {schema}.get_id_area_type('{area_type}') AS id_type, cd_sig, code, geom, geojson
+        SELECT {schema}.get_id_area_type('{area_type}') AS id_type, cd_sig, code, ST_Transform(geom, {local_srid}), geojson
         FROM {schema}.{temp_table_name}
     """)
     logger.info("Copy grids in li_grids…")
@@ -66,3 +68,10 @@ def insert_grids_and_drop_temporary_table(schema, temp_table_name, area_type):
     op.execute(f'REINDEX INDEX {schema}.index_l_areas_geom')
     logger.info("Dropping temporary grids table…")
     op.execute(f'DROP TABLE {schema}.{temp_table_name}')
+
+
+def get_local_srid():
+    return TParameters.query.filter_by(parameter_name='local_srid') \
+        .with_entities(TParameters.parameter_value) \
+        .one() \
+        .parameter_value

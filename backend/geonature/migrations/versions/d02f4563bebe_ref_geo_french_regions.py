@@ -9,6 +9,7 @@ import sqlalchemy as sa
 from shutil import copyfileobj
 
 from geonature.migrations.ref_geo_utils import (
+    get_local_srid,
     schema,
     delete_area_with_type,
 )
@@ -49,6 +50,7 @@ def upgrade():
         logger.info("Inserting regions data in temporary table…")
         cursor.copy_expert(f'COPY {schema}.{temp_table_name} FROM STDIN', geofile)
     logger.info("Copy regions in l_areas…")
+    local_srid = get_local_srid()
     op.execute(f"""
         INSERT INTO {schema}.l_areas
             (id_type, area_code, area_name, geom, geojson_4326)
@@ -56,7 +58,7 @@ def upgrade():
             {schema}.get_id_area_type('REG') as id_type,
             insee_reg,
             nom,
-            geom,
+            ST_Transform(geom, {local_srid}),
             public.ST_asgeojson(public.st_transform(geom, 4326))
         FROM {schema}.{temp_table_name}
     """)
