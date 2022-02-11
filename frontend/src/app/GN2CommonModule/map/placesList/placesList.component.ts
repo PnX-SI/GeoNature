@@ -107,9 +107,6 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
           this.place = null;
         }
       },
-      err => {
-        this.commonService.translateToaster('error', err.error.description);
-      }
     );
   }
 }

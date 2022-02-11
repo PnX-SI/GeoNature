@@ -23,7 +23,11 @@ def set_logged_user_cookie(client, user):
                                 id_role=user.id_role,
                                 id_application=current_app.config['ID_APP'],
     ).one()
-    client.set_cookie('*', 'token', user_to_token(app_user))
+    client.set_cookie(current_app.config['SERVER_NAME'], 'token', user_to_token(app_user))
+
+
+def unset_logged_user_cookie(client):
+    client.delete_cookie(current_app.config['SERVER_NAME'], 'token')
 
 
 def logged_user_headers(user, headers=Headers()):

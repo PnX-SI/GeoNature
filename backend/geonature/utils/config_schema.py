@@ -270,8 +270,6 @@ class Synthese(Schema):
     EXCLUDED_COLUMNS = fields.List(fields.String(), load_default=[])
     # Afficher ou non l'arbre taxonomique
     DISPLAY_TAXON_TREE = fields.Boolean(load_default=True)
-    # rajoute le filtre sur l'observers_txt en ILIKE sur les portée 1 et 2 du CRUVED
-    CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = fields.Boolean(load_default=False)
     # Switch the observer form input in free text input (true) or in select input (false)
     SEARCH_OBSERVER_WITH_LIST = fields.Boolean(load_default=False)
     # id of the observer list -- utilisateurs.t_menus

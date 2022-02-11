@@ -265,10 +265,6 @@ MAIL_ON_ERROR = false
     # Passer à 'false' si le temps de chargement est trop long.
     DISPLAY_TAXON_TREE = true
 
-    # Active (=true) ou pas (=false) le fait de rechercher sur le nom d'observateur
-    # en 'ILIKE' sur les portées 1 et 2 du CRUVED
-    CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = false
-
     # Switch the observer form input in free text input (false by default) or in select input (true)
     SEARCH_OBSERVER_WITH_LIST = false
     # id of the observer list -- utilisateurs.t_menus

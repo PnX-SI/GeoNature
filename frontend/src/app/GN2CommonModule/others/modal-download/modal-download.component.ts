@@ -96,7 +96,6 @@ export class ModalDownloadComponent implements OnInit {
         }
       },
       (e: HttpErrorResponse) => {
-        this._commonService.translateToaster('error', 'ErrorMessage');
         this.isDownloading = false;
       },
       () => {

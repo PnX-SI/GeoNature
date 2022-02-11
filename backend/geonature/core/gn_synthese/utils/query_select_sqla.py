@@ -138,11 +138,6 @@ class SyntheseQuery:
                 self.model_id_syn_col.in_(subquery_observers),
                 self.model_id_digitiser_column == user.id_role,
             ]
-            if current_app.config["SYNTHESE"]["CRUVED_SEARCH_WITH_OBSERVER_AS_TXT"]:
-                user_fullname1 = user.nom_role + " " + user.prenom_role + "%"
-                user_fullname2 = user.prenom_role + " " + user.nom_role + "%"
-                ors_filters.append(self.model_observers_column.ilike(user_fullname1))
-                ors_filters.append(self.model_observers_column.ilike(user_fullname2))
 
             allowed_datasets = [d.id_dataset for d in TDatasets.query.filter_by_scope(scope).all()]
             ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))

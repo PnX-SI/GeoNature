@@ -102,8 +102,6 @@ export class AfCardComponent implements OnInit {
         err => {
           if (err.status === 404) {
             this._commonService.translateToaster("error", "MetaData.AF404");
-          } else {
-            this._commonService.translateToaster("error", "ErrorMessage");
           }
           this._router.navigate(['/metadata']);
         }

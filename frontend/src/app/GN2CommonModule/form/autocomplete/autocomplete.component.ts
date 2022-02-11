@@ -100,10 +100,7 @@ export class AutoCompleteComponent implements OnInit {
               }
             }
           }
-          return this._api.get<any>(url, { params: getParams }).catch(err => {
-            if (err.status_code === 500) {
-              this._commonService.translateToaster('error', 'ErrorMessage');
-            }
+          return this._api.get<any>(url, { params: getParams }).catch(() => {
             return of([]);
           });
         } else {
