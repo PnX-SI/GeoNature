@@ -3,6 +3,8 @@ from flask import request, template_rendered, url_for
 from sqlalchemy import func
 from werkzeug.exceptions import Forbidden, Unauthorized
 
+from pypnusershub.db.models import User
+
 from geonature.core.gn_permissions.models import CorRoleActionFilterModuleObject, TFilters
 from geonature.core.gn_permissions.tools import (
     cruved_scope_for_user_in_module,
@@ -32,6 +34,11 @@ def captured_templates(app):
 @pytest.fixture
 def unavailable_filter_id():
     return DB.session.query(func.max(TFilters.id_filter)).scalar() + 1
+
+
+@pytest.fixture
+def unavailable_user_id():
+    return DB.session.query(func.max(User.id_role)).scalar() + 1
 
 
 @pytest.fixture
@@ -93,11 +100,11 @@ class TestGnPermissionsTools:
             resp = get_user_from_token_and_raise(request)
             assert isinstance(resp, dict)
 
-    def test_get_user_permissions_forbidden(self):
+    def test_get_user_permissions_forbidden(self, unavailable_user_id):
         """
         Test get_user_permissions
         """
-        fake_user = {"id_role": 220, "nom_role": "Administrateur"}
+        fake_user = {"id_role": unavailable_user_id, "nom_role": "Administrateur"}
         # get_user_permissions(fake_user, code_action="C", code_filter_type="SCOPE")
         with pytest.raises(Forbidden):
             get_user_permissions(fake_user, code_action="C", code_filter_type="SCOPE")
@@ -122,16 +129,22 @@ class TestGnPermissionsTools:
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestGnPermissionsView:
-    def test_get_users(self, users):
+    def test_get_users(self, users, captured_templates):
         """
         Test get page with all roles
         """
-        set_logged_user_cookie(self.client, users["admin_user"])
+        admin_user = users["admin_user"]
+        set_logged_user_cookie(self.client, admin_user)
+
         response = self.client.get(url_for("gn_permissions_backoffice.users"))
-        # test = self.get_context_variable('users')
+
+        template, context = captured_templates[0]
+        assert template.name == "users.html"
         assert response.status_code == 200
+        users_context = context["users"]
         assert b"Liste des roles" in response.data
         assert b"Grp_en_poste" in response.data
+        assert admin_user.id_role in [user["id_role"] for user in users_context]
 
     def test_get_user_cruveds(self, users, captured_templates):
         """
@@ -224,8 +237,7 @@ class TestGnPermissionsView:
             data=wrong_data,
         )
 
-        # if the post return a 200, its an error who render the initial template form
-        # the post must return a 302 (redirect code)
+        # if the post returns a 200, its an error which renders the initial template form (otherwise it should be 302, see other tests)
         response.status_code == 200
 
     def test_post_other_perm(self, deactivate_csrf, users, filters):
@@ -254,6 +266,7 @@ class TestGnPermissionsView:
         admin_user = users["admin_user"]
         self_user = users["self_user"]
         set_logged_user_cookie(self.client, admin_user)
+        # Get the permission to update
         permission = (
             DB.session.query(CorRoleActionFilterModuleObject)
             .filter(CorRoleActionFilterModuleObject.id_role == self_user.id_role)
