@@ -113,6 +113,7 @@ if [ "$install_sig_layers" = true ];
 then
     geonature db upgrade ref_geo_fr_departments@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
     geonature db upgrade ref_geo_fr_municipalities@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
+    geonature db upgrade ref_geo_fr_regions@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
 fi
 
 if [ "$install_grid_layer" = true ];
