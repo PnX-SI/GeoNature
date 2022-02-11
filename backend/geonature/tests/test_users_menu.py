@@ -1,14 +1,37 @@
 import pytest
 from flask import url_for
 from sqlalchemy import func
+from sqlalchemy.sql import and_
 
-from geonature.core.users.models import VUserslistForallMenu
+from geonature.core.users.models import VUserslistForallMenu, TListes
 from geonature.utils.env import db
 
 
 @pytest.fixture
 def unavailable_menu_id():
     return db.session.query(func.max(VUserslistForallMenu.id_menu)).scalar() + 1
+
+
+@pytest.fixture
+def user_tlist():
+    """
+    Get a user list that is mentioned in VUserslistForallMenu so
+    that the getRolesByMenuCode call works
+    """
+    # with entity ?
+    return (
+        TListes.query.with_entities(
+            TListes.nom_liste,
+            TListes.code_liste,
+            TListes.desc_liste,
+            VUserslistForallMenu.nom_complet,
+        )
+        .join(
+            VUserslistForallMenu,
+            and_(TListes.id_liste == VUserslistForallMenu.id_menu),
+        )
+        .first()
+    )
 
 
 # No need of temporary transaction since only selects are performed
@@ -31,3 +54,20 @@ class TestApiUsersMenu:
         resp = self.client.get(url_for("users.getRolesByMenuId", id_menu=unavailable_menu_id))
 
         assert resp.status_code == 404
+
+    def test_get_roles_by_menu_code(self, user_tlist):
+        resp = self.client.get(
+            url_for("users.getRolesByMenuCode", code_liste=user_tlist.code_liste)
+        )
+        json_resp = resp.json
+
+        assert resp.status_code == 200
+        assert user_tlist.nom_complet in [resp['nom_complet'] for resp in json_resp]
+
+    def test_get_listes(self, user_tlist):
+        resp = self.client.get(
+            url_for("users.getListes")
+        )
+
+        assert resp.status_code == 200
+        assert user_tlist.nom_liste in [resp['nom_liste'] for resp in resp.json]
