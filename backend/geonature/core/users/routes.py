@@ -195,7 +195,7 @@ def get_organismes_jdd(info_role):
 ### ACCOUNT_MANAGEMENT ROUTES #####
 #########################
 
-
+# TODO: let frontend call UsersHub directly?
 @routes.route("/inscription", methods=["POST"])
 def inscription():
     """

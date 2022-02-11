@@ -8,7 +8,7 @@ from pypnusershub.db.models import Organisme as BibOrganismes
 from geonature.utils.env import db
 from geonature.tests.utils import set_logged_user_cookie
 
-# Apparently: need to import both ?
+# Apparently: need to import both?
 from geonature.tests.fixtures import datasets, acquisition_frameworks
 
 
