@@ -11,6 +11,7 @@ def unavailable_menu_id():
     return db.session.query(func.max(VUserslistForallMenu.id_menu)).scalar() + 1
 
 
+# No need of temporary transaction since only selects are performed
 @pytest.mark.usefixtures("client_class")
 class TestApiUsersMenu:
     """
