@@ -5,6 +5,7 @@ import json
 
 from flask import Blueprint, request, current_app, Response, redirect
 from sqlalchemy.sql import distinct, and_
+from werkzeug.exceptions import NotFound
 
 from geonature.utils.env import DB
 from geonature.core.gn_permissions import decorators as permissions
@@ -55,7 +56,7 @@ def getRolesByMenuId(id_menu):
     :type id_menu: int
     :query str nom_complet: begenning of complet name of the role
     """
-    q = DB.session.query(VUserslistForallMenu).filter_by(id_menu=id_menu).first_or_404()
+    q = DB.session.query(VUserslistForallMenu).filter_by(id_menu=id_menu)
 
     parameters = request.args
     if parameters.get("nom_complet"):
@@ -63,6 +64,10 @@ def getRolesByMenuId(id_menu):
             VUserslistForallMenu.nom_complet.ilike("{}%".format(parameters.get("nom_complet")))
         )
     data = q.order_by(VUserslistForallMenu.nom_complet.asc()).all()
+
+    if not data:
+        raise NotFound('No menu found')
+
     return [n.as_dict() for n in data]
 
 
