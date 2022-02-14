@@ -2,6 +2,14 @@
 CHANGELOG
 =========
 
+2.9.2 (unreleased)
+------------------
+
+**🐛 Corrections**
+
+* Correction de l’authentification au CAS de l’INPN
+
+
 2.9.1 (2022-01-27)
 ------------------
 
