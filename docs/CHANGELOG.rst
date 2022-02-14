@@ -5,6 +5,10 @@ CHANGELOG
 2.9.2 (unreleased)
 ------------------
 
+**🚀 Nouveautés**
+
+* Optimisation du nombres d’informations renvoyées par l’API pour les utilisateurs et les organismes
+
 **🐛 Corrections**
 
 * Correction d’une régression sur la récupération de la liste des taxons (#1674)
