@@ -12,6 +12,7 @@ CHANGELOG
 **🐛 Corrections**
 
 * Correction d’une régression sur la récupération de la liste des taxons (#1674)
+* Correction de l’authentification au CAS de l’INPN
 
 
 2.9.1 (2022-01-27)
