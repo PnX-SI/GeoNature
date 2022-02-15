@@ -14,6 +14,7 @@ from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
 from geonature.core.gn_meta.routes import get_af_from_id
 from geonature.core.gn_permissions.models import CorRoleActionFilterModuleObject, TActions, TFilters
+from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 
 from .fixtures import acquisition_frameworks, datasets, source, synthese_data
@@ -499,6 +500,10 @@ class TestGNMeta:
         assert response.status_code == 200
 
     def test_uuid_report(self, users, synthese_data):
+        observations_nbr = db.session.query(func.count(Synthese.id_synthese)).scalar()
+        if observations_nbr > 1000000:
+            pytest.skip("Too much observations in gn_synthese.synthese")
+
         response = self.client.get(url_for("gn_meta.uuid_report"))
         assert response.status_code == Unauthorized.code
 
