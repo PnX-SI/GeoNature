@@ -37,7 +37,7 @@ CHANGELOG
 
 **🐛 Corrections**
 
-* Correction d’une régression sur la récupération de la liste des taxons (#1674)
+* Correction d’une régression sur la récupération de la liste des taxons (#1672)
 * Correction de l’authentification au CAS de l’INPN
 * Correction du calcul de la sensibilité (#1284) :
 
