@@ -147,14 +147,6 @@ class SyntheseQuery:
                 self.model_id_digitiser_column == auth.id_role,
             ]
 
-            # ... if user authenticated firstname and lastname combinaisons are
-            # in observers plain text column
-            if current_app.config["SYNTHESE"]["CRUVED_SEARCH_WITH_OBSERVER_AS_TXT"]:
-                user_fullname = f"{auth.nom_role} {auth.prenom_role}%"
-                user_fullname_alernative = f"{auth.prenom_role} {auth.nom_role}%"
-                ors_filters.append(self.model_observers_column.ilike(user_fullname))
-                ors_filters.append(self.model_observers_column.ilike(user_fullname_alernative))
-
             allowed_datasets = [d.id_dataset for d in TDatasets.query.filter_by_scope(scope).all()]
             ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
 

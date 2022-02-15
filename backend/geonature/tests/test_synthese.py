@@ -113,7 +113,8 @@ class TestSynthese:
 
         features = data["data"]["features"]
         assert len(data["data"]["features"]) > 0
-        assert all(feat["properties"]["lb_nom"] in [synt.nom_cite for synt in synthese_data] for feat in features)
+        lb_noms = [lb_nom for lb_nom in features[0]["properties"]["lb_nom"]]
+        assert all(lb_nom in [synt.nom_cite for synt in synthese_data] for lb_nom in lb_noms)
         assert response.status_code == 200
 
     def test_filter_cor_observers(self, users, synthese_data):

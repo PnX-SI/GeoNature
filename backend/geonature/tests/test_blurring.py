@@ -106,7 +106,7 @@ def sensitivity_rule(synthese_data):
     return rule
 
 
-@pytest.mark.usefixtures("client_class")
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestBlurring:
     def test_get_one_synthese_record(self, blurring_config, blurred_users,
                                      synthese_data, sensitivity_rule):

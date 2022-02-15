@@ -1,20 +1,16 @@
 import logging
 import datetime
 
-from flask import current_app
+from flask import current_app, g
 from werkzeug.exceptions import Unauthorized, Forbidden
 from werkzeug.routing import RequestRedirect
-
-
 from itsdangerous import (
     TimedJSONWebSignatureSerializer as Serializer,
     SignatureExpired,
     BadSignature,
 )
-
 import sqlalchemy as sa
 from sqlalchemy.sql.expression import func
-
 
 from pypnusershub.db.tools import (
     AccessRightsExpiredError,
@@ -25,10 +21,9 @@ from pypnusershub.db.models import (User, AppRole)
 from geonature.core.gn_commons.models import TModules
 from geonature.core.taxonomie.models import Taxref
 from geonature.core.ref_geo.models import LAreas, BibAreasTypes
-
 from geonature.core.gn_permissions.models import VUsersPermissions
-
 from geonature.utils.env import DB
+
 
 log = logging.getLogger(__name__)
 
@@ -342,7 +337,7 @@ def get_scopes_by_action(id_role=None, module_code=None, object_code=None):
         id_role = g.current_user.id_role
     cruved = UserCruved(id_role=id_role, code_filter_type="SCOPE",
                         module_code=module_code, object_code=object_code)
-    return { action: int(scope) for action, scope in cruved.get_perm_for_all_actions(get_id=False)[0].items() }
+    return { action: int(scope) for action, scope in cruved.get_perm_for_all_actions()[0].items() }
 
 
 def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, object_code=None):

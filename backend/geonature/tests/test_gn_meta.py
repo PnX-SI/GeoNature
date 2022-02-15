@@ -458,11 +458,15 @@ class TestGNMeta:
     def test_update_dataset_forbidden(self, users, datasets):
         ds = datasets["own_dataset"]
         user = users["stranger_user"]
-        actions_scopes = [{"action": "U", "filter_type": "SCOPE", "value_filter": "2", "module": "METADATA"}]
+        actions_scopes = [
+            {"action": "U", "filter_type": "SCOPE", "value_filter": "2", "module": "METADATA"}
+        ]
         with db.session.begin_nested():
             for act_scope in actions_scopes:
                 action = TActions.query.filter_by(code_action=act_scope.get("action", "")).one()
-                filter_type = BibFiltersType.query.filter_by(code_filter_type=act_scope.get("filter_type", "")).one()
+                filter_type = BibFiltersType.query.filter_by(
+                    code_filter_type=act_scope.get("filter_type", "")
+                ).one()
                 module = TModules.query.filter_by(module_code=act_scope.get("module", "")).one()
                 permission = CorRoleActionFilterModuleObject(
                     role=user,
@@ -593,9 +597,7 @@ class TestGNMeta:
             app.preprocess_request()
             create = TDatasets.query._get_create_scope(module_code=modcode)
 
-        usercreate = TDatasets.query._get_create_scope(
-            module_code=modcode, user=users["user"]
-        )
+        usercreate = TDatasets.query._get_create_scope(module_code=modcode, user=users["user"])
         norightcreate = TDatasets.query._get_create_scope(
             module_code=modcode, user=users["noright_user"]
         )
