@@ -264,8 +264,8 @@ def get_synthese(auth, permissions):
 
 
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
-@permissions.check_permissions(module_code="SYNTHESE", action_code="R")
-def get_one_synthese(auth, permissions, id_synthese):
+@permissions.check_permissions(module_code="SYNTHESE", action_code="R", with_scope=True)
+def get_one_synthese(auth, permissions, scope, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature
     """
     synthese = Synthese.query.with_nomenclatures().options(
@@ -278,7 +278,7 @@ def get_one_synthese(auth, permissions, id_synthese):
         joinedload('validations'),
         joinedload('cor_observers'),
     ).get_or_404(id_synthese)
-    if not synthese.has_instance_permission(scope=auth["scope"]):
+    if not synthese.has_instance_permission(scope=scope):
         raise Forbidden()
 
     geofeature = synthese.as_geofeature(

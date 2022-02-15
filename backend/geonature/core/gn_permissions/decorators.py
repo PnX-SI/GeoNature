@@ -95,7 +95,8 @@ def check_cruved_scope(
 def check_permissions(
     module_code,
     action_code,
-    object_code=None
+    object_code=None,
+    with_scope=False,
 ):
     """Décorateur permettant de protéger les routes des web services.
 
@@ -162,8 +163,9 @@ def check_permissions(
 
                 # Set infos into kwargs
                 kwargs["auth"] = old_access_permission
-                kwargs["auth"]["scope"] = int(old_access_permission["value_filter"])
                 kwargs["permissions"] = permissions
+                if with_scope:
+                    kwargs["scope"] = int(getattr(old_access_permission, "value_filter"))
 
                 # Store data globally within the current context
                 g.user = old_access_permission # Retro-compatibility
