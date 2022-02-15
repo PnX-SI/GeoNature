@@ -621,7 +621,7 @@ def deleteOneOccurenceCounting(id_count):
     """
     ccc = CorCountingOccurrence.query.get_or_404(id_count)
     # TODO check ccc ownership!
-    DB.session.delete(data)
+    DB.session.delete(ccc)
     DB.session.commit()
     return '', 204
 
