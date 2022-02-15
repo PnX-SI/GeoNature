@@ -70,29 +70,35 @@
     >
     </textarea>
 
-    <select
-      *ngSwitchCase="'select'"
-      class="form-control form-control-sm"
-      id="{{formDefComp['attribut_name']}}_{{rand}}"
-      [formControl]="form.get(formDefComp['attribut_name'])"
-    >
-      <option
-        [ngValue]="null"
-        *ngIf="!formDefComp['noNullOption']"
-      >
-        -
-      </option>
-      <option
-        *ngFor="let val of formDefComp['values']"
-        [value]="val"
-      >
-        {{val}}
-      </option>
-    </select>
+    <span *ngSwitchCase="'select'">
 
+      <select
+        *ngIf="isValInSelectList; else selectElseBlock"
+        class="form-control form-control-sm"
+        id="{{formDefComp['attribut_name']}}_{{rand}}"
+        (change)="test(val)"
+        [formControl]="form.get(formDefComp['attribut_name'])"
+        >
+        <option
+          [ngValue]="null"
+          *ngIf="!formDefComp['noNullOption']"
+          >
+          -
+        </option>
+        <option *ngFor="let val of formDefComp['values']" [value]="val">
+            {{val}}
+        </option>
+      </select>
+
+      <ng-template #selectElseBlock>
+        <input type="text"disabled [value]="form.get(formDefComp['attribut_name'])?.value" >
+      </ng-template>
+    </span>
+    
+    
     <div
-      *ngSwitchCase="'file'"
-      class="input-group"
+    *ngSwitchCase="'file'"
+    class="input-group"
     >
       <div class="custom-file">
         <input
