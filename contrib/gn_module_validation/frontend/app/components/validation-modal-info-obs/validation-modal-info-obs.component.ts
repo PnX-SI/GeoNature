@@ -59,10 +59,11 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
     // disable nextButton or previousButton if first last observation selected
     this.activateNextPrevButton(this.filteredIds.indexOf(this.id_synthese));
+    // call status only once on init
+    this.getStatusNames();
   }
-
   setCurrentCdNomenclature(item) {
-    this.currentCdNomenclature = item.cd_nomenclature;
+    this.currentCdNomenclature = item;
   }
 
   getStatusNames() {
@@ -89,12 +90,12 @@ export class ValidationModalInfoObsComponent implements OnInit {
           this._commonService.translateToaster("error", err.error);
         }
       },
-      () => {
-        this.edit = true;
-      }
     );
   }
 
+  editStatus() {
+    this.edit = !this.edit;
+  }
 
   changeObsIndex(increment: number) {
     // add 1 to find new position
@@ -125,17 +126,16 @@ export class ValidationModalInfoObsComponent implements OnInit {
     link.click();
   }
 
-  onSubmit(value) {    
+  onSubmit(value) {
     // post validation status form ('statusForm') for the current observation
     this._validService
       .postNewValidStatusAndUpdateUI(value, [this.id_synthese])
-      .subscribe(newValidationStatus => {             
+      .subscribe(newValidationStatus => {          
           this.currentValidationStatus = newValidationStatus;     
           this.statusForm.reset();
-      })
-      
+          this.editStatus();
+      })      
   }
-
 
   cancel() {
     this.statusForm.reset();
