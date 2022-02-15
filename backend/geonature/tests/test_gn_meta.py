@@ -13,7 +13,11 @@ from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound, Unaut
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
 from geonature.core.gn_meta.routes import get_af_from_id
-from geonature.core.gn_permissions.models import CorRoleActionFilterModuleObject, TActions, TFilters
+from geonature.core.gn_permissions.models import (
+    CorRoleActionFilterModuleObject,
+    TActions,
+    BibFiltersType,
+)
 from geonature.utils.env import db
 
 from .fixtures import acquisition_frameworks, datasets, source, synthese_data
@@ -454,14 +458,18 @@ class TestGNMeta:
     def test_update_dataset_forbidden(self, users, datasets):
         ds = datasets["own_dataset"]
         user = users["stranger_user"]
-        actions_scopes = [{"action": "U", "scope": "2", "module": "METADATA"}]
+        actions_scopes = [{"action": "U", "filter_type": "SCOPE", "value_filter": "2", "module": "METADATA"}]
         with db.session.begin_nested():
             for act_scope in actions_scopes:
                 action = TActions.query.filter_by(code_action=act_scope.get("action", "")).one()
-                scope = TFilters.query.filter_by(value_filter=act_scope.get("scope", "")).one()
+                filter_type = BibFiltersType.query.filter_by(code_filter_type=act_scope.get("filter_type", "")).one()
                 module = TModules.query.filter_by(module_code=act_scope.get("module", "")).one()
                 permission = CorRoleActionFilterModuleObject(
-                    role=user, action=action, filter=scope, module=module
+                    role=user,
+                    action=action,
+                    module=module,
+                    filter_type=filter_type,
+                    value_filter=act_scope.get("value_filter", ""),
                 )
                 db.session.add(permission)
         set_logged_user_cookie(self.client, user)

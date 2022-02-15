@@ -4,9 +4,9 @@ from flask import testing, url_for, current_app
 
 from geonature.utils.env import db
 
-from . import *
+from .fixtures import *
 from .utils import set_logged_user_cookie
-from .fixtures import acquisition_frameworks, datasets, synthese_data
+
 
 @pytest.fixture(scope='class')
 def blurring_config(app):

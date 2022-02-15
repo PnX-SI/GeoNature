@@ -206,7 +206,7 @@ def source():
     return source
 
 @pytest.fixture()
-def synthese_data(users, datasets, source):
+def synthese_data(app, users, datasets, source):
     now = datetime.datetime.now()
     map_center_point = Point(
         app.config['MAPCONFIG']['CENTER'][1],
