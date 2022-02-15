@@ -3,7 +3,7 @@ CHANGELOG
 =========
 
 2.10.0 (unreleased)
-------------------
+-------------------
 
 **🚀 Nouveautés**
 
@@ -22,6 +22,18 @@ CHANGELOG
     geonature generate_frontend_tsconfig
     geonature generate_frontend_tsconfig_app
 
+2.9.2 (unreleased)
+------------------
+
+**🚀 Nouveautés**
+
+* Optimisation du nombres d’informations renvoyées par l’API pour les utilisateurs et les organismes
+
+**🐛 Corrections**
+
+* Correction d’une régression sur la récupération de la liste des taxons (#1674)
+* Correction de l’authentification au CAS de l’INPN
+
 2.9.1 (2022-01-27)
 ------------------
 
@@ -34,6 +46,7 @@ CHANGELOG
 **🐛 Corrections**
 
 * Correction de l'URL de réinitialisation de mot passe envoyée par email (#1620)
+* Correction d’un problème d’authentification avec le CAS
 * Occtax : Correction des listes déroulantes masquées dans le bloc dénombrement, en rajoutant un scroll
 * Correction de l'URL de l'API de TaxHub (slash final manquant) pour l'affichage des photos sur la fiche d'un profil de taxon
 * Correction de la synchronisation des métadonnées depuis MTD
