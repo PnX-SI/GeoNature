@@ -28,12 +28,37 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
-* Optimisation du nombres d’informations renvoyées par l’API pour les utilisateurs et les organismes
+* Optimisation du nombre d’informations renvoyées par l’API pour les utilisateurs et les organismes
+* Ajout d’une commande pour relancer le calcul de la sensibilité, utile en cas de modification du référentiel de sensibilité : ``geonature sensitivity update-synthese``. Elle s'appuie sur la fonction ``gn_synthese.update_sensitivity()``.
+* Le niveau de diffusion dans la synthèse n’est plus calculé automatiquement à partir du niveau de sensibilité (#1711)
+* Le niveau de sensibilité tient compte du comportement de l’occurrence (``OCC_COMPORTEMENT``), en plus du statut biologique (``STATUT_BIO``)
+* Optimisation du recalcul de la sensibilité lors de la mise à jour de la synthèse (trigger ``BEFORE`` au lieu de ``AFTER``)
+* Ajout de tests unitaires sur les fonctions de calcul de la sensibilité
 
 **🐛 Corrections**
 
 * Correction d’une régression sur la récupération de la liste des taxons (#1674)
 * Correction de l’authentification au CAS de l’INPN
+* Correction du calcul de la sensibilité (#1284) :
+
+  * Gestion correcte de la présence de plusieurs règles avec et sans critère statut biologique
+  * Utilisation de la règle la plus sensible quand plusieurs règles s’appliquent
+
+**⚠️ Notes de version**
+
+* La correction de la fonction de calcul de la sensibilité est suivie d’un recalcul automatique du niveau de sensibilité des données présentes dans la synthèse. Si vous ne souhaitez pas procéder à ce recalcul, ajoutez le paramètre ``-x recompute-sensitivity=false`` lors de la mise à jour de la base de données avec la commande ``geonature db autoupgrade`` (lancée automatiquement par le script ``migration.sh``) :
+
+  ::
+
+    (venv)$ geonature db autoupgrade -x recompute-sensitivity=false
+
+* Le niveau de diffusion des données dans la synthèse est remis à ``NULL`` si celui-ci équivaut au niveau de sensibilité. Seuls les niveaux de diffusion qui différent sont laissés intacts. Si vous souhaitez rectifier vous-mêmes vos niveaux de diffusion et ne pas les remettre à ``NULL`` quand ils sont équivalents au niveau de sensibilité, vous pouvez ajouter le paramètre ``-x clear-diffusion-level=false`` lors de la mise à jour de la base de données :
+
+  ::
+
+    (venv)$ geonature db autoupgrade -x clear-diffusion-level=false
+
+  Si vous redescendez à l’état antérieur de votre base de données, les niveaux de diffusion seront restaurés à partir du niveau de sensibilité ; vous pouvez éviter ceci avec ``-x restore-diffusion-level=false``.
 
 2.9.1 (2022-01-27)
 ------------------
