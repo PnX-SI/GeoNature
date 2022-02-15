@@ -348,15 +348,35 @@ class TestSynthese:
         response_dataset = self.client.get(url_for('gn_synthese.observation_count_per_column', column=column_name_dataset))
         response_cd_nom = self.client.get(url_for('gn_synthese.observation_count_per_column', column=column_name_cd_nom))
 
-        id_datasets = [synt.id_dataset for synt in synthese_data]
-        id_dataset_set = set(id_datasets)
+        datasets_count = {}
+        for synt in synthese_data:
+            if synt.id_dataset not in datasets_count:
+                datasets_count[synt.id_dataset] = {'count': 1, 'id_dataset': synt.id_dataset}
+            else:
+                datasets_count[synt.id_dataset]['count'] += 1
+
+        cd_nom_count = {}
+        for synt in synthese_data:
+            if synt.cd_nom not in cd_nom_count:
+                cd_nom_count[synt.cd_nom] = {'count': 1, 'cd_nom': synt.cd_nom}
+            else:
+                cd_nom_count[synt.cd_nom]['count'] += 1
+
         resp_json = response_dataset.json
-        assert len(resp_json) == len(id_dataset_set)
-        assert [resp['count'] for resp in resp_json] == [id_datasets.count(ds) for ds in id_dataset_set]
+        assert resp_json
+        for test_dataset in datasets_count.values():
+            assert test_dataset['id_dataset'] in [item['id_dataset'] for item in resp_json]
+            for item in resp_json:
+                if item['id_dataset'] == test_dataset['id_dataset']:
+                    assert item['count'] == test_dataset['count']
 
         resp_json = response_cd_nom.json
-        assert len(resp_json) == len(set(synt.cd_nom for synt in synthese_data))
-        assert response_cd_nom.json
+        assert resp_json
+        for test_cd_nom in cd_nom_count.values():
+            assert test_cd_nom['cd_nom'] in [item['cd_nom'] for item in resp_json]
+            for item in resp_json:
+                if item['cd_nom'] == test_cd_nom['cd_nom']:
+                    assert item['count'] >= test_cd_nom['count']
 
     def test_get_autocomplete_taxons_synthese(self, synthese_data):
         seach_name = synthese_data[0].nom_cite
