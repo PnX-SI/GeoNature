@@ -2,7 +2,7 @@ Ecrire des tests
 ================
 
 Cette documentation a pour objectif d'expliquer comment écrire des tests pour 
-le backend et le frontend de GeoNature.
+le backend de GeoNature.
 
 Un test se décompose en général en 3 étapes :
 
@@ -239,8 +239,3 @@ Le format ``xml`` est interprété par l'extension VSCode `Coverage Gutters <htt
 Si vous souhaitez voir le coverage directement depuis le navigateur, il est 
 possible de générer le coverage au format html en remplaçant ``xml`` par 
 ``html``.
-
-
-Frontend
---------
-TODO
