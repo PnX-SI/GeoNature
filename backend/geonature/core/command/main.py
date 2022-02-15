@@ -8,6 +8,7 @@ from os import environ
 import click
 from flask.cli import run_command
 import flask_migrate
+import alembic
 from alembic.migration import MigrationContext
 from alembic.context import EnvironmentContext
 from alembic.script import ScriptDirectory
@@ -184,3 +185,65 @@ def autoupgrade(directory, sql, tag, x_arg):
     for head in current_heads - heads:
         revision = head + '@head'
         flask_migrate.upgrade(directory, revision, sql, tag, x_arg)
+
+
+@db_cli.command()
+@click.option('-d', '--directory', default=None,
+              help=('Migration script directory (default is "migrations")'))
+@click.option('-x', '--x-arg', multiple=True,
+              help='Additional arguments consumed by custom env.py scripts')
+@with_appcontext
+def status(directory, x_arg):
+    """Show all revisions sorted by branches."""
+    config = migrate.get_config(directory, x_arg)
+    script = ScriptDirectory.from_config(config)
+    migration_context = MigrationContext.configure(db.session.connection())
+    current_heads = migration_context.get_current_heads()
+    unknown_heads = []
+    for head in current_heads:
+        try:
+            script.get_revision(head)
+        except alembic.util.exc.CommandError:
+            unknown_heads.append(head)
+    if unknown_heads:
+        current_heads = set()
+    else:
+        current_heads = script.get_all_current(current_heads)
+    outdated = False
+    bases = [ script.get_revision(base) for base in script.get_bases() ]
+    for rev in sorted(bases, key=lambda rev: next(iter(rev.branch_labels))):
+        branch, = rev.branch_labels
+        rev_list = [rev]
+        while rev.nextrev:
+            nextrev, = rev.nextrev
+            rev = script.get_revision(nextrev)
+            rev_list.append(rev)
+        enabled_branch = set(rev_list) & current_heads
+        fg = 'white' if enabled_branch else None
+        if enabled_branch:
+            if rev_list[-1] in current_heads:
+                fg = 'white'
+                check = ' ✓'
+            else:
+                fg = 'red'
+                check = ' ×'
+                outdated = True
+        else:
+            fg = None
+            check = ''
+        click.secho(f"[{branch}{check}]", bold=True, fg=fg)
+        applied = enabled_branch
+        for i, rev in enumerate(rev_list, 1):
+            fg = 'white' if applied else 'red' if enabled_branch else None
+            check = 'x' if applied else ' '
+            click.secho(f"  [{check}] {i:04d} ({rev.revision}) {rev.doc}", fg=fg)
+            if rev in current_heads:
+                applied = False
+    if unknown_heads:
+       click.secho("⚠ UNABLE TO CHECK DATABASE STATUS ⚠", bold=True, fg="red")
+       click.secho("These revisions are present in alembic version table "
+                   "but their script was not found:", bold=True, fg="red")
+       for unknown_head in unknown_heads:
+           click.secho(f"  · {unknown_head}", bold=True, fg="red")
+    elif outdated:
+        click.secho("Some branches are outdated, you can upgrade with: geonature db autoupgrade", fg="red")
