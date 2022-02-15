@@ -23,7 +23,7 @@ CHANGELOG
     geonature generate_frontend_tsconfig
     geonature generate_frontend_tsconfig_app
 
-2.9.2 (unreleased)
+2.9.2 (2022-02-15)
 ------------------
 
 **🚀 Nouveautés**
@@ -59,6 +59,7 @@ CHANGELOG
     (venv)$ geonature db autoupgrade -x clear-diffusion-level=false
 
   Si vous redescendez à l’état antérieur de votre base de données, les niveaux de diffusion seront restaurés à partir du niveau de sensibilité ; vous pouvez éviter ceci avec ``-x restore-diffusion-level=false``.
+
 
 2.9.1 (2022-01-27)
 ------------------
