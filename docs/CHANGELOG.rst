@@ -8,11 +8,35 @@ CHANGELOG
 **🚀 Nouveautés**
 
 * Optimisation du nombres d’informations renvoyées par l’API pour les utilisateurs et les organismes
+* Ajout d’une commande pour relancer le calcule de la sensibilité, utile en cas de modification du référentiel de sensibilité : ``geonature sensitivity update-synthese``
+* Le niveau de diffusion dans la synthèse n’est plus calculé automatiquement.
+* Le niveau de sensibilité tient compte du comportement de l’occurence (``OCC_COMPORTEMENT``) en plus du statut biologique (``STATUT_BIO``).
+* Optimisation du recalcule de la sensibilité lors de mise-à-jour de la synthèse (trigger ``BEFORE`` au lieu de ``AFTER``).
 
 **🐛 Corrections**
 
 * Correction d’une régression sur la récupération de la liste des taxons (#1674)
 * Correction de l’authentification au CAS de l’INPN
+* Correction du calcul de la sensibilité :
+  * gestion correcte de la présence de plusieurs règles avec et sans critère statut biologique
+  * utilisation de la règle la plus sensible quand plusieurs règles s’appliquent
+
+**⚠️ Notes de version**
+
+* La correction du calcul de la sensibilité est suivi d’un recalcule du niveau de sensibilité des données présentes dans la synthèse. Si vous ne souhaitez pas procéder au recalcule, ajoutez le paramètre ``-x recompute-sensitivity=false`` lors de la mise-à-jour de la base de données :
+
+  ::
+
+    (venv)$ geonature db autoupgrade -x recompute-sensitivity=false
+
+
+* Le niveau de diffusion des données dans la synthèse est remis à ``NULL`` si celui-ci équivaut au niveau de sensibilité. Seul les niveaux de diffusions qui différent sont laissé intacte. Si vous souhaitez rectifier vous même vos niveaux de diffusion, vous pouvez ajouter le paramètre ``-x clear-diffusion-level=false`` lors de la mise-à-jour de la base de données :
+
+  ::
+
+    (venv)$ geonature db autoupgrade -x clear-diffusion-level=false
+
+  Si vous redescendez à l’état intérieur de votre base de données, les niveaux de diffusions seront restaurés à partir du niveau de sensibilité ; vous pouvez éviter ceci avec ``-x restore-diffusion-level=false``.
 
 
 2.9.1 (2022-01-27)
