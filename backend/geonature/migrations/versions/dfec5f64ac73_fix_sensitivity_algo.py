@@ -1,22 +1,31 @@
 """Fix sensitivity algorithm
 
 Revision ID: dfec5f64ac73
-Revises: 30edd97ae582
+Revises: dde31e76ce45
 Create Date: 2022-01-28 14:06:38.748133
 
 """
-from alembic import op
+from distutils.util import strtobool
+
+from alembic import op, context
 import sqlalchemy as sa
 
+from utils_flask_sqla.migrations.utils import logger
 
 # revision identifiers, used by Alembic.
 revision = 'dfec5f64ac73'
-down_revision = 'c9854947fa23'
+down_revision = '61e46813d621'
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
+    recompute_sensitivity = context.get_x_argument(as_dictionary=True).get('recompute-sensitivity')
+    if recompute_sensitivity is not None:
+        recompute_sensitivity = bool(strtobool(recompute_sensitivity))
+    else:
+        recompute_sensitivity = True
+
     op.execute("""
     CREATE OR REPLACE FUNCTION gn_sensitivity.get_id_nomenclature_sensitivity(my_date_obs date, my_cd_ref integer, my_geom geometry, my_criterias jsonb)
      RETURNS integer
@@ -60,6 +69,12 @@ def upgrade():
         END;
         $function$
     """)
+
+
+    if recompute_sensitivity:
+        logger.info("Recompute sensitivity…")
+        count = op.get_bind().execute("SELECT gn_synthese.update_sensitivity()").scalar()
+        logger.info(f"Sensitivity updated for {count} rows")
 
 
 def downgrade():
