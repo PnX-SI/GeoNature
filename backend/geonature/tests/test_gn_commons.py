@@ -133,7 +133,7 @@ class TestCommons:
             TPlaces.query.filter_by(id_place=place.id_place).exists()
         ).scalar()
 
-    def test_additional_data(self, datasets, additional_field):
+    def test_get_additional_fields(self, datasets, additional_field):
         query_string = {
             "module_code": "SYNTHESE",
             "object_code": "ALL"
@@ -155,4 +155,23 @@ class TestCommons:
         addi_one = data[0]
         assert "type_widget" in addi_one
         assert "bib_nomenclature_type" in addi_one
-        
+    
+    def test_get_additional_fields_multi_module(self, datasets, additional_field):
+        response = self.client.get(
+            url_for("gn_commons.get_additional_fields"),
+            query_string={"module_code": "GEONATURE,SYNTHESE"}
+        )
+
+        for f in response.json:
+            for m in f["modules"]:
+                assert m["module_code"] == "SYNTHESE"
+
+    def test_get_additional_fields_not_exist_in_module(self):
+        response = self.client.get(
+            url_for("gn_commons.get_additional_fields"),
+            query_string={"module_code": "VALIDATION"}
+        )
+
+        data = response.json
+        # TODO: Do better than that:
+        assert len(data) == 0
