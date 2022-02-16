@@ -80,7 +80,7 @@ for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
 done
 
 
-if ! ${CI};then
+if [[ -z "${CI}" ]] ; then
   echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
   # Generate the app.config.ts
   geonature generate_frontend_config --build=false
@@ -96,19 +96,18 @@ fi
 # deactivate
 
 # Frontend installation"
- 
 cd "${BASE_DIR}/frontend"
 echo " ############"
 echo "Installation des paquets Npm"
 
 # build and npm install is done by cypress github action
-if $CI; then
+if [[ -n "${CI}" ]] ; then
   exit 0
 fi
 
 if [[ "${MODE}" == "dev" ]]; then
   npm install --production=false || exit 1
-else 
+else
   npm ci --only=prod --legacy-peer-deps || exit 1
 fi
 
