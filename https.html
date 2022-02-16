@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>HTTPS &mdash; GeoNature 2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -75,7 +76,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="https">
+  <section id="https">
 <h1>HTTPS<a class="headerlink" href="#https" title="Permalink to this headline"></a></h1>
 <p>La procédure décrit une méthode de certification HTTPS de votre domaine, grâce au service <a class="reference external" href="https://letsencrypt.org/">Let’s Encrypt</a>. Les manipulations ont été effectuées sur un serveur Debian 9 avec Apache2 installé, et un utilisateur bénéficiant des droits sudo.</p>
 <p>Ressources :</p>
@@ -83,13 +84,13 @@
 <li><p><a class="reference external" href="https://www.memoinfo.fr/tutoriels-linux/configurer-lets-encrypt-apache/">https://www.memoinfo.fr/tutoriels-linux/configurer-lets-encrypt-apache/</a></p></li>
 <li><p><a class="reference external" href="https://korben.info/securiser-facilement-gratuitement-site-https.html">https://korben.info/securiser-facilement-gratuitement-site-https.html</a></p></li>
 </ul>
-<div class="section" id="installer-certbot">
+<section id="installer-certbot">
 <h2>Installer certbot<a class="headerlink" href="#installer-certbot" title="Permalink to this headline"></a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">certbot</span><span class="o">-</span><span class="n">apache</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="lancer-la-commande-cerbot">
+</section>
+<section id="lancer-la-commande-cerbot">
 <h2>Lancer la commande cerbot<a class="headerlink" href="#lancer-la-commande-cerbot" title="Permalink to this headline"></a></h2>
 <p>Lancer la commande suivant pour générer des certificats et des clés pour le nom de domaine que vous souhaitez mettre en HTTPS.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">certbot</span> <span class="n">certonly</span> <span class="o">--</span><span class="n">webroot</span> <span class="o">--</span><span class="n">webroot</span><span class="o">-</span><span class="n">path</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span> <span class="o">--</span><span class="n">domain</span> <span class="n">mondomaine</span><span class="o">.</span><span class="n">fr</span> <span class="o">--</span><span class="n">email</span> <span class="n">monemail</span><span class="nd">@mondomaine</span><span class="o">.</span><span class="n">fr</span>
@@ -102,8 +103,8 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">--domain</span></code> : le nom de domaine à certifier. Mettre tous les sous-domaines à certifier</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">--email</span></code> : l’adresse qui recevra les notifications de Let’s Encrypt. Principalement pour rappeler de renouveler le certificat le moment venu.</p></li>
 </ul>
-</div>
-<div class="section" id="les-certificats-obtenus">
+</section>
+<section id="les-certificats-obtenus">
 <h2>Les certificats obtenus<a class="headerlink" href="#les-certificats-obtenus" title="Permalink to this headline"></a></h2>
 <p>Le certificat se trouve dans le répertoire <code class="docutils literal notranslate"><span class="pre">/etc/letsencrypt/live/mondomaine.fr/</span></code>.</p>
 <p>Il est constitué de 4 fichiers :</p>
@@ -113,8 +114,8 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">chain.pem</span></code> : Les autres certificats, SAUF le certificat serveur. Par exemple les certificats intermédiaires. Là encore pour les versions d’Apache &lt; 2.4.8.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">fullchain.pem</span></code> : Logiquement, l’ensemble des certificats. La concaténation du <code class="docutils literal notranslate"><span class="pre">cert.pem</span></code> et du <code class="docutils literal notranslate"><span class="pre">chain.pem</span></code>. A utiliser cette fois-ci pour les versions d’Apache &gt;= 2.4.8.</p></li>
 </ul>
-</div>
-<div class="section" id="automatiser-le-renouvellement-du-certificat">
+</section>
+<section id="automatiser-le-renouvellement-du-certificat">
 <h2>Automatiser le renouvellement du certificat<a class="headerlink" href="#automatiser-le-renouvellement-du-certificat" title="Permalink to this headline"></a></h2>
 <p>Le certificat fourni par Let’s Encrypt n’est valable que 3 mois. Il faut donc mettre en place un renouvellement automatique.
 Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le certificat :</p>
@@ -122,8 +123,8 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
 <span class="mi">1</span> <span class="mi">8</span> <span class="o">*</span> <span class="o">*</span> <span class="n">Sat</span> <span class="n">certbot</span> <span class="n">renew</span> <span class="o">--</span><span class="n">renew</span><span class="o">-</span><span class="n">hook</span> <span class="s2">&quot;service apache2 reload&quot;</span> <span class="o">&gt;&gt;</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">log</span><span class="o">/</span><span class="n">certbot</span><span class="o">.</span><span class="n">log</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="prise-en-compte-des-nouvelles-configurations-apache">
+</section>
+<section id="prise-en-compte-des-nouvelles-configurations-apache">
 <h2>Prise en compte des nouvelles configurations Apache<a class="headerlink" href="#prise-en-compte-des-nouvelles-configurations-apache" title="Permalink to this headline"></a></h2>
 <p>Activer les modules <code class="docutils literal notranslate"><span class="pre">ssl</span></code>, <code class="docutils literal notranslate"><span class="pre">headers</span></code> et <code class="docutils literal notranslate"><span class="pre">rewrite</span></code> puis redémarrer Apache :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">ssl</span>
@@ -133,8 +134,8 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
 </pre></div>
 </div>
 <p>Les fichiers de configuration des sites TaxHub et UsersHub ne sont pas à modifier, ils seront automatiquement associés à la configuration HTTPS. En revanche, la configuration de GeoNature doit être mise à jour.</p>
-</div>
-<div class="section" id="configuration-de-l-application-geonature">
+</section>
+<section id="configuration-de-l-application-geonature">
 <h2>Configuration de l’application GeoNature<a class="headerlink" href="#configuration-de-l-application-geonature" title="Permalink to this headline"></a></h2>
 <p>Il est nécessaire de mettre à jour le fichier de configuration <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code> situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/config</span></code> :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span><span class="o">/</span><span class="n">config</span>
@@ -155,8 +156,8 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
 </pre></div>
 </div>
 <p>Les applications sont désormais accessibles sur votre domaine sécurisé en HTTPS !</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

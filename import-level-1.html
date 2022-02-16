@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>IMPORT NIVEAU 1 &mdash; GeoNature 2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -83,13 +84,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="import-niveau-1">
+  <section id="import-niveau-1">
 <h1>IMPORT NIVEAU 1<a class="headerlink" href="#import-niveau-1" title="Permalink to this headline"></a></h1>
 <p>Dans cet exemple, nous allons importer un fichier CSV (ou SHP) d’observations dans la base de données de GeoNature,
 pour ensuite intégrer ces données dans la synthèse de GeoNature.</p>
 <p>On utilisera le fichier d’exemple
 <a class="reference external" href="https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-basique/01-observations-faune-2008-2010.csv">https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-basique/01-observations-faune-2008-2010.csv</a>.</p>
-<div class="section" id="importer-la-donnee-source-dans-la-bdd-avec-qgis">
+<section id="importer-la-donnee-source-dans-la-bdd-avec-qgis">
 <h2>Importer la donnée source dans la BDD avec QGIS<a class="headerlink" href="#importer-la-donnee-source-dans-la-bdd-avec-qgis" title="Permalink to this headline"></a></h2>
 <p>PS : Si vous utilisez un CSV, vous pouvez aussi utiliser la fonction <code class="docutils literal notranslate"><span class="pre">gn_imports.load_csv_file</span></code>.</p>
 <p><strong>1.</strong> Connecter la BDD dans QGIS :</p>
@@ -109,8 +110,8 @@ voir la documentation <a class="reference external" href="https://github.com/PnE
 <li><p>Importer une couche/un fichier</p></li>
 <li><p>Choisir la couche à importer et définir le nom de table de destination</p></li>
 </ul>
-</div>
-<div class="section" id="creer-les-metadonnees">
+</section>
+<section id="creer-les-metadonnees">
 <h2>Créer les métadonnées<a class="headerlink" href="#creer-les-metadonnees" title="Permalink to this headline"></a></h2>
 <p><strong>1.</strong> Ajouter une source (si elle n’existe pas déjà)</p>
 <p>En l’ajoutant manuellement dans la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.t_sources</span></code> ou en SQL :</p>
@@ -131,8 +132,8 @@ Par exemple ici <code class="docutils literal notranslate"><span class="pre">ref
 Ou bien l’Admin des nomenclatures disponible dans GeoNature.</p>
 <p>Il est aussi possible d’utiliser les codes des nomenclatures pour retrouver leurs id (ceci étant variables d’une instance à l’autre),
 en utilisant la fonction <code class="docutils literal notranslate"><span class="pre">ref_nomencltaure.get_id_nomenclature</span></code>.</p>
-</div>
-<div class="section" id="insertion-des-donnees-dans-la-synthese">
+</section>
+<section id="insertion-des-donnees-dans-la-synthese">
 <h2>Insertion des données dans la Synthèse<a class="headerlink" href="#insertion-des-donnees-dans-la-synthese" title="Permalink to this headline"></a></h2>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span><span class="p">(</span><span class="w"></span>
 <span class="n">unique_id_sinp</span><span class="p">,</span><span class="w"></span>
@@ -222,8 +223,8 @@ en les faisant correspondre avec leurs <code class="docutils literal notranslate
 </pre></div>
 </div>
 <p>A utiliser dans une requête de suppression, en gérant les cascades entre les tables.</p>
-</div>
-<div class="section" id="insertion-depuis-un-shapefile">
+</section>
+<section id="insertion-depuis-un-shapefile">
 <h2>Insertion depuis un shapefile<a class="headerlink" href="#insertion-depuis-un-shapefile" title="Permalink to this headline"></a></h2>
 <p>L’exercice est similaire si on part depuis un fichier Shape
 (<a class="reference external" href="https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-basique/01-observations-faune-2008-2010-SHP.zip">https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-basique/01-observations-faune-2008-2010-SHP.zip</a>)</p>
@@ -234,8 +235,8 @@ en les faisant correspondre avec leurs <code class="docutils literal notranslate
 <span class="n">geom</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">the_geom_local</span><span class="p">,</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

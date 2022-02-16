@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DEVELOPPEMENT &mdash; GeoNature 2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -149,9 +150,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="developpement">
+  <section id="developpement">
 <h1>DEVELOPPEMENT<a class="headerlink" href="#developpement" title="Permalink to this headline"></a></h1>
-<div class="section" id="general">
+<section id="general">
 <h2>Général<a class="headerlink" href="#general" title="Permalink to this headline"></a></h2>
 <p>GeoNature a été développé par Gil Deluermoz depuis 2010 avec PHP/Symfony/ExtJS.</p>
 <p>En 2017, les parcs nationaux français ont décidé de refondre GeoNature
@@ -164,8 +165,8 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <li><p>Camille MONCHICOURT (PnEcrins)</p></li>
 </ul>
 <img alt="_images/geonature-techno.png" src="_images/geonature-techno.png" />
-</div>
-<div class="section" id="api">
+</section>
+<section id="api">
 <span id="id1"></span><h2>API<a class="headerlink" href="#api" title="Permalink to this headline"></a></h2>
 <p>GeoNature utilise :</p>
 <ul class="simple">
@@ -175,7 +176,7 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <li><p>l’API de GeoNature (get, post, update des données des différents modules, métadonnées, intersections géographiques, exports…)</p></li>
 </ul>
 <img alt="_images/api_services.png" src="_images/api_services.png" />
-<div class="section" id="liste-des-routes">
+<section id="liste-des-routes">
 <h3>Liste des routes<a class="headerlink" href="#liste-des-routes" title="Permalink to this headline"></a></h3>
 <table class="colwidths-given docutils align-default">
 <colgroup>
@@ -203,19 +204,11 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--admin-corexportsroles-ajax-update-">POST /admin/corexportsroles/ajax/update/</a></p></td>
+<td><p><a class="reference external" href="#post--admin-contentmapping-ajax-update-">POST /admin/contentmapping/ajax/update/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#post--admin-exportschedules-ajax-update-">POST /admin/exportschedules/ajax/update/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--admin-licences-ajax-update-">POST /admin/licences/ajax/update/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#post--admin-export-ajax-update-">POST /admin/export/ajax/update/</a></p></td>
+<td><p><a class="reference external" href="#post--admin-fieldmapping-ajax-update-">POST /admin/fieldmapping/ajax/update/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
@@ -231,19 +224,19 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--admin-bibnomenclaturestypesadmin-edit-">GET /admin/bibnomenclaturestypesadmin/edit/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#post--admin-bibnomenclaturestypesadmin-edit-">POST /admin/bibnomenclaturestypesadmin/edit/</a></p></td>
 <td></td>
 </tr>
+<tr class="row-odd"><td></td>
+<td><p><a class="reference external" href="#get--admin-bibnomenclaturestypesadmin-edit-">GET /admin/bibnomenclaturestypesadmin/edit/</a></p></td>
+<td></td>
+</tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--admin-bibnomenclaturestypesadmin-new-">GET /admin/bibnomenclaturestypesadmin/new/</a></p></td>
+<td><p><a class="reference external" href="#post--admin-bibnomenclaturestypesadmin-new-">POST /admin/bibnomenclaturestypesadmin/new/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--admin-bibnomenclaturestypesadmin-new-">POST /admin/bibnomenclaturestypesadmin/new/</a></p></td>
+<td><p><a class="reference external" href="#get--admin-bibnomenclaturestypesadmin-new-">GET /admin/bibnomenclaturestypesadmin/new/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
@@ -259,19 +252,19 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--admin-tnomenclaturesadmin-edit-">GET /admin/tnomenclaturesadmin/edit/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#post--admin-tnomenclaturesadmin-edit-">POST /admin/tnomenclaturesadmin/edit/</a></p></td>
 <td></td>
 </tr>
+<tr class="row-even"><td></td>
+<td><p><a class="reference external" href="#get--admin-tnomenclaturesadmin-edit-">GET /admin/tnomenclaturesadmin/edit/</a></p></td>
+<td></td>
+</tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--admin-tnomenclaturesadmin-new-">GET /admin/tnomenclaturesadmin/new/</a></p></td>
+<td><p><a class="reference external" href="#post--admin-tnomenclaturesadmin-new-">POST /admin/tnomenclaturesadmin/new/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#post--admin-tnomenclaturesadmin-new-">POST /admin/tnomenclaturesadmin/new/</a></p></td>
+<td><p><a class="reference external" href="#get--admin-tnomenclaturesadmin-new-">GET /admin/tnomenclaturesadmin/new/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
@@ -287,139 +280,83 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--admin-tadditionalfields-edit-">GET /admin/tadditionalfields/edit/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#post--admin-tadditionalfields-edit-">POST /admin/tadditionalfields/edit/</a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--admin-tadditionalfields-new-">GET /admin/tadditionalfields/new/</a></p></td>
+<tr class="row-odd"><td></td>
+<td><p><a class="reference external" href="#get--admin-tadditionalfields-edit-">GET /admin/tadditionalfields/edit/</a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td></td>
+<tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#post--admin-tadditionalfields-new-">POST /admin/tadditionalfields/new/</a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--admin-corexportsroles-details-">GET /admin/corexportsroles/details/</a></p></td>
-<td></td>
-</tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--admin-exportschedules-details-">GET /admin/exportschedules/details/</a></p></td>
+<td><p><a class="reference external" href="#get--admin-tadditionalfields-new-">GET /admin/tadditionalfields/new/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#post--admin-corexportsroles-action-">POST /admin/corexportsroles/action/</a></p></td>
+<td><p><a class="reference external" href="#get--admin-contentmapping-details-">GET /admin/contentmapping/details/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--admin-corexportsroles-delete-">POST /admin/corexportsroles/delete/</a></p></td>
+<td><p><a class="reference external" href="#post--admin-contentmapping-action-">POST /admin/contentmapping/action/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#post--admin-exportschedules-action-">POST /admin/exportschedules/action/</a></p></td>
+<td><p><a class="reference external" href="#post--admin-contentmapping-delete-">POST /admin/contentmapping/delete/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--admin-exportschedules-delete-">POST /admin/exportschedules/delete/</a></p></td>
+<td><p><a class="reference external" href="#post--admin-contentmapping-edit-">POST /admin/contentmapping/edit/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--admin-corexportsroles-edit-">GET /admin/corexportsroles/edit/</a></p></td>
+<td><p><a class="reference external" href="#get--admin-contentmapping-edit-">GET /admin/contentmapping/edit/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--admin-corexportsroles-edit-">POST /admin/corexportsroles/edit/</a></p></td>
+<td><p><a class="reference external" href="#post--admin-contentmapping-new-">POST /admin/contentmapping/new/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--admin-exportschedules-edit-">GET /admin/exportschedules/edit/</a></p></td>
+<td><p><a class="reference external" href="#get--admin-contentmapping-new-">GET /admin/contentmapping/new/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--admin-exportschedules-edit-">POST /admin/exportschedules/edit/</a></p></td>
+<td><p><a class="reference external" href="#get--admin-fieldmapping-details-">GET /admin/fieldmapping/details/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--admin-corexportsroles-new-">GET /admin/corexportsroles/new/</a></p></td>
+<td><p><a class="reference external" href="#post--admin-fieldmapping-action-">POST /admin/fieldmapping/action/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--admin-corexportsroles-new-">POST /admin/corexportsroles/new/</a></p></td>
+<td><p><a class="reference external" href="#post--admin-fieldmapping-delete-">POST /admin/fieldmapping/delete/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--admin-exportschedules-new-">GET /admin/exportschedules/new/</a></p></td>
+<td><p><a class="reference external" href="#post--admin-fieldmapping-edit-">POST /admin/fieldmapping/edit/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--admin-exportschedules-new-">POST /admin/exportschedules/new/</a></p></td>
+<td><p><a class="reference external" href="#get--admin-fieldmapping-edit-">GET /admin/fieldmapping/edit/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--admin-licences-details-">GET /admin/licences/details/</a></p></td>
+<td><p><a class="reference external" href="#post--admin-fieldmapping-new-">POST /admin/fieldmapping/new/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
+<td><p><a class="reference external" href="#get--admin-fieldmapping-new-">GET /admin/fieldmapping/new/</a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#put--users-password-change">PUT /users/password/change</a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#post--admin-licences-action-">POST /admin/licences/action/</a></p></td>
-<td></td>
-</tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--admin-licences-delete-">POST /admin/licences/delete/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--admin-licences-edit-">GET /admin/licences/edit/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--admin-licences-edit-">POST /admin/licences/edit/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#put--users-password-new">PUT /users/password/new</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--admin-licences-new-">GET /admin/licences/new/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#post--admin-licences-new-">POST /admin/licences/new/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--admin-export-details-">GET /admin/export/details/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#post--admin-export-action-">POST /admin/export/action/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--admin-export-delete-">POST /admin/export/delete/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--admin-export-edit-">GET /admin/export/edit/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--admin-export-edit-">POST /admin/export/edit/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--admin-export-new-">GET /admin/export/new/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--admin-export-new-">POST /admin/export/new/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
@@ -432,22 +369,6 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 </tr>
 <tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#get--synthese-taxa_distribution">GET /synthese/taxa_distribution</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--exports-swagger-ressources-(int-id_export)">GET /exports/swagger-ressources/(int:id_export)</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--exports-swagger-ressources-">GET /exports/swagger-ressources/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--exports-swagger-(int-id_export)">GET /exports/swagger/(int:id_export)</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--exports-swagger-">GET /exports/swagger/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
@@ -467,27 +388,19 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--admin-corexportsroles-">GET /admin/corexportsroles/</a></p></td>
+<td><p><a class="reference external" href="#get--admin-contentmapping-">GET /admin/contentmapping/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--admin-exportschedules-">GET /admin/exportschedules/</a></p></td>
+<td><p><a class="reference external" href="#get--users-confirmation">GET /users/confirmation</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--users-confirmation">GET /users/confirmation</a></p></td>
+<td><p><a class="reference external" href="#get--admin-fieldmapping-">GET /admin/fieldmapping/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#post--users-inscription">POST /users/inscription</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--admin-licences-">GET /admin/licences/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--admin-export-">GET /admin/export/</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
@@ -503,71 +416,55 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--exports-">GET /exports/</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#post--import-mappings-(int-mapping_id)-contents">POST /import/mappings/(int:mapping_id)/contents</a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td></td>
+<tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#post--import-mappings-(int-id_mapping)-fields">POST /import/mappings/(int:id_mapping)/fields</a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td></td>
+<tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#post--import-imports-(int-import_id)-prepare">POST /import/imports/(int:import_id)/prepare</a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td></td>
+<tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#post--occtax-releve-(int-id_releve)-occurrence">POST /occtax/releve/(int:id_releve)/occurrence</a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td></td>
+<tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#post--occtax-only-releve-(int-id_releve)">POST /occtax/only/releve/(int:id_releve)</a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td></td>
+<tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#get--meta-acquisition_frameworks-export_pdf-(id_acquisition_framework)">GET /meta/acquisition_frameworks/export_pdf/(id_acquisition_framework)</a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td></td>
+<tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#post--pypn-register-post_usershub-(string-type_action)">POST /pypn/register/post_usershub/(string:type_action)</a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td></td>
+<tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#get--meta-dataset-export_pdf-(id_dataset)">GET /meta/dataset/export_pdf/(id_dataset)</a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td></td>
+<tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#get--validation-date-(uuid-uuid)">GET /validation/date/(uuid:uuid)</a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td></td>
+<tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#get--synthese-observation_count_per_column-(column)">GET /synthese/observation_count_per_column/(column)</a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td></td>
+<tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#get--synthese-vsynthese-(id_synthese)">GET /synthese/vsynthese/(id_synthese)</a></p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--exports-static-(path-filename)">GET /exports/static/(path:filename)</a></p></td>
-<td></td>
-</tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--exports-api-(int-id_export)">GET /exports/api/(int:id_export)</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#post--occtax-occurrence-(int-id_occurrence)">POST /occtax/occurrence/(int:id_occurrence)</a></p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--admin-static-(path-filename)">GET /admin/static/(path:filename)</a></p></td>
-<td></td>
-</tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#post--exports-(int-id_export)-(export_format)">POST /exports/(int:id_export)/(export_format)</a></p></td>
+<td><p><a class="reference external" href="#get--admin-static-(path-filename)">GET /admin/static/(path:filename)</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p>Commons</p></td>
@@ -583,19 +480,19 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#post--gn_commons-media-(int-id_media)">POST /gn_commons/media/(int:id_media)</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--gn_commons-media">POST /gn_commons/media</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#put--gn_commons-media-(int-id_media)">PUT /gn_commons/media/(int:id_media)</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#put--gn_commons-media">PUT /gn_commons/media</a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><a class="reference external" href="#post--gn_commons-media-(int-id_media)">POST /gn_commons/media/(int:id_media)</a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><a class="reference external" href="#post--gn_commons-media">POST /gn_commons/media</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
@@ -643,14 +540,6 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td><p>Get synthesis fields.</p></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#put--import-imports-(int-import_id)-upload">PUT /import/imports/(int:import_id)/upload</a></p></td>
-<td><p>Add an import or update an existing import.</p></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#post--import-imports-upload">POST /import/imports/upload</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#post--import-mappings-">POST /import/mappings/</a></p></td>
 <td><p>Add a mapping.</p></td>
 </tr>
@@ -673,6 +562,14 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#post--import-mappings-(int-id_mapping)-name">POST /import/mappings/(int:id_mapping)/name</a></p></td>
 <td><p>Update mapping name.</p></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><a class="reference external" href="#post--import-imports-upload">POST /import/imports/upload</a></p></td>
+<td><p>Add an import or update an existing import.</p></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><a class="reference external" href="#put--import-imports-(int-import_id)-upload">PUT /import/imports/(int:import_id)/upload</a></p></td>
+<td></td>
 </tr>
 <tr class="row-odd"><td></td>
 <td><p><a class="reference external" href="#get--import-imports-(int-import_id)-invalid_rows">GET /import/imports/(int:import_id)/invalid_rows</a></p></td>
@@ -939,11 +836,11 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--synthese-export_metadata">GET /synthese/export_metadata</a></p></td>
+<td><p><a class="reference external" href="#post--synthese-export_metadata">POST /synthese/export_metadata</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#post--synthese-export_metadata">POST /synthese/export_metadata</a></p></td>
+<td><p><a class="reference external" href="#get--synthese-export_metadata">GET /synthese/export_metadata</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
@@ -971,11 +868,11 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--synthese-for_web">GET /synthese/for_web</a></p></td>
+<td><p><a class="reference external" href="#post--synthese-for_web">POST /synthese/for_web</a></p></td>
 <td><p>Get filtered observations</p></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#post--synthese-for_web">POST /synthese/for_web</a></p></td>
+<td><p><a class="reference external" href="#get--synthese-for_web">GET /synthese/for_web</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
@@ -991,11 +888,11 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--gn_auth-login_cas">GET /gn_auth/login_cas</a></p></td>
+<td><p><a class="reference external" href="#post--gn_auth-login_cas">POST /gn_auth/login_cas</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--gn_auth-login_cas">POST /gn_auth/login_cas</a></p></td>
+<td><p><a class="reference external" href="#get--gn_auth-login_cas">GET /gn_auth/login_cas</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
@@ -1023,23 +920,15 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td></td>
 </tr>
 <tr class="row-even"><td><p>Validation</p></td>
-<td><p><a class="reference external" href="#get--validation">GET /validation</a></p></td>
+<td><p><a class="reference external" href="#post--validation">POST /validation</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#post--validation">POST /validation</a></p></td>
+<td><p><a class="reference external" href="#get--validation">GET /validation</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p>View_Permission</p></td>
 <td><p><a class="reference external" href="#get--permissions_backoffice-users">GET /permissions_backoffice/users</a></p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)">GET /permissions_backoffice/other_permissions_form/id_permission/(int:id_permission)/user/(int:id_role)/filter_type/(int:id_filter_type)</a></p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)">GET /permissions_backoffice/other_permissions_form/user/(int:id_role)/filter_type/(int:id_filter_type)</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
@@ -1051,11 +940,11 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">GET /permissions_backoffice/cruved_form/module/(int:id_module)/role/(int:id_role)/object/(int:id_object)</a></p></td>
+<td><p><a class="reference external" href="#get--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)">GET /permissions_backoffice/other_permissions_form/id_permission/(int:id_permission)/user/(int:id_role)/filter_type/(int:id_filter_type)</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)">GET /permissions_backoffice/cruved_form/module/(int:id_module)/role/(int:id_role)</a></p></td>
+<td><p><a class="reference external" href="#get--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)">GET /permissions_backoffice/other_permissions_form/user/(int:id_role)/filter_type/(int:id_filter_type)</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
@@ -1067,11 +956,11 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
-<td><p><a class="reference external" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)">GET /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)/id_filter/(int:id_filter)</a></p></td>
+<td><p><a class="reference external" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">GET /permissions_backoffice/cruved_form/module/(int:id_module)/role/(int:id_role)/object/(int:id_object)</a></p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td></td>
-<td><p><a class="reference external" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">GET /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)</a></p></td>
+<td><p><a class="reference external" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)">GET /permissions_backoffice/cruved_form/module/(int:id_module)/role/(int:id_role)</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
@@ -1080,6 +969,14 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 </tr>
 <tr class="row-even"><td></td>
 <td><p><a class="reference external" href="#post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">POST /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)</a></p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td></td>
+<td><p><a class="reference external" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)">GET /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)/id_filter/(int:id_filter)</a></p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td></td>
+<td><p><a class="reference external" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">GET /permissions_backoffice/filter_form/id_filter_type/(int:id_filter_type)</a></p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td></td>
@@ -1100,8 +997,8 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 </tr>
 </tbody>
 </table>
-</div>
-<div class="section" id="documentation-des-routes">
+</section>
+<section id="documentation-des-routes">
 <h3>Documentation des routes<a class="headerlink" href="#documentation-des-routes" title="Permalink to this headline"></a></h3>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--admin-bibnomenclaturestypesadmin-ajax-update-">
@@ -1122,26 +1019,14 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 </dd></dl>
 
 <dl class="http post">
-<dt class="sig sig-object http" id="post--admin-corexportsroles-ajax-update-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/corexportsroles/ajax/update/</span></span><a class="headerlink" href="#post--admin-corexportsroles-ajax-update-" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object http" id="post--admin-contentmapping-ajax-update-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/contentmapping/ajax/update/</span></span><a class="headerlink" href="#post--admin-contentmapping-ajax-update-" title="Permalink to this definition"></a></dt>
 <dd><p>Edits a single column of a record in list view.</p>
 </dd></dl>
 
 <dl class="http post">
-<dt class="sig sig-object http" id="post--admin-exportschedules-ajax-update-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/exportschedules/ajax/update/</span></span><a class="headerlink" href="#post--admin-exportschedules-ajax-update-" title="Permalink to this definition"></a></dt>
-<dd><p>Edits a single column of a record in list view.</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-licences-ajax-update-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/licences/ajax/update/</span></span><a class="headerlink" href="#post--admin-licences-ajax-update-" title="Permalink to this definition"></a></dt>
-<dd><p>Edits a single column of a record in list view.</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-export-ajax-update-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/export/ajax/update/</span></span><a class="headerlink" href="#post--admin-export-ajax-update-" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object http" id="post--admin-fieldmapping-ajax-update-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/fieldmapping/ajax/update/</span></span><a class="headerlink" href="#post--admin-fieldmapping-ajax-update-" title="Permalink to this definition"></a></dt>
 <dd><p>Edits a single column of a record in list view.</p>
 </dd></dl>
 
@@ -1174,34 +1059,6 @@ You can find a jsonschema of the returned data in the associated test.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Array&lt;AutoCompleteHabitat&gt;</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="http put">
-<dt class="sig sig-object http" id="put--import-imports-(int-import_id)-upload">
-<span class="sig-name descname"><span class="pre">PUT</span> </span><span class="sig-name descname"><span class="pre">/import/imports/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">import_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/upload</span></span><a class="headerlink" href="#put--import-imports-(int-import_id)-upload" title="Permalink to this definition"></a></dt>
-<dd><p>Add an import or update an existing import.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Form Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>file</strong> – file to import</p></li>
-<li><p><strong>int datasetId</strong> – dataset ID to which import data</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--import-imports-upload">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/import/imports/upload</span></span><a class="headerlink" href="#post--import-imports-upload" title="Permalink to this definition"></a></dt>
-<dd><p>Add an import or update an existing import.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Form Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>file</strong> – file to import</p></li>
-<li><p><strong>int datasetId</strong> – dataset ID to which import data</p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -1253,12 +1110,6 @@ You can find a jsonschema of the returned data in the associated test.</p>
 <dd><p>Delete model view. Only POST method is allowed.</p>
 </dd></dl>
 
-<dl class="http get">
-<dt class="sig sig-object http" id="get--admin-bibnomenclaturestypesadmin-edit-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/bibnomenclaturestypesadmin/edit/</span></span><a class="headerlink" href="#get--admin-bibnomenclaturestypesadmin-edit-" title="Permalink to this definition"></a></dt>
-<dd><p>Edit model view</p>
-</dd></dl>
-
 <dl class="http post">
 <dt class="sig sig-object http" id="post--admin-bibnomenclaturestypesadmin-edit-">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/bibnomenclaturestypesadmin/edit/</span></span><a class="headerlink" href="#post--admin-bibnomenclaturestypesadmin-edit-" title="Permalink to this definition"></a></dt>
@@ -1266,14 +1117,20 @@ You can find a jsonschema of the returned data in the associated test.</p>
 </dd></dl>
 
 <dl class="http get">
-<dt class="sig sig-object http" id="get--admin-bibnomenclaturestypesadmin-new-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/bibnomenclaturestypesadmin/new/</span></span><a class="headerlink" href="#get--admin-bibnomenclaturestypesadmin-new-" title="Permalink to this definition"></a></dt>
-<dd><p>Create model view</p>
+<dt class="sig sig-object http" id="get--admin-bibnomenclaturestypesadmin-edit-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/bibnomenclaturestypesadmin/edit/</span></span><a class="headerlink" href="#get--admin-bibnomenclaturestypesadmin-edit-" title="Permalink to this definition"></a></dt>
+<dd><p>Edit model view</p>
 </dd></dl>
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--admin-bibnomenclaturestypesadmin-new-">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/bibnomenclaturestypesadmin/new/</span></span><a class="headerlink" href="#post--admin-bibnomenclaturestypesadmin-new-" title="Permalink to this definition"></a></dt>
+<dd><p>Create model view</p>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--admin-bibnomenclaturestypesadmin-new-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/bibnomenclaturestypesadmin/new/</span></span><a class="headerlink" href="#get--admin-bibnomenclaturestypesadmin-new-" title="Permalink to this definition"></a></dt>
 <dd><p>Create model view</p>
 </dd></dl>
 
@@ -1295,12 +1152,6 @@ You can find a jsonschema of the returned data in the associated test.</p>
 <dd><p>Delete model view. Only POST method is allowed.</p>
 </dd></dl>
 
-<dl class="http get">
-<dt class="sig sig-object http" id="get--admin-tnomenclaturesadmin-edit-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/tnomenclaturesadmin/edit/</span></span><a class="headerlink" href="#get--admin-tnomenclaturesadmin-edit-" title="Permalink to this definition"></a></dt>
-<dd><p>Edit model view</p>
-</dd></dl>
-
 <dl class="http post">
 <dt class="sig sig-object http" id="post--admin-tnomenclaturesadmin-edit-">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/tnomenclaturesadmin/edit/</span></span><a class="headerlink" href="#post--admin-tnomenclaturesadmin-edit-" title="Permalink to this definition"></a></dt>
@@ -1308,14 +1159,20 @@ You can find a jsonschema of the returned data in the associated test.</p>
 </dd></dl>
 
 <dl class="http get">
-<dt class="sig sig-object http" id="get--admin-tnomenclaturesadmin-new-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/tnomenclaturesadmin/new/</span></span><a class="headerlink" href="#get--admin-tnomenclaturesadmin-new-" title="Permalink to this definition"></a></dt>
-<dd><p>Create model view</p>
+<dt class="sig sig-object http" id="get--admin-tnomenclaturesadmin-edit-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/tnomenclaturesadmin/edit/</span></span><a class="headerlink" href="#get--admin-tnomenclaturesadmin-edit-" title="Permalink to this definition"></a></dt>
+<dd><p>Edit model view</p>
 </dd></dl>
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--admin-tnomenclaturesadmin-new-">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/tnomenclaturesadmin/new/</span></span><a class="headerlink" href="#post--admin-tnomenclaturesadmin-new-" title="Permalink to this definition"></a></dt>
+<dd><p>Create model view</p>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--admin-tnomenclaturesadmin-new-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/tnomenclaturesadmin/new/</span></span><a class="headerlink" href="#get--admin-tnomenclaturesadmin-new-" title="Permalink to this definition"></a></dt>
 <dd><p>Create model view</p>
 </dd></dl>
 
@@ -1337,12 +1194,6 @@ You can find a jsonschema of the returned data in the associated test.</p>
 <dd><p>Delete model view. Only POST method is allowed.</p>
 </dd></dl>
 
-<dl class="http get">
-<dt class="sig sig-object http" id="get--admin-tadditionalfields-edit-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/tadditionalfields/edit/</span></span><a class="headerlink" href="#get--admin-tadditionalfields-edit-" title="Permalink to this definition"></a></dt>
-<dd><p>Edit model view</p>
-</dd></dl>
-
 <dl class="http post">
 <dt class="sig sig-object http" id="post--admin-tadditionalfields-edit-">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/tadditionalfields/edit/</span></span><a class="headerlink" href="#post--admin-tadditionalfields-edit-" title="Permalink to this definition"></a></dt>
@@ -1350,9 +1201,9 @@ You can find a jsonschema of the returned data in the associated test.</p>
 </dd></dl>
 
 <dl class="http get">
-<dt class="sig sig-object http" id="get--admin-tadditionalfields-new-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/tadditionalfields/new/</span></span><a class="headerlink" href="#get--admin-tadditionalfields-new-" title="Permalink to this definition"></a></dt>
-<dd><p>Create model view</p>
+<dt class="sig sig-object http" id="get--admin-tadditionalfields-edit-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/tadditionalfields/edit/</span></span><a class="headerlink" href="#get--admin-tadditionalfields-edit-" title="Permalink to this definition"></a></dt>
+<dd><p>Edit model view</p>
 </dd></dl>
 
 <dl class="http post">
@@ -1362,105 +1213,93 @@ You can find a jsonschema of the returned data in the associated test.</p>
 </dd></dl>
 
 <dl class="http get">
-<dt class="sig sig-object http" id="get--admin-corexportsroles-details-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/corexportsroles/details/</span></span><a class="headerlink" href="#get--admin-corexportsroles-details-" title="Permalink to this definition"></a></dt>
-<dd><p>Details model view</p>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--admin-exportschedules-details-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/exportschedules/details/</span></span><a class="headerlink" href="#get--admin-exportschedules-details-" title="Permalink to this definition"></a></dt>
-<dd><p>Details model view</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-corexportsroles-action-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/corexportsroles/action/</span></span><a class="headerlink" href="#post--admin-corexportsroles-action-" title="Permalink to this definition"></a></dt>
-<dd><p>Mass-model action view.</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-corexportsroles-delete-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/corexportsroles/delete/</span></span><a class="headerlink" href="#post--admin-corexportsroles-delete-" title="Permalink to this definition"></a></dt>
-<dd><p>Delete model view. Only POST method is allowed.</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-exportschedules-action-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/exportschedules/action/</span></span><a class="headerlink" href="#post--admin-exportschedules-action-" title="Permalink to this definition"></a></dt>
-<dd><p>Mass-model action view.</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-exportschedules-delete-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/exportschedules/delete/</span></span><a class="headerlink" href="#post--admin-exportschedules-delete-" title="Permalink to this definition"></a></dt>
-<dd><p>Delete model view. Only POST method is allowed.</p>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--admin-corexportsroles-edit-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/corexportsroles/edit/</span></span><a class="headerlink" href="#get--admin-corexportsroles-edit-" title="Permalink to this definition"></a></dt>
-<dd><p>Edit model view</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-corexportsroles-edit-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/corexportsroles/edit/</span></span><a class="headerlink" href="#post--admin-corexportsroles-edit-" title="Permalink to this definition"></a></dt>
-<dd><p>Edit model view</p>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--admin-exportschedules-edit-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/exportschedules/edit/</span></span><a class="headerlink" href="#get--admin-exportschedules-edit-" title="Permalink to this definition"></a></dt>
-<dd><p>Edit model view</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-exportschedules-edit-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/exportschedules/edit/</span></span><a class="headerlink" href="#post--admin-exportschedules-edit-" title="Permalink to this definition"></a></dt>
-<dd><p>Edit model view</p>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--admin-corexportsroles-new-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/corexportsroles/new/</span></span><a class="headerlink" href="#get--admin-corexportsroles-new-" title="Permalink to this definition"></a></dt>
-<dd><p>Create model view</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-corexportsroles-new-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/corexportsroles/new/</span></span><a class="headerlink" href="#post--admin-corexportsroles-new-" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object http" id="get--admin-tadditionalfields-new-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/tadditionalfields/new/</span></span><a class="headerlink" href="#get--admin-tadditionalfields-new-" title="Permalink to this definition"></a></dt>
 <dd><p>Create model view</p>
 </dd></dl>
 
 <dl class="http get">
-<dt class="sig sig-object http" id="get--admin-exportschedules-new-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/exportschedules/new/</span></span><a class="headerlink" href="#get--admin-exportschedules-new-" title="Permalink to this definition"></a></dt>
-<dd><p>Create model view</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-exportschedules-new-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/exportschedules/new/</span></span><a class="headerlink" href="#post--admin-exportschedules-new-" title="Permalink to this definition"></a></dt>
-<dd><p>Create model view</p>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--admin-licences-details-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/licences/details/</span></span><a class="headerlink" href="#get--admin-licences-details-" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object http" id="get--admin-contentmapping-details-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/contentmapping/details/</span></span><a class="headerlink" href="#get--admin-contentmapping-details-" title="Permalink to this definition"></a></dt>
 <dd><p>Details model view</p>
 </dd></dl>
 
 <dl class="http post">
-<dt class="sig sig-object http" id="post--admin-licences-action-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/licences/action/</span></span><a class="headerlink" href="#post--admin-licences-action-" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object http" id="post--admin-contentmapping-action-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/contentmapping/action/</span></span><a class="headerlink" href="#post--admin-contentmapping-action-" title="Permalink to this definition"></a></dt>
 <dd><p>Mass-model action view.</p>
 </dd></dl>
 
 <dl class="http post">
-<dt class="sig sig-object http" id="post--admin-licences-delete-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/licences/delete/</span></span><a class="headerlink" href="#post--admin-licences-delete-" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object http" id="post--admin-contentmapping-delete-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/contentmapping/delete/</span></span><a class="headerlink" href="#post--admin-contentmapping-delete-" title="Permalink to this definition"></a></dt>
 <dd><p>Delete model view. Only POST method is allowed.</p>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--admin-contentmapping-edit-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/contentmapping/edit/</span></span><a class="headerlink" href="#post--admin-contentmapping-edit-" title="Permalink to this definition"></a></dt>
+<dd><p>Edit model view</p>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--admin-contentmapping-edit-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/contentmapping/edit/</span></span><a class="headerlink" href="#get--admin-contentmapping-edit-" title="Permalink to this definition"></a></dt>
+<dd><p>Edit model view</p>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--admin-contentmapping-new-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/contentmapping/new/</span></span><a class="headerlink" href="#post--admin-contentmapping-new-" title="Permalink to this definition"></a></dt>
+<dd><p>Create model view</p>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--admin-contentmapping-new-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/contentmapping/new/</span></span><a class="headerlink" href="#get--admin-contentmapping-new-" title="Permalink to this definition"></a></dt>
+<dd><p>Create model view</p>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--admin-fieldmapping-details-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/fieldmapping/details/</span></span><a class="headerlink" href="#get--admin-fieldmapping-details-" title="Permalink to this definition"></a></dt>
+<dd><p>Details model view</p>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--admin-fieldmapping-action-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/fieldmapping/action/</span></span><a class="headerlink" href="#post--admin-fieldmapping-action-" title="Permalink to this definition"></a></dt>
+<dd><p>Mass-model action view.</p>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--admin-fieldmapping-delete-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/fieldmapping/delete/</span></span><a class="headerlink" href="#post--admin-fieldmapping-delete-" title="Permalink to this definition"></a></dt>
+<dd><p>Delete model view. Only POST method is allowed.</p>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--admin-fieldmapping-edit-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/fieldmapping/edit/</span></span><a class="headerlink" href="#post--admin-fieldmapping-edit-" title="Permalink to this definition"></a></dt>
+<dd><p>Edit model view</p>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--admin-fieldmapping-edit-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/fieldmapping/edit/</span></span><a class="headerlink" href="#get--admin-fieldmapping-edit-" title="Permalink to this definition"></a></dt>
+<dd><p>Edit model view</p>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--admin-fieldmapping-new-">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/fieldmapping/new/</span></span><a class="headerlink" href="#post--admin-fieldmapping-new-" title="Permalink to this definition"></a></dt>
+<dd><p>Create model view</p>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--admin-fieldmapping-new-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/fieldmapping/new/</span></span><a class="headerlink" href="#get--admin-fieldmapping-new-" title="Permalink to this definition"></a></dt>
+<dd><p>Create model view</p>
 </dd></dl>
 
 <dl class="http put">
@@ -1470,77 +1309,11 @@ You can find a jsonschema of the returned data in the associated test.</p>
 Fait appel à l’API UsersHub</p>
 </dd></dl>
 
-<dl class="http get">
-<dt class="sig sig-object http" id="get--admin-licences-edit-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/licences/edit/</span></span><a class="headerlink" href="#get--admin-licences-edit-" title="Permalink to this definition"></a></dt>
-<dd><p>Edit model view</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-licences-edit-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/licences/edit/</span></span><a class="headerlink" href="#post--admin-licences-edit-" title="Permalink to this definition"></a></dt>
-<dd><p>Edit model view</p>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--admin-licences-new-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/licences/new/</span></span><a class="headerlink" href="#get--admin-licences-new-" title="Permalink to this definition"></a></dt>
-<dd><p>Create model view</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-licences-new-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/licences/new/</span></span><a class="headerlink" href="#post--admin-licences-new-" title="Permalink to this definition"></a></dt>
-<dd><p>Create model view</p>
-</dd></dl>
-
 <dl class="http put">
 <dt class="sig sig-object http" id="put--users-password-new">
 <span class="sig-name descname"><span class="pre">PUT</span> </span><span class="sig-name descname"><span class="pre">/users/password/new</span></span><a class="headerlink" href="#put--users-password-new" title="Permalink to this definition"></a></dt>
 <dd><p>Modifie le mdp d’un utilisateur apres que celui-ci ai demander un renouvelement
 Necessite un token envoyer par mail a l’utilisateur</p>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--admin-export-details-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/export/details/</span></span><a class="headerlink" href="#get--admin-export-details-" title="Permalink to this definition"></a></dt>
-<dd><p>Details model view</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-export-action-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/export/action/</span></span><a class="headerlink" href="#post--admin-export-action-" title="Permalink to this definition"></a></dt>
-<dd><p>Mass-model action view.</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-export-delete-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/export/delete/</span></span><a class="headerlink" href="#post--admin-export-delete-" title="Permalink to this definition"></a></dt>
-<dd><p>Delete model view. Only POST method is allowed.</p>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--admin-export-edit-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/export/edit/</span></span><a class="headerlink" href="#get--admin-export-edit-" title="Permalink to this definition"></a></dt>
-<dd><p>Edit model view</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-export-edit-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/export/edit/</span></span><a class="headerlink" href="#post--admin-export-edit-" title="Permalink to this definition"></a></dt>
-<dd><p>Edit model view</p>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--admin-export-new-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/export/new/</span></span><a class="headerlink" href="#get--admin-export-new-" title="Permalink to this definition"></a></dt>
-<dd><p>Create model view</p>
-</dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--admin-export-new-">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/admin/export/new/</span></span><a class="headerlink" href="#post--admin-export-new-" title="Permalink to this definition"></a></dt>
-<dd><p>Create model view</p>
 </dd></dl>
 
 <dl class="http post">
@@ -1672,18 +1445,6 @@ when the user logout we need clear the session to get the new cruved session</p>
 .. :quickref: Commons;</p>
 </dd></dl>
 
-<dl class="http post">
-<dt class="sig sig-object http" id="post--gn_commons-media-(int-id_media)">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/gn_commons/media/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_media</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--gn_commons-media-(int-id_media)" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="http post">
-<dt class="sig sig-object http" id="post--gn_commons-media">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/gn_commons/media</span></span><a class="headerlink" href="#post--gn_commons-media" title="Permalink to this definition"></a></dt>
-<dd><p>Insertion ou mise à jour d’un média
-avec prise en compte des fichiers joints</p>
-</dd></dl>
-
 <dl class="http put">
 <dt class="sig sig-object http" id="put--gn_commons-media-(int-id_media)">
 <span class="sig-name descname"><span class="pre">PUT</span> </span><span class="sig-name descname"><span class="pre">/gn_commons/media/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_media</span></em><span class="sig-paren">)</span><a class="headerlink" href="#put--gn_commons-media-(int-id_media)" title="Permalink to this definition"></a></dt>
@@ -1692,6 +1453,18 @@ avec prise en compte des fichiers joints</p>
 <dl class="http put">
 <dt class="sig sig-object http" id="put--gn_commons-media">
 <span class="sig-name descname"><span class="pre">PUT</span> </span><span class="sig-name descname"><span class="pre">/gn_commons/media</span></span><a class="headerlink" href="#put--gn_commons-media" title="Permalink to this definition"></a></dt>
+<dd><p>Insertion ou mise à jour d’un média
+avec prise en compte des fichiers joints</p>
+</dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--gn_commons-media-(int-id_media)">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/gn_commons/media/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_media</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--gn_commons-media-(int-id_media)" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="http post">
+<dt class="sig sig-object http" id="post--gn_commons-media">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/gn_commons/media</span></span><a class="headerlink" href="#post--gn_commons-media" title="Permalink to this definition"></a></dt>
 <dd><p>Insertion ou mise à jour d’un média
 avec prise en compte des fichiers joints</p>
 </dd></dl>
@@ -1774,18 +1547,18 @@ Some columns are mandatory: id_synthese, geojson and geojson_local to generate t
 and grouped by a certain taxa rank</p>
 </dd></dl>
 
-<dl class="http get">
-<dt class="sig sig-object http" id="get--synthese-export_metadata">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/synthese/export_metadata</span></span><a class="headerlink" href="#get--synthese-export_metadata" title="Permalink to this definition"></a></dt>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--synthese-export_metadata">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/synthese/export_metadata</span></span><a class="headerlink" href="#post--synthese-export_metadata" title="Permalink to this definition"></a></dt>
 <dd><p>Route to export the metadata in CSV</p>
 <p>The table synthese is join with gn_synthese.v_metadata_for_export
 The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export</p>
 <p>POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view</p>
 </dd></dl>
 
-<dl class="http post">
-<dt class="sig sig-object http" id="post--synthese-export_metadata">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/synthese/export_metadata</span></span><a class="headerlink" href="#post--synthese-export_metadata" title="Permalink to this definition"></a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--synthese-export_metadata">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/synthese/export_metadata</span></span><a class="headerlink" href="#get--synthese-export_metadata" title="Permalink to this definition"></a></dt>
 <dd><p>Route to export the metadata in CSV</p>
 <p>The table synthese is join with gn_synthese.v_metadata_for_export
 The column jdd_id is mandatory in the view gn_synthese.v_metadata_for_export</p>
@@ -1865,9 +1638,9 @@ Some columns are mandatory: cd_ref</p>
 </dl>
 </dd></dl>
 
-<dl class="http get">
-<dt class="sig sig-object http" id="get--synthese-for_web">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/synthese/for_web</span></span><a class="headerlink" href="#get--synthese-for_web" title="Permalink to this definition"></a></dt>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--synthese-for_web">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/synthese/for_web</span></span><a class="headerlink" href="#post--synthese-for_web" title="Permalink to this definition"></a></dt>
 <dd><p>Optimized route to serve data for the frontend with all filters.</p>
 <p>Query filtered by any filter, returning all the fields of the
 view v_synthese_for_export:</p>
@@ -1923,9 +1696,9 @@ view v_synthese_for_export:</p>
 </dl>
 </dd></dl>
 
-<dl class="http post">
-<dt class="sig sig-object http" id="post--synthese-for_web">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/synthese/for_web</span></span><a class="headerlink" href="#post--synthese-for_web" title="Permalink to this definition"></a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--synthese-for_web">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/synthese/for_web</span></span><a class="headerlink" href="#get--synthese-for_web" title="Permalink to this definition"></a></dt>
 <dd><p>Optimized route to serve data for the frontend with all filters.</p>
 <p>Query filtered by any filter, returning all the fields of the
 view v_synthese_for_export:</p>
@@ -1988,28 +1761,11 @@ view v_synthese_for_export:</p>
 </dd></dl>
 
 <dl class="http get">
-<dt class="sig sig-object http" id="get--exports-swagger-ressources-(int-id_export)">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/exports/swagger-ressources/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_export</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--exports-swagger-ressources-(int-id_export)" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--exports-swagger-ressources-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/exports/swagger-ressources/</span></span><a class="headerlink" href="#get--exports-swagger-ressources-" title="Permalink to this definition"></a></dt>
-<dd><p>Génération des spécifications Swagger</p>
-</dd></dl>
-
-<dl class="http get">
 <dt class="sig sig-object http" id="get--gn_auth-logout_cruved">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/gn_auth/logout_cruved</span></span><a class="headerlink" href="#get--gn_auth-logout_cruved" title="Permalink to this definition"></a></dt>
 <dd><p>Route to logout with cruved
 To avoid multiples server call, we store the cruved in the session
 when the user logout we need clear the session to get the new cruved session</p>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--gn_auth-login_cas">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/gn_auth/login_cas</span></span><a class="headerlink" href="#get--gn_auth-login_cas" title="Permalink to this definition"></a></dt>
-<dd><p>Login route with the INPN CAS</p>
 </dd></dl>
 
 <dl class="http post">
@@ -2019,14 +1775,9 @@ when the user logout we need clear the session to get the new cruved session</p>
 </dd></dl>
 
 <dl class="http get">
-<dt class="sig sig-object http" id="get--exports-swagger-(int-id_export)">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/exports/swagger/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_export</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--exports-swagger-(int-id_export)" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--exports-swagger-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/exports/swagger/</span></span><a class="headerlink" href="#get--exports-swagger-" title="Permalink to this definition"></a></dt>
-<dd><p>Génération de l’interface de Swagger</p>
+<dt class="sig sig-object http" id="get--gn_auth-login_cas">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/gn_auth/login_cas</span></span><a class="headerlink" href="#get--gn_auth-login_cas" title="Permalink to this definition"></a></dt>
+<dd><p>Login route with the INPN CAS</p>
 </dd></dl>
 
 <dl class="http get">
@@ -2068,12 +1819,6 @@ when the user logout we need clear the session to get the new cruved session</p>
 </dl>
 </dd></dl>
 
-<dl class="http get">
-<dt class="sig sig-object http" id="get--occhab-stations">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/occhab/stations</span></span><a class="headerlink" href="#get--occhab-stations" title="Permalink to this definition"></a></dt>
-<dd><p>Get all stations with their hab</p>
-</dd></dl>
-
 <dl class="http post">
 <dt class="sig sig-object http" id="post--import-mappings-">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/import/mappings/</span></span><a class="headerlink" href="#post--import-mappings-" title="Permalink to this definition"></a></dt>
@@ -2094,6 +1839,18 @@ when the user logout we need clear the session to get the new cruved session</p>
 </dd></dl>
 
 <dl class="http get">
+<dt class="sig sig-object http" id="get--occhab-stations">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/occhab/stations</span></span><a class="headerlink" href="#get--occhab-stations" title="Permalink to this definition"></a></dt>
+<dd><p>Get all stations with their hab</p>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--import-imports-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/import/imports/</span></span><a class="headerlink" href="#get--import-imports-" title="Permalink to this definition"></a></dt>
+<dd><p>Get all imports to which logged-in user has access.</p>
+</dd></dl>
+
+<dl class="http get">
 <dt class="sig sig-object http" id="get--occtax-releves">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/occtax/releves</span></span><a class="headerlink" href="#get--occtax-releves" title="Permalink to this definition"></a></dt>
 <dd><p>Route for map list web interface</p>
@@ -2109,12 +1866,6 @@ when the user logout we need clear the session to get the new cruved session</p>
 <dd class="field-odd"><p>GeoJson&lt;TStationsOcchab&gt;</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--import-imports-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/import/imports/</span></span><a class="headerlink" href="#get--import-imports-" title="Permalink to this definition"></a></dt>
-<dd><p>Get all imports to which logged-in user has access.</p>
 </dd></dl>
 
 <dl class="http post">
@@ -2202,14 +1953,14 @@ the current user hase autorization with its cruved</p>
 </dd></dl>
 
 <dl class="http get">
-<dt class="sig sig-object http" id="get--admin-corexportsroles-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/corexportsroles/</span></span><a class="headerlink" href="#get--admin-corexportsroles-" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object http" id="get--admin-contentmapping-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/contentmapping/</span></span><a class="headerlink" href="#get--admin-contentmapping-" title="Permalink to this definition"></a></dt>
 <dd><p>List view</p>
 </dd></dl>
 
 <dl class="http get">
-<dt class="sig sig-object http" id="get--admin-exportschedules-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/exportschedules/</span></span><a class="headerlink" href="#get--admin-exportschedules-" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object http" id="get--admin-fieldmapping-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/fieldmapping/</span></span><a class="headerlink" href="#get--admin-fieldmapping-" title="Permalink to this definition"></a></dt>
 <dd><p>List view</p>
 </dd></dl>
 
@@ -2233,18 +1984,6 @@ Fait appel à l’API UsersHub</p>
 <dt class="sig sig-object http" id="get--users-organisms">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/users/organisms</span></span><a class="headerlink" href="#get--users-organisms" title="Permalink to this definition"></a></dt>
 <dd><p>Get all organisms</p>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--admin-licences-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/licences/</span></span><a class="headerlink" href="#get--admin-licences-" title="Permalink to this definition"></a></dt>
-<dd><p>List view</p>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--admin-export-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/export/</span></span><a class="headerlink" href="#get--admin-export-" title="Permalink to this definition"></a></dt>
-<dd><p>List view</p>
 </dd></dl>
 
 <dl class="http get">
@@ -2373,9 +2112,9 @@ from l_areas
 and the altitude min/max</p>
 </dd></dl>
 
-<dl class="http get">
-<dt class="sig sig-object http" id="get--validation">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/validation</span></span><a class="headerlink" href="#get--validation" title="Permalink to this definition"></a></dt>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--validation">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/validation</span></span><a class="headerlink" href="#post--validation" title="Permalink to this definition"></a></dt>
 <dd><p>Return synthese and t_validations data filtered by form params
 Params must have same synthese fields names</p>
 <dl class="simple">
@@ -2385,9 +2124,9 @@ Params must have same synthese fields names</p>
 <p>FeatureCollection</p>
 </dd></dl>
 
-<dl class="http post">
-<dt class="sig sig-object http" id="post--validation">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/validation</span></span><a class="headerlink" href="#post--validation" title="Permalink to this definition"></a></dt>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--validation">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/validation</span></span><a class="headerlink" href="#get--validation" title="Permalink to this definition"></a></dt>
 <dd><p>Return synthese and t_validations data filtered by form params
 Params must have same synthese fields names</p>
 <dl class="simple">
@@ -2419,29 +2158,10 @@ Params must have same synthese fields names</p>
 </dd></dl>
 
 <dl class="http get">
-<dt class="sig sig-object http" id="get--exports-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/exports/</span></span><a class="headerlink" href="#get--exports-" title="Permalink to this definition"></a></dt>
-<dd><p>Fonction qui renvoie la liste des exports
-accessibles pour un role donné</p>
-</dd></dl>
-
-<dl class="http get">
 <dt class="sig sig-object http" id="get--config">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/config</span></span><a class="headerlink" href="#get--config" title="Permalink to this definition"></a></dt>
 <dd><p>Parse and return configuration files as toml
 .. :quickref: Generic;</p>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/permissions_backoffice/other_permissions_form/id_permission/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_permission</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/user/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_role</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/filter_type/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_filter_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/permissions_backoffice/other_permissions_form/user/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_role</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/filter_type/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_filter_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)" title="Permalink to this definition"></a></dt>
-<dd><p>Form to define permisisons for a user expect SCOPE permissions
-.. :quickref: View_Permission;</p>
 </dd></dl>
 
 <dl class="http post">
@@ -2457,14 +2177,16 @@ accessibles pour un role donné</p>
 </dd></dl>
 
 <dl class="http get">
-<dt class="sig sig-object http" id="get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/permissions_backoffice/cruved_form/module/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_module</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/role/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_role</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/object/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_object</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object http" id="get--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/permissions_backoffice/other_permissions_form/id_permission/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_permission</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/user/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_role</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/filter_type/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_filter_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-other_permissions_form-id_permission-(int-id_permission)-user-(int-id_role)-filter_type-(int-id_filter_type)" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="http get">
-<dt class="sig sig-object http" id="get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/permissions_backoffice/cruved_form/module/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_module</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/role/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_role</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object http" id="get--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/permissions_backoffice/other_permissions_form/user/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_role</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/filter_type/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_filter_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-other_permissions_form-user-(int-id_role)-filter_type-(int-id_filter_type)" title="Permalink to this definition"></a></dt>
+<dd><p>Form to define permisisons for a user expect SCOPE permissions
+.. :quickref: View_Permission;</p>
+</dd></dl>
 
 <dl class="http post">
 <dt class="sig sig-object http" id="post--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">
@@ -2477,13 +2199,13 @@ accessibles pour un role donné</p>
 <dd></dd></dl>
 
 <dl class="http get">
-<dt class="sig sig-object http" id="get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/permissions_backoffice/filter_form/id_filter_type/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_filter_type</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/id_filter/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_filter</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object http" id="get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/permissions_backoffice/cruved_form/module/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_module</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/role/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_role</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/object/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_object</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)-object-(int-id_object)" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="http get">
-<dt class="sig sig-object http" id="get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/permissions_backoffice/filter_form/id_filter_type/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_filter_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object http" id="get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/permissions_backoffice/cruved_form/module/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_module</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/role/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_role</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-cruved_form-module-(int-id_module)-role-(int-id_role)" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="http post">
@@ -2494,6 +2216,16 @@ accessibles pour un role donné</p>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/permissions_backoffice/filter_form/id_filter_type/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_filter_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/permissions_backoffice/filter_form/id_filter_type/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_filter_type</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/id_filter/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_filter</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)-id_filter-(int-id_filter)" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/permissions_backoffice/filter_form/id_filter_type/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_filter_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--permissions_backoffice-filter_form-id_filter_type-(int-id_filter_type)" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="http get">
@@ -2545,6 +2277,34 @@ Existing fields mapping are kept.</p>
 </dl>
 </dd></dl>
 
+<dl class="http post">
+<dt class="sig sig-object http" id="post--import-imports-upload">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/import/imports/upload</span></span><a class="headerlink" href="#post--import-imports-upload" title="Permalink to this definition"></a></dt>
+<dd><p>Add an import or update an existing import.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Form Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> – file to import</p></li>
+<li><p><strong>int datasetId</strong> – dataset ID to which import data</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="http put">
+<dt class="sig sig-object http" id="put--import-imports-(int-import_id)-upload">
+<span class="sig-name descname"><span class="pre">PUT</span> </span><span class="sig-name descname"><span class="pre">/import/imports/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">import_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/upload</span></span><a class="headerlink" href="#put--import-imports-(int-import_id)-upload" title="Permalink to this definition"></a></dt>
+<dd><p>Add an import or update an existing import.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Form Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file</strong> – file to import</p></li>
+<li><p><strong>int datasetId</strong> – dataset ID to which import data</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="http get">
 <dt class="sig sig-object http" id="get--import-imports-(int-import_id)-invalid_rows">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/import/imports/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">import_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/invalid_rows</span></span><a class="headerlink" href="#get--import-imports-(int-import_id)-invalid_rows" title="Permalink to this definition"></a></dt>
@@ -2572,7 +2332,7 @@ Existing fields mapping are kept.</p>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--import-imports-(int-import_id)-values">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/import/imports/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">import_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/values</span></span><a class="headerlink" href="#get--import-imports-(int-import_id)-values" title="Permalink to this definition"></a></dt>
-<dd><p>Return all the columns of the file of an import</p>
+<dd><p>Return all the values of nomenclatures fields</p>
 </dd></dl>
 
 <dl class="http post">
@@ -2769,75 +2529,6 @@ pour l’observation uuid</p>
 <dd><p>Get one synthese record for web app with all decoded nomenclature</p>
 </dd></dl>
 
-<dl class="http get">
-<dt class="sig sig-object http" id="get--exports-static-(path-filename)">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/exports/static/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">path:</span> </em><em class="sig-param"><span class="pre">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--exports-static-(path-filename)" title="Permalink to this definition"></a></dt>
-<dd><p>Function used internally to send static files from the static
-folder to the browser.</p>
-<div class="versionadded">
-<p><span class="versionmodified added">New in version 0.5.</span></p>
-</div>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--exports-api-(int-id_export)">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/exports/api/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_export</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--exports-api-(int-id_export)" title="Permalink to this definition"></a></dt>
-<dd><dl class="simple">
-<dt>Fonction qui expose les exports disponibles à un role</dt><dd><p>sous forme d’api</p>
-</dd>
-<dt>Le requetage des données se base sur la classe GenericQuery qui permet</dt><dd><p>de filter les données de façon dynamique en respectant des
-conventions de nommage</p>
-</dd>
-</dl>
-<p>limit : nombre limite de résultats à retourner
-offset : numéro de page</p>
-<dl class="simple">
-<dt>FILTRES :</dt><dd><dl class="simple">
-<dt>nom_col=val: Si nom_col fait partie des colonnes</dt><dd><p>de la vue alors filtre nom_col=val</p>
-</dd>
-<dt>ilikenom_col=val: Si nom_col fait partie des colonnes</dt><dd><p>de la vue et que la colonne est de type texte
-alors filtre nom_col ilike ‘%val%’</p>
-</dd>
-<dt>filter_d_up_nom_col=val: Si nom_col fait partie des colonnes</dt><dd><p>de la vue et que la colonne est de type date
-alors filtre nom_col &gt;= val</p>
-</dd>
-<dt>filter_d_lo_nom_col=val: Si nom_col fait partie des colonnes</dt><dd><p>de la vue et que la colonne est de type date
-alors filtre nom_col &lt;= val</p>
-</dd>
-<dt>filter_d_eq_nom_col=val: Si nom_col fait partie des colonnes</dt><dd><p>de la vue et que la colonne est de type date
-alors filtre nom_col == val</p>
-</dd>
-<dt>filter_n_up_nom_col=val: Si nom_col fait partie des colonnes</dt><dd><p>de la vue et que la colonne est de type numérique
-alors filtre nom_col &gt;= val</p>
-</dd>
-<dt>filter_n_lo_nom_col=val: Si nom_col fait partie des colonnes</dt><dd><p>de la vue et que la colonne est de type numérique
-alors filtre nom_col &lt;= val</p>
-</dd>
-</dl>
-</dd>
-<dt>ORDONNANCEMENT :</dt><dd><dl class="simple">
-<dt>orderby: char</dt><dd><p>Nom du champ sur lequel baser l’ordonnancement</p>
-</dd>
-<dt>order: char (asc|desc)</dt><dd><p>Sens de l’ordonnancement</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p>json
-{</p>
-<blockquote>
-<div><p>‘total’: Nombre total de résultats,
-‘total_filtered’: Nombre total de résultats après filtration,
-‘page’: Numéro de la page retournée,
-‘limit’: Nombre de résultats,
-‘items’: Données au format Json ou GeoJson</p>
-</div></blockquote>
-<p>}</p>
-<blockquote>
-<div><p>order by : &#64;TODO</p>
-</div></blockquote>
-</dd></dl>
-
 <dl class="http post">
 <dt class="sig sig-object http" id="post--occhab-export_stations-(export_format)">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/occhab/export_stations/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">export_format</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--occhab-export_stations-(export_format)" title="Permalink to this definition"></a></dt>
@@ -2874,6 +2565,20 @@ The route is in post to avoid a too large query string</p>
 </dd></dl>
 
 <dl class="http get">
+<dt class="sig sig-object http" id="get--import-mappings-(int-id_mapping)-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/import/mappings/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_mapping</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#get--import-mappings-(int-id_mapping)-" title="Permalink to this definition"></a></dt>
+<dd><p>Return a mapping. Mapping has to be active.</p>
+</dd></dl>
+
+<dl class="http delete">
+<dt class="sig sig-object http" id="delete--import-mappings-(int-id_mapping)-">
+<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/import/mappings/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_mapping</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#delete--import-mappings-(int-id_mapping)-" title="Permalink to this definition"></a></dt>
+<dd><p>Delete a mappping. Only permanent (named) mapping can be deleted.
+If a mapping is still used by a import, it is not deleted but marked as temporary (unnamed).
+Return the updated list of mapping of the same type of the deleted mapping.</p>
+</dd></dl>
+
+<dl class="http get">
 <dt class="sig sig-object http" id="get--occtax-counting-(int-id_counting)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/occtax/counting/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_counting</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--occtax-counting-(int-id_counting)" title="Permalink to this definition"></a></dt>
 <dd><p>Get one counting record, with its id_counting</p>
@@ -2893,20 +2598,6 @@ The route is in post to avoid a too large query string</p>
 </dd></dl>
 
 <dl class="http get">
-<dt class="sig sig-object http" id="get--import-mappings-(int-id_mapping)-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/import/mappings/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_mapping</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#get--import-mappings-(int-id_mapping)-" title="Permalink to this definition"></a></dt>
-<dd><p>Return a mapping. Mapping has to be active.</p>
-</dd></dl>
-
-<dl class="http delete">
-<dt class="sig sig-object http" id="delete--import-mappings-(int-id_mapping)-">
-<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/import/mappings/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_mapping</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#delete--import-mappings-(int-id_mapping)-" title="Permalink to this definition"></a></dt>
-<dd><p>Delete a mappping. Only permanent (named) mapping can be deleted.
-If a mapping is still used by a import, it is not deleted but marked as temporary (unnamed).
-Return the updated list of mapping of the same type of the deleted mapping.</p>
-</dd></dl>
-
-<dl class="http get">
 <dt class="sig sig-object http" id="get--habref-habitat-(int-cd_hab)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/habref/habitat/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">cd_hab</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--habref-habitat-(int-cd_hab)" title="Permalink to this definition"></a></dt>
 <dd><p>Get one habitat with its correspondances</p>
@@ -2915,6 +2606,18 @@ Return the updated list of mapping of the same type of the deleted mapping.</p>
 <dd class="field-odd"><p>a cd_hab</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="http get">
+<dt class="sig sig-object http" id="get--import-imports-(int-import_id)-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/import/imports/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">import_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#get--import-imports-(int-import_id)-" title="Permalink to this definition"></a></dt>
+<dd><p>Get an import.</p>
+</dd></dl>
+
+<dl class="http delete">
+<dt class="sig sig-object http" id="delete--import-imports-(int-import_id)-">
+<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/import/imports/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">import_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#delete--import-imports-(int-import_id)-" title="Permalink to this definition"></a></dt>
+<dd><p>Delete an import.</p>
 </dd></dl>
 
 <dl class="http get">
@@ -2938,18 +2641,6 @@ Return the updated list of mapping of the same type of the deleted mapping.</p>
 <dt class="sig sig-object http" id="delete--occhab-station-(int-id_station)">
 <span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/occhab/station/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_station</span></em><span class="sig-paren">)</span><a class="headerlink" href="#delete--occhab-station-(int-id_station)" title="Permalink to this definition"></a></dt>
 <dd><p>Delete a station with its habitat and its observers</p>
-</dd></dl>
-
-<dl class="http get">
-<dt class="sig sig-object http" id="get--import-imports-(int-import_id)-">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/import/imports/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">import_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#get--import-imports-(int-import_id)-" title="Permalink to this definition"></a></dt>
-<dd><p>Get an import.</p>
-</dd></dl>
-
-<dl class="http delete">
-<dt class="sig sig-object http" id="delete--import-imports-(int-import_id)-">
-<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/import/imports/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">import_id</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><a class="headerlink" href="#delete--import-imports-(int-import_id)-" title="Permalink to this definition"></a></dt>
-<dd><p>Delete an import.</p>
 </dd></dl>
 
 <dl class="http get">
@@ -3026,8 +2717,10 @@ Use trigram algo to add relevance</p>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--admin-static-(path-filename)">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/admin/static/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">path:</span> </em><em class="sig-param"><span class="pre">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#get--admin-static-(path-filename)" title="Permalink to this definition"></a></dt>
-<dd><p>Function used internally to send static files from the static
-folder to the browser.</p>
+<dd><p>The view function used to serve files from
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">static_folder</span></code>. A route is automatically registered for
+this view at <code class="xref py py-attr docutils literal notranslate"><span class="pre">static_url_path</span></code> if <code class="xref py py-attr docutils literal notranslate"><span class="pre">static_folder</span></code> is
+set.</p>
 <div class="versionadded">
 <p><span class="versionmodified added">New in version 0.5.</span></p>
 </div>
@@ -3133,15 +2826,9 @@ folder to the browser.</p>
 .. :quickref: Metadata;</p>
 </dd></dl>
 
-<dl class="http post">
-<dt class="sig sig-object http" id="post--exports-(int-id_export)-(export_format)">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/exports/</span></span><span class="sig-paren">(</span><em class="property"><span class="pre">int:</span> </em><em class="sig-param"><span class="pre">id_export</span></em><span class="sig-paren">)</span><span class="sig-name descname"><span class="pre">/</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="pre">export_format</span></em><span class="sig-paren">)</span><a class="headerlink" href="#post--exports-(int-id_export)-(export_format)" title="Permalink to this definition"></a></dt>
-<dd><p>Run export with thread</p>
-</dd></dl>
-
-</div>
-</div>
-<div class="section" id="release">
+</section>
+</section>
+<section id="release">
 <h2>Release<a class="headerlink" href="#release" title="Permalink to this headline"></a></h2>
 <p>Pour sortir une nouvelle version de GeoNature :</p>
 <ul class="simple">
@@ -3155,8 +2842,8 @@ folder to the browser.</p>
 <li><p>Faites la release (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/releases">https://github.com/PnX-SI/GeoNature/releases</a>) en la taguant <code class="docutils literal notranslate"><span class="pre">X.Y.Z</span></code> (sans <code class="docutils literal notranslate"><span class="pre">v</span></code> devant) et en copiant le contenu du Changelog</p></li>
 <li><p>Dans la branche <code class="docutils literal notranslate"><span class="pre">develop</span></code>, modifiez le fichier <code class="docutils literal notranslate"><span class="pre">VERSION</span></code> en <code class="docutils literal notranslate"><span class="pre">X.Y.Z.dev0</span></code> et pareil dans le fichier <code class="docutils literal notranslate"><span class="pre">docs/CHANGELOG.rst</span></code></p></li>
 </ul>
-</div>
-<div class="section" id="bdd">
+</section>
+<section id="bdd">
 <h2>BDD<a class="headerlink" href="#bdd" title="Permalink to this headline"></a></h2>
 <p>Mettre à jour le <code class="docutils literal notranslate"><span class="pre">ref_geo</span></code> à partir des données IGN scan express :</p>
 <ul class="simple">
@@ -3166,13 +2853,13 @@ folder to the browser.</p>
 <li><p>Zipper le fichier SQL et le mettre sur le serveur <a class="reference external" href="https://geonature.fr/data">https://geonature.fr/data</a></p></li>
 <li><p>Adapter le script <code class="docutils literal notranslate"><span class="pre">install_db.sh</span></code> pour récupérer le nouveau fichier zippé</p></li>
 </ul>
-</div>
-<div class="section" id="pratiques-et-regles-de-developpement">
+</section>
+<section id="pratiques-et-regles-de-developpement">
 <h2>Pratiques et règles de developpement<a class="headerlink" href="#pratiques-et-regles-de-developpement" title="Permalink to this headline"></a></h2>
 <p>Afin de partager des règles communes de développement et faciliter l’intégration de
 nouveau code, veuillez lire les recommandations et bonnes pratiques recommandées pour contribuer
 au projet GeoNature.</p>
-<div class="section" id="git">
+<section id="git">
 <h3>Git<a class="headerlink" href="#git" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Ne jamais faire de commit dans la branche <code class="docutils literal notranslate"><span class="pre">master</span></code> mais dans la branche <code class="docutils literal notranslate"><span class="pre">develop</span></code> ou idéalement dans une branche dédiée à la fonctionnalité (feature branch)</p></li>
@@ -3181,8 +2868,8 @@ au projet GeoNature.</p>
 <li><p>Les messages de commits font référence à un ticket ou le ferment (<code class="docutils literal notranslate"><span class="pre">ref</span> <span class="pre">#12</span></code> ou <code class="docutils literal notranslate"><span class="pre">fixes</span> <span class="pre">#23</span></code>)</p></li>
 <li><p>Les messages des commits sont en anglais (dans la mesure du possible)</p></li>
 </ul>
-</div>
-<div class="section" id="backend">
+</section>
+<section id="backend">
 <h3>Backend<a class="headerlink" href="#backend" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Une fonction ou classe doit contenir une docstring en français. Les doctrings doivent suivre le modèle NumPy/SciPy (voir <a class="reference external" href="https://numpydoc.readthedocs.io/en/latest/format.html">https://numpydoc.readthedocs.io/en/latest/format.html</a> et <a class="reference external" href="https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example">https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example</a>)</p></li>
@@ -3205,8 +2892,8 @@ au projet GeoNature.</p>
 <ul class="simple">
 <li><p>Utiliser des doubles quotes pour les chaines de charactères.</p></li>
 </ul>
-</div>
-<div class="section" id="id2">
+</section>
+<section id="id2">
 <h3>BDD<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Le noms des tables est préfixé par un “t” pour une table de contenu, de “bib” pour les tables de “dictionnaires” et de “cor” pour les tables de correspondance (relations N-N)</p></li>
@@ -3215,8 +2902,8 @@ au projet GeoNature.</p>
 <li><p>Ne rien écrire dans le schéma <code class="docutils literal notranslate"><span class="pre">public</span></code></p></li>
 <li><p>Ne pas répeter le nom des tables dans les noms des colonnes</p></li>
 </ul>
-</div>
-<div class="section" id="typescript">
+</section>
+<section id="typescript">
 <h3>Typescript<a class="headerlink" href="#typescript" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Documenter les fonctions et classes grâce au JSDoc en français (<a class="reference external" href="https://jsdoc.app/">https://jsdoc.app/</a>)</p></li>
@@ -3227,16 +2914,16 @@ au projet GeoNature.</p>
 <li><p>Utiliser <code class="docutils literal notranslate"><span class="pre">tslint</span></code> comme linter</p></li>
 <li><p>La longueur maximale pour une ligne de code est 100 caractères.</p></li>
 </ul>
-</div>
-<div class="section" id="angular">
+</section>
+<section id="angular">
 <h3>Angular<a class="headerlink" href="#angular" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Suivre les recommandations définies par le styleguide Angular: <a class="reference external" href="https://angular.io/guide/styleguide">https://angular.io/guide/styleguide</a>. C’est une ressources très fournie en cas de question sur les pratiques de développement (principe de séparation des principes, organisation des services et des composants)</p></li>
 <li><p>On privilégiera l’utilisation des reactive forms pour la construction des formulaires (<a class="reference external" href="https://angular.io/guide/reactive-forms">https://angular.io/guide/reactive-forms</a>). Ce sont des formulaires pilotés par le code, ce qui facilite la lisibilité et le contrôle de ceux-ci.</p></li>
 <li><p>Pour l’ensemble des composants cartographiques et des formulaires (taxonomie, nomenclatures…), il est conseillé d’utiliser les composants présents dans le module ‘GN2CommonModule’.</p></li>
 </ul>
-</div>
-<div class="section" id="html">
+</section>
+<section id="html">
 <h3>HTML<a class="headerlink" href="#html" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>La longueur maximale pour une ligne de code est 100 caractères.</p></li>
@@ -3256,8 +2943,8 @@ au projet GeoNature.</p>
 <ul class="simple">
 <li><p>VsCode fournit un formatteur de HTML par défaut (Dans les options de VsCode, tapez “wrap attributes” et sélectionner “force-expand-multiline”)</p></li>
 </ul>
-</div>
-<div class="section" id="style-et-ergonomie">
+</section>
+<section id="style-et-ergonomie">
 <h3>Style et ergonomie<a class="headerlink" href="#style-et-ergonomie" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Boutons :
@@ -3291,9 +2978,9 @@ On utilise les boutons d’Angular materials (<a class="reference external" href
 </ul>
 </li>
 </ul>
-</div>
-</div>
-<div class="section" id="developper-et-installer-un-gn-module">
+</section>
+</section>
+<section id="developper-et-installer-un-gn-module">
 <h2>Développer et installer un gn_module<a class="headerlink" href="#developper-et-installer-un-gn-module" title="Permalink to this headline"></a></h2>
 <p>GeoNature a été conçu pour fonctionner en briques modulaires.</p>
 <p>Chaque protocole, répondant à une question scientifique, est amené à avoir
@@ -3313,7 +3000,7 @@ rubrique <a class="reference internal" href="#api"><span class="std std-ref">API
 composants Angular réutilisables
 (<a class="reference external" href="http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html">http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html</a>),
 pour l’affichage des cartes, des formulaires etc…</p>
-<div class="section" id="developper-un-gn-module">
+<section id="developper-un-gn-module">
 <h3>Développer un gn_module<a class="headerlink" href="#developper-un-gn-module" title="Permalink to this headline"></a></h3>
 <p>Avant de développer un gn_module, assurez-vous d’avoir GeoNature bien
 installé sur votre machine (voir <a class="reference internal" href="installation.html#installation-standalone"><span class="std std-ref">Installation de GeoNature uniquement</span></a>).</p>
@@ -3371,7 +3058,7 @@ l’intégration du module est à la charge du développeur.</p>
 <span class="c1"># example geonature install_gn_module /home/moi/gn_module_validation /validation</span>
 </pre></div>
 </div>
-<div class="section" id="bonnes-pratiques-frontend">
+<section id="bonnes-pratiques-frontend">
 <h4>Bonnes pratiques Frontend<a class="headerlink" href="#bonnes-pratiques-frontend" title="Permalink to this headline"></a></h4>
 <ul>
 <li><p>Pour l’ensemble des composants cartographiques et des formulaires (taxonomie, nomenclatures…), il est conseillé d’utiliser les composants présents dans le module ‘GN2CommonModule’.</p>
@@ -3400,9 +3087,9 @@ de GeoNature</p>
 </div>
 </li>
 </ul>
-</div>
-</div>
-<div class="section" id="installer-un-gn-module">
+</section>
+</section>
+<section id="installer-un-gn-module">
 <h3>Installer un gn_module<a class="headerlink" href="#installer-un-gn-module" title="Permalink to this headline"></a></h3>
 <p>Renseignez l’éventuel fichier <code class="docutils literal notranslate"><span class="pre">config/settings.ini</span></code> du module.</p>
 <p>Pour installer un module, rendez vous dans le dossier <code class="docutils literal notranslate"><span class="pre">backend</span></code> de GeoNature.</p>
@@ -3433,18 +3120,18 @@ valeurs par défaut. Puis relancez la mise à jour de la configuration
 (depuis le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/backend</span></code> et une fois dans le venv
 (<code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">venv/bin/activate</span></code>) :
 <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">update_module_configuration</span> <span class="pre">nom_du_module</span></code>)</p>
-</div>
-</div>
-<div class="section" id="developpement-backend">
+</section>
+</section>
+<section id="developpement-backend">
 <h2>Développement Backend<a class="headerlink" href="#developpement-backend" title="Permalink to this headline"></a></h2>
-<div class="section" id="demarrage-du-serveur-de-dev-backend">
+<section id="demarrage-du-serveur-de-dev-backend">
 <h3>Démarrage du serveur de dev backend<a class="headerlink" href="#demarrage-du-serveur-de-dev-backend" title="Permalink to this headline"></a></h3>
 <p>La commande <code class="docutils literal notranslate"><span class="pre">geonature</span></code> fournit la sous-commande <code class="docutils literal notranslate"><span class="pre">dev_back</span></code> pour lancer un serveur de test :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(venv)...$ geonature dev_back
 </pre></div>
 </div>
-</div>
-<div class="section" id="base-de-donnees-avec-flask-sqlalchemy">
+</section>
+<section id="base-de-donnees-avec-flask-sqlalchemy">
 <h3>Base de données avec Flask-SQLAlchemy<a class="headerlink" href="#base-de-donnees-avec-flask-sqlalchemy" title="Permalink to this headline"></a></h3>
 <p>L’intégration de la base de données à GeoNature repose sur la bibliothèque <a class="reference external" href="https://flask-sqlalchemy.palletsprojects.com">Flask-SQLAlchemy</a>.</p>
 <p>Celle-ci fournit un objet <code class="docutils literal notranslate"><span class="pre">db</span></code> à importer comme ceci : <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">geonature.utils.env</span> <span class="pre">import</span> <span class="pre">db</span></code></p>
@@ -3466,7 +3153,7 @@ obj = MyModel.query.get(1)
 </pre></div>
 </div>
 <p>Ceci est typiquement la première ligne de toutes les routes travaillant sur une instance (route de type get/update/delete).</p>
-<div class="section" id="fonctions-de-filtrages">
+<section id="fonctions-de-filtrages">
 <h4>Fonctions de filtrages<a class="headerlink" href="#fonctions-de-filtrages" title="Permalink to this headline"></a></h4>
 <p>L’attribut <code class="docutils literal notranslate"><span class="pre">query</span></code> est une instance de la classe <code class="docutils literal notranslate"><span class="pre">flask_sqlalchemy.BaseQuery</span></code> qui peut être sur-chargée afin de définir de nouvelles fonctions de filtrage.</p>
 <p>On pourra ainsi implémenter une fonction pour filtrer les objets auxquels l’utilisateur a accès, ou encore pour implémenter des filtres de recherche.</p>
@@ -3495,11 +3182,11 @@ obj = MyModel.query.get(1)
     <span class="n">obj_list</span> <span class="o">=</span> <span class="n">MyModel</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">filter_by_scope</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-</div>
-<div class="section" id="serialisation-des-modeles">
+</section>
+</section>
+<section id="serialisation-des-modeles">
 <h3>Serialisation des modèles<a class="headerlink" href="#serialisation-des-modeles" title="Permalink to this headline"></a></h3>
-<div class="section" id="avec-marshmallow">
+<section id="avec-marshmallow">
 <h4>Avec Marshmallow<a class="headerlink" href="#avec-marshmallow" title="Permalink to this headline"></a></h4>
 <p>La bibliothèque <a class="reference external" href="https://marshmallow.readthedocs.io/en/stable/">Marshmallow</a> fournit des outils de sérialisation et desérialisation.</p>
 <p>Elle est intégrée à GeoNature par la bibliothèque <a class="reference external" href="https://flask-marshmallow.readthedocs.io/en/latest/">Flask-Marshmallow</a> qui fournit l’objet <code class="docutils literal notranslate"><span class="pre">ma</span></code> à importer comme ceci : <code class="docutils literal notranslate"><span class="pre">from</span> <span class="pre">geonature.utils.env</span> <span class="pre">import</span> <span class="pre">ma</span></code>.</p>
@@ -3560,8 +3247,8 @@ obj = MyModel.query.get(1)
     <span class="n">parent</span> <span class="o">=</span> <span class="n">ma</span><span class="o">.</span><span class="n">Nested</span><span class="p">(</span><span class="n">ParentModelSchema</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="avec-le-decorateur-serializable">
+</section>
+<section id="avec-le-decorateur-serializable">
 <h4>Avec le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;serializable</span></code><a class="headerlink" href="#avec-le-decorateur-serializable" title="Permalink to this headline"></a></h4>
 <p>Note : l’utilisation des schémas Marshmallow est probablement plus performante.</p>
 <p>La bibliothèque maison <a class="reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy">Utils-Flask-SQLAlchemy</a> fournit le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;serializable</span></code> qui ajoute une méthode <code class="docutils literal notranslate"><span class="pre">as_dict</span></code> sur les modèles décorés :</p>
@@ -3590,8 +3277,8 @@ obj.as_dict()
 <li><p>augmentation non prévue des données sérialisées lors de l’ajout d’une nouvelle relationship</p></li>
 <li><p>problème n+1 (voir section dédiée)</p></li>
 </ul>
-</div>
-<div class="section" id="cas-des-modeles-geographiques">
+</section>
+<section id="cas-des-modeles-geographiques">
 <h4>Cas des modèles géographiques<a class="headerlink" href="#cas-des-modeles-geographiques" title="Permalink to this headline"></a></h4>
 <p>La bibliothèque maison <a class="reference external" href="https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo">Utils-Flask-SQLAlchemy-Geo</a> fournit des décorateurs supplémentaires pour la sérialisation des modèles contenant des champs géographiques.</p>
 <ul>
@@ -3672,9 +3359,9 @@ shapefiles qui ont au moins un enregistrement:</p>
 </div>
 </li>
 </ul>
-</div>
-</div>
-<div class="section" id="reponses">
+</section>
+</section>
+<section id="reponses">
 <h3>Réponses<a class="headerlink" href="#reponses" title="Permalink to this headline"></a></h3>
 <p>Voici quelques conseils sur l’envoi de réponse dans vos routes.</p>
 <ul>
@@ -3758,7 +3445,7 @@ def restricted_action(pk):
 <p>Lorsque par exemple une action est traitée mais aucun résultat n’est à renvoyer, inutile d’envoyer une réponse « OK ». C’est l’envoi d’une réponse HTTP avec un code égale à 400 ou supérieur qui entrainera le traitement d’une erreur côté frontend, plutôt que de se fonder sur le contenu d’une réponse non normalisée.</p>
 </li>
 </ul>
-<div class="section" id="le-decorateur-json-resp">
+<section id="le-decorateur-json-resp">
 <h4>Le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;json_resp</span></code><a class="headerlink" href="#le-decorateur-json-resp" title="Permalink to this headline"></a></h4>
 <p>Historiquement, beaucoup de vues sont décorées avec le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;json_resp</span></code>.</p>
 <p>Celui-ci apparait aujourd’hui superflu par rapport à l’usage directement de la fonction <code class="docutils literal notranslate"><span class="pre">jsonify</span></code> fournie par Flask.</p>
@@ -3788,9 +3475,9 @@ données).</p>
 </div>
 </li>
 </ul>
-</div>
-</div>
-<div class="section" id="probleme-n-1">
+</section>
+</section>
+<section id="probleme-n-1">
 <h3>Problème « n+1 »<a class="headerlink" href="#probleme-n-1" title="Permalink to this headline"></a></h3>
 <p>Le problème « n+1 » est un anti-pattern courant des routes de type « liste » (par exemple, récupération de la liste des cadres d’acquisition).</p>
 <p>En effet, on souhaite par exemple afficher la liste des cadres d’acquisitions, et pour chacun d’entre eux, la liste des jeux de données :</p>
@@ -3857,12 +3544,12 @@ données).</p>
 <p>Pour toutes les requêtes récupérant une liste d’objet, l’utilisation de la stratégie <code class="docutils literal notranslate"><span class="pre">raise</span></code> par défaut est grandement encouragée afin de ne pas tomber dans cet anti-pattern.</p>
 <p>La méthode <code class="docutils literal notranslate"><span class="pre">as_dict</span></code> du décorateur <code class="docutils literal notranslate"><span class="pre">&#64;serializable</span></code> accepte l’argument <code class="docutils literal notranslate"><span class="pre">unloaded='raise'</span></code> ou <code class="docutils literal notranslate"><span class="pre">unloaded='warn'</span></code> pour un résultat similaire (ou un simple warning).</p>
 <p>L’utilisation de <code class="docutils literal notranslate"><span class="pre">raiseload</span></code>, appartenant au cœur de SQLAlchemy, reste à privilégier.</p>
-</div>
-<div class="section" id="export-des-donnees">
+</section>
+<section id="export-des-donnees">
 <h3>Export des données<a class="headerlink" href="#export-des-donnees" title="Permalink to this headline"></a></h3>
 <p>TODO</p>
-</div>
-<div class="section" id="utilisation-de-la-configuration">
+</section>
+<section id="utilisation-de-la-configuration">
 <h3>Utilisation de la configuration<a class="headerlink" href="#utilisation-de-la-configuration" title="Permalink to this headline"></a></h3>
 <p>La configuration globale de l’application est controlée par le fichier
 <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code> qui contient un nombre limité de paramètres.</p>
@@ -3904,10 +3591,10 @@ il faut utiliser la méthode suivante</p>
 <span class="n">ID_MODULE</span> <span class="o">=</span> <span class="n">get_id_module</span><span class="p">(</span><span class="n">current_app</span><span class="p">,</span> <span class="s1">&#39;occtax&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="authentification-et-authorisations">
+</section>
+<section id="authentification-et-authorisations">
 <h3>Authentification et authorisations<a class="headerlink" href="#authentification-et-authorisations" title="Permalink to this headline"></a></h3>
-<div class="section" id="restreindre-une-route-aux-utilisateurs-connectes">
+<section id="restreindre-une-route-aux-utilisateurs-connectes">
 <h4>Restreindre une route aux utilisateurs connectés<a class="headerlink" href="#restreindre-une-route-aux-utilisateurs-connectes" title="Permalink to this headline"></a></h4>
 <p>Utiliser le décorateur <code class="docutils literal notranslate"><span class="pre">&#64;login_required</span></code> :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">geonature.core.gn_permissions.decorators</span> <span class="kn">import</span> <span class="n">login_required</span>
@@ -3917,8 +3604,8 @@ il faut utiliser la méthode suivante</p>
     <span class="k">pass</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="connaitre-lutilisateur-actuellement-connecte">
+</section>
+<section id="connaitre-lutilisateur-actuellement-connecte">
 <h4>Connaitre l’utilisateur actuellement connecté<a class="headerlink" href="#connaitre-lutilisateur-actuellement-connecte" title="Permalink to this headline"></a></h4>
 <p>L’utilisateur courant est stocké dans l’espace de nom <code class="docutils literal notranslate"><span class="pre">g</span></code> :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">g</span>
@@ -3927,8 +3614,8 @@ il faut utiliser la méthode suivante</p>
 </pre></div>
 </div>
 <p>Il s’agit d’une instance de <code class="docutils literal notranslate"><span class="pre">pypnusershub.db.models.User</span></code>.</p>
-</div>
-<div class="section" id="verification-des-droits-des-utilisateurs">
+</section>
+<section id="verification-des-droits-des-utilisateurs">
 <h4>Vérification des droits des utilisateurs<a class="headerlink" href="#verification-des-droits-des-utilisateurs" title="Permalink to this headline"></a></h4>
 <ul>
 <li><p><code class="docutils literal notranslate"><span class="pre">geonature.core.gn_permissions.decorators.check_cruved_scope</span></code></p>
@@ -4008,19 +3695,19 @@ un module parent ou non.</p>
 </div>
 </li>
 </ul>
-</div>
-</div>
-</div>
-<div class="section" id="developpement-frontend">
+</section>
+</section>
+</section>
+<section id="developpement-frontend">
 <h2>Développement Frontend<a class="headerlink" href="#developpement-frontend" title="Permalink to this headline"></a></h2>
-<div class="section" id="bonnes-pratiques">
+<section id="bonnes-pratiques">
 <h3>Bonnes pratiques<a class="headerlink" href="#bonnes-pratiques" title="Permalink to this headline"></a></h3>
 <ul class="simple">
 <li><p>Chaque gn_module de GeoNature doit être un module Angular indépendant <a class="reference external" href="https://angular.io/guide/ngmodule">https://angular.io/guide/ngmodule</a>.</p></li>
 <li><p>Ce gn_module peut s’appuyer sur une série de composants génériques intégrés dans le module GN2CommonModule et décrit ci-dessous</p></li>
 </ul>
-</div>
-<div class="section" id="les-composants-generiques">
+</section>
+<section id="les-composants-generiques">
 <h3>Les composants génériques<a class="headerlink" href="#les-composants-generiques" title="Permalink to this headline"></a></h3>
 <p>Un ensemble de composants décrits ci-dessous sont intégrés dans le coeur de GeoNature et permettent aux développeurs de simplifier la mise en place de formulaires ou de bloc cartographiques.</p>
 <p>Voir la <a class="reference external" href="http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html">DOCUMENTATION COMPLETE</a> sur les composants génériques.</p>
@@ -4058,7 +3745,7 @@ au composant parent qui l’accueil
 <p>Un ensemble de composants permettant de simplifier l’affichage des cartographies
 Leaflet sont disponibles. Notamment un composant “map-list” permettant de
 connecter une carte avec une liste d’objets décrits en détail ci dessous.</p>
-<div class="section" id="maplistcomponent">
+<section id="maplistcomponent">
 <h4>MapListComponent<a class="headerlink" href="#maplistcomponent" title="Permalink to this headline"></a></h4>
 <p>Le composant MapList fournit une carte pouvant être synchronisée
 avec une liste. La liste, pouvant être spécifique à chaque module,
@@ -4156,8 +3843,8 @@ Les paramètres <code class="docutils literal notranslate"><span class="pre">api
 <span class="o">&lt;/</span><span class="n">table</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="pnx-municipalities">
+</section>
+<section id="pnx-municipalities">
 <h4>Pnx-Municipalities<a class="headerlink" href="#pnx-municipalities" title="Permalink to this headline"></a></h4>
 <p>Suite à l’ajout d’un input “valueFieldName” pour “pnx-areas” et “pnx-municipalities” dans la version 2.9.0 de GeoNature, pour ceux qui utilisent le composant <code class="docutils literal notranslate"><span class="pre">pnx-municipalities</span></code>, l’idéal serait de traduire les données et les modèles et de passer du <code class="docutils literal notranslate"><span class="pre">code_insee</span></code> à <code class="docutils literal notranslate"><span class="pre">id_area</span></code>. La correspondance est immédiate (<code class="docutils literal notranslate"><span class="pre">area_code</span></code> = <code class="docutils literal notranslate"><span class="pre">code_insee</span></code>).</p>
 <p>Cependant, pour garder la retrocompatibilité du composant <code class="docutils literal notranslate"><span class="pre">pnx-municipalities</span></code> veuillez ajouter :</p>
@@ -4166,10 +3853,10 @@ Les paramètres <code class="docutils literal notranslate"><span class="pre">api
 <li><p>dans les config (js, ts ou json) (attention à la casse) : <code class="docutils literal notranslate"><span class="pre">&quot;value_field_name&quot;:</span> <span class="pre">&quot;area_code&quot;</span></code></p></li>
 <li><p>dans le module Monitoring, ajouter aussi <code class="docutils literal notranslate"><span class="pre">&quot;type_util&quot;:</span> <span class="pre">&quot;area&quot;</span></code></p></li>
 </ul>
-</div>
-</div>
-</div>
-<div class="section" id="outils-d-aide-a-la-qualite-du-code">
+</section>
+</section>
+</section>
+<section id="outils-d-aide-a-la-qualite-du-code">
 <h2>Outils d’aide à la qualité du code<a class="headerlink" href="#outils-d-aide-a-la-qualite-du-code" title="Permalink to this headline"></a></h2>
 <p>Des outils d’amélioration du code pour les développeurs peuvent être utilisés :
 flake8, pylint, pytest, coverage.</p>
@@ -4180,7 +3867,7 @@ flake8, pylint, pytest, coverage.</p>
 </ul>
 <p>Un fichier <code class="docutils literal notranslate"><span class="pre">.editorconfig</span></code> permettant de définir le comportement de
 votre éditeur de code est également disponible à la racine du projet.</p>
-<div class="section" id="sphinx">
+<section id="sphinx">
 <h3>Sphinx<a class="headerlink" href="#sphinx" title="Permalink to this headline"></a></h3>
 <p>Sphinx est un générateur de documentation.</p>
 <p>Pour générer la documentation HTML, se placer dans le répertoire <code class="docutils literal notranslate"><span class="pre">docs</span></code>
@@ -4189,8 +3876,8 @@ et modifier les fichiers .rst:</p>
 <span class="n">make</span> <span class="n">html</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="pylint">
+</section>
+<section id="pylint">
 <h3>Pylint<a class="headerlink" href="#pylint" title="Permalink to this headline"></a></h3>
 <p>Pylint fait la même chose que Flake8 mais il est plus complet, plus
 configurable mais aussi plus exigeant.</p>
@@ -4199,8 +3886,8 @@ configurable mais aussi plus exigeant.</p>
 <span class="n">pylint</span> <span class="n">geonature</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="tslint">
+</section>
+<section id="tslint">
 <h3>tslint<a class="headerlink" href="#tslint" title="Permalink to this headline"></a></h3>
 <p>tslint fait la même chose que pylint mais pour la partie frontend en
 typescript:</p>
@@ -4208,8 +3895,8 @@ typescript:</p>
 <span class="n">npm</span> <span class="n">run</span> <span class="n">lint</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="pytest">
+</section>
+<section id="pytest">
 <h3>Pytest<a class="headerlink" href="#pytest" title="Permalink to this headline"></a></h3>
 <p>Pytest permet de mettre en place des tests fonctionnels et automatisés
 du code Python.</p>
@@ -4217,8 +3904,8 @@ du code Python.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="coverage">
+</section>
+<section id="coverage">
 <h3>Coverage<a class="headerlink" href="#coverage" title="Permalink to this headline"></a></h3>
 <p>Coverage permet de donner une indication concernant la couverture du code
 par les tests.</p>
@@ -4226,9 +3913,9 @@ par les tests.</p>
 </pre></div>
 </div>
 <p>Ceci génénère un rapport html disponible dans <code class="docutils literal notranslate"><span class="pre">htmlcov/index.html</span></code>.</p>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>

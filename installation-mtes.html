@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Spécificités DEPOBIO &mdash; GeoNature 2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -75,11 +76,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="specificites-depobio">
+  <section id="specificites-depobio">
 <h1>Spécificités DEPOBIO<a class="headerlink" href="#specificites-depobio" title="Permalink to this headline"></a></h1>
 <p>Cette documentation mentionne les spécificités et la configuration de l’installation de l’instance nationale du Ministère de la Transition Ecologique et Solidaire (MTES), dans le cadre du projet de Depôt Légal des données de biodiversité (<a class="reference external" href="https://depot-legal-biodiversite.naturefrance.fr/">https://depot-legal-biodiversite.naturefrance.fr/</a>).</p>
 <p>Pour l’installation de GeoNature, voir la procédure d’installation de GeoNature et ses dépendances (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-all.rst">https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-all.rst</a>).</p>
-<div class="section" id="configuration-apache">
+<section id="configuration-apache">
 <h2>Configuration Apache<a class="headerlink" href="#configuration-apache" title="Permalink to this headline"></a></h2>
 <p>Editez la configuration Apache de GeoNature et de TaxHub pour l’adapter au
 contexte de production.</p>
@@ -111,8 +112,8 @@ contexte de production.</p>
 <p>Le fichier <code class="docutils literal notranslate"><span class="pre">/etc/apache/site-enabled/000-default.conf</span></code> doit également être
 édité pour faire fonctionner le load balancing (Voir la configuration de la
 pre-prod pour l’adapter au serveur de production).</p>
-</div>
-<div class="section" id="configuration-de-l-application">
+</section>
+<section id="configuration-de-l-application">
 <h2>Configuration de l’application<a class="headerlink" href="#configuration-de-l-application" title="Permalink to this headline"></a></h2>
 <p>Une fois l’installation terminée, il est nécessaire d’adapter les fichiers de
 configuration de l’application pour les besoins spécifiques de
@@ -129,7 +130,7 @@ valeurs par défaut.</p>
 </pre></div>
 </div>
 <p>Ci-dessous, les paramètres de configuration pour l’instance de production.</p>
-<div class="section" id="configuration-globale-de-l-application">
+<section id="configuration-globale-de-l-application">
 <h3>Configuration globale de l’application<a class="headerlink" href="#configuration-globale-de-l-application" title="Permalink to this headline"></a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># code EPSG de la projection de la base</span>
 <span class="n">LOCAL_SRID</span> <span class="o">=</span> <span class="s1">&#39;2154&#39;</span>
@@ -145,8 +146,8 @@ valeurs par défaut.</p>
 <span class="n">ID_APPLICATION_GEONATURE</span> <span class="o">=</span> <span class="mi">14</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="configuration-des-urls-pour-le-cas">
+</section>
+<section id="configuration-des-urls-pour-le-cas">
 <h3>Configuration des URLS pour le CAS<a class="headerlink" href="#configuration-des-urls-pour-le-cas" title="Permalink to this headline"></a></h3>
 <p>Les URLS doivent correspondre aux informations renseignées dans la
 configuration Apache et au Load Balancer. Elle ne doivent pas contenir
@@ -162,15 +163,15 @@ configuration Apache en conséquence.</p>
 <span class="n">API_TAXHUB</span> <span class="o">=</span> <span class="s1">&#39;https://depot-legal-biodiversite.naturefrance.fr/taxhub/api&#39;</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="cle-secrete">
+</section>
+<section id="cle-secrete">
 <h3>Clé secrète<a class="headerlink" href="#cle-secrete" title="Permalink to this headline"></a></h3>
 <p>Mettre un clé secrète personnalisée</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">SECRET_KEY</span> <span class="o">=</span> <span class="s1">&#39;&lt;MA_CLE_CRYPTEE&gt;&#39;</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="configuration-bdd-liee-a-la-connexion-au-cas">
+</section>
+<section id="configuration-bdd-liee-a-la-connexion-au-cas">
 <h3>Configuration BDD liée à la connexion au CAS<a class="headerlink" href="#configuration-bdd-liee-a-la-connexion-au-cas" title="Permalink to this headline"></a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">BDD</span><span class="p">]</span>
 <span class="c1"># id du groupe dans lequel tous les utilisateurs connectés sont ajoutés</span>
@@ -179,8 +180,8 @@ configuration Apache en conséquence.</p>
 <span class="n">ID_USER_SOCLE_2</span> <span class="o">=</span> <span class="mi">20001</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="connexion-au-cas-inpn-gestion-centralisee-des-utilisateurs">
+</section>
+<section id="connexion-au-cas-inpn-gestion-centralisee-des-utilisateurs">
 <h3>Connexion au CAS INPN - gestion centralisée des utilisateurs<a class="headerlink" href="#connexion-au-cas-inpn-gestion-centralisee-des-utilisateurs" title="Permalink to this headline"></a></h3>
 <p>Bien changer les variables ID et PASSWORD avec les bonnes valeurs.</p>
 <p>NB : pour la pré-prod, utiliser <code class="docutils literal notranslate"><span class="pre">https://preprod-inpn.mnhn.fr</span></code></p>
@@ -200,8 +201,8 @@ configuration Apache en conséquence.</p>
 <span class="n">PASSWORD</span> <span class="o">=</span> <span class="s1">&#39;&lt;THE_INPN_PASSWORD&gt;&#39;</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="configuration-du-frontend">
+</section>
+<section id="configuration-du-frontend">
 <h3>Configuration du frontend<a class="headerlink" href="#configuration-du-frontend" title="Permalink to this headline"></a></h3>
 <p>Pour l’instance de pré-prod, rajouter “instance de démo” à la variable
 <code class="docutils literal notranslate"><span class="pre">appName</span></code>.</p>
@@ -216,8 +217,8 @@ configuration Apache en conséquence.</p>
     <span class="n">DISPLAY_STAT_BLOC</span> <span class="o">=</span> <span class="n">false</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="configuration-de-la-cartographie">
+</section>
+<section id="configuration-de-la-cartographie">
 <h3>Configuration de la cartographie<a class="headerlink" href="#configuration-de-la-cartographie" title="Permalink to this headline"></a></h3>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">MAPCONFIG</span><span class="p">]</span>
 <span class="n">BASEMAP</span> <span class="o">=</span> <span class="p">[</span>
@@ -242,8 +243,8 @@ il s’agit de la recompilation du frontend).</p>
 <span class="n">deactivate</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="configuration-du-module-occurrence-de-taxon-occtax">
+</section>
+<section id="configuration-du-module-occurrence-de-taxon-occtax">
 <h3>Configuration du module Occurrence de taxon: OCCTAX<a class="headerlink" href="#configuration-du-module-occurrence-de-taxon-occtax" title="Permalink to this headline"></a></h3>
 <p>Le fichier de configuration du module Occtax se trouve dans le fichier
 <code class="docutils literal notranslate"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/external_modules/occtax/config/conf_gn_module.toml</span></code>.</p>
@@ -329,24 +330,24 @@ il s’agit de la recompilation du frontend).</p>
 </pre></div>
 </div>
 <p>Pour plus d’information sur la configuration du module Occtax, voir la documentation concernant le module (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/docs/admin-manual.rst#module-occtax">https://github.com/PnX-SI/GeoNature/blob/master/docs/admin-manual.rst#module-occtax</a>).</p>
-</div>
-</div>
-<div class="section" id="referentiel-geographique">
+</section>
+</section>
+<section id="referentiel-geographique">
 <h2>Référentiel géographique<a class="headerlink" href="#referentiel-geographique" title="Permalink to this headline"></a></h2>
 <p>Sur l’instance nationale on charge dans le référentiel géographique
 l’ensemble des communes du territoire français, ainsi qu’un MNT (modèle
 numérique de terrain) national de résolution 250m (pour le calcul automatique
 des altitudes pour chaque observation).</p>
 <img alt="http://geonature.fr/docs/img/admin-manual/design-geonature-mtes.png" src="http://geonature.fr/docs/img/admin-manual/design-geonature-mtes.png" />
-</div>
-<div class="section" id="authentification-cas-inpn">
+</section>
+<section id="authentification-cas-inpn">
 <h2>Authentification CAS INPN<a class="headerlink" href="#authentification-cas-inpn" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p>Code source : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/core/auth/routes.py">https://github.com/PnX-SI/GeoNature/blob/master/backend/geonature/core/auth/routes.py</a></p></li>
 <li><p>Config : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/config/default_config.toml.example#L124-L135">https://github.com/PnX-SI/GeoNature/blob/master/config/default_config.toml.example#L124-L135</a></p></li>
 </ul>
-</div>
-<div class="section" id="connexion-et-droits-dans-geonature">
+</section>
+<section id="connexion-et-droits-dans-geonature">
 <h2>Connexion et droits dans GeoNature<a class="headerlink" href="#connexion-et-droits-dans-geonature" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p>A chaque connexion via le CAS INPN on récupère l’ID_Utilisateur.
@@ -364,8 +365,8 @@ Create / Read / Update / Validate / Export / Delete (aka CRUVED).</p></li>
 <li><p>3 portées de ces actions sont possibles :
 Mes données / Les données de mon organisme / Toutes les données.</p></li>
 </ul>
-</div>
-<div class="section" id="recuperation-des-jdd">
+</section>
+<section id="recuperation-des-jdd">
 <h2>Récupération des JDD<a class="headerlink" href="#recuperation-des-jdd" title="Permalink to this headline"></a></h2>
 <p>Grâce à l’API de MTD, il est désormais possible d’ajouter les jeux de données
 (et des cadres d’acquisition) créés dans MTD dans la BDD GeoNature.</p>
@@ -392,8 +393,8 @@ obligatoirement un ID).</p></li>
 est supprimé dans MTD, qu’est-ce qu’on fait des données associées a celui-ci
 dans GeoNature ?</p></li>
 </ul>
-</div>
-<div class="section" id="module-synthese">
+</section>
+<section id="module-synthese">
 <h2>Module Synthese<a class="headerlink" href="#module-synthese" title="Permalink to this headline"></a></h2>
 <p>Sur l’instance DEPOPBIO le module synthese a été désactivé en mettant un
 CRUVED à 0 au groupe socle 1 et socle 2 pour le module.</p>
@@ -464,8 +465,8 @@ CRUVED à 0 au groupe socle 1 et socle 2 pour le module.</p>
 <span class="n">ALTER</span> <span class="n">TABLE</span> <span class="n">pr_occtax</span><span class="o">.</span><span class="n">cor_counting_occtax</span> <span class="n">DISABLE</span> <span class="n">TRIGGER</span> <span class="n">tri_delete_synthese_cor_counting_occtax</span><span class="p">;</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

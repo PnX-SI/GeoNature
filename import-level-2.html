@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>IMPORT NIVEAU 2 &mdash; GeoNature 2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -89,9 +90,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="import-niveau-2">
+  <section id="import-niveau-2">
 <h1>IMPORT NIVEAU 2<a class="headerlink" href="#import-niveau-2" title="Permalink to this headline"></a></h1>
-<div class="section" id="description">
+<section id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this headline"></a></h2>
 <p>L’exercice consiste à importer le fichier
 <a class="reference external" href="https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-avance/observations.csv">https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-avance/observations.csv</a> dans GeoNature V2.</p>
@@ -109,8 +110,8 @@
 <p>6 - On importe les données en synthèse.</p>
 <p>7 - On gère les nouveaux taxons vis à vis la saisie.</p>
 <p>8 - On archive la table où on veut.</p>
-</div>
-<div class="section" id="import-du-fichier-csv">
+</section>
+<section id="import-du-fichier-csv">
 <h2>1 - Import du fichier CSV<a class="headerlink" href="#import-du-fichier-csv" title="Permalink to this headline"></a></h2>
 <p>Cette action doit être faite par un superuser PostgreSQL.</p>
 <dl class="field-list simple">
@@ -144,8 +145,8 @@ psql -d geonature2db
 </ul>
 </dd>
 </dl>
-</div>
-<div class="section" id="preparation-de-la-nouvelle-table-contenant-les-donnees-importees">
+</section>
+<section id="preparation-de-la-nouvelle-table-contenant-les-donnees-importees">
 <h2>2 - Préparation de la nouvelle table contenant les données importées<a class="headerlink" href="#preparation-de-la-nouvelle-table-contenant-les-donnees-importees" title="Permalink to this headline"></a></h2>
 <p><strong>Ajouter une clé primaire sur la table importée</strong></p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">gn_imports</span><span class="p">.</span><span class="n">testimport</span><span class="w"> </span><span class="k">ADD</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">id_data</span><span class="p">);</span><span class="w"></span>
@@ -164,8 +165,8 @@ psql -d geonature2db
 </pre></div>
 </div>
 <p>En l’état vos données sont importées et stockées dans la base GeoNature. Cependant GeoNature ne connait pas ces données. Pour qu’elles soient utilisables, au moins en consultation, vous devez fournir à l’application GeoNature un certain nombre d’informations concernant ces données et à minima les importer dans la synthèse. Vous pouvez également les importer dans un autre module, comme “Occtax” (non abordé dans cet exemple).</p>
-</div>
-<div class="section" id="creation-des-metadonnees">
+</section>
+<section id="creation-des-metadonnees">
 <h2>3 - Création des métadonnées<a class="headerlink" href="#creation-des-metadonnees" title="Permalink to this headline"></a></h2>
 <p>Il est nécessaire de rattacher les données importées à un jeu de données qui doit appartenir à un cadre d’acquisition. Si ceux-ci n’ont pas encore été créés dans la base, vous devez le faire dans <code class="docutils literal notranslate"><span class="pre">gn_meta.t_acquisition_frameworks</span></code> pour le cadre d’acquisition et dans <code class="docutils literal notranslate"><span class="pre">gn_meta.t_datasets</span></code> pour le jeu de données. Vous pouvez pour cela utiliser les formulaires disponibles dans l’interface d’aministration de GeoNature : <a class="reference external" href="http://myurl/geonature/#/admin">http://myurl/geonature/#/admin</a></p>
 <p>Le jeu de données doit être rattaché à un protocole décrivant la manière dont les données ont été collectées.</p>
@@ -199,8 +200,8 @@ psql -d geonature2db
 <dd class="field-even"><p>Il est possible d’utiliser ce mécanisme générique pour insérer des données de n’importe quelle table vers n’importe quelle autre, à partir du moment où il est possible d’établir un mapping cohérent entre les champs et notamment que les types puissent correspondre ou soient “transtypables”.</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="creation-du-mapping-source-cible">
+</section>
+<section id="creation-du-mapping-source-cible">
 <h2>4 - Création du mapping (source –&gt; cible)<a class="headerlink" href="#creation-du-mapping-source-cible" title="Permalink to this headline"></a></h2>
 <p>Le schéma gn_imports comporte trois tables permettant de préparer le mapping des champs entre la table importée (source) et une table de destination (target).</p>
 <ul class="simple">
@@ -230,8 +231,8 @@ psql -d geonature2db
 </dd>
 </dl>
 <p>Une fois que le mapping est renseigné, vous pouvez passer à l’étape suivante.</p>
-</div>
-<div class="section" id="construire-la-requete-d-import">
+</section>
+<section id="construire-la-requete-d-import">
 <h2>5 - Construire la requête d’import<a class="headerlink" href="#construire-la-requete-d-import" title="Permalink to this headline"></a></h2>
 <p>Attention, pgAdmin va tronquer le résultat. Pour obtenir l’ensemble de la requête utiliser le bouton d’export du résultat dans un fichier ou executé la requête avec psql.</p>
 <p><strong>Génération de la requête d’import dans les tables de destination</strong></p>
@@ -245,12 +246,12 @@ psql -d geonature2db
 IL EST NECESSAIRE D’ADAPTER LA REQUETE SI BESOIN DE FAIRE DES JOIN POUR RECUPERER DES VALEURS DANS D’AUTRES TABLES</p>
 </dd>
 </dl>
-</div>
-<div class="section" id="chargement-des-donnees-dans-la-table-de-destination-synthese-ici">
+</section>
+<section id="chargement-des-donnees-dans-la-table-de-destination-synthese-ici">
 <h2>6 - Chargement des données dans la table de destination (synthese ici)<a class="headerlink" href="#chargement-des-donnees-dans-la-table-de-destination-synthese-ici" title="Permalink to this headline"></a></h2>
 <p>Voir la requête d’import en synthèse à la fin de cette page.</p>
-</div>
-<div class="section" id="on-gere-les-nouveaux-taxons-vis-a-vis-la-saisie">
+</section>
+<section id="on-gere-les-nouveaux-taxons-vis-a-vis-la-saisie">
 <h2>7 - On gère les nouveaux taxons vis à vis la saisie<a class="headerlink" href="#on-gere-les-nouveaux-taxons-vis-a-vis-la-saisie" title="Permalink to this headline"></a></h2>
 <p>Gestion des taxons dans <code class="docutils literal notranslate"><span class="pre">taxonomie.bib_noms</span></code> et de la liste des taxons saisissables dans Occtax.</p>
 <p>Cette étape est optionnelle et va permettre de rajouter les nouveaux taxons intégrés dans la synthèse dans la table des taxons de votre territoire (<code class="docutils literal notranslate"><span class="pre">taxonomie.bib_noms</span></code>) et dans la liste des taxons saisissables dans Occtax (<code class="docutils literal notranslate"><span class="pre">cor_nom_liste</span></code>).</p>
@@ -297,16 +298,16 @@ IL EST NECESSAIRE D’ADAPTER LA REQUETE SI BESOIN DE FAIRE DES JOIN POUR RECUPE
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">gn_imports</span><span class="p">.</span><span class="n">new_noms</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="deplacement-de-la-table-importee-facultatif">
+</section>
+<section id="deplacement-de-la-table-importee-facultatif">
 <h2>8 - Déplacement de la table importée (facultatif)<a class="headerlink" href="#deplacement-de-la-table-importee-facultatif" title="Permalink to this headline"></a></h2>
 <p>On peut si on le souhaite déplacer la table vers une destination d’archivage</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">ALTER</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">gn_imports</span><span class="p">.</span><span class="n">testimport</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="k">SCHEMA</span><span class="w"> </span><span class="n">schema_destination</span><span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
 <p>On peut la mettre dans le schéma gn_exports pour l’exercice afin de tester mais ce n’est pas sa vocation.</p>
-</div>
-<div class="section" id="resultat-final">
+</section>
+<section id="resultat-final">
 <h2>RESULTAT FINAL<a class="headerlink" href="#resultat-final" title="Permalink to this headline"></a></h2>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">--DELETE FROM gn_imports.matching_fields WHERE id_matching_table IN (1,2);</span>
 <span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">gn_imports</span><span class="p">.</span><span class="n">matching_fields</span><span class="w"> </span><span class="p">(</span><span class="n">id_matching_field</span><span class="p">,</span><span class="w"> </span><span class="n">source_field</span><span class="p">,</span><span class="w"> </span><span class="n">source_default_value</span><span class="p">,</span><span class="w"> </span><span class="n">target_field</span><span class="p">,</span><span class="w"> </span><span class="n">target_field_type</span><span class="p">,</span><span class="w"> </span><span class="n">field_comments</span><span class="p">,</span><span class="w"> </span><span class="n">id_matching_table</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="w"> </span><span class="p">(</span><span class="mi">207</span><span class="p">,</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;uuid_generate_v4()&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;unique_id_sinp&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;uuid&#39;</span><span class="p">,</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span>
@@ -480,8 +481,8 @@ IL EST NECESSAIRE D’ADAPTER LA REQUETE SI BESOIN DE FAIRE DES JOIN POUR RECUPE
 <span class="p">;</span><span class="w"></span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

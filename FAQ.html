@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FAQ &mdash; GeoNature 2.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -85,11 +86,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="faq">
+  <section id="faq">
 <h1>FAQ<a class="headerlink" href="#faq" title="Permalink to this headline"></a></h1>
-<div class="section" id="problemes-lies-au-frontend">
+<section id="problemes-lies-au-frontend">
 <h2>Problèmes liés au frontend<a class="headerlink" href="#problemes-lies-au-frontend" title="Permalink to this headline"></a></h2>
-<div class="section" id="message-d-erreur-lors-de-la-compilation-du-frontend">
+<section id="message-d-erreur-lors-de-la-compilation-du-frontend">
 <h3>Message d’erreur lors de la compilation du frontend<a class="headerlink" href="#message-d-erreur-lors-de-la-compilation-du-frontend" title="Permalink to this headline"></a></h3>
 <ul>
 <li><p><strong>Probleme lié à Node-sass</strong>:</p>
@@ -138,16 +139,16 @@
 <li><p>Réinstaller les dépendances du Frontend : Dans le répertoire frontend, lancez la commande <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">install</span></code></p></li>
 <li><p>Reconstruire le Frontend : Dans le répertoire frontend, lancez la commande <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">build</span></code></p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="problemes-lies-a-la-bdd">
+</section>
+</section>
+<section id="problemes-lies-a-la-bdd">
 <h2>Problèmes liés à la BDD<a class="headerlink" href="#problemes-lies-a-la-bdd" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p>Après un redémarrage de PostgreSQL (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">service</span> <span class="pre">postgresql</span> <span class="pre">restart</span></code>), celle-ci ne sera plus accessible par l’application et si vous tentez de vous connecter, vous aurez un message du type <code class="docutils literal notranslate"><span class="pre">LoginError</span></code>. Cela est lié au fait que lorsqu’on redémarre PostgreSQL, il faut aussi relancer les API de GeoNature, car cela génère des erreurs de transaction et de session entre l’API et PostgreSQL.</p></li>
 </ul>
 <p>Donc à chaque <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">service</span> <span class="pre">postgresql</span> <span class="pre">restart</span></code>, lancer un <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">supervisorctl</span> <span class="pre">reload</span></code></p>
-</div>
-<div class="section" id="probleme-de-lancement-l-api-lie-a-supervisor">
+</section>
+<section id="probleme-de-lancement-l-api-lie-a-supervisor">
 <h2>Problème de lancement l’API lié à supervisor<a class="headerlink" href="#probleme-de-lancement-l-api-lie-a-supervisor" title="Permalink to this headline"></a></h2>
 <ul class="simple">
 <li><p>Suite à une montée de version, si la commande <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">supervisorctl</span> <span class="pre">reload</span></code> renvoie cette erreur:</p></li>
@@ -161,8 +162,8 @@
 </pre></div>
 </div>
 <p>Retester le fonctionnement de l’application grâce à la commande <code class="docutils literal notranslate"><span class="pre">ps</span> <span class="pre">-aux</span> <span class="pre">|grep</span> <span class="pre">gunicorn</span></code>, celle ci doit renvoyer plus d’une ligne</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
