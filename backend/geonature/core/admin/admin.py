@@ -1,5 +1,5 @@
 from flask import g
-from werkzeug.exceptions import Unauthorized
+from werkzeug.exceptions import Unauthorized, Forbidden
 from flask_admin import Admin, AdminIndexView, expose
 from flask_admin.menu import MenuLink
 from flask_admin.contrib.sqla import ModelView
@@ -32,27 +32,55 @@ class CruvedProtectedMixin:
             raise Unauthorized  # return False leads to Forbidden which is different
         return True
 
-    def _can_action(self, action):
-        scope = get_scopes_by_action(
-            g.current_user.id_role, module_code=self.module_code, object_code=self.object_code
+    def get_query(self):
+        q = self.model.query
+        if hasattr(q, "filter_by_scope"):
+            q = q.filter_by_scope(self._get_action_scope("R"))
+        return q
+
+    def get_one(self, id):
+        model = super().get_one(id)
+        if hasattr(model, "has_instance_permission"):
+            if not model.has_instance_permission(self._get_action_scope("R")):
+                raise Forbidden
+        return model
+
+    def on_model_change(self, form, model, is_created):
+        if is_created:
+            return
+        if hasattr(model, "has_instance_permission"):
+            if not model.has_instance_permission(self._get_action_scope("U")):
+                raise Forbidden
+
+    def on_model_delete(self, model):
+        if hasattr(model, "has_instance_permission"):
+            if not model.has_instance_permission(self._get_action_scope("D")):
+                raise Forbidden
+
+    def _get_action_scope(self, action):
+        return get_scopes_by_action(
+            module_code=self.module_code, object_code=self.object_code
         )[action]
-        return scope == 3
 
     @property
     def can_create(self):
-        return self._can_action("C")
+        return self._get_action_scope("C") > 0
+
+    @property
+    def can_view_details(self):
+        return self._get_action_scope("R") > 0
 
     @property
     def can_edit(self):
-        return self._can_action("U")
+        return self._get_action_scope("U") > 0
 
     @property
     def can_delete(self):
-        return self._can_action("D")
+        return self._get_action_scope("D") > 0
 
     @property
     def can_export(self):
-        return self._can_action("E")
+        return self._get_action_scope("E") > 0
 
 
 class ProtectedBibNomenclaturesTypesAdminConfig(
