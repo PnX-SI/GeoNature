@@ -41,7 +41,7 @@ def create_synthese_record(
     geom_4326 = WKTElement(f'POINT({str(x)} {str(y)})', srid=4326)
 
     return Synthese(
-        id_synthese=randint(1, 1000000),#TODO: make the sequence work automaticly ?
+        id_synthese=randint(50000000, 100000000),#TODO: make the sequence work automaticly ?
         cd_nom=cd_nom,
         date_min=date_min,
         date_max=date_max,
