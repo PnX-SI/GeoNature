@@ -110,6 +110,15 @@ class TestGnPermissionsTools:
             get_user_permissions(fake_user, code_action="C", code_filter_type="SCOPE")
         # with module code
 
+    def test_get_user_permissions(self, users):
+        user = users['self_user']
+        user_json = {"id_role": user.id_role,
+                "nom_role": user.nom_role}
+
+        permissions = get_user_permissions(user_json, code_action="C", code_filter_type="SCOPE")
+
+        assert all(permission.id_role == user.id_role for permission in permissions)
+
     def test_cruved_scope_for_user_in_module(self, users):
         admin_user = users["admin_user"]
         # get cruved for geonature
