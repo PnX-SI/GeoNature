@@ -6,7 +6,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import * as L from 'leaflet';
 import { CommonService } from '../service/common.service';
-
+import { ConfigService } from '../../services/config.service';
 import 'leaflet-draw';
 import { FormControl } from '@angular/forms';
 import { Observable, of } from 'rxjs';
@@ -68,6 +68,8 @@ export class MapComponent implements OnInit {
   /** Activer la barre de recherche */
   @Input() searchBar: boolean = true;
 
+  AppConfig = null;
+
   @ViewChild('mapDiv', { static: true }) mapContainer;
   searchLocation: string;
   public searching = false;
@@ -79,8 +81,11 @@ export class MapComponent implements OnInit {
     private _commonService: CommonService,
     private _http: HttpClient,
     private _nominatim: NominatimService,
+    private _configService: ConfigService
   ) {
     this.searchLocation = '';
+    this.AppConfig = this._configService.getConfig()
+    console.log(this.AppConfig.MAPCONFIG.CENTER)
   }
 
   ngOnInit() {
@@ -116,7 +121,8 @@ export class MapComponent implements OnInit {
     if (this.center !== undefined) {
       center = L.latLng(this.center[0], this.center[1]);
     } else {
-      center = L.latLng(AppConfig.MAPCONFIG.CENTER[0], AppConfig.MAPCONFIG.CENTER[1]);
+      center = L.latLng(
+        this.AppConfig.MAPCONFIG.CENTER[0], this.AppConfig.MAPCONFIG.CENTER[1]);
     }
 
 

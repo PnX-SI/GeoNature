@@ -2,6 +2,8 @@
 settings.ini
 config/geonature_config.toml
 
+frontend/src/assets/config.json
+
 **/conf_gn_module.toml
 **/module.config.ts
 

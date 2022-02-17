@@ -89,8 +89,9 @@ def generate_frontend_config(build):
 @main.command()
 @click.option("--host", default="0.0.0.0")
 @click.option("--port", default=8000)
+@click.option("--extra-files", default="")
 @click.pass_context
-def dev_back(ctx, host, port):
+def dev_back(ctx, host, port, extra_files):
     """
         Lance l'api du backend avec flask
 
@@ -102,7 +103,7 @@ def dev_back(ctx, host, port):
     """
     if not environ.get('FLASK_ENV'):
         environ['FLASK_ENV'] = 'development'
-    ctx.invoke(run_command, host=host, port=port)
+    ctx.invoke(run_command, host=host, port=port, extra_files=extra_files.split(','))
 
 
 @main.command()

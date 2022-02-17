@@ -1,3 +1,12 @@
+<ng-container *ngIf="!configService.isInitialized">
+  <div>
+    La configuration du Frontend de cette instance contient des erreurs : <br><br>
+    <pre>
+{{ configService.msgError| json}}
+    </pre>
+  </div>
+</ng-container>
+
 <mat-sidenav-container class="sidenav-container">
 
   <mat-sidenav
@@ -10,7 +19,7 @@
   </mat-sidenav>
 
 
-  <mat-sidenav-content>
+  <mat-sidenav-content  *ngIf="configService.isInitialized">
     <mat-toolbar
       id="app-toolbar"
       class="row"

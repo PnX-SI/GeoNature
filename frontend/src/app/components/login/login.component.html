@@ -1,4 +1,15 @@
-<div id="login-body">
+<ng-container *ngIf="!configService.isInitialized">
+  <div>
+    La configuration du Frontend de cette instance contient des erreurs : <br>
+    <pre>
+{{ configService.msgError| json}}
+    </pre>
+  </div>
+</ng-container>
+
+<ng-container *ngIf="configService.isInitialized">
+
+ <div id="login-body" >
   <div
     *ngIf="!casLogin"
     class="container"
@@ -77,7 +88,7 @@
                       type="submit"
                     >Se connecter</button>
                     <br>
-                    
+
                     <div *ngIf="enable_sign_up">
                       <div class="inscription">
                         <a routerLink="/inscription">{{ 'CreateAccount' | translate }}</a>
@@ -85,7 +96,7 @@
                     </div>
                     <!-- <input type="submit" class="btn btn-success" value="Connexion"> -->
                   </form>
-                
+
                 </mat-step>
               </mat-horizontal-stepper>
             </ng-container>
@@ -164,3 +175,4 @@
 
   </div>
 </div>
+</ng-container>

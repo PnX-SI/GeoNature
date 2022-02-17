@@ -4,6 +4,7 @@ import { AppConfig } from '../../../conf/app.config';
 import { AuthService } from '../auth/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from '@geonature_common/service/common.service';
+import { ConfigService } from '../../services/config.service';
 
 @Component({
   selector: 'pnx-login',
@@ -26,7 +27,8 @@ export class LoginComponent implements OnInit {
     private _authService: AuthService,
     private fb: FormBuilder,
     private _toasterService: ToastrService,
-    private _commonService: CommonService
+    private _commonService: CommonService,
+    public configService: ConfigService
   ) {
     this.casLogin = AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION;
     this.enable_sign_up = AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false;

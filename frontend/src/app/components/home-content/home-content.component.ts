@@ -6,6 +6,7 @@ import { MapService } from '@geonature_common/map/map.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 
 import { AppConfig } from '../../../conf/app.config';
+import { ConfigService } from '../../services/config.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
 import { GlobalSubService } from '../../services/global-sub.service';
 import { ModuleService } from '../../services/module.service';
@@ -35,6 +36,7 @@ export class HomeContentComponent implements OnInit {
     private _mapService: MapService,
     private _moduleService: ModuleService,
     private translateService: TranslateService,
+    private _configService: ConfigService,
   ) {
     // this work here thanks to APP_INITIALIZER on ModuleService
     let synthese_module = this._moduleService.getModule('SYNTHESE');
@@ -52,7 +54,7 @@ export class HomeContentComponent implements OnInit {
     this.getI18nLocale();
 
     this._SideNavService.sidenav.open();
-    this.appConfig = AppConfig;
+    this.appConfig = this._configService.getConfig();
 
     if (this.showLastObsMap) {
       this._syntheseApi.getSyntheseData({ limit: 100 }).subscribe(result => {

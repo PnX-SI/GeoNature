@@ -9,6 +9,9 @@ import {
   HTTP_INTERCEPTORS
 } from '@angular/common/http';
 
+// rxjs
+import { mergeMap } from "rxjs/operators";
+
 // For Angular Dependencies
 import 'hammerjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -47,6 +50,7 @@ import {
   UserManagementGuard
 } from '@geonature/routing/routes-guards.service';
 import { ModuleService } from './services/module.service';
+import { ConfigService } from './services/config.service';
 import { CruvedStoreService } from './GN2CommonModule/service/cruved-store.service';
 import { SideNavService } from './components/sidenav-items/sidenav-service';
 
@@ -63,8 +67,11 @@ import { UserDataService } from "./userModule/services/user-data.service";
 import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
 
 
-export function get_modules(moduleService: ModuleService) {
-    return () => {return moduleService.fetchModules().toPromise(); };
+// Ici l'initialisation de la configuration va initialiser le service des modules
+export function init_config(configService: ConfigService) {
+    return () => {
+      return configService.init().toPromise()
+    };
 }
 
 
@@ -107,6 +114,7 @@ export function get_modules(moduleService: ModuleService) {
     AuthService,
     AuthGuard,
     ModuleService,
+    ConfigService,
     ToastrService,
     GlobalSubService,
     CookieService,
@@ -121,7 +129,7 @@ export function get_modules(moduleService: ModuleService) {
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
     // { provide: APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService], multi: true},
-     { provide: APP_INITIALIZER, useFactory: get_modules, deps: [ModuleService], multi: true},
+     { provide: APP_INITIALIZER, useFactory: init_config, deps: [ConfigService], multi: true},
   ],
   bootstrap: [AppComponent]
 })

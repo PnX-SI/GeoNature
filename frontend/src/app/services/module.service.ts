@@ -25,6 +25,10 @@ export class ModuleService {
     return this.modules;
   }
 
+  setModules(modules) {
+    this.modules = modules;
+  }
+
   getDisplayedModules() {
     return this.modules.filter(mod => {
       return (

@@ -10,6 +10,7 @@ import { AuthService, User } from '../../components/auth/auth.service';
 import { AppConfig } from '../../../conf/app.config';
 import { GlobalSubService } from '../../services/global-sub.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
+import { ConfigService } from '../../services/config.service';
 
 
 @Component({
@@ -34,6 +35,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     public sideNavService: SideNavService,
     private globalSubService: GlobalSubService,
     private router: Router,
+    public configService: ConfigService
   ) {}
 
   ngOnInit() {

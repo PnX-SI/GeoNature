@@ -32,11 +32,19 @@ routes = Blueprint("gn_commons", __name__)
 # import routes sub folder
 from .validation.routes import *
 from .medias.routes import *
+from geonature.utils.config import config_frontend
+
+@routes.route("/config", methods=["GET"])
+# @login_required
+def config():
+    """
+    Returns geonature configuration
+    """
+
+    return config_frontend
 
 
-@routes.route("/modules", methods=["GET"])
-@login_required
-def list_modules():
+def allowed_modules():
     """
     Return the allowed modules of user from its cruved
     .. :quickref: Commons;
@@ -78,8 +86,20 @@ def list_modules():
                 )
                 module_dict["module_objects"][obj_code] = obj_dict
             allowed_modules.append(module_dict)
-    return jsonify(allowed_modules)
+    return allowed_modules
 
+@routes.route("/modules", methods=["GET"])
+@login_required
+def get_modules():
+    return jsonify(allowed_modules())
+
+@routes.route("/modules_and_config", methods=["GET"])
+@login_required
+def get_modules_and_config():
+    return {
+        'modules': allowed_modules(),
+        'config': config_frontend
+    }
 
 @routes.route("/module/<module_code>", methods=["GET"])
 def get_module(module_code):
@@ -133,7 +153,7 @@ def get_additional_fields():
         if len(params["module_code"].split(",")) > 1:
 
             ors = [
-                TAdditionalFields.modules.any(module_code=module_code) 
+                TAdditionalFields.modules.any(module_code=module_code)
                 for module_code in params["module_code"].split(",")
                 ]
 
