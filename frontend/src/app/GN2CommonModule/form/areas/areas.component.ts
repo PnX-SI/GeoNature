@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 
-import { Subject, Observable, of, concat } from 'rxjs';
+import { Subject, Observable, of, concat, zip } from 'rxjs';
 import { distinctUntilChanged, debounceTime, switchMap, tap, catchError, map, distinct } from 'rxjs/operators'
 
 import { AppConfig } from '@geonature_config/app.config';
@@ -94,14 +94,21 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
     }
   }
 
+  initalAreas(): Observable<any> {
+    return zip(
+      this.dataService.getAreas(this.typeCodes).pipe(map(data => this.formatAreas(data))), // Default items
+      of(this.defaultItems)
+    ).pipe(
+      map(el => {
+        return el[0].concat(el[1])
+      })
+    )
+  }
+
   getAreas() {
+
     this.areas = concat(
-      concat(
-        of(this.defaultItems), // Load items for update mode
-        this.dataService.getAreas(this.typeCodes).pipe(map(data => this.formatAreas(data))) // Default items
-      ).pipe(
-        distinct(item => item[this.valueFieldName]) // Remove duplicates
-      ),
+      this.initalAreas(),
       this.areas_input$.pipe(
         debounceTime(200),
         distinctUntilChanged(),
