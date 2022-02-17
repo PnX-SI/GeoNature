@@ -1,5 +1,6 @@
 import pytest
 import json
+import itertools
 
 from flask import url_for, current_app
 from sqlalchemy import func
@@ -346,23 +347,27 @@ class TestSynthese:
         response_dataset = self.client.get(url_for('gn_synthese.observation_count_per_column', column=column_name_dataset))
         response_cd_nom = self.client.get(url_for('gn_synthese.observation_count_per_column', column=column_name_cd_nom))
 
-        datasets_count = {}
-        for synt in synthese_data:
-            if synt.id_dataset not in datasets_count:
-                datasets_count[synt.id_dataset] = {'count': 1, 'id_dataset': synt.id_dataset}
-            else:
-                datasets_count[synt.id_dataset]['count'] += 1
+        ds_keyfunc = lambda s: s.id_dataset
+        partial_expected_ds_resp = [
+            {
+                'id_dataset': k,
+                'count': len(list(g)),
+            }
+            for k, g in itertools.groupby(sorted(synthese_data, key=ds_keyfunc), key=ds_keyfunc)
+        ]
 
-        cd_nom_count = {}
-        for synt in synthese_data:
-            if synt.cd_nom not in cd_nom_count:
-                cd_nom_count[synt.cd_nom] = {'count': 1, 'cd_nom': synt.cd_nom}
-            else:
-                cd_nom_count[synt.cd_nom]['count'] += 1
+        cn_keyfunc = lambda s: s.cd_nom
+        partial_expected_cn_resp = [
+            {
+                'cd_nom': k,
+                'count': len(list(g)),
+            }
+            for k, g in itertools.groupby(sorted(synthese_data, key=cn_keyfunc), key=cn_keyfunc)
+        ]
 
         resp_json = response_dataset.json
         assert resp_json
-        for test_dataset in datasets_count.values():
+        for test_dataset in partial_expected_ds_resp:
             assert test_dataset['id_dataset'] in [item['id_dataset'] for item in resp_json]
             for item in resp_json:
                 if item['id_dataset'] == test_dataset['id_dataset']:
@@ -370,7 +375,7 @@ class TestSynthese:
 
         resp_json = response_cd_nom.json
         assert resp_json
-        for test_cd_nom in cd_nom_count.values():
+        for test_cd_nom in partial_expected_cn_resp:
             assert test_cd_nom['cd_nom'] in [item['cd_nom'] for item in resp_json]
             for item in resp_json:
                 if item['cd_nom'] == test_cd_nom['cd_nom']:
