@@ -383,20 +383,11 @@ Si vous avez téléchargé GeoNature zippé (via la procédure d'installation gl
   --- Cloner les sous-modules pour récupérer les dépendances
   git submodule init
   git submodule update
-  --- Installer les dépendances de développement
-  cd backend && pip install -r requirements-dev.txt
 
-
-Récupération de l'ID de l'application GeoNature
+Configuration des URLs de développement
 ************************************************
 
-Accédez à la table utilisateurs.t_applications de la base de données utilisée par géonature.
-Identifiez et notez maintenant la valeur du champ ``id_application`` GeoNature (``GeoNature`` étant la valeur du champ ``nom_application``).
-
-Configuration des URLs du mode développement
-************************************************
-
-Editez le fichier de configuration de GeoNature (``<GEONATURE_DIRECTORY>/config/geonature_config.toml``) de la manière suivante :
+il est nécessaire de changer la configuration du fichier ``config/geonature_config.toml`` pour utiliser les adresses suivantes :
 
 .. code-block:: bash
     
@@ -404,63 +395,45 @@ Editez le fichier de configuration de GeoNature (``<GEONATURE_DIRECTORY>/config/
   API_ENDPOINT = 'http://127.0.0.1:8000'
   API_TAXHUB =  'http://127.0.0.1:5000/api'
 
-Remplacez dans ce fichier la valeur de ``ID_APPLICATION_GEONATURE`` pour mettre la valeur récupérée plus haut.
 
-Ouvrez et modifiez maintenant le fichier ``/home/<mon_user>/geonature/frontend/src/conf/app.config.ts`.
 
-Identifiez et remplacer les valeurs des variables ci-dessous pour avoir ces valeurs :
+Pour mettre à jour le fichier ``frontend/src/conf/app.config.ts` et prendre en compte ces modifications, lancer les commandes suivantes :
 
-.. code-block:: javascript
-    
-  "URL_APPLICATION": 'http://127.0.0.1:4200',
-  "API_ENDPOINT": 'http://127.0.0.1:8000',
-  "API_TAXHUB":  'http://127.0.0.1:5000/api',
-
-Remplacez aussi dans ce fichier la valeur de ``ID_APPLICATION_GEONATURE`` pour mettre la valeur récupérée plus haut.
+.. code-block:: bash
+  source ~/geonature/backend/venv/bin/activate
+  geonature update_configuration
+  deactivate
 
 Serveur frontend en développement
 *********************************
 
-Lancer le serveur de développement du frontend grâce à Angular-CLI :
+Lancer le serveur frontent via le virtualenv :
 
 .. code-block:: bash
   
-  cd frontend
-  npm run start
+  source ~/geonature/frontend/venv/bin/activate
+  geonature dev_front
 
-Vous pouvez consultez le fichier `frontend/package.json <https://github.com/PnX-SI/GeoNature/blob/7af2c82a97675daa965024a3879c7168aca2fdb1/frontend/package.json#L7>`_ pour modifier les options exécutées par la commande ``start`` et voir les autres commandes.
+Notez que vous pouvez aussi utiliser alternativement les commandes ``npm`` standards sans le virtualenv (consultez le fichier `frontend/package.json <https://github.com/PnX-SI/GeoNature/blob/7af2c82a97675daa965024a3879c7168aca2fdb1/frontend/package.json#L7>`_).
 
 
 API en développement
 ********************
 
-Lancer l'API en mode développement.
+.. Note::
+  Retrouvez plus de'informations dans la section :ref:`dev-backend` dédiée.
 
-Stopper d'abord gunicorn qui est lancé en mode production via le supervisor :
-
-.. code-block:: bash
-    
-  sudo supervisorctl stop geonature2
-
-Ouvrez un nouveau terminal et positionnez vous dans le répertoire backend:
+Dans un nouveau terminal, stopper le service geonature (gunicorn) et lancer le serveur backend :
 
 .. code-block:: bash
     
-  cd backend
-
-Puis lancer le serveur backend en mode développement via le virtualenv python :
-
-.. code-block:: bash
-    
-  source venv/bin/activate
+  sudo systemctl stop geonature    
+  source ~/geonature/backend/venv/bin/activate
   geonature dev_back
 
-.. Note::
-  Le serveur de développement du backend est disponible à l'adresse 127.0.0.1:8000
-
-  Le serveur de développement du frontend est disponible à l'adresse 127.0.0.1:4200
-
-Vous pouvez vous connecter à l'application avec l'identifiant ``admin`` et le mot de passe ``admin``.
+Les serveurs seront accessibles via ces adresses (login ``admin`` et password ``admin``) :
+  - backend - 127.0.0.1:8000
+  - frontend - 127.0.0.1:4200
 
 Autres extensions en développement
 **********************************
@@ -475,8 +448,7 @@ Si toutefois TaxHub retourne une erreur 500 et ne répond pas sur l'URL http://1
 
 .. code-block:: bash
 
-  cd ~/taxhub
-  source venv/bin/activate
+  source ~/taxhub/venv/bin/activate
   flask run
 
 Debugger avec un navigateur
@@ -493,6 +465,8 @@ Ouvrez le fichier  ``frontend/src/conf/app.config.ts`` et modifiez la valeur ``P
   "PROD_MOD": false
 
 Si le mode production (PROD_MOD) est à true, alors vous n'êtes pas en mode production lors du lancement de la commande ``npm run start``.
+
+.. _dev-backend:
 
 Développement Backend
 ----------------------
