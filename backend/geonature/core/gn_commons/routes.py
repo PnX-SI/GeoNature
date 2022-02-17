@@ -90,7 +90,7 @@ def allowed_modules():
 
 @routes.route("/modules", methods=["GET"])
 @login_required
-def get_modules():
+def list_modules():
     return jsonify(allowed_modules())
 
 @routes.route("/modules_and_config", methods=["GET"])
