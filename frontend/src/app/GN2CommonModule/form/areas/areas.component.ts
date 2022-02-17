@@ -22,13 +22,8 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
  * dans la variable `parentFormControl` correspondant aux sélections de l'utilisateur.
  *
  * En mode mise à jour, il est nécessaire de fournir dans `parentFormControl` une liste
- * d'objets. Ces objets doivent contenir à minima 2 attributs :
- *  - un attribut correspondant à la valeur de l'input `valueFieldName` et
- * contenant l'identifiant de la zone géographique.
- *  - un attribut `area_name` contenant l'intitulé de la zone géographique
- * à afficher.
- * Le composant se charge de transformer le contenu de l'input `parentFormControl`
- * pour qu'il contienne en sortie seulement une liste d'identifiant.
+ * d'id de zones géo. Ces id seront comparés à l'aide de la fonction de l'input
+ * `compareWith` aux objets passés dans l'input `defaultItems`.
  *
  * @example
  * <pnx-areas
@@ -40,7 +35,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
  */
 @Component({
   selector: 'pnx-areas',
-  templateUrl: 'areas.component.html'
+  templateUrl: 'areas.component.html',
 })
 export class AreasComponent extends GenericFormComponent implements OnInit {
   /**
@@ -60,13 +55,22 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    */
   @Input() valueFieldName: string = 'id_area';
   /**
-   * Fonction de comparaison entre les élements sélectionnés et les éléments
-   * affichés dans la liste des options.
+   * Fonction de comparaison entre les élements sélectionnés présent dans
+   * le `parentFormControl` et les éléments affichés dans la liste des options.
    * @param item
    * @param selected
    * @returns
    */
   @Input() compareWith = (item, selected) => item[this.valueFieldName] === selected;
+  /**
+   * Tableau d'objets qui doivent contenir chacun à minima 2 attributs :
+   *  - un attribut correspondant à la valeur de l'input `valueFieldName` et
+   * contenant l'identifiant de la zone géographique.
+   *  - un attribut `area_name` contenant l'intitulé de la zone géographique
+   * à afficher.
+   * En mise à jour, ces objets doivent correspondres aux id présents dans
+   * `parentFormControl`.
+   */
   @Input() defaultItems: Array<any> = [];
   areas_input$ = new Subject<string>();
   areas: Observable<any>;
@@ -84,20 +88,21 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
 
     this.getAreas();
   }
+
   /**
    * Merge initial 100 areas + default values (for update)
    */
-   initalAreas(): Observable<any> {    
+  initalAreas(): Observable<any> {
     return zip(
-      this.dataService.getAreas(this.typeCodes).pipe(map(data => this.formatAreas(data))), // Default items
-      of(this.defaultItems)
+      this.dataService.getAreas(this.typeCodes).pipe(map((data) => this.formatAreas(data))), // Default items
+      of(this.defaultItems) // Default items in update mode
     ).pipe(
-      map(el => {
-        // remove doublon
+      map((el) => {
+        // Remove dubplicates items
         const concat = el[0].concat(el[1]);
-        return concat.filter(val => !el[1].includes(val));
-      }),
-    )
+        return concat.filter((val) => !el[1].includes(val));
+      })
+    );
   }
 
   getAreas() {
@@ -107,10 +112,10 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
         debounceTime(200),
         distinctUntilChanged(),
         tap(() => (this.loading = true)),
-        switchMap(term => {
+        switchMap((term) => {
           return term && term.length >= 2
             ? this.dataService.getAreas(this.typeCodes, term).pipe(
-                map(data => this.formatAreas(data)),
+                map((data) => this.formatAreas(data)),
                 catchError(() => of([])), // Empty list on error
                 tap(() => (this.loading = false))
               )
@@ -128,7 +133,7 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    */
   private formatAreas(data: Partial<{ id_type: number; area_code: string }>[]) {
     if (data.length > 0 && data[0]['id_type'] === AppConfig.BDD.id_area_type_municipality) {
-      return data.map(element => {
+      return data.map((element) => {
         element['area_name'] = `${element['area_name']} (${element.area_code.substring(0, 2)}) `;
         return element;
       });
