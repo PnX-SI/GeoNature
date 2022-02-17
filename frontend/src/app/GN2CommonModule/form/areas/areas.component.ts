@@ -70,41 +70,33 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
   areas_input$ = new Subject<string>();
   areas: Observable<any>;
   loading = false;
-  private defaultItems = [];
+  @Input() defaultItems = [];
 
   constructor(private dataService: DataFormService) {
     super();
   }
 
-  ngOnInit() {
+  ngOnInit() {    
     // Patch to force 'id_area' as default value for valueFieldName
     // when this attribute is defined in HTML but with an undefined value
     // TODO : try to resolve this problem in DynamicForm with conditional attribute maybe
     this.valueFieldName = this.valueFieldName === undefined ? 'id_area' : this.valueFieldName;
 
-    this.updateParentFormControl();
     this.getAreas();
-  }
-
-  private updateParentFormControl() {
-    // Replace objects by valueFieldName values
-    if (this.parentFormControl.value) {
-      this.defaultItems = this.parentFormControl.value;
-      this.parentFormControl.setValue(this.defaultItems.map(item => item[this.valueFieldName]));
-    }
   }
 
   /**
    * Merge initial 100 areas + default values (for update)
    */
-  initalAreas(): Observable<any> {
+  initalAreas(): Observable<any> {    
     return zip(
       this.dataService.getAreas(this.typeCodes).pipe(map(data => this.formatAreas(data))), // Default items
       of(this.defaultItems)
     ).pipe(
-      map(el => {
+      map(el => {        
         return el[0].concat(el[1])
-      })
+      }),
+      distinct()
     )
   }
 

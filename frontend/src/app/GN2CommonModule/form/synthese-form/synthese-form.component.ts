@@ -8,6 +8,7 @@ import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-for
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { ActivatedRoute } from "@angular/router";
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'pnx-synthese-search',
@@ -25,6 +26,8 @@ export class SyntheseSearchComponent implements OnInit {
   private params: any;
   @Input() displayValidation = false;
   @Output() searchClicked = new EventEmitter();
+  public defaultItem = [];
+  test = new FormControl()
 
   constructor(
     public dataService: SyntheseDataService,
@@ -41,6 +44,23 @@ export class SyntheseSearchComponent implements OnInit {
   }
 
   ngOnInit() {
+
+
+   this.defaultItem = [{
+    "area_code": "38185", 
+    "area_name": "Grenoble", 
+    "enable": true, 
+    "id_area": 34393, 
+    "id_type": 25, 
+    "meta_create_date": "2022-01-04 16:03:36.819456", 
+    "meta_update_date": null, 
+    "source": null
+  }]
+  this.defaultItem.forEach(i => {    
+    this.test.patchValue([i.id_area])
+  })
+  
+
     // get organisms:
     this._api.getOrganismsDatasets().subscribe(data => {
       this.organisms = data;

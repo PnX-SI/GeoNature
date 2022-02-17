@@ -278,17 +278,28 @@
 
   <fieldset>
     <legend> Ou ?</legend>
+    test : 
+        <pnx-areas
+          [parentFormControl]="test"
+          label="area"
+          [typeCodes]="['COM']"
+          [defaultItems]="defaultItem"
+        >
+        </pnx-areas>
 
-    <div *ngIf="formService.formBuilded">
+        {{test.value |json}}
+
+    <!-- <div *ngIf="formService.formBuilded">
       <div *ngFor="let area of areaFilters; let i = index;">
         <pnx-areas
           [parentFormControl]="area.control"
           [label]="area.label"
           [typeCodes]="area.type_code_array"
+          [defaultItems]="defaultItem"
         >
         </pnx-areas>
       </div>
-    </div>
+    </div> -->
 
 
   </fieldset>
