@@ -359,6 +359,7 @@ Cette section liste les branches Alembic disponibles et leur impacte sur la base
 * ``habitats`` : Crée le schéma ``ref_habitats``. Fournie par Habref-api-module.
 * ``habitats_inpn_data`` : Insert le référentiel HABREF de l’INPN en base. Fournie par Habref-api-module.
 * ``ref_geo`` : Crée le schéma ``ref_geo``.
+* ``ref_sensitivity_inpn`` : Insère le référentiel de sensbilité de l’INPN en base.
 
 Si vous utilisez TaxHub, vous pouvez être intéressé par les branches suivantes :
 
