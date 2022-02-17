@@ -94,6 +94,9 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
     }
   }
 
+  /**
+   * Merge initial 100 areas + default values (for update)
+   */
   initalAreas(): Observable<any> {
     return zip(
       this.dataService.getAreas(this.typeCodes).pipe(map(data => this.formatAreas(data))), // Default items
@@ -106,7 +109,6 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
   }
 
   getAreas() {
-
     this.areas = concat(
       this.initalAreas(),
       this.areas_input$.pipe(
