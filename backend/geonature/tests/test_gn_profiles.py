@@ -25,7 +25,8 @@ from .fixtures import (acquisition_frameworks,
 
 ALT_MIN = 1000
 ALT_MAX = 1200
-
+DATE_MIN = "2021-01-01"
+DATE_MAX = "2021-01-05"
 
 def create_synthese_record(
     cd_nom=None,
@@ -86,8 +87,8 @@ def sample_synthese_records_for_profile(datasets, get_gn_profile_data):
             cd_nom=cd_nom,
             x=6.12,
             y=44.85,
-            date_min=datetime(2021, 1, 1),
-            date_max=datetime(2021, 1, 5),
+            date_min=datetime.strptime(DATE_MIN, "%Y-%m-%d"),
+            date_max=datetime.strptime(DATE_MAX, "%Y-%m-%d"),
             altitude_min=ALT_MIN,
             altitude_max=ALT_MAX,
             id_nomenclature_valid_status=get_gn_profile_data["valid_status"],
@@ -202,8 +203,8 @@ class TestGnProfiles:
         data = response.get_json()["properties"]
         assert data["altitude_min"] == ALT_MIN
         assert data["altitude_max"] == ALT_MAX
-        assert data["first_valid_data"] == '2021-01-01 00:00:00'
-        assert data["last_valid_data"] == '2021-01-05 00:00:00'
+        assert DATE_MIN in data["first_valid_data"]
+        assert DATE_MAX in data["last_valid_data"]
         assert data["count_valid_data"] == 1
         assert data["active_life_stage"] == True
 
@@ -251,8 +252,8 @@ class TestGnProfiles:
         data = {
             "altitude_min": ALT_MIN,
             "altitude_max": ALT_MAX,
-            "date_min": "2021-01-01",
-            "date_max": "2021-01-05",
+            "date_min": DATE_MIN,
+            "date_max": DATE_MAX,
             "cd_ref": get_gn_profile_data["cd_nom"],
             "geom": {'coordinates': [6.12, 44.85], 'type': 'Point'}
         }
@@ -275,9 +276,9 @@ class TestGnProfiles:
 
     def test_get_observation_score_no_date(self, get_gn_profile_data):
         data = {
-            "altitude_min": 500,
-            "altitude_max": 600,
-            "date_min": "2021-01-01",
+            "altitude_min": ALT_MIN,
+            "altitude_max": ALT_MAX,
+            "date_min": DATE_MIN,
             "cd_ref": get_gn_profile_data["cd_nom"],
             "geom": {'coordinates': [6.12, 44.85], 'type': 'Point'}
         }
@@ -291,13 +292,30 @@ class TestGnProfiles:
         assert response.json['description'] == "Missing date min or date max"
     
     def test_get_observation_score_no_altitude(self, get_gn_profile_data):
+        data = {
+            "altitude_min": ALT_MIN,
+            "date_min": DATE_MIN,
+            "date_max": DATE_MAX,
+            "cd_ref": get_gn_profile_data["cd_nom"],
+            "geom": {'coordinates': [6.12, 44.85], 'type': 'Point'}
+        }
+
+        response = self.client.post(
+            url_for("gn_profiles.get_observation_score"),
+            json=data
+        )
+
+        assert response.status_code == 400
+        assert response.json['description'] == "Missing altitude_min or altitude_max"
+    
+    def test_get_observation_score_not_observed_altitude(self, get_gn_profile_data):
         alt_min = 500
         alt_max = 600
         data = {
             "altitude_min": alt_min,
             "altitude_max": alt_max,
-            "date_min": "2021-01-01",
-            "date_max": "2021-01-05",
+            "date_min": DATE_MIN,
+            "date_max": DATE_MAX,
             "cd_ref": get_gn_profile_data["cd_nom"],
             "geom": {'coordinates': [6.12, 44.85], 'type': 'Point'}
         }
@@ -310,13 +328,19 @@ class TestGnProfiles:
         assert response.status_code == 200
         assert f"Le taxon n'a jamais été observé à cette altitude ({alt_min}-{alt_max}m)" in [err['value'] for err in response.json['errors']]
  
-    @pytest.mark.skip()  # FIXME
+    def test_get_observation_score_error_not_observed_alt(self, get_gn_profile_data):
+        # TODO when routes.py is fixed for this
+        pass
+
+
     def test_get_observation_score_error_not_observed(self, get_gn_profile_data):
+         # In the date, only the days are relevant not the date. Which means 
+         # that when 2022-01-20 is entered, the doy is more or less 20. 
         data = {
             "altitude_min": ALT_MIN,
             "altitude_max": ALT_MAX,
-            "date_min": "1900-01-01",
-            "date_max": "1900-01-01",
+            "date_min": "2022-01-20",
+            "date_max": "2022-01-25",
             "cd_ref": get_gn_profile_data["cd_nom"],
             "geom": {'coordinates': [6.12, 44.85], 'type': 'Point'}
         }
@@ -329,6 +353,24 @@ class TestGnProfiles:
         assert response.status_code == 200
         assert "Le taxon n'a jamais été observé à cette periode" in [err['value'] for err in response.json['errors']]
 
+    def test_get_observation_score_error_geom_not_observed(self, get_gn_profile_data):
+        data = {
+            "altitude_min": ALT_MIN,
+            "altitude_max": ALT_MAX,
+            "date_min": DATE_MIN,
+            "date_max": DATE_MAX,
+            "cd_ref": get_gn_profile_data["cd_nom"],
+            "geom": {'coordinates': [1000, 2000], 'type': 'Point'}
+        }
+
+        response = self.client.post(
+            url_for("gn_profiles.get_observation_score"),
+            json=data
+        )
+
+        assert response.status_code == 200
+        assert "Le taxon n'a jamais été observé dans cette zone géographique" in [err['value'] for err in response.json['errors']]
+    
     # def test_get_observation_score_(self, app):
     #     data.update({"cd_ref": 212})
     #     response = self.client.post(
@@ -370,6 +412,3 @@ class TestGnProfiles:
     #     assert result["valid_altitude"] == True
     #     assert result["valid_phenology"] == True
     #     assert result["valid_distribution"] == True
-
-
-
