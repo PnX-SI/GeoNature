@@ -67,10 +67,10 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    * @returns
    */
   @Input() compareWith = (item, selected) => item[this.valueFieldName] === selected;
+  @Input() defaultItems: Array<any> = [];
   areas_input$ = new Subject<string>();
   areas: Observable<any>;
   loading = false;
-  private defaultItems = [];
 
   constructor(private dataService: DataFormService) {
     super();
@@ -82,29 +82,21 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
     // TODO : try to resolve this problem in DynamicForm with conditional attribute maybe
     this.valueFieldName = this.valueFieldName === undefined ? 'id_area' : this.valueFieldName;
 
-    this.updateParentFormControl();
     this.getAreas();
   }
-
-  private updateParentFormControl() {
-    // Replace objects by valueFieldName values
-    if (this.parentFormControl.value) {
-      this.defaultItems = this.parentFormControl.value;
-      this.parentFormControl.setValue(this.defaultItems.map(item => item[this.valueFieldName]));
-    }
-  }
-
   /**
    * Merge initial 100 areas + default values (for update)
    */
-  initalAreas(): Observable<any> {
+   initalAreas(): Observable<any> {    
     return zip(
       this.dataService.getAreas(this.typeCodes).pipe(map(data => this.formatAreas(data))), // Default items
       of(this.defaultItems)
     ).pipe(
       map(el => {
-        return el[0].concat(el[1])
-      })
+        // remove doublon
+        const concat = el[0].concat(el[1]);
+        return concat.filter(val => !el[1].includes(val));
+      }),
     )
   }
 
