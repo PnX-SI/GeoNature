@@ -80,7 +80,7 @@ for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
 done
 
 
-if [[ -z "${CI}" ]] ; then
+if [[ -z "${CI}" || "${CI}" == false ]] ; then
   echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
   # Generate the app.config.ts
   geonature generate_frontend_config --build=false
@@ -101,7 +101,7 @@ echo " ############"
 echo "Installation des paquets Npm"
 
 # build and npm install is done by cypress github action
-if [[ -n "${CI}" ]] ; then
+if [[ "${CI}" == true ]] ; then
   exit 0
 fi
 
