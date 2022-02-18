@@ -10,6 +10,7 @@ from shutil import copyfileobj
 from geonature.migrations.ref_geo_utils import (
     schema,
     delete_area_with_type,
+    get_local_srid
 )
 from utils_flask_sqla.migrations.utils import logger, open_remote_file
 
@@ -49,9 +50,10 @@ def upgrade():
         logger.info("Inserting departments data in temporary table…")
         cursor.copy_expert(f'COPY {schema}.{temp_table_name} FROM STDIN', geofile)
     logger.info("Copy departments data in l_areas…")
+    local_srid = get_local_srid()
     op.execute(f"""
         INSERT INTO {schema}.l_areas (id_type, area_code, area_name, geom, geojson_4326)
-        SELECT {schema}.get_id_area_type('DEP') AS id_type, insee_dep, nom_dep, geom, geojson
+        SELECT {schema}.get_id_area_type('DEP') AS id_type, insee_dep, nom_dep, ST_TRANSFORM(geom, {local_srid}), geojson
         FROM {schema}.{temp_table_name}
     """)
     logger.info("Re-indexing…")

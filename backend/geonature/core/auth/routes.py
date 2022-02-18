@@ -3,8 +3,6 @@
 """
 
 import datetime
-from pypnusershub.db.models import User
-from pypnusershub.schemas import UserSchema
 import xmltodict
 import logging
 from copy import copy
@@ -24,9 +22,11 @@ from flask import (
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from utils_flask_sqla.response import json_resp
 
+from pypnusershub.db.models import User, Organisme
 from pypnusershub.routes import insert_or_update_organism, insert_or_update_role
 from geonature.utils import utilsrequests
 from geonature.utils.errors import CasAuthentificationError
+from geonature.utils.env import db
 
 
 routes = Blueprint("gn_auth", __name__, template_folder="templates")
@@ -69,10 +69,9 @@ def loginCas():
                 raise CasAuthentificationError(
                     "Error with the inpn authentification service", status_code=500
                 )
-
             info_user = response.json()
-            organism_id = info_user["codeOrganisme"]
             user = insert_user_and_org(info_user)
+            db.session.commit()
 
             # creation de la Response
             response = make_response(redirect(current_app.config["URL_APPLICATION"]))
@@ -85,10 +84,18 @@ def loginCas():
             response.set_cookie("token", token, expires=cookie_exp)
 
             # User cookie
+            organism_id = info_user["codeOrganisme"]
+            if not organism_id:
+                organism_id = (
+                    Organisme.query
+                    .filter_by(nom_organisme='Autre')
+                    .one()
+                    .id_organisme
+                )
             current_user = {
                 "user_login": user["identifiant"],
                 "id_role": user["id_role"],
-                "id_organisme": organism_id if organism_id else -1,
+                "id_organisme": organism_id,
             }
             response.set_cookie("current_user", str(current_user), expires=cookie_exp)
             return response
@@ -153,16 +160,7 @@ def insert_user_and_org(info_user):
     if organism_id:
         organism = {"id_organisme": organism_id, "nom_organisme": organism_name}
         insert_or_update_organism(organism)
-    if not current_app.config["CAS"]["USERS_CAN_SEE_ORGANISM_DATA"] or organism_id is None:
-        # group socle 1
-        group_id = current_app.config["BDD"]["ID_USER_SOCLE_1"]
-    else:
-        # group socle 2
-        group_id = current_app.config["BDD"]["ID_USER_SOCLE_2"]
-
-    group = User.query.get(group_id)
-    group_as_dict = UserSchema(exclude=["nom_complet"]).dump(group)
-    user = {
+    user_info = {
         "id_role": user_id,
         "identifiant": user_login,
         "nom_role": info_user["nom"],
@@ -170,14 +168,16 @@ def insert_user_and_org(info_user):
         "id_organisme": organism_id,
         "email": info_user["email"],
         "active": True,
-        "groups": [group_as_dict]
     }
-    try:
-        insert_or_update_role(user)
-    except Exception as e:
-        log.info(e)
-        log.error(e)
-        raise CasAuthentificationError(
-            "Error insering user in GeoNature", status_code=500
-        )
-    return user
+    user_info = insert_or_update_role(user_info)
+    user = User.query.get(user_id)
+    if not user.groups:
+        if not current_app.config["CAS"]["USERS_CAN_SEE_ORGANISM_DATA"] or organism_id is None:
+            # group socle 1
+            group_id = current_app.config["BDD"]["ID_USER_SOCLE_1"]
+        else:
+            # group socle 2
+            group_id = current_app.config["BDD"]["ID_USER_SOCLE_2"]
+        group = User.query.get(group_id)
+        user.groups.append(group)
+    return user_info

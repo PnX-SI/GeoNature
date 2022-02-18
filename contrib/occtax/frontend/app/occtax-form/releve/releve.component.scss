@@ -51,3 +51,13 @@ button .mat-spinner {
   background-color: #ddd;
   cursor: not-allowed;
 }
+
+:host ::ng-deep ngb-typeahead-window  {
+  width: 100%;
+  overflow: auto;
+  max-height: 300px;
+}
+
+::ng-deep .dropdown-item {
+  white-space: inherit;
+}

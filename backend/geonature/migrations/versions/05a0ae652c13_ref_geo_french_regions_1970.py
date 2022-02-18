@@ -10,6 +10,7 @@ from sqlalchemy import func
 from shutil import copyfileobj
 
 from geonature.migrations.ref_geo_utils import (
+    get_local_srid,
     schema,
     delete_area_with_type,
 )
@@ -27,6 +28,7 @@ depends_on = (
 
 def upgrade():
     conn = op.get_bind()
+
     metadata = sa.MetaData(bind=conn)
     area_type = sa.Table('bib_areas_types', metadata, schema='ref_geo', autoload_with=conn)
     conn.execute(area_type.insert().values(type_name='Ancienne régions',
@@ -34,11 +36,16 @@ def upgrade():
                                            type_desc='Type anciennes régions',
                                            ref_name='Fusion départements IGN admin_express'))
     area = sa.Table('l_areas', metadata, schema='ref_geo', autoload_with=conn)
+    local_srid = get_local_srid()
     insert = area.insert({
         'id_type': func.ref_geo.get_id_area_type('REG_1970'),
         'area_name': sa.bindparam('name'),
         'area_code': sa.bindparam('code'),
-        'geom': sa.select([func.ST_Multi(func.ST_Union(area.c.geom))]) \
+        'geom': sa.select([func.ST_Multi(
+            func.ST_Union(
+                func.ST_Transform(area.c.geom, sa.cast(local_srid, sa.Integer))
+            )
+        )]) \
                     .where(sa.and_(
                         area.c.id_type==func.ref_geo.get_id_area_type('DEP'),
                         area.c.area_code.in_(sa.bindparam('deps', expanding=True)))),

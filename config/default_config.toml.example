@@ -210,6 +210,22 @@ MAIL_ON_ERROR = false
     url = "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
     attribution = "OSM contributors"
 [[MAPCONFIG.BASEMAP]]
+    name = "IGN Plan v2"
+    url = "https://wxs.ign.fr/cartes/geoportail/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/png&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
+    attribution = "&copy IGN"
+[[MAPCONFIG.BASEMAP]]
+    name = "IGN Ortho"
+    url = "https://wxs.ign.fr/ortho/geoportail/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/jpeg&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
+    attribution = "&copy IGN"
+[[MAPCONFIG.BASEMAP]]
+    name = "IGN Scan 25"
+    url = "https://wxs.ign.fr/YOUR-IGN-KEY/geoportail/wmts?LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&EXCEPTIONS=text/xml&FORMAT=image/jpeg&SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
+    attribution = "&copy IGN"
+[[MAPCONFIG.BASEMAP]]
+    name = "IGN Cadastre"
+    url = "https://wxs.ign.fr/parcellaire/geoportail/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/png&LAYER=CADASTRALPARCELS.PARCELS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
+    attribution = "&copy IGN"
+[[MAPCONFIG.BASEMAP]]
     name = "WMS"
     url = "https://mon_flux_wms"
     service = "wms"

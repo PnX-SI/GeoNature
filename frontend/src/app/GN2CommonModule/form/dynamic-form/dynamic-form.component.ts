@@ -6,17 +6,20 @@ import {
   Output,
   EventEmitter,
   SimpleChanges,
+  OnDestroy,
 } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.service';
 import { AppConfig } from '@geonature_config/app.config';
+import { distinctUntilChanged } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'pnx-dynamic-form',
   templateUrl: './dynamic-form.component.html',
   styleUrls: ['./dynamic-form.component.scss']
 })
-export class DynamicFormComponent implements OnInit, OnChanges {
+export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   @Input() formDef: any;
   @Input() form: FormGroup;
 
@@ -28,11 +31,22 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   public rand = Math.ceil(Math.random() * 1e10);
 
   public formDefComp = {};
+  public isValInSelectList: boolean = true;
+  private _sub : Subscription
 
   constructor(private _dynformService: DynamicFormService) { }
 
   ngOnInit() {
     this.setFormDefComp(true);
+    // Disable the form if a value is provided and is not in the select list
+    // In case list value change and data are still in database
+    if (this.formDef.type_widget == 'select') {
+      this._sub = this.form.get(this.formDefComp['attribut_name']).valueChanges.pipe(
+        distinctUntilChanged()
+        ).subscribe(val => {
+        this.isValInSelectList = this.formDefComp['values'].includes(val);
+      })
+    }
   }
 
   setFormDefComp(withDefaultValue=false) {
@@ -107,5 +121,9 @@ export class DynamicFormComponent implements OnInit, OnChanges {
         this.setFormDefComp();
       }
     }
+  }
+
+  ngOnDestroy(): void {
+    this._sub.unsubscribe();
   }
 }

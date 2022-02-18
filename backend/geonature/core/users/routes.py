@@ -36,6 +36,22 @@ log = logging.getLogger()
 s = requests.Session()
 
 
+user_fields = {
+    'id_role',
+    'identifiant',
+    'nom_role',
+    'prenom_role',
+    'nom_complet',
+    'id_organisme',
+    'groupe',
+    'active',
+}
+organism_fields = {
+    'id_organisme',
+    'uuid_organisme',
+    'nom_organisme',
+}
+
 # configuration of post_request actions for registrations
 REGISTER_POST_ACTION_FCT.update({
     "create_temp_user": validate_temp_user,
@@ -108,7 +124,7 @@ def getListes():
 
 
 @routes.route("/role/<int:id_role>", methods=["GET"])
-@permissions.check_cruved_scope("R", False)
+@permissions.login_required
 @json_resp
 def get_role(id_role):
     """
@@ -119,12 +135,12 @@ def get_role(id_role):
     :param id_role: the id user
     :type id_role: int
     """
-    user = DB.session.query(User).filter_by(id_role=id_role).one()
-    return user.as_dict()
+    user = User.query.get_or_404(id_role)
+    return user.as_dict(fields=user_fields)
 
 
 @routes.route("/roles", methods=["GET"])
-@permissions.check_cruved_scope("R", False)
+@permissions.login_required
 @json_resp
 def get_roles():
     """
@@ -133,7 +149,7 @@ def get_roles():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-    q = DB.session.query(User)
+    q = User.query
     if "group" in params:
         q = q.filter(User.groupe == params["group"])
     if "orderby" in params:
@@ -142,11 +158,11 @@ def get_roles():
             q = q.order_by(order_col)
         except AttributeError:
             log.error("the attribute to order on does not exist")
-    return [user.as_dict() for user in q.all()]
+    return [user.as_dict(fields=user_fields) for user in q.all()]
 
 
 @routes.route("/organisms", methods=["GET"])
-@permissions.check_cruved_scope("R", False)
+@permissions.login_required
 @json_resp
 def get_organismes():
     """
@@ -155,20 +171,20 @@ def get_organismes():
         .. :quickref: User;
     """
     params = request.args.to_dict()
-    q = DB.session.query(BibOrganismes)
+    q = BibOrganismes.query
     if "orderby" in params:
         try:
             order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
             log.error("the attribute to order on does not exist")
-    return [organism.as_dict() for organism in q.all()]
+    return [organism.as_dict(fields=organism_fields) for organism in q.all()]
 
 
 @routes.route("/organisms_dataset_actor", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
+@permissions.login_required
 @json_resp
-def get_organismes_jdd(info_role):
+def get_organismes_jdd():
     """
     Get all organisms and the JDD where there are actor and where
     the current user hase autorization with its cruved
@@ -190,7 +206,7 @@ def get_organismes_jdd(info_role):
             q = q.order_by(order_col)
         except AttributeError:
             log.error("the attribute to order on does not exist")
-    return [organism.as_dict() for organism in q.all()]
+    return [organism.as_dict(fields=organism_fields) for organism in q.all()]
 
 
 #########################

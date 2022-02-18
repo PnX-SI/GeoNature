@@ -17,7 +17,7 @@ fieldset {
 
 .cdk-overlay-pane {
   &.mat-tooltip-panel {
-    .mat-tooltip {
+    .validation-tooltip.mat-tooltip {
       color: black;
       background-color: rgba(231, 228, 228, 0.85);
       border-radius: 3px;
@@ -55,7 +55,8 @@ legend {
 }
 
 .taxon-list {
-  margin-bottom: 0px;
+  padding-left: 0;
+  margin-bottom: 0;
   font-size: 12px;
 }
 .taxon-alert {
