@@ -32,6 +32,7 @@ class TestUsers:
         for org in organisms:
             assert org.uuid_organisme in resp_uuids
 
+    @pytest.mark.skip()
     def test_get_organismes_no_right(self, users):
         set_logged_user_cookie(self.client, users['noright_user'])
 
