@@ -27,9 +27,8 @@ export class RoutingService {
 
   init() {
     this._router.resetConfig(this.getRoutes());
-    console.log(this.getRoutes())
-    this._router.navigateByUrl(this._router.url);
     // reload route
+    this._router.navigateByUrl(this._router.url);
   }
 
   getRoutes(): Routes {

@@ -4,8 +4,7 @@ import { AuthService } from '../auth/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { similarValidator } from '@geonature/services/validators';
 import { Router, ActivatedRoute } from '@angular/router';
-import { AppConfig } from '../../../conf/app.config';
-
+import { ConfigService } from '@geonature/services/config.service';
 @Component({
   selector: 'pnx-new-password',
   templateUrl: 'new-password.component.html',
@@ -15,14 +14,18 @@ export class NewPasswordComponent implements OnInit {
   token: string;
   form: FormGroup;
   public casLogin
+  public appConfig;
 
   constructor(
     private _authService: AuthService,
     private fb: FormBuilder,
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private _toasterService: ToastrService
+    private _toasterService: ToastrService,
+    public configService: ConfigService,
+
   ) {
+    this.appConfig = this.configService.config;
     this.activatedRoute.queryParams.subscribe(params => {
       let token = params['token'];
       if (!RegExp('^[0-9]+$').test(token)) {
@@ -30,7 +33,7 @@ export class NewPasswordComponent implements OnInit {
       }
       this.token = token;
     });
-    this.casLogin = AppConfig.PUBLIC_ACCESS.ENABLE_PUBLIC_ACCESS;
+    this.casLogin = this.appConfig.PUBLIC_ACCESS.ENABLE_PUBLIC_ACCESS;
   }
 
   ngOnInit() {

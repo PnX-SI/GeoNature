@@ -30,17 +30,16 @@ export class ConfigService {
 
           this.config = config;
 
-          if (!this.config.URL_APPLICATION) {
+          if (!this.config.API_ENDPOINT) {
             this.msgError = {
-              message: `Le fichier de configuration 'assets/config.json' est mal renseigné : il manque une valeur pour 'URL_APPLICATION'`,
+              message: `Le fichier de configuration 'assets/config.json' est mal renseigné : il manque une valeur pour 'API_ENDPOINT'`,
               config: config
             }
             console.error(this.msgError)
             return of(false)
           }
 
-          // const apiConfig = `${this._config.URL_APPLICATION}/gn_commons/config`;
-          const apiConfig = `${this.config.URL_APPLICATION}/gn_commons/modules_and_config`;
+          const apiConfig = `${this.config.API_ENDPOINT}/gn_commons/modules_and_config`;
 
           // on initialise ici la configuration ET les modules
           return this._hhtp.get(apiConfig);
