@@ -1,0 +1,32 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "importHelpers": true,
+    "outDir": "./dist/out-tsc",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "module": "es2020",
+    "target": "es2015",
+    "lib": [
+      "es2018",
+      "dom"
+    ],
+    "typeRoots": [
+      "node_modules/@types",
+      "./src/typings.d.ts"
+    ],
+    "types":[
+    ],
+    "baseUrl": "node_modules",
+    "paths": {
+      "@angular/*": ["./@angular/*"],
+      "@geonature_common/*" : ["../src/app/GN2CommonModule/*"],
+      "@geonature/*" : ["../src/app/*"],
+      "@geonature_config/*" : ["../src/conf/*"],
+      "@librairies/*" : ["./*"],
+    }
+  }
+}

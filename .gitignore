@@ -33,7 +33,6 @@ backend/run.py
 *.pem
 *.ipynb
 
-tsconfig.json
 .angulardoc.json
 Pipfile.lock
 
