@@ -1,6 +1,6 @@
 // Angular core
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, APP_INITIALIZER, APP_BOOTSTRAP_LISTENER } from '@angular/core';
 
 import {
   HttpClientModule,
@@ -26,7 +26,6 @@ import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 
 // Angular created component
 import { AppComponent } from './app.component';
-import { routing } from './routing/app-routing.module'; // RoutingModule
 import { HomeContentComponent } from './components/home-content/home-content.component';
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
@@ -40,6 +39,7 @@ import { FooterComponent } from '../custom/components/footer/footer.component';
 import { IntroductionComponent } from '../custom/components/introduction/introduction.component';
 
 // Service
+import { Router, RouterModule } from "@angular/router";
 import { AuthService } from './components/auth/auth.service';
 import { CookieService } from 'ng2-cookies';
 import { ChartsModule } from 'ng2-charts';
@@ -65,6 +65,7 @@ import { UserDataService } from "./userModule/services/user-data.service";
 
 // Config
 import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
+import { RoutingService } from './services/routing.service';
 
 
 // Ici l'initialisation de la configuration va initialiser le service des modules
@@ -74,6 +75,11 @@ export function init_config(configService: ConfigService) {
     };
 }
 
+export function initRoutes(routingService: RoutingService) {
+  return () => {
+    routingService.init()
+  }
+}
 
 @NgModule({
   imports: [
@@ -81,7 +87,7 @@ export function init_config(configService: ConfigService) {
     HttpClientModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
-    routing,
+    RouterModule.forRoot([], {useHash: true }),
     ChartModule,
     ChartsModule,
     ToastrModule.forRoot({
@@ -115,6 +121,7 @@ export function init_config(configService: ConfigService) {
     AuthGuard,
     ModuleService,
     ConfigService,
+    RoutingService,
     ToastrService,
     GlobalSubService,
     CookieService,
@@ -129,7 +136,8 @@ export function init_config(configService: ConfigService) {
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
     // { provide: APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService], multi: true},
-     { provide: APP_INITIALIZER, useFactory: init_config, deps: [ConfigService], multi: true},
+    { provide: APP_INITIALIZER, useFactory: init_config, deps: [ConfigService], multi: true},
+    { provide: APP_BOOTSTRAP_LISTENER, useFactory: initRoutes, deps: [RoutingService], multi: true },
   ],
   bootstrap: [AppComponent]
 })

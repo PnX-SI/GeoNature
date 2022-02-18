@@ -43,7 +43,7 @@ export class ModuleService {
    * @param module_code: name of the module
    */
   getModule(module_code: string) {
-    for (let mod of this.modules) {
+    for (let mod of (this.modules || [])) {
       if (mod.module_code.toLowerCase() === module_code.toLowerCase()) {
         return mod;
       }

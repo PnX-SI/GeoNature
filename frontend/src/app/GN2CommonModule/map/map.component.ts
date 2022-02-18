@@ -84,8 +84,7 @@ export class MapComponent implements OnInit {
     private _configService: ConfigService
   ) {
     this.searchLocation = '';
-    this.AppConfig = this._configService.getConfig()
-    console.log(this.AppConfig.MAPCONFIG.CENTER)
+    this.AppConfig = this._configService.config;
   }
 
   ngOnInit() {

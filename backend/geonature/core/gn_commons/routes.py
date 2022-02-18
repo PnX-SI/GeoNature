@@ -94,10 +94,9 @@ def list_modules():
     return jsonify(allowed_modules())
 
 @routes.route("/modules_and_config", methods=["GET"])
-@login_required
 def get_modules_and_config():
     return {
-        'modules': allowed_modules(),
+        'modules': g.current_user and allowed_modules(),
         'config': config_frontend
     }
 

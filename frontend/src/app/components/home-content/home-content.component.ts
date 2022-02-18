@@ -54,7 +54,7 @@ export class HomeContentComponent implements OnInit {
     this.getI18nLocale();
 
     this._SideNavService.sidenav.open();
-    this.appConfig = this._configService.getConfig();
+    this.appConfig = this._configService.config;
 
     if (this.showLastObsMap) {
       this._syntheseApi.getSyntheseData({ limit: 100 }).subscribe(result => {

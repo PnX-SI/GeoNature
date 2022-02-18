@@ -11,7 +11,7 @@ export class ConfigService {
     private _modules: ModuleService,
   ) {}
 
-  _config: any = {};
+  config: any = {};
   isInitialized = false;
   msgError: any;
 
@@ -19,7 +19,7 @@ export class ConfigService {
     return this._hhtp.get('./assets/config.json')
       .pipe(
         catchError((error) => {
-          console.log('assets/config.json', error);
+          console.error('assets/config.json', error);
           this.msgError= `Le fichier de configuration 'assets/config.json' n'est pas présent.`
           return of(false);
         }),
@@ -28,9 +28,9 @@ export class ConfigService {
             return of(false);
           }
 
-          this._config = config;
+          this.config = config;
 
-          if (!this._config.URL_APPLICATION) {
+          if (!this.config.URL_APPLICATION) {
             this.msgError = {
               message: `Le fichier de configuration 'assets/config.json' est mal renseigné : il manque une valeur pour 'URL_APPLICATION'`,
               config: config
@@ -39,40 +39,35 @@ export class ConfigService {
             return of(false)
           }
 
-          const apiConfig = `${this._config.URL_APPLICATION}/gn_commons/config`;
+          // const apiConfig = `${this._config.URL_APPLICATION}/gn_commons/config`;
+          const apiConfig = `${this.config.URL_APPLICATION}/gn_commons/modules_and_config`;
 
           // on initialise ici la configuration ET les modules
-          return forkJoin([
-            this._hhtp.get(apiConfig),
-            this._modules.fetchModules()
-          ])
+          return this._hhtp.get(apiConfig);
         }),
         catchError((error) => {
           console.error('api config modules', error);
           this.msgError = {
             error: error.message,
             url: error.url,
-            config: this._config,
-            hints: `Veuillez vérifier si l'url de l'application est bien ${this._config.URL_APPLICATION} et si l'application est en bon état de marche`
+            config: this.config,
+            hints: `Veuillez vérifier si l'url de l'application est bien ${this.config.URL_APPLICATION} et si l'application est en bon état de marche`
           }
           return of(false);
         }),
         mergeMap((results: any) => {
-          if (!results[0]) {
+          if (!results) {
             return of(false)
           }
-          this._config = {
-            ...this._config,
-            ...results[0]
+          this._modules.setModules(results.modules)
+          this.config = {
+            ...this.config,
+            ...results.config
           };
           this.isInitialized = true;
-          return of(this._config)
+          return of(this.config)
         })
       )
-  }
-
-  getConfig() {
-    return this._config
   }
 
 }

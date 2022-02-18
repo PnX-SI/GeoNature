@@ -3,13 +3,13 @@
 """
 
 import logging
-from os import environ
+from os import environ, path
 from collections import ChainMap, deque
 from io import StringIO
 
 import toml
 import click
-from flask.cli import run_command
+from flask.cli import run_command, SeparatedPathType
 import flask_migrate
 import alembic
 from alembic.migration import MigrationContext
@@ -89,7 +89,14 @@ def generate_frontend_config(build):
 @main.command()
 @click.option("--host", default="0.0.0.0")
 @click.option("--port", default=8000)
-@click.option("--extra-files", default="")
+@click.option("--extra-files",
+    default=None,
+    type=SeparatedPathType(),
+    help=(
+        "Extra files that trigger a reload on change. Multiple paths"
+        " are separated by '{}'.".format(path.pathsep)
+    )
+)
 @click.pass_context
 def dev_back(ctx, host, port, extra_files):
     """
@@ -103,7 +110,7 @@ def dev_back(ctx, host, port, extra_files):
     """
     if not environ.get('FLASK_ENV'):
         environ['FLASK_ENV'] = 'development'
-    ctx.invoke(run_command, host=host, port=port, extra_files=extra_files.split(','))
+    ctx.invoke(run_command, host=host, port=port, extra_files=extra_files)
 
 
 @main.command()
