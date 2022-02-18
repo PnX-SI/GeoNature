@@ -16,7 +16,7 @@ def unavailable_menu_id():
 def user_tlist():
     """
     Get a user list that is mentioned in VUserslistForallMenu so
-    that the getRolesByMenuCode call works
+    that the get_roles_by_menu_code call works
     """
     # with entity ?
     return (
@@ -42,7 +42,7 @@ class TestApiUsersMenu:
     """
 
     def test_menu_exists(self):
-        resp = self.client.get(url_for("users.getRolesByMenuId", id_menu=1))
+        resp = self.client.get(url_for("users.get_roles_by_menu_id", id_menu=1))
         users = resp.json
         mandatory_attr = ["id_role", "nom_role", "prenom_role"]
         for user in users:
@@ -51,13 +51,13 @@ class TestApiUsersMenu:
         assert resp.status_code == 200
 
     def test_menu_notexists(self, unavailable_menu_id):
-        resp = self.client.get(url_for("users.getRolesByMenuId", id_menu=unavailable_menu_id))
+        resp = self.client.get(url_for("users.get_roles_by_menu_id", id_menu=unavailable_menu_id))
 
         assert resp.status_code == 404
 
     def test_get_roles_by_menu_code(self, user_tlist):
         resp = self.client.get(
-            url_for("users.getRolesByMenuCode", code_liste=user_tlist.code_liste)
+            url_for("users.get_roles_by_menu_code", code_liste=user_tlist.code_liste)
         )
         json_resp = resp.json
 
@@ -66,7 +66,7 @@ class TestApiUsersMenu:
 
     def test_get_listes(self, user_tlist):
         resp = self.client.get(
-            url_for("users.getListes")
+            url_for("users.get_listes")
         )
 
         assert resp.status_code == 200
