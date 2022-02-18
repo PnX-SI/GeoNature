@@ -1,8 +1,9 @@
 import { Component, Inject } from '@angular/core';
 
-import { MAT_DIALOG_DATA } from '@angular/material';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { IPermission } from '../../permission.interface';
 
@@ -25,7 +26,7 @@ export class DeletePermissionDialog {
   private getI18nLocale() {
     this.locale = this.translateService.currentLang;
     this.translateService.onLangChange
-      .takeUntil(this.destroy$)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((langChangeEvent: LangChangeEvent) => {
         this.locale = langChangeEvent.lang;
       });

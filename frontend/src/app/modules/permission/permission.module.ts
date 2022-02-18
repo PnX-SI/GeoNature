@@ -29,11 +29,7 @@ import { PermissionService } from './permission.service';
 import { routes } from './permissions.routes'
 
 @NgModule({
-  imports: [
-    RouterModule.forChild(routes),
-    GN2CommonModule,
-    CommonModule,
-  ],
+  imports: [RouterModule.forChild(routes), GN2CommonModule, CommonModule],
   declarations: [
     AcceptRequestDialog,
     AccessRequestComponent,
@@ -51,9 +47,7 @@ import { routes } from './permissions.routes'
     RequestDisplayComponent,
     RequestListComponent,
   ],
-  providers: [
-    PermissionService
-  ],
+  providers: [PermissionService],
   entryComponents: [
     AcceptRequestDialog,
     ConventiondModalContent,

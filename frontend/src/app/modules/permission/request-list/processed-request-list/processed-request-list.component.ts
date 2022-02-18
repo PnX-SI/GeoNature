@@ -3,6 +3,7 @@ import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/c
 import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { IPermissionRequestDatatableColumn, IPermissionRequest } from '../../permission.interface';
 import { PermissionService } from '../../permission.service';
@@ -202,7 +203,7 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
     this.locale = this.translateService.currentLang;
     // don't forget to unsubscribe!
     this.translateService.onLangChange
-      .takeUntil(this.destroy$)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((langChangeEvent: LangChangeEvent) => {
         this.locale = langChangeEvent.lang;
         this.defineDatatableMessages();

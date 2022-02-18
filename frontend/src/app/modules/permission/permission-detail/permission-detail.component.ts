@@ -1,8 +1,9 @@
 import { Router, ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { MatDialog, MatSlideToggleChange } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
+import { MatSlideToggleChange } from '@angular/material/slide-toggle';
 
-import { map, mergeMap } from 'rxjs/operators';
+import { map, mergeMap, takeUntil } from 'rxjs/operators';
 import { of, Subject, Subscription } from 'rxjs';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
@@ -14,7 +15,6 @@ import { ToastrService } from 'ngx-toastr';
 import { EditPermissionModal } from './edit-permission-modal/edit-permission-modal.component';
 import { Permission } from '../shared/permission.model';
 import { HttpParams } from '@angular/common/http';
-import { NumberValueAccessor } from '@angular/forms/src/directives';
 
 @Component({
   selector: 'gn-permission-detail',
@@ -171,7 +171,7 @@ export class PermissionDetailComponent implements OnInit {
   private getI18nLocale() {
     this.locale = this.translateService.currentLang;
     this.translateService.onLangChange
-      .takeUntil(this.destroy$)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((langChangeEvent: LangChangeEvent) => {
         this.locale = langChangeEvent.lang;
       });
