@@ -1,15 +1,13 @@
-import json
 import uuid
 
-from flask import url_for
 import pytest
+from flask import url_for
 from pypnusershub.db.models import Organisme as BibOrganismes
 
-from geonature.utils.env import db
-from geonature.tests.utils import set_logged_user_cookie
-
 # Apparently: need to import both?
-from geonature.tests.fixtures import datasets, acquisition_frameworks
+from geonature.tests.fixtures import acquisition_frameworks, datasets
+from geonature.tests.utils import set_logged_user_cookie
+from geonature.utils.env import db
 
 
 @pytest.fixture
@@ -23,10 +21,10 @@ def organisms():
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestUsers:
     def test_get_organismes(self, users, organisms):
-        set_logged_user_cookie(self.client, users['admin_user'])
+        set_logged_user_cookie(self.client, users["admin_user"])
 
         response = self.client.get(url_for("users.get_organismes"))
-        
+
         assert response.status_code == 200
         resp_uuids = [uuid.UUID(json_r["uuid_organisme"]) for json_r in response.get_json()]
         for org in organisms:
@@ -34,14 +32,14 @@ class TestUsers:
 
     @pytest.mark.skip()
     def test_get_organismes_no_right(self, users):
-        set_logged_user_cookie(self.client, users['noright_user'])
+        set_logged_user_cookie(self.client, users["noright_user"])
 
         response = self.client.get(url_for("users.get_organismes"))
-        
+
         assert response.status_code == 403
 
     def test_get_organisme_order_by(self, users, organisms):
-        set_logged_user_cookie(self.client, users['admin_user'])
+        set_logged_user_cookie(self.client, users["admin_user"])
         order_by_column = "nom_organisme"
 
         response = self.client.get(
@@ -55,7 +53,7 @@ class TestUsers:
 
     def test_get_role(self, users):
         self_user = users["self_user"]
-        set_logged_user_cookie(self.client, users['admin_user'])
+        set_logged_user_cookie(self.client, users["admin_user"])
 
         response = self.client.get(url_for("users.get_role", id_role=self_user.id_role))
 
@@ -64,7 +62,7 @@ class TestUsers:
 
     def test_get_roles(self, users):
         noright_user = users["noright_user"]
-        set_logged_user_cookie(self.client, users['admin_user'])
+        set_logged_user_cookie(self.client, users["admin_user"])
 
         response = self.client.get(url_for("users.get_roles"))
 
@@ -75,7 +73,7 @@ class TestUsers:
         pass
 
     def test_get_roles_order_by(self, users):
-        set_logged_user_cookie(self.client, users['admin_user'])
+        set_logged_user_cookie(self.client, users["admin_user"])
 
         response = self.client.get(
             url_for("users.get_roles"), query_string={"orderby": "identifiant"}
