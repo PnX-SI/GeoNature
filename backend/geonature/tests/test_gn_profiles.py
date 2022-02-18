@@ -63,7 +63,7 @@ def create_synthese_record(
     )
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def get_gn_profile_data():
     valid_status = TParameters.query.with_entities(TParameters.name, TParameters.value).filter_by(name="id_valid_status_for_profiles").one()
     valid_status = valid_status.value.split(',')[0]
