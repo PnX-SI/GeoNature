@@ -108,6 +108,7 @@ def getListes():
 
 
 @routes.route("/role/<int:id_role>", methods=["GET"])
+@permissions.check_cruved_scope("R", False)
 @json_resp
 def get_role(id_role):
     """
@@ -122,8 +123,8 @@ def get_role(id_role):
     return user.as_dict()
 
 
-
 @routes.route("/roles", methods=["GET"])
+@permissions.check_cruved_scope("R", False)
 @json_resp
 def get_roles():
     """
@@ -145,6 +146,7 @@ def get_roles():
 
 
 @routes.route("/organisms", methods=["GET"])
+@permissions.check_cruved_scope("R", False)
 @json_resp
 def get_organismes():
     """
