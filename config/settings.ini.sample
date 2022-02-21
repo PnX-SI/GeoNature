@@ -62,6 +62,9 @@ vectorise_dem=false
 # Insert sample data (available only in Mainland France with srid_local=2154 ; false otherwise)
 add_sample_data=true
 
+# Insert INPN sensitivity referential (will force installation of departments and regions)
+install_ref_sensitivity=true
+
 #### Modules GeoNature ####
 
 # Installer le module validation
@@ -82,21 +85,9 @@ install_usershub_schema=true
 usershub_release=2.2.1
 
 # Définir dans quelle version de TaxHub (release, branche ou tag) prendre le code SQL permettant la création du schéma taxonomie de la base de données de GeoNature
-taxhub_release=1.9.0
+taxhub_release=1.9.4
 
 # Proxy - si le serveur sur lequel se trouve GeoNature se trouve derrière un proxy
 # laisser vide si vous n'avez pas de proxy
 proxy_http=
 proxy_https=
-
-
-#####################
-### Gunicorn settings
-#####################
-
-app_name=geonature2
-venv_dir=venv
-gun_num_workers=4
-gun_host=0.0.0.0
-gun_port=8000
-gun_timeout=30

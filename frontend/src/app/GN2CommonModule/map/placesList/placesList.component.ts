@@ -19,7 +19,7 @@ import { timeStamp } from 'console';
   templateUrl: 'placesList.component.html'
 })
 export class PlacesListComponent extends MarkerComponent implements OnInit {
-  @ViewChild('modalContent') public modalContent: any;
+  @ViewChild('modalContent', { static: false }) public modalContent: any;
   private geojsonSubscription$: Subscription;
   public geojson: any;
   public places: any[];
@@ -75,7 +75,6 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
     this.mapservice.removeAllLayers(this.map, this.mapService.leafletDrawFeatureGroup);
     this.mapservice.removeAllLayers(this.map, this.mapService.fileLayerFeatureGroup);
 
-    this.mapservice.firstLayerFromMap = false;
     this.layerDrawed.emit(L.geoJSON(this.selectedPlace));
     this.mapService.loadGeometryReleve(this.selectedPlace, true);
     this.modalService.dismissAll();
@@ -101,20 +100,13 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
   fetchPlaces() {
     this._dfs.getPlaces().subscribe(
       res => {
-        if (Object.keys(res[0]).length > 0) {
-          this.places = res;
+        this.places = res;
+        if (this.places.length > 0) {
           this.place = this.places[0];
         } else {
-          this.places = null;
           this.place = null;
         }
       },
-      err => {
-        if (err.status === 404) {
-          this.places = [];
-          this.place = null;
-        }
-      }
     );
   }
 }

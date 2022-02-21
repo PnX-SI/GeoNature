@@ -9,9 +9,9 @@ Installation des dépendances
 
 Installer les paquets suivants :
 
-  ::  
+::  
     
-    $ sudo apt install unzip git postgresql postgis python2 python3-pip python3-venv libgdal-dev libpangocairo-1.0-0 apache2
+  $ sudo apt install unzip git postgresql postgis python2 python3-pip python3-venv libgdal-dev libffi-dev libpangocairo-1.0-0 apache2
 
 
 Installation de l'application
@@ -102,7 +102,7 @@ UsersHub n'est pas nécessaire au fonctionnement de GeoNature mais il sera utile
 
 Par contre il est nécessaire d'installer TaxHub (https://github.com/PnX-SI/TaxHub) pour que GeoNature fonctionne. En effet, GeoNature utilise l'API de TaxHub. Une fois GeoNature installé, il vous faut donc installer TaxHub en le connectant à la BDD de GeoNature, vu que son schéma ``taxonomie`` a déjà été installé par le script ``02_create_db.sh`` de GeoNature. Lors de l'installation de TaxHub, n'installez donc que l'application et pas la BDD.
 
-Télécharger Taxhub depuis le dépôt github depuis la racine de votre utilisateur:
+Télécharger TaxHub depuis son dépôt Github depuis la racine de votre utilisateur :
 
 ::
 
@@ -137,121 +137,8 @@ Voir la doc d'installation de TaxHub : http://taxhub.readthedocs.io/
 
 Voir la doc d'installation de UsersHub : http://usershub.readthedocs.io/
 
-Mise à jour de l'application
-----------------------------
-
-Attention, avant chaque mise à jour, il est important de sauvegarder l'application et sa base de données, ou de faire un snapshot du serveur pour pouvoir revenir à son état antérieure avant mise à jour en cas de problème.
-
-La mise à jour de GeoNature consiste à télécharger sa nouvelle version dans un nouveau répertoire, récupérer les fichiers de configuration et de surcouche depuis la version actuelle et de relancer l'installation dans le répertoire de la nouvelle version.
-
-La mise à jour doit être réalisée avec votre utilisateur linux courant (``geonatureadmin`` par exemple) et non pas le super-utilisateur ``root``.
-
-* Télécharger la dernière version de GeoNature :
-
-  ::
-
-    wget https://github.com/PnX-SI/GeoNature/archive/X.Y.Z.zip
-    unzip X.Y.Z.zip
-    rm X.Y.Z.zip
-
-* Renommer l'ancien repertoire de l'application, ainsi que le nouveau :
-
-  ::
-
-    mv /home/`whoami`/geonature/ /home/`whoami`/geonature_old/
-    mv GeoNature-X.Y.Z /home/`whoami`/geonature/
-    cd geonature
-
-* Suivez les éventuelles notes de version spécifiques décrites au niveau de chaque version : https://github.com/PnX-SI/GeoNature/releases.
-
-⚠️ Si la release inclut des scripts de migration SQL : *lancer ces scripts avec l'utilisateur de BDD courant* (généralement ``geonatadmin``) et non le super-utilisateur ``postgres``.
-
-Sauf mentions contraires dans les notes de version, vous pouvez sauter des versions mais en suivant bien les différentes notes de versions intermédiaires et notamment les scripts de mise à jour de la base de données à exécuter successivement.
-
-* Si vous devez aussi mettre à jour TaxHub et/ou UsersHub, suivez leurs notes de versions mais aussi leur documentation (https://usershub.readthedocs.io et https://taxhub.readthedocs.io).
-
-* Lancez le script de ``migration.sh`` à la racine du dossier ``geonature``:
-
-  ::
-    
-    ./install/migration/migration.sh
-
-
 Passer en mode développement
-----------------------------
+---------------------------------
 
-Si vous avez téléchargé GeoNature zippé (via la procédure d'installation globale ``install_all.sh`` ou en suivant la documentation d'installation standalone), il est nécessaire de rattacher votre répertoire au dépôt GitHub afin de pouvoir télécharger les dernières avancées du coeur en ``git pull``. Pour cela, suivez les commandes suivantes en vous placant à la racine du répertoire de GeoNature.
-
-::
-
-    --- Se créer un répertoire .git ---
-    mkdir .git
-    ---  récupérer l'historique du dépôt --- 
-    git clone --depth=2 --bare https://github.com/PnX-SI/GeoNature.git .git
-    --- initialiser un dépôt git à partir de l'historique téléchargé --- 
-    git init
-    --- vérifier que le dépôt distant et le contenu local sont synchronisés --- 
-    git pull
-    --- Reset sur HEAD pour mettre à jour les status --- 
-    git reset HEAD
-    -> vous êtes à jour sur la branche master
-    --- Cloner les sous-modules pour récupérer les dépendances
-    git submodule init
-    git submodule update
-    --- Installer les dépendances de développement
-    cd backend && pip install -r requirements-dev.txt
-
-
-@TODO : A relire et à basculer dans DOC DEVELOPEMENT ?
-
-Editez le fichier de configuration de GeoNature (``<GEONATURE_DIRECTORY>/config/geonature_config.toml``) de la manière suivante :
-
-::
-    
-    URL_APPLICATION = 'http://127.0.0.1:4200'
-    API_ENDPOINT = 'http://127.0.0.1:8000'
-    API_TAXHUB =  'http://127.0.0.1:5000/api'
-    ID_APPLICATION_GEONATURE = 3
-
-Puis le fichier ``/home/<mon_user>/geonature/frontend/src/conf/app.config.ts`` :
-
-::
-    
-    URL_APPLICATION: 'http://127.0.0.1:4200',
-    API_ENDPOINT: 'http://127.0.0.1:8000',
-    API_TAXHUB:  'http://127.0.0.1:5000/api',
-    ID_APPLICATION_GEONATURE: 3
-
-* Lancer le serveur de développement du frontend grâce à Angular-CLI :
-
-  ::
-    
-    cd frontend
-    npm run start
-
-* Lancer l'API en mode développement
-
-Ouvrir un nouveau terminal :
-
-::
-    
-    cd backend
-
-Stopper d'abord gunicorn qui est lancé en mode production via le supervisor :
-
-::
-    
-    sudo supervisorctl stop geonature2
-
-Puis lancer le backend en mode développement :
-
-::
-    
-    source venv/bin/activate
-    geonature dev_back
-
-**Le serveur de développement du backend est disponible à l'adresse 127.0.0.1:8000**
-
-**Le serveur de développement du frontend est disponible à l'adresse 127.0.0.1:4200**.
-
-Vous pouvez vous connecter à l'application avec l'identifiant ``admin`` et le mot de passe ``admin``.
+.. Note::
+    Consultez le guide :ref:`mode-dev` de GeoNature.

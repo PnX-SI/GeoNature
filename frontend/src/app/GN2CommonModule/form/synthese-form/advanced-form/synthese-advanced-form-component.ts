@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, AfterContentInit, Inject } from '@angular
 import { FormGroup } from '@angular/forms';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { TreeNode, TreeComponent, IActionMapping } from 'angular-tree-component';
+import { TreeNode, TreeComponent, IActionMapping } from '@circlon/angular-tree-component';
 
 import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
@@ -17,7 +17,7 @@ import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/
   styleUrls: ['./synthese-advanced-form.component.scss']
 })
 export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
-  @ViewChild('tree') treeComponent: TreeComponent;
+  @ViewChild('tree', { static: false }) treeComponent: TreeComponent;
   public URL_AUTOCOMPLETE;
   public taxonsTree;
   public treeOptions;

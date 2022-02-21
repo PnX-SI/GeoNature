@@ -11,10 +11,10 @@ complètement avec une nouvelle version (V2) réalisée en Python/Flask/Angular.
 
 Mainteneurs :
 
-- Gil DELUERMOZ (PnEcrins) : Base de données / SQL / Installation / Mise à jour
-- Amandine SAHL (PnCevennes) : Backend / Python Flask / API
-- Theo LECHEMIA (PnEcrins) : Frontend / Angular
-- Camille MONCHICOURT (PnEcrins) : Documentation / Gestion du projet
+- Elie BOUTTIER (PnEcrins)
+- Theo LECHEMIA (PnEcrins)
+- Amandine SAHL (PnCevennes)
+- Camille MONCHICOURT (PnEcrins)
 
 .. image :: _static/geonature-techno.png
 
@@ -65,7 +65,7 @@ BDD
 
 Mettre à jour le ``ref_geo`` à partir des données IGN scan express :
 
-- Télécharger le dernier millesime : http://professionnels.ign.fr/adminexpress
+- Télécharger le dernier millésime : http://professionnels.ign.fr/adminexpress
 - Intégrer le fichier Shape dans la BDD grâce à QGIS dans une table nommée ``ref_geo.temp_fr_municipalities``
 - Générer le SQL de création de la table : ``pg_dump --table=ref_geo.temp_fr_municipalities --column-inserts -U <MON_USER> -h <MON_HOST> -d <MA_BASE> > fr_municipalities.sql``. Le fichier en sortie doit s'appeler ``fr_municipalities.sql``
 - Zipper le fichier SQL et le mettre sur le serveur https://geonature.fr/data
@@ -93,6 +93,7 @@ Backend
 - Une fonction ou classe doit contenir une docstring en français. Les doctrings doivent suivre le modèle NumPy/SciPy (voir https://numpydoc.readthedocs.io/en/latest/format.html et https://realpython.com/documenting-python-code/#numpyscipy-docstrings-example)
 - Les commentaires dans le codes doivent être en anglais (ne pas s'empêcher de mettre un commentaire en français sur une partie du code complexe !)
 - Assurez-vous d’avoir récupérer les dépendances dans les sous-modules git : ``git submodule init && git submodule update``
+  - Après un ``git pull``, il faut mettre à jour les sous-modules : ``git submodule update``
 - Installer les requirements-dev (``cd backend && pip install -r requirements-dev.txt``) qui contiennent une série d'outils indispensables au développement dans GeoNature.
 - Utiliser *blake* comme formateur de texte et activer l'auto-formatage dans son éditeur de texte (Tuto pour VsCode : https://medium.com/@marcobelo/setting-up-python-black-on-visual-studio-code-5318eba4cd00)
 - Utiliser *pylint* comme formatteur de code 
@@ -112,40 +113,28 @@ Backend
 BDD 
 ***
 
-- Le noms des tables est préfixé par un "t" pour une table de contenu, de "bib" pour les tables de "dictionnaires" et de "cor" pour les tables de correspondance
+- Le noms des tables est préfixé par un "t" pour une table de contenu, de "bib" pour les tables de "dictionnaires" et de "cor" pour les tables de correspondance (relations N-N)
 - Les schémas du coeur de GeoNature sont préfixés de "gn" 
 - Les schémas des protocoles ou modules GeoNature sont préfixés de "pr"
-- Chaque schéma de BDD dispose de son propre fichier SQL
-- Les scripts SQL sont ordonnés en section dans l'ordre suivant : (voir https://github.com/PnX-SI/GeoNature/blob/master/data/core/synthese.sql)
-
-  - Fonctions
-  - Tables 
-  - Clés primaires 
-  - Clés étrangères 
-  - Contraintes 
-  - Triggers 
-  - Données nécessaires au fonctionnement du schéma
-  
-- Les scripts de données sont écrits dans des fichiers à part
 - Ne rien écrire dans le schéma ``public``
-- Ne pas répeter le nom des tables dans les noms des colonnes (exception faite des colonnes "id)
+- Ne pas répeter le nom des tables dans les noms des colonnes
 
 Typescript
 **********
 
 - Documenter les fonctions et classes grâce au JSDoc en français (https://jsdoc.app/)
-- Les commentaires dans le codes doivent être en anglais (ne pas s'empecher de mettre un commentaire en français sur une partie du code complexe !)
+- Les commentaires dans le codes doivent être en anglais (ne pas s'empêcher de mettre un commentaire en français sur une partie du code complexe !)
 - Les messages renvoyés aux utilisateurs sont en français 
-- Installer les outils de devéloppement: `npm install --only=dev`
+- Installer les outils de devéloppement : ``npm install --only=dev``
 - Utiliser *prettier* comme formateur de texte et activer l'autoformatage dans son éditeur de texte (VsCode dispose d'une extension Prettier : https://github.com/prettier/prettier-vscode)
-- Utiliser tslint comme linter
+- Utiliser ``tslint`` comme linter
 - La longueur maximale pour une ligne de code est 100 caractères.
 
 Angular
 *******
 
 - Suivre les recommandations définies par le styleguide Angular: https://angular.io/guide/styleguide. C'est une ressources très fournie en cas de question sur les pratiques de développement (principe de séparation des principes, organisation des services et des composants)
-- On privilegira l'utilisation des reactive forms pour la construction des formulaires (https://angular.io/guide/reactive-forms). Ce sont des formulaires piloté par le code, ce qui facilite la lisibilité et le contrôle de ceux-ci.
+- On privilégiera l'utilisation des reactive forms pour la construction des formulaires (https://angular.io/guide/reactive-forms). Ce sont des formulaires pilotés par le code, ce qui facilite la lisibilité et le contrôle de ceux-ci.
 - Pour l'ensemble des composants cartographiques et des formulaires (taxonomie, nomenclatures...), il est conseillé d'utiliser les composants présents dans le module 'GN2CommonModule'.
  
 HTML 
@@ -211,7 +200,7 @@ constitué d'un ensemble de briques réutilisables.
 
 En base de données, le coeur de GeoNature est constitué de l'ensemble des
 référentiels (utilisateurs, taxonomique, nomenclatures géographique)
-et du schéma ``synthese`` regroupant l'ensemble données saisies dans les
+et du schéma ``gn_synthese`` regroupant l'ensemble données saisies dans les
 différents protocoles (voir doc administrateur pour plus de détail sur le
 modèle de données).
 
@@ -228,8 +217,7 @@ Développer un gn_module
 ***********************
 
 Avant de développer un gn_module, assurez-vous d'avoir GeoNature bien
-installé sur votre machine
-(`voir doc <https://github.com/PnX-SI/GeoNature/blob/master/docs/installation-standalone.rst>`__).
+installé sur votre machine (voir :ref:`installation-standalone`).
 
 Afin de pouvoir connecter ce module au "coeur", il est impératif de suivre
 une arborescence prédéfinie par l'équipe GeoNature.
@@ -281,9 +269,9 @@ Le module est ensuite installable à la manière d'un plugin grâce à la comman
     cd <GEONATURE_DIRECTORY>/backend
     # activer le virtualenv python
     source venv/bin/activate
-    # lancer la commande d'installation
+    # lancer la commande d'installation
     geonature install_gn_module <CHEMIN_ABSOLU_DU_MODULE> <URL_API>
-    # example geonature install_gn_module /home/moi/gn_module_validation /validation
+    # example geonature install_gn_module /home/moi/gn_module_validation /validation
 
 
 Bonnes pratiques Frontend
@@ -369,6 +357,116 @@ valeurs par défaut. Puis relancez la mise à jour de la configuration
 (``source venv/bin/activate``) :
 ``geonature update_module_configuration nom_du_module``)
 
+.. _mode-dev:
+
+Passer en mode développement
+----------------------------
+
+Récupération des sources
+************************
+
+Si vous avez téléchargé GeoNature zippé (via la procédure d'installation globale ``install_all.sh`` ou en suivant la documentation d'installation standalone), il est nécessaire de rattacher votre répertoire au dépôt GitHub afin de pouvoir télécharger les dernières avancées du coeur en ``git pull``. Pour cela, suivez les commandes suivantes en vous placant à la racine du répertoire de GeoNature.
+
+.. code-block:: bash
+
+  --- Se créer un répertoire .git ---
+  mkdir .git
+  ---  récupérer l'historique du dépôt --- 
+  git clone --depth=2 --bare https://github.com/PnX-SI/GeoNature.git .git
+  --- initialiser un dépôt git à partir de l'historique téléchargé --- 
+  git init
+  --- vérifier que le dépôt distant et le contenu local sont synchronisés --- 
+  git pull
+  --- Reset sur HEAD pour mettre à jour les status --- 
+  git reset HEAD
+  -> vous êtes à jour sur la branche master
+  --- Cloner les sous-modules pour récupérer les dépendances
+  git submodule init
+  git submodule update
+
+Configuration des URLs de développement
+************************************************
+
+il est nécessaire de changer la configuration du fichier ``config/geonature_config.toml`` pour utiliser les adresses suivantes :
+
+.. code-block:: bash
+    
+  URL_APPLICATION = 'http://127.0.0.1:4200'
+  API_ENDPOINT = 'http://127.0.0.1:8000'
+  API_TAXHUB =  'http://127.0.0.1:5000/api'
+
+
+
+Pour mettre à jour le fichier ``frontend/src/conf/app.config.ts` et prendre en compte ces modifications, lancer les commandes suivantes :
+
+.. code-block:: bash
+  source ~/geonature/backend/venv/bin/activate
+  geonature update_configuration
+  deactivate
+
+Serveur frontend en développement
+*********************************
+
+Lancer le serveur frontent via le virtualenv :
+
+.. code-block:: bash
+  
+  source ~/geonature/frontend/venv/bin/activate
+  geonature dev_front
+
+Notez que vous pouvez aussi utiliser alternativement les commandes ``npm`` standards sans le virtualenv (consultez le fichier `frontend/package.json <https://github.com/PnX-SI/GeoNature/blob/7af2c82a97675daa965024a3879c7168aca2fdb1/frontend/package.json#L7>`_).
+
+
+API en développement
+********************
+
+.. Note::
+  Retrouvez plus de'informations dans la section :ref:`dev-backend` dédiée.
+
+Dans un nouveau terminal, stopper le service geonature (gunicorn) et lancer le serveur backend :
+
+.. code-block:: bash
+    
+  sudo systemctl stop geonature    
+  source ~/geonature/backend/venv/bin/activate
+  geonature dev_back
+
+Les serveurs seront accessibles via ces adresses (login ``admin`` et password ``admin``) :
+  - backend - 127.0.0.1:8000
+  - frontend - 127.0.0.1:4200
+
+Autres extensions en développement
+**********************************
+
+Il n'est pas forcémment utile de passer toutes les extensions en mode dévelomment.
+Pour plus d'informations, référez-vous aux documentations dédiées :
+
+- https://taxhub.readthedocs.io/fr/latest/installation.html#developpement
+- https://usershub.readthedocs.io/fr/latest/
+
+Si toutefois TaxHub retourne une erreur 500 et ne répond pas sur l'URL http://127.0.0.1:5000 alors vous pouvez avoir besoin de passer TaxHub en mode développement :
+
+.. code-block:: bash
+
+  source ~/taxhub/venv/bin/activate
+  flask run
+
+Debugger avec un navigateur
+**************************
+
+L'extension `Angular DevTools <https://angular.io/guide/devtools>`_ permettra de debugger l'application dans la console du navigateur.
+Pour utiliser l'extension vous devez l'installer et passer obligatoirement en mode ``development``.
+
+Ouvrez le fichier  ``frontend/src/conf/app.config.ts`` et modifiez la valeur ``PROD_MOD`` pour avoir :
+
+.. code-block:: javascript
+  :linenos:
+
+  "PROD_MOD": false
+
+Si le mode production (PROD_MOD) est à true, alors vous n'êtes pas en mode production lors du lancement de la commande ``npm run start``.
+
+.. _dev-backend:
 
 Développement Backend
 ----------------------
@@ -376,53 +474,210 @@ Développement Backend
 Démarrage du serveur de dev backend
 ***********************************
 
+La commande ``geonature`` fournit la sous-commande ``dev_back`` pour lancer un serveur de test :
+
 ::
 
     (venv)...$ geonature dev_back
 
 
-Base de données
-***************
+Base de données avec Flask-SQLAlchemy
+*************************************
 
-Session sqlalchemy
-""""""""""""""""""
+L’intégration de la base de données à GeoNature repose sur la bibliothèque `Flask-SQLAlchemy <https://flask-sqlalchemy.palletsprojects.com>`_.
 
-- ``geonature.utils.env.DB``
+Celle-ci fournit un objet ``db`` à importer comme ceci : ``from geonature.utils.env import db``
+
+Cet objet permet d’accéder à la session SQLAlchemy ainsi :
+
+::
+
+    from geonature.utils.env import db
+    obj = db.session.query(MyModel).get(1)
+
+Mais il fournit une base déclarative ``db.Model`` permettant d’interroger encore plus simplement les modèles via leur attribut ``query`` :
+
+::
+
+    from geonature.utils.env import db
+    class MyModel(db.Model):
+        …
+
+    obj = MyModel.query.get(1)
+
+L’attribut ``query`` fournit `plusieurs fonctions <https://flask-sqlalchemy.palletsprojects.com/en/2.x/api/#flask_sqlalchemy.BaseQuery>`_ très utiles dont la fonction ``get_or_404`` :
+
+::
+
+    obj = MyModel.query.get_or_404(1)
+
+Ceci est typiquement la première ligne de toutes les routes travaillant sur une instance (route de type get/update/delete).
 
 
-Fournit l'instance de connexion SQLAlchemy Python ::
+Fonctions de filtrages
+""""""""""""""""""""""
 
-    from geonature.utils.env import DB
+L’attribut ``query`` est une instance de la classe ``flask_sqlalchemy.BaseQuery`` qui peut être sur-chargée afin de définir de nouvelles fonctions de filtrage.
 
-    result = DB.session.query(MyModel).get(1)
+On pourra ainsi implémenter une fonction pour filtrer les objets auxquels l’utilisateur a accès, ou encore pour implémenter des filtres de recherche.
+
+::
+
+    from flask import g
+    import sqlalchemy as sa
+    from flask_sqlalchemy import BaseQuery
+    from geonature.core.gn_permissions import login_required
+
+    class MyModelQuery(BaseQuery):
+        def filter_by_scope(self, scope):
+            if scope == 0:
+                self = self.filter(sa.false())
+            elif scope in (1, 2):
+                filters = [ MyModel.owner==g.current_user ]
+                if scope == 2 and g.current_user.id_organism is not None:
+                    filters.append(MyModel.owner.any(id_organism=g.current_user.id_organism)
+                self = self.filter(sa.or_(*filters))
+            return self
+
+    class MyModel(db.Model):
+        query_class = MyModelQuery
+
+
+    @login_required
+    def list_my_model():
+        obj_list = MyModel.query.filter_by_scope(2).all()
 
 
 Serialisation des modèles
 *************************
 
-La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison externalisée. Voir la doc plus complète: https://github.com/PnX-SI/Utils-Flask-SQLAlchemy
+Avec Marshmallow
+""""""""""""""""
 
-- ``utils_flask_sqla.serializers.serializable``
+La bibliothèque `Marshmallow <https://marshmallow.readthedocs.io/en/stable/>`_ fournit des outils de sérialisation et desérialisation.
 
-  Décorateur pour les modèles SQLA : Ajoute une méthode ``as_dict`` qui
-  retourne un dictionnaire des données de l'objet sérialisable json
+Elle est intégrée à GeoNature par la bibliothèque `Flask-Marshmallow <https://flask-marshmallow.readthedocs.io/en/latest/>`_ qui fournit l’objet ``ma`` à importer comme ceci : ``from geonature.utils.env import ma``.
 
-  Fichier définition modèle :
+Cette bibliothèque ajoute notablement une méthode ``jsonify`` aux schémas.
 
-  ::
+Les schémas Marshmallow peuvent être facilement créés à partir des modèles SQLAlchemy grâce à la bibliothèque `Marshmallow-SQLAlchemy <https://marshmallow-sqlalchemy.readthedocs.io/en/latest/>`_.
 
-    from geonature.utils.env import DB
+::
+
+    from geonature.utils.env import ma
+
+    class MyModelSchema(ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = MyModel
+            include_fk = True
+
+La propriété ``include_fk=True`` concerne les champs de type ``ForeignKey``, mais pas les ``relationships`` en elles-même. Pour ces dernières, il est nécessaire d’ajouter manuellement des champs ``Nested`` à son schéma :
+
+::
+
+    class ParentModelSchema(ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = ParentModel
+            include_fk = True
+
+        childs = ma.Nested("ChildModelSchema", many=True)
+
+    class ChildModelSchema(ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = ChildModel
+            include_fk = True
+
+        parent = ma.Nested(ParentModelSchema)
+
+
+Attention, la sérialisation d’un objet avec un tel schéma va provoquer une récursion infinie, le schéma parent incluant le schéma enfant, et le schéma enfant incluant le schéma parent.
+
+Il est donc nécessaire de restreindre les champs à inclure avec l’argument ``only`` ou ``exclude`` lors de la création des schémas :
+
+::
+
+    parent_schema = ParentModelSchema(only=['pk', 'childs.pk'])
+
+L’utilisation de ``only`` est lourde puisqu’il faut re-spécifier tous les champs à sérialiser. On est alors tenté d’utiliser l’argument ``exclude`` :
+
+::
+
+    parent_schema = ParentModelSchema(exclude=['childs.parent'])
+
+Cependant, l’utilisation de ``exclude`` est hautement problématique !
+
+En effet, l’ajout d’un nouveau champs ``Nested`` au schéma nécessiterait de le rajouter dans la liste des exclusions partout où le schéma est utilisé (que ça soit pour éviter une récursion infinie, d’alourdir une réponse JSON avec des données inutiles ou pour éviter un problème n+1 - voir section dédiée).
+
+La bibliothèque Utils-Flask-SQLAlchemy fournit une classe utilitaire ``SmartRelationshipsMixin`` permettant de résoudre ces problématiques.
+
+Elle permet d’exclure par défaut les champs ``Nested``.
+
+Pour demander la sérialisation d’un sous-schéma, il faut le spécifier avec ``only``, mais sans nécessité de spécifier tous les champs basiques (non ``Nested``).
+
+::
+
+    from utils_flask_sqla.schema import SmartRelationshipsMixin
+
+    class ParentModelSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = ParentModel
+            include_fk = True
+
+        childs = ma.Nested("ChildModelSchema", many=True)
+
+    class ChildModelSchema(SmartRelationshipsMixin, ma.SQLAlchemyAutoSchema):
+        class Meta:
+            model = ChildModel
+            include_fk = True
+
+        parent = ma.Nested(ParentModelSchema)
+
+
+Avec le décorateur ``@serializable``
+""""""""""""""""""""""""""""""""""""
+
+.. Note::
+  L’utilisation des schémas Marshmallow est probablement plus performante.
+
+La bibliothèque maison `Utils-Flask-SQLAlchemy <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy>`_ fournit le décorateur ``@serializable`` qui ajoute une méthode ``as_dict`` sur les modèles décorés :
+
+::
+
     from utils_flask_sqla.serializers import serializable
 
     @serializable
-    class MyModel(DB.Model):
-        __tablename__ = 'bla'
-        ...
+    class MyModel(db.Model):
+        …
 
-  Fichier utilisation modèle ::
 
-    instance = DB.session.query(MyModel).get(1)
-    result = instance.as_dict()
+    obj = MyModel(…)
+    obj.as_dict()
+
+
+La méthode ``as_dict`` fournit les arguments ``fields`` et ``exclude`` permettant de spécifier les champs que l’on souhaite sérialiser.
+
+Par défaut, seules les champs qui ne sont pas des relationshisp sont sérialisées (fonctionnalité similaire à celle fournit par ``SmartRelationshipsMixin`` pour Marshmallow).
+
+Les relations que l’on souhaite voir sérialisées doivent être explicitement déclarées via l’argument ``fields``.
+
+L’argument ``fields`` supporte la « notation à point » permettant de préciser les champs d’un modèle en relation :
+
+::
+
+    child.as_dict(fields=['parent.pk'])
+
+Les `tests unitaires <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/blob/master/src/utils_flask_sqla/tests/test_serializers.py>`_ fournissent un ensemble d’exemples d’usage du décorateur.
+
+La fonction ``as_dict`` prenait autrefois en argument les paramètres ``recursif`` et ``depth`` qui sont tous les deux obsolètes. Ces derniers ont différents problèmes :
+
+- récursion infinie (contournée par un hack qui ne résoud pas tous les problèmes et qu’il serait souhaitable de voir disparaitre)
+- augmentation non prévue des données sérialisées lors de l’ajout d’une nouvelle relationship
+- problème n+1 (voir section dédiée)
+
+Cas des modèles géographiques
+"""""""""""""""""""""""""""""
+
+La bibliothèque maison `Utils-Flask-SQLAlchemy-Geo <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo>`_ fournit des décorateurs supplémentaires pour la sérialisation des modèles contenant des champs géographiques.
 
 - ``utils_flask_sqla_geo.serializers.geoserializable``
 
@@ -513,6 +768,102 @@ La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison ex
                 FionaShapeService.save_and_zip_shapefiles()
 
 
+Réponses
+********
+
+Voici quelques conseils sur l’envoi de réponse dans vos routes.
+
+- Privilégier l’envoi du modèle sérialisé (vues de type create/update), ou d’une liste de modèles sérialisés (vues de type list), plutôt que des structures de données non conventionnelles.
+
+  ::
+
+    def get_foo(pk):
+        foo = Foo.query.get_or_404(pk)
+        return jsonify(foo.as_dict(fields=…))
+
+    def get_foo(pk):
+        foo = Foo.query.get_or_404(pk)
+        return FooSchema(only=…).jsonify(foo)
+
+    def list_foo():
+        q = Foo.query.filter(…)
+        return jsonify([foo.as_dict(fields=…) for foo in q.all()])
+
+    def list_foo():
+        q = Foo.query.filter(…)
+        return FooSchema(only=…).jsonify(q.all(), many=True)
+
+- Pour les listes vides, ne pas renvoyer le code d’erreur 404 mais une liste vide !
+
+  ::
+
+    return jsonify([])
+
+- Renvoyer une liste et sa longueur dans une structure de données non conventionnelle est strictement inutile, il est très simple d’accéder à la longueur de la liste en javascript via l’attribut ``length``.
+
+- Traitement des erreurs : utiliser `les exceptions prévues à cet effet <https://werkzeug.palletsprojects.com/en/2.0.x/exceptions/>`_ :
+
+  ::
+
+    from werkzeug.exceptions import Forbidden, BadRequest, NotFound
+
+    def restricted_action(pk):
+        if …:
+            raise Forbidden
+
+    
+  - Penser à utiliser ``get_or_404`` plutôt que de lancer une exception ``NotFound``
+  - Si l’utilisateur n’a pas le droit d’effectuer une action, utiliser l’exception ``Forbidden`` (code HTTP 403), et non l’exception ``Unauthorized`` (code HTTP 401), cette dernière étant réservée aux utilisateurs non authentifiés.
+  - Vérifier la validité des données fournies par l’utilisateur (``request.json`` ou ``request.args``) et lever une exception ``BadRequest`` si celles-ci ne sont pas valides (l’utilisateur ne doit pas être en mesure de déclencher une erreur 500 en fournissant une string plutôt qu’un int par exemple !).
+
+    - Marshmallow peut servir à cela :
+
+    ::
+
+        from marshmallow import Schema, fields, ValidationError
+        def my_route():
+            class RequestSchema(Schema):
+                value = fields.Float()
+            try:
+                data = RequestSchema().load(request.json)
+            except ValidationError as error:
+                raise BadRequest(error.messages)
+
+    - Cela peut être fait avec *jsonschema* :
+
+    ::
+
+        from from jsonschema import validate as validate_json, ValidationError
+
+        def my_route():
+            request_schema = {
+                "type": "object",
+                "properties": {
+                    "value": { "type": "number", },
+                },
+                "minProperties": 1,
+                "additionalProperties": False,
+            }
+            try:
+                validate_json(request.json, request_schema)
+            except ValidationError as err:
+                raise BadRequest(err.message)
+    
+- Pour les réponses vides (exemple : route de type delete), on pourra utiliser le code de retour 204 :
+
+  ::
+
+    return '', 204
+
+  Lorsque par exemple une action est traitée mais aucun résultat n'est à renvoyer, inutile d’envoyer une réponse « OK ». C’est l’envoi d’une réponse HTTP avec un code égale à 400 ou supérieur qui entrainera le traitement d’une erreur côté frontend, plutôt que de se fonder sur le contenu d’une réponse non normalisée.
+
+
+Le décorateur ``@json_resp``
+""""""""""""""""""""""""""""
+
+Historiquement, beaucoup de vues sont décorées avec le décorateur ``@json_resp``.
+
+Celui-ci apparait aujourd’hui superflu par rapport à l’usage directement de la fonction ``jsonify`` fournie par Flask.
 
 - ``utils_flask_sqla_geo.serializers.json_resp``
 
@@ -540,6 +891,93 @@ La sérialisation des modèles SQLAlchemy s'appuie sur deux librairies maison ex
     def my_err_view():
         return {'result': 'Not OK'}, 400
 
+Problème « n+1 »
+****************
+
+Le problème « n+1 » est un anti-pattern courant des routes de type « liste » (par exemple, récupération de la liste des cadres d’acquisition).
+
+En effet, on souhaite par exemple afficher la liste des cadres d’acquisitions, et pour chacun d’entre eux, la liste des jeux de données :
+
+::
+
+    af_list = AcquisitionFramwork.query.all()
+
+    # with Marshmallow (and SmartRelationshipsMixin)
+    return AcquisitionFrameworkSchema(only=['datasets']).jsonify(af_list, many=True)
+
+    # with @serializable
+    return jsonify([ af.as_dict(fields=['datasets']) for af in af_list])
+
+Ainsi, lors de la sérialisation de chaque AF, on demande à sérialiser l’attribut ``datasets``, qui est une relationships vers la liste des DS associés :
+
+::
+
+    class AcquisitionFramework(db.Model)
+        datasets = db.relationships(Dataset, uselist=True)
+
+Sans précision, la `stratégie de chargement <https://docs.sqlalchemy.org/en/14/orm/loading_relationships.html>`_ de la relation ``datasets`` est ``select``, c’est-à-dire que l’accès à l’attribut ``datasets`` d’un AF provoque une nouvelle requête select afin de récupérer la liste des DS concernés.
+
+Ceci est généralement peu grave lorsque l’on manipule un unique objet, mais dans le cas d’une liste d’objet, cela génère 1+n requêtes SQL : une pour récupérer la liste des AF, puis une lors de la sérialisation de chaque AF pour récupérer les DS de ce dernier.
+
+Cela devient alors un problème de performance notable !
+
+Afin de résoudre ce problème, il nous faut joindre les DS à la requête de récupération des AF.
+
+Pour cela, plusieurs solutions :
+
+- Le spécifier dans la relationship :
+
+  ::
+
+    class AcquisitionFramework(db.Model)
+        datasets = db.relationships(Dataset, uselist=True, lazy='joined')
+    
+  Cependant, cette stratégie s’appliquera (sauf contre-ordre) dans tous les cas, même lorsque les DS ne sont pas nécessaires, alourdissant potentiellement certaines requêtes qui n’en ont pas usage.
+
+- Le spécifier au moment où la requête est effectuée :
+
+  ::
+
+    from sqlalchemy.orm import joinedload
+
+    af_list = AcquisitionFramework.query.options(joinedload('datasets')).all()
+
+Il est également possible de joindre les relations d’une relation, par exemple le créateur des jeux de données :
+
+::
+
+    af_list = (
+        AcquisitionFramework.query
+        .options(
+            joinedload('datasets').options(
+                joinedload('creator'),
+            ),
+        )
+        .all()
+    )
+
+Afin d’être sûr d’avoir joint toutes les relations nécessaires, il est possible d’utiliser la stratégie ``raise`` par défaut, ce qui va provoquer le lancement d’une exception lors de l’accès à un attribut non pré-chargé, nous incitant à le joindre également :
+
+::
+
+    from sqlalchemy.orm import raiseload, joinedload
+
+    af_list = (
+        AcquisitionFramework.query
+        .options(
+            raiseload('*'),
+            joinedload('datasets'),
+        )
+        .all()
+    )
+
+Pour toutes les requêtes récupérant une liste d’objet, l’utilisation de la stratégie ``raise`` par défaut est grandement encouragée afin de ne pas tomber dans cet anti-pattern.
+
+La méthode ``as_dict`` du décorateur ``@serializable`` accepte l’argument ``unloaded='raise'`` ou ``unloaded='warn'`` pour un résultat similaire (ou un simple warning).
+
+L’utilisation de ``raiseload``, appartenant au cœur de SQLAlchemy, reste à privilégier.
+
+
 Export des données
 ******************
 
@@ -551,6 +989,7 @@ Utilisation de la configuration
 
 La configuration globale de l'application est controlée par le fichier
 ``config/geonature_config.toml`` qui contient un nombre limité de paramètres.
+
 De nombreux paramètres sont néammoins passés à l'application via un schéma
 Marshmallow (voir fichier ``backend/geonature/utils/config_schema.py``).
 
@@ -563,6 +1002,7 @@ utilisables via le dictionnaire ``config`` ::
 Chaque module GeoNature dispose de son propre fichier de configuration,
 (``module/config/cong_gn_module.toml``) contrôlé de la même manière par un
 schéma Marshmallow (``module/config/conf_schema_toml.py``).
+
 Pour récupérer la configuration du module dans l'application Flask,
 il existe deux méthodes:
 
@@ -592,40 +1032,40 @@ il faut utiliser la méthode suivante ::
         ID_MODULE = get_id_module(current_app, 'occtax')
 
 
-Authentification avec pypnusershub
+Authentification et authorisations
 **********************************
+
+Restreindre une route aux utilisateurs connectés
+""""""""""""""""""""""""""""""""""""""""""""""""
+
+Utiliser le décorateur ``@login_required`` :
+
+::
+
+    from geonature.core.gn_permissions.decorators import login_required
+
+    @login_required
+    def my_protected_route():
+        pass
+
+
+Connaitre l’utilisateur actuellement connecté
+"""""""""""""""""""""""""""""""""""""""""""""
+
+L’utilisateur courant est stocké dans l’espace de nom ``g`` :
+
+::
+
+    from flask import g
+
+    print(g.current_user)
+
+
+Il s’agit d’une instance de ``pypnusershub.db.models.User``.
 
 
 Vérification des droits des utilisateurs
 """"""""""""""""""""""""""""""""""""""""
-
-- ``pypnusershub.routes.check_auth``
-
-  Décorateur pour les routes : vérifie les droits de l'utilisateur et le
-  redirige en cas de niveau insuffisant ou d'informations de session erronés
-  (deprecated) Privilegier `check_cruved_scope`
-
-  params :
-
-  * level <int> : niveau de droits requis pour accéder à la vue
-  * get_role <bool:False> : si True, ajoute l'id utilisateur aux kwargs de la vue
-
-  ::
-
-        from flask import Blueprint
-        from pypnusershub.routes import check_auth
-        from utils_flask_sqla.response import json_resp
-
-        blueprint = Blueprint(__name__)
-
-        @blueprint.route('/myview')
-        @check_auth(
-                1,
-                True,
-                )
-        @json_resp
-        def my_view(id_role):
-                return {'result': 'id_role = {}'.format(id_role)}
 
 - ``geonature.core.gn_permissions.decorators.check_cruved_scope``
 
@@ -637,10 +1077,10 @@ Vérification des droits des utilisateurs
 
   * action <str:['C','R','U','V','E','D']> type d'action effectuée par la route
     (Create, Read, Update, Validate, Export, Delete)
-  * get_role <bool:False>: si True, ajoute l'id utilisateur aux kwargs de la vue
-  * module_code: <str:None>: Code du module (gn_commons.t_modules) sur lequel on
-    veut récupérer le CRUVED. Si ce paramètre n'est pas passer on vérifie le
-    cruved de GeoNature
+  * get_role <bool:False> : si True, ajoute l'id utilisateur aux kwargs de la vue
+  * module_code: <str:None> : Code du module (gn_commons.t_modules) sur lequel on
+    veut récupérer le CRUVED. Si ce paramètre n'est pas passé, on vérifie le
+    CRUVED de GeoNature
 
 
   ::
@@ -684,7 +1124,7 @@ Vérification des droits des utilisateurs
   params :
 
   * id_role <integer:None>
-  * module_code <str:None>: code du module sur lequel on veut avoir le CRUVED
+  * module_code <str:None> : code du module sur lequel on veut avoir le CRUVED
   * object_code <str:'ALL'> : code de l'objet sur lequel on veut avoir le CRUVED
   * get_id <boolean: False> : retourne l'id_filter et non le code_filter si True
 
@@ -694,21 +1134,20 @@ Vérification des droits des utilisateurs
   {'C': '1', 'R':'2', 'U': '1', 'V':'2', 'E':'3', 'D': '3'} ou
   {'C': 2, 'R':3, 'U': 4, 'V':1, 'E':2, 'D': 2} si ``get_id=True``
 
-  A l'indice 1 du tuple: un booléan spécifiant si le CRUVED est hérité depuis
+  A l'indice 1 du tuple: un booléen spécifiant si le CRUVED est hérité depuis
   un module parent ou non.
 
   ::
 
     from pypnusershub.db.tools import cruved_for_user_in_app
 
-    # recuperer le cruved de l'utilisateur 1 dans le module OCCTAX
+    # récupérer le CRUVED de l'utilisateur 1 dans le module OCCTAX
     cruved, herited = cruved_scope_for_user_in_module(
             id_role=1
             module_code='OCCTAX
     )
-    # recupérer le cruved de l'utilisateur 1 sur GeoNature
+    # récupérer le CRUVED de l'utilisateur 1 sur GeoNature
     cruved, herited = cruved_scope_for_user_in_module(id_role=1)
-
 
 
 Développement Frontend
@@ -727,15 +1166,14 @@ Un ensemble de composants décrits ci-dessous sont intégrés dans le coeur de G
 
 Voir la `DOCUMENTATION COMPLETE <http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html>`_ sur les composants génériques. 
 
+NB : les composants de type "formulaire" (balise `input` ou `select`) partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs, décrits ci-dessous. (voir https://github.com/PnX-SI/GeoNature/blob/master/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 
-NB: mes composants de type "formulaire" (balise `input` ou `select`) partagent une logique commune et ont des ``Inputs`` et des ``Outputs`` communs décrit ci dessous. (voir https://github.com/PnX-SI/GeoNature/blob/master/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
-
-Une documentation complète des composants générique est
+Une documentation complète des composants génériques est
 `disponible ici <http://pnx-si.github.io/GeoNature/frontend/modules/GN2CommonModule.html>`_
 
-NB: mes composants de type "formulaire" (balise `input` ou `select`) partagent
-une logique commune et ont des ``Inputs`` et des ``Outputs`` communs décrit
-ci dessous.
+NB : les composants de type "formulaire" (balise `input` ou `select`) partagent
+une logique commune et ont des ``Inputs`` et des ``Outputs`` communs, décrits
+ci-dessous.
 (voir https://github.com/PnX-SI/GeoNature/blob/master/frontend/src/app/GN2CommonModule/form/genericForm.component.ts).
 
 - Inputs
@@ -760,15 +1198,16 @@ Ces composants peuvent être considérés comme des "dump components" ou
 au composant parent qui l'accueil
 (https://blog.angular-university.io/angular-2-smart-components-vs-presentation-components-whats-the-difference-when-to-use-each-and-why/)
 
-Un ensemble de composant permattant de simplifier l'affichage des cartographies
-leaflet sont disponible. Notamment un composant "map-list" permettant de
-connecter une carte avec une liste d'objet décrit en détail ci dessous.
+Un ensemble de composants permettant de simplifier l'affichage des cartographies
+Leaflet sont disponibles. Notamment un composant "map-list" permettant de
+connecter une carte avec une liste d'objets décrits en détail ci dessous.
 
-- **MapListComponent**
+MapListComponent
+""""""""""""""""
 
-Le composant MapList fournit une carte pouvant être synchronisé
+Le composant MapList fournit une carte pouvant être synchronisée
 avec une liste. La liste, pouvant être spécifique à chaque module,
-elle n'est pas intégré dans le composant et est laissé à la
+elle n'est pas intégrée dans le composant et est laissée à la
 responsabilité du développeur. Le service ``MapListService`` offre
 cependant des fonctions permettant facilement de synchroniser
 les deux éléments.
@@ -776,13 +1215,13 @@ les deux éléments.
 Fonctionnalité et comportement offert par le composant et le
 service :
 
- - Charger les données
-      
+- Charger les données
+  
   Le service expose la fonction ``getData(apiEndPoint, params?)``
   permettant de charger les données pour la carte et la liste.
   Cette fonction doit être utilisée dans le composant qui utilise
   le composant ``MapListComponent``. Elle se charge de faire
-  appel à l'API passé en paramètre et de rendre les données
+  appel à l'API passée en paramètre et de rendre les données
   disponibles au service.
 
   Le deuxième paramètre ``params`` est un tableau de paramètre(s)
@@ -814,48 +1253,56 @@ service :
   Pour une liste simple sans pagination, seule la propriété 'items'
   est obligatoire.
 
-  - Rafraîchir les données
+- Rafraîchir les données
         
   La fonction ``refreshData(apiEndPoint, method, params?)`` permet de raffrachir les données en fonction de filtres personnalisés.
   Les paramètres ``apiEndPoint`` et ``params`` sont les mêmes que pour la fonction ``getData``. Le paramètre ``method`` permet lui de chosir si on ajoute - ``append``- , ou si on initialise (ou remplace) -``set``- un filtre.
 
-  Exemple 1 : Pour filtrer sur l'observateur 1, puis ajouter un filtre sur l'observateur 2.
+  Exemple 1 : Pour filtrer sur l'observateur 1, puis ajouter un filtre sur l'observateur 2 :
 
-                ``mapListService.refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 1'}])``
+  ::
 
-                puis
+      mapListService.refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 1'}])
 
-                ``refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 2'}])``
+  puis :
 
-                Exemple 2: pour filtrer sur le cd_nom 212, supprimer ce filtre et filtrer sur  le cd_nom 214
+  ::
+    
+      refreshData('occtax/relevé', 'append, [{'param': 'observers', 'value': 2'}])
 
-                ``mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 1'}])``
+  Exemple 2: pour filtrer sur le cd_nom 212, supprimer ce filtre et filtrer sur  le cd_nom 214
+    
+  ::
+    
+      mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 1'}])
 
-                puis
+  puis :
+    
+  ::
+    
+      mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 2'}])
 
-                ``mapListService.refreshData('occtax/relevé', 'set, [{'param': 'cd_nom', 'value': 2'}])``
-
-        - Gestion des évenements :
+- Gestion des évenements :
         
-                - Au clic sur un marker de la carte, le service ``MapListService`` expose la propriété ``selectedRow`` qui est un tableau contenant l'id du marker sélectionné. Il est ainsi possible de surligner l'élément séléctionné dans le liste.
-                - Au clic sur une ligne du tableau, utiliser la fonction ``MapListService.onRowSelected(id)`` (id étant l'id utilisé dans le GeoJson) qui permet de zoomer sur le point séléctionner et de changer la couleur de celui-ci.
+  - Au clic sur un marker de la carte, le service ``MapListService`` expose la propriété ``selectedRow`` qui est un tableau contenant l'id du marker sélectionné. Il est ainsi possible de surligner l'élément séléctionné dans le liste.
+  - Au clic sur une ligne du tableau, utiliser la fonction ``MapListService.onRowSelected(id)`` (id étant l'id utilisé dans le GeoJson) qui permet de zoomer sur le point séléctionner et de changer la couleur de celui-ci.
 
-        La service contient également deux propriétés publiques ``geoJsonData`` (le geojson renvoyé par l'API) et ``tableData`` (le tableau de features du Geojson) qui sont respectivement passées à la carte et à la liste. Ces deux propriétés sont utilisables pour intéragir (ajouter, supprimer) avec les données de la carte et de la liste.
+Le service contient également deux propriétés publiques ``geoJsonData`` (le geojson renvoyé par l'API) et ``tableData`` (le tableau de features du Geojson) qui sont respectivement passées à la carte et à la liste. Ces deux propriétés sont utilisables pour interagir (ajouter, supprimer) avec les données de la carte et de la liste.
 
-        **Selector**: ``pnx-map-list``
+- Selector : ``pnx-map-list``
 
-        **Inputs**:
+- Inputs :
 
-        :``idName``:
+  :``idName``:
                         Libellé de l'id du geojson (id_releve, id)
 
                         Type: ``string``
-        :``height``:
+  :``height``:
                         Taille de l'affichage de la carte Leaflet
 
                         Type: ``string``
 
-        Exemple d'utilisation avec une liste simple :
+Exemple d'utilisation avec une liste simple :
         
 .. code-block::
 
@@ -871,7 +1318,26 @@ service :
             </tr>
     </table>
 
+Pnx-Municipalities
+""""""""""""""""""
 
+Suite à l'ajout d'un input "valueFieldName" pour "pnx-areas" et "pnx-municipalities" dans la version 2.9.0 de GeoNature, pour ceux qui utilisent le composant ``pnx-municipalities``, l'idéal serait de traduire les données et les modèles et de passer du ``code_insee`` à ``id_area``. La correspondance est immédiate (``area_code`` = ``code_insee``).
+
+Cependant, pour garder la retrocompatibilité du composant ``pnx-municipalities`` veuillez ajouter :
+
+Test end to end
+***************
+
+Pour toute PR ou nouvelle fonctionnalité il est demandé d'écrire des tests.
+Pour les test e2e, la librairie Cypress est utilisé. 
+Des exemples de tests peuvent être trouvé ici : https://github.com/PnX-SI/GeoNature/tree/develop/frontend/cypress/integration
+Les tests sont joués automatiquement sur Github-action lors de commit et PR sur la branch develop et master.
+Pour lancer les tests sur sa machine locale, utilisez la commande ``npm run e2e && npm run e2e:coverage``. Celle-ci lance le serveur de frontend, joue les tests cypress et contrôle la couverture de test. Cette dernière est disponible dans le repertoire `frontend/coverage`.
+
+
+* dans les templates : ``[valueFieldName]="'area_code'`` dans les templates
+* dans les config (js, ts ou json) (attention à la casse) : ``"value_field_name": "area_code"``
+* dans le module Monitoring, ajouter aussi ``"type_util": "area"``
 
 Outils d'aide à la qualité du code
 ----------------------------------
@@ -928,12 +1394,11 @@ Pytest
 Pytest permet de mettre en place des tests fonctionnels et automatisés
 du code Python.
 
-Les fichiers de test sont dans le répertoire ``backend/tests``
+Les fichiers de test sont dans le répertoire ``backend/geonature/tests``
 
-::
+.. code::
 
-        cd backend
-        pytest
+    pytest
 
 
 Coverage
@@ -942,10 +1407,9 @@ Coverage
 Coverage permet de donner une indication concernant la couverture du code
 par les tests.
 
-::
+.. code::
 
-        cd backend
-        pytest --cov=geonature --cov-report=html
+    pytest --cov=geonature --cov-report=html
 
 
-Ceci génénère un rapport html disponible dans  ``backend/htmlcov/index.html``.
+Ceci génénère un rapport html disponible dans ``htmlcov/index.html``.

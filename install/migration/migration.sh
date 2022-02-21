@@ -24,6 +24,10 @@ echo "OK, let's migrate GeoNature version..."
 
 cp $myrootpath/geonature_old/config/settings.ini config/settings.ini
 cp $myrootpath/geonature_old/config/geonature_config.toml config/geonature_config.toml
+sk_len=$(grep -E '^SECRET_KEY' config/geonature_config.toml | tail -n 1 | sed 's/SECRET_KEY = ['\''"]\(.*\)['\''"]/\1/' | wc -c)
+if [ $sk_len -lt 20 ]; then
+    sed -i "s|^SECRET_KEY = .*$|SECRET_KEY = '`openssl rand -hex 32`'|" config/geonature_config.toml
+fi
 
 # Handle frontend custom components
 echo "Copie des fichiers existant des composants personnalisables du frontend..."

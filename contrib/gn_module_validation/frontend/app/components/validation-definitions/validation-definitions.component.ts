@@ -13,7 +13,7 @@ import { ModuleConfig } from "../../module.config";
 })
 export class ValidationDefinitionsComponent {
   public definitions;
-  private showDefinitions: Boolean = false;
+  public showDefinitions: Boolean = false;
   public VALIDATION_CONFIG = ModuleConfig;
 
   constructor(
@@ -23,7 +23,7 @@ export class ValidationDefinitionsComponent {
 
   getDefinitions(param) {
     this.showDefinitions = !this.showDefinitions;
-    this.searchService.getDefinitionData().subscribe(
+    this.searchService.getStatusNames().subscribe(
       result => {
         this.definitions = result;
       },

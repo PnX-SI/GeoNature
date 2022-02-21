@@ -1,0 +1,14 @@
+version: 2
+updates:
+
+  - package-ecosystem: "pip"
+    directory: "/backend/"
+    schedule:
+      interval: "daily"
+    target-branch: 'develop'
+
+  - package-ecosystem: "npm"
+    directory: "/frontend/"
+    schedule:
+      interval: "daily"
+    target-branch: 'develop'

@@ -1,8 +1,9 @@
 import json
 from operator import or_
 
-from flask import Blueprint, request, current_app
+from flask import Blueprint, request, current_app, g
 from flask.json import jsonify
+from werkzeug.exceptions import Forbidden, Conflict
 import requests
 from sqlalchemy.orm import joinedload
 
@@ -15,9 +16,10 @@ from geonature.core.gn_commons.models import (
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_commons.repositories import get_table_location_id
 from geonature.core.gn_permissions.models import TObjects
-from geonature.utils.env import DB, BACKEND_DIR
+from geonature.utils.env import DB, db, BACKEND_DIR
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.core.gn_permissions.decorators import login_required
+from geonature.core.gn_permissions.tools import get_scopes_by_action
 from shapely.geometry import asShape
 from geoalchemy2.shape import from_shape
 from geonature.utils.errors import (
@@ -33,16 +35,15 @@ from .medias.routes import *
 
 
 @routes.route("/modules", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
-@json_resp
-def get_modules(info_role):
+@login_required
+def list_modules():
     """
     Return the allowed modules of user from its cruved
     .. :quickref: Commons;
 
     """
     params = request.args
-    q = DB.session.query(TModules).options(
+    q = TModules.query.options(
         joinedload(TModules.objects)
     )
     if "exclude" in params:
@@ -50,46 +51,40 @@ def get_modules(info_role):
     q = q.order_by(TModules.module_order.asc()).order_by(TModules.module_label.asc())
     modules = q.all()
     allowed_modules = []
-    for mod in modules:
-        app_cruved = cruved_scope_for_user_in_module(
-            id_role=info_role.id_role, module_code=mod.module_code, 
-        )[0]
-        if app_cruved["R"] != "0":
-            module = mod.as_dict(fields=["objects"])
-            module["cruved"] = app_cruved
-            if mod.active_frontend:
-                # try to get module url from conf for new modules
-                if module['module_code'] in current_app.config:
-                    module_url = current_app.config[module['module_code']].get('MODULE_URL', mod.module_path)
-                else:
+    for module in modules:
+        cruved = get_scopes_by_action(module_code=module.module_code)
+        if cruved["R"] > 0:
+            module_dict = module.as_dict(fields=["objects"])
+            module_dict["cruved"] = cruved
+            if module.active_frontend:
+                try:
+                    # try to get module url from conf for new modules
+                    module_url = current_app.config[module.module_code]['MODULE_URL']
+                except KeyError:
                     # fallback for legacy modules
-                    module_url = mod.module_path
-                module["module_url"] = "{}/#/{}".format(
+                    module_url = module.module_path
+                module_dict["module_url"] = "{}/#/{}".format(
                     current_app.config["URL_APPLICATION"], module_url
                 )
             else:
-                module["module_url"] = mod.module_external_url
-            module_objects_as_dict = {}
-            # # get cruved for each object
-            for _object in module.get("objects", []):
-                object_cruved, herited = cruved_scope_for_user_in_module(
-                    id_role=info_role.id_role,
-                    module_code=module["module_code"],
-                    object_code=_object["code_object"],
+                module_dict["module_url"] = module.module_external_url
+            module_dict["module_objects"] = {}
+            # get cruved for each object
+            for obj_dict in module_dict["objects"]:
+                obj_code = obj_dict["code_object"]
+                obj_dict["cruved"] = get_scopes_by_action(
+                    module_code=module.module_code,
+                    object_code=obj_code,
                 )
-                _object["cruved"] = object_cruved
-                module_objects_as_dict[_object["code_object"]] = _object
-
-                module["module_objects"] = module_objects_as_dict
-            allowed_modules.append(module)
-    return allowed_modules
+                module_dict["module_objects"][obj_code] = obj_dict
+            allowed_modules.append(module_dict)
+    return jsonify(allowed_modules)
 
 
 @routes.route("/module/<module_code>", methods=["GET"])
-@json_resp
 def get_module(module_code):
-    module = DB.session.query(TModules).filter_by(module_code=module_code).one()
-    return module.as_dict()
+    module = TModules.query.filter_by(module_code=module_code).first_or_404()
+    return jsonify(module.as_dict())
 
 
 @routes.route("/list/parameters", methods=["GET"])
@@ -154,7 +149,16 @@ def get_additional_fields():
             q = q.filter(or_(*ors))
         else:
             q = q.filter(TAdditionalFields.objects.any(code_object=params["object_code"]))
-    return jsonify([d.as_dict(depth=1) for d in q.all()])
+    return jsonify([
+        d.as_dict(fields=[
+            'bib_nomenclature_type',
+            'modules',
+            'objects',
+            'datasets',
+            'type_widget'
+        ])
+        for d in q.all()
+    ])
 
 
 
@@ -227,67 +231,51 @@ def api_get_id_table_location(schema_dot_table):
     return get_table_location_id(schema_name, table_name)
 
 
-#######################################################################################
-# ----------------Geofit additional code  routes.py
-#######################################################################################
-#######################################################################################
-# recuperer les lieux
+##############################
+# Gestion des lieux (places) #
+##############################
 @routes.route("/places", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
-@json_resp
-def get_places(info_role):
-    id_role = info_role.id_role
-    data = DB.session.query(TPlaces).filter(TPlaces.id_role == id_role).all()
-    return [n.as_geofeature("place_geom", "id_place") for n in data]
+@permissions.check_cruved_scope("R")
+def list_places():
+    places = TPlaces.query.filter_by(id_role=g.current_user.id_role).all()
+    return jsonify([p.as_geofeature() for p in places])
 
 
-#######################################################################################
-# supprimer un lieu
-@routes.route("/place/<int:id_place>", methods=["DELETE"])
-@permissions.check_cruved_scope("D", True)
-@json_resp
-def del_one_place(id_place, info_role):
-    place = DB.session.query(TPlaces).filter(TPlaces.id_place == id_place).one_or_none()
-    if not place:
-        return None
-    if info_role.id_role == place.id_role:
-        DB.session.query(TPlaces).filter(TPlaces.id_place == id_place).delete()
-        DB.session.commit()
-        return {"message": "suppression du lieu avec succès", "status": "success"}
-    return {
-        "message": "Vous n'êtes pas l'utilisateur propriétaire de ce lieu",
-        "status": "error",
-    }
-
-
-#######################################################################################
-# ajouter un lieu
-@routes.route("/place", methods=["POST"])
-@permissions.check_cruved_scope("C", True)
-@json_resp
-def add_one_place(info_role):
-    user_id = info_role.id_role
-
+@routes.route("/place", methods=["POST"])  #  XXX best practices recommend plural nouns
+@routes.route("/places", methods=["POST"])
+@permissions.check_cruved_scope("C")
+def add_place():
     data = request.get_json()
-    place_name = data["properties"]["placeName"]
+    # FIXME check data validity!
+    place_name = data["properties"]["place_name"]
     place_exists = (
-        DB.session.query(TPlaces)
-        .filter(TPlaces.place_name == place_name, TPlaces.id_role == user_id)
-        .scalar()
+        TPlaces.query
+        .filter(TPlaces.place_name == place_name, TPlaces.id_role == g.current_user.id_role)
+        .exists()
     )
-    if place_exists:
-        return {"message": "Nom du lieu déjà existant", "status": "error"}
+    if db.session.query(place_exists).scalar():
+        raise Conflict("Nom du lieu déjà existant")
 
     shape = asShape(data["geometry"])
     two_dimension_geom = remove_third_dimension(shape)
     place_geom = from_shape(two_dimension_geom, srid=4326)
 
-    place = TPlaces(id_role=user_id, place_name=place_name, place_geom=place_geom)
-    DB.session.add(place)
-    DB.session.commit()
+    place = TPlaces(id_role=g.current_user.id_role, place_name=place_name, place_geom=place_geom)
+    db.session.add(place)
+    db.session.commit()
 
-    return {"message": "Ajout du lieu avec succés", "status": "success"}
+    return jsonify(place.as_geofeature())
 
 
-#######################################################################################
-#######################################################################################
+@routes.route("/place/<int:id_place>", methods=["DELETE"])  # XXX best practices recommend plural nouns
+@routes.route("/places/<int:id_place>", methods=["DELETE"])
+@permissions.check_cruved_scope("D")
+def delete_place(id_place):
+    place = TPlaces.query.get_or_404(id_place)
+    if g.current_user.id_role != place.id_role:
+        raise Forbidden("Vous n'êtes pas l'utilisateur propriétaire de ce lieu")
+    db.session.delete(place)
+    db.session.commit()
+    return '', 204
+
+##############################

@@ -1,5 +1,5 @@
 
-<div *ngIf="values; else loadingBlock">
+<div *ngIf="values">
   <mat-form-field style="display: inline-block; width:100%">
     <mat-label>{{ label }}</mat-label>
     <mat-select
@@ -8,13 +8,15 @@
       [required]="required"
       dense
     >
-      <ngx-mat-select-search
-        placeholderLabel="Filtre"
-        (ngModelChange)="searchChanged($event)"
-        [ngModel]="search"
-        [clearSearchInput]="false"
-      ></ngx-mat-select-search>
-      <mat-select-trigger *ngIf="multiple">
+      <mat-option>
+        <ngx-mat-select-search
+          placeholderLabel="Filtre"
+          (ngModelChange)="searchChanged($event)"
+          [ngModel]="search"
+          [clearSearchInput]="false"
+        ></ngx-mat-select-search>
+      </mat-option>
+        <mat-select-trigger *ngIf="multiple">
         <mat-chip-list>
           <mat-chip
             *ngFor="let value of selectedValues()"

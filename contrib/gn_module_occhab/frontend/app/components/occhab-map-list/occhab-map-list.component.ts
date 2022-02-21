@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, HostListener } from "@angular/core";
 import { OcchabStoreService } from "../../services/store.service";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { OccHabDataService } from "../../services/data.service";
-import { DatatableComponent } from "@swimlane/ngx-datatable/release";
+import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { OccHabModalDownloadComponent } from "./modal-download.component";
 import { NgbModal, NgbActiveModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
@@ -16,11 +16,6 @@ import { ModuleConfig } from "../../../../../../external_modules/occhab/frontend
   providers: [NgbActiveModal]
 })
 export class OccHabMapListComponent implements OnInit {
-  public displayedColumns = [
-    { name: "Date", prop: "date_min", width: "100" },
-    { name: "Habitats", prop: "habitats", width: "300" },
-    { name: "Jeu de données", prop: "dataset_name", width: "200" }
-  ];
   @ViewChild("dataTable") dataTable: DatatableComponent;
   public rowNumber: number;
   public dataLoading = true;

@@ -1,0 +1,38 @@
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = [
+    "backend/geonature/tests/",
+]
+
+[tool.coverage.run]
+source = [
+    "backend/geonature/",
+    "contrib/occtax/backend/occtax/",
+    "contrib/gn_module_occhab/backend/gn_module_occhab/",
+    "contrib/gn_module_validation/backend/gn_module_validation/",
+]
+omit = [
+    "*/tests/*",
+    "*/migrations/*",
+]
+
+[tool.black]
+line-length = 99
+exclude ='''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+    | node_modules
+    | venv
+  )/
+)
+'''

@@ -4,14 +4,15 @@ import datetime
 import time
 
 from collections import OrderedDict
+from warnings import warn
 
-from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify
-from werkzeug.exceptions import Forbidden
+from flask import Blueprint, request, Response, current_app, \
+                  send_from_directory, render_template, jsonify
+from werkzeug.exceptions import Forbidden, NotFound
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
-from geoalchemy2.shape import to_shape
-from shapely import wkt
+import sqlalchemy as sa
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
@@ -151,7 +152,7 @@ def get_observations_for_web(info_role):
     )
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
     synthese_query_class.filter_query_all_filters(info_role)
-    result = DB.engine.execute(synthese_query_class.query.limit(result_limit))
+    result = DB.session.execute(synthese_query_class.query.limit(result_limit))
     geojson_features = []
     for r in result:
         properties = {
@@ -173,8 +174,9 @@ def get_observations_for_web(info_role):
     return {
         "data": FeatureCollection(geojson_features),
         "nb_total": len(geojson_features),
-        "nb_obs_limited": len(geojson_features)
-        == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
+        "nb_obs_limited": (
+            len(geojson_features) == int(current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"])
+        ),
     }
 
 
@@ -226,12 +228,12 @@ def get_synthese(info_role):
 
 
 @routes.route("/vsynthese/<id_synthese>", methods=["GET"])
-@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
-def get_one_synthese(info_role, id_synthese):
+@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+def get_one_synthese(scope, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature
     """
-    synthese = Synthese.query.get_or_404(id_synthese)
-    if not synthese.has_instance_permission(scope=int(info_role.value_filter)):
+    synthese = Synthese.query.join_nomenclatures().get_or_404(id_synthese)
+    if not synthese.has_instance_permission(scope=scope):
         raise Forbidden()
     geojson = synthese.as_geofeature(
         "the_geom_4326", "id_synthese",
@@ -262,7 +264,6 @@ def get_one_synthese(info_role, id_synthese):
             'validations.validation_label',
             'validations.validator_role',
             'cor_observers',
-            'cor_observers.nom_complet',
             'cor_observers.organisme',
             'source',
             'habitat',
@@ -621,7 +622,7 @@ def export_status(info_role):
 
 
 @routes.route("/general_stats", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
+@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
 def general_stats(info_role):
     """Return stats about synthese.
@@ -722,7 +723,6 @@ def get_sources():
 
 
 @routes.route("/defaultsNomenclatures", methods=["GET"])
-@json_resp
 def getDefaultsNomenclatures():
     """Get default nomenclatures
 
@@ -754,8 +754,8 @@ def getDefaultsNomenclatures():
         q = q.filter(DefaultsNomenclaturesValue.mnemonique_type.in_(tuple(types)))
     data = q.all()
     if not data:
-        return {"message": "not found"}, 404
-    return {d[0]: d[1] for d in data}
+        raise NotFound
+    return jsonify(dict(data))
 
 
 @routes.route("/color_taxon", methods=["GET"])
@@ -772,7 +772,11 @@ def get_color_taxon():
     """
     params = request.args
     limit = int(params.get("limit", 100))
-    offset = int(params.get("offset", 0))
+    page = params.get("page", 1, int)
+
+    if "offset" in request.args:
+        warn("offset is deprecated, please use page for pagination (start at 1)", DeprecationWarning)
+        page = (int(request.args["offset"]) / limit) + 1
     id_areas_type = params.getlist("code_area_type")
     cd_noms = params.getlist("cd_nom")
     id_areas = params.getlist("id_area")
@@ -787,11 +791,13 @@ def get_color_taxon():
         if not LAreas in [mapper.class_ for mapper in q._join_entities]:
             q = q.join(LAreas, LAreas.id_area == VColorAreaTaxon.id_area)
         q = q.filter(LAreas.id_area.in_(tuple(id_areas)))
+    q = q.order_by(VColorAreaTaxon.cd_nom).order_by(VColorAreaTaxon.id_area)
     if len(cd_noms) > 0:
         q = q.filter(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
-    data = q.limit(limit).offset(offset).all()
+    results = q.paginate(page=page, per_page=limit, error_out=False)
 
-    return jsonify([d.as_dict() for d in data])
+
+    return jsonify([d.as_dict() for d in results.items])
 
 
 @routes.route("/taxa_count", methods=["GET"])
@@ -849,7 +855,6 @@ def get_observation_count():
 
 
 @routes.route("/observations_bbox", methods=["GET"])
-@json_resp
 def get_bbox():
     """
     Get bbbox of observations
@@ -873,30 +878,24 @@ def get_bbox():
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
     data = query.one()
     if data and data[0]:
-        return json.loads(data[0])
-    return None
+        return Response(data[0], mimetype='application/json')
+    return '', 204
 
 @routes.route("/observation_count_per_column/<column>", methods=["GET"])
-@json_resp
 def observation_count_per_column(column):
     """Get observations count group by a given column"""
-    params = request.args
-    try:
-        model_column = getattr(Synthese, column)
-    except Exception:
-        return f'No column name {column} in Synthese', 500
-    query = DB.session.query(
-        func.count(Synthese.id_synthese), model_column
-        ).select_from(
-            Synthese
-        ).group_by(model_column)
-    data = []
-    for d in query.all():
-        temp = {}
-        temp[column] = d[1]
-        temp['count'] = d[0]
-        data.append(temp)
-    return data
+    if column not in sa.inspect(Synthese).column_attrs:
+        raise BadRequest(f'No column name {column} in Synthese')
+    synthese_column = getattr(Synthese, column)
+    stmt = DB.session.query(
+               func.count(Synthese.id_synthese).label("count"),
+               synthese_column.label(column),
+           ).select_from(
+               Synthese
+           ).group_by(
+               synthese_column
+           )
+    return jsonify(DB.session.execute(stmt).fetchall())
 
 
 @routes.route("/taxa_distribution", methods=["GET"])
@@ -909,12 +908,16 @@ def get_taxa_distribution():
 
     id_dataset = request.args.get("id_dataset")
     id_af = request.args.get("id_af")
+    id_source = request.args.get("id_source")
 
     rank = request.args.get("taxa_rank")
     if not rank:
         rank = "regne"
 
-    rank = getattr(Taxref.__table__.columns, rank)
+    try:
+        rank = getattr(Taxref.__table__.columns, rank)
+    except AttributeError:
+        raise BadRequest("Rank does not exist")
 
     Taxref.group2_inpn
 
@@ -931,57 +934,9 @@ def get_taxa_distribution():
         query = query.outerjoin(TDatasets, TDatasets.id_dataset == Synthese.id_dataset).filter(
             TDatasets.id_acquisition_framework == id_af
         )
+    # User can add id_source filter along with id_dataset or id_af
+    if id_source is not None:
+        query = query.filter(Synthese.id_source == id_source)
 
     data = query.group_by(rank).all()
     return [{"count": d[0], "group": d[1]} for d in data]
-
-
-# @routes.route("/test", methods=["GET"])
-# @json_resp
-# def test():
-#     from shapely.geometry import asShape
-#     from geoalchemy2.shape import from_shape
-#     from shapely.geometry import Point
-#     import random
-
-#     s = DB.session.query(Synthese).get(2)
-
-#     s_as_dict = s.as_dict()
-#     s_as_dict.pop("unique_id_sinp")
-#     # wkt = asShape(s.the_geom_4326)
-#     # print(wkt)
-#     # releve.geom_4326 = from_shape(shape, srid=4326)
-#     import datetime
-
-#     DB.session.query()
-#     for i in range(1000):
-#         new_point = Point(random.uniform(6.1, 7.5), random.uniform(44.0, 45.2))
-#         wkb = from_shape(new_point, 4326)
-#         s_as_dict["id_synthese"] = random.randint(1500, 999999999)
-
-#         # with random cd_nom
-#         random_cd_nom = DB.engine.execute(
-#             """
-#         SELECT cd_nom FROM taxonomie.bib_noms OFFSET random() * (select count(*) from taxonomie.bib_noms) limit 1 ;"""
-#         )
-#         cd_nom = None
-#         for cd in random_cd_nom:
-#             s_as_dict["cd_nom"] = cd[0]
-#         new_synthese = Synthese(**s_as_dict)
-#         new_synthese.the_geom_4326 = wkb
-#         new_synthese.the_geom_local = func.st_transform(wkb, 2154)
-
-#         new_date = datetime.datetime.now()
-#         new_date = new_date.replace(year=random.randint(2000, 2016))
-#         new_synthese.date_min = new_date
-#         new_synthese.date_max = new_date
-#         print(new_synthese.the_geom_local)
-#         q = DB.session.add(new_synthese)
-#         # DB.session.flush()
-#         DB.session.commit()
-
-#     # s = TSources(name_source="lalala")
-
-#     # DB.session.add(s)
-#     # DB.session.commit()
-#     return "la"

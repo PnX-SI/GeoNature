@@ -20,25 +20,13 @@ from geonature.core.gn_synthese.models import TSources, Synthese
 from pypnusershub.db.models import User, Organisme, Application, Profils as Profil, UserApplicationRight
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 from apptax.taxonomie.models import Taxref
+from utils_flask_sqla.tests.utils import JSONClient
 
 
-class JSONClient(testing.FlaskClient):
-    def open(self, *args, **kwargs):
-        headers = kwargs.pop('headers', Headers())
-        if 'Accept' not in headers:
-            headers.extend(Headers({
-                'Accept': 'application/json, text/plain, */*',
-            }))
-        if 'Content-Type' not in headers and 'data' in kwargs:
-            kwargs['data'] = json.dumps(kwargs['data'])
-            headers.extend(Headers({
-                'Content-Type': 'application/json',
-            }))
-        kwargs['headers'] = headers
-        return super().open(*args, **kwargs)
+__all__ = ['datasets', 'acquisition_frameworks', 'synthese_data', 'source']
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='session', autouse=True)
 def app():
     app = create_app()
     app.testing = True
@@ -59,8 +47,8 @@ def app():
         transaction.rollback()  # rollback all database changes
 
 
-@pytest.fixture(scope='class')
-def users(app):  # an app context is required
+@pytest.fixture(scope='session')
+def users(app):
     app = Application.query.filter(Application.code_application=='GN').one()
     profil = Profil.query.filter(Profil.nom_profil=='Lecteur').one()
 
@@ -69,10 +57,10 @@ def users(app):  # an app context is required
 
     actions = { code: TActions.query.filter(TActions.code_action == code).one()
                 for code in 'CRUVED' }
-    filters = [
-        TFilters.query.filter(TFilters.value_filter == str(scope)).one()
+    scope_filters = {
+        scope: TFilters.query.filter(TFilters.value_filter == str(scope)).one()
         for scope in [ 0, 1, 2, 3 ]
-    ]
+    }
 
     def create_user(username, organisme=None, scope=None):
         # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
@@ -105,12 +93,12 @@ def users(app):  # an app context is required
     db.session.add(organisme)
 
     users_to_create = [
-        ('noright_user', organisme, filters[0]),
+        ('noright_user', organisme, scope_filters[0]),
         ('stranger_user',),
-        ('associate_user', organisme, filters[2]),
-        ('self_user', organisme, filters[1]),
-        ('user', organisme, filters[2]),
-        ('admin_user', organisme, filters[3]),
+        ('associate_user', organisme, scope_filters[2]),
+        ('self_user', organisme, scope_filters[1]),
+        ('user', organisme, scope_filters[2]),
+        ('admin_user', organisme, scope_filters[3]),
     ]
 
     for username, *args in users_to_create:
@@ -119,7 +107,12 @@ def users(app):  # an app context is required
     return users
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture
+def _session(app):
+    return db.session
+
+
+@pytest.fixture(scope='function')
 def acquisition_frameworks(users):
     principal_actor_role = TNomenclatures.query.filter(
                                 BibNomenclaturesTypes.mnemonique=='ROLE_ACTEUR',
@@ -137,27 +130,30 @@ def acquisition_frameworks(users):
                             nomenclature_actor_role=principal_actor_role)
                 af.cor_af_actor.append(actor)
         return af
-    return {
+
+    afs = {
         'own_af': create_af(creator=users['user']),
         'associate_af': create_af(creator=users['associate_user']),
         'stranger_af': create_af(creator=users['stranger_user']),
         'orphan_af': create_af(),
     }
 
+    return afs
 
-@pytest.fixture(scope='class')
+
+@pytest.fixture(scope='function')
 def datasets(users, acquisition_frameworks):
     af = acquisition_frameworks['orphan_af']
     principal_actor_role = TNomenclatures.query.filter(
                                 BibNomenclaturesTypes.mnemonique=='ROLE_ACTEUR',
                                 TNomenclatures.mnemonique=='Contact principal').one()
-    def create_dataset(digitizer=None):
+    def create_dataset(name, digitizer=None):
         with db.session.begin_nested():
             dataset = TDatasets(
                             id_acquisition_framework=af.id_acquisition_framework,
-                            dataset_name='test',
-                            dataset_shortname='test',
-                            dataset_desc='test',
+                            dataset_name=name,
+                            dataset_shortname=name,
+                            dataset_desc=name,
                             marine_domain=True,
                             terrestrial_domain=True,
                             id_digitizer=digitizer.id_role if digitizer else None)
@@ -168,108 +164,73 @@ def datasets(users, acquisition_frameworks):
                             nomenclature_actor_role=principal_actor_role)
                 dataset.cor_dataset_actor.append(actor)
         return dataset
-    return {
-        'own_dataset': create_dataset(digitizer=users['user']),
-        'associate_dataset': create_dataset(digitizer=users['associate_user']),
-        'stranger_dataset': create_dataset(digitizer=users['stranger_user']),
-        'orphan_dataset': create_dataset(),
-    }
+
+    datasets = { name: create_dataset(name, digitizer)
+                 for name, digitizer in [
+                     ('own_dataset', users['user']),
+                     ('associate_dataset', users['associate_user']),
+                     ('stranger_dataset', users['stranger_user']),
+                     ('orphan_dataset', None),
+                 ] }
+
+    return datasets
 
 
 
-@pytest.fixture(scope='class')
-def sample_data(app):
+#@pytest.fixture(scope='class')
+#def sample_data(app):
+#    with db.session.begin_nested():
+#        for sql_file in ['delete_sample_data.sql', 'sample_data.sql']:
+#            operations = pkg_resources.resource_string("geonature.tests", f"data/{sql_file}") \
+#                                      .decode('utf-8')
+#            db.session.execute(operations)
+
+
+@pytest.fixture()
+def taxon_attribut():
+    from apptax.taxonomie.models import BibAttributs, BibNoms, CorTaxonAttribut
+    nom = BibNoms.query.filter_by(cd_ref=209902).one()
+    attribut = BibAttributs.query.filter_by(nom_attribut='atlas_milieu').one()
     with db.session.begin_nested():
-        for sql_file in ['delete_sample_data.sql', 'sample_data.sql']:
-            operations = pkg_resources.resource_string("geonature.tests", f"data/{sql_file}") \
-                                      .decode('utf-8')
-            db.session.execute(operations)
-
-
-@pytest.fixture(scope='function')
-def temporary_transaction(app):
-    """
-    We start two nested transaction (SAVEPOINT):
-        - The outer one will be used to rollback all changes made by the current test function.
-        - The inner one will be used to catch all commit() / rollback() made in tested code.
-          After starting the inner transaction, we install a listener on transaction end events,
-          and each time the inner transaction is closed, we restart a new transaction to catch
-          potential new commit() / rollback().
-    Note: When we rollback the inner transaction at the end of the test, we actually rollback
-    only the last inner transaction but previous inner transaction may have been committed by the
-    tested code! This is why we need an outer transaction to rollback all changes made by the test.
-    """
-    outer_transaction = db.session.begin_nested()
-    inner_transaction = db.session.begin_nested()
-
-    def restart_savepoint(session, transaction):
-        nonlocal inner_transaction
-        if transaction == inner_transaction:
-            session.expire_all()
-            inner_transaction = session.begin_nested()
-
-    db.event.listen(db.session, "after_transaction_end", restart_savepoint)
-
-    yield
-
-    db.event.remove(db.session, "after_transaction_end", restart_savepoint)
-
-    inner_transaction.rollback()  # probably rollback not so much
-    outer_transaction.rollback()  # rollback all changes made during this test
-
+        c = CorTaxonAttribut(
+                bib_nom=nom,
+                bib_attribut=attribut,
+                valeur_attribut='eau')
+        db.session.add(c)
+    return c
 
 @pytest.fixture()
-def releve_data(client, datasets):
-    """
-        Releve associated with dataset created by "user"
-    """
-    id_dataset = datasets["own_dataset"].id_dataset
-    response = client.get(url_for("pr_occtax.getDefaultNomenclatures"))
-    default_nomenclatures = response.get_json()
-    data = {
-        "depth": 2,
-        "geometry": {"type": "Point", "coordinates": [3.428936004638672, 44.276611357355904],},
-        "properties": {
-            "id_dataset": id_dataset,
-            "id_digitiser": 1,
-            "date_min": "2018-03-02",
-            "date_max": "2018-03-02",
-            "hour_min": None,
-            "hour_max": None,
-            "altitude_min": None,
-            "altitude_max": None,
-            "meta_device_entry": "web",
-            "comment": None,
-            "id_nomenclature_obs_technique": default_nomenclatures["TECHNIQUE_OBS"],
-            "observers": [1],
-            "observers_txt": "tatatato",
-            "id_nomenclature_grp_typ": default_nomenclatures["TYP_GRP"],
-        },
-    }
-
-    return data
-
-
-@pytest.fixture()
-def synthese_data(users, datasets):
+def source():
     with db.session.begin_nested():
         source = TSources(name_source='Fixture',
                           desc_source='Synthese data from fixture')
         db.session.add(source)
+    return source
+
+@pytest.fixture()
+def synthese_data(users, datasets, source):
     now = datetime.datetime.now()
     geom_4326 = from_shape(Point(3.63492965698242, 44.3999389306734), srid=4326)
+    data = []
     with db.session.begin_nested():
-        taxon = Taxref.query.filter_by(cd_nom=713776).one()
-        s = Synthese(id_source=source.id_source,
-                     dataset=datasets['own_dataset'],
-                     digitiser=users['self_user'],
-                     nom_cite='Ashmeadopria Kieffer',
-                     cd_nom=taxon.cd_nom,
-                     cd_hab=3,
-                     the_geom_4326=geom_4326,
-                     the_geom_point=geom_4326,
-                     the_geom_local=func.st_transform(geom_4326, 2154),
-                     date_min=now,
-                     date_max=now)
-        db.session.add(s)
-    return [s]
+        taxons = [
+            Taxref.query.filter_by(cd_nom=713776).one(),
+            Taxref.query.filter_by(cd_nom=2497).one()
+        ]
+        for taxon in taxons:
+            s = Synthese(id_source=source.id_source,
+                        unique_id_sinp=func.uuid_generate_v4(),
+                        dataset=datasets['own_dataset'],
+                        digitiser=users['self_user'],
+                        nom_cite=taxon.lb_nom,
+                        cd_nom=taxon.cd_nom,
+                        cd_hab=3,
+                        the_geom_4326=geom_4326,
+                        the_geom_point=geom_4326,
+                        the_geom_local=func.st_transform(geom_4326, 2154),
+                        date_min=now,
+                        date_max=now)
+            db.session.add(s)
+            data.append(s)
+
+    return data

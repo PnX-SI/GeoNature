@@ -10,6 +10,7 @@ import { AppConfig } from '../../../conf/app.config';
 import { Taxon } from './taxonomy/taxonomy.component';
 import { Observable } from 'rxjs';
 import { isArray } from 'rxjs/internal-compatibility';
+import { map } from 'rxjs/operators'
 
 /** Interface for queryString parameters*/
 interface ParamsDict {
@@ -64,7 +65,7 @@ export class DataFormService {
 
   getDefaultNomenclatureValue(path, mnemoniques: Array<string> = [], kwargs: ParamsDict = {}) {
     let queryString: HttpParams = new HttpParams();
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (const key in kwargs) {
       queryString = queryString.set(key, kwargs[key].toString());
     }
@@ -161,7 +162,8 @@ export class DataFormService {
   }
 
   getTaxaBibList() {
-    return this._http.get<any>(`${AppConfig.API_TAXHUB}/biblistes`).map(d => d.data);
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/biblistes/`)
+      .pipe(map(d => d.data));
   }
 
   async getTaxonInfoSynchrone(cd_nom: number): Promise<any> {
@@ -182,11 +184,12 @@ export class DataFormService {
     }
 
     return this._http.get<any>(url, { params: params })
-      .map(data => {
+      .pipe(map(data => {
         return data.map(item => {
           return this.formatSciname(item);
         })
-      });
+      })
+      );
   }
 
   /**
@@ -246,13 +249,14 @@ export class DataFormService {
     }
     return this._http
       .get<any>(`${AppConfig.API_ENDPOINT}/habref/typo`, { params: params })
-      .map(data => {
+      .pipe(map(data => {
         // replace '_' with space because habref is super clean !
         return data.map(d => {
           d['lb_nom_typo'] = d['lb_nom_typo'].replace(/_/g, ' ');
           return d;
         });
-      });
+      })
+      );
   }
 
   getHabitatInfo(cd_hab) {
@@ -278,7 +282,7 @@ export class DataFormService {
     if (idType) {
       geojson['id_type'] = idType;
     }
-    return this._http.post(`${AppConfig.API_ENDPOINT}/geo/areas`, geojson).map(res => {
+    return this._http.post(`${AppConfig.API_ENDPOINT}/geo/areas`, geojson).pipe(map(res => {
       const areasIntersected = [];
       Object.keys(res).forEach(key => {
         const typeName = res[key]['type_name'];
@@ -291,7 +295,8 @@ export class DataFormService {
         areasIntersected.push(obj);
       });
       return areasIntersected;
-    });
+    })
+    );
   }
 
   getAreaSize(geojson) {
@@ -349,7 +354,7 @@ export class DataFormService {
     );
   }
 
-  getAcquisitionFrameworksForSelect(searchTerms = {}) {
+  getAcquisitionFrameworksList(searchTerms = {}) {
     let queryString: HttpParams = new HttpParams();
     for (let key in searchTerms) {
       queryString = queryString.set(key, searchTerms[key])
@@ -430,7 +435,7 @@ export class DataFormService {
     if (orderByName) {
       queryString = this.addOrderBy(queryString, 'nom_role');
     }
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (let key in params) {
       if (params[key] !== null) {
         queryString = queryString.set(key, params[key]);
@@ -571,13 +576,13 @@ export class DataFormService {
   }
   //Ajouter lieu
   addPlace(place) {
-    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place`, place);
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_commons/places`, place);
   }
-
   // Supprimer lieu
   deletePlace(idPlace) {
-    return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/gn_commons/place/${idPlace}`);
+    return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/gn_commons/places/${idPlace}`);
   }
+
   deleteAf(af_id) {
     return this._http.delete<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${af_id}`);
   }
@@ -592,35 +597,35 @@ export class DataFormService {
 
   getadditionalFields(params?: ParamsDict) {
     let queryString: HttpParams = new HttpParams();
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (const key in params) {
       queryString = queryString.set(key, params[key].toString());
     }
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/additional_fields`,
-     {params: queryString}).map(additionalFields => {
-      return additionalFields.map(data => {
-        return {
-          "id_field": data.id_field,
-          "attribut_label": data.field_label,
-          "attribut_name": data.field_name,
-          "required": data.required,
-          "description": data.description,
-          "quantitative": data.quantitative,
-          "unity": data.unity,
-          "code_nomenclature_type": data.code_nomenclature_type,
-          "type_widget": data.type_widget.widget_name,
-          "multi_select": null,
-          "values": data.field_values,
-          "value": data.default_value,
-          "id_list": data.id_list,
-          "objects": data.objects,
-          "modules": data.modules,
-          "datasets": data.datasets,
-          "key_value": data.type_widget.widget_name === "nomenclature" ? "label_default": null,
-          ...data.additional_attributes
-        }
-      })
-    });
+      {params: queryString}).pipe(map(additionalFields => {
+        return additionalFields.map(data => {
+          return {
+            "id_field": data.id_field,
+            "attribut_label": data.field_label,
+            "attribut_name": data.field_name,
+            "required": data.required,
+            "description": data.description,
+            "quantitative": data.quantitative,
+            "unity": data.unity,
+            "code_nomenclature_type": data.code_nomenclature_type,
+            "type_widget": data.type_widget.widget_name,
+            "multi_select": null,
+            "values": data.field_values,
+            "value": data.default_value,
+            "id_list": data.id_list,
+            "objects": data.objects,
+            "modules": data.modules,
+            "datasets": data.datasets,
+            "key_value": data.type_widget.widget_name === "nomenclature" ? "label_default": null,
+            ...data.additional_attributes
+          }
+        })
+      }));
   }
 
   getRedListValues(statusType: String) {
@@ -647,7 +652,7 @@ export class DataFormService {
   }
 
   controlProfile(data) {
-    return this._http.post(
+    return this._http.post<any>(
       `${AppConfig.API_ENDPOINT}/gn_profiles/check_observation`,
       data
     );

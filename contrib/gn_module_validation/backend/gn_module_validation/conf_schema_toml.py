@@ -5,35 +5,11 @@
 from marshmallow import Schema, fields
 
 
-# Colonnes renvoyees par l'API synthese qui sont obligatoires pour que les fonctionnalités
-#  front fonctionnent
-MANDATORY_COLUMNS = [
-    {"column_name": "id_nomenclature_valid_status", "column_label": ""},
-    {"column_name": "id_synthese", "column_label": "id_synthese"},
-    {"column_name": "entity_source_pk_value", "column_label": "entity_source_pk_value"},
-    {"column_name": "validation_auto", "column_label": "validation_auto"},
-    {"column_name": "cd_nom", "column_label": "cd_nom"},
-    {"column_name": "meta_update_date", "column_label": "meta_update_date"},
-    {"column_name": "cd_nomenclature_validation_status", "column_label": "cd_nomenclature_validation_status"},
-    {"column_name": "mnemonique", "column_label": "mnemonique"},
-    {"column_name": "label_default", "column_label": "label_default"},
-    {"column_name": "unique_id_sinp", "column_label": "unique_id_sinp"},
-    {"column_name": "geojson", "column_label": "geojson"},
-    {"column_name": "nom_vern", "column_label": "nom_vern"},
-    {"column_name": "lb_nom", "column_label": "lb_nom"},
-    {"column_name": "validation_date", "column_label": "Date de validation"},
-    {"column_name": "score", "column_label": "Score"},
-    {"column_name": "valid_phenology", "column_label": "valid_phenology"},
-    {"column_name": "valid_altitude", "column_label": "valid_altitude"},
-    {"column_name": "valid_distribution", "column_label": "valid_distribution"},
-]
-
-
 COLUMN_LIST = [
-    {"column_name": "id_nomenclature_valid_status", "column_label": "", "max_width": 40},
-    {"column_name": "nom_vern_or_lb_nom", "column_label": "Taxon", "min_width": 250},
+    {"column_name": "nomenclature_valid_status.label_default", "column_label": "", "max_width": 40},
+    {"column_name": "taxref.nom_vern_or_lb_nom", "column_label": "Taxon", "min_width": 250},
     {"column_name": "date_min", "column_label": "Date obs.", "min_width": 100},
-    {"column_name": "dataset_name", "column_label": "Jeu de donnees", "min_width": 100},
+    {"column_name": "dataset.dataset_name", "column_label": "Jeu de donnees", "min_width": 100},
     {"column_name": "observers", "column_label": "Observateur", "min_width": 100},
 ]
 
@@ -69,7 +45,7 @@ DISPLAY_TAXON_TREE = True
 
 ID_ATTRIBUT_TAXHUB = [1, 2]
 
-AREA_FILTERS = [{"label": "Communes", "id_type": 25}]
+AREA_FILTERS = [{"label": "Communes", "type_code": "COM"}]
 MAIL_BODY = """La donnée en date du ${ d.date_min } relative au taxon ${ d.nom_vern } - ${ d.nom_valide } pose question.\n\r
 Merci de contacter la personne en charge de la validation. 
 \n\rCommunes : ${ d.communes }
@@ -88,7 +64,6 @@ class ColumnSchema(Schema):
 
 
 class GnModuleSchemaConf(Schema):
-    MANDATORY_COLUMNS = fields.List(fields.Nested(ColumnSchema), load_default=MANDATORY_COLUMNS)
     STATUS_INFO = fields.Dict(fields.Dict(), load_default=STATUS_INFO)
     NB_MAX_OBS_MAP = fields.Integer(load_default=5000)
     MAP_POINT_STYLE = fields.Dict(fields.Dict(), load_default=MAP_POINT_STYLE)

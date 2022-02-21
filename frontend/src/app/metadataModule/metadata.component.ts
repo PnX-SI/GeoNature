@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { PageEvent, MatPaginator } from '@angular/material';
+import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { Router, NavigationExtras } from "@angular/router";
@@ -21,7 +21,7 @@ import { MetadataService } from './services/metadata.service';
 })
 export class MetadataComponent implements OnInit {
 
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
   /* getter this.metadataService.filteredAcquisitionFrameworks */
   acquisitionFrameworks: Observable<any[]>;
@@ -47,7 +47,7 @@ export class MetadataComponent implements OnInit {
   pageSize: number;
   pageIndex: number;
 
-  
+
 
   constructor(
     public _cruvedStore: CruvedStoreService,
@@ -85,7 +85,7 @@ export class MetadataComponent implements OnInit {
 
   setDsObservationCount(datasets, dsNbObs) {
     datasets.forEach(ds=> {
-      let foundDS = dsNbObs.find(d => {                
+      let foundDS = dsNbObs.find(d => {
         return d.id_dataset == ds.id_dataset
       })
       if (foundDS) {
@@ -97,92 +97,6 @@ export class MetadataComponent implements OnInit {
     })
   }
 
-  //recuperation cadres d'acquisition
-  // getAcquisitionFrameworksAndDatasets(formValue={}, expand=false) {
-  //   this.isLoading = true;
-  //   this._dfs.getAfAndDatasetListMetadata(formValue).subscribe(
-  //     data => {
-  //       this.isLoading = false;
-  //       this.acquisitionFrameworks = data.data;
-  //       this.tempAF = this.acquisitionFrameworks;
-  //       this.datasets = [];
-  //       this.acquisitionFrameworks.forEach(af => {
-  //         af['datasetsTemp'] = af['datasets'];
-  //         this.datasets = this.datasets.concat(af['datasets']);
-  //       })
-  //     if(expand) {
-  //       this.expandAccordions = (this.searchFormService.form.value.selector == 'ds');
-
-  //     }
-  //     // load stat for ds
-  //     if (!this.datasetNbObs) {        
-  //       this._syntheseDataService.getObsCountByColumn('id_dataset').subscribe(count_ds => {
-  //         this.datasetNbObs = count_ds
-  //         this.setDsObservationCount(this.datasets, this.datasetNbObs);
-          
-  //       })
-  //     } else {        
-  //       this.setDsObservationCount(this.datasets, this.datasetNbObs);
-  //     }
-
-
-  //   },
-  //   err => {
-  //     this.isLoading = false;
-  //   }
-  //   );
-  // }
-
-
-  /**
-   *	Filtre les éléments CA et JDD selon la valeur de la barre de recherche
-   **/
-  // updateSearchbar(event) {
-  //   this.researchTerm = event;
-  //   const searchTerm = this.researchTerm.toLocaleLowerCase();
-  //   //recherche des cadres d'acquisition qui matchent
-  //   this.tempAF = this.acquisitionFrameworks.filter(af => {
-  //     //si vide => affiche tout et ferme le panel
-  //     if (this.researchTerm === '') {
-  //       // 'dé-expand' les accodions pour prendre moins de place
-  //       this.expandAccordions = false;
-  //       //af.datasets.filter(ds=>true);
-  //       af.datasetsTemp = af.datasets;
-  //       return true;
-  //     } else {
-        
-  //       // expand tous les accordeons recherchés pour voir le JDD des CA
-  //       this.expandAccordions = true;
-  //       if ((af.id_acquisition_framework + ' ').toLowerCase().indexOf(searchTerm) !== -1
-  //         || af.acquisition_framework_name.toLowerCase().indexOf(searchTerm) !== -1
-  //         || af.acquisition_framework_start_date.toLowerCase().indexOf(searchTerm) !== -1
-  //         || af.unique_acquisition_framework_id.toLowerCase().indexOf(searchTerm) !== -1
-  //       ) {
-  //         //si un cadre matche on affiche tous ses JDD
-  //         af.datasetsTemp = af.datasets;
-  //         return true;
-  //       }
-
-  //       //Sinon on on filtre les JDD qui matchent eventuellement
-  //       if (af.datasets) {
-  //         af.datasetsTemp = af.datasets.filter(
-  //           ds => ((ds.id_dataset + ' ').toLowerCase().indexOf(searchTerm) !== -1
-  //             || ds.dataset_name.toLowerCase().indexOf(searchTerm) !== -1
-  //             || ds.unique_dataset_id.toLowerCase().indexOf(searchTerm) !== -1
-  //             || ds.meta_create_date.toLowerCase().indexOf(searchTerm) !== -1)
-  //         );
-  //         return af.datasetsTemp.length;
-  //       }
-  //       return false;
-  //     }
-  //   });
-  //   //retour à la premiere page du tableau pour voir les résultats
-  //   this.paginator.pageIndex = 0;
-  //   this.activePage = 0;
-  // }
-
-  
-  
   refreshFilters() {
     this.metadataService.resetForm();
     this.advancedSearch();
@@ -245,7 +159,7 @@ export class MetadataComponent implements OnInit {
             'error', "Une erreur s'est produite lors de la fermeture du cadre d'acquisition. Contactez l'administrateur"
             )
         }
-        
+
 
     }
     )

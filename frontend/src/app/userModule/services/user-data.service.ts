@@ -15,7 +15,7 @@ export class UserDataService {
 
   getRoles(params?: any) {
     let queryString: HttpParams = new HttpParams();
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (let key in params) {
       if (params[key] !== null) {
         queryString = queryString.set(key, params[key]);

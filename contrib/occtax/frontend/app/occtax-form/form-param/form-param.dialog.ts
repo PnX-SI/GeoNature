@@ -10,7 +10,7 @@ import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { combineLatest, Subscription } from "rxjs";
 import { filter, map, tap } from "rxjs/operators";
 import { ModuleConfig } from "../../module.config";
-import { OcctaxFormMapService } from "../map/map.service";
+import { OcctaxFormMapService } from "../map/occtax-map.service";
 import { OcctaxFormReleveService } from "../releve/releve.service";
 import { OcctaxFormOccurrenceService } from "../occurrence/occurrence.service";
 import { OcctaxFormParamService } from "./form-param.service";
@@ -66,8 +66,8 @@ export class OcctaxFormParamDialog implements OnInit, OnDestroy {
   constructor(
     private fb: FormBuilder,
     private occtaxFormMapService: OcctaxFormMapService,
-    private occtaxFormReleveService: OcctaxFormReleveService,
-    private occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
+    public occtaxFormReleveService: OcctaxFormReleveService,
+    public occtaxFormOccurrenceService: OcctaxFormOccurrenceService,
     public occtaxFormParamService: OcctaxFormParamService
   ) {
     this.occtaxConfig = ModuleConfig;

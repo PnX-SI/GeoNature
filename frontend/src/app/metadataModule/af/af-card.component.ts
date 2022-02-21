@@ -18,7 +18,7 @@ export class AfCardComponent implements OnInit {
   public stats: any;
   public bbox: any;
   public acquisitionFrameworks: any;
-  @ViewChild(BaseChartDirective) chart: BaseChartDirective;
+  @ViewChild(BaseChartDirective, { static: false }) chart: BaseChartDirective;
   // Type de graphe
   public pieChartType = 'doughnut';
   // Tableau contenant les labels du graphe
@@ -102,8 +102,6 @@ export class AfCardComponent implements OnInit {
         err => {
           if (err.status === 404) {
             this._commonService.translateToaster("error", "MetaData.AF404");
-          } else {
-            this._commonService.translateToaster("error", "ErrorMessage");
           }
           this._router.navigate(['/metadata']);
         }
@@ -135,9 +133,9 @@ export class AfCardComponent implements OnInit {
           this.pieChartData.push(row['count']);
           this.pieChartLabels.push(row['group']);
         }
-        
+
         setTimeout(() => {
-          this.chart.chart.update();
+          this.chart && this.chart.chart.update();
         }, 1000);
       });
   }
@@ -146,7 +144,7 @@ export class AfCardComponent implements OnInit {
     const url = `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks/export_pdf/${
       this.af.id_acquisition_framework
     }`;
-    const chart_img = this.chart ? this.chart.ctx.canvas.toDataURL('image/png') : '';
+    const chart_img = this.chart ? this.chart.ctx['canvas'].toDataURL('image/png') : '';
     this._dfs.uploadCanvas(chart_img).subscribe(data => {
       window.open(url);
     });

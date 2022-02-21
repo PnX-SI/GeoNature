@@ -35,9 +35,9 @@ export class AfFormComponent implements OnInit {
     private _router: Router,
     private _toaster: ToastrService,
     private dateParser: NgbDateParserFormatter,
-    private afFormS: AcquisitionFrameworkFormService,
+    public afFormS: AcquisitionFrameworkFormService,
     private actorFormS: ActorFormService,
-    private metadataS: MetadataService,
+    public metadataS: MetadataService,
     private metadataDataS: MetadataDataService
   ) {}
   ngOnInit() {
@@ -61,7 +61,7 @@ export class AfFormComponent implements OnInit {
   }
 
   getAcquisitionFramework(id_af, param) {
-    
+
     return this._dfs.getAcquisitionFramework(id_af, param)
       .pipe(
         map((af: any) => {
@@ -83,7 +83,7 @@ export class AfFormComponent implements OnInit {
     }
     this.afFormS.addActor(
       formArray,
-      value 
+      value
     )
   }
 
@@ -128,8 +128,6 @@ export class AfFormComponent implements OnInit {
           if (error.status === 403) {
             this._commonService.translateToaster('error', 'NotAllowed');
             this._router.navigate(['/metadata/']);
-          } else {
-            this._commonService.translateToaster('error', 'ErrorMessage');
           }
         }
       );

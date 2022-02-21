@@ -66,7 +66,8 @@ class SyntheseQuery:
         id_dataset_column="id_dataset",
         observers_column="observers",
         id_digitiser_column="id_digitiser",
-        with_generic_table=False
+        with_generic_table=False,
+        query_joins=None,
     ):
         self.query = query
 
@@ -78,10 +79,10 @@ class SyntheseQuery:
                 filters[k] = [filters[k]]
 
         self.filters = filters
-        self.first = True
+        self.first = query_joins is None
         self.model = model
         self._already_joined_table = []
-        self.query_joins = None
+        self.query_joins = query_joins
 
         if with_generic_table:
             model_temp = model.columns
@@ -137,7 +138,8 @@ class SyntheseQuery:
         """
         Filter the query with the cruved authorization of a user
         """
-        if user.value_filter in ("1", "2"):
+        scope = int(user.value_filter)
+        if scope in (1, 2):
             # get id synthese where user is observer
             subquery_observers = (
                 select([CorObserverSynthese.id_synthese])
@@ -148,20 +150,11 @@ class SyntheseQuery:
                 self.model_id_syn_col.in_(subquery_observers),
                 self.model_id_digitiser_column == user.id_role,
             ]
-            if current_app.config["SYNTHESE"]["CRUVED_SEARCH_WITH_OBSERVER_AS_TXT"]:
-                user_fullname1 = user.nom_role + " " + user.prenom_role + "%"
-                user_fullname2 = user.prenom_role + " " + user.nom_role + "%"
-                ors_filters.append(self.model_observers_column.ilike(user_fullname1))
-                ors_filters.append(self.model_observers_column.ilike(user_fullname2))
 
-            if user.value_filter == "1":
-                allowed_datasets = [d.id_dataset for d in TDatasets.query.filter_by_scope(1).all()] 
-                ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
-                self.query = self.query.where(or_(*ors_filters))
-            elif user.value_filter == "2":
-                allowed_datasets = [d.id_dataset for d in TDatasets.query.filter_by_scope(1).all()] 
-                ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
-                self.query = self.query.where(or_(*ors_filters))
+            allowed_datasets = [d.id_dataset for d in TDatasets.query.filter_by_scope(scope).all()]
+            ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
+
+            self.query = self.query.where(or_(*ors_filters))
 
     def filter_taxonomy(self):
         """
@@ -191,8 +184,8 @@ class SyntheseQuery:
         cd_ref_childs.extend(cd_ref_selected)
 
         if len(cd_ref_childs) > 0:
-            sub_query_synonym = select([Taxref.cd_nom]).where(Taxref.cd_ref.in_(cd_ref_childs))
-            self.query = self.query.where(self.model.cd_nom.in_(sub_query_synonym))
+            self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
+            self.query = self.query.where(Taxref.cd_ref.in_(cd_ref_childs))
         if "taxonomy_group2_inpn" in self.filters:
             self.add_join(Taxref, Taxref.cd_nom, self.model.cd_nom)
             self.query = self.query.where(
@@ -287,11 +280,19 @@ class SyntheseQuery:
             self.query = self.query.where(self.model.date_max <= date_max)
 
         if "id_acquisition_framework" in self.filters:
-            self.query = self.query.where(
-                self.model.id_acquisition_framework.in_(
-                    self.filters.pop("id_acquisition_framework")
+            if hasattr(self.model, 'id_acquisition_framework'):
+                self.query = self.query.where(
+                    self.model.id_acquisition_framework.in_(
+                        self.filters.pop("id_acquisition_framework")
+                    )
                 )
-            )
+            else:
+                self.add_join(TDatasets, self.model.id_dataset, TDatasets.id_dataset)
+                self.query = self.query.where(
+                    TDatasets.id_acquisition_framework.in_(
+                        self.filters.pop("id_acquisition_framework")
+                    )
+                )
 
         if "geoIntersection" in self.filters:
             # Insersect with the geom send from the map
@@ -328,10 +329,6 @@ class SyntheseQuery:
                     ),
                 )
             )
-        #  use for validation module since the class is factorized
-        if "modif_since_validation" in self.filters:
-            self.query = self.query.where(self.model.meta_update_date > self.model.validation_date)
-            self.filters.pop("modif_since_validation")
         if "unique_id_sinp" in self.filters:
             try:
                 uuid_filter = uuid.UUID(self.filters.pop("unique_id_sinp")[0])
@@ -422,7 +419,13 @@ class SyntheseQuery:
                 self.query = self.query.where(col.in_(value))
             elif hasattr(self.model.__table__.columns, colname):
                 col = getattr(self.model.__table__.columns, colname)
-                self.query = self.query.where(col.ilike("%{}%".format(value[0])))
+                if str(col.type) == "INTEGER":
+                    if colname in ["precision"]:
+                        self.query = self.query.where(col <= value[0])
+                    else:
+                        self.query = self.query.where(col == value[0])
+                else:
+                    self.query = self.query.where(col.ilike("%{}%".format(value[0])))
 
     def filter_query_all_filters(self, user):
         """High level function to manage query with all filters.
@@ -442,10 +445,8 @@ class SyntheseQuery:
         """
 
         self.filter_query_with_cruved(user)
-
         self.filter_taxonomy()
         self.filter_other_filters()
-
         if self.query_joins is not None:
             self.query = self.query.select_from(self.query_joins)
         return self.query

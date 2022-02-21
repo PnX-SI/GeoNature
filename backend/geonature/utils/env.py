@@ -32,9 +32,8 @@ DEFAULT_CONFIG_FILE = ROOT_DIR / "config/geonature_config.toml"
 
 os.environ['FLASK_SQLALCHEMY_DB'] = 'geonature.utils.env.DB'
 os.environ['FLASK_MARSHMALLOW'] = 'geonature.utils.env.MA'
-DB = SQLAlchemy()
-db = DB
-MA = Marshmallow()
+DB = db = SQLAlchemy()
+MA = ma = Marshmallow()
 migrate = Migrate()
 
 GN_MODULE_FILES = (

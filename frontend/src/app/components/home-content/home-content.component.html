@@ -1,12 +1,12 @@
 <div class="container-fluid">
   <div class="row">
-    <div [className]="(appConfig.FRONTEND.DISPLAY_MAP_LAST_OBS) ? 'col-6' : 'col-12'">
+    <div [className]="showLastObsMap ? 'col-xs-12 col-sm-12 col-md-6 col-lg-6' : 'col-12'">
       <pnx-introduction> </pnx-introduction>
 
     </div>
     <div 
-      class="col-6" 
-      *ngIf="appConfig.FRONTEND.DISPLAY_MAP_LAST_OBS"
+      class="col-xs-12 col-sm-12 col-md-6 col-lg-6" 
+      *ngIf="showLastObsMap"
     >
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -43,7 +43,7 @@
   </div>
 
   <div
-    *ngIf="appConfig.FRONTEND.DISPLAY_STAT_BLOC"
+    *ngIf="showGeneralStat"
     class="panel panel-container panel-top"
   >
     <div class="row row-0">

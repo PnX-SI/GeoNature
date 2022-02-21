@@ -185,34 +185,26 @@
         </ng-template>
       </ngx-datatable-column>
 
-
-
-      <ng-container *ngFor="let col of displayedColumns">
-        <ngx-datatable-column
-          [name]="col.name"
-          [prop]="col.prop"
-          [ngSwitch]="col.prop"
-          [width]="col.width"
-        >
-          <!-- HABITAT -->
+        <ngx-datatable-column name="Habitat">
           <ng-template
-            *ngSwitchCase="'habitats'"
             ngx-datatable-cell-template
-            let-row="row"
+          let-row="row"
+        >
+          <span
+            [matTooltip]="displayHabTooltip(row).join('\n')"
+            matTooltipPosition="left"
           >
-            <span
-              [matTooltip]="displayHabTooltip(row).join('\n')"
-              matTooltipPosition="left"
-            >
-              <span>
-                <span class='badge badge-dark'> {{row.t_habitats?.length}} </span>
-                {{displayHabTooltip(row)}}
-              </span>
+            <span>
+              <span class="badge badge-dark"> {{row.t_habitats?.length}} </span>
+              {{displayHabTooltip(row)}}
             </span>
-          </ng-template>
-          <!-- DATE -->
+          </span>
+        </ng-template>
+
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="Date min" >
           <ng-template
-            *ngSwitchCase="'date_min'"
             ngx-datatable-cell-template
             let-row="row"
             maxWidth="50"
@@ -221,9 +213,11 @@
               {{ row.date_min|date:'dd-MM-yyyy' }}
             </span>
           </ng-template>
-          <!-- JDD -->
+
+        </ngx-datatable-column>
+
+        <ngx-datatable-column name="Jeu de données">
           <ng-template
-            *ngSwitchCase="'dataset_name'"
             ngx-datatable-cell-template
             let-row="row"
           >
@@ -231,21 +225,8 @@
               {{row.dataset.dataset_name}}
             </span>
           </ng-template>
-          <!-- OTHER COLS -->
-          <ng-template
-            *ngSwitchDefault
-            let-row="row"
-            ngx-datatable-cell-template
-          >
-            <span
-              [matTooltip]="row[col.prop]"
-              matTooltipPosition="left"
-            >
-              {{row[col.prop]}}
-            </span>
-          </ng-template>
+
         </ngx-datatable-column>
-      </ng-container>
     </ngx-datatable>
   </div>
 

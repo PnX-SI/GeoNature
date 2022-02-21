@@ -2,66 +2,206 @@
 CHANGELOG
 =========
 
-2.9.0 (unreleased)
+2.10.0 (unreleased)
+-------------------
+
+**🚀 Nouveautés**
+
+* Simplification du CRUVED minimum pour accéder à GeoNature, ne nécessitant plus d'avoir obligatoirement un CRUVED défini au niveau global de GeoNature (#1622)
+* Ajout de la commande ``geonature db status``
+
+**⚠️ Notes de version**
+
+* Passage à angular 12 (développeur), executez les commandes suivantes : 
+  ::
+  
+    # depuis le répertoire frontend
+    nvm use
+    npm install --legacy-peer-deps
+    # depuis le virtualenv
+    geonature generate_frontend_modules_route
+    geonature generate_frontend_tsconfig
+    geonature generate_frontend_tsconfig_app
+
+2.9.2 (2022-02-15)
 ------------------
 
 **🚀 Nouveautés**
 
-* Construction d'une fiche d'identité (profil) par taxon grâce aux observations présente en base de données (altitude min/max, distribution spatiale, date de premiere/dernière observation, nombre de données valides, phénologie)
-* [OCCTAX] Contrôle de la cohérence des nouvelles données saisies par rapport au profil
-* [SYNTHESE] Création d'une "fiche taxon" à partir des informations décrites plus haut
-* [SYNTHESE] Filtre par UUID
-* [VALIDATION] Aide à la validation grâce à un score de "fiabilité" (basé sur les trois critères : altitude/distribution/phénologie) affiché dans le module de validation
-* Passage à la librairie 'select2' pour les composants multiselects (@jbrieuclp)
+* Optimisation du nombre d’informations renvoyées par l’API pour les utilisateurs et les organismes
+* Ajout d’une commande pour relancer le calcul de la sensibilité, utile en cas de modification du référentiel de sensibilité : ``geonature sensitivity update-synthese``. Elle s'appuie sur la fonction ``gn_synthese.update_sensitivity()``.
+* Le niveau de diffusion dans la synthèse n’est plus calculé automatiquement à partir du niveau de sensibilité (#1711)
+* Le niveau de sensibilité tient compte du comportement de l’occurrence (``OCC_COMPORTEMENT``), en plus du statut biologique (``STATUT_BIO``)
+* Optimisation du recalcul de la sensibilité lors de la mise à jour de la synthèse (trigger ``BEFORE`` au lieu de ``AFTER``)
+* Ajout de tests unitaires sur les fonctions de calcul de la sensibilité
 
-[DEV]
-* Factorisation du composant "pnx-municipalities" avec "pnx-areas"
-* Ajout de "pnx-areas" dans dynamic-form
-* Ajout d'un input "valueFieldName" pour "pnx-areas" et "pnx-municipalities"
+**🐛 Corrections**
 
-Note de version :
+* Correction d’une régression sur la récupération de la liste des taxons (#1672)
+* Correction de l’authentification au CAS de l’INPN
+* Correction du calcul de la sensibilité (#1284) :
 
-Si vous avez surcouché le paramètre `AREA_FILTERS` de la section `[SYNTHESE]`, veuillez remplacer le `id_type` par le `type_code` (voir `ref_geo.bib_areas_types`)
-::
+  * Gestion correcte de la présence de plusieurs règles avec et sans critère statut biologique
+  * Utilisation de la règle la plus sensible quand plusieurs règles s’appliquent
+
+**⚠️ Notes de version**
+
+* La correction de la fonction de calcul de la sensibilité est suivie d’un recalcul automatique du niveau de sensibilité des données présentes dans la synthèse. Si vous ne souhaitez pas procéder à ce recalcul, ajoutez le paramètre ``-x recompute-sensitivity=false`` lors de la mise à jour de la base de données avec la commande ``geonature db autoupgrade`` (lancée automatiquement par le script ``migration.sh``) :
+
+  ::
+
+    (venv)$ geonature db autoupgrade -x recompute-sensitivity=false
+
+* Le niveau de diffusion des données dans la synthèse est remis à ``NULL`` si celui-ci équivaut au niveau de sensibilité. Seuls les niveaux de diffusion qui différent sont laissés intacts. Si vous souhaitez rectifier vous-mêmes vos niveaux de diffusion et ne pas les remettre à ``NULL`` quand ils sont équivalents au niveau de sensibilité, vous pouvez ajouter le paramètre ``-x clear-diffusion-level=false`` lors de la mise à jour de la base de données :
+
+  ::
+
+    (venv)$ geonature db autoupgrade -x clear-diffusion-level=false
+
+  Si vous redescendez à l’état antérieur de votre base de données, les niveaux de diffusion seront restaurés à partir du niveau de sensibilité ; vous pouvez éviter ceci avec ``-x restore-diffusion-level=false``.
+
+
+2.9.1 (2022-01-27)
+------------------
+
+**🚀 Nouveautés**
+
+* Utilisation du paramètre ``page`` de Flask à la place du paramètre maison ``offset`` pour la pagination des routes (rétro-compatible)
+* Installation de TaxHub en version 1.9.4 (version corrective) par défaut
+* Ajout du paramètre de configuration ``CODE_APPLICATION`` (par défaut ``GN``) (#1635)
+
+**🐛 Corrections**
+
+* Correction de l'URL de réinitialisation de mot passe envoyée par email (#1620)
+* Correction d’un problème d’authentification avec le CAS
+* Occtax : Correction des listes déroulantes masquées dans le bloc dénombrement, en rajoutant un scroll
+* Correction de l'URL de l'API de TaxHub (slash final manquant) pour l'affichage des photos sur la fiche d'un profil de taxon
+* Correction de la synchronisation des métadonnées depuis MTD
+* Correction de la génération du token quand on utilise le CAS de l'INPN pour se connecter à GeoNature
+* Correction des permissions trop restrictives d’accès aux données de la synthèse
+* Correction de la pagination de la route ``/color_taxon`` en rajoutant un ordonnancement par ``cd_nom`` et ``id_area`` (utilisé par Occtax-mobile)
+* Contournement d'un problème de redirection incorrecte par l’API de TaxHub lorsque celui-ci est mal configuré (#1438, #1616)
+
+2.9.0 - Actias luna (2022-01-13)
+--------------------------------
+
+**Profils de taxons**
+
+**🚀 Nouveautés**
+
+* Construction automatique d'une fiche d'identité (profil) par taxon grâce aux observations validées présentes dans la base de données (altitude min/max, distribution spatiale, date de première/dernière observation, nombre de données valides, phénologie) (#917 par @DonovanMaillard, @lepontois, @Adrien-Pajot, @TheoLechemia, @bouttier, @amandine-sahl, @jpm-cbna)
+  
+  - Création d'un schéma ``gn_profiles`` dans la BDD contenant les tables, les vues, les fonctions et les paramètres de calcul des profils de taxons (https://github.com/PnX-SI/GeoNature/blob/develop/data/core/profiles.sql) (#1103)
+  - Mise en place de l'API des profils de taxons (#1104)
+  - Affichage des scores de chaque observation par rapport au profil du taxon dans la liste des observations du module Validation, ainsi que dans les fiches détails des observations dans les modules Synthèse et Validation (#1105)
+  - Ajout de filtres des observations par score ou critère des profils de taxon dans le module Validation (#1105)
+  - Ajout d'une alerte de contextualisation d'une observation par rapport au profil de taxon, lors de sa saisie dans le module Occtax 
+  - Mise en place de paramètres pour activer ou non les profils de taxons, paramétrer leurs règles et définir les statut de validation pris en compte pour le calcul des profils ("Certain-très probable" et "Probable" par défaut)
+  - Documentation des profils de taxons et de leur paramètrage (https://docs.geonature.fr/admin-manual.html#profils-de-taxons)
+  - Suppression de la vue matérialisée ``gn_synthese.vm_min_max_for_taxons`` et de la fonction ``gn_synthese.fct_calculate_min_max_for_taxon()`` qui n'étaient pas utilisées
+
+* [OCCTAX] Ajout d'un bouton permettant d'annuler la modification d'un taxon (#1508 par @jbrieuclp)
+* [OCCTAX] Ajout de valeurs par défaut aux champs additionnels (``gn_commons.t_additional_fields.default_value``)
+* [OCCTAX] Ajout d'un filtre avancé par ``id_releve``
+* [SYNTHESE] Ajout d'un filtre avancé par UUID d'observation (#973)
+* Amélioration des listes déroulantes en passant à la librairie ``ng-select2`` pour les composants multiselects (#616 par @jbrieuclp)
+* Gestion du référentiel des régions par Alembic (#1475)
+* Ajout des anciennes régions (1970-2016), inactives par défaut, mais utiles pour les règles régionales de sensibilité
+* Gestion du référentiel de sensibilité (règles nationales et régionales) par Alembic (#1576)
+* Ajout d'une documentation sur le calcul de la sensibilité des observations (https://docs.geonature.fr/admin-manual.html#gestion-de-la-sensibilite, par @mvergez)
+* [SYNTHESE] Amélioration de la fenêtre de limite d'affichage atteinte (#1520 par @jpm-cbna)
+* [OCCHAB] Utilisation de tout Habref par défaut si aucune liste d'habitats n'est renseignée dans la configuration du module
+* [METADONNEES] Attribuer des droits à un utilisateur sur un JDD si il a des droits sur son cadre d'acquisition
+* Association automatique et paramétrable des jeux de données personnels auto-générés à des modules (Occtax par défaut) (#1555)
+* Utilisation du C du CRUVED de l'utilisateur pour lister les jeux de données dans lesquels il peut ajouter des données dans les différents modules (et non plus le R du CRUVED sur GeoNature) (#659)
+
+**🐛 Corrections**
+
+* [OCCTAX] Correction de l'enregistrement des dénombrements lors de l'enchainement des relevés (#1479 par @jbrieuclp)
+* [OCCTAX] Correction du filtre du champs "Habitat" par typologie d'habitat
+* [ADMIN] Correction de l'affichage du module (#1427 par @jbrieuclp)
+* [ADMIN] Sécurisation du module (#839)
+* [VALIDATION] Corrections de la validation des observations (#1485 / #1529)
+* [METADONNEES] Amélioration des performances (#1559)
+* [METADONNEES] Correction de la suppression des JDD
+* [METADONNEES] Correction de l'export PDF des JDD (#1544)
+* [METADONNEES] Correction des permissions (#1528)
+* [METADONNEES] Correction de la recherche avancée
+* [SYNTHESE] Correction de la recherche sur les champs génériques de type nombre entier (#1519 par @jpm-cbna)
+* [SYNTHESE] Correction des permissions
+* [SYNTHESE] Correction du lien entre les filtres CA et JDD (#1530)
+* [OCCHAB] Correction du chargement de la configuration, des fiches info et de la modification d'une station
+* [METADONNEES] Améliorations des performances et des contrôles du formulaire des acteurs pour les JDD et les CA (par @joelclems)
+* Correction de la redirection vers le formulaire de login en cas de cookie corrompu (#1550 par @antoinececchimnhn)
+* Correction de la création de compte utilisateur (#1527)
+* Mise à jour du module Habref-api-module pour corrections de certaines données d'Habref
+
+**💻 Développement**
+
+* Migration vers la librairie ``gn-select2`` pour les listes déroulantes des formulaires (#616 / #1285 par @jbrieuclp)
+* Documentation de développement backend revue et complétée (#1559, https://docs.geonature.fr/development.html#developpement-backend)
+* Amélioration de nombreuses routes et fonctions du backend
+* Ajouts de tests automatisés du backend
+* Mise en place d'une intégration continue pour exécuter automatiquement les tests backend et leur couverture de code avec GitHub Actions, à chaque commit ou pull request dans les branches ``develop`` ou ``master`` (#1568, https://github.com/PnX-SI/GeoNature/actions)
+* [VALIDATION] Suppression des vues SQL et optimisation des routes
+* Génération automatique et aléatoire du paramètre ``SECRET_KEY``
+* [SYNTHESE] Remplacement de ``as_literal`` par ``json.loads``, plus performant (par @antoinececchimnhn)
+* Possibilité de filter la route ``synthese/taxa_distribution`` par ``id_source`` (#1446 par @mvergez)
+* Factorisation du composant ``pnx-municipalities`` avec le composant ``pnx-areas``
+* Ajout du composant ``pnx-areas`` dans dynamic-form
+* Ajout d'un input ``valueFieldName`` aux composants ``pnx-areas`` et ``pnx-municipalities``. Voir documentation (https://github.com/PnX-SI/GeoNature/blob/develop/docs/development.rst#pnx-municipalities)
+* Mise à jour de nombreuses dépendances
+
+**⚠️ Notes de version**
+
+* La liste des JDD dans les modules de saisie (Occtax, Occhab, Monitoring et Import) se base désormais sur le C du CRUVED de l'utilisateur au niveau du module (ou du C du CRUVED de GeoNature si l'utilisateur n'a pas de CRUVED sur le module), au lieu du R de GeoNature jusqu'à présent. Vous devrez donc potentiellement adapter vos permissions à ce changement de comportement (#659)
+
+* Si vous avez surcouché le paramètre de configuration ``AREA_FILTERS`` de la section ``[SYNTHESE]``, veuillez remplacer ``id_type`` par ``type_code`` (voir ``ref_geo.bib_areas_types``)
+
+  ::
 
     AREA_FILTERS = [
         { label = "Communes", id_type = 25 }
     ]
-devient
 
-::
+  devient
+
+  ::
 
     AREA_FILTERS = [
         { label = "Communes", type_code = "COM" }
     ]
 
-Les nouvelles fonctionnalités liés aux profiles necessite de raffraichir des vues materialisées à intervales réguliers et donc de créer une tâche planfiée (cron):
+* Si vous aviez modifié les colonnes de la liste des observations du module Validation en adaptant la vue ``gn_validation.v_synthese_validation_forwebapp``, celle-ci a été supprimée et il suffit désormais d'indiquer les colonnes souhaitées dans la configuration du module. Voir documentation (http://docs.geonature.fr/admin-manual.html#liste-des-champs-visibles)
 
-::
+* Les nouvelles fonctionnalités liées aux profils de taxons nécessitent de rafraichir des vues materialisées à intervalles réguliers et donc de créer une tâche planfiée (cron). Voir documentation (https://docs.geonature.fr/installation.html#taches-planifiees)
 
-      sudo nano /etc/cron.d/update_profile
+* Les régions sont maintenant disponibles via des migrations Alembic. Si vous possédez déjà les régions, vous pouvez l’indiquer à Alembic :
 
-Ajouter la ligne suivante en prenant changeant <CHEMIN_ABSOLUE_VERS_VENV> par le chemin absolue vers me virtualenv GeoNature et <GEONATURE_USER> par l'utilisateur linux de GeoNature:
+  ::
 
-::
+    geonature db upgrade ref_geo@head
+    geonature db stamp d02f4563bebe
 
-    0 * * * * <GEONATURE_USER> source <CHEMIN_ABSOLUE_VERS_VENV> && geonature profiles update_vms
+* Le référentiel de sensibilité est désormais disponible via une migration Alembic. Celui-ci nécessite le référentiel des régions (branche Alembic ``ref_geo_fr_regions``), ainsi que le référentiel des anciennes régions (branche Alembic ``ref_geo_fr_regions_1970``) – l’installation de ces référentiels est automatique avec l'installation des règles de sensibilité.
 
-Exemple : 
-::
+  - Si vous possédez déjà le référentiel, vous pouvez l’indiquer à Alembic :
 
-    0 * * * * geonatadmin source /home/user/geonature/backend/venv/bin/activate && geonature profiles update_vms
+    ::
 
-Cet exemple lance la tâche toute les nuits à minuit. Pour une autre fréquence voir la syntaxe cron : https://crontab.guru/
+      geonature db stamp 7dfd0a813f86
 
-Pour ceux qui utilisent le composant "pnx-municipalities" l'idéal serait de traduire les données et les modèle et de passer du ``code_insee`` a ``id_area``
-* la correspondance est immédiate (``area_code`` = ``code_insee``)
+  - Si vous avez installé GeoNature 2.8.X, le référentiel de sensibilité n’a pas été installé automatiquement. Vous pouvez l’installer manuellement :
 
-Cependant, pour garder la retrocompatibilité du composant "pnx-municipalities" veuillez ajouter
+    ::
 
-* dans les templates : ``[valueFieldName]="'area_code'`` dans les temaplte
-* dans les config (js, ts ou json) (attention à la casse): ``"value_field_name": "area_code"``
-* dans le module monitoring ajouter aussi ``"type_util": "area"``
+      geonature db upgrade ref_sensitivity_inpn@head
+
+  Par défaut, seule les règles nationales sont activées, vous laissant le soin d’activer vos règles locales en base vous-même. Vous pouvez également demander, lors de l’installation du référentiel, à activer (resp. désactiver) toutes les règles en ajout à la commande Alembic l’option ``-x active=true`` (resp. ``-x active=false``).
+  
+* Si vous souhaitez surcoucher les paramètres par défaut de Gunicorn (app_name, timeout...), depuis le passage à ``systemd`` dans la version 2.8.0, c'est désormais à faire dans un fichier ``environ`` à la racine du dossier de votre GeoNature (#1588, https://docs.geonature.fr/admin-manual.html#parametres-gunicorn)
+
+* Si vous les utilisez, mettez à jour les modules Import, Export et Monitoring dans leurs dernières versions compatibles avec le version 2.9.0 de GeoNature
 
 2.8.1 (2021-10-17)
 ------------------
@@ -163,6 +303,14 @@ Cependant, pour garder la retrocompatibilité du composant "pnx-municipalities" 
         ProxyPassReverse  http://127.0.0.1:8000/geonature/api
     </Location>
 
+  Si vous servez GeoNature sur un sous-domaine, vérifiez ou modifier la configuration Apache :
+
+  .. code-block::
+
+    <Location /api>
+        ProxyPass http://127.0.0.1:8000/api
+        ProxyPassReverse  http://127.0.0.1:8000/api
+    </Location>
 
   Pensez à recharger Apache si vous êtes amené à en changer la configuration : ``sudo systemctl reload apache2``
 
@@ -372,7 +520,7 @@ Si vous mettez à jour GeoNature :
 * Vous pouvez passer directement à cette version mais en suivant les notes des versions intermédiaires
 * Exécuter le script SQL de mise à jour de la BDD de GeoNature (https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.6.2to2.7.0.sql)
 * Le script SQL de mise à jour va supprimer et recréer les vues ``pr_occtax.v_export_occtax`` et ``gn_synthese.v_synthese_for_export`` pour y intégrer les champs additionnels. Si vous aviez modifié ces vues, adaptez le script de mise à jour de GeoNature 2.6.2 à 2.7.0, ou répercuter vos modifications après la mise à jour, à appliquer aussi dans votre éventuelle surcouche des paramètres ``default_columns_export`` (dans ``contrib/occtax/config/conf_gn_module.toml``) et ``EXPORT_COLUMNS`` (dans ``config/geonature_config.toml``)
-* Le fichier de customisation CSS a été déplacé de ``frontend/src/custom/custom.scss`` vers ``frontend/src/assets/custom.css`` pour pouvoir être modifier sans devoir rebuilder l'application. Son déplacement est fait automatiquement lors de la mise à jour de GeoNature. Si vous avez customisé les styles dans ce fichier et notamment fait référence à d'autres fichiers, vérifiez ou adaptez leurs chemins
+* Le fichier de customisation CSS a été déplacé de ``frontend/src/custom/custom.scss`` vers ``frontend/src/assets/custom.css`` pour pouvoir être modifié sans devoir rebuilder l'application. Son déplacement est fait automatiquement lors de la mise à jour de GeoNature. Si vous avez customisé les styles dans ce fichier et notamment fait référence à d'autres fichiers, vérifiez ou adaptez leurs chemins
 * Si vous aviez renseigner un des deux paramètres ``LIST_COLUMNS_FRONTEND``, ``COLUMNS_API_VALIDATION_WEB_APP`` dans le module Validation, il est nécessaire de les remplacer par le nouveau paramètre ``COLUMN_LIST``. Voir le fichier ``contrib/gn_module_validation/config/conf_gn_module.toml.example``
 * Modifier dans le fichier ``/etc/supervisor/conf.d/geonature-service.conf``, remplacer ``gn_errors.log`` par ``supervisor.log`` dans la variable ``stdout_logfile`` :
 

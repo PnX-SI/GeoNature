@@ -57,8 +57,11 @@ echo "############### Installation des paquets systèmes ###############"
 
 # Installing required environment for GeoNature and TaxHub
 echo "Installation de l'environnement logiciel..."
+# force node and npm version
+wget -qO- https://deb.nodesource.com/setup_16.x | sudo -E bash -
 
-sudo apt-get install -y unzip git postgresql postgis python2 python3-pip python3-venv libgdal-dev libpangocairo-1.0-0 apache2 || exit 1
+sudo apt-get install -y unzip git postgresql postgis python3-pip python3-venv libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 nodejs || exit 1
+
 
 # Apache configuration
 sudo a2enmod rewrite || exit 1
@@ -106,6 +109,7 @@ sed -i "s/install_sig_layers=.*$/install_sig_layers=$install_sig_layers/g" confi
 sed -i "s/install_grid_layer=.*$/install_grid_layer=$install_grid_layer/g" config/settings.ini
 sed -i "s/install_default_dem=.*$/install_default_dem=$install_default_dem/g" config/settings.ini
 sed -i "s/vectorise_dem=.*$/vectorise_dem=$vectorise_dem/g" config/settings.ini
+sed -i "s/install_ref_sensitivity=.*$/install_ref_sensitivity=$install_ref_sensitivity/g" config/settings.ini
 sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
 sed -i "s/usershub_release=.*$/usershub_release=$usershub_release/g" config/settings.ini
 sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini

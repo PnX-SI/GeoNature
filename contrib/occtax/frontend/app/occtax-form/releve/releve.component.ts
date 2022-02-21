@@ -9,7 +9,7 @@ import { CommonService } from "@geonature_common/service/common.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormReleveService } from "./releve.service";
-import { OcctaxFormMapService } from "../map/map.service";
+import { OcctaxFormMapService } from "../map/occtax-map.service";
 import { AppConfig } from "@geonature_config/app.config";
 
 @Component({
@@ -20,7 +20,7 @@ import { AppConfig } from "@geonature_config/app.config";
 })
 export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public occtaxConfig: any;
-  public geojson: GeoJSON;
+  public get geojson(): GeoJSON { return this.occtaxFormMapService.geojson.getValue(); };
   public userDatasets: Array<any>;
   public releveForm: FormGroup;
   public moduleConfig = ModuleConfig;
@@ -28,10 +28,12 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
   public routeSub: Subscription ;
   private _subscriptions: Subscription[] = [];
 
+  get additionalFieldsForm(): any[] { return this.occtaxFormReleveService.additionalFieldsForm; }
+
   constructor(
     private route: ActivatedRoute,
     public occtaxFormService: OcctaxFormService,
-    private occtaxFormReleveService: OcctaxFormReleveService,
+    public occtaxFormReleveService: OcctaxFormReleveService,
     private occtaxFormMapService: OcctaxFormMapService,
     private commonService: CommonService,
     private _dataService: DataFormService
@@ -44,21 +46,10 @@ export class OcctaxFormReleveComponent implements OnInit, OnDestroy {
     // pass route to releve.service to navigate
     this.occtaxFormReleveService.route = this.route;
     this.initHabFormSub();
-    // in order to pass data to the inserected area component
-    this._subscriptions.push(
-      this.occtaxFormMapService.geojson.subscribe(geojson => {
-        this.geojson = geojson;
-        if (geojson) {
-          this._dataService.getAltitudes(geojson).subscribe(altitude => {
-            this.releveForm.get("properties").patchValue(altitude)
-          })
-        }
-      })
-    );
 
     // if id_dataset pass as query parameters, pass it to the releve service in the form
     this._subscriptions.push(
-        this.route.queryParams.subscribe(params => {
+      this.route.queryParams.subscribe(params => {
         let datasetId = params["id_dataset"];
         if (datasetId){
           this.occtaxFormReleveService.datasetId = datasetId;

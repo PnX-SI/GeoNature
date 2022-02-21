@@ -1,0 +1,12 @@
+{% import 'admin/index_layout.html' as index_layout with context -%}
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<h3>Bienvenue sur l'interface d'administration de GeoNature</h3>
+
+<p>Vous trouverez ci-dessous les interfaces de configuration des différents modules.</p>
+
+<ul>
+{{ index_layout.menu() }}
+</ul>
+{% endblock %}

@@ -1,11 +1,13 @@
 from collections import OrderedDict
 
+import sqlalchemy as sa
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, column_property, foreign
+from sqlalchemy.orm import relationship, column_property, foreign, joinedload, contains_eager
 from sqlalchemy.sql import select, func, exists
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
+
 from geojson import Feature
 from flask import g
 from flask_sqlalchemy import BaseQuery
@@ -16,12 +18,14 @@ from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User
 from utils_flask_sqla.serializers import serializable, SERIALIZERS
 from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
+from utils_flask_sqla_geo.mixins import GeoFeatureCollectionMixin
 from pypn_habref_api.models import Habref
+from apptax.taxonomie.models import Taxref
 
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.ref_geo.models import LAreas, CorAreaStatus
-from geonature.core.ref_geo.models import LiMunicipalities
-from geonature.core.gn_commons.models import THistoryActions, TValidations, TMedias, TModules
+from geonature.core.gn_commons.models import THistoryActions, TValidations, last_validation, \
+                                             TMedias, TModules
 from geonature.utils.env import DB, db
 from geonature.utils.config import config
 
@@ -90,21 +94,45 @@ class VSyntheseDecodeNomenclatures(DB.Model):
     occ_stat_biogeo = DB.Column(DB.Unicode)
 
 
-class SyntheseQuery(BaseQuery):
-    def with_nomenclatures(self):
+class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
+    def join_nomenclatures(self):
         return self.options(*[joinedload(n) for n in Synthese.nomenclature_fields])
 
+    def lateraljoin_last_validation(self):
+        subquery = (
+            TValidations.query
+            .filter(TValidations.uuid_attached_row==Synthese.unique_id_sinp)
+            .limit(1)
+            .subquery()
+            .lateral('last_validation')
+        )
+        return self.outerjoin(subquery, sa.true()) \
+                   .options(contains_eager(Synthese.last_validation, alias=subquery))
+
+    def filter_by_scope(self, scope, user=None):
+        if user is None:
+            user = g.current_user
+        if scope == 0:
+            self = self.filter(sa.false())
+        elif scope in (1, 2):
+            ors = [
+            ]
+            datasets = (
+                TDatasets.query
+                .filter_by_readable(user)
+                .with_entities(TDatasets.id_dataset)
+                .all()
+            )
+            self = self.filter(or_(
+                Synthese.id_digitizer == user.id_role,
+                Synthese.cor_observers.any(id_role=user.id_role),
+                Synthese.id_dataset.in_([ds.id_dataset for ds in datasets]),
+            ))
+        return self
+
 
 @serializable
-class CorAreaSynthese(DB.Model):
-    __tablename__ = "cor_area_synthese"
-    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
-    id_synthese = DB.Column(DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True)
-    id_area = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True)
-
-
-@serializable
-@geoserializable
+@geoserializable(geoCol="the_geom_4326", idCol="id_synthese")
 @shapeserializable
 class Synthese(DB.Model):
     __tablename__ = "synthese"
@@ -194,7 +222,8 @@ class Synthese(DB.Model):
     reference_biblio = DB.Column(DB.Unicode(length=5000))
     count_min = DB.Column(DB.Integer)
     count_max = DB.Column(DB.Integer)
-    cd_nom = DB.Column(DB.Integer)
+    cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom))
+    taxref = relationship(Taxref)
     cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
     habitat = relationship(Habref)
     nom_cite = DB.Column(DB.Unicode(length=1000), nullable=False)
@@ -230,7 +259,14 @@ class Synthese(DB.Model):
 
     areas = relationship('LAreas', secondary=corAreaSynthese)
     validations = relationship(TValidations, backref='attached_row')
-    medias = relationship(TMedias, primaryjoin=(TMedias.uuid_attached_row==foreign(unique_id_sinp)))
+    last_validation = relationship(last_validation,
+                                   uselist=False,
+                                   viewonly=True)
+    medias = relationship(
+        TMedias,
+        primaryjoin=(TMedias.uuid_attached_row==foreign(unique_id_sinp)),
+        uselist=True
+    )
 
     cor_observers = DB.relationship(User, secondary=cor_observer_synthese)
 
@@ -252,12 +288,17 @@ class Synthese(DB.Model):
                 return True
             if g.current_user in self.cor_observers:
                 return True
-            if scope == 2:
-                if g.current_user.organisme in self.dataset.organism_actors:
-                    return True
-            return False
+            return self.dataset.has_instance_permission(scope)
         elif scope == 3:
             return True
+
+
+@serializable
+class CorAreaSynthese(DB.Model):
+    __tablename__ = "cor_area_synthese"
+    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
+    id_synthese = DB.Column(DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True)
+    id_area = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True)
 
 
 @serializable
@@ -429,8 +470,8 @@ def synthese_export_serialization(cls):
 class VColorAreaTaxon(DB.Model):
     __tablename__ = "v_color_taxon_area"
     __table_args__ = {"schema": "gn_synthese"}
-    cd_nom = DB.Column(DB.Integer(), ForeignKey("taxonomie.taxref.cd_nom"), primary_key=True)
-    id_area = DB.Column(DB.Integer(), ForeignKey("ref_geo.l_area.id_area"), primary_key=True)
+    cd_nom = DB.Column(DB.Integer(), ForeignKey(Taxref.cd_nom), primary_key=True)
+    id_area = DB.Column(DB.Integer(), ForeignKey(LAreas.id_area), primary_key=True)
     nb_obs = DB.Column(DB.Integer())
     last_date = DB.Column(DB.DateTime())
     color = DB.Column(DB.Unicode())

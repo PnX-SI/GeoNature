@@ -18,7 +18,7 @@ export class ValidationComponent implements OnInit {
 
   constructor(
     public _ds: ValidationDataService,
-    private _mapListService: MapListService,
+    public _mapListService: MapListService,
     private _commonService: CommonService,
     private _fs: SyntheseFormService
   ) { }
@@ -68,9 +68,9 @@ export class ValidationComponent implements OnInit {
     this._ds.dataLoaded = false;
     this._ds.getSyntheseData(formatedParams).subscribe(
       result => {
-        this._mapListService.geojsonData = result["data"];
+        this._mapListService.geojsonData = result;
         this._mapListService.loadTableData(
-          result["data"],
+          result,
           this.customColumns.bind(this)
         );
         this._mapListService.idName = "id_synthese";
@@ -83,8 +83,9 @@ export class ValidationComponent implements OnInit {
           this._commonService.translateToaster("error", "ERROR: IMPOSSIBLE TO CONNECT TO SERVER (check your connection)");
         } else {
           // show error message if other server error
-          this._commonService.translateToaster("error", err.error);
+          this._commonService.translateToaster("error", err.error.description);
         }
+        this._ds.dataLoaded = true;
       },
       () => { }
     );

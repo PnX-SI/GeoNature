@@ -35,7 +35,7 @@ class EmailStrOrListOfEmailStrField(fields.Field):
             return value
         else:
             raise ValidationError('Field should be str or list of str')
-    
+
     def _check_email(self, value):
         recipients = clean_recipients(value)
         for recipient in recipients:
@@ -105,6 +105,7 @@ class AccountManagement(Schema):
     VALIDATOR_EMAIL = EmailStrOrListOfEmailStrField(load_default=None)
     ACCOUNT_FORM = fields.List(fields.Dict(), load_default=[])
     ADDON_USER_EMAIL = fields.String(load_default="")
+    DATASET_MODULES_ASSOCIATION = fields.List(fields.String(), load_default=["OCCTAX"])
 
 
 class UsersHubConfig(Schema):
@@ -131,7 +132,7 @@ class AlembicConfig(Schema):
 class AdditionalFields(Schema):
     IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX"])
     IMPLEMENTED_OBJECTS = fields.List(
-        fields.String(), 
+        fields.String(),
         load_default=["OCCTAX_RELEVE",  "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"]
     )
 
@@ -179,7 +180,7 @@ class GnPySchemaConf(Schema):
     )
     CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
-    MAIL_CONFIG = fields.Nested(MailConfig, load_default=None)
+    MAIL_CONFIG = fields.Nested(MailConfig, load_default=MailConfig().load({}))
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     ADMIN_APPLICATION_LOGIN = fields.String()
     ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
@@ -214,11 +215,7 @@ class GnPySchemaConf(Schema):
                     "URL_USERSHUB, ADMIN_APPLICATION_LOGIN et ADMIN_APPLICATION_PASSWORD sont necessaires si ENABLE_SIGN_UP=True",
                     "URL_USERSHUB",
                 )
-            if (
-                data["MAIL_CONFIG"].get("MAIL_SERVER", None) is None
-                or data["MAIL_CONFIG"].get("MAIL_USERNAME", None) is None
-                or data["MAIL_CONFIG"].get("MAIL_PASSWORD", None) is None
-            ):
+            if data["MAIL_CONFIG"].get("MAIL_SERVER", None) is None:
                 raise ValidationError(
                     "Veuillez remplir la rubrique MAIL_CONFIG si ENABLE_SIGN_UP=True",
                     "ENABLE_SIGN_UP",
@@ -258,19 +255,19 @@ class Synthese(Schema):
     # Regulatory or not status list of fields
     STATUS_FILTERS = fields.List(fields.Dict, missing=[
         {
-            "id": "protections", 
+            "id": "protections",
             "show": True,
             "display_name": "Taxons protégés",
             "status_types": ["PN", "PR", "PD"],
         },
         {
-            "id": "regulations", 
+            "id": "regulations",
             "show": True,
             "display_name": "Taxons réglementés",
             "status_types": ["REGLII", "REGLLUTTE", "REGL", "REGLSO"],
         },
         {
-            "id": "znief", 
+            "id": "znief",
             "show": True,
             "display_name": "Espèces déterminantes ZNIEFF",
             "status_types": ["ZDET"],
@@ -279,31 +276,31 @@ class Synthese(Schema):
     # Red lists list of fields
     RED_LISTS_FILTERS = fields.List(fields.Dict, missing=[
         {
-            "id": "worldwide", 
+            "id": "worldwide",
             "show": True,
             "display_name": "Liste rouge mondiale",
             "status_type": "LRM",
         },
         {
-            "id": "european", 
+            "id": "european",
             "show": True,
             "display_name": "Liste rouge européenne",
             "status_type": "LRE",
         },
         {
-            "id": "national", 
+            "id": "national",
             "show": True,
             "display_name": "Liste rouge nationale",
             "status_type": "LRN",
         },
         {
-            "id": "regional", 
+            "id": "regional",
             "show": True,
             "display_name": "Liste rouge régionale",
             "status_type": "LRR",
         },
     ])
-    
+
     #--------------------------------------------------------------------
     # SYNTHESE - OBSERVATIONS LIST
     # Listes des champs renvoyés par l'API synthese '/synthese'
@@ -393,7 +390,7 @@ class MapConfig(Schema):
 
 
 class TaxHub(Schema):
-    ID_TYPE_MAIN_PHOTO = fields.Integer(missing=1)
+    ID_TYPE_MAIN_PHOTO = fields.Integer(load_default=1)
 
 
 # class a utiliser pour les paramètres que l'on veut passer au frontend
@@ -408,6 +405,7 @@ class GnGeneralSchemaConf(Schema):
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
     LOCAL_SRID = fields.Integer(load_default=2154)
+    CODE_APPLICATION = fields.String(load_default='GN')
     XML_NAMESPACE = fields.String(load_default="{http://inpn.mnhn.fr/mtd}")
     MTD_API_ENDPOINT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/mtd")
     CAS_PUBLIC = fields.Nested(CasFrontend, load_default=CasFrontend().load({}))

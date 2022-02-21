@@ -22,9 +22,11 @@ from flask import (
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from utils_flask_sqla.response import json_resp
 
-from geonature.core.users import routes as users
+from pypnusershub.db.models import User, Organisme
+from pypnusershub.routes import insert_or_update_organism, insert_or_update_role
 from geonature.utils import utilsrequests
 from geonature.utils.errors import CasAuthentificationError
+from geonature.utils.env import db
 
 
 routes = Blueprint("gn_auth", __name__, template_folder="templates")
@@ -67,47 +69,33 @@ def loginCas():
                 raise CasAuthentificationError(
                     "Error with the inpn authentification service", status_code=500
                 )
-
             info_user = response.json()
-            organism_id = info_user["codeOrganisme"]
             user = insert_user_and_org(info_user)
-            # push the user in the right group
-            try:
-                if not current_app.config["CAS"]["USERS_CAN_SEE_ORGANISM_DATA"]:
-                    # group socle 1
-                    users.insert_in_cor_role(
-                        current_app.config["BDD"]["ID_USER_SOCLE_1"], user["id_role"]
-                    )
-                elif organism_id is None:
-                    # group socle 1
-                    users.insert_in_cor_role(
-                        current_app.config["BDD"]["ID_USER_SOCLE_1"], user["id_role"]
-                    )
-                else:
-                    # group socle 2
-                    users.insert_in_cor_role(
-                        current_app.config["BDD"]["ID_USER_SOCLE_2"], user["id_role"]
-                    )
-                user["id_application"] = current_app.config["ID_APPLICATION_GEONATURE"]
-            except Exception as e:
-                log.info(e)
-                log.error(e)
+            db.session.commit()
 
             # creation de la Response
             response = make_response(redirect(current_app.config["URL_APPLICATION"]))
             cookie_exp = datetime.datetime.utcnow()
             expiration = current_app.config["COOKIE_EXPIRATION"]
             cookie_exp += datetime.timedelta(seconds=expiration)
-            # generation d'un token
+            user["id_application"] = current_app.config["ID_APP"]
             s = Serializer(current_app.config["SECRET_KEY"], expiration)
             token = s.dumps(user)
             response.set_cookie("token", token, expires=cookie_exp)
 
             # User cookie
+            organism_id = info_user["codeOrganisme"]
+            if not organism_id:
+                organism_id = (
+                    Organisme.query
+                    .filter_by(nom_organisme='Autre')
+                    .one()
+                    .id_organisme
+                )
             current_user = {
                 "user_login": user["identifiant"],
                 "id_role": user["id_role"],
-                "id_organisme": organism_id if organism_id else -1,
+                "id_organisme": organism_id,
             }
             response.set_cookie("current_user", str(current_user), expires=cookie_exp)
             return response
@@ -171,9 +159,8 @@ def insert_user_and_org(info_user):
     # Reconciliation avec base GeoNature
     if organism_id:
         organism = {"id_organisme": organism_id, "nom_organisme": organism_name}
-        resp = users.insert_organism(organism)
-
-    user = {
+        insert_or_update_organism(organism)
+    user_info = {
         "id_role": user_id,
         "identifiant": user_login,
         "nom_role": info_user["nom"],
@@ -182,12 +169,15 @@ def insert_user_and_org(info_user):
         "email": info_user["email"],
         "active": True,
     }
-    try:
-        resp = users.insert_role(user)
-    except Exception as e:
-        log.info(e)
-        log.error(e)
-        raise CasAuthentificationError(
-            "Error insering user in GeoNature", status_code=500
-        )
-    return user
+    user_info = insert_or_update_role(user_info)
+    user = User.query.get(user_id)
+    if not user.groups:
+        if not current_app.config["CAS"]["USERS_CAN_SEE_ORGANISM_DATA"] or organism_id is None:
+            # group socle 1
+            group_id = current_app.config["BDD"]["ID_USER_SOCLE_1"]
+        else:
+            # group socle 2
+            group_id = current_app.config["BDD"]["ID_USER_SOCLE_2"]
+        group = User.query.get(group_id)
+        user.groups.append(group)
+    return user_info

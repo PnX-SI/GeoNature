@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@angular/core';
 
-import { TreeModel } from 'angular-tree-component';
+import { TreeModel } from '@circlon/angular-tree-component';
 
 import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
 import { DataFormService } from '@geonature_common/form/data-form.service';
@@ -92,7 +92,7 @@ export class TaxonAdvancedStoreService {
     const all_groups = [];
     this._dataService.getRegneAndGroup2Inpn().subscribe(data => {
       this.taxonomyGroup2Inpn = data;
-      // tslint:disable-next-line:forin
+      // eslint-disable-next-line guard-for-in
       for (let regne in data) {
         data[regne].forEach(group => {
           if (group.length > 0) {

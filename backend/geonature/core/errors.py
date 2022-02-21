@@ -5,7 +5,6 @@ from flask import current_app, request, json, redirect
 from werkzeug.exceptions import Unauthorized, InternalServerError, HTTPException
 from werkzeug.urls import url_encode
 
-
 # Unauthorized means disconnected
 # (logged but not allowed to perform an action = Forbidden)
 @current_app.errorhandler(Unauthorized)
@@ -40,6 +39,7 @@ def handle_http_exception(e):
             'code': e.code,
             'name': e.name,
             'description': e.description,
+            'request_id': request.environ['FLASK_REQUEST_ID'],
         })
         response.content_type = 'application/json'
     return response
@@ -62,6 +62,7 @@ def handle_internal_server_error(e):
             'code': e.code,
             'name': e.name,
             'description': description,
+            'request_id': request.environ['FLASK_REQUEST_ID'],
         })
     return response
 

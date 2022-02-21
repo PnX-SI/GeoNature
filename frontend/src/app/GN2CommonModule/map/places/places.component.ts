@@ -20,7 +20,7 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
   templateUrl: 'places.component.html'
 })
 export class PlacesComponent extends MarkerComponent implements OnInit, OnDestroy {
-  @ViewChild('modalContent') public modalContent: any;
+  @ViewChild('modalContent', { static: false }) public modalContent: any;
   public placeForm = new FormControl();
   private geojsonSubscription$: Subscription;
   public geojson: GeoJSON.Feature;
@@ -69,14 +69,14 @@ export class PlacesComponent extends MarkerComponent implements OnInit, OnDestro
     if (!this.geojson.properties) {
       this.geojson.properties = {};
     }
-    this.geojson.properties['placeName'] = placeName.toString();
-    this._dfs.addPlace(this.geojson).subscribe(res => {
-      this.commonService.translateToaster(res.status, res.message);
-      if (res.status == 'success') {
+    this.geojson.properties['place_name'] = placeName.toString();
+    this._dfs.addPlace(this.geojson).subscribe(
+      res => {
+        this.commonService.translateToaster('success', 'Lieux ajouté avec succès.');
         this.modalService.dismissAll();
         this.placeForm.reset();
-      }
-    });
+      },
+    );
   }
 
   ngOnDestroy() {

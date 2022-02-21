@@ -69,7 +69,7 @@
             >
               <option [ngValue]="null"></option>
               <option
-                *ngFor="let ac of acquisitionFrameworks"
+                *ngFor="let ac of metadataS.acquisitionFrameworks"
                 [ngValue]="ac.id_acquisition_framework"
               >
                 {{ac.acquisition_framework_name}}
@@ -180,7 +180,7 @@
           <div>
             <h6>Référence(s) bibliographique(s)</h6>
 
-            <ng-container *ngFor="let bibliograpicReferenceForm of form.get('bibliographical_references').controls; let idx = index; let last = last">
+            <ng-container *ngFor="let bibliograpicReferenceForm of form.get('bibliographical_references')['controls']; let idx = index; let last = last">
               <div class="row">
                 <div class="col-1">
                   <button
@@ -221,7 +221,7 @@
               <mat-divider style="margin-top:10px;" *ngIf="!last"></mat-divider>
             </ng-container>
             <div>
-              <ng-container *ngIf="!form.get('bibliographical_references').controls.length; else roundButton">
+              <ng-container *ngIf="!form.get('bibliographical_references')['controls'] .length; else roundButton">
                 <button
                   type="button"
                   mat-raised-button
@@ -263,18 +263,12 @@
             <pnx-metadata-actor
               *ngIf="afFormS.isMainContact(actorForm)"
               [actorForm]="actorForm"
-              [isRemovable]="idx != 0"
               metadataType="af"
+              [isRemovable]="false"
               (actorFormRemove)="afFormS.removeActor(afFormS.actors, idx)"
               [defaultTab]="(afFormS.acquisition_framework | async)?.id_acquisition_framework ? 'all': 'organism'"
             >
             </pnx-metadata-actor>
-          </ng-container>
-          <ng-container *ngIf="form.get('cor_af_actor').invalid && form.get('cor_af_actor').errors?.mainContactRequired">
-            <small
-              class="mat-error">
-              Le renseignement d'un contact principal est obligatoire
-            </small>
           </ng-container>
         </div>
       </div>
@@ -284,7 +278,7 @@
           <h3 class="main-color"> Autre(s) acteur(s) </h3>
         </div>
         <div class="card-body">
-          <ng-container *ngFor="let actorForm of afFormS.actors.controls; let idx = index"> 
+          <ng-container *ngFor="let actorForm of afFormS.actors.controls; let idx = index">
 
           <pnx-metadata-actor
             *ngIf="!afFormS.isMainContact(actorForm)"
@@ -294,8 +288,18 @@
             [defaultTab]="(afFormS.acquisition_framework | async)?.id_acquisition_framework ? 'all': 'organism'"
           >
           </pnx-metadata-actor>
+          
+          <ng-container *ngIf="
+            !afFormS.actors.valid
+            && afFormS.actors.errors?.hasDoublons.index == idx
+          ">
+            <small
+              class="mat-error">
+              Cet acteur est déjà présent dans la liste
+            </small>
+          </ng-container>
 
-
+          <p></p>
         </ng-container>
         <button
           class="mt-2 float-right"
@@ -304,6 +308,7 @@
           color="primary"
           matTooltip="Ajouter un autre acteur"
           (click)="addContact(afFormS.actors, false)"
+          [disabled]="!afFormS.actors.valid"
         >
           <mat-icon>add</mat-icon>
         </button>

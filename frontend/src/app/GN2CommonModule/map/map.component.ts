@@ -68,7 +68,7 @@ export class MapComponent implements OnInit {
   /** Activer la barre de recherche */
   @Input() searchBar: boolean = true;
 
-  @ViewChild('mapDiv') mapContainer;
+  @ViewChild('mapDiv', { static: true }) mapContainer;
   searchLocation: string;
   public searching = false;
   public searchFailed = false;
@@ -160,10 +160,14 @@ export class MapComponent implements OnInit {
 
 
     map.on('moveend', e => {
-      this.mapService.currentExtend = {
-        center: this.map.getCenter(),
-        zoom: this.map.getZoom()
-      };
+      const zoom = this.map.getZoom();
+      // keep current extend only if current zoom != 0
+      if (zoom !== 0) {
+        this.mapService.currentExtend = {
+          center: this.map.getCenter(),
+          zoom: this.map.getZoom()
+        };
+      }
     });
 
     setTimeout(() => {
@@ -173,7 +177,7 @@ export class MapComponent implements OnInit {
   }
 
   /** Retrocompatibility hack to format map config to the expected format:
-   * 
+   *
    {
     name: string,
     url: string,
@@ -187,7 +191,7 @@ export class MapComponent implements OnInit {
   }
    */
   formatBaseMapConfig(baseMap) {
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (let attr in baseMap) {
       if (attr === 'layer') {
         baseMap['url'] = baseMap[attr];

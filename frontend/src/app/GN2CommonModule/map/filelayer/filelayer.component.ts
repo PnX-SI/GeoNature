@@ -10,8 +10,8 @@ import {
 import { MapService } from '../map.service';
 import { Map } from 'leaflet';
 import * as L from 'leaflet';
-import * as ToGeojson from 'togeojson';
-import * as FileLayer from 'leaflet-filelayer';
+import * as ToGeojson from '@tmcw/togeojson';
+import * as FileLayer from '@geonature/utils/filelayer';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -74,7 +74,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
 
       const geojsonArray = [];
       // loop on layers to set them on the map via the fileLayerFeatureGroup
-      // tslint:disable-next-line:forin
+      // eslint-disable-next-line guard-for-in
       for (let _layer in event.layer._layers) {
         // emit the geometry as an output
         currentFeature = event.layer._layers[_layer]['feature'];
@@ -88,7 +88,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
           onEachFeature: (feature, layer) => {
             let propertiesContent = '';
             // loop on properties dict to build the popup
-            // tslint:disable-next-line:forin
+            // eslint-disable-next-line guard-for-in
             for (let prop in currentFeature.properties) {
               propertiesContent +=
                 '<b>' + prop + '</b> : ' + currentFeature.properties[prop] + ' ' + '<br>';
@@ -112,7 +112,6 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
                 this.previousCurrentLayer = layer;
 
                 // sent geojson observable
-                this.mapService.firstLayerFromMap = false;
                 this.onGeomChange.emit((layer as any).feature);
                 this.mapService.setGeojsonCoord((layer as any).feature);
               });
@@ -122,8 +121,11 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
         });
         // add the layers to the feature groupe
         this.mapService.fileLayerFeatureGroup.addLayer(newLayer);
-        this.mapService.setGeojsonCoord(geojsonArray);
-        this.onLoad.emit(geojsonArray);
+        // if not edition mode fire event (ex use in synthese for search)
+        if(!this.editMode) {
+          this.mapService.setGeojsonCoord(geojsonArray);
+          this.onLoad.emit(geojsonArray);
+        }
       }
       // remove the previous layer of the map
       if (this.previousLayer) {
@@ -135,7 +137,6 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
     // event on load fail
 
     (this.fileLayerControl as any).loader.on('data:error', error => {
-      this._toasterService.error(error.error.message, "Erreur d'import");
       console.error(error);
     });
   }

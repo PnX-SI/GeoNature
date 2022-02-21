@@ -9,6 +9,7 @@ from urllib.parse import urlsplit
 from importlib import import_module
 
 from flask import Flask, g, request, current_app
+from flask.json import JSONEncoder
 from flask_mail import Message
 from flask_cors import CORS
 from flask_sqlalchemy import before_models_committed
@@ -16,12 +17,14 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from psycopg2.errors import UndefinedTable
 from sqlalchemy.exc import ProgrammingError
 from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.engine import RowProxy
 
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
 from geonature.utils.module import import_backend_enabled_modules
 from geonature.core.admin.admin import admin
+from geonature.middlewares import RequestID
 
 from pypnusershub.db.tools import user_from_token, UnreadableAccessRightsError, AccessRightsExpiredError
 from pypnusershub.db.models import Application
@@ -56,21 +59,36 @@ if config.get('SENTRY_DSN'):
     )
 
 
+class MyJSONEncoder(JSONEncoder):
+    def default(self, o):
+        if isinstance(o, RowProxy):
+            return dict(o)
+        return super().default(o)
+
+
 def create_app(with_external_mods=True):
-    app = Flask(__name__, static_folder="../static")
+    app = Flask(__name__.split('.')[0], static_folder="../static")
 
     app.config.update(config)
     api_uri = urlsplit(app.config['API_ENDPOINT'])
     app.config['APPLICATION_ROOT'] = api_uri.path
     app.config['PREFERRED_URL_SCHEME'] = api_uri.scheme
     if 'SCRIPT_NAME' not in os.environ:
-        os.environ['SCRIPT_NAME'] = app.config['APPLICATION_ROOT']
+        os.environ['SCRIPT_NAME'] = app.config['APPLICATION_ROOT'].rstrip('/')
     app.config['TEMPLATES_AUTO_RELOAD'] = True
     # disable cache for downloaded files (PDF file stat for ex)
     app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+    app.config.from_envvar('GEONATURE_SETTINGS', silent=True)  # optional settings
+
+    if len(app.config['SECRET_KEY']) < 20:
+        raise Exception("The SECRET_KEY config option must have a length "
+                        "greater or equals to 20 characters.")
 
     # set from headers HTTP_HOST, SERVER_NAME, and SERVER_PORT
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
+    app.wsgi_app = RequestID(app.wsgi_app)
+
+    app.json_encoder = MyJSONEncoder
 
     # set logging config
     config_loggers(app.config)
@@ -107,12 +125,24 @@ def create_app(with_external_mods=True):
         except (KeyError, UnreadableAccessRightsError, AccessRightsExpiredError):
             g.current_user = None
 
+    if config.get('SENTRY_DSN'):
+        from sentry_sdk import set_tag, set_user
+        @app.before_request
+        def set_sentry_context():
+            set_tag("request.id", request.environ["FLASK_REQUEST_ID"])
+            if g.current_user:
+                set_user({
+                    'id': g.current_user.id_role,
+                    'username': g.current_user.identifiant,
+                    'email': g.current_user.email,
+                })
+
     admin.init_app(app)
 
     # Pass the ID_APP to the submodule to avoid token conflict between app on the same server
     with app.app_context():
         try:
-            gn_app = Application.query.filter_by(code_application='GN').one()
+            gn_app = Application.query.filter_by(code_application=config['CODE_APPLICATION']).one()
         except (ProgrammingError, NoResultFound):
             logging.warning("Warning: unable to find GeoNature application, database not yet initialized?")
         else:
@@ -131,10 +161,10 @@ def create_app(with_external_mods=True):
                 ('geonature.core.gn_synthese.routes:routes', '/synthese'),
                 ('geonature.core.gn_meta.routes:routes', '/meta'),
                 ('geonature.core.ref_geo.routes:routes', '/geo'),
-                ('geonature.core.gn_exports.routes:routes', '/exports'),
                 ('geonature.core.auth.routes:routes', '/gn_auth'),
                 ('geonature.core.gn_monitoring.routes:routes', '/gn_monitoring'),
                 ('geonature.core.gn_profiles.routes:routes', '/gn_profiles'),
+                ('geonature.core.sensitivity.routes:routes', None),
             ]:
         module_name, blueprint_name = blueprint_path.split(':')
         blueprint = getattr(import_module(module_name), blueprint_name)

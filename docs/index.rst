@@ -11,8 +11,6 @@ Bienvenue dans la documentation de GeoNature
    import-level-2
    development
    versions-compatibility
-   conf-apache
-   https
    FAQ
    authors
    CHANGELOG

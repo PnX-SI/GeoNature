@@ -15,9 +15,8 @@
     <!-- Page Content  -->
     <div class="row row-sm page-content">
 
-      <div class="col-sm-12 col-md-7 padding-sm middle">
+      <div class="col-sm-12 col-md-9 padding-sm middle">
           <button #buttonToggle
-            [style.left.px]="marginButton"
             (click)="searchBarHidden = !searchBarHidden"
             data-toggle="collapse" data-target="#sidebar"
             aria-controls="sidebar"
@@ -35,7 +34,7 @@
           -->
 
       </div>
-      <div class="col-sm-12 col-md-5 padding-sm last">
+      <div class="col-sm-12 col-md-3 padding-sm last">
           <pnx-validation-synthese-carte [inputSyntheseData]="_mapListService.geojsonData"></pnx-validation-synthese-carte>
       </div>
 

@@ -1,15 +1,17 @@
 import datetime
+from uuid import UUID
 
 from flask import g
 from flask_sqlalchemy import BaseQuery
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, get_scopes_by_action
 from geonature.utils.errors import GeonatureApiError
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_
 from sqlalchemy.sql import select, func, exists
-from sqlalchemy.orm import relationship, exc
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship, exc, synonym
+from sqlalchemy.dialects.postgresql import UUID as UUIDType
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.schema import FetchedValue
 from utils_flask_sqla.generic import testDataType
 from werkzeug.exceptions import BadRequest, NotFound
 
@@ -17,8 +19,30 @@ from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User, Organisme
 from utils_flask_sqla.serializers import serializable
 
-from geonature.utils.env import DB
+from geonature.utils.env import DB, db
 from geonature.core.gn_commons.models import cor_field_dataset, cor_module_dataset
+
+
+class FilterMixin:
+    @classmethod
+    def compute_filter(cls, **kwargs):
+        f = sa.true()
+        for key, value in kwargs.items():
+            if '.' in key:
+                rel_name, key = key.split('.', 1)
+                try:
+                    rel = getattr(cls, rel_name)
+                except AttributeError:
+                    continue
+                remote_cls = rel.property.mapper.class_
+                if not hasattr(remote_cls, 'compute_filter'):
+                    continue
+                _f = remote_cls.compute_filter(**{key: value})
+                if rel.property.uselist:
+                    f &= rel.any(_f)
+                else:
+                    f &= rel.has(_f)
+        return f
 
 
 class CorAcquisitionFrameworkObjectif(DB.Model):
@@ -117,39 +141,6 @@ class CorAcquisitionFrameworkActor(DB.Model):
         lazy="joined",
     )
 
-    @staticmethod
-    def get_actor(
-        id_acquisition_framework, id_nomenclature_actor_role, id_role=None, id_organism=None,
-    ):
-        """
-            Get CorAcquisitionFrameworkActor from id_dataset, id_actor, and id_role or id_organism.
-            if no object return None
-        """
-        try:
-            if id_role is None:
-                return (
-                    DB.session.query(CorAcquisitionFrameworkActor)
-                    .filter_by(
-                        id_acquisition_framework=id_acquisition_framework,
-                        id_organism=id_organism,
-                        id_nomenclature_actor_role=id_nomenclature_actor_role,
-                    )
-                    .one()
-                )
-            elif id_organism is None:
-                return (
-                    DB.session.query(CorAcquisitionFrameworkActor)
-                    .filter_by(
-                        id_acquisition_framework=id_acquisition_framework,
-                        id_role=id_role,
-                        id_nomenclature_actor_role=id_nomenclature_actor_role,
-                    )
-                    .one()
-                )
-        except exc.NoResultFound:
-            return None
-
-
 @serializable(exclude=['actor'])
 class CorDatasetActor(DB.Model):
     __tablename__ = "cor_dataset_actor"
@@ -171,14 +162,14 @@ class CorDatasetActor(DB.Model):
     )
 
     role = DB.relationship(User, lazy="joined")
-    organism = relationship(Organisme, lazy="joined")
+    organism = DB.relationship(Organisme, lazy="joined")
 
     @hybrid_property
     def actor(self):
         if self.role is not None:
             return self.role
         else:
-            return self.organisme
+            return self.organism
 
     @hybrid_property
     def display(self):
@@ -187,37 +178,6 @@ class CorDatasetActor(DB.Model):
         else:
             actor = self.organism.nom_organisme
         return '{} ({})'.format(actor, self.nomenclature_actor_role.label_default)
-
-    @staticmethod
-    def get_actor(id_dataset, id_nomenclature_actor_role, id_role=None, id_organism=None):
-        """
-            Get CorDatasetActor from id_dataset, id_actor, and id_role or id_organism.
-            if no object return None
-        """
-        try:
-            if id_role is None:
-                return (
-                    DB.session.query(CorDatasetActor)
-                    .filter_by(
-                        id_dataset=id_dataset,
-                        id_organism=id_organism,
-                        id_nomenclature_actor_role=id_nomenclature_actor_role,
-                    )
-                    .one()
-                )
-            elif id_organism is None:
-                return (
-                    DB.session.query(CorDatasetActor)
-                    .filter_by(
-                        id_dataset=id_dataset,
-                        id_role=id_role,
-                        id_nomenclature_actor_role=id_nomenclature_actor_role,
-                    )
-                    .one()
-                )
-        except exc.NoResultFound:
-            return None
-
 
 @serializable
 class CorDatasetProtocol(DB.Model):
@@ -251,58 +211,34 @@ class CorDatasetTerritory(DB.Model):
     )
 
 
-class CruvedHelper(DB.Model):
+class CruvedMixin:
     """
     Classe abstraite permettant d'ajouter des méthodes de
     contrôle d'accès à la donnée des class TDatasets et TAcquisitionFramework
     """
-
-    __abstract__ = True
-
-    def user_is_allowed_to(
-        self,
-        object_actors: list,
-        info_role: list,
-        level: str,
+    def get_object_cruved(
+        self, user_cruved
     ):
         """
-            Fonction permettant de dire si un utilisateur
-            peu ou non agir sur une donnée
+        Return the user's cruved for a Model instance.
+        Use in the map-list interface to allow or not an action
+        params:
+            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
+            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
+            - id_role: identifiant de la personne qui demande la route
+            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
+            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
 
-            Params:
-                object_actors: liste d'id dataset sur lequel l'utilisateur a des droits
-                id_role: identifiant de la personne qui demande la route
-
-            Return: boolean
+        Return: dict {'C': True, 'R': False ...}
         """
-        # Si l'utilisateur n'a pas de droit d'accès aux données
-        if level not in ("1", "2", "3"):
-            return False
-
-        # Si l'utilisateur à le droit d'accéder à toutes les données
-        if level == "3":
-            return True
-
-        # Si l'utilisateur est createur de la données
-        if self.id_digitizer == info_role.id_role:
-            return True
-
-        for actor in object_actors :
-            # Si l'utilisateur est indiqué comme role dans la données
-            if actor.id_role == info_role.id_role :
-                return True
-            # Si l'utilisateur appartient à un organisme
-            # qui a un droit sur la données et
-            # que son niveau d'accès est 2 ou 3
-            if actor.id_organism == info_role.id_organisme and level == "2":
-                return True
-
-        return False
-
+        return {
+            action: self.has_instance_permission(int(level))
+            for action, level in user_cruved.items()
+        }
 
 
 @serializable
-class TBibliographicReference(CruvedHelper):
+class TBibliographicReference(CruvedMixin, db.Model):
     __tablename__ = "t_bibliographical_references"
     __table_args__ = {"schema": "gn_meta"}
     id_bibliographic_reference = DB.Column(DB.Integer, primary_key=True)
@@ -318,20 +254,20 @@ class TDatasetsQuery(BaseQuery):
     def _get_read_scope(self, user=None):
         if user is None:
             user = g.current_user
-        cruved, herited = cruved_scope_for_user_in_module(
+        cruved = get_scopes_by_action(
             id_role=user.id_role,
             module_code="GEONATURE"
         )
-        return int(cruved['R'])
+        return cruved['R']
 
     def _get_create_scope(self, module_code, user=None):
         if user is None:
             user = g.current_user
-        cruved, herited = cruved_scope_for_user_in_module(
+        cruved = get_scopes_by_action(
             id_role=user.id_role,
             module_code=module_code
         )
-        return int(cruved["C"])
+        return cruved["C"]
 
     def filter_by_scope(self, scope, user=None):
         if user is None:
@@ -345,11 +281,11 @@ class TDatasetsQuery(BaseQuery):
             ]
             # if organism is None => do not filter on id_organism even if level = 2
             if scope == 2 and user.id_organisme is not None:
-                ors.append(TDatasets.cor_dataset_actor.any(id_organism=g.current_user.id_organisme))
+                ors.append(TDatasets.cor_dataset_actor.any(id_organism=user.id_organisme))
             self = self.filter(or_(*ors))
         return self
 
-    def filter_by_generic_params(self, params={}):
+    def filter_by_params(self, params={}):
         if "active" in params:
             self = self.filter(TDatasets.active == bool(params["active"]))
             params.pop("active")
@@ -371,6 +307,8 @@ class TDatasetsQuery(BaseQuery):
                 self = self.order_by(orderCol)
             except AttributeError:
                 raise BadRequest("the attribute to order on does not exist")
+        if "module_code" in params:
+            self = self.filter(TDatasets.modules.any(module_code=params["module_code"]))
         # Generic Filters
         for param in params:
             if param in table_columns:
@@ -378,25 +316,25 @@ class TDatasetsQuery(BaseQuery):
                 testT = testDataType(params[param], col.type, param)
                 if testT:
                     raise BadRequest(testT)
-                q = q.filter(col == params[param])
+                self = self.filter(col == params[param])
         return self
 
-    def filter_by_readable(self):
+    def filter_by_readable(self, user=None):
         """
             Return the datasets where the user has autorization via its CRUVED
         """
         return self.filter_by_scope(
-            self._get_read_scope()
+            self._get_read_scope(user)
         )
 
-    def filter_by_creatable(self, module_code):
+    def filter_by_creatable(self, module_code, user=None):
         """
         Return all dataset where user have read rights minus those who user to not have
         create rigth
         """
         query = self.filter(TDatasets.modules.any(module_code=module_code))
-        scope = self._get_read_scope()
-        create_scope = self._get_create_scope(module_code)
+        scope = self._get_read_scope(user)
+        create_scope = self._get_create_scope(module_code, user=user)
         if create_scope < scope:
             scope = create_scope
         return query.filter_by_scope(scope)
@@ -404,16 +342,17 @@ class TDatasetsQuery(BaseQuery):
     
 
 @serializable(exclude=['user_actors', 'organism_actors'])
-class TDatasets(CruvedHelper):
+class TDatasets(CruvedMixin, FilterMixin, db.Model):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
     query_class = TDatasetsQuery
 
     id_dataset = DB.Column(DB.Integer, primary_key=True)
-    unique_dataset_id = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
+    unique_dataset_id = DB.Column(UUIDType(as_uuid=True), default=select([func.uuid_generate_v4()]))
     id_acquisition_framework = DB.Column(
         DB.Integer, ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
+    acquisition_framework = DB.relationship("TAcquisitionFramework", lazy="joined")  # join AF as required for permissions checks
     dataset_name = DB.Column(DB.Unicode)
     dataset_shortname = DB.Column(DB.Unicode)
     dataset_desc = DB.Column(DB.Unicode)
@@ -457,9 +396,9 @@ class TDatasets(CruvedHelper):
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
     active = DB.Column(DB.Boolean, default=True)
-    validable = DB.Column(DB.Boolean)
+    validable = DB.Column(DB.Boolean, server_default=FetchedValue())
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
-    digitizer = DB.relationship(User)
+    digitizer = DB.relationship(User, lazy="joined")  # joined for permission check
     id_taxa_list = DB.Column(DB.Integer)
     modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
 
@@ -527,7 +466,10 @@ class TDatasets(CruvedHelper):
     def is_deletable(self):
         return not DB.session.query(self.synthese_records.exists()).scalar()
 
-    def has_instance_permission(self, scope):
+    def has_instance_permission(self, scope, _through_af=True):
+        """
+        _through_af prevent infinite recursion
+        """
         if scope == 0:
             return False
         elif scope in (1, 2):
@@ -535,55 +477,44 @@ class TDatasets(CruvedHelper):
                 return True
             if scope == 2 and g.current_user.organisme in self.organism_actors:
                 return True
-            return False
+            return _through_af and self.acquisition_framework.has_instance_permission(scope, _through_ds=False)
         elif scope == 3:
             return True
 
     def __str__(self):
         return self.dataset_name
-        
-    def get_object_cruved(
-        self, info_role, user_cruved
-    ):
-        """
-        Return the user's cruved for a Model instance.
-        Use in the map-list interface to allow or not an action
-        params:
-            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
-            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
-            - id_role: identifiant de la personne qui demande la route
-            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
-            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
-
-        Return: dict {'C': True, 'R': False ...}
-        """
-        return {
-            action: self.user_is_allowed_to(self.cor_dataset_actor, info_role, level)
-            for action, level in user_cruved.items()
-        }
 
     @staticmethod
     def get_id(uuid_dataset):
-        id_dataset = (
+        return(
             DB.session.query(TDatasets.id_dataset)
             .filter(TDatasets.unique_dataset_id == uuid_dataset)
-            .first()
+            .scalar()
         )
-        if id_dataset:
-            return id_dataset[0]
-        return id_dataset
 
     @staticmethod
     def get_uuid(id_dataset):
-        uuid_dataset = (
+        return(
             DB.session.query(TDatasets.unique_dataset_id)
             .filter(TDatasets.id_dataset == id_dataset)
-            .first()
+            .scalar()
         )
-        if uuid_dataset:
-            return uuid_dataset[0]
-        return uuid_dataset
 
+    @classmethod
+    def compute_filter(cls, **kwargs):
+        f = super().compute_filter(**kwargs)
+        uuid = kwargs.get('uuid')
+        if uuid is not None:
+            try:
+                uuid = UUID(uuid.strip())
+            except TypeError:
+                pass
+            else:
+                f &= TDatasets.unique_dataset_id == uuid
+        name = kwargs.get('name')
+        if name is not None:
+            f &= TDatasets.dataset_name.ilike(f'%{name}%')
+        return f
 
 
 class TAcquisitionFrameworkQuery(BaseQuery):
@@ -593,6 +524,7 @@ class TAcquisitionFrameworkQuery(BaseQuery):
             module_code="GEONATURE"
         )
         return int(cruved['R'])
+
 
     def filter_by_scope(self, scope, user=None):
         if user is None:
@@ -627,18 +559,26 @@ class TAcquisitionFrameworkQuery(BaseQuery):
             self._get_read_scope()
         )
 
+    def filter_by_params(self, params={}):
+        # XXX frontend retro-compatibility
+        selector = params.get('selector')
+        if selector == 'ds':
+            params = { f'datasets.{key}': value for key, value in params.items() }
+        f = TAcquisitionFramework.compute_filter(**params)
+        return self.filter(f)
+
 
 @serializable(exclude=['user_actors', 'organism_actors'])
-class TAcquisitionFramework(CruvedHelper):
+class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
     __tablename__ = "t_acquisition_frameworks"
     __table_args__ = {"schema": "gn_meta"}
     query_class = TAcquisitionFrameworkQuery
 
     id_acquisition_framework = DB.Column(DB.Integer, primary_key=True)
     unique_acquisition_framework_id = DB.Column(
-        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
+        UUIDType(as_uuid=True), default=select([func.uuid_generate_v4()])
     )
-    acquisition_framework_name = DB.Column(DB.Unicode)
+    acquisition_framework_name = DB.Column(DB.Unicode(255))
     acquisition_framework_desc = DB.Column(DB.Unicode)
     id_nomenclature_territorial_level = DB.Column(
         DB.Integer,
@@ -740,11 +680,11 @@ class TAcquisitionFramework(CruvedHelper):
 
     t_datasets = DB.relationship(
         "TDatasets",
-        lazy="select",
+        lazy="joined",  # DS required for permissions checks
         cascade="all,delete-orphan",
         uselist=True,
-        backref=DB.backref("acquisition_framework", lazy="select"),
     )
+    datasets = synonym("t_datasets")
 
     @hybrid_property
     def user_actors(self):
@@ -754,7 +694,14 @@ class TAcquisitionFramework(CruvedHelper):
     def organism_actors(self):
         return [ actor.organism for actor in self.cor_af_actor if actor.organism is not None ]
 
-    def has_instance_permission(self, scope):
+    def is_deletable(self):
+        return not db.session.query(
+            TDatasets.query
+            .filter_by(id_acquisition_framework=self.id_acquisition_framework)
+            .exists()
+        ).scalar()
+
+    def has_instance_permission(self, scope, _through_ds=True):
         if scope == 0:
             return False
         elif scope in (1, 2):
@@ -763,29 +710,9 @@ class TAcquisitionFramework(CruvedHelper):
             if scope == 2 and g.current_user.organisme in self.organism_actors:
                 return True
             # rights on DS give rights on AF!
-            return any(map(lambda ds: ds.has_instance_permission(scope), self.t_datasets))
+            return _through_ds and any(map(lambda ds: ds.has_instance_permission(scope, _through_af=False), self.t_datasets))
         elif scope == 3:
             return True
-
-    def get_object_cruved(
-        self, info_role, user_cruved
-    ):
-        """
-        Return the user's cruved for a Model instance.
-        Use in the map-list interface to allow or not an action
-        params:
-            - user_cruved: object retourner by cruved_for_user_in_app(user) {'C': '2', 'R':'3' etc...}
-            - id_object (int): id de l'objet sur lqurqul on veut vérifier le CRUVED (self.id_dataset/ self.id_ca)
-            - id_role: identifiant de la personne qui demande la route
-            - id_object_users_actor (list): identifiant des objects ou l'utilisateur est lui même acteur
-            - id_object_organism_actor (list): identifiants des objects ou l'utilisateur ou son organisme sont acteurs
-
-        Return: dict {'C': True, 'R': False ...}
-        """
-        return {
-            action: self.user_is_allowed_to(self.cor_af_actor, info_role, level)
-            for action, level in user_cruved.items()
-        }
 
     @staticmethod
     def get_id(uuid_af):
@@ -793,14 +720,11 @@ class TAcquisitionFramework(CruvedHelper):
             return the acquisition framework's id
             from its UUID if exist or None
         """
-        a_f = (
+        return(
             DB.session.query(TAcquisitionFramework.id_acquisition_framework)
             .filter(TAcquisitionFramework.unique_acquisition_framework_id == uuid_af)
-            .first()
+            .scalar()
         )
-        if a_f:
-            return a_f[0]
-        return a_f
 
     @staticmethod
     def get_user_af(user, only_query=False, only_user=False):
@@ -835,6 +759,22 @@ class TAcquisitionFramework(CruvedHelper):
             return q
         data = q.all()
         return list(set([d.id_acquisition_framework for d in data]))
+
+    @classmethod
+    def compute_filter(cls, **kwargs):
+        f = super().compute_filter(**kwargs)
+        uuid = kwargs.get('uuid')
+        if uuid is not None:
+            try:
+                uuid = UUID(uuid.strip())
+            except TypeError:
+                pass
+            else:
+                f &= TAcquisitionFramework.unique_acquisition_framework_id == uuid
+        name = kwargs.get('name')
+        if name is not None:
+            f &= TAcquisitionFramework.acquisition_framework_name.ilike(f'%{name}%')
+        return f
 
 
 @serializable

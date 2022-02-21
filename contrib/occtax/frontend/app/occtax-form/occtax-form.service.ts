@@ -1,14 +1,14 @@
 import { Injectable } from "@angular/core";
 import { FormControl } from "@angular/forms";
 import { BehaviorSubject, Observable, of } from "rxjs";
-import { filter, tap, skip, mergeMap, distinctUntilChanged } from "rxjs/operators";
+import { filter, tap, skip, mergeMap, distinctUntilChanged, switchMap } from "rxjs/operators";
 
 import { AppConfig } from "@geonature_config/app.config";
 import { HttpClient, HttpParams } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { CommonService } from "@geonature_common/service/common.service";
-import {DataFormService} from "@geonature_common/form/data-form.service"
+import { DataFormService } from "@geonature_common/form/data-form.service"
 
 import { OcctaxDataService } from "../services/occtax-data.service";
 
@@ -26,16 +26,16 @@ export class OcctaxFormService {
   public stayOnFormInterface = new FormControl(false);
   public currentIdDataset:any;
   public previousReleve = null;
-  public globalReleveAddFields: Array<any> = [];
-  public globalOccurrenceAddFields: Array<any>= [];
+  // public globalOccurrenceAddFields: Array<any>= [];
   public globalCountingAddFields: Array<any>= [];
-  public datasetReleveAddFields: Array<any>= [];
-  public datasetOccurrenceAddFields: Array<any>= [];
+  // public datasetOccurrenceAddFields: Array<any>= [];
   public datasetCountingAddFields: Array<any>= [];
   public idTaxonList: number;
   public currentTab: "releve" | "taxons";
 
-
+  get observerFromCurrentUser() {
+    return 
+  }
 
 
   constructor(
@@ -48,11 +48,11 @@ export class OcctaxFormService {
   ) {        
     this.currentUser = this._auth.getCurrentUser();
 
-    //observation de l'URL
+    //observation de l'URL et recuperation du relevé si édition id !== null
     this.id_releve_occtax
       .pipe(
         skip(1), // skip initilization value (null)
-        tap((id) =>{ 
+        tap((id) =>{           
           if(id == null) {            
             this.editionMode.next(false);
           } else {
@@ -61,28 +61,21 @@ export class OcctaxFormService {
         }), //reinitialisation du mode edition à faux
         filter((id) => id !== null),
         distinctUntilChanged(),
+        switchMap((id) => this._dataS.getOneReleve(id))
       )
-      .subscribe((id) => {                             
-        this.getOcctaxData(id)
-      });
-  }
-
-  getOcctaxData(id) {
-    this._dataS.getOneReleve(id).subscribe(
-      (data) => {        
-        this.occtaxData.next(data);
-        this.editionMode.next(true);
-        // set taxa list
-
-        if(data.releve.properties.dataset.id_taxa_list) {
-          this.idTaxonList = data.releve.properties.dataset.id_taxa_list;
+      .subscribe(
+        (data) => {        
+          this.occtaxData.next(data);
+          // set taxa list
+          if(data.releve.properties.dataset.id_taxa_list) {
+            this.idTaxonList = data.releve.properties.dataset.id_taxa_list;
+          }
+          
+        },
+        (error) => {
+          this._commonService.translateToaster("error", "Releve.DoesNotExist");
+          this._router.navigate(["occtax/form"]);
         }
-        
-      },
-      (error) => {
-        this._commonService.translateToaster("error", "Releve.DoesNotExist");
-        this._router.navigate(["occtax/form"]);
-      }
     );
   }
 
@@ -104,19 +97,15 @@ export class OcctaxFormService {
       }
     );
   }
-  getAdditionnalFields(object_code: Array<string>, idDataset?): Observable<any> {        
-    
-    let _idDataset = "null";
-    if(idDataset) {
-      _idDataset = idDataset
-    }    
+
+  getAdditionnalFields(object_code: Array<string>, idDataset?: string): Observable<any> {          
     return this.dataFormService.getadditionalFields({
-      'id_dataset':  _idDataset,
+      'id_dataset':  idDataset || "null",
       'module_code': ['OCCTAX'],
       'object_code': object_code
-    }).catch(() => {    
-      console.error("error while get addional fields");
-      return of({})
+    }).catch((error) => {  
+      console.error("error while get addional fields", error);
+      return of([])
     })
   }
 

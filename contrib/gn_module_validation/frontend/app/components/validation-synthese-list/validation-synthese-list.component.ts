@@ -79,43 +79,19 @@ export class ValidationSyntheseListComponent
 
   onMapClick() {
     this.mapListService.onMapClik$.subscribe(id => {
-      // create list of observation ids having coordinates = to id value
-
-
-      const selected_id_coordinates = this.mapListService.layerDict[id].feature
-        .geometry.coordinates;
-      this.id_same_coordinates = [];
-
-      // for (let obs in this.mapListService.geojsonData.features) {
-      //   console.log(obs);
-
-      //   if (
-      //     JSON.stringify(selected_id_coordinates) ==
-      //     JSON.stringify(
-      //       this.mapListService.geojsonData.features[obs].geometry.coordinates
-      //     )
-      //   ) {
-      //     this.id_same_coordinates.push(
-      //       parseInt(this.mapListService.geojsonData.features[obs].id)
-      //     );
-      //   }
-      // }
-
-      // select rows having id_synthese = to one of the id_same_coordinates values
       this.mapListService.selectedRow = [];
-      for (let i = 0; i < this.mapListService.tableData.length; i++) {
-        if (this.mapListService.tableData[i]["id_synthese"] === id) {
+      const integerId = parseInt(id);
+      let i;
+      for (i = 0; i < this.mapListService.tableData.length; i++) {        
+        if (this.mapListService.tableData[i]["id_synthese"] === integerId) {
           this.mapListService.selectedRow.push(
             this.mapListService.tableData[i]
-          );
+          );          
           break;
         }
-        const page = Math.trunc(i / this.rowNumber);
-
-        this.table.offset = page;
       }
-
-      //this.setSelectedObs();
+      const page = Math.trunc(i / this.rowNumber);
+      this.table.offset = page;
     });
   }
 
@@ -221,23 +197,7 @@ export class ValidationSyntheseListComponent
     }
   }
 
-  onStatusChange(cd_nomenclature) {
-    for (let obs in this.mapListService.selectedRow) {
-      this.mapListService.selectedRow[obs][
-        "cd_nomenclature_validation_status"
-      ] = cd_nomenclature;
 
-      this.mapListService.selectedRow[obs]["validation_auto"] = "";
-    }
-    this.mapListService.selectedRow = [...this.mapListService.selectedRow];
-  }
-
-  onValidationDateChange(date) {
-    for (let obs in this.mapListService.selectedRow) {
-      this.mapListService.selectedRow[obs]["validation_date"] = date;
-    }
-    this.mapListService.selectedRow = [...this.mapListService.selectedRow];
-  }
 
   // update the number of row per page when resize the window
   @HostListener("window:resize", ["$event"])
@@ -277,6 +237,7 @@ export class ValidationSyntheseListComponent
     modalRef.componentInstance.id_synthese = row.id_synthese;
     modalRef.componentInstance.uuidSynthese = row.unique_id_sinp;
     modalRef.componentInstance.validationStatus = this.validationStatus;
+    modalRef.componentInstance.currentValidationStatus = row.nomenclature_valid_status;
     modalRef.componentInstance.mapListService = this.mapListService;
     modalRef.componentInstance.modifiedStatus.subscribe(modifiedStatus => {
       for (let obs in this.mapListService.tableData) {
@@ -296,15 +257,5 @@ export class ValidationSyntheseListComponent
       }
       this.mapListService.selectedRow = [...this.mapListService.selectedRow];
     });
-  }
-
-  getValidationStatusMnemonique(code) {
-    var statusF = this.validationStatus.filter((st) => st.cd_nomenclature == code);
-    if (statusF.length > 0) {
-      return statusF[0].mnemonique;
-    }
-    else {
-      return null;
-    }
   }
 }

@@ -1,6 +1,6 @@
 import logging, json
 
-from flask import current_app, redirect, Response
+from flask import current_app, redirect, Response, g
 from werkzeug.exceptions import Forbidden, Unauthorized
 from werkzeug.routing import RequestRedirect
 
@@ -382,7 +382,9 @@ def cruved_scope_for_user_in_module(
     return herited_cruved, is_herited
 
 
-def get_scopes_by_action(id_role, module_code=None, object_code=None):
+def get_scopes_by_action(id_role=None, module_code=None, object_code=None):
+    if id_role is None:
+        id_role = g.current_user.id_role
     cruved = UserCruved(id_role=id_role, code_filter_type="SCOPE",
                         module_code=module_code, object_code=object_code)
     return { action: int(scope) for action, scope in cruved.get_perm_for_all_actions(get_id=False)[0].items() }

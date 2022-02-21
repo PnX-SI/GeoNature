@@ -35,6 +35,22 @@ log = logging.getLogger()
 s = requests.Session()
 
 
+user_fields = {
+    'id_role',
+    'identifiant',
+    'nom_role',
+    'prenom_role',
+    'nom_complet',
+    'id_organisme',
+    'groupe',
+    'active',
+}
+organism_fields = {
+    'id_organisme',
+    'uuid_organisme',
+    'nom_organisme',
+}
+
 # configuration of post_request actions for registrations
 REGISTER_POST_ACTION_FCT.update({
     "create_temp_user": validate_temp_user,
@@ -103,6 +119,7 @@ def getListes():
 
 
 @routes.route("/role/<int:id_role>", methods=["GET"])
+@permissions.login_required
 @json_resp
 def get_role(id_role):
     """
@@ -113,95 +130,13 @@ def get_role(id_role):
     :param id_role: the id user
     :type id_role: int
     """
-    user = DB.session.query(User).filter_by(id_role=id_role).one()
-    return user.as_dict()
+    user = User.query.get_or_404(id_role)
+    return user.as_dict(fields=user_fields)
 
-
-@routes.route("/role", methods=["POST"])
-@json_resp
-def insert_role(user=None):
-    """
-        Insert un role
-
-        .. :quickref: User;
-
-        @TODO : Ne devrait pas être là mais dans UserHub
-        Utilisé dans l'authentification du CAS INPN
-    """
-    if user:
-        data = user
-    else:
-        data = dict(request.get_json())
-    user = User(**data)
-    if user.id_role is not None:
-        exist_user = DB.session.query(User).get(user.id_role)
-        if exist_user:
-            DB.session.merge(user)
-        else:
-            DB.session.add(user)
-    else:
-        DB.session.add(user)
-    DB.session.commit()
-    DB.session.flush()
-    return user.as_dict()
-
-
-@routes.route("/cor_role", methods=["POST"])
-@json_resp
-def insert_in_cor_role(id_group=None, id_user=None):
-    """
-    Insert a user in a group
-
-    .. :quickref: User;
-
-    :param id_role: the id user
-    :type id_role: int
-    :param id_group: the id group
-    :type id_group: int
-        # TODO ajouter test sur les POST de données
-    """
-    exist_user = (
-        DB.session.query(CorRole)
-        .filter(CorRole.id_role_groupe == id_group)
-        .filter(CorRole.id_role_utilisateur == id_user)
-        .all()
-    )
-    if not exist_user:
-        cor_role = CorRole(id_group, id_user)
-        DB.session.add(cor_role)
-        DB.session.commit()
-        DB.session.flush()
-        return cor_role.as_dict()
-    return {"message": "cor already exists"}, 500
-
-
-@routes.route("/organism", methods=["POST"])
-@json_resp
-def insert_organism(organism):
-    """
-    Insert a organism
-
-    .. :quickref: User;
-    """
-    if organism is not None:
-        data = organism
-    else:
-        data = dict(request.get_json())
-    organism = BibOrganismes(**data)
-    if organism.id_organisme:
-        exist_org = DB.session.query(BibOrganismes).get(organism.id_organisme)
-        if exist_org:
-            DB.session.merge(organism)
-        else:
-            DB.session.add(organism)
-    else:
-        DB.session.add(organism)
-    DB.session.commit()
-    DB.session.flush()
-    return organism.as_dict()
 
 
 @routes.route("/roles", methods=["GET"])
+@permissions.login_required
 @json_resp
 def get_roles():
     """
@@ -210,7 +145,7 @@ def get_roles():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-    q = DB.session.query(User)
+    q = User.query
     if "group" in params:
         q = q.filter(User.groupe == params["group"])
     if "orderby" in params:
@@ -219,10 +154,11 @@ def get_roles():
             q = q.order_by(order_col)
         except AttributeError:
             log.error("the attribute to order on does not exist")
-    return [user.as_dict() for user in q.all()]
+    return [user.as_dict(fields=user_fields) for user in q.all()]
 
 
 @routes.route("/organisms", methods=["GET"])
+@permissions.login_required
 @json_resp
 def get_organismes():
     """
@@ -231,20 +167,20 @@ def get_organismes():
         .. :quickref: User;
     """
     params = request.args.to_dict()
-    q = DB.session.query(BibOrganismes)
+    q = BibOrganismes.query
     if "orderby" in params:
         try:
             order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
             log.error("the attribute to order on does not exist")
-    return [organism.as_dict() for organism in q.all()]
+    return [organism.as_dict(fields=organism_fields) for organism in q.all()]
 
 
 @routes.route("/organisms_dataset_actor", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
+@permissions.login_required
 @json_resp
-def get_organismes_jdd(info_role):
+def get_organismes_jdd():
     """
     Get all organisms and the JDD where there are actor and where
     the current user hase autorization with its cruved
@@ -266,7 +202,7 @@ def get_organismes_jdd(info_role):
             q = q.order_by(order_col)
         except AttributeError:
             log.error("the attribute to order on does not exist")
-    return [organism.as_dict() for organism in q.all()]
+    return [organism.as_dict(fields=organism_fields) for organism in q.all()]
 
 
 #########################

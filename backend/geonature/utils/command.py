@@ -64,11 +64,10 @@ def frontend_routes_templating(app=None):
                 # test if module have frontend
                 if (module_dir / "frontend").is_dir():
                     path = module_object.module_path.lstrip("/")
-                    location = "{}/{}#GeonatureModule".format(module_dir, GN_MODULE_FE_FILE)
+                    location = "() => import('{}/{}').then(m => m.GeonatureModule)".format(module_dir, GN_MODULE_FE_FILE)
                     routes.append({"path": path, "location": location, "module_code": module_object.module_code})
 
                 # TODO test if two modules with the same name is okay for Angular
-
             route_template = template.render(
                 routes=routes,
                 enable_user_management=configs_gn["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT"),
@@ -145,5 +144,4 @@ def update_app_configuration(build=True):
     if build:
         subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
     log.info("...%s\n", MSG_OK)
-    log.info("Si vous avez changé des paramtères de configuration nécessaire au backend, "
-             "pensez à également relancer ce dernier.")
+    log.info("Pensez à relancer geonature (sudo systemctl restart geonature)")

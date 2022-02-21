@@ -1,14 +1,25 @@
 <div class="row">
-  <div *ngIf="occtaxConfig.form_fields.obj_count" class="col-lg-4 col-sm-6">
-    <pnx-nomenclature label="{{ 'Counting.CountingObject' | translate }}" codeNomenclatureType="OBJ_DENBR"
-      [parentFormControl]="countingForm.get('id_nomenclature_obj_count')"
+  <div
+    *ngIf="occtaxConfig.form_fields.obj_count"
+    class="col-lg-4 col-sm-6"
+  >
+    <pnx-nomenclature
+      label="{{ 'Counting.CountingObject' | translate }}"
+      codeNomenclatureType="OBJ_DENBR"
+      [parentFormControl]="form.get('id_nomenclature_obj_count')"
       [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne"
       [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
     </pnx-nomenclature>
   </div>
-  <div *ngIf="occtaxConfig.form_fields.type_count" class="col-lg-4 col-sm-6">
-    <pnx-nomenclature #typeDenombrement label="{{ 'Counting.CountingType' | translate }}"
-      codeNomenclatureType="TYP_DENBR" [parentFormControl]="countingForm.get('id_nomenclature_type_count')"
+  <div
+    *ngIf="occtaxConfig.form_fields.type_count"
+    class="col-lg-4 col-sm-6"
+  >
+    <pnx-nomenclature
+      #typeDenombrement
+      label="{{ 'Counting.CountingType' | translate }}"
+      codeNomenclatureType="TYP_DENBR"
+      [parentFormControl]="form.get('id_nomenclature_type_count')"
       [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne"
       [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
     </pnx-nomenclature>
@@ -16,49 +27,87 @@
 
 </div>
 <small
-  *ngIf="countingForm.get('id_nomenclature_obj_count').hasError('required') && countingForm.get('id_nomenclature_obj_count').touched"
-  class="error" style="color:red">
+  *ngIf="form.get('id_nomenclature_obj_count').hasError('required') && form.get('id_nomenclature_obj_count').touched"
+  class="error"
+  style="color:red"
+>
   {{'Counting.Errors.CountingObjectRequiredError' |translate}}
 </small>
 
 <div class="row">
 
-  <div *ngIf="occtaxConfig.form_fields.count_min" class="col-3">
+  <div 
+    *ngIf="occtaxConfig.form_fields.count_min" 
+    class="col-3"
+  >
     <small> {{ 'Counting.NumberMin' | translate }} </small>
-    <input class="form-control form-control-sm" type="number" min="0"
-      [ngClass]="{'is-invalid': countingForm.hasError('invalidCount')}" [formControl]="countingForm.get('count_min')">
+    <input
+      data-qa="counting-count-min"
+      class="form-control form-control-sm"
+      type="number"
+      min="0"
+      [ngClass]="{'is-invalid': form.hasError('invalidCount')}"
+      [formControl]="form.get('count_min')"
+    >
   </div>
 
-  <div *ngIf="occtaxConfig.form_fields.count_max" class="col-3">
+  <div 
+    *ngIf="occtaxConfig.form_fields.count_max" 
+    class="col-3"
+  >
     <small> {{ 'Counting.NumberMax' | translate }} </small>
-    <input class="form-control form-control-sm" type="number" min="0"
-      [ngClass]="{'is-invalid': countingForm.hasError('invalidCount')}" [formControl]="countingForm.get('count_max')">
-    <small *ngIf="countingForm.hasError('invalidCount')" class="error" style="color:red">
+    <input
+      data-qa="counting-count-max"
+      class="form-control form-control-sm"
+      type="number"
+      min="0"
+      [ngClass]="{'is-invalid': form.hasError('invalidCount')}"
+      [formControl]="form.get('count_max')"
+    >
+    <small
+      *ngIf="form.hasError('invalidCount')"
+      class="error"
+      style="color:red"
+    >
       {{ 'Counting.Errors.CountError' | translate }}
     </small>
   </div>
 
-  <div *ngIf="occtaxConfig.form_fields.life_stage" class="col-3">
-    <pnx-nomenclature label="{{ 'Counting.LifeStage' | translate }}" codeNomenclatureType="STADE_VIE"
-      [parentFormControl]="countingForm.get('id_nomenclature_life_stage')"
+  <div
+    *ngIf="occtaxConfig.form_fields.life_stage"
+    class="col-3"
+  >
+    <pnx-nomenclature
+      label="{{ 'Counting.LifeStage' | translate }}"
+      codeNomenclatureType="STADE_VIE"
+      [parentFormControl]="form.get('id_nomenclature_life_stage')"
       [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne"
       [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
     </pnx-nomenclature>
     <small
-      *ngIf="countingForm.get('id_nomenclature_life_stage').hasError('required') && countingForm.get('id_nomenclature_life_stage').touched"
-      class="error" style="color:red">
+      *ngIf="form.get('id_nomenclature_life_stage').hasError('required') && form.get('id_nomenclature_life_stage').touched"
+      class="error"
+      style="color:red"
+    >
       {{'Counting.Errors.LifeStageRequiredError' |translate}}
     </small>
   </div>
-  <div *ngIf="occtaxConfig.form_fields.sex" class="col-3">
-    <pnx-nomenclature label="{{ 'Counting.Sex' | translate }}" codeNomenclatureType="SEXE"
-      [parentFormControl]="countingForm.get('id_nomenclature_sex')"
+  <div
+    *ngIf="occtaxConfig.form_fields.sex"
+    class="col-3"
+  >
+    <pnx-nomenclature
+      label="{{ 'Counting.Sex' | translate }}"
+      codeNomenclatureType="SEXE"
+      [parentFormControl]="form.get('id_nomenclature_sex')"
       [regne]="(occtaxFormOccurrenceService.taxref|async)?.regne"
       [group2Inpn]="(occtaxFormOccurrenceService.taxref|async)?.group2_inpn">
     </pnx-nomenclature>
     <small
-      *ngIf="countingForm.get('id_nomenclature_sex').hasError('required') && countingForm.get('id_nomenclature_sex').touched"
-      class="error" style="color:red">
+      *ngIf="form.get('id_nomenclature_sex').hasError('required') && form.get('id_nomenclature_sex').touched"
+      class="error"
+      style="color:red"
+    >
       {{'Counting.Errors.SexRequiredError' |translate}}
     </small>
   </div>
@@ -67,23 +116,31 @@
 
   <pnx-dynamic-form-generator
     [autoGenerated]="true"
-    [myFormGroup]="countingForm.get('additional_fields')"
-    [formsDefinition]="fs.globalCountingAddFields"
+    [myFormGroup]="form.get('additional_fields')"
+    [formsDefinition]="additionalFieldsForm"
   >
   </pnx-dynamic-form-generator>
 </div>
 
 <div class="row">
-  <div id='occurrence-medias' *ngIf="occtaxConfig.ENABLE_MEDIAS" class="col-sm-12">
+  <div 
+    id='occurrence-medias' 
+    *ngIf="occtaxConfig.ENABLE_MEDIAS" 
+    class="col-sm-12"
+  >
 
     <h6 style="margin-top: 15px;">
-      <span [matBadge]="(countingForm.value.medias || []).length" matBadgeOverlap="false" class="color-add-media">
+      <span
+        [matBadge]="(form.value.medias || []).length"
+        matBadgeOverlap="false"
+        class="color-add-media"
+      >
         {{'Media.Medias' |translate}}
       </span>
     </h6>
     <pnx-medias
       schemaDotTable="pr_occtax.cor_counting_occtax"
-      [parentFormControl]="countingForm.controls.medias"
+      [parentFormControl]="form.controls.medias"
       [sizeMax]="appConfig.MEDIAS.MEDIAS_SIZE_MAX"
       [default]="defaultsMedia()"
       [details]="occtaxConfig.MEDIA_FIELDS_DETAILS"
@@ -92,9 +149,3 @@
     ></pnx-medias>
   </div>
 </div>
-
-
-
-
-
-

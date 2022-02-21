@@ -8,6 +8,7 @@ from alembic import op
 from shutil import copyfileobj
 
 from geonature.migrations.ref_geo_utils import (
+    get_local_srid,
     schema,
     delete_area_with_type,
 )
@@ -55,9 +56,10 @@ def upgrade():
         logger.info("Inserting municipalities data in temporary table…")
         cursor.copy_expert(f'COPY {schema}.{temp_table_name} FROM STDIN', geofile)
     logger.info("Copy municipalities in l_areas…")
+    local_srid = get_local_srid()
     op.execute(f"""
         INSERT INTO {schema}.l_areas (id_type, area_code, area_name, geom, geojson_4326)
-        SELECT {schema}.get_id_area_type('COM') AS id_type, insee_com, nom_com, geom, geojson
+        SELECT {schema}.get_id_area_type('COM') AS id_type, insee_com, nom_com, ST_TRANSFORM(geom, {local_srid}), geojson
         FROM {schema}.{temp_table_name}
     """)
     logger.info("Copy municipalities in li_municipalities…")

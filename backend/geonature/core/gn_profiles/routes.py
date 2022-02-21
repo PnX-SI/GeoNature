@@ -2,12 +2,12 @@ import json
 import datetime
 import math
 
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask.globals import current_app
 from geoalchemy2.shape import to_shape
 from geojson import Feature
 from sqlalchemy.sql import func, text, select
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, NotFound, abort
 from utils_flask_sqla.response import json_resp
 
 from pypnnomenclature.models import TNomenclatures
@@ -57,7 +57,6 @@ def get_phenology(cd_ref):
 
 
 @routes.route("/valid_profile/<int:cd_ref>", methods=["GET"])
-@json_resp
 def get_profile(cd_ref):
     """
     .. :quickref: Profiles;
@@ -73,22 +72,19 @@ def get_profile(cd_ref):
     )
     data = data.one_or_none()
     if data:
-        return Feature(geometry=json.loads(data[0]), properties=data[1].as_dict())
-    return None
+        return jsonify(Feature(geometry=json.loads(data[0]), properties=data[1].as_dict()))
+    abort(404)
 
 
 @routes.route("/consistancy_data/<id_synthese>", methods=["GET"])
-@json_resp
 def get_consistancy_data(id_synthese):
     """
     .. :quickref: Profiles;
 
     Return the validation score for a synthese data
     """
-    data = DB.session.query(VConsistancyData).get(id_synthese)
-    if data:
-        return data.as_dict()
-    return None
+    data = VConsistancyData.query.get_or_404(id_synthese)
+    return jsonify(data.as_dict())
 
 @routes.route("/check_observation", methods=["POST"])
 @json_resp
@@ -111,7 +107,7 @@ def get_observation_score():
         DB.session.query(VmValidProfiles).filter(VmValidProfiles.cd_ref == cd_ref).one_or_none()
     )
     if not profile:
-        return None
+        raise NotFound("No profile for this cd_ref")
     check_life_stage = profile.active_life_stage
         
     result = {
@@ -142,7 +138,6 @@ def get_observation_score():
         raise BadRequest('Missing altitude_min or altitude_max')
     # Check de la répartition
     if "geom" in data:
-        print(data["geom"])
         query = DB.session.query(
             func.ST_Contains(
                 func.ST_Transform(profile.valid_distribution, 4326),
@@ -190,7 +185,7 @@ def get_observation_score():
             result["valid_altitude"] = False
             result["errors"].append({
             "type": "altitude",
-            "value": f"Le taxon n'a déjà été observé entre {altitude_min}m et {altitude_max}m d'altitude"
+            "value": f"Le taxon n'a jamais été observé à cette altitude ({altitude_min}-{altitude_max}m)"
             })
         # check de l'altitude pour la période donnée
         if len(period_result) > 0:
@@ -210,12 +205,12 @@ def get_observation_score():
                 if altitude_max <= profile.altitude_max and altitude_min >= altitude_min:
                     result["errors"].append({
                         "type": "period",
-                        "value": f"Le taxon a déjà été observé entre {altitude_min} et {altitude_max}m d'altitude mais pas à cette periode de l'année"
+                        "value": f"Le taxon a déjà été observé à cette altitude ({altitude_min}-{altitude_max}m), mais pas à cette periode de l'année"
                     })
                 if result["valid_phenology"]:
                     result["errors"].append({
                         "type": "period",
-                        "value": f"Le taxon a déjà été observé à cette periode de l'année mais pas entre {altitude_min} et {altitude_max}m d'altitude"
+                        "value": f"Le taxon a déjà été observé à cette periode de l'année, mais pas à cette altitude ({altitude_min}-{altitude_max}m)"
                     })
 
         # check du stade de vie pour la periode donnée
@@ -247,12 +242,13 @@ def get_observation_score():
                             result["errors"].append({
                                 "type": "life_stage",
                                 "value": f"""
-                                Le taxon n'a jamais été observé à cette periode entre 
-                                {altitude_min} et {altitude_max}m d'altitude pour le stade de vie {life_stage_value.label_default}"""
+                                Le taxon n'a jamais été observé à cette periode et à cette altitude ({altitude_min}-{altitude_max}m) 
+                                pour le stade de vie {life_stage_value.label_default}"""
                             })
-        return result
+    return result
 
 
 @routes.cli.command()
-def update_vms():
-    DB.session.query(func.gn_profiles.refresh_profiles()).scalar()
+def update():
+    DB.session.execute(func.gn_profiles.refresh_profiles())
+    DB.session.commit()

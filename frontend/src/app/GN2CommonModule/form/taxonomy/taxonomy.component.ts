@@ -1,10 +1,11 @@
-import { Component, OnInit, OnChanges, Input, Output, EventEmitter, ViewEncapsulation } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewEncapsulation } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { Observable, of } from 'rxjs';
-import { DataFormService } from '../data-form.service';
-import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '@geonature_config/app.config';
+import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
+import { Observable, of } from 'rxjs';
+import { debounceTime, distinctUntilChanged, filter, map, switchMap, tap } from 'rxjs/operators';
+import { DataFormService } from '../data-form.service';
 
 export interface Taxon {
   search_name?: string;
@@ -27,8 +28,8 @@ export interface Taxon {
   nom_vern?: string;
   ordre?: string;
   phylum?: string;
-  statuts_protection?: Array<any>;
-  synonymes?: Array<any>;
+  statuts_protection?: any[];
+  synonymes?: any[];
 }
 
 /**
@@ -38,7 +39,7 @@ export interface Taxon {
  * <pnx-taxonomy #taxon
  * label="{{ 'Taxon.Taxon' | translate }}
  * [parentFormControl]="occurrenceForm.controls.cd_nom"
- * [idList]="occtaxConfig.id_taxon_list" 
+ * [idList]="occtaxConfig.id_taxon_list"
  * [charNumber]="3"
  *  [listLength]="occtaxConfig.taxon_result_number"
  * (onChange)="fs.onTaxonChanged($event);"
@@ -64,10 +65,10 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   @Input() idList: string;
   /** Nombre de charactere avant que la recherche AJAX soit lançé (obligatoire) */
   @Input() charNumber: number;
-  //**ombre de résultat affiché */
+  // **ombre de résultat affiché */
   @Input() listLength = 20;
-  //** Pour changer la valeur affichée */
-  @Input() displayedLabel: string = 'nom_valide';
+  // ** Pour changer la valeur affichée */
+  @Input() displayedLabel = 'nom_valide';
   /** Afficher ou non les filtres par regne et groupe INPN qui controle l'autocomplétion */
   @Input() displayAdvancedFilters = false;
   searchString: any;
@@ -84,11 +85,11 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   constructor(private _dfService: DataFormService, private _commonService: CommonService) { }
 
   ngOnInit() {
-    if(!this.apiEndPoint) {
+    if (!this.apiEndPoint) {
       this.setApiEndPoint(this.idList);
     }
     this.parentFormControl.valueChanges
-      .filter(value => value !== null && value.length === 0)
+      .pipe(filter(value => value !== null && value.length === 0))
       .subscribe(value => {
         this.onDelete.emit();
       });
@@ -96,7 +97,7 @@ export class TaxonomyComponent implements OnInit, OnChanges {
       // get regne and group2
       this._dfService.getRegneAndGroup2Inpn().subscribe(data => {
         this.regnesAndGroup = data;
-        for (let regne in data) {
+        for (const regne in data) {
           this.regnes.push(regne);
         }
       });
@@ -111,14 +112,14 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes) {
-    if (changes && changes.idList) {      
+    if (changes && changes.idList) {
       this.setApiEndPoint(changes.idList.currentValue);
     }
-    
+
   }
 
-  setApiEndPoint(idList) {    
-      if(idList) {      
+  setApiEndPoint(idList) {
+      if (idList) {
         this.apiEndPoint = `${AppConfig.API_TAXHUB}/taxref/allnamebylist/${idList}`;
       } else {
         this.apiEndPoint = `${AppConfig.API_TAXHUB}/taxref/allnamebylist`;
@@ -130,15 +131,14 @@ export class TaxonomyComponent implements OnInit, OnChanges {
   }
 
   formatter = (taxon: any) => {
-    return taxon[this.displayedLabel].replace(/<[^>]*>/g, ''); //supprime les balises HTML
-  };
+    return taxon[this.displayedLabel].replace(/<[^>]*>/g, ''); // supprime les balises HTML
+  }
 
   searchTaxon = (text$: Observable<string>) =>
     text$
-      .do(() => (this.isLoading = true))
-      .debounceTime(400)
-      .distinctUntilChanged()
-      .switchMap(search_name => {
+      .pipe(distinctUntilChanged(), debounceTime(400), tap( () => this.isLoading = true),
+      switchMap(search_name_ => {
+        const search_name = search_name_.toString();
         if (search_name.length >= this.charNumber) {
           return this._dfService
             .autocompleteTaxon(this.apiEndPoint, search_name, {
@@ -146,10 +146,7 @@ export class TaxonomyComponent implements OnInit, OnChanges {
               group2_inpn: this.groupControl.value,
               limit: this.listLength.toString()
             })
-            .catch(err => {
-              if (err.status_code === 500) {
-                this._commonService.translateToaster('error', 'ErrorMessage');
-              }
+            .catch(() => {
               return of([]);
             });
         } else {
@@ -157,11 +154,12 @@ export class TaxonomyComponent implements OnInit, OnChanges {
           return [[]];
         }
       })
-      .map(response => {
+      , map(response => {
         this.noResult = response.length === 0;
         this.isLoading = false;
         return response;
-      });
+      })
+      )
 
   refreshAllInput() {
     this.parentFormControl.reset();

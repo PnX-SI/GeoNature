@@ -24,6 +24,7 @@ export class SyntheseSearchComponent implements OnInit {
   private params: any;
   @Input() displayValidation = false;
   @Output() searchClicked = new EventEmitter();
+
   constructor(
     public dataService: SyntheseDataService,
     public formService: SyntheseFormService,
@@ -46,10 +47,10 @@ export class SyntheseSearchComponent implements OnInit {
 
     // format areas filter
     this.formService.areasFilters.map(area => {
-      if (typeof area.type_code === 'string') {
-        area['type_code_array'] = [area.type_code];
+      if (typeof area['type_code'] === 'string') {
+        area['type_code_array'] = [area['type_code']];
       } else {
-        area['type_code_array'] = area.type_code;
+        area['type_code_array'] = area['type_code'];
       }
       return area;
     });

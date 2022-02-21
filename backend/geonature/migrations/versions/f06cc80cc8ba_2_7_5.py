@@ -39,7 +39,6 @@ def upgrade():
                 ('geonature.migrations.data.core', 'imports.sql'),
                 ('geonature.migrations.data.core', 'synthese.sql'),
                 ('geonature.migrations.data.core', 'synthese_default_values.sql'),
-                ('geonature.migrations.data.core', 'exports.sql'),
                 ('geonature.migrations.data.core', 'monitoring.sql'),
                 ('geonature.migrations.data.core', 'permissions.sql'),
                 ('geonature.migrations.data.core', 'permissions_data.sql'),
