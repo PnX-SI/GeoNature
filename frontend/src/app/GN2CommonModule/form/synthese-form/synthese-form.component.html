@@ -149,7 +149,13 @@
         </li>
       </ul>
     </div>
-    <button (click)="openModal()" class="btn btn-xs btn-outline-secondary advanced mt-2">Avancé</button>
+
+    <button
+      (click)="openModal()"
+      class="btn btn-xs btn-outline-secondary advanced mt-2"
+    >
+      Avancé
+    </button>
 
     <div
       *ngIf="formService.haveAdvancedFormValues()"
