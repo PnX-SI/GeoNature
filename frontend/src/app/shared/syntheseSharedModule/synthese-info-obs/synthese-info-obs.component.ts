@@ -271,4 +271,15 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   backToModule(url_source, id_pk_source) {
     window.open(url_source + '/' + id_pk_source, '_blank');
   }
+
+  copyPermalink () {
+    const urlPermaLink = [
+      this.APP_CONFIG.URL_APPLICATION,
+      "#/validation/occurrence",
+      this.selectedObs.entity_source_pk_value
+    ].join('/');
+    if (navigator && navigator.clipboard && navigator.clipboard.writeText)
+      return navigator.clipboard.writeText(urlPermaLink);
+    return Promise.reject('The Clipboard API is not available.');
+  }
 }

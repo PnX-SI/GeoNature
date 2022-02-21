@@ -58,6 +58,16 @@
         >
           <mat-icon>mail</mat-icon>
         </button>
+        <button
+          *ngIf="tbarVisible"
+          mat-mini-fab
+          ngbTooltip="{{'Synthese.copyPermalink' | translate }}"
+          placement="bottom"
+          (click)="copyPermalink()"
+          mat-raised-button
+        >
+          <mat-icon>share</mat-icon>
+        </button>
       </mat-toolbar>
     </div>
   </div>
