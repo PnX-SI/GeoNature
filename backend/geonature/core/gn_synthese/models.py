@@ -139,7 +139,7 @@ class CorAreaSynthese(DB.Model):
 
 
 @serializable
-@geoserializable
+@geoserializable(geoCol="the_geom_4326", idCol="id_synthese")
 @shapeserializable
 class Synthese(DB.Model):
     __tablename__ = "synthese"
@@ -352,8 +352,6 @@ class Synthese(DB.Model):
             return self.dataset.has_instance_permission(scope)
         elif scope == 3:
             return True
-
-
 
 
 @serializable
