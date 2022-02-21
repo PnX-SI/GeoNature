@@ -1,5 +1,6 @@
 import { AppConfig } from "@geonature_config/app.config";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
+import { TranslateService } from "@ngx-translate/core";
 import {
   Component,
   OnInit,
@@ -21,6 +22,7 @@ import { DatatableComponent } from "@swimlane/ngx-datatable";
 import { ValidationModalInfoObsComponent } from "../validation-modal-info-obs/validation-modal-info-obs.component";
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
 import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
+import { Router } from "@angular/router";
 @Component({
   selector: "pnx-validation-synthese-list",
   templateUrl: "validation-synthese-list.component.html",
@@ -47,11 +49,15 @@ export class ValidationSyntheseListComponent
   @Input() validationStatus: Array<any>;
   @ViewChild("table") table: DatatableComponent;
   @Output() pageChange: EventEmitter<number>;
+  @Output() displayAll = new EventEmitter<any>();
+  @Input() idSynthese: any;
   public validationStatusAsDict: any;
   public datatable_column_list: Array<any>
+  public messages: any;
 
   constructor(
     public mapListService: MapListService,
+    private translate: TranslateService,
     private _ds: SyntheseDataService,
     public ngbModal: NgbModal,
     private _commonService: CommonService,
@@ -74,7 +80,9 @@ export class ValidationSyntheseListComponent
     this.onMapClick();
     this.onTableClick();
     this.npage = 1;
-
+    this.messages = {
+      emptyMessage: this.idSynthese ? this.translate.instant("Validation.noIdFound") : this.translate.instant("Validation.noData")
+    };
   }
 
   onMapClick() {
@@ -102,6 +110,10 @@ export class ValidationSyntheseListComponent
       this.setOriginStyleToAll();
       this.setSelectedSyleToSelectedRows();
     });
+  }
+
+  displayAllObs() {
+    this.displayAll.emit()
   }
 
   ngAfterContentChecked() {
@@ -223,11 +235,13 @@ export class ValidationSyntheseListComponent
     if (changes.inputSyntheseData && changes.inputSyntheseData.currentValue) {
       // reset page 0 when new data appear
       this.table.offset = 0;
+      this.openInfoModal(this.inputSyntheseData.filter(i => i.id_synthese == this?.idSynthese)[0])
     }
     this.deselectAll();
   }
 
   openInfoModal(row) {
+    if(!row) return;
     this.oneSyntheseObs = row;
     const modalRef = this.ngbModal.open(ValidationModalInfoObsComponent, {
       size: "lg",

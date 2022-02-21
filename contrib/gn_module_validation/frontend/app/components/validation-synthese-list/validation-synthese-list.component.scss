@@ -18,6 +18,12 @@
   border: none;
 }
 
+#displayAllObs {
+  border: 1px solid rgb(103, 58, 183);
+  background-color: transparent;
+  color: rgb(103, 58, 183);
+}
+
 #details {
   width: 20px;
   height: 20px;
@@ -40,7 +46,7 @@
 }
 
 .material-icons {
-  padding-bottom: 3px;  
+  padding-bottom: 3px;
 }
 
 // .mat-icon {
@@ -189,19 +195,18 @@ button:active {
 
 .chip-alert {
   background: red;
-  color: white!important;
-
+  color: white !important;
 }
 
 .chip-warning {
   background: rgb(255, 123, 0);
-  color: white!important;
+  color: white !important;
 }
 
 .chip-success {
   background: green;
-  color: white!important;
-  }
+  color: white !important;
+}
 
 .mat-chip {
   width: 70%;

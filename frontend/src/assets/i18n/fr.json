@@ -227,6 +227,11 @@
     "ObsSex": "Sexe",
     "ObsLifeStep": "Stade de vie"
   },
+  "Validation": {
+    "noData": "Aucune données à afficher",
+    "noIdFound": "Aucun résultat pour cet ID",
+    "displayAll": "Voir toutes les occurrences"
+  },
   "MyAccount": "Mon compte",
   "CreateAccount": "Créer un compte",
   "ForgotPasswordOrLogin": "Identifiant ou mot de passe oublié ?",
