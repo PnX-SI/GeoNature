@@ -20,7 +20,6 @@ import { RefusalRequestDialog } from '../../shared/refusal-request-dialog/refusa
   styleUrls: ['./pending-request-list.component.scss'],
 })
 export class PendingRequestListComponent implements OnInit, OnDestroy, AfterViewInit {
-
   locale: string;
   destroy$: Subject<boolean> = new Subject<boolean>();
 
@@ -28,23 +27,23 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
   reorderable = true;
   swapColumns = false;
 
-  @ViewChild(DatatableComponent)
+  @ViewChild(DatatableComponent, { static: true })
   datatable: DatatableComponent;
-  @ViewChild('colHeaderTpl')
+  @ViewChild('colHeaderTpl', { static: true })
   colHeaderTpl: TemplateRef<any>;
-  @ViewChild('tokenCellTpl')
+  @ViewChild('tokenCellTpl', { static: true })
   tokenCellTpl: TemplateRef<any>;
-  @ViewChild('geographicCellTpl')
+  @ViewChild('geographicCellTpl', { static: true })
   geographicCellTpl: TemplateRef<any>;
-  @ViewChild('taxonomicCellTpl')
+  @ViewChild('taxonomicCellTpl', { static: true })
   taxonomicCellTpl: TemplateRef<any>;
-  @ViewChild('sensitiveCellTpl')
+  @ViewChild('sensitiveCellTpl', { static: true })
   sensitiveCellTpl: TemplateRef<any>;
-  @ViewChild('endAccessDateCellTpl')
+  @ViewChild('endAccessDateCellTpl', { static: true })
   endAccessDateCellTpl: TemplateRef<any>;
-  @ViewChild('createDateCellTpl')
+  @ViewChild('createDateCellTpl', { static: true })
   createDateCellTpl: TemplateRef<any>;
-  @ViewChild('actionsCellTpl')
+  @ViewChild('actionsCellTpl', { static: true })
   actionsCellTpl: TemplateRef<any>;
 
   columns: Array<IPermissionRequestDatatableColumn> = [
@@ -71,7 +70,7 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
     {
       prop: 'endAccessDate',
       name: 'Date de fin',
-      tooltip: "Date à laquelle les permissions demandées expires.",
+      tooltip: 'Date à laquelle les permissions demandées expires.',
       flexGrow: 1,
       searchable: true,
     },
@@ -105,7 +104,7 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
       name: 'Actions',
       flexGrow: 2,
       sortable: false,
-      headerClass: 'd-flex justify-content-end'
+      headerClass: 'd-flex justify-content-end',
     },
   ];
   searchableColumnsNames: string;
@@ -136,10 +135,9 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
     this.datatable.columnMode = ColumnMode.force;
 
     // Define default messages for datatable
-    this.translateService.get('Datatable')
-      .subscribe((translatedTxts: string[]) => {
-        this.datatable.messages = translatedTxts;
-      });
+    this.translateService.get('Datatable').subscribe((translatedTxts: string[]) => {
+      this.datatable.messages = translatedTxts;
+    });
   }
 
   ngOnDestroy(): void {
@@ -148,7 +146,7 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
   }
 
   private loadRequests() {
-    this.permissionService.getAllPendingRequests().subscribe(data => {
+    this.permissionService.getAllPendingRequests().subscribe((data) => {
       this.loadingIndicator = false;
       this.rows = data;
       this.filteredData = [...data];
@@ -156,7 +154,7 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
   }
 
   private prepareColumns() {
-    this.columns.forEach(col => {
+    this.columns.forEach((col) => {
       // Set common config
       col.headerTemplate = this.colHeaderTpl;
       col.headerClass += ' table-primary';
@@ -182,7 +180,7 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
 
   private formatSearchableColumn() {
     const searchable = [];
-    this.columns.forEach(col => {
+    this.columns.forEach((col) => {
       if (col.searchable) {
         searchable.push(col.name);
       }
@@ -203,10 +201,9 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
 
   private defineDatatableMessages() {
     // Define default messages for datatable
-    this.translateService.get('Datatable')
-      .subscribe((translatedTxts: string[]) => {
-        this.datatable.messages = translatedTxts;
-      });
+    this.translateService.get('Datatable').subscribe((translatedTxts: string[]) => {
+      this.datatable.messages = translatedTxts;
+    });
   }
 
   updateFilter(event) {
@@ -221,13 +218,13 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
       // Iterate through each row's column data
       for (let i = 0; i < searchColsAmount; i++) {
         // Handle item (defined or not)
-        let item_value = ''
+        let item_value = '';
         if (item[searchColumns[i]]) {
           item_value = item[searchColumns[i]].toString().toLowerCase();
         }
 
         // Check for a match
-        if (item_value.indexOf(val) !== -1 || !val){
+        if (item_value.indexOf(val) !== -1 || !val) {
           // Found match, return true to add to result set
           return true;
         }
@@ -240,7 +237,7 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
 
   private getSearchableColumn() {
     const searchable = [];
-    this.columns.forEach(col => {
+    this.columns.forEach((col) => {
       if (col.searchable) {
         searchable.push(col.prop);
       }
@@ -250,20 +247,20 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
 
   openAcceptDialog(data: IPermissionRequest): void {
     const dialogRef = this.dialog.open(AcceptRequestDialog, {
-      data: data
+      data: data,
     });
 
-    dialogRef.afterClosed().subscribe(request_token => {
+    dialogRef.afterClosed().subscribe((request_token) => {
       if (request_token) {
         this.permissionService.acceptRequest(request_token).subscribe(
           () => {
             this.loadRequests();
             this.commonService.translateToaster('info', 'Permissions.accessRequest.acceptOk');
           },
-          error => {
-            const msg = (error.error && error.error.msg) ? error.error.msg : error.message;
+          (error) => {
+            const msg = error.error && error.error.msg ? error.error.msg : error.message;
             this.translateService
-              .get('Permissions.accessRequest.acceptKo', {errorMsg: msg})
+              .get('Permissions.accessRequest.acceptKo', { errorMsg: msg })
               .subscribe((translatedTxt: string) => {
                 this.toasterService.error(translatedTxt);
               });
@@ -275,20 +272,20 @@ export class PendingRequestListComponent implements OnInit, OnDestroy, AfterView
 
   openRefusalDialog(request: IPermissionRequest): void {
     const dialogRef = this.dialog.open(RefusalRequestDialog, {
-      data: request
+      data: request,
     });
 
-    dialogRef.afterClosed().subscribe(request => {
+    dialogRef.afterClosed().subscribe((request) => {
       if (request) {
         this.permissionService.refuseRequest(request).subscribe(
           () => {
             this.loadRequests();
             this.commonService.translateToaster('info', 'Permissions.accessRequest.refusalOk');
           },
-          error => {
-            const msg = (error.error && error.error.msg) ? error.error.msg : error.message;
+          (error) => {
+            const msg = error.error && error.error.msg ? error.error.msg : error.message;
             this.translateService
-              .get('Permissions.accessRequest.refusalKo', {errorMsg: msg})
+              .get('Permissions.accessRequest.refusalKo', { errorMsg: msg })
               .subscribe((translatedTxt: string) => {
                 this.toasterService.error(translatedTxt);
               });

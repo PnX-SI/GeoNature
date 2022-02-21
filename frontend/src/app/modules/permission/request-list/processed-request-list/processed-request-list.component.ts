@@ -15,7 +15,6 @@ import { PermissionService } from '../../permission.service';
   styleUrls: ['./processed-request-list.component.scss'],
 })
 export class ProcessedRequestListComponent implements OnInit, OnDestroy {
-
   locale: string;
   destroy$: Subject<boolean> = new Subject<boolean>();
 
@@ -23,29 +22,29 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
   reorderable = true;
   swapColumns = false;
 
-  @ViewChild(DatatableComponent)
+  @ViewChild(DatatableComponent, { static: true })
   datatable: DatatableComponent;
-  @ViewChild('colHeaderTpl')
+  @ViewChild('colHeaderTpl', { static: true })
   colHeaderTpl: TemplateRef<any>;
-  @ViewChild('tokenCellTpl')
+  @ViewChild('tokenCellTpl', { static: true })
   tokenCellTpl: TemplateRef<any>;
-  @ViewChild('geographicCellTpl')
+  @ViewChild('geographicCellTpl', { static: true })
   geographicCellTpl: TemplateRef<any>;
-  @ViewChild('taxonomicCellTpl')
+  @ViewChild('taxonomicCellTpl', { static: true })
   taxonomicCellTpl: TemplateRef<any>;
-  @ViewChild('sensitiveCellTpl')
+  @ViewChild('sensitiveCellTpl', { static: true })
   sensitiveCellTpl: TemplateRef<any>;
-  @ViewChild('endAccessDateCellTpl')
+  @ViewChild('endAccessDateCellTpl', { static: true })
   endAccessDateCellTpl: TemplateRef<any>;
-  @ViewChild('stateCellTpl')
+  @ViewChild('stateCellTpl', { static: true })
   stateCellTpl: TemplateRef<any>;
-  @ViewChild('processedDateCellTpl')
+  @ViewChild('processedDateCellTpl', { static: true })
   processedDateCellTpl: TemplateRef<any>;
-  @ViewChild('processedByCellTpl')
+  @ViewChild('processedByCellTpl', { static: true })
   processedByCellTpl: TemplateRef<any>;
-  @ViewChild('createDateCellTpl')
+  @ViewChild('createDateCellTpl', { static: true })
   createDateCellTpl: TemplateRef<any>;
-  @ViewChild('actionsCellTpl')
+  @ViewChild('actionsCellTpl', { static: true })
   actionsCellTpl: TemplateRef<any>;
 
   columns: Array<IPermissionRequestDatatableColumn> = [
@@ -90,28 +89,29 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
     {
       prop: 'endAccessDate',
       name: 'Date de fin',
-      tooltip: "Date à laquelle les permissions demandées expires.",
+      tooltip: 'Date à laquelle les permissions demandées expires.',
       flexGrow: 1,
       searchable: true,
     },
     {
       prop: 'processedState',
       name: 'État',
-      tooltip: "État de la demande : acceptée ou refusée.",
+      tooltip: 'État de la demande : acceptée ou refusée.',
       flexGrow: 1,
       searchable: true,
     },
     {
       prop: 'processedDate',
       name: 'Date traitement',
-      tooltip: "Date et heure à laquelle le traitement de la demande a eu lieu.",
+      tooltip: 'Date et heure à laquelle le traitement de la demande a eu lieu.',
       flexGrow: 1,
       searchable: true,
     },
     {
       prop: 'processedBy',
       name: 'Traité par',
-      tooltip: "Prénom et nom de l'administrateur ayant traité la demande. ANONYME si le traitement a eu lieu via l'email.",
+      tooltip:
+        "Prénom et nom de l'administrateur ayant traité la demande. ANONYME si le traitement a eu lieu via l'email.",
       flexGrow: 1,
       searchable: true,
     },
@@ -135,11 +135,11 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
 
   constructor(
     private translateService: TranslateService,
-    public permissionService: PermissionService,
+    public permissionService: PermissionService
   ) {
     this.locale = translateService.currentLang;
 
-    this.permissionService.getAllProcessedRequests().subscribe(data => {
+    this.permissionService.getAllProcessedRequests().subscribe((data) => {
       this.loadingIndicator = false;
       this.rows = data;
       this.filteredData = [...data];
@@ -159,7 +159,7 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
   }
 
   private prepareColumns() {
-    this.columns.forEach(col => {
+    this.columns.forEach((col) => {
       // Set common config
       col.headerTemplate = this.colHeaderTpl;
       col.headerClass = 'table-primary';
@@ -191,7 +191,7 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
 
   private formatSearchableColumn(): void {
     const searchable = [];
-    this.columns.forEach(col => {
+    this.columns.forEach((col) => {
       if (col.searchable) {
         searchable.push(col.name);
       }
@@ -212,15 +212,14 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
 
   private defineDatatableMessages() {
     // Define default messages for datatable
-    this.translateService.get('Datatable')
-      .subscribe((translatedTxts: string[]) => {
-        this.datatable.messages = translatedTxts;
-      });
+    this.translateService.get('Datatable').subscribe((translatedTxts: string[]) => {
+      this.datatable.messages = translatedTxts;
+    });
   }
 
   private getSearchableColumn() {
     const searchable = [];
-    this.columns.forEach(col => {
+    this.columns.forEach((col) => {
       if (col.searchable) {
         searchable.push(col.prop);
       }
@@ -240,13 +239,13 @@ export class ProcessedRequestListComponent implements OnInit, OnDestroy {
       // Iterate through each row's column data
       for (let i = 0; i < searchColsAmount; i++) {
         // Handle item (defined or not)
-        let item_value = ''
+        let item_value = '';
         if (item[searchColumns[i]]) {
           item_value = item[searchColumns[i]].toString().toLowerCase();
         }
 
         // Check for a match
-        if (item_value.indexOf(val) !== -1 || !val){
+        if (item_value.indexOf(val) !== -1 || !val) {
           // Found match, return true to add to result set
           return true;
         }

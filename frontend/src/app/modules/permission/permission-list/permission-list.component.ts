@@ -33,13 +33,13 @@ export class PermissionListComponent implements OnInit {
 
   @ViewChild(DatatableComponent, { static: true })
   datatable: DatatableComponent;
-  @ViewChild('colHeaderTpl')
+  @ViewChild('colHeaderTpl', { static: true })
   colHeaderTpl: TemplateRef<any>;
-  @ViewChild('typeCellTpl')
+  @ViewChild('typeCellTpl', { static: true })
   typeCellTpl: TemplateRef<any>;
-  @ViewChild('organismCellTpl')
+  @ViewChild('organismCellTpl', { static: true })
   organismCellTpl: TemplateRef<any>;
-  @ViewChild('actionsCellTpl')
+  @ViewChild('actionsCellTpl', { static: true })
   actionsCellTpl: TemplateRef<any>;
 
   columns: Array<DatatableColumn> = [
