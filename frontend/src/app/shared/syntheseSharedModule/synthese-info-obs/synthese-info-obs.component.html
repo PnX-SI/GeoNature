@@ -59,12 +59,11 @@
           <mat-icon>mail</mat-icon>
         </button>
         <button
-          *ngIf="tbarVisible"
           mat-mini-fab
           ngbTooltip="{{'Synthese.copyPermalink' | translate }}"
           placement="bottom"
           [cdkCopyToClipboard]="APP_CONFIG.URL_APPLICATION + '/#/validation/occurrence/' + selectedObs?.entity_source_pk_value"
-          (click)="this._commonService.translateToaster('info', 'Synthese.copy')"
+          (click)="displaySuccessToaster()"
           mat-raised-button
         >
           <mat-icon>share</mat-icon>

@@ -7,7 +7,8 @@ import {
   AfterViewInit,
   SimpleChanges,
   Output,
-  EventEmitter } from '@angular/core';
+  EventEmitter
+} from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -72,9 +73,9 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-      if (changes.idSynthese && changes.idSynthese.currentValue) {
-        this.loadAllInfo(changes.idSynthese.currentValue);
-      }
+    if (changes.idSynthese && changes.idSynthese.currentValue) {
+      this.loadAllInfo(changes.idSynthese.currentValue);
+    }
   }
 
   // HACK to display a second map on validation tab
@@ -270,5 +271,9 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
 
   backToModule(url_source, id_pk_source) {
     window.open(url_source + '/' + id_pk_source, '_blank');
+  }
+
+  displaySuccessToaster() {
+    this._commonService.translateToaster('info', 'Synthese.copy')
   }
 }
