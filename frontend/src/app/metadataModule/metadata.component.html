@@ -138,7 +138,7 @@
                       mat-icon-button
                       [disabled]="!af.cruved.U"
                       matTooltip="Editer ce cadre d'acquisition"
-                      [routerLink]="['/metadata/af', af.id_acquisition_framework]"
+                      [routerLink]="af.cruved.U ? ['/metadata/af', af.id_acquisition_framework] : null"
                     >
                       <mat-icon> create</mat-icon>
                     </a>
