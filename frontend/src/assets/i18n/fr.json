@@ -200,6 +200,7 @@
     "ExportModuleName": "Module d'export des données"
   },
   "Synthese": {
+    "copy": "Copié dans le presse-papier !",
     "copyPermalink": "Copier le permalien",
     "changeValidStatus": "Modifier le statut de validation",
     "ModalTitle": "Information sur l'observation",
