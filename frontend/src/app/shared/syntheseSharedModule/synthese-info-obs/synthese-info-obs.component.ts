@@ -273,13 +273,14 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   }
 
   copyPermalink () {
-    const urlPermaLink = [
-      this.APP_CONFIG.URL_APPLICATION,
-      "#/validation/occurrence",
-      this.selectedObs.entity_source_pk_value
-    ].join('/');
-    if (navigator && navigator.clipboard && navigator.clipboard.writeText)
+    const urlPermaLink = `
+      ${this.APP_CONFIG.URL_APPLICATION}
+      /#/validation/occurrence/
+      ${this.selectedObs.entity_source_pk_value}`;
+    if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+      this._commonService.translateToaster('info', 'Synthese.copy');
       return navigator.clipboard.writeText(urlPermaLink);
+    }
     return Promise.reject('The Clipboard API is not available.');
   }
 }
