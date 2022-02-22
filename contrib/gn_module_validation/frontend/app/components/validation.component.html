@@ -15,6 +15,7 @@
   >
     <!-- <pnx-validation-search (searchClicked)="loadAndStoreData($event)"></pnx-validation-search> -->
     <pnx-synthese-search
+      (resetFilter)="goHome()"
       [displayValidation]="true"
       (searchClicked)="loadAndStoreData($event)"
     >
@@ -41,7 +42,7 @@
         ></i>
       </button>
       <pnx-validation-synthese-list
-        (displayAll)="displayAllObs()"
+        (displayAll)="goHome()"
         [idSynthese]="idSynthese"
         [inputSyntheseData]="_mapListService.tableData"
         [validationStatus]="validationStatus"

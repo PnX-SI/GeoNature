@@ -115,7 +115,7 @@ export class ValidationComponent implements OnInit {
     return feature;
   }
 
-  displayAllObs() {
+  goHome() {
     this._router.navigate(["/validation"]);
   }
 }
