@@ -91,8 +91,21 @@
   [idSynthese]="id_synthese"
   [mailCustomSubject]="VALIDATION_CONFIG.MAIL_SUBJECT"
   [mailCustomBody]="VALIDATION_CONFIG.MAIL_BODY"
-  (editStatus)="editStatus($event)"
 >
+  <button
+    class="status-badge"
+    mat-button
+    ngbTooltip="{{'Synthese.changeValidStatus' | translate}}"
+    (click)="editStatus()"
+    [ngStyle]="{
+      'background-color': currentValidationStatus?.color || 'red',
+      'color': ['0', '6'].includes(currentValidationStatus.cd_nomenclature) ? 'darkslategray' : 'white',
+      'border': ['0', '6'].includes(currentValidationStatus.cd_nomenclature) ? '1px solid rgba(0,0,0,0.2)' : 'transparent'
+    }"
+  >
+    {{currentValidationStatus.mnemonique}}
+    <mat-icon inline>edit</mat-icon>
+  </button>
 </pnx-synthese-info-obs>
 <!--<div class="modal-footer justify-content-between">-->
 <div

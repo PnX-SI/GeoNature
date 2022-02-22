@@ -204,8 +204,6 @@
     "ModalTitle": "Information sur l'observation",
     "Edit": "Voir dans le module de saisie",
     "Mailto": "Contacter par email",
-    "Close": "Fermer",
-    "ShowActions": "Afficher les actions",
     "DeleteObs": "Supprimer l'observations",
     "DeleteSuccess": "Observation supprimée avec succès",
     "PeriodError": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période",

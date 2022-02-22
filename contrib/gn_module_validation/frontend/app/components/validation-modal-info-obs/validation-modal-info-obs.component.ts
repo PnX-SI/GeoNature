@@ -61,7 +61,15 @@ export class ValidationModalInfoObsComponent implements OnInit {
     this.activateNextPrevButton(this.filteredIds.indexOf(this.id_synthese));
     // call status only once on init
     this.getStatusNames();
+    // to get color
+    this.setValidationStatus(this.currentValidationStatus);
   }
+
+  setValidationStatus(validStatus) {
+    const color = this.VALIDATION_CONFIG.STATUS_INFO[validStatus.cd_nomenclature].color;
+    this.currentValidationStatus = {...validStatus, color: color};
+  }
+
   setCurrentCdNomenclature(item) {
     this.currentCdNomenclature = item;
   }
@@ -130,10 +138,10 @@ export class ValidationModalInfoObsComponent implements OnInit {
     // post validation status form ('statusForm') for the current observation
     this._validService
       .postNewValidStatusAndUpdateUI(value, [this.id_synthese])
-      .subscribe(newValidationStatus => {          
-          this.currentValidationStatus = newValidationStatus;     
-          this.statusForm.reset();
-          this.editStatus();
+      .subscribe(newValidationStatus => {
+        this.setValidationStatus(newValidationStatus);
+        this.statusForm.reset();
+        this.editStatus();
       })      
   }
 

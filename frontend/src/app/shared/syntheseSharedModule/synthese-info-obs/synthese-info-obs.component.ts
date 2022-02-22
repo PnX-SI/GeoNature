@@ -29,7 +29,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   @Input() header: false;
   @Input() mailCustomSubject: string;
   @Input() mailCustomBody: string;
-  @Output() editStatus = new EventEmitter();
   public selectedObs: any;
   public validationHistory: Array<any>;
   public selectedObsTaxonDetail: any;
@@ -47,7 +46,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public isLoading = false;
   public email;
   public mailto: string;
-  public tbarVisible: boolean;
+
   public profile: any;
   public phenology: any[];
   public validationColor = {
@@ -70,7 +69,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.loadAllInfo(this.idSynthese);
-    this.tbarVisible = true;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -153,10 +151,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     this._gnDataService.getProfileConsistancyData(this.idSynthese).subscribe(dataChecks => {
       this.profileDataChecks = dataChecks;
     });
-  }
-
-  changeTbar() {
-    this.tbarVisible = !this.tbarVisible;
   }
 
   sendMail() {
