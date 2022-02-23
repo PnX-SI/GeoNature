@@ -766,7 +766,7 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
         uuid = kwargs.get('uuid')
         if uuid is not None:
             try:
-                uuid = UUIDType(uuid.strip())
+                uuid = UUID(uuid.strip())
             except TypeError:
                 pass
             else:
