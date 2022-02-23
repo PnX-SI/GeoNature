@@ -17,7 +17,8 @@ import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/
   styleUrls: ['./synthese-advanced-form.component.scss']
 })
 export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
-  @ViewChild('tree', { static: false }) treeComponent: TreeComponent;
+  @ViewChild('tree', { static: false })
+  public treeComponent: TreeComponent;
   public URL_AUTOCOMPLETE;
   public taxonsTree;
   public treeOptions;
@@ -159,7 +160,9 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   ngAfterContentInit() {
-    this.storeService.treeModel = this.treeComponent.treeModel;
+    if (this.storeService.displayTaxonTree) {
+      this.storeService.treeModel = this.treeComponent.treeModel;
+    }
   }
 
   catchEvent(event) {
@@ -185,7 +188,9 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   onCloseModal() {
-    this.storeService.taxonTreeState = this.storeService.treeModel.getState();
+    if (this.storeService.displayTaxonTree) {
+      this.storeService.taxonTreeState = this.storeService.treeModel.getState();
+    }
     this.activeModal.close();
   }
 

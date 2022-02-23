@@ -43,14 +43,13 @@ export class TaxonAdvancedStoreService {
         .getStatusType(status.status_types)
         .subscribe(data => {
           status.values = data;
-    // get taxhub attributes
         });
     });
 
     // Set red lists filters data
     this._formService.redListsFilters.forEach(redList => {
       this._dataService
-        .getRedListValues(redList.status_type)
+        .getStatusValues(redList.status_type)
         .subscribe(data => {
           redList.values = data;
         });

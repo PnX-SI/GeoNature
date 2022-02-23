@@ -628,8 +628,8 @@ export class DataFormService {
       }));
   }
 
-  getRedListValues(statusType: String) {
-    return this._http.get<any>(`${AppConfig.API_TAXHUB}/bdc_statuts/red_lists/${statusType}`);
+  getStatusValues(statusType: String) {
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/bdc_statuts/status_values/${statusType}`);
   }
 
   getProfile(cdRef) {
