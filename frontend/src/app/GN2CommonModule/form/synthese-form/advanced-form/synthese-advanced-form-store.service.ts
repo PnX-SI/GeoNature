@@ -37,21 +37,17 @@ export class TaxonAdvancedStoreService {
     }
 
     // Set protection status filters data
-    this._formService.statusFilters.forEach(status => {
+    this._formService.statusFilters.forEach((status) => {
       this._dataService
         .getStatusType(status.status_types)
         .subscribe(data => {
           status.values = data;
-          // get taxhub attributes
-          this._dataService.getTaxhubBibAttributes().subscribe((attrs) => {
-            // display only the taxhub attributes set in the config
-          });
         });
 
       // Set red lists filters data
       this._formService.redListsFilters.forEach((redList) => {
         this._dataService
-          .getRedListValues(redList.status_type)
+          .getStatusValues(redList.status_type)
           .subscribe(data => {
             redList.values = data;
           });

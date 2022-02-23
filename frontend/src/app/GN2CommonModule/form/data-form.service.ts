@@ -613,43 +613,47 @@ export class DataFormService {
             };
           });
         })
-      );
-  }
+      }));
+}
 
-  getProfile(cdRef) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`);
-  }
+getStatusValues(statusType: String) {
+  return this._http.get<any>(`${AppConfig.API_TAXHUB}/bdc_statuts/status_values/${statusType}`);
+}
 
-  getPhenology(cdRef, idNomenclatureLifeStage?) {
-    return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/gn_profiles/cor_taxon_phenology/
+getProfile(cdRef) {
+  return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`);
+}
+
+getPhenology(cdRef, idNomenclatureLifeStage ?) {
+  return this._http.get<any>(
+    `${AppConfig.API_ENDPOINT}/gn_profiles/cor_taxon_phenology/
       ${cdRef}?id_nomenclature_life_stage=
       ${idNomenclatureLifeStage}`
-    );
-  }
+  );
+}
 
-  /* A partir d'un id synthese, retourne si l'observation match avec les différents
-   critère d'un profil
-  */
-  getProfileConsistancyData(idSynthese) {
-    return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/gn_profiles/consistancy_data/${idSynthese}`
-    );
-  }
+/* A partir d'un id synthese, retourne si l'observation match avec les différents
+ critère d'un profil
+*/
+getProfileConsistancyData(idSynthese) {
+  return this._http.get<any>(
+    `${AppConfig.API_ENDPOINT}/gn_profiles/consistancy_data/${idSynthese}`
+  );
+}
 
-  controlProfile(data) {
-    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/check_observation`, data);
-  }
+controlProfile(data) {
+  return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/check_observation`, data);
+}
 
-  getStatusType(statusTypes: String[]) {
-    let queryString: HttpParams = new HttpParams();
-    if (statusTypes) {
-      queryString = queryString.set('codes', statusTypes.join(','));
-    }
-    return this._http.get<any>(`${AppConfig.API_TAXHUB}/bdc_statuts/status_types`, {
-      params: queryString
-    });
+getStatusType(statusTypes: String[]) {
+  let queryString: HttpParams = new HttpParams();
+  if (statusTypes) {
+    queryString = queryString.set('codes', statusTypes.join(','));
   }
+  return this._http.get<any>(`${AppConfig.API_TAXHUB}/bdc_statuts/status_types`, {
+    params: queryString
+  });
+}
 
 }
 

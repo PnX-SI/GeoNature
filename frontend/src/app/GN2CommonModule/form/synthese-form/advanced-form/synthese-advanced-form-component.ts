@@ -161,7 +161,9 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   ngAfterContentInit() {
-    this.storeService.treeModel = this.treeComponent.treeModel;
+    if (this.storeService.displayTaxonTree) {
+      this.storeService.treeModel = this.treeComponent.treeModel;
+    }
   }
 
   catchEvent(event) {
@@ -187,7 +189,9 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   onCloseModal() {
-    this.storeService.taxonTreeState = this.storeService.treeModel.getState();
+    if (this.storeService.displayTaxonTree) {
+      this.storeService.taxonTreeState = this.storeService.treeModel.getState();
+    }
     this.activeModal.close();
   }
 
