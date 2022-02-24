@@ -57,7 +57,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
         key,
         this.form.value
       );
-    }    
+    }
     if (this.form !== undefined) {
       // on met à jour les contraintes
       this._dynformService.setControl(
@@ -110,7 +110,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  ngOnChanges(changes: SimpleChanges) {    
+  ngOnChanges(changes: SimpleChanges) {
     for (const propName of Object.keys(changes)) {
       // si le composant dynamic-form-generator annonce un update
       // => on recalcule les propriétés
@@ -124,6 +124,8 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this._sub.unsubscribe();
+    if (this._sub) {
+      this._sub.unsubscribe();
+    }
   }
 }
