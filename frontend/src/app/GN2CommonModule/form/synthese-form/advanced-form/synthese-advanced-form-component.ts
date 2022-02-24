@@ -60,7 +60,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
 
   ngOnInit() {
     // if the modal has already been open, reload the former state of the taxon tree
-    if (this.storeService.taxonTreeState) {
+    if (this.storeService.displayTaxonTree && this.storeService.taxonTreeState) {
       this.storeService.treeModel.setState(this.storeService.taxonTreeState);
     }
   }
