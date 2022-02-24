@@ -170,6 +170,7 @@
           <div class="form-group" *ngIf="availableFilters?.includes('GEOGRAPHIC')">
             <pnx-areas
               [parentFormControl]="formGroup.controls['filters'].controls['geographic']"
+              [defaultItems]="filtersDefaultItems['geographic']"
               [label]="'Permissions.filters.types.GEOGRAPHIC' | translate"
               [typeCodes]="geographicFilterTypes"
               [matTooltip]="'Permissions.filters.tooltips.GEOGRAPHIC' | translate"
@@ -181,6 +182,7 @@
           <div class="form-group" *ngIf="availableFilters?.includes('TAXONOMIC')">
             <pnx-taxa
               [parentFormControl]="formGroup.controls['filters'].controls['taxonomic']"
+              [defaultItems]="filtersDefaultItems['taxonomic']"
               [label]="'Permissions.filters.types.TAXONOMIC' | translate"
               [rank]="taxonomicFilterRank"
               [matTooltip]="'Permissions.filters.tooltips.TAXONOMIC' | translate"

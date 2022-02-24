@@ -31,6 +31,7 @@ export class EditPermissionModal implements OnInit {
   modules;
   actionsOjects;
   filters: Observable<IFilter[]>;
+  filtersDefaultItems = {};
   availableFilters: string[] = [];
   filtersValues: Record<string, IFilterValue[]>;
   geographicFilterTypes: Array<String>;
@@ -185,19 +186,25 @@ export class EditPermissionModal implements OnInit {
     let filterValue = filter.value;
     if (filter.type == 'TAXONOMIC') {
       filterValue = [];
+      this.filtersDefaultItems[filter.type.toLowerCase()] = [];
       filter.value.forEach((nameCode, idx) => {
-        filterValue.push({
+        filterValue.push(parseInt(nameCode));
+
+        this.filtersDefaultItems[filter.type.toLowerCase()].push({
           cd_nom: parseInt(nameCode),
           displayName: filter.label[idx],
-        })
+        });
       });
     } else if (filter.type == 'GEOGRAPHIC') {
       filterValue = [];
+      this.filtersDefaultItems[filter.type.toLowerCase()] = [];
       filter.value.forEach((areaId, idx) => {
-        filterValue.push({
+        filterValue.push(parseInt(areaId));
+
+        this.filtersDefaultItems[filter.type.toLowerCase()].push({
           id_area: parseInt(areaId),
           area_name: filter.label[idx],
-        })
+        });
       });
     }
     return filterValue;
