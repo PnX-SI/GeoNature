@@ -17,7 +17,7 @@ import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/
   styleUrls: ['./synthese-advanced-form.component.scss']
 })
 export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
-  @ViewChild('tree', { static: false })
+  @ViewChild('tree', { static: true })
   public treeComponent: TreeComponent;
   public URL_AUTOCOMPLETE;
   public taxonsTree;
@@ -59,7 +59,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
 
   ngOnInit() {
     // if the modal has already been open, reload the former state of the taxon tree
-    if (this.storeService.taxonTreeState) {
+    if (this.storeService.displayTaxonTree && this.storeService.taxonTreeState) {
       this.storeService.treeModel.setState(this.storeService.taxonTreeState);
     }
   }
