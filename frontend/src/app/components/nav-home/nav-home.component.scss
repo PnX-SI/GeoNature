@@ -7,7 +7,8 @@
   }
 }
 #app-toolbar {
-  [mat-raised-button], [mat-icon-button] {
+  [mat-raised-button],
+  [mat-icon-button] {
     background-color: white !important;
     outline: none;
   }
@@ -17,4 +18,9 @@
   #documentation_link {
     color: black !important;
   }
+}
+
+.home-link {
+  text-decoration: none;
+  color: black;
 }
