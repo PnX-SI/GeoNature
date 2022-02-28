@@ -1,6 +1,6 @@
-from datetime import datetime
-from uuid import uuid4
+import tempfile
 
+from PIL import Image
 import pytest 
 from flask import url_for
 from werkzeug.exceptions import Unauthorized, Forbidden, NotFound, Conflict
@@ -9,8 +9,8 @@ from geoalchemy2.elements import WKTElement
 
 from geonature.utils.env import db
 
-from geonature.core.gn_commons.models import TAdditionalFields, TPlaces
-from geonature.core.gn_commons.models.base import TModules
+from geonature.core.gn_commons.models import TAdditionalFields, TPlaces, TMedias
+from geonature.core.gn_commons.models.base import TModules, TParameters
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_permissions.models import TObjects
 from geonature.core.gn_synthese.models import Synthese
@@ -54,6 +54,122 @@ def additional_field(app, datasets):
     return additional_field
 
 
+@pytest.fixture(scope="function")
+def parameter(users):
+    param = TParameters(id_organism=users["self_user"].organisme.id_organisme,
+                        parameter_name="MyTestParameter",
+                        parameter_desc="TestDesc",
+                        parameter_value=4,
+                        parameter_extra_value=12)
+
+    with db.session.begin_nested():
+        db.session.add(param)
+    return param
+
+
+@pytest.fixture(scope="function")
+def nonexistent_media():
+    # media can be None
+    return db.session.query(func.max(TMedias.id_media)).scalar() or 0 + 1
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestMedia:
+
+    def test_get_medias(self, medium):
+        response = self.client.get(url_for("gn_commons.get_medias",
+                                   uuid_attached_row=str(medium.uuid_attached_row)
+                                   ))
+        
+        assert response.status_code == 200
+        assert response.json[0]["id_media"] == medium.id_media
+
+    def test_get_media(self, medium):
+        response = self.client.get(url_for("gn_commons.get_media", id_media=medium.id_media))
+    
+        assert response.status_code == 200
+        resp_json = response.json
+        assert resp_json["id_media"] == medium.id_media
+        assert resp_json["title_fr"] == medium.title_fr
+        assert resp_json["unique_id_media"] == str(medium.unique_id_media)
+    
+    def test_delete_media(self, medium):
+        id_media = int(medium.id_media)
+
+        response = self.client.delete(url_for("gn_commons.delete_media",
+                                      id_media=id_media))
+
+        assert response.status_code == 200
+        assert response.json['resp'] == f"media {id_media} deleted"
+
+    def test_create_media(self, medium):
+        title_fr = "test_test"
+        image = Image.new('RGBA',
+                        size=(1, 1),
+                        color=(155, 0, 0))
+        with tempfile.NamedTemporaryFile() as f:
+            image.save(f, 'png')
+            payload = {
+                "title_fr": title_fr,
+                "media_path": f.name,
+                "id_nomenclature_media_type": medium.id_nomenclature_media_type,
+                "id_table_location": medium.id_table_location,
+            }
+
+            response = self.client.post(url_for("gn_commons.insert_or_update_media"),
+                            content_type='multipart/form-data',
+                            data=payload)
+        
+        assert response.status_code == 200
+        assert response.json["title_fr"] == title_fr
+    
+    def test_update_media(self, medium):
+        title_fr = "New title"
+        author = "New author"
+        payload = {
+            "title_fr": title_fr,
+            "author": author,
+            "media_path": medium.media_path,
+            "id_nomenclature_media_type": medium.id_nomenclature_media_type
+        }
+
+        response = self.client.put(url_for("gn_commons.delete_media",
+                                   id_media=medium.id_media),
+                                   json=payload)
+        assert response.status_code == 200
+        resp_json = response.json
+        assert resp_json["title_fr"] == title_fr
+        assert resp_json["author"] == author
+
+    def test_update_media_error(self, medium):
+        payload = {
+            "media_path": "",
+        }
+
+        response = self.client.put(url_for("gn_commons.delete_media",
+                                   id_media=medium.id_media),
+                                   json=payload)
+        # FIXME: should not return 500
+        assert response.status_code == 500
+
+    def test_get_media_thumb(self, medium):
+        response = self.client.get(url_for("gn_commons.get_media_thumb",
+                                   id_media=medium.id_media,
+                                   size=300)
+                                   )
+
+        # Redirection
+        assert response.status_code == 302
+
+    def test_get_media_not_found(self, nonexistent_media):
+        response = self.client.get(url_for("gn_commons.get_media_thumb",
+                                   id_media=nonexistent_media,
+                                   size=300))
+        
+        assert response.status_code == 404
+        assert response.json["msg"] == "Media introuvable"
+    
+
 @pytest.mark.usefixtures(
     "client_class",
     "temporary_transaction"
@@ -72,6 +188,43 @@ class TestCommons:
         response = self.client.get(url_for("gn_commons.list_modules"))
         assert response.status_code == 200
         assert len(response.json) > 0
+    
+    def test_list_module_exclude(self, users):
+        excluded_module = "GEONATURE"
+
+        set_logged_user_cookie(self.client, users['admin_user'])
+
+        response = self.client.get(url_for("gn_commons.list_modules"),
+                                   query_string={"exclude": [excluded_module]}
+        )
+
+        assert response.status_code == 200
+        assert excluded_module not in [module["module_code"] for module in response.json]
+                            
+    def test_get_module(self):
+        module_code = "GEONATURE"
+
+        response = self.client.get(url_for("gn_commons.get_module",         module_code=module_code)
+        )
+
+        assert response.status_code == 200
+        assert response.json["module_code"] == module_code
+
+    def test_get_parameters_list(self, parameter):
+        response = self.client.get(url_for("gn_commons.get_parameters_list")
+        )
+
+        assert response.status_code == 200
+        assert isinstance(response.json, list)
+        assert parameter.id_parameter in [resp["id_parameter"] for resp in response.json]
+
+    def test_get_parameter(self, parameter):
+        response = self.client.get(url_for("gn_commons.get_one_parameter",
+                                   param_name=parameter.parameter_name)
+        )
+
+        assert response.status_code == 200
+        assert response.json[0]["id_parameter"] == parameter.id_parameter
 
     def test_list_places(self, place, users):
         response = self.client.get(url_for("gn_commons.list_places"))

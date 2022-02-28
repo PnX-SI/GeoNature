@@ -67,6 +67,7 @@ def insert_or_update_media(id_media=None):
         file = None
 
     data = {}
+    # Useful ?
     if request.form:
         formData = dict(request.form)
         for key in formData:

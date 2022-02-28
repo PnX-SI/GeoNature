@@ -1,7 +1,9 @@
 import json
 import pkg_resources
 import datetime
+import tempfile
 
+from PIL import Image
 import pytest
 from flask import testing, url_for
 from werkzeug.datastructures import Headers
@@ -12,7 +14,7 @@ from geoalchemy2.shape import from_shape
 from geonature import create_app
 from geonature.utils.env import db
 from geonature.core.gn_permissions.models import TActions, TFilters, BibFiltersType, CorRoleActionFilterModuleObject
-from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_commons.models import TModules, TMedias, BibTablesLocation
 from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets, \
                                           CorDatasetActor, CorAcquisitionFrameworkActor
 from geonature.core.gn_synthese.models import TSources, Synthese
@@ -24,7 +26,7 @@ from utils_flask_sqla.tests.utils import JSONClient
 
 
 __all__ = ['datasets', 'acquisition_frameworks', 'synthese_data', 'source',
-           'filters']
+           'filters', 'medium']
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -261,3 +263,57 @@ def filters():
             db.session.add(new_filter)
     
     return filters_dict
+
+
+
+def create_media(media_path=""):
+    photo_type = TNomenclatures.query.filter(
+                                BibNomenclaturesTypes.mnemonique == 'TYPE_MEDIA',
+                                TNomenclatures.mnemonique == 'Photo').one()
+    location = (
+            BibTablesLocation.query
+            .filter(BibTablesLocation.schema_name == "gn_commons")
+            .filter(BibTablesLocation.table_name == "t_medias")
+            .one()
+        )
+    with db.session.begin_nested():
+        new_media = TMedias(id_nomenclature_media_type=photo_type.id_nomenclature,
+                            media_path=media_path,
+                            title_fr="Test media",
+                            author="Test author",
+                            id_table_location=location.id_table_location)
+        db.session.add(new_media)
+    
+    return new_media
+
+def create_media(media_path=""):
+    photo_type = TNomenclatures.query.filter(
+                                BibNomenclaturesTypes.mnemonique == 'TYPE_MEDIA',
+                                TNomenclatures.mnemonique == 'Photo').one()
+    location = (
+            BibTablesLocation.query
+            .filter(BibTablesLocation.schema_name == "gn_commons")
+            .filter(BibTablesLocation.table_name == "t_medias")
+            .one()
+        )
+    
+    new_media = TMedias(id_nomenclature_media_type=photo_type.id_nomenclature,
+                        media_path=media_path,
+                        title_fr="Test media",
+                        author="Test author",
+                        id_table_location=location.id_table_location,
+                        uuid_attached_row=func.uuid_generate_v4()
+                        )
+    
+    with db.session.begin_nested():
+        db.session.add(new_media)
+    return new_media
+
+@pytest.fixture
+def medium(app):
+    image = Image.new('RGBA',
+                        size=(1, 1),
+                        color=(155, 0, 0))
+    with tempfile.NamedTemporaryFile() as f:
+        image.save(f, 'png')
+        yield create_media(media_path=str(f.name))
