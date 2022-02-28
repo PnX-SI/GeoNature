@@ -11,6 +11,7 @@ from geonature.utils.env import db
 
 from geonature.core.gn_commons.models import TAdditionalFields, TPlaces, TMedias
 from geonature.core.gn_commons.models.base import TModules, TParameters
+from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_permissions.models import TObjects
 from geonature.core.gn_synthese.models import Synthese
@@ -117,8 +118,7 @@ class TestMedia:
             }
 
             response = self.client.post(url_for("gn_commons.insert_or_update_media"),
-                            content_type='multipart/form-data',
-                            data=payload)
+                            json=payload)
         
         assert response.status_code == 200
         assert response.json["title_fr"] == title_fr
@@ -168,7 +168,35 @@ class TestMedia:
         
         assert response.status_code == 404
         assert response.json["msg"] == "Media introuvable"
-    
+
+
+@pytest.mark.usefixtures(
+    "client_class",
+    "temporary_transaction"
+)
+class TestTMediaRepository:
+    def test__init__(self, medium):
+        media = TMediaRepository(id_media=medium.id_media)
+
+        assert media.media.id_media == medium.id_media
+
+    def test_persist_media_db_error_not_null(self):
+        media = TMediaRepository()
+
+        with pytest.raises(Exception) as e:
+            media._persist_media_db()
+        
+        assert "NotNullViolation" in str(e.value)
+
+    def test_persist_media_error_exists(self, medium):
+        media = TMediaRepository(id_media=medium.id_media)
+        media.media.id_nomenclature_media_type = 0
+
+        with pytest.raises(Exception) as e:
+            media._persist_media_db()
+        
+        assert "type didn't match" in str(e.value)
+
 
 @pytest.mark.usefixtures(
     "client_class",
