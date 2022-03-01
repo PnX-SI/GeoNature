@@ -546,8 +546,10 @@
         <br><br>
       </ng-template>
     </div>
-    <mat-tab label="{{ 'Synthese.Discussion' | translate }}">
-    </mat-tab>
+  </mat-tab>
+
+  <mat-tab label="{{ 'Synthese.Discussion' | translate }}">
+    <pnx-discussion-card [idSynthese]="idSynthese"></pnx-discussion-card>
   </mat-tab>
 
   <mat-tab
