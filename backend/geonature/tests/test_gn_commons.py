@@ -9,7 +9,7 @@ from sqlalchemy import func
 from werkzeug.exceptions import Conflict, Forbidden, NotFound, Unauthorized
 
 from geonature.core.gn_commons.models import (TAdditionalFields, TMedias,
-                                              TPlaces)
+                                              TPlaces, BibTablesLocation)
 from geonature.core.gn_commons.models.base import TModules, TParameters
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_permissions.models import TObjects
@@ -456,3 +456,33 @@ class TestCommons:
         data = response.json
         # TODO: Do better than that:
         assert len(data) == 0
+
+    def test_get_t_mobile_apps(self):
+        response = self.client.get(url_for("gn_commons.get_t_mobile_apps"))
+
+        assert response.status_code == 200
+        assert len(response.json) == 0
+    
+    def test_api_get_id_table_location(self):
+        schema = "gn_commons"
+        table = "t_medias"
+        location = (
+            db.session.query(BibTablesLocation)
+            .filter(BibTablesLocation.schema_name == schema)
+            .filter(BibTablesLocation.table_name == table)
+            .one()
+        )
+
+        response = self.client.get(url_for("gn_commons.api_get_id_table_location", schema_dot_table=f"{schema}.{table}"))
+
+        assert response.status_code == 200
+        assert response.json == location.id_table_location
+
+    def test_api_get_id_table_location_not_found(self):
+        schema = "wrongschema"
+        table = "wrongtable"
+
+        response = self.client.get(url_for("gn_commons.api_get_id_table_location", schema_dot_table=f"{schema}.{table}"))
+
+        assert response.status_code == 204  # No content
+        assert response.json is None
