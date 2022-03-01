@@ -6,8 +6,8 @@ from flask import url_for
 from werkzeug.exceptions import Unauthorized, Forbidden, NotFound, Conflict
 from sqlalchemy import func
 from geoalchemy2.elements import WKTElement
+from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes 
 
-from geonature.utils.env import db
 
 from geonature.core.gn_commons.models import TAdditionalFields, TPlaces, TMedias
 from geonature.core.gn_commons.models.base import TModules, TParameters
@@ -15,8 +15,8 @@ from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_permissions.models import TObjects
 from geonature.core.gn_synthese.models import Synthese
-
-from pypnnomenclature.models import TNomenclatures
+from geonature.utils.env import db
+from geonature.utils.errors import GeoNatureError
 
 
 from . import *
@@ -72,6 +72,11 @@ def parameter(users):
 def nonexistent_media():
     # media can be None
     return db.session.query(func.max(TMedias.id_media)).scalar() or 0 + 1
+
+
+@pytest.fixture(scope="function")
+def media_repository(medium):
+    return TMediaRepository(id_media=medium.id_media)
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -175,10 +180,8 @@ class TestMedia:
     "temporary_transaction"
 )
 class TestTMediaRepository:
-    def test__init__(self, medium):
-        media = TMediaRepository(id_media=medium.id_media)
-
-        assert media.media.id_media == medium.id_media
+    def test__init__(self, medium, media_repository):
+        assert media_repository.media.id_media == medium.id_media
 
     def test_persist_media_db_error_not_null(self):
         media = TMediaRepository()
@@ -188,16 +191,117 @@ class TestTMediaRepository:
         
         assert "NotNullViolation" in str(e.value)
 
-    def test_persist_media_error_exists(self, medium):
-        media = TMediaRepository(id_media=medium.id_media)
-        media.media.id_nomenclature_media_type = 0
+    def test_persist_media_error_exists(self, media_repository):
+        media_repository.media.id_nomenclature_media_type = 0
 
         with pytest.raises(Exception) as e:
-            media._persist_media_db()
+            media_repository._persist_media_db()
         
         assert "type didn't match" in str(e.value)
 
+    def test_header_content_type(self, medium, media_repository):
+        media_repository.data["id_nomenclature_media_type"] = medium.id_nomenclature_media_type
 
+        test = media_repository.test_header_content_type("image")
+        
+        assert test
+    
+    def test_test_url_none(self, media_repository):
+        media_repository.data["media_url"] = None
+        test = media_repository.test_url()
+
+        assert test is None
+    
+    def test_test_url(self, medium, media_repository):
+        media_repository.data["media_url"] = "https://google.com/"
+        media_repository.data["id_nomenclature_media_type"] = medium.id_nomenclature_media_type
+
+        with pytest.raises(GeoNatureError) as e:
+            media_repository.test_url()
+
+        assert "Il y a un problème avec l'URL renseignée" in str(e.value)
+    
+    def test_test_url_wrong_url(self, media_repository):
+        media_repository.data["media_url"] = "https://google.com/notfound"
+
+        with pytest.raises(GeoNatureError) as e:
+            media_repository.test_url()
+        
+        assert "la réponse est différente de 200" in str(e.value)
+
+    def test_test_url_wrong_image_url(self, medium, media_repository):
+        media_repository.data["media_url"] = "https://www.youtube.com/watch?v=vRfl0ies5GY"
+        media_repository.data["id_nomenclature_media_type"] = medium.id_nomenclature_media_type
+
+        with pytest.raises(GeoNatureError) as e:
+            media_repository.test_url()
+
+        assert "le format du lien" in str(e.value)
+
+    def test_test_url_wrong_video(self, media_repository):
+        media_repository.data["media_url"] = "https://www.google.com/"
+        photo_type = TNomenclatures.query.filter(
+                                BibNomenclaturesTypes.mnemonique == 'TYPE_MEDIA',
+                                TNomenclatures.mnemonique == "Vidéo Youtube").one()
+        media_repository.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
+
+        with pytest.raises(GeoNatureError) as e:
+            media_repository.test_url()
+
+        assert "l'URL n est pas valide pour le type de média choisi" in str(e.value)
+
+
+@pytest.mark.parametrize("test_media_type,test_media_url,test_wrong_url", 
+                            [("Vidéo Youtube", "http://youtube.com/","http://you.com/"), 
+                             ("Vidéo Dailymotion", "http://dailymotion.com/", "http://daily.com/"), 
+                             ("Vidéo Vimeo", "http://vimeo.com/", "http://vim.org/")])
+class TestTMediaRepositoryVideoLink:
+    def test_test_video_link(self, medium, test_media_type, test_media_url, test_wrong_url):
+        # Need to create a video link
+        photo_type = TNomenclatures.query.filter(
+                                BibNomenclaturesTypes.mnemonique == 'TYPE_MEDIA',
+                                TNomenclatures.mnemonique == test_media_type).one()
+        media = TMediaRepository(id_media=medium.id_media)
+        media.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
+        media.data["media_url"] = test_media_url
+
+        test = media.test_video_link()
+
+        assert test
+    
+    def test_test_video_link_wrong(self, medium, test_media_type, test_media_url, test_wrong_url):
+        # Need to create a video link
+        photo_type = TNomenclatures.query.filter(
+                                BibNomenclaturesTypes.mnemonique == 'TYPE_MEDIA',
+                                TNomenclatures.mnemonique == test_media_type).one()
+        media = TMediaRepository(id_media=medium.id_media)
+        media.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
+        # WRONG URL:
+        media.data["media_url"] = test_wrong_url
+
+        test = media.test_video_link()
+
+        assert not test
+
+
+@pytest.mark.parametrize("test_media_type,test_content_type", [("Photo", "wrong"), 
+                                        ("Audio", "wrong"), 
+                                        ("Vidéo (fichier)", "wrong"),
+                                        ("PDF", "wrong"),
+                                        ("Page web", "wrong")])
+class TestTMediaRepositoryHeader:
+    def test_header_content_type_wrong(self, medium, test_media_type, test_content_type):
+        photo_type = TNomenclatures.query.filter(
+                                BibNomenclaturesTypes.mnemonique == 'TYPE_MEDIA',
+                                TNomenclatures.mnemonique == test_media_type).one()
+        media = TMediaRepository(id_media=medium.id_media)
+        media.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
+
+        test = media.test_header_content_type(test_content_type)
+        
+        assert not test
+        
+    
 @pytest.mark.usefixtures(
     "client_class",
     "temporary_transaction"
