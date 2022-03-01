@@ -50,6 +50,7 @@ from geonature.utils.gn_module_import import (
     frontend_routes_templating,
     MSG_OK,
 )
+from geonature.utils.module import get_module_config_path
 from geonature.utils.errors import GNModuleInstallError, GeoNatureError
 from geonature.core.gn_commons.models import TModules
 from geonature import create_app
@@ -117,7 +118,8 @@ def install_packaged_gn_module(module_path, module_code, build):
         os.symlink(os.path.abspath(module_path), module_symlink)
 
     # creation du fichier conf_gn_module.toml
-    gn_module_register_config(module_code)
+    module_config_path = get_module_config_path(module_object)
+    module_config_path.touch(exist_ok=True)
 
     ### Frontend
     # creation du lien symbolique des assets externes
