@@ -1,0 +1,47 @@
+<div>
+    <div>
+        <button
+            button="submit"
+            mat-mini-fab
+            color="primary"
+            (click)="addComment()"
+        >
+            <mat-icon>add_comment</mat-icon>
+        </button>
+    </div>
+    <div class="blocks">
+        <mat-form-field appearance="fill">
+            <mat-label>Commentaire :</mat-label>
+            <input
+                matInput
+                [(ngModel)]="comment"
+            >
+        </mat-form-field>
+    </div>
+    <div class="blocks">
+        <mat-card class="discussion-card">
+            <mat-card-header>
+                <mat-card-title>Jean marc</mat-card-title>
+                <mat-card-subtitle>{{comment?.date}}</mat-card-subtitle>
+            </mat-card-header>
+            <mat-card-content>
+                <p>
+                    The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
+                    A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
+                    bred for hunting.
+                </p>
+            </mat-card-content>
+            <mat-card-actions>
+                <button mat-button>LIKE</button>
+                <button mat-button>SHARE</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+    <mat-paginator
+        [length]="100"
+        [pageSize]="10"
+        [pageSizeOptions]="[5, 10, 25, 100]"
+        aria-label="Select page"
+    >
+    </mat-paginator>
+</div>
