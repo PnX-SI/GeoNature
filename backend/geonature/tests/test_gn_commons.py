@@ -8,18 +8,13 @@ from sqlalchemy import func
 from geoalchemy2.elements import WKTElement
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes 
 
-
 from geonature.core.gn_commons.models import TAdditionalFields, TPlaces, TMedias
 from geonature.core.gn_commons.models.base import TModules, TParameters
 from geonature.core.gn_commons.repositories import TMediaRepository
-from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_permissions.models import TObjects
-from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 from geonature.utils.errors import GeoNatureError
 
-
-from . import *
 from .fixtures import *
 from .utils import set_logged_user_cookie
 
