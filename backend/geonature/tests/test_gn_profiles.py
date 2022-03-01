@@ -108,8 +108,9 @@ def sample_synthese_records_for_profile(datasets, get_gn_profile_data):
             db.session.add(synthese_record_for_profile)
             db.session.add(taxon_param)
 
-        db.session.execute('REFRESH MATERIALIZED VIEW gn_profiles.vm_valid_profiles')
-        db.session.execute('REFRESH MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology')
+        with db.session.begin_nested():
+            db.session.execute('REFRESH MATERIALIZED VIEW gn_profiles.vm_valid_profiles')
+            db.session.execute('REFRESH MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology')
 
         return synthese_record_for_profile
 
@@ -127,16 +128,19 @@ def wrong_sample_synthese_records_for_profile(datasets, get_gn_profile_data):
             "11"
         )
     )
+
     with db.session.begin_nested():
         db.session.add(wrong_new_obs)
-    db.session.execute('REFRESH MATERIALIZED VIEW gn_profiles.vm_valid_profiles')
-    db.session.execute('REFRESH MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology')
+
+    with db.session.begin_nested():
+        db.session.execute('REFRESH MATERIALIZED VIEW gn_profiles.vm_valid_profiles')
+        db.session.execute('REFRESH MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology')
     
     return wrong_new_obs
 
 
 @pytest.mark.usefixtures("client_class",
-"temporary_transaction", "sample_synthese_records_for_profile"
+"temporary_transaction"
 )
 class TestGnProfiles:
     def test_checks(self, sample_synthese_records_for_profile):
@@ -152,25 +156,27 @@ class TestGnProfiles:
         # check altitude
         consitancy_data = VConsistancyData.query.filter(VConsistancyData.id_synthese == valid_new_obs.id_synthese).one()
         cor = VmCorTaxonPhenology.query.first()
-        assert consitancy_data.valid_distribution is True
-        assert consitancy_data.valid_altitude is True
-        assert consitancy_data.valid_phenology is True
+        assert consitancy_data.valid_distribution
+        assert consitancy_data.valid_altitude
+        assert consitancy_data.valid_phenology
         profile = VmValidProfiles.query.first()
 
-    def test_checks_all_false(self, wrong_sample_synthese_records_for_profile):
+    def test_checks_all_false(self, sample_synthese_records_for_profile, wrong_sample_synthese_records_for_profile):
+        # Need to create the good sample for the taxon parameter and to
+        # set the profile correctly
         wrong_new_obs = wrong_sample_synthese_records_for_profile
 
         consitancy_data = VConsistancyData.query.filter(
             VConsistancyData.id_synthese == wrong_new_obs.id_synthese
         ).one()
 
-        assert consitancy_data.valid_distribution is False
-        assert consitancy_data.valid_altitude is False
-        assert consitancy_data.valid_phenology is False
+        assert not consitancy_data.valid_distribution
+        assert not consitancy_data.valid_altitude
+        assert not consitancy_data.valid_phenology
 
-    def test_get_phenology(self, get_gn_profile_data):
+    def test_get_phenology(self, sample_synthese_records_for_profile):
         response = self.client.get(
-            url_for("gn_profiles.get_phenology", cd_ref=get_gn_profile_data["cd_nom"]),
+            url_for("gn_profiles.get_phenology", cd_ref=sample_synthese_records_for_profile.cd_nom),
             query_string={
                 "id_nomenclature_life_stage" : db.session.query(func.ref_nomenclatures.get_id_nomenclature("STADE_VIE","10")).first()[0]
             }
@@ -195,9 +201,9 @@ class TestGnProfiles:
 
         assert response.status_code == 204  # No content
 
-    def test_valid_profile(self, get_gn_profile_data):
+    def test_valid_profile(self, sample_synthese_records_for_profile):
         response = self.client.get(
-            url_for("gn_profiles.get_profile", cd_ref=get_gn_profile_data["cd_nom"]),
+            url_for("gn_profiles.get_profile", cd_ref=sample_synthese_records_for_profile.cd_nom),
         )
         assert response.status_code == 200
         data = response.get_json()["properties"]
@@ -247,14 +253,13 @@ class TestGnProfiles:
         assert response.status_code == 404
         assert response.json.get("description") == "No profile for this cd_ref"
 
-    def test_get_observation_score(self, get_gn_profile_data):
-        print(get_gn_profile_data)
+    def test_get_observation_score(self, sample_synthese_records_for_profile):
         data = {
             "altitude_min": ALT_MIN,
             "altitude_max": ALT_MAX,
             "date_min": DATE_MIN,
             "date_max": DATE_MAX,
-            "cd_ref": get_gn_profile_data["cd_nom"],
+            "cd_ref": sample_synthese_records_for_profile.cd_nom,
             "geom": {'coordinates': [6.12, 44.85], 'type': 'Point'}
         }
 
@@ -274,12 +279,12 @@ class TestGnProfiles:
                 'check_life_stage'] == list(resp_json.keys())
         assert len(resp_json['errors']) == 0
 
-    def test_get_observation_score_no_date(self, get_gn_profile_data):
+    def test_get_observation_score_no_date(self, sample_synthese_records_for_profile):
         data = {
             "altitude_min": ALT_MIN,
             "altitude_max": ALT_MAX,
             "date_min": DATE_MIN,
-            "cd_ref": get_gn_profile_data["cd_nom"],
+            "cd_ref": sample_synthese_records_for_profile.cd_nom,
             "geom": {'coordinates': [6.12, 44.85], 'type': 'Point'}
         }
 
@@ -291,12 +296,12 @@ class TestGnProfiles:
         assert response.status_code == 400
         assert response.json['description'] == "Missing date min or date max"
     
-    def test_get_observation_score_no_altitude(self, get_gn_profile_data):
+    def test_get_observation_score_no_altitude(self, sample_synthese_records_for_profile):
         data = {
             "altitude_min": ALT_MIN,
             "date_min": DATE_MIN,
             "date_max": DATE_MAX,
-            "cd_ref": get_gn_profile_data["cd_nom"],
+            "cd_ref": sample_synthese_records_for_profile.cd_nom,
             "geom": {'coordinates': [6.12, 44.85], 'type': 'Point'}
         }
 
@@ -308,7 +313,7 @@ class TestGnProfiles:
         assert response.status_code == 400
         assert response.json['description'] == "Missing altitude_min or altitude_max"
     
-    def test_get_observation_score_not_observed_altitude(self, get_gn_profile_data):
+    def test_get_observation_score_not_observed_altitude(self, sample_synthese_records_for_profile):
         alt_min = 500
         alt_max = 600
         data = {
@@ -316,7 +321,7 @@ class TestGnProfiles:
             "altitude_max": alt_max,
             "date_min": DATE_MIN,
             "date_max": DATE_MAX,
-            "cd_ref": get_gn_profile_data["cd_nom"],
+            "cd_ref": sample_synthese_records_for_profile.cd_nom,
             "geom": {'coordinates': [6.12, 44.85], 'type': 'Point'}
         }
 
@@ -333,7 +338,7 @@ class TestGnProfiles:
         pass
 
 
-    def test_get_observation_score_error_not_observed(self, get_gn_profile_data):
+    def test_get_observation_score_error_not_observed(self, sample_synthese_records_for_profile):
          # In the date, only the days are relevant not the date. Which means 
          # that when 2022-01-20 is entered, the doy is more or less 20. 
         data = {
@@ -341,7 +346,7 @@ class TestGnProfiles:
             "altitude_max": ALT_MAX,
             "date_min": "2022-01-20",
             "date_max": "2022-01-25",
-            "cd_ref": get_gn_profile_data["cd_nom"],
+            "cd_ref": sample_synthese_records_for_profile.cd_nom,
             "geom": {'coordinates': [6.12, 44.85], 'type': 'Point'}
         }
 
@@ -353,13 +358,13 @@ class TestGnProfiles:
         assert response.status_code == 200
         assert "Le taxon n'a jamais été observé à cette periode" in [err['value'] for err in response.json['errors']]
 
-    def test_get_observation_score_error_geom_not_observed(self, get_gn_profile_data):
+    def test_get_observation_score_error_geom_not_observed(self, sample_synthese_records_for_profile):
         data = {
             "altitude_min": ALT_MIN,
             "altitude_max": ALT_MAX,
             "date_min": DATE_MIN,
             "date_max": DATE_MAX,
-            "cd_ref": get_gn_profile_data["cd_nom"],
+            "cd_ref": sample_synthese_records_for_profile.cd_nom,
             "geom": {'coordinates': [1000, 2000], 'type': 'Point'}
         }
 
