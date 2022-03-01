@@ -95,10 +95,15 @@ class TestGnPermissionsTools:
             resp = get_user_from_token_and_raise(request)
 
     def test_get_user_from_token_and_raise(self, app, users):
-        with app.test_request_context(headers=logged_user_headers(users["user"])):
+        user = users["user"]
+
+        with app.test_request_context(headers=logged_user_headers(user)):
             app.preprocess_request()
             resp = get_user_from_token_and_raise(request)
             assert isinstance(resp, dict)
+            assert resp["id_role"] == user.id_role
+            assert resp["id_organisme"] == user.id_organisme
+            assert resp["identifiant"] == user.identifiant
 
     def test_get_user_permissions_forbidden(self, unavailable_user_id):
         """
