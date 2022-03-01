@@ -1,14 +1,15 @@
 import tempfile
 
-from PIL import Image
-import pytest 
+import pytest
 from flask import url_for
-from werkzeug.exceptions import Unauthorized, Forbidden, NotFound, Conflict
-from sqlalchemy import func
 from geoalchemy2.elements import WKTElement
-from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes 
+from PIL import Image
+from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
+from sqlalchemy import func
+from werkzeug.exceptions import Conflict, Forbidden, NotFound, Unauthorized
 
-from geonature.core.gn_commons.models import TAdditionalFields, TPlaces, TMedias
+from geonature.core.gn_commons.models import (TAdditionalFields, TMedias,
+                                              TPlaces)
 from geonature.core.gn_commons.models.base import TModules, TParameters
 from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_permissions.models import TObjects
