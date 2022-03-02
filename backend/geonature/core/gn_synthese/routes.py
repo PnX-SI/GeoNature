@@ -7,9 +7,9 @@ from collections import OrderedDict
 from warnings import warn
 
 from flask import Blueprint, request, Response, current_app, \
-                  send_from_directory, render_template, jsonify
-from werkzeug.exceptions import BadRequest, Forbidden, NotFound
-from sqlalchemy import distinct, func, desc, select, text
+                  send_from_directory, render_template, jsonify, g
+from werkzeug.exceptions import Forbidden, NotFound, BadRequest
+from sqlalchemy import distinct, func, desc, asc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
@@ -32,6 +32,7 @@ from geonature.core.gn_synthese.models import (
     DefaultsNomenclaturesValue,
     VSyntheseForWebApp,
     VColorAreaTaxon,
+    CorDiscussionSynthese
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
@@ -47,6 +48,7 @@ from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 
 from ref_geo.models import LAreas, BibAreasTypes
 
+from pypnusershub.db.tools import user_from_token
 
 # debug
 # current_app.config['SQLALCHEMY_ECHO'] = True
@@ -277,7 +279,6 @@ def get_one_synthese(scope, id_synthese):
 
 
 @routes.route("/export_taxons", methods=["POST"])
-@permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_taxon_web(info_role):
     """Optimized route for taxon web export.
 
@@ -935,3 +936,69 @@ def get_taxa_distribution():
 
     data = query.group_by(rank).all()
     return [{"count": d[0], "group": d[1]} for d in data]
+
+@routes.route("/reports", methods=["POST","PUT"])
+@json_resp
+def create_discussion():
+    """
+    Create a report (e.g discussion) for a given synthese id
+
+    Returns
+    -------
+        report: `json`: 
+            Every occurrence's discussions
+    """
+
+    # {date: '2022-03-03T11:16:31.926Z', user: 3, content: 'dqsd', module: 6, item: 5}
+    session = DB.session
+    # form, data, json, args
+    data = request.json
+    print("==============================================>>>>>>>>>>>>>>")
+    print(data)
+    print("==============================================>>>>>>>>>>>>>>")
+    new_entry = CorDiscussionSynthese(
+        id_synthese=data['item'],
+        id_module=data['module'],
+        id_role=g.current_user.id_role,
+        content_owner=data['user'],
+        content_report=data['content'],
+        content_date=datetime.datetime.now(),
+        content_type=1
+    )
+    session.add(new_entry)
+    session.commit()
+
+@routes.route('/reports', methods=["GET"])
+@json_resp
+def get_report():
+    # show the subpath after /path/
+    id_type = request.args.get("type")
+    id_role = request.args.get("idRole")
+    id_synthese = request.args.get("idSynthese")
+    id_module = request.args.get("idModule")
+    sort=request.args.get("sort")
+    
+    if not id_synthese:
+        raise BadRequest('idSynthese is missing from the request')
+
+    data = DB.session.query(CorReportSynthese).filter(CorReportSynthese.id_synthese==id_synthese)
+    if id_role and id_role == g.current_user.id_role:
+        data = data.filter(CorReportSynthese.id_role==id_role)
+    if id_module:
+        data = data.filter(CorReportSynthese.id_module==id_module)
+    if id_type:
+        data = data.filter(CorReportSynthese.content_type==id_type)
+    if sort == 'asc':
+        data = data.order_by(asc(CorReportSynthese.content_date))
+    if sort == 'desc':
+        data = data.order_by(desc(CorReportSynthese.content_date))
+    data = [CorReportSynthese.as_dict(d) for d in data]
+    return { 'totalResults':  len(data), 'results': data }
+
+@routes.route('/reports/<int:id_report>', methods=["DELETE"])
+@json_resp
+def delete_report(id_report):
+    g.current_user = user_from_token(request.cookies['token']).role
+    reportItem = DB.session.query(CorReportSynthese).filter_by(id_report=id_report, id_role=g.current_user.id_role).first()
+    DB.session.delete(reportItem)
+    DB.session.commit()

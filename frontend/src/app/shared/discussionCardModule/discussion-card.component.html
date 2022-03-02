@@ -1,0 +1,118 @@
+<div>
+    <div class="text-right">
+        <button
+            *ngIf="!open"
+            button="submit"
+            mat-mini-fab
+            color="primary"
+            class="m-2 disccusion-action-btn"
+            (click)="openCloseComment()"
+            ngbTooltip="{{'Synthese.AddComment' | translate}}"
+            placement="left"
+            align="end"
+        >
+            <mat-icon>add_comment</mat-icon>
+        </button>
+    </div>
+    <div
+        class="blocks"
+        *ngIf="open"
+    >
+        <mat-card class="comment-card mb-2">
+            <mat-card-header>
+            </mat-card-header>
+            <mat-card-content class="m-0">
+                <mat-form-field
+                    appearance="fill"
+                    class="disccusion-field"
+                    style="width:100%;"
+                >
+                    <mat-label class="gn-color">Comentaire :</mat-label>
+                    <textarea
+                        matInput
+                        [maxlength]="appConfig.SYNTHESE?.DISCUSSION_LENGTH"
+                        placeholder="Votre commentaire...."
+                        [formControl]="commentForm.get('content')"
+                    ></textarea>
+                    <mat-error *ngIf="!this.commentForm.valid">
+                        Veuillez saisir un commentaire
+                    </mat-error>
+                </mat-form-field>
+            </mat-card-content>
+            <mat-card-actions
+                class="m-0 pt-0"
+                align="end"
+            >
+                <button
+                    (click)="openCloseComment()"
+                    mat-stroked-button
+                    class="cancelBtn link-infos"
+                >Annuler</button>
+                <button
+                    mat-stroked-button
+                    [disabled]="!isValid()"
+                    class="saveBtn link-infos"
+                    (click)="handleSubmitComment()"
+                >Envoyer</button>
+            </mat-card-actions>
+        </mat-card>
+    </div>
+    <div class="blocks">
+        <span *ngFor="let comment of discussions">
+            <mat-card
+                class="discussion-card my-3 mx-0 p-0"
+                *ngIf="!comment.spid"
+            >
+                <mat-card-header class="header-card p-2">
+                    <mat-card-subtitle class="mb-0 p-0 subtitle-card">
+                        <strong [ngStyle]="{color:'black'}">
+                            {{comment.content_owner.nom_role}}
+                            {{comment.content_owner.prenom_role}}
+                        </strong>
+                        {{ 'Synthese.Commented' | translate }}
+                        {{formatDate(comment.content_date) }}
+
+                    </mat-card-subtitle>
+                    <span
+                        align="end"
+                        color="error"
+                        class="deleteComment"
+                        ngbTooltip="{{'Synthese.DeleteComment' | translate}}"
+                        placement="left"
+                        *ngIf="currentUser.id_role ===comment.id_role"
+                        (click)="deleteComment(comment.id_report)"
+                    >
+                        <mat-icon
+                            class="rm-comment"
+                            color="primary"
+                        >delete</mat-icon>
+                    </span>
+                </mat-card-header>
+                <mat-card-content class="content-card p-2">
+                    <p>
+                        {{comment.content_report.comment}}
+                    </p>
+                </mat-card-content>
+            </mat-card>
+            <div
+                *ngIf="comment.spid && codeModule === 'VALIDATION'"
+                class="my-4 mx-2"
+            >
+                <mat-icon class="statusIcon mr-3">sync</mat-icon>
+                <span class="statusName">
+                    <strong>{{comment.validator}}</strong>
+                    a changé le statut en
+                    <span
+                        class="py-1 px-2"
+                        [ngStyle]="{
+                        'background-color': validationColor[comment.cd_nomenclature],
+                        'border-radius': '20px',
+                        'color': ['0', '6'].includes(comment.cd_nomenclature) ? 'darkslategray' : 'white',
+                        'border': ['0', '6'].includes(comment.cd_nomenclature) ? '1px solid rgba(0,0,0,0.2)' : 'none'
+                      }"
+                    >{{comment.label_default}}</span>
+                </span>
+            </div>
+        </span>
+    </div>
+</div>

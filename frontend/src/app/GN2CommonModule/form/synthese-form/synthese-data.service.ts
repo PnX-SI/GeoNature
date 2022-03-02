@@ -218,4 +218,21 @@ export class SyntheseDataService {
     link.click();
     document.body.removeChild(link);
   }
+
+  getReports(params) {
+    return this._api.get(
+      `${AppConfig.API_ENDPOINT}/synthese/reports?${params}`
+    );
+  }
+
+  createReport(params) {
+    return this._api.put(`${AppConfig.API_ENDPOINT}/synthese/reports`,
+      params, {
+        headers: new HttpHeaders().set('Content-Type', 'application/json')
+      });
+  }
+
+  deleteReport(id) {
+    return this._api.delete(`${AppConfig.API_ENDPOINT}/synthese/reports/${id}`);
+  }
 }

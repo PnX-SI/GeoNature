@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 import sqlalchemy as sa
+import datetime
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, column_property, foreign, joinedload, contains_eager
 from sqlalchemy.sql import select, func, exists
@@ -467,3 +468,15 @@ class VColorAreaTaxon(DB.Model):
     nb_obs = DB.Column(DB.Integer())
     last_date = DB.Column(DB.DateTime())
     color = DB.Column(DB.Unicode())
+
+@serializable
+class CorReportSynthese(DB.Model):
+    __tablename__ = "t_reports"
+    __table_args__ = {"schema": "gn_synthese"}
+    id_report = DB.Column(DB.Integer(), primary_key=True)
+    id_synthese = DB.Column(DB.Integer())
+    id_module = DB.Column(DB.Integer())
+    content_owner = DB.Column(JSONB)
+    content_report = DB.Column(JSONB)
+    content_date = DB.Column(DB.DateTime(), default=datetime.datetime.utcnow)
+    content_type = DB.Column(DB.Integer())

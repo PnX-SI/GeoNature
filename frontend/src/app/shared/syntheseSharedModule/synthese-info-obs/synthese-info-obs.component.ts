@@ -18,6 +18,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
 import { constants } from 'crypto';
+import { GlobalSubService } from '@geonature/services/global-sub.service';
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -47,6 +48,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public isLoading = false;
   public email;
   public mailto: string;
+  public moduleInfos: any;
 
   public profile: any;
   public phenology: any[];
@@ -59,17 +61,24 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     '5': '#BDBDBD',
     '6': '#FFFFFF'
   };
+  public comment: string;
   constructor(
     private _gnDataService: DataFormService,
     private _dataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
     public mediaService: MediaService,
     private _commonService: CommonService,
-    private _mapService: MapService
+    private _mapService: MapService,
+    private globalSubService: GlobalSubService
   ) { }
 
   ngOnInit() {
     this.loadAllInfo(this.idSynthese);
+    this.globalSubService.currentModuleSub.subscribe(module => {
+      if (module) {
+        this.moduleInfos = { id: module.id_module, code: module.module_code };
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -232,6 +241,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           // format date
           const date = new Date(this.validationHistory[row].date);
           this.validationHistory[row].date = date.toLocaleDateString('fr-FR');
+          this.validationHistory[row].dateTime = date;
           // format comments
           if (
             this.validationHistory[row].comment === 'None' ||
