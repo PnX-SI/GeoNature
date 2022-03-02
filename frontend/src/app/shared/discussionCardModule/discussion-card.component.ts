@@ -19,7 +19,6 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   @Input() idSynthese: number;
   @Input() additionalData: any;
   @Input() validationColor: any;
-  @Input() codeModule: string;
   public commentForm: FormGroup;
   public open = false;
   public currentUser: User;
@@ -37,13 +36,14 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     private dataService: DataFormService
   ) {
     this.commentForm = this._formBuilder
-    .group({
-      user: [],
-      content: ['', Validators.required],
-      module: [],
-      item: [],
-      role: []
-    });
+      .group({
+        user: [],
+        content: ['', Validators.required],
+        module: [],
+        item: [],
+        role: [],
+        idReport: 0
+      });
   }
 
   ngOnInit() {
@@ -77,8 +77,9 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     if (this.additionalData && this.additionalData.data) {
       this.additionalData = {
         ...this.additionalData,
+        // insert spid to diff additionalData from reports data
         data: this.additionalData.data.map(d => ({ ...d, spid: uniqueId() }))
-      }; 
+      };
     }
     if (this.moduleId) {
       this.getDiscussions();
@@ -87,21 +88,25 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
 
   isValid() {
     return this.commentForm.valid &&
-      this.commentForm.get('content').value.length <= this.appConfig?.SYNTHESE?.DISCUSSION_LENGTH;
+      this.commentForm.get('content').value.length <= this.appConfig?.SYNTHESE?.DISCUSSION_MAX_LENGTH;
+  }
+
+  prepareReport(reportContent = null) {
+    const userInfos = pickBy(this?.currentUser, (value, key) => {
+      return ['id_role', 'prenom_role', 'nom_role'].includes(key);
+    });
+    // set required form fields
+    this.commentForm.get('user').setValue(userInfos);
+    this.commentForm.get('content').setValue(reportContent || { comment: this.commentForm.get('content').value });
+    this.commentForm.get('item').setValue(this.idSynthese);
+    this.commentForm.get('module').setValue(this.moduleId);
   }
 
   /**
    * Send comment
    */
   handleSubmitComment() {
-    const userInfos = pickBy(this?.currentUser, (value, key) => {
-      return ['id_role', 'prenom_role', 'nom_role'].includes(key);
-    });
-    // set required form fields
-    this.commentForm.get('user').setValue(userInfos);
-    this.commentForm.get('content').setValue({ comment: this.commentForm.get('content').value });
-    this.commentForm.get('item').setValue(this.idSynthese);
-    this.commentForm.get('module').setValue(this.moduleId);
+    this.prepareReport();
     // create new comment
     this._syntheseDataService.createReport(this.commentForm.value).subscribe(data => {
       this._commonService.regularToaster(
@@ -110,6 +115,24 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
       );
       // close add comment panel and refresh list
       this.openCloseComment();
+      this.getDiscussions();
+    });
+  }
+
+  /**
+ * Send comment
+ */
+  updateComment(id) {
+    const deletedComment = { comment: "", deleted: new Date().toISOString() };
+    this.prepareReport(deletedComment);
+    this.commentForm.get('idReport').setValue(id);
+    // create new comment
+    this._syntheseDataService.modifyReport(id, this.commentForm.value).subscribe(data => {
+      this._commonService.regularToaster(
+        'success',
+        'Commentaire mis à jour !'
+      );
+      // close add comment panel and refresh list
       this.getDiscussions();
     });
   }
@@ -143,15 +166,13 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
    * get all discussion by module and type
    */
   getDiscussions() {
-    const params = `idSynthese=${this.idSynthese}&idModule=${this.moduleId}&type=1&sort=${this.sort}`;
+    const params = `idSynthese=${this.idSynthese}&type=1&sort=${this.sort}`;
     this._syntheseDataService.getReports(params).subscribe(response => {
       this.setDiscussions(response);
     });
   }
 
-  deleteComment(id) {
-    this._syntheseDataService.deleteReport(id).subscribe(response => {
-      this.getDiscussions();
-    });
+  isDeleted(c) {
+    return c?.content_report?.deleted;
   }
 }

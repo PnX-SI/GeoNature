@@ -9,7 +9,7 @@ from warnings import warn
 from flask import Blueprint, request, Response, current_app, \
                   send_from_directory, render_template, jsonify, g
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest
-from sqlalchemy import distinct, func, desc, asc, select, text
+from sqlalchemy import distinct, func, desc, asc, select, text, update
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
@@ -32,7 +32,7 @@ from geonature.core.gn_synthese.models import (
     DefaultsNomenclaturesValue,
     VSyntheseForWebApp,
     VColorAreaTaxon,
-    CorDiscussionSynthese
+    CorReportSynthese
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
@@ -937,7 +937,7 @@ def get_taxa_distribution():
     data = query.group_by(rank).all()
     return [{"count": d[0], "group": d[1]} for d in data]
 
-@routes.route("/reports", methods=["POST","PUT"])
+@routes.route("/reports", methods=["POST"])
 @json_resp
 def create_discussion():
     """
@@ -948,15 +948,9 @@ def create_discussion():
         report: `json`: 
             Every occurrence's discussions
     """
-
-    # {date: '2022-03-03T11:16:31.926Z', user: 3, content: 'dqsd', module: 6, item: 5}
     session = DB.session
-    # form, data, json, args
     data = request.json
-    print("==============================================>>>>>>>>>>>>>>")
-    print(data)
-    print("==============================================>>>>>>>>>>>>>>")
-    new_entry = CorDiscussionSynthese(
+    new_entry = CorReportSynthese(
         id_synthese=data['item'],
         id_module=data['module'],
         id_role=g.current_user.id_role,
@@ -966,6 +960,28 @@ def create_discussion():
         content_type=1
     )
     session.add(new_entry)
+    session.commit()
+
+@routes.route("/reports/<int:id_report>", methods=["PUT"])
+@json_resp
+def update_content_discussion(id_report):
+    """
+    Modify a report (e.g discussion) for a given synthese id
+
+    Returns
+    -------
+        report: `json`: 
+            Every occurrence's discussions
+    """
+    data = request.json
+    session = DB.session
+    idReport = data["idReport"]
+    row = session.query(CorReportSynthese).filter_by(id_report=data["idReport"], id_role=g.current_user.id_role).one_or_none()
+
+    if not row :
+        raise NotFound(f"This report can't be update by {g.current_user}")
+
+    row.content_report = data["content"]
     session.commit()
 
 @routes.route('/reports', methods=["GET"])
@@ -999,6 +1015,9 @@ def get_report():
 @json_resp
 def delete_report(id_report):
     g.current_user = user_from_token(request.cookies['token']).role
-    reportItem = DB.session.query(CorReportSynthese).filter_by(id_report=id_report, id_role=g.current_user.id_role).first()
+    id_role = g.current_user.id_role
+    reportItem = DB.session.query(CorReportSynthese).filter_by(id_report=id_report, id_role=id_role).first()
+    if not reportItem:
+        raise NotFound(f"This report can't be delete (not found or not authorized)")
     DB.session.delete(reportItem)
     DB.session.commit()

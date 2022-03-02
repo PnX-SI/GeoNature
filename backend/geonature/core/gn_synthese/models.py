@@ -476,6 +476,7 @@ class CorReportSynthese(DB.Model):
     id_report = DB.Column(DB.Integer(), primary_key=True)
     id_synthese = DB.Column(DB.Integer())
     id_module = DB.Column(DB.Integer())
+    id_role = DB.Column(DB.Integer())
     content_owner = DB.Column(JSONB)
     content_report = DB.Column(JSONB)
     content_date = DB.Column(DB.DateTime(), default=datetime.datetime.utcnow)

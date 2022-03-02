@@ -555,6 +555,17 @@
     <pnx-discussion-card
       [validationColor]="validationColor"
       [idSynthese]="idSynthese"
+      [additionalData]="{data: validationHistory, dateField: 'dateTime'}"
+    ></pnx-discussion-card>
+  </mat-tab>
+
+  <mat-tab
+    label="{{ 'Synthese.Discussion' | translate }}"
+    *ngIf="APP_CONFIG.SYNTHESE.DISCUSSION_MODULES.includes(moduleInfos.code)"
+  >
+    <pnx-discussion-card
+      [validationColor]="validationColor"
+      [idSynthese]="idSynthese"
       [codeModule]="moduleInfos.code"
       [additionalData]="{data: validationHistory, dateField: 'dateTime'}"
     ></pnx-discussion-card>
