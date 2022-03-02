@@ -1,7 +1,7 @@
 import uuid
 
 import pytest
-from flask import url_for
+from flask import url_for, current_app
 from pypnusershub.db.models import Organisme as BibOrganismes
 
 # Apparently: need to import both?
@@ -109,3 +109,9 @@ class TestUsers:
         assert users["admin_user"].organisme.nom_organisme not in [
             org["nom_organisme"] for org in response.json
         ]
+    
+    def test_inscription_not_found(self):
+        response = self.client.post(url_for("users.inscription"))
+
+        assert response.status_code == 404
+        assert response.json["message"] == "Page introuvable"
