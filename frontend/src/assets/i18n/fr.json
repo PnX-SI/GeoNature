@@ -202,6 +202,7 @@
   "Synthese": {
     "copy": "Copié dans le presse-papier !",
     "copyPermalink": "Copier le permalien",
+    "Discussion":"Discussion",
     "changeValidStatus": "Modifier le statut de validation",
     "ModalTitle": "Information sur l'observation",
     "Edit": "Voir dans le module de saisie",
