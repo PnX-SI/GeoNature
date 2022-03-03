@@ -23,8 +23,10 @@ def upgrade():
         id_discussion SERIAL NOT NULL PRIMARY KEY,
         id_synthese integer NOT NULL,
         id_role integer NOT NULL,
+        id_module integer NOT NULL,
         content json NOT NULL,
-        content_date DATE NOT NULL DEFAULT CURRENT_DATE
+        content_date DATE NOT NULL DEFAULT CURRENT_DATE,
+        content_type integer NOT NULL
     )
     """)
     pass
