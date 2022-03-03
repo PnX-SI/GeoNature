@@ -1,4 +1,13 @@
-import { Component, OnInit, OnChanges, Input, ViewChild, AfterViewInit, SimpleChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnChanges,
+  Input,
+  ViewChild,
+  AfterViewInit,
+  SimpleChanges,
+  Output,
+  EventEmitter } from '@angular/core';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -7,6 +16,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
+import { constants } from 'crypto';
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -16,10 +26,9 @@ import { finalize } from 'rxjs/operators';
 })
 export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   @Input() idSynthese: number;
-  @Input() header: boolean = false;
-  @Input() mailCustomSubject: String;
-  @Input() mailCustomBody: String;
-
+  @Input() header: false;
+  @Input() mailCustomSubject: string;
+  @Input() mailCustomBody: string;
   public selectedObs: any;
   public validationHistory: Array<any>;
   public selectedObsTaxonDetail: any;
@@ -28,14 +37,15 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public selectedGeom;
   // public chartType = 'line';
   public profileDataChecks: any;
-  public showValidation = false
+  public showValidation = false;
 
   public selectObsTaxonInfo;
+  public selectCdNomenclature;
   public formatedAreas = [];
   public CONFIG = AppConfig;
   public isLoading = false;
   public email;
-  public mailto: String;
+  public mailto: string;
 
   public profile: any;
   public phenology: any[];
@@ -59,20 +69,18 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
 
   ngOnInit() {
     this.loadAllInfo(this.idSynthese);
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-      if(changes.idSynthese && changes.idSynthese.currentValue) {
-        this.loadAllInfo(changes.idSynthese.currentValue)
+      if (changes.idSynthese && changes.idSynthese.currentValue) {
+        this.loadAllInfo(changes.idSynthese.currentValue);
       }
   }
-
 
   // HACK to display a second map on validation tab
   setValidationTab(event) {
     this.showValidation = true;
-    if(this._mapService.map){
+    if (this._mapService.map) {
       setTimeout(() => {
         this._mapService.map.invalidateSize();
       }, 100);
@@ -90,7 +98,8 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         })
       )
       .subscribe(data => {
-        this.selectedObs = data["properties"];
+        this.selectedObs = data['properties'];
+        this.selectCdNomenclature = this.selectedObs?.nomenclature_valid_status.cd_nomenclature;
         this.selectedGeom = data;
         this.selectedObs['municipalities'] = [];
         this.selectedObs['other_areas'] = [];
@@ -114,7 +123,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         // for angular tempate we need to convert it into a aray
         // eslint-disable-next-line guard-for-in
         this.formatedAreas = [];
-        for (let key in areaDict) {
+        for (const key in areaDict) {
           this.formatedAreas.push({ area_type: key, areas: areaDict[key] });
         }
 
@@ -128,9 +137,8 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         this._gnDataService.getTaxonInfo(this.selectedObs['cd_nom']).subscribe(taxInfo => {
           this.selectedObsTaxonDetail = taxInfo;
           if (this.selectedObs.cor_observers) {
-            this.email = this.selectedObs.cor_observers.map(el => el.email).join();
+            this.email = this.selectedObs.cor_observers.map(el => el.email).filter(v => v).join();
             this.mailto = this.formatMailContent(this.email);
-
           }
 
           this._gnDataService.getProfile(taxInfo.cd_ref).subscribe(profile => {
@@ -142,7 +150,11 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
 
     this._gnDataService.getProfileConsistancyData(this.idSynthese).subscribe(dataChecks => {
       this.profileDataChecks = dataChecks;
-    })
+    });
+  }
+
+  sendMail() {
+    window.location.href = `${this.mailto}`;
   }
 
   formatMailContent(email) {
@@ -150,56 +162,54 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     if (this.mailCustomSubject || this.mailCustomBody) {
 
       // Mise en forme des données
-      let d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };
+      const d = { ...this.selectedObsTaxonDetail, ...this.selectedObs };
       if (this.selectedObs.source.url_source) {
         d['data_link'] = [
           this.APP_CONFIG.URL_APPLICATION,
           this.selectedObs.source.url_source,
           this.selectedObs.entity_source_pk_value
-        ].join("/");
-      }
-      else {
-        d['data_link'] = "";
+        ].join('/');
+      } else {
+        d['data_link'] = '';
       }
 
-      d["communes"] = this.selectedObs.areas.filter(
-        area => area.area_type.type_code == 'COM'
+      d['communes'] = this.selectedObs.areas.filter(
+        area => area.area_type.type_code === 'COM'
       ).map(
         area => area.area_name
       ).join(', ');
 
-      let contentMedias = "";
+      let contentMedias = '';
       if (!this.selectedObs.medias) {
-        contentMedias = "Aucun media";
-      }
-      else {
-        if (this.selectedObs.medias.length == 0) {
-          contentMedias = "Aucun media";
+        contentMedias = 'Aucun media';
+      } else {
+        if (!this.selectedObs.medias.length) {
+          contentMedias = 'Aucun media';
         }
-        this.selectedObs.medias.map((media) => {
-          contentMedias += "\n\tTitre : " + media.title_fr;
-          contentMedias += "\n\tLien vers le media : " + this.mediaService.href(media);
+        this.selectedObs.medias.map(media => {
+          contentMedias += '\n\tTitre : ' + media.title_fr;
+          contentMedias += '\n\tLien vers le media : ' + this.mediaService.href(media);
           if (media.description_fr) {
-            contentMedias += "\n\tDescription : " + media.description_fr;
+            contentMedias += '\n\tDescription : ' + media.description_fr;
           }
           if (media.author) {
-            contentMedias += "\n\tAuteur : " + media.author;
+            contentMedias += '\n\tAuteur : ' + media.author;
           }
-          contentMedias += "\n";
-        })
+          contentMedias += '\n';
+        });
       }
-      d["medias"] = contentMedias;
+      d['medias'] = contentMedias;
       // Construction du mail
       if (this.mailCustomSubject !== undefined) {
         try {
-          mailto += "?subject=" + eval('`' + this.mailCustomSubject + '`');
+          mailto += `?subject=${new Function('d', 'return ' + '`' + this.mailCustomSubject + '`')(d)}`;
         } catch (error) {
           console.log('ERROR : unable to eval mail subject');
         }
       }
       if (this.mailCustomBody !== undefined) {
         try {
-          mailto += '&body=' + eval('`' + this.mailCustomBody + '`');
+          mailto += `&body=${new Function('d', 'return ' + '`' + this.mailCustomBody + '`')(d)}`;
         } catch (error) {
           console.log('ERROR : unable to eval mail body');
         }
@@ -217,25 +227,22 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       data => {
         this.validationHistory = data;
         // eslint-disable-next-line guard-for-in
-        for (let row in this.validationHistory) {
+        for (const row in this.validationHistory) {
           // format date
           const date = new Date(this.validationHistory[row].date);
           this.validationHistory[row].date = date.toLocaleDateString('fr-FR');
           // format comments
           if (
-            this.validationHistory[row].comment == 'None' ||
-            this.validationHistory[row].comment == 'auto = default value'
+            this.validationHistory[row].comment === 'None' ||
+            this.validationHistory[row].comment === 'auto = default value'
           ) {
             this.validationHistory[row].comment = '';
           }
           // format validator
-          if (this.validationHistory[row].typeValidation == 'True') {
+          if (this.validationHistory[row].typeValidation === 'True') {
             this.validationHistory[row].validator = 'Attribution automatique';
           }
         }
-      },
-      () => {
-        //console.log(this.statusNames);
       }
     );
   }
@@ -258,9 +265,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           );
         }
       },
-      () => {
-        //console.log(this.statusNames);
-      }
     );
   }
 
