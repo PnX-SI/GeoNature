@@ -218,4 +218,17 @@ export class SyntheseDataService {
     link.click();
     document.body.removeChild(link);
   }
+
+  getDiscussions(id_synthese) {
+    return this._api.get(
+      `${AppConfig.API_ENDPOINT}/synthese/discussions/${id_synthese}`
+    )
+  }
+
+  createDiscussions(params) {
+    return this._api.put(`${AppConfig.API_ENDPOINT}/synthese/discussions`,
+      params, {
+        headers: new HttpHeaders().set('Content-Type', 'application/json')
+      });
+  }
 }
