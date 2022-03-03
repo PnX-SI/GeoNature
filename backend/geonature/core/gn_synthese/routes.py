@@ -32,6 +32,7 @@ from geonature.core.gn_synthese.models import (
     DefaultsNomenclaturesValue,
     VSyntheseForWebApp,
     VColorAreaTaxon,
+    CorDiscussionSynthese
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
@@ -277,7 +278,6 @@ def get_one_synthese(scope, id_synthese):
 
 
 @routes.route("/export_taxons", methods=["POST"])
-@permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_taxon_web(info_role):
     """Optimized route for taxon web export.
 
@@ -935,3 +935,53 @@ def get_taxa_distribution():
 
     data = query.group_by(rank).all()
     return [{"count": d[0], "group": d[1]} for d in data]
+
+@routes.route("/discussions/<id_synthese>", methods=["GET"])
+@json_resp
+def get_discussions_by_id_synthese(id_synthese):
+    """
+    Get all discussions for a given synthese id
+    
+    Parameters
+    -----------
+    id_synthese: int: (query parameter)
+
+    Returns
+    -------
+        dicussions: `array`: 
+            Every occurrence's discussions
+    """
+    if not id_synthese:
+        raise BadRequest("id_synthese is required !")
+    data = DB.session.query(CorDiscussionSynthese).filter_by(id_synthese=id_synthese)
+    data = [CorDiscussionSynthese.as_dict(d) for d in data]
+    return data
+
+@routes.route("/discussions", methods=["POST","PUT"])
+@json_resp
+def create_discussion():
+    """
+    Create a discussions for a given synthese id
+
+    Returns
+    -------
+        dicussions: `json`: 
+            Every occurrence's discussions
+    """
+
+    # {date: '2022-03-03T11:16:31.926Z', user: 3, content: 'dqsd', module: 6, item: 5}
+    session = DB.session
+    # form, data, json, args
+    data = request.json
+    print("==============================================>>>>>>>>>>>>>>")
+    print(data)
+    print("==============================================>>>>>>>>>>>>>>")
+    new_entry = CorDiscussionSynthese(
+        id_synthese=data['item'],
+        id_module=data['module'],
+        content_owner=data['user'],
+        content_discussion=data['content'],
+        content_type=1
+    )
+    session.add(new_entry)
+    session.commit()
