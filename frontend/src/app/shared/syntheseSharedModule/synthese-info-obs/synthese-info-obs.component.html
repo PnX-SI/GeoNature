@@ -341,7 +341,7 @@
     >
       <ng-container *ngFor="let status of selectedObsTaxonDetail?.status | keyvalue">
         <tr class="table-primary">
-          <th> {{ status.value.label }} </th>
+          <th> {{ status.value.display }} </th>
         </tr>
         <tr *ngFor="let text of status.value.text | keyvalue">
           <td>
@@ -367,9 +367,9 @@
               <li>
                 <span *ngFor="let value of text.value.values | keyvalue">
                   <strong *ngIf="value.value.code != 'true'">
-                    {{ value.value.code }}
+                    {{ value.value.code_statut }}
                   </strong>
-                  {{ value.value.label }}
+                  {{ value.value.label_statut }}
                   {{ value.value.rq_statut }}
                 </span>
               </li>
