@@ -30,7 +30,7 @@ export class NewPasswordComponent implements OnInit {
       }
       this.token = token;
     });
-    this.casLogin = AppConfig.PUBLIC_ACCESS.ENABLE_PUBLIC_ACCESS;
+    this.casLogin = AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION;
   }
 
   ngOnInit() {
