@@ -937,15 +937,36 @@ def get_taxa_distribution():
     data = query.group_by(rank).all()
     return [{"count": d[0], "group": d[1]} for d in data]
 
-@routes.route("/reports", methods=["POST","PUT"])
+@routes.route("/discussions/<id_synthese>", methods=["GET"])
 @json_resp
-def create_discussion():
+def get_discussions_by_id_synthese(id_synthese):
     """
-    Create a report (e.g discussion) for a given synthese id
+    Get all discussions for a given synthese id
+    
+    Parameters
+    -----------
+    id_synthese: int: (query parameter)
 
     Returns
     -------
-        report: `json`: 
+        dicussions: `array`: 
+            Every occurrence's discussions
+    """
+    if not id_synthese:
+        raise BadRequest("id_synthese is required !")
+    data = DB.session.query(CorDiscussionSynthese).filter_by(id_synthese=id_synthese)
+    data = [CorDiscussionSynthese.as_dict(d) for d in data]
+    return data
+
+@routes.route("/discussions", methods=["POST","PUT"])
+@json_resp
+def create_discussion():
+    """
+    Create a discussions for a given synthese id
+
+    Returns
+    -------
+        dicussions: `json`: 
             Every occurrence's discussions
     """
 
@@ -959,46 +980,9 @@ def create_discussion():
     new_entry = CorDiscussionSynthese(
         id_synthese=data['item'],
         id_module=data['module'],
-        id_role=g.current_user.id_role,
         content_owner=data['user'],
-        content_report=data['content'],
-        content_date=datetime.datetime.now(),
+        content_discussion=data['content'],
         content_type=1
     )
     session.add(new_entry)
     session.commit()
-
-@routes.route('/reports', methods=["GET"])
-@json_resp
-def get_report():
-    # show the subpath after /path/
-    id_type = request.args.get("type")
-    id_role = request.args.get("idRole")
-    id_synthese = request.args.get("idSynthese")
-    id_module = request.args.get("idModule")
-    sort=request.args.get("sort")
-    
-    if not id_synthese:
-        raise BadRequest('idSynthese is missing from the request')
-
-    data = DB.session.query(CorReportSynthese).filter(CorReportSynthese.id_synthese==id_synthese)
-    if id_role and id_role == g.current_user.id_role:
-        data = data.filter(CorReportSynthese.id_role==id_role)
-    if id_module:
-        data = data.filter(CorReportSynthese.id_module==id_module)
-    if id_type:
-        data = data.filter(CorReportSynthese.content_type==id_type)
-    if sort == 'asc':
-        data = data.order_by(asc(CorReportSynthese.content_date))
-    if sort == 'desc':
-        data = data.order_by(desc(CorReportSynthese.content_date))
-    data = [CorReportSynthese.as_dict(d) for d in data]
-    return { 'totalResults':  len(data), 'results': data }
-
-@routes.route('/reports/<int:id_report>', methods=["DELETE"])
-@json_resp
-def delete_report(id_report):
-    g.current_user = user_from_token(request.cookies['token']).role
-    reportItem = DB.session.query(CorReportSynthese).filter_by(id_report=id_report, id_role=g.current_user.id_role).first()
-    DB.session.delete(reportItem)
-    DB.session.commit()
