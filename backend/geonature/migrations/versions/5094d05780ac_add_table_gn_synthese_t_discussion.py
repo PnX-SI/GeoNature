@@ -22,10 +22,10 @@ def upgrade():
     CREATE TABLE gn_synthese.t_discussions (
         id_discussion SERIAL NOT NULL PRIMARY KEY,
         id_synthese integer NOT NULL,
-        id_role integer NOT NULL,
         id_module integer NOT NULL,
-        content json NOT NULL,
-        content_date DATE NOT NULL DEFAULT CURRENT_DATE,
+        content_owner json NOT NULL,
+        content_discussion json NOT NULL,
+        content_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         content_type integer NOT NULL
     )
     """)
