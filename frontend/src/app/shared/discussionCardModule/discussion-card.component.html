@@ -1,40 +1,74 @@
 <div>
-    <div>
+    <div class="text-right">
         <button
+            *ngIf="!open"
             button="submit"
             mat-mini-fab
             color="primary"
-            (click)="addComment()"
+            class="m-2"
+            (click)="openCloseComment()"
+            align="end"
         >
             <mat-icon>add_comment</mat-icon>
         </button>
     </div>
-    <div class="blocks">
-        <mat-form-field appearance="fill">
-            <mat-label>Commentaire :</mat-label>
-            <input
-                matInput
-                [(ngModel)]="comment"
+    <div
+        class="blocks"
+        *ngIf="open"
+    >
+        <mat-card class="comment-card mb-2">
+            <mat-card-header>
+            </mat-card-header>
+            <mat-card-content class="m-0">
+                <mat-form-field
+                    appearance="fill"
+                    class="disccusion-field"
+                    style="width:100%;"
+                >
+                    <mat-label class="gn-color">Comentaire :</mat-label>
+                    <textarea
+                        matInput
+                        placeholder="Votre commentaire...."
+                        [formControl]="commentForm.get('content')"
+                    ></textarea>
+                    <mat-error *ngIf="!this.commentForm.valid">
+                        Veuillez saisir un commentaire
+                    </mat-error>
+                </mat-form-field>
+            </mat-card-content>
+            <mat-card-actions
+                class="m-0 pt-0"
+                align="end"
             >
-        </mat-form-field>
+                <button
+                    (click)="openCloseComment()"
+                    mat-stroked-button
+                    class="cancelBtn link-infos"
+                >Annuler</button>
+                <button
+                    mat-stroked-button
+                    [disabled]="!this.commentForm.valid"
+                    class="saveBtn link-infos"
+                    (click)="handleSubmitComment()"
+                >Envoyer</button>
+            </mat-card-actions>
+        </mat-card>
     </div>
     <div class="blocks">
-        <mat-card class="discussion-card">
+        <mat-card
+            class="discussion-card"
+            *ngFor="let comment of discussions"
+        >
             <mat-card-header>
-                <mat-card-title>Jean marc</mat-card-title>
-                <mat-card-subtitle>{{comment?.date}}</mat-card-subtitle>
+                <mat-card-title>{{comment.content_owner.prenom_role}} ({{comment.content_owner.nom_role}})
+                </mat-card-title>
+                <mat-card-subtitle>{{comment.content_date}}</mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
                 <p>
-                    The Shiba Inu is the smallest of the six original and distinct spitz breeds of dog from Japan.
-                    A small, agile dog that copes very well with mountainous terrain, the Shiba Inu was originally
-                    bred for hunting.
+                    {{comment.content_discussion.comment}}
                 </p>
             </mat-card-content>
-            <mat-card-actions>
-                <button mat-button>LIKE</button>
-                <button mat-button>SHARE</button>
-            </mat-card-actions>
         </mat-card>
     </div>
     <mat-paginator

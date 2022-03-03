@@ -1,3 +1,29 @@
 .discussion-card {
   border: 1px solid rgba(103, 58, 183, 0.8);
 }
+.comment-card {
+  border: 1px solid rgba(141, 137, 148, 0.8);
+}
+.link-infos {
+  border: 1px solid #673ab7;
+}
+.saveBtn {
+  background-color: #673ab7;
+  color: white;
+}
+.cancelBtn {
+  color: #673ab7;
+}
+
+.disccusion-field textarea {
+  border-left: 1px solid transparent !important;
+}
+
+.disccusion-field {
+  border: 1px solid transparent !important;
+}
+
+.link-infos.mat-button-disabled {
+  color: white;
+  background-color: rgba(104, 58, 183, 0.226);
+}
