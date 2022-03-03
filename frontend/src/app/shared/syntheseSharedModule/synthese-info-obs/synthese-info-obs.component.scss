@@ -22,3 +22,40 @@
   //left:0%;
   transform: translateX(0%);
 }
+
+.action-tbar {
+  all: unset;
+}
+
+.action-tbar > button,
+.action-tbar > a:link {
+  background-color: #673ab7;
+  color: white;
+  margin-right: 5px;
+  outline: none;
+  padding: 0;
+  text-decoration: none;
+}
+
+.link-infos {
+  border: 1px solid #673ab7;
+  margin: auto;
+}
+
+.no-link-style {
+  text-decoration: none;
+  color: #673ab7;
+}
+
+.tbar-bottom {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0px;
+}
+.spacer {
+  flex: 1 1 auto !important;
+}
+.status-badge {
+  border-radius: 50px;
+}
