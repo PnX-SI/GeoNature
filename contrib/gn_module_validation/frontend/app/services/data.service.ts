@@ -42,20 +42,17 @@ export class ValidationDataService {
     );
   }
 
-  getReports(params) {
+  getDiscussions(id_synthese) {
     return this._http.get(
-      `${AppConfig.API_ENDPOINT}/synthese/reports?${params}`
+      `${AppConfig.API_ENDPOINT}/synthese/discussions/${id_synthese}`
     )
   }
 
-  createReport(params) {
-    return this._http.put(`${AppConfig.API_ENDPOINT}/synthese/reports`,
+  createDiscussions(params) {
+    return this._http.put(`${AppConfig.API_ENDPOINT}/synthese/discussions`,
       params, {
         headers: new HttpHeaders().set('Content-Type', 'application/json')
       });
   }
 
-  deleteReport(id) {
-    return this._http.delete(`${AppConfig.API_ENDPOINT}/synthese/reports${id}`)
-  }
 }
