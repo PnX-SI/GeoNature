@@ -219,20 +219,16 @@ export class SyntheseDataService {
     document.body.removeChild(link);
   }
 
-  getReports(params) {
+  getDiscussions(id_synthese) {
     return this._api.get(
-      `${AppConfig.API_ENDPOINT}/synthese/reports?${params}`
-    );
+      `${AppConfig.API_ENDPOINT}/synthese/discussions/${id_synthese}`
+    )
   }
 
-  createReport(params) {
-    return this._api.put(`${AppConfig.API_ENDPOINT}/synthese/reports`,
+  createDiscussions(params) {
+    return this._api.put(`${AppConfig.API_ENDPOINT}/synthese/discussions`,
       params, {
         headers: new HttpHeaders().set('Content-Type', 'application/json')
       });
-  }
-
-  deleteReport(id) {
-    return this._api.delete(`${AppConfig.API_ENDPOINT}/synthese/reports/${id}`);
   }
 }
