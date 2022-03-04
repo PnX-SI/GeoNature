@@ -1,4 +1,3 @@
-
 <div [style.display]="formDefComp['hidden'] ? 'none': 'inherit'">
   <div *ngIf="(formDefComp['type_widget'] == 'checkbox' && formDefComp['values'].length > 1)
       || [
@@ -72,7 +71,7 @@
     </textarea>
 
     <span *ngSwitchCase="'select'">
-      <!--  -->
+
       <select
         *ngIf="isValInSelectList; else selectElseBlock"
         class="form-control form-control-sm"
@@ -95,8 +94,8 @@
         <input type="text"disabled [value]="form.get(formDefComp['attribut_name'])?.value" >
       </ng-template>
     </span>
-
-
+    
+    
     <div
     *ngSwitchCase="'file'"
     class="input-group"
