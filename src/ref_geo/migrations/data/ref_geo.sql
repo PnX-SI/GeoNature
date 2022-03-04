@@ -20,7 +20,7 @@ SET search_path = ref_geo, pg_catalog, public;
 CREATE OR REPLACE FUNCTION ref_geo.fct_trg_calculate_geom_local()
   RETURNS trigger AS
 -- trigger qui reprojete une geom a partir d'une geom source fournie et l'insert dans le NEW
--- en prenant le parametre local_srid de la table t_parameters
+-- en prenant le srid local (srid de la colonne ref_geo.l_areas.geom)
 -- 1er param: nom de la colonne source
 -- 2eme param: nom de la colonne a reprojeter
 -- utiliser pour calculer les geom_local à partir des geom_4326
@@ -35,7 +35,7 @@ BEGIN
 	-- si c'est un insert ou que c'est un UPDATE ET que le geom_4326 a été modifié
 	IF (TG_OP = 'INSERT' OR (TG_OP = 'UPDATE' AND NOT public.ST_EQUALS(hstore(OLD)-> the4326geomcol, hstore(NEW)-> the4326geomcol)  )) THEN
 		--récupérer le srid local
-		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
+        SELECT Find_SRID('ref_geo', 'l_areas', 'geom') INTO thelocalsrid;
 		EXECUTE FORMAT ('SELECT public.ST_TRANSFORM($1.%I, $2)',the4326geomcol) INTO thegeomlocalvalue USING NEW, thelocalsrid;
                 -- insertion dans le NEW de la geom transformée
 		NEW := NEW#= hstore(thelocalgeomcol, thegeomlocalvalue);
@@ -65,7 +65,7 @@ DECLARE
     thesrid int;
     is_vectorized int;
 BEGIN
-  SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO thesrid;
+  SELECT Find_SRID('ref_geo', 'l_areas', 'geom') INTO thesrid;
   SELECT COALESCE(gid, NULL) FROM ref_geo.dem_vector LIMIT 1 INTO is_vectorized;
 
   IF is_vectorized IS NULL THEN
@@ -107,7 +107,7 @@ $BODY$
 DECLARE
   isrid int;
 BEGIN
-  SELECT gn_commons.get_default_parameter('local_srid', NULL) INTO isrid;
+  SELECT Find_SRID('ref_geo', 'l_areas', 'geom') INTO isrid;
   RETURN QUERY
   WITH d  as (
       SELECT public.st_transform(myGeom,isrid) geom_trans
@@ -150,7 +150,7 @@ BEGIN
 	-- si c'est un insert et que l'altitude min ou max est null -> on calcule
 	IF (TG_OP = 'INSERT' and (new.altitude_min IS NULL or new.altitude_max IS NULL)) THEN 
 		--récupérer le srid local
-		SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
+        SELECT Find_SRID('ref_geo', 'l_areas', 'geom') INTO thelocalsrid;
 		--Calcul de l'altitude
 		
     SELECT (ref_geo.fct_get_altitude_intersection(st_transform(hstore(NEW)-> the4326geomcol,thelocalsrid))).*  INTO NEW.altitude_min, NEW.altitude_max;
@@ -160,7 +160,7 @@ BEGIN
    -- OU si les altitudes ont changé, si oui =  elles ont déjà été calculés - on ne relance pas le calcul
 	   IF (new.altitude_min is null or new.altitude_max is null) OR (NOT OLD.altitude_min = NEW.altitude_min or NOT OLD.altitude_max = OLD.altitude_max) THEN 
 	   --récupérer le srid local	
-	   SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
+       SELECT Find_SRID('ref_geo', 'l_areas', 'geom') INTO thelocalsrid;
 		--Calcul de l'altitude
         SELECT (ref_geo.fct_get_altitude_intersection(st_transform(hstore(NEW)-> the4326geomcol,thelocalsrid))).*  INTO NEW.altitude_min, NEW.altitude_max;
 	   end IF;
@@ -359,7 +359,7 @@ CREATE TRIGGER tri_calculate_geojson
 --   -- en executant des st_transform
 --   -- à executer AFTER INSERT
 -- BEGIN
--- SELECT INTO thelocalsrid parameter_value::int FROM gn_commons.t_parameters WHERE parameter_name = 'local_srid';
+-- SELECT Find_SRID('ref_geo', 'l_areas', 'geom') INTO thelocalsrid;
 -- IF (TG_OP = 'INSERT') THEN
 -- -- si geom_4326 n'est pas null on remplit geom_local
 --     --INSERT INTO pr_occtax.debug (d) VALUES (hstore(new)->'geom_4326'::text);
