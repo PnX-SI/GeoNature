@@ -42,9 +42,9 @@ export class ValidationDataService {
     );
   }
 
-  getDiscussions(id_synthese) {
+  getReports(params) {
     return this._http.get(
-      `${AppConfig.API_ENDPOINT}/synthese/discussions/${id_synthese}`
+      `${AppConfig.API_ENDPOINT}/synthese/reports?${params}`
     )
   }
 
