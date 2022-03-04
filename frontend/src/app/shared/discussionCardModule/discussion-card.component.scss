@@ -27,3 +27,19 @@
   color: white;
   background-color: rgba(104, 58, 183, 0.226);
 }
+
+.header-card {
+  background-color: #f6f8fa;
+  color: rgb(87, 96, 106);
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-bottom: 1px solid rgb(208, 215, 222);
+}
+
+::ng-deep .mat-card-header-text {
+  width: 100%;
+}
+.discussion-card {
+  border: 1px solid rgb(208, 215, 222);
+}
