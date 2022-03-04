@@ -90,7 +90,7 @@ def releve(app, users, releve_data):
 
 @pytest.fixture(scope="function")
 def unexisting_id_releve():
-    return db.session.query(func.max(TRelevesOccurrence.id_releve_occtax)).scalar() + 1
+    return (db.session.query(func.max(TRelevesOccurrence.id_releve_occtax)).scalar() or 0) + 1
 
 
 @pytest.fixture(scope="function")
