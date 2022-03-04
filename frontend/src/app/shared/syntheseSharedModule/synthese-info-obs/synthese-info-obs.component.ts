@@ -18,6 +18,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
 import { constants } from 'crypto';
+import { GlobalSubService } from '@geonature/services/global-sub.service';
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -47,6 +48,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public isLoading = false;
   public email;
   public mailto: string;
+  public moduleInfos: any;
 
   public profile: any;
   public phenology: any[];
@@ -66,11 +68,17 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     public activeModal: NgbActiveModal,
     public mediaService: MediaService,
     private _commonService: CommonService,
-    private _mapService: MapService
+    private _mapService: MapService,
+    private globalSubService: GlobalSubService
   ) { }
 
   ngOnInit() {
     this.loadAllInfo(this.idSynthese);
+    this.globalSubService.currentModuleSub.subscribe(module => {
+      if (module) {
+        this.moduleInfos = { id: module.id_module, code: module.module_code };
+      }
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
