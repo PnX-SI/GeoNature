@@ -23,6 +23,7 @@ def upgrade():
         id_discussion SERIAL NOT NULL PRIMARY KEY,
         id_synthese integer NOT NULL,
         id_module integer NOT NULL,
+        id_role integer NOT NULL,
         content_owner json NOT NULL,
         content_discussion json NOT NULL,
         content_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
