@@ -6,4 +6,4 @@ pypn_habref_api@https://github.com/PnX-SI/Habref-api-module/archive/0.3.0.tar.gz
 utils-flask-sqlalchemy-geo@https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/archive/0.2.2.zip
 utils-flask-sqlalchemy@https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/archive/0.2.6.zip
 taxhub@https://github.com/PnX-SI/TaxHub/archive/1.9.4.zip
-pypn-ref-geo@https://github.com/PnX-SI/RefGeo/archive/1.0.0.zip
+pypn-ref-geo@https://github.com/PnX-SI/RefGeo/archive/1.0.1.zip
