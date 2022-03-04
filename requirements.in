@@ -1,0 +1,3 @@
+alembic
+sqlalchemy<1.4
+utils-flask-sqlalchemy==0.2.6

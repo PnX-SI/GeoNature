@@ -1,0 +1,6 @@
+/venv
+/dist
+*.swp
+*.swo
+*.egg-info/
+__pycache__
