@@ -219,9 +219,9 @@ export class SyntheseDataService {
     document.body.removeChild(link);
   }
 
-  getDiscussions(id_synthese) {
+  getReports(params) {
     return this._api.get(
-      `${AppConfig.API_ENDPOINT}/synthese/discussions/${id_synthese}`
+      `${AppConfig.API_ENDPOINT}/synthese/reports?${params}`
     )
   }
 
