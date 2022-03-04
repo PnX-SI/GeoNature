@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+1.0.1 (unreleased)
+------------------
+
+**🐛 Corrections**
+
+* Correction du trigger de calcule de l’altitude min / max.
+
+
 1.0.0 (2022-03-04)
 ------------------
 
