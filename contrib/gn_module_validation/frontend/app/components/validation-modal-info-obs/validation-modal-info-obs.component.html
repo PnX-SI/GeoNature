@@ -10,6 +10,9 @@
     class="close"
     aria-label="Close"
     (click)="closeModal()"
+    [ngStyle]="{
+      outlineWidth: '0px'
+    }"
   >
     <span aria-hidden="true">&times;</span>
   </button>
