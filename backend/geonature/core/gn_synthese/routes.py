@@ -972,11 +972,13 @@ def get_report():
     sort=request.args.get("sort")
     if not id_synthese:
         raise BadRequest('idSynthese is missing from the request')
-    data = DB.session.query(CorReportSynthese).filter(id_synthese==id_synthese, id_role==id_role)
+    data = DB.session.query(CorReportSynthese).filter(CorReportSynthese.id_synthese==id_synthese)
+    if id_role:
+        data = data.filter(CorReportSynthese.id_role==id_role)
     if id_module:
-        data = data.filter(id_module==id_module)
+        data = data.filter(CorReportSynthese.id_module==id_module)
     if id_type:
-        data = data.filter(id_type==id_type)
+        data = data.filter(CorReportSynthese.content_type==id_type)
     if sort == 'asc':
         data = data.order_by(asc(CorReportSynthese.content_date))
     if sort == 'desc':

@@ -82,10 +82,14 @@ export class DiscussionCardComponent implements OnInit {
     }
   }
 
+  setDiscussions(data) {
+    this.discussions = data?.results || [];
+  }
+
   getDiscussions() {
     const params = `idSynthese=${this.idSynthese}&idModule=${this.moduleId}&type=1&sort=desc`;
-    this._syntheseDataService.getReports(params).subscribe(data => {
-      this.discussions = data;
+    this._syntheseDataService.getReports(params).subscribe(response => {
+      this.setDiscussions(response);
     });
   }
 }
