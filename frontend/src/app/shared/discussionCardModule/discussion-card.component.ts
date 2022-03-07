@@ -40,7 +40,9 @@ export class DiscussionCardComponent implements OnInit {
 
   ngOnInit() {
     this.open = false;
+    // get current user required to save comment
     this.currentUser = this._authService.getCurrentUser();
+    // init infos about current module required to save comment
     this.globalSubService.currentModuleSub.subscribe(module => {
       if (module) {
         // send module id to table
@@ -50,17 +52,21 @@ export class DiscussionCardComponent implements OnInit {
     });
   }
 
+  /**
+   * Send comment
+   */
   handleSubmitComment() {
     const userInfos = pickBy(this?.currentUser, (value, key) => {
       return ['id_role', 'prenom_role', 'nom_role'].includes(key);
     });
+    // set required form fields
     this.commentForm.get('user').setValue(userInfos);
     this.commentForm.get('role').setValue(this.currentUser.id_role);
     this.commentForm.get('content').setValue({ comment: this.commentForm.get('content').value });
     this.commentForm.get('item').setValue(this.idSynthese);
     this.commentForm.get('module').setValue(this.moduleId);
     // create new comment
-    this._syntheseDataService.createDiscussions(this.commentForm.value).subscribe(data => {
+    this._syntheseDataService.createReport(this.commentForm.value).subscribe(data => {
       this._commonService.regularToaster(
         'success',
         'Commentaire sauvegardé !'
@@ -71,10 +77,16 @@ export class DiscussionCardComponent implements OnInit {
     });
   }
 
+  /**
+   * From timestamp to readable value
+   */
   formatDate(d) {
-    return new Date(d).toLocaleDateString();
+    return new Date(d).toLocaleString();
   }
 
+  /**
+   * Manage comment form visibility
+   */
   openCloseComment() {
     this.open = !this.open;
     if (!this.open) {
@@ -86,10 +98,20 @@ export class DiscussionCardComponent implements OnInit {
     this.discussions = data?.results || [];
   }
 
+  /**
+   * get all discussion by module and type
+   */
   getDiscussions() {
     const params = `idSynthese=${this.idSynthese}&idModule=${this.moduleId}&type=1&sort=desc`;
     this._syntheseDataService.getReports(params).subscribe(response => {
       this.setDiscussions(response);
+    });
+  }
+
+  deleteComment(id) {
+    console.log(id);
+    this._syntheseDataService.deleteReport(id).subscribe(response => {
+      this.getDiscussions();
     });
   }
 }

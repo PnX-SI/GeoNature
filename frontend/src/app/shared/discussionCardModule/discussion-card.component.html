@@ -5,8 +5,10 @@
             button="submit"
             mat-mini-fab
             color="primary"
-            class="m-2"
+            class="m-2 disccusion-action-btn"
             (click)="openCloseComment()"
+            ngbTooltip="{{'Synthese.AddComment' | translate}}"
+            placement="left"
             align="end"
         >
             <mat-icon>add_comment</mat-icon>
@@ -56,30 +58,40 @@
     </div>
     <div class="blocks">
         <mat-card
-            class="discussion-card my-1 mx-0 p-0"
+            class="discussion-card my-2 mx-0 p-0"
             *ngFor="let comment of discussions"
         >
             <mat-card-header class="header-card p-2">
                 <mat-card-subtitle class="mb-0 p-0 subtitle-card">
                     <strong>
-                        {{comment.content_owner.prenom_role}}
+                        {{comment.content_owner.nom_role}}
                     </strong>
-                    ({{comment.content_owner.nom_role}}) {{ 'Discussion.commented' | translate }}commenté le
+                    {{comment.content_owner.prenom_role}}
+                    {{ 'Synthese.Commented' | translate }}
                     {{formatDate(comment.content_date) }}
                 </mat-card-subtitle>
+
             </mat-card-header>
             <mat-card-content class="content-card p-2">
                 <p>
-                    {{comment.content_discussion.comment}}
+                    {{comment.content_report.comment}}
                 </p>
             </mat-card-content>
+            <mat-card-actions
+                *ngIf="currentUser.id_role ===comment.id_role"
+                align="end"
+                class="p-0 m-0"
+            >
+                <button
+                    class="px-1 py-0"
+                    placement="left"
+                    mat-button
+                    color="error"
+                    (click)="deleteComment(comment.id_report)"
+                >
+                    {{'Synthese.DeleteComment' | translate}}
+                </button>
+            </mat-card-actions>
         </mat-card>
     </div>
-    <mat-paginator
-        [length]="100"
-        [pageSize]="10"
-        [pageSizeOptions]="[5, 10, 25, 100]"
-        aria-label="Select page"
-    >
-    </mat-paginator>
 </div>
