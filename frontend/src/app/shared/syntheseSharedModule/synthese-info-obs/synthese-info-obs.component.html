@@ -14,6 +14,9 @@
     class="close"
     aria-label="Close"
     (click)="activeModal.dismiss('Cross click')"
+    [ngStyle]="{
+      outlineWidth: '0px'
+    }"
   >
     <span aria-hidden="true">&times;</span>
   </button>
