@@ -936,36 +936,15 @@ def get_taxa_distribution():
     data = query.group_by(rank).all()
     return [{"count": d[0], "group": d[1]} for d in data]
 
-@routes.route("/discussions/<id_synthese>", methods=["GET"])
-@json_resp
-def get_discussions_by_id_synthese(id_synthese):
-    """
-    Get all discussions for a given synthese id
-    
-    Parameters
-    -----------
-    id_synthese: int: (query parameter)
-
-    Returns
-    -------
-        dicussions: `array`: 
-            Every occurrence's discussions
-    """
-    if not id_synthese:
-        raise BadRequest("id_synthese is required !")
-    data = DB.session.query(CorDiscussionSynthese).filter_by(id_synthese=id_synthese)
-    data = [CorDiscussionSynthese.as_dict(d) for d in data]
-    return data
-
-@routes.route("/discussions", methods=["POST","PUT"])
+@routes.route("/reports", methods=["POST","PUT"])
 @json_resp
 def create_discussion():
     """
-    Create a discussions for a given synthese id
+    Create a report (e.g discussion) for a given synthese id
 
     Returns
     -------
-        dicussions: `json`: 
+        report: `json`: 
             Every occurrence's discussions
     """
 
@@ -980,7 +959,7 @@ def create_discussion():
         id_synthese=data['item'],
         id_module=data['module'],
         content_owner=data['user'],
-        content_discussion=data['content'],
+        content_report=data['content'],
         content_type=1
     )
     session.add(new_entry)
@@ -1010,3 +989,11 @@ def get_report():
         data = data.order_by(desc(CorReportSynthese.content_date))
     data = [CorReportSynthese.as_dict(d) for d in data]
     return { 'totalResults':  len(data), 'results': data }
+
+@routes.route('/reports/<int:id_report>', methods=["DELETE"])
+@json_resp
+def delete_report(id_report):
+    print(id_report)
+    reportItem = DB.session.query(CorReportSynthese).filter_by(id_report=id_report).first()
+    DB.session.delete(reportItem)
+    DB.session.commit()
