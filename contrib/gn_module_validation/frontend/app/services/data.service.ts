@@ -48,11 +48,14 @@ export class ValidationDataService {
     )
   }
 
-  createDiscussions(params) {
-    return this._http.put(`${AppConfig.API_ENDPOINT}/synthese/discussions`,
+  createReport(params) {
+    return this._http.put(`${AppConfig.API_ENDPOINT}/synthese/reports`,
       params, {
         headers: new HttpHeaders().set('Content-Type', 'application/json')
       });
   }
 
+  deleteReport(id) {
+    return this._http.delete(`${AppConfig.API_ENDPOINT}/synthese/reports${id}`)
+  }
 }

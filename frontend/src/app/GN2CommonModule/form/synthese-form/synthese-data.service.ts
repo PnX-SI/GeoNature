@@ -225,10 +225,14 @@ export class SyntheseDataService {
     )
   }
 
-  createDiscussions(params) {
-    return this._api.put(`${AppConfig.API_ENDPOINT}/synthese/discussions`,
+  createReport(params) {
+    return this._api.put(`${AppConfig.API_ENDPOINT}/synthese/reports`,
       params, {
         headers: new HttpHeaders().set('Content-Type', 'application/json')
       });
+  }
+
+  deleteReport(id) {
+    return this._api.delete(`${AppConfig.API_ENDPOINT}/synthese/reports/${id}`)
   }
 }
