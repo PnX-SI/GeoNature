@@ -40,6 +40,13 @@
 ::ng-deep .mat-card-header-text {
   width: 100%;
 }
+::ng-deep .mat-card-content {
+  margin-bottom: 0px;
+}
 .discussion-card {
   border: 1px solid rgb(208, 215, 222);
+}
+
+.disccusion-action-btn {
+  outline-width: 0px;
 }
