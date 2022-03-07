@@ -50,3 +50,7 @@
 .disccusion-action-btn {
   outline-width: 0px;
 }
+
+::ng-deep .rm-comment:focus {
+  outline-width: 0px;
+}
