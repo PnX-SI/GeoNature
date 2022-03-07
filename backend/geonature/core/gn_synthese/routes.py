@@ -989,7 +989,6 @@ def get_report():
 @routes.route('/reports/<int:id_report>', methods=["DELETE"])
 @json_resp
 def delete_report(id_report):
-    print(id_report)
     reportItem = DB.session.query(CorReportSynthese).filter_by(id_report=id_report).first()
     DB.session.delete(reportItem)
     DB.session.commit()
