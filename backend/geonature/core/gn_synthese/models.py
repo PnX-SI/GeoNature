@@ -471,13 +471,13 @@ class VColorAreaTaxon(DB.Model):
 
 @serializable
 class CorReportSynthese(DB.Model):
-    __tablename__ = "t_discussions"
+    __tablename__ = "t_reports"
     __table_args__ = {"schema": "gn_synthese"}
-    id_discussion = DB.Column(DB.Integer(), primary_key=True)
+    id_report = DB.Column(DB.Integer(), primary_key=True)
     id_synthese = DB.Column(DB.Integer())
     id_module = DB.Column(DB.Integer())
     id_role = DB.Column(DB.Integer())
     content_owner = DB.Column(JSONB)
-    content_discussion = DB.Column(JSONB)
+    content_report = DB.Column(JSONB)
     content_date = DB.Column(DB.DateTime(), default=datetime.datetime.utcnow)
     content_type = DB.Column(DB.Integer())
