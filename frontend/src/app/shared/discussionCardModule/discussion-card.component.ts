@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { AppConfig } from '@geonature_config/app.config';
 import { AuthService, User } from '@geonature/components/auth/auth.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -13,7 +13,7 @@ import { pickBy, isEqual, isEmpty } from 'lodash';
   styleUrls: ['discussion-card.component.scss']
 })
 
-export class DiscussionCardComponent implements OnInit {
+export class DiscussionCardComponent implements OnInit, OnChanges {
   @Input() idSynthese: number;
   public commentForm: FormGroup;
   public open = false;
@@ -38,6 +38,12 @@ export class DiscussionCardComponent implements OnInit {
     });
   }
 
+  ngOnChanges() {
+    // reload list for next or previous item
+    if (this.moduleId) {
+      this.getDiscussions();
+    }
+  }
   ngOnInit() {
     this.open = false;
     // get current user required to save comment
