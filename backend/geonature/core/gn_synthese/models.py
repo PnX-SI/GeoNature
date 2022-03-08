@@ -28,9 +28,7 @@ from utils_flask_sqla.serializers import serializable, SERIALIZERS
 from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
 from utils_flask_sqla_geo.mixins import GeoFeatureCollectionMixin
 from pypn_habref_api.models import Habref
-from apptax.taxonomie.models import Taxref
-from ref_geo.models import LAreas, LiMunicipalities
-from geonature.core.ref_geo.models import CorAreaStatus
+from apptax.taxonomie.models import Taxref, TaxrefBdcStatutCorTextArea
 
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.gn_commons.models import (
@@ -330,13 +328,6 @@ class Synthese(DB.Model):
     )
 
     cor_observers = DB.relationship(User, secondary=cor_observer_synthese)
-
-    areas_status = DB.relationship(
-        "CorAreaStatus",
-        secondary=corAreaSynthese,
-        primaryjoin=(CorAreaSynthese.id_synthese == id_synthese),
-        secondaryjoin=(CorAreaSynthese.id_area == CorAreaStatus.id_area),
-    )
 
     def get_geofeature(self, recursif=True, fields=None):
         return self.as_geofeature("the_geom_4326", "id_synthese", recursif, fields=fields)

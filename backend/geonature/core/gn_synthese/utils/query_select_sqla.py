@@ -30,13 +30,11 @@ from geonature.core.gn_meta.models import (
     TDatasets,
 )
 from geonature.utils.errors import GeonatureApiError
-from geonature.core.ref_geo.models import (
-    CorAreaStatus,
-)
 from apptax.taxonomie.models import (
     Taxref,
     CorTaxonAttribut,
     TaxrefBdcStatutTaxon,
+    TaxrefBdcStatutCorTextArea,
     TaxrefBdcStatutCorTextValues,
     TaxrefBdcStatutText,
     TaxrefBdcStatutValues,
@@ -356,11 +354,11 @@ class SyntheseQuery:
                 all_red_lists_cfg = current_app.config["SYNTHESE"]["RED_LISTS_FILTERS"]
                 red_list_cfg = next((item for item in all_red_lists_cfg if item["id"] == red_list_id), None)
                 red_list_cte = (
-                    select([TaxrefBdcStatutTaxon.cd_ref, CorAreaStatus.id_area])
+                    select([TaxrefBdcStatutTaxon.cd_ref, TaxrefBdcStatutCorTextArea.id_area])
                     .select_from(
                         TaxrefBdcStatutTaxon.__table__
                         .join(
-                            TaxrefBdcStatutCorTextValues, 
+                            TaxrefBdcStatutCorTextValues,
                             TaxrefBdcStatutCorTextValues.id_value_text == TaxrefBdcStatutTaxon.id_value_text
                         )
                         .join(
@@ -372,8 +370,8 @@ class SyntheseQuery:
                             TaxrefBdcStatutValues.id_value == TaxrefBdcStatutCorTextValues.id_value
                         )
                         .join(
-                            CorAreaStatus,
-                            CorAreaStatus.cd_sig == TaxrefBdcStatutText.cd_sig
+                            TaxrefBdcStatutCorTextArea,
+                            TaxrefBdcStatutCorTextArea.id_text == TaxrefBdcStatutText.id_text
                         )
                     )
                     .where(TaxrefBdcStatutValues.code_statut.in_(value))
@@ -397,11 +395,11 @@ class SyntheseQuery:
                 if (isinstance(value, list) and value[0] == True and len(status_cfg['status_types']) == 1):
                     value = status_cfg['status_types']
                 status_cte = (
-                    select([TaxrefBdcStatutTaxon.cd_ref, CorAreaStatus.id_area])
+                    select([TaxrefBdcStatutTaxon.cd_ref, TaxrefBdcStatutCorTextArea.id_area])
                     .select_from(
                         TaxrefBdcStatutTaxon.__table__
                         .join(
-                            TaxrefBdcStatutCorTextValues, 
+                            TaxrefBdcStatutCorTextValues,
                             TaxrefBdcStatutCorTextValues.id_value_text == TaxrefBdcStatutTaxon.id_value_text
                         )
                         .join(
@@ -409,8 +407,8 @@ class SyntheseQuery:
                             TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextValues.id_text
                         )
                         .join(
-                            CorAreaStatus,
-                            CorAreaStatus.cd_sig == TaxrefBdcStatutText.cd_sig
+                            TaxrefBdcStatutCorTextArea,
+                            TaxrefBdcStatutCorTextArea.id_text == TaxrefBdcStatutText.id_text
                         )
                     )
                     .where(TaxrefBdcStatutText.cd_type_statut.in_(value))

@@ -295,8 +295,6 @@ def get_one_synthese(scope, id_synthese):
         raise Forbidden()
 
     geofeature = synthese.as_geofeature(fields=Synthese.nomenclature_fields + fields)
-    #  geojson["properties"]["areas_status"] = [d['cd_sig'] for d in geojson["properties"]["areas_status"]]
-
     return jsonify(geofeature)
 
 
