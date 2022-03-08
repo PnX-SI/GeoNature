@@ -19,6 +19,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   public open = false;
   public currentUser: User;
   public moduleId: number;
+  public appConfig = AppConfig;
   public discussions: any;
   public allow = false;
   constructor(
@@ -43,6 +44,11 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     if (this.moduleId) {
       this.getDiscussions();
     }
+  }
+
+  isValid() {
+    return this.commentForm.valid &&
+      this.commentForm.get('content').value.length <= this.appConfig?.SYNTHESE?.DISCUSSION_LENGTH;
   }
   ngOnInit() {
     this.open = false;

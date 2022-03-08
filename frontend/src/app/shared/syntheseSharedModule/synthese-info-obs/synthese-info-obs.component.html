@@ -550,7 +550,7 @@
 
   <mat-tab
     label="{{ 'Synthese.Discussion' | translate }}"
-    *ngIf="APP_CONFIG.DISCUSSIONS.ALLOW_MODULES.includes(moduleInfos.code)"
+    *ngIf="APP_CONFIG.SYNTHESE.DISCUSSION_MODULES.includes(moduleInfos.code)"
   >
     <pnx-discussion-card [idSynthese]="idSynthese"></pnx-discussion-card>
   </mat-tab>
