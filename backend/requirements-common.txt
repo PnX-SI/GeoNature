@@ -14,7 +14,7 @@ flask-script==2.0.6
 flask-sqlalchemy==2.4.4
 Flask-WeasyPrint==0.6
 flask==1.1.1
-geoalchemy2==0.4.0
+geoalchemy2==0.11.0
 geog==0.0.2
 geojson==2.5.0
 gunicorn==20.1.0

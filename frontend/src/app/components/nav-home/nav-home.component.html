@@ -24,7 +24,11 @@
         <mat-icon aria-label="Ouvrir le menu principal">menu</mat-icon>
       </button>
 
-      <span class="mx-2"> {{ moduleName }} </span>
+      <span class="mx-2"> <a
+          class=" home-link"
+          href="{{moduleUrl}}"
+        >{{moduleName}}</a>
+      </span>
 
       <img
         id="logo-structure"

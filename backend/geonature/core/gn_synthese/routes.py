@@ -36,7 +36,6 @@ from geonature.core.gn_synthese.models import (
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.ref_geo.models import (
-    CorAreaStatus,
     BibAreasTypes,
     LAreas,
 )
@@ -48,6 +47,7 @@ from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from apptax.taxonomie.models import (
     CorTaxonAttribut,
     Taxref,
+    TaxrefBdcStatutCorTextArea,
     TaxrefBdcStatutCorTextValues,
     TaxrefBdcStatutTaxon,
     TaxrefBdcStatutText,
@@ -230,9 +230,7 @@ def get_one_synthese(scope, id_synthese):
             'medias',
             'areas',
             'areas.area_type',
-            'areas_status',
         ])
-    geojson["properties"]["areas_status"] = [d['cd_sig'] for d in geojson["properties"]["areas_status"]]
     return jsonify(geojson)
 
 
@@ -530,7 +528,11 @@ def export_status(info_role):
         CorAreaSynthese.id_synthese,
         VSyntheseForWebApp.id_synthese,
     )
-    synthese_query.add_join(CorAreaStatus, CorAreaStatus.id_area, CorAreaSynthese.id_area)
+    synthese_query.add_join(
+        TaxrefBdcStatutCorTextArea,
+        TaxrefBdcStatutCorTextArea.id_area,
+        CorAreaSynthese.id_area
+    )
     synthese_query.add_join(TaxrefBdcStatutTaxon, TaxrefBdcStatutTaxon.cd_ref, Taxref.cd_ref)
     synthese_query.add_join(
         TaxrefBdcStatutCorTextValues,
@@ -541,7 +543,7 @@ def export_status(info_role):
         TaxrefBdcStatutText,
         [
             TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextValues.id_text,
-            TaxrefBdcStatutText.cd_sig == CorAreaStatus.cd_sig,
+            TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextArea.id_text,
         ]
     )
     synthese_query.add_join(
