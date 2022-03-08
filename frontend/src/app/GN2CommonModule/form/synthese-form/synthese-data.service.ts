@@ -233,6 +233,6 @@ export class SyntheseDataService {
   }
 
   deleteReport(id) {
-    return this._api.delete(`${AppConfig.API_ENDPOINT}/synthese/reports/${id}`)
+    return this._api.delete(`${AppConfig.API_ENDPOINT}/synthese/reports/${id}`);
   }
 }
