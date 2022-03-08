@@ -30,6 +30,7 @@
                     <mat-label class="gn-color">Comentaire :</mat-label>
                     <textarea
                         matInput
+                        [maxlength]="appConfig.SYNTHESE?.DISCUSSION_LENGTH"
                         placeholder="Votre commentaire...."
                         [formControl]="commentForm.get('content')"
                     ></textarea>
@@ -49,7 +50,7 @@
                 >Annuler</button>
                 <button
                     mat-stroked-button
-                    [disabled]="!this.commentForm.valid"
+                    [disabled]="!isValid()"
                     class="saveBtn link-infos"
                     (click)="handleSubmitComment()"
                 >Envoyer</button>

@@ -393,6 +393,8 @@ MAIL_ON_ERROR = false
         "date_modification",
         "champs_additionnels
     ]
+    DISCUSSION_MODULES = ["SYNTHESE","VALIDATION"]
+    DICUSSION_LENTH = 1500
 
 # Configuration de l'accès sans authentication
 [PUBLIC_ACCESS]
