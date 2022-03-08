@@ -235,7 +235,6 @@ class GnFrontEndConf(Schema):
     DISPLAY_EMAIL_INFO_OBS = fields.Boolean(load_default=True)
     DISPLAY_EMAIL_DISPLAY_INFO = fields.List(fields.String(), load_default=["NOM_VERN"])
 
-
 class Synthese(Schema):
     AREA_FILTERS = fields.List(
         fields.Dict, load_default=[{"label": "Communes", "type_code": "COM"}]
@@ -285,7 +284,10 @@ class Synthese(Schema):
 
     # Display email on synthese and validation info obs modal
     DISPLAY_EMAIL = fields.Boolean(load_default=True)
-
+    # Limit comment max length for the discussion tab
+    DISCUSSION_LENGTH = fields.Integer(load_default=1500)
+    # Allow disable discussion tab for synthese or validation
+    DISCUSSION_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
 
 # Map configuration
 BASEMAP = [
