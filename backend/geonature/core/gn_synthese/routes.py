@@ -953,7 +953,7 @@ def create_discussion():
     new_entry = CorReportSynthese(
         id_synthese=data['item'],
         id_module=data['module'],
-        id_role=data['role'],
+        id_role=g.current_user.id_role,
         content_owner=data['user'],
         content_report=data['content'],
         content_type=1
@@ -970,10 +970,12 @@ def get_report():
     id_synthese = request.args.get("idSynthese")
     id_module = request.args.get("idModule")
     sort=request.args.get("sort")
+    
     if not id_synthese:
         raise BadRequest('idSynthese is missing from the request')
+
     data = DB.session.query(CorReportSynthese).filter(CorReportSynthese.id_synthese==id_synthese)
-    if id_role:
+    if id_role and id_role == g.current_user.id_role:
         data = data.filter(CorReportSynthese.id_role==id_role)
     if id_module:
         data = data.filter(CorReportSynthese.id_module==id_module)
@@ -989,6 +991,7 @@ def get_report():
 @routes.route('/reports/<int:id_report>', methods=["DELETE"])
 @json_resp
 def delete_report(id_report):
-    reportItem = DB.session.query(CorReportSynthese).filter_by(id_report=id_report).first()
+    g.current_user = user_from_token(request.cookies['token']).role
+    reportItem = DB.session.query(CorReportSynthese).filter_by(id_report=id_report, id_role=g.current_user.id_role).first()
     DB.session.delete(reportItem)
     DB.session.commit()

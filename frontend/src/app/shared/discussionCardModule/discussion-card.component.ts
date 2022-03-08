@@ -73,7 +73,6 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     });
     // set required form fields
     this.commentForm.get('user').setValue(userInfos);
-    this.commentForm.get('role').setValue(this.currentUser.id_role);
     this.commentForm.get('content').setValue({ comment: this.commentForm.get('content').value });
     this.commentForm.get('item').setValue(this.idSynthese);
     this.commentForm.get('module').setValue(this.moduleId);
@@ -121,7 +120,6 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   }
 
   deleteComment(id) {
-    console.log(id);
     this._syntheseDataService.deleteReport(id).subscribe(response => {
       this.getDiscussions();
     });
