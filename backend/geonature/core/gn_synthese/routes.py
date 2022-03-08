@@ -281,9 +281,7 @@ def get_one_synthese(scope, id_synthese):
             'medias',
             'areas',
             'areas.area_type',
-            'areas_status',
         ])
-    geojson["properties"]["areas_status"] = [d['cd_sig'] for d in geojson["properties"]["areas_status"]]
     return jsonify(geojson)
 
 

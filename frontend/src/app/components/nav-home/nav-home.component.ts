@@ -11,7 +11,6 @@ import { AppConfig } from '../../../conf/app.config';
 import { GlobalSubService } from '../../services/global-sub.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
 
-
 @Component({
   selector: 'pnx-nav-home',
   templateUrl: './nav-home.component.html',
@@ -25,6 +24,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   public appConfig: any;
   public currentDocUrl: string;
   public locale: string;
+  public moduleUrl: string;
   @ViewChild('sidenav', {static: true}) public sidenav: MatSidenav;
 
   constructor(
@@ -53,7 +53,6 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     this.currentUser = this.authService.getCurrentUser();
   }
 
-
   private extractLocaleFromUrl() {
     this.subscription = this.activatedRoute.queryParams.subscribe((param: any) => {
       const locale = param['locale'];
@@ -80,14 +79,14 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   }
 
   private onModuleChange() {
-    this.globalSubService.currentModuleSub.subscribe(module => {
-      if (module) {
-        this.moduleName = module.module_label;
-        if (module.module_doc_url) {
-          this.currentDocUrl = module.module_doc_url;
-        }
-      } else {
-        this.moduleName = 'Accueil';
+    this.globalSubService.currentModuleSub.subscribe((module) => {
+      if (!module) {
+        module = this.sideNavService.getHomeItem();
+      }
+      this.moduleName = module.module_label;
+      this.moduleUrl = module.module_url;
+      if (module.module_doc_url) {
+        this.currentDocUrl = module.module_doc_url;
       }
     });
   }
