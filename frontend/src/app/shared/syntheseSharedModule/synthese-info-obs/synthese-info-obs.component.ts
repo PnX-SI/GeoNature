@@ -135,7 +135,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
 
         this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
         let cdNom = this.selectedObs['cd_nom'];
-        let areasStatus = this.selectedObs['areas_status'];
+        let areasStatus = this.selectedObs['areas'].map(area => area.id_area);
         this._gnDataService.getTaxonInfo(cdNom, areasStatus).subscribe(taxInfo => {
           this.selectedObsTaxonDetail = taxInfo;
           if (this.selectedObs.cor_observers) {
