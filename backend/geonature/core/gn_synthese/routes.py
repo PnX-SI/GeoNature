@@ -956,6 +956,7 @@ def create_discussion():
         id_role=g.current_user.id_role,
         content_owner=data['user'],
         content_report=data['content'],
+        content_date=datetime.datetime.now(),
         content_type=1
     )
     session.add(new_entry)
