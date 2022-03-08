@@ -270,9 +270,7 @@ def get_one_synthese(scope, id_synthese):
             'medias',
             'areas',
             'areas.area_type',
-            'areas_status',
         ])
-    geojson["properties"]["areas_status"] = [d['cd_sig'] for d in geojson["properties"]["areas_status"]]
     return jsonify(geojson)
 
 
@@ -503,7 +501,7 @@ def export_metadata(info_role):
     ])
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, q, filters)
     synthese_query_class.add_join(
-        metadata_view.tableDef, 
+        metadata_view.tableDef,
         getattr(
             metadata_view.tableDef.columns,
             current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"],
@@ -807,14 +805,14 @@ def get_taxa_count():
     Get taxa count in synthese filtering with generic parameters
 
     .. :quickref: Synthese;
-    
+
     Parameters
     ----------
     id_dataset: `int` (query parameter)
 
     Returns
     -------
-    count: `int`: 
+    count: `int`:
         the number of taxon
     """
     params = request.args
@@ -833,16 +831,16 @@ def get_observation_count():
     Get observations found in a given dataset
 
     .. :quickref: Synthese;
-    
+
     Parameters
     ----------
     id_dataset: `int` (query parameter)
 
     Returns
     -------
-    count: `int`: 
+    count: `int`:
         the number of observation
-    
+
     """
     params = request.args
 
@@ -860,20 +858,20 @@ def get_bbox():
     Get bbbox of observations
 
     .. :quickref: Synthese;
-    
+
     Parameters
     -----------
     id_dataset: int: (query parameter)
 
     Returns
     -------
-        bbox: `geojson`: 
+        bbox: `geojson`:
             the bounding box in geojson
     """
     params = request.args
 
     query = DB.session.query(func.ST_AsGeoJSON(func.ST_Extent(Synthese.the_geom_4326)))
-        
+
     if "id_dataset" in params:
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
     data = query.one()
