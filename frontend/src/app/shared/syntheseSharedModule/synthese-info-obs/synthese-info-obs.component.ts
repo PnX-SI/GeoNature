@@ -241,6 +241,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
           // format date
           const date = new Date(this.validationHistory[row].date);
           this.validationHistory[row].date = date.toLocaleDateString('fr-FR');
+          this.validationHistory[row].dateTime = date;
           // format comments
           if (
             this.validationHistory[row].comment === 'None' ||

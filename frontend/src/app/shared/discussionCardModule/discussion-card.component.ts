@@ -5,7 +5,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { GlobalSubService } from '@geonature/services/global-sub.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { pickBy, isEqual, isEmpty } from 'lodash';
+import { pickBy, isEmpty, uniqueId } from 'lodash';
+import * as moment from "moment";
 
 @Component({
   selector: 'pnx-discussion-card',
@@ -15,6 +16,9 @@ import { pickBy, isEqual, isEmpty } from 'lodash';
 
 export class DiscussionCardComponent implements OnInit, OnChanges {
   @Input() idSynthese: number;
+  @Input() additionalData: any;
+  @Input() validationColor: any;
+  @Input() codeModule: string;
   public commentForm: FormGroup;
   public open = false;
   public currentUser: User;
@@ -22,6 +26,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   public appConfig = AppConfig;
   public discussions: any;
   public allow = false;
+  public sort = 'desc';
   constructor(
     private _authService: AuthService,
     private _formBuilder: FormBuilder,
@@ -39,17 +44,6 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnChanges() {
-    // reload list for next or previous item
-    if (this.moduleId) {
-      this.getDiscussions();
-    }
-  }
-
-  isValid() {
-    return this.commentForm.valid &&
-      this.commentForm.get('content').value.length <= this.appConfig?.SYNTHESE?.DISCUSSION_LENGTH;
-  }
   ngOnInit() {
     this.open = false;
     // get current user required to save comment
@@ -62,6 +56,31 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
         this.getDiscussions();
       }
     });
+  }
+
+  orderData(data) {
+    const newarr = data.sort((a, b) => {
+      const aDate = moment(a.content_date ? a.content_date : a.dateTime)
+      const bDate = moment(b.content_date ? b.content_date : b.dateTime)
+      return moment(aDate).diff(bDate);
+    });
+    if (this.sort === 'desc') newarr.reverse();
+    return newarr;
+  }
+
+  ngOnChanges() {
+    // reload list for next or previous item
+    if (this.additionalData && this.additionalData.data) {
+      this.additionalData = { ...this.additionalData, data: this.additionalData.data.map(d => ({ ...d, spid: uniqueId() })) }; 
+    }
+    if (this.moduleId) {
+      this.getDiscussions();
+    }
+  }
+
+  isValid() {
+    return this.commentForm.valid &&
+      this.commentForm.get('content').value.length <= this.appConfig?.SYNTHESE?.DISCUSSION_LENGTH;
   }
 
   /**
@@ -106,14 +125,18 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   }
 
   setDiscussions(data) {
-    this.discussions = data?.results || [];
+    let listEl = data?.results || [];
+    if (!isEmpty(this.additionalData?.data) && this.additionalData.dateField) {
+      listEl = this.orderData([...listEl, ...this.additionalData.data]);
+    }
+    this.discussions = listEl;
   }
 
   /**
    * get all discussion by module and type
    */
   getDiscussions() {
-    const params = `idSynthese=${this.idSynthese}&idModule=${this.moduleId}&type=1&sort=desc`;
+    const params = `idSynthese=${this.idSynthese}&idModule=${this.moduleId}&type=1&sort=${this.sort}`;
     this._syntheseDataService.getReports(params).subscribe(response => {
       this.setDiscussions(response);
     });

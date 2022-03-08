@@ -44,7 +44,7 @@
   margin-bottom: 0px;
 }
 .discussion-card {
-  border: 1px solid rgb(208, 215, 222);
+  border: 1px solid rgba(103, 58, 183, 0.2);
 }
 
 .disccusion-action-btn {
@@ -53,4 +53,11 @@
 
 ::ng-deep .rm-comment:focus {
   outline-width: 0px;
+}
+::ng-deep .rm-comment:hover {
+  color: rgba(104, 58, 183, 0.5);
+}
+
+.statusIcon {
+  vertical-align: middle;
 }
