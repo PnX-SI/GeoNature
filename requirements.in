@@ -1,3 +1,4 @@
 alembic
 sqlalchemy<1.4
+flask-sqlalchemy
 utils-flask-sqlalchemy==0.2.6
