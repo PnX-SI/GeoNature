@@ -111,18 +111,20 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   onStatusSelected(event) {
-    this.formService.selectedStatus.push(event.code);
+    console.log("onStatusSelected", event)
+    this.formService.selectedStatus.push(event.cd_type_statut);
   }
 
   onStatusDeleted(event) {
     this.formService.selectedStatus.splice(
-      this.formService.selectedStatus.indexOf(event.value.code),
+      this.formService.selectedStatus.indexOf(event.value.cd_type_statut),
       1
     );
   }
 
   onRedListsSelected(event) {
-    let key = `${event.statusType} [${event.code}]`;
+    console.log('onRedListsSelected', event);
+    let key = `${event.statusType} [${event.code_statut}]`;
     this.formService.selectedRedLists.push(key);
   }
 
