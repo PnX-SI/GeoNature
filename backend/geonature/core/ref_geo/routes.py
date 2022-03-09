@@ -10,8 +10,8 @@ from werkzeug.exceptions import BadRequest
 
 from geonature.utils.env import db
 from geonature.utils.config import config
-from geonature.core.ref_geo.models import BibAreasTypes, LiMunicipalities, LAreas
 
+from ref_geo.models import BibAreasTypes, LiMunicipalities, LAreas
 from utils_flask_sqla.response import json_resp
 
 
