@@ -11,8 +11,8 @@ from geonature.utils.env import db
 from geonature.utils.config import config
 from geonature.core.sensitivity.models import SensitivityRule, cor_sensitivity_area, CorSensitivityCriteria
 from geonature.core.gn_synthese.models import Synthese
-from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 
+from ref_geo.models import LAreas, BibAreasTypes
 from apptax.taxonomie.models import Taxref
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 

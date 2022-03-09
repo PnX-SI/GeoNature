@@ -12,6 +12,7 @@ from sqlalchemy.sql import select, func
 
 
 from pypnusershub.db.models import User
+from ref_geo.models import LAreas
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
@@ -57,7 +58,7 @@ corSiteArea = DB.Table(
         ForeignKey("gn_monitoring.t_base_sites.id_base_site"),
         primary_key=True,
     ),
-    DB.Column("id_area", DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True),
+    DB.Column("id_area", DB.Integer, ForeignKey(LAreas.id_area), primary_key=True),
     schema="gn_monitoring",
 )
 
