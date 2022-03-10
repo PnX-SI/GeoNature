@@ -126,7 +126,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   }
 
   onRedListsDeleted(event) {
-    let key = `${event.statusType} [${event.value.code}]`;
+    let key = `${event.statusType} [${event.value.code_statut}]`;
     this.formService.selectedRedLists.splice(
       this.formService.selectedRedLists.indexOf(key),
       1
