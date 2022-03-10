@@ -570,6 +570,8 @@ def export_status(info_role):
     # Initialize SyntheseQuery class
     synthese_query = SyntheseQuery(VSyntheseForWebApp, q, filters)
 
+    synthese_query.apply_all_filters(info_role)
+
     # Add join
     synthese_query.add_join(Taxref, Taxref.cd_nom, VSyntheseForWebApp.cd_nom)
     synthese_query.add_join(
@@ -606,8 +608,8 @@ def export_status(info_role):
         TaxrefBdcStatutCorTextValues.id_value,
     )
 
-    # Filter with all get params
-    q = synthese_query.filter_query_all_filters(info_role)
+    # Build query
+    q = synthese_query.build_query()
 
     # Set enable status texts filter
     q = q.where(TaxrefBdcStatutText.enable == True)
