@@ -222,7 +222,7 @@ export class SyntheseDataService {
   getReports(params) {
     return this._api.get(
       `${AppConfig.API_ENDPOINT}/synthese/reports?${params}`
-    )
+    );
   }
 
   createReport(params) {
