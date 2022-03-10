@@ -33,7 +33,8 @@ DELETE FROM gn_permissions.t_filters WHERE id_filter = 500;
 DELETE FROM utilisateurs.t_roles WHERE identifiant = 'hello_test';
 DELETE FROM utilisateurs.temp_users WHERE identifiant = 'hello_test';
 
-
+-- test reports
+DELETE FROM gn_synthese.t_reports WHERE id_report IN (100002, 100001, 100000);
 ----------------
 -- GN_COMMONS --
 ----------------
