@@ -1,12 +1,13 @@
 import { Component, OnInit, Input, OnChanges } from '@angular/core';
 import { AppConfig } from '@geonature_config/app.config';
 import { AuthService, User } from '@geonature/components/auth/auth.service';
+import { DataFormService } from '@geonature_common/form/data-form.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { GlobalSubService } from '@geonature/services/global-sub.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { pickBy, isEmpty, uniqueId } from 'lodash';
-import * as moment from "moment";
+import * as moment from 'moment';
 
 @Component({
   selector: 'pnx-discussion-card',
@@ -32,7 +33,8 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     private _formBuilder: FormBuilder,
     private globalSubService: GlobalSubService,
     private _commonService: CommonService,
-    private _syntheseDataService: SyntheseDataService
+    private _syntheseDataService: SyntheseDataService,
+    private dataService: DataFormService
   ) {
     this.commentForm = this._formBuilder
     .group({
@@ -64,14 +66,19 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
       const bDate = moment(b.content_date ? b.content_date : b.dateTime)
       return moment(aDate).diff(bDate);
     });
-    if (this.sort === 'desc') newarr.reverse();
+    if (this.sort === 'desc') {
+      newarr.reverse();
+    };
     return newarr;
   }
 
   ngOnChanges() {
     // reload list for next or previous item
     if (this.additionalData && this.additionalData.data) {
-      this.additionalData = { ...this.additionalData, data: this.additionalData.data.map(d => ({ ...d, spid: uniqueId() })) }; 
+      this.additionalData = {
+        ...this.additionalData,
+        data: this.additionalData.data.map(d => ({ ...d, spid: uniqueId() }))
+      }; 
     }
     if (this.moduleId) {
       this.getDiscussions();
