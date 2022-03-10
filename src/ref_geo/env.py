@@ -13,7 +13,4 @@ else:
     db = SQLAlchemy()
 
 
-LOCAL_SRID = int(environ['LOCAL_SRID'])
-
-
 __all__ = ['db']

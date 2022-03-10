@@ -6,7 +6,7 @@ from sqlalchemy import ForeignKey
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
-from .env import db, LOCAL_SRID
+from .env import db
 
 from sqlalchemy.ext.hybrid import hybrid_property
 
@@ -32,7 +32,7 @@ class LAreas(db.Model):
     id_type = db.Column(db.Integer, ForeignKey("ref_geo.bib_areas_types.id_type"))
     area_name = db.Column(db.Unicode)
     area_code = db.Column(db.Unicode)
-    geom = db.Column(Geometry("GEOMETRY", LOCAL_SRID))
+    geom = db.Column(Geometry("GEOMETRY"))
     source = db.Column(db.Unicode)
     enable = db.Column(db.Boolean, nullable=False, default=True)
     meta_create_date = db.Column(db.DateTime, default=datetime.now)
