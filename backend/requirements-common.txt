@@ -14,7 +14,7 @@ flask-script==2.0.6
 flask-sqlalchemy==2.4.4
 Flask-WeasyPrint==0.6
 flask==1.1.1
-geoalchemy2==0.11.0
+geoalchemy2==0.11.1
 geog==0.0.2
 geojson==2.5.0
 gunicorn==20.1.0
@@ -22,7 +22,7 @@ idna==3.3
 itsdangerous==2.0.1
 jinja2==2.11.3
 lxml==4.6.5
-markupsafe==1.1
+markupsafe==2.1.0
 marshmallow==3.13.0
 marshmallow-sqlalchemy==0.26.1
 packaging==21.3
