@@ -27,7 +27,6 @@ from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.gn_commons.models import THistoryActions, TValidations, last_validation, \
                                              TMedias, TModules
 from geonature.utils.env import DB, db
-from geonature.utils.config import config
 
 
 @serializable
@@ -238,7 +237,7 @@ class Synthese(DB.Model):
     place_name = DB.Column(DB.Unicode(length=500))
     the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_point = DB.Column(Geometry("GEOMETRY", 4326))
-    the_geom_local = DB.Column(Geometry("GEOMETRY", config["LOCAL_SRID"]))
+    the_geom_local = DB.Column(Geometry("GEOMETRY"))
     precision = DB.Column(DB.Integer)
     id_area_attachment = DB.Column(DB.Integer)
     date_min = DB.Column(DB.DateTime, nullable=False)
