@@ -143,7 +143,7 @@ class CorCountingOccurrence(DB.Model):
 
     medias = DB.relationship(
         TMedias,
-        primaryjoin=('TMedias.uuid_attached_row == CorCountingOccurrence.unique_id_sinp_occtax'),
+        primaryjoin=TMedias.uuid_attached_row == unique_id_sinp_occtax,
         foreign_keys=[TMedias.uuid_attached_row],
         cascade="all",
         lazy="select",

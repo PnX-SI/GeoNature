@@ -108,12 +108,12 @@ class TMedias(DB.Model):
     __table_args__ = {"schema": "gn_commons"}
     id_media = DB.Column(DB.Integer, primary_key=True)
     id_nomenclature_media_type = DB.Column(
-        DB.Integer
-        # ,
-        # ForeignKey('ref_nomenclatures.t_nomenclatures.id_nomenclature')
+        DB.Integer,
+        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature")
     )
     id_table_location = DB.Column(
-        DB.Integer, ForeignKey("gn_commons.bib_tables_location.id_table_location")
+        DB.Integer,
+        ForeignKey("gn_commons.bib_tables_location.id_table_location")
     )
     unique_id_media = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
     uuid_attached_row = DB.Column(UUID(as_uuid=True))
