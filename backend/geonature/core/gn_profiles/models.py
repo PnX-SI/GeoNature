@@ -10,7 +10,6 @@ from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.utils.env import DB
-from geonature.utils.config import config
 from geonature.core.gn_synthese.models import Synthese
 
 
@@ -42,7 +41,7 @@ class VmValidProfiles(DB.Model):
     __tablename__ = "vm_valid_profiles"
     __table_args__ = {"schema": "gn_profiles"}
     cd_ref = DB.Column(DB.Integer, primary_key=True)
-    valid_distribution = DB.Column(Geometry("GEOMETRY", config["LOCAL_SRID"]))
+    valid_distribution = DB.Column(Geometry("GEOMETRY"))
     altitude_min = DB.Column(DB.Integer)
     altitude_max = DB.Column(DB.Integer)
     first_valid_data = DB.Column(DB.DateTime)

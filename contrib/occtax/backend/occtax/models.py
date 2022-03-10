@@ -15,7 +15,6 @@ from utils_flask_sqla_geo.serializers import geoserializable
 from geonature.core.gn_commons.models import TMedias
 from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.env import DB
-from geonature.utils.config import config
 
 
 
@@ -227,7 +226,7 @@ class TRelevesOccurrence(ReleveModel):
     comment = DB.Column(DB.Unicode)
     place_name = DB.Column(DB.Unicode)
     geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
-    geom_local = DB.Column(Geometry("GEOMETRY", config["LOCAL_SRID"]))
+    geom_local = DB.Column(Geometry("GEOMETRY"))
     cd_hab = DB.Column(DB.Integer, ForeignKey(Habref.cd_hab))
     precision = DB.Column(DB.Integer)
 

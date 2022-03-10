@@ -375,13 +375,14 @@ def export_observations_web(info_role):
     if not export_format in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
         raise BadRequest("Unsupported format")
 
+    srid = DB.session.execute(func.Find_SRID("gn_synthese", "synthese", "the_geom_local")).scalar()
     # set default to csv
     export_view = GenericTableGeo(
         tableName="v_synthese_for_export",
         schemaName="gn_synthese",
         engine=DB.engine,
         geometry_field=None,
-        srid=current_app.config["LOCAL_SRID"],
+        srid=srid,
     )
 
     # get list of id synthese from POST
