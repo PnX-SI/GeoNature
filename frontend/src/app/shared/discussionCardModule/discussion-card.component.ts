@@ -19,7 +19,6 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   @Input() idSynthese: number;
   @Input() additionalData: any;
   @Input() validationColor: any;
-  @Input() codeModule: string;
   public commentForm: FormGroup;
   public open = false;
   public currentUser: User;
@@ -37,13 +36,13 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     private dataService: DataFormService
   ) {
     this.commentForm = this._formBuilder
-    .group({
-      user: [],
-      content: ['', Validators.required],
-      module: [],
-      item: [],
-      role: []
-    });
+      .group({
+        user: [],
+        content: ['', Validators.required],
+        module: [],
+        item: [],
+        role: []
+      });
   }
 
   ngOnInit() {
@@ -77,8 +76,9 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     if (this.additionalData && this.additionalData.data) {
       this.additionalData = {
         ...this.additionalData,
+        // insert spid to diff additionalData from reports data
         data: this.additionalData.data.map(d => ({ ...d, spid: uniqueId() }))
-      }; 
+      };
     }
     if (this.moduleId) {
       this.getDiscussions();
@@ -143,13 +143,14 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
    * get all discussion by module and type
    */
   getDiscussions() {
-    const params = `idSynthese=${this.idSynthese}&idModule=${this.moduleId}&type=1&sort=${this.sort}`;
+    const params = `idSynthese=${this.idSynthese}&type=1&sort=${this.sort}`;
     this._syntheseDataService.getReports(params).subscribe(response => {
       this.setDiscussions(response);
     });
   }
 
   deleteComment(id) {
+    // TODO : don't delete bu display generic msg
     this._syntheseDataService.deleteReport(id).subscribe(response => {
       this.getDiscussions();
     });
