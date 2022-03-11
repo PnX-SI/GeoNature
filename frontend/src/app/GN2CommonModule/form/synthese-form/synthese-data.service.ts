@@ -52,28 +52,28 @@ export class SyntheseDataService {
     return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/general_stats`);
   }
 
-  getTaxaCount(params={}){
+  getTaxaCount(params = {}) {
     let queryString = new HttpParams();
     for (let key in params) {
       queryString = queryString.set(key, params[key].toString())
     }
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_count`, {params: queryString});
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_count`, { params: queryString });
   }
 
-  getObsCount(params={}){
+  getObsCount(params = {}) {
     let queryString = new HttpParams();
     for (let key in params) {
       queryString = queryString.set(key, params[key].toString())
     }
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observation_count`, {params: queryString});
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observation_count`, { params: queryString });
   }
 
-  getObsBbox(params={}){
+  getObsBbox(params = {}) {
     let queryString = new HttpParams();
     for (let key in params) {
       queryString = queryString.set(key, params[key].toString())
     }
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observations_bbox`, {params: queryString});
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observations_bbox`, { params: queryString });
   }
 
 
@@ -226,13 +226,20 @@ export class SyntheseDataService {
   }
 
   createReport(params) {
-    return this._api.put(`${AppConfig.API_ENDPOINT}/synthese/reports`,
+    return this._api.post(`${AppConfig.API_ENDPOINT}/synthese/reports`,
       params, {
-        headers: new HttpHeaders().set('Content-Type', 'application/json')
-      });
+      headers: new HttpHeaders().set('Content-Type', 'application/json')
+    });
   }
 
   deleteReport(id) {
     return this._api.delete(`${AppConfig.API_ENDPOINT}/synthese/reports/${id}`);
+  }
+
+  modifyReport(id, params) {
+    return this._api.put(`${AppConfig.API_ENDPOINT}/synthese/reports/${id}`,
+      params, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json')
+    });
   }
 }

@@ -9,7 +9,7 @@ from warnings import warn
 from flask import Blueprint, request, Response, current_app, \
                   send_from_directory, render_template, jsonify, g
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest
-from sqlalchemy import distinct, func, desc, asc, select, text
+from sqlalchemy import distinct, func, desc, asc, select, text, update
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
@@ -937,7 +937,7 @@ def get_taxa_distribution():
     data = query.group_by(rank).all()
     return [{"count": d[0], "group": d[1]} for d in data]
 
-@routes.route("/reports", methods=["POST","PUT"])
+@routes.route("/reports", methods=["POST"])
 @json_resp
 def create_discussion():
     """
@@ -960,6 +960,28 @@ def create_discussion():
         content_type=1
     )
     session.add(new_entry)
+    session.commit()
+
+@routes.route("/reports/<int:id_report>", methods=["PUT"])
+@json_resp
+def update_content_discussion(id_report):
+    """
+    Modify a report (e.g discussion) for a given synthese id
+
+    Returns
+    -------
+        report: `json`: 
+            Every occurrence's discussions
+    """
+    data = request.json
+    session = DB.session
+    idReport = data["idReport"]
+    row = session.query(CorReportSynthese).filter_by(id_report=data["idReport"], id_role=g.current_user.id_role).one_or_none()
+
+    if not row :
+        raise NotFound(f"This report can't be delete by {g.current_user}")
+
+    row.content_report = data["content"]
     session.commit()
 
 @routes.route('/reports', methods=["GET"])
