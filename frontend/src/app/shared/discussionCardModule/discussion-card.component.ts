@@ -41,7 +41,8 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
         content: ['', Validators.required],
         module: [],
         item: [],
-        role: []
+        role: [],
+        idReport: 0
       });
   }
 
@@ -90,18 +91,22 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
       this.commentForm.get('content').value.length <= this.appConfig?.SYNTHESE?.DISCUSSION_LENGTH;
   }
 
-  /**
-   * Send comment
-   */
-  handleSubmitComment() {
+  prepareReport(reportContent = null) {
     const userInfos = pickBy(this?.currentUser, (value, key) => {
       return ['id_role', 'prenom_role', 'nom_role'].includes(key);
     });
     // set required form fields
     this.commentForm.get('user').setValue(userInfos);
-    this.commentForm.get('content').setValue({ comment: this.commentForm.get('content').value });
+    this.commentForm.get('content').setValue(reportContent || { comment: this.commentForm.get('content').value });
     this.commentForm.get('item').setValue(this.idSynthese);
     this.commentForm.get('module').setValue(this.moduleId);
+  }
+
+  /**
+   * Send comment
+   */
+  handleSubmitComment() {
+    this.prepareReport();
     // create new comment
     this._syntheseDataService.createReport(this.commentForm.value).subscribe(data => {
       this._commonService.regularToaster(
@@ -110,6 +115,24 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
       );
       // close add comment panel and refresh list
       this.openCloseComment();
+      this.getDiscussions();
+    });
+  }
+
+  /**
+ * Send comment
+ */
+  updateComment(id) {
+    const deletedComment = { comment: "", deleted: new Date().toISOString() };
+    this.prepareReport(deletedComment);
+    this.commentForm.get('idReport').setValue(id);
+    // create new comment
+    this._syntheseDataService.modifyReport(id, this.commentForm.value).subscribe(data => {
+      this._commonService.regularToaster(
+        'success',
+        'Commentaire mis à jour !'
+      );
+      // close add comment panel and refresh list
       this.getDiscussions();
     });
   }
@@ -149,10 +172,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     });
   }
 
-  deleteComment(id) {
-    // TODO : don't delete bu display generic msg
-    this._syntheseDataService.deleteReport(id).subscribe(response => {
-      this.getDiscussions();
-    });
+  isDeleted(c) {
+    return c?.content_report?.deleted;
   }
 }
