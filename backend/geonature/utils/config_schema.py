@@ -285,7 +285,7 @@ class Synthese(Schema):
     # Display email on synthese and validation info obs modal
     DISPLAY_EMAIL = fields.Boolean(load_default=True)
     # Limit comment max length for the discussion tab
-    DISCUSSION_LENGTH = fields.Integer(load_default=1500)
+    DISCUSSION_MAX_LENGTH = fields.Integer(load_default=1500)
     # Allow disable discussion tab for synthese or validation
     DISCUSSION_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
 

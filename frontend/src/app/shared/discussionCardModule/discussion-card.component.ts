@@ -88,7 +88,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
 
   isValid() {
     return this.commentForm.valid &&
-      this.commentForm.get('content').value.length <= this.appConfig?.SYNTHESE?.DISCUSSION_LENGTH;
+      this.commentForm.get('content').value.length <= this.appConfig?.SYNTHESE?.DISCUSSION_MAX_LENGTH;
   }
 
   prepareReport(reportContent = null) {
