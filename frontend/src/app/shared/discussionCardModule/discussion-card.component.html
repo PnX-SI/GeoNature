@@ -1,4 +1,4 @@
-<div>
+<div class="pb-3">
     <div class="text-right">
         <button
             *ngIf="!open"
@@ -104,7 +104,7 @@
                     a changé le statut en
                     <span
                         ngbTooltip="{{comment.comment}}"
-                        placement="bottom"
+                        placement="right"
                         class="py-1 px-2"
                         [ngStyle]="{
                         'background-color': validationColor[comment.cd_nomenclature],
