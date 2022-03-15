@@ -69,6 +69,10 @@ export class NomenclatureComponent extends GenericFormComponent
   @Input() keyValue = 'id_nomenclature';
 
   @Input() bindAllItem: false;
+  /**
+   * Array of cd_nomenclature to display
+   */
+  @Input() excludedCdNomenclature: Array<string>
   @Output() labelsLoaded = new EventEmitter<Array<any>>();
 
   constructor(private _dfService: DataFormService, private _translate: TranslateService) {
@@ -130,12 +134,18 @@ export class NomenclatureComponent extends GenericFormComponent
     }
   }
 
-  initLabels() {
+
+
+  initLabels() {    
     const filters = { orderby: 'label_default' };
     this._dfService
       .getNomenclature(this.codeNomenclatureType, this.regne, this.group2Inpn, filters)
       .subscribe(data => {
-        this.labels = data.values;
+        if(this.excludedCdNomenclature) {
+          this.labels = data.values.filter(nom => !this.excludedCdNomenclature.includes(nom.cd_nomenclature));
+        } else {
+          this.labels = data.values;
+        }
         this.savedLabels = data.values;
         this.labelsLoaded.emit(this.labels);
       });
