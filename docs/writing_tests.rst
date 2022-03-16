@@ -28,7 +28,7 @@ Comme spécifié dans la partie Développement, la librairie Python PyTest est
 utilisée pour rédiger des tests. Elle permet de : 
 
 - disposer d'un framework de redaction de tests en se basant notamment sur 
-  l'instruction ``assert``,
+  l'instruction ``assert``
 - écrire des objets ou des portions de code réutilisables : les ``fixtures``
 - lancer un même test avec des configurations différentes
 - faire de nombreuses autres choses décrites dans la 
@@ -53,11 +53,11 @@ Fixtures
 ^^^^^^^^
 
 Les fixtures de PyTest peuvent permettre de nombreuses choses comme expliqué 
-dans la documentation PyTest sur `les fixtures <https://docs.pytest.org/explanation/fixtures.html#about-fixtures>`_
+dans la documentation PyTest sur `les fixtures <https://docs.pytest.org/explanation/fixtures.html#about-fixtures>`_.
 
 Dans GeoNature elles sont, en général, utilisées pour définir des objets 
-réutilisables comme des utilisateurs en base de donnée pour tester les droits, des observations fictives de taxon pour tester des routes de la synthèse ou 
-encore des elements non présents en base pour tester que le code voulant les 
+réutilisables comme des utilisateurs en base de données pour tester les droits, des observations fictives de taxon pour tester des routes de la synthèse ou 
+encore des éléments non présents en base pour tester que le code voulant les 
 récupérer ne plante pas etc.
 
 Elles sont aussi utilisées pour fournir un contexte à un test. Par exemple, la 
@@ -143,7 +143,7 @@ GitHub Actions. Ils permettent donc de vérifier que les modifications apportée
 par les développeurs ne changent pas le statut des tests et permettent donc aux 
 mainteneurs du projet de disposer d'une meilleure confiance dans la pull 
 request. Un coverage est aussi exécuté pour s'assurer que les nouveaux 
-développement sont bien testés.
+développements sont bien testés.
 
 Coverage
 ^^^^^^^^
@@ -201,8 +201,8 @@ projet avec le code suivant pour qu'il soit compatible avec GeoNature :
       "python.testing.pytestEnabled": true
     }
 
-Exécuter un ou plusieurs test en ligne de commande
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Exécuter un ou plusieurs test(s) en ligne de commande
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Pour exécuter les tests de GeoNature placez vous à la racine du dossier où est 
 installé GeoNature et exécutez la commande suivante : 
@@ -224,17 +224,17 @@ Pour exécuter un seul test l'option ``-k`` est très utile :
 
     pytest backend/geonature/tests/test_gn_meta.py -k 'test_uuid_report_with_dataset_id'
 
-Ici elle exécutera uniquement le test ``test_uuid_report_with_dataset_id`` du 
+Ici, elle exécutera uniquement le test ``test_uuid_report_with_dataset_id`` du 
 ficher ``test_gn_meta.py``.
 
-Enfin pour générer le coverage en même temps que les tests :
+Enfin, pour générer le coverage en même temps que les tests :
 
 .. code-block::
 
     pytest backend/geonature/tests/. --cov --cov-report xml
 
 
-Le format ``xml`` est interprété par l'extension VSCode `Coverage Gutters <https://marketplace.visualstudio.com/items?itemName=ryanluker.vscode-coverage-gutters>`_ qui fournie directement dans le code les lignes couvertes et non.
+Le format ``xml`` est interprété par l'extension VSCode `Coverage Gutters <https://marketplace.visualstudio.com/items?itemName=ryanluker.vscode-coverage-gutters>`_ qui fournie directement dans le code les lignes couvertes et celles non parcourues par le test.
 
 Si vous souhaitez voir le coverage directement depuis le navigateur, il est 
 possible de générer le coverage au format html en remplaçant ``xml`` par 
