@@ -216,7 +216,7 @@ Assurez vous d'avoir bien installé les librairies de développement avant
 
 .. code-block::
 
-    pip install .[tests]
+    pip install -e .[tests]
 
 Pour éxecuter un seul test l'option ``-k`` est très utile : 
 
