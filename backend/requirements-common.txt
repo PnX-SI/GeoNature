@@ -22,7 +22,7 @@ idna==3.3
 itsdangerous==0.24
 jinja2==2.11.3
 lxml==4.6.5
-markupsafe==1.1
+markupsafe==2.1.1
 marshmallow==3.13.0
 marshmallow-sqlalchemy==0.26.1
 packaging==21.3
