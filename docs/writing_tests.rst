@@ -1,4 +1,4 @@
-Ecrire des tests
+Écrire des tests
 ================
 
 Cette documentation a pour objectif d'expliquer comment écrire des tests pour 
@@ -6,17 +6,17 @@ le backend de GeoNature.
 
 Un test se décompose en général en 3 étapes :
 
-  - **Arrange** : prépare tous les éléments avant l'éxecution de la portion de 
+  - **Arrange** : prépare tous les éléments avant l'exécution de la portion de 
     code à tester (en général une fonction)
-  - **Act** : éxecute cette portion de code
-  - **Assert** : vérifie que l'éxécution s'est bien déroulée
+  - **Act** : exécute cette portion de code
+  - **Assert** : vérifie que l'exécution s'est bien déroulée
 
 Il est toujours utile de distinguer dans le code ces 3 étapes en ajoutant un 
 commentaire ou une séparation entre elles.
 
 Enfin un test doit être concis, il vaut mieux écrire plusieurs tests pour 
 tester différentes configurations plutôt qu'un seul les testant toutes d'un 
-coup. Cela permet d'identifier plus précisemment le test qui n'a pas fonctionné.
+coup. Cela permet d'identifier plus précisément le test qui n'a pas fonctionné.
 
 Backend
 -------
@@ -100,7 +100,7 @@ Il est aussi possible de définir un ``scope`` d'une fixture comme ceci :
 
 .. code-block:: python
 
-    # Définit une fixture qui renverra 2 mais qui sera éxecutée qu'une
+    # Définit une fixture qui renverra 2 mais qui sera exécutée qu'une
     # seule fois par classe (une classe regroupe plusieurs tests) au
     # lieu d'une fois par test. Il est possible aussi de définir ce 
     # scope au module ou à la function
@@ -137,7 +137,7 @@ notamment.
 Dans GitHub
 ^^^^^^^^^^^
 
-Dans le dépôt de GeoNature sur GitHub, tous ces tests sont éxécutés 
+Dans le dépôt de GeoNature sur GitHub, tous ces tests sont exécutés 
 automatiquement pour chaque commit d'une pull request grâce à PyTest et à 
 GitHub Actions. Ils permettent donc de vérifier que les modifications apportées 
 par les développeurs ne changent pas le statut des tests et permettent donc aux 
@@ -149,7 +149,7 @@ Coverage
 ^^^^^^^^
 
 Le coverage est un système permettant de quantifier les lignes de code 
-éxécutées par le test. Exemple rapide :
+exécutées par le test. Exemple rapide :
 
 .. code-block:: python
     
@@ -187,7 +187,7 @@ Dans VSCode
 ^^^^^^^^^^^
 
 Il est possible d'installer `l'extension Python <https://marketplace.visualstudio.com/items?itemName=ms-python.python>`_ pour facilement lancer et 
-débugger un ou plusieurs tests directement depuis VSCode. Il suffit juste de 
+debugger un ou plusieurs tests directement depuis VSCode. Il suffit juste de 
 changer le fichier ``settings.json`` dans le dossier ``.vscode`` de votre 
 projet avec le code suivant pour qu'il soit compatible avec GeoNature : 
 
@@ -218,7 +218,7 @@ Assurez vous d'avoir bien installé les librairies de développement avant
 
     pip install -e .[tests]
 
-Pour éxecuter un seul test l'option ``-k`` est très utile : 
+Pour exécuter un seul test l'option ``-k`` est très utile : 
 
 .. code-block::
 
