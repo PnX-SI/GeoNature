@@ -45,6 +45,11 @@ export class DataFormService {
     if (filters['order']) {
       params = params.set('order', filters['order']);
     }
+    if(filters["cd_nomenclature"] && filters["cd_nomenclature"].length > 0) {
+      filters["cd_nomenclature"].forEach(cd => {
+        params = params.append("cd_nomenclature", cd);
+      })
+    }
     return this._http.get<any>(
       `${AppConfig.API_ENDPOINT}/nomenclatures/nomenclature/${codeNomenclatureType}`,
       { params: params }
