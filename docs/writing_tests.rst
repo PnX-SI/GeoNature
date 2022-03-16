@@ -6,10 +6,10 @@ le backend de GeoNature.
 
 Un test se décompose en général en 3 étapes :
 
-  - **Arrange** : prépare tous les éléments avant l'exécution de la portion de 
-    code à tester (en général une fonction)
-  - **Act** : exécute cette portion de code
-  - **Assert** : vérifie que l'exécution s'est bien déroulée
+- **Arrange** : prépare tous les éléments avant l'exécution de la portion de 
+  code à tester (en général une fonction)
+- **Act** : exécute cette portion de code
+- **Assert** : vérifie que l'exécution s'est bien déroulée
 
 Il est toujours utile de distinguer dans le code ces 3 étapes en ajoutant un 
 commentaire ou une séparation entre elles.
@@ -27,12 +27,12 @@ Introduction
 Comme spécifié dans la partie Développement, la librairie Python PyTest est 
 utilisée pour rédiger des tests. Elle permet de : 
 
-    - disposer d'un framework de redaction de tests en se basant notamment sur 
-      l'instruction ``assert``,
-    - écrire des objets ou des portions de code réutilisables : les ``fixtures``
-    - lancer un même test avec des configurations différentes
-    - faire de nombreuses autres choses décrites dans la 
-      `documentation PyTest <https://docs.pytest.org/>`_ 
+- disposer d'un framework de redaction de tests en se basant notamment sur 
+  l'instruction ``assert``,
+- écrire des objets ou des portions de code réutilisables : les ``fixtures``
+- lancer un même test avec des configurations différentes
+- faire de nombreuses autres choses décrites dans la 
+  `documentation PyTest <https://docs.pytest.org/>`_ 
 
 Utilisation
 ^^^^^^^^^^^
@@ -40,14 +40,14 @@ Utilisation
 Les tests sont des fonctions pouvant être regroupées dans des classes. La 
 nomenclature est la suivante : 
 
-    - Les tests doivent être situées dans un dossier nommé tests (dans 
-      GeoNature, ils sont situés dans ``backend/geonature/tests``)
-    - Le nom de chaque fichier Python contenant des tests doit commencer par 
-      ``test_``
-    - Chaque classe comprenant des tests doit commencer par ``Test`` (pas de 
-      underscore car la norme PEP8 impose un nom de classe en CamelCase)
-    - Chaque nom de test (donc de fonction) doit commencer par ``test_`` pour 
-      pouvoir être détecté automatiquement par PyTest
+- Les tests doivent être situées dans un dossier nommé tests (dans 
+  GeoNature, ils sont situés dans ``backend/geonature/tests``)
+- Le nom de chaque fichier Python contenant des tests doit commencer par 
+  ``test_``
+- Chaque classe comprenant des tests doit commencer par ``Test`` (pas de 
+  underscore car la norme PEP8 impose un nom de classe en CamelCase)
+- Chaque nom de test (donc de fonction) doit commencer par ``test_`` pour 
+  pouvoir être détecté automatiquement par PyTest
 
 Fixtures
 ^^^^^^^^
