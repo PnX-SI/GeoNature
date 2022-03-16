@@ -137,6 +137,7 @@ sudo a2enconf geonature || exit 1
 sudo systemctl start geonature || exit 1
 if [ "${mode}" != dev ]; then
     sudo systemctl enable geonature || exit 1
+    sudo cp assets/log_rotate /etc/logrotate.d/geonature || exit 1
 fi
 
 
@@ -192,6 +193,7 @@ sudo a2enconf taxhub || exit 1
 sudo systemctl start taxhub || exit 1
 if [ "${mode}" != "dev" ]; then
     sudo systemctl enable taxhub || exit 1
+    sudo cp log_rotate /etc/logrotate.d/taxhub || exit 1
 fi
 
 # Installation and configuration of UsersHub application (if activated)
@@ -236,6 +238,7 @@ if [ "$install_usershub_app" = true ]; then
     sudo systemctl start usershub || exit 1
     if [ "${mode}" != "dev" ]; then
         sudo systemctl enable usershub || exit 1
+        sudo cp log_rotate /etc/logrotate.d/usershub || exit 1
     fi
 fi
 

@@ -1,5 +1,4 @@
-{{APP_PATH}}/var/log/gn_errors.log {
-    su {{USER}} {{GROUP}}
+/var/log/geonature.log {
     daily
     rotate 8
     size 100M
