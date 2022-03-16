@@ -979,7 +979,7 @@ def update_content_discussion(id_report):
     row = session.query(CorReportSynthese).filter_by(id_report=data["idReport"], id_role=g.current_user.id_role).one_or_none()
 
     if not row :
-        raise NotFound(f"This report can't be delete by {g.current_user}")
+        raise NotFound(f"This report can't be update by {g.current_user}")
 
     row.content_report = data["content"]
     session.commit()
@@ -1015,6 +1015,9 @@ def get_report():
 @json_resp
 def delete_report(id_report):
     g.current_user = user_from_token(request.cookies['token']).role
-    reportItem = DB.session.query(CorReportSynthese).filter_by(id_report=id_report, id_role=g.current_user.id_role).first()
+    id_role = g.current_user.id_role
+    reportItem = DB.session.query(CorReportSynthese).filter_by(id_report=id_report, id_role=id_role).first()
+    if not reportItem:
+        raise NotFound(f"This report can't be delete (not found or not authorized)")
     DB.session.delete(reportItem)
     DB.session.commit()
