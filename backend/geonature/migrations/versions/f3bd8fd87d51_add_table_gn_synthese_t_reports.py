@@ -1,16 +1,17 @@
 """add table gn_synthese.t_reports
 
-Revision ID: 5094d05780ac
+Revision ID: f3bd8fd87d51
 Revises: 1dbc45309d6e
-Create Date: 2022-03-02 15:22:16.032792
+Create Date: 2022-03-16 15:23:49.051447
 
 """
 from alembic import op
 import sqlalchemy as sa
 from utils_flask_sqla.migrations.utils import logger
 
+
 # revision identifiers, used by Alembic.
-revision = '5094d05780ac'
+revision = 'f3bd8fd87d51'
 down_revision = '1dbc45309d6e'
 branch_labels = None
 depends_on = None
