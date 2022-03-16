@@ -93,6 +93,18 @@ Configuration Apache
 * L'application est disponible à l'adresse suivante : http://monip.com/geonature
 
 
+Rotation de logs
+^^^^^^^^^^^^^^^^
+
+Les logs de l'application sont ammené à grossir et peuvent surcharger le disque du serveur. Il est recommandé de mettre en place une rotation et une compression des logs grâce à logrotate.
+
+Copier le fichier suivant :
+
+::
+
+  cp <geonature_dir>/install/assets/log_rotate /etc/logrotate.d/geonature
+
+
 Dépendances
 -----------
 
