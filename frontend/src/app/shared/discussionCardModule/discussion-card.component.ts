@@ -86,6 +86,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   handleSubmitComment() {
     // create new comment
     this.commentForm.get('item').setValue(this.idSynthese);
+    this.commentForm.get('type').setValue(1);
     this._syntheseDataService.createReport(this.commentForm.value).subscribe(data => {
       this._commonService.regularToaster(
         'success',

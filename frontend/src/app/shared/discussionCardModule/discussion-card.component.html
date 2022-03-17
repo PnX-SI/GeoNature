@@ -122,20 +122,17 @@
                 </span>
             </div>
             <div
-                *ngIf="comment.content && comment.deleted"
+                *ngIf="comment.deleted"
                 class="my-4 mx-2 fontComment"
             >
                 <mat-icon
                     class="statusIcon mr-3"
-                    ngbTooltip="
-                        Supprimé le {{formatDate(comment.deleted)}}
-                        par {{comment.content_owner.nom_role}} {{comment.content_owner.prenom_role}}"
                     placement="right"
                 >visibility_off</mat-icon>
                 <span class="statusName">
-                    <strong>
-                        {{comment.content_owner.nom_role}}
-                        {{comment.content_owner.prenom_role}}
+                    <strong *ngIf="comment.nom_role && comment.prenom_role">
+                        {{comment.nom_role}}
+                        {{comment.prenom_role}}
                     </strong>
                     a supprimé le commentaire du {{formatDate(comment.creation_date)}}
                 </span>
