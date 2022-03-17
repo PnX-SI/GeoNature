@@ -49,6 +49,7 @@ from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from ref_geo.models import LAreas, BibAreasTypes
 
 from pypnusershub.db.tools import user_from_token
+from pypnusershub.db.models import User
 
 # debug
 # current_app.config['SQLALCHEMY_ECHO'] = True
@@ -950,20 +951,23 @@ def create_report():
     """
     session = DB.session
     data = request.json
-    content_type = data['type']
+    id_type = data['type']
     id_synthese = data['item']
+    content = data['content']
+    if not g.current_user.id_role:
+        raise Forbidden()
     if not id_synthese:
-        raise BadRequest('is_synthese is missing from the request')
-    if not content_type:
-        raise BadRequest('report type is missing from the request')
+        raise BadRequest('id_synthese is missing from the request')
+    if not id_type:
+        raise BadRequest('Report type is missing from the request')
+    if not content and id_type == 1:
+        raise BadRequest('Discussion content is required')
     new_entry = CorReportSynthese(
         id_synthese=id_synthese,
-        id_module=data['module'],
         id_role=g.current_user.id_role,
-        content_owner=data['user'],
-        content_report=data['content'],
-        content_date=datetime.datetime.now(),
-        content_type=content_type
+        content=content,
+        creation_date=datetime.datetime.now(),
+        id_type=id_type
     )
     session.add(new_entry)
     session.commit()
@@ -987,7 +991,11 @@ def update_content_report(id_report):
     if not row :
         raise NotFound(f"This report can't be update by {g.current_user}")
 
-    row.content_report = data["content"]
+    if not data["content"]:
+        row.content = ''
+    
+    if data["content"] is not None:
+        row.deleted = data["deleted"]
     session.commit()
 
 @routes.route('/reports', methods=["GET"])
@@ -997,7 +1005,6 @@ def get_report():
     id_type = request.args.get("type")
     id_role = request.args.get("idRole")
     id_synthese = request.args.get("idSynthese")
-    id_module = request.args.get("idModule")
     sort=request.args.get("sort")
     
     if not id_synthese:
@@ -1006,15 +1013,19 @@ def get_report():
     data = DB.session.query(CorReportSynthese).filter(CorReportSynthese.id_synthese==id_synthese)
     if id_role and id_role == g.current_user.id_role:
         data = data.filter(CorReportSynthese.id_role==id_role)
-    if id_module:
-        data = data.filter(CorReportSynthese.id_module==id_module)
     if id_type:
-        data = data.filter(CorReportSynthese.content_type==id_type)
+        data = data.filter(CorReportSynthese.id_type==id_type)
     if sort == 'asc':
-        data = data.order_by(asc(CorReportSynthese.content_date))
+        data = data.order_by(asc(CorReportSynthese.creation_date))
     if sort == 'desc':
-        data = data.order_by(desc(CorReportSynthese.content_date))
+        data = data.order_by(desc(CorReportSynthese.creation_date))
+    # JOIN TO GET ROLE INFOS
+    # data = data.join(User, User.id_role == CorReportSynthese.id_role)
+    print(data)
+    print("==========================")
+    print(data)
     data = [CorReportSynthese.as_dict(d) for d in data]
+    print(data)
     return { 'totalResults':  len(data), 'results': data }
 
 @routes.route('/reports/<int:id_report>', methods=["DELETE"])

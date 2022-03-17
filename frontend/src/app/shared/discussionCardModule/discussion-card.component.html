@@ -61,16 +61,16 @@
         <span *ngFor="let comment of discussions">
             <mat-card
                 class="discussion-card my-3 mx-0 p-0"
-                *ngIf="!comment.spid && !comment?.content_report?.deleted"
+                *ngIf="!comment.spid && !comment?.deleted"
             >
                 <mat-card-header class="header-card p-2">
                     <mat-card-subtitle class="mb-0 p-0 subtitle-card">
-                        <strong [ngStyle]="{color:'black'}">
-                            {{comment.content_owner.nom_role}}
-                            {{comment.content_owner.prenom_role}}
+                        <strong *ngIf="comment.nom_role && comment.prenom_role" [ngStyle]="{color:'black'}">
+                            {{comment.nom_role}}
+                            {{comment.prenom_role}}
                         </strong>
                         {{ 'Synthese.Commented' | translate }}
-                        {{formatDate(comment.content_date) }}
+                        {{formatDate(comment.creation_date) }}
 
                     </mat-card-subtitle>
                     <span
@@ -90,7 +90,7 @@
                 </mat-card-header>
                 <mat-card-content class="content-card p-2">
                     <p>
-                        {{comment.content_report.comment}}
+                        {{comment.content}}
                     </p>
                 </mat-card-content>
             </mat-card>
@@ -122,13 +122,13 @@
                 </span>
             </div>
             <div
-                *ngIf="comment.content_report && comment.content_report.deleted"
+                *ngIf="comment.content && comment.deleted"
                 class="my-4 mx-2 fontComment"
             >
                 <mat-icon
                     class="statusIcon mr-3"
                     ngbTooltip="
-                        Supprimé le {{formatDate(comment.content_report.deleted)}}
+                        Supprimé le {{formatDate(comment.deleted)}}
                         par {{comment.content_owner.nom_role}} {{comment.content_owner.prenom_role}}"
                     placement="right"
                 >visibility_off</mat-icon>
@@ -137,7 +137,7 @@
                         {{comment.content_owner.nom_role}}
                         {{comment.content_owner.prenom_role}}
                     </strong>
-                    a supprimé le commentaire du {{formatDate(comment.content_date)}}
+                    a supprimé le commentaire du {{formatDate(comment.creation_date)}}
                 </span>
             </div>
         </span>

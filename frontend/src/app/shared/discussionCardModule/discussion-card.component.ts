@@ -22,7 +22,6 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   public commentForm: FormGroup;
   public open = false;
   public currentUser: User;
-  public moduleId: number;
   public appConfig = AppConfig;
   public discussions: any;
   public allow = false;
@@ -37,12 +36,11 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   ) {
     this.commentForm = this._formBuilder
       .group({
-        user: [],
         content: ['', Validators.required],
-        module: [],
-        item: [],
-        role: [],
-        idReport: 0
+        item: [this.idSynthese],
+        type: [1],
+        idReport: [],
+        deleted: [false]
       });
   }
 
@@ -50,20 +48,13 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     this.open = false;
     // get current user required to save comment
     this.currentUser = this._authService.getCurrentUser();
-    // init infos about current module required to save comment
-    this.globalSubService.currentModuleSub.subscribe(module => {
-      if (module) {
-        // send module id to table
-        this.moduleId = module.id_module;
-        this.getDiscussions();
-      }
-    });
+    this.getDiscussions();
   }
 
   orderData(data) {
     const newarr = data.sort((a, b) => {
-      const aDate = moment(a.content_date ? a.content_date : a.dateTime)
-      const bDate = moment(b.content_date ? b.content_date : b.dateTime)
+      const aDate = moment(a.creation_date ? a.creation_date : a.dateTime)
+      const bDate = moment(b.creation_date ? b.creation_date : b.dateTime)
       return moment(aDate).diff(bDate);
     });
     if (this.sort === 'desc') {
@@ -81,9 +72,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
         data: this.additionalData.data.map(d => ({ ...d, spid: uniqueId() }))
       };
     }
-    if (this.moduleId) {
-      this.getDiscussions();
-    }
+    this.getDiscussions();
   }
 
   isValid() {
@@ -91,23 +80,12 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
       this.commentForm.get('content').value.length <= this.appConfig?.SYNTHESE?.DISCUSSION_MAX_LENGTH;
   }
 
-  prepareReport(reportContent = null) {
-    const userInfos = pickBy(this?.currentUser, (value, key) => {
-      return ['id_role', 'prenom_role', 'nom_role'].includes(key);
-    });
-    // set required form fields
-    this.commentForm.get('user').setValue(userInfos);
-    this.commentForm.get('content').setValue(reportContent || { comment: this.commentForm.get('content').value });
-    this.commentForm.get('item').setValue(this.idSynthese);
-    this.commentForm.get('module').setValue(this.moduleId);
-  }
-
   /**
    * Send comment
    */
   handleSubmitComment() {
-    this.prepareReport();
     // create new comment
+    this.commentForm.get('item').setValue(this.idSynthese);
     this._syntheseDataService.createReport(this.commentForm.value).subscribe(data => {
       this._commonService.regularToaster(
         'success',
@@ -123,14 +101,14 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
  * Send comment
  */
   updateComment(id) {
-    const deletedComment = { comment: "", deleted: new Date().toISOString() };
-    this.prepareReport(deletedComment);
     this.commentForm.get('idReport').setValue(id);
+    this.commentForm.get('content').setValue('');
+    this.commentForm.get('deleted').setValue(true);
     // create new comment
     this._syntheseDataService.modifyReport(id, this.commentForm.value).subscribe(data => {
       this._commonService.regularToaster(
         'success',
-        'Commentaire mis à jour !'
+        'Commentaire modifié !'
       );
       // close add comment panel and refresh list
       this.getDiscussions();
@@ -173,6 +151,6 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   }
 
   isDeleted(c) {
-    return c?.content_report?.deleted;
+    return c?.deleted;
   }
 }
