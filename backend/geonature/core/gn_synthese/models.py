@@ -475,9 +475,9 @@ class CorReportSynthese(DB.Model):
     __table_args__ = {"schema": "gn_synthese"}
     id_report = DB.Column(DB.Integer(), primary_key=True)
     id_synthese = DB.Column(DB.Integer())
-    id_module = DB.Column(DB.Integer())
     id_role = DB.Column(DB.Integer())
-    content_owner = DB.Column(JSONB)
-    content_report = DB.Column(JSONB)
-    content_date = DB.Column(DB.DateTime(), default=datetime.datetime.utcnow)
-    content_type = DB.Column(DB.Integer())
+    id_type = DB.Column(DB.Integer())
+    content = DB.Column(DB.Text())
+    creation_date = DB.Column(DB.DateTime(), default=datetime.datetime.utcnow)
+    deleted = DB.Column(DB.Boolean(), default=False)
+    
