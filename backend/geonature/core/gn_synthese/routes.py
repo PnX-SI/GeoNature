@@ -32,7 +32,7 @@ from geonature.core.gn_synthese.models import (
     DefaultsNomenclaturesValue,
     VSyntheseForWebApp,
     VColorAreaTaxon,
-    CorReportSynthese
+    TReport
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
@@ -962,7 +962,7 @@ def create_report():
         raise BadRequest('Report type is missing from the request')
     if not content and id_type == 1:
         raise BadRequest('Discussion content is required')
-    new_entry = CorReportSynthese(
+    new_entry = TReport(
         id_synthese=id_synthese,
         id_role=g.current_user.id_role,
         content=content,
@@ -986,7 +986,7 @@ def update_content_report(id_report):
     data = request.json
     session = DB.session
     idReport = data["idReport"]
-    row = session.query(CorReportSynthese).filter_by(id_report=data["idReport"], id_role=g.current_user.id_role).one_or_none()
+    row = session.query(TReport).filter_by(id_report=data["idReport"], id_role=g.current_user.id_role).one_or_none()
 
     if not row :
         raise NotFound(f"This report can't be update by {g.current_user}")
@@ -1012,27 +1012,28 @@ def get_report():
 
     # JOIN TO GET ROLE INFOS
     data = DB.session.query(
-        CorReportSynthese.id_type,
-        CorReportSynthese.content,
-        CorReportSynthese.id_synthese,
-        CorReportSynthese.id_report,
-        CorReportSynthese.id_role,
-        CorReportSynthese.creation_date,
-        CorReportSynthese.deleted,
+        TReport.id_type,
+        TReport.content,
+        TReport.id_synthese,
+        TReport.id_report,
+        TReport.id_role,
+        TReport.creation_date,
+        TReport.deleted,
         User.prenom_role,
         User.nom_role,
-        ).join(User, User.id_role == CorReportSynthese.id_role)
+        ).join(User, User.id_role == TReport.id_role)
     
     # FILTER RESULT BY ARGS
-    data = data.filter(CorReportSynthese.id_synthese==id_synthese)
+    data = data.filter(TReport.id_synthese==id_synthese)
     if id_role and id_role == g.current_user.id_role:
-        data = data.filter(CorReportSynthese.id_role==id_role)
+        data = data.filter(TReport.id_role==id_role)
     if id_type:
-        data = data.filter(CorReportSynthese.id_type==id_type)
+        data = data.filter(TReport.id_type==id_type)
     if sort == 'asc':
-        data = data.order_by(asc(CorReportSynthese.creation_date))
+        data = data.order_by(asc(TReport.creation_date))
     if sort == 'desc':
-        data = data.order_by(desc(CorReportSynthese.creation_date))
+        data = data.order_by(desc(TReport.creation_date))
+    print(data)
     # CREATE JSON RESPONSE
     data = [d._asdict() for d in data]
     return { 'totalResults':  len(data), 'results': data }
@@ -1042,7 +1043,7 @@ def get_report():
 def delete_report(id_report):
     g.current_user = user_from_token(request.cookies['token']).role
     id_role = g.current_user.id_role
-    reportItem = DB.session.query(CorReportSynthese).filter_by(id_report=id_report, id_role=id_role).first()
+    reportItem = DB.session.query(TReport).filter_by(id_report=id_report, id_role=id_role).first()
     if not reportItem:
         raise NotFound(f"This report can't be delete (not found or not authorized)")
     DB.session.delete(reportItem)

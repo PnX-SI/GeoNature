@@ -470,7 +470,7 @@ class VColorAreaTaxon(DB.Model):
     color = DB.Column(DB.Unicode())
 
 @serializable
-class CorReportSynthese(DB.Model):
+class TReport(DB.Model):
     __tablename__ = "t_reports"
     __table_args__ = {"schema": "gn_synthese"}
     id_report = DB.Column(DB.Integer(), primary_key=True)
