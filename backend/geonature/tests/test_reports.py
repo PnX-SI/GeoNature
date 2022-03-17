@@ -6,46 +6,100 @@ from sqlalchemy import func
 from werkzeug.exceptions import Forbidden, BadRequest, Unauthorized, NotFound
 
 from geonature.utils.env import db
-from geonature.core.gn_synthese.models import CorReportSynthese
+from geonature.core.gn_synthese.models import TReport, BibReportsTypes, Synthese
 
 from .fixtures import *
 from .utils import logged_user_headers, set_logged_user_cookie
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestReports:
-    def test_delete_report(self, users):
+    def test_create_report(self, synthese_data, users):
+        url = "gn_synthese.create_report"
+        id_synthese = db.session.query(Synthese).first().id_synthese
+        data = {"item": id_synthese, "content": "comment 4", "type": "discussion"}
+        # TEST - NO AUTHENT
+        response = self.client.post(
+            url_for(url),
+            data=data
+        )
+        assert response.status_code == 401
+        # TEST NO DATA
+        set_logged_user_cookie(self.client, users['admin_user'])
+        response = self.client.post(
+                url_for(url)
+        )
+        assert response.status_code == BadRequest.code
+        # TEST VALID - ADD DISCUSSION
+        response = self.client.post(
+                url_for(url),
+                data=data
+        )
+        assert response.status_code == 204
+        # TEST VALID - ADD ALERT
+        response = self.client.post(
+            url_for(url),
+            data={"item": id_synthese, "content": "comment 4", "type": "alert"}
+        )
+        assert response.status_code == 204
+        # TEST REQUIRED KEY MISSING
+        data = {"content": "comment 4", "type": "discussion"}
+        response = self.client.post(
+                url_for(url),
+                data = data
+        )
+        assert response.status_code == BadRequest.code
+
+    def test_delete_report(self, reports_data, users):
         # NO AUTHENT
         url = "gn_synthese.delete_report"
-        id_report_ok = db.session.query(func.max(CorReportSynthese.id_report)).scalar()
-        id_report_ko = id_report_ok + 1
-        response = self.client.delete(url_for(url, id_report=id_report_ok))
-        assert response.status_code == BadRequest.code
+        id_report_ko = db.session.query(func.max(TReport.id_report)).scalar() + 1
+        # get id type for discussion type
+        discussionIdType = BibReportsTypes.query.filter(BibReportsTypes.type == "discussion").first().id_type
+        # get a report with discussion type
+        notDiscussionReportId = TReport.query.filter(TReport.id_type != discussionIdType).first().id_report
+        # get a report with other type (e.g alert)
+        discussionReportId = TReport.query.filter(TReport.id_type == discussionIdType, TReport.id_role == users['admin_user'].id_role ).first().id_report
+        # DELETE WITHOUT AUTH
+        response = self.client.delete(url_for(url, id_report=discussionReportId))
+        assert response.status_code == 401
         # NOT FOUND
-        set_logged_user_cookie(self.client, users['user'])
-        response = self.client.delete(url_for("gn_synthese.delete_report", id_report=id_report_ko))
+        set_logged_user_cookie(self.client, users['admin_user'])
+        response = self.client.delete(url_for(url, id_report=id_report_ko))
         assert response.status_code == NotFound.code
-        
-        # SUCCESS
-        response = self.client.delete(url_for("gn_synthese.delete_report", id_report=id_report_ok))
+        # SUCCESS - NOT DELETE WITH DISCUSSION
+        response = self.client.delete(url_for(url, id_report=discussionReportId))
         assert response.status_code == 204
+        assert db.session.query(
+            TReport.query.filter_by(id_report=discussionReportId).exists()
+        ).scalar()
+        # SUCCESS - DELETE IF NOT DISCUSSION
+        set_logged_user_cookie(self.client, users['admin_user'])
+        response = self.client.delete(url_for(url, id_report=notDiscussionReportId))
         assert not db.session.query(
-            CorReportSynthese.query.filter_by(id_report=id_report_ok).exists()
+            TReport.query.filter_by(id_report=notDiscussionReportId).exists()
         ).scalar()
 
-    def test_get_report(self, users):
-        url = "gn_synthese.get_report"
+    def test_list_reports(self, reports_data, synthese_data, users):
+        url = "gn_synthese.list_reports"
         # TEST GET WITHOUT REQUIRED ID SYNTHESE
-        set_logged_user_cookie(self.client, users['user'])
+        set_logged_user_cookie(self.client, users['admin_user'])
         response = self.client.get(url_for(url))
-        assert response.status_code == BadRequest.code
+        ids = []
+        for el in synthese_data:
+            ids.append(el.id_synthese)
+        assert response.status_code == NotFound.code
         # TEST GET BY ID SYNTHESE
-        response = self.client.get(url_for(url, idSynthese=2))
+        response = self.client.get(url_for(url, idSynthese=ids[0], idRole=users['admin_user'].id_role, type="discussion"))
         assert response.status_code == 200
+        assert len(response.json) == 1
         # TEST NO RESULT
-        response = self.client.get(url_for(url, idSynthese=2, type=10))
-        assert response.status_code == 200
-        assert response.json.get("totalResults") == 0
-
-    def test_create_discussion(self, report):
-        set_logged_user_cookie(self.client, users['user'])
-        assert 1 == 1
+        if len(ids) > 1 :
+            response = self.client.get(url_for(url, idSynthese=ids[1], type="discussion"))
+            assert response.status_code == 200
+            assert len(response.json) == 1
+            # TEST TYPE NOT EXISTS
+            response = self.client.get(url_for(url, idSynthese=ids[1], type="foo"))
+            assert response.status_code == BadRequest.code
+            # NO TYPE - TYPE IS NOT REQUIRED
+            response = self.client.get(url_for(url, idSynthese=ids[1]))
+            assert response.status_code == 200

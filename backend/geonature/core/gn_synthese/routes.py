@@ -10,7 +10,7 @@ from flask import Blueprint, request, Response, current_app, \
                   send_from_directory, render_template, jsonify, g
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest
 from sqlalchemy import distinct, func, desc, asc, select, text, update
-from sqlalchemy.orm import exc
+from sqlalchemy.orm import exc, joinedload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 
@@ -27,12 +27,13 @@ from geonature.utils.utilsgeometrytools import export_as_geo_file
 from geonature.core.gn_meta.models import TDatasets
 
 from geonature.core.gn_synthese.models import (
+    BibReportsTypes,
     Synthese,
     TSources,
     DefaultsNomenclaturesValue,
     VSyntheseForWebApp,
     VColorAreaTaxon,
-    CorReportSynthese
+    TReport
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
@@ -49,6 +50,7 @@ from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from ref_geo.models import LAreas, BibAreasTypes
 
 from pypnusershub.db.tools import user_from_token
+from pypnusershub.db.models import User
 
 # debug
 # current_app.config['SQLALCHEMY_ECHO'] = True
@@ -279,6 +281,7 @@ def get_one_synthese(scope, id_synthese):
 
 
 @routes.route("/export_taxons", methods=["POST"])
+@permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_taxon_web(info_role):
     """Optimized route for taxon web export.
 
@@ -938,86 +941,128 @@ def get_taxa_distribution():
     return [{"count": d[0], "group": d[1]} for d in data]
 
 @routes.route("/reports", methods=["POST"])
+@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
 @json_resp
-def create_discussion():
+def create_report(scope):
     """
-    Create a report (e.g discussion) for a given synthese id
+    Create a report (e.g report) for a given synthese id
 
     Returns
     -------
         report: `json`: 
-            Every occurrence's discussions
+            Every occurrence's report
     """
     session = DB.session
-    data = request.json
-    new_entry = CorReportSynthese(
-        id_synthese=data['item'],
-        id_module=data['module'],
+    data = request.get_json()
+    if data is None :
+        raise BadRequest("Empty request data")
+    try:
+        type_name = data['type']
+        id_synthese = data['item']
+        content = data['content']
+        if not id_synthese:
+            raise BadRequest('id_synthese is missing from the request')
+        if not type_name:
+            raise BadRequest('Report type is missing from the request')
+        if not content and type_name == 'discussion':
+            raise BadRequest('Discussion content is required')
+        type_exists = BibReportsTypes.query.filter_by(type=type_name).first()
+        if not type_exists:
+            raise BadRequest('This report type does not exist')
+        synthese = Synthese.query.get_or_404(id_synthese)
+        if not synthese.has_instance_permission(scope):
+            raise Forbidden
+    except KeyError:
+        raise BadRequest('Empty request data')
+    new_entry = TReport(
+        id_synthese=id_synthese,
         id_role=g.current_user.id_role,
-        content_owner=data['user'],
-        content_report=data['content'],
-        content_date=datetime.datetime.now(),
-        content_type=1
+        content=content,
+        creation_date=datetime.datetime.now(),
+        id_type=type_exists.id_type
     )
     session.add(new_entry)
     session.commit()
 
 @routes.route("/reports/<int:id_report>", methods=["PUT"])
+@permissions.login_required
 @json_resp
-def update_content_discussion(id_report):
+def update_content_report(id_report):
     """
-    Modify a report (e.g discussion) for a given synthese id
+    Modify a report (e.g report) for a given synthese id
 
     Returns
     -------
-        report: `json`: 
-            Every occurrence's discussions
+        report: `json`:
+            Every occurrence's report
     """
     data = request.json
     session = DB.session
     idReport = data["idReport"]
-    row = session.query(CorReportSynthese).filter_by(id_report=data["idReport"], id_role=g.current_user.id_role).one_or_none()
-
-    if not row :
-        raise NotFound(f"This report can't be update by {g.current_user}")
-
-    row.content_report = data["content"]
+    row = TReport.query.get_or_404(idReport)
+    if row.user != g.current.user:
+        raise Forbidden
+    row.content = data["content"]
     session.commit()
 
 @routes.route('/reports', methods=["GET"])
-@json_resp
-def get_report():
-    # show the subpath after /path/
-    id_type = request.args.get("type")
-    id_role = request.args.get("idRole")
+@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+def list_reports(scope):
+    type_name = request.args.get("type")
     id_synthese = request.args.get("idSynthese")
-    id_module = request.args.get("idModule")
     sort=request.args.get("sort")
-    
-    if not id_synthese:
-        raise BadRequest('idSynthese is missing from the request')
-
-    data = DB.session.query(CorReportSynthese).filter(CorReportSynthese.id_synthese==id_synthese)
-    if id_role and id_role == g.current_user.id_role:
-        data = data.filter(CorReportSynthese.id_role==id_role)
-    if id_module:
-        data = data.filter(CorReportSynthese.id_module==id_module)
-    if id_type:
-        data = data.filter(CorReportSynthese.content_type==id_type)
+    # READ REQUEST PARAMS
+    synthese = Synthese.query.get_or_404(id_synthese)
+    if not synthese.has_instance_permission(scope):
+        raise Forbidden
+    req = TReport.query.filter(TReport.id_synthese==id_synthese)
+    type_exists = BibReportsTypes.query.filter_by(type=type_name).one_or_none()
+    # type param is not required to get all
+    if type_name and not type_exists:
+        raise BadRequest('This report type does not exist')
+    # sort
     if sort == 'asc':
-        data = data.order_by(asc(CorReportSynthese.content_date))
+        req = req.order_by(asc(TReport.creation_date))
     if sort == 'desc':
-        data = data.order_by(desc(CorReportSynthese.content_date))
-    data = [CorReportSynthese.as_dict(d) for d in data]
-    return { 'totalResults':  len(data), 'results': data }
+        req = req.order_by(desc(TReport.creation_date))
+    # join user and bib_reports_types tables
+    result = req.options(
+        joinedload('user').load_only("nom_role", "prenom_role"),
+        joinedload('report_type')
+    )
+    # get results by type
+    if type_name:
+        result = result.filter(BibReportsTypes.type==type_name)
+    # filter by id_role for pin type only
+    if type_name and type_name == "pin":
+        result = result.filter(TReport.id_role==g.current_user.id_role)
+    result = [
+        report.as_dict(fields=[
+            "id_report",
+            "id_synthese",
+            "id_role",
+            "report_type.type",
+            "report_type.id_type",
+            "content",
+            "deleted",
+            "creation_date",
+            "user.nom_role",
+            "user.prenom_role"
+        ]) for report in result.all()
+    ]
+    return jsonify(result)
 
 @routes.route('/reports/<int:id_report>', methods=["DELETE"])
+@permissions.login_required
 @json_resp
 def delete_report(id_report):
-    g.current_user = user_from_token(request.cookies['token']).role
-    id_role = g.current_user.id_role
-    reportItem = DB.session.query(CorReportSynthese).filter_by(id_report=id_report, id_role=id_role).first()
-    if not reportItem:
-        raise NotFound(f"This report can't be delete (not found or not authorized)")
-    DB.session.delete(reportItem)
+    reportItem = TReport.query.get_or_404(id_report)
+
+    if reportItem.id_role != g.current_user.id_role:
+        raise Forbidden
+    if reportItem.report_type.type == "discussion":
+        reportItem.content=''
+        reportItem.deleted=True
+    else :
+        DB.session.delete(reportItem)
     DB.session.commit()

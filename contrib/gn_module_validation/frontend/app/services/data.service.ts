@@ -56,6 +56,6 @@ export class ValidationDataService {
   }
 
   deleteReport(id) {
-    return this._http.delete(`${AppConfig.API_ENDPOINT}/synthese/reports${id}`)
+    return this._http.delete(`${AppConfig.API_ENDPOINT}/synthese/reports/${id}`)
   }
 }

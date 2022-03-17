@@ -226,10 +226,7 @@ export class SyntheseDataService {
   }
 
   createReport(params) {
-    return this._api.post(`${AppConfig.API_ENDPOINT}/synthese/reports`,
-      params, {
-      headers: new HttpHeaders().set('Content-Type', 'application/json')
-    });
+    return this._api.post(`${AppConfig.API_ENDPOINT}/synthese/reports`, params);
   }
 
   deleteReport(id) {
@@ -237,9 +234,6 @@ export class SyntheseDataService {
   }
 
   modifyReport(id, params) {
-    return this._api.put(`${AppConfig.API_ENDPOINT}/synthese/reports/${id}`,
-      params, {
-      headers: new HttpHeaders().set('Content-Type', 'application/json')
-    });
+    return this._api.put(`${AppConfig.API_ENDPOINT}/synthese/reports/${id}`, params);
   }
 }
