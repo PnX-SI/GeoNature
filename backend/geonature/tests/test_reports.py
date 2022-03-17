@@ -46,6 +46,6 @@ class TestReports:
         assert response.status_code == 200
         assert response.json.get("totalResults") == 0
 
-    def test_create_discussion(self, report):
+    def test_create_report(self, report):
         set_logged_user_cookie(self.client, users['user'])
         assert 1 == 1

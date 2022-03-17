@@ -939,39 +939,45 @@ def get_taxa_distribution():
 
 @routes.route("/reports", methods=["POST"])
 @json_resp
-def create_discussion():
+def create_report():
     """
-    Create a report (e.g discussion) for a given synthese id
+    Create a report (e.g report) for a given synthese id
 
     Returns
     -------
         report: `json`: 
-            Every occurrence's discussions
+            Every occurrence's report
     """
     session = DB.session
     data = request.json
+    content_type = data['type']
+    id_synthese = data['item']
+    if not id_synthese:
+        raise BadRequest('is_synthese is missing from the request')
+    if not content_type:
+        raise BadRequest('report type is missing from the request')
     new_entry = CorReportSynthese(
-        id_synthese=data['item'],
+        id_synthese=id_synthese,
         id_module=data['module'],
         id_role=g.current_user.id_role,
         content_owner=data['user'],
         content_report=data['content'],
         content_date=datetime.datetime.now(),
-        content_type=1
+        content_type=content_type
     )
     session.add(new_entry)
     session.commit()
 
 @routes.route("/reports/<int:id_report>", methods=["PUT"])
 @json_resp
-def update_content_discussion(id_report):
+def update_content_report(id_report):
     """
-    Modify a report (e.g discussion) for a given synthese id
+    Modify a report (e.g report) for a given synthese id
 
     Returns
     -------
         report: `json`: 
-            Every occurrence's discussions
+            Every occurrence's report
     """
     data = request.json
     session = DB.session
