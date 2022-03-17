@@ -1001,16 +1001,30 @@ def update_content_report(id_report):
 @routes.route('/reports', methods=["GET"])
 @json_resp
 def get_report():
-    # show the subpath after /path/
+    # READ REQUEST PARAMS
     id_type = request.args.get("type")
     id_role = request.args.get("idRole")
     id_synthese = request.args.get("idSynthese")
     sort=request.args.get("sort")
-    
+
     if not id_synthese:
         raise BadRequest('idSynthese is missing from the request')
 
-    data = DB.session.query(CorReportSynthese).filter(CorReportSynthese.id_synthese==id_synthese)
+    # JOIN TO GET ROLE INFOS
+    data = DB.session.query(
+        CorReportSynthese.id_type,
+        CorReportSynthese.content,
+        CorReportSynthese.id_synthese,
+        CorReportSynthese.id_report,
+        CorReportSynthese.id_role,
+        CorReportSynthese.creation_date,
+        CorReportSynthese.deleted,
+        User.prenom_role,
+        User.nom_role,
+        ).join(User, User.id_role == CorReportSynthese.id_role)
+    
+    # FILTER RESULT BY ARGS
+    data = data.filter(CorReportSynthese.id_synthese==id_synthese)
     if id_role and id_role == g.current_user.id_role:
         data = data.filter(CorReportSynthese.id_role==id_role)
     if id_type:
@@ -1019,13 +1033,8 @@ def get_report():
         data = data.order_by(asc(CorReportSynthese.creation_date))
     if sort == 'desc':
         data = data.order_by(desc(CorReportSynthese.creation_date))
-    # JOIN TO GET ROLE INFOS
-    # data = data.join(User, User.id_role == CorReportSynthese.id_role)
-    print(data)
-    print("==========================")
-    print(data)
-    data = [CorReportSynthese.as_dict(d) for d in data]
-    print(data)
+    # CREATE JSON RESPONSE
+    data = [d._asdict() for d in data]
     return { 'totalResults':  len(data), 'results': data }
 
 @routes.route('/reports/<int:id_report>', methods=["DELETE"])
