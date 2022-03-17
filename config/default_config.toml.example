@@ -18,6 +18,9 @@
 # URI de connexion à la base Postgresql utilisé par Psycopg2
 SQLALCHEMY_DATABASE_URI = "postgresql://monuser:monpassachanger@localhost:monport/mondbname"
 
+# Application_name (pg_stat_activity)
+APPLICATION_NAME = "geonature"
+
 # Active (=true) ou pas (=false) le système de suivi de modification de SQLAlchemy
 # Note : l'API event de SQLAchemy n'étant pas utilisée, la désactivation économise des ressources.
 # Note : Patch pour suivre la supression des médias et pouvoir supprimer un fichier sur un DELETE de media

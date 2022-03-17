@@ -35,7 +35,7 @@ class EmailStrOrListOfEmailStrField(fields.Field):
             return value
         else:
             raise ValidationError('Field should be str or list of str')
-    
+
     def _check_email(self, value):
         recipients = clean_recipients(value)
         for recipient in recipients:
@@ -132,7 +132,7 @@ class AlembicConfig(Schema):
 class AdditionalFields(Schema):
     IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX"])
     IMPLEMENTED_OBJECTS = fields.List(
-        fields.String(), 
+        fields.String(),
         load_default=["OCCTAX_RELEVE",  "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"]
     )
 
@@ -166,6 +166,7 @@ class GnPySchemaConf(Schema):
         ),
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(load_default=True)
+    APPLICATION_NAME = fields.String(load_default="geonature")
     SESSION_TYPE = fields.String(load_default="filesystem")
     SECRET_KEY = fields.String(required=True)
     # le cookie expire toute les 7 jours par défaut

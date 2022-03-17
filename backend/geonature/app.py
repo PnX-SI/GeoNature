@@ -93,6 +93,7 @@ def create_app(with_external_mods=True):
     # set logging config
     config_loggers(app.config)
 
+    app.config['SQLALCHEMY_DATABASE_URI'] += f"?application_name={app.config['APPLICATION_NAME']}"
     db.init_app(app)
     migrate.init_app(app, DB, directory=BACKEND_DIR / 'geonature' / 'migrations')
     MA.init_app(app)
