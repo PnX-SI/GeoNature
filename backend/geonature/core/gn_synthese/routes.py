@@ -9,7 +9,7 @@ from warnings import warn
 from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify
 from werkzeug.exceptions import Forbidden, NotFound
 from sqlalchemy import distinct, func, desc, select, text
-from sqlalchemy.orm import exc, joinedload
+from sqlalchemy.orm import exc, joinedload, lazyload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 
@@ -273,7 +273,8 @@ def get_one_synthese(auth, permissions, id_synthese):
         joinedload('dataset.acquisition_framework'),
         joinedload('habitat'),
         joinedload('medias'),
-        joinedload('areas'),
+        lazyload('areas').load_only(LAreas.area_name),
+        joinedload('areas.area_type'),
         joinedload('validations'),
         joinedload('cor_observers'),
     ).get_or_404(id_synthese)
@@ -316,7 +317,7 @@ def get_one_synthese(auth, permissions, id_synthese):
             'source',
             'habitat',
             'medias',
-            'areas',
+            'areas.area_name',
             'areas.area_type',
         ])
     # TODO: see if it work again after REBASE to 2.9.0 !
