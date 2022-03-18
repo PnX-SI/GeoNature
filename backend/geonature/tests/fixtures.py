@@ -15,7 +15,7 @@ from geonature.core.gn_permissions.models import TActions, TFilters, CorRoleActi
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets, \
                                           CorDatasetActor, CorAcquisitionFrameworkActor
-from geonature.core.gn_synthese.models import TSources, Synthese
+from geonature.core.gn_synthese.models import TSources, Synthese, TReport
 
 from pypnusershub.db.models import User, Organisme, Application, Profils as Profil, UserApplicationRight
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
@@ -233,4 +233,31 @@ def synthese_data(users, datasets, source):
             db.session.add(s)
             data.append(s)
 
+    return data
+
+
+@pytest.fixture()
+def reports_data(users):
+    data = []
+    # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
+    def create_report(id_synthese, id_role, content, id_type, deleted):
+        new_report = TReport(
+            id_synthese=id_synthese,
+            id_role=id_role,
+            content=content,
+            id_type=id_type,
+            deleted=deleted,
+            creation_date=datetime.datetime.now()
+        )
+        db.session.add(new_report)
+        return new_report
+    with db.session.begin_nested():
+        reports = [
+            (1, users["admin_user"].id_role, "comment1", 1, False),
+            (2, users["admin_user"].id_role, "comment1", 2, False),
+            (3, users["user"].id_role, "comment1", 1, False)
+        ]
+        for id_synthese, *args in reports:
+            data.append(create_report(id_synthese, *args))
+    
     return data
