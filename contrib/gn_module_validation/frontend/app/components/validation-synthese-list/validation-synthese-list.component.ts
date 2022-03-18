@@ -112,10 +112,6 @@ export class ValidationSyntheseListComponent
     });
   }
 
-  displayAllObs() {
-    this.displayAll.emit()
-  }
-
   ngAfterContentChecked() {
     if (this.table && this.table.element.clientWidth !== this._latestWidth) {
       this._latestWidth = this.table.element.clientWidth;
