@@ -53,7 +53,8 @@ class TestApiUsersMenu:
     def test_menu_notexists(self, unavailable_menu_id):
         resp = self.client.get(url_for("users.get_roles_by_menu_id", id_menu=unavailable_menu_id))
 
-        assert resp.status_code == 404
+        assert resp.status_code == 200
+        assert len(resp.json) == 0
 
     def test_get_roles_by_menu_code(self, user_tlist):
         resp = self.client.get(

@@ -80,10 +80,6 @@ def get_roles_by_menu_id(id_menu):
             VUserslistForallMenu.nom_complet.ilike("{}%".format(parameters.get("nom_complet")))
         )
     data = q.order_by(VUserslistForallMenu.nom_complet.asc()).all()
-
-    if not data:
-        raise NotFound('No menu found')
-
     return [n.as_dict() for n in data]
 
 
