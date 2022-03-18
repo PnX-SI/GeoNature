@@ -44,7 +44,6 @@ class TestReports:
         # TEST NO RESULT
         response = self.client.get(url_for(url, idSynthese=2, type=10))
         assert response.status_code == 200
-        assert response.json.get("totalResults") == 0
 
     def test_create_report(self, report):
         set_logged_user_cookie(self.client, users['user'])
