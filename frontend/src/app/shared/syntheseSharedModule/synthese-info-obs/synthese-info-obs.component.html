@@ -62,7 +62,7 @@
           mat-mini-fab
           ngbTooltip="{{'Synthese.copyPermalink' | translate }}"
           placement="bottom"
-          [cdkCopyToClipboard]="APP_CONFIG.URL_APPLICATION + '/#/validation/occurrence/' + selectedObs?.entity_source_pk_value"
+          [cdkCopyToClipboard]="APP_CONFIG.URL_APPLICATION + '/#/validation/occurrence/' + selectedObs?.id_synthese"
           (click)="displaySuccessToaster()"
           mat-raised-button
         >
