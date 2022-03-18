@@ -489,5 +489,5 @@ class TReport(DB.Model):
     creation_date = DB.Column(DB.DateTime(), default=datetime.datetime.utcnow)
     deleted = DB.Column(DB.Boolean(), default=False)
 
-    user = DB.relationship(User, lazy="select")
+    user = DB.relationship(User)
 
