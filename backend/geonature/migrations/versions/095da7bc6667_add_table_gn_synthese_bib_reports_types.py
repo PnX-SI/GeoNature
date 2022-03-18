@@ -1,7 +1,7 @@
 """add table gn_synthese.bib_reports_types
 
 Revision ID: 095da7bc6667
-Revises: 1dbc45309d6e
+Revises: ca052245c6ec
 Create Date: 2022-03-17 10:57:34.730596
 
 """
@@ -11,7 +11,7 @@ from utils_flask_sqla.migrations.utils import logger
 
 # revision identifiers, used by Alembic.
 revision = '095da7bc6667'
-down_revision = '1dbc45309d6e'
+down_revision = 'ca052245c6ec'
 branch_labels = None
 depends_on = None
 

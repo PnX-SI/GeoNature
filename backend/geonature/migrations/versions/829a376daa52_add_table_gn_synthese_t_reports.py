@@ -13,7 +13,7 @@ from utils_flask_sqla.migrations.utils import logger
 revision = '829a376daa52'
 down_revision = '095da7bc6667'
 branch_labels = None
-depends_on = None
+depends_on = '095da7bc6667'
 
 
 def upgrade():
