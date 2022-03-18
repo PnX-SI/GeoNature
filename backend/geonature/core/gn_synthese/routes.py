@@ -950,18 +950,25 @@ def create_report():
             Every occurrence's report
     """
     session = DB.session
-    data = request.json
-    id_type = data['type']
-    id_synthese = data['item']
-    content = data['content']
-    if not g.current_user.id_role:
-        raise Forbidden()
-    if not id_synthese:
-        raise BadRequest('id_synthese is missing from the request')
-    if not id_type:
-        raise BadRequest('Report type is missing from the request')
-    if not content and id_type == 1:
-        raise BadRequest('Discussion content is required')
+    data = request.get_json()
+    if data is None :
+        raise BadRequest("Empty request data")
+    try:
+        id_type = data['type']
+        id_synthese = data['item']
+        content = data['content']
+        if not g.current_user or not g.current_user.id_role:
+            raise Forbidden()
+        if not id_synthese:
+            raise BadRequest('id_synthese is missing from the request')
+        if not id_type:
+            raise BadRequest('Report type is missing from the request')
+        if not content and id_type == 1:
+            raise BadRequest('Discussion content is required')
+        if not g.current_user.id_role:
+            raise Forbidden()
+    except KeyError:
+        raise BadRequest('Empty request data')
     new_entry = TReport(
         id_synthese=id_synthese,
         id_role=g.current_user.id_role,
