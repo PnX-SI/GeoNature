@@ -10,7 +10,7 @@ from flask import Blueprint, request, Response, current_app, \
                   send_from_directory, render_template, jsonify, g
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest
 from sqlalchemy import distinct, func, desc, asc, select, text, update
-from sqlalchemy.orm import exc
+from sqlalchemy.orm import exc, joinedload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 
@@ -999,44 +999,43 @@ def update_content_report(id_report):
     session.commit()
 
 @routes.route('/reports', methods=["GET"])
-@json_resp
 def get_report():
-    # READ REQUEST PARAMS
     id_type = request.args.get("type")
     id_role = request.args.get("idRole")
     id_synthese = request.args.get("idSynthese")
+    id_report = request.args.get("idReport")
     sort=request.args.get("sort")
-
+    # READ REQUEST PARAMS
     if not id_synthese:
         raise BadRequest('idSynthese is missing from the request')
-
-    # JOIN TO GET ROLE INFOS
-    data = DB.session.query(
-        TReport.id_type,
-        TReport.content,
-        TReport.id_synthese,
-        TReport.id_report,
-        TReport.id_role,
-        TReport.creation_date,
-        TReport.deleted,
-        User.prenom_role,
-        User.nom_role,
-        ).join(User, User.id_role == TReport.id_role)
-    
-    # FILTER RESULT BY ARGS
-    data = data.filter(TReport.id_synthese==id_synthese)
+    req = TReport.query.filter(TReport.id_synthese==id_synthese)
     if id_role and id_role == g.current_user.id_role:
-        data = data.filter(TReport.id_role==id_role)
+        req = req.filter(TReport.id_role==id_role)
     if id_type:
-        data = data.filter(TReport.id_type==id_type)
+        req = req.filter(TReport.id_type==id_type)
+    if id_report:
+        req = req.filter(TReport.id_report==id_report)
     if sort == 'asc':
-        data = data.order_by(asc(TReport.creation_date))
+        req = req.order_by(asc(TReport.creation_date))
     if sort == 'desc':
-        data = data.order_by(desc(TReport.creation_date))
-    print(data)
-    # CREATE JSON RESPONSE
-    data = [d._asdict() for d in data]
-    return { 'totalResults':  len(data), 'results': data }
+        req = req.order_by(desc(TReport.creation_date))
+    
+    result = req.options(joinedload('user').load_only("nom_role", "prenom_role")).all()
+    result = [
+        report.as_dict(fields=[
+            "id_report",
+            "id_synthese",
+            "id_role",
+            "id_type",
+            "content",
+            "deleted",
+            "creation_date",
+            "user.nom_role",
+            "user.prenom_role"
+        ]) for report in result
+    ]
+    return jsonify({"results": result})
+
 
 @routes.route('/reports/<int:id_report>', methods=["DELETE"])
 @json_resp
