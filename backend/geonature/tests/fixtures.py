@@ -265,27 +265,6 @@ def filters():
     return filters_dict
 
 
-
-def create_media(media_path=""):
-    photo_type = TNomenclatures.query.filter(
-                                BibNomenclaturesTypes.mnemonique == 'TYPE_MEDIA',
-                                TNomenclatures.mnemonique == 'Photo').one()
-    location = (
-            BibTablesLocation.query
-            .filter(BibTablesLocation.schema_name == "gn_commons")
-            .filter(BibTablesLocation.table_name == "t_medias")
-            .one()
-        )
-    with db.session.begin_nested():
-        new_media = TMedias(id_nomenclature_media_type=photo_type.id_nomenclature,
-                            media_path=media_path,
-                            title_fr="Test media",
-                            author="Test author",
-                            id_table_location=location.id_table_location)
-        db.session.add(new_media)
-    
-    return new_media
-
 def create_media(media_path=""):
     photo_type = TNomenclatures.query.filter(
                                 BibNomenclaturesTypes.mnemonique == 'TYPE_MEDIA',
@@ -308,6 +287,7 @@ def create_media(media_path=""):
     with db.session.begin_nested():
         db.session.add(new_media)
     return new_media
+
 
 @pytest.fixture
 def medium(app):
