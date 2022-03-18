@@ -27,10 +27,14 @@ def upgrade():
         content VARCHAR NOT NULL,
         creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         deleted BOOLEAN DEFAULT FALSE,
-        CONSTRAINT fk_type
+        CONSTRAINT fk_report_type
             FOREIGN KEY(id_type) 
             REFERENCES gn_synthese.bib_reports_types(id_type)
-            ON DELETE SET NULL
+            ON UPDATE CASCADE ON DELETE CASCADE
+        CONSTRAINT fk_report_role
+            FOREIGN KEY(id_role)
+            REFERENCES utilisateurs.t_roles(id_role)
+            ON UPDATE CASCADE ON DELETE CASCADE
     )
     """)
     pass
