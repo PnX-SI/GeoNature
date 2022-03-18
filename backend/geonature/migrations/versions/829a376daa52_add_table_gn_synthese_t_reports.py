@@ -30,7 +30,7 @@ def upgrade():
         CONSTRAINT fk_report_type
             FOREIGN KEY(id_type) 
             REFERENCES gn_synthese.bib_reports_types(id_type)
-            ON UPDATE CASCADE ON DELETE CASCADE
+            ON UPDATE CASCADE ON DELETE CASCADE,
         CONSTRAINT fk_report_role
             FOREIGN KEY(id_role)
             REFERENCES utilisateurs.t_roles(id_role)
