@@ -58,6 +58,16 @@
         >
           <mat-icon>mail</mat-icon>
         </button>
+        <button
+          mat-mini-fab
+          ngbTooltip="{{'Synthese.copyPermalink' | translate }}"
+          placement="bottom"
+          [cdkCopyToClipboard]="APP_CONFIG.URL_APPLICATION + '/#/validation/occurrence/' + selectedObs?.id_synthese"
+          (click)="displaySuccessToaster()"
+          mat-raised-button
+        >
+          <mat-icon>share</mat-icon>
+        </button>
       </mat-toolbar>
     </div>
   </div>

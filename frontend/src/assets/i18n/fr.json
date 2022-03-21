@@ -200,6 +200,8 @@
     "ExportModuleName": "Module d'export des données"
   },
   "Synthese": {
+    "copy": "Copié dans le presse-papier !",
+    "copyPermalink": "Copier le permalien",
     "changeValidStatus": "Modifier le statut de validation",
     "ModalTitle": "Information sur l'observation",
     "Edit": "Voir dans le module de saisie",
@@ -226,6 +228,11 @@
     "ObsBehav": "Comportement",
     "ObsSex": "Sexe",
     "ObsLifeStep": "Stade de vie"
+  },
+  "Validation": {
+    "noData": "Aucune données à afficher",
+    "noIdFound": "Aucun résultat pour cet ID",
+    "displayAll": "Voir toutes les occurrences"
   },
   "MyAccount": "Mon compte",
   "CreateAccount": "Créer un compte",

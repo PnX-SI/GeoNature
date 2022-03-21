@@ -7,6 +7,7 @@
   [columnMode]="'force'"
   [headerHeight]="50"
   [footerHeight]="35"
+  [messages]="messages"
   [selected]="mapListService.selectedRow"
   [selectionType]="'multiClick'"
   [count]="mapListService.tableData.length"
@@ -94,7 +95,10 @@
           class="validationCircle"
           [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
         >
-          <i *ngIf="row.last_validation?.validation_auto" class="material-icons">computer</i>
+          <i
+            *ngIf="row.last_validation?.validation_auto"
+            class="material-icons"
+          >computer</i>
         </span>
         <div
           [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
@@ -139,7 +143,10 @@
           class="validationCircle"
           [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
         >
-          <i *ngIf="row.last_validation?.validation_auto" class="material-icons">computer</i>
+          <i
+            *ngIf="row.last_validation?.validation_auto"
+            class="material-icons"
+          >computer</i>
         </span>
         <div
           [ngStyle]="{'background': VALIDATION_CONFIG.STATUS_INFO[row.nomenclature_valid_status.cd_nomenclature]?.color}"
@@ -161,13 +168,16 @@
       let-column="column"
       ngx-datatable-header-template
     >
-    <span>Score</span>
+      <span>Score</span>
     </ng-template>
     <ng-template
       let-row="row"
       ngx-datatable-cell-template
     >
-      <div *ngIf="row.profile" [ngSwitch]="row.profile.score">
+      <div
+        *ngIf="row.profile"
+        [ngSwitch]="row.profile.score"
+      >
         <mat-chip
           *ngSwitchCase="'0'"
           class="chip-alert"
@@ -176,7 +186,7 @@
           [popoverTitle]="popTitle"
           container="body"
           placement="left"
-          > {{row.profile.score}}/3
+        > {{row.profile.score}}/3
         </mat-chip>
         <mat-chip
           *ngSwitchCase="'3'"
@@ -186,25 +196,25 @@
           [popoverTitle]="popTitle"
           container="body"
           placement="left"
-          > {{row.profile.score}}/3
+        > {{row.profile.score}}/3
         </mat-chip>
         <mat-chip
           *ngSwitchDefault
-          class= "chip-warning"
+          class="chip-warning"
           triggers="mouseenter:mouseleave"
           [ngbPopover]="popContent"
           [popoverTitle]="popTitle"
           container="body"
           placement="left"
-          >  {{row.profile.score}}/3
+        > {{row.profile.score}}/3
         </mat-chip>
       </div>
       <div *ngIf="!row.profile">
         <mat-chip
-          class= "chip-disabled"
+          class="chip-disabled"
           container="body"
           placement="left"
-          > –
+        > –
         </mat-chip>
       </div>
 
@@ -212,43 +222,31 @@
 
       <ng-template #popContent>
         <table class="table table-sm font-xs table-striped">
-            <tr>
-              <td>Aire de répartition </td>
-              <td *ngIf="row.profile.valid_distribution">
-                <mat-icon
-                  class="success"
-                > check </mat-icon>
-              </td>
-              <td *ngIf="!row.profile.valid_distribution">
-                <mat-icon
-                  class="error"
-                > close </mat-icon>
-              </td>
-            </tr>
+          <tr>
+            <td>Aire de répartition </td>
+            <td *ngIf="row.profile.valid_distribution">
+              <mat-icon class="success"> check </mat-icon>
+            </td>
+            <td *ngIf="!row.profile.valid_distribution">
+              <mat-icon class="error"> close </mat-icon>
+            </td>
+          </tr>
           <tr>
             <td>Phénologie </td>
             <td *ngIf="row.profile.valid_phenology">
-              <mat-icon
-                class="success"
-              > check </mat-icon>
+              <mat-icon class="success"> check </mat-icon>
             </td>
             <td *ngIf="!row.profile.valid_phenology">
-              <mat-icon
-                class="error"
-              > close </mat-icon>
+              <mat-icon class="error"> close </mat-icon>
             </td>
           </tr>
           <tr>
             <td> Altitudes</td>
             <td *ngIf="row.profile.valid_altitude">
-              <mat-icon
-                class="success"
-              > check </mat-icon>
+              <mat-icon class="success"> check </mat-icon>
             </td>
             <td *ngIf="!row.profile.valid_altitude">
-              <mat-icon
-                class="error"
-              > close </mat-icon>
+              <mat-icon class="error"> close </mat-icon>
             </td>
           </tr>
         </table>
@@ -263,8 +261,10 @@
       ngx-datatable-footer-template
       let-rowCount="rowCount"
       let-pageSize="pageSize"
-      let-selectedCount="selectedCount",
-      let-curPage="curPage",
+      let-selectedCount="selectedCount"
+      ,
+      let-curPage="curPage"
+      ,
       let-offset="offset"
     >
 
