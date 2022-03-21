@@ -47,8 +47,10 @@ from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from ref_geo.models import LAreas, BibAreasTypes
 
 from apptax.taxonomie.models import (
-    TaxrefBdcStatutCorTextArea,
+    bdc_statut_cor_text_area,
+    Taxref,
     TaxrefBdcStatutCorTextValues,
+    TaxrefBdcStatutTaxon,
     TaxrefBdcStatutText,
     TaxrefBdcStatutType,
     TaxrefBdcStatutValues,
@@ -576,8 +578,8 @@ def export_status(info_role):
         VSyntheseForWebApp.id_synthese,
     )
     synthese_query.add_join(
-        TaxrefBdcStatutCorTextArea,
-        TaxrefBdcStatutCorTextArea.id_area,
+        bdc_statut_cor_text_area,
+        bdc_statut_cor_text_area.c.id_area,
         CorAreaSynthese.id_area
     )
     synthese_query.add_join(TaxrefBdcStatutTaxon, TaxrefBdcStatutTaxon.cd_ref, Taxref.cd_ref)
@@ -590,7 +592,7 @@ def export_status(info_role):
         TaxrefBdcStatutText,
         [
             TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextValues.id_text,
-            TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextArea.id_text,
+            TaxrefBdcStatutText.id_text == bdc_statut_cor_text_area.c.id_text,
         ]
     )
     synthese_query.add_join(
