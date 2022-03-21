@@ -382,12 +382,21 @@ def cruved_scope_for_user_in_module(
     return herited_cruved, is_herited
 
 
-def get_scopes_by_action(id_role=None, module_code=None, object_code=None):
-    if id_role is None:
-        id_role = g.current_user.id_role
+def _get_scopes_by_action(id_role, module_code, object_code):
     cruved = UserCruved(id_role=id_role, code_filter_type="SCOPE",
                         module_code=module_code, object_code=object_code)
     return { action: int(scope) for action, scope in cruved.get_perm_for_all_actions(get_id=False)[0].items() }
+
+
+def get_scopes_by_action(id_role=None, module_code=None, object_code=None):
+    if id_role is None:
+        id_role = g.current_user.id_role
+    if 'scopes_by_action' not in g:
+        g.scopes_by_action = dict()
+    key = (id_role, module_code, object_code)
+    if key not in g.scopes_by_action:
+        g.scopes_by_action[key] = _get_scopes_by_action(*key)
+    return g.scopes_by_action[key]
 
 
 def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, object_code=None):

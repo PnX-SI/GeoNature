@@ -4,7 +4,7 @@ from flask import g, url_for
 
 from geonature.utils.env import db
 
-from pypnusershub.db.models import User, Application, AppUser, UserApplicationRight, ProfilsForApp
+from pypnusershub.db.models import User, Application, AppUser, UserApplicationRight, Profils
 
 from . import *
 from .utils import logged_user_headers
@@ -19,8 +19,7 @@ class TestUsersLogin:
             user = User(groupe=False, active=True, identifiant='user', password='password')
             db.session.add(user)
             application = Application.query.get(id_app)
-            profil = ProfilsForApp.query.filter_by(id_application=application.id_application) \
-                                        .order_by(ProfilsForApp.id_profil.desc()).first().profil
+            profil = Profils.query.filter(Profils.applications.contains(application)).first()
             right = UserApplicationRight(role=user, id_profil=profil.id_profil, id_application=application.id_application)
             db.session.add(right)
         return user

@@ -113,11 +113,12 @@ export class MediaService {
     } else {
       return this._http
         .get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/get_id_table_location/${schemaDotTable}`)
-        .pipe()
-        .switchMap(idTableLocation => {
-          this.idTableLocations[schemaDotTable] = idTableLocation;
-          return of(idTableLocation);
-        });
+        .pipe(
+          switchMap(idTableLocation => {
+            this.idTableLocations[schemaDotTable] = idTableLocation;
+            return of(idTableLocation);
+          })
+        )
     }
   }
 
