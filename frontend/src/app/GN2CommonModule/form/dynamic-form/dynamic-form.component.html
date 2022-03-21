@@ -76,7 +76,6 @@
         *ngIf="isValInSelectList; else selectElseBlock"
         class="form-control form-control-sm"
         id="{{formDefComp['attribut_name']}}_{{rand}}"
-        (change)="test(val)"
         [formControl]="form.get(formDefComp['attribut_name'])"
         >
         <option

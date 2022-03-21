@@ -21,13 +21,12 @@ from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
 from utils_flask_sqla_geo.mixins import GeoFeatureCollectionMixin
 from pypn_habref_api.models import Habref
 from apptax.taxonomie.models import Taxref
+from ref_geo.models import LAreas
 
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
-from geonature.core.ref_geo.models import LAreas
 from geonature.core.gn_commons.models import THistoryActions, TValidations, last_validation, \
                                              TMedias, TModules
 from geonature.utils.env import DB, db
-from geonature.utils.config import config
 
 
 @serializable
@@ -63,7 +62,7 @@ class CorObserverSynthese(DB.Model):
 
 corAreaSynthese = DB.Table("cor_area_synthese",
     DB.Column("id_synthese", DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True),
-    DB.Column("id_area", DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True),
+    DB.Column("id_area", DB.Integer, ForeignKey(LAreas.id_area), primary_key=True),
     schema='gn_synthese',
 )
 
@@ -238,7 +237,7 @@ class Synthese(DB.Model):
     place_name = DB.Column(DB.Unicode(length=500))
     the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
     the_geom_point = DB.Column(Geometry("GEOMETRY", 4326))
-    the_geom_local = DB.Column(Geometry("GEOMETRY", config["LOCAL_SRID"]))
+    the_geom_local = DB.Column(Geometry("GEOMETRY"))
     precision = DB.Column(DB.Integer)
     id_area_attachment = DB.Column(DB.Integer)
     date_min = DB.Column(DB.DateTime, nullable=False)
@@ -257,7 +256,7 @@ class Synthese(DB.Model):
     meta_update_date = DB.Column(DB.DateTime)
     last_action = DB.Column(DB.Unicode)
 
-    areas = relationship('LAreas', secondary=corAreaSynthese)
+    areas = relationship(LAreas, secondary=corAreaSynthese)
     validations = relationship(TValidations, backref='attached_row')
     last_validation = relationship(last_validation,
                                    uselist=False,
@@ -291,7 +290,7 @@ class CorAreaSynthese(DB.Model):
     __tablename__ = "cor_area_synthese"
     __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
     id_synthese = DB.Column(DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True)
-    id_area = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True)
+    id_area = DB.Column(DB.Integer, ForeignKey(LAreas.id_area), primary_key=True)
 
 
 @serializable

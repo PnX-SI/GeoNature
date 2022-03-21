@@ -8,11 +8,10 @@ from geoalchemy2.types import Geometry
 from geoalchemy2.elements import WKTElement
 
 from geonature.utils.env import db
-from geonature.utils.config import config
 from geonature.core.sensitivity.models import SensitivityRule, cor_sensitivity_area, CorSensitivityCriteria
 from geonature.core.gn_synthese.models import Synthese
-from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 
+from ref_geo.models import LAreas, BibAreasTypes
 from apptax.taxonomie.models import Taxref
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
@@ -29,6 +28,7 @@ class TestSensitivity:
     def test_get_id_nomenclature_sensitivity(self, app):
         taxon = Taxref.query.first()
         geom = WKTElement('POINT(6.15 44.85)', srid=4326)
+        local_geom = func.ST_Transform(geom, func.Find_SRID("ref_geo", "l_areas", "geom"))
         date_obs = datetime.now() - timedelta(days=365 *  10)
         date_obs = date_obs.replace(month=3)
         statut_bio_type = BibNomenclaturesTypes.query.filter_by(mnemonique='STATUT_BIO').one()
@@ -45,7 +45,7 @@ class TestSensitivity:
                     .where(TNomenclatures.id_nomenclature==func.gn_sensitivity.get_id_nomenclature_sensitivity(
                             sa.cast(date_obs, sa.types.Date),
                             taxon.cd_ref,
-                            func.ST_Transform(geom, config['LOCAL_SRID']),
+                            local_geom,
                             sa.cast({'STATUS_BIO': statut_bio_hibernation.id_nomenclature},
                                     sa.dialects.postgresql.JSONB),
                         ))
@@ -59,7 +59,7 @@ class TestSensitivity:
         no_diffusion = TNomenclatures.query.filter_by(id_type=sensitivity_nomenc_type.id_type,
                                                       mnemonique='4').one()
 
-        st_intersects = func.ST_Intersects(LAreas.geom, func.ST_Transform(geom, config['LOCAL_SRID']))
+        st_intersects = func.ST_Intersects(LAreas.geom, local_geom)
         deps = LAreas.query.join(BibAreasTypes).filter(BibAreasTypes.type_code=='DEP')
         area_in = deps.filter(st_intersects).first()
         area_out = deps.filter(sa.not_(st_intersects)).first()
