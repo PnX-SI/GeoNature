@@ -34,7 +34,7 @@ from apptax.taxonomie.models import (
     Taxref,
     CorTaxonAttribut,
     TaxrefBdcStatutTaxon,
-    TaxrefBdcStatutCorTextArea,
+    bdc_statut_cor_text_area,
     TaxrefBdcStatutCorTextValues,
     TaxrefBdcStatutText,
     TaxrefBdcStatutValues,
@@ -354,7 +354,7 @@ class SyntheseQuery:
                 all_red_lists_cfg = current_app.config["SYNTHESE"]["RED_LISTS_FILTERS"]
                 red_list_cfg = next((item for item in all_red_lists_cfg if item["id"] == red_list_id), None)
                 red_list_cte = (
-                    select([TaxrefBdcStatutTaxon.cd_ref, TaxrefBdcStatutCorTextArea.id_area])
+                    select([TaxrefBdcStatutTaxon.cd_ref, bdc_statut_cor_text_area.c.id_area])
                     .select_from(
                         TaxrefBdcStatutTaxon.__table__
                         .join(
@@ -370,8 +370,8 @@ class SyntheseQuery:
                             TaxrefBdcStatutValues.id_value == TaxrefBdcStatutCorTextValues.id_value
                         )
                         .join(
-                            TaxrefBdcStatutCorTextArea,
-                            TaxrefBdcStatutCorTextArea.id_text == TaxrefBdcStatutText.id_text
+                            bdc_statut_cor_text_area,
+                            bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutText.id_text
                         )
                     )
                     .where(TaxrefBdcStatutValues.code_statut.in_(value))
@@ -395,7 +395,7 @@ class SyntheseQuery:
                 if (isinstance(value, list) and value[0] == True and len(status_cfg['status_types']) == 1):
                     value = status_cfg['status_types']
                 status_cte = (
-                    select([TaxrefBdcStatutTaxon.cd_ref, TaxrefBdcStatutCorTextArea.id_area])
+                    select([TaxrefBdcStatutTaxon.cd_ref, bdc_statut_cor_text_area.c.id_area])
                     .select_from(
                         TaxrefBdcStatutTaxon.__table__
                         .join(
@@ -407,8 +407,8 @@ class SyntheseQuery:
                             TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextValues.id_text
                         )
                         .join(
-                            TaxrefBdcStatutCorTextArea,
-                            TaxrefBdcStatutCorTextArea.id_text == TaxrefBdcStatutText.id_text
+                            bdc_statut_cor_text_area,
+                            bdc_statut_cor_text_area.c.id_text == TaxrefBdcStatutText.id_text
                         )
                     )
                     .where(TaxrefBdcStatutText.cd_type_statut.in_(value))
