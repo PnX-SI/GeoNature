@@ -30,10 +30,11 @@ except pkg_resources.DistributionNotFound:
 BACKEND_DIR = ROOT_DIR / "backend"
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/geonature_config.toml"
 
-os.environ['FLASK_SQLALCHEMY_DB'] = 'geonature.utils.env.DB'
-os.environ['FLASK_MARSHMALLOW'] = 'geonature.utils.env.MA'
+os.environ['FLASK_SQLALCHEMY_DB'] = 'geonature.utils.env.db'
 DB = db = SQLAlchemy()
+os.environ['FLASK_MARSHMALLOW'] = 'geonature.utils.env.ma'
 MA = ma = Marshmallow()
+os.environ['FLASK_MIGRATE'] = 'geonature.utils.env.migrate'
 migrate = Migrate()
 
 GN_MODULE_FILES = (

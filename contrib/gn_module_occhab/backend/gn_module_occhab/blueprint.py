@@ -211,12 +211,13 @@ def export_all_habitats(
 
     data = request.get_json()
 
+    DB.session.execute(func.Find_SRID("gn_synthese", "synthese", "the_geom_local")).scalar()
     export_view = GenericTableGeo(
         tableName="v_export_sinp",
         schemaName="pr_occhab",
         engine=DB.engine,
         geometry_field="geom_local",
-        srid=current_app.config["LOCAL_SRID"],
+        srid=srid,
     )
 
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")

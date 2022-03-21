@@ -3,8 +3,8 @@ from sqlalchemy.orm import backref, relationship
 from sqlalchemy.ext.associationproxy import association_proxy
 
 from geonature.utils.env import db
-from geonature.core.ref_geo.models import LAreas
 
+from ref_geo.models import LAreas
 from apptax.taxonomie.models import Taxref
 from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
 
@@ -16,7 +16,7 @@ cor_sensitivity_area = db.Table("cor_sensitivity_area",
               primary_key=True),
     db.Column("id_area",
               db.Integer,
-              ForeignKey("ref_geo.l_areas.id_area"),
+              ForeignKey(LAreas.id_area),
               primary_key=True),
     schema = "gn_sensitivity")
 
