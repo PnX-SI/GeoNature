@@ -9,9 +9,9 @@ from alembic.script import ScriptDirectory
 
 from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
-from geonature.core.ref_geo.models import BibAreasTypes
 from geonature.utils.env import migrate
 
+from ref_geo.models import BibAreasTypes
 from pypnusershub.db.tools import user_to_token
 
 from .fixtures import acquisition_frameworks, datasets
