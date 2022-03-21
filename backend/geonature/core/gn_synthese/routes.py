@@ -8,7 +8,7 @@ from warnings import warn
 
 from flask import Blueprint, request, Response, current_app, \
                   send_from_directory, render_template, jsonify
-from werkzeug.exceptions import Forbidden, NotFound
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
@@ -35,19 +35,16 @@ from geonature.core.gn_synthese.models import (
     VColorAreaTaxon,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
-from geonature.core.ref_geo.models import (
-    BibAreasTypes,
-    LAreas,
-)
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 
+from ref_geo.models import LAreas, BibAreasTypes
+
 from apptax.taxonomie.models import (
-    CorTaxonAttribut,
+    bdc_statut_cor_text_area,
     Taxref,
-    TaxrefBdcStatutCorTextArea,
     TaxrefBdcStatutCorTextValues,
     TaxrefBdcStatutTaxon,
     TaxrefBdcStatutText,
@@ -338,13 +335,14 @@ def export_observations_web(info_role):
     if not export_format in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
         raise BadRequest("Unsupported format")
 
+    srid = DB.session.execute(func.Find_SRID("gn_synthese", "synthese", "the_geom_local")).scalar()
     # set default to csv
     export_view = GenericTableGeo(
         tableName="v_synthese_for_export",
         schemaName="gn_synthese",
         engine=DB.engine,
         geometry_field=None,
-        srid=current_app.config["LOCAL_SRID"],
+        srid=srid,
     )
 
     # get list of id synthese from POST
@@ -521,6 +519,8 @@ def export_status(info_role):
     # Initialize SyntheseQuery class
     synthese_query = SyntheseQuery(VSyntheseForWebApp, q, filters)
 
+    synthese_query.apply_all_filters(info_role)
+
     # Add join
     synthese_query.add_join(Taxref, Taxref.cd_nom, VSyntheseForWebApp.cd_nom)
     synthese_query.add_join(
@@ -529,8 +529,8 @@ def export_status(info_role):
         VSyntheseForWebApp.id_synthese,
     )
     synthese_query.add_join(
-        TaxrefBdcStatutCorTextArea,
-        TaxrefBdcStatutCorTextArea.id_area,
+        bdc_statut_cor_text_area,
+        bdc_statut_cor_text_area.c.id_area,
         CorAreaSynthese.id_area
     )
     synthese_query.add_join(TaxrefBdcStatutTaxon, TaxrefBdcStatutTaxon.cd_ref, Taxref.cd_ref)
@@ -543,7 +543,7 @@ def export_status(info_role):
         TaxrefBdcStatutText,
         [
             TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextValues.id_text,
-            TaxrefBdcStatutText.id_text == TaxrefBdcStatutCorTextArea.id_text,
+            TaxrefBdcStatutText.id_text == bdc_statut_cor_text_area.c.id_text,
         ]
     )
     synthese_query.add_join(
@@ -557,8 +557,8 @@ def export_status(info_role):
         TaxrefBdcStatutCorTextValues.id_value,
     )
 
-    # Filter with all get params
-    q = synthese_query.filter_query_all_filters(info_role)
+    # Build query
+    q = synthese_query.build_query()
 
     # Set enable status texts filter
     q = q.where(TaxrefBdcStatutText.enable == True)

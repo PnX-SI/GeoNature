@@ -9,9 +9,8 @@ from sqlalchemy.sql import text
 from werkzeug.exceptions import BadRequest
 
 from geonature.utils.env import db
-from geonature.utils.config import config
-from geonature.core.ref_geo.models import BibAreasTypes, LiMunicipalities, LAreas
 
+from ref_geo.models import BibAreasTypes, LiMunicipalities, LAreas
 from utils_flask_sqla.response import json_resp
 
 
@@ -33,7 +32,7 @@ geojson_intersect_filter = func.ST_Intersects(
     LAreas.geom,
     func.ST_Transform(
         func.ST_SetSRID(func.ST_GeomFromGeoJSON(sa.bindparam('geojson')), 4326),
-        config['LOCAL_SRID'],
+        func.Find_SRID('ref_geo', 'l_areas', 'geom'),
     ),
 )
 
@@ -43,7 +42,7 @@ area_size_func = func.ST_Area(
             func.ST_GeomFromGeoJSON(sa.bindparam('geojson')),
             4326,
         ),
-        config['LOCAL_SRID'],
+        func.Find_SRID('ref_geo', 'l_areas', 'geom'),
     )
 )
 
