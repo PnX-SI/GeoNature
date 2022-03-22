@@ -25,11 +25,11 @@ def upgrade():
     )
     """)
     op.execute("""
-    INSERT INTO gn_synthese.bib_reports_types (id_type, type)
+    INSERT INTO gn_synthese.bib_reports_types (type)
     VALUES 
-        (1, 'discussion'),
-        (2, 'alert'),
-        (3, 'pin')
+        ('discussion'),
+        ('alert'),
+        ('pin')
     """)
     pass
 
