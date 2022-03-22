@@ -1052,8 +1052,6 @@ def list_reports(scope):
 def delete_report(id_report):
     reportItem = TReport.query.get_or_404(id_report)
     if reportItem.user != g.current_user:
-        raise Forbidden 
-    if not reportItem:
-        raise NotFound(f"This report can't be found )")
+        raise Forbidden
     DB.session.delete(reportItem)
     DB.session.commit()
