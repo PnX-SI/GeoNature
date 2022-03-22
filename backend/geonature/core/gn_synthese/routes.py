@@ -986,7 +986,6 @@ def create_report(scope):
 
 @routes.route("/reports/<int:id_report>", methods=["PUT"])
 @permissions.login_required
-@permissions.check_cruved_scope("R")
 @json_resp
 def update_content_report(id_report):
     """
@@ -1000,6 +999,10 @@ def update_content_report(id_report):
     data = request.json
     session = DB.session
     idReport = data["idReport"]
+    row = TReport.query.get_or_404(data["idReport"])
+    if not row :
+        raise NotFound(f"This report can't be update by {g.current_user}")
+
     row = session.query(TReport).filter_by(id_report=data["idReport"], id_role=g.current_user.id_role).one_or_none()
 
     if not row :
@@ -1012,8 +1015,8 @@ def update_content_report(id_report):
         row.deleted = data["deleted"]
     session.commit()
 
-@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
 @routes.route('/reports', methods=["GET"])
+@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
 def list_reports(scope):
     id_type = request.args.get("type")
     id_role = request.args.get("idRole")
@@ -1050,7 +1053,7 @@ def list_reports(scope):
             "user.prenom_role"
         ]) for report in result
     ]
-    return jsonify({"results": result})
+    return jsonify(result)
 
 @routes.route('/reports/<int:id_report>', methods=["DELETE"])
 @permissions.login_required

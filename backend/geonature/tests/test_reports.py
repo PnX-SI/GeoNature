@@ -60,7 +60,7 @@ class TestReports:
             TReport.query.filter_by(id_report=id_report_ok).exists()
         ).scalar()
 
-    def test_get_report(self, reports_data, users):
+    def test_list_reports(self, reports_data, users):
         url = "gn_synthese.get_report"
         # TEST GET WITHOUT REQUIRED ID SYNTHESE
         set_logged_user_cookie(self.client, users['user'])
