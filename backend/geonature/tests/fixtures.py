@@ -15,7 +15,7 @@ from geonature.core.gn_permissions.models import TActions, TFilters, CorRoleActi
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import TAcquisitionFramework, TDatasets, \
                                           CorDatasetActor, CorAcquisitionFrameworkActor
-from geonature.core.gn_synthese.models import TSources, Synthese, TReport
+from geonature.core.gn_synthese.models import TSources, Synthese, TReport, BibReportsTypes
 
 from pypnusershub.db.models import User, Organisme, Application, Profils as Profil, UserApplicationRight
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
@@ -261,3 +261,26 @@ def reports_data(users):
             data.append(create_report(id_synthese, *args))
     
     return data
+
+@pytest.fixture()
+def bib_report_types_data():
+    data = []
+    # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
+    def create_report_type(id_type, type_name):
+        new_type = BibReportsTypes(
+            id_type=id_type,
+            type=type_name
+        )
+        db.session.add(new_type)
+        return new_type
+    with db.session.begin_nested():
+        BibReportsTypes.query.delete()
+        reports = [
+            (1, "discussion"),
+            (2, "alert"),
+            (3, "pin")
+        ]
+        for id_type, *args in reports:
+            data.append(create_report_type(id_type, *args))
+    return data
+        
