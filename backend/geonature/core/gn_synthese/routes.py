@@ -999,13 +999,10 @@ def update_content_report(id_report):
     data = request.json
     session = DB.session
     idReport = data["idReport"]
-
     row = TReport.query.get_or_404(idReport)
     if row.user != g.current.user:
         raise Forbidden
-
     row = session.query(TReport).filter_by(id_report=data["idReport"], id_role=g.current_user.id_role)
-
     session.commit()
 
 @routes.route('/reports', methods=["GET"])
@@ -1019,7 +1016,7 @@ def list_reports(scope):
     if not synthese.has_instance_permission(scope):
         raise Forbidden
     req = TReport.query.filter(TReport.id_synthese==id_synthese)
-    type_exists = BibReportsTypes.query.filter_by(type=type_name)
+    type_exists = BibReportsTypes.query.filter_by(type=type_name).one_or_none()
     # type param is not required to get all
     if type_name and not type_exists:
         raise BadRequest('This report type does not exist')
@@ -1058,7 +1055,9 @@ def list_reports(scope):
 @json_resp
 def delete_report(id_report):
     reportItem = TReport.query.get_or_404(id_report)
-    if reportItem.user != g.current_user:
+    if reportItem.id_role != g.current_user.id_role:
+        print("================BACKEND============")
+        print(reportItem.id_role)
         raise Forbidden
     type_exists = BibReportsTypes.query.get_or_404(reportItem.id_type)
     if type_exists.type == "discussion":
