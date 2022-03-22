@@ -34,10 +34,6 @@ from geonature.core.gn_synthese.models import (
     VColorAreaTaxon,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
-from geonature.core.taxonomie.models import (
-    TaxrefProtectionArticles,
-    TaxrefProtectionEspeces,
-)
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_synthese.utils.blurring import DataBlurring
 
@@ -219,58 +215,6 @@ def get_observations_for_web(auth, permissions):
         "nb_obs_limited": (
             len(geojson_features) == int(current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"])
         ),
-    }
-
-
-@routes.route("", methods=["GET"])
-@permissions.check_permissions(module_code="SYNTHESE", action_code="R")
-@json_resp
-def get_synthese(auth, permissions):
-    """Return synthese row(s) filtered by form params. NOT USED ANY MORE FOR PERFORMANCE ISSUES
-
-    .. :quickref: Synthese; Deprecated
-
-    .. deprecated:: 2?
-    Use :route: /for_web instead
-
-    Params must have same synthese fields names
-
-    :param str auth: autorisation contenant des informations sur
-        l'utilisateur et la permissions permettant l'accés au web service.
-        Utiliser pour configurer les filtres, **TBC**.
-    :param str permissions: listes de toutes les permissions NON applaties
-        en lien avec la permission d'accès. Seul l'héritage des groupes est appliqué.
-        Utiliser pour configurer les filtres, **TBC**.
-    :returns dict[dict, int, bool]: See description above
-    """
-    # change all args in a list of value
-    filters = {key: request.args.getlist(key) for key, value in request.args.items()}
-    if "limit" in filters:
-        result_limit = filters.pop("limit")[0]
-    else:
-        result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
-
-    query = select([VSyntheseForWebApp]).order_by(VSyntheseForWebApp.date_min.desc())
-    synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
-    synthese_query_class.filter_query_all_filters(auth)
-    data = DB.session.execute(synthese_query_class.query.limit(result_limit))
-
-
-    # q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, auth)
-
-    # data = q.limit(result_limit)
-    columns = current_app.config["SYNTHESE"]["COLUMNS_API_SYNTHESE_WEB_APP"] + MANDATORY_COLUMNS
-    features = []
-    for d in data:
-        feature = d.get_geofeature(fields=columns)
-        feature["properties"]["nom_vern_or_lb_nom"] = (
-            d.lb_nom if d.nom_vern is None else d.nom_vern
-        )
-        features.append(feature)
-    return {
-        "data": FeatureCollection(features),
-        "nb_obs_limited": len(features) == current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"],
-        "nb_total": len(features),
     }
 
 

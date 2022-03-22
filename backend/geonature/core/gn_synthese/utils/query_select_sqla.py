@@ -19,9 +19,6 @@ from geoalchemy2.shape import from_shape
 from utils_flask_sqla_geo.utilsgeometry import circle_from_point
 
 from geonature.utils.env import DB
-from geonature.core.taxonomie.models import (
-    TaxrefLR
-)
 from geonature.core.gn_synthese.models import (
     Synthese,
     CorObserverSynthese,
@@ -201,14 +198,6 @@ class SyntheseQuery:
             self.query = self.query.where(
                 Taxref.id_habitat.in_(self.filters.pop("taxonomy_id_hab"))
             )
-
-        if "taxonomy_lr" in self.filters:
-            sub_query_lr = select([TaxrefLR.cd_nom]).where(
-                TaxrefLR.id_categorie_france.in_(self.filters.pop("taxonomy_lr"))
-            )
-            # TODO est-ce qu'il faut pas filtrer sur le cd_ ref ?
-            # quid des protection définit à rang superieur de la saisie ?
-            self.query = self.query.where(self.model.cd_nom.in_(sub_query_lr))
 
         aliased_cor_taxon_attr = {}
         for colname, value in self.filters.items():
