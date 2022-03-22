@@ -482,12 +482,14 @@ class TReport(DB.Model):
     __tablename__ = "t_reports"
     __table_args__ = {"schema": "gn_synthese"}
     id_report = DB.Column(DB.Integer(), primary_key=True)
-    id_synthese = DB.Column(DB.Integer())
+    id_synthese = DB.Column(DB.Integer(), ForeignKey("gn_synthese.synthese.id_synthese"))
     id_role = DB.Column(DB.Integer(), ForeignKey(User.id_role))
     id_type = DB.Column(DB.Integer(), ForeignKey(BibReportsTypes.id_type))
     content = DB.Column(DB.Text())
     creation_date = DB.Column(DB.DateTime(), default=datetime.datetime.utcnow)
     deleted = DB.Column(DB.Boolean(), default=False)
 
+    synthese = relationship(Synthese, backref=db.backref("discussions", order_by=creation_date))
+    report_type = relationship(BibReportsTypes)
     user = DB.relationship(User)
 
