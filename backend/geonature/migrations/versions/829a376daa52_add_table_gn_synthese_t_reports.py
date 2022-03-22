@@ -34,6 +34,10 @@ def upgrade():
         CONSTRAINT fk_report_role
             FOREIGN KEY(id_role)
             REFERENCES utilisateurs.t_roles(id_role)
+            ON UPDATE CASCADE ON DELETE CASCADE,
+        CONSTRAINT fk_report_synthese
+            FOREIGN KEY(id_synthese)
+            REFERENCES utilisateurs.t_roles(id_synthese)
             ON UPDATE CASCADE ON DELETE CASCADE
     )
     """)
