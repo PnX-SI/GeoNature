@@ -37,7 +37,7 @@ def upgrade():
             ON UPDATE CASCADE ON DELETE CASCADE,
         CONSTRAINT fk_report_synthese
             FOREIGN KEY(id_synthese)
-            REFERENCES utilisateurs.t_roles(id_synthese)
+            REFERENCES gn_synthese.synthese(id_synthese)
             ON UPDATE CASCADE ON DELETE CASCADE
     )
     """)
