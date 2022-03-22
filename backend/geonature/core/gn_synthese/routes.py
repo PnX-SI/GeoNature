@@ -1000,8 +1000,6 @@ def update_content_report(id_report):
     session = DB.session
     idReport = data["idReport"]
     row = TReport.query.get_or_404(data["idReport"])
-    if not row :
-        raise NotFound(f"This report can't be update by {g.current_user}")
 
     row = session.query(TReport).filter_by(id_report=data["idReport"], id_role=g.current_user.id_role).one_or_none()
 
@@ -1021,7 +1019,6 @@ def list_reports(scope):
     id_type = request.args.get("type")
     id_role = request.args.get("idRole")
     id_synthese = request.args.get("idSynthese")
-    id_report = request.args.get("idReport")
     sort=request.args.get("sort")
     # READ REQUEST PARAMS
     synthese = Synthese.query.get_or_404(id_synthese)
@@ -1032,8 +1029,6 @@ def list_reports(scope):
         req = req.filter(TReport.id_role==id_role)
     if id_type:
         req = req.filter(TReport.id_type==id_type)
-    if id_report:
-        req = req.filter(TReport.id_report==id_report)
     if sort == 'asc':
         req = req.order_by(asc(TReport.creation_date))
     if sort == 'desc':
