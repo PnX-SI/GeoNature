@@ -960,8 +960,6 @@ def create_report(scope):
         id_type = data['type']
         id_synthese = data['item']
         content = data['content']
-        if not g.current_user or not g.current_user.id_role:
-            raise Forbidden()
         if not id_synthese:
             raise BadRequest('id_synthese is missing from the request')
         if not id_type:
@@ -988,6 +986,7 @@ def create_report(scope):
 
 @routes.route("/reports/<int:id_report>", methods=["PUT"])
 @permissions.login_required
+@permissions.check_cruved_scope("R")
 @json_resp
 def update_content_report(id_report):
     """
@@ -995,7 +994,7 @@ def update_content_report(id_report):
 
     Returns
     -------
-        report: `json`: 
+        report: `json`:
             Every occurrence's report
     """
     data = request.json
