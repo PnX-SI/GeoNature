@@ -19,7 +19,7 @@ from pypnusershub.db.tools import (
 from pypnusershub.db.models import (User, AppRole)
 
 from geonature.core.gn_commons.models import TModules
-from geonature.core.taxonomie.models import Taxref
+from apptax.taxonomie.models import Taxref
 from ref_geo.models import LAreas, BibAreasTypes
 from geonature.core.gn_permissions.models import VUsersPermissions
 from geonature.utils.env import DB
