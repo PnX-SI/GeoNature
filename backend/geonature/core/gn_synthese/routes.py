@@ -999,12 +999,8 @@ def update_content_report(id_report):
     data = request.json
     session = DB.session
     idReport = data["idReport"]
-    row = TReport.query.get_or_404(data["idReport"])
 
-    row = session.query(TReport).filter_by(id_report=data["idReport"], id_role=g.current_user.id_role).one_or_none()
-
-    if not row :
-        raise NotFound(f"This report can't be update by {g.current_user}")
+    row = session.query(TReport).filter_by(id_report=data["idReport"], id_role=g.current_user.id_role).first_or_404()
 
     if not data["content"]:
         row.content = ''
