@@ -134,7 +134,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   }
 
   setDiscussions(data) {
-    let listEl = data?.results || [];
+    let listEl = data.length ? data : [];
     if (!isEmpty(this.additionalData?.data) && this.additionalData.dateField) {
       listEl = this.orderData([...listEl, ...this.additionalData.data]);
     }
