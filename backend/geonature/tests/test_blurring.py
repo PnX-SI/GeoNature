@@ -129,7 +129,7 @@ class TestBlurring:
 
         assert 'areas' in geoproperties
         area_type_codes = { area['area_type']['type_code'] for area in geoproperties['areas'] }
-        from geonature.core.ref_geo.models import BibAreasTypes
+        from ref_geo.models import BibAreasTypes
         for la in current_app.config['DATA_BLURRING']['AREA_TYPE_FOR_SENSITIVITY_LEVELS']:
             if la['level'] == nomenc_sensitivity.mnemonique:
                 sensitivity_area_type = BibAreasTypes.query.filter_by(type_code=la['area']).one()

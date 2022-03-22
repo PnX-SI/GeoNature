@@ -497,7 +497,6 @@ def export_observations_web(auth, permissions):
                     "output_field": current_app.config["SYNTHESE"]["EXPORT_GEOJSON_LOCAL_COL"],
                     "area_field": "geom",
                     "compute": "asgeojson",
-                    "srid": current_app.config["LOCAL_SRID"],
                 },
                 {
                     "output_field": 'x_centroid_4326',

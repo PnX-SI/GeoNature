@@ -10,7 +10,7 @@ from pypnnomenclature.models import (
 )
 
 from geonature.core.gn_synthese.models import (CorAreaSynthese, Synthese)
-from geonature.core.ref_geo.models import (LAreas, BibAreasTypes)
+from ref_geo.models import (LAreas, BibAreasTypes)
 from geonature.core.taxonomie.models import Taxref
 from geonature.utils.env import DB
 
@@ -245,7 +245,7 @@ class DataBlurring:
             label = field["output_field"]
             if with_compute:
                 larea_col = getattr(table, field.get("area_field", "geom"))
-                srid = field.get("srid", 4326)
+                srid = func.Find_SRID("ref_geo", "l_areas", "geom")
                 compute = field.get("compute", None)
                 if compute == "x":
                     geocolumn = func.ST_X(func.ST_Transform(func.ST_Centroid(larea_col), srid))
