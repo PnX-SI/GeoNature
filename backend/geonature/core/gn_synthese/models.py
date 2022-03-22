@@ -21,7 +21,7 @@ from utils_flask_sqla.serializers import serializable, SERIALIZERS
 from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
 from utils_flask_sqla_geo.mixins import GeoFeatureCollectionMixin
 from pypn_habref_api.models import Habref
-from apptax.taxonomie.models import Taxref
+from apptax.taxonomie.models import Taxref, bdc_statut_cor_text_area
 from ref_geo.models import LAreas
 
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
@@ -129,6 +129,14 @@ class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
                 Synthese.id_dataset.in_([ds.id_dataset for ds in datasets]),
             ))
         return self
+
+
+@serializable
+class CorAreaSynthese(DB.Model):
+    __tablename__ = "cor_area_synthese"
+    __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
+    id_synthese = DB.Column(DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True)
+    id_area = DB.Column(DB.Integer, ForeignKey("ref_geo.l_areas.id_area"), primary_key=True)
 
 
 @serializable

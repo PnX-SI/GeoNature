@@ -100,11 +100,13 @@ def get_observations_for_web(auth, permissions):
         en lien avec la permission d'accès. Seul l'héritage des groupes est appliqué.
         Utiliser pour configurer les filtres, **TBC**.
     :qparam str limit: Limit number of synthese returned. Defaults to NB_MAX_OBS_MAP.
+    :qparam str cd_ref_parent: filtre tous les taxons enfants d'un TAXREF cd_ref.
     :qparam str cd_ref: Filter by TAXREF cd_ref attribute
     :qparam str taxonomy_group2_inpn: Filter by TAXREF group2_inpn attribute
     :qparam str taxonomy_id_hab: Filter by TAXREF id_habitat attribute
-    :qparam str taxonomy_lr: Filter by TAXREF cd_ref attribute
-    :qparam str taxhub_attribut*: Generig TAXREF filter, given attribute & value
+    :qparam str taxhub_attribut*: filtre générique TAXREF en fonction de l'attribut et de la valeur.
+    :qparam str *_red_lists: filtre générique de listes rouges. Filtre sur les valeurs. Voir config.
+    :qparam str *_status: filtre générique de statuts (BdC Statuts). Filtre sur les types. Voir config.
     :qparam str observers: Filter on observer
     :qparam str id_organism: Filter on organism
     :qparam str date_min: Start date

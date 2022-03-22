@@ -607,33 +607,34 @@ export class DataFormService {
       queryString = queryString.set(key, params[key].toString());
     }
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/additional_fields`,
-     {params: queryString}).pipe(map(additionalFields => {
-      return additionalFields.map(data => {
-        return {
-          "id_field": data.id_field,
-          "attribut_label": data.field_label,
-          "attribut_name": data.field_name,
-          "required": data.required,
-          "description": data.description,
-          "quantitative": data.quantitative,
-          "unity": data.unity,
-          "code_nomenclature_type": data.code_nomenclature_type,
-          "type_widget": data.type_widget.widget_name,
-          "multi_select": null,
-          "values": data.field_values,
-          "value": data.default_value,
-          "id_list": data.id_list,
-          "objects": data.objects,
-          "modules": data.modules,
-          "datasets": data.datasets,
-          "key_value": data.type_widget.widget_name === "nomenclature" ? "label_default": null,
-          ...data.additional_attributes
-        }
-      })
+      {params: queryString}).pipe(map(additionalFields => {
+        return additionalFields.map(data => {
+          return {
+            "id_field": data.id_field,
+            "attribut_label": data.field_label,
+            "attribut_name": data.field_name,
+            "required": data.required,
+            "description": data.description,
+            "quantitative": data.quantitative,
+            "unity": data.unity,
+            "code_nomenclature_type": data.code_nomenclature_type,
+            "type_widget": data.type_widget.widget_name,
+            "multi_select": null,
+            "values": data.field_values,
+            "value": data.default_value,
+            "id_list": data.id_list,
+            "objects": data.objects,
+            "modules": data.modules,
+            "datasets": data.datasets,
+            "key_value": data.type_widget.widget_name === "nomenclature" ? "label_default": null,
+            ...data.additional_attributes
+          }
+        })
+      }));
+  }
 
-     })
-    );
-
+  getStatusValues(statusType: String) {
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/bdc_statuts/status_values/${statusType}`);
   }
 
   getProfile(cdRef) {
@@ -662,5 +663,14 @@ export class DataFormService {
     );
   }
 
-}
+  getStatusType(statusTypes: String[]) {
+    let queryString: HttpParams = new HttpParams();
+    if (statusTypes) {
+      queryString = queryString.set('codes', statusTypes.join(','));
+    }
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/bdc_statuts/status_types`, {
+      params: queryString
+    });
+  }
 
+}
