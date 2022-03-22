@@ -31,14 +31,13 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     private _formBuilder: FormBuilder,
     private globalSubService: GlobalSubService,
     private _commonService: CommonService,
-    private _syntheseDataService: SyntheseDataService,
-    private dataService: DataFormService
+    private _syntheseDataService: SyntheseDataService
   ) {
     this.commentForm = this._formBuilder
       .group({
         content: ['', Validators.required],
         item: [this.idSynthese],
-        type: [1],
+        type: ['discussion'],
         idReport: [],
         deleted: [false]
       });
@@ -86,7 +85,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   handleSubmitComment() {
     // create new comment
     this.commentForm.get('item').setValue(this.idSynthese);
-    this.commentForm.get('type').setValue(1);
+    this.commentForm.get('type').setValue('discussion');
     this._syntheseDataService.createReport(this.commentForm.value).subscribe(data => {
       this._commonService.regularToaster(
         'success',
@@ -94,24 +93,6 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
       );
       // close add comment panel and refresh list
       this.openCloseComment();
-      this.getDiscussions();
-    });
-  }
-
-  /**
- * Send comment
- */
-  updateComment(id) {
-    this.commentForm.get('idReport').setValue(id);
-    this.commentForm.get('content').setValue('');
-    this.commentForm.get('deleted').setValue(true);
-    // create new comment
-    this._syntheseDataService.modifyReport(id, this.commentForm.value).subscribe(data => {
-      this._commonService.regularToaster(
-        'success',
-        'Commentaire modifié !'
-      );
-      // close add comment panel and refresh list
       this.getDiscussions();
     });
   }
@@ -145,9 +126,15 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
    * get all discussion by module and type
    */
   getDiscussions() {
-    const params = `idSynthese=${this.idSynthese}&type=1&sort=${this.sort}`;
+    const params = `idSynthese=${this.idSynthese}&type=discussion&sort=${this.sort}`;
     this._syntheseDataService.getReports(params).subscribe(response => {
       this.setDiscussions(response);
+    });
+  }
+
+  deleteComment(idReport) {
+    this._syntheseDataService.deleteReport(idReport).subscribe(() => {
+      this.getDiscussions();
     });
   }
 
