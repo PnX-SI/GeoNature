@@ -27,6 +27,7 @@ from geonature.utils.utilsgeometrytools import export_as_geo_file
 from geonature.core.gn_meta.models import TDatasets
 
 from geonature.core.gn_synthese.models import (
+    BibReportsTypes,
     Synthese,
     TSources,
     DefaultsNomenclaturesValue,
@@ -280,6 +281,7 @@ def get_one_synthese(scope, id_synthese):
 
 
 @routes.route("/export_taxons", methods=["POST"])
+@permissions.check_cruved_scope("E", True, module_code="SYNTHESE")
 def export_taxon_web(info_role):
     """Optimized route for taxon web export.
 
@@ -939,8 +941,9 @@ def get_taxa_distribution():
     return [{"count": d[0], "group": d[1]} for d in data]
 
 @routes.route("/reports", methods=["POST"])
+@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
 @json_resp
-def create_report():
+def create_report(scope):
     """
     Create a report (e.g report) for a given synthese id
 
@@ -965,8 +968,12 @@ def create_report():
             raise BadRequest('Report type is missing from the request')
         if not content and id_type == 1:
             raise BadRequest('Discussion content is required')
-        if not g.current_user.id_role:
-            raise Forbidden()
+        synthese = Synthese.query.get_or_404(id_synthese)
+        if not synthese.has_instance_permission(scope):
+            raise Forbidden
+        report_type = BibReportsTypes.query.get_or_404(id_type)
+        if not report_type:
+            raise BadRequest('This report type does not exist')
     except KeyError:
         raise BadRequest('Empty request data')
     new_entry = TReport(
@@ -980,6 +987,7 @@ def create_report():
     session.commit()
 
 @routes.route("/reports/<int:id_report>", methods=["PUT"])
+@permissions.login_required
 @json_resp
 def update_content_report(id_report):
     """
@@ -1005,16 +1013,18 @@ def update_content_report(id_report):
         row.deleted = data["deleted"]
     session.commit()
 
+@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
 @routes.route('/reports', methods=["GET"])
-def get_report():
+def list_reports(scope):
     id_type = request.args.get("type")
     id_role = request.args.get("idRole")
     id_synthese = request.args.get("idSynthese")
     id_report = request.args.get("idReport")
     sort=request.args.get("sort")
     # READ REQUEST PARAMS
-    if not id_synthese:
-        raise BadRequest('idSynthese is missing from the request')
+    synthese = Synthese.query.get_or_404(id_synthese)
+    if not synthese.has_instance_permission(scope):
+        raise Forbidden
     req = TReport.query.filter(TReport.id_synthese==id_synthese)
     if id_role and id_role == g.current_user.id_role:
         req = req.filter(TReport.id_role==id_role)
@@ -1043,14 +1053,14 @@ def get_report():
     ]
     return jsonify({"results": result})
 
-
 @routes.route('/reports/<int:id_report>', methods=["DELETE"])
+@permissions.login_required
 @json_resp
 def delete_report(id_report):
-    g.current_user = user_from_token(request.cookies['token']).role
-    id_role = g.current_user.id_role
-    reportItem = DB.session.query(TReport).filter_by(id_report=id_report, id_role=id_role).first()
+    reportItem = TReport.query.get_or_404(id_report)
+    if reportItem.user != g.current_user:
+        raise Forbidden 
     if not reportItem:
-        raise NotFound(f"This report can't be delete (not found or not authorized)")
+        raise NotFound(f"This report can't be found )")
     DB.session.delete(reportItem)
     DB.session.commit()
