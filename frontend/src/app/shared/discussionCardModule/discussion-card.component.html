@@ -80,7 +80,7 @@
                         ngbTooltip="{{'Synthese.DeleteComment' | translate}}"
                         placement="left"
                         *ngIf="currentUser.id_role ===comment.id_role"
-                        (click)="updateComment(comment.id_report)"
+                        (click)="deleteComment(comment.id_report, comment.report_type.type)"
                     >
                         <mat-icon
                             class="rm-comment"

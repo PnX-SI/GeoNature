@@ -957,21 +957,21 @@ def create_report(scope):
     if data is None :
         raise BadRequest("Empty request data")
     try:
-        id_type = data['type']
+        type_name = data['type']
         id_synthese = data['item']
         content = data['content']
         if not id_synthese:
             raise BadRequest('id_synthese is missing from the request')
-        if not id_type:
+        if not type_name:
             raise BadRequest('Report type is missing from the request')
-        if not content and id_type == 1:
+        if not content and type_name == 'discussion':
             raise BadRequest('Discussion content is required')
+        type_exists = BibReportsTypes.query.filter_by(type=type_name).first()
+        if not type_exists:
+            raise BadRequest('This report type does not exist')
         synthese = Synthese.query.get_or_404(id_synthese)
         if not synthese.has_instance_permission(scope):
             raise Forbidden
-        report_type = BibReportsTypes.query.get_or_404(id_type)
-        if not report_type:
-            raise BadRequest('This report type does not exist')
     except KeyError:
         raise BadRequest('Empty request data')
     new_entry = TReport(
@@ -979,7 +979,7 @@ def create_report(scope):
         id_role=g.current_user.id_role,
         content=content,
         creation_date=datetime.datetime.now(),
-        id_type=id_type
+        id_type=type_exists.id_type
     )
     session.add(new_entry)
     session.commit()
@@ -1000,20 +1000,18 @@ def update_content_report(id_report):
     session = DB.session
     idReport = data["idReport"]
 
-    row = session.query(TReport).filter_by(id_report=data["idReport"], id_role=g.current_user.id_role).first_or_404()
+    row = TReport.query.get_or_404(idReport)
+    if row.user != g.current.user:
+        raise Forbidden
 
-    if not data["content"]:
-        row.content = ''
-    
-    if data["content"] is not None:
-        row.deleted = data["deleted"]
+    row = session.query(TReport).filter_by(id_report=data["idReport"], id_role=g.current_user.id_role)
+
     session.commit()
 
 @routes.route('/reports', methods=["GET"])
 @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
 def list_reports(scope):
-    id_type = request.args.get("type")
-    id_role = request.args.get("idRole")
+    type_name = request.args.get("type")
     id_synthese = request.args.get("idSynthese")
     sort=request.args.get("sort")
     # READ REQUEST PARAMS
@@ -1021,28 +1019,37 @@ def list_reports(scope):
     if not synthese.has_instance_permission(scope):
         raise Forbidden
     req = TReport.query.filter(TReport.id_synthese==id_synthese)
-    if id_role and id_role == g.current_user.id_role:
-        req = req.filter(TReport.id_role==id_role)
-    if id_type:
-        req = req.filter(TReport.id_type==id_type)
+    type_exists = BibReportsTypes.query.filter_by(type=type_name)
+    # type param is not required to get all
+    if type_name and not type_exists:
+        raise BadRequest('This report type does not exist')
+    # sort
     if sort == 'asc':
         req = req.order_by(asc(TReport.creation_date))
     if sort == 'desc':
         req = req.order_by(desc(TReport.creation_date))
-    
-    result = req.options(joinedload('user').load_only("nom_role", "prenom_role")).all()
+    # join user and bib_reports_types tables
+    result = req.options(joinedload('user').load_only("nom_role", "prenom_role"))
+    result = req.options(joinedload('report_type').load_only("id_type","type"))
+    # get results by type
+    if type_name:
+        result = result.filter(BibReportsTypes.type==type_name)
+    # filter by id_role for pin type only
+    if type_name and type_name == "pin":
+        result = result.filter(TReport.id_role==g.current_user.id_role)
     result = [
         report.as_dict(fields=[
             "id_report",
             "id_synthese",
             "id_role",
-            "id_type",
+            "report_type.type",
+            "report_type.id_type",
             "content",
             "deleted",
             "creation_date",
             "user.nom_role",
             "user.prenom_role"
-        ]) for report in result
+        ]) for report in result.all()
     ]
     return jsonify(result)
 
@@ -1053,5 +1060,10 @@ def delete_report(id_report):
     reportItem = TReport.query.get_or_404(id_report)
     if reportItem.user != g.current_user:
         raise Forbidden
-    DB.session.delete(reportItem)
+    type_exists = BibReportsTypes.query.get_or_404(reportItem.id_type)
+    if type_exists.type == "discussion":
+        reportItem.content=''
+        reportItem.deleted=True
+    else :
+        DB.session.delete(reportItem)
     DB.session.commit()
