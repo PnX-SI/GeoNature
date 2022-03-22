@@ -19,7 +19,7 @@
     let-search="searchTerm"
   >
     <div matTooltip="{{item.nom_complet}}">
-      <span class="pre-wrap">{{item.nom_complet}}</span>
+      <span class="pre-wrap" [attr.data-qa]='"gn-common-form-observers-select-"+item.nom_complet'>{{item.nom_complet}}</span>
     </div>
   </ng-template>
 </ng-select>

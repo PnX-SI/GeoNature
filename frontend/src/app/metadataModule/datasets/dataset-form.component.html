@@ -32,7 +32,7 @@
               let-index="index" 
               let-search="searchTerm"
             >
-              <span class="pre-wrap"> 
+              <span class="pre-wrap" [attr.data-qa]='"pnx-metadata-jdd-"+item.acquisition_framework_name'> 
                 <span *ngIf="!item.opened">
                   [Cloturé]
                 </span>

@@ -86,6 +86,7 @@
               <mat-expansion-panel-header
                 collapsedHeight="*"
                 expandedHeight="*"
+                [attr.data-qa]='"pnx-metadata-acq-framework-header-"+idx'
               >
                 <mat-panel-title
                   class="af-title"
@@ -94,7 +95,7 @@
 
                   <div class="col-md-1">{{ af.id_acquisition_framework }}</div>
                   <div class="col-md-2">
-                    <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]">
+                    <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]" [attr.data-qa]='"pnx-metadata-acq-framework-"+idx'>
                       {{ af.acquisition_framework_name }}
                       <br> <small style="color: gray"> {{ af.unique_acquisition_framework_id  }}
                       </small>
