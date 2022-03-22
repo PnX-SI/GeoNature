@@ -64,7 +64,7 @@ jobs:
         PGPASSWORD: geonatpasswd
     - uses: actions/checkout@v2
       with:
-        submodules: recursive
+        submodules: true
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
@@ -83,7 +83,8 @@ jobs:
           -e file:backend/dependencies/Habref-api-module#egg=pypn_habref_api \
           -e file:backend/dependencies/TaxHub#egg=taxhub \
           -e file:backend/dependencies/Utils-Flask-SQLAlchemy#egg=utils-flask-sqlalchemy \
-          -e file:backend/dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo
+          -e file:backend/dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo \
+          -e file:backend/dependencies/RefGeo#egg=pypn-ref-geo
     - name: Install database
       run: |
         geonature db upgrade geonature@head -x local-srid=2154

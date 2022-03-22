@@ -39,9 +39,9 @@ from geonature.core.gn_synthese.models import (
     CorAreaSynthese,
     CorSensitivitySynthese,
 )
-from geonature.core.ref_geo.models import LAreas
 from geonature.core.gn_permissions.decorators import login_required
 
+from ref_geo.models import LAreas
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User

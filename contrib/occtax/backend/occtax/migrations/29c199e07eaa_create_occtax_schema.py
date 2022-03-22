@@ -9,9 +9,8 @@ import importlib
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import func
 from sqlalchemy.sql import text
-
-from geonature.core.gn_commons.models import TParameters
 
 
 # revision identifiers, used by Alembic.
@@ -24,10 +23,7 @@ depends_on = (
 
 
 def upgrade():
-    local_srid = TParameters.query.filter_by(parameter_name='local_srid') \
-                                  .with_entities(TParameters.parameter_value) \
-                                  .one() \
-                                  .parameter_value
+    local_srid = op.get_bind().execute(func.Find_SRID('ref_geo', 'l_areas', 'geom')).scalar()
     operations = text(importlib.resources.read_text('occtax.migrations.data', 'occtax.sql'))
     op.get_bind().execute(operations, {'local_srid': local_srid})
 

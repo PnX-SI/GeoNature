@@ -32,7 +32,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
 
   public formDefComp = {};
   public isValInSelectList: boolean = true;
-  private _sub : Subscription
+  private _sub: Subscription
 
   constructor(private _dynformService: DynamicFormService) { }
 
@@ -43,13 +43,16 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
     if (this.formDef.type_widget == 'select') {
       this._sub = this.form.get(this.formDefComp['attribut_name']).valueChanges.pipe(
         distinctUntilChanged()
-        ).subscribe(val => {
-        this.isValInSelectList = this.formDefComp['values'].includes(val);
+      ).subscribe(val => {
+        // Cas ou la valeur n'est pas sélectionnée et que la valeur null n'est pas dans la liste
+        if (val != null) {
+          this.isValInSelectList = this.formDefComp['values'].includes(val);
+        }
       })
     }
   }
 
-  setFormDefComp(withDefaultValue=false) {
+  setFormDefComp(withDefaultValue = false) {
     this.formDefComp = {};
     for (const key of Object.keys(this.formDef)) {
       this.formDefComp[key] = this._dynformService.getFormDefValue(
@@ -112,8 +115,8 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnChanges(changes: SimpleChanges) {
     for (const propName of Object.keys(changes)) {
-      // si le composant dynamic-form-generator annonce un update
-      // => on recalcule les propriétés
+      // si le composant dynamic - form - generator annonce un update
+      //   => on recalcule les propriétés
       if (propName === 'update' && this.update === true) {
         this.setFormDefComp();
       }
@@ -124,7 +127,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this._sub) {
+    if (this._sub !== undefined) {
       this._sub.unsubscribe();
     }
   }

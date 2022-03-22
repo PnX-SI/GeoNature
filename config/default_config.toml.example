@@ -72,9 +72,6 @@ TRAP_ALL_EXCEPTIONS = false
 # Cf. https://docs.python.org/3/library/logging.html#logging-levels
 API_LOG_LEVEL = 40
 
-# Code EPSG pour les geom locaux en base de données
-LOCAL_SRID = 2154
-
 # MTD (pour la connexion au webservice de métadonnées de l'INPN)
 XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
 MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"

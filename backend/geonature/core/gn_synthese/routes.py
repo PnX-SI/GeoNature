@@ -8,7 +8,7 @@ from warnings import warn
 
 from flask import Blueprint, request, Response, current_app, \
                   send_from_directory, render_template, jsonify
-from werkzeug.exceptions import Forbidden, NotFound
+from werkzeug.exceptions import BadRequest, Forbidden, NotFound
 from sqlalchemy import distinct, func, desc, select, text
 from sqlalchemy.orm import exc, joinedload
 from geojson import FeatureCollection, Feature
@@ -39,7 +39,6 @@ from geonature.core.taxonomie.models import (
     TaxrefProtectionEspeces,
     VMTaxrefListForautocomplete,
 )
-from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_synthese.utils.blurring import DataBlurring
 
@@ -47,6 +46,8 @@ from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 from werkzeug.exceptions import BadRequest
 from itertools import groupby
+from ref_geo.models import LAreas, BibAreasTypes
+
 
 # debug
 # current_app.config['SQLALCHEMY_ECHO'] = True
@@ -429,13 +430,14 @@ def export_observations_web(auth, permissions):
     if not export_format in current_app.config["SYNTHESE"]["EXPORT_FORMAT"]:
         raise BadRequest("Unsupported format")
 
-    # Set default to csv
+    srid = DB.session.execute(func.Find_SRID("gn_synthese", "synthese", "the_geom_local")).scalar()
+    # set default to csv
     export_view = GenericTableGeo(
         tableName="v_synthese_for_export",
         schemaName="gn_synthese",
         engine=DB.engine,
         geometry_field=None,
-        srid=current_app.config["LOCAL_SRID"],
+        srid=srid,
     )
 
     # Get list of id synthese from POST

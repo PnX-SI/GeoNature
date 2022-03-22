@@ -69,6 +69,7 @@ export class NomenclatureComponent extends GenericFormComponent
   @Input() keyValue = 'id_nomenclature';
 
   @Input() bindAllItem: false;
+  @Input() cdNomenclatures: Array<string> = [];
   @Output() labelsLoaded = new EventEmitter<Array<any>>();
 
   constructor(private _dfService: DataFormService, private _translate: TranslateService) {
@@ -131,7 +132,7 @@ export class NomenclatureComponent extends GenericFormComponent
   }
 
   initLabels() {
-    const filters = { orderby: 'label_default' };
+    const filters = { orderby: 'label_default', cd_nomenclature: this.cdNomenclatures };
     this._dfService
       .getNomenclature(this.codeNomenclatureType, this.regne, this.group2Inpn, filters)
       .subscribe(data => {

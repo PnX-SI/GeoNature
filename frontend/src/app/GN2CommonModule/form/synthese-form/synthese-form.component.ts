@@ -25,6 +25,7 @@ export class SyntheseSearchComponent implements OnInit {
   private params: any;
   @Input() displayValidation = false;
   @Output() searchClicked = new EventEmitter();
+  @Output() resetFilter = new EventEmitter();
 
   constructor(
     public dataService: SyntheseDataService,
@@ -87,6 +88,7 @@ export class SyntheseSearchComponent implements OnInit {
     this.formService.selectedTaxonFromRankInput = [];
     this.formService.selectedCdRefFromTree = [];
     this.formService.searchForm.reset();
+    this.resetFilter.emit();
 
     // refresh taxon tree
     this._storeService.taxonTreeState = {};

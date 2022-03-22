@@ -59,7 +59,6 @@ export class SyntheseComponent implements OnInit {
         }
         this._mapListService.geojsonData = geoJsonData;
         this._mapListService.tableData = result['data'];
-        console.log(result["data"]);
         this._mapListService.loadTableData(result['data']);
         this._mapListService.idName = 'id';
         this.searchService.dataLoaded = true;

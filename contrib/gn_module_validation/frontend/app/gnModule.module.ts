@@ -28,7 +28,10 @@ import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthe
 import { TaxonAdvancedStoreService } from "@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service";
 import { ValidationService } from "./services/validation.service";
 // my module routing
-const routes: Routes = [{path: "", component: ValidationComponent}];
+const routes: Routes = [
+    {path: "", component: ValidationComponent},
+    {path: "occurrence/:id_synthese", component: ValidationComponent, pathMatch: "full"}
+];
 
 @NgModule({
     declarations: [
