@@ -1,7 +1,7 @@
 """access request
 
 Revision ID: 3b2f3de760dc
-Revises: 5f4c4b644844
+Revises: ca052245c6ec
 Create Date: 2021-10-07 12:39:39.834674
 
 """
@@ -14,7 +14,7 @@ from sqlalchemy.sql import text
 
 # revision identifiers, used by Alembic.
 revision = '3b2f3de760dc'
-down_revision = '1dbc45309d6e'
+down_revision = 'ca052245c6ec'
 branch_labels = None
 depends_on = (
     '10e87bc144cd',  # utilisateurs.get_id_role_by_name()

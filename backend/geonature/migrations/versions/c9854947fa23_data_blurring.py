@@ -15,7 +15,10 @@ import sqlalchemy as sa
 revision = 'c9854947fa23'
 down_revision = '3b2f3de760dc'
 branch_labels = None
-depends_on = None
+depends_on = (
+    "441fc2d0f616",  # [ref_geo] add areas types size_hierarchy field
+)
+
 
 
 def upgrade():
@@ -165,31 +168,8 @@ def upgrade():
                 ON ( hab.cd_hab = s.cd_hab ) ;
     """)
 
-    op.execute("""
-    ALTER TABLE ref_geo.bib_areas_types
-        ADD COLUMN size_hierarchy INT default NULL;
-
-    COMMENT ON COLUMN ref_geo.bib_areas_types.size_hierarchy IS
-        'Diamètre moyen en mètres de ce type zone. Permet d''établir une hiérarchie des types '
-        'de zone géographique. Utile pour le floutage des observations.' ;
-    """)
-
-    op.execute("""
-    UPDATE ref_geo.bib_areas_types SET size_hierarchy = 200000 WHERE type_code = 'REG' ;
-    UPDATE ref_geo.bib_areas_types SET size_hierarchy = 75000 WHERE type_code = 'DEP' ;
-    UPDATE ref_geo.bib_areas_types SET size_hierarchy = 5000 WHERE type_code = 'COM' ;
-    UPDATE ref_geo.bib_areas_types SET size_hierarchy = 10000 WHERE type_code = 'M10' ;
-    UPDATE ref_geo.bib_areas_types SET size_hierarchy = 5000 WHERE type_code = 'M5' ;
-    UPDATE ref_geo.bib_areas_types SET size_hierarchy = 1000 WHERE type_code = 'M1' ;
-    """)
-
 
 def downgrade():
-    op.execute("""
-    ALTER TABLE ref_geo.bib_areas_types
-        DROP COLUMN size_hierarchy;
-    """)
-
     op.execute("""
     DROP VIEW gn_synthese.v_synthese_for_export;
     CREATE VIEW gn_synthese.v_synthese_for_export
