@@ -1002,7 +1002,6 @@ def update_content_report(id_report):
     row = TReport.query.get_or_404(idReport)
     if row.user != g.current.user:
         raise Forbidden
-    row = session.query(TReport).filter_by(id_report=data["idReport"], id_role=g.current_user.id_role)
     row.content = data["content"]
     session.commit()
 
