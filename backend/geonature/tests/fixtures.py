@@ -237,7 +237,7 @@ def synthese_data(users, datasets, source):
 
 
 @pytest.fixture()
-def reports_data(users):
+def reports_data(users, synthese_data):
     data = []
     # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
     def create_report(id_synthese, id_role, content, id_type, deleted):
@@ -251,11 +251,13 @@ def reports_data(users):
         )
         db.session.add(new_report)
         return new_report
+    ids = []
+    for el in synthese_data:
+        ids.append(el.id_synthese)
     with db.session.begin_nested():
         reports = [
-            (1, users["admin_user"].id_role, "comment1", 1, False),
-            (2, users["admin_user"].id_role, "comment1", 2, False),
-            (3, users["user"].id_role, "comment1", 1, False)
+            (ids[0], users["admin_user"].id_role, "comment1", 1, False),
+            (ids[1], users["admin_user"].id_role, "comment1", 2, False)
         ]
         for id_synthese, *args in reports:
             data.append(create_report(id_synthese, *args))
