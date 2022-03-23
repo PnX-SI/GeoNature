@@ -23,7 +23,7 @@ from apptax.taxonomie.models import Taxref
 from utils_flask_sqla.tests.utils import JSONClient
 
 
-__all__ = ['datasets', 'acquisition_frameworks', 'synthese_data', 'source']
+__all__ = ['datasets', 'acquisition_frameworks', 'synthese_data', 'source', 'reports_data', 'bib_report_types_data']
 
 
 @pytest.fixture(scope='session', autouse=True)

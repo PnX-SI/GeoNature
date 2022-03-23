@@ -6,16 +6,18 @@ from sqlalchemy import func
 from werkzeug.exceptions import Forbidden, BadRequest, Unauthorized, NotFound
 
 from geonature.utils.env import db
-from geonature.core.gn_synthese.models import TReport, BibReportsTypes
+from geonature.core.gn_synthese.models import TReport, BibReportsTypes, Synthese
 
-from .fixtures import reports_data, users, bib_report_types_data
+from .fixtures import *
 from .utils import logged_user_headers, set_logged_user_cookie
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestReports:
-    def test_create_report(self, users):
-        url = "gn_synthese.create_report"        
-        data = {"item": 4, "content": "comment 4", "type": "discussion"}
+    def test_create_report(self, synthese_data, users):
+        url = "gn_synthese.create_report"
+        id_synthese = db.session.query(Synthese).first().id_synthese
+        data = {"item": id_synthese, "content": "comment 4", "type": "discussion"}
+        # TEST - NO AUTHENT
         response = self.client.post(
             url_for(url),
             data=data
@@ -27,10 +29,16 @@ class TestReports:
                 url_for(url)
         )
         assert response.status_code == BadRequest.code
-        # TEST VALID
+        # TEST VALID - ADD DISCUSSION
         response = self.client.post(
                 url_for(url),
                 data=data
+        )
+        assert response.status_code == 204
+        # TEST VALID - ADD ALERT
+        response = self.client.post(
+            url_for(url),
+            data={"item": id_synthese, "content": "comment 4", "type": "alert"}
         )
         assert response.status_code == 204
         # TEST REQUIRED KEY MISSING
