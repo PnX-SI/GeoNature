@@ -97,6 +97,7 @@ jobs:
   test_backend:
 
     needs: install
+    runs-on: ubuntu-latest
 
     steps:
     - name: Test with pytest
