@@ -143,11 +143,10 @@ jobs:
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
     - name: run TX backend
-      run : |
-        gunicorn "app:create_app()" --bind "0.0.0.0:5000" --daemon
-      working-directory: ./backend/dependencies/TaxHub/apptax
+      run : flask run --host=0.0.0.0 &
+      working-directory: ./backend/dependencies/TaxHub/
       env:
-        TAXHUB_SETTINGS: ../test_config.py
+        TAXHUB_SETTINGS: test_config.py
     - name: curl
       uses: wei/curl@master
       with:
