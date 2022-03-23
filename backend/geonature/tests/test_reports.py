@@ -76,23 +76,27 @@ class TestReports:
             TReport.query.filter_by(id_report=notDiscussionReportId).exists()
         ).scalar()
 
-    def test_list_reports(self, reports_data, users):
+    def test_list_reports(self, reports_data, synthese_data, users):
         url = "gn_synthese.list_reports"
         # TEST GET WITHOUT REQUIRED ID SYNTHESE
         set_logged_user_cookie(self.client, users['admin_user'])
         response = self.client.get(url_for(url))
+        ids = []
+        for el in synthese_data:
+            ids.append(el.id_synthese)
         assert response.status_code == NotFound.code
         # TEST GET BY ID SYNTHESE
-        response = self.client.get(url_for(url, idSynthese=1, idRole=users['admin_user'].id_role, type="discussion"))
+        response = self.client.get(url_for(url, idSynthese=ids[0], idRole=users['admin_user'].id_role, type="discussion"))
         assert response.status_code == 200
         assert len(response.json) == 1
         # TEST NO RESULT
-        response = self.client.get(url_for(url, idSynthese=3, type="discussion"))
-        assert response.status_code == 200
-        assert len(response.json) == 1
-        # TEST TYPE NOT EXISTS
-        response = self.client.get(url_for(url, idSynthese=3, type="foo"))
-        assert response.status_code == BadRequest.code
-        # NO TYPE - TYPE IS NOT REQUIRED
-        response = self.client.get(url_for(url, idSynthese=3))
-        assert response.status_code == 200
+        if len(ids) > 1 :
+            response = self.client.get(url_for(url, idSynthese=ids[1], type="discussion"))
+            assert response.status_code == 200
+            assert len(response.json) == 1
+            # TEST TYPE NOT EXISTS
+            response = self.client.get(url_for(url, idSynthese=ids[1], type="foo"))
+            assert response.status_code == BadRequest.code
+            # NO TYPE - TYPE IS NOT REQUIRED
+            response = self.client.get(url_for(url, idSynthese=ids[1]))
+            assert response.status_code == 200
