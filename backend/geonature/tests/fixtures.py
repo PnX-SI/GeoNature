@@ -23,7 +23,7 @@ from apptax.taxonomie.models import Taxref
 from utils_flask_sqla.tests.utils import JSONClient
 
 
-__all__ = ['datasets', 'acquisition_frameworks', 'synthese_data', 'source', 'reports_data', 'bib_report_types_data']
+__all__ = ['datasets', 'acquisition_frameworks', 'synthese_data', 'source', 'reports_data']
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -254,35 +254,16 @@ def reports_data(users, synthese_data):
     ids = []
     for el in synthese_data:
         ids.append(el.id_synthese)
+    # get id by type
+    discussionId = BibReportsTypes.query.filter(BibReportsTypes.type=='discussion').first().id_type
+    alertId = BibReportsTypes.query.filter(BibReportsTypes.type=='alert').first().id_type
     with db.session.begin_nested():
         reports = [
-            (ids[0], users["admin_user"].id_role, "comment1", 1, False),
-            (ids[1], users["admin_user"].id_role, "comment1", 2, False)
+            (ids[0], users["admin_user"].id_role, "comment1", discussionId, False),
+            (ids[1], users["admin_user"].id_role, "comment1", alertId, False)
         ]
         for id_synthese, *args in reports:
             data.append(create_report(id_synthese, *args))
     
-    return data
-
-@pytest.fixture()
-def bib_report_types_data():
-    data = []
-    # do not commit directly on current transaction, as we want to rollback all changes at the end of tests
-    def create_report_type(id_type, type_name):
-        new_type = BibReportsTypes(
-            id_type=id_type,
-            type=type_name
-        )
-        db.session.add(new_type)
-        return new_type
-    with db.session.begin_nested():
-        BibReportsTypes.query.delete()
-        reports = [
-            (1, "discussion"),
-            (2, "alert"),
-            (3, "pin")
-        ]
-        for id_type, *args in reports:
-            data.append(create_report_type(id_type, *args))
     return data
         

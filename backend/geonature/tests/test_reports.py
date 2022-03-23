@@ -49,12 +49,15 @@ class TestReports:
         )
         assert response.status_code == BadRequest.code
 
-    def test_delete_report(self, bib_report_types_data, reports_data, users):
+    def test_delete_report(self, reports_data, users):
         # NO AUTHENT
         url = "gn_synthese.delete_report"
         id_report_ko = db.session.query(func.max(TReport.id_report)).scalar() + 1
+        # get id type for discussion type
         discussionIdType = BibReportsTypes.query.filter(BibReportsTypes.type == "discussion").first().id_type
+        # get a report with discussion type
         notDiscussionReportId = TReport.query.filter(TReport.id_type != discussionIdType).first().id_report
+        # get a report with other type (e.g alert)
         discussionReportId = TReport.query.filter(TReport.id_type == discussionIdType, TReport.id_role == users['admin_user'].id_role ).first().id_report
         # DELETE WITHOUT AUTH
         response = self.client.delete(url_for(url, id_report=discussionReportId))
