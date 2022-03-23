@@ -148,9 +148,7 @@ jobs:
       env:
         TAXHUB_SETTINGS: test_config.py
     - name: curl
-      uses: wei/curl@master
-      with:
-        args: http://127.0.0.1:5000/api/taxref/allnamebylist?offset=10
+      run: curl http://127.0.0.1:5000/api/taxref/allnamebylist?offset=10
     - name: Cypress run
       uses: cypress-io/github-action@v2
       with:
