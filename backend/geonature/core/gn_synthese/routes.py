@@ -1003,6 +1003,7 @@ def update_content_report(id_report):
     if row.user != g.current.user:
         raise Forbidden
     row = session.query(TReport).filter_by(id_report=data["idReport"], id_role=g.current_user.id_role)
+    row.content = data["content"]
     session.commit()
 
 @routes.route('/reports', methods=["GET"])
@@ -1026,8 +1027,10 @@ def list_reports(scope):
     if sort == 'desc':
         req = req.order_by(desc(TReport.creation_date))
     # join user and bib_reports_types tables
-    result = req.options(joinedload('user').load_only("nom_role", "prenom_role"))
-    result = req.options(joinedload('report_type').load_only("id_type","type"))
+    result = req.options(
+        joinedload('user').load_only("nom_role", "prenom_role"),
+        joinedload('report_type')
+    )
     # get results by type
     if type_name:
         result = result.filter(BibReportsTypes.type==type_name)
@@ -1055,12 +1058,10 @@ def list_reports(scope):
 @json_resp
 def delete_report(id_report):
     reportItem = TReport.query.get_or_404(id_report)
+
     if reportItem.id_role != g.current_user.id_role:
-        print("================BACKEND============")
-        print(reportItem.id_role)
         raise Forbidden
-    type_exists = BibReportsTypes.query.get_or_404(reportItem.id_type)
-    if type_exists.type == "discussion":
+    if reportItem.report_type.type == "discussion":
         reportItem.content=''
         reportItem.deleted=True
     else :
