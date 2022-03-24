@@ -217,8 +217,11 @@ def synthese_data(users, datasets, source):
             Taxref.query.filter_by(cd_nom=713776).one(),
             Taxref.query.filter_by(cd_nom=2497).one()
         ]
+        entity_source_pk_value = 0
         for taxon in taxons:
+            entity_source_pk_value += 1
             s = Synthese(id_source=source.id_source,
+                        entity_source_pk_value=f"{entity_source_pk_value}",
                         unique_id_sinp=func.uuid_generate_v4(),
                         dataset=datasets['own_dataset'],
                         digitiser=users['self_user'],
@@ -264,6 +267,5 @@ def reports_data(users, synthese_data):
         ]
         for id_synthese, *args in reports:
             data.append(create_report(id_synthese, *args))
-    
+
     return data
-        
