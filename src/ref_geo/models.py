@@ -2,6 +2,7 @@ from datetime import datetime
 
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
+from sqlalchemy.dialects.postgresql import JSONB
 
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
@@ -40,6 +41,65 @@ class LAreas(db.Model):
     meta_create_date = db.Column(db.DateTime, default=datetime.now)
     meta_update_date = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     area_type = db.relationship("BibAreasTypes", lazy="select")
+
+
+@serializable
+class BibLinearsTypes(db.Model):
+    __tablename__ = "bib_linears_types"
+    __table_args__ = {"schema": "ref_geo"}
+    id_type = db.Column(db.Integer, primary_key=True)
+    type_name = db.Column(db.Unicode(length=200), nullable=False)
+    type_code = db.Column(db.Unicode(length=25), nullable=False)
+    type_desc = db.Column(db.Unicode)
+    ref_name = db.Column(db.Unicode(length=200))
+    ref_version = db.Column(db.Integer)
+    num_version = db.Column(db.Unicode(length=50))
+
+
+class CorLinearGroup(db.Model):
+    __table_name__ = "cor_linear_group"
+    __table_args__ = {"schema": "ref_geo"}
+    id_group = db.Column(
+        db.Integer,
+        ForeignKey("ref_geo.t_linear_groups.id_group"),
+        primary_key=True,
+    )
+    id_linear = db.Column(
+        db.Integer,
+        ForeignKey("ref_geo.l_linears.id_linear"),
+        primary_key=True,
+    )
+
+
+@geoserializable
+class LLinears(db.Model):
+    __tablename__ = "l_linears"
+    __table_args__ = {"schema": "ref_geo"}
+    id_linear = db.Column(db.Integer, primary_key=True)
+    id_type = db.Column(
+        db.Integer, ForeignKey("ref_geo.bib_linears_types.id_type"), nullable=False
+    )
+    linear_name = db.Column(db.Unicode(length=250))
+    linear_code = db.Column(db.Unicode(length=25))
+    geom = db.Column(Geometry("GEOMETRY"))
+    source = db.Column(db.Unicode(length=250))
+    enable = db.Column(db.Boolean, nullable=False, default=True)
+    additional_data = db.Column(JSONB)
+    meta_create_date = db.Column(db.DateTime, default=datetime.now)
+    meta_update_date = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    type = db.relationship("BibLinearsTypes")
+    groups = db.relationship(
+        "TLinearGroups", secondary=CorLinearGroup.__table__, backref="linears"
+    )
+
+
+@serializable
+class TLinearGroups(db.Model):
+    __table_name__ = "l_linear_groups"
+    __table_args__ = {"schema": "ref_geo"}
+    id_group = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Unicode(length=250))
+    code = db.Column(db.Unicode(length=25), unique=True)
 
 
 @serializable

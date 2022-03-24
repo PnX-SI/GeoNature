@@ -6,6 +6,10 @@ CHANGELOG
 
 **🚀 Nouveautés**
 
+* Ajout de tables et de modèles pour un référentiel geographique de linaires
+    * Peut être organisé en tronçons (stockés dans ``ref_geo.l_linears``) qui peuvent appartenir à un groupe de linéaires (``ref_geo.l_linear_groups``)
+    * Par exemple les tronçons d'autoroute ``A7_40727085`` et ``A7_40819117`` appartiennent au groupe ``Autoroute A7``
+
 * Ajout d'un fonction ``get_local_srid`` pour récupérer le srid local
 
 
