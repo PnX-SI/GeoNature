@@ -35,7 +35,7 @@ class EmailStrOrListOfEmailStrField(fields.Field):
             return value
         else:
             raise ValidationError('Field should be str or list of str')
-    
+
     def _check_email(self, value):
         recipients = clean_recipients(value)
         for recipient in recipients:
@@ -132,7 +132,7 @@ class AlembicConfig(Schema):
 class AdditionalFields(Schema):
     IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX"])
     IMPLEMENTED_OBJECTS = fields.List(
-        fields.String(), 
+        fields.String(),
         load_default=["OCCTAX_RELEVE",  "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"]
     )
 
@@ -161,7 +161,7 @@ class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
         validate=Regexp(
-            "^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+$",
+            "^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+",
             error="Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name",
         ),
     )
