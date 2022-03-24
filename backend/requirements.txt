@@ -1,9 +1,9 @@
 -r requirements-common.txt
 
-pypnusershub@https://github.com/PnX-SI/UsersHub-authentification-module/archive/1.5.9.tar.gz
-pypnnomenclature@https://github.com/PnX-SI/Nomenclature-api-module/archive/1.5.1.tar.gz
+pypnusershub@https://github.com/PnX-SI/UsersHub-authentification-module/archive/ec370fa50399b3aa345fd20ffcbdbbaab6e23323.tar.gz
+pypnnomenclature@https://github.com/PnX-SI/Nomenclature-api-module/archive/b2bcb4e2fa0bc4d72e316cf7d2ba864a0a73e7db.tar.gz
 pypn_habref_api@https://github.com/PnX-SI/Habref-api-module/archive/0.3.0.tar.gz
 utils-flask-sqlalchemy-geo@https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo/archive/0.2.2.zip
-utils-flask-sqlalchemy@https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/archive/0.2.6.zip
-taxhub@https://github.com/PnX-SI/TaxHub/archive/1.9.4.zip
-pypn-ref-geo@https://github.com/PnX-SI/RefGeo/archive/1.0.1.zip
+utils-flask-sqlalchemy@https://github.com/PnX-SI/Utils-Flask-SQLAlchemy/archive/abc373e20c40428cc43ca858227536d813bac6fa.zip
+taxhub@https://github.com/PnX-SI/TaxHub/archive/8427fc3575fca785b305fd2f055066c3d37d0f1e.zip
+pypn-ref-geo@https://github.com/PnX-SI/RefGeo/archive/3cdea5b36e931a851aa663a2f154090e85947363.zip
