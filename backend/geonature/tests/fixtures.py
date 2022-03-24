@@ -272,10 +272,11 @@ def source():
     return source
 
 
-def create_synthese(geom, taxon, user, dataset, source, uuid):
+def create_synthese(geom, taxon, user, dataset, source, entity_source_pk_value, uuid):
     now = datetime.datetime.now()
     return Synthese(
         id_source=source.id_source,
+        entity_source_pk_value=entity_source_pk_value,
         unique_id_sinp=uuid,
         dataset=dataset,
         digitiser=user,
@@ -297,23 +298,25 @@ def synthese_data(app, users, datasets, source):
     point3 = Point(-3.486786, 48.832182)
     data = {}
     with db.session.begin_nested():
-        for name, cd_nom, point, ds in [
-            ("obs1", 713776, point1, datasets["own_dataset"]),
-            ("obs2", 212, point2, datasets["own_dataset"]),
-            ("obs3", 2497, point3, datasets["own_dataset"]),
-            ("p1_af1", 713776, point1, datasets["belong_af_1"]),
-            ("p1_af1_2", 212, point1, datasets["belong_af_1"]),
-            ("p1_af2", 212, point1, datasets["belong_af_2"]),
-            ("p2_af2", 2497, point2, datasets["belong_af_2"]),
-            ("p2_af1", 2497, point2, datasets["belong_af_1"]),
-            ("p3_af3", 2497, point3, datasets["belong_af_3"]),
+        for name, cd_nom, point, ds, entity_source_pk_value in [
+            ("obs1", 713776, point1, datasets["own_dataset"], "1"),
+            ("obs2", 212, point2, datasets["own_dataset"], "2"),
+            ("obs3", 2497, point3, datasets["own_dataset"], "3"),
+            ("p1_af1", 713776, point1, datasets["belong_af_1"], "4"),
+            ("p1_af1_2", 212, point1, datasets["belong_af_1"], "5"),
+            ("p1_af2", 212, point1, datasets["belong_af_2"], "6"),
+            ("p2_af2", 2497, point2, datasets["belong_af_2"], "7"),
+            ("p2_af1", 2497, point2, datasets["belong_af_1"], "8"),
+            ("p3_af3", 2497, point3, datasets["belong_af_3"], "9"),
         ]:
             unique_id_sinp = (
                 "f4428222-d038-40bc-bc5c-6e977bbbc92b" if not data else func.uuid_generate_v4()
             )
             geom = from_shape(point, srid=4326)
             taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
-            s = create_synthese(geom, taxon, users["self_user"], ds, source, unique_id_sinp)
+            s = create_synthese(
+                geom, taxon, users["self_user"], ds, source, entity_source_pk_value, unique_id_sinp
+            )
             db.session.add(s)
             data[name] = s
     return data
