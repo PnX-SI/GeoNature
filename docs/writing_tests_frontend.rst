@@ -73,7 +73,7 @@ Exemple
 Lancement
 *********
 
-Pour lancer Cypress et executer les tests à la main il faut exécuter la commande(nécessite qu'un geonature fonctionne):
+Pour lancer Cypress et executer les tests à la main il faut exécuter la commande (nécessite qu'une instance GeoNature fonctionne (backend+frontend)):
 
 .. code-block:: bash
 
