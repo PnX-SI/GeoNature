@@ -26,9 +26,11 @@ Lancement
 Pour lancer Cypress est executer les tests à la main il faut exécuter la commande:
 
 .. code-block::
-    npm run cypress:open
+
+    $ npm run cypress:open
 
 Pour lancer les test en mode automatique, il faut exécuter la commande:
 
 .. code-block::
-    e2e:ci && e2e:coverage
+
+    $ e2e:ci && e2e:coverage
