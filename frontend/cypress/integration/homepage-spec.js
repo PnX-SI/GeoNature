@@ -8,7 +8,7 @@ describe("Testing metadata", () => {
     cy.geonatureLogin();
   });
 
-  it.only('should close and open the menu', () => {
+  it('should close and open the menu', () => {
     cy.get("#app-toolbar > button.mat-focus-indicator.mat-tooltip-trigger.mat-elevation-z1.mr-2.mat-icon-button.mat-button-base").click()
     cy.wait(500)
     cy.get("#app-sidenav").should('have.css', 'visibility').and('match', /hidden/)
@@ -18,7 +18,7 @@ describe("Testing metadata", () => {
   })
 
   it('should display synthese page', () => {
-    cy.get('body > pnx-root > pnx-nav-home > mat-sidenav-container > mat-sidenav-content > div > div > pnx-home-content > div > div.row > div.col-6.ng-star-inserted > div > div.panel-heading > button').click({force: true})
+    cy.get('[data-qa="pnx-home-content"] > div.row > div.col-6.ng-star-inserted > div > div.panel-heading > button').click({force: true})
     cy.url().should('include', 'synthese') 
   })
 

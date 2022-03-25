@@ -11,7 +11,7 @@ describe("Testing adding an observation in OccTax", () => {
     cy.geonatureLogout();
     cy.geonatureLogin();
     cy.visit("/#/occtax")
-    cy.get("[data-qa='gn-occtax-btn-add-releve']").click();
+    // cy.get("[data-qa='gn-occtax-btn-add-releve']").click();
   });
 
   it('should not be possible to add data if any geometry had been selected', () => {
@@ -29,7 +29,7 @@ describe("Testing adding an observation in OccTax", () => {
   });
 
   // TODO 
-  it('should be possible to add a geometry on the map'){
+  it('should be possible to add a geometry on the map', () => {
     // Le point 
       // Il est impossible d'ajouter un point au zoom minimal du relevé
       // Tester que l'ajout de point n'est pas possible 
@@ -55,7 +55,7 @@ describe("Testing adding an observation in OccTax", () => {
     // Une fois une géométrie sélectionnée il est impossible d'enregistrer et saisir des taxons avant de remplir des champs 
     cy.get("[data-qa=\"pnx-occtax-releve-submit-btn\"]")
     .should('be.disabled')
-  }
+  });
 
   it("should test the observer form", () => {
     // Test de l'existence d'une valeur initiale 
@@ -300,13 +300,8 @@ describe("Testing adding an observation in OccTax", () => {
     cy.get('[data-qa="pnx-occtax-filter-search"]').click()
   })
 
-  it("Should be the good taxa", async () => {
-    const date = await promisify(cy.get("body > pnx-root > pnx-nav-home > mat-sidenav-container > mat-sidenav-content > div > div > pnx-occtax-map-list > div > div > div.row > div:nth-child(2) > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller > datatable-row-wrapper > datatable-body-row > div.datatable-row-center.datatable-row-group.ng-star-inserted > datatable-body-cell:nth-child(7) > div > div > span"))
-    expect(date[0].innerText).to.equal("25-01-2022")
-  })
-
-  it("Should be the good taxa", async () => {
-    const date = await promisify(cy.get("body > pnx-root > pnx-nav-home > mat-sidenav-container > mat-sidenav-content > div > div > pnx-occtax-map-list > div > div > div.row > div:nth-child(2) > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller > datatable-row-wrapper > datatable-body-row > div.datatable-row-center.datatable-row-group.ng-star-inserted > datatable-body-cell:nth-child(7) > div > div > span"))
+  it.only("Should be the good taxa", async () => {
+    const date = await promisify(cy.get("[data-qa='pnx-occtax-map-list'] > div > div.row > div:nth-child(2) > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller > datatable-row-wrapper > datatable-body-row > div.datatable-row-center.datatable-row-group.ng-star-inserted > datatable-body-cell:nth-child(7) > div > div > span"))
     expect(date[0].innerText).to.equal("25-01-2022")
   })
 
