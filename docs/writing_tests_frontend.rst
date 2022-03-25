@@ -79,7 +79,7 @@ Pour lancer Cypress et executer les tests à la main il faut exécuter la comman
 
     $ npm run cypress:open
 
-Pour lancer les test en mode automatique, il faut exécuter la commande (utilisation dans la CI):
+Pour lancer les test en mode automatique, il faut exécuter la commande (utilisée dans l'intégration continue (GitHub Action)):
 
 .. code-block:: bash
 
