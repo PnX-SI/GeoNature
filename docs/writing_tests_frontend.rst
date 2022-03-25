@@ -29,7 +29,7 @@ Dans chaque fichier la structure des tests est de la forme
 Exemple
 ^^^^^^^
 
-.. code-block::
+.. code-block:: js
 
     describe("description général de la partie testée", () => {
 
@@ -54,21 +54,21 @@ Angular suggère l'ajout de tags de ce type:
 Exemple
 ^^^^^^^
 
-.. code-block::
+.. code-block:: HTML
 
     <div data-qa="text_de_selection">
 
 Lancement
 *********
 
-Pour lancer Cypress et executer les tests à la main il faut exécuter la commande:
+Pour lancer Cypress et executer les tests à la main il faut exécuter la commande(nécessite qu'un geonature fonctionne):
 
-.. code-block::
+.. code-block:: bash
 
     $ npm run cypress:open
 
 Pour lancer les test en mode automatique, il faut exécuter la commande(utilisation dans la CI):
 
-.. code-block::
+.. code-block:: bash
 
     $ npm run e2e:ci && npm run e2e:coverage
