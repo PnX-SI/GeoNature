@@ -19,7 +19,7 @@ Structure
 
 La nomenclature des fichiers de test est XXXXXXX-spec.js
 
-Dans chaque fichier la structure des test est de la forme
+Dans chaque fichier la structure des tests est de la forme
 
 - une description
     - test
@@ -33,13 +33,13 @@ Exemple
 
     describe("description général de la partie testée", () => {
 
-    it('description du test 1', () => {
-        //contenu du test 1
-    })
+        it('description du test 1', () => {
+            //contenu du test 1
+        })
 
-    it('description du test 2', () => {
-        //contenu du test 2
-    })
+        it('description du test 2', () => {
+            //contenu du test 2
+        })
 
     })
 
@@ -51,17 +51,24 @@ Angular suggère l'ajout de tags de ce type:
 - test-qa
 - data-test
 
+Exemple
+^^^^^^^
+
+.. code-block::
+
+    <div data-qa="text_de_selection">
+
 Lancement
 *********
 
-Pour lancer Cypress est executer les tests à la main il faut exécuter la commande:
+Pour lancer Cypress et executer les tests à la main il faut exécuter la commande:
 
 .. code-block::
 
     $ npm run cypress:open
 
-Pour lancer les test en mode automatique, il faut exécuter la commande:
+Pour lancer les test en mode automatique, il faut exécuter la commande(utilisation dans la CI):
 
 .. code-block::
 
-    $ e2e:ci && e2e:coverage
+    $ npm run e2e:ci && npm run e2e:coverage
