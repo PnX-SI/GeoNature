@@ -192,16 +192,6 @@ jobs:
         geonature install_packaged_gn_module contrib/gn_module_validation VALIDATION --build=false
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
-    # - name: Test with pytest
-    #   run: |
-    #     pytest -v --cov --cov-report xml
-    #   env:
-    #     GEONATURE_CONFIG_FILE: config/test_config.toml
-    - name: Upload coverage to Codecov
-      if: ${{ matrix.name == 'Debian 11' }}
-      uses: codecov/codecov-action@v2
-      with:
-        flags: pytest
       # FRONTEND
     - name: Cache node modules
       uses: actions/cache@v1
