@@ -213,7 +213,7 @@ def get_observations_for_web(auth, permissions):
         "data": FeatureCollection(geojson_features),
         "nb_total": len(geojson_features),
         "nb_obs_limited": (
-            len(geojson_features) == int(current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"])
+            len(results) == int(current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"])
         ),
     }
 
