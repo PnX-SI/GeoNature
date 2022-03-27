@@ -112,7 +112,6 @@ class PermissionManagement(Schema):
     ENABLE_ACCESS_REQUEST = fields.Boolean(load_default=False)
     AREA_TYPES = fields.List(fields.String(), load_default=["COM", "DEP"])
     ENABLE_SENSITIVE_ACCESS = fields.Boolean(load_default=True)
-    DATA_ACCESS_RULES_LINK = fields.String(load_default=None)
     DEFAULT_ACCESS_DURATION = fields.Integer(load_default=None)
     MAX_ACCESS_DURATION = fields.Integer(load_default=365)
     VALIDATOR_EMAIL = EmailStrOrListOfEmailStrField(load_default=None)

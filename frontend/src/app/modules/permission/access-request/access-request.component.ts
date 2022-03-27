@@ -27,7 +27,6 @@ export class AccessRequestComponent implements OnInit {
   public config = AppConfig.PERMISSION_MANAGEMENT;
   public dynamicFormCfg;
   public enableSensitiveAccess;
-  public rulesLink;
   public areaTypes: Array<String>;
   public defaultAccessDuration;
   public maxAccessDuration;
@@ -49,7 +48,6 @@ export class AccessRequestComponent implements OnInit {
     this.redirectToHome();
     this.dynamicFormCfg = this.config.REQUEST_FORM;
     this.enableSensitiveAccess = this.config.ENABLE_SENSITIVE_ACCESS || false;
-    this.rulesLink = this.config.DATA_ACCESS_RULES_LINK || false;
     // TODO: use code instead of id
     this.areaTypes = this.config.AREA_TYPES;
     this.defaultAccessDuration = this.config.DEFAULT_ACCESS_DURATION;
