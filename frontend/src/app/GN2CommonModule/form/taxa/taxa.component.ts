@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { Observable, of, Subject, concat } from 'rxjs';
 import {
@@ -43,7 +43,6 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
   templateUrl: 'taxa.component.html',
 })
 export class TaxaComponent extends GenericFormComponent implements OnInit {
-
   taxa: Observable<any>;
   taxaInput$ = new Subject<string>();
   loading = false;
@@ -81,6 +80,13 @@ export class TaxaComponent extends GenericFormComponent implements OnInit {
    * `parentFormControl`.
    */
   @Input() defaultItems: Array<any> = [];
+  /**
+   * Permet découter les changements sur la sélection de ng-select.
+   * Retourne un tableau d'objets. Les objets correspondent aux items
+   * sélectionnés. Chaque objet contient à minima 2 attributs : un
+   * correspondant à l'input `valueFieldName`, l'autre est `displayName`.
+   */
+  @Output() onSelectionChange = new EventEmitter<any>();
 
   constructor(private dataService: DataFormService) {
     super();
