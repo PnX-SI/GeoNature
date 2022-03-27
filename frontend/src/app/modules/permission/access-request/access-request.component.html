@@ -62,12 +62,6 @@
               <label for="sensitive_access" class="custom-control-label">
                 <small>
                   <span [innerHTML]="'Permissions.accessRequest.sensitiveAccessText' | translate"></span>
-                  <span *ngIf="rulesLink">
-                    (<a
-                      href="{{ rulesLink }}"
-                      target="_blank"
-                    >{{ 'Permissions.accessRequest.sensitiveAccessRules' | translate}}</a>)
-                  </span>
                 </small>
               </label>
             </div>
