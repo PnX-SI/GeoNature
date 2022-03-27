@@ -33,6 +33,7 @@
               [typeCodes]="areaTypes"
               [matTooltip]="'Permissions.accessRequest.geoAreaTooltip' | translate"
               matTooltipPosition="above"
+              (onSelectionChange)="onChangeAreas($event)"
             >
             </pnx-areas>
           </div>
@@ -44,6 +45,7 @@
               rank="GN"
               [matTooltip]="'Permissions.accessRequest.taxaTooltip' | translate"
               matTooltipPosition="above"
+              (onSelectionChange)="onChangeTaxa($event)"
             >
             </pnx-taxa>
           </div>

@@ -15,10 +15,9 @@ import { ConventiondModalContent } from '../convention-modal/convention-modal.co
 @Component({
   selector: 'gn-access-request',
   templateUrl: './access-request.component.html',
-  styleUrls: ['./access-request.component.scss']
+  styleUrls: ['./access-request.component.scss'],
 })
 export class AccessRequestComponent implements OnInit {
-
   public sendingRequest = false;
   public disableSubmit = false;
   public regularFormGrp: FormGroup;
@@ -34,7 +33,12 @@ export class AccessRequestComponent implements OnInit {
   public datePickerMin;
   public datePickerMax;
   public userInfos;
-  public accessRequestInfos;
+  public accessRequestInfos = {
+    'areas': '',
+    'taxa': '',
+    'sensitiveAccess': '',
+    'endAccessDate': '',
+  };
   public customData;
 
   constructor(
@@ -43,7 +47,7 @@ export class AccessRequestComponent implements OnInit {
     private formBuilder: FormBuilder,
     private router: Router,
     private permissionService: PermissionService,
-    private modalService: NgbModal,
+    private modalService: NgbModal
   ) {
     this.redirectToHome();
     this.dynamicFormCfg = this.config.REQUEST_FORM;
@@ -122,46 +126,32 @@ export class AccessRequestComponent implements OnInit {
     modalRef.componentInstance.userInfos = this.userInfos;
     modalRef.componentInstance.accessRequestInfos = this.accessRequestInfos;
     modalRef.componentInstance.customData = this.customData;
-    modalRef.result.then((result) => {
-      this.sendAccessRequest();
-    }, (reason) => {
-      this.commonService.translateToaster('warning', 'Permissions.accessRequest.conventionCanceled');
-      this.disableSubmit = false;
-    });
+    modalRef.result.then(
+      (result) => {
+        this.sendAccessRequest();
+      },
+      (reason) => {
+        this.commonService.translateToaster(
+          'warning',
+          'Permissions.accessRequest.conventionCanceled'
+        );
+        this.disableSubmit = false;
+      }
+    );
   }
 
   private buildUserInfos() {
     const currentUser = this.authService.getCurrentUser();
     this.userInfos = {
       firstname: currentUser.prenom_role,
-      lastname: currentUser.nom_role
+      lastname: currentUser.nom_role,
     };
   }
 
   private buildAccessRequestInfos() {
     const regularData = Object.assign({}, this.regularFormGrp.value);
-    this.accessRequestInfos = {
-      areas: '',
-      taxa: '',
-      sensitiveAccess: regularData.sensitive_access,
-      endAccessDate: this.formatDate(regularData.end_access_date)
-    }
-
-    if (regularData.areas.length > 0) {
-      let areasNames = [];
-      regularData.areas.forEach(area => {
-        areasNames.push(area.area_name);
-      });
-      this.accessRequestInfos.areas = areasNames.join(', ');
-    }
-
-    if (regularData.taxa.length > 0) {
-      let taxaNames = [];
-      regularData.taxa.forEach(taxon => {
-        taxaNames.push(taxon.displayName);
-      });
-      this.accessRequestInfos.taxa = taxaNames.join(', ');
-    }
+    this.accessRequestInfos.sensitiveAccess = regularData.sensitive_access;
+    this.accessRequestInfos.endAccessDate = this.formatDate(regularData.end_access_date);
   }
 
   private formatDate(date) {
@@ -170,13 +160,13 @@ export class AccessRequestComponent implements OnInit {
       const day = this.padStartWithZero(date.day);
       const month = this.padStartWithZero(date.month);
       const year = date.year;
-      formatedDate = `${day}/${month}/${year}`
+      formatedDate = `${day}/${month}/${year}`;
     }
     return formatedDate;
   }
 
   // TODO: replace by string.padStart() when we 'll use ES2017.
-  private padStartWithZero(number, size=2) {
+  private padStartWithZero(number, size = 2) {
     number = number.toString();
     while (number.length < size) {
       number = '0' + number;
@@ -184,7 +174,25 @@ export class AccessRequestComponent implements OnInit {
     return number;
   }
 
-  private buildCustomData() {
+  onChangeAreas(value) {
+    console.log('In onChangeAreas:', value);
+    let areasNames = [];
+    value.forEach((area) => {
+      areasNames.push(area.area_name);
+    });
+    this.accessRequestInfos.areas = areasNames.length > 0 ? areasNames.join(', ') : '';
+  }
+
+  onChangeTaxa(value) {
+    console.log('In onChangeTaxa:', value);
+    let taxaNames = [];
+    value.forEach((taxon) => {
+      taxaNames.push(taxon.displayName);
+    });
+    this.accessRequestInfos.taxa = taxaNames.length > 0 ? taxaNames.join(', ') : '';
+  }
+
+  private buildCustomData() {
     this.customData = this.dynamicFormGrp.value;
   }
 
@@ -192,7 +200,7 @@ export class AccessRequestComponent implements OnInit {
     const options: NgbModalOptions = {
       size: 'lg',
       backdrop: 'static',
-      keyboard: false
+      keyboard: false,
     };
     return this.modalService.open(ConventiondModalContent, options);
   }
@@ -202,23 +210,24 @@ export class AccessRequestComponent implements OnInit {
     const accessRequestData = this.getAccessRequestData();
 
     this.permissionService
-    .sendAccessRequest(accessRequestData)
-    .subscribe(
-      () => {
-        this.commonService.translateToaster('info', 'Permissions.accessRequest.responseOk');
-        this.router.navigate(['/']);
-      },
-      error => {
-        console.log('Error occurred when sending access request:', error);
-        this.commonService.translateToaster('error', 'Permissions.accessRequest.responseError');
-      })
-    .add(() => {
-      this.sendingRequest = false;
-      this.disableSubmit = false;
-    });
+      .sendAccessRequest(accessRequestData)
+      .subscribe(
+        () => {
+          this.commonService.translateToaster('info', 'Permissions.accessRequest.responseOk');
+          this.router.navigate(['/']);
+        },
+        (error) => {
+          console.log('Error occurred when sending access request:', error);
+          this.commonService.translateToaster('error', 'Permissions.accessRequest.responseError');
+        }
+      )
+      .add(() => {
+        this.sendingRequest = false;
+        this.disableSubmit = false;
+      });
   }
 
-  private getAccessRequestData() {
+  private getAccessRequestData() {
     const regularData = Object.assign({}, this.regularFormGrp.value);
     let accessRequestData = {
       areas: regularData.areas.length > 0 ? regularData.areas : [],
