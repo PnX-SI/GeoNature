@@ -25,6 +25,8 @@ from geonature.core.gn_synthese.models import (
     CorObserverSynthese,
     TSources,
     CorAreaSynthese,
+    BibReportsTypes,
+    TReport,
 )
 from geonature.core.gn_meta.models import (
     TAcquisitionFramework,
@@ -224,9 +226,13 @@ class SyntheseQuery:
         """
         Other filters
         """
-
         if "has_medias" in self.filters:
             self.query = self.query.where(self.model.medias.any())
+
+        if "has_alert" in self.filters:
+            self.query = self.query.where(
+                self.model.reports.any(TReport.report_type.has(BibReportsTypes.type == "alert"))
+            )
 
         if "id_dataset" in self.filters:
             self.query = self.query.where(

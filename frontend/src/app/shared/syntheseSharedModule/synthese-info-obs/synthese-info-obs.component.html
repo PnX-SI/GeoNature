@@ -8,7 +8,14 @@
   *ngIf="header"
   class="modal-header padding-md-all"
 >
-  <h5 class="my-3 ml-3">{{'Synthese.ModalTitle' | translate }}</h5>
+  <h5
+    *ngIf="!alertOpen"
+    class="my-3 ml-3"
+  >{{'Synthese.ModalTitle' | translate }}</h5>
+  <h5
+    *ngIf="alertOpen"
+    class="my-3 ml-3"
+  >Signalement</h5>
   <button
     type="button"
     class="close"
@@ -22,7 +29,26 @@
   </button>
 </div>
 
-<mat-card class="modal-body">
+<mat-card
+  class="modal-body"
+  *ngIf="idSynthese && alertOpen"
+>
+  <mat-card-content *ngIf="activateAlert">
+    <span class="font-xs mb-2">
+      <pnx-alert-info
+        [idSynthese]="idSynthese"
+        [alert]="alert"
+        (changeVisibility)="openCloseAlert($event)"
+      ></pnx-alert-info>
+    </span>
+  </mat-card-content>
+</mat-card>
+
+
+<mat-card
+  class="modal-body"
+  *ngIf="!alertOpen"
+>
   <div class="d-flex w-100 justify-content-between">
     <h4 class="mr-auto  gn-color">
       <a
@@ -70,6 +96,17 @@
           mat-raised-button
         >
           <mat-icon>share</mat-icon>
+        </button>
+        <button
+          mat-mini-fab
+          *ngIf="activateAlert"
+          [ngbTooltip]="alertExists() ? 'Signalement en cours' : 'Signaler'"
+          placement="bottom"
+          mat-raised-button
+          (click)="openCloseAlert()"
+          [ngStyle]="activateAlert && alertExists() ? {'background-color': 'white', 'color': 'rgb(252,63,42)'} : ''"
+        >
+          <mat-icon>flag</mat-icon>
         </button>
       </mat-toolbar>
     </div>
@@ -559,4 +596,4 @@
       [additionalData]="{data: validationHistory, dateField: 'dateTime'}"
     ></pnx-discussion-card>
   </mat-tab>
-  <mat-tab-group>
+</mat-tab-group>
