@@ -1,5 +1,12 @@
 export const DYNAMIC_FORM_DEF = [
   {
+    attribut_name: 'has_alert',
+    type_widget: 'bool_checkbox',
+    attribut_label: "Est signalé",
+    required: false,
+    value: true
+  },
+  {
     attribut_name: 'has_medias',
     type_widget: 'bool_checkbox',
     attribut_label: 'Possède des médias',

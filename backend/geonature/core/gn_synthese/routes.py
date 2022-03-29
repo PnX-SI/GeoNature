@@ -6,19 +6,11 @@ import time
 from collections import OrderedDict
 from warnings import warn
 
-from flask import (
-    Blueprint,
-    request,
-    Response,
-    current_app,
-    send_from_directory,
-    render_template,
-    jsonify,
-    g,
-)
-from werkzeug.exceptions import Forbidden, NotFound, BadRequest
+from flask import Blueprint, request, Response, current_app, \
+                  send_from_directory, render_template, jsonify, g
+from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from sqlalchemy import distinct, func, desc, asc, select, text, update
-from sqlalchemy.orm import joinedload, selectinload, lazyload
+from sqlalchemy.orm import joinedload, contains_eager, lazyload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 
@@ -999,6 +991,14 @@ def create_report(scope):
         synthese = Synthese.query.get_or_404(id_synthese)
         if not synthese.has_instance_permission(scope):
             raise Forbidden
+        # only allow one alert by id_synthese
+        if type_name == 'alert':
+            alert_exists = DB.session.query(TReport).join("report_type").\
+                options(contains_eager("report_type")).\
+                filter(TReport.id_synthese == id_synthese, BibReportsTypes.type==type_name).\
+                one_or_none()
+            if alert_exists is not None:
+                raise Conflict("Alert already exists for this id")
     except KeyError:
         raise BadRequest("Empty request data")
     new_entry = TReport(
@@ -1039,47 +1039,45 @@ def update_content_report(id_report):
 def list_reports(scope):
     type_name = request.args.get("type")
     id_synthese = request.args.get("idSynthese")
-    sort = request.args.get("sort")
-    # READ REQUEST PARAMS
+    sort=request.args.get("sort")
+    # VERIFY ID SYNTHESE
     synthese = Synthese.query.get_or_404(id_synthese)
     if not synthese.has_instance_permission(scope):
         raise Forbidden
-    req = TReport.query.filter(TReport.id_synthese == id_synthese)
+    # START REQUEST
+    req = DB.session.query(TReport).join("report_type").\
+            options(contains_eager("report_type")).\
+            filter(TReport.id_synthese == id_synthese)
+    # VERIFY AND SET TYPE
     type_exists = BibReportsTypes.query.filter_by(type=type_name).one_or_none()
     # type param is not required to get all
     if type_name and not type_exists:
-        raise BadRequest("This report type does not exist")
-    # sort
-    if sort == "asc":
+        raise BadRequest('This report type does not exist')
+    req = req.filter(BibReportsTypes.type==type_name)
+    # SORT
+    if sort == 'asc':
         req = req.order_by(asc(TReport.creation_date))
     if sort == "desc":
         req = req.order_by(desc(TReport.creation_date))
-    # join user and bib_reports_types tables
-    result = req.options(
-        joinedload("user").load_only("nom_role", "prenom_role"), joinedload("report_type")
-    )
     # get results by type
     if type_name:
-        result = result.filter(BibReportsTypes.type == type_name)
+        req = req.filter(BibReportsTypes.type==type_name)
     # filter by id_role for pin type only
     if type_name and type_name == "pin":
-        result = result.filter(TReport.id_role == g.current_user.id_role)
+        req = req.filter(TReport.id_role==g.current_user.id_role)
     result = [
-        report.as_dict(
-            fields=[
-                "id_report",
-                "id_synthese",
-                "id_role",
-                "report_type.type",
-                "report_type.id_type",
-                "content",
-                "deleted",
-                "creation_date",
-                "user.nom_role",
-                "user.prenom_role",
-            ]
-        )
-        for report in result.all()
+        report.as_dict(fields=[
+            "id_report",
+            "id_synthese",
+            "id_role",
+            "report_type.type",
+            "report_type.id_type",
+            "content",
+            "deleted",
+            "creation_date",
+            "user.nom_role",
+            "user.prenom_role"
+        ]) for report in req.all()
     ]
     return jsonify(result)
 
@@ -1089,7 +1087,8 @@ def list_reports(scope):
 @json_resp
 def delete_report(id_report):
     reportItem = TReport.query.get_or_404(id_report)
-
+    if reportItem.report_type.type == "alert":
+        raise Forbidden("This service can't delete alert")
     if reportItem.id_role != g.current_user.id_role:
         raise Forbidden
     if reportItem.report_type.type == "discussion":
@@ -1098,3 +1097,39 @@ def delete_report(id_report):
     else:
         DB.session.delete(reportItem)
     DB.session.commit()
+
+
+@routes.route('/reports/alert/<int:id_report>', methods=["DELETE"])
+@permissions.check_cruved_scope("V", get_scope=True, module_code="VALIDATION")
+@json_resp
+def delete_alert_report(scope, id_report):
+    # all validator could delete an alert
+    # only owner can delete a discussion or a pin
+    reportItem = TReport.query.get_or_404(id_report)
+    if reportItem.report_type.type != "alert":
+        raise Forbidden("This service delete alert only !")
+    DB.session.delete(reportItem)
+    DB.session.commit()
+
+@routes.route('/reports/<string:type_name>', methods=["GET"])
+@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+def get_all_reports_by_type(scope, type_name):
+    if not type:
+        raise BadRequest("Type param is required !")
+    req = DB.session.query(TReport).join("report_type").\
+        options(contains_eager("report_type")).\
+        filter(BibReportsTypes.type==type_name)
+    result = [
+        report.as_dict(fields=[
+            "id_report",
+            "id_synthese",
+            "id_role",
+            "report_type.type",
+            "report_type.id_type",
+            "content",
+            "deleted",
+            "creation_date",
+        ]) for report in req.all()
+    ]
+    return jsonify(result)
+

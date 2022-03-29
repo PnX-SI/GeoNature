@@ -51,6 +51,7 @@ export class ValidationSyntheseListComponent
   @Output() pageChange: EventEmitter<number>;
   @Output() displayAll = new EventEmitter<any>();
   @Input() idSynthese: any;
+  public alertsData: any;
   public validationStatusAsDict: any;
   public datatable_column_list: Array<any>
   public messages: any;
@@ -83,6 +84,8 @@ export class ValidationSyntheseListComponent
     this.messages = {
       emptyMessage: this.idSynthese ? this.translate.instant("Validation.noIdFound") : this.translate.instant("Validation.noData")
     };
+
+    this.getAlerts();
   }
 
   onMapClick() {
@@ -90,11 +93,11 @@ export class ValidationSyntheseListComponent
       this.mapListService.selectedRow = [];
       const integerId = parseInt(id);
       let i;
-      for (i = 0; i < this.mapListService.tableData.length; i++) {        
+      for (i = 0; i < this.mapListService.tableData.length; i++) {
         if (this.mapListService.tableData[i]["id_synthese"] === integerId) {
           this.mapListService.selectedRow.push(
             this.mapListService.tableData[i]
-          );          
+          );
           break;
         }
       }
@@ -234,10 +237,11 @@ export class ValidationSyntheseListComponent
       this.openInfoModal(this.inputSyntheseData.filter(i => i.id_synthese == this?.idSynthese)[0])
     }
     this.deselectAll();
+    this.getAlerts();
   }
 
   openInfoModal(row) {
-    if(!row) return;
+    if (!row) return;
     this.oneSyntheseObs = row;
     const modalRef = this.ngbModal.open(ValidationModalInfoObsComponent, {
       size: "lg",
@@ -267,5 +271,16 @@ export class ValidationSyntheseListComponent
       }
       this.mapListService.selectedRow = [...this.mapListService.selectedRow];
     });
+  }
+
+  getAlertByRow(row) {
+    return this.alertsData.filter(alert => alert.id_synthese == row.id_synthese)[0];
+  }
+
+  getAlerts() {
+    this.alertsData = [];
+    if (this.appConfig.SYNTHESE.ALERT_MODULES.includes("VALIDATION")) {
+      this._ds.getReportsByType("alert").subscribe(data => { this.alertsData = data });
+    }
   }
 }

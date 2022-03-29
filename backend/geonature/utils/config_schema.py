@@ -303,6 +303,8 @@ class Synthese(Schema):
     DISCUSSION_MAX_LENGTH = fields.Integer(load_default=1500)
     # Allow disable discussion tab for synthese or validation
     DISCUSSION_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
+    # Allow disable alert synthese module for synthese or validation or any
+    ALERT_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
 
 
 # Map configuration
