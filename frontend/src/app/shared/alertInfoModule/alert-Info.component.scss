@@ -1,0 +1,27 @@
+.link-infos {
+  border: 1px solid #673ab7;
+}
+.saveBtn {
+  background-color: #673ab7;
+  color: white;
+}
+.cancelBtn {
+  color: #673ab7;
+}
+
+::ng-deep .alert-field textarea {
+  border-left: 1px solid transparent !important;
+}
+
+::ng-deep  .alert-field {
+  border: 1px solid transparent !important;
+}
+
+.link-infos.mat-button-disabled {
+  color: white;
+  background-color: rgba(104, 58, 183, 0.226);
+}
+
+#deleteAlertButton{
+  color: gold;
+}

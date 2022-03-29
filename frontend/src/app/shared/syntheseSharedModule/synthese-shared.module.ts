@@ -7,11 +7,12 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 
 import { SyntheseInfoObsComponent } from './synthese-info-obs/synthese-info-obs.component';
 import { DiscussionCardComponent } from '../discussionCardModule/discussion-card.component';
+import { AlertInfoComponent } from '../alertInfoModule/alert-Info.component';
 
 @NgModule({
   imports: [CommonModule, GN2CommonModule, ChartsModule, RouterModule, ClipboardModule],
-  exports: [SyntheseInfoObsComponent, DiscussionCardComponent],
-  declarations: [SyntheseInfoObsComponent, DiscussionCardComponent],
+  exports: [SyntheseInfoObsComponent, DiscussionCardComponent, AlertInfoComponent],
+  declarations: [SyntheseInfoObsComponent, DiscussionCardComponent, AlertInfoComponent],
   providers: [],
 })
 export class SharedSyntheseModule {}
