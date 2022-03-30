@@ -1,0 +1,47 @@
+name: ci
+
+on:
+  push:
+    branches: feat/docker_action
+
+jobs:
+  build-geonature:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        env:
+          DOCKER_CONFIG: ./docker/backend
+      -
+        name: Build and export
+        uses: docker/build-push-action@v2
+        with:
+          # context: ./docker/backend/
+          file: ./docker/backend/Dockerfile
+          tags: name/app:latest
+          outputs: type=tar,dest=/tmp/backend.tar
+      -
+        name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: geonature-backend
+          path: /tmp/backend.tar
+
+  install-database:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Download artifacts (Docker images) from previous workflows
+        uses: actions/download-artifact@v2
+
+      - name: Load Docker images from previous workflows
+        run: |
+          docker load --input geonature-backend/backend.tar 
+
+      - run: docker image ls
