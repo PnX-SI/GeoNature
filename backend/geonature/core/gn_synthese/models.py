@@ -268,6 +268,11 @@ class Synthese(DB.Model):
         uselist=True
     )
 
+    has_medias = column_property(
+        exists([TMedias.id_media]).\
+            where(TMedias.uuid_attached_row==unique_id_sinp)
+    )
+
     cor_observers = DB.relationship(User, secondary=cor_observer_synthese)
 
     def get_geofeature(self, recursif=True, fields=None):
@@ -391,6 +396,12 @@ class VSyntheseForWebApp(DB.Model):
     name_source = DB.Column(DB.Unicode)
     url_source = DB.Column(DB.Unicode)
     st_asgeojson = DB.Column(DB.Unicode)
+
+    medias = relationship(
+        TMedias, 
+        primaryjoin=(TMedias.uuid_attached_row==foreign(unique_id_sinp)),
+        uselist=True
+    )
 
     has_medias = column_property(
         exists([TMedias.id_media]).\
