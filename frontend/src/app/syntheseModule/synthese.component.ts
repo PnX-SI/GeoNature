@@ -10,6 +10,7 @@ import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list
 import { AppConfig } from '@geonature_config/app.config';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
+import { SyntheseInfoObsComponent } from '../shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 
 @Component({
   selector: 'pnx-synthese',
@@ -31,10 +32,13 @@ export class SyntheseComponent implements OnInit {
     private _fs: SyntheseFormService,
     private _syntheseStore: SyntheseStoreService,
     private _toasterService: ToastrService,
-    private _route: ActivatedRoute
+    private _route: ActivatedRoute,
+    private _ngModal: NgbModal
   ) {}
 
   loadAndStoreData(formParams) {
+    console.log(formParams);
+
     this.searchService.dataLoaded = false;
     this.searchService.getSyntheseData(formParams).subscribe(
       (data) => {
@@ -77,12 +81,17 @@ export class SyntheseComponent implements OnInit {
   ngOnInit() {
     this._route.queryParamMap.subscribe((params) => {
       let initialFilter = {};
+      const idSynthese = this._route.snapshot.paramMap.get('id_synthese');
+      if (idSynthese) {
+        initialFilter['id_synthese'] = idSynthese;
+      }
+
       if (params.get('id_acquisition_framework')) {
         initialFilter['id_acquisition_framework'] = params.get('id_acquisition_framework');
       } else if (params.get('id_dataset')) {
         initialFilter['id_dataset'] = params.get('id_dataset');
       } else {
-        initialFilter = { limit: AppConfig.SYNTHESE.NB_LAST_OBS };
+        initialFilter['limit'] = AppConfig.SYNTHESE.NB_LAST_OBS;
       }
 
       // reinitialize the form
@@ -92,6 +101,16 @@ export class SyntheseComponent implements OnInit {
       this._fs.selectedtaxonFromComponent = [];
       this.loadAndStoreData(initialFilter);
     });
+  }
+
+  openInfoModal(idSynthese) {
+    const modalRef = this._ngModal.open(SyntheseInfoObsComponent, {
+      size: 'lg',
+      windowClass: 'large-modal',
+    });
+    modalRef.componentInstance.idSynthese = idSynthese;
+    modalRef.componentInstance.header = true;
+    modalRef.componentInstance.useFrom = 'synthese';
   }
 
   mooveButton() {
