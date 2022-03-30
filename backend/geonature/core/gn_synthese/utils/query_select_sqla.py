@@ -226,7 +226,7 @@ class SyntheseQuery:
 
         if "has_medias" in self.filters:
             self.query = self.query.where(
-                self.model.has_medias
+                self.model.medias.any()
             )
 
         if "id_dataset" in self.filters:
