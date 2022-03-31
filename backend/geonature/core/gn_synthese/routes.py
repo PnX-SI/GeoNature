@@ -18,7 +18,7 @@ from flask import (
 )
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from sqlalchemy import distinct, func, desc, asc, select, text, update
-from sqlalchemy.orm import exc, joinedload, contains_eager
+from sqlalchemy.orm import exc, joinedload, contains_eager, lazyload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 
@@ -53,7 +53,10 @@ from geonature.core.taxonomie.models import (
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from geonature.core.gn_permissions.tools import (
+    cruved_scope_for_user_in_module,
+    get_scopes_by_action,
+)
 
 from ref_geo.models import LAreas, BibAreasTypes
 
@@ -241,47 +244,55 @@ def get_synthese(info_role):
 @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
 def get_one_synthese(scope, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature"""
-    synthese = Synthese.query.join_nomenclatures().get_or_404(id_synthese)
+    synthese = Synthese.query.join_nomenclatures()
+
+    fields = [
+        "dataset",
+        "dataset.acquisition_framework",
+        "dataset.acquisition_framework.bibliographical_references",
+        "dataset.acquisition_framework.cor_af_actor",
+        "dataset.acquisition_framework.cor_objectifs",
+        "dataset.acquisition_framework.cor_territories",
+        "dataset.acquisition_framework.cor_volets_sinp",
+        "dataset.acquisition_framework.creator",
+        "dataset.acquisition_framework.nomenclature_territorial_level",
+        "dataset.acquisition_framework.nomenclature_financing_type",
+        "dataset.cor_dataset_actor",
+        "dataset.cor_dataset_actor.role",
+        "dataset.cor_dataset_actor.organism",
+        "dataset.cor_territories",
+        "dataset.nomenclature_source_status",
+        "dataset.nomenclature_resource_type",
+        "dataset.nomenclature_dataset_objectif",
+        "dataset.nomenclature_data_type",
+        "dataset.nomenclature_data_origin",
+        "dataset.nomenclature_collecting_method",
+        "dataset.creator",
+        "dataset.modules",
+        "validations",
+        "validations.validation_label",
+        "validations.validator_role",
+        "cor_observers",
+        "cor_observers.organisme",
+        "source",
+        "habitat",
+        "medias",
+        "areas",
+        "areas.area_type",
+    ]
+
+    # get reports info only if activated by admin config
+    alertModulesActivated = current_app.config["SYNTHESE"]["ALERT_MODULES"]
+    if len(alertModulesActivated) and "SYNTHESE" in alertModulesActivated:
+        fields.append("reports.report_type.type")
+        synthese = synthese.options(lazyload(Synthese.reports).joinedload(TReport.report_type))
+
+    synthese = synthese.get_or_404(id_synthese)
+
     if not synthese.has_instance_permission(scope=scope):
         raise Forbidden()
     geojson = synthese.as_geofeature(
-        "the_geom_4326",
-        "id_synthese",
-        fields=Synthese.nomenclature_fields
-        + [
-            "dataset",
-            "dataset.acquisition_framework",
-            "dataset.acquisition_framework.bibliographical_references",
-            "dataset.acquisition_framework.cor_af_actor",
-            "dataset.acquisition_framework.cor_objectifs",
-            "dataset.acquisition_framework.cor_territories",
-            "dataset.acquisition_framework.cor_volets_sinp",
-            "dataset.acquisition_framework.creator",
-            "dataset.acquisition_framework.nomenclature_territorial_level",
-            "dataset.acquisition_framework.nomenclature_financing_type",
-            "dataset.cor_dataset_actor",
-            "dataset.cor_dataset_actor.role",
-            "dataset.cor_dataset_actor.organism",
-            "dataset.cor_territories",
-            "dataset.nomenclature_source_status",
-            "dataset.nomenclature_resource_type",
-            "dataset.nomenclature_dataset_objectif",
-            "dataset.nomenclature_data_type",
-            "dataset.nomenclature_data_origin",
-            "dataset.nomenclature_collecting_method",
-            "dataset.creator",
-            "dataset.modules",
-            "validations",
-            "validations.validation_label",
-            "validations.validator_role",
-            "cor_observers",
-            "cor_observers.organisme",
-            "source",
-            "habitat",
-            "medias",
-            "areas",
-            "areas.area_type",
-        ],
+        "the_geom_4326", "id_synthese", fields=Synthese.nomenclature_fields + fields
     )
     return jsonify(geojson)
 
@@ -992,14 +1003,6 @@ def create_report(scope):
                 TReport.id_synthese == id_synthese,
                 TReport.report_type.has(BibReportsTypes.type == type_name),
             ).one_or_none()
-            print(alert_exists)
-            alert_exists = (
-                DB.session.query(TReport)
-                .join("report_type")
-                .options(contains_eager("report_type"))
-                .filter(TReport.id_synthese == id_synthese, BibReportsTypes.type == type_name)
-                .one_or_none()
-            )
             if alert_exists is not None:
                 raise Conflict("Alert already exists for this id")
     except KeyError:
@@ -1064,6 +1067,9 @@ def list_reports(scope):
     # filter by id_role for pin type only
     if type_name and type_name == "pin":
         req = req.filter(TReport.id_role == g.current_user.id_role)
+    req = req.options(
+        joinedload("user").load_only("nom_role", "prenom_role"), joinedload("report_type")
+    )
     result = [
         report.as_dict(
             fields=[
@@ -1089,55 +1095,21 @@ def list_reports(scope):
 @json_resp
 def delete_report(id_report):
     reportItem = TReport.query.get_or_404(id_report)
-    if reportItem.report_type.type == "alert":
-        raise Forbidden("This service can't delete alert")
-    if reportItem.id_role != g.current_user.id_role:
+    # alert control to check cruved - allow validators only
+    if reportItem.report_type.type in ["alert", "pin"]:
+        scope = get_scopes_by_action(module_code="VALIDATION")["R"]
+        if not reportItem.synthese.has_instance_permission(scope):
+            raise Forbidden("Permission required to delete this report !")
+    # only owner could delete a report for pin and discussion
+    if reportItem.id_role != g.current_user.id_role and reportItem.report_type.type in [
+        "discussion",
+        "pin",
+    ]:
         raise Forbidden
+    # discussion control to don't delete but tag report as deleted only
     if reportItem.report_type.type == "discussion":
         reportItem.content = ""
         reportItem.deleted = True
     else:
         DB.session.delete(reportItem)
     DB.session.commit()
-
-
-@routes.route("/reports/alert/<int:id_report>", methods=["DELETE"])
-@permissions.check_cruved_scope("V", get_scope=True, module_code="VALIDATION")
-@json_resp
-def delete_alert_report(scope, id_report):
-    # all validator could delete an alert
-    # only owner can delete a discussion or a pin
-    reportItem = TReport.query.get_or_404(id_report)
-    if reportItem.report_type.type != "alert":
-        raise Forbidden("This service delete alert only !")
-    DB.session.delete(reportItem)
-    DB.session.commit()
-
-
-@routes.route("/reports/<string:type_name>", methods=["GET"])
-@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
-def get_all_reports_by_type(scope, type_name):
-    if not type:
-        raise BadRequest("Type param is required !")
-    req = (
-        DB.session.query(TReport)
-        .join("report_type")
-        .options(contains_eager("report_type"))
-        .filter(BibReportsTypes.type == type_name)
-    )
-    result = [
-        report.as_dict(
-            fields=[
-                "id_report",
-                "id_synthese",
-                "id_role",
-                "report_type.type",
-                "report_type.id_type",
-                "content",
-                "deleted",
-                "creation_date",
-            ]
-        )
-        for report in req.all()
-    ]
-    return jsonify(result)

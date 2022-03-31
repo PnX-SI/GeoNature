@@ -230,10 +230,6 @@ export class SyntheseDataService {
     return this._api.get(`${AppConfig.API_ENDPOINT}/synthese/reports?${params}`);
   }
 
-  getReportsByType(type) {
-    return this._api.get(`${AppConfig.API_ENDPOINT}/synthese/reports/${type}`);
-  }
-
   createReport(params) {
     return this._api.post(`${AppConfig.API_ENDPOINT}/synthese/reports`, params);
   }
@@ -244,9 +240,5 @@ export class SyntheseDataService {
 
   modifyReport(id, params) {
     return this._api.put(`${AppConfig.API_ENDPOINT}/synthese/reports/${id}`, params);
-  }
-
-  deleteAlertReport(id) {
-    return this._api.delete(`${AppConfig.API_ENDPOINT}/synthese/reports/alert/${id}`);
   }
 }

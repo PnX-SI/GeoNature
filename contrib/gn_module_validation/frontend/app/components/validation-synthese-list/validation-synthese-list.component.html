@@ -83,10 +83,10 @@
       >
       </button>
       <i
-        *ngIf="getAlertByRow(row)"
+        *ngIf="findAlertInfo(row)"
         class="fa fa-flag"
         aria-hidden="true"
-        [title]="getAlertByRow(row)?.content"
+        [title]="findAlertInfo(row, 'content')"
       ></i>
     </ng-template>
   </ngx-datatable-column>
