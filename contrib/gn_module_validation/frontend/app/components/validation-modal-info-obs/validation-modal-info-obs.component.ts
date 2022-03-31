@@ -125,6 +125,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
   closeModal() {
     this.activeModal.close();
+    this.onCloseModal.emit();
   }
 
   backToModule(url_source, id_pk_source) {
