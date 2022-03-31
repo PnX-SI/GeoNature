@@ -40,7 +40,7 @@ jobs:
 
     services:
       postgres:
-        image: postgis/postgis:${{ matrix.postgres-version }}-${{ matrix.postgis-version }}
+        image: postgis/postgis:13-3.2
         env:
           POSTGRES_DB: geonature2db
           POSTGRES_PASSWORD: geonatpasswd
@@ -61,28 +61,28 @@ jobs:
 
       - name: Load Docker images from previous workflows
         run: |
-          docker load --input geonature/backend.tar 
+          docker import geonature/backend.tar 
 
       - run: docker image ls
       
-      - name: Archive code coverage results
+      - name: Upload database data
         uses: actions/upload-artifact@v3
         with:
           name: geonature2db
           path: geonature2db
 
-  pytest:
-    runs-on: ubuntu-latest
+  # pytest:
+  #   runs-on: ubuntu-latest
 
-    needs: build-geonature
+  #   needs: build-geonature
 
-    steps:
-      -
-        name: Download artifacts (Docker images) from previous workflows
-        uses: actions/download-artifact@v2
+  #   steps:
+  #     -
+  #       name: Download artifacts (Docker images) from previous workflows
+  #       uses: actions/download-artifact@v2
 
-      - name: Load Docker images from previous workflows
-        run: |
-          docker load --input geonature/backend.tar 
+  #     - name: Load Docker images from previous workflows
+  #       run: |
+  #         docker import geonature/backend.tar 
 
-      - run: docker image ls
+  #     - run: docker image ls
