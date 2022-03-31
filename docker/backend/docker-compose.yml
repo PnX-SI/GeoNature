@@ -2,12 +2,13 @@ version: '3.7'
 
 services:
   flask:
+    restart: unless-stopped
     image: ${DOCKER_IMAGE}
     env_file:
       - .env
     volumes:
       - "raw-data:/GeoNature/tmp"
-      - "front-build:/GeoNature/frontend/dist"
+      - "front-build:/GeoNature/frontend/build"
       - "external-modules:/GeoNature/external_modules"
     expose:
       - "80"
@@ -16,9 +17,9 @@ services:
       databases:
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.geonature.priority=2"
-      - "traefik.http.routers.geonature.rule=Host(`${HOST}`) && PathPrefix(`${GEONATURE_PATH}`)"
-      - "traefik.http.routers.geonature.entrypoints=web"
+      - "traefik.http.routers.geonature${PLATEFORM_NAME}.priority=2"
+      - "traefik.http.routers.geonature${PLATEFORM_NAME}.rule=Host(`${HOST}`) && PathPrefix(`${GEONATURE_PATH}`)"
+      - "traefik.http.routers.geonature${PLATEFORM_NAME}.entrypoints=web"
 
 volumes:
   raw-data:
