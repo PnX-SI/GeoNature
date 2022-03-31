@@ -74,27 +74,7 @@ class TestReports:
         assert db.session.query(
             TReport.query.filter_by(id_report=discussionReportId).exists()
         ).scalar()
-        # ERROR - NOT DELETE ALERT
-        set_logged_user_cookie(self.client, users['admin_user'])
-        response = self.client.delete(url_for(url, id_report=alertReportId))
-        assert db.session.query(
-            TReport.query.filter_by(id_report=alertReportId).exists()
-        ).scalar()
-
-    def test_delete_alert(self, reports_data, users):
-        url = "gn_synthese.delete_alert_report"
-        # ALERT - ERROR - DELETE WITH NO RIGHT
-        set_logged_user_cookie(self.client, users['noright_user'])
-        alertIdType = BibReportsTypes.query.filter(BibReportsTypes.type == "alert").first().id_type
-        alertReportId = TReport.query.filter(TReport.id_type == alertIdType).first().id_report
-        response = self.client.delete(url_for(url, id_report=alertReportId))
-        assert response.status_code == Forbidden.code
-        # ALERT - ERROR - DELETE DISCUSSION NOT ACCEPTED
-        set_logged_user_cookie(self.client, users['admin_user'])
-        otherReportId = TReport.query.filter(TReport.id_type != alertIdType).first().id_report
-        response = self.client.delete(url_for(url, id_report=otherReportId))
-        assert response.status_code == Forbidden.code
-        # ALERT - OK - DELETE ALERT
+        # SUCCESS - DELETE ALERT
         response = self.client.delete(url_for(url, id_report=alertReportId))
         assert not db.session.query(
             TReport.query.filter_by(id_report=alertReportId).exists()
@@ -116,7 +96,7 @@ class TestReports:
         assert response.status_code == 200
         assert len(response.json) == 1
         # TEST NO RESULT
-        if len(ids) > 1 :
+        if len(ids) > 1:
             # not exists because ids[1] is an alert
             response = self.client.get(url_for(url, idSynthese=ids[1], type="discussion"))
             assert response.status_code == 200

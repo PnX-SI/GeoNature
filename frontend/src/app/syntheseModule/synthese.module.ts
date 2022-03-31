@@ -37,7 +37,12 @@ const routes: Routes = [
     SyntheseModalDownloadComponent,
     TaxonSheetComponent,
   ],
-  entryComponents: [SyntheseInfoObsComponent, SyntheseModalDownloadComponent, DiscussionCardComponent, AlertInfoComponent],
+  entryComponents: [
+    SyntheseInfoObsComponent,
+    SyntheseModalDownloadComponent,
+    DiscussionCardComponent,
+    AlertInfoComponent,
+  ],
   providers: [
     MapService,
     DynamicFormService,
@@ -46,4 +51,4 @@ const routes: Routes = [
     SyntheseFormService,
   ],
 })
-export class SyntheseModule { }
+export class SyntheseModule {}

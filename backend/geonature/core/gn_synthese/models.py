@@ -352,6 +352,7 @@ class DefaultsNomenclaturesValue(DB.Model):
     group2_inpn = DB.Column(DB.Unicode, primary_key=True)
     id_nomenclature = DB.Column(DB.Integer)
 
+
 # Type library to list every report types
 @serializable
 class BibReportsTypes(DB.Model):
@@ -359,6 +360,7 @@ class BibReportsTypes(DB.Model):
     __table_args__ = {"schema": "gn_synthese"}
     id_type = DB.Column(DB.Integer(), primary_key=True)
     type = DB.Column(DB.Text())
+
 
 # Relation report model with User and BibReportsTypes to get every infos about a report
 @serializable
@@ -376,6 +378,7 @@ class TReport(DB.Model):
     synthese = relationship(Synthese, backref=db.backref("reports", order_by=creation_date))
     report_type = relationship(BibReportsTypes)
     user = DB.relationship(User)
+
 
 @serializable
 @geoserializable(geoCol="the_geom_4326", idCol="id_synthese")
@@ -458,9 +461,7 @@ class VSyntheseForWebApp(DB.Model):
     )
 
     reports = relationship(
-        TReport, 
-        primaryjoin=(TReport.id_synthese==foreign(id_synthese)),
-        uselist=True
+        TReport, primaryjoin=(TReport.id_synthese == foreign(id_synthese)), uselist=True
     )
 
     def get_geofeature(self, recursif=False, fields=[]):
