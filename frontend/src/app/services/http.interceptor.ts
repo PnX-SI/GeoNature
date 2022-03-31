@@ -30,7 +30,6 @@ export class MyCustomInterceptor implements HttpInterceptor {
         errName = 'Une erreur est survenue'
       }
       this._toastrService.error(errMsg, errName, {
-        timeOut: 6000,
         disableTimeOut: true,
         tapToDismiss: false,
         closeButton: true
