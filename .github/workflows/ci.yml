@@ -23,7 +23,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           # context: ./docker/backend/
-          file: ./docker/backend/Dockerfile
+          file: ./docker/backend/Dockerfiletest
           tags: name/app:latest
           outputs: type=image,dest=/tmp/backend.tar
       -
