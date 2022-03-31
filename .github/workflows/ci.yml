@@ -52,8 +52,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-      volumes:
-        - geonature2db:/var/lib/postgresql/data
+        volumes:
+          - geonature2db:/var/lib/postgresql/data
 
     steps:
       - name: Download artifacts (Docker images) from previous workflows
