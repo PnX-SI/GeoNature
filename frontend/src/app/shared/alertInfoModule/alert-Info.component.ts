@@ -4,6 +4,7 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { CommonService } from '@geonature_common/service/common.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { filter } from 'rxjs/operators';
+import { isEmpty } from 'lodash';
 
 @Component({
   selector: 'pnx-alert-info',
@@ -51,7 +52,7 @@ export class AlertInfoComponent implements OnInit, OnChanges {
       });
   }
   ngOnChanges() {
-    this.canChangeAlert = this.userCruved?.V && this.userCruved?.V > 0 && this.alert?.id_report;
+    this.canChangeAlert = this.userCruved?.V && this.userCruved?.V > 0 && !isEmpty(this.alert);
   }
   /**
    * Create new alert with /reports GET service
@@ -72,13 +73,14 @@ export class AlertInfoComponent implements OnInit, OnChanges {
    * Manage alert form visibility
    */
   openCloseAlert() {
-    this.changeVisibility.emit(false);
+    this.changeVisibility.emit();
   }
   /**
    * Remove alert with /reports DELETE service
    */
   deleteAlert() {
-    this._syntheseDataService.deleteAlertReport(this.alert.id_report).subscribe(() => {
+    this._syntheseDataService.deleteReport(this.alert.id_report).subscribe(() => {
+      this.alertForm.reset();
       this.openCloseAlert();
     });
   }

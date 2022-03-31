@@ -18,7 +18,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
 import { constants } from 'crypto';
-import { isEmpty } from 'lodash';
+import { isEmpty, find } from 'lodash';
 import { GlobalSubService } from '@geonature/services/global-sub.service';
 
 @Component({
@@ -84,8 +84,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
         this.activateAlert = AppConfig.SYNTHESE.ALERT_MODULES.includes(this.moduleInfos?.code);
       }
     });
-
-    this.getAlert();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -115,6 +113,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       )
       .subscribe((data) => {
         this.selectedObs = data['properties'];
+        this.alert = find(data.properties.reports, ['report_type.type', 'alert']);
         this.selectCdNomenclature = this.selectedObs?.nomenclature_valid_status.cd_nomenclature;
         this.selectedGeom = data;
         this.selectedObs['municipalities'] = [];
@@ -169,7 +168,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     this._gnDataService.getProfileConsistancyData(this.idSynthese).subscribe((dataChecks) => {
       this.profileDataChecks = dataChecks;
     });
-    this.getAlert();
   }
 
   sendMail() {
@@ -293,6 +291,9 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     this._commonService.translateToaster('info', 'Synthese.copy');
   }
 
+  /**
+   * Get required id_report to delete an alert
+   */
   getAlert() {
     this._dataService.getReports(`idSynthese=${this.idSynthese}&type=alert&sort=asc`).subscribe(data => {
       this.alert = data[0];
