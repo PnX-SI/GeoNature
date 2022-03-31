@@ -15,7 +15,8 @@ RUN mkdir /GeoNature/backend
 RUN mkdir /GeoNature/frontend
 COPY backend/requirements-submodules.txt /GeoNature/backend
 COPY backend/requirements-common.txt /GeoNature/backend
-RUN cd backend && pip3 install -U pip && pip3 install -r requirements-common.txt && pip3 install -r requirements-submodules.txt && cd /GeoNature
+COPY . /GeoNature/
+RUN cd backend && pip3 install -U pip && pip3 install -e .. -r requirements-common.txt -r requirements-submodules.txt && cd /GeoNature
 
 RUN echo "Europe/P" > /etc/timezone && \
     dpkg-reconfigure -f noninteractive tzdata && \
@@ -30,7 +31,6 @@ RUN export LANG=fr_FR.UTF-8
 
 #Install frontend dependences
 
-COPY . /GeoNature/
 COPY ./install/install_all/install_all.ini /GeoNature
 COPY ./install/install_all/install_all.sh /GeoNature
 
