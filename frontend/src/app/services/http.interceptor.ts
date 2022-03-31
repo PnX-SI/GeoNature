@@ -18,7 +18,9 @@ export class MyCustomInterceptor implements HttpInterceptor {
   private handleError(error: Response | any) {
     let errMsg: string;
     let errName:string;
-    if (error.status !== 404) {
+    console.log(error.status);
+    
+    if (error.status !== 404 && error.status !== 401) {
       if (error instanceof Response || error['error']) {
         errMsg = `${error.status} - ${error.statusText || ''} ${error['error'].description}
         id requete: ${error['error'].request_id}`;
@@ -27,7 +29,12 @@ export class MyCustomInterceptor implements HttpInterceptor {
         errMsg = error.message ? error.message : error.toString();
         errName = 'Une erreur est survenue'
       }
-      this._toastrService.error(errMsg, errName, {timeOut: 6000})
+      this._toastrService.error(errMsg, errName, {
+        timeOut: 6000,
+        disableTimeOut: true,
+        tapToDismiss: false,
+        closeButton: true
+      })
     }
   }
 
