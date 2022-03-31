@@ -15,7 +15,7 @@ RUN mkdir /GeoNature/backend
 RUN mkdir /GeoNature/frontend
 COPY backend/requirements-submodules.txt /GeoNature/backend
 COPY backend/requirements-common.txt /GeoNature/backend
-RUN cd backend && pip3 install -r requirements-common.txt && pip3 install -r requirements-submodules.txt && cd /GeoNature
+RUN cd backend && pip3 install -U pip && pip3 install -r requirements-common.txt && pip3 install -r requirements-submodules.txt && cd /GeoNature
 
 RUN echo "Europe/P" > /etc/timezone && \
     dpkg-reconfigure -f noninteractive tzdata && \
