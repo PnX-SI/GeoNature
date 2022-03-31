@@ -988,6 +988,11 @@ def create_report(scope):
             raise Forbidden
         # only allow one alert by id_synthese
         if type_name == "alert":
+            alert_exists = TReport.query.filter(
+                TReport.id_synthese == id_synthese,
+                TReport.report_type.has(BibReportsTypes.type == type_name),
+            ).one_or_none()
+            print(alert_exists)
             alert_exists = (
                 DB.session.query(TReport)
                 .join("report_type")
@@ -1043,26 +1048,19 @@ def list_reports(scope):
     if not synthese.has_instance_permission(scope):
         raise Forbidden
     # START REQUEST
-    req = (
-        DB.session.query(TReport)
-        .join("report_type")
-        .options(contains_eager("report_type"))
-        .filter(TReport.id_synthese == id_synthese)
-    )
-    # VERIFY AND SET TYPE
-    type_exists = BibReportsTypes.query.filter_by(type=type_name).one_or_none()
-    # type param is not required to get all
-    if type_name and not type_exists:
-        raise BadRequest("This report type does not exist")
-    req = req.filter(BibReportsTypes.type == type_name)
+    req = TReport.query.filter(TReport.id_synthese == id_synthese)
     # SORT
     if sort == "asc":
         req = req.order_by(asc(TReport.creation_date))
     if sort == "desc":
         req = req.order_by(desc(TReport.creation_date))
-    # get results by type
+    # VERIFY AND SET TYPE
+    type_exists = BibReportsTypes.query.filter_by(type=type_name).one_or_none()
+    # type param is not required to get all
+    if type_name and not type_exists:
+        raise BadRequest("This report type does not exist")
     if type_name:
-        req = req.filter(BibReportsTypes.type == type_name)
+        req = req.filter(TReport.report_type.has(BibReportsTypes.type == type_name))
     # filter by id_role for pin type only
     if type_name and type_name == "pin":
         req = req.filter(TReport.id_role == g.current_user.id_role)

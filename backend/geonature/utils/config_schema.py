@@ -307,7 +307,6 @@ class Synthese(Schema):
     ALERT_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
 
 
-
 # Map configuration
 BASEMAP = [
     {
