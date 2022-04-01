@@ -158,5 +158,5 @@ if [ "$BUILD_FRONT" = true ]; then
   cd /GeoNature/
 fi
 
-exec gunicorn "geonature:create_app()"  -w 4  -b 0.0.0.0:80 --log-file /var/log/geonature.log  #-n "${app_name}" #https://testdriven.io/blog/dockerizing-flask-with-postgres-gunicorn-and-nginx/
+exec gunicorn "geonature:create_app()"  -w 4  -b 0.0.0.0:80 --log-file /var/log/geonature/geonature.log  #-n "${app_name}" #https://testdriven.io/blog/dockerizing-flask-with-postgres-gunicorn-and-nginx/
 
