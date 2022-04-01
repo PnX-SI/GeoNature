@@ -10,6 +10,7 @@ services:
       - "raw-data:/GeoNature/tmp"
       - "front-build:/GeoNature/frontend/build"
       - "external-modules:/GeoNature/external_modules"
+      - "flask-logs:/var/log/geonature"
     expose:
       - "80"
     networks:
@@ -27,6 +28,7 @@ volumes:
   front-build:
     external: true
   external-modules:
+  flask-logs:
 
 networks:
   web:
