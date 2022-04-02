@@ -21,16 +21,14 @@ import { ToastrModule, ToastrService } from 'ngx-toastr';
 // Modules
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 
-// Angular created component
+// Angular created components/modules
 import { AppComponent } from './app.component';
 import { routing } from './routing/app-routing.module'; // RoutingModule
 import { HomeContentComponent } from './components/home-content/home-content.component';
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
-import { LoginComponent } from './components/login/login.component';
-import { SignUpComponent } from './components/sign-up/sign-up.component';
-import { NewPasswordComponent } from './components/new-password/new-password.component';
 import { NavHomeComponent } from './components/nav-home/nav-home.component';
+import { LoginModule } from './modules/login/login.module';
 
 // Custom component (footer, presentation etc...)
 import { FooterComponent } from '../custom/components/footer/footer.component';
@@ -43,8 +41,6 @@ import { ChartsModule } from 'ng2-charts';
 import {
   AuthGuard,
   ModuleGuardService,
-  SignUpGuard,
-  UserManagementGuard
 } from '@geonature/routing/routes-guards.service';
 import { ModuleService } from './services/module.service';
 import { CruvedStoreService } from './GN2CommonModule/service/cruved-store.service';
@@ -87,18 +83,16 @@ export function get_modules(moduleService: ModuleService) {
       loader: {
         provide: TranslateLoader,
         useFactory: createTranslateLoader,
-        deps: [HttpClient]
-      }
-    })
+        deps: [HttpClient],
+      },
+    }),
+    LoginModule,
   ],
   declarations: [
     AppComponent,
     HomeContentComponent,
     SidenavItemsComponent,
     PageNotFoundComponent,
-    LoginComponent,
-    SignUpComponent,
-    NewPasswordComponent,
     NavHomeComponent,
     FooterComponent,
     IntroductionComponent,
@@ -112,8 +106,6 @@ export function get_modules(moduleService: ModuleService) {
     CookieService,
     HttpClient,
     ModuleGuardService,
-    SignUpGuard,
-    UserManagementGuard,
     SideNavService,
     CruvedStoreService,
     UserDataService,
