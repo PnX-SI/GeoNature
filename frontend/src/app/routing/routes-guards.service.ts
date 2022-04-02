@@ -23,7 +23,6 @@ export class ModuleGuardService implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     const moduleName = route.data['module_code'];
-
     const askedModule = this._moduleService.getModule(moduleName);
     if (askedModule) {
       this._globalSubService.currentModuleSubject.next(askedModule);
@@ -66,34 +65,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
       return false;
     } else {
       return true;
-    }
-  }
-}
-
-@Injectable()
-export class SignUpGuard implements CanActivate {
-  constructor(private _router: Router) {}
-
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_SIGN_UP'] || false) {
-      return true;
-    } else {
-      this._router.navigate(['/login']);
-      return false;
-    }
-  }
-}
-
-@Injectable()
-export class UserManagementGuard implements CanActivate {
-  constructor(private _router: Router) {}
-
-  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if (AppConfig['ACCOUNT_MANAGEMENT']['ENABLE_USER_MANAGEMENT'] || false) {
-      return true;
-    } else {
-      this._router.navigate(['/login']);
-      return false;
     }
   }
 }

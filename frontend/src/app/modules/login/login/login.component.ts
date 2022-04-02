@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
-import { AppConfig } from '../../../conf/app.config';
-import { AuthService } from '../auth/auth.service';
+
 import { ToastrService } from 'ngx-toastr';
 import { CommonService } from '@geonature_common/service/common.service';
+
+import { AppConfig } from '../../../../conf/app.config';
+import { AuthService } from '../../../components/auth/auth.service';
+
 
 @Component({
   selector: 'pnx-login',
