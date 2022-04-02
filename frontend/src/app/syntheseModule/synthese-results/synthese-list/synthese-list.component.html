@@ -68,7 +68,7 @@
   mat-raised-button
   color="primary"
   (click)="openDownloadModal()"
-  [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E == '0'"
+  [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E === 0"
 >
   {{ 'Download' | translate }}
   <mat-icon>file_download</mat-icon>

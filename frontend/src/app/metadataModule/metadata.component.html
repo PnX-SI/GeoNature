@@ -7,7 +7,7 @@
     <div class="card-body">
       <div class="row ml-4 mb-4">
         <button
-          *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== '0'"
+          *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== 0"
           routerLink="/metadata/af"
           class="uppercase mr-1"
           mat-raised-button
@@ -17,7 +17,7 @@
           &nbsp;
         </button>
         <button
-          *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== '0'"
+          *ngIf="_cruvedStore.cruved?.METADATA?.cruved.C !== 0"
           routerLink="/metadata/dataset"
           class="uppercase"
           mat-raised-button
