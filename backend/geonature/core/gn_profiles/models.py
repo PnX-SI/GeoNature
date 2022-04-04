@@ -36,7 +36,7 @@ class VmCorTaxonPhenology(DB.Model):
 
 
 @serializable
-@geoserializable
+@geoserializable(geoCol="valid_distribution", idCol="cd_ref")
 class VmValidProfiles(DB.Model):
     __tablename__ = "vm_valid_profiles"
     __table_args__ = {"schema": "gn_profiles"}
@@ -48,9 +48,6 @@ class VmValidProfiles(DB.Model):
     last_valid_data = DB.Column(DB.DateTime)
     count_valid_data = DB.Column(DB.Integer)
     active_life_stage = DB.Column(DB.Boolean)
-
-    def get_geofeature(self, recursif=False, columns=()):
-        return self.as_geofeature("valid_distribution", "cd_ref", recursif, columns=columns)
 
 
 @serializable
