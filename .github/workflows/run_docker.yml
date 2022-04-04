@@ -82,6 +82,14 @@ jobs:
           psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
         env:
           PGPASSWORD: geonatpasswd
+      - run: ls
+        continue-on-error: true
+      - run: ls GeoNature
+        continue-on-error: true
+      - run: ls config
+        continue-on-error: true
+      - run: ls GeoNatur/config
+        continue-on-error: true
       -
         name: Install database
         run: |
