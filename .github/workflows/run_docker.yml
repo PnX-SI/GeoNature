@@ -1,0 +1,106 @@
+name: run-docker
+
+on:
+  push:
+    branches: feat/docker_run
+
+jobs:
+  #build-geonature:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    -
+  #      name: Checkout
+  #      uses: actions/checkout@v2
+  #      with:
+  #        submodules: true
+  #    -
+  #      name: Docker meta
+  #      id: meta
+  #      uses: docker/metadata-action@v3
+  #      with:
+  #        images: ghcr.io/pnx-si/geonature
+  #        tags: |
+  #          type=ref,event=branch
+  #    -
+  #      name: Set up Docker Buildx
+  #      uses: docker/setup-buildx-action@v1
+  #      env:
+  #        DOCKER_CONFIG: ./docker/backend
+  #    -
+  #      name: Login to GHCR
+  #      if: github.event_name != 'pull_request'
+  #      uses: docker/login-action@v1
+  #      with:
+  #        registry: ghcr.io
+  #        username: ${{ secrets.GHCR_USERNAME }}
+  #        password: ${{ secrets.GHCR_TOKEN }}
+  #    -
+  #      name: Build and export
+  #      uses: docker/build-push-action@v2
+  #      with:
+  #        file: ./docker/backend/Dockerfiletest
+  #        push: true
+  #        tags: ${{ steps.meta.outputs.tags }}
+  #        labels: ${{ steps.meta.outputs.labels }}
+
+  install-database:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgis/postgis:13-3.2
+        env:
+          POSTGRES_DB: geonature2db
+          POSTGRES_PASSWORD: geonatpasswd
+          POSTGRES_USER: geonatadmin
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        volumes:
+          - geonature2db:/var/lib/postgresql/data
+
+    container:
+      image: ghcr.io/pnx-si/geonature:feat-docker_action
+
+    steps:
+      -
+        name: Add database extensions
+        run: |
+          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
+          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "hstore";'
+          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "uuid-ossp";'
+          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "pg_trgm";'
+          psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
+
+      -
+        name: Install database
+        run: |
+          geonature db upgrade geonature@head -x local-srid=2154
+          geonature db autoupgrade -x local-srid=2154
+          geonature db upgrade geonature-samples@head
+          geonature db upgrade taxonomie_taxons_example@head
+          geonature db upgrade ref_geo_fr_departments@head
+          geonature db upgrade ref_geo_fr_municipalities@head
+          geonature db upgrade ref_geo_inpn_grids_5@head
+          geonature db upgrade ref_sensitivity_inpn@head
+
+
+  # pytest:
+  #   runs-on: ubuntu-latest
+
+  #   needs: build-geonature
+
+  #   steps:
+  #     -
+  #       name: Download artifacts (Docker images) from previous workflows
+  #       uses: actions/download-artifact@v2
+
+  #     - name: Load Docker images from previous workflows
+  #       run: |
+  #         docker import geonature/backend.tar 
+
+  #     - run: docker image ls
