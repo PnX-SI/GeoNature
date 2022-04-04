@@ -78,32 +78,6 @@ corAreaSynthese = DB.Table(
 )
 
 
-@serializable
-class VSyntheseDecodeNomenclatures(DB.Model):
-    __tablename__ = "v_synthese_decode_nomenclatures"
-    __table_args__ = {"schema": "gn_synthese"}
-    id_synthese = DB.Column(DB.Integer, primary_key=True)
-    nat_obj_geo = DB.Column(DB.Unicode)
-    grp_typ = DB.Column(DB.Unicode)
-    obs_technique = DB.Column(DB.Unicode)
-    bio_status = DB.Column(DB.Unicode)
-    bio_condition = DB.Column(DB.Unicode)
-    naturalness = DB.Column(DB.Unicode)
-    exist_proof = DB.Column(DB.Unicode)
-    valid_status = DB.Column(DB.Unicode)
-    diffusion_level = DB.Column(DB.Unicode)
-    life_stage = DB.Column(DB.Unicode)
-    sex = DB.Column(DB.Unicode)
-    obj_count = DB.Column(DB.Unicode)
-    type_count = DB.Column(DB.Unicode)
-    sensitivity = DB.Column(DB.Unicode)
-    observation_status = DB.Column(DB.Unicode)
-    blurring = DB.Column(DB.Unicode)
-    source_status = DB.Column(DB.Unicode)
-    occ_behaviour = DB.Column(DB.Unicode)
-    occ_stat_biogeo = DB.Column(DB.Unicode)
-
-
 class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
     def join_nomenclatures(self):
         return self.options(*[joinedload(n) for n in Synthese.nomenclature_fields])
@@ -387,7 +361,7 @@ class VSyntheseForWebApp(DB.Model):
 
     id_synthese = DB.Column(
         DB.Integer,
-        ForeignKey("gn_synthese.v_synthese_decode_nomenclatures.id_synthese"),
+        ForeignKey("gn_synthese.synthese.id_synthese"),
         primary_key=True,
     )
     unique_id_sinp = DB.Column(UUID(as_uuid=True))
