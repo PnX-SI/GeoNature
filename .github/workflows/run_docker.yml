@@ -82,15 +82,7 @@ jobs:
           psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
         env:
           PGPASSWORD: geonatpasswd
-      - run: ls /
-        continue-on-error: true
-      - run: ls /GeoNature
-        continue-on-error: true
-      - run: ls /config
-        continue-on-error: true
-      - run: ls /GeoNature/config
-        continue-on-error: true
-      - run: which geonature
+      - run: pwd
         continue-on-error: true
       -
         name: Install database
@@ -104,7 +96,7 @@ jobs:
           geonature db upgrade ref_geo_inpn_grids_5@head
           geonature db upgrade ref_sensitivity_inpn@head
         env:
-          GEONATURE_CONFIG_FILE: config/test_config.toml
+          GEONATURE_CONFIG_FILE: /GeoNature/config/test_config.toml
 
 
   # pytest:
