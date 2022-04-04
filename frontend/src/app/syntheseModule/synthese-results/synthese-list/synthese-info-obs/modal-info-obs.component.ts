@@ -8,7 +8,7 @@ import { finalize } from 'rxjs/operators';
 
 @Component({
   selector: 'pnx-synthese-modal-info-obs',
-  templateUrl: 'modal-info-obs.component.html'
+  templateUrl: 'modal-info-obs.component.html',
 })
 export class ModalInfoObsComponent implements OnInit {
   @Input() syntheseObs: any;
@@ -23,7 +23,7 @@ export class ModalInfoObsComponent implements OnInit {
     private _dataService: SyntheseDataService,
     public activeModal: NgbActiveModal,
     public mediaService: MediaService
-  ) { }
+  ) {}
 
   ngOnInit() {
     this.loadOneSyntheseReleve(this.syntheseObs);
@@ -38,14 +38,14 @@ export class ModalInfoObsComponent implements OnInit {
           this.isLoading = false;
         })
       )
-      .subscribe(data => {
+      .subscribe((data) => {
         this.selectedObs = data;
         this.selectedObs['municipalities'] = [];
         this.selectedObs['other_areas'] = [];
         this.selectedObs['actors'] = this.selectedObs['actors'].split('|');
         const areaDict = {};
         // for each area type we want all the areas: we build an dict of array
-        this.selectedObs.areas.forEach(area => {
+        this.selectedObs.areas.forEach((area) => {
           if (!areaDict[area.area_type.type_name]) {
             areaDict[area.area_type.type_name] = [area];
           } else {
@@ -63,11 +63,11 @@ export class ModalInfoObsComponent implements OnInit {
       });
     this._gnDataService
       .getTaxonAttributsAndMedia(syntheseObs.cd_nom, this.SYNTHESE_CONFIG.ID_ATTRIBUT_TAXHUB)
-      .subscribe(data => {
+      .subscribe((data) => {
         this.selectObsTaxonInfo = data;
       });
 
-    this._gnDataService.getTaxonInfo(syntheseObs.cd_nom).subscribe(data => {
+    this._gnDataService.getTaxonInfo(syntheseObs.cd_nom).subscribe((data) => {
       this.selectedObsTaxonDetail = data;
     });
   }

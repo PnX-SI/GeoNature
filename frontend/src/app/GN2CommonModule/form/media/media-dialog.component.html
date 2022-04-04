@@ -4,8 +4,10 @@
   [ngClass]="{ 'media-dialog-fade-in': bDisplay, 'media-dialog-fade-out': !bDisplay }"
 >
   <mat-card>
-    <mat-card-title><span *ngIf="medias.length > 1">{{ curIndex + 1 }}/{{ medias.length }} : </span>
-      {{ media.title_fr }}</mat-card-title>
+    <mat-card-title
+      ><span *ngIf="medias.length > 1">{{ curIndex + 1 }}/{{ medias.length }} : </span>
+      {{ media.title_fr }}</mat-card-title
+    >
     <pnx-display-medias
       [medias]="medias"
       [index]="curIndex"
@@ -13,12 +15,7 @@
     ></pnx-display-medias>
     <!-- <img *ngIf='ms.isImg(media)' mat-card-image [src]="media.href()" /> -->
     <mat-card-content>
-      <a
-        *ngIf="media.href()"
-        target="_blank"
-        class="link-media float-right"
-        [href]="media.href()"
-      >
+      <a *ngIf="media.href()" target="_blank" class="link-media float-right" [href]="media.href()">
         <mat-icon matTooltip="{{ 'Media.link' | translate }}">link</mat-icon>
       </a>
       {{ media.description_fr }}

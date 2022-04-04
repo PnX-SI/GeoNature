@@ -58,6 +58,7 @@ from geonature import create_app
 
 log = logging.getLogger(__name__)
 
+
 @main.command()
 @click.argument("module_path")
 @click.argument("module_code")
@@ -78,33 +79,33 @@ def install_packaged_gn_module(module_path, module_code, build):
 
     # add module to database
     try:
-        module_picto = load_entry_point(module_dist, 'gn_module', 'picto')
+        module_picto = load_entry_point(module_dist, "gn_module", "picto")
     except ImportError:
         module_picto = "fa-puzzle-piece"
     try:
         module_object = TModules.query.filter_by(module_code=module_code).one()
-        module_object.module_picto=module_picto
+        module_object.module_picto = module_picto
         db.session.merge(module_object)
     except sa_exc.NoResultFound:
         module_object = TModules(
-                module_code=module_code,
-                module_label=module_code.capitalize(),
-                module_path=module_code.lower(),
-                module_target="_self",
-                module_picto=module_picto,
-                active_frontend=True,
-                active_backend=True,
+            module_code=module_code,
+            module_label=module_code.capitalize(),
+            module_path=module_code.lower(),
+            module_target="_self",
+            module_picto=module_picto,
+            active_frontend=True,
+            active_backend=True,
         )
         db.session.add(module_object)
     db.session.commit()
 
-    info = get_entry_info(module_dist, 'gn_module', 'migrations')
+    info = get_entry_info(module_dist, "gn_module", "migrations")
     if info is not None:
         try:
-            alembic_branch = load_entry_point(module_dist, 'gn_module', 'alembic_branch')
+            alembic_branch = load_entry_point(module_dist, "gn_module", "alembic_branch")
         except ImportError:
             alembic_branch = module_code.lower()
-        db_upgrade(revision=alembic_branch + '@head')
+        db_upgrade(revision=alembic_branch + "@head")
     else:
         log.info("Module do not provide any migration files, skipping database upgrade.")
 
@@ -123,9 +124,7 @@ def install_packaged_gn_module(module_path, module_code, build):
 
     ### Frontend
     # creation du lien symbolique des assets externes
-    enable_frontend = create_external_assets_symlink(
-        module_path, module_code.lower()
-    )
+    enable_frontend = create_external_assets_symlink(module_path, module_code.lower())
 
     install_frontend_dependencies(os.path.abspath(module_path))
     # generation du fichier tsconfig.app.json
@@ -209,13 +208,9 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                     if enable_frontend:
                         install_frontend_dependencies(module_path)
                         # generation du fichier tsconfig.app.json
-                        tsconfig_app_templating(
-                            app=app
-                        )
+                        tsconfig_app_templating(app=app)
                         # generation du routing du frontend
-                        frontend_routes_templating(
-                            app=app
-                        )
+                        frontend_routes_templating(app=app)
                         # generation du fichier de configuration du frontend
                         create_module_config(app, module_code, build=False)
                     if build and enable_frontend:

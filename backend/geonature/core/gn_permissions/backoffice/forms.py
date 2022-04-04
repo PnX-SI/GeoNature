@@ -38,7 +38,7 @@ class CruvedScopeForm(FlaskForm):
 
     def init_choices(self):
         """
-            Get and set the scope filters to the form choices
+        Get and set the scope filters to the form choices
         """
         data = (
             DB.session.query(TFilters.id_filter, TFilters.description_filter)
@@ -58,10 +58,13 @@ class CruvedScopeForm(FlaskForm):
         super(CruvedScopeForm, self).__init__(*args, **kwargs)
         self.init_choices()
 
+
 class OtherPermissionsForm(FlaskForm):
     module = QuerySelectField(
         "action",
-        query_factory=lambda: DB.session.query(TModules.id_module, TModules.module_label).order_by(TModules.module_label).all(),
+        query_factory=lambda: DB.session.query(TModules.id_module, TModules.module_label)
+        .order_by(TModules.module_label)
+        .all(),
         get_pk=lambda mod: str(mod.id_module),
         get_label=lambda mod: mod.module_label,
     )
@@ -71,7 +74,9 @@ class OtherPermissionsForm(FlaskForm):
         get_pk=lambda act: act.id_action,
         get_label=lambda act: act.description_action,
     )
-    filter = SelectField("filtre",)
+    filter = SelectField(
+        "filtre",
+    )
     submit = SubmitField("Valider")
 
     def __init__(self, id_filter_type, *args, **kwargs):

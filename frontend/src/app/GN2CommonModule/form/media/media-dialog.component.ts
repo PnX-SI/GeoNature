@@ -6,7 +6,7 @@ import {
   EventEmitter,
   ViewEncapsulation,
   SimpleChanges,
-  Inject
+  Inject,
 } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Media } from './media';
@@ -20,7 +20,7 @@ export interface MediaDialogData {
 @Component({
   selector: 'pnx-media-dialog',
   templateUrl: './media-dialog.component.html',
-  styleUrls: ['./media.scss']
+  styleUrls: ['./media.scss'],
 })
 export class MediaDialog {
   constructor(

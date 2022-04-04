@@ -13,7 +13,7 @@ import * as L from 'leaflet';
  */
 @Component({
   selector: 'pnx-gps',
-  templateUrl: 'gps.component.html'
+  templateUrl: 'gps.component.html',
 })
 export class GPSComponent extends MarkerComponent implements OnInit {
   @ViewChild('modalContent', { static: false }) public modalContent: any;

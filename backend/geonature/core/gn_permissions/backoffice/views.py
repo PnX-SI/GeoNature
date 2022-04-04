@@ -48,11 +48,7 @@ routes = Blueprint("gn_permissions_backoffice", __name__, template_folder="templ
     methods=["GET", "POST"],
 )
 @routes.route("cruved_form/module/<int:id_module>/role/<int:id_role>", methods=["GET", "POST"])
-@permissions.check_cruved_scope(
-    "R",
-    True,
-    object_code="PERMISSIONS"
-)
+@permissions.check_cruved_scope("R", True, object_code="PERMISSIONS")
 def permission_form(info_role, id_module, id_role, id_object=None):
     """
     .. :quickref: View_Permission;
@@ -158,11 +154,7 @@ def permission_form(info_role, id_module, id_role, id_object=None):
 
 
 @routes.route("/users", methods=["GET"])
-@permissions.check_cruved_scope(
-    "R",
-    True,
-    object_code="PERMISSIONS"
-)
+@permissions.check_cruved_scope("R", True, object_code="PERMISSIONS")
 def users(info_role):
     """
     .. :quickref: View_Permission;
@@ -210,12 +202,12 @@ def user_cruved(id_role):
     Get all scope CRUVED (with heritage) for a user in all modules
     """
     user = DB.session.query(User).get(id_role).as_dict()
-    modules_data = DB.session.query(
-        TModules
-        ).options(
-            joinedload(TModules.objects
-        )
-        ).order_by(TModules.module_order).all()
+    modules_data = (
+        DB.session.query(TModules)
+        .options(joinedload(TModules.objects))
+        .order_by(TModules.module_order)
+        .all()
+    )
     groupes_data = DB.session.query(CorRole).filter(CorRole.id_role_utilisateur == id_role).all()
     actions_label = {}
     for action in DB.session.query(TActions).all():

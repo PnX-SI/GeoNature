@@ -12,21 +12,21 @@ export class CommonService {
   private current: any = {};
 
   translateToaster(messageType: string, messageValue: string): void {
-
     // si toaster contenant le message est en cours on ne fait rien
-    if(this.current[messageValue]) {
+    if (this.current[messageValue]) {
       return;
     }
 
-    this.current[messageValue]=true;
+    this.current[messageValue] = true;
 
     this.translate
       .get(messageValue, { value: messageValue })
-      .subscribe(res => this.toastrService[messageType](res, ''));
+      .subscribe((res) => this.toastrService[messageType](res, ''));
 
     // on supprime le message de current au bout de 5s
-    setTimeout(() => { delete this.current[messageValue] }, 5000);
-
+    setTimeout(() => {
+      delete this.current[messageValue];
+    }, 5000);
   }
 
   regularToaster(messageType: string, messageValue: string): void {

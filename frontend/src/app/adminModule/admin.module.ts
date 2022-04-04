@@ -9,6 +9,6 @@ const routes: Routes = [{ path: '', component: AdminComponent }];
 @NgModule({
   imports: [CommonModule, GN2CommonModule, RouterModule.forChild(routes)],
   exports: [],
-  declarations: [AdminComponent]
+  declarations: [AdminComponent],
 })
 export class AdminModule {}

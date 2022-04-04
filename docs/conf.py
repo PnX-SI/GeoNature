@@ -129,9 +129,7 @@ html_static_path = ["_static"]
 #
 # This is required for the alabaster theme
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
-html_sidebars = {
-    "**": ["globaltoc.html", "relations.html", "sourcelink.html", "searchbox.html"]
-}
+html_sidebars = {"**": ["globaltoc.html", "relations.html", "sourcelink.html", "searchbox.html"]}
 # html_sidebars = {
 #     '**': [
 #         'relations.html',  # needs 'show_related': True theme option to display
@@ -166,9 +164,7 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
-latex_documents = [
-    (master_doc, "GeoNature.tex", "GeoNature Documentation", "PnE, pnC", "manual")
-]
+latex_documents = [(master_doc, "GeoNature.tex", "GeoNature Documentation", "PnE, pnC", "manual")]
 
 
 # -- Options for manual page output ---------------------------------------
@@ -198,4 +194,3 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {"https://docs.python.org/": None}
-

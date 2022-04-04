@@ -1,7 +1,15 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 import { Subject, Observable, of, concat, zip } from 'rxjs';
-import { distinctUntilChanged, debounceTime, switchMap, tap, catchError, map, distinct } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  debounceTime,
+  switchMap,
+  tap,
+  catchError,
+  map,
+  distinct,
+} from 'rxjs/operators';
 
 import { AppConfig } from '@geonature_config/app.config';
 import { DataFormService } from '../data-form.service';

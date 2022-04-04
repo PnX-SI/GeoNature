@@ -15,11 +15,13 @@ class NoManifestFound(Exception):
 
 
 def get_module_config_path(module_object):
-    config_path = os.environ.get(f'GEONATURE_{module_object.module_code}_CONFIG_FILE')
+    config_path = os.environ.get(f"GEONATURE_{module_object.module_code}_CONFIG_FILE")
     if config_path:  # fallback to legacy conf path guessing
         config_path = Path(config_path)
     else:
-        config_path = GN_EXTERNAL_MODULE / module_object.module_path / 'config' / 'conf_gn_module.toml'
+        config_path = (
+            GN_EXTERNAL_MODULE / module_object.module_path / "config" / "conf_gn_module.toml"
+        )
     return config_path
 
 
@@ -30,18 +32,22 @@ def import_legacy_module(module_object):
         # in utils.gn_module_import.copy_in_external_mods
         module_dist = module_object.module_code.lower()
         module_dir = GN_EXTERNAL_MODULE / module_dist
-        manifest_path = module_dir / 'manifest.toml'
+        manifest_path = module_dir / "manifest.toml"
         if not manifest_path.is_file():
-            raise NoManifestFound(f"Can not find manifest.toml for module {module_object.module_code}")
+            raise NoManifestFound(
+                f"Can not find manifest.toml for module {module_object.module_code}"
+            )
         module_manifest = load_and_validate_toml(manifest_path, ManifestSchemaProdConf)
-        module_blueprint = import_module(f'{module_dist}.backend.blueprint').blueprint
+        module_blueprint = import_module(f"{module_dist}.backend.blueprint").blueprint
         module_config = {
-            'ID_MODULE': module_object.id_module,
-            'MODULE_CODE': module_object.module_code,
-            'MODULE_URL': '/' + module_object.module_path.replace(' ', ''),
-            'FRONTEND_PATH': str(module_dir / 'frontend'),
+            "ID_MODULE": module_object.id_module,
+            "MODULE_CODE": module_object.module_code,
+            "MODULE_URL": "/" + module_object.module_path.replace(" ", ""),
+            "FRONTEND_PATH": str(module_dir / "frontend"),
         }
-        module_schema = import_module(f'{module_object.module_code.lower()}.config.conf_schema_toml').GnModuleSchemaConf
+        module_schema = import_module(
+            f"{module_object.module_code.lower()}.config.conf_schema_toml"
+        ).GnModuleSchemaConf
         config_path = module_dir / "config/conf_gn_module.toml"
         module_config.update(load_and_validate_toml(config_path, module_schema))
         module_blueprint.config = module_config
@@ -53,23 +59,24 @@ def import_legacy_module(module_object):
 def import_packaged_module(module_dist, module_object):
     module_code = module_object.module_code
     module_dir = GN_EXTERNAL_MODULE / module_object.module_path
-    frontend_path = os.environ.get(f'GEONATURE_{module_code}_FRONTEND_PATH',
-                                   str(module_dir / 'frontend'))
+    frontend_path = os.environ.get(
+        f"GEONATURE_{module_code}_FRONTEND_PATH", str(module_dir / "frontend")
+    )
     module_config = {
-        'MODULE_CODE': module_code,
-        'MODULE_URL': '/' + module_object.module_path,
-        'FRONTEND_PATH': frontend_path,
+        "MODULE_CODE": module_code,
+        "MODULE_URL": "/" + module_object.module_path,
+        "FRONTEND_PATH": frontend_path,
     }
 
     try:
-        module_schema = load_entry_point(module_dist, 'gn_module', 'config_schema')
+        module_schema = load_entry_point(module_dist, "gn_module", "config_schema")
     except ImportError:
         pass
     else:
         config_path = get_module_config_path(module_object)
         module_config.update(load_and_validate_toml(str(config_path), module_schema))
 
-    blueprint_entry_point = get_entry_info(module_dist, 'gn_module', 'blueprint')
+    blueprint_entry_point = get_entry_info(module_dist, "gn_module", "blueprint")
     if blueprint_entry_point:
         module_blueprint = blueprint_entry_point.load()
         module_blueprint.config = module_config
@@ -79,7 +86,7 @@ def import_packaged_module(module_dist, module_object):
 
 
 def get_dist_from_code(module_code):
-    for entry_point in iter_entry_points('gn_module', 'code'):
+    for entry_point in iter_entry_points("gn_module", "code"):
         if module_code == entry_point.load():
             return entry_point.dist
 
@@ -100,8 +107,8 @@ def import_gn_module(module_object):
 
 def import_backend_enabled_modules():
     """
-        yield (module_object, module_config, module_blueprint)
-        for backend-enabled modules in gn_commons.t_modules
+    yield (module_object, module_config, module_blueprint)
+    for backend-enabled modules in gn_commons.t_modules
     """
     enabled_modules = TModules.query.filter_by(active_backend=True).all()
     for module_object in enabled_modules:
@@ -113,8 +120,8 @@ def import_backend_enabled_modules():
 
 def list_frontend_enabled_modules():
     """
-        yield module_config
-        for frontend-enabled modules in gn_commons.t_modules
+    yield module_config
+    for frontend-enabled modules in gn_commons.t_modules
     """
     enabled_modules = TModules.query.filter_by(active_frontend=True).all()
     for module_object in enabled_modules:
