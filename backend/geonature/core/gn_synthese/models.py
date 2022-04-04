@@ -270,9 +270,6 @@ class Synthese(DB.Model):
 
     cor_observers = DB.relationship(User, secondary=cor_observer_synthese)
 
-    def get_geofeature(self, recursif=True, fields=None):
-        return self.as_geofeature("the_geom_4326", "id_synthese", recursif, fields=fields)
-
     def has_instance_permission(self, scope):
         if scope == 0:
             return False
@@ -317,7 +314,7 @@ class DefaultsNomenclaturesValue(DB.Model):
 
 
 @serializable
-@geoserializable
+@geoserializable(geoCol="the_geom_4326", idCol="id_synthese")
 class VSyntheseForWebApp(DB.Model):
     __tablename__ = "v_synthese_for_web_app"
     __table_args__ = {"schema": "gn_synthese"}
@@ -397,9 +394,6 @@ class VSyntheseForWebApp(DB.Model):
         primaryjoin=(TMedias.uuid_attached_row==foreign(unique_id_sinp)),
         uselist=True
     )
-
-    def get_geofeature(self, recursif=False, fields=[]):
-        return self.as_geofeature("the_geom_4326", "id_synthese", recursif, fields=fields)
 
 
 # Non utilisé - laissé pour exemple d'une sérialisation ordonnée

@@ -111,7 +111,7 @@ class TBaseVisits(DB.Model):
 
 
 @serializable
-@geoserializable
+@geoserializable(geoCol="geom", idCol="id_base_site")
 class TBaseSites(DB.Model):
     """
         Table centralisant les données élémentaire des sites
@@ -151,6 +151,3 @@ class TBaseSites(DB.Model):
         secondaryjoin=(corSiteModule.c.id_module == TModules.id_module),
         foreign_keys=[corSiteModule.c.id_base_site, corSiteModule.c.id_module],
     )
-
-    def get_geofeature(self, recursif=True):
-        return self.as_geofeature("geom", "id_base_site", recursif)
