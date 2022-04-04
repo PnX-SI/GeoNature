@@ -71,6 +71,9 @@ jobs:
 
 
     steps:
+      - name: Install postgresql client
+        run: |
+          apt-get install -y postgresql-client
       -
         name: Add database extensions
         run: |
