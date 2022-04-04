@@ -98,6 +98,17 @@
           <mat-icon>share</mat-icon>
         </button>
         <button
+          *ngIf="activatePin"
+          mat-mini-fab
+          ngbTooltip="Epingler"
+          placement="bottom"
+          (click)="pinSelectedObs()"
+          mat-raised-button
+          [ngStyle]="activatePin && pinExists() ? {'background-color': '#3fb8a8', 'color': 'white'} : ''"
+        >
+          <mat-icon>push_pin</mat-icon>
+        </button>
+        <button
           mat-mini-fab
           *ngIf="activateAlert"
           [ngbTooltip]="alertExists() ? 'Signalement en cours' : 'Signaler'"

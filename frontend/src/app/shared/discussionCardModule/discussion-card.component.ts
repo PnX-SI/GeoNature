@@ -6,7 +6,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { GlobalSubService } from '@geonature/services/global-sub.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { pickBy, isEmpty, uniqueId } from 'lodash';
+import { isEmpty, uniqueId } from 'lodash';
 import * as moment from 'moment';
 
 @Component({
@@ -69,7 +69,9 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
         data: this.additionalData.data.map((d) => ({ ...d, spid: uniqueId() })),
       };
     }
-    this.getDiscussions();
+    if (isEmpty(this.discussions)) {
+      this.getDiscussions();
+    }
   }
 
   isValid() {

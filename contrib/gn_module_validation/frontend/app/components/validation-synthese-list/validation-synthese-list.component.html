@@ -83,10 +83,18 @@
       >
       </button>
       <i
-        *ngIf="findAlertInfo(row)"
+        *ngIf="findReportInfo(row, 'alert')"
         class="fa fa-flag"
+        [ngStyle]="{'margin-right':'2px'}"
         aria-hidden="true"
-        [title]="findAlertInfo(row, 'content')"
+        (click)="openInfoModal(row)"
+        [title]="findReportInfo(row, 'alert', 'content')"
+      ></i>
+      <i
+        *ngIf="findReportInfo(row, 'pin')"
+        class="fa fa-thumb-tack"
+        aria-hidden="true"
+        (click)="openInfoModal(row)"
       ></i>
     </ng-template>
   </ngx-datatable-column>

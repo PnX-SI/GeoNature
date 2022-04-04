@@ -46,7 +46,9 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   public phenology: any[];
   public alertOpen: boolean;
   public alert;
+  public pin;
   public activateAlert = false;
+  public activatePin = false;
   public validationColor = {
     '0': '#FFFFFF',
     '1': '#8BC34A',
@@ -74,6 +76,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       if (module) {
         this.moduleInfos = { id: module.id_module, code: module.module_code };
         this.activateAlert = AppConfig.SYNTHESE.ALERT_MODULES.includes(this.moduleInfos?.code);
+        this.activatePin = AppConfig.SYNTHESE.PIN_MODULES.includes(this.moduleInfos?.code);
       }
     });
   }
@@ -106,6 +109,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
       .subscribe((data) => {
         this.selectedObs = data['properties'];
         this.alert = find(data.properties.reports, ['report_type.type', 'alert']);
+        this.pin = find(data.properties.reports, ['report_type.type', 'pin']);
         this.selectCdNomenclature = this.selectedObs?.nomenclature_valid_status.cd_nomenclature;
         this.selectedGeom = data;
         this.selectedObs['municipalities'] = [];
@@ -282,23 +286,64 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   }
 
   /**
-   * Get required id_report to delete an alert
+   * This GET is required to get id_report autogenerate on creation, and DELETE with id_report next.
    */
-  getAlert() {
+  getReport(type) {
     this._dataService
-      .getReports(`idSynthese=${this.idSynthese}&type=alert&sort=asc`)
+      .getReports(`idSynthese=${this.idSynthese}&type=${type}&sort=asc`)
       .subscribe((data) => {
-        this.alert = data[0];
+        this[type] = data[0];
       });
   }
 
   openCloseAlert() {
     this.alertOpen = !this.alertOpen;
-    this.getAlert();
+    // avoid useless request
+    if (AppConfig.SYNTHESE?.ALERT_MODULES && AppConfig.SYNTHESE.ALERT_MODULES.length) {
+      this.getReport('alert');
+    }
   }
 
   alertExists() {
     return !isEmpty(this.alert);
+  }
+
+  pinExists() {
+    return !isEmpty(this.pin);
+  }
+
+  /**
+   * Create only one pin by user by id_synthese.
+   * Only owner car delete or create pin for himself.
+   */
+  addPin() {
+    this._dataService
+      .createReport({
+        type: 'pin',
+        item: this.idSynthese,
+        content: '',
+      })
+      .subscribe((success) => {
+        this._commonService.translateToaster('success', 'Epinglé !');
+        this.getReport('pin');
+      });
+  }
+
+  deletePin() {
+    this._dataService.deleteReport(this.pin.id_report).subscribe(() => {
+      this._commonService.translateToaster('info', 'Epingle supprimée !');
+      this.pin = {};
+    });
+  }
+
+  /**
+   * Manage click action on pin button to add or delete pin
+   */
+  pinSelectedObs() {
+    if (isEmpty(this.pin)) {
+      this.addPin();
+    }
+    this.deletePin();
   }
 
   copyToClipBoard() {

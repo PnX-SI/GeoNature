@@ -995,13 +995,13 @@ def create_report(scope):
         if not synthese.has_instance_permission(scope):
             raise Forbidden
         # only allow one alert by id_synthese
-        if type_name == "alert":
+        if type_name in ["alert", "pin"]:
             alert_exists = TReport.query.filter(
                 TReport.id_synthese == id_synthese,
                 TReport.report_type.has(BibReportsTypes.type == type_name),
             ).one_or_none()
             if alert_exists is not None:
-                raise Conflict("Alert already exists for this id")
+                raise Conflict("This type already exists for this id")
     except KeyError:
         raise BadRequest("Empty request data")
     new_entry = TReport(
@@ -1093,7 +1093,7 @@ def list_reports(scope):
 def delete_report(id_report):
     reportItem = TReport.query.get_or_404(id_report)
     # alert control to check cruved - allow validators only
-    if reportItem.report_type.type in ["alert", "pin"]:
+    if reportItem.report_type.type in ["alert"]:
         scope = get_scopes_by_action(module_code="VALIDATION")["C"]
         if not reportItem.synthese.has_instance_permission(scope):
             raise Forbidden("Permission required to delete this report !")

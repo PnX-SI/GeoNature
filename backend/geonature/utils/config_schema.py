@@ -307,6 +307,8 @@ class Synthese(Schema):
     DISCUSSION_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
     # Allow disable alert synthese module for synthese or validation or any
     ALERT_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
+    # Allow to activate pin tool for any, some or all VALIDATION, SYNTHESE
+    PIN_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
 
 
 # Map configuration
