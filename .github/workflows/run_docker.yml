@@ -93,6 +93,8 @@ jobs:
           geonature db upgrade ref_geo_fr_municipalities@head
           geonature db upgrade ref_geo_inpn_grids_5@head
           geonature db upgrade ref_sensitivity_inpn@head
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
 
 
   # pytest:
