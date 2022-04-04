@@ -20,7 +20,7 @@ def upgrade():
     logger.info("Create t_reports table...")
     op.execute(
         """
-    CREATE TABLE gn_synthese.t_reports (
+    CREATE TABLE IF NOT EXISTS gn_synthese.t_reports (
         id_report SERIAL NOT NULL PRIMARY KEY,
         id_synthese INT NOT NULL,
         id_role INT NOT NULL,

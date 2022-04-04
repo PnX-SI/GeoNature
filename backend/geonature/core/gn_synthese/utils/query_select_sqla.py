@@ -230,6 +230,11 @@ class SyntheseQuery:
                 self.model.reports.any(TReport.report_type.has(BibReportsTypes.type == "alert"))
             )
 
+        if "has_pin" in self.filters:
+            self.query = self.query.where(
+                self.model.reports.any(TReport.report_type.has(BibReportsTypes.type == "pin"))
+            )
+
         if "id_dataset" in self.filters:
             self.query = self.query.where(
                 self.model.id_dataset.in_(self.filters.pop("id_dataset"))
