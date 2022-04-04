@@ -80,7 +80,8 @@ jobs:
           psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "uuid-ossp";'
           psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "pg_trgm";'
           psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
-
+        env:
+          PGPASSWORD: geonatpasswd
       -
         name: Install database
         run: |
