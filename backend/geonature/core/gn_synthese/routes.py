@@ -10,7 +10,7 @@ from flask import Blueprint, request, Response, current_app, \
                   send_from_directory, render_template, jsonify, g
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from sqlalchemy import distinct, func, desc, asc, select, text, update
-from sqlalchemy.orm import joinedload, contains_eager, lazyload 
+from sqlalchemy.orm import joinedload, contains_eager, lazyload, selectinload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 

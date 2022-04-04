@@ -175,16 +175,9 @@ def get_synthese_data(info_role):
     )
 
     # Step 3: Construct Synthese model from query result
-<<<<<<< HEAD
-    query = (
-        Synthese.query.options(
-            *[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)]
-        )
-=======
     syntheseModelQuery = (
         Synthese.query
         .options(*[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)])
->>>>>>> c3437debc (refresh VALIDATION obs list on modal close)
         .options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
     )
     if len(current_app.config["SYNTHESE"]["ALERT_MODULES"]):
