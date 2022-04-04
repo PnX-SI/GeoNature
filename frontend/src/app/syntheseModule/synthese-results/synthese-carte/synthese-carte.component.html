@@ -1,7 +1,14 @@
 <pnx-map height="92vh" class="map-card">
-  <pnx-leaflet-filelayer (onLoad)="onFileLayerLoaded($event)" [removeLayer]="currentLeafletDrawCoord"
-    [style]="{'color': 'green'}"></pnx-leaflet-filelayer>
-  <pnx-leaflet-draw [options]="leafletDrawOptions" [zoomLevel]="1" (layerDrawed)="bindGeojsonForm($event)"
-    (layerDeleted)="deleteControlValue()">
+  <pnx-leaflet-filelayer
+    (onLoad)="onFileLayerLoaded($event)"
+    [removeLayer]="currentLeafletDrawCoord"
+    [style]="{ color: 'green' }"
+  ></pnx-leaflet-filelayer>
+  <pnx-leaflet-draw
+    [options]="leafletDrawOptions"
+    [zoomLevel]="1"
+    (layerDrawed)="bindGeojsonForm($event)"
+    (layerDeleted)="deleteControlValue()"
+  >
   </pnx-leaflet-draw>
 </pnx-map>

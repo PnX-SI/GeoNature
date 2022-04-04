@@ -4,7 +4,6 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 
-
 /**
  * Ce composant permet d'afficher un input de type "autocomplete" sur un liste d'observateur définit dans le schéma ``utilisateur.t_menus`` et ``utilisateurs.cor_role_menu``.
  * Il permet de séléctionner plusieurs utilisateurs dans le même input.
@@ -21,7 +20,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
   selector: 'pnx-observers',
   templateUrl: './observers.component.html',
   styleUrls: ['./observers.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class ObserversComponent extends GenericFormComponent {
   /**
@@ -32,7 +31,9 @@ export class ObserversComponent extends GenericFormComponent {
   @Input() codeList: string;
   @Input() bindAllItem = false;
   @Input() bindValue: string = null;
-  @Input() compareWith = (c1, c2) => {return c1.id_role === c2.id_role};
+  @Input() compareWith = (c1, c2) => {
+    return c1.id_role === c2.id_role;
+  };
   public observers: Observable<Array<any>>;
 
   constructor(private _dfService: DataFormService) {
@@ -44,25 +45,22 @@ export class ObserversComponent extends GenericFormComponent {
     this.multiSelect = this.multiSelect || true;
     // uniformise as IdList the id of list
     // retrocompat: keep idMenu
-    if(this.idList) {
-      this.idMenu = this.idList
+    if (this.idList) {
+      this.idMenu = this.idList;
     }
     // si idMenu
 
     if (this.idMenu) {
-      this.observers = this._dfService
-                            .getObservers(this.idMenu);
+      this.observers = this._dfService.getObservers(this.idMenu);
     } else if (this.codeList) {
-      this.observers = this._dfService
-                            .getObserversFromCode(this.codeList)
-                            .pipe(
-                              map(data => {
-                                if (this.parentFormControl.value) {
-                                  this.parentFormControl.setValue(this.parentFormControl.value);
-                                }
-                                return data;
-                              })
-                            );
+      this.observers = this._dfService.getObserversFromCode(this.codeList).pipe(
+        map((data) => {
+          if (this.parentFormControl.value) {
+            this.parentFormControl.setValue(this.parentFormControl.value);
+          }
+          return data;
+        })
+      );
     }
   }
 

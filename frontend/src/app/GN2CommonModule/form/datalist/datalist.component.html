@@ -1,13 +1,7 @@
-
 <div *ngIf="values">
-  <mat-form-field style="display: inline-block; width:100%">
+  <mat-form-field style="display: inline-block; width: 100%">
     <mat-label>{{ label }}</mat-label>
-    <mat-select
-      [formControl]="parentFormControl"
-      [multiple]="multiple"
-      [required]="required"
-      dense
-    >
+    <mat-select [formControl]="parentFormControl" [multiple]="multiple" [required]="required" dense>
       <mat-option>
         <ngx-mat-select-search
           placeholderLabel="Filtre"
@@ -16,7 +10,7 @@
           [clearSearchInput]="false"
         ></ngx-mat-select-search>
       </mat-option>
-        <mat-select-trigger *ngIf="multiple">
+      <mat-select-trigger *ngIf="multiple">
         <mat-chip-list>
           <mat-chip
             *ngFor="let value of selectedValues()"
@@ -24,16 +18,11 @@
             (removed)="onToppingRemoved(value)"
           >
             {{ displayLabelFromValue(value) }}
-            <mat-icon matChipRemove>
-              cancel
-            </mat-icon>
+            <mat-icon matChipRemove> cancel </mat-icon>
           </mat-chip>
         </mat-chip-list>
       </mat-select-trigger>
-      <mat-option
-        *ngFor="let value of filteredValues"
-        [value]="value[keyValue]"
-      >
+      <mat-option *ngFor="let value of filteredValues" [value]="value[keyValue]">
         {{ displayLabel(value) }}
       </mat-option>
     </mat-select>
@@ -43,10 +32,9 @@
       matTooltipClass="form-tooltip"
       class="small-icon"
       matSuffix
-    >help</mat-icon>
+      >help</mat-icon
+    >
   </mat-form-field>
 
-  <ng-template #loadingBlock>
-    DataListComponent : Chargement en cours...
-  </ng-template>
+  <ng-template #loadingBlock> DataListComponent : Chargement en cours... </ng-template>
 </div>

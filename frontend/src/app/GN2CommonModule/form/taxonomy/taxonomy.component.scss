@@ -1,16 +1,16 @@
-#filter{
+#filter {
   cursor: pointer;
 }
 
-#sel1{
+#sel1 {
   margin-right: 8px;
 }
 
-.loading {    
+.loading {
   background-color: #ffffff;
-  background-image: url("../../../../assets/images/Spinner.gif");
+  background-image: url('../../../../assets/images/Spinner.gif');
   background-size: 25px 25px;
-  background-position:right center;
+  background-position: right center;
   background-repeat: no-repeat;
 }
 

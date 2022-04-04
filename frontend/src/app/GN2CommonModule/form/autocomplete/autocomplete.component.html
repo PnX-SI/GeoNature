@@ -1,9 +1,9 @@
-<small> {{label}} </small>
+<small> {{ label }} </small>
 <div class="input-group">
   <input
     type="text"
-    class="form-control form-control-sm "
-    [ngClass]="{'loading' : isLoading && parentFormControl.value?.length >= 3}"
+    class="form-control form-control-sm"
+    [ngClass]="{ loading: isLoading && parentFormControl.value?.length >= 3 }"
     id="taxonInput"
     [formControl]="parentFormControl"
     [disableControl]="false"
@@ -13,17 +13,10 @@
     (selectItem)="itemSelected($event)"
     [placeholder]="placeholder"
   />
-  <ng-template
-    #rt
-    let-r="result"
-    let-t="term"
-  >
+  <ng-template #rt let-r="result" let-t="term">
     <span [innerHTML]="r[keyValue]"> </span>
   </ng-template>
-
 </div>
-<small
-  *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3"
-  style="color:red"
+<small *ngIf="!isLoading && noResult && parentFormControl.value?.length >= 3" style="color: red">
+  Aucun élement trouvé</small
 >
-  Aucun élement trouvé</small>

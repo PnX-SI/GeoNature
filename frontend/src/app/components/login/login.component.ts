@@ -8,7 +8,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 @Component({
   selector: 'pnx-login',
   templateUrl: 'login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
   enable_sign_up: boolean = false;
@@ -37,9 +37,7 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
       // if token not here here, redirection to CAS login page
-      const url_redirection_cas = `${AppConfig.CAS_PUBLIC.CAS_URL_LOGIN}?service=${
-        AppConfig.API_ENDPOINT
-      }/gn_auth/login_cas`;
+      const url_redirection_cas = `${AppConfig.CAS_PUBLIC.CAS_URL_LOGIN}?service=${AppConfig.API_ENDPOINT}/gn_auth/login_cas`;
       document.location.href = url_redirection_cas;
     }
   }
@@ -50,9 +48,9 @@ export class LoginComponent implements OnInit {
 
   registerPublic() {
     const userPublic = {
-      "username": AppConfig.PUBLIC_ACCESS.PUBLIC_LOGIN,
-      "password": AppConfig.PUBLIC_ACCESS.PUBLIC_PASSWORD,
-    }
+      username: AppConfig.PUBLIC_ACCESS.PUBLIC_LOGIN,
+      password: AppConfig.PUBLIC_ACCESS.PUBLIC_PASSWORD,
+    };
     this._authService.signinUser(userPublic);
   }
 
@@ -60,11 +58,9 @@ export class LoginComponent implements OnInit {
     this.disableSubmit = true;
     this._authService
       .loginOrPwdRecovery(data)
-      .subscribe(
-        res => {
-          this._commonService.translateToaster('info', 'PasswordAndLoginRecovery');
-        }
-      )
+      .subscribe((res) => {
+        this._commonService.translateToaster('info', 'PasswordAndLoginRecovery');
+      })
       .add(() => {
         this.disableSubmit = false;
       });

@@ -26,7 +26,7 @@ import { CommonService } from '@geonature_common/service/common.service';
  */
 @Component({
   selector: 'pnx-taxa',
-  templateUrl: 'taxa.component.html'
+  templateUrl: 'taxa.component.html',
 })
 export class TaxaComponent implements OnInit {
   /** Contient un tableau d'objets. L'attribut "displayName" des objets
@@ -63,10 +63,7 @@ export class TaxaComponent implements OnInit {
   @Input() disabled: boolean = false;
 
   /** @ignore */
-  constructor(
-    private dataService: DataFormService,
-    private commonService: CommonService
-  ) {}
+  constructor(private dataService: DataFormService, private commonService: CommonService) {}
 
   ngOnInit() {
     this.taxa = [];
@@ -86,14 +83,14 @@ export class TaxaComponent implements OnInit {
    *
    * @param taxon_name La chaine de caractère saisie dans la zone de
    * recherche.
-  */
+   */
   refreshTaxaList(taxon_name) {
     if (taxon_name && taxon_name.length >= 2) {
       this.dataService.getHigherTaxa(this.rank, taxon_name).subscribe(
-        data => {
+        (data) => {
           this.taxa = data;
         },
-        err => {
+        (err) => {
           if (err.status === 404) {
             this.taxa = [{ displayName: 'No data to display' }];
           } else {

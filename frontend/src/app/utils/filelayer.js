@@ -38,12 +38,12 @@
   } else if (typeof window !== 'undefined' && window.L && window.toGeoJSON) {
     factory(window.L, window.toGeoJSON);
   }
-}(function fileLoaderFactory(L, toGeoJSON) {
+})(function fileLoaderFactory(L, toGeoJSON) {
   var FileLoader = L.Layer.extend({
     options: {
       layer: L.geoJson,
       layerOptions: {},
-      fileSizeLimit: 1024
+      fileSizeLimit: 1024,
     },
 
     initialize: function (map, options) {
@@ -54,13 +54,12 @@
         geojson: this._loadGeoJSON,
         json: this._loadGeoJSON,
         gpx: this._convertToGeoJSON,
-        kml: this._convertToGeoJSON
+        kml: this._convertToGeoJSON,
       };
     },
 
     load: function (file, ext) {
-      var parser,
-        reader;
+      var parser, reader;
 
       // Check file is defined
       if (this._isParameterMissing(file, 'file')) {
@@ -88,7 +87,7 @@
           this.fire('data:loaded', {
             layer: layer,
             filename: file.name,
-            format: parser.ext
+            format: parser.ext,
           });
         } catch (err) {
           this.fire('data:error', { error: err });
@@ -122,8 +121,7 @@
       var layer;
 
       // Check required parameters
-      if ((this._isParameterMissing(data, 'data'))
-        || (this._isParameterMissing(name, 'name'))) {
+      if (this._isParameterMissing(data, 'data') || this._isParameterMissing(name, 'name')) {
         return;
       }
 
@@ -145,7 +143,7 @@
         this.fire('data:loaded', {
           layer: layer,
           filename: name,
-          format: parser.ext
+          format: parser.ext,
         });
       } catch (err) {
         this.fire('data:error', { error: err });
@@ -155,7 +153,7 @@
     _isParameterMissing: function (v, vname) {
       if (typeof v === 'undefined') {
         this.fire('data:error', {
-          error: new Error('Missing parameter: ' + vname)
+          error: new Error('Missing parameter: ' + vname),
         });
         return true;
       }
@@ -168,13 +166,13 @@
       parser = this._parsers[ext];
       if (!parser) {
         this.fire('data:error', {
-          error: new Error('Unsupported file type (' + ext + ')')
+          error: new Error('Unsupported file type (' + ext + ')'),
         });
         return undefined;
       }
       return {
         processor: parser,
-        ext: ext
+        ext: ext,
       };
     },
 
@@ -183,10 +181,8 @@
       if (fileSize > this.options.fileSizeLimit) {
         this.fire('data:error', {
           error: new Error(
-            'File size exceeds limit (' +
-            fileSize + ' > ' +
-            this.options.fileSizeLimit + 'kb)'
-          )
+            'File size exceeds limit (' + fileSize + ' > ' + this.options.fileSizeLimit + 'kb)'
+          ),
         });
         return false;
       }
@@ -214,24 +210,24 @@
       var geojson;
       // Format is either 'gpx' or 'kml'
       if (typeof content === 'string') {
-        content = (new window.DOMParser()).parseFromString(content, 'text/xml');
+        content = new window.DOMParser().parseFromString(content, 'text/xml');
       }
       geojson = toGeoJSON[format](content);
       return this._loadGeoJSON(geojson);
-    }
+    },
   });
 
   var FileLayerLoad = L.Control.extend({
     statics: {
       TITLE: 'Load local file (GPX, KML, GeoJSON)',
-      LABEL: '&#8965;'
+      LABEL: '&#8965;',
     },
     options: {
       position: 'topleft',
       fitBounds: true,
       layerOptions: {},
       addToMap: true,
-      fileSizeLimit: 1024
+      fileSizeLimit: 1024,
     },
 
     initialize: function (options) {
@@ -242,14 +238,18 @@
     onAdd: function (map) {
       this.loader = L.FileLayer.fileLoader(map, this.options);
 
-      this.loader.on('data:loaded', function (e) {
-        // Fit bounds after loading
-        if (this.options.fitBounds) {
-          window.setTimeout(function () {
-            map.fitBounds(e.layer.getBounds());
-          }, 500);
-        }
-      }, this);
+      this.loader.on(
+        'data:loaded',
+        function (e) {
+          // Fit bounds after loading
+          if (this.options.fitBounds) {
+            window.setTimeout(function () {
+              map.fitBounds(e.layer.getBounds());
+            }, 500);
+          }
+        },
+        this
+      );
 
       // Initialize Drag-and-drop
       this._initDragAndDrop(map);
@@ -280,7 +280,7 @@
 
           thisLoader.loadMultiple(e.dataTransfer.files);
           map.scrollWheelZoom.enable();
-        }
+        },
       };
       for (callbackName in callbacks) {
         if (callbacks.hasOwnProperty(callbackName)) {
@@ -314,11 +314,15 @@
       }
       fileInput.style.display = 'none';
       // Load on file change
-      fileInput.addEventListener('change', function () {
-        thisLoader.loadMultiple(this.files);
-        // reset so that the user can upload the same file again if they want to
-        this.value = '';
-      }, false);
+      fileInput.addEventListener(
+        'change',
+        function () {
+          thisLoader.loadMultiple(this.files);
+          // reset so that the user can upload the same file again if they want to
+          this.value = '';
+        },
+        false
+      );
 
       L.DomEvent.disableClickPropagation(link);
       L.DomEvent.on(link, 'click', function (e) {
@@ -326,7 +330,7 @@
         e.preventDefault();
       });
       return container;
-    }
+    },
   });
 
   L.FileLayer = {};
@@ -339,4 +343,4 @@
   L.Control.fileLayerLoad = function (options) {
     return new L.Control.FileLayerLoad(options);
   };
-}, window));
+}, window);

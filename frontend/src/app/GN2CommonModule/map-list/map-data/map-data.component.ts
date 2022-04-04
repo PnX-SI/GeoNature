@@ -6,7 +6,7 @@ import {
   Input,
   Output,
   OnChanges,
-  EventEmitter
+  EventEmitter,
 } from '@angular/core';
 import { MapService } from '../../map/map.service';
 import { MapListService } from '../../map-list/map-list.service';
@@ -19,7 +19,7 @@ import { ColumnActions } from '@geonature_common/map-list/map-list.component';
 @Component({
   selector: 'pnx-map-data',
   templateUrl: './map-data.component.html',
-  styleUrls: ['./map-data.component.scss']
+  styleUrls: ['./map-data.component.scss'],
 })
 export class MapDataComponent implements OnInit {
   @ViewChild(DatatableComponent, { static: false }) table: DatatableComponent;

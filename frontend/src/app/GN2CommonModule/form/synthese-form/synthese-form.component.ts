@@ -7,14 +7,14 @@ import { MapService } from '@geonature_common/map/map.service';
 import { TaxonAdvancedModalComponent } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-component';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
-import { ActivatedRoute } from "@angular/router";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'pnx-synthese-search',
   templateUrl: 'synthese-form.component.html',
   styleUrls: ['synthese-form.component.scss'],
   providers: [],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class SyntheseSearchComponent implements OnInit {
   public AppConfig = AppConfig;
@@ -36,19 +36,19 @@ export class SyntheseSearchComponent implements OnInit {
     private _api: DataFormService,
     private route: ActivatedRoute
   ) {
-    this.route.queryParams.subscribe(params => {
+    this.route.queryParams.subscribe((params) => {
       this.params = params;
     });
   }
 
   ngOnInit() {
     // get organisms:
-    this._api.getOrganismsDatasets().subscribe(data => {
+    this._api.getOrganismsDatasets().subscribe((data) => {
       this.organisms = data;
     });
 
     // format areas filter
-    this.areaFilters = AppConfig.SYNTHESE.AREA_FILTERS.map(area => {
+    this.areaFilters = AppConfig.SYNTHESE.AREA_FILTERS.map((area) => {
       if (typeof area['type_code'] === 'string') {
         area['type_code_array'] = [area['type_code']];
       } else {
@@ -58,22 +58,23 @@ export class SyntheseSearchComponent implements OnInit {
     });
 
     if (this.displayValidation) {
-      this._api.getNomenclatures(['STATUT_VALID']).subscribe(data => {
+      this._api.getNomenclatures(['STATUT_VALID']).subscribe((data) => {
         this.validationStatus = data[0].values;
       });
     }
 
     if (this.params) {
       if (this.params.id_acquisition_framework) {
-        this.formService.searchForm.controls.id_acquisition_framework.setValue([+this.params.id_acquisition_framework])
+        this.formService.searchForm.controls.id_acquisition_framework.setValue([
+          +this.params.id_acquisition_framework,
+        ]);
       }
 
       if (this.params.id_dataset) {
-        this.formService.searchForm.controls.id_dataset.setValue([+this.params.id_dataset])
+        this.formService.searchForm.controls.id_dataset.setValue([+this.params.id_dataset]);
       }
       this.formService.searchForm.markAsDirty();
     }
-
   }
 
   onSubmitForm() {
@@ -102,7 +103,7 @@ export class SyntheseSearchComponent implements OnInit {
     const taxonModal = this.ngbModal.open(TaxonAdvancedModalComponent, {
       size: 'lg',
       backdrop: 'static',
-      keyboard: false
+      keyboard: false,
     });
   }
 }

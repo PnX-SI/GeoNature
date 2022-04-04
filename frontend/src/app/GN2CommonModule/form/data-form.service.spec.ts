@@ -11,7 +11,7 @@ describe('DataFormService', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [DataFormService]
+      providers: [DataFormService],
     })
   );
 
@@ -29,9 +29,9 @@ describe('DataFormService', () => {
       group2_inpn: 'Poissons',
       regne: 'Animalia',
       lb_nom: 'Alburnus alburnus',
-      cd_nom: 67111
+      cd_nom: 67111,
     };
-    service.searchTaxonomy('ablette', '1001').subscribe(taxons => {
+    service.searchTaxonomy('ablette', '1001').subscribe((taxons) => {
       expect(taxons.length).toBe(1);
       expect(taxons[0]).toEqual(dummyTaxon);
     });
