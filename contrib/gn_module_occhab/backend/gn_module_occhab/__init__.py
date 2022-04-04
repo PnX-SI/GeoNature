@@ -1,2 +1,2 @@
-MODULE_CODE = 'OCCHAB'
-MODULE_PICTO = 'fa-leaf'
+MODULE_CODE = "OCCHAB"
+MODULE_PICTO = "fa-leaf"

@@ -7,7 +7,7 @@ from pypnusershub.tests.utils import (
 )
 
 
-def login(client, username='admin', password=None):
+def login(client, username="admin", password=None):
     data = {
         "login": username,
         "password": password if password else username,

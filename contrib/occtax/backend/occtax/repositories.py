@@ -25,25 +25,25 @@ from pypnusershub.db.models import User
 
 class ReleveRepository:
     """
-        Repository: classe permettant l'acces au données
-        d'un modèle de type 'releve'
-        """
+    Repository: classe permettant l'acces au données
+    d'un modèle de type 'releve'
+    """
 
     def __init__(self, model):
         self.model = model
 
-    #Ajout de colonne dynamique
-    def input(self,row,col,val):
-        self.dat[row] = {col:val}
+    # Ajout de colonne dynamique
+    def input(self, row, col, val):
+        self.dat[row] = {col: val}
         pass
 
     def get_one(self, id_releve, info_user):
-        """ Get one releve model if allowed
+        """Get one releve model if allowed
         params:
          - id_releve: integer
          - info_user: TRole object model
 
-        Return: 
+        Return:
             Tuple(the releve model, the releve as geojson)
         """
         releve = DB.session.query(self.model).get(id_releve)
@@ -71,7 +71,7 @@ class ReleveRepository:
         return releve, rel_as_geojson
 
     def update(self, releve, info_user, geom):
-        """ Update the current releve if allowed
+        """Update the current releve if allowed
         params:
         - releve: a Releve object model
         - info_user: Trole object model
@@ -153,8 +153,8 @@ class ReleveRepository:
 
     def get_all(self, info_user):
         """
-            Return all the data from Releve model filtered with
-            the cruved authorization
+        Return all the data from Releve model filtered with
+        the cruved authorization
         """
         q = self.filter_query_with_autorization(info_user)
         data = q.all()
@@ -164,40 +164,28 @@ class ReleveRepository:
 
     def get_filtered_query(self, info_user, from_generic_table=False):
         """
-            Return a query object already filtered with
-            the cruved authorization
+        Return a query object already filtered with
+        the cruved authorization
         """
         if from_generic_table:
             return self.filter_query_generic_table(info_user)
         else:
             return self.filter_query_with_autorization(info_user)
-    
+
     def add_media_in_export(self, query, columns):
-        query = query.outerjoin(
-            TMedias,
-            TMedias.uuid_attached_row == self.model.tableDef.c.permId
-        )
+        query = query.outerjoin(TMedias, TMedias.uuid_attached_row == self.model.tableDef.c.permId)
         query = query.add_columns(
-            func.string_agg(TMedias.title_fr, " | ").label('titreMedia'),
-            func.string_agg(TMedias.description_fr, " | ").label('descMedia'),
+            func.string_agg(TMedias.title_fr, " | ").label("titreMedia"),
+            func.string_agg(TMedias.description_fr, " | ").label("descMedia"),
             func.string_agg(
-                case(
-                    [
-                        (TMedias.media_url == None, TMedias.media_path)
-                    ],
-                    else_=TMedias.media_url
-                ),
-            " | "
-            ).label("urlMedia")
+                case([(TMedias.media_url == None, TMedias.media_path)], else_=TMedias.media_url),
+                " | ",
+            ).label("urlMedia"),
         )
-        query = query.group_by(
-            *self.model.db_cols
-        )
+        query = query.group_by(*self.model.db_cols)
         added_medias_cols = ["titreMedia", "descMedia", "urlMedia"]
         columns = columns + added_medias_cols
         return query, columns
-
-
 
 
 def get_query_occtax_filters(
@@ -253,9 +241,9 @@ def get_query_occtax_filters(
         q = q.filter(mappedView.altitude_min >= params.pop("altitude_min"))
 
     if "organism" in params:
-        q = q.join(
-            CorDatasetActor, CorDatasetActor.id_dataset == mappedView.id_dataset
-        ).filter(CorDatasetActor.id_actor == int(params.pop("organism")))
+        q = q.join(CorDatasetActor, CorDatasetActor.id_dataset == mappedView.id_dataset).filter(
+            CorDatasetActor.id_actor == int(params.pop("organism"))
+        )
 
     if "observers_txt" in params:
         observers_query = "%{}%".format(params.pop("observers_txt"))
@@ -272,9 +260,7 @@ def get_query_occtax_filters(
                 TOccurrencesOccurrence,
                 mappedView.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
             )
-        q = q.filter(
-            TOccurrencesOccurrence.non_digital_proof == params.pop("non_digital_proof")
-        )
+        q = q.filter(TOccurrencesOccurrence.non_digital_proof == params.pop("non_digital_proof"))
     if "digital_proof" in params:
         if not is_already_joined(TOccurrencesOccurrence, q):
             q = q.join(
@@ -337,8 +323,8 @@ def get_query_occtax_filters(
 
 def get_query_occtax_order(orderby, mappedView, q, from_generic_table=False):
     """
-        Permet de d'ordonner sur un champ d'une table
-        Ajout d'elements de tris spécifiques/synthétiques
+    Permet de d'ordonner sur un champ d'une table
+    Ajout d'elements de tris spécifiques/synthétiques
     """
     if from_generic_table:
         mappedView = mappedView.tableDef.columns

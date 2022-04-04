@@ -34,7 +34,7 @@ class EmailStrOrListOfEmailStrField(fields.Field):
             self._check_email(value)
             return value
         else:
-            raise ValidationError('Field should be str or list of str')
+            raise ValidationError("Field should be str or list of str")
 
     def _check_email(self, value):
         recipients = clean_recipients(value)
@@ -59,10 +59,13 @@ class CasFrontend(Schema):
 
 
 class CasSchemaConf(Schema):
-    CAS_URL_VALIDATION = fields.String(load_default="https://preprod-inpn.mnhn.fr/auth/serviceValidate")
+    CAS_URL_VALIDATION = fields.String(
+        load_default="https://preprod-inpn.mnhn.fr/auth/serviceValidate"
+    )
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, load_default=CasUserSchemaConf().load({}))
     USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(load_default=False)
     # Quel modules seront associés au JDD récupérés depuis MTD
+
 
 class MTDSchemaConf(Schema):
     JDD_MODULE_CODE_ASSOCIATION = fields.List(fields.String, load_default=["OCCTAX", "OCCHAB"])
@@ -113,10 +116,12 @@ class UsersHubConfig(Schema):
     ADMIN_APPLICATION_PASSWORD = fields.String()
     URL_USERSHUB = fields.Url()
 
+
 class PublicAccess(Schema):
     PUBLIC_LOGIN = fields.String(load_default=None)
     PUBLIC_PASSWORD = fields.String(load_default=None)
     ENABLE_PUBLIC_ACCESS = fields.Boolean(load_default=False)
+
 
 class ServerConfig(Schema):
     LOG_LEVEL = fields.Integer(load_default=20)
@@ -126,15 +131,17 @@ class MediasConfig(Schema):
     MEDIAS_SIZE_MAX = fields.Integer(load_default=50000)
     THUMBNAIL_SIZES = fields.List(fields.Integer, load_default=[200, 50])
 
+
 class AlembicConfig(Schema):
     VERSION_LOCATIONS = fields.String()
+
 
 class AdditionalFields(Schema):
     IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX"])
     IMPLEMENTED_OBJECTS = fields.List(
-        fields.String(),
-        load_default=["OCCTAX_RELEVE",  "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"]
+        fields.String(), load_default=["OCCTAX_RELEVE", "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"]
     )
+
 
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(load_default=50, validate=OneOf([10, 25, 50, 100]))
@@ -149,10 +156,13 @@ class MetadataConfig(Schema):
     MAIL_CONTENT_AF_CLOSED_URL = fields.String(load_default="")
     MAIL_CONTENT_AF_CLOSED_GREETINGS = fields.String(load_default="")
     CLOSED_MODAL_LABEL = fields.String(load_default="Fermer un cadre d'acquisition")
-    CLOSED_MODAL_CONTENT = fields.String(load_default="""L'action de fermeture est irréversible. Il ne sera
-    plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite.""")
+    CLOSED_MODAL_CONTENT = fields.String(
+        load_default="""L'action de fermeture est irréversible. Il ne sera
+    plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite."""
+    )
     CD_NOMENCLATURE_ROLE_TYPE_DS = fields.List(fields.Str(), load_default=[])
     CD_NOMENCLATURE_ROLE_TYPE_AF = fields.List(fields.Str(), load_default=[])
+
 
 # class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
 
@@ -183,7 +193,9 @@ class GnPySchemaConf(Schema):
     MAIL_CONFIG = fields.Nested(MailConfig, load_default=MailConfig().load({}))
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     ADMIN_APPLICATION_LOGIN = fields.String()
-    ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
+    ACCOUNT_MANAGEMENT = fields.Nested(
+        AccountManagement, load_default=AccountManagement().load({})
+    )
     USERSHUB = fields.Nested(UsersHubConfig, load_default=UsersHubConfig().load({}))
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
@@ -235,6 +247,7 @@ class GnFrontEndConf(Schema):
     DISPLAY_EMAIL_INFO_OBS = fields.Boolean(load_default=True)
     DISPLAY_EMAIL_DISPLAY_INFO = fields.List(fields.String(), load_default=["NOM_VERN"])
 
+
 class Synthese(Schema):
     AREA_FILTERS = fields.List(
         fields.Dict, load_default=[{"label": "Communes", "type_code": "COM"}]
@@ -243,7 +256,9 @@ class Synthese(Schema):
     # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
     # d'abbord s'assurer que ces champs sont bien renvoyé par l'API !
     # Champs disponibles: tous ceux de la vue 'v_synthese_for_web_app
-    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(fields.String, load_default=DEFAULT_COLUMNS_API_SYNTHESE)
+    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(
+        fields.String, load_default=DEFAULT_COLUMNS_API_SYNTHESE
+    )
     # Colonnes affichées sur la liste des résultats de la sytnthese
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, load_default=DEFAULT_LIST_COLUMN)
     EXPORT_COLUMNS = fields.List(fields.String(), load_default=DEFAULT_EXPORT_COLUMNS)
@@ -288,6 +303,7 @@ class Synthese(Schema):
     DISCUSSION_MAX_LENGTH = fields.Integer(load_default=1500)
     # Allow disable discussion tab for synthese or validation
     DISCUSSION_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
+
 
 # Map configuration
 BASEMAP = [
@@ -341,7 +357,7 @@ class GnGeneralSchemaConf(Schema):
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
-    CODE_APPLICATION = fields.String(load_default='GN')
+    CODE_APPLICATION = fields.String(load_default="GN")
     XML_NAMESPACE = fields.String(load_default="{http://inpn.mnhn.fr/mtd}")
     MTD_API_ENDPOINT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/mtd")
     CAS_PUBLIC = fields.Nested(CasFrontend, load_default=CasFrontend().load({}))
@@ -353,7 +369,9 @@ class GnGeneralSchemaConf(Schema):
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(load_default=True)
     BDD = fields.Nested(BddConfig, load_default=BddConfig().load({}))
     URL_USERSHUB = fields.Url(required=False)
-    ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
+    ACCOUNT_MANAGEMENT = fields.Nested(
+        AccountManagement, load_default=AccountManagement().load({})
+    )
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
     UPLOAD_FOLDER = fields.String(load_default="static/medias")
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
@@ -379,7 +397,7 @@ class GnGeneralSchemaConf(Schema):
     def validate_account_autovalidation(self, data, **kwargs):
         account_config = data["ACCOUNT_MANAGEMENT"]
         if (
-                account_config["AUTO_ACCOUNT_CREATION"] is False
+            account_config["AUTO_ACCOUNT_CREATION"] is False
             and account_config["VALIDATOR_EMAIL"] is None
         ):
             raise ValidationError(

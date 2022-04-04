@@ -8,19 +8,18 @@ from flask.logging import default_handler
 
 
 class RequestIdFormatter(logging.Formatter):
-
     def format(self, record):
         s = super().format(record)
         if has_request_context():
-            req_id = request.environ['FLASK_REQUEST_ID']
-            s = f'[{req_id}] {s}'
+            req_id = request.environ["FLASK_REQUEST_ID"]
+            s = f"[{req_id}] {s}"
         return s
 
 
 def config_loggers(config):
     """
-        Configuration des niveaux de logging/warnings 
-        et des hanlers
+    Configuration des niveaux de logging/warnings
+    et des hanlers
     """
     root_logger = logging.getLogger()
     formatter = RequestIdFormatter()
@@ -39,7 +38,7 @@ def config_loggers(config):
         )
         mail_handler.setLevel(logging.ERROR)
         root_logger.addHandler(mail_handler)
-    if os.environ.get('FLASK_ENV') == "development":
+    if os.environ.get("FLASK_ENV") == "development":
         warnings.simplefilter("always", DeprecationWarning)
     else:
         gunicorn_error_logger = logging.getLogger("gunicorn.error")

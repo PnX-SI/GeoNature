@@ -36,16 +36,18 @@ log = logging.getLogger()
 @routes.route("/login_cas", methods=["GET", "POST"])
 def loginCas():
     """
-        Login route with the INPN CAS
+    Login route with the INPN CAS
 
-        .. :quickref: User;
+    .. :quickref: User;
     """
     config_cas = current_app.config["CAS"]
     params = request.args
     if "ticket" in params:
         base_url = current_app.config["API_ENDPOINT"] + "/gn_auth/login_cas"
         url_validate = "{url}?ticket={ticket}&service={service}".format(
-            url=config_cas["CAS_URL_VALIDATION"], ticket=params["ticket"], service=base_url,
+            url=config_cas["CAS_URL_VALIDATION"],
+            ticket=params["ticket"],
+            service=base_url,
         )
 
         response = utilsrequests.get(url_validate)
@@ -61,7 +63,10 @@ def loginCas():
             try:
                 response = utilsrequests.get(
                     ws_user_url,
-                    (config_cas["CAS_USER_WS"]["ID"], config_cas["CAS_USER_WS"]["PASSWORD"],),
+                    (
+                        config_cas["CAS_USER_WS"]["ID"],
+                        config_cas["CAS_USER_WS"]["PASSWORD"],
+                    ),
                 )
                 assert response.status_code == 200
             except AssertionError:
@@ -86,12 +91,7 @@ def loginCas():
             # User cookie
             organism_id = info_user["codeOrganisme"]
             if not organism_id:
-                organism_id = (
-                    Organisme.query
-                    .filter_by(nom_organisme='Autre')
-                    .one()
-                    .id_organisme
-                )
+                organism_id = Organisme.query.filter_by(nom_organisme="Autre").one().id_organisme
             current_user = {
                 "user_login": user["identifiant"],
                 "id_role": user["id_role"],
@@ -117,7 +117,7 @@ def logout_cruved():
     Route to logout with cruved
     To avoid multiples server call, we store the cruved in the session
     when the user logout we need clear the session to get the new cruved session
-    
+
     .. :quickref: User;
     """
     copy_session_key = copy(session)
@@ -132,7 +132,10 @@ def get_user_from_id_inpn_ws(id_user):
     try:
         response = utilsrequests.get(
             URL,
-            (config_cas["CAS_USER_WS"]["ID"], config_cas["CAS_USER_WS"]["PASSWORD"],),
+            (
+                config_cas["CAS_USER_WS"]["ID"],
+                config_cas["CAS_USER_WS"]["PASSWORD"],
+            ),
         )
         assert response.status_code == 200
         return response.json()
@@ -153,9 +156,7 @@ def insert_user_and_org(info_user):
         assert user_id is not None and user_login is not None
     except AssertionError:
         log.error("'CAS ERROR: no ID or LOGIN provided'")
-        raise CasAuthentificationError(
-            "CAS ERROR: no ID or LOGIN provided", status_code=500
-        )
+        raise CasAuthentificationError("CAS ERROR: no ID or LOGIN provided", status_code=500)
     # Reconciliation avec base GeoNature
     if organism_id:
         organism = {"id_organisme": organism_id, "nom_organisme": organism_name}

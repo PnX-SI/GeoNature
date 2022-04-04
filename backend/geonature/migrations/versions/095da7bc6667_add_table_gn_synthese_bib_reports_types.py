@@ -10,27 +10,31 @@ import sqlalchemy as sa
 from utils_flask_sqla.migrations.utils import logger
 
 # revision identifiers, used by Alembic.
-revision = '095da7bc6667'
-down_revision = 'ca052245c6ec'
+revision = "095da7bc6667"
+down_revision = "ca052245c6ec"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
     logger.info("Create bib_reports_types table...")
-    op.execute("""
+    op.execute(
+        """
     CREATE TABLE gn_synthese.bib_reports_types (
         id_type SERIAL NOT NULL PRIMARY KEY,
         type VARCHAR NOT NULL
     )
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     INSERT INTO gn_synthese.bib_reports_types (type)
     VALUES 
         ('discussion'),
         ('alert'),
         ('pin')
-    """)
+    """
+    )
     pass
 
 
