@@ -7,4 +7,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: psf/black@stable
+      - name: Backend code formatting check (Black)
+        uses: psf/black@stable
+      - name : Frontend code formatting check (Prettier)
+        uses: creyD/prettier_action@v4.2
+        with:
+          dry: True
