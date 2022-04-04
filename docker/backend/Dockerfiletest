@@ -34,8 +34,6 @@ RUN pip3 install -e /GeoNature/contrib/occtax \
     && pip3 install -e /GeoNature/contrib/gn_module_validation \
     && pip3 install -e /GeoNature/contrib/gn_module_occhab
 
-RUN cd /GeoNature && pip3 install -e .
-
 
 ENTRYPOINT ["sh", "entrypoint.sh"]
 EXPOSE 80
