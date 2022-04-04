@@ -65,6 +65,10 @@ jobs:
 
     container:
       image: ghcr.io/pnx-si/geonature:feat-docker_action
+      credentials:
+        username: ${{ secrets.GHCR_USERNAME }}
+        password: ${{ secrets.GHCR_TOKEN }}
+
 
     steps:
       -
