@@ -3,7 +3,14 @@ from collections import OrderedDict
 import sqlalchemy as sa
 import datetime
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import relationship, column_property, foreign, joinedload, contains_eager
+from sqlalchemy.orm import (
+    relationship,
+    column_property,
+    foreign,
+    joinedload,
+    contains_eager,
+    deferred,
+)
 from sqlalchemy.sql import select, func, exists
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from geoalchemy2 import Geometry
@@ -279,8 +286,9 @@ class Synthese(DB.Model):
     depth_max = DB.Column(DB.Integer)
     place_name = DB.Column(DB.Unicode(length=500))
     the_geom_4326 = DB.Column(Geometry("GEOMETRY", 4326))
-    the_geom_point = DB.Column(Geometry("GEOMETRY", 4326))
-    the_geom_local = DB.Column(Geometry("GEOMETRY"))
+    the_geom_4326_geojson = column_property(func.ST_AsGeoJSON(the_geom_4326), deferred=True)
+    the_geom_point = deferred(DB.Column(Geometry("GEOMETRY", 4326)))
+    the_geom_local = deferred(DB.Column(Geometry("GEOMETRY")))
     precision = DB.Column(DB.Integer)
     id_area_attachment = DB.Column(DB.Integer)
     date_min = DB.Column(DB.DateTime, nullable=False)
