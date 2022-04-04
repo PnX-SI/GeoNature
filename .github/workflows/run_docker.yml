@@ -75,11 +75,11 @@ jobs:
       -
         name: Add database extensions
         run: |
-          psql -h postgresql -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
-          psql -h postgresql -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "hstore";'
-          psql -h postgresql -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "uuid-ossp";'
-          psql -h postgresql -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "pg_trgm";'
-          psql -h postgresql -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
+          psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
+          psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "hstore";'
+          psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "uuid-ossp";'
+          psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "pg_trgm";'
+          psql -h postgres -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
 
       -
         name: Install database
