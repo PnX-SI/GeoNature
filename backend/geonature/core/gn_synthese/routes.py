@@ -18,7 +18,7 @@ from flask import (
 )
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest
 from sqlalchemy import distinct, func, desc, asc, select, text, update
-from sqlalchemy.orm import exc, joinedload
+from sqlalchemy.orm import joinedload, selectinload, lazyload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 
@@ -241,12 +241,25 @@ def get_synthese(info_role):
 @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
 def get_one_synthese(scope, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature"""
-    synthese = Synthese.query.join_nomenclatures().get_or_404(id_synthese)
+    synthese = (
+        Synthese.query.join_nomenclatures()
+        .options(
+            joinedload("dataset").options(
+                selectinload("acquisition_framework").options(
+                    joinedload("creator"),
+                    joinedload("nomenclature_territorial_level"),
+                    joinedload("nomenclature_financing_type"),
+                ),
+            ),
+            lazyload("areas").options(
+                joinedload("area_type"),
+            ),
+        )
+        .get_or_404(id_synthese)
+    )
     if not synthese.has_instance_permission(scope=scope):
         raise Forbidden()
-    geojson = synthese.as_geofeature(
-        "the_geom_4326",
-        "id_synthese",
+    geofeature = synthese.as_geofeature(
         fields=Synthese.nomenclature_fields
         + [
             "dataset",
@@ -281,9 +294,9 @@ def get_one_synthese(scope, id_synthese):
             "medias",
             "areas",
             "areas.area_type",
-        ],
+        ]
     )
-    return jsonify(geojson)
+    return jsonify(geofeature)
 
 
 ################################
