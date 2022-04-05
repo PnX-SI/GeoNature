@@ -291,6 +291,8 @@ class Synthese(Schema):
     # Display email on synthese and validation info obs modal
     DISPLAY_EMAIL = fields.Boolean(load_default=True)
 
+    # Add delete log API to synthese module
+    LOG_API = fields.Boolean(load_default=True)
 
 # Map configuration
 BASEMAP = [
