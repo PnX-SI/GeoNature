@@ -37,8 +37,8 @@ export class SyntheseComponent implements OnInit {
   loadAndStoreData(formParams) {
     this.searchService.dataLoaded = false;
     this.searchService.getSyntheseData(formParams).subscribe(
-      (result) => {
-        if (result['nb_obs_limited']) {
+      (data) => {
+        if (data.length >= AppConfig.SYNTHESE.NB_MAX_OBS_MAP) {
           const modalRef = this._modalService.open(SyntheseModalDownloadComponent, {
             size: 'lg',
           });
@@ -46,13 +46,13 @@ export class SyntheseComponent implements OnInit {
           modalRef.componentInstance.queryString = this.searchService.buildQueryUrl(formatedParams);
           modalRef.componentInstance.tooManyObs = true;
         }
-        this._mapListService.geojsonData = result['data'];
-        this._mapListService.tableData = result['data'];
-        this._mapListService.loadTableData(result['data']);
+        this._mapListService.geojsonData = data;
+        this._mapListService.tableData = data;
+        this._mapListService.loadTableData(data);
         this._mapListService.idName = 'id';
         this.searchService.dataLoaded = true;
         // store the list of id_synthese for exports
-        this._syntheseStore.idSyntheseList = result['data']['features'].map((row) => {
+        this._syntheseStore.idSyntheseList = data['features'].map((row) => {
           return row['properties']['id'];
         });
       },

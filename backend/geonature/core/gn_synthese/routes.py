@@ -73,7 +73,6 @@ routes = Blueprint("gn_synthese", __name__)
 
 @routes.route("/for_web", methods=["GET", "POST"])
 @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
-@json_resp
 def get_observations_for_web(info_role):
     """Optimized route to serve data for the frontend with all filters.
 
@@ -172,16 +171,14 @@ def get_observations_for_web(info_role):
             "unique_id_sinp": str(r["unique_id_sinp"]),
             "entity_source_pk_value": r["entity_source_pk_value"],
         }
-        geojson = json.loads(r["st_asgeojson"])
-        geojson["properties"] = properties
-        geojson_features.append(geojson)
-    return {
-        "data": FeatureCollection(geojson_features),
-        "nb_total": len(geojson_features),
-        "nb_obs_limited": (
-            len(geojson_features) == int(current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"])
-        ),
-    }
+        geometry = json.loads(r["st_asgeojson"])
+        geojson_features.append(
+            Feature(
+                geometry=geometry,
+                properties=properties,
+            )
+        )
+    return jsonify(FeatureCollection(geojson_features))
 
 
 @routes.route("", methods=["GET"])
