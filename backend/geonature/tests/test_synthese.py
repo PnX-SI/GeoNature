@@ -4,7 +4,7 @@ import itertools
 
 from flask import url_for, current_app
 from sqlalchemy import func
-from werkzeug.exceptions import Forbidden, BadRequest
+from werkzeug.exceptions import Forbidden, BadRequest, Unauthorized
 from jsonschema import validate as validate_json
 from geoalchemy2.shape import to_shape
 from geojson import Point
@@ -13,8 +13,11 @@ from geonature.utils.env import db
 from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_synthese.models import Synthese, TSources
 
+from pypnusershub.tests.utils import logged_user_headers, set_logged_user_cookie
+from ref_geo.models import BibAreasTypes, LAreas
+
 from .fixtures import *
-from .utils import logged_user_headers, set_logged_user_cookie
+from .utils import jsonschema_definitions
 
 
 @pytest.fixture()
@@ -28,6 +31,64 @@ def source():
     with db.session.begin_nested():
         db.session.add(source)
     return source
+
+
+@pytest.fixture()
+def taxon_attribut():
+    """
+    Require "taxonomie_taxons_example" and "taxonomie_attributes_example" alembic branches.
+    """
+    from apptax.taxonomie.models import BibAttributs, BibNoms, CorTaxonAttribut
+
+    nom = BibNoms.query.filter_by(cd_ref=209902).one()
+    attribut = BibAttributs.query.filter_by(nom_attribut="migrateur").one()
+    with db.session.begin_nested():
+        c = CorTaxonAttribut(bib_nom=nom, bib_attribut=attribut, valeur_attribut="eau")
+        db.session.add(c)
+    return c
+
+
+synthese_properties = {
+    "type": "object",
+    "properties": {
+        "id": {"type": "number"},
+        "cd_nom": {"type": "number"},
+        "count_min_max": {"type": "string"},
+        "dataset_name": {"type": "string"},
+        "date_min": {"type": "string"},
+        "entity_source_pk_value": {
+            "oneOf": [
+                {"type": "null"},
+                {"type": "string"},
+            ],
+        },
+        "lb_nom": {"type": "string"},
+        "nom_vern_or_lb_nom": {"type": "string"},
+        "unique_id_sinp": {
+            "type": "string",
+            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+        },
+        "observers": {
+            "oneOf": [
+                {"type": "null"},
+                {"type": "string"},
+            ],
+        },
+        "url_source": {
+            "oneOf": [
+                {"type": "null"},
+                {"type": "string"},
+            ],
+        },
+    },
+    "required": [  # obligatoire pour le fonctionement du front
+        "id",
+        "cd_nom",
+        "url_source",
+        "entity_source_pk_value",
+    ],
+    "additionalProperties": False,
+}
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -51,9 +112,22 @@ class TestSynthese:
         response = self.client.get(url_for("gn_synthese.getDefaultsNomenclatures"))
         assert response.status_code == 200
 
-    @pytest.mark.skip()  # FIXME
-    def test_get_synthese_data(self, users, taxon_attribut):
+    def test_get_observations_for_web(self, users, synthese_data, taxon_attribut):
+        url = url_for("gn_synthese.get_observations_for_web")
+        schema = {
+            "definitions": jsonschema_definitions,
+            "$ref": "#/definitions/featurecollection",
+            "$defs": {"props": synthese_properties},
+        }
+
+        r = self.client.get(url)
+        assert r.status_code == Unauthorized.code
+
         set_logged_user_cookie(self.client, users["self_user"])
+
+        r = self.client.get(url)
+        assert r.status_code == 200
+        validate_json(instance=r.json, schema=schema)
 
         # test on synonymy and taxref attrs
         query_string = {
@@ -64,50 +138,45 @@ class TestSynthese:
             "taxonomy_group2_inpn": "Insectes",
             "taxonomy_id_hab": 3,
         }
-        response = self.client.get(
-            url_for("gn_synthese.get_observations_for_web"), query_string=query_string
-        )
-        assert response.status_code == 200
-        data = response.get_json()
-        assert len(data["data"]["features"]) == 1
-        # clés obligatoire pour le fonctionnement du front
-        assert "cd_nom" in data["data"]["features"][0]["properties"]
-        assert "id" in data["data"]["features"][0]["properties"]
-        assert "url_source" in data["data"]["features"][0]["properties"]
-        assert "entity_source_pk_value" in data["data"]["features"][0]["properties"]
-        assert data["data"]["features"][0]["properties"]["cd_nom"] == 713776
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        validate_json(instance=r.json, schema=schema)
+        assert len(r.json["features"]) == 1
+        assert r.json["features"][0]["properties"]["cd_nom"] == 713776
 
         # test geometry filters
-        key_municipality = "area_" + str(current_app.config["BDD"]["id_area_type_municipality"])
+        com_type = BibAreasTypes.query.filter_by(type_code="COM").one()
+        vesdun = LAreas.query.filter_by(area_type=com_type, area_name="Vesdun").one()
         query_string = {
             "geoIntersection": """
-                POLYGON ((5.580368041992188 43.42100882994726, 5.580368041992188 45.30580259943578, 8.12919616699219 45.30580259943578, 8.12919616699219 43.42100882994726, 5.580368041992188 43.42100882994726))
-                """,
-            key_municipality: 28290,
+            POLYGON((2.313844516928274 46.62891246017805,2.654420688803274 46.62891246017805,2.654420688803274 46.415359531851166,2.313844516928274 46.415359531851166,2.313844516928274 46.62891246017805))
+            """,
+            f"area_{com_type.id_type}": vesdun.id_area,
         }
-        response = self.client.get(
-            url_for("gn_synthese.get_observations_for_web"), query_string=query_string
-        )
-        data = response.get_json()
-        assert len(data["data"]) >= 2
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        validate_json(instance=r.json, schema=schema)
+        assert len(r.json["features"]) >= 2
 
         # test geometry filter with circle radius
         query_string = {
-            "geoIntersection": "POINT (6.121788024902345 45.06794388950998)",
-            "radius": "83883.94104436478",
+            "geoIntersection": "POINT ({} {})".format(
+                current_app.config["MAPCONFIG"]["CENTER"][1] + 0.01,
+                current_app.config["MAPCONFIG"]["CENTER"][0] - 0.10,
+            ),
+            "radius": "20000",  # 20km
         }
-
-        response = self.client.get(
-            url_for("gn_synthese.get_observations_for_web"), query_string=query_string
-        )
-        data = response.get_json()
-        assert len(data["data"]) >= 2
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        validate_json(instance=r.json, schema=schema)
+        assert len(r.json["features"]) >= 2
 
         # test organisms and multiple same arg in query string
-
-        response = self.client.get("/synthese/for_web?id_organism=1&id_organism=2")
-        data = response.get_json()
-        assert len(data["data"]) >= 2
+        id_organisme = users["self_user"].id_organisme
+        r = self.client.get(f"{url}?id_organism={id_organisme}&id_organism=2")
+        assert r.status_code == 200
+        validate_json(instance=r.json, schema=schema)
+        assert len(r.json["features"]) >= 2
 
     def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
         set_logged_user_cookie(self.client, users["self_user"])
