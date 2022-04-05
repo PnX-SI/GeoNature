@@ -303,9 +303,7 @@ def get_one_synthese(scope, id_synthese):
 
     if not synthese.has_instance_permission(scope=scope):
         raise Forbidden()
-    geofeature = synthese.as_geofeature(
-        fields=Synthese.nomenclature_fields + fields
-    )
+    geofeature = synthese.as_geofeature(fields=Synthese.nomenclature_fields + fields)
     return jsonify(geofeature)
 
 

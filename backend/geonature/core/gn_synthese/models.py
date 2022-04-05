@@ -464,6 +464,7 @@ class VSyntheseForWebApp(DB.Model):
         TReport, primaryjoin=(TReport.id_synthese == foreign(id_synthese)), uselist=True
     )
 
+
 # Non utilisé - laissé pour exemple d'une sérialisation ordonnée
 def synthese_export_serialization(cls):
     """
