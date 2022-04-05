@@ -9,7 +9,7 @@ import { isEmpty } from 'lodash';
 @Component({
   selector: 'pnx-alert-info',
   templateUrl: 'alert-Info.component.html',
-  styleUrls: ['alert-Info.component.scss']
+  styleUrls: ['alert-Info.component.scss'],
 })
 
 /**
@@ -29,16 +29,15 @@ export class AlertInfoComponent implements OnInit, OnChanges {
     private _formBuilder: FormBuilder,
     private _commonService: CommonService,
     private _syntheseDataService: SyntheseDataService,
-    public globalSub: GlobalSubService,
+    public globalSub: GlobalSubService
   ) {
     // a simple form
-    this.alertForm = this._formBuilder
-      .group({
-        content: ['', Validators.required]
-      });
+    this.alertForm = this._formBuilder.group({
+      content: ['', Validators.required],
+    });
   }
   ngOnInit() {
-    this.setCruved()
+    this.setCruved();
   }
   /**
    * Display delete alert button for validator only
@@ -58,16 +57,16 @@ export class AlertInfoComponent implements OnInit, OnChanges {
    * Create new alert with /reports GET service
    */
   createAlert() {
-    this._syntheseDataService.createReport({
-      type: 'alert',
-      item: this.idSynthese,
-      content: this.alertForm.get('content').value
-    }).subscribe(
-      success => {
+    this._syntheseDataService
+      .createReport({
+        type: 'alert',
+        item: this.idSynthese,
+        content: this.alertForm.get('content').value,
+      })
+      .subscribe((success) => {
         this._commonService.translateToaster('success', 'Signalement sauvegardé !');
         this.openCloseAlert();
-      }
-    );
+      });
   }
   /**
    * Manage alert form visibility

@@ -13,6 +13,6 @@ import { AlertInfoComponent } from '../alertInfoModule/alert-Info.component';
   imports: [CommonModule, GN2CommonModule, ChartsModule, RouterModule, ClipboardModule],
   exports: [SyntheseInfoObsComponent, DiscussionCardComponent, AlertInfoComponent],
   declarations: [SyntheseInfoObsComponent, DiscussionCardComponent, AlertInfoComponent],
-  providers: []
+  providers: [],
 })
-export class SharedSyntheseModule { }
+export class SharedSyntheseModule {}

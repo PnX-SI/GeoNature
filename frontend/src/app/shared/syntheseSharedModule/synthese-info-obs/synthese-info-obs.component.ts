@@ -295,9 +295,11 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
    * Get required id_report to delete an alert
    */
   getAlert() {
-    this._dataService.getReports(`idSynthese=${this.idSynthese}&type=alert&sort=asc`).subscribe(data => {
-      this.alert = data[0];
-    });
+    this._dataService
+      .getReports(`idSynthese=${this.idSynthese}&type=alert&sort=asc`)
+      .subscribe((data) => {
+        this.alert = data[0];
+      });
   }
 
   openCloseAlert() {
