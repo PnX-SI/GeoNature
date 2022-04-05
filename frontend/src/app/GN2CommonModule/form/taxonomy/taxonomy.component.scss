@@ -1,11 +1,10 @@
-#filter {
-  cursor: pointer;
+:host {
+  // Unset position to show .dropdown-menu hover all panels
+  position: unset;
 }
-
-#sel1 {
+#sel1{
   margin-right: 8px;
 }
-
 .loading {
   background-color: #ffffff;
   background-image: url('../../../../assets/images/Spinner.gif');
@@ -13,8 +12,17 @@
   background-position: right center;
   background-repeat: no-repeat;
 }
-
+.input-group {
+  // Unset position to show .dropdown-menu hover all panels
+  position: unset;
+}
 .dropdown-menu {
   max-height: 30vh;
   overflow-y: auto;
+  padding: 0.2rem;
+  z-index: 10000;
+}
+.dropdown-item {
+  font-size: .8em;
+  padding: 0.2rem;
 }

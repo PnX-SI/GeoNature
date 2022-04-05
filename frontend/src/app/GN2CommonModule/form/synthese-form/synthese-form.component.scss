@@ -91,6 +91,8 @@ legend {
 .search-wrapper {
   max-height: 86vh;
   overflow: auto;
+  // Unset position to show content dropdown-menu hover all panels
+  position: unset;
 }
 
 .relative {
