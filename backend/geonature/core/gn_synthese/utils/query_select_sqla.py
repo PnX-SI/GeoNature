@@ -8,8 +8,7 @@ much more efficient
 import datetime
 import uuid
 
-from flask import current_app, request
-from sqlalchemy import func, or_, and_, select, join
+from sqlalchemy import func, or_, and_, select
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased
 from shapely.wkt import loads
@@ -21,15 +20,12 @@ from utils_flask_sqla_geo.utilsgeometry import circle_from_point
 from geonature.utils.env import DB
 from geonature.core.taxonomie.models import Taxref, CorTaxonAttribut, TaxrefLR
 from geonature.core.gn_synthese.models import (
-    Synthese,
     CorObserverSynthese,
-    TSources,
     CorAreaSynthese,
     BibReportsTypes,
     TReport,
 )
 from geonature.core.gn_meta.models import (
-    TAcquisitionFramework,
     CorDatasetActor,
     TDatasets,
 )
