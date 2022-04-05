@@ -12,12 +12,13 @@ from sqlalchemy.orm import exc
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 
-from utils_flask_sqla.generic import serializeQuery, GenericTable
+from utils_flask_sqla.generic import serializeQuery, GenericTable, GenericQuery
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo
 
 
 from geonature.utils import filemanager
+from geonature.utils.config import config
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
@@ -30,6 +31,7 @@ from geonature.core.gn_synthese.models import (
     DefaultsNomenclaturesValue,
     VSyntheseForWebApp,
     VColorAreaTaxon,
+    TLogSynthese,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
@@ -44,6 +46,7 @@ from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
+from werkzeug.datastructures import iter_multi_items
 from werkzeug.exceptions import BadRequest
 
 
