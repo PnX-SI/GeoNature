@@ -304,7 +304,7 @@ def get_one_synthese(scope, id_synthese):
     if not synthese.has_instance_permission(scope=scope):
         raise Forbidden()
     geofeature = synthese.as_geofeature(
-        "the_geom_4326", "id_synthese", fields=Synthese.nomenclature_fields + fields
+        fields=Synthese.nomenclature_fields + fields
     )
     return jsonify(geofeature)
 
@@ -1109,7 +1109,7 @@ def delete_report(id_report):
     reportItem = TReport.query.get_or_404(id_report)
     # alert control to check cruved - allow validators only
     if reportItem.report_type.type in ["alert", "pin"]:
-        scope = get_scopes_by_action(module_code="VALIDATION")["R"]
+        scope = get_scopes_by_action(module_code="VALIDATION")["C"]
         if not reportItem.synthese.has_instance_permission(scope):
             raise Forbidden("Permission required to delete this report !")
     # only owner could delete a report for pin and discussion

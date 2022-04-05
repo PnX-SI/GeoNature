@@ -178,15 +178,14 @@ def get_synthese_data(info_role):
     syntheseModelQuery = Synthese.query.options(
         *[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)]
     ).options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
+
+    # to pass alert reports infos with synthese to validation list
     if len(current_app.config["SYNTHESE"]["ALERT_MODULES"]):
         fields |= {"reports.report_type.type"}
-        syntheseModelQuery.options(
-            *[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()]
+        syntheseModelQuery = syntheseModelQuery.options(
+            selectinload(Synthese.reports).joinedload(TReport.report_type)
         )
-
-    query = syntheseModelQuery.options(
-        selectinload(Synthese.reports).joinedload(TReport.report_type)
-    ).from_statement(query)
+    query = syntheseModelQuery.from_statement(query)
     # The raise option ensure that we have correctly retrived relationships data at step 3
     return jsonify(query.as_geofeaturecollection(fields=fields))
 

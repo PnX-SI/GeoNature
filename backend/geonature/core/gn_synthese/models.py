@@ -464,10 +464,6 @@ class VSyntheseForWebApp(DB.Model):
         TReport, primaryjoin=(TReport.id_synthese == foreign(id_synthese)), uselist=True
     )
 
-    def get_geofeature(self, recursif=False, fields=[]):
-        return self.as_geofeature("the_geom_4326", "id_synthese", recursif, fields=fields)
-
-
 # Non utilisé - laissé pour exemple d'une sérialisation ordonnée
 def synthese_export_serialization(cls):
     """
