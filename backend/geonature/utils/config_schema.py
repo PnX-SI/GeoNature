@@ -22,9 +22,6 @@ from geonature.utils.env import GEONATURE_VERSION
 from geonature.utils.utilsmails import clean_recipients
 
 
-DEFAULT_ID_MUNICIPALITY = 25
-
-
 class EmailStrOrListOfEmailStrField(fields.Field):
     def _deserialize(self, value, attr, data, **kwargs):
         if isinstance(value, str):
@@ -73,7 +70,6 @@ class MTDSchemaConf(Schema):
 
 
 class BddConfig(Schema):
-    id_area_type_municipality = fields.Integer(load_default=DEFAULT_ID_MUNICIPALITY)
     ID_USER_SOCLE_1 = fields.Integer(load_default=8)
     ID_USER_SOCLE_2 = fields.Integer(load_default=6)
 

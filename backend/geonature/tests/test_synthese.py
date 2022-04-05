@@ -186,8 +186,8 @@ class TestSynthese:
         )
         data = response.get_json()
 
-        features = data["data"]["features"]
-        assert len(data["data"]["features"]) > 0
+        features = data["features"]
+        assert len(features) > 0
         assert all(
             feat["properties"]["lb_nom"] in [synt.nom_cite for synt in synthese_data]
             for feat in features
@@ -204,7 +204,7 @@ class TestSynthese:
         data = response.get_json()
 
         # le résultat doit être supérieur ou égal à 2
-        assert len(data["data"]["features"]) != 0
+        assert len(data["features"]) != 0
         # le requete doit etre OK marlgré la geom NULL
         assert response.status_code == 200
 

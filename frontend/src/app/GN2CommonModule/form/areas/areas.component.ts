@@ -140,7 +140,7 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    * @param data Liste d'objets contenant des infos sur des zones géographiques.
    */
   private formatAreas(data: Partial<{ id_type: number; area_code: string }>[]) {
-    if (data.length > 0 && data[0]['id_type'] === AppConfig.BDD.id_area_type_municipality) {
+    if (data.length > 0 && data[0]['area_type']['type_code'] === 'COM') {
       return data.map((element) => {
         element['area_name'] = `${element['area_name']} (${element.area_code.substring(0, 2)}) `;
         return element;

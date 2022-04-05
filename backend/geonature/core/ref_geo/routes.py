@@ -6,6 +6,7 @@ from flask.json import jsonify
 import sqlalchemy as sa
 from sqlalchemy import func
 from sqlalchemy.sql import text
+from sqlalchemy.orm import joinedload
 from werkzeug.exceptions import BadRequest
 
 from geonature.utils.env import db
@@ -183,7 +184,11 @@ def get_areas():
     # change all args in a list of value
     params = {key: request.args.getlist(key) for key, value in request.args.items()}
 
-    q = db.session.query(LAreas).order_by(LAreas.area_name.asc())
+    q = (
+        db.session.query(LAreas)
+        .options(joinedload("area_type").load_only("type_code"))
+        .order_by(LAreas.area_name.asc())
+    )
 
     if "enable" in params:
         enable_param = params["enable"][0].lower()
@@ -205,8 +210,7 @@ def get_areas():
         q = q.filter(LAreas.id_type.in_(params["id_type"]))
 
     if "type_code" in params:
-        q = q.join(BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type)
-        q = q.filter(BibAreasTypes.type_code.in_(params["type_code"]))
+        q = q.filter(LAreas.area_type.has(BibAreasTypes.type_code.in_(params["type_code"])))
 
     if "area_name" in params:
         q = q.filter(LAreas.area_name.ilike("%{}%".format(params.get("area_name")[0])))
@@ -214,7 +218,7 @@ def get_areas():
     limit = int(params.get("limit")[0]) if params.get("limit") else 100
 
     data = q.limit(limit)
-    return jsonify([d.as_dict() for d in data])
+    return jsonify([d.as_dict(fields=["area_type.type_code"]) for d in data])
 
 
 @routes.route("/area_size", methods=["Post"])
