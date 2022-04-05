@@ -175,24 +175,20 @@ def get_synthese_data(info_role):
     )
 
     # Step 3: Construct Synthese model from query result
-    syntheseModelQuery = (
-        Synthese.query
-        .options(*[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)])
-        .options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
-    )
+    syntheseModelQuery = Synthese.query.options(
+        *[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)]
+    ).options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
     if len(current_app.config["SYNTHESE"]["ALERT_MODULES"]):
-        fields|={"reports.report_type.type"}
-        syntheseModelQuery.options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
+        fields |= {"reports.report_type.type"}
+        syntheseModelQuery.options(
+            *[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()]
+        )
 
-    query = (
-        syntheseModelQuery
-        .options(selectinload(Synthese.reports).joinedload(TReport.report_type))
-        .from_statement(query)
-    )
+    query = syntheseModelQuery.options(
+        selectinload(Synthese.reports).joinedload(TReport.report_type)
+    ).from_statement(query)
     # The raise option ensure that we have correctly retrived relationships data at step 3
-    return jsonify(
-        query.as_geofeaturecollection(fields=fields)
-    )
+    return jsonify(query.as_geofeaturecollection(fields=fields))
 
 
 @blueprint.route("/statusNames", methods=["GET"])

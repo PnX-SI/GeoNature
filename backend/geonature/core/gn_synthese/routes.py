@@ -6,8 +6,16 @@ import time
 from collections import OrderedDict
 from warnings import warn
 
-from flask import Blueprint, request, Response, current_app, \
-                  send_from_directory, render_template, jsonify, g
+from flask import (
+    Blueprint,
+    request,
+    Response,
+    current_app,
+    send_from_directory,
+    render_template,
+    jsonify,
+    g,
+)
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from sqlalchemy import distinct, func, desc, asc, select, text, update
 from sqlalchemy.orm import joinedload, contains_eager, lazyload, selectinload
@@ -45,7 +53,10 @@ from geonature.core.taxonomie.models import (
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, get_scopes_by_action
+from geonature.core.gn_permissions.tools import (
+    cruved_scope_for_user_in_module,
+    get_scopes_by_action,
+)
 
 from ref_geo.models import LAreas, BibAreasTypes
 
@@ -233,56 +244,53 @@ def get_synthese(info_role):
 @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
 def get_one_synthese(scope, id_synthese):
     """Get one synthese record for web app with all decoded nomenclature"""
-    synthese = (
-        Synthese.query.join_nomenclatures()
-        .options(
-            joinedload("dataset").options(
-                selectinload("acquisition_framework").options(
-                    joinedload("creator"),
-                    joinedload("nomenclature_territorial_level"),
-                    joinedload("nomenclature_financing_type"),
-                ),
+    synthese = Synthese.query.join_nomenclatures().options(
+        joinedload("dataset").options(
+            selectinload("acquisition_framework").options(
+                joinedload("creator"),
+                joinedload("nomenclature_territorial_level"),
+                joinedload("nomenclature_financing_type"),
             ),
-            lazyload("areas").options(
-                joinedload("area_type"),
-            ),
-        )
+        ),
+        lazyload("areas").options(
+            joinedload("area_type"),
+        ),
     )
     ##################
 
     fields = [
-        'dataset',
-        'dataset.acquisition_framework',
-        'dataset.acquisition_framework.bibliographical_references',
-        'dataset.acquisition_framework.cor_af_actor',
-        'dataset.acquisition_framework.cor_objectifs',
-        'dataset.acquisition_framework.cor_territories',
-        'dataset.acquisition_framework.cor_volets_sinp',
-        'dataset.acquisition_framework.creator',
-        'dataset.acquisition_framework.nomenclature_territorial_level',
-        'dataset.acquisition_framework.nomenclature_financing_type',
-        'dataset.cor_dataset_actor',
-        'dataset.cor_dataset_actor.role',
-        'dataset.cor_dataset_actor.organism',
-        'dataset.cor_territories',
-        'dataset.nomenclature_source_status',
-        'dataset.nomenclature_resource_type',
-        'dataset.nomenclature_dataset_objectif',
-        'dataset.nomenclature_data_type',
-        'dataset.nomenclature_data_origin',
-        'dataset.nomenclature_collecting_method',
-        'dataset.creator',
-        'dataset.modules',
-        'validations',
-        'validations.validation_label',
-        'validations.validator_role',
-        'cor_observers',
-        'cor_observers.organisme',
-        'source',
-        'habitat',
-        'medias',
-        'areas',
-        'areas.area_type'
+        "dataset",
+        "dataset.acquisition_framework",
+        "dataset.acquisition_framework.bibliographical_references",
+        "dataset.acquisition_framework.cor_af_actor",
+        "dataset.acquisition_framework.cor_objectifs",
+        "dataset.acquisition_framework.cor_territories",
+        "dataset.acquisition_framework.cor_volets_sinp",
+        "dataset.acquisition_framework.creator",
+        "dataset.acquisition_framework.nomenclature_territorial_level",
+        "dataset.acquisition_framework.nomenclature_financing_type",
+        "dataset.cor_dataset_actor",
+        "dataset.cor_dataset_actor.role",
+        "dataset.cor_dataset_actor.organism",
+        "dataset.cor_territories",
+        "dataset.nomenclature_source_status",
+        "dataset.nomenclature_resource_type",
+        "dataset.nomenclature_dataset_objectif",
+        "dataset.nomenclature_data_type",
+        "dataset.nomenclature_data_origin",
+        "dataset.nomenclature_collecting_method",
+        "dataset.creator",
+        "dataset.modules",
+        "validations",
+        "validations.validation_label",
+        "validations.validator_role",
+        "cor_observers",
+        "cor_observers.organisme",
+        "source",
+        "habitat",
+        "medias",
+        "areas",
+        "areas.area_type",
     ]
 
     # get reports info only if activated by admin config
@@ -290,14 +298,14 @@ def get_one_synthese(scope, id_synthese):
     if len(alertModulesActivated) and "SYNTHESE" in alertModulesActivated:
         fields.append("reports.report_type.type")
         synthese = synthese.options(lazyload(Synthese.reports).joinedload(TReport.report_type))
-    
+
     synthese = synthese.get_or_404(id_synthese)
 
     if not synthese.has_instance_permission(scope=scope):
         raise Forbidden()
     geofeature = synthese.as_geofeature(
-        "the_geom_4326", "id_synthese",
-        fields=Synthese.nomenclature_fields + fields)
+        "the_geom_4326", "id_synthese", fields=Synthese.nomenclature_fields + fields
+    )
     return jsonify(geofeature)
 
 
@@ -1002,8 +1010,11 @@ def create_report(scope):
         if not synthese.has_instance_permission(scope):
             raise Forbidden
         # only allow one alert by id_synthese
-        if type_name == 'alert':
-            alert_exists = TReport.query.filter(TReport.id_synthese==id_synthese, TReport.report_type.has(BibReportsTypes.type==type_name)).one_or_none()
+        if type_name == "alert":
+            alert_exists = TReport.query.filter(
+                TReport.id_synthese == id_synthese,
+                TReport.report_type.has(BibReportsTypes.type == type_name),
+            ).one_or_none()
             if alert_exists is not None:
                 raise Conflict("Alert already exists for this id")
     except KeyError:
@@ -1046,15 +1057,15 @@ def update_content_report(id_report):
 def list_reports(scope):
     type_name = request.args.get("type")
     id_synthese = request.args.get("idSynthese")
-    sort=request.args.get("sort")
+    sort = request.args.get("sort")
     # VERIFY ID SYNTHESE
     synthese = Synthese.query.get_or_404(id_synthese)
     if not synthese.has_instance_permission(scope):
         raise Forbidden
     # START REQUEST
-    req = TReport.query.filter(TReport.id_synthese==id_synthese)
+    req = TReport.query.filter(TReport.id_synthese == id_synthese)
     # SORT
-    if sort == 'asc':
+    if sort == "asc":
         req = req.order_by(asc(TReport.creation_date))
     if sort == "desc":
         req = req.order_by(desc(TReport.creation_date))
@@ -1062,29 +1073,31 @@ def list_reports(scope):
     type_exists = BibReportsTypes.query.filter_by(type=type_name).one_or_none()
     # type param is not required to get all
     if type_name and not type_exists:
-        raise BadRequest('This report type does not exist')
+        raise BadRequest("This report type does not exist")
     if type_name:
-        req = req.filter(TReport.report_type.has(BibReportsTypes.type==type_name))
+        req = req.filter(TReport.report_type.has(BibReportsTypes.type == type_name))
     # filter by id_role for pin type only
     if type_name and type_name == "pin":
-        req = req.filter(TReport.id_role==g.current_user.id_role)
+        req = req.filter(TReport.id_role == g.current_user.id_role)
     req = req.options(
-        joinedload('user').load_only("nom_role", "prenom_role"),
-        joinedload('report_type')
+        joinedload("user").load_only("nom_role", "prenom_role"), joinedload("report_type")
     )
     result = [
-        report.as_dict(fields=[
-            "id_report",
-            "id_synthese",
-            "id_role",
-            "report_type.type",
-            "report_type.id_type",
-            "content",
-            "deleted",
-            "creation_date",
-            "user.nom_role",
-            "user.prenom_role"
-        ]) for report in req.all()
+        report.as_dict(
+            fields=[
+                "id_report",
+                "id_synthese",
+                "id_role",
+                "report_type.type",
+                "report_type.id_type",
+                "content",
+                "deleted",
+                "creation_date",
+                "user.nom_role",
+                "user.prenom_role",
+            ]
+        )
+        for report in req.all()
     ]
     return jsonify(result)
 
@@ -1095,12 +1108,15 @@ def list_reports(scope):
 def delete_report(id_report):
     reportItem = TReport.query.get_or_404(id_report)
     # alert control to check cruved - allow validators only
-    if reportItem.report_type.type in ["alert", "pin"] :
+    if reportItem.report_type.type in ["alert", "pin"]:
         scope = get_scopes_by_action(module_code="VALIDATION")["R"]
         if not reportItem.synthese.has_instance_permission(scope):
             raise Forbidden("Permission required to delete this report !")
     # only owner could delete a report for pin and discussion
-    if reportItem.id_role != g.current_user.id_role and  reportItem.report_type.type in ["discussion", "pin"]:
+    if reportItem.id_role != g.current_user.id_role and reportItem.report_type.type in [
+        "discussion",
+        "pin",
+    ]:
         raise Forbidden
     # discussion control to don't delete but tag report as deleted only
     if reportItem.report_type.type == "discussion":

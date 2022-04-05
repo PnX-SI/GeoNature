@@ -96,7 +96,7 @@ class TestReports:
         assert response.status_code == 200
         assert len(response.json) == 1
         # TEST NO RESULT
-        if len(ids) > 1 :
+        if len(ids) > 1:
             # not exists because ids[1] is an alert
             response = self.client.get(url_for(url, idSynthese=ids[1], type="discussion"))
             assert response.status_code == 200
