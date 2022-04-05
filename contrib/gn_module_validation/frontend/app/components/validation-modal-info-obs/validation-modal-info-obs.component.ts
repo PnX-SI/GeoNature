@@ -31,6 +31,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   @Input() uuidSynthese: any;
   @Output() modifiedStatus = new EventEmitter();
   @Output() valDate = new EventEmitter();
+  @Output() onCloseModal = new EventEmitter();
 
   constructor(
     public mapListService: MapListService,
@@ -38,7 +39,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private _fb: FormBuilder,
     private _commonService: CommonService,
-    private _validService : ValidationService
+    private _validService: ValidationService
   ) {
     // form used for changing validation status
     this.statusForm = this._fb.group({
@@ -67,7 +68,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
   setValidationStatus(validStatus) {
     const color = this.VALIDATION_CONFIG.STATUS_INFO[validStatus.cd_nomenclature].color;
-    this.currentValidationStatus = {...validStatus, color: color};
+    this.currentValidationStatus = { ...validStatus, color: color };
   }
 
   setCurrentCdNomenclature(item) {
@@ -115,7 +116,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     this.id_synthese = this.filteredIds[
       this.filteredIds.indexOf(this.id_synthese) + 1
     ];
-    
+
     const syntheseRow = this.mapListService.tableData[this.position];
     this.uuidSynthese = syntheseRow.unique_id_sinp;
     this.statusForm.reset();
@@ -124,6 +125,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
   closeModal() {
     this.activeModal.close();
+    this.onCloseModal.emit();
   }
 
   backToModule(url_source, id_pk_source) {
@@ -142,7 +144,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
         this.setValidationStatus(newValidationStatus);
         this.statusForm.reset();
         this.editStatus();
-      })      
+      })
   }
 
   cancel() {

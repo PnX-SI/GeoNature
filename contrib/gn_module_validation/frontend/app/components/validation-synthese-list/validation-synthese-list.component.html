@@ -82,6 +82,12 @@
         [disabled]="row.unique_id_sinp == null"
       >
       </button>
+      <i
+        *ngIf="findAlertInfo(row)"
+        class="fa fa-flag"
+        aria-hidden="true"
+        [title]="findAlertInfo(row, 'content')"
+      ></i>
     </ng-template>
   </ngx-datatable-column>
 

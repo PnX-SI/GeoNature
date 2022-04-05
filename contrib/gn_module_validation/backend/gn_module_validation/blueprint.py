@@ -10,7 +10,7 @@ import sqlalchemy as sa
 from sqlalchemy import select, func
 from sqlalchemy.sql.expression import cast, outerjoin
 from sqlalchemy.sql.sqltypes import Integer
-from sqlalchemy.orm import aliased, joinedload, contains_eager, relation
+from sqlalchemy.orm import aliased, joinedload, contains_eager, relation, selectinload
 from marshmallow import ValidationError
 
 from utils_flask_sqla.response import json_resp
@@ -19,7 +19,7 @@ from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 from geonature.utils.env import DB, db
 from geonature.utils.utilssqlalchemy import test_is_uuid
-from geonature.core.gn_synthese.models import Synthese
+from geonature.core.gn_synthese.models import Synthese, TReport
 from geonature.core.gn_profiles.models import VConsistancyData
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 from geonature.core.gn_permissions import decorators as permissions
@@ -175,15 +175,20 @@ def get_synthese_data(info_role):
     )
 
     # Step 3: Construct Synthese model from query result
-    query = (
-        Synthese.query.options(
-            *[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)]
+    syntheseModelQuery = Synthese.query.options(
+        *[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)]
+    ).options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
+
+    # to pass alert reports infos with synthese to validation list
+    if len(current_app.config["SYNTHESE"]["ALERT_MODULES"]):
+        fields |= {"reports.report_type.type"}
+        syntheseModelQuery = syntheseModelQuery.options(
+            selectinload(Synthese.reports).joinedload(TReport.report_type)
         )
-        .options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
-        .from_statement(query)
-    )
+    query = syntheseModelQuery.from_statement(query)
+
     # The raise option ensure that we have correctly retrived relationships data at step 3
-    return jsonify(query.as_geofeaturecollection(fields=fields, unloaded="raise"))
+    return jsonify(query.as_geofeaturecollection(fields=fields))
 
 
 @blueprint.route("/statusNames", methods=["GET"])

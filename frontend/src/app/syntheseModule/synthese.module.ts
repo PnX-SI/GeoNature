@@ -15,6 +15,7 @@ import { SharedSyntheseModule } from '@geonature/shared/syntheseSharedModule/syn
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 import { DiscussionCardComponent } from '@geonature/shared/discussionCardModule/discussion-card.component';
+import { AlertInfoComponent } from '../shared/alertInfoModule/alert-Info.component';
 import { TaxonSheetComponent } from './taxon-sheet/taxon-sheet.component';
 const routes: Routes = [
   { path: '', component: SyntheseComponent },
@@ -40,6 +41,7 @@ const routes: Routes = [
     SyntheseInfoObsComponent,
     SyntheseModalDownloadComponent,
     DiscussionCardComponent,
+    AlertInfoComponent,
   ],
   providers: [
     MapService,

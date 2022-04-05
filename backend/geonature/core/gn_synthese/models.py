@@ -353,6 +353,33 @@ class DefaultsNomenclaturesValue(DB.Model):
     id_nomenclature = DB.Column(DB.Integer)
 
 
+# Type library to list every report types
+@serializable
+class BibReportsTypes(DB.Model):
+    __tablename__ = "bib_reports_types"
+    __table_args__ = {"schema": "gn_synthese"}
+    id_type = DB.Column(DB.Integer(), primary_key=True)
+    type = DB.Column(DB.Text())
+
+
+# Relation report model with User and BibReportsTypes to get every infos about a report
+@serializable
+class TReport(DB.Model):
+    __tablename__ = "t_reports"
+    __table_args__ = {"schema": "gn_synthese"}
+    id_report = DB.Column(DB.Integer(), primary_key=True)
+    id_synthese = DB.Column(DB.Integer(), ForeignKey("gn_synthese.synthese.id_synthese"))
+    id_role = DB.Column(DB.Integer(), ForeignKey(User.id_role))
+    id_type = DB.Column(DB.Integer(), ForeignKey(BibReportsTypes.id_type))
+    content = DB.Column(DB.Text())
+    creation_date = DB.Column(DB.DateTime(), default=datetime.datetime.utcnow)
+    deleted = DB.Column(DB.Boolean(), default=False)
+
+    synthese = relationship(Synthese, backref=db.backref("reports", order_by=creation_date))
+    report_type = relationship(BibReportsTypes)
+    user = DB.relationship(User)
+
+
 @serializable
 @geoserializable(geoCol="the_geom_4326", idCol="id_synthese")
 class VSyntheseForWebApp(DB.Model):
@@ -433,6 +460,10 @@ class VSyntheseForWebApp(DB.Model):
         TMedias, primaryjoin=(TMedias.uuid_attached_row == foreign(unique_id_sinp)), uselist=True
     )
 
+    reports = relationship(
+        TReport, primaryjoin=(TReport.id_synthese == foreign(id_synthese)), uselist=True
+    )
+
 
 # Non utilisé - laissé pour exemple d'une sérialisation ordonnée
 def synthese_export_serialization(cls):
@@ -503,29 +534,3 @@ class VColorAreaTaxon(DB.Model):
     nb_obs = DB.Column(DB.Integer())
     last_date = DB.Column(DB.DateTime())
     color = DB.Column(DB.Unicode())
-
-
-# rajouter model type
-@serializable
-class BibReportsTypes(DB.Model):
-    __tablename__ = "bib_reports_types"
-    __table_args__ = {"schema": "gn_synthese"}
-    id_type = DB.Column(DB.Integer(), primary_key=True)
-    type = DB.Column(DB.Text())
-
-
-@serializable
-class TReport(DB.Model):
-    __tablename__ = "t_reports"
-    __table_args__ = {"schema": "gn_synthese"}
-    id_report = DB.Column(DB.Integer(), primary_key=True)
-    id_synthese = DB.Column(DB.Integer(), ForeignKey("gn_synthese.synthese.id_synthese"))
-    id_role = DB.Column(DB.Integer(), ForeignKey(User.id_role))
-    id_type = DB.Column(DB.Integer(), ForeignKey(BibReportsTypes.id_type))
-    content = DB.Column(DB.Text())
-    creation_date = DB.Column(DB.DateTime(), default=datetime.datetime.utcnow)
-    deleted = DB.Column(DB.Boolean(), default=False)
-
-    synthese = relationship(Synthese, backref=db.backref("discussions", order_by=creation_date))
-    report_type = relationship(BibReportsTypes)
-    user = DB.relationship(User)

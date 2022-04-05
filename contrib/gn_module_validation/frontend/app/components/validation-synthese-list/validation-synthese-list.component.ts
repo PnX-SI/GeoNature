@@ -23,6 +23,7 @@ import { ValidationModalInfoObsComponent } from "../validation-modal-info-obs/va
 import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthese-form.service";
 import { SyntheseDataService } from "@geonature_common/form/synthese-form/synthese-data.service";
 import { Router } from "@angular/router";
+import { find, isEmpty, get, findIndex } from 'lodash';
 @Component({
   selector: "pnx-validation-synthese-list",
   templateUrl: "validation-synthese-list.component.html",
@@ -51,6 +52,7 @@ export class ValidationSyntheseListComponent
   @Output() pageChange: EventEmitter<number>;
   @Output() displayAll = new EventEmitter<any>();
   @Input() idSynthese: any;
+  public alertsData: any;
   public validationStatusAsDict: any;
   public datatable_column_list: Array<any>
   public messages: any;
@@ -90,11 +92,11 @@ export class ValidationSyntheseListComponent
       this.mapListService.selectedRow = [];
       const integerId = parseInt(id);
       let i;
-      for (i = 0; i < this.mapListService.tableData.length; i++) {        
+      for (i = 0; i < this.mapListService.tableData.length; i++) {
         if (this.mapListService.tableData[i]["id_synthese"] === integerId) {
           this.mapListService.selectedRow.push(
             this.mapListService.tableData[i]
-          );          
+          );
           break;
         }
       }
@@ -237,7 +239,7 @@ export class ValidationSyntheseListComponent
   }
 
   openInfoModal(row) {
-    if(!row) return;
+    if (!row) return;
     this.oneSyntheseObs = row;
     const modalRef = this.ngbModal.open(ValidationModalInfoObsComponent, {
       size: "lg",
@@ -261,11 +263,44 @@ export class ValidationSyntheseListComponent
         }
       }
     });
+    modalRef.componentInstance.onCloseModal.subscribe(() => {
+      this.updateAlerts();
+    });
     modalRef.componentInstance.valDate.subscribe(data => {
       for (let obs in this.mapListService.selectedRow) {
         this.mapListService.selectedRow[obs]["validation_date"] = data;
       }
       this.mapListService.selectedRow = [...this.mapListService.selectedRow];
     });
+  }
+
+  updateAlerts() {
+    if (this.oneSyntheseObs) {
+      const idSynthese = this.oneSyntheseObs.id_synthese;
+      const rowIndex = findIndex(
+        this.mapListService.tableData, ['id_synthese', this.oneSyntheseObs.id_synthese]
+      );
+      const reportPos = findIndex(this.oneSyntheseObs.reports, ['report_type.type', 'alert']);
+      const params = `idSynthese=${idSynthese}&type=alert`;
+      this._ds.getReports(params).subscribe(response => {
+        if (isEmpty(response)) {
+          this.mapListService.tableData[rowIndex].reports.splice(reportPos);
+        } else if (reportPos > -1) {
+          this.mapListService.tableData[rowIndex].reports[reportPos] = response[0];
+        } else {
+          this.mapListService.tableData[rowIndex].reports.push(response[0]);
+        }
+      });
+    }
+  }
+
+  findAlertInfo(row, attribute) {
+    const alertItem = find(row.reports, ['report_type.type', 'alert']);
+    if (attribute && !isEmpty(alertItem)) {
+      // search a value 
+      return get(alertItem, `${attribute}`)
+    }
+    // search if exists
+    return alertItem;
   }
 }
