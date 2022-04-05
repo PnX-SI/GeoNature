@@ -1,4 +1,3 @@
-import logging
 import json
 import datetime
 import time
@@ -63,17 +62,8 @@ from ref_geo.models import LAreas, BibAreasTypes
 from pypnusershub.db.tools import user_from_token
 from pypnusershub.db.models import User
 
-# debug
-# current_app.config['SQLALCHEMY_ECHO'] = True
 
 routes = Blueprint("gn_synthese", __name__)
-
-# get the root logger
-log = logging.getLogger()
-
-
-def current_milli_time():
-    return time.time()
 
 
 ############################################
