@@ -49,10 +49,6 @@ export class DatasetFormComponent implements OnInit {
     this.form = this.datasetFormS.form;
 
     this._dfs.getTaxaBibList().subscribe((d) => (this.taxaBibList = d));
-    // get Modules
-    if (!this.moduleService.getModules()) {
-      this.moduleService.fetchModules();
-    }
 
     this.acquisitionFrameworks = this._dfs.getAcquisitionFrameworksList();
   }
