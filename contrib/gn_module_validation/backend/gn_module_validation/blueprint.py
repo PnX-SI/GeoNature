@@ -186,6 +186,7 @@ def get_synthese_data(info_role):
             selectinload(Synthese.reports).joinedload(TReport.report_type)
         )
     query = syntheseModelQuery.from_statement(query)
+
     # The raise option ensure that we have correctly retrived relationships data at step 3
     return jsonify(query.as_geofeaturecollection(fields=fields))
 
