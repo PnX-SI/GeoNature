@@ -1,6 +1,7 @@
 from collections import OrderedDict
 
 import sqlalchemy as sa
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, column_property, foreign, joinedload, contains_eager
 from sqlalchemy.sql import select, func, exists
@@ -270,6 +271,11 @@ class Synthese(DB.Model):
     def get_geofeature(self, recursif=True, fields=None):
         return self.as_geofeature("the_geom_4326", "id_synthese", recursif, fields=fields)
 
+   
+    @hybrid_property
+    def meta_last_action_date(self):
+        return func.coalesce(self.meta_update_date, self.meta_create_date)
+    
     def has_instance_permission(self, scope):
         if scope == 0:
             return False
@@ -468,3 +474,19 @@ class VColorAreaTaxon(DB.Model):
     nb_obs = DB.Column(DB.Integer())
     last_date = DB.Column(DB.DateTime())
     color = DB.Column(DB.Unicode())
+
+
+@serializable
+class TLogSynthese(DB.Model):
+    """Log synthese table, populated with Delete Triggers on gn_synthes.synthese
+    Parameters
+    ----------
+    DB: 
+        Flask SQLAlchemy controller
+    """
+    __tablename__ = "t_log_synthese"
+    __table_args__ = {"schema": "gn_synthese"}
+    id_synthese = DB.Column(DB.Integer(), primary_key=True)
+    unique_id_sinp = DB.Column(UUID(as_uuid=True))
+    last_action = DB.Column(DB.Unicode)
+    meta_last_action_date = DB.Column(DB.DateTime)
