@@ -10,12 +10,12 @@ import { RoleFormService, UserDataService } from './services';
 
 const routes: Routes = [
   { path: '', component: UserComponent },
-  { path: 'password', component: PasswordComponent }
+  { path: 'password', component: PasswordComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes), GN2CommonModule, CommonModule],
   declarations: [UserComponent, PasswordComponent],
-  providers: [UserDataService, RoleFormService]
+  providers: [UserDataService, RoleFormService],
 })
 export class UserModule {}

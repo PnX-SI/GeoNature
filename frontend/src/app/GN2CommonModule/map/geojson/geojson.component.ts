@@ -11,7 +11,7 @@ import { GeoJSON } from '@tmcw/togeojson';
  */
 @Component({
   selector: 'pnx-geojson',
-  templateUrl: 'geojson.component.html'
+  templateUrl: 'geojson.component.html',
 })
 export class GeojsonComponent implements OnInit, OnChanges {
   public map: Map;
@@ -36,7 +36,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
   /** Observable pour retourner les données geojson passées au composant */
   public currentGeoJson$: Observable<L.GeoJSON> = this.geojsonCharged.asObservable();
 
-  constructor(public mapservice: MapService) { }
+  constructor(public mapservice: MapService) {}
 
   ngOnInit() {
     this.map = this.mapservice.map;
@@ -55,7 +55,7 @@ export class GeojsonComponent implements OnInit, OnChanges {
       const bounds = curLayerGroup.getBounds();
       if (!Object.keys(bounds).length) {
         return;
-      }      
+      }
       map.fitBounds(bounds);
     }, 200);
   }

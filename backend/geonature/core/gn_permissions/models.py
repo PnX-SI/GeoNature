@@ -78,19 +78,23 @@ class TActions(DB.Model):
 cor_object_module = DB.Table(
     "cor_object_module",
     DB.Column(
-        "id_cor_object_module", DB.Integer, primary_key=True,
-    ),
-    
-    DB.Column(
-        "id_object", DB.Integer,
-          ForeignKey("gn_permissions.t_objects.id_object"),
+        "id_cor_object_module",
+        DB.Integer,
+        primary_key=True,
     ),
     DB.Column(
-        "id_module", DB.Integer,
+        "id_object",
+        DB.Integer,
+        ForeignKey("gn_permissions.t_objects.id_object"),
+    ),
+    DB.Column(
+        "id_module",
+        DB.Integer,
         ForeignKey("gn_commons.t_modules.id_module"),
     ),
     schema="gn_permissions",
 )
+
 
 @serializable
 class TObjects(DB.Model):
@@ -102,6 +106,7 @@ class TObjects(DB.Model):
 
     def __str__(self):
         return f"{self.code_object} ({self.description_object})"
+
 
 @serializable
 class CorRoleActionFilterModuleObject(DB.Model):
@@ -121,12 +126,15 @@ class CorRoleActionFilterModuleObject(DB.Model):
     role = DB.relationship(User, primaryjoin=(User.id_role == id_role), foreign_keys=[id_role])
 
     action = DB.relationship(
-        TActions, primaryjoin=(TActions.id_action == id_action), foreign_keys=[id_action],
+        TActions,
+        primaryjoin=(TActions.id_action == id_action),
+        foreign_keys=[id_action],
     )
 
     filter = DB.relationship(
         TFilters,
-        primaryjoin=(TFilters.id_filter == id_filter), foreign_keys=[id_filter],
+        primaryjoin=(TFilters.id_filter == id_filter),
+        foreign_keys=[id_filter],
     )
 
     module = DB.relationship("TModules")
@@ -135,10 +143,10 @@ class CorRoleActionFilterModuleObject(DB.Model):
     def is_permission_already_exist(
         self, id_role, id_action, id_module, id_filter_type, id_object=1
     ):
-        """ 
-            Tell if a permission exist for a user, an action, a module and a filter_type
-            Return:
-                A CorRoleActionFilterModuleObject if exist or None
+        """
+        Tell if a permission exist for a user, an action, a module and a filter_type
+        Return:
+            A CorRoleActionFilterModuleObject if exist or None
         """
         privilege = {
             "id_role": id_role,
@@ -156,9 +164,11 @@ class CorRoleActionFilterModuleObject(DB.Model):
         )
 
     def __str__(self):
-        return f'Permission(' \
-                    f'id_role={self.id_role},' \
-                    f'action={self.action},' \
-                    f'filter={self.filter},' \
-                    f'module={self.module},' \
-                    f'object={self.object})'
+        return (
+            f"Permission("
+            f"id_role={self.id_role},"
+            f"action={self.action},"
+            f"filter={self.filter},"
+            f"module={self.module},"
+            f"object={self.object})"
+        )

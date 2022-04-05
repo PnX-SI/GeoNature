@@ -5,7 +5,7 @@ import {
   EventEmitter,
   Output,
   ElementRef,
-  OnDestroy
+  OnDestroy,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
@@ -31,11 +31,11 @@ export interface DateStruc {
 @Component({
   selector: 'pnx-date',
   host: {
-    '(document:click)': 'onClick($event)'
+    '(document:click)': 'onClick($event)',
   },
   templateUrl: 'date.component.html',
   styleUrls: ['./date.component.scss'],
-  providers: [{ provide: NgbDateParserFormatter, useClass: NgbDateFRParserFormatter }]
+  providers: [{ provide: NgbDateParserFormatter, useClass: NgbDateFRParserFormatter }],
 })
 export class DateComponent implements OnInit, OnDestroy {
   public elementRef: ElementRef;
@@ -44,7 +44,7 @@ export class DateComponent implements OnInit, OnDestroy {
   @Input() disabled: boolean;
   @Input() parentFormControl: FormControl;
   @Input() defaultToday = false;
-  @Input() minDate = {year: 1735, month: 1, day: 1};
+  @Input() minDate = { year: 1735, month: 1, day: 1 };
   @Input() maxDate;
   @Output() onChange = new EventEmitter<any>();
   @Output() onDelete = new EventEmitter<any>();
@@ -52,10 +52,7 @@ export class DateComponent implements OnInit, OnDestroy {
   public changeSub: Subscription;
   public today: DateStruc;
 
-  constructor(
-    myElement: ElementRef,
-    private _dateParser: NgbDateParserFormatter
-  ) {
+  constructor(myElement: ElementRef, private _dateParser: NgbDateParserFormatter) {
     this.elementRef = myElement;
     this.initializeDates();
   }
@@ -72,7 +69,7 @@ export class DateComponent implements OnInit, OnDestroy {
     }
 
     // React to parent form control change
-    this.changeSub = this.parentFormControl.valueChanges.subscribe(date => {
+    this.changeSub = this.parentFormControl.valueChanges.subscribe((date) => {
       if (date !== null && this._dateParser.format(date) !== 'undefined--') {
         this.onChange.emit(this._dateParser.format(date));
       } else {

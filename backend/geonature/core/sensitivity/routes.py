@@ -10,7 +10,7 @@ routes = Blueprint("sensitivity", __name__)
 @routes.cli.command()
 def refresh_rules_cache():
     """
-        Rafraichie la vue matérialisée associant les règles aux cd_ref.
+    Rafraichie la vue matérialisée associant les règles aux cd_ref.
     """
     db.session.execute("REFRESH MATERIALIZED VIEW gn_sensitivity.t_sensitivity_rules_cd_ref")
     db.session.commit()
@@ -19,7 +19,7 @@ def refresh_rules_cache():
 @routes.cli.command()
 def update_synthese():
     """
-        Recalcule la sensibilité des observations de la synthèse.
+    Recalcule la sensibilité des observations de la synthèse.
     """
     count = db.session.execute("SELECT gn_synthese.update_sensitivity()").scalar()
     db.session.commit()

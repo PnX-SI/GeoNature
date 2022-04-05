@@ -14,7 +14,7 @@ import { leafletDrawOptions } from './leaflet-draw.options';
   selector: 'pnx-geometry-form',
   templateUrl: './geometry-form.component.html',
   styleUrls: ['./geometry-form.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class GeometryFormComponent implements OnInit {
   public geojson;
@@ -46,8 +46,8 @@ export class GeometryFormComponent implements OnInit {
           allowIntersection: false, // Restricts shapes to simple polygons
           drawError: {
             color: '#e1e100', // Color the shape will turn when intersects
-            message: 'Intersection forbidden !' // Message that will show when intersect
-          }
+            message: 'Intersection forbidden !', // Message that will show when intersect
+          },
         };
         break;
       }
@@ -67,7 +67,7 @@ export class GeometryFormComponent implements OnInit {
     }
 
     // suivi formControl => composant
-    this.parentFormControl.valueChanges.subscribe(geometry => {
+    this.parentFormControl.valueChanges.subscribe((geometry) => {
       this.setGeojson(geometry);
     });
   }

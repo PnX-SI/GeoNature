@@ -5,7 +5,7 @@ import {
   Input,
   EventEmitter,
   AfterViewInit,
-  OnChanges
+  OnChanges,
 } from '@angular/core';
 import { MapService } from '../map.service';
 import { Map } from 'leaflet';
@@ -16,7 +16,7 @@ import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'pnx-leaflet-filelayer',
-  templateUrl: './filelayer.component.html'
+  templateUrl: './filelayer.component.html',
 })
 export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChanges {
   public map: Map;
@@ -57,13 +57,13 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
         // File size limit in kb (default: 10024) ?
         fileSizeLimit: 10024,
         // Restrict accepted file formats (default: .geojson, .json, .kml, and .gpx) ?
-        formats: ['.gpx', '.geojson', '.kml']
+        formats: ['.gpx', '.geojson', '.kml'],
       })
       .addTo(this.map);
 
     // la
     // event on load success
-    (this.fileLayerControl as any).loader.on('data:loaded', event => {
+    (this.fileLayerControl as any).loader.on('data:loaded', (event) => {
       // remove layer from leaflet draw
       this.mapService.removeAllLayers(this.mapService.map, this.mapService.leafletDrawFeatureGroup);
       // set marker editing OFF
@@ -95,7 +95,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
             }
 
             //on right click display popup
-            layer.on('contextmenu', e => {
+            layer.on('contextmenu', (e) => {
               if (propertiesContent.length > 0) {
                 layer.bindPopup(propertiesContent);
                 layer.openPopup();
@@ -104,7 +104,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
 
             // on click on a layer, change the color of the layer
             if (this.editMode) {
-              layer.on('click', e => {
+              layer.on('click', (e) => {
                 if (this.previousCurrentLayer) {
                   this.previousCurrentLayer.setStyle(this.style);
                 }
@@ -117,12 +117,12 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
               });
             }
           },
-          style: this.style
+          style: this.style,
         });
         // add the layers to the feature groupe
         this.mapService.fileLayerFeatureGroup.addLayer(newLayer);
         // if not edition mode fire event (ex use in synthese for search)
-        if(!this.editMode) {
+        if (!this.editMode) {
           this.mapService.setGeojsonCoord(geojsonArray);
           this.onLoad.emit(geojsonArray);
         }
@@ -136,7 +136,7 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
 
     // event on load fail
 
-    (this.fileLayerControl as any).loader.on('data:error', error => {
+    (this.fileLayerControl as any).loader.on('data:error', (error) => {
       console.error(error);
     });
   }

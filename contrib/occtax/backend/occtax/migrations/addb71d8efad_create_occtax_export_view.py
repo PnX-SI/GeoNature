@@ -12,14 +12,14 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'addb71d8efad'
-down_revision = '29c199e07eaa'
+revision = "addb71d8efad"
+down_revision = "29c199e07eaa"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
-    operations = importlib.resources.read_text('occtax.migrations.data', 'exports_occtax.sql')
+    operations = importlib.resources.read_text("occtax.migrations.data", "exports_occtax.sql")
     op.execute(operations)
 
 

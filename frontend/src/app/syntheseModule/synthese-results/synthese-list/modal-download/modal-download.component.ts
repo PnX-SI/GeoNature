@@ -7,7 +7,7 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 
 @Component({
   selector: 'pnx-synthese-modal-download',
-  templateUrl: 'modal-download.component.html'
+  templateUrl: 'modal-download.component.html',
 })
 export class SyntheseModalDownloadComponent {
   public syntheseConfig = AppConfig.SYNTHESE;

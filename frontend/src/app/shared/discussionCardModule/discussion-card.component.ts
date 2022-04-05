@@ -12,9 +12,8 @@ import * as moment from 'moment';
 @Component({
   selector: 'pnx-discussion-card',
   templateUrl: 'discussion-card.component.html',
-  styleUrls: ['discussion-card.component.scss']
+  styleUrls: ['discussion-card.component.scss'],
 })
-
 export class DiscussionCardComponent implements OnInit, OnChanges {
   @Input() idSynthese: number;
   @Input() additionalData: any;
@@ -33,14 +32,13 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     private _commonService: CommonService,
     private _syntheseDataService: SyntheseDataService
   ) {
-    this.commentForm = this._formBuilder
-      .group({
-        content: ['', Validators.required],
-        item: [this.idSynthese],
-        type: ['discussion'],
-        idReport: [],
-        deleted: [false]
-      });
+    this.commentForm = this._formBuilder.group({
+      content: ['', Validators.required],
+      item: [this.idSynthese],
+      type: ['discussion'],
+      idReport: [],
+      deleted: [false],
+    });
   }
 
   ngOnInit() {
@@ -52,13 +50,13 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
 
   orderData(data) {
     const newarr = data.sort((a, b) => {
-      const aDate = moment(a.creation_date ? a.creation_date : a.dateTime)
-      const bDate = moment(b.creation_date ? b.creation_date : b.dateTime)
+      const aDate = moment(a.creation_date ? a.creation_date : a.dateTime);
+      const bDate = moment(b.creation_date ? b.creation_date : b.dateTime);
       return moment(aDate).diff(bDate);
     });
     if (this.sort === 'desc') {
       newarr.reverse();
-    };
+    }
     return newarr;
   }
 
@@ -68,15 +66,18 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
       this.additionalData = {
         ...this.additionalData,
         // insert spid to diff additionalData from reports data
-        data: this.additionalData.data.map(d => ({ ...d, spid: uniqueId() }))
+        data: this.additionalData.data.map((d) => ({ ...d, spid: uniqueId() })),
       };
     }
     this.getDiscussions();
   }
 
   isValid() {
-    return this.commentForm.valid &&
-      this.commentForm.get('content').value.length <= this.appConfig?.SYNTHESE?.DISCUSSION_MAX_LENGTH;
+    return (
+      this.commentForm.valid &&
+      this.commentForm.get('content').value.length <=
+        this.appConfig?.SYNTHESE?.DISCUSSION_MAX_LENGTH
+    );
   }
 
   /**
@@ -86,11 +87,8 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
     // create new comment
     this.commentForm.get('item').setValue(this.idSynthese);
     this.commentForm.get('type').setValue('discussion');
-    this._syntheseDataService.createReport(this.commentForm.value).subscribe(data => {
-      this._commonService.regularToaster(
-        'success',
-        'Commentaire sauvegardé !'
-      );
+    this._syntheseDataService.createReport(this.commentForm.value).subscribe((data) => {
+      this._commonService.regularToaster('success', 'Commentaire sauvegardé !');
       // close add comment panel and refresh list
       this.openCloseComment();
       this.getDiscussions();
@@ -127,7 +125,7 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
    */
   getDiscussions() {
     const params = `idSynthese=${this.idSynthese}&type=discussion&sort=${this.sort}`;
-    this._syntheseDataService.getReports(params).subscribe(response => {
+    this._syntheseDataService.getReports(params).subscribe((response) => {
       this.setDiscussions(response);
     });
   }

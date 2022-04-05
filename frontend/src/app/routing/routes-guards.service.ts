@@ -2,7 +2,7 @@ import {
   CanActivate,
   CanActivateChild,
   ActivatedRouteSnapshot,
-  RouterStateSnapshot
+  RouterStateSnapshot,
 } from '@angular/router';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
@@ -50,7 +50,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this._authService.getToken() === null) {
       this._router.navigate(['/login'], {
-          queryParams: { route: state.url, }
+        queryParams: { route: state.url },
       });
       return false;
     } else {
@@ -61,7 +61,7 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this._authService.getToken() === null) {
       this._router.navigate(['/login'], {
-          queryParams: { route: state.url, }
+        queryParams: { route: state.url },
       });
       return false;
     } else {

@@ -5,18 +5,19 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { Observable } from 'rxjs';
 import { of } from 'rxjs/observable/of';
 import { NgbTypeaheadSelectItemEvent } from '@ng-bootstrap/ng-bootstrap';
-import { filter,
+import {
+  filter,
   debounceTime,
   distinctUntilChanged,
   tap,
   switchMap,
   map,
-  timeout} from 'rxjs/operators';
-
+  timeout,
+} from 'rxjs/operators';
 
 @Component({
   selector: 'pnx-autocomplete',
-  templateUrl: 'autocomplete.component.html'
+  templateUrl: 'autocomplete.component.html',
 })
 
 /**
@@ -65,8 +66,8 @@ export class AutoCompleteComponent implements OnInit {
 
   ngOnInit() {
     this.parentFormControl.valueChanges
-      .pipe(filter(value => value !== null && value.length === 0))
-      .subscribe(value => {
+      .pipe(filter((value) => value !== null && value.length === 0))
+      .subscribe((value) => {
         this.onDelete.emit();
       });
   }
@@ -77,12 +78,11 @@ export class AutoCompleteComponent implements OnInit {
   }
 
   search = (text$: Observable<string>) =>
-    text$
-      .pipe(
+    text$.pipe(
       tap(() => (this.isLoading = true)),
       debounceTime(400),
       distinctUntilChanged(),
-      switchMap(search_name => {
+      switchMap((search_name) => {
         if (search_name.length >= this.charNumber) {
           let url = this.apiEndPoint;
           let getParams = new HttpParams();
@@ -108,7 +108,7 @@ export class AutoCompleteComponent implements OnInit {
           return [[]];
         }
       }),
-      map(data => {
+      map((data) => {
         this.noResult = data.length === 0;
         this.isLoading = false;
         if (this.mapFunc) {

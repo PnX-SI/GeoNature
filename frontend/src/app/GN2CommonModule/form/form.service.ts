@@ -1,7 +1,7 @@
-import { Injectable } from "@angular/core";
-import { AbstractControl, ValidatorFn, FormGroup, FormControl } from "@angular/forms";
-  // import { FormGroup, FormControl } from "@angular/forms/src/model";
-import { Subscription } from "rxjs";
+import { Injectable } from '@angular/core';
+import { AbstractControl, ValidatorFn, FormGroup, FormControl } from '@angular/forms';
+// import { FormGroup, FormControl } from "@angular/forms/src/model";
+import { Subscription } from 'rxjs';
 
 @Injectable()
 export class FormService {
@@ -16,7 +16,7 @@ export class FormService {
         const formatedDateMax = new Date(dateMax.year, dateMax.month, dateMax.day);
         if (formatedDateMax < formatedDateMin) {
           return {
-            invalidDate: true
+            invalidDate: true,
           };
         } else {
           return null;
@@ -42,7 +42,7 @@ export class FormService {
       const altMax = maxControl.value;
       if (altMin && altMax && altMin > altMax) {
         return {
-          [validatorKeyName]: true
+          [validatorKeyName]: true,
         };
       } else {
         return null;
@@ -65,7 +65,7 @@ export class FormService {
       );
       return invalidHour
         ? {
-            invalidHour: true
+            invalidHour: true,
           }
         : null;
     };
@@ -87,17 +87,16 @@ export class FormService {
       return true;
       // if hour min et hour max => check validity
     } else if (dateMin && dateMax && hourMin && hourMax) {
-      const formatedHourMin = hourMin.split(":").map(h => parseInt(h));
-      const formatedHourMax = hourMax.split(":").map(h => parseInt(h));
+      const formatedHourMin = hourMin.split(':').map((h) => parseInt(h));
+      const formatedHourMax = hourMax.split(':').map((h) => parseInt(h));
       // Date month are initialized with month index ... 0 = janvier SO -1 .
-      const formatedDateMin = new Date(dateMin.year, dateMin.month -1, dateMin.day);
-      const formatedDateMax = new Date(dateMax.year, dateMax.month -1, dateMax.day);
+      const formatedDateMin = new Date(dateMin.year, dateMin.month - 1, dateMin.day);
+      const formatedDateMax = new Date(dateMax.year, dateMax.month - 1, dateMax.day);
 
       if (dateMin && dateMax) {
         formatedDateMin.setHours(formatedHourMin[0], formatedHourMin[1]);
         formatedDateMax.setHours(formatedHourMax[0], formatedHourMax[1]);
       }
-
 
       return formatedDateMin > formatedDateMax;
     }
@@ -110,7 +109,7 @@ export class FormService {
       return null;
     } else if (!currentTaxon.cd_nom && !currentTaxon.search_name) {
       return {
-        invalidTaxon: true
+        invalidTaxon: true,
       };
     } else {
       return null;
@@ -120,7 +119,7 @@ export class FormService {
   searchLocally(searchPatern, data) {
     const savedData = data;
     let filteredData = [];
-    filteredData = savedData.filter(el => {
+    filteredData = savedData.filter((el) => {
       const isIn = el.label_default.toUpperCase().indexOf(searchPatern.toUpperCase());
       return isIn !== -1;
     });
@@ -129,15 +128,15 @@ export class FormService {
 
   autoCompleteDate(
     formControl,
-    dateMinControlName = "date_min",
-    dateMaxControlName = "date_max"
+    dateMinControlName = 'date_min',
+    dateMaxControlName = 'date_max'
   ): Subscription {
     // date max autocomplete
     const dateMinControl: FormControl = formControl.get(dateMinControlName);
-    const subscription = dateMinControl.valueChanges.subscribe(newvalue => {
+    const subscription = dateMinControl.valueChanges.subscribe((newvalue) => {
       // Get mindate and maxdate value before mindate change
-      let oldmindate = formControl.value["date_min"];
-      let oldmaxdate = formControl.value["date_max"];
+      let oldmindate = formControl.value['date_min'];
+      let oldmaxdate = formControl.value['date_max'];
 
       // Compare the dates before the change of the datemin.
       // If datemin and datemax were equal, maintain this equality
@@ -146,13 +145,13 @@ export class FormService {
       if (oldmindate) {
         if (JSON.stringify(oldmaxdate) === JSON.stringify(oldmindate) || oldmaxdate == null) {
           formControl.patchValue({
-            date_max: newvalue
+            date_max: newvalue,
           });
         }
         // if olddatminDate is null => fill dateMax
       } else {
         formControl.patchValue({
-          date_max: newvalue
+          date_max: newvalue,
         });
       }
     });

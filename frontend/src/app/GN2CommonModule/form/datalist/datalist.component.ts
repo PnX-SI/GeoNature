@@ -6,7 +6,7 @@ import {
   OnChanges,
   DoCheck,
   IterableDiffers,
-  IterableDiffer
+  IterableDiffer,
 } from '@angular/core';
 import { DataFormService } from '../data-form.service';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
@@ -14,7 +14,7 @@ import { CommonService } from '../../service/common.service';
 
 @Component({
   selector: 'pnx-datalist',
-  templateUrl: './datalist.component.html'
+  templateUrl: './datalist.component.html',
 })
 export class DatalistComponent extends GenericFormComponent implements OnInit {
   formId: string; // Unique form id
@@ -52,7 +52,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
 
   onToppingRemoved(val) {
     const value = this.parentFormControl.value;
-    this.parentFormControl.patchValue(value.filter(v => v !== val));
+    this.parentFormControl.patchValue(value.filter((v) => v !== val));
   }
 
   searchChanged(event) {
@@ -66,21 +66,18 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
     values = values
       // filter search
       .filter(
-        v =>
-          !this.search ||
-          this.displayLabel(v)
-            .toLowerCase()
-            .includes(this.search.toLowerCase())
+        (v) =>
+          !this.search || this.displayLabel(v).toLowerCase().includes(this.search.toLowerCase())
       )
       // remove doublons (keyValue)
       .filter(
-        (item, pos, self) => self.findIndex(i => i[this.keyValue] === item[this.keyValue]) === pos
+        (item, pos, self) => self.findIndex((i) => i[this.keyValue] === item[this.keyValue]) === pos
       );
 
     for (const key of Object.keys(this.filters || [])) {
       const filter_ = this.filters[key];
       if (filter_.length) {
-        values = filter_.map(f => values.find(v => v[key] === f)).filter(v => !!v);
+        values = filter_.map((f) => values.find((v) => v[key] === f)).filter((v) => !!v);
       }
     }
 
@@ -108,7 +105,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
       return '';
     }
     const label = '';
-    const item = (this.values || []).find(v => v[this.keyValue] === value);
+    const item = (this.values || []).find((v) => v[this.keyValue] === value);
     if (item) {
       return this.displayLabel(item);
     }
@@ -116,7 +113,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   }
 
   initValues(data) {
-    this.values = data ? data.map(v => (typeof v !== 'object' ? { label: v, value: v } : v)) : [];
+    this.values = data ? data.map((v) => (typeof v !== 'object' ? { label: v, value: v } : v)) : [];
     this.filteredValues = this.getFilteredValues();
     // si requis
     // et un seul choix
@@ -134,23 +131,22 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
     // valeur par défaut (depuis input value)
     if (!this.parentFormControl.value && this.default) {
       const value = this.multiple ? this.default : [this.default];
-      const res = value.map(val =>
+      const res = value.map((val) =>
         typeof val === 'object'
-          ? (this.filteredValues.find(v => Object.keys(val).every(key => v[key] === val[key])) ||
-            {})[this.keyValue]
+          ? (this.filteredValues.find((v) =>
+              Object.keys(val).every((key) => v[key] === val[key])
+            ) || {})[this.keyValue]
           : val
       );
       this.parentFormControl.patchValue(this.multiple ? res : res[0]);
     }
     this.parentFormControl.markAsTouched();
-
   }
 
   getData() {
-
     if (!this.values && this.api) {
       this._dfs.getDataList(this.api, this.application, this.params).subscribe(
-        data => {
+        (data) => {
           let values = data;
           if (this.dataPath) {
             const paths = this.dataPath.split('/');
@@ -160,7 +156,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
           }
           this.initValues(values);
         },
-        error => {
+        (error) => {
           this._commonService.regularToaster('error', error.message);
         }
       );
