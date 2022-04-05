@@ -47,7 +47,7 @@ def list_modules():
 
     """
     params = request.args
-    q = TModules.query.options(joinedload(TModules.objects))
+    q = TModules.query.options(joinedload(TModules.objects), joinedload(TModules.datasets))
     if "exclude" in params:
         q = q.filter(TModules.module_code.notin_(params.getlist("exclude")))
     q = q.order_by(TModules.module_order.asc()).order_by(TModules.module_label.asc())
@@ -56,7 +56,7 @@ def list_modules():
     for module in modules:
         cruved = get_scopes_by_action(module_code=module.module_code)
         if cruved["R"] > 0:
-            module_dict = module.as_dict(fields=["objects"])
+            module_dict = module.as_dict(fields=["objects", "datasets"])
             module_dict["cruved"] = cruved
             if module.active_frontend:
                 try:

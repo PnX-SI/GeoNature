@@ -402,7 +402,7 @@ class TDatasets(CruvedMixin, FilterMixin, db.Model):
     id_digitizer = DB.Column(DB.Integer, ForeignKey(User.id_role))
     digitizer = DB.relationship(User, lazy="joined")  # joined for permission check
     id_taxa_list = DB.Column(DB.Integer)
-    modules = DB.relationship("TModules", secondary=cor_module_dataset, lazy="select")
+    modules = DB.relationship("TModules", secondary=cor_module_dataset, backref="datasets")
 
     creator = DB.relationship(User, lazy="joined")  # = digitizer
     nomenclature_data_type = DB.relationship(

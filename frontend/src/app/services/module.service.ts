@@ -27,7 +27,7 @@ export class ModuleService {
       tap((modules) => {
         const routingConfig = this._router.config;
         modules.forEach(module => {
-          if(module.ng_module) {                             
+          if(module.ng_module) {                                 
             const moduleConfig ={
                 path: module.module_path,
                 loadChildren: () => import("../../../../external_modules/"+module.ng_module+ "/frontend/app/gnModule.module").then(m => m.GeonatureModule),
@@ -39,7 +39,7 @@ export class ModuleService {
             // insert at the begining otherwise pagenotfound component is first matched
             routingConfig[3].children.unshift(moduleConfig)
           }
-        })          
+        })               
         this._router.resetConfig(routingConfig)          
         this.modules = modules
       }),
