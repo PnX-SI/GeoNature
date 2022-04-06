@@ -551,9 +551,10 @@ class TLogSynthese(DB.Model):
     """Log synthese table, populated with Delete Triggers on gn_synthes.synthese
     Parameters
     ----------
-    DB: 
+    DB:
         Flask SQLAlchemy controller
     """
+
     __tablename__ = "t_log_synthese"
     __table_args__ = {"schema": "gn_synthese"}
     id_synthese = DB.Column(DB.Integer(), primary_key=True)
