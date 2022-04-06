@@ -301,6 +301,8 @@ class Synthese(Schema):
     DISCUSSION_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
     # Allow disable alert synthese module for synthese or validation or any
     ALERT_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
+    # Add action log API to synthese module
+    LOG_API = fields.Boolean(missing=True)
 
 
 # Map configuration

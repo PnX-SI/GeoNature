@@ -397,6 +397,11 @@ MAIL_ON_ERROR = false
     DICUSSION_MAX_LENGTH = 1500
     ALERT_MODULES = ["SYNTHESE","VALIDATION"]
 
+    # Ajoute une API requêtable de log listant sommairement les
+    # données mises à jour (id_synthese, uuid, dernière action, date de dernière action)
+    # Utilisée par GN2PG (https://github.com/lpoaura/GN2PG)
+    LOG_API = true
+
 # Configuration de l'accès sans authentication
 [PUBLIC_ACCESS]
     PUBLIC_LOGIN = "admin"
