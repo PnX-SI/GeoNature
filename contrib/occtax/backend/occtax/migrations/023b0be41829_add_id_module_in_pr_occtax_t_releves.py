@@ -1,8 +1,8 @@
 """add id_module in pr_occtax.t_releves
 
-Revision ID: 56aa959ac3be
-Revises: 42040535a20e
-Create Date: 2022-04-05 17:36:54.528861
+Revision ID: 023b0be41829
+Revises: 944072911ff7
+Create Date: 2022-04-06 16:19:58.971694
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "56aa959ac3be"
-down_revision = "42040535a20e"
+revision = "023b0be41829"
+down_revision = "944072911ff7"
 branch_labels = None
 depends_on = None
 
