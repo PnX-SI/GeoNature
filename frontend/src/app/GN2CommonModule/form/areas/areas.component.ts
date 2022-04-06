@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { Subject, Observable, of, concat, zip } from 'rxjs';
 import {
@@ -80,6 +80,13 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    * `parentFormControl`.
    */
   @Input() defaultItems: Array<any> = [];
+  /**
+   * Permet découter les changements sur la sélection de ng-select.
+   * Retourne un tableau d'objets. Les objets correspondent aux items
+   * sélectionnés. Chaque objet contient à minima 2 attributs : un
+   * correspondant à l'input `valueFieldName`, l'autre est `displayName`.
+   */
+  @Output() onSelectionChange = new EventEmitter<any>();
   areas_input$ = new Subject<string>();
   areas: Observable<any>;
   loading = false;
