@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { Subject, Observable, of, concat, zip } from 'rxjs';
 import {
@@ -80,6 +80,13 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    * `parentFormControl`.
    */
   @Input() defaultItems: Array<any> = [];
+  /**
+   * Permet découter les changements sur la sélection de ng-select.
+   * Retourne un tableau d'objets. Les objets correspondent aux items
+   * sélectionnés. Chaque objet contient à minima 2 attributs : un
+   * correspondant à l'input `valueFieldName`, l'autre est `displayName`.
+   */
+  @Output() onSelectionChange = new EventEmitter<any>();
   areas_input$ = new Subject<string>();
   areas: Observable<any>;
   loading = false;
@@ -105,10 +112,20 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
       this.dataService.getAreas(this.typeCodes).pipe(map((data) => this.formatAreas(data))), // Default items
       of(this.defaultItems) // Default items in update mode
     ).pipe(
-      map((el) => {
+      map((areasArrays) => {
         // Remove dubplicates items
-        const concat = el[0].concat(el[1]);
-        return concat.filter((val) => !el[1].includes(val));
+        const items = areasArrays[0];
+        const defaultItems = areasArrays[1];
+        if (defaultItems.length > 0) {
+          const filteredItems = items.filter((area) => {
+            return !defaultItems.some(
+              (defaultArea) => defaultArea[this.valueFieldName] === area[this.valueFieldName]
+            );
+          });
+          return filteredItems.concat(defaultItems);
+        } else {
+          return items;
+        }
       })
     );
   }

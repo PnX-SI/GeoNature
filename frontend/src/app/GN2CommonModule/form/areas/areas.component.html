@@ -15,6 +15,7 @@
   [formControl]="parentFormControl"
   clearAllText="Supprimer toutes les zones géographiques"
   addTagText="Ajouter une zone géographique"
+  (change)="onSelectionChange.emit($event)"
 >
   <ng-template ng-typetosearch-tmp>
     <div class="ng-option disabled">

@@ -1,7 +1,6 @@
 import { throwError as observableThrowError, Observable } from 'rxjs';
 import { Injectable, Injector } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
-import { AuthService } from '@geonature/components/auth/auth.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 
@@ -14,8 +13,6 @@ export class MyCustomInterceptor implements HttpInterceptor {
   private handleError(error: Response | any) {
     let errMsg: string;
     let errName: string;
-    console.log(error.status);
-
     if (error.status !== 404 && error.status !== 401) {
       if (error instanceof Response || error['error']) {
         errMsg = `${error.status} - ${error.statusText || ''} ${error['error'].description}
@@ -50,7 +47,7 @@ export class MyCustomInterceptor implements HttpInterceptor {
     // pass on the modified request object
     // and intercept error
     return next.handle(request).catch((err: any) => {
-      this.handleError(err);
+      //this.handleError(err);
       return observableThrowError(err);
     });
   }

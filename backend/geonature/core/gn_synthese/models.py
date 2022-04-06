@@ -192,11 +192,9 @@ class Synthese(DB.Model):
     nomenclature_naturalness = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_naturalness]
     )
-    id_nomenclature_exist_proof = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_exist_proof = db.relationship(
-        TNomenclatures, foreign_keys=[id_nomenclature_exist_proof]
+    id_nomenclature_valid_status = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
     )
-    id_nomenclature_valid_status = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
     nomenclature_valid_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_valid_status]
     )

@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AuthService } from '../auth/auth.service';
+
 import { ToastrService } from 'ngx-toastr';
 import { similarValidator } from '@geonature/services/validators';
-import { Router, ActivatedRoute } from '@angular/router';
-import { AppConfig } from '../../../conf/app.config';
+
+import { AuthService } from '../../../components/auth/auth.service';
+import { AppConfig } from '../../../../conf/app.config';
+
 
 @Component({
   selector: 'pnx-new-password',

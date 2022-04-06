@@ -1,11 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AppConfig } from '@geonature_config/app.config';
+
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from '../auth/auth.service';
+
+import { AppConfig } from '@geonature_config/app.config';
 import { similarValidator } from '@geonature/services/validators/validators';
 import { CommonService } from '@geonature_common/service/common.service';
+
+import { AuthService } from '../../../components/auth/auth.service';
+
 
 @Component({
   selector: 'pnx-signup',
