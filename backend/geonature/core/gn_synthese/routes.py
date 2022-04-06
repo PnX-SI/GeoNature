@@ -1111,6 +1111,7 @@ def delete_report(id_report):
 
 
 if config["SYNTHESE"]["LOG_API"]:
+
     @routes.route("/log", methods=["get"])
     @permissions.check_cruved_scope("R", True)
     @json_resp
@@ -1127,7 +1128,7 @@ if config["SYNTHESE"]["LOG_API"]:
         dict
             log action list
         """
-        
+
         limit = request.args.get("limit", default=1000, type=int)
         offset = request.args.get("offset", default=0, type=int)
 
@@ -1139,12 +1140,7 @@ if config["SYNTHESE"]["LOG_API"]:
         filters = {f: args.get(f) for f in args}
 
         query = GenericQuery(
-            DB,
-            'v_log_synthese',
-            'gn_synthese',
-            filters=filters,
-            limit=limit,
-            offset=offset
+            DB, "v_log_synthese", "gn_synthese", filters=filters, limit=limit, offset=offset
         )
 
         data = query.return_query()

@@ -196,9 +196,7 @@ class Synthese(DB.Model):
     nomenclature_exist_proof = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_exist_proof]
     )
-    id_nomenclature_valid_status = db.Column(
-        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
-    )
+    id_nomenclature_valid_status = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
     nomenclature_valid_status = db.relationship(
         TNomenclatures, foreign_keys=[id_nomenclature_valid_status]
     )
@@ -237,9 +235,7 @@ class Synthese(DB.Model):
         TNomenclatures, foreign_keys=[id_nomenclature_observation_status]
     )
     id_nomenclature_blurring = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_blurring = db.relationship(
-        TNomenclatures, foreign_keys=[id_nomenclature_blurring]
-    )
+    nomenclature_blurring = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_blurring])
     id_nomenclature_source_status = db.Column(
         db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
     )
@@ -550,9 +546,10 @@ class TLogSynthese(DB.Model):
     """Log synthese table, populated with Delete Triggers on gn_synthes.synthese
     Parameters
     ----------
-    DB: 
+    DB:
         Flask SQLAlchemy controller
     """
+
     __tablename__ = "t_log_synthese"
     __table_args__ = {"schema": "gn_synthese"}
     id_synthese = DB.Column(DB.Integer(), primary_key=True)
