@@ -13,6 +13,7 @@ from sqlalchemy.orm import (
     deferred,
 )
 from sqlalchemy.sql import select, func, exists
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
@@ -350,6 +351,10 @@ class Synthese(DB.Model):
         elif scope == 3:
             return True
 
+    @hybrid_property
+    def meta_last_action_date(self):
+        return func.coalesce(self.meta_update_date, self.meta_create_date)
+
 
 @serializable
 class DefaultsNomenclaturesValue(DB.Model):
@@ -543,6 +548,22 @@ class VColorAreaTaxon(DB.Model):
     nb_obs = DB.Column(DB.Integer())
     last_date = DB.Column(DB.DateTime())
     color = DB.Column(DB.Unicode())
+
+
+@serializable
+class TLogSynthese(DB.Model):
+    """Log synthese table, populated with Delete Triggers on gn_synthes.synthese
+    Parameters
+    ----------
+    DB: 
+        Flask SQLAlchemy controller
+    """
+    __tablename__ = "t_log_synthese"
+    __table_args__ = {"schema": "gn_synthese"}
+    id_synthese = DB.Column(DB.Integer(), primary_key=True)
+    unique_id_sinp = DB.Column(UUID(as_uuid=True))
+    last_action = DB.Column(DB.Unicode)
+    meta_last_action_date = DB.Column(DB.DateTime)
 
 
 # defined here to avoid circular dependencies
