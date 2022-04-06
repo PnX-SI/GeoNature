@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 import { AuthService } from '@geonature/components/auth/auth.service';
 import { ModuleService } from '@geonature/services/module.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { GlobalSubService } from '../services/global-sub.service';
 import { AppConfig } from '@geonature_config/app.config';
 
 @Injectable()
@@ -17,7 +16,6 @@ export class ModuleGuardService implements CanActivate {
   constructor(
     private _router: Router,
     private _moduleService: ModuleService,
-    private _globalSubService: GlobalSubService,
     private _commonService: CommonService
   ) {}
 
@@ -25,7 +23,7 @@ export class ModuleGuardService implements CanActivate {
     const moduleName = route.data['module_code'];
     const askedModule = this._moduleService.getModule(moduleName);
     if (askedModule) {
-      this._globalSubService.currentModuleSubject.next(askedModule);
+      this._moduleService.currentModule$.next(askedModule);
       return true;
     } else {
       this._router.navigate(['/']);

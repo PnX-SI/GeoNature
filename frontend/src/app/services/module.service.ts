@@ -7,7 +7,7 @@ import { ModuleGuardService } from '../routing/routes-guards.service';
 
 @Injectable()
 export class ModuleService {
-  private _modules: BehaviorSubject<any[]> = new BehaviorSubject([]);
+  public _modules: BehaviorSubject<any[]> = new BehaviorSubject([]);
   get modules(): any[] {
     return this._modules.getValue();
   }
@@ -17,32 +17,41 @@ export class ModuleService {
   get $_modules(): Observable<any[]> {
     return this._modules.asObservable();
   }
+  public currentModule$ = new BehaviorSubject<any>(null);
+  get currentModule(): any {
+    return this.currentModule$.getValue();
+  }
 
-  constructor(private _api: DataFormService,  private _router: Router) {}
+  constructor(private _api: DataFormService, private _router: Router) {}
 
   fetchModulesAndSetRouting(): Observable<any[]> {
     // see CruvedStoreService.fetchCruved comments about the catchError
     return this._api.getModulesList([]).pipe(
-      catchError(err => of([])), // TODO: error MUST be handled in case we are logged! (typically, api down)
+      catchError((err) => of([])), // TODO: error MUST be handled in case we are logged! (typically, api down)
       tap((modules) => {
         const routingConfig = this._router.config;
-        modules.forEach(module => {
-          if(module.ng_module) {                                 
-            const moduleConfig ={
-                path: module.module_path,
-                loadChildren: () => import("../../../../external_modules/"+module.ng_module+ "/frontend/app/gnModule.module").then(m => m.GeonatureModule),
-                canActivate: [ModuleGuardService],
-                data: {
-                  module_code: module.module_code
-                },
-              }
+        modules.forEach((module) => {
+          if (module.ng_module) {
+            const moduleConfig = {
+              path: module.module_path,
+              loadChildren: () =>
+                import(
+                  '../../../../external_modules/' +
+                    module.ng_module +
+                    '/frontend/app/gnModule.module'
+                ).then((m) => m.GeonatureModule),
+              canActivate: [ModuleGuardService],
+              data: {
+                module_code: module.module_code,
+              },
+            };
             // insert at the begining otherwise pagenotfound component is first matched
-            routingConfig[3].children.unshift(moduleConfig)
+            routingConfig[3].children.unshift(moduleConfig);
           }
-        })               
-        this._router.resetConfig(routingConfig)          
-        this.modules = modules
-      }),
+        });
+        this._router.resetConfig(routingConfig);
+        this.modules = modules;
+      })
     );
   }
 

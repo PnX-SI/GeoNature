@@ -58,7 +58,8 @@ import { Router } from '@angular/router';
 
 export function getModulesAndInitRouting(moduleService: ModuleService, router: Router) {
   return () => {
-    return moduleService.fetchModulesAndSetRouting().toPromise(); };
+    return moduleService.fetchModulesAndSetRouting().toPromise();
+  };
 }
 
 @NgModule({
@@ -110,7 +111,12 @@ export function getModulesAndInitRouting(moduleService: ModuleService, router: R
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
     // { provide: APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService], multi: true},
-    { provide: APP_INITIALIZER, useFactory: getModulesAndInitRouting, deps: [ModuleService, Router], multi: true },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: getModulesAndInitRouting,
+      deps: [ModuleService, Router],
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
 })

@@ -8,34 +8,9 @@ import { HomeContentComponent } from '../components/home-content/home-content.co
 import { PageNotFoundComponent } from '../components/page-not-found/page-not-found.component';
 import { AuthGuard, ModuleGuardService } from '@geonature/routing/routes-guards.service';
 
-import { SignUpGuard } from '@geonature/routing/routes-guards.service';
-import { SignUpComponent } from '../components/sign-up/sign-up.component';
-
-import { UserManagementGuard } from '@geonature/routing/routes-guards.service';
-import { NewPasswordComponent } from '../components/new-password/new-password.component';
-
-import { LoginComponent } from '../components/login/login.component';
 import { NavHomeComponent } from '../components/nav-home/nav-home.component';
-import { MediasTestComponent } from '@geonature_common/form/media/medias-test.component';
 
 const defaultRoutes: Routes = [
-  {
-    path: 'login',
-    component: LoginComponent,
-  },
-
-  {
-    path: 'inscription',
-    component: SignUpComponent,
-    canActivate: [SignUpGuard],
-  },
-
-  {
-    path: 'new-password',
-    component: NewPasswordComponent,
-    canActivate: [UserManagementGuard],
-  },
-
   {
     path: '',
     component: NavHomeComponent,
@@ -81,4 +56,3 @@ const defaultRoutes: Routes = [
 ];
 
 export const routing = RouterModule.forRoot(defaultRoutes, { useHash: true });
-
