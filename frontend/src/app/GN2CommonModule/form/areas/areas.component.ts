@@ -112,10 +112,20 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
       this.dataService.getAreas(this.typeCodes).pipe(map((data) => this.formatAreas(data))), // Default items
       of(this.defaultItems) // Default items in update mode
     ).pipe(
-      map((el) => {
+      map((areasArrays) => {
         // Remove dubplicates items
-        const concat = el[0].concat(el[1]);
-        return concat.filter((val) => !el[1].includes(val));
+        const items = areasArrays[0];
+        const defaultItems = areasArrays[1];
+        if (defaultItems.length > 0) {
+          const filteredItems = items.filter((area) => {
+            return !defaultItems.some(
+              (defaultArea) => defaultArea[this.valueFieldName] === area[this.valueFieldName]
+            );
+          });
+          return filteredItems.concat(defaultItems);
+        } else {
+          return items;
+        }
       })
     );
   }
