@@ -12,7 +12,6 @@ from sqlalchemy.orm import (
     deferred,
 )
 from sqlalchemy.sql import select, func, exists
-from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.dialects.postgresql import UUID, JSONB
 from geoalchemy2 import Geometry
 from geoalchemy2.shape import to_shape
@@ -345,9 +344,6 @@ class Synthese(DB.Model):
         elif scope == 3:
             return True
 
-    @hybrid_property
-    def meta_last_action_date(self):
-        return func.coalesce(self.meta_update_date, self.meta_create_date)
 
 
 @serializable
