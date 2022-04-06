@@ -20,11 +20,12 @@ from sqlalchemy.orm import joinedload, lazyload, selectinload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 
-from utils_flask_sqla.generic import serializeQuery, GenericTable
+from utils_flask_sqla.generic import serializeQuery, GenericTable, GenericQuery
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo
 
 from geonature.utils import filemanager
+from geonature.utils.config import config
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
@@ -40,6 +41,7 @@ from geonature.core.gn_synthese.models import (
     VSyntheseForWebApp,
     VColorAreaTaxon,
     TReport,
+    TLogSynthese,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 
@@ -256,9 +258,7 @@ def get_synthese(scope):
     features = []
     for d in data:
         feature = d.as_geofeature(fields=columns)
-        feature["properties"]["nom_vern_or_lb_nom"] = (
-            d.lb_nom if d.nom_vern is None else d.nom_vern
-        )
+        feature["properties"]["nom_vern_or_lb_nom"] = d.lb_nom if d.nom_vern is None else d.nom_vern
         features.append(feature)
     return {
         "data": FeatureCollection(features),
@@ -774,9 +774,7 @@ def get_autocomplete_taxons_synthese():
     q = (
         DB.session.query(
             VMTaxrefListForautocomplete,
-            func.similarity(VMTaxrefListForautocomplete.search_name, search_name).label(
-                "idx_trgm"
-            ),
+            func.similarity(VMTaxrefListForautocomplete.search_name, search_name).label("idx_trgm"),
         )
         .distinct()
         .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
@@ -1181,3 +1179,45 @@ def delete_report(id_report):
     else:
         DB.session.delete(reportItem)
     DB.session.commit()
+
+
+if config["SYNTHESE"]["LOG_API"]:
+    @routes.route("/log", methods=["get"])
+    @permissions.check_cruved_scope("R", True)
+    @json_resp
+    def log_delete_history(info_role) -> dict:
+        """Get log history from synthese
+
+        Parameters
+        ----------
+        info_role : VUsersPermissions
+            User permissions
+
+        Returns
+        -------
+        dict
+            log action list
+        """
+        
+        limit = request.args.get("limit", default=1000, type=int)
+        offset = request.args.get("offset", default=0, type=int)
+
+        args = request.args.to_dict()
+        if "limit" in args:
+            args.pop("limit")
+        if "offset" in args:
+            args.pop("offset")
+        filters = {f: args.get(f) for f in args}
+
+        query = GenericQuery(
+            DB,
+            'v_log_synthese',
+            'gn_synthese',
+            filters=filters,
+            limit=limit,
+            offset=offset
+        )
+
+        data = query.return_query()
+
+        return data

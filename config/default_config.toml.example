@@ -437,6 +437,11 @@ NOTIFICATIONS_ENABLED = true
         { "id" = "znief", "show" = true, "display_name" = "Espèces déterminantes ZNIEFF", "status_types" = ["ZDET"] },
     ]
 
+    # Ajoute une API requêtable de log listant sommairement les
+    # données mises à jour (id_synthese, uuid, dernière action, date de dernière action)
+    # Utilisée par GN2PG (https://github.com/lpoaura/GN2PG)
+    LOG_API = true
+
     # Enable areas vizualisation with toggle slide
     ENABLE_AREA_AGGREGATION = true
     # Choose size of areas
