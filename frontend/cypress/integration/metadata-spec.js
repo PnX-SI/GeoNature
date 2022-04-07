@@ -96,7 +96,7 @@ describe("Testing metadata", () => {
 //       cy.get('[data-qa="pnx-metadata-acq-framework-name"]').contains(newCadreAcq.name)
 //   })
 
-	it.only('should create a new "jeux de données"', () => {
+	it('should create a new "jeux de données"', () => {
 		cy.get('[data-qa="pnx-metadata"] > div > div.card-body > div.row.ml-4.mb-4 > button:nth-child(2)').click()
 
 		cy.get("[data-qa='pnx-dataset-form'] > div.mr-1.mt-1 > button.mat-focus-indicator.button-success.ml-1.mat-raised-button.mat-button-base.mat-button-disabled").should('be.disabled')
@@ -148,7 +148,7 @@ describe("Testing metadata", () => {
 		cy.get('[data-qa="pnx-dataset-form"] > div.mr-1.mt-1 > button.mat-focus-indicator.button-success.ml-1.mat-raised-button.mat-button-base').click()
 	})
 
-	it.only('should new "jeux de données" created', () => {
+	it('should new "jeux de données" created', () => {
 		cy.get('[data-qa="pnx-metadata-dataset-name"]').contains(newJdd.name)
 		cy.get('[data-qa="pnx-datasets-card"] > div:nth-child(1) > div > button').click()
 	})
@@ -164,8 +164,8 @@ describe("Testing metadata", () => {
 	})
 
 	it('should display data of the "cadre d\'acquisition"', async () => {
-    cy.get('[data-qa="pnx-metadata-acq-framework-header-0"]').click()
-		cy.get('[data-qa="pnx-metadata-jdd-display-data-1"]').click()
+    cy.get('[data-qa="pnx-metadata-acq-framework-header-0"]').click({force: true})
+		cy.get('[data-qa="pnx-metadata-jdd-display-data-1"]').click({force: true})
 		const listData = await promisify(cy.get("[data-qa='pnx-synthese'] > div > div.col-sm-12.col-md-5.padding-sm > pnx-synthese-list > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller"))
 		const elements = Array.from(listData[0].children);
 		elements.forEach(data => {

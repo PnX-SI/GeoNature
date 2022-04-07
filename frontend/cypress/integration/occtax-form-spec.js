@@ -11,7 +11,7 @@ describe("Testing adding an observation in OccTax", () => {
     cy.geonatureLogout();
     cy.geonatureLogin();
     cy.visit("/#/occtax")
-    // cy.get("[data-qa='gn-occtax-btn-add-releve']").click();
+    cy.get("[data-qa='gn-occtax-btn-add-releve']").click();
   });
 
   it('should not be possible to add data if any geometry had been selected', () => {
@@ -300,7 +300,7 @@ describe("Testing adding an observation in OccTax", () => {
     cy.get('[data-qa="pnx-occtax-filter-search"]').click()
   })
 
-  it.only("Should be the good taxa", async () => {
+  it("Should be the good taxa", async () => {
     const date = await promisify(cy.get("[data-qa='pnx-occtax-map-list'] > div > div.row > div:nth-child(2) > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller > datatable-row-wrapper > datatable-body-row > div.datatable-row-center.datatable-row-group.ng-star-inserted > datatable-body-cell:nth-child(7) > div > div > span"))
     expect(date[0].innerText).to.equal("25-01-2022")
   })

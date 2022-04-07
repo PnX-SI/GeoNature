@@ -1,7 +1,7 @@
 import promisify from 'cypress-promise';
 
 
-describe("Testing metadata", () => {
+describe("Testing homepage", () => {
 
   before(() => {
     cy.geonatureLogout();
@@ -26,9 +26,9 @@ describe("Testing metadata", () => {
     cy.get('#app-sidenav > div > pnx-sidenav-items > mat-card').click()
   })
 
-  it('open documentation', () => {
-    cy.get('#app-toolbar > a').click()
-  })
+  // it('open documentation', () => {
+  //   cy.get('#app-toolbar > a').click()
+  // })
 
   it('disconnect', () => {
     cy.get('#app-toolbar > button.mat-focus-indicator.mat-tooltip-trigger.mx-2.mat-elevation-z1.mat-icon-button.mat-button-base').click()

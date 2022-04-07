@@ -44,7 +44,7 @@ describe("Testing metadata", () => {
 
   })
 
-  it.only('should display the new habitation', async () => {
+  it('should display the new habitation', async () => {
     const listHabit = await promisify(cy.get('[data-qa="pnx-occhab-map-list"] > div:nth-child(2) > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller'))
     expect(listHabit[0].children[0].children[0].children[1].children[4].innerText).contains('Prés salés du contact haut schorre/dune')
     listHabit[0].children[0].children[0].children[1].children[2].children[0].children[0].click()
