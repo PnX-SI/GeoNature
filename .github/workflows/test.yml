@@ -1,6 +1,15 @@
 name: pytest
-
-on: push
+on:
+  push:
+    branches:
+      - master
+      - hotfixes
+      - develop
+  pull_request:
+    branches:
+      - master
+      - hotfixes
+      - develop
 
 jobs:
   test_backend:
