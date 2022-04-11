@@ -1185,7 +1185,7 @@ def delete_report(id_report):
 if config["SYNTHESE"]["LOG_API"]:
 
     @routes.route("/log", methods=["get"])
-    @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+    @permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
     @json_resp
     def list_synthese_log_entries(info_role) -> dict:
         """Get log history from synthese
