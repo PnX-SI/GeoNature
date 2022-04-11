@@ -116,7 +116,7 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
         // Remove dubplicates items
         const items = areasArrays[0];
         const defaultItems = areasArrays[1];
-        if (defaultItems.length > 0) {
+        if (defaultItems && defaultItems.length > 0) {
           const filteredItems = items.filter((area) => {
             return !defaultItems.some(
               (defaultArea) => defaultArea[this.valueFieldName] === area[this.valueFieldName]
