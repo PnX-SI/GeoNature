@@ -3,11 +3,11 @@
         <div class="card-body">
             <div class="">
                 <h3 class="card-title mb-0">
-                    <i> {{taxon?.nom_complet}}</i> 
+                    <i> {{taxon?.nom_complet}}</i>
                    <span *ngIf="taxon?.nom_vern"> - {{taxon?.nom_vern}} </span>
                 </h3>
-            <small class="text-muted">*Le profil est calculé à partir des observations considérées comme valides</small>
-                
+            <small class="text-muted">*Le profil est calculé à partir des observations considérées comme valides et non confidentielles</small>
+
             </div>
             <div class="card-columns">
                 <div class="card" *ngIf="mediaUrl">
@@ -40,7 +40,7 @@
                         <p class="text-muted">Dernière observation</p>
                     </div>
                 </div>
-        
+
                 <div class="card">
                     <div class="card-body">
                         <mat-icon>terrain</mat-icon>
@@ -49,7 +49,7 @@
                         <p class="text-muted">Plage d'altitude</p>
                     </div>
                 </div>
-                
+
             </div>
 
 
@@ -58,11 +58,11 @@
                     <pnx-geojson
                         [geojson]="profilArea"
                         [zoomOnFirstTime]="true"
-                    > 
+                    >
                     </pnx-geojson>
                 </pnx-map>
         </div>
 
     </div>
-  
+
 </div>
