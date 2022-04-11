@@ -10,6 +10,7 @@ services:
     volumes:
       - "$PWD/.:/GeoNature"
       - "raw-data:/GeoNature/tmp"
+      - "$PWD/var/log:/var/log/geonature/"
     expose:
       - "80"
     networks:
