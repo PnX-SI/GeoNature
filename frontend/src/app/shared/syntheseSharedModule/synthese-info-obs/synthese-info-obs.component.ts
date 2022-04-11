@@ -59,8 +59,6 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     '5': '#BDBDBD',
     '6': '#FFFFFF'
   };
-  public dataBlurringEnable = AppConfig.DATA_BLURRING.ENABLE_DATA_BLURRING;
-
   constructor(
     private _gnDataService: DataFormService,
     private _dataService: SyntheseDataService,
