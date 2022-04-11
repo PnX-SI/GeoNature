@@ -36,7 +36,8 @@
       <ng-container
         *ngIf="
           !appConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION &&
-            appConfig.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT;
+          appConfig.PUBLIC_ACCESS.PUBLIC_LOGIN != currentUser?.user_login &&
+          appConfig.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT ;
           else noUserManagement
         "
       >
@@ -65,9 +66,21 @@
       </ng-container>
 
       <ng-template #noUserManagement>
-        <span class="user-name">
-          {{ currentUser?.user_login }}
-        </span>
+        <ng-container
+            *ngIf="
+              appConfig.PUBLIC_ACCESS.PUBLIC_LOGIN != currentUser?.user_login ;
+              else publicAccessUser
+            "
+        >
+          <mat-icon> person </mat-icon>
+          <span class="user-name">
+            {{ currentUser?.user_login }}
+          </span>
+        </ng-container>
+        <ng-template #publicAccessUser>
+          <mat-icon> accessibility_new </mat-icon>
+          <span class="user-name">Accès public</span>
+        </ng-template>
       </ng-template>
 
       <ng-container *ngIf="appConfig.FRONTEND.MULTILINGUAL">

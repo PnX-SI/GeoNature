@@ -5,7 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { HomeContentComponent } from '../components/home-content/home-content.component';
 import { PageNotFoundComponent } from '../components/page-not-found/page-not-found.component';
-import { AuthGuard, ModuleGuardService } from '@geonature/routing/routes-guards.service';
+import { AuthGuard, ModuleGuardService, PublicAccessGuard } from '@geonature/routing/routes-guards.service';
 
 import { NavHomeComponent } from '../components/nav-home/nav-home.component';
 import { MediasTestComponent } from '@geonature_common/form/media/medias-test.component';
@@ -22,6 +22,10 @@ const defaultRoutes: Routes = [
     component: NavHomeComponent,
     canActivateChild: [AuthGuard],
     children: [
+      {
+        path: '',
+        component: HomeContentComponent,
+      },
       {% for route in routes %}
         {
           path: '{{route.path}}',
@@ -33,31 +37,28 @@ const defaultRoutes: Routes = [
         },
       {% endfor %}
       {
-        path: '',
-        component: HomeContentComponent,
-      },
-      {
         path: 'synthese',
         data: { module_code: 'synthese' },
         canActivate: [ModuleGuardService],
-        loadChildren: () => import('@geonature/syntheseModule/synthese.module').then(m => m.SyntheseModule)
+        loadChildren: () => import('@geonature/syntheseModule/synthese.module').then(m => m.SyntheseModule),
       },
       {
         path: 'metadata',
         data: { module_code: 'metadata' },
         canActivate: [ModuleGuardService],
-        loadChildren: () => import('@geonature/metadataModule/metadata.module').then(m => m.MetadataModule)
+        loadChildren: () => import('@geonature/metadataModule/metadata.module').then(m => m.MetadataModule),
       },
       {
         path: 'admin',
         data: { module_code: 'admin' },
-        loadChildren: () => import('@geonature/adminModule/admin.module').then(m => m.AdminModule),
         canActivate: [ModuleGuardService],
+        loadChildren: () => import('@geonature/adminModule/admin.module').then(m => m.AdminModule),
       },
       {% if enable_user_management %}
         {
           path: 'user',
           data: { module_code: 'user' },
+          canActivateChild: [PublicAccessGuard],
           loadChildren: () => import('@geonature/userModule/user.module').then(m => m.UserModule),
         },
       {% endif %}
