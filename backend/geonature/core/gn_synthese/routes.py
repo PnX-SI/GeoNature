@@ -255,7 +255,9 @@ def get_synthese(scope):
     features = []
     for d in data:
         feature = d.as_geofeature(fields=columns)
-        feature["properties"]["nom_vern_or_lb_nom"] = d.lb_nom if d.nom_vern is None else d.nom_vern
+        feature["properties"]["nom_vern_or_lb_nom"] = (
+            d.lb_nom if d.nom_vern is None else d.nom_vern
+        )
         features.append(feature)
     return {
         "data": FeatureCollection(features),
@@ -771,7 +773,9 @@ def get_autocomplete_taxons_synthese():
     q = (
         DB.session.query(
             VMTaxrefListForautocomplete,
-            func.similarity(VMTaxrefListForautocomplete.search_name, search_name).label("idx_trgm"),
+            func.similarity(VMTaxrefListForautocomplete.search_name, search_name).label(
+                "idx_trgm"
+            ),
         )
         .distinct()
         .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
@@ -1181,9 +1185,9 @@ def delete_report(id_report):
 if config["SYNTHESE"]["LOG_API"]:
 
     @routes.route("/log", methods=["get"])
-    @permissions.check_cruved_scope("R", True)
+    @permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
     @json_resp
-    def log_delete_history(info_role) -> dict:
+    def list_synthese_log_entries(info_role) -> dict:
         """Get log history from synthese
 
         Parameters
