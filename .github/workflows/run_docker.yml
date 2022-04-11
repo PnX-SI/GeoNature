@@ -87,6 +87,7 @@ jobs:
       -
         name: Install database
         run: |
+          git branch
           geonature db upgrade geonature@head -x local-srid=2154
           geonature db autoupgrade -x local-srid=2154
           geonature db upgrade geonature-samples@head
