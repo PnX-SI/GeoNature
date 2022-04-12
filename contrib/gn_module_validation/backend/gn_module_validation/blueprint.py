@@ -180,7 +180,16 @@ def get_synthese_data(info_role):
     ).options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
 
     # to pass alert reports infos with synthese to validation list
-    if len(current_app.config["SYNTHESE"]["ALERT_MODULES"]):
+    # only if tools are activate for validation
+    alertActivate = (
+        len(current_app.config["SYNTHESE"]["ALERT_MODULES"])
+        and "VALIDATION" in current_app.config["SYNTHESE"]["ALERT_MODULES"]
+    )
+    pinActivate = (
+        len(current_app.config["SYNTHESE"]["PIN_MODULES"])
+        and "VALIDATION" in current_app.config["SYNTHESE"]["PIN_MODULES"]
+    )
+    if alertActivate or pinActivate:
         fields |= {"reports.report_type.type"}
         syntheseModelQuery = syntheseModelQuery.options(
             selectinload(Synthese.reports).joinedload(TReport.report_type)

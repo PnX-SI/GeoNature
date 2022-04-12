@@ -83,7 +83,7 @@
       >
       </button>
       <i
-        *ngIf="findReportInfo(row, 'alert')"
+        *ngIf="alertActivate && findReportInfo(row, 'alert')"
         class="fa fa-flag"
         [ngStyle]="{'margin-right':'2px'}"
         aria-hidden="true"
@@ -91,7 +91,7 @@
         [title]="findReportInfo(row, 'alert', 'content')"
       ></i>
       <i
-        *ngIf="findReportInfo(row, 'pin')"
+        *ngIf="pinActivate && findReportInfo(row, 'pin')"
         class="fa fa-thumb-tack"
         aria-hidden="true"
         (click)="openInfoModal(row)"
