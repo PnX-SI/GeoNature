@@ -52,10 +52,11 @@ export class ValidationSyntheseListComponent
   @Output() pageChange: EventEmitter<number>;
   @Output() displayAll = new EventEmitter<any>();
   @Input() idSynthese: any;
-  public alertsData: any;
   public validationStatusAsDict: any;
   public datatable_column_list: Array<any>
   public messages: any;
+  public alertActivate: boolean;
+  public pinActivate: boolean;
 
   constructor(
     public mapListService: MapListService,
@@ -73,6 +74,9 @@ export class ValidationSyntheseListComponent
   ngOnInit() {
     // get app config
     this.appConfig = AppConfig;
+
+    this.alertActivate = AppConfig.SYNTHESE.ALERT_MODULES && AppConfig.SYNTHESE.ALERT_MODULES.includes("VALIDATION");
+    this.pinActivate = AppConfig.SYNTHESE.PIN_MODULES && AppConfig.SYNTHESE.PIN_MODULES.includes("VALIDATION");
 
     // get wiewport height to set the number of rows in the tabl
     const h = document.documentElement.clientHeight;

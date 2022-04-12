@@ -76,7 +76,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     private _commonService: CommonService,
     private _mapService: MapService,
     private globalSubService: GlobalSubService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadAllInfo(this.idSynthese);
@@ -308,7 +308,10 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
 
   openCloseAlert() {
     this.alertOpen = !this.alertOpen;
-    this.getReport('alert');
+    // avoid useless request
+    if (AppConfig.SYNTHESE?.ALERT_MODULES && AppConfig.SYNTHESE.ALERT_MODULES.length) {
+      this.getReport('alert');
+    }
   }
 
   alertExists() {
