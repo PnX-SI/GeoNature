@@ -10,7 +10,6 @@ import { CommonService } from '@geonature_common/service/common.service';
 
 import { AuthService } from '../../../components/auth/auth.service';
 
-
 @Component({
   selector: 'pnx-signup',
   templateUrl: './sign-up.component.html',
