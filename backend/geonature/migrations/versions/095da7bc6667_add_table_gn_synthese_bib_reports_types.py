@@ -20,7 +20,7 @@ def upgrade():
     logger.info("Create bib_reports_types table...")
     op.execute(
         """
-    CREATE TABLE IF NOT EXISTS gn_synthese.bib_reports_types (
+    CREATE TABLE gn_synthese.bib_reports_types (
         id_type SERIAL NOT NULL PRIMARY KEY,
         type VARCHAR NOT NULL
     )
@@ -33,7 +33,6 @@ def upgrade():
         ('discussion'),
         ('alert'),
         ('pin')
-    ON CONFLICT DO NOTHING
     """
     )
     pass
