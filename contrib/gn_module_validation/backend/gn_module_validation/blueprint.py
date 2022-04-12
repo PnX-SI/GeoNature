@@ -181,8 +181,14 @@ def get_synthese_data(info_role):
 
     # to pass alert reports infos with synthese to validation list
     # only if tools are activate for validation
-    alertActivate = len(current_app.config["SYNTHESE"]["ALERT_MODULES"]) and "VALIDATION" in current_app.config["SYNTHESE"]["ALERT_MODULES"]
-    pinActivate = len(current_app.config["SYNTHESE"]["PIN_MODULES"]) and "VALIDATION" in current_app.config["SYNTHESE"]["PIN_MODULES"]
+    alertActivate = (
+        len(current_app.config["SYNTHESE"]["ALERT_MODULES"])
+        and "VALIDATION" in current_app.config["SYNTHESE"]["ALERT_MODULES"]
+    )
+    pinActivate = (
+        len(current_app.config["SYNTHESE"]["PIN_MODULES"])
+        and "VALIDATION" in current_app.config["SYNTHESE"]["PIN_MODULES"]
+    )
     if alertActivate or pinActivate:
         fields |= {"reports.report_type.type"}
         syntheseModelQuery = syntheseModelQuery.options(
