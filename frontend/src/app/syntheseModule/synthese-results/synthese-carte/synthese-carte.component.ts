@@ -156,7 +156,10 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
             geojson.geometry.type === 'Polygon' ? 1 : 2
           );
           this.setStyleEventAndAdd(new L.Polygon(latLng), geojson.properties.id);
-        } else if (geojson.geometry.type == 'LineString' || geojson.geometry.type == 'MultiLineString') {
+        } else if (
+          geojson.geometry.type == 'LineString' ||
+          geojson.geometry.type == 'MultiLineString'
+        ) {
           const latLng = L.GeoJSON.coordsToLatLngs(
             geojson.geometry.coordinates,
             geojson.geometry.type === 'LineString' ? 0 : 1

@@ -7,7 +7,6 @@ import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '../../../../conf/app.config';
 import { AuthService } from '../../../components/auth/auth.service';
 
-
 @Component({
   selector: 'pnx-login',
   templateUrl: 'login.component.html',

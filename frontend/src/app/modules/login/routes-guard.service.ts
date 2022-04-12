@@ -1,7 +1,7 @@
-import { Injectable } from "@angular/core";
-import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from "@angular/router";
+import { Injectable } from '@angular/core';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot } from '@angular/router';
 
-import { AppConfig } from "../../../conf/app.config";
+import { AppConfig } from '../../../conf/app.config';
 
 @Injectable()
 export class SignUpGuard implements CanActivate {

@@ -38,10 +38,7 @@ import { IntroductionComponent } from '../custom/components/introduction/introdu
 import { AuthService } from './components/auth/auth.service';
 import { CookieService } from 'ng2-cookies';
 import { ChartsModule } from 'ng2-charts';
-import {
-  AuthGuard,
-  ModuleGuardService,
-} from '@geonature/routing/routes-guards.service';
+import { AuthGuard, ModuleGuardService } from '@geonature/routing/routes-guards.service';
 import { ModuleService } from './services/module.service';
 import { CruvedStoreService } from './GN2CommonModule/service/cruved-store.service';
 import { SideNavService } from './components/sidenav-items/sidenav-service';
