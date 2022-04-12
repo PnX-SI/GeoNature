@@ -47,7 +47,7 @@ export class MyCustomInterceptor implements HttpInterceptor {
     // pass on the modified request object
     // and intercept error
     return next.handle(request).catch((err: any) => {
-      //this.handleError(err);
+      this.handleError(err);
       return observableThrowError(err);
     });
   }
