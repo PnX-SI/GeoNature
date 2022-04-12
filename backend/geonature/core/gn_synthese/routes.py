@@ -148,20 +148,17 @@ def get_observations_for_web(info_role):
         VSyntheseForWebApp.observers,
         VSyntheseForWebApp.dataset_name,
         VSyntheseForWebApp.url_source,
-        VSyntheseForWebApp.entity_source_pk_value,
         VSyntheseForWebApp.unique_id_sinp,
     ]
 
     query = (
         select(columns)
-            .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
-            .order_by(VSyntheseForWebApp.date_min.desc())
+        .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
+        .order_by(VSyntheseForWebApp.date_min.desc())
     )
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
     synthese_query_class.filter_query_all_filters(info_role)
     results = DB.session.execute(synthese_query_class.query.limit(result_limit))
-
-    length_result = results.rowcount
 
     # Group results by geometry
     grouped_results = {}
@@ -176,31 +173,35 @@ def get_observations_for_web(info_role):
     # Build GeoJson
     geojson_features = []
     for geom_as_geojson, observations in grouped_results.items():
-        geojson = json.loads(geom_as_geojson)
-        geojson["properties"] = {}
+        geometry = json.loads(geom_as_geojson)
 
+        properties = {"observations": []}
         for idx, obs in enumerate(observations):
             obs["id"] = obs["id_synthese"]
             obs["date_min"] = str(obs["date_min"])
-            obs["nom_vern_or_lb_nom"] = obs["nom_vern"] if obs["nom_vern"] else obs["lb_nom"],
+            obs["nom_vern_or_lb_nom"] = (obs["nom_vern"] if obs["nom_vern"] else obs["lb_nom"],)
             obs["count_min_max"] = (
                 f"{obs['count_min']} - {obs['count_max']}"
                 if obs["count_min"] != obs["count_max"]
                 else str(obs["count_min"] or "")
             )
             obs["unique_id_sinp"] = str(obs["unique_id_sinp"])
-            del(obs["id_synthese"])
-            del(obs["st_asgeojson"])
-            del(obs["nom_vern"])
-            del(obs["count_min"])
-            del(obs["count_max"])
+            del obs["id_synthese"]
+            del obs["st_asgeojson"]
+            del obs["nom_vern"]
+            del obs["count_min"]
+            del obs["count_max"]
 
-            geojson["properties"][idx] = obs
+            properties["observations"].append(obs)
 
-        geojson_features.append(geojson)
+        geojson_features.append(
+            Feature(
+                geometry=geometry,
+                properties=properties,
+            )
+        )
 
     return jsonify(FeatureCollection(geojson_features))
-
 
 
 @routes.route("", methods=["GET"])
@@ -760,8 +761,8 @@ def get_autocomplete_taxons_synthese():
                 "idx_trgm"
             ),
         )
-            .distinct()
-            .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
+        .distinct()
+        .join(Synthese, Synthese.cd_nom == VMTaxrefListForautocomplete.cd_nom)
     )
     search_name = search_name.replace(" ", "%")
     q = q.filter(VMTaxrefListForautocomplete.search_name.ilike("%" + search_name + "%"))
@@ -954,7 +955,6 @@ def get_bbox():
     return "", 204
 
 
-
 @routes.route("/observation_count_per_column/<column>", methods=["GET"])
 def observation_count_per_column(column):
     """Get observations count group by a given column"""
@@ -997,8 +997,8 @@ def get_taxa_distribution():
 
     query = (
         DB.session.query(func.count(distinct(Synthese.cd_nom)), rank)
-            .select_from(Synthese)
-            .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+        .select_from(Synthese)
+        .outerjoin(Taxref, Taxref.cd_nom == Synthese.cd_nom)
     )
 
     if id_dataset:

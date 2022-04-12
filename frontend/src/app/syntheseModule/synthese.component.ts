@@ -11,6 +11,7 @@ import { AppConfig } from '@geonature_config/app.config';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
 import { SyntheseInfoObsComponent } from '../shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
+import * as cloneDeep from 'lodash/cloneDeep';
 
 @Component({
   selector: 'pnx-synthese',
@@ -40,7 +41,11 @@ export class SyntheseComponent implements OnInit {
     this.searchService.dataLoaded = false;
     this.searchService.getSyntheseData(formParams).subscribe(
       (data) => {
-        if (data.length >= AppConfig.SYNTHESE.NB_MAX_OBS_MAP) {
+        // Store the list of id_synthese for exports
+        this._syntheseStore.idSyntheseList = this.extractSyntheseIds(data);
+
+        // Check if synthese observations limit is reach
+        if (this._syntheseStore.idSyntheseList.length >= AppConfig.SYNTHESE.NB_MAX_OBS_MAP) {
           const modalRef = this._modalService.open(SyntheseModalDownloadComponent, {
             size: 'lg',
           });
@@ -49,15 +54,11 @@ export class SyntheseComponent implements OnInit {
           modalRef.componentInstance.tooManyObs = true;
         }
 
-        this._mapListService.geojsonData = this.simplifyGeoJson(data);
-        this._mapListService.tableData = data;
+        // Store geojson
+        this._mapListService.geojsonData = this.simplifyGeoJson(cloneDeep(data));
         this._mapListService.loadTableData(data);
         this._mapListService.idName = 'id';
         this.searchService.dataLoaded = true;
-        // store the list of id_synthese for exports
-        this._syntheseStore.idSyntheseList = data['features'].map((row) => {
-          return row['properties']['id'];
-        });
       },
       (error) => {
         this.searchService.dataLoaded = true;
@@ -77,11 +78,34 @@ export class SyntheseComponent implements OnInit {
     this.firstLoad = false;
   }
 
+  private extractSyntheseIds(geojson) {
+    let ids = [];
+    for (let feature of geojson.features) {
+      for (let obs of Object.values(feature.properties)) {
+        ids.push(obs['id']);
+      }
+    }
+    return ids;
+  }
+
   private simplifyGeoJson(geojson) {
-    let geojsonList = []
+    for (let feature of geojson.features) {
+      let ids = [];
+      for (let obs of Object.values(feature.properties)) {
+        if (obs['id']) {
+          ids.push(obs['id']);
+        }
+      }
+      feature.properties = { id: ids };
+    }
+    return geojson;
+  }
+
+  private simplifyGeoJson2(geojson) {
+    let geojsonList = [];
     for (let feature of geojson.features) {
       let item = (({ type, coordinates }) => ({ type, coordinates }))(feature);
-      item['properties'] = { 'id': [] };
+      item['properties'] = { id: [] };
       for (let obs of Object.values(feature['properties'])) {
         if (obs['id']) {
           item['properties']['id'].push(obs['id']);
@@ -92,7 +116,7 @@ export class SyntheseComponent implements OnInit {
     let geoJsonData = {
       type: 'FeatureCollection',
       features: geojsonList,
-    }
+    };
     return geoJsonData;
   }
 
