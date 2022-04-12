@@ -15,6 +15,7 @@ import * as L from 'leaflet';
   providers: [],
 })
 export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges {
+
   public leafletDrawOptions = leafletDrawOption;
   public currentLeafletDrawCoord: any;
   public firstFileLayerMessage = true;
@@ -25,15 +26,15 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     : new L.FeatureGroup();
 
   originStyle = {
-    color: '#3388ff',
-    fill: false,
-    weight: 3,
+    color: '#E0C0F0',
+    opacity: 0.8,
+    weight: 4,
+    fillColor: '#9E48C7',
+    fillOpacity: 0.5
   };
 
   selectedStyle = {
     color: '#ff0000',
-    weight: 3,
-    fill: false,
   };
 
   @Input() inputSyntheseData: GeoJSON;
@@ -67,66 +68,13 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
   }
 
   // redefine toggle style from mapListSerice because we don't use geojson component here for perf reasons
-  toggleStyle(selectedLayer) {
+  private toggleStyle(selectedLayer) {
     // togle the style of selected layer
     if (this.mapListService.selectedLayer !== undefined) {
       this.mapListService.selectedLayer.setStyle(this.originStyle);
     }
     this.mapListService.selectedLayer = selectedLayer;
     this.mapListService.selectedLayer.setStyle(this.selectedStyle);
-  }
-
-  eventOnEachFeature(id, layer): void {
-    // event from the map
-    for (let id_ of id) {
-      this.mapListService.layerDict[id_] = layer;
-    }
-    layer.on({
-      click: (e) => {
-        // toggle style
-        this.toggleStyle(layer);
-        this.mapListService.mapSelected.next(id);
-      },
-    });
-  }
-
-  bindGeojsonForm(geojson) {
-    this.formService.searchForm.controls.radius.setValue(geojson.properties['radius']);
-    this.formService.searchForm.controls.geoIntersection.setValue(geojson);
-    // set the current coord of the geojson to remove layer from filelayer component via the input removeLayer
-    this.currentLeafletDrawCoord = geojson;
-  }
-
-  onFileLayerLoaded(geojson) {
-    this.formService.searchForm.controls.geoIntersection.setValue(geojson);
-
-    if (this.firstFileLayerMessage) {
-      this._commonService.translateToaster('success', 'Map.FileLayerInfoSynthese');
-    }
-    this.firstFileLayerMessage = false;
-  }
-
-  deleteControlValue() {
-    this.formService.searchForm.controls.geoIntersection.reset();
-    this.formService.searchForm.controls.radius.reset();
-  }
-
-  setStyle(layer) {
-    layer.setStyle({
-      color: '#3388ff',
-      weight: 3,
-      fill: false,
-    });
-  }
-
-  coordsToLatLng(coordinates) {
-    return new L.LatLng(coordinates[1], coordinates[0]);
-  }
-
-  setStyleEventAndAdd(layer, id) {
-    this.setStyle(layer);
-    this.eventOnEachFeature(id, layer);
-    this.cluserOrSimpleFeatureGroup.addLayer(layer);
   }
 
   ngOnChanges(change) {
@@ -143,6 +91,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
         : new L.FeatureGroup();
 
       change.inputSyntheseData.currentValue.features.forEach((geojson) => {
+        let countId = geojson.properties.id.length
         // we don't create a generic function for setStyle and event on each layer to avoid
         // a if on possible milion of point (with multipoint we must set the event on each point)
         if (geojson.geometry.type == 'Point' || geojson.geometry.type == 'MultiPoint') {
@@ -151,7 +100,15 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
           }
           for (let i = 0; i < geojson.geometry.coordinates.length; i++) {
             const latLng = L.GeoJSON.coordsToLatLng(geojson.geometry.coordinates[i]);
-            this.setStyleEventAndAdd(L.circleMarker(latLng), geojson.properties.id);
+            let markerIds = geojson.properties.id;
+            let marker = L.circleMarker(latLng).bindTooltip(`${countId}`, {
+              permanent: true,
+              direction: 'center',
+              className: 'number-obs',
+            });
+            this.setStyleCircleMarker(marker, countId);
+            this.eventOnEachFeature(markerIds, marker);
+            this.cluserOrSimpleFeatureGroup.addLayer(marker);
           }
         } else if (geojson.geometry.type == 'Polygon' || geojson.geometry.type == 'MultiPolygon') {
           const latLng = L.GeoJSON.coordsToLatLngs(
@@ -182,4 +139,70 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
       }
     }
   }
+
+
+  private setStyleCircleMarker(layer, ids) {
+    layer.setStyle({
+      color: '#E0C0F0',
+      opacity: 0.8,
+      weight: 4,
+      radius: 10+ids,
+      fillColor: '#9E48C7',
+      fillOpacity: 0.5
+    });
+  }
+
+
+  private setStyleEventAndAdd(layer, ids) {
+    this.setStyle(layer);
+    this.eventOnEachFeature(ids, layer);
+    this.cluserOrSimpleFeatureGroup.addLayer(layer);
+  }
+
+  private setStyle(layer) {
+    layer.setStyle({
+      color: '#3388ff',
+      weight: 3,
+      fill: false,
+    });
+  }
+
+  private eventOnEachFeature(ids, layer): void {
+    // event from the map
+    for (let id of ids) {
+      this.mapListService.layerDict[id] = layer;
+    }
+    layer.on({
+      click: (e) => {
+        // toggle style
+        this.toggleStyle(layer);
+        this.mapListService.mapSelected.next(ids);
+      },
+    });
+  }
+
+  bindGeojsonForm(geojson) {
+    this.formService.searchForm.controls.radius.setValue(geojson.properties['radius']);
+    this.formService.searchForm.controls.geoIntersection.setValue(geojson);
+    // set the current coord of the geojson to remove layer from filelayer component via the input removeLayer
+    this.currentLeafletDrawCoord = geojson;
+  }
+
+  onFileLayerLoaded(geojson) {
+    this.formService.searchForm.controls.geoIntersection.setValue(geojson);
+
+    if (this.firstFileLayerMessage) {
+      this._commonService.translateToaster('success', 'Map.FileLayerInfoSynthese');
+    }
+    this.firstFileLayerMessage = false;
+  }
+
+  deleteControlValue() {
+    this.formService.searchForm.controls.geoIntersection.reset();
+    this.formService.searchForm.controls.radius.reset();
+  }
+
+  // coordsToLatLng(coordinates) {
+  //   return new L.LatLng(coordinates[1], coordinates[0]);
+  // }
 }

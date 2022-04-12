@@ -301,7 +301,7 @@ export class MapListService {
         }
       });
     }
-    this.tableData = [...this.tableData];
+    //this.tableData = [...this.tableData];
   }
 }
 
