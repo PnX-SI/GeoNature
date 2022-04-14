@@ -560,6 +560,15 @@
         <div class="mb-3 border border-secondary">
           <pnx-map height="40vh">
             <pnx-geojson
+              *ngIf="
+                (
+                  selectedObs?.nomenclature_sensitivity == null ||
+                  selectedObs?.nomenclature_sensitivity?.cd_nomenclature == '0'
+                ) && (
+                  selectedObs?.nomenclature_diffusion_level == null ||
+                  selectedObs?.nomenclature_diffusion_level?.cd_nomenclature == '5'
+                )
+              "
               [geojson]="selectedGeom"
               [style]="{color: 'red'}"
             >
