@@ -648,7 +648,7 @@ def export_status(info_role):
     q = q.where(TaxrefBdcStatutText.enable == True)
 
     protection_status = []
-    data = DB.engine.execute(q)
+    data = DB.session.execute(q)
     for d in data:
         row = OrderedDict(
             [
