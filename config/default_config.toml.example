@@ -270,7 +270,7 @@ MAIL_ON_ERROR = false
 
     # Colonne à afficher par défaut sur la liste des résultats de la synthese
     # Choisir le champ 'prop' parmis les colonnes suivantes :
-    # id_synthese, date_min, cd_nom, lb_nom, nom_vern_or_lb_nom, st_asgeojson,
+    # id (=id_synthese), date_min, cd_nom, lb_nom, nom_vern_or_lb_nom,
     # observers, dataset_name, url_source, count_min_max
     LIST_COLUMNS_FRONTEND = [
         { prop = "nom_vern_or_lb_nom", name = "Taxon" },

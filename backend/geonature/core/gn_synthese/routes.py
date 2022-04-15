@@ -16,7 +16,7 @@ from flask import (
     g,
 )
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
-from sqlalchemy import distinct, func, desc, asc, select, text, update
+from sqlalchemy import distinct, func, desc, asc, select, case
 from sqlalchemy.orm import joinedload, contains_eager, lazyload, selectinload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
@@ -136,67 +136,64 @@ def get_observations_for_web(info_role):
     else:
         result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
 
-    columns = [
-        VSyntheseForWebApp.id_synthese,
-        VSyntheseForWebApp.date_min,
-        VSyntheseForWebApp.lb_nom,
-        VSyntheseForWebApp.cd_nom,
-        VSyntheseForWebApp.nom_vern,
-        VSyntheseForWebApp.count_min,
-        VSyntheseForWebApp.count_max,
-        VSyntheseForWebApp.st_asgeojson,
-        VSyntheseForWebApp.observers,
-        VSyntheseForWebApp.dataset_name,
-        VSyntheseForWebApp.url_source,
-        VSyntheseForWebApp.unique_id_sinp,
-    ]
+    count_min_max = case(
+        [
+            (
+                VSyntheseForWebApp.count_min != VSyntheseForWebApp.count_max,
+                func.concat(VSyntheseForWebApp.count_min, " - ", VSyntheseForWebApp.count_max),
+            ),
+            (VSyntheseForWebApp.count_min != None, f"{VSyntheseForWebApp.count_min}"),
+        ],
+        else_="",
+    )
 
+    nom_vern_or_lb_nom = func.coalesce(VSyntheseForWebApp.nom_vern, VSyntheseForWebApp.lb_nom)
+
+    columns = [
+        "id",
+        VSyntheseForWebApp.id_synthese,
+        "date_min",
+        VSyntheseForWebApp.date_min,
+        "lb_nom",
+        VSyntheseForWebApp.lb_nom,
+        "cd_nom",
+        VSyntheseForWebApp.cd_nom,
+        "observers",
+        VSyntheseForWebApp.observers,
+        "dataset_name",
+        VSyntheseForWebApp.dataset_name,
+        "url_source",
+        VSyntheseForWebApp.url_source,
+        "unique_id_sinp",
+        VSyntheseForWebApp.unique_id_sinp,
+        "nom_vern_or_lb_nom",
+        nom_vern_or_lb_nom,
+        "count_min_max",
+        count_min_max,
+    ]
+    observations = func.json_build_object(*columns)
+    json_agg = func.json_build_object("observations", func.json_agg(observations)).label(
+        "properties"
+    )
+
+    st_asgeojson = func.ST_AsGeoJSON(VSyntheseForWebApp.the_geom_4326).label("st_asgeojson")
+    
     query = (
-        select(columns)
+        select([st_asgeojson, json_agg])
         .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
+        .group_by(VSyntheseForWebApp.the_geom_4326, VSyntheseForWebApp.date_min)
         .order_by(VSyntheseForWebApp.date_min.desc())
     )
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
     synthese_query_class.filter_query_all_filters(info_role)
     results = DB.session.execute(synthese_query_class.query.limit(result_limit))
 
-    # Group results by geometry
-    grouped_results = {}
-    for result in results:
-        result = dict(result)
-
-        if not result["st_asgeojson"] in grouped_results.keys():
-            grouped_results[result["st_asgeojson"]] = [result]
-        else:
-            grouped_results[result["st_asgeojson"]].append(result)
-
     # Build GeoJson
     geojson_features = []
-    for geom_as_geojson, observations in grouped_results.items():
-        geometry = json.loads(geom_as_geojson)
-
-        properties = {"observations": []}
-        for idx, obs in enumerate(observations):
-            obs["id"] = obs["id_synthese"]
-            obs["date_min"] = str(obs["date_min"])
-            obs["nom_vern_or_lb_nom"] = (obs["nom_vern"] if obs["nom_vern"] else obs["lb_nom"],)
-            obs["count_min_max"] = (
-                f"{obs['count_min']} - {obs['count_max']}"
-                if obs["count_min"] != obs["count_max"]
-                else str(obs["count_min"] or "")
-            )
-            obs["unique_id_sinp"] = str(obs["unique_id_sinp"])
-            del obs["id_synthese"]
-            del obs["st_asgeojson"]
-            del obs["nom_vern"]
-            del obs["count_min"]
-            del obs["count_max"]
-
-            properties["observations"].append(obs)
-
+    for (geom_as_geojson, properties) in results:
         geojson_features.append(
             Feature(
-                geometry=geometry,
+                geometry=json.loads(geom_as_geojson),
                 properties=properties,
             )
         )
