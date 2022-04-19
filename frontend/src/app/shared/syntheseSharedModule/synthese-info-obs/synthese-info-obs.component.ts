@@ -19,7 +19,7 @@ import { MediaService } from '@geonature_common/service/media.service';
 import { finalize } from 'rxjs/operators';
 import { constants } from 'crypto';
 import { isEmpty, find } from 'lodash';
-import { GlobalSubService } from '@geonature/services/global-sub.service';
+import { ModuleService } from '../../../services/module.service';
 
 @Component({
   selector: 'pnx-synthese-info-obs',
@@ -73,12 +73,12 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
     public mediaService: MediaService,
     private _commonService: CommonService,
     private _mapService: MapService,
-    private globalSubService: GlobalSubService
+    private _moduleService: ModuleService
   ) {}
 
   ngOnInit() {
     this.loadAllInfo(this.idSynthese);
-    this.globalSubService.currentModuleSub.subscribe((module) => {
+    this._moduleService.currentModule$.subscribe((module) => {
       if (module) {
         this.moduleInfos = { id: module.id_module, code: module.module_code };
         this.activateAlert = AppConfig.SYNTHESE.ALERT_MODULES.includes(this.moduleInfos?.code);

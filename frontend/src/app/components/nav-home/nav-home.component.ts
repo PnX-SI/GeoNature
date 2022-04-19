@@ -7,8 +7,8 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { AuthService, User } from '../../components/auth/auth.service';
 import { AppConfig } from '../../../conf/app.config';
-import { GlobalSubService } from '../../services/global-sub.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
+import { ModuleService } from '../../services/module.service';
 
 @Component({
   selector: 'pnx-nav-home',
@@ -30,7 +30,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     public authService: AuthService,
     private activatedRoute: ActivatedRoute,
     public sideNavService: SideNavService,
-    private globalSubService: GlobalSubService,
+    private _moduleService: ModuleService,
     private router: Router
   ) {}
 
@@ -77,7 +77,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   }
 
   private onModuleChange() {
-    this.globalSubService.currentModuleSub.subscribe((module) => {
+    this._moduleService.currentModule$.subscribe((module) => {
       if (!module) {
         module = this.sideNavService.getHomeItem();
       }

@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AppConfig } from '@geonature_config/app.config';
-import { GlobalSubService } from '../../services/global-sub.service';
 import { ModuleService } from '../../services/module.service';
 import { SideNavService } from './sidenav-service';
 
@@ -17,7 +16,6 @@ export class SidenavItemsComponent implements OnInit {
   public exportModule: any;
 
   constructor(
-    public globalSub: GlobalSubService,
     public moduleService: ModuleService,
     public _sidenavService: SideNavService
   ) {}
@@ -27,6 +25,6 @@ export class SidenavItemsComponent implements OnInit {
   }
 
   setHome() {
-    this.globalSub.currentModuleSubject.next(null);
+    this.moduleService.currentModule$.next(null)
   }
 }
