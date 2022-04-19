@@ -142,7 +142,7 @@ def get_observations_for_web(info_role):
                 VSyntheseForWebApp.count_min != VSyntheseForWebApp.count_max,
                 func.concat(VSyntheseForWebApp.count_min, " - ", VSyntheseForWebApp.count_max),
             ),
-            (VSyntheseForWebApp.count_min != None, f"{VSyntheseForWebApp.count_min}"),
+            (VSyntheseForWebApp.count_min != None, func.concat(VSyntheseForWebApp.count_min)),
         ],
         else_="",
     )
@@ -171,22 +171,33 @@ def get_observations_for_web(info_role):
         "count_min_max",
         count_min_max,
     ]
-    observations = func.json_build_object(*columns)
-    json_agg = func.json_build_object("observations", func.json_agg(observations)).label(
-        "properties"
+    observations = func.json_build_object(*columns).label("obs_as_json")
+
+    if "with_meshes" in filters:
+        geom_4326 = func.ST_Transform(LAreas.geom, 4326).label("geom")
+    else:
+        geom_4326 = func.ST_AsGeoJSON(VSyntheseForWebApp.the_geom_4326).label("geom")
+
+    obs_query = (
+        select([geom_4326, observations])
+        .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
+        .order_by(VSyntheseForWebApp.date_min.desc())
+        .limit(result_limit)
     )
 
-    st_asgeojson = func.ST_AsGeoJSON(VSyntheseForWebApp.the_geom_4326).label("st_asgeojson")
-    
-    query = (
-        select([st_asgeojson, json_agg])
-        .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
-        .group_by(VSyntheseForWebApp.the_geom_4326, VSyntheseForWebApp.date_min)
-        .order_by(VSyntheseForWebApp.date_min.desc())
-    )
-    synthese_query_class = SyntheseQuery(VSyntheseForWebApp, query, filters)
+    # Add filters to CTE query
+    synthese_query_class = SyntheseQuery(VSyntheseForWebApp, obs_query, filters)
     synthese_query_class.filter_query_all_filters(info_role)
-    results = DB.session.execute(synthese_query_class.query.limit(result_limit))
+    query_cte = synthese_query_class.query.cte("query_cte")
+
+    # Group geometries with main query
+    st_asgeojson = func.ST_AsGeoJSON(query_cte.c.geom).label("st_asgeojson")
+    properties = func.json_build_object(
+        "observations", func.json_agg(query_cte.c.obs_as_json).label("observations")
+    )
+    query = select([st_asgeojson, properties]).group_by(query_cte.c.geom)
+
+    results = DB.session.execute(query)
 
     # Build GeoJson
     geojson_features = []
