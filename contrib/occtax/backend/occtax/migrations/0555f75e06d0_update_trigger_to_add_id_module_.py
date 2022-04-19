@@ -59,6 +59,11 @@ def upgrade():
             END;
             $function$
             ;
+            DROP TRIGGER tri_update_synthese_t_releve_occtax ON pr_occtax.t_releves_occtax;
+            CREATE TRIGGER tri_update_synthese_t_releve_occtax AFTER
+            UPDATE ON
+            pr_occtax.t_releves_occtax REFERENCING NEW TABLE AS NEW FOR EACH STATEMENT 
+            EXECUTE FUNCTION pr_occtax.fct_tri_synthese_update_releve();
         """
     )
     op.execute(
@@ -225,41 +230,47 @@ def downgrade():
         RETURNS trigger
         LANGUAGE plpgsql
         AS $function$
-            DECLARE
-            BEGIN
-            --mise à jour en synthese des informations correspondant au relevé uniquement
-            UPDATE gn_synthese.synthese s SET
-                id_dataset = updated_rows.id_dataset,
-                -- take observer_txt only if not null
-                observers = COALESCE(updated_rows.observers_txt, observers),
-                id_digitiser = updated_rows.id_digitiser,
-                grp_method = updated_rows.grp_method,
-                id_nomenclature_grp_typ = updated_rows.id_nomenclature_grp_typ,
-                date_min = date_trunc('day',updated_rows.date_min)+COALESCE(updated_rows.hour_min,'00:00:00'::time),
-                date_max = date_trunc('day',updated_rows.date_max)+COALESCE(updated_rows.hour_max,'00:00:00'::time), 
-                altitude_min = updated_rows.altitude_min,
-                altitude_max = updated_rows.altitude_max,
-                depth_min = updated_rows.depth_min,
-                depth_max = updated_rows.depth_max,
-                place_name = updated_rows.place_name,
-                precision = updated_rows.precision,
-                the_geom_local = updated_rows.geom_local,
-                the_geom_4326 = updated_rows.geom_4326,
-                the_geom_point = ST_CENTROID(updated_rows.geom_4326),
-                id_nomenclature_geo_object_nature = updated_rows.id_nomenclature_geo_object_nature,
-                last_action = 'U',
-                comment_context = updated_rows.comment,
-                additional_data = COALESCE(updated_rows.additional_fields, '{}'::jsonb) || COALESCE(o.additional_fields, '{}'::jsonb) || COALESCE(c.additional_fields, '{}'::jsonb)
-                FROM NEW as updated_rows  
-                JOIN pr_occtax.t_occurrences_occtax o ON updated_rows.id_releve_occtax = o.id_releve_occtax
-                JOIN  pr_occtax.cor_counting_occtax c ON o.id_occurrence_occtax = c.id_occurrence_occtax
-                WHERE s.unique_id_sinp_grp  = updated_rows.unique_id_sinp_grp
-                ;
+                DECLARE
+                myobservers text;
+                BEGIN
 
-            RETURN NULL;
-            END;
+                --mise à jour en synthese des informations correspondant au relevé uniquement
+                UPDATE gn_synthese.synthese s SET
+                    id_dataset = NEW.id_dataset,
+                    -- take observer_txt only if not null
+                    observers = COALESCE(NEW.observers_txt, observers),
+                    id_digitiser = NEW.id_digitiser,
+                    grp_method = NEW.grp_method,
+                    id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
+                    date_min = date_trunc('day',NEW.date_min)+COALESCE(NEW.hour_min,'00:00:00'::time),
+                    date_max = date_trunc('day',NEW.date_max)+COALESCE(NEW.hour_max,'00:00:00'::time), 
+                    altitude_min = NEW.altitude_min,
+                    altitude_max = NEW.altitude_max,
+                    depth_min = NEW.depth_min,
+                    depth_max = NEW.depth_max,
+                    place_name = NEW.place_name,
+                    precision = NEW.precision,
+                    the_geom_local = NEW.geom_local,
+                    the_geom_4326 = NEW.geom_4326,
+                    the_geom_point = ST_CENTROID(NEW.geom_4326),
+                    id_nomenclature_geo_object_nature = NEW.id_nomenclature_geo_object_nature,
+                    last_action = 'U',
+                    comment_context = NEW.comment,
+                    additional_data = COALESCE(NEW.additional_fields, '{}'::jsonb) || COALESCE(o.additional_fields, '{}'::jsonb) || COALESCE(c.additional_fields, '{}'::jsonb)
+                    FROM pr_occtax.cor_counting_occtax c
+                    INNER JOIN pr_occtax.t_occurrences_occtax o ON c.id_occurrence_occtax = o.id_occurrence_occtax
+                    WHERE c.unique_id_sinp_occtax = s.unique_id_sinp
+                        AND s.unique_id_sinp IN (SELECT unnest(pr_occtax.get_unique_id_sinp_from_id_releve(NEW.id_releve_occtax::integer)));
+
+                RETURN NULL;
+                END;
             $function$
             ;
+
+            DROP TRIGGER tri_update_synthese_t_releve_occtax ON pr_occtax.t_releves_occtax;
+            create trigger tri_update_synthese_t_releve_occtax after
+            update on pr_occtax.t_releves_occtax 
+            for each row execute procedure pr_occtax.fct_tri_synthese_update_releve();
         """
     )
     op.execute(
