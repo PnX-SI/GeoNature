@@ -37,7 +37,14 @@ from apptax.taxonomie.models import Taxref
 from utils_flask_sqla.tests.utils import JSONClient
 
 
-__all__ = ["datasets", "acquisition_frameworks", "synthese_data", "source", "reports_data"]
+__all__ = [
+    "datasets",
+    "acquisition_frameworks",
+    "synthese_data",
+    "source",
+    "reports_data",
+    "module",
+]
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -162,14 +169,28 @@ def acquisition_frameworks(users):
 
 
 @pytest.fixture(scope="function")
-def datasets(users, acquisition_frameworks):
+def module():
+    with db.session.begin_nested():
+        new_module = TModules(
+            module_code="MODULE_1",
+            module_label="module_1",
+            module_path="module_1",
+            active_frontend=True,
+            active_backend=False,
+        )
+        db.session.add(new_module)
+    return new_module
+
+
+@pytest.fixture(scope="function")
+def datasets(users, acquisition_frameworks, module):
     af = acquisition_frameworks["orphan_af"]
     principal_actor_role = TNomenclatures.query.filter(
         BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR",
         TNomenclatures.mnemonique == "Contact principal",
     ).one()
 
-    def create_dataset(name, digitizer=None):
+    def create_dataset(name, digitizer=None, modules=[]):
         with db.session.begin_nested():
             dataset = TDatasets(
                 id_acquisition_framework=af.id_acquisition_framework,
@@ -180,12 +201,13 @@ def datasets(users, acquisition_frameworks):
                 terrestrial_domain=True,
                 id_digitizer=digitizer.id_role if digitizer else None,
             )
-            db.session.add(dataset)
             if digitizer and digitizer.organisme:
                 actor = CorDatasetActor(
                     organism=digitizer.organisme, nomenclature_actor_role=principal_actor_role
                 )
                 dataset.cor_dataset_actor.append(actor)
+            [dataset.modules.append(m) for m in modules]
+            db.session.add(dataset)
         return dataset
 
     datasets = {
@@ -197,7 +219,7 @@ def datasets(users, acquisition_frameworks):
             ("orphan_dataset", None),
         ]
     }
-
+    datasets["with_module_1"] = create_dataset("module_1_dataset", modules=[module])
     return datasets
 
 
