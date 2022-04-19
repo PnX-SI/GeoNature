@@ -19,17 +19,26 @@ depends_on = None
 
 def upgrade():
     for m in list_frontend_enabled_modules():
-        m.ng_module = m.module_code.lower()
-        v = {"module_code": m.module_code}
-        op.get_bind().execute(
-            sa.sql.text(
-                """
+        # WORK in local but not in the CI ?
+        # v = {"module_code": m.module_code}
+        # op.get_bind().execute(
+        #     sa.sql.text(
+        #         """
+        #     UPDATE gn_commons.t_modules
+        #     SET ng_module = LOWER(module_code)
+        #     WHERE module_code = :module_code
+        #     """
+        #     ),
+        #     **v
+        # )
+
+        # alternativ but not acceptable..(sql injection)
+        op.execute(
+            f"""
             UPDATE gn_commons.t_modules
             SET ng_module = LOWER(module_code)
-            WHERE module_code = :module_code
+            WHERE module_code = '{m.module_code}'
             """
-            ),
-            **v
         )
 
 
