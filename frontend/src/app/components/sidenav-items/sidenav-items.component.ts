@@ -15,16 +15,13 @@ export class SidenavItemsComponent implements OnInit {
   public home_page: any;
   public exportModule: any;
 
-  constructor(
-    public moduleService: ModuleService,
-    public _sidenavService: SideNavService
-  ) {}
+  constructor(public moduleService: ModuleService, public _sidenavService: SideNavService) {}
 
   ngOnInit() {
     this.home_page = this._sidenavService.getHomeItem();
   }
 
   setHome() {
-    this.moduleService.currentModule$.next(null)
+    this.moduleService.currentModule$.next(null);
   }
 }
