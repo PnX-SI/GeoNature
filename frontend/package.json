@@ -5,7 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --poll=2000 --configuration=development",
-    "build": "ng build --aot=false --build-optimizer=false --configuration production",
+    "build": "ng build --configuration production",
     "test": "ng test",
     "lint": "ng lint",
     "start-for-ci": "ng run geonature:serve-coverage",
