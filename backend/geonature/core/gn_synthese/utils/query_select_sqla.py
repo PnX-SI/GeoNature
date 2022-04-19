@@ -38,6 +38,7 @@ from apptax.taxonomie.models import (
     TaxrefBdcStatutText,
     TaxrefBdcStatutValues,
 )
+from ref_geo.models import LAreas, BibAreasTypes
 
 
 class SyntheseQuery:
@@ -443,10 +444,18 @@ class SyntheseQuery:
                 else:
                     self.query = self.query.where(col.ilike("%{}%".format(value[0])))
 
+    def transform_to_meshes(self):
+        if "with_meshes" in self.filters:
+            self.add_join(CorAreaSynthese, CorAreaSynthese.id_synthese, self.model.id_synthese)
+            self.add_join(LAreas, LAreas.id_area, CorAreaSynthese.id_area)
+            self.add_join(BibAreasTypes, BibAreasTypes.id_type, LAreas.id_type)
+            self.query = self.query.where(BibAreasTypes.type_code == "M5")
+
     def apply_all_filters(self, user):
         self.filter_query_with_cruved(user)
         self.filter_taxonomy()
         self.filter_other_filters()
+        self.transform_to_meshes()
 
     def build_query(self):
         if self.query_joins is not None:
