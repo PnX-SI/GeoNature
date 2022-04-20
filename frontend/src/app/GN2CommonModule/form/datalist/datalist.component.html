@@ -22,7 +22,11 @@
           </mat-chip>
         </mat-chip-list>
       </mat-select-trigger>
-      <mat-option *ngFor="let value of filteredValues" [value]="value[keyValue]">
+      <mat-option
+        *ngFor="let value of filteredValues"
+        [value]="value[keyValue]"
+        [title]="keyTitle && value[keyTitle] || ''"
+      >
         {{ displayLabel(value) }}
       </mat-option>
     </mat-select>

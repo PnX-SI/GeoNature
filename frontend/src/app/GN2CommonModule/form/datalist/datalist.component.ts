@@ -22,6 +22,7 @@ export class DatalistComponent extends GenericFormComponent implements OnInit {
   @Input() values: Array<any>; // list of choices
   @Input() keyLabel = 'label'; // field name for value
   @Input() keyValue = 'value'; // field name for label
+  @Input() keyTitle; // field name for description (title in select option)
 
   @Input() api: string; // api from 'GeoNature', 'TaxHub' or url to foreign app
   @Input() application: string; // 'GeoNature', 'TaxHub' for api's; null for raw url
