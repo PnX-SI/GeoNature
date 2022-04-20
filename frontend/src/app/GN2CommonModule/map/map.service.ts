@@ -16,6 +16,7 @@ export class MapService {
   public marker: Marker;
   public editingMarker = true;
   public leafletDrawFeatureGroup: FeatureGroup;
+  public geomanLayerGroup: L.LayerGroup;
   public fileLayerFeatureGroup: FeatureGroup;
   // object {'zoom': int, 'center': {lat:int, lng: 'int}} in order to keep map extend between windows
   public currentExtend: any;

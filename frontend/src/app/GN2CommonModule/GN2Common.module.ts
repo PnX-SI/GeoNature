@@ -56,6 +56,7 @@ import { GeometryFormComponent } from '@geonature_common/form/geometry-form/geom
 import { GPSComponent } from './map/gps/gps.component';
 import { LeafletDrawComponent } from './map/leaflet-draw/leaflet-draw.component';
 import { LeafletFileLayerComponent } from './map/filelayer/filelayer.component';
+import { LeafletDrawGeomanComponent } from './map/leaflet-draw-geoman/leaflet-draw-geoman.component';
 import { MapComponent } from './map/map.component';
 import { MapDataComponent } from './map-list/map-data/map-data.component';
 import { MapListComponent } from './map-list/map-list.component';
@@ -166,6 +167,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     GeometryFormComponent,
     GPSComponent,
     LeafletDrawComponent,
+    LeafletDrawGeomanComponent,
     LeafletFileLayerComponent,
     MapComponent,
     MapDataComponent,
@@ -243,6 +245,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     GPSComponent,
     LeafletDrawComponent,
     LeafletFileLayerComponent,
+    LeafletDrawGeomanComponent,
     MapComponent,
     MapDataComponent,
     MapListComponent,
