@@ -116,9 +116,8 @@ class TestGnPermissionsTools:
         # with module code
 
     def test_get_user_permissions(self, users):
-        user = users['self_user']
-        user_json = {"id_role": user.id_role,
-                "nom_role": user.nom_role}
+        user = users["self_user"]
+        user_json = {"id_role": user.id_role, "nom_role": user.nom_role}
 
         permissions = get_user_permissions(user_json, code_action="C", code_filter_type="SCOPE")
 
@@ -157,7 +156,6 @@ class TestGnPermissionsView:
         assert response.status_code == 200
         users_context = context["users"]
         assert b"Liste des roles" in response.data
-        assert b"Grp_en_poste" in response.data
         assert admin_user.id_role in [user["id_role"] for user in users_context]
 
     def test_get_user_cruveds(self, users, captured_templates):
