@@ -79,6 +79,7 @@ class VConsistancyData(DB.Model):
             + cls.valid_altitude.cast(sa.Integer)
         )
 
+
 class TParameters(DB.Model):
     __tablename__ = "t_parameters"
     __table_args__ = {"schema": "gn_profiles"}
@@ -91,9 +92,7 @@ class TParameters(DB.Model):
 class CorTaxonParameters(DB.Model):
     __tablename__ = "cor_taxons_parameters"
     __table_args__ = {"schema": "gn_profiles"}
-    cd_nom = DB.Column(DB.Integer, 
-                       ForeignKey(Taxref.cd_nom),
-                       primary_key=True)
+    cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom), primary_key=True)
     spatial_precision = DB.Column(DB.Integer)
     temporal_precision_days = DB.Column(DB.Integer)
     active_life_stage = DB.Column(DB.Boolean)

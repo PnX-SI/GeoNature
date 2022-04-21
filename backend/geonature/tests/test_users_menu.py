@@ -63,12 +63,10 @@ class TestApiUsersMenu:
         json_resp = resp.json
 
         assert resp.status_code == 200
-        assert user_tlist.nom_complet in [resp['nom_complet'] for resp in json_resp]
+        assert user_tlist.nom_complet in [resp["nom_complet"] for resp in json_resp]
 
     def test_get_listes(self, user_tlist):
-        resp = self.client.get(
-            url_for("users.get_listes")
-        )
+        resp = self.client.get(url_for("users.get_listes"))
 
         assert resp.status_code == 200
-        assert user_tlist.nom_liste in [resp['nom_liste'] for resp in resp.json]
+        assert user_tlist.nom_liste in [resp["nom_liste"] for resp in resp.json]
