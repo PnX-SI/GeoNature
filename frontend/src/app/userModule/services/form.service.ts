@@ -39,15 +39,15 @@ export class RoleFormService {
       prenom_role: ['', Validators.required],
       email: [
         '',
-        [Validators.pattern('^[a-z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$'), Validators.required]
+        [Validators.pattern('^[a-z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$'), Validators.required],
       ],
-      remarques: ['', null]
+      remarques: ['', null],
     });
     this.roleForm.disable();
   }
 
   private getRole(role: number) {
-    this.dataService.getRole(role).subscribe(res => {
+    this.dataService.getRole(role).subscribe((res) => {
       this.roleForm.patchValue(res);
     });
   }

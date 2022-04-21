@@ -19,34 +19,34 @@
 // }
 
 .card-deck {
-    text-align: center;
+  text-align: center;
 }
 .card-deck mat-icon {
-    font-size: 40px;
+  font-size: 40px;
 }
 
 .stat .card {
-    text-align: center;
-    margin-bottom: 10px;
+  text-align: center;
+  margin-bottom: 10px;
 }
 
 .title {
-    display: flex;
+  display: flex;
 }
 .card-columns .card-body {
-    height: 200px;
-    text-align: center;
-    // margin-right: 10px;
-    padding-top: 15%;
+  height: 200px;
+  text-align: center;
+  // margin-right: 10px;
+  padding-top: 15%;
 }
 .cover {
-    background-size: cover;
+  background-size: cover;
 }
 
 .card-columns {
-    column-count: 5;
-  }
+  column-count: 5;
+}
 
 .card-body.image {
-    background-position: center;
+  background-position: center;
 }

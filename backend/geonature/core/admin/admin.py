@@ -100,8 +100,8 @@ admin = Admin(
 
 admin.add_link(
     MenuLink(
-        name='Retourner à GeoNature',
-        url=config['URL_APPLICATION'],
+        name="Retourner à GeoNature",
+        url=config["URL_APPLICATION"],
         icon_type="glyph",
         icon_value="glyphicon-log-out",
     )

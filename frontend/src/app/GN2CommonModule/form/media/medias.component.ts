@@ -5,7 +5,7 @@ import {
   Output,
   EventEmitter,
   ViewEncapsulation,
-  SimpleChanges
+  SimpleChanges,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Media } from './media';
@@ -14,7 +14,7 @@ import { MediaService } from '@geonature_common/service/media.service';
 @Component({
   selector: 'pnx-medias',
   templateUrl: './medias.component.html',
-  styleUrls: ['./media.scss']
+  styleUrls: ['./media.scss'],
 })
 export class MediasComponent implements OnInit {
   //  @Input() medias: Array<Media> = []; /** list of medias */
@@ -31,7 +31,7 @@ export class MediasComponent implements OnInit {
   @Input() disabled = false;
   @Input() disabledTxt: string;
   /* fix #1083 Cacher les champs présents dans details */
-  @Input() hideDetailsFields : boolean = false;
+  @Input() hideDetailsFields: boolean = false;
 
   public bInitialized: boolean;
 

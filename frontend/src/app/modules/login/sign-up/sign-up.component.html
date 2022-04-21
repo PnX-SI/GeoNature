@@ -11,7 +11,7 @@
             </div>
             INSCRIPTION
           </div>
-          <div class="panel-body ">
+          <div class="panel-body">
             <form [formGroup]="form">
               <h5>Utilisateur</h5>
 
@@ -26,7 +26,7 @@
                     id="prenom_role"
                     placeholder="Prénom"
                     formControlName="prenom_role"
-                  >
+                  />
                   <small
                     *ngIf="
                       form.get('prenom_role').hasError('required') &&
@@ -39,9 +39,7 @@
               </div>
 
               <div class="form-group row">
-                <label for="nom_role" class="col-md-3 col-form-label text-md-right">
-                  Nom
-                </label>
+                <label for="nom_role" class="col-md-3 col-form-label text-md-right"> Nom </label>
                 <div class="col-md-9 col-lg-7">
                   <input
                     type="text"
@@ -49,7 +47,7 @@
                     id="nom_role"
                     placeholder="Nom"
                     formControlName="nom_role"
-                  >
+                  />
                   <small
                     *ngIf="
                       form.get('nom_role').hasError('required') && form.get('nom_role').touched
@@ -71,7 +69,7 @@
                     id="email"
                     placeholder="Email"
                     formControlName="email"
-                  >
+                  />
                   <small
                     *ngIf="
                       form.get('password_confirmation').hasError('required') &&
@@ -147,16 +145,17 @@
                     matTooltip="Répéter le mot de passe précédemment saisi."
                     formControlName="password_confirmation"
                   />
-                  <small *ngIf="
+                  <small
+                    *ngIf="
                       form.get('password_confirmation').hasError('required') &&
                       form.get('password_confirmation').touched
                     "
                   >
                     Ce champ est nécessaire
                   </small>
-                  <small *ngIf="
-                      form.hasError('similarError')
-                      && form.get('password_confirmation').touched
+                  <small
+                    *ngIf="
+                      form.hasError('similarError') && form.get('password_confirmation').touched
                     "
                   >
                     Erreur de confirmation
@@ -179,7 +178,7 @@
                     id="organisme"
                     placeholder="Organisme"
                     formControlName="organisme"
-                  >
+                  />
                 </div>
               </div>
 

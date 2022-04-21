@@ -3,7 +3,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
 
 @Component({
   selector: 'pnx-dumb-select',
-  templateUrl: 'dumb-select.component.html'
+  templateUrl: 'dumb-select.component.html',
 })
 
 /**

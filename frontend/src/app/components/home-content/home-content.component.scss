@@ -28,11 +28,6 @@ mat-spinner {
   font-size: 1em;
 }
 
-:host ::ng-deep pnx-introduction .panel-body {
-  height: 50vh !important;
-  overflow-y: auto;
-}
-
 #map-title {
   position: absolute;
   z-index: 1000;

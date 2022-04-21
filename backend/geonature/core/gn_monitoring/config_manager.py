@@ -20,10 +20,10 @@ from geonature.core.users.models import TApplications
 
 def generate_config(file_path):
     """
-        Lecture et modification des fichiers de configuration yml
-        Pour l'instant utile pour la compatiblité avec l'application
-            projet_suivi
-            ou le frontend génère les formulaires à partir de ces données
+    Lecture et modification des fichiers de configuration yml
+    Pour l'instant utile pour la compatiblité avec l'application
+        projet_suivi
+        ou le frontend génère les formulaires à partir de ces données
     """
     # Chargement du fichier de configuration
     config = load_toml(file_path)
@@ -33,9 +33,9 @@ def generate_config(file_path):
 
 def find_field_config(config_data):
     """
-        Parcours des champs du fichier de config
-        de façon à trouver toutes les occurences du champ field
-        qui nécessite un traitement particulier
+    Parcours des champs du fichier de config
+    de façon à trouver toutes les occurences du champ field
+    qui nécessite un traitement particulier
     """
     if isinstance(config_data, dict):
         for ckey in config_data:
@@ -57,8 +57,8 @@ def find_field_config(config_data):
 
 def parse_field(fieldlist):
     """
-       Traitement particulier pour les champs de type field :
-       Chargement des listes de valeurs de nomenclature
+    Traitement particulier pour les champs de type field :
+    Chargement des listes de valeurs de nomenclature
     """
     for field in fieldlist:
         if "options" not in field:
@@ -97,8 +97,8 @@ def parse_field(fieldlist):
 
 def get_app_id(module_code):
     """
-        Retourne l'identifiant d'un module
-        à partir de son code
+    Retourne l'identifiant d'un module
+    à partir de son code
     """
     try:
         mod_id = (
@@ -114,8 +114,8 @@ def get_app_id(module_code):
 
 def format_nomenclature_list(params):
     """
-        Mise en forme des listes de valeurs de façon à assurer une
-        compatibilité avec l'application de suivis
+    Mise en forme des listes de valeurs de façon à assurer une
+    compatibilité avec l'application de suivis
     """
     mapping = {
         "id": {"object": "nomenclature", "field": "id_nomenclature"},

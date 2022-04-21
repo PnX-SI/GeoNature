@@ -46,8 +46,11 @@ def filter_query_with_cruved(
         )
     if user.value_filter in ("1", "2"):
 
-        sub_query_id_role = DB.session.query(CorStationObserverOccHab).filter(
-            CorStationObserverOccHab.id_role == user.id_role).exists()
+        sub_query_id_role = (
+            DB.session.query(CorStationObserverOccHab)
+            .filter(CorStationObserverOccHab.id_role == user.id_role)
+            .exists()
+        )
         ors_filters = [
             sub_query_id_role,
             model_id_digitiser_column == user.id_role,

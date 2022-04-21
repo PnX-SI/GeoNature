@@ -1,10 +1,7 @@
 <ng-container *ngFor="let media of medias; index as i">
   <ng-container *ngIf="(!index && index !== 0) || i == index">
     <ng-container *ngIf="media.id_media && bInitialized">
-      <span
-        class="media-mini"
-        *ngIf="display == 'mini'"
-      >
+      <span class="media-mini" *ngIf="display == 'mini'">
         <ng-container *ngIf="ms.typeMedia(media) === 'Photo'">
           <img
             class="media-mini"
@@ -30,17 +27,14 @@
       <ng-container *ngIf="display != 'mini'">
         <div class="flex-container">
           <ng-container *ngIf="ms.typeMedia(media) === 'PDF'">
-            <embed
-              [src]="media.safeUrl"
-              width="100%"
-              [height]="height"
-              type="application/pdf"
-            />
+            <embed [src]="media.safeUrl" width="100%" [height]="height" type="application/pdf" />
           </ng-container>
 
-          <ng-container *ngIf="
+          <ng-container
+            *ngIf="
               ['Vidéo Youtube', 'Vidéo Dailymotion', 'Vidéo Vimeo'].includes(ms.typeMedia(media))
-            ">
+            "
+          >
             <iframe
               width="100%"
               [height]="height"
@@ -50,19 +44,11 @@
           </ng-container>
 
           <ng-container *ngIf="ms.typeMedia(media) === 'Vidéo (fichier)'">
-            <video
-              class="media-center"
-              controls
-              [src]="media.href()"
-            ></video>
+            <video class="media-center" controls [src]="media.href()"></video>
           </ng-container>
 
           <ng-container *ngIf="ms.typeMedia(media) === 'Audio'">
-            <audio
-              class="media-center"
-              controls
-              [src]="media.href()"
-            ></audio>
+            <audio class="media-center" controls [src]="media.href()"></audio>
           </ng-container>
           <ng-container *ngIf="ms.typeMedia(media) === 'Photo'">
             <img

@@ -96,7 +96,9 @@ def gn_module_register_config(module_code):
 
     """
     log.info("Register module")
-    conf_gn_module_path = str(GN_EXTERNAL_MODULE / module_code.lower() / "config/conf_gn_module.toml")
+    conf_gn_module_path = str(
+        GN_EXTERNAL_MODULE / module_code.lower() / "config/conf_gn_module.toml"
+    )
     # creation du fichier s'il n'existe pas
     config_file = open(conf_gn_module_path, "w+")
 
@@ -200,6 +202,7 @@ def check_codefile_validity(module_path, module_code):
     if gn_file.is_file():
         try:
             from install_gn_module import gnmodule_install_app as fonc
+
             if not inspect.getargspec(fonc).args == ["gn_db", "gn_app"]:
                 raise GeoNatureError("Invalid variable")
             log.info("      install_gn_module  OK")
@@ -217,12 +220,12 @@ def check_codefile_validity(module_path, module_code):
             )
         except ImportError as e:
             raise GeoNatureError(
-            f"""
+                f"""
                 Import error...
                 Check all imports in blueprint.py are installed.
                 {e}
             """
-        )
+            )
 
     # Font-end
     gn_file = Path(module_path) / "{}.ts".format(GN_MODULE_FE_FILE)
@@ -298,12 +301,16 @@ def install_frontend_dependencies(module_path):
     if (frontend_module_path / "package.json").is_file():
         try:
             # To avoid Maximum call stack size exceeded on npm install - clear cache...
-            subprocess.call(
-                ["/bin/bash", "-i", "-c", "nvm use"], cwd=str(ROOT_DIR / "frontend")
-            )
+            subprocess.call(["/bin/bash", "-i", "-c", "nvm use"], cwd=str(ROOT_DIR / "frontend"))
             assert (
                 subprocess.call(
-                    ["npm", "install", str(frontend_module_path), "--no-save", "--legacy-peer-deps"],
+                    [
+                        "npm",
+                        "install",
+                        str(frontend_module_path),
+                        "--no-save",
+                        "--legacy-peer-deps",
+                    ],
                     cwd=str(ROOT_DIR / "frontend"),
                 )
                 == 0
@@ -380,7 +387,6 @@ def remove_application_db(app, module_code):
     log.info("...%s\n", MSG_OK)
 
 
-
 def create_module_config(app, module_code, build=True):
     """
     Create the frontend config
@@ -391,7 +397,7 @@ def create_module_config(app, module_code, build=True):
     except NoResultFound:
         raise Exception(f"Module with code '{module_code}' not found in database.")
     _, module_config, _ = import_gn_module(module_object)
-    frontend_config_path = os.path.join(module_config['FRONTEND_PATH'], "app/module.config.ts")
+    frontend_config_path = os.path.join(module_config["FRONTEND_PATH"], "app/module.config.ts")
     try:
         with open(str(ROOT_DIR / frontend_config_path), "w") as outputfile:
             outputfile.write("export const ModuleConfig = ")

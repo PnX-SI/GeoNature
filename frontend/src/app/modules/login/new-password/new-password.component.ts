@@ -1,20 +1,22 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { AuthService } from '../auth/auth.service';
+
 import { ToastrService } from 'ngx-toastr';
 import { similarValidator } from '@geonature/services/validators';
-import { Router, ActivatedRoute } from '@angular/router';
-import { AppConfig } from '../../../conf/app.config';
+
+import { AuthService } from '../../../components/auth/auth.service';
+import { AppConfig } from '../../../../conf/app.config';
 
 @Component({
   selector: 'pnx-new-password',
   templateUrl: 'new-password.component.html',
-  styleUrls: ['./new-password.component.scss']
+  styleUrls: ['./new-password.component.scss'],
 })
 export class NewPasswordComponent implements OnInit {
   token: string;
   form: FormGroup;
-  public casLogin
+  public casLogin;
 
   constructor(
     private _authService: AuthService,
@@ -23,7 +25,7 @@ export class NewPasswordComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private _toasterService: ToastrService
   ) {
-    this.activatedRoute.queryParams.subscribe(params => {
+    this.activatedRoute.queryParams.subscribe((params) => {
       let token = params['token'];
       if (!RegExp('^[0-9]+$').test(token)) {
         this.router.navigate(['/login']);
@@ -40,7 +42,7 @@ export class NewPasswordComponent implements OnInit {
   setForm() {
     this.form = this.fb.group({
       password: ['', [Validators.required]],
-      password_confirmation: ['', [Validators.required]]
+      password_confirmation: ['', [Validators.required]],
     });
     this.form.setValidators([similarValidator('password', 'password_confirmation')]);
   }
@@ -50,16 +52,16 @@ export class NewPasswordComponent implements OnInit {
       let data = this.form.value;
       data['token'] = this.token;
       this._authService.passwordChange(data).subscribe(
-        res => {
+        (res) => {
           this._toasterService.info(res.msg, '', {
             positionClass: 'toast-top-center',
             tapToDismiss: true,
-            timeOut: 10000
+            timeOut: 10000,
           });
           this.router.navigate(['/login']);
         },
         // error callback
-        error => {
+        (error) => {
           this._toasterService.error(error.error.msg, '');
         }
       );

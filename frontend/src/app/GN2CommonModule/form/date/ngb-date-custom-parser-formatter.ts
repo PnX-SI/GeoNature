@@ -44,7 +44,7 @@ export class NgbDateFRParserFormatter extends NgbDateParserFormatter {
         return {
           year: toInteger(dateParts[2]),
           month: toInteger(dateParts[1]),
-          day: toInteger(dateParts[0])
+          day: toInteger(dateParts[0]),
         };
       }
     }
@@ -81,7 +81,7 @@ export class NgbDatePeriodParserFormatter extends NgbDateParserFormatter {
         return {
           year: null,
           month: toInteger(dateParts[1]),
-          day: toInteger(dateParts[0])
+          day: toInteger(dateParts[0]),
         };
       }
     }

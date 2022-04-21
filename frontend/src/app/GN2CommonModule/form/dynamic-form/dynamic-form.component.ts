@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'pnx-dynamic-form',
   templateUrl: './dynamic-form.component.html',
-  styleUrls: ['./dynamic-form.component.scss']
+  styleUrls: ['./dynamic-form.component.scss'],
 })
 export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   @Input() formDef: any;
@@ -32,23 +32,24 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
 
   public formDefComp = {};
   public isValInSelectList: boolean = true;
-  private _sub: Subscription
+  private _sub: Subscription;
 
-  constructor(private _dynformService: DynamicFormService) { }
+  constructor(private _dynformService: DynamicFormService) {}
 
   ngOnInit() {
     this.setFormDefComp(true);
     // Disable the form if a value is provided and is not in the select list
     // In case list value change and data are still in database
     if (this.formDef.type_widget == 'select') {
-      this._sub = this.form.get(this.formDefComp['attribut_name']).valueChanges.pipe(
-        distinctUntilChanged()
-      ).subscribe(val => {
-        // Cas ou la valeur n'est pas sélectionnée et que la valeur null n'est pas dans la liste
-        if (val != null) {
-          this.isValInSelectList = this.formDefComp['values'].includes(val);
-        }
-      })
+      this._sub = this.form
+        .get(this.formDefComp['attribut_name'])
+        .valueChanges.pipe(distinctUntilChanged())
+        .subscribe((val) => {
+          // Cas ou la valeur n'est pas sélectionnée et que la valeur null n'est pas dans la liste
+          if (val != null) {
+            this.isValInSelectList = this.formDefComp['values'].includes(val);
+          }
+        });
     }
   }
 
@@ -65,7 +66,7 @@ export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
       // on met à jour les contraintes
       this._dynformService.setControl(
         this.form.controls[this.formDef.attribut_name],
-        this.formDefComp,
+        this.formDefComp
       );
     }
   }

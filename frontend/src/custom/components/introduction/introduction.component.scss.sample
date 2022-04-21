@@ -1,0 +1,4 @@
+.panel-body {
+  height: 50vh !important;
+  overflow-y: auto;
+}

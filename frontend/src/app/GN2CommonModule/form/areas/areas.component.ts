@@ -1,7 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { Subject, Observable, of, concat, zip } from 'rxjs';
-import { distinctUntilChanged, debounceTime, switchMap, tap, catchError, map, distinct } from 'rxjs/operators'
+import {
+  distinctUntilChanged,
+  debounceTime,
+  switchMap,
+  tap,
+  catchError,
+  map,
+  distinct,
+} from 'rxjs/operators';
 
 import { AppConfig } from '@geonature_config/app.config';
 import { DataFormService } from '../data-form.service';
@@ -72,6 +80,13 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    * `parentFormControl`.
    */
   @Input() defaultItems: Array<any> = [];
+  /**
+   * Permet découter les changements sur la sélection de ng-select.
+   * Retourne un tableau d'objets. Les objets correspondent aux items
+   * sélectionnés. Chaque objet contient à minima 2 attributs : un
+   * correspondant à l'input `valueFieldName`, l'autre est `displayName`.
+   */
+  @Output() onSelectionChange = new EventEmitter<any>();
   areas_input$ = new Subject<string>();
   areas: Observable<any>;
   loading = false;
@@ -97,10 +112,20 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
       this.dataService.getAreas(this.typeCodes).pipe(map((data) => this.formatAreas(data))), // Default items
       of(this.defaultItems) // Default items in update mode
     ).pipe(
-      map((el) => {
+      map((areasArrays) => {
         // Remove dubplicates items
-        const concat = el[0].concat(el[1]);
-        return concat.filter((val) => !el[1].includes(val));
+        const items = areasArrays[0];
+        const defaultItems = areasArrays[1];
+        if (defaultItems && defaultItems.length > 0) {
+          const filteredItems = items.filter((area) => {
+            return !defaultItems.some(
+              (defaultArea) => defaultArea[this.valueFieldName] === area[this.valueFieldName]
+            );
+          });
+          return filteredItems.concat(defaultItems);
+        } else {
+          return items;
+        }
       })
     );
   }
@@ -132,7 +157,7 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    * @param data Liste d'objets contenant des infos sur des zones géographiques.
    */
   private formatAreas(data: Partial<{ id_type: number; area_code: string }>[]) {
-    if (data.length > 0 && data[0]['id_type'] === AppConfig.BDD.id_area_type_municipality) {
+    if (data.length > 0 && data[0]['area_type']['type_code'] === 'COM') {
       return data.map((element) => {
         element['area_name'] = `${element['area_name']} (${element.area_code.substring(0, 2)}) `;
         return element;

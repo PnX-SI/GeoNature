@@ -200,6 +200,14 @@
     "ExportModuleName": "Module d'export des données"
   },
   "Synthese": {
+    "copy": "Copié dans le presse-papier !",
+    "copyPermalink": "Copier le permalien",
+    "Discussion": "Discussion",
+    "Commented": "a commenté le",
+    "AddComment": "Ajouter un commentaire",
+    "ChangeComment": "Modifier",
+    "ChangeStatus": "a modifié le statut le",
+    "DeleteComment": "Supprimer",
     "changeValidStatus": "Modifier le statut de validation",
     "ModalTitle": "Information sur l'observation",
     "Edit": "Voir dans le module de saisie",
@@ -209,7 +217,7 @@
     "PeriodError": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période",
     "LocationName": "Nom du lieux",
     "Accuracy": "Précision du pointage",
-    "Owner":"Observation de",
+    "Owner": "Observation de",
     "Date": "Date",
     "Altitude": "Altitude",
     "UidObs": "UUID observation",
@@ -226,6 +234,11 @@
     "ObsBehav": "Comportement",
     "ObsSex": "Sexe",
     "ObsLifeStep": "Stade de vie"
+  },
+  "Validation": {
+    "noData": "Aucune données à afficher",
+    "noIdFound": "Aucun résultat pour cet ID",
+    "displayAll": "Voir toutes les occurrences"
   },
   "MyAccount": "Mon compte",
   "CreateAccount": "Créer un compte",

@@ -6,7 +6,7 @@ from .bootstrap_test import app, post_json, json_of_response
 @pytest.mark.usefixtures("client_class")
 class TestApiPyPnUsershub:
     """
-        Test de l'api du sous module d'authentification
+    Test de l'api du sous module d'authentification
     """
 
     def test_login(self):
@@ -17,4 +17,3 @@ class TestApiPyPnUsershub:
         }
         response = post_json(self.client, url_for("auth.login"), login_data)
         assert response.status_code == 200
-

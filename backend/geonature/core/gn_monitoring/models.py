@@ -30,7 +30,10 @@ corVisitObserver = DB.Table(
         primary_key=True,
     ),
     DB.Column(
-        "id_role", DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"), primary_key=True,
+        "id_role",
+        DB.Integer,
+        ForeignKey("utilisateurs.t_roles.id_role"),
+        primary_key=True,
     ),
     schema="gn_monitoring",
 )
@@ -45,7 +48,10 @@ corSiteModule = DB.Table(
         primary_key=True,
     ),
     DB.Column(
-        "id_module", DB.Integer, ForeignKey("gn_commons.t_modules.id_module"), primary_key=True,
+        "id_module",
+        DB.Integer,
+        ForeignKey("gn_commons.t_modules.id_module"),
+        primary_key=True,
     ),
     schema="gn_monitoring",
 )
@@ -66,7 +72,7 @@ corSiteArea = DB.Table(
 @serializable
 class TBaseVisits(DB.Model):
     """
-        Table de centralisation des visites liées à un site
+    Table de centralisation des visites liées à un site
     """
 
     __tablename__ = "t_base_visits"
@@ -111,10 +117,10 @@ class TBaseVisits(DB.Model):
 
 
 @serializable
-@geoserializable
+@geoserializable(geoCol="geom", idCol="id_base_site")
 class TBaseSites(DB.Model):
     """
-        Table centralisant les données élémentaire des sites
+    Table centralisant les données élémentaire des sites
     """
 
     __tablename__ = "t_base_sites"
@@ -151,6 +157,3 @@ class TBaseSites(DB.Model):
         secondaryjoin=(corSiteModule.c.id_module == TModules.id_module),
         foreign_keys=[corSiteModule.c.id_base_site, corSiteModule.c.id_module],
     )
-
-    def get_geofeature(self, recursif=True):
-        return self.as_geofeature("geom", "id_base_site", recursif)

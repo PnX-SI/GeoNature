@@ -13,7 +13,12 @@ from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound, Unaut
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
 from geonature.core.gn_meta.routes import get_af_from_id
-from geonature.core.gn_permissions.models import CorRoleActionFilterModuleObject, TActions, TFilters
+from geonature.core.gn_permissions.models import (
+    CorRoleActionFilterModuleObject,
+    TActions,
+    TFilters,
+)
+from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 
 from .fixtures import acquisition_frameworks, datasets, source, synthese_data
@@ -56,7 +61,9 @@ def get_csv_from_response(data):
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestGNMeta:
-    def test_acquisition_frameworks_permissions(self, app, acquisition_frameworks, datasets, users):
+    def test_acquisition_frameworks_permissions(
+        self, app, acquisition_frameworks, datasets, users
+    ):
         af = acquisition_frameworks["own_af"]
         with app.test_request_context(headers=logged_user_headers(users["user"])):
             app.preprocess_request()
@@ -265,7 +272,9 @@ class TestGNMeta:
         set_logged_user_cookie(self.client, users["user"])
 
         response = self.client.get(
-            url_for("gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id)
+            url_for(
+                "gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id
+            )
         )
 
         assert response.status_code == 200
@@ -274,7 +283,9 @@ class TestGNMeta:
         af_id = acquisition_frameworks["own_af"].id_acquisition_framework
 
         response = self.client.get(
-            url_for("gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id)
+            url_for(
+                "gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id
+            )
         )
 
         assert response.status_code == Unauthorized.code
@@ -500,6 +511,10 @@ class TestGNMeta:
         assert response.status_code == 200
 
     def test_uuid_report(self, users, synthese_data):
+        observations_nbr = db.session.query(func.count(Synthese.id_synthese)).scalar()
+        if observations_nbr > 1000000:
+            pytest.skip("Too much observations in gn_synthese.synthese")
+
         response = self.client.get(url_for("gn_meta.uuid_report"))
         assert response.status_code == Unauthorized.code
 
@@ -586,9 +601,7 @@ class TestGNMeta:
             app.preprocess_request()
             create = TDatasets.query._get_create_scope(module_code=modcode)
 
-        usercreate = TDatasets.query._get_create_scope(
-            module_code=modcode, user=users["user"]
-        )
+        usercreate = TDatasets.query._get_create_scope(module_code=modcode, user=users["user"])
         norightcreate = TDatasets.query._get_create_scope(
             module_code=modcode, user=users["noright_user"]
         )

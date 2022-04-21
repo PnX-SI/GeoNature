@@ -15,7 +15,7 @@ import { GeoJson } from '@tmcw/togeojson';
  */
 @Component({
   selector: 'pnx-marker',
-  templateUrl: 'marker.component.html'
+  templateUrl: 'marker.component.html',
 })
 export class MarkerComponent implements OnInit, OnChanges {
   public map: Map;
@@ -45,16 +45,15 @@ export class MarkerComponent implements OnInit, OnChanges {
     } else {
       this.changeMarkerButtonColor(false);
     }
-    
 
-    this.mapservice.isMarkerEditing$.subscribe(isEditing => {
+    this.mapservice.isMarkerEditing$.subscribe((isEditing) => {
       this.toggleEditing(isEditing);
     });
 
     //Observable pour gérer de l'affichage du marker
     this._coordinates
-      .pipe(filter(coords => this.map !== undefined && coords != null))
-      .subscribe(coords => {
+      .pipe(filter((coords) => this.map !== undefined && coords != null))
+      .subscribe((coords) => {
         this.previousCoord = coords;
         this.generateMarkerAndEvent(coords[0], coords[1], false);
       });
@@ -86,7 +85,7 @@ export class MarkerComponent implements OnInit, OnChanges {
       }
     });
   }
-  generateMarkerAndEvent(x, y, withEvents=true) {    
+  generateMarkerAndEvent(x, y, withEvents = true) {
     if (this.mapservice.marker !== undefined) {
       this.mapservice.marker.remove();
       this.mapservice.marker = this.mapservice.createMarker(x, y, true).addTo(this.map);

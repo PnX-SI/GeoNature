@@ -17,18 +17,16 @@ routes = Blueprint("gn_monitoring", __name__)
 @json_resp
 def get_list_sites():
     """
-        Return the sites list for an application in a dict {id_base_site, nom site}
-        .. :quickref: Monitoring;
+    Return the sites list for an application in a dict {id_base_site, nom site}
+    .. :quickref: Monitoring;
 
-        :param id_base_site: id of base site
-        :param module_code: code of the module
-        :param id_module: id of the module
-        :param base_site_name: part of the name of the site
-        :param type: int
+    :param id_base_site: id of base site
+    :param module_code: code of the module
+    :param id_module: id of the module
+    :param base_site_name: part of the name of the site
+    :param type: int
     """
-    q = DB.session.query(
-        TBaseSites
-    )
+    q = DB.session.query(TBaseSites)
     parameters = request.args
 
     if parameters.get("module_code"):
@@ -46,21 +44,18 @@ def get_list_sites():
         )
 
     data = q.all()
-    return [
-        n.as_dict(fields=["id_base_site", "base_site_name"])
-        for n in data
-    ]
+    return [n.as_dict(fields=["id_base_site", "base_site_name"]) for n in data]
 
 
 @routes.route("/siteslist/<int:id_site>", methods=["GET"])
 @json_resp
 def get_onelist_site(id_site):
     """
-        Get minimal information for a site {id_base_site, nom site}
-        .. :quickref: Monitoring;
+    Get minimal information for a site {id_base_site, nom site}
+    .. :quickref: Monitoring;
 
-        :param id_site: id of base site
-        :param type: int
+    :param id_site: id of base site
+    :param type: int
     """
     q = DB.session.query(
         TBaseSites.id_base_site, TBaseSites.base_site_name, TBaseSites.base_site_code

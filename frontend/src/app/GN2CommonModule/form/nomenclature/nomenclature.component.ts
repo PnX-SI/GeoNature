@@ -7,7 +7,7 @@ import {
   SimpleChanges,
   ViewEncapsulation,
   Output,
-  EventEmitter
+  EventEmitter,
 } from '@angular/core';
 import { DataFormService } from '../data-form.service';
 import { TranslateService, LangChangeEvent } from '@ngx-translate/core';
@@ -37,10 +37,12 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
   selector: 'pnx-nomenclature',
   templateUrl: './nomenclature.component.html',
   styleUrls: ['./nomenclature.component.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
-export class NomenclatureComponent extends GenericFormComponent
-  implements OnInit, OnChanges, OnDestroy {
+export class NomenclatureComponent
+  extends GenericFormComponent
+  implements OnInit, OnChanges, OnDestroy
+{
   public labels: Array<any>;
   public labelLang: string;
   public definitionLang: string;
@@ -69,6 +71,7 @@ export class NomenclatureComponent extends GenericFormComponent
   @Input() keyValue = 'id_nomenclature';
 
   @Input() bindAllItem: false;
+  @Input() cdNomenclatures: Array<string> = [];
   @Output() labelsLoaded = new EventEmitter<Array<any>>();
 
   constructor(private _dfService: DataFormService, private _translate: TranslateService) {
@@ -76,9 +79,7 @@ export class NomenclatureComponent extends GenericFormComponent
   }
 
   ngOnInit() {
-    this.keyValue = this.bindAllItem
-      ? null
-      : this.keyValue || 'id_nomenclature'; // patch pour les cas ou this.keyValue == undefined
+    this.keyValue = this.bindAllItem ? null : this.keyValue || 'id_nomenclature'; // patch pour les cas ou this.keyValue == undefined
     this.labelLang = 'label_' + this._translate.currentLang;
     this.definitionLang = 'definition_' + this._translate.currentLang;
     // load the data
@@ -90,11 +91,11 @@ export class NomenclatureComponent extends GenericFormComponent
     });
 
     // set cdNomenclature
-    this.valueSubscription = this.parentFormControl.valueChanges.subscribe(id => {
+    this.valueSubscription = this.parentFormControl.valueChanges.subscribe((id) => {
       this.currentIdNomenclature = id;
       const self = this;
       if (this.labels) {
-        this.labels.forEach(label => {
+        this.labels.forEach((label) => {
           if (this.currentIdNomenclature === label.id_nomenclature) {
             self.currentCdNomenclature = label.cd_nomenclature;
           }
@@ -106,7 +107,7 @@ export class NomenclatureComponent extends GenericFormComponent
   getCdNomenclature() {
     let cdNomenclature;
     if (this.labels) {
-      this.labels.forEach(label => {
+      this.labels.forEach((label) => {
         if (this.currentIdNomenclature === label.id_nomenclature) {
           cdNomenclature = label.cd_nomenclature;
         }
@@ -131,10 +132,10 @@ export class NomenclatureComponent extends GenericFormComponent
   }
 
   initLabels() {
-    const filters = { orderby: 'label_default' };
+    const filters = { orderby: 'label_default', cd_nomenclature: this.cdNomenclatures };
     this._dfService
       .getNomenclature(this.codeNomenclatureType, this.regne, this.group2Inpn, filters)
-      .subscribe(data => {
+      .subscribe((data) => {
         this.labels = data.values;
         this.savedLabels = data.values;
         this.labelsLoaded.emit(this.labels);
@@ -148,7 +149,7 @@ export class NomenclatureComponent extends GenericFormComponent
 
   filterItems(event) {
     if (this.searchBar && event) {
-      this.labels = this.savedLabels.filter(el => {
+      this.labels = this.savedLabels.filter((el) => {
         const isIn = el.label_default.toUpperCase().indexOf(event.toUpperCase());
         return isIn !== -1;
       });

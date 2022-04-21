@@ -14,7 +14,6 @@ from geonature.core.gn_synthese.models import Synthese
 from geonature.core.taxonomie.models import Taxref
 
 
-
 @serializable
 class VmCorTaxonPhenology(DB.Model):
     __tablename__ = "vm_cor_taxon_phenology"
@@ -34,10 +33,8 @@ class VmCorTaxonPhenology(DB.Model):
     nomenclature_life_stage = DB.relationship("TNomenclatures")
 
 
-
-
 @serializable
-@geoserializable
+@geoserializable(geoCol="valid_distribution", idCol="cd_ref")
 class VmValidProfiles(DB.Model):
     __tablename__ = "vm_valid_profiles"
     __table_args__ = {"schema": "gn_profiles"}
@@ -50,18 +47,13 @@ class VmValidProfiles(DB.Model):
     count_valid_data = DB.Column(DB.Integer)
     active_life_stage = DB.Column(DB.Boolean)
 
-    def get_geofeature(self, recursif=False, columns=()):
-        return self.as_geofeature("valid_distribution", "cd_ref", recursif, columns=columns)
-
 
 @serializable
 class VConsistancyData(DB.Model):
     __tablename__ = "v_consistancy_data"
     __table_args__ = {"schema": "gn_profiles"}
-    id_synthese = DB.Column(DB.Integer,
-                            ForeignKey(Synthese.id_synthese),
-                            primary_key=True)
-    synthese = relationship(Synthese, backref=backref('profile', uselist=False))
+    id_synthese = DB.Column(DB.Integer, ForeignKey(Synthese.id_synthese), primary_key=True)
+    synthese = relationship(Synthese, backref=backref("profile", uselist=False))
     id_sinp = DB.Column(UUID(as_uuid=True))
     cd_ref = DB.Column(DB.Integer)
     valid_name = DB.Column(DB.Unicode)
