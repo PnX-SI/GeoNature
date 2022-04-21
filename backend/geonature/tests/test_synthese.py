@@ -339,23 +339,28 @@ class TestSynthese:
         assert response_empty.status_code == 204
         assert response_empty.get_data(as_text=True) == ''
     
-    def test_observation_count_per_column(self, synthese_data):
-        column_name_dataset = 'id_dataset'
+    def test_observation_count_per_column_cd_nom(self, synthese_data):
         column_name_cd_nom = 'cd_nom'
 
-        response_dataset = self.client.get(url_for('gn_synthese.observation_count_per_column', column=column_name_dataset))
         response_cd_nom = self.client.get(url_for('gn_synthese.observation_count_per_column', column=column_name_cd_nom))
+       
+        resp_json = response_cd_nom.json
+        assert len(resp_json) >= len(set(synt.cd_nom for synt in synthese_data))
+    
+    def test_observation_count_per_column_id_dataset(self, synthese_data):
+        column_name_dataset = 'id_dataset'
+
+        response_dataset = self.client.get(url_for('gn_synthese.observation_count_per_column', column=column_name_dataset))
 
         id_datasets = [synt.id_dataset for synt in synthese_data]
         id_dataset_set = set(id_datasets)
         resp_json = response_dataset.json
-        assert len(resp_json) == len(id_dataset_set)
-        assert [resp['count'] for resp in resp_json] == [id_datasets.count(ds) for ds in id_dataset_set]
-       
-        resp_json = response_cd_nom.json
-        assert len(resp_json) == len(set(synt.cd_nom for synt in synthese_data))
-        assert response_cd_nom.json
-    
+        # At least there are the same number of dataset or more in the synthese
+        assert len(resp_json) >= len(id_dataset_set)
+        # At least the id_dataset of the fixture is contained in the existing
+        # database
+        assert all(count in [resp['count'] for resp in resp_json] for count in [id_datasets.count(ds) for ds in id_dataset_set])
+
     def test_get_autocomplete_taxons_synthese(self, synthese_data):
         seach_name = synthese_data[0].nom_cite
 
