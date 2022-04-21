@@ -40,6 +40,8 @@ def taxon_attribut():
     """
     from apptax.taxonomie.models import BibAttributs, BibNoms, CorTaxonAttribut
 
+    # FIXME: what if taxonomie_taxons_example and taxonomie_attributes_example alembic branches
+    # had not been run?
     nom = BibNoms.query.filter_by(cd_ref=209902).one()
     attribut = BibAttributs.query.filter_by(nom_attribut="migrateur").one()
     with db.session.begin_nested():
