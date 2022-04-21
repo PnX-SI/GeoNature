@@ -13,7 +13,18 @@ def unavailable_menu_id():
 
 
 @pytest.fixture
-def user_tlist():
+def tlist():
+    """
+    Create a list if there is no list in the database
+    """
+    with db.session.begin_nested():
+        test_list = TListes(code_liste="testCode", nom_liste="testNom", desc_liste="testDesc")
+        db.session.add(test_list)
+    return test_list
+
+
+@pytest.fixture
+def user_tlist(tlist):
     """
     Get a user list that is mentioned in VUserslistForallMenu so
     that the get_roles_by_menu_code call works
