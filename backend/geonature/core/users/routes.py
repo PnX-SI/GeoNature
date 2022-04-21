@@ -16,7 +16,7 @@ from geonature.core.users.models import (
     TListes,
 )
 from geonature.utils.config import config
-from pypnusershub.db.models import Organisme as BibOrganismes
+from pypnusershub.db.models import Organisme
 from geonature.core.users.register_post_actions import (
     validate_temp_user,
     execute_actions_after_validation,
@@ -172,10 +172,10 @@ def get_organismes():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-    q = BibOrganismes.query
+    q = Organisme.query
     if "orderby" in params:
         try:
-            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
+            order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
             log.error("the attribute to order on does not exist")
@@ -196,14 +196,14 @@ def get_organismes_jdd():
 
     datasets = [d.id_dataset for d in TDatasets.query.filter_by_readable()]
     q = (
-        DB.session.query(BibOrganismes)
-        .join(CorDatasetActor, BibOrganismes.id_organisme == CorDatasetActor.id_organism)
+        DB.session.query(Organisme)
+        .join(CorDatasetActor, Organisme.id_organisme == CorDatasetActor.id_organism)
         .filter(CorDatasetActor.id_dataset.in_(datasets))
         .distinct()
     )
     if "orderby" in params:
         try:
-            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
+            order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
             log.error("the attribute to order on does not exist")

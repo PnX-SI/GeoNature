@@ -2,7 +2,7 @@ import uuid
 
 import pytest
 from flask import url_for, current_app
-from pypnusershub.db.models import Organisme as BibOrganismes
+from pypnusershub.db.models import Organisme
 
 # Apparently: need to import both?
 from geonature.tests.fixtures import acquisition_frameworks, datasets
@@ -15,7 +15,7 @@ def organisms():
     """
     Returns all organismes
     """
-    return db.session.query(BibOrganismes).order_by(BibOrganismes.id_organisme).all()
+    return db.session.query(Organisme).order_by(Organisme.id_organisme).all()
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
@@ -109,7 +109,7 @@ class TestUsers:
         assert users["admin_user"].organisme.nom_organisme not in [
             org["nom_organisme"] for org in response.json
         ]
-    
+
     def test_inscription_not_found(self):
         response = self.client.post(url_for("users.inscription"))
 
