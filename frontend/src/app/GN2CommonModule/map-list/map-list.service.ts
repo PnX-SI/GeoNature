@@ -291,11 +291,11 @@ export class MapListService {
         if (customCallBack) {
           newFeature = customCallBack(feature);
         }
-        this.tableData.push(newFeature.properties);
+        this.tableData.push(newFeature.properties.observations);
       });
     } else {
       data.features.forEach(feature => {
-        for (let obs of Object.values(feature.properties)) {
+        for (let obs of Object.values(feature.properties.observations)) {
           obs['selected'] = false;
           this.tableData.push(obs);
         }

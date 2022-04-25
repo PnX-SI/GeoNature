@@ -147,7 +147,9 @@ def get_observations_for_web(info_role):
         else_="",
     )
 
-    nom_vern_or_lb_nom = func.coalesce(VSyntheseForWebApp.nom_vern, VSyntheseForWebApp.lb_nom)
+    nom_vern_or_lb_nom = func.coalesce(
+        func.nullif(VSyntheseForWebApp.nom_vern, ""), VSyntheseForWebApp.lb_nom
+    )
 
     columns = [
         "id",
@@ -173,7 +175,9 @@ def get_observations_for_web(info_role):
     ]
     observations = func.json_build_object(*columns).label("obs_as_json")
 
-    if "with_meshes" in filters:
+    if "with_meshes" in filters and (
+        filters["with_meshes"] in ["1", "true"] or filters["with_meshes"] == True
+    ):
         geom_4326 = func.ST_Transform(LAreas.geom, 4326).label("geom")
     else:
         geom_4326 = func.ST_AsGeoJSON(VSyntheseForWebApp.the_geom_4326).label("geom")
@@ -195,8 +199,8 @@ def get_observations_for_web(info_role):
     properties = func.json_build_object(
         "observations", func.json_agg(query_cte.c.obs_as_json).label("observations")
     )
-    query = select([st_asgeojson, properties]).group_by(query_cte.c.geom)
 
+    query = select([st_asgeojson, properties]).group_by(query_cte.c.geom)
     results = DB.session.execute(query)
 
     # Build GeoJson

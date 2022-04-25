@@ -81,7 +81,7 @@ export class SyntheseComponent implements OnInit {
   private extractSyntheseIds(geojson) {
     let ids = [];
     for (let feature of geojson.features) {
-      for (let obs of Object.values(feature.properties)) {
+      for (let obs of Object.values(feature.properties.observations)) {
         ids.push(obs['id']);
       }
     }
@@ -91,33 +91,14 @@ export class SyntheseComponent implements OnInit {
   private simplifyGeoJson(geojson) {
     for (let feature of geojson.features) {
       let ids = [];
-      for (let obs of Object.values(feature.properties)) {
+      for (let obs of Object.values(feature.properties.observations)) {
         if (obs['id']) {
           ids.push(obs['id']);
         }
       }
-      feature.properties = { id: ids };
+      feature.properties.observations = { id: ids };
     }
     return geojson;
-  }
-
-  private simplifyGeoJson2(geojson) {
-    let geojsonList = [];
-    for (let feature of geojson.features) {
-      let item = (({ type, coordinates }) => ({ type, coordinates }))(feature);
-      item['properties'] = { id: [] };
-      for (let obs of Object.values(feature['properties'])) {
-        if (obs['id']) {
-          item['properties']['id'].push(obs['id']);
-        }
-      }
-      geojsonList.push(item);
-    }
-    let geoJsonData = {
-      type: 'FeatureCollection',
-      features: geojsonList,
-    };
-    return geoJsonData;
   }
 
   ngOnInit() {

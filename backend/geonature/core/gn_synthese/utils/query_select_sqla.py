@@ -446,10 +446,13 @@ class SyntheseQuery:
 
     def transform_to_meshes(self):
         if "with_meshes" in self.filters:
-            self.add_join(CorAreaSynthese, CorAreaSynthese.id_synthese, self.model.id_synthese)
-            self.add_join(LAreas, LAreas.id_area, CorAreaSynthese.id_area)
-            self.add_join(BibAreasTypes, BibAreasTypes.id_type, LAreas.id_type)
-            self.query = self.query.where(BibAreasTypes.type_code == "M5")
+            with_meshes = self.filters["with_meshes"][0]
+            if with_meshes in ["1", "true"] or with_meshes == True:
+                cas = aliased(CorAreaSynthese)
+                self.add_join(cas, cas.id_synthese, self.model.id_synthese)
+                self.add_join(LAreas, LAreas.id_area, cas.id_area)
+                self.add_join(BibAreasTypes, BibAreasTypes.id_type, LAreas.id_type)
+                self.query = self.query.where(BibAreasTypes.type_code == "M5")
 
     def apply_all_filters(self, user):
         self.filter_query_with_cruved(user)

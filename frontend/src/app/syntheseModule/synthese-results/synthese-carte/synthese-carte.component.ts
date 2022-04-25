@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, AfterViewInit, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, EventEmitter, OnChanges, Output } from '@angular/core';
 import { GeoJSON } from 'leaflet';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { MapService } from '@geonature_common/map/map.service';
@@ -26,11 +26,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     : new L.FeatureGroup();
 
   originStyle = {
-    color: '#E0C0F0',
-    opacity: 0.8,
-    weight: 4,
-    fillColor: '#9E48C7',
-    fillOpacity: 0.5
+    color: '#3388ff',
   };
 
   selectedStyle = {
@@ -38,12 +34,14 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
   };
 
   @Input() inputSyntheseData: GeoJSON;
+  @Output() onMeshesToggle = new EventEmitter<any>()
+
   constructor(
     public mapListService: MapListService,
     private _ms: MapService,
     public formService: SyntheseFormService,
-    private _commonService: CommonService
-  ) {}
+    private _commonService: CommonService,
+  ) { }
 
   ngOnInit() {
     this.leafletDrawOptions.draw.rectangle = true;
@@ -65,6 +63,49 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
 
     // add the featureGroup to the map
     this.cluserOrSimpleFeatureGroup.addTo(this._ms.map);
+    this.addMeshesButton();
+  }
+
+  addMeshesButton() {
+    const LayerControl = L.Control.extend({
+      options: {
+        position: 'topright',
+      },
+      onAdd: (map) => {
+        let switchBtnContainer = L.DomUtil.create(
+          'div',
+          'leaflet-bar custom-control custom-switch leaflet-control-custom synthese-map-meshes'
+        );
+
+        let switchBtn = L.DomUtil.create(
+          'input',
+          'custom-control-input',
+          switchBtnContainer
+        );
+        switchBtn.id = 'toggle-meshes-btn';
+        switchBtn.type = 'checkbox';
+        switchBtn.onclick = () => {
+          this.formService.searchForm.patchValue({
+            "with_meshes": switchBtn.checked
+          });
+          this.formService.searchForm.markAsDirty();
+          this.onMeshesToggle.emit(this.formService.formatParams());
+        };
+
+        let labelSwitchBtn = L.DomUtil.create(
+          'label',
+          'custom-control-label',
+          switchBtnContainer
+        );
+        labelSwitchBtn.setAttribute('for', 'toggle-meshes-btn');
+        labelSwitchBtn.innerText = 'Mailles';
+
+        return switchBtnContainer;
+      },
+    });
+
+    const map = this._ms.getMap()
+    map.addControl(new LayerControl);
   }
 
   // redefine toggle style from mapListSerice because we don't use geojson component here for perf reasons
@@ -100,22 +141,18 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
           }
           for (let i = 0; i < geojson.geometry.coordinates.length; i++) {
             const latLng = L.GeoJSON.coordsToLatLng(geojson.geometry.coordinates[i]);
-            let markerIds = geojson.properties.id;
-            let marker = L.circleMarker(latLng).bindTooltip(`${countId}`, {
+            this.setStyleEventAndAdd(L.circleMarker(latLng).bindTooltip(`${countObs}`, {
               permanent: true,
               direction: 'center',
               className: 'number-obs',
-            });
-            this.setStyleCircleMarker(marker, countId);
-            this.eventOnEachFeature(markerIds, marker);
-            this.cluserOrSimpleFeatureGroup.addLayer(marker);
+            }), geojson.properties.observations.id);
           }
         } else if (geojson.geometry.type == 'Polygon' || geojson.geometry.type == 'MultiPolygon') {
           const latLng = L.GeoJSON.coordsToLatLngs(
             geojson.geometry.coordinates,
             geojson.geometry.type === 'Polygon' ? 1 : 2
           );
-          this.setStyleEventAndAdd(new L.Polygon(latLng), geojson.properties.id);
+          this.setStyleEventAndAdd(new L.Polygon(latLng), geojson.properties.observations.id);
         } else if (
           geojson.geometry.type == 'LineString' ||
           geojson.geometry.type == 'MultiLineString'
@@ -124,7 +161,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
             geojson.geometry.coordinates,
             geojson.geometry.type === 'LineString' ? 0 : 1
           );
-          this.setStyleEventAndAdd(new L.Polyline(latLng), geojson.properties.id);
+          this.setStyleEventAndAdd(new L.Polyline(latLng), geojson.properties.observations.id);
         }
       });
       this._ms.map.addLayer(this.cluserOrSimpleFeatureGroup);
@@ -138,18 +175,6 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
         }
       }
     }
-  }
-
-
-  private setStyleCircleMarker(layer, ids) {
-    layer.setStyle({
-      color: '#E0C0F0',
-      opacity: 0.8,
-      weight: 4,
-      radius: 10+ids,
-      fillColor: '#9E48C7',
-      fillOpacity: 0.5
-    });
   }
 
 
