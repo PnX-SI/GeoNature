@@ -126,9 +126,9 @@ export class HomeContentComponent implements OnInit {
       click: () => {
         // Open popup
         const popup = `
-          ${feature.properties.nom_vern_or_lb_nom} <br>
-          <b> Observé le: </b> ${feature.properties.date_min} <br>
-          <b> Par</b>:  ${feature.properties.observers}
+          ${feature.properties.observations.nom_vern_or_lb_nom} <br>
+          <b> Observé le: </b> ${feature.properties.observations.date_min} <br>
+          <b> Par</b>:  ${feature.properties.observations.observers}
         `;
         layer.bindPopup(popup).openPopup();
       },
