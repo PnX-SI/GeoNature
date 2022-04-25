@@ -91,7 +91,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
         : new L.FeatureGroup();
 
       change.inputSyntheseData.currentValue.features.forEach((geojson) => {
-        let countId = geojson.properties.id.length
+        let countObs = geojson.properties.observations.id.length
         // we don't create a generic function for setStyle and event on each layer to avoid
         // a if on possible milion of point (with multipoint we must set the event on each point)
         if (geojson.geometry.type == 'Point' || geojson.geometry.type == 'MultiPoint') {
