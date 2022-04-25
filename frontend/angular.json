@@ -33,7 +33,8 @@
               "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
               "node_modules/@circlon/angular-tree-component/src/lib/angular-tree-component.css",
               "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-              "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
+              "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+              "@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css"
             ],
             "scripts": [
               "node_modules/popper.js/dist/umd/popper.min.js",

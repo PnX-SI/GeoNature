@@ -37,6 +37,7 @@
     "@angular/platform-browser-dynamic": "12.2.13",
     "@angular/router": "12.2.13",
     "@circlon/angular-tree-component": "^11.0.2",
+    "@geoman-io/leaflet-geoman-free": "^2.11.4",
     "@ng-bootstrap/ng-bootstrap": "10.0.0",
     "@ng-select/ng-select": "^7.4.0",
     "@ngx-translate/core": "^14.0.0",
