@@ -212,27 +212,6 @@ def datasets(users, acquisition_frameworks):
     return datasets
 
 
-# @pytest.fixture(scope='class')
-# def sample_data(app):
-#    with db.session.begin_nested():
-#        for sql_file in ['delete_sample_data.sql', 'sample_data.sql']:
-#            operations = pkg_resources.resource_string("geonature.tests", f"data/{sql_file}") \
-#                                      .decode('utf-8')
-#            db.session.execute(operations)
-
-
-@pytest.fixture()
-def taxon_attribut():
-    from apptax.taxonomie.models import BibAttributs, BibNoms, CorTaxonAttribut
-
-    nom = BibNoms.query.filter_by(cd_ref=209902).one()
-    attribut = BibAttributs.query.filter_by(nom_attribut="atlas_milieu").one()
-    with db.session.begin_nested():
-        c = CorTaxonAttribut(bib_nom=nom, bib_attribut=attribut, valeur_attribut="eau")
-        db.session.add(c)
-    return c
-
-
 @pytest.fixture()
 def source():
     with db.session.begin_nested():
