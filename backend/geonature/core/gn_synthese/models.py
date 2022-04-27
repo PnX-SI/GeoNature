@@ -53,6 +53,8 @@ class TSources(DB.Model):
     url_source = DB.Column(DB.Unicode)
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
+    id_module = DB.Column(DB.Integer, ForeignKey(TModules.id_module))
+    module = DB.relationship(TModules, backref="sources")
 
 
 cor_observer_synthese = DB.Table(
