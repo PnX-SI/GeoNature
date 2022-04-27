@@ -190,7 +190,7 @@ class TestGnProfiles:
             },
         )
 
-        assert response.status_code == 200
+        assert response.status_code == 200, response.json
         data = response.get_json()
         first_pheno = data[0]
         assert first_pheno["doy_min"] == 0
@@ -207,13 +207,13 @@ class TestGnProfiles:
             url_for("gn_profiles.get_phenology", cd_ref=invalid_cd_nom),
         )
 
-        assert response.status_code == 204  # No content
+        assert response.status_code == 204, response.json  # No content
 
     def test_valid_profile(self, sample_synthese_records_for_profile):
         response = self.client.get(
             url_for("gn_profiles.get_profile", cd_ref=sample_synthese_records_for_profile.cd_nom),
         )
-        assert response.status_code == 200
+        assert response.status_code == 200, response.json
         data = response.get_json()["properties"]
         assert data["altitude_min"] == ALT_MIN
         assert data["altitude_max"] == ALT_MAX
@@ -229,7 +229,7 @@ class TestGnProfiles:
             url_for("gn_profiles.get_profile", cd_ref=invalid_cd_nom),
         )
 
-        assert response.status_code == 404
+        assert response.status_code == 404, response.json
 
     def test_get_consistancy_data(self, sample_synthese_records_for_profile):
         synthese_record = sample_synthese_records_for_profile
@@ -237,14 +237,14 @@ class TestGnProfiles:
         response = self.client.get(
             url_for("gn_profiles.get_consistancy_data", id_synthese=synthese_record.id_synthese),
         )
-        assert response.status_code == 200
+        assert response.status_code == 200, response.json
 
     def test_get_observation_score_no_cd_ref(self):
         data = {}
 
         response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
 
-        assert response.status_code == 400
+        assert response.status_code == 400, response.json
         assert response.json.get("description") == "No cd_ref provided"
 
     def test_get_observation_score_cd_ref_not_found(self):
@@ -252,7 +252,7 @@ class TestGnProfiles:
 
         response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
 
-        assert response.status_code == 404
+        assert response.status_code == 404, response.json
         assert response.json.get("description") == "No profile for this cd_ref"
 
     def test_get_observation_score(self, sample_synthese_records_for_profile):
@@ -267,7 +267,7 @@ class TestGnProfiles:
 
         response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
         resp_json = response.json
-        assert response.status_code == 200
+        assert response.status_code == 200, response.json
         assert [
             "valid_distribution",
             "valid_altitude",
@@ -291,7 +291,7 @@ class TestGnProfiles:
 
         response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
 
-        assert response.status_code == 400
+        assert response.status_code == 400, response.json
         assert response.json["description"] == "Missing date min or date max"
 
     def test_get_observation_score_no_altitude(self, sample_synthese_records_for_profile):
@@ -305,7 +305,7 @@ class TestGnProfiles:
 
         response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
 
-        assert response.status_code == 400
+        assert response.status_code == 400, response.json
         assert response.json["description"] == "Missing altitude_min or altitude_max"
 
     def test_get_observation_score_not_observed_altitude(
@@ -324,7 +324,7 @@ class TestGnProfiles:
 
         response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
 
-        assert response.status_code == 200
+        assert response.status_code == 200, response.json
         assert f"Le taxon n'a jamais été observé à cette altitude ({alt_min}-{alt_max}m)" in [
             err["value"] for err in response.json["errors"]
         ]
@@ -347,7 +347,7 @@ class TestGnProfiles:
 
         response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
 
-        assert response.status_code == 200
+        assert response.status_code == 200, response.json
         assert "Le taxon n'a jamais été observé à cette periode" in [
             err["value"] for err in response.json["errors"]
         ]
@@ -366,7 +366,7 @@ class TestGnProfiles:
 
         response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
 
-        assert response.status_code == 200
+        assert response.status_code == 200, response.json
         assert "Le taxon n'a jamais été observé dans cette zone géographique" in [
             err["value"] for err in response.json["errors"]
         ]
