@@ -178,7 +178,23 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     if (change && change.inputSyntheseData.currentValue) {
       // regenerate the featuregroup
       this.cluserOrSimpleFeatureGroup = AppConfig.SYNTHESE.ENABLE_LEAFLET_CLUSTER
-        ? (L as any).markerClusterGroup()
+        ? (L as any).markerClusterGroup({
+          iconCreateFunction: (cluster) => {
+            const obsChildCount = cluster.getAllChildMarkers()
+              .map(marker => marker.countObs)
+              .reduce((previous, next) => previous + next);
+            const clusterSize = (obsChildCount > 100)
+              ? 'large'
+              : (obsChildCount > 10)
+                ? 'medium'
+                : 'small';
+            return L.divIcon({
+              html: `<div><span>${obsChildCount}</span></div>`,
+              className: `marker-cluster marker-cluster-${clusterSize}`,
+              iconSize: L.point(40, 40)
+            });
+          }
+        })
         : new L.FeatureGroup();
 
       change.inputSyntheseData.currentValue.features.forEach((geojson) => {
@@ -191,11 +207,14 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
           }
           for (let i = 0; i < geojson.geometry.coordinates.length; i++) {
             const latLng = L.GeoJSON.coordsToLatLng(geojson.geometry.coordinates[i]);
-            this.setStyleEventAndAdd(L.circleMarker(latLng).bindTooltip(`${countObs}`, {
+            const circleMarker = L.circleMarker(latLng);
+            circleMarker.bindTooltip(`${countObs}`, {
               permanent: true,
               direction: 'center',
               className: 'number-obs',
-            }), geojson.properties.observations.id);
+            });
+            circleMarker['countObs'] = countObs;
+            this.setStyleEventAndAdd(circleMarker, geojson.properties.observations.id);
           }
         } else if (geojson.geometry.type == 'Polygon' || geojson.geometry.type == 'MultiPolygon') {
           const latLng = L.GeoJSON.coordsToLatLngs(
