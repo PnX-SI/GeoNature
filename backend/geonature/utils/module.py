@@ -110,7 +110,13 @@ def import_backend_enabled_modules():
     yield (module_object, module_config, module_blueprint)
     for backend-enabled modules in gn_commons.t_modules
     """
-    enabled_modules = TModules.query.filter_by(active_backend=True).all()
+    enabled_modules = (
+        TModules.query.with_entities(
+            TModules.module_code, TModules.id_module, TModules.module_path
+        )
+        .filter_by(active_backend=True)
+        .all()
+    )
     for module_object in enabled_modules:
         # ignore internal module (i.e. without symlink in external module directory)
         if not Path(GN_EXTERNAL_MODULE / module_object.module_code.lower()).exists():
