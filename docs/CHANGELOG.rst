@@ -12,6 +12,8 @@ CHANGELOG
 
 **⚠️ Notes de version**
 
+TODO : l'ajout de la colonne id_module dans la table `gn_synthese.t_sources` necessite une intervention manuelle sur les données. Pour les sources qui viennent d'un module geonature, veuillez renseigner l'identifiant du module GeoNature attaché (voir `gn_commons.t_modules` pour trouver l'identifiant).
+
 * Passage à angular 12 (développeur), executez les commandes suivantes :
   ::
 
