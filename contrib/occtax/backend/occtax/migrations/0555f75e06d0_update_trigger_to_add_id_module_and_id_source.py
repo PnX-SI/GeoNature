@@ -1,4 +1,4 @@
-"""update trigger to add id_module dynamicly
+"""update trigger to add id_module and id_source dynamicly
 
 Revision ID: 0555f75e06d0
 Revises: 023b0be41829
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 revision = "0555f75e06d0"
 down_revision = "023b0be41829"
 branch_labels = None
-depends_on = None
+depends_on = ("f4ffdc68072c",)
 
 
 def upgrade():
@@ -161,7 +161,7 @@ def upgrade():
             VALUES(
                 new_count.unique_id_sinp_occtax,
                 releve.unique_id_sinp_grp,
-                id_source,
+                (SELECT source.id_source FROM gn_synthese.t_sources source WHERE id_module = releve.id_module),
                 new_count.id_counting_occtax,
                 releve.id_dataset,
                 releve.id_module,
