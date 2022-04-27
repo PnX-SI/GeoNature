@@ -86,6 +86,7 @@ export class OcctaxFormReleveService {
     this.propertiesForm = this.fb.group({
       id_dataset: [null, Validators.required],
       id_digitiser: null,
+      id_module: this.moduleService.currentModule.id_module,
       date_min: [null, Validators.required],
       date_max: [null, Validators.required],
       hour_min: [
