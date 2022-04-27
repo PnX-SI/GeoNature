@@ -1877,6 +1877,10 @@ Exemples de configuration :
 
 .. image :: _static/html1.png
 
+- Un champs de type "datalist". Ce champs permet de générer une liste de valeurs à partir d'une API. Dans le champ "attributs additionnels", renseignez les éléments suivants : 
+::
+
+    ``{"api": "url_vers_la_ressource", "keyValue": "champ à stocker en base", "keyLabel": "champ à afficher en interface"}
 
 Configuration avancée des champs
 ````````````````````````````````
