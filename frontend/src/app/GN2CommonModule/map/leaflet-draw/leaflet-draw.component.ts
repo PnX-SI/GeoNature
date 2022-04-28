@@ -1,4 +1,12 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  Input,
+  Output,
+  EventEmitter,
+  OnChanges,
+} from '@angular/core';
 import { Map } from 'leaflet';
 
 import { MapService } from '../map.service';
@@ -22,7 +30,7 @@ L.Icon.Default.mergeOptions(CustomIcon);
   selector: 'pnx-leaflet-draw',
   templateUrl: 'leaflet-draw.component.html',
 })
-export class LeafletDrawComponent implements OnInit, OnChanges {
+export class LeafletDrawComponent implements OnInit, OnChanges, OnDestroy {
   public map: Map;
   private _currentDraw: any;
   private _Le: any;
@@ -54,9 +62,14 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   constructor(public mapservice: MapService, private _commonService: CommonService) {}
 
   ngOnInit() {
+    (window as any).type = true;
     this.map = this.mapservice.map;
     this._Le = L as any;
     this.enableLeafletDraw();
+  }
+
+  ngOnDestroy() {
+    (window as any).type = true;
   }
 
   enableLeafletDraw() {
