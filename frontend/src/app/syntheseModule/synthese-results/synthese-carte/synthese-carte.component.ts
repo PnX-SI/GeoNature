@@ -25,12 +25,26 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     ? (L as any).markerClusterGroup()
     : new L.FeatureGroup();
 
-  originStyle = {
-    color: '#3388ff',
-  };
+  private meshesEnable = false;
+  private meshesLegend;
+  private enableFitBounds = true;
 
-  selectedStyle = {
+  private originDefaultStyle = {
+    color: '#3388ff',
+    weight: 3,
+    fill: false,
+  };
+  private selectedDefaultStyle = {
     color: '#ff0000',
+  };
+  private originMeshesStyle = {
+    color: '#FFFFFF',
+    weight: 0.4,
+    fillOpacity: 0.8,
+  };
+  private selectedMeshesStyle = {
+    color: '#ff0000',
+    weight: 3,
   };
 
   @Input() inputSyntheseData: GeoJSON;
@@ -63,6 +77,8 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
 
     // add the featureGroup to the map
     this.cluserOrSimpleFeatureGroup.addTo(this._ms.map);
+
+    // Handle meshes button and legend
     this.addMeshesButton();
   }
 
@@ -85,11 +101,20 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
         switchBtn.id = 'toggle-meshes-btn';
         switchBtn.type = 'checkbox';
         switchBtn.onclick = () => {
+          this.meshesEnable = switchBtn.checked
           this.formService.searchForm.patchValue({
             "with_meshes": switchBtn.checked
           });
           this.formService.searchForm.markAsDirty();
           this.onMeshesToggle.emit(this.formService.formatParams());
+
+          // Show meshes legend if meshes toggle button is enable
+          if (this.meshesEnable) {
+            this.addMeshesLegend();
+          } else {
+            this.removeMeshesLegend();
+            this.enableFitBounds = false;
+          }
         };
 
         let labelSwitchBtn = L.DomUtil.create(
@@ -108,14 +133,39 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     map.addControl(new LayerControl);
   }
 
-  // redefine toggle style from mapListSerice because we don't use geojson component here for perf reasons
-  private toggleStyle(selectedLayer) {
-    // togle the style of selected layer
-    if (this.mapListService.selectedLayer !== undefined) {
-      this.mapListService.selectedLayer.setStyle(this.originStyle);
-    }
-    this.mapListService.selectedLayer = selectedLayer;
-    this.mapListService.selectedLayer.setStyle(this.selectedStyle);
+  private addMeshesLegend() {
+    this.meshesLegend = new (L.Control.extend({
+      options: { position: 'bottomright' }
+    }));
+
+    const vm = this;
+    this.meshesLegend.onAdd = function (map) {
+      let div = L.DomUtil.create("div", "info legend");
+      let grades = [0, 1, 2, 5, 10, 20, 50, 100];
+      let labels = ["<strong> Nombre <br> d'observations </strong> <br>"];
+
+      // loop through our density intervals and generate a label with a colored square for each interval
+      for (var i = 0; i < grades.length; i++) {
+        labels.push(
+          '<i style="background:' +
+          vm.getColor(grades[i] + 1) +
+          '"></i> ' +
+          grades[i] +
+          (grades[i + 1] ? "&ndash;" + grades[i + 1] + "<br>" : "+")
+        );
+      }
+      div.innerHTML = labels.join("<br>");
+
+      return div;
+    };
+
+    const map = this._ms.getMap();
+    this.meshesLegend.addTo(map);
+  }
+
+  private removeMeshesLegend() {
+    const map = this._ms.getMap();
+    this.meshesLegend.remove(map);
   }
 
   ngOnChanges(change) {
@@ -152,11 +202,13 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
             geojson.geometry.coordinates,
             geojson.geometry.type === 'Polygon' ? 1 : 2
           );
-          this.setStyleEventAndAdd(new L.Polygon(latLng), geojson.properties.observations.id);
-        } else if (
-          geojson.geometry.type == 'LineString' ||
-          geojson.geometry.type == 'MultiLineString'
-        ) {
+          if (this.meshesEnable) {
+            this.setMeshesStyle(new L.Polygon(latLng), geojson.properties.observations.id);
+          }
+          else {
+            this.setStyleEventAndAdd(new L.Polygon(latLng), geojson.properties.observations.id);
+          }
+        } else if (geojson.geometry.type == 'LineString' || geojson.geometry.type == 'MultiLineString') {
           const latLng = L.GeoJSON.coordsToLatLngs(
             geojson.geometry.coordinates,
             geojson.geometry.type === 'LineString' ? 0 : 1
@@ -169,7 +221,11 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
       if (change.inputSyntheseData.previousValue !== undefined) {
         try {
           // try to fit bound on layer. catch error if no layer in feature group
-          this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
+          if (this.enableFitBounds) {
+            this._ms.map.fitBounds(this.cluserOrSimpleFeatureGroup.getBounds());
+          } else {
+            this.enableFitBounds = true;
+          }
         } catch (error) {
           console.log('no layer in feature group');
         }
@@ -177,19 +233,39 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     }
   }
 
-
-  private setStyleEventAndAdd(layer, ids) {
-    this.setStyle(layer);
+  private setMeshesStyle(layer, ids) {
+    this.originMeshesStyle['fillColor'] = this.getColor(ids.length);
+    layer.setStyle(this.originMeshesStyle);
     this.eventOnEachFeature(ids, layer);
     this.cluserOrSimpleFeatureGroup.addLayer(layer);
   }
 
-  private setStyle(layer) {
-    layer.setStyle({
-      color: '#3388ff',
-      weight: 3,
-      fill: false,
-    });
+  private getColor(obsNbr) {
+    return obsNbr > 100
+      ? "#800026"
+      : obsNbr > 50
+        ? "#BD0026"
+        : obsNbr > 20
+          ? "#E31A1C"
+          : obsNbr > 10
+            ? "#FC4E2A"
+            : obsNbr > 5
+              ? "#FD8D3C"
+              : obsNbr > 2
+                ? "#FEB24C"
+                : obsNbr > 1
+                  ? "#FED976"
+                  : "#FFEDA0";
+  }
+
+  private setStyleEventAndAdd(layer, ids) {
+    this.setDefaultStyle(layer);
+    this.eventOnEachFeature(ids, layer);
+    this.cluserOrSimpleFeatureGroup.addLayer(layer);
+  }
+
+  private setDefaultStyle(layer) {
+    layer.setStyle(this.originDefaultStyle);
   }
 
   private eventOnEachFeature(ids, layer): void {
@@ -199,11 +275,34 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     }
     layer.on({
       click: (e) => {
-        // toggle style
         this.toggleStyle(layer);
         this.mapListService.mapSelected.next(ids);
+        if (this.meshesEnable) {
+          this.bindMeshesPopup(layer, ids);
+        }
       },
     });
+  }
+
+  // Redefine toggle style from mapListSerice because we don't use geojson component here for perf reasons
+  private toggleStyle(selectedLayer) {
+    // Reset style of previous selected layer
+    if (this.mapListService.selectedLayer !== undefined) {
+      let originStyle = (this.meshesEnable) ? this.originMeshesStyle : this.originDefaultStyle;
+      this.mapListService.selectedLayer.setStyle(originStyle);
+    }
+
+    // Apply new selected layer
+    this.mapListService.selectedLayer = selectedLayer;
+
+    // Set selected style on new selected layer
+    let selectedStyle = (this.meshesEnable) ? this.selectedMeshesStyle : this.selectedDefaultStyle;
+    this.mapListService.selectedLayer.setStyle(selectedStyle);
+  }
+
+  private bindMeshesPopup(layer, ids) {
+    let popupContent = `<b>${ids.length} observation(s)</b>`;
+    layer.bindPopup(popupContent).openPopup();
   }
 
   bindGeojsonForm(geojson) {
@@ -226,8 +325,4 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     this.formService.searchForm.controls.geoIntersection.reset();
     this.formService.searchForm.controls.radius.reset();
   }
-
-  // coordsToLatLng(coordinates) {
-  //   return new L.LatLng(coordinates[1], coordinates[0]);
-  // }
 }
