@@ -286,7 +286,7 @@ class Synthese(DB.Model):
     the_geom_point = deferred(DB.Column(Geometry("GEOMETRY", 4326)))
     the_geom_local = deferred(DB.Column(Geometry("GEOMETRY")))
     precision = DB.Column(DB.Integer)
-    id_area_attachment = DB.Column(DB.Integer)
+    id_area_attachment = DB.Column(DB.Integer, ForeignKey(LAreas.id_area))
     date_min = DB.Column(DB.DateTime, nullable=False)
     date_max = DB.Column(DB.DateTime, nullable=False)
     validator = DB.Column(DB.Unicode(length=1000))
@@ -304,6 +304,7 @@ class Synthese(DB.Model):
     last_action = DB.Column(DB.Unicode)
 
     areas = relationship(LAreas, secondary=corAreaSynthese)
+    area_attachment = relationship(LAreas, foreign_keys=[id_area_attachment])
     validations = relationship(TValidations, backref="attached_row")
     last_validation = relationship(last_validation, uselist=False, viewonly=True)
     medias = relationship(
