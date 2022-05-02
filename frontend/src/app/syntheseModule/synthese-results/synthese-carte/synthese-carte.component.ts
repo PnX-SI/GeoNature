@@ -1,12 +1,15 @@
-import { Component, OnInit, Input, AfterViewInit, EventEmitter, OnChanges, Output } from '@angular/core';
+import { Component, OnInit, Input, AfterViewInit, EventEmitter, OnChanges, Output, Inject, OnDestroy } from '@angular/core';
 import { GeoJSON } from 'leaflet';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { MapService } from '@geonature_common/map/map.service';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { AppConfig } from '@geonature_config/app.config';
+import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
 import * as L from 'leaflet';
+import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
+import { takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'pnx-synthese-carte',
@@ -14,20 +17,23 @@ import * as L from 'leaflet';
   styleUrls: ['synthese-carte.component.scss'],
   providers: [],
 })
-export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges {
+export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
 
   public leafletDrawOptions = leafletDrawOption;
   public currentLeafletDrawCoord: any;
   public firstFileLayerMessage = true;
-  public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
+  public SYNTHESE_CONFIG = this.config.SYNTHESE;
   // set a new featureGroup - cluster or not depending of the synthese config
-  public cluserOrSimpleFeatureGroup = AppConfig.SYNTHESE.ENABLE_LEAFLET_CLUSTER
+  public cluserOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
     ? (L as any).markerClusterGroup()
     : new L.FeatureGroup();
 
-  private meshesEnable = false;
+  private destroy$: Subject<boolean> = new Subject<boolean>();
+
+  private meshesEnable;
   private meshesLegend;
   private enableFitBounds = true;
+  private meshesLabelSwitchBtn;
 
   private originDefaultStyle = {
     color: '#3388ff',
@@ -51,17 +57,34 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
   @Output() onMeshesToggle = new EventEmitter<any>()
 
   constructor(
+    @Inject(APP_CONFIG_TOKEN) private config,
     public mapListService: MapListService,
     private _ms: MapService,
     public formService: SyntheseFormService,
     private _commonService: CommonService,
-  ) { }
+    private translateService: TranslateService,
+  ) {
+    this.meshesEnable = this.config.SYNTHESE.ENABLE_MESHES && this.config.SYNTHESE.MESHES_BY_DEFAULT;
+  }
 
   ngOnInit() {
     this.leafletDrawOptions.draw.rectangle = true;
     this.leafletDrawOptions.draw.circle = true;
     this.leafletDrawOptions.draw.polyline = false;
     this.leafletDrawOptions.edit.remove = true;
+    this.initializeFormWithMapParams();
+  }
+
+  private initializeFormWithMapParams() {
+    this.formService.searchForm.patchValue({
+      "with_meshes": this.meshesEnable
+    });
+    this.formService.searchForm.markAsDirty();
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
   ngAfterViewInit() {
@@ -79,7 +102,29 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     this.cluserOrSimpleFeatureGroup.addTo(this._ms.map);
 
     // Handle meshes button and legend
-    this.addMeshesButton();
+    if (this.config.SYNTHESE.ENABLE_MESHES) {
+      this.addMeshesButton();
+      this.onLanguageChange();
+      if (this.meshesEnable) {
+        this.addMeshesLegend();
+      }
+    }
+  }
+
+  private onLanguageChange() {
+    // don't forget to unsubscribe!
+    this.translateService.onLangChange
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((langChangeEvent: LangChangeEvent) => {
+        this.defineI18nMessages();
+      });
+  }
+
+  private defineI18nMessages() {
+    // Define default messages for datatable
+    this.translateService.get('Synthese.Map.MeshesToggleBtn').subscribe((translatedTxt: string[]) => {
+      this.meshesLabelSwitchBtn.innerText = translatedTxt;
+    });
   }
 
   addMeshesButton() {
@@ -100,6 +145,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
         );
         switchBtn.id = 'toggle-meshes-btn';
         switchBtn.type = 'checkbox';
+        switchBtn.checked = this.config.SYNTHESE.MESHES_BY_DEFAULT;
         switchBtn.onclick = () => {
           this.meshesEnable = switchBtn.checked
           this.formService.searchForm.patchValue({
@@ -117,13 +163,13 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
           }
         };
 
-        let labelSwitchBtn = L.DomUtil.create(
+        this.meshesLabelSwitchBtn = L.DomUtil.create(
           'label',
           'custom-control-label',
           switchBtnContainer
         );
-        labelSwitchBtn.setAttribute('for', 'toggle-meshes-btn');
-        labelSwitchBtn.innerText = 'Mailles';
+        this.meshesLabelSwitchBtn.setAttribute('for', 'toggle-meshes-btn');
+        this.meshesLabelSwitchBtn.innerText = this.translateService.instant('Synthese.Map.MeshesToggleBtn');
 
         return switchBtnContainer;
       },
@@ -139,9 +185,11 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     }));
 
     const vm = this;
-    this.meshesLegend.onAdd = function (map) {
+    this.meshesLegend.onAdd = (map) => {
       let div = L.DomUtil.create("div", "info legend");
-      let grades = [0, 1, 2, 5, 10, 20, 50, 100];
+      let grades = this.config['SYNTHESE']['MESHES_LEGEND_CLASSES']
+        .map(legendClass => legendClass.min)
+        .reverse();
       let labels = ["<strong> Nombre <br> d'observations </strong> <br>"];
 
       // loop through our density intervals and generate a label with a colored square for each interval
@@ -177,7 +225,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     }
     if (change && change.inputSyntheseData.currentValue) {
       // regenerate the featuregroup
-      this.cluserOrSimpleFeatureGroup = AppConfig.SYNTHESE.ENABLE_LEAFLET_CLUSTER
+      this.cluserOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
         ? (L as any).markerClusterGroup({
           iconCreateFunction: (cluster) => {
             const obsChildCount = cluster.getAllChildMarkers()
@@ -260,21 +308,18 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
   }
 
   private getColor(obsNbr) {
-    return obsNbr > 100
-      ? "#800026"
-      : obsNbr > 50
-        ? "#BD0026"
-        : obsNbr > 20
-          ? "#E31A1C"
-          : obsNbr > 10
-            ? "#FC4E2A"
-            : obsNbr > 5
-              ? "#FD8D3C"
-              : obsNbr > 2
-                ? "#FEB24C"
-                : obsNbr > 1
-                  ? "#FED976"
-                  : "#FFEDA0";
+    let classesNbr = this.config['SYNTHESE']['MESHES_LEGEND_CLASSES'].length;
+    let lastIndex = (classesNbr - 1);
+    for (let i = 0; i < classesNbr; i++) {
+      let legendClass = this.config['SYNTHESE']['MESHES_LEGEND_CLASSES'][i];
+      if (i != lastIndex) {
+        if (obsNbr > legendClass.min) {
+          return legendClass.color;
+        }
+      } else {
+        return legendClass.color;
+      }
+    }
   }
 
   private setStyleEventAndAdd(layer, ids) {
