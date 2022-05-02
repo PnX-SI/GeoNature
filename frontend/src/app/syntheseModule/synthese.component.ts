@@ -110,6 +110,8 @@ export class SyntheseComponent implements OnInit {
         this.openInfoModal(idSynthese);
       }
 
+      initialFilter['with_meshes'] =
+        AppConfig.SYNTHESE.ENABLE_MESHES && AppConfig.SYNTHESE.MESHES_BY_DEFAULT;
       if (params.get('id_acquisition_framework')) {
         initialFilter['id_acquisition_framework'] = params.get('id_acquisition_framework');
       } else if (params.get('id_dataset')) {

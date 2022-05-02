@@ -385,6 +385,26 @@ class Synthese(Schema):
     ALERT_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
     # Allow to activate pin tool for any, some or all VALIDATION, SYNTHESE
     PIN_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
+    # Enable meshes vizualisation with toggle slide
+    ENABLE_MESHES = fields.Boolean(load_default=True)
+    # Choose size of meshes
+    MESHES_TYPE = fields.String(load_default="M10")
+    # Activate meshes mode by default
+    MESHES_BY_DEFAULT = fields.Boolean(load_default=False)
+    # Meshes legend classes to use
+    MESHES_LEGEND_CLASSES = fields.List(
+        fields.Dict(),
+        load_default=[
+            {"min": 100, "color": "#800026"},
+            {"min": 50, "color": "#BD0026"},
+            {"min": 20, "color": "#E31A1C"},
+            {"min": 10, "color": "#FC4E2A"},
+            {"min": 5, "color": "#FD8D3C"},
+            {"min": 2, "color": "#FEB24C"},
+            {"min": 1, "color": "#FED976"},
+            {"min": 0, "color": "#FFEDA0"},
+        ],
+    )
 
 
 # Map configuration

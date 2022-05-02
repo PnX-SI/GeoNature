@@ -190,7 +190,12 @@ def get_observations_for_web(info_role):
     )
 
     # Add filters to CTE query
-    synthese_query_class = SyntheseQuery(VSyntheseForWebApp, obs_query, filters)
+    synthese_query_class = SyntheseQuery(
+        VSyntheseForWebApp,
+        obs_query,
+        filters,
+        meshes_type=current_app.config["SYNTHESE"]["MESHES_TYPE"],
+    )
     synthese_query_class.filter_query_all_filters(info_role)
     query_cte = synthese_query_class.query.cte("query_cte")
 

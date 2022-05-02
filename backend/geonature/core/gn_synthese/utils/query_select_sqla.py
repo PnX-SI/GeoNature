@@ -64,6 +64,7 @@ class SyntheseQuery:
         id_digitiser_column="id_digitiser",
         with_generic_table=False,
         query_joins=None,
+        meshes_type=None,
     ):
         self.query = query
 
@@ -79,6 +80,7 @@ class SyntheseQuery:
         self.model = model
         self._already_joined_table = []
         self.query_joins = query_joins
+        self.meshes_type = meshes_type
 
         if with_generic_table:
             model_temp = model.columns
@@ -445,14 +447,14 @@ class SyntheseQuery:
                     self.query = self.query.where(col.ilike("%{}%".format(value[0])))
 
     def transform_to_meshes(self):
-        if "with_meshes" in self.filters:
+        if "with_meshes" in self.filters and self.meshes_type:
             with_meshes = self.filters["with_meshes"][0]
             if with_meshes in ["1", "true"] or with_meshes == True:
                 cas = aliased(CorAreaSynthese)
                 self.add_join(cas, cas.id_synthese, self.model.id_synthese)
                 self.add_join(LAreas, LAreas.id_area, cas.id_area)
                 self.add_join(BibAreasTypes, BibAreasTypes.id_type, LAreas.id_type)
-                self.query = self.query.where(BibAreasTypes.type_code == "M5")
+                self.query = self.query.where(BibAreasTypes.type_code == self.meshes_type)
 
     def apply_all_filters(self, user):
         self.filter_query_with_cruved(user)

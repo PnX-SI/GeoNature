@@ -53,7 +53,7 @@ export class SyntheseFormService {
       taxonomy_id_hab: null,
       taxonomy_group2_inpn: null,
       taxon_rank: null,
-      with_meshes: false
+      with_meshes: null,
     });
 
     this.searchForm.setValidators([this.periodValidator()]);
