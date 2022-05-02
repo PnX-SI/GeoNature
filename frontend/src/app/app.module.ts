@@ -1,6 +1,6 @@
 // Angular core
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, APP_INITIALIZER, Injector } from '@angular/core';
 
 import {
   HttpClientModule,
@@ -38,7 +38,8 @@ import { IntroductionComponent } from '../custom/components/introduction/introdu
 import { AuthService } from './components/auth/auth.service';
 import { CookieService } from 'ng2-cookies';
 import { ChartsModule } from 'ng2-charts';
-import { AuthGuard, ModuleGuardService } from '@geonature/routing/routes-guards.service';
+import { AuthGuard } from '@geonature/routing/auth-guard.service';
+import { ModuleGuardService } from '@geonature/routing/module.guard.service';
 import { ModuleService } from './services/module.service';
 import { CruvedStoreService } from './GN2CommonModule/service/cruved-store.service';
 import { SideNavService } from './components/sidenav-items/sidenav-service';
@@ -54,11 +55,21 @@ import { UserDataService } from './userModule/services/user-data.service';
 
 // Config
 import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
-import { Router } from '@angular/router';
+import { tap } from 'rxjs/operators';
+import { RoutingService } from './routing/routing.service';
 
-export function getModulesAndInitRouting(moduleService: ModuleService, router: Router) {
+export function getModulesAndInitRouting(injector: Injector) {
   return () => {
-    return moduleService.fetchModulesAndSetRouting().toPromise();
+    const moduleService = injector.get(ModuleService);
+    const routingService = injector.get(RoutingService);
+    return moduleService
+      .loadModules()
+      .pipe(
+        tap((modules) => {
+          routingService.loadRoutes(modules);
+        })
+      )
+      .toPromise();
   };
 }
 
@@ -114,7 +125,7 @@ export function getModulesAndInitRouting(moduleService: ModuleService, router: R
     {
       provide: APP_INITIALIZER,
       useFactory: getModulesAndInitRouting,
-      deps: [ModuleService, Router],
+      deps: [Injector],
       multi: true,
     },
   ],

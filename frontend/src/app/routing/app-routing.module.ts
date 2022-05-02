@@ -6,8 +6,8 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { HomeContentComponent } from '../components/home-content/home-content.component';
 import { PageNotFoundComponent } from '../components/page-not-found/page-not-found.component';
-import { AuthGuard, ModuleGuardService } from '@geonature/routing/routes-guards.service';
-
+import { AuthGuard } from '@geonature/routing/auth-guard.service';
+import { ModuleGuardService } from '@geonature/routing/module.guard.service';
 import { NavHomeComponent } from '../components/nav-home/nav-home.component';
 
 const defaultRoutes: Routes = [
@@ -56,3 +56,20 @@ const defaultRoutes: Routes = [
 ];
 
 export const routing = RouterModule.forRoot(defaultRoutes, { useHash: true });
+
+export function addModuleInRouting(module) {
+  if (module.ng_module) {
+    const moduleConfig = {
+      path: module.module_path,
+      loadChildren: () =>
+        import(
+          '../../../../external_modules/' + module.ng_module + '/frontend/app/gnModule.module'
+        ).then((m) => m.GeonatureModule),
+      canActivate: [ModuleGuardService],
+      data: {
+        module_code: module.module_code,
+      },
+    };
+    return moduleConfig;
+  }
+}

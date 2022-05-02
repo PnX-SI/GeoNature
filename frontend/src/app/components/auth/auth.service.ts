@@ -1,6 +1,6 @@
 import { Router, ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import { CookieService } from 'ng2-cookies';
@@ -9,6 +9,8 @@ import { forkJoin } from 'rxjs';
 import { AppConfig } from '../../../conf/app.config';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { ModuleService } from '../../services/module.service';
+import { tap } from 'rxjs/operators';
+import { RoutingService } from '../../routing/routing.service';
 
 export interface User {
   user_login: string;
@@ -32,7 +34,9 @@ export class AuthService {
     private _http: HttpClient,
     private _cookie: CookieService,
     private cruvedService: CruvedStoreService,
-    private moduleService: ModuleService
+    private _injector: Injector,
+    private _routingService: RoutingService,
+    private _moduleService: ModuleService
   ) {}
 
   setCurrentUser(user) {
@@ -99,7 +103,9 @@ export class AuthService {
         this.loginError = false;
         // Now that we are logged, we fetch the cruved again, and redirect once received
         forkJoin({
-          modules: this.moduleService.fetchModulesAndSetRouting(),
+          modules: this._moduleService
+            .loadModules()
+            .pipe(tap((modules) => this._routingService.loadRoutes(modules))),
         }).subscribe(() => {
           this.isLoading = false;
           let next = this.route.snapshot.queryParams['next'];
