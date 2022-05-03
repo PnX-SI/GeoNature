@@ -79,20 +79,20 @@
                     <div class="label">  Altitude max :</div>
                     <div class="value">{{ releve.altitude_max  || "-"}}</div>
                   </div>
+                  <!--Champs additionnels-->
+                  <ng-container *ngFor="let dynamiqueField of releveAddFields ">
+                    <div *ngIf="dynamiqueField.type_widget != 'html'">
+                      <div class="label"> {{dynamiqueField.attribut_label}} : </div>
+                      <div class="value"> 
+                        {{releve?.additional_fields[dynamiqueField.attribut_name]}}
+                      </div>
+                    </div>
+                  </ng-container>
                   <p id="info-geo">
                     <pnx-areas-intersected-modal 
                       [geojson]="geojson">
                     </pnx-areas-intersected-modal>
                   </p>
-                    <!--Champs additionnels-->
-                    <ng-container *ngFor="let dynamiqueField of releveAddFields ">
-                      <div *ngIf="dynamiqueField.type_widget != 'html'">
-                        <div class="label"> {{dynamiqueField.attribut_label}} : </div>
-                        <div class="value"> 
-                          {{releve?.additional_fields[dynamiqueField.attribut_name]}}
-                        </div>
-                      </div>
-                    </ng-container>
                 </div>
                 <div class="col-6">
                   <div *ngIf="occtaxConfig.form_fields.depth_min">
