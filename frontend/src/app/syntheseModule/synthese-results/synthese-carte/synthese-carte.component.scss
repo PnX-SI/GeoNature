@@ -6,16 +6,16 @@
   box-shadow: none;
   /* font-size:2; */
 }
-::ng-deep .synthese-map-meshes {
+::ng-deep .synthese-map-areas {
   background-color: rgba(255,255,255,.8);
 }
-::ng-deep .synthese-map-meshes .custom-control-label {
+::ng-deep .synthese-map-areas .custom-control-label {
   margin: .2rem;
 }
-::ng-deep .synthese-map-meshes .custom-control-label::before {
+::ng-deep .synthese-map-areas .custom-control-label::before {
   top: .05rem;
 }
-::ng-deep .synthese-map-meshes .custom-control-label::after {
+::ng-deep .synthese-map-areas .custom-control-label::after {
   top: calc(.05rem + 2px);
 }
 ::ng-deep .legend {

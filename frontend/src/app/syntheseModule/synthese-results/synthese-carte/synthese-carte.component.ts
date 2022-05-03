@@ -1,4 +1,14 @@
-import { Component, OnInit, Input, AfterViewInit, EventEmitter, OnChanges, Output, Inject, OnDestroy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  AfterViewInit,
+  EventEmitter,
+  OnChanges,
+  Output,
+  Inject,
+  OnDestroy,
+} from '@angular/core';
 import { GeoJSON } from 'leaflet';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { MapService } from '@geonature_common/map/map.service';
@@ -18,7 +28,6 @@ import { Subject } from 'rxjs';
   providers: [],
 })
 export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges, OnDestroy {
-
   public leafletDrawOptions = leafletDrawOption;
   public currentLeafletDrawCoord: any;
   public firstFileLayerMessage = true;
@@ -30,10 +39,10 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
 
   private destroy$: Subject<boolean> = new Subject<boolean>();
 
-  private meshesEnable;
-  private meshesLegend;
+  private areasEnable;
+  private areasLegend;
   private enableFitBounds = true;
-  private meshesLabelSwitchBtn;
+  private areasLabelSwitchBtn;
 
   private originDefaultStyle = {
     color: '#3388ff',
@@ -43,18 +52,18 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   private selectedDefaultStyle = {
     color: '#ff0000',
   };
-  private originMeshesStyle = {
+  private originAreasStyle = {
     color: '#FFFFFF',
     weight: 0.4,
     fillOpacity: 0.8,
   };
-  private selectedMeshesStyle = {
+  private selectedAreasStyle = {
     color: '#ff0000',
     weight: 3,
   };
 
   @Input() inputSyntheseData: GeoJSON;
-  @Output() onMeshesToggle = new EventEmitter<any>()
+  @Output() onAreasToggle = new EventEmitter<any>();
 
   constructor(
     @Inject(APP_CONFIG_TOKEN) private config,
@@ -62,9 +71,11 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     private _ms: MapService,
     public formService: SyntheseFormService,
     private _commonService: CommonService,
-    private translateService: TranslateService,
+    private translateService: TranslateService
   ) {
-    this.meshesEnable = this.config.SYNTHESE.ENABLE_MESHES && this.config.SYNTHESE.MESHES_BY_DEFAULT;
+    this.areasEnable =
+      this.config.SYNTHESE.ENABLE_AREA_AGGREGATION &&
+      this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
   }
 
   ngOnInit() {
@@ -77,7 +88,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
 
   private initializeFormWithMapParams() {
     this.formService.searchForm.patchValue({
-      "with_meshes": this.meshesEnable
+      with_areas: this.areasEnable,
     });
     this.formService.searchForm.markAsDirty();
   }
@@ -101,12 +112,12 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     // add the featureGroup to the map
     this.cluserOrSimpleFeatureGroup.addTo(this._ms.map);
 
-    // Handle meshes button and legend
-    if (this.config.SYNTHESE.ENABLE_MESHES) {
-      this.addMeshesButton();
+    // Handle areas button and legend
+    if (this.config.SYNTHESE.ENABLE_AREA_AGGREGATION) {
+      this.addAreasButton();
       this.onLanguageChange();
-      if (this.meshesEnable) {
-        this.addMeshesLegend();
+      if (this.areasEnable) {
+        this.addAreasLegend();
       }
     }
   }
@@ -122,12 +133,14 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
 
   private defineI18nMessages() {
     // Define default messages for datatable
-    this.translateService.get('Synthese.Map.MeshesToggleBtn').subscribe((translatedTxt: string[]) => {
-      this.meshesLabelSwitchBtn.innerText = translatedTxt;
-    });
+    this.translateService
+      .get('Synthese.Map.AreasToggleBtn')
+      .subscribe((translatedTxt: string[]) => {
+        this.areasLabelSwitchBtn.innerText = translatedTxt;
+      });
   }
 
-  addMeshesButton() {
+  addAreasButton() {
     const LayerControl = L.Control.extend({
       options: {
         position: 'topright',
@@ -135,60 +148,58 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
       onAdd: (map) => {
         let switchBtnContainer = L.DomUtil.create(
           'div',
-          'leaflet-bar custom-control custom-switch leaflet-control-custom synthese-map-meshes'
+          'leaflet-bar custom-control custom-switch leaflet-control-custom synthese-map-areas'
         );
 
-        let switchBtn = L.DomUtil.create(
-          'input',
-          'custom-control-input',
-          switchBtnContainer
-        );
-        switchBtn.id = 'toggle-meshes-btn';
+        let switchBtn = L.DomUtil.create('input', 'custom-control-input', switchBtnContainer);
+        switchBtn.id = 'toggle-areas-btn';
         switchBtn.type = 'checkbox';
-        switchBtn.checked = this.config.SYNTHESE.MESHES_BY_DEFAULT;
+        switchBtn.checked = this.config.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
         switchBtn.onclick = () => {
-          this.meshesEnable = switchBtn.checked
+          this.areasEnable = switchBtn.checked;
           this.formService.searchForm.patchValue({
-            "with_meshes": switchBtn.checked
+            with_areas: switchBtn.checked,
           });
           this.formService.searchForm.markAsDirty();
-          this.onMeshesToggle.emit(this.formService.formatParams());
+          this.onAreasToggle.emit(this.formService.formatParams());
 
-          // Show meshes legend if meshes toggle button is enable
-          if (this.meshesEnable) {
-            this.addMeshesLegend();
+          // Show areas legend if areas toggle button is enable
+          if (this.areasEnable) {
+            this.addAreasLegend();
           } else {
-            this.removeMeshesLegend();
+            this.removeAreasLegend();
             this.enableFitBounds = false;
           }
         };
 
-        this.meshesLabelSwitchBtn = L.DomUtil.create(
+        this.areasLabelSwitchBtn = L.DomUtil.create(
           'label',
           'custom-control-label',
           switchBtnContainer
         );
-        this.meshesLabelSwitchBtn.setAttribute('for', 'toggle-meshes-btn');
-        this.meshesLabelSwitchBtn.innerText = this.translateService.instant('Synthese.Map.MeshesToggleBtn');
+        this.areasLabelSwitchBtn.setAttribute('for', 'toggle-areas-btn');
+        this.areasLabelSwitchBtn.innerText = this.translateService.instant(
+          'Synthese.Map.AreasToggleBtn'
+        );
 
         return switchBtnContainer;
       },
     });
 
-    const map = this._ms.getMap()
-    map.addControl(new LayerControl);
+    const map = this._ms.getMap();
+    map.addControl(new LayerControl());
   }
 
-  private addMeshesLegend() {
-    this.meshesLegend = new (L.Control.extend({
-      options: { position: 'bottomright' }
-    }));
+  private addAreasLegend() {
+    this.areasLegend = new (L.Control.extend({
+      options: { position: 'bottomright' },
+    }))();
 
     const vm = this;
-    this.meshesLegend.onAdd = (map) => {
-      let div = L.DomUtil.create("div", "info legend");
-      let grades = this.config['SYNTHESE']['MESHES_LEGEND_CLASSES']
-        .map(legendClass => legendClass.min)
+    this.areasLegend.onAdd = (map) => {
+      let div = L.DomUtil.create('div', 'info legend');
+      let grades = this.config['SYNTHESE']['AREA_AGGREGATION_LEGEND_CLASSES']
+        .map((legendClass) => legendClass.min)
         .reverse();
       let labels = ["<strong> Nombre <br> d'observations </strong> <br>"];
 
@@ -196,24 +207,24 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
       for (var i = 0; i < grades.length; i++) {
         labels.push(
           '<i style="background:' +
-          vm.getColor(grades[i] + 1) +
-          '"></i> ' +
-          grades[i] +
-          (grades[i + 1] ? "&ndash;" + grades[i + 1] + "<br>" : "+")
+            vm.getColor(grades[i] + 1) +
+            '"></i> ' +
+            grades[i] +
+            (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+')
         );
       }
-      div.innerHTML = labels.join("<br>");
+      div.innerHTML = labels.join('<br>');
 
       return div;
     };
 
     const map = this._ms.getMap();
-    this.meshesLegend.addTo(map);
+    this.areasLegend.addTo(map);
   }
 
-  private removeMeshesLegend() {
+  private removeAreasLegend() {
     const map = this._ms.getMap();
-    this.meshesLegend.remove(map);
+    this.areasLegend.remove(map);
   }
 
   ngOnChanges(change) {
@@ -227,26 +238,24 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
       // regenerate the featuregroup
       this.cluserOrSimpleFeatureGroup = this.config.SYNTHESE.ENABLE_LEAFLET_CLUSTER
         ? (L as any).markerClusterGroup({
-          iconCreateFunction: (cluster) => {
-            const obsChildCount = cluster.getAllChildMarkers()
-              .map(marker => marker.countObs)
-              .reduce((previous, next) => previous + next);
-            const clusterSize = (obsChildCount > 100)
-              ? 'large'
-              : (obsChildCount > 10)
-                ? 'medium'
-                : 'small';
-            return L.divIcon({
-              html: `<div><span>${obsChildCount}</span></div>`,
-              className: `marker-cluster marker-cluster-${clusterSize}`,
-              iconSize: L.point(40, 40)
-            });
-          }
-        })
+            iconCreateFunction: (cluster) => {
+              const obsChildCount = cluster
+                .getAllChildMarkers()
+                .map((marker) => marker.countObs)
+                .reduce((previous, next) => previous + next);
+              const clusterSize =
+                obsChildCount > 100 ? 'large' : obsChildCount > 10 ? 'medium' : 'small';
+              return L.divIcon({
+                html: `<div><span>${obsChildCount}</span></div>`,
+                className: `marker-cluster marker-cluster-${clusterSize}`,
+                iconSize: L.point(40, 40),
+              });
+            },
+          })
         : new L.FeatureGroup();
 
       change.inputSyntheseData.currentValue.features.forEach((geojson) => {
-        let countObs = geojson.properties.observations.id.length
+        let countObs = geojson.properties.observations.id.length;
         // we don't create a generic function for setStyle and event on each layer to avoid
         // a if on possible milion of point (with multipoint we must set the event on each point)
         if (geojson.geometry.type == 'Point' || geojson.geometry.type == 'MultiPoint') {
@@ -269,13 +278,15 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
             geojson.geometry.coordinates,
             geojson.geometry.type === 'Polygon' ? 1 : 2
           );
-          if (this.meshesEnable) {
-            this.setMeshesStyle(new L.Polygon(latLng), geojson.properties.observations.id);
-          }
-          else {
+          if (this.areasEnable) {
+            this.setAreasStyle(new L.Polygon(latLng), geojson.properties.observations.id);
+          } else {
             this.setStyleEventAndAdd(new L.Polygon(latLng), geojson.properties.observations.id);
           }
-        } else if (geojson.geometry.type == 'LineString' || geojson.geometry.type == 'MultiLineString') {
+        } else if (
+          geojson.geometry.type == 'LineString' ||
+          geojson.geometry.type == 'MultiLineString'
+        ) {
           const latLng = L.GeoJSON.coordsToLatLngs(
             geojson.geometry.coordinates,
             geojson.geometry.type === 'LineString' ? 0 : 1
@@ -300,18 +311,18 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
-  private setMeshesStyle(layer, ids) {
-    this.originMeshesStyle['fillColor'] = this.getColor(ids.length);
-    layer.setStyle(this.originMeshesStyle);
+  private setAreasStyle(layer, ids) {
+    this.originAreasStyle['fillColor'] = this.getColor(ids.length);
+    layer.setStyle(this.originAreasStyle);
     this.eventOnEachFeature(ids, layer);
     this.cluserOrSimpleFeatureGroup.addLayer(layer);
   }
 
   private getColor(obsNbr) {
-    let classesNbr = this.config['SYNTHESE']['MESHES_LEGEND_CLASSES'].length;
-    let lastIndex = (classesNbr - 1);
+    let classesNbr = this.config['SYNTHESE']['AREA_AGGREGATION_LEGEND_CLASSES'].length;
+    let lastIndex = classesNbr - 1;
     for (let i = 0; i < classesNbr; i++) {
-      let legendClass = this.config['SYNTHESE']['MESHES_LEGEND_CLASSES'][i];
+      let legendClass = this.config['SYNTHESE']['AREA_AGGREGATION_LEGEND_CLASSES'][i];
       if (i != lastIndex) {
         if (obsNbr > legendClass.min) {
           return legendClass.color;
@@ -341,8 +352,8 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
       click: (e) => {
         this.toggleStyle(layer);
         this.mapListService.mapSelected.next(ids);
-        if (this.meshesEnable) {
-          this.bindMeshesPopup(layer, ids);
+        if (this.areasEnable) {
+          this.bindAreasPopup(layer, ids);
         }
       },
     });
@@ -352,7 +363,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   private toggleStyle(selectedLayer) {
     // Reset style of previous selected layer
     if (this.mapListService.selectedLayer !== undefined) {
-      let originStyle = (this.meshesEnable) ? this.originMeshesStyle : this.originDefaultStyle;
+      let originStyle = this.areasEnable ? this.originAreasStyle : this.originDefaultStyle;
       this.mapListService.selectedLayer.setStyle(originStyle);
     }
 
@@ -360,11 +371,11 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     this.mapListService.selectedLayer = selectedLayer;
 
     // Set selected style on new selected layer
-    let selectedStyle = (this.meshesEnable) ? this.selectedMeshesStyle : this.selectedDefaultStyle;
+    let selectedStyle = this.areasEnable ? this.selectedAreasStyle : this.selectedDefaultStyle;
     this.mapListService.selectedLayer.setStyle(selectedStyle);
   }
 
-  private bindMeshesPopup(layer, ids) {
+  private bindAreasPopup(layer, ids) {
     let popupContent = `<b>${ids.length} observation(s)</b>`;
     layer.bindPopup(popupContent).openPopup();
   }
