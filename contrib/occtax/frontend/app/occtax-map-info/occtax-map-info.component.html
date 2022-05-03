@@ -84,6 +84,15 @@
                       [geojson]="geojson">
                     </pnx-areas-intersected-modal>
                   </p>
+                    <!--Champs additionnels-->
+                    <ng-container *ngFor="let dynamiqueField of releveAddFields ">
+                      <div *ngIf="dynamiqueField.type_widget != 'html'">
+                        <div class="label"> {{dynamiqueField.attribut_label}} : </div>
+                        <div class="value"> 
+                          {{releve?.additional_fields[dynamiqueField.attribut_name]}}
+                        </div>
+                      </div>
+                    </ng-container>
                 </div>
                 <div class="col-6">
                   <div *ngIf="occtaxConfig.form_fields.depth_min">
@@ -123,15 +132,6 @@
                     <div class="label"> Commentaire : </div>
                     <div class="value"> {{releve.comment || "-"}}  </div>
                   </div> 
-                  <!--Champs additionnels-->
-                  <ng-container *ngFor="let dynamiqueField of releveAddFields ">
-                    <div>
-                      <div class="label"> {{dynamiqueField.attribut_label}} : </div>
-                      <div class="value"> 
-                        {{releve?.additional_fields[dynamiqueField.attribut_name]}}
-                      </div>
-                    </div>
-                  </ng-container>
         
                 </div>
               </div>
