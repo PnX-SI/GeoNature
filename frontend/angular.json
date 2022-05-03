@@ -17,7 +17,14 @@
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
-            "assets": ["src/assets", "src/custom", "src/favicon.ico", "src/external_assets"],
+            "assets": [
+              "src/assets", "src/custom", "src/favicon.ico", "src/external_assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/leaflet/dist/images/",
+                "output": "./assets/"
+             }
+            ],
             "styles": [
               "node_modules/primeng/resources/themes/nova/theme.css",
               "node_modules/primeng/resources/primeng.min.css",
