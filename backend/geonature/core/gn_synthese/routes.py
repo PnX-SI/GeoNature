@@ -175,8 +175,8 @@ def get_observations_for_web(info_role):
     ]
     observations = func.json_build_object(*columns).label("obs_as_json")
 
-    if "with_meshes" in filters and (
-        filters["with_meshes"] in ["1", "true"] or filters["with_meshes"] == True
+    if "with_areas" in filters and (
+        filters["with_areas"] in ["1", "true"] or filters["with_areas"] == True
     ):
         geom_4326 = func.ST_Transform(LAreas.geom, 4326).label("geom")
     else:
@@ -194,7 +194,7 @@ def get_observations_for_web(info_role):
         VSyntheseForWebApp,
         obs_query,
         filters,
-        meshes_type=current_app.config["SYNTHESE"]["MESHES_TYPE"],
+        areas_type=current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"],
     )
     synthese_query_class.filter_query_all_filters(info_role)
     query_cte = synthese_query_class.query.cte("query_cte")

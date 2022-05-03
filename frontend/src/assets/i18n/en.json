@@ -198,7 +198,7 @@
   "Synthese": {
     "DeleteObs": "Delete this observation",
     "Map": {
-      "MeshesToggleBtn": "Meshes"
+      "AreasToggleBtn": "Areas"
     }
   },
   "MyAccount": "My account",
