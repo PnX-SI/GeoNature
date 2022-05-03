@@ -8,6 +8,11 @@
   font-weight: bold;
 }
 
+#card-occ {
+  max-height: 30vh;
+  overflow-y: auto;
+}
+
 .info-occurrence {
   margin-top: 10px;
 }
