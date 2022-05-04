@@ -281,7 +281,10 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
           if (this.areasEnable) {
             this.setAreasStyle(new L.Polygon(latLng), geojson.properties.observations.id);
           } else {
-            this.setStyleEventAndAdd(new L.Polygon(latLng), geojson.properties.observations.id);
+            this.setStyleEventAndAdd(
+              new L.Polygon(latLng).bindTooltip(`${countObs} observation(s)`),
+              geojson.properties.observations.id
+            );
           }
         } else if (
           geojson.geometry.type == 'LineString' ||
@@ -291,7 +294,10 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
             geojson.geometry.coordinates,
             geojson.geometry.type === 'LineString' ? 0 : 1
           );
-          this.setStyleEventAndAdd(new L.Polyline(latLng), geojson.properties.observations.id);
+          this.setStyleEventAndAdd(
+            new L.Polyline(latLng).bindTooltip(`${countObs} observation(s)`),
+            geojson.properties.observations.id
+          );
         }
       });
       this._ms.map.addLayer(this.cluserOrSimpleFeatureGroup);
