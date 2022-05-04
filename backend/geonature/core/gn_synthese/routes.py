@@ -178,9 +178,9 @@ def get_observations_for_web(info_role):
     if "with_areas" in filters and (
         filters["with_areas"] in ["1", "true"] or filters["with_areas"] == True
     ):
-        geom_4326 = func.ST_Transform(LAreas.geom, 4326).label("geom")
+        geom_4326 = LAreas.geom
     else:
-        geom_4326 = func.ST_AsGeoJSON(VSyntheseForWebApp.the_geom_4326).label("geom")
+        geom_4326 = VSyntheseForWebApp.the_geom_4326.label("geom")
 
     obs_query = (
         select([geom_4326, observations])
@@ -200,12 +200,21 @@ def get_observations_for_web(info_role):
     query_cte = synthese_query_class.query.cte("query_cte")
 
     # Group geometries with main query
-    st_asgeojson = func.ST_AsGeoJSON(query_cte.c.geom).label("st_asgeojson")
+
+    if "with_areas" in filters and (
+        filters["with_areas"][0] in ["1", "true"] or filters["with_areas"][0] == True
+    ):
+        st_asgeojson = func.ST_Transform(query_cte.c.geom, 4326)
+    else:
+        st_asgeojson = query_cte.c.geom
+
     properties = func.json_build_object(
         "observations", func.json_agg(query_cte.c.obs_as_json).label("observations")
     )
 
-    query = select([st_asgeojson, properties]).group_by(query_cte.c.geom)
+    query = select([func.ST_AsGeoJSON(st_asgeojson).label("st_asgeojson"), properties]).group_by(
+        query_cte.c.geom
+    )
     results = DB.session.execute(query)
 
     # Build GeoJson
