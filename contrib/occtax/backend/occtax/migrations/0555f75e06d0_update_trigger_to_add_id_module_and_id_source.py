@@ -29,6 +29,7 @@ def upgrade():
             UPDATE gn_synthese.synthese s SET
                 id_dataset = updated_rows.id_dataset,
                 id_module = updated_rows.id_module,
+                id_source = sources.id_source,
                 -- take observer_txt only if not null
                 observers = COALESCE(updated_rows.observers_txt, observers),
                 id_digitiser = updated_rows.id_digitiser,
@@ -52,6 +53,7 @@ def upgrade():
                 FROM NEW as updated_rows  
                 JOIN pr_occtax.t_occurrences_occtax o ON updated_rows.id_releve_occtax = o.id_releve_occtax
                 JOIN  pr_occtax.cor_counting_occtax c ON o.id_occurrence_occtax = c.id_occurrence_occtax
+                LEFT JOIN gn_synthese.t_sources sources ON sources.id_module = updated_rows.id_module
                 WHERE s.unique_id_sinp_grp  = updated_rows.unique_id_sinp_grp
                 ;
 

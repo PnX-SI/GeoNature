@@ -24,6 +24,8 @@ def upgrade():
             ALTER TABLE ONLY pr_occtax.t_releves_occtax 
                 ADD CONSTRAINT fk_id_module FOREIGN KEY (id_module) 
                 REFERENCES gn_commons.t_modules (id_module) ON UPDATE CASCADE; 
+            UPDATE pr_occtax.t_releves_occtax
+            SET id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'OCCTAX');
         """
     )
 
