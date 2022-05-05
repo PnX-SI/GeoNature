@@ -3,6 +3,7 @@
   *ngIf="dataLoading"
 >
 </div>
+
 <div class="float-btns" >
   <button
     id="add-btn"
@@ -74,6 +75,7 @@
       [footerHeight]="50"
       [headerHeight]="50"
       (select)="mapListService.onRowSelect($event)"
+      data-qa="pnx-occhab-map-list-datatable"
     >
       <ngx-datatable-row-detail
         #myDetailRow

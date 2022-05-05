@@ -22,6 +22,7 @@
           class="uppercase"
           mat-raised-button
           color="primary"
+          data-qa="pnx-metadata-add-jdd"
         >
           Ajouter un jeu de données
         </button>
@@ -34,6 +35,7 @@
             type="text"
             placeholder="Rechercher"
             [formControl]="metadataService.rapidSearchControl"
+            data-qa="pnx-metadata-search"
           >
         </div>
         <div class="col-sm-3">
@@ -82,6 +84,7 @@
           <ng-container *ngFor="let af of (acquisitionFrameworks | async); let idx = index">
             <mat-expansion-panel
               [expanded]="expandAccordions"
+              [attr.data-qa]='"pnx-metadata-acq-framework"'
             >
               <mat-expansion-panel-header
                 collapsedHeight="*"

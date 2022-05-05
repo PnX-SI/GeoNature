@@ -27,25 +27,25 @@ describe("Testing metadata", () => {
     cy.get('[data-qa="gn-common-form-observers-select-AGENT test"]').click()
     cy.get('#validateButton').should('be.disabled')
     
-    cy.get('#station-card > div > div:nth-child(1) > div.col > pnx-datasets > ng-select').click()
+    cy.get('[data-qa="pnx-occhab-form-dataset"] > ng-select').click()
     cy.get('[data-qa="Carto d\'habitat X"]').click()
     cy.get('#validateButton').should('be.disabled')
     
-    cy.get('#station-card > div > div:nth-child(7) > div > pnx-dumb-select > div > select').select("1: Object")
+    cy.get('[data-qa="pnx-occhab-form-geographic"] > div > select').select("1: Object")
     cy.get('#validateButton').should('be.disabled')
 
     cy.get('#add-hab-btn').click()
     cy.get('#taxonInput').type('dune')
     cy.get('#ngb-typeahead-3-0').click()
-    cy.get('[data-qa="pnx-occhab-form"] > div:nth-child(2) > div > div:nth-child(3) > div > div > pnx-dumb-select:nth-child(4) > div > select').select('1: Object')
-    cy.get('[data-qa="pnx-occhab-form"] > div:nth-child(2) > div > div:nth-child(3) > div > div > button').click()
+    cy.get('[data-qa="pnx-occhab-form-technique-collect"] > div > select').select('1: Object')
+    cy.get('[data-qa="pnx-occhab-form-valid-button"]').click()
 
     cy.get('#validateButton').click()
 
   })
 
   it('should display the new habitation', async () => {
-    const listHabit = await promisify(cy.get('[data-qa="pnx-occhab-map-list"] > div:nth-child(2) > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller'))
+    const listHabit = await promisify(cy.get('[data-qa="pnx-occhab-map-list-datatable"] > div > datatable-body > datatable-selection > datatable-scroller'))
     expect(listHabit[0].children[0].children[0].children[1].children[4].innerText).contains('Prés salés du contact haut schorre/dune')
     listHabit[0].children[0].children[0].children[1].children[2].children[0].children[0].click()
   })

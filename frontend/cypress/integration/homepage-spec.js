@@ -1,5 +1,3 @@
-import promisify from 'cypress-promise';
-
 
 describe("Testing homepage", () => {
 
@@ -9,21 +7,21 @@ describe("Testing homepage", () => {
   });
 
   it('should close and open the menu', () => {
-    cy.get("#app-toolbar > button.mat-focus-indicator.mat-tooltip-trigger.mat-elevation-z1.mr-2.mat-icon-button.mat-button-base").click()
+    cy.get('[data-qa="pnx-home-content-sidebar-open-button"]').click()
     cy.wait(500)
     cy.get("#app-sidenav").should('have.css', 'visibility').and('match', /hidden/)
-    cy.get("#app-toolbar > button.mat-focus-indicator.mat-tooltip-trigger.mat-elevation-z1.mr-2.mat-icon-button.mat-button-base").click()
+    cy.get('[data-qa="pnx-home-content-sidebar-open-button"]').click()
     cy.wait(500)
     cy.get("#app-sidenav").should('have.css', 'visibility').and('match', /visible/)
   })
 
   it('should display synthese page', () => {
-    cy.get('[data-qa="pnx-home-content"] > div.row > div.col-6.ng-star-inserted > div > div.panel-heading > button').click({force: true})
+    cy.get('[data-qa="pnx-home-content-explore-data-button"]').click({force: true})
     cy.url().should('include', 'synthese') 
   })
 
   it('back to home', () => {
-    cy.get('#app-sidenav > div > pnx-sidenav-items > mat-card').click()
+    cy.get('[data-qa="gn-sidenav-mat-card"]').click()
   })
 
   // it('open documentation', () => {
@@ -31,8 +29,8 @@ describe("Testing homepage", () => {
   // })
 
   it('disconnect', () => {
-    cy.get('#app-toolbar > button.mat-focus-indicator.mat-tooltip-trigger.mx-2.mat-elevation-z1.mat-icon-button.mat-button-base').click()
-    cy.get('#cdk-step-content-0-0 > form > button')
+    cy.get('[data-qa="pnx-home-content-exit-button"]').click()
+    cy.get('[data-qa="gn-connection-button"]')
   })
 
 })

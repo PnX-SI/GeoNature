@@ -24,7 +24,7 @@ describe("Testing metadata", () => {
   });
 
   it('should display "cadre d\'acquisition"', async () => {
-    const listCadreAcq = await promisify(cy.get("[data-qa='pnx-metadata'] > div > div.card-body > mat-accordion > mat-expansion-panel.mat-expansion-panel.ng-tns-c206-6.ng-star-inserted"))
+    const listCadreAcq = await promisify(cy.get("[data-qa='pnx-metadata-acq-framework']"))
     const firstCadreAcqIntitule = listCadreAcq[0].firstChild.firstChild.firstChild.children[1].innerText
     
     expect(firstCadreAcqIntitule).to.equal("Données d'observation de la faune, de la Flore et de la fonge du Parc national des Ecrins\n57b7d0f2-4183-4b7b-8f08-6e105d476dc5")
@@ -54,7 +54,7 @@ describe("Testing metadata", () => {
   })
 
   it('should display the good "jeux de données"', () => {
-    cy.get('[data-qa="pnx-metadata"] > div > div.card-body > div:nth-child(2) > div.form-group.col-sm-7 > input').type('contact')
+    cy.get('[data-qa="pnx-metadata-search"]').type('contact')
     cy.get('[data-qa="pnx-metadata-jdd-1"]').contains(jdd)
     cy.get('[data-qa="pnx-metadata-jdd-actif-1"]').click()
   })
@@ -97,76 +97,76 @@ describe("Testing metadata", () => {
 //   })
 
 	it('should create a new "jeux de données"', () => {
-		cy.get('[data-qa="pnx-metadata"] > div > div.card-body > div.row.ml-4.mb-4 > button:nth-child(2)').click()
+		cy.get('[data-qa="pnx-metadata-add-jdd"]').click()
 
-		cy.get("[data-qa='pnx-dataset-form'] > div.mr-1.mt-1 > button.mat-focus-indicator.button-success.ml-1.mat-raised-button.mat-button-base.mat-button-disabled").should('be.disabled')
+		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 
 		cy.get('[data-qa="pnx-dataset-form"] > div.row > div.col-md-4 > div:nth-child(1) > div.card-body > pnx-metadata-actor > div > form > ng-select > div > div > div.ng-input').click()
 		cy.get('[data-qa="pnx-metadata-organism-ALL"]').click()
-		cy.get("[data-qa='pnx-dataset-form'] > div.mr-1.mt-1 > button.mat-focus-indicator.button-success.ml-1.mat-raised-button.mat-button-base.mat-button-disabled").should('be.disabled')
+		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 
-		cy.get('[data-qa="pnx-dataset-form"] > div.row > div.col-md-8 > div > div.card-body > div:nth-child(1) > ng-select').click()
+		cy.get('[data-qa="pnx-dataset-form-select-cadre-acq"]').click()
 		cy.get('[data-qa="pnx-metadata-jdd-'+newCadreAcq.name+'"]').click()
-		cy.get("[data-qa='pnx-dataset-form'] > div.mr-1.mt-1 > button.mat-focus-indicator.button-success.ml-1.mat-raised-button.mat-button-base.mat-button-disabled").should('be.disabled')
+		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 
-		cy.get('[data-qa="pnx-dataset-form"] > div.row > div.col-md-8 > div > div.card-body > div:nth-child(2) > input').type(newJdd.name)
-		cy.get("[data-qa='pnx-dataset-form'] > div.mr-1.mt-1 > button.mat-focus-indicator.button-success.ml-1.mat-raised-button.mat-button-base.mat-button-disabled").should('be.disabled')
+		cy.get('[data-qa="pnx-dataset-form-input-jdd-name"]').type(newJdd.name)
+		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 
-		cy.get('[data-qa="pnx-dataset-form"] > div.row > div.col-md-8 > div > div.card-body > div:nth-child(3) > div > input').type(newJdd.shortname)
-		cy.get("[data-qa='pnx-dataset-form'] > div.mr-1.mt-1 > button.mat-focus-indicator.button-success.ml-1.mat-raised-button.mat-button-base.mat-button-disabled").should('be.disabled')
+		cy.get('[data-qa="pnx-dataset-form-input-jdd-shortname"]').type(newJdd.shortname)
+		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 		
-		cy.get('[data-qa="pnx-dataset-form"] > div.row > div.col-md-8 > div > div.card-body > div:nth-child(4) > textarea').type(newJdd.description)
-		cy.get("[data-qa='pnx-dataset-form'] > div.mr-1.mt-1 > button.mat-focus-indicator.button-success.ml-1.mat-raised-button.mat-button-base.mat-button-disabled").should('be.disabled')
+		cy.get('[data-qa="pnx-dataset-form-input-jdd-description"]').type(newJdd.description)
+		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 	
-		cy.get("[data-qa='pnx-dataset-form'] > div.row > div.col-md-8 > div > div.card-body > div:nth-child(7) > div:nth-child(1) > pnx-nomenclature > ng-select > div > div > div.ng-input").click()
+		cy.get("[data-qa='pnx-dataset-form-datatype'] > ng-select > div > div > div.ng-input").click()
 		cy.get('[data-qa="Non renseigné"]').click()
-		cy.get("[data-qa='pnx-dataset-form'] > div.mr-1.mt-1 > button.mat-focus-indicator.button-success.ml-1.mat-raised-button.mat-button-base.mat-button-disabled").should('be.disabled')
+		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 	
-		cy.get('[data-qa="pnx-dataset-form"] > div.row > div.col-md-8 > div > div.card-body > div:nth-child(7) > div:nth-child(2) > pnx-nomenclature > ng-select > div > div > div.ng-input').click()
+		cy.get('[data-qa="pnx-dataset-form-status-source"] > ng-select > div > div > div.ng-input').click()
 		cy.get('[data-qa="Collection : l\'observation concerne une base de données de collection."]').click()
-		cy.get("[data-qa='pnx-dataset-form'] > div.mr-1.mt-1 > button.mat-focus-indicator.button-success.ml-1.mat-raised-button.mat-button-base.mat-button-disabled").should('be.disabled')
+		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 	
-		cy.get('[data-qa="pnx-dataset-form"] > div.row > div.col-md-8 > div > div.card-body > div:nth-child(8) > pnx-nomenclature > ng-select > div > div > div.ng-input').click()
+		cy.get('[data-qa="pnx-dataset-form-objectif"] > ng-select > div > div > div.ng-input').click()
 		cy.get('[data-qa="Cas n’entrant pas clairement dans les autres rubriques. Dans ce cas les métadonnées (champ libres « description » et « protocole » des fiches de métadonnées) devront bien expliquer en quoi consiste le but de l’acquisition des données"]').click()
-		cy.get("[data-qa='pnx-dataset-form'] > div.mr-1.mt-1 > button.mat-focus-indicator.button-success.ml-1.mat-raised-button.mat-button-base.mat-button-disabled").should('be.disabled')
+		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 	
-		cy.get('[data-qa="pnx-dataset-form"] > div.row > div.col-md-8 > div > div.card-body > div:nth-child(9) > pnx-nomenclature > ng-select > div > div > div.ng-input').click()
+		cy.get('[data-qa="pnx-dataset-form-territories"] > ng-select > div > div > div.ng-input').click()
 		cy.get('[data-qa="Clipperton"]').click()
-		cy.get("[data-qa='pnx-dataset-form'] > div.mr-1.mt-1 > button.mat-focus-indicator.button-success.ml-1.mat-raised-button.mat-button-base.mat-button-disabled").should('be.disabled')
+		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 
-		cy.get('[data-qa="pnx-dataset-form"] > div.row > div.col-md-8 > div > div.card-body > div:nth-child(10) > pnx-nomenclature > ng-select > div > div > div.ng-input').click()
+		cy.get('[data-qa="pnx-dataset-form-collecting-method"] > ng-select > div > div > div.ng-input').click()
 		cy.get('[data-qa="Autre"]').click()
-		cy.get("[data-qa='pnx-dataset-form'] > div.mr-1.mt-1 > button.mat-focus-indicator.button-success.ml-1.mat-raised-button.mat-button-base.mat-button-disabled").should('be.disabled')
+		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 	
-		cy.get('[data-qa="pnx-dataset-form"] > div.row > div.col-md-8 > div > div.card-body > div:nth-child(11) > div:nth-child(1) > pnx-nomenclature > ng-select > div > div > div.ng-input').click()
+		cy.get('[data-qa="pnx-dataset-form-data-origin"] > ng-select > div > div > div.ng-input').click()
 		cy.get('[data-qa="Ne sait pas : L\'information indiquant si la Donnée Source est publique ou privée n\'est pas connue."]').click()
-		cy.get("[data-qa='pnx-dataset-form'] > div.mr-1.mt-1 > button.mat-focus-indicator.button-success.ml-1.mat-raised-button.mat-button-base.mat-button-disabled").should('be.disabled')
+		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 		
-		cy.get('[data-qa="pnx-dataset-form"] > div.row > div.col-md-8 > div > div.card-body > div:nth-child(11) > div:nth-child(2) > pnx-nomenclature > ng-select > div').click()
+		cy.get('[data-qa="pnx-dataset-form-resource-type"] > ng-select > div').click()
 		cy.get('[data-qa="Jeu de données"]').click()
 
-		cy.get('[data-qa="pnx-dataset-form"] > div.mr-1.mt-1 > button.mat-focus-indicator.button-success.ml-1.mat-raised-button.mat-button-base').click()
+		cy.get('[data-qa="pnx-dataset-form-save-jdd"]').click()
 	})
 
 	it('should new "jeux de données" created', () => {
 		cy.get('[data-qa="pnx-metadata-dataset-name"]').contains(newJdd.name)
-		cy.get('[data-qa="pnx-datasets-card"] > div:nth-child(1) > div > button').click()
+		cy.get('[data-qa="pnx-metadata-exit-jdd"]').click()
 	})
 
 	it('should delete the new "jeux de données"', async () => {
-    cy.get('[data-qa="pnx-metadata"] > div > div.card-body > div:nth-child(2) > div.form-group.col-sm-7 > input').clear()
+    cy.get('[data-qa="pnx-metadata-search"]').clear()
 		cy.get('[data-qa="pnx-metadata-acq-framework-header-1"]').click()
 		const myCadreAcq = await promisify(cy.get('[data-qa="pnx-metadata-acq-framework-header-1"]'))
     const id = myCadreAcq[0].parentElement.childNodes[1].firstChild.firstChild.childNodes[1].childNodes[0].childNodes[0].innerText
 		cy.get('[data-qa="pnx-metadata-jdd-nb-obs-'+id+'"]').contains("0")
 		cy.get('[data-qa="pnx-metadata-jdd-delete-'+id+'"]').click()
-		cy.get("#mat-dialog-0 > gn-confirmation-dialog > div.mat-dialog-actions > button.mat-focus-indicator.mat-raised-button.mat-button-base.mat-warn.cdk-focused.cdk-program-focused").click()
+		cy.get('[data-qa="confirmation-dialog-yes"]').click()
 	})
 
 	it('should display data of the "cadre d\'acquisition"', async () => {
     cy.get('[data-qa="pnx-metadata-acq-framework-header-0"]').click({force: true})
 		cy.get('[data-qa="pnx-metadata-jdd-display-data-1"]').click({force: true})
-		const listData = await promisify(cy.get("[data-qa='pnx-synthese'] > div > div.col-sm-12.col-md-5.padding-sm > pnx-synthese-list > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller"))
+		const listData = await promisify(cy.get("[data-qa='pnx-synthese-list'] > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller"))
 		const elements = Array.from(listData[0].children);
 		elements.forEach(data => {
 			expect(data.children[0].children[1].children[4].innerText).contains("Contact aléatoire tous règnes confondus")

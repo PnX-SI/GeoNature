@@ -199,19 +199,19 @@ describe("Testing adding an observation in OccTax", () => {
     const nomValideResult = cy.get("[data-qa='occurrence-nom-valide']");
     nomValideResult.contains("Canis lupus Linnaeus, 1758")
     cy.get('[data-qa="occurrence-add-btn"]').should('be.enabled')
-
-    cy.get("#left-form > pnx-occtax-form-occurrence > div:nth-child(3) > div:nth-child(1) > pnx-nomenclature > ng-select > div > span.ng-clear-wrapper.ng-star-inserted").click()
+    
+    cy.get('[data-qa="pnx-nomenclature-meth-obs"] > ng-select > div > span.ng-clear-wrapper.ng-star-inserted').click()
     cy.get('[data-qa="occurrence-add-btn"]').should('be.disabled')
-    cy.get("#left-form > pnx-occtax-form-occurrence > div:nth-child(3)").click()
-    cy.get("#left-form > pnx-occtax-form-occurrence > div:nth-child(3) > div:nth-child(1) > small").contains(" Veuillez indiquer la technique d'observation ")
+    cy.get('[data-qa="pnx-nomenclature-info-comp"]').click()
+    cy.get('[data-qa="pnx-nomenclature-meth-obs-error"]').contains(" Veuillez indiquer la technique d'observation ")
     cy.get('[qa-test="Technique d\'observation"]').click()
     cy.get('[data-qa="Pour tout cas qui ne rentrerait pas dans la présente liste. Le nombre d\'apparitions permettra de faire évoluer la nomenclature."]').click()
     cy.get('[data-qa="occurrence-add-btn"]').should('be.enabled')
 
-    cy.get("#left-form > pnx-occtax-form-occurrence > div:nth-child(3) > div:nth-child(2) > pnx-nomenclature > ng-select > div > span.ng-clear-wrapper.ng-star-inserted").click()
+    cy.get('[data-qa="pnx-nomenclature-eta-bio"] > ng-select > div > span.ng-clear-wrapper.ng-star-inserted').click()
     cy.get('[data-qa="occurrence-add-btn"]').should('be.disabled')
-    cy.get("#left-form > pnx-occtax-form-occurrence > div:nth-child(3)").click()
-    cy.get("#left-form > pnx-occtax-form-occurrence > div:nth-child(3) > div:nth-child(2) > small").contains(" Veuillez indiquer l'état biologique ")
+    cy.get('[data-qa="pnx-nomenclature-info-comp"]').click()
+    cy.get('[data-qa="pnx-nomenclature-eta-bio-error"]').contains(" Veuillez indiquer l'état biologique ")
     cy.get('[qa-test="Etat biologique"]').click()
     cy.get('[data-qa="L\'individu a été observé vivant."]').click()
     cy.get('[data-qa="occurrence-add-btn"]').should('be.enabled')
@@ -220,8 +220,8 @@ describe("Testing adding an observation in OccTax", () => {
     cy.get('[data-qa="pnx-occtax-taxon-form-determinator"]')
 
     cy.get('[qa-test="Objet du dénombrement"] > div > span.ng-clear-wrapper.ng-star-inserted').click()
-    cy.get("#cdk-accordion-child-0 > div > pnx-occtax-form-counting > div:nth-child(1)").click()
-    cy.get("#cdk-accordion-child-0 > div > pnx-occtax-form-counting > small").contains(" Veuillez indiquer l'objet du dénombrement ")
+    cy.get('[data-qa="pnx-nomenclature-obj-denombrement"] > div:nth-child(1)').click()
+    cy.get('[data-qa="pnx-nomenclature-obj-denombrement"] > small').contains(" Veuillez indiquer l'objet du dénombrement ")
     cy.get('[qa-test="Objet du dénombrement"]').click()
     cy.get('[data-qa="Nombre d\'individus observés."]').click()
 
