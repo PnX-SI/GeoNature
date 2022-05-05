@@ -162,7 +162,7 @@ export class DataFormService {
   }
 
   getTaxaBibList() {
-    return this._http.get<any>(`${AppConfig.API_TAXHUB}/biblistes`)
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/biblistes/`)
       .pipe(map(d => d.data));
   }
 

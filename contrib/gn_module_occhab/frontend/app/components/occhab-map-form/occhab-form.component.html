@@ -1,4 +1,4 @@
-<div class="row row-0">
+<div class="row row-0" data-qa="pnx-occhab-form">
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
     <!-- HABITAT ALREADY SAVED -->
     <div
@@ -146,6 +146,7 @@
                   label="{{ 'MetaData.Datasets' | translate }}"
                   [parentFormControl]="occHabForm.stationForm.get('id_dataset')"
                   moduleCode="OCCHAB"
+                  data-qa="pnx-occhab-form-dataset"
                 >
                 </pnx-datasets>
               </ng-template>
@@ -185,7 +186,6 @@
               {{ 'Releve.DateMaxError' | translate }}
             </small>
           </div>
-
 
           <div class="form-group">
             <div class="row row-0">
@@ -275,7 +275,6 @@
             </div>
           </div>
 
-
           <pnx-dumb-select
             *ngIf="moduleConfig.formConfig['exposure']"
             label="Exposition"
@@ -313,6 +312,7 @@
               </pnx-dumb-select>
             </div>
           </div>
+
           <div class="row row-0">
             <div class="form-group col-6 padding-sm">
               <pnx-dumb-select
@@ -323,6 +323,7 @@
                 comparedKey="id_nomenclature"
                 titleKey="definition_fr"
                 displayedKey="label_fr"
+                data-qa="pnx-occhab-form-geographic"
               >
               </pnx-dumb-select>
             </div>
@@ -342,7 +343,6 @@
             </div>
 
           </div>
-
 
         </div>
       </div>
@@ -513,6 +513,7 @@
               comparedKey="id_nomenclature"
               titleKey="definition_fr"
               displayedKey="label_fr"
+              data-qa="pnx-occhab-form-technique-collect"
             >
             </pnx-dumb-select>
 
@@ -573,6 +574,7 @@
               [disabled]="
           occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm]
           && occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].invalid"
+              data-qa="pnx-occhab-form-valid-button"
             >
               Valider cet habitat
               <mat-icon>done</mat-icon>

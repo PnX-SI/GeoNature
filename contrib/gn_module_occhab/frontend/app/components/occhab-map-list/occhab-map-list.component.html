@@ -3,7 +3,8 @@
   *ngIf="dataLoading"
 >
 </div>
-<div class="float-btns">
+
+<div class="float-btns" >
   <button
     id="add-btn"
     mat-raised-button
@@ -33,7 +34,7 @@
 
 </div>
 
-<div class="row row-sm map-list-container">
+<div class="row row-sm map-list-container" data-qa="pnx-occhab-map-list">
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
     <pnx-map-list
       height='88vh'
@@ -74,6 +75,7 @@
       [footerHeight]="50"
       [headerHeight]="50"
       (select)="mapListService.onRowSelect($event)"
+      data-qa="pnx-occhab-map-list-datatable"
     >
       <ngx-datatable-row-detail
         #myDetailRow

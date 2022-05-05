@@ -5,7 +5,7 @@
 </div>
 
 
-<div class="wrapper">
+<div class="wrapper" data-qa='pnx-synthese'>
   <nav
     #navBar
     id="sidebar"
@@ -45,6 +45,7 @@
       <pnx-synthese-list
         [inputSyntheseData]="_mapListService.tableData"
         [searchBarHidden]="searchBarHidden"
+        data-qa="pnx-synthese-list"
       ></pnx-synthese-list>
     </div>
   </div>
