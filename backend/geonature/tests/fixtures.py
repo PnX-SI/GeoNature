@@ -219,14 +219,14 @@ def synthese_data(app, users, datasets, source):
     geom_4326 = from_shape(map_center_point, srid=4326)
     data = []
     with db.session.begin_nested():
-        taxons = [
-            Taxref.query.filter_by(cd_nom=713776).one(),
-            Taxref.query.filter_by(cd_nom=2497).one(),
-        ]
-        for taxon in taxons:
+        for cd_nom in [713776, 2497]:
+            taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
+            unique_id_sinp = (
+                "f4428222-d038-40bc-bc5c-6e977bbbc92b" if not data else func.uuid_generate_v4()
+            )
             s = Synthese(
                 id_source=source.id_source,
-                unique_id_sinp=func.uuid_generate_v4(),
+                unique_id_sinp=unique_id_sinp,
                 dataset=datasets["own_dataset"],
                 digitiser=users["self_user"],
                 nom_cite=taxon.lb_nom,
