@@ -91,7 +91,12 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
             // eslint-disable-next-line guard-for-in
             for (let prop in currentFeature.properties.observations) {
               propertiesContent +=
-                '<b>' + prop + '</b> : ' + currentFeature.properties.observations[prop] + ' ' + '<br>';
+                '<b>' +
+                prop +
+                '</b> : ' +
+                currentFeature.properties.observations[prop] +
+                ' ' +
+                '<br>';
             }
 
             //on right click display popup
