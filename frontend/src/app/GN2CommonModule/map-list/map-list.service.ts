@@ -294,7 +294,7 @@ export class MapListService {
         this.tableData.push(newFeature.properties.observations);
       });
     } else {
-      data.features.forEach(feature => {
+      data.features.forEach((feature) => {
         for (let obs of Object.values(feature.properties.observations)) {
           obs['selected'] = false;
           this.tableData.push(obs);

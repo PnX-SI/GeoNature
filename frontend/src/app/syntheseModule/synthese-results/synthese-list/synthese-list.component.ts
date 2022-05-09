@@ -61,23 +61,28 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.rowNumber = Math.trunc(h / 37);
 
     // On map click, select on the list a change the page
-    this.mapListService.onMapClik$.subscribe(id => {
-      this.mapListService.tableData.map(e => {
+    this.mapListService.onMapClik$.subscribe((id) => {
+      this.mapListService.tableData.map((e) => {
         if (e.selected && !id.includes(e.id)) {
-          e.selected = false
+          e.selected = false;
+        } else if (id.includes(e.id)) {
+          e.selected = true;
         }
-        else if (id.includes(e.id)) {
-          e.selected = true
-        }
-      })
-      let observations = this.mapListService.tableData.filter(e => {
-        return id.includes(e.id)
-      })
-      this.mapListService.tableData.sort((a,b) => { return b.selected - a.selected})
-      this.mapListService.tableData = [...this.mapListService.tableData]
-      this.mapListService.selectedRow = observations
-      const page = Math.trunc(this.mapListService.tableData.findIndex(e => {return e.id === id[0]}) / this.rowNumber)
-      this.table.offset = page
+      });
+      let observations = this.mapListService.tableData.filter((e) => {
+        return id.includes(e.id);
+      });
+      this.mapListService.tableData.sort((a, b) => {
+        return b.selected - a.selected;
+      });
+      this.mapListService.tableData = [...this.mapListService.tableData];
+      this.mapListService.selectedRow = observations;
+      const page = Math.trunc(
+        this.mapListService.tableData.findIndex((e) => {
+          return e.id === id[0];
+        }) / this.rowNumber
+      );
+      this.table.offset = page;
     });
   }
 
