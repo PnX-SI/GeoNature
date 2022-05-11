@@ -195,8 +195,16 @@ def datasets(users, acquisition_frameworks):
             ("associate_dataset", users["associate_user"]),
             ("stranger_dataset", users["stranger_user"]),
             ("orphan_dataset", None),
+            ("private_dataset", users["user"]),
         ]
     }
+    with db.session.begin_nested():
+        datasets["private_dataset"].nomenclature_data_origin = TNomenclatures.query.filter(
+            TNomenclatures.nomenclature_type.has(
+                BibNomenclaturesTypes.mnemonique == "DS_PUBLIQUE"
+            ),
+            TNomenclatures.mnemonique == "Privée",
+        ).one()
 
     return datasets
 
