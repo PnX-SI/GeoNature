@@ -1,4 +1,4 @@
-name: pytest
+name: test_back_front
 on:
   push:
     branches:
