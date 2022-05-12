@@ -1,0 +1,95 @@
+.panel {
+  margin-top: 10px;
+}
+
+.panel-signin {
+  color: #ced4da;
+  background-color: #1d21249e;
+}
+
+.panel-heading {
+  background-color: transparent;
+  color: white;
+  //font-weight: 600;
+  letter-spacing: 0.1rem;
+  text-align: center;
+  border-bottom: 1px solid #17c001;
+}
+
+.form-control {
+  color: #ced4da;
+  background-color: #1d21249e;
+  border: 1px solid #55585a;
+  position: relative;
+  padding-left: 15px !important;
+  border-radius: 0px !important;
+}
+
+.form-control:focus {
+  box-shadow: 0.5px -0.5px 0.5px 0.2rem rgba(98, 255, 0, 0.15) !important;
+}
+
+.addon {
+  color: #55585a;
+  position: absolute;
+  top: 10px;
+  left: 6px;
+  z-index: 9999;
+  font-size: 18px;
+}
+
+.form-group {
+  position: relative;
+}
+
+.btn {
+  font-size: 90%;
+  border-radius: 0px;
+  letter-spacing: 0.1rem;
+  font-weight: 600;
+  padding: 0.8rem;
+  transition: all 0.2s;
+}
+
+.btn-success {
+  color: #fff;
+  background-color: #17c001;
+  border-color: #17c001;
+}
+
+.btn-success:hover {
+  background-color: #14af00;
+  border-color: #14af00;
+}
+
+.alert-danger {
+  color: white;
+  border-color: red;
+  background-color: transparent;
+}
+
+#login-body {
+  background: url(../../../../custom/images/login_background.jpg) center 10% no-repeat fixed;
+  background-size: cover;
+  height: 100%;
+}
+
+form.ng-invalid {
+  border-left-style: none !important;
+}
+small {
+  color: red;
+}
+
+form h5 {
+  font-weight: bold;
+  margin-top: 30px;
+  font-size: 1.1em;
+}
+
+.mat-mini-fab {
+  background-color: #ddd !important;
+}
+.mat-mini-fab:hover {
+  background-color: #aaa !important;
+}

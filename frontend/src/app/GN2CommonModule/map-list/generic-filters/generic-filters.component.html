@@ -1,18 +1,32 @@
 <div class="row row-sm" id="generic-filter">
   <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4 padding-sm">
     <div class="input-group">
-      <input [formControl]="mapListService.genericFilterInput" type="text" class="form-control form-control-sm" placeholder="{{ 'Search' | translate }}" >
+      <input
+        [formControl]="mapListService.genericFilterInput"
+        type="text"
+        class="form-control form-control-sm"
+        placeholder="{{ 'Search' | translate }}"
+      />
       <div class="input-group-btn">
-        <button type="button" class="btn btn-outline-shadow dropdown-toggle btn-sm" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            {{ 'By' | translate }} {{mapListService.colSelected.name | readablePropertie}}
+        <button
+          type="button"
+          class="btn btn-outline-shadow dropdown-toggle btn-sm"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          {{ 'By' | translate }} {{ mapListService.colSelected.name | readablePropertie }}
         </button>
         <div class="dropdown-menu dropdown-menu-right">
-          <a class="dropdown-item font-md clickable" *ngFor="let col of mapListService.filterableColumns" (click)="onChangeFilterOps(col)">
-             {{ 'By' | translate }} {{col.name | readablePropertie}}
+          <a
+            class="dropdown-item font-md clickable"
+            *ngFor="let col of mapListService.filterableColumns"
+            (click)="onChangeFilterOps(col)"
+          >
+            {{ 'By' | translate }} {{ col.name | readablePropertie }}
           </a>
         </div>
       </div>
     </div>
   </div>
 </div>
-

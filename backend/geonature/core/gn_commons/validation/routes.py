@@ -31,7 +31,7 @@ def get_hist(uuid_attached_row):
             TValidations.id_nomenclature_valid_status,
             TValidations.validation_date,
             TValidations.validation_comment,
-            User.nom_role+' '+User.prenom_role,
+            User.nom_role + " " + User.prenom_role,
             TValidations.validation_auto,
             TNomenclatures.label_default,
             TNomenclatures.cd_nomenclature,

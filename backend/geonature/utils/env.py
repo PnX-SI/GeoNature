@@ -12,7 +12,6 @@ from flask_mail import Mail
 from flask_migrate import Migrate
 
 
-
 # Must be at top of this file. I don't know why (?)
 MAIL = Mail()
 
@@ -30,10 +29,11 @@ except pkg_resources.DistributionNotFound:
 BACKEND_DIR = ROOT_DIR / "backend"
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/geonature_config.toml"
 
-os.environ['FLASK_SQLALCHEMY_DB'] = 'geonature.utils.env.DB'
-os.environ['FLASK_MARSHMALLOW'] = 'geonature.utils.env.MA'
+os.environ["FLASK_SQLALCHEMY_DB"] = "geonature.utils.env.db"
 DB = db = SQLAlchemy()
+os.environ["FLASK_MARSHMALLOW"] = "geonature.utils.env.ma"
 MA = ma = Marshmallow()
+os.environ["FLASK_MIGRATE"] = "geonature.utils.env.migrate"
 migrate = Migrate()
 
 GN_MODULE_FILES = (
@@ -53,6 +53,3 @@ def import_requirements(req_file):
     cmd_return = subprocess.call(["pip", "install", "-r", req_file])
     if cmd_return != 0:
         raise GeoNatureError("Error while installing module backend dependencies")
-
-
-

@@ -20,7 +20,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import {MatIconRegistry} from '@angular/material/icon';
+import { MatIconRegistry } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
@@ -104,7 +104,6 @@ import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-da
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
 
-
 @NgModule({
   imports: [
     AutoCompleteModule,
@@ -140,7 +139,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     NgSelectModule,
     RouterModule,
     TranslateModule.forChild(),
-    TreeModule
+    TreeModule,
   ],
   declarations: [
     AcquisitionFrameworksComponent,
@@ -195,7 +194,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     TaxaComponent,
     TaxonAdvancedModalComponent,
     TaxonomyComponent,
-    TaxonTreeComponent
+    TaxonTreeComponent,
   ],
   providers: [
     CommonService,
@@ -214,7 +213,7 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     ConfirmationDialog,
     MediaDialog,
     TaxonAdvancedModalComponent,
-    TaxonTreeComponent
+    TaxonTreeComponent,
   ],
   exports: [
     AcquisitionFrameworksComponent,
@@ -306,13 +305,11 @@ import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
     TaxonAdvancedModalComponent,
     TaxonomyComponent,
     TaxonTreeComponent,
-    TranslateModule
-  ]
+    TranslateModule,
+  ],
 })
 export class GN2CommonModule {
-  constructor(
-    public matIconRegistry: MatIconRegistry
-  ) {
+  constructor(public matIconRegistry: MatIconRegistry) {
     matIconRegistry.registerFontClassAlias('fontawesome', 'fa');
   }
 }

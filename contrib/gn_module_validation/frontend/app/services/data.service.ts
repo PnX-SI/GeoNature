@@ -1,8 +1,8 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { AppConfig } from "@geonature_config/app.config";
 import { CommonService } from "@geonature_common/service/common.service";
-import {Nomenclature} from "@geonature_common/interfaces";
+import { Nomenclature } from "@geonature_common/interfaces";
 
 @Injectable()
 export class ValidationDataService {
@@ -42,4 +42,20 @@ export class ValidationDataService {
     );
   }
 
+  getReports(params) {
+    return this._http.get(
+      `${AppConfig.API_ENDPOINT}/synthese/reports?${params}`
+    )
+  }
+
+  createReport(params) {
+    return this._http.put(`${AppConfig.API_ENDPOINT}/synthese/reports`,
+      params, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json')
+    });
+  }
+
+  deleteReport(id) {
+    return this._http.delete(`${AppConfig.API_ENDPOINT}/synthese/reports/${id}`)
+  }
 }

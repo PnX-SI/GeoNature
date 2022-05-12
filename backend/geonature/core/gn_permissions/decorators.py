@@ -20,6 +20,7 @@ def login_required(view_func):
         if g.current_user is None:
             raise Unauthorized
         return view_func(*args, **kwargs)
+
     return decorated_view
 
 
@@ -50,10 +51,7 @@ def check_cruved_scope(
         @wraps(fn)
         def __check_cruved_scope(*args, **kwargs):
             user = get_user_from_token_and_raise(
-                request,
-                action,
-                redirect_on_expiration,
-                redirect_on_invalid_token
+                request, action, redirect_on_expiration, redirect_on_invalid_token
             )
             user_with_highter_perm = None
 
@@ -66,11 +64,6 @@ def check_cruved_scope(
             if user_with_highter_perm:
                 user_with_highter_perm = user_with_highter_perm[0]
 
-            # if get_role = True : set info_role as kwargs
-            if get_role:
-                kwargs["info_role"] = user_with_highter_perm
-            if get_scope:
-                kwargs["scope"] = int(user_with_highter_perm.value_filter)
             # if no perm or perm = 0 -> raise 403
             if user_with_highter_perm is None or user_with_highter_perm.value_filter == "0":
                 if object_code:
@@ -78,6 +71,11 @@ def check_cruved_scope(
                 else:
                     message = f"""User {user["id_role"]} cannot "{action}" in {module_code}"""
                 raise Forbidden(description=message)
+            # if get_role = True : set info_role as kwargs
+            if get_role:
+                kwargs["info_role"] = user_with_highter_perm
+            if get_scope:
+                kwargs["scope"] = int(user_with_highter_perm.value_filter)
             g.user = user_with_highter_perm
             return fn(*args, **kwargs)
 

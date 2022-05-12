@@ -52,23 +52,17 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 parseScriptOptions "${@}"
 
 
-
-
 write_log "Préparation du frontend..."
 
-cd "${BASE_DIR}/frontend"
-
-echo "Activation du venv..."
-source "${BASE_DIR}/backend/venv/bin/activate"
-
-# Lien symbolique vers le dossier static du backend (pour le backoffice)
+# Create in frontend directory a symbolic link to backend static directory
 ln -sf "${BASE_DIR}/frontend/node_modules" "${BASE_DIR}/backend/static"
 
-# Creation du dossier des assets externes
+# Create external assets directory
+cd "${BASE_DIR}/frontend"
 mkdir -p "src/external_assets"
 
 # Copy the custom components
-if [ ! -f src/assets/custom.css ]; then
+if [[ ! -f src/assets/custom.css ]]; then
   write_log "Création des fichiers de customisation du frontend..."
   cp -n src/assets/custom.sample.css src/assets/custom.css
 fi
@@ -79,8 +73,10 @@ for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
   fi
 done
 
+if [[ -z "${CI}" || "${CI}" == false ]] ; then
+  echo "Activation du venv..."
+  source "${BASE_DIR}/backend/venv/bin/activate"
 
-if ! ${CI};then
   echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
   # Generate the app.config.ts
   geonature generate_frontend_config --build=false
@@ -90,25 +86,22 @@ if ! ${CI};then
   geonature generate_frontend_tsconfig_app
   # Generate the modules routing file by templating
   geonature generate_frontend_modules_route
+
+  echo "Désactivation du venv..."
+  deactivate
 fi
 
-# echo "Désactivation du venv..."
-# deactivate
-
-# Frontend installation"
- 
-cd "${BASE_DIR}/frontend"
-echo " ############"
-echo "Installation des paquets Npm"
-
-# build and npm install is done by cypress github action
-if $CI; then
+if [[ "${CI}" == true ]] ; then
+  echo "Cypress dans Github action se charge de lancer Npm build et install"
   exit 0
 fi
 
+# Frontend installation
+echo "Installation des paquets Npm"
+cd "${BASE_DIR}/frontend"
 if [[ "${MODE}" == "dev" ]]; then
   npm install --production=false || exit 1
-else 
+else
   npm ci --only=prod --legacy-peer-deps || exit 1
 fi
 

@@ -1,0 +1,21 @@
+name: Lint
+
+on: [push, pull_request]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Backend code formatting check (Black)
+        uses: psf/black@stable
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Frontend code formatting check (Prettier)
+        uses: creyD/prettier_action@v4.2
+        with:
+          dry: True
+          prettier_options: --config frontend/.prettierrc --check frontend/src/app/**/*.ts

@@ -518,7 +518,27 @@ pnx-root:empty + #cover-spin-removable {
 .ng-select.auto .ng-input input {
   font-size: 13px;
 }
-
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value {
+  background-color: #64b5f6;
+}
+.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value .ng-value-icon {
+  font-weight: bolder;
+}
+.ng-select.ng-select-multiple
+  .ng-select-container
+  .ng-value-container
+  .ng-value
+  .ng-value-icon:hover {
+  color: white;
+  background-color: #64b5f6;
+}
+.ng-select.ng-select-multiple
+  .ng-select-container
+  .ng-value-container
+  .ng-value
+  .ng-value-icon.left {
+  border-right: none;
+}
 a.mat-raised-button:hover {
   text-decoration: none !important;
 }

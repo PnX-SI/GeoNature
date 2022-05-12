@@ -9,7 +9,7 @@ from cookies import Cookie
 @pytest.mark.usefixtures("client_class")
 class TestApiModulePrOcctax:
     """
-        Test de l'api du module pr_occtax
+    Test de l'api du module pr_occtax
     """
 
     mimetype = "application/json"
@@ -79,7 +79,7 @@ class TestApiModulePrOcctax:
         resp_data_insert = json_of_response(response)
 
         assert resp_data_insert["properties"]["comment"] == "Super MODIIFF"
-        # update with an other user 
+        # update with an other user
         token = get_token(self.client, login="agent", password="admin")
         # get the releve
         response = self.client.get(
@@ -91,9 +91,8 @@ class TestApiModulePrOcctax:
         resp_data_update = json_of_response(response)
         # check id_digitizer has not be updated by the editor person
         assert (
-            resp_data_insert["properties"]["id_digitiser"] 
-            == 
-            resp_data_update["releve"]["properties"]["id_digitiser"] 
+            resp_data_insert["properties"]["id_digitiser"]
+            == resp_data_update["releve"]["properties"]["id_digitiser"]
         )
 
         assert "releve" in resp_data_update
@@ -107,6 +106,7 @@ class TestApiModulePrOcctax:
         )
 
         assert response.status_code == 200
+
     def test_get_export_sinp(self):
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
@@ -149,7 +149,7 @@ class TestApiModulePrOcctax:
     # ## Test des droits ####
     def test_get_and_delete_releve(self):
         """
-            user admin is observer of releve 1
+        user admin is observer of releve 1
         """
         token = get_token(self.client)
         self.client.set_cookie("/", "token", token)
@@ -159,8 +159,8 @@ class TestApiModulePrOcctax:
 
     def test_user_cannot_delete_releve(self):
         """
-            user agent is not observer, digitiser
-            or in cor_dataset_actor
+        user agent is not observer, digitiser
+        or in cor_dataset_actor
         """
         token = get_token(self.client, login="agent", password="admin")
         self.client.set_cookie("/", "token", token)

@@ -6,7 +6,11 @@ from marshmallow import Schema, fields
 
 
 COLUMN_LIST = [
-    {"column_name": "nomenclature_valid_status.label_default", "column_label": "", "max_width": 40},
+    {
+        "column_name": "nomenclature_valid_status.label_default",
+        "column_label": "",
+        "max_width": 40,
+    },
     {"column_name": "taxref.nom_vern_or_lb_nom", "column_label": "Taxon", "min_width": 250},
     {"column_name": "date_min", "column_label": "Date obs.", "min_width": 100},
     {"column_name": "dataset.dataset_name", "column_label": "Jeu de donnees", "min_width": 100},
@@ -52,7 +56,10 @@ Merci de contacter la personne en charge de la validation.
 Médias : ${ d.medias }\n\r
 Lien vers l'observation: ${ d.data_link }
 """
-MAIL_SUBJECT = "[GeoNature Validation] Donnée du ${ d.date_min } - ${ d.nom_vern } - ${ d.nom_valide }"
+MAIL_SUBJECT = (
+    "[GeoNature Validation] Donnée du ${ d.date_min } - ${ d.nom_vern } - ${ d.nom_valide }"
+)
+
 
 class ColumnSchema(Schema):
     column_name = fields.Str(required=True)

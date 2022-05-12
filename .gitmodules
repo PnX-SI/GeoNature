@@ -16,3 +16,6 @@
 [submodule "backend/dependencies/Utils-Flask-SQLAlchemy-Geo"]
 	path = backend/dependencies/Utils-Flask-SQLAlchemy-Geo
 	url = https://github.com/PnX-SI/Utils-Flask-SQLAlchemy-Geo
+[submodule "backend/dependencies/RefGeo"]
+	path = backend/dependencies/RefGeo
+	url = https://github.com/PnX-SI/RefGeo.git

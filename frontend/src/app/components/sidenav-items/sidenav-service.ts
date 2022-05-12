@@ -35,6 +35,10 @@ export class SideNavService {
     return this.currentModule;
   }
 
+  getHomeItem() {
+    return { module_url: '/', module_label: 'Accueil', module_picto: 'fa-home', id: '1' };
+  }
+
   toggleSideNav() {
     this.sidenav.toggle();
   }

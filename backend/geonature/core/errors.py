@@ -5,43 +5,47 @@ from flask import current_app, request, json, redirect
 from werkzeug.exceptions import Unauthorized, InternalServerError, HTTPException
 from werkzeug.urls import url_encode
 
-
 # Unauthorized means disconnected
 # (logged but not allowed to perform an action = Forbidden)
 @current_app.errorhandler(Unauthorized)
 def handle_unauthenticated_request(e):
-    if request.accept_mimetypes.best == 'application/json':
+    if request.accept_mimetypes.best == "application/json":
         response = e.get_response()
-        response.data = json.dumps({
-            'code': e.code,
-            'name': e.name,
-            'description': e.description,
-        })
-        response.content_type = 'application/json'
+        response.data = json.dumps(
+            {
+                "code": e.code,
+                "name": e.name,
+                "description": e.description,
+            }
+        )
+        response.content_type = "application/json"
         return response
     else:
-        base_url = current_app.config['URL_APPLICATION']
-        login_path = '/#/login'  # FIXME: move in config
-        api_endpoint = current_app.config['API_ENDPOINT']
-        url_application = current_app.config['URL_APPLICATION']
+        base_url = current_app.config["URL_APPLICATION"]
+        login_path = "/#/login"  # FIXME: move in config
+        api_endpoint = current_app.config["API_ENDPOINT"]
+        url_application = current_app.config["URL_APPLICATION"]
         if urlparse(api_endpoint).netloc == urlparse(url_application).netloc:
             next_url = request.full_path
         else:
             next_url = request.url
-        query_string = url_encode({'next': next_url})
-        return redirect(f'{base_url}{login_path}?{query_string}')
+        query_string = url_encode({"next": next_url})
+        return redirect(f"{base_url}{login_path}?{query_string}")
 
 
 @current_app.errorhandler(HTTPException)
 def handle_http_exception(e):
     response = e.get_response()
-    if request.accept_mimetypes.best == 'application/json':
-        response.data = json.dumps({
-            'code': e.code,
-            'name': e.name,
-            'description': e.description,
-        })
-        response.content_type = 'application/json'
+    if request.accept_mimetypes.best == "application/json":
+        response.data = json.dumps(
+            {
+                "code": e.code,
+                "name": e.name,
+                "description": e.description,
+                "request_id": request.environ["FLASK_REQUEST_ID"],
+            }
+        )
+        response.content_type = "application/json"
     return response
 
 
@@ -57,18 +61,21 @@ def handle_internal_server_error(e):
     else:
         description = e.description
     response = e.get_response()
-    if request.accept_mimetypes.best == 'application/json':
-        response.data = json.dumps({
-            'code': e.code,
-            'name': e.name,
-            'description': description,
-        })
+    if request.accept_mimetypes.best == "application/json":
+        response.data = json.dumps(
+            {
+                "code": e.code,
+                "name": e.name,
+                "description": description,
+                "request_id": request.environ["FLASK_REQUEST_ID"],
+            }
+        )
     return response
 
 
 @current_app.errorhandler(Exception)
 def handle_exception(e):
-    if request.accept_mimetypes.best == 'application/json':
+    if request.accept_mimetypes.best == "application/json":
         # exceptions are logged by flask when not handled or when re-raised.
         # as here we construct a json error response, we have to log the exception our-self.
         current_app.log_exception(sys.exc_info())

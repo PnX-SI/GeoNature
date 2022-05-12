@@ -19,12 +19,8 @@ class CorStationObserverOccHab(DB.Model):
     __tablename__ = "cor_station_observer"
     __table_args__ = {"schema": "pr_occhab"}
     id_cor_station_observer = DB.Column(DB.Integer, primary_key=True)
-    id_station = DB.Column(
-        "id_station", DB.Integer, ForeignKey("pr_occhab.t_stations.id_station")
-    )
-    id_role = DB.Column(
-        "id_role", DB.Integer, ForeignKey("utilisateurs.t_roles.id_role")
-    )
+    id_station = DB.Column("id_station", DB.Integer, ForeignKey("pr_occhab.t_stations.id_station"))
+    id_role = DB.Column("id_role", DB.Integer, ForeignKey("utilisateurs.t_roles.id_role"))
 
 
 @serializable
@@ -32,21 +28,19 @@ class THabitatsOcchab(DB.Model):
     __tablename__ = "t_habitats"
     __table_args__ = {"schema": "pr_occhab"}
     id_habitat = DB.Column(DB.Integer, primary_key=True)
-    id_station = DB.Column(DB.Integer, ForeignKey(
-        "pr_occhab.t_stations.id_station"))
-    unique_id_sinp_hab = DB.Column(
-        UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
-    )
-    cd_hab = DB.Column(DB.Integer, ForeignKey('ref_habitats.habref.cd_hab'))
+    id_station = DB.Column(DB.Integer, ForeignKey("pr_occhab.t_stations.id_station"))
+    unique_id_sinp_hab = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
+    cd_hab = DB.Column(DB.Integer, ForeignKey("ref_habitats.habref.cd_hab"))
     nom_cite = DB.Column(DB.Unicode)
     id_nomenclature_determination_type = DB.Column(
-        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
     determiner = DB.Column(DB.Unicode)
     id_nomenclature_collection_technique = DB.Column(
-        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
     recovery_percentage = DB.Column(DB.Float)
-    id_nomenclature_abundance = DB.Column(
-        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_abundance = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
     technical_precision = DB.Column(DB.Unicode)
     id_nomenclature_sensitvity = DB.Column(DB.Integer)
 
@@ -62,30 +56,29 @@ class TStationsOcchab(ModelCruvedAutorization):
     unique_id_sinp_station = DB.Column(
         UUID(as_uuid=True), default=select([func.uuid_generate_v4()])
     )
-    id_dataset = DB.Column(DB.Integer, ForeignKey(
-        'gn_meta.t_datasets.id_dataset'))
+    id_dataset = DB.Column(DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"))
     date_min = DB.Column(DB.DateTime)
     date_max = DB.Column(DB.DateTime)
     observers_txt = DB.Column(DB.Unicode)
     station_name = DB.Column(DB.Unicode)
     is_habitat_complex = DB.Column(DB.Boolean)
-    id_nomenclature_exposure = DB.Column(
-        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    id_nomenclature_exposure = DB.Column(DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
     altitude_min = DB.Column(DB.Integer)
     altitude_max = DB.Column(DB.Integer)
     depth_min = DB.Column(DB.Integer)
     depth_max = DB.Column(DB.Integer)
     area = DB.Column(DB.Float)
     id_nomenclature_area_surface_calculation = DB.Column(
-        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
     id_nomenclature_geographic_object = DB.Column(
-        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+        DB.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
     comment = DB.Column(DB.Unicode)
     id_digitiser = DB.Column(DB.Integer)
     geom_4326 = DB.Column(Geometry("GEOMETRY", 4626))
 
-    t_habitats = relationship(
-        "THabitatsOcchab", lazy="joined",  cascade="all, delete-orphan")
+    t_habitats = relationship("THabitatsOcchab", lazy="joined", cascade="all, delete-orphan")
     dataset = relationship("TDatasets", lazy="joined")
     observers = DB.relationship(
         User,
@@ -103,21 +96,21 @@ class TStationsOcchab(ModelCruvedAutorization):
     # to inherit of ReleModel, the constructor must define some mandatory attribute
     def __init__(self, *args, **kwargs):
         super(TStationsOcchab, self).__init__(*args, **kwargs)
-        self.observer_rel = getattr(self, 'observers')
-        self.dataset_rel = getattr(self, 'dataset')
-        self.id_digitiser_col = getattr(self, 'id_digitiser')
-        self.id_dataset_col = getattr(self, 'id_dataset')
+        self.observer_rel = getattr(self, "observers")
+        self.dataset_rel = getattr(self, "dataset")
+        self.id_digitiser_col = getattr(self, "id_digitiser")
+        self.id_dataset_col = getattr(self, "id_dataset")
 
     def get_geofeature(self):
         return self.as_geofeature(
             "geom_4326",
             "id_station",
             fields=[
-                'observers',
-                't_habitats',
-                't_habitats.habref',
-                'dataset',
-            ]
+                "observers",
+                "t_habitats",
+                "t_habitats.habref",
+                "dataset",
+            ],
         )
 
 
@@ -127,21 +120,23 @@ class OneHabitat(THabitatsOcchab):
     Class which extend THabitatsOcchab with nomenclatures relationships
     use for get ONE habitat and station
     """
+
     determination_method = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature ==
-                     THabitatsOcchab.id_nomenclature_determination_type),
+        primaryjoin=(
+            TNomenclatures.id_nomenclature == THabitatsOcchab.id_nomenclature_determination_type
+        ),
     )
 
     collection_technique = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature ==
-                     THabitatsOcchab.id_nomenclature_collection_technique),
+        primaryjoin=(
+            TNomenclatures.id_nomenclature == THabitatsOcchab.id_nomenclature_collection_technique
+        ),
     )
     abundance = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature ==
-                     THabitatsOcchab.id_nomenclature_abundance),
+        primaryjoin=(TNomenclatures.id_nomenclature == THabitatsOcchab.id_nomenclature_abundance),
     )
 
 
@@ -150,18 +145,20 @@ class OneHabitat(THabitatsOcchab):
 class OneStation(TStationsOcchab):
     exposure = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature ==
-                     TStationsOcchab.id_nomenclature_exposure),
+        primaryjoin=(TNomenclatures.id_nomenclature == TStationsOcchab.id_nomenclature_exposure),
     )
     area_surface_calculation = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature ==
-                     TStationsOcchab.id_nomenclature_area_surface_calculation),
+        primaryjoin=(
+            TNomenclatures.id_nomenclature
+            == TStationsOcchab.id_nomenclature_area_surface_calculation
+        ),
     )
     geographic_object = DB.relationship(
         TNomenclatures,
-        primaryjoin=(TNomenclatures.id_nomenclature ==
-                     TStationsOcchab.id_nomenclature_geographic_object),
+        primaryjoin=(
+            TNomenclatures.id_nomenclature == TStationsOcchab.id_nomenclature_geographic_object
+        ),
     )
 
     t_one_habitats = relationship("OneHabitat", lazy="joined")
@@ -171,17 +168,17 @@ class OneStation(TStationsOcchab):
             "geom_4326",
             "id_station",
             fields=[
-                'observers',
-                't_one_habitats',
-                'exposure',
-                'dataset',
-                'area_surface_calculation',
-                'geographic_object',
-                't_one_habitats.determination_method',
-                't_one_habitats.collection_technique',
-                't_one_habitats.abundance',
-                "t_habitats.habref"
-            ]
+                "observers",
+                "t_one_habitats",
+                "exposure",
+                "dataset",
+                "area_surface_calculation",
+                "geographic_object",
+                "t_one_habitats.determination_method",
+                "t_one_habitats.collection_technique",
+                "t_one_habitats.abundance",
+                "t_habitats.habref",
+            ],
         )
 
 

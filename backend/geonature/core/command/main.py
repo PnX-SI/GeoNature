@@ -4,22 +4,13 @@
 
 import logging
 from os import environ
+from collections import ChainMap
 
+import toml
 import click
 from flask.cli import run_command
-import flask_migrate
-from alembic.migration import MigrationContext
-from alembic.context import EnvironmentContext
-from alembic.script import ScriptDirectory
-from flask_migrate.cli import db as db_cli
-from flask.cli import with_appcontext
 
-from geonature.utils.env import (
-    db,
-    migrate,
-    DEFAULT_CONFIG_FILE,
-    GEONATURE_VERSION,
-)
+from geonature.utils.env import GEONATURE_VERSION
 from geonature.utils.command import (
     start_geonature_front,
     build_geonature_front,
@@ -29,6 +20,7 @@ from geonature.utils.command import (
     tsconfig_app_templating,
     update_app_configuration,
 )
+from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
 from geonature import create_app
 from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actors
 
@@ -72,8 +64,8 @@ def main(ctx):
 @click.option("--build", type=bool, required=False, default=True)
 def generate_frontend_config(build):
     """
-        Génération des fichiers de configurations pour javascript
-        Relance le build du front par defaut
+    Génération des fichiers de configurations pour javascript
+    Relance le build du front par defaut
     """
     create_frontend_config()
     if build:
@@ -87,23 +79,23 @@ def generate_frontend_config(build):
 @click.pass_context
 def dev_back(ctx, host, port):
     """
-        Lance l'api du backend avec flask
+    Lance l'api du backend avec flask
 
-        Exemples
+    Exemples
 
-        - geonature dev_back
+    - geonature dev_back
 
-        - geonature dev_back --port=8080 --port=0.0.0.0
+    - geonature dev_back --port=8080 --port=0.0.0.0
     """
-    if not environ.get('FLASK_ENV'):
-        environ['FLASK_ENV'] = 'development'
+    if not environ.get("FLASK_ENV"):
+        environ["FLASK_ENV"] = "development"
     ctx.invoke(run_command, host=host, port=port)
 
 
 @main.command()
 def dev_front():
     """
-        Démarre le frontend en mode develop
+    Démarre le frontend en mode develop
     """
     start_geonature_front()
 
@@ -112,7 +104,7 @@ def dev_front():
 @main.command()
 def frontend_build(build_sass):
     """
-        Lance le build du frontend
+    Lance le build du frontend
     """
     build_geonature_front(build_sass)
 
@@ -120,8 +112,8 @@ def frontend_build(build_sass):
 @main.command()
 def generate_frontend_modules_route():
     """
-        Génere le fichier de routing du frontend
-        à partir des modules GeoNature activé
+    Génere le fichier de routing du frontend
+    à partir des modules GeoNature activé
     """
     frontend_routes_templating()
 
@@ -129,7 +121,7 @@ def generate_frontend_modules_route():
 @main.command()
 def generate_frontend_tsconfig():
     """
-        Génere tsconfig du frontend
+    Génere tsconfig du frontend
     """
     tsconfig_templating()
 
@@ -137,7 +129,7 @@ def generate_frontend_tsconfig():
 @main.command()
 def generate_frontend_tsconfig_app():
     """
-        Génere tsconfig.app du frontend/src
+    Génere tsconfig.app du frontend/src
     """
     tsconfig_app_templating()
 
@@ -146,13 +138,13 @@ def generate_frontend_tsconfig_app():
 @click.option("--build", type=bool, required=False, default=True)
 def update_configuration(build):
     """
-        Regénère la configuration de l'application
+    Regénère la configuration de l'application
 
-        Example:
+    Example:
 
-        - geonature update_configuration
+    - geonature update_configuration
 
-        - geonature update_configuration --build=false (met à jour la configuration sans recompiler le frontend)
+    - geonature update_configuration --build=false (met à jour la configuration sans recompiler le frontend)
 
     """
     # Recréation du fichier de routing car il dépend de la conf
@@ -161,7 +153,7 @@ def update_configuration(build):
 
 
 @main.command()
-@click.argument('table_name')
+@click.argument("table_name")
 def import_jdd_from_mtd(table_name):
     """
     Import les JDD et CA (et acters associé) à partir d'une table (ou vue) listant les UUID des JDD dans MTD
@@ -169,26 +161,19 @@ def import_jdd_from_mtd(table_name):
     import_all_dataset_af_and_actors(table_name)
 
 
-@db_cli.command()
-@click.option('-d', '--directory', default=None,
-              help=('Migration script directory (default is "migrations")'))
-@click.option('--sql', is_flag=True,
-              help=('Don\'t emit SQL to database - dump to standard output '
-                    'instead'))
-@click.option('--tag', default=None,
-              help=('Arbitrary "tag" name - can be used by custom env.py '
-                    'scripts'))
-@click.option('-x', '--x-arg', multiple=True,
-              help='Additional arguments consumed by custom env.py scripts')
-@with_appcontext
-def autoupgrade(directory, sql, tag, x_arg):
-    config = migrate.get_config(directory, x_arg)
-    script = ScriptDirectory.from_config(config)
-    heads = set(script.get_heads())
-    migration_context = MigrationContext.configure(db.session.connection())
-    current_heads = migration_context.get_current_heads()
-    # get_current_heads does not return implicit revision through dependecies, get_all_current does
-    current_heads = set(map(lambda rev: rev.revision, script.get_all_current(current_heads)))
-    for head in current_heads - heads:
-        revision = head + '@head'
-        flask_migrate.upgrade(directory, revision, sql, tag, x_arg)
+@main.command()
+def default_config():
+    """
+    Afficher l’ensemble des paramètres et leur valeur par défaut.
+    """
+    required_fields = (
+        "URL_APPLICATION",
+        "API_ENDPOINT",
+        "API_TAXHUB",
+        "SECRET_KEY",
+        "SQLALCHEMY_DATABASE_URI",
+    )
+    backend_defaults = GnPySchemaConf().load({}, partial=required_fields)
+    frontend_defaults = GnGeneralSchemaConf().load({}, partial=required_fields)
+    defaults = ChainMap(backend_defaults, frontend_defaults)
+    print(toml.dumps(defaults))

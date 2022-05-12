@@ -1,68 +1,60 @@
 <div class="container-fluid">
-    <div class="card">
-        <div class="card-body">
-            <div class="">
-                <h3 class="card-title mb-0">
-                    <i> {{taxon?.nom_complet}}</i> 
-                   <span *ngIf="taxon?.nom_vern"> - {{taxon?.nom_vern}} </span>
-                </h3>
-            <small class="text-muted">*Le profil est calculé à partir des observations considérées comme valides</small>
-                
-            </div>
-            <div class="card-columns">
-                <div class="card" *ngIf="mediaUrl">
-                    <div class="card-body cover image"
-                        [style.background-image]="'url(' + mediaUrl + ')'"
-                    >
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <mat-icon>search</mat-icon>
-                        <h3>{{profile?.count_valid_data }}</h3>
-                        <!-- <mat-icon style="color:green">check</mat-icon> -->
-                        <p class="text-muted">Observations valides</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <mat-icon>schedule</mat-icon>
-                        <h3>{{profile?.first_valid_data | date:'dd/MM/yyyy'}}</h3>
-                        <!-- <mat-icon style="color:green">check</mat-icon> -->
-                        <p class="text-muted">Première observation</p>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <mat-icon>schedule</mat-icon>
-                        <h3>{{profile?.last_valid_data | date:'dd/MM/yyyy'}}</h3>
-                        <!-- <mat-icon style="color:green">check</mat-icon> -->
-                        <p class="text-muted">Dernière observation</p>
-                    </div>
-                </div>
-        
-                <div class="card">
-                    <div class="card-body">
-                        <mat-icon>terrain</mat-icon>
-                        <h3> {{profile?.altitude_min}}m - {{profile?.altitude_max}}m</h3>
-                        <!-- <mat-icon style="color:green">check</mat-icon> -->
-                        <p class="text-muted">Plage d'altitude</p>
-                    </div>
-                </div>
-                
-            </div>
-
-
-
-                <pnx-map height="50vh">
-                    <pnx-geojson
-                        [geojson]="profilArea"
-                        [zoomOnFirstTime]="true"
-                    > 
-                    </pnx-geojson>
-                </pnx-map>
+  <div class="card">
+    <div class="card-body">
+      <div class="">
+        <h3 class="card-title mb-0">
+          <i> {{ taxon?.nom_complet }}</i>
+          <span *ngIf="taxon?.nom_vern"> - {{ taxon?.nom_vern }} </span>
+        </h3>
+        <small class="text-muted"
+          >*Le profil est calculé à partir des observations considérées comme valides</small
+        >
+      </div>
+      <div class="card-columns">
+        <div class="card" *ngIf="mediaUrl">
+          <div
+            class="card-body cover image"
+            [style.background-image]="'url(' + mediaUrl + ')'"
+          ></div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <mat-icon>search</mat-icon>
+            <h3>{{ profile?.count_valid_data }}</h3>
+            <!-- <mat-icon style="color:green">check</mat-icon> -->
+            <p class="text-muted">Observations valides</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <mat-icon>schedule</mat-icon>
+            <h3>{{ profile?.first_valid_data | date: 'dd/MM/yyyy' }}</h3>
+            <!-- <mat-icon style="color:green">check</mat-icon> -->
+            <p class="text-muted">Première observation</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-body">
+            <mat-icon>schedule</mat-icon>
+            <h3>{{ profile?.last_valid_data | date: 'dd/MM/yyyy' }}</h3>
+            <!-- <mat-icon style="color:green">check</mat-icon> -->
+            <p class="text-muted">Dernière observation</p>
+          </div>
         </div>
 
+        <div class="card">
+          <div class="card-body">
+            <mat-icon>terrain</mat-icon>
+            <h3>{{ profile?.altitude_min }}m - {{ profile?.altitude_max }}m</h3>
+            <!-- <mat-icon style="color:green">check</mat-icon> -->
+            <p class="text-muted">Plage d'altitude</p>
+          </div>
+        </div>
+      </div>
+
+      <pnx-map height="50vh">
+        <pnx-geojson [geojson]="profilArea" [zoomOnFirstTime]="true"> </pnx-geojson>
+      </pnx-map>
     </div>
-  
+  </div>
 </div>

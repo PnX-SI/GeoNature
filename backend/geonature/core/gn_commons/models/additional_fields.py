@@ -25,13 +25,13 @@ class TAdditionalFields(DB.Model):
     quantitative = DB.Column(DB.Boolean, default=False)
     unity = DB.Column(DB.String(50))
     field_values = DB.Column(JSONB)
-    code_nomenclature_type = DB.Column(DB.String, 
+    code_nomenclature_type = DB.Column(
+        DB.String,
         DB.ForeignKey("ref_nomenclatures.bib_nomenclatures_types.mnemonique"),
     )
     additional_attributes = DB.Column(JSONB)
-    id_widget = DB.Column(DB.Integer, 
-        DB.ForeignKey("gn_commons.bib_widgets.id_widget"),
-        nullable=False
+    id_widget = DB.Column(
+        DB.Integer, DB.ForeignKey("gn_commons.bib_widgets.id_widget"), nullable=False
     )
     id_list = DB.Column(DB.Integer)
     exportable = DB.Column(DB.Boolean, default=True)
@@ -39,7 +39,7 @@ class TAdditionalFields(DB.Model):
     type_widget = DB.relationship("BibWidgets")
     bib_nomenclature_type = DB.relationship(
         "BibNomenclaturesTypes",
-        primaryjoin="BibNomenclaturesTypes.mnemonique == TAdditionalFields.code_nomenclature_type"
+        primaryjoin="BibNomenclaturesTypes.mnemonique == TAdditionalFields.code_nomenclature_type",
     )
     additional_attributes = DB.Column(JSONB)
     multiselect = DB.Column(DB.Boolean)
@@ -51,13 +51,8 @@ class TAdditionalFields(DB.Model):
         "TModules",
         secondary=cor_field_module,
     )
-    objects = DB.relationship(
-        "TObjects",
-        secondary=cor_field_object
-    )
-    datasets = DB.relationship(
-        "TDatasets",
-        secondary=cor_field_dataset
-    )
+    objects = DB.relationship("TObjects", secondary=cor_field_object)
+    datasets = DB.relationship("TDatasets", secondary=cor_field_dataset)
+
     def __str__(self):
         return f"{self.field_label} ({self.description})"

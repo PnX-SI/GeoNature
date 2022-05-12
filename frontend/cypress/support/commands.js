@@ -11,7 +11,6 @@ Cypress.Commands.add("geonatureLogin", () => {
       })
 });
 
-Cypress.Commands.add("geonatureLogout", () => {
-    cy.clearCookie('token') // clear the 'authId' cookie
+Cypress.Commands.add('geonatureLogout', () => {
+  cy.clearCookie('token'); // clear the 'authId' cookie
 });
-

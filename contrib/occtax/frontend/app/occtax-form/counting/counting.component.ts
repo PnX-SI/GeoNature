@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, OnDestroy, Output, EventEmitter  } from "@angular/core";
 import { FormGroup, FormArray } from "@angular/forms";
 import { Subscription } from "rxjs";
+import { filter } from "rxjs/operators";
 
 import { OcctaxFormService } from "../occtax-form.service";
 import { ModuleConfig } from "../../module.config";
@@ -38,8 +39,10 @@ export class OcctaxFormCountingComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.form = this.occtaxFormCountingService.form;
-    this.sub = this.form.get("id_nomenclature_life_stage").valueChanges
-      .filter(idNomenclatureLifeStage => idNomenclatureLifeStage !== null)
+    this.sub = this.form.get("id_nomenclature_life_stage").valueChanges.pipe(
+
+      filter(idNomenclatureLifeStage => idNomenclatureLifeStage !== null)
+    )
       .subscribe(idNomenclatureLifeStage => {      
         this.occtaxFormOccurrenceService.lifeStage.next(idNomenclatureLifeStage);
       });

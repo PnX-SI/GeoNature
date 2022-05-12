@@ -20,7 +20,7 @@ def app():
 
 
 def post_json(client, url, json_dict, query_string=None):
-    """Send dictionary json_dict as a json to the specified url """
+    """Send dictionary json_dict as a json to the specified url"""
     return client.post(
         url,
         data=json.dumps(json_dict),
@@ -59,7 +59,10 @@ def releve_data(client):
     default_nomenclatures = json_of_response(response)
     data = {
         "depth": 2,
-        "geometry": {"type": "Point", "coordinates": [3.428936004638672, 44.276611357355904],},
+        "geometry": {
+            "type": "Point",
+            "coordinates": [3.428936004638672, 44.276611357355904],
+        },
         "properties": {
             "id_dataset": 1,
             "id_digitiser": 1,

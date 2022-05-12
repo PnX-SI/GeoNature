@@ -64,13 +64,15 @@ jobs:
         PGPASSWORD: geonatpasswd
     - uses: actions/checkout@v2
       with:
-        submodules: recursive
+        submodules: true
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
+        cache: 'pip'
     - name: Install GDAL
       run: |
+        sudo apt update
         sudo apt install -y libgdal-dev
     - name: Install dependencies
       run: |
@@ -83,13 +85,15 @@ jobs:
           -e file:backend/dependencies/Habref-api-module#egg=pypn_habref_api \
           -e file:backend/dependencies/TaxHub#egg=taxhub \
           -e file:backend/dependencies/Utils-Flask-SQLAlchemy#egg=utils-flask-sqlalchemy \
-          -e file:backend/dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo
+          -e file:backend/dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo \
+          -e file:backend/dependencies/RefGeo#egg=pypn-ref-geo
     - name: Install database
       run: |
         geonature db upgrade geonature@head -x local-srid=2154
         geonature db autoupgrade -x local-srid=2154
         geonature db upgrade geonature-samples@head
         geonature db upgrade taxonomie_taxons_example@head
+        geonature db upgrade taxonomie_attributes_example@head
         geonature db upgrade ref_geo_fr_departments@head
         geonature db upgrade ref_geo_fr_municipalities@head
         geonature db upgrade ref_geo_inpn_grids_5@head

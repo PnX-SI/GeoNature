@@ -8,6 +8,6 @@ import { GNPanelComponent } from './gn-panel.component';
 @NgModule({
   imports: [CommonModule, MatIconModule],
   declarations: [GNPanelComponent],
-  exports: [GNPanelComponent]
+  exports: [GNPanelComponent],
 })
 export class GNPanelModule {}

@@ -18,10 +18,12 @@
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
             "assets": [
-              "src/assets",
-              "src/custom",
-              "src/favicon.ico",
-              "src/external_assets"
+              "src/assets", "src/custom", "src/favicon.ico", "src/external_assets",
+              {
+                "glob": "**/*",
+                "input": "node_modules/leaflet/dist/images/",
+                "output": "./assets/"
+             }
             ],
             "styles": [
               "node_modules/primeng/resources/themes/nova/theme.css",
@@ -148,12 +150,7 @@
               "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
               "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
             ],
-            "assets": [
-              "src/assets",
-              "src/custom",
-              "src/favicon.ico",
-              "src/external_assets"
-            ]
+            "assets": ["src/assets", "src/custom", "src/favicon.ico", "src/external_assets"]
           }
         },
         "lint": {
@@ -164,9 +161,7 @@
               "src/tsconfig.spec.json",
               "cypress/tsconfig.json"
             ],
-            "exclude": [
-              "**/node_modules/**/*"
-            ]
+            "exclude": ["**/node_modules/**/*"]
           }
         },
         "cypress-run": {
@@ -238,12 +233,8 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "e2e/cypress/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**/*"
-            ]
+            "tsConfig": ["e2e/cypress/tsconfig.json"],
+            "exclude": ["**/node_modules/**/*"]
           }
         },
         "cypress-run": {

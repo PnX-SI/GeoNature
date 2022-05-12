@@ -10,20 +10,23 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '6f7d5549d49e'
-down_revision = '9a9f4971edcd'
+revision = "6f7d5549d49e"
+down_revision = "7471f51011c8"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
-    op.execute("""
+    op.execute(
+        """
     DROP VIEW gn_commons.v_synthese_validation_forwebapp;
-    """)
+    """
+    )
 
 
 def downgrade():
-    op.execute("""
+    op.execute(
+        """
     CREATE OR REPLACE VIEW gn_commons.v_synthese_validation_forwebapp AS
     SELECT  s.id_synthese,
         s.unique_id_sinp,
@@ -105,4 +108,5 @@ def downgrade():
       WHERE d.validable = true AND NOT s.unique_id_sinp IS NULL;
 
     COMMENT ON VIEW gn_commons.v_synthese_validation_forwebapp  IS 'Vue utilisée pour le module validation. Prend l''id_nomenclature dans la table synthese ainsi que toutes les colonnes de la synthese pour les filtres. On JOIN sur la vue latest_validation pour voir si la validation est auto';
-    """)
+    """
+    )

@@ -269,9 +269,9 @@ Le module est ensuite installable à la manière d'un plugin grâce à la comman
     cd <GEONATURE_DIRECTORY>/backend
     # activer le virtualenv python
     source venv/bin/activate
-    # lancer la commande d'installation
+    # lancer la commande d'installation
     geonature install_gn_module <CHEMIN_ABSOLU_DU_MODULE> <URL_API>
-    # example geonature install_gn_module /home/moi/gn_module_validation /validation
+    # example geonature install_gn_module /home/moi/gn_module_validation /validation
 
 
 Bonnes pratiques Frontend
@@ -357,6 +357,116 @@ valeurs par défaut. Puis relancez la mise à jour de la configuration
 (``source venv/bin/activate``) :
 ``geonature update_module_configuration nom_du_module``)
 
+.. _mode-dev:
+
+Passer en mode développement
+----------------------------
+
+Récupération des sources
+************************
+
+Si vous avez téléchargé GeoNature zippé (via la procédure d'installation globale ``install_all.sh`` ou en suivant la documentation d'installation standalone), il est nécessaire de rattacher votre répertoire au dépôt GitHub afin de pouvoir télécharger les dernières avancées du coeur en ``git pull``. Pour cela, suivez les commandes suivantes en vous placant à la racine du répertoire de GeoNature.
+
+.. code-block:: bash
+
+  --- Se créer un répertoire .git ---
+  mkdir .git
+  ---  récupérer l'historique du dépôt --- 
+  git clone --depth=2 --bare https://github.com/PnX-SI/GeoNature.git .git
+  --- initialiser un dépôt git à partir de l'historique téléchargé --- 
+  git init
+  --- vérifier que le dépôt distant et le contenu local sont synchronisés --- 
+  git pull
+  --- Reset sur HEAD pour mettre à jour les status --- 
+  git reset HEAD
+  -> vous êtes à jour sur la branche master
+  --- Cloner les sous-modules pour récupérer les dépendances
+  git submodule init
+  git submodule update
+
+Configuration des URLs de développement
+************************************************
+
+il est nécessaire de changer la configuration du fichier ``config/geonature_config.toml`` pour utiliser les adresses suivantes :
+
+.. code-block:: bash
+    
+  URL_APPLICATION = 'http://127.0.0.1:4200'
+  API_ENDPOINT = 'http://127.0.0.1:8000'
+  API_TAXHUB =  'http://127.0.0.1:5000/api'
+
+
+
+Pour mettre à jour le fichier ``frontend/src/conf/app.config.ts` et prendre en compte ces modifications, lancer les commandes suivantes :
+
+.. code-block:: bash
+  source ~/geonature/backend/venv/bin/activate
+  geonature update_configuration
+  deactivate
+
+Serveur frontend en développement
+*********************************
+
+Lancer le serveur frontent via le virtualenv :
+
+.. code-block:: bash
+  
+  source ~/geonature/frontend/venv/bin/activate
+  geonature dev_front
+
+Notez que vous pouvez aussi utiliser alternativement les commandes ``npm`` standards sans le virtualenv (consultez le fichier `frontend/package.json <https://github.com/PnX-SI/GeoNature/blob/7af2c82a97675daa965024a3879c7168aca2fdb1/frontend/package.json#L7>`_).
+
+
+API en développement
+********************
+
+.. Note::
+  Retrouvez plus de'informations dans la section :ref:`dev-backend` dédiée.
+
+Dans un nouveau terminal, stopper le service geonature (gunicorn) et lancer le serveur backend :
+
+.. code-block:: bash
+    
+  sudo systemctl stop geonature    
+  source ~/geonature/backend/venv/bin/activate
+  geonature dev_back
+
+Les serveurs seront accessibles via ces adresses (login ``admin`` et password ``admin``) :
+  - backend - 127.0.0.1:8000
+  - frontend - 127.0.0.1:4200
+
+Autres extensions en développement
+**********************************
+
+Il n'est pas forcémment utile de passer toutes les extensions en mode dévelomment.
+Pour plus d'informations, référez-vous aux documentations dédiées :
+
+- https://taxhub.readthedocs.io/fr/latest/installation.html#developpement
+- https://usershub.readthedocs.io/fr/latest/
+
+Si toutefois TaxHub retourne une erreur 500 et ne répond pas sur l'URL http://127.0.0.1:5000 alors vous pouvez avoir besoin de passer TaxHub en mode développement :
+
+.. code-block:: bash
+
+  source ~/taxhub/venv/bin/activate
+  flask run
+
+Debugger avec un navigateur
+**************************
+
+L'extension `Angular DevTools <https://angular.io/guide/devtools>`_ permettra de debugger l'application dans la console du navigateur.
+Pour utiliser l'extension vous devez l'installer et passer obligatoirement en mode ``development``.
+
+Ouvrez le fichier  ``frontend/src/conf/app.config.ts`` et modifiez la valeur ``PROD_MOD`` pour avoir :
+
+.. code-block:: javascript
+  :linenos:
+
+  "PROD_MOD": false
+
+Si le mode production (PROD_MOD) est à true, alors vous n'êtes pas en mode production lors du lancement de la commande ``npm run start``.
+
+.. _dev-backend:
 
 Développement Backend
 ----------------------
@@ -526,7 +636,8 @@ Pour demander la sérialisation d’un sous-schéma, il faut le spécifier avec 
 Avec le décorateur ``@serializable``
 """"""""""""""""""""""""""""""""""""
 
-Note : l’utilisation des schémas Marshmallow est probablement plus performante.
+.. Note::
+  L’utilisation des schémas Marshmallow est probablement plus performante.
 
 La bibliothèque maison `Utils-Flask-SQLAlchemy <https://github.com/PnX-SI/Utils-Flask-SQLAlchemy>`_ fournit le décorateur ``@serializable`` qui ajoute une méthode ``as_dict`` sur les modèles décorés :
 
@@ -1037,7 +1148,6 @@ Vérification des droits des utilisateurs
     )
     # récupérer le CRUVED de l'utilisateur 1 sur GeoNature
     cruved, herited = cruved_scope_for_user_in_module(id_role=1)
-
 
 
 Développement Frontend

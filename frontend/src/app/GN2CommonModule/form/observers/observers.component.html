@@ -1,16 +1,16 @@
-<small> {{label }} </small>
-<ng-select 
+<small> {{ label }} </small>
+<ng-select
   [ngClass]="class"
-	[items]="observers | async"
-	bindLabel="nom_complet"
-	[bindValue]="bindValue"
-	[compareWith]="compareWith"
-	[multiple]="multiSelect"
-	[clearable]="clearable"
-	placeholder="Observateur(s)"
-	data-qa="gn-common-form-observers-select"
-	[virtualScroll]="true"
-	[formControl]="parentFormControl"
+  [items]="observers | async"
+  bindLabel="nom_complet"
+  [bindValue]="bindValue"
+  [compareWith]="compareWith"
+  [multiple]="multiSelect"
+  [clearable]="clearable"
+  placeholder="Observateur(s)"
+  data-qa="gn-common-form-observers-select"
+  [virtualScroll]="true"
+  [formControl]="parentFormControl"
 >
 	<ng-template 
     ng-option-tmp 

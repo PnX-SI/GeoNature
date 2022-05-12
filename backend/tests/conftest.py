@@ -7,7 +7,7 @@ from geonature.utils.config import config
 
 
 def pytest_sessionstart(session):
-    """ before session.main() is called. """
+    """before session.main() is called."""
     app = create_app()
     app.config["TESTING"] = True
     # push the app_context
@@ -21,8 +21,8 @@ def pytest_sessionstart(session):
 
 
 def execute_script(file_name):
-    """ 
-        Execute a script to set or delete sample data before test
+    """
+    Execute a script to set or delete sample data before test
     """
     conn = psycopg2.connect(config["SQLALCHEMY_DATABASE_URI"])
     cur = conn.cursor()

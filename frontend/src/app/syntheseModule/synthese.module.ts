@@ -14,6 +14,8 @@ import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/
 import { SharedSyntheseModule } from '@geonature/shared/syntheseSharedModule/synthese-shared.module';
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
+import { DiscussionCardComponent } from '@geonature/shared/discussionCardModule/discussion-card.component';
+import { AlertInfoComponent } from '../shared/alertInfoModule/alert-Info.component';
 import { TaxonSheetComponent } from './taxon-sheet/taxon-sheet.component';
 const routes: Routes = [
   { path: '', component: SyntheseComponent },
@@ -26,22 +28,27 @@ const routes: Routes = [
     GN2CommonModule,
     SharedSyntheseModule,
     CommonModule,
-    TreeModule
+    TreeModule,
   ],
   declarations: [
     SyntheseComponent,
     SyntheseListComponent,
     SyntheseCarteComponent,
     SyntheseModalDownloadComponent,
-    TaxonSheetComponent
+    TaxonSheetComponent,
   ],
-  entryComponents: [SyntheseInfoObsComponent, SyntheseModalDownloadComponent],
+  entryComponents: [
+    SyntheseInfoObsComponent,
+    SyntheseModalDownloadComponent,
+    DiscussionCardComponent,
+    AlertInfoComponent,
+  ],
   providers: [
     MapService,
     DynamicFormService,
     TaxonAdvancedStoreService,
     SyntheseStoreService,
-    SyntheseFormService
-  ]
+    SyntheseFormService,
+  ],
 })
 export class SyntheseModule {}

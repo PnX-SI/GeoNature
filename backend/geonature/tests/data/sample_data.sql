@@ -434,3 +434,46 @@ WHERE module_code = 'SYNTHESE';
 UPDATE gn_commons.t_modules 
 SET module_order = 2
 WHERE module_code = 'OCCTAX';
+
+-- Ajout de commentaires type 1 et un signalement type 2
+
+INSERT INTO gn_synthese.t_reports (
+    id_report,
+    id_synthese,
+    id_module,
+    id_role,
+    content_report,
+    content_date,
+    content_type
+)
+VALUES
+INSERT INTO gn_synthese.t_reports (
+	id_report, id_synthese, id_module, id_role, content_owner, content_report, content_date, content_type) 
+VALUES (
+	'100000'::integer,
+	'1'::integer,
+	'6'::integer,
+	'3'::integer,
+	'{"prenom_role": "test", "id_role": 3, "nom_role": "Administrateur"}'::json,
+	'{"comment": "comment1"}'::json,
+	NOW()::timestamp without time zone,
+	'1'::integer
+), (
+	'100001'::integer,
+	'3'::integer,
+	'1'::integer,
+	'5'::integer,
+	'{"prenom_role": "testprenom", "id_role": 5, "nom_role": "testnom"}'::json,
+	'{"comment": "comment2"}'::json,
+	NOW()::timestamp without time zone,
+	'1'::integer
+),  (
+	'100002'::integer,
+	'3'::integer,
+	'1'::integer,
+	'5'::integer,
+	'{"prenom_role": "testprenom", "id_role": 5, "nom_role": "testnom"}'::json,
+	'{"comment": "comment3"}'::json,
+	NOW()::timestamp without time zone,
+	'2'::integer
+);
