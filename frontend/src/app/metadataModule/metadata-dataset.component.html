@@ -23,26 +23,15 @@
         [checked]="dataset.active"
         [disabled]="true"
         color="primary"
-<<<<<<< HEAD
         [matTooltip]="dataset.active ? 'Le jeu de données est actif' : 'Le jeu de données est inactif'"
         [attr.data-qa]='"pnx-metadata-jdd-inactif-"+dataset.id_dataset'
-=======
-        [matTooltip]="
-          dataset.active ? 'Le jeu de données est actif' : 'Le jeu de données est inactif'
-        "
->>>>>>> 67064d5cf3583703152654c05f84b349771fff70
       >
       </mat-slide-toggle>
     </ng-template>
   </span>
 
-<<<<<<< HEAD
   <a [routerLink]="['/metadata/dataset_detail', dataset.id_dataset]" [attr.data-qa]='"pnx-metadata-jdd-"+dataset.id_dataset'>
     {{dataset.dataset_name}}
-=======
-  <a [routerLink]="['/metadata/dataset_detail', dataset.id_dataset]">
-    {{ dataset.dataset_name }}
->>>>>>> 67064d5cf3583703152654c05f84b349771fff70
 
     <br />
     <small style="color: gray"> {{ dataset.unique_dataset_id }} </small>
@@ -73,11 +62,7 @@
     </div>
   </ng-template>
 </td>
-<<<<<<< HEAD
 <td [attr.data-qa]='"pnx-metadata-jdd-nb-obs-"+dataset.id_dataset'> {{dataset?.observation_count}} </td>
-=======
-<td>{{ dataset?.observation_count }}</td>
->>>>>>> 67064d5cf3583703152654c05f84b349771fff70
 <td>
   <a
     mat-icon-button
@@ -139,15 +124,11 @@
   </ng-template>
 
   <ng-container *ngIf="!dataset.cruved.D || (dataset?.observation_count || 0) > 0; else elseblock">
-<<<<<<< HEAD
     <button
       mat-icon-button
       [disabled]="true"
       [attr.data-qa]='"pnx-metadata-jdd-delete-"+dataset.id_dataset'
     >
-=======
-    <button mat-icon-button [disabled]="true">
->>>>>>> 67064d5cf3583703152654c05f84b349771fff70
       <mat-icon
         [matTooltip]="
           (dataset?.observation_count || 0) > 0
@@ -160,15 +141,11 @@
     </button>
   </ng-container>
   <ng-template #elseblock>
-<<<<<<< HEAD
     <button
       mat-icon-button
       (click)="deleteDs(dataset)"
       [attr.data-qa]='"pnx-metadata-jdd-delete-"+dataset.id_dataset'
     >
-=======
-    <button mat-icon-button (click)="deleteDs(dataset)">
->>>>>>> 67064d5cf3583703152654c05f84b349771fff70
       <mat-icon matTooltip="Supprimer le jeu de données"> delete </mat-icon>
     </button>
   </ng-template>
