@@ -78,7 +78,8 @@ jobs:
           -e file:backend/dependencies/Habref-api-module#egg=pypn_habref_api \
           -e file:backend/dependencies/TaxHub#egg=taxhub \
           -e file:backend/dependencies/Utils-Flask-SQLAlchemy#egg=utils-flask-sqlalchemy \
-          -e file:backend/dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo
+          -e file:backend/dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo \
+          -e file:backend/dependencies/RefGeo#egg=pypn-ref-geo
     - name: Install database
       run: |
         geonature db upgrade geonature@head -x local-srid=2154
@@ -183,8 +184,9 @@ jobs:
           -e file:backend/dependencies/Habref-api-module#egg=pypn_habref_api \
           -e file:backend/dependencies/TaxHub#egg=taxhub \
           -e file:backend/dependencies/Utils-Flask-SQLAlchemy#egg=utils-flask-sqlalchemy \
-          -e file:backend/dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo
-    - name: Install database
+          -e file:backend/dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo \
+          -e file:backend/dependencies/RefGeo#egg=pypn-ref-geo
+    - name: Install database 
       run: |
         geonature db upgrade geonature@head -x local-srid=2154
         geonature db autoupgrade -x local-srid=2154
