@@ -264,7 +264,7 @@ describe("Testing adding an observation in OccTax", () => {
   })
 
   it("Should submit an occurrence", () => {
-    cy.get("[data-qa='occurrence-add-btn']").click()
+    cy.get("[data-qa='occurrence-add-btn']").click({force: true})
   })
 
   it("Should save the good taxa", async () => {
