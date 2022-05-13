@@ -29,7 +29,7 @@ from utils_flask_sqla_geo.serializers import geoserializable, shapeserializable
 from utils_flask_sqla_geo.mixins import GeoFeatureCollectionMixin
 from pypn_habref_api.models import Habref
 from apptax.taxonomie.models import Taxref
-from ref_geo.models import LAreas
+from geonature.core.ref_geo.models import LAreas
 
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
 from geonature.core.gn_commons.models import (
