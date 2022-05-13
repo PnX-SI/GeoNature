@@ -66,7 +66,7 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install GDAL
       run: |
-        sudo atp update
+        sudo apt update
         sudo apt install -y libgdal-dev
     - name: Install dependencies
       run: |
@@ -164,7 +164,7 @@ jobs:
         # cache: 'pip'
     - name: Install GDAL
       run: |
-        sudo atp update
+        sudo apt update
         sudo apt install -y libgdal-dev
     
     - name: Cache dependencies
