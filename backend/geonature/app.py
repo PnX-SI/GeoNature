@@ -107,6 +107,11 @@ def create_app(with_external_mods=True):
     MA.init_app(app)
     CORS(app, supports_credentials=True)
 
+    if "CELERY" in app.config:
+        from geonature.utils.celery import celery_app
+
+        celery_app.conf.update(app.config["CELERY"])
+
     # Emails configuration
     if app.config["MAIL_CONFIG"]:
         conf = app.config.copy()

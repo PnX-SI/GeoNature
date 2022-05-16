@@ -95,6 +95,11 @@ class MailConfig(Schema):
     ERROR_MAIL_TO = EmailStrOrListOfEmailStrField(load_default=None)
 
 
+class CeleryConfig(Schema):
+    broker_url = fields.String()
+    result_backend = fields.String(required=False)
+
+
 class AccountManagement(Schema):
     # Config for sign-up
     ENABLE_SIGN_UP = fields.Boolean(load_default=False)
@@ -187,6 +192,7 @@ class GnPySchemaConf(Schema):
     CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
     MAIL_CONFIG = fields.Nested(MailConfig, load_default=MailConfig().load({}))
+    CELERY = fields.Nested(CeleryConfig)
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     ADMIN_APPLICATION_LOGIN = fields.String()
     ACCOUNT_MANAGEMENT = fields.Nested(

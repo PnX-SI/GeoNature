@@ -129,6 +129,16 @@ def _session(app):
     return db.session
 
 
+@pytest.fixture
+def celery_eager(app):
+    from geonature.utils.celery import celery_app
+
+    old_eager = celery_app.conf.task_always_eager
+    celery_app.conf.task_always_eager = True
+    yield
+    celery_app.conf.task_always_eager = old_eager
+
+
 @pytest.fixture(scope="function")
 def acquisition_frameworks(users):
     principal_actor_role = TNomenclatures.query.filter(
