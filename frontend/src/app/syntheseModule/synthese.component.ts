@@ -84,6 +84,7 @@ export class SyntheseComponent implements OnInit {
       const idSynthese = this._route.snapshot.paramMap.get('id_synthese');
       if (idSynthese) {
         initialFilter['id_synthese'] = idSynthese;
+        this.openInfoModal(idSynthese);
       }
 
       if (params.get('id_acquisition_framework')) {
