@@ -1,7 +1,7 @@
 import promisify from 'cypress-promise';
 
 
-describe("Testing metadata", () => {
+describe("Testing occhab", () => {
 
   before(() => {
     cy.geonatureLogout();
