@@ -33,6 +33,19 @@ def upgrade():
         """
     )
 
+    op.execute(
+        """
+        update gn_monitoring.t_base_sites s 
+        set altitude_min =a.altitude_min, altitude_max = a.altitude_max
+        from (select 
+            id_base_site,
+            alti.*
+            from gn_monitoring.t_base_sites bs, lateral ref_geo.fct_get_altitude_intersection(bs.geom) alti
+        )a
+        where a.id_base_site = s.id_base_site
+        """
+    )
+
 
 def downgrade():
     op.execute(
