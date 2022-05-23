@@ -252,3 +252,9 @@ jobs:
       env: 
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          working-directory: ./frontend
+          name: cypress-screenshots
+          path: cypress/screenshots
