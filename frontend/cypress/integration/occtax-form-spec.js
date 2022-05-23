@@ -214,7 +214,7 @@ describe("Testing adding an observation in OccTax", () => {
     cy.get('[data-qa="pnx-nomenclature-info-comp"]').click()
     cy.get('[data-qa="pnx-nomenclature-eta-bio-error"]').contains(" Veuillez indiquer l'état biologique ")
     cy.get('[qa-test="Etat biologique"]').click()
-    cy.get('[data-qa="L\'individu a été observé vivant."]').click()
+    cy.get('[data-qa="2"]').click()
     cy.get('[data-qa="occurrence-add-btn"]').should('be.enabled')
 
     cy.get('[data-qa="pnx-occtax-taxon-form-advanced"]').click()
@@ -224,7 +224,7 @@ describe("Testing adding an observation in OccTax", () => {
     cy.get('[data-qa="pnx-nomenclature-obj-denombrement"] > div:nth-child(1)').click()
     cy.get('[data-qa="pnx-nomenclature-obj-denombrement"] > small').contains(" Veuillez indiquer l'objet du dénombrement ")
     cy.get('[qa-test="Objet du dénombrement"]').click()
-    cy.get('[data-qa="Nombre d\'individus observés."]').click()
+    cy.get('[data-qa="IND"]').click()
 
     cy.get("#left-form").scrollTo("bottom")
     cy.get('[data-qa="pnx-occtax-taxon-form-add-count"]').click()
@@ -289,7 +289,7 @@ describe("Testing adding an observation in OccTax", () => {
   })
 
   it("Should close observation", () => {
-    cy.get("[data-qa='pnx-occtax-taxon-form-finish']").click()
+    cy.get("[data-qa='pnx-occtax-taxon-form-finish']").click({force: true})
   })
 
   it("Should filter the last observation", () => {
