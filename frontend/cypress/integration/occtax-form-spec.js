@@ -3,7 +3,8 @@ import promisify from 'cypress-promise';
 
 describe("Testing adding an observation in OccTax", () => {
   // 
-  const taxaNameRef = "Loup gris = Canis lupus Linnaeus, 1758 - [ES - 60577]"
+  // const taxaNameRef = "Loup gris = Canis lupus Linnaeus, 1758 - [ES - 60577]"
+  const taxaNameRef = "Canis lupus lupus = Canis lupus lupus Linnaeus, 1758 - [SSES - 899246]"
   const dateSaisieTaxon = "25/01/2022"
   const taxaSearch = "canis lupus"
 
