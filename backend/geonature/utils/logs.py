@@ -38,6 +38,7 @@ def config_loggers(config):
         )
         mail_handler.setLevel(logging.ERROR)
         root_logger.addHandler(mail_handler)
+    logging.getLogger("fiona").setLevel(config["SERVER"]["LOG_LEVEL"])
     if os.environ.get("FLASK_ENV") == "development":
         warnings.simplefilter("always", DeprecationWarning)
     else:

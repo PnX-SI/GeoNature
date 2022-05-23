@@ -119,8 +119,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
       windowClass: 'large-modal',
     });
     modalRef.componentInstance.idSynthese = row.id_synthese;
-    modalRef.componentInstance.uuidSynthese = row.unique_id_sinp;
     modalRef.componentInstance.header = true;
+    modalRef.componentInstance.useFrom = 'synthese';
   }
 
   openDownloadModal() {
