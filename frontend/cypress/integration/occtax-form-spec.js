@@ -285,7 +285,7 @@ describe("Testing adding an observation in OccTax", () => {
   it("Should display good taxa's obs tech", async () => {
     const cyTaxaObsTech = cy.get('[data-qa="pnx-occtax-taxon-form-taxa-ObsTech-0"]')
     const taxaObsTech = await promisify(cyTaxaObsTech)
-    expect(taxaObsTech[0].innerText).to.equal("Autre")
+    expect(taxaObsTech[0].innerText).to.equal("Vu")
   })
 
   it("Should close observation", () => {
