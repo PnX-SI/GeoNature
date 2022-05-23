@@ -33,10 +33,14 @@ class LAreas(db.Model):
     area_name = db.Column(db.Unicode)
     area_code = db.Column(db.Unicode)
     geom = db.Column(Geometry("GEOMETRY"))
+    centroid = db.Column(Geometry("POINT"))
+    geojson_4326 = db.Column(db.Unicode)
     source = db.Column(db.Unicode)
     enable = db.Column(db.Boolean, nullable=False, default=True)
     meta_create_date = db.Column(db.DateTime, default=datetime.now)
-    meta_update_date = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
+    meta_update_date = db.Column(
+        db.DateTime, default=datetime.now, onupdate=datetime.now
+    )
     area_type = db.relationship("BibAreasTypes", lazy="select")
 
 
@@ -71,4 +75,4 @@ class LiMunicipalities(db.Model):
 
     @hybrid_property
     def nom_com_dept(self):
-        return '{} ({})'.format(self.nom_com, self.insee_dep)
+        return "{} ({})".format(self.nom_com, self.insee_dep)
