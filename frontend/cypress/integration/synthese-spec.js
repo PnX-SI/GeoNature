@@ -74,7 +74,7 @@ describe("Tests gn_synthese", () => {
     cy.get('pnx-dynamic-form-generator > :nth-child(1) > .input-group > .form-control').select('Sexe');
     cy.get('.ng-star-inserted > .auto > .ng-select-container > .ng-value-container > .ng-input > input').click(); 
     // get element from its cd_nomenclature (2)
-    cy.get('[data-qa="Féminin : L\'individu est de sexe féminin."]').click();
+    cy.get('[data-qa="2"]').click();
     cy.get('.button-success').click();
 
     cy.get(':nth-child(1) > .datatable-body-cell-label > .btn > .mat-tooltip-trigger')

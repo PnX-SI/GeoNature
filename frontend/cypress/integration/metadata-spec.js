@@ -110,7 +110,7 @@ describe("Testing metadata", () => {
 		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 
 		cy.get('[data-qa="pnx-dataset-form-select-cadre-acq"]').click()
-		cy.get('[data-qa="pnx-metadata-jdd-'+newCadreAcq.name+'"]').click()
+		cy.get('[data-qa="pnx-metadata-jdd-'+newCadreAcq.name+'"]').click({force:true})
 		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 
 		cy.get('[data-qa="pnx-dataset-form-input-jdd-name"]').type(newJdd.name)
