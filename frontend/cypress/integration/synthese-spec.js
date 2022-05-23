@@ -4,7 +4,7 @@ NodeList.prototype.forEach = Array.prototype.forEach;
 
 describe("Tests gn_synthese", () => {
 
-  beforeEach(() => {
+  before(() => {
     cy.geonatureLogout()
     cy.geonatureLogin();
       cy.visit("/#/synthese")

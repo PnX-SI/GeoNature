@@ -198,7 +198,7 @@ describe("Testing adding an observation in OccTax", () => {
     const results = cy.get("ngb-typeahead-window")
     const firstTaxon = results.first().click() // TODO : variable utilisée? 
     const nomValideResult = cy.get("[data-qa='occurrence-nom-valide']");
-    nomValideResult.contains("Canis lupus Linnaeus, 1758")
+    nomValideResult.contains("Canis lupus")
     cy.get('[data-qa="occurrence-add-btn"]').should('be.enabled')
     
     cy.get('[data-qa="pnx-nomenclature-meth-obs"] > ng-select > div > span.ng-clear-wrapper.ng-star-inserted').click()
@@ -285,7 +285,7 @@ describe("Testing adding an observation in OccTax", () => {
   it("Should display good taxa's obs tech", async () => {
     const cyTaxaObsTech = cy.get('[data-qa="pnx-occtax-taxon-form-taxa-ObsTech-0"]')
     const taxaObsTech = await promisify(cyTaxaObsTech)
-    expect(taxaObsTech[0].innerText).to.equal("Autre")
+    expect(taxaObsTech[0].innerText).to.equal("Vu")
   })
 
   it("Should close observation", () => {
