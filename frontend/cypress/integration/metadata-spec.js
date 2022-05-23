@@ -9,7 +9,8 @@ describe("Testing metadata", () => {
   const jdd = ' JDD-1 '
 
   const newCadreAcq = {
-      name:'Mon cadre d\'acquisition',
+      name:'CA-1',
+      // name:'Mon cadre d\'acquisition',
       description:'description de mon cadre d\'acquisition',
       startDate:"17/03/2022"
   }

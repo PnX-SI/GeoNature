@@ -10,10 +10,10 @@ describe("Tests gn_synthese", () => {
       cy.visit("/#/synthese")
     });
 
-  it("Should display synthese interface", () => {
-    // check there are elements in the list --> au 13/01/22, ce test n'est pas complet, plus d'éléments testables sur la fenêtre : présence des filtres, de la carte et des listes d'observations
-    cy.get('datatable-scroller').children('datatable-row-wrapper');
-  });
+  // it("Should display synthese interface", () => {
+  //   // check there are elements in the list --> au 13/01/22, ce test n'est pas complet, plus d'éléments testables sur la fenêtre : présence des filtres, de la carte et des listes d'observations
+  //   cy.get('datatable-scroller').children('datatable-row-wrapper');
+  // });
 
   it('Should search by taxa name', function () {
     // objectifs : pouvoir rentrer un nom d'espèce dans le filtre, que cela affiche le ou les observations sur la liste correspondant à ce nom
