@@ -406,13 +406,16 @@ MAIL_ON_ERROR = false
         { "id" = "znief", "show" = true, "display_name" = "Espèces déterminantes ZNIEFF", "status_types" = ["ZDET"] },
     ]
 
-    # Enable areas vizualisation with toggle slide
+    # Autorise la visualisation des observations en mode zonage 
     ENABLE_AREA_AGGREGATION = fields.Boolean(load_default=True)
-    # Choose size of areas
+    # Choisir la taille du zonage. Attention, si vous utilisez le floutage (DATA_BLURRING), 
+    # il est nécessaire d'utiliser un type de zonage qui puisse s'imbriquer dans ceux du floutage.
+    # Exemple : type de zonage M5 avec un floutage M5, M10, M75
+    # OU type de zonage COM avecun floutage COM, DEP.
     AREA_AGGREGATION_TYPE = fields.String(load_default="M10")
-    # Activate areas mode by default
+    # Activer le zonage par défaut
     AREA_AGGREGATION_BY_DEFAULT = fields.Boolean(load_default=False)
-    # Areas legend classes to use
+    # Classes de la légende à utiliser
     AREA_AGGREGATION_LEGEND_CLASSES = fields.List(fields.Dict(), load_default=[
         {"min": 100, "color": "#800026"},
         {"min": 50, "color": "#BD0026"},

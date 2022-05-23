@@ -81,7 +81,6 @@ def current_milli_time():
 
 @routes.route("/for_web", methods=["GET", "POST"])
 @permissions.check_permissions(module_code="SYNTHESE", action_code="R")
-@json_resp
 def get_observations_for_web(auth, permissions):
     """Optimized route to serve data for the frontend with all filters.
 
@@ -142,11 +141,20 @@ def get_observations_for_web(auth, permissions):
     else:
         filters = {key: request.args.get(key) for key, value in request.args.items()}
 
-    if "limit" in filters:
-        result_limit = int(filters.pop("limit"))
-    else:
-        result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
+    result_limit = (
+        int(filters.pop("limit"))
+        if "limit" in filters
+        else current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
+    )
 
+    with_areas = (
+        True
+        if "with_areas" in filters
+        and (filters["with_areas"] in ["1", "true"] or filters["with_areas"] == True)
+        else False
+    )
+
+    # Build defaut CTE observations query
     count_min_max = case(
         [
             (
@@ -157,11 +165,9 @@ def get_observations_for_web(auth, permissions):
         ],
         else_="",
     )
-
     nom_vern_or_lb_nom = func.coalesce(
         func.nullif(VSyntheseForWebApp.nom_vern, ""), VSyntheseForWebApp.lb_nom
     )
-
     columns = [
         "id",
         VSyntheseForWebApp.id_synthese,
@@ -184,30 +190,22 @@ def get_observations_for_web(auth, permissions):
         "count_min_max",
         count_min_max,
     ]
-    
-    if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
-        columns.append("sensitivity")
-        columns.append(VSyntheseForWebApp.id_nomenclature_sensitivity)
-        columns.append("diffusion_level")
-        columns.append(VSyntheseForWebApp.id_nomenclature_diffusion_level)
-
     observations = func.json_build_object(*columns).label("obs_as_json")
 
-    if "with_areas" in filters and (
-        filters["with_areas"] in ["1", "true"] or filters["with_areas"] == True
-    ):
-        geom_4326 = LAreas.geom
-    else:
-        geom_4326 = VSyntheseForWebApp.the_geom_4326.label("geom")
+    geojson = (
+        LAreas.geojson_4326.label("geojson")
+        if with_areas
+        else VSyntheseForWebApp.st_asgeojson.label("geojson")
+    )
 
     obs_query = (
-        select([geom_4326, observations])
+        select([geojson, observations])
         .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
         .order_by(VSyntheseForWebApp.date_min.desc())
         .limit(result_limit)
     )
 
-    # Add filters to CTE query
+    # Add filters to observations CTE query
     synthese_query_class = SyntheseQuery(
         VSyntheseForWebApp,
         obs_query,
@@ -215,31 +213,27 @@ def get_observations_for_web(auth, permissions):
         areas_type=current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"],
     )
     synthese_query_class.filter_query_all_filters(auth)
-    query_cte = synthese_query_class.query.cte("query_cte")
+    obs_query = synthese_query_class.query
 
+    # Add CTE queries to blur observations geometries
     if current_app.config["DATA_BLURRING"]["ENABLE_DATA_BLURRING"]:
         data_blurring = DataBlurring(permissions)
-        results = data_blurring.blurSeveralObs(results)
+        obs_query = data_blurring.blurObservationsQuery(
+            obs_query, geojson, observations, with_areas
+        )
+    else:
+        obs_query = obs_query.cte("OBSERVATIONS")
+
+    # Aggregate observation infos
+    properties = func.json_build_object(
+        "observations", func.json_agg(obs_query.c.obs_as_json).label("observations")
+    )
 
     # Group geometries with main query
-
-    if "with_areas" in filters and (
-        filters["with_areas"][0] in ["1", "true"] or filters["with_areas"][0] == True
-    ):
-        st_asgeojson = func.ST_Transform(query_cte.c.geom, 4326)
-    else:
-        st_asgeojson = query_cte.c.geom
-
-    properties = func.json_build_object(
-        "observations", func.json_agg(query_cte.c.obs_as_json).label("observations")
-    )
-
-    query = select([func.ST_AsGeoJSON(st_asgeojson).label("st_asgeojson"), properties]).group_by(
-        query_cte.c.geom
-    )
+    query = select([obs_query.c.geojson, properties]).group_by(obs_query.c.geojson)
     results = DB.session.execute(query)
 
-    # Build GeoJson
+    # Build final GeoJson
     geojson_features = []
     for (geom_as_geojson, properties) in results:
         geojson_features.append(

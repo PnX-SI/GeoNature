@@ -1,15 +1,15 @@
 import logging
-from collections import namedtuple
+from collections import namedtuple, defaultdict
 
 from flask import current_app
-from sqlalchemy import (func, not_, and_, or_, select, column, text, union, literal, exists)
+from sqlalchemy import (case, func, and_, or_, select, column, text, union, literal, exists)
 
 from pypnnomenclature.models import (
     TNomenclatures,
     BibNomenclaturesTypes,
 )
 
-from geonature.core.gn_synthese.models import (CorAreaSynthese, Synthese)
+from geonature.core.gn_synthese.models import (CorAreaSynthese, Synthese, VSyntheseForWebApp)
 from ref_geo.models import (LAreas, BibAreasTypes)
 from apptax.taxonomie.models import Taxref
 from geonature.utils.env import DB
@@ -28,7 +28,8 @@ class DataBlurring:
                 "output_field": "st_asgeojson",
                 "area_field": "geojson_4326",
             },
-        ]
+        ],
+        data_table=VSyntheseForWebApp,
     ):
         # get the root logger
         self.log = logging.getLogger()
@@ -38,6 +39,7 @@ class DataBlurring:
         self.result_to_dict = result_to_dict
         self.fields_to_erase = fields_to_erase
         self.geom_fields = geom_fields
+        self.data_table = data_table
         self.diffusion_levels_ids = self._get_diffusion_levels()
         self.sensitivity_ids = self._get_sensitivity_levels()
         self.non_diffusable = []
@@ -51,10 +53,10 @@ class DataBlurring:
         ignored_object = self._get_ignored_object(see_all)
         output = []
         if ignored_object == "PRIVATE_AND_SENSITIVE":
-            # No need to blurre, set output directly
+            # No need to blur, set output directly
             output = synthese_results
         else:
-            # Need to blurre observations
+            # Need to blur observations
             # For iterate many times on SQLA ProxyResult
             synthese_results = list(synthese_results)
 
@@ -87,6 +89,244 @@ class DataBlurring:
                     output.append(result)
 
         return output
+
+
+    def blurObservationsQuery(self, obs_query, geojson, json_obs, with_areas):
+        (exact_filters, see_all) = self._compute_exact_filters()
+        ignored_object = self._get_ignored_object(see_all)
+
+        if ignored_object == "PRIVATE_AND_SENSITIVE":
+            return obs_query.cte("OBSERVATIONS")
+        else:
+            areas_used_to_blur = self._get_distinct_config_areas_types_codes()
+            areas_sizes = self._get_areas_size_hierarchy(areas_used_to_blur)
+            blurring_types = ["PRIVATE_OBSERVATION", "SENSITIVE_OBSERVATION"]
+
+            # Replace original selected columns
+            columns = [
+                self.data_table.id_synthese,
+                self.data_table.id_nomenclature_diffusion_level,
+                self.data_table.id_nomenclature_sensitivity,
+                geojson,
+            ]
+
+            if with_areas:
+                columns.append(BibAreasTypes.size_hierarchy.label("priority"))
+                blurring_types = self._get_blurring_types(areas_sizes)
+                if len(blurring_types) == 0:
+                    return obs_query.cte("OBSERVATIONS")
+                else:
+                    obs_query = (
+                        obs_query.with_only_columns(columns)
+                        .distinct(self.data_table.id_synthese, self.data_table.date_min)
+                    )
+            else:
+                obs_query = obs_query.with_only_columns(columns)
+
+            # Add blur CTE queries
+            output_query = self._add_blurred_cte_queries(
+                obs_query.cte("OBSERVATIONS"),
+                exact_filters,
+                json_obs,
+                blurring_types,
+                areas_sizes,
+                with_areas,
+            )
+            return output_query
+
+    def _add_blurred_cte_queries(
+        self, observations_query, exact_filters, json_obs, blurring_types, areas_sizes, with_areas
+    ):
+        diffusion_level_ids = self._get_diffusion_levels_area_types()
+        sensitivity_ids = self._get_sensitivity_area_types()
+
+        blurred_obs_queries = []
+        # TODO: avoid to build private and sensitive queries when areas aggregation type is equal of superior
+        for object_type in blurring_types:
+            obs_geo_queries = []
+            nomenclature_ids = (
+                diffusion_level_ids if object_type == "PRIVATE_OBSERVATION" else sensitivity_ids
+            )
+
+            # Group nomenclatures by areas
+            sorted_nomenclature_ids = defaultdict(list)
+            for key, val in sorted(nomenclature_ids.items()):
+                sorted_nomenclature_ids[val].append(key)
+
+            for (
+                area_type_id,
+                area_type_code,
+            ), nomenclature_ids_list in sorted_nomenclature_ids.items():
+                # Build obs queries giving id_synthese and area geojson dispatched by object type
+                priority = int(areas_sizes[area_type_code])
+                obs_geo_query = select(
+                    [
+                        literal(priority).label("priority"),
+                        observations_query.c.id_synthese,
+                        LAreas.geojson_4326.label("geojson"),
+                    ],
+                    distinct=observations_query.c.id_synthese,
+                ).select_from(
+                    CorAreaSynthese.__table__.join(
+                        LAreas, LAreas.id_area == CorAreaSynthese.id_area
+                    ).join(
+                        observations_query,
+                        observations_query.c.id_synthese == CorAreaSynthese.id_synthese,
+                    )
+                )
+                # Handle obs geo query conditions
+                obs_geo_conditions = [LAreas.id_type == area_type_id]
+                if object_type == "PRIVATE_OBSERVATION":
+                    obs_geo_conditions.append(
+                        observations_query.c.id_nomenclature_diffusion_level.in_(
+                            nomenclature_ids_list
+                        )
+                    )
+                elif object_type == "SENSITIVE_OBSERVATION":
+                    obs_geo_conditions.append(
+                        observations_query.c.id_nomenclature_sensitivity.in_(nomenclature_ids_list)
+                    )
+                obs_geo_query = obs_geo_query.where(and_(*obs_geo_conditions))
+
+                obs_geo_queries.append(obs_geo_query)
+
+            object_cte = union(*obs_geo_queries).cte(name=object_type)
+
+            # Build blurred geom by id_synthese query
+            blurred_obs_query = select(
+                [object_cte.c.priority, object_cte.c.id_synthese, object_cte.c.geojson]
+            ).select_from(object_cte)
+
+            # Build permissions conditions
+            if (
+                object_type in exact_filters
+                and exact_filters[object_type]
+                and len(exact_filters[object_type]) > 0
+            ):
+                permissions_ors = self._get_permissions_where_clause(
+                    exact_filters,
+                    object_type,
+                    nomenclature_ids.keys(),
+                )
+
+                # Build permissions NOT EXISTS clause
+                permissions_cte = (
+                    select([object_cte.c.id_synthese])
+                    .select_from(
+                        object_cte.join(
+                            Synthese.__table__, Synthese.id_synthese == object_cte.c.id_synthese
+                        )
+                        .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
+                        .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+                    )
+                    .where(or_(*permissions_ors))
+                    .cte(name=f"{object_type}_PERM")
+                )
+                blurred_obs_query = blurred_obs_query.where(
+                    ~exists([literal("X")])
+                    .select_from(permissions_cte)
+                    .where(permissions_cte.c.id_synthese == object_cte.c.id_synthese)
+                )
+
+            blurred_obs_queries.append(blurred_obs_query)
+
+        # Add observations with size hierarchy 0 or areas aggregation size hierarchy
+        columns = [observations_query.c.id_synthese, observations_query.c.geojson]
+        if with_areas:
+            columns.insert(0, observations_query.c.priority)
+        else:
+            columns.insert(0, literal(1).label("priority"))
+        blurred_obs_queries.append(select(columns).select_from(observations_query))
+
+        # Group all observations with union
+        obs_subquery = union(*blurred_obs_queries).cte("OBS_ALL")
+
+        # Manage areas geometry output
+        if not with_areas:
+            geom_column = obs_subquery.c.geojson
+            select_from_clause = obs_subquery.join(
+                self.data_table.__table__,
+                self.data_table.id_synthese == obs_subquery.c.id_synthese,
+            )
+        else:
+            area_type = current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"]
+            size_area = self._get_area_aggregation_size_hierarchy(area_type)
+
+            pick_one_agg_area = (
+                select([LAreas.geojson_4326.label("geojson")])
+                .select_from(
+                    LAreas.__table__.join(BibAreasTypes, BibAreasTypes.id_type == LAreas.id_type)
+                )
+                .where(
+                    and_(
+                        BibAreasTypes.type_code == area_type,
+                        func.ST_Intersects(
+                            func.ST_GeomFromGeoJSON(obs_subquery.c.geojson),
+                            func.ST_GeomFromGeoJSON(LAreas.geojson_4326),
+                        ),
+                    )
+                )
+                .lateral("CONTAINED_AGG_AREA")
+            )
+
+            geom_column = case(
+                [(obs_subquery.c.priority > size_area, pick_one_agg_area.c.geojson)],
+                else_=obs_subquery.c.geojson,
+            ).label("geojson")
+
+            select_from_clause = obs_subquery.join(
+                self.data_table.__table__,
+                self.data_table.id_synthese == obs_subquery.c.id_synthese,
+            ).outerjoin(pick_one_agg_area, obs_subquery.c.priority > size_area)
+
+        # Final query => Aggregate all observation infos inside JSON
+        all_obs_query = (
+            select(
+                [obs_subquery.c.id_synthese, obs_subquery.c.priority, geom_column, json_obs],
+                distinct=obs_subquery.c.id_synthese,
+            )
+            .select_from(select_from_clause)
+            .order_by(obs_subquery.c.id_synthese, obs_subquery.c.priority.desc())
+            .cte("BLURRED_OBSERVATIONS")
+        )
+
+        return all_obs_query
+
+    def _get_blurring_types(self, areas_sizes):
+        blurring_types = []
+        area_agg_type = current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"]
+        if area_agg_type in areas_sizes:
+            area_agg_size = areas_sizes[area_agg_type]
+        else:
+            area_agg_size = self._get_area_aggregation_size_hierarchy(area_agg_type)
+
+        # Sensitive levels
+        areas_sensitive_levels = current_app.config["DATA_BLURRING"][
+            "AREA_TYPE_FOR_SENSITIVITY_LEVELS"
+        ]
+        sensitive_areas = set([sub["area"] for sub in areas_sensitive_levels])
+        add_sensitive = False
+        for area_type in sensitive_areas:
+            if areas_sizes[area_type] > area_agg_size:
+                add_sensitive = True
+        if add_sensitive:
+            blurring_types.append("SENSITIVE_OBSERVATION")
+
+        # Diffusion levels
+        areas_diffusion_levels = current_app.config["DATA_BLURRING"][
+            "AREA_TYPE_FOR_DIFFUSION_LEVELS"
+        ]
+        diffusion_level_areas = set([sub["area"] for sub in areas_diffusion_levels])
+        add_diffusion_level = False
+        for area_type in diffusion_level_areas:
+            if areas_sizes[area_type] > area_agg_size:
+                add_diffusion_level = True
+        if add_diffusion_level:
+            blurring_types.append("PRIVATE_OBSERVATION")
+
+        return blurring_types
+
+
 
     def _compute_exact_filters(self):
         see_all = {
@@ -199,7 +439,7 @@ class DataBlurring:
                     select([object_cte.c.id_synthese])
                     .select_from(object_cte
                         .join(Synthese.__table__, Synthese.id_synthese == object_cte.c.id_synthese)
-                        .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
+                        .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthelarea_colse)
                         .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
                     )
                     .where(or_(*permissions_ors))
@@ -226,8 +466,8 @@ class DataBlurring:
         )
 
         # DEBUG QUERY:
-        #from sqlalchemy.dialects import postgresql
-        #print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
+        from sqlalchemy.dialects import postgresql
+        print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
         #exit()
 
         results = DB.session.execute(query)
@@ -244,8 +484,8 @@ class DataBlurring:
         for field in self.geom_fields:
             label = field["output_field"]
             if with_compute:
-                larea_col = getattr(table, field.get("area_field", "geom"))
                 srid = func.Find_SRID("ref_geo", "l_areas", "geom")
+                larea_col = getattr(table, field.get("area_field", "geom"))
                 compute = field.get("compute", None)
                 if compute == "x":
                     geocolumn = func.ST_X(func.ST_Transform(func.ST_Centroid(larea_col), srid))
@@ -260,8 +500,17 @@ class DataBlurring:
                 columns.append(geocolumn.label(label))
             else:
                 columns.append(column(label))
-
         return columns
+
+    def _get_area_aggregation_size_hierarchy(self, area_type):
+        query = (
+            select([BibAreasTypes.size_hierarchy])
+            .select_from(BibAreasTypes)
+            .where(BibAreasTypes.type_code == area_type)
+        )
+        results = DB.session.execute(query)
+        area_size = results.fetchone()[0]
+        return int(area_size)
 
     def _sort_synthese_id_by_area_type_id(self, synthese_results, ignored_object):
         sorted_ids = {}
