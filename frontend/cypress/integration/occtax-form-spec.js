@@ -186,11 +186,11 @@ describe("Testing adding an observation in OccTax", () => {
     })
   })
 
-  it("Should focus on taxa input", ()=> {
-    cy.focused()
-    .invoke('attr', 'data-qa')
-    .should('eq', 'taxonomy-form-input')
-  });
+  // it("Should focus on taxa input", ()=> {
+  //   cy.focused()
+  //   .invoke('attr', 'data-qa')
+  //   .should('eq', 'taxonomy-form-input')
+  // });
 
   it("Should be possible to search and select taxa", async ()=> {
     const taxonInput = cy.get("input[data-qa='taxonomy-form-input'].ng-invalid");
@@ -285,7 +285,7 @@ describe("Testing adding an observation in OccTax", () => {
   it("Should display good taxa's obs tech", async () => {
     const cyTaxaObsTech = cy.get('[data-qa="pnx-occtax-taxon-form-taxa-ObsTech-0"]')
     const taxaObsTech = await promisify(cyTaxaObsTech)
-    expect(taxaObsTech[0].innerText).to.equal("Vu")
+    expect(taxaObsTech[0].innerText).to.equal("Autre")
   })
 
   it("Should close observation", () => {
