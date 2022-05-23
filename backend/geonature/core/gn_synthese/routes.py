@@ -131,11 +131,20 @@ def get_observations_for_web(info_role):
     else:
         filters = {key: request.args.get(key) for key, value in request.args.items()}
 
-    if "limit" in filters:
-        result_limit = int(filters.pop("limit"))
-    else:
-        result_limit = current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
+    result_limit = (
+        int(filters.pop("limit"))
+        if "limit" in filters
+        else current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"]
+    )
 
+    with_areas = (
+        True
+        if "with_areas" in filters
+        and (filters["with_areas"] in ["1", "true"] or filters["with_areas"] == True)
+        else False
+    )
+
+    # Build defaut CTE observations query
     count_min_max = case(
         [
             (
@@ -175,21 +184,20 @@ def get_observations_for_web(info_role):
     ]
     observations = func.json_build_object(*columns).label("obs_as_json")
 
-    if "with_areas" in filters and (
-        filters["with_areas"] in ["1", "true"] or filters["with_areas"] == True
-    ):
-        geom_4326 = LAreas.geom
-    else:
-        geom_4326 = VSyntheseForWebApp.the_geom_4326.label("geom")
+    geojson = (
+        LAreas.geojson_4326.label("geojson")
+        if with_areas
+        else VSyntheseForWebApp.st_asgeojson.label("geojson")
+    )
 
     obs_query = (
-        select([geom_4326, observations])
+        select([geojson, observations])
         .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
         .order_by(VSyntheseForWebApp.date_min.desc())
         .limit(result_limit)
     )
 
-    # Add filters to CTE query
+    # Add filters to observations CTE query
     synthese_query_class = SyntheseQuery(
         VSyntheseForWebApp,
         obs_query,
@@ -197,27 +205,18 @@ def get_observations_for_web(info_role):
         areas_type=current_app.config["SYNTHESE"]["AREA_AGGREGATION_TYPE"],
     )
     synthese_query_class.filter_query_all_filters(info_role)
-    query_cte = synthese_query_class.query.cte("query_cte")
-
-    # Group geometries with main query
-
-    if "with_areas" in filters and (
-        filters["with_areas"][0] in ["1", "true"] or filters["with_areas"][0] == True
-    ):
-        st_asgeojson = func.ST_Transform(query_cte.c.geom, 4326)
-    else:
-        st_asgeojson = query_cte.c.geom
+    obs_query = synthese_query_class.query
+    obs_query = obs_query.cte("OBSERVATIONS")
 
     properties = func.json_build_object(
-        "observations", func.json_agg(query_cte.c.obs_as_json).label("observations")
+        "observations", func.json_agg(obs_query.c.obs_as_json).label("observations")
     )
 
-    query = select([func.ST_AsGeoJSON(st_asgeojson).label("st_asgeojson"), properties]).group_by(
-        query_cte.c.geom
-    )
+    # Group geometries with main query
+    query = select([obs_query.c.geojson, properties]).group_by(obs_query.c.geojson)
     results = DB.session.execute(query)
 
-    # Build GeoJson
+    # Build final GeoJson
     geojson_features = []
     for (geom_as_geojson, properties) in results:
         geojson_features.append(
