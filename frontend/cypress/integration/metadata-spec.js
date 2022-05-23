@@ -28,7 +28,8 @@ describe("Testing metadata", () => {
     const listCadreAcq = await promisify(cy.get("[data-qa='pnx-metadata-acq-framework']"))
     const firstCadreAcqIntitule = listCadreAcq[0].firstChild.firstChild.firstChild.children[1].innerText
     
-    expect(firstCadreAcqIntitule).to.equal("Données d'observation de la faune, de la Flore et de la fonge du Parc national des Ecrins\n57b7d0f2-4183-4b7b-8f08-6e105d476dc5")
+    expect(firstCadreAcqIntitule).to.equal("CA-1\n57b7d0f2-4183-4b7b-8f08-6e105d476dc5")
+    // expect(firstCadreAcqIntitule).to.equal("Données d'observation de la faune, de la Flore et de la fonge du Parc national des Ecrins\n57b7d0f2-4183-4b7b-8f08-6e105d476dc5")
   })
 
   it('should display the first "cadre d\'acquisition"', () => {
