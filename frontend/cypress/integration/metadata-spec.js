@@ -5,7 +5,8 @@ describe("Testing metadata", () => {
 
   // const cadreAcq = " Données d'observation de la faune, de la Flore et de la fonge du Parc national des Ecrins"
   const cadreAcq = "CA-1"
-  const jdd = ' Contact aléatoire tous règnes confondus '
+  // const jdd = ' Contact aléatoire tous règnes confondus '
+  const jdd = ' JDD-1 '
 
   const newCadreAcq = {
       name:'Mon cadre d\'acquisition',
