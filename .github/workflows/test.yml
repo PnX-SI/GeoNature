@@ -254,7 +254,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Cypress upload
       uses: actions/upload-artifact@v2
-        if: failure()
+        if: ${{ failure() }}
         with:
           working-directory: ./frontend
           name: cypress-screenshots
