@@ -256,6 +256,5 @@ jobs:
       if: ${{ failure() }}
       uses: actions/upload-artifact@v2
       with:
-        working-directory: ./frontend
         name: cypress-screenshots
-        path: cypress/screenshots
+        path: frontend/cypress/screenshots
