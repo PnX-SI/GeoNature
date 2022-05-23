@@ -45,12 +45,12 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   private areasLabelSwitchBtn;
 
   private originDefaultStyle = {
-    color: '#3388ff',
+    color: '#3388FF',
     weight: 3,
     fill: false,
   };
   private selectedDefaultStyle = {
-    color: '#ff0000',
+    color: '#FF0000',
   };
   private originAreasStyle = {
     color: '#FFFFFF',
@@ -58,7 +58,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     fillOpacity: 0.8,
   };
   private selectedAreasStyle = {
-    color: '#ff0000',
+    color: '#FF0000',
     weight: 3,
   };
 
@@ -370,6 +370,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     // Reset style of previous selected layer
     if (this.mapListService.selectedLayer !== undefined) {
       let originStyle = this.areasEnable ? this.originAreasStyle : this.originDefaultStyle;
+      originStyle['fillColor'] = this.mapListService.selectedLayer.options.fillColor;
       this.mapListService.selectedLayer.setStyle(originStyle);
     }
 
