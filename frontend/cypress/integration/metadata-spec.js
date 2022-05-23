@@ -45,7 +45,7 @@ describe("Testing metadata", () => {
     cy.get('[data-qa="pnx-metadata-acq-framework-header-0"]').click()
     cy.get('[data-qa="pnx-metadata-jdd-1"]').contains(jdd)
     cy.get('[data-qa="pnx-metadata-jdd-actif-1"]').click()
-    cy.get('[data-qa="pnx-metadata-jdd-nb-obs-1"]').contains("5")
+    cy.get('[data-qa="pnx-metadata-jdd-nb-obs-1"]').contains("2")
 		cy.get('[data-qa="pnx-metadata-jdd-delete-1"]').should('be.disabled')
   })
 
@@ -123,7 +123,7 @@ describe("Testing metadata", () => {
 		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 	
 		cy.get("[data-qa='pnx-dataset-form-datatype'] > ng-select > div > div > div.ng-input").click()
-		cy.get('[data-qa="Non renseigné"]').click()
+		cy.get('[data-qa="5"]').click()
 		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 	
 		cy.get('[data-qa="pnx-dataset-form-status-source"] > ng-select > div > div > div.ng-input').click()
