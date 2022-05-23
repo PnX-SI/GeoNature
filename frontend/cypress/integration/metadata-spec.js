@@ -45,7 +45,7 @@ describe("Testing metadata", () => {
     cy.get('[data-qa="pnx-metadata-acq-framework-header-0"]').click()
     cy.get('[data-qa="pnx-metadata-jdd-1"]').contains(jdd)
     cy.get('[data-qa="pnx-metadata-jdd-actif-1"]').click()
-    cy.get('[data-qa="pnx-metadata-jdd-nb-obs-1"]').contains("0")
+    cy.get('[data-qa="pnx-metadata-jdd-nb-obs-1"]').contains("3")
 		cy.get('[data-qa="pnx-metadata-jdd-delete-1"]').should('be.disabled')
   })
 
