@@ -127,27 +127,27 @@ describe("Testing metadata", () => {
 		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 	
 		cy.get('[data-qa="pnx-dataset-form-status-source"] > ng-select > div > div > div.ng-input').click()
-		cy.get('[data-qa="Collection : l\'observation concerne une base de données de collection."]').click()
+		cy.get('[data-qa="Co"]').click()
 		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 	
 		cy.get('[data-qa="pnx-dataset-form-objectif"] > ng-select > div > div > div.ng-input').click()
-		cy.get('[data-qa="Cas n’entrant pas clairement dans les autres rubriques. Dans ce cas les métadonnées (champ libres « description » et « protocole » des fiches de métadonnées) devront bien expliquer en quoi consiste le but de l’acquisition des données"]').click()
+		cy.get('[data-qa="7.2"]').click()
 		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 	
 		cy.get('[data-qa="pnx-dataset-form-territories"] > ng-select > div > div > div.ng-input').click()
-		cy.get('[data-qa="Clipperton"]').click()
+		cy.get('[data-qa="CLI"]').click()
 		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 
 		cy.get('[data-qa="pnx-dataset-form-collecting-method"] > ng-select > div > div > div.ng-input').click()
-		cy.get('[data-qa="Autre"]').click()
+		cy.get('[data-qa="12"]').click()
 		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 	
 		cy.get('[data-qa="pnx-dataset-form-data-origin"] > ng-select > div > div > div.ng-input').click()
-		cy.get('[data-qa="Ne sait pas : L\'information indiquant si la Donnée Source est publique ou privée n\'est pas connue."]').click()
+		cy.get('[data-qa="NSP"]').click()
 		cy.get("[data-qa='pnx-dataset-form-save-jdd'] ").should('be.disabled')
 		
 		cy.get('[data-qa="pnx-dataset-form-resource-type"] > ng-select > div').click()
-		cy.get('[data-qa="Jeu de données"]').click()
+		cy.get('[data-qa="1"]').click()
 
 		cy.get('[data-qa="pnx-dataset-form-save-jdd"]').click()
 	})

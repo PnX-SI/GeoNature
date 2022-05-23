@@ -206,7 +206,7 @@ describe("Testing adding an observation in OccTax", () => {
     cy.get('[data-qa="pnx-nomenclature-info-comp"]').click()
     cy.get('[data-qa="pnx-nomenclature-meth-obs-error"]').contains(" Veuillez indiquer la technique d'observation ")
     cy.get('[qa-test="Technique d\'observation"]').click()
-    cy.get('[data-qa="Pour tout cas qui ne rentrerait pas dans la présente liste. Le nombre d\'apparitions permettra de faire évoluer la nomenclature."]').click()
+    cy.get('[data-qa="20"]').click()
     cy.get('[data-qa="occurrence-add-btn"]').should('be.enabled')
 
     cy.get('[data-qa="pnx-nomenclature-eta-bio"] > ng-select > div > span.ng-clear-wrapper.ng-star-inserted').click()
