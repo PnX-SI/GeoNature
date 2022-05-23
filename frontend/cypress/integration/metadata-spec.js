@@ -59,7 +59,7 @@ describe("Testing metadata", () => {
   it('should display the good "jeux de données"', () => {
     cy.get('[data-qa="pnx-metadata-search"]').type('contact')
     cy.get('[data-qa="pnx-metadata-jdd-1"]').contains(jdd)
-    cy.get('[data-qa="pnx-metadata-jdd-actif-1"]').click()
+    cy.get('[data-qa="pnx-metadata-jdd-actif-1"]').click({force: true})
   })
 
   // it('should create a new "cardre d\'acquisition"', () => {
