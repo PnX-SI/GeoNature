@@ -159,6 +159,7 @@ describe("Testing metadata", () => {
 
 	it('should delete the new "jeux de données"', async () => {
     cy.get('[data-qa="pnx-metadata-search"]').clear()
+    cy.get('[data-qa="pnx-metadata-refresh"]').click()
     cy.wait(2000)
 		cy.get('[data-qa="pnx-metadata-acq-framework-header-1"]').click()
 		const myCadreAcq = await promisify(cy.get('[data-qa="pnx-metadata-acq-framework-header-1"]'))
