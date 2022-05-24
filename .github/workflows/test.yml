@@ -258,9 +258,3 @@ jobs:
       with:
         name: cypress-screenshots
         path: frontend/cypress/screenshots
-    - name: Cypress video upload
-      if: ${{ failure() }}
-      uses: actions/upload-artifact@v2
-      with:
-        name: cypress-videos
-        path: frontend/cypress/videos
