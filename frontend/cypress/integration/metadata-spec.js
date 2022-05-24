@@ -175,7 +175,7 @@ describe("Testing metadata", () => {
 		const listData = await promisify(cy.get("[data-qa='pnx-synthese-list'] > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller"))
 		const elements = Array.from(listData[0].children);
 		elements.forEach(data => {
-			expect(data.children[0].children[1].children[4].innerText).contains("Contact aléatoire tous règnes confondus")
+			expect(data.children[0].children[1].children[4].innerText).contains("JDD-1")
 		})
 	})
 
