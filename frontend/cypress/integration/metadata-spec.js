@@ -163,7 +163,7 @@ describe("Testing metadata", () => {
     cy.wait(2000)
 		cy.get('[data-qa="pnx-metadata-acq-framework-header-0"]').click()
 		const myCadreAcq = await promisify(cy.get('[data-qa="pnx-metadata-acq-framework-header-0"]'))
-    const id = myCadreAcq[0].parentElement.childNodes[1].firstChild.firstChild.childNodes[1].childNodes[0].childNodes[0].innerText
+    const id = myCadreAcq[0].parentElement.childNodes[1].firstChild.firstChild.childNodes[1].childNodes[2].childNodes[0].innerText
 		cy.get('[data-qa="pnx-metadata-jdd-nb-obs-'+id+'"]').contains("0")
 		cy.get('[data-qa="pnx-metadata-jdd-delete-'+id+'"]').click()
 		cy.get('[data-qa="confirmation-dialog-yes"]').click()
