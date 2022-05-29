@@ -200,6 +200,7 @@ def get_observations_for_web(auth, permissions):
 
     obs_query = (
         select([geojson, observations])
+        .distinct(VSyntheseForWebApp.id_synthese, VSyntheseForWebApp.date_min)
         .where(VSyntheseForWebApp.the_geom_4326.isnot(None))
         .order_by(VSyntheseForWebApp.date_min.desc())
         .limit(result_limit)
