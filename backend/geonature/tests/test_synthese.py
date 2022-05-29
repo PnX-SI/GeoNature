@@ -189,15 +189,15 @@ class TestSynthese:
         assert len(r.json["features"]) >= 2
 
         # test status lr
-        query_string = {"regulations_status": ["REGLLUTTE"]}
+        query_string = {"regulations_protection_status": ["REGLLUTTE"]}
         r = self.client.get(url, query_string=query_string)
         assert r.status_code == 200
         # test status znieff
-        query_string = {"znief_status": True}
+        query_string = {"znief_protection_status": True}
         r = self.client.get(url, query_string=query_string)
         assert r.status_code == 200
         # test status protection
-        query_string = {"protections_status": ["PN"]}
+        query_string = {"protections_protection_status": ["PN"]}
         r = self.client.get(url, query_string=query_string)
         assert r.status_code == 200
         # test LR

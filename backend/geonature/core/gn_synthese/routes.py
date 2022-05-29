@@ -34,6 +34,7 @@ from geonature.utils.utilsgeometrytools import export_as_geo_file
 from geonature.core.gn_meta.models import TDatasets
 
 from geonature.core.gn_synthese.models import (
+    BibReportsTypes,
     CorAreaSynthese,
     DefaultsNomenclaturesValue,
     Synthese,
@@ -43,10 +44,7 @@ from geonature.core.gn_synthese.models import (
     TReport,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
-from geonature.core.taxonomie.models import (
-    TaxrefProtectionArticles,
-    TaxrefProtectionEspeces,
-)
+
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_permissions import decorators as permissions
@@ -111,7 +109,7 @@ def get_observations_for_web(info_role):
     :qparam str taxonomy_id_hab: Filter by TAXREF id_habitat attribute
     :qparam str taxhub_attribut*: filtre générique TAXREF en fonction de l'attribut et de la valeur.
     :qparam str *_red_lists: filtre générique de listes rouges. Filtre sur les valeurs. Voir config.
-    :qparam str *_status: filtre générique de statuts (BdC Statuts). Filtre sur les types. Voir config.
+    :qparam str *_protection_status: filtre générique de statuts (BdC Statuts). Filtre sur les types. Voir config.
     :qparam str observers: Filter on observer
     :qparam str id_organism: Filter on organism
     :qparam str date_min: Start date

@@ -263,8 +263,8 @@ class SyntheseQuery:
                     ],
                 )
 
-            elif colname.endswith("_status"):
-                status_id = colname.replace("_status", "")
+            elif colname.endswith("_protection_status"):
+                status_id = colname.replace("_protection_status", "")
                 all_status_cfg = current_app.config["SYNTHESE"]["STATUS_FILTERS"]
                 status_cfg = next(
                     (item for item in all_status_cfg if item["id"] == status_id), None
@@ -296,7 +296,7 @@ class SyntheseQuery:
                     .where(TaxrefBdcStatutText.cd_type_statut.in_(value))
                     .where(TaxrefBdcStatutText.enable == True)
                     .distinct()
-                    .cte(name=f"{status_id}_status")
+                    .cte(name=f"{status_id}_protection_status")
                 )
                 # cas_status = aliased(CorAreaSynthese)
                 self.add_join(CorAreaSynthese, CorAreaSynthese.id_synthese, self.model.id_synthese)

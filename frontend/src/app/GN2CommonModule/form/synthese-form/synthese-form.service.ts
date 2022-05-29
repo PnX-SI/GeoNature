@@ -60,7 +60,7 @@ export class SyntheseFormService {
     // Add protection status filters defined in configuration parameters
     this.statusFilters = Object.assign([], this.cfg.SYNTHESE.STATUS_FILTERS);
     this.statusFilters.forEach((status) => {
-      const control_name = `${status.id}_status`;
+      const control_name = `${status.id}_protection_status`;
       this.searchForm.addControl(control_name, new FormControl(new Array()));
       status['control_name'] = control_name;
       status['control'] = this.searchForm.controls[control_name];

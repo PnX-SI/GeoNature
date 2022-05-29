@@ -40,7 +40,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
 
     const actionMapping: IActionMapping = {
       mouse: {
-        click: (tree, node, $event) => { },
+        click: (tree, node, $event) => {},
         checkboxClick: (tree, node, $event) => {
           node.toggleSelected();
           if (!node.isExpanded) {
@@ -126,10 +126,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
 
   onRedListsDeleted(event) {
     let key = `${event.statusType} [${event.value.code_statut}]`;
-    this.formService.selectedRedLists.splice(
-      this.formService.selectedRedLists.indexOf(key),
-      1
-    );
+    this.formService.selectedRedLists.splice(this.formService.selectedRedLists.indexOf(key), 1);
   }
 
   onTaxRefAttributsSelected(event) {

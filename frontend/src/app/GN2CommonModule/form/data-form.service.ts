@@ -151,7 +151,7 @@ export class DataFormService {
       query_string = query_string.append('areas_status', areasStatus.join(','));
     }
     return this._http.get<Taxon>(`${AppConfig.API_TAXHUB}/taxref/${cd_nom}`, {
-      params: query_string
+      params: query_string,
     });
   }
 
