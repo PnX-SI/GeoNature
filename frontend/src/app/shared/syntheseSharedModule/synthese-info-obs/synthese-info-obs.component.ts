@@ -24,7 +24,7 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
   @Input() mailCustomBody: string;
   @Input() useFrom: 'synthese' | 'validation';
   public selectedObs: any;
-  public validationHistory: Array<any>;
+  public validationHistory: Array<any> = [];
   public selectedObsTaxonDetail: any;
   @ViewChild('tabGroup') tabGroup;
   public APP_CONFIG = AppConfig;
@@ -140,7 +140,9 @@ export class SyntheseInfoObsComponent implements OnInit, OnChanges {
             this.selectObsTaxonInfo = taxAttr;
           });
 
-        this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
+        if (this.selectedObs['unique_id_sinp']) {
+          this.loadValidationHistory(this.selectedObs['unique_id_sinp']);
+        }
         this._gnDataService.getTaxonInfo(this.selectedObs['cd_nom']).subscribe((taxInfo) => {
           this.selectedObsTaxonDetail = taxInfo;
           if (this.selectedObs.cor_observers) {
