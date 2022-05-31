@@ -543,4 +543,8 @@ a.mat-raised-button:hover {
   text-decoration: none !important;
 }
 
+.ngx-toastr {
+  width: 500px !important;  // Specify toastr-dialog width for all devices
+}
+
 /* .loading screen is visible when app is not bootstrapped yet, my-app is empty */
