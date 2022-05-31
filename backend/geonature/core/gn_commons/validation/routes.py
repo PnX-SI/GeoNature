@@ -1,13 +1,15 @@
 import logging
 
+from werkzeug.exceptions import BadRequest
+
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
+from pypnusershub.db.models import User
 from utils_flask_sqla.response import json_resp
 
 from geonature.core.gn_commons.models import TValidations
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.utils.env import DB
 from geonature.utils.utilssqlalchemy import test_is_uuid
-from pypnusershub.db.models import User
 
 
 from ..routes import routes
@@ -21,10 +23,7 @@ log = logging.getLogger()
 def get_hist(uuid_attached_row):
     # Test if uuid_attached_row is uuid
     if not test_is_uuid(uuid_attached_row):
-        return (
-            "Value error uuid_attached_row is not valid",
-            500,
-        )
+        raise BadRequest("Value error uuid_attached_row is not valid")
 
     data = (
         DB.session.query(
