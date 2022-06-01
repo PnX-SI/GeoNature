@@ -1,8 +1,11 @@
-{{APP_PATH}}/var/log/gn_errors.log {
-    su {{USER}} {{GROUP}}
+/var/log/geonature/geonature.log {
+    su ${USER} ${USER}
     daily
     rotate 8
     size 100M
     create
     compress
+    postrotate
+    systemctl reload geonature || true
+    endscript
 }

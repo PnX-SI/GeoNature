@@ -11,6 +11,10 @@ CHANGELOG
 * Ajout de la commande ``geonature db status``
 * Déplacement du fichier de log GeoNature dans le dossier ``/var/log/geonature/``
 
+**🐛 Corrections**
+
+* Remise en place de la rotation des fichiers de logs
+
 **⚠️ Notes de version**
 
 * Passage à angular 12 (développeur), executez les commandes suivantes :

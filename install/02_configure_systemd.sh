@@ -24,4 +24,7 @@ sudo systemctl daemon-reload
 echo "Activation de geonature au démarrage…"
 sudo systemctl enable geonature || exit 1
 
+echo "Installation de la configuration logrotate…"
+envsubst '${USER}' < "${BASE_DIR}/install/assets/log_rotate" | sudo tee /etc/logrotate.d/geonature
+
 echo "Vous pouvez maintenant démarrer GeoNature avec la commande : sudo systemctl start geonature"
