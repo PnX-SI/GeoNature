@@ -9,3 +9,14 @@
     systemctl reload geonature || true
     endscript
 }
+/var/log/geonature/geonature-worker.log {
+    su ${USER} ${USER}
+    daily
+    rotate 8
+    size 100M
+    create
+    compress
+    postrotate
+    systemctl reload geonature-worker || true
+    endscript
+}

@@ -61,6 +61,9 @@ echo "Installation de l'environnement logiciel..."
 wget -qO- https://deb.nodesource.com/setup_16.x | sudo -E bash -
 
 sudo apt-get install -y unzip git postgresql postgis python3-pip python3-venv libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 nodejs || exit 1
+if [ "${WORKER}" = true ]; then
+    sudo apt-get install redis
+fi
 
 
 # Apache configuration

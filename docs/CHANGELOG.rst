@@ -9,6 +9,7 @@ CHANGELOG
 
 * Simplification du CRUVED minimum pour accéder à GeoNature, ne nécessitant plus d'avoir obligatoirement un CRUVED défini au niveau global de GeoNature (#1622)
 * Ajout de la commande ``geonature db status``
+* Ajout d’un worker Celery pour l’exécution de tâches asynchrones
 * Déplacement du fichier de log GeoNature dans le dossier ``/var/log/geonature/``
 
 **🐛 Corrections**
@@ -16,6 +17,11 @@ CHANGELOG
 * Remise en place de la rotation des fichiers de logs
 
 **⚠️ Notes de version**
+
+* Installation du worker Celery : il vous faut installer le broker redis :
+  ::
+
+    # sudo apt install redis
 
 * Passage à angular 12 (développeur), executez les commandes suivantes :
   ::

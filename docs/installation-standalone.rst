@@ -11,7 +11,10 @@ Installer les paquets suivants :
 
 ::  
     
-  $ sudo apt install unzip git postgresql postgis python2 python3-pip python3-venv libgdal-dev libffi-dev libpangocairo-1.0-0 apache2
+  $ sudo apt install unzip git postgresql postgis python2 python3-pip python3-venv libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis
+
+
+Note : le paquet ``redis`` n’est pas nécessaire si vous ne souhaitez pas installer le worker celery.
 
 
 Installation de l'application

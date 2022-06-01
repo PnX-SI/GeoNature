@@ -3,6 +3,9 @@
 # Set mode to 'dev' to install GeoNature in dev mode
 MODE=prod
 
+# Set to true to enable installation of GeoNature Celery Worker
+WORKER=true
+
 # Langue du serveur
 # valeur possible : fr_FR.UTF-8, en_US.utf8 
 # locale -a pour voir la liste des locales disponible
