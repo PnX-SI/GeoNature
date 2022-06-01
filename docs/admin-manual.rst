@@ -1017,7 +1017,7 @@ Logs
 """"
 
 * Logs d’installation de GeoNature : ``geonature/install/install.log``
-* Logs de GeoNature : ``/var/log/geonature.log``
+* Logs de GeoNature : ``/var/log/geonature/geonature.log``
 * Logs de TaxHub : ``/var/log/taxhub.log``
 * Logs de UsersHub : ``/var/log/usershub.log``
 

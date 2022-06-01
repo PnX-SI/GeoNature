@@ -9,6 +9,7 @@ CHANGELOG
 
 * Simplification du CRUVED minimum pour accéder à GeoNature, ne nécessitant plus d'avoir obligatoirement un CRUVED défini au niveau global de GeoNature (#1622)
 * Ajout de la commande ``geonature db status``
+* Déplacement du fichier de log GeoNature dans le dossier ``/var/log/geonature/``
 
 **⚠️ Notes de version**
 

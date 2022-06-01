@@ -184,6 +184,11 @@ cd $myrootpath/$currentdir/install
 ./02_configure_systemd.sh
 cd $myrootpath/$currentdir/
 
+if [ -f "/var/log/geonature.log" ]; then
+    sudo mv /var/log/geonature.log /var/log/geonature/geonature.log
+    sudo chown $USER: /var/log/geonature/geonature.log
+fi
+
 sudo systemctl restart geonature
 
 deactivate
