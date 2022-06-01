@@ -119,13 +119,3 @@ echo "Ajout du fichier d'autocomplétion de la commande GeoNature au virtual env
 if [ ! -f "${BIN_VENV_DIR}/${COMPLETION_FILE_NAME}" ]; then
   _GEONATURE_COMPLETE=bash_source geonature > "${BIN_VENV_DIR}/${COMPLETION_FILE_NAME}"
 fi
-
-
-echo "Installation du service-file systemd…"
-envsubst '${USER} ${BASE_DIR}' < "${BASE_DIR}/install/assets/geonature.service" | sudo tee /etc/systemd/system/geonature.service && sudo systemctl daemon-reload || exit 1
-if [[ "${MODE}" != "dev" ]]; then
-  echo "Activation de geonature au démarrage…"
-  sudo systemctl enable geonature || exit 1
-fi
-
-echo "Vous pouvez maintenant démarrer GeoNature avec la commande : sudo systemctl start geonature"

@@ -179,6 +179,11 @@ geonature update_module_configuration occhab --build=false
 
 geonature frontend_build
 
+echo "Mise à jour des scripts systemd"
+cd $myrootpath/$currentdir/install
+./02_configure_systemd.sh
+cd $myrootpath/$currentdir/
+
 sudo systemctl restart geonature
 
 deactivate

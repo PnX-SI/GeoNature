@@ -52,11 +52,12 @@ Installation de l'application
 
 Rendez vous dans le dossier ``install`` et lancez successivement dans l’ordre les scripts suivant :
 
-* ``01_install_backend.sh`` : Création du virtualenv python, installation des dépendances et du backend GeoNature dans celui-ci, création du service systemd (permettant d’utiliser ``sudo systemctl {start,stop} geonature2``).
-* ``02_create_db.sh`` : Création du role postgresql, de la base de données, ajout des extensions nécessaires (postgis, …), création des schémas nécessaires à GeoNature et ajout des données métiers.
-* ``03_install_gn_modules.sh`` : Installation des modules OccTax, OccHab et validation (si activé dans le fichier `settings.ini`).
-* ``04_install_frontend.sh`` : Création des dossiers et liens symboliques nécessaires, création des fichier custom à partir des fichiers d’exemple, génération des fichiers de configuration grâce à la commande `geonature`, installation de nvm, npm et node ainsi que toutes les dépendances javascript nécessaires puis build du front.
-* ``05_configure_apache.sh`` : Installation du fichier de configuration Apache ``/etc/apache2/conf-available/geonature.conf`` et activation des modules Apache nécessaires.
+* ``01_install_backend.sh`` : Création du virtualenv python, installation des dépendances et du backend GeoNature dans celui-ci.
+* ``02_configure_systemd.sh`` : Création des services systemd ``geonature`` et ``geonature-worker``, configuration de ``logrotate``, création des dossiers ``/run/geonature`` et ``/var/log/geonature``.
+* ``03_create_db.sh`` : Création du role postgresql, de la base de données, ajout des extensions nécessaires (postgis, …), création des schémas nécessaires à GeoNature et ajout des données métiers.
+* ``04_install_gn_modules.sh`` : Installation des modules OccTax, OccHab et validation (si activé dans le fichier `settings.ini`).
+* ``05_install_frontend.sh`` : Création des dossiers et liens symboliques nécessaires, création des fichier custom à partir des fichiers d’exemple, génération des fichiers de configuration grâce à la commande `geonature`, installation de nvm, npm et node ainsi que toutes les dépendances javascript nécessaires puis build du front.
+* ``06_configure_apache.sh`` : Installation du fichier de configuration Apache ``/etc/apache2/conf-available/geonature.conf`` et activation des modules Apache nécessaires.
 
 Vous pouvez alors démarrer le backend GeoNature : ``sudo systemctl start geonature2``
 

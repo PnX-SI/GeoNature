@@ -123,14 +123,16 @@ cd "${GEONATURE_DIR}/install"
 
 echo "Installation du backend GeoNature"
 ./01_install_backend.sh || exit 1
+echo "Installation des scripts systemd"
+./02_configure_systemd.sh || exit 1
 echo "Installation de la base de données"
-./02_create_db.sh || exit 1
+./03_create_db.sh || exit 1
 echo "Installation des modules GeoNature"
-./03_install_gn_modules.sh || exit 1
+./04_install_gn_modules.sh || exit 1
 echo "Installation du frontend GeoNature"
-./04_install_frontend.sh || exit 1
+./05_install_frontend.sh || exit 1
 echo "Installation de la config apache pour GeoNature"
-./05_configure_apache.sh || exit 1
+./06_configure_apache.sh || exit 1
 
 sudo a2enconf geonature || exit 1
 
