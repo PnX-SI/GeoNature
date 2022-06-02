@@ -27,7 +27,8 @@ setuptools.setup(
         "geonature.tests": ["data/*.sql"],
         "geonature.migrations": ["data/**/*.sql"],
     },
-    install_requires=list(open("backend/requirements.in", "r")),
+    install_requires=list(open("backend/requirements-common.in", "r"))
+    + list(open("backend/requirements-dependencies.in", "r")),
     extras_require={
         "tests": [
             "pytest",

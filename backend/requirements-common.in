@@ -1,0 +1,29 @@
+click>=7.0
+fiona
+flask<2.0
+flask-cors
+flask-mail
+flask-marshmallow
+flask-migrate
+flask-sqlalchemy
+flask-weasyprint
+flask_wtf
+geog
+geojson
+gunicorn>=19.8.0
+lxml
+marshmallow
+marshmallow-sqlalchemy
+pillow
+packaging
+psycopg2
+python-dateutil
+shapely
+sqlalchemy<1.4
+toml
+weasyprint<53
+wtforms
+wtforms-sqlalchemy
+xmltodict
+markupsafe<2.1  # jinja2==2.11.3 compatibility
+numpy<1.22  # Python 3.7 (Debian 10) compatibility

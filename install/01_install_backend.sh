@@ -93,7 +93,7 @@ if [[ "${MODE}" == "dev" ]]; then
       echo "Avez-vous lancé 'git submodule init && git submodule update' ?"
       exit 1
   fi
-  pip install -e "${BASE_DIR}"[tests] -r requirements-common.txt -r requirements-submodules.txt
+  pip install -e "${BASE_DIR}"[tests] -r requirements-dev.txt
 else
   pip install -e "${BASE_DIR}" -r requirements.txt
 fi
