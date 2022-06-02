@@ -150,7 +150,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
             const latLng = L.GeoJSON.coordsToLatLng(geojson.geometry.coordinates[i]);
             this.setStyleEventAndAdd(L.circleMarker(latLng), geojson.properties.id);
           }
-        } else if (geojson.type == 'Polygon' || geojson.type == 'MultiPolygon') {
+        } else if (geojson.geometry.type == 'Polygon' || geojson.geometry.type == 'MultiPolygon') {
           const latLng = L.GeoJSON.coordsToLatLngs(
             geojson.geometry.coordinates,
             geojson.geometry.type === 'Polygon' ? 1 : 2
