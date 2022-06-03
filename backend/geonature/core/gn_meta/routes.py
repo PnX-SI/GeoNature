@@ -37,7 +37,6 @@ from geonature.core.gn_synthese.models import (
     Synthese,
     TSources,
     CorAreaSynthese,
-    CorSensitivitySynthese,
 )
 from geonature.core.gn_permissions.decorators import login_required
 
@@ -306,18 +305,12 @@ def sensi_report():
             func.ref_nomenclatures.get_nomenclature_label(
                 Synthese.id_nomenclature_bio_status, "fr"
             ).label("occStatutBiologique"),
-            func.min(CorSensitivitySynthese.meta_update_date).label("sensiDateAttribution"),
-            func.min(CorSensitivitySynthese.sensitivity_comment).label("sensiAlerte"),
             TNomenclatures.cd_nomenclature,
             TNomenclatures.label_fr,
         )
         .select_from(Synthese)
         .outerjoin(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
         .outerjoin(LAreas, LAreas.id_area == CorAreaSynthese.id_area)
-        .outerjoin(
-            CorSensitivitySynthese,
-            CorSensitivitySynthese.uuid_attached_row == Synthese.unique_id_sinp,
-        )
         .outerjoin(
             TNomenclatures, TNomenclatures.id_nomenclature == Synthese.id_nomenclature_sensitivity
         )

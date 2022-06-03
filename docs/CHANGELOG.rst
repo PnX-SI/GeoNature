@@ -11,6 +11,7 @@ CHANGELOG
 * Ajout de la commande ``geonature db status``
 * Ajout d’un worker Celery pour l’exécution de tâches asynchrones
 * Déplacement du fichier de log GeoNature dans le dossier ``/var/log/geonature/``
+* Suppression de la table ``gn_sensitivity.cor_sensitivity_synthese`` et des triggers associés.
 
 **🐛 Corrections**
 
