@@ -1,0 +1,5 @@
+-r ../backend/requirements.txt
+sphinx_rtd_theme
+sphinx
+sphinxcontrib-httpdomain
+sphinxcontrib-websupport

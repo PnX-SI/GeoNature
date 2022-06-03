@@ -137,6 +137,10 @@ html_sidebars = {"**": ["globaltoc.html", "relations.html", "sourcelink.html", "
 #     ]
 # }
 
+html_extra_path = [
+    "CNAME",
+]
+
 
 # -- Options for HTMLHelp output ------------------------------------------
 
