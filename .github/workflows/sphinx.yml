@@ -1,9 +1,8 @@
 name: "Build Sphinx Documentation"
 
 on: 
-  push:
-    pull_request:
-      - develop
+  release:
+    types: [published]
 
 jobs:
   docs:
@@ -41,4 +40,4 @@ jobs:
       uses: ad-m/github-push-action@master
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: gh-pages2
+        branch: gh-pages
