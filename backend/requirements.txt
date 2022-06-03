@@ -10,12 +10,24 @@ alembic==1.8.0
     #   flask-migrate
     #   pypn-ref-geo
     #   pypnusershub
+amqp==2.6.1
+    # via
+    #   -r requirements-common.txt
+    #   kombu
+async-timeout==4.0.2
+    # via
+    #   -r requirements-common.txt
+    #   redis
 attrs==21.4.0
     # via
     #   -r requirements-common.txt
     #   fiona
 bcrypt==3.2.2
     # via pypnusershub
+billiard==3.6.4.0
+    # via
+    #   -r requirements-common.txt
+    #   celery
 blinker==1.4
     # via
     #   -r requirements-common.txt
@@ -29,6 +41,8 @@ cairosvg==2.5.2
     # via
     #   -r requirements-common.txt
     #   weasyprint
+celery[redis]==4.4.7
+    # via -r requirements-common.txt
 certifi==2022.5.18.1
     # via
     #   -r requirements-common.txt
@@ -66,6 +80,10 @@ defusedxml==0.7.1
     # via
     #   -r requirements-common.txt
     #   cairosvg
+deprecated==1.2.13
+    # via
+    #   -r requirements-common.txt
+    #   redis
 fiona==1.8.21
     # via
     #   -r requirements-common.txt
@@ -146,6 +164,10 @@ jinja2==2.11.3
     # via
     #   -r requirements-common.txt
     #   flask
+kombu==4.6.11
+    # via
+    #   -r requirements-common.txt
+    #   celery
 lxml==4.9.0
     # via -r requirements-common.txt
 mako==1.2.0
@@ -185,6 +207,7 @@ packaging==21.3
     #   -r requirements-common.txt
     #   geoalchemy2
     #   marshmallow
+    #   redis
 pillow==9.1.1
     # via
     #   -r requirements-common.txt
@@ -226,6 +249,14 @@ python-dotenv==0.20.0
     #   pypn-habref-api
     #   pypnnomenclature
     #   taxhub
+pytz==2022.1
+    # via
+    #   -r requirements-common.txt
+    #   celery
+redis==4.3.3
+    # via
+    #   -r requirements-common.txt
+    #   celery
 requests==2.27.1
     # via
     #   pypn-habref-api
@@ -277,6 +308,11 @@ utils-flask-sqlalchemy==0.2.6
     #   utils-flask-sqlalchemy-geo
 utils-flask-sqlalchemy-geo==0.2.2
     # via -r requirements-dependencies.in
+vine==1.3.0
+    # via
+    #   -r requirements-common.txt
+    #   amqp
+    #   celery
 weasyprint==52.5
     # via
     #   -r requirements-common.txt
@@ -291,6 +327,10 @@ werkzeug==1.0.1
     # via
     #   -r requirements-common.txt
     #   flask
+wrapt==1.14.1
+    # via
+    #   -r requirements-common.txt
+    #   deprecated
 wtforms==3.0.1
     # via
     #   -r requirements-common.txt

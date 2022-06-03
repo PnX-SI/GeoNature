@@ -1,3 +1,4 @@
+celery[redis]<5.0  # redis 5 conflict with flask<2 click requirement
 click>=7.0
 fiona
 flask<2.0
