@@ -439,7 +439,7 @@ class DataBlurring:
                     select([object_cte.c.id_synthese])
                     .select_from(object_cte
                         .join(Synthese.__table__, Synthese.id_synthese == object_cte.c.id_synthese)
-                        .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthelarea_colse)
+                        .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
                         .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
                     )
                     .where(or_(*permissions_ors))
