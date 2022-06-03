@@ -129,6 +129,7 @@ flask-sqlalchemy==2.5.1
     #   -r requirements-common.txt
     #   flask-migrate
     #   pypn-habref-api
+    #   pypn-ref-geo
     #   pypnnomenclature
     #   pypnusershub
     #   taxhub
@@ -234,7 +235,7 @@ pyphen==0.12.0
     #   weasyprint
 pypn-habref-api==0.3.0
     # via -r requirements-dependencies.in
-pypn-ref-geo==1.0.1
+pypn-ref-geo==1.1.0
     # via -r requirements-dependencies.in
 pypnnomenclature==1.5.1
     # via -r requirements-dependencies.in
@@ -307,7 +308,9 @@ utils-flask-sqlalchemy==0.2.6
     #   taxhub
     #   utils-flask-sqlalchemy-geo
 utils-flask-sqlalchemy-geo==0.2.2
-    # via -r requirements-dependencies.in
+    # via
+    #   -r requirements-dependencies.in
+    #   pypn-ref-geo
 vine==1.3.0
     # via
     #   -r requirements-common.txt
