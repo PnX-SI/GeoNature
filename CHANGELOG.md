@@ -1,6 +1,17 @@
 CHANGELOG
 =========
 
+1.1.0 (2022-06-03)
+------------------
+
+**🚀 Nouveautés**
+
+* Ajout des modèles SQLAlchemy géographiques
+
+**🐛 Corrections**
+
+* Auto-détection du SRID local sans accéder aux paramètres de GeoNature
+
 1.0.1 (2022-03-04)
 ------------------
 
