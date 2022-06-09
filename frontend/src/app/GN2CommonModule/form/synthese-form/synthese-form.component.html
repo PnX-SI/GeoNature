@@ -1,9 +1,9 @@
 <div class="card search-wrapper">
   <fieldset *ngIf="displayValidation">
-    <legend> Validation </legend>
+    <legend> {{'Form.SyntheseForm.Validation' | translate }} </legend>
 
     <div>
-      <small>Statut de validation</small>
+      <small>{{'Form.SyntheseForm.ValidationStatus' | translate }}</small>
       <pnx-multiselect
         [values]="validationStatus"
         [parentFormControl]="formService.searchForm.controls.id_nomenclature_valid_status"
@@ -34,7 +34,7 @@
         for="modif_checkbox"
         class="form-check-label"
       >
-        <small>Données modifiées depuis la dernière validation</small>
+        <small>{{'Form.SyntheseForm.EditedDataSinceLastEdit' | translate }}</small>
       </label>
     </div>
     <button
@@ -42,7 +42,7 @@
       class="btn btn-sm btn-outline-shadow profile float-right"
       data-toggle="collapse"
       data-target="#collapseScore"
-      matTooltip="Filtrer selon le profil du taxon"
+      matTooltip="{{Form.SyntheseForm.FilterTaxaProfile | translate }}"
       matTooltipClass="validation-tooltip"
     >
       <i
@@ -51,7 +51,7 @@
       ></i>
     </button>
     <div class="advanded-score collapse" id="collapseScore">
-      <small> Score</small>
+      <small> {{'Form.SyntheseForm.Score' | translate }}</small>
         <div class="input-group">
           <select
             class="form-control form-control-sm"
@@ -68,7 +68,7 @@
           matTooltip="La localisation est-elle dans l'aire de répartition connue du taxon ?"
           matTooltipClass="validation-tooltip"
         >
-          Localisation valide
+          {{'Form.SyntheseForm.ValidPosition' | translate }}
           <mat-icon class="material-icons-outlined" inline="true">info</mat-icon>
         </small>
         <div class="input-group">
@@ -77,16 +77,16 @@
             [formControl]="formService.searchForm.get('valid_distribution')"
             name="score"
           >
-          <option [ngValue]="null"> -- aucun filtre --</option>
-          <option [ngValue]="true">Valide</option>
-          <option [ngValue]="false">Invalide</option>
+          <option [ngValue]="null"> {{'Form.SyntheseForm.NoFilter' | translate }}</option>
+          <option [ngValue]="true">{{'Form.SyntheseForm.Valid' | translate }}</option>
+          <option [ngValue]="false">{{'Form.SyntheseForm.Invalid' | translate }}</option>
           </select>
         </div>
         <small
           matTooltip="L'altitude de l'observation est-elle dans la plage d'altitude connue du taxon ?"
           matTooltipClass="validation-tooltip"
         >
-          Altitude valide
+          {{'Form.SyntheseForm.ValidAltitude' | translate }}
           <mat-icon class="material-icons-outlined" inline="true">info</mat-icon>
         </small>
         <div class="input-group">
@@ -95,16 +95,15 @@
             [formControl]="formService.searchForm.get('valid_altitude')"
             name="score"
           >
-            <option [ngValue]="null"> -- aucun filtre --</option>
-            <option [ngValue]="true">Valide</option>
-            <option [ngValue]="false">Invalide</option>
-          </select>
+            <option [ngValue]="null"> {{'Form.SyntheseForm.NoFilter' | translate }}</option>
+            <option [ngValue]="true">{{'Form.SyntheseForm.Valid' | translate }}</option>
+            <option [ngValue]="false">{{'Form.SyntheseForm.Invalid' | translate }}</option></select>
         </div>
         <small
           matTooltip="La date et l'altitude de l'observation sont-elle conforme à la phénologie connue du taxon ?"
           matTooltipClass="validation-tooltip"
         >
-          Phénologie valide
+          {{'Form.SyntheseForm.ValidPhenology' | translate }}
           <mat-icon class="material-icons-outlined" inline="true">info</mat-icon>
         </small>
         <div class="input-group">
@@ -113,16 +112,15 @@
             [formControl]="formService.searchForm.get('valid_phenology')"
             name="score"
           >
-            <option [ngValue]="null"> -- aucun filtre --</option>
-            <option [ngValue]="true">Valide</option>
-            <option [ngValue]="false">Invalide</option>
-          </select>
+            <option [ngValue]="null">{{'Form.SyntheseForm.NoFilter' | translate }}</option>
+            <option [ngValue]="true">{{'Form.SyntheseForm.Valid' | translate }}</option>
+            <option [ngValue]="false">{{'Form.SyntheseForm.Invalid' | translate }}</option></select>
         </div>
     </div>
   </fieldset>
 
   <fieldset>
-    <legend> Quoi ?</legend>
+    <legend> {{'Form.SyntheseForm.What' | translate }}</legend>
 
     <pnx-taxonomy
       label="{{'Taxon.Taxon' | translate }} "
@@ -139,7 +137,7 @@
       *ngIf="formService.selectedtaxonFromComponent.length > 0"
     >
       <p class="taxon-list">
-        <b> Taxon(s) recherché(s):</b>
+        <b> {{'Form.SyntheseForm.SearchedTaxa' | translate }}:</b>
       </p>
       <ul class="taxon-list">
         <li
@@ -158,7 +156,7 @@
     <button
       (click)="openModal()"
       class="btn btn-xs btn-outline-secondary advanced"
-    > Avancé
+    > {{'Taxon.Advanced' | translate }}
     </button>
 
     <br>
@@ -169,7 +167,7 @@
         && formService.searchForm.controls.taxonomy_group2_inpn.value != '' )
       "
     >
-      <h2 class="h6 mb-1"><small>Champs avancé(s) sélectionné(s) :</small></h2>
+      <h2 class="h6 mb-1"><small>{{'Form.SyntheseForm.AdvancedFieldsSelected' | translate }}</small></h2>
       <ul class="list-unstyled search-list">
         <li *ngIf="
             formService.selectedCdRefFromTree.length > 0 || formService.selectedTaxonFromRankInput.length > 0
@@ -198,7 +196,7 @@
           *ngIf="formService.selectedRedLists?.length > 0"
           class="d-flex justify-content-between align-items-center"
         >
-          {{formService.selectedRedLists.length}} catégories de listes rouges
+          {{formService.selectedRedLists.length}} {{'Form.SyntheseForm.RedListCategory' | translate }}
 
           <i class="fa fa-info-circle clickable"
             [matTooltip]="'Sélection : ' + formService.selectedRedLists.join(', ')"
@@ -209,7 +207,7 @@
           *ngIf="formService.selectedStatus?.length > 0"
           class="d-flex justify-content-between align-items-center"
         >
-          {{formService.selectedStatus.length}} statuts de protection
+          {{formService.selectedStatus.length}} {{'Form.SyntheseForm.ProtectionStatus' | translate }}
 
           <i class="fa fa-info-circle clickable"
             [matTooltip]="'Sélection : ' + formService.selectedStatus.join(', ')"
@@ -220,14 +218,14 @@
           *ngIf="formService.selectedTaxRefAttributs?.length > 0"
           class="d-flex justify-content-between align-items-center"
         >
-          {{formService.selectedTaxRefAttributs.length}} attributs TaxRef
+          {{formService.selectedTaxRefAttributs.length}} {{'Form.SyntheseForm.TaxrefAttributes' | translate }}
         </li>
       </ul>
     </span>
   </fieldset>
 
   <fieldset>
-    <legend> Quand ?</legend>
+    <legend>{{'Form.SyntheseForm.When' | translate }}</legend>
     <div class="row row-sm">
 
       <pnx-date
@@ -308,7 +306,7 @@
 
 
   <fieldset>
-    <legend> Qui ?</legend>
+    <legend> {{'Form.SyntheseForm.Who' | translate }} </legend>
 
     <ng-container *ngIf="AppConfig.SYNTHESE.SEARCH_OBSERVER_WITH_LIST; else observersTxtBlock">
       <pnx-observers
@@ -344,7 +342,7 @@
 
 
   <fieldset>
-    <legend> Comment ?</legend>
+    <legend> {{'Form.SyntheseForm.How' | translate }}</legend>
 
     <pnx-acquisition-frameworks
       [multiSelect]='true'
@@ -368,8 +366,8 @@
   </fieldset>
 
   <fieldset>
-    <legend> Filtres avancés </legend>
-    <small> Ajouter un filtre </small>
+    <legend> {{'Form.AdvancedFilters' | translate }} </legend>
+    <small> {{'Form.AddFilter' | translate }} </small>
     <pnx-dynamic-form-generator
       [myFormGroup]="formService.searchForm"
       [formsDefinition]="formService.dynamycFormDef"
@@ -396,7 +394,7 @@
     mat-raised-button
     (click)="onSubmitForm()"
   >
-    Rechercher
+    {{'Search' | translate }}
   </button>
 </div>
 <!-- <pre>form value: <br>{{formService.searchForm.value | json}}</pre> -->

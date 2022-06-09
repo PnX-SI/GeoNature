@@ -7,19 +7,19 @@
   >
     <mat-button-toggle
       value="organism"
-      matTooltip="Renseigner un organisme uniquement"
+      matTooltip="{{'MetaData.Actors.EnterOrganization'|translate}}"
     >
       <mat-icon>domain</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="person"
-      matTooltip="Renseigner une personne uniquement"
+      matTooltip="{{'MetaData.Actors.EnterPerson'|translate}}"
     >
       <mat-icon>person</mat-icon>
     </mat-button-toggle>
     <mat-button-toggle
       value="all"
-      matTooltip="Renseigner un organisme et un personne"
+      matTooltip="{{'MetaData.Actors.EnterOrganizationPerson'|translate}}"
     >
       <mat-icon>domain</mat-icon>
       <mat-icon>person</mat-icon>
@@ -29,7 +29,7 @@
     *ngIf="isRemovable"
     mat-icon-button
     color="warn"
-    matTooltip="Supprimer cet acteur"
+    matTooltip="{{'MetaData.Actors.DeleteThisActor' | translate}}"
     (click)="remove()"
   >
     <mat-icon>clear</mat-icon>
@@ -37,13 +37,13 @@
 
   <form [formGroup]="actorForm">
     <ng-container *ngIf="!isMainContact">
-      <small> Type de role </small>
+      <small> {{'MetaData.Actors.RoleType' | translate}} </small>
       <ng-select 
         class="auto"
         [items]="role_types"
         bindLabel="label_default"
         bindValue="id_nomenclature"
-        placeholder="Type de role"
+        placeholder="{{'MetaData.Actors.RoleType' | translate}}"
         [multiple]="false"
         [clearable]="false"
         formControlName="id_nomenclature_actor_role"
@@ -63,13 +63,13 @@
 
     <!-- Organismes -->
     <ng-container *ngIf="toggleButtonValue == 'organism' || toggleButtonValue == 'all'">
-      <small> Organisme </small>
+      <small> {{'Form.Organism' | translate}} </small>
       <ng-select 
         class="auto"
         [items]="organisms"
         bindLabel="nom_organisme"
         bindValue="id_organisme"
-        placeholder="Organisme"
+        placeholder="{{'Form.Organism' | translate}}"
         [multiple]="false"
         [clearable]="true"
         [virtualScroll]="true"
@@ -90,13 +90,13 @@
 
     <!-- Personnes -->
     <ng-container *ngIf="toggleButtonValue == 'person' || toggleButtonValue == 'all'">
-      <small> Personne </small>
+      <small> {{'MetaData.Actors.Person' | translate}} </small>
       <ng-select 
         class="auto"
         [items]="roles"
         bindLabel="nom_complet"
         bindValue="id_role"
-        placeholder="Personne"
+        placeholder="{{'MetaData.Actors.Person' | translate}}"
         [multiple]="false"
         [clearable]="true"
         [virtualScroll]="true"

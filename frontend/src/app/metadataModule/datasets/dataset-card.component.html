@@ -10,7 +10,7 @@
         class="mb-2"
       >
         <mat-icon>chevron_left</mat-icon>
-        Retour
+        {{'GoBack' | translate}}
       </button>
     </div>
   </div>
@@ -20,7 +20,7 @@
 
       <div class="card">
         <div class="card-body">
-          <h5 class="text-muted">Jeu de données</h5>
+          <h5 class="text-muted">{{'MetaData.DatasetCard.Dataset' | translate}}</h5>
           <h4>{{ dataset.dataset_name }}
             <button
               *ngIf="dataset.cruved.D"
@@ -29,11 +29,11 @@
               [disabled]="nbObservations > 0"
               (click)="deleteDataset(dataset)"
               class="float-right"
-              matTooltip="Supprimer le jeu de données"
+              matTooltip="{{'MetaData.DatasetCard.DeleteDataset' | translate}}"
             >
               <mat-icon
                 *ngIf="nbObservations > 0; else elseblock"
-                matTooltip="Le jeu de données contient des données et ne peut pas être supprimé"
+                matTooltip="{{'MetaData.DatasetCard.ErrorDeleteDataset' | translate}}"
               > delete </mat-icon>
               <ng-template #elseblock>
                 <mat-icon> delete </mat-icon>
@@ -44,7 +44,7 @@
               [routerLink]="['/metadata/dataset', dataset.id_dataset]"
               mat-mini-fab
               color="primary"
-              matTooltip="Editer le jeu de données"
+              matTooltip="{{'MetaData.DatasetCard.EditDataset' | translate}}"
               class="mr-2 float-right"
             >
               <mat-icon>create</mat-icon>
@@ -65,7 +65,7 @@
             <div class="card-body">
               <div class="row">
                 <div class="col">
-                  <h5>Taxons</h5> {{ nbTaxons }}
+                  <h5>{{'Taxon.Taxons' | translate}}</h5> {{ nbTaxons }}
                 </div>
                 <div
                   class="col-auto"
@@ -88,7 +88,7 @@
             <div class="card-body">
               <div class="row">
                 <div class="col">
-                  <h5>Observations</h5> {{ nbObservations }}
+                  <h5>{{'Taxon.Observations' | translate}}</h5> {{ nbObservations }}
                 </div>
                 <div
                   class="col-auto"
@@ -110,89 +110,89 @@
       <div class="card">
         <div class="card-header">
           <h5>
-            Fiche descriptive
+            {{'MetaData.DatasetCard.DescriptiveForm' | translate}}
           </h5>
         </div>
         <div class="card-body">
 
-          <div class="b">Identification</div>
+          <div class="b">{{'MetaData.DatasetCard.ID' | translate}}</div>
           <div class="a">
-            <b>Nom : </b>
+            <b>{{'MetaData.Name' | translate}} : </b>
             {{dataset.dataset_name}}
           </div>
           <div class="a">
-            <b> Identifiant SINP du jeu de données :</b>
+            <b> {{'MetaData.DatasetCard.DatasetSINPID'| translate}} :</b>
             {{dataset.unique_dataset_id}}
           </div>
           <div class="a">
-            <b> Identifiant GeoNature du jeu de données :</b>
+            <b> {{'MetaData.DatasetCard.DatasetGeoNatureID' | translate}} :</b>
             {{dataset.id_dataset}}
           </div>
           <div class="a">
-            <b> Libellé court :</b>
+            <b> {{'MetaData.DatasetCard.ShortName' | translate}} :</b>
             {{dataset.dataset_shortname || '-'}}
           </div>
           <div class="a">
-            <b> Description : </b>
+            <b> {{'Media.description' | translate}} : </b>
             {{dataset.dataset_desc || '-'}}
           </div>
           <br />
 
-          <div class="b">Type de données</div>
+          <div class="b">{{'MetaData.DatasetCard.DataType' | translate}}</div>
           <div class="a">
             {{dataset?.nomenclature_data_type.label_default || 'Non renseigné'}}
           </div>
           <br />
 
-          <div class="b"> Objectifs </div>
+          <div class="b"> {{'MetaData.DatasetCard.Aims' | translate}} </div>
           <div class="a">
             {{dataset?.nomenclature_dataset_objectif.label_default || 'Non renseigné' }}
           </div>
           <br />
 
-          <div class="b">Territoires</div>
+          <div class="b">{{'MetaData.DatasetCard.Areas' | translate}}</div>
           <ul class="a">
             <li *ngFor="let ter of dataset?.cor_territories">
               - {{ter.label_default}}
             </li>
           </ul>
           <div class="a">
-            <b> Couverture du territoire terrestre :</b>
+            <b> {{'MetaData.DatasetCard.LandCoverage' | translate}} :</b>
             {{dataset.terrestrial_domain ? "oui" : "non"}}
            </div>
           <div class="a">
-            <b>Couverture du territoire marin : </b>
+            <b>{{'MetaData.DatasetCard.MarineAreaCoverage' | translate}} : </b>
             {{dataset.marine_domain ? "oui" : "non"}}
           </div>
 
 
           <br />
 
-          <div class="b">Cadre de référence</div>
+          <div class="b">{{'MetaData.DatasetCard.TermsReference' | translate}}</div>
           <div class="a">
-            <b> Titre du cadre d'acquisition :</b>
+            <b> {{'MetaData.DatasetCard.TitleAF' | translate}} :</b>
             {{dataset.acquisition_framework.acquisition_framework_name}}
           </div>
           <div class="a">
-            <b> Identifiant du cadre d'acquisition :</b>
+            <b> {{'MetaData.DatasetCard.IDAF' | translate}} :</b>
             {{dataset.acquisition_framework.unique_acquisition_framework_id }}
           </div>
           <br />
 
 
-          <div class="b">Processus de collecte</div>
+          <div class="b">{{'MetaData.DatasetCard.CollectionProcess' | translate}}</div>
           <div class="a">
-            <b>Libellé : </b>
+            <b>{{'MetaData.DatasetCard.Label' | translate}} : </b>
             {{dataset?.nomenclature_collecting_method.label_default || 'Non renseigné'}} </div>
           <div class="a">
-            <b> Description :</b>
+            <b> {{'Media.description' | translate}} :</b>
             {{dataset?.nomenclature_collecting_method.definition_default || 'Non renseigné'}}
           </div>
 
           <br />
 
           <div *ngIf="dataset.cor_dataset_actor">
-            <div class="b">Acteurs </div>
+            <div class="b">{{'MetaData.Stakeholders' | translate}} </div>
             <ng-container *ngIf="dataset.cor_dataset_actor.length; else elifNoActor">
               <div
                 class="a"
@@ -209,33 +209,33 @@
             <ng-template #elifNoActor>
               <div class="a alert-actor">
                 <mat-icon>report</mat-icon>
-                <span> Aucun acteur renseigné </span>
+                <span> {{"MetaData.NoActorProvided" | translate}} </span>
               </div>
             </ng-template>
           </div>
           <br />
 
-          <div class="b"> Créateur</div>
+          <div class="b"> {{"MetaData.DatasetCard.Creator" | translate}}</div>
 
-          <div class="a"> <b> Créateur du jeu de données :</b> {{dataset.creator?.nom_complet || 'Non renseigné'}}
+          <div class="a"> <b> {{"MetaData.DatasetCard.Creator" | translate}}</b> {{dataset.creator?.nom_complet || 'Non renseigné'}}
           </div>         
 
           <br />
 
 
           <div *ngIf="dataset.keywords">
-            <div class="b">Mots-clés :</div>
+            <div class="b">{{"MetaData.DatasetCard.Keywords" | translate}}</div>
             <div class="a"> {{dataset.keywords}} </div>
           </div>
 
           <br/>
 
-          <h4>Spécificités GeoNature</h4>
-          <div class="align"> <b>Actif :  </b>  {{dataset.active ? 'Oui' : 'Non'}} </div>
-          <div class="align"> <b> Validable :</b>  {{dataset.validable ? 'Oui' : 'Non'}} </div>
-          <div *ngIf="dataset.id_taxa_list" class="b"> ID de liste de taxon : {{dataset.id_taxa_list}} </div>
+          <h4>{{"MetaData.DatasetCard.GNSpecificFeatures" | translate}}</h4>
+          <div class="align"> <b>{{"MetaData.DatasetCard.Active" | translate}}  </b>  {{dataset.active ? 'Oui' : 'Non'}} </div>
+          <div class="align"> <b> {{"MetaData.DatasetCard.Validable" | translate}}</b>  {{dataset.validable ? 'Oui' : 'Non'}} </div>
+          <div *ngIf="dataset.id_taxa_list" class="b"> {{"MetaData.TaxaListID" | translate}} {{dataset.id_taxa_list}} </div>
           <div *ngIf="dataset.modules.length">
-            <div class="b">Module(s) GeoNature associé(s) au jeu de données :</div>
+            <div class="b">{{"MetaData.DatasetCard.AssociatedGNModules" | translate}}</div>
             <div class="a">
               <div *ngFor="let module of dataset.modules">
                 {{ module.module_label }}
@@ -246,16 +246,16 @@
           <br />
 
           <div *ngIf="dataset.additional_fields">
-            <div class="b">Champ(s) addionnel(s) du jeu de données :</div>
+            <div class="b">{{"MetaData.DatasetCard.AdditionalDatasetFields" | translate}}</div>
             <div class="a" *ngFor="let field of dataset.additional_fields">
               - <span class="bold">{{field.field_label}} : </span>
               <br/>
               <div class="ml-5">
-                <span class="bold"> Description : </span> <span> {{field.description |json}}  </span> <br/>
-                <span class="bold"> Type widget : </span> <span> {{field.type_widget.widget_name}}  </span> <br/>
-                <span class="bold"> Obligatoire : </span> <span> {{field.required}}  </span> <br/>
-                <span class="bold"> Quantitatif : </span> <span> {{field.quantitative}}  </span> <br/>
-                <span class="bold"> Unité : </span> <span> {{field.unity |json}}  </span>  
+                <span class="bold"> {{"media.description" | translate}} </span> <span> {{field.description |json}}  </span> <br/>
+                <span class="bold"> {{"MetaData.WidgetType" | translate}} </span> <span> {{field.type_widget.widget_name}}  </span> <br/>
+                <span class="bold"> {{"MetaData.Mandatory" | translate}} </span> <span> {{field.required}}  </span> <br/>
+                <span class="bold"> {{"MetaData.Quantitative" | translate}} </span> <span> {{field.quantitative}}  </span> <br/>
+                <span class="bold"> {{"MetaData.Unit" | translate}} </span> <span> {{field.unity |json}}  </span>  
               </div>
      
 
@@ -274,18 +274,18 @@
       >
         <div class="card-header">
           <h5>
-            Liste des imports
+            {{"MetaData.ImportsList" | translate}}
           </h5>
         </div>
         <div class="card-body">
           <table class="table table-bordered tabRecap">
             <thead class="bold">
               <tr>
-                <td class="textCenter">Source</td>
-                <td class="textCenter">Nombre de données</td>
-                <td class="textCenter">Intégré le</td>
-                <td class="textCenter">Statut</td>
-                <td class="textCenter">Rapport</td>
+                <td class="textCenter">{{"MetaData.Source" | translate}}</td>
+                <td class="textCenter">{{"MetaData.NumberOfData" | translate}}</td>
+                <td class="textCenter">{{"MetaData.IntegratedOn" | translate}}</td>
+                <td class="textCenter">{{"MetaData.Status" | translate}}</td>
+                <td class="textCenter">{{"MetaData.Report" | translate}}</td>
               </tr>
             </thead>
             <tbody>
@@ -386,7 +386,7 @@
             matTooltip="Télécharger la fiche PDF"
             (click)="getPdf()"
           >
-            Export PDF
+            {{"MetaData.DatasetCard.PDFExport" | translate}}
             <mat-icon>file_download</mat-icon>
           </button>
 
@@ -402,7 +402,7 @@
               class="mb-2 mr-1"
               (click)="sensiReport(dataset.id_dataset)"
             >
-              Rapport de sensibilité
+              {{"MetaData.DatasetCard.SensitivityReport" | translate}}
               <mat-icon> do_not_touch
               </mat-icon>
             </button>
@@ -420,7 +420,7 @@
               class="mb-2 mr-1"
               (click)="uuidReport(dataset?.id_dataset)"
             >
-              Rapport d'UUID
+              {{"MetaData.DatasetCard.UUIDReport" | translate}}
               <mat-icon> format_list_numbered
               </mat-icon>
             </button>
@@ -436,7 +436,7 @@
               color="primary"
               (click)="importDs(dataset.id_dataset)"
             >
-              Importer des données
+              {{"MetaData.ImportData" | translate}}
               <mat-icon> publish
               </mat-icon>
             </button>
@@ -454,7 +454,7 @@
         <!-- changer la valeur du ngif quand la carte sera prete -->
         <div class="card-header">
           <h5>
-            Périmètre géographique
+            {{"MetaData.GeographicalScope" | translate}}
             <button
               mat-raised-button
               class="ml-2"
@@ -462,7 +462,7 @@
               (click)="syntheseDs(dataset.id_dataset)"
               matTooltip="Afficher les données dans la Synthèse"
             >
-              Afficher les données
+              {{"MetaData.DisplayData" | translate}}
               <mat-icon> room </mat-icon>
             </button>
           </h5>
@@ -491,7 +491,7 @@
         class="card"
       >
         <div class="card-header">
-          <h5>Répartition des espèces</h5>
+          <h5>{{"MetaData.SpeciesDistribution" | translate}}</h5>
         </div>
         <div class="card-body">
           <div style="display: block">
@@ -513,7 +513,7 @@
       <!-- Bloc AF -->
       <div class="card ">
         <div class="card-header">
-          <h5>Cadre d'acquisition</h5>
+          <h5>{{"MetaData.AcquisitionFramework" | translate}}</h5>
         </div>
         <div class="card-body">
           <div class="row">

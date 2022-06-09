@@ -5,7 +5,7 @@
       mat-raised-button
       routerLink="/metadata"
     >
-      <mat-icon> chevron_left</mat-icon> Retour
+      <mat-icon> chevron_left</mat-icon> {{'GoBack' | translate}}
     </a>
   </div>
 
@@ -13,12 +13,12 @@
     <div class="col-md-8">
       <div class="card">
         <div class="card-header">
-          <h3 class="main-color"> Jeu de données </h3>
+          <h3 class="main-color"> {{'MetaData.DatasetCard.Dataset' | translate}} </h3>
         </div>
         <div class="card-body">
 
           <div>
-            <small>Cadre d'acquisition</small>
+            <small>{{'MetaData.AcquisitionFramework'| translate}}</small>
             <ng-select
               [formControl]="form.get('id_acquisition_framework')"
               [items]="acquisitionFrameworks |async"
@@ -44,7 +44,7 @@
           </div>
 
           <div>
-            <small>Nom du JDD </small>
+            <small>{{'MetaData.DatasetName'|translate}} </small>
             <input
               class="form-control form-control-sm"
               type="text"
@@ -55,13 +55,13 @@
               class="error"
               style="color:red"
             >
-              Le nom du JDD doit être inférieur ou égal à 150 caractères
+            {{'MetaData.DatasetForm.SizeNameJDD'|translate}}
             </small>
           </div>
 
           <div class="row">
             <div class="col-md-8">
-              <small>Nom court du JDD </small>
+              <small>{{'MetaData.DatasetForm.ShortNameJDD'|translate}} </small>
               <input
                 class="form-control form-control-sm"
                 type="text"
@@ -72,13 +72,13 @@
                 class="error"
                 style="color:red"
               >
-                Le nom court du JDD doit être inférieur ou égal à 30 caractères
+              {{'MetaData.DatasetForm.SizeShortNameJDD'|translate}}
               </small>
             </div>
           </div>
 
           <div>
-            <small>Description</small>
+            <small>{{'Media.description'|translate}}</small>
             <textarea
               class="form-control form-control-sm"
               type="text"
@@ -88,7 +88,7 @@
           </div>
 
           <div>
-            <small>Mots clés </small>
+            <small>{{'MetaData.DatasetCard.Keywords'|translate}} </small>
             <input
               class="form-control form-control-sm"
               type="text"
@@ -97,7 +97,7 @@
           </div>
 
           <div>
-            <small>Domaine</small>
+            <small>{{'MetaData.DatasetForm.Field'|translate}}</small>
             <div>
               <div class="checkbox">
                 <input
@@ -106,7 +106,7 @@
                   id="terrestrial_domain"
                 >
                 <label for="terrestrial_domain">
-                  Domaine terrestre
+                  {{'MetaData.DatasetForm.LandField'|translate}}
                 </label>
               </div>
               <div class="checkbox">
@@ -116,7 +116,7 @@
                   id="marine_domain"
                 >
                 <label for="marine_domain">
-                  Domaine marin
+                  {{'MetaData.DatasetForm.MarineField'|translate}}
                 </label>
               </div>
             </div>
@@ -126,7 +126,7 @@
           <div class="row">
             <div class="col-md-6">
               <pnx-nomenclature
-                label="Type de données"
+                label="{{'MetaData.DatasetCard.DataType'|translate}}"
                 [parentFormControl]="form.get('id_nomenclature_data_type')"
                 codeNomenclatureType="DATA_TYP"
               >
@@ -135,7 +135,7 @@
 
             <div class="col-md-6">
               <pnx-nomenclature
-                label="Statut source"
+                label="{{'MetaData.DatasetForm.SourceStatus'|translate}}"
                 [parentFormControl]="form.get('id_nomenclature_source_status')"
                 codeNomenclatureType="STATUT_SOURCE"
               >
@@ -145,7 +145,7 @@
 
           <div>
             <pnx-nomenclature
-              label="Objectif"
+              label="{{'MetaData.DatasetForm.Aim'|translate}}"
               [parentFormControl]="form.get('id_nomenclature_dataset_objectif')"
               codeNomenclatureType="JDD_OBJECTIFS"
             >
@@ -155,7 +155,7 @@
           <div>
             <pnx-nomenclature
               [multiSelect]="true"
-              label="Territoires"
+              label="{{'MetaData.DatasetCard.Areas'|translate}}"
               [parentFormControl]="form.get('cor_territories')"
               codeNomenclatureType="TERRITOIRE"
               [bindAllItem]="true"
@@ -166,7 +166,7 @@
 
           <div>
             <pnx-nomenclature
-              label="Méthode de collecte"
+              label="{{'MetaData.DatasetForm.CollectionMethod'|translate}}"
               [parentFormControl]="form.get('id_nomenclature_collecting_method')"
               codeNomenclatureType="METHO_RECUEIL"
             >
@@ -176,7 +176,7 @@
           <div class="row">
             <div class="col-md-6">
               <pnx-nomenclature
-                label="Origine des données"
+                label="{{'MetaData.DatasetForm.DataOrigin'|translate}}"
                 [parentFormControl]="form.get('id_nomenclature_data_origin')"
                 codeNomenclatureType="DS_PUBLIQUE"
               >
@@ -185,7 +185,7 @@
 
             <div class="col-md-6">
               <pnx-nomenclature
-                label="Type de ressource"
+                label="{{'MetaData.DatasetForm.ResourceType'|translate}}"
                 [parentFormControl]="form.get('id_nomenclature_resource_type')"
                 codeNomenclatureType="RESOURCE_TYP"
               >
@@ -193,7 +193,7 @@
             </div>
           </div>
 
-          <h5 style="margin-top: 10px;"> Spécifique GeoNature </h5>
+          <h5 style="margin-top: 10px;"> {{'MetaData.DatasetForm.SpecificGeonature'|translate}} </h5>
 
           <div>
             <div class="checkbox">
@@ -203,7 +203,7 @@
                 id="active"
               >
               <label for="active">
-                Actif à la saisie
+                {{'MetaData.DatasetForm.ActiveOnEntry' | translate}}
               </label>
             </div>
             <div class="checkbox">
@@ -213,7 +213,7 @@
                 id="validable"
               >
               <label for="validable">
-                Validable
+                {{'MetaData.DatasetCard.Validable' | translate}}
               </label>
             </div>
           </div>
@@ -223,17 +223,17 @@
               [parentFormControl]="form.get('modules')"
               keyLabel="module_label"
               [keyValue]="null"
-              label="Module(s) GeoNature associé(s) au jeu de données"
+              label="{{'MetaData.DatasetCard.AssociatedGNModules' | translate}}"
               [bindAllItem]="true"
             >
             </pnx-multiselect>
-          <small>Liste de taxons (facultatif)</small>
+          <small>{{'MetaData.DatasetForm.FacultativeTaxaList' | translate}}</small>
           <select
             class="form-control form-control-sm"
             [formControl]="form.get('id_taxa_list')"
           >
-            <option [ngValue]="null"> --Selectionner une liste de taxon--</option>
-            <option [ngValue]="-1"> Aucune liste (tout Taxref)</option>
+            <option [ngValue]="null"> {{'MetaData.DatasetForm.SelectTaxaList' | translate}} </option>
+            <option [ngValue]="-1"> {{'MetaData.DatasetForm.NoList' | translate}} </option>
             <option
               *ngFor="let list of taxaBibList"
               [ngValue]="list.id_liste"
@@ -248,7 +248,7 @@
     <div class="col-md-4">
       <div class="card">
         <div class="card-header">
-          <h3 class="main-color"> Contact principal </h3>
+          <h3 class="main-color"> {{'MetaData.DatasetForm.MainContact' | translate}} </h3>
         </div>
         <div class="card-body">
           <ng-container *ngFor="let actorForm of datasetFormS.actors.controls; let idx = index">
@@ -268,7 +268,7 @@
             ">
               <small
                   class="mat-error">
-                  Ce contact principal est déjà présent dans la liste
+                  {{'MetaData.DatasetForm.MainContactExists' | translate}}
                 </small>
             </ng-container>
             
@@ -293,7 +293,7 @@
 
       <div class="card">
         <div class="card-header">
-          <h3 class="main-color"> Autre(s) acteur(s) </h3>
+          <h3 class="main-color"> {{'MetaData.DatasetForm.OtherStakeholders' | translate}} </h3>
         </div>
         <div class="card-body">
           <ng-container *ngFor="let actorForm of datasetFormS.genericActorForm.controls; let idx = index">
@@ -310,7 +310,7 @@
             ">
             <small
               class="mat-error">
-              Cet acteur est déjà présent dans la liste
+              {{'MetaData.DatasetForm.StakeholderExists' | translate}}
               
             </small>
           </ng-container>
@@ -343,7 +343,7 @@
       color="warn"
       routerLink="/metadata"
     >
-      Annuler
+      {{'Cancel' | translate}}
     </button>
     <button
       [disabled]="form.invalid || datasetFormS.genericActorForm.invalid"
@@ -351,7 +351,7 @@
       mat-raised-button
       (click)="postDataset()"
     >
-      Enregistrer le jeu de données
+      {{'MetaData.DatasetForm.SaveDataset' | translate}}
     </button>
 
   </div>

@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div class="card card-page">
     <div class="card-header">
-      <h3 class="main-color"> Catalogue des jeux de données </h3>
+      <h3 class="main-color"> {{"MetaData.Catalog" | translate}} </h3>
     </div>
 
     <div class="card-body">
@@ -13,7 +13,7 @@
           mat-raised-button
           color="primary"
         >
-          Ajouter un cadre d'acquisition
+          {{"MetaData.AddAF" | translate}}
           &nbsp;
         </button>
         <button
@@ -23,7 +23,7 @@
           mat-raised-button
           color="primary"
         >
-          Ajouter un jeu de données
+          {{"MetaData.AddDataset" | translate}}
         </button>
       </div>
 
@@ -32,7 +32,7 @@
           <input
             class="form-control form-control-sm"
             type="text"
-            placeholder="Rechercher"
+            placeholder="{{'MetaData.Search' | translate}}"
             [formControl]="metadataService.rapidSearchControl"
           >
         </div>
@@ -41,12 +41,12 @@
             mat-raised-button
             color="primary"
             (click)="openSearchModal(searchModal)"
-          > Recherche avancée </button>
+          >  {{"MetaData.AdvancedSearch" | translate}} </button>
           <button
             mat-raised-button
             color="accent"
             class="ml-2"
-            matTooltip="Réinitialiser la recherche"
+            matTooltip="{{'MetaData.ResetSearch' | translate}}"
             (click)="refreshFilters()"
           >
             <mat-icon style="vertical-align: middle;">refresh</mat-icon>
@@ -54,7 +54,7 @@
         </div>
       </div>
 
-      <div>Liste des cadres d'acquisition et des jeux de données associés</div>
+      <div>{{"MetaData.AFAndDatasetsList" | translate}}</div>
       <br>
 
       <ng-container *ngIf="(acquisitionFrameworks | async)?.length || isLoading; else noAcquisitionFrameworks">
@@ -66,10 +66,10 @@
           >
           <div class="tab-title" *ngIf="!isLoading">
             <div class="col-md-1">ID </div>
-            <div class="col-md-2"> Nom</div>
-            <div class="col-md-2"> Date de création</div>
-            <div class="col-md-5"> Acteurs</div>
-            <div class="col-md-1"> Actions</div>
+            <div class="col-md-2"> {{"MetaData.Name" | translate}}</div>
+            <div class="col-md-2"> {{"MetaData.CreationDate" | translate}}</div>
+            <div class="col-md-5">{{"MetaData.Stakeholders" | translate}}</div>
+            <div class="col-md-1">{{"MetaData.Actions" | translate}}</div>
           </div>
           <mat-spinner
             *ngIf="isLoading"
@@ -103,7 +103,7 @@
                   <div class="col-md-2 ">{{af.meta_create_date |date:'d/MM/yyyy'}}
                   </div>
                   <section class="col-md-5">
-                    <span *ngIf="af.creator"> <b> {{af.creator?.nom_complet}} : </b> créateur </span>
+                    <span *ngIf="af.creator"> <b> {{af.creator?.nom_complet}} : </b> {{"MetaData.Designer" | translate}}</span>
 
                     <ng-container *ngIf="af.cor_af_actor.length; else elifNoActor">
                       <div *ngFor="let ac of af.cor_af_actor">
@@ -120,7 +120,7 @@
                     <ng-template #elifNoActor>
                       <div class="alert-actor">
                         <mat-icon>report</mat-icon>
-                        <span> Aucun acteur renseigné </span>
+                        <span> {{"MetaData.NoStakeholder" | translate}} </span>
                       </div>
                     </ng-template>
                   </section>
@@ -129,7 +129,7 @@
                     <a 
                       mat-icon-button
                       [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
-                      matTooltip="Voir la fiche du cadre d'acquisition"
+                      matTooltip="{{'MetaData.SeeAFSheet' | translate}}"
                       style="color: black;"
                     >
                       <mat-icon> info</mat-icon>
@@ -137,7 +137,7 @@
                     <a
                       mat-icon-button
                       [disabled]="!af.cruved.U"
-                      matTooltip="Editer ce cadre d'acquisition"
+                      matTooltip="{{'MetaData.EditAF' | translate}}"
                       [routerLink]="['/metadata/af', af.id_acquisition_framework]"
                     >
                       <mat-icon> create</mat-icon>
@@ -151,17 +151,17 @@
                     >
                       <mat-icon
                         *ngIf="af.opened==false; else elifEmpty"
-                        matTooltip="Le cadre d'acquisition a déjà été déposé"
+                        matTooltip="{{'MetaData.FiledAF' | translate}}"
                       > gavel </mat-icon>
                       <ng-template #elifEmpty>
                         <mat-icon
                           *ngIf="af['t_datasets'].length == 0; else elsePublish"
-                          matTooltip="Le cadre d'acquisition est vide"
+                          matTooltip="{{'MetaData.EmptyAF' | translate}}"
                         > gavel </mat-icon>
                       </ng-template>
                       <ng-template #elsePublish>
                         <mat-icon
-                          matTooltip="Déposer le cadre d'acquisition"
+                          matTooltip="{{'MetaData.SubmitAF' | translate}}"
                         > gavel </mat-icon>
                       </ng-template>
                     </button>
@@ -177,11 +177,11 @@
                     <td style="width:1%">
                       Id
                     </td>
-                    <td>Nom du JDD</td>
-                    <td>Date de création</td>
-                    <td>Acteurs</td>
-                    <td>Nombre de données</td>
-                    <td>Actions</td>
+                    <td>{{"MetaData.NoStakeholder" | translate}}</td>
+                    <td>{{"MetaData.CreationDate" | translate}}</td>
+                    <td>{{"MetaData.Stakeholders" | translate}}</td>
+                    <td>{{"MetaData.DataAmount" | translate}}</td>
+                    <td>{{"MetaData.Actions" | translate}}</td>
                   </tr>
                 </thead>
                 <tbody>
@@ -208,7 +208,7 @@
         </mat-paginator>
       </ng-container>
       <ng-template #noAcquisitionFrameworks>
-        <div class="text-center">Oups ! Il n'y a aucune métadonnée à afficher.</div>
+        <div class="text-center">{{"MetaData.NoMetadata" | translate}}</div>
       </ng-template>
 
 
@@ -226,21 +226,21 @@
     <h5
       class="modal-title"
       id="exampleModalLabel"
-    > Rechercher </h5>
+    > {{"MetaData.Search" | translate}} </h5>
   </div>
   <div
     class="modal-body"
     style="align-items: flex-end;"
   >
-    <label> Rechercher sur:</label>
+    <label> {{"MetaData.Search" | translate}}{{"MetaData.On" | translate}} :</label>
     <select
       [formControl]="metadataService.form.get('selector')"
       name="selecteur"
       id="selector"
       class="form-control"
     >
-      <option value="ds">Jeu de données</option>
-      <option value="af">Cadre d'acquisition</option>
+      <option value="ds">{{"MetaData.Datasets" | translate}}</option>
+      <option value="af">{{"AcquisitionFramework"| translate}}</option>
     </select>
     <label>UUID</label>
     <input
@@ -248,7 +248,7 @@
       class="form-control form-control-sm"
       type="text"
     >
-    <label>Nom</label>
+    <label>{{"MetaData.Name" | translate}}</label>
 
     <input
       [formControl]="metadataService.form.get('name')"
@@ -257,9 +257,9 @@
 
     <pnx-date
       [parentFormControl]="metadataService.form.get('date')"
-      label="Date de création"
+      label="{{'MetaData.CreationDate' | translate}}"
     ></pnx-date>
-    <label>Acteur (organisme)</label>
+    <label>{{"MetaData.StakeholderOrganization" | translate}}</label>
 
     <select
       [formControl]="metadataService.form.get('organism')"
@@ -275,7 +275,7 @@
       >
         {{org.nom_organisme}} </option>
     </select>
-    <label> Acteur (personne)</label>
+    <label> {{"MetaData.StakehoderPerson" | translate}}</label>
 
     <select
       class="form-control form-control"
@@ -297,14 +297,14 @@
         mat-raised-button
         class="button-success uppercase mr-2"
         (click)="advancedSearch(); c()"
-      > Rechercher </button>
+      > {{"MetaData.Search" | translate}} </button>
       <button
         mat-raised-button
         color="warn"
         class="uppercase"
         (click)="c()"
       >
-        Fermer
+      {{"MetaData.Close" | translate}}
       </button>
     </div>
 
@@ -344,12 +344,12 @@
         cdkFocusInitial
         class="mr-1"
         (click)="c()"
-      > Annuler </button>
+      > {{"Cancel" | translate}} </button>
       <button
         mat-raised-button
         color="primary"
         (click)="publishAf()"
-      > Confirmer </button>
+      > {{"MetaData.Confirm" | translate}} </button>
     </div>
     <br>
   </div>
