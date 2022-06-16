@@ -33,4 +33,15 @@ def upgrade():
 
 
 def downgrade():
-    pass
+    op.drop_constraint(
+        "check_cor_af_territory",
+        table_name="cor_acquisition_framework_territory",
+        schema="gn_meta",
+    )
+
+    op.execute(
+        """
+        ALTER TABLE gn_meta.cor_acquisition_framework_territory ADD CONSTRAINT check_cor_af_territory
+            CHECK (ref_nomenclatures.check_nomenclature_type_by_mnemonique(id_nomenclature_territory, 'TERRITOIRE'::character varying));
+        """
+    )
