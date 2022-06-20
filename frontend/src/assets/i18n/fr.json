@@ -188,7 +188,7 @@
       "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum",
       "LifeStageRequiredError": "Veuillez indiquer le stade de vie",
       "SexRequiredError": "Veuillez indiquer le sexe",
-      "CountingObjectRequiredError": "Veuillez indiquer le type de dénombrement"
+      "CountingObjectRequiredError": "Veuillez indiquer l'objet du dénombrement"
     }
   },
   "Geo": {

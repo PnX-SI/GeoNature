@@ -56,13 +56,18 @@
         bindValue="id_organisme"
         placeholder="Organisme"
         [multiple]="false"
-        [clearable]="true"
+        [clearable]="false"
         [virtualScroll]="true"
         formControlName="id_organism"
       >
-        <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
-          <div [matTooltip]="item.nom_organisme">
-            <span class="pre-wrap">{{ item.nom_organisme }}</span>
+        <ng-template 
+          ng-option-tmp 
+          let-item="item" 
+          let-index="index" 
+          let-search="searchTerm"
+        >
+          <div [matTooltip]="item.nom_organisme" [attr.data-qa]='"pnx-metadata-organism-"+item.nom_organisme'>
+            <span class="pre-wrap">{{item.nom_organisme}}</span>
           </div>
         </ng-template>
       </ng-select>
@@ -78,9 +83,9 @@
         bindValue="id_role"
         placeholder="Personne"
         [multiple]="false"
-        [clearable]="true"
+        [clearable]="false"
         [virtualScroll]="true"
-        formControlName="id_role"
+        formControlName="id_organism"
       >
         <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
           <div [matTooltip]="item.nom_complet">

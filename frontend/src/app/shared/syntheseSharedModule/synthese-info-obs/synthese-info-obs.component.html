@@ -515,48 +515,47 @@
                 </tr>
 
                 <tr>
-                  <td>Première observation valide</td>
-                  <td>{{ profile?.properties?.first_valid_data | date: 'dd/MM/yyyy' }}</td>
+                  <td> Première observation valide </td>
+                  <td> {{profile?.properties?.first_valid_data | date:'dd/MM/yyyy'}} </td>
                 </tr>
                 <tr>
-                  <td>Dernière observation valide</td>
-                  <td>{{ profile?.properties?.last_valid_data | date: 'dd/MM/yyyy' }}</td>
+                  <td> Dernière observation valide </td>
+                  <td>{{profile?.properties?.last_valid_data | date:'dd/MM/yyyy'}} </td>
                 </tr>
               </table>
-            </div>
-            <div class="col-4 padding-sm">
-              <h5>Cohérence de la donnée</h5>
+
+              <h5> Cohérence de la donnée </h5>
               <table class="font-xs table table-sm table-striped">
                 <tr>
-                  <td>Dans l'aire d'observation valide</td>
-                  <td *ngIf="profileDataChecks?.valid_distribution">
+                  <td> Dans l'aire d'observation valide </td>
+                  <td *ngIf='profileDataChecks?.valid_distribution'>
                     <mat-icon class="success"> check </mat-icon>
                   </td>
-                  <td *ngIf="!profileDataChecks?.valid_distribution">
+                  <td *ngIf='!profileDataChecks?.valid_distribution'>
                     <mat-icon class="error"> close </mat-icon>
                   </td>
                 </tr>
                 <tr>
-                  <td>Cohérence phénologique</td>
-                  <td *ngIf="profileDataChecks?.valid_phenology">
+                  <td> Cohérence phénologique </td>
+                  <td *ngIf='profileDataChecks?.valid_phenology'>
                     <mat-icon class="success"> check </mat-icon>
                   </td>
-                  <td *ngIf="!profileDataChecks?.valid_phenology">
+                  <td *ngIf='!profileDataChecks?.valid_phenology'>
                     <mat-icon class="error"> close </mat-icon>
                   </td>
                 </tr>
                 <tr>
-                  <td>Dans la fourchette altitudinale valide</td>
-                  <td *ngIf="profileDataChecks?.valid_altitude">
+                  <td> Dans la fourchette altitudinale valide </td>
+                  <td *ngIf='profileDataChecks?.valid_altitude'>
                     <mat-icon class="success"> check </mat-icon>
                   </td>
-                  <td *ngIf="!profileDataChecks?.valid_altitude">
+                  <td *ngIf='!profileDataChecks?.valid_altitude'>
                     <mat-icon class="error"> close </mat-icon>
                   </td>
                 </tr>
                 <tr>
-                  <td>Score</td>
-                  <td>{{ profileDataChecks?.score }}</td>
+                  <td> Score </td>
+                  <td> {{profileDataChecks?.score}} </td>
                 </tr>
               </table>
             </div>

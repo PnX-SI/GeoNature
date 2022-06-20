@@ -1,7 +1,11 @@
 <div id="cover-spin" *ngIf="!searchService.dataLoaded"></div>
 
-<div class="wrapper">
-  <nav #navBar id="sidebar" class="collapse show">
+<div class="wrapper" data-qa='pnx-synthese'>
+  <nav
+    #navBar
+    id="sidebar"
+    class="collapse show"
+  >
     <!-- <pnx-synthese-search (searchClicked)="loadAndStoreData($event)"></pnx-synthese-search> -->
     <pnx-synthese-search (searchClicked)="loadAndStoreData($event)"> </pnx-synthese-search>
   </nav>
@@ -28,6 +32,7 @@
       <pnx-synthese-list
         [inputSyntheseData]="_mapListService.tableData"
         [searchBarHidden]="searchBarHidden"
+        data-qa="pnx-synthese-list"
       ></pnx-synthese-list>
     </div>
   </div>

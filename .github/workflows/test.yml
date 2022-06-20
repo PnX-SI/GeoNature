@@ -1,25 +1,125 @@
-name: cypress
-
+name: test_back_front
 on:
   push:
     branches:
-      - gh-test2
+      - master
+      - hotfixes
+      - develop
   pull_request:
     branches:
-      - angular12
+      - master
+      - hotfixes
+      - develop
 
 jobs:
-  build:
+  test_backend:
+
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
         include:
-          # - name: "Debian 10"
-          #   python-version: "3.7"
-          #   postgres-version: 11
-          #   postgis-version: 2.5
+          - name: "Debian 11"
+            python-version: "3.9"
+            postgres-version: 13
+            postgis-version: 3.2
+
+    name: ${{ matrix.name }}
+
+    services:
+      postgres:
+        image: postgis/postgis:${{ matrix.postgres-version }}-${{ matrix.postgis-version }}
+        env:
+          POSTGRES_DB: geonature2db
+          POSTGRES_PASSWORD: geonatpasswd
+          POSTGRES_USER: geonatadmin
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+    - name: Add postgis_raster database extension
+      if: ${{ matrix.postgis-version >= 3 }}
+      run: |
+        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "postgis_raster";'
+      env:
+        PGPASSWORD: geonatpasswd
+    - name: Add database extensions
+      run: |
+        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "hstore";'
+        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "uuid-ossp";'
+        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "pg_trgm";'
+        psql -h localhost -U geonatadmin -d geonature2db -tc 'CREATE EXTENSION "unaccent";'
+      env:
+        PGPASSWORD: geonatpasswd
+    - uses: actions/checkout@v2
+      with:
+        submodules: recursive
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install GDAL
+      run: |
+        sudo apt update
+        sudo apt install -y libgdal-dev
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install \
+          -e .[tests] \
+          -r backend/requirements-common.txt \
+          -e file:backend/dependencies/UsersHub-authentification-module#egg=pypnusershub \
+          -e file:backend/dependencies/Nomenclature-api-module#egg=pypnnomenclature \
+          -e file:backend/dependencies/Habref-api-module#egg=pypn_habref_api \
+          -e file:backend/dependencies/TaxHub#egg=taxhub \
+          -e file:backend/dependencies/Utils-Flask-SQLAlchemy#egg=utils-flask-sqlalchemy \
+          -e file:backend/dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo \
+          -e file:backend/dependencies/RefGeo#egg=pypn-ref-geo
+    - name: Install database
+      run: |
+        geonature db upgrade geonature@head -x local-srid=2154
+        geonature db autoupgrade -x local-srid=2154
+        geonature db upgrade geonature-samples@head
+        geonature db upgrade taxonomie_taxons_example@head
+        geonature db upgrade taxonomie_attributes_example@head
+        geonature db upgrade ref_geo_fr_departments@head
+        geonature db upgrade ref_geo_fr_municipalities@head
+        geonature db upgrade ref_geo_inpn_grids_5@head
+        geonature db upgrade ref_sensitivity_inpn@head
+      env:
+        GEONATURE_CONFIG_FILE: config/test_config.toml
+    - name: Install core modules
+      run: |
+        geonature install_packaged_gn_module contrib/occtax OCCTAX --build=false
+        geonature db upgrade occtax-samples-test@head
+        geonature install_packaged_gn_module contrib/gn_module_occhab OCCHAB --build=false
+        geonature db upgrade occhab-samples@head
+        geonature install_packaged_gn_module contrib/gn_module_validation VALIDATION --build=false
+      env:
+        GEONATURE_CONFIG_FILE: config/test_config.toml
+    - name: Test with pytest
+      run: |
+        pytest -v --cov --cov-report xml
+      env:
+        GEONATURE_CONFIG_FILE: config/test_config.toml
+    - name: Upload coverage to Codecov
+      if: ${{ matrix.name == 'Debian 11' }}
+      uses: codecov/codecov-action@v2
+      with:
+        flags: pytest
+  test_frontend:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
           - name: "Debian 11"
             python-version: "3.9"
             postgres-version: 13
@@ -67,6 +167,7 @@ jobs:
         # cache: 'pip'
     - name: Install GDAL
       run: |
+        sudo apt update
         sudo apt install -y libgdal-dev
     
     - name: Cache dependencies
@@ -88,8 +189,9 @@ jobs:
           -e file:backend/dependencies/Habref-api-module#egg=pypn_habref_api \
           -e file:backend/dependencies/TaxHub#egg=taxhub \
           -e file:backend/dependencies/Utils-Flask-SQLAlchemy#egg=utils-flask-sqlalchemy \
-          -e file:backend/dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo
-    - name: Install database
+          -e file:backend/dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo \
+          -e file:backend/dependencies/RefGeo#egg=pypn-ref-geo
+    - name: Install database 
       run: |
         geonature db upgrade geonature@head -x local-srid=2154
         geonature db autoupgrade -x local-srid=2154
@@ -103,19 +205,10 @@ jobs:
         geonature install_packaged_gn_module contrib/occtax OCCTAX --build=false
         geonature db upgrade occtax-samples-test@head
         geonature install_packaged_gn_module contrib/gn_module_occhab OCCHAB --build=false
+        geonature db upgrade occhab-samples@head
         geonature install_packaged_gn_module contrib/gn_module_validation VALIDATION --build=false
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
-    # - name: Test with pytest
-    #   run: |
-    #     pytest -v --cov --cov-report xml
-    #   env:
-    #     GEONATURE_CONFIG_FILE: config/test_config.toml
-    - name: Upload coverage to Codecov
-      if: ${{ matrix.name == 'Debian 11' }}
-      uses: codecov/codecov-action@v2
-      with:
-        flags: pytest
       # FRONTEND
     - name: Cache node modules
       uses: actions/cache@v1
@@ -143,15 +236,12 @@ jobs:
       env:
         GEONATURE_CONFIG_FILE: config/test_config.toml
     - name: run TX backend
-      run : |
-        gunicorn "app:create_app()" --bind "0.0.0.0:5000" --daemon
-      working-directory: ./backend/dependencies/TaxHub/apptax
+      run : flask run --host=0.0.0.0 &
+      working-directory: ./backend/dependencies/TaxHub/
       env:
-        TAXHUB_SETTINGS: ../test_config.py
+        TAXHUB_SETTINGS: test_config.py
     - name: curl
-      uses: wei/curl@master
-      with:
-        args: http://127.0.0.1:5000/api/taxref/allnamebylist?offset=10
+      run: curl http://127.0.0.1:5000/api/taxref/allnamebylist?offset=10
     - name: Cypress run
       uses: cypress-io/github-action@v2
       with:
@@ -163,6 +253,9 @@ jobs:
       env: 
         CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-
-
+    - name: Cypress screenshot upload
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: cypress-screenshots
+        path: frontend/cypress/screenshots

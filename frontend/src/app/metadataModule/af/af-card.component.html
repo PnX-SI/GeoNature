@@ -1,7 +1,12 @@
 <div class="container-fluid mt-4">
   <div class="row">
     <div class="col-5">
-      <a mat-raised-button routerLink="/metadata" class="mb-2">
+      <a
+        mat-raised-button
+        routerLink="/metadata"
+        class="mb-2"
+        data-qa="pnx-metadata-exit-af"
+      >
         <mat-icon>chevron_left</mat-icon>
         Retour
       </a>
@@ -134,16 +139,14 @@
           <h5>Fiche descriptive</h5>
         </div>
         <div class="card-body">
-          <div class="b">Identification</div>
-          <div class="a"><b> Nom :</b> {{ af?.acquisition_framework_name }}</div>
-          <div class="a">
-            <b> Identifiant SINP du cadre d'acquisition : </b>
-            {{ af?.unique_acquisition_framework_id }}
-          </div>
-          <div class="a">
-            <b> Identifiant GeoNature du cadre d'acquisition :</b>
-            {{ af?.id_acquisition_framework }}
-          </div>
+          <div class="b">Identification </div>
+          <div class="a" data-qa='pnx-metadata-acq-framework-name'> <b> Nom :</b>
+            {{af?.acquisition_framework_name}}</div>
+          <div class="a"> <b> Identifiant SINP du cadre d'acquisition : </b>
+            {{af?.unique_acquisition_framework_id}}</div>
+          <div class="a" data-qa='pnx-metadata-acq-framework-id'> <b> Identifiant GeoNature du cadre d'acquisition :</b>
+            {{af?.id_acquisition_framework}}</div>
+
 
           <br />
 

@@ -30,7 +30,8 @@
                         ngModel
                         placeholder="Identifiant"
                         autofocus
-                      />
+                        data-qa="gn-connection-id"
+                      >
                     </div>
                     <div class="form-group">
                       <i class="addon fa fa-lock"></i>
@@ -40,7 +41,8 @@
                         class="form-control"
                         placeholder="Mot de passe"
                         ngModel
-                      />
+                        data-qa="gn-connection-pwd"
+                      >
                     </div>
                     <div
                       *ngIf="enable_user_management"
@@ -55,6 +57,13 @@
                     </button>
                     <br />
 
+                    <button
+                      class="btn btn-lg btn-success btn-block text-uppercase"
+                      type="submit"
+                      data-qa="gn-connection-button"
+                    >Se connecter</button>
+                    <br>
+                    
                     <div *ngIf="enable_sign_up">
                       <div class="inscription">
                         <a routerLink="/login/inscription">{{ 'CreateAccount' | translate }}</a>

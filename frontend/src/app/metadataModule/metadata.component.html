@@ -1,4 +1,4 @@
-<div class="container-fluid">
+<div class="container-fluid" data-qa="pnx-metadata">
   <div class="card card-page">
     <div class="card-header">
       <h3 class="main-color">Catalogue des jeux de données</h3>
@@ -21,6 +21,7 @@
           class="uppercase"
           mat-raised-button
           color="primary"
+          data-qa="pnx-metadata-add-jdd"
         >
           Ajouter un jeu de données
         </button>
@@ -33,7 +34,8 @@
             type="text"
             placeholder="Rechercher"
             [formControl]="metadataService.rapidSearchControl"
-          />
+            data-qa="pnx-metadata-search"
+          >
         </div>
         <div class="col-sm-3">
           <button mat-raised-button color="primary" (click)="openSearchModal(searchModal)">
@@ -45,6 +47,7 @@
             class="ml-2"
             matTooltip="Réinitialiser la recherche"
             (click)="refreshFilters()"
+            data-qa="pnx-metadata-refresh"
           >
             <mat-icon style="vertical-align: middle">refresh</mat-icon>
           </button>
@@ -68,13 +71,24 @@
           <mat-spinner *ngIf="isLoading" diameter="50" strokeWidth="2" style="margin: 0 auto">
           </mat-spinner>
 
-          <ng-container *ngFor="let af of acquisitionFrameworks | async; let idx = index">
-            <mat-expansion-panel [expanded]="expandAccordions">
-              <mat-expansion-panel-header collapsedHeight="*" expandedHeight="*">
-                <mat-panel-title class="af-title" style="margin-top: 2.5%; margin-bottom: 1.2%">
+          <ng-container *ngFor="let af of (acquisitionFrameworks | async); let idx = index">
+            <mat-expansion-panel
+              [expanded]="expandAccordions"
+              [attr.data-qa]='"pnx-metadata-acq-framework"'
+            >
+              <mat-expansion-panel-header
+                collapsedHeight="*"
+                expandedHeight="*"
+                [attr.data-qa]='"pnx-metadata-acq-framework-header-"+idx'
+              >
+                <mat-panel-title
+                  class="af-title"
+                  style="margin-top:2.5%;margin-bottom: 1.2%;"
+                >
+
                   <div class="col-md-1">{{ af.id_acquisition_framework }}</div>
                   <div class="col-md-2">
-                    <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]">
+                    <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]" [attr.data-qa]='"pnx-metadata-acq-framework-"+idx'>
                       {{ af.acquisition_framework_name }}
                       <br />
                       <small style="color: gray"> {{ af.unique_acquisition_framework_id }} </small>

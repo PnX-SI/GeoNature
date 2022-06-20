@@ -73,6 +73,7 @@
                 [innerHTML]="taxonTitle(occurrence)"
                 [matTooltip]="occurrence.taxref?.nom_valide || removeHtml(occurrence.nom_cite)"
                 class="header-title"
+                [attr.data-qa]='"pnx-occtax-taxon-form-taxa-head-"+i'
               >
               </span> 
             </mat-panel-description>
@@ -89,7 +90,7 @@
 
                 <div>
                   <div class="label">{{ 'Taxon.NomCite' | translate }} :</div>
-                  <div class="value">{{ removeHtml(occurrence.nom_cite) }}</div>
+                  <div class="value" [attr.data-qa]='"pnx-occtax-taxon-form-taxa-name-"+i'>{{ removeHtml(occurrence.nom_cite) }}</div>
                 </div>
 
                 <div>
@@ -118,14 +119,14 @@
 
                 <div *ngIf="ModuleConfig.form_fields.obs_tech">
                   <div class="label">{{ 'Taxon.ObsTech' | translate }} :</div>
-                  <div class="value">
+                  <div class="value" [attr.data-qa]='"pnx-occtax-taxon-form-taxa-ObsTech-"+i'>
                     {{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_obs_technique) || "-" }}
                   </div>
                 </div>
 
                 <div *ngIf="ModuleConfig.form_fields.bio_condition">
                   <div class="label">{{ 'Taxon.BiologicalCondition' | translate }} :</div>
-                  <div class="value">
+                  <div class="value" [attr.data-qa]='"pnx-occtax-taxon-form-taxa-bio-"+i'>
                     {{ occtaxTaxaListService.getLibelleByID(occurrence?.id_nomenclature_bio_condition) || "-" }}
                   </div>
                 </div>
