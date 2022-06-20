@@ -1,7 +1,7 @@
 # Node Files #
 /node_modules/
 npm-debug.log
-
+.nyc_output/out.json
 /dist/
 src/conf/app.config.ts
 src/tsconfig.app.json

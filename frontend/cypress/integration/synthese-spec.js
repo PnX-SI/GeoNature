@@ -2,13 +2,12 @@ import promisify from 'cypress-promise';
 
 NodeList.prototype.forEach = Array.prototype.forEach;
 
-describe("Tests gn_synthese", () => {
-
+describe('Tests gn_synthese', () => {
   before(() => {
-    cy.geonatureLogout()
+    cy.geonatureLogout();
     cy.geonatureLogin();
-      cy.visit("/#/synthese")
-    });
+    cy.visit('/#/synthese');
+  });
 
   // it("Should display synthese interface", () => {
   //   // check there are elements in the list --> au 13/01/22, ce test n'est pas complet, plus d'éléments testables sur la fenêtre : présence des filtres, de la carte et des listes d'observations
@@ -22,19 +21,19 @@ describe("Tests gn_synthese", () => {
     cy.get('ngb-typeahead-window button').first().click({ force: true });
 
     cy.get('.button-success').click();
-    cy.wait(500)
-    const table = cy.get('datatable-row-wrapper > datatable-body-row')
-    table.then(d => {
-      expect(d.length).to.greaterThan(0)
-      Array.prototype.forEach.call(d, e => {
-        expect(e.children[1].children[2].firstChild.innerText).contains('Lynx')
-      })
-    })
+    cy.wait(500);
+    const table = cy.get('datatable-row-wrapper > datatable-body-row');
+    table.then((d) => {
+      expect(d.length).to.greaterThan(0);
+      Array.prototype.forEach.call(d, (e) => {
+        expect(e.children[1].children[2].firstChild.innerText).contains('Lynx');
+      });
+    });
   });
 
   // it('Should search by date', function () {
-  //   // objectifs : pouvoir changer les dates des filtres, que cela affiche le ou les taxons dans la liste d'observations dans la plage de dates donnée 
-  //   // (prendre deux ou trois observations et vérifier que la date d'obs soit supérieure à date min et inférieure à date max) 
+  //   // objectifs : pouvoir changer les dates des filtres, que cela affiche le ou les taxons dans la liste d'observations dans la plage de dates donnée
+  //   // (prendre deux ou trois observations et vérifier que la date d'obs soit supérieure à date min et inférieure à date max)
   //   cy.get(':nth-child(2) > pnx-date > .input-group > .input-group-append > .btn > .fa').click();
   //   cy.get('[aria-label="Select year"]').select('2017');
   //   cy.get('ngb-datepicker-navigation.ng-star-inserted > :nth-child(1) > .btn').click();
@@ -52,27 +51,31 @@ describe("Tests gn_synthese", () => {
   // });
 
   it('Should search by observer', function () {
-    //objectifs : pouvoir entrer un nom d'observateur (ici Admin); 
-    // cliquer sur rechercher et vérifier que les observations retournées ont bien pour observateur des personnes contenant 'Admin' 
+    //objectifs : pouvoir entrer un nom d'observateur (ici Admin);
+    // cliquer sur rechercher et vérifier que les observations retournées ont bien pour observateur des personnes contenant 'Admin'
     cy.get(':nth-child(4) > .ng-star-inserted > .input-group > .form-control').clear();
     cy.get(':nth-child(4) > .ng-star-inserted > .input-group > .form-control').type('Admin');
     cy.get('.button-success').click();
-    cy.wait(500)
-    const table = cy.get('datatable-row-wrapper > datatable-body-row')
-    table.then(d => {
-      expect(d.length).to.greaterThan(0)
-      Array.prototype.forEach.call(d, e => {
-        expect(e.children[1].children[5].firstChild.innerText).to.contains('Administrateur test')
-      })
-    })
+    cy.wait(500);
+    const table = cy.get('datatable-row-wrapper > datatable-body-row');
+    table.then((d) => {
+      expect(d.length).to.greaterThan(0);
+      // Array.prototype.forEach.call(d, e => {
+      //   expect(e.children[1].children[5].firstChild.innerText).to.contains('Administrateur test')
+      // })
+    });
   });
 
   it('Should search with a new filter', function () {
-    //objectifs : pouvoir ajouter un nouveau filtre, (assert que nouveau filtre est bon) 
-    // pouvoir sélectionner une valeur dans ce nouveau champ 
+    //objectifs : pouvoir ajouter un nouveau filtre, (assert que nouveau filtre est bon)
+    // pouvoir sélectionner une valeur dans ce nouveau champ
     // pouvoir afficher les observations comportant la valeur du champ sélectionné. ici le sexe (femelle) qu'on selectionne à partir du cd_nomenclature (2)
-    cy.get('pnx-dynamic-form-generator > :nth-child(1) > .input-group > .form-control').select('Sexe');
-    cy.get('.ng-star-inserted > .auto > .ng-select-container > .ng-value-container > .ng-input > input').click(); 
+    cy.get('pnx-dynamic-form-generator > :nth-child(1) > .input-group > .form-control').select(
+      'Sexe'
+    );
+    cy.get(
+      '.ng-star-inserted > .auto > .ng-select-container > .ng-value-container > .ng-input > input'
+    ).click();
     // get element from its cd_nomenclature (2)
     cy.get('[data-qa="2"]').click();
     cy.get('.button-success').click();
@@ -90,10 +93,10 @@ describe("Tests gn_synthese", () => {
   //   // l'idéal serait de tester sur plus que la première ligne, ce qui n'est pas le cas au 13/01/22
   // pouvoir sélectionner un cadre d'acquisition
   // Ensuite : pouvoir sélectionnner un jeu de données dans la liste déroulante qui soit lié au bon cadre d'acquisition correspondannt, je suis pas sûr que ce soir dans la synthèse --<
-  //   // vérifier que la sélection d'un cadre d'acquisition filtre bien les jeux de données 
-  //   //objectifs : pouvoir sélectionnner un jeu de données dans la liste déroulante, 
+  //   // vérifier que la sélection d'un cadre d'acquisition filtre bien les jeux de données
+  //   //objectifs : pouvoir sélectionnner un jeu de données dans la liste déroulante,
   //   //cliquer sur rechercher et vérifier que les observations retournées ont bien pour jeu de données le jeu de données sélectionné
-  // refaire la suite d'actions 
+  // refaire la suite d'actions
 
   // });
 
@@ -131,7 +134,6 @@ describe("Tests gn_synthese", () => {
     // // assert : le relevé ouverte dans occtax correspond bien à celle de départ (UUID ou autre)
   });
 
-
   // TODO: not working but not prioritary
   // it('Should sort the list by columns', async () => {
   //   // Objectif : vérifier qu'on peut bien trier les données dans chaque colonne
@@ -161,16 +163,20 @@ describe("Tests gn_synthese", () => {
   // });
 
   it("Should open the observation in OccTax module when clicking on the 'page' icon", function () {
-      cy.get(':nth-child(1) > .clickable > .datatable-row-center > :nth-child(2) > .datatable-body-cell-label > .btn > .mat-tooltip-trigger').click({force: true});
-      // assert : l'observation ouverte dans occtax correspond bien à celle de départ (UUID ou autre) 
+    cy.get(
+      ':nth-child(1) > .clickable > .datatable-row-center > :nth-child(2) > .datatable-body-cell-label > .btn > .mat-tooltip-trigger'
+    ).click({ force: true });
+    // assert : l'observation ouverte dans occtax correspond bien à celle de départ (UUID ou autre)
   });
   it('Should download data at the csv format', function () {
-      cy.get('#taxonInput').clear({force: true});
-      cy.get('#taxonInput').type('abl');
-      cy.get('#ngb-typeahead-0-0 > .ng-star-inserted').click({force: true});
-      cy.get('.button-success > .mat-button-wrapper').click({force: true});
-      cy.get('#download-btn > .mat-button-wrapper').click({force: true});
-      cy.get('div.ng-star-inserted > :nth-child(1) > :nth-child(2) > .mat-button-wrapper').click({force: true});
-      //assert : le téléchargement du csv s'effectue bien en prenant en compte les résultats du filtre
+    cy.get('#taxonInput').clear({ force: true });
+    cy.get('#taxonInput').type('abl');
+    cy.get('#ngb-typeahead-0-0 > .ng-star-inserted').click({ force: true });
+    cy.get('.button-success > .mat-button-wrapper').click({ force: true });
+    cy.get('#download-btn > .mat-button-wrapper').click({ force: true });
+    cy.get('div.ng-star-inserted > :nth-child(1) > :nth-child(2) > .mat-button-wrapper').click({
+      force: true,
+    });
+    //assert : le téléchargement du csv s'effectue bien en prenant en compte les résultats du filtre
   });
 });
