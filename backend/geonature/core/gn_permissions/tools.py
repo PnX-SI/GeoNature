@@ -93,7 +93,12 @@ class UserCruved:
 
         self._id_role = id_role
         self._code_filter_type = code_filter_type
-        self._module_code = module_code
+        if module_code:
+            self._module_code = module_code
+        elif hasattr(g, "current_module"):
+            self._module_code = g.current_module.module_code
+        else:
+            self._module_code = self._main_module_code
         self._object_code = object_code
         self._permission_select = self._build_permission_select_list(append_to_select)
 
