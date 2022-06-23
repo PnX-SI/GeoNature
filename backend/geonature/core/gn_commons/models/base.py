@@ -102,6 +102,7 @@ class TModules(DB.Model):
     objects = DB.relationship(
         "TObjects", secondary=lambda: _resolve_import_cor_object_module(), backref="modules"
     )
+    # relationship datasets add via backref
 
     def __str__(self):
         return self.module_label.capitalize()
