@@ -96,6 +96,7 @@ class TModules(DB.Model):
     active_backend = DB.Column(DB.Boolean)
     module_doc_url = DB.Column(DB.Unicode)
     module_order = DB.Column(DB.Integer)
+    ng_module = DB.Column(DB.Unicode(length=500))
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
 
