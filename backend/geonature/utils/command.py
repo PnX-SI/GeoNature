@@ -26,17 +26,6 @@ log = logging.getLogger(__name__)
 MSG_OK = "\033[92mok\033[0m\n"
 
 
-def tsconfig_templating():
-    log.info("Generating tsconfig.json")
-    with open(str(ROOT_DIR / "frontend/tsconfig.json.sample"), "r") as input_file:
-        template = Template(input_file.read())
-        tsconfig_templated = template.render(geonature_path=ROOT_DIR)
-
-    with open(str(ROOT_DIR / "frontend/tsconfig.json"), "w") as output_file:
-        output_file.write(tsconfig_templated)
-    log.info("...%s\n", MSG_OK)
-
-
 def tsconfig_app_templating(app=None):
     if not app:
         app = create_app(with_external_mods=False)
