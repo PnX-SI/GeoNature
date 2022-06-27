@@ -1,7 +1,16 @@
-<div *ngIf="dataset; else spinnerBlock" class="container-fluid mt-4">
+<div
+  *ngIf="dataset; else spinnerBlock"
+  class="container-fluid mt-4"
+  data-qa="pnx-datasets-card"
+>
   <div class="row">
     <div class="col-8">
-      <button mat-raised-button routerLink="/metadata" class="mb-2">
+      <button
+        mat-raised-button
+        routerLink="/metadata"
+        class="mb-2"
+        data-qa="pnx-metadata-exit-jdd"
+      >
         <mat-icon>chevron_left</mat-icon>
         Retour
       </button>
@@ -90,7 +99,7 @@
         </div>
         <div class="card-body">
           <div class="b">Identification</div>
-          <div class="a">
+          <div class="a" data-qa='pnx-metadata-dataset-name'>
             <b>Nom : </b>
             {{ dataset.dataset_name }}
           </div>
@@ -98,7 +107,7 @@
             <b> Identifiant SINP du jeu de données :</b>
             {{ dataset.unique_dataset_id }}
           </div>
-          <div class="a">
+          <div class="a" data-qa='pnx-metadata-dataset-id'>
             <b> Identifiant GeoNature du jeu de données :</b>
             {{ dataset.id_dataset }}
           </div>
@@ -209,11 +218,9 @@
           <br />
 
           <h4>Spécificités GeoNature</h4>
-          <div class="align"><b>Actif : </b> {{ dataset.active ? 'Oui' : 'Non' }}</div>
-          <div class="align"><b> Validable :</b> {{ dataset.validable ? 'Oui' : 'Non' }}</div>
-          <div *ngIf="dataset.id_taxa_list" class="b">
-            ID de liste de taxon : {{ dataset.id_taxa_list }}
-          </div>
+          <div class="align" data-qa='pnx-metadata-dataset-status'> <b>Actif :  </b>  {{dataset.active ? 'Oui' : 'Non'}} </div>
+          <div class="align"> <b> Validable :</b>  {{dataset.validable ? 'Oui' : 'Non'}} </div>
+          <div *ngIf="dataset.id_taxa_list" class="b"> ID de liste de taxon : {{dataset.id_taxa_list}} </div>
           <div *ngIf="dataset.modules.length">
             <div class="b">Module(s) GeoNature associé(s) au jeu de données :</div>
             <div class="a">

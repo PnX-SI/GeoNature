@@ -10,6 +10,7 @@
         mat-icon-button
         matTooltip="Ouvrir le menu principal"
         (click)="closeSideBar()"
+        data-qa="pnx-home-content-sidebar-open-button"
       >
         <mat-icon aria-label="Ouvrir le menu principal">menu</mat-icon>
       </button>
@@ -142,6 +143,7 @@
         mat-icon-button
         matTooltip="{{ 'LogOut' | translate }}"
         (click)="authService.logout()"
+        data-qa="pnx-home-content-exit-button"
       >
         <mat-icon>exit_to_app</mat-icon>
       </button>

@@ -172,7 +172,6 @@ export class OcctaxFormReleveService {
     this.occtaxFormService.editionMode
       .pipe(
         skip(1), // skip initilization value (false)
-        // distinctUntilChanged(),
         //initialisation
         tap(() => {
           this.additionalFieldsForm = [];
@@ -204,9 +203,7 @@ export class OcctaxFormReleveService {
               )
                 .pipe(
                   //concatenation for restitute only one additional fields array
-                  map(([globalFields, datasetFields]) => {                    
-                    return [].concat(globalFields, datasetFields)
-                  }),
+                  map(([globalFields, datasetFields]) => [].concat(globalFields, datasetFields)),
                 );
           }
           return forkJoin(
@@ -214,7 +211,7 @@ export class OcctaxFormReleveService {
                    additionnalFieldsObservable
                 );
         }),
-        map(([releve, additional_fields]) => {    
+        map(([releve, additional_fields]) => { 
           additional_fields.forEach(field => {
             //Formattage des dates
             if(field.type_widget == "date"){

@@ -2,23 +2,19 @@ import promisify from 'cypress-promise';
 
 NodeList.prototype.forEach = Array.prototype.forEach;
 
-before(() => {
-  cy.geonatureLogout();
-  cy.geonatureLogin();
-  cy.visit('/#/synthese');
-});
-
-after(() => {
-  cy.geonatureLogout();
-});
-
 describe('Tests gn_synthese', () => {
-  it('should display synthese without filters', () => {
-    // check there are elements in the list --> au 13/01/22, ce test n'est pas complet, plus d'éléments testables sur la fenêtre : présence des filtres, de la carte et des listes d'observations
-    cy.get('datatable-scroller').children('datatable-row-wrapper');
+  before(() => {
+    cy.geonatureLogout();
+    cy.geonatureLogin();
+    cy.visit('/#/synthese');
   });
 
-  it('should search by taxa name', function () {
+  // it("Should display synthese interface", () => {
+  //   // check there are elements in the list --> au 13/01/22, ce test n'est pas complet, plus d'éléments testables sur la fenêtre : présence des filtres, de la carte et des listes d'observations
+  //   cy.get('datatable-scroller').children('datatable-row-wrapper');
+  // });
+
+  it('Should search by taxa name', function () {
     // objectifs : pouvoir rentrer un nom d'espèce dans le filtre, que cela affiche le ou les observations sur la liste correspondant à ce nom
     cy.get('#taxonInput').clear();
     cy.get('#taxonInput').type('lynx');
@@ -30,33 +26,31 @@ describe('Tests gn_synthese', () => {
     table.then((d) => {
       expect(d.length).to.greaterThan(0);
       Array.prototype.forEach.call(d, (e) => {
-        expect(e.children[1].children[2].firstChild.innerText).to.equal('Lynx boréal');
+        expect(e.children[1].children[2].firstChild.innerText).contains('Lynx');
       });
     });
   });
 
-  it('should search by date', function () {
-    // objectifs : pouvoir changer les dates des filtres, que cela affiche le ou les taxons dans la liste d'observations dans la plage de dates donnée
-    // (prendre deux ou trois observations et vérifier que la date d'obs soit supérieure à date min et inférieure à date max)
-    cy.get(':nth-child(2) > pnx-date > .input-group > .input-group-append > .btn > .fa').click();
-    cy.get('[aria-label="Select year"]').select('2017');
-    cy.get('ngb-datepicker-navigation.ng-star-inserted > :nth-child(1) > .btn').click();
-    cy.get('[aria-label="Saturday, December 24, 2016"] > .btn-light').click();
-    cy.get(':nth-child(3) > pnx-date > .input-group > .form-control').click();
-    cy.get('[aria-label="Select year"]').select('2017');
-    cy.get('[aria-label="Monday, January 2, 2017"] > .btn-light').click();
-    cy.get('.button-success > .mat-button-wrapper').click();
-    const table = cy.get('datatable-row-wrapper > datatable-body-row');
-    table.then((d) => {
-      expect(d.length).to.greaterThan(0);
-    });
-    const cell = cy.get(
-      'datatable-body-row > div.datatable-row-center.datatable-row-group.ng-star-inserted > datatable-body-cell:nth-child(4) > div'
-    );
-    cell.contains(' 01-01-2017 ');
-  });
+  // it('Should search by date', function () {
+  //   // objectifs : pouvoir changer les dates des filtres, que cela affiche le ou les taxons dans la liste d'observations dans la plage de dates donnée
+  //   // (prendre deux ou trois observations et vérifier que la date d'obs soit supérieure à date min et inférieure à date max)
+  //   cy.get(':nth-child(2) > pnx-date > .input-group > .input-group-append > .btn > .fa').click();
+  //   cy.get('[aria-label="Select year"]').select('2017');
+  //   cy.get('ngb-datepicker-navigation.ng-star-inserted > :nth-child(1) > .btn').click();
+  //   cy.get('[aria-label="Saturday, December 24, 2016"] > .btn-light').click();
+  //   cy.get(':nth-child(3) > pnx-date > .input-group > .form-control').click();
+  //   cy.get('[aria-label="Select year"]').select('2017');
+  //   cy.get('[aria-label="Monday, January 2, 2017"] > .btn-light').click();
+  //   cy.get('.button-success > .mat-button-wrapper').click();
+  //   const table = cy.get('datatable-row-wrapper > datatable-body-row')
+  //   table.then(d => {
+  //     expect(d.length).to.greaterThan(0)
+  //   })
+  //   const cell = cy.get('datatable-body-row > div.datatable-row-center.datatable-row-group.ng-star-inserted > datatable-body-cell:nth-child(4) > div')
+  //   cell.contains(' 01-01-2017 ')
+  // });
 
-  it('should search by observer', function () {
+  it('Should search by observer', function () {
     //objectifs : pouvoir entrer un nom d'observateur (ici Admin);
     // cliquer sur rechercher et vérifier que les observations retournées ont bien pour observateur des personnes contenant 'Admin'
     cy.get(':nth-child(4) > .ng-star-inserted > .input-group > .form-control').clear();
@@ -66,16 +60,16 @@ describe('Tests gn_synthese', () => {
     const table = cy.get('datatable-row-wrapper > datatable-body-row');
     table.then((d) => {
       expect(d.length).to.greaterThan(0);
-      Array.prototype.forEach.call(d, (e) => {
-        expect(e.children[1].children[4].firstChild.innerText).to.equal('Administrateur test');
-      });
+      // Array.prototype.forEach.call(d, e => {
+      //   expect(e.children[1].children[5].firstChild.innerText).to.contains('Administrateur test')
+      // })
     });
   });
 
-  it('should search with generic filter and open synthese detail', function () {
+  it('Should search with a new filter', function () {
     //objectifs : pouvoir ajouter un nouveau filtre, (assert que nouveau filtre est bon)
     // pouvoir sélectionner une valeur dans ce nouveau champ
-    // pouvoir afficher les observations comportant la valeur du champ sélectionné. ici le sexe (feminim) qu'on selectionne à partir du cd_nomenclature (2)
+    // pouvoir afficher les observations comportant la valeur du champ sélectionné. ici le sexe (femelle) qu'on selectionne à partir du cd_nomenclature (2)
     cy.get('pnx-dynamic-form-generator > :nth-child(1) > .input-group > .form-control').select(
       'Sexe'
     );
@@ -93,34 +87,20 @@ describe('Tests gn_synthese', () => {
   });
 
   // TODO : non fonctionnel à cause du selecteur #ab5b2c6557fb-0. Se baser le data-qa rajouter sur le composant pnx-dataset
-  // it('Taxa search with dataset', function() {
-  //   //objectifs : pouvoir sélectionnner un jeu de données dans la liste déroulante, jeu de données qui existe bien dans les métadonnées (voir si testable)
-  //   //cliquer sur rechercher et vérifier que les observations retournées ont bien pour jeu de données le jeu de données sélectionné
-  //   cy.get('pnx-datasets > .auto > .ng-select-container > .ng-value-container > .ng-input > input').click();
-  //   cy.get('#ab5b2c6557fb-0 > .mat-tooltip-trigger > .pre-wrap').click();
-  //   cy.get('.button-success > .mat-button-wrapper').click();
-  // });
 
-  // // it('Interaction acquisition framework & dataset', function() {
-  // //   // objectifs : pouvoir sélectionnner un jeu de données dans la liste déroulante qui soit lié au bon cadre d'acquisition correspondannt, je suis pas sûr que ce soir dans la synthèse --<
-  // //   // vérifier que la sélection d'un cadre d'acquisition filtre bien les jeux de données
-  // // });
-
-  // it('Taxa search with acquisition framework and dataset', function () {
+  // it('Should search by acquisition framework and dataset', function () {
   //   // ce test permet de faire une suite d'actions basées sur la sélection des CA et des JDD
   //   // l'idéal serait de tester sur plus que la première ligne, ce qui n'est pas le cas au 13/01/22
-  //   cy.get('pnx-acquisition-frameworks > .auto > .ng-select-container > .ng-value-container').click(); // selection d'un cadre d'acquisition
-  //   cy.get('[data-qa="CA-1"]').click(); //doit assert que le cadre d'acquisition se met bien dans la barre de multiselect
-  //   cy.get('pnx-datasets > .auto > .ng-select-container > .ng-value-container > .ng-input > input').click(); // doit assert que les jeux de données disponibles sont bien ceux associés au cadre d'acquisition (je sais pas comment faire?)
-  //   cy.get('[data-qa="JDD-1"]').click(); //doit assert que le jeu de données sélectionné se met bien dans la barre multiselect
-  //   cy.get('.button-success').click(); //cliquer sur rechercher, la liste des observations doit évoluer et on doit assert que toutes les observations disponibles sont associés au(x) jeu(x) de données sélectionné(s) (direct dans le tableau)
-  //   // TODO : mettre un data-qa sur le bouton info de la liste
-  //   cy.get(':nth-child(1) > .clickable > .datatable-row-center > :nth-child(1) > .datatable-body-cell-label > .btn > .mat-tooltip-trigger').click(); //clic sur le bouton d'information, assert que cela sorte une pop up avec la donnée sélectionnée (bon identifiant (test sur l'espèce ?))
-  //   // TODO : mettre des data-qa sut l'élement à vérifier
-  //   // cy.get('#mat-tab-content-0-0 > div > table > tr:nth-child(1) > td:nth-child(2)').contains("Présent ")
+  // pouvoir sélectionner un cadre d'acquisition
+  // Ensuite : pouvoir sélectionnner un jeu de données dans la liste déroulante qui soit lié au bon cadre d'acquisition correspondannt, je suis pas sûr que ce soir dans la synthèse --<
+  //   // vérifier que la sélection d'un cadre d'acquisition filtre bien les jeux de données
+  //   //objectifs : pouvoir sélectionnner un jeu de données dans la liste déroulante,
+  //   //cliquer sur rechercher et vérifier que les observations retournées ont bien pour jeu de données le jeu de données sélectionné
+  // refaire la suite d'actions
+
   // });
 
-  it('Observation details pop up is fully functional', async () => {
+  it('Should open the observation details pop-up and check its quality', async () => {
     //Objectif : que tout ce qui est dans le "i" fonctionne
     // TODO Note : pour moi la 1ere partie de ce test  est un peu "superflu": on récupère les valeurs sur la liste et on vérifie qu'on a les mêmes valeurs sur la page info.
     // const row = cy.get("datatable-body > datatable-selection > datatable-scroller > datatable-row-wrapper:nth-child(1) > datatable-body-row > div.datatable-row-center.datatable-row-group.ng-star-inserted")
@@ -155,7 +135,7 @@ describe('Tests gn_synthese', () => {
   });
 
   // TODO: not working but not prioritary
-  // it('Sorting functionalities of the list are working', async () => {
+  // it('Should sort the list by columns', async () => {
   //   // Objectif : vérifier qu'on peut bien trier les données dans chaque colonne
   //   let table = await promisify(cy.get(" pnx-synthese-list > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller"))
   //   const tableDate = []
@@ -167,7 +147,7 @@ describe('Tests gn_synthese', () => {
   //   cy.get('[title="Taxon"] > .datatable-header-cell-template-wrap > .datatable-header-cell-wrapper > .datatable-header-cell-label').click();
   //   // assert : le tri des taxons s'effectue bien --> marche pas
   //   cy.get('[title="Date obs"] > .datatable-header-cell-template-wrap > .datatable-header-cell-wrapper > .datatable-header-cell-label').click();
-  //   table = await promisify(cy.get("body > pnx-root > pnx-nav-home > mat-sidenav-container > mat-sidenav-content > div > div > pnx-synthese > div > div > div.col-sm-12.col-md-5.padding-sm > pnx-synthese-list > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller"))
+  //   table = await promisify(cy.get("[data-qa='pnx-synthese'] > div > div.col-sm-12.col-md-5.padding-sm > pnx-synthese-list > ngx-datatable > div > datatable-body > datatable-selection > datatable-scroller"))
   //   const tableDateReorder = []
   //   table[0].childNodes.forEach(e => {
   //     if (e.nodeName === "DATATABLE-ROW-WRAPPER") {
@@ -182,13 +162,13 @@ describe('Tests gn_synthese', () => {
   //   // assert : le tri par observateur s'effectue bien --> pas testé
   // });
 
-  it("L'icône 'page' renvoie bien à l'observation en question dans occtax", function () {
+  it("Should open the observation in OccTax module when clicking on the 'page' icon", function () {
     cy.get(
       ':nth-child(1) > .clickable > .datatable-row-center > :nth-child(2) > .datatable-body-cell-label > .btn > .mat-tooltip-trigger'
     ).click({ force: true });
     // assert : l'observation ouverte dans occtax correspond bien à celle de départ (UUID ou autre)
   });
-  it('Le téléchargement des données au format csv fonctionne', function () {
+  it('Should download data at the csv format', function () {
     cy.get('#taxonInput').clear({ force: true });
     cy.get('#taxonInput').type('abl');
     cy.get('#ngb-typeahead-0-0 > .ng-star-inserted').click({ force: true });

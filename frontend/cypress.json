@@ -7,5 +7,6 @@
   "screenshotsFolder": "cypress/screenshots",
   "pluginsFile": "cypress/plugins/index.ts",
   "fixturesFolder": "cypress/fixtures",
-  "baseUrl": "http://127.0.0.1:4200"
+  "baseUrl": "http://127.0.0.1:4200",
+  "defaultCommandTimeout": 10000
 }

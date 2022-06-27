@@ -44,7 +44,7 @@
   </div>
 </div>
 
-<div class="row">
+<div class="row" data-qa="pnx-nomenclature-info-comp">
   <div 
     *ngIf="occtaxConfig.form_fields.obs_tech" 
     class="col-lg-4 col-sm-6"
@@ -55,12 +55,14 @@
       codeNomenclatureType="METH_OBS"
       [regne]="taxref?.regne"
       [group2Inpn]="taxref?.group2_inpn"
+      data-qa="pnx-nomenclature-meth-obs"
     >
     </pnx-nomenclature>
     <small
       *ngIf="occurrenceForm.get('id_nomenclature_obs_technique').hasError('required') && occurrenceForm.get('id_nomenclature_obs_technique').touched"
       class="error" 
       style="color:red"
+      data-qa="pnx-nomenclature-meth-obs-error"
     >
       {{'Taxon.Errors.TechObsRequiredError' |translate}}
     </small>
@@ -75,18 +77,18 @@
       codeNomenclatureType="ETA_BIO"
       [regne]="taxref?.regne"
       [group2Inpn]="taxref?.group2_inpn"
+      data-qa="pnx-nomenclature-eta-bio"
     >
     </pnx-nomenclature>
     <small
       *ngIf="occurrenceForm.get('id_nomenclature_bio_condition').hasError('required') && occurrenceForm.get('id_nomenclature_bio_condition').touched"
       class="error" 
       style="color:red"
+      data-qa="pnx-nomenclature-eta-bio-error"
     >
       {{'Taxon.Errors.BiologicalConditionRequiredError' |translate}}
     </small>
   </div>
-
-
 </div>
 
 <div style="margin-top: 10px;">
@@ -94,6 +96,7 @@
     type="button" 
     class="btn btn-outline-shadow btn-sm" 
     (click)='collapse()'
+    data-qa="pnx-occtax-taxon-form-advanced"
   >
     <i class="fa fa-cog" aria-hidden="true"></i>
     {{ 'Taxon.Advanced' | translate }}
@@ -111,10 +114,12 @@
       <input 
         class="form-control form-control-sm" 
         [formControl]="occurrenceForm.get('determiner')" 
+        data-qa="pnx-occtax-taxon-form-determinator"
         type="text"
       >
       <small 
         *ngIf="occurrenceForm.get('determiner').hasError('required') && occurrenceForm.get('determiner').touched"
+        data-qa="pnx-occtax-taxon-form-determinator-error"
         class="error" 
         style="color:red"
       >
@@ -338,11 +343,12 @@
   {{'Taxon.Errors.CountingRequiredError' |translate}}
 </div>
 
-<mat-accordion [multi]="true">
+<mat-accordion [multi]="true" data-qa="pnx-occtax-taxon-form-count">
 
   <div
     *ngFor="let counting of countings; index as i"
     class="blc-expansion-panel"
+    [attr.data-qa]='"pnx-occtax-taxon-form-count-"+i'
     displayMouseOver
     selector=".btn-clear"
   >
@@ -365,6 +371,7 @@
 
     <pnx-occtax-form-counting 
       [value]="counting" 
+      data-qa="pnx-nomenclature-obj-denombrement"
     >
     </pnx-occtax-form-counting>
 
@@ -374,6 +381,7 @@
       *ngIf="i == countings.length - 1"
       mat-mini-fab
       color="primary"
+      data-qa="pnx-occtax-taxon-form-add-count"
       class="btn-add-counting"
       (click)="addCounting()"
     >
