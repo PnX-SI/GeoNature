@@ -109,7 +109,7 @@
     "cypress-promise": "^1.1.0",
     "eslint": "^8.3.0",
     "eslint-plugin-import": "^2.25.3",
-    "eslint-plugin-jsdoc": "^37.0.3",
+    "eslint-plugin-jsdoc": "^39.3.3",
     "eslint-plugin-prefer-arrow": "^1.2.3",
     "eslint-plugin-react": "^7.27.1",
     "istanbul-lib-coverage": "^3.2.0",
