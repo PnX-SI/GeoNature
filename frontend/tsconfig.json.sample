@@ -15,8 +15,7 @@
       "dom"
     ],
     "typeRoots": [
-      "node_modules/@types",
-      "./src/typings.d.ts"
+      "node_modules/@types"
     ],
     "types":[
     ],
