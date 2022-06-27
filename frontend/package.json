@@ -107,7 +107,7 @@
     "codelyzer": "~6.0.0",
     "cypress": "^9.2.1",
     "cypress-promise": "^1.1.0",
-    "eslint": "^8.3.0",
+    "eslint": "^8.18.0",
     "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-jsdoc": "^39.3.3",
     "eslint-plugin-prefer-arrow": "^1.2.3",
