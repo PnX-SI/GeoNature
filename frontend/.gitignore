@@ -6,10 +6,6 @@ npm-debug.log
 src/conf/app.config.ts
 src/tsconfig.app.json
 
-
-#tsconfig
-tsconfig.json
-
 # custom components
 src/custom/components/**/*.component.ts
 src/custom/components/**/*.component.scss

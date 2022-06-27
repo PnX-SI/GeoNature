@@ -80,8 +80,6 @@ if [[ -z "${CI}" || "${CI}" == false ]] ; then
   echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
   # Generate the app.config.ts
   geonature generate_frontend_config
-  # Generate the tsconfig.json
-  geonature generate_frontend_tsconfig
   # Generate the src/tsconfig.app.json
   geonature generate_frontend_tsconfig_app
 
