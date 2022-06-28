@@ -39,10 +39,7 @@ export class ModuleGuardService implements CanActivate {
 
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild {
-  constructor(
-    private _authService: AuthService,
-    private _router: Router,
-  ) {}
+  constructor(private _authService: AuthService, private _router: Router) {}
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
     if (this._authService.getToken() === null) {
@@ -69,7 +66,6 @@ export class AuthGuard implements CanActivate, CanActivateChild {
 
 @Injectable()
 export class PublicAccessGuard implements CanActivateChild {
-
   constructor(@Inject(APP_CONFIG_TOKEN) private cfg, private authService: AuthService) {}
 
   canActivateChild(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
