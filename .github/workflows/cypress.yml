@@ -129,21 +129,15 @@ jobs:
         working-directory: ./backend/dependencies/TaxHub/
         env:
           TAXHUB_SETTINGS: test_config.py
-      - name: curl
-        run: curl http://127.0.0.1:5000/api/taxref/allnamebylist?offset=10
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          record: true
+          record: ${{ fromJSON(github.ref_name == 'master') }}
           working-directory: ./frontend
           start: npm run start-for-ci
           wait-on: http://127.0.0.1:4200
           headless: true
         env:
+          is_master:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Cypress screenshot upload
-        uses: actions/upload-artifact@v2
-        with:
-          name: cypress-screenshots
-          path: frontend/cypress/screenshots
