@@ -287,7 +287,7 @@ def confirmation():
 def after_confirmation():
     data = dict(request.get_json())
     type_action = "valid_temp_user"
-    after_confirmation_fn = function_dict.get(type_action, None)
+    after_confirmation_fn = REGISTER_POST_ACTION_FCT.get(type_action, None)
     result = after_confirmation_fn(data)
     if result != 0 and result["msg"] != "ok":
         msg = f"Problem in GeoNature API after confirmation {type_action} : {result['msg']}"
