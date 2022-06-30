@@ -528,3 +528,11 @@ class VColorAreaTaxon(DB.Model):
     nb_obs = DB.Column(DB.Integer())
     last_date = DB.Column(DB.DateTime())
     color = DB.Column(DB.Unicode())
+
+
+# defined here to avoid circular dependencies
+TDatasets.sources = db.relationship(
+    TSources,
+    secondary=Synthese.__table__,
+    viewonly=True,
+)
