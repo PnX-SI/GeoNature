@@ -10,6 +10,7 @@ from .models import (
 )
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_commons.schemas import ModuleSchema
+from geonature.core.gn_synthese.schemas import SourceSchema
 
 from utils_flask_sqla.schema import SmartRelationshipsMixin
 from pypnusershub.schemas import UserSchema, OrganismeSchema
@@ -64,6 +65,7 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     nomenclature_resource_type = MA.Nested(NomenclatureSchema, dump_only=True)
     cor_territories = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
+    sources = MA.Nested(SourceSchema, many=True, dump_only=True)
 
 
 class BibliographicReferenceSchema(

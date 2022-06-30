@@ -172,6 +172,7 @@ def get_dataset(info_role, id_dataset):
             "acquisition_framework.cor_af_actor.nomenclature_actor_role",
             "acquisition_framework.cor_af_actor.organism",
             "acquisition_framework.cor_af_actor.role",
+            "sources",
         ]
     )
 
