@@ -531,8 +531,16 @@ class VColorAreaTaxon(DB.Model):
 
 
 # defined here to avoid circular dependencies
+source_subquery = (
+    select([TSources.id_source, Synthese.id_dataset])
+    .where(TSources.id_source == Synthese.id_source)
+    .distinct()
+    .alias()
+)
 TDatasets.sources = db.relationship(
     TSources,
-    secondary=Synthese.__table__,
+    primaryjoin=TDatasets.id_dataset == source_subquery.c.id_dataset,
+    secondaryjoin=source_subquery.c.id_source == TSources.id_source,
+    secondary=source_subquery,
     viewonly=True,
 )
