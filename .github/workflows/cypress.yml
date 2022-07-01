@@ -110,7 +110,6 @@ jobs:
         run: |
           cp ./config/settings.ini.sample ./config/settings.ini 
           geonature generate_frontend_config
-          geonature generate_frontend_tsconfig_app
           ./install/05_install_frontend.sh --ci
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml

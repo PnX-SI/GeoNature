@@ -14,7 +14,6 @@ from flask.cli import run_command
 from geonature.utils.env import GEONATURE_VERSION, ROOT_DIR
 from geonature.utils.command import (
     create_frontend_config,
-    tsconfig_app_templating,
 )
 from geonature.utils.gn_module_import import create_frontend_module_config
 from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
@@ -100,14 +99,6 @@ def dev_back(ctx, host, port):
     if not environ.get("FLASK_DEBUG"):
         environ["FLASK_DEBUG"] = "true"
     ctx.invoke(run_command, host=host, port=port)
-
-
-@main.command()
-def generate_frontend_tsconfig_app():
-    """
-    Génere tsconfig.app du frontend/src
-    """
-    tsconfig_app_templating()
 
 
 @main.command()
