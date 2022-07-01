@@ -11,17 +11,14 @@
     "main.ts",
     "polyfills.ts",
     "*.d.ts",
-    "**/*"
-  {% for route in routes %}
-    ,"{{route.location}}/*.ts"
-    ,"{{route.location}}/**/*.ts"
-  {% endfor %}
+    "**/*",
+    "../../external_modules/*/frontend/app/*.ts",
+    "../../external_modules/*/frontend/app/**/*.ts"
   ],
   "exclude": [
     "test.ts",
-    "**/*.spec.ts"
-  {% for route in routes %}
-    ,"{{route.location}}/**/*.spec.ts"
-  {% endfor %}
-  ],
+    "**/*.spec.ts",
+    "../../external_modules/*/frontend/app/*.spec.ts",
+    "../../external_modules/*/frontend/app/**/*.spec.ts"
+  ]
 }

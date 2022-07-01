@@ -71,7 +71,13 @@ Modules compatibles à date de la publication de la version 2.10 de GeoNature :
 * Suivez la procédure de mise à jour classique de GeoNature (https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application)
 * Suivez les éventuelles notes de version spécifiques des modules installés (SQL de migration de leur schéma de BDD, stamp Alembic de la BDD)
 
-✅ Un exemple de migration complète de GeoNature 2.9 à 2.10, ses dépendances et ses modules principaux est disponible sur https://geonature.fr/documents/procedures/2022-11-GN-210-Migrate.txt (pour information et à adapter à votre contexte).
+    # depuis le répertoire frontend
+    nvm use
+    npm install --legacy-peer-deps
+    # depuis le virtualenv
+    geonature generate_frontend_modules_route
+    geonature generate_frontend_tsconfig
+    geonature generate_frontend_tsconfig_app
 
 **🚀 Nouveautés**
 

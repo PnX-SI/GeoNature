@@ -18,40 +18,11 @@ from geonature.utils.env import (
     ROOT_DIR,
     GN_EXTERNAL_MODULE,
 )
-from geonature.utils.module import list_frontend_enabled_modules
 from geonature.utils.config import config_frontend
 
 log = logging.getLogger(__name__)
 
 MSG_OK = "\033[92mok\033[0m\n"
-
-
-def tsconfig_app_templating(app=None):
-    if not app:
-        app = create_app(with_external_mods=False)
-
-    with app.app_context():
-
-        log.info("Generating tsconfig.app.json")
-
-        with open(str(ROOT_DIR / "frontend/src/tsconfig.app.json.sample"), "r") as input_file:
-            template = Template(input_file.read())
-            routes = []
-            for module in list_frontend_enabled_modules():
-                module_dir = Path(GN_EXTERNAL_MODULE / module.module_code.lower())
-                # test if module have frontend
-                if (module_dir / "frontend").is_dir():
-                    location = "{}/frontend/app".format(module_dir)
-                    routes.append({"location": location})
-
-                # TODO test if two modules with the same name is okay for Angular
-
-            route_template = template.render(routes=routes)
-
-            with open(str(ROOT_DIR / "frontend/src/tsconfig.app.json"), "w") as output_file:
-                output_file.write(route_template)
-
-        log.info("...%s\n", MSG_OK)
 
 
 def create_frontend_config(input_file=None, output_file=None):

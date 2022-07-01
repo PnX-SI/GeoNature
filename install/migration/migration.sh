@@ -180,7 +180,6 @@ geonature db autoupgrade -x data-directory=tmp/ -x local-srid=$srid_local
 
 echo "Update configurations"
 geonature generate_frontend_config
-geonature generate_frontend_tsconfig_app
 for D in $(find external_modules -type l) ; do
     # si le lien symbolique exisite
     module_path=$(readlink $D)

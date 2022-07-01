@@ -25,9 +25,6 @@ from flask_migrate import upgrade as db_upgrade
 from geonature.utils.env import db, GN_EXTERNAL_MODULE
 from geonature.utils.module import get_dist_from_code
 
-from geonature.utils.command import (
-    tsconfig_app_templating,
-)
 from geonature.core.command.main import main
 from geonature.utils.gn_module_import import (
     gn_module_activate,
@@ -114,8 +111,6 @@ def install_packaged_gn_module(module_path, module_code, skip_frontend):
         enable_frontend = create_external_assets_symlink(module_path, module_code.lower())
 
         install_frontend_dependencies(os.path.abspath(module_path))
-        # generation du fichier tsconfig.app.json
-        tsconfig_app_templating(app=current_app)
 
     log.info("Module installé, pensez à recompiler le frontend.")
 
