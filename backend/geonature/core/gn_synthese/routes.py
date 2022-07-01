@@ -381,7 +381,11 @@ def export_taxon_web(info_role):
 
     subq = synthese_query_class.query.alias("subq")
 
-    q = DB.session.query(*columns, subq.c.nb_obs, subq.c.date_min, subq.c.date_max).join(
+    q = DB.session.query(
+        distinct(columns.cd_ref).label("cd_ref"),
+        *columns,
+        subq.c.nb_obs, subq.c.date_min, subq.c.date_max
+    ).join(
         subq, subq.c.cd_ref == columns.cd_ref
     )
     return to_csv_resp(
