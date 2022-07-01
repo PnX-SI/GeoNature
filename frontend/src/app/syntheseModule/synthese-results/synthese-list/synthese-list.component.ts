@@ -18,15 +18,15 @@ import { AppConfig } from '@geonature_config/app.config';
 import { HttpParams } from '@angular/common/http/';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
-// import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { DatatableComponent} from '@swimlane/ngx-datatable';
-import {ColumnMode} from '@swimlane/ngx-datatable';
+import { ColumnMode, DatatableComponent } from '@swimlane/ngx-datatable';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
+
+
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
-  styleUrls: ['synthese-list.component.scss']
+  styleUrls: ['synthese-list.component.scss'],
 })
 export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
@@ -102,11 +102,6 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.rowNumber = Math.trunc(event.target.innerHeight / 37);
   }
 
-  dateComparator(a: Date, b: Date) {
-    if (new Date(a) < new Date(b)) return -1;
-    if (new Date(a) > new Date(b)) return 1;
-  }
-
   backToModule(url_source, id_pk_source) {
     const link = document.createElement('a');
     link.target = '_blank';
@@ -126,7 +121,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     row.id_synthese = row.id;
     const modalRef = this.ngbModal.open(SyntheseInfoObsComponent, {
       size: 'lg',
-      windowClass: 'large-modal'
+      windowClass: 'large-modal',
     });
     modalRef.componentInstance.idSynthese = row.id_synthese;
     modalRef.componentInstance.uuidSynthese = row.unique_id_sinp;
@@ -135,7 +130,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
 
   openDownloadModal() {
     this.ngbModal.open(SyntheseModalDownloadComponent, {
-      size: 'lg'
+      size: 'lg',
     });
   }
 
@@ -144,7 +139,9 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   }
 
   getDate(date) {
-    function pad(s) { return (s < 10) ? '0' + s : s; }
+    function pad(s) {
+      return s < 10 ? '0' + s : s;
+    }
     const d = new Date(date);
     return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('-');
   }
