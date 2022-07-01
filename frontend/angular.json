@@ -76,17 +76,6 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
-            },
-            "e2e": {
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true,
-              "vendorChunk": true,
-              "optimization": false,
-              "buildOptimizer": false,
-              "customWebpackConfig": {
-                "path": "./cypress/coverage.webpack.ts"
-              }
             }
           }
         },
@@ -109,110 +98,6 @@
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "geonature:build"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json",
-              "cypress/tsconfig.json"
-            ],
-            "exclude": ["**/node_modules/**/*"]
-          }
-        },
-        "cypress-run": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "devServerTarget": "geonature:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "geonature:serve:production"
-            }
-          }
-        },
-        "cypress-open": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "watch": true,
-            "headless": false
-          }
-        },
-        "e2e": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "devServerTarget": "geonature:serve-coverage",
-            "watch": true,
-            "headless": false
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "geonature:serve-coverage:production"
-            }
-          }
-        },
-        "e2e-ci": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "devServerTarget": "geonature:serve-coverage",
-            "headless": true,
-            "watch": false,
-            "report": true
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "geonature:serve-coverage:production"
-            }
-          }
-        }
-      }
-    },
-    "geonature-e2e": {
-      "root": "e2e",
-      "sourceRoot": "e2e",
-      "projectType": "application",
-      "architect": {
-        "e2e": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "devServerTarget": "geonature-e2e:serve",
-            "watch": true,
-            "headless": true,
-            "report": true
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "geonature-e2e:serve:production"
-            }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["e2e/cypress/tsconfig.json"],
-            "exclude": ["**/node_modules/**/*"]
-          }
-        },
-        "cypress-run": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "devServerTarget": "geonature-e2e:serve",
-            "configFile": "e2e/cypress.json"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "geonature-e2e:serve:production"
-            }
-          }
-        },
-        "cypress-open": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "watch": true,
-            "headless": false,
-            "configFile": "e2e/cypress.json"
           }
         }
       }
