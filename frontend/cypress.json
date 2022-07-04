@@ -5,7 +5,7 @@
   "supportFile": "cypress/support/index.ts",
   "videosFolder": "cypress/videos",
   "screenshotsFolder": "cypress/screenshots",
-  "pluginsFile": "cypress/plugins/index.ts",
+  "pluginsFile": false,
   "fixturesFolder": "cypress/fixtures",
   "baseUrl": "http://127.0.0.1:4200",
   "defaultCommandTimeout": 10000
