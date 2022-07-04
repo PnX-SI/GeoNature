@@ -254,102 +254,46 @@
       <!-- Fin fiche descriptive -->
 
       <!-- Liste des imports -->
-      <div class="card" *ngIf="imports.length">
+      <div class="card" *ngIf="dataset.sources.length">
         <div class="card-header">
-          <h5>Liste des imports</h5>
+          <h5>Sources des données</h5>
         </div>
-        <div class="card-body">
-          <table class="table table-bordered tabRecap">
-            <thead class="bold">
-              <tr>
-                <td class="textCenter">Source</td>
-                <td class="textCenter">Nombre de données</td>
-                <td class="textCenter">Intégré le</td>
-                <td class="textCenter">Statut</td>
-                <td class="textCenter">Rapport</td>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let import of imports">
-                <td class="textCenter">{{ import.import_table }}</td>
-                <td class="textCenter">{{ import.source_count }}</td>
-                <td class="textCenter">{{ import.date_create_import | date: 'd/MM/yyyy' }}</td>
-                <td class="textCenter">
-                  <div class="imgStatus">
-                    <mat-icon class="success" matTooltip="Terminé" *ngIf="import.is_finished">
-                      done</mat-icon
-                    >
-
-                    <mat-icon
-                      *ngIf="!import.is_finished"
-                      matTooltip="Non terminé"
-                      class="color-orange"
-                    >
-                      close</mat-icon
-                    >
-                  </div>
-                </td>
-                <td class="textCenter">
-                  <div *ngIf="import.source_count != 0 && import.is_finished">
-                    <mat-icon
-                      (click)="sensiReportImport(import.id_import)"
-                      matTooltip="Télécharger le rapport de sensibilité"
-                    >
-                      do_not_touch</mat-icon
-                    >
-                    <mat-icon
-                      (click)="uuidReportImport(import.id_import)"
-                      matTooltip="Télécharger le rapport d'UUID"
-                    >
-                      format_list_numbered
-                    </mat-icon>
-                  </div>
-                  <div *ngIf="import.source_count == 0 || !import.is_finished">
-                    <mat-icon matTooltip="Impossible de télécharger le rapport de sensibilité">
-                      do_not_touch</mat-icon
-                    >
-                    <mat-icon matTooltip="Impossible de télécharger de rapport UUID">
-                      format_list_numbered
-                    </mat-icon>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-            <!-- <tbody>
-              <tr *ngFor='let taxons of taxs'>
-                <td
-                  class="textCenter"
-                  *ngIf="taxons.properties.id_dataset=== dataset.id_dataset"
-                >{{taxons.properties.t_occurrences_occtax[0].taxref.nom_complet}}</td>
-                <td
-                  class="textCenter"
-                  *ngIf="taxons.properties.id_dataset=== dataset.id_dataset"
-                >{{taxons.properties.t_occurrences_occtax[0].cor_counting_occtax[0].count_max}}</td>
-                <td
-                  class="textCenter"
-                  *ngIf="taxons.properties.id_dataset=== dataset.id_dataset"
-                >{{taxons.properties.date_max |date: 'd/MM/yyyy'}}</td>
-                <td
-                  class="textCenter"
-                  *ngIf="taxons.properties.id_dataset=== dataset.id_dataset"
-                ></td>
-                <td
-                  class="textCenter"
-                  *ngIf="taxons.properties.id_dataset=== dataset.id_dataset"
-                >
-                  <mat-icon
-                    (click)="sensiReport(taxons.properties.id_dataset)"
-                    matTooltip="Rapport de sensibilité"
-                  > do_not_touch</mat-icon>
-                  <mat-icon
-                    matTooltip="Rapport d'UUID"
-                    (click)="uuidReport(taxons.properties.id_dataset)"
-                  > format_list_numbered </mat-icon>
-                </td>
-              </tr>
-            </tbody> -->
-          </table>
-        </div>
+        <ngx-datatable
+          #table
+          class="material striped"
+          [rows]="dataset.sources"
+          [count]="dataset.sources.length"
+          [columnMode]="'force'"
+          [headerHeight]="35"
+          [footerHeight]="30"
+          [rowHeight]="40"
+          [offset]="1"
+          [sorts]="[{prop: 'meta_create_date', dir: 'desc'}]"
+        >
+          <ngx-datatable-column name="module" [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{row.name_source}}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="details" [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{row.desc_source}}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="date" [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              {{row.meta_create_date | date:'dd-MM-yyyy'}}
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="url" [sortable]="false">
+            <ng-template let-row="row" ngx-datatable-cell-template>
+              <a (click)="_router.navigate([row.module_url])" class="cursor-wait" *ngIf="row.module_url; else elseBlock">
+                 détails <mat-icon class="icon-small">open_in_new</mat-icon>
+              </a>
+              <ng-template #elseBlock> <p class="font-italic">Non renseignée</p></ng-template>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
       </div>
       <!-- Fin liste des imports -->
     </div>
