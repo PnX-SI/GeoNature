@@ -3,14 +3,13 @@ import { FormControl, Validators } from "@angular/forms";
 import { isEqual } from "lodash";
 import { BehaviorSubject, Observable, of } from "rxjs";
 import { filter, map, switchMap } from "rxjs/operators";
-import { GeoJSON } from "leaflet";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 
 @Injectable()
 export class OcctaxFormMapService {
   private _geometry: FormControl;
-  public geojson: BehaviorSubject<GeoJSON> = new BehaviorSubject(null);
+  public geojson: BehaviorSubject<any> = new BehaviorSubject(null);
   public markerCoordinates;
   public leafletDrawGeoJson;
 
