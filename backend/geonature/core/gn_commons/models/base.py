@@ -78,8 +78,7 @@ class TModules(DB.Model):
     __table_args__ = {"schema": "gn_commons"}
 
     type = DB.Column(DB.Unicode)
-    mapper_args = {
-        "polymorphic_identity": "modules",
+    __mapper_args__ = {
         "polymorphic_on": "type",
     }
 
