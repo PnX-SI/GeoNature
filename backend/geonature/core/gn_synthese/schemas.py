@@ -7,3 +7,5 @@ class SourceSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = TSources
         load_instance = True
+
+    module_url = ma.String(dump_only=True)

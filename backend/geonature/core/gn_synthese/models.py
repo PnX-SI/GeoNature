@@ -42,7 +42,7 @@ from geonature.core.gn_commons.models import (
 from geonature.utils.env import DB, db
 
 
-@serializable
+@serializable(exclude=["module_url"])
 class TSources(DB.Model):
     __tablename__ = "t_sources"
     __table_args__ = {"schema": "gn_synthese"}
@@ -55,6 +55,13 @@ class TSources(DB.Model):
     meta_update_date = DB.Column(DB.DateTime)
     id_module = DB.Column(DB.Integer, ForeignKey(TModules.id_module))
     module = DB.relationship(TModules, backref="sources")
+
+    @property
+    def module_url(self):
+        if self.module is not None and hasattr(self.module, "generate_module_url_for_source"):
+            return self.module.generate_module_url_for_source(self)
+        else:
+            return None
 
 
 cor_observer_synthese = DB.Table(
