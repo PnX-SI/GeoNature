@@ -143,7 +143,7 @@ NOTIFICATIONS_ENABLED = true
     # Modules auxquels les JDD sont automatiquement associés
     JDD_MODULE_CODE_ASSOCIATION = ["OCCTAX", "OCCHAB"]
     # Filter les JDD par id_instance
-    ID_INSTANCE_FILTER = null
+    ID_INSTANCE_FILTER = "null"
 
 [BDD]
     id_area_type_municipality = 25
@@ -414,7 +414,7 @@ NOTIFICATIONS_ENABLED = true
         "uuid_perm_grp_sinp",
         "date_creation",
         "date_modification",
-        "champs_additionnels
+        "champs_additionnels",
     ]
     DISCUSSION_MODULES = ["SYNTHESE","VALIDATION"]
     DISCUSSION_MAX_LENGTH = 1500
@@ -438,22 +438,22 @@ NOTIFICATIONS_ENABLED = true
     ]
 
     # Enable areas vizualisation with toggle slide
-    ENABLE_AREA_AGGREGATION = fields.Boolean(load_default=True)
+    ENABLE_AREA_AGGREGATION = true
     # Choose size of areas
-    AREA_AGGREGATION_TYPE = fields.String(load_default="M10")
+    AREA_AGGREGATION_TYPE = "M10"
     # Activate areas mode by default
-    AREA_AGGREGATION_BY_DEFAULT = fields.Boolean(load_default=False)
+    AREA_AGGREGATION_BY_DEFAULT = false
     # Areas legend classes to use
-    AREA_AGGREGATION_LEGEND_CLASSES = fields.List(fields.Dict(), load_default=[
-        {"min": 100, "color": "#800026"},
-        {"min": 50, "color": "#BD0026"},
-        {"min": 20, "color": "#E31A1C"},
-        {"min": 10, "color": "#FC4E2A"},
-        {"min": 5, "color": "#FD8D3C"},
-        {"min": 2, "color": "#FEB24C"},
-        {"min": 1, "color": "#FED976"},
-        {"min": 0, "color": "#FFEDA0"},
-    ])
+    AREA_AGGREGATION_LEGEND_CLASSES = [
+        { min = 100, color = "#800026" },
+        { min = 50, color = "#BD0026" },
+        { min = 20, color = "#E31A1C" },
+        { min = 10, color = "#FC4E2A" },
+        { min = 5, color = "#FD8D3C" },
+        { min = 2, color = "#FEB24C" },
+        { min = 1, color = "#FED976" },
+        { min = 0, color = "#FFEDA0" }
+    ]
 
 # Gestion des demandes d'inscription
 [ACCOUNT_MANAGEMENT]
@@ -575,7 +575,7 @@ NOTIFICATIONS_ENABLED = true
     MAIL_CONTENT_AF_CLOSED_URL = ""
     MAIL_CONTENT_AF_CLOSED_GREETINGS = ""
     CLOSED_MODAL_LABEL = "Dépôt d'un cadre d'acquisition"
-    CLOSED_MODAL_CONTENT = L'action de dépôt est une action irréversible. Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite. Vous ne pourrez pas supprimer votre dépôt. "
+    CLOSED_MODAL_CONTENT = "L'action de dépôt est une action irréversible. Il ne sera plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite. Vous ne pourrez pas supprimer votre dépôt. "
     # liste des types de role à afficher sur les formulaires JDD et CA
     CD_NOMENCLATURE_ROLE_TYPE_DS = ["2"]
     CD_NOMENCLATURE_ROLE_TYPE_AF = ["3"]
