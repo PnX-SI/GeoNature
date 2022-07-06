@@ -57,10 +57,11 @@ def configure_alembic(alembic_config):
 if config.get("SENTRY_DSN"):
     import sentry_sdk
     from sentry_sdk.integrations.flask import FlaskIntegration
+    from sentry_sdk.integrations.celery import CeleryIntegration
 
     sentry_sdk.init(
         config["SENTRY_DSN"],
-        integrations=[FlaskIntegration()],
+        integrations=[FlaskIntegration(), CeleryIntegration()],
         traces_sample_rate=1.0,
     )
 
