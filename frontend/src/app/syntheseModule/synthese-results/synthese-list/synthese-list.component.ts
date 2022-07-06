@@ -62,6 +62,8 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
 
     // On map click, select on the list a change the page
     this.mapListService.onMapClik$.subscribe((id) => {
+      this.resetSorting();
+
       this.mapListService.tableData.map((e) => {
         if (e.selected && !id.includes(e.id)) {
           e.selected = false;
@@ -93,6 +95,22 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
         this.table.recalculate();
         this.ref.markForCheck();
       }
+    }
+  }
+
+  private resetSorting() {
+    this.table.sorts = [];
+  }
+
+  /**
+   * Restore previous selected rows when sort state return to 'undefined'.
+   * With ngx-datable sortType must be 'multi' to use 3 states : asc, desc and undefined !
+   * @param event sort event infos.
+   */
+  onSort(event) {
+    if (event.newValue === undefined) {
+      let selectedObsIds = this.mapListService.selectedRow.map((obs) => obs.id);
+      this.mapListService.mapSelected.next(selectedObsIds);
     }
   }
 

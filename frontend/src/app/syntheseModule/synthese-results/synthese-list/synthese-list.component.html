@@ -14,6 +14,8 @@
   [limit]="rowNumber"
   [rowClass]="getRowClass"
   [reorderable]="true"
+  sortType="multi"
+  (sort)="onSort($event)"
   (select)="mapListService.onRowSelect($event)"
 >
   <ngx-datatable-column [maxWidth]="5">
@@ -36,7 +38,8 @@
     [maxWidth]="col.max_width"
     [name]='col.name'
     [prop]='col.prop'
-    [sortable]="true">
+    [sortable]="true"
+  >
       <ng-template let-row="row" ngx-datatable-cell-template>
         {{col.prop == 'date_max' || col.prop == 'date_min' ? getDate(row[col.prop]) : row[col.prop]}}
       </ng-template>
