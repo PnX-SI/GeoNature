@@ -83,11 +83,16 @@ def install_packaged_gn_module(module_path, module_code, build):
     except ImportError:
         module_picto = "fa-puzzle-piece"
     try:
+        module_type = load_entry_point(module_dist, "gn_module", "type")
+    except ImportError:
+        module_type = module_code.lower()
+    try:
         module_object = TModules.query.filter_by(module_code=module_code).one()
         module_object.module_picto = module_picto
         db.session.merge(module_object)
     except sa_exc.NoResultFound:
         module_object = TModules(
+            type=module_type,
             module_code=module_code,
             module_label=module_code.capitalize(),
             module_path=module_code.lower(),
