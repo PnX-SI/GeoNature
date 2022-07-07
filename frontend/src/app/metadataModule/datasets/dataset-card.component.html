@@ -467,6 +467,7 @@
         <div class="card-body">
           <div style="display: block">
             <canvas
+              *ngIf="pieChartData.length"
               baseChart
               [data]="pieChartData"
               [labels]="pieChartLabels"
