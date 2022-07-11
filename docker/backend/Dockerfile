@@ -9,9 +9,11 @@ COPY apt-packages.txt /GeoNature
 RUN xargs apt-get install -y <apt-packages.txt
 RUN wget -qO- https://deb.nodesource.com/setup_16.x | bash - && apt-get update && apt-get install -y nodejs
 # Install python packages
-RUN mkdir /GeoNature/backend && mkdir /GeoNature/frontend
-COPY backend/requirements.txt backend/requirements-common.txt /GeoNature/backend/
-RUN pip3 install --upgrade pip && pip3 install -r backend/requirements.txt
+RUN mkdir /GeoNature/backend && mkdir /GeoNature/frontend && mkdir /GeoNature/backend/dependencies
+COPY backend/requirements.txt backend/requirements-dev.txt /GeoNature/backend/
+COPY backend/dependencies/ /GeoNature/backend/dependencies/
+
+RUN pip3 install --upgrade pip && cd /GeoNature/backend && pip3 install -r requirements-dev.txt && cd /GeoNature
 
 RUN echo "Europe/P" > /etc/timezone && \
     dpkg-reconfigure -f noninteractive tzdata && \
@@ -31,9 +33,8 @@ COPY . ./install/install_all/install_all.ini ./install/install_all/install_all.s
 # Install core modules dependencies
 RUN pip3 install -e /GeoNature/contrib/occtax \
     && pip3 install -e /GeoNature/contrib/gn_module_validation \
-    && pip3 install -e /GeoNature/contrib/gn_module_occhab
-
-RUN cd /GeoNature && pip3 install -e .
+    && pip3 install -e /GeoNature/contrib/gn_module_occhab \
+    && cd /GeoNature && pip3 install -e .
 
 
 ENTRYPOINT ["sh", "entrypoint.sh"]
