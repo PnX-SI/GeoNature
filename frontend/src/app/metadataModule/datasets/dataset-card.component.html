@@ -270,27 +270,22 @@
           [offset]="1"
           [sorts]="[{prop: 'meta_create_date', dir: 'desc'}]"
         >
-          <ngx-datatable-column name="module" [sortable]="false">
+          <ngx-datatable-column name="Nom" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
-              {{row.name_source}}
+              <a (click)="_router.navigate([row.module_url])" class="cursor-wait" *ngIf="row.module_url; else elseBlock">
+                 {{row.name_source}} <mat-icon class="icon-small">open_in_new</mat-icon>
+              </a>
+              <ng-template #elseBlock>{{row.name_source}}</ng-template>
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="details" [sortable]="false">
+          <ngx-datatable-column name="Description" [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
               {{row.desc_source}}
             </ng-template>
           </ngx-datatable-column>
-          <ngx-datatable-column name="date" [sortable]="false">
+          <ngx-datatable-column name="Date" maxWidth=150 [sortable]="false">
             <ng-template let-row="row" ngx-datatable-cell-template>
               {{row.meta_create_date | date:'dd-MM-yyyy'}}
-            </ng-template>
-          </ngx-datatable-column>
-          <ngx-datatable-column name="url" [sortable]="false">
-            <ng-template let-row="row" ngx-datatable-cell-template>
-              <a (click)="_router.navigate([row.module_url])" class="cursor-wait" *ngIf="row.module_url; else elseBlock">
-                 détails <mat-icon class="icon-small">open_in_new</mat-icon>
-              </a>
-              <ng-template #elseBlock> <p class="font-italic">Non renseignée</p></ng-template>
             </ng-template>
           </ngx-datatable-column>
         </ngx-datatable>
