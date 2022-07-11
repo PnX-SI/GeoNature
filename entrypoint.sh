@@ -25,13 +25,6 @@ then
 fi
 
 
-echo "Création du fichier de configuration  et préparation du fichier de configuration..."
-if [ "$FLASK_ENV" = production ];
-then
-  sh config/config_from_env.sh
-else
-  sh config/config_from_env_local.sh
-fi
 
 cd backend
 echo "Installation du backend geonature..."
@@ -63,6 +56,13 @@ then
   cd $BASE_DIR
 fi
 echo "Migration de la base de donées Alembic"
+cd /GeoNature/external_modules
+  for file in *;
+  do
+    if [ ! -f "${file}/config/conf_gn_module.toml" ]; then
+      touch "${file}/config/conf_gn_module.toml"
+    fi
+  done
 geonature db upgrade geonature@head -x data-directory=tmp/ -x local-srid=$srid_local
 geonature db autoupgrade -x data-directory=tmp/ -x local-srid=$srid_local
 if [ "$INSTALL_DB" = true ];
@@ -99,7 +99,13 @@ fi
 
 
 
-# Retour à la racine de GeoNature
+#TODO Remove or do only if necessary
+# Generate the tsconfig.json
+geonature generate_frontend_tsconfig
+# Generate the src/tsconfig.app.json
+geonature generate_frontend_tsconfig_app
+# Generate the modules routing file by templating
+geonature generate_frontend_modules_route
 
 if [ "$BUILD_FRONT" = true ]; then
   # Lien symbolique vers le dossier static du backend (pour le backoffice)
@@ -117,13 +123,7 @@ if [ "$BUILD_FRONT" = true ]; then
     cp -n src/assets/custom.sample.css src/assets/custom.css
   fi
 
-  #TODO Remove or do only if necessary
-  # Generate the tsconfig.json
-  geonature generate_frontend_tsconfig
-  # Generate the src/tsconfig.app.json
-  geonature generate_frontend_tsconfig_app
-  # Generate the modules routing file by templating
-  geonature generate_frontend_modules_route
+
   cd /GeoNature/frontend;
 
   # Create custom files if not exist
@@ -157,6 +157,6 @@ if [ "$BUILD_FRONT" = true ]; then
   mv dist/ build/build-front${PLATEFORM_NAME}
   cd /GeoNature/
 fi
-
-exec gunicorn "geonature:create_app()"  -w 4  -b 0.0.0.0:80 --log-file /var/log/geonature/geonature.log  #-n "${app_name}" #https://testdriven.io/blog/dockerizing-flask-with-postgres-gunicorn-and-nginx/
+celery -A geonature.celery_app worker -l INFO &
+exec gunicorn "geonature:create_app()"  -w 4  -b 0.0.0.0:80 --log-file /var/log/geonature/geonature.log  --reload #-n "${app_name}" #https://testdriven.io/blog/dockerizing-flask-with-postgres-gunicorn-and-nginx/
 
