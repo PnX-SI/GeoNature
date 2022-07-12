@@ -418,10 +418,9 @@ class TestGNMeta:
 
         response = self.client.get(url_for("gn_meta.get_datasets"))
         assert response.status_code == 200
-        assert all(
-            dataset.id_dataset in [resp_dataset["id_dataset"] for resp_dataset in response.json]
-            for dataset in datasets.values()
-        )
+        expected_ds = {dataset.id_dataset for dataset in datasets.values()}
+        resp_ds = {ds["id_dataset"] for ds in response.json}
+        assert expected_ds.issubset(resp_ds)
 
     def test_create_dataset(self, users):
         response = self.client.post(url_for("gn_meta.create_dataset"))
