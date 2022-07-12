@@ -42,10 +42,10 @@ def unavailable_user_id():
 
 
 @pytest.fixture
-def deactivate_csrf(app):
+def deactivate_csrf(monkeypatch, app):
     # Deactivate the csrf check on the form otherwise it will appear
     # with errors on csrf
-    app.config["WTF_CSRF_ENABLED"] = False
+    monkeypatch.setitem(app.config, "WTF_CSRF_ENABLED", False)
 
 
 @pytest.mark.usefixtures("client_class")
