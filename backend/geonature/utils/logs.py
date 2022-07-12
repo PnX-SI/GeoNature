@@ -10,7 +10,7 @@ from flask.logging import default_handler
 class RequestIdFormatter(logging.Formatter):
     def format(self, record):
         s = super().format(record)
-        if has_request_context():
+        if has_request_context() and "FLASK_REQUEST_ID" in request.environ:
             req_id = request.environ["FLASK_REQUEST_ID"]
             s = f"[{req_id}] {s}"
         return s
