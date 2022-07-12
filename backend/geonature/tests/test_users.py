@@ -110,7 +110,9 @@ class TestUsers:
             org["nom_organisme"] for org in response.json
         ]
 
-    def test_inscription_not_found(self):
+    def test_inscription_not_found(self, monkeypatch):
+        monkeypatch.setitem(current_app.config["ACCOUNT_MANAGEMENT"], "ENABLE_SIGN_UP", False)
+
         response = self.client.post(url_for("users.inscription"))
 
         assert response.status_code == 404
