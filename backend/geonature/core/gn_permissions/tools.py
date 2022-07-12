@@ -315,21 +315,6 @@ def get_user_permissions(
         )
 
 
-# def build_cruved_dict(cruved, get_id):
-#     """
-#         function utils to build a dict like {'C':'3', 'R':'2'}...
-#         from Array<VUsersPermissions>
-#         NOT USE => TODO DELETE
-#     """
-#     cruved_dict = {}
-#     for action_scope in cruved:
-#         if get_id:
-#             cruved_dict[action_scope[0]] = action_scope[2]
-#         else:
-#             cruved_dict[action_scope[0]] = action_scope[1]
-#     return cruved_dict
-
-
 def beautifulize_cruved(actions, cruved):
     """
     Build more readable the cruved dict with the actions label
