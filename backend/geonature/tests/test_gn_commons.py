@@ -1,24 +1,20 @@
-from datetime import datetime
-from uuid import uuid4
+import tempfile
 
 import pytest
 from flask import url_for
-from werkzeug.exceptions import Unauthorized, Forbidden, NotFound, Conflict
-from sqlalchemy import func
 from geoalchemy2.elements import WKTElement
+from PIL import Image
+from pypnnomenclature.models import BibNomenclaturesTypes, TNomenclatures
+from sqlalchemy import func
+from werkzeug.exceptions import Conflict, Forbidden, NotFound, Unauthorized
 
-from geonature.utils.env import db
-
-from geonature.core.gn_commons.models import TAdditionalFields, TPlaces
-from geonature.core.gn_commons.models.base import TModules
-from geonature.core.gn_meta.models import TDatasets
+from geonature.core.gn_commons.models import TAdditionalFields, TMedias, TPlaces, BibTablesLocation
+from geonature.core.gn_commons.models.base import TModules, TParameters
+from geonature.core.gn_commons.repositories import TMediaRepository
 from geonature.core.gn_permissions.models import TObjects
-from geonature.core.gn_synthese.models import Synthese
+from geonature.utils.env import db
+from geonature.utils.errors import GeoNatureError
 
-from pypnnomenclature.models import TNomenclatures
-
-
-from . import *
 from .fixtures import *
 from .utils import set_logged_user_cookie
 
@@ -54,6 +50,259 @@ def additional_field(app, datasets):
     return additional_field
 
 
+@pytest.fixture(scope="function")
+def parameter(users):
+    param = TParameters(
+        id_organism=users["self_user"].organisme.id_organisme,
+        parameter_name="MyTestParameter",
+        parameter_desc="TestDesc",
+        parameter_value=4,
+        parameter_extra_value=12,
+    )
+
+    with db.session.begin_nested():
+        db.session.add(param)
+    return param
+
+
+@pytest.fixture(scope="function")
+def nonexistent_media():
+    # media can be None
+    return db.session.query(func.max(TMedias.id_media)).scalar() or 0 + 1
+
+
+@pytest.fixture(scope="function")
+def media_repository(medium):
+    return TMediaRepository(id_media=medium.id_media)
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestMedia:
+    def test_get_medias(self, medium):
+        response = self.client.get(
+            url_for("gn_commons.get_medias", uuid_attached_row=str(medium.uuid_attached_row))
+        )
+
+        assert response.status_code == 200
+        assert response.json[0]["id_media"] == medium.id_media
+
+    def test_get_media(self, medium):
+        response = self.client.get(url_for("gn_commons.get_media", id_media=medium.id_media))
+
+        assert response.status_code == 200
+        resp_json = response.json
+        assert resp_json["id_media"] == medium.id_media
+        assert resp_json["title_fr"] == medium.title_fr
+        assert resp_json["unique_id_media"] == str(medium.unique_id_media)
+
+    def test_delete_media(self, medium):
+        id_media = int(medium.id_media)
+
+        response = self.client.delete(url_for("gn_commons.delete_media", id_media=id_media))
+
+        assert response.status_code == 200
+        assert response.json["resp"] == f"media {id_media} deleted"
+
+    def test_create_media(self, medium):
+        title_fr = "test_test"
+        image = Image.new("RGBA", size=(1, 1), color=(155, 0, 0))
+        with tempfile.NamedTemporaryFile() as f:
+            image.save(f, "png")
+            payload = {
+                "title_fr": title_fr,
+                "media_path": f.name,
+                "id_nomenclature_media_type": medium.id_nomenclature_media_type,
+                "id_table_location": medium.id_table_location,
+            }
+
+            response = self.client.post(url_for("gn_commons.insert_or_update_media"), json=payload)
+
+        assert response.status_code == 200
+        assert response.json["title_fr"] == title_fr
+
+    def test_update_media(self, medium):
+        title_fr = "New title"
+        author = "New author"
+        payload = {
+            "title_fr": title_fr,
+            "author": author,
+            "media_path": medium.media_path,
+            "id_nomenclature_media_type": medium.id_nomenclature_media_type,
+        }
+
+        response = self.client.put(
+            url_for("gn_commons.delete_media", id_media=medium.id_media), json=payload
+        )
+        assert response.status_code == 200
+        resp_json = response.json
+        assert resp_json["title_fr"] == title_fr
+        assert resp_json["author"] == author
+
+    def test_update_media_error(self, medium):
+        payload = {
+            "media_path": "",
+        }
+
+        response = self.client.put(
+            url_for("gn_commons.delete_media", id_media=medium.id_media), json=payload
+        )
+        # FIXME: should not return 500
+        assert response.status_code == 500
+
+    def test_get_media_thumb(self, medium):
+        response = self.client.get(
+            url_for("gn_commons.get_media_thumb", id_media=medium.id_media, size=300)
+        )
+
+        # Redirection
+        assert response.status_code == 302
+
+    def test_get_media_not_found(self, nonexistent_media):
+        response = self.client.get(
+            url_for("gn_commons.get_media_thumb", id_media=nonexistent_media, size=300)
+        )
+
+        assert response.status_code == 404
+        assert response.json["msg"] == "Media introuvable"
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestTMediaRepository:
+    def test__init__(self, medium, media_repository):
+        assert media_repository.media.id_media == medium.id_media
+
+    def test_persist_media_db_error_not_null(self):
+        media = TMediaRepository()
+
+        with pytest.raises(Exception) as e:
+            media._persist_media_db()
+
+        assert "NotNullViolation" in str(e.value)
+
+    def test_persist_media_error_exists(self, media_repository):
+        media_repository.media.id_nomenclature_media_type = 0
+
+        with pytest.raises(Exception) as e:
+            media_repository._persist_media_db()
+
+        assert "type didn't match" in str(e.value)
+
+    def test_header_content_type(self, medium, media_repository):
+        media_repository.data["id_nomenclature_media_type"] = medium.id_nomenclature_media_type
+
+        test = media_repository.test_header_content_type("image")
+
+        assert test
+
+    def test_test_url_none(self, media_repository):
+        media_repository.data["media_url"] = None
+        test = media_repository.test_url()
+
+        assert test is None
+
+    def test_test_url(self, medium, media_repository):
+        media_repository.data["media_url"] = "https://google.com/"
+        media_repository.data["id_nomenclature_media_type"] = medium.id_nomenclature_media_type
+
+        with pytest.raises(GeoNatureError) as e:
+            media_repository.test_url()
+
+        assert "Il y a un problème avec l'URL renseignée" in str(e.value)
+
+    def test_test_url_wrong_url(self, media_repository):
+        media_repository.data["media_url"] = "https://google.com/notfound"
+
+        with pytest.raises(GeoNatureError) as e:
+            media_repository.test_url()
+
+        assert "la réponse est différente de 200" in str(e.value)
+
+    def test_test_url_wrong_image_url(self, medium, media_repository):
+        media_repository.data["media_url"] = "https://www.youtube.com/watch?v=vRfl0ies5GY"
+        media_repository.data["id_nomenclature_media_type"] = medium.id_nomenclature_media_type
+
+        with pytest.raises(GeoNatureError) as e:
+            media_repository.test_url()
+
+        assert "le format du lien" in str(e.value)
+
+    def test_test_url_wrong_video(self, media_repository):
+        media_repository.data["media_url"] = "https://www.google.com/"
+        photo_type = TNomenclatures.query.filter(
+            BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
+            TNomenclatures.mnemonique == "Vidéo Youtube",
+        ).one()
+        media_repository.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
+
+        with pytest.raises(GeoNatureError) as e:
+            media_repository.test_url()
+
+        assert "l'URL n est pas valide pour le type de média choisi" in str(e.value)
+
+
+@pytest.mark.parametrize(
+    "test_media_type,test_media_url,test_wrong_url",
+    [
+        ("Vidéo Youtube", "http://youtube.com/", "http://you.com/"),
+        ("Vidéo Dailymotion", "http://dailymotion.com/", "http://daily.com/"),
+        ("Vidéo Vimeo", "http://vimeo.com/", "http://vim.org/"),
+    ],
+)
+class TestTMediaRepositoryVideoLink:
+    def test_test_video_link(self, medium, test_media_type, test_media_url, test_wrong_url):
+        # Need to create a video link
+        photo_type = TNomenclatures.query.filter(
+            BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
+            TNomenclatures.mnemonique == test_media_type,
+        ).one()
+        media = TMediaRepository(id_media=medium.id_media)
+        media.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
+        media.data["media_url"] = test_media_url
+
+        test = media.test_video_link()
+
+        assert test
+
+    def test_test_video_link_wrong(self, medium, test_media_type, test_media_url, test_wrong_url):
+        # Need to create a video link
+        photo_type = TNomenclatures.query.filter(
+            BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
+            TNomenclatures.mnemonique == test_media_type,
+        ).one()
+        media = TMediaRepository(id_media=medium.id_media)
+        media.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
+        # WRONG URL:
+        media.data["media_url"] = test_wrong_url
+
+        test = media.test_video_link()
+
+        assert not test
+
+
+@pytest.mark.parametrize(
+    "test_media_type,test_content_type",
+    [
+        ("Photo", "wrong"),
+        ("Audio", "wrong"),
+        ("Vidéo (fichier)", "wrong"),
+        ("PDF", "wrong"),
+        ("Page web", "wrong"),
+    ],
+)
+class TestTMediaRepositoryHeader:
+    def test_header_content_type_wrong(self, medium, test_media_type, test_content_type):
+        photo_type = TNomenclatures.query.filter(
+            BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA",
+            TNomenclatures.mnemonique == test_media_type,
+        ).one()
+        media = TMediaRepository(id_media=medium.id_media)
+        media.data["id_nomenclature_media_type"] = photo_type.id_nomenclature
+
+        test = media.test_header_content_type(test_content_type)
+
+        assert not test
+
+
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestCommons:
     def test_list_modules(self, users):
@@ -69,6 +318,41 @@ class TestCommons:
         response = self.client.get(url_for("gn_commons.list_modules"))
         assert response.status_code == 200
         assert len(response.json) > 0
+
+    def test_list_module_exclude(self, users):
+        excluded_module = "GEONATURE"
+
+        set_logged_user_cookie(self.client, users["admin_user"])
+
+        response = self.client.get(
+            url_for("gn_commons.list_modules"), query_string={"exclude": [excluded_module]}
+        )
+
+        assert response.status_code == 200
+        assert excluded_module not in [module["module_code"] for module in response.json]
+
+    def test_get_module(self):
+        module_code = "GEONATURE"
+
+        response = self.client.get(url_for("gn_commons.get_module", module_code=module_code))
+
+        assert response.status_code == 200
+        assert response.json["module_code"] == module_code
+
+    def test_get_parameters_list(self, parameter):
+        response = self.client.get(url_for("gn_commons.get_parameters_list"))
+
+        assert response.status_code == 200
+        assert isinstance(response.json, list)
+        assert parameter.id_parameter in [resp["id_parameter"] for resp in response.json]
+
+    def test_get_parameter(self, parameter):
+        response = self.client.get(
+            url_for("gn_commons.get_one_parameter", param_name=parameter.parameter_name)
+        )
+
+        assert response.status_code == 200
+        assert response.json[0]["id_parameter"] == parameter.id_parameter
 
     def test_list_places(self, place, users):
         response = self.client.get(url_for("gn_commons.list_places"))
@@ -130,7 +414,7 @@ class TestCommons:
             TPlaces.query.filter_by(id_place=place.id_place).exists()
         ).scalar()
 
-    def test_additional_data(self, datasets, additional_field):
+    def test_get_additional_fields(self, datasets, additional_field):
         query_string = {"module_code": "SYNTHESE", "object_code": "ALL"}
         response = self.client.get(
             url_for("gn_commons.get_additional_fields"), query_string=query_string
@@ -150,3 +434,56 @@ class TestCommons:
         addi_one = data[0]
         assert "type_widget" in addi_one
         assert "bib_nomenclature_type" in addi_one
+
+    def test_get_additional_fields_multi_module(self, datasets, additional_field):
+        response = self.client.get(
+            url_for("gn_commons.get_additional_fields"),
+            query_string={"module_code": "GEONATURE,SYNTHESE"},
+        )
+
+        for f in response.json:
+            for m in f["modules"]:
+                assert m["module_code"] == "SYNTHESE"
+
+    def test_get_additional_fields_not_exist_in_module(self):
+        response = self.client.get(
+            url_for("gn_commons.get_additional_fields"), query_string={"module_code": "VALIDATION"}
+        )
+
+        data = response.json
+        # TODO: Do better than that:
+        assert len(data) == 0
+
+    def test_get_t_mobile_apps(self):
+        response = self.client.get(url_for("gn_commons.get_t_mobile_apps"))
+
+        assert response.status_code == 200
+        assert len(response.json) == 0
+
+    def test_api_get_id_table_location(self):
+        schema = "gn_commons"
+        table = "t_medias"
+        location = (
+            db.session.query(BibTablesLocation)
+            .filter(BibTablesLocation.schema_name == schema)
+            .filter(BibTablesLocation.table_name == table)
+            .one()
+        )
+
+        response = self.client.get(
+            url_for("gn_commons.api_get_id_table_location", schema_dot_table=f"{schema}.{table}")
+        )
+
+        assert response.status_code == 200
+        assert response.json == location.id_table_location
+
+    def test_api_get_id_table_location_not_found(self):
+        schema = "wrongschema"
+        table = "wrongtable"
+
+        response = self.client.get(
+            url_for("gn_commons.api_get_id_table_location", schema_dot_table=f"{schema}.{table}")
+        )
+
+        assert response.status_code == 204  # No content
+        assert response.json is None

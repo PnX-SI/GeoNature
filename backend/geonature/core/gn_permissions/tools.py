@@ -279,6 +279,7 @@ class UserCruved:
         return self.build_herited_user_cruved(permissions)
 
 
+# FIXME: to remove ?
 def get_user_permissions(
     user, code_filter_type, code_action=None, module_code=None, code_object=None
 ):

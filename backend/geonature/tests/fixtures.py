@@ -1,7 +1,9 @@
 import json
 import pkg_resources
 import datetime
+import tempfile
 
+from PIL import Image
 import pytest
 from flask import testing, url_for
 from werkzeug.datastructures import Headers
@@ -14,9 +16,10 @@ from geonature.utils.env import db
 from geonature.core.gn_permissions.models import (
     TActions,
     TFilters,
+    BibFiltersType,
     CorRoleActionFilterModuleObject,
 )
-from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_commons.models import TModules, TMedias, BibTablesLocation
 from geonature.core.gn_meta.models import (
     TAcquisitionFramework,
     TDatasets,
@@ -37,7 +40,15 @@ from apptax.taxonomie.models import Taxref
 from utils_flask_sqla.tests.utils import JSONClient
 
 
-__all__ = ["datasets", "acquisition_frameworks", "synthese_data", "source", "reports_data"]
+__all__ = [
+    "datasets",
+    "acquisition_frameworks",
+    "synthese_data",
+    "source",
+    "reports_data",
+    "filters",
+    "medium",
+]
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -252,6 +263,62 @@ def synthese_data(app, users, datasets, source):
             data.append(s)
 
     return data
+
+
+@pytest.fixture(scope="function")
+def filters():
+    """
+    Creates one filter per filter type
+    """
+    # Gather all types
+    avail_filter_types = BibFiltersType.query.order_by(BibFiltersType.id_filter_type).all()
+    # Init returned filter_dict
+    filters_dict = {}
+    # For each type, generate a Filter
+    with db.session.begin_nested():
+        for i, filter_type in enumerate(avail_filter_types):
+            new_filter = TFilters(
+                label_filter=f"test_{i}",
+                value_filter=f"value_{i}",
+                description_filter="Filtre test",
+                id_filter_type=filter_type.id_filter_type,
+            )
+            filters_dict[filter_type.code_filter_type] = new_filter
+            db.session.add(new_filter)
+
+    return filters_dict
+
+
+def create_media(media_path=""):
+    photo_type = TNomenclatures.query.filter(
+        BibNomenclaturesTypes.mnemonique == "TYPE_MEDIA", TNomenclatures.mnemonique == "Photo"
+    ).one()
+    location = (
+        BibTablesLocation.query.filter(BibTablesLocation.schema_name == "gn_commons")
+        .filter(BibTablesLocation.table_name == "t_medias")
+        .one()
+    )
+
+    new_media = TMedias(
+        id_nomenclature_media_type=photo_type.id_nomenclature,
+        media_path=media_path,
+        title_fr="Test media",
+        author="Test author",
+        id_table_location=location.id_table_location,
+        uuid_attached_row=func.uuid_generate_v4(),
+    )
+
+    with db.session.begin_nested():
+        db.session.add(new_media)
+    return new_media
+
+
+@pytest.fixture
+def medium(app):
+    image = Image.new("RGBA", size=(1, 1), color=(155, 0, 0))
+    with tempfile.NamedTemporaryFile() as f:
+        image.save(f, "png")
+        yield create_media(media_path=str(f.name))
 
 
 @pytest.fixture()

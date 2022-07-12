@@ -1,14 +1,12 @@
 """
 Decorators to protects routes with permissions
 """
-import json
 from functools import wraps
 
-from flask import redirect, request, Response, current_app, g, Response
+from flask import request, g
 from werkzeug.exceptions import Unauthorized, Forbidden
 
 from geonature.core.gn_permissions.tools import (
-    get_user_permissions,
     get_user_from_token_and_raise,
     UserCruved,
 )

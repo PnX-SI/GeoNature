@@ -11,6 +11,7 @@ from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.utils.env import DB
 from geonature.core.gn_synthese.models import Synthese
+from geonature.core.taxonomie.models import Taxref
 
 
 @serializable
@@ -77,3 +78,21 @@ class VConsistancyData(DB.Model):
             + cls.valid_phenology.cast(sa.Integer)
             + cls.valid_altitude.cast(sa.Integer)
         )
+
+
+class TParameters(DB.Model):
+    __tablename__ = "t_parameters"
+    __table_args__ = {"schema": "gn_profiles"}
+    id_parameter = DB.Column(DB.Integer, primary_key=True)
+    name = DB.Column(DB.String(100))
+    desc = DB.Column(DB.Text)
+    value = DB.Column(DB.Text)
+
+
+class CorTaxonParameters(DB.Model):
+    __tablename__ = "cor_taxons_parameters"
+    __table_args__ = {"schema": "gn_profiles"}
+    cd_nom = DB.Column(DB.Integer, ForeignKey(Taxref.cd_nom), primary_key=True)
+    spatial_precision = DB.Column(DB.Integer)
+    temporal_precision_days = DB.Column(DB.Integer)
+    active_life_stage = DB.Column(DB.Boolean)
