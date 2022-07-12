@@ -200,6 +200,7 @@ class TestTMediaRepository:
 
         assert test is None
 
+    @pytest.mark.skip(reason="TODO: mock external request")
     def test_test_url(self, medium, media_repository):
         media_repository.data["media_url"] = "https://google.com/"
         media_repository.data["id_nomenclature_media_type"] = medium.id_nomenclature_media_type
@@ -209,6 +210,7 @@ class TestTMediaRepository:
 
         assert "Il y a un problème avec l'URL renseignée" in str(e.value)
 
+    @pytest.mark.skip(reason="TODO: mock external request")
     def test_test_url_wrong_url(self, media_repository):
         media_repository.data["media_url"] = "https://google.com/notfound"
 
@@ -217,6 +219,7 @@ class TestTMediaRepository:
 
         assert "la réponse est différente de 200" in str(e.value)
 
+    @pytest.mark.skip(reason="TODO: mock external request")
     def test_test_url_wrong_image_url(self, medium, media_repository):
         media_repository.data["media_url"] = "https://www.youtube.com/watch?v=vRfl0ies5GY"
         media_repository.data["id_nomenclature_media_type"] = medium.id_nomenclature_media_type
@@ -226,6 +229,7 @@ class TestTMediaRepository:
 
         assert "le format du lien" in str(e.value)
 
+    @pytest.mark.skip(reason="TODO: mock external request")
     def test_test_url_wrong_video(self, media_repository):
         media_repository.data["media_url"] = "https://www.google.com/"
         photo_type = TNomenclatures.query.filter(
