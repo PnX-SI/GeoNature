@@ -50,26 +50,6 @@ def deactivate_csrf(app):
 
 @pytest.mark.usefixtures("client_class")
 class TestGnPermissionsRoutes:
-    def test_get_cruved(self, users):
-        admin_user = users["admin_user"]
-        set_logged_user_cookie(self.client, admin_user)
-
-        response = self.client.get(url_for("gn_permissions.get_cruved"))
-
-        assert response.status_code == 200
-        assert "GEONATURE" in response.json.keys()
-
-    def test_get_cruved_with_module(self, users):
-        admin_user = users["admin_user"]
-        set_logged_user_cookie(self.client, admin_user)
-
-        response = self.client.get(
-            url_for("gn_permissions.get_cruved"), query_string={"module_code": "GEONATURE"}
-        )
-
-        assert response.status_code == 200
-        assert list(response.json.keys()) == ["GEONATURE"]
-
     def test_logout(self):
         response = self.client.get(url_for("gn_permissions.logout"))
 
