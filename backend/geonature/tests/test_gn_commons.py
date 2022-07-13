@@ -68,7 +68,7 @@ def parameter(users):
 @pytest.fixture(scope="function")
 def nonexistent_media():
     # media can be None
-    return db.session.query(func.max(TMedias.id_media)).scalar() or 0 + 1
+    return (db.session.query(func.max(TMedias.id_media)).scalar() or 0) + 1
 
 
 @pytest.fixture(scope="function")
