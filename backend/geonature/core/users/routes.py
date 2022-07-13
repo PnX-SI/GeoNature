@@ -5,7 +5,7 @@ import json
 
 from flask import Blueprint, request, current_app, Response, redirect
 from sqlalchemy.sql import distinct, and_
-from werkzeug.exceptions import NotFound
+from werkzeug.exceptions import NotFound, BadRequest
 
 from geonature.utils.env import DB
 from geonature.core.gn_permissions import decorators as permissions
@@ -158,7 +158,7 @@ def get_roles():
             order_col = getattr(User.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
-            log.error("the attribute to order on does not exist")
+            raise BadRequest("the attribute to order on does not exist")
     return [user.as_dict(fields=user_fields) for user in q.all()]
 
 
@@ -178,7 +178,7 @@ def get_organismes():
             order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
-            log.error("the attribute to order on does not exist")
+            raise BadRequest("the attribute to order on does not exist")
     return [organism.as_dict(fields=organism_fields) for organism in q.all()]
 
 
@@ -206,7 +206,7 @@ def get_organismes_jdd():
             order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
-            log.error("the attribute to order on does not exist")
+            raise BadRequest("the attribute to order on does not exist")
     return [organism.as_dict(fields=organism_fields) for organism in q.all()]
 
 
