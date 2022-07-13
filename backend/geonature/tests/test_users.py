@@ -47,9 +47,11 @@ class TestUsers:
         )
 
         assert response.status_code == 200
-        org_names = [getattr(org, order_by_column) for org in organisms]
-        org_names.sort()
-        assert org_names == [j_resp[order_by_column] for j_resp in response.json]
+        actual_names = [j_resp[order_by_column] for j_resp in response.json]
+        expected_names = sorted(
+            [getattr(org, order_by_column) for org in organisms], key=str.casefold
+        )
+        assert actual_names == expected_names
 
     def test_get_role(self, users):
         self_user = users["self_user"]
