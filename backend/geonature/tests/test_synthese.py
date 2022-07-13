@@ -34,18 +34,28 @@ def source():
 
 
 @pytest.fixture()
-def taxon_attribut():
+def taxon_attribut(synthese_data):
     """
     Require "taxonomie_taxons_example" and "taxonomie_attributes_example" alembic branches.
     """
-    from apptax.taxonomie.models import BibAttributs, BibNoms, CorTaxonAttribut
+    from apptax.taxonomie.models import Taxref, BibAttributs, BibNoms, BibThemes, CorTaxonAttribut
 
-    # FIXME: what if taxonomie_taxons_example and taxonomie_attributes_example alembic branches
-    # had not been run?
-    nom = BibNoms.query.filter_by(cd_ref=209902).one()
-    attribut = BibAttributs.query.filter_by(nom_attribut="migrateur").one()
+    taxref = Taxref.query.filter_by(cd_nom=synthese_data[0].cd_nom).one()
     with db.session.begin_nested():
-        c = CorTaxonAttribut(bib_nom=nom, bib_attribut=attribut, valeur_attribut="eau")
+        nom = BibNoms.query.filter_by(cd_nom=taxref.cd_nom).one_or_none()
+        if nom is None:
+            nom = BibNoms(cd_nom=taxref.cd_nom, cd_ref=taxref.cd_ref)
+            db.session.add(nom)
+        attribut = BibAttributs(
+            nom_attribut="test",
+            label_attribut="test",
+            desc_attribut="test",
+            type_attribut="varchar(50)",
+            liste_valeur_attribut="""{"values":["valeur 1","valeur 2"]}""",
+            id_theme=BibThemes.query.first().id_theme,
+        )
+        db.session.add(attribut)
+        c = CorTaxonAttribut(bib_nom=nom, bib_attribut=attribut, valeur_attribut="valeur 1")
         db.session.add(c)
     return c
 
@@ -137,14 +147,12 @@ class TestSynthese:
             "taxhub_attribut_{}".format(
                 taxon_attribut.bib_attribut.id_attribut
             ): taxon_attribut.valeur_attribut,
-            "taxonomy_group2_inpn": "Insectes",
-            "taxonomy_id_hab": 3,
         }
         r = self.client.get(url, query_string=query_string)
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
         assert len(r.json["features"]) == 1
-        assert r.json["features"][0]["properties"]["cd_nom"] == 713776
+        assert r.json["features"][0]["properties"]["cd_nom"] == taxon_attribut.bib_nom.cd_nom
 
         # test geometry filters
         com_type = BibAreasTypes.query.filter_by(type_code="COM").one()
