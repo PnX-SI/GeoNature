@@ -462,7 +462,7 @@ class TestCommons:
         response = self.client.get(url_for("gn_commons.get_t_mobile_apps"))
 
         assert response.status_code == 200
-        assert len(response.json) == 0
+        assert type(response.json) == list
 
     def test_api_get_id_table_location(self):
         schema = "gn_commons"
