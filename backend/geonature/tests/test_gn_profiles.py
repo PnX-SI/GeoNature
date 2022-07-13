@@ -329,9 +329,10 @@ class TestGnProfiles:
             err["value"] for err in response.json["errors"]
         ]
 
+    @pytest.mark.xfail(reason="Test non implémenté")
     def test_get_observation_score_error_not_observed_alt(self, get_gn_profile_data):
         # TODO when routes.py is fixed for this
-        pass
+        raise NotImplementedError
 
     def test_get_observation_score_error_not_observed(self, sample_synthese_records_for_profile):
         # In the date, only the days are relevant not the date. Which means
