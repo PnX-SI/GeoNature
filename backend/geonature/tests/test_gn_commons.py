@@ -157,7 +157,7 @@ class TestMedia:
         # Redirection
         assert response.status_code == 302
 
-    def test_get_media_not_found(self, nonexistent_media):
+    def test_get_media_thumb_not_found(self, nonexistent_media):
         response = self.client.get(
             url_for("gn_commons.get_media_thumb", id_media=nonexistent_media, size=300)
         )
