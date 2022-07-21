@@ -1,0 +1,13 @@
+version: '3.2'
+
+services:
+  angular:
+    user: "node:node"
+    build:
+      context: ./
+      dockerfile: docker/frontend/DockerfileLocal
+    volumes:
+      - "$PWD/.:/GeoNature"
+    ports:
+      - "4200:4200"
+
