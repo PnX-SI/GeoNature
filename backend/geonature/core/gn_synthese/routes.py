@@ -48,7 +48,7 @@ from geonature.core.taxonomie.models import (
     TaxrefProtectionEspeces,
     VMTaxrefListForautocomplete,
 )
-from geonature.core.ref_geo.models import LAreas, BibAreasTypes
+from ref_geo.models import LAreas, BibAreasTypes
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
 
 from geonature.core.gn_synthese.utils.blurring import DataBlurring

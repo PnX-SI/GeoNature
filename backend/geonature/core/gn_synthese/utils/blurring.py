@@ -10,7 +10,7 @@ from pypnnomenclature.models import (
 )
 
 from geonature.core.gn_synthese.models import (CorAreaSynthese, Synthese)
-from geonature.core.ref_geo.models import (LAreas, BibAreasTypes)
+from ref_geo.models import (LAreas, BibAreasTypes)
 from geonature.core.taxonomie.models import Taxref
 from geonature.utils.env import DB
 

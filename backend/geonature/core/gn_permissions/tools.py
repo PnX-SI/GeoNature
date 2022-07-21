@@ -23,8 +23,8 @@ from pypnusershub.db.tools import (
 from pypnusershub.db.models import (User, AppRole)
 
 from geonature.core.gn_commons.models import TModules
-from geonature.core.taxonomie.models import Taxref
-from geonature.core.ref_geo.models import LAreas, BibAreasTypes
+from apptax.taxonomie.models import Taxref
+from ref_geo.models import LAreas, BibAreasTypes
 
 from geonature.core.gn_permissions.models import VUsersPermissions
 
@@ -300,6 +300,22 @@ class UserCruved:
             other_filters_permissions = self._build_other_filters_for_max_perm_query(max_perm.gathering)
             return max_perm, is_inherited_by_module, herited_by, other_filters_permissions
 
+def beautifulize_cruved(actions, cruved):
+    """
+    Build more readable the cruved dict with the actions label
+    Params:
+        actions: dict action {'C': 'Action de créer'}
+        cruved: dict of cruved
+    Return:
+        Array<dict> [{'label': 'Action de Lire', 'value': '3'}]
+    """
+    cruved_beautiful = []
+    for key, value in cruved.items():
+        temp = {}
+        temp["label"] = actions.get(key)
+        temp["value"] = value
+        cruved_beautiful.append(temp)
+    return cruved_beautiful
 
 def cruved_scope_for_user_in_module(
     id_role=None,
