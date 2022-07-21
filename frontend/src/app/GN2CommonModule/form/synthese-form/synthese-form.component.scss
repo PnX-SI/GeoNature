@@ -40,17 +40,17 @@ legend {
   margin-right: 5px;
 }
 
-:host /deep/ .dynamic-form-wrapper {
+:host ::ng-deep .dynamic-form-wrapper {
   display: flex;
 }
 
-:host /deep/ .trash-btn {
+:host ::ng-deep .trash-btn {
   position: relative;
   top: 28px;
   left: 5px;
 }
 
-:host /deep/ pnx-dynamic-form {
+:host ::ng-deep pnx-dynamic-form {
   max-width: 90%;
 }
 
@@ -91,17 +91,19 @@ legend {
 .search-wrapper {
   max-height: 86vh;
   overflow: auto;
+  // Unset position to show content dropdown-menu hover all panels
+  position: unset;
 }
 
 .relative {
   position: relative;
 }
 
-:host /deep/ ngb-typeahead-window > button > span {
+:host ::ng-deep ngb-typeahead-window > button > span {
   font-size: 12px !important;
   cursor: pointer;
 }
 
-:host /deep/ ngb-typeahead-window > button {
+:host ::ng-deep ngb-typeahead-window > button {
   padding-left: 5px;
 }

@@ -31,6 +31,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
   @Input() uuidSynthese: any;
   @Output() modifiedStatus = new EventEmitter();
   @Output() valDate = new EventEmitter();
+  @Output() onCloseModal = new EventEmitter();
 
   constructor(
     public mapListService: MapListService,
@@ -38,7 +39,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     public activeModal: NgbActiveModal,
     private _fb: FormBuilder,
     private _commonService: CommonService,
-    private _validService : ValidationService
+    private _validService: ValidationService
   ) {
     // form used for changing validation status
     this.statusForm = this._fb.group({
@@ -59,10 +60,19 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
     // disable nextButton or previousButton if first last observation selected
     this.activateNextPrevButton(this.filteredIds.indexOf(this.id_synthese));
+    // call status only once on init
+    this.getStatusNames();
+    // to get color
+    this.setValidationStatus(this.currentValidationStatus);
+  }
+
+  setValidationStatus(validStatus) {
+    const color = this.VALIDATION_CONFIG.STATUS_INFO[validStatus.cd_nomenclature].color;
+    this.currentValidationStatus = { ...validStatus, color: color };
   }
 
   setCurrentCdNomenclature(item) {
-    this.currentCdNomenclature = item.cd_nomenclature;
+    this.currentCdNomenclature = item;
   }
 
   getStatusNames() {
@@ -89,14 +99,14 @@ export class ValidationModalInfoObsComponent implements OnInit {
           this._commonService.translateToaster("error", err.error);
         }
       },
-      () => {
-        this.edit = true;
-      }
     );
   }
 
+  editStatus() {
+    this.edit = !this.edit;
+  }
 
-  changeObsIndex(increment: bigint) {
+  changeObsIndex(increment: number) {
     // add 1 to find new position
     this.position = this.filteredIds.indexOf(this.id_synthese) + increment;
     // disable next button if last observation
@@ -106,7 +116,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
     this.id_synthese = this.filteredIds[
       this.filteredIds.indexOf(this.id_synthese) + 1
     ];
-    
+
     const syntheseRow = this.mapListService.tableData[this.position];
     this.uuidSynthese = syntheseRow.unique_id_sinp;
     this.statusForm.reset();
@@ -115,6 +125,7 @@ export class ValidationModalInfoObsComponent implements OnInit {
 
   closeModal() {
     this.activeModal.close();
+    this.onCloseModal.emit();
   }
 
   backToModule(url_source, id_pk_source) {
@@ -125,17 +136,16 @@ export class ValidationModalInfoObsComponent implements OnInit {
     link.click();
   }
 
-  onSubmit(value) {    
+  onSubmit(value) {
     // post validation status form ('statusForm') for the current observation
     this._validService
       .postNewValidStatusAndUpdateUI(value, [this.id_synthese])
-      .subscribe(newValidationStatus => {             
-          this.currentValidationStatus = newValidationStatus;     
-          this.statusForm.reset();
+      .subscribe(newValidationStatus => {
+        this.setValidationStatus(newValidationStatus);
+        this.statusForm.reset();
+        this.editStatus();
       })
-      
   }
-
 
   cancel() {
     this.statusForm.reset();

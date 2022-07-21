@@ -1,242 +1,327 @@
 <div
   id="cover-spin"
   *ngIf="isLoading"
->
-</div>
+></div>
 
 <div
   *ngIf="header"
   class="modal-header padding-md-all"
 >
-  <h2 class="h3">Information sur l'observation</h2>
+  <h5
+    *ngIf="!alertOpen"
+    class="my-3 ml-3"
+  >{{'Synthese.ModalTitle' | translate }}</h5>
+  <h5
+    *ngIf="alertOpen"
+    class="my-3 ml-3"
+  >Signalement</h5>
   <button
     type="button"
     class="close"
     aria-label="Close"
     (click)="activeModal.dismiss('Cross click')"
+    [ngStyle]="{
+      outlineWidth: '0px'
+    }"
   >
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 
-<mat-card>
-  <div class="d-flex w-100 justify-content-between">
-    <h3 class="h4 mr-auto">
-      <span *ngIf="selectedObsTaxonDetail?.nom_vern">
-        {{ selectedObsTaxonDetail?.nom_vern }} -
-      </span>
-      {{ selectedObsTaxonDetail?.nom_valide }}
-    </h3>
-
-    <a
-      *ngIf="selectedObsTaxonDetail && CONFIG.FRONTEND.ENABLE_PROFILES"
-      [routerLink]="['/synthese/taxon', selectedObsTaxonDetail?.cd_ref]"
-      target="_blank"
-      mat-stroked-button
-      color="primary"
-      class="mr-1"
-    >
-      Fiche GeoNature
-    </a>
-
-    <a
-      class="btn align-self-start"
-      href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }}"
-      target="_blank"
-      mat-stroked-button
-      color="primary"
-    >
-      Fiche INPN du taxon
-      <mat-icon aria-hidden="true">launch</mat-icon>
-    </a>
-  </div>
-
-  <mat-card-content>
-    <span class="font-xs">
-      <div>
-        <span *ngIf="selectedObs?.place_name">
-          <b>Nom du lieu : </b> {{selectedObs?.place_name}}
-        </span>
-        <span *ngIf="selectedObs?.precision">
-          <b>Précision du pointage : </b> {{selectedObs?.precision}}
-        </span>
-      </div>
-      <b> Observation de : </b> {{selectedObs?.observers}}
-      <span
-        *ngIf="selectedObs?.cor_observers?.length > 0 && CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_OBS">
-        (
-        <span *ngFor="let observers of selectedObs?.cor_observers; let i = index">
-          {{ observers.email}} <span *ngIf="i != selectedObs?.cor_observers.length -1">, </span>
-        </span>
-        <button> <a href="{{mailto}}" target="_blank"><i
-            class="fa fa-envelope-o"
-            aria-hidden="true"
-          ></i></a> </button>
-        )
-      </span>
-      <br>
-      <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
-        <b> Date : </b>{{selectedObs?.date_min}} -> {{selectedObs?.date_max}}
-      </span>
-      <ng-template #elseBlock>
-        <b> Date : </b>{{selectedObs?.date_min}}
-      </ng-template>
-      <br>
-      <span *ngIf="selectedObs?.altitude_min || selectedObs?.altitude_max">
-        <b> Altitude</b> : {{selectedObs?.altitude_min}} m -
-        {{selectedObs?.altitude_max}} m
-        <br>
-      </span>
-      <span *ngIf="selectedObs?.depth_min || selectedObs?.depth_max">
-        <b> Profondeur min </b> : {{selectedObs?.depth_min}} m - <b> Profondeur
-          max : </b>
-        {{selectedObs?.depth_max}} m
-        <br>
-      </span>
-      <b> UUID observation : </b> {{selectedObs?.unique_id_sinp}}
-      <br>
-      <span *ngIf="selectedObs?.habitat">
-        <b> Habitat associé</b>: {{selectedObs?.habitat?.lb_hab_fr}} -
-        {{selectedObs?.habitat?.lb_code}}
-        <br>
-      </span>
-      <button
-        *ngIf="selectedObs?.source?.url_source"
-        mat-raised-button
-        color="primary"
-        (click)="backToModule(selectedObs?.source?.url_source, selectedObs?.entity_source_pk_value)"
-      >
-        Voir l'observation dans le module de saisie
-      </button>
+<mat-card
+  class="modal-body"
+  *ngIf="idSynthese && alertOpen"
+>
+  <mat-card-content *ngIf="activateAlert">
+    <span class="font-xs mb-2">
+      <pnx-alert-info
+        [idSynthese]="idSynthese"
+        [alert]="alert"
+        (changeVisibility)="openCloseAlert($event)"
+      ></pnx-alert-info>
     </span>
   </mat-card-content>
 </mat-card>
 
 
-<mat-tab-group (selectedTabChange)="setValidationTab($event)" #tabGroup  class="my-tab-grp">
+<mat-card
+  class="modal-body"
+  *ngIf="!alertOpen"
+>
+  <div class="d-flex w-100 justify-content-between">
+    <h4 class="mr-auto gn-color">
+      <a
+        class="no-link-style"
+        ngbTooltip="{{ 'Synthese.GnRecord' | translate }}"
+        placement="bottom"
+        *ngIf="selectedObsTaxonDetail && CONFIG.FRONTEND['ENABLE_PROFILES']"
+        [routerLink]="['/synthese/taxon', selectedObsTaxonDetail?.cd_ref]"
+        target="_blank"
+      >
+        <span *ngIf="selectedObsTaxonDetail?.nom_vern">
+          {{ selectedObsTaxonDetail?.nom_vern }} -
+        </span>
+        {{ selectedObsTaxonDetail?.nom_valide }}
+      </a>
+    </h4>
+    <div>
+      <mat-toolbar class="action-tbar">
+        <button
+          mat-mini-fab
+          *ngIf="selectedObs?.source?.url_source"
+          mat-raised-button
+          ngbTooltip="{{ 'Synthese.Edit' | translate }}"
+          placement="bottom"
+          (click)="
+            backToModule(selectedObs?.source?.url_source, selectedObs?.entity_source_pk_value)
+          "
+        >
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button
+          *ngIf="selectedObs?.cor_observers?.length > 0 && CONFIG.FRONTEND.DISPLAY_EMAIL_INFO_OBS"
+          mat-mini-fab
+          ngbTooltip="{{ 'Synthese.Mailto' | translate }}"
+          placement="bottom"
+          (click)="sendMail()"
+          mat-raised-button
+        >
+          <mat-icon>mail</mat-icon>
+        </button>
+        <button
+          mat-mini-fab
+          ngbTooltip="{{ 'Synthese.copyPermalink' | translate }}"
+          placement="bottom"
+          (click)="copyToClipBoard()"
+          mat-raised-button
+        >
+          <mat-icon>share</mat-icon>
+        </button>
+        <button
+          *ngIf="activatePin"
+          mat-mini-fab
+          ngbTooltip="Epingler"
+          placement="bottom"
+          (click)="pinSelectedObs()"
+          mat-raised-button
+          [ngStyle]="activatePin && pinExists() ? {'background-color': '#3fb8a8', 'color': 'white'} : ''"
+        >
+          <mat-icon>push_pin</mat-icon>
+        </button>
+        <button
+          mat-mini-fab
+          *ngIf="activateAlert"
+          [ngbTooltip]="alertExists() ? 'Signalement en cours' : 'Signaler'"
+          placement="bottom"
+          mat-raised-button
+          (click)="openCloseAlert()"
+          [ngStyle]="activateAlert && alertExists() ? {'background-color': 'white', 'color': 'rgb(252,63,42)'} : ''"
+        >
+          <mat-icon>flag</mat-icon>
+        </button>
+      </mat-toolbar>
+    </div>
+  </div>
+  <mat-card-content>
+    <span class="font-xs mb-2">
+      <div>
+        <span *ngIf="selectedObs?.place_name">
+          <b>{{ 'Synthese.LocationName' | translate }} : </b> {{ selectedObs?.place_name }}
+        </span>
+        <span *ngIf="selectedObs?.precision">
+          <b>{{ 'Synthese.Accuracy' | translate }} : </b> {{ selectedObs?.precision }}
+        </span>
+      </div>
+      <b> {{ 'Synthese.Owner' | translate }} : </b>
+      <span data-qa="synthese-info-obs-observateur">
+        {{ selectedObs?.observers }}
+      </span>
+      <br />
+      <span *ngIf="selectedObs?.date_min != selectedObs?.date_max; else elseBlock">
+        <b> {{ 'Synthese.Date' | translate }} : </b><span>{{ selectedObs?.date_min }} -> {{ selectedObs?.date_max
+          }}</span>
+      </span>
+      <ng-template #elseBlock>
+        <b> {{ 'Synthese.Date' | translate }} : </b><span data-qa="synthese-info-obs-date">{{ selectedObs?.date_min
+          }}</span>
+      </ng-template>
+      <br />
+      <span *ngIf="selectedObs?.altitude_min || selectedObs?.altitude_max">
+        <b> {{ 'Synthese.Altitude' | translate }}</b> : {{ selectedObs?.altitude_min }} m -
+        {{ selectedObs?.altitude_max }} m
+        <br />
+      </span>
+      <span *ngIf="selectedObs?.depth_min || selectedObs?.depth_max">
+        <b> {{ 'Synthese.DeepMin' | translate }} </b> : {{ selectedObs?.depth_min }} m -
+        <b> {{ 'Synthese.DeepMax' | translate }} : </b> {{ selectedObs?.depth_max }} m
+        <br />
+      </span>
+      <b> {{ 'Synthese.UidObs' | translate }} : </b> {{ selectedObs?.unique_id_sinp }}
+      <br />
+      <span *ngIf="selectedObs?.habitat">
+        <b> {{ 'Synthese.Habitat' | translate }}</b>: {{ selectedObs?.habitat?.lb_hab_fr }} -
+        {{ selectedObs?.habitat?.lb_code }}
+        <br />
+      </span>
+    </span>
+    <mat-toolbar class="tbar-bottom">
+      <a
+        color="primary"
+        class="btn btn-xs align-self-start mr-2 link-infos"
+        *ngIf="selectedObsTaxonDetail && CONFIG.FRONTEND['ENABLE_PROFILES']"
+        [routerLink]="['/synthese/taxon', selectedObsTaxonDetail?.cd_ref]"
+        target="_blank"
+        mat-stroked-button
+      >
+        {{ 'Synthese.GnRecord' | translate }}
+        <mat-icon aria-hidden="true">description</mat-icon>
+      </a>
+      <a
+        class="btn align-self-start mr-2 link-infos"
+        href="https://inpn.mnhn.fr/espece/cd_nom/{{ selectedObsTaxonDetail?.cd_nom }}"
+        target="_blank"
+        mat-stroked-button
+        color="primary"
+      >
+        {{ 'Synthese.InpnTaxon' | translate }}
+        <mat-icon aria-hidden="true">launch</mat-icon>
+      </a>
+      <span class="spacer"></span>
+      <ng-content></ng-content>
+    </mat-toolbar>
+  </mat-card-content>
+</mat-card>
+
+<mat-tab-group
+  (selectedTabChange)="setValidationTab($event)"
+  #tabGroup
+  class="my-tab-grp"
+>
   <mat-tab label="Détail de l'occurrence">
     <table class="font-xs table table-striped table-sm">
       <tr>
-        <td> Statut de l'observation </td>
-        <td> {{selectedObs?.nomenclature_observation_status?.label_default}} </td>
+        <td>{{ 'Synthese.ObsState' | translate }}</td>
+        <td>{{ selectedObs?.nomenclature_observation_status?.label_default }}</td>
       </tr>
       <tr>
-        <td> Technique d'observation </td>
-        <td> {{selectedObs?.nomenclature_obs_technique?.label_default}} </td>
+        <td>{{ 'Synthese.ObsTech' | translate }}</td>
+        <td>{{ selectedObs?.nomenclature_obs_technique?.label_default }}</td>
       </tr>
       <tr>
-        <td> Etat biologique </td>
-        <td> {{selectedObs?.nomenclature_bio_condition?.label_default}} </td>
+        <td>{{ 'Synthese.ObsStateBio' | translate }}</td>
+        <td>{{ selectedObs?.nomenclature_bio_condition?.label_default }}</td>
       </tr>
       <tr>
-        <td> Statut biologique </td>
-        <td> {{selectedObs?.nomenclature_bio_status?.label_default}} </td>
+        <td>{{ 'Synthese.ObsStatusBio' | translate }}</td>
+        <td>{{ selectedObs?.nomenclature_bio_status?.label_default }}</td>
       </tr>
       <tr>
-        <td> Statut biogéographique </td>
-        <td> {{selectedObs?.nomenclature_occ_biogeo_status?.label_default}} </td>
+        <td>{{ 'Synthese.ObsStatBiogeo' | translate }}</td>
+        <td>{{ selectedObs?.nomenclature_occ_biogeo_status?.label_default }}</td>
       </tr>
       <tr>
-        <td> Comportement </td>
-        <td> {{selectedObs?.nomenclature_behaviour?.label_default}} </td>
+        <td>{{ 'Synthese.ObsBehav' | translate }}</td>
+        <td>{{ selectedObs?.nomenclature_behaviour?.label_default }}</td>
       </tr>
       <tr>
-        <td> Sexe </td>
-        <td> {{selectedObs?.nomenclature_sex?.label_default}} </td>
+        <td>{{ 'Synthese.ObsSex' | translate }}</td>
+        <td data-qa="synthese-info-obs-sexe-value">
+          {{ selectedObs?.nomenclature_sex?.label_default }}
+        </td>
       </tr>
       <tr>
-        <td> Stade de vie </td>
-        <td> {{selectedObs?.nomenclature_life_stage?.label_default}} </td>
+        <td>{{ 'Synthese.ObsLifeStep' | translate }}</td>
+        <td>{{ selectedObs?.nomenclature_life_stage?.label_default }}</td>
       </tr>
       <tr>
-        <td> Denombrement min </td>
-        <td> {{selectedObs?.count_min}} </td>
+        <td>Denombrement min</td>
+        <td>{{ selectedObs?.count_min }}</td>
       </tr>
       <tr>
-        <td> Denombrement max </td>
-        <td> {{selectedObs?.count_max}} </td>
+        <td>Denombrement max</td>
+        <td>{{ selectedObs?.count_max }}</td>
       </tr>
       <tr>
-        <td> Type de dénombrement </td>
-        <td> {{selectedObs?.nomenclature_type_count?.label_default}} </td>
+        <td>Type de dénombrement</td>
+        <td>{{ selectedObs?.nomenclature_type_count?.label_default }}</td>
       </tr>
       <tr>
-        <td> Objet du dénombrement </td>
-        <td> {{selectedObs?.nomenclature_obj_count?.label_default}} </td>
+        <td>Objet du dénombrement</td>
+        <td>{{ selectedObs?.nomenclature_obj_count?.label_default }}</td>
+      </tr>
+      <tr></tr>
+      <tr>
+        <td>Naturalité</td>
+        <td>{{ selectedObs?.nomenclature_naturalness?.label_default }}</td>
       </tr>
       <tr>
-      <tr>
-        <td> Naturalité </td>
-        <td> {{selectedObs?.nomenclature_naturalness?.label_default}} </td>
+        <td>Commentaire relevé</td>
+        <td>{{ selectedObs?.comment_context }}</td>
       </tr>
       <tr>
-        <td> Commentaire relevé </td>
-        <td> {{selectedObs?.comment_context}} </td>
+        <td>Commentaire occurrence</td>
+        <td>{{ selectedObs?.comment_description }}</td>
       </tr>
       <tr>
-        <td> Commentaire occurrence </td>
-        <td> {{selectedObs?.comment_description}} </td>
+        <td>Determinateur</td>
+        <td>{{ selectedObs?.determiner }}</td>
       </tr>
       <tr>
-        <td> Determinateur </td>
-        <td> {{selectedObs?.determiner}} </td>
+        <td>Preuve d'existence</td>
+        <td>{{ selectedObs?.nomenclature_exist_proof?.label_default }}</td>
       </tr>
       <tr>
-        <td> Preuve d'existence </td>
-        <td> {{selectedObs?.nomenclature_exist_proof?.label_default}} </td>
+        <td>Preuve numérique</td>
+        <td>{{ selectedObs?.digital_proof }}</td>
       </tr>
       <tr>
-        <td> Preuve numérique </td>
-        <td> {{selectedObs?.digital_proof}} </td>
+        <td>Preuve non numérique</td>
+        <td>{{ selectedObs?.non_digital_proof }}</td>
       </tr>
       <tr>
-        <td> Preuve non numérique </td>
-        <td> {{selectedObs?.non_digital_proof}} </td>
+        <td>Echantillon de preuve</td>
+        <td>{{ selectedObs?.sample_number_proof }}</td>
+      </tr>
+      <tr></tr>
+      <tr>
+        <td>Type de regroupement</td>
+        <td>{{ selectedObs?.nomenclature_grp_typ?.label_default }}</td>
       </tr>
       <tr>
-        <td> Echantillon de preuve </td>
-        <td> {{selectedObs?.sample_number_proof}} </td>
+        <td>Méthode de regroupement</td>
+        <td>{{ selectedObs?.grp_method }}</td>
       </tr>
       <tr>
-      <tr>
-        <td> Type de regroupement </td>
-        <td> {{selectedObs?.nomenclature_grp_typ?.label_default}} </td>
+        <td>Source de la donnée</td>
+        <td>{{ selectedObs?.nomenclature_source_status?.label_default }}</td>
       </tr>
       <tr>
-        <td> Méthode de regroupement </td>
-        <td> {{selectedObs?.grp_method}} </td>
+        <td>Statut de validation</td>
+        <td>{{ selectedObs?.nomenclature_valid_status?.label_default }}</td>
       </tr>
       <tr>
-        <td> Source de la donnée </td>
-        <td> {{selectedObs?.nomenclature_source_status?.label_default}} </td>
+        <td>Sensibilité</td>
+        <td>{{ selectedObs?.nomenclature_sensitivity?.label_default }}</td>
       </tr>
       <tr>
-        <td> Statut de validation </td>
-        <td> {{selectedObs?.nomenclature_valid_status?.label_default}} </td>
+        <td>Niveau de diffusion</td>
+        <td>{{ selectedObs?.nomenclature_diffusion_level?.label_default }}</td>
       </tr>
       <tr>
-        <td> Sensibilité </td>
-        <td> {{selectedObs?.nomenclature_sensitivity?.label_default}} </td>
+        <td>Nature de l'objet géographique</td>
+        <td>{{ selectedObs?.nomenclature_geo_object_nature?.label_default }}</td>
       </tr>
       <tr>
-        <td> Niveau de diffusion </td>
-        <td> {{selectedObs?.nomenclature_diffusion_level?.label_default}} </td>
+        <td>Floutage</td>
+        <td>{{ selectedObs?.nomenclature_blurring?.label_default }}</td>
       </tr>
       <tr>
-        <td> Nature de l'objet géographique </td>
-        <td> {{selectedObs?.nomenclature_geo_object_nature?.label_default}} </td>
+        <td>Identifiant unique SINP</td>
+        <td>{{ selectedObs?.unique_id_sinp }}</td>
       </tr>
       <tr>
-        <td> Floutage </td>
-        <td> {{selectedObs?.nomenclature_blurring?.label_default}} </td>
-      </tr>
-      <tr>
-        <td> Identifiant unique SINP </td>
-        <td> {{selectedObs?.unique_id_sinp}} </td>
-      </tr>
-      <tr>
-        <td> Champs additionnels </td>
-        <td> {{selectedObs?.additional_data |json}} </td>
+        <td>Champs additionnels</td>
+        <td>{{ selectedObs?.additional_data | json }}</td>
       </tr>
     </table>
   </mat-tab>
@@ -244,28 +329,26 @@
   <mat-tab label="Métadonnées">
     <table class="font-xs table table-striped table-sm">
       <tr>
-        <td> Jeu de données </td>
-        <td> {{selectedObs?.dataset.dataset_name}} </td>
+        <td>Jeu de données</td>
+        <td>{{ selectedObs?.dataset.dataset_name }}</td>
       </tr>
       <tr>
-        <td> Cadre d'acquisition </td>
-        <td> {{selectedObs?.dataset.acquisition_framework.acquisition_framework_name}}</td>
+        <td>Cadre d'acquisition</td>
+        <td>{{ selectedObs?.dataset.acquisition_framework.acquisition_framework_name }}</td>
       </tr>
       <tr>
-        <td>
-          Acteurs
-        </td>
+        <td>Acteurs</td>
         <td>
           <ul>
             <li *ngFor="let actor of selectedObs?.dataset.cor_dataset_actor">
-              {{actor.display}}
+              {{ actor.display }}
             </li>
           </ul>
         </td>
       </tr>
       <tr>
-        <td> Module de provenance </td>
-        <td> {{selectedObs?.source.name_source}} </td>
+        <td>Module de provenance</td>
+        <td>{{ selectedObs?.source.name_source }}</td>
       </tr>
     </table>
   </mat-tab>
@@ -276,19 +359,19 @@
         <td>
           <b>Groupe taxonomique </b>
         </td>
-        <td> {{ selectedObsTaxonDetail?.classe }} </td>
+        <td>{{ selectedObsTaxonDetail?.classe }}</td>
       </tr>
       <tr>
         <td>
           <b>Ordre</b>
         </td>
-        <td> {{ selectedObsTaxonDetail?.ordre }} </td>
+        <td>{{ selectedObsTaxonDetail?.ordre }}</td>
       </tr>
       <tr>
         <td>
           <b> Famille</b>
         </td>
-        <td> {{ selectedObsTaxonDetail?.famille }} </td>
+        <td>{{ selectedObsTaxonDetail?.famille }}</td>
       </tr>
     </table>
 
@@ -298,8 +381,10 @@
         class="font-xs"
         *ngFor="let attr of selectObsTaxonInfo?.attributs"
       >
-        <td> <b>{{attr.label_attribut}} </b> </td>
-        <td> {{attr.valeur_attribut}} </td>
+        <td>
+          <b>{{ attr.label_attribut }} </b>
+        </td>
+        <td>{{ attr.valeur_attribut }}</td>
       </tr>
     </table>
 
@@ -307,7 +392,7 @@
     <table class="font-xs table table-striped table-sm">
       <tr *ngFor="let arrete of selectedObsTaxonDetail?.statuts_protection">
         <td>
-          <a [href]="arrete.url"> {{arrete.intitule}} </a>
+          <a [href]="arrete.url"> {{ arrete.intitule }} </a>
         </td>
       </tr>
     </table>
@@ -315,29 +400,30 @@
 
   <ng-container *ngIf="selectedObs?.medias?.length">
     <mat-tab label="Médias">
-      <h5 class="underlined underlined-sm main-color"> Médias
-      </h5>
+      <h5 class="underlined underlined-sm main-color">Médias</h5>
       <table class="font-xs table table-striped table-sm">
         <ng-container *ngFor="let media of selectedObs?.medias; index as i">
           <tr>
-            <td> Titre </td>
-            <td> <a
+            <td>Titre</td>
+            <td>
+              <a
                 target="_blank"
                 [href]="mediaService.href(media)"
-              >{{media.title_fr}}</a> </td>
+              >{{ media.title_fr }}</a>
+            </td>
           </tr>
-          <tr *ngIf='media.description_fr'>
-            <td> Description </td>
-            <td> {{ media.description_fr }} </td>
+          <tr *ngIf="media.description_fr">
+            <td>Description</td>
+            <td>{{ media.description_fr }}</td>
           </tr>
-          <tr *ngIf='media.author'>
-            <td> Auteur </td>
-            <td> {{ media.author }} </td>
+          <tr *ngIf="media.author">
+            <td>Auteur</td>
+            <td>{{ media.author }}</td>
           </tr>
           <tr>
             <td colspan="2">
               <pnx-display-medias
-                diaporama=true
+                diaporama="true"
                 [medias]="selectedObs?.medias"
                 [index]="i"
                 display="medium"
@@ -350,13 +436,12 @@
     </mat-tab>
   </ng-container>
 
-
   <mat-tab label="Zonage">
     <table class="font-xs table table-striped table-sm">
       <thead>
         <tr>
-          <th class="table_date"> Type de zonage </th>
-          <th class="table_comment"> Zones </th>
+          <th class="table_date">Type de zonage</th>
+          <th class="table_comment">Zones</th>
         </tr>
       </thead>
 
@@ -367,40 +452,38 @@
           </td>
           <td>
             <span *ngFor="let area of area_type.areas; let index = index">
-              {{area.area_name}}<span *ngIf="index < area_type.areas.length -1 ">,</span>
+              {{ area.area_name }}<span *ngIf="index < area_type.areas.length - 1">,</span>
             </span>
-
           </td>
         </tr>
       </tbody>
     </table>
   </mat-tab>
 
-
-  <mat-tab
-  >
-  <ng-template mat-tab-label>
-    <span >Validation</span>
-  </ng-template>
-  <div *ngIf="showValidation">
+  <mat-tab>
+    <ng-template mat-tab-label>
+      <span>Validation</span>
+    </ng-template>
+    <div *ngIf="showValidation">
       <h3>Historique de validation de la donnée</h3>
 
       <table class="font-xs table table-striped table-sm">
         <thead>
           <tr>
-            <th class="table_date"> Date de validation </th>
-            <th class="table_status"> Statut </th>
-            <th class="table_comment"> Validateur </th>
-            <th class="table_comment"> Commentaire </th>
+            <th class="table_date">Date de validation</th>
+            <th class="table_status">Statut</th>
+            <th class="table_comment">Validateur</th>
+            <th class="table_comment">Commentaire</th>
           </tr>
         </thead>
 
         <tbody>
           <tr *ngFor="let row of validationHistory">
-            <td width="15%"> {{row.date}} </td>
+            <td width="15%">{{ row.date }}</td>
             <td width="20%">
-              <span class="validationCircle"
-                [ngStyle]="{'background': validationColor[row.cd_nomenclature]}"
+              <span
+                class="validationCircle"
+                [ngStyle]="{ background: validationColor[row.cd_nomenclature] }"
               >
                 <mat-icon
                   *ngIf="row.typeValidation == 'True'"
@@ -411,104 +494,115 @@
                 class="statusName"
                 class="ml-4"
               >
-                {{row.label_default}}
+                {{ row.label_default }}
               </span>
             </td>
-            <td width="20%"> <span> {{row.validator}} </span> </td>
-            <td> {{row.comment}} </td>
+            <td width="20%">
+              <span> {{ row.validator }} </span>
+            </td>
+            <td>{{ row.comment }}</td>
           </tr>
         </tbody>
       </table>
 
       <div *ngIf="CONFIG.FRONTEND.ENABLE_PROFILES">
         <div *ngIf="profile; else noProfile">
-            <h3>Profil du taxon </h3>
-            <div class="row row-sm">
-              <div class="col-4 padding-sm">
-                <h5> Informations générales sur le taxon </h5>
-                <table class="font-xs table table-striped table-sm">
-                  <tr>
-                    <td> Nombre de données valides </td>
-                    <td>{{profile?.properties?.count_valid_data}}</td>
-                  </tr>
-                  <tr>
-                    <td> Altitude minimale valide </td>
-                    <td> {{profile?.properties?.altitude_min}} </td>
-                  </tr>
-                  <tr>
-                    <td> Altitude maximale valide </td>
-                    <td> {{profile?.properties?.altitude_max}}</td>
-                  </tr>
+          <h3>Profil du taxon</h3>
+          <div class="row row-sm">
+            <div class="col-4 padding-sm">
+              <h5>Informations générales sur le taxon</h5>
+              <table class="font-xs table table-striped table-sm">
+                <tr>
+                  <td>Nombre de données valides</td>
+                  <td>{{ profile?.properties?.count_valid_data }}</td>
+                </tr>
+                <tr>
+                  <td>Altitude minimale valide</td>
+                  <td>{{ profile?.properties?.altitude_min }}</td>
+                </tr>
+                <tr>
+                  <td>Altitude maximale valide</td>
+                  <td>{{ profile?.properties?.altitude_max }}</td>
+                </tr>
 
-                  <tr>
-                    <td> Première observation valide </td>
-                    <td> {{profile?.properties?.first_valid_data | date:'dd/MM/yyyy'}} </td>
-                  </tr>
-                  <tr>
-                    <td> Dernière observation valide </td>
-                    <td>{{profile?.properties?.last_valid_data | date:'dd/MM/yyyy'}} </td>
-                  </tr>
-                </table>
-              </div>
-              <div class="col-4 padding-sm">
-                <h5> Cohérence de la donnée </h5>
-                <table class="font-xs table table-sm table-striped">
-                  <tr>
-                    <td> Dans l'aire d'observation valide </td>
-                    <td *ngIf='profileDataChecks?.valid_distribution'>
-                      <mat-icon class="success"> check </mat-icon>
-                    </td>
-                    <td *ngIf='!profileDataChecks?.valid_distribution'>
-                      <mat-icon class="error"> close </mat-icon>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td> Cohérence phénologique </td>
-                    <td *ngIf='profileDataChecks?.valid_phenology'>
-                      <mat-icon class="success"> check </mat-icon>
-                    </td>
-                    <td *ngIf='!profileDataChecks?.valid_phenology'>
-                      <mat-icon class="error"> close </mat-icon>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td> Dans la fourchette altitudinale valide </td>
-                    <td *ngIf='profileDataChecks?.valid_altitude'>
-                      <mat-icon class="success"> check </mat-icon>
-                    </td>
-                    <td *ngIf='!profileDataChecks?.valid_altitude'>
-                      <mat-icon class="error"> close </mat-icon>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td> Score </td>
-                    <td> {{profileDataChecks?.score}} </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
+                <tr>
+                  <td> Première observation valide </td>
+                  <td> {{profile?.properties?.first_valid_data | date:'dd/MM/yyyy'}} </td>
+                </tr>
+                <tr>
+                  <td> Dernière observation valide </td>
+                  <td>{{profile?.properties?.last_valid_data | date:'dd/MM/yyyy'}} </td>
+                </tr>
+              </table>
 
-            <h5>Aire de répartition des observations valides</h5>
-            <div class="mb-3 border border-secondary">
-              <pnx-map height="40vh">
-                <pnx-geojson
-                  [geojson]="selectedGeom"
-                  [style]="{color: 'red'}">
-                </pnx-geojson>
-                <pnx-geojson
-                  [geojson]="profile"
-                  [zoomOnFirstTime]="true">
-                </pnx-geojson>
-              </pnx-map>
+              <h5> Cohérence de la donnée </h5>
+              <table class="font-xs table table-sm table-striped">
+                <tr>
+                  <td> Dans l'aire d'observation valide </td>
+                  <td *ngIf='profileDataChecks?.valid_distribution'>
+                    <mat-icon class="success"> check </mat-icon>
+                  </td>
+                  <td *ngIf='!profileDataChecks?.valid_distribution'>
+                    <mat-icon class="error"> close </mat-icon>
+                  </td>
+                </tr>
+                <tr>
+                  <td> Cohérence phénologique </td>
+                  <td *ngIf='profileDataChecks?.valid_phenology'>
+                    <mat-icon class="success"> check </mat-icon>
+                  </td>
+                  <td *ngIf='!profileDataChecks?.valid_phenology'>
+                    <mat-icon class="error"> close </mat-icon>
+                  </td>
+                </tr>
+                <tr>
+                  <td> Dans la fourchette altitudinale valide </td>
+                  <td *ngIf='profileDataChecks?.valid_altitude'>
+                    <mat-icon class="success"> check </mat-icon>
+                  </td>
+                  <td *ngIf='!profileDataChecks?.valid_altitude'>
+                    <mat-icon class="error"> close </mat-icon>
+                  </td>
+                </tr>
+                <tr>
+                  <td> Score </td>
+                  <td> {{profileDataChecks?.score}} </td>
+                </tr>
+              </table>
             </div>
+          </div>
         </div>
-        <ng-template #noProfile >
-          <span class="alert alert-info">
-            Pas de profil pour ce taxon
-          </span>
-          <br><br>
-        </ng-template>
+
+        <h5>Aire de répartition des observations valides</h5>
+        <div class="mb-3 border border-secondary">
+          <pnx-map height="40vh">
+            <pnx-geojson
+              [geojson]="selectedGeom"
+              [style]="{ color: 'red' }"
+            > </pnx-geojson>
+            <pnx-geojson
+              [geojson]="profile"
+              [zoomOnFirstTime]="true"
+            > </pnx-geojson>
+          </pnx-map>
+        </div>
       </div>
+      <ng-template #noProfile>
+        <span class="alert alert-info"> Pas de profil pour ce taxon </span>
+        <br /><br />
+      </ng-template>
     </div>
   </mat-tab>
-<mat-tab-group>
+
+  <mat-tab
+    label="{{ 'Synthese.Discussion' | translate }}"
+    *ngIf="APP_CONFIG.SYNTHESE.DISCUSSION_MODULES.includes(moduleInfos.code)"
+  >
+    <pnx-discussion-card
+      [validationColor]="validationColor"
+      [idSynthese]="idSynthese"
+      [codeModule]="moduleInfos.code"
+      [additionalData]="{ data: validationHistory, dateField: 'dateTime' }"
+    ></pnx-discussion-card>
+  </mat-tab>
+</mat-tab-group>

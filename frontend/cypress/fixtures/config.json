@@ -1,0 +1,258 @@
+{
+  "GEONATURE_VERSION": "2.8.1",
+  "SYNTHESE": {
+    "EXPORT_GEOJSON_LOCAL_COL": "geojson_local",
+    "EXPORT_COLUMNS": [
+      "date_debut",
+      "date_fin",
+      "heure_debut",
+      "heure_fin",
+      "cd_nom",
+      "cd_ref",
+      "nom_valide",
+      "nom_vernaculaire",
+      "nom_cite",
+      "regne",
+      "group1_inpn",
+      "group2_inpn",
+      "classe",
+      "ordre",
+      "famille",
+      "rang_taxo",
+      "nombre_min",
+      "nombre_max",
+      "alti_min",
+      "alti_max",
+      "prof_min",
+      "prof_max",
+      "observateurs",
+      "determinateur",
+      "communes",
+      "x_centroid_4326",
+      "y_centroid_4326",
+      "geometrie_wkt_4326",
+      "nom_lieu",
+      "comment_releve",
+      "comment_occurrence",
+      "validateur",
+      "niveau_validation",
+      "date_validation",
+      "comment_validation",
+      "preuve_numerique_url",
+      "preuve_non_numerique",
+      "jdd_nom",
+      "jdd_uuid",
+      "jdd_id",
+      "ca_nom",
+      "ca_uuid",
+      "ca_id",
+      "cd_habref",
+      "cd_habitat",
+      "nom_habitat",
+      "precision_geographique",
+      "nature_objet_geo",
+      "type_regroupement",
+      "methode_regroupement",
+      "technique_observation",
+      "biologique_statut",
+      "etat_biologique",
+      "biogeographique_statut",
+      "naturalite",
+      "preuve_existante",
+      "niveau_precision_diffusion",
+      "stade_vie",
+      "sexe",
+      "objet_denombrement",
+      "type_denombrement",
+      "niveau_sensibilite",
+      "statut_observation",
+      "floutage_dee",
+      "statut_source",
+      "type_info_geo",
+      "methode_determination",
+      "comportement",
+      "reference_biblio",
+      "id_synthese",
+      "id_origine",
+      "uuid_perm_sinp",
+      "uuid_perm_grp_sinp",
+      "date_creation",
+      "date_modification",
+      "champs_additionnels"
+    ],
+    "EXPORT_FORMAT": ["csv", "geojson", "shapefile"],
+    "ID_SEARCH_OBSERVER_LIST": 1,
+    "LIST_COLUMNS_FRONTEND": [
+      {
+        "prop": "nom_vern_or_lb_nom",
+        "name": "Taxon",
+        "max_width": 200
+      },
+      {
+        "prop": "date_min",
+        "name": "Date obs",
+        "max_width": 100
+      },
+      {
+        "prop": "dataset_name",
+        "name": "JDD",
+        "max_width": 200
+      },
+      {
+        "prop": "observers",
+        "name": "observateur",
+        "max_width": 200
+      }
+    ],
+    "TAXON_RESULT_NUMBER": 20,
+    "NB_LAST_OBS": 100,
+    "DISPLAY_TAXON_TREE": true,
+    "NB_MAX_OBS_MAP": 50000,
+    "ENABLE_LEAFLET_CLUSTER": true,
+    "EXPORT_ID_SYNTHESE_COL": "id_synthese",
+    "EXPORT_ID_DIGITISER_COL": "id_digitiser",
+    "EXCLUDED_COLUMNS": [],
+    "CRUVED_SEARCH_WITH_OBSERVER_AS_TXT": false,
+    "SEARCH_OBSERVER_WITH_LIST": false,
+    "COLUMNS_API_SYNTHESE_WEB_APP": [
+      "id_synthese",
+      "date_min",
+      "observers",
+      "nom_valide",
+      "dataset_name"
+    ],
+    "ID_ATTRIBUT_TAXHUB": [102, 103],
+    "DISPLAY_EMAIL": true,
+    "EXPORT_GEOJSON_4326_COL": "geojson_4326",
+    "EXPORT_OBSERVERS_COL": "observateurs",
+    "EXPORT_ID_DATASET_COL": "jdd_id",
+    "EXPORT_METADATA_ID_DATASET_COL": "jdd_id",
+    "AREA_FILTERS": [
+      {
+        "label": "Communes",
+        "type_code": "COM"
+      }
+    ],
+    "EXPORT_METADATA_ACTOR_COL": "acteurs",
+    "NB_MAX_OBS_EXPORT": 50000
+  },
+  "BDD": {
+    "id_area_type_municipality": 25,
+    "ID_USER_SOCLE_1": 8,
+    "ID_USER_SOCLE_2": 6
+  },
+  "LOCAL_SRID": 2154,
+  "METADATA": {
+    "CD_NOMENCLATURE_ROLE_TYPE_AF": [],
+    "ENABLE_CLOSE_AF": false,
+    "CLOSED_MODAL_CONTENT": "L'action de fermeture est irr\u00e9versible. Il ne sera\n    plus possible d'ajouter des jeux de donn\u00e9es au cadre d'acquisition par la suite.",
+    "CLOSED_AF_TITLE": "",
+    "CD_NOMENCLATURE_ROLE_TYPE_DS": [],
+    "MAIL_CONTENT_AF_CLOSED_PDF": "",
+    "MAIL_SUBJECT_AF_CLOSED_BASE": "",
+    "MAIL_CONTENT_AF_CLOSED_ADDITION": "",
+    "CLOSED_MODAL_LABEL": "Fermer un cadre d'acquisition",
+    "DS_PDF_TITLE": "",
+    "AF_PDF_TITLE": "Cadre d'acquisition: ",
+    "MAIL_CONTENT_AF_CLOSED_GREETINGS": "",
+    "AF_SHEET_CLOSED_LINK_NAME": "Lien du certificat de d\u00e9p\u00f4t",
+    "NB_AF_DISPLAYED": 50,
+    "MAIL_CONTENT_AF_CLOSED_URL": ""
+  },
+  "ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS": true,
+  "MEDIAS": {
+    "THUMBNAIL_SIZES": [200, 50],
+    "MEDIAS_SIZE_MAX": 50000
+  },
+  "DEBUG": false,
+  "MTD_API_ENDPOINT": "https://preprod-inpn.mnhn.fr/mtd",
+  "LOGO_STRUCTURE_FILE": "logo_structure.png",
+  "PASS_METHOD": "hash",
+  "XML_NAMESPACE": "{http://inpn.mnhn.fr/mtd}",
+  "PUBLIC_ACCESS": {
+    "ENABLE_PUBLIC_ACCESS": false,
+    "PUBLIC_LOGIN": null,
+    "PUBLIC_PASSWORD": null
+  },
+  "MTD": {
+    "ID_INSTANCE_FILTER": null,
+    "JDD_MODULE_CODE_ASSOCIATION": ["OCCTAX", "OCCHAB"]
+  },
+  "URL_APPLICATION": "http://127.0.0.1:4200",
+  "FRONTEND": {
+    "STAT_BLOC_TTL": 3600,
+    "MULTILINGUAL": false,
+    "DISPLAY_EMAIL_DISPLAY_INFO": ["NOM_VERN"],
+    "ENABLE_PROFILES": true,
+    "DISPLAY_FOOTER": true,
+    "DISPLAY_EMAIL_INFO_OBS": true,
+    "DISPLAY_STAT_BLOC": true,
+    "PROD_MOD": true,
+    "DISPLAY_MAP_LAST_OBS": true
+  },
+  "DEFAULT_LANGUAGE": "fr",
+  "API_TAXHUB": "http://127.0.0.1:5000",
+  "ACCOUNT_MANAGEMENT": {
+    "AUTO_DATASET_CREATION": true,
+    "ENABLE_USER_MANAGEMENT": false,
+    "AUTO_ACCOUNT_CREATION": true,
+    "ENABLE_SIGN_UP": false,
+    "DATASET_MODULES_ASSOCIATION": ["OCCTAX"],
+    "ADDON_USER_EMAIL": "",
+    "VALIDATOR_EMAIL": null,
+    "ACCOUNT_FORM": []
+  },
+  "CAS_PUBLIC": {
+    "CAS_URL_LOGOUT": "https://preprod-inpn.mnhn.fr/auth/logout",
+    "CAS_URL_LOGIN": "https://preprod-inpn.mnhn.fr/auth/login",
+    "CAS_AUTHENTIFICATION": false
+  },
+  "UPLOAD_FOLDER": "static/medias",
+  "RIGHTS": {
+    "MY_DATA": 1,
+    "NOTHING": 0,
+    "MY_ORGANISM_DATA": 2,
+    "ALL_DATA": 3
+  },
+  "appName": "GeoNature2",
+  "NB_MAX_DATA_SENSITIVITY_REPORT": 1000000,
+  "API_ENDPOINT": "http://127.0.0.1:8000",
+  "ADDITIONAL_FIELDS": {
+    "IMPLEMENTED_OBJECTS": ["OCCTAX_RELEVE", "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"],
+    "IMPLEMENTED_MODULES": ["OCCTAX"]
+  },
+  "TAXHUB": {
+    "ID_TYPE_MAIN_PHOTO": 1
+  },
+  "MAPCONFIG": {
+    "ZOOM_LEVEL_RELEVE": 15,
+    "ZOOM_LEVEL": 6,
+    "BASEMAP": [
+      {
+        "name": "OpenStreetMap",
+        "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
+        "options": {
+          "attribution": "&copy OpenStreetMap"
+        }
+      },
+      {
+        "name": "OpenTopoMap",
+        "url": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
+        "options": {
+          "attribution": "\u00a9 OpenTopoMap"
+        }
+      },
+      {
+        "name": "GoogleSatellite",
+        "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+        "options": {
+          "subdomains": ["mt0", "mt1", "mt2", "mt3"],
+          "attribution": "\u00a9 GoogleMap"
+        }
+      }
+    ],
+    "CENTER": [46.52863469527167, 2.43896484375],
+    "ZOOM_ON_CLICK": 18
+  },
+  "ID_APPLICATION_GEONATURE": 1
+}

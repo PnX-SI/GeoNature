@@ -37,10 +37,10 @@ log = logging.getLogger()
 
 def create_cor_object_actors(actors, new_object):
     """
-        Create a new cor_dataset_actor/cor_acquisition_framework_actor object for the JDD/AF
-        Input :
-            actors (list) : List of all actors related to the JDD/AF
-            new_object : JDD or AF
+    Create a new cor_dataset_actor/cor_acquisition_framework_actor object for the JDD/AF
+    Input :
+        actors (list) : List of all actors related to the JDD/AF
+        new_object : JDD or AF
     """
     for act in actors:
         # person = None
@@ -49,7 +49,7 @@ def create_cor_object_actors(actors, new_object):
         id_organism = None
 
         # For the moment wo do not match the user with the actor provided by the XML -> only the organism
-        
+
         # If the email of the contact Person was provided in the XML file, we try to link him to the t_role table
         # if act["email"]:
         #     # We first check if the Person's email exists in the t_role table
@@ -118,20 +118,34 @@ def create_cor_object_actors(actors, new_object):
 
             # We finally build the correlation corresponding to the JDD/AF
             if isinstance(new_object, TAcquisitionFramework):
-                if not any(map(lambda cafa: dict_cor['id_organism']==cafa.id_organism and act['actor_role']==cafa.id_nomenclature_actor_role.clauses.clauses[1].value, new_object.cor_af_actor)):
+                if not any(
+                    map(
+                        lambda cafa: dict_cor["id_organism"] == cafa.id_organism
+                        and act["actor_role"]
+                        == cafa.id_nomenclature_actor_role.clauses.clauses[1].value,
+                        new_object.cor_af_actor,
+                    )
+                ):
                     cor_actor = CorAcquisitionFrameworkActor(**dict_cor)
                     new_object.cor_af_actor.append(cor_actor)
             elif isinstance(new_object, TDatasets):
-                if not any(map(lambda ca: dict_cor['id_organism']==ca.id_organism and act['actor_role']==ca.id_nomenclature_actor_role.clauses.clauses[1].value, new_object.cor_dataset_actor)):
+                if not any(
+                    map(
+                        lambda ca: dict_cor["id_organism"] == ca.id_organism
+                        and act["actor_role"]
+                        == ca.id_nomenclature_actor_role.clauses.clauses[1].value,
+                        new_object.cor_dataset_actor,
+                    )
+                ):
                     cor_actor = CorDatasetActor(**dict_cor)
                     new_object.cor_dataset_actor.append(cor_actor)
 
 
 def post_acquisition_framework(uuid=None):
-    """ 
-        Post an acquisition framwork from MTD XML
-        Params:
-            uuid (str): uuid of the acquisition framework    
+    """
+    Post an acquisition framwork from MTD XML
+    Params:
+        uuid (str): uuid of the acquisition framework
     """
     xml_af = None
     xml_af = get_acquisition_framework(uuid)
@@ -147,8 +161,7 @@ def post_acquisition_framework(uuid=None):
             new_af.id_acquisition_framework = id_acquisition_framework
 
             delete_q = CorAcquisitionFrameworkActor.__table__.delete().where(
-                CorAcquisitionFrameworkActor.id_acquisition_framework
-                == id_acquisition_framework
+                CorAcquisitionFrameworkActor.id_acquisition_framework == id_acquisition_framework
             )
             DB.session.execute(delete_q)
             DB.session.commit()
@@ -176,14 +189,13 @@ def post_acquisition_framework(uuid=None):
 def add_dataset_module(dataset):
     dataset.modules.extend(
         DB.session.query(TModules)
-        .filter(
-            TModules.module_code.in_(current_app.config["MTD"]["JDD_MODULE_CODE_ASSOCIATION"])
-        ).all()
+        .filter(TModules.module_code.in_(current_app.config["MTD"]["JDD_MODULE_CODE_ASSOCIATION"]))
+        .all()
     )
 
 
 def post_jdd_from_user(id_user=None):
-    """ Post a jdd from the mtd XML"""
+    """Post a jdd from the mtd XML"""
     xml_jdd = None
     xml_jdd = get_jdd_by_user_id(id_user)
     if xml_jdd:
@@ -213,14 +225,14 @@ def post_jdd_from_user(id_user=None):
                 if key.startswith("id_nomenclature"):
                     response = DB.session.query(
                         func.ref_nomenclatures.get_id_nomenclature(
-                        NOMENCLATURE_MAPPING.get(key), value
+                            NOMENCLATURE_MAPPING.get(key), value
                         )
                     ).one_or_none()
                     if response and response[0]:
                         ds[key] = response[0]
                     else:
                         ds.pop(key)
-        
+
             #  set validable = true
             ds["validable"] = True
             dataset = TDatasets(**ds)
@@ -242,7 +254,7 @@ def post_jdd_from_user(id_user=None):
 
             # its a new DS
             else:
-                # set the dataset as activ
+                # set the dataset as activ
                 dataset.active = True
                 # create the correlation links
                 create_cor_object_actors(actors, dataset)
@@ -259,7 +271,7 @@ def post_jdd_from_user(id_user=None):
 
 
 def import_all_dataset_af_and_actors(table_name):
-    file_handler = logging.FileHandler('/tmp/uuid_ca.txt')
+    file_handler = logging.FileHandler("/tmp/uuid_ca.txt")
     file_handler.setLevel(logging.CRITICAL)
     log.addHandler(file_handler)
     datasets = DB.engine.execute(f"SELECT * FROM {table_name}")
@@ -269,7 +281,7 @@ def import_all_dataset_af_and_actors(table_name):
             ds_list = parse_jdd_xml(xml_jdd)
             if ds_list:
                 ds = ds_list[0]
-                inpn_user = get_user_from_id_inpn_ws(ds['id_digitizer'])
+                inpn_user = get_user_from_id_inpn_ws(ds["id_digitizer"])
                 # get user info from id_digitizer
                 if inpn_user:
                     # insert user id digitizer
@@ -280,8 +292,8 @@ def import_all_dataset_af_and_actors(table_name):
                         uuid=ds["uuid_acquisition_framework"],
                     )
                     # get the id from the uuid
-                    ds["id_acquisition_framework"] = new_af['id_acquisition_framework']
-                    log.critical(str(new_af['id_acquisition_framework'])+ ",")
+                    ds["id_acquisition_framework"] = new_af["id_acquisition_framework"]
+                    log.critical(str(new_af["id_acquisition_framework"]) + ",")
                     ds.pop("uuid_acquisition_framework")
                     # get the id of the dataset to check if exists
                     id_dataset = TDatasets.get_id(ds["unique_dataset_id"])
@@ -296,7 +308,7 @@ def import_all_dataset_af_and_actors(table_name):
                                 )
                             else:
                                 ds.pop(key)
-                    
+
                     #  set validable = true
                     ds["validable"] = True
                     dataset = TDatasets(**ds)
@@ -318,7 +330,7 @@ def import_all_dataset_af_and_actors(table_name):
 
                     # its a new DS
                     else:
-                        # set the dataset as activ
+                        # set the dataset as activ
                         dataset.active = True
                         # create the correlation links
                         create_cor_object_actors(actors, dataset)

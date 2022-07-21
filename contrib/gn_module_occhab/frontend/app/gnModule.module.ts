@@ -36,7 +36,7 @@ const routes: Routes = [
     CommonModule,
     GN2CommonModule,
     RouterModule.forChild(routes),
-    NgbModule.forRoot()
+    NgbModule
   ],
   entryComponents: [OccHabModalDownloadComponent],
 

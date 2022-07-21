@@ -10,14 +10,15 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '5f4c4b644844'
-down_revision = '2a2e5c519fd1'
+revision = "5f4c4b644844"
+down_revision = "2a2e5c519fd1"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
-    op.execute("""
+    op.execute(
+        """
        ALTER TABLE gn_meta.cor_dataset_territory 
         DROP CONSTRAINT IF EXISTS fk_cor_dataset_territory_id_dataset;
        ALTER TABLE gn_meta.cor_dataset_territory
@@ -29,7 +30,8 @@ def upgrade():
         ALTER TABLE gn_meta.cor_dataset_protocol 
         ADD CONSTRAINT fk_cor_dataset_protocol_id_dataset FOREIGN KEY (id_dataset) 
          REFERENCES gn_meta.t_datasets(id_dataset) ON UPDATE CASCADE ON DELETE CASCADE;
-    """)
+    """
+    )
 
 
 def downgrade():

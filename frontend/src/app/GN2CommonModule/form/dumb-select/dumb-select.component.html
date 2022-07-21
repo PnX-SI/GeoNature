@@ -1,4 +1,4 @@
-<small> {{label}} </small>
+<small> {{ label }} </small>
 <div class="input-group">
   <select
     class="form-control form-control-sm"
@@ -6,15 +6,9 @@
     [formControl]="parentFormControl"
     [compareWith]="compareFn.bind(this)"
   >
-    <option
-      *ngIf="displayNullValue"
-      [ngValue]="null"
-    > {{nullValueLabel}} </option>
-    <option
-      *ngFor="let item of items"
-      [ngValue]="item"
-      [title]="item[titleKey]"
-    >
-      {{item[displayedKey]}} </option>
+    <option *ngIf="displayNullValue" [ngValue]="null">{{ nullValueLabel }}</option>
+    <option *ngFor="let item of items" [ngValue]="item" [title]="item[titleKey]">
+      {{ item[displayedKey] }}
+    </option>
   </select>
 </div>

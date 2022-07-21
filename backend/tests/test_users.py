@@ -8,7 +8,7 @@ from cookies import Cookie
 @pytest.mark.usefixtures("client_class")
 class TestApiUsersMenu:
     """
-        Test de l'api users/menu
+    Test de l'api users/menu
     """
 
     def test_menu_exists(self):

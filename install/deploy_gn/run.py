@@ -19,10 +19,10 @@ def deploy():
     conn.run("chmod +x install_all.sh")
     conn.run("./install_all.sh 2>&1 | tee install_all.log")
 
+
 def clean():
     conn = connect()
-    conn.run("sudo rm -r geonature taxhub usershub install_all.*") 
-
+    conn.run("sudo rm -r geonature taxhub usershub install_all.*")
 
 
 if __name__ == "__main__":
@@ -36,4 +36,3 @@ if __name__ == "__main__":
             clean()
         else:
             print("Pass 'deploy' or 'clean' argument to the script")
-

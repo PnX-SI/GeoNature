@@ -10,26 +10,26 @@ ngx-datatable {
   // overflow:scroll;
 }
 
-:host /deep/ .datatable-body-row.active .datatable-row-group {
+:host ::ng-deep .datatable-body-row.active .datatable-row-group {
   background-color: rgb(117, 227, 118) !important;
 }
 
-:host /deep/ .datatable-body-row {
+:host ::ng-deep .datatable-body-row {
   height: 30px !important;
 }
 
-:host /deep/ .datatable-body-cell {
+:host ::ng-deep .datatable-body-cell {
   font-size: 12px !important;
   //padding: 5px 5px !important;
   padding-bottom: 15px !important;
   padding-top: 8px !important;
   padding-left: 15px !important;
 }
-:host /deep/ .datatable-body-cell i {
+:host ::ng-deep .datatable-body-cell i {
   font-size: 12px;
 }
 
-:host /deep/ .datatable-body {
+:host ::ng-deep .datatable-body {
   overflow-x: scroll;
 }
 

@@ -6,17 +6,20 @@ import {
   Output,
   EventEmitter,
   SimpleChanges,
+  OnDestroy,
 } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
 import { DynamicFormService } from '../dynamic-form-generator/dynamic-form.service';
 import { AppConfig } from '@geonature_config/app.config';
+import { distinctUntilChanged } from 'rxjs/operators';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'pnx-dynamic-form',
   templateUrl: './dynamic-form.component.html',
-  styleUrls: ['./dynamic-form.component.scss']
+  styleUrls: ['./dynamic-form.component.scss'],
 })
-export class DynamicFormComponent implements OnInit, OnChanges {
+export class DynamicFormComponent implements OnInit, OnChanges, OnDestroy {
   @Input() formDef: any;
   @Input() form: FormGroup;
 
@@ -28,14 +31,29 @@ export class DynamicFormComponent implements OnInit, OnChanges {
   public rand = Math.ceil(Math.random() * 1e10);
 
   public formDefComp = {};
+  public isValInSelectList: boolean = true;
+  private _sub: Subscription;
 
-  constructor(private _dynformService: DynamicFormService) { }
+  constructor(private _dynformService: DynamicFormService) {}
 
   ngOnInit() {
     this.setFormDefComp(true);
+    // Disable the form if a value is provided and is not in the select list
+    // In case list value change and data are still in database
+    if (this.formDef.type_widget == 'select') {
+      this._sub = this.form
+        .get(this.formDefComp['attribut_name'])
+        .valueChanges.pipe(distinctUntilChanged())
+        .subscribe((val) => {
+          // Cas ou la valeur n'est pas sélectionnée et que la valeur null n'est pas dans la liste
+          if (val != null) {
+            this.isValInSelectList = this.formDefComp['values'].includes(val);
+          }
+        });
+    }
   }
 
-  setFormDefComp(withDefaultValue=false) {
+  setFormDefComp(withDefaultValue = false) {
     this.formDefComp = {};
     for (const key of Object.keys(this.formDef)) {
       this.formDefComp[key] = this._dynformService.getFormDefValue(
@@ -43,12 +61,12 @@ export class DynamicFormComponent implements OnInit, OnChanges {
         key,
         this.form.value
       );
-    }    
+    }
     if (this.form !== undefined) {
       // on met à jour les contraintes
       this._dynformService.setControl(
         this.form.controls[this.formDef.attribut_name],
-        this.formDefComp,
+        this.formDefComp
       );
     }
   }
@@ -96,16 +114,22 @@ export class DynamicFormComponent implements OnInit, OnChanges {
     }
   }
 
-  ngOnChanges(changes: SimpleChanges) {    
+  ngOnChanges(changes: SimpleChanges) {
     for (const propName of Object.keys(changes)) {
-      // si le composant dynamic-form-generator annonce un update
-      // => on recalcule les propriétés
+      // si le composant dynamic - form - generator annonce un update
+      //   => on recalcule les propriétés
       if (propName === 'update' && this.update === true) {
         this.setFormDefComp();
       }
       if (propName !== 'update') {
         this.setFormDefComp();
       }
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this._sub !== undefined) {
+      this._sub.unsubscribe();
     }
   }
 }

@@ -40,7 +40,7 @@
 }
 
 .material-icons {
-  padding-bottom: 3px;  
+  padding-bottom: 3px;
 }
 
 // .mat-icon {
@@ -84,11 +84,11 @@
 //   // overflow:scroll;
 // }
 
-:host /deep/ .datatable-body {
+:host ::ng-deep .datatable-body {
   overflow-x: auto;
 }
 
-:host /deep/ .datatable-body-row {
+:host ::ng-deep .datatable-body-row {
   height: 30px !important;
   &.active .datatable-row-group {
     background-color: #1976d2 !important;
@@ -115,7 +115,7 @@
   }
 }
 
-:host /deep/ ngx-datatable.material {
+:host ::ng-deep ngx-datatable.material {
   datatable-footer datatable-pager a {
     margin: 0px !important;
     padding: 0px !important;
@@ -125,7 +125,7 @@
   }
 }
 
-:host /deep/ .datatable-body-cell i {
+:host ::ng-deep .datatable-body-cell i {
   font-size: 12px;
 }
 
@@ -162,7 +162,7 @@ button:active {
 }
 
 @media screen and (max-width: 1260px) {
-  :host /deep/ .datatable-footer-inner {
+  :host ::ng-deep .datatable-footer-inner {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -189,19 +189,18 @@ button:active {
 
 .chip-alert {
   background: red;
-  color: white!important;
-
+  color: white !important;
 }
 
 .chip-warning {
   background: rgb(255, 123, 0);
-  color: white!important;
+  color: white !important;
 }
 
 .chip-success {
   background: green;
-  color: white!important;
-  }
+  color: white !important;
+}
 
 .mat-chip {
   width: 70%;

@@ -22,9 +22,6 @@ from geonature.utils.env import GEONATURE_VERSION
 from geonature.utils.utilsmails import clean_recipients
 
 
-DEFAULT_ID_MUNICIPALITY = 25
-
-
 class EmailStrOrListOfEmailStrField(fields.Field):
     def _deserialize(self, value, attr, data, **kwargs):
         if isinstance(value, str):
@@ -34,7 +31,7 @@ class EmailStrOrListOfEmailStrField(fields.Field):
             self._check_email(value)
             return value
         else:
-            raise ValidationError('Field should be str or list of str')
+            raise ValidationError("Field should be str or list of str")
 
     def _check_email(self, value):
         recipients = clean_recipients(value)
@@ -59,10 +56,13 @@ class CasFrontend(Schema):
 
 
 class CasSchemaConf(Schema):
-    CAS_URL_VALIDATION = fields.String(load_default="https://preprod-inpn.mnhn.fr/auth/serviceValidate")
+    CAS_URL_VALIDATION = fields.String(
+        load_default="https://preprod-inpn.mnhn.fr/auth/serviceValidate"
+    )
     CAS_USER_WS = fields.Nested(CasUserSchemaConf, load_default=CasUserSchemaConf().load({}))
     USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(load_default=False)
     # Quel modules seront associés au JDD récupérés depuis MTD
+
 
 class MTDSchemaConf(Schema):
     JDD_MODULE_CODE_ASSOCIATION = fields.List(fields.String, load_default=["OCCTAX", "OCCHAB"])
@@ -70,7 +70,6 @@ class MTDSchemaConf(Schema):
 
 
 class BddConfig(Schema):
-    id_area_type_municipality = fields.Integer(load_default=DEFAULT_ID_MUNICIPALITY)
     ID_USER_SOCLE_1 = fields.Integer(load_default=8)
     ID_USER_SOCLE_2 = fields.Integer(load_default=6)
 
@@ -94,6 +93,11 @@ class MailConfig(Schema):
     MAIL_SUPPRESS_SEND = fields.Boolean(required=False)
     MAIL_ASCII_ATTACHMENTS = fields.Boolean(required=False)
     ERROR_MAIL_TO = EmailStrOrListOfEmailStrField(load_default=None)
+
+
+class CeleryConfig(Schema):
+    broker_url = fields.String()
+    result_backend = fields.String(required=False)
 
 
 class AccountManagement(Schema):
@@ -128,10 +132,12 @@ class UsersHubConfig(Schema):
     ADMIN_APPLICATION_PASSWORD = fields.String()
     URL_USERSHUB = fields.Url()
 
+
 class PublicAccess(Schema):
     PUBLIC_LOGIN = fields.String(load_default=None)
     PUBLIC_PASSWORD = fields.String(load_default=None)
     ENABLE_PUBLIC_ACCESS = fields.Boolean(load_default=False)
+
 
 class ServerConfig(Schema):
     LOG_LEVEL = fields.Integer(load_default=20)
@@ -141,15 +147,17 @@ class MediasConfig(Schema):
     MEDIAS_SIZE_MAX = fields.Integer(load_default=50000)
     THUMBNAIL_SIZES = fields.List(fields.Integer, load_default=[200, 50])
 
+
 class AlembicConfig(Schema):
     VERSION_LOCATIONS = fields.String()
+
 
 class AdditionalFields(Schema):
     IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX"])
     IMPLEMENTED_OBJECTS = fields.List(
-        fields.String(),
-        load_default=["OCCTAX_RELEVE",  "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"]
+        fields.String(), load_default=["OCCTAX_RELEVE", "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"]
     )
+
 
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(load_default=50, validate=OneOf([10, 25, 50, 100]))
@@ -164,17 +172,22 @@ class MetadataConfig(Schema):
     MAIL_CONTENT_AF_CLOSED_URL = fields.String(load_default="")
     MAIL_CONTENT_AF_CLOSED_GREETINGS = fields.String(load_default="")
     CLOSED_MODAL_LABEL = fields.String(load_default="Fermer un cadre d'acquisition")
-    CLOSED_MODAL_CONTENT = fields.String(load_default="""L'action de fermeture est irréversible. Il ne sera
-    plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite.""")
+    CLOSED_MODAL_CONTENT = fields.String(
+        load_default="""L'action de fermeture est irréversible. Il ne sera
+    plus possible d'ajouter des jeux de données au cadre d'acquisition par la suite."""
+    )
     CD_NOMENCLATURE_ROLE_TYPE_DS = fields.List(fields.Str(), load_default=[])
     CD_NOMENCLATURE_ROLE_TYPE_AF = fields.List(fields.Str(), load_default=[])
 
-# Class to use for parameters you NOT want to pass to frontend
+
+# class a utiliser pour les paramètres que l'on ne veut pas passer au frontend
+
+
 class GnPySchemaConf(Schema):
     SQLALCHEMY_DATABASE_URI = fields.String(
         required=True,
         validate=Regexp(
-            "^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+$",
+            "^postgresql:\/\/.*:.*@[^:]+:\w+\/\w+",
             error="Database uri is invalid ex: postgresql://monuser:monpass@server:port/db_name",
         ),
     )
@@ -194,9 +207,12 @@ class GnPySchemaConf(Schema):
     CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
     MAIL_CONFIG = fields.Nested(MailConfig, load_default=MailConfig().load({}))
+    CELERY = fields.Nested(CeleryConfig)
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     ADMIN_APPLICATION_LOGIN = fields.String()
-    ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
+    ACCOUNT_MANAGEMENT = fields.Nested(
+        AccountManagement, load_default=AccountManagement().load({})
+    )
     PERMISSION_MANAGEMENT = fields.Nested(PermissionManagement, load_default=PermissionManagement().load({}))
     USERSHUB = fields.Nested(UsersHubConfig, load_default=UsersHubConfig().load({}))
     SERVER = fields.Nested(ServerConfig, load_default=ServerConfig().load({}))
@@ -258,7 +274,9 @@ class Synthese(Schema):
     # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
     # d'abbord s'assurer que ces champs sont bien renvoyé par l'API !
     # Champs disponibles: tous ceux de la vue 'v_synthese_for_web_app
-    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(fields.String, load_default=DEFAULT_COLUMNS_API_SYNTHESE)
+    COLUMNS_API_SYNTHESE_WEB_APP = fields.List(
+        fields.String, load_default=DEFAULT_COLUMNS_API_SYNTHESE
+    )
     # Colonnes affichées sur la liste des résultats de la sytnthese
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, load_default=DEFAULT_LIST_COLUMN)
     EXPORT_COLUMNS = fields.List(fields.String(), load_default=DEFAULT_EXPORT_COLUMNS)
@@ -283,8 +301,6 @@ class Synthese(Schema):
     EXCLUDED_COLUMNS = fields.List(fields.String(), load_default=[])
     # Afficher ou non l'arbre taxonomique
     DISPLAY_TAXON_TREE = fields.Boolean(load_default=True)
-    # rajoute le filtre sur l'observers_txt en ILIKE sur les portée 1 et 2 du CRUVED
-    CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = fields.Boolean(load_default=False)
     # Switch the observer form input in free text input (true) or in select input (false)
     SEARCH_OBSERVER_WITH_LIST = fields.Boolean(load_default=False)
     # id of the observer list -- utilisateurs.t_menus
@@ -300,6 +316,14 @@ class Synthese(Schema):
 
     # Display email on synthese and validation info obs modal
     DISPLAY_EMAIL = fields.Boolean(load_default=True)
+    # Limit comment max length for the discussion tab
+    DISCUSSION_MAX_LENGTH = fields.Integer(load_default=1500)
+    # Allow disable discussion tab for synthese or validation
+    DISCUSSION_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
+    # Allow disable alert synthese module for synthese or validation or any
+    ALERT_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
+    # Allow to activate pin tool for any, some or all VALIDATION, SYNTHESE
+    PIN_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
 
 class DataBlurringManagement(Schema):
     # Configuration parameters for blurring geo data based on diffusion_level, sensitivity
@@ -387,8 +411,7 @@ class GnGeneralSchemaConf(Schema):
     URL_APPLICATION = fields.Url(required=True)
     API_ENDPOINT = fields.Url(required=True)
     API_TAXHUB = fields.Url(required=True)
-    LOCAL_SRID = fields.Integer(load_default=2154)
-    CODE_APPLICATION = fields.String(load_default='GN')
+    CODE_APPLICATION = fields.String(load_default="GN")
     XML_NAMESPACE = fields.String(load_default="{http://inpn.mnhn.fr/mtd}")
     MTD_API_ENDPOINT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/mtd")
     CAS_PUBLIC = fields.Nested(CasFrontend, load_default=CasFrontend().load({}))
@@ -400,7 +423,9 @@ class GnGeneralSchemaConf(Schema):
     ENABLE_NOMENCLATURE_TAXONOMIC_FILTERS = fields.Boolean(load_default=True)
     BDD = fields.Nested(BddConfig, load_default=BddConfig().load({}))
     URL_USERSHUB = fields.Url(required=False)
-    ACCOUNT_MANAGEMENT = fields.Nested(AccountManagement, load_default=AccountManagement().load({}))
+    ACCOUNT_MANAGEMENT = fields.Nested(
+        AccountManagement, load_default=AccountManagement().load({})
+    )
     PERMISSION_MANAGEMENT = fields.Nested(PermissionManagement, load_default=PermissionManagement().load({}))
     DATA_BLURRING = fields.Nested(DataBlurringManagement, load_default=DataBlurringManagement().load({}))
     MEDIAS = fields.Nested(MediasConfig, load_default=MediasConfig().load({}))
@@ -428,7 +453,7 @@ class GnGeneralSchemaConf(Schema):
     def validate_account_autovalidation(self, data, **kwargs):
         account_config = data["ACCOUNT_MANAGEMENT"]
         if (
-                account_config["AUTO_ACCOUNT_CREATION"] is False
+            account_config["AUTO_ACCOUNT_CREATION"] is False
             and account_config["VALIDATOR_EMAIL"] is None
         ):
             raise ValidationError(

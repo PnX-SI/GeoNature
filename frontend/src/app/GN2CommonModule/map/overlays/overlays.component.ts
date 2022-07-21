@@ -4,7 +4,7 @@ import * as L from 'leaflet';
 
 @Component({
   selector: 'pnx-map-overlays',
-  template: ''
+  template: '',
 })
 export class MapOverLaysComponent implements OnInit, OnChanges {
   /** List de geojson à ajouter à la carte */
@@ -15,7 +15,7 @@ export class MapOverLaysComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes) {
     if (changes.layers && changes.layers.currentValue) {
-      changes.layers.currentValue.forEach(layer => {
+      changes.layers.currentValue.forEach((layer) => {
         const geojsonLayer = L.geoJSON(layer.geojson);
         this._mapService.layerControl.addOverlay(geojsonLayer, layer.layerName);
       });

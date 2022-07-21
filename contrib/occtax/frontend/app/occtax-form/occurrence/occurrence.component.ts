@@ -18,7 +18,7 @@ import { Taxon } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { FormService } from "@geonature_common/form/form.service";
 import { OcctaxTaxaListService } from "../taxa-list/taxa-list.service";
 import { ConfirmationDialog } from "@geonature_common/others/modal-confirmation/confirmation.dialog";
-import { MatDialog } from "@angular/material";
+import { MatDialog } from "@angular/material/dialog";
 
 
 @Component({
@@ -52,7 +52,7 @@ export class OcctaxFormOccurrenceComponent implements OnInit, OnDestroy {
   public occurrenceForm: FormGroup;
   public taxonForm: FormControl; //control permettant de rechercher un taxon TAXREF
   public taxonFormFocus: boolean = false; //pour mieux gérer l'affichage de l'erreur required
-  private advanced: string = "collapsed";
+  public advanced: string = "collapsed";
   private _subscriptions: Subscription[] = [];
   public displayProofFromElements: boolean = false;
 

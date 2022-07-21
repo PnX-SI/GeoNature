@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container" data-qa="pnx-af-form">
   <a
     mat-raised-button
     class="ml-1 mb-1"
@@ -9,13 +9,9 @@
 
   <div class="row">
     <div class="col-md-8">
-
-      <div class="card ">
+      <div class="card">
         <div class="card-body">
-          <h3>
-            Cadre d'acquisition
-          </h3>
-
+          <h3>Cadre d'acquisition</h3>
 
           <div>
             <small>Nom </small>
@@ -23,7 +19,7 @@
               class="form-control form-control-sm"
               type="text"
               [formControl]="form.get('acquisition_framework_name')"
-            >
+            />
           </div>
 
           <div>
@@ -39,7 +35,9 @@
           <div>
             <small>
               Mots clés
-              <mat-icon matTooltip="Mot(s)-clé(s) représentatifs du cadre d'acquisition, séparés par des virgules">
+              <mat-icon
+                matTooltip="Mot(s)-clé(s) représentatifs du cadre d'acquisition, séparés par des virgules"
+              >
                 info
               </mat-icon>
             </small>
@@ -47,18 +45,13 @@
               class="form-control form-control-sm"
               type="text"
               [formControl]="form.get('keywords')"
-            >
+            />
           </div>
 
-          <br>
+          <br />
           <div>
-            <input
-              [formControl]="form.get('is_parent')"
-              type="checkbox"
-            >
-            <small>
-              Est un cadre d'acquisition parent
-            </small>
+            <input [formControl]="form.get('is_parent')" type="checkbox" />
+            <small> Est un cadre d'acquisition parent </small>
           </div>
 
           <div>
@@ -69,10 +62,10 @@
             >
               <option [ngValue]="null"></option>
               <option
-                *ngFor="let ac of acquisitionFrameworks"
+                *ngFor="let ac of metadataS.acquisitionFrameworks"
                 [ngValue]="ac.id_acquisition_framework"
               >
-                {{ac.acquisition_framework_name}}
+                {{ ac.acquisition_framework_name }}
               </option>
             </select>
           </div>
@@ -131,7 +124,6 @@
           >
           </pnx-nomenclature>
 
-
           <div>
             <small>
               Cibles écologiques ou géologiques
@@ -146,7 +138,7 @@
               class="form-control form-control-sm"
               type="text"
               [formControl]="form.get('ecologic_or_geologic_target')"
-            >
+            />
           </div>
 
           <div>
@@ -170,21 +162,23 @@
           >
           </pnx-date>
 
-          <small
-            *ngIf="form.errors?.invalidDate"
-            class="error"
-            style="color:red"
-          >
+          <small *ngIf="form.errors?.invalidDate" class="error" style="color: red">
             {{ 'Releve.DateMaxError' | translate }}
           </small>
           <div>
             <h6>Référence(s) bibliographique(s)</h6>
 
-            <ng-container *ngFor="let bibliograpicReferenceForm of form.get('bibliographical_references').controls; let idx = index; let last = last">
+            <ng-container
+              *ngFor="
+                let bibliograpicReferenceForm of form.get('bibliographical_references')['controls'];
+                let idx = index;
+                let last = last
+              "
+            >
               <div class="row">
                 <div class="col-1">
                   <button
-                    style="margin-top: 10px;"
+                    style="margin-top: 10px"
                     matTooltip="Supprimer la référence"
                     mat-icon-button
                     color="warn"
@@ -197,31 +191,38 @@
                   <div>
                     <small>
                       URL de la publication
-                      <mat-icon matTooltip="Adresse à laquelle trouver la publication">info</mat-icon>
+                      <mat-icon matTooltip="Adresse à laquelle trouver la publication"
+                        >info</mat-icon
+                      >
                     </small>
                     <input
                       class="form-control form-control-sm"
                       type="text"
                       [formControl]="bibliograpicReferenceForm.get('publication_url')"
-                    >
+                    />
                   </div>
                   <div>
                     <small>
                       Référence de la publication
-                      <mat-icon matTooltip="Référence complète de la publication suivant la nomenclature ISO 690">info</mat-icon>
+                      <mat-icon
+                        matTooltip="Référence complète de la publication suivant la nomenclature ISO 690"
+                        >info</mat-icon
+                      >
                     </small>
                     <input
                       class="form-control form-control-sm"
                       type="text"
                       [formControl]="bibliograpicReferenceForm.get('publication_reference')"
-                    >
+                    />
                   </div>
                 </div>
               </div>
-              <mat-divider style="margin-top:10px;" *ngIf="!last"></mat-divider>
+              <mat-divider style="margin-top: 10px" *ngIf="!last"></mat-divider>
             </ng-container>
             <div>
-              <ng-container *ngIf="!form.get('bibliographical_references').controls.length; else roundButton">
+              <ng-container
+                *ngIf="!form.get('bibliographical_references')['controls'].length; else roundButton"
+              >
                 <button
                   type="button"
                   mat-raised-button
@@ -235,7 +236,7 @@
               <ng-template #roundButton>
                 <div class="text-right">
                   <button
-                    style="margin-top: 5px;"
+                    style="margin-top: 5px"
                     type="button"
                     matTooltip="Ajouter une autre référence"
                     mat-mini-fab
@@ -252,11 +253,10 @@
       </div>
     </div>
 
-
     <div class="col-md-4">
       <div class="card">
         <div class="card-header">
-          <h3 class="main-color"> Contact principal </h3>
+          <h3 class="main-color">Contact principal</h3>
         </div>
         <div class="card-body">
           <ng-container *ngFor="let actorForm of afFormS.actors.controls; let idx = index">
@@ -266,7 +266,11 @@
               metadataType="af"
               [isRemovable]="false"
               (actorFormRemove)="afFormS.removeActor(afFormS.actors, idx)"
-              [defaultTab]="(afFormS.acquisition_framework | async)?.id_acquisition_framework ? 'all': 'organism'"
+              [defaultTab]="
+                (afFormS.acquisition_framework | async)?.id_acquisition_framework
+                  ? 'all'
+                  : 'organism'
+              "
             >
             </pnx-metadata-actor>
           </ng-container>
@@ -275,66 +279,53 @@
 
       <div class="card">
         <div class="card-header">
-          <h3 class="main-color"> Autre(s) acteur(s) </h3>
+          <h3 class="main-color">Autre(s) acteur(s)</h3>
         </div>
         <div class="card-body">
-          <ng-container *ngFor="let actorForm of afFormS.actors.controls; let idx = index"> 
+          <ng-container *ngFor="let actorForm of afFormS.actors.controls; let idx = index">
+            <pnx-metadata-actor
+              *ngIf="!afFormS.isMainContact(actorForm)"
+              [actorForm]="actorForm"
+              metadataType="af"
+              (actorFormRemove)="afFormS.removeActor(afFormS.actors, idx)"
+              [defaultTab]="
+                (afFormS.acquisition_framework | async)?.id_acquisition_framework
+                  ? 'all'
+                  : 'organism'
+              "
+            >
+            </pnx-metadata-actor>
 
-          <pnx-metadata-actor
-            *ngIf="!afFormS.isMainContact(actorForm)"
-            [actorForm]="actorForm"
-            metadataType="af"
-            (actorFormRemove)="afFormS.removeActor(afFormS.actors, idx)"
-            [defaultTab]="(afFormS.acquisition_framework | async)?.id_acquisition_framework ? 'all': 'organism'"
-          >
-          </pnx-metadata-actor>
-          
-          <ng-container *ngIf="
-            !afFormS.actors.valid
-            && afFormS.actors.errors?.hasDoublons.index == idx
-          ">
-            <small
-              class="mat-error">
-              Cet acteur est déjà présent dans la liste
-            </small>
+            <ng-container
+              *ngIf="!afFormS.actors.valid && afFormS.actors.errors?.hasDoublons.index == idx"
+            >
+              <small class="mat-error"> Cet acteur est déjà présent dans la liste </small>
+            </ng-container>
+
+            <p></p>
           </ng-container>
-
-          <p></p>
-        </ng-container>
-        <button
-          class="mt-2 float-right"
-          type="button"
-          mat-mini-fab
-          color="primary"
-          matTooltip="Ajouter un autre acteur"
-          (click)="addContact(afFormS.actors, false)"
-          [disabled]="!afFormS.actors.valid"
-        >
-          <mat-icon>add</mat-icon>
-        </button>
+          <button
+            class="mt-2 float-right"
+            type="button"
+            mat-mini-fab
+            color="primary"
+            matTooltip="Ajouter un autre acteur"
+            (click)="addContact(afFormS.actors, false)"
+            [disabled]="!afFormS.actors.valid"
+          >
+            <mat-icon>add</mat-icon>
+          </button>
         </div>
       </div>
     </div>
   </div>
 
   <div class="ml-1 mt-1">
-    <button
-      class="mr-1"
-      type="button"
-      mat-raised-button
-      color="warn"
-      routerLink="/metadata"
-    >
+    <button class="mr-1" type="button" mat-raised-button color="warn" routerLink="/metadata">
       Annuler
     </button>
-    <button
-      [disabled]="form.invalid"
-      mat-raised-button
-      class="button-success"
-      (click)="postAf()"
-    >
+    <button [disabled]="form.invalid" mat-raised-button class="button-success" (click)="postAf()">
       Enregistrer le cadre d'acquisition
     </button>
   </div>
-
 </div>

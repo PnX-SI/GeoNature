@@ -6,32 +6,33 @@ import {
   EventEmitter,
   AfterViewInit,
   OnChanges,
-  SimpleChanges, 
+  SimpleChanges,
   SimpleChange,
-  OnDestroy
+  OnDestroy,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs';
+import { distinctUntilChanged, debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'pnx-generic-form',
-  template: ''
+  template: '',
 })
 export class GenericFormComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
   @Input() parentFormControl: FormControl;
   @Input() label: string;
-  @Input() class: string = "auto"; 
+  @Input() class: string = 'auto';
 
   @Input() disabled: boolean = false;
-    /**
- * @deprecated Do not use this input
- */
+  /**
+   * @deprecated Do not use this input
+   */
   @Input() debounceTime: number;
   @Input() multiSelect: boolean = false;
   @Input() clearable: boolean = true;
-    /**
- * @deprecated Do not use this input
- */
+  /**
+   * @deprecated Do not use this input
+   */
   @Input() searchBar: boolean = false;
   @Input() displayAll: boolean = false; // param to display the field 'all' in the list, default at false
   @Output() onChange = new EventEmitter<any>();
@@ -55,9 +56,8 @@ export class GenericFormComponent implements OnInit, OnChanges, AfterViewInit, O
   ngAfterViewInit() {
     this.setDisabled();
     this.sub = this.parentFormControl.valueChanges
-      .distinctUntilChanged()
-      .debounceTime(this.debounceTime)
-      .subscribe(value => {
+      .pipe(distinctUntilChanged(), debounceTime(this.debounceTime))
+      .subscribe((value) => {
         if (!value || (value && (value.length === 0 || value === ''))) {
           this.onDelete.emit();
         } else {
@@ -72,7 +72,7 @@ export class GenericFormComponent implements OnInit, OnChanges, AfterViewInit, O
 
   filterItems(event, savedItems, itemKey) {
     if (this.searchBar && event) {
-      return savedItems.filter(el => {
+      return savedItems.filter((el) => {
         const isIn = el[itemKey].toUpperCase().indexOf(event.toUpperCase());
         return isIn !== -1;
       });

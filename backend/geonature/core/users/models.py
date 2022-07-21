@@ -27,7 +27,9 @@ class CorRole(DB.Model):
     )
     id_role_utilisateur = DB.Column(DB.Integer, primary_key=True)
     role = DB.relationship(
-        User, primaryjoin=(User.id_role == id_role_groupe), foreign_keys=[id_role_groupe],
+        User,
+        primaryjoin=(User.id_role == id_role_groupe),
+        foreign_keys=[id_role_groupe],
     )
 
     def __init__(self, id_group, id_role):

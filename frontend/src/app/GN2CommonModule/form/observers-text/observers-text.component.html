@@ -1,11 +1,11 @@
 <small> {{ 'Releve.Observers' | translate }} </small>
 <div class="input-group">
   <input
-    [ngClass]="{'is-invalid' : parentFormControl.invalid}"
+    [ngClass]="{ 'is-invalid': parentFormControl.invalid }"
     class="form-control form-control-sm"
     type="text"
     [formControl]="parentFormControl"
     placeholder=""
     [disableControl]="disabled"
-  >
+  />
 </div>

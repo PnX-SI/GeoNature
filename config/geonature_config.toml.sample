@@ -11,9 +11,6 @@ API_TAXHUB = 'http://url.com/taxhub/api'
 # Remplacer par une clé alétoire complexe
 SECRET_KEY = 'super secret key'
 
-# Code EPSG des geométries dans la BDD
-LOCAL_SRID = 2154
-
 # Langue principale par défaut
 DEFAULT_LANGUAGE='fr'
 

@@ -1,13 +1,11 @@
-<div
-  mat-dialog-content
-  [innerHtml]="message"
-></div>
+<div mat-dialog-content [innerHtml]="message"></div>
 
 <div mat-dialog-actions>
   <button
     mat-raised-button
     [color]="noColor"
     (click)="onNoClick()"
+    data-qa="confirmation-dialog-no"
   >{{ 'No' | translate }}
   </button>
   <button
@@ -15,6 +13,7 @@
     [color]="yesColor"
     [mat-dialog-close]="true"
     cdkFocusInitial
-  >{{ 'Yes' | translate }}
+    data-qa="confirmation-dialog-yes"
+    >{{ 'Yes' | translate }}
   </button>
 </div>

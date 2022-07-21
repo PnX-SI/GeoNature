@@ -10,14 +10,15 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '2a2e5c519fd1'
-down_revision = '7077aa76da3d'
+revision = "2a2e5c519fd1"
+down_revision = "7077aa76da3d"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
-    op.execute("""
+    op.execute(
+        """
     CREATE OR REPLACE FUNCTION gn_synthese.get_default_nomenclature_value(myidtype character varying, myidorganism integer DEFAULT NULL, myregne character varying DEFAULT '0'::character varying, mygroup2inpn character varying DEFAULT '0'::character varying)
      RETURNS integer
      LANGUAGE plpgsql
@@ -50,11 +51,13 @@ def upgrade():
       END;
     $function$
     ;
-    """)
+    """
+    )
 
 
 def downgrade():
-    op.execute("""
+    op.execute(
+        """
     CREATE OR REPLACE FUNCTION gn_synthese.get_default_nomenclature_value(myidtype character varying, myidorganism integer DEFAULT 0, myregne character varying DEFAULT '0'::character varying, mygroup2inpn character varying DEFAULT '0'::character varying)
      RETURNS integer
      LANGUAGE plpgsql
@@ -79,4 +82,5 @@ def downgrade():
       END;
     $function$
     ;
-    """)
+    """
+    )

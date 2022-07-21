@@ -18,7 +18,7 @@ export class SideNavService {
     this.opened = false;
   }
 
-  setSideNav(sidenav) {
+  setSideNav(sidenav: MatSidenav) {
     this.sidenav = sidenav;
   }
 
@@ -33,6 +33,10 @@ export class SideNavService {
 
   getCurrentApp() {
     return this.currentModule;
+  }
+
+  getHomeItem() {
+    return { module_url: '/', module_label: 'Accueil', module_picto: 'fa-home', id: '1' };
   }
 
   toggleSideNav() {

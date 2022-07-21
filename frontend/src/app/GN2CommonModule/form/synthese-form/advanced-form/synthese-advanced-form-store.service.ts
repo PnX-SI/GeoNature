@@ -3,7 +3,7 @@ import { DataFormService } from '@geonature_common/form/data-form.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
-import { TreeModel } from 'angular-tree-component';
+import { TreeModel } from '@circlon/angular-tree-component';
 import { AppConfig } from '@geonature_config/app.config';
 import { formatTaxonTree } from '@geonature_common/form/taxon-tree/taxon-tree.service';
 
@@ -26,26 +26,26 @@ export class TaxonAdvancedStoreService {
     private _formGen: DynamicFormService
   ) {
     if (AppConfig.SYNTHESE.DISPLAY_TAXON_TREE) {
-      this._validationDataService.getTaxonTree().subscribe(data => {
+      this._validationDataService.getTaxonTree().subscribe((data) => {
         this.taxonTree = formatTaxonTree(data);
       });
     }
 
     // get taxhub attributes
-    this._dataService.getTaxhubBibAttributes().subscribe(attrs => {
+    this._dataService.getTaxhubBibAttributes().subscribe((attrs) => {
       // display only the taxhub attributes set in the config
       this.taxhubAttributes = attrs
-        .filter(attr => {
+        .filter((attr) => {
           return AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB.indexOf(attr.id_attribut) !== -1;
         })
-        .map(attr => {
+        .map((attr) => {
           // format attributes to fit with the GeoNature dynamicFormComponent
           attr['values'] = JSON.parse(attr['liste_valeur_attribut']).values;
           attr['attribut_name'] = 'taxhub_attribut_' + attr['id_attribut'];
           attr['required'] = attr['obligatoire'];
           attr['attribut_label'] = attr['label_attribut'];
           if (attr['type_widget'] == 'multiselect') {
-            attr['values'] = attr['values'].map(val => {
+            attr['values'] = attr['values'].map((val) => {
               return { value: val };
             });
           }
@@ -56,20 +56,20 @@ export class TaxonAdvancedStoreService {
       this.formBuilded = true;
     });
     // load LR,  habitat and group2inpn
-    this._dataService.getTaxonomyLR().subscribe(data => {
+    this._dataService.getTaxonomyLR().subscribe((data) => {
       this.taxonomyLR = data;
     });
 
-    this._dataService.getTaxonomyHabitat().subscribe(data => {
+    this._dataService.getTaxonomyHabitat().subscribe((data) => {
       this.taxonomyHab = data;
     });
 
     const all_groups = [];
-    this._dataService.getRegneAndGroup2Inpn().subscribe(data => {
+    this._dataService.getRegneAndGroup2Inpn().subscribe((data) => {
       this.taxonomyGroup2Inpn = data;
-      // tslint:disable-next-line:forin
+      // eslint-disable-next-line guard-for-in
       for (let regne in data) {
-        data[regne].forEach(group => {
+        data[regne].forEach((group) => {
           if (group.length > 0) {
             all_groups.push({ value: group });
           }

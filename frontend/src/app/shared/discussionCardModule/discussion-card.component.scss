@@ -1,0 +1,67 @@
+.discussion-card {
+  border: 1px solid rgba(103, 58, 183, 0.8);
+}
+.comment-card {
+  border: 1px solid rgba(141, 137, 148, 0.8);
+}
+.link-infos {
+  border: 1px solid #673ab7;
+}
+.saveBtn {
+  background-color: #673ab7;
+  color: white;
+}
+.cancelBtn {
+  color: #673ab7;
+}
+
+.disccusion-field textarea {
+  border-left: 1px solid transparent !important;
+}
+
+.disccusion-field {
+  border: 1px solid transparent !important;
+}
+
+.link-infos.mat-button-disabled {
+  color: white;
+  background-color: rgba(104, 58, 183, 0.226);
+}
+
+.header-card {
+  background-color: #f6f8fa;
+  color: rgb(87, 96, 106);
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-bottom: 1px solid rgb(208, 215, 222);
+}
+
+::ng-deep .mat-card-header-text {
+  width: 100%;
+}
+::ng-deep .mat-card-content {
+  margin-bottom: 0px;
+}
+.discussion-card {
+  border: 1px solid rgba(103, 58, 183, 0.2);
+}
+
+.disccusion-action-btn {
+  outline-width: 0px;
+}
+
+::ng-deep .rm-comment:focus {
+  outline-width: 0px;
+}
+::ng-deep .rm-comment:hover {
+  color: rgba(104, 58, 183, 0.5);
+}
+
+.statusIcon {
+  vertical-align: middle;
+}
+
+.fontComment {
+  font-size: 15px;
+}

@@ -6,7 +6,7 @@ import {
   HttpClientModule,
   HttpClient,
   HttpClientXsrfModule,
-  HTTP_INTERCEPTORS
+  HTTP_INTERCEPTORS,
 } from '@angular/common/http';
 
 // For Angular Dependencies
@@ -21,16 +21,14 @@ import { ToastrModule, ToastrService } from 'ngx-toastr';
 // Modules
 import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 
-// Angular created component
+// Angular created components/modules
 import { AppComponent } from './app.component';
 import { routing } from './routing/app-routing.module'; // RoutingModule
 import { HomeContentComponent } from './components/home-content/home-content.component';
 import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.component';
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
-import { LoginComponent } from './components/login/login.component';
-import { SignUpComponent } from './components/sign-up/sign-up.component';
-import { NewPasswordComponent } from './components/new-password/new-password.component';
 import { NavHomeComponent } from './components/nav-home/nav-home.component';
+import { LoginModule } from './modules/login/login.module';
 
 // Custom component (footer, presentation etc...)
 import { FooterComponent } from '../custom/components/footer/footer.component';
@@ -39,12 +37,11 @@ import { IntroductionComponent } from '../custom/components/introduction/introdu
 // Service
 import { AuthService } from './components/auth/auth.service';
 import { CookieService } from 'ng2-cookies';
-import { ChartsModule } from 'ng2-charts/ng2-charts';
+import { ChartsModule } from 'ng2-charts';
 import {
   AuthGuard,
   ModuleGuardService,
-  SignUpGuard,
-  UserManagementGuard
+  PublicAccessGuard,
 } from '@geonature/routing/routes-guards.service';
 import { ModuleService } from './services/module.service';
 import { CruvedStoreService } from './GN2CommonModule/service/cruved-store.service';
@@ -57,16 +54,16 @@ import { GlobalSubService } from './services/global-sub.service';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
-import { UserDataService } from "./userModule/services/user-data.service";
+import { UserDataService } from './userModule/services/user-data.service';
 
 // Config
 import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
 
-
 export function get_modules(moduleService: ModuleService) {
-    return () => { return moduleService.fetchModules().toPromise(); };
+  return () => {
+    return moduleService.fetchModules().toPromise();
+  };
 }
-
 
 @NgModule({
   imports: [
@@ -80,25 +77,23 @@ export function get_modules(moduleService: ModuleService) {
     ToastrModule.forRoot({
       positionClass: 'toast-top-center',
       tapToDismiss: true,
-      timeOut: 3000
+      timeOut: 3000,
     }),
     GN2CommonModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: createTranslateLoader,
-        deps: [HttpClient]
-      }
-    })
+        deps: [HttpClient],
+      },
+    }),
+    LoginModule,
   ],
   declarations: [
     AppComponent,
     HomeContentComponent,
     SidenavItemsComponent,
     PageNotFoundComponent,
-    LoginComponent,
-    SignUpComponent,
-    NewPasswordComponent,
     NavHomeComponent,
     FooterComponent,
     IntroductionComponent,
@@ -112,17 +107,16 @@ export function get_modules(moduleService: ModuleService) {
     CookieService,
     HttpClient,
     ModuleGuardService,
-    SignUpGuard,
-    UserManagementGuard,
     SideNavService,
     CruvedStoreService,
     UserDataService,
+    PublicAccessGuard,
     { provide: APP_CONFIG_TOKEN, useValue: AppConfig },
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
     // { provide: APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService], multi: true},
-     { provide: APP_INITIALIZER, useFactory: get_modules, deps: [ModuleService], multi: true},
+    { provide: APP_INITIALIZER, useFactory: get_modules, deps: [ModuleService], multi: true },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

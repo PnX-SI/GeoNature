@@ -104,6 +104,12 @@ instance/
 docs/_build/
 #frontend doc
 
+#frontend test
+frontend/cypress/videos
+frontend/cypress/screenshots
+frontend/coverage
+frontend/.nyc_output/out.json
+
 # PyBuilder
 target/
 
@@ -156,3 +162,5 @@ backend/static/images/taxa.png
 *.swo
 
 /docs/CHANGELOG.html
+frontend/coverage/clover.xml
+frontend/.nyc_output/out.json

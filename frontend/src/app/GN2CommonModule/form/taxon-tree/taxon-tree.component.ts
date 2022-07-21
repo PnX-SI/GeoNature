@@ -1,19 +1,22 @@
 import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter,
   AfterContentInit,
-  ViewChild
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
 } from '@angular/core';
-import { TreeModel } from 'angular-tree-component';
-import { TreeNode, TreeComponent, IActionMapping } from 'angular-tree-component';
-
+import {
+  IActionMapping,
+  TreeComponent,
+  TreeModel,
+  TreeNode,
+} from '@circlon/angular-tree-component';
 /** Generic component for display taxon tree. Not use yet */
 @Component({
   selector: 'pnx-tree',
-  templateUrl: 'taxon-tree.component.html'
+  templateUrl: 'taxon-tree.component.html',
 })
 export class TaxonTreeComponent implements OnInit, AfterContentInit {
   public selectedNodes = [];
@@ -26,7 +29,7 @@ export class TaxonTreeComponent implements OnInit, AfterContentInit {
   @Input() treeOptions;
   @Output() onReset = new EventEmitter<any>();
   @Output() onEvent = new EventEmitter<any>();
-  @ViewChild('tree') treeComponent: TreeComponent;
+  @ViewChild('tree', { static: false }) treeComponent: TreeComponent;
 
   constructor() {
     const actionMapping: IActionMapping = {
@@ -38,12 +41,12 @@ export class TaxonTreeComponent implements OnInit, AfterContentInit {
             node.toggleExpanded();
           }
           this.expandNodeRecursively(node, 5);
-        }
-      }
+        },
+      },
     };
     this.treeOptions = {
       actionMapping,
-      useCheckbox: true
+      useCheckbox: true,
     };
   }
 
@@ -59,7 +62,7 @@ export class TaxonTreeComponent implements OnInit, AfterContentInit {
   expandNodeRecursively(node: TreeNode, depth: number): void {
     depth = depth - 1;
     if (node.children) {
-      node.children.forEach(subNode => {
+      node.children.forEach((subNode) => {
         if (!subNode.isExpanded) {
           subNode.toggleExpanded();
         }
@@ -73,7 +76,7 @@ export class TaxonTreeComponent implements OnInit, AfterContentInit {
   // algo recursif pour retrouver tout les cd_ref sélectionné à partir de l'arbre
   searchSelectedId(node, depth): Array<any> {
     if (node.children) {
-      node.children.forEach(subNode => {
+      node.children.forEach((subNode) => {
         depth = depth - 1;
         if (depth > 0) {
           this.searchSelectedId(subNode, depth);
@@ -102,7 +105,7 @@ export class TaxonTreeComponent implements OnInit, AfterContentInit {
 
   resetTree() {
     this.treeModel.collapseAll();
-    this.treeModel.doForAll(node => {
+    this.treeModel.doForAll((node) => {
       node.setIsSelected(false);
     });
     this.selectedCdRefFromTree = [];

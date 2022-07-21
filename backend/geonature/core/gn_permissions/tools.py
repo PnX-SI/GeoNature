@@ -47,18 +47,18 @@ def user_from_token(token, secret_key=None):
     except BadSignature:
         raise UnreadableAccessRightsError("Token BadSignature", 403)
 
+
 def log_expiration_warning():
-    log.warning("""
+    log.warning(
+        """
         The parameter redirect_on_expiration will be soon removed.
         The redirection will be default to GeoNature login page
         """
     )
 
+
 def get_user_from_token_and_raise(
-    request,
-    secret_key=None,
-    redirect_on_expiration=None,
-    redirect_on_invalid_token=None
+    request, secret_key=None, redirect_on_expiration=None, redirect_on_invalid_token=None
 ):
     """
     Déserialisation du token utilisateur.
@@ -73,17 +73,17 @@ def get_user_from_token_and_raise(
         if redirect_on_expiration:
             log_expiration_warning()
             raise RequestRedirect(new_url=redirect_on_expiration)
-        raise Unauthorized(description='No token.')
+        raise Unauthorized(description="No token.")
     except AccessRightsExpiredError:
         if redirect_on_expiration:
             log_expiration_warning()
             raise RequestRedirect(new_url=redirect_on_expiration)
-        raise Unauthorized(description='Token expired.')
+        raise Unauthorized(description="Token expired.")
     except UnreadableAccessRightsError:
         if redirect_on_invalid_token:
             log_expiration_warning()
             raise RequestRedirect(new_url=redirect_on_invalid_token)
-        raise Unauthorized(description='Token corrupted.')
+        raise Unauthorized(description="Token corrupted.")
     except Exception as e:
         trap_all_exceptions = current_app.config.get("TRAP_ALL_EXCEPTIONS", True)
         if not trap_all_exceptions:
@@ -337,12 +337,25 @@ def cruved_scope_for_user_in_module(
     return herited_cruved, is_herited
 
 
+def _get_scopes_by_action(id_role, module_code, object_code):
+    cruved = UserCruved(
+        id_role=id_role, code_filter_type="SCOPE", module_code=module_code, object_code=object_code
+    )
+    return {
+        action: int(scope)
+        for action, scope in cruved.get_perm_for_all_actions(get_id=False)[0].items()
+    }
+
+
 def get_scopes_by_action(id_role=None, module_code=None, object_code=None):
     if id_role is None:
         id_role = g.current_user.id_role
-    cruved = UserCruved(id_role=id_role, code_filter_type="SCOPE",
-                        module_code=module_code, object_code=object_code)
-    return { action: int(scope) for action, scope in cruved.get_perm_for_all_actions(get_id=False)[0].items() }
+    if "scopes_by_action" not in g:
+        g.scopes_by_action = dict()
+    key = (id_role, module_code, object_code)
+    if key not in g.scopes_by_action:
+        g.scopes_by_action[key] = _get_scopes_by_action(*key)
+    return g.scopes_by_action[key]
 
 
 def get_or_fetch_user_cruved(session=None, id_role=None, module_code=None, object_code=None):

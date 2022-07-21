@@ -6,16 +6,27 @@
     </button>
   </div>
   <div class="modal-body">
-      <p> Degrés décimaux (WGS84) </p>
-      <div class="form-inline">
-        <div class="form-group ">
-            <input class="form-control col-sm-4 col-md-4" placeholder="X" [(ngModel)]='x' type="number">
-            <input class="form-control col-sm-4 col-md-4" placeholder="Y" [(ngModel)]='y' type="number">
-        </div>
+    <p>Degrés décimaux (WGS84)</p>
+    <div class="form-inline">
+      <div class="form-group">
+        <input
+          class="form-control col-sm-4 col-md-4"
+          placeholder="X"
+          [(ngModel)]="x"
+          type="number"
+        />
+        <input
+          class="form-control col-sm-4 col-md-4"
+          placeholder="Y"
+          [(ngModel)]="y"
+          type="number"
+        />
       </div>
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-success" (click)="d()" (click)="setMarkerFromGps(x, y)">Valider</button>
-    </div>
-
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-success" (click)="d()" (click)="setMarkerFromGps(x, y)">
+      Valider
+    </button>
+  </div>
 </ng-template>

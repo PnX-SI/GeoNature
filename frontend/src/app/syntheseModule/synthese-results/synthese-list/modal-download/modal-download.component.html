@@ -1,6 +1,6 @@
 <div class="modal-header">
-  <h5 *ngIf="!tooManyObs" class="modal-title" id="modalLabel"> Téléchargement </h5>
-  <h5 *ngIf="tooManyObs" class="modal-title" id="modalLabel"> Limite d'affichage atteinte ! </h5>
+  <h5 *ngIf="!tooManyObs" class="modal-title" id="modalLabel">Téléchargement</h5>
+  <h5 *ngIf="tooManyObs" class="modal-title" id="modalLabel">Limite d'affichage atteinte !</h5>
 
   <button
     type="button"
@@ -15,8 +15,8 @@
 <div class="modal-body">
   <div *ngIf="tooManyObs">
     <div class="alert alert-danger" role="alert">
-      <b> Attention ! </b> Votre requête comporte un nombre trop important
-      d'observations pour que celles-ci soient affichées sur la carte.
+      <b> Attention ! </b> Votre requête comporte un nombre trop important d'observations pour que
+      celles-ci soient affichées sur la carte.
     </div>
 
     <div class="alert alert-warning" role="alert">
@@ -34,29 +34,29 @@
       role="alert"
     >
       Vous pouvez néanmoins exporter les données, dans une limite de
-      <b> {{syntheseConfig.NB_MAX_OBS_EXPORT}} </b>
+      <b> {{ syntheseConfig.NB_MAX_OBS_EXPORT }} </b>
       observations en cliquant sur les liens ci-dessous
     </div>
   </div>
 
   <div *ngIf="!tooManyObs || syntheseConfig.NB_MAX_OBS_EXPORT > syntheseConfig.NB_MAX_OBS_MAP">
     <div class="my-3 pt-2">
-      <h5 class="second-color"> Télécharger les observations </h5>
+      <h5 class="second-color">Télécharger les observations</h5>
       <button
         [disabled]="_dataService.isDownloading"
-        style="margin-left: 5px;"
+        style="margin-left: 5px"
         *ngFor="let format of syntheseConfig.EXPORT_FORMAT"
         mat-raised-button
         (click)="downloadObservations(format)"
         type="button"
         class="buttonLoad button-success format-btn"
       >
-        Format {{format}}
+        Format {{ format }}
       </button>
     </div>
 
     <div class="my-3 pt-2">
-      <h5 class="second-color"> Télécharger les taxons </h5>
+      <h5 class="second-color">Télécharger les taxons</h5>
       <button
         [disabled]="_dataService.isDownloading"
         mat-raised-button
@@ -68,9 +68,8 @@
       </button>
     </div>
 
-
     <div class="my-3 pt-2">
-      <h5 class="second-color"> Télécharger les statuts</h5>
+      <h5 class="second-color">Télécharger les statuts</h5>
       <button
         [disabled]="_dataService.isDownloading"
         mat-raised-button
@@ -83,7 +82,7 @@
     </div>
 
     <div class="my-3 pt-2">
-      <h5 class="my-2 second-color"> Télécharger les métadonnées</h5>
+      <h5 class="my-2 second-color">Télécharger les métadonnées</h5>
       <button
         [disabled]="_dataService.isDownloading"
         mat-raised-button
@@ -96,19 +95,10 @@
     </div>
   </div>
 
-  <div
-    *ngIf="_dataService.isDownloading"
-    class="telechargement card"
-    style="margin-top: 30px;"
-  >
-    <div class="card-body text-{{bstype}}">
-      {{'Downloading' | translate }}
-      <img
-        src="assets/images/Spinner.gif"
-        alt="Chargement..."
-        height="40"
-        width="40"
-      />
+  <div *ngIf="_dataService.isDownloading" class="telechargement card" style="margin-top: 30px">
+    <div class="card-body text-{{ bstype }}">
+      {{ 'Downloading' | translate }}
+      <img src="assets/images/Spinner.gif" alt="Chargement..." height="40" width="40" />
     </div>
   </div>
 </div>

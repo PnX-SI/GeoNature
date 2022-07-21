@@ -10,9 +10,7 @@ from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
 
 from geonature.utils.env import DB
-from geonature.utils.config import config
 from geonature.core.gn_synthese.models import Synthese
-
 
 
 @serializable
@@ -34,15 +32,13 @@ class VmCorTaxonPhenology(DB.Model):
     nomenclature_life_stage = DB.relationship("TNomenclatures")
 
 
-
-
 @serializable
-@geoserializable
+@geoserializable(geoCol="valid_distribution", idCol="cd_ref")
 class VmValidProfiles(DB.Model):
     __tablename__ = "vm_valid_profiles"
     __table_args__ = {"schema": "gn_profiles"}
     cd_ref = DB.Column(DB.Integer, primary_key=True)
-    valid_distribution = DB.Column(Geometry("GEOMETRY", config["LOCAL_SRID"]))
+    valid_distribution = DB.Column(Geometry("GEOMETRY"))
     altitude_min = DB.Column(DB.Integer)
     altitude_max = DB.Column(DB.Integer)
     first_valid_data = DB.Column(DB.DateTime)
@@ -50,18 +46,13 @@ class VmValidProfiles(DB.Model):
     count_valid_data = DB.Column(DB.Integer)
     active_life_stage = DB.Column(DB.Boolean)
 
-    def get_geofeature(self, recursif=False, columns=()):
-        return self.as_geofeature("valid_distribution", "cd_ref", recursif, columns=columns)
-
 
 @serializable
 class VConsistancyData(DB.Model):
     __tablename__ = "v_consistancy_data"
     __table_args__ = {"schema": "gn_profiles"}
-    id_synthese = DB.Column(DB.Integer,
-                            ForeignKey(Synthese.id_synthese),
-                            primary_key=True)
-    synthese = relationship(Synthese, backref=backref('profile', uselist=False))
+    id_synthese = DB.Column(DB.Integer, ForeignKey(Synthese.id_synthese), primary_key=True)
+    synthese = relationship(Synthese, backref=backref("profile", uselist=False))
     id_sinp = DB.Column(UUID(as_uuid=True))
     cd_ref = DB.Column(DB.Integer)
     valid_name = DB.Column(DB.Unicode)

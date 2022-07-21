@@ -63,8 +63,8 @@ class TestReleveModel:
     #  Test on abstract class ReleveModel and its methods
     def test_user_is_observers(self):
         """
-            user is observer of the releve
-            Must be True
+        user is observer of the releve
+        Must be True
         """
 
         from occtax.backend.models import ReleveModel, VReleveOccurrence
@@ -77,9 +77,9 @@ class TestReleveModel:
 
     def test_user_is_in_dataset(self):
         """
-            user is not observer but can see its organism data
-            via rigth in dataset number 1
-            Must be True
+        user is not observer but can see its organism data
+        via rigth in dataset number 1
+        Must be True
         """
         from occtax.backend.models import ReleveModel, VReleveOccurrence
 
@@ -91,9 +91,9 @@ class TestReleveModel:
 
     def test_user_not_in_dataset(self):
         """
-            user is not observer of the releve cannot see dataset
-            number 1
-            Must return an Forbidden
+        user is not observer of the releve cannot see dataset
+        number 1
+        Must return an Forbidden
         """
         from occtax.backend.models import ReleveModel, VReleveOccurrence
 
@@ -104,8 +104,8 @@ class TestReleveModel:
 
     def test_user_not_observer(self):
         """
-            user is not observer of the releve and have low right
-            Must return an Forbidden
+        user is not observer of the releve and have low right
+        Must return an Forbidden
         """
         from occtax.backend.models import ReleveModel, VReleveOccurrence
 
@@ -116,8 +116,8 @@ class TestReleveModel:
 
     def test_user_low_digitiser(self):
         """
-            user is digitiser of the releve and have low right
-            Must return true
+        user is digitiser of the releve and have low right
+        Must return true
         """
         from occtax.backend.models import ReleveModel, VReleveOccurrence
 

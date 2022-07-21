@@ -5,11 +5,11 @@ import {
   FormBuilder,
   Validators,
   AbstractControl,
-  ValidatorFn
+  ValidatorFn,
 } from '@angular/forms';
 import {
   arrayMinLengthValidator,
-  isObjectValidator
+  isObjectValidator,
 } from '@geonature/services/validators/validators';
 import { MediaService } from '@geonature_common/service/media.service';
 
@@ -24,7 +24,7 @@ export class DynamicFormService {
   toFormGroup(formsDef: Array<any>) {
     // TODO: this method seem not used. Remove it ?
     const group: any = {};
-    formsDef.forEach(form => {
+    formsDef.forEach((form) => {
       group[form.attribut_name] = this.createControl(form);
     });
     return new FormGroup(group);
@@ -40,8 +40,7 @@ export class DynamicFormService {
    *
    */
   getFormDefValue(formDef, key, value) {
-    
-    const def = formDef[key];    
+    const def = formDef[key];
     return typeof def === 'function'
       ? def({ value, meta: formDef.meta, attribut_name: formDef.attribut_name })
       : def;
@@ -100,8 +99,8 @@ export class DynamicFormService {
         if (cond_max) {
           validators.push(Validators.max(formDef.max));
         }
-        if(formDef.attribut_name == 'file') {
-          console.log(validators)
+        if (formDef.attribut_name == 'file') {
+          console.log(validators);
         }
       }
 
@@ -111,8 +110,8 @@ export class DynamicFormService {
           try {
             new RegExp(formDef.pattern);
             validators.push(Validators.pattern(formDef.pattern));
-          } catch(e) {
-            console.log("invalid regular expression");
+          } catch (e) {
+            console.log('invalid regular expression');
           }
         }
       }
@@ -129,28 +128,27 @@ export class DynamicFormService {
     }
 
     control.updateValueAndValidity();
-
   }
 
-  createControl(formDef): AbstractControl {    
+  createControl(formDef): AbstractControl {
     const formControl = new FormControl();
     const value = formDef.value || null;
     this.setControl(formControl, formDef, value);
     return formControl;
   }
 
-  addNewControl(formDef, formGroup: FormGroup) {    
+  addNewControl(formDef, formGroup: FormGroup) {
     //Mise en fonction des valeurs des dynamic-form ex: "hidden: "({value}) => value.monChamps != 'maValeur'""
     for (const keyParam of Object.keys(formDef)) {
-      const func = this.toFunction(formDef[keyParam])
-      if(func) {
-        formDef[keyParam] = func;  
+      const func = this.toFunction(formDef[keyParam]);
+      if (func) {
+        formDef[keyParam] = func;
       }
     }
 
     if (formDef.type_widget !== 'html') {
       let control = this.createControl(formDef);
-      if(formDef.disable) {
+      if (formDef.disable) {
         control.disable();
       }
       formGroup.addControl(formDef.attribut_name, control);
@@ -166,44 +164,42 @@ export class DynamicFormService {
   }
 
   formDefinitionsdictToArray(formDefinitionsDict, meta) {
-    const formDefinitions = Object.keys(formDefinitionsDict).map(key => ({
+    const formDefinitions = Object.keys(formDefinitionsDict).map((key) => ({
       ...formDefinitionsDict[key],
       attribut_name: key,
-      meta
+      meta,
     }));
 
     return formDefinitions;
   }
-  
 
   /**
    * Converti s en function js
-   *  
-   * 
+   *
+   *
    * @param s chaine de caractere
    */
   toFunction(s_in) {
     //En cas de tableau de fonction, on les joint (utile pour fonction complexe)
-    let s = Array.isArray(s_in) ? s_in.join("\n") : s_in;
-    if(! (typeof(s) == 'string')) {
-      return
+    let s = Array.isArray(s_in) ? s_in.join('\n') : s_in;
+    if (!(typeof s == 'string')) {
+      return;
     }
 
-    const tests = [ '(', ')', '{', '}', '=>']
+    const tests = ['(', ')', '{', '}', '=>'];
 
-    if (!tests.every(test => s.includes(test))) {
-      return 
+    if (!tests.every((test) => s.includes(test))) {
+      return;
     }
 
     let func;
 
     try {
       func = eval(s);
-    } catch(error) {
+    } catch (error) {
       console.error(`Erreur dans la définition de la fonction ${error}`);
     }
 
     return func;
-
-  } 
+  }
 }

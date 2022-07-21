@@ -1,29 +1,23 @@
-<small> {{label}} </small>
-<div
-  class="input-group"
-  [ngClass]="{'is-invalid' : isInvalid}"
->
+<small> {{ label }} </small>
+<div class="input-group" [ngClass]="{ 'is-invalid': isInvalid }">
   <input
     class="form-control form-control-sm"
     ngbDatepicker
+    data-qa="input-date"
     #d1="ngbDatepicker"
     [formControl]="parentFormControl"
     [disableControl]="disabled"
     [maxDate]="maxDate"
     [minDate]="minDate"
     (click)="d1.toggle(); openDatepicker(d1)"
-  >
+  />
   <div class="input-group-append">
     <button
       class="btn btn-sm btn-outline-shadow"
       (click)="d1.toggle(); openDatepicker(d1)"
       type="button"
     >
-      <i
-        class="fa fa-calendar"
-        aria-hidden="true"
-      ></i>
+      <i class="fa fa-calendar" aria-hidden="true"></i>
     </button>
   </div>
-
 </div>

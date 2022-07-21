@@ -24,6 +24,7 @@ def remove_additional_none_val(self, data, **kwargs):
     data.additional_fields = data.additional_fields if data.additional_fields else {}
     return data
 
+
 class GeojsonSerializationField(fields.Field):
     def _serialize(self, value, attr, obj):
         if value is None:
@@ -60,6 +61,7 @@ class ObserverSchema(MA.SQLAlchemyAutoSchema):
             "remarques",
             "identifiant",
         )
+
     nom_complet = fields.Str(dump_only=True)
 
     @pre_load
@@ -69,19 +71,13 @@ class ObserverSchema(MA.SQLAlchemyAutoSchema):
         return data
 
 
-
-
-
 class CountingSchema(MA.SQLAlchemyAutoSchema):
     class Meta:
         model = CorCountingOccurrence
         load_instance = True
 
-    medias = MA.Nested(
-        MediaSchema, many=True
-    )
+    medias = MA.Nested(MediaSchema, many=True)
     pre_dump_fn = remove_additional_none_val
-
 
     @pre_load
     def make_counting(self, data, **kwargs):
@@ -90,17 +86,18 @@ class CountingSchema(MA.SQLAlchemyAutoSchema):
         return data
 
 
-
 class OccurrenceSchema(MA.SQLAlchemyAutoSchema):
     class Meta:
         model = TOccurrencesOccurrence
         load_instance = True
         include_fk = True
+
     additional_fields = fields.Raw(allow_none=False, required=True)
     # additional_fields = fields.Raw(load_only=True)
     cor_counting_occtax = MA.Nested(CountingSchema, many=True)
     taxref = MA.Nested(TaxrefSchema, dump_only=True)
     pre_dump_fn = remove_additional_none_val
+
 
 class ReleveSchema(MA.SQLAlchemyAutoSchema):
     class Meta:

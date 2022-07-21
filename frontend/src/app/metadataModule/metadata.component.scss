@@ -74,28 +74,28 @@ mat-expansion-panel {
   cursor: pointer;
 }
 
-/deep/ .mat-slide-toggle.custom-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+::ng-deeps .mat-slide-toggle.custom-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
   background-color: rgba(0, 128, 0, 0.322);
 }
 
-/deep/ .mat-slide-toggle.custom-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+::ng-deeps .mat-slide-toggle.custom-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
   background-color: green;
 }
 
-/deep/ .mat-slide-toggle.custom-toggle .mat-slide-toggle-bar {
+::ng-deeps .mat-slide-toggle.custom-toggle .mat-slide-toggle-bar {
   background-color: rgba(255, 0, 0, 0.322);
 }
 
-/deep/ .mat-slide-toggle.custom-toggle .mat-slide-toggle-thumb {
+::ng-deeps .mat-slide-toggle.custom-toggle .mat-slide-toggle-thumb {
   background-color: red;
 }
 
-/deep/ .mat-slide-toggle.mat-disabled .mat-slide-toggle-label,
+::ng-deeps .mat-slide-toggle.mat-disabled .mat-slide-toggle-label,
 .mat-slide-toggle.mat-disabled .mat-slide-toggle-thumb-container {
   cursor: not-allowed !important;
 }
 
-/deep/ .mat-slide-toggle.mat-disabled .mat-slide-toggle-thumb {
+::ng-deeps .mat-slide-toggle.mat-disabled .mat-slide-toggle-thumb {
   cursor: not-allowed !important;
 }
 

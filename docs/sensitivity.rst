@@ -41,21 +41,13 @@ régional et national et donc de ne pas ajouter de règles locales.
 Intégration dans GeoNature
 ``````````````````````````
 
-Schéma gn_synthese
-^^^^^^^^^^^^^^^^^^
+Le référentiel de sensibilité fournie par l’INPN est normalement intégré
+à GeoNature lors de son installation. Sinon, il peut être manuellement
+intégré avec la commande :
 
-A chaque insertion d'une donnée dans la table ``gn_synthese.synthese``,
-un trigger (``tri_insert_calculate_sensitivity``) fait appel à une
-fonction (``fct_tri_cal_sensi_diff_level_on_each_statement``) qui appelle
-elle-même les fonctions (``get_id_nomenclature_sensitivity`` et
-``calculate_cd_diffusion_level``) du schéma ``gn_sensitivity`` pour le
-calcul de la sensibilité.
+.. code-block::
 
-La fonction ``get_id_nomenclature_sensitivity`` calcule le niveau de
-sensibilité en fonction de l'espèce, du type de sensibilité, de la durée
-de validité, de la période d'observation et du statut biologique.
-La fonction ``calculate_cd_diffusion_level`` calcule le niveau de diffusion. 
-Actuellement, ce calcul est une simple copie du niveau de sensibilité.
+    (venv)$ geonature db upgrade ref_sensitivity_inpn@head
 
 Schéma gn_sensitivity
 ^^^^^^^^^^^^^^^^^^^^^
@@ -71,8 +63,24 @@ Schéma gn_sensitivity
   ici)
 
 S'il n'y a aucune entrée dans ``cor_sensitivity_criteria``, le niveau de
-sensibilité défini dans ``t_sensitivity_rules`` est directement appliqué.
+sensibilité défini dans ``t_sensitivity_rules`` est appliqué peu importe
+le statut biologique ou le comportement de l’occurence.
+De même, s’il n’y a aucune entrée dans ``cor_sensitivity_area``, le niveau
+de sensibilité est appliqué peu importe la localisation de l’observation.
 
+Schéma gn_synthese
+^^^^^^^^^^^^^^^^^^
+
+A chaque insertion d'une donnée dans la table ``gn_synthese.synthese``,
+un trigger (``tri_insert_calculate_sensitivity``) fait appel à une
+fonction (``fct_tri_cal_sensitivity_on_each_statement``) qui appelle
+elle-même la fonction ``gn_sensitivity.get_id_nomenclature_sensitivity``
+pour le calcul de la sensibilité.
+
+La fonction ``get_id_nomenclature_sensitivity`` calcule le niveau de
+sensibilité en fonction de l'espèce, du type de sensibilité, de la durée
+de validité, de la période d'observation, du statut biologique et du 
+comportement de l’occurence.
 
 Personnalisation
 ````````````````
@@ -86,11 +94,12 @@ Sensibilité de l'espèce toute observation confondue
 #. Dans ``gn_sensitivity.t_sensitivity_rules`` : Changez le niveau de
    sensibilité ``id_nomenclature_sensitivity`` par celui désiré. Pour la
    valeur à renseigner, voir dans ``t_nomenclature`` en filtrant avec
-   ``id_type=ref_nomenclatures.get_id_nomenclature_type('SENSIBILITE')``. En général l'identifiant varie entre 65 (non sensible) et 69
+   ``id_type=ref_nomenclatures.get_id_nomenclature_type('SENSIBILITE')``.
+   En général l'identifiant varie entre 65 (non sensible) et 69
    (aucune diffusion). Attention ces identifiants peuvent varier en fonction de 
    votre installation.
 #. Dans ``cor_sensitivity_criteria`` : s'il y a une correspondance
-   d'``id_sensitivity`` avec ``t_sensitivity_rules``, supprimez cette ligne.
+   d'``id_sensitivity`` avec ``t_sensitivity_rules``, modifiez ou supprimez cette ligne.
 #. Lancez la commande SQL suivante :
 
    .. code-block:: sql
@@ -99,27 +108,14 @@ Sensibilité de l'espèce toute observation confondue
 
    Pour rafraîchir la vue materialisée utilisée par les fonctions
    appelées par le trigger de ``gn_synthese.synthese``.
-#. Il est maintenant nécessaire de mettre à jour les lignes concernant
-   la sensibilité de vos anciennes observations dans la synthèse en
-   déclenchant le trigger de calcul de la sensibilité. Or ce dernier est
-   appelé uniquement lors d'un ``INSERT`` ou d'un ``UPDATE``. Il est alors
-   possible de faire un ``UPDATE`` sans changer les données en lançant la
-   commande SQL suivante :
+#. Il est maintenant nécessaire de mettre à jour la sensibilité de vos
+   observations présentent dans la synthèse. Pour cela, lancez la commande suivante :
 
-   .. code-block:: sql
+   .. code-block::
 
-       UPDATE gn_synthese.synthese
-       SET cd_nom=cd_nom
-       WHERE cd_nom=:cd_nom_de_votre_espece;
+      (venv)$ geonature sensitivity update-synthese
 
-**Note** : Il n'est pas possible de définir la sensibilité à *NULL* dans
-cet ``UPDATE`` sinon le trigger ne se déclenchera pas.
-
-**Note 2** : Si vous avez modifié plusieurs espèces à la fois, modifiez
-le ``WHERE`` avec un ``IN`` ainsi qu'un ``ARRAY`` contenant tous les cd_nom
-de vos espèces.
-
-Normalement, les valeurs dans les colonnes
-``id_nomenclature_diffusion_level`` et ``id_nomenclature_sensitivity`` de la table ``gn_synthese.synthese`` ont
+Normalement, les valeurs dans la colonne ``id_nomenclature_sensitivity``
+de la table ``gn_synthese.synthese`` ont
 changé. Vous pouvez le vérifier en navigant dans le module Synthèse
 puis dans les détails d'une observation de votre/vos espèce(s).

@@ -1,11 +1,6 @@
 <div class="modal-header">
   <h4 class="modal-title pull-left">Filtres taxonomiques avancés</h4>
-  <button
-    type="button"
-    class="close pull-right"
-    aria-label="Close"
-    (click)="onCloseModal()"
-  >
+  <button type="button" class="close pull-right" aria-label="Close" (click)="onCloseModal()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
@@ -31,12 +26,12 @@
       *ngIf="formService.selectedTaxonFromRankInput.length > 0"
     >
       <h5><small>Taxon(s) recherché(s):</small></h5>
-      <ul class="list-group d-flex flex-row flex-wrap" >
+      <ul class="list-group d-flex flex-row flex-wrap">
         <li
           class="list-group-item d-flex justify-content-between w-50"
           *ngFor="let taxon of formService.selectedTaxonFromRankInput; let i = index"
         >
-          {{taxon.lb_nom}}
+          {{ taxon.lb_nom }}
           <i
             (click)="formService.removeTaxon(i, formService.selectedTaxonFromRankInput)"
             class="fa fa-times clickable"
@@ -46,10 +41,7 @@
     </div>
   </div>
 
-  <div
-    [hidden]="!AppConfig.SYNTHESE.DISPLAY_TAXON_TREE"
-    class="form-group"
-  >
+  <div [hidden]="!AppConfig.SYNTHESE.DISPLAY_TAXON_TREE" class="form-group">
     <button
       (click)="toggleTree()"
       id="btn-tree"
@@ -58,35 +50,13 @@
       data-target="#collapseTree"
     >
       Arbre taxonomique
-      <i
-        *ngIf="showTree"
-        class="fa fa-chevron-down"
-        aria-expanded="false"
-      > </i>
-      <i
-        *ngIf="!showTree"
-        class="fa fa-chevron-right"
-        aria-expanded="false"
-      > </i>
+      <i *ngIf="showTree" class="fa fa-chevron-down" aria-expanded="false"> </i>
+      <i *ngIf="!showTree" class="fa fa-chevron-right" aria-expanded="false"> </i>
     </button>
 
-    <div
-      class="collapse"
-      id="collapseTree"
-    >
-      <small>
-        Selectionner un ou plusieurs taxons à partir de la hierarchie taxonomique
-      </small>
-      <br>
-      <span *ngIf="isLoading">
-        Chargement...
-        <img
-          src="assets/images/Spinner.gif"
-          alt="Chargement..."
-          height="40"
-          width="40"
-        >
-      </span>
+    <div class="collapse" id="collapseTree">
+      <small> Selectionner un ou plusieurs taxons à partir de la hierarchie taxonomique </small>
+      <br />
       <div class="card">
         <div class="card-body tree-wrapper">
           <tree-root
@@ -96,21 +66,9 @@
             [nodes]="storeService.taxonTree"
             [options]="treeOptions"
           >
-            <ng-template
-              #treeNodeTemplate
-              let-node
-              let-index="index"
-            >
-              <i
-                *ngIf="!node.data.leaf"
-                class="fa fa-folder-o"
-                aria-hidden="true"
-              ></i>
-              <i
-                *ngIf="node.data.leaf"
-                class="fa fa-hand-o-right"
-                aria-hidden="true"
-              ></i>
+            <ng-template #treeNodeTemplate let-node let-index="index">
+              <i *ngIf="!node.data.leaf" class="fa fa-folder-o" aria-hidden="true"></i>
+              <i *ngIf="node.data.leaf" class="fa fa-hand-o-right" aria-hidden="true"></i>
               <span [ngClass]="node.data.classes">{{ node.data.name }}</span>
             </ng-template>
           </tree-root>
@@ -166,22 +124,11 @@
       class="dynamic-form padding-sm"
       *ngFor="let formDef of storeService.taxhubAttributes; let i = index"
     >
-      <pnx-dynamic-form
-        [formDef]="formDef"
-        [form]="formService.searchForm"
-      >
-      </pnx-dynamic-form>
+      <pnx-dynamic-form [formDef]="formDef" [form]="formService.searchForm"> </pnx-dynamic-form>
     </div>
-
   </div>
 </div>
 
 <div class="modal-footer">
-  <button
-    type="button"
-    class="btn btn-success"
-    (click)="onCloseModal()"
-  >
-    Valider et fermer
-  </button>
+  <button type="button" class="btn btn-success" (click)="onCloseModal()">Valider et fermer</button>
 </div>

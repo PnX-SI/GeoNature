@@ -17,7 +17,7 @@ import {
   tap,
   switchMap,
   map,
-  timeout
+  timeout,
 } from 'rxjs/operators';
 
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
@@ -25,20 +25,20 @@ const PARAMS = new HttpParams({
   fromObject: {
     format: 'json',
     limit: '10',
-    polygon_geojson: '1'
-  }
+    polygon_geojson: '1',
+  },
 });
 
 @Injectable()
 export class NominatimService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   search(term: string) {
     if (term === '') {
       return of([]);
     }
 
-    return this.http.get(NOMINATIM_URL, { params: PARAMS.set('q', term) }).pipe(map(res => res));
+    return this.http.get(NOMINATIM_URL, { params: PARAMS.set('q', term) }).pipe(map((res) => res));
   }
 }
 
@@ -51,7 +51,7 @@ export class NominatimService {
   selector: 'pnx-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss'],
-  providers: [NominatimService]
+  providers: [NominatimService],
 })
 export class MapComponent implements OnInit {
   /**
@@ -68,7 +68,7 @@ export class MapComponent implements OnInit {
   /** Activer la barre de recherche */
   @Input() searchBar: boolean = true;
 
-  @ViewChild('mapDiv') mapContainer;
+  @ViewChild('mapDiv', { static: true }) mapContainer;
   searchLocation: string;
   public searching = false;
   public searchFailed = false;
@@ -78,7 +78,7 @@ export class MapComponent implements OnInit {
     private mapService: MapService,
     private _commonService: CommonService,
     private _http: HttpClient,
-    private _nominatim: NominatimService,
+    private _nominatim: NominatimService
   ) {
     this.searchLocation = '';
   }
@@ -87,13 +87,12 @@ export class MapComponent implements OnInit {
     this.initialize();
   }
 
-
   search = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(300),
       distinctUntilChanged(),
       tap(() => (this.searching = true)),
-      switchMap(term =>
+      switchMap((term) =>
         this._nominatim.search(term).pipe(
           tap(() => (this.searchFailed = false)),
           catchError(() => {
@@ -119,13 +118,11 @@ export class MapComponent implements OnInit {
       center = L.latLng(AppConfig.MAPCONFIG.CENTER[0], AppConfig.MAPCONFIG.CENTER[1]);
     }
 
-
-
     const map = L.map(this.mapContainer.nativeElement, {
       zoomControl: false,
       center: center,
       zoom: this.zoom,
-      preferCanvas: true
+      preferCanvas: true,
     });
     this.map = map;
     (map as any)._onResize();
@@ -158,14 +155,13 @@ export class MapComponent implements OnInit {
     this.mapService.setMap(map);
     this.mapService.initializeLeafletDrawFeatureGroup();
 
-
-    map.on('moveend', e => {
+    map.on('moveend', (e) => {
       const zoom = this.map.getZoom();
       // keep current extend only if current zoom != 0
       if (zoom !== 0) {
         this.mapService.currentExtend = {
           center: this.map.getCenter(),
-          zoom: this.map.getZoom()
+          zoom: this.map.getZoom(),
         };
       }
     });
@@ -173,11 +169,10 @@ export class MapComponent implements OnInit {
     setTimeout(() => {
       this.map.invalidateSize();
     }, 50);
-
   }
 
   /** Retrocompatibility hack to format map config to the expected format:
-   * 
+   *
    {
     name: string,
     url: string,
@@ -191,7 +186,7 @@ export class MapComponent implements OnInit {
   }
    */
   formatBaseMapConfig(baseMap) {
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (let attr in baseMap) {
       if (attr === 'layer') {
         baseMap['url'] = baseMap[attr];

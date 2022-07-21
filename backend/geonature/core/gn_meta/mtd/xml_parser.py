@@ -33,11 +33,11 @@ def get_tag_content(parent, tag_name, default_value=None):
 
 def parse_actors_xml(actors):
     """
-        Parse the parameters of the Actor provided as an XML node in the input variable "actors"
-        Param:
-            actors (etree Element): Node of an actor type containing from one to multiple actors
-        Returns:
-            dict: A dictionnary of the actors informations
+    Parse the parameters of the Actor provided as an XML node in the input variable "actors"
+    Param:
+        actors (etree Element): Node of an actor type containing from one to multiple actors
+    Returns:
+        dict: A dictionnary of the actors informations
     """
     actor_list = []
     if actors is not None:
@@ -54,7 +54,7 @@ def parse_actors_xml(actors):
                     "uuid_organism": uuid_organism,
                     "organism": organism,
                     "actor_role": actor_role,
-                    "email": email
+                    "email": email,
                 }
             )
 
@@ -63,9 +63,9 @@ def parse_actors_xml(actors):
 
 def parse_acquisition_framwork_xml(xml):
     """
-        Parse an xml of AF from a string
-        Return: 
-            dict: a dict of the parsed xml 
+    Parse an xml of AF from a string
+    Return:
+        dict: a dict of the parsed xml
     """
     root = ET.fromstring(xml, parser=_xml_parser)
     ca = root.find(".//" + namespace + "CadreAcquisition")
@@ -76,13 +76,17 @@ def parse_acquisition_framework(ca):
 
     # We extract all the required informations from the different tags of the XML file
     ca_uuid = get_tag_content(ca, "identifiantCadre")
-    ca_name_max_length = TAcquisitionFramework.acquisition_framework_name.property.columns[0].type.length
-    ca_name = get_tag_content(ca, "libelle")[:ca_name_max_length-1]
+    ca_name_max_length = TAcquisitionFramework.acquisition_framework_name.property.columns[
+        0
+    ].type.length
+    ca_name = get_tag_content(ca, "libelle")[: ca_name_max_length - 1]
     ca_desc = get_tag_content(ca, "description", default_value="")
     date_info = ca.find(namespace + "ReferenceTemporelle")
     ca_create_date = get_tag_content(ca, "dateCreationMtd", default_value=datetime.datetime.now())
     ca_update_date = get_tag_content(ca, "dateMiseAJourMtd")
-    ca_start_date = get_tag_content(date_info, "dateLancement", default_value=datetime.datetime.now())
+    ca_start_date = get_tag_content(
+        date_info, "dateLancement", default_value=datetime.datetime.now()
+    )
     ca_end_date = get_tag_content(date_info, "dateCloture")
     ca_id_digitizer = None
     attributs_additionnels_node = ca.find(namespace + "attributsAdditionnels")
@@ -120,9 +124,9 @@ def parse_acquisition_framework(ca):
 
 def parse_jdd_xml(xml):
     """
-        Parse an xml of datasets from a string
-        Return: 
-            list: a list of dict of the JDD in the xml
+    Parse an xml of datasets from a string
+    Return:
+        list: a list of dict of the JDD in the xml
     """
 
     root = ET.fromstring(xml, parser=_xml_parser)
@@ -141,7 +145,6 @@ def parse_jdd_xml(xml):
         create_date = get_tag_content(jdd, "dateCreation", default_value=datetime.datetime.now())
         update_date = get_tag_content(jdd, "dateRevision")
         attributs_additionnels_node = jdd.find(namespace + "attributsAdditionnels")
-
 
         # We extract the ID of the user to assign it the JDD as an id_digitizer
         id_digitizer = None
@@ -190,13 +193,13 @@ def parse_jdd_xml(xml):
             "id_digitizer": id_digitizer,
             "id_nomenclature_data_origin": code_statut_donnees_source,
             "actors": all_actors,
-            "meta_create_date" : create_date,
-            "meta_update_date": update_date
+            "meta_create_date": create_date,
+            "meta_update_date": update_date,
         }
 
         # filter with id_instance
-        if current_app.config['MTD']['ID_INSTANCE_FILTER']:
-            if id_instance and id_instance == str(current_app.config['MTD']['ID_INSTANCE_FILTER']):
+        if current_app.config["MTD"]["ID_INSTANCE_FILTER"]:
+            if id_instance and id_instance == str(current_app.config["MTD"]["ID_INSTANCE_FILTER"]):
                 jdd_list.append(current_jdd)
         else:
             jdd_list.append(current_jdd)

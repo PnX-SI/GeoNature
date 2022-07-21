@@ -1,0 +1,74 @@
+<div
+  id="createAlert"
+  class="m-4"
+>
+  <p [ngStyle]="{'font-size': '16px'}">Description du signalement :</p>
+  <form
+    class="
+    my-3"
+    *ngIf="!alert?.content"
+  >
+    <mat-form-field
+      appearance="fill"
+      style="width:100%"
+      focused
+      class="my-3 alert-field"
+    >
+      <mat-label class="gn-color">Détailler ici le signalement :</mat-label>
+      <textarea
+        matInput
+        placeholder="Votre commentaire...."
+        [formControl]="alertForm.controls.content"
+      ></textarea>
+      <mat-error *ngIf="!this.alertForm.valid">
+        Veuillez saisir un commentaire
+      </mat-error>
+    </mat-form-field>
+  </form>
+  <mat-card *ngIf="alert?.content">{{alert?.content}}</mat-card>
+  <div class="mt-4">
+    <button
+      id="cancelAlertBtn"
+      mat-raised-button
+      class="btn btn-sm mt-2 mr-2 link-infos"
+      type="submit"
+      data-dismiss="modal"
+      (click)="openCloseAlert()"
+    >
+      <mat-icon>west</mat-icon> Retour
+    </button>
+    <button
+      *ngIf="!alert || !alert?.id_report"
+      mat-raised-button
+      id="saveAlertButton"
+      (click)="createAlert()"
+      data-toggle="modal"
+      value="Signaler"
+      type="button"
+      [disabled]="!this.alertForm.valid"
+      class="btn btn-sm mt-2 mr-2 link-infos"
+      data-dismiss="modal"
+      #required
+    >
+      <mat-icon>check</mat-icon> Enregistrer
+    </button>
+    <button
+      mat-raised-button
+      *ngIf="canChangeAlert"
+      id="deleteAlertButton"
+      (click)="deleteAlert()"
+      data-toggle="modal"
+      value="delete"
+      color="success"
+      type="button"
+      class="btn btn-sm mt-2 mr-2 link-infos"
+      data-dismiss="modal"
+      ngbTooltip="Supprimer ce signalement"
+      placement="bottom"
+      color="primary"
+      #required
+    >
+      <mat-icon>verified</mat-icon> Signalement pris en compte !
+    </button>
+  </div>
+</div>

@@ -6,7 +6,7 @@ import {
   HostListener,
   AfterContentChecked,
   OnChanges,
-  ChangeDetectorRef
+  ChangeDetectorRef,
 } from '@angular/core';
 import { GeoJSON } from 'leaflet';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
@@ -15,16 +15,18 @@ import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthe
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CommonService } from '@geonature_common/service/common.service';
 import { AppConfig } from '@geonature_config/app.config';
-import { HttpParams } from '@angular/common/http/src/params';
+import { HttpParams } from '@angular/common/http/';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
+// import { DatatableComponent } from '@swimlane/ngx-datatable';
 import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { ColumnMode } from '@swimlane/ngx-datatable';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
-  styleUrls: ['synthese-list.component.scss']
+  styleUrls: ['synthese-list.component.scss'],
 })
 export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
@@ -36,10 +38,11 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   public queyrStringDownload: HttpParams;
   public inpnMapUrl: string;
   public downloadMessage: string;
+  public ColumnMode: ColumnMode;
   //input to resize datatable on searchbar toggle
   @Input() searchBarHidden: boolean;
   @Input() inputSyntheseData: GeoJSON;
-  @ViewChild('table') table: DatatableComponent;
+  @ViewChild('table', { static: true }) table: DatatableComponent;
   private _latestWidth: number;
   constructor(
     public mapListService: MapListService,
@@ -118,21 +121,29 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     row.id_synthese = row.id;
     const modalRef = this.ngbModal.open(SyntheseInfoObsComponent, {
       size: 'lg',
-      windowClass: 'large-modal'
+      windowClass: 'large-modal',
     });
     modalRef.componentInstance.idSynthese = row.id_synthese;
-    modalRef.componentInstance.uuidSynthese = row.unique_id_sinp;
     modalRef.componentInstance.header = true;
+    modalRef.componentInstance.useFrom = 'synthese';
   }
 
   openDownloadModal() {
     this.ngbModal.open(SyntheseModalDownloadComponent, {
-      size: 'lg'
+      size: 'lg',
     });
   }
 
   getRowClass() {
     return 'row-sm clickable';
+  }
+
+  getDate(date) {
+    function pad(s) {
+      return s < 10 ? '0' + s : s;
+    }
+    const d = new Date(date);
+    return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('-');
   }
 
   ngOnChanges(changes) {

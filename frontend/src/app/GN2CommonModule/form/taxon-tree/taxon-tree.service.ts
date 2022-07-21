@@ -24,7 +24,7 @@ export function formatTaxonTree(taxonTree) {
   //let famille = {};
 
   //on bouble sur les enregistrements du store des taxons issu de la base
-  taxonTree.forEach(record => {
+  taxonTree.forEach((record) => {
     if (kd === null) {
       kd = record.nom_regne;
     } //initialisation
@@ -59,7 +59,7 @@ export function formatTaxonTree(taxonTree) {
       name: record.nom_latin + ' - ' + record.nom_francais,
       classes: ['leaf'],
       leaf: true,
-      checked: false
+      checked: false,
     };
 
     if (nouvelleClasse) {
@@ -67,7 +67,7 @@ export function formatTaxonTree(taxonTree) {
       classe = {
         name: cl + ' - ' + desc_cl,
         checked: false,
-        children: childrensClasse
+        children: childrensClasse,
       };
       childrensEmbranchement.push(classe); //on ajoute ce groupe à l'arbre
       nouvelleClasse = false; //on repasse à false pour les prochains tests
@@ -78,7 +78,7 @@ export function formatTaxonTree(taxonTree) {
       embranchement = {
         name: emb,
         checked: false,
-        children: childrensEmbranchement
+        children: childrensEmbranchement,
       };
       childrensRegne.push(embranchement); //on ajoute ce groupe à l'arbre
       nouvelEmbranchement = false; //on repasse à false pour les prochains tests
@@ -89,7 +89,7 @@ export function formatTaxonTree(taxonTree) {
       regne = {
         name: kd,
         checked: false,
-        children: childrensRegne
+        children: childrensRegne,
       };
       formattedTree.push(regne); //on ajoute ce groupe à l'arbre
       nouveauRegne = false; //on repasse à false pour les prochains tests
@@ -109,17 +109,17 @@ export function formatTaxonTree(taxonTree) {
   classe = {
     name: cl + ' - ' + desc_cl,
     checked: false,
-    children: childrensClasse
+    children: childrensClasse,
   };
   embranchement = {
     name: emb,
     checked: false,
-    children: childrensEmbranchement
+    children: childrensEmbranchement,
   };
   regne = {
     name: kd,
     checked: false,
-    children: childrensRegne
+    children: childrensRegne,
   };
   //childrensClasse.push(ordre);
   childrensEmbranchement.push(classe);

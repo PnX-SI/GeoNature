@@ -12,7 +12,7 @@ import * as L from 'leaflet';
   selector: 'pnx-synthese-carte',
   templateUrl: 'synthese-carte.component.html',
   styleUrls: ['synthese-carte.component.scss'],
-  providers: []
+  providers: [],
 })
 export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges {
   public leafletDrawOptions = leafletDrawOption;
@@ -27,13 +27,13 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
   originStyle = {
     color: '#3388ff',
     fill: false,
-    weight: 3
+    weight: 3,
   };
 
   selectedStyle = {
     color: '#ff0000',
     weight: 3,
-    fill: false
+    fill: false,
   };
 
   @Input() inputSyntheseData: GeoJSON;
@@ -54,7 +54,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
   ngAfterViewInit() {
     // event from the list
     // On table click, change style layer and zoom
-    this.mapListService.onTableClick$.subscribe(id => {
+    this.mapListService.onTableClick$.subscribe((id) => {
       const selectedLayer = this.mapListService.layerDict[id];
       //selectedLayer.bringToFront();
       this.toggleStyle(selectedLayer);
@@ -81,11 +81,11 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
       this.mapListService.layerDict[id_] = layer;
     }
     layer.on({
-      click: e => {
+      click: (e) => {
         // toggle style
         this.toggleStyle(layer);
         this.mapListService.mapSelected.next(id);
-      }
+      },
     });
   }
 
@@ -114,7 +114,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     layer.setStyle({
       color: '#3388ff',
       weight: 3,
-      fill: false
+      fill: false,
     });
   }
 
@@ -141,27 +141,30 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
         ? (L as any).markerClusterGroup()
         : new L.FeatureGroup();
 
-      change.inputSyntheseData.currentValue.features.forEach(geojson => {
+      change.inputSyntheseData.currentValue.features.forEach((geojson) => {
         // we don't create a generic function for setStyle and event on each layer to avoid
         // a if on possible milion of point (with multipoint we must set the event on each point)
-        if (geojson.type == 'Point' || geojson.type == 'MultiPoint') {
-          if (geojson.type == 'Point') {
-            geojson.coordinates = [geojson.coordinates];
+        if (geojson.geometry.type == 'Point' || geojson.geometry.type == 'MultiPoint') {
+          if (geojson.geometry.type == 'Point') {
+            geojson.geometry.coordinates = [geojson.geometry.coordinates];
           }
-          for (let i = 0; i < geojson.coordinates.length; i++) {
-            const latLng = L.GeoJSON.coordsToLatLng(geojson.coordinates[i]);
+          for (let i = 0; i < geojson.geometry.coordinates.length; i++) {
+            const latLng = L.GeoJSON.coordsToLatLng(geojson.geometry.coordinates[i]);
             this.setStyleEventAndAdd(L.circleMarker(latLng), geojson.properties.id);
           }
-        } else if (geojson.type == 'Polygon' || geojson.type == 'MultiPolygon') {
+        } else if (geojson.geometry.type == 'Polygon' || geojson.geometry.type == 'MultiPolygon') {
           const latLng = L.GeoJSON.coordsToLatLngs(
-            geojson.coordinates,
-            geojson.type === 'Polygon' ? 1 : 2
+            geojson.geometry.coordinates,
+            geojson.geometry.type === 'Polygon' ? 1 : 2
           );
           this.setStyleEventAndAdd(new L.Polygon(latLng), geojson.properties.id);
-        } else if (geojson.type == 'LineString' || geojson.type == 'MultiLineString') {
+        } else if (
+          geojson.geometry.type == 'LineString' ||
+          geojson.geometry.type == 'MultiLineString'
+        ) {
           const latLng = L.GeoJSON.coordsToLatLngs(
-            geojson.coordinates,
-            geojson.type === 'LineString' ? 0 : 1
+            geojson.geometry.coordinates,
+            geojson.geometry.type === 'LineString' ? 0 : 1
           );
           this.setStyleEventAndAdd(new L.Polyline(latLng), geojson.properties.id);
         }

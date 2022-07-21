@@ -1,71 +1,121 @@
 <!-- MODAL HEADER -->
-<div class="modal-header">
+<div class="modal-header padding-md-all">
 
-  <h5> Information sur l'observation</h5>
+  <h5 class="my-3 ml-3">
+    {{edit ? "Modifier le statut de validation" : "Information sur l'observation"}}
+  </h5>
 
-  <button type="button" class="close" aria-label="Close" (click)="closeModal()">
+  <button
+    type="button"
+    class="close"
+    aria-label="Close"
+    (click)="closeModal()"
+    [ngStyle]="{
+      outlineWidth: '0px'
+    }"
+  >
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-
-<!-- MODAL BODY -->
-
-<div class="modal-body">
-
-
-  <div *ngIf="edit" id="statusChange">
-
-
-    <form>
-      <div>
-        <span *ngFor="let item of validationStatus" id="validButtons">
-          <label [ngStyle]="{'background-color': VALIDATION_CONFIG.STATUS_INFO[item.cd_nomenclature]?.color}"
-            role="button" class="btn btn-success box-shadow" aria-pressed="true">
-            <input (click)="setCurrentCdNomenclature(item)" type="radio" [formControl]="statusForm.controls.statut"
-              value="{{item.id_nomenclature}}">
-            {{item.mnemonique}}</label>
-        </span>
-      </div>
-      <div class="md-form mb-0" style="padding-top:5px;">
-        <span> Commentaire : </span>
-        <textarea type="text" rows="1" class="form-control md-textarea"
-          [formControl]="statusForm.controls.comment"> </textarea>
-      </div>
-    </form>
-
-    <div style="padding-top:5px;">
-      <button class="btn btn-sm btn-light" type="submit" data-dismiss="modal" (click)="cancel()">
-        Annuler
-      </button>
-      <button id="saveButton" (click)="onSubmit(statusForm.value)" data-toggle="modal" value="Enregistrer" type="button"
-        [disabled]="!this.statusForm.valid" class="btn btn-sm btn-success" data-dismiss="modal" #required>
-        Enregistrer
-      </button>
+<div
+  *ngIf="edit"
+  id="statusChange"
+  class="m-4"
+>
+  <p>Sélectionner le statut de l'observation :</p>
+  <form class="my-3">
+    <div class="my-3">
+      <span
+        *ngFor="let item of validationStatus"
+        id="validButtons"
+        class="mr-2"
+      >
+        <label
+          [ngStyle]="{
+            'background-color': VALIDATION_CONFIG.STATUS_INFO[item.cd_nomenclature]?.color,
+            'color': ['0', '6'].includes(item.cd_nomenclature) ? 'darkslategray' : 'white',
+            'border-color': ['0', '6'].includes(item.cd_nomenclature) ? 'rgba(0,0,0,0.2)' : 'transparent'
+          }"
+          role="button"
+          class="btn btn-success box-shadow status-badge"
+          aria-pressed="true"
+        >
+          <input
+            (click)="setCurrentCdNomenclature(item)"
+            type="radio"
+            [formControl]="statusForm.controls.statut"
+            value="{{item.id_nomenclature}}"
+          >
+          {{item.mnemonique}}</label>
+      </span>
     </div>
-    <br>
-  </div>
-
-  <span class="font-xs">
-    <b> Statut de validation actuel : </b>
-    {{currentValidationStatus.label_default}}
-    <button class="edit btn btn-sm btn-primary" (click)="getStatusNames()" [disabled]=edit>
-      Modifier le statut de validation <mat-icon> edit </mat-icon>
+    <mat-form-field
+      appearance="fill"
+      style="width:100%"
+      class="my-3"
+    >
+      <mat-label class="gn-color">Comentaire :</mat-label>
+      <textarea
+        matInput
+        placeholder="Votre commentaire...."
+        [formControl]="statusForm.controls.comment"
+      ></textarea>
+    </mat-form-field>
+  </form>
+  <div class="mt-4">
+    <button
+      id="cancelStatusBtn"
+      mat-stroked-button
+      class="btn btn-sm mt-2 mr-2 link-infos"
+      type="submit"
+      data-dismiss="modal"
+      (click)="cancel()"
+    >
+      Annuler
     </button>
-  </span>
-  <br>
-
-  <pnx-synthese-info-obs
-    [idSynthese]="id_synthese"
-    [mailCustomSubject]="VALIDATION_CONFIG.MAIL_SUBJECT"
-    [mailCustomBody]="VALIDATION_CONFIG.MAIL_BODY"
-  >
-  </pnx-synthese-info-obs>
-
+    <button
+      mat-raised-button
+      id="saveButton"
+      (click)="onSubmit(statusForm.value)"
+      data-toggle="modal"
+      value="Enregistrer"
+      type="button"
+      [disabled]="!this.statusForm.valid"
+      class="btn btn-sm mt-2 mr-2 link-infos"
+      data-dismiss="modal"
+      #required
+    >
+      Enregistrer
+    </button>
+  </div>
 </div>
-
+<pnx-synthese-info-obs
+  *ngIf="!edit"
+  [idSynthese]="id_synthese"
+  [mailCustomSubject]="VALIDATION_CONFIG.MAIL_SUBJECT"
+  [mailCustomBody]="VALIDATION_CONFIG.MAIL_BODY"
+  useFrom="validation"
+>
+  <button
+    class="status-badge"
+    mat-button
+    ngbTooltip="{{'Synthese.changeValidStatus' | translate}}"
+    (click)="editStatus()"
+    [ngStyle]="{
+      'background-color': currentValidationStatus?.color || 'red',
+      'color': ['0', '6'].includes(currentValidationStatus.cd_nomenclature) ? 'darkslategray' : 'white',
+      'border': ['0', '6'].includes(currentValidationStatus.cd_nomenclature) ? '1px solid rgba(0,0,0,0.2)' : 'transparent'
+    }"
+  >
+    {{currentValidationStatus.mnemonique}}
+    <mat-icon inline>edit</mat-icon>
+  </button>
+</pnx-synthese-info-obs>
 <!--<div class="modal-footer justify-content-between">-->
-<div class="modal-footer">
-
+<div
+  class="modal-footer"
+  *ngIf="!edit"
+>
   <div id="navigButtons">
     <button
       [disabled]="!isPrevButtonValid"
@@ -74,7 +124,6 @@
     >
       <i class="material-icons">navigate_before</i>
     </button>
-
     <button
       [disabled]="!isNextButtonValid"
       class="btn btn-sm"
@@ -83,5 +132,4 @@
       <i class="material-icons">navigate_next</i>
     </button>
   </div>
-
 </div>

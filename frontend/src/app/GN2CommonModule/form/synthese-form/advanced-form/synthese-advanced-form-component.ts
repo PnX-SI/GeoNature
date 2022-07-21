@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, AfterContentInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { TreeNode, TreeComponent, IActionMapping } from 'angular-tree-component';
+import { TreeNode, TreeComponent, IActionMapping } from '@circlon/angular-tree-component';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
 import { FormGroup } from '@angular/forms';
@@ -11,10 +11,11 @@ import { AppConfig } from '@geonature_config/app.config';
   selector: 'pnx-validation-taxon-advanced',
   templateUrl: './synthese-advanced-form.component.html',
   providers: [DynamicFormService],
-  styleUrls: ['./synthese-advanced-form.component.scss']
+  styleUrls: ['./synthese-advanced-form.component.scss'],
 })
 export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
-  @ViewChild('tree') treeComponent: TreeComponent;
+  @ViewChild('tree', { static: true })
+  public treeComponent: TreeComponent;
   public AppConfig = AppConfig;
   public URL_AUTOCOMPLETE = AppConfig.API_TAXHUB + '/taxref/search/lb_nom';
   public taxonsTree;
@@ -41,12 +42,12 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
             node.toggleExpanded();
           }
           //this.expandNodeRecursively(node, 0);
-        }
-      }
+        },
+      },
     };
     this.treeOptions = {
       actionMapping,
-      useCheckbox: true
+      useCheckbox: true,
     };
   }
 
@@ -72,7 +73,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   expandNodeRecursively(node: TreeNode, depth: number): void {
     depth = depth - 1;
     if (node.children) {
-      node.children.forEach(subNode => {
+      node.children.forEach((subNode) => {
         if (!subNode.isExpanded) {
           subNode.toggleExpanded();
         }
@@ -92,7 +93,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   // algo recursif pour retrouver tout les cd_ref sélectionné à partir de l'arbre
   searchSelectedId(node, depth): Array<any> {
     if (node.children) {
-      node.children.forEach(subNode => {
+      node.children.forEach((subNode) => {
         depth = depth - 1;
         if (depth > 0) {
           this.searchSelectedId(subNode, depth);
@@ -124,7 +125,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
 
   resetTree() {
     this.storeService.treeModel.collapseAll();
-    this.storeService.treeModel.doForAll(node => {
+    this.storeService.treeModel.doForAll((node) => {
       node.setIsSelected(false);
     });
     this.formService.selectedCdRefFromTree = [];

@@ -1,6 +1,7 @@
 <div
   *ngIf="occtaxFormService.disabled"
   id="overlay"
+  data-qa="overlay"
   class="disabled-form"
   (click)="formDisabled()"
 >
@@ -39,6 +40,7 @@
     <!-- OBSERVATEURS -->
     <pnx-observers
       *ngIf="!occtaxConfig.observers_txt; else elseBlock"
+      data-qa="pnx-occtax-releve-form-observers"
       [parentFormControl]="propertiesForm.get('observers')"
       [multiSelect]="true"
       [idMenu]="occtaxConfig.id_observers_list"
@@ -70,6 +72,7 @@
       <ng-template #elseblocDatasetForm>
         <pnx-datasets 
           #dataset
+          data-qa="pnx-occtax-releve-form-datasets"
           label="{{ 'MetaData.Datasets' | translate }}" 
           [parentFormControl]="propertiesForm.get('id_dataset')"
           (valueLoaded)="userDatasets = $event.value"
@@ -88,6 +91,7 @@
     <pnx-date
       *ngIf="occtaxConfig.form_fields.date_min"
       [isInvalid]="propertiesForm.hasError('invalidDate') || propertiesForm.get('date_min').invalid"
+      data-qa="pnx-occtax-releve-form-datemin"
       label="{{ 'Releve.MinDate' | translate }}"
       [defaultToday]="occtaxConfig.DATE_FORM_WITH_TODAY"
       [parentFormControl]="propertiesForm.get('date_min')"
@@ -102,6 +106,7 @@
     <!-- DATE MAX -->
     <pnx-date
       *ngIf="occtaxConfig.form_fields.date_max"
+      data-qa="pnx-occtax-releve-form-datemax"
       [isInvalid]="propertiesForm.hasError('invalidDate') || propertiesForm.get('date_max').invalid"
       label="{{ 'Releve.MaxDate' | translate }} "
       [parentFormControl]="propertiesForm.get('date_max')"
@@ -112,6 +117,7 @@
     <button
       class="btn btn-sm btn-outline-shadow"
       (click)="occtaxFormReleveService.showTime = !occtaxFormReleveService.showTime"
+      data-qa="pnx-occtax-releve-form-adddate"
     >
       <i
         class="fa fa-plus"
@@ -364,6 +370,7 @@
     </button>
     <button
       mat-raised-button
+      data-qa="pnx-occtax-releve-submit-btn"
       class="button-success uppercase"
       matTooltip="Enregistrer le relevé et saisir les taxons"
       [disabled]="releveForm.invalid || occtaxFormReleveService.waiting"

@@ -1,4 +1,3 @@
-import logging
 import json
 import datetime
 import time
@@ -6,10 +5,19 @@ import time
 from collections import OrderedDict
 from warnings import warn
 
-from flask import Blueprint, request, current_app, send_from_directory, render_template, jsonify
-from werkzeug.exceptions import Forbidden, NotFound
-from sqlalchemy import distinct, func, desc, select, text
-from sqlalchemy.orm import exc, joinedload, lazyload
+from flask import (
+    Blueprint,
+    request,
+    Response,
+    current_app,
+    send_from_directory,
+    render_template,
+    jsonify,
+    g,
+)
+from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
+from sqlalchemy import distinct, func, desc, asc, select, text, update
+from sqlalchemy.orm import joinedload, contains_eager, lazyload, selectinload
 from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
 
@@ -25,11 +33,13 @@ from geonature.utils.utilsgeometrytools import export_as_geo_file
 from geonature.core.gn_meta.models import TDatasets
 
 from geonature.core.gn_synthese.models import (
+    BibReportsTypes,
     Synthese,
     TSources,
     DefaultsNomenclaturesValue,
     VSyntheseForWebApp,
     VColorAreaTaxon,
+    TReport,
 )
 from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
 from geonature.core.taxonomie.models import (
@@ -40,24 +50,23 @@ from geonature.core.taxonomie.models import (
 )
 from geonature.core.ref_geo.models import LAreas, BibAreasTypes
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
+
 from geonature.core.gn_synthese.utils.blurring import DataBlurring
 
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
-from werkzeug.exceptions import BadRequest
+from geonature.core.gn_permissions.tools import (
+    cruved_scope_for_user_in_module,
+    get_scopes_by_action,
+)
+
+from ref_geo.models import LAreas, BibAreasTypes
 from itertools import groupby
 
-# debug
-# current_app.config['SQLALCHEMY_ECHO'] = True
+from pypnusershub.db.tools import user_from_token
+from pypnusershub.db.models import User
+
 
 routes = Blueprint("gn_synthese", __name__)
-
-# get the root logger
-log = logging.getLogger()
-
-
-def current_milli_time():
-    return time.time()
 
 
 ############################################
@@ -66,6 +75,7 @@ def current_milli_time():
 
 
 @routes.route("/for_web", methods=["GET", "POST"])
+#TODO: check merge
 @permissions.check_permissions(module_code="SYNTHESE", action_code="R")
 @json_resp
 def get_observations_for_web(auth, permissions):
@@ -198,16 +208,14 @@ def get_observations_for_web(auth, permissions):
             "unique_id_sinp": str(r["unique_id_sinp"]),
             "entity_source_pk_value": r["entity_source_pk_value"],
         }
-        geojson = json.loads(r["st_asgeojson"])
-        geojson["properties"] = properties
-        geojson_features.append(geojson)
-    return {
-        "data": FeatureCollection(geojson_features),
-        "nb_total": len(geojson_features),
-        "nb_obs_limited": (
-            len(geojson_features) == int(current_app.config["SYNTHESE"]["NB_MAX_OBS_MAP"])
-        ),
-    }
+        geometry = json.loads(r["st_asgeojson"])
+        geojson_features.append(
+            Feature(
+                geometry=geometry,
+                properties=properties,
+            )
+        )
+    return jsonify(FeatureCollection(geojson_features))
 
 
 @routes.route("", methods=["GET"])
@@ -243,14 +251,14 @@ def get_synthese(auth, permissions):
     synthese_query_class.filter_query_all_filters(auth)
     data = DB.session.execute(synthese_query_class.query.limit(result_limit))
 
-
-    # q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, auth)
+    # q = synthese_query.filter_query_all_filters(VSyntheseForWebApp, q, filters, info_role)
 
     # data = q.limit(result_limit)
     columns = current_app.config["SYNTHESE"]["COLUMNS_API_SYNTHESE_WEB_APP"] + MANDATORY_COLUMNS
     features = []
     for d in data:
-        feature = d.get_geofeature(fields=columns)
+        #Todo check merge
+        feature = d.as_geofeature(fields=columns)
         feature["properties"]["nom_vern_or_lb_nom"] = (
             d.lb_nom if d.nom_vern is None else d.nom_vern
         )
@@ -377,12 +385,14 @@ def export_taxon_web(info_role):
     # check R and E CRUVED to know if we filter with cruved
     cruved = cruved_scope_for_user_in_module(info_role.id_role, module_code="SYNTHESE")[0]
     sub_query = (
-        select([
-            VSyntheseForWebApp.cd_ref,
-            func.count(distinct(VSyntheseForWebApp.id_synthese)).label("nb_obs"),
-            func.min(VSyntheseForWebApp.date_min).label("date_min"),
-            func.max(VSyntheseForWebApp.date_max).label("date_max")
-        ])
+        select(
+            [
+                VSyntheseForWebApp.cd_ref,
+                func.count(distinct(VSyntheseForWebApp.id_synthese)).label("nb_obs"),
+                func.min(VSyntheseForWebApp.date_min).label("date_min"),
+                func.max(VSyntheseForWebApp.date_max).label("date_max"),
+            ]
+        )
         .where(VSyntheseForWebApp.id_synthese.in_(id_list))
         .group_by(VSyntheseForWebApp.cd_ref)
     )
@@ -432,12 +442,14 @@ def export_observations_web(auth, permissions):
         raise BadRequest("Unsupported format")
 
     # Set default to csv
+    srid = DB.session.execute(func.Find_SRID("gn_synthese", "synthese", "the_geom_local")).scalar()
+    # set default to csv
     export_view = GenericTableGeo(
         tableName="v_synthese_for_export",
         schemaName="gn_synthese",
         engine=DB.engine,
         geometry_field=None,
-        srid=current_app.config["LOCAL_SRID"],
+        srid=srid,
     )
 
     # Get list of id synthese from POST
@@ -585,9 +597,7 @@ def export_metadata(info_role):
         == VSyntheseForWebApp.id_dataset,
     )
 
-    q = select([
-        distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef
-    ])
+    q = select([distinct(VSyntheseForWebApp.id_dataset), metadata_view.tableDef])
     synthese_query_class = SyntheseQuery(VSyntheseForWebApp, q, filters)
     synthese_query_class.add_join(
         metadata_view.tableDef,
@@ -595,7 +605,7 @@ def export_metadata(info_role):
             metadata_view.tableDef.columns,
             current_app.config["SYNTHESE"]["EXPORT_METADATA_ID_DATASET_COL"],
         ),
-        VSyntheseForWebApp.id_dataset
+        VSyntheseForWebApp.id_dataset,
     )
     synthese_query_class.filter_query_all_filters(info_role)
 
@@ -709,7 +719,7 @@ def export_status(info_role):
 
 
 @routes.route("/general_stats", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
+@permissions.check_cruved_scope("R", True, module_code="SYNTHESE")
 @json_resp
 def general_stats(info_role):
     """Return stats about synthese.
@@ -726,7 +736,7 @@ def general_stats(info_role):
         [
             func.count(Synthese.id_synthese),
             func.count(func.distinct(Synthese.cd_nom)),
-            func.count(func.distinct(Synthese.observers))
+            func.count(func.distinct(Synthese.observers)),
         ]
     )
     synthese_query_obj = SyntheseQuery(Synthese, q, {})
@@ -862,7 +872,9 @@ def get_color_taxon():
     page = params.get("page", 1, int)
 
     if "offset" in request.args:
-        warn("offset is deprecated, please use page for pagination (start at 1)", DeprecationWarning)
+        warn(
+            "offset is deprecated, please use page for pagination (start at 1)", DeprecationWarning
+        )
         page = (int(request.args["offset"]) / limit) + 1
     id_areas_type = params.getlist("code_area_type")
     cd_noms = params.getlist("cd_nom")
@@ -882,7 +894,6 @@ def get_color_taxon():
     if len(cd_noms) > 0:
         q = q.filter(VColorAreaTaxon.cd_nom.in_(tuple(cd_noms)))
     results = q.paginate(page=page, per_page=limit, error_out=False)
-
 
     return jsonify([d.as_dict() for d in results.items])
 
@@ -965,24 +976,25 @@ def get_bbox():
         query = query.filter(Synthese.id_dataset == params["id_dataset"])
     data = query.one()
     if data and data[0]:
-        return data[0]
-    return '', 204
+        return Response(data[0], mimetype="application/json")
+    return "", 204
+
 
 
 @routes.route("/observation_count_per_column/<column>", methods=["GET"])
 def observation_count_per_column(column):
     """Get observations count group by a given column"""
     if column not in sa.inspect(Synthese).column_attrs:
-        raise BadRequest(f'No column name {column} in Synthese')
+        raise BadRequest(f"No column name {column} in Synthese")
     synthese_column = getattr(Synthese, column)
-    stmt = DB.session.query(
-               func.count(Synthese.id_synthese).label("count"),
-               synthese_column.label(column),
-           ).select_from(
-               Synthese
-           ).group_by(
-               synthese_column
-           )
+    stmt = (
+        DB.session.query(
+            func.count(Synthese.id_synthese).label("count"),
+            synthese_column.label(column),
+        )
+        .select_from(Synthese)
+        .group_by(synthese_column)
+    )
     return jsonify(DB.session.execute(stmt).fetchall())
 
 
@@ -1028,3 +1040,153 @@ def get_taxa_distribution():
 
     data = query.group_by(rank).all()
     return [{"count": d[0], "group": d[1]} for d in data]
+
+
+@routes.route("/reports", methods=["POST"])
+@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+@json_resp
+def create_report(scope):
+    """
+    Create a report (e.g report) for a given synthese id
+
+    Returns
+    -------
+        report: `json`:
+            Every occurrence's report
+    """
+    session = DB.session
+    data = request.get_json()
+    if data is None:
+        raise BadRequest("Empty request data")
+    try:
+        type_name = data["type"]
+        id_synthese = data["item"]
+        content = data["content"]
+        if not id_synthese:
+            raise BadRequest("id_synthese is missing from the request")
+        if not type_name:
+            raise BadRequest("Report type is missing from the request")
+        if not content and type_name == "discussion":
+            raise BadRequest("Discussion content is required")
+        type_exists = BibReportsTypes.query.filter_by(type=type_name).first()
+        if not type_exists:
+            raise BadRequest("This report type does not exist")
+        synthese = Synthese.query.get_or_404(id_synthese)
+        if not synthese.has_instance_permission(scope):
+            raise Forbidden
+        # only allow one alert by id_synthese
+        if type_name in ["alert", "pin"]:
+            alert_exists = TReport.query.filter(
+                TReport.id_synthese == id_synthese,
+                TReport.report_type.has(BibReportsTypes.type == type_name),
+            ).one_or_none()
+            if alert_exists is not None:
+                raise Conflict("This type already exists for this id")
+    except KeyError:
+        raise BadRequest("Empty request data")
+    new_entry = TReport(
+        id_synthese=id_synthese,
+        id_role=g.current_user.id_role,
+        content=content,
+        creation_date=datetime.datetime.now(),
+        id_type=type_exists.id_type,
+    )
+    session.add(new_entry)
+    session.commit()
+
+
+@routes.route("/reports/<int:id_report>", methods=["PUT"])
+@permissions.login_required
+@json_resp
+def update_content_report(id_report):
+    """
+    Modify a report (e.g report) for a given synthese id
+
+    Returns
+    -------
+        report: `json`:
+            Every occurrence's report
+    """
+    data = request.json
+    session = DB.session
+    idReport = data["idReport"]
+    row = TReport.query.get_or_404(idReport)
+    if row.user != g.current.user:
+        raise Forbidden
+    row.content = data["content"]
+    session.commit()
+
+
+@routes.route("/reports", methods=["GET"])
+@permissions.check_cruved_scope("R", get_scope=True, module_code="SYNTHESE")
+def list_reports(scope):
+    type_name = request.args.get("type")
+    id_synthese = request.args.get("idSynthese")
+    sort = request.args.get("sort")
+    # VERIFY ID SYNTHESE
+    synthese = Synthese.query.get_or_404(id_synthese)
+    if not synthese.has_instance_permission(scope):
+        raise Forbidden
+    # START REQUEST
+    req = TReport.query.filter(TReport.id_synthese == id_synthese)
+    # SORT
+    if sort == "asc":
+        req = req.order_by(asc(TReport.creation_date))
+    if sort == "desc":
+        req = req.order_by(desc(TReport.creation_date))
+    # VERIFY AND SET TYPE
+    type_exists = BibReportsTypes.query.filter_by(type=type_name).one_or_none()
+    # type param is not required to get all
+    if type_name and not type_exists:
+        raise BadRequest("This report type does not exist")
+    if type_name:
+        req = req.filter(TReport.report_type.has(BibReportsTypes.type == type_name))
+    # filter by id_role for pin type only
+    if type_name and type_name == "pin":
+        req = req.filter(TReport.id_role == g.current_user.id_role)
+    req = req.options(
+        joinedload("user").load_only("nom_role", "prenom_role"), joinedload("report_type")
+    )
+    result = [
+        report.as_dict(
+            fields=[
+                "id_report",
+                "id_synthese",
+                "id_role",
+                "report_type.type",
+                "report_type.id_type",
+                "content",
+                "deleted",
+                "creation_date",
+                "user.nom_role",
+                "user.prenom_role",
+            ]
+        )
+        for report in req.all()
+    ]
+    return jsonify(result)
+
+
+@routes.route("/reports/<int:id_report>", methods=["DELETE"])
+@permissions.login_required
+@json_resp
+def delete_report(id_report):
+    reportItem = TReport.query.get_or_404(id_report)
+    # alert control to check cruved - allow validators only
+    if reportItem.report_type.type in ["alert"]:
+        scope = get_scopes_by_action(module_code="VALIDATION")["C"]
+        if not reportItem.synthese.has_instance_permission(scope):
+            raise Forbidden("Permission required to delete this report !")
+    # only owner could delete a report for pin and discussion
+    if reportItem.id_role != g.current_user.id_role and reportItem.report_type.type in [
+        "discussion",
+        "pin",
+    ]:
+        raise Forbidden
+    # discussion control to don't delete but tag report as deleted only
+    if reportItem.report_type.type == "discussion":
+        reportItem.content = ""
+        reportItem.deleted = True
+    else:
+        DB.session.delete(reportItem)
+    DB.session.commit()

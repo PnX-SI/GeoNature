@@ -1,33 +1,29 @@
 // Angular's modules
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  MatAutocompleteModule,
-  MatBadgeModule,
-  MatButtonModule,
-  MatCardModule,
-  MatChipsModule,
-  MatDialogModule,
-  MatExpansionModule,
-  MatFormFieldModule,
-  MatIconModule,
-  MatIconRegistry,
-  MatInputModule,
-  MatListModule,
-  MatMenuModule,
-  MatPaginatorModule,
-  MatProgressBarModule,
-  MatProgressSpinnerModule,
-  MatSelectModule,
-  MatSidenavModule,
-  MatSlideToggleModule,
-  MatStepperModule,
-  MatTabsModule,
-  MatToolbarModule,
-  MatTooltipModule,
-  MAT_HAMMER_OPTIONS
-} from '@angular/material';
-
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatInputModule } from '@angular/material/input';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconRegistry } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
@@ -35,9 +31,9 @@ import { RouterModule } from '@angular/router';
 import 'rxjs/Rx';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { AutoCompleteModule } from 'primeng/primeng';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { TreeModule } from 'angular-tree-component';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { TreeModule } from '@circlon/angular-tree-component';
 
 // Components
 import { AcquisitionFrameworksComponent } from '@geonature_common/form/acquisition-frameworks/acquisition-frameworks.component';
@@ -46,7 +42,7 @@ import { AreasIntersectedComponent } from './form/areas-intersected/areas-inters
 import { AutoCompleteComponent } from '@geonature_common/form/autocomplete/autocomplete.component';
 import { ConfirmationDialog } from '@geonature_common/others/modal-confirmation/confirmation.dialog';
 import { DatalistComponent } from '@geonature_common/form/datalist/datalist.component';
-import { BreadcrumbsComponent } from '@geonature_common/others/breadcrumbs/breadcrumbs.component'
+import { BreadcrumbsComponent } from '@geonature_common/others/breadcrumbs/breadcrumbs.component';
 import { DatasetsComponent } from './form/datasets/datasets.component';
 import { DateComponent } from './form/date/date.component';
 import { DisplayMediasComponent } from '@geonature_common/form/media/display-medias.component';
@@ -106,7 +102,7 @@ import { MapService } from './map/map.service';
 import { MediaService } from '@geonature_common/service/media.service';
 import { NgbDatePeriodParserFormatter } from '@geonature_common/form/date/ngb-date-custom-parser-formatter';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
-
+import { TaxonTreeComponent } from './form/taxon-tree/taxon-tree.component';
 
 @NgModule({
   imports: [
@@ -135,7 +131,7 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
-    NgbModule.forRoot(),
+    NgbModule,
     NgxDatatableModule,
     NgxMatSelectSearchModule,
     ReactiveFormsModule,
@@ -198,6 +194,7 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
     TaxaComponent,
     TaxonAdvancedModalComponent,
     TaxonomyComponent,
+    TaxonTreeComponent,
   ],
   providers: [
     CommonService,
@@ -211,15 +208,12 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
     NgbDatePeriodParserFormatter,
     SyntheseDataService,
     TranslateService,
-    {
-      provide : MAT_HAMMER_OPTIONS,
-      useValue: { cssProps: { userSelect: true } }
-    } // change tooltip select behavior see https://github.com/angular/components/issues/7097
   ],
   entryComponents: [
     ConfirmationDialog,
     MediaDialog,
     TaxonAdvancedModalComponent,
+    TaxonTreeComponent,
   ],
   exports: [
     AcquisitionFrameworksComponent,
@@ -294,7 +288,6 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
     SafeStripHtmlPipe,
     StripHtmlPipe,
     SyntheseSearchComponent,
-    TaxonAdvancedModalComponent,
     DumbSelectComponent,
     GeometryFormComponent,
     ConfirmationDialog,
@@ -311,13 +304,12 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
     TaxaComponent,
     TaxonAdvancedModalComponent,
     TaxonomyComponent,
+    TaxonTreeComponent,
     TranslateModule,
-  ]
+  ],
 })
 export class GN2CommonModule {
-  constructor(
-    public matIconRegistry: MatIconRegistry
-  ) {
+  constructor(public matIconRegistry: MatIconRegistry) {
     matIconRegistry.registerFontClassAlias('fontawesome', 'fa');
   }
 }

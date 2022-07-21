@@ -1,39 +1,26 @@
-<ng-template
-  #modalContent
-  let-c="close"
-  let-d="dismiss"
->
+<ng-template #modalContent let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">Mes lieux</h4>
-    <button
-      type="button"
-      class="close"
-      aria-label="Close"
-      (click)="d()"
-    >
+    <button type="button" class="close" aria-label="Close" (click)="d()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
     <div class="form-inline">
-      <div class="form-group ">
+      <div class="form-group">
         <input
           class="form-control col-sm-12 col-md-12"
           placeholder="Nom du lieu"
           [formControl]="placeForm"
           type="text"
-        >
+        />
       </div>
-
     </div>
   </div>
 
   <div class="modal-footer">
-    <button
-      type="button"
-      class="btn btn-success"
-      (click)="addPlace(placeForm.value)"
-    >Enregistrer</button>
+    <button type="button" class="btn btn-success" (click)="addPlace(placeForm.value)">
+      Enregistrer
+    </button>
   </div>
-
 </ng-template>

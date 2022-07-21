@@ -1,65 +1,41 @@
-<mat-card class="logo">
-  <a
-    routerLink="/"
-    routerLinkActive="active"
-  >
-    <img
-      mat-card-image
-      src="custom/images/logo_sidebar.jpg"
-    />
+<mat-card class="logo" data-qa="gn-sidenav-mat-card">
+  <a routerLink="/" routerLinkActive="active">
+    <img mat-card-image src="custom/images/logo_sidebar.jpg" />
   </a>
 </mat-card>
 <mat-nav-list class="appnav">
-  <a href="#{{home_page.module_url}}">
+  <a href="#{{ home_page.module_url }}">
     <mat-list-item
       (click)="setHome()"
       [routerLink]="home_page.module_url"
       routerLinkActive="active"
       class="sidenav-item"
     >
-      <i
-        class="fa {{home_page.module_picto}} picto"
-        aria-hidden="true"
-      > </i>
+      <i class="fa {{ home_page.module_picto }} picto" aria-hidden="true"> </i>
       <span class="module-name">{{ home_page.module_label }} </span>
     </mat-list-item>
   </a>
 
   <a
-    *ngFor="let module of moduleService.getDisplayedModules()"
-    href="{{module.module_url}}"
+    *ngFor="let module of moduleService.getDisplayedModules(); let index = index"
+    href="{{ module.module_url }}"
+    [attr.data-qa]="'gn-sidenav-link-' + module.module_code"
     target="_self"
   >
-    <mat-list-item
-      class="sidenav-item"
-      (click)="_sidenavService.toggleSideNav()"
-    >
-      <i
-        class="fa {{module.module_picto}} picto"
-        aria-hidden="true"
-      > </i>
+    <mat-list-item class="sidenav-item" (click)="_sidenavService.toggleSideNav()">
+      <i class="fa {{ module.module_picto }} picto" aria-hidden="true"> </i>
       <span class="module-name">{{ module.module_label }} </span>
     </mat-list-item>
   </a>
 </mat-nav-list>
 
-
 <div class="navbar-footer">
   <p class="p-small">
-    Réalisé avec <a
-      target="_blank"
-      href="http://geonature.fr"
-    > GeoNature</a> version
-    <a
-      target="_blank"
-      href="https://github.com/PnX-SI/GeoNature/releases"
-    >{{ version }}</a>
+    Réalisé avec <a target="_blank" href="http://geonature.fr"> GeoNature</a> version
+    <a target="_blank" href="https://github.com/PnX-SI/GeoNature/releases">{{ version }}</a>
   </p>
   <p class="p-small">
     Logiciel open source développé par une
-    <a
-      target="_blank"
-      href="http://docs.geonature.fr/authors.html"
-    > communauté de structures</a>
+    <a target="_blank" href="http://docs.geonature.fr/authors.html"> communauté de structures</a>
   </p>
 </div>

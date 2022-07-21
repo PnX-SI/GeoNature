@@ -1,6 +1,6 @@
 <div class="card search-wrapper">
   <fieldset *ngIf="displayValidation">
-    <legend> Validation </legend>
+    <legend>Validation</legend>
 
     <div>
       <small>Statut de validation</small>
@@ -18,10 +18,7 @@
       </pnx-multiselect>
     </div>
 
-    <div
-      id="modif"
-      class="form-check"
-    >
+    <div id="modif" class="form-check">
       <input
         id="modif_checkbox"
         class="form-check-input"
@@ -30,102 +27,96 @@
         type="checkbox"
         checked
       />
-      <label
-        for="modif_checkbox"
-        class="form-check-label"
-      >
+      <label for="modif_checkbox" class="form-check-label">
         <small>Données modifiées depuis la dernière validation</small>
       </label>
     </div>
     <button
-      *ngIf="AppConfig.FRONTEND.ENABLE_PROFILES"
+      *ngIf="AppConfig.FRONTEND['ENABLE_PROFILES']"
       class="btn btn-sm btn-outline-shadow profile float-right"
       data-toggle="collapse"
       data-target="#collapseScore"
       matTooltip="Filtrer selon le profil du taxon"
       matTooltipClass="validation-tooltip"
     >
-      <i
-        class="fa fa-cog"
-        aria-hidden="true"
-      ></i>
+      <i class="fa fa-cog" aria-hidden="true"></i>
     </button>
     <div class="advanded-score collapse" id="collapseScore">
       <small> Score</small>
-        <div class="input-group">
-          <select
-            class="form-control form-control-sm"
-            [formControl]="formService.searchForm.get('score')"
-            name="score"
-          >
-            <option value="0">0</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
-        </div>
-        <small
-          matTooltip="La localisation est-elle dans l'aire de répartition connue du taxon ?"
-          matTooltipClass="validation-tooltip"
+      <div class="input-group">
+        <select
+          class="form-control form-control-sm"
+          [formControl]="formService.searchForm.get('score')"
+          name="score"
         >
-          Localisation valide
-          <mat-icon class="material-icons-outlined" inline="true">info</mat-icon>
-        </small>
-        <div class="input-group">
-          <select
-            class="form-control form-control-sm"
-            [formControl]="formService.searchForm.get('valid_distribution')"
-            name="score"
-          >
-          <option [ngValue]="null"> -- aucun filtre --</option>
+          <option value="0">0</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+        </select>
+      </div>
+      <small
+        matTooltip="La localisation est-elle dans l'aire de répartition connue du taxon ?"
+        matTooltipClass="validation-tooltip"
+      >
+        Localisation valide
+        <mat-icon class="material-icons-outlined" inline="true">info</mat-icon>
+      </small>
+      <div class="input-group">
+        <select
+          class="form-control form-control-sm"
+          [formControl]="formService.searchForm.get('valid_distribution')"
+          name="score"
+        >
+          <option [ngValue]="null">-- aucun filtre --</option>
           <option [ngValue]="true">Valide</option>
           <option [ngValue]="false">Invalide</option>
-          </select>
-        </div>
-        <small
-          matTooltip="L'altitude de l'observation est-elle dans la plage d'altitude connue du taxon ?"
-          matTooltipClass="validation-tooltip"
+        </select>
+      </div>
+      <small
+        matTooltip="L'altitude de l'observation est-elle dans la plage d'altitude connue du taxon ?"
+        matTooltipClass="validation-tooltip"
+      >
+        Altitude valide
+        <mat-icon class="material-icons-outlined" inline="true">info</mat-icon>
+      </small>
+      <div class="input-group">
+        <select
+          class="form-control form-control-sm"
+          [formControl]="formService.searchForm.get('valid_altitude')"
+          name="score"
         >
-          Altitude valide
-          <mat-icon class="material-icons-outlined" inline="true">info</mat-icon>
-        </small>
-        <div class="input-group">
-          <select
-            class="form-control form-control-sm"
-            [formControl]="formService.searchForm.get('valid_altitude')"
-            name="score"
-          >
-            <option [ngValue]="null"> -- aucun filtre --</option>
-            <option [ngValue]="true">Valide</option>
-            <option [ngValue]="false">Invalide</option>
-          </select>
-        </div>
-        <small
-          matTooltip="La date et l'altitude de l'observation sont-elle conforme à la phénologie connue du taxon ?"
-          matTooltipClass="validation-tooltip"
+          <option [ngValue]="null">-- aucun filtre --</option>
+          <option [ngValue]="true">Valide</option>
+          <option [ngValue]="false">Invalide</option>
+        </select>
+      </div>
+      <small
+        matTooltip="La date et l'altitude de l'observation sont-elle conforme à la phénologie connue du taxon ?"
+        matTooltipClass="validation-tooltip"
+      >
+        Phénologie valide
+        <mat-icon class="material-icons-outlined" inline="true">info</mat-icon>
+      </small>
+      <div class="input-group">
+        <select
+          class="form-control form-control-sm"
+          [formControl]="formService.searchForm.get('valid_phenology')"
+          name="score"
         >
-          Phénologie valide
-          <mat-icon class="material-icons-outlined" inline="true">info</mat-icon>
-        </small>
-        <div class="input-group">
-          <select
-            class="form-control form-control-sm"
-            [formControl]="formService.searchForm.get('valid_phenology')"
-            name="score"
-          >
-            <option [ngValue]="null"> -- aucun filtre --</option>
-            <option [ngValue]="true">Valide</option>
-            <option [ngValue]="false">Invalide</option>
-          </select>
-        </div>
+          <option [ngValue]="null">-- aucun filtre --</option>
+          <option [ngValue]="true">Valide</option>
+          <option [ngValue]="false">Invalide</option>
+        </select>
+      </div>
     </div>
   </fieldset>
 
   <fieldset>
-    <legend> Quoi ?</legend>
+    <legend>Quoi ?</legend>
 
     <pnx-taxonomy
-      label="{{'Taxon.Taxon' | translate }} "
+      label="{{ 'Taxon.Taxon' | translate }} "
       [parentFormControl]="formService.searchForm.controls.cd_nom"
       [charNumber]="3"
       [listLength]="AppConfig.SYNTHESE.TAXON_RESULT_NUMBER"
@@ -146,61 +137,69 @@
           *ngFor="let taxon of formService.selectedtaxonFromComponent; let i = index"
           class="d-flex justify-content-between align-items-center"
         >
-          {{taxon.nom_valide}}
+          {{ taxon.nom_valide }}
           <i
             (click)="formService.removeTaxon(i, formService.selectedtaxonFromComponent)"
             class="fa fa-times clickable"
-            matTooltip="Retirer « {{taxon.nom_valide}} » des filtres de recherche"
+            matTooltip="Retirer « {{ taxon.nom_valide }} » des filtres de recherche"
           ></i>
         </li>
       </ul>
     </div>
-    <button
-      (click)="openModal($event, advancedTaxon)"
-      class="btn btn-xs btn-outline-secondary advanced"
-    > Avancé
-    </button>
+    <button (click)="openModal()" class="btn btn-xs btn-outline-secondary advanced">Avancé</button>
 
-    <br>
+    <br />
     <span
-      *ngIf="formService.selectedCdRefFromTree.length > 0
-        || formService.selectedTaxonFromRankInput.length > 0
-        || ( formService.searchForm.controls.taxonomy_group2_inpn.value != null
-        && formService.searchForm.controls.taxonomy_group2_inpn.value != '' )
+      *ngIf="
+        formService.selectedCdRefFromTree.length > 0 ||
+        formService.selectedTaxonFromRankInput.length > 0 ||
+        (formService.searchForm.controls.taxonomy_group2_inpn.value != null &&
+          formService.searchForm.controls.taxonomy_group2_inpn.value != '')
       "
     >
       <h2 class="h6 mb-1"><small>Champs avancé(s) sélectionné(s) :</small></h2>
       <ul class="list-unstyled search-list">
-        <li *ngIf="
-            formService.selectedCdRefFromTree.length > 0 || formService.selectedTaxonFromRankInput.length > 0
+        <li
+          *ngIf="
+            formService.selectedCdRefFromTree.length > 0 ||
+            formService.selectedTaxonFromRankInput.length > 0
           "
           class="d-flex justify-content-between align-items-center"
         >
-          {{formService.selectedCdRefFromTree.length + formService.selectedTaxonFromRankInput.length}}
+          {{
+            formService.selectedCdRefFromTree.length + formService.selectedTaxonFromRankInput.length
+          }}
           taxons
-          <ul class="list-unstyled search-list"
+          <ul
+            class="list-unstyled search-list"
             *ngIf="formService.selectedTaxonFromRankInput.length > 0"
           >
-            <li *ngFor="let tax of formService.selectedTaxonFromRankInput; let i = index">{{ tax.lb_nom }}</li>
+            <li *ngFor="let tax of formService.selectedTaxonFromRankInput; let i = index">
+              {{ tax.lb_nom }}
+            </li>
           </ul>
           <!-- <i class="fa fa-info-circle clickable"
             [matTooltip]="'Sélection : ' + formService.getSelectedTaxonsSummary()"
             matTooltipPosition="above"
           ></i> -->
         </li>
-        <li *ngIf="( formService.searchForm.controls.taxonomy_group2_inpn.value != null
-            && formService.searchForm.controls.taxonomy_group2_inpn.value != '' )"
+        <li
+          *ngIf="
+            formService.searchForm.controls.taxonomy_group2_inpn.value != null &&
+            formService.searchForm.controls.taxonomy_group2_inpn.value != ''
+          "
           class="d-flex justify-content-between align-items-center"
         >
-          Groupe 2 inpn : {{formService.searchForm.controls.taxonomy_group2_inpn.value}}
+          Groupe 2 inpn : {{ formService.searchForm.controls.taxonomy_group2_inpn.value }}
         </li>
         <li
           *ngIf="formService.selectedRedLists?.length > 0"
           class="d-flex justify-content-between align-items-center"
         >
-          {{formService.selectedRedLists.length}} catégories de listes rouges
+          {{ formService.selectedRedLists.length }} catégories de listes rouges
 
-          <i class="fa fa-info-circle clickable"
+          <i
+            class="fa fa-info-circle clickable"
             [matTooltip]="'Sélection : ' + formService.selectedRedLists.join(', ')"
             matTooltipPosition="above"
           ></i>
@@ -209,9 +208,10 @@
           *ngIf="formService.selectedStatus?.length > 0"
           class="d-flex justify-content-between align-items-center"
         >
-          {{formService.selectedStatus.length}} statuts de protection
+          {{ formService.selectedStatus.length }} statuts de protection
 
-          <i class="fa fa-info-circle clickable"
+          <i
+            class="fa fa-info-circle clickable"
             [matTooltip]="'Sélection : ' + formService.selectedStatus.join(', ')"
             matTooltipPosition="above"
           ></i>
@@ -220,31 +220,23 @@
           *ngIf="formService.selectedTaxRefAttributs?.length > 0"
           class="d-flex justify-content-between align-items-center"
         >
-          {{formService.selectedTaxRefAttributs.length}} attributs TaxRef
+          {{ formService.selectedTaxRefAttributs.length }} attributs TaxRef
         </li>
       </ul>
     </span>
   </fieldset>
 
   <fieldset>
-    <legend> Quand ?</legend>
+    <legend>Quand ?</legend>
     <div class="row row-sm">
-
-      <pnx-date
-        label="Date min"
-        [parentFormControl]="formService.searchForm.controls.date_min"
-      >
-      </pnx-date>
-
-    </div>
-    <div class="row row-sm">
-      <pnx-date
-        label="Date max"
-        [parentFormControl]="formService.searchForm.controls.date_max"
-      >>
+      <pnx-date label="Date min" [parentFormControl]="formService.searchForm.controls.date_min">
       </pnx-date>
     </div>
-
+    <div class="row row-sm">
+      <pnx-date label="Date max" [parentFormControl]="formService.searchForm.controls.date_max"
+        >>
+      </pnx-date>
+    </div>
 
     <button
       class="btn btn-sm btn-outline-shadow period"
@@ -252,48 +244,41 @@
       data-target="#collapsePeriod"
       matTooltip="Ajouter une période"
     >
-      <i
-        class="fa fa-cog"
-        aria-hidden="true"
-      ></i>
+      <i class="fa fa-cog" aria-hidden="true"></i>
     </button>
-    <div
-      class="collapse"
-      id="collapsePeriod"
-    >
+    <div class="collapse" id="collapsePeriod">
       <div class="row row-sm">
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
           <pnx-period
             class="form-sm"
             label="Periode début"
             [parentFormControl]="formService.searchForm.controls.period_start"
-          >>
+            >>
           </pnx-period>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 padding-sm">
           <pnx-period
             label="Periode fin"
             [parentFormControl]="formService.searchForm.controls.period_end"
-          >>
+            >>
           </pnx-period>
         </div>
         <small
           *ngIf="formService.searchForm.errors?.invalidPeriod"
           class="error"
-          style="color:rgb(18, 32, 155)"
+          style="color: rgb(18, 32, 155)"
         >
           {{ 'Synthese.PeriodError' | translate }}
         </small>
       </div>
-
     </div>
   </fieldset>
 
   <fieldset>
-    <legend> Ou ?</legend>
+    <legend>Ou ?</legend>
 
     <div *ngIf="formService.formBuilded">
-      <div *ngFor="let area of areaFilters; let i = index;">
+      <div *ngFor="let area of areaFilters; let i = index">
         <pnx-areas
           [parentFormControl]="area.control"
           [label]="area.label"
@@ -302,13 +287,10 @@
         </pnx-areas>
       </div>
     </div>
-
-
   </fieldset>
 
-
   <fieldset>
-    <legend> Qui ?</legend>
+    <legend>Qui ?</legend>
 
     <ng-container *ngIf="AppConfig.SYNTHESE.SEARCH_OBSERVER_WITH_LIST; else observersTxtBlock">
       <pnx-observers
@@ -336,39 +318,35 @@
       keyValue="id_organisme"
       [label]="'Form.Organism' | translate"
       debounceTime="500"
-      [disabled]="disabled"
+      [disabled]="false"
     >
     </pnx-multiselect>
-
   </fieldset>
 
-
   <fieldset>
-    <legend> Comment ?</legend>
+    <legend>Comment ?</legend>
 
     <pnx-acquisition-frameworks
-      [multiSelect]='true'
+      [multiSelect]="true"
       [displayAll]="true"
       [parentFormControl]="formService.searchForm.controls.id_acquisition_framework"
-      label="{{ 'MetaData.AcquisitionFramework' | translate}}"
+      label="{{ 'MetaData.AcquisitionFramework' | translate }}"
     >
     </pnx-acquisition-frameworks>
-
 
     <pnx-datasets
       [displayOnlyActive]="false"
       [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_framework.value"
-      [multiSelect]='true'
+      [multiSelect]="true"
       [displayAll]="true"
       [parentFormControl]="formService.searchForm.controls.id_dataset"
-      label="{{ 'MetaData.Datasets' | translate}}"
+      label="{{ 'MetaData.Datasets' | translate }}"
     >
     </pnx-datasets>
-
   </fieldset>
 
   <fieldset>
-    <legend> Filtres avancés </legend>
+    <legend>Filtres avancés</legend>
     <small> Ajouter un filtre </small>
     <pnx-dynamic-form-generator
       [myFormGroup]="formService.searchForm"
@@ -386,16 +364,9 @@
     (click)="refreshFilters()"
     matTooltip="{{ 'Form.RefreshFilters' | translate }}"
   >
-    <i
-      class="fa fa-refresh"
-      aria-hidden="true"
-    ></i>
+    <i class="fa fa-refresh" aria-hidden="true"></i>
   </button>
-  <button
-    class="button-success uppercase"
-    mat-raised-button
-    (click)="onSubmitForm()"
-  >
+  <button class="button-success uppercase" mat-raised-button (click)="onSubmitForm()">
     Rechercher
   </button>
 </div>

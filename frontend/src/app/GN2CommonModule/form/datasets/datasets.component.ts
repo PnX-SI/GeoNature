@@ -5,13 +5,13 @@ import {
   OnChanges,
   DoCheck,
   IterableDiffers,
-  IterableDiffer
+  IterableDiffer,
 } from '@angular/core';
 import { DataFormService } from '../data-form.service';
 import { AppConfig } from '../../../../conf/app.config';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
 import { CommonService } from '../../service/common.service';
-import { DatasetStoreService } from "./dataset.service";
+import { DatasetStoreService } from './dataset.service';
 
 /**
  *  Ce composant permet de créer un "input" de type "select" ou "multiselect" affichant l'ensemble des jeux de données sur lesquels l'utilisateur connecté a des droits (table ``gn_meta.t_datasets`` et ``gn_meta.cor_dataset_actor``)
@@ -54,9 +54,8 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
    * Si on veux uniquement les JDD surlequels l'utilisateur a des droits de création
    * fournir le code du module
    */
-  @Input() creatableInModule : string
-  @Input() bindValue: string = "id_dataset";
-
+  @Input() creatableInModule: string;
+  @Input() bindValue: string = 'id_dataset';
 
   constructor(
     private _dfs: DataFormService,
@@ -81,20 +80,17 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     if (this.moduleCode) {
       filter_param['module_code'] = this.moduleCode;
     }
-    if(this.creatableInModule) {
+    if (this.creatableInModule) {
       filter_param['create'] = this.creatableInModule;
-
     }
     this._dfs.getDatasets((params = filter_param)).subscribe(
-      res => {
+      (res) => {
         this.datasetStore.filteredDataSets = res;
-        this.datasetStore.datasets = res;        
+        this.datasetStore.datasets = res;
         this.valueLoaded.emit({ value: this.datasetStore.datasets });
       },
-      error => {
-        if (error.status === 500) {
-          this._commonService.translateToaster('error', 'MetaData.JddError');
-        } else if (error.status === 404) {
+      (error) => {
+        if (error.status === 404) {
           if (AppConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION) {
             this._commonService.translateToaster('warning', 'MetaData.NoJDDMTD');
           } else {
@@ -106,7 +102,11 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
   }
 
   filterItems(event) {
-    this.datasetStore.filteredDataSets = super.filterItems(event, this.datasetStore.datasets, 'dataset_shortname');
+    this.datasetStore.filteredDataSets = super.filterItems(
+      event,
+      this.datasetStore.datasets,
+      'dataset_shortname'
+    );
   }
 
   ngOnChanges(changes) {
@@ -127,7 +127,7 @@ export class DatasetsComponent extends GenericFormComponent implements OnInit, O
     const changes = this.iterableDiffer.diff(this.idAcquisitionFrameworks);
     if (changes) {
       const idAcquisitionFrameworks = [];
-      changes.forEachItem(it => {
+      changes.forEachItem((it) => {
         idAcquisitionFrameworks.push(it.item);
       });
       const params = { id_acquisition_frameworks: idAcquisitionFrameworks };

@@ -1,6 +1,6 @@
-import { Component, OnInit, Output, EventEmitter } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { ValidationDataService } from "../services/data.service";
-
+import { ActivatedRoute, Router } from "@angular/router";
 import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { ModuleConfig } from "../module.config";
@@ -12,13 +12,16 @@ import { SyntheseFormService } from "@geonature_common/form/synthese-form/synthe
   templateUrl: "validation.component.html"
 })
 export class ValidationComponent implements OnInit {
-  public sameCoordinates: any;
+  public sameCoordinates: string;
   public validationStatus;
   public searchBarHidden: boolean = true;
+  public idSynthese: any;
 
   constructor(
+    private _route: ActivatedRoute,
+    private _router: Router,
     public _ds: ValidationDataService,
-    private _mapListService: MapListService,
+    public _mapListService: MapListService,
     private _commonService: CommonService,
     private _fs: SyntheseFormService
   ) { }
@@ -33,6 +36,7 @@ export class ValidationComponent implements OnInit {
     this._commonService.translateToaster("info", "La limite de nombre d'observations affichable dans le module est de " +
       ModuleConfig.NB_MAX_OBS_MAP);
     this._commonService.translateToaster("info", "Les 100 dernières observations");
+    this.idSynthese = this._route.snapshot.paramMap.get("id_synthese");
   }
 
   getStatusNames() {
@@ -65,6 +69,10 @@ export class ValidationComponent implements OnInit {
   }
 
   loadAndStoreData(formatedParams) {
+    if(this.idSynthese) {
+      // filter data by search id
+      formatedParams.id_synthese = this.idSynthese;
+    }
     this._ds.dataLoaded = false;
     this._ds.getSyntheseData(formatedParams).subscribe(
       result => {
@@ -86,8 +94,7 @@ export class ValidationComponent implements OnInit {
           this._commonService.translateToaster("error", err.error.description);
         }
         this._ds.dataLoaded = true;
-      },
-      () => { }
+      }
     );
   }
 
@@ -106,5 +113,9 @@ export class ValidationComponent implements OnInit {
       feature.properties.validation_auto = "";
     }
     return feature;
+  }
+
+  goHome() {
+    this._router.navigate(["/validation"]);
   }
 }

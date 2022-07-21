@@ -45,7 +45,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
  */
 @Component({
   selector: 'pnx-taxa',
-  templateUrl: 'taxa.component.html'
+  templateUrl: 'taxa.component.html',
 })
 export class TaxaComponent extends GenericFormComponent implements OnInit {
   taxa: Observable<any>;
@@ -76,8 +76,9 @@ export class TaxaComponent extends GenericFormComponent implements OnInit {
   loading = false;
   private defaultItems = [];
 
-  constructor(private dataService: DataFormService) {
-    super();
+  /** @ignore */
+  constructor(private dataService: DataFormService, private commonService: CommonService) {
+    super()
   }
 
   ngOnInit() {
@@ -107,12 +108,37 @@ export class TaxaComponent extends GenericFormComponent implements OnInit {
         switchMap(term => {
           return term && term.length >= 2
             ? this.dataService.getHigherTaxa(this.rank, term).pipe(
-                catchError(() => of([])) // empty list on error
-              )
+              catchError(() => of([])) // empty list on error
+            )
             : of([]);
         }),
         tap(() => (this.loading = false))
       )
     );
+  }
+   *
+   * La liste de noms est réinitialisée quand un nom est sélectionné ou
+   * la zone de recherche vidée.
+   *
+   * @param taxon_name La chaine de caractère saisie dans la zone de
+   * recherche.
+   */
+  refreshTaxaList(taxon_name) {
+    if (taxon_name && taxon_name.length >= 2) {
+      this.dataService.getHigherTaxa(this.rank, taxon_name).subscribe(
+        (data) => {
+          this.taxa = data;
+        },
+        (err) => {
+          if (err.status === 404) {
+            this.taxa = [{ displayName: 'No data to display' }];
+          } else {
+            this.taxa = [];
+          }
+        }
+      );
+    } else if (!taxon_name) {
+      this.taxa = [];
+    }
   }
 }

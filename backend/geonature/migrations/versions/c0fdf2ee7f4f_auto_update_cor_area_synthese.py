@@ -10,22 +10,32 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c0fdf2ee7f4f'
-down_revision = 'f06cc80cc8ba'
+revision = "c0fdf2ee7f4f"
+down_revision = "f06cc80cc8ba"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
     # Add 'on delete cascade' on gn_synthese.cor_area_synthese.id_area FK
-    op.drop_constraint('fk_cor_area_synthese_id_area', table_name='cor_area_synthese', schema='gn_synthese')
-    op.create_foreign_key('fk_cor_area_synthese_id_area',
-        source_schema='gn_synthese', source_table='cor_area_synthese', local_cols=['id_area'],
-        referent_schema='ref_geo', referent_table='l_areas', remote_cols=['id_area'],
-        onupdate='CASCADE', ondelete='CASCADE')
+    op.drop_constraint(
+        "fk_cor_area_synthese_id_area", table_name="cor_area_synthese", schema="gn_synthese"
+    )
+    op.create_foreign_key(
+        "fk_cor_area_synthese_id_area",
+        source_schema="gn_synthese",
+        source_table="cor_area_synthese",
+        local_cols=["id_area"],
+        referent_schema="ref_geo",
+        referent_table="l_areas",
+        remote_cols=["id_area"],
+        onupdate="CASCADE",
+        ondelete="CASCADE",
+    )
 
     # Populate gn_synthese.cor_area_synthese on new areas inserted in ref_geo.l_areas
-    op.execute("""
+    op.execute(
+        """
     CREATE OR REPLACE FUNCTION gn_synthese.fct_trig_l_areas_insert_cor_area_synthese_on_each_statement()
      RETURNS trigger
      LANGUAGE plpgsql
@@ -49,23 +59,36 @@ def upgrade():
       RETURN NULL;
       END;
       $function$
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     CREATE TRIGGER tri_insert_cor_area_synthese after
     INSERT ON ref_geo.l_areas
     REFERENCING NEW TABLE AS new
     FOR EACH STATEMENT
     EXECUTE PROCEDURE gn_synthese.fct_trig_l_areas_insert_cor_area_synthese_on_each_statement();
-    """)
+    """
+    )
 
 
 def downgrade():
-    op.execute('DROP TRIGGER tri_insert_cor_area_synthese ON ref_geo.l_areas')
-    op.execute('DROP FUNCTION gn_synthese.fct_trig_l_areas_insert_cor_area_synthese_on_each_statement')
+    op.execute("DROP TRIGGER tri_insert_cor_area_synthese ON ref_geo.l_areas")
+    op.execute(
+        "DROP FUNCTION gn_synthese.fct_trig_l_areas_insert_cor_area_synthese_on_each_statement"
+    )
 
     # Remove 'on delete cascade' on gn_synthese.cor_area_synthese.id_area FK
-    op.drop_constraint('fk_cor_area_synthese_id_area', table_name='cor_area_synthese', schema='gn_synthese')
-    op.create_foreign_key('fk_cor_area_synthese_id_area',
-        source_schema='gn_synthese', source_table='cor_area_synthese', local_cols=['id_area'],
-        referent_schema='ref_geo', referent_table='l_areas', remote_cols=['id_area'],
-        onupdate='CASCADE')
+    op.drop_constraint(
+        "fk_cor_area_synthese_id_area", table_name="cor_area_synthese", schema="gn_synthese"
+    )
+    op.create_foreign_key(
+        "fk_cor_area_synthese_id_area",
+        source_schema="gn_synthese",
+        source_table="cor_area_synthese",
+        local_cols=["id_area"],
+        referent_schema="ref_geo",
+        referent_table="l_areas",
+        remote_cols=["id_area"],
+        onupdate="CASCADE",
+    )

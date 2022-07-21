@@ -20,6 +20,7 @@ def login_required(view_func):
         if g.current_user is None:
             raise Unauthorized
         return view_func(*args, **kwargs)
+
     return decorated_view
 
 
@@ -56,10 +57,7 @@ def check_cruved_scope(
         @wraps(fn)
         def __check_cruved_scope(*args, **kwargs):
             user = get_user_from_token_and_raise(
-                request,
-                action,
-                redirect_on_expiration,
-                redirect_on_invalid_token
+                request, action, redirect_on_expiration, redirect_on_invalid_token
             )
             user_with_highter_perm = None
 

@@ -192,7 +192,7 @@
       "CountError": "Le dénombrement maximum ne peut pas être inférieur au dénombrement minimum",
       "LifeStageRequiredError": "Veuillez indiquer le stade de vie",
       "SexRequiredError": "Veuillez indiquer le sexe",
-      "CountingObjectRequiredError": "Veuillez indiquer le type de dénombrement"
+      "CountingObjectRequiredError": "Veuillez indiquer l'objet du dénombrement"
     }
   },
   "Geo": {
@@ -204,9 +204,45 @@
     "ExportModuleName": "Module d'export des données"
   },
   "Synthese": {
+    "copy": "Copié dans le presse-papier !",
+    "copyPermalink": "Copier le permalien",
+    "Discussion": "Discussion",
+    "Commented": "a commenté le",
+    "AddComment": "Ajouter un commentaire",
+    "ChangeComment": "Modifier",
+    "ChangeStatus": "a modifié le statut le",
+    "DeleteComment": "Supprimer",
+    "changeValidStatus": "Modifier le statut de validation",
+    "ModalTitle": "Information sur l'observation",
+    "Edit": "Voir dans le module de saisie",
+    "Mailto": "Contacter par email",
     "DeleteObs": "Supprimer l'observations",
     "DeleteSuccess": "Observation supprimée avec succès",
-    "PeriodError": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période"
+    "PeriodError": "Le champs 'periode début' ET 'periode fin' doivent être remplis si vous souhaitez faire une recherche par période",
+    "LocationName": "Nom du lieux",
+    "Accuracy": "Précision du pointage",
+    "Owner": "Observation de",
+    "Date": "Date",
+    "Altitude": "Altitude",
+    "UidObs": "UUID observation",
+    "MinDeep": "Profondeur min",
+    "MaxDeep": "Profondeur max",
+    "Habitat": "Habitat associé",
+    "InpnTaxon": "Fiche INPN du taxon",
+    "GnRecord": "Fiche GeoNature",
+    "ObsState": "Statut de l'observation",
+    "ObsTech": "Technique d'observation",
+    "ObsStateBio": "Etat biologique",
+    "ObsStatusBio": "Status biologique",
+    "ObsStatBiogeo": "Statut biogéographique",
+    "ObsBehav": "Comportement",
+    "ObsSex": "Sexe",
+    "ObsLifeStep": "Stade de vie"
+  },
+  "Validation": {
+    "noData": "Aucune données à afficher",
+    "noIdFound": "Aucun résultat pour cet ID",
+    "displayAll": "Voir toutes les occurrences"
   },
   "MyAccount": "Mon compte",
   "CreateAccount": "Créer un compte",

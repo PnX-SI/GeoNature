@@ -72,9 +72,6 @@ TRAP_ALL_EXCEPTIONS = false
 # Cf. https://docs.python.org/3/library/logging.html#logging-levels
 API_LOG_LEVEL = 40
 
-# Code EPSG pour les geom locaux en base de données
-LOCAL_SRID = 2154
-
 # MTD (pour la connexion au webservice de métadonnées de l'INPN)
 XML_NAMESPACE = "{http://inpn.mnhn.fr/mtd}"
 MTD_API_ENDPOINT = "https://preprod-inpn.mnhn.fr/mtd"
@@ -210,6 +207,22 @@ MAIL_ON_ERROR = false
     url = "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
     attribution = "OSM contributors"
 [[MAPCONFIG.BASEMAP]]
+    name = "IGN Plan v2"
+    url = "https://wxs.ign.fr/cartes/geoportail/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/png&LAYER=GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
+    attribution = "&copy IGN"
+[[MAPCONFIG.BASEMAP]]
+    name = "IGN Ortho"
+    url = "https://wxs.ign.fr/ortho/geoportail/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/jpeg&LAYER=ORTHOIMAGERY.ORTHOPHOTOS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
+    attribution = "&copy IGN"
+[[MAPCONFIG.BASEMAP]]
+    name = "IGN Scan 25"
+    url = "https://wxs.ign.fr/YOUR-IGN-KEY/geoportail/wmts?LAYER=GEOGRAPHICALGRIDSYSTEMS.MAPS&EXCEPTIONS=text/xml&FORMAT=image/jpeg&SERVICE=WMTS&VERSION=1.0.0&REQUEST=GetTile&STYLE=normal&TILEMATRIXSET=PM&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
+    attribution = "&copy IGN"
+[[MAPCONFIG.BASEMAP]]
+    name = "IGN Cadastre"
+    url = "https://wxs.ign.fr/parcellaire/geoportail/wmts?&REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&STYLE=normal&TILEMATRIXSET=PM&FORMAT=image/png&LAYER=CADASTRALPARCELS.PARCELS&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}"
+    attribution = "&copy IGN"
+[[MAPCONFIG.BASEMAP]]
     name = "WMS"
     url = "https://mon_flux_wms"
     service = "wms"
@@ -264,10 +277,6 @@ MAIL_ON_ERROR = false
     # Cette fonctionnalité n'est pas actuallement stable sur un grand nombre de taxons.
     # Passer à 'false' si le temps de chargement est trop long.
     DISPLAY_TAXON_TREE = true
-
-    # Active (=true) ou pas (=false) le fait de rechercher sur le nom d'observateur
-    # en 'ILIKE' sur les portées 1 et 2 du CRUVED
-    CRUVED_SEARCH_WITH_OBSERVER_AS_TXT = false
 
     # Switch the observer form input in free text input (false by default) or in select input (true)
     SEARCH_OBSERVER_WITH_LIST = false
@@ -384,6 +393,10 @@ MAIL_ON_ERROR = false
         "date_modification",
         "champs_additionnels
     ]
+    DISCUSSION_MODULES = ["SYNTHESE","VALIDATION"]
+    DICUSSION_MAX_LENGTH = 1500
+    ALERT_MODULES = ["SYNTHESE","VALIDATION"]
+    PIN_MODULES = ["SYNTHESE","VALIDATION"]
 
 # Configuration de l'accès sans authentication
 [PUBLIC_ACCESS]

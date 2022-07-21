@@ -1,18 +1,12 @@
 <div class="gn-panel">
-  <div
-    [ngClass]="['_gn-panel-header', state]"
-    (click)='animateMe()'
-  >
+  <div [ngClass]="['_gn-panel-header', state]" (click)="animateMe()">
     <div class="gn-panel-header">
       <ng-content select=".gn-panel-header"></ng-content>
     </div>
     <mat-icon class="state-icon">expand_more</mat-icon>
   </div>
 
-  <div
-    class="gn-panel-content"
-    [@detailExpand]='state'
-  >
+  <div class="gn-panel-content" [@detailExpand]="state">
     <ng-content select=".gn-panel-content"></ng-content>
   </div>
 </div>

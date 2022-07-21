@@ -77,7 +77,7 @@ tbody {
   opacity: 0.3;
 }
 
-:host /deep/ ngb-typeahead-window {
+:host ::ng-deep ngb-typeahead-window {
   transform: translate(0px, 30px) !important;
 }
 

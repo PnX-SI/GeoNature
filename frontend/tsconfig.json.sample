@@ -5,20 +5,20 @@
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "declaration": false,
-    "module": "es2015",
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "module": "es2020",
+    "target": "es2015",
+    "lib": [
+      "es2018",
+      "dom"
+    ],
     "typeRoots": [
       "node_modules/@types",
       "./src/typings.d.ts"
     ],
     "types":[
-    ],
-    "lib": [
-      "es2016",
-      "dom"
     ],
     "baseUrl": "{{geonature_path}}/frontend/node_modules",
     "paths": {

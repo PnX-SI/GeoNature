@@ -19,7 +19,7 @@ from pypnusershub.db.models import Organisme as BibOrganismes
 from geonature.core.users.register_post_actions import (
     validate_temp_user,
     execute_actions_after_validation,
-    send_email_for_recovery
+    send_email_for_recovery,
 )
 
 from pypnusershub.env import REGISTER_POST_ACTION_FCT
@@ -36,27 +36,29 @@ s = requests.Session()
 
 
 user_fields = {
-    'id_role',
-    'identifiant',
-    'nom_role',
-    'prenom_role',
-    'nom_complet',
-    'id_organisme',
-    'groupe',
-    'active',
+    "id_role",
+    "identifiant",
+    "nom_role",
+    "prenom_role",
+    "nom_complet",
+    "id_organisme",
+    "groupe",
+    "active",
 }
 organism_fields = {
-    'id_organisme',
-    'uuid_organisme',
-    'nom_organisme',
+    "id_organisme",
+    "uuid_organisme",
+    "nom_organisme",
 }
 
 # configuration of post_request actions for registrations
-REGISTER_POST_ACTION_FCT.update({
-    "create_temp_user": validate_temp_user,
-    "valid_temp_user": execute_actions_after_validation,
-    "create_cor_role_token": send_email_for_recovery,
-})
+REGISTER_POST_ACTION_FCT.update(
+    {
+        "create_temp_user": validate_temp_user,
+        "valid_temp_user": execute_actions_after_validation,
+        "create_cor_role_token": send_email_for_recovery,
+    }
+)
 
 
 @routes.route("/menu/<int:id_menu>", methods=["GET"])
@@ -97,7 +99,10 @@ def getRolesByMenuCode(code_liste):
 
     q = DB.session.query(VUserslistForallMenu).join(
         TListes,
-        and_(TListes.id_liste == VUserslistForallMenu.id_menu, TListes.code_liste == code_liste,),
+        and_(
+            TListes.id_liste == VUserslistForallMenu.id_menu,
+            TListes.code_liste == code_liste,
+        ),
     )
 
     parameters = request.args
@@ -134,7 +139,6 @@ def get_role(id_role):
     return user.as_dict(fields=user_fields)
 
 
-
 @routes.route("/roles", methods=["GET"])
 @permissions.login_required
 @json_resp
@@ -162,9 +166,9 @@ def get_roles():
 @json_resp
 def get_organismes():
     """
-        Get all organisms
+    Get all organisms
 
-        .. :quickref: User;
+    .. :quickref: User;
     """
     params = request.args.to_dict()
     q = BibOrganismes.query
@@ -213,9 +217,9 @@ def get_organismes_jdd():
 @routes.route("/inscription", methods=["POST"])
 def inscription():
     """
-        Ajoute un utilisateur à utilisateurs.temp_user à partir de l'interface geonature
-        Fonctionne selon l'autorisation 'ENABLE_SIGN_UP' dans la config.
-        Fait appel à l'API UsersHub
+    Ajoute un utilisateur à utilisateurs.temp_user à partir de l'interface geonature
+    Fonctionne selon l'autorisation 'ENABLE_SIGN_UP' dans la config.
+    Fait appel à l'API UsersHub
     """
     # test des droits
     if not config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
@@ -228,7 +232,8 @@ def inscription():
     data["confirmation_url"] = config["API_ENDPOINT"] + "/users/after_confirmation"
 
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/create_temp_user", json=data,
+        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/create_temp_user",
+        json=data,
     )
 
     return Response(r), r.status_code
@@ -238,9 +243,9 @@ def inscription():
 @routes.route("/login/recovery", methods=["POST"])
 def login_recovery():
     """
-        Call UsersHub API to create a TOKEN for a user
-        A post_action send an email with the user login and a link to reset its password
-        Work only if 'ENABLE_SIGN_UP' is set to True
+    Call UsersHub API to create a TOKEN for a user
+    A post_action send an email with the user login and a link to reset its password
+    Work only if 'ENABLE_SIGN_UP' is set to True
     """
     # test des droits
     if not current_app.config.get("ACCOUNT_MANAGEMENT").get("ENABLE_USER_MANAGEMENT", False):
@@ -259,9 +264,9 @@ def login_recovery():
 @routes.route("/confirmation", methods=["GET"])
 def confirmation():
     """
-        Validate a account after a demande (this action is triggered by the link in the email)
-        Create a personnal JDD as post_action if the parameter AUTO_DATASET_CREATION is set to True
-        Fait appel à l'API UsersHub
+    Validate a account after a demande (this action is triggered by the link in the email)
+    Create a personnal JDD as post_action if the parameter AUTO_DATASET_CREATION is set to True
+    Fait appel à l'API UsersHub
     """
     # test des droits
     if not config["ACCOUNT_MANAGEMENT"].get("ENABLE_SIGN_UP", False):
@@ -274,7 +279,8 @@ def confirmation():
     data = {"token": token, "id_application": current_app.config["ID_APPLICATION_GEONATURE"]}
 
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/valid_temp_user", json=data,
+        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/valid_temp_user",
+        json=data,
     )
 
     if r.status_code != 200:
@@ -301,7 +307,7 @@ def after_confirmation():
 @json_resp
 def update_role(info_role):
     """
-        Modifie le role de l'utilisateur du token en cours
+    Modifie le role de l'utilisateur du token en cours
     """
     if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
         return {"message": "Page introuvable"}, 404
@@ -344,8 +350,8 @@ def update_role(info_role):
 @json_resp
 def change_password(id_role):
     """
-        Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp
-        Fait appel à l'API UsersHub
+    Modifie le mot de passe de l'utilisateur connecté et de son ancien mdp
+    Fait appel à l'API UsersHub
     """
     if not current_app.config["ACCOUNT_MANAGEMENT"].get("ENABLE_USER_MANAGEMENT", False):
         return {"message": "Page introuvable"}, 404
@@ -383,7 +389,8 @@ def change_password(id_role):
     ):
         return {"msg": "Erreur serveur"}, 500
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password", json=data,
+        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password",
+        json=data,
     )
 
     if r.status_code != 200:
@@ -407,7 +414,8 @@ def new_password():
         return {"msg": "Erreur serveur"}, 500
 
     r = s.post(
-        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password", json=data,
+        url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/change_password",
+        json=data,
     )
 
     if r.status_code != 200:

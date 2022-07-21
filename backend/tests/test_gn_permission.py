@@ -29,7 +29,7 @@ from geonature.core.gn_permissions.models import VUsersPermissions
 
 @pytest.mark.usefixtures("client_class")
 class TestGnPermissionsTools:
-    """ Test of gn_permissions tools functions"""
+    """Test of gn_permissions tools functions"""
 
     def test_user_from_token(self):
         with pytest.raises(UnreadableAccessRightsError):

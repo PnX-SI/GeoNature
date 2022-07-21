@@ -1,20 +1,21 @@
 <small> {{ label }} </small>
 <ng-select
-	[ngClass]="class"
-	[items]="areas | async"
-	bindLabel="area_name"
-	[bindValue]="valueFieldName"
+  [ngClass]="class"
+  [items]="areas | async"
+  bindLabel="area_name"
+  [bindValue]="valueFieldName"
   [compareWith]="compareWith"
   [hideSelected]="true"
-	[placeholder]="label"
-	[multiple]="true"
-	[clearable]="clearable"
-	[virtualScroll]="true"
-	[typeahead]="areas_input$"
-	[loading]="loading"
-	[formControl]="parentFormControl"
+  [placeholder]="label"
+  [multiple]="true"
+  [clearable]="clearable"
+  [virtualScroll]="true"
+  [typeahead]="areas_input$"
+  [loading]="loading"
+  [formControl]="parentFormControl"
   clearAllText="Supprimer toutes les zones géographiques"
   addTagText="Ajouter une zone géographique"
+  (change)="onSelectionChange.emit($event)"
 >
   <ng-template ng-typetosearch-tmp>
     <div class="ng-option disabled">
@@ -27,34 +28,37 @@
 
   <ng-template ng-notfound-tmp let-searchTerm="searchTerm">
     <div class="ng-option disabled">
-      <span class="bg-warning p-2 rounded" matTooltip="Aucune correspondance pour «&nbsp;{{searchTerm}}&nbsp;»">
+      <span
+        class="bg-warning p-2 rounded"
+        matTooltip="Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»"
+      >
         <mat-icon inline>warning_amber</mat-icon>
-        Aucune correspondance pour «&nbsp;{{searchTerm}}&nbsp;»
+        Aucune correspondance pour «&nbsp;{{ searchTerm }}&nbsp;»
       </span>
     </div>
   </ng-template>
 
   <ng-template ng-loadingtext-tmp let-searchTerm="searchTerm">
-    <div class="ng-option disabled" matTooltip="Chargements des zones pour «&nbsp;{{searchTerm}}&nbsp;»">
+    <div
+      class="ng-option disabled"
+      matTooltip="Chargements des zones pour «&nbsp;{{ searchTerm }}&nbsp;»"
+    >
       <span class="bg-info p-2 rounded">
         <mat-icon inline>autorenew</mat-icon>
-        Chargements pour «&nbsp;{{searchTerm}}&nbsp;»
+        Chargements pour «&nbsp;{{ searchTerm }}&nbsp;»
       </span>
     </div>
   </ng-template>
 
-	<ng-template ng-option-tmp let-item="item">
-    <div matTooltip="{{item.area_name}}">
-    	<span class="pre-wrap">{{item.area_name}}</span>
+  <ng-template ng-option-tmp let-item="item">
+    <div matTooltip="{{ item.area_name }}">
+      <span class="pre-wrap">{{ item.area_name }}</span>
     </div>
   </ng-template>
 
   <ng-template ng-label-tmp let-item="item" let-clear="clear">
-    <span
-      class="ng-value-label pl-2"
-      [style.background-color]="item.kolor"
-    >
-      {{item.area_name}}
+    <span class="ng-value-label pl-2" [style.background-color]="item.kolor">
+      {{ item.area_name }}
     </span>
     <span
       *ngIf="item.disabled !== true"
@@ -62,8 +66,7 @@
       (click)="clear(item)"
       aria-hidden="true"
     >
-       ×
+      ×
     </span>
   </ng-template>
 </ng-select>
-

@@ -78,7 +78,7 @@ DEFAULT_EXPORT_COLUMNS = [
     "uuid_perm_grp_sinp",
     "date_creation",
     "date_modification",
-    "champs_additionnels"
+    "champs_additionnels",
 ]
 
 DEFAULT_COLUMNS_API_SYNTHESE = [

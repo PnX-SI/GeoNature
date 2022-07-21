@@ -10,16 +10,16 @@ from werkzeug.exceptions import Forbidden
 
 class ModelCruvedAutorization(DB.Model):
     """
-        Classe abstraite permettant d'ajout des méthodes
-        de controle d'accès à la donnée en fonction
-        des droits associés à un utilisateur
-        La classe enfant doit avoir les attributs suivant dans son constructeur:
-        - observers
-        - dataset
-        - id_digitiser
-        - id_dataset
-        A définir en tant que "synonymes" si les attributs sont différents
-        ou surcharger les méthodes
+    Classe abstraite permettant d'ajout des méthodes
+    de controle d'accès à la donnée en fonction
+    des droits associés à un utilisateur
+    La classe enfant doit avoir les attributs suivant dans son constructeur:
+    - observers
+    - dataset
+    - id_digitiser
+    - id_dataset
+    A définir en tant que "synonymes" si les attributs sont différents
+    ou surcharger les méthodes
     """
 
     __abstract__ = True
@@ -35,8 +35,8 @@ class ModelCruvedAutorization(DB.Model):
 
     def user_is_allowed_to(self, user, level):
         """
-            Fonction permettant de dire si un utilisateur
-            peu ou non agir sur une donnée
+        Fonction permettant de dire si un utilisateur
+        peu ou non agir sur une donnée
         """
         # Si l'utilisateur n'a pas de droit d'accès aux données
         if level == "0" or level not in ("1", "2", "3"):
@@ -59,9 +59,9 @@ class ModelCruvedAutorization(DB.Model):
 
     def check_if_allowed(self, info_role, action, level_scope):
         """
-            Return the releve if the user is allowed
-            params:
-                info_role: object from Permission
+        Return the releve if the user is allowed
+        params:
+            info_role: object from Permission
         """
         user = UserRigth(
             id_role=info_role.id_role,

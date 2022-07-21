@@ -1,5 +1,5 @@
 <td>
-  {{dataset.id_dataset}}
+  {{ dataset.id_dataset }}
 </td>
 <td>
   <span class="float-left">
@@ -9,15 +9,14 @@
         class="custom-toggle"
         *ngIf="!stateChangeSaving"
         [checked]="dataset.active"
-        [matTooltip]="dataset.active ? 'Le jeu de données est actif' : 'Le jeu de données est inactif'"
+        [matTooltip]="
+          dataset.active ? 'Le jeu de données est actif' : 'Le jeu de données est inactif'
+        "
         (change)="switchDatasetState($event)"
+        [attr.data-qa]='"pnx-metadata-jdd-actif-"+dataset.id_dataset'
       >
       </mat-slide-toggle>
-      <mat-spinner 
-        *ngIf="stateChangeSaving"
-        diameter="25"
-        strokeWidth="2">
-      </mat-spinner>
+      <mat-spinner *ngIf="stateChangeSaving" diameter="25" strokeWidth="2"> </mat-spinner>
     </ng-container>
     <ng-template #noSwitchButton>
       <mat-slide-toggle
@@ -25,35 +24,34 @@
         [disabled]="true"
         color="primary"
         [matTooltip]="dataset.active ? 'Le jeu de données est actif' : 'Le jeu de données est inactif'"
+        [attr.data-qa]='"pnx-metadata-jdd-inactif-"+dataset.id_dataset'
       >
       </mat-slide-toggle>
     </ng-template>
   </span>
 
-  <a [routerLink]="['/metadata/dataset_detail', dataset.id_dataset]">
+  <a [routerLink]="['/metadata/dataset_detail', dataset.id_dataset]" [attr.data-qa]='"pnx-metadata-jdd-"+dataset.id_dataset'>
     {{dataset.dataset_name}}
 
     <br />
-    <small style="color: gray"> {{dataset.unique_dataset_id}} </small>
-
+    <small style="color: gray"> {{ dataset.unique_dataset_id }} </small>
   </a>
 </td>
-<td> {{dataset.meta_create_date |date:'dd/MM/yyyy' }}</td>
-<td style="text-align: left;">
-
-  <span *ngIf="dataset.creator"> 
-    <b> {{dataset.creator?.nom_complet}} : </b> créateur
+<td>{{ dataset.meta_create_date | date: 'dd/MM/yyyy' }}</td>
+<td style="text-align: left">
+  <span *ngIf="dataset.creator">
+    <b> {{ dataset.creator?.nom_complet }} : </b> créateur
   </span>
 
   <ng-container *ngIf="dataset.cor_dataset_actor.length; else elifNoActor">
     <div *ngFor="let ac of dataset.cor_dataset_actor">
       <span *ngIf="ac.organism">
-        <b> {{ac.organism?.nom_organisme }} : </b>
-        {{ac.nomenclature_actor_role.label_fr }} <br>
+        <b> {{ ac.organism?.nom_organisme }} : </b>
+        {{ ac.nomenclature_actor_role.label_fr }} <br />
       </span>
       <span *ngIf="ac.role">
-        <b> {{ac.role?.nom_complet }} : </b>
-        {{ac.nomenclature_actor_role.label_fr }} <br>
+        <b> {{ ac.role?.nom_complet }} : </b>
+        {{ ac.nomenclature_actor_role.label_fr }} <br />
       </span>
     </div>
   </ng-container>
@@ -63,9 +61,8 @@
       <span> Aucun acteur renseigné </span>
     </div>
   </ng-template>
-
 </td>
-<td> {{dataset?.observation_count}} </td>
+<td [attr.data-qa]='"pnx-metadata-jdd-nb-obs-"+dataset.id_dataset'> {{dataset?.observation_count}} </td>
 <td>
   <a
     mat-icon-button
@@ -79,13 +76,12 @@
     mat-icon-button
     type="button"
     [disabled]="!dataset.active"
-    [routerLink]="['/import/process/step/1']" 
-    [queryParams]="{datasetId: dataset.id_dataset, resetStepper: true}"
+    [routerLink]="['/import/process/step/1']"
+    [queryParams]="{ datasetId: dataset.id_dataset, resetStepper: true }"
   >
-    <mat-icon
-      *ngIf="!dataset.active; else elseImport"
-      matTooltip="Le jeu de donnée est inactif"
-    > upload </mat-icon>
+    <mat-icon *ngIf="!dataset.active; else elseImport" matTooltip="Le jeu de donnée est inactif">
+      upload
+    </mat-icon>
     <ng-template #elseImport>
       <mat-icon matTooltip="Importer dans ce jeu de donnée"> upload </mat-icon>
     </ng-template>
@@ -96,14 +92,16 @@
     [disabled]="dataset?.observation_count == 0"
     [routerLink]="['/synthese']" 
     [queryParams]="{id_dataset: dataset.id_dataset}"
+    [attr.data-qa]='"pnx-metadata-jdd-display-data-"+dataset.id_dataset'
   >
     <mat-icon
-      *ngIf="dataset?.observation_count == 0; else elseSynthese;"
+      *ngIf="dataset?.observation_count == 0; else elseSynthese"
       matTooltip="Ce jeu de données ne comporte aucune donnée"
-    > room </mat-icon>
+    >
+      room
+    </mat-icon>
     <ng-template #elseSynthese>
-      <mat-icon matTooltip="Afficher les données dans la Synthèse"> room
-      </mat-icon>
+      <mat-icon matTooltip="Afficher les données dans la Synthèse"> room </mat-icon>
     </ng-template>
   </a>
 
@@ -118,11 +116,10 @@
     </a>
   </ng-container>
   <ng-template #noUpdateButton>
-    <button
-      mat-icon-button
-      [disabled]="true"
-    >
-      <mat-icon matTooltip="Vous n'avez pas l'autorisation de modifier de jeu de données"> create</mat-icon>
+    <button mat-icon-button [disabled]="true">
+      <mat-icon matTooltip="Vous n'avez pas l'autorisation de modifier de jeu de données">
+        create</mat-icon
+      >
     </button>
   </ng-template>
 
@@ -130,20 +127,24 @@
     <button
       mat-icon-button
       [disabled]="true"
+      [attr.data-qa]='"pnx-metadata-jdd-delete-"+dataset.id_dataset'
     >
       <mat-icon
         [matTooltip]="
-          (dataset?.observation_count || 0) > 0 ? 
-            'Ce jeu de données contient des données et ne peut pas être supprimé' :
-            'Vous n\'avez pas les droits nécessaires pour supprimer ce jeu de données'
+          (dataset?.observation_count || 0) > 0
+            ? 'Ce jeu de données contient des données et ne peut pas être supprimé'
+            : 'Vous n\'avez pas les droits nécessaires pour supprimer ce jeu de données'
         "
-      > delete </mat-icon>
+      >
+        delete
+      </mat-icon>
     </button>
   </ng-container>
   <ng-template #elseblock>
     <button
       mat-icon-button
       (click)="deleteDs(dataset)"
+      [attr.data-qa]='"pnx-metadata-jdd-delete-"+dataset.id_dataset'
     >
       <mat-icon matTooltip="Supprimer le jeu de données"> delete </mat-icon>
     </button>

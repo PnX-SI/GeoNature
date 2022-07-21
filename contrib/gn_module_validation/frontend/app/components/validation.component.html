@@ -1,44 +1,65 @@
-<div id="cover-spin" *ngIf="!_ds.dataLoaded">
+<div
+  id="cover-spin"
+  *ngIf="!_ds.dataLoaded"
+>
 </div>
 
 
 <div class="wrapper">
 
-      <nav #navBar id="sidebar" class="collapse show" class="collapse show">
-        <!-- <pnx-validation-search (searchClicked)="loadAndStoreData($event)"></pnx-validation-search> -->
-        <pnx-synthese-search
-        [displayValidation]="true"
-        (searchClicked)="loadAndStoreData($event)">
-        </pnx-synthese-search>
-      </nav>
+  <nav
+    #navBar
+    id="sidebar"
+    class="collapse show"
+    class="collapse show"
+  >
+    <!-- <pnx-validation-search (searchClicked)="loadAndStoreData($event)"></pnx-validation-search> -->
+    <pnx-synthese-search
+      (resetFilter)="goHome()"
+      [displayValidation]="true"
+      (searchClicked)="loadAndStoreData($event)"
+    >
+    </pnx-synthese-search>
+  </nav>
 
-    <!-- Page Content  -->
-    <div class="row row-sm page-content">
+  <!-- Page Content  -->
+  <div class="row row-sm page-content">
 
-      <div class="col-sm-12 col-md-9 padding-sm middle">
-          <button #buttonToggle
-            [style.left.px]="marginButton"
-            (click)="searchBarHidden = !searchBarHidden"
-            data-toggle="collapse" data-target="#sidebar"
-            aria-controls="sidebar"
-            type="button" id="sidebarCollapse" class="btn btn-toogle-sidenav box-shadow"
-          >
-              <i class="fa" [ngClass]="searchBarHidden ? 'fa-caret-left' : 'fa-caret-right'"></i>
-          </button>
-          <pnx-validation-synthese-list [inputSyntheseData]="_mapListService.tableData" [validationStatus]="validationStatus"></pnx-validation-synthese-list>
+    <div class="col-sm-12 col-md-9 padding-sm middle">
+      <button
+        #buttonToggle
+        (click)="searchBarHidden = !searchBarHidden"
+        data-toggle="collapse"
+        data-target="#sidebar"
+        aria-controls="sidebar"
+        type="button"
+        id="sidebarCollapse"
+        class="btn btn-toogle-sidenav box-shadow"
+      >
+        <i
+          class="fa"
+          [ngClass]="searchBarHidden ? 'fa-caret-left' : 'fa-caret-right'"
+        ></i>
+      </button>
+      <pnx-validation-synthese-list
+        (displayAll)="goHome()"
+        [idSynthese]="idSynthese"
+        [inputSyntheseData]="_mapListService.tableData"
+        [validationStatus]="validationStatus"
+      ></pnx-validation-synthese-list>
 
-          <!-- select only observations with awaiting validation status
+      <!-- select only observations with awaiting validation status
           <div id="awaitingObs" [formGroup]="awaitingForm">
           <input (change)="onAwaitingClick()" id="awaiting_checkbox" value="awaiting" formControlName="awaiting" type="checkbox" checked/>
           <label for="awaiting_checkbox"> Observations en attente de validation </label>
           </div>
           -->
 
-      </div>
-      <div class="col-sm-12 col-md-3 padding-sm last">
-          <pnx-validation-synthese-carte [inputSyntheseData]="_mapListService.geojsonData"></pnx-validation-synthese-carte>
-      </div>
-
     </div>
+    <div class="col-sm-12 col-md-3 padding-sm last">
+      <pnx-validation-synthese-carte [inputSyntheseData]="_mapListService.geojsonData"></pnx-validation-synthese-carte>
+    </div>
+
+  </div>
 
 </div>

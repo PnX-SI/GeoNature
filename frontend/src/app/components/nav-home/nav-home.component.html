@@ -1,49 +1,47 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav
-    id="app-sidenav"
-    #sidenav
-    mode="side"
-    [opened]="sideNavService.opened"
-  >
-    <pnx-sidenav-items></pnx-sidenav-items>
+  <mat-sidenav id="app-sidenav" #sidenav mode="side" [opened]="sideNavService.opened">
+    <pnx-sidenav-items data-qa="gn-sidenav"></pnx-sidenav-items>
   </mat-sidenav>
 
   <mat-sidenav-content>
-    <mat-toolbar
-      id="app-toolbar"
-      class="row"
-    >
+    <mat-toolbar id="app-toolbar" class="row">
       <button
         class="mat-elevation-z1 mr-2"
         mat-icon-button
         matTooltip="Ouvrir le menu principal"
         (click)="closeSideBar()"
+        data-qa="pnx-home-content-sidebar-open-button"
       >
         <mat-icon aria-label="Ouvrir le menu principal">menu</mat-icon>
       </button>
 
-      <span class="mx-2"> {{ moduleName }} </span>
+      <span class="mx-2">
+        <a class="home-link" href="{{ moduleUrl }}">{{ moduleName }}</a>
+      </span>
 
       <img
         id="logo-structure"
         class="mx-2"
-        src="custom/images/{{appConfig.LOGO_STRUCTURE_FILE}}"
+        src="custom/images/{{ appConfig.LOGO_STRUCTURE_FILE }}"
         alt=""
-      >
+      />
 
       <span class="toolbar-spacer"></span>
 
       <span id="appName">
-        <h3> {{ appConfig.appName }} </h3>
+        <h3>{{ appConfig.appName }}</h3>
       </span>
 
       <span class="toolbar-spacer"></span>
 
-      <ng-container *ngIf="
+      <ng-container
+        *ngIf="
           !appConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION &&
+          appConfig.PUBLIC_ACCESS.PUBLIC_LOGIN != currentUser?.user_login &&
           appConfig.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT ;
           else noUserManagement
-        ">
+        "
+      >
         <button
           class="mx-1"
           mat-raised-button
@@ -79,14 +77,26 @@
       </ng-container>
 
       <ng-template #noUserManagement>
-        <span class="user-name">
-          {{ currentUser?.user_login }}
-        </span>
+        <ng-container
+            *ngIf="
+              appConfig.PUBLIC_ACCESS.PUBLIC_LOGIN != currentUser?.user_login ;
+              else publicAccessUser
+            "
+        >
+          <mat-icon> person </mat-icon>
+          <span class="user-name">
+            {{ currentUser?.user_login }}
+          </span>
+        </ng-container>
+        <ng-template #publicAccessUser>
+          <mat-icon> accessibility_new </mat-icon>
+          <span class="user-name">Accès public</span>
+        </ng-template>
       </ng-template>
 
       <ng-container *ngIf="appConfig.FRONTEND.MULTILINGUAL">
         <button
-          class="mx-2  mat-elevation-z1"
+          class="mx-2 mat-elevation-z1"
           mat-icon-button
           matTooltip="{{ 'Sel_lang' | translate }}"
           [matMenuTriggerFor]="languagesMenu"
@@ -143,6 +153,7 @@
         mat-icon-button
         matTooltip="{{ 'LogOut' | translate }}"
         (click)="authService.logout()"
+        data-qa="pnx-home-content-exit-button"
       >
         <mat-icon>exit_to_app</mat-icon>
       </button>

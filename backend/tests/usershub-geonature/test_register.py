@@ -13,8 +13,8 @@ from geonature.core.gn_meta.models import CorDatasetActor, CorAcquisitionFramewo
 @pytest.mark.usefixtures("client_class")
 class TestApiRegister:
     """
-        Test de l'api register
-        La config de la gesion des compte doit être en mode auto_validation (AUTO_DATASET_CREATION = true)
+    Test de l'api register
+    La config de la gesion des compte doit être en mode auto_validation (AUTO_DATASET_CREATION = true)
     """
 
     user_form = {
@@ -31,9 +31,9 @@ class TestApiRegister:
 
     def test_inscription_success(self):
         """
-            - Appel de la route inscription qui écrit dans temp_user et renvoie un token
-            - Récupératon du token pour valider le compte et le passer dans t_roles 
-            - Vérification du JDD créé
+        - Appel de la route inscription qui écrit dans temp_user et renvoie un token
+        - Récupératon du token pour valider le compte et le passer dans t_roles
+        - Vérification du JDD créé
         """
         # inscription
         response = post_json(self.client, url_for("users.inscription"), self.__class__.user_form)
@@ -78,8 +78,8 @@ class TestApiRegister:
 
     def test_password_recovery(self):
         """
-            - Création d'un token
-            - Maj du mdp
+        - Création d'un token
+        - Maj du mdp
         """
         data = {"email": "email_test@mail.com"}
         response = post_json(
@@ -97,7 +97,9 @@ class TestApiRegister:
         }
 
         self.client.put(
-            url_for("users.new_password"), data=json.dumps(data), content_type="application/json",
+            url_for("users.new_password"),
+            data=json.dumps(data),
+            content_type="application/json",
         )
         assert response.status_code == 200
 

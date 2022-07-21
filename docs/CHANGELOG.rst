@@ -2,6 +2,68 @@
 CHANGELOG
 =========
 
+2.10.0 (unreleased)
+-------------------
+
+**🚀 Nouveautés**
+
+* Simplification du CRUVED minimum pour accéder à GeoNature, ne nécessitant plus d'avoir obligatoirement un CRUVED défini au niveau global de GeoNature (#1622)
+* Ajout de la commande ``geonature db status``
+* Ajout d’un worker Celery pour l’exécution de tâches asynchrones
+* Déplacement du fichier de log GeoNature dans le dossier ``/var/log/geonature/``
+* Suppression de la table ``gn_sensitivity.cor_sensitivity_synthese`` et des triggers associés.
+
+**🐛 Corrections**
+
+* Remise en place de la rotation des fichiers de logs
+
+**⚠️ Notes de version**
+
+* Installation du worker Celery : il vous faut installer le broker redis :
+  ::
+
+    # sudo apt install redis
+
+* Passage à angular 12 (développeur), executez les commandes suivantes :
+  ::
+
+    # depuis le répertoire frontend
+    nvm use
+    npm install --legacy-peer-deps
+    # depuis le virtualenv
+    geonature generate_frontend_modules_route
+    geonature generate_frontend_tsconfig
+    geonature generate_frontend_tsconfig_app
+
+* Modification du fichier SCSS du composant personnalisable introduction.
+  Ce composant possède désormais un fichier SCSS avec une règle qui lui est propre.
+  Il est donc nécessaire de :
+
+  * se placer dans le dossier du composant : `cd ~/geonature/frontend/src/custom/components/introduction/`
+  * copier le fichier *introduction.component.scss.sample* en *introduction.component.scss* avec : `cp introduction.component.scss.sample introduction.component.scss`
+  * modifier votre fichier `frontend/src/custom/components/introduction/introduction.component.ts` en :
+
+    * remplacant :
+
+        ::
+
+          @Component({
+            selector: 'pnx-introduction',
+            templateUrl: 'introduction.component.html'
+          })
+
+    * par :
+
+        ::
+
+          @Component({
+            selector: 'pnx-introduction',
+            styleUrls: ['introduction.component.scss'],
+            templateUrl: 'introduction.component.html'
+          })
+
+  * le changement sera pris en compte au prochain *build* du frontend de GeoNature.
+
 2.9.2 (2022-02-15)
 ------------------
 
@@ -16,7 +78,7 @@ CHANGELOG
 
 **🐛 Corrections**
 
-* Correction d’une régression sur la récupération de la liste des taxons (#1674)
+* Correction d’une régression sur la récupération de la liste des taxons (#1672)
 * Correction de l’authentification au CAS de l’INPN
 * Correction du calcul de la sensibilité (#1284) :
 
@@ -69,12 +131,12 @@ CHANGELOG
 **🚀 Nouveautés**
 
 * Construction automatique d'une fiche d'identité (profil) par taxon grâce aux observations validées présentes dans la base de données (altitude min/max, distribution spatiale, date de première/dernière observation, nombre de données valides, phénologie) (#917 par @DonovanMaillard, @lepontois, @Adrien-Pajot, @TheoLechemia, @bouttier, @amandine-sahl, @jpm-cbna)
-  
+
   - Création d'un schéma ``gn_profiles`` dans la BDD contenant les tables, les vues, les fonctions et les paramètres de calcul des profils de taxons (https://github.com/PnX-SI/GeoNature/blob/develop/data/core/profiles.sql) (#1103)
   - Mise en place de l'API des profils de taxons (#1104)
   - Affichage des scores de chaque observation par rapport au profil du taxon dans la liste des observations du module Validation, ainsi que dans les fiches détails des observations dans les modules Synthèse et Validation (#1105)
   - Ajout de filtres des observations par score ou critère des profils de taxon dans le module Validation (#1105)
-  - Ajout d'une alerte de contextualisation d'une observation par rapport au profil de taxon, lors de sa saisie dans le module Occtax 
+  - Ajout d'une alerte de contextualisation d'une observation par rapport au profil de taxon, lors de sa saisie dans le module Occtax
   - Mise en place de paramètres pour activer ou non les profils de taxons, paramétrer leurs règles et définir les statut de validation pris en compte pour le calcul des profils ("Certain-très probable" et "Probable" par défaut)
   - Documentation des profils de taxons et de leur paramètrage (https://docs.geonature.fr/admin-manual.html#profils-de-taxons)
   - Suppression de la vue matérialisée ``gn_synthese.vm_min_max_for_taxons`` et de la fonction ``gn_synthese.fct_calculate_min_max_for_taxon()`` qui n'étaient pas utilisées
@@ -177,7 +239,7 @@ CHANGELOG
       geonature db upgrade ref_sensitivity_inpn@head
 
   Par défaut, seule les règles nationales sont activées, vous laissant le soin d’activer vos règles locales en base vous-même. Vous pouvez également demander, lors de l’installation du référentiel, à activer (resp. désactiver) toutes les règles en ajout à la commande Alembic l’option ``-x active=true`` (resp. ``-x active=false``).
-  
+
 * Si vous souhaitez surcoucher les paramètres par défaut de Gunicorn (app_name, timeout...), depuis le passage à ``systemd`` dans la version 2.8.0, c'est désormais à faire dans un fichier ``environ`` à la racine du dossier de votre GeoNature (#1588, https://docs.geonature.fr/admin-manual.html#parametres-gunicorn)
 
 * Si vous les utilisez, mettez à jour les modules Import, Export et Monitoring dans leurs dernières versions compatibles avec le version 2.9.0 de GeoNature

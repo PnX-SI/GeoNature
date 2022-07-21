@@ -1,15 +1,16 @@
-<small> {{label }} </small>
-<ng-select 
+<small> {{ label }} </small>
+<ng-select
   [ngClass]="class"
-	[items]="observers | async"
-	bindLabel="nom_complet"
-	[bindValue]="bindValue"
-	[compareWith]="compareWith"
-	[multiple]="multiSelect"
-	[clearable]="clearable"
-	placeholder="Observateur(s)"
-	[virtualScroll]="true"
-	[formControl]="parentFormControl"
+  [items]="observers | async"
+  bindLabel="nom_complet"
+  [bindValue]="bindValue"
+  [compareWith]="compareWith"
+  [multiple]="multiSelect"
+  [clearable]="clearable"
+  placeholder="Observateur(s)"
+  data-qa="gn-common-form-observers-select"
+  [virtualScroll]="true"
+  [formControl]="parentFormControl"
 >
 	<ng-template 
     ng-option-tmp 
@@ -18,7 +19,7 @@
     let-search="searchTerm"
   >
     <div matTooltip="{{item.nom_complet}}">
-      <span class="pre-wrap">{{item.nom_complet}}</span>
+      <span class="pre-wrap" [attr.data-qa]='"gn-common-form-observers-select-"+item.nom_complet'>{{item.nom_complet}}</span>
     </div>
   </ng-template>
 </ng-select>

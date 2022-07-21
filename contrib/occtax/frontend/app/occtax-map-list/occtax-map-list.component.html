@@ -1,19 +1,20 @@
-<div class="container-fluid">
+<div class="container-fluid" data-qa="pnx-occtax-map-list">
   <div class="map-list-container">
     <div class="float-btns">
 
       <ng-container *ngIf="userCruved?.C != '0'">
-        <button
+        <a
           mat-raised-button
           color="primary"
+          data-qa="gn-occtax-btn-add-releve"
           class="btn-action hard-shadow button-success uppercase ml-3"
           [routerLink]="['form/releve']"
         >
           {{ 'Releve.AddReleve' | translate }}
           <mat-icon>add_circle_outline</mat-icon>
-        </button>
-        <!-- <a [routerLink]="['form']" class="btn btn-success btn-action hard-shadow uppercase"> 
-          {{ 'Releve.AddReleve' | translate }} <i class="fa fa-plus-circle" aria-hidden="true"> </i> 
+        </a>
+        <!-- <a [routerLink]="['form']" class="btn btn-success btn-action hard-shadow uppercase">
+          {{ 'Releve.AddReleve' | translate }} <i class="fa fa-plus-circle" aria-hidden="true"> </i>
         </a> -->
       </ng-container>
       <button
@@ -22,6 +23,7 @@
         class="btn-action hard-shadow uppercase ml-3"
         data-toggle="collapse"
         data-target="#collapseAvance"
+        data-qa="pnx-occtax-filter"
       >
         Filtrer
         <i
@@ -229,12 +231,14 @@
           <ngx-datatable-column maxWidth="10">
             <ng-template
               let-row="row"
+              let-rowIndex="rowIndex"
               ngx-datatable-cell-template
             >
               <button
                 class="btn btn-outline-shadow btn-no-padding btn-ghost"
                 [disabled]="!row.rights.D"
                 (click)="openDeleteModal($event, modalConfirm, iElement, row)"
+                [attr.data-qa]='"pnx-occtax-delete-taxa-"+rowIndex'
               >
                 <i
                   [ngClass]="{'disabled' : !row.rights.D}"
@@ -249,123 +253,52 @@
 
 
           <!-- DATA COLOMNS -->
-          <ng-container *ngFor="let col of mapListService.displayColumns">
+          <ng-container *ngFor="let col of mapListService['displayColumns']; let index=index;">
             <ngx-datatable-column
-              [ngSwitch]="col.prop"
-              [maxWidth]="col.max_width"
-              [prop]="col.prop"
-              [name]="col.name"
+
+              [maxWidth]="col['max_width']"
+              [prop]="col['prop']"
+              [name]="col['name']"
               [sortable]="true"
             >
 
               <!-- date -->
               <!-- Pour afficher la date, si période mise en forme en Du ... au ... -->
               <ng-template
-                *ngSwitchCase="'date'"
                 ngx-datatable-cell-template
                 let-row="row"
               >
-                <span matTooltip="{{ displayDateTooltip(row) }}">
+                <div [ngSwitch]="mapListService['displayColumns'][index]['prop']">
+                <span *ngSwitchCase="'date'" matTooltip="{{ displayDateTooltip(row) }}" >
                   {{ displayDateTooltip(row) }}
                 </span>
-              </ng-template>
-
-              <!-- date_min -->
-              <ng-template
-                *ngSwitchCase="'date_min'"
-                ngx-datatable-cell-template
-                let-row="row"
-              >
-                <span matTooltip="{{ row.date_min|date:'dd-MM-yyyy' }}">
+                <span *ngSwitchCase="'date_min'">
                   {{ row.date_min|date:'dd-MM-yyyy' }}
                 </span>
-              </ng-template>
-
-              <!-- date_max -->
-              <ng-template
-                *ngSwitchCase="'date_max'"
-                ngx-datatable-cell-template
-                let-row="row"
-              >
-                <span matTooltip="{{ row.date_max|date:'dd-MM-yyyy' }}">
+                <span *ngSwitchCase="'date_max'">
                   {{ row.date_max|date:'dd-MM-yyyy' }}
                 </span>
-              </ng-template>
-
-              <!-- nb_taxons -->
-              <!-- Affiche le nombre de taxons du relevé -->
-              <ng-template
-                *ngSwitchCase="'nb_taxons'"
-                ngx-datatable-cell-template
-                let-row="row"
-              >
-                <span
-                  [matTooltip]="displayTaxons(row).join('\n')"
-                  matTooltipPosition="left"
-                >
-                  <span>
-                    {{ displayTaxons(row).length }}
-                  </span>
+                <span *ngSwitchCase="'nb_taxons'" [matTooltip]="displayTaxons(row).join('\n')" matTooltipPosition="left">
+                  {{ displayTaxons(row).length }}
                 </span>
-              </ng-template>
-              <ng-template
-                *ngSwitchCase="'taxons'"
-                ngx-datatable-cell-template
-                let-row="row"
-              >
-                <span
-                  [matTooltip]="displayTaxons(row).join('\n')"
-                  matTooltipPosition="left"
-                >
+                <span *ngSwitchCase="'taxons'" [matTooltip]="displayTaxons(row).join('\n')" matTooltipPosition="left">
                   <span>
-                    <span class='badge badge-dark'> {{row.t_occurrences_occtax?.length || '0' }}
+                    <span class='badge badge-dark'>
+                      {{row.t_occurrences_occtax?.length || '0' }}
                     </span>
-                    {{displayTaxons(row)}}
-                  </span>
+                      {{displayTaxons(row)}}
+                    </span>
                 </span>
-              </ng-template>
-
-              <!-- observateurs -->
-              <!-- Affiche le nombre de taxons du relevé -->
-              <ng-template
-                *ngSwitchCase="'observateurs'"
-                ngx-datatable-cell-template
-                let-row="row"
-              >
-                <span
-                  [matTooltip]="displayObservateursTooltip(row).join('\n')"
-                  matTooltipPosition="left"
-                >
+                <span *ngSwitchCase="'observateurs'" [matTooltip]="displayObservateursTooltip(row).join('\n')" matTooltipPosition="left">
                   {{ displayObservateursTooltip(row).join(', ') }}
                 </span>
-              </ng-template>
-
-              <!-- dataset -->
-              <ng-template
-                *ngSwitchCase="'dataset'"
-                ngx-datatable-cell-template
-                let-row="row"
-              >
-                <span
-                  [matTooltip]="row?.dataset.dataset_name || 'Aucun JDD'"
-                  matTooltipPosition="left"
-                >
-                  {{ row?.dataset.dataset_name || 'Aucun JDD'}}
+                <span *ngSwitchCase="'dataset'" [matTooltip]="row?.dataset.dataset_name || 'Aucun JDD'" matTooltipPosition="left">
+                  {{ row["dataset"].dataset_name || 'Aucun JDD'}}
                 </span>
-              </ng-template>
-
-              <!-- Autres colonnes -->
-              <ng-template
-                *ngSwitchDefault
-                let-row="row"
-                ngx-datatable-cell-template
-              >
-                <span
-                  [matTooltip]="row[col.prop]"
-                  matTooltipPosition="left"
-                >
+                <span *ngSwitchDefault [matTooltip]="row[col.prop]" matTooltipPosition="left">
                   {{row[col.prop]}}
                 </span>
+                </div>
               </ng-template>
             </ngx-datatable-column>
 
@@ -439,6 +372,7 @@
               mat-raised-button
               color="warn"
               class="uppercase"
+              data-qa="pnx-occtax-delete"
               (click)="c(); onDeleteReleve(mapListService.selectedRow[0].id_releve_occtax)"
             >
               {{'Delete' | translate }} </button>

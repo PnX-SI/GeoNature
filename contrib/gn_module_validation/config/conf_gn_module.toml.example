@@ -1,9 +1,4 @@
 [[COLUMN_LIST]]
-column_label = ""
-column_name = "nomenclature_valid_status.label_default"
-max_width = 40
-
-[[COLUMN_LIST]]
 column_label = "Taxon"
 column_name = "taxref.nom_vern_or_lb_nom"
 min_width = 250

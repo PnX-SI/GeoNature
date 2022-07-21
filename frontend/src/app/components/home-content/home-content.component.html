@@ -1,51 +1,39 @@
-<div class="container-fluid">
+<div class="container-fluid" data-qa="pnx-home-content">
   <div class="row">
-    <div [className]="(appConfig.FRONTEND.DISPLAY_MAP_LAST_OBS) ? 'col-6' : 'col-12'">
+    <div [className]="showLastObsMap ? 'col-xs-12 col-sm-12 col-md-6 col-lg-6' : 'col-12'">
       <pnx-introduction> </pnx-introduction>
-
     </div>
-    <div 
-      class="col-6" 
-      *ngIf="appConfig.FRONTEND.DISPLAY_MAP_LAST_OBS"
-    >
+    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6" *ngIf="showLastObsMap">
       <div class="panel panel-default">
-        <div class="panel-heading">
-          Les 100 dernières observations
-          <button 
-            routerLink="/synthese"
-            mat-stroked-button
-            color="primary"
-            class="uppercase ml-1 mt-1 float-right"
-    
-          >
-            Explorer les données
-          </button>
-       </div>
-      
-        <div id="map-title">
-
+        <!-- mr-0 and ml-0 since row puts margin-left and right at -15px... -->
+        <div class="panel-heading row mr-0 ml-0">
+          <div class="col-12 col-lg-5 col-xl-7">
+            <span>Les 100 dernières observations</span>
+          </div>
+          <div class="col-12 col-lg-7 col-xl-5">
+            <button
+              routerLink="/synthese"
+              mat-stroked-button
+              color="primary"
+              class="uppercase ml-1 mt-1 float-right"
+              data-qa="pnx-home-content-explore-data-button"
+            >
+              Explorer les données
+            </button>
+          </div>
         </div>
-  
-        <pnx-map
-          class="map-card"
-          height="50vh"
-        >
-          <pnx-geojson
-            [geojson]="lastObs"
-            [onEachFeature]="onEachFeature.bind(this)"
-          > </pnx-geojson>
+
+        <div id="map-title"></div>
+
+        <pnx-map class="map-card" height="50vh">
+          <pnx-geojson [geojson]="lastObs" [onEachFeature]="onEachFeature.bind(this)">
+          </pnx-geojson>
         </pnx-map>
+      </div>
     </div>
-  
   </div>
 
-
-  </div>
-
-  <div
-    *ngIf="appConfig.FRONTEND.DISPLAY_STAT_BLOC"
-    class="panel panel-container panel-top"
-  >
+  <div *ngIf="showGeneralStat" class="panel panel-container panel-top">
     <div class="row row-0">
       <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
         <div class="panel panel-teal panel-widget border-right no-margin-bottom">
@@ -53,12 +41,11 @@
             <em class="fa fa-xl fa-search color-blue"></em>
             <div class="large">
               <mat-spinner *ngIf="!generalStat" diameter="20"></mat-spinner>
-              {{generalStat?.nb_data}}
+              {{ generalStat?.nb_data }}
             </div>
             <div class="text-muted">Observations</div>
           </div>
         </div>
-
       </div>
       <div class="col-xs-6 col-md-3 col-lg-3 no-padding">
         <div class="panel panel-blue panel-widget border-right no-margin-bottom">
@@ -67,7 +54,7 @@
             <div class="large">
               <mat-spinner *ngIf="!generalStat" diameter="20"></mat-spinner>
 
-              {{generalStat?.nb_species}}
+              {{ generalStat?.nb_species }}
             </div>
             <div class="text-muted">Taxons</div>
           </div>
@@ -78,10 +65,9 @@
           <div class="no-padding">
             <em class="fa fa-xl fa-users color-teal"></em>
             <div class="large">
-
               <mat-spinner *ngIf="!generalStat; else hasStat" diameter="20"></mat-spinner>
 
-              <ng-template #hasStat>~{{generalStat?.nb_observers}}</ng-template>
+              <ng-template #hasStat>~{{ generalStat?.nb_observers }}</ng-template>
             </div>
             <div class="text-muted">Observateurs</div>
           </div>
@@ -94,7 +80,7 @@
             <div class="large">
               <mat-spinner *ngIf="!generalStat" diameter="20"></mat-spinner>
 
-              {{generalStat?.nb_dataset}}
+              {{ generalStat?.nb_dataset }}
             </div>
             <div class="text-muted">Jeux de données</div>
           </div>
@@ -103,13 +89,13 @@
     </div>
     <div class="d-flex justify-content-center">
       <div class="col-xs-12 pr-2 text-muted">
-        <small>Dernière mise à jour {{generalStat?.createdDate| date:'full':undefined:locale}}</small>
+        <small
+          >Dernière mise à jour
+          {{ generalStat?.createdDate | date: 'full':undefined:locale }}</small
+        >
       </div>
     </div>
   </div>
-
-
-
 </div>
 
 <!-- FOOTER -->

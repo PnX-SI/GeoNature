@@ -130,7 +130,7 @@ default_columns_export = [
     "natObjGeo",
     "nomLieu",
     "precision",
-    "additional_data"
+    "additional_data",
 ]
 
 # Export available format (Only csv, geojson and shapefile and 'gpkg' is possible)
@@ -148,10 +148,13 @@ Vous vous apprêtez à télécharger les données de la <b>recherche courante. <
 
 default_export_col_name_additional_data = "additional_data"
 
-default_media_fields_details = ['title_fr', 'description_fr', 'id_nomenclature_media_type', 'author', 'bFile']
-
-
-
+default_media_fields_details = [
+    "title_fr",
+    "description_fr",
+    "id_nomenclature_media_type",
+    "author",
+    "bFile",
+]
 
 
 class GnModuleSchemaConf(Schema):
@@ -162,9 +165,7 @@ class GnModuleSchemaConf(Schema):
     export_id_column_name = fields.String(load_default="permId")
     export_srid = fields.Integer(load_default=4326)
     export_observer_txt_column = fields.String(load_default="obsId")
-    export_available_format = fields.List(
-        fields.String(), load_default=available_export_format
-    )
+    export_available_format = fields.List(fields.String(), load_default=available_export_format)
     export_columns = fields.List(fields.String(), load_default=default_columns_export)
     export_message = fields.String(load_default=export_message)
     list_messages = fields.Dict(load_default=list_messages)
@@ -174,9 +175,7 @@ class GnModuleSchemaConf(Schema):
     taxon_result_number = fields.Integer(load_default=20)
     id_observers_list = fields.Integer(load_default=1)
     default_maplist_columns = fields.List(fields.Dict(), load_default=default_map_list_conf)
-    available_maplist_column = fields.List(
-        fields.Dict(), load_default=available_maplist_column
-    )
+    available_maplist_column = fields.List(fields.Dict(), load_default=available_maplist_column)
     MAX_EXPORT_NUMBER = fields.Integer(load_default=50000)
     ENABLE_GPS_TOOL = fields.Boolean(load_default=True)
     ENABLE_UPLOAD_TOOL = fields.Boolean(load_default=True)
@@ -185,7 +184,9 @@ class GnModuleSchemaConf(Schema):
     ENABLE_MEDIAS = fields.Boolean(load_default=True)
     ENABLE_MY_PLACES = fields.Boolean(load_default=True)
     DISPLAY_VERNACULAR_NAME = fields.Boolean(load_default=True)
-    export_col_name_additional_data = fields.String(load_default=default_export_col_name_additional_data)
+    export_col_name_additional_data = fields.String(
+        load_default=default_export_col_name_additional_data
+    )
     MEDIA_FIELDS_DETAILS = fields.List(fields.String(), load_default=default_media_fields_details)
     ADD_MEDIA_IN_EXPORT = fields.Boolean(load_default=False)
     ID_LIST_HABITAT = fields.Integer(load_default=None)

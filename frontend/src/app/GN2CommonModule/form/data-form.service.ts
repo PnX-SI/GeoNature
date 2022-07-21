@@ -4,12 +4,13 @@ import {
   HttpParams,
   HttpEventType,
   HttpErrorResponse,
-  HttpEvent
+  HttpEvent,
 } from '@angular/common/http';
 import { AppConfig } from '../../../conf/app.config';
 import { Taxon } from './taxonomy/taxonomy.component';
 import { Observable } from 'rxjs';
 import { isArray } from 'rxjs/internal-compatibility';
+import { map } from 'rxjs/operators';
 
 /** Interface for queryString parameters*/
 interface ParamsDict {
@@ -19,13 +20,13 @@ interface ParamsDict {
 export const FormatMapMime = new Map([
   ['csv', 'text/csv'],
   ['json', 'application/json'],
-  ['shp', 'application/zip']
+  ['shp', 'application/zip'],
 ]);
 
 @Injectable()
 export class DataFormService {
   private _blob: Blob;
-  constructor(private _http: HttpClient) { }
+  constructor(private _http: HttpClient) {}
 
   getNomenclature(
     codeNomenclatureType: string,
@@ -44,6 +45,11 @@ export class DataFormService {
     if (filters['order']) {
       params = params.set('order', filters['order']);
     }
+    if (filters['cd_nomenclature'] && filters['cd_nomenclature'].length > 0) {
+      filters['cd_nomenclature'].forEach((cd) => {
+        params = params.append('cd_nomenclature', cd);
+      });
+    }
     return this._http.get<any>(
       `${AppConfig.API_ENDPOINT}/nomenclatures/nomenclature/${codeNomenclatureType}`,
       { params: params }
@@ -53,35 +59,35 @@ export class DataFormService {
   getNomenclatures(codesNomenclatureType: Array<string>) {
     let params: HttpParams = new HttpParams();
     params = params.set('orderby', 'label_default');
-    codesNomenclatureType.forEach(code => {
+    codesNomenclatureType.forEach((code) => {
       params = params.append('code_type', code);
     });
 
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/nomenclatures/nomenclatures`, {
-      params: params
+      params: params,
     });
   }
 
   getDefaultNomenclatureValue(path, mnemoniques: Array<string> = [], kwargs: ParamsDict = {}) {
     let queryString: HttpParams = new HttpParams();
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (const key in kwargs) {
       queryString = queryString.set(key, kwargs[key].toString());
     }
-    mnemoniques.forEach(mnem => {
+    mnemoniques.forEach((mnem) => {
       queryString = queryString.append('mnemonique', mnem);
     });
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/${path}/defaultNomenclatures`, {
-      params: queryString
+      params: queryString,
     });
   }
 
   getDatasets(params?: ParamsDict, orderByName = true, fields = []) {
     let queryString: HttpParams = new HttpParams();
     queryString = this.addOrderBy(queryString, 'dataset_name');
-    fields.forEach(f => {
-      queryString = queryString.append('fields', f)
-    })
+    fields.forEach((f) => {
+      queryString = queryString.append('fields', f);
+    });
 
     if (params) {
       for (const key in params) {
@@ -89,7 +95,7 @@ export class DataFormService {
           queryString = queryString.set('organisme', params[key]);
           // is its an array of id_af
         } else if (key === 'id_acquisition_frameworks') {
-          params[key].forEach(id_af => {
+          params[key].forEach((id_af) => {
             queryString = queryString.append('id_acquisition_framework', id_af);
           });
         } else {
@@ -98,7 +104,7 @@ export class DataFormService {
       }
     }
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/datasets`, {
-      params: queryString
+      params: queryString,
     });
   }
 
@@ -139,7 +145,7 @@ export class DataFormService {
       }
     }
     return this._http.get<Taxon[]>(`${api_endpoint}`, {
-      params: queryString
+      params: queryString,
     });
   }
 
@@ -150,18 +156,18 @@ export class DataFormService {
   getTaxonAttributsAndMedia(cd_nom: number, id_attributs?: Array<number>) {
     let query_string = new HttpParams();
     if (id_attributs) {
-      id_attributs.forEach(id => {
+      id_attributs.forEach((id) => {
         query_string = query_string.append('id_attribut', id.toString());
       });
     }
 
     return this._http.get<any>(`${AppConfig.API_TAXHUB}/bibnoms/taxoninfo/${cd_nom}`, {
-      params: query_string
+      params: query_string,
     });
   }
 
   getTaxaBibList() {
-    return this._http.get<any>(`${AppConfig.API_TAXHUB}/biblistes/`).map(d => d.data);
+    return this._http.get<any>(`${AppConfig.API_TAXHUB}/biblistes/`).pipe(map((d) => d.data));
   }
 
   async getTaxonInfoSynchrone(cd_nom: number): Promise<any> {
@@ -176,17 +182,18 @@ export class DataFormService {
     params = params.set('rank_limit', rank);
     params = params.set('fields', 'lb_auteur,nom_complet_html');
 
-    let url = `${AppConfig.API_TAXHUB}/taxref/search/lb_nom`
+    let url = `${AppConfig.API_TAXHUB}/taxref/search/lb_nom`;
     if (search) {
-      url = `${url}/${search}`
+      url = `${url}/${search}`;
     }
 
-    return this._http.get<any>(url, { params: params })
-      .map(data => {
-        return data.map(item => {
+    return this._http.get<any>(url, { params: params }).pipe(
+      map((data) => {
+        return data.map((item) => {
           return this.formatSciname(item);
-        })
-      });
+        });
+      })
+    );
   }
 
   /**
@@ -213,10 +220,7 @@ export class DataFormService {
         item.displayName = item.displayName.replaceAll('<i>', '<b><i>');
         item.displayName = item.displayName.replaceAll('</i>', '</i></b>');
       } else {
-        item.displayName = item.displayName.replace(
-          item['lb_nom'],
-          `<b>${item['lb_nom']}</b>`
-        );
+        item.displayName = item.displayName.replace(item['lb_nom'], `<b>${item['lb_nom']}</b>`);
       }
     }
     return item;
@@ -244,15 +248,15 @@ export class DataFormService {
     if (id_list) {
       params = params.set('id_list', id_list.toString());
     }
-    return this._http
-      .get<any>(`${AppConfig.API_ENDPOINT}/habref/typo`, { params: params })
-      .map(data => {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/habref/typo`, { params: params }).pipe(
+      map((data) => {
         // replace '_' with space because habref is super clean !
-        return data.map(d => {
+        return data.map((d) => {
           d['lb_nom_typo'] = d['lb_nom_typo'].replace(/_/g, ' ');
           return d;
         });
-      });
+      })
+    );
   }
 
   getHabitatInfo(cd_hab) {
@@ -278,20 +282,22 @@ export class DataFormService {
     if (idType) {
       geojson['id_type'] = idType;
     }
-    return this._http.post(`${AppConfig.API_ENDPOINT}/geo/areas`, geojson).map(res => {
-      const areasIntersected = [];
-      Object.keys(res).forEach(key => {
-        const typeName = res[key]['type_name'];
-        const areas = res[key]['areas'];
-        const formatedAreas = areas.map(area => area.area_name).join(', ');
-        const obj = {
-          type_name: typeName,
-          areas: formatedAreas
-        };
-        areasIntersected.push(obj);
-      });
-      return areasIntersected;
-    });
+    return this._http.post(`${AppConfig.API_ENDPOINT}/geo/areas`, geojson).pipe(
+      map((res) => {
+        const areasIntersected = [];
+        Object.keys(res).forEach((key) => {
+          const typeName = res[key]['type_name'];
+          const areas = res[key]['areas'];
+          const formatedAreas = areas.map((area) => area.area_name).join(', ');
+          const obj = {
+            type_name: typeName,
+            areas: formatedAreas,
+          };
+          areasIntersected.push(obj);
+        });
+        return areasIntersected;
+      })
+    );
   }
 
   getAreaSize(geojson) {
@@ -314,7 +320,7 @@ export class DataFormService {
   getAreas(area_type_list: Array<string>, area_name?) {
     let params: HttpParams = new HttpParams();
 
-    area_type_list.forEach(id_type => {
+    area_type_list.forEach((id_type) => {
       params = params.append('type_code', id_type.toString());
     });
 
@@ -332,55 +338,50 @@ export class DataFormService {
     );
   }
 
-
   /**
    *
    * @param params: dict of paramters
    */
-  getAcquisitionFrameworks(params = {}) {    
+  getAcquisitionFrameworks(params = {}) {
     let queryString: HttpParams = new HttpParams();
     for (let key in params) {
-      queryString = queryString.set(key, params[key])
+      queryString = queryString.set(key, params[key]);
     }
 
-    return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/meta/list/acquisition_frameworks`,
-      { params: queryString }
-    );
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/list/acquisition_frameworks`, {
+      params: queryString,
+    });
   }
 
   getAcquisitionFrameworksList(searchTerms = {}) {
     let queryString: HttpParams = new HttpParams();
     for (let key in searchTerms) {
-      queryString = queryString.set(key, searchTerms[key])
+      queryString = queryString.set(key, searchTerms[key]);
     }
 
-    return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`,
-      { params: queryString }
-    );
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`, {
+      params: queryString,
+    });
   }
-
 
   /**
    * @param id_af: id of acquisition_framework
    * @params params : get parameters
    */
-  getAcquisitionFramework(id_af, params?: ParamsDict) {    
+  getAcquisitionFramework(id_af, params?: ParamsDict) {
     let queryString: HttpParams = new HttpParams();
     for (let key in params) {
-      if(isArray(params[key])) {
-        params[key].forEach(el => {
-          queryString = queryString.append(key, el)
+      if (isArray(params[key])) {
+        params[key].forEach((el) => {
+          queryString = queryString.append(key, el);
         });
-      }else {
-        queryString = queryString.set(key, params[key])
+      } else {
+        queryString = queryString.set(key, params[key]);
       }
     }
-    return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`,
-      { params: queryString }
-    );
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/${id_af}`, {
+      params: queryString,
+    });
   }
 
   /**
@@ -407,7 +408,7 @@ export class DataFormService {
       queryString = this.addOrderBy(queryString, 'nom_organisme');
     }
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/organisms`, {
-      params: queryString
+      params: queryString,
     });
   }
 
@@ -417,7 +418,7 @@ export class DataFormService {
       queryString = this.addOrderBy(queryString, 'nom_organisme');
     }
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/organisms_dataset_actor`, {
-      params: queryString
+      params: queryString,
     });
   }
 
@@ -430,7 +431,7 @@ export class DataFormService {
     if (orderByName) {
       queryString = this.addOrderBy(queryString, 'nom_role');
     }
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (let key in params) {
       if (params[key] !== null) {
         queryString = queryString.set(key, params[key]);
@@ -467,34 +468,34 @@ export class DataFormService {
     }
 
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_distribution`, {
-      params: queryString
+      params: queryString,
     });
   }
 
   getModulesList(exclude: Array<string> = []): Observable<Array<any>> {
     let queryString: HttpParams = new HttpParams();
-    exclude.forEach(mod_code => {
+    exclude.forEach((mod_code) => {
       queryString = queryString.append('exclude', mod_code);
     });
     return this._http.get<Array<any>>(`${AppConfig.API_ENDPOINT}/gn_commons/modules`, {
-      params: queryString
+      params: queryString,
     });
   }
 
   getModuleByCodeName(module_code): Observable<any> {
-    console.log("WARNING: use moduleService.getModule(module_code) instead?");
+    console.log('WARNING: use moduleService.getModule(module_code) instead?');
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/modules/${module_code}`);
   }
 
   getCruved(modules_code?: Array<string>) {
     let queryString: HttpParams = new HttpParams();
     if (modules_code) {
-      modules_code.forEach(mod_code => {
+      modules_code.forEach((mod_code) => {
         queryString = queryString.set('module_code', mod_code);
       });
     }
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/permissions/cruved`, {
-      params: queryString
+      params: queryString,
     });
   }
 
@@ -519,8 +520,8 @@ export class DataFormService {
       application === 'GeoNature'
         ? `${AppConfig.API_ENDPOINT}/${api}`
         : application === 'TaxHub'
-          ? `${AppConfig.API_TAXHUB}/${api}`
-          : api;
+        ? `${AppConfig.API_TAXHUB}/${api}`
+        : api;
 
     return this._http.get<any>(url, { params: queryString });
   }
@@ -531,7 +532,7 @@ export class DataFormService {
     format: string
   ): void {
     const subscription = source.subscribe(
-      event => {
+      (event) => {
         if (event.type === HttpEventType.Response) {
           this._blob = new Blob([event.body], { type: event.headers.get('Content-Type') });
         }
@@ -564,7 +565,6 @@ export class DataFormService {
     document.body.removeChild(link);
   }
 
-
   //liste des lieux
   getPlaces() {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/places`);
@@ -583,7 +583,9 @@ export class DataFormService {
   }
 
   publishAf(af_id) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_framework/publish/${af_id}`);
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_framework/publish/${af_id}`
+    );
   }
 
   deleteDs(ds_id) {
@@ -592,41 +594,42 @@ export class DataFormService {
 
   getadditionalFields(params?: ParamsDict) {
     let queryString: HttpParams = new HttpParams();
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
     for (const key in params) {
       queryString = queryString.set(key, params[key].toString());
     }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/additional_fields`,
-     {params: queryString}).map(additionalFields => {
-      return additionalFields.map(data => {        
-        return {
-          "id_field": data.id_field,
-          "attribut_label": data.field_label,
-          "attribut_name": data.field_name,
-          "required": data.required,
-          "description": data.description,
-          "quantitative": data.quantitative,
-          "unity": data.unity,
-          "code_nomenclature_type": data.code_nomenclature_type,
-          "type_widget": data.type_widget.widget_name,
-          "multi_select": null,
-          "values": data.field_values,
-          "value": data.default_value,
-          "id_list": data.id_list,
-          "objects": data.objects,
-          "modules": data.modules,
-          "datasets": data.datasets,
-          "key_value": data.type_widget.widget_name === "nomenclature" ? "label_default": null,
-          ...data.additional_attributes
-        }
-      })
-        
-     });
-
+    return this._http
+      .get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/additional_fields`, { params: queryString })
+      .pipe(
+        map((additionalFields) => {
+          return additionalFields.map((data) => {
+            return {
+              id_field: data.id_field,
+              attribut_label: data.field_label,
+              attribut_name: data.field_name,
+              required: data.required,
+              description: data.description,
+              quantitative: data.quantitative,
+              unity: data.unity,
+              code_nomenclature_type: data.code_nomenclature_type,
+              type_widget: data.type_widget.widget_name,
+              multi_select: null,
+              values: data.field_values,
+              value: data.default_value,
+              id_list: data.id_list,
+              objects: data.objects,
+              modules: data.modules,
+              datasets: data.datasets,
+              key_value: data.type_widget.widget_name === 'nomenclature' ? 'label_default' : null,
+              ...data.additional_attributes,
+            };
+          });
+        })
+      );
   }
 
   getProfile(cdRef) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`)
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/valid_profile/${cdRef}`);
   }
 
   getPhenology(cdRef, idNomenclatureLifeStage?) {
@@ -634,22 +637,19 @@ export class DataFormService {
       `${AppConfig.API_ENDPOINT}/gn_profiles/cor_taxon_phenology/
       ${cdRef}?id_nomenclature_life_stage=
       ${idNomenclatureLifeStage}`
-    )
+    );
   }
 
   /* A partir d'un id synthese, retourne si l'observation match avec les différents
    critère d'un profil
   */
   getProfileConsistancyData(idSynthese) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/consistancy_data/${idSynthese}`)
-  }
-
-  controlProfile(data) {
-    return this._http.post<any>(
-      `${AppConfig.API_ENDPOINT}/gn_profiles/check_observation`,
-      data
+    return this._http.get<any>(
+      `${AppConfig.API_ENDPOINT}/gn_profiles/consistancy_data/${idSynthese}`
     );
   }
 
+  controlProfile(data) {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/gn_profiles/check_observation`, data);
+  }
 }
-

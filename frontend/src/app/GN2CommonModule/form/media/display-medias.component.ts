@@ -7,11 +7,11 @@ import {
   EventEmitter,
   ViewEncapsulation,
   SimpleChanges,
-  Inject
+  Inject,
 } from '@angular/core';
 import { Media } from './media';
 import { MediaService } from '@geonature_common/service/media.service';
-import { MatDialog } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { MediaDialog } from './media-dialog.component';
 
 export interface MediaDialogData {
@@ -22,7 +22,7 @@ export interface MediaDialogData {
 @Component({
   selector: 'pnx-display-medias',
   templateUrl: './display-medias.component.html',
-  styleUrls: ['./media.scss']
+  styleUrls: ['./media.scss'],
 })
 export class DisplayMediasComponent {
   @Input() medias: Array<Media> = [];
@@ -58,7 +58,7 @@ export class DisplayMediasComponent {
     const heights = {
       mini: 50,
       small: 100,
-      medium: 200
+      medium: 200,
     };
 
     this.height = heights[this.display] ? `${heights[this.display]}px` : '100%';
@@ -68,7 +68,7 @@ export class DisplayMediasComponent {
   openDialog(index) {
     const dialogRef = this.dialog.open(MediaDialog, {
       width: '1000px',
-      data: { medias: this.medias, index }
+      data: { medias: this.medias, index },
     });
   }
 

@@ -10,17 +10,19 @@ import { SideNavService } from '../sidenav-items/sidenav-service';
 import { GlobalSubService } from '../../services/global-sub.service';
 import { ModuleService } from '../../services/module.service';
 import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'pnx-home-content',
   templateUrl: './home-content.component.html',
   styleUrls: ['./home-content.component.scss'],
-  providers: [MapService, SyntheseDataService]
+  providers: [MapService, SyntheseDataService],
 })
 export class HomeContentComponent implements OnInit {
-
   public appConfig: any;
+  public showLastObsMap: boolean = false;
   public lastObs: any;
+  public showGeneralStat: boolean = false;
   public generalStat: any;
   public locale: string;
   public destroy$: Subject<boolean> = new Subject<boolean>();
@@ -31,25 +33,33 @@ export class HomeContentComponent implements OnInit {
     private _globalSub: GlobalSubService,
     private _mapService: MapService,
     private _moduleService: ModuleService,
-    private translateService: TranslateService,
-  ) {}
+    private translateService: TranslateService
+  ) {
+    // this work here thanks to APP_INITIALIZER on ModuleService
+    let synthese_module = this._moduleService.getModule('SYNTHESE');
+    let synthese_read_scope = synthese_module ? synthese_module.cruved['R'] : 0;
+
+    if (AppConfig.FRONTEND.DISPLAY_MAP_LAST_OBS && synthese_read_scope > 0) {
+      this.showLastObsMap = true;
+    }
+    if (AppConfig.FRONTEND.DISPLAY_STAT_BLOC && synthese_read_scope > 0) {
+      this.showGeneralStat = true;
+    }
+  }
 
   ngOnInit() {
-    let gn_module = this._moduleService.getModule('GEONATURE');
-    gn_module.module_label = 'Accueil';
-    this._globalSub.currentModuleSubject.next(gn_module);
     this.getI18nLocale();
 
     this._SideNavService.sidenav.open();
     this.appConfig = AppConfig;
 
-    if (AppConfig.FRONTEND.DISPLAY_MAP_LAST_OBS) {
-      this._syntheseApi.getSyntheseData({ limit: 100 }).subscribe(result => {
-        this.lastObs = result.data;
+    if (this.showLastObsMap) {
+      this._syntheseApi.getSyntheseData({ limit: 100 }).subscribe((data) => {
+        this.lastObs = data;
       });
     }
 
-    if (AppConfig.FRONTEND.DISPLAY_STAT_BLOC) {
+    if (this.showGeneralStat) {
       this.computeStatsBloc();
     }
   }
@@ -70,7 +80,7 @@ export class HomeContentComponent implements OnInit {
       // Compute refresh need
       const currentDatetime = new Date();
       const cacheEndDatetime = new Date(stats.createdDate);
-      const milliSecondsTtl = (AppConfig.FRONTEND.STAT_BLOC_TTL * 1000)
+      const milliSecondsTtl = AppConfig.FRONTEND.STAT_BLOC_TTL * 1000;
       const futureTimestamp = cacheEndDatetime.getTime() + milliSecondsTtl;
       cacheEndDatetime.setTime(futureTimestamp);
 
@@ -81,19 +91,20 @@ export class HomeContentComponent implements OnInit {
 
     if (needToRefreshStats) {
       // Get general stats from Server
+      console.log(this._syntheseApi.getSyntheseGeneralStat());
       this._syntheseApi
         .getSyntheseGeneralStat()
-        .map(stat => {
-          // tslint:disable-next-line:forin
-          for (const key in stat) {
-            // Pretty the number with spaces
-            if (stat[key]) {
-              stat[key] = stat[key].toLocaleString('fr-FR');
-            }
-          }
-          return stat;
-        })
-        .subscribe(stats => {
+        // .map(stat => {
+        //   // eslint-disable-next-line guard-for-in
+        //   for (const key in stat) {
+        //     // Pretty the number with spaces
+        //     if (stat[key]) {
+        //       stat[key] = stat[key].toLocaleString('fr-FR');
+        //     }
+        //   }
+        //   return stat;
+        // })
+        .subscribe((stats) => {
           stats['createdDate'] = new Date().toUTCString();
           localStorage.setItem('homePage.stats', JSON.stringify(stats));
           this.generalStat = stats;
@@ -105,7 +116,7 @@ export class HomeContentComponent implements OnInit {
     this.locale = this.translateService.currentLang;
     // don't forget to unsubscribe!
     this.translateService.onLangChange
-      .takeUntil(this.destroy$)
+      .pipe(takeUntil(this.destroy$))
       .subscribe((langChangeEvent: LangChangeEvent) => {
         this.locale = langChangeEvent.lang;
       });
@@ -127,7 +138,7 @@ export class HomeContentComponent implements OnInit {
         }
         popup = popup + `<\div>`;
         layer.bindPopup(popup).openPopup();
-      }
+      },
     });
   }
 }

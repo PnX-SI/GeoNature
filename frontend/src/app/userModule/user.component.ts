@@ -9,7 +9,7 @@ import { UserDataService } from './services/user-data.service';
 @Component({
   selector: 'pnx-user',
   templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss']
+  styleUrls: ['./user.component.scss'],
 })
 export class UserComponent implements OnInit {
   form: FormGroup;
@@ -34,7 +34,7 @@ export class UserComponent implements OnInit {
 
   save() {
     if (this.form.valid) {
-      this.userService.putRole(this.form.value).subscribe(res => this.form.disable());
+      this.userService.putRole(this.form.value).subscribe((res) => this.form.disable());
     }
   }
 

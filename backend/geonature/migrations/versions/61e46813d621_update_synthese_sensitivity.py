@@ -10,14 +10,15 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '61e46813d621'
-down_revision = 'dde31e76ce45'
+revision = "61e46813d621"
+down_revision = "dde31e76ce45"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
-    op.execute("""
+    op.execute(
+        """
     CREATE OR REPLACE FUNCTION gn_synthese.update_sensitivity()
         RETURNS int4
         LANGUAGE plpgsql
@@ -60,10 +61,13 @@ def upgrade():
         END;
     $function$
     ;
-    """)
+    """
+    )
 
 
 def downgrade():
-    op.execute("""
+    op.execute(
+        """
     DROP FUNCTION gn_synthese.update_sensitivity;
-    """)
+    """
+    )

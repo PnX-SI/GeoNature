@@ -5,25 +5,22 @@ import { MapService } from '../map.service';
 import { AppConfig } from '@geonature_config/app.config';
 import { CommonService } from '../../service/common.service';
 import { leafletDrawOption } from '@geonature_common/map/leaflet-draw.options';
-import { GeoJSON } from 'togeojson';
+import { GeoJSON } from '@tmcw/togeojson';
+import { CustomIcon } from '@geonature/utils/leaflet-icon';
 
 import 'leaflet-draw';
 import * as L from 'leaflet';
 
 delete L.Icon.Default.prototype['_getIconUrl'];
 
-L.Icon.Default.mergeOptions({
-  iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
-  iconUrl: require('leaflet/dist/images/marker-icon.png'),
-  shadowUrl: require('leaflet/dist/images/marker-shadow.png')
-});
+L.Icon.Default.mergeOptions(CustomIcon);
 
 /**
  * Ce composant permet d'activer le `plugin leaflet-draw <https://github.com/Leaflet/Leaflet.draw>`_
  */
 @Component({
   selector: 'pnx-leaflet-draw',
-  templateUrl: 'leaflet-draw.component.html'
+  templateUrl: 'leaflet-draw.component.html',
 })
 export class LeafletDrawComponent implements OnInit, OnChanges {
   public map: Map;
@@ -57,9 +54,15 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
   constructor(public mapservice: MapService, private _commonService: CommonService) {}
 
   ngOnInit() {
+    // HACK for leaflet draw compatibility
+    (window as any).type = true;
     this.map = this.mapservice.map;
     this._Le = L as any;
     this.enableLeafletDraw();
+  }
+
+  ngOnDestroy() {
+    (window as any).type = undefined;
   }
 
   enableLeafletDraw() {
@@ -72,7 +75,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       this.disableDrawControl();
     }
 
-    this.map.on(this._Le.Draw.Event.DRAWSTART, e => {
+    this.map.on(this._Le.Draw.Event.DRAWSTART, (e) => {
       this.mapservice.removeAllLayers(this.map, this.mapservice.fileLayerFeatureGroup);
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
@@ -102,7 +105,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     });
 
     // on draw layer created
-    this.map.on(this._Le.Draw.Event.CREATED, e => {
+    this.map.on(this._Le.Draw.Event.CREATED, (e) => {
       if (this.map.getZoom() < this.zoomLevel) {
         this._commonService.translateToaster('warning', 'Map.ZoomWarning');
         this.layerDrawed.emit({ geojson: null });
@@ -118,24 +121,22 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     });
 
     // on draw edited
-    this.mapservice.map.on(this._Le.Draw.Event.EDITED, e => {
+    this.mapservice.map.on(this._Le.Draw.Event.EDITED, (e) => {
       const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
       this.mapservice.setGeojsonCoord(geojson);
       this.layerDrawed.emit(geojson);
-
     });
 
     // on layer deleted
-    this.map.on(this._Le.Draw.Event.DELETESTART, e => {
+    this.map.on(this._Le.Draw.Event.DELETESTART, (e) => {
       this.layerDeleted.emit();
     });
 
-    this.map.on(this._Le.Draw.Event.DELETESTOP, e => {
+    this.map.on(this._Le.Draw.Event.DELETESTOP, (e) => {
       const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
       if (geojson) {
         this.layerDrawed.emit(geojson);
         this.mapservice.setGeojsonCoord(geojson);
-
       }
     });
   }

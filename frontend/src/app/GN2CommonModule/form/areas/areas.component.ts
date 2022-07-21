@@ -1,7 +1,15 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
-import { Subject, Observable, of, concat } from 'rxjs';
-import { distinctUntilChanged, debounceTime, switchMap, tap, catchError, map, distinct } from 'rxjs/operators'
+import { Subject, Observable, of, concat, zip } from 'rxjs';
+import {
+  distinctUntilChanged,
+  debounceTime,
+  switchMap,
+  tap,
+  catchError,
+  map,
+  distinct,
+} from 'rxjs/operators';
 
 import { AppConfig } from '@geonature_config/app.config';
 import { DataFormService } from '../data-form.service';
@@ -40,7 +48,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
  */
 @Component({
   selector: 'pnx-areas',
-  templateUrl: 'areas.component.html'
+  templateUrl: 'areas.component.html',
 })
 export class AreasComponent extends GenericFormComponent implements OnInit {
   /**
@@ -60,13 +68,30 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    */
   @Input() valueFieldName: string = 'id_area';
   /**
-   * Fonction de comparaison entre les élements sélectionnés et les éléments
-   * affichés dans la liste des options.
+   * Fonction de comparaison entre les élements sélectionnés présent dans
+   * le `parentFormControl` et les éléments affichés dans la liste des options.
    * @param item
    * @param selected
    * @returns
    */
   @Input() compareWith = (item, selected) => item[this.valueFieldName] === selected;
+  /**
+   * Tableau d'objets qui doivent contenir chacun à minima 2 attributs :
+   *  - un attribut correspondant à la valeur de l'input `valueFieldName` et
+   * contenant l'identifiant de la zone géographique.
+   *  - un attribut `area_name` contenant l'intitulé de la zone géographique
+   * à afficher.
+   * En mise à jour, ces objets doivent correspondres aux id présents dans
+   * `parentFormControl`.
+   */
+  @Input() defaultItems: Array<any> = [];
+  /**
+   * Permet découter les changements sur la sélection de ng-select.
+   * Retourne un tableau d'objets. Les objets correspondent aux items
+   * sélectionnés. Chaque objet contient à minima 2 attributs : un
+   * correspondant à l'input `valueFieldName`, l'autre est `displayName`.
+   */
+  @Output() onSelectionChange = new EventEmitter<any>();
   areas_input$ = new Subject<string>();
   areas: Observable<any>;
   loading = false;
@@ -86,6 +111,32 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
     this.getAreas();
   }
 
+  /**
+   * Merge initial 100 areas + default values (for update)
+   */
+  initalAreas(): Observable<any> {
+    return zip(
+      this.dataService.getAreas(this.typeCodes).pipe(map((data) => this.formatAreas(data))), // Default items
+      of(this.defaultItems) // Default items in update mode
+    ).pipe(
+      map((areasArrays) => {
+        // Remove dubplicates items
+        const items = areasArrays[0];
+        const defaultItems = areasArrays[1];
+        if (defaultItems && defaultItems.length > 0) {
+          const filteredItems = items.filter((area) => {
+            return !defaultItems.some(
+              (defaultArea) => defaultArea[this.valueFieldName] === area[this.valueFieldName]
+            );
+          });
+          return filteredItems.concat(defaultItems);
+        } else {
+          return items;
+        }
+      })
+    );
+  }
+
   private updateParentFormControl() {
     // Replace objects by valueFieldName values
     if (this.parentFormControl.value) {
@@ -93,23 +144,18 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
       this.parentFormControl.setValue(this.defaultItems.map(item => item[this.valueFieldName]));
     }
   }
-
+  //TODO: check merge
   getAreas() {
     this.areas = concat(
-      concat(
-        of(this.defaultItems), // Load items for update mode
-        this.dataService.getAreas(this.typeCodes).pipe(map(data => this.formatAreas(data))) // Default items
-      ).pipe(
-        distinct(item => item[this.valueFieldName]) // Remove duplicates
-      ),
+      this.initalAreas(),
       this.areas_input$.pipe(
         debounceTime(200),
         distinctUntilChanged(),
         tap(() => (this.loading = true)),
-        switchMap(term => {
+        switchMap((term) => {
           return term && term.length >= 2
             ? this.dataService.getAreas(this.typeCodes, term).pipe(
-                map(data => this.formatAreas(data)),
+                map((data) => this.formatAreas(data)),
                 catchError(() => of([])), // Empty list on error
                 tap(() => (this.loading = false))
               )
@@ -126,8 +172,8 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    * @param data Liste d'objets contenant des infos sur des zones géographiques.
    */
   private formatAreas(data: Partial<{ id_type: number; area_code: string }>[]) {
-    if (data.length > 0 && data[0]['id_type'] === AppConfig.BDD.id_area_type_municipality) {
-      return data.map(element => {
+    if (data.length > 0 && data[0]['area_type']['type_code'] === 'COM') {
+      return data.map((element) => {
         element['area_name'] = `${element['area_name']} (${element.area_code.substring(0, 2)}) `;
         return element;
       });

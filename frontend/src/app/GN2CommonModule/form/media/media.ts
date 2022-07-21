@@ -42,8 +42,8 @@ class Media {
       'media_url',
       'id_nomenclature_media_type',
       'bFile',
-      'file'
-    ].every(key => this[key] === values[key]);
+      'file',
+    ].every((key) => this[key] === values[key]);
   }
 
   setValues(values: Object) {

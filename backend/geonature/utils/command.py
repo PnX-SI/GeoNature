@@ -1,9 +1,9 @@
-"""   
+"""
     Fichier de création des commandes geonature
     Ce module ne doit en aucun cas faire appel à des models ou au coeur de geonature
     dans les imports d'entête de fichier pour garantir un bon fonctionnement des fonctions
-    d'administration de l'application GeoNature (génération des fichiers de configuration, des 
-    fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si 
+    d'administration de l'application GeoNature (génération des fichiers de configuration, des
+    fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si
     un paquet PIP du requirement GeoNature n'a pas été bien installé
 """
 import sys
@@ -64,8 +64,16 @@ def frontend_routes_templating(app=None):
                 # test if module have frontend
                 if (module_dir / "frontend").is_dir():
                     path = module_object.module_path.lstrip("/")
-                    location = "{}/{}#GeonatureModule".format(module_dir, GN_MODULE_FE_FILE)
-                    routes.append({"path": path, "location": location, "module_code": module_object.module_code})
+                    location = "() => import('{}/{}').then(m => m.GeonatureModule)".format(
+                        module_dir, GN_MODULE_FE_FILE
+                    )
+                    routes.append(
+                        {
+                            "path": path,
+                            "location": location,
+                            "module_code": module_object.module_code,
+                        }
+                    )
 
                 # TODO test if two modules with the same name is okay for Angular
 
@@ -112,7 +120,7 @@ def tsconfig_app_templating(app=None):
             for module in list_frontend_enabled_modules():
                 module_dir = Path(GN_EXTERNAL_MODULE / module.module_code.lower())
                 # test if module have frontend
-                if (module_dir/ "frontend").is_dir():
+                if (module_dir / "frontend").is_dir():
                     location = "{}/frontend/app".format(module_dir)
                     routes.append({"location": location})
 
@@ -131,10 +139,13 @@ def create_frontend_config():
 
     with open(str(ROOT_DIR / "frontend/src/conf/app.config.ts.sample"), "r") as input_file:
         template = Template(input_file.read())
-        parameters = json.dumps({
-            **config_frontend,
-            'ID_APPLICATION_GEONATURE': current_app.config['ID_APP'],
-        }, indent=True)
+        parameters = json.dumps(
+            {
+                **config_frontend,
+                "ID_APPLICATION_GEONATURE": current_app.config["ID_APP"],
+            },
+            indent=True,
+        )
         app_config_template = template.render(parameters=parameters)
 
         with open(str(ROOT_DIR / "frontend/src/conf/app.config.ts"), "w") as output_file:
@@ -150,3 +161,4 @@ def update_app_configuration(build=True):
         subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
     log.info("...%s\n", MSG_OK)
     log.info("Pensez à relancer geonature (sudo systemctl restart geonature)")
+

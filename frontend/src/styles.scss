@@ -89,10 +89,10 @@ mat-sidenav-content {
 }
 
 /*
- * The /deep/ selector is simply to overcome view encapsulation
+ * The ::ng-deep selector is simply to overcome view encapsulation
  * and be able to select the div.md-sidenav-content generated at runtime
 */
-md-sidenav-layout /deep/ .md-sidenav-content {
+md-sidenav-layout ::ng-deep .md-sidenav-content {
   overflow: hidden;
 }
 
@@ -524,16 +524,27 @@ pnx-root:empty + #cover-spin-removable {
 .ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value .ng-value-icon {
   font-weight: bolder;
 }
-.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value .ng-value-icon:hover {
+.ng-select.ng-select-multiple
+  .ng-select-container
+  .ng-value-container
+  .ng-value
+  .ng-value-icon:hover {
   color: white;
   background-color: #64b5f6;
 }
-.ng-select.ng-select-multiple .ng-select-container .ng-value-container .ng-value .ng-value-icon.left {
+.ng-select.ng-select-multiple
+  .ng-select-container
+  .ng-value-container
+  .ng-value
+  .ng-value-icon.left {
   border-right: none;
 }
 a.mat-raised-button:hover {
   text-decoration: none !important;
 }
 
+.ngx-toastr {
+  width: 500px !important;  // Specify toastr-dialog width for all devices
+}
 
 /* .loading screen is visible when app is not bootstrapped yet, my-app is empty */

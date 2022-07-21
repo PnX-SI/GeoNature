@@ -16,51 +16,61 @@
   [reorderable]="true"
   (select)="mapListService.onRowSelect($event)"
 >
-
-
   <ngx-datatable-column [maxWidth]="5">
     <ng-template let-row="row" ngx-datatable-cell-template>
-      <button class="btn btn-outline-shadow btn-no-padding btn-ghost" (click)="openInfoModal(row);">
-        <i #iElement matTooltip="{{row[mapListService.idName]}}" class="fa fa-info-circle" aria-hidden="true "></i>
+      <button class="btn btn-outline-shadow btn-no-padding btn-ghost" (click)="openInfoModal(row)">
+        <i
+          #iElement
+          matTooltip="{{ row[mapListService.idName] }}"
+          class="fa fa-info-circle"
+          aria-hidden="true "
+        ></i>
       </button>
     </ng-template>
   </ngx-datatable-column>
 
   <ngx-datatable-column [maxWidth]="5">
     <ng-template let-row="row" ngx-datatable-cell-template>
-      <button *ngIf="row.url_source" class="btn btn-outline-shadow btn-no-padding btn-ghost" (click)="backToModule(row.url_source, row.entity_source_pk_value)">
-        <i matTooltip="Voir l'observation dans le module de saisie" class="fa fa-file-text" aria-hidden="true"></i>
+      <button
+        *ngIf="row.url_source"
+        class="btn btn-outline-shadow btn-no-padding btn-ghost"
+        (click)="backToModule(row.url_source, row.entity_source_pk_value)"
+      >
+        <i
+          matTooltip="Voir l'observation dans le module de saisie"
+          class="fa fa-file-text"
+          aria-hidden="true"
+        ></i>
       </button>
     </ng-template>
   </ngx-datatable-column>
-
 
   <!-- DATA COLOMNS -->
-  <div *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND ">
-    <!-- custom columns for date in order to format them and order them -->
-    <span *ngIf="col.prop == 'date_max' || col.prop == 'date_min'; else notDate">
-        <ngx-datatable-column
-          [comparator]="dateComparator"
-          [maxWidth]="col.max_width"
-          [name]='col.name'
-          [prop]='col.prop'
-          [sortable]="true">
-            <ng-template let-row="row" ngx-datatable-cell-template>
-              {{row[col.prop] | date:'dd-MM-yyyy'}}
-            </ng-template>
-        </ngx-datatable-column>
-    </span>
-    <ng-template #notDate>
-        <ngx-datatable-column  [name]="col.name " [prop]="col.prop"
-        [maxWidth]="col.max_width">
-      </ngx-datatable-column>
+  <!--  <div *ngFor="let col of *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND " ">-->
+  <!--    &lt;!&ndash; custom columns for date in order to format them and order them &ndash;&gt;-->
+  <!--    <span *ngIf="col.prop == 'date_max' || col.prop == 'date_min'; else notDate">-->
+  <ngx-datatable-column
+    *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND"
+    [comparator]="dateComparator"
+    [maxWidth]="col.max_width"
+    [name]="col.name"
+    [prop]="col.prop"
+    [sortable]="true"
+  >
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      {{
+        col.prop == 'date_max' || col.prop == 'date_min' ? getDate(row[col.prop]) : row[col.prop]
+      }}
     </ng-template>
-  </div>
-
+  </ngx-datatable-column>
+  <!--    </span>-->
+  <!--    <ng-template #notDate>-->
+  <!--        <ngx-datatable-column  [name]="col.name " [prop]="col.prop"-->
+  <!--        [maxWidth]="col.max_width">-->
+  <!--      </ngx-datatable-column>-->
+  <!--    </ng-template>-->
+  <!--  </div>-->
 </ngx-datatable>
-
-
-
 
 <button
   type="button"
@@ -69,12 +79,11 @@
   mat-raised-button
   color="primary"
   (click)="openDownloadModal()"
-  [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E == '0'"
+  [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E === 0"
 >
   {{ 'Download' | translate }}
   <mat-icon>file_download</mat-icon>
 </button>
-
 
 <!-- <pnx-modal-download [pathDownload]="exportRoute " [queryString]="queyrStringDownload " [exportFormat]="SYNTHESE_CONFIG.EXPORT_FORMAT "
   (buttonClicked)="setQueryString() ">

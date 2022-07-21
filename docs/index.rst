@@ -5,7 +5,6 @@ Bienvenue dans la documentation de GeoNature
    :maxdepth: 2
    
    installation
-     https
    user-manual
    admin-manual
    import-level-1

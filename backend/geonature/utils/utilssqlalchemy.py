@@ -41,9 +41,9 @@ def test_is_uuid(uuid_string):
 
 def testDataType(value, sqlType, paramName):
     """
-        Test the type of a filter
-        #TODO: antipatern: should raise something which can be exect by the function which use it
-        # and not return the error
+    Test the type of a filter
+    #TODO: antipatern: should raise something which can be exect by the function which use it
+    # and not return the error
     """
     if sqlType == DB.Integer or isinstance(sqlType, (DB.Integer)):
         try:
@@ -65,13 +65,13 @@ def testDataType(value, sqlType, paramName):
 
 def test_type_and_generate_query(param_name, value, model, q):
     """
-        Generate a query with the filter given, 
-        checking the params is the good type of the columns, and formmatting it
-        Params:
-            - param_name (str): the name of the column
-            - value (any): the value of the filter
-            - model (SQLA model)
-            - q (SQLA Query)
+    Generate a query with the filter given,
+    checking the params is the good type of the columns, and formmatting it
+    Params:
+        - param_name (str): the name of the column
+        - value (any): the value of the filter
+        - model (SQLA model)
+        - q (SQLA Query)
     """
     # check the attribut exist in the model
     try:
@@ -105,7 +105,7 @@ def test_type_and_generate_query(param_name, value, model, q):
 
 
 def get_geojson_feature(wkb):
-    """ retourne une feature geojson à partir d'un WKB"""
+    """retourne une feature geojson à partir d'un WKB"""
     geometry = to_shape(wkb)
     feature = Feature(geometry=geometry, properties={})
     return feature
@@ -128,8 +128,8 @@ SERIALIZERS = {
 
 class GenericTable:
     """
-        Classe permettant de créer à la volée un mapping
-        d'une vue avec la base de données par rétroingénierie
+    Classe permettant de créer à la volée un mapping
+    d'une vue avec la base de données par rétroingénierie
     """
 
     def __init__(self, tableName, schemaName, geometry_field=None, srid=None):
@@ -162,8 +162,8 @@ class GenericTable:
 
     def get_serialized_columns(self, serializers=SERIALIZERS):
         """
-            Return a tuple of serialize_columns, and db_cols
-            from the generic table
+        Return a tuple of serialize_columns, and db_cols
+        from the generic table
         """
         regular_serialize = []
         db_cols = []
@@ -219,11 +219,18 @@ class GenericTable:
 
 class GenericQuery:
     """
-        Classe permettant de manipuler des objets GenericTable
+    Classe permettant de manipuler des objets GenericTable
     """
 
     def __init__(
-        self, db_session, tableName, schemaName, geometry_field, filters, limit=100, offset=0,
+        self,
+        db_session,
+        tableName,
+        schemaName,
+        geometry_field,
+        filters,
+        limit=100,
+        offset=0,
     ):
         log.warning(
             "WARNING: Utilssqlalchemy will soon be removed from GeoNature.\nPlease use utils_flask_sqla instead\n"
@@ -239,7 +246,7 @@ class GenericQuery:
 
     def build_query_filters(self, query, parameters):
         """
-            Construction des filtres
+        Construction des filtres
         """
         for f in parameters:
             query = self.build_query_filter(query, f, parameters.get(f))
@@ -300,7 +307,7 @@ class GenericQuery:
 
     def return_query(self):
         """
-            Lance la requete et retourne les résutats dans un format standard
+        Lance la requete et retourne les résutats dans un format standard
         """
         q = self.db_session.query(self.view.tableDef)
         nb_result_without_filter = q.count()
@@ -379,9 +386,9 @@ def serializeQueryTest(data, column_def):
 ################################################################################
 def serializable(cls):
     """
-        Décorateur de classe pour les DB.Models
-        Permet de rajouter la fonction as_dict
-        qui est basée sur le mapping SQLAlchemy
+    Décorateur de classe pour les DB.Models
+    Permet de rajouter la fonction as_dict
+    qui est basée sur le mapping SQLAlchemy
     """
     log.warning(
         "WARNING: Utilssqlalchemy will soon be removed from GeoNature.\nPlease use utils_flask_sqla instead\n"
@@ -391,7 +398,10 @@ def serializable(cls):
         associées à leur sérializer en fonction de leur type
     """
     cls_db_columns = [
-        (db_col.key, SERIALIZERS.get(db_col.type.__class__.__name__.lower(), lambda x: x),)
+        (
+            db_col.key,
+            SERIALIZERS.get(db_col.type.__class__.__name__.lower(), lambda x: x),
+        )
         for db_col in cls.__mapper__.c
         if not db_col.type.__class__.__name__ == "Geometry"
     ]
@@ -452,8 +462,8 @@ def serializable(cls):
 
 def geoserializable(cls):
     """
-        Décorateur de classe
-        Permet de rajouter la fonction as_geofeature à une classe
+    Décorateur de classe
+    Permet de rajouter la fonction as_geofeature à une classe
     """
     log.warning(
         "WARNING: Utilssqlalchemy will soon be removed from GeoNature.\nPlease use utils_flask_sqla instead\n"

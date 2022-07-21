@@ -11,10 +11,6 @@ label:hover {
   color: #607d8b;
 }
 
-#statusChange {
-  background-color: #eaeaea;
-}
-
 #modify {
   font-size: 18px;
 }
@@ -69,4 +65,20 @@ label:hover {
   form.ng-invalid {
     border-left: none !important;
   }
+}
+
+.status-badge {
+  border-radius: 50px;
+  box-shadow: none;
+}
+
+.link-infos {
+  border: 1px solid #673ab7;
+}
+#saveButton {
+  background-color: #673ab7;
+  color: white;
+}
+#cancelStatusBtn {
+  color: #673ab7;
 }

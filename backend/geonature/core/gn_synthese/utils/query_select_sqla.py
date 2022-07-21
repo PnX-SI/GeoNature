@@ -21,13 +21,12 @@ from utils_flask_sqla_geo.utilsgeometry import circle_from_point
 from geonature.utils.env import DB
 from geonature.core.taxonomie.models import Taxref, CorTaxonAttribut, TaxrefLR
 from geonature.core.gn_synthese.models import (
-    Synthese,
     CorObserverSynthese,
-    TSources,
     CorAreaSynthese,
+    BibReportsTypes,
+    TReport,
 )
 from geonature.core.gn_meta.models import (
-    TAcquisitionFramework,
     CorDatasetActor,
     TDatasets,
 )
@@ -36,17 +35,18 @@ from geonature.utils.errors import GeonatureApiError
 
 class SyntheseQuery:
     """
-        class for building synthese query and manage join
+    class for building synthese query and manage join
 
-        Attributes:
-            query: SQLA select object
-            filters: dict of query string filters
-            model: a SQLA model
-            _already_joined_table: (private) a list of already joined table. Auto build with 'add_join' method
-            query_joins = SQLA Join object
+    Attributes:
+        query: SQLA select object
+        filters: dict of query string filters
+        model: a SQLA model
+        _already_joined_table: (private) a list of already joined table. Auto build with 'add_join' method
+        query_joins = SQLA Join object
     """
 
-    def __init__(self,
+    def __init__(
+        self,
         model,
         query,
         filters,
@@ -128,35 +128,27 @@ class SyntheseQuery:
                 # push the joined table in _already_joined_table list
                 self._already_joined_table.append(right_table)
 
-    def filter_query_with_cruved(self, auth):
+    def filter_query_with_cruved(self, user):
         """
         Filter the query with the cruved authorization of a user
         """
-        if auth.value_filter in ("1", "2"):
-            # Get id synthese where user authenticated is observer and ...
+        scope = int(user.value_filter)
+        if scope in (1, 2):
+            # get id synthese where user is observer
             subquery_observers = (
                 select([CorObserverSynthese.id_synthese])
                 .select_from(CorObserverSynthese)
-                .where(CorObserverSynthese.id_role == auth.id_role)
+                .where(CorObserverSynthese.id_role == user.id_role)
             )
-
-            # ... if user authenticated id is observer or digitiser
             ors_filters = [
                 self.model_id_syn_col.in_(subquery_observers),
-                self.model_id_digitiser_column == auth.id_role,
+                self.model_id_digitiser_column == user.id_role,
             ]
 
-            # ... if user authenticated firstname and lastname combinaisons are
-            # in observers plain text column
-            if current_app.config["SYNTHESE"]["CRUVED_SEARCH_WITH_OBSERVER_AS_TXT"]:
-                user_fullname = f"{auth.nom_role} {auth.prenom_role}%"
-                user_fullname_alernative = f"{auth.prenom_role} {auth.nom_role}%"
-                ors_filters.append(self.model_observers_column.ilike(user_fullname))
-                ors_filters.append(self.model_observers_column.ilike(user_fullname_alernative))
+            allowed_datasets = [d.id_dataset for d in TDatasets.query.filter_by_scope(scope).all()]
+            ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
 
-                allowed_datasets = [d.id_dataset for d in TDatasets.query.filter_by_scope(int(auth.value_filter)).all()]
-                ors_filters.append(self.model_id_dataset_column.in_(allowed_datasets))
-                self.query = self.query.where(or_(*ors_filters))
+            self.query = self.query.where(or_(*ors_filters))
 
     def filter_taxonomy(self):
         """
@@ -233,12 +225,19 @@ class SyntheseQuery:
 
     def filter_other_filters(self):
         """
-            Other filters
+        Other filters
         """
-
         if "has_medias" in self.filters:
+            self.query = self.query.where(self.model.medias.any())
+
+        if "has_alert" in self.filters:
             self.query = self.query.where(
-                self.model.has_medias
+                self.model.reports.any(TReport.report_type.has(BibReportsTypes.type == "alert"))
+            )
+
+        if "has_pin" in self.filters:
+            self.query = self.query.where(
+                self.model.reports.any(TReport.report_type.has(BibReportsTypes.type == "pin"))
             )
 
         if "id_dataset" in self.filters:
@@ -280,7 +279,7 @@ class SyntheseQuery:
             self.query = self.query.where(self.model.date_max <= date_max)
 
         if "id_acquisition_framework" in self.filters:
-            if hasattr(self.model, 'id_acquisition_framework'):
+            if hasattr(self.model, "id_acquisition_framework"):
                 self.query = self.query.where(
                     self.model.id_acquisition_framework.in_(
                         self.filters.pop("id_acquisition_framework")

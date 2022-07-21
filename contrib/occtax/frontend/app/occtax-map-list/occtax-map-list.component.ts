@@ -12,7 +12,7 @@ import { MapService } from "@geonature_common/map/map.service";
 import { OcctaxDataService } from "../services/occtax-data.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { DatatableComponent } from "@swimlane/ngx-datatable/release";
+import { DatatableComponent} from "@swimlane/ngx-datatable";
 import { ModuleConfig } from "../module.config";
 import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.component";
 import { FormGroup } from "@angular/forms";
@@ -22,7 +22,7 @@ import { GlobalSubService } from "@geonature/services/global-sub.service";
 import { Subscription } from "rxjs/Subscription";
 import * as moment from "moment";
 import { MediaService } from '@geonature_common/service/media.service';
-
+import { filter } from 'rxjs/operators';
 import { OcctaxFormReleveService } from "../occtax-form/releve/releve.service";
 import { OcctaxFormOccurrenceService } from "../occtax-form/occurrence/occurrence.service";
 import { OcctaxFormService } from "../occtax-form/occtax-form.service";
@@ -70,7 +70,7 @@ export class OcctaxMapListComponent
     public globalSub: GlobalSubService,
     private renderer: Renderer2,
     public mediaService: MediaService,
-    private occtaxMapListS: OcctaxMapListService
+    public occtaxMapListS: OcctaxMapListService
 
   ) { }
 
@@ -87,7 +87,7 @@ export class OcctaxMapListComponent
     // get user cruved
     this.moduleSub = this.globalSub.currentModuleSub
       // filter undefined or null
-      .filter((mod) => mod)
+      .pipe(filter((mod) => mod))
       .subscribe((mod) => {
         this.userCruved = mod.cruved;
       });

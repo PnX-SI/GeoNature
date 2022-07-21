@@ -1,7 +1,10 @@
 .gn-panel {
-  box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-  -moz-box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
-  -webkit-box-shadow: 0 3px 1px -2px rgba(0,0,0,.2), 0 2px 2px 0 rgba(0,0,0,.14), 0 1px 5px 0 rgba(0,0,0,.12);
+  box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  -moz-box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  -webkit-box-shadow: 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
   border-radius: 4px;
   overflow: hidden;
   margin-bottom: 2px;
@@ -9,7 +12,7 @@
 }
 
 ._gn-panel-header {
-	display: flex;
+  display: flex;
   flex-direction: row;
   align-items: center;
   border-radius: inherit;
@@ -20,21 +23,21 @@
 }
 
 ._gn-panel-header.collapsed:hover {
-	background-color: #f6f6f6;
+  background-color: #f6f6f6;
 }
 
 ._gn-panel-header > div.gn-panel-header {
-	flex: 1;
+  flex: 1;
 }
 
 ._gn-panel-header .state-icon {
-	transition: all 0.2s ease-out !important;
+  transition: all 0.2s ease-out !important;
 }
 
 ._gn-panel-header.expanded .state-icon {
-	transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 .gn-panel-content {
-	padding: 5px 10px;
+  padding: 5px 10px;
 }

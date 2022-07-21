@@ -1,7 +1,4 @@
-<div
-  *ngIf="bInitialized"
-  class="medias-form"
->
+<div *ngIf="bInitialized" class="medias-form">
   <div class="mat-accordeon">
     <mat-accordion>
       <div
@@ -10,41 +7,37 @@
         selector=".btn-clear"
         displayMouseOver
       >
-        <button
-          mat-icon-button
-          class="btn-clear d-none"
-          (click)="deleteMedia(i)"
-        >
+        <button mat-icon-button class="btn-clear d-none" (click)="deleteMedia(i)">
           <mat-icon matTooltip="Supprimer ce media">clear</mat-icon>
         </button>
         <mat-expansion-panel
           [expanded]="parentFormControl.value.length === i + 1 && !media.id_media"
-          (closed)="media.closed=true"
-          (opened)="media.closed=false"
+          (closed)="media.closed = true"
+          (opened)="media.closed = false"
         >
           <mat-expansion-panel-header>
             <mat-panel-title>
-              <div style="display: block; width: 100%;">
+              <div style="display: block; width: 100%">
                 <div>
                   <mat-icon
                     *ngIf="!media.valid() && !media.bLoading"
                     [matTooltip]="'Veuillez compléter le formulaire.'"
                     class="not-valid"
-                  >error</mat-icon>
+                    >error</mat-icon
+                  >
                   <mat-icon
                     *ngIf="media.valid() && !media.bLoading"
                     matTooltip="Le media est valide"
                     class="valid"
-                  >check</mat-icon>
+                    >check</mat-icon
+                  >
 
-                  <mat-icon
-                    *ngIf="media.bLoading"
-                    matTooltip="chargement en cours"
-                    class="fa-spin"
-                  >settings</mat-icon>
+                  <mat-icon *ngIf="media.bLoading" matTooltip="chargement en cours" class="fa-spin"
+                    >settings</mat-icon
+                  >
                   <pnx-display-medias
-                    *ngIf='media.sent'
-                    [medias]="[media]"
+                    *ngIf="media.sent"
+                    [medias]="[parentFormControl.value[i]]"
                     index="0"
                     display="mini"
                   ></pnx-display-medias>
@@ -52,8 +45,9 @@
                   <span class="media-title">
                     Titre: {{ media.title_fr }}
                     <i>
-                      ({{ ms.typeMedia(media) }}<span *ngIf="media.author"> par
-                        {{ media.author }}</span>)
+                      ({{ ms.typeMedia(media)
+                      }}<span *ngIf="media.author"> par {{ media.author }}</span
+                      >)
                     </i>
                   </span>
                 </div>
@@ -68,7 +62,7 @@
             </mat-panel-title>
           </mat-expansion-panel-header>
           <pnx-media
-            [(media)]="media"
+            [(media)]="parentFormControl.value[i]"
             (mediaChange)="onMediaChange()"
             [schemaDotTable]="schemaDotTable"
             [sizeMax]="sizeMax"

@@ -26,8 +26,8 @@ import { MapListService } from "@geonature_common/map-list/map-list.service";
 import { OcctaxFormMapService } from "./occtax-form/map/occtax-map.service";
 import { OcctaxFormParamService } from "./occtax-form/form-param/form-param.service";
 
-import { MatSlideToggleModule, MatTabsModule } from "@angular/material";
-
+import { MatSlideToggleModule } from "@angular/material/slide-toggle";
+import { MatTabsModule } from "@angular/material/tabs";
 const routes: Routes = [
   { path: "", component: OcctaxMapListComponent },
   { 

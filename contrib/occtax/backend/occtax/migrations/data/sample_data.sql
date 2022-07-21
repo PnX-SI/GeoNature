@@ -224,8 +224,9 @@ INSERT INTO gn_meta.cor_dataset_protocol (id_dataset, id_protocol) VALUES
 
 INSERT INTO gn_commons.cor_module_dataset (id_module, id_dataset)
 SELECT gn_commons.get_id_module_bycode('OCCTAX'), id_dataset
-FROM gn_meta.t_datasets
-WHERE active;
+FROM gn_meta.t_datasets t
+JOIN gn_meta.t_acquisition_frameworks af on t.id_acquisition_framework = af.id_acquisition_framework 
+WHERE active and af.unique_acquisition_framework_id = '57b7d0f2-4183-4b7b-8f08-6e105d476dc5';
 
 -- Insérer 2 relevés d'exemple dans Occtax
 

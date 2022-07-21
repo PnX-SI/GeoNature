@@ -43,12 +43,12 @@ export class SyntheseFormService {
       taxonomy_lr: null,
       taxonomy_id_hab: null,
       taxonomy_group2_inpn: null,
-      taxon_rank: null
+      taxon_rank: null,
     });
 
     this.searchForm.setValidators([this.periodValidator()]);
-    AppConfig.SYNTHESE.AREA_FILTERS.forEach(area => {
-      const control_name = 'area_' + area.type_code;
+    AppConfig.SYNTHESE.AREA_FILTERS.forEach((area) => {
+      const control_name = 'area_' + area['type_code'];
       this.searchForm.addControl(control_name, new FormControl(new Array()));
       const control = this.searchForm.controls[control_name];
       area['control'] = control;
@@ -56,7 +56,7 @@ export class SyntheseFormService {
 
     // init the dynamic form with the user parameters
     // remove the filters which are in AppConfig.SYNTHESE.EXCLUDED_COLUMNS
-    this.dynamycFormDef = DYNAMIC_FORM_DEF.filter(formDef => {
+    this.dynamycFormDef = DYNAMIC_FORM_DEF.filter((formDef) => {
       return AppConfig.SYNTHESE.EXCLUDED_COLUMNS.indexOf(formDef.attribut_name) === -1;
     });
     this.formBuilded = true;
@@ -73,9 +73,9 @@ export class SyntheseFormService {
   }
 
   formatParams() {
-    const params = Object.assign({}, this.searchForm.value);    
+    const params = Object.assign({}, this.searchForm.value);
     const updatedParams = {};
-    // tslint:disable-next-line:forin
+    // eslint-disable-next-line guard-for-in
 
     for (const key in params) {
       if (key === 'cd_nom') {
@@ -97,7 +97,7 @@ export class SyntheseFormService {
         // stringify accepte uniquement les geojson simple (pas les feature collection)
         // on boucle sur les feature pour les transformer en WKT
         if (Array.isArray(params['geoIntersection'])) {
-          updatedParams['geoIntersection'] = params['geoIntersection'].map(geojson => {
+          updatedParams['geoIntersection'] = params['geoIntersection'].map((geojson) => {
             return stringify(geojson);
           });
         } else {
@@ -116,12 +116,12 @@ export class SyntheseFormService {
     }
 
     if (this.selectedtaxonFromComponent.length > 0) {
-      updatedParams['cd_ref'] = this.selectedtaxonFromComponent.map(taxon => taxon.cd_ref);
+      updatedParams['cd_ref'] = this.selectedtaxonFromComponent.map((taxon) => taxon.cd_ref);
     }
     if (this.selectedCdRefFromTree.length > 0 || this.selectedTaxonFromRankInput.length > 0) {
       updatedParams['cd_ref_parent'] = [
-        ...this.selectedTaxonFromRankInput.map(el => el.cd_ref),
-        ...this.selectedCdRefFromTree
+        ...this.selectedTaxonFromRankInput.map((el) => el.cd_ref),
+        ...this.selectedCdRefFromTree,
       ];
     }
     return updatedParams;
@@ -133,7 +133,7 @@ export class SyntheseFormService {
       const periodEnd = formGroup.controls.period_end.value;
       if ((perioStart && !periodEnd) || (!perioStart && periodEnd)) {
         return {
-          invalidPeriod: true
+          invalidPeriod: true,
         };
       }
       return null;

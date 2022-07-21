@@ -19,10 +19,9 @@ import { MetadataDataService } from '../services/metadata-data.service';
   selector: 'pnx-af-form',
   templateUrl: './af-form.component.html',
   styleUrls: ['../form.component.scss'],
-  providers: [AcquisitionFrameworkFormService]
+  providers: [AcquisitionFrameworkFormService],
 })
 export class AfFormComponent implements OnInit {
-
   public form: FormGroup;
   //observable pour la liste déroulantes HTML des AF parents
   public acquisitionFrameworkParents: Observable<any>;
@@ -35,9 +34,9 @@ export class AfFormComponent implements OnInit {
     private _router: Router,
     private _toaster: ToastrService,
     private dateParser: NgbDateParserFormatter,
-    private afFormS: AcquisitionFrameworkFormService,
+    public afFormS: AcquisitionFrameworkFormService,
     private actorFormS: ActorFormService,
-    private metadataS: MetadataService,
+    public metadataS: MetadataService,
     private metadataDataS: MetadataDataService
   ) {}
   ngOnInit() {
@@ -45,65 +44,56 @@ export class AfFormComponent implements OnInit {
     this._route.params
       .pipe(
         switchMap((params) => {
-          return params['id'] ? this.getAcquisitionFramework(params['id'], {"exclude": ["t_datasets"]}) : of(null);
+          return params['id']
+            ? this.getAcquisitionFramework(params['id'], { exclude: ['t_datasets'] })
+            : of(null);
         })
       )
-      .subscribe(af => this.afFormS.acquisition_framework.next(af));
+      .subscribe((af) => this.afFormS.acquisition_framework.next(af));
 
     this.form = this.afFormS.form;
 
     // get acquisistion frameworks parent
-    this._dfs.getAcquisitionFrameworks({ is_parent: 'true' })
-      .subscribe(afParent => {
-        this.acquisitionFrameworkParents = afParent;
-      });
-
+    this._dfs.getAcquisitionFrameworks({ is_parent: 'true' }).subscribe((afParent) => {
+      this.acquisitionFrameworkParents = afParent;
+    });
   }
 
   getAcquisitionFramework(id_af, param) {
-    
-    return this._dfs.getAcquisitionFramework(id_af, param)
-      .pipe(
-        map((af: any) => {
-          af.acquisition_framework_start_date = this.dateParser.parse(
-            af.acquisition_framework_start_date
-          );
-          af.acquisition_framework_end_date = this.dateParser.parse(
-            af.acquisition_framework_end_date
-          );
-          return af;
-        })
-      );
+    return this._dfs.getAcquisitionFramework(id_af, param).pipe(
+      map((af: any) => {
+        af.acquisition_framework_start_date = this.dateParser.parse(
+          af.acquisition_framework_start_date
+        );
+        af.acquisition_framework_end_date = this.dateParser.parse(
+          af.acquisition_framework_end_date
+        );
+        return af;
+      })
+    );
   }
 
-  addContact(formArray: FormArray, mainContact: boolean){
+  addContact(formArray: FormArray, mainContact: boolean) {
     let value = null;
-    if(mainContact) {
-      value = {id_nomenclature_actor_role: this.actorFormS.getIDRoleTypeByCdNomenclature("1")}
+    if (mainContact) {
+      value = { id_nomenclature_actor_role: this.actorFormS.getIDRoleTypeByCdNomenclature('1') };
     }
-    this.afFormS.addActor(
-      formArray,
-      value 
-    )
+    this.afFormS.addActor(formArray, value);
   }
 
   postAf() {
-    if (!this.form.valid)
-      return;
+    if (!this.form.valid) return;
 
     let api: Observable<any>;
 
-    const af = Object.assign((this.afFormS.acquisition_framework.getValue()||{}), this.form.value);
-
+    const af = Object.assign(this.afFormS.acquisition_framework.getValue() || {}, this.form.value);
 
     af.acquisition_framework_start_date = this.dateParser.format(
       af.acquisition_framework_start_date
     );
 
     if (af.acquisition_framework_end_date) {
-      af.acquisition_framework_end_date = this.dateParser.format(
-        af.acquisition_framework_end_date
-      );
+      af.acquisition_framework_end_date = this.dateParser.format(af.acquisition_framework_end_date);
     }
     //UPDATE
     if (this.afFormS.acquisition_framework.getValue() !== null) {
@@ -123,13 +113,15 @@ export class AfFormComponent implements OnInit {
         })
       )
       .subscribe(
-        (acquisition_framework: any) => this._router.navigate(['/metadata/af_detail', acquisition_framework.id_acquisition_framework]),
-        error => {
+        (acquisition_framework: any) =>
+          this._router.navigate([
+            '/metadata/af_detail',
+            acquisition_framework.id_acquisition_framework,
+          ]),
+        (error) => {
           if (error.status === 403) {
             this._commonService.translateToaster('error', 'NotAllowed');
             this._router.navigate(['/metadata/']);
-          } else {
-            this._commonService.translateToaster('error', 'ErrorMessage');
           }
         }
       );

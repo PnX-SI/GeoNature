@@ -57,8 +57,14 @@ echo "############### Installation des paquets systèmes ###############"
 
 # Installing required environment for GeoNature and TaxHub
 echo "Installation de l'environnement logiciel..."
+# force node and npm version
+wget -qO- https://deb.nodesource.com/setup_16.x | sudo -E bash -
 
-sudo apt-get install -y unzip git postgresql postgis python2 python3-pip python3-venv libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 || exit 1
+sudo apt-get install -y unzip git postgresql postgis python3-pip python3-venv libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 nodejs || exit 1
+if [ "${WORKER}" = true ]; then
+    sudo apt-get install redis
+fi
+
 
 # Apache configuration
 sudo a2enmod rewrite || exit 1
@@ -106,6 +112,7 @@ sed -i "s/install_sig_layers=.*$/install_sig_layers=$install_sig_layers/g" confi
 sed -i "s/install_grid_layer=.*$/install_grid_layer=$install_grid_layer/g" config/settings.ini
 sed -i "s/install_default_dem=.*$/install_default_dem=$install_default_dem/g" config/settings.ini
 sed -i "s/vectorise_dem=.*$/vectorise_dem=$vectorise_dem/g" config/settings.ini
+sed -i "s/install_ref_sensitivity=.*$/install_ref_sensitivity=$install_ref_sensitivity/g" config/settings.ini
 sed -i "s/add_sample_data=.*$/add_sample_data=$add_sample_data/g" config/settings.ini
 sed -i "s/usershub_release=.*$/usershub_release=$usershub_release/g" config/settings.ini
 sed -i "s/taxhub_release=.*$/taxhub_release=$taxhub_release/g" config/settings.ini
@@ -119,14 +126,16 @@ cd "${GEONATURE_DIR}/install"
 
 echo "Installation du backend GeoNature"
 ./01_install_backend.sh || exit 1
+echo "Installation des scripts systemd"
+./02_configure_systemd.sh || exit 1
 echo "Installation de la base de données"
-./02_create_db.sh || exit 1
+./03_create_db.sh || exit 1
 echo "Installation des modules GeoNature"
-./03_install_gn_modules.sh || exit 1
+./04_install_gn_modules.sh || exit 1
 echo "Installation du frontend GeoNature"
-./04_install_frontend.sh || exit 1
+./05_install_frontend.sh || exit 1
 echo "Installation de la config apache pour GeoNature"
-./05_configure_apache.sh || exit 1
+./06_configure_apache.sh || exit 1
 
 sudo a2enconf geonature || exit 1
 

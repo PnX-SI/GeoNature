@@ -27,17 +27,23 @@ dataset_schema = {
         "id_nomenclature_data_origin": {"type": "integer"},
         "id_nomenclature_resource_type": {"type": "integer"},
         "cor_territories": {"type": "array"},
-
     },
     "required": [
-        "id_digitizer", 
-        "acquisition_framework", "cor_dataset_actor", "creator", 
-        "dataset_name", "dataset_shortname",
-        "dataset_desc", "id_nomenclature_data_type", "id_nomenclature_source_status",
-        "id_nomenclature_dataset_objectif", "id_nomenclature_collecting_method",
-        "id_nomenclature_data_origin", "id_nomenclature_resource_type",
-        "cor_territories"
-    ]
+        "id_digitizer",
+        "acquisition_framework",
+        "cor_dataset_actor",
+        "creator",
+        "dataset_name",
+        "dataset_shortname",
+        "dataset_desc",
+        "id_nomenclature_data_type",
+        "id_nomenclature_source_status",
+        "id_nomenclature_dataset_objectif",
+        "id_nomenclature_collecting_method",
+        "id_nomenclature_data_origin",
+        "id_nomenclature_resource_type",
+        "cor_territories",
+    ],
 }
 
 af_schema = {
@@ -50,19 +56,20 @@ af_schema = {
         "id_digitizer": {"type": "number"},
         "acquisition_framework_name": {"type": "string"},
         "acquisition_framework_desc": {"type": "string"},
-        "acquisition_framework_start_date": {"type": "string"},                
+        "acquisition_framework_start_date": {"type": "string"},
     },
     "required": [
-        "id_digitizer", 
-        "t_datasets", 
-        "cor_af_actor", 
+        "id_digitizer",
+        "t_datasets",
+        "cor_af_actor",
         "creator",
         "acquisition_framework_name",
         "acquisition_framework_desc",
         "cor_territories",
-        "acquisition_framework_start_date"
-    ]
+        "acquisition_framework_start_date",
+    ],
 }
+
 
 @pytest.mark.usefixtures("client_class")
 class TestGnMeta:
@@ -74,10 +81,7 @@ class TestGnMeta:
         token = get_token(self.client, login="admin", password="admin")
         self.client.set_cookie("/", "token", token)
 
-        response = self.client.get(
-            url_for("gn_meta.get_datasets"),
-            query_string={"depth":1}
-        )
+        response = self.client.get(url_for("gn_meta.get_datasets"), query_string={"depth": 1})
 
         # check fields for mobile
         data = json_of_response(response)
@@ -132,9 +136,7 @@ class TestGnMeta:
         """
         token = get_token(self.client, login="partenaire", password="admin")
         self.client.set_cookie("/", "token", token)
-        response = self.client.get(
-            url_for("gn_meta.get_datasets")
-        )
+        response = self.client.get(url_for("gn_meta.get_datasets"))
         dataset_list = json_of_response(response)
         assert (
             response.status_code == 200
@@ -176,7 +178,9 @@ class TestGnMeta:
             "terrestrial_domain": True,
             "validable": True,
             # meta_dates must be ignored NEVER post !
-            "modules": [{"id_module": 1, "meta_create_date": "fake_date", "meta_update_date": "fake_date"}],
+            "modules": [
+                {"id_module": 1, "meta_create_date": "fake_date", "meta_update_date": "fake_date"}
+            ],
         }
         response = post_json(self.client, url_for("gn_meta.create_dataset"), json_dict=one_dataset)
         assert response.status_code == 200
@@ -197,15 +201,22 @@ class TestGnMeta:
             cor.pop("nomenclature_actor_role")
         # ajout d'un acteur
         fetched_dataset["cor_dataset_actor"].append(
-            {"id_cda": None, "id_nomenclature_actor_role": 359, "id_organism": 1, "id_role": None,}
+            {
+                "id_cda": None,
+                "id_nomenclature_actor_role": 359,
+                "id_organism": 1,
+                "id_role": None,
+            }
         )
         # modification du nom
         fetched_dataset["dataset_name"] = "new_name"
         response = post_json(
-            self.client, url_for("gn_meta.update_dataset", id_dataset=fetched_dataset["id_dataset"]), json_dict=fetched_dataset
+            self.client,
+            url_for("gn_meta.update_dataset", id_dataset=fetched_dataset["id_dataset"]),
+            json_dict=fetched_dataset,
         )
         updated_dataset = json_of_response(response)
-        assert  len(updated_dataset["modules"]) == 0
+        assert len(updated_dataset["modules"]) == 0
 
         assert len(updated_dataset["cor_dataset_actor"]) == 2
         assert updated_dataset["dataset_name"] == "new_name"
@@ -250,18 +261,14 @@ class TestGnMeta:
     def test_get_af_list(self):
         token = get_token(self.client, login="admin", password="admin")
         self.client.set_cookie("/", "token", token)
-        query_string = {
-            "nested": "true",
-            "excluded_fields": "creator"
-        }
+        query_string = {"nested": "true", "excluded_fields": "creator"}
         response = self.client.get(
-            url_for("gn_meta.get_acquisition_frameworks_list"),
-            query_string=query_string
+            url_for("gn_meta.get_acquisition_frameworks_list"), query_string=query_string
         )
         assert response.status_code == 200
         afs = response.get_json()
         af = afs[0]
-        assert "creator" not in af 
+        assert "creator" not in af
         assert "nomenclature_financing_type" in af
 
     def test_get_afs(self):

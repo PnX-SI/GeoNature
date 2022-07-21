@@ -1,5 +1,5 @@
 """
-Modèles du schema gn_permissions
+Models of gn_permissions schema
 """
 import enum
 
@@ -10,7 +10,7 @@ from sqlalchemy.dialects.postgresql import JSONB, UUID
 from utils_flask_sqla.serializers import serializable
 from pypnusershub.db.models import User
 
-from geonature.core.gn_commons.models import TModules
+from geonature.core.gn_commons.models.base import TModules
 from geonature.utils.env import DB, db
 
 
@@ -71,6 +71,16 @@ class FilterValueFormats(str, enum.Enum):
     geometry: str = "geometry"
     csvint: str = "csvint"
 
+#TODO check merge if TFilters still used else remove
+@serializable
+class TFilters(DB.Model):
+    __tablename__ = "t_filters"
+    __table_args__ = {"schema": "gn_permissions"}
+    id_filter = DB.Column(DB.Integer, primary_key=True)
+    value_filter = DB.Column(DB.Unicode)
+    label_filter = DB.Column(DB.Unicode)
+    description_filter = DB.Column(DB.Unicode)
+    id_filter_type = DB.Column(DB.Integer)
 
 @serializable
 class BibFiltersValues(DB.Model):
@@ -95,6 +105,27 @@ class TActions(DB.Model):
     description_action = DB.Column(DB.Unicode)
 
 
+cor_object_module = DB.Table(
+    "cor_object_module",
+    DB.Column(
+        "id_cor_object_module",
+        DB.Integer,
+        primary_key=True,
+    ),
+    DB.Column(
+        "id_object",
+        DB.Integer,
+        ForeignKey("gn_permissions.t_objects.id_object"),
+    ),
+    DB.Column(
+        "id_module",
+        DB.Integer,
+        ForeignKey("gn_commons.t_modules.id_module"),
+    ),
+    schema="gn_permissions",
+)
+
+
 @serializable
 class TObjects(DB.Model):
     __tablename__ = "t_objects"
@@ -105,6 +136,7 @@ class TObjects(DB.Model):
 
     def __str__(self):
         return f"{self.code_object} ({self.description_object})"
+
 
 @serializable
 class CorRoleActionFilterModuleObject(DB.Model):
@@ -157,6 +189,8 @@ class CorRoleActionFilterModuleObject(DB.Model):
         primaryjoin=(BibFiltersType.id_filter_type == id_filter_type),
         foreign_keys=[id_filter_type],
     )
+    module = DB.relationship("TModules")
+    object = DB.relationship("TObjects")
 
     def is_already_exist(self):
         """ Retourne la première permission trouvée correspondant à l'objet courant.
@@ -186,6 +220,15 @@ class CorRoleActionFilterModuleObject(DB.Model):
             .first()
         )
 
+    def __str__(self):
+        return (
+            f"Permission("
+            f"id_role={self.id_role},"
+            f"action={self.action},"
+            f"filter={self.filter},"
+            f"module={self.module},"
+            f"object={self.object})"
+        )
 
 class RequestStates(str, enum.Enum):
     pending: str = "pending"

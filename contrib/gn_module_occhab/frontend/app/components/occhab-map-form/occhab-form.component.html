@@ -1,4 +1,4 @@
-<div class="row row-0">
+<div class="row row-0" data-qa="pnx-occhab-form">
   <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6 padding-sm">
     <!-- HABITAT ALREADY SAVED -->
     <div
@@ -146,6 +146,7 @@
                   label="{{ 'MetaData.Datasets' | translate }}"
                   [parentFormControl]="occHabForm.stationForm.get('id_dataset')"
                   moduleCode="OCCHAB"
+                  data-qa="pnx-occhab-form-dataset"
                 >
                 </pnx-datasets>
               </ng-template>
@@ -156,7 +157,7 @@
             <div class="row row-0">
               <div
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
-                *ngIf="moduleConfig.formConfig.date_min"
+                *ngIf="moduleConfig.formConfig['date_min']"
               >
                 <pnx-date
                   [defaultToday]="true"
@@ -167,7 +168,7 @@
               </div>
               <div
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
-                *ngIf="moduleConfig.formConfig.date_max"
+                *ngIf="moduleConfig.formConfig['date_max']"
               >
                 <pnx-date
                   [defaultToday]="true"
@@ -186,12 +187,11 @@
             </small>
           </div>
 
-
           <div class="form-group">
             <div class="row row-0">
               <div
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
-                *ngIf="moduleConfig.formConfig.altitude_min"
+                *ngIf="moduleConfig.formConfig['altitude_min']"
               >
                 <small for=""> Altitude min</small>
                 <input
@@ -202,7 +202,7 @@
               </div>
               <div
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
-                *ngIf="moduleConfig.formConfig.altitude_max"
+                *ngIf="moduleConfig.formConfig['altitude_max']"
               >
                 <small for=""> Altitude max</small>
                 <input
@@ -212,7 +212,7 @@
                 >
               </div>
               <button
-                *ngIf="!showDepth && (moduleConfig.formConfig.depth_min || moduleConfig.formConfig.depth_max)"
+                *ngIf="!showDepth && (moduleConfig.formConfig['depth_min'] || moduleConfig.formConfig['depth_max'])"
                 (click)="toggleDepth()"
                 class="btn btn-sm btn-outline-shadow depth-button"
                 data-toggle="collapse"
@@ -252,7 +252,7 @@
             <div class="row row-0">
               <div
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
-                *ngIf="moduleConfig.formConfig.depth_min"
+                *ngIf="moduleConfig.formConfig['depth_min']"
               >
                 <small for=""> Profondeur min</small>
                 <input
@@ -263,7 +263,7 @@
               </div>
               <div
                 class="col-xs-3 col-sm-3 col-md-3 col-lg-3 padding-sm"
-                *ngIf="moduleConfig.formConfig.depth_max"
+                *ngIf="moduleConfig.formConfig['depth_max']"
               >
                 <small for=""> Profondeur max</small>
                 <input
@@ -275,9 +275,8 @@
             </div>
           </div>
 
-
           <pnx-dumb-select
-            *ngIf="moduleConfig.formConfig.exposure"
+            *ngIf="moduleConfig.formConfig['exposure']"
             label="Exposition"
             [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_exposure')"
             [items]="storeService.nomenclatureItems.EXPOSITION"
@@ -290,7 +289,7 @@
           <div class="row row-0">
             <div
               class="col padding-sm"
-              *ngIf="moduleConfig.formConfig.area"
+              *ngIf="moduleConfig.formConfig['area']"
             >
               <small> Surface (en m²)</small>
               <input
@@ -302,7 +301,7 @@
 
             <div class="col padding-sm">
               <pnx-dumb-select
-                *ngIf="moduleConfig.formConfig.area_surface_calculation"
+                *ngIf="moduleConfig.formConfig['area_surface_calculation']"
                 label="Méthode de calcul de la surface"
                 [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_area_surface_calculation')"
                 [items]="storeService.nomenclatureItems.METHOD_CALCUL_SURFACE"
@@ -313,16 +312,18 @@
               </pnx-dumb-select>
             </div>
           </div>
+
           <div class="row row-0">
             <div class="form-group col-6 padding-sm">
               <pnx-dumb-select
-                *ngIf="moduleConfig.formConfig.geographic_object"
+                *ngIf="moduleConfig.formConfig['geographic_object']"
                 label="Nature objet géographique"
                 [parentFormControl]="occHabForm.stationForm.get('id_nomenclature_geographic_object')"
                 [items]="storeService.nomenclatureItems.NAT_OBJ_GEO"
                 comparedKey="id_nomenclature"
                 titleKey="definition_fr"
                 displayedKey="label_fr"
+                data-qa="pnx-occhab-form-geographic"
               >
               </pnx-dumb-select>
             </div>
@@ -330,7 +331,7 @@
 
           <div
             class="row row-0"
-            *ngIf="moduleConfig.formConfig.comment"
+            *ngIf="moduleConfig.formConfig['comment']"
           >
             <div class="form-group col-6 padding-sm">
               <textarea
@@ -342,7 +343,6 @@
             </div>
 
           </div>
-
 
         </div>
       </div>
@@ -460,7 +460,7 @@
               </div>
               <div class="col-6 padding-sm">
                 <pnx-dumb-select
-                  *ngIf="moduleConfig.formConfig.community_interest"
+                  *ngIf="moduleConfig.formConfig['community_interest']"
                   label="Habitat d'interet communautaire"
                   [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('id_nomenclature_community_interest')"
                   [items]="storeService.nomenclatureItems.HAB_INTERET_COM"
@@ -478,7 +478,7 @@
             <div class="form-row">
               <div
                 class="col"
-                *ngIf="moduleConfig.formConfig.determiner"
+                *ngIf="moduleConfig.formConfig['determiner']"
               >
                 <small> Déterminateur</small>
                 <input
@@ -490,7 +490,7 @@
               </div>
               <div
                 class="col"
-                *ngIf="moduleConfig.formConfig.determination_type"
+                *ngIf="moduleConfig.formConfig['determination_type']"
               >
                 <pnx-dumb-select
                   label="Type de détermination"
@@ -506,20 +506,21 @@
 
 
             <pnx-dumb-select
-              *ngIf="moduleConfig.formConfig.collection_technique"
+              *ngIf="moduleConfig.formConfig['collection_technique']"
               label="Technique de collecte"
               [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('id_nomenclature_collection_technique')"
               [items]="storeService.nomenclatureItems.TECHNIQUE_COLLECT_HAB"
               comparedKey="id_nomenclature"
               titleKey="definition_fr"
               displayedKey="label_fr"
+              data-qa="pnx-occhab-form-technique-collect"
             >
             </pnx-dumb-select>
 
 
             <div class="form-group">
               <input
-                *ngIf="moduleConfig.formConfig.technical_precision"
+                *ngIf="moduleConfig.formConfig['technical_precision']"
                 type="text"
                 class="form-control form-control-sm"
                 placeholder="Précision sur la technique de collecte"
@@ -538,7 +539,7 @@
 
             <div
               class="form-group"
-              *ngIf="moduleConfig.formConfig.recovery_percentage"
+              *ngIf="moduleConfig.formConfig['recovery_percentage']"
             >
               <small> Pourcentage de recouvrement</small>
               <input
@@ -550,7 +551,7 @@
             </div>
 
             <pnx-dumb-select
-              *ngIf="moduleConfig.formConfig.abundance"
+              *ngIf="moduleConfig.formConfig['abundance']"
               label="Abondance"
               [parentFormControl]="occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].get('id_nomenclature_abundance')"
               [items]="storeService.nomenclatureItems.ABONDANCE_HAB"
@@ -573,6 +574,7 @@
               [disabled]="
           occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm]
           && occHabForm.stationForm.get('t_habitats').controls[occHabForm.currentEditingHabForm].invalid"
+              data-qa="pnx-occhab-form-valid-button"
             >
               Valider cet habitat
               <mat-icon>done</mat-icon>

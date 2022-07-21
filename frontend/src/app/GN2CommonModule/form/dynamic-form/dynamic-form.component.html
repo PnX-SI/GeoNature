@@ -1,22 +1,26 @@
-<div [style.display]="formDefComp.hidden ? 'none': 'inherit'">
-  <div *ngIf="(formDefComp.type_widget == 'checkbox' && formDefComp.values.length > 1)
-      || [
-      'text',
-      'textarea',
-      'radio',
-      'select',
-      'time',
-      'number',
-      'file',
-      'medias',
-      'bool_radio'
-      ].includes(formDefComp.type_widget)">
-    <small [attr.for]="formDefComp.attribut_name">
-      {{formDefComp.attribut_label}}
+<div [style.display]="formDefComp['hidden'] ? 'none' : 'inherit'">
+  <div
+    *ngIf="
+      (formDefComp['type_widget'] == 'checkbox' && formDefComp['values'].length > 1) ||
+      [
+        'text',
+        'textarea',
+        'radio',
+        'select',
+        'time',
+        'number',
+        'file',
+        'medias',
+        'bool_radio'
+      ].includes(formDefComp['type_widget'])
+    "
+  >
+    <small [attr.for]="formDefComp['attribut_name']">
+      {{ formDefComp['attribut_label'] }}
     </small>
     <mat-icon
-      *ngIf="formDefComp.definition && !formDefComp.link_definition"
-      [matTooltip]="formDefComp.definition"
+      *ngIf="formDefComp['definition'] && !formDefComp['link_definition']"
+      [matTooltip]="formDefComp['definition']"
       matTooltipClass="form-tooltip"
       class="small-icon"
       matSuffix
@@ -25,89 +29,91 @@
     </mat-icon>
 
     <!-- Ajout d'un bouton lien externe -->
-    <a *ngIf="formDefComp.link_definition && formDefComp.definition" target="_blank" class="link-media" [href]="formDefComp.link_definition"
-      ><mat-icon [matTooltip]="formDefComp.definition" matTooltipClass="form-tooltip">info</mat-icon>
+    <a
+      *ngIf="formDefComp['link_definition'] && formDefComp['definition']"
+      target="_blank"
+      class="link-media"
+      [href]="formDefComp.link_definition"
+      ><mat-icon [matTooltip]="formDefComp['definition']" matTooltipClass="form-tooltip"
+        >info</mat-icon
+      >
     </a>
   </div>
-  <div [ngSwitch]="formDefComp.type_widget">
-
+  <div [ngSwitch]="formDefComp['type_widget']">
     <input
       *ngSwitchCase="'text'"
       class="form-control form-control-sm"
-      [formControl]="form.get(formDefComp.attribut_name)"
-      id="{{formDefComp.attribut_name}}_{{rand}}"
+      [formControl]="form.get(formDefComp['attribut_name'])"
+      id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
       type="text"
-    >
+    />
     <div
-      *ngIf="formDefComp.type_widget=='text' && form.get(formDefComp.attribut_name).errors?.pattern"
-    ><small class="text-danger">{{formDefComp.pattern_message}}</small></div>
+      *ngIf="
+        formDefComp['type_widget'] == 'text' &&
+        form.get(formDefComp['attribut_name']).errors?.pattern
+      "
+    >
+      <small class="text-danger">{{ formDefComp['pattern_message'] }}</small>
+    </div>
 
     <input
       *ngSwitchCase="'time'"
       class="form-control form-control-sm"
-      [formControl]="form.get(formDefComp.attribut_name)"
-      id="{{formDefComp.attribut_name}}_{{rand}}"
+      [formControl]="form.get(formDefComp['attribut_name'])"
+      id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
       type="time"
-    >
+    />
 
     <input
       *ngSwitchCase="'number'"
       class="form-control form-control-sm"
-      [formControl]="form.get(formDefComp.attribut_name)"
-      id="{{formDefComp.attribut_name}}_{{rand}}"
+      [formControl]="form.get(formDefComp['attribut_name'])"
+      id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
       type="number"
-      min="{{formDefComp.min}}"
-      max="{{formDefComp.max}}"
-    >
+      min="{{ formDefComp['min'] }}"
+      max="{{ formDefComp['max'] }}"
+    />
 
     <textarea
       *ngSwitchCase="'textarea'"
       class="form-control form-control-sm"
-      [formControl]="form.get(formDefComp.attribut_name)"
-      id="{{formDefComp.attribut_name}}_{{rand}}"
+      [formControl]="form.get(formDefComp['attribut_name'])"
+      id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
       type="textarea"
-      rows="{{formDefComp.rows}}"
+      rows="{{ formDefComp['rows'] }}"
     >
     </textarea>
 
-    <select
-      *ngSwitchCase="'select'"
-      class="form-control form-control-sm"
-      id="{{formDefComp.attribut_name}}_{{rand}}"
-      [formControl]="form.get(formDefComp.attribut_name)"
-    >
-      <option
-        [ngValue]="null"
-        *ngIf="!formDefComp.noNullOption"
+    <span *ngSwitchCase="'select'">
+      <select
+        *ngIf="isValInSelectList; else selectElseBlock"
+        class="form-control form-control-sm"
+        id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
+        [formControl]="form.get(formDefComp['attribut_name'])"
       >
-        -
-      </option>
-      <option
-        *ngFor="let val of formDefComp.values"
-        [value]="val"
-      >
-        {{val}}
-      </option>
-    </select>
+        <option [ngValue]="null" *ngIf="!formDefComp['noNullOption']">-</option>
+        <option *ngFor="let val of formDefComp['values']" [value]="val">
+          {{ val }}
+        </option>
+      </select>
 
-    <div
-      *ngSwitchCase="'file'"
-      class="input-group"
-    >
+      <ng-template #selectElseBlock>
+        <input type="text" disabled [value]="form.get(formDefComp['attribut_name'])?.value" />
+      </ng-template>
+    </span>
+
+    <div *ngSwitchCase="'file'" class="input-group">
       <div class="custom-file">
         <input
           type="file"
           class="custom-file-input"
-          id="inputGroupFile01_{{rand}}"
+          id="inputGroupFile01_{{ rand }}"
           aria-describedby="inputGroupFileAddon01"
-          [accept]="formDefComp.accept"
+          [accept]="formDefComp['accept']"
           (change)="onFileChange($event)"
-        >
-        <label
-          class="custom-file-label"
-          for="inputGroupFile01"
-        >
-          {{form.get(formDefComp.attribut_name).value?.name || 'Choisir un fichier' }}
+        />
+        <label class="custom-file-label" for="inputGroupFile01">
+          {{ form.get(formDefComp['attribut_name']).value?.name || 'Choisir un fichier' }}
         </label>
       </div>
     </div>
@@ -115,43 +121,36 @@
     <div *ngSwitchCase="'checkbox'">
       <div
         class="custom-control custom-checkbox"
-        *ngIf="formDefComp.values.length == 1; else elseBlock"
-        [ngClass]="{'ng-invalid': form.get(formDefComp.attribut_name).invalid}"
+        *ngIf="formDefComp['values'].length == 1; else elseBlock"
+        [ngClass]="{ 'ng-invalid': form.get(formDefComp['attribut_name']).invalid }"
       >
         <input
           type="checkbox"
-          id="{{formDefComp.attribut_name}}_{{rand}}"
+          id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
           class="custom-control-input"
-          [name]="formDefComp.attribut_name"
-          [value]="formDefComp.values[0]"
-          (change)="onCheckChange($event, form.get(formDefComp.attribut_name))"
-        >
-        <label
-          class="custom-control-label"
-          for="{{formDefComp.attribut_name}}_{{rand}}"
-        >
-          <span [innerHTML]="formDefComp.attribut_label"> </span>
+          [name]="formDefComp['attribut_name']"
+          [value]="formDefComp['values'][0]"
+          (change)="onCheckChange($event, form.get(formDefComp['attribut_name']))"
+        />
+        <label class="custom-control-label" for="{{ formDefComp['attribut_name'] }}_{{ rand }}">
+          <span [innerHTML]="formDefComp['attribut_label']"> </span>
         </label>
       </div>
       <ng-template #elseBlock>
         <div
-          *ngFor="let val of formDefComp.values; let index=index"
+          *ngFor="let val of formDefComp['values']; let index = index"
           class="custom-control custom-checkbox"
-          [ngClass]="{'ng-invalid': form.get(formDefComp.attribut_name).invalid}"
-
+          [ngClass]="{ 'ng-invalid': form.get(formDefComp['attribut_name']).invalid }"
         >
           <input
             class="custom-control-input"
             type="checkbox"
-            id="{{val}}_{{rand}}"
-            [name]="formDefComp.attribut_name"
+            id="{{ val }}_{{ rand }}"
+            [name]="formDefComp['attribut_name']"
             [value]="val"
-            (change)="onCheckChange($event, form.get(formDefComp.attribut_name))"
-          >
-          <label
-            for="{{val}}_{{rand}}"
-            class="custom-control-label"
-          >
+            (change)="onCheckChange($event, form.get(formDefComp['attribut_name']))"
+          />
+          <label for="{{ val }}_{{ rand }}" class="custom-control-label">
             <span [innerHTML]="val"></span>
           </label>
         </div>
@@ -162,14 +161,14 @@
       <input
         class="bool-checkbox"
         type="checkbox"
-        id="{{ formDefComp.attribut_name }}"
-        [name]="formDefComp.attribut_name"
-        [formControl]="form.get(formDefComp.attribut_name)"
-      >
-      <span> {{formDefComp.attribut_label}} </span>
+        id="{{ formDefComp['attribut_name'] }}"
+        [name]="formDefComp['attribut_name']"
+        [formControl]="form.get(formDefComp['attribut_name'])"
+      />
+      <span> {{ formDefComp['attribut_label'] }} </span>
       <mat-icon
-        *ngIf="formDefComp.definition"
-        [matTooltip]="formDefComp.definition"
+        *ngIf="formDefComp['definition']"
+        [matTooltip]="formDefComp['definition']"
         matTooltipClass="form-tooltip"
         class="small-icon"
         matSuffix
@@ -180,22 +179,22 @@
 
     <div *ngSwitchCase="'radio'">
       <div
-        *ngFor="let val of formDefComp.values"
+        *ngFor="let val of formDefComp['values']"
         class="custom-control custom-radio"
-        [ngClass]="{'ng-invalid': form.get(formDefComp.attribut_name).invalid}"
+        [ngClass]="{ 'ng-invalid': form.get(formDefComp['attribut_name']).invalid }"
       >
         <input
           type="radio"
-          id="{{formDefComp.attribut_name}}_{{rand}}_{{val}}"
-          (click)="onRadioChange(val, form.get(formDefComp.attribut_name))"
+          id="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ val }}"
+          (click)="onRadioChange(val, form.get(formDefComp['attribut_name']))"
           class="custom-control-input"
-          name="{{formDefComp.attribut_name}}_{{rand}}_{{val}}"
+          name="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ val }}"
           [value]="val"
-          [formControl]="form.get(formDefComp.attribut_name)"
-        >
+          [formControl]="form.get(formDefComp['attribut_name'])"
+        />
         <label
           class="custom-control-label"
-          for="{{formDefComp.attribut_name}}_{{rand}}_{{val}}"
+          for="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ val }}"
         >
           <span [innerHTML]="val"></span>
         </label>
@@ -205,21 +204,21 @@
     <div *ngSwitchCase="'bool_radio'">
       <div
         class="custom-control custom-radio"
-        *ngFor="let val of formDefComp.values; index as i"
-        [ngClass]="{'ng-invalid': form.get(formDefComp.attribut_name).invalid}"
+        *ngFor="let val of formDefComp['values']; index as i"
+        [ngClass]="{ 'ng-invalid': form.get(formDefComp['attribut_name']).invalid }"
       >
         <input
           type="radio"
-          id="{{formDefComp.attribut_name}}_{{rand}}_{{i}}"
+          id="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ i }}"
           class="custom-control-input"
-          (click)="onRadioChange(i==0, form.get(formDefComp.attribut_name))"
-          name="{{formDefComp.attribut_name}}_{{rand}}_{{i}}"
-          [value]="i==0"
-          [formControl]="form.get(formDefComp.attribut_name)"
-        >
+          (click)="onRadioChange(i == 0, form.get(formDefComp['attribut_name']))"
+          name="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ i }}"
+          [value]="i == 0"
+          [formControl]="form.get(formDefComp['attribut_name'])"
+        />
         <label
           class="custom-control-label"
-          for="{{formDefComp.attribut_name}}_{{rand}}_{{i}}"
+          for="{{ formDefComp['attribut_name'] }}_{{ rand }}_{{ i }}"
         >
           <span [innerHTML]="val"></span>
         </label>
@@ -228,40 +227,42 @@
 
     <div
       *ngSwitchCase="'html'"
-      id="{{ formDefComp.attribut_name }}_{{ rand }}"
-      class="{{ formDefComp.class }}"
-      [innerHTML]="formDefComp.html | safeHTML"
-    >
-    </div>
+      id="{{ formDefComp['attribut_name'] }}_{{ rand }}"
+      class="{{ formDefComp['class'] }}"
+      [innerHTML]="formDefComp['html'] | safeHTML"
+    ></div>
 
     <div>
       <pnx-medias
         *ngSwitchCase="'medias'"
-        [schemaDotTable]="formDefComp.schema_dot_table"
-        [parentFormControl]="form.get(formDefComp.attribut_name)"
+        [schemaDotTable]="formDefComp['schema_dot_table']"
+        [parentFormControl]="form.get(formDefComp['attribut_name'])"
         [sizeMax]="appConfig.MEDIAS.MEDIAS_SIZE_MAX"
-        [default]="formDefComp.default || {}"
-        [details]="formDefComp.details"
-        [hideDetailsFields]="formDefComp.hide_details_fields"
+        [default]="formDefComp['default'] || {}"
+        [details]="formDefComp['details']"
+        [hideDetailsFields]="formDefComp['hide_details_fields']"
       >
       </pnx-medias>
     </div>
 
     <pnx-nomenclature
       *ngSwitchCase="'nomenclature'"
-      [label]="formDefComp.attribut_label"
-      [parentFormControl]="form.get(formDefComp.attribut_name)"
-      [codeNomenclatureType]="formDefComp.code_nomenclature_type"
-      [multiSelect]="formDefComp.multi_select"
-      [keyValue]="formDefComp.key_value"
+      [label]="formDefComp['attribut_label']"
+      [parentFormControl]="form.get(formDefComp['attribut_name'])"
+      [codeNomenclatureType]="formDefComp['code_nomenclature_type']"
+      [multiSelect]="formDefComp['multi_select']"
+      [keyValue]="formDefComp['key_value']"
+      [cdNomenclatures]="formDefComp['cd_nomenclatures']"
+      [regne]="formDefComp['regne']"
+      [group2Inpn]="formDefComp['group2Inpn']"
     >
     </pnx-nomenclature>
 
     <pnx-taxonomy
       *ngSwitchCase="'taxonomy'"
-      [label]="formDefComp.attribut_label"
-      [parentFormControl]="form.get(formDefComp.attribut_name)"
-      [idList]="formDefComp.id_list"
+      [label]="formDefComp['attribut_label']"
+      [parentFormControl]="form.get(formDefComp['attribut_name'])"
+      [idList]="formDefComp['id_list']"
       [charNumber]="3"
       [listLength]="20"
     >
@@ -278,18 +279,18 @@
 
     <pnx-observers
       *ngSwitchCase="'observers'"
-      [label]="formDefComp.attribut_label"
-      [parentFormControl]="form.get(formDefComp.attribut_name)"
-      [idMenu]="formDefComp.id_menu"
-      [idList]="formDefComp.id_list"
-      [codeList]="formDefComp.code_list"
+      [label]="formDefComp['attribut_label']"
+      [parentFormControl]="form.get(formDefComp['attribut_name'])"
+      [idMenu]="formDefComp['id_menu']"
+      [idList]="formDefComp['id_list']"
+      [codeList]="formDefComp['code_list']"
     >
     </pnx-observers>
 
     <pnx-date
       *ngSwitchCase="'date'"
-      [label]="formDefComp.attribut_label"
-      [parentFormControl]="form.get(formDefComp.attribut_name)"
+      [label]="formDefComp['attribut_label']"
+      [parentFormControl]="form.get(formDefComp['attribut_name'])"
     >
     </pnx-date>
 
@@ -304,42 +305,43 @@
 
     <pnx-municipalities
       *ngSwitchCase="'municipalities'"
-      [label]="formDefComp.attribut_label"
-      [parentFormControl]="form.get(formDefComp.attribut_name)"
-      [valueFieldName]="formDefComp.value_field_name"
+      [label]="formDefComp['attribut_label']"
+      [parentFormControl]="form.get(formDefComp['attribut_name'])"
+      [valueFieldName]="formDefComp['value_field_name']"
     >
     </pnx-municipalities>
 
     <pnx-multiselect
       *ngSwitchCase="'multiselect'"
-      [values]="formDefComp.values"
-      [parentFormControl]="form.get(formDefComp.attribut_name)"
+      [values]="formDefComp['values']"
+      [parentFormControl]="form.get(formDefComp['attribut_name'])"
       keyLabel="value"
       keyValue="value"
-      [label]="formDefComp.attribut_label"
+      [label]="formDefComp['attribut_label']"
       [searchBar]="false"
-      [disabled]="form.get(formDefComp.attribut_name)?.disabled"
+      [disabled]="form.get(formDefComp['attribut_name'])?.disabled"
     >
     </pnx-multiselect>
     <pnx-datalist
       *ngSwitchCase="'datalist'"
-      [parentFormControl]="form.get(formDefComp.attribut_name)"
-      [application]="formDefComp.application"
-      [values]="formDefComp.values"
-      [api]="formDefComp.api"
-      [values]="formDefComp.values"
-      [keyValue]="formDefComp.keyValue || 'value'"
-      [keyLabel]="formDefComp.keyLabel || 'label'"
-      [multiple]="formDefComp.multiple"
-      [dataPath]="formDefComp.data_path"
-      [label]="formDefComp.attribut_label"
-      [required]="formDefComp.required"
-      [params]="formDefComp.params"
-      [definition]="formDefComp.definition"
-      [filters]="formDefComp.filters"
-      [default]="formDefComp.default"
+      [parentFormControl]="form.get(formDefComp['attribut_name'])"
+      [application]="formDefComp['application']"
+      [values]="formDefComp['values']"
+      [api]="formDefComp['api']"
+      [values]="formDefComp['values']"
+      [keyValue]="formDefComp['keyValue'] || 'value'"
+      [keyLabel]="formDefComp['keyLabel'] || 'label'"
+      [keyTitle]="formDefComp['keyTitle']"
+      [multiple]="formDefComp['multiple']"
+      [dataPath]="formDefComp['data_path']"
+      [label]="formDefComp['attribut_label']"
+      [required]="formDefComp['required']"
+      [params]="formDefComp['params']"
+      [definition]="formDefComp['definition']"
+      [filters]="formDefComp['filters']"
+      [default]="formDefComp['default']"
     ></pnx-datalist>
 
-    <small class="form-text text-muted">{{formDefComp.help}}</small>
+    <small class="form-text text-muted">{{ formDefComp['help'] }}</small>
   </div>
 </div>
