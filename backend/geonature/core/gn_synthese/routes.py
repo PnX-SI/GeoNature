@@ -215,7 +215,7 @@ def get_observations_for_web(auth, permissions):
                 properties=properties,
             )
         )
-    return jsonify(FeatureCollection(geojson_features))
+    return FeatureCollection(geojson_features)
 
 
 @routes.route("", methods=["GET"])

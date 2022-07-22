@@ -95,7 +95,7 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
   areas_input$ = new Subject<string>();
   areas: Observable<any>;
   loading = false;
-  private defaultItems = [];
+  // private defaultItems = [];
 
   constructor(private dataService: DataFormService) {
     super();

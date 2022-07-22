@@ -11,6 +11,7 @@ import {
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
+import { CommonService } from '@geonature_common/service/common.service';
 
 
 /**
@@ -48,7 +49,7 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
   templateUrl: 'taxa.component.html',
 })
 export class TaxaComponent extends GenericFormComponent implements OnInit {
-  taxa: Observable<any>;
+  public taxa: any;
   /**
    * Rang minimum des noms recherchés.
    * Utiliser une valeur du champ "`id_rang`" de la table "`bib_taxref_rangs`".
@@ -116,7 +117,7 @@ export class TaxaComponent extends GenericFormComponent implements OnInit {
       )
     );
   }
-   *
+   /*
    * La liste de noms est réinitialisée quand un nom est sélectionné ou
    * la zone de recherche vidée.
    *

@@ -10,7 +10,7 @@
           class="card"
           *ngIf="
             _cruvedStore.cruved?.ADMIN?.module_objects.NOMENCLATURES &&
-            adminStoreService?.moduleCruved?.module_objects?.NOMENCLATURES?.cruved?.C != '0'
+            _cruvedStore.cruved?.ADMIN?.module_objects.NOMENCLATURES?.cruved?.C != '0'
           "
         >
           <div class="card-header d-inline-flex align-items-center">
@@ -41,7 +41,7 @@
           class="card"
           *ngIf="
             _cruvedStore.cruved?.ADMIN?.module_objects?.PERMISSIONS &&
-            adminStoreService?.moduleCruved?.module_objects?.PERMISSIONS?.cruved?.C != '0'
+            _cruvedStore.cruved?.ADMIN?.module_objects?.PERMISSIONS?.cruved?.C != '0'
           "
         >
           <div class="card-header d-inline-flex align-items-center">
@@ -71,7 +71,7 @@
           class="card"
           *ngIf="
             _cruvedStore.cruved?.ADMIN?.module_objects?.PERMISSIONS &&
-            adminStoreService?.moduleCruved?.module_objects?.PERMISSIONS?.cruved?.C != '0' &&
+            _cruvedStore.cruved?.ADMIN?.module_objects?.PERMISSIONS?.cruved?.C != '0' &&
             ENABLED_ACCESS_REQUEST
           "
         >

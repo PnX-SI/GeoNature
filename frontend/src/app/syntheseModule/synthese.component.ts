@@ -61,8 +61,8 @@ export class SyntheseComponent implements OnInit {
           "features": geojsonlist
         }
         this._mapListService.geojsonData = geoJsonData;
-        this._mapListService.tableData = result['data'];
-        this._mapListService.loadTableData(result['data']);
+        this._mapListService.tableData = data;
+        this._mapListService.loadTableData(data);
         this._mapListService.idName = 'id';
         this.searchService.dataLoaded = true;
         // store the list of id_synthese for exports, make a 1D array

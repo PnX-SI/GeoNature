@@ -23,7 +23,7 @@ from geonature.core.gn_permissions.models import TObjects
 from geonature.utils.env import DB, db, BACKEND_DIR
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required
-from geonature.core.gn_permissions.tools import get_scopes_by_action
+from geonature.core.gn_permissions.tools import get_scopes_by_action, cruved_scope_for_user_in_module
 from shapely.geometry import asShape
 from geoalchemy2.shape import from_shape
 from geonature.utils.errors import (
@@ -32,22 +32,21 @@ from geonature.utils.errors import (
 
 
 routes = Blueprint("gn_commons", __name__)
-
+# from geonature.core.gn
 # import routes sub folder
 from .validation.routes import *
 from .medias.routes import *
 
 
 @routes.route("/modules", methods=["GET"])
-@login_required
-def list_modules():
+@permissions.check_cruved_scope("R", True)
+@json_resp
+def get_modules(info_role):
     """
     Return the allowed modules of user from its cruved
     .. :quickref: Commons;
-
     """
     params = request.args
-    #TODO check merge
     q = DB.session.query(TModules).options(
         joinedload(TModules.available_permissions)
     )
@@ -56,34 +55,47 @@ def list_modules():
     q = q.order_by(TModules.module_order.asc()).order_by(TModules.module_label.asc())
     modules = q.all()
     allowed_modules = []
-    for module in modules:
-        cruved = get_scopes_by_action(module_code=module.module_code)
-        if cruved["R"] > 0:
-            module_dict = module.as_dict(fields=["objects"])
-            module_dict["cruved"] = cruved
-            if module.active_frontend:
-                try:
-                    # try to get module url from conf for new modules
-                    module_url = current_app.config[module.module_code]["MODULE_URL"]
-                except KeyError:
+    for mod in modules:
+        app_cruved = cruved_scope_for_user_in_module(
+            id_role=info_role.id_role, module_code=mod.module_code,
+        )[0]
+        if app_cruved["R"] != "0":
+            module = mod.as_dict(fields=["available_permissions"])
+            module["cruved"] = app_cruved
+            if mod.active_frontend:
+                # try to get module url from conf for new modules
+                if module['module_code'] in current_app.config:
+                    module_url = current_app.config[module['module_code']].get('MODULE_URL', mod.module_path)
+                else:
                     # fallback for legacy modules
-                    module_url = module.module_path
-                module_dict["module_url"] = "{}/#/{}".format(
+                    module_url = mod.module_path
+                module["module_url"] = "{}/#/{}".format(
                     current_app.config["URL_APPLICATION"], module_url
                 )
             else:
-                module_dict["module_url"] = module.module_external_url
-            module_dict["module_objects"] = {}
+                module["module_url"] = mod.module_external_url
+            module_objects_as_dict = {}
+
             # get cruved for each object
-            for obj_dict in module_dict["objects"]:
-                obj_code = obj_dict["code_object"]
-                obj_dict["cruved"] = get_scopes_by_action(
-                    module_code=module.module_code,
-                    object_code=obj_code,
+            objects_list = []
+            if mod.available_permissions:
+                for item in mod.available_permissions:
+                    item = item.cor_object.as_dict()
+                    if item not in objects_list:
+                        objects_list.append(item)
+
+            for _object in objects_list:
+                object_cruved, herited = cruved_scope_for_user_in_module(
+                    id_role=info_role.id_role,
+                    module_code=module["module_code"],
+                    object_code=_object["code_object"],
                 )
-                module_dict["module_objects"][obj_code] = obj_dict
-            allowed_modules.append(module_dict)
-    return jsonify(allowed_modules)
+                _object["cruved"] = object_cruved
+                module_objects_as_dict[_object["code_object"]] = _object
+
+                module["module_objects"] = module_objects_as_dict
+            allowed_modules.append(module)
+    return allowed_modules
 
 
 @routes.route("/module/<module_code>", methods=["GET"])

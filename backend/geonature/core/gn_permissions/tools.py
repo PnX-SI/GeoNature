@@ -1,7 +1,7 @@
 import logging
 import datetime
 
-from flask import current_app
+from flask import current_app, g
 from werkzeug.exceptions import Unauthorized, Forbidden
 from werkzeug.routing import RequestRedirect
 
@@ -359,7 +359,7 @@ def _get_scopes_by_action(id_role, module_code, object_code):
     )
     return {
         action: int(scope)
-        for action, scope in cruved.get_perm_for_all_actions(get_id=False)[0].items()
+        for action, scope in cruved.get_perm_for_all_actions()[0].items()
     }
 
 

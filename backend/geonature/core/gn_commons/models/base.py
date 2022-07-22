@@ -99,9 +99,9 @@ class TModules(DB.Model):
     meta_create_date = DB.Column(DB.DateTime)
     meta_update_date = DB.Column(DB.DateTime)
 
-    objects = DB.relationship(
-        "TObjects", secondary=lambda: _resolve_import_cor_object_module(), backref="modules"
-    )
+    # objects = DB.relationship(
+    #     "TObjects", secondary=lambda: _resolve_import_cor_object_module(), backref="modules"
+    # )
 
     def __str__(self):
         return self.module_label.capitalize()
