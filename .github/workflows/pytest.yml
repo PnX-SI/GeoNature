@@ -99,11 +99,21 @@ jobs:
           geonature db upgrade ref_sensitivity_inpn@head
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
+      - name: Show database status
+        run: |
+          geonature db status --dependencies
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Install core modules
         run: |
           geonature install_packaged_gn_module contrib/occtax OCCTAX --build=false
           geonature install_packaged_gn_module contrib/gn_module_occhab OCCHAB --build=false
           geonature install_packaged_gn_module contrib/gn_module_validation VALIDATION --build=false
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
+      - name: Show database status
+        run: |
+          geonature db status --dependencies
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Test with pytest
