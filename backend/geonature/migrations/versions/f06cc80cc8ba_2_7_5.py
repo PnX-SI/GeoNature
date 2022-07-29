@@ -51,10 +51,9 @@ def upgrade():
 def downgrade():
     op.execute("DROP SCHEMA gn_commons CASCADE")
     op.execute("DROP SCHEMA gn_meta CASCADE")
-    op.execute("DROP SCHEMA ref_geo CASCADE")
     op.execute("DROP SCHEMA gn_imports CASCADE")
     op.execute("DROP SCHEMA gn_synthese CASCADE")
-    op.execute("DROP SCHEMA gn_exports CASCADE")
+    op.execute("DROP SCHEMA IF EXISTS gn_exports CASCADE")
     op.execute("DROP SCHEMA gn_monitoring CASCADE")
     op.execute("DROP SCHEMA gn_permissions CASCADE")
     op.execute("DROP SCHEMA gn_sensitivity CASCADE")
