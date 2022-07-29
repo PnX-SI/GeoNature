@@ -16,22 +16,22 @@ revision = "f06cc80cc8ba"
 down_revision = None
 branch_labels = ("geonature",)
 depends_on = (
-    #'3842a6d800a0',  # sql utils (already covered by other dependencies)
-    "72f227e37bdf",  # utilisateurs schema 1.4.7 + samples data
-    #'f61f95136ec3',  # taxonomie schema 1.8.1 + inpn data (already required by nomenc with taxo)
-    "a763fb554ff2",  # nomenclatures with taxonomie enabled + inpn data
-    "46e91e738845",  # ref_habitats schema 0.1.6 + inpn data
+    # "3842a6d800a0",  # sql utils (already covered by others dependencies)
+    # "fa35dfe5ff27",  # utilisateurs schema (already covered by others dependencies)
+    "72f227e37bdf",  # utilisateurs samples data
+    # "9c2c0254aadc",  # taxonomie schema 1.8.1 (already covered by nomenclatures_taxonomie)
+    # "6015397d686a",  # nomenclatures (already covered by nomenclatures_taxonomie)
+    "f5436084bf17",  # nomenclatures_taxonomie
+    "96a713739fdd",  # nomenclatures_inpn_data
+    "62e63cd6135d",  # ref_habitats schema 0.1.6
     "6afe74833ed0",  # ref_geo
 )
 
 
 def upgrade():
-    bindparams = {}
-    try:
-        bindparams["local_srid"] = context.get_x_argument(as_dictionary=True)["local-srid"]
-    except KeyError:
-        raise Exception("Missing local srid, please use -x local-srid=...")
     conn = op.get_bind()
+    local_srid = conn.execute("SELECT Find_SRID('ref_geo', 'l_areas', 'geom')").scalar()
+    bindparams = {"local_srid": local_srid}
     for path, filename in [
         ("geonature.migrations.data.utilisateurs", "adds_for_usershub.sql"),
         ("geonature.migrations.data.core", "commons.sql"),

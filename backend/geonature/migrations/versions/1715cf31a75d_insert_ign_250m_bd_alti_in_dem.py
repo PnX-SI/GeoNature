@@ -29,14 +29,13 @@ file_name = "BDALTIV2_250M_FXX_0098_7150_MNT_LAMB93_IGN69.asc"
 
 
 def upgrade():
-    try:
-        local_srid = context.get_x_argument(as_dictionary=True)["local-srid"]
-    except KeyError:
-        raise Exception("Missing local srid, please use -x local-srid=...")
+    conn = op.get_bind()
+    local_srid = conn.execute("SELECT Find_SRID('ref_geo', 'l_areas', 'geom')").scalar()
     with TemporaryDirectory() as temp_dir:
         with open_remote_file(base_url, archive_name, open_fct=ZipFile) as archive:
             archive.extract(file_name, path=temp_dir)
         path = os.path.join(temp_dir, file_name)
+        # FIXME data are not imported on alembic transaction…
         cmd = f"raster2pgsql -s {local_srid} -c -C -I -M -d -t 5x5 {path} ref_geo.dem | psql"
         db_uri = urlsplit(config["SQLALCHEMY_DATABASE_URI"])
         env = {
