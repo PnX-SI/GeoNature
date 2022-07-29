@@ -32,5 +32,5 @@ def downgrade():
     op.drop_column(
         schema="gn_synthese",
         table_name="t_sources",
-        column_name="id_source",
+        column_name="id_module",
     )
