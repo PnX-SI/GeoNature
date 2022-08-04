@@ -93,6 +93,8 @@ jobs:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Install database
         run: |
+          geonature db upgrade taxonomie@head -x local-srid=2154  # because of missing dependency
+          geonature db upgrade taxonomie_inpn_data@head
           geonature db upgrade geonature@head -x local-srid=2154
           geonature db autoupgrade -x local-srid=2154
           geonature db upgrade geonature-samples@head

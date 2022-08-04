@@ -7,31 +7,30 @@
 -e file:dependencies/Habref-api-module#egg=pypn_habref_api
     # via -r requirements-submodules.txt
 -e file:dependencies/RefGeo#egg=pypn-ref-geo
-    # via -r requirements-submodules.txt
+    # via
+    #   -r requirements-submodules.txt
+    #   taxhub
 -e file:dependencies/Nomenclature-api-module#egg=pypnnomenclature
     # via -r requirements-submodules.txt
 -e file:dependencies/UsersHub-authentification-module#egg=pypnusershub
-    # via -r requirements-submodules.txt
+    # via
+    #   -r requirements-submodules.txt
+    #   taxhub
 -e file:dependencies/TaxHub#egg=taxhub
     # via -r requirements-submodules.txt
 -e file:dependencies/Utils-Flask-SQLAlchemy#egg=utils-flask-sqlalchemy
     # via
     #   -r requirements-submodules.txt
     #   pypn-habref-api
-    #   pypn-ref-geo
     #   pypnnomenclature
-    #   pypnusershub
     #   taxhub
+    #   utils-flask-sqlalchemy-geo
 -e file:dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo
-    # via
-    #   -r requirements-submodules.txt
-    #   pypn-ref-geo
+    # via -r requirements-submodules.txt
 alembic==1.8.0
     # via
     #   -r requirements-common.txt
     #   flask-migrate
-    #   pypn-ref-geo
-    #   pypnusershub
 amqp==2.6.1
     # via
     #   -r requirements-common.txt
@@ -44,8 +43,6 @@ attrs==21.4.0
     # via
     #   -r requirements-common.txt
     #   fiona
-bcrypt==3.2.2
-    # via pypnusershub
 billiard==3.6.4.0
     # via
     #   -r requirements-common.txt
@@ -79,7 +76,6 @@ certifi==2022.5.18.1
 cffi==1.15.0
     # via
     #   -r requirements-common.txt
-    #   bcrypt
     #   cairocffi
     #   weasyprint
 charset-normalizer==2.0.12
@@ -113,7 +109,9 @@ deprecated==1.2.13
     #   -r requirements-common.txt
     #   redis
 fiona==1.8.21
-    # via -r requirements-common.txt
+    # via
+    #   -r requirements-common.txt
+    #   utils-flask-sqlalchemy-geo
 flask==1.1.4
     # via
     #   -r requirements-common.txt
@@ -127,7 +125,6 @@ flask==1.1.4
     #   flask-wtf
     #   pypn-habref-api
     #   pypnnomenclature
-    #   pypnusershub
     #   taxhub
 flask-admin==1.6.0
     # via pypnnomenclature
@@ -142,7 +139,6 @@ flask-marshmallow==0.14.0
     #   -r requirements-common.txt
     #   pypn-habref-api
     #   pypnnomenclature
-    #   pypnusershub
 flask-migrate==3.1.0
     # via
     #   -r requirements-common.txt
@@ -154,18 +150,22 @@ flask-sqlalchemy==2.5.1
     #   -r requirements-common.txt
     #   flask-migrate
     #   pypn-habref-api
-    #   pypn-ref-geo
     #   pypnnomenclature
-    #   pypnusershub
     #   taxhub
 flask-weasyprint==0.6
     # via -r requirements-common.txt
 flask-wtf==1.0.1
     # via -r requirements-common.txt
+geoalchemy2==0.11.1
+    # via utils-flask-sqlalchemy-geo
 geog==0.0.2
-    # via -r requirements-common.txt
+    # via
+    #   -r requirements-common.txt
+    #   utils-flask-sqlalchemy-geo
 geojson==2.5.0
-    # via -r requirements-common.txt
+    # via
+    #   -r requirements-common.txt
+    #   utils-flask-sqlalchemy-geo
 gunicorn==20.1.0
     # via -r requirements-common.txt
 html5lib==1.1
@@ -179,7 +179,6 @@ itsdangerous==1.1.0
     #   -r requirements-common.txt
     #   flask
     #   flask-wtf
-    #   pypnusershub
 jinja2==2.11.3
     # via
     #   -r requirements-common.txt
@@ -203,7 +202,6 @@ markupsafe==2.0.1
     #   -r requirements-common.txt
     #   jinja2
     #   mako
-    #   pypnusershub
     #   wtforms
 marshmallow==3.16.0
     # via
@@ -216,7 +214,6 @@ marshmallow-sqlalchemy==0.28.0
     #   -r requirements-common.txt
     #   pypn-habref-api
     #   pypnnomenclature
-    #   pypnusershub
     #   taxhub
 munch==2.5.0
     # via
@@ -229,19 +226,20 @@ numpy==1.21.6
 packaging==21.3
     # via
     #   -r requirements-common.txt
+    #   geoalchemy2
     #   marshmallow
     #   redis
 pillow==9.1.1
     # via
     #   -r requirements-common.txt
     #   cairosvg
+    #   taxhub
     #   weasyprint
 psycopg2==2.9.3
     # via
     #   -r requirements-common.txt
     #   pypn-habref-api
     #   pypnnomenclature
-    #   pypnusershub
     #   taxhub
 pycparser==2.21
     # via
@@ -273,13 +271,13 @@ redis==4.3.3
     #   -r requirements-common.txt
     #   celery
 requests==2.27.1
-    # via
-    #   pypn-habref-api
-    #   pypnusershub
+    # via pypn-habref-api
 s3transfer==0.6.0
     # via boto3
 shapely==1.8.2
-    # via -r requirements-common.txt
+    # via
+    #   -r requirements-common.txt
+    #   utils-flask-sqlalchemy-geo
 six==1.16.0
     # via
     #   -r requirements-common.txt
@@ -294,10 +292,10 @@ sqlalchemy==1.3.24
     #   -r requirements-common.txt
     #   alembic
     #   flask-sqlalchemy
+    #   geoalchemy2
     #   marshmallow-sqlalchemy
-    #   pypn-ref-geo
-    #   pypnusershub
     #   taxhub
+    #   utils-flask-sqlalchemy-geo
     #   wtforms-sqlalchemy
 tinycss2==1.1.1
     # via
@@ -311,6 +309,7 @@ urllib3==1.26.9
     # via
     #   botocore
     #   requests
+    #   taxhub
 vine==1.3.0
     # via
     #   -r requirements-common.txt
