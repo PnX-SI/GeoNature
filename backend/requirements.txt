@@ -6,51 +6,35 @@
 #
 alembic==1.8.0
     # via
-    #   -r requirements-common.txt
     #   flask-migrate
     #   pypn-ref-geo
     #   pypnusershub
 amqp==2.6.1
-    # via
-    #   -r requirements-common.txt
-    #   kombu
+    # via kombu
 async-timeout==4.0.2
-    # via
-    #   -r requirements-common.txt
-    #   redis
+    # via redis
 attrs==21.4.0
-    # via
-    #   -r requirements-common.txt
-    #   fiona
+    # via fiona
 bcrypt==3.2.2
     # via pypnusershub
 billiard==3.6.4.0
-    # via
-    #   -r requirements-common.txt
-    #   celery
+    # via celery
 blinker==1.4
-    # via
-    #   -r requirements-common.txt
-    #   flask-mail
+    # via flask-mail
 cairocffi==1.3.0
     # via
-    #   -r requirements-common.txt
     #   cairosvg
     #   weasyprint
 cairosvg==2.5.2
-    # via
-    #   -r requirements-common.txt
-    #   weasyprint
+    # via weasyprint
 celery[redis]==4.4.7
-    # via -r requirements-common.txt
+    # via -r requirements-common.in
 certifi==2022.5.18.1
     # via
-    #   -r requirements-common.txt
     #   fiona
     #   requests
 cffi==1.15.0
     # via
-    #   -r requirements-common.txt
     #   bcrypt
     #   cairocffi
     #   weasyprint
@@ -58,39 +42,30 @@ charset-normalizer==2.0.12
     # via requests
 click==7.1.2
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   click-plugins
     #   cligj
     #   fiona
     #   flask
 click-plugins==1.1.1
-    # via
-    #   -r requirements-common.txt
-    #   fiona
+    # via fiona
 cligj==0.7.2
-    # via
-    #   -r requirements-common.txt
-    #   fiona
+    # via fiona
 cssselect2==0.6.0
     # via
-    #   -r requirements-common.txt
     #   cairosvg
     #   weasyprint
 defusedxml==0.7.1
-    # via
-    #   -r requirements-common.txt
-    #   cairosvg
+    # via cairosvg
 deprecated==1.2.13
-    # via
-    #   -r requirements-common.txt
-    #   redis
+    # via redis
 fiona==1.8.21
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
 flask==1.1.4
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   flask-admin
     #   flask-cors
     #   flask-mail
@@ -108,25 +83,25 @@ flask-admin==1.6.0
     # via pypnnomenclature
 flask-cors==3.0.10
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   taxhub
 flask-mail==0.9.1
-    # via -r requirements-common.txt
+    # via -r requirements-common.in
 flask-marshmallow==0.14.0
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   pypn-habref-api
     #   pypnnomenclature
     #   pypnusershub
 flask-migrate==3.1.0
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   pypn-habref-api
     #   pypnnomenclature
     #   taxhub
 flask-sqlalchemy==2.5.1
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   flask-migrate
     #   pypn-habref-api
     #   pypn-ref-geo
@@ -135,104 +110,87 @@ flask-sqlalchemy==2.5.1
     #   taxhub
     #   utils-flask-sqlalchemy
 flask-weasyprint==0.6
-    # via -r requirements-common.txt
+    # via -r requirements-common.in
 flask-wtf==1.0.1
-    # via -r requirements-common.txt
+    # via -r requirements-common.in
 geoalchemy2==0.11.1
     # via utils-flask-sqlalchemy-geo
 geog==0.0.2
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
 geojson==2.5.0
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
 gunicorn==20.1.0
-    # via -r requirements-common.txt
+    # via -r requirements-common.in
 html5lib==1.1
-    # via
-    #   -r requirements-common.txt
-    #   weasyprint
+    # via weasyprint
 idna==3.3
     # via requests
 itsdangerous==1.1.0
     # via
-    #   -r requirements-common.txt
     #   flask
     #   flask-wtf
 jinja2==2.11.3
-    # via
-    #   -r requirements-common.txt
-    #   flask
+    # via flask
 kombu==4.6.11
-    # via
-    #   -r requirements-common.txt
-    #   celery
+    # via celery
 lxml==4.9.0
-    # via -r requirements-common.txt
+    # via -r requirements-common.in
 mako==1.2.0
-    # via
-    #   -r requirements-common.txt
-    #   alembic
+    # via alembic
 markupsafe==2.0.1
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   jinja2
     #   mako
     #   wtforms
 marshmallow==3.16.0
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   flask-marshmallow
     #   marshmallow-sqlalchemy
     #   pypn-habref-api
     #   utils-flask-sqlalchemy
 marshmallow-sqlalchemy==0.28.0
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   pypn-habref-api
     #   pypnnomenclature
     #   pypnusershub
     #   taxhub
 munch==2.5.0
-    # via
-    #   -r requirements-common.txt
-    #   fiona
+    # via fiona
 numpy==1.21.6
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   geog
 packaging==21.3
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   geoalchemy2
     #   marshmallow
     #   redis
 pillow==9.1.1
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   cairosvg
     #   weasyprint
 psycopg2==2.9.3
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   pypn-habref-api
     #   pypnnomenclature
     #   pypnusershub
     #   taxhub
 pycparser==2.21
-    # via
-    #   -r requirements-common.txt
-    #   cffi
+    # via cffi
 pyparsing==3.0.9
-    # via
-    #   -r requirements-common.txt
-    #   packaging
+    # via packaging
 pyphen==0.12.0
-    # via
-    #   -r requirements-common.txt
-    #   weasyprint
+    # via weasyprint
 pypn-habref-api==0.3.0
     # via -r requirements-dependencies.in
 pypn-ref-geo==1.1.0
@@ -243,7 +201,7 @@ pypnusershub==1.5.9
     # via -r requirements-dependencies.in
 python-dateutil==2.8.2
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   utils-flask-sqlalchemy
 python-dotenv==0.20.0
     # via
@@ -251,24 +209,19 @@ python-dotenv==0.20.0
     #   pypnnomenclature
     #   taxhub
 pytz==2022.1
-    # via
-    #   -r requirements-common.txt
-    #   celery
+    # via celery
 redis==4.3.3
-    # via
-    #   -r requirements-common.txt
-    #   celery
+    # via celery
 requests==2.27.1
     # via
     #   pypn-habref-api
     #   pypnusershub
 shapely==1.8.2
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
 six==1.16.0
     # via
-    #   -r requirements-common.txt
     #   fiona
     #   flask-cors
     #   flask-marshmallow
@@ -277,7 +230,7 @@ six==1.16.0
     #   python-dateutil
 sqlalchemy==1.3.24
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   alembic
     #   flask-sqlalchemy
     #   geoalchemy2
@@ -290,12 +243,11 @@ taxhub==1.9.4
     # via -r requirements-dependencies.in
 tinycss2==1.1.1
     # via
-    #   -r requirements-common.txt
     #   cairosvg
     #   cssselect2
     #   weasyprint
 toml==0.10.2
-    # via -r requirements-common.txt
+    # via -r requirements-common.in
 urllib3==1.26.9
     # via requests
 utils-flask-sqlalchemy==0.2.6
@@ -313,37 +265,31 @@ utils-flask-sqlalchemy-geo==0.2.2
     #   pypn-ref-geo
 vine==1.3.0
     # via
-    #   -r requirements-common.txt
     #   amqp
     #   celery
 weasyprint==52.5
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   flask-weasyprint
 webencodings==0.5.1
     # via
-    #   -r requirements-common.txt
     #   cssselect2
     #   html5lib
     #   tinycss2
 werkzeug==1.0.1
-    # via
-    #   -r requirements-common.txt
-    #   flask
+    # via flask
 wrapt==1.14.1
-    # via
-    #   -r requirements-common.txt
-    #   deprecated
+    # via deprecated
 wtforms==3.0.1
     # via
-    #   -r requirements-common.txt
+    #   -r requirements-common.in
     #   flask-admin
     #   flask-wtf
     #   wtforms-sqlalchemy
 wtforms-sqlalchemy==0.3
-    # via -r requirements-common.txt
+    # via -r requirements-common.in
 xmltodict==0.13.0
-    # via -r requirements-common.txt
+    # via -r requirements-common.in
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools
