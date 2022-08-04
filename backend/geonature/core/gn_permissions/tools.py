@@ -3,13 +3,8 @@ import logging, json
 from flask import current_app, redirect, Response, g
 from werkzeug.exceptions import Forbidden, Unauthorized
 from werkzeug.routing import RequestRedirect
+from authlib.jose.errors import ExpiredTokenError, JoseError
 
-
-from itsdangerous import (
-    TimedJSONWebSignatureSerializer as Serializer,
-    SignatureExpired,
-    BadSignature,
-)
 
 import sqlalchemy as sa
 from sqlalchemy.sql.expression import func
@@ -18,6 +13,7 @@ from sqlalchemy.sql.expression import func
 from pypnusershub.db.tools import (
     AccessRightsExpiredError,
     UnreadableAccessRightsError,
+    decode_token,
 )
 
 from geonature.core.gn_permissions.models import VUsersPermissions, TFilters
@@ -30,14 +26,10 @@ def user_from_token(token, secret_key=None):
     secret_key = secret_key or current_app.config["SECRET_KEY"]
 
     try:
-        s = Serializer(current_app.config["SECRET_KEY"])
-        user = s.loads(token)
-        return user
-
-    except SignatureExpired:
+        return decode_token(token)
+    except ExpiredTokenError:
         raise AccessRightsExpiredError("Token expired")
-
-    except BadSignature:
+    except JoseError:
         raise UnreadableAccessRightsError("Token BadSignature", 403)
 
 
@@ -51,7 +43,7 @@ def log_expiration_warning():
 
 
 def get_user_from_token_and_raise(
-    request, secret_key=None, redirect_on_expiration=None, redirect_on_invalid_token=None
+    request, redirect_on_expiration=None, redirect_on_invalid_token=None
 ):
     """
     Deserialize the token
@@ -59,7 +51,7 @@ def get_user_from_token_and_raise(
     """
     try:
         token = request.cookies["token"]
-        return user_from_token(token, secret_key)
+        return user_from_token(token)
 
     except KeyError:
         if redirect_on_expiration:

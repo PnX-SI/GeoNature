@@ -19,10 +19,10 @@ from flask import (
     session,
     Response,
 )
-from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from utils_flask_sqla.response import json_resp
 
 from pypnusershub.db.models import User, Organisme
+from pypnusershub.db.tools import encode_token
 from pypnusershub.routes import insert_or_update_organism, insert_or_update_role
 from geonature.utils import utilsrequests
 from geonature.utils.errors import CasAuthentificationError
@@ -84,8 +84,7 @@ def loginCas():
             expiration = current_app.config["COOKIE_EXPIRATION"]
             cookie_exp += datetime.timedelta(seconds=expiration)
             user["id_application"] = current_app.config["ID_APP"]
-            s = Serializer(current_app.config["SECRET_KEY"], expiration)
-            token = s.dumps(user)
+            token = encode_token(user)
             response.set_cookie("token", token, expires=cookie_exp)
 
             # User cookie
