@@ -70,15 +70,9 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install \
             pytest-cov \
-            -e .[tests] \
-            -r backend/requirements-common.txt \
-            -e file:backend/dependencies/UsersHub-authentification-module#egg=pypnusershub \
-            -e file:backend/dependencies/Nomenclature-api-module#egg=pypnnomenclature \
-            -e file:backend/dependencies/Habref-api-module#egg=pypn_habref_api \
-            -e file:backend/dependencies/TaxHub#egg=taxhub \
-            -e file:backend/dependencies/Utils-Flask-SQLAlchemy#egg=utils-flask-sqlalchemy \
-            -e file:backend/dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo \
-            -e file:backend/dependencies/RefGeo#egg=pypn-ref-geo
+            -e ..[tests] \
+            -r backend/requirements-dev.txt
+        working-directory: ./backend
       - name: Install database
         run: |
           geonature db upgrade geonature@head -x local-srid=2154
