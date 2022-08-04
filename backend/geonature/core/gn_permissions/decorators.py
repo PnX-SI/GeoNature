@@ -51,7 +51,7 @@ def check_cruved_scope(
         @wraps(fn)
         def __check_cruved_scope(*args, **kwargs):
             user = get_user_from_token_and_raise(
-                request, action, redirect_on_expiration, redirect_on_invalid_token
+                request, redirect_on_expiration, redirect_on_invalid_token
             )
             user_with_highter_perm = None
 
