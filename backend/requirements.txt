@@ -143,7 +143,6 @@ mako==1.2.0
     # via alembic
 markupsafe==2.0.1
     # via
-    #   -r requirements-common.in
     #   jinja2
     #   mako
     #   wtforms

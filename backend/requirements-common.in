@@ -1,7 +1,7 @@
 celery[redis]<5.0  # redis 5 conflict with flask<2 click requirement
 click>=7.0
 fiona
-flask<2.0
+flask
 flask-cors
 flask-mail
 flask-marshmallow
@@ -26,5 +26,4 @@ weasyprint<53
 wtforms
 wtforms-sqlalchemy
 xmltodict
-markupsafe<2.1  # jinja2==2.11.3 compatibility
 numpy<1.22  # Python 3.7 (Debian 10) compatibility
