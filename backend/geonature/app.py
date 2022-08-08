@@ -15,7 +15,7 @@ from flask_cors import CORS
 from flask_sqlalchemy import before_models_committed
 from werkzeug.middleware.proxy_fix import ProxyFix
 from psycopg2.errors import UndefinedTable
-from sqlalchemy.exc import ProgrammingError
+from sqlalchemy.exc import OperationalError, ProgrammingError
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.engine import RowProxy
 
@@ -161,7 +161,11 @@ def create_app(with_external_mods=True):
     with app.app_context():
         try:
             gn_app = Application.query.filter_by(code_application=config["CODE_APPLICATION"]).one()
-        except (ProgrammingError, NoResultFound):
+        except (
+            OperationalError,  # database does not exist
+            ProgrammingError,  # database empty
+            NoResultFound,  # database has schema but not required data
+        ):
             logging.warning(
                 "Warning: unable to find GeoNature application, database not yet initialized?"
             )
@@ -206,8 +210,10 @@ def create_app(with_external_mods=True):
                     app.register_blueprint(
                         module_blueprint, url_prefix=module_config["MODULE_URL"]
                     )
-            except ProgrammingError as sqla_error:
-                if isinstance(sqla_error.orig, UndefinedTable):
+            except (OperationalError, ProgrammingError) as sqla_error:
+                if not isinstance(sqla_error, ProgrammingError) or isinstance(
+                    sqla_error.orig, UndefinedTable
+                ):
                     logging.warning(
                         "Warning: database not yet initialized, skipping loading of external modules"
                     )
