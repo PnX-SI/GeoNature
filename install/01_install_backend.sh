@@ -104,7 +104,7 @@ readonly BIN_VENV_DIR="${BASE_DIR}/backend/venv/bin"
 readonly ACTIVATE_FILE="${BIN_VENV_DIR}/activate"
 readonly COMPLETION_FILE_NAME="geonature_completion"
 if ! grep -q "${COMPLETION_FILE_NAME}" "${ACTIVATE_FILE}" ; then
-  cp "${ACTIVATE_FILE}" "${ACTIVATE_FILE}.save-$(date +'%f')"
+  cp "${ACTIVATE_FILE}" "${ACTIVATE_FILE}.save-$(date +'%F')"
   cat >> "${ACTIVATE_FILE}" << EOF
 
 # GeoNature command completion
