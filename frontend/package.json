@@ -101,7 +101,7 @@
     "@types/jasmine": "~3.3.12",
     "@types/jasminewd2": "~2.0.5",
     "@types/jquery": "^3.3.11",
-    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/eslint-plugin": "^5.33.0",
     "@typescript-eslint/eslint-plugin-tslint": "^5.4.0",
     "@typescript-eslint/parser": "^5.4.0",
     "codelyzer": "~6.0.0",
