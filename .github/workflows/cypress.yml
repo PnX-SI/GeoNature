@@ -81,6 +81,8 @@ jobs:
           geonature db autoupgrade -x local-srid=2154
           geonature db upgrade geonature-samples@head
           geonature db upgrade taxhub@head
+          geonature taxref import-v15 --skip-bdc-statuts
+          geonature db upgrade nomenclatures_taxonomie_data@head
           geonature db upgrade taxonomie_taxons_example@head
 
         env:
