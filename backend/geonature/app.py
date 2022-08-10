@@ -9,7 +9,7 @@ from urllib.parse import urlsplit
 from importlib import import_module
 
 from flask import Flask, g, request, current_app
-from flask.json import JSONEncoder
+from flask.json.provider import DefaultJSONProvider
 from flask_mail import Message
 from flask_cors import CORS
 from flask_sqlalchemy import before_models_committed
@@ -66,11 +66,12 @@ if config.get("SENTRY_DSN"):
     )
 
 
-class MyJSONEncoder(JSONEncoder):
-    def default(self, o):
+class MyJSONProvider(DefaultJSONProvider):
+    @staticmethod
+    def default(o):
         if isinstance(o, RowProxy):
             return dict(o)
-        return super().default(o)
+        return DefaultJSONProvider.default(o)
 
 
 def create_app(with_external_mods=True):
@@ -98,7 +99,7 @@ def create_app(with_external_mods=True):
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
     app.wsgi_app = RequestID(app.wsgi_app)
 
-    app.json_encoder = MyJSONEncoder
+    app.json = MyJSONProvider(app)
 
     # set logging config
     config_loggers(app.config)
