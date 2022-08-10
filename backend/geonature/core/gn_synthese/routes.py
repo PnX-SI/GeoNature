@@ -498,11 +498,8 @@ def export_metadata(info_role):
 
     POST parameters: Use a list of id_synthese (in POST parameters) to filter the v_synthese_for_export_view
     """
-    if request.json:
+    if request.is_json:
         filters = request.json
-    elif request.data:
-        #  decode byte to str - compat python 3.5
-        filters = json.loads(request.data.decode("utf-8"))
     else:
         filters = {key: request.args.getlist(key) for key, value in request.args.items()}
 
@@ -552,11 +549,8 @@ def export_status(info_role):
     Parameters:
         - HTTP-GET: the same that the /synthese endpoint (all the filter in web app)
     """
-    if request.json:
+    if request.is_json:
         filters = request.json
-    elif request.data:
-        #  decode byte to str - compat python 3.5
-        filters = json.loads(request.data.decode("utf-8"))
     else:
         filters = {key: request.args.getlist(key) for key, value in request.args.items()}
 

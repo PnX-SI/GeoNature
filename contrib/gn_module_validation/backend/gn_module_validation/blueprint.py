@@ -82,7 +82,7 @@ def get_synthese_data(info_role):
 
     fields |= {col["column_name"] for col in blueprint.config["COLUMN_LIST"]}
 
-    filters = request.json or {}
+    filters = (request.json if request.is_json else None) or {}
 
     result_limit = filters.pop("limit", blueprint.config["NB_MAX_OBS_MAP"])
     lateral_join = {}
