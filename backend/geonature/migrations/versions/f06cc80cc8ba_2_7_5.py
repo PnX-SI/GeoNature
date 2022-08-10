@@ -16,14 +16,11 @@ revision = "f06cc80cc8ba"
 down_revision = None
 branch_labels = ("geonature",)
 depends_on = (
-    # "3842a6d800a0",  # sql utils (already covered by others dependencies)
-    # "fa35dfe5ff27",  # utilisateurs schema (already covered by others dependencies)
-    "72f227e37bdf",  # utilisateurs samples data
-    # "9c2c0254aadc",  # taxonomie schema 1.8.1 (already covered by nomenclatures_taxonomie)
-    # "6015397d686a",  # nomenclatures (already covered by nomenclatures_taxonomie)
-    "f5436084bf17",  # nomenclatures_taxonomie
-    "96a713739fdd",  # nomenclatures_inpn_data
-    "62e63cd6135d",  # ref_habitats schema 0.1.6
+    #'3842a6d800a0',  # sql utils (already covered by other dependencies)
+    "72f227e37bdf",  # utilisateurs schema 1.4.7 + samples data
+    #'f61f95136ec3',  # taxonomie schema 1.8.1 + inpn data (already required by nomenc with taxo)
+    "a763fb554ff2",  # nomenclatures with taxonomie enabled + inpn data
+    "46e91e738845",  # ref_habitats schema 0.1.6 + inpn data
     "6afe74833ed0",  # ref_geo
 )
 
