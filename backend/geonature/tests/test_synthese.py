@@ -15,6 +15,7 @@ from geonature.core.gn_synthese.models import Synthese, TSources
 
 from pypnusershub.tests.utils import logged_user_headers, set_logged_user_cookie
 from ref_geo.models import BibAreasTypes, LAreas
+from apptax.tests.fixtures import noms_example, attribut_example
 
 from .fixtures import *
 from .utils import jsonschema_definitions
@@ -34,14 +35,14 @@ def source():
 
 
 @pytest.fixture()
-def taxon_attribut():
+def taxon_attribut(noms_example, attribut_example):
     """
     Require "taxonomie_taxons_example" and "taxonomie_attributes_example" alembic branches.
     """
     from apptax.taxonomie.models import BibAttributs, BibNoms, CorTaxonAttribut
 
     nom = BibNoms.query.filter_by(cd_ref=209902).one()
-    attribut = BibAttributs.query.filter_by(nom_attribut="migrateur").one()
+    attribut = BibAttributs.query.filter_by(nom_attribut=attribut_example.nom_attribut).one()
     with db.session.begin_nested():
         c = CorTaxonAttribut(bib_nom=nom, bib_attribut=attribut, valeur_attribut="eau")
         db.session.add(c)
