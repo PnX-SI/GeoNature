@@ -77,8 +77,24 @@ def sample_synthese_records_for_profile(app, datasets):
     # with db.session.begin_nested():
     with db.session.begin_nested():
         db.session.add(synthese_record_for_profile)
+        # TODO: remove all present parameters for cd_nom 212
         db.session.execute(
-            "UPDATE gn_profiles.cor_taxons_parameters SET active_life_stage = TRUE WHERE cd_nom = 183716"
+            """
+        INSERT INTO
+            gn_profiles.cor_taxons_parameters (
+                cd_nom,
+                spatial_precision,
+                temporal_precision_days,
+                active_life_stage
+            )
+        VALUES
+            (
+                183716,
+                2000,
+                10,
+                TRUE
+            )
+        """
         )
 
     db.session.execute("REFRESH MATERIALIZED VIEW gn_profiles.vm_valid_profiles")
