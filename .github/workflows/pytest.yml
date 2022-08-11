@@ -86,6 +86,11 @@ jobs:
             -e file:backend/dependencies/Utils-Flask-SQLAlchemy#egg=utils-flask-sqlalchemy \
             -e file:backend/dependencies/Utils-Flask-SQLAlchemy-Geo#egg=utils-flask-sqlalchemy-geo \
             -e file:backend/dependencies/RefGeo#egg=pypn-ref-geo
+      - name: Show database branches and dependencies
+        run: |
+          geonature db status --dependencies
+        env:
+          GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Install database
         run: |
           geonature db upgrade geonature@head -x local-srid=2154
@@ -101,7 +106,7 @@ jobs:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Show database status
         run: |
-          geonature db status --dependencies
+          geonature db status
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Install core modules
