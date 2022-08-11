@@ -115,11 +115,11 @@ jobs:
           ./install/05_install_frontend.sh --ci
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
-      - name: run GN backend
+      - name: Run GeoNature backend
         run: geonature dev_back &
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
-      - name: run TX backend
+      - name: Run TaxHub backend
         run: flask run --host=0.0.0.0 &
         working-directory: ./backend/dependencies/TaxHub/
         env:
