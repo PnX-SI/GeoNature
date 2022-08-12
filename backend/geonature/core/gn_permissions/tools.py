@@ -271,6 +271,7 @@ class UserCruved:
         return self.build_herited_user_cruved(permissions)
 
 
+# FIXME: to remove ?
 def get_user_permissions(
     user, code_filter_type, code_action=None, module_code=None, code_object=None
 ):
@@ -304,21 +305,6 @@ def get_user_permissions(
         raise Forbidden(
             f"User {user['id_role']} cannot '{code_action}' in module/app/object {object_for_error}"
         )
-
-
-# def build_cruved_dict(cruved, get_id):
-#     """
-#         function utils to build a dict like {'C':'3', 'R':'2'}...
-#         from Array<VUsersPermissions>
-#         NOT USE => TODO DELETE
-#     """
-#     cruved_dict = {}
-#     for action_scope in cruved:
-#         if get_id:
-#             cruved_dict[action_scope[0]] = action_scope[2]
-#         else:
-#             cruved_dict[action_scope[0]] = action_scope[1]
-#     return cruved_dict
 
 
 def beautifulize_cruved(actions, cruved):

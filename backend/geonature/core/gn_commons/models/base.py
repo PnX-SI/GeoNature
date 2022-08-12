@@ -258,6 +258,7 @@ class TMobileApps(DB.Model):
     app_code = DB.Column(DB.Unicode)
     relative_path_apk = DB.Column(DB.Unicode)
     url_apk = DB.Column(DB.Unicode)
+    url_settings = DB.Column(DB.Unicode)
     package = DB.Column(DB.Unicode)
     version_code = DB.Column(DB.Unicode)
 

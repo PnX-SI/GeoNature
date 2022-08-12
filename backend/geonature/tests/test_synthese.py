@@ -35,7 +35,7 @@ def source():
 
 
 @pytest.fixture()
-def taxon_attribut(noms_example, attribut_example):
+def taxon_attribut(noms_example, attribut_example, synthese_data):
     """
     Require "taxonomie_taxons_example" and "taxonomie_attributes_example" alembic branches.
     """
@@ -136,14 +136,12 @@ class TestSynthese:
             "taxhub_attribut_{}".format(
                 taxon_attribut.bib_attribut.id_attribut
             ): taxon_attribut.valeur_attribut,
-            "taxonomy_group2_inpn": "Insectes",
-            "taxonomy_id_hab": 3,
         }
         r = self.client.get(url, query_string=query_string)
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
         assert len(r.json["features"]) == 1
-        assert r.json["features"][0]["properties"]["cd_nom"] == 713776
+        assert r.json["features"][0]["properties"]["cd_nom"] == taxon_attribut.bib_nom.cd_nom
 
         # test geometry filters
         com_type = BibAreasTypes.query.filter_by(type_code="COM").one()

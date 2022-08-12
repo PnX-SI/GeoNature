@@ -402,7 +402,7 @@ def delete_filter(id_filter):
     """
     .. :quickref: View_Permission;
     """
-    my_filter = DB.session.query(TFilters).get(id_filter)
+    my_filter = DB.session.query(TFilters).get_or_404(id_filter)
     DB.session.delete(my_filter)
     DB.session.commit()
     flash("Filtre supprimé avec succès")

@@ -1,24 +1,31 @@
-from datetime import date, datetime, timedelta
+from datetime import datetime
 from random import randint
-from geonature.core.gn_meta.models import TDatasets
 
 import pytest
-from flask import g, url_for, current_app
+from flask import url_for
 import sqlalchemy as sa
 from sqlalchemy.sql.expression import func
 from geoalchemy2.elements import WKTElement
 
 from geonature.utils.env import db
+from geonature.core.gn_meta.models import TDatasets
 from geonature.core.gn_profiles.models import (
     VConsistancyData,
     VmCorTaxonPhenology,
     VmValidProfiles,
+    TParameters,
+    CorTaxonParameters,
 )
 from geonature.core.gn_synthese.models import Synthese
 from geonature.core.taxonomie.models import Taxref
 
 
-from .fixtures import acquisition_frameworks, datasets
+from .fixtures import acquisition_frameworks, datasets, synthese_data, source
+
+ALT_MIN = 1000
+ALT_MAX = 1200
+DATE_MIN = "2021-01-01"
+DATE_MAX = "2021-01-05"
 
 
 def create_synthese_record(
@@ -57,55 +64,86 @@ def create_synthese_record(
 
 
 @pytest.fixture(scope="function")
-def sample_synthese_records_for_profile(app, datasets):
-    Synthese.query.delete()  # clear all synthese entries
-    # set a profile for taxon 212 (sonneur)
+def get_gn_profile_data():
+    valid_status = (
+        TParameters.query.with_entities(TParameters.name, TParameters.value)
+        .filter_by(name="id_valid_status_for_profiles")
+        .one()
+    )
+    valid_status = valid_status.value.split(",")[0]
+    id_rang = (
+        TParameters.query.with_entities(TParameters.name, TParameters.value)
+        .filter_by(name="id_rang_for_profiles")
+        .one()
+    )
+    id_rang = id_rang.value.split(",")[0]
+
+    cd_nom = (
+        Taxref.query.with_entities(Taxref.cd_nom, Taxref.id_rang)
+        .filter_by(id_rang=id_rang)
+        .first()
+        .cd_nom
+    )
+
+    return {"valid_status": valid_status, "cd_nom": cd_nom}
+
+
+@pytest.fixture(scope="function")
+def sample_synthese_records_for_profile(datasets, get_gn_profile_data):
+    cd_nom = get_gn_profile_data["cd_nom"]
+
+    # set a profile for taxon
     synthese_record_for_profile = create_synthese_record(
-        cd_nom=212,
+        cd_nom=cd_nom,
         x=6.12,
         y=44.85,
-        date_min=datetime(2021, 1, 1),
-        date_max=datetime(2021, 1, 1),
-        altitude_min=1000,
-        altitude_max=1200,
-        id_nomenclature_valid_status=func.ref_nomenclatures.get_id_nomenclature(
-            "STATUT_VALID", "1"
-        ),
+        date_min=datetime.strptime(DATE_MIN, "%Y-%m-%d"),
+        date_max=datetime.strptime(DATE_MAX, "%Y-%m-%d"),
+        altitude_min=ALT_MIN,
+        altitude_max=ALT_MAX,
+        id_nomenclature_valid_status=get_gn_profile_data["valid_status"],
         id_nomenclature_life_stage=func.ref_nomenclatures.get_id_nomenclature("STADE_VIE", "10"),
+    )
+    taxon_param = CorTaxonParameters(
+        cd_nom=cd_nom, spatial_precision=2000, temporal_precision_days=10, active_life_stage=True
     )
     # set life stage active for animalia
     # with db.session.begin_nested():
     with db.session.begin_nested():
         db.session.add(synthese_record_for_profile)
-        # TODO: remove all present parameters for cd_nom 212
-        db.session.execute(
-            """
-        INSERT INTO
-            gn_profiles.cor_taxons_parameters (
-                cd_nom,
-                spatial_precision,
-                temporal_precision_days,
-                active_life_stage
-            )
-        VALUES
-            (
-                183716,
-                2000,
-                10,
-                TRUE
-            )
-        """
-        )
+        db.session.add(taxon_param)
 
-    db.session.execute("REFRESH MATERIALIZED VIEW gn_profiles.vm_valid_profiles")
-    db.session.execute("REFRESH MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology")
+    with db.session.begin_nested():
+        db.session.execute("REFRESH MATERIALIZED VIEW gn_profiles.vm_valid_profiles")
+        db.session.execute("REFRESH MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology")
+
+    return synthese_record_for_profile
 
 
-@pytest.mark.usefixtures(
-    "client_class", "temporary_transaction", "sample_synthese_records_for_profile"
-)
+@pytest.fixture(scope="function")
+def wrong_sample_synthese_records_for_profile(datasets, get_gn_profile_data):
+    wrong_new_obs = create_synthese_record(
+        cd_nom=get_gn_profile_data["cd_nom"],
+        x=20.12,
+        y=55.85,
+        altitude_min=10,
+        altitude_max=20,
+        id_nomenclature_life_stage=func.ref_nomenclatures.get_id_nomenclature("STADE_VIE", "11"),
+    )
+
+    with db.session.begin_nested():
+        db.session.add(wrong_new_obs)
+
+    with db.session.begin_nested():
+        db.session.execute("REFRESH MATERIALIZED VIEW gn_profiles.vm_valid_profiles")
+        db.session.execute("REFRESH MATERIALIZED VIEW gn_profiles.vm_cor_taxon_phenology")
+
+    return wrong_new_obs
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestGnProfiles:
-    def test_checks(self, app):
+    def test_checks(self, sample_synthese_records_for_profile):
         """
         Call of view VConsistancyData which process to the tree checks:
             - check altitude
@@ -113,55 +151,38 @@ class TestGnProfiles:
             - check distribution
         -> test the tree sql associated functions
         """
-        valid_new_obs = create_synthese_record(
-            cd_nom=212,
-            x=6.12,
-            y=44.85,
-            date_min=datetime(2021, 1, 1),
-            date_max=datetime(2021, 1, 1),
-            altitude_min=1100,
-            altitude_max=1100,
-            id_nomenclature_life_stage=func.ref_nomenclatures.get_id_nomenclature(
-                "STADE_VIE", "10"
-            ),
-        )
-        with db.session.begin_nested():
-            db.session.add(valid_new_obs)
+        valid_new_obs = sample_synthese_records_for_profile
 
         # check altitude
         consitancy_data = VConsistancyData.query.filter(
             VConsistancyData.id_synthese == valid_new_obs.id_synthese
         ).one()
         cor = VmCorTaxonPhenology.query.first()
-        assert consitancy_data.valid_distribution is True
-        assert consitancy_data.valid_altitude is True
-        assert consitancy_data.valid_phenology is True
+        assert consitancy_data.valid_distribution
+        assert consitancy_data.valid_altitude
+        assert consitancy_data.valid_phenology
         profile = VmValidProfiles.query.first()
 
-        wrong_new_obs = create_synthese_record(
-            cd_nom=212,
-            x=20.12,
-            y=55.85,
-            altitude_min=10,
-            altitude_max=20,
-            id_nomenclature_life_stage=func.ref_nomenclatures.get_id_nomenclature(
-                "STADE_VIE", "11"
-            ),
-        )
-        with db.session.begin_nested():
-            db.session.add(wrong_new_obs)
+    def test_checks_all_false(
+        self, sample_synthese_records_for_profile, wrong_sample_synthese_records_for_profile
+    ):
+        # Need to create the good sample for the taxon parameter and to
+        # set the profile correctly
+        wrong_new_obs = wrong_sample_synthese_records_for_profile
+
         consitancy_data = VConsistancyData.query.filter(
             VConsistancyData.id_synthese == wrong_new_obs.id_synthese
         ).one()
-        cor = VmCorTaxonPhenology.query.first()
 
-        assert consitancy_data.valid_distribution is False
-        assert consitancy_data.valid_altitude is False
-        assert consitancy_data.valid_phenology is False
+        assert not consitancy_data.valid_distribution
+        assert not consitancy_data.valid_altitude
+        assert not consitancy_data.valid_phenology
 
-    def test_get_phenology(self, app):
+    def test_get_phenology(self, sample_synthese_records_for_profile):
         response = self.client.get(
-            url_for("gn_profiles.get_phenology", cd_ref=212),
+            url_for(
+                "gn_profiles.get_phenology", cd_ref=sample_synthese_records_for_profile.cd_nom
+            ),
             query_string={
                 "id_nomenclature_life_stage": db.session.query(
                     func.ref_nomenclatures.get_id_nomenclature("STADE_VIE", "10")
@@ -169,7 +190,7 @@ class TestGnProfiles:
             },
         )
 
-        assert response.status_code == 200
+        assert response.status_code == 200, response.json
         data = response.get_json()
         first_pheno = data[0]
         assert first_pheno["doy_min"] == 0
@@ -179,75 +200,174 @@ class TestGnProfiles:
         assert first_pheno["calculated_altitude_min"] == 1000
         assert first_pheno["calculated_altitude_max"] == 1200
 
-    def test_valid_profile(self, app):
+    def test_get_phenology_none(self):
+        invalid_cd_nom = 0
+
         response = self.client.get(
-            url_for("gn_profiles.get_profile", cd_ref=212),
+            url_for("gn_profiles.get_phenology", cd_ref=invalid_cd_nom),
         )
-        assert response.status_code == 200
+
+        assert response.status_code == 204, response.json  # No content
+
+    def test_valid_profile(self, sample_synthese_records_for_profile):
+        response = self.client.get(
+            url_for("gn_profiles.get_profile", cd_ref=sample_synthese_records_for_profile.cd_nom),
+        )
+        assert response.status_code == 200, response.json
         data = response.get_json()["properties"]
-        assert data["altitude_min"] == 1000
-        assert data["altitude_max"] == 1200
-        assert data["first_valid_data"] == "2021-01-01 00:00:00"
-        assert data["last_valid_data"] == "2021-01-01 00:00:00"
+        assert data["altitude_min"] == ALT_MIN
+        assert data["altitude_max"] == ALT_MAX
+        assert DATE_MIN in data["first_valid_data"]
+        assert DATE_MAX in data["last_valid_data"]
         assert data["count_valid_data"] == 1
         assert data["active_life_stage"] == True
 
-    def test_get_consistancy_data(self, app):
-        synthese_record = Synthese.query.first()
+    def test_valid_profile_404(self):
+        invalid_cd_nom = 0
+
+        response = self.client.get(
+            url_for("gn_profiles.get_profile", cd_ref=invalid_cd_nom),
+        )
+
+        assert response.status_code == 404, response.json
+
+    def test_get_consistancy_data(self, sample_synthese_records_for_profile):
+        synthese_record = sample_synthese_records_for_profile
+
         response = self.client.get(
             url_for("gn_profiles.get_consistancy_data", id_synthese=synthese_record.id_synthese),
         )
-        assert response.status_code == 200
+        assert response.status_code == 200, response.json
 
-    @pytest.mark.skip()  # FIXME
-    def test_get_observation_score(self, app):
+    def test_get_observation_score_no_cd_ref(self):
         data = {}
-        response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
-        assert response.status_code == 400
 
+        response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
+
+        assert response.status_code == 400, response.json
+        assert response.json.get("description") == "No cd_ref provided"
+
+    def test_get_observation_score_cd_ref_not_found(self):
+        data = {"cd_ref": 0}
+
+        response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
+
+        assert response.status_code == 404, response.json
+        assert response.json.get("description") == "No profile for this cd_ref"
+
+    def test_get_observation_score(self, sample_synthese_records_for_profile):
         data = {
-            "altitude_min": 500,
-            "altitude_max": 600,
-            "date_min": "2021-01-01",
-            "date_max": "2021-01-01",
-            "cd_ref": 500,
+            "altitude_min": ALT_MIN,
+            "altitude_max": ALT_MAX,
+            "date_min": DATE_MIN,
+            "date_max": DATE_MAX,
+            "cd_ref": sample_synthese_records_for_profile.cd_nom,
             "geom": {"coordinates": [6.12, 44.85], "type": "Point"},
         }
-        response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
-        assert response.status_code == 204  # No content
 
-        data.update({"cd_ref": 212})
         response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
-        assert response.status_code == 200
-        result = response.get_json()
-        assert result["valid_altitude"] == False
-        assert result["valid_phenology"] == False
-        assert result["valid_distribution"] == True
+        resp_json = response.json
+        assert response.status_code == 200, response.json
+        assert [
+            "valid_distribution",
+            "valid_altitude",
+            "valid_phenology",
+            "valid_life_stage",
+            "life_stage_accepted",
+            "errors",
+            "profil",
+            "check_life_stage",
+        ] == list(resp_json.keys())
+        assert len(resp_json["errors"]) == 0
 
-        data.update(
-            {
-                "date_min": "2021-10-01",
-                "date_max": "2021-10-01",
-                "altitude_min": 1000,
-                "altitude_min": 1200,
-            }
-        )
-        response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
-        assert response.status_code == 200
-        result = response.get_json()
-        assert result["valid_altitude"] == True
-        assert result["valid_phenology"] == False
-        assert result["valid_distribution"] == True
+    def test_get_observation_score_no_date(self, sample_synthese_records_for_profile):
+        data = {
+            "altitude_min": ALT_MIN,
+            "altitude_max": ALT_MAX,
+            "date_min": DATE_MIN,
+            "cd_ref": sample_synthese_records_for_profile.cd_nom,
+            "geom": {"coordinates": [6.12, 44.85], "type": "Point"},
+        }
 
-        data.update(
-            {
-                "date_min": "2021-01-01",
-                "date_max": "2021-01-10",  # periode de 10 jour
-            }
-        )
         response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
-        assert response.status_code == 200
-        result = response.get_json()
-        assert result["valid_altitude"] == True
-        assert result["valid_phenology"] == True
-        assert result["valid_distribution"] == True
+
+        assert response.status_code == 400, response.json
+        assert response.json["description"] == "Missing date min or date max"
+
+    def test_get_observation_score_no_altitude(self, sample_synthese_records_for_profile):
+        data = {
+            "altitude_min": ALT_MIN,
+            "date_min": DATE_MIN,
+            "date_max": DATE_MAX,
+            "cd_ref": sample_synthese_records_for_profile.cd_nom,
+            "geom": {"coordinates": [6.12, 44.85], "type": "Point"},
+        }
+
+        response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
+
+        assert response.status_code == 400, response.json
+        assert response.json["description"] == "Missing altitude_min or altitude_max"
+
+    def test_get_observation_score_not_observed_altitude(
+        self, sample_synthese_records_for_profile
+    ):
+        alt_min = 500
+        alt_max = 600
+        data = {
+            "altitude_min": alt_min,
+            "altitude_max": alt_max,
+            "date_min": DATE_MIN,
+            "date_max": DATE_MAX,
+            "cd_ref": sample_synthese_records_for_profile.cd_nom,
+            "geom": {"coordinates": [6.12, 44.85], "type": "Point"},
+        }
+
+        response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
+
+        assert response.status_code == 200, response.json
+        assert f"Le taxon n'a jamais été observé à cette altitude ({alt_min}-{alt_max}m)" in [
+            err["value"] for err in response.json["errors"]
+        ]
+
+    @pytest.mark.xfail(reason="Test non implémenté")
+    def test_get_observation_score_error_not_observed_alt(self, get_gn_profile_data):
+        # TODO when routes.py is fixed for this
+        raise NotImplementedError
+
+    def test_get_observation_score_error_not_observed(self, sample_synthese_records_for_profile):
+        # In the date, only the days are relevant not the date. Which means
+        # that when 2022-01-20 is entered, the doy is more or less 20.
+        data = {
+            "altitude_min": ALT_MIN,
+            "altitude_max": ALT_MAX,
+            "date_min": "2022-01-20",
+            "date_max": "2022-01-25",
+            "cd_ref": sample_synthese_records_for_profile.cd_nom,
+            "geom": {"coordinates": [6.12, 44.85], "type": "Point"},
+        }
+
+        response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
+
+        assert response.status_code == 200, response.json
+        assert "Le taxon n'a jamais été observé à cette periode" in [
+            err["value"] for err in response.json["errors"]
+        ]
+
+    def test_get_observation_score_error_geom_not_observed(
+        self, sample_synthese_records_for_profile
+    ):
+        data = {
+            "altitude_min": ALT_MIN,
+            "altitude_max": ALT_MAX,
+            "date_min": DATE_MIN,
+            "date_max": DATE_MAX,
+            "cd_ref": sample_synthese_records_for_profile.cd_nom,
+            "geom": {"coordinates": [1000, 2000], "type": "Point"},
+        }
+
+        response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
+
+        assert response.status_code == 200, response.json
+        assert "Le taxon n'a jamais été observé dans cette zone géographique" in [
+            err["value"] for err in response.json["errors"]
+        ]

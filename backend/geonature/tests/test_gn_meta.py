@@ -410,7 +410,7 @@ class TestGNMeta:
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == 204
 
-    def test_list_datasets(self, users):
+    def test_list_datasets(self, users, datasets):
         response = self.client.get(url_for("gn_meta.get_datasets"))
         assert response.status_code == Unauthorized.code
 
@@ -418,6 +418,9 @@ class TestGNMeta:
 
         response = self.client.get(url_for("gn_meta.get_datasets"))
         assert response.status_code == 200
+        expected_ds = {dataset.id_dataset for dataset in datasets.values()}
+        resp_ds = {ds["id_dataset"] for ds in response.json}
+        assert expected_ds.issubset(resp_ds)
 
     def test_create_dataset(self, users):
         response = self.client.post(url_for("gn_meta.create_dataset"))

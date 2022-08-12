@@ -4,7 +4,8 @@
 """
 import json
 
-from flask import Blueprint, request, current_app, redirect
+from flask import Blueprint, request, current_app, redirect, jsonify
+from werkzeug.exceptions import NotFound
 
 from geonature.core.gn_commons.repositories import TMediaRepository, TMediumRepository
 from geonature.core.gn_commons.models import TMedias
@@ -36,7 +37,6 @@ def get_medias(uuid_attached_row):
 
 
 @routes.route("/media/<int:id_media>", methods=["GET"])
-@json_resp
 def get_media(id_media):
     """
     Retourne un media
@@ -44,8 +44,9 @@ def get_media(id_media):
     """
 
     m = TMediaRepository(id_media=id_media).media
-    if m:
-        return m.as_dict()
+    if not m:
+        raise NotFound
+    return jsonify(m.as_dict())
 
 
 @routes.route("/media", methods=["POST", "PUT"])
@@ -67,6 +68,7 @@ def insert_or_update_media(id_media=None):
         file = None
 
     data = {}
+    # Useful ?
     if request.form:
         formData = dict(request.form)
         for key in formData:

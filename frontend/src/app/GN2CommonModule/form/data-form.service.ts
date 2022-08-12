@@ -487,18 +487,6 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/gn_commons/modules/${module_code}`);
   }
 
-  getCruved(modules_code?: Array<string>) {
-    let queryString: HttpParams = new HttpParams();
-    if (modules_code) {
-      modules_code.forEach((mod_code) => {
-        queryString = queryString.set('module_code', mod_code);
-      });
-    }
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/permissions/cruved`, {
-      params: queryString,
-    });
-  }
-
   addOrderBy(httpParam: HttpParams, order_column): HttpParams {
     return httpParam.append('orderby', order_column);
   }

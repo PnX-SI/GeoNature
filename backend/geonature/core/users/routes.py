@@ -5,6 +5,7 @@ import json
 
 from flask import Blueprint, request, current_app, Response, redirect
 from sqlalchemy.sql import distinct, and_
+from werkzeug.exceptions import NotFound, BadRequest
 
 from geonature.utils.env import DB
 from geonature.core.gn_permissions import decorators as permissions
@@ -15,7 +16,7 @@ from geonature.core.users.models import (
     TListes,
 )
 from geonature.utils.config import config
-from pypnusershub.db.models import Organisme as BibOrganismes
+from pypnusershub.db.models import Organisme
 from geonature.core.users.register_post_actions import (
     validate_temp_user,
     execute_actions_after_validation,
@@ -63,7 +64,7 @@ REGISTER_POST_ACTION_FCT.update(
 
 @routes.route("/menu/<int:id_menu>", methods=["GET"])
 @json_resp
-def getRolesByMenuId(id_menu):
+def get_roles_by_menu_id(id_menu):
     """
     Retourne la liste des roles associés à un menu
 
@@ -86,7 +87,7 @@ def getRolesByMenuId(id_menu):
 
 @routes.route("/menu_from_code/<string:code_liste>", methods=["GET"])
 @json_resp
-def getRolesByMenuCode(code_liste):
+def get_roles_by_menu_code(code_liste):
     """
     Retourne la liste des roles associés à une liste (identifiée par son code)
 
@@ -116,7 +117,7 @@ def getRolesByMenuCode(code_liste):
 
 @routes.route("/listes", methods=["GET"])
 @json_resp
-def getListes():
+def get_listes():
 
     q = DB.session.query(TListes)
     lists = q.all()
@@ -157,7 +158,7 @@ def get_roles():
             order_col = getattr(User.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
-            log.error("the attribute to order on does not exist")
+            raise BadRequest("the attribute to order on does not exist")
     return [user.as_dict(fields=user_fields) for user in q.all()]
 
 
@@ -171,13 +172,13 @@ def get_organismes():
     .. :quickref: User;
     """
     params = request.args.to_dict()
-    q = BibOrganismes.query
+    q = Organisme.query
     if "orderby" in params:
         try:
-            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
+            order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
-            log.error("the attribute to order on does not exist")
+            raise BadRequest("the attribute to order on does not exist")
     return [organism.as_dict(fields=organism_fields) for organism in q.all()]
 
 
@@ -195,17 +196,17 @@ def get_organismes_jdd():
 
     datasets = [d.id_dataset for d in TDatasets.query.filter_by_readable()]
     q = (
-        DB.session.query(BibOrganismes)
-        .join(CorDatasetActor, BibOrganismes.id_organisme == CorDatasetActor.id_organism)
+        DB.session.query(Organisme)
+        .join(CorDatasetActor, Organisme.id_organisme == CorDatasetActor.id_organism)
         .filter(CorDatasetActor.id_dataset.in_(datasets))
         .distinct()
     )
     if "orderby" in params:
         try:
-            order_col = getattr(BibOrganismes.__table__.columns, params.pop("orderby"))
+            order_col = getattr(Organisme.__table__.columns, params.pop("orderby"))
             q = q.order_by(order_col)
         except AttributeError:
-            log.error("the attribute to order on does not exist")
+            raise BadRequest("the attribute to order on does not exist")
     return [organism.as_dict(fields=organism_fields) for organism in q.all()]
 
 
@@ -213,7 +214,7 @@ def get_organismes_jdd():
 ### ACCOUNT_MANAGEMENT ROUTES #####
 #########################
 
-
+# TODO: let frontend call UsersHub directly?
 @routes.route("/inscription", methods=["POST"])
 def inscription():
     """

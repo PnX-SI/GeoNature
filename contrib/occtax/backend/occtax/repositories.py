@@ -70,6 +70,7 @@ class ReleveRepository:
                 )
         return releve, rel_as_geojson
 
+    # FIXME: geom not used here?
     def update(self, releve, info_user, geom):
         """Update the current releve if allowed
         params:
