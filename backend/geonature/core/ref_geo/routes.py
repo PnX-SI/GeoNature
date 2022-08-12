@@ -53,7 +53,7 @@ def getGeoInfo():
 
     .. :quickref: Ref Geo;
     """
-    if request.json is None:
+    if not request.is_json or request.json is None:
         raise BadRequest("Missing request payload")
     try:
         geojson = request.json["geometry"]
@@ -112,7 +112,7 @@ def getAreasIntersection():
     from l_areas
     .. :quickref: Ref Geo;
     """
-    if request.json is None:
+    if not request.is_json or request.json is None:
         raise BadRequest("Missing request payload")
     try:
         geojson = request.json["geometry"]
@@ -230,7 +230,7 @@ def get_area_size():
 
     :returns: An area size (int)
     """
-    if request.json is None:
+    if not request.is_json or request.json is None:
         raise BadRequest("Missing request payload")
     try:
         geojson = request.json["geometry"]
