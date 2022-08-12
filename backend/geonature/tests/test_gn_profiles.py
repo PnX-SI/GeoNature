@@ -268,7 +268,7 @@ class TestGnProfiles:
         response = self.client.post(url_for("gn_profiles.get_observation_score"), json=data)
         resp_json = response.json
         assert response.status_code == 200, response.json
-        assert [
+        assert {
             "valid_distribution",
             "valid_altitude",
             "valid_phenology",
@@ -277,7 +277,7 @@ class TestGnProfiles:
             "errors",
             "profil",
             "check_life_stage",
-        ] == list(resp_json.keys())
+        } == set(resp_json.keys())
         assert len(resp_json["errors"]) == 0
 
     def test_get_observation_score_no_date(self, sample_synthese_records_for_profile):
