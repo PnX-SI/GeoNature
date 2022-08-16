@@ -87,8 +87,8 @@ def dev_back(ctx, host, port):
 
     - geonature dev_back --port=8080 --port=0.0.0.0
     """
-    if not environ.get("FLASK_ENV"):
-        environ["FLASK_ENV"] = "development"
+    if not environ.get("FLASK_DEBUG"):
+        environ["FLASK_DEBUG"] = "true"
     ctx.invoke(run_command, host=host, port=port)
 
 
