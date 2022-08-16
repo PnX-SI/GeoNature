@@ -190,8 +190,6 @@ if [ -f "/var/log/geonature.log" ]; then
 fi
 
 sudo systemctl restart geonature
-if [ "${WORKER}" = true ]; then
-    sudo systemctl restart geonature-worker
-fi
+sudo systemctl restart geonature-worker
 
 deactivate
