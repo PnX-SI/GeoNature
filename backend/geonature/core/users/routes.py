@@ -13,10 +13,9 @@ from geonature.core.gn_meta.models import CorDatasetActor, TDatasets
 from geonature.core.users.models import (
     VUserslistForallMenu,
     CorRole,
-    TListes,
 )
 from geonature.utils.config import config
-from pypnusershub.db.models import Organisme
+from pypnusershub.db.models import Organisme, User, UserList
 from geonature.core.users.register_post_actions import (
     validate_temp_user,
     execute_actions_after_validation,
@@ -99,10 +98,10 @@ def get_roles_by_menu_code(code_liste):
     """
 
     q = DB.session.query(VUserslistForallMenu).join(
-        TListes,
+        UserList,
         and_(
-            TListes.id_liste == VUserslistForallMenu.id_menu,
-            TListes.code_liste == code_liste,
+            UserList.id_liste == VUserslistForallMenu.id_menu,
+            UserList.code_liste == code_liste,
         ),
     )
 
@@ -119,7 +118,7 @@ def get_roles_by_menu_code(code_liste):
 @json_resp
 def get_listes():
 
-    q = DB.session.query(TListes)
+    q = DB.session.query(UserList)
     lists = q.all()
     return [l.as_dict() for l in lists]
 

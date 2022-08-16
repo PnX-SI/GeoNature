@@ -3,8 +3,11 @@ from flask import url_for
 from sqlalchemy import func
 from sqlalchemy.sql import and_
 
-from geonature.core.users.models import VUserslistForallMenu, TListes
+from geonature.tests.fixtures import users
+from geonature.core.users.models import VUserslistForallMenu
 from geonature.utils.env import db
+
+from pypnusershub.db.models import UserList
 
 
 @pytest.fixture
@@ -13,13 +16,14 @@ def unavailable_menu_id():
 
 
 @pytest.fixture
-def tlist():
+def tlist(users):
     """
     Create a list if there is no list in the database
     """
     with db.session.begin_nested():
-        test_list = TListes(code_liste="testCode", nom_liste="testNom", desc_liste="testDesc")
+        test_list = UserList(code_liste="testCode", nom_liste="testNom", desc_liste="testDesc")
         db.session.add(test_list)
+        test_list.users.append(users["user"])
     return test_list
 
 
@@ -31,15 +35,15 @@ def user_tlist(tlist):
     """
     # with entity ?
     return (
-        TListes.query.with_entities(
-            TListes.nom_liste,
-            TListes.code_liste,
-            TListes.desc_liste,
+        UserList.query.with_entities(
+            UserList.nom_liste,
+            UserList.code_liste,
+            UserList.desc_liste,
             VUserslistForallMenu.nom_complet,
         )
         .join(
             VUserslistForallMenu,
-            and_(TListes.id_liste == VUserslistForallMenu.id_menu),
+            and_(UserList.id_liste == VUserslistForallMenu.id_menu),
         )
         .first()
     )
