@@ -11,7 +11,7 @@ from pypnusershub.db.models import UserList
 
 
 @pytest.fixture
-def unavailable_menu_id():
+def unavailable_menu_id(tlist):
     return db.session.query(func.max(VUserslistForallMenu.id_menu)).scalar() + 1
 
 
