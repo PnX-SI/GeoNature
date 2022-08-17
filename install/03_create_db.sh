@@ -104,9 +104,6 @@ if [ "$add_sample_data" = true ];
 then
     write_log "Inserting sample datasets..."
     geonature db upgrade geonature-samples@head |& tee -a "${LOG_FILE}"
-
-    write_log "Inserting sample dataset of taxons for taxonomic schema..."
-    geonature db upgrade taxonomie_taxons_example@head |& tee -a "${LOG_FILE}"
 fi
 
 if [ "$install_sig_layers" = true ];
