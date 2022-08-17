@@ -17,6 +17,7 @@ depends_on = None
 
 
 def upgrade():
+    op.execute("DROP VIEW  gn_exports.v_synthese_sinp_dee")
     op.execute("DROP VIEW gn_synthese.v_synthese_decode_nomenclatures")
 
 

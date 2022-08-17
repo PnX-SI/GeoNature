@@ -163,7 +163,7 @@ class Synthese(DB.Model):
     __tablename__ = "synthese"
     __table_args__ = {"schema": "gn_synthese"}
     query_class = SyntheseQuery
-    nomenclature_fields = [
+    nomenclatures_fields = [
         "nomenclature_geo_object_nature",
         "nomenclature_grp_typ",
         "nomenclature_obs_technique",

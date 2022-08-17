@@ -14,7 +14,7 @@
     "e2e:coverage": "npx nyc report --reporter=lcov --reporter=text-summary",
     "format": "prettier --write '**/*.ts'",
     "compodoc": "npx compodoc -p tsconfig.json --output=../docs/build/html/frontend",
-    "docker_start": "ng serve --poll=2000 --host=0.0.0.0",
+    "docker_start": "ng serve --poll=20000 --host=0.0.0.0",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
   },

@@ -51,7 +51,7 @@ export class SyntheseComponent implements OnInit {
         let geojsonlist = []
         // todo: check merge resul["data"] replaced by data ?
         for (let feature of data.features) {
-          let item  = (({ type, coordinates }) => ({ type, coordinates }))(feature)
+          let item  = (({ type, geometry }) => ({ type, geometry }))(feature)
           item["properties"] = {"id": null}
           item["properties"]["id"] = feature["properties"]["id"]
           geojsonlist.push(item)

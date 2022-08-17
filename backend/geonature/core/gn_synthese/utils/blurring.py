@@ -12,7 +12,10 @@ from pypnnomenclature.models import (
 from geonature.core.gn_synthese.models import (CorAreaSynthese, Synthese)
 from ref_geo.models import (LAreas, BibAreasTypes)
 from geonature.core.taxonomie.models import Taxref
-from geonature.utils.env import DB
+from geonature.utils.env import DB, db
+
+BibAreasTypes.size_hierarchy = DB.Column(DB.Integer)
+LAreas.geojson_4326 = DB.Column(DB.Unicode)
 
 class DataBlurring:
     def __init__(
