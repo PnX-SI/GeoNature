@@ -65,7 +65,7 @@ const defaultRoutes: Routes = [
       {
         path: 'permissions',
         data: { module_code: 'permissions' },
-        loadChildren: '@geonature/modules/permission/permission.module#PermissionModule',
+        loadChildren: () => import('@geonature/modules/permission/permission.module').then(m => m.PermissionModule),
       },
       {
         path: 'test/medias/:uuidAttachedRow',
