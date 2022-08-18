@@ -135,13 +135,7 @@ def create_frontend_config():
 
     with open(str(ROOT_DIR / "frontend/src/conf/app.config.ts.sample"), "r") as input_file:
         template = Template(input_file.read())
-        parameters = json.dumps(
-            {
-                **config_frontend,
-                "ID_APPLICATION_GEONATURE": current_app.config["ID_APP"],
-            },
-            indent=True,
-        )
+        parameters = json.dumps(config_frontend, indent=True)
         app_config_template = template.render(parameters=parameters)
 
         with open(str(ROOT_DIR / "frontend/src/conf/app.config.ts"), "w") as output_file:
