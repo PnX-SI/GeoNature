@@ -15,6 +15,7 @@ from geonature.core.gn_profiles.models import (
     VmValidProfiles,
     TParameters,
     CorTaxonParameters,
+    VSyntheseForProfiles,
 )
 from geonature.core.gn_synthese.models import Synthese
 from geonature.core.taxonomie.models import Taxref
@@ -63,52 +64,41 @@ def create_synthese_record(
     )
 
 
-@pytest.fixture(scope="function")
-def get_gn_profile_data():
-    valid_status = (
-        TParameters.query.with_entities(TParameters.name, TParameters.value)
-        .filter_by(name="id_valid_status_for_profiles")
-        .one()
-    )
-    valid_status = valid_status.value.split(",")[0]
-    id_rang = (
-        TParameters.query.with_entities(TParameters.name, TParameters.value)
-        .filter_by(name="id_rang_for_profiles")
-        .one()
-    )
-    id_rang = id_rang.value.split(",")[0]
+@pytest.fixture
+def valid_status_for_profiles():
+    param = TParameters.query.filter_by(name="id_valid_status_for_profiles").one()
+    return param.value.split(",")[0]
 
-    cd_nom = (
-        Taxref.query.with_entities(Taxref.cd_nom, Taxref.id_rang)
-        .filter_by(id_rang=id_rang)
-        .first()
-        .cd_nom
-    )
 
-    return {"valid_status": valid_status, "cd_nom": cd_nom}
+@pytest.fixture
+def cd_nom_for_profiles():
+    param = TParameters.query.filter_by(name="id_rang_for_profiles").one()
+    id_rang = param.value.split(",")[0]
+    taxref = Taxref.query.filter_by(id_rang=id_rang).first()
+    return taxref.cd_nom
 
 
 @pytest.fixture(scope="function")
-def sample_synthese_records_for_profile(datasets, get_gn_profile_data):
-    cd_nom = get_gn_profile_data["cd_nom"]
-
+def sample_synthese_records_for_profile(datasets, valid_status_for_profiles, cd_nom_for_profiles):
     # set a profile for taxon
     synthese_record_for_profile = create_synthese_record(
-        cd_nom=cd_nom,
+        cd_nom=cd_nom_for_profiles,
         x=6.12,
         y=44.85,
         date_min=datetime.strptime(DATE_MIN, "%Y-%m-%d"),
         date_max=datetime.strptime(DATE_MAX, "%Y-%m-%d"),
         altitude_min=ALT_MIN,
         altitude_max=ALT_MAX,
-        id_nomenclature_valid_status=get_gn_profile_data["valid_status"],
+        id_nomenclature_valid_status=valid_status_for_profiles,
         id_nomenclature_life_stage=func.ref_nomenclatures.get_id_nomenclature("STADE_VIE", "10"),
     )
+    # set life stage active for this obs
     taxon_param = CorTaxonParameters(
-        cd_nom=cd_nom, spatial_precision=2000, temporal_precision_days=10, active_life_stage=True
+        cd_nom=cd_nom_for_profiles,
+        spatial_precision=2000,
+        temporal_precision_days=10,
+        active_life_stage=True,
     )
-    # set life stage active for animalia
-    # with db.session.begin_nested():
     with db.session.begin_nested():
         db.session.add(synthese_record_for_profile)
         db.session.add(taxon_param)
@@ -121,9 +111,13 @@ def sample_synthese_records_for_profile(datasets, get_gn_profile_data):
 
 
 @pytest.fixture(scope="function")
-def wrong_sample_synthese_records_for_profile(datasets, get_gn_profile_data):
+def wrong_sample_synthese_records_for_profile(
+    datasets,
+    cd_nom_for_profiles,
+):
+    # This obs will be not used for computing profiles as it has no dates
     wrong_new_obs = create_synthese_record(
-        cd_nom=get_gn_profile_data["cd_nom"],
+        cd_nom=cd_nom_for_profiles,
         x=20.12,
         y=55.85,
         altitude_min=10,
@@ -153,15 +147,22 @@ class TestGnProfiles:
         """
         valid_new_obs = sample_synthese_records_for_profile
 
-        # check altitude
-        consitancy_data = VConsistancyData.query.filter(
-            VConsistancyData.id_synthese == valid_new_obs.id_synthese
+        assert VSyntheseForProfiles.query.get(valid_new_obs.id_synthese) is not None
+
+        profile = VmValidProfiles.query.filter_by(
+            cd_ref=func.taxonomie.find_cdref(valid_new_obs.cd_nom)
+        ).first()
+        assert profile is not None
+
+        consistancy_data = VConsistancyData.query.filter_by(
+            id_synthese=valid_new_obs.id_synthese
         ).one()
-        cor = VmCorTaxonPhenology.query.first()
-        assert consitancy_data.valid_distribution
-        assert consitancy_data.valid_altitude
-        assert consitancy_data.valid_phenology
-        profile = VmValidProfiles.query.first()
+        assert consistancy_data.valid_distribution is True
+        assert consistancy_data.valid_altitude is True
+        assert consistancy_data.valid_phenology is True
+
+        cor = VmCorTaxonPhenology.query.filter_by(cd_ref=consistancy_data.cd_ref).first()
+        assert cor is not None
 
     def test_checks_all_false(
         self, sample_synthese_records_for_profile, wrong_sample_synthese_records_for_profile
@@ -170,13 +171,23 @@ class TestGnProfiles:
         # set the profile correctly
         wrong_new_obs = wrong_sample_synthese_records_for_profile
 
-        consitancy_data = VConsistancyData.query.filter(
+        assert VSyntheseForProfiles.query.get(wrong_new_obs.id_synthese) is None
+
+        profile = VmValidProfiles.query.filter_by(
+            cd_ref=func.taxonomie.find_cdref(wrong_new_obs.cd_nom)
+        ).first()
+        assert profile is not None
+
+        consistancy_data = VConsistancyData.query.filter(
             VConsistancyData.id_synthese == wrong_new_obs.id_synthese
         ).one()
 
-        assert not consitancy_data.valid_distribution
-        assert not consitancy_data.valid_altitude
-        assert not consitancy_data.valid_phenology
+        assert consistancy_data.valid_distribution is False
+        assert consistancy_data.valid_altitude is False
+        assert consistancy_data.valid_phenology is False
+
+        cor = VmCorTaxonPhenology.query.filter_by(cd_ref=consistancy_data.cd_ref).first()
+        assert cor is not None
 
     def test_get_phenology(self, sample_synthese_records_for_profile):
         response = self.client.get(
@@ -330,7 +341,7 @@ class TestGnProfiles:
         ]
 
     @pytest.mark.xfail(reason="Test non implémenté")
-    def test_get_observation_score_error_not_observed_alt(self, get_gn_profile_data):
+    def test_get_observation_score_error_not_observed_alt(self):
         # TODO when routes.py is fixed for this
         raise NotImplementedError
 
