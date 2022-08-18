@@ -61,14 +61,6 @@ export class AuthService {
     return response;
   }
 
-  checkUserExist(username: string): Observable<any> {
-    const options = {
-      identifiant: username,
-      id_application: AppConfig.ID_APPLICATION_GEONATURE,
-    };
-    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/auth/login/check`, options);
-  }
-
   loginOrPwdRecovery(data: any): Observable<any> {
     return this._http.post<any>(`${AppConfig.API_ENDPOINT}/users/login/recovery`, data);
   }
