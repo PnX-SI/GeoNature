@@ -35,6 +35,17 @@ def source():
 
 
 @pytest.fixture()
+def unexisted_id_source():
+    return db.session.query(func.max(TSources.id_source)).scalar() + 1
+
+
+@pytest.fixture()
+def bbox_geom(synthese_data):
+    """used to check bbox"""
+    return Point(geometry=to_shape(synthese_data[0].the_geom_4326))
+
+
+@pytest.fixture()
 def taxon_attribut(noms_example, attribut_example, synthese_data):
     """
     Require "taxonomie_taxons_example" and "taxonomie_attributes_example" alembic branches.
@@ -431,6 +442,26 @@ class TestSynthese:
         response_empty = self.client.get(url_for(url), query_string={"id_dataset": unexisted_id})
         assert response_empty.status_code == 204
         assert response_empty.get_data(as_text=True) == ""
+
+    def test_get_bbox_id_source(self, bbox_geom, source):
+        id_source = source.id_source
+        url = "gn_synthese.get_bbox"
+
+        response = self.client.get(url_for(url), query_string={"id_source": id_source})
+
+        assert response.status_code == 200
+        assert response.json["type"] == "Point"
+        assert response.json["coordinates"] == [
+            pytest.approx(coord, 0.9) for coord in [bbox_geom.geometry.x, bbox_geom.geometry.y]
+        ]
+
+    def test_get_bbox_id_source_empty(self, unexisted_id_source):
+        url = "gn_synthese.get_bbox"
+
+        response = self.client.get(url_for(url), query_string={"id_source": unexisted_id_source})
+
+        assert response.status_code == 204
+        assert response.json is None
 
     def test_observation_count_per_column(self, synthese_data):
         column_name_dataset = "id_dataset"
