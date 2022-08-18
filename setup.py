@@ -28,6 +28,9 @@ setuptools.setup(
         'alembic': [
             'migrations = ref_geo.migrations:versions',
         ],
+        "flask.commands": [
+            "ref_geo = ref_geo.commands:ref_geo",
+        ],
     },
     classifiers=['Development Status :: 1 - Planning',
                  'Intended Audience :: Developers',
