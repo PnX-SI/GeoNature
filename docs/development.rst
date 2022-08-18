@@ -759,7 +759,7 @@ La bibliothèque maison `Utils-Flask-SQLAlchemy-Geo <https://github.com/PnX-SI/U
         for d in data:
                 FionaShapeService.create_shapes_struct(
                         db_cols=db_cols,
-                        srid=current_app.config['LOCAL_SRID'],
+                        srid=srid,
                         dir_path=dir_path,
                         file_name=file_name,
                         col_mapping=current_app.config['SYNTHESE']['EXPORT_COLUMNS']
