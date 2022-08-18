@@ -4,12 +4,14 @@ import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import relationship, backref, deferred
+from geoalchemy2 import Geometry
 
 from utils_flask_sqla.serializers import serializable
 from utils_flask_sqla_geo.serializers import geoserializable
+from pypnnomenclature.models import TNomenclatures
 
-from geonature.utils.env import DB
+from geonature.utils.env import DB, db
 from geonature.core.gn_synthese.models import Synthese
 from geonature.core.taxonomie.models import Taxref
 
@@ -78,6 +80,41 @@ class VConsistancyData(DB.Model):
             + cls.valid_phenology.cast(sa.Integer)
             + cls.valid_altitude.cast(sa.Integer)
         )
+
+
+class VSyntheseForProfiles(db.Model):
+    __tablename__ = "v_synthese_for_profiles"
+    __table_args__ = {"schema": "gn_profiles"}
+
+    id_synthese = db.Column(db.Integer, ForeignKey(Synthese.id_synthese), primary_key=True)
+    synthese = relationship(Synthese)
+    cd_nom = db.Column(db.Integer)
+    nom_cite = db.Column(db.Unicode(length=1000))
+    cd_ref = db.Column(db.Integer)
+    nom_valide = db.Column(db.Unicode(length=500))
+    id_rang = db.Column(db.Unicode(length=10))
+    date_min = db.Column(db.DateTime)
+    date_max = db.Column(db.DateTime)
+    the_geom_local = deferred(db.Column(Geometry("GEOMETRY")))
+    the_geom_4326 = deferred(db.Column(Geometry("GEOMETRY", 4326)))
+    altitude_min = db.Column(db.Integer)
+    altitude_max = db.Column(db.Integer)
+
+    id_nomenclature_life_stage = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
+    nomenclature_life_stage = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_life_stage]
+    )
+    id_nomenclature_valid_status = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
+    nomenclature_valid_status = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_valid_status]
+    )
+
+    spatial_precision = db.Column(db.Integer)
+    temporal_precision_days = db.Column(db.Integer)
+    active_life_stage = db.Column(db.Boolean)
+    distance = db.Column(db.Integer)
 
 
 class TParameters(DB.Model):
