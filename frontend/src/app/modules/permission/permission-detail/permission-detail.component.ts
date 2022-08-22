@@ -221,7 +221,6 @@ export class PermissionDetailComponent implements OnInit {
           },
           error => {
             const msg = (error.error && error.error.msg) ? error.error.msg : error.message;
-            console.log(msg);
             this.translateService
               .get('Permissions.deleteKo', {errorMsg: msg})
               .subscribe((translatedTxt: string) => {

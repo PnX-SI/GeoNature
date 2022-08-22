@@ -1,5 +1,4 @@
 const webpack = require('webpack');
-console.log('Use webpack here');
 module.exports = {
   plugins: [
     new webpack.DefinePlugin({

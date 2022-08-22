@@ -232,7 +232,6 @@ export class EditPermissionModal implements OnInit {
         },
         error => {
           const msg = (error.error && error.error.msg) ? error.error.msg : error.message;
-          console.log(msg);
           this.translateService
             .get('Permissions.addingKo', {errorMsg: msg})
             .subscribe((translatedTxt: string) => {
@@ -254,7 +253,6 @@ export class EditPermissionModal implements OnInit {
         },
         error => {
           const msg = (error.error && error.error.msg) ? error.error.msg : error.message;
-          console.log(msg);
           this.translateService
             .get('Permissions.updatingKo', {errorMsg: msg})
             .subscribe((translatedTxt: string) => {
