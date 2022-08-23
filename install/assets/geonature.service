@@ -12,7 +12,7 @@ Environment=GUNICORN_NUM_WORKERS=4
 Environment=GUNICORN_HOST=127.0.0.1
 Environment=GUNICORN_PORT=8000
 Environment=GUNICORN_TIMEOUT=30
-Environment=GUNICORN_LOG_FILE=/var/log/geonature/geonature.log
+Environment=GUNICORN_LOG_FILE=/var/log/geonature/%N%I.log
 EnvironmentFile=-${BASE_DIR}/environ
 ExecStart=${BASE_DIR}/backend/venv/bin/gunicorn geonature:create_app() \
                 --name "${GUNICORN_PROC_NAME}" --workers "${GUNICORN_NUM_WORKERS}" \
