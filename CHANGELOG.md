@@ -1,6 +1,21 @@
 CHANGELOG
 =========
 
+1.1.1 (2022-08-31)
+------------------
+
+**🚀 Nouveautés**
+
+* Ajout de la sous-commande ``ref_geo info`` permettant de lister les zones par types.
+* Mise-à-jour des dépendances :
+    * Utils-Flask-SQLAlchemy 0.3.0
+    * Utils-Flask-SQLAlchemy-Geo 0.2.4
+
+**🐛 Corrections**
+
+* Ajout des champs manquants au modèle ``LAreas``.
+
+
 1.1.0 (2022-06-03)
 ------------------
 
@@ -11,6 +26,7 @@ CHANGELOG
 **🐛 Corrections**
 
 * Auto-détection du SRID local sans accéder aux paramètres de GeoNature
+
 
 1.0.1 (2022-03-04)
 ------------------
