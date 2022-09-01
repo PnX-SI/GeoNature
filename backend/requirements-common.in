@@ -9,7 +9,6 @@ flask-migrate
 flask-sqlalchemy
 flask-weasyprint
 flask_wtf
-geog
 geojson
 gunicorn>=19.8.0
 lxml
@@ -26,4 +25,3 @@ weasyprint<53
 wtforms
 wtforms-sqlalchemy
 xmltodict
-numpy<1.22  # Python 3.7 (Debian 10) compatibility

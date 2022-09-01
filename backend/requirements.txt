@@ -128,9 +128,7 @@ flask-wtf==1.0.1
 geoalchemy2==0.11.1
     # via utils-flask-sqlalchemy-geo
 geog==0.0.2
-    # via
-    #   -r requirements-common.in
-    #   utils-flask-sqlalchemy-geo
+    # via utils-flask-sqlalchemy-geo
 geojson==2.5.0
     # via
     #   -r requirements-common.in
@@ -191,7 +189,6 @@ munch==2.5.0
     # via fiona
 numpy==1.21.6
     # via
-    #   -r requirements-common.in
     #   geog
     #   utils-flask-sqlalchemy-geo
 packaging==21.3

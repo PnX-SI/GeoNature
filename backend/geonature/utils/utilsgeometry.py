@@ -10,8 +10,6 @@ import zipfile
 from collections import OrderedDict
 
 import fiona
-import geog
-import numpy as np
 
 from fiona.crs import from_epsg
 from geoalchemy2.shape import to_shape
@@ -330,20 +328,6 @@ def shapeserializable(cls):
 
     cls.as_shape = to_shape_fn
     return cls
-
-
-def circle_from_point(point, radius, nb_point=20):
-    """
-    return a circle (shapely POLYGON) from a point
-    parameters:
-        - point: a shapely POINT
-        - radius: circle's diameter in meter
-        - nb_point: nb of point of the polygo,
-
-    """
-    angles = np.linspace(0, 360, nb_point)
-    polygon = geog.propagate(point, angles, radius)
-    return Polygon(polygon)
 
 
 def convert_to_2d(geojson):
