@@ -95,9 +95,13 @@ done
 # Create database schema #
 ##########################
 
+if [[ "${MODE}" == "dev" ]]; then
+    export DATA_DIRECTORY="${BASE_DIR}/data"
+    mkdir "${DATA_DIRECTORY}"
+fi
 
-geonature db upgrade geonature@head -x data-directory=tmp/ -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
-geonature db autoupgrade -x data-directory=tmp/ -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
+geonature db upgrade geonature@head -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
+geonature db autoupgrade -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
 
 geonature taxref import-v15 --skip-bdc-statuts
 
@@ -110,30 +114,30 @@ fi
 
 if [ "$install_sig_layers" = true ];
 then
-    geonature db upgrade ref_geo_fr_departments@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
-    geonature db upgrade ref_geo_fr_municipalities@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
-    geonature db upgrade ref_geo_fr_regions@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
+    geonature db upgrade ref_geo_fr_departments@head |& tee -a "${LOG_FILE}"
+    geonature db upgrade ref_geo_fr_municipalities@head |& tee -a "${LOG_FILE}"
+    geonature db upgrade ref_geo_fr_regions@head |& tee -a "${LOG_FILE}"
 fi
 
 if [ "$install_grid_layer" = true ];
 then
-    geonature db upgrade ref_geo_inpn_grids_1@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
-    geonature db upgrade ref_geo_inpn_grids_5@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
-    geonature db upgrade ref_geo_inpn_grids_10@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
+    geonature db upgrade ref_geo_inpn_grids_1@head |& tee -a "${LOG_FILE}"
+    geonature db upgrade ref_geo_inpn_grids_5@head |& tee -a "${LOG_FILE}"
+    geonature db upgrade ref_geo_inpn_grids_10@head |& tee -a "${LOG_FILE}"
 fi
 
 if [ "$install_ref_sensitivity" = true ];
 then
-    geonature db upgrade ref_sensitivity_inpn@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
+    geonature db upgrade ref_sensitivity_inpn@head |& tee -a "${LOG_FILE}"
 fi
 
 if  [ "$install_default_dem" = true ];
 then
-    geonature db upgrade ign_bd_alti@head -x local-srid=$srid_local -x data-directory=tmp |& tee -a "${LOG_FILE}"
+    geonature db upgrade ign_bd_alti@head -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
     if [ "$vectorise_dem" = true ];
     then
-        geonature db upgrade ign_bd_alti_vector@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
+        geonature db upgrade ign_bd_alti_vector@head |& tee -a "${LOG_FILE}"
     fi
 fi
 
-geonature db autoupgrade -x data-directory=tmp/ -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
+geonature db autoupgrade -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
