@@ -15,8 +15,6 @@ from shapely.wkt import loads
 from werkzeug.exceptions import BadRequest
 from geoalchemy2.shape import from_shape
 
-from utils_flask_sqla_geo.utilsgeometry import circle_from_point
-
 from geonature.utils.env import DB
 from geonature.core.taxonomie.models import Taxref, CorTaxonAttribut, TaxrefLR
 from geonature.core.gn_synthese.models import (
@@ -297,11 +295,18 @@ class SyntheseQuery:
                 if "radius" in self.filters:
                     radius = self.filters.pop("radius")[0]
                     wkt = loads(str_wkt)
-                    wkt = circle_from_point(wkt, float(radius))
+                    geom_wkb = from_shape(wkt, srid=4326)
+                    ors.append(
+                        func.ST_DWithin(
+                            func.ST_GeogFromWKB(self.model.the_geom_4326),
+                            func.ST_GeogFromWKB(geom_wkb),
+                            radius,
+                        ),
+                    )
                 else:
                     wkt = loads(str_wkt)
-                geom_wkb = from_shape(wkt, srid=4326)
-                ors.append(self.model.the_geom_4326.ST_Intersects(geom_wkb))
+                    geom_wkb = from_shape(wkt, srid=4326)
+                    ors.append(self.model.the_geom_4326.ST_Intersects(geom_wkb))
 
             self.query = self.query.where(or_(*ors))
             self.filters.pop("geoIntersection")
