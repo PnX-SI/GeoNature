@@ -99,6 +99,8 @@ done
 geonature db upgrade geonature@head -x data-directory=tmp/ -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
 geonature db autoupgrade -x data-directory=tmp/ -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
 
+geonature taxref import-v15 --skip-bdc-statuts
+
 # Installation des données exemples
 if [ "$add_sample_data" = true ];
 then
@@ -133,3 +135,5 @@ then
         geonature db upgrade ign_bd_alti_vector@head -x data-directory=tmp |& tee -a "${LOG_FILE}"
     fi
 fi
+
+geonature db autoupgrade -x data-directory=tmp/ -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
