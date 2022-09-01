@@ -127,8 +127,6 @@ flask-wtf==1.0.1
     # via -r requirements-common.in
 geoalchemy2==0.11.1
     # via utils-flask-sqlalchemy-geo
-geog==0.0.2
-    # via utils-flask-sqlalchemy-geo
 geojson==2.5.0
     # via
     #   -r requirements-common.in
@@ -187,10 +185,6 @@ marshmallow-sqlalchemy==0.28.1
     #   taxhub
 munch==2.5.0
     # via fiona
-numpy==1.21.6
-    # via
-    #   geog
-    #   utils-flask-sqlalchemy-geo
 packaging==21.3
     # via
     #   -r requirements-common.in
@@ -304,7 +298,7 @@ utils-flask-sqlalchemy==0.3.0
     #   pypnusershub
     #   taxhub
     #   utils-flask-sqlalchemy-geo
-utils-flask-sqlalchemy-geo==0.2.4
+utils-flask-sqlalchemy-geo==0.2.5
     # via
     #   -r requirements-dependencies.in
     #   pypn-ref-geo
