@@ -96,9 +96,16 @@ if [[ "${CI}" == true ]] ; then
   exit 0
 fi
 
+echo "Installation de nvm"
+wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+nvm install
+
 # Frontend installation
 echo "Installation des paquets Npm"
 cd "${BASE_DIR}/frontend"
+nvm use || exit 1
 if [[ "${MODE}" == "dev" ]]; then
   npm install --production=false || exit 1
 else
