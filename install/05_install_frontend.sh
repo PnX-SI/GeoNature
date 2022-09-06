@@ -107,9 +107,9 @@ echo "Installation des paquets Npm"
 cd "${BASE_DIR}/frontend"
 nvm use || exit 1
 if [[ "${MODE}" == "dev" ]]; then
-  npm install --production=false || exit 1
+  npm ci || exit 1
 else
-  npm ci --only=prod --legacy-peer-deps || exit 1
+  npm ci --omit=dev || exit 1
 fi
 
 
