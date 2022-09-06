@@ -2,7 +2,9 @@
 Description=GeoNature Celery Worker Service
 After=network.target
 After=redis-server.service
+After=postgresql.service
 Requires=redis-server.service
+Requires=postgresql.service
 
 [Service]
 Type=forking

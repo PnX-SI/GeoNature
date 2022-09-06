@@ -1,5 +1,7 @@
 [Unit]
 Description=GeoNature
+Requires=postgresql.service
+After=postgresql.service
 After=network.target
 
 [Service]
