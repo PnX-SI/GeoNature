@@ -13,7 +13,7 @@
           dataset.active ? 'Le jeu de données est actif' : 'Le jeu de données est inactif'
         "
         (change)="switchDatasetState($event)"
-        [attr.data-qa]='"pnx-metadata-jdd-actif-"+dataset.id_dataset'
+        [attr.data-qa]='"pnx-metadata-jdd-actif-"+dataset.unique_dataset_id'
       >
       </mat-slide-toggle>
       <mat-spinner *ngIf="stateChangeSaving" diameter="25" strokeWidth="2"> </mat-spinner>
@@ -24,13 +24,13 @@
         [disabled]="true"
         color="primary"
         [matTooltip]="dataset.active ? 'Le jeu de données est actif' : 'Le jeu de données est inactif'"
-        [attr.data-qa]='"pnx-metadata-jdd-inactif-"+dataset.id_dataset'
+        [attr.data-qa]='"pnx-metadata-jdd-inactif-"+dataset.unique_dataset_id'
       >
       </mat-slide-toggle>
     </ng-template>
   </span>
 
-  <a [routerLink]="['/metadata/dataset_detail', dataset.id_dataset]" [attr.data-qa]='"pnx-metadata-jdd-"+dataset.id_dataset'>
+  <a [routerLink]="['/metadata/dataset_detail', dataset.id_dataset]" [attr.data-qa]='"pnx-metadata-jdd-"+dataset.unique_dataset_id'>
     {{dataset.dataset_name}}
 
     <br />
@@ -62,7 +62,7 @@
     </div>
   </ng-template>
 </td>
-<td [attr.data-qa]='"pnx-metadata-jdd-nb-obs-"+dataset.id_dataset'> {{dataset?.observation_count}} </td>
+<td [attr.data-qa]='"pnx-metadata-jdd-nb-obs-"+dataset.unique_dataset_id'> {{dataset?.observation_count}} </td>
 <td>
   <a
     mat-icon-button
@@ -92,7 +92,7 @@
     [disabled]="dataset?.observation_count == 0"
     [routerLink]="['/synthese']" 
     [queryParams]="{id_dataset: dataset.id_dataset}"
-    [attr.data-qa]='"pnx-metadata-jdd-display-data-"+dataset.id_dataset'
+    [attr.data-qa]='"pnx-metadata-jdd-display-data-"+dataset.unique_dataset_id'
   >
     <mat-icon
       *ngIf="dataset?.observation_count == 0; else elseSynthese"
@@ -127,7 +127,7 @@
     <button
       mat-icon-button
       [disabled]="true"
-      [attr.data-qa]='"pnx-metadata-jdd-delete-"+dataset.id_dataset'
+      [attr.data-qa]='"pnx-metadata-jdd-delete-"+dataset.unique_dataset_id'
     >
       <mat-icon
         [matTooltip]="
@@ -143,8 +143,9 @@
   <ng-template #elseblock>
     <button
       mat-icon-button
+      class="delete-btn"
       (click)="deleteDs(dataset)"
-      [attr.data-qa]='"pnx-metadata-jdd-delete-"+dataset.id_dataset'
+      [attr.data-qa]='"pnx-metadata-jdd-delete-"+dataset.unique_dataset_id'
     >
       <mat-icon matTooltip="Supprimer le jeu de données"> delete </mat-icon>
     </button>

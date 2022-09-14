@@ -12,6 +12,7 @@
           class="uppercase mr-1"
           mat-raised-button
           color="primary"
+          data-qa="pnx-metadata-add-af"
         >
           Ajouter un cadre d'acquisition &nbsp;
         </button>
@@ -71,7 +72,8 @@
           <mat-spinner *ngIf="isLoading" diameter="50" strokeWidth="2" style="margin: 0 auto">
           </mat-spinner>
 
-          <ng-container *ngFor="let af of (acquisitionFrameworks | async); let idx = index">
+          <ng-container *ngFor="let af of (acquisitionFrameworks | async); let idx = index"
+          >
             <mat-expansion-panel
               [expanded]="expandAccordions"
               [attr.data-qa]='"pnx-metadata-acq-framework"'
@@ -79,7 +81,7 @@
               <mat-expansion-panel-header
                 collapsedHeight="*"
                 expandedHeight="*"
-                [attr.data-qa]='"pnx-metadata-acq-framework-header-"+idx'
+                [attr.data-qa]='"pnx-metadata-acq-framework-header-"+af.unique_acquisition_framework_id'
               >
                 <mat-panel-title
                   class="af-title"
@@ -88,7 +90,7 @@
 
                   <div class="col-md-1">{{ af.id_acquisition_framework }}</div>
                   <div class="col-md-2">
-                    <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]" [attr.data-qa]='"pnx-metadata-acq-framework-"+idx'>
+                    <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]" [attr.data-qa]='"pnx-metadata-acq-framework-"+af.unique_acquisition_framework_id'>
                       {{ af.acquisition_framework_name }}
                       <br />
                       <small style="color: gray"> {{ af.unique_acquisition_framework_id }} </small>
@@ -181,6 +183,7 @@
                 <tbody>
                   <tr
                     *ngFor="let dataset of af.datasetsTemp; let last = last"
+                    [attr.data-qa]='"pnx-metadata-dataset-name-"+dataset.dataset_name'
                     pnx-metadata-dataset
                     [dataset]="dataset"
                   ></tr>
