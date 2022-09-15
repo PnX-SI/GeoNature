@@ -27,7 +27,7 @@ from sqlalchemy.sql import text, exists, select, update
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import Load, joinedload, raiseload
 from werkzeug.exceptions import Conflict, BadRequest, Forbidden, NotFound
-from werkzeug.datastructures import Headers
+from werkzeug.datastructures import Headers, MultiDict
 from werkzeug.utils import secure_filename
 from marshmallow import ValidationError, EXCLUDE
 
@@ -108,7 +108,7 @@ def get_datasets():
     :query int id_acquisition_framework: get only dataset of given AF
     :returns:  `list<TDatasets>`
     """
-    params = request.args.to_dict()
+    params = MultiDict(request.args)
     fields = params.get("fields", None)
     if fields:
         fields = fields.split(",")
