@@ -35,13 +35,7 @@ extensions = [
     "sphinx.ext.coverage",
     "sphinx.ext.viewcode",
     "sphinx.ext.githubpages",
-    "sphinxcontrib.httpdomain",
-    "sphinxcontrib.autohttp.flask",
-    "sphinxcontrib.autohttp.flaskqref",
 ]
-
-http_index_ignore_prefixes = ["/nomenclatures"]
-http_index_shortname = "api"
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]

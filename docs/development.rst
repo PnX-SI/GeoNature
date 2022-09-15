@@ -33,16 +33,19 @@ GeoNature utilise :
 .. image :: _static/api_services.png
 
 Liste des routes
-*****************
+****************
 
-.. qrefflask:: geonature:create_app()
-  :undoc-static:
+Vous pouvez obtenir la liste des routes de GeoNature avec la commande suivante :
+
+.. code-block:: bash
+
+    $ geonature routes
+
 
 Documentation des routes
 ************************
 
-.. autoflask:: geonature:create_app()
-  :undoc-static:
+Génération automatique actuellement hors-service :-(
 
 
 Release
