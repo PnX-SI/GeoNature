@@ -346,6 +346,12 @@ class MapConfig(Schema):
     # zoom appliqué sur la carte lorsque l'on clique sur une liste
     # ne s'applique qu'aux points
     ZOOM_ON_CLICK = fields.Integer(load_default=18)
+    # Restreindre la recherche OpenStreetMap à certains pays
+    # Les pays doivent être au format ISO_3166-1 : https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
+    # et séparés par une virgule
+    # Exemple : COUNTRY_CODES = "fr,es,be,ch" (Restreint à France, Espagne, Belgique et Suisse)
+    # Laisser à null pour n'avoir aucune restriction
+    OSM_RESTRICT_COUNTRY_CODES = fields.String(load_default=None)
 
 
 class TaxHub(Schema):
