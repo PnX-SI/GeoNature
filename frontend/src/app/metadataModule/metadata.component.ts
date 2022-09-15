@@ -61,7 +61,6 @@ export class MetadataComponent implements OnInit {
 
     this.afPublishModalLabel = AppConfig.METADATA.CLOSED_MODAL_LABEL;
     this.afPublishModalContent = AppConfig.METADATA.CLOSED_MODAL_CONTENT;
-
     //Combinaison des observables pour afficher les éléments filtrés en fonction de l'état du paginator
     this.acquisitionFrameworks = combineLatest(
       this.metadataService.filteredAcquisitionFrameworks.pipe(distinctUntilChanged()),
@@ -153,5 +152,9 @@ export class MetadataComponent implements OnInit {
     );
 
     this.modal.dismissAll();
+  }
+
+  onOpenExpansionPanel(af: any) {
+    this.metadataService.addDatasetToAcquisitionFramework(af.id_acquisition_framework);
   }
 }

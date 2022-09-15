@@ -77,7 +77,7 @@ export class MetadataService {
       }),
       map(([term, afs]: [string, any[]]): [string, any[]] => {
         //restaure les datasets avant les filtres
-        afs.map((af) => (af['datasetsTemp'] = af['t_datasets']));
+        //afs.map((af) => (af['datasetsTemp'] = af['t_datasets']));
         return [term, afs];
       }),
       //filtre des éléments selon le texte, retourne les AF filtrés
@@ -98,11 +98,12 @@ export class MetadataService {
   //recuperation cadres d'acquisition
 
   getMetadata(params = {}) {
-    params['datasets'] = 1;
+    params['datasets'] = false;
     params['creator'] = 1;
     params['actors'] = 1;
     this.isLoading = true;
     this._acquisitionFrameworks.next([]);
+    console.log('yolo');
 
     //forkJoin pour lancer les 2 requetes simultanément
     forkJoin({
@@ -112,11 +113,13 @@ export class MetadataService {
       .pipe(
         tap(() => (this.isLoading = false)),
         map((val) => {
+          console.log('yolo', val);
           //val: {afs: CA[], datasetNbObs: {id_dataset: number, count: number}[]}
           //boucle sur les CA pour attribuer le nombre de données au JDD et création de la clé datasetsTemp
-          for (let i = 0; i < val.afs.length; i++) {
-            this.setDsObservationCount(val.afs[i]['t_datasets'], val.datasetNbObs);
-          }
+          // for (let i = 0; i < val.afs.length; i++) {
+          //   this.setDsObservationCount(val.afs[i]['t_datasets'], val.datasetNbObs);
+          // }
+          console.log('yolo', val.afs);
           //renvoie uniquement les CA
           return val.afs;
         })
@@ -155,6 +158,19 @@ export class MetadataService {
       }
       return false;
     });
+  }
+
+  addDatasetToAcquisitionFramework(id_af: number) {
+    this.dataFormService
+      .getDatasets({ id_acquisition_frameworks: [id_af] })
+      .toPromise()
+      .then((datasets) => {
+        this.acquisitionFrameworks
+          .filter((af) => af.id_acquisition_framework === id_af)
+          .map((af) => (af.datasetsTemp = datasets));
+      });
+
+    console.log(this.acquisitionFrameworks);
   }
 
   private setDsObservationCount(datasets, dsNbObs) {

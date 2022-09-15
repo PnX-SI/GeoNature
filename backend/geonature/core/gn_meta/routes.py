@@ -5,77 +5,55 @@ import datetime as dt
 import json
 import logging
 import threading
-from pathlib import Path
 from binascii import a2b_base64
+from pathlib import Path
 
 import click
-from lxml import etree as ET
-
-from flask import (
-    Blueprint,
-    current_app,
-    request,
-    render_template,
-    send_from_directory,
-    copy_current_request_context,
-    Response,
-    g,
-)
+from flask import (Blueprint, Response, copy_current_request_context,
+                   current_app, g, render_template, request,
+                   send_from_directory)
 from flask.json import jsonify
-from sqlalchemy import inspect
-from sqlalchemy.sql import text, exists, select, update
-from sqlalchemy.sql.functions import func
-from sqlalchemy.orm import Load, joinedload, raiseload
-from werkzeug.exceptions import Conflict, BadRequest, Forbidden, NotFound
-from werkzeug.datastructures import Headers
-from werkzeug.utils import secure_filename
-from marshmallow import ValidationError, EXCLUDE
-
-from geonature.utils.config import config
-from geonature.utils.env import DB, db, BACKEND_DIR
-from geonature.core.gn_synthese.models import (
-    Synthese,
-    TSources,
-    CorAreaSynthese,
-)
-from geonature.core.gn_permissions.decorators import login_required
-
-from ref_geo.models import LAreas
+from lxml import etree as ET
+from marshmallow import EXCLUDE, ValidationError
 from pypnnomenclature.models import TNomenclatures
-from pypnusershub.db.tools import InsufficientRightsError
 from pypnusershub.db.models import User
-
-from geonature.core.gn_meta.models import (
-    TDatasets,
-    CorDatasetActor,
-    CorDatasetProtocol,
-    CorDatasetTerritory,
-    TAcquisitionFramework,
-    TAcquisitionFrameworkDetails,
-    CorAcquisitionFrameworkActor,
-    CorAcquisitionFrameworkObjectif,
-    CorAcquisitionFrameworkVoletSINP,
-)
-from geonature.core.gn_meta.repositories import (
-    get_metadata_list,
-)
-from geonature.core.gn_meta.schemas import (
-    AcquisitionFrameworkSchema,
-    DatasetSchema,
-)
-from utils_flask_sqla.response import json_resp, to_csv_resp, generate_csv_content
+from pypnusershub.db.tools import InsufficientRightsError
+from ref_geo.models import LAreas
+from sqlalchemy import inspect
+from sqlalchemy.orm import Load, joinedload, raiseload
+from sqlalchemy.sql import exists, select, text, update
+from sqlalchemy.sql.functions import func
+from utils_flask_sqla.response import (generate_csv_content, json_resp,
+                                       to_csv_resp)
 from werkzeug.datastructures import Headers
-from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import (
-    cruved_scope_for_user_in_module,
-    get_scopes_by_action,
-)
-from geonature.core.gn_meta.mtd import mtd_utils
+from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound
+from werkzeug.utils import secure_filename
+
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
+from geonature.core.gn_meta.models import (CorAcquisitionFrameworkActor,
+                                           CorAcquisitionFrameworkObjectif,
+                                           CorAcquisitionFrameworkVoletSINP,
+                                           CorDatasetActor, CorDatasetProtocol,
+                                           CorDatasetTerritory,
+                                           TAcquisitionFramework,
+                                           TAcquisitionFrameworkDetails,
+                                           TDatasets)
+from geonature.core.gn_meta.mtd import mtd_utils
+from geonature.core.gn_meta.repositories import get_metadata_list
+from geonature.core.gn_meta.schemas import (AcquisitionFrameworkSchema,
+                                            DatasetSchema)
+from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_permissions.decorators import login_required
+from geonature.core.gn_permissions.tools import (
+    cruved_scope_for_user_in_module, get_scopes_by_action)
+from geonature.core.gn_synthese.models import (CorAreaSynthese, Synthese,
+                                               TSources)
+from geonature.utils.config import config
+from geonature.utils.env import BACKEND_DIR, DB, db
 from geonature.utils.errors import GeonatureApiError
-from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 
+from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 
 routes = Blueprint("gn_meta", __name__, cli_group="metadata")
 
@@ -95,8 +73,9 @@ if config["CAS_PUBLIC"]["CAS_AUTHENTIFICATION"]:
 
 
 @routes.route("/datasets", methods=["GET"])
+@permissions.check_cruved_scope("R", True, module_code="METADATA")
 @login_required
-def get_datasets():
+def get_datasets(info_role):
     """
     Get datasets list
 
@@ -116,14 +95,29 @@ def get_datasets():
         query = TDatasets.query.filter_by_creatable(params.pop("create"))
     else:
         query = TDatasets.query.filter_by_readable()
-    query = query.filter_by_params(params)
-    data = [d.as_dict(fields=fields) for d in query.all()]
+    query = query.filter_by_params(params).options(
+            Load(TDatasets).raiseload("*"),
+            joinedload("cor_dataset_actor").options(
+                joinedload("role"),
+                joinedload("organism"),
+            ))
+    user_cruved = cruved_scope_for_user_in_module(
+        id_role=info_role.id_role,
+        module_code="METADATA",
+    )[0]
+    
+    # TODO: Need to add cor_dataset_actor 
+    dataset_schema = DatasetSchema(only=["cor_dataset_actor"])
+    dataset_schema.context = {"user_cruved": user_cruved}
+    data = dataset_schema.jsonify(query.all(), many=True)
+
+    # data = [d.as_dict(fields=fields) for d in query.all()]
     user_agent = request.headers.get("User-Agent")
     if (
         user_agent and user_agent.split("/")[0].lower() == "okhttp"
     ):  # retro-compatibility for mobile app
         return jsonify({"data": data})
-    return jsonify(data)
+    return data
 
 
 def get_af_from_id(id_af, af_list):
