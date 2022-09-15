@@ -397,9 +397,10 @@ il est nécessaire de changer la configuration du fichier ``config/geonature_con
 
 
 
-Pour mettre à jour le fichier ``frontend/src/conf/app.config.ts` et prendre en compte ces modifications, lancer les commandes suivantes :
+Pour mettre à jour le fichier ``frontend/src/conf/app.config.ts`` et prendre en compte ces modifications, lancer les commandes suivantes :
 
 .. code-block:: bash
+
   source ~/geonature/backend/venv/bin/activate
   geonature update_configuration
   deactivate
@@ -452,7 +453,7 @@ Si toutefois TaxHub retourne une erreur 500 et ne répond pas sur l'URL http://1
   flask run
 
 Debugger avec un navigateur
-**************************
+***************************
 
 L'extension `Angular DevTools <https://angular.io/guide/devtools>`_ permettra de debugger l'application dans la console du navigateur.
 Pour utiliser l'extension vous devez l'installer et passer obligatoirement en mode ``development``.
@@ -1391,28 +1392,7 @@ typescript::
         npm run lint
 
 
-Pytest
-******
 
-Pytest permet de mettre en place des tests fonctionnels et automatisés
-du code Python.
+.. include:: tests_backend.rst
 
-Les fichiers de test sont dans le répertoire ``backend/geonature/tests``
-
-.. code::
-
-    pytest
-
-
-Coverage
-********
-
-Coverage permet de donner une indication concernant la couverture du code
-par les tests.
-
-.. code::
-
-    pytest --cov=geonature --cov-report=html
-
-
-Ceci génénère un rapport html disponible dans ``htmlcov/index.html``.
+.. include:: tests_frontend.rst

@@ -1702,7 +1702,7 @@ En modifiant les variables des champs ci-dessous, vous pouvez donc personnaliser
 Si le champ est masqué, une valeur par défaut est inscrite en base (voir plus loin pour définir ces valeurs).
 
 Modifier le champ Observateurs
-******************************
+``````````````````````````````
 
 Par défaut le champ ``Observateurs`` est une liste déroulante qui pointe vers une liste du schéma ``utilisateurs``.
 Il est possible de passer ce champ en texte libre en mettant à ``true`` la variable ``observers_txt``.
@@ -1712,7 +1712,7 @@ Le paramètre ``id_observers_list`` permet de changer la liste d'observateurs pr
 Par défaut, l'ensemble des observateurs de la liste 9 (observateurs faune/flore) sont affichés.
 
 Personnaliser la liste des taxons saisissables dans le module
-*************************************************************
+`````````````````````````````````````````````````````````````
 
 Le module est fourni avec une liste restreinte de taxons (8 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
 
@@ -1739,7 +1739,7 @@ Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa 
 Il est également possible d'éditer des listes à partir de l'application TaxHub.
 
 Gérer les valeurs par défaut des nomenclatures
-**********************************************
+``````````````````````````````````````````````
 
 Le formulaire de saisie pré-remplit des valeurs par défaut pour simplifier la saisie. Ce sont également ces valeurs qui sont prises en compte pour remplir dans la BDD les champs du formulaire qui sont masqués.
 
@@ -1760,7 +1760,7 @@ Une interface de gestion des nomenclatures est prévue d'être développée pour
 TODO : valeur par défaut de la validation
 
 Personnaliser l'interface Map-list
-**********************************
+``````````````````````````````````
 
 La liste des champs affichés par défaut dans le tableau peut être modifiée avec le paramètre ``default_maplist_columns``.
 
@@ -1779,7 +1779,7 @@ Par défaut :
 Voir la vue ``occtax.v_releve_list`` pour voir les champs disponibles.
 
 Ajouter une contrainte d'échelle de saisie sur la carte
-*******************************************************
+```````````````````````````````````````````````````````
 
 Il est possible de contraindre la saisie de la géométrie d'un relevé sur la carte par un seuil d'échelle minimum avec le paramètre ``releve_map_zoom_level``.
 
@@ -1879,6 +1879,7 @@ Exemples de configuration :
 .. image :: _static/html1.png
 
 - Un champs de type "datalist". Ce champs permet de générer une liste de valeurs à partir d'une API. Dans le champ "attributs additionnels", renseignez les éléments suivants : 
+
 ::
 
     ``{"api": "url_vers_la_ressource", "keyValue": "champ à stocker en base", "keyLabel": "champ à afficher en interface"}
