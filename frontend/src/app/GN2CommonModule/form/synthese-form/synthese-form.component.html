@@ -229,12 +229,17 @@
   <fieldset>
     <legend>Quand ?</legend>
     <div class="row row-sm">
-      <pnx-date label="Date min" [parentFormControl]="formService.searchForm.controls.date_min">
+      <pnx-date 
+        label="Date min" [parentFormControl]="formService.searchForm.controls.date_min"
+        data-qa="synthese-form-date-min"
+        >
       </pnx-date>
     </div>
     <div class="row row-sm">
       <pnx-date label="Date max" [parentFormControl]="formService.searchForm.controls.date_max"
-        >>
+        data-qa="synthese-form-date-max"
+
+        >
       </pnx-date>
     </div>
 
@@ -331,9 +336,11 @@
       [displayAll]="true"
       [parentFormControl]="formService.searchForm.controls.id_acquisition_framework"
       label="{{ 'MetaData.AcquisitionFramework' | translate }}"
+      data-qa="synthese-form-ca"
     >
     </pnx-acquisition-frameworks>
 
+    {{formService.searchForm.controls.id_acquisition_framework.value |json}}
     <pnx-datasets
       [displayOnlyActive]="false"
       [idAcquisitionFrameworks]="formService.searchForm.controls.id_acquisition_framework.value"
@@ -341,6 +348,8 @@
       [displayAll]="true"
       [parentFormControl]="formService.searchForm.controls.id_dataset"
       label="{{ 'MetaData.Datasets' | translate }}"
+      data-qa="synthese-form-dataset"
+
     >
     </pnx-datasets>
   </fieldset>
@@ -363,10 +372,11 @@
     color="warn"
     (click)="refreshFilters()"
     matTooltip="{{ 'Form.RefreshFilters' | translate }}"
+    data-qa="synthese-refresh-btn"
   >
     <i class="fa fa-refresh" aria-hidden="true"></i>
   </button>
-  <button class="button-success uppercase" mat-raised-button (click)="onSubmitForm()">
+  <button data-qa="synthese-search-btn" class="button-success uppercase" mat-raised-button (click)="onSubmitForm()">
     Rechercher
   </button>
 </div>

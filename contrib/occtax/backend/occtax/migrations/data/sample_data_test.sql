@@ -46,8 +46,42 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
     null,
     '2018-09-01 10:35:08',
     null
-    )
+    );
 ;
+
+INSERT INTO gn_meta.t_acquisition_frameworks (
+    unique_acquisition_framework_id, 
+    acquisition_framework_name, 
+    acquisition_framework_desc, 
+    id_nomenclature_territorial_level, 
+    territory_desc, 
+    keywords, 
+    id_nomenclature_financing_type, 
+    target_description, 
+    ecologic_or_geologic_target, 
+    acquisition_framework_parent_id, 
+    is_parent, 
+    acquisition_framework_start_date, 
+    acquisition_framework_end_date, 
+    meta_create_date, 
+    meta_update_date
+    ) VALUES (
+    '48b7d0f2-4183-4b7b-8f08-6e105d476dd8', 
+    'CA-2-empty',
+    'CA-1-empty',
+    ref_nomenclatures.get_id_nomenclature('NIVEAU_TERRITORIAL', '4'),
+    'Test',
+    'flore, fonge',
+    ref_nomenclatures.get_id_nomenclature('TYPE_FINANCEMENT', '1'),
+    'Tous les taxons',
+    null,
+    null,
+    false,
+    '2002-03-27',
+    null,
+    '2022-09-01 10:35:08',
+    null
+    );
 
 -- Insérer 2 jeux de données d'exemple
 INSERT INTO gn_meta.t_datasets (

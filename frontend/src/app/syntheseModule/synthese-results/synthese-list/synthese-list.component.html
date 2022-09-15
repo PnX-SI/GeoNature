@@ -23,6 +23,7 @@
           matTooltip="{{ row[mapListService.idName] }}"
           class="fa fa-info-circle"
           aria-hidden="true "
+          data-qa="synthese-info-btn"
         ></i>
       </button>
     </ng-template>
@@ -44,10 +45,8 @@
     </ng-template>
   </ngx-datatable-column>
 
-  <!-- DATA COLOMNS -->
-  <!--  <div *ngFor="let col of *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND " ">-->
-  <!--    &lt;!&ndash; custom columns for date in order to format them and order them &ndash;&gt;-->
-  <!--    <span *ngIf="col.prop == 'date_max' || col.prop == 'date_min'; else notDate">-->
+
+  <!-- cellClass is use for test, the "data-qa" attr do not work because the html is generated -->
   <ngx-datatable-column
     *ngFor="let col of SYNTHESE_CONFIG.LIST_COLUMNS_FRONTEND"
     [comparator]="dateComparator"
@@ -55,20 +54,15 @@
     [name]="col.name"
     [prop]="col.prop"
     [sortable]="true"
+    cellClass="synthese-list-col-{{col.prop}}" 
   >
-    <ng-template let-row="row" ngx-datatable-cell-template>
+    <ng-template  let-row="row" ngx-datatable-cell-template>
       {{
         col.prop == 'date_max' || col.prop == 'date_min' ? getDate(row[col.prop]) : row[col.prop]
       }}
+
     </ng-template>
   </ngx-datatable-column>
-  <!--    </span>-->
-  <!--    <ng-template #notDate>-->
-  <!--        <ngx-datatable-column  [name]="col.name " [prop]="col.prop"-->
-  <!--        [maxWidth]="col.max_width">-->
-  <!--      </ngx-datatable-column>-->
-  <!--    </ng-template>-->
-  <!--  </div>-->
 </ngx-datatable>
 
 <button
@@ -79,6 +73,7 @@
   color="primary"
   (click)="openDownloadModal()"
   [disabled]="_cruvedStore.cruved?.SYNTHESE?.cruved?.E === 0"
+  data-qa="synthese-download-btn"
 >
   {{ 'Download' | translate }}
   <mat-icon>file_download</mat-icon>
