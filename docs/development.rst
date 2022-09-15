@@ -415,10 +415,9 @@ Lancer le serveur frontent via le virtualenv :
 
 .. code-block:: bash
   
-  source ~/geonature/frontend/venv/bin/activate
-  geonature dev_front
-
-Notez que vous pouvez aussi utiliser alternativement les commandes ``npm`` standards sans le virtualenv (consultez le fichier `frontend/package.json <https://github.com/PnX-SI/GeoNature/blob/7af2c82a97675daa965024a3879c7168aca2fdb1/frontend/package.json#L7>`_).
+  source ~/geonature/frontend/
+  nvm use
+  npm run start
 
 
 API en développement

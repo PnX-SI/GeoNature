@@ -12,7 +12,6 @@ from flask.cli import run_command
 
 from geonature.utils.env import GEONATURE_VERSION
 from geonature.utils.command import (
-    start_geonature_front,
     build_geonature_front,
     create_frontend_config,
     frontend_routes_templating,
@@ -90,14 +89,6 @@ def dev_back(ctx, host, port):
     if not environ.get("FLASK_DEBUG"):
         environ["FLASK_DEBUG"] = "true"
     ctx.invoke(run_command, host=host, port=port)
-
-
-@main.command()
-def dev_front():
-    """
-    Démarre le frontend en mode develop
-    """
-    start_geonature_front()
 
 
 @click.option("--build-sass", type=bool, default=False)

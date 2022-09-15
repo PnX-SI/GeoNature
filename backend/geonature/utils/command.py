@@ -34,10 +34,6 @@ log = logging.getLogger(__name__)
 MSG_OK = "\033[92mok\033[0m\n"
 
 
-def start_geonature_front():
-    subprocess.call(["npm", "run", "start"], cwd=str(ROOT_DIR / "frontend"))
-
-
 def build_geonature_front():
     subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
 

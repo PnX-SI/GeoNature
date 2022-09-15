@@ -1040,7 +1040,6 @@ Voici la liste des commandes disponibles (aussi disponibles en tapant la command
 - ``activate_gn_module`` : Active un gn_module installé (Possibilité d'activer seulement le backend ou le frontend)
 - ``deactivate_gn_module`` : Désactive gn_un module activé (Possibilté de désactiver seulement le backend ou le frontend)
 - ``dev_back`` : Lance le backend en mode développement
-- ``dev_front`` : Lance le frontend en mode développement
 - ``generate_frontend_module_route`` : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installés (Fait automatiquement lors de l'installation d'un module)
 - ``install_gn_module`` : Installe un gn_module
 - ``update_configuration`` : Met à jour la configuration du cœur de l'application. A exécuter suite à une modification du fichier ``geonature_config.toml``
