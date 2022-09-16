@@ -115,6 +115,5 @@ fi
 
 if [[ "${MODE}" != "dev" ]]; then
   echo "Build du frontend..."
-  npm rebuild node-sass --force || exit 1
   npm run build || exit 1
 fi

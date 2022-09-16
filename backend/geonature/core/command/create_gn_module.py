@@ -141,7 +141,7 @@ def install_packaged_gn_module(module_path, module_code, build):
     create_module_config(current_app, module_code, build=False)
     if build:
         # Rebuild the frontend
-        build_geonature_front(rebuild_sass=True)
+        build_geonature_front()
 
 
 @main.command()
@@ -221,7 +221,7 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                         create_module_config(app, module_code, build=False)
                     if build and enable_frontend:
                         # Rebuild the frontend
-                        build_geonature_front(rebuild_sass=True)
+                        build_geonature_front()
 
                     log.info("Pensez à relancer geonature (sudo systemctl restart geonature)")
                 except Exception as e:
