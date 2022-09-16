@@ -169,7 +169,7 @@ pip install --editable .
 geonature db autoupgrade -x data-directory=tmp/ -x local-srid=$srid_local
 
 echo "Update configurations"
-geonature update_configuration --build=false
+geonature generate_frontend_config
 geonature generate_frontend_modules_route
 geonature generate_frontend_tsconfig_app
 geonature generate_frontend_tsconfig
