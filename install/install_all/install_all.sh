@@ -57,9 +57,6 @@ echo "############### Installation des paquets systèmes ###############"
 
 # Installing required environment for GeoNature and TaxHub
 echo "Installation de l'environnement logiciel..."
-# force node and npm version
-wget -qO- https://deb.nodesource.com/setup_16.x | sudo -E bash -
-
 sudo apt-get install -y unzip git postgresql postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis || exit 1
 
 
