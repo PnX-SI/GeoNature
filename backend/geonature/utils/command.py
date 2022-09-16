@@ -34,10 +34,6 @@ log = logging.getLogger(__name__)
 MSG_OK = "\033[92mok\033[0m\n"
 
 
-def build_geonature_front():
-    subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
-
-
 def frontend_routes_templating(app=None):
     if not app:
         app = create_app(with_external_mods=False)

@@ -18,7 +18,7 @@ from geonature.utils.config import config
 from geonature.utils.module import import_gn_module
 from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
-from geonature.utils.command import build_geonature_front, frontend_routes_templating
+from geonature.utils.command import frontend_routes_templating
 from geonature.core.gn_commons.models import TModules
 from geonature import create_app
 
@@ -387,7 +387,7 @@ def remove_application_db(app, module_code):
     log.info("...%s\n", MSG_OK)
 
 
-def create_module_config(app, module_code, build=True):
+def create_module_config(app, module_code):
     """
     Create the frontend config
     """
@@ -405,5 +405,3 @@ def create_module_config(app, module_code, build=True):
     except FileNotFoundError:
         log.info("No frontend config file")
         raise
-    if build:
-        build_geonature_front()

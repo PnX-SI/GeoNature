@@ -12,7 +12,6 @@ from flask.cli import run_command
 
 from geonature.utils.env import GEONATURE_VERSION
 from geonature.utils.command import (
-    build_geonature_front,
     create_frontend_config,
     frontend_routes_templating,
     tsconfig_templating,
@@ -46,16 +45,12 @@ def main(ctx):
 
 
 @main.command()
-@click.option("--build", type=bool, required=False, default=True)
-def generate_frontend_config(build):
+def generate_frontend_config():
     """
     Génération des fichiers de configurations pour javascript
-    Relance le build du front par defaut
     """
     create_frontend_config()
-    if build:
-        build_geonature_front()
-    log.info("Config successfully updated")
+    log.info("Config successfully updated. Do not forget to rebuild frontend for production.")
 
 
 @main.command()
@@ -75,15 +70,6 @@ def dev_back(ctx, host, port):
     if not environ.get("FLASK_DEBUG"):
         environ["FLASK_DEBUG"] = "true"
     ctx.invoke(run_command, host=host, port=port)
-
-
-@click.option("--build-sass", type=bool, default=False)
-@main.command()
-def frontend_build(build_sass):
-    """
-    Lance le build du frontend
-    """
-    build_geonature_front(build_sass)
 
 
 @main.command()
