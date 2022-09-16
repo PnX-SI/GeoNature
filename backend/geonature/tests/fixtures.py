@@ -177,6 +177,8 @@ def acquisition_frameworks(users):
         "associate_af": create_af(creator=users["associate_user"]),
         "stranger_af": create_af(creator=users["stranger_user"]),
         "orphan_af": create_af(),
+        "af_1": create_af(),
+        "af_2": create_af(),
     }
 
     return afs
@@ -184,16 +186,19 @@ def acquisition_frameworks(users):
 
 @pytest.fixture(scope="function")
 def datasets(users, acquisition_frameworks):
-    af = acquisition_frameworks["orphan_af"]
     principal_actor_role = TNomenclatures.query.filter(
         BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR",
         TNomenclatures.mnemonique == "Contact principal",
     ).one()
 
-    def create_dataset(name, digitizer=None):
+    def create_dataset(
+        name,
+        id_af,
+        digitizer=None,
+    ):
         with db.session.begin_nested():
             dataset = TDatasets(
-                id_acquisition_framework=af.id_acquisition_framework,
+                id_acquisition_framework=id_af,
                 dataset_name=name,
                 dataset_shortname=name,
                 dataset_desc=name,
@@ -209,13 +214,18 @@ def datasets(users, acquisition_frameworks):
                 dataset.cor_dataset_actor.append(actor)
         return dataset
 
+    af = acquisition_frameworks["orphan_af"]
+    af_1 = acquisition_frameworks["af_1"]
+    af_2 = acquisition_frameworks["af_2"]
     datasets = {
-        name: create_dataset(name, digitizer)
-        for name, digitizer in [
-            ("own_dataset", users["user"]),
-            ("associate_dataset", users["associate_user"]),
-            ("stranger_dataset", users["stranger_user"]),
-            ("orphan_dataset", None),
+        name: create_dataset(name, id_af, digitizer)
+        for name, id_af, digitizer in [
+            ("own_dataset", af.id_acquisition_framework, users["user"]),
+            ("associate_dataset", af.id_acquisition_framework, users["associate_user"]),
+            ("stranger_dataset", af.id_acquisition_framework, users["stranger_user"]),
+            ("orphan_dataset", af.id_acquisition_framework, None),
+            ("belong_af_1", af_1.id_acquisition_framework, None),
+            ("belong_af_2", af_2.id_acquisition_framework, None),
         ]
     }
 

@@ -10,6 +10,7 @@ from geoalchemy2.shape import to_shape
 from geojson import Point
 from sqlalchemy import func
 from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound, Unauthorized
+from werkzeug.datastructures import MultiDict
 
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
@@ -309,7 +310,9 @@ class TestGNMeta:
         data = response.json
 
         assert response.status_code == 200
-        assert data["nb_dataset"] == len(list(datasets.keys()))
+        assert data["nb_dataset"] == len(
+            list(filter(lambda ds: ds.id_acquisition_framework == id_af, datasets.values()))
+        )
         assert data["nb_habitats"] == 0
         assert data["nb_observations"] == len(synthese_data)
         # Count of taxa :
@@ -417,7 +420,7 @@ class TestGNMeta:
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == 204
 
-    def test_list_datasets(self, users, datasets):
+    def test_list_datasets(self, users, datasets, acquisition_frameworks):
         response = self.client.get(url_for("gn_meta.get_datasets"))
         assert response.status_code == Unauthorized.code
 
@@ -428,6 +431,29 @@ class TestGNMeta:
         expected_ds = {dataset.id_dataset for dataset in datasets.values()}
         resp_ds = {ds["id_dataset"] for ds in response.json}
         assert expected_ds.issubset(resp_ds)
+        filtered_response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            query_string=MultiDict(
+                [
+                    (
+                        "id_acquisition_framework",
+                        acquisition_frameworks["af_1"].id_acquisition_framework,
+                    ),
+                    (
+                        "id_acquisition_framework",
+                        acquisition_frameworks["af_2"].id_acquisition_framework,
+                    ),
+                ]
+            ),
+        )
+        assert filtered_response.status_code == 200
+        expected_ds = {
+            dataset.id_dataset
+            for key, dataset in datasets.items()
+            if key in ("belong_af_1", "belong_af_2")
+        }
+        filtered_ds = {ds["id_dataset"] for ds in filtered_response.json}
+        assert expected_ds.issubset(filtered_ds)
 
     def test_create_dataset(self, users):
         response = self.client.post(url_for("gn_meta.create_dataset"))
