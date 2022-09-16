@@ -86,11 +86,11 @@ jobs:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Install core modules
         run: |
-          geonature install_packaged_gn_module contrib/occtax OCCTAX --build=false
+          geonature install_packaged_gn_module contrib/occtax OCCTAX
           geonature db upgrade occtax-samples-test@head
-          geonature install_packaged_gn_module contrib/gn_module_occhab OCCHAB --build=false
+          geonature install_packaged_gn_module contrib/gn_module_occhab OCCHAB
           geonature db upgrade occhab-samples@head
-          geonature install_packaged_gn_module contrib/gn_module_validation VALIDATION --build=false
+          geonature install_packaged_gn_module contrib/gn_module_validation VALIDATION
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
         # FRONTEND
@@ -108,7 +108,7 @@ jobs:
       - name: install frontend
         run: |
           cp ./config/settings.ini.sample ./config/settings.ini 
-          geonature generate_frontend_config --build=false
+          geonature generate_frontend_config
           geonature generate_frontend_tsconfig
           geonature generate_frontend_tsconfig_app
           geonature generate_frontend_modules_route
