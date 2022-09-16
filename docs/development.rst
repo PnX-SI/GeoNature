@@ -388,7 +388,7 @@ Si vous avez téléchargé GeoNature zippé (via la procédure d'installation gl
   git submodule update
 
 Configuration des URLs de développement
-************************************************
+***************************************
 
 il est nécessaire de changer la configuration du fichier ``config/geonature_config.toml`` pour utiliser les adresses suivantes :
 
@@ -398,15 +398,7 @@ il est nécessaire de changer la configuration du fichier ``config/geonature_con
   API_ENDPOINT = 'http://127.0.0.1:8000'
   API_TAXHUB =  'http://127.0.0.1:5000/api'
 
-
-
-Pour mettre à jour le fichier ``frontend/src/conf/app.config.ts`` et prendre en compte ces modifications, lancer les commandes suivantes :
-
-.. code-block:: bash
-
-  source ~/geonature/backend/venv/bin/activate
-  geonature update_configuration
-  deactivate
+N’oubliez pas les :ref:`actions à effecture après modification de la configuration <post_config_change>`.
 
 Serveur frontend en développement
 *********************************

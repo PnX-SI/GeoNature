@@ -17,7 +17,6 @@ from geonature.utils.command import (
     frontend_routes_templating,
     tsconfig_templating,
     tsconfig_app_templating,
-    update_app_configuration,
 )
 from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
 from geonature import create_app
@@ -110,24 +109,6 @@ def generate_frontend_tsconfig_app():
     Génere tsconfig.app du frontend/src
     """
     tsconfig_app_templating()
-
-
-@main.command()
-@click.option("--build", type=bool, required=False, default=True)
-def update_configuration(build):
-    """
-    Regénère la configuration de l'application
-
-    Example:
-
-    - geonature update_configuration
-
-    - geonature update_configuration --build=false (met à jour la configuration sans recompiler le frontend)
-
-    """
-    # Recréation du fichier de routing car il dépend de la conf
-    frontend_routes_templating()
-    update_app_configuration(build)
 
 
 @main.command()

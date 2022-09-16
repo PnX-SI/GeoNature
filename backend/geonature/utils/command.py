@@ -136,12 +136,3 @@ def create_frontend_config():
             output_file.write(app_config_template)
 
     log.info("...%s\n", MSG_OK)
-
-
-def update_app_configuration(build=True):
-    log.info("Update app configuration")
-    create_frontend_config()
-    if build:
-        subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
-    log.info("...%s\n", MSG_OK)
-    log.info("Pensez à relancer geonature (sudo systemctl restart geonature)")
