@@ -46,19 +46,6 @@ def main(ctx):
     pass
 
 
-# Unused
-# @main.command()
-# def launch_redis_worker():
-#     """ launch redis worker
-#     """
-#     app = create_app()
-#     with app.app_context():
-#         with Connection(redis.Redis(host='localhost', port='6379')):
-#             q = Queue()
-#             w = Worker(q)
-#             w.work()
-
-
 @main.command()
 @click.option("--build", type=bool, required=False, default=True)
 def generate_frontend_config(build):
