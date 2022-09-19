@@ -91,7 +91,6 @@ export class HomeContentComponent implements OnInit {
 
     if (needToRefreshStats) {
       // Get general stats from Server
-      console.log(this._syntheseApi.getSyntheseGeneralStat());
       this._syntheseApi
         .getSyntheseGeneralStat()
         // .map(stat => {
