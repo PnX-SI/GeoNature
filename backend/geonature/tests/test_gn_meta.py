@@ -1,6 +1,7 @@
 import csv
 import uuid
 from io import StringIO
+from unittest.mock import patch
 
 import pytest
 from flask import url_for
@@ -50,6 +51,12 @@ def synthese_corr():
         "jourDatefin": "date_max",
         "observateurIdentite": "observers",
     }
+
+
+@pytest.fixture
+def mocked_publish_mail():
+    with patch("geonature.core.gn_meta.routes.publish_acquisition_framework_mail") as mock:
+        yield mock
 
 
 def get_csv_from_response(data):
@@ -679,3 +686,33 @@ class TestGNMeta:
         assert roleonly.actor == user
         assert organismonly.actor == user.organisme
         assert complete.actor == user
+
+    def test_publish_acquisition_framework_no_data(
+        self, mocked_publish_mail, users, acquisition_frameworks
+    ):
+        set_logged_user_cookie(self.client, users["user"])
+
+        af = acquisition_frameworks["own_af"]
+        response = self.client.get(
+            url_for("gn_meta.publish_acquisition_framework", af_id=af.id_acquisition_framework)
+        )
+        assert response.status_code == Conflict.code, response.json
+        mocked_publish_mail.assert_not_called()
+
+        af = acquisition_frameworks["orphan_af"]
+        response = self.client.get(
+            url_for("gn_meta.publish_acquisition_framework", af_id=af.id_acquisition_framework)
+        )
+        assert response.status_code == Conflict.code, response.json
+        mocked_publish_mail.assert_not_called()
+
+    def test_publish_acquisition_framework_with_data(
+        self, mocked_publish_mail, users, acquisition_frameworks, synthese_data
+    ):
+        set_logged_user_cookie(self.client, users["user"])
+        af = acquisition_frameworks["orphan_af"]
+        response = self.client.get(
+            url_for("gn_meta.publish_acquisition_framework", af_id=af.id_acquisition_framework)
+        )
+        assert response.status_code == 200, response.json
+        mocked_publish_mail.assert_called_once()

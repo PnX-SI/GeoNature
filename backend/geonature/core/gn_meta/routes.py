@@ -1050,6 +1050,14 @@ def publish_acquisition_framework(info_role, af_id):
     if not datasets:
         raise Conflict("Le cadre doit contenir des jeux de données")
 
+    if not db.session.query(
+        TAcquisitionFramework.query.filter(
+            TAcquisitionFramework.id_acquisition_framework == af_id,
+            TAcquisitionFramework.datasets.any(TDatasets.synthese_records.any()),
+        ).exists()
+    ).scalar():
+        raise Conflict("Tous les jeux de données du cadre d’acquisition sont vides")
+
     # After publishing an AF, we set it as closed and all its DS as inactive
     for dataset in datasets:
         dataset.active = False
