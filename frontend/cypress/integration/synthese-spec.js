@@ -174,7 +174,6 @@ describe('Tests gn_synthese', () => {
   //   // assert : le tri par observateur s'effectue bien --> pas testé
   // });
 
-  // FIXME '#ngb-typeahead-0-0 > .ng-star-inserted' is not found
   it('Should download data at the csv format', function () {
     cy.intercept('POST', '/synthese/export_observations?export_format=csv').as('exportCall');
 
