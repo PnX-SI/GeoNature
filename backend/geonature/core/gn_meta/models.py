@@ -298,7 +298,7 @@ class TDatasetsQuery(BaseQuery):
             except AttributeError:
                 raise BadRequest("the attribute to order on does not exist")
         if "module_code" in params:
-            self = self.filter(TDatasets.modules.any(module_code=params["module_code"]))
+            self = self.filter(TDatasets.modules.any(module_code=params.pop("module_code")))
         # Generic Filters
         for key, values in params.lists():
             try:
