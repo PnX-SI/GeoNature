@@ -173,7 +173,9 @@ geojson==2.5.0
     #   -r requirements-common.in
     #   utils-flask-sqlalchemy-geo
 gunicorn==20.1.0
-    # via -r requirements-common.in
+    # via
+    #   -r requirements-common.in
+    #   taxhub
 html5lib==1.1
     # via weasyprint
 idna==3.3
