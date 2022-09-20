@@ -40,7 +40,7 @@ if database_exists "${db_name}"; then
         sudo -u "postgres" -s dropdb "${db_name}"
     else
         echo "Database exists but the settings file indicates that we don't have to drop it."
-	exit 1
+        exit 0
     fi
 fi
 
