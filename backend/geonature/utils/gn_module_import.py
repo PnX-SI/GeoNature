@@ -309,7 +309,6 @@ def install_frontend_dependencies(module_path):
                         "install",
                         str(frontend_module_path),
                         "--no-save",
-                        "--legacy-peer-deps",
                     ],
                     cwd=str(ROOT_DIR / "frontend"),
                 )
