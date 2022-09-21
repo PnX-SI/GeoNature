@@ -13,6 +13,7 @@ import logging
 import subprocess
 import site
 import importlib
+from warnings import warn
 import pkg_resources
 from pkg_resources import load_entry_point, get_entry_info
 from importlib import invalidate_caches
@@ -150,6 +151,11 @@ def install_gn_module(module_path, url, conf_file, enable_backend):
     """
     Installation d'un module gn
     """
+    warn(
+        "Cette commande sera supprimée au profit de la commande install_packaged_gn_module "
+        "dans la prochaine version de GeoNature. Pensez à packager vos modules.",
+        DeprecationWarning,
+    )
     try:
 
         # Indique si l'utilisateur est en train de
