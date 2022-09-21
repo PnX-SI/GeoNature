@@ -83,7 +83,7 @@ def install_packaged_gn_module(module_path, module_code):
     try:
         module_type = load_entry_point(module_dist, "gn_module", "type")
     except ImportError:
-        module_type = module_code.lower()
+        module_type = None
     try:
         module_object = TModules.query.filter_by(module_code=module_code).one()
         module_object.module_picto = module_picto
