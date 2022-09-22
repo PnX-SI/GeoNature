@@ -140,8 +140,8 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
         map((data) => {
           this.userReleveCruved = data.cruved;
           let releve = data.releve;
-          releve.properties.date_min = new Date(releve.properties.date_min);
-          releve.properties.date_max = new Date(releve.properties.date_max);
+          releve.properties.date_min = releve.properties.date_min.split('-').reverse().join('/');
+          releve.properties.date_max = releve.properties.date_min.split('-').reverse().join('/');
           this.getNomenclatures();
           return releve;
         })

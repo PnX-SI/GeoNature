@@ -16,6 +16,7 @@ CHANGELOG
 **🐛 Corrections**
 
 * Remise en place de la rotation des fichiers de logs
+* Formatage des dates dans occtax pour ne pas dépendre du fuseau horaire (#2005)
 
 **⚠️ Notes de version**
 

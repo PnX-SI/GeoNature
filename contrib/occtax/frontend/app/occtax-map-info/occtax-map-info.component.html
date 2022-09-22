@@ -59,9 +59,9 @@
                   </div>
                   <div>
                     <div class="label"> Entre le :</div>
-                    <div class="value">{{ releve.date_min | date:'dd/MM/yyyy' }} {{releve.hour_min}} </div>
+                    <div class="value">{{ releve.date_min }} {{ releve.hour_min }} </div>
                     <div class="label"> &nbsp; et le : </div>
-                    <div class="value">{{ releve.date_max | date:'dd/MM/yyyy' }} {{releve.hour_max}} </div>
+                    <div class="value">{{ releve.date_max }} {{ releve.hour_max }} </div>
                   </div>
                   <div *ngIf="occtaxConfig.form_fields.place_name">
                       <div class="label">  {{ 'Releve.PlaceName' | translate }} :</div>

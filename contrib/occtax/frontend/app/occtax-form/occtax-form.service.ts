@@ -169,11 +169,11 @@ export class OcctaxFormService {
 
 
   formatDate(strDate) {
-    const date = new Date(strDate);
+    const [year, month, day] = strDate.split('-').map(x => parseInt(x))
     return {
-      year: date.getFullYear(),
-      month: date.getMonth() + 1,
-      day: date.getDate(),
+      year,
+      month,
+      day
     };
   }
 
