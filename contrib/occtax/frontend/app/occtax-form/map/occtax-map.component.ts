@@ -2,7 +2,7 @@ import { Component, OnInit, AfterViewInit, OnDestroy } from "@angular/core";
 import { leafletDrawOption } from "@geonature_common/map/leaflet-draw.options";
 import { CommonService } from "@geonature_common/service/common.service";
 import { ModuleConfig } from "../../module.config";
-import { MapService } from '@geonature_common/map/map.service';
+import { MapService } from "@geonature_common/map/map.service";
 import { OcctaxFormMapService } from "./occtax-map.service";
 import { OcctaxFormService } from "../occtax-form.service";
 
@@ -10,7 +10,9 @@ import { OcctaxFormService } from "../occtax-form.service";
   selector: "pnx-occtax-form-map",
   templateUrl: "occtax-map.component.html",
 })
-export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy {
+export class OcctaxFormMapComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   public leafletDrawOptions: any;
   public firstFileLayerMessage = true;
   public occtaxConfig = ModuleConfig;
@@ -24,7 +26,7 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
     private _commonService: CommonService,
     private _occtaxFormService: OcctaxFormService,
     private _mapService: MapService
-  ) { }
+  ) {}
 
   ngOnInit() {
     // overight the leaflet draw object to set options
@@ -42,7 +44,7 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
       this._mapService.map.setView(
         this._mapService.currentExtend.center,
         this._mapService.currentExtend.zoom
-      )
+      );
     }
     let filelayerFeatures = this._mapService.fileLayerFeatureGroup.getLayers();
     // si il y a encore des filelayer -> on désactive le marker par defaut
@@ -51,7 +53,7 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
       this._mapService.fileLayerEditionMode = true;
     }
 
-    filelayerFeatures.forEach(el => {
+    filelayerFeatures.forEach((el) => {
       if ((el as any).getLayers()[0].options.color == "red") {
         (el as any).setStyle({ color: "green", opacity: 0.2 });
       }
@@ -64,11 +66,6 @@ export class OcctaxFormMapComponent implements OnInit, AfterViewInit, OnDestroy 
       this._commonService.translateToaster("info", "Map.FileLayerInfoMessage");
     }
     this.firstFileLayerMessage = false;
-  }
-
-  sendGeoInfo(geojson) {
-    this._occtaxFormService.disabled = false;
-    this.ms.geometry = geojson;
   }
 
   ngOnDestroy() {

@@ -125,6 +125,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
       const geojson = this.getGeojsonFromFeatureGroup(this.currentLayerType);
       this.mapservice.setGeojsonCoord(geojson);
       this.layerDrawed.emit(geojson);
+      console.log('edit');
     });
 
     // on layer deleted
