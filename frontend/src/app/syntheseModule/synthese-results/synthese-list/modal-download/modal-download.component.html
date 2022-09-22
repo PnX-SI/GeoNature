@@ -7,6 +7,7 @@
     class="close"
     aria-label="Close"
     (click)="activeModal.dismiss('Cross click')"
+    data-qa="synthese-download-close-btn"
   >
     <span aria-hidden="true">&times;</span>
   </button>
@@ -46,6 +47,8 @@
         (click)="downloadObservations(format)"
         type="button"
         class="buttonLoad button-success format-btn"
+        [attr.data-qa]="'download-'+format"
+
       >
         Format {{ format }}
       </button>

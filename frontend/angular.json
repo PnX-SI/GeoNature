@@ -105,13 +105,6 @@
             }
           }
         },
-        "serve-coverage": {
-          "builder": "@angular-builders/custom-webpack:dev-server",
-          "options": {
-            "browserTarget": "geonature:build:e2e",
-            "host": "127.0.0.1"
-          }
-        },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {

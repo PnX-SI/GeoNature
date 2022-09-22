@@ -81,6 +81,7 @@ jobs:
           geonature db upgrade taxhub@head
           geonature taxref import-v15 --skip-bdc-statuts
           geonature db upgrade nomenclatures_taxonomie_data@head
+          geonature db upgrade ref_geo_fr_departments@head
 
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
@@ -130,7 +131,7 @@ jobs:
         with:
           record: ${{ fromJSON(github.ref_name == 'master') }}
           working-directory: ./frontend
-          start: npm run start-for-ci
+          start: npm run start
           wait-on: http://127.0.0.1:4200
           headless: true
         env:

@@ -23,6 +23,7 @@
     [ngStyle]="{
       outlineWidth: '0px'
     }"
+    data-qa="synthese-info-obs-close-btn"
   >
     <span aria-hidden="true">&times;</span>
   </button>
@@ -329,12 +330,12 @@
   <mat-tab label="Métadonnées">
     <table class="font-xs table table-striped table-sm">
       <tr>
-        <td>Jeu de données</td>
-        <td>{{ selectedObs?.dataset.dataset_name }}</td>
+        <td >Jeu de données</td>
+        <td data-qa="synthese-obs-detail-jdd">{{ selectedObs?.dataset.dataset_name }}</td>
       </tr>
       <tr>
         <td>Cadre d'acquisition</td>
-        <td>{{ selectedObs?.dataset.acquisition_framework.acquisition_framework_name }}</td>
+        <td data-qa="synthese-obs-detail-ca">{{ selectedObs?.dataset.acquisition_framework.acquisition_framework_name }}</td>
       </tr>
       <tr>
         <td>Acteurs</td>
@@ -371,7 +372,7 @@
         <td>
           <b> Famille</b>
         </td>
-        <td>{{ selectedObsTaxonDetail?.famille }}</td>
+        <td  data-qa="synthese-obs-detail-taxo-familly">{{ selectedObsTaxonDetail?.famille }}</td>
       </tr>
     </table>
 
@@ -451,7 +452,7 @@
             {{ area_type.area_type }}
           </td>
           <td>
-            <span *ngFor="let area of area_type.areas; let index = index">
+            <span data-qa="synthese-obs-detail-area" *ngFor="let area of area_type.areas; let index = index">
               {{ area.area_name }}<span *ngIf="index < area_type.areas.length - 1">,</span>
             </span>
           </td>
@@ -465,7 +466,7 @@
       <span>Validation</span>
     </ng-template>
     <div *ngIf="showValidation">
-      <h3>Historique de validation de la donnée</h3>
+      <h3 data-qa="synthese-obs-detail-validation-title">Historique de validation de la donnée</h3>
 
       <table class="font-xs table table-striped table-sm">
         <thead>

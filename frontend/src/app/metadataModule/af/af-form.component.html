@@ -18,6 +18,7 @@
             <input
               class="form-control form-control-sm"
               type="text"
+              data-qa="pnx-metadata-af-form-name"
               [formControl]="form.get('acquisition_framework_name')"
             />
           </div>
@@ -28,6 +29,7 @@
               class="form-control form-control-sm"
               type="text"
               [formControl]="form.get('acquisition_framework_desc')"
+              data-qa="pnx-metadata-af-form-description"
             >
             </textarea>
           </div>
@@ -77,6 +79,7 @@
             codeNomenclatureType="TERRITOIRE"
             [bindAllItem]="true"
             [keyValue]="null"
+            data-qa="pnx-metadata-af-form-territory"
           >
           </pnx-nomenclature>
 
@@ -84,6 +87,7 @@
             label="Niveau territorial"
             [parentFormControl]="form.get('id_nomenclature_territorial_level')"
             codeNomenclatureType="NIVEAU_TERRITORIAL"
+            data-qa="pnx-metadata-af-form-territory-level"
           >
           </pnx-nomenclature>
 
@@ -104,6 +108,8 @@
             codeNomenclatureType="CA_OBJECTIFS"
             [bindAllItem]="true"
             [keyValue]="null"
+            data-qa="pnx-metadata-af-form-objectif"
+
           >
           </pnx-nomenclature>
 
@@ -121,6 +127,7 @@
             label="Type de financement"
             [parentFormControl]="form.get('id_nomenclature_financing_type')"
             codeNomenclatureType="TYPE_FINANCEMENT"
+            data-qa="pnx-metadata-af-form-financing-type"
           >
           </pnx-nomenclature>
 
@@ -153,6 +160,7 @@
           <pnx-date
             label="Date début"
             [parentFormControl]="form.get('acquisition_framework_start_date')"
+            data-qa="pnx-metadata-af-form-start-date"
           >
           </pnx-date>
 
@@ -324,7 +332,12 @@
     <button class="mr-1" type="button" mat-raised-button color="warn" routerLink="/metadata">
       Annuler
     </button>
-    <button [disabled]="form.invalid" mat-raised-button class="button-success" (click)="postAf()">
+    <button 
+      [disabled]="form.invalid" 
+      mat-raised-button class="button-success" 
+      (click)="postAf()"
+      data-qa="pnx-metadata-save-af"
+      >
       Enregistrer le cadre d'acquisition
     </button>
   </div>
