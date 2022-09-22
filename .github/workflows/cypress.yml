@@ -131,7 +131,7 @@ jobs:
         with:
           record: ${{ fromJSON(github.ref_name == 'master') }}
           working-directory: ./frontend
-          start: npm run start-for-ci
+          start: npm run start
           wait-on: http://127.0.0.1:4200
           headless: true
         env:
