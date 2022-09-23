@@ -9,9 +9,16 @@ from binascii import a2b_base64
 from pathlib import Path
 
 import click
-from flask import (Blueprint, Response, copy_current_request_context,
-                   current_app, g, render_template, request,
-                   send_from_directory)
+from flask import (
+    Blueprint,
+    Response,
+    copy_current_request_context,
+    current_app,
+    g,
+    render_template,
+    request,
+    send_from_directory,
+)
 from flask.json import jsonify
 from lxml import etree as ET
 from marshmallow import EXCLUDE, ValidationError
@@ -23,32 +30,34 @@ from sqlalchemy import inspect
 from sqlalchemy.orm import Load, joinedload, raiseload
 from sqlalchemy.sql import exists, select, text, update
 from sqlalchemy.sql.functions import func
-from utils_flask_sqla.response import (generate_csv_content, json_resp,
-                                       to_csv_resp)
+from utils_flask_sqla.response import generate_csv_content, json_resp, to_csv_resp
 from werkzeug.datastructures import Headers
 from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound
 from werkzeug.utils import secure_filename
 
 import geonature.utils.filemanager as fm
 import geonature.utils.utilsmails as mail
-from geonature.core.gn_meta.models import (CorAcquisitionFrameworkActor,
-                                           CorAcquisitionFrameworkObjectif,
-                                           CorAcquisitionFrameworkVoletSINP,
-                                           CorDatasetActor, CorDatasetProtocol,
-                                           CorDatasetTerritory,
-                                           TAcquisitionFramework,
-                                           TAcquisitionFrameworkDetails,
-                                           TDatasets)
+from geonature.core.gn_meta.models import (
+    CorAcquisitionFrameworkActor,
+    CorAcquisitionFrameworkObjectif,
+    CorAcquisitionFrameworkVoletSINP,
+    CorDatasetActor,
+    CorDatasetProtocol,
+    CorDatasetTerritory,
+    TAcquisitionFramework,
+    TAcquisitionFrameworkDetails,
+    TDatasets,
+)
 from geonature.core.gn_meta.mtd import mtd_utils
 from geonature.core.gn_meta.repositories import get_metadata_list
-from geonature.core.gn_meta.schemas import (AcquisitionFrameworkSchema,
-                                            DatasetSchema)
+from geonature.core.gn_meta.schemas import AcquisitionFrameworkSchema, DatasetSchema
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.decorators import login_required
 from geonature.core.gn_permissions.tools import (
-    cruved_scope_for_user_in_module, get_scopes_by_action)
-from geonature.core.gn_synthese.models import (CorAreaSynthese, Synthese,
-                                               TSources)
+    cruved_scope_for_user_in_module,
+    get_scopes_by_action,
+)
+from geonature.core.gn_synthese.models import CorAreaSynthese, Synthese, TSources
 from geonature.utils.config import config
 from geonature.utils.env import BACKEND_DIR, DB, db
 from geonature.utils.errors import GeonatureApiError
@@ -96,18 +105,26 @@ def get_datasets(info_role):
     else:
         query = TDatasets.query.filter_by_readable()
     query = query.filter_by_params(params).options(
-            Load(TDatasets).raiseload("*"),
-            joinedload("cor_dataset_actor").options(
-                joinedload("role"),
-                joinedload("organism"),
-            ))
+        Load(TDatasets).raiseload("*"),
+        joinedload("cor_dataset_actor").options(
+            joinedload("role"),
+            joinedload("organism"),
+        ),
+    )
     user_cruved = cruved_scope_for_user_in_module(
         id_role=info_role.id_role,
         module_code="METADATA",
     )[0]
-    
-    # TODO: Need to add cor_dataset_actor 
-    dataset_schema = DatasetSchema(only=["cor_dataset_actor"])
+
+    # TODO: Need to add cor_dataset_actor
+    dataset_schema = DatasetSchema(
+        only=[
+            "cor_dataset_actor",
+            "cor_dataset_actor.nomenclature_actor_role",
+            "cor_dataset_actor.organism",
+            "cor_dataset_actor.role",
+        ]
+    )
     dataset_schema.context = {"user_cruved": user_cruved}
     data = dataset_schema.jsonify(query.all(), many=True)
 
