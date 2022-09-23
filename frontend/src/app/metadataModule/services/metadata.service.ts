@@ -17,6 +17,11 @@ import { AppConfig } from '@geonature_config/app.config';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 
+type DataSetObsCount = {
+  count: number;
+  id_dataset: number;
+};
+
 @Injectable()
 export class MetadataService {
   public form: FormGroup;
@@ -28,6 +33,8 @@ export class MetadataService {
   get acquisitionFrameworks() {
     return this._acquisitionFrameworks.getValue();
   }
+
+  private _datasetNbObs: DataSetObsCount[] = [];
 
   /* resultat du filtre sur _acquisitionFrameworks */
   public filteredAcquisitionFrameworks: Observable<any[]>;
@@ -103,7 +110,6 @@ export class MetadataService {
     params['actors'] = 1;
     this.isLoading = true;
     this._acquisitionFrameworks.next([]);
-    console.log('yolo');
 
     //forkJoin pour lancer les 2 requetes simultanément
     forkJoin({
@@ -113,13 +119,12 @@ export class MetadataService {
       .pipe(
         tap(() => (this.isLoading = false)),
         map((val) => {
-          console.log('yolo', val);
+          this._datasetNbObs = val.datasetNbObs;
           //val: {afs: CA[], datasetNbObs: {id_dataset: number, count: number}[]}
           //boucle sur les CA pour attribuer le nombre de données au JDD et création de la clé datasetsTemp
           // for (let i = 0; i < val.afs.length; i++) {
           //   this.setDsObservationCount(val.afs[i]['t_datasets'], val.datasetNbObs);
           // }
-          console.log('yolo', val.afs);
           //renvoie uniquement les CA
           return val.afs;
         })
@@ -161,16 +166,20 @@ export class MetadataService {
   }
 
   addDatasetToAcquisitionFramework(id_af: number) {
-    this.dataFormService
-      .getDatasets({ id_acquisition_frameworks: [id_af] })
-      .toPromise()
-      .then((datasets) => {
-        this.acquisitionFrameworks
-          .filter((af) => af.id_acquisition_framework === id_af)
-          .map((af) => (af.datasetsTemp = datasets));
-      });
-
-    console.log(this.acquisitionFrameworks);
+    // current_af is either the af corresponding to id_af
+    // or undefined
+    const current_af = this.acquisitionFrameworks.filter(
+      (af) => af.id_acquisition_framework === id_af
+    )[0];
+    if (current_af !== undefined && !('datasetsTemp' in current_af)) {
+      this.dataFormService
+        .getDatasets({ id_acquisition_frameworks: [id_af] })
+        .toPromise()
+        .then((datasets) => {
+          this.setDsObservationCount(datasets, this._datasetNbObs);
+          current_af.datasetsTemp = datasets;
+        });
+    }
   }
 
   private setDsObservationCount(datasets, dsNbObs) {
