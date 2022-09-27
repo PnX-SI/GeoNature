@@ -18,7 +18,7 @@ from geonature.utils.config import config
 from geonature.utils.module import import_gn_module
 from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
-from geonature.utils.command import build_geonature_front, frontend_routes_templating
+from geonature.utils.command import frontend_routes_templating
 from geonature.core.gn_commons.models import TModules
 from geonature import create_app
 
@@ -300,20 +300,27 @@ def install_frontend_dependencies(module_path):
     frontend_module_path = Path(module_path) / "frontend"
     if (frontend_module_path / "package.json").is_file():
         try:
-            # To avoid Maximum call stack size exceeded on npm install - clear cache...
-            subprocess.call(["/bin/bash", "-i", "-c", "nvm use"], cwd=str(ROOT_DIR / "frontend"))
-            assert (
-                subprocess.call(
-                    [
-                        "npm",
-                        "install",
-                        str(frontend_module_path),
-                        "--no-save",
-                        "--legacy-peer-deps",
-                    ],
-                    cwd=str(ROOT_DIR / "frontend"),
+            subprocess.check_call(
+                ["/bin/bash", "-i", "-c", "nvm use"], cwd=str(ROOT_DIR / "frontend")
+            )
+            try:
+                subprocess.check_call(
+                    ["npm", "ci"],
+                    cwd=str(frontend_module_path),
                 )
-                == 0
+            except subprocess.CalledProcessError:  # probably missing package-lock.json
+                subprocess.check_call(
+                    ["npm", "install"],
+                    cwd=str(frontend_module_path),
+                )
+            subprocess.check_call(
+                [
+                    "npm",
+                    "install",
+                    str(frontend_module_path),
+                    "--no-save",
+                ],
+                cwd=str(ROOT_DIR / "frontend"),
             )
         except Exception as ex:
             log.info("Error while installing JS dependencies")
@@ -387,7 +394,7 @@ def remove_application_db(app, module_code):
     log.info("...%s\n", MSG_OK)
 
 
-def create_module_config(app, module_code, build=True):
+def create_module_config(app, module_code):
     """
     Create the frontend config
     """
@@ -405,5 +412,3 @@ def create_module_config(app, module_code, build=True):
     except FileNotFoundError:
         log.info("No frontend config file")
         raise
-    if build:
-        build_geonature_front()

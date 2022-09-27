@@ -17,6 +17,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.schema import FetchedValue
 from utils_flask_sqla.generic import testDataType
 from werkzeug.exceptions import BadRequest, NotFound
+from werkzeug.datastructures import MultiDict
 
 from pypnnomenclature.models import TNomenclatures
 from pypnusershub.db.models import User, Organisme
@@ -285,21 +286,10 @@ class TDatasetsQuery(BaseQuery):
             self = self.filter(or_(*ors))
         return self
 
-    def filter_by_params(self, params={}):
+    def filter_by_params(self, params: MultiDict = MultiDict()):
         if "active" in params:
             self = self.filter(TDatasets.active == bool(params["active"]))
             params.pop("active")
-        if "id_acquisition_framework" in params:
-            if type(params["id_acquisition_framework"]) is list:
-                self = self.filter(
-                    TDatasets.id_acquisition_framework.in_(
-                        [int(id_af) for id_af in params["id_acquisition_framework"]]
-                    )
-                )
-            else:
-                self = self.filter(
-                    TDatasets.id_acquisition_framework == int(params["id_acquisition_framework"])
-                )
         table_columns = TDatasets.__table__.columns
         if "orderby" in params:
             try:
@@ -308,15 +298,20 @@ class TDatasetsQuery(BaseQuery):
             except AttributeError:
                 raise BadRequest("the attribute to order on does not exist")
         if "module_code" in params:
-            self = self.filter(TDatasets.modules.any(module_code=params["module_code"]))
+            self = self.filter(TDatasets.modules.any(module_code=params.pop("module_code")))
         # Generic Filters
-        for param in params:
-            if param in table_columns:
-                col = getattr(table_columns, param)
-                testT = testDataType(params[param], col.type, param)
+        for key, values in params.lists():
+            try:
+                col = getattr(TDatasets, key)
+            except KeyError:
+                raise BadRequest(f"Column {key} does not exist")
+            col = getattr(table_columns, key)
+            for v in values:
+                testT = testDataType(v, col.type, key)
                 if testT:
                     raise BadRequest(testT)
-                self = self.filter(col == params[param])
+            ors = [col == v for v in values]
+            self = self.filter(or_(*ors))
         return self
 
     def filter_by_readable(self, user=None):

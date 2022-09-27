@@ -12,14 +12,14 @@ echo "Activation du virtual env"
 source backend/venv/bin/activate
 
 
-geonature install_packaged_gn_module "${BASE_DIR}/contrib/occtax" OCCTAX --build=false
+geonature install_packaged_gn_module "${BASE_DIR}/contrib/occtax" OCCTAX
 if [ "$add_sample_data" = true ];
 then
     geonature db upgrade occtax-samples@head
 fi
 
 if [ "$install_module_occhab" = true ]; then
-    geonature install_packaged_gn_module "${BASE_DIR}/contrib/gn_module_occhab" OCCHAB --build=false
+    geonature install_packaged_gn_module "${BASE_DIR}/contrib/gn_module_occhab" OCCHAB
     if [ "$add_sample_data" = true ];
     then
         geonature db upgrade occhab-samples@head
@@ -27,7 +27,7 @@ if [ "$install_module_occhab" = true ]; then
 fi
 
 if [ "$install_module_validation" = true ]; then
-    geonature install_packaged_gn_module "${BASE_DIR}/contrib/gn_module_validation" VALIDATION --build=false
+    geonature install_packaged_gn_module "${BASE_DIR}/contrib/gn_module_validation" VALIDATION
 fi
 
 echo "Désactivation du virtual env"

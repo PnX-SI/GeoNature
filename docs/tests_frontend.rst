@@ -1,5 +1,5 @@
-Ecrire des tests
-================
+Tests frontend
+--------------
 
 Cette documentation a pour objectif d'expliquer comment écrire des tests pour 
 le frontend de GeoNature.
@@ -16,7 +16,7 @@ Rédaction
 La rédaction des fichiers de tests se fait dans le dossier frontend/cypress/integration.
 
 Structure
-^^^^^^^^^
+"""""""""
 
 La nomenclature des fichiers de test est XXXXXXX-spec.js (XXXX correspondant au nom du module testé). 
 
@@ -25,10 +25,10 @@ Dans chaque fichier la structure des tests est de la forme
 - une description
     - test
     - test
-    ...  
+    - ...  
     
 Exemple
-^^^^^^^
+"""""""
 
 .. code-block:: js
 
@@ -47,13 +47,14 @@ Exemple
 Afin d'homogénéiser les descriptions des tests il est établi que l'on nomme un test en anglais en commençant par should. 
 
 Exemple
-^^^^^^^ 
+"""""""
+
 .. code-block:: js
 
     it('should change the state',() => ... 
 
 Implémentation 
-^^^^^^^^^^^^^^
+""""""""""""""
 
 La réalisation des tests frontend passe par la sélection des objets HTML du DOM.
 A fin de rendre ces sélections plus propres, on peut ajouter des tags HTML dans le dom.
@@ -64,7 +65,7 @@ Angular suggère l'ajout de tags de ce type:
 - data-test
 
 Exemple
-^^^^^^^
+"""""""
 
 .. code-block:: HTML
 

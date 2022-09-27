@@ -34,16 +34,6 @@ log = logging.getLogger(__name__)
 MSG_OK = "\033[92mok\033[0m\n"
 
 
-def start_geonature_front():
-    subprocess.call(["npm", "run", "start"], cwd=str(ROOT_DIR / "frontend"))
-
-
-def build_geonature_front(rebuild_sass=False):
-    if rebuild_sass:
-        subprocess.call(["npm", "rebuild", "node-sass", "--force"], cwd=str(ROOT_DIR / "frontend"))
-    subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
-
-
 def frontend_routes_templating(app=None):
     if not app:
         app = create_app(with_external_mods=False)
@@ -142,12 +132,3 @@ def create_frontend_config():
             output_file.write(app_config_template)
 
     log.info("...%s\n", MSG_OK)
-
-
-def update_app_configuration(build=True):
-    log.info("Update app configuration")
-    create_frontend_config()
-    if build:
-        subprocess.call(["npm", "run", "build"], cwd=str(ROOT_DIR / "frontend"))
-    log.info("...%s\n", MSG_OK)
-    log.info("Pensez à relancer geonature (sudo systemctl restart geonature)")

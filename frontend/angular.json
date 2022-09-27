@@ -9,7 +9,7 @@
       "projectType": "application",
       "architect": {
         "build": {
-          "builder": "@angular-builders/custom-webpack:browser",
+          "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "preserveSymlinks": true,
             "outputPath": "dist",
@@ -93,7 +93,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "geonature:build"
+            "browserTarget": "geonature:build",
+            "host": "127.0.0.1"
           },
           "configurations": {
             "production": {
@@ -102,12 +103,6 @@
             "development": {
               "browserTarget": "geonature:build:development"
             }
-          }
-        },
-        "serve-coverage": {
-          "builder": "@angular-builders/custom-webpack:dev-server",
-          "options": {
-            "browserTarget": "geonature:build:e2e"
           }
         },
         "extract-i18n": {

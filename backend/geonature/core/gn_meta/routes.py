@@ -31,7 +31,7 @@ from sqlalchemy.orm import Load, joinedload, raiseload
 from sqlalchemy.sql import exists, select, text, update
 from sqlalchemy.sql.functions import func
 from utils_flask_sqla.response import generate_csv_content, json_resp, to_csv_resp
-from werkzeug.datastructures import Headers
+from werkzeug.datastructures import Headers, MultiDict
 from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound
 from werkzeug.utils import secure_filename
 
@@ -96,7 +96,7 @@ def get_datasets(info_role):
     :query int id_acquisition_framework: get only dataset of given AF
     :returns:  `list<TDatasets>`
     """
-    params = request.args.to_dict()
+    params = MultiDict(request.args)
     fields = params.get("fields", None)
     if fields:
         fields = fields.split(",")
@@ -1060,6 +1060,14 @@ def publish_acquisition_framework(info_role, af_id):
 
     if not datasets:
         raise Conflict("Le cadre doit contenir des jeux de données")
+
+    if not db.session.query(
+        TAcquisitionFramework.query.filter(
+            TAcquisitionFramework.id_acquisition_framework == af_id,
+            TAcquisitionFramework.datasets.any(TDatasets.synthese_records.any()),
+        ).exists()
+    ).scalar():
+        raise Conflict("Tous les jeux de données du cadre d’acquisition sont vides")
 
     # After publishing an AF, we set it as closed and all its DS as inactive
     for dataset in datasets:

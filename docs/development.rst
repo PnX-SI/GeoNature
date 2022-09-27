@@ -33,16 +33,19 @@ GeoNature utilise :
 .. image :: _static/api_services.png
 
 Liste des routes
-*****************
+****************
 
-.. qrefflask:: geonature:create_app()
-  :undoc-static:
+Vous pouvez obtenir la liste des routes de GeoNature avec la commande suivante :
+
+.. code-block:: bash
+
+    $ geonature routes
+
 
 Documentation des routes
 ************************
 
-.. autoflask:: geonature:create_app()
-  :undoc-static:
+Génération automatique actuellement hors-service :-(
 
 
 Release
@@ -385,7 +388,7 @@ Si vous avez téléchargé GeoNature zippé (via la procédure d'installation gl
   git submodule update
 
 Configuration des URLs de développement
-************************************************
+***************************************
 
 il est nécessaire de changer la configuration du fichier ``config/geonature_config.toml`` pour utiliser les adresses suivantes :
 
@@ -395,14 +398,7 @@ il est nécessaire de changer la configuration du fichier ``config/geonature_con
   API_ENDPOINT = 'http://127.0.0.1:8000'
   API_TAXHUB =  'http://127.0.0.1:5000/api'
 
-
-
-Pour mettre à jour le fichier ``frontend/src/conf/app.config.ts` et prendre en compte ces modifications, lancer les commandes suivantes :
-
-.. code-block:: bash
-  source ~/geonature/backend/venv/bin/activate
-  geonature update_configuration
-  deactivate
+N’oubliez pas les :ref:`actions à effecture après modification de la configuration <post_config_change>`.
 
 Serveur frontend en développement
 *********************************
@@ -411,10 +407,9 @@ Lancer le serveur frontent via le virtualenv :
 
 .. code-block:: bash
   
-  source ~/geonature/frontend/venv/bin/activate
-  geonature dev_front
-
-Notez que vous pouvez aussi utiliser alternativement les commandes ``npm`` standards sans le virtualenv (consultez le fichier `frontend/package.json <https://github.com/PnX-SI/GeoNature/blob/7af2c82a97675daa965024a3879c7168aca2fdb1/frontend/package.json#L7>`_).
+  source ~/geonature/frontend/
+  nvm use
+  npm run start
 
 
 API en développement
@@ -452,7 +447,7 @@ Si toutefois TaxHub retourne une erreur 500 et ne répond pas sur l'URL http://1
   flask run
 
 Debugger avec un navigateur
-**************************
+***************************
 
 L'extension `Angular DevTools <https://angular.io/guide/devtools>`_ permettra de debugger l'application dans la console du navigateur.
 Pour utiliser l'extension vous devez l'installer et passer obligatoirement en mode ``development``.
@@ -1391,28 +1386,7 @@ typescript::
         npm run lint
 
 
-Pytest
-******
 
-Pytest permet de mettre en place des tests fonctionnels et automatisés
-du code Python.
+.. include:: tests_backend.rst
 
-Les fichiers de test sont dans le répertoire ``backend/geonature/tests``
-
-.. code::
-
-    pytest
-
-
-Coverage
-********
-
-Coverage permet de donner une indication concernant la couverture du code
-par les tests.
-
-.. code::
-
-    pytest --cov=geonature --cov-report=html
-
-
-Ceci génénère un rapport html disponible dans ``htmlcov/index.html``.
+.. include:: tests_frontend.rst
