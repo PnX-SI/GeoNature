@@ -2,7 +2,16 @@ import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
 import { forkJoin, Observable, BehaviorSubject } from 'rxjs';
-import { tap, map, startWith, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import {
+  tap,
+  map,
+  startWith,
+  distinctUntilChanged,
+  debounceTime,
+  distinct,
+  switchMap,
+  reduce,
+} from 'rxjs/operators';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 
 import { AppConfig } from '@geonature_config/app.config';
@@ -13,6 +22,8 @@ type DataSetObsCount = {
   count: number;
   id_dataset: number;
 };
+
+const APIPARAMS = { datasets: false, creator: 1, actors: 1 };
 
 @Injectable()
 export class MetadataService {
@@ -54,19 +65,21 @@ export class MetadataService {
       person: null,
     });
 
-    //this.getMetadata();
+    this.getMetadata();
 
     this.filteredAcquisitionFrameworks = this._acquisitionFrameworks.asObservable();
     this.rapidSearchControl.valueChanges
       .pipe(startWith(''), debounceTime(200), distinctUntilChanged())
-      .subscribe((term) => this.getMetadata({ name: term }));
+      .subscribe((term) => {
+        if (term) {
+          this.search(term);
+        }
+      });
   }
 
   //recuperation cadres d'acquisition
   getMetadataObservable(params = {}) {
-    params['datasets'] = false;
-    params['creator'] = 1;
-    params['actors'] = 1;
+    params = { ...params, ...APIPARAMS };
     this.isLoading = true;
     this._acquisitionFrameworks.next([]);
 
@@ -87,6 +100,26 @@ export class MetadataService {
         return val.afs;
       })
     );
+  }
+
+  search(term: string) {
+    const params = [
+      { ...APIPARAMS, name: term },
+      { ...APIPARAMS, 'datasets.name': term },
+      // { ...APIPARAMS, acquisition_framework_start_date: term },
+      // { ...APIPARAMS, 'datasets.meta_create_date': term },
+    ];
+    return forkJoin(params.map((param) => this.dataFormService.getAcquisitionFrameworksList(param)))
+      .pipe(
+        switchMap((array) => {
+          return [].concat(...array);
+        }),
+        distinct((af) => af.id_acquisition_framework),
+        reduce((afs, af) => [...afs, af], [])
+      )
+      .subscribe((afs) => {
+        this._acquisitionFrameworks.next(afs);
+      });
   }
 
   getMetadata(params = {}) {
