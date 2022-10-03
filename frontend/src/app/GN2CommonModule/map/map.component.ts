@@ -196,7 +196,7 @@ export class MapComponent implements OnInit {
       // 6 decimales
       const lat = Math.round(event.latlng.lat * 1e6) / 1e6;
       const lng = Math.round(event.latlng.lng * 1e6) / 1e6;
-      this.coordinatesTxt = `${lat}, ${lng}`;
+      this.coordinatesTxt = `${lng}, ${lat}`;
     });
 
     // quand le pointeur de la soouris quitte la carte
@@ -211,7 +211,7 @@ export class MapComponent implements OnInit {
       // 6 decimales
       const lat = Math.round(event.latlng.lat * 1e6) / 1e6;
       const lng = Math.round(event.latlng.lng * 1e6) / 1e6;
-      this.coordinatesTxt = `${lat}, ${lng}`;
+      this.coordinatesTxt = `${lng}, ${lat}`;
       if (!(navigator as any).clipboard) {
         return;
       }
