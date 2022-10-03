@@ -212,7 +212,10 @@ export class MapComponent implements OnInit {
       const lat = Math.round(event.latlng.lat * 1e6) / 1e6;
       const lng = Math.round(event.latlng.lng * 1e6) / 1e6;
       this.coordinatesTxt = `${lat}, ${lng}`;
-      navigator.clipboard.writeText(this.coordinatesTxt);
+      if (!(navigator as any).clipboard) {
+        return;
+      }
+      (navigator as any).clipboard.writeText(this.coordinatesTxt);
       this._commonService.regularToaster(
         'success',
         `Le point\n(lon: ${lng}, lat: ${lat})\na été copié dans le presse papier`
