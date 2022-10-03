@@ -97,9 +97,9 @@ def get_datasets(info_role):
     :returns:  `list<TDatasets>`
     """
     params = MultiDict(request.args)
-    fields = params.get("fields", None)
-    if fields:
-        fields = fields.split(",")
+    # fields = params.get("fields", None)
+    # if fields:
+    #     fields = fields.split(",")
     if "create" in params:
         query = TDatasets.query.filter_by_creatable(params.pop("create"))
     else:
