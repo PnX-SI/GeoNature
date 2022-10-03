@@ -206,6 +206,19 @@ class TestGNMeta:
         assert response.status_code == 200
         assert response.json.get("acquisition_framework_name") == new_name
 
+    def test_update_acquisition_framework(self, users, acquisition_frameworks):
+        set_logged_user_cookie(self.client, users["stranger_user"])
+        af = acquisition_frameworks["own_af"]
+        response = self.client.post(
+            url_for(
+                "gn_meta.updateAcquisitionFramework",
+                id_acquisition_framework=af.id_acquisition_framework,
+            ),
+            data=dict(acquisition_framework_name="new_name"),
+        )
+
+        assert response.status_code == Forbidden.code
+
     def test_get_acquisition_frameworks(self, users):
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks"))
         assert response.status_code == Unauthorized.code
