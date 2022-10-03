@@ -133,7 +133,7 @@ def get_datasets(info_role):
     if (
         user_agent and user_agent.split("/")[0].lower() == "okhttp"
     ):  # retro-compatibility for mobile app
-        return jsonify({"data": data})
+        return jsonify({"data": data.json})
     return data
 
 

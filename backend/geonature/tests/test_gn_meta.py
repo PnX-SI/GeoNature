@@ -10,7 +10,7 @@ from geoalchemy2.shape import to_shape
 from geojson import Point
 from sqlalchemy import func
 from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound, Unauthorized
-from werkzeug.datastructures import MultiDict
+from werkzeug.datastructures import MultiDict, Headers
 
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
@@ -467,6 +467,15 @@ class TestGNMeta:
         }
         filtered_ds = {ds["id_dataset"] for ds in filtered_response.json}
         assert expected_ds.issubset(filtered_ds)
+
+    def test_list_datasets_mobile(self, users, datasets, acquisition_frameworks):
+        set_logged_user_cookie(self.client, users["admin_user"])
+        headers = Headers()
+        headers.add("User-Agent", "okhttp/")
+
+        response = self.client.get(url_for("gn_meta.get_datasets"), headers=headers)
+
+        assert set(response.json.keys()) == {"data"}
 
     def test_create_dataset(self, users):
         response = self.client.post(url_for("gn_meta.create_dataset"))
