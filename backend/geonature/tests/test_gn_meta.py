@@ -206,9 +206,11 @@ class TestGNMeta:
         assert response.status_code == 200
         assert response.json.get("acquisition_framework_name") == new_name
 
-    def test_update_acquisition_framework(self, users, acquisition_frameworks):
-        set_logged_user_cookie(self.client, users["stranger_user"])
+    def test_update_acquisition_framework_forbidden(self, users, acquisition_frameworks):
+        stranger_user = users["stranger_user"]
+        set_logged_user_cookie(self.client, stranger_user)
         af = acquisition_frameworks["own_af"]
+        
         response = self.client.post(
             url_for(
                 "gn_meta.updateAcquisitionFramework",
@@ -218,6 +220,23 @@ class TestGNMeta:
         )
 
         assert response.status_code == Forbidden.code
+        assert response.json["description"] == f"User {stranger_user.id_role} cannot \"U\" in METADATA"
+
+    def test_update_acquisition_framework_forbidden_af(self, users, acquisition_frameworks):
+        self_user = users["self_user"]
+        set_logged_user_cookie(self.client, self_user)
+        af = acquisition_frameworks["own_af"]
+        
+        response = self.client.post(
+            url_for(
+                "gn_meta.updateAcquisitionFramework",
+                id_acquisition_framework=af.id_acquisition_framework,
+            ),
+            data=dict(acquisition_framework_name="new_name"),
+        )
+
+        assert response.status_code == Forbidden.code
+        assert response.json["description"] == f"User {self_user.identifiant} cannot update acquisition framework {af.id_acquisition_framework}"
 
     def test_get_acquisition_frameworks(self, users):
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks"))
@@ -492,13 +511,25 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
         assert response.status_code == Unauthorized.code
 
-        set_logged_user_cookie(self.client, users["stranger_user"])
+        stranger_user = users["stranger_user"]
+        set_logged_user_cookie(self.client, stranger_user)
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
         assert response.status_code == Forbidden.code
+        assert response.json['description'] == f"User {stranger_user.id_role} cannot \"R\" in METADATA"
 
         set_logged_user_cookie(self.client, users["associate_user"])
         response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
         assert response.status_code == 200
+
+    def test_get_dataset_forbidden_ds(self, users, datasets):
+        ds = datasets["own_dataset"]
+        self_user =  users["self_user"]
+        set_logged_user_cookie(self.client, self_user)
+
+        response = self.client.get(url_for("gn_meta.get_dataset", id_dataset=ds.id_dataset))
+        
+        assert response.status_code == Forbidden.code
+        assert response.json['description'] == f"User {self_user.identifiant} cannot read dataset {ds.id_dataset}"
 
     def test_update_dataset(self, users, datasets):
         new_name = "thenewname"
