@@ -180,7 +180,7 @@ export class MapComponent implements OnInit {
     });
 
     if (AppConfig.MAPCONFIG.DISPLAY_MOUSE_COORDINATES) {
-      this.initDisplayCoordinates()
+      this.initDisplayCoordinates();
     }
 
     setTimeout(() => {
@@ -192,7 +192,7 @@ export class MapComponent implements OnInit {
   initDisplayCoordinates() {
     // au survol de la carte
     // - on affiche les coordonnées en bas au milieu
-    this.map.on("mousemove", (event: any) => {
+    this.map.on('mousemove', (event: any) => {
       // 6 decimales
       const lat = Math.round(event.latlng.lat * 1e6) / 1e6;
       const lng = Math.round(event.latlng.lng * 1e6) / 1e6;
@@ -201,25 +201,23 @@ export class MapComponent implements OnInit {
 
     // quand le pointeur de la soouris quitte la carte
     // - on affiche plus les coordonnées
-    this.map.on("mouseout", () => {
+    this.map.on('mouseout', () => {
       this.coordinatesTxt = '';
     });
 
     // sur un clik droit
     // - on copie les coordonées dans le presse papier
-    this.map.on('contextmenu',  (event: any) => {
+    this.map.on('contextmenu', (event: any) => {
       // 6 decimales
       const lat = Math.round(event.latlng.lat * 1e6) / 1e6;
       const lng = Math.round(event.latlng.lng * 1e6) / 1e6;
       this.coordinatesTxt = `${lat}, ${lng}`;
-      navigator.clipboard.writeText(
-        this.coordinatesTxt
-      )
+      navigator.clipboard.writeText(this.coordinatesTxt);
       this._commonService.regularToaster(
         'success',
         `Le point\n(lon: ${lng}, lat: ${lat})\na été copié dans le presse papier`
       );
-    })
+    });
   }
 
   /** Retrocompatibility hack to format map config to the expected format:
