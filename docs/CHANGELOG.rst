@@ -12,7 +12,8 @@ CHANGELOG
 * Ajout d’un worker Celery pour l’exécution de tâches asynchrones
 * Déplacement du fichier de log GeoNature dans le dossier ``/var/log/geonature/``
 * Suppression de la table ``gn_sensitivity.cor_sensitivity_synthese`` et des triggers associés.
-
+* Possibilité de voir les coordonnées quand le pointer de la souris survole une carte et de copier ces coordonnées dans le presse papier avec un click droit.
+    * options ``MAP_CONFIG.DISPLAY_MOUSE_COORDINATES`` (par défaut à ``false``)
 **🐛 Corrections**
 
 * Remise en place de la rotation des fichiers de logs

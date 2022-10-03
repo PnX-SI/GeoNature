@@ -17,5 +17,6 @@
       </ng-template>
     </div>
   </div>
+  <div class="coordinates" *ngIf="coordinatesTxt"> {{ coordinatesTxt }}</div>
   <div #mapDiv [ngStyle]="{ height: height }"></div>
 </div>

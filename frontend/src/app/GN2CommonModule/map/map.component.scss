@@ -47,3 +47,18 @@
   background-position: right center;
   background-repeat: no-repeat;
 }
+
+
+.coordinates {
+  position: absolute;
+  bottom: 5px;
+  z-index: 9999;
+  text-align: center;
+  width: 200px;
+  left: 50%;
+  margin-left: -100px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 5px;
+  border: 1px solid rgba(0,0,0,0.5);
+  font-size: 0.8em;
+}

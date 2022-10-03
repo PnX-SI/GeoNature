@@ -353,6 +353,8 @@ class MapConfig(Schema):
     # et Suisse)
     # Laisser à null pour n'avoir aucune restriction
     OSM_RESTRICT_COUNTRY_CODES = fields.String(load_default=None)
+    # Affichage des coordonées sur la carte (lon, lat) au survol de la souris
+    DISPLAY_MOUSE_COORDINATES = fields.Boolean(load_default=False)
 
 
 class TaxHub(Schema):

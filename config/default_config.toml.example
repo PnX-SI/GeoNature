@@ -206,6 +206,9 @@ MAIL_ON_ERROR = false
     # Laisser à null pour n'avoir aucune restriction
     OSM_RESTRICT_COUNTRY_CODES = null
 
+    # Affichage des coordonées du point survolé par le pointer de la souris
+    DISPLAY_MOUSE_COORDINATES = false
+
 # Liste des fonds de carte proposés sur les cartes de GeoNature
 # chaque section [[MAPCONFIG.BASEMAP]] définit un fond de carte
 # l'option service est obligatoire uniquement pour les wms
