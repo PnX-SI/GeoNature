@@ -321,14 +321,14 @@ BASEMAP = [
         "name": "OpenStreetMap",
         "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
         "options": {
-            "attribution": "&copy OpenStreetMap",
+            "attribution": "<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>",
         },
     },
     {
         "name": "OpenTopoMap",
         "url": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
         "options": {
-            "attribution": "© OpenTopoMap",
+            "attribution": "Map data: © <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap contributors</a>, SRTM | Map style: © <a href='https://opentopomap.org' target='_blank'>OpenTopoMap</a> (<a href='https://creativecommons.org/licenses/by-sa/3.0/' target='_blank'>CC-BY-SA</a>)",
         },
     },
     {
