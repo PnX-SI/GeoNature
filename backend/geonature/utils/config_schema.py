@@ -321,7 +321,7 @@ BASEMAP = [
         "name": "OpenStreetMap",
         "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
         "options": {
-            "attribution": "<a href="https://www.openstreetmap.org/copyright" target="_blank">© OpenStreetMap contributors</a>",
+            "attribution": "<a href='https://www.openstreetmap.org/copyright' target='_blank'>© OpenStreetMap contributors</a>",
         },
     },
     {
@@ -336,7 +336,7 @@ BASEMAP = [
         "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
         "options": {
             "subdomains": ["mt0", "mt1", "mt2", "mt3"],
-            "attribution": "© GoogleMap",
+            "attribution": "© Google Maps",
         },
     },
 ]
