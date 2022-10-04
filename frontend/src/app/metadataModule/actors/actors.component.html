@@ -60,10 +60,10 @@
         [virtualScroll]="true"
         formControlName="id_organism"
       >
-        <ng-template 
-          ng-option-tmp 
-          let-item="item" 
-          let-index="index" 
+        <ng-template
+          ng-option-tmp
+          let-item="item"
+          let-index="index"
           let-search="searchTerm"
         >
           <div [matTooltip]="item.nom_organisme" [attr.data-qa]='"pnx-metadata-organism-"+item.nom_organisme'>
@@ -85,7 +85,7 @@
         [multiple]="false"
         [clearable]="false"
         [virtualScroll]="true"
-        formControlName="id_organism"
+        formControlName="id_role"
       >
         <ng-template ng-option-tmp let-item="item" let-index="index" let-search="searchTerm">
           <div [matTooltip]="item.nom_complet">
