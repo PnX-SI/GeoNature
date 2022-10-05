@@ -96,8 +96,8 @@ class MailConfig(Schema):
 
 
 class CeleryConfig(Schema):
-    broker_url = fields.String()
-    result_backend = fields.String(required=False)
+    broker_url = fields.String(load_default="redis://localhost:6379/0")
+    result_backend = fields.String(load_default="redis://localhost:6379/0")
 
 
 class AccountManagement(Schema):
@@ -192,7 +192,7 @@ class GnPySchemaConf(Schema):
     CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
     MAIL_CONFIG = fields.Nested(MailConfig, load_default=MailConfig().load({}))
-    CELERY = fields.Nested(CeleryConfig)
+    CELERY = fields.Nested(CeleryConfig, load_default=CeleryConfig().load({}))
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     ADMIN_APPLICATION_LOGIN = fields.String()
     ACCOUNT_MANAGEMENT = fields.Nested(
