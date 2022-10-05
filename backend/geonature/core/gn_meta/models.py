@@ -303,7 +303,7 @@ class TDatasetsQuery(BaseQuery):
         for key, values in params.lists():
             try:
                 col = getattr(TDatasets, key)
-            except KeyError:
+            except AttributeError:
                 raise BadRequest(f"Column {key} does not exist")
             col = getattr(table_columns, key)
             for v in values:
