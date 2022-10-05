@@ -97,9 +97,6 @@ def get_datasets(info_role):
     :returns:  `list<TDatasets>`
     """
     params = MultiDict(request.args)
-    # fields = params.get("fields", None)
-    # if fields:
-    #     fields = fields.split(",")
     if "create" in params:
         query = TDatasets.query.filter_by_creatable(params.pop("create"))
     else:
@@ -128,7 +125,6 @@ def get_datasets(info_role):
     dataset_schema.context = {"user_cruved": user_cruved}
     data = dataset_schema.jsonify(query.all(), many=True)
 
-    # data = [d.as_dict(fields=fields) for d in query.all()]
     user_agent = request.headers.get("User-Agent")
     if (
         user_agent and user_agent.split("/")[0].lower() == "okhttp"
