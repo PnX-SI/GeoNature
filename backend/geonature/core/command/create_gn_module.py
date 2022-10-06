@@ -62,7 +62,8 @@ log = logging.getLogger(__name__)
 @main.command()
 @click.argument("module_path")
 @click.argument("module_code")
-def install_packaged_gn_module(module_path, module_code):
+@click.option("--skip-frontend", is_flag=True)
+def install_packaged_gn_module(module_path, module_code, skip_frontend):
     # install python package and dependencies
     subprocess.run(f"pip install -e '{module_path}'", shell=True, check=True)
 
@@ -128,16 +129,17 @@ def install_packaged_gn_module(module_path, module_code):
     module_config_path.touch(exist_ok=True)
 
     ### Frontend
-    # creation du lien symbolique des assets externes
-    enable_frontend = create_external_assets_symlink(module_path, module_code.lower())
+    if not skip_frontend:
+        # creation du lien symbolique des assets externes
+        enable_frontend = create_external_assets_symlink(module_path, module_code.lower())
 
-    install_frontend_dependencies(os.path.abspath(module_path))
-    # generation du fichier tsconfig.app.json
-    tsconfig_app_templating(app=current_app)
-    # generation du routing du frontend
-    frontend_routes_templating(app=current_app)
-    # generation du fichier de configuration du frontend
-    create_module_config(current_app, module_code)
+        install_frontend_dependencies(os.path.abspath(module_path))
+        # generation du fichier tsconfig.app.json
+        tsconfig_app_templating(app=current_app)
+        # generation du routing du frontend
+        frontend_routes_templating(app=current_app)
+        # generation du fichier de configuration du frontend
+        create_module_config(current_app, module_code)
 
     log.info("Module installé, pensez à recompiler le frontend.")
 
