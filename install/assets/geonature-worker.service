@@ -26,7 +26,7 @@ ExecStop=/bin/sh -c '${CELERY_BIN} multi stopwait "$CELERYD_NODES" \
 ExecReload=/bin/sh -c '${CELERY_BIN} -A ${CELERY_APP} multi restart "$CELERYD_NODES" \
         --pidfile="${CELERYD_PID_FILE}" --logfile="${CELERYD_LOG_FILE}" \
         --loglevel="${CELERYD_LOG_LEVEL}" ${CELERYD_OPTS}'
-PIDFile=/run/geonature/%n.pid
+PIDFile=/run/geonature/%N.pid
 
 [Install]
 WantedBy=multi-user.target
