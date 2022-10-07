@@ -16,10 +16,7 @@ def ref_geo():
 def info():
     click.echo("RefGeo : nombre de zones par type")
     q = (
-        db.session.query(
-            BibAreasTypes,
-            func.count(LAreas.id_area).label("count")
-        )
+        db.session.query(BibAreasTypes, func.count(LAreas.id_area).label("count"))
         .join(LAreas)
         .group_by(BibAreasTypes.id_type)
         .order_by(BibAreasTypes.id_type)

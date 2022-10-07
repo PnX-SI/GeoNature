@@ -11,13 +11,13 @@ from alembic import context
 # access to the values within the .ini file in use.
 config = context.config
 
-sqlalchemy_database_uri = os.environ.get('SQLALCHEMY_DATABASE_URI')
+sqlalchemy_database_uri = os.environ.get("SQLALCHEMY_DATABASE_URI")
 if sqlalchemy_database_uri:
     config.set_main_option("sqlalchemy.url", sqlalchemy_database_uri)
-version_locations = config.get_main_option('version_locations', default='').split()
-for entry_point in iter_entry_points('alembic', 'migrations'):
-    _, migrations = str(entry_point).split('=', 1)
-    version_locations += [ migrations.strip() ]
+version_locations = config.get_main_option("version_locations", default="").split()
+for entry_point in iter_entry_points("alembic", "migrations"):
+    _, migrations = str(entry_point).split("=", 1)
+    version_locations += [migrations.strip()]
 context.script.version_locations = version_locations
 
 # Interpret the config file for Python logging.
@@ -74,9 +74,7 @@ def run_migrations_online():
     )
 
     with connectable.connect() as connection:
-        context.configure(
-            connection=connection, target_metadata=target_metadata
-        )
+        context.configure(connection=connection, target_metadata=target_metadata)
 
         with context.begin_transaction():
             context.run_migrations()
