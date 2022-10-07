@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+1.1.2 (unreleased)
+------------------
+
+**🚀 Nouveautés**
+
+* Ajout d'un fonction ``get_local_srid`` pour récupérer le srid local
+
+
 1.1.1 (2022-08-31)
 ------------------
 
