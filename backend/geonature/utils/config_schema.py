@@ -3,6 +3,7 @@
 """
 
 import os
+from secrets import token_hex
 
 from pkg_resources import iter_entry_points, load_entry_point
 
@@ -182,7 +183,7 @@ class GnPySchemaConf(Schema):
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(load_default=True)
     SESSION_TYPE = fields.String(load_default="filesystem")
-    SECRET_KEY = fields.String(required=True)
+    SECRET_KEY = fields.String(load_default=token_hex(32))
     # le cookie expire toute les 7 jours par défaut
     COOKIE_EXPIRATION = fields.Integer(load_default=3600 * 24 * 7)
     COOKIE_AUTORENEW = fields.Boolean(load_default=True)
