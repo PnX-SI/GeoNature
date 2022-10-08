@@ -75,7 +75,8 @@ class MyJSONProvider(DefaultJSONProvider):
 
 
 def create_app(with_external_mods=True):
-    app = Flask(__name__.split(".")[0], static_folder="../static")
+    static_folder = os.environ.get("GEONATURE_STATIC_FOLDER", "../static")
+    app = Flask(__name__.split(".")[0], static_folder=static_folder)
 
     app.config.update(config)
     api_uri = urlsplit(app.config["API_ENDPOINT"])
