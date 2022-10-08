@@ -196,6 +196,7 @@ class GnPySchemaConf(Schema):
     )
     CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
+    SERVE_TAXHUB_API = fields.Boolean(load_default=False)
     MAIL_CONFIG = fields.Nested(MailConfig, load_default=MailConfig().load({}))
     CELERY = fields.Nested(CeleryConfig, load_default=CeleryConfig().load({}))
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))

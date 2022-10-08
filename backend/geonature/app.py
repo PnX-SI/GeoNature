@@ -34,6 +34,35 @@ from pypnusershub.db.tools import (
 from pypnusershub.db.models import Application
 
 
+def routes_to_register(app):
+    yield ("pypnusershub.routes:routes", "/auth")
+    yield ("pypn_habref_api.routes:routes", "/habref")
+    yield ("pypnusershub.routes_register:bp", "/pypn/register")
+    yield ("pypnnomenclature.routes:routes", "/nomenclatures")
+    yield ("geonature.core.gn_commons.routes:routes", "/gn_commons")
+    yield ("geonature.core.gn_permissions.routes:routes", "/permissions")
+    yield ("geonature.core.gn_permissions.backoffice.views:routes", "/permissions_backoffice")
+    yield ("geonature.core.routes:routes", "/")
+    yield ("geonature.core.users.routes:routes", "/users")
+    yield ("geonature.core.gn_synthese.routes:routes", "/synthese")
+    yield ("geonature.core.gn_meta.routes:routes", "/meta")
+    yield ("geonature.core.ref_geo.routes:routes", "/geo")
+    yield ("geonature.core.auth.routes:routes", "/gn_auth")
+    yield ("geonature.core.gn_monitoring.routes:routes", "/gn_monitoring")
+    yield ("geonature.core.gn_profiles.routes:routes", "/gn_profiles")
+    yield ("geonature.core.sensitivity.routes:routes", None)
+    if app.config["SERVE_TAXHUB_API"]:
+        with app.app_context():
+            yield ("apptax.taxonomie.routesbibnoms:adresses", "/taxhub/api/bibnoms")
+            yield ("apptax.taxonomie.routestaxref:adresses", "/taxhub/api/taxref")
+            yield ("apptax.taxonomie.routesbibattributs:adresses", "/taxhub/api/bibattributs")
+            yield ("apptax.taxonomie.routesbiblistes:adresses", "/taxhub/api/biblistes")
+            yield ("apptax.taxonomie.routestmedias:adresses", "/taxhub/api/tmedias")
+            yield ("apptax.taxonomie.routesbibtypesmedia:adresses", "/taxhub/api/bibtypesmedia")
+            yield ("apptax.utils.routesconfig:adresses", "/taxhub/api/config")
+            yield ("apptax.taxonomie.routesbdcstatuts:adresses", "/taxhub/api/bdc_statuts")
+
+
 @migrate.configure
 def configure_alembic(alembic_config):
     """
@@ -174,24 +203,7 @@ def create_app(with_external_mods=True):
         else:
             app.config["ID_APP"] = app.config["ID_APPLICATION_GEONATURE"] = gn_app.id_application
 
-    for blueprint_path, url_prefix in [
-        ("pypnusershub.routes:routes", "/auth"),
-        ("pypn_habref_api.routes:routes", "/habref"),
-        ("pypnusershub.routes_register:bp", "/pypn/register"),
-        ("pypnnomenclature.routes:routes", "/nomenclatures"),
-        ("geonature.core.gn_commons.routes:routes", "/gn_commons"),
-        ("geonature.core.gn_permissions.routes:routes", "/permissions"),
-        ("geonature.core.gn_permissions.backoffice.views:routes", "/permissions_backoffice"),
-        ("geonature.core.routes:routes", "/"),
-        ("geonature.core.users.routes:routes", "/users"),
-        ("geonature.core.gn_synthese.routes:routes", "/synthese"),
-        ("geonature.core.gn_meta.routes:routes", "/meta"),
-        ("geonature.core.ref_geo.routes:routes", "/geo"),
-        ("geonature.core.auth.routes:routes", "/gn_auth"),
-        ("geonature.core.gn_monitoring.routes:routes", "/gn_monitoring"),
-        ("geonature.core.gn_profiles.routes:routes", "/gn_profiles"),
-        ("geonature.core.sensitivity.routes:routes", None),
-    ]:
+    for blueprint_path, url_prefix in routes_to_register(app):
         module_name, blueprint_name = blueprint_path.split(":")
         blueprint = getattr(import_module(module_name), blueprint_name)
         app.register_blueprint(blueprint, url_prefix=url_prefix)
