@@ -163,3 +163,5 @@ backend/static/images/taxa.png
 /docs/CHANGELOG.html
 frontend/coverage/clover.xml
 frontend/.nyc_output/out.json
+
+docker-compose.override.yml

@@ -1,0 +1,6 @@
+SQLALCHEMY_DATABASE_URI = "postgresql://geonatadmin:geonatpasswd@postgres:5432/geonature2db"
+URL_APPLICATION = 'http://127.0.0.1:4200'
+API_ENDPOINT = 'http://127.0.0.1:8000'
+API_TAXHUB = 'http://127.0.0.1:8000/taxhub/api'
+SERVE_TAXHUB_API = true
+DEFAULT_LANGUAGE='fr'

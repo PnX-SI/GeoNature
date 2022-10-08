@@ -12,10 +12,11 @@ GeoNature repose sur les composants suivants :
 - Librairies CSS (Bootstrap, Material Design)
 
 
-Deux méthodes d’installation existent :
+Trois méthodes d’installation existent :
 
 - :ref:`installation-all` : Installation automatisée de GeoNature, TaxHub et UsersHub.
 - :ref:`installation-standalone` : TaxHub et UsersHub ne sont pas installés (mais leur schémas sont tous de même créés dans la base de données).
+- :ref:`installation-docker` : Installation de GeoNature (avec API TaxHub intégrée, mais sans son interface d’administration)
 
 
 Prérequis
