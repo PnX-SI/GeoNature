@@ -54,9 +54,6 @@ parseScriptOptions "${@}"
 
 write_log "Préparation du frontend..."
 
-# Create in frontend directory a symbolic link to backend static directory
-ln -sf "${BASE_DIR}/frontend/node_modules" "${BASE_DIR}/backend/static"
-
 # Create external assets directory
 cd "${BASE_DIR}/frontend"
 mkdir -p "src/external_assets"
@@ -109,6 +106,10 @@ if [[ "${MODE}" == "dev" ]]; then
 else
   npm ci --omit=dev || exit 1
 fi
+cd "${BASE_DIR}/backend/static"
+npm ci || exit 1
+
+cd "${BASE_DIR}/frontend"
 
 
 if [[ "${MODE}" != "dev" ]]; then
