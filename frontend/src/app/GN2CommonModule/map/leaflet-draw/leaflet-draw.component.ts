@@ -128,7 +128,7 @@ export class LeafletDrawComponent implements OnInit, OnChanges {
     });
 
     // on layer deleted
-    this.map.on(this._Le.Draw.Event.DELETESTART, (e) => {
+    this.map.on(this._Le.Draw.Event.DELETED, (e) => {
       this.layerDeleted.emit();
     });
 

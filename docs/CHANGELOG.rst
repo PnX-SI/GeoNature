@@ -16,6 +16,7 @@ CHANGELOG
 **🐛 Corrections**
 
 * Remise en place de la rotation des fichiers de logs
+* [OCCTAX] Correction d'un bug d'édition de géométrie non pris en compte
 
 **⚠️ Notes de version**
 
