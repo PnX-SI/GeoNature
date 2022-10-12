@@ -1,9 +1,9 @@
 """restore occtax missing counting
- 
+
 Revision ID: 35e6f0d01f93
 Revises: 944072911ff7
 Create Date: 2022-01-07 15:46:58.634720
- 
+
 """
 from alembic import op
 import sqlalchemy as sa
@@ -26,8 +26,7 @@ def upgrade():
                 INNER JOIN gn_commons.t_history_actions h_create ON o.unique_id_occurence_occtax = h_create.uuid_attached_row AND h_create.operation_type = 'I'
                 INNER JOIN gn_commons.bib_tables_location bt ON bt.id_table_location = h_create.id_table_location AND bt.schema_name = 'pr_occtax' AND bt.table_name = 't_occurrences_occtax'
                 WHERE NOT EXISTS (SELECT NULL FROM pr_occtax.cor_counting_occtax c WHERE o.id_occurrence_occtax = c.id_occurrence_occtax)
-                --au besoin par rapport à la requête initiale, ajouter un filtre sur la date
-                --AND h_create.operation_date > '2022-01-12'
+                AND h_create.operation_date > '2021-06-29'
             ),
             --exclude last commit on old counting execute with new counting insert
             exclude_history (id_occ, id_history_action) as (
@@ -73,7 +72,7 @@ def upgrade():
 
     op.execute(
         """
-        WITH 
+        WITH
         observers (id_releve_occtax, observers) as (
             SELECT r.id_releve_occtax, array_to_string(array_agg(concat_ws(' ', obs.nom_role, obs.prenom_role)), ', ')
             FROM pr_occtax.t_releves_occtax r
@@ -81,7 +80,7 @@ def upgrade():
             INNER JOIN utilisateurs.t_roles obs ON r_obs.id_role = obs.id_role
             GROUP BY r.id_releve_occtax
         )
- 
+
         UPDATE gn_synthese.synthese SET
         unique_id_sinp = counting.unique_id_sinp_occtax,
         unique_id_sinp_grp = rel.unique_id_sinp_grp,
