@@ -1,8 +1,8 @@
 """restore occtax missing counting
 
-Revision ID: 35e6f0d01f93
-Revises: 944072911ff7
-Create Date: 2022-01-07 15:46:58.634720
+Revision ID: 9624348fea40
+Revises: 22c2851bc387
+Create Date: 2022-10-12 16:19:18.065398
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = "35e6f0d01f93"
-down_revision = "944072911ff7"
+revision = "9624348fea40"
+down_revision = "22c2851bc387"
 branch_labels = None
 depends_on = None
 
