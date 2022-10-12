@@ -121,6 +121,10 @@ def create_app(with_external_mods=True):
         app.config = conf
         MAIL.init_app(app)
 
+    # Notifications configuration enable/disabled
+    if "NOTIFICATION" in app.config:
+        notification = true
+
     # Pass parameters to the usershub authenfication sub-module, DONT CHANGE THIS
     app.config["DB"] = DB
     # Pass parameters to the submodules

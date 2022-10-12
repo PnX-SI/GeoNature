@@ -8,8 +8,9 @@ from geonature.utils.env import db
 from geonature.utils.config import config
 from geonature.core.gn_commons.models import TAdditionalFields
 from geonature.core.gn_commons.admin import BibFieldAdmin
+from geonature.core.notifications.admin import BibNotificationsTemplatesAdmin
+from geonature.core.notifications.models import BibNotificationsTemplates
 from geonature.core.gn_permissions.tools import get_scopes_by_action
-
 
 from pypnnomenclature.admin import (
     BibNomenclaturesTypesAdminConfig,
@@ -18,13 +19,11 @@ from pypnnomenclature.admin import (
     TNomenclaturesAdmin,
 )
 
-
 class MyHomeView(AdminIndexView):
     def is_accessible(self):
         if g.current_user is None:
             raise Unauthorized  # return False leads to Forbidden which is different
         return True
-
 
 class CruvedProtectedMixin:
     def is_accessible(self):
@@ -86,7 +85,14 @@ class ProtectedBibFieldAdmin(
     module_code = "ADMIN"
     object_code = "ADDITIONAL_FIELDS"
 
+class ProtectedBibNotificationsTemplatesAdmin(
+    CruvedProtectedMixin,
+    BibNotificationsTemplates,
+):
+    module_code = "ADMIN"
+    object_code = "NOTIFICATIONS_TEMPLATES"
 
+## déclaration de la page d'admin
 admin = Admin(
     template_mode="bootstrap3",
     name="Administration GeoNature",
@@ -97,7 +103,7 @@ admin = Admin(
     ),
 )
 
-
+## ajout des liens
 admin.add_link(
     MenuLink(
         name="Retourner à GeoNature",
@@ -107,6 +113,7 @@ admin.add_link(
     )
 )
 
+## ajout des elements
 
 admin.add_view(
     ProtectedBibNomenclaturesTypesAdminConfig(
@@ -132,6 +139,17 @@ admin.add_view(
         db.session,
         name="Bibliothèque de champs additionnels",
         category="Champs additionnels",
+    )
+)
+
+# Ajout de la vue pour la gestion des templates de notifications
+# accès protegé par CruvedProtectedMixin
+admin.add_view(
+    BibNotificationsTemplatesAdmin(
+        BibNotificationsTemplates, 
+        db.session,
+        name="Templates de mails",
+        category="Notifications",
     )
 )
 
