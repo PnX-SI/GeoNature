@@ -67,17 +67,27 @@
       </ng-container>
 
       <ng-template #noUserManagement>
-        <ng-container
+          <!-- <ng-container
             *ngIf="
               appConfig.PUBLIC_ACCESS.PUBLIC_LOGIN != currentUser?.user_login ;
               else publicAccessUser
             "
-        >
+        > -->
           <mat-icon> person </mat-icon>
           <span class="user-name">
             {{ currentUser?.user_login }}
           </span>
-        </ng-container>
+          <!-- add notification only if user connected -->
+          <a
+            class="mx-2 mat-elevation-z1"
+            mat-icon-button
+            matTooltip="Accéder aux notifications"
+            routerLink="/notification"
+            matBadge="{{ notificationNumber }}"
+          >
+            <mat-icon>notifications</mat-icon>
+          </a>
+        <!-- </ng-container> -->
         <ng-template #publicAccessUser>
           <mat-icon> accessibility_new </mat-icon>
           <span class="user-name">Accès public</span>

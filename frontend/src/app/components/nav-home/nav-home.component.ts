@@ -9,6 +9,7 @@ import { AuthService, User } from '../../components/auth/auth.service';
 import { AppConfig } from '../../../conf/app.config';
 import { GlobalSubService } from '../../services/global-sub.service';
 import { SideNavService } from '../sidenav-items/sidenav-service';
+import { NotificationDataService } from '@geonature/components/notification/notification-data.service';
 
 @Component({
   selector: 'pnx-nav-home',
@@ -23,6 +24,8 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   public currentDocUrl: string;
   public locale: string;
   public moduleUrl: string;
+  public notificationNumber : number;
+
   @ViewChild('sidenav', { static: true }) public sidenav: MatSidenav;
 
   constructor(
@@ -31,6 +34,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     public sideNavService: SideNavService,
     private globalSubService: GlobalSubService,
+    private notificationDataService : NotificationDataService,
     private router: Router
   ) {}
 
@@ -49,6 +53,8 @@ export class NavHomeComponent implements OnInit, OnDestroy {
 
     // Put the user name in navbar
     this.currentUser = this.authService.getCurrentUser();
+
+    this.notificationNumber = this.notificationDataService.getNotificationsNumber();
   }
 
   private extractLocaleFromUrl() {
