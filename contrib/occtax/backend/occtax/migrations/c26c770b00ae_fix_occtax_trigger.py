@@ -1,4 +1,4 @@
-"""fix occtax trigger additionnal data
+"""fix occtax trigger additionnal data + trigger occ
 
 Revision ID: c26c770b00ae
 Revises: 22c2851bc387
@@ -222,16 +222,14 @@ def upgrade():
 
     op.execute(
         """
-        CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_occ()
+       CREATE OR REPLACE FUNCTION pr_occtax.fct_tri_synthese_update_occ()
  RETURNS trigger
  LANGUAGE plpgsql
 AS $function$  declare
-                counting RECORD;
                 releve_add_fields jsonb;
-            begin
-                select * into counting from pr_occtax.cor_counting_occtax c where id_occurrence_occtax = new.id_occurrence_occtax;
+            BEGIN
                 select r.additional_fields into releve_add_fields from pr_occtax.t_releves_occtax r where id_releve_occtax = new.id_releve_occtax;
-                UPDATE gn_synthese.synthese SET
+                UPDATE gn_synthese.synthese s SET
                 id_nomenclature_obs_technique = NEW.id_nomenclature_obs_technique,
                 id_nomenclature_bio_condition = NEW.id_nomenclature_bio_condition,
                 id_nomenclature_bio_status = NEW.id_nomenclature_bio_status,
@@ -253,9 +251,9 @@ AS $function$  declare
                 comment_description = NEW.comment,
                 last_action = 'U',
                 --CHAMPS ADDITIONNELS OCCTAX
-                additional_data = COALESCE(releve_add_fields, '{}'::jsonb) || COALESCE(NEW.additional_fields, '{}'::jsonb) || COALESCE(counting.additional_fields, '{}'::jsonb)
-                WHERE unique_id_sinp = counting.unique_id_sinp_occtax;
-                
+                additional_data = COALESCE(releve_add_fields, '{}'::jsonb) || COALESCE(NEW.additional_fields, '{}'::jsonb) || COALESCE(c.additional_fields, '{}'::jsonb)
+                FROM pr_occtax.cor_counting_occtax c
+                WHERE s.unique_id_sinp = c.unique_id_sinp_occtax AND NEW.id_occurrence_occtax = c.id_occurrence_occtax ;
                 RETURN NULL;
         END;
         $function$;
@@ -274,7 +272,6 @@ AS $function$  declare
         --mise à jour en synthese des informations correspondant au relevé uniquement
         UPDATE gn_synthese.synthese s SET
             id_dataset = NEW.id_dataset,
-            -- take observer_txt only if not null
             observers = COALESCE(NEW.observers_txt, observers),
             id_digitiser = NEW.id_digitiser,
             grp_method = NEW.grp_method,
@@ -305,6 +302,7 @@ AS $function$  declare
         ;
         """
     )
+    # correction des données de synthese suite au bug des dénombrement
     op.execute(
         """
         UPDATE gn_synthese.synthese s
@@ -316,6 +314,45 @@ AS $function$  declare
         -- where un des trois additionnal data est null, mais qu'il ne sont pas tous les 3 null
         AND (rel.additional_fields IS NULL OR occ.additional_fields IS NULL OR cor.additional_fields IS NULL) AND NOT 
         (rel.additional_fields IS NULL AND occ.additional_fields IS NULL AND cor.additional_fields IS NULL);
+        """
+    )
+    # correction des données de synthese suite au bug du trigger d'update occurrence (issue #1821)
+    op.execute(
+        """
+        UPDATE gn_synthese.synthese s
+        SET
+        id_nomenclature_bio_condition = too.id_nomenclature_bio_condition, 
+        id_nomenclature_bio_status = too.id_nomenclature_bio_status,
+        id_nomenclature_naturalness  = too.id_nomenclature_naturalness, 
+        id_nomenclature_exist_proof = too.id_nomenclature_exist_proof, 
+        id_nomenclature_diffusion_level = too.id_nomenclature_diffusion_level, 
+        id_nomenclature_observation_status = too.id_nomenclature_observation_status,
+        id_nomenclature_blurring = too.id_nomenclature_blurring,
+        id_nomenclature_source_status = too.id_nomenclature_source_status,
+        id_nomenclature_behaviour = too.id_nomenclature_behaviour, 
+        determiner = too.determiner, 
+        id_nomenclature_determination_method = too.id_nomenclature_determination_method, 
+        nom_cite = too.nom_cite, 
+        sample_number_proof  = too.sample_number_proof
+        FROM pr_occtax.cor_counting_occtax cco
+        JOIN pr_occtax.t_occurrences_occtax too ON too.id_occurrence_occtax = cco.id_occurrence_occtax 
+        WHERE s.unique_id_sinp  = cco.unique_id_sinp_occtax AND 
+        (
+            s.cd_nom != too.cd_nom  
+            OR too.id_nomenclature_obs_technique != s.id_nomenclature_obs_technique 
+            OR too.id_nomenclature_bio_condition != s.id_nomenclature_bio_condition 
+            OR too.id_nomenclature_bio_status != s.id_nomenclature_bio_status 
+            OR too.id_nomenclature_naturalness != s.id_nomenclature_naturalness 
+            OR too.id_nomenclature_exist_proof != s.id_nomenclature_exist_proof 
+            OR too.id_nomenclature_observation_status != s.id_nomenclature_observation_status 
+            OR too.id_nomenclature_blurring != s.id_nomenclature_blurring 
+            OR too.id_nomenclature_source_status != s.id_nomenclature_source_status
+            OR too.id_nomenclature_behaviour != s.id_nomenclature_behaviour 
+            OR too.determiner != s.determiner 
+            OR too.id_nomenclature_determination_method != s.id_nomenclature_determination_method 
+            OR too.nom_cite != s.nom_cite 
+            OR too.sample_number_proof != s.sample_number_proof 
+        );
         """
     )
 

@@ -1,4 +1,3 @@
-from inspect import Parameter
 import pytest
 
 from flask import url_for, current_app
@@ -8,6 +7,7 @@ from geoalchemy2.shape import from_shape
 from sqlalchemy import func
 
 from geonature.core.gn_permissions.models import VUsersPermissions
+from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 from .utils import set_logged_user_cookie
 from .fixtures import *
@@ -16,10 +16,7 @@ occtax = pytest.importorskip("occtax")
 
 from occtax.models import DefaultNomenclaturesValue, TRelevesOccurrence
 from occtax.repositories import ReleveRepository
-
-# FIXME: not importable due to current app
-#   from occtax.schemas import ReleveSchema
-#   Fallback: using TRelevesOccurrence...
+from occtax.schemas import OccurrenceSchema, ReleveSchema
 
 
 @pytest.fixture()
@@ -59,33 +56,77 @@ def releve_data(client, datasets):
     return data
 
 
+@pytest.fixture()
+def occurrence_data(client, releve):
+    nomenclatures = DefaultNomenclaturesValue.query.all()
+    dict_nomenclatures = {n.mnemonique_type: n.id_nomenclature for n in nomenclatures}
+    return {
+        "id_releve_occtax": releve.id_releve_occtax,
+        "id_nomenclature_obs_technique": dict_nomenclatures["METH_OBS"],
+        "id_nomenclature_bio_condition": dict_nomenclatures["ETA_BIO"],
+        "id_nomenclature_bio_status": dict_nomenclatures["STATUT_BIO"],
+        "id_nomenclature_naturalness": dict_nomenclatures["NATURALITE"],
+        "id_nomenclature_exist_proof": dict_nomenclatures["PREUVE_EXIST"],
+        "id_nomenclature_behaviour": dict_nomenclatures["OCC_COMPORTEMENT"],
+        "id_nomenclature_observation_status": dict_nomenclatures["STATUT_OBS"],
+        "id_nomenclature_blurring": dict_nomenclatures["DEE_FLOU"],
+        "id_nomenclature_source_status": dict_nomenclatures["STATUT_SOURCE"],
+        "determiner": "Administrateur test",
+        "id_nomenclature_determination_method": dict_nomenclatures["METH_DETERMIN"],
+        "nom_cite": "Canis lupus =   Canis lupus Linnaeus, 1758 - [ES - 60577]",
+        "cd_nom": 60577,
+        "meta_v_taxref": "Taxref v15",
+        "sample_number_proof": None,
+        "digital_proof": None,
+        "non_digital_proof": None,
+        "comment": "blah",
+        "additional_fields": {},
+        "cor_counting_occtax": [
+            {
+                "id_nomenclature_life_stage": dict_nomenclatures["STADE_VIE"],
+                "id_nomenclature_sex": db.session.query(
+                    func.ref_nomenclatures.get_id_nomenclature("SEXE", "3")
+                ).scalar(),
+                "id_nomenclature_obj_count": dict_nomenclatures["OBJ_DENBR"],
+                "id_nomenclature_type_count": dict_nomenclatures["TYP_DENBR"],
+                "count_min": 2,
+                "count_max": 2,
+                "medias": [],
+                "additional_fields": {},
+            },
+            {
+                "id_nomenclature_life_stage": dict_nomenclatures["STADE_VIE"],
+                "id_nomenclature_sex": db.session.query(
+                    func.ref_nomenclatures.get_id_nomenclature("SEXE", "2")
+                ).scalar(),
+                "id_nomenclature_obj_count": dict_nomenclatures["OBJ_DENBR"],
+                "id_nomenclature_type_count": dict_nomenclatures["TYP_DENBR"],
+                "count_min": 1,
+                "count_max": 1,
+                "medias": [],
+                "additional_fields": {},
+            },
+        ],
+    }
+
+
 @pytest.fixture(scope="function")
 def releve(app, users, releve_data):
     data = releve_data["properties"]
-    coords = releve_data["geometry"]["coordinates"]
-    data["geom_4326"] = from_shape(Point(coords[0], coords[1]), srid=4326)
-    # FIXME use ReleveSchema when importable
-    releve_db = TRelevesOccurrence(
-        id_dataset=data["id_dataset"],
-        id_digitiser=data["id_digitiser"],
-        date_min=data["date_min"],
-        date_max=data["date_max"],
-        hour_min=data["hour_min"],
-        hour_max=data["hour_max"],
-        altitude_min=data["altitude_min"],
-        altitude_max=data["altitude_max"],
-        meta_device_entry=data["meta_device_entry"],
-        comment=data["comment"],
-        observers=[users["user"]],
-        observers_txt=data["observers_txt"],
-        id_nomenclature_grp_typ=data["id_nomenclature_grp_typ"],
-        geom_4326=data["geom_4326"],
-    )
-
+    data["geom_4326"] = releve_data["geometry"]
+    data["observers"] = [users["user"].id_role]
+    releve_db = ReleveSchema().load(data)
     with db.session.begin_nested():
         db.session.add(releve_db)
-
     return releve_db
+
+
+@pytest.fixture(scope="function")
+def occurrence(app, occurrence_data):
+    occ = OccurrenceSchema().load(occurrence_data)
+    with db.session.begin_nested():
+        db.session.add(occ)
+    return occ
 
 
 @pytest.fixture(scope="function")
@@ -122,7 +163,42 @@ class TestOcctax:
         response = self.client.post(url_for("pr_occtax.createReleve"), json=releve_data)
         assert response.status_code == Forbidden.code
 
-        # TODO : test update, test post occurrence
+    def test_post_occurrence(self, users, occurrence_data):
+        set_logged_user_cookie(self.client, users["user"])
+        response = self.client.post(
+            url_for("pr_occtax.createOccurrence", id_releve=occurrence_data["id_releve_occtax"]),
+            json=occurrence_data,
+        )
+        assert response.status_code == 200
+        json_resp = response.json
+        assert len(json_resp["cor_counting_occtax"]) == 2
+
+        # TODO : test dans la synthese qu'il y a bien 2 ligne pour l'UUID couting
+
+    def test_update_occurrence(self, users, occurrence):
+        set_logged_user_cookie(self.client, users["user"])
+        occ_dict = OccurrenceSchema(exclude=("taxref",)).dump(occurrence)
+        # change the cd_nom (occurrence level)
+        occ_dict["cd_nom"] = 4516
+        occ_dict["nom_cite"] = "Etourneau sansonnet"
+        # change counting
+        occ_dict["cor_counting_occtax"][0]["count_max"] = 3
+        occ_dict["cor_counting_occtax"][1]["count_max"] = 5
+        response = self.client.post(
+            url_for("pr_occtax.updateOccurrence", id_occurrence=occurrence.id_occurrence_occtax),
+            json=occ_dict,
+        )
+        assert response.status_code == 200
+        occ = response.json
+        # check if in synthese all the UUID has been updated with the new cd_nom
+        # -> it check the trigger update occ and update counting
+        uuid_counting = [
+            counting["unique_id_sinp_occtax"] for counting in occ["cor_counting_occtax"]
+        ]
+        synthese_data = Synthese.query.filter(Synthese.unique_id_sinp.in_(uuid_counting))
+        for s in synthese_data:
+            assert s.cd_nom == 4516
+        {3, 5}.issubset([s.count_max for s in synthese_data])
 
     def test_get_defaut_nomenclatures(self):
         response = self.client.get(url_for("pr_occtax.getDefaultNomenclatures"))
