@@ -90,7 +90,7 @@ export class AuthService {
         this.loginError = false;
         // Now that we are logged, we fetch the cruved again, and redirect once received
         forkJoin({
-          modules: this.moduleService.fetchModules(),
+          modules: this.moduleService.fetchModulesAndSetRouting(),
         }).subscribe(() => {
           this.isLoading = false;
           let next = this.route.snapshot.queryParams['next'];
