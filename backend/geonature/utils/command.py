@@ -120,15 +120,12 @@ def tsconfig_app_templating(app=None):
         log.info("...%s\n", MSG_OK)
 
 
-def create_frontend_config():
+def create_frontend_config(input_file, output_file):
     log.info("Generating configuration")
 
-    with open(str(ROOT_DIR / "frontend/src/conf/app.config.ts.sample"), "r") as input_file:
-        template = Template(input_file.read())
-        parameters = json.dumps(config_frontend, indent=True)
-        app_config_template = template.render(parameters=parameters)
-
-        with open(str(ROOT_DIR / "frontend/src/conf/app.config.ts"), "w") as output_file:
-            output_file.write(app_config_template)
+    template = Template(input_file.read())
+    parameters = json.dumps(config_frontend, indent=True)
+    app_config_template = template.render(parameters=parameters)
+    output_file.write(app_config_template)
 
     log.info("...%s\n", MSG_OK)

@@ -10,7 +10,7 @@ import toml
 import click
 from flask.cli import run_command
 
-from geonature.utils.env import GEONATURE_VERSION
+from geonature.utils.env import GEONATURE_VERSION, ROOT_DIR
 from geonature.utils.command import (
     create_frontend_config,
     frontend_routes_templating,
@@ -45,11 +45,23 @@ def main(ctx):
 
 
 @main.command()
-def generate_frontend_config():
+@click.option(
+    "--input",
+    "input_file",
+    type=click.File("r"),
+    default=str(ROOT_DIR / "frontend/src/conf/app.config.ts.sample"),
+)
+@click.option(
+    "--output",
+    "output_file",
+    type=click.File("w"),
+    default=str(ROOT_DIR / "frontend/src/conf/app.config.ts"),
+)
+def generate_frontend_config(input_file, output_file):
     """
     Génération des fichiers de configurations pour javascript
     """
-    create_frontend_config()
+    create_frontend_config(input_file, output_file)
     log.info("Config successfully updated. Do not forget to rebuild frontend for production.")
 
 
