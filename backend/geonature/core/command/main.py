@@ -13,7 +13,6 @@ from flask.cli import run_command
 from geonature.utils.env import GEONATURE_VERSION
 from geonature.utils.command import (
     create_frontend_config,
-    frontend_routes_templating,
     tsconfig_templating,
     tsconfig_app_templating,
 )
@@ -70,15 +69,6 @@ def dev_back(ctx, host, port):
     if not environ.get("FLASK_DEBUG"):
         environ["FLASK_DEBUG"] = "true"
     ctx.invoke(run_command, host=host, port=port)
-
-
-@main.command()
-def generate_frontend_modules_route():
-    """
-    Génere le fichier de routing du frontend
-    à partir des modules GeoNature activé
-    """
-    frontend_routes_templating()
 
 
 @main.command()
