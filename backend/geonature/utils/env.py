@@ -33,6 +33,8 @@ os.environ["FLASK_SQLALCHEMY_DB"] = "geonature.utils.env.db"
 DB = db = SQLAlchemy()
 os.environ["FLASK_MARSHMALLOW"] = "geonature.utils.env.ma"
 MA = ma = Marshmallow()
+ma.SQLAlchemySchema.OPTIONS_CLASS.session = db.session
+ma.SQLAlchemyAutoSchema.OPTIONS_CLASS.session = db.session
 os.environ["FLASK_MIGRATE"] = "geonature.utils.env.migrate"
 migrate = Migrate()
 
