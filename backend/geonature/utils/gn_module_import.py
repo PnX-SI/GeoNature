@@ -31,7 +31,7 @@ from geonature.utils.env import (
     DB,
     import_requirements,
 )
-from geonature.utils.config_schema import ManifestSchemaConf
+from geonature.utils.schemas import ManifestSchemaConf
 
 log = logging.getLogger(__name__)
 
