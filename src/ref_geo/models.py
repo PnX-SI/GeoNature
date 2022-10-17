@@ -95,7 +95,7 @@ class LLinears(db.Model):
 
 @serializable
 class TLinearGroups(db.Model):
-    __table_name__ = "l_linear_groups"
+    __table_name__ = "t_linear_groups"
     __table_args__ = {"schema": "ref_geo"}
     id_group = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode(length=250))
