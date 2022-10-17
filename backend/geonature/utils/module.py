@@ -5,7 +5,7 @@ from importlib import import_module
 from pkg_resources import load_entry_point, get_entry_info, iter_entry_points
 
 from geonature.utils.utilstoml import load_and_validate_toml
-from geonature.utils.config_schema import ManifestSchemaProdConf
+from geonature.utils.schemas import ManifestSchemaProdConf
 from geonature.utils.env import GN_EXTERNAL_MODULE
 from geonature.core.gn_commons.models import TModules
 
