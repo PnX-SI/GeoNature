@@ -112,7 +112,7 @@
   "schematics": {
     "@schematics/angular:component": {
       "prefix": "pnx",
-      "styleext": "scss"
+      "style": "scss"
     },
     "@schematics/angular:directive": {
       "prefix": "pnx"
