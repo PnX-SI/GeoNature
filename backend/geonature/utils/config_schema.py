@@ -4,6 +4,8 @@
 
 import os
 
+from pkg_resources import iter_entry_points, load_entry_point
+
 from marshmallow import (
     Schema,
     fields,
@@ -19,7 +21,9 @@ from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_COLUMNS_API_SYNTHESE,
 )
 from geonature.utils.env import GEONATURE_VERSION
+from geonature.utils.module import get_module_config_path
 from geonature.utils.utilsmails import clean_recipients
+from geonature.utils.utilstoml import load_and_validate_toml
 
 
 class EmailStrOrListOfEmailStrField(fields.Field):
@@ -417,3 +421,12 @@ class GnGeneralSchemaConf(Schema):
                 "Si AUTO_ACCOUNT_CREATION = False, veuillez remplir le paramètre VALIDATOR_EMAIL",
                 "AUTO_ACCOUNT_CREATION, VALIDATOR_EMAIL",
             )
+
+    @post_load
+    def insert_module_config(self, data, **kwargs):
+        for module_code_entry in iter_entry_points("gn_module", "code"):
+            module_code = module_code_entry.resolve()
+            config_schema = load_entry_point(module_code_entry.dist, "gn_module", "config_schema")
+            config = load_and_validate_toml(get_module_config_path(module_code), config_schema)
+            data[module_code] = config
+        return data

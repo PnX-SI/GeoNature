@@ -125,7 +125,7 @@ def install_packaged_gn_module(module_path, module_code, skip_frontend):
         os.symlink(os.path.abspath(module_path), module_symlink)
 
     # creation du fichier conf_gn_module.toml
-    module_config_path = get_module_config_path(module_object)
+    module_config_path = get_module_config_path(module_object.module_code)
     module_config_path.touch(exist_ok=True)
 
     ### Frontend
