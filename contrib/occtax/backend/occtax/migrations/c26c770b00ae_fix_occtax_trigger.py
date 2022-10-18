@@ -11,7 +11,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = "c26c770b00ae"
-down_revision = "9624348fea40"
+down_revision = "023b0be41829"
 branch_labels = None
 depends_on = None
 
@@ -27,7 +27,6 @@ def upgrade():
             occurrence RECORD;
             releve RECORD;
             id_source integer;
-            id_module integer;
             id_nomenclature_source_status integer;
             myobservers RECORD;
             id_role_loop integer;
@@ -44,9 +43,6 @@ def upgrade():
 
             -- Récupération de la source
             SELECT INTO id_source s.id_source FROM gn_synthese.t_sources s WHERE name_source ILIKE 'occtax';
-
-            -- Récupération de l'id_module
-            SELECT INTO id_module gn_commons.get_id_module_bycode('OCCTAX');
 
             -- Récupération du status_source depuis le JDD
             SELECT INTO id_nomenclature_source_status d.id_nomenclature_source_status FROM gn_meta.t_datasets d WHERE id_dataset = releve.id_dataset;
@@ -119,7 +115,7 @@ def upgrade():
                 id_source,
                 new_count.id_counting_occtax,
                 releve.id_dataset,
-                id_module,
+                releve.id_module,
                 releve.id_nomenclature_geo_object_nature,
                 releve.id_nomenclature_grp_typ,
                 releve.grp_method,
@@ -274,6 +270,7 @@ AS $function$  declare
             id_dataset = NEW.id_dataset,
             observers = COALESCE(NEW.observers_txt, observers),
             id_digitiser = NEW.id_digitiser,
+            id_module = NEW.id_module,
             grp_method = NEW.grp_method,
             id_nomenclature_grp_typ = NEW.id_nomenclature_grp_typ,
             date_min = date_trunc('day',NEW.date_min)+COALESCE(NEW.hour_min,'00:00:00'::time),
