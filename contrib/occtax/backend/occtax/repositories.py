@@ -1,4 +1,4 @@
-from flask import current_app
+from flask import g
 from sqlalchemy import or_, case, func
 from sqlalchemy.sql import func, and_
 from sqlalchemy.orm.exc import NoResultFound
@@ -97,7 +97,15 @@ class ReleveRepository:
         raise NotFound('The releve "{}" does not exist'.format(id_releve))
 
     def filter_query_with_autorization(self, user):
-        q = DB.session.query(self.model)
+        """
+        Filter with autorized data via cruved
+        and via the current_module (only datasets of this module)
+        """
+        q = DB.session.query(self.model).filter(
+            self.model.id_dataset.in_(
+                tuple(map(lambda x: x.id_dataset, g.current_module.datasets))
+            )
+        )
         allowed_datasets = [
             d.id_dataset for d in TDatasets.query.filter_by_scope(int(user.value_filter)).all()
         ]
@@ -150,7 +158,11 @@ class ReleveRepository:
                         self.model.tableDef.columns.id_digitiser == user.id_role,
                     )
                 )
-        return q
+        return q.filter(
+            self.model.tableDef.columns.id_dataset.in_(
+                tuple(map(lambda x: x.id_dataset, g.current_module.datasets))
+            )
+        )
 
     def get_all(self, info_user):
         """
