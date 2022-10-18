@@ -380,7 +380,7 @@ def remove_application_db(app, module_code):
     log.info("...%s\n", MSG_OK)
 
 
-def create_module_config(app, module_code):
+def create_module_config(module_code):
     """
     Create the frontend config
     """
