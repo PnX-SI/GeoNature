@@ -32,7 +32,12 @@ def downgrade():
     DELETE FROM pr_occtax.cor_counting_occtax cco
     USING pr_occtax.t_occurrences_occtax too
     WHERE cco.id_occurrence_occtax = too.id_occurrence_occtax
-    AND too.unique_id_occurence_occtax = 'f303683c-2510-11ec-b93a-67b44043fe7d'
+    AND too.unique_id_occurence_occtax IN (
+        'f303683c-2510-11ec-b93a-67b44043fe7d',
+        'fb106f34-2510-11ec-a3ff-6fb52354595c',
+        'fcdf2c24-2510-11ec-9995-fb27008e2817',
+        '8db83b16-3d88-4af3-85ca-44464daf32c0'
+    )
     """
     )
     op.execute(
@@ -40,7 +45,11 @@ def downgrade():
     DELETE FROM pr_occtax.cor_role_releves_occtax crro
     USING pr_occtax.t_releves_occtax tro
     WHERE crro.id_releve_occtax = tro.id_releve_occtax
-    AND tro.unique_id_sinp_grp IN ('4f784326-2511-11ec-9fdd-23b0fb947058', '4fa06f7c-2511-11ec-93a1-eb4838107091')
+    AND tro.unique_id_sinp_grp IN (
+        '4f784326-2511-11ec-9fdd-23b0fb947058', 
+        '4fa06f7c-2511-11ec-93a1-eb4838107091',
+        '297106a0-4dad-4d44-ae59-2e44a419e11f'
+        )
     """
     )
     op.execute(
@@ -48,13 +57,21 @@ def downgrade():
     DELETE FROM pr_occtax.t_occurrences_occtax too
     USING pr_occtax.t_releves_occtax tro
     WHERE too.id_releve_occtax = tro.id_releve_occtax
-    AND tro.unique_id_sinp_grp IN ('4f784326-2511-11ec-9fdd-23b0fb947058', '4fa06f7c-2511-11ec-93a1-eb4838107091')
+    AND tro.unique_id_sinp_grp IN (
+        '4f784326-2511-11ec-9fdd-23b0fb947058', 
+        '4fa06f7c-2511-11ec-93a1-eb4838107091',
+        '297106a0-4dad-4d44-ae59-2e44a419e11f'
+    )
     """
     )
     op.execute(
         """
     DELETE FROM pr_occtax.t_releves_occtax tro
-    WHERE tro.unique_id_sinp_grp IN ('4f784326-2511-11ec-9fdd-23b0fb947058', '4fa06f7c-2511-11ec-93a1-eb4838107091')
+    WHERE tro.unique_id_sinp_grp IN (
+        '4f784326-2511-11ec-9fdd-23b0fb947058', 
+        '4fa06f7c-2511-11ec-93a1-eb4838107091',
+        '297106a0-4dad-4d44-ae59-2e44a419e11f'
+        )
     """
     )
     op.execute(
@@ -130,4 +147,10 @@ def downgrade():
     DELETE FROM gn_meta.t_acquisition_frameworks af
     WHERE af.unique_acquisition_framework_id = '57b7d0f2-4183-4b7b-8f08-6e105d476dc5'
     """
+    )
+    op.execute(
+        """
+        DELETE FROM gn_commons.t_modules
+        WHERE module_code = 'OCCTAX_DS'
+        """
     )

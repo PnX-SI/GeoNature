@@ -23,7 +23,7 @@ from geonature.core.gn_permissions.models import (
 from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 
-from .fixtures import acquisition_frameworks, datasets, source, synthese_data
+from .fixtures import *
 from .utils import logged_user_headers, set_logged_user_cookie
 
 
