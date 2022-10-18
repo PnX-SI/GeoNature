@@ -84,8 +84,6 @@ if [[ -z "${CI}" || "${CI}" == false ]] ; then
   geonature generate_frontend_tsconfig
   # Generate the src/tsconfig.app.json
   geonature generate_frontend_tsconfig_app
-  # Generate the modules routing file by templating
-  geonature generate_frontend_modules_route
 
   echo "Désactivation du venv..."
   deactivate
