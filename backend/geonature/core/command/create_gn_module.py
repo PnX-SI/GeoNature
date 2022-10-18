@@ -331,7 +331,12 @@ def deactivate_gn_module(module_code, frontend, backend):
 
 @main.command()
 @click.argument("module_code")
-def update_module_configuration(module_code):
+@click.option(
+    "--output",
+    "output_file",
+    type=click.File("w"),
+)
+def update_module_configuration(module_code, output_file):
     """
     Génère la config frontend d'un module
 
@@ -340,5 +345,5 @@ def update_module_configuration(module_code):
     - geonature update-module-configuration OCCTAX
 
     """
-    create_module_config(module_code)
+    create_module_config(module_code, output_file)
     log.info("Pensez à rebuilder le frontend")
