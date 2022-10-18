@@ -77,9 +77,10 @@ if [ ! -d "${GEONATURE_DIR}" ]; then
         git submodule init
         git submodule update
     else
-        wget https://github.com/PnX-SI/GeoNature/archive/$geonature_release.zip -O GeoNature-$geonature_release.zip || exit 1
-        unzip GeoNature-$geonature_release.zip || exit 1
-        mv GeoNature-$geonature_release "${GEONATURE_DIR}"
+        escaped_geonature_release=${geonature_release//\//-}
+        wget https://github.com/PnX-SI/GeoNature/archive/$geonature_release.zip -O GeoNature-$escaped_geonature_release.zip || exit 1
+        unzip GeoNature-$escaped_geonature_release.zip || exit 1
+        mv GeoNature-$escaped_geonature_release "${GEONATURE_DIR}"
     fi
 fi
 
@@ -152,9 +153,10 @@ if [ ! -d "${TAXHUB_DIR}" ]; then
         git submodule init || exit 1
         git submodule update || exit 1
     else
-        wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip -O TaxHub-$taxhub_release.zip || exit 1
-        unzip TaxHub-$taxhub_release.zip || exit 1
-        mv TaxHub-$taxhub_release "${TAXHUB_DIR}"
+        escaped_taxhub_release=${taxhub_release//\//-}
+        wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip -O TaxHub-$escaped_taxhub_release.zip || exit 1
+        unzip TaxHub-$escaped_taxhub_release.zip || exit 1
+        mv TaxHub-$escaped_taxhub_release "${TAXHUB_DIR}"
     fi
 fi
 
@@ -207,9 +209,10 @@ if [ "$install_usershub_app" = true ]; then
             git submodule init || exit 1
             git submodule update || exit 1
         else
-            wget https://github.com/PnX-SI/UsersHub/archive/$usershub_release.zip -O UsersHub-$usershub_release.zip || exit 1
-            unzip UsersHub-$usershub_release.zip || exit 1
-            mv UsersHub-$usershub_release "${USERSHUB_DIR}"
+            escaped_usershub_release=${usershub_release//\//-}
+            wget https://github.com/PnX-SI/UsersHub/archive/$usershub_release.zip -O UsersHub-$escaped_usershub_release.zip || exit 1
+            unzip UsersHub-$escaped_usershub_release.zip || exit 1
+            mv UsersHub-$escaped_usershub_release "${USERSHUB_DIR}"
         fi
     fi
     cd "${USERSHUB_DIR}"
