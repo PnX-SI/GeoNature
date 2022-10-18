@@ -171,6 +171,7 @@
             >
               <ng-container *ngIf="row.rights.U; else disabledEditBlc">
                 <a
+                  data-qa="edit-releve"
                   class="btn btn-outline-shadow btn-no-padding btn-ghost"
                   [routerLink]="['form/releve', row.id_releve_occtax]"
                 >

@@ -145,7 +145,10 @@ def downgrade():
     op.execute(
         """
     DELETE FROM gn_meta.t_acquisition_frameworks af
-    WHERE af.unique_acquisition_framework_id = '57b7d0f2-4183-4b7b-8f08-6e105d476dc5'
+    WHERE af.unique_acquisition_framework_id in (
+        '57b7d0f2-4183-4b7b-8f08-6e105d476dc5',
+        '48b7d0f2-4183-4b7b-8f08-6e105d476dd8'
+        )
     """
     )
     op.execute(
