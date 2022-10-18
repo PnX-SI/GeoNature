@@ -9,7 +9,7 @@ import { Router } from "@angular/router";
 import { AuthService, User } from "@geonature/components/auth/auth.service";
 import { CommonService } from "@geonature_common/service/common.service";
 import { DataFormService } from "@geonature_common/form/data-form.service"
-
+import { ModuleService } from "@geonature/services/module.service"
 import { OcctaxDataService } from "../services/occtax-data.service";
 
 @Injectable()
@@ -45,6 +45,7 @@ export class OcctaxFormService {
     private _commonService: CommonService,
     private _dataS: OcctaxDataService,
     private dataFormService: DataFormService,
+    private _moduleService : ModuleService
   ) {        
     this.currentUser = this._auth.getCurrentUser();
 
@@ -101,7 +102,7 @@ export class OcctaxFormService {
   getAdditionnalFields(object_code: Array<string>, idDataset?: string): Observable<any> {          
     return this.dataFormService.getadditionalFields({
       'id_dataset':  idDataset || "null",
-      'module_code': ['OCCTAX'],
+      'module_code': [this._moduleService.currentModule.module_code],
       'object_code': object_code
     }).catch((error) => {  
       console.error("error while get addional fields", error);
