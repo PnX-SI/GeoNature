@@ -7,6 +7,7 @@ import subprocess
 import logging
 import os
 import json
+from contextlib import ExitStack
 
 from flask import current_app
 from pathlib import Path
@@ -380,7 +381,7 @@ def remove_application_db(app, module_code):
     log.info("...%s\n", MSG_OK)
 
 
-def create_module_config(module_code):
+def create_module_config(module_code, output_file=None):
     """
     Create the frontend config
     """
@@ -390,11 +391,11 @@ def create_module_config(module_code):
     except NoResultFound:
         raise Exception(f"Module with code '{module_code}' not found in database.")
     _, module_config, _ = import_gn_module(module_object)
-    frontend_config_path = os.path.join(module_config["FRONTEND_PATH"], "app/module.config.ts")
-    try:
-        with open(str(ROOT_DIR / frontend_config_path), "w") as outputfile:
-            outputfile.write("export const ModuleConfig = ")
-            json.dump(module_config, outputfile, indent=True, sort_keys=True)
-    except FileNotFoundError:
-        log.info("No frontend config file")
-        raise
+    with ExitStack() as stack:
+        if output_file is None:
+            frontend_config_path = (
+                ROOT_DIR / module_config["FRONTEND_PATH"] / "app/module.config.ts"
+            )
+            output_file = stack.enter_context(open(str(frontend_config_path), "w"))
+        output_file.write("export const ModuleConfig = ")
+        json.dump(module_config, output_file, indent=True, sort_keys=True)
