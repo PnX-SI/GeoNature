@@ -5,7 +5,7 @@ from flask import url_for, current_app
 from pypnusershub.db.models import Organisme
 
 # Apparently: need to import both?
-from geonature.tests.fixtures import acquisition_frameworks, datasets
+from geonature.tests.fixtures import acquisition_frameworks, datasets, module
 from geonature.tests.utils import set_logged_user_cookie
 from geonature.utils.env import db
 
@@ -97,7 +97,8 @@ class TestUsers:
         set_logged_user_cookie(self.client, users["admin_user"])
 
         response = self.client.get(url_for("users.get_organismes_jdd"))
-
+        for org in response.json:
+            print("EXPECTED", org["nom_organisme"])
         assert users["admin_user"].organisme.nom_organisme in [
             org["nom_organisme"] for org in response.json
         ]
