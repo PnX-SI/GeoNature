@@ -50,27 +50,40 @@ const defaultRoutes: Routes = [
         data: { module_code: 'synthese' },
         canActivate: [ModuleGuardService],
         loadChildren: () =>
-          import('@geonature/syntheseModule/synthese.module').then((m) => m.SyntheseModule),
+          import(
+            /* webpackChunkName: "synthese" */
+            '@geonature/syntheseModule/synthese.module'
+          ).then((m) => m.SyntheseModule),
       },
       {
         path: 'metadata',
         data: { module_code: 'metadata' },
         canActivate: [ModuleGuardService],
         loadChildren: () =>
-          import('@geonature/metadataModule/metadata.module').then((m) => m.MetadataModule),
+          import(
+            /* webpackChunkName: "metadata" */
+            '@geonature/metadataModule/metadata.module'
+          ).then((m) => m.MetadataModule),
       },
       {
         path: 'admin',
         data: { module_code: 'admin' },
         loadChildren: () =>
-          import('@geonature/adminModule/admin.module').then((m) => m.AdminModule),
+          import(
+            /* webpackChuckName: "admin" */
+            '@geonature/adminModule/admin.module'
+          ).then((m) => m.AdminModule),
         canActivate: [ModuleGuardService],
       },
 
       {
         path: 'user',
         data: { module_code: 'user' },
-        loadChildren: () => import('@geonature/userModule/user.module').then((m) => m.UserModule),
+        loadChildren: () =>
+          import(
+            /* webpackChuckName: "user" */
+            '@geonature/userModule/user.module'
+          ).then((m) => m.UserModule),
       },
       {
         path: '**',
