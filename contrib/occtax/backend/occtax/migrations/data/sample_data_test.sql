@@ -17,6 +17,7 @@ INSERT INTO gn_commons.t_modules
 (module_code, module_label, module_path, active_frontend, active_backend, ng_module)
 VALUES('OCCTAX_DS', 'Occtax ds',  'occtax_ds', true, false, 'occtax');
 
+
 -- Insérer un cadre d'acquisition d'exemple
 
 INSERT INTO gn_meta.t_acquisition_frameworks (
@@ -54,7 +55,6 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
     );
 ;
 
-<<<<<<< HEAD
 INSERT INTO gn_meta.t_acquisition_frameworks (
     unique_acquisition_framework_id, 
     acquisition_framework_name, 
@@ -90,9 +90,6 @@ INSERT INTO gn_meta.t_acquisition_frameworks (
     );
 
 -- Insérer 2 jeux de données d'exemple
-=======
--- Insérer 3 jeux de données d'exemple
->>>>>>> 67007079a... fix sql migration + fix sample data for tests
 INSERT INTO gn_meta.t_datasets (
     unique_dataset_id,
     id_acquisition_framework,

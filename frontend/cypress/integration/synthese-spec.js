@@ -110,15 +110,18 @@ describe('Tests gn_synthese', () => {
     cy.get('[data-qa="CA-1"]').click();
     cy.get('[data-qa="synthese-form-dataset"] ng-select').click();
     cy.get('[data-qa="JDD-1"]').click();
-    cy.get('[data-qa="synthese-search-btn"]').click();
-
-    const resultsCells = cy.get('.synthese-list-col-dataset_name');
-    resultsCells.then((d) => {
-      expect(d.length).to.greaterThan(0);
-    });
-    resultsCells.each(($el, index, $list) => {
-      cy.wrap($el).contains('JDD-1');
-    });
+    cy.get('[data-qa="synthese-search-btn"]')
+      .click()
+      .wait(1000)
+      .then(() => {
+        const resultsCells = cy.get('.synthese-list-col-dataset_name');
+        resultsCells.then((d) => {
+          expect(d.length).to.greaterThan(0);
+        });
+        resultsCells.each(($el, index, $list) => {
+          expect($el.text().trim()).to.be.equal('JDD-1');
+        });
+      });
   });
 
   it('Should open the observation details pop-up and check its content', () => {
