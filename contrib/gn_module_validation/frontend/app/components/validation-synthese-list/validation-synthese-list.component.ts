@@ -112,6 +112,10 @@ export class ValidationSyntheseListComponent
   onTableClick() {
     this.setSelectedObs();
     this.mapListService.onTableClick$.subscribe(id => {
+      if(typeof id == 'number') {
+        const selectedLayer = this.mapListService.layerDict[id];
+        selectedLayer.bringToFront();
+      }
       this.setSelectedObs();
       this.setOriginStyleToAll();
       this.setSelectedSyleToSelectedRows();

@@ -59,6 +59,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
       //selectedLayer.bringToFront();
       this.toggleStyle(selectedLayer);
       this.mapListService.zoomOnSelectedLayer(this._ms.map, selectedLayer);
+      selectedLayer.bringToFront();
     });
 
     // add the featureGroup to the map
