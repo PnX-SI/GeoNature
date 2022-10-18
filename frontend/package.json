@@ -37,7 +37,7 @@
     "@tmcw/togeojson": "^4.1.0",
     "@types/geojson": "^7946.0.7",
     "@types/leaflet": "^1.4.3",
-    "@types/leaflet-draw": "^0.4.13",
+    "@types/leaflet-draw": "^1.0.5",
     "@types/leaflet.markercluster": "^1.4.0",
     "@types/node": "^18.0.0",
     "angular2-chartjs": "^0.5.1",
