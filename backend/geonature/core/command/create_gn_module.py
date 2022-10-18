@@ -136,7 +136,7 @@ def install_packaged_gn_module(module_path, module_code, skip_frontend):
         # generation du fichier tsconfig.app.json
         tsconfig_app_templating(app=current_app)
         # generation du fichier de configuration du frontend
-        create_module_config(current_app, module_code)
+        create_module_config(module_code)
 
     log.info("Module installé, pensez à recompiler le frontend.")
 
@@ -217,7 +217,7 @@ def install_gn_module(module_path, url, conf_file, enable_backend):
                         # generation du fichier tsconfig.app.json
                         tsconfig_app_templating(app=app)
                         # generation du fichier de configuration du frontend
-                        create_module_config(app, module_code)
+                        create_module_config(module_code)
 
                     log.info("Pensez à relancer geonature (sudo systemctl restart geonature)")
                 except Exception as e:
@@ -340,9 +340,5 @@ def update_module_configuration(module_code):
     - geonature update-module-configuration OCCTAX
 
     """
-    app = create_app(with_external_mods=False)
-    with app.app_context():
-        create_module_config(app, module_code)
-    log.info(
-        "Pensez à relancer geonature (sudo systemctl restart geonature) et rebuilder le frontend"
-    )
+    create_module_config(module_code)
+    log.info("Pensez à rebuilder le frontend")
