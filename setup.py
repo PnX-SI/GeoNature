@@ -24,6 +24,7 @@ setuptools.setup(
         "": "backend",
     },
     package_data={
+        "geonature": ["**/templates/**/*.html"],
         "geonature.tests": ["data/*.sql"],
         "geonature.migrations": ["data/**/*.sql"],
     },
