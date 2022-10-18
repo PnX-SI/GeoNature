@@ -326,6 +326,8 @@ def insertOrUpdateOneReleve(info_role):
     if "observers" in data["properties"]:
         observersList = data["properties"]["observers"]
         data["properties"].pop("observers")
+    if "id_module" not in data["properties"]:
+        data["properties"]["id_module"] = g.current_module.id_module
 
     # Test et suppression des propriétés inexistantes de TRelevesOccurrence
     attliste = [k for k in data["properties"]]
