@@ -746,6 +746,7 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
           - only_query: boolean (return the query not the id_datasets allowed if true)
           - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
 
+
         return: a list of id_dataset or a query"""
         q = DB.session.query(TAcquisitionFramework.id_acquisition_framework).outerjoin(
             CorAcquisitionFrameworkActor,
