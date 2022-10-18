@@ -18,7 +18,6 @@ from geonature.utils.config import config
 from geonature.utils.module import import_gn_module
 from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
-from geonature.utils.command import frontend_routes_templating
 from geonature.core.gn_commons.models import TModules
 from geonature import create_app
 
@@ -151,13 +150,6 @@ def gn_module_activate(module_code, activ_front, activ_back):
                     """The module does not exist.
                     \n Check the gn_commons.t_module to get the module name"""
                 )
-    log.info("Generate frontend routes")
-    try:
-        frontend_routes_templating(app)
-        log.info("...%s\n", MSG_OK)
-    except Exception:
-        log.error("Error while generating frontend routing")
-        raise
 
 
 def gn_module_deactivate(module_code, activ_front, activ_back):
@@ -181,12 +173,6 @@ def gn_module_deactivate(module_code, activ_front, activ_back):
             """The module does not exist.
             \n Check the gn_commons.t_module to get the module name"""
         )
-    log.info("Regenerate frontend routes")
-    try:
-        frontend_routes_templating(app)
-        log.info("...%s\n", MSG_OK)
-    except Exception as e:
-        raise GeoNatureError(e)
 
 
 def check_codefile_validity(module_path, module_code):

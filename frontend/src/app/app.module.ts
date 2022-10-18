@@ -58,10 +58,11 @@ import { UserDataService } from './userModule/services/user-data.service';
 
 // Config
 import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
+import { Router } from '@angular/router';
 
-export function get_modules(moduleService: ModuleService) {
+export function getModulesAndInitRouting(moduleService: ModuleService, router: Router) {
   return () => {
-    return moduleService.fetchModules().toPromise();
+    return moduleService.fetchModulesAndSetRouting().toPromise();
   };
 }
 
@@ -115,7 +116,12 @@ export function get_modules(moduleService: ModuleService) {
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
     // { provide: APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService], multi: true},
-    { provide: APP_INITIALIZER, useFactory: get_modules, deps: [ModuleService], multi: true },
+    {
+      provide: APP_INITIALIZER,
+      useFactory: getModulesAndInitRouting,
+      deps: [ModuleService, Router],
+      multi: true,
+    },
   ],
   bootstrap: [AppComponent],
 })
