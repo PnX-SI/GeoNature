@@ -7,7 +7,7 @@ import { ModuleGuardService } from '../routing/routes-guards.service';
 
 @Injectable()
 export class ModuleService {
-  private _modules: BehaviorSubject<any[]> = new BehaviorSubject([]);
+  public _modules: BehaviorSubject<any[]> = new BehaviorSubject([]);
   get modules(): any[] {
     return this._modules.getValue();
   }
@@ -16,6 +16,10 @@ export class ModuleService {
   }
   get $_modules(): Observable<any[]> {
     return this._modules.asObservable();
+  }
+  public currentModule$ = new BehaviorSubject<any>(null);
+  get currentModule(): any {
+    return this.currentModule$.getValue();
   }
 
   constructor(private _api: DataFormService, private _router: Router) {}

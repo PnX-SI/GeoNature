@@ -28,6 +28,8 @@ import { OcctaxDataService } from "../../services/occtax-data.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 import { DatasetStoreService } from "@geonature_common/form/datasets/dataset.service";
 import { MapService } from "@geonature_common/map/map.service";
+import { ModuleService } from "@geonature/services/module.service";
+
 @Injectable()
 export class OcctaxFormReleveService {
   public userReleveRigth: any;
@@ -61,7 +63,8 @@ export class OcctaxFormReleveService {
     private occtaxParamS: OcctaxFormParamService,
     private _datasetStoreService: DatasetStoreService,
     private _cd: ChangeDetectorRef,
-    private _mapService: MapService
+    private _mapService: MapService,
+    public moduleService: ModuleService
   ) {
     this.initPropertiesForm();
     this.setObservables();
@@ -83,6 +86,7 @@ export class OcctaxFormReleveService {
     this.propertiesForm = this.fb.group({
       id_dataset: [null, Validators.required],
       id_digitiser: null,
+      id_module: this.moduleService.currentModule.id_module,
       date_min: [null, Validators.required],
       date_max: [null, Validators.required],
       hour_min: [
@@ -520,6 +524,7 @@ export class OcctaxFormReleveService {
   }
 
   submitReleve() {
+    const modulePath = this.moduleService.currentModule.module_path;
     this.waiting = true;
     if (this.occtaxFormService.id_releve_occtax.getValue()) {
       //update
@@ -537,8 +542,7 @@ export class OcctaxFormReleveService {
             );
             this.occtaxFormService.replaceReleveData(data);
             this.releveForm.markAsPristine();
-
-            this.router.navigate(["occtax/form", data.id, "taxons"]);
+            this.router.navigate([`${modulePath}/form`, data.id, "taxons"]);
             this.occtaxFormService.currentTab = "taxons";
           },
           (err) => {

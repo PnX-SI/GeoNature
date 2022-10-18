@@ -35,7 +35,7 @@
                   matTooltip="Editez le relevé {{id}}" 
                   class="float-right mr-2" 
                   [disabled]="userReleveCruved?.U == false"
-                  [routerLink]="['/occtax/form/releve', id]"
+                  (click)="goToEdit(id)"
                   >
                   <mat-icon>edit</mat-icon>
                 </button>

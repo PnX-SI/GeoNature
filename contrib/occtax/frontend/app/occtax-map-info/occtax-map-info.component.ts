@@ -10,6 +10,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 import { CommonService } from "@geonature_common/service/common.service";
 import { MediaService } from "@geonature_common/service/media.service";
 import { DataFormService } from "@geonature_common/form/data-form.service";
+import { ModuleService } from "@geonature/services/module.service";
 
 const NOMENCLATURES = [
   "TECHNIQUE_OBS",
@@ -29,7 +30,7 @@ const NOMENCLATURES = [
   "OBJ_DENBR",
   "TYP_DENBR",
   "NAT_OBJ_GEO",
-  "OCC_COMPORTEMENT"
+  "OCC_COMPORTEMENT",
 ];
 
 @Component({
@@ -90,7 +91,8 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
     private _commonService: CommonService,
     private dataFormS: DataFormService,
     public ms: MediaService,
-  ) { }
+    private _moduleService: ModuleService
+  ) {}
 
   ngOnInit() {
     //si modification, récuperation de l'ID du relevé
@@ -105,7 +107,7 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
         .getOneCounting(Number(id_counting))
         .pipe(map((data) => data["id_releve"]))
         .subscribe((id_releve) => {
-          this.getOcctaxData(id_releve)
+          this.getOcctaxData(id_releve);
         });
     }
 
@@ -149,50 +151,60 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
       .subscribe(
         (data) => {
           this.occtaxData.next(data);
-            this.dataFormS.getadditionalFields({
-              'id_dataset': data.properties.id_dataset,
-              'module_code': ['OCCTAX'],
-            }).subscribe(additionalFields => {
-              additionalFields.forEach(field => {
+          this.dataFormS
+            .getadditionalFields({
+              id_dataset: data.properties.id_dataset,
+              module_code: [this._moduleService.currentModule.module_code],
+            })
+            .subscribe((additionalFields) => {
+              additionalFields.forEach((field) => {
                 const map = {
-                  "OCCTAX_RELEVE": this.releveAddFields,
-                  "OCCTAX_OCCURENCE": this.occurrenceAddFields,
-                  "OCCTAX_DENOMBREMENT": this.countingAddFields,
-                }
-                if(field.type_widget != "html") {
-                  field.objects.forEach(object => {                  
+                  OCCTAX_RELEVE: this.releveAddFields,
+                  OCCTAX_OCCURENCE: this.occurrenceAddFields,
+                  OCCTAX_DENOMBREMENT: this.countingAddFields,
+                };
+                if (field.type_widget != "html") {
+                  field.objects.forEach((object) => {
                     if (object.code_object in map) {
                       map[object.code_object].push(field);
                     }
                   });
                 }
-                
-
               });
+            });
+          this.dataFormS
+            .getadditionalFields({
+              id_dataset: "null",
+              module_code: [this._moduleService.currentModule.module_code],
             })
-            this.dataFormS.getadditionalFields({
-              'id_dataset': "null",
-              'module_code': ['OCCTAX'],
-            }).subscribe(additionalFields => {
-              additionalFields.forEach(field => {
+            .subscribe((additionalFields) => {
+              additionalFields.forEach((field) => {
                 const map = {
-                  "OCCTAX_RELEVE": this.releveAddFields,
-                  "OCCTAX_OCCURENCE": this.occurrenceAddFields,
-                  "OCCTAX_DENOMBREMENT": this.countingAddFields,
-                }
-                field.objects.forEach(object => {
+                  OCCTAX_RELEVE: this.releveAddFields,
+                  OCCTAX_OCCURENCE: this.occurrenceAddFields,
+                  OCCTAX_DENOMBREMENT: this.countingAddFields,
+                };
+                field.objects.forEach((object) => {
                   if (object.code_object in map) {
                     map[object.code_object].push(field);
                   }
                 });
               });
-            })
+            });
         },
         (error) => {
           this._commonService.translateToaster("error", "Releve.DoesNotExist");
-          this._router.navigate(["occtax"]);
+          const currentModulePath =
+            this._moduleService.currentModule.module_path.toLowerCase();
+          this._router.navigate([currentModulePath]);
         }
       );
+  }
+
+  goToEdit(idReleve) {
+    const currentModulePath =
+      this._moduleService.currentModule.module_path.toLowerCase();
+    this._router.navigate([`${currentModulePath}/form/releve/${idReleve}`]);
   }
 
   getNomenclatures() {
@@ -229,7 +241,9 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
           "success",
           "Releve.DeleteSuccessfully"
         );
-        this._router.navigate(["/occtax"]);
+        const currentModulePath =
+          this._moduleService.currentModule.module_path.toLowerCase();
+        this._router.navigate([currentModulePath]);
       },
       (error) => {
         if (error.status === 403) {
@@ -243,5 +257,5 @@ export class OcctaxMapInfoComponent implements OnInit, AfterViewInit {
   //TODO rendre global, additional fields
   sortingFunction = (a, b) => {
     return a.key > b.key ? -1 : 1;
-  }
+  };
 }
