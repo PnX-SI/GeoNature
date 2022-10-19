@@ -7,7 +7,6 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 
 import { AppConfig } from '../../../conf/app.config';
 import { SideNavService } from '../sidenav-items/sidenav-service';
-import { GlobalSubService } from '../../services/global-sub.service';
 import { ModuleService } from '../../services/module.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -30,7 +29,6 @@ export class HomeContentComponent implements OnInit {
   constructor(
     private _SideNavService: SideNavService,
     private _syntheseApi: SyntheseDataService,
-    private _globalSub: GlobalSubService,
     private _mapService: MapService,
     private _moduleService: ModuleService,
     private translateService: TranslateService

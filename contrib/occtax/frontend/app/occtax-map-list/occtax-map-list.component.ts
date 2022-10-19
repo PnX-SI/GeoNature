@@ -18,7 +18,6 @@ import { TaxonomyComponent } from "@geonature_common/form/taxonomy/taxonomy.comp
 import { FormGroup } from "@angular/forms";
 import { GenericFormGeneratorComponent } from "@geonature_common/form/dynamic-form-generator/dynamic-form-generator.component";
 import { AppConfig } from "@geonature_config/app.config";
-import { GlobalSubService } from "@geonature/services/global-sub.service";
 import * as moment from "moment";
 import { MediaService } from '@geonature_common/service/media.service';
 import { filter } from 'rxjs/operators';
@@ -66,7 +65,6 @@ export class OcctaxMapListComponent
     private _commonService: CommonService,
     private _mapService: MapService,
     public ngbModal: NgbModal,
-    public globalSub: GlobalSubService,
     private renderer: Renderer2,
     public mediaService: MediaService,
     public occtaxMapListS: OcctaxMapListService,
