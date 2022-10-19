@@ -1,10 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges } from '@angular/core';
-import { GlobalSubService } from '@geonature/services/global-sub.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { filter } from 'rxjs/operators';
 import { isEmpty } from 'lodash';
+import { ModuleService } from '../../services/module.service';
 
 @Component({
   selector: 'pnx-alert-info',
@@ -29,7 +29,7 @@ export class AlertInfoComponent implements OnInit, OnChanges {
     private _formBuilder: FormBuilder,
     private _commonService: CommonService,
     private _syntheseDataService: SyntheseDataService,
-    public globalSub: GlobalSubService
+    public moduleService: ModuleService
   ) {
     // a simple form
     this.alertForm = this._formBuilder.group({
@@ -43,7 +43,7 @@ export class AlertInfoComponent implements OnInit, OnChanges {
    * Display delete alert button for validator only
    */
   setCruved() {
-    this.moduleSub = this.globalSub.currentModuleSub
+    this.moduleSub = this.moduleService.currentModule$
       // filter undefined or null
       .pipe(filter((mod) => mod))
       .subscribe((mod) => {

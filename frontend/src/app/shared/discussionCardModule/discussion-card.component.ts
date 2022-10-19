@@ -3,7 +3,6 @@ import { AppConfig } from '@geonature_config/app.config';
 import { AuthService, User } from '@geonature/components/auth/auth.service';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { GlobalSubService } from '@geonature/services/global-sub.service';
 import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { isEmpty, uniqueId } from 'lodash';
@@ -28,7 +27,6 @@ export class DiscussionCardComponent implements OnInit, OnChanges {
   constructor(
     private _authService: AuthService,
     private _formBuilder: FormBuilder,
-    private globalSubService: GlobalSubService,
     private _commonService: CommonService,
     private _syntheseDataService: SyntheseDataService
   ) {
