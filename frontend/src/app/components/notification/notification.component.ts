@@ -7,15 +7,6 @@ import { MatPaginator } from '@angular/material/paginator';
 import { Observable } from 'rxjs';
 import { MatTableDataSource } from '@angular/material/table';
 
-
-const NOTIFICATION_DATA_JSON = 
-  {
-    category: "VALIDATION-1",
-    title: 'Modification du statut',
-    content: 'Le statut de l\'observation a été modifié ( Invalide )',
-    url: 'http://geonature.jdev.fr/geonature/#/validation/occurrence/2'
-  };
-
 @Component({
   selector: 'pnx-notification',
   templateUrl: './notification.component.html',
@@ -41,7 +32,6 @@ export class NotificationComponent implements OnInit, OnDestroy, AfterViewInit  
     this.currentUser = this.authService.getCurrentUser();
     this.obs = this.dataSource.connect();
     this.getNotifications();
-    this.createNotification(NOTIFICATION_DATA_JSON);
   }
 
   /**
@@ -60,10 +50,6 @@ export class NotificationComponent implements OnInit, OnDestroy, AfterViewInit  
     });
   }
 
-  createNotification(data) {
-    this.notificationDataService.createNotification(data).subscribe((response) => {
-  });
-}
   ngOnDestroy() {
     if (this.dataSource) {
       this.dataSource.disconnect();
