@@ -1,9 +1,7 @@
 import json
 import datetime
 import time
-
-from collections import OrderedDict
-from warnings import warn
+import logging
 
 from flask import (
     Blueprint,
@@ -17,111 +15,97 @@ from flask import (
 )
 from werkzeug.exceptions import Forbidden, NotFound, BadRequest, Conflict
 from sqlalchemy import distinct, func, desc, asc, select, text, update
-from sqlalchemy.orm import joinedload, contains_eager, lazyload, selectinload
-from geojson import FeatureCollection, Feature
 import sqlalchemy as sa
+from sqlalchemy.orm import joinedload
 
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
-from utils_flask_sqla_geo.generic import GenericTableGeo
 
 
 from geonature.utils import filemanager
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
-from geonature.utils.utilsgeometrytools import export_as_geo_file
-
-from geonature.core.gn_meta.models import TDatasets
-
-from geonature.core.gn_synthese.models import (
-    BibReportsTypes,
-    Synthese,
-    TSources,
-    DefaultsNomenclaturesValue,
-    VSyntheseForWebApp,
-    VColorAreaTaxon,
-    TReport,
-)
-from geonature.core.gn_synthese.synthese_config import MANDATORY_COLUMNS
-from geonature.core.taxonomie.models import (
-    Taxref,
-    TaxrefProtectionArticles,
-    TaxrefProtectionEspeces,
-    VMTaxrefListForautocomplete,
-)
-from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
-
-from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import (
-    cruved_scope_for_user_in_module,
-    get_scopes_by_action,
-)
-
-from ref_geo.models import LAreas, BibAreasTypes
 
 from pypnusershub.db.tools import user_from_token
 from pypnusershub.db.models import User
 
-routes = Blueprint("gn_notification", __name__)
+from geonature.core.notifications.models import (
+    TNotifications,
+    BibNotificationsMethods,
+    BibNotificationsStatus,
+    TNotificationsRules,
+)
 
+routes = Blueprint("notifications", __name__)
+log = logging.getLogger()
 
-@routes.route("/notifications", methods=["POST"])
+# Notification input in Json
+# Mandatory attribut (category, method)
+# reserved attribut (title, url, content)
+# if attribut content exist no templating
+# otherwise all other attribut will be used in templating
+@routes.route("/notification", methods=["PUT"])
 @json_resp
-def create_notification(scope):
+def create_notification():
 
-    session = DB.session
     data = request.get_json()
+    log.info(data)
     if data is None:
         raise BadRequest("Empty request data")
-    try:
-        # Information to check if notification is need
-        id_role = data["id_role"]
-        category = data["category"]
-        method = data["method"]
 
-        # Optional notification content
-        title = data["title"]
-        content = data["content"]
-        url = data["url"]
+    # Check if category is in the list
+    category = data["category"]
+    if not category:
+        raise BadRequest("Category is missing from the request")
 
-        if not id_role:
-            raise BadRequest("id_role is missing from the request")
-        if not category or not method:
-            raise BadRequest("Category or method is missing from the request")
+    # Get notification method for current user for the given category
+    user_notifications_rules = TNotificationsRules.query.filter(
+        TNotificationsRules.id_role == g.current_user.id_role,
+        TNotificationsRules.code_notification_category == category,
+    )
+
+    # if no information then no rules return OK with information
+    if user_notifications_rules.all() == []:
+        return (
+            json.dumps({"success": True, "information": "No rules for this user/category"}),
+            200,
+            {"ContentType": "application/json"},
+        )
+
+    # else get all methods
+    for rule in user_notifications_rules.all():
+        log.info(rule.code_notification_method)
+        method = rule.code_notification_method
 
         # Check if method exist in config
         method_exists = BibNotificationsMethods.query.filter_by(
-            label_notification_method=method
+            code_notification_method=method
         ).first()
         if not method_exists:
             raise BadRequest("This type of notification in not implement yet")
 
-        # check if id_role exist
-
-        # check in rules if user have notification for this category
+        title = data["title"]
+        content = data["content"]
+        url = data["url"]
 
         # if method is type BDD
         if method == "BDD":
 
-            # create notification with unread status
-            unread = "UNREAD"
-            status = BibNotificationsStatus.query.filter_by(
-                label_notification_status=unread
-            ).first()
-
-            # Save notification in database
+            session = DB.session
+            # Save notification in database as UNREAD
             new_notification = TNotifications(
                 id_role=g.current_user.id_role,
                 title=title,
                 content=content,
                 url=url,
                 creation_date=datetime.datetime.now(),
-                code_status=status.code_notification_status,
+                code_status="UNREAD",
             )
             session.add(new_notification)
             session.commit()
 
-        # else if method is type MAIL
+        # if method is type MAIL
+        # if method == "MAIL":
         # get category
 
         # get templates
@@ -130,16 +114,16 @@ def create_notification(scope):
 
         # Send mail via celery
 
-    except KeyError:
-        raise BadRequest("Empty request data")
 
-
+# Get all database notification for current user
 @routes.route("/notifications", methods=["GET"])
-def list_database_notification(scope):
+def list_database_notification():
 
     notifications = TNotifications.query.filter(TNotifications.id_role == g.current_user.id_role)
-    notifications = notifications.order_by(desc(TNotifications.creation_date))
-    notifications = notification.options(joinedload("notification_status"))
+    notifications = notifications.order_by(
+        TNotifications.code_status.desc(), TNotifications.creation_date.desc()
+    )
+    notifications = notifications.options(joinedload("notification_status"))
     result = [
         notificationsResult.as_dict(
             fields=[
@@ -150,7 +134,7 @@ def list_database_notification(scope):
                 "url",
                 "code_status",
                 "creation_date",
-                "notification_status.code_status",
+                "notification_status.code_notification_status",
                 "notification_status.label_notification_status",
             ]
         )
@@ -159,10 +143,30 @@ def list_database_notification(scope):
     return jsonify(result)
 
 
-@routes.route("/notificationsNumber", methods=["GET"])
-def count_notification(scope):
+# count database unread notification for current user
+@routes.route("/count", methods=["GET"])
+def count_notification():
 
     notificationNumber = TNotifications.query.filter(
-        TNotifications.id_role == g.current_user.id_role
+        TNotifications.id_role == g.current_user.id_role, TNotifications.code_status == "UNREAD"
     ).count()
-    return notificationNumber
+    return jsonify(notificationNumber)
+
+
+# Update status ( for the moment only UNREAD/READ)
+@routes.route("/notification", methods=["POST"])
+@json_resp
+def update_notification():
+
+    session = DB.session
+    data = request.get_json()
+    if data is None:
+        raise BadRequest("Empty request data")
+
+    # Information to check if notification is need
+    id_notification = data["id_notification"]
+    notification = TNotifications.query.get_or_404(id_notification)
+    if notification.id_role != g.current_user.id_role:
+        raise Forbidden
+    notification.code_status = "READ"
+    session.commit()
