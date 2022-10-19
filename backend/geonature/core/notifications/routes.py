@@ -1,5 +1,5 @@
 import json
-import datetime
+
 import time
 import logging
 
@@ -21,7 +21,6 @@ from sqlalchemy.orm import joinedload
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 
-
 from geonature.utils import filemanager
 from geonature.utils.env import DB
 from geonature.utils.errors import GeonatureApiError
@@ -34,7 +33,9 @@ from geonature.core.notifications.models import (
     BibNotificationsMethods,
     BibNotificationsStatus,
     TNotificationsRules,
+    BibNotificationsTemplates,
 )
+from geonature.core.notifications.utils import Notification
 
 routes = Blueprint("notifications", __name__)
 log = logging.getLogger()
@@ -46,73 +47,13 @@ log = logging.getLogger()
 # otherwise all other attribut will be used in templating
 @routes.route("/notification", methods=["PUT"])
 @json_resp
-def create_notification():
+def create_notification_from_api():
 
-    data = request.get_json()
-    log.info(data)
-    if data is None:
+    requestData = request.get_json()
+    if requestData is None:
         raise BadRequest("Empty request data")
 
-    # Check if category is in the list
-    category = data["category"]
-    if not category:
-        raise BadRequest("Category is missing from the request")
-
-    # Get notification method for current user for the given category
-    user_notifications_rules = TNotificationsRules.query.filter(
-        TNotificationsRules.id_role == g.current_user.id_role,
-        TNotificationsRules.code_notification_category == category,
-    )
-
-    # if no information then no rules return OK with information
-    if user_notifications_rules.all() == []:
-        return (
-            json.dumps({"success": True, "information": "No rules for this user/category"}),
-            200,
-            {"ContentType": "application/json"},
-        )
-
-    # else get all methods
-    for rule in user_notifications_rules.all():
-        log.info(rule.code_notification_method)
-        method = rule.code_notification_method
-
-        # Check if method exist in config
-        method_exists = BibNotificationsMethods.query.filter_by(
-            code_notification_method=method
-        ).first()
-        if not method_exists:
-            raise BadRequest("This type of notification in not implement yet")
-
-        title = data["title"]
-        content = data["content"]
-        url = data["url"]
-
-        # if method is type BDD
-        if method == "BDD":
-
-            session = DB.session
-            # Save notification in database as UNREAD
-            new_notification = TNotifications(
-                id_role=g.current_user.id_role,
-                title=title,
-                content=content,
-                url=url,
-                creation_date=datetime.datetime.now(),
-                code_status="UNREAD",
-            )
-            session.add(new_notification)
-            session.commit()
-
-        # if method is type MAIL
-        # if method == "MAIL":
-        # get category
-
-        # get templates
-
-        # replace information in templates
-
-        # Send mail via celery
+    Notification.create_notification(requestData)
 
 
 # Get all database notification for current user
