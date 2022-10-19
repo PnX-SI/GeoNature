@@ -6,27 +6,18 @@
     fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si
     un paquet PIP du requirement GeoNature n'a pas été bien installé
 """
-import sys
 import logging
-import subprocess
 import json
 from contextlib import nullcontext
 
-from flask import current_app
 from jinja2 import Template
 from pathlib import Path
 
 from geonature import create_app
 from geonature.utils.env import (
-    BACKEND_DIR,
     ROOT_DIR,
-    GN_MODULE_FE_FILE,
-    DB,
     GN_EXTERNAL_MODULE,
 )
-from geonature.utils.errors import ConfigError
-from geonature.utils.utilstoml import load_and_validate_toml
-from geonature.utils.config_schema import GnGeneralSchemaConf
 from geonature.utils.module import list_frontend_enabled_modules
 from geonature.utils.config import config_frontend
 
