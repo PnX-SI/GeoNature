@@ -1,9 +1,6 @@
 <div class="containerCards">
-  <h4 class="dateTitle-notification">
-    <span>Non lue(s)</span>
-  </h4>
-  <mat-card class="cardNotification" *ngFor="let notificationData of obs | async">
-    <div *ngIf="(notificationData.code_status == 'unread')" class="{{ notificationData.code_status }} card">
+  <mat-card class="cardNotification" *ngFor="let notificationData of obs | async" (click)="OnMatCardClickEvent(notificationData)">
+    <div class="{{ notificationData.code_status }} card">
         <div class="row align-items-center">
           <div class="col-md-2" style="text-align:center">
             <mat-icon
@@ -15,9 +12,7 @@
           </div>
           <div class="col-md-3">
             <h5 class="cardTitle">
-              <a href="{{ notificationData.url }}"
-                >{{ notificationData.title }}</a
-              >
+                {{ notificationData.title }}
             </h5>
           </div>
           <div class="col-md-4">
@@ -29,36 +24,6 @@
         </div>
     </div>
   </mat-card>
-  <h4 class="dateTitle-notification">
-    <span>Lue(s)</span>
-  </h4>
-  <mat-card class="cardNotification" *ngFor="let notificationDataUnRead of obs | async">
-    <div *ngIf="(notificationDataUnRead.code_status == 'read')" class="{{ notificationDataUnRead.code_status }} card">
-        <div class="row align-items-center">
-          <div class="col-md-2" style="text-align:center">
-            <mat-icon
-              class="cardIcon"
-              aria-hidden="false"
-              aria-label="Icon desccription"
-              >description
-            </mat-icon>
-          </div>
-          <div class="col-md-3">
-            <h5 class="cardTitle">
-              <a href="{{ notificationDataUnRead.url }}"
-                >{{ notificationDataUnRead.title }}</a
-              >
-            </h5>
-          </div>
-          <div class="col-md-4">
-            <p>{{ notificationDataUnRead.content }}</p>
-          </div>
-          <div class="col-md-3" class="cardDate">
-            <p>{{ notificationDataUnRead.creation_date }}</p>
-          </div>
-        </div>
-    </div>
-  </mat-card>
-    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+  <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
 </div>
   
