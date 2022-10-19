@@ -70,7 +70,7 @@ const defaultRoutes: Routes = [
         data: { module_code: 'admin' },
         loadChildren: () =>
           import(
-            /* webpackChuckName: "admin" */
+            /* webpackChunkName: "admin" */
             '@geonature/adminModule/admin.module'
           ).then((m) => m.AdminModule),
         canActivate: [ModuleGuardService],
@@ -81,7 +81,7 @@ const defaultRoutes: Routes = [
         data: { module_code: 'user' },
         loadChildren: () =>
           import(
-            /* webpackChuckName: "user" */
+            /* webpackChunkName: "user" */
             '@geonature/userModule/user.module'
           ).then((m) => m.UserModule),
       },
