@@ -28,6 +28,7 @@ from geonature.core.gn_commons.models.base import TValidations
 
 from werkzeug.exceptions import BadRequest
 from geonature.core.gn_commons.models import TValidations
+from geonature.core.notifications.utils import Notification
 
 
 blueprint = Blueprint("validation", __name__)
@@ -194,6 +195,7 @@ def get_synthese_data(info_role):
         syntheseModelQuery = syntheseModelQuery.options(
             selectinload(Synthese.reports).joinedload(TReport.report_type)
         )
+
     query = syntheseModelQuery.from_statement(query)
 
     # The raise option ensure that we have correctly retrived relationships data at step 3
@@ -268,6 +270,10 @@ def post_status(info_role, id_synthese):
             raise BadRequest(error.messages)
         DB.session.add(validation)
         DB.session.commit()
+   
+        # Send element to notification system
+        notifyChange(data, id)
+
     return jsonify(TNomenclatures.query.get(id_validation_status).as_dict())
 
 
@@ -282,3 +288,28 @@ def get_validation_date(uuid):
         return jsonify(str(s.last_validation.validation_date))
     else:
         return "", 204
+
+# Send notification
+def notifyChange(data, idsynthese):
+
+    # If notification enabled only
+    #if current_app.config["NOTIFICATION"]:
+    log.info(data)
+
+    nomenclature = TNomenclatures.query.filter(TNomenclatures.id_nomenclature == data["statut"]).first()
+    log.info(nomenclature.mnemonique)
+
+    # idRole is a list separated by coma
+    idRoles = (
+            DB.session.query(Synthese.id_digitiser).filter(Synthese.id_synthese == int(idsynthese)).one()
+        )   
+    
+    roles = [str(role) for role in idRoles]
+
+    data["mnemonique"]=nomenclature.mnemonique
+    data["category"]="VALIDATION-1"
+    data["title"]="Modification de statut"
+    data["id_synthese"]=idsynthese
+    data["id_roles"]=roles
+    Notification.create_notification(data)
+
