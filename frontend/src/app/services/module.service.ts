@@ -32,7 +32,7 @@ export class ModuleService {
               path: module.module_path,
               loadChildren: () =>
                 import(
-                  /* webpackInclude: /^..\/..\/..\/external_modules\/[^/]*\/frontend\// */
+                  /* webpackInclude: /\/external_modules\/[^/]*\/frontend\// */
                   `../../../../external_modules/${module.ng_module}/frontend/app/gnModule.module`
                 ).then((m) => m.GeonatureModule),
               canActivate: [ModuleGuardService],
