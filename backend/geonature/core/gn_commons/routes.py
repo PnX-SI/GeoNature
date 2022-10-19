@@ -54,6 +54,8 @@ def list_modules():
     modules = q.all()
     allowed_modules = []
     for module in modules:
+        if module.module_code in current_app.config["DISABLED_MODULES"]:
+            continue
         cruved = get_scopes_by_action(module_code=module.module_code)
         if cruved["R"] > 0:
             module_dict = module.as_dict(fields=["objects", "datasets"])

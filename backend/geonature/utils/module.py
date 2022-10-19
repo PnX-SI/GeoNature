@@ -5,6 +5,8 @@ from pathlib import Path
 from importlib import import_module
 from pkg_resources import load_entry_point, get_entry_info, iter_entry_points
 
+from flask import current_app
+
 from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.schemas import ManifestSchemaProdConf
 from geonature.utils.env import GN_EXTERNAL_MODULE
@@ -120,12 +122,15 @@ def import_backend_enabled_modules():
         # ignore internal module (i.e. without symlink in external module directory)
         if not Path(GN_EXTERNAL_MODULE / module_object.module_code.lower()).exists():
             continue
+        if module_object.module_code in current_app.config["DISABLED_MODULES"]:
+            continue
         logging.info(f"Loading module {module_object.module_code}…")
         try:
             yield import_gn_module(module_object)
         except Exception as e:
             logging.exception(e)
             logging.warning(f"Unable to load module {module_object.module_code}, skipping…")
+            current_app.config["DISABLED_MODULES"].append(module_object.module_code)
 
 
 def list_frontend_enabled_modules():
@@ -137,5 +142,7 @@ def list_frontend_enabled_modules():
     for module_object in enabled_modules:
         # ignore internal module (i.e. without symlink in external module directory)
         if not Path(GN_EXTERNAL_MODULE / module_object.module_code.lower()).exists():
+            continue
+        if module_object.module_code in current_app.config["DISABLED_MODULES"]:
             continue
         yield module_object

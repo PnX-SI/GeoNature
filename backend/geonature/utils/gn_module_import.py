@@ -129,10 +129,8 @@ def gn_module_activate(module_code, activ_front, activ_back):
 
     app = None
     # TODO gestion des erreurs
-    if not (GN_EXTERNAL_MODULE / module_code).is_dir():
-        raise GeoNatureError(
-            "Module {} is not activated (Not in external_module directory)".format(module_code)
-        )
+    if module_code in config["DISABLED_MODULES"]:
+        raise GeoNatureError("Module {} is not activated".format(module_code))
     else:
         app = create_app()
         with app.app_context():
