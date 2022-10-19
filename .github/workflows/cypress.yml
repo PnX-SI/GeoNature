@@ -126,7 +126,7 @@ jobs:
           TAXHUB_SETTINGS: test_config.py
           TAXHUB_SQLALCHEMY_DATABASE_URI: "postgresql://geonatadmin:geonatpasswd@127.0.0.1:5432/geonature2db"
       - name: Cypress run
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v4
         with:
           record: ${{ fromJSON(github.ref_name == 'master') }}
           working-directory: ./frontend
