@@ -35,7 +35,6 @@ services:
     ports:
       - "${GEONATURE_FRONTEND_PORT:-4200}:80"
 
-
 volumes:
   postgres:
   redis:
