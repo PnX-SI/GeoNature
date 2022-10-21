@@ -12,13 +12,13 @@ from pathlib import Path
 from sqlalchemy.orm.exc import NoResultFound
 
 from geonature.utils.config import config
-from geonature.utils.module import import_gn_module
 from geonature.utils.errors import GeoNatureError
 from geonature.core.gn_commons.models import TModules
 from geonature import create_app
 
 from geonature.utils.env import (
     ROOT_DIR,
+    GN_EXTERNAL_MODULE,
     DB,
 )
 
@@ -148,15 +148,11 @@ def create_module_config(module_code, output_file=None):
     Create the frontend config
     """
     module_code = module_code.upper()
-    try:
-        module_object = TModules.query.filter_by(module_code=module_code).one()
-    except NoResultFound:
-        raise Exception(f"Module with code '{module_code}' not found in database.")
-    _, module_config, _ = import_gn_module(module_object)
+    module_config = config[module_code]
     with ExitStack() as stack:
         if output_file is None:
             frontend_config_path = (
-                ROOT_DIR / module_config["FRONTEND_PATH"] / "app/module.config.ts"
+                GN_EXTERNAL_MODULE / module_code.lower() / "frontend" / "app" / "module.config.ts"
             )
             output_file = stack.enter_context(open(str(frontend_config_path), "w"))
         output_file.write("export const ModuleConfig = ")
