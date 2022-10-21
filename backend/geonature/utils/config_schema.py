@@ -21,7 +21,7 @@ from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_COLUMNS_API_SYNTHESE,
 )
 from geonature.utils.env import GEONATURE_VERSION
-from geonature.utils.module import get_module_config_path
+from geonature.utils.module import get_module_config
 from geonature.utils.utilsmails import clean_recipients
 from geonature.utils.utilstoml import load_and_validate_toml
 
@@ -429,7 +429,5 @@ class GnGeneralSchemaConf(Schema):
             module_code = module_code_entry.resolve()
             if module_code in data["DISABLED_MODULES"]:
                 continue
-            config_schema = load_entry_point(module_code_entry.dist, "gn_module", "config_schema")
-            config = load_and_validate_toml(get_module_config_path(module_code), config_schema)
-            data[module_code] = config
+            data[module_code] = get_module_config(module_code_entry.dist)
         return data

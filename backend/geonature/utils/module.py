@@ -27,41 +27,17 @@ def get_module_config_path(module_code):
     return None
 
 
+def get_module_config(module_dist):
+    module_code = load_entry_point(module_dist, "gn_module", "code")
+    config_schema = load_entry_point(module_dist, "gn_module", "config_schema")
+    return load_and_validate_toml(get_module_config_path(module_code), config_schema)
+
+
 def get_dist_from_code(module_code):
     for entry_point in iter_entry_points("gn_module", "code"):
         if module_code == entry_point.load():
             return entry_point.dist
     raise Exception(f"Module with code {module_code} not installed in venv")
-
-
-def import_gn_module(module_object):
-    module_code = module_object.module_code
-    module_dist = get_dist_from_code(module_code)
-    module_dir = GN_EXTERNAL_MODULE / module_object.module_path
-    frontend_path = os.environ.get(
-        f"GEONATURE_{module_code}_FRONTEND_PATH", str(module_dir / "frontend")
-    )
-    module_config = {
-        "MODULE_CODE": module_code,
-        "MODULE_URL": "/" + module_object.module_path,
-        "FRONTEND_PATH": frontend_path,
-    }
-
-    try:
-        module_schema = load_entry_point(module_dist, "gn_module", "config_schema")
-    except ImportError:
-        pass
-    else:
-        config_path = get_module_config_path(module_object.module_code)
-        module_config.update(load_and_validate_toml(config_path, module_schema))
-
-    blueprint_entry_point = get_entry_info(module_dist, "gn_module", "blueprint")
-    if blueprint_entry_point:
-        module_blueprint = blueprint_entry_point.load()
-        module_blueprint.config = module_config
-    else:
-        module_blueprint = None
-    return (module_object, module_config, module_blueprint)
 
 
 def import_backend_enabled_modules():

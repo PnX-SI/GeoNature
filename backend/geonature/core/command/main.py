@@ -17,6 +17,7 @@ from geonature.utils.command import (
     tsconfig_templating,
     tsconfig_app_templating,
 )
+from geonature.utils.gn_module_import import create_frontend_module_config
 from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
 from geonature import create_app
 from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actors
@@ -60,7 +61,27 @@ def generate_frontend_config(input_file, output_file):
     Génération des fichiers de configurations pour javascript
     """
     create_frontend_config(input_file, output_file)
-    log.info("Config successfully updated. Do not forget to rebuild frontend for production.")
+    click.echo("Configuration générée. Pensez à rebuilder le frontend pour la production.")
+
+
+@main.command()
+@click.argument("module_code")
+@click.option(
+    "--output",
+    "output_file",
+    type=click.File("w"),
+)
+def generate_frontend_module_config(module_code, output_file):
+    """
+    Génère la config frontend d'un module
+
+    Example:
+
+    - geonature generate-frontend-module-config OCCTAX
+
+    """
+    create_frontend_module_config(module_code, output_file)
+    click.echo("Configuration générée. Pensez à rebuilder le frontend pour la production.")
 
 
 @main.command()

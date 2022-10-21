@@ -34,7 +34,7 @@ from geonature.utils.gn_module_import import (
     gn_module_deactivate,
     install_frontend_dependencies,
     create_external_assets_symlink,
-    create_module_config,
+    create_frontend_module_config,
 )
 from geonature.utils.module import get_module_config_path
 from geonature.core.gn_commons.models import TModules
@@ -117,7 +117,7 @@ def install_packaged_gn_module(module_path, module_code, skip_frontend):
         # generation du fichier tsconfig.app.json
         tsconfig_app_templating(app=current_app)
         # generation du fichier de configuration du frontend
-        create_module_config(module_code)
+        create_frontend_module_config(module_code)
 
     log.info("Module installé, pensez à recompiler le frontend.")
 
@@ -159,23 +159,3 @@ def deactivate_gn_module(module_code, frontend, backend):
     """
     # TODO vérifier que l'utilisateur est root ou du groupe geonature
     gn_module_deactivate(module_code.upper(), frontend, backend)
-
-
-@main.command()
-@click.argument("module_code")
-@click.option(
-    "--output",
-    "output_file",
-    type=click.File("w"),
-)
-def update_module_configuration(module_code, output_file):
-    """
-    Génère la config frontend d'un module
-
-    Example:
-
-    - geonature update-module-configuration OCCTAX
-
-    """
-    create_module_config(module_code, output_file)
-    log.info("Pensez à rebuilder le frontend")
