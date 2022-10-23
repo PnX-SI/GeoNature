@@ -4,8 +4,8 @@
       <pnx-introduction> </pnx-introduction>
 
     </div>
-    <div 
-      class="col-xs-12 col-sm-12 col-md-6 col-lg-6" 
+    <div
+      class="col-xs-12 col-sm-12 col-md-6 col-lg-6"
       *ngIf="showLastObsMap"
     >
       <div class="panel panel-default">
@@ -25,11 +25,11 @@
             </button>
           </div>
        </div>
-      
+
         <div id="map-title">
 
         </div>
-  
+
         <pnx-map
           class="map-card"
           height="50vh"
@@ -40,7 +40,7 @@
           > </pnx-geojson>
         </pnx-map>
     </div>
-  
+
   </div>
 
 
@@ -57,7 +57,7 @@
             <em class="fa fa-xl fa-search color-blue"></em>
             <div class="large">
               <mat-spinner *ngIf="!generalStat" diameter="20"></mat-spinner>
-              {{generalStat?.nb_data}}
+              {{generalStat?.nb_data | number:'1.0-0':locale }}
             </div>
             <div class="text-muted">Observations</div>
           </div>
@@ -71,7 +71,7 @@
             <div class="large">
               <mat-spinner *ngIf="!generalStat" diameter="20"></mat-spinner>
 
-              {{generalStat?.nb_species}}
+              {{generalStat?.nb_species | number:'1.0-0':locale }}
             </div>
             <div class="text-muted">Taxons</div>
           </div>
@@ -85,7 +85,7 @@
 
               <mat-spinner *ngIf="!generalStat; else hasStat" diameter="20"></mat-spinner>
 
-              <ng-template #hasStat>~{{generalStat?.nb_observers}}</ng-template>
+              <ng-template #hasStat>~{{generalStat?.nb_observers | number:'1.0-0':locale }}</ng-template>
             </div>
             <div class="text-muted">Observateurs</div>
           </div>
@@ -98,7 +98,7 @@
             <div class="large">
               <mat-spinner *ngIf="!generalStat" diameter="20"></mat-spinner>
 
-              {{generalStat?.nb_dataset}}
+              {{generalStat?.nb_dataset | number:'1.0-0':locale }}
             </div>
             <div class="text-muted">Jeux de données</div>
           </div>
