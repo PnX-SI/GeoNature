@@ -40,33 +40,6 @@ def get_dist_from_code(module_code):
     raise Exception(f"Module with code {module_code} not installed in venv")
 
 
-def import_backend_enabled_modules():
-    """
-    yield (module_object, module_config, module_blueprint)
-    for backend-enabled modules in gn_commons.t_modules
-    """
-    enabled_modules = (
-        TModules.query.with_entities(
-            TModules.module_code, TModules.id_module, TModules.module_path
-        )
-        .filter_by(active_backend=True)
-        .all()
-    )
-    for module_object in enabled_modules:
-        # ignore internal module (i.e. without symlink in external module directory)
-        if not Path(GN_EXTERNAL_MODULE / module_object.module_code.lower()).exists():
-            continue
-        if module_object.module_code in current_app.config["DISABLED_MODULES"]:
-            continue
-        logging.debug(f"Loading module {module_object.module_code}…")
-        try:
-            yield import_gn_module(module_object)
-        except Exception as e:
-            logging.exception(e)
-            logging.warning(f"Unable to load module {module_object.module_code}, skipping…")
-            current_app.config["DISABLED_MODULES"].append(module_object.module_code)
-
-
 def list_frontend_enabled_modules():
     """
     yield module_config

@@ -4,7 +4,7 @@ Démarrage de l'application
 
 import logging, os
 from itertools import chain
-from pkg_resources import iter_entry_points
+from pkg_resources import iter_entry_points, load_entry_point
 from urllib.parse import urlsplit
 from importlib import import_module
 
@@ -22,7 +22,6 @@ from sqlalchemy.engine import RowProxy
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
-from geonature.utils.module import import_backend_enabled_modules
 from geonature.core.admin.admin import admin
 from geonature.middlewares import RequestID
 
@@ -187,24 +186,22 @@ def create_app(with_external_mods=True):
 
         # Loading third-party modules
         if with_external_mods:
-            try:
-                for (
-                    module_object,
-                    module_config,
-                    module_blueprint,
-                ) in import_backend_enabled_modules():
-                    app.config[module_config["MODULE_CODE"]] = module_config
-                    app.register_blueprint(
-                        module_blueprint, url_prefix=module_config["MODULE_URL"]
+            for module_code_entry in iter_entry_points("gn_module", "code"):
+                module_code = module_code_entry.resolve()
+                if module_code in config["DISABLED_MODULES"]:
+                    continue
+                try:
+                    module_blueprint = load_entry_point(
+                        module_code_entry.dist, "gn_module", "blueprint"
                     )
-            except (OperationalError, ProgrammingError) as sqla_error:
-                if not isinstance(sqla_error, ProgrammingError) or isinstance(
-                    sqla_error.orig, UndefinedTable
-                ):
+                except Exception as e:
+                    logging.exception(e)
                     logging.warning(
-                        "Warning: database not yet initialized, skipping loading of external modules"
+                        f"Unable to load module {module_object.module_code}, skipping…"
                     )
+                    current_app.config["DISABLED_MODULES"].append(module_object.module_code)
                 else:
-                    raise
+                    module_blueprint.config = config[module_code]
+                    app.register_blueprint(module_blueprint, url_prefix=f"/{module_code.lower()}")
 
     return app
