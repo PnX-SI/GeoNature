@@ -22,7 +22,6 @@ Installation
 * Génération des fichiers du frontend ::
 
     docker compose run --rm api geonature generate-frontend-config
-    docker compose run --rm api geonature generate-frontend-modules-route
     docker compose run --rm api geonature generate-frontend-tsconfig
     docker compose run --rm api geonature generate-frontend-tsconfig-app
 
