@@ -61,14 +61,8 @@ def list_modules():
             module_dict = module.as_dict(fields=["objects", "datasets"])
             module_dict["cruved"] = cruved
             if module.active_frontend:
-                try:
-                    # try to get module url from conf for new modules
-                    module_url = current_app.config[module.module_code]["MODULE_URL"]
-                except KeyError:
-                    # fallback for legacy modules
-                    module_url = module.module_path
                 module_dict["module_url"] = "{}/#/{}".format(
-                    current_app.config["URL_APPLICATION"], module_url
+                    current_app.config["URL_APPLICATION"], module.module_path
                 )
             else:
                 module_dict["module_url"] = module.module_external_url
