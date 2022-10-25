@@ -8,8 +8,8 @@ from geonature.utils.env import db
 from geonature.utils.config import config
 from geonature.core.gn_commons.models import TAdditionalFields
 from geonature.core.gn_commons.admin import BibFieldAdmin
-from geonature.core.notifications.admin import BibNotificationsTemplatesAdmin
-from geonature.core.notifications.models import BibNotificationsTemplates
+from geonature.core.notifications.admin import BibNotificationsTemplatesAdmin, BibNotificationsCategoriesAdmin, BibNotificationsMethodsAdmin
+from geonature.core.notifications.models import BibNotificationsTemplates, BibNotificationsCategories, BibNotificationsMethods
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 
 from pypnnomenclature.admin import (
@@ -69,15 +69,6 @@ class ProtectedTNomenclaturesAdminConfig(
     module_code = "ADMIN"
     object_code = "NOMENCLATURES"
 
-
-class ProtectedBibNomenclaturesTypesAdminConfig(
-    CruvedProtectedMixin,
-    BibNomenclaturesTypesAdminConfig,
-):
-    module_code = "ADMIN"
-    object_code = "NOMENCLATURES"
-
-
 class ProtectedBibFieldAdmin(
     CruvedProtectedMixin,
     BibFieldAdmin,
@@ -91,6 +82,20 @@ class ProtectedBibNotificationsTemplatesAdmin(
 ):
     module_code = "ADMIN"
     object_code = "NOTIFICATIONS_TEMPLATES"
+
+class ProtectedBibNotificationsCategoriesAdmin(
+    CruvedProtectedMixin,
+    BibNotificationsCategories,
+):
+    module_code = "ADMIN"
+    object_code = "NOTIFICATIONS_CATEGORIES"
+
+class ProtectedBibNotificationsMethodsAdmin(
+    CruvedProtectedMixin,
+    BibNotificationsMethods,
+):
+    module_code = "ADMIN"
+    object_code = "NOTIFICATIONS_METHODS"
 
 ## déclaration de la page d'admin
 admin = Admin(
@@ -148,7 +153,25 @@ admin.add_view(
     BibNotificationsTemplatesAdmin(
         BibNotificationsTemplates, 
         db.session,
-        name="Templates de mails",
+        name="Templates des notifications",
+        category="Notifications",
+    )
+)
+
+admin.add_view(
+    BibNotificationsCategoriesAdmin(
+        BibNotificationsCategories, 
+        db.session,
+        name="Catégories des notifications",
+        category="Notifications",
+    )
+)
+
+admin.add_view(
+    BibNotificationsMethodsAdmin(
+        BibNotificationsMethods, 
+        db.session,
+        name="Méthodes de notification",
         category="Notifications",
     )
 )
