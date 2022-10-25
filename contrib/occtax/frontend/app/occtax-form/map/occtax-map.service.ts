@@ -30,7 +30,7 @@ export class OcctaxFormMapService {
   }
 
   setGeometryFromMap(geojson) {
-    this.manageGeometryChange(geojson);
+    this.manageGeometryChange(geojson.geometry);
   }
 
   setGeometryFromAPI(geojson) {
@@ -43,8 +43,8 @@ export class OcctaxFormMapService {
   }
 
   manageGeometryChange(geojson) {
-    if (!isEqual(geojson.geometry, this._geometry.value)) {
-      this._geometry.setValue(geojson.geometry);
+    if (!isEqual(geojson, this._geometry.value)) {
+      this._geometry.setValue(geojson);
       this._geometry.markAsDirty();
       this.occtaxFormService.disabled = false;
     }
