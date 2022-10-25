@@ -239,7 +239,7 @@
                 class="btn btn-outline-shadow btn-no-padding btn-ghost"
                 [disabled]="!row.rights.D"
                 (click)="openDeleteModal($event, modalConfirm, iElement, row)"
-                [attr.data-qa]='"pnx-occtax-delete-taxa-"+rowIndex'
+                data-qa="pnx-occtax-delete-taxa"
               >
                 <i
                   [ngClass]="{'disabled' : !row.rights.D}"

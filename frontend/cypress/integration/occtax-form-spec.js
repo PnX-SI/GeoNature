@@ -1,17 +1,40 @@
 import promisify from 'cypress-promise';
 
-describe('Testing adding an observation in OccTax', () => {
-  //
-  // const taxaNameRef = "Loup gris = Canis lupus Linnaeus, 1758 - [ES - 60577]"
-  const taxaNameRef = 'Canis lupus lupus = Canis lupus lupus Linnaeus, 1758 - [SSES - 899246]';
-  const dateSaisieTaxon = '25/01/2022';
-  const taxaSearch = 'canis lupus';
+const taxaNameRef = 'Canis lupus lupus = Canis lupus lupus Linnaeus, 1758 - [SSES - 899246]';
+const dateSaisieTaxon = '25/01/2022';
+const taxaSearch = 'canis lupus';
 
+function filterMapList() {
+  cy.intercept(Cypress.env('apiEndpoint') + 'occtax/OCCTAX/releves?**').as('getReleves');
+  cy.get('[data-qa="pnx-occtax-filter"]').click();
+  cy.get('[data-qa="taxonomy-form-input"]').clear().type(taxaSearch);
+  const results = cy.get('ngb-typeahead-window');
+  results.first().click();
+  cy.get('[data-qa="pnx-occtax-filter-date-min"] [data-qa="input-date"]')
+    .click()
+    .clear()
+    .type(dateSaisieTaxon);
+  cy.get('[data-qa="pnx-occtax-filter-date-max"] [data-qa="input-date"]')
+    .click()
+    .clear()
+    .type(dateSaisieTaxon);
+  cy.get('[data-qa="pnx-occtax-filter-search"]').click();
+  cy.wait('@getReleves');
+}
+
+describe('Testing adding an observation in OccTax', () => {
   before(() => {
     cy.geonatureLogout();
     cy.geonatureLogin();
     cy.visit('/#/occtax');
     cy.get("[data-qa='gn-occtax-btn-add-releve']").click();
+  });
+  beforeEach(() => {
+    cy.restoreLocalStorage();
+  });
+
+  afterEach(() => {
+    cy.saveLocalStorage();
   });
 
   it('should not be possible to add data if any geometry had been selected', () => {
@@ -137,7 +160,7 @@ describe('Testing adding an observation in OccTax', () => {
       .should('have.length', 2); //compte que le nombre de valeur selectionnée = 2
   });
 
-  it('should test the dataset form', async () => {
+  it('should test the dataset form', () => {
     // Tester le champ vide à l'initialisation
     cy.get("[data-qa='pnx-occtax-releve-form-datasets'] ng-select .ng-value-container")
       .find('.ng-value')
@@ -160,32 +183,9 @@ describe('Testing adding an observation in OccTax', () => {
       .find('.ng-value')
       .should('have.length', 1);
     cy.get('[data-qa="pnx-occtax-releve-submit-btn"]').should('be.enabled');
+  });
 
-    // TODO : SUPPRIMER TOUS LES TESTS OBSERVATEURS PARCE QUE JE PENSE QU'ILS SONT AU DESSUS OU AU MOINS LES MERGER AVEC AVANT SI Y A DU PLUS
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] .ng-select-container"
-    ).click();
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option.ng-option-selected"
-    ).click({ multiple: true });
-    cy.get('[data-qa="pnx-occtax-releve-submit-btn"]').should('be.disabled');
-
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option:nth-child(1)"
-    ).click();
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] .ng-select-container"
-    ).click();
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select'] ng-dropdown-panel div.ng-option:nth-child(2)"
-    ).click();
-    cy.get(
-      "[data-qa='pnx-occtax-releve-form-observers'] [data-qa='gn-common-form-observers-select']"
-    )
-      .find('.ng-value-container .ng-value')
-      .should('have.length', 2);
-
-    // TODO : CREER UN it{should test the date field}
+  it('Should fill date min and autocomplete date max', () => {
     cy.get("[data-qa='pnx-occtax-releve-form-adddate']").click();
 
     cy.get("[data-qa='pnx-occtax-releve-form-datemin'] [data-qa='input-date']")
@@ -201,14 +201,14 @@ describe('Testing adding an observation in OccTax', () => {
       'ng-invalid'
     );
     cy.get('[data-qa="pnx-occtax-releve-submit-btn"]').should('be.disabled');
-
     cy.get("[data-qa='pnx-occtax-releve-form-datemin'] [data-qa='input-date']")
       .click()
+      .clear()
       .type(dateSaisieTaxon);
-    const dateMaxVal = await promisify(
-      cy.get("[data-qa='pnx-occtax-releve-form-datemax'] [data-qa='input-date']")
+    cy.get("[data-qa='pnx-occtax-releve-form-datemax'] [data-qa='input-date']").should(
+      'have.value',
+      dateSaisieTaxon
     );
-    expect(dateMaxVal[0].value).to.equal(dateSaisieTaxon);
     cy.get('[data-qa="pnx-occtax-releve-submit-btn"]').should('be.enabled');
   });
 
@@ -233,11 +233,11 @@ describe('Testing adding an observation in OccTax', () => {
   //   .should('eq', 'taxonomy-form-input')
   // });
 
-  it('Should be possible to search and select taxa', async () => {
+  it('Should be possible to search and select taxa', () => {
     const taxonInput = cy.get("input[data-qa='taxonomy-form-input'].ng-invalid");
     taxonInput.type(taxaSearch);
     const results = cy.get('ngb-typeahead-window');
-    const firstTaxon = results.first().click(); // TODO : variable utilisée?
+    results.first().click();
     const nomValideResult = cy.get("[data-qa='occurrence-nom-valide']");
     nomValideResult.contains('Canis lupus');
     cy.get('[data-qa="occurrence-add-btn"]').should('be.enabled');
@@ -285,8 +285,10 @@ describe('Testing adding an observation in OccTax', () => {
     cy.get(
       "[data-qa='pnx-occtax-taxon-form-count-1'] > mat-expansion-panel > mat-expansion-panel-header > span > mat-panel-description"
     ).click({ force: true });
-    const listCount = await promisify(cy.get('[data-qa="pnx-occtax-taxon-form-count"]'));
-    expect(listCount[0].children.length).to.equal(2);
+    const listCount = cy
+      .get('[data-qa="pnx-occtax-taxon-form-count"]')
+      .children()
+      .should('have.length', 2);
   });
 
   // it("should focus on sumbit button", ()=> {
@@ -307,11 +309,6 @@ describe('Testing adding an observation in OccTax', () => {
     // change count max val with a lower value than count min - should be invalid
     cy.get("[data-qa='counting-count-max']").clear();
     cy.get("[data-qa='counting-count-max']").type(2);
-    // TODO check is invalid // not working
-    // try with this ?
-    //       cy.get('section')
-    // .should('have.class', 'container')
-    // cy.get("[data-qa='counting-count-max'].ng-invalid")
 
     // change count min - count max should'nt be updated because it's been already change
     cy.get("[data-qa='counting-count-min']").clear();
@@ -344,17 +341,7 @@ describe('Testing adding an observation in OccTax', () => {
   });
 
   it('Should filter the last observation', () => {
-    cy.get('[data-qa="pnx-occtax-filter"]').click();
-    cy.get('[data-qa="taxonomy-form-input"]').type(taxaSearch);
-    const results = cy.get('ngb-typeahead-window');
-    const firstTaxon = results.first().click();
-    cy.get('[data-qa="pnx-occtax-filter-date-min"] [data-qa="input-date"]')
-      .click()
-      .type(dateSaisieTaxon);
-    cy.get('[data-qa="pnx-occtax-filter-date-max"] [data-qa="input-date"]')
-      .click()
-      .type(dateSaisieTaxon);
-    cy.get('[data-qa="pnx-occtax-filter-search"]').click();
+    filterMapList();
   });
 
   // FIXME we should wait for the end of the research!
@@ -367,9 +354,23 @@ describe('Testing adding an observation in OccTax', () => {
     expect(date[0].innerText).to.equal('25-01-2022');
   });
 
+  it('should edit a releve', () => {
+    cy.get('[data-qa="edit-releve"]').first().click();
+  });
+  it('Should display date', () => {
+    cy.get("[data-qa='pnx-occtax-releve-form-datemax'] [data-qa='input-date']")
+      .wait(500)
+      .should('have.value', dateSaisieTaxon);
+  });
+  it('Should edit the releve and back to map list', () => {
+    cy.get('[data-qa="pnx-occtax-releve-submit-btn"]').click();
+    cy.get('[data-qa="pnx-occtax-taxon-form-finish"]').click();
+  });
+
   // FIXME we should wait for the end of the research!
-  it.skip('Should delete the taxa', () => {
-    cy.get('[data-qa="pnx-occtax-delete-taxa-0"]').click();
+  it('Should delete the taxa', () => {
+    filterMapList();
+    cy.get('[data-qa="pnx-occtax-delete-taxa"]').first().click();
     // cy.wait(2000)
     cy.get('[data-qa="pnx-occtax-delete"]').click();
   });
