@@ -178,7 +178,7 @@ export class OcctaxFormService {
   }
 
   formatDate(strDate) {
-    const date = new Date(strDate + "00:00:00");
+    const date = new Date(strDate + "T00:00:00");
     return {
       year: date.getFullYear(),
       month: date.getMonth() + 1,
