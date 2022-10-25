@@ -9,7 +9,6 @@ export class RoutingService {
   loadRoutes(modules) {
     const router: Router = this._injector.get(Router);
     const routingConfig = router.config;
-    console.log(routingConfig);
 
     modules.forEach((module) => {
       if (module.ng_module) {
