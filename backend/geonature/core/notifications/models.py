@@ -25,7 +25,6 @@ class BibNotificationsMethods(DB.Model):
     def __str__(self):
         return self.code_notification_method.capitalize()
 
-
 @serializable
 class BibNotificationsCategories(DB.Model):
     __tablename__ = "bib_notifications_categories"
@@ -81,3 +80,5 @@ class TNotificationsRules(DB.Model):
     code_notification_method = DB.Column(DB.Unicode, ForeignKey(BibNotificationsMethods.code_notification_method))
     code_notification_category = DB.Column(DB.Unicode, ForeignKey(BibNotificationsCategories.code_notification_category))
     
+    notification_method = relationship(BibNotificationsMethods)
+    notification_category = relationship(BibNotificationsCategories)
