@@ -95,3 +95,6 @@ class TNotificationsRules(DB.Model):
     code_notification_category = DB.Column(
         DB.Unicode, ForeignKey(BibNotificationsCategories.code_notification_category)
     )
+
+    notification_method = relationship(BibNotificationsMethods)
+    notification_category = relationship(BibNotificationsCategories)
