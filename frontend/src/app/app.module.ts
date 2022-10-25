@@ -30,6 +30,7 @@ import { PageNotFoundComponent } from './components/page-not-found/page-not-foun
 import { NavHomeComponent } from './components/nav-home/nav-home.component';
 import { LoginModule } from './modules/login/login.module';
 import { NotificationComponent } from './components/notification/notification.component';
+import { RulesComponent } from './components/notification/rules/rules.component';
 
 // Custom component (footer, presentation etc...)
 import { FooterComponent } from '../custom/components/footer/footer.component';
@@ -100,6 +101,7 @@ export function get_modules(moduleService: ModuleService) {
     FooterComponent,
     IntroductionComponent,
     NotificationComponent,
+    RulesComponent,
   ],
   providers: [
     AuthService,
