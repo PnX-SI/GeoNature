@@ -1,0 +1,47 @@
+    <main role="main" class="flex-shrink-0">
+    <div class="container" id="manageNotif">
+        <h1 class="mt-5">Gestion des notifications</h1>
+        <p class="lead">Gérer vos notification selon le type d'action sur les observations.</p>
+        <div class="row mt-5">
+            <div class="col-12" id="manageNotif">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-6">
+                                <b>Notifications</b>
+                            </div>
+                            <div class="col text-center" *ngFor="let ruleMethod of rulesMethods"  id="type-{{ ruleMethod.code_notification_method }}" title="{{ ruleMethod.description_notification_method }}">
+                                {{ ruleMethod.label_notification_method }}
+                            </div>
+                        </div>                          
+                    </div>       
+                    <ul class="list-group list-group-flush" id="listValidationNotif">
+                        <li class="list-group-item" *ngFor="let ruleCategory of rulesCategories" id="list-{{ ruleCategory.code_notification_category }}"> 
+                            <div class="row" id="listType-{{ ruleCategory.code_notification_category }}">
+                                <div class="col-6">
+                                    <span>{{ ruleCategory.label_notification_category }}</span><br />
+                                    <mat-card><span class="text-small box">{{ ruleCategory.description_notification_category }}</span></mat-card>
+                                </div>       
+                                <div class="col" *ngFor="let ruleMethod of rulesMethods">
+                                    <div class="btn-switch btn-margin-auto ">
+                                        <input 
+                                            id="{{ ruleCategory.code_notification_category }}-{{ ruleMethod.code_notification_method }}" 
+                                            name="{{ ruleCategory.code_notification_category }}-{{ ruleMethod.code_notification_method }}" 
+                                            type="checkbox"
+                                            [checked]="hasUserSubscribed(ruleCategory.code_notification_category, ruleMethod.code_notification_method)"
+                                            (change)="updateRule(ruleCategory.code_notification_category, ruleMethod.code_notification_method, $event)" />
+                                        <label for="{{ ruleCategory.code_notification_category }}-{{ ruleMethod.code_notification_method }}" class="label-default"></label>
+                                    </div>
+                                </div>
+                            </div>                                 
+                        </li>                      
+                    </ul>
+                </div>            
+            </div>
+        </div>
+        <div class="manageNotif-Validate mt-3 text-right">
+            <button type="button" class="btn btn-light" (click)="deleteRules()">Supprimer toutes mes règles de notification</button>
+        </div>
+        
+    </div>
+
