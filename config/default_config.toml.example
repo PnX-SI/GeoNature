@@ -536,3 +536,8 @@ MAIL_ON_ERROR = false
     # liste des types de role à afficher sur les formulaires JDD et CA
     CD_NOMENCLATURE_ROLE_TYPE_DS = ["2"]
     CD_NOMENCLATURE_ROLE_TYPE_AF = ["3"]
+
+# Notification
+[NOTIFICATION]
+    #Enabled
+    ENABLED = false
