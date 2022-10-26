@@ -15,7 +15,9 @@ CHANGELOG
 
 **🐛 Corrections**
 
-* Remise en place de la rotation des fichiers de logs
+* Remise en place de la rotation des fichiers de logs (#1627)
+* [OCCTAX] Correction d'un bug d'édition de géométrie non pris en compte
+* Map List: à la selection d'une ligne dans le tableau, placement de la géométrie correspondante au dessus des autres géométries (#2036)
 
 **⚠️ Notes de version**
 

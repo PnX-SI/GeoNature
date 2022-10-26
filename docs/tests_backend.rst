@@ -1,28 +1,25 @@
-Écrire des tests
-================
+Tests backend
+-------------
 
-Cette documentation a pour objectif d'expliquer comment écrire des tests pour 
+Cette documentation a pour objectif d'expliquer comment écrire des tests pour
 le backend de GeoNature.
 
 Un test se décompose en général en 3 étapes :
 
-- **Arrange** : prépare tous les éléments avant l'exécution de la portion de 
+- **Arrange** : prépare tous les éléments avant l'exécution de la portion de
   code à tester (en général une fonction)
 - **Act** : exécute cette portion de code
 - **Assert** : vérifie que l'exécution s'est bien déroulée
 
-Il est toujours utile de distinguer dans le code ces 3 étapes en ajoutant un 
+Il est toujours utile de distinguer dans le code ces 3 étapes en ajoutant un
 commentaire ou une séparation entre elles.
 
-Enfin un test doit être concis, il vaut mieux écrire plusieurs tests pour 
-tester différentes configurations plutôt qu'un seul les testant toutes d'un 
+Enfin un test doit être concis, il vaut mieux écrire plusieurs tests pour
+tester différentes configurations plutôt qu'un seul les testant toutes d'un
 coup. Cela permet d'identifier plus précisément le test qui n'a pas fonctionné.
 
-Backend
--------
-
 Introduction
-^^^^^^^^^^^^
+************
 
 Comme spécifié dans la partie Développement, la librairie Python PyTest est 
 utilisée pour rédiger des tests. Elle permet de : 
@@ -35,7 +32,7 @@ utilisée pour rédiger des tests. Elle permet de :
   `documentation PyTest <https://docs.pytest.org/>`_ 
 
 Utilisation
-^^^^^^^^^^^
+***********
 
 Les tests sont des fonctions pouvant être regroupées dans des classes. La 
 nomenclature est la suivante : 
@@ -50,7 +47,7 @@ nomenclature est la suivante :
   pouvoir être détecté automatiquement par PyTest
 
 Fixtures
-^^^^^^^^
+********
 
 Les fixtures de PyTest peuvent permettre de nombreuses choses comme expliqué 
 dans la documentation PyTest sur `les fixtures <https://docs.pytest.org/explanation/fixtures.html#about-fixtures>`_.
@@ -109,7 +106,7 @@ Il est aussi possible de définir un ``scope`` d'une fixture comme ceci :
       return 2
 
 Exemple
-^^^^^^^
+*******
 
 Voici un exemple de test qui a été fait dans GeoNature
 
@@ -135,7 +132,7 @@ l'attribut ``client`` de la classe, utile pour faire des requêtes http
 notamment. 
 
 Dans GitHub
-^^^^^^^^^^^
+***********
 
 Dans le dépôt de GeoNature sur GitHub, tous ces tests sont exécutés 
 automatiquement pour chaque commit d'une pull request grâce à PyTest et à 
@@ -146,7 +143,7 @@ request. Un coverage est aussi exécuté pour s'assurer que les nouveaux
 développements sont bien testés.
 
 Coverage
-^^^^^^^^
+********
 
 Le coverage est un système permettant de quantifier les lignes de code 
 exécutées par le test. Exemple rapide :
@@ -184,7 +181,7 @@ obtenir 100% de coverage sur la fonction ``ma_fonction_a_tester()``.
 
 
 Dans VSCode
-^^^^^^^^^^^
+***********
 
 Il est possible d'installer `l'extension Python <https://marketplace.visualstudio.com/items?itemName=ms-python.python>`_ pour facilement lancer et 
 debugger un ou plusieurs tests directement depuis VSCode. Il suffit juste de 
@@ -202,14 +199,14 @@ projet avec le code suivant pour qu'il soit compatible avec GeoNature :
     }
 
 Exécuter un ou plusieurs test(s) en ligne de commande
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+*****************************************************
 
 Pour exécuter les tests de GeoNature placez vous à la racine du dossier où est 
 installé GeoNature et exécutez la commande suivante : 
 
 .. code-block::
 
-    pytest backend/geonature/tests/.
+    pytest
 
 Assurez vous d'avoir bien installé les librairies de développement avant 
 (en étant toujours placé à la racine de l'installation de GeoNature) :
@@ -222,16 +219,16 @@ Pour exécuter un seul test l'option ``-k`` est très utile :
 
 .. code-block::
 
-    pytest backend/geonature/tests/test_gn_meta.py -k 'test_uuid_report_with_dataset_id'
+    pytest -k 'test_uuid_report_with_dataset_id'
 
-Ici, elle exécutera uniquement le test ``test_uuid_report_with_dataset_id`` du 
-ficher ``test_gn_meta.py``.
+Ici, elle exécutera uniquement le test ``test_uuid_report_with_dataset_id`` (du 
+ficher ``test_gn_meta.py``).
 
 Enfin, pour générer le coverage en même temps que les tests :
 
 .. code-block::
 
-    pytest backend/geonature/tests/. --cov --cov-report xml
+    pytest --cov --cov-report xml
 
 
 Le format ``xml`` est interprété par l'extension VSCode `Coverage Gutters <https://marketplace.visualstudio.com/items?itemName=ryanluker.vscode-coverage-gutters>`_ qui fournie directement dans le code les lignes couvertes et celles non parcourues par le test.

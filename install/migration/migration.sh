@@ -169,15 +169,12 @@ pip install --editable .
 geonature db autoupgrade -x data-directory=tmp/ -x local-srid=$srid_local
 
 echo "Update configurations"
-geonature update_configuration --build=false
-geonature generate_frontend_modules_route
+geonature generate_frontend_config
 geonature generate_frontend_tsconfig_app
 geonature generate_frontend_tsconfig
-geonature update_module_configuration occtax --build=false
-geonature update_module_configuration validation --build=false
-geonature update_module_configuration occhab --build=false
-
-geonature frontend_build
+geonature update_module_configuration occtax
+geonature update_module_configuration validation
+geonature update_module_configuration occhab
 
 echo "Mise à jour des scripts systemd"
 cd $myrootpath/$currentdir/install
@@ -193,3 +190,11 @@ sudo systemctl restart geonature
 sudo systemctl restart geonature-worker
 
 deactivate
+
+echo "Rebuild du frontend…"
+cd $myrootpath/$currentdir/frontend
+nvm use
+npm run build
+
+
+echo "Migration terminée"

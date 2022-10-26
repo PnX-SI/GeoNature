@@ -48,6 +48,7 @@ __all__ = [
     "reports_data",
     "filters",
     "medium",
+    "module",
 ]
 
 
@@ -70,6 +71,20 @@ def app():
         transaction = db.session.begin_nested()  # execute tests in a savepoint
         yield app
         transaction.rollback()  # rollback all database changes
+
+
+@pytest.fixture(scope="function")
+def module():
+    with db.session.begin_nested():
+        new_module = TModules(
+            module_code="MODULE_1",
+            module_label="module_1",
+            module_path="module_1",
+            active_frontend=True,
+            active_backend=False,
+        )
+        db.session.add(new_module)
+    return new_module
 
 
 @pytest.fixture(scope="session")
@@ -177,23 +192,27 @@ def acquisition_frameworks(users):
         "associate_af": create_af(creator=users["associate_user"]),
         "stranger_af": create_af(creator=users["stranger_user"]),
         "orphan_af": create_af(),
+        "af_1": create_af(),
+        "af_2": create_af(),
     }
 
     return afs
 
 
 @pytest.fixture(scope="function")
-def datasets(users, acquisition_frameworks):
-    af = acquisition_frameworks["orphan_af"]
+def datasets(users, acquisition_frameworks, module):
     principal_actor_role = TNomenclatures.query.filter(
         BibNomenclaturesTypes.mnemonique == "ROLE_ACTEUR",
         TNomenclatures.mnemonique == "Contact principal",
     ).one()
+    # add module code in the list to associate them to datasets
+    writable_module_code = ["OCCTAX"]
+    writable_module = TModules.query.filter(TModules.module_code.in_(writable_module_code)).all()
 
-    def create_dataset(name, digitizer=None):
+    def create_dataset(name, id_af, digitizer=None, modules=writable_module):
         with db.session.begin_nested():
             dataset = TDatasets(
-                id_acquisition_framework=af.id_acquisition_framework,
+                id_acquisition_framework=id_af,
                 dataset_name=name,
                 dataset_shortname=name,
                 dataset_desc=name,
@@ -201,24 +220,35 @@ def datasets(users, acquisition_frameworks):
                 terrestrial_domain=True,
                 id_digitizer=digitizer.id_role if digitizer else None,
             )
-            db.session.add(dataset)
             if digitizer and digitizer.organisme:
                 actor = CorDatasetActor(
                     organism=digitizer.organisme, nomenclature_actor_role=principal_actor_role
                 )
                 dataset.cor_dataset_actor.append(actor)
+            [dataset.modules.append(m) for m in modules]
+            db.session.add(dataset)
         return dataset
 
+    af = acquisition_frameworks["orphan_af"]
+    af_1 = acquisition_frameworks["af_1"]
+    af_2 = acquisition_frameworks["af_2"]
+
     datasets = {
-        name: create_dataset(name, digitizer)
-        for name, digitizer in [
-            ("own_dataset", users["user"]),
-            ("associate_dataset", users["associate_user"]),
-            ("stranger_dataset", users["stranger_user"]),
-            ("orphan_dataset", None),
+        name: create_dataset(name, id_af, digitizer)
+        for name, id_af, digitizer in [
+            ("own_dataset", af.id_acquisition_framework, users["user"]),
+            ("associate_dataset", af.id_acquisition_framework, users["associate_user"]),
+            ("stranger_dataset", af.id_acquisition_framework, users["stranger_user"]),
+            ("orphan_dataset", af.id_acquisition_framework, None),
+            ("belong_af_1", af_1.id_acquisition_framework, None),
+            ("belong_af_2", af_2.id_acquisition_framework, None),
         ]
     }
-
+    datasets["with_module_1"] = create_dataset(
+        name="module_1_dataset",
+        id_af=af_1.id_acquisition_framework,
+        modules=[module],
+    )
     return datasets
 
 

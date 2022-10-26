@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { Observable, of, BehaviorSubject } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 
 @Injectable()
 export class ModuleService {
-  private _modules: BehaviorSubject<any[]> = new BehaviorSubject([]);
+  public _modules: BehaviorSubject<any[]> = new BehaviorSubject([]);
   get modules(): any[] {
     return this._modules.getValue();
   }
@@ -15,14 +16,19 @@ export class ModuleService {
   get $_modules(): Observable<any[]> {
     return this._modules.asObservable();
   }
+  public currentModule$ = new BehaviorSubject<any>(null);
+  get currentModule(): any {
+    return this.currentModule$.getValue();
+  }
 
-  constructor(private _api: DataFormService) {}
+  constructor(private _api: DataFormService, private _router: Router) {}
 
-  fetchModules(): Observable<any[]> {
-    // see CruvedStoreService.fetchCruved comments about the catchError
+  loadModules(): Observable<any[]> {
     return this._api.getModulesList([]).pipe(
       catchError((err) => of([])), // TODO: error MUST be handled in case we are logged! (typically, api down)
-      tap((modules) => (this.modules = modules))
+      tap((modules) => {
+        this.modules = modules;
+      })
     );
   }
 

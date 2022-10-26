@@ -1,6 +1,7 @@
 import csv
 import uuid
 from io import StringIO
+from unittest.mock import patch
 
 import pytest
 from flask import url_for
@@ -9,6 +10,7 @@ from geoalchemy2.shape import to_shape
 from geojson import Point
 from sqlalchemy import func
 from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound, Unauthorized
+from werkzeug.datastructures import MultiDict
 
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
@@ -21,7 +23,7 @@ from geonature.core.gn_permissions.models import (
 from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 
-from .fixtures import acquisition_frameworks, datasets, source, synthese_data
+from .fixtures import *
 from .utils import logged_user_headers, set_logged_user_cookie
 
 
@@ -50,6 +52,12 @@ def synthese_corr():
         "jourDatefin": "date_max",
         "observateurIdentite": "observers",
     }
+
+
+@pytest.fixture
+def mocked_publish_mail():
+    with patch("geonature.core.gn_meta.routes.publish_acquisition_framework_mail") as mock:
+        yield mock
 
 
 def get_csv_from_response(data):
@@ -302,7 +310,9 @@ class TestGNMeta:
         data = response.json
 
         assert response.status_code == 200
-        assert data["nb_dataset"] == len(list(datasets.keys()))
+        assert data["nb_dataset"] == len(
+            list(filter(lambda ds: ds.id_acquisition_framework == id_af, datasets.values()))
+        )
         assert data["nb_habitats"] == 0
         assert data["nb_observations"] == len(synthese_data)
         # Count of taxa :
@@ -410,7 +420,7 @@ class TestGNMeta:
         response = self.client.delete(url_for("gn_meta.delete_dataset", ds_id=ds_id))
         assert response.status_code == 204
 
-    def test_list_datasets(self, users, datasets):
+    def test_list_datasets(self, users, datasets, acquisition_frameworks):
         response = self.client.get(url_for("gn_meta.get_datasets"))
         assert response.status_code == Unauthorized.code
 
@@ -421,6 +431,29 @@ class TestGNMeta:
         expected_ds = {dataset.id_dataset for dataset in datasets.values()}
         resp_ds = {ds["id_dataset"] for ds in response.json}
         assert expected_ds.issubset(resp_ds)
+        filtered_response = self.client.get(
+            url_for("gn_meta.get_datasets"),
+            query_string=MultiDict(
+                [
+                    (
+                        "id_acquisition_framework",
+                        acquisition_frameworks["af_1"].id_acquisition_framework,
+                    ),
+                    (
+                        "id_acquisition_framework",
+                        acquisition_frameworks["af_2"].id_acquisition_framework,
+                    ),
+                ]
+            ),
+        )
+        assert filtered_response.status_code == 200
+        expected_ds = {
+            dataset.id_dataset
+            for key, dataset in datasets.items()
+            if key in ("belong_af_1", "belong_af_2")
+        }
+        filtered_ds = {ds["id_dataset"] for ds in filtered_response.json}
+        assert expected_ds.issubset(filtered_ds)
 
     def test_create_dataset(self, users):
         response = self.client.post(url_for("gn_meta.create_dataset"))
@@ -679,3 +712,33 @@ class TestGNMeta:
         assert roleonly.actor == user
         assert organismonly.actor == user.organisme
         assert complete.actor == user
+
+    def test_publish_acquisition_framework_no_data(
+        self, mocked_publish_mail, users, acquisition_frameworks
+    ):
+        set_logged_user_cookie(self.client, users["user"])
+
+        af = acquisition_frameworks["own_af"]
+        response = self.client.get(
+            url_for("gn_meta.publish_acquisition_framework", af_id=af.id_acquisition_framework)
+        )
+        assert response.status_code == Conflict.code, response.json
+        mocked_publish_mail.assert_not_called()
+
+        af = acquisition_frameworks["orphan_af"]
+        response = self.client.get(
+            url_for("gn_meta.publish_acquisition_framework", af_id=af.id_acquisition_framework)
+        )
+        assert response.status_code == Conflict.code, response.json
+        mocked_publish_mail.assert_not_called()
+
+    def test_publish_acquisition_framework_with_data(
+        self, mocked_publish_mail, users, acquisition_frameworks, synthese_data
+    ):
+        set_logged_user_cookie(self.client, users["user"])
+        af = acquisition_frameworks["orphan_af"]
+        response = self.client.get(
+            url_for("gn_meta.publish_acquisition_framework", af_id=af.id_acquisition_framework)
+        )
+        assert response.status_code == 200, response.json
+        mocked_publish_mail.assert_called_once()

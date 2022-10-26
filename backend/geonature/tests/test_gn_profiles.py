@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime
 from random import randint
 
@@ -21,7 +22,7 @@ from geonature.core.gn_synthese.models import Synthese
 from geonature.core.taxonomie.models import Taxref
 
 
-from .fixtures import acquisition_frameworks, datasets, synthese_data, source
+from .fixtures import *
 
 ALT_MIN = 1000
 ALT_MAX = 1200
@@ -136,6 +137,9 @@ def wrong_sample_synthese_records_for_profile(
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
+@pytest.mark.skipif(
+    sys.version_info < (3, 9), reason="Profiles tests randomly fail with Python 3.7"
+)
 class TestGnProfiles:
     def test_checks(self, sample_synthese_records_for_profile):
         """

@@ -13,6 +13,7 @@ import logging
 import subprocess
 import site
 import importlib
+from warnings import warn
 import pkg_resources
 from pkg_resources import load_entry_point, get_entry_info
 from importlib import invalidate_caches
@@ -29,7 +30,6 @@ from geonature.utils.env import DB, db, DEFAULT_CONFIG_FILE, GN_EXTERNAL_MODULE
 from geonature.utils.module import get_dist_from_code
 
 from geonature.utils.command import (
-    build_geonature_front,
     tsconfig_app_templating,
 )
 from geonature.core.command.main import main
@@ -47,7 +47,6 @@ from geonature.utils.gn_module_import import (
     remove_application_db,
     create_module_config,
     copy_in_external_mods,
-    frontend_routes_templating,
     MSG_OK,
 )
 from geonature.utils.module import get_module_config_path
@@ -62,8 +61,8 @@ log = logging.getLogger(__name__)
 @main.command()
 @click.argument("module_path")
 @click.argument("module_code")
-@click.option("--build", type=bool, required=False, default=True)
-def install_packaged_gn_module(module_path, module_code, build):
+@click.option("--skip-frontend", is_flag=True)
+def install_packaged_gn_module(module_path, module_code, skip_frontend):
     # install python package and dependencies
     subprocess.run(f"pip install -e '{module_path}'", shell=True, check=True)
 
@@ -85,7 +84,7 @@ def install_packaged_gn_module(module_path, module_code, build):
     try:
         module_type = load_entry_point(module_dist, "gn_module", "type")
     except ImportError:
-        module_type = module_code.lower()
+        module_type = None
     try:
         module_object = TModules.query.filter_by(module_code=module_code).one()
         module_object.module_picto = module_picto
@@ -125,35 +124,37 @@ def install_packaged_gn_module(module_path, module_code, build):
         os.symlink(os.path.abspath(module_path), module_symlink)
 
     # creation du fichier conf_gn_module.toml
-    module_config_path = get_module_config_path(module_object)
+    module_config_path = get_module_config_path(module_object.module_code)
     module_config_path.touch(exist_ok=True)
 
     ### Frontend
-    # creation du lien symbolique des assets externes
-    enable_frontend = create_external_assets_symlink(module_path, module_code.lower())
+    if not skip_frontend:
+        # creation du lien symbolique des assets externes
+        enable_frontend = create_external_assets_symlink(module_path, module_code.lower())
 
-    install_frontend_dependencies(os.path.abspath(module_path))
-    # generation du fichier tsconfig.app.json
-    tsconfig_app_templating(app=current_app)
-    # generation du routing du frontend
-    frontend_routes_templating(app=current_app)
-    # generation du fichier de configuration du frontend
-    create_module_config(current_app, module_code, build=False)
-    if build:
-        # Rebuild the frontend
-        build_geonature_front(rebuild_sass=True)
+        install_frontend_dependencies(os.path.abspath(module_path))
+        # generation du fichier tsconfig.app.json
+        tsconfig_app_templating(app=current_app)
+        # generation du fichier de configuration du frontend
+        create_module_config(module_code)
+
+    log.info("Module installé, pensez à recompiler le frontend.")
 
 
 @main.command()
 @click.argument("module_path")
 @click.argument("url")  # url de l'api
 @click.option("--conf-file", required=False, default=DEFAULT_CONFIG_FILE)
-@click.option("--build", type=bool, required=False, default=True)
 @click.option("--enable_backend", type=bool, required=False, default=True)
-def install_gn_module(module_path, url, conf_file, build, enable_backend):
+def install_gn_module(module_path, url, conf_file, enable_backend):
     """
     Installation d'un module gn
     """
+    warn(
+        "Cette commande sera supprimée au profit de la commande install_packaged_gn_module "
+        "dans la prochaine version de GeoNature. Pensez à packager vos modules.",
+        DeprecationWarning,
+    )
     try:
 
         # Indique si l'utilisateur est en train de
@@ -215,13 +216,8 @@ def install_gn_module(module_path, url, conf_file, build, enable_backend):
                         install_frontend_dependencies(module_path)
                         # generation du fichier tsconfig.app.json
                         tsconfig_app_templating(app=app)
-                        # generation du routing du frontend
-                        frontend_routes_templating(app=app)
                         # generation du fichier de configuration du frontend
-                        create_module_config(app, module_code, build=False)
-                    if build and enable_frontend:
-                        # Rebuild the frontend
-                        build_geonature_front(rebuild_sass=True)
+                        create_module_config(module_code)
 
                     log.info("Pensez à relancer geonature (sudo systemctl restart geonature)")
                 except Exception as e:
@@ -335,19 +331,19 @@ def deactivate_gn_module(module_code, frontend, backend):
 
 @main.command()
 @click.argument("module_code")
-@click.option("--build", type=bool, required=False, default=True)
-def update_module_configuration(module_code, build):
+@click.option(
+    "--output",
+    "output_file",
+    type=click.File("w"),
+)
+def update_module_configuration(module_code, output_file):
     """
     Génère la config frontend d'un module
 
     Example:
 
-    - geonature update_module_configuration occtax
-
-    - geonature update_module_configuration --build False --prod False occtax
+    - geonature update-module-configuration OCCTAX
 
     """
-    app = create_app(with_external_mods=False)
-    with app.app_context():
-        create_module_config(app, module_code, build=build)
-    log.info("Pensez à relancer geonature (sudo systemctl restart geonature)")
+    create_module_config(module_code, output_file)
+    log.info("Pensez à rebuilder le frontend")

@@ -5,7 +5,7 @@ from importlib import import_module
 from pkg_resources import load_entry_point, get_entry_info, iter_entry_points
 
 from geonature.utils.utilstoml import load_and_validate_toml
-from geonature.utils.config_schema import ManifestSchemaProdConf
+from geonature.utils.schemas import ManifestSchemaProdConf
 from geonature.utils.env import GN_EXTERNAL_MODULE
 from geonature.core.gn_commons.models import TModules
 
@@ -14,14 +14,12 @@ class NoManifestFound(Exception):
     pass
 
 
-def get_module_config_path(module_object):
-    config_path = os.environ.get(f"GEONATURE_{module_object.module_code}_CONFIG_FILE")
+def get_module_config_path(module_code):
+    config_path = os.environ.get(f"GEONATURE_{module_code.lower()}_CONFIG_FILE")
     if config_path:  # fallback to legacy conf path guessing
         config_path = Path(config_path)
     else:
-        config_path = (
-            GN_EXTERNAL_MODULE / module_object.module_path / "config" / "conf_gn_module.toml"
-        )
+        config_path = GN_EXTERNAL_MODULE / module_code.lower() / "config" / "conf_gn_module.toml"
     return config_path
 
 
@@ -73,7 +71,7 @@ def import_packaged_module(module_dist, module_object):
     except ImportError:
         pass
     else:
-        config_path = get_module_config_path(module_object)
+        config_path = get_module_config_path(module_object.module_code)
         module_config.update(load_and_validate_toml(str(config_path), module_schema))
 
     blueprint_entry_point = get_entry_info(module_dist, "gn_module", "blueprint")

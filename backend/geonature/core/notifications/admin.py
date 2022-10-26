@@ -23,6 +23,7 @@ class BibNotificationsTemplatesAdmin(ModelView):
         "notification_template_content": "Contenu du template de notification",
     }
 
+
 class BibNotificationsCategoriesAdmin(ModelView):
     form_columns = (
         "code_notification_category",
@@ -41,6 +42,7 @@ class BibNotificationsCategoriesAdmin(ModelView):
         "label_notification_category": "Label catégorie",
         "description_notification_category": "Description du code a utiliser ensuite dans la notification",
     }
+
 
 class BibNotificationsMethodsAdmin(ModelView):
     form_columns = (

@@ -133,6 +133,13 @@ Cette commande exécute les actions suivantes :
 - Intégration du blueprint du module dans l'API de GeoNature
 - Vérification de la conformité des paramètres utilisateurs
 - Génération du routing Angular pour le frontend
-- Re-build du frontend pour une mise en production
 
 **4.** Complétez l'éventuelle configuration du module (``config/conf_gn_module.toml``) à partir des paramètres présents dans ``config/conf_gn_module.toml.example`` dont vous pouvez surcoucher les valeurs par défaut. Puis relancez la mise à jour de la configuration (depuis le répertoire ``geonature/backend`` et une fois dans le venv (``source venv/bin/activate``) : ``geonature update_module_configuration nom_du_module``)
+
+**5.** Re-build du frontend :
+
+::
+
+    cd frontend
+    nvm use
+    npm run build

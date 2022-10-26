@@ -21,6 +21,7 @@ ExecStart=${BASE_DIR}/backend/venv/bin/gunicorn geonature:create_app() \
                 --bind "${GUNICORN_HOST}:${GUNICORN_PORT}" --timeout="${GUNICORN_TIMEOUT}" \
                 --log-file "${GUNICORN_LOG_FILE}"
 ExecReload=/bin/kill -s HUP $MAINPID
+KillMode=mixed
 TimeoutStartSec=10
 TimeoutStopSec=5
 PrivateTmp=true

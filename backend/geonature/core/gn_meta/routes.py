@@ -27,7 +27,7 @@ from sqlalchemy.sql import text, exists, select, update
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import Load, joinedload, raiseload
 from werkzeug.exceptions import Conflict, BadRequest, Forbidden, NotFound
-from werkzeug.datastructures import Headers
+from werkzeug.datastructures import Headers, MultiDict
 from werkzeug.utils import secure_filename
 from marshmallow import ValidationError, EXCLUDE
 
@@ -108,7 +108,7 @@ def get_datasets():
     :query int id_acquisition_framework: get only dataset of given AF
     :returns:  `list<TDatasets>`
     """
-    params = request.args.to_dict()
+    params = MultiDict(request.args)
     fields = params.get("fields", None)
     if fields:
         fields = fields.split(",")
@@ -1049,6 +1049,14 @@ def publish_acquisition_framework(info_role, af_id):
 
     if not datasets:
         raise Conflict("Le cadre doit contenir des jeux de données")
+
+    if not db.session.query(
+        TAcquisitionFramework.query.filter(
+            TAcquisitionFramework.id_acquisition_framework == af_id,
+            TAcquisitionFramework.datasets.any(TDatasets.synthese_records.any()),
+        ).exists()
+    ).scalar():
+        raise Conflict("Tous les jeux de données du cadre d’acquisition sont vides")
 
     # After publishing an AF, we set it as closed and all its DS as inactive
     for dataset in datasets:

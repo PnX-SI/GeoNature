@@ -481,16 +481,11 @@ Etapes :
   PUBLIC_LOGIN = 'public'
   PUBLIC_PASSWORD = 'public'
 
-- Mettre à jour la configuration de GeoNature
 
-.. code:: 
-
-  $ source backend/venv/bin/activate
-  $ geonature update_configuration
-  $ sudo systemctl restart geonature
+:ref:`Exécuter les actions post-modification de la configuration <post_config_change>`.
 
 A ce moment-là, cet utilisateur a tous les droits sur GeoNature.
-Il s'agit maintenant de gérer ses permissions dans GeoNature même. 
+Il s'agit maintenant de gérer ses permissions dans GeoNature même.
 
 3/ GeoNature 
 
@@ -978,22 +973,33 @@ Pour configurer GeoNature, actuellement il y a :
 Configuration générale de l'application
 """""""""""""""""""""""""""""""""""""""
 
-L'installation de GeoNature génère le fichier de configuration globale ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``. Ce fichier est aussi copié dans le frontend (``frontend/conf/app.config.ts``), à ne pas modifier.
+La configuration générale de GeoNature se fait dans le fichier ``config/geonature_config.toml``.
+Une version minimaliste est généré à l’installation à partir du fichier ``config/settings.ini``.
+Vous pouvez compléter votre configuration en vous inspirant des paramètres par défaut présent dans le fichier ``config/default_config.toml.example``.
 
-Par défaut, le fichier ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` est minimaliste et généré à partir des infos présentes dans le fichier ``config/settings.ini``.
+Le frontend lit sa configuration depuis le fichier ``frontend/conf/app.config.ts`` mais ce dernier n’est pas à modifier manuellement : il est généré à partir des paramètres présents dans le fichier ``config/geonature_config.toml``.
 
-Il est possible de le compléter en surcouchant les paramètres présents dans le fichier ``config/default_config.toml.example``.
+.. _post_config_change:
 
-A chaque modification du fichier global de configuration (``<GEONATURE_DIRECTORY>/config/geonature_config.toml``), il faut regénérer le fichier de configuration du frontend.
+Ainsi, à chaque modification du fichier de configuration, vous devez :
 
-Ainsi après chaque modification des fichiers de configuration globale, placez-vous dans le backend de GeoNature (``/home/monuser/GeoNature/backend``) et lancez les commandes :
+- relancer le backend : ``sudo systemctl restart geonature``
+- regénérer le fichier de configuration du frontend :
 
-.. code-block:: console
+.. code-block:: bash
 
-    source venv/bin/activate
-    geonature update_configuration
-    sudo systemctl restart geonature
-    deactivate
+    source backend/venv/bin/activate
+    geonature generate-frontend-config
+
+
+- rebuilder le frontend :
+
+.. code-block:: bash
+
+    cd frontend
+    nvm use
+    npm run build
+
 
 Configuration d'un gn_module
 """"""""""""""""""""""""""""
@@ -1040,10 +1046,9 @@ Voici la liste des commandes disponibles (aussi disponibles en tapant la command
 - ``activate_gn_module`` : Active un gn_module installé (Possibilité d'activer seulement le backend ou le frontend)
 - ``deactivate_gn_module`` : Désactive gn_un module activé (Possibilté de désactiver seulement le backend ou le frontend)
 - ``dev_back`` : Lance le backend en mode développement
-- ``dev_front`` : Lance le frontend en mode développement
 - ``generate_frontend_module_route`` : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installés (Fait automatiquement lors de l'installation d'un module)
 - ``install_gn_module`` : Installe un gn_module
-- ``update_configuration`` : Met à jour la configuration du cœur de l'application. A exécuter suite à une modification du fichier ``geonature_config.toml``
+- ``generate_frontend_config`` : Regénère le fichier de configuration du frontend. A exécuter suite à une modification du fichier ``geonature_config.toml``
 - ``update_module_configuration`` : Met à jour la configuration d'un module. A exécuter suite à une modification du fichier ``conf_gn_module.toml``.
 
 Effectuez ``geonature <nom_commande> --help`` pour accéder à la documentation et à des exemples d'utilisation de chaque commande.
@@ -1605,19 +1610,12 @@ Etapes :
     $ nano geonature_config.toml
     PUBLIC_LOGIN = 'public'
     PUBLIC_PASSWORD = 'public'
-..
 
-   - Mettre à jour la configuration de GeoNature
 
-.. code-block::
+:ref:`Exécuter les actions post-modification de la configuration <post_config_change>`.
 
-    $ source backend/venv/bin/activate
-    $ geonature update_configuration
-    $ sudo systemctl restart geonature
-..
-
-A ce moment là, cet utilisateur a tous les droits sur GeoNature.
-Il s'agit donc de gérer ses permissions dans GeoNature même. 
+A ce moment-là, cet utilisateur a tous les droits sur GeoNature.
+Il s'agit maintenant de gérer ses permissions dans GeoNature même.
 
 3/ GeoNature 
 
@@ -1702,7 +1700,7 @@ En modifiant les variables des champs ci-dessous, vous pouvez donc personnaliser
 Si le champ est masqué, une valeur par défaut est inscrite en base (voir plus loin pour définir ces valeurs).
 
 Modifier le champ Observateurs
-******************************
+``````````````````````````````
 
 Par défaut le champ ``Observateurs`` est une liste déroulante qui pointe vers une liste du schéma ``utilisateurs``.
 Il est possible de passer ce champ en texte libre en mettant à ``true`` la variable ``observers_txt``.
@@ -1712,7 +1710,7 @@ Le paramètre ``id_observers_list`` permet de changer la liste d'observateurs pr
 Par défaut, l'ensemble des observateurs de la liste 9 (observateurs faune/flore) sont affichés.
 
 Personnaliser la liste des taxons saisissables dans le module
-*************************************************************
+`````````````````````````````````````````````````````````````
 
 Le module est fourni avec une liste restreinte de taxons (8 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
 
@@ -1739,7 +1737,7 @@ Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa 
 Il est également possible d'éditer des listes à partir de l'application TaxHub.
 
 Gérer les valeurs par défaut des nomenclatures
-**********************************************
+``````````````````````````````````````````````
 
 Le formulaire de saisie pré-remplit des valeurs par défaut pour simplifier la saisie. Ce sont également ces valeurs qui sont prises en compte pour remplir dans la BDD les champs du formulaire qui sont masqués.
 
@@ -1760,7 +1758,7 @@ Une interface de gestion des nomenclatures est prévue d'être développée pour
 TODO : valeur par défaut de la validation
 
 Personnaliser l'interface Map-list
-**********************************
+``````````````````````````````````
 
 La liste des champs affichés par défaut dans le tableau peut être modifiée avec le paramètre ``default_maplist_columns``.
 
@@ -1779,7 +1777,7 @@ Par défaut :
 Voir la vue ``occtax.v_releve_list`` pour voir les champs disponibles.
 
 Ajouter une contrainte d'échelle de saisie sur la carte
-*******************************************************
+```````````````````````````````````````````````````````
 
 Il est possible de contraindre la saisie de la géométrie d'un relevé sur la carte par un seuil d'échelle minimum avec le paramètre ``releve_map_zoom_level``.
 
@@ -1879,6 +1877,7 @@ Exemples de configuration :
 .. image :: _static/html1.png
 
 - Un champs de type "datalist". Ce champs permet de générer une liste de valeurs à partir d'une API. Dans le champ "attributs additionnels", renseignez les éléments suivants : 
+
 ::
 
     ``{"api": "url_vers_la_ressource", "keyValue": "champ à stocker en base", "keyLabel": "champ à afficher en interface"}

@@ -4,6 +4,8 @@
 
 import os
 
+from pkg_resources import iter_entry_points, load_entry_point
+
 from marshmallow import (
     Schema,
     fields,
@@ -18,8 +20,10 @@ from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_LIST_COLUMN,
     DEFAULT_COLUMNS_API_SYNTHESE,
 )
-from geonature.utils.env import GEONATURE_VERSION
+from geonature.utils.env import GEONATURE_VERSION, GN_EXTERNAL_MODULE
+from geonature.utils.module import get_module_config_path
 from geonature.utils.utilsmails import clean_recipients
+from geonature.utils.utilstoml import load_and_validate_toml
 
 
 class EmailStrOrListOfEmailStrField(fields.Field):
@@ -96,8 +100,8 @@ class MailConfig(Schema):
 
 
 class CeleryConfig(Schema):
-    broker_url = fields.String()
-    result_backend = fields.String(required=False)
+    broker_url = fields.String(load_default="redis://localhost:6379/0")
+    result_backend = fields.String(load_default="redis://localhost:6379/0")
 
 
 class AccountManagement(Schema):
@@ -192,7 +196,7 @@ class GnPySchemaConf(Schema):
     CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
     MAIL_CONFIG = fields.Nested(MailConfig, load_default=MailConfig().load({}))
-    CELERY = fields.Nested(CeleryConfig)
+    CELERY = fields.Nested(CeleryConfig, load_default=CeleryConfig().load({}))
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     ADMIN_APPLICATION_LOGIN = fields.String()
     ACCOUNT_MANAGEMENT = fields.Nested(
@@ -317,14 +321,14 @@ BASEMAP = [
         "name": "OpenStreetMap",
         "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
         "options": {
-            "attribution": "&copy OpenStreetMap",
+            "attribution": "<a href='https://www.openstreetmap.org/copyright' target='_blank'>© OpenStreetMap contributors</a>",
         },
     },
     {
         "name": "OpenTopoMap",
         "url": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
         "options": {
-            "attribution": "© OpenTopoMap",
+            "attribution": "Map data: © <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap contributors</a>, SRTM | Map style: © <a href='https://opentopomap.org' target='_blank'>OpenTopoMap</a> (<a href='https://creativecommons.org/licenses/by-sa/3.0/' target='_blank'>CC-BY-SA</a>)",
         },
     },
     {
@@ -332,7 +336,7 @@ BASEMAP = [
         "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
         "options": {
             "subdomains": ["mt0", "mt1", "mt2", "mt3"],
-            "attribution": "© GoogleMap",
+            "attribution": "© Google Maps",
         },
     },
 ]
@@ -346,6 +350,13 @@ class MapConfig(Schema):
     # zoom appliqué sur la carte lorsque l'on clique sur une liste
     # ne s'applique qu'aux points
     ZOOM_ON_CLICK = fields.Integer(load_default=18)
+    # Restreindre la recherche OpenStreetMap (sur la carte dans l'encart "Rechercher un lieu")
+    # à certains pays. Les pays doivent être au format ISO_3166-1 :
+    # https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2 et séparés par une virgule.
+    # Exemple : OSM_RESTRICT_COUNTRY_CODES = "fr,es,be,ch" (Restreint à France, Espagne, Belgique
+    # et Suisse)
+    # Laisser à null pour n'avoir aucune restriction
+    OSM_RESTRICT_COUNTRY_CODES = fields.String(load_default=None)
 
 
 class TaxHub(Schema):
@@ -414,14 +425,13 @@ class GnGeneralSchemaConf(Schema):
                 "AUTO_ACCOUNT_CREATION, VALIDATOR_EMAIL",
             )
 
-class ManifestSchemaConf(Schema):
-    package_format_version = fields.String(required=True)
-    module_code = fields.String(required=True)
-    module_version = fields.String(required=True)
-    min_geonature_version = fields.String(required=True)
-    max_geonature_version = fields.String(required=True)
-    exclude_geonature_versions = fields.List(fields.String)
-
-class ManifestSchemaProdConf(Schema):
-    module_code = fields.String(required=True)
-
+    @post_load
+    def insert_module_config(self, data, **kwargs):
+        for module_code_entry in iter_entry_points("gn_module", "code"):
+            module_code = module_code_entry.resolve()
+            if not (GN_EXTERNAL_MODULE / module_code.lower()).exists():
+                continue
+            config_schema = load_entry_point(module_code_entry.dist, "gn_module", "config_schema")
+            config = load_and_validate_toml(get_module_config_path(module_code), config_schema)
+            data[module_code] = config
+        return data

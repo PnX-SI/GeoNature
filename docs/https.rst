@@ -94,14 +94,6 @@ Modifier les éléments suivants :
   API_ENDPOINT = 'https://mondomaine.fr/geonature/api'
   API_TAXHUB = 'https://mondomaine.fr/taxhub/api'
 
-
-Pour que ces modifications soient prises en compte, lancer les commandes suivantes :
-
-::
-	
-  cd geonature/backend
-  source venv/bin/activate
-  geonature update_configuration
-  deactivate
+Pour que ces modifications soient prises en compte, exécuter les :ref:`actions à effecture après modification de la configuration <post_config_change>`.
 
 Les applications sont désormais accessibles sur votre domaine sécurisé en HTTPS !

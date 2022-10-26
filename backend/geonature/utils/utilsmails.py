@@ -35,9 +35,6 @@ def send_mail(recipients, subject, msg_html):
     void
         L'email est envoyé. Aucun retour.
     """
-    if not MAIL:
-        raise Exception("No configuration for email")
-
     with MAIL.connect() as conn:
         mail_sender = current_app.config.get("MAIL_DEFAULT_SENDER")
         if not mail_sender:

@@ -18,7 +18,6 @@ import json
 class Notification:
     def create_notification(requestData):
         log = logging.getLogger()
-        log.info(requestData)
         # for all categories given
         categories = requestData.get("categories")
         if not categories:
@@ -28,12 +27,11 @@ class Notification:
             # Get notification method for wanted users
             # Can be several user to notify ( exemple multi digitiser for an observation)
             idRoles = requestData.get("id_roles")
-            log.info("Category code %s", category)
+            log.info("Notification search for category code %s", category)
             if not idRoles:
                 raise BadRequest("Notification is missing id_role to be notify")
 
             for role in idRoles:
-                log.info("Notification for id role %s", role)
                 userNotificationsRules = TNotificationsRules.query.filter(
                     TNotificationsRules.id_role == role,
                     TNotificationsRules.code_notification_category == category,
@@ -78,7 +76,6 @@ class Notification:
                         # erase existing content with template
                         template = Template(notificationTemplate.notification_template_content)
                         content = template.render(requestData)
-                        log.info("Notification content : %s", content)
 
                     # if method is type BDD
                     if method == "BDD":

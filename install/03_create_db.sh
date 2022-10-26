@@ -40,7 +40,7 @@ if database_exists "${db_name}"; then
         sudo -u "postgres" -s dropdb "${db_name}"
     else
         echo "Database exists but the settings file indicates that we don't have to drop it."
-	exit 1
+        exit 0
     fi
 fi
 
@@ -103,7 +103,13 @@ fi
 geonature db upgrade geonature@head -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
 geonature db autoupgrade -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
 
-geonature taxref import-v15 --skip-bdc-statuts
+geonature db exec "DO 'BEGIN ASSERT EXISTS (SELECT 1 FROM taxonomie.taxref); END'" 2>/dev/null || if [ "$install_bdc_statuts" = true ];
+then
+    geonature taxref import-v15
+else
+    geonature taxref import-v15 --skip-bdc-statuts
+fi
+geonature db upgrade nomenclatures_taxonomie_data@head
 
 # Installation des données exemples
 if [ "$add_sample_data" = true ];

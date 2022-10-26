@@ -1,7 +1,7 @@
 import { Component, Input, OnInit, ViewChild, Injectable } from '@angular/core';
 import { MapService } from './map.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Map, LatLngExpression } from 'leaflet';
+import { Map, LatLngExpression, LatLngBounds } from 'leaflet';
 import { AppConfig } from '@geonature_config/app.config';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import * as L from 'leaflet';
@@ -26,6 +26,7 @@ const PARAMS = new HttpParams({
     format: 'json',
     limit: '10',
     polygon_geojson: '1',
+    countrycodes: AppConfig.MAPCONFIG.OSM_RESTRICT_COUNTRY_CODES,
   },
 });
 
@@ -106,8 +107,18 @@ export class MapComponent implements OnInit {
     );
 
   onResultSelected(nomatimObject) {
-    const geojson = L.geoJSON(nomatimObject.item.geojson);
-    this.map.fitBounds(geojson.getBounds());
+    let bounds: LatLngBounds;
+    if (nomatimObject.item?.geojson) {
+      const geojson = L.geoJSON(nomatimObject.item.geojson);
+      bounds = geojson.getBounds();
+    } else {
+      const boundingBox: number[] = nomatimObject.item.boundingbox;
+      bounds = L.latLngBounds(
+        L.latLng(boundingBox[0], boundingBox[2]),
+        L.latLng(boundingBox[1], boundingBox[3])
+      );
+    }
+    this.map.fitBounds(bounds);
   }
 
   initialize() {

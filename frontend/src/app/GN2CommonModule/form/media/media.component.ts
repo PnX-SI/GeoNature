@@ -75,7 +75,7 @@ export class MediaComponent implements OnInit {
     });
 
     //Si la liste de champs à afficher dans detail est différente de la liste des champs details
-    if (mediaDetailsFields.length > 0 && this.details.length != mediaDetailsFields.length) {
+    if (mediaDetailsFields.length > 0 && (this.details || []).length != mediaDetailsFields.length) {
       let outDetailsFields = this.mediaFormDefinition.filter(
         (field) => !this.details.includes(field.attribut_name) && mediaDetailsFields.includes(field)
       );

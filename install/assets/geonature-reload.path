@@ -1,0 +1,5 @@
+[Path]
+PathModified=${BASE_DIR}/config/geonature_config.toml
+
+[Install]
+WantedBy=multi-user.target

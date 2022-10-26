@@ -7,6 +7,7 @@ import subprocess
 import logging
 import os
 import json
+from contextlib import ExitStack
 
 from flask import current_app
 from pathlib import Path
@@ -18,7 +19,6 @@ from geonature.utils.config import config
 from geonature.utils.module import import_gn_module
 from geonature.utils import utilstoml
 from geonature.utils.errors import GeoNatureError
-from geonature.utils.command import build_geonature_front, frontend_routes_templating
 from geonature.core.gn_commons.models import TModules
 from geonature import create_app
 
@@ -31,7 +31,7 @@ from geonature.utils.env import (
     DB,
     import_requirements,
 )
-from geonature.utils.config_schema import ManifestSchemaConf
+from geonature.utils.schemas import ManifestSchemaConf
 
 log = logging.getLogger(__name__)
 
@@ -151,13 +151,6 @@ def gn_module_activate(module_code, activ_front, activ_back):
                     """The module does not exist.
                     \n Check the gn_commons.t_module to get the module name"""
                 )
-    log.info("Generate frontend routes")
-    try:
-        frontend_routes_templating(app)
-        log.info("...%s\n", MSG_OK)
-    except Exception:
-        log.error("Error while generating frontend routing")
-        raise
 
 
 def gn_module_deactivate(module_code, activ_front, activ_back):
@@ -181,12 +174,6 @@ def gn_module_deactivate(module_code, activ_front, activ_back):
             """The module does not exist.
             \n Check the gn_commons.t_module to get the module name"""
         )
-    log.info("Regenerate frontend routes")
-    try:
-        frontend_routes_templating(app)
-        log.info("...%s\n", MSG_OK)
-    except Exception as e:
-        raise GeoNatureError(e)
 
 
 def check_codefile_validity(module_path, module_code):
@@ -300,20 +287,27 @@ def install_frontend_dependencies(module_path):
     frontend_module_path = Path(module_path) / "frontend"
     if (frontend_module_path / "package.json").is_file():
         try:
-            # To avoid Maximum call stack size exceeded on npm install - clear cache...
-            subprocess.call(["/bin/bash", "-i", "-c", "nvm use"], cwd=str(ROOT_DIR / "frontend"))
-            assert (
-                subprocess.call(
-                    [
-                        "npm",
-                        "install",
-                        str(frontend_module_path),
-                        "--no-save",
-                        "--legacy-peer-deps",
-                    ],
-                    cwd=str(ROOT_DIR / "frontend"),
+            subprocess.check_call(
+                ["/bin/bash", "-i", "-c", "nvm use"], cwd=str(ROOT_DIR / "frontend")
+            )
+            try:
+                subprocess.check_call(
+                    ["npm", "ci"],
+                    cwd=str(frontend_module_path),
                 )
-                == 0
+            except subprocess.CalledProcessError:  # probably missing package-lock.json
+                subprocess.check_call(
+                    ["npm", "install"],
+                    cwd=str(frontend_module_path),
+                )
+            subprocess.check_call(
+                [
+                    "npm",
+                    "install",
+                    str(frontend_module_path),
+                    "--no-save",
+                ],
+                cwd=str(ROOT_DIR / "frontend"),
             )
         except Exception as ex:
             log.info("Error while installing JS dependencies")
@@ -387,7 +381,7 @@ def remove_application_db(app, module_code):
     log.info("...%s\n", MSG_OK)
 
 
-def create_module_config(app, module_code, build=True):
+def create_module_config(module_code, output_file=None):
     """
     Create the frontend config
     """
@@ -397,13 +391,11 @@ def create_module_config(app, module_code, build=True):
     except NoResultFound:
         raise Exception(f"Module with code '{module_code}' not found in database.")
     _, module_config, _ = import_gn_module(module_object)
-    frontend_config_path = os.path.join(module_config["FRONTEND_PATH"], "app/module.config.ts")
-    try:
-        with open(str(ROOT_DIR / frontend_config_path), "w") as outputfile:
-            outputfile.write("export const ModuleConfig = ")
-            json.dump(module_config, outputfile, indent=True, sort_keys=True)
-    except FileNotFoundError:
-        log.info("No frontend config file")
-        raise
-    if build:
-        build_geonature_front()
+    with ExitStack() as stack:
+        if output_file is None:
+            frontend_config_path = (
+                ROOT_DIR / module_config["FRONTEND_PATH"] / "app/module.config.ts"
+            )
+            output_file = stack.enter_context(open(str(frontend_config_path), "w"))
+        output_file.write("export const ModuleConfig = ")
+        json.dump(module_config, output_file, indent=True, sort_keys=True)
