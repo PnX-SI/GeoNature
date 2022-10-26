@@ -29,7 +29,12 @@ class Notification:
             idRoles = requestData.get("id_roles")
             log.info("Notification search for category code %s", category)
             if not idRoles:
-                return (json.dumps({"success": False, "information": "Notification is missing id_role to be notify"}))
+                return json.dumps(
+                    {
+                        "success": False,
+                        "information": "Notification is missing id_role to be notify",
+                    }
+                )
 
             for role in idRoles:
                 userNotificationsRules = NotificationsRules.query.filter(
@@ -39,7 +44,9 @@ class Notification:
 
                 # if no information then no rules return OK with information
                 if userNotificationsRules.all() == []:
-                    return (json.dumps({"success": False, "information": "No rules for this user/category"}))
+                    return json.dumps(
+                        {"success": False, "information": "No rules for this user/category"}
+                    )
 
                 # else get all methods
                 for rule in userNotificationsRules.all():
@@ -48,7 +55,12 @@ class Notification:
                     # Check if method exist in config
                     method_exists = NotificationsMethods.query.filter_by(code=method).one()
                     if not method_exists:
-                        return (json.dumps({"success": False, "information": "This method of notification in not implement yet"}))
+                        return json.dumps(
+                            {
+                                "success": False,
+                                "information": "This method of notification in not implement yet",
+                            }
+                        )
 
                     title = requestData.get("title", "")
                     content = requestData.get("content", "")
