@@ -96,12 +96,10 @@ export class NavHomeComponent implements OnInit, OnDestroy {
         this.currentDocUrl = module.module_doc_url;
       }
     });
-    this.updateNotificationCount();
   }
 
   closeSideBar() {
     this.sideNavService.sidenav.toggle();
-    this.updateNotificationCount();
   }
 
   private updateNotificationCount() {
