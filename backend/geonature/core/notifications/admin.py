@@ -33,7 +33,7 @@ class BibNotificationsCategoriesAdmin(ModelView):
     column_display_all_relations = True
     form_args = {
         "code_notification_category": {"label": "Id de la catégorie de notification"},
-        "label_notification_category": {"label": "Titre afficher dans la notification"},
+        "label_notification_category": {"label": "Titre affiché dans la notification"},
         "description_notification_category": {"label": "Description de la règle de notification"},
     }
     column_descriptions = {
