@@ -30,11 +30,11 @@ from pypnusershub.db.models import User
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.notifications.models import (
-    TNotifications,
-    BibNotificationsMethods,
-    TNotificationsRules,
-    BibNotificationsTemplates,
-    BibNotificationsCategories,
+    Notifications,
+    NotificationsMethods,
+    NotificationsRules,
+    NotificationsTemplates,
+    NotificationsCategories,
 )
 from geonature.core.notifications.utils import Notification
 
@@ -46,9 +46,9 @@ log = logging.getLogger()
 @permissions.login_required
 def list_database_notification():
 
-    notifications = TNotifications.query.filter(TNotifications.id_role == g.current_user.id_role)
+    notifications = Notifications.query.filter(Notifications.id_role == g.current_user.id_role)
     notifications = notifications.order_by(
-        TNotifications.code_status.desc(), TNotifications.creation_date.desc()
+        Notifications.code_status.desc(), Notifications.creation_date.desc()
     )
     result = [
         notificationsResult.as_dict(
@@ -72,25 +72,19 @@ def list_database_notification():
 @permissions.login_required
 def count_notification():
 
-    notificationNumber = TNotifications.query.filter(
-        TNotifications.id_role == g.current_user.id_role, TNotifications.code_status == "UNREAD"
+    notificationNumber = Notifications.query.filter(
+        Notifications.id_role == g.current_user.id_role, Notifications.code_status == "UNREAD"
     ).count()
     return jsonify(notificationNumber)
 
 
 # Update status ( for the moment only UNREAD/READ)
-@routes.route("/notification", methods=["POST"])
+@routes.route("/notification/<int:id_notification>", methods=["POST"])
 @json_resp
 @permissions.login_required
-def update_notification():
+def update_notification(id_notification):
 
-    data = request.get_json()
-    if data is None:
-        raise BadRequest("Empty request data")
-
-    # Information to check if notification is need
-    id_notification = data["id_notification"]
-    notification = TNotifications.query.get_or_404(id_notification)
+    notification = Notifications.query.get_or_404(id_notification)
     if notification.id_role != g.current_user.id_role:
         raise Forbidden
     notification.code_status = "READ"
@@ -102,12 +96,12 @@ def update_notification():
 @permissions.login_required
 def list_notification_rules():
 
-    notificationsRules = TNotificationsRules.query.filter(
-        TNotificationsRules.id_role == g.current_user.id_role
+    notificationsRules = NotificationsRules.query.filter(
+        NotificationsRules.id_role == g.current_user.id_role
     )
     notificationsRules = notificationsRules.order_by(
-        TNotificationsRules.code_category.desc(),
-        TNotificationsRules.code_method.desc(),
+        NotificationsRules.code_category.desc(),
+        NotificationsRules.code_method.desc(),
     )
     notificationsRules = notificationsRules.options(joinedload("notification_method"))
     notificationsRules = notificationsRules.options(joinedload("notification_category"))
@@ -131,7 +125,7 @@ def list_notification_rules():
 
 
 # add rule for user
-@routes.route("/rule", methods=["PUT"])
+@routes.route("/rules", methods=["PUT"])
 @permissions.login_required
 def create_rule():
 
@@ -143,7 +137,7 @@ def create_rule():
     code_category = requestData.get("code_category", "")
 
     # Save notification in database as UNREAD
-    new_rule = TNotificationsRules(
+    new_rule = NotificationsRules(
         id_role=g.current_user.id_role,
         code_method=code_method,
         code_category=code_category,
@@ -160,29 +154,21 @@ def create_rule():
 @permissions.login_required
 def delete_all_rules():
 
-    nbRulesDeleted = TNotificationsRules.query.filter(
-        TNotificationsRules.id_role == g.current_user.id_role
+    nbRulesDeleted = NotificationsRules.query.filter(
+        NotificationsRules.id_role == g.current_user.id_role
     ).delete()
     DB.session.commit()
     return jsonify(nbRulesDeleted)
 
 
-# add rule for user
-@routes.route("/rule", methods=["DELETE"])
+# Delete a specific rule
+@routes.route("/rules/<int:id_notification_rules>", methods=["DELETE"])
 @permissions.login_required
-def modify_rules():
+def delete_rule(id_notification_rules):
 
-    requestData = request.get_json()
-    if requestData is None:
-        raise BadRequest("Empty request data")
-
-    code_method = requestData.get("code_method", "")
-    code_category = requestData.get("code_category", "")
-
-    nbRulesDeleted = TNotificationsRules.query.filter(
-        TNotificationsRules.id_role == g.current_user.id_role,
-        TNotificationsRules.code_category == code_category,
-        TNotificationsRules.code_method == code_method,
+    nbRulesDeleted = NotificationsRules.query.filter(
+        NotificationsRules.id_role == g.current_user.id_role,
+        NotificationsRules.id_notification_rules == id_notification_rules,
     ).delete()
     DB.session.commit()
     return jsonify(nbRulesDeleted)
@@ -192,7 +178,7 @@ def modify_rules():
 @routes.route("/methods", methods=["GET"])
 @permissions.login_required
 def list_notification_methods():
-    notificationMethods = BibNotificationsMethods.query.all()
+    notificationMethods = NotificationsMethods.query.all()
     result = [
         notificationsMethod.as_dict(
             fields=[
@@ -210,7 +196,7 @@ def list_notification_methods():
 @routes.route("/categories", methods=["GET"])
 @permissions.login_required
 def list_notification_categories():
-    notificationCategories = BibNotificationsCategories.query.all()
+    notificationCategories = NotificationsCategories.query.all()
     result = [
         notificationsCategory.as_dict(
             fields=[

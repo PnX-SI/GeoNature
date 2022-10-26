@@ -48,8 +48,18 @@ def upgrade():
     logger.info("Create table " + SCHEMA_NAME + ".bib_notifications_templates")
     bibNotificationsTemplates = op.create_table(
         "bib_notifications_templates",
-        Column("code_category", Unicode, primary_key=True),
-        Column("code_method", Unicode, primary_key=True),
+        Column(
+            "code_category",
+            Unicode,
+            ForeignKey(SCHEMA_NAME + ".bib_notifications_categories.code"),
+            primary_key=True,
+        ),
+        Column(
+            "code_method",
+            Unicode,
+            ForeignKey(SCHEMA_NAME + ".bib_notifications_methods.code"),
+            primary_key=True,
+        ),
         Column("content", Unicode),
         schema=SCHEMA_NAME,
     )
@@ -145,11 +155,6 @@ def upgrade():
                 "label": "Passage d'une observation au statut Inconnu",
                 "description": "Se déclenche en cas du passage d'une observation en statut Inconnu",
             },
-            {
-                "code": "VALIDATION-8",
-                "label": "Passage d'une observation au statut En attente de validation",
-                "description": "Se déclenche en cas du passage d'une observation en statut En attente de validation",
-            },
         ],
     )
 
@@ -193,11 +198,6 @@ def upgrade():
                 "content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
             },
             {
-                "code_category": "VALIDATION-8",
-                "code_method": "BDD",
-                "content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
-            },
-            {
                 "code_category": "VALIDATION-1",
                 "code_method": "MAIL",
                 "content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
@@ -229,11 +229,6 @@ def upgrade():
             },
             {
                 "code_category": "VALIDATION-7",
-                "code_method": "MAIL",
-                "content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
-            },
-            {
-                "code_category": "VALIDATION-8",
                 "code_method": "MAIL",
                 "content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
             },

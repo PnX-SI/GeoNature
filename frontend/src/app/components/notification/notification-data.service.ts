@@ -9,6 +9,7 @@ import {
 } from '@angular/common/http';
 
 import { AppConfig } from '../../../conf/app.config';
+import * as internal from 'stream';
 
 /** Interface to display notifications */
 export interface NotificationCard {
@@ -36,6 +37,7 @@ export interface CategoriesRules {
 
 /** Interface to serialise categorie rules */
 export interface Rules {
+  id_notification_rules: number;
   code_category: string;
   code_method: string;
 }
@@ -73,7 +75,7 @@ export class NotificationDataService {
 
   // Create rules
   createRule(data) {
-    return this._api.put(`${AppConfig.API_ENDPOINT}/notifications/rule`, data, {
+    return this._api.put(`${AppConfig.API_ENDPOINT}/notifications/rules`, data, {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }
@@ -97,7 +99,9 @@ export class NotificationDataService {
     return this._api.delete<any>(`${AppConfig.API_ENDPOINT}/notifications/rules`);
   }
 
-  deleteRule(data: Rules) {
-    return this._api.delete<any>(`${AppConfig.API_ENDPOINT}/notifications/rules`);
+  deleteRule(id_notification_rules) {
+    return this._api.delete<any>(
+      `${AppConfig.API_ENDPOINT}/notifications/rules/${id_notification_rules}`
+    );
   }
 }

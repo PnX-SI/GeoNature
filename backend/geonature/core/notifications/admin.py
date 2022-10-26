@@ -1,10 +1,9 @@
 from flask_admin.contrib.sqla import ModelView
 
 from geonature.utils.env import DB
-from geonature.core.notifications.models import BibNotificationsCategories
 
 
-class BibNotificationsTemplatesAdmin(ModelView):
+class NotificationsTemplatesAdmin(ModelView):
     form_columns = (
         "code_category",
         "code_method",
@@ -24,7 +23,7 @@ class BibNotificationsTemplatesAdmin(ModelView):
     }
 
 
-class BibNotificationsCategoriesAdmin(ModelView):
+class NotificationsCategoriesAdmin(ModelView):
     form_columns = (
         "code",
         "label",
@@ -44,7 +43,7 @@ class BibNotificationsCategoriesAdmin(ModelView):
     }
 
 
-class BibNotificationsMethodsAdmin(ModelView):
+class NotificationsMethodsAdmin(ModelView):
     form_columns = (
         "code",
         "label",
