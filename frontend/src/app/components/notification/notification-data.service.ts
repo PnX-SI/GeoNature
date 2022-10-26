@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import {
   HttpClient,
@@ -43,22 +42,21 @@ export interface Rules {
 
 @Injectable()
 export class NotificationDataService {
-
-  constructor(private _api: HttpClient) {
-  }
+  constructor(private _api: HttpClient) {}
 
   // Create notification via API
   // Could be used for notification on frond environnement
   createNotification(data) {
-    return this._api.put(`${AppConfig.API_ENDPOINT}/notifications/notification`,
-      data, {
-      headers: new HttpHeaders().set('Content-Type', 'application/json')
+    return this._api.put(`${AppConfig.API_ENDPOINT}/notifications/notification`, data, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }
 
   // returns notifications content for this user
   getNotifications() {
-    return this._api.get<NotificationCard[]>(`${AppConfig.API_ENDPOINT}/notifications/notifications`);
+    return this._api.get<NotificationCard[]>(
+      `${AppConfig.API_ENDPOINT}/notifications/notifications`
+    );
   }
 
   // returns number of notification for this user
@@ -68,17 +66,15 @@ export class NotificationDataService {
 
   // update notification status
   updateNotification(data: any) {
-    return this._api.post(`${AppConfig.API_ENDPOINT}/notifications/notification`,
-      data, {
-      headers: new HttpHeaders().set('Content-Type', 'application/json')
+    return this._api.post(`${AppConfig.API_ENDPOINT}/notifications/notification`, data, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }
 
   // Create rules
   createRule(data) {
-    return this._api.put(`${AppConfig.API_ENDPOINT}/notifications/rule`,
-      data, {
-      headers: new HttpHeaders().set('Content-Type', 'application/json')
+    return this._api.put(`${AppConfig.API_ENDPOINT}/notifications/rule`, data, {
+      headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }
 
@@ -104,6 +100,4 @@ export class NotificationDataService {
   deleteRule(data: Rules) {
     return this._api.delete<any>(`${AppConfig.API_ENDPOINT}/notifications/rules`);
   }
-
 }
-

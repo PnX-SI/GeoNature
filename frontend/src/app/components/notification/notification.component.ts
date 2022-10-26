@@ -1,4 +1,11 @@
-import { Component, OnInit, OnDestroy, ViewChild, ChangeDetectorRef, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  OnDestroy,
+  ViewChild,
+  ChangeDetectorRef,
+  AfterViewInit,
+} from '@angular/core';
 import { AppConfig } from '@geonature_config/app.config';
 import { NotificationDataService } from '@geonature/components/notification/notification-data.service';
 import { NotificationCard } from '@geonature/components/notification/notification-data.service';
@@ -9,19 +16,14 @@ import { MatTableDataSource } from '@angular/material/table';
 @Component({
   selector: 'pnx-notification',
   templateUrl: './notification.component.html',
-  styleUrls: ['./notification.component.scss']
+  styleUrls: ['./notification.component.scss'],
 })
 export class NotificationComponent implements OnInit, OnDestroy, AfterViewInit {
-
-
   @ViewChild(MatPaginator) paginator: MatPaginator;
   obs: Observable<any>;
   dataSource: MatTableDataSource<NotificationCard> = new MatTableDataSource<NotificationCard>();
 
-  constructor(
-    private notificationDataService: NotificationDataService) {
-
-  }
+  constructor(private notificationDataService: NotificationDataService) {}
 
   ngOnInit(): void {
     this.obs = this.dataSource.connect();
@@ -37,11 +39,10 @@ export class NotificationComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  updateNotificationStatus(data:NotificationCard) {
+  updateNotificationStatus(data: NotificationCard) {
     // Only update status if need
-    if(data.code_status == "UNREAD"){
-      this.notificationDataService.updateNotification(data).subscribe((response) => {
-      });
+    if (data.code_status == 'UNREAD') {
+      this.notificationDataService.updateNotification(data).subscribe((response) => {});
     }
   }
 
@@ -57,13 +58,9 @@ export class NotificationComponent implements OnInit, OnDestroy, AfterViewInit {
 
   //function with param item object
   OnMatCardClickEvent(notification: NotificationCard) {
-    // update status 
-    this.updateNotificationStatus(notification)
+    // update status
+    this.updateNotificationStatus(notification);
     // open given url
     window.open(notification.url, '_self');
   }
-
 }
-
-
-
