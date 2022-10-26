@@ -33,3 +33,7 @@ DEFAULT_LANGUAGE='fr'
 
 # Configuration médias
 [MEDIAS]
+
+# Gestion des Notification
+[NOTIFICATION]
+    ENABLED = false

@@ -542,3 +542,8 @@ MAIL_ON_ERROR = false
         { "label" = "Départements", "type_code"= "DEP" },
         { "label" = "Régions", "type_code"= "REG" }
     ]
+
+# Notification
+[NOTIFICATION]
+    #Enabled
+    ENABLED = false
