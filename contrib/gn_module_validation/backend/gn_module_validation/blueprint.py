@@ -1,3 +1,4 @@
+import array
 import logging
 import datetime
 import json
@@ -294,26 +295,51 @@ def get_validation_date(uuid):
 def notifyChange(data, idsynthese):
 
     # If notification enabled only
-    # if current_app.config["NOTIFICATION"]:
-    log.info(data)
+    if current_app.config["NOTIFICATION"]["ENABLED"] == True:
+        nomenclature = TNomenclatures.query.filter(
+            TNomenclatures.id_nomenclature == data["statut"]
+        ).first()
 
-    nomenclature = TNomenclatures.query.filter(
-        TNomenclatures.id_nomenclature == data["statut"]
-    ).first()
-    log.info(nomenclature.mnemonique)
+        # idRole is a list separated by coma
+        idRoles = (
+            DB.session.query(Synthese.id_digitiser)
+            .filter(Synthese.id_synthese == int(idsynthese))
+            .one()
+        )
+        roles = [str(role) for role in idRoles]
 
-    # idRole is a list separated by coma
-    idRoles = (
-        DB.session.query(Synthese.id_digitiser)
-        .filter(Synthese.id_synthese == int(idsynthese))
-        .one()
-    )
+        # Add mandatory dat
+        categoriesArray = ["VALIDATION-1"]
+        # Statut Certain
+        if data["statut"] == "315":
+            categoriesArray.append("VALIDATION-2")
+        # Statut Probable
+        if data["statut"] == "316":
+            categoriesArray.append("VALIDATION-3")
+        # Statut Douteux
+        if data["statut"] == "317":
+            categoriesArray.append("VALIDATION-4")
+        # Statut Invalide
+        if data["statut"] == "318":
+            categoriesArray.append("VALIDATION-5")
+        # Statut Non réalisable
+        if data["statut"] == "319":
+            categoriesArray.append("VALIDATION-6")
+        # Statut Inconnu
+        if data["statut"] == "320":
+            categoriesArray.append("VALIDATION-7")
+        # Statut En attente de validation
+        if data["statut"] == "548":
+            categoriesArray.append("VALIDATION-8")
+        data["categories"] = categoriesArray
+        data["id_roles"] = roles
+        data["title"] = "Modification de statut"
 
-    roles = [str(role) for role in idRoles]
+        # Add optional data
+        data["mnemonique"] = nomenclature.mnemonique
+        data["id_synthese"] = idsynthese
+        data["url"] = (
+            current_app.config["URL_APPLICATION"] + "/#/validation/occurrence/" + idsynthese
+        )
 
-    data["mnemonique"] = nomenclature.mnemonique
-    data["category"] = "VALIDATION-1"
-    data["title"] = "Modification de statut"
-    data["id_synthese"] = idsynthese
-    data["id_roles"] = roles
-    Notification.create_notification(data)
+        Notification.create_notification(data)
