@@ -13,10 +13,10 @@
               <div
                 class="col text-center"
                 *ngFor="let ruleMethod of rulesMethods"
-                id="type-{{ ruleMethod.code_notification_method }}"
-                title="{{ ruleMethod.description_notification_method }}"
+                id="type-{{ ruleMethod.code }}"
+                title="{{ ruleMethod.description }}"
               >
-                {{ ruleMethod.label_notification_method }}
+                {{ ruleMethod.label }}
               </div>
             </div>
           </div>
@@ -24,45 +24,45 @@
             <li
               class="list-group-item"
               *ngFor="let ruleCategory of rulesCategories"
-              id="list-{{ ruleCategory.code_notification_category }}"
+              id="list-{{ ruleCategory.code }}"
             >
-              <div class="row" id="listType-{{ ruleCategory.code_notification_category }}">
+              <div class="row" id="listType-{{ ruleCategory.code }}">
                 <div class="col-6">
-                  <span>{{ ruleCategory.label_notification_category }}</span
+                  <span>{{ ruleCategory.label }}</span
                   ><br />
                   <mat-card
                     ><span class="text-small box">{{
-                      ruleCategory.description_notification_category
+                      ruleCategory.description
                     }}</span></mat-card
                   >
                 </div>
                 <div class="col" style="margin: auto" *ngFor="let ruleMethod of rulesMethods">
                   <div class="btn-switch btn-margin-auto">
                     <input
-                      id="{{ ruleCategory.code_notification_category }}-{{
-                        ruleMethod.code_notification_method
+                      id="{{ ruleCategory.code }}-{{
+                        ruleMethod.code
                       }}"
-                      name="{{ ruleCategory.code_notification_category }}-{{
-                        ruleMethod.code_notification_method
+                      name="{{ ruleCategory.code }}-{{
+                        ruleMethod.code
                       }}"
                       type="checkbox"
                       [checked]="
                         hasUserSubscribed(
-                          ruleCategory.code_notification_category,
-                          ruleMethod.code_notification_method
+                          ruleCategory.code,
+                          ruleMethod.code
                         )
                       "
                       (change)="
                         updateRule(
-                          ruleCategory.code_notification_category,
-                          ruleMethod.code_notification_method,
+                          ruleCategory.code,
+                          ruleMethod.code,
                           $event
                         )
                       "
                     />
                     <label
-                      for="{{ ruleCategory.code_notification_category }}-{{
-                        ruleMethod.code_notification_method
+                      for="{{ ruleCategory.code }}-{{
+                        ruleMethod.code
                       }}"
                       class="label-default"
                     ></label>

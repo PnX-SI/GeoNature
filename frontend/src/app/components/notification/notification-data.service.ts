@@ -22,22 +22,22 @@ export interface NotificationCard {
 
 /** Interface to serialise method rules */
 export interface MethodRules {
-  code_notification_method: string;
-  label_notification_method: string;
-  description_notification_method: string;
+  code: string;
+  label: string;
+  description: string;
 }
 
 /** Interface to serialise categorie rules */
 export interface CategoriesRules {
-  code_notification_category: string;
-  label_notification_category: string;
-  description_notification_category: string;
+  code: string;
+  label: string;
+  description: string;
 }
 
 /** Interface to serialise categorie rules */
 export interface Rules {
-  code_notification_category: string;
-  code_notification_method: string;
+  code_category: string;
+  code_method: string;
 }
 
 @Injectable()

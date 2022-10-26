@@ -41,22 +41,6 @@ from geonature.core.notifications.utils import Notification
 routes = Blueprint("notifications", __name__)
 log = logging.getLogger()
 
-# Notification input in Json
-# Mandatory attribut (category, method)
-# reserved attribut (title, url, content)
-# if attribut content exist no templating
-# otherwise all other attribut will be used in templating
-@routes.route("/notification", methods=["PUT"])
-@permissions.login_required
-def create_notification_from_api():
-
-    requestData = request.get_json()
-    if requestData is None:
-        raise BadRequest("Empty request data")
-
-    Notification.create_notification(requestData)
-
-
 # Get all database notification for current user
 @routes.route("/notifications", methods=["GET"])
 @permissions.login_required
@@ -122,8 +106,8 @@ def list_notification_rules():
         TNotificationsRules.id_role == g.current_user.id_role
     )
     notificationsRules = notificationsRules.order_by(
-        TNotificationsRules.code_notification_category.desc(),
-        TNotificationsRules.code_notification_method.desc(),
+        TNotificationsRules.code_category.desc(),
+        TNotificationsRules.code_method.desc(),
     )
     notificationsRules = notificationsRules.options(joinedload("notification_method"))
     notificationsRules = notificationsRules.options(joinedload("notification_category"))
@@ -133,12 +117,12 @@ def list_notification_rules():
             fields=[
                 "id_notification_rules",
                 "id_role",
-                "code_notification_method",
-                "code_notification_category",
-                "notification_method.label_notification_method",
-                "notification_method.description_notification_method",
-                "notification_category.label_notification_category",
-                "notification_category.description_notification_category",
+                "code_method",
+                "code_category",
+                "notification_method.label",
+                "notification_method.description",
+                "notification_category.label",
+                "notification_category.description",
             ]
         )
         for notificationsRulesResult in notificationsRules.all()
@@ -155,14 +139,14 @@ def create_rule():
     if requestData is None:
         raise BadRequest("Empty request data")
 
-    code_notification_method = requestData.get("code_notification_method", "")
-    code_notification_category = requestData.get("code_notification_category", "")
+    code_method = requestData.get("code_method", "")
+    code_category = requestData.get("code_category", "")
 
     # Save notification in database as UNREAD
     new_rule = TNotificationsRules(
         id_role=g.current_user.id_role,
-        code_notification_method=code_notification_method,
-        code_notification_category=code_notification_category,
+        code_method=code_method,
+        code_category=code_category,
     )
 
     DB.session.add(new_rule)
@@ -192,13 +176,13 @@ def modify_rules():
     if requestData is None:
         raise BadRequest("Empty request data")
 
-    code_notification_method = requestData.get("code_notification_method", "")
-    code_notification_category = requestData.get("code_notification_category", "")
+    code_method = requestData.get("code_method", "")
+    code_category = requestData.get("code_category", "")
 
     nbRulesDeleted = TNotificationsRules.query.filter(
         TNotificationsRules.id_role == g.current_user.id_role,
-        TNotificationsRules.code_notification_category == code_notification_category,
-        TNotificationsRules.code_notification_method == code_notification_method,
+        TNotificationsRules.code_category == code_category,
+        TNotificationsRules.code_method == code_method,
     ).delete()
     DB.session.commit()
     return jsonify(nbRulesDeleted)
@@ -212,9 +196,9 @@ def list_notification_methods():
     result = [
         notificationsMethod.as_dict(
             fields=[
-                "code_notification_method",
-                "label_notification_method",
-                "description_notification_method",
+                "code",
+                "label",
+                "description",
             ]
         )
         for notificationsMethod in notificationMethods
@@ -230,9 +214,9 @@ def list_notification_categories():
     result = [
         notificationsCategory.as_dict(
             fields=[
-                "code_notification_category",
-                "label_notification_category",
-                "description_notification_category",
+                "code",
+                "label",
+                "description",
             ]
         )
         for notificationsCategory in notificationCategories
