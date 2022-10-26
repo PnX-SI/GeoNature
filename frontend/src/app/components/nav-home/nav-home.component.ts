@@ -108,6 +108,11 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  openNotification() {
+    this.updateNotificationCount();
+    this.router.navigate(['/notification']);
+  }
+
   ngOnDestroy() {
     // Prevent memory leak by unsubscribing
     this.subscription.unsubscribe();
