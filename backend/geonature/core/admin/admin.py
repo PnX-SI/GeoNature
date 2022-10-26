@@ -93,7 +93,7 @@ class ProtectedBibNotificationsTemplatesAdmin(
     BibNotificationsTemplates,
 ):
     module_code = "ADMIN"
-    object_code = "NOTIFICATIONS_TEMPLATES"
+    object_code = "NOTIFICATIONS"
 
 
 class ProtectedBibNotificationsCategoriesAdmin(
@@ -101,7 +101,7 @@ class ProtectedBibNotificationsCategoriesAdmin(
     BibNotificationsCategories,
 ):
     module_code = "ADMIN"
-    object_code = "NOTIFICATIONS_CATEGORIES"
+    object_code = "NOTIFICATIONS"
 
 
 class ProtectedBibNotificationsMethodsAdmin(
@@ -109,7 +109,7 @@ class ProtectedBibNotificationsMethodsAdmin(
     BibNotificationsMethods,
 ):
     module_code = "ADMIN"
-    object_code = "NOTIFICATIONS_METHODS"
+    object_code = "NOTIFICATIONS"
 
 
 ## déclaration de la page d'admin
