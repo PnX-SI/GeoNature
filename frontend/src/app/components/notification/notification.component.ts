@@ -7,7 +7,6 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { AppConfig } from '@geonature_config/app.config';
-import { AuthService, User } from '@geonature/components/auth/auth.service';
 import { NotificationDataService } from '@geonature/components/notification/notification-data.service';
 import { NotificationCard } from '@geonature/components/notification/notification-data.service';
 import { MatPaginator } from '@angular/material/paginator';
@@ -20,20 +19,13 @@ import { MatTableDataSource } from '@angular/material/table';
   styleUrls: ['./notification.component.scss'],
 })
 export class NotificationComponent implements OnInit, OnDestroy, AfterViewInit {
-  public currentUser: User;
-
   @ViewChild(MatPaginator) paginator: MatPaginator;
   obs: Observable<any>;
   dataSource: MatTableDataSource<NotificationCard> = new MatTableDataSource<NotificationCard>();
 
-  constructor(
-    public authService: AuthService,
-    private notificationDataService: NotificationDataService
-  ) {}
+  constructor(private notificationDataService: NotificationDataService) {}
 
   ngOnInit(): void {
-    // check for user information (must be connected for this feature)
-    this.currentUser = this.authService.getCurrentUser();
     this.obs = this.dataSource.connect();
     this.getNotifications();
   }
@@ -43,13 +35,15 @@ export class NotificationComponent implements OnInit, OnDestroy, AfterViewInit {
    */
   getNotifications() {
     this.notificationDataService.getNotifications().subscribe((response) => {
-      console.log(response);
       this.dataSource.data = response;
     });
   }
 
-  updateNotificationStatus(data) {
-    this.notificationDataService.updateNotification(data).subscribe((response) => {});
+  updateNotificationStatus(data: NotificationCard) {
+    // Only update status if need
+    if (data.code_status == 'UNREAD') {
+      this.notificationDataService.updateNotification(data).subscribe((response) => {});
+    }
   }
 
   ngOnDestroy() {
