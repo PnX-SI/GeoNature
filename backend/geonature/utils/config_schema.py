@@ -351,6 +351,8 @@ class MapConfig(Schema):
 class TaxHub(Schema):
     ID_TYPE_MAIN_PHOTO = fields.Integer(load_default=1)
 
+class NotificationConf(Schema):
+    ENABLED = fields.Boolean(load_default=False)
 
 # class a utiliser pour les paramètres que l'on veut passer au frontend
 class GnGeneralSchemaConf(Schema):
@@ -386,6 +388,7 @@ class GnGeneralSchemaConf(Schema):
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS = fields.Nested(PublicAccess, load_default=PublicAccess().load({}))
     TAXHUB = fields.Nested(TaxHub, load_default=TaxHub().load({}))
+    NOTIFICATION = fields.Nested(NotificationConf, load_default=NotificationConf().load({}))
 
     @validates_schema
     def validate_enable_sign_up(self, data, **kwargs):
@@ -411,7 +414,6 @@ class GnGeneralSchemaConf(Schema):
                 "AUTO_ACCOUNT_CREATION, VALIDATOR_EMAIL",
             )
 
-
 class ManifestSchemaConf(Schema):
     package_format_version = fields.String(required=True)
     module_code = fields.String(required=True)
@@ -420,6 +422,6 @@ class ManifestSchemaConf(Schema):
     max_geonature_version = fields.String(required=True)
     exclude_geonature_versions = fields.List(fields.String)
 
-
 class ManifestSchemaProdConf(Schema):
     module_code = fields.String(required=True)
+
