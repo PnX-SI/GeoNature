@@ -29,7 +29,7 @@ from pypnusershub.db.tools import user_from_token
 from pypnusershub.db.models import User
 
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.notifications.models import TNotifications, BibNotificationsMethods, BibNotificationsStatus, TNotificationsRules, BibNotificationsTemplates, BibNotificationsCategories
+from geonature.core.notifications.models import TNotifications, BibNotificationsMethods, TNotificationsRules, BibNotificationsTemplates, BibNotificationsCategories
 from geonature.core.notifications.utils import Notification
 
 routes = Blueprint("notifications", __name__)
@@ -58,9 +58,6 @@ def list_database_notification():
 
     notifications = TNotifications.query.filter(TNotifications.id_role == g.current_user.id_role)
     notifications = notifications.order_by(TNotifications.code_status.desc(), TNotifications.creation_date.desc())
-    notifications = notifications.options(
-        joinedload("notification_status")
-    )
     result = [
         notificationsResult.as_dict(
             fields=[
@@ -70,9 +67,7 @@ def list_database_notification():
                 "content",
                 "url",
                 "code_status",
-                "creation_date",
-                "notification_status.code_notification_status",
-                "notification_status.label_notification_status",
+                "creation_date"
             ]
         )
         for notificationsResult in notifications.all()

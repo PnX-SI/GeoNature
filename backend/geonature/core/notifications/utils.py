@@ -1,4 +1,4 @@
-from geonature.core.notifications.models import TNotifications, BibNotificationsMethods, BibNotificationsStatus, TNotificationsRules, BibNotificationsTemplates
+from geonature.core.notifications.models import TNotifications, BibNotificationsMethods, TNotificationsRules, BibNotificationsTemplates
 from geonature.utils.env import DB
 from jinja2 import Template
 from pypnusershub.db.models import User
