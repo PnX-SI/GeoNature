@@ -13,7 +13,7 @@ from utils_flask_sqla.migrations.utils import logger
 
 # revision identifiers, used by Alembic.
 revision = "36d0bd313a47"
-down_revision = "42040535a20e"
+down_revision = "4b5478df71cb"
 branch_labels = None
 depends_on = None
 
