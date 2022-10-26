@@ -83,8 +83,8 @@
               class="mx-2 mat-elevation-z1"
               mat-icon-button
               matTooltip="Accéder aux notifications"
-              routerLink="/notification"
               matBadge="{{ notificationNumber }}"
+              (click)="openNotification()"
             >
               <mat-icon>notifications</mat-icon>
             </a>
