@@ -34,7 +34,7 @@ class Notification:
             for role in idRoles:
                 userNotificationsRules = TNotificationsRules.query.filter(
                     TNotificationsRules.id_role == role,
-                    TNotificationsRules.code_notification_category == category,
+                    TNotificationsRules.code_category == category,
                 )
 
                 # if no information then no rules return OK with information
@@ -49,11 +49,11 @@ class Notification:
 
                 # else get all methods
                 for rule in userNotificationsRules.all():
-                    method = rule.code_notification_method
+                    method = rule.code_method
 
                     # Check if method exist in config
                     method_exists = BibNotificationsMethods.query.filter_by(
-                        code_notification_method=method
+                        code=method
                     ).one()
                     if not method_exists:
                         raise BadRequest("This method of notification in not implement yet")
@@ -63,8 +63,8 @@ class Notification:
 
                     # get template for this method and category
                     notificationTemplate = BibNotificationsTemplates.query.filter_by(
-                        notification_template_method=method,
-                        notification_template_category=category,
+                        code_method=method,
+                        code_category=category,
                     ).one()
                     if not notificationTemplate:
                         log.info(
@@ -74,7 +74,7 @@ class Notification:
                         )
                     else:
                         # erase existing content with template
-                        template = Template(notificationTemplate.notification_template_content)
+                        template = Template(notificationTemplate.content)
                         content = template.render(requestData)
 
                     # if method is type BDD
