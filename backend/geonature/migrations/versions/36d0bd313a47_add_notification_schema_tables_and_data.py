@@ -123,12 +123,42 @@ def upgrade():
             {
                 "code_notification_category": "VALIDATION-1",
                 "label_notification_category": "Modification du statut d'une observation",
-                "description_notification_category": "Categorie a utiliser en cas de modification d'un statut d'observation ",
+                "description_notification_category": "Se déclenche en cas de modification d'un statut d'observation ",
             },
             {
                 "code_notification_category": "VALIDATION-2",
-                "label_notification_category": "Suppresion d'une observation",
-                "description_notification_category": "Categorie a utiliser en cas de suppression d'une observation",
+                "label_notification_category": "Observation validée",
+                "description_notification_category": "Se déclenche en cas du passage d'une observation en statut Validée",
+            },
+            {
+                "code_notification_category": "VALIDATION-3",
+                "label_notification_category": "Passage d'une observation au statut Probable",
+                "description_notification_category": "Se déclenche en cas du passage d'une observation en statut Probable",
+            },
+            {
+                "code_notification_category": "VALIDATION-4",
+                "label_notification_category": "Passage d'une observation au statut Douteux",
+                "description_notification_category": "Se déclenche en cas du passage d'une observation en statut Douteux",
+            },
+            {
+                "code_notification_category": "VALIDATION-5",
+                "label_notification_category": "Passage d'une observation au statut Invalide",
+                "description_notification_category": "Se déclenche en cas du passage d'une observation en statut Invalide",
+            },
+            {
+                "code_notification_category": "VALIDATION-6",
+                "label_notification_category": "Passage d'une observation au statut Non réalisable",
+                "description_notification_category": "Se déclenche en cas du passage d'une observation en statut Non réalisable",
+            },
+            {
+                "code_notification_category": "VALIDATION-7",
+                "label_notification_category": "Passage d'une observation au statut Inconnu",
+                "description_notification_category": "Se déclenche en cas du passage d'une observation en statut Inconnu",
+            },
+            {
+                "code_notification_category": "VALIDATION-8",
+                "label_notification_category": "Passage d'une observation au statut En attente de validation",
+                "description_notification_category": "Se déclenche en cas du passage d'une observation en statut En attente de validation",
             },
         ],
     )
@@ -154,9 +184,49 @@ def upgrade():
         [
             {
                 "notification_template_category": "VALIDATION-1",
+                "notification_template_method": "BDD",
+                "notification_template_content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
+            },
+            {
+                "notification_template_category": "VALIDATION-2",
+                "notification_template_method": "BDD",
+                "notification_template_content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
+            },
+            {
+                "notification_template_category": "VALIDATION-3",
+                "notification_template_method": "BDD",
+                "notification_template_content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
+            },
+            {
+                "notification_template_category": "VALIDATION-4",
+                "notification_template_method": "BDD",
+                "notification_template_content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
+            },
+            {
+                "notification_template_category": "VALIDATION-5",
+                "notification_template_method": "BDD",
+                "notification_template_content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
+            },
+            {
+                "notification_template_category": "VALIDATION-6",
+                "notification_template_method": "BDD",
+                "notification_template_content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
+            },
+            {
+                "notification_template_category": "VALIDATION-7",
+                "notification_template_method": "BDD",
+                "notification_template_content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
+            },
+            {
+                "notification_template_category": "VALIDATION-8",
+                "notification_template_method": "BDD",
+                "notification_template_content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
+            },
+            {
+                "notification_template_category": "VALIDATION-1",
                 "notification_template_method": "MAIL",
-                "notification_template_content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'observation <a href="{{ url }}"></a>{{ observation }}</a> a été modifié.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
-            }
+                "notification_template_content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
+            },
         ],
     )
 
