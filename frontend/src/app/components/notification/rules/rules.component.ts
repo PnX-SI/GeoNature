@@ -79,17 +79,17 @@ export class RulesComponent implements OnInit {
   updateRule(categorie, method, event) {
     // if checkbox is checked add rule
     if (event.target.checked) {
-      this.createRule({ code_notification_method: method, code_notification_category: categorie });
+      this.createRule({ code_method: method, code_category: categorie });
     } else {
       // if checkbox not checked remove rule
-      this.deleteRule({ code_notification_method: method, code_notification_category: categorie });
+      this.deleteRule({ code_method: method, code_category: categorie });
     }
   }
 
   hasUserSubscribed(categorie, method) {
     let checked: boolean = false;
     for (var rule of this.userRules) {
-      if (rule.code_notification_category == categorie && rule.code_notification_method == method) {
+      if (rule.code_category == categorie && rule.code_method == method) {
         checked = true;
       }
     }
