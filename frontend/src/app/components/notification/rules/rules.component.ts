@@ -29,13 +29,12 @@ export class RulesComponent implements OnInit {
    */
   getRules() {
     this.notificationDataService.getRules().subscribe((response) => {
-      //console.log(response);
       this.userRules = response;
     });
   }
 
   /**
-   * get all rules for current user
+   * get all exisiting methods of notification
    */
   getMethods() {
     this.notificationDataService.getRulesMethods().subscribe((response) => {
@@ -44,7 +43,7 @@ export class RulesComponent implements OnInit {
   }
 
   /**
-   * get all rules for current user
+   * get all exisiting categories of notification
    */
   getCategories() {
     this.notificationDataService.getRulesCategories().subscribe((response) => {
@@ -53,21 +52,22 @@ export class RulesComponent implements OnInit {
   }
 
   /**
-   * get all rules for current user
+   * Create a rule for un user
+   * data inclue code_category and code_method
    */
   createRule(data) {
     this.notificationDataService.createRule(data).subscribe((response) => {});
   }
 
   /**
-   * delete one rule
+   * delete one rule with its id
    */
-  deleteRule(data) {
-    this.notificationDataService.deleteRule(data).subscribe((response) => {});
+  deleteRule(idRule) {
+    this.notificationDataService.deleteRule(idRule).subscribe((response) => {});
   }
 
   /**
-   * delete all rules
+   * delete all user rules
    */
   deleteRules() {
     this.notificationDataService.deleteRules().subscribe((response) => {
@@ -76,21 +76,39 @@ export class RulesComponent implements OnInit {
     });
   }
 
+  /**
+   * Action from checkbox to create or delete a rule depending on checkbox value
+   *
+   * @param categorie notification code_category
+   * @param method notification code_method
+   * @param event event to get checkbox
+   */
   updateRule(categorie, method, event) {
     // if checkbox is checked add rule
     if (event.target.checked) {
       this.createRule({ code_method: method, code_category: categorie });
     } else {
       // if checkbox not checked remove rule
-      this.deleteRule({ code_method: method, code_category: categorie });
+      for (var rule of this.userRules) {
+        if (rule.code_category == categorie && rule.code_method == method) {
+          this.deleteRule(rule.id_notification_rules);
+          break;
+        }
+      }
     }
   }
 
+  /**
+   * function to knwo if user has a rule with this categorie and role
+   * @param categorie notification code_category
+   * @param method notification code_method
+   * @returns boolean
+   */
   hasUserSubscribed(categorie, method) {
     let checked: boolean = false;
     for (var rule of this.userRules) {
       if (rule.code_category == categorie && rule.code_method == method) {
-        checked = true;
+        return (checked = true);
       }
     }
     return checked;

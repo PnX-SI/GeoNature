@@ -311,26 +311,24 @@ def notifyChange(data, idsynthese):
         # Add mandatory dat
         categoriesArray = ["VALIDATION-1"]
         # Statut Certain
-        if data["statut"] == "315":
+        if nomenclature.cd_nomenclature == "1":
             categoriesArray.append("VALIDATION-2")
         # Statut Probable
-        if data["statut"] == "316":
+        if nomenclature.cd_nomenclature == "2":
             categoriesArray.append("VALIDATION-3")
         # Statut Douteux
-        if data["statut"] == "317":
+        if nomenclature.cd_nomenclature == "3":
             categoriesArray.append("VALIDATION-4")
         # Statut Invalide
-        if data["statut"] == "318":
+        if nomenclature.cd_nomenclature == "4":
             categoriesArray.append("VALIDATION-5")
         # Statut Non réalisable
-        if data["statut"] == "319":
+        if nomenclature.cd_nomenclature == "5":
             categoriesArray.append("VALIDATION-6")
         # Statut Inconnu
-        if data["statut"] == "320":
+        if nomenclature.cd_nomenclature == "6":
             categoriesArray.append("VALIDATION-7")
-        # Statut En attente de validation
-        if data["statut"] == "548":
-            categoriesArray.append("VALIDATION-8")
+
         data["categories"] = categoriesArray
         data["id_roles"] = roles
         data["title"] = "Modification de statut"

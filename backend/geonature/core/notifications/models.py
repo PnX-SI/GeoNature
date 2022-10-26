@@ -14,7 +14,7 @@ from geonature.utils.env import DB
 
 
 @serializable
-class BibNotificationsMethods(DB.Model):
+class NotificationsMethods(DB.Model):
     __tablename__ = "bib_notifications_methods"
     __table_args__ = {"schema": "gn_notifications"}
     code = DB.Column(DB.Unicode, primary_key=True)
@@ -26,7 +26,7 @@ class BibNotificationsMethods(DB.Model):
 
 
 @serializable
-class BibNotificationsCategories(DB.Model):
+class NotificationsCategories(DB.Model):
     __tablename__ = "bib_notifications_categories"
     __table_args__ = {"schema": "gn_notifications"}
     code = DB.Column(DB.Unicode, primary_key=True)
@@ -38,15 +38,15 @@ class BibNotificationsCategories(DB.Model):
 
 
 @serializable
-class BibNotificationsTemplates(DB.Model):
+class NotificationsTemplates(DB.Model):
     __tablename__ = "bib_notifications_templates"
     __table_args__ = {"schema": "gn_notifications"}
     code_category = DB.Column(
         DB.Unicode,
-        ForeignKey(BibNotificationsCategories.code),
+        ForeignKey(NotificationsCategories.code),
         primary_key=True,
     )
-    code_method = DB.Column(DB.Unicode, ForeignKey(BibNotificationsMethods.code), primary_key=True)
+    code_method = DB.Column(DB.Unicode, ForeignKey(NotificationsMethods.code), primary_key=True)
     content = DB.Column(DB.Unicode)
 
     def __str__(self):
@@ -54,7 +54,7 @@ class BibNotificationsTemplates(DB.Model):
 
 
 @serializable
-class TNotifications(DB.Model):
+class Notifications(DB.Model):
     __tablename__ = "t_notifications"
     __table_args__ = {"schema": "gn_notifications"}
     id_notification = DB.Column(DB.Integer, primary_key=True)
@@ -69,17 +69,19 @@ class TNotifications(DB.Model):
 
 
 @serializable
-class TNotificationsRules(DB.Model):
+class NotificationsRules(DB.Model):
     __tablename__ = "t_notifications_rules"
     __table_args__ = {"schema": "gn_notifications"}
     id_notification_rules = DB.Column(DB.Integer, primary_key=True)
     id_role = DB.Column(DB.Integer, ForeignKey(User.id_role), nullable=False)
-    code_method = DB.Column(DB.Unicode, ForeignKey(BibNotificationsMethods.code), nullable=False)
+    code_method = DB.Column(DB.Unicode, ForeignKey(NotificationsMethods.code), nullable=False)
     code_category = DB.Column(
         DB.Unicode,
-        ForeignKey(BibNotificationsCategories.code),
+        ForeignKey(NotificationsCategories.code),
         nullable=False,
     )
 
-    notification_method = relationship(BibNotificationsMethods)
-    notification_category = relationship(BibNotificationsCategories)
+    notification_method = relationship(NotificationsMethods)
+    notification_category = relationship(NotificationsCategories)
+
+    user = DB.relationship(User)
