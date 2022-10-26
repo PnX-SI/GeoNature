@@ -63,7 +63,6 @@ export class NotificationDataService {
 
   // returns number of notification for this user
   getNotificationsNumber(): any {
-    console.log("Call notification count");
     return this._api.get<any>(`${AppConfig.API_ENDPOINT}/notifications/count`);
   }
 
