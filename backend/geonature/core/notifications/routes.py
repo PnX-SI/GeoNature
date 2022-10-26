@@ -32,7 +32,6 @@ from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.notifications.models import (
     TNotifications,
     BibNotificationsMethods,
-    BibNotificationsStatus,
     TNotificationsRules,
     BibNotificationsTemplates,
     BibNotificationsCategories,
@@ -67,7 +66,6 @@ def list_database_notification():
     notifications = notifications.order_by(
         TNotifications.code_status.desc(), TNotifications.creation_date.desc()
     )
-    notifications = notifications.options(joinedload("notification_status"))
     result = [
         notificationsResult.as_dict(
             fields=[
@@ -78,8 +76,6 @@ def list_database_notification():
                 "url",
                 "code_status",
                 "creation_date",
-                "notification_status.code_notification_status",
-                "notification_status.label_notification_status",
             ]
         )
         for notificationsResult in notifications.all()

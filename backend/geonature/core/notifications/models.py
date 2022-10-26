@@ -55,16 +55,6 @@ class BibNotificationsTemplates(DB.Model):
         return self.notification_template_content()
 
 
-# Status type example ( read/unread/sent)
-@serializable
-class BibNotificationsStatus(DB.Model):
-    __tablename__ = "bib_notifications_status"
-    __table_args__ = {"schema": "gn_notifications"}
-    code_notification_status = DB.Column(DB.Unicode, primary_key=True)
-    label_notification_status = DB.Column(DB.Unicode)
-    description_notification_status = DB.Column(DB.Unicode)
-
-
 @serializable
 class TNotifications(DB.Model):
     __tablename__ = "t_notifications"
@@ -74,12 +64,9 @@ class TNotifications(DB.Model):
     title = DB.Column(DB.Unicode)
     content = DB.Column(DB.Unicode)
     url = DB.Column(DB.Unicode)
-    code_status = DB.Column(
-        DB.Unicode, ForeignKey(BibNotificationsStatus.code_notification_status)
-    )
+    code_status = DB.Column(DB.Unicode)
     creation_date = DB.Column(DB.DateTime(), default=datetime.datetime.utcnow)
 
-    notification_status = relationship(BibNotificationsStatus)
     user = DB.relationship(User)
 
 

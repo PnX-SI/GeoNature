@@ -1,7 +1,6 @@
 from geonature.core.notifications.models import (
     TNotifications,
     BibNotificationsMethods,
-    BibNotificationsStatus,
     TNotificationsRules,
     BibNotificationsTemplates,
 )

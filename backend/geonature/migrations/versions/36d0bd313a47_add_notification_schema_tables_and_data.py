@@ -54,15 +54,6 @@ def upgrade():
         schema=SCHEMA_NAME,
     )
 
-    logger.info("Create table " + SCHEMA_NAME + ".bib_notifications_status")
-    bibNotificationsStatus = op.create_table(
-        "bib_notifications_status",
-        Column("code_notification_status", Unicode, primary_key=True),
-        Column("label_notification_status", Unicode),
-        Column("description_notification_status", Unicode),
-        schema=SCHEMA_NAME,
-    )
-
     # Create notification tables
     logger.info("Create table " + SCHEMA_NAME + ".t_notifications")
     tNotifications = op.create_table(
@@ -72,11 +63,7 @@ def upgrade():
         Column("title", Unicode),
         Column("content", Unicode),
         Column("url", Unicode),
-        Column(
-            "code_status",
-            Unicode,
-            ForeignKey(SCHEMA_NAME + ".bib_notifications_status.code_notification_status"),
-        ),
+        Column("code_status", Unicode),
         Column("creation_date", DateTime, default=datetime.datetime.utcnow),
         schema=SCHEMA_NAME,
     )
@@ -164,22 +151,6 @@ def upgrade():
     )
 
     op.bulk_insert(
-        bibNotificationsStatus,
-        [
-            {
-                "code_notification_status": "UNREAD",
-                "label_notification_status": "Non lu",
-                "description_notification_status": "Notification pas encore lu par l'utilisateur",
-            },
-            {
-                "code_notification_status": "READ",
-                "label_notification_status": "lu",
-                "description_notification_status": "Notification lu par l'utilisateur",
-            },
-        ],
-    )
-
-    op.bulk_insert(
         bibNotificationsTemplates,
         [
             {
@@ -224,6 +195,41 @@ def upgrade():
             },
             {
                 "notification_template_category": "VALIDATION-1",
+                "notification_template_method": "MAIL",
+                "notification_template_content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
+            },
+            {
+                "notification_template_category": "VALIDATION-2",
+                "notification_template_method": "MAIL",
+                "notification_template_content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
+            },
+            {
+                "notification_template_category": "VALIDATION-3",
+                "notification_template_method": "MAIL",
+                "notification_template_content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
+            },
+            {
+                "notification_template_category": "VALIDATION-4",
+                "notification_template_method": "MAIL",
+                "notification_template_content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
+            },
+            {
+                "notification_template_category": "VALIDATION-5",
+                "notification_template_method": "MAIL",
+                "notification_template_content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
+            },
+            {
+                "notification_template_category": "VALIDATION-6",
+                "notification_template_method": "MAIL",
+                "notification_template_content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
+            },
+            {
+                "notification_template_category": "VALIDATION-7",
+                "notification_template_method": "MAIL",
+                "notification_template_content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
+            },
+            {
+                "notification_template_category": "VALIDATION-8",
                 "notification_template_method": "MAIL",
                 "notification_template_content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
             },
