@@ -1,39 +1,34 @@
-<div align="right" >
-  <a
-  class="mx-2"
-  mat-fab
-  matTooltip="Gérer vos notifications"
-  routerLink="/notification/rules"
->
-  <mat-icon>build</mat-icon>
-</a>
+<div align="right">
+  <a class="mx-2" mat-fab matTooltip="Gérer vos notifications" routerLink="/notification/rules">
+    <mat-icon>build</mat-icon>
+  </a>
 </div>
 <div class="containerCards">
-  <mat-card class="cardNotification" *ngFor="let notificationData of obs | async" (click)="OnMatCardClickEvent(notificationData)">
+  <mat-card
+    class="cardNotification"
+    *ngFor="let notificationData of obs | async"
+    (click)="OnMatCardClickEvent(notificationData)"
+  >
     <div class="{{ notificationData.code_status }} card">
-        <div class="row align-items-center">
-          <div class="col-md-1" style="text-align:center">
-            <mat-icon
-              class="cardIcon"
-              aria-hidden="false"
-              aria-label="Icon desccription"
-              >description
-            </mat-icon>
-          </div>
-          <div class="col-md-3">
-            <h5 class="cardTitle">
-              <p innerHTML="{{ notificationData.title }}"></p>
-            </h5>
-          </div>
-          <div class="col-md-5">
-            <p innerHTML="{{ notificationData.content }}"></p>
-          </div>
-          <div class="col-md-3" class="cardDate">
-            <p>{{ notificationData.creation_date | date :'EEEE d MMMM y h:mm':'+0200':'fr' }}</p>
-          </div>
+      <div class="row align-items-center">
+        <div class="col-md-1" style="text-align: center">
+          <mat-icon class="cardIcon" aria-hidden="false" aria-label="Icon desccription"
+            >description
+          </mat-icon>
         </div>
+        <div class="col-md-3">
+          <h5 class="cardTitle">
+            <p innerHTML="{{ notificationData.title }}"></p>
+          </h5>
+        </div>
+        <div class="col-md-5">
+          <p innerHTML="{{ notificationData.content }}"></p>
+        </div>
+        <div class="col-md-3" class="cardDate">
+          <p>{{ notificationData.creation_date | date: 'EEEE d MMMM y h:mm':'+0200':'fr' }}</p>
+        </div>
+      </div>
     </div>
   </mat-card>
   <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
 </div>
-  
