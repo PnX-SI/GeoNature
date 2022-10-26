@@ -9,14 +9,14 @@ from geonature.utils.config import config
 from geonature.core.gn_commons.models import TAdditionalFields
 from geonature.core.gn_commons.admin import BibFieldAdmin
 from geonature.core.notifications.admin import (
-    BibNotificationsTemplatesAdmin,
-    BibNotificationsCategoriesAdmin,
-    BibNotificationsMethodsAdmin,
+    NotificationsTemplatesAdmin,
+    NotificationsCategoriesAdmin,
+    NotificationsMethodsAdmin,
 )
 from geonature.core.notifications.models import (
-    BibNotificationsTemplates,
-    BibNotificationsCategories,
-    BibNotificationsMethods,
+    NotificationsTemplates,
+    NotificationsCategories,
+    NotificationsMethods,
 )
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 
@@ -88,25 +88,25 @@ class ProtectedBibFieldAdmin(
     object_code = "ADDITIONAL_FIELDS"
 
 
-class ProtectedBibNotificationsTemplatesAdmin(
+class ProtectedNotificationsTemplatesAdmin(
     CruvedProtectedMixin,
-    BibNotificationsTemplates,
+    NotificationsTemplates,
 ):
     module_code = "ADMIN"
     object_code = "NOTIFICATIONS"
 
 
-class ProtectedBibNotificationsCategoriesAdmin(
+class ProtectedNotificationsCategoriesAdmin(
     CruvedProtectedMixin,
-    BibNotificationsCategories,
+    NotificationsCategories,
 ):
     module_code = "ADMIN"
     object_code = "NOTIFICATIONS"
 
 
-class ProtectedBibNotificationsMethodsAdmin(
+class ProtectedNotificationsMethodsAdmin(
     CruvedProtectedMixin,
-    BibNotificationsMethods,
+    NotificationsMethods,
 ):
     module_code = "ADMIN"
     object_code = "NOTIFICATIONS"
@@ -165,8 +165,8 @@ admin.add_view(
 # Ajout de la vue pour la gestion des templates de notifications
 # accès protegé par CruvedProtectedMixin
 admin.add_view(
-    BibNotificationsTemplatesAdmin(
-        BibNotificationsTemplates,
+    NotificationsTemplatesAdmin(
+        NotificationsTemplates,
         db.session,
         name="Templates des notifications",
         category="Notifications",
@@ -174,8 +174,8 @@ admin.add_view(
 )
 
 admin.add_view(
-    BibNotificationsCategoriesAdmin(
-        BibNotificationsCategories,
+    NotificationsCategoriesAdmin(
+        NotificationsCategories,
         db.session,
         name="Catégories des notifications",
         category="Notifications",
@@ -183,8 +183,8 @@ admin.add_view(
 )
 
 admin.add_view(
-    BibNotificationsMethodsAdmin(
-        BibNotificationsMethods,
+    NotificationsMethodsAdmin(
+        NotificationsMethods,
         db.session,
         name="Méthodes de notification",
         category="Notifications",
