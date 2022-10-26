@@ -121,7 +121,7 @@ def create_app(with_external_mods=True):
         conf.update(app.config["MAIL_CONFIG"])
         app.config = conf
         MAIL.init_app(app)
-        
+
     # Pass parameters to the usershub authenfication sub-module, DONT CHANGE THIS
     app.config["DB"] = DB
     # Pass parameters to the submodules

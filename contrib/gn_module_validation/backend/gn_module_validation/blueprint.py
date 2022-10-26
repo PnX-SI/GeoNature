@@ -271,7 +271,7 @@ def post_status(info_role, id_synthese):
             raise BadRequest(error.messages)
         DB.session.add(validation)
         DB.session.commit()
-   
+
         # Send element to notification system
         notifyChange(data, id)
 
@@ -290,50 +290,56 @@ def get_validation_date(uuid):
     else:
         return "", 204
 
+
 # Send notification
 def notifyChange(data, idsynthese):
 
     # If notification enabled only
-    if current_app.config["NOTIFICATION"]["ENABLED"]==True:
-        nomenclature = TNomenclatures.query.filter(TNomenclatures.id_nomenclature == data["statut"]).first()
+    if current_app.config["NOTIFICATION"]["ENABLED"] == True:
+        nomenclature = TNomenclatures.query.filter(
+            TNomenclatures.id_nomenclature == data["statut"]
+        ).first()
 
         # idRole is a list separated by coma
         idRoles = (
-                DB.session.query(Synthese.id_digitiser).filter(Synthese.id_synthese == int(idsynthese)).one()
-            )   
+            DB.session.query(Synthese.id_digitiser)
+            .filter(Synthese.id_synthese == int(idsynthese))
+            .one()
+        )
         roles = [str(role) for role in idRoles]
-        
+
         # Add mandatory dat
-        categoriesArray=['VALIDATION-1']
+        categoriesArray = ["VALIDATION-1"]
         # Statut Certain
-        if data["statut"] == '315':
-            categoriesArray.append('VALIDATION-2') 
+        if data["statut"] == "315":
+            categoriesArray.append("VALIDATION-2")
         # Statut Probable
-        if data["statut"] == '316':
-            categoriesArray.append('VALIDATION-3')
+        if data["statut"] == "316":
+            categoriesArray.append("VALIDATION-3")
         # Statut Douteux
-        if data["statut"] == '317':
-            categoriesArray.append('VALIDATION-4')  
+        if data["statut"] == "317":
+            categoriesArray.append("VALIDATION-4")
         # Statut Invalide
-        if data["statut"] == '318':
-            categoriesArray.append('VALIDATION-5') 
+        if data["statut"] == "318":
+            categoriesArray.append("VALIDATION-5")
         # Statut Non réalisable
-        if data["statut"] == '319':
-            categoriesArray.append('VALIDATION-6') 
+        if data["statut"] == "319":
+            categoriesArray.append("VALIDATION-6")
         # Statut Inconnu
-        if data["statut"] == '320':
-            categoriesArray.append('VALIDATION-7') 
+        if data["statut"] == "320":
+            categoriesArray.append("VALIDATION-7")
         # Statut En attente de validation
-        if data["statut"] == '548':
-            categoriesArray.append('VALIDATION-8')  
-        data["categories"]=categoriesArray                         
-        data["id_roles"]=roles
-        data["title"]="Modification de statut"
-        
-        # Add optional data 
-        data["mnemonique"]=nomenclature.mnemonique 
-        data["id_synthese"]=idsynthese
-        data["url"]=current_app.config["URL_APPLICATION"]+ "/#/validation/occurrence/" + idsynthese
+        if data["statut"] == "548":
+            categoriesArray.append("VALIDATION-8")
+        data["categories"] = categoriesArray
+        data["id_roles"] = roles
+        data["title"] = "Modification de statut"
+
+        # Add optional data
+        data["mnemonique"] = nomenclature.mnemonique
+        data["id_synthese"] = idsynthese
+        data["url"] = (
+            current_app.config["URL_APPLICATION"] + "/#/validation/occurrence/" + idsynthese
+        )
 
         Notification.create_notification(data)
-    
