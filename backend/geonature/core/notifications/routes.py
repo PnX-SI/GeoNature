@@ -96,6 +96,7 @@ def count_notification():
 
 # Update status ( for the moment only UNREAD/READ)
 @routes.route("/notification", methods=["POST"])
+@json_resp
 @permissions.login_required
 def update_notification():
 
