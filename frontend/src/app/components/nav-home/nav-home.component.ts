@@ -24,7 +24,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   public currentDocUrl: string;
   public locale: string;
   public moduleUrl: string;
-  public notificationNumber : any;
+  public notificationNumber: any;
 
   @ViewChild('sidenav', { static: true }) public sidenav: MatSidenav;
 
@@ -34,7 +34,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     public sideNavService: SideNavService,
     private globalSubService: GlobalSubService,
-    private notificationDataService : NotificationDataService,
+    private notificationDataService: NotificationDataService,
     private router: Router
   ) {}
 
@@ -54,9 +54,9 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     // Put the user name in navbar
     this.currentUser = this.authService.getCurrentUser();
 
-    if(this.appConfig.NOTIFICATION.ENABLED == true){
+    if (this.appConfig.NOTIFICATION.ENABLED == true) {
       // Update notification count to display in badge
-      this.updateNotificationCount();    
+      this.updateNotificationCount();
     }
   }
 
@@ -99,15 +99,14 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   }
 
   closeSideBar() {
-    this.sideNavService.sidenav.toggle(); 
+    this.sideNavService.sidenav.toggle();
   }
 
   private updateNotificationCount() {
     this.notificationDataService.getNotificationsNumber().subscribe((count) => {
-      this.notificationNumber  = count;
+      this.notificationNumber = count;
     });
   }
-    
 
   ngOnDestroy() {
     // Prevent memory leak by unsubscribing
