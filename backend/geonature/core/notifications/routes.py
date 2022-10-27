@@ -1,42 +1,29 @@
 import json
 
-import time
 import logging
 
 from flask import (
     Blueprint,
     request,
-    Response,
-    current_app,
-    send_from_directory,
-    render_template,
     jsonify,
     g,
 )
 from werkzeug.exceptions import Forbidden, BadRequest
-from sqlalchemy import distinct, func, desc, asc, select, text, update
 import sqlalchemy as sa
 from sqlalchemy.orm import joinedload
 
-from utils_flask_sqla.generic import serializeQuery, GenericTable
-from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
+from utils_flask_sqla.response import json_resp
 
-from geonature.utils import filemanager
 from geonature.utils.env import DB
-from geonature.utils.errors import GeonatureApiError
-
-from pypnusershub.db.tools import user_from_token
-from pypnusershub.db.models import User
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.notifications.models import (
-    Notifications,
-    NotificationsMethods,
-    NotificationsRules,
-    NotificationsTemplates,
-    NotificationsCategories,
+    Notification,
+    NotificationMethod,
+    NotificationRule,
+    NotificationTemplate,
+    NotificationCategory,
 )
-from geonature.core.notifications.utils import Notification
 
 routes = Blueprint("notifications", __name__)
 log = logging.getLogger()
@@ -46,9 +33,9 @@ log = logging.getLogger()
 @permissions.login_required
 def list_database_notification():
 
-    notifications = Notifications.query.filter(Notifications.id_role == g.current_user.id_role)
+    notifications = Notification.query.filter(Notification.id_role == g.current_user.id_role)
     notifications = notifications.order_by(
-        Notifications.code_status.desc(), Notifications.creation_date.desc()
+        Notification.code_status.desc(), Notification.creation_date.desc()
     )
     result = [
         notificationsResult.as_dict(
@@ -72,23 +59,28 @@ def list_database_notification():
 @permissions.login_required
 def count_notification():
 
-    notificationNumber = Notifications.query.filter(
-        Notifications.id_role == g.current_user.id_role, Notifications.code_status == "UNREAD"
+    notificationNumber = Notification.query.filter(
+        Notification.id_role == g.current_user.id_role, Notification.code_status == "UNREAD"
     ).count()
     return jsonify(notificationNumber)
 
 
 # Update status ( for the moment only UNREAD/READ)
-@routes.route("/notification/<int:id_notification>", methods=["POST"])
+@routes.route("/notifications/<int:id_notification>", methods=["POST"])
 @json_resp
 @permissions.login_required
 def update_notification(id_notification):
 
-    notification = Notifications.query.get_or_404(id_notification)
+    notification = Notification.query.get_or_404(id_notification)
     if notification.id_role != g.current_user.id_role:
         raise Forbidden
     notification.code_status = "READ"
-    DB.session.commit()
+    try:
+        DB.session.commit()
+    except:
+        return json.dumps({"success": False, "information": "Could not update notification"})
+    else:
+        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
 
 # Get all database notification for current user
@@ -96,12 +88,12 @@ def update_notification(id_notification):
 @permissions.login_required
 def list_notification_rules():
 
-    notificationsRules = NotificationsRules.query.filter(
-        NotificationsRules.id_role == g.current_user.id_role
+    notificationsRules = NotificationRule.query.filter(
+        NotificationRule.id_role == g.current_user.id_role
     )
     notificationsRules = notificationsRules.order_by(
-        NotificationsRules.code_category.desc(),
-        NotificationsRules.code_method.desc(),
+        NotificationRule.code_category.desc(),
+        NotificationRule.code_method.desc(),
     )
     notificationsRules = notificationsRules.options(joinedload("notification_method"))
     notificationsRules = notificationsRules.options(joinedload("notification_category"))
@@ -124,6 +116,18 @@ def list_notification_rules():
     return jsonify(result)
 
 
+# Delete all rules for current user
+@routes.route("/notifications", methods=["DELETE"])
+@permissions.login_required
+def delete_all_notifications():
+
+    nbNotificationsDeleted = Notification.query.filter(
+        Notification.id_role == g.current_user.id_role
+    ).delete()
+    DB.session.commit()
+    return jsonify(nbNotificationsDeleted)
+
+
 # add rule for user
 @routes.route("/rules", methods=["PUT"])
 @permissions.login_required
@@ -134,19 +138,26 @@ def create_rule():
         raise BadRequest("Empty request data")
 
     code_method = requestData.get("code_method", "")
+    if not code_method:
+        raise BadRequest("Missing method")
+
     code_category = requestData.get("code_category", "")
+    if not code_category:
+        raise BadRequest("Missing category")
 
     # Save notification in database as UNREAD
-    new_rule = NotificationsRules(
+    new_rule = NotificationRule(
         id_role=g.current_user.id_role,
         code_method=code_method,
         code_category=code_category,
     )
-
-    DB.session.add(new_rule)
-    DB.session.commit()
-
-    return jsonify(1)
+    try:
+        DB.session.add(new_rule)
+        DB.session.commit()
+    except:
+        return json.dumps({"success": False, "information": "Could not save rule in database"})
+    else:
+        return json.dumps({"success": True}), 200, {"ContentType": "application/json"}
 
 
 # Delete all rules for current user
@@ -154,8 +165,8 @@ def create_rule():
 @permissions.login_required
 def delete_all_rules():
 
-    nbRulesDeleted = NotificationsRules.query.filter(
-        NotificationsRules.id_role == g.current_user.id_role
+    nbRulesDeleted = NotificationRule.query.filter(
+        NotificationRule.id_role == g.current_user.id_role
     ).delete()
     DB.session.commit()
     return jsonify(nbRulesDeleted)
@@ -166,9 +177,9 @@ def delete_all_rules():
 @permissions.login_required
 def delete_rule(id_notification_rules):
 
-    nbRulesDeleted = NotificationsRules.query.filter(
-        NotificationsRules.id_role == g.current_user.id_role,
-        NotificationsRules.id_notification_rules == id_notification_rules,
+    nbRulesDeleted = NotificationRule.query.filter(
+        NotificationRule.id_role == g.current_user.id_role,
+        NotificationRule.id_notification_rules == id_notification_rules,
     ).delete()
     DB.session.commit()
     return jsonify(nbRulesDeleted)
@@ -178,7 +189,7 @@ def delete_rule(id_notification_rules):
 @routes.route("/methods", methods=["GET"])
 @permissions.login_required
 def list_notification_methods():
-    notificationMethods = NotificationsMethods.query.all()
+    notificationMethods = NotificationMethod.query.order_by(NotificationMethod.code.asc()).all()
     result = [
         notificationsMethod.as_dict(
             fields=[
@@ -196,7 +207,9 @@ def list_notification_methods():
 @routes.route("/categories", methods=["GET"])
 @permissions.login_required
 def list_notification_categories():
-    notificationCategories = NotificationsCategories.query.all()
+    notificationCategories = NotificationCategory.query.order_by(
+        NotificationCategory.code.asc()
+    ).all()
     result = [
         notificationsCategory.as_dict(
             fields=[
