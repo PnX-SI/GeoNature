@@ -67,14 +67,17 @@ export class NotificationDataService {
   }
 
   deleteNotifications() {
-    return this._api.delete<any>(`${AppConfig.API_ENDPOINT}/notifications/notifications`);
+    return this._api.delete<any>(`${AppConfig.API_ENDPOINT}/notifications/notificationss`);
   }
 
   // update notification status
   updateNotification(idNotification) {
-    return this._api.post(`${AppConfig.API_ENDPOINT}/notifications/notifications/${idNotification}`, {
-      headers: new HttpHeaders().set('Content-Type', 'application/json'),
-    });
+    return this._api.post(
+      `${AppConfig.API_ENDPOINT}/notifications/notifications/${idNotification}`,
+      {
+        headers: new HttpHeaders().set('Content-Type', 'application/json'),
+      }
+    );
   }
 
   // Create rules
