@@ -347,9 +347,6 @@ Cette section liste les branches Alembic disponibles et leur impacte sur la base
 * ``geonature`` : Crée les schémas propres à GeoNature (``gn_commons``, ``gn_synthese``, …).
 * ``geonature-samples`` : Insert quelques données d’exemple en base.
 * ``taxonomie`` : Crée le schéma ``taxonomie``. Fournie par TaxHub.
-* ``taxonomie_inpn_data`` : Insert le référentiel TAXHUBv14 en base. Fournie par TaxHub.
-* ``taxonomie_attributes_example`` : Insert quelques attributs d’exemple en base. Fournie par TaxHub.
-* ``taxonomie_taxons_example`` : Insert quelques taxons d’exemple en base. Fournie par TaxHub.
 * ``nomenclatures`` : Crée le schéma ``ref_nomenclatures``. Fournie par Nomenclature-api-module.
 * ``nomenclatures_inpn_data`` : Insert le référentiel des nomenclatures de l’INPN en base. Fournie par Nomenclature-api-module.
 * ``nomenclatures_taxonomie`` : Complète le schéma ``ref_nomenclatures`` pour accueillir les nomenclatures liées à la taxonomie.
