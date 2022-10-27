@@ -5,7 +5,7 @@ from pkg_resources import load_entry_point, get_entry_info, iter_entry_points
 from flask import current_app
 
 from geonature.utils.utilstoml import load_and_validate_toml
-from geonature.utils.env import GN_EXTERNAL_MODULE
+from geonature.utils.env import CONFIG_FILE, GN_EXTERNAL_MODULE
 from geonature.core.gn_commons.models import TModules
 
 
@@ -14,12 +14,17 @@ class NoManifestFound(Exception):
 
 
 def get_module_config_path(module_code):
-    config_path = os.environ.get(f"GEONATURE_{module_code.lower()}_CONFIG_FILE")
-    if config_path:  # fallback to legacy conf path guessing
-        config_path = Path(config_path)
-    else:
-        config_path = GN_EXTERNAL_MODULE / module_code.lower() / "config" / "conf_gn_module.toml"
-    return config_path
+    config_path = os.environ.get(f"GEONATURE_{module_code}_CONFIG_FILE")
+    if config_path:
+        return Path(config_path)
+    dist = get_dist_from_code(module_code)
+    config_path = Path(dist.module_path).parent / "config" / "conf_gn_module.toml"
+    if config_path.exists():
+        return config_path
+    config_path = Path(CONFIG_FILE).parent / f"{module_code.lower()}_config.toml"
+    if config_path.exists():
+        return config_path
+    return None
 
 
 def get_dist_from_code(module_code):
