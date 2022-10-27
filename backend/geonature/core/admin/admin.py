@@ -9,14 +9,14 @@ from geonature.utils.config import config
 from geonature.core.gn_commons.models import TAdditionalFields
 from geonature.core.gn_commons.admin import BibFieldAdmin
 from geonature.core.notifications.admin import (
-    NotificationsTemplatesAdmin,
-    NotificationsCategoriesAdmin,
-    NotificationsMethodsAdmin,
+    NotificationTemplateAdmin,
+    NotificationCategoryAdmin,
+    NotificationMethodAdmin,
 )
 from geonature.core.notifications.models import (
-    NotificationsTemplates,
-    NotificationsCategories,
-    NotificationsMethods,
+    NotificationTemplate,
+    NotificationCategory,
+    NotificationMethod,
 )
 from geonature.core.gn_permissions.tools import get_scopes_by_action
 
@@ -88,25 +88,25 @@ class ProtectedBibFieldAdmin(
     object_code = "ADDITIONAL_FIELDS"
 
 
-class ProtectedNotificationsTemplatesAdmin(
+class ProtectedNotificationTemplateAdmin(
     CruvedProtectedMixin,
-    NotificationsTemplates,
+    NotificationTemplate,
 ):
     module_code = "ADMIN"
     object_code = "NOTIFICATIONS"
 
 
-class ProtectedNotificationsCategoriesAdmin(
+class ProtectedNotificationCategoryAdmin(
     CruvedProtectedMixin,
-    NotificationsCategories,
+    NotificationCategory,
 ):
     module_code = "ADMIN"
     object_code = "NOTIFICATIONS"
 
 
-class ProtectedNotificationsMethodsAdmin(
+class ProtectedNotificationMethodAdmin(
     CruvedProtectedMixin,
-    NotificationsMethods,
+    NotificationMethod,
 ):
     module_code = "ADMIN"
     object_code = "NOTIFICATIONS"
@@ -166,8 +166,8 @@ admin.add_view(
 # Ajout de la vue pour la gestion des templates de notifications
 # accès protegé par CruvedProtectedMixin
 admin.add_view(
-    NotificationsTemplatesAdmin(
-        NotificationsTemplates,
+    NotificationTemplateAdmin(
+        NotificationTemplate,
         db.session,
         name="Templates des notifications",
         category="Notifications",
@@ -175,8 +175,8 @@ admin.add_view(
 )
 
 admin.add_view(
-    NotificationsCategoriesAdmin(
-        NotificationsCategories,
+    NotificationCategoryAdmin(
+        NotificationCategory,
         db.session,
         name="Catégories des notifications",
         category="Notifications",
@@ -184,8 +184,8 @@ admin.add_view(
 )
 
 admin.add_view(
-    NotificationsMethodsAdmin(
-        NotificationsMethods,
+    NotificationMethodAdmin(
+        NotificationMethod,
         db.session,
         name="Méthodes de notification",
         category="Notifications",

@@ -3,7 +3,7 @@ from flask_admin.contrib.sqla import ModelView
 from geonature.utils.env import DB
 
 
-class NotificationsTemplatesAdmin(ModelView):
+class NotificationTemplateAdmin(ModelView):
     form_columns = (
         "code_category",
         "code_method",
@@ -23,7 +23,7 @@ class NotificationsTemplatesAdmin(ModelView):
     }
 
 
-class NotificationsCategoriesAdmin(ModelView):
+class NotificationCategoryAdmin(ModelView):
     form_columns = (
         "code",
         "label",
@@ -43,7 +43,7 @@ class NotificationsCategoriesAdmin(ModelView):
     }
 
 
-class NotificationsMethodsAdmin(ModelView):
+class NotificationMethodAdmin(ModelView):
     form_columns = (
         "code",
         "label",
