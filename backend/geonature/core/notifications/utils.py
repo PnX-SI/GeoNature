@@ -1,6 +1,6 @@
 from geonature.core.notifications.models import (
     Notifications,
-    NotificationsMethods,
+    NotificationsCategories,
     NotificationsRules,
     NotificationsTemplates,
 )
@@ -16,18 +16,52 @@ import json
 
 
 class Notification:
-    def create_notification(requestData):
+    def create_database_notification(id_role, title, content, url):
+        # Save notification in database as UNREAD
+        new_notification = Notifications(
+            id_role=id_role,
+            title=title,
+            content=content,
+            url=url,
+            creation_date=datetime.datetime.now(),
+            code_status="UNREAD",
+        )
+        try:
+            DB.session.add(new_notification)
+            DB.session.commit()
+        except:
+            return json.dumps(
+                {"success": False, "information": "Could not save notification in database"}
+            )
+        else:
+            return json.dumps({"success": True, "information": "Notification saved"})
+
+    def create_notification(notificationData):
         log = logging.getLogger()
         # for all categories given
-        categories = requestData.get("categories")
+        categories = notificationData.get("categories")
         if not categories:
-            json.dumps({"success": False, "information": "Category is missing from the request"})
+            return json.dumps(
+                {"success": False, "information": "Category is missing from the request"}
+            )
 
         for category in categories:
+
+            # Check if method exist in config
+            categorie_exists = NotificationsCategories.query.filter_by(code=category).one()
+            if not categorie_exists:
+                return json.dumps(
+                    {
+                        "success": False,
+                        "information": "This categorie of notification in not implement yet",
+                    }
+                )
+            # Set notification title, label categorie if not set
+            title = notificationData.get("title", categorie_exists.label)
+
             # Get notification method for wanted users
             # Can be several user to notify ( exemple multi digitiser for an observation)
-            idRoles = requestData.get("id_roles")
-            log.info("Notification search for category code %s", category)
+            idRoles = notificationData.get("id_roles")
             if not idRoles:
                 return json.dumps(
                     {
@@ -48,48 +82,31 @@ class Notification:
                         {"success": False, "information": "No rules for this user/category"}
                     )
 
-                # else get all methods
+                # loop on all methods subscribed by user
+                # No need to test id method exist ( foreign key constraint)
                 for rule in userNotificationsRules.all():
                     method = rule.code_method
 
-                    # Check if method exist in config
-                    method_exists = NotificationsMethods.query.filter_by(code=method).one()
-                    if not method_exists:
-                        return json.dumps(
-                            {
-                                "success": False,
-                                "information": "This method of notification in not implement yet",
-                            }
-                        )
-
-                    title = requestData.get("title", "")
-                    content = requestData.get("content", "")
-
-                    # get template for this method and category
-                    notificationTemplate = NotificationsTemplates.query.filter_by(
-                        code_method=method,
-                        code_category=category,
-                    ).one()
-                    if notificationTemplate:
-                        # erase existing content with template
-                        template = Template(notificationTemplate.content)
-                        content = template.render(requestData)
+                    # If content exist use it, otherwise use template
+                    content = notificationData.get("content")
+                    if not content:
+                        # get template for this method and category
+                        notificationTemplate = NotificationsTemplates.query.filter_by(
+                            code_method=method,
+                            code_category=category,
+                        ).one()
+                        if notificationTemplate:
+                            # erase existing content with template
+                            template = Template(notificationTemplate.content)
+                            content = template.render(notificationData)
 
                     # if method is type BDD
                     if method == "BDD":
-
-                        session = DB.session
-                        # Save notification in database as UNREAD
-                        new_notification = Notifications(
-                            id_role=role,
-                            title=title,
-                            content=content,
-                            url=requestData.get("url", ""),
-                            creation_date=datetime.datetime.now(),
-                            code_status="UNREAD",
+                        url = notificationData.get("url", "")
+                        message = Notification.create_database_notification(
+                            role, title, content, url
                         )
-                        session.add(new_notification)
-                        session.commit()
+                        log.debug("Notification return %s ", message)
 
                     # if method is type MAIL
                     if method == "MAIL":
@@ -99,7 +116,7 @@ class Notification:
 
                         if result:
                             email = str(result[0])
-                            log.info("Notification email : %s", email)
+                            log.debug("Notification email : %s", email)
                             # Send mail via celery
                             if title and content and email:
                                 mailTask = send_notification_mail.s(title, content, email)
