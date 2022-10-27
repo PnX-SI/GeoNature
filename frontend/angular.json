@@ -31,12 +31,16 @@
               "src/favicon.ico",
               "src/custom",
               "src/assets",
-              "src/external_assets",
+              {
+                "glob": "**/*",
+                "input": "external_modules/*/assets/",
+                "output": "./assets/"
+              },
               {
                 "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images/",
                 "output": "./assets/"
-             }
+              }
             ],
             "styles": [
               "node_modules/primeng/resources/themes/nova/theme.css",

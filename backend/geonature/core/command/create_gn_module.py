@@ -30,7 +30,6 @@ from geonature.utils.gn_module_import import (
     gn_module_activate,
     gn_module_deactivate,
     install_frontend_dependencies,
-    create_external_assets_symlink,
     create_frontend_module_config,
 )
 from geonature.utils.module import get_module_config_path
@@ -111,9 +110,6 @@ def install_packaged_gn_module(module_path, module_code, skip_frontend):
         else:
             click.echo(f"Création du lien symbolique {module_symlink} → {module_frontend_path}")
             os.symlink(module_frontend_path, module_symlink)
-
-        # creation du lien symbolique des assets externes
-        enable_frontend = create_external_assets_symlink(module_path, module_code.lower())
 
         install_frontend_dependencies(os.path.abspath(module_path))
         # generation du fichier de configuration du frontend

@@ -78,42 +78,6 @@ def gn_module_deactivate(module_code, activ_front, activ_back):
         )
 
 
-def create_external_assets_symlink(module_path, module_code):
-    """
-    Create a symlink for the module assets
-    return True if module have a frontend. False otherwise
-    """
-    module_assets_dir = os.path.join(os.path.abspath(module_path), "frontend/assets")
-
-    # test if module have frontend
-    if not Path(module_assets_dir).is_dir():
-        log.info("No frontend for this module \n")
-        return False
-
-    geonature_asset_symlink = os.path.join(
-        str(ROOT_DIR), "frontend/src/external_assets", module_code
-    )
-    # create the symlink if not exist
-    try:
-        if not os.path.isdir(geonature_asset_symlink):
-            log.info("Create a symlink for assets \n")
-            assert (
-                subprocess.call(
-                    ["ln", "-s", module_assets_dir, module_code],
-                    cwd=str(ROOT_DIR / "frontend/src/external_assets"),
-                )
-                == 0
-            )
-        else:
-            log.info("symlink already exist \n")
-
-        log.info("...%s\n", MSG_OK)
-    except Exception as exp:
-        log.info("...error when create symlink external assets \n")
-        raise GeoNatureError(exp)
-    return True
-
-
 def install_frontend_dependencies(module_path):
     """
     Install module frontend dependencies in the GN node_modules directory
