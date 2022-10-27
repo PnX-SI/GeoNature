@@ -9,7 +9,7 @@ from flask import current_app
 
 from geonature.utils.utilstoml import load_and_validate_toml
 from geonature.utils.schemas import ManifestSchemaProdConf
-from geonature.utils.env import GN_EXTERNAL_MODULE
+from geonature.utils.env import CONFIG_FILE, GN_EXTERNAL_MODULE
 from geonature.core.gn_commons.models import TModules
 
 
@@ -18,12 +18,17 @@ class NoManifestFound(Exception):
 
 
 def get_module_config_path(module_code):
-    config_path = os.environ.get(f"GEONATURE_{module_code.lower()}_CONFIG_FILE")
-    if config_path:  # fallback to legacy conf path guessing
-        config_path = Path(config_path)
-    else:
-        config_path = GN_EXTERNAL_MODULE / module_code.lower() / "config" / "conf_gn_module.toml"
-    return config_path
+    config_path = os.environ.get(f"GEONATURE_{module_code}_CONFIG_FILE")
+    if config_path:
+        return Path(config_path)
+    dist = get_dist_from_code(module_code)
+    config_path = Path(dist.module_path).parent / "config" / "conf_gn_module.toml"
+    if config_path.exists():
+        return config_path
+    config_path = Path(CONFIG_FILE).parent / f"{module_code.lower()}_config.toml"
+    if config_path.exists():
+        return config_path
+    return None
 
 
 def import_legacy_module(module_object):
@@ -75,7 +80,7 @@ def import_packaged_module(module_dist, module_object):
         pass
     else:
         config_path = get_module_config_path(module_object.module_code)
-        module_config.update(load_and_validate_toml(str(config_path), module_schema))
+        module_config.update(load_and_validate_toml(config_path, module_schema))
 
     blueprint_entry_point = get_entry_info(module_dist, "gn_module", "blueprint")
     if blueprint_entry_point:

@@ -28,6 +28,7 @@ except pkg_resources.DistributionNotFound:
 
 BACKEND_DIR = ROOT_DIR / "backend"
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/geonature_config.toml"
+CONFIG_FILE = os.environ.get("GEONATURE_CONFIG_FILE", DEFAULT_CONFIG_FILE)
 
 os.environ["FLASK_SQLALCHEMY_DB"] = "geonature.utils.env.db"
 DB = db = SQLAlchemy()
