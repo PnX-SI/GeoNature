@@ -1,25 +1,16 @@
-import array
 import logging
 import datetime
 import json
-from geojson import FeatureCollection
 
 from flask import Blueprint, request, jsonify, current_app
-from flask.globals import session
 from flask.json import jsonify
 import sqlalchemy as sa
-from sqlalchemy import select, func
-from sqlalchemy.sql.expression import cast, outerjoin
-from sqlalchemy.sql.sqltypes import Integer
-from sqlalchemy.orm import aliased, joinedload, contains_eager, relation, selectinload
+from sqlalchemy.orm import aliased, contains_eager, selectinload
 from marshmallow import ValidationError
 
-from utils_flask_sqla.response import json_resp
-from utils_flask_sqla.serializers import SERIALIZERS
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 from geonature.utils.env import DB, db
-from geonature.utils.utilssqlalchemy import test_is_uuid
 from geonature.core.gn_synthese.models import Synthese, TReport
 from geonature.core.gn_profiles.models import VConsistancyData
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
@@ -29,7 +20,7 @@ from geonature.core.gn_commons.models.base import TValidations
 
 from werkzeug.exceptions import BadRequest
 from geonature.core.gn_commons.models import TValidations
-from geonature.core.notifications.utils import Notification
+from geonature.core.notifications.utils import NotificationUtil
 
 
 blueprint = Blueprint("validation", __name__)
@@ -296,6 +287,8 @@ def notifyChange(data, idsynthese):
 
     # If notification enabled only
     if current_app.config["NOTIFICATION"]["ENABLED"] == True:
+
+        # return nomenclature
         nomenclature = TNomenclatures.query.filter(
             TNomenclatures.id_nomenclature == data["statut"]
         ).first()
@@ -340,4 +333,4 @@ def notifyChange(data, idsynthese):
             current_app.config["URL_APPLICATION"] + "/#/validation/occurrence/" + idsynthese
         )
 
-        Notification.create_notification(data)
+        NotificationUtil.create_notification(data)
