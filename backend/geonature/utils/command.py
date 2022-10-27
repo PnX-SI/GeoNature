@@ -16,7 +16,6 @@ from pathlib import Path
 from geonature import create_app
 from geonature.utils.env import (
     ROOT_DIR,
-    GN_EXTERNAL_MODULE,
 )
 from geonature.utils.config import config_frontend
 

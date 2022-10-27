@@ -18,7 +18,6 @@ from geonature import create_app
 
 from geonature.utils.env import (
     ROOT_DIR,
-    GN_EXTERNAL_MODULE,
     DB,
 )
 
@@ -152,7 +151,12 @@ def create_module_config(module_code, output_file=None):
     with ExitStack() as stack:
         if output_file is None:
             frontend_config_path = (
-                GN_EXTERNAL_MODULE / module_code.lower() / "frontend" / "app" / "module.config.ts"
+                ROOT_DIR
+                / "frontend"
+                / "external_modules"
+                / module_code.lower()
+                / "app"
+                / "module.config.ts"
             )
             output_file = stack.enter_context(open(str(frontend_config_path), "w"))
         output_file.write("export const ModuleConfig = ")

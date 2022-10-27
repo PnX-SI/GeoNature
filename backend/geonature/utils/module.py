@@ -3,7 +3,7 @@ from pathlib import Path
 from pkg_resources import load_entry_point, get_entry_info, iter_entry_points
 
 from geonature.utils.utilstoml import load_and_validate_toml
-from geonature.utils.env import CONFIG_FILE, GN_EXTERNAL_MODULE
+from geonature.utils.env import CONFIG_FILE
 from geonature.core.gn_commons.models import TModules
 
 

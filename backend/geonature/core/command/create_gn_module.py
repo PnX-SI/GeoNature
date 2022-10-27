@@ -22,7 +22,7 @@ from click import ClickException
 from flask import current_app
 from flask_migrate import upgrade as db_upgrade
 
-from geonature.utils.env import db, GN_EXTERNAL_MODULE
+from geonature.utils.env import db
 from geonature.utils.module import get_dist_from_code
 
 from geonature.core.command.main import main
@@ -95,15 +95,6 @@ def install_packaged_gn_module(module_path, module_code, skip_frontend):
         db_upgrade(revision=alembic_branch + "@head")
     else:
         log.info("Module do not provide any migration files, skipping database upgrade.")
-
-    # symlink module in exernal module directory
-    module_symlink = GN_EXTERNAL_MODULE / module_code.lower()
-    if os.path.exists(module_symlink):
-        target = os.readlink(module_symlink)
-        if os.path.realpath(module_path) != os.path.realpath(target):
-            raise ClickException(f"Module symlink has wrong target: '{target}'")
-    else:
-        os.symlink(os.path.abspath(module_path), module_symlink)
 
     ### Frontend
     if not skip_frontend:

@@ -88,12 +88,15 @@ jobs:
       - name: Install core modules
         run: |
           geonature install-packaged-gn-module contrib/occtax OCCTAX
+          ln -sr contrib/occtax/frontend frontend/external_modules/occtax
           geonature update-module-configuration OCCTAX
           geonature db upgrade occtax-samples-test@head
           geonature install-packaged-gn-module contrib/gn_module_occhab OCCHAB
+          ln -sr contrib/gn_module_occhab/frontend frontend/external_modules/occhab
           geonature update-module-configuration OCCHAB
           geonature db upgrade occhab-samples@head
           geonature install-packaged-gn-module contrib/gn_module_validation VALIDATION
+          ln -sr contrib/gn_module_validation/frontend frontend/external_modules/validation
           geonature update-module-configuration VALIDATION
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml

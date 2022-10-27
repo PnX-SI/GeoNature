@@ -12,13 +12,13 @@
     "polyfills.ts",
     "*.d.ts",
     "**/*",
-    "../../external_modules/*/frontend/app/*.ts",
-    "../../external_modules/*/frontend/app/**/*.ts"
+    "../external_modules/*/app/*.ts",
+    "../external_modules/*/app/**/*.ts"
   ],
   "exclude": [
     "test.ts",
     "**/*.spec.ts",
-    "../../external_modules/*/frontend/app/*.spec.ts",
-    "../../external_modules/*/frontend/app/**/*.spec.ts"
+    "../external_modules/*/app/*.spec.ts",
+    "../external_modules/*/app/**/*.spec.ts"
   ]
 }
