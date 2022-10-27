@@ -66,9 +66,13 @@ export class NotificationDataService {
     return this._api.get<any>(`${AppConfig.API_ENDPOINT}/notifications/count`);
   }
 
+  deleteNotifications() {
+    return this._api.delete<any>(`${AppConfig.API_ENDPOINT}/notifications/notifications`);
+  }
+
   // update notification status
-  updateNotification(data: any) {
-    return this._api.post(`${AppConfig.API_ENDPOINT}/notifications/notification`, data, {
+  updateNotification(idNotification) {
+    return this._api.post(`${AppConfig.API_ENDPOINT}/notifications/notifications/${idNotification}`, {
       headers: new HttpHeaders().set('Content-Type', 'application/json'),
     });
   }
