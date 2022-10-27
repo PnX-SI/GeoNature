@@ -1,13 +1,12 @@
 from geonature.core.notifications.models import (
-    Notifications,
-    NotificationsCategories,
-    NotificationsRules,
-    NotificationsTemplates,
+    Notification,
+    NotificationCategory,
+    NotificationRule,
+    NotificationTemplate,
 )
 from geonature.utils.env import DB
 from jinja2 import Template
 from pypnusershub.db.models import User
-from werkzeug.exceptions import BadRequest
 from geonature.core.notifications.tasks import send_notification_mail
 import geonature.utils.utilsmails as mail
 import datetime
@@ -15,10 +14,10 @@ import logging
 import json
 
 
-class Notification:
+class NotificationUtil:
     def create_database_notification(id_role, title, content, url):
         # Save notification in database as UNREAD
-        new_notification = Notifications(
+        new_notification = Notification(
             id_role=id_role,
             title=title,
             content=content,
@@ -48,7 +47,7 @@ class Notification:
         for category in categories:
 
             # Check if method exist in config
-            categorie_exists = NotificationsCategories.query.filter_by(code=category).one()
+            categorie_exists = NotificationCategory.query.filter_by(code=category).one()
             if not categorie_exists:
                 return json.dumps(
                     {
@@ -71,9 +70,9 @@ class Notification:
                 )
 
             for role in idRoles:
-                userNotificationsRules = NotificationsRules.query.filter(
-                    NotificationsRules.id_role == role,
-                    NotificationsRules.code_category == category,
+                userNotificationsRules = NotificationRule.query.filter(
+                    NotificationRule.id_role == role,
+                    NotificationRule.code_category == category,
                 )
 
                 # if no information then no rules return OK with information
@@ -91,7 +90,7 @@ class Notification:
                     content = notificationData.get("content")
                     if not content:
                         # get template for this method and category
-                        notificationTemplate = NotificationsTemplates.query.filter_by(
+                        notificationTemplate = NotificationTemplate.query.filter_by(
                             code_method=method,
                             code_category=category,
                         ).one()
@@ -103,7 +102,7 @@ class Notification:
                     # if method is type BDD
                     if method == "BDD":
                         url = notificationData.get("url", "")
-                        message = Notification.create_database_notification(
+                        message = NotificationUtil.create_database_notification(
                             role, title, content, url
                         )
                         log.debug("Notification return %s ", message)
