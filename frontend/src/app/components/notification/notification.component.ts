@@ -6,7 +6,6 @@ import {
   ChangeDetectorRef,
   AfterViewInit,
 } from '@angular/core';
-import { AppConfig } from '@geonature_config/app.config';
 import { NotificationDataService } from '@geonature/components/notification/notification-data.service';
 import { NotificationCard } from '@geonature/components/notification/notification-data.service';
 import { MatPaginator } from '@angular/material/paginator';
@@ -42,8 +41,19 @@ export class NotificationComponent implements OnInit, OnDestroy, AfterViewInit {
   updateNotificationStatus(data: NotificationCard) {
     // Only update status if need
     if (data.code_status == 'UNREAD') {
-      this.notificationDataService.updateNotification(data).subscribe((response) => {});
+      this.notificationDataService
+        .updateNotification(data.id_notification)
+        .subscribe((response) => {
+          data.code_status = 'READ';
+        });
     }
+  }
+
+  deleteNotifications() {
+    this.notificationDataService.deleteNotifications().subscribe((response) => {
+      // refresh rules values
+      this.ngOnInit();
+    });
   }
 
   ngOnDestroy() {
@@ -60,7 +70,9 @@ export class NotificationComponent implements OnInit, OnDestroy, AfterViewInit {
   OnMatCardClickEvent(notification: NotificationCard) {
     // update status
     this.updateNotificationStatus(notification);
-    // open given url
-    window.open(notification.url, '_self');
+    // open given url if exist
+    if (notification.url) {
+      window.open(notification.url, '_self');
+    }
   }
 }

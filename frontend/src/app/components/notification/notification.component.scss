@@ -64,3 +64,8 @@
 .UNREAD .cardTitle {
   color: #673ab7;
 }
+
+.URL.card:hover {
+  cursor: pointer;
+  background-color: #c4b0e67d;
+}

@@ -7,9 +7,12 @@
   <mat-card
     class="cardNotification"
     *ngFor="let notificationData of obs | async"
-    (click)="OnMatCardClickEvent(notificationData)"
+    (click)="notificationData.url != null && OnMatCardClickEvent(notificationData)"
   >
-    <div class="{{ notificationData.code_status }} card">
+    <div
+      class="{{ notificationData.code_status }} card"
+      [ngClass]="{ URL: notificationData.url != null }"
+    >
       <div class="row align-items-center">
         <div class="col-md-1" style="text-align: center">
           <mat-icon class="cardIcon" aria-hidden="false" aria-label="Icon desccription"
@@ -31,4 +34,9 @@
     </div>
   </mat-card>
   <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]"></mat-paginator>
+  <div class="cardNotification mt-3">
+    <button type="button" class="btn btn-light" (click)="deleteNotifications()">
+      Supprimer toutes vos notifications
+    </button>
+  </div>
 </div>
