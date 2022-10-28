@@ -13,14 +13,14 @@ from contextlib import nullcontext
 from jinja2 import Template
 
 from geonature import create_app
-from geonature.utils.env import ROOT_DIR
+from geonature.utils.env import FRONTEND_DIR
 from geonature.utils.config import config_frontend
 from geonature.utils.module import get_dist_from_code, get_module_config
 
 
 def create_frontend_config(input_file=None, output_file=None):
     if input_file is None:
-        input_file = (ROOT_DIR / "frontend/src/conf/app.config.ts.sample").open("r")
+        input_file = (FRONTEND_DIR / "src/conf/app.config.ts.sample").open("r")
     else:
         input_file = nullcontext(input_file)
     with input_file as f:
@@ -30,7 +30,7 @@ def create_frontend_config(input_file=None, output_file=None):
     app_config_template = template.render(parameters=parameters)
 
     if output_file is None:
-        output_file = (ROOT_DIR / "frontend/src/conf/app.config.ts").open("w")
+        output_file = (FRONTEND_DIR / "src/conf/app.config.ts").open("w")
     else:
         output_file = nullcontext(output_file)
     with output_file as f:
@@ -45,7 +45,7 @@ def create_frontend_module_config(module_code, output_file=None):
     module_config = get_module_config(get_dist_from_code(module_code))
     if output_file is None:
         output_file = (
-            ROOT_DIR / "frontend/external_modules" / module_code.lower() / "app/module.config.ts"
+            FRONTEND_DIR / "external_modules" / module_code.lower() / "app/module.config.ts"
         ).open("w")
     else:
         output_file = nullcontext(output_file)
@@ -55,7 +55,7 @@ def create_frontend_module_config(module_code, output_file=None):
 
 
 def install_frontend_dependencies(module_frontend_path):
-    with (ROOT_DIR / "frontend" / ".nvmrc").open("r") as f:
+    with (FRONTEND_DIR / ".nvmrc").open("r") as f:
         node_version = f.read().strip()
     subprocess.run(
         ["/bin/bash", "-i", "-c", f"nvm exec {node_version} npm ci --omit=dev"],
@@ -68,5 +68,5 @@ def build_frontend():
     subprocess.run(
         ["/bin/bash", "-i", "-c", "nvm exec npm run build"],
         check=True,
-        cwd=str(ROOT_DIR / "frontend"),
+        cwd=str(FRONTEND_DIR),
     )

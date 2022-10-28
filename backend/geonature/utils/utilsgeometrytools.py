@@ -2,7 +2,10 @@
     Fonctions permettant de manipuler de façon génériques
     les fonctions de flask_sqla_geo
 """
-from geonature.utils.env import ROOT_DIR
+from pathlib import Path
+
+from flask import current_app
+
 from geonature.utils import filemanager
 
 
@@ -36,11 +39,11 @@ def export_as_geo_file(export_format, export_view, db_cols, geojson_col, data, f
     """
     if export_format == "gpkg":
         geo_format = "gpkg"
-        dir_path = str(ROOT_DIR / "backend/static/geopackages")
+        dir_path = str(Path(current_app.static_folder) / "geopackages")
         dwn_extension = "gpkg"
     elif export_format == "shapefile":
         geo_format = "shp"
-        dir_path = str(ROOT_DIR / "backend/static/shapefiles")
+        dir_path = str(Path(current_app.static_folder) / "shapefiles")
         dwn_extension = "zip"
 
     filemanager.delete_recursively(dir_path, excluded_files=[".gitkeep"])

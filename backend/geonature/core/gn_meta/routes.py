@@ -32,7 +32,7 @@ from werkzeug.utils import secure_filename
 from marshmallow import ValidationError, EXCLUDE
 
 from geonature.utils.config import config
-from geonature.utils.env import DB, db, BACKEND_DIR
+from geonature.utils.env import DB, db
 from geonature.core.gn_synthese.models import (
     Synthese,
     TSources,
@@ -194,7 +194,7 @@ def get_dataset(info_role, id_dataset):
 def upload_canvas():
     """Upload the canvas as a temporary image used while generating the pdf file"""
     data = request.data[22:]
-    filepath = str(BACKEND_DIR) + "/static/images/taxa.png"
+    filepath = str(Path(current_app.static_folder) / "images" / "taxa.png")
     fm.remove_file(filepath)
     if data:
         binary_data = a2b_base64(data)
@@ -498,12 +498,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
         dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
     )
 
-    try:
-        f = open(str(BACKEND_DIR) + "/static/images/taxa.png")
-        f.close()
-        dataset["chart"] = True
-    except IOError:
-        dataset["chart"] = False
+    dataset["chart"] = (Path(current_app.static_folder) / "images" / "taxa.png").exists()
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf("dataset_template_pdf.html", dataset, filename)

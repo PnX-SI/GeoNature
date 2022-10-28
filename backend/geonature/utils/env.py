@@ -16,14 +16,16 @@ MAIL = Mail()
 
 # Define GEONATURE_VERSION before import config_shema module
 # because GEONATURE_VERSION is imported in this module
-ROOT_DIR = Path(__file__).absolute().parent.parent.parent.parent
+BACKEND_DIR = Path(__file__).absolute().parent.parent.parent
+ROOT_DIR = BACKEND_DIR.parent
+FRONTEND_DIR = ROOT_DIR / "frontend"
+
 try:
     GEONATURE_VERSION = pkg_resources.get_distribution("geonature").version
 except pkg_resources.DistributionNotFound:
     with open(str((ROOT_DIR / "VERSION"))) as v:
         GEONATURE_VERSION = v.read()
 
-BACKEND_DIR = ROOT_DIR / "backend"
 DEFAULT_CONFIG_FILE = ROOT_DIR / "config/geonature_config.toml"
 CONFIG_FILE = os.environ.get("GEONATURE_CONFIG_FILE", DEFAULT_CONFIG_FILE)
 

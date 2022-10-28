@@ -4,12 +4,11 @@ import shutil
 import logging
 import datetime
 import re
+from pathlib import Path
 
 from werkzeug.utils import secure_filename
 from flask import current_app, render_template
 from weasyprint import HTML, CSS
-
-from geonature.utils.env import BACKEND_DIR
 
 # get the root logger
 log = logging.getLogger()
@@ -88,6 +87,6 @@ def generate_pdf(template, data, filename):
     html_file = HTML(
         string=template_rendered, base_url=current_app.config["API_ENDPOINT"], encoding="utf-8"
     )
-    file_abs_path = str(BACKEND_DIR) + "/static/pdf/" + filename
+    file_abs_path = str(Path(current_app.static_folder) / "pdf" / filename)
     html_file.write_pdf(file_abs_path)
     return file_abs_path
