@@ -103,11 +103,14 @@ jobs:
           geonature db status
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
-      - name: Install core modules
+      - name: Install core modules backend
         run: |
-          geonature install_packaged_gn_module contrib/occtax OCCTAX
-          geonature install_packaged_gn_module contrib/gn_module_occhab OCCHAB
-          geonature install_packaged_gn_module contrib/gn_module_validation VALIDATION
+          pip install -e contrib/occtax
+          pip install -e contrib/gn_module_occhab
+          pip install -e contrib/gn_module_validation
+      - name: Install core modules database
+        run: |
+          geonature upgrade-modules
         env:
           GEONATURE_CONFIG_FILE: config/test_config.toml
       - name: Show database status
