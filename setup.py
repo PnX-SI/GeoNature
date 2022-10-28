@@ -26,7 +26,7 @@ setuptools.setup(
     package_data={
         "geonature": ["**/templates/**/*.html"],
         "geonature.tests": ["data/*.sql"],
-        "geonature.migrations": ["data/**/*.sql"],
+        "geonature.migrations": ["alembic.ini", "script.py.mako", "data/**/*.sql"],
     },
     install_requires=list(open("backend/requirements-common.in", "r"))
     + list(open("backend/requirements-dependencies.in", "r")),
