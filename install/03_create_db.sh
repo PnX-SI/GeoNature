@@ -96,7 +96,7 @@ done
 ##########################
 
 if [[ "${MODE}" == "dev" ]]; then
-    export DATA_DIRECTORY="${BASE_DIR}/data"
+    export DATA_DIRECTORY="${BASE_DIR}/cache"
     mkdir -p "${DATA_DIRECTORY}"
 fi
 
