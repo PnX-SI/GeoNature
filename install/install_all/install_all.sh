@@ -135,9 +135,9 @@ echo "Installation de la config apache pour GeoNature"
 
 sudo a2enconf geonature || exit 1
 
-sudo systemctl start geonature || exit 1
-sudo systemctl start geonature-worker || exit 1
 if [ "${mode}" != dev ]; then
+    sudo systemctl start geonature || exit 1
+    sudo systemctl start geonature-worker || exit 1
     sudo systemctl enable geonature || exit 1
     sudo systemctl enable geonature-worker || exit 1
 fi
