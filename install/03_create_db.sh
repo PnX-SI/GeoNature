@@ -97,7 +97,7 @@ done
 
 if [[ "${MODE}" == "dev" ]]; then
     export DATA_DIRECTORY="${BASE_DIR}/data"
-    mkdir "${DATA_DIRECTORY}"
+    mkdir -p "${DATA_DIRECTORY}"
 fi
 
 geonature db upgrade geonature@head -x local-srid=$srid_local |& tee -a "${LOG_FILE}"
