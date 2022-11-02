@@ -48,13 +48,11 @@ def main(ctx):
     "--input",
     "input_file",
     type=click.File("r"),
-    default=str(ROOT_DIR / "frontend/src/conf/app.config.ts.sample"),
 )
 @click.option(
     "--output",
     "output_file",
     type=click.File("w"),
-    default=str(ROOT_DIR / "frontend/src/conf/app.config.ts"),
 )
 def generate_frontend_config(input_file, output_file):
     """

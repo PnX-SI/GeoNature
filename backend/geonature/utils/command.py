@@ -10,6 +10,7 @@ import sys
 import logging
 import subprocess
 import json
+from contextlib import nullcontext
 
 from flask import current_app
 from jinja2 import Template
@@ -73,12 +74,24 @@ def tsconfig_app_templating(app=None):
         log.info("...%s\n", MSG_OK)
 
 
-def create_frontend_config(input_file, output_file):
+def create_frontend_config(input_file=None, output_file=None):
     log.info("Generating configuration")
 
-    template = Template(input_file.read())
+    if input_file is None:
+        input_file = (ROOT_DIR / "frontend/src/conf/app.config.ts.sample").open("r")
+    else:
+        input_file = nullcontext(input_file)
+    with input_file as f:
+        template = Template(f.read())
+
     parameters = json.dumps(config_frontend, indent=True)
     app_config_template = template.render(parameters=parameters)
-    output_file.write(app_config_template)
+
+    if output_file is None:
+        output_file = (ROOT_DIR / "frontend/src/conf/app.config.ts").open("w")
+    else:
+        ouptut_file = nullcontext(output_file)
+    with output_file as f:
+        f.write(app_config_template)
 
     log.info("...%s\n", MSG_OK)
