@@ -140,8 +140,8 @@ export class MapService {
   createMarker(x, y, isDraggable) {
     return L.marker([y, x], {
       icon: L.icon({
-        iconUrl: 'assets/marker-icon.png',
-        shadowUrl: 'assets/marker-shadow.png',
+        iconUrl: 'marker-icon.png',
+        shadowUrl: 'marker-shadow.png',
         iconSize: [24, 36],
         iconAnchor: [12, 36],
       }),
