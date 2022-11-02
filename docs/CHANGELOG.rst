@@ -2,26 +2,20 @@
 CHANGELOG
 =========
 
-2.10.0 (unreleased)
--------------------
+2.10.0 - Alouatta macconnelli (2022-11-02)
+------------------------------------------
 
 * **Angular 12, tests automatisés frontend et backend**
 * **Discussions, signalement, partage, épinglage d'une occurrence**
 
-Passage de la version 7 à 12 d'Angular. Avant de mettre à jour GeoNature sur cette version, vérifiez que les modules que vous utilisez sont disponibles dans une version compatible avec GeoNature 2.10.0 ou plus (compatibilité Angular 12).
+⚠️ Passage de la version 7 à 12 d'Angular. Avant de mettre à jour GeoNature sur cette version, vérifiez que les modules que vous utilisez sont disponibles dans une version compatible avec GeoNature 2.10.0 ou plus (compatibilité Angular 12).
+
 Modules compatibles à date de la publication de la version 2.10 de GeoNature :
+
 * Import
 * Export
 * Dashboard
 * Monitoring
-
-**TODO**
-
-- Relire, fusionner et intégrer les 2 docs sur les tests dans le sommaire
-- Vérifier https://github.com/PnX-SI/GeoNature/pull/1857 car il faut aussi reprendre les anciennes données
-- Répercuter les évolutions de TaxHub / Taxref v15 ?
-- Indiquer de modifier le paramètre de version de Taxref pour ceux qui font la migration de version de Taxref
-- Vérifier les docs concernant la MAJ de la conf et les commandes à lancer, l'installation des modules, etc... Plusieurs commandes ont été supprimées, mais on a gardé ``generate_frontend_config``. Expliquer ce qui a changé et pourquoi.
 
 **🚀 Nouveautés**
 
@@ -101,11 +95,7 @@ Modules compatibles à date de la publication de la version 2.10 de GeoNature :
 * Possibilité de configurer GeoNature avec un fichier python en définissant le nom du module dans la variable d’environnement ``GEONATURE_SETTINGS``
 * Utilisation de la pagination fournit par Flask-SQLAlchemy pour ``get_color_taxon()``
 * Suppression de la table ``gn_exports.t_config_export`` et du schéma ``gn_exports`` créés par GeoNature (si le module Export n'est pas déjà installé) (#1642)
-* Suppression des commandes GeoNature ``update-configuration``, ``dev-front`` et ``frontend-build`` (#1800, #2088) :
-
-  * Utiliser ``geonature generate-frontend-config`` pour re-générer la configuration du frontend après modification de ``geonature_config.toml``
-  * Utiliser ``npm`` directement pour rebuilder le frontend : ``cd frontend && nvm use && npm run build``
-
+* Suppression des commandes GeoNature ``dev-front`` et ``frontend-build`` (#1800, #2088) :
 * Rétablissement de l’utilisation de ``nvm`` pour installer NodeJS (#1726)
 * Ajout de la commande ``geonature default-config``
 * Externalisation du ``ref_geo``, de son schéma de données et de ses modèles en tant que module indépendant dans un dépôt dédié (#228)
@@ -116,7 +106,7 @@ Modules compatibles à date de la publication de la version 2.10 de GeoNature :
 * Ajout de la commande ``geonature sensitivity refresh-rules-cache`` pour rafraichir la vue matérialisé ``gn_synthese.t_sensitivity_rules_cd_ref`` (à lancer à chaque modification de règles dans la table ``gn_synthese.t_sensitivity_rules``)
 * La configuration du module n’est pas écrasée lors d’une réinstallation de ce dernier
 * Suppression de la vue ``gn_synthese.v_synthese_decode_nomenclatures``
-* Génération automatique de la documentation quand on release
+* Génération automatique de la documentation quand on publie une nouvelle version
 * Ajout de la commande ``geonature ref_geo info`` qui compte le nombre de zonages par type
 * Suppression des dépendances "geog" et "numpy" en utilisation la fonction PostGIS ``ST_DWithin`` pour la recherche par cercle (#1972)
 * La variable d’environnement ``DATA_DIRECTORY`` permet de définir un dossier pour la mise en cache et réutilisation des ressources téléchargées lors de la création de la base de données
@@ -128,7 +118,7 @@ Modules compatibles à date de la publication de la version 2.10 de GeoNature :
 
   * Mettre à jour les TaxHub (1.10.4) et UsersHub (2.3.1), sans la partie migration de la base de données avec Alembic (elle sera faite lors de la mise à jour de GeoNature)
   * Mettre à jour les modules compatibles avec GeoNature 2.10, sans lancer le rebuild du Frontend (cela sera fait lors de la mise à jour de GeoNature)
-  * Mettre à jour Angular de la version 7 à 12 dans vos modules spécifiques (https://update.angular.io/?v=7.2-12.0)
+  * Si vous avez des modules spécifiques, mettez à jour Angular de la version 7 à 12 (https://update.angular.io/?v=7.2-12.0)
   * Archiver les anciens fichiers de log ``/var/log/geonature.log*``. Les nouveaux fichiers de logs seront placés dans le dossier ``/var/log/geonature/``.
   * Supprimer les paramètres de configuration qui ont disparu s’ils sont présents dans votre fichier de configuration ``geonature_config.toml`` :
   
@@ -136,8 +126,8 @@ Modules compatibles à date de la publication de la version 2.10 de GeoNature :
     * ``CRUVED_SEARCH_WITH_OBSERVER_AS_TXT``
     * ``id_area_type_municipality``
 
-  * Installation du worker Celery : il vous faut installer le broker redis :
-  ::
+  * Installation du worker Celery : il vous faut installer le broker ``redis`` :
+    ::
 
     # sudo apt install redis
 
