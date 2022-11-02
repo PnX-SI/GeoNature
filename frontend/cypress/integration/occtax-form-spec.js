@@ -358,9 +358,10 @@ describe('Testing adding an observation in OccTax', () => {
     cy.get('[data-qa="edit-releve"]').first().click();
   });
   it('Should display date', () => {
-    cy.get("[data-qa='pnx-occtax-releve-form-datemax'] [data-qa='input-date']")
-      .wait(500)
-      .should('have.value', dateSaisieTaxon);
+    cy.get("[data-qa='pnx-occtax-releve-form-datemax'] [data-qa='input-date']").should(
+      'have.value',
+      dateSaisieTaxon
+    );
   });
   it('Should edit the releve and back to map list', () => {
     cy.get('[data-qa="pnx-occtax-releve-submit-btn"]').click();
