@@ -2,6 +2,11 @@
 CHANGELOG
 =========
 
+2.10.1 (unreleased)
+-------------------
+
+* 
+
 2.10.0 - Alouatta macconnelli (2022-11-02)
 ------------------------------------------
 
@@ -55,7 +60,8 @@ Modules compatibles à date de la publication de la version 2.10 de GeoNature :
 * Synthèse : ajout d'un message lors du chargement des données (#1637)
 * Cartes : Faire remonter la géométrie de l'objet selectionné dans la liste (#2036)
 * Ajout du paramètre ``CODE_APPLICATION``, suite à la suppression du paramètre ``ID_APP`` (#1635)
-* [Metadonnées] Formulaire des CA : correction de la saisie des CA parents ( #2097)
+* [Metadonnées] Formulaire des CA : correction de la saisie des CA parents (#2097)
+* [Accueil] Amélioration du formatage des nombres dans le bloc de statistiques (#2085)
 
 **🐛 Corrections**
 
@@ -85,6 +91,7 @@ Modules compatibles à date de la publication de la version 2.10 de GeoNature :
 * Correction de la fonction ``gn_synthese.update_sensitivity()`` en cas de valeurs nulles
 * [OCCTAX] Correction d'un bug d'édition de géométrie non pris en compte (#2023)
 * [OCCTAX] Correction de l'affichage des dates en utilisant l'UTC pour éviter les soucis de fuseaux horaires différents entre le serveur et le navigateur de l'utilisateur (#2005)
+* [Métadonnées] Correction de l'affichage des boutons de création d'un JDD et d'un CA seulement si l'utilisateur en a les droits (#1822)
 
 **💻 Développement**
 
