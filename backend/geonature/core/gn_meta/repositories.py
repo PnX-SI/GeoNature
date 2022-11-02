@@ -112,7 +112,12 @@ def get_metadata_list(info_role, args, exclude_cols):
     organisme = args.get("organism")
     person = args.get("person")
     selector = args.get("selector")
+    is_parent = args.get("is_parent")
+
     query = DB.session.query(TAcquisitionFramework)
+
+    if is_parent is not None:
+        query = query.filter(TAcquisitionFramework.is_parent)
 
     if selector == "af" and ("organism" in args or "person" in args):
         query = query.join(

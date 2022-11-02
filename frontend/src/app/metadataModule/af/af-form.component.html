@@ -64,7 +64,7 @@
             >
               <option [ngValue]="null"></option>
               <option
-                *ngFor="let ac of metadataS.acquisitionFrameworks"
+                *ngFor="let ac of acquisitionFrameworkParents"
                 [ngValue]="ac.id_acquisition_framework"
               >
                 {{ ac.acquisition_framework_name }}
