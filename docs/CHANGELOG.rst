@@ -32,7 +32,8 @@ Modules compatibles à date de la publication de la version 2.10 de GeoNature :
 * Documentation de l'utilisation et de la mise en place des tests automatisés backend et frontend (https://github.com/PnX-SI/GeoNature/blob/develop/docs/writing_tests.rst et https://github.com/PnX-SI/GeoNature/blob/develop/docs/writing_tests_frontend.rst)
 * Simplification du CRUVED minimum pour accéder à GeoNature, ne nécessitant plus d'avoir obligatoirement un CRUVED défini au niveau global de GeoNature (#1622)
 * [Métadonnées] Remplacement de la liste des imports par la liste des sources dans la fiche des JDD (#1249)
-* [Métadonnées] Lister les cadres d'acquisition par ordre alphabétique 
+* [Métadonnées] Lister les cadres d'acquisition par ordre alphabétique
+* [Admin] Amélioration de l'interface (#2101)
 * Amélioration des fiches des observations dans les modules Synthèse et Validation (#1474)
 * Ajout d'un permalien sur les fiches des observations dans les modules Synthèse et Validation (#1727)
 * Signaler une occurrence et paramètre ``ALERT_MODULES`` associé (#1750)
@@ -64,7 +65,8 @@ Modules compatibles à date de la publication de la version 2.10 de GeoNature :
 
 **🐛 Corrections**
 
-* Remise en place de la rotation des fichiers de logs (#1627)
+* Remise en place de la rotation automatique des fichiers de logs (#1627)
+* [OCCTAX] Ajout des valeurs par défaut des nomenclatures au niveau de la base de données (#1857)
 * [OCCTAX] Correction d'un bug d'édition de géométrie non pris en compte
 * Map List: à la selection d'une ligne dans le tableau, placement de la géométrie correspondante au dessus des autres géométries (#2036)
 * Correction de l’URL pour la mise à jour des mots de passe (#1620)
