@@ -5,6 +5,7 @@
 import logging
 from os import environ
 from collections import ChainMap
+import subprocess
 
 import toml
 import click
@@ -95,6 +96,21 @@ def generate_frontend_tsconfig_app():
     Génere tsconfig.app du frontend/src
     """
     tsconfig_app_templating()
+
+
+@main.command()
+@click.option("--build", type=bool, required=False, default=True)
+def update_configuration(build):
+    """
+    Régénère la configuration du front et lance le rebuild.
+    """
+    create_frontend_config()
+    if build:
+        subprocess.run(
+            ["/bin/bash", "-i", "-c", "nvm use && npm run build"],
+            check=True,
+            cwd=str(ROOT_DIR / "frontend"),
+        )
 
 
 @main.command()
