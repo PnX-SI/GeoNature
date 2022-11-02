@@ -1,48 +1,45 @@
 {% import 'admin/layout.html' as layout with context -%}
 
 {% macro menu(menu_root=None) %}
-  {% if menu_root is none %}{% set menu_root = admin_view.admin.menu() %}{% endif %}
+
+
+<div class="list-group">
+{% if menu_root is none %}{% set menu_root = admin_view.admin.menu() %}{% endif %}
   {%- for item in menu_root %}
     {%- if item.is_category() -%}
       {% set children = item.get_children() %}
       {%- if children %}
-        <li class="media">
-        <div class="media-body">
-          <h4>
-          {{ layout.menu_icon(item) }}{{ item.name }}
-          </h4>
-          <ul>
+      <a 
+        data-toggle="collapse" 
+        href="#collapseExample" 
+        class="list-group-item disabled list-group-item-action main-item">
+        {{ layout.menu_icon(item) }}{{ item.name }}
+      </a>
           {%- for child in children -%}
             {%- if child.is_category() -%}
               {{ menu(menu_root=[child]) }}
             {% else %}
-              <li class="media">
-              <div class="media-body">
-              <h4>
-              <a href="{{ child.get_url() }}"{% if child.target %} target="{{ child.target }}"{% endif %}>
-              {{ layout.menu_icon(child) }}{{ child.name }}
+
+              <a 
+                href="{{ child.get_url() }}" 
+                class="list-group-item list-group-item-action child-item">
+                {{ layout.menu_icon(child) }}{{ child.name }}
               </a>
-              </h4>
-              </div>
-              </li>
+
             {%- endif %}
           {%- endfor %}
-          </ul>
-        </div>
-        </li>
       {% endif %}
     {%- else %}
       {%- if item.is_accessible() and item.is_visible() -%}
-        <li class="media">
-          <div class="media-body">
-          <h4>
-          <a href="{{ item.get_url() }}"{% if item.target %} target="{{ item.target }}"{% endif %}>
-          {{ layout.menu_icon(item) }}{{ item.name }}
+          <a 
+            href="{{ item.get_url() }}"  
+            {% if item.target %} target="{{ item.target }}"{% endif %} 
+            class="list-group-item list-group-item-action main-item">
+            {{ layout.menu_icon(item) }}{{ item.name }}
           </a>
-          </h4>
-          </div>
-        </li>
+
       {%- endif -%}
     {% endif -%}
   {% endfor %}
+</div>
 {% endmacro %}
