@@ -88,12 +88,13 @@ class ProtectedBibFieldAdmin(
 
 
 admin = Admin(
-    template_mode="bootstrap3",
+    template_mode="bootstrap4",
     name="Administration GeoNature",
+    base_template="layout.html",
     index_view=MyHomeView(
         name="Accueil",
-        menu_icon_type="glyph",
-        menu_icon_value="glyphicon-home",
+        menu_icon_type="fa",
+        menu_icon_value="fa-home",
     ),
 )
 
@@ -102,8 +103,8 @@ admin.add_link(
     MenuLink(
         name="Retourner à GeoNature",
         url=config["URL_APPLICATION"],
-        icon_type="glyph",
-        icon_value="glyphicon-log-out",
+        icon_type="fa",
+        icon_value="fa-sign-out",
     )
 )
 
