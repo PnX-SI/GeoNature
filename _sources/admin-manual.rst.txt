@@ -82,18 +82,135 @@ Il est également possible de spécifier l’emplacement de révisions Alembic m
     [ALEMBIC]
     VERSION_LOCATIONS = '/path/to/usershub/app/migrations/versions'
 
-Les commandes Alembic sont disponible grâce à la sous-commande ``db`` de la commande ``geonature`` :
-
-.. code-block::
-
-    $ geonature db --help
-
 Chaque fichier de migration est caractérisé par :
 
 * un identifiant, `e.g.` ``f06cc80cc8ba``
 * une branche : Les branches permettent de séparer les fichiers de migrations afin de pouvoir les appliquer séparement. Par exemple, pour un déploiement de TaxHub sans GeoNature, il peut être intéressant de créer le schéma ``taxonomie`` sans créer les schémas de GeoNature, et ainsi gérer indépendamment les migrations de chaque schéma.
 * un ancêtre : Lorsqu’un fichier de migration représente l’évolution d’un état antérieur de la base de données, l’ancêtre indique dans quelle version la base de données doit se trouver avant d’appliquer le-dis fichier de migration.
 * des dépendances : Il est possible d’indiquer qu’une migration nécessite qu’une ou plusieurs autres migrations aient été préalablement appliquées. Par exemple, ceci permet d’indiquer que le schéma de GeoNature nécessite les schémas ``taxonomie`` et ``utilisateurs``.
+
+Les commandes Alembic sont disponible grâce à la sous-commande ``db`` de la commande ``geonature`` :
+
+.. code-block::
+
+    $ geonature db --help
+
+Les deux sous-commandes ``status`` et ``autoupgrade`` sont spécifique à GeoNature afin d’aider à l’utilisation d’Alembic.
+
+La commande ``status`` permet de visualiser les branches et l’ensemble de leurs révisions.
+Pour chaque révision est indiqué si celle-ci est appliqué à la base de données.
+Si une branche a au moins sa première révision d’appliquée, alors un petit symbole indique si cette branche est à jour, c’est-à-dire si toutes les révisions de la branche ont été appliquées (``✓``) ou si la branche est en retard, c’est-à-dire que celle-ci contient des révisions qui ne sont pas encore appliqué à la base de données (``×``).
+
+.. code-block::
+
+    [geonature ✓]
+      [x] ┰ f06cc80cc8ba geonature schemas 2.7.5
+      [x] ┃ c0fdf2ee7f4f auto update cor_area_synthese
+      [x] ┃ 7077aa76da3d bump dependencies
+      [x] ┃ 2a2e5c519fd1 fix gn_synthese.get_default_nomenclature_value
+      [x] ┃ 5f4c4b644844 delete cascade on  cor_dataset_territory and cor_dataset_protocol
+      [x] ┃ 2aa558b1be3a add schema gn_profiles
+      [x] ┃ 1eb624249f2b add default value in additionalFields bib
+      [x] ┃ 7471f51011c8 change index_vm_valid_profiles_cd_ref to unique index
+      [x] ┃ 9a9f4971edcd fix altitude trigger
+      [x] ┃ 6f7d5549d49e delete view v_synthese_validation_forwebapp
+      [x] ┣┓ dde31e76ce45 remove old profile function
+      [x]  ┃ 61e46813d621 Update synthese sensitivity
+      [x]  ┃ dfec5f64ac73 Fix sensitivity algorithm
+      [x]  ┃ ac08dcf3f27b Do not auto-compute diffusion_level
+      [x] ┃ 30edd97ae582 Remove gn_export.t_config_exports
+      [x] ┗┛ 1dbc45309d6e Merge sensitivity
+    [geonature-samples ✓]
+      [x] ─ 3d0bf4ee67d1 geonature samples
+    [habitats ✓]
+      [x] ─ 62e63cd6135d create ref_habitats schema
+    [habitats_inpn_data ✓]
+      [x] ┰ 46e91e738845 insert inpn data in ref_habitats schema
+      [x] ┸ 805442837a68 correction on habref data
+    [ign_bd_alti ✓]
+      [x] ─ 1715cf31a75d Insert default French DEM (IGN 250m BD alti)
+    [ign_bd_alti_vector]
+      [ ] ─ 87651375c2e8 Vectorize French DEM
+    [nomenclatures ✓]
+      [x] ┰ 6015397d686a create ref_nomenclature schema 1.3.9
+      [x] ┃ 11e7741319fd fix ref_nomenclatures.get_default_nomenclature_value
+      [x] ┃ f8c2c8482419 fix ref_nomenclatures.get_default_nomenclature_value
+      [x] ┸ b820c66d8daa fix ref_nomenclatures.get_nomenclature_label
+    [nomenclatures_inpn_data ✓]
+      [x] ─ 96a713739fdd insert inpn data in ref_nomenclatures
+    [nomenclatures_taxonomie ✓]
+      [x] ─ f5436084bf17 add support for taxonomy into ref_nomenclatures
+    [nomenclatures_taxonomie_inpn_data ✓]
+      [x] ─ a763fb554ff2 insert taxonomic inpn data in ref_nomenclatures
+    [occhab ✓]
+      [x] ─ 2984569d5df6 create occhab schema
+    [occhab-samples]
+      [ ] ─ 21f661247023 insert occhab sample data
+    [occtax ✓]
+      [x] ┰ 29c199e07eaa create occtax schema
+      [x] ┃ addb71d8efad create occtax export view
+      [x] ┃ f57107d2d0ad fix get_default_nomenclature_value
+      [x] ┃ 494cb2245a43 trigger comportement
+      [x] ┸ 944072911ff7 update synthese data (bug occtax trigger)
+    [occtax-samples ✓]
+      [x] ─ cce08a64eb4f insert occtax sample data
+    [occtax-samples-test]
+      [ ] ─ 2a0ab7644e1c occtax sample test
+    [ref_geo ✓]
+      [x] ┰ 6afe74833ed0 ref_geo schema
+      [x] ┃ e0ac4c9f5c0a add indexes on FK referencing l_areas.id_area
+      [x] ┸ 4882d6141a41 add regions in area types
+    [ref_geo_fr_departments ✓]
+      [x] ─ 3fdaa1805575 Insert French departments in ref_geo
+    [ref_geo_fr_municipalities ✓]
+      [x] ─ 0dfdbfbccd63 Insert French municipalities in ref_geo
+    [ref_geo_fr_regions ✓]
+      [x] ─ d02f4563bebe Insert French regions in ref_geo
+    [ref_geo_fr_regions_1970 ✓]
+      [x] ─ 05a0ae652c13 Insert French regions 1970-2016 in ref_geo
+    [ref_geo_inpn_grids_1 ✓]
+      [x] ─ 586613e2faeb Insert INPN 1×1 grids in ref_geo
+    [ref_geo_inpn_grids_10 ✓]
+      [x] ─ ede150d9afd9 Insert INPN 10×10 grids in ref_geo
+    [ref_geo_inpn_grids_5 ✓]
+      [x] ─ 7d6e98441e4c Insert INPN 5×5 grids in ref_geo
+    [ref_sensitivity_inpn ✓]
+      [x] ─ 7dfd0a813f86 Insert INPN rules in sensitivity referential
+    [sql_utils ✓]
+      [x] ─ 3842a6d800a0 Add public shared functions
+    [taxhub ✓]
+      [x] ─ fa5a90853c45 taxhub
+    [taxhub-admin ✓]
+      [x] ─ 3fe8c07741be taxhub
+    [taxonomie ✓]
+      [x] ┰ 9c2c0254aadc create taxonomie schema version 1.8.1
+      [x] ┃ 7540702c6407 cd_ref utility functions
+      [x] ┃ 98035939bc0d find_all_taxons_parents
+      [x] ┃ c93cbb35cfe4 set default value for id_liste
+      [x] ┸ 4fb7e197d241 create taxonomie.v_bdc_status view
+    [taxonomie_attributes_example]
+      [ ] ─ aa7533601e41 add attributes exemple to taxonomie
+    [taxonomie_inpn_data ✓]
+      [x] ─ f61f95136ec3 insert inpn data in taxonomie schema
+    [taxonomie_taxons_example]
+      [ ] ─ 8222017dc3f6 add taxons exemple to taxonomie
+    [usershub ✓]
+      [x] ┰ 9445a69f2bed UsersHub
+      [x] ┸ 6ec215fe023e upgrade utilisateurs schema
+    [usershub-samples ✓]
+      [x] ─ f63a8f44c969 UsersHub samples data
+    [utilisateurs ✓]
+      [x] ┰ fa35dfe5ff27 utilisateurs schema 1.4.7 (usershub 2.1.3)
+      [x] ┃ 830cc8f4daef add additional_data field to bib_organismes
+      [x] ┃ 5b334b77f5f5 fix v_roleslist_forall_applications
+      [x] ┃ 951b8270a1cf add unique constraint on bib_organismes.uuid_organisme
+      [x] ┸ 10e87bc144cd get_id_role_by_name()
+    [utilisateurs-samples ✓]
+      [x] ─ 72f227e37bdf utilisateurs sample data
+
+La commande ``autoupgrade`` permet de mettre automatiquement à jour toutes les branches dont au moins une révision est appliquée lorsque celles-ci possèdent une ou plusieurs révisions non appliquées.
+Cette commande est appelé par le script ``migration.sh`` lors d’une mise à jour de la base de données.
+Elle accepte également les paramètres ``-x`` qui sont alors fournis à la commande ``upgrade`` lorsque appelé sur chaque branche en retard.
 
 La commande ``heads`` permet de lister l’ensemble des branches disponibles, ainsi que la dernière révision disponible pour chaque branche :
 
@@ -230,9 +347,6 @@ Cette section liste les branches Alembic disponibles et leur impacte sur la base
 * ``geonature`` : Crée les schémas propres à GeoNature (``gn_commons``, ``gn_synthese``, …).
 * ``geonature-samples`` : Insert quelques données d’exemple en base.
 * ``taxonomie`` : Crée le schéma ``taxonomie``. Fournie par TaxHub.
-* ``taxonomie_inpn_data`` : Insert le référentiel TAXHUBv14 en base. Fournie par TaxHub.
-* ``taxonomie_attributes_example`` : Insert quelques attributs d’exemple en base. Fournie par TaxHub.
-* ``taxonomie_taxons_example`` : Insert quelques taxons d’exemple en base. Fournie par TaxHub.
 * ``nomenclatures`` : Crée le schéma ``ref_nomenclatures``. Fournie par Nomenclature-api-module.
 * ``nomenclatures_inpn_data`` : Insert le référentiel des nomenclatures de l’INPN en base. Fournie par Nomenclature-api-module.
 * ``nomenclatures_taxonomie`` : Complète le schéma ``ref_nomenclatures`` pour accueillir les nomenclatures liées à la taxonomie.
@@ -242,6 +356,7 @@ Cette section liste les branches Alembic disponibles et leur impacte sur la base
 * ``habitats`` : Crée le schéma ``ref_habitats``. Fournie par Habref-api-module.
 * ``habitats_inpn_data`` : Insert le référentiel HABREF de l’INPN en base. Fournie par Habref-api-module.
 * ``ref_geo`` : Crée le schéma ``ref_geo``.
+* ``ref_sensitivity_inpn`` : Insère le référentiel de sensbilité de l’INPN en base.
 
 Si vous utilisez TaxHub, vous pouvez être intéressé par les branches suivantes :
 
@@ -363,16 +478,11 @@ Etapes :
   PUBLIC_LOGIN = 'public'
   PUBLIC_PASSWORD = 'public'
 
-- Mettre à jour la configuration de GeoNature
 
-.. code:: 
-
-  $ source backend/venv/bin/activate
-  $ geonature update_configuration
-  $ sudo systemctl restart geonature
+:ref:`Exécuter les actions post-modification de la configuration <post_config_change>`.
 
 A ce moment-là, cet utilisateur a tous les droits sur GeoNature.
-Il s'agit maintenant de gérer ses permissions dans GeoNature même. 
+Il s'agit maintenant de gérer ses permissions dans GeoNature même.
 
 3/ GeoNature 
 
@@ -860,22 +970,33 @@ Pour configurer GeoNature, actuellement il y a :
 Configuration générale de l'application
 """""""""""""""""""""""""""""""""""""""
 
-L'installation de GeoNature génère le fichier de configuration globale ``<GEONATURE_DIRECTORY>/config/geonature_config.toml``. Ce fichier est aussi copié dans le frontend (``frontend/conf/app.config.ts``), à ne pas modifier.
+La configuration générale de GeoNature se fait dans le fichier ``config/geonature_config.toml``.
+Une version minimaliste est généré à l’installation à partir du fichier ``config/settings.ini``.
+Vous pouvez compléter votre configuration en vous inspirant des paramètres par défaut présent dans le fichier ``config/default_config.toml.example``.
 
-Par défaut, le fichier ``<GEONATURE_DIRECTORY>/config/geonature_config.toml`` est minimaliste et généré à partir des infos présentes dans le fichier ``config/settings.ini``.
+Le frontend lit sa configuration depuis le fichier ``frontend/conf/app.config.ts`` mais ce dernier n’est pas à modifier manuellement : il est généré à partir des paramètres présents dans le fichier ``config/geonature_config.toml``.
 
-Il est possible de le compléter en surcouchant les paramètres présents dans le fichier ``config/default_config.toml.example``.
+.. _post_config_change:
 
-A chaque modification du fichier global de configuration (``<GEONATURE_DIRECTORY>/config/geonature_config.toml``), il faut regénérer le fichier de configuration du frontend.
+Ainsi, à chaque modification du fichier de configuration, vous devez :
 
-Ainsi après chaque modification des fichiers de configuration globale, placez-vous dans le backend de GeoNature (``/home/monuser/GeoNature/backend``) et lancez les commandes :
+- relancer le backend : ``sudo systemctl restart geonature``
+- regénérer le fichier de configuration du frontend :
 
-.. code-block:: console
+.. code-block:: bash
 
-    source venv/bin/activate
-    geonature update_configuration
-    sudo systemctl restart geonature
-    deactivate
+    source backend/venv/bin/activate
+    geonature generate-frontend-config
+
+
+- rebuilder le frontend :
+
+.. code-block:: bash
+
+    cd frontend
+    nvm use
+    npm run build
+
 
 Configuration d'un gn_module
 """"""""""""""""""""""""""""
@@ -899,7 +1020,8 @@ Logs
 """"
 
 * Logs d’installation de GeoNature : ``geonature/install/install.log``
-* Logs de GeoNature : ``/var/log/geonature.log``
+* Logs de GeoNature : ``/var/log/geonature/geonature.log``
+* Logs du worker Celery : ``/var/log/geonature/geonature-worker.log``
 * Logs de TaxHub : ``/var/log/taxhub.log``
 * Logs de UsersHub : ``/var/log/usershub.log``
 
@@ -921,11 +1043,9 @@ Voici la liste des commandes disponibles (aussi disponibles en tapant la command
 - ``activate_gn_module`` : Active un gn_module installé (Possibilité d'activer seulement le backend ou le frontend)
 - ``deactivate_gn_module`` : Désactive gn_un module activé (Possibilté de désactiver seulement le backend ou le frontend)
 - ``dev_back`` : Lance le backend en mode développement
-- ``dev_front`` : Lance le frontend en mode développement
 - ``generate_frontend_module_route`` : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installés (Fait automatiquement lors de l'installation d'un module)
 - ``install_gn_module`` : Installe un gn_module
-- ``start_gunicorn`` : Lance l'API du backend avec gunicorn
-- ``update_configuration`` : Met à jour la configuration du cœur de l'application. A exécuter suite à une modification du fichier ``geonature_config.toml``
+- ``generate_frontend_config`` : Regénère le fichier de configuration du frontend. A exécuter suite à une modification du fichier ``geonature_config.toml``
 - ``update_module_configuration`` : Met à jour la configuration d'un module. A exécuter suite à une modification du fichier ``conf_gn_module.toml``.
 
 Effectuez ``geonature <nom_commande> --help`` pour accéder à la documentation et à des exemples d'utilisation de chaque commande.
@@ -993,6 +1113,20 @@ Voici les paramètres de Gunicorn par défaut :
   * ``GUNICORN_TIMEOUT=30``
 
 Pour modifier une de ces variables, créer un fichier ``environ`` à la racine de votre dossier GeoNature, et indiquer la variable d’environnement avec sa valeur modifiée.
+
+Si vous souhaitez modifier de manière plus avancé la ligne de commande ``gunicorn``, surcouchez le service systemd :
+
+  * Lancez ``sudo systemctl edit geonature`` ce qui va créer le fichier ``/etc/systemd/system/geonature.service.d/override.conf`` et ouvrir un éditeur pour vous permettre de le modifier
+  * Indiquez :
+  
+    .. code::
+
+      [Service]
+      ExecStart=
+      ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
+
+    Note : le premier ``ExecStart`` permet de réinitialiser la commande de lancement de gunicorn.
+    
 
 Sauvegarde et restauration
 --------------------------
@@ -1473,19 +1607,12 @@ Etapes :
     $ nano geonature_config.toml
     PUBLIC_LOGIN = 'public'
     PUBLIC_PASSWORD = 'public'
-..
 
-   - Mettre à jour la configuration de GeoNature
 
-.. code-block::
+:ref:`Exécuter les actions post-modification de la configuration <post_config_change>`.
 
-    $ source backend/venv/bin/activate
-    $ geonature update_configuration
-    $ sudo systemctl restart geonature
-..
-
-A ce moment là, cet utilisateur a tous les droits sur GeoNature.
-Il s'agit donc de gérer ses permissions dans GeoNature même. 
+A ce moment-là, cet utilisateur a tous les droits sur GeoNature.
+Il s'agit maintenant de gérer ses permissions dans GeoNature même.
 
 3/ GeoNature 
 
@@ -1570,7 +1697,7 @@ En modifiant les variables des champs ci-dessous, vous pouvez donc personnaliser
 Si le champ est masqué, une valeur par défaut est inscrite en base (voir plus loin pour définir ces valeurs).
 
 Modifier le champ Observateurs
-******************************
+``````````````````````````````
 
 Par défaut le champ ``Observateurs`` est une liste déroulante qui pointe vers une liste du schéma ``utilisateurs``.
 Il est possible de passer ce champ en texte libre en mettant à ``true`` la variable ``observers_txt``.
@@ -1580,7 +1707,7 @@ Le paramètre ``id_observers_list`` permet de changer la liste d'observateurs pr
 Par défaut, l'ensemble des observateurs de la liste 9 (observateurs faune/flore) sont affichés.
 
 Personnaliser la liste des taxons saisissables dans le module
-*************************************************************
+`````````````````````````````````````````````````````````````
 
 Le module est fourni avec une liste restreinte de taxons (8 seulement). C'est à l'administrateur de changer ou de remplir cette liste.
 
@@ -1607,7 +1734,7 @@ Il faut d'abord remplir la table ``taxonomie.bib_noms`` (table des taxons de sa 
 Il est également possible d'éditer des listes à partir de l'application TaxHub.
 
 Gérer les valeurs par défaut des nomenclatures
-**********************************************
+``````````````````````````````````````````````
 
 Le formulaire de saisie pré-remplit des valeurs par défaut pour simplifier la saisie. Ce sont également ces valeurs qui sont prises en compte pour remplir dans la BDD les champs du formulaire qui sont masqués.
 
@@ -1628,7 +1755,7 @@ Une interface de gestion des nomenclatures est prévue d'être développée pour
 TODO : valeur par défaut de la validation
 
 Personnaliser l'interface Map-list
-**********************************
+``````````````````````````````````
 
 La liste des champs affichés par défaut dans le tableau peut être modifiée avec le paramètre ``default_maplist_columns``.
 
@@ -1647,7 +1774,7 @@ Par défaut :
 Voir la vue ``occtax.v_releve_list`` pour voir les champs disponibles.
 
 Ajouter une contrainte d'échelle de saisie sur la carte
-*******************************************************
+```````````````````````````````````````````````````````
 
 Il est possible de contraindre la saisie de la géométrie d'un relevé sur la carte par un seuil d'échelle minimum avec le paramètre ``releve_map_zoom_level``.
 
@@ -1746,6 +1873,11 @@ Exemples de configuration :
 
 .. image :: _static/html1.png
 
+- Un champs de type "datalist". Ce champs permet de générer une liste de valeurs à partir d'une API. Dans le champ "attributs additionnels", renseignez les éléments suivants : 
+
+::
+
+    ``{"api": "url_vers_la_ressource", "keyValue": "champ à stocker en base", "keyLabel": "champ à afficher en interface"}
 
 Configuration avancée des champs
 ````````````````````````````````

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="fr" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HTTPS &mdash; GeoNature 2.0 documentation</title>
+  <title>HTTPS &mdash; Documentation GeoNature 2.0</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,10 +14,12 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Recherche" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -33,7 +35,7 @@
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -68,7 +70,7 @@
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>HTTPS</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/https.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/https.rst.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
   </ul>
   <hr/>
@@ -77,7 +79,7 @@
            <div itemprop="articleBody">
              
   <section id="https">
-<h1>HTTPS<a class="headerlink" href="#https" title="Permalink to this headline"></a></h1>
+<h1>HTTPS<a class="headerlink" href="#https" title="Lien permanent vers cette rubrique"></a></h1>
 <p>La procédure décrit une méthode de certification HTTPS de votre domaine, grâce au service <a class="reference external" href="https://letsencrypt.org/">Let’s Encrypt</a>. Les manipulations ont été effectuées sur un serveur Debian 9 avec Apache2 installé, et un utilisateur bénéficiant des droits sudo.</p>
 <p>Ressources :</p>
 <ul class="simple">
@@ -85,13 +87,13 @@
 <li><p><a class="reference external" href="https://korben.info/securiser-facilement-gratuitement-site-https.html">https://korben.info/securiser-facilement-gratuitement-site-https.html</a></p></li>
 </ul>
 <section id="installer-certbot">
-<h2>Installer certbot<a class="headerlink" href="#installer-certbot" title="Permalink to this headline"></a></h2>
+<h2>Installer certbot<a class="headerlink" href="#installer-certbot" title="Lien permanent vers cette rubrique"></a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">apt</span><span class="o">-</span><span class="n">get</span> <span class="n">install</span> <span class="n">python3</span><span class="o">-</span><span class="n">certbot</span><span class="o">-</span><span class="n">apache</span>
 </pre></div>
 </div>
 </section>
 <section id="lancer-la-commande-cerbot">
-<h2>Lancer la commande cerbot<a class="headerlink" href="#lancer-la-commande-cerbot" title="Permalink to this headline"></a></h2>
+<h2>Lancer la commande cerbot<a class="headerlink" href="#lancer-la-commande-cerbot" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Lancer la commande suivant pour générer des certificats et des clés pour le nom de domaine que vous souhaitez mettre en HTTPS.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">certbot</span> <span class="n">certonly</span> <span class="o">--</span><span class="n">webroot</span> <span class="o">--</span><span class="n">webroot</span><span class="o">-</span><span class="n">path</span> <span class="o">/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span> <span class="o">--</span><span class="n">domain</span> <span class="n">mondomaine</span><span class="o">.</span><span class="n">fr</span> <span class="o">--</span><span class="n">email</span> <span class="n">monemail</span><span class="nd">@mondomaine</span><span class="o">.</span><span class="n">fr</span>
 </pre></div>
@@ -105,7 +107,7 @@
 </ul>
 </section>
 <section id="les-certificats-obtenus">
-<h2>Les certificats obtenus<a class="headerlink" href="#les-certificats-obtenus" title="Permalink to this headline"></a></h2>
+<h2>Les certificats obtenus<a class="headerlink" href="#les-certificats-obtenus" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Le certificat se trouve dans le répertoire <code class="docutils literal notranslate"><span class="pre">/etc/letsencrypt/live/mondomaine.fr/</span></code>.</p>
 <p>Il est constitué de 4 fichiers :</p>
 <ul class="simple">
@@ -116,7 +118,7 @@
 </ul>
 </section>
 <section id="automatiser-le-renouvellement-du-certificat">
-<h2>Automatiser le renouvellement du certificat<a class="headerlink" href="#automatiser-le-renouvellement-du-certificat" title="Permalink to this headline"></a></h2>
+<h2>Automatiser le renouvellement du certificat<a class="headerlink" href="#automatiser-le-renouvellement-du-certificat" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Le certificat fourni par Let’s Encrypt n’est valable que 3 mois. Il faut donc mettre en place un renouvellement automatique.
 Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le certificat :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">crontab</span> <span class="o">-</span><span class="n">e</span>
@@ -125,7 +127,7 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
 </div>
 </section>
 <section id="prise-en-compte-des-nouvelles-configurations-apache">
-<h2>Prise en compte des nouvelles configurations Apache<a class="headerlink" href="#prise-en-compte-des-nouvelles-configurations-apache" title="Permalink to this headline"></a></h2>
+<h2>Prise en compte des nouvelles configurations Apache<a class="headerlink" href="#prise-en-compte-des-nouvelles-configurations-apache" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Activer les modules <code class="docutils literal notranslate"><span class="pre">ssl</span></code>, <code class="docutils literal notranslate"><span class="pre">headers</span></code> et <code class="docutils literal notranslate"><span class="pre">rewrite</span></code> puis redémarrer Apache :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">ssl</span>
 <span class="n">sudo</span> <span class="n">a2enmod</span> <span class="n">rewrite</span>
@@ -136,7 +138,7 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
 <p>Les fichiers de configuration des sites TaxHub et UsersHub ne sont pas à modifier, ils seront automatiquement associés à la configuration HTTPS. En revanche, la configuration de GeoNature doit être mise à jour.</p>
 </section>
 <section id="configuration-de-l-application-geonature">
-<h2>Configuration de l’application GeoNature<a class="headerlink" href="#configuration-de-l-application-geonature" title="Permalink to this headline"></a></h2>
+<h2>Configuration de l’application GeoNature<a class="headerlink" href="#configuration-de-l-application-geonature" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Il est nécessaire de mettre à jour le fichier de configuration <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code> situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/config</span></code> :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span><span class="o">/</span><span class="n">config</span>
 <span class="n">nano</span> <span class="n">geonature_config</span><span class="o">.</span><span class="n">toml</span>
@@ -148,13 +150,7 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
 <span class="n">API_TAXHUB</span> <span class="o">=</span> <span class="s1">&#39;https://mondomaine.fr/taxhub/api&#39;</span>
 </pre></div>
 </div>
-<p>Pour que ces modifications soient prises en compte, lancer les commandes suivantes :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">geonature</span><span class="o">/</span><span class="n">backend</span>
-<span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
-<span class="n">geonature</span> <span class="n">update_configuration</span>
-<span class="n">deactivate</span>
-</pre></div>
-</div>
+<p>Pour que ces modifications soient prises en compte, exécuter les <a class="reference internal" href="admin-manual.html#post-config-change"><span class="std std-ref">actions à effecture après modification de la configuration</span></a>.</p>
 <p>Les applications sont désormais accessibles sur votre domaine sécurisé en HTTPS !</p>
 </section>
 </section>
@@ -170,9 +166,9 @@ Ajouter une tache automatique (Cron) pour renouveler une fois par semaine le cer
     <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
   </div>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>

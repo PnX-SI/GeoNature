@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="fr" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aide mémoire pour l’utilisation du core de geonature &mdash; GeoNature 2.0 documentation</title>
+  <title>Aide mémoire pour l’utilisation du core de geonature &mdash; Documentation GeoNature 2.0</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,10 +14,12 @@
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/translations.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Recherche" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -33,7 +35,7 @@
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -68,7 +70,7 @@
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Aide mémoire pour l’utilisation du core de geonature</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/dev_guide/dev_guide.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/dev_guide/dev_guide.rst.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
   </ul>
   <hr/>
@@ -77,9 +79,9 @@
            <div itemprop="articleBody">
              
   <section id="aide-memoire-pour-l-utilisation-du-core-de-geonature">
-<h1>Aide mémoire pour l’utilisation du core de geonature<a class="headerlink" href="#aide-memoire-pour-l-utilisation-du-core-de-geonature" title="Permalink to this headline"></a></h1>
+<h1>Aide mémoire pour l’utilisation du core de geonature<a class="headerlink" href="#aide-memoire-pour-l-utilisation-du-core-de-geonature" title="Lien permanent vers cette rubrique"></a></h1>
 <section id="demarrage-du-serveur-de-dev-backend">
-<h2>Démarrage du serveur de dev backend<a class="headerlink" href="#demarrage-du-serveur-de-dev-backend" title="Permalink to this headline"></a></h2>
+<h2>Démarrage du serveur de dev backend<a class="headerlink" href="#demarrage-du-serveur-de-dev-backend" title="Lien permanent vers cette rubrique"></a></h2>
 <blockquote>
 <div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(venv)...$ geonature dev_back
 </pre></div>
@@ -87,9 +89,9 @@
 </div></blockquote>
 </section>
 <section id="base-de-donnees">
-<h2>Base de données<a class="headerlink" href="#base-de-donnees" title="Permalink to this headline"></a></h2>
+<h2>Base de données<a class="headerlink" href="#base-de-donnees" title="Lien permanent vers cette rubrique"></a></h2>
 <section id="session-sqlalchemy">
-<h3>Session sqlalchemy<a class="headerlink" href="#session-sqlalchemy" title="Permalink to this headline"></a></h3>
+<h3>Session sqlalchemy<a class="headerlink" href="#session-sqlalchemy" title="Lien permanent vers cette rubrique"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">geonature.utils.env.DB</span></code></p></li>
 </ul>
@@ -103,7 +105,7 @@
 </section>
 </section>
 <section id="serialisation-des-modeles">
-<h2>Serialisation des modèles<a class="headerlink" href="#serialisation-des-modeles" title="Permalink to this headline"></a></h2>
+<h2>Serialisation des modèles<a class="headerlink" href="#serialisation-des-modeles" title="Lien permanent vers cette rubrique"></a></h2>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">utils_flask_sqla.serializers.serializable</span></code></p></li>
 </ul>
@@ -196,7 +198,7 @@ qui ont au moin un enregistrement</p></li>
 <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
         <span class="n">FionaShapeService</span><span class="o">.</span><span class="n">create_shapes_struct</span><span class="p">(</span>
                 <span class="n">db_cols</span><span class="o">=</span><span class="n">db_cols</span><span class="p">,</span>
-                <span class="n">srid</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;LOCAL_SRID&#39;</span><span class="p">],</span>
+                <span class="n">srid</span><span class="o">=</span><span class="n">srid</span><span class="p">,</span>
                 <span class="n">dir_path</span><span class="o">=</span><span class="n">dir_path</span><span class="p">,</span>
                 <span class="n">file_name</span><span class="o">=</span><span class="n">file_name</span><span class="p">,</span>
                 <span class="n">col_mapping</span><span class="o">=</span><span class="n">current_app</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;SYNTHESE&#39;</span><span class="p">][</span><span class="s1">&#39;EXPORT_COLUMNS&#39;</span><span class="p">]</span>
@@ -232,13 +234,13 @@ données).</p>
 </div>
 </section>
 <section id="export-des-donnees">
-<h2>Export des données<a class="headerlink" href="#export-des-donnees" title="Permalink to this headline"></a></h2>
+<h2>Export des données<a class="headerlink" href="#export-des-donnees" title="Lien permanent vers cette rubrique"></a></h2>
 <p>TODO</p>
 </section>
 <section id="authentification-avec-pypnusershub">
-<h2>Authentification avec pypnusershub<a class="headerlink" href="#authentification-avec-pypnusershub" title="Permalink to this headline"></a></h2>
+<h2>Authentification avec pypnusershub<a class="headerlink" href="#authentification-avec-pypnusershub" title="Lien permanent vers cette rubrique"></a></h2>
 <section id="verification-des-droits-des-utilisateurs">
-<h3>Vérification des droits des utilisateurs<a class="headerlink" href="#verification-des-droits-des-utilisateurs" title="Permalink to this headline"></a></h3>
+<h3>Vérification des droits des utilisateurs<a class="headerlink" href="#verification-des-droits-des-utilisateurs" title="Lien permanent vers cette rubrique"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">pypnusershub.routes.check_auth</span></code></p></li>
 </ul>
@@ -274,7 +276,7 @@ une action sur la donnée et le redirige en cas de niveau insuffisant ou
 d’informations de session erronées</p>
 <p>params :</p>
 <ul class="simple">
-<li><p>action &lt;str:[‘C’,’R’,’U’,’V’,’E’,’D’]&gt; type d’action effectuée par la route
+<li><p>action &lt;str:[“C”,”R”,”U”,”V”,”E”,”D”]&gt; type d’action effectuée par la route
 (Create, Read, Update, Validate, Export, Delete)</p></li>
 <li><p>get_role &lt;bool:False&gt;: si True, ajoute l’id utilisateur aux kwargs de la vue</p></li>
 </ul>
@@ -307,7 +309,7 @@ mère.</p>
 * id_application: id du module surlequel on veut avoir le cruved
 * id_application_parent: id l’application parent du module</p>
 <p>Valeur retourné:
-&lt;dict&gt; {‘C’: ‘1’, ‘R’:’2’, ‘U’: ‘1’, ‘V’:’2’, ‘E’:’3’, ‘D’: ‘3’}</p>
+&lt;dict&gt; {“C”: “1”, “R”:”2”, “U”: “1”, “V”:”2”, “E”:”3”, “D”: “3”}</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pypnusershub.db.tools</span> <span class="kn">import</span> <span class="n">cruved_for_user_in_app</span>
 
 <span class="n">cruved</span> <span class="o">=</span> <span class="n">cruved_for_user_in_app</span><span class="p">(</span><span class="n">id_role</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">id_application</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span> <span class="n">id_application_parent</span><span class="o">=</span><span class="mi">14</span><span class="p">)</span>
@@ -328,9 +330,9 @@ mère.</p>
     <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
   </div>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>

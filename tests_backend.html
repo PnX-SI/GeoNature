@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="fr" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tests backend &mdash; Documentation GeoNature 2.0</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Recherche" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: white" >
+            <a href="index.html" class="icon icon-home"> GeoNature
+            <img src="_static/LogoGeonature.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Rechercher docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">INSTALLATION</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user-manual.html">MANUEL UTILISATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="admin-manual.html">MANUEL ADMINISTRATEUR</a></li>
+<li class="toctree-l1"><a class="reference internal" href="import-level-1.html">IMPORT NIVEAU 1</a></li>
+<li class="toctree-l1"><a class="reference internal" href="import-level-2.html">IMPORT NIVEAU 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">DEVELOPPEMENT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="versions-compatibility.html">COMPATIBILITE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu"  style="background: white" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">GeoNature</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Tests backend</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/tests_backend.rst.txt" rel="nofollow"> Afficher la source de la page</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tests-backend">
+<h1>Tests backend<a class="headerlink" href="#tests-backend" title="Lien permanent vers cette rubrique"></a></h1>
+<p>Cette documentation a pour objectif d’expliquer comment écrire des tests pour
+le backend de GeoNature.</p>
+<p>Un test se décompose en général en 3 étapes :</p>
+<ul class="simple">
+<li><p><strong>Arrange</strong> : prépare tous les éléments avant l’exécution de la portion de
+code à tester (en général une fonction)</p></li>
+<li><p><strong>Act</strong> : exécute cette portion de code</p></li>
+<li><p><strong>Assert</strong> : vérifie que l’exécution s’est bien déroulée</p></li>
+</ul>
+<p>Il est toujours utile de distinguer dans le code ces 3 étapes en ajoutant un
+commentaire ou une séparation entre elles.</p>
+<p>Enfin un test doit être concis, il vaut mieux écrire plusieurs tests pour
+tester différentes configurations plutôt qu’un seul les testant toutes d’un
+coup. Cela permet d’identifier plus précisément le test qui n’a pas fonctionné.</p>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Lien permanent vers cette rubrique"></a></h2>
+<p>Comme spécifié dans la partie Développement, la librairie Python PyTest est
+utilisée pour rédiger des tests. Elle permet de :</p>
+<ul class="simple">
+<li><p>disposer d’un framework de redaction de tests en se basant notamment sur
+l’instruction <code class="docutils literal notranslate"><span class="pre">assert</span></code></p></li>
+<li><p>écrire des objets ou des portions de code réutilisables : les <code class="docutils literal notranslate"><span class="pre">fixtures</span></code></p></li>
+<li><p>lancer un même test avec des configurations différentes</p></li>
+<li><p>faire de nombreuses autres choses décrites dans la
+<a class="reference external" href="https://docs.pytest.org/">documentation PyTest</a></p></li>
+</ul>
+</section>
+<section id="utilisation">
+<h2>Utilisation<a class="headerlink" href="#utilisation" title="Lien permanent vers cette rubrique"></a></h2>
+<p>Les tests sont des fonctions pouvant être regroupées dans des classes. La
+nomenclature est la suivante :</p>
+<ul class="simple">
+<li><p>Les tests doivent être situées dans un dossier nommé tests (dans
+GeoNature, ils sont situés dans <code class="docutils literal notranslate"><span class="pre">backend/geonature/tests</span></code>)</p></li>
+<li><p>Le nom de chaque fichier Python contenant des tests doit commencer par
+<code class="docutils literal notranslate"><span class="pre">test_</span></code></p></li>
+<li><p>Chaque classe comprenant des tests doit commencer par <code class="docutils literal notranslate"><span class="pre">Test</span></code> (pas de
+underscore car la norme PEP8 impose un nom de classe en CamelCase)</p></li>
+<li><p>Chaque nom de test (donc de fonction) doit commencer par <code class="docutils literal notranslate"><span class="pre">test_</span></code> pour
+pouvoir être détecté automatiquement par PyTest</p></li>
+</ul>
+</section>
+<section id="fixtures">
+<h2>Fixtures<a class="headerlink" href="#fixtures" title="Lien permanent vers cette rubrique"></a></h2>
+<p>Les fixtures de PyTest peuvent permettre de nombreuses choses comme expliqué
+dans la documentation PyTest sur <a class="reference external" href="https://docs.pytest.org/explanation/fixtures.html#about-fixtures">les fixtures</a>.</p>
+<p>Dans GeoNature elles sont, en général, utilisées pour définir des objets
+réutilisables comme des utilisateurs en base de données pour tester les droits, des observations fictives de taxon pour tester des routes de la synthèse ou
+encore des éléments non présents en base pour tester que le code voulant les
+récupérer ne plante pas etc.</p>
+<p>Elles sont aussi utilisées pour fournir un contexte à un test. Par exemple, la
+fixture <code class="docutils literal notranslate"><span class="pre">temporary_transaction</span></code> permet de ne pas sauvegarder ce qui sera
+inséré/supprimé/modifié dans la base de données pendant le test.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>La plupart des fixtures sont rassemblées dans
+<code class="docutils literal notranslate"><span class="pre">backend/geonature/tests/fixtures.py</span></code>, il est important de regarder
+lesquelles y sont définies avant d’en écrire d’autres !</p>
+</div>
+<p>Enfin, les fixtures peuvent aussi être définies directement dans le fichier
+Python du test. Elles sont définies comme suit :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Obligatoire pour accéder au décorateur</span>
+<span class="kn">import</span> <span class="nn">pytest</span>
+
+<span class="c1"># Définit une fixture qui renverra 2</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">my_fixture</span><span class="p">():</span>
+  <span class="k">return</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>Et s’utilisent comme suit :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># On passe directement la fixture en argument du test. Il est</span>
+<span class="c1"># nécessaire de l&#39;importer si elle n&#39;est pas définie dans le même fichier</span>
+<span class="c1"># Ce test n&#39;est pas dans une classe (donc pas de self)</span>
+<span class="k">def</span> <span class="nf">test_ma_fonction_a_tester</span><span class="p">(</span><span class="n">my_fixture</span><span class="p">):</span>
+  <span class="n">result</span> <span class="o">=</span> <span class="n">my_fixture</span>
+
+  <span class="c1"># On vérifie que la fixture retourne la bonne valeur</span>
+  <span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>Il est aussi possible de définir un <code class="docutils literal notranslate"><span class="pre">scope</span></code> d’une fixture comme ceci :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Définit une fixture qui renverra 2 mais qui sera exécutée qu&#39;une</span>
+<span class="c1"># seule fois par classe (une classe regroupe plusieurs tests) au</span>
+<span class="c1"># lieu d&#39;une fois par test. Il est possible aussi de définir ce</span>
+<span class="c1"># scope au module ou à la function</span>
+<span class="nd">@pytest</span><span class="o">.</span><span class="n">fixture</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="s2">&quot;class&quot;</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">my_fixture</span><span class="p">():</span>
+  <span class="k">return</span> <span class="mi">2</span>
+</pre></div>
+</div>
+</section>
+<section id="exemple">
+<h2>Exemple<a class="headerlink" href="#exemple" title="Lien permanent vers cette rubrique"></a></h2>
+<p>Voici un exemple de test qui a été fait dans GeoNature</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">test_get_consistancy_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">synthese_record</span> <span class="o">=</span> <span class="n">Synthese</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="n">url_for</span><span class="p">(</span><span class="s2">&quot;gn_profiles.get_consistancy_data&quot;</span><span class="p">,</span>
+                <span class="n">id_synthese</span><span class="o">=</span><span class="n">synthese_record</span><span class="o">.</span><span class="n">id_synthese</span><span class="p">))</span>
+
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+</pre></div>
+</div>
+<p>Ce test est situé dans une classe (le <code class="docutils literal notranslate"><span class="pre">self</span></code> est donc obligatoire). Ce test
+vérifie que la route <code class="docutils literal notranslate"><span class="pre">gn_profiles.get_consistancy_data</span></code> fonctionne bien avec
+un <code class="docutils literal notranslate"><span class="pre">id_synthese</span></code> pris dans la base de données. Le <code class="docutils literal notranslate"><span class="pre">assert</span></code> est directement
+interprété par PyTest et le test sera en erreur si la condition n’est pas
+respectée. Il est possible d’écrire plusieurs <code class="docutils literal notranslate"><span class="pre">assert</span></code> pour un même test !</p>
+<p>Enfin, une fixture a été utilisée au niveau de la classe pour rendre accessible
+l’attribut <code class="docutils literal notranslate"><span class="pre">client</span></code> de la classe, utile pour faire des requêtes http
+notamment.</p>
+</section>
+<section id="dans-github">
+<h2>Dans GitHub<a class="headerlink" href="#dans-github" title="Lien permanent vers cette rubrique"></a></h2>
+<p>Dans le dépôt de GeoNature sur GitHub, tous ces tests sont exécutés
+automatiquement pour chaque commit d’une pull request grâce à PyTest et à
+GitHub Actions. Ils permettent donc de vérifier que les modifications apportées
+par les développeurs ne changent pas le statut des tests et permettent donc aux
+mainteneurs du projet de disposer d’une meilleure confiance dans la pull
+request. Un coverage est aussi exécuté pour s’assurer que les nouveaux
+développements sont bien testés.</p>
+</section>
+<section id="coverage">
+<h2>Coverage<a class="headerlink" href="#coverage" title="Lien permanent vers cette rubrique"></a></h2>
+<p>Le coverage est un système permettant de quantifier les lignes de code
+exécutées par le test. Exemple rapide :</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Définition d&#39;une fonction quelconque</span>
+<span class="k">def</span> <span class="nf">ma_fonction_a_tester</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;blablabla&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;blabla&quot;</span>
+
+<span class="c1"># Définition d&#39;un possible test associé</span>
+<span class="k">def</span> <span class="nf">test_ma_fonction_a_tester</span><span class="p">():</span>
+    <span class="c1"># Arrange</span>
+    <span class="n">verbose</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Act</span>
+    <span class="n">message</span> <span class="o">=</span> <span class="n">ma_fonction_a_tester</span><span class="p">(</span><span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+
+    <span class="c1"># Assert</span>
+    <span class="k">assert</span> <span class="n">message</span> <span class="o">==</span> <span class="s2">&quot;blablabla&quot;</span>
+</pre></div>
+</div>
+<p>Dans cet exemple, un seul test a été écrit où <code class="docutils literal notranslate"><span class="pre">verbose</span> <span class="pre">=</span> <span class="pre">True</span></code> donc la
+ligne <code class="docutils literal notranslate"><span class="pre">return</span> <span class="pre">&quot;blabla&quot;</span></code> ne sera jamais exécutée par un test. Donc sur les 3
+lignes de la fonction, seules 67% des lignes ont été exécutées donc le
+coverage serait d’environ (le calcul est plus complexe) 67%. Il faudrait
+donc écrire un nouveau test avec <code class="docutils literal notranslate"><span class="pre">verbose</span> <span class="pre">=</span> <span class="pre">False</span></code> dans <code class="docutils literal notranslate"><span class="pre">Arrange</span></code> pour
+obtenir 100% de coverage sur la fonction <code class="docutils literal notranslate"><span class="pre">ma_fonction_a_tester()</span></code>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Avertissement</p>
+<p>Un coverage de 100% ne garantit pas un code sans bug ! Il permet plutôt
+d’être plus confiant dans la modification/refactorisation de lignes de code et dans le développement de nouvelles fonctionnalités.</p>
+</div>
+</section>
+<section id="dans-vscode">
+<h2>Dans VSCode<a class="headerlink" href="#dans-vscode" title="Lien permanent vers cette rubrique"></a></h2>
+<p>Il est possible d’installer <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">l’extension Python</a> pour facilement lancer et
+debugger un ou plusieurs tests directement depuis VSCode. Il suffit juste de
+changer le fichier <code class="docutils literal notranslate"><span class="pre">settings.json</span></code> dans le dossier <code class="docutils literal notranslate"><span class="pre">.vscode</span></code> de votre
+projet avec le code suivant pour qu’il soit compatible avec GeoNature :</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;python.testing.pytestArgs&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
+<span class="w">    </span><span class="s2">&quot;/chemin/vers/geonature/backend/geonature/tests&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p">],</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;python.testing.unittestEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">&quot;python.testing.pytestEnabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+<section id="executer-un-ou-plusieurs-test-s-en-ligne-de-commande">
+<h2>Exécuter un ou plusieurs test(s) en ligne de commande<a class="headerlink" href="#executer-un-ou-plusieurs-test-s-en-ligne-de-commande" title="Lien permanent vers cette rubrique"></a></h2>
+<p>Pour exécuter les tests de GeoNature placez vous à la racine du dossier où est
+installé GeoNature et exécutez la commande suivante :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span>
+</pre></div>
+</div>
+<p>Assurez vous d’avoir bien installé les librairies de développement avant
+(en étant toujours placé à la racine de l’installation de GeoNature) :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span><span class="p">[</span><span class="n">tests</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Pour exécuter un seul test l’option <code class="docutils literal notranslate"><span class="pre">-k</span></code> est très utile :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="o">-</span><span class="n">k</span> <span class="s1">&#39;test_uuid_report_with_dataset_id&#39;</span>
+</pre></div>
+</div>
+<p>Ici, elle exécutera uniquement le test <code class="docutils literal notranslate"><span class="pre">test_uuid_report_with_dataset_id</span></code> (du
+ficher <code class="docutils literal notranslate"><span class="pre">test_gn_meta.py</span></code>).</p>
+<p>Enfin, pour générer le coverage en même temps que les tests :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pytest</span> <span class="o">--</span><span class="n">cov</span> <span class="o">--</span><span class="n">cov</span><span class="o">-</span><span class="n">report</span> <span class="n">xml</span>
+</pre></div>
+</div>
+<p>Le format <code class="docutils literal notranslate"><span class="pre">xml</span></code> est interprété par l’extension VSCode <a class="reference external" href="https://marketplace.visualstudio.com/items?itemName=ryanluker.vscode-coverage-gutters">Coverage Gutters</a> qui fournie directement dans le code les lignes couvertes et celles non parcourues par le test.</p>
+<p>Si vous souhaitez voir le coverage directement depuis le navigateur, il est
+possible de générer le coverage au format html en remplaçant <code class="docutils literal notranslate"><span class="pre">xml</span></code> par
+<code class="docutils literal notranslate"><span class="pre">html</span></code>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
+  </div>
+
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

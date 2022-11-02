@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="fr" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gestion de la sensibilité &mdash; GeoNature 2.0 documentation</title>
+  <title>Gestion de la sensibilité &mdash; Documentation GeoNature 2.0</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,10 +14,12 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Recherche" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -33,7 +35,7 @@
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -68,7 +70,7 @@
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Gestion de la sensibilité</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/sensitivity.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/sensitivity.rst.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
   </ul>
   <hr/>
@@ -77,14 +79,14 @@
            <div itemprop="articleBody">
              
   <section id="gestion-de-la-sensibilite">
-<h1>Gestion de la sensibilité<a class="headerlink" href="#gestion-de-la-sensibilite" title="Permalink to this headline"></a></h1>
+<h1>Gestion de la sensibilité<a class="headerlink" href="#gestion-de-la-sensibilite" title="Lien permanent vers cette rubrique"></a></h1>
 <section id="introduction">
-<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline"></a></h2>
+<h2>Introduction<a class="headerlink" href="#introduction" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Les régles de sensibilité définies par défaut sont issues des règles du SINP.
 Elles dépendent de l’espèce et de l’observation. C’est-à-dire que pour une espèce donnée,
 plusieurs niveaux de sensibilité sont possibles selon l’observation.</p>
 <section id="niveaux-de-sensibilite">
-<h3>Niveaux de sensibilité<a class="headerlink" href="#niveaux-de-sensibilite" title="Permalink to this headline"></a></h3>
+<h3>Niveaux de sensibilité<a class="headerlink" href="#niveaux-de-sensibilite" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Voici les 5 niveaux de sensibilité définis par le SINP :</p>
 <ul class="simple">
 <li><p>Sensible - Aucune diffusion</p></li>
@@ -98,7 +100,7 @@ d’une espèce (et donc une espèce) sensible.
 Cette documentation propose une méthode pour y arriver dans l’outil GeoNature.</p>
 </section>
 <section id="pour-plus-d-informations">
-<h3>Pour plus d’informations<a class="headerlink" href="#pour-plus-d-informations" title="Permalink to this headline"></a></h3>
+<h3>Pour plus d’informations<a class="headerlink" href="#pour-plus-d-informations" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Vous pouvez consulter :</p>
 <ul class="simple">
 <li><p>La page du site du <a class="reference external" href="https://inpn.mnhn.fr/programme/donnees-observations-especes/references/sensibilite">MNHN traitant de la sensibilité</a>.</p></li>
@@ -107,29 +109,21 @@ Cette documentation propose une méthode pour y arriver dans l’outil GeoNature
 </section>
 </section>
 <section id="attention">
-<h2>Attention<a class="headerlink" href="#attention" title="Permalink to this headline"></a></h2>
+<h2>Attention<a class="headerlink" href="#attention" title="Lien permanent vers cette rubrique"></a></h2>
 <p>L’objectif de ce document n’est pas de modifier les règles établies par
 le SINP. Il est donc conseillé de respecter ces règles définies au niveau
 régional et national et donc de ne pas ajouter de règles locales.</p>
 </section>
 <section id="integration-dans-geonature">
-<h2>Intégration dans GeoNature<a class="headerlink" href="#integration-dans-geonature" title="Permalink to this headline"></a></h2>
-<section id="schema-gn-synthese">
-<h3>Schéma gn_synthese<a class="headerlink" href="#schema-gn-synthese" title="Permalink to this headline"></a></h3>
-<p>A chaque insertion d’une donnée dans la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code>,
-un trigger (<code class="docutils literal notranslate"><span class="pre">tri_insert_calculate_sensitivity</span></code>) fait appel à une
-fonction (<code class="docutils literal notranslate"><span class="pre">fct_tri_cal_sensi_diff_level_on_each_statement</span></code>) qui appelle
-elle-même les fonctions (<code class="docutils literal notranslate"><span class="pre">get_id_nomenclature_sensitivity</span></code> et
-<code class="docutils literal notranslate"><span class="pre">calculate_cd_diffusion_level</span></code>) du schéma <code class="docutils literal notranslate"><span class="pre">gn_sensitivity</span></code> pour le
-calcul de la sensibilité.</p>
-<p>La fonction <code class="docutils literal notranslate"><span class="pre">get_id_nomenclature_sensitivity</span></code> calcule le niveau de
-sensibilité en fonction de l’espèce, du type de sensibilité, de la durée
-de validité, de la période d’observation et du statut biologique.
-La fonction <code class="docutils literal notranslate"><span class="pre">calculate_cd_diffusion_level</span></code> calcule le niveau de diffusion.
-Actuellement, ce calcul est une simple copie du niveau de sensibilité.</p>
-</section>
+<h2>Intégration dans GeoNature<a class="headerlink" href="#integration-dans-geonature" title="Lien permanent vers cette rubrique"></a></h2>
+<p>Le référentiel de sensibilité fournie par l’INPN est normalement intégré
+à GeoNature lors de son installation. Sinon, il peut être manuellement
+intégré avec la commande :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(venv)$ geonature db upgrade ref_sensitivity_inpn@head
+</pre></div>
+</div>
 <section id="schema-gn-sensitivity">
-<h3>Schéma gn_sensitivity<a class="headerlink" href="#schema-gn-sensitivity" title="Permalink to this headline"></a></h3>
+<h3>Schéma gn_sensitivity<a class="headerlink" href="#schema-gn-sensitivity" title="Lien permanent vers cette rubrique"></a></h3>
 <p>3 tables sont utilisées par ces fonctions :</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code> qui relie notamment une espèce à un niveau de
@@ -141,24 +135,40 @@ sensibilité en fonction de la zone géographique (pas encore abordée
 ici)</p></li>
 </ul>
 <p>S’il n’y a aucune entrée dans <code class="docutils literal notranslate"><span class="pre">cor_sensitivity_criteria</span></code>, le niveau de
-sensibilité défini dans <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code> est directement appliqué.</p>
+sensibilité défini dans <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code> est appliqué peu importe
+le statut biologique ou le comportement de l’occurence.
+De même, s’il n’y a aucune entrée dans <code class="docutils literal notranslate"><span class="pre">cor_sensitivity_area</span></code>, le niveau
+de sensibilité est appliqué peu importe la localisation de l’observation.</p>
+</section>
+<section id="schema-gn-synthese">
+<h3>Schéma gn_synthese<a class="headerlink" href="#schema-gn-synthese" title="Lien permanent vers cette rubrique"></a></h3>
+<p>A chaque insertion d’une donnée dans la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code>,
+un trigger (<code class="docutils literal notranslate"><span class="pre">tri_insert_calculate_sensitivity</span></code>) fait appel à une
+fonction (<code class="docutils literal notranslate"><span class="pre">fct_tri_cal_sensitivity_on_each_statement</span></code>) qui appelle
+elle-même la fonction <code class="docutils literal notranslate"><span class="pre">gn_sensitivity.get_id_nomenclature_sensitivity</span></code>
+pour le calcul de la sensibilité.</p>
+<p>La fonction <code class="docutils literal notranslate"><span class="pre">get_id_nomenclature_sensitivity</span></code> calcule le niveau de
+sensibilité en fonction de l’espèce, du type de sensibilité, de la durée
+de validité, de la période d’observation, du statut biologique et du
+comportement de l’occurence.</p>
 </section>
 </section>
 <section id="personnalisation">
-<h2>Personnalisation<a class="headerlink" href="#personnalisation" title="Permalink to this headline"></a></h2>
+<h2>Personnalisation<a class="headerlink" href="#personnalisation" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Pour l’instant, seule la personnalisation de la sensibilité pour
 une espèce donnée (peu importe l’observation) est abordée ici.</p>
 <section id="sensibilite-de-l-espece-toute-observation-confondue">
-<h3>Sensibilité de l’espèce toute observation confondue<a class="headerlink" href="#sensibilite-de-l-espece-toute-observation-confondue" title="Permalink to this headline"></a></h3>
+<h3>Sensibilité de l’espèce toute observation confondue<a class="headerlink" href="#sensibilite-de-l-espece-toute-observation-confondue" title="Lien permanent vers cette rubrique"></a></h3>
 <ol class="arabic">
 <li><p>Dans <code class="docutils literal notranslate"><span class="pre">gn_sensitivity.t_sensitivity_rules</span></code> : Changez le niveau de
 sensibilité <code class="docutils literal notranslate"><span class="pre">id_nomenclature_sensitivity</span></code> par celui désiré. Pour la
 valeur à renseigner, voir dans <code class="docutils literal notranslate"><span class="pre">t_nomenclature</span></code> en filtrant avec
-<code class="docutils literal notranslate"><span class="pre">id_type=ref_nomenclatures.get_id_nomenclature_type('SENSIBILITE')</span></code>. En général l’identifiant varie entre 65 (non sensible) et 69
+<code class="docutils literal notranslate"><span class="pre">id_type=ref_nomenclatures.get_id_nomenclature_type('SENSIBILITE')</span></code>.
+En général l’identifiant varie entre 65 (non sensible) et 69
 (aucune diffusion). Attention ces identifiants peuvent varier en fonction de
 votre installation.</p></li>
 <li><p>Dans <code class="docutils literal notranslate"><span class="pre">cor_sensitivity_criteria</span></code> : s’il y a une correspondance
-d’<code class="docutils literal notranslate"><span class="pre">id_sensitivity</span></code> avec <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code>, supprimez cette ligne.</p></li>
+d”<code class="docutils literal notranslate"><span class="pre">id_sensitivity</span></code> avec <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code>, modifiez ou supprimez cette ligne.</p></li>
 <li><p>Lancez la commande SQL suivante :</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">REFRESH</span><span class="w"> </span><span class="n">MATERIALIZED</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">gn_sensitivity</span><span class="p">.</span><span class="n">t_sensitivity_rules_cd_ref</span><span class="p">;</span><span class="w"></span>
 </pre></div>
@@ -166,26 +176,15 @@ d’<code class="docutils literal notranslate"><span class="pre">id_sensitivity<
 <p>Pour rafraîchir la vue materialisée utilisée par les fonctions
 appelées par le trigger de <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code>.</p>
 </li>
-<li><p>Il est maintenant nécessaire de mettre à jour les lignes concernant
-la sensibilité de vos anciennes observations dans la synthèse en
-déclenchant le trigger de calcul de la sensibilité. Or ce dernier est
-appelé uniquement lors d’un <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> ou d’un <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code>. Il est alors
-possible de faire un <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code> sans changer les données en lançant la
-commande SQL suivante :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span><span class="w"></span>
-<span class="k">SET</span><span class="w"> </span><span class="n">cd_nom</span><span class="o">=</span><span class="n">cd_nom</span><span class="w"></span>
-<span class="k">WHERE</span><span class="w"> </span><span class="n">cd_nom</span><span class="o">=</span><span class="p">:</span><span class="n">cd_nom_de_votre_espece</span><span class="p">;</span><span class="w"></span>
+<li><p>Il est maintenant nécessaire de mettre à jour la sensibilité de vos
+observations présentent dans la synthèse. Pour cela, lancez la commande suivante :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(venv)$ geonature sensitivity update-synthese
 </pre></div>
 </div>
 </li>
 </ol>
-<p><strong>Note</strong> : Il n’est pas possible de définir la sensibilité à <em>NULL</em> dans
-cet <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code> sinon le trigger ne se déclenchera pas.</p>
-<p><strong>Note 2</strong> : Si vous avez modifié plusieurs espèces à la fois, modifiez
-le <code class="docutils literal notranslate"><span class="pre">WHERE</span></code> avec un <code class="docutils literal notranslate"><span class="pre">IN</span></code> ainsi qu’un <code class="docutils literal notranslate"><span class="pre">ARRAY</span></code> contenant tous les cd_nom
-de vos espèces.</p>
-<p>Normalement, les valeurs dans les colonnes
-<code class="docutils literal notranslate"><span class="pre">id_nomenclature_diffusion_level</span></code> et <code class="docutils literal notranslate"><span class="pre">id_nomenclature_sensitivity</span></code> de la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code> ont
+<p>Normalement, les valeurs dans la colonne <code class="docutils literal notranslate"><span class="pre">id_nomenclature_sensitivity</span></code>
+de la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code> ont
 changé. Vous pouvez le vérifier en navigant dans le module Synthèse
 puis dans les détails d’une observation de votre/vos espèce(s).</p>
 </section>
@@ -203,9 +202,9 @@ puis dans les détails d’une observation de votre/vos espèce(s).</p>
     <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
   </div>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>

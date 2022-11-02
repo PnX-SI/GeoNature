@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="fr" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Bienvenue dans la documentation de GeoNature &mdash; GeoNature 2.0 documentation</title>
+  <title>Bienvenue dans la documentation de GeoNature &mdash; Documentation GeoNature 2.0</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,10 +14,12 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="search" title="Recherche" href="search.html" />
     <link rel="next" title="INSTALLATION" href="installation.html" /> 
 </head>
 
@@ -34,7 +36,7 @@
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -69,7 +71,7 @@
       <li><a href="#" class="icon icon-home"></a> &raquo;</li>
       <li>Bienvenue dans la documentation de GeoNature</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/index.rst.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
   </ul>
   <hr/>
@@ -78,7 +80,7 @@
            <div itemprop="articleBody">
              
   <section id="bienvenue-dans-la-documentation-de-geonature">
-<h1>Bienvenue dans la documentation de GeoNature<a class="headerlink" href="#bienvenue-dans-la-documentation-de-geonature" title="Permalink to this headline"></a></h1>
+<h1>Bienvenue dans la documentation de GeoNature<a class="headerlink" href="#bienvenue-dans-la-documentation-de-geonature" title="Lien permanent vers cette rubrique"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">INSTALLATION</a><ul>
@@ -88,6 +90,7 @@
 <li class="toctree-l2"><a class="reference internal" href="installation.html#installation-de-geonature-uniquement">Installation de GeoNature uniquement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#https">HTTPS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#taches-planifiees">Taches planifiées</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#installation-d-un-module-geonature">Installation d’un module GeoNature</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#mise-a-jour-de-l-application">Mise à jour de l’application</a></li>
 </ul>
 </li>
@@ -145,12 +148,16 @@
 <li class="toctree-l2"><a class="reference internal" href="development.html#bdd">BDD</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#pratiques-et-regles-de-developpement">Pratiques et règles de developpement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#developper-et-installer-un-gn-module">Développer et installer un gn_module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#passer-en-mode-developpement">Passer en mode développement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#developpement-backend">Développement Backend</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#developpement-frontend">Développement Frontend</a></li>
 <li class="toctree-l2"><a class="reference internal" href="development.html#outils-d-aide-a-la-qualite-du-code">Outils d’aide à la qualité du code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#tests-backend">Tests backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="development.html#tests-frontend">Tests frontend</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="versions-compatibility.html">COMPATIBILITE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-10-0">GeoNature 2.10.0</a></li>
 <li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-9-2">GeoNature 2.9.2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-9-1">GeoNature 2.9.1</a></li>
 <li class="toctree-l2"><a class="reference internal" href="versions-compatibility.html#geonature-2-9-0">GeoNature 2.9.0</a></li>
@@ -193,7 +200,6 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="FAQ.html#problemes-lies-au-frontend">Problèmes liés au frontend</a></li>
 <li class="toctree-l2"><a class="reference internal" href="FAQ.html#problemes-lies-a-la-bdd">Problèmes liés à la BDD</a></li>
-<li class="toctree-l2"><a class="reference internal" href="FAQ.html#probleme-de-lancement-l-api-lie-a-supervisor">Problème de lancement l’API lié à supervisor</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a><ul>
@@ -203,6 +209,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">CHANGELOG</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#alouatta-macconnelli-2022-11-02">2.10.0 - Alouatta macconnelli (2022-11-02)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id1">2.9.2 (2022-02-15)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#id2">2.9.1 (2022-01-27)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="CHANGELOG.html#actias-luna-2022-01-13">2.9.0 - Actias luna (2022-01-13)</a></li>
@@ -276,8 +283,8 @@
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="installation.html" class="btn btn-neutral float-right" title="INSTALLATION" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="installation.html" class="btn btn-neutral float-right" title="INSTALLATION" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
@@ -286,9 +293,9 @@
     <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
   </div>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>

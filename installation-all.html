@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="fr" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Installation globale &mdash; GeoNature 2.0 documentation</title>
+  <title>Installation globale &mdash; Documentation GeoNature 2.0</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,10 +14,12 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Recherche" href="search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -33,7 +35,7 @@
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -68,7 +70,7 @@
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Installation globale</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/installation-all.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/installation-all.rst.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
   </ul>
   <hr/>
@@ -77,7 +79,7 @@
            <div itemprop="articleBody">
              
   <section id="installation-globale">
-<h1>Installation globale<a class="headerlink" href="#installation-globale" title="Permalink to this headline"></a></h1>
+<h1>Installation globale<a class="headerlink" href="#installation-globale" title="Lien permanent vers cette rubrique"></a></h1>
 <p>Ce document décrit une procédure d’installation packagée de GeoNature.</p>
 <p>En lançant le script d’installation ci-dessous, l’application GeoNature ainsi que ses dépendances seront installées sur un seul et même serveur au sein d’une seule base de données.</p>
 <p>Les applications suivantes seront installées :</p>
@@ -88,7 +90,7 @@
 </ul>
 <p>Si vous disposez déjà de Taxhub ou de UsersHub sur un autre serveur ou une autre base de données et que vous souhaitez installer simplement GeoNature, veuillez suivre la documentation <a class="reference internal" href="installation.html#installation-standalone"><span class="std std-ref">Installation de GeoNature uniquement</span></a>.</p>
 <section id="installation-de-l-application">
-<h2>Installation de l’application<a class="headerlink" href="#installation-de-l-application" title="Permalink to this headline"></a></h2>
+<h2>Installation de l’application<a class="headerlink" href="#installation-de-l-application" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Commencer la procédure en se connectant au serveur en SSH avec l’utilisateur dédié précédemment créé lors de l’étape de <a class="reference internal" href="installation.html#preparation-server"><span class="std std-ref">Préparation du serveur</span></a> (usuellement <code class="docutils literal notranslate"><span class="pre">geonatureadmin</span></code>).</p>
 <ul class="simple">
 <li><p>Se placer à la racine du <code class="docutils literal notranslate"><span class="pre">home</span></code> de l’utilisateur puis récupérer les scripts d’installation (X.Y.Z à remplacer par le numéro de la <a class="reference external" href="https://github.com/PnEcrins/GeoNature/releases">dernière version stable de GeoNature</a>). Ces scripts installent les applications GeoNature, TaxHub et UsersHub (en option) ainsi que leurs bases de données (uniquement les schémas du coeur) :</p></li>
@@ -131,8 +133,7 @@ $ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_
 </dd>
 <dt class="field-even">Note</dt>
 <dd class="field-even"><ul class="simple">
-<li><p><strong>GeoNature-atlas</strong> : Comme dans la V1, le script <code class="docutils literal notranslate"><span class="pre">install_all.sh</span></code> permettra à terme d’installer automatiquement GeoNature-atlas (en option)</p></li>
-<li><p>Une première version de GeoNature-atlas compatible avec GeoNature V2 est disponible : <a class="reference external" href="https://github.com/PnEcrins/GeoNature-atlas">https://github.com/PnEcrins/GeoNature-atlas</a></p></li>
+<li><p>GeoNature-atlas compatible avec GeoNature V2 est disponible sur <a class="reference external" href="https://github.com/PnX-SI/GeoNature-atlas">https://github.com/PnX-SI/GeoNature-atlas</a></p></li>
 <li><p>Vous pouvez utiliser le schéma <code class="docutils literal notranslate"><span class="pre">ref_geo</span></code> de GeoNature pour votre territoire, les communes et les mailles, si vous les avez intégré dans <code class="docutils literal notranslate"><span class="pre">ref_geo.l_areas</span></code> au préalable.</p></li>
 </ul>
 </dd>
@@ -152,42 +153,12 @@ $ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Note</dt>
-<dd class="field-odd"><p>Par défaut la base de données est accessible uniquement localement par la machine où elle est installée. Pour y accéder depuis une autre machine (pour s’y connecter avec QGIS, pgAdmin ou autre), ouvrez-en les connexions. Voir la documentation <a class="reference external" href="https://github.com/PnEcrins/GeoNature-atlas/blob/master/docs/installation.rst#acc%C3%A9der-%C3%A0-votre-bdd">https://github.com/PnEcrins/GeoNature-atlas/blob/master/docs/installation.rst#acc%C3%A9der-%C3%A0-votre-bdd</a>. Attention si vous redémarrez PostgreSQL (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">service</span> <span class="pre">postgresql</span> <span class="pre">restart</span></code>), il faut ensuite redémarrer les API GeoNature et TaxHub (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">supervisorctl</span> <span class="pre">reload</span></code>).</p>
+<dd class="field-odd"><p>Par défaut et par mesure de sécurité, la base de données est accessible uniquement localement par la machine où elle est installée. Pour accéder à la BDD depuis une autre machine (pour s’y connecter avec QGIS, pgAdmin ou autre), vous pouvez consulter cette documentation <a class="reference external" href="https://github.com/PnX-SI/Ressources-techniques/blob/master/PostgreSQL/acces-bdd.rst">https://github.com/PnX-SI/Ressources-techniques/blob/master/PostgreSQL/acces-bdd.rst</a>. Attention si vous redémarrez PostgreSQL (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">service</span> <span class="pre">postgresql</span> <span class="pre">restart</span></code>), il faut ensuite redémarrer les API de GeoNature, UsersHub et TaxHub (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">geonature.service</span></code>, <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">usershub.service</span></code> et <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">taxhub.service</span></code>). Attention, exposer la base de données sur internet n’est pas recommandé. Il est préférable de se connecter via un tunnel SSH. QGIS et la plupart des outils d’administration de base de données permettent d’établir une connexion à la base de cette manière.</p>
 </dd>
 <dt class="field-even">Note</dt>
 <dd class="field-even"><p>Il est aussi important de configurer l’accès au serveur en HTTPS plutôt qu’en HTTP pour chiffrer le contenu des échanges entre le navigateur et le serveur (<a class="reference external" href="https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/">https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/</a>).</p>
 </dd>
 </dl>
-</section>
-<section id="installation-d-un-module-geonature">
-<h2>Installation d’un module GeoNature<a class="headerlink" href="#installation-d-un-module-geonature" title="Permalink to this headline"></a></h2>
-<p>L’installation de GeoNature n’est livrée qu’avec les schémas de base de données et les modules du coeur (NB : le module Occurrence de Taxon - Occtax - est fourni par défaut). Pour ajouter un gn_module externe, il est nécessaire de l’installer :</p>
-<p><strong>1.</strong> Téléchargez le module depuis son dépôt Github puis dézippez-le dans le repertoire utilisateur, au même niveau que le dossier <code class="docutils literal notranslate"><span class="pre">geonature</span></code>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>cd /home/`whoami`
-</pre></div>
-</div>
-<p><strong>2.</strong> Renseignez l’éventuel fichier <code class="docutils literal notranslate"><span class="pre">config/settings.ini</span></code> du module.</p>
-<p><strong>3.</strong> Installez le module. Rendez-vous dans le répertoire <code class="docutils literal notranslate"><span class="pre">backend</span></code> de GeoNature et activez le virtualenv pour rendre disponible les commandes GeoNature :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">source</span> <span class="n">venv</span><span class="o">/</span><span class="nb">bin</span><span class="o">/</span><span class="n">activate</span>
-</pre></div>
-</div>
-<p>Lancez ensuite la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">install_gn_module</span> <span class="pre">&lt;mon_chemin_absolu_vers_le_module&gt;</span> <span class="pre">&lt;url_relative_du_module&gt;</span></code></p>
-<p>Le premier paramètre est l’emplacement absolu du module sur votre serveur et le deuxième est le chemin derrière lequel on accédera au module dans le navigateur.</p>
-<p>Exemple pour un module Import :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>geonature install_gn_module /home/`whoami`/gn_module_import import
-</pre></div>
-</div>
-<p>Le module sera disponible à l’adresse <code class="docutils literal notranslate"><span class="pre">http://mon-geonature.fr/geonature/#/import</span></code></p>
-<p>L’API du module sera disponible à l’adresse <code class="docutils literal notranslate"><span class="pre">http://mon-geonature.fr/api/import</span></code></p>
-<p>Cette commande exécute les actions suivantes :</p>
-<ul class="simple">
-<li><p>Vérification de la conformité de la structure du module (présence des fichiers et dossiers obligatoires)</p></li>
-<li><p>Intégration du blueprint du module dans l’API de GeoNature</p></li>
-<li><p>Vérification de la conformité des paramètres utilisateurs</p></li>
-<li><p>Génération du routing Angular pour le frontend</p></li>
-<li><p>Re-build du frontend pour une mise en production</p></li>
-</ul>
-<p><strong>4.</strong> Complétez l’éventuelle configuration du module (<code class="docutils literal notranslate"><span class="pre">config/conf_gn_module.toml</span></code>) à partir des paramètres présents dans <code class="docutils literal notranslate"><span class="pre">config/conf_gn_module.toml.example</span></code> dont vous pouvez surcoucher les valeurs par défaut. Puis relancez la mise à jour de la configuration (depuis le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/backend</span></code> et une fois dans le venv (<code class="docutils literal notranslate"><span class="pre">source</span> <span class="pre">venv/bin/activate</span></code>) : <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">update_module_configuration</span> <span class="pre">nom_du_module</span></code>)</p>
 </section>
 </section>
 
@@ -202,9 +173,9 @@ $ wget https://raw.githubusercontent.com/PnX-SI/GeoNature/X.Y.Z/install/install_
     <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
   </div>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>

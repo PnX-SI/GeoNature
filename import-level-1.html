@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="fr" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IMPORT NIVEAU 1 &mdash; GeoNature 2.0 documentation</title>
+  <title>IMPORT NIVEAU 1 &mdash; Documentation GeoNature 2.0</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,10 +14,12 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="search" title="Recherche" href="search.html" />
     <link rel="next" title="IMPORT NIVEAU 2" href="import-level-2.html" />
     <link rel="prev" title="MANUEL ADMINISTRATEUR" href="admin-manual.html" /> 
 </head>
@@ -35,7 +37,7 @@
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -76,7 +78,7 @@
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>IMPORT NIVEAU 1</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/import-level-1.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/import-level-1.rst.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
   </ul>
   <hr/>
@@ -85,13 +87,13 @@
            <div itemprop="articleBody">
              
   <section id="import-niveau-1">
-<h1>IMPORT NIVEAU 1<a class="headerlink" href="#import-niveau-1" title="Permalink to this headline"></a></h1>
+<h1>IMPORT NIVEAU 1<a class="headerlink" href="#import-niveau-1" title="Lien permanent vers cette rubrique"></a></h1>
 <p>Dans cet exemple, nous allons importer un fichier CSV (ou SHP) d’observations dans la base de données de GeoNature,
 pour ensuite intégrer ces données dans la synthèse de GeoNature.</p>
 <p>On utilisera le fichier d’exemple
 <a class="reference external" href="https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-basique/01-observations-faune-2008-2010.csv">https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-basique/01-observations-faune-2008-2010.csv</a>.</p>
 <section id="importer-la-donnee-source-dans-la-bdd-avec-qgis">
-<h2>Importer la donnée source dans la BDD avec QGIS<a class="headerlink" href="#importer-la-donnee-source-dans-la-bdd-avec-qgis" title="Permalink to this headline"></a></h2>
+<h2>Importer la donnée source dans la BDD avec QGIS<a class="headerlink" href="#importer-la-donnee-source-dans-la-bdd-avec-qgis" title="Lien permanent vers cette rubrique"></a></h2>
 <p>PS : Si vous utilisez un CSV, vous pouvez aussi utiliser la fonction <code class="docutils literal notranslate"><span class="pre">gn_imports.load_csv_file</span></code>.</p>
 <p><strong>1.</strong> Connecter la BDD dans QGIS :</p>
 <ul class="simple">
@@ -112,7 +114,7 @@ voir la documentation <a class="reference external" href="https://github.com/PnE
 </ul>
 </section>
 <section id="creer-les-metadonnees">
-<h2>Créer les métadonnées<a class="headerlink" href="#creer-les-metadonnees" title="Permalink to this headline"></a></h2>
+<h2>Créer les métadonnées<a class="headerlink" href="#creer-les-metadonnees" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>1.</strong> Ajouter une source (si elle n’existe pas déjà)</p>
 <p>En l’ajoutant manuellement dans la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.t_sources</span></code> ou en SQL :</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">t_sources</span><span class="p">(</span><span class="n">name_source</span><span class="p">,</span><span class="w"> </span><span class="n">desc_source</span><span class="p">)</span><span class="w"></span>
@@ -134,7 +136,7 @@ Ou bien l’Admin des nomenclatures disponible dans GeoNature.</p>
 en utilisant la fonction <code class="docutils literal notranslate"><span class="pre">ref_nomencltaure.get_id_nomenclature</span></code>.</p>
 </section>
 <section id="insertion-des-donnees-dans-la-synthese">
-<h2>Insertion des données dans la Synthèse<a class="headerlink" href="#insertion-des-donnees-dans-la-synthese" title="Permalink to this headline"></a></h2>
+<h2>Insertion des données dans la Synthèse<a class="headerlink" href="#insertion-des-donnees-dans-la-synthese" title="Lien permanent vers cette rubrique"></a></h2>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span><span class="p">(</span><span class="w"></span>
 <span class="n">unique_id_sinp</span><span class="p">,</span><span class="w"></span>
 <span class="n">id_source</span><span class="p">,</span><span class="w"></span>
@@ -203,7 +205,7 @@ en utilisant la fonction <code class="docutils literal notranslate"><span class=
 <p>Ajouter le champ <code class="docutils literal notranslate"><span class="pre">entity_source_pk_value</span></code> dans ton INSERT et <code class="docutils literal notranslate"><span class="pre">gid</span></code> dans le SELECT.</p>
 <p>On pourrait aussi remplir <code class="docutils literal notranslate"><span class="pre">cor_observers_synthese</span></code> si on le veut et si on a les observateurs présents dans les données,
 en les faisant correspondre avec leurs <code class="docutils literal notranslate"><span class="pre">id_role</span></code>.</p>
-<p>L’intégration de données dans la Synthèse peut faire apparaitre des nouveaux taxons présents sur le territoire. Si vous souhaitez les proposer à la saisie dans Occtax, il faut les ajouter dans <code class="docutils literal notranslate"><span class="pre">taxonomie.bib_noms</span></code> puis dans la liste “Saisie Occtax”.</p>
+<p>L’intégration de données dans la Synthèse peut faire apparaitre des nouveaux taxons présents sur le territoire. Si vous souhaitez les proposer à la saisie dans Occtax, il faut les ajouter dans <code class="docutils literal notranslate"><span class="pre">taxonomie.bib_noms</span></code> puis dans la liste « Saisie Occtax ».</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Remplir taxonomie.bib_noms avec les nouveaux noms présents dans la synthèse</span>
 <span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">taxonomie</span><span class="p">.</span><span class="n">bib_noms</span><span class="w"> </span><span class="p">(</span><span class="n">cd_nom</span><span class="p">,</span><span class="w"> </span><span class="n">cd_ref</span><span class="p">)</span><span class="w"></span>
 <span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">cd_nom</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">cd_ref</span><span class="w"></span>
@@ -213,7 +215,7 @@ en les faisant correspondre avec leurs <code class="docutils literal notranslate
 <span class="k">WHERE</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="n">s</span><span class="p">.</span><span class="n">cd_nom</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="k">SELECT</span><span class="w"> </span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">cd_nom</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">taxonomie</span><span class="p">.</span><span class="n">bib_noms</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
-<p>Il faudrait ensuite les ajouter à la liste “Saisie Occtax”, pour que ces nouveaux noms soient proposés à la saisie dans le module Occtax de GeoNature.</p>
+<p>Il faudrait ensuite les ajouter à la liste « Saisie Occtax », pour que ces nouveaux noms soient proposés à la saisie dans le module Occtax de GeoNature.</p>
 <p>L’installation de GeoNature intègre les communes de toute la France métropolitaine. Pour alléger la table <code class="docutils literal notranslate"><span class="pre">ref_geo.l_areas</span></code>, il peut être pertinent de supprimer les communes en dehors du territoire de travail. Par exemple, supprimer toutes les communes en dehors du département.</p>
 <p>Pour retrouver le détail de toutes les communes du département Bouches-du-Rhône :</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">ref_geo</span><span class="p">.</span><span class="n">l_areas</span><span class="w"> </span><span class="n">la</span><span class="w"></span>
@@ -225,7 +227,7 @@ en les faisant correspondre avec leurs <code class="docutils literal notranslate
 <p>A utiliser dans une requête de suppression, en gérant les cascades entre les tables.</p>
 </section>
 <section id="insertion-depuis-un-shapefile">
-<h2>Insertion depuis un shapefile<a class="headerlink" href="#insertion-depuis-un-shapefile" title="Permalink to this headline"></a></h2>
+<h2>Insertion depuis un shapefile<a class="headerlink" href="#insertion-depuis-un-shapefile" title="Lien permanent vers cette rubrique"></a></h2>
 <p>L’exercice est similaire si on part depuis un fichier Shape
 (<a class="reference external" href="https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-basique/01-observations-faune-2008-2010-SHP.zip">https://github.com/PnX-SI/Ressources-techniques/blob/master/GeoNature/V2/import-basique/01-observations-faune-2008-2010-SHP.zip</a>)</p>
 <p>La seule différence est que la géométrie est calculée lors de l’import de QGIS vers PostGIS.</p>
@@ -241,9 +243,9 @@ en les faisant correspondre avec leurs <code class="docutils literal notranslate
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="admin-manual.html" class="btn btn-neutral float-left" title="MANUEL ADMINISTRATEUR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="import-level-2.html" class="btn btn-neutral float-right" title="IMPORT NIVEAU 2" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="admin-manual.html" class="btn btn-neutral float-left" title="MANUEL ADMINISTRATEUR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="import-level-2.html" class="btn btn-neutral float-right" title="IMPORT NIVEAU 2" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
@@ -252,9 +254,9 @@ en les faisant correspondre avec leurs <code class="docutils literal notranslate
     <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
   </div>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>

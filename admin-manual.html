@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="fr" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MANUEL ADMINISTRATEUR &mdash; GeoNature 2.0 documentation</title>
+  <title>MANUEL ADMINISTRATEUR &mdash; Documentation GeoNature 2.0</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,10 +14,12 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="search" title="Recherche" href="search.html" />
     <link rel="next" title="IMPORT NIVEAU 1" href="import-level-1.html" />
     <link rel="prev" title="MANUEL UTILISATEUR" href="user-manual.html" /> 
 </head>
@@ -35,7 +37,7 @@
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -53,7 +55,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#gestion-des-droits">Gestion des droits</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#acces-a-geonature-et-cruved">Accès à GeoNature et CRUVED</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#cas-particulier-de-l-action-c">Cas particulier de l’action “C”</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#cas-particulier-de-l-action-c">Cas particulier de l’action « C »</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#recapitulatif">Récapitulatif</a></li>
 </ul>
 </li>
@@ -125,6 +127,11 @@
 <li class="toctree-l3"><a class="reference internal" href="#installer-le-module">Installer le module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#configuration-du-module">Configuration du module</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#afficher-masquer-des-champs-du-formulaire">Afficher/masquer des champs du formulaire</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#modifier-le-champ-observateurs">Modifier le champ Observateurs</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#personnaliser-la-liste-des-taxons-saisissables-dans-le-module">Personnaliser la liste des taxons saisissables dans le module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#gerer-les-valeurs-par-defaut-des-nomenclatures">Gérer les valeurs par défaut des nomenclatures</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#personnaliser-l-interface-map-list">Personnaliser l’interface Map-list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ajouter-une-contrainte-d-echelle-de-saisie-sur-la-carte">Ajouter une contrainte d’échelle de saisie sur la carte</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#gestion-des-exports">Gestion des exports</a></li>
@@ -186,7 +193,7 @@
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>MANUEL ADMINISTRATEUR</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/admin-manual.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/admin-manual.rst.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
   </ul>
   <hr/>
@@ -195,22 +202,22 @@
            <div itemprop="articleBody">
              
   <section id="manuel-administrateur">
-<h1>MANUEL ADMINISTRATEUR<a class="headerlink" href="#manuel-administrateur" title="Permalink to this headline"></a></h1>
+<h1>MANUEL ADMINISTRATEUR<a class="headerlink" href="#manuel-administrateur" title="Lien permanent vers cette rubrique"></a></h1>
 <section id="architecture">
-<h2>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline"></a></h2>
-<p>GeoNature possède une architecture modulaire et s’appuie sur plusieurs “services” indépendants pour fonctionner :</p>
+<h2>Architecture<a class="headerlink" href="#architecture" title="Lien permanent vers cette rubrique"></a></h2>
+<p>GeoNature possède une architecture modulaire et s’appuie sur plusieurs « services » indépendants pour fonctionner :</p>
 <ul class="simple">
 <li><p>UsersHub et son sous-module d’authentification Flask (<a class="reference external" href="https://github.com/PnX-SI/UsersHub-authentification-module">https://github.com/PnX-SI/UsersHub-authentification-module</a>) sont utilisés pour gérer le schéma de BDD <code class="docutils literal notranslate"><span class="pre">ref_users</span></code> (actuellement nommé <code class="docutils literal notranslate"><span class="pre">utilisateurs</span></code>) et l’authentification. UsersHub permet une gestion centralisée de ses utilisateurs (listes, organismes, droits), utilisable par les différentes applications de son système d’information.</p></li>
 <li><p>TaxHub (<a class="reference external" href="https://github.com/PnX-SI/TaxHub">https://github.com/PnX-SI/TaxHub</a>) est utilisé pour la gestion du schéma de BDD <code class="docutils literal notranslate"><span class="pre">ref_taxonomy</span></code> (actuellement nommé <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code>). L’API de TaxHub est utilisée pour récupérer des informations sur les espèces et la taxonomie en général.</p></li>
 <li><p>Un sous-module Flask (<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/">https://github.com/PnX-SI/Nomenclature-api-module/</a>) a été créé pour une gestion centralisée des nomenclatures (<a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/">https://github.com/PnX-SI/Nomenclature-api-module/</a>), il pilote le schéma <code class="docutils literal notranslate"><span class="pre">ref_nomenclature</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ref_geo</span></code> est le schéma de base de données qui gère le référentiel géographique. Il est utilisé pour gérer les zonages, les communes, le MNT, le calcul automatique d’altitude et les intersections spatiales.</p></li>
 </ul>
-<p>GeoNature a également une séparation claire entre le backend (API: intéraction avec la base de données) et le frontend (interface utilisateur). Le backend peut être considéré comme un “service” dont se sert le frontend pour récupérer ou poster des données.
+<p>GeoNature a également une séparation claire entre le backend (API: intéraction avec la base de données) et le frontend (interface utilisateur). Le backend peut être considéré comme un « service » dont se sert le frontend pour récupérer ou poster des données.
 NB : Le backend et le frontend se lancent séparément dans GeoNature.</p>
 <img alt="_images/design-geonature.png" src="_images/design-geonature.png" />
 </section>
 <section id="base-de-donnees">
-<h2>Base de données<a class="headerlink" href="#base-de-donnees" title="Permalink to this headline"></a></h2>
+<h2>Base de données<a class="headerlink" href="#base-de-donnees" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Dans la continuité de sa version 1, GeoNature V2 utilise le SGBD PostgreSQL et sa cartouche spatiale PostGIS. Cependant l’architecture du modèle de données a été complétement revue.</p>
 <p>La base de données a notamment été refondue pour s’appuyer au maximum sur des standards, comme le standard d’Occurrences de taxons du SINP (Voir <a class="reference external" href="http://standards-sinp.mnhn.fr/category/standards/occurrences-de-taxons/">http://standards-sinp.mnhn.fr/category/standards/occurrences-de-taxons/</a>).</p>
 <p>La base de données a également été traduite en Anglais et supporte désormais le multilangue.</p>
@@ -236,7 +243,7 @@ NB : Le backend et le frontend se lancent séparément dans GeoNature.</p>
 <img alt="_images/2019-08-GN2-1-MCD.png" src="_images/2019-08-GN2-1-MCD.png" />
 <p>Les relations complexes entre les schémas ont été grisées pour faciliter la lisibilité.</p>
 <section id="administration-avec-alembic">
-<h3>Administration avec Alembic<a class="headerlink" href="#administration-avec-alembic" title="Permalink to this headline"></a></h3>
+<h3>Administration avec Alembic<a class="headerlink" href="#administration-avec-alembic" title="Lien permanent vers cette rubrique"></a></h3>
 <p>À partir de la version 2.7.5 de GeoNature, la gestion du schéma de la base de données se fait avec l’outil <a class="reference external" href="https://alembic.sqlalchemy.org/en/latest/">Alembic</a>.
 Celui-ci fonctionne grâce à des fichiers de migration qui sont appliqués de manière atomique (via une transaction) à la base de données, leur application étant enregistré dans la table <code class="docutils literal notranslate"><span class="pre">public.alembic_version</span></code> permettant en chaque instant de savoir dans quel état la base de données se trouve.</p>
 <p>Les fichiers de migrations de GeoNature se trouve dans le dossier <code class="docutils literal notranslate"><span class="pre">backend/geonature/migrations/versions/</span></code>.
@@ -257,10 +264,6 @@ Il est possible pour n’importe quelle dépendance ou module GeoNature de fourn
 <span class="n">VERSION_LOCATIONS</span> <span class="o">=</span> <span class="s1">&#39;/path/to/usershub/app/migrations/versions&#39;</span>
 </pre></div>
 </div>
-<p>Les commandes Alembic sont disponible grâce à la sous-commande <code class="docutils literal notranslate"><span class="pre">db</span></code> de la commande <code class="docutils literal notranslate"><span class="pre">geonature</span></code> :</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ geonature db --help
-</pre></div>
-</div>
 <p>Chaque fichier de migration est caractérisé par :</p>
 <ul class="simple">
 <li><p>un identifiant, <cite>e.g.</cite> <code class="docutils literal notranslate"><span class="pre">f06cc80cc8ba</span></code></p></li>
@@ -268,6 +271,123 @@ Il est possible pour n’importe quelle dépendance ou module GeoNature de fourn
 <li><p>un ancêtre : Lorsqu’un fichier de migration représente l’évolution d’un état antérieur de la base de données, l’ancêtre indique dans quelle version la base de données doit se trouver avant d’appliquer le-dis fichier de migration.</p></li>
 <li><p>des dépendances : Il est possible d’indiquer qu’une migration nécessite qu’une ou plusieurs autres migrations aient été préalablement appliquées. Par exemple, ceci permet d’indiquer que le schéma de GeoNature nécessite les schémas <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code> et <code class="docutils literal notranslate"><span class="pre">utilisateurs</span></code>.</p></li>
 </ul>
+<p>Les commandes Alembic sont disponible grâce à la sous-commande <code class="docutils literal notranslate"><span class="pre">db</span></code> de la commande <code class="docutils literal notranslate"><span class="pre">geonature</span></code> :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ geonature db --help
+</pre></div>
+</div>
+<p>Les deux sous-commandes <code class="docutils literal notranslate"><span class="pre">status</span></code> et <code class="docutils literal notranslate"><span class="pre">autoupgrade</span></code> sont spécifique à GeoNature afin d’aider à l’utilisation d’Alembic.</p>
+<p>La commande <code class="docutils literal notranslate"><span class="pre">status</span></code> permet de visualiser les branches et l’ensemble de leurs révisions.
+Pour chaque révision est indiqué si celle-ci est appliqué à la base de données.
+Si une branche a au moins sa première révision d’appliquée, alors un petit symbole indique si cette branche est à jour, c’est-à-dire si toutes les révisions de la branche ont été appliquées (<code class="docutils literal notranslate"><span class="pre">✓</span></code>) ou si la branche est en retard, c’est-à-dire que celle-ci contient des révisions qui ne sont pas encore appliqué à la base de données (<code class="docutils literal notranslate"><span class="pre">×</span></code>).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[geonature ✓]
+  [x] ┰ f06cc80cc8ba geonature schemas 2.7.5
+  [x] ┃ c0fdf2ee7f4f auto update cor_area_synthese
+  [x] ┃ 7077aa76da3d bump dependencies
+  [x] ┃ 2a2e5c519fd1 fix gn_synthese.get_default_nomenclature_value
+  [x] ┃ 5f4c4b644844 delete cascade on  cor_dataset_territory and cor_dataset_protocol
+  [x] ┃ 2aa558b1be3a add schema gn_profiles
+  [x] ┃ 1eb624249f2b add default value in additionalFields bib
+  [x] ┃ 7471f51011c8 change index_vm_valid_profiles_cd_ref to unique index
+  [x] ┃ 9a9f4971edcd fix altitude trigger
+  [x] ┃ 6f7d5549d49e delete view v_synthese_validation_forwebapp
+  [x] ┣┓ dde31e76ce45 remove old profile function
+  [x]  ┃ 61e46813d621 Update synthese sensitivity
+  [x]  ┃ dfec5f64ac73 Fix sensitivity algorithm
+  [x]  ┃ ac08dcf3f27b Do not auto-compute diffusion_level
+  [x] ┃ 30edd97ae582 Remove gn_export.t_config_exports
+  [x] ┗┛ 1dbc45309d6e Merge sensitivity
+[geonature-samples ✓]
+  [x] ─ 3d0bf4ee67d1 geonature samples
+[habitats ✓]
+  [x] ─ 62e63cd6135d create ref_habitats schema
+[habitats_inpn_data ✓]
+  [x] ┰ 46e91e738845 insert inpn data in ref_habitats schema
+  [x] ┸ 805442837a68 correction on habref data
+[ign_bd_alti ✓]
+  [x] ─ 1715cf31a75d Insert default French DEM (IGN 250m BD alti)
+[ign_bd_alti_vector]
+  [ ] ─ 87651375c2e8 Vectorize French DEM
+[nomenclatures ✓]
+  [x] ┰ 6015397d686a create ref_nomenclature schema 1.3.9
+  [x] ┃ 11e7741319fd fix ref_nomenclatures.get_default_nomenclature_value
+  [x] ┃ f8c2c8482419 fix ref_nomenclatures.get_default_nomenclature_value
+  [x] ┸ b820c66d8daa fix ref_nomenclatures.get_nomenclature_label
+[nomenclatures_inpn_data ✓]
+  [x] ─ 96a713739fdd insert inpn data in ref_nomenclatures
+[nomenclatures_taxonomie ✓]
+  [x] ─ f5436084bf17 add support for taxonomy into ref_nomenclatures
+[nomenclatures_taxonomie_inpn_data ✓]
+  [x] ─ a763fb554ff2 insert taxonomic inpn data in ref_nomenclatures
+[occhab ✓]
+  [x] ─ 2984569d5df6 create occhab schema
+[occhab-samples]
+  [ ] ─ 21f661247023 insert occhab sample data
+[occtax ✓]
+  [x] ┰ 29c199e07eaa create occtax schema
+  [x] ┃ addb71d8efad create occtax export view
+  [x] ┃ f57107d2d0ad fix get_default_nomenclature_value
+  [x] ┃ 494cb2245a43 trigger comportement
+  [x] ┸ 944072911ff7 update synthese data (bug occtax trigger)
+[occtax-samples ✓]
+  [x] ─ cce08a64eb4f insert occtax sample data
+[occtax-samples-test]
+  [ ] ─ 2a0ab7644e1c occtax sample test
+[ref_geo ✓]
+  [x] ┰ 6afe74833ed0 ref_geo schema
+  [x] ┃ e0ac4c9f5c0a add indexes on FK referencing l_areas.id_area
+  [x] ┸ 4882d6141a41 add regions in area types
+[ref_geo_fr_departments ✓]
+  [x] ─ 3fdaa1805575 Insert French departments in ref_geo
+[ref_geo_fr_municipalities ✓]
+  [x] ─ 0dfdbfbccd63 Insert French municipalities in ref_geo
+[ref_geo_fr_regions ✓]
+  [x] ─ d02f4563bebe Insert French regions in ref_geo
+[ref_geo_fr_regions_1970 ✓]
+  [x] ─ 05a0ae652c13 Insert French regions 1970-2016 in ref_geo
+[ref_geo_inpn_grids_1 ✓]
+  [x] ─ 586613e2faeb Insert INPN 1×1 grids in ref_geo
+[ref_geo_inpn_grids_10 ✓]
+  [x] ─ ede150d9afd9 Insert INPN 10×10 grids in ref_geo
+[ref_geo_inpn_grids_5 ✓]
+  [x] ─ 7d6e98441e4c Insert INPN 5×5 grids in ref_geo
+[ref_sensitivity_inpn ✓]
+  [x] ─ 7dfd0a813f86 Insert INPN rules in sensitivity referential
+[sql_utils ✓]
+  [x] ─ 3842a6d800a0 Add public shared functions
+[taxhub ✓]
+  [x] ─ fa5a90853c45 taxhub
+[taxhub-admin ✓]
+  [x] ─ 3fe8c07741be taxhub
+[taxonomie ✓]
+  [x] ┰ 9c2c0254aadc create taxonomie schema version 1.8.1
+  [x] ┃ 7540702c6407 cd_ref utility functions
+  [x] ┃ 98035939bc0d find_all_taxons_parents
+  [x] ┃ c93cbb35cfe4 set default value for id_liste
+  [x] ┸ 4fb7e197d241 create taxonomie.v_bdc_status view
+[taxonomie_attributes_example]
+  [ ] ─ aa7533601e41 add attributes exemple to taxonomie
+[taxonomie_inpn_data ✓]
+  [x] ─ f61f95136ec3 insert inpn data in taxonomie schema
+[taxonomie_taxons_example]
+  [ ] ─ 8222017dc3f6 add taxons exemple to taxonomie
+[usershub ✓]
+  [x] ┰ 9445a69f2bed UsersHub
+  [x] ┸ 6ec215fe023e upgrade utilisateurs schema
+[usershub-samples ✓]
+  [x] ─ f63a8f44c969 UsersHub samples data
+[utilisateurs ✓]
+  [x] ┰ fa35dfe5ff27 utilisateurs schema 1.4.7 (usershub 2.1.3)
+  [x] ┃ 830cc8f4daef add additional_data field to bib_organismes
+  [x] ┃ 5b334b77f5f5 fix v_roleslist_forall_applications
+  [x] ┃ 951b8270a1cf add unique constraint on bib_organismes.uuid_organisme
+  [x] ┸ 10e87bc144cd get_id_role_by_name()
+[utilisateurs-samples ✓]
+  [x] ─ 72f227e37bdf utilisateurs sample data
+</pre></div>
+</div>
+<p>La commande <code class="docutils literal notranslate"><span class="pre">autoupgrade</span></code> permet de mettre automatiquement à jour toutes les branches dont au moins une révision est appliquée lorsque celles-ci possèdent une ou plusieurs révisions non appliquées.
+Cette commande est appelé par le script <code class="docutils literal notranslate"><span class="pre">migration.sh</span></code> lors d’une mise à jour de la base de données.
+Elle accepte également les paramètres <code class="docutils literal notranslate"><span class="pre">-x</span></code> qui sont alors fournis à la commande <code class="docutils literal notranslate"><span class="pre">upgrade</span></code> lorsque appelé sur chaque branche en retard.</p>
 <p>La commande <code class="docutils literal notranslate"><span class="pre">heads</span></code> permet de lister l’ensemble des branches disponibles, ainsi que la dernière révision disponible pour chaque branche :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ geonature db heads
 e0ac4c9f5c0a (ref_geo) (effective head)
@@ -369,16 +489,13 @@ Vous pouvez alors mettre à jour cette branche avec la commande <code class="doc
 <p>La <a class="reference external" href="https://alembic.sqlalchemy.org/en/latest/ops.html">documentation d’Alembic</a> liste les opérations prises en charge.
 Certaines opérations complexes telles que la création de trigger ne sont pas prévu, mais il reste toujours possible d’executer du SQL directement avec l’opérateur <code class="docutils literal notranslate"><span class="pre">op.execute</span></code>.</p>
 <section id="description-des-branches">
-<h4>Description des branches<a class="headerlink" href="#description-des-branches" title="Permalink to this headline"></a></h4>
+<h4>Description des branches<a class="headerlink" href="#description-des-branches" title="Lien permanent vers cette rubrique"></a></h4>
 <p>Cette section liste les branches Alembic disponibles et leur impacte sur la base de données.</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">sql_utils</span></code> : Fournie quelques fonctions SQl utilitaires dans le schéma <code class="docutils literal notranslate"><span class="pre">public</span></code>. Fournie par Utils-Flask-SQLAlchemy.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">geonature</span></code> : Crée les schémas propres à GeoNature (<code class="docutils literal notranslate"><span class="pre">gn_commons</span></code>, <code class="docutils literal notranslate"><span class="pre">gn_synthese</span></code>, …).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">geonature-samples</span></code> : Insert quelques données d’exemple en base.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">taxonomie</span></code> : Crée le schéma <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code>. Fournie par TaxHub.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">taxonomie_inpn_data</span></code> : Insert le référentiel TAXHUBv14 en base. Fournie par TaxHub.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">taxonomie_attributes_example</span></code> : Insert quelques attributs d’exemple en base. Fournie par TaxHub.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">taxonomie_taxons_example</span></code> : Insert quelques taxons d’exemple en base. Fournie par TaxHub.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">nomenclatures</span></code> : Crée le schéma <code class="docutils literal notranslate"><span class="pre">ref_nomenclatures</span></code>. Fournie par Nomenclature-api-module.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">nomenclatures_inpn_data</span></code> : Insert le référentiel des nomenclatures de l’INPN en base. Fournie par Nomenclature-api-module.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">nomenclatures_taxonomie</span></code> : Complète le schéma <code class="docutils literal notranslate"><span class="pre">ref_nomenclatures</span></code> pour accueillir les nomenclatures liées à la taxonomie.</p></li>
@@ -388,6 +505,7 @@ Certaines opérations complexes telles que la création de trigger ne sont pas p
 <li><p><code class="docutils literal notranslate"><span class="pre">habitats</span></code> : Crée le schéma <code class="docutils literal notranslate"><span class="pre">ref_habitats</span></code>. Fournie par Habref-api-module.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">habitats_inpn_data</span></code> : Insert le référentiel HABREF de l’INPN en base. Fournie par Habref-api-module.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">ref_geo</span></code> : Crée le schéma <code class="docutils literal notranslate"><span class="pre">ref_geo</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ref_sensitivity_inpn</span></code> : Insère le référentiel de sensbilité de l’INPN en base.</p></li>
 </ul>
 <p>Si vous utilisez TaxHub, vous pouvez être intéressé par les branches suivantes :</p>
 <ul class="simple">
@@ -416,18 +534,18 @@ Certaines opérations complexes telles que la création de trigger ne sont pas p
 </section>
 </section>
 <section id="gestion-des-droits">
-<h3>Gestion des droits<a class="headerlink" href="#gestion-des-droits" title="Permalink to this headline"></a></h3>
+<h3>Gestion des droits<a class="headerlink" href="#gestion-des-droits" title="Lien permanent vers cette rubrique"></a></h3>
 <section id="acces-a-geonature-et-cruved">
-<h4>Accès à GeoNature et CRUVED<a class="headerlink" href="#acces-a-geonature-et-cruved" title="Permalink to this headline"></a></h4>
-<p>Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l’application GeoNature est géré de manière centralisée dans UsersHub. Pour qu’un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de “Lecteur” dans l’application GeoNature, grâce à l’application UsersHub.</p>
+<h4>Accès à GeoNature et CRUVED<a class="headerlink" href="#acces-a-geonature-et-cruved" title="Lien permanent vers cette rubrique"></a></h4>
+<p>Les comptes des utilisateurs, leur mot de passe, email, groupes et leur accès à l’application GeoNature est géré de manière centralisée dans UsersHub. Pour qu’un rôle (utilisateur ou groupe) ait accès à GeoNature, il faut lui attribuer un profil de « Lecteur » dans l’application GeoNature, grâce à l’application UsersHub.</p>
 <p>La gestion des droits (permissions) des rôles, spécifique à GeoNature, est ensuite gérée dans un schéma (<code class="docutils literal notranslate"><span class="pre">gn_permissions</span></code>) et un module de GeoNature dédié.</p>
-<p>Les permissions des groupes et utilisateurs peuvent en effet être administrées dans le module “Admin / Administration des permissions” de GeoNature.
+<p>Les permissions des groupes et utilisateurs peuvent en effet être administrées dans le module « Admin / Administration des permissions » de GeoNature.
 Dans la version 1 de GeoNature, il était possible d’attribuer des droits selon 6 niveaux à des rôles (utilisateurs ou groupes). Pour la version 2 de GeoNature, des évolutions ont été réalisées pour étendre les possibilités d’attribution de droits et les rendre plus génériques.</p>
-<p>La gestion des droits dans GeoNature, comme dans beaucoup d’applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l’application nous avons rajouté deux actions : “Valider” et “Exporter”, ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.</p>
-<p>Sur ces actions, on peut appliquer des “portées”:</p>
+<p>La gestion des droits dans GeoNature, comme dans beaucoup d’applications, est liée à des actions (Create / Read / Update / Delete aka CRUD). Pour les besoins  métiers de l’application nous avons rajouté deux actions : « Valider » et « Exporter », ce qui donne le CRUVED : Create / Read / Update / Validate / Export / Delete.</p>
+<p>Sur ces actions, on peut appliquer des « portées »:</p>
 <ul class="simple">
 <li><dl class="simple">
-<dt>Portée 1 = “Mes données”. Cela concerne les données sur lesquels je suis :</dt><dd><ul>
+<dt>Portée 1 = « Mes données ». Cela concerne les données sur lesquels je suis :</dt><dd><ul>
 <li><p>observateur</p></li>
 <li><p>personne ayant effectuée la saisie de la données</p></li>
 <li><p>personnelement acteur du jeu de données de la donnée</p></li>
@@ -453,28 +571,28 @@ Dans la version 1 de GeoNature, il était possible d’attribuer des droits selo
 </ul>
 <p>Exemple :</p>
 <ul class="simple">
-<li><p>Utilisateur 1 peut effectuer l’action “DELETE” sur la portée “SES DONNEES”</p></li>
-<li><p>Utilisateur Admin peut effectuer l’action “UPDATE” sur la portée “TOUTES LES DONNEES”</p></li>
+<li><p>Utilisateur 1 peut effectuer l’action « DELETE » sur la portée « SES DONNEES »</p></li>
+<li><p>Utilisateur Admin peut effectuer l’action « UPDATE » sur la portée « TOUTES LES DONNEES »</p></li>
 </ul>
 <p>Enfin ces permissions vont pouvoir s’attribuer à l’ensemble de l’application GeoNature et/ou à un module.</p>
 <p>On a donc le quatriptique : Un utilisateur / Une action / Une portée / Un module</p>
-<p><strong>NB</strong> : certains objets comme les JDD et CA sont transversal à tout GeoNature (ils sont utilisés dans tous les modules: saisie, synthese, métadonnées, dashbord), il sont donc contrôlé par les permissions du “module” GeoNature</p>
+<p><strong>NB</strong> : certains objets comme les JDD et CA sont transversal à tout GeoNature (ils sont utilisés dans tous les modules: saisie, synthese, métadonnées, dashbord), il sont donc contrôlé par les permissions du « module » GeoNature</p>
 </section>
 <section id="cas-particulier-de-l-action-c">
-<h4>Cas particulier de l’action “C”<a class="headerlink" href="#cas-particulier-de-l-action-c" title="Permalink to this headline"></a></h4>
+<h4>Cas particulier de l’action « C »<a class="headerlink" href="#cas-particulier-de-l-action-c" title="Lien permanent vers cette rubrique"></a></h4>
 <div class="line-block">
 <div class="line">Dans les modules de saisie, on veut que des utilisateurs puissent saisir uniquement dans certains JDD.</div>
-<div class="line">La liste des JDD ouvert à la saisie est contrôlée par l’action “CREATE” du module dans lequel on se trouve.</div>
-<div class="line">Comme il n’est pas “normal” de pouvoir saisir dans des JDD sur lesquels on n’a pas les droit de lecture, la portée de l’action “CREATE” vient simplement réduire la liste des JDD surlesquels on a les droits de lecture (“READ”).</div>
-<div class="line">Même si la portée de l’action “CREATE” sur le module est supérieure à l’action “READ”, l’utilisateur ne vera que les JDD surlesquels il a des droits de lecture</div>
+<div class="line">La liste des JDD ouvert à la saisie est contrôlée par l’action « CREATE » du module dans lequel on se trouve.</div>
+<div class="line">Comme il n’est pas « normal » de pouvoir saisir dans des JDD sur lesquels on n’a pas les droit de lecture, la portée de l’action « CREATE » vient simplement réduire la liste des JDD surlesquels on a les droits de lecture (« READ »).</div>
+<div class="line">Même si la portée de l’action « CREATE » sur le module est supérieure à l’action « READ », l’utilisateur ne vera que les JDD surlesquels il a des droits de lecture</div>
 </div>
 </section>
 <section id="recapitulatif">
-<h4>Récapitulatif<a class="headerlink" href="#recapitulatif" title="Permalink to this headline"></a></h4>
+<h4>Récapitulatif<a class="headerlink" href="#recapitulatif" title="Lien permanent vers cette rubrique"></a></h4>
 <ul class="simple">
 <li><p>Dans GeoNature V2 on peut attribuer à un role des actions possibles, sur lesquels on peut ajouter des filtres, dans un module ou sur toute l’application GeoNature (définis dans <code class="docutils literal notranslate"><span class="pre">gn_permissions.cor_role_action_filter_module_object</span></code>).</p></li>
 <li><p>6 actions sont possibles dans GeoNature : Create / Read / Update / Validate / Export / Delete (aka CRUVED).</p></li>
-<li><p>Différents types de filtre existent. Le plus courant est le filtre de type “SCOPE” (portée) : 3 portées sont attribuables à des actions: Mes données / Les données de mon organisme / Toutes les données.</p></li>
+<li><p>Différents types de filtre existent. Le plus courant est le filtre de type « SCOPE » (portée) : 3 portées sont attribuables à des actions: Mes données / Les données de mon organisme / Toutes les données.</p></li>
 <li><p>Une vue permet de retourner toutes les actions, leurs filtres et leurs modules de GeoNature pour tous les rôles (<code class="docutils literal notranslate"><span class="pre">gn_permissions.v_users_permissions</span></code>)</p></li>
 <li><p>Des fonctions PostgreSQL ont aussi été intégrées pour faciliter la récupération de ces informations (<code class="docutils literal notranslate"><span class="pre">gn_permissions.cruved_for_user_in_module</span></code>, <code class="docutils literal notranslate"><span class="pre">gn_permissions.does_user_have_scope_permission</span></code>, …)</p></li>
 <li><p>Les permissions attribuées à un module surchargent les permission attribuées sur l’ensemble de l’application par un mécanisme d’héritage. Par défaut et en l’absence de permissions, tous les modules héritent des permissions de GeoNature. Attention cependant aux utilisateurs appartenant à plusieurs groupes. Si un CRUVED est définit pour un module à un seul de ses groupes, c’est ce CRUVED qui sera pris en compte. En effet, le mécanisme d’héritage ne fonctionne plus lorsqu’on surcouche implicitement le CRUVED d’un module pour un groupe.</p></li>
@@ -487,19 +605,19 @@ Dans la version 1 de GeoNature, il était possible d’attribuer des droits selo
 </section>
 </section>
 <section id="acces-public">
-<h3>Accès public<a class="headerlink" href="#acces-public" title="Permalink to this headline"></a></h3>
+<h3>Accès public<a class="headerlink" href="#acces-public" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Cette section de la documentation concerne l’implémentation d’un utilisateur-lecteur pour votre instance GeoNature, permettant d’y donner accès sans authentification.</p>
 <p>Etapes :</p>
 <p>1/ UsersHub :</p>
 <ul class="simple">
 <li><p>Aller dans la section <code class="docutils literal notranslate"><span class="pre">Utilisateurs</span></code></p></li>
 <li><p>Créer un utilisateur</p></li>
-<li><p>Définir un identifiant et un mot de passe (par défaut utilisateur ‘public’ et mot de passe ‘public’)</p></li>
+<li><p>Définir un identifiant et un mot de passe (par défaut utilisateur “public” et mot de passe “public”)</p></li>
 <li><p>Aller ensuite dans la section <cite>Applications</cite></p></li>
-<li><p>Pour GeoNature, cliquer sur le premier icône ‘Voir les membres’</p></li>
+<li><p>Pour GeoNature, cliquer sur le premier icône “Voir les membres”</p></li>
 <li><p>Cliquer sur ajouter un rôle</p></li>
 <li><p>Choisir l’utilisateur juste créé</p></li>
-<li><p>Attribuer le rôle 1, ‘lecteur’</p></li>
+<li><p>Attribuer le rôle 1, “lecteur”</p></li>
 </ul>
 <p>2/ Configuration GeoNature :</p>
 <ul class="simple">
@@ -509,33 +627,26 @@ Dans la version 1 de GeoNature, il était possible d’attribuer des droits selo
 <span class="n">PUBLIC_PASSWORD</span> <span class="o">=</span> <span class="s1">&#39;public&#39;</span>
 </pre></div>
 </div>
-<ul class="simple">
-<li><p>Mettre à jour la configuration de GeoNature</p></li>
-</ul>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ source backend/venv/bin/activate
-$ geonature update_configuration
-$ sudo systemctl restart geonature
-</pre></div>
-</div>
+<p><a class="reference internal" href="#post-config-change"><span class="std std-ref">Exécuter les actions post-modification de la configuration</span></a>.</p>
 <p>A ce moment-là, cet utilisateur a tous les droits sur GeoNature.
 Il s’agit maintenant de gérer ses permissions dans GeoNature même.</p>
 <p>3/ GeoNature</p>
 <ul class="simple">
 <li><p>Se connecter à GeoNature avec un utilisateur administrateur</p></li>
 <li><p>Aller dans le module Admin</p></li>
-<li><p>Cliquer sur ‘Gestion des permissions’</p></li>
+<li><p>Cliquer sur “Gestion des permissions”</p></li>
 <li><p>Choisissez l’utilisateur sélectionné</p></li>
-<li><p>Editer le CRUVED pour chacun des modules de l’instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser ‘3’ pour les modules d’intérêt.</p></li>
+<li><p>Editer le CRUVED pour chacun des modules de l’instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser “3” pour les modules d’intérêt.</p></li>
 </ul>
 </section>
 <section id="nomenclatures">
-<h3>Nomenclatures<a class="headerlink" href="#nomenclatures" title="Permalink to this headline"></a></h3>
+<h3>Nomenclatures<a class="headerlink" href="#nomenclatures" title="Lien permanent vers cette rubrique"></a></h3>
 <ul class="simple">
 <li><p>Toutes les valeurs des listes déroulantes sont gérées dans une table générique <code class="docutils literal notranslate"><span class="pre">ref_nomenclatures.t_nomenclatures</span></code></p></li>
 <li><p>Elles s’appuient sur les nomenclatures du SINP (<a class="reference external" href="http://standards-sinp.mnhn.fr/nomenclature/">http://standards-sinp.mnhn.fr/nomenclature/</a>) qui peuvent être désactivées ou completées</p></li>
 <li><p>Chaque nomenclature est associée à un type, et une vue par type de nomenclature a été ajoutée pour simplifier leur usage</p></li>
 <li><p>Ces nomenclatures sont gérées dans un sous-module pour pouvoir les réutiliser (ainsi que leur mécanisme) dans d’autres applications : <a class="reference external" href="https://github.com/PnX-SI/Nomenclature-api-module/">https://github.com/PnX-SI/Nomenclature-api-module/</a></p></li>
-<li><p>Les identifiants des nomenclatures et des types de nomenclature sont des serials (entiers auto-incrémentés) et ne sont pas prédéfinis lors de l’installation, ni utilisées en dur dans le code des applications. En effet, les nomenclatures peuvent varier en fonction des structures. On utilise le <code class="docutils literal notranslate"><span class="pre">cd_nomenclature</span></code> et le <code class="docutils literal notranslate"><span class="pre">mnémonique</span></code> du type de nomenclature pour retrouver dynamiquement l’<code class="docutils literal notranslate"><span class="pre">id_nomenclature</span></code> d’une nomenclature. C’est cependant cet identifiant qu’on stocke au niveau des données pour garantir l’intégrité référentielle</p></li>
+<li><p>Les identifiants des nomenclatures et des types de nomenclature sont des serials (entiers auto-incrémentés) et ne sont pas prédéfinis lors de l’installation, ni utilisées en dur dans le code des applications. En effet, les nomenclatures peuvent varier en fonction des structures. On utilise le <code class="docutils literal notranslate"><span class="pre">cd_nomenclature</span></code> et le <code class="docutils literal notranslate"><span class="pre">mnémonique</span></code> du type de nomenclature pour retrouver dynamiquement l”<code class="docutils literal notranslate"><span class="pre">id_nomenclature</span></code> d’une nomenclature. C’est cependant cet identifiant qu’on stocke au niveau des données pour garantir l’intégrité référentielle</p></li>
 <li><p>Chaque nomenclature peut être associée à un règne ou un group2inpn (<code class="docutils literal notranslate"><span class="pre">ref_nomenclatures.cor_taxref_nomenclature</span></code>) pour proposer des nomenclatures correspondants à un taxon</p></li>
 <li><p>Les valeurs par défaut sont définies dans chaque module</p></li>
 <li><p>Pour Occtax c’est dans <code class="docutils literal notranslate"><span class="pre">pr_occtax.defaults_nomenclatures_value</span></code>. Elles peuvent être définies pour chaque type de nomenclature ainsi que par organisme, règne et/ou group2inpn</p></li>
@@ -547,7 +658,7 @@ Il s’agit maintenant de gérer ses permissions dans GeoNature même.</p>
 </ul>
 </section>
 <section id="metadonnees">
-<h3>Métadonnées<a class="headerlink" href="#metadonnees" title="Permalink to this headline"></a></h3>
+<h3>Métadonnées<a class="headerlink" href="#metadonnees" title="Lien permanent vers cette rubrique"></a></h3>
 <ul class="simple">
 <li><p>Elles sont gérées dans le schéma <code class="docutils literal notranslate"><span class="pre">gn_meta</span></code> basé sur le standard Métadonnées du SINP (<a class="reference external" href="http://standards-sinp.mnhn.fr/category/standards/metadonnees/">http://standards-sinp.mnhn.fr/category/standards/metadonnees/</a>)</p></li>
 <li><p>Elles permettent de gérer des jeux de données, des cadres d’acquisition, des acteurs (propriétaire, financeur, producteur…) et des protocoles</p></li>
@@ -555,7 +666,7 @@ Il s’agit maintenant de gérer ses permissions dans GeoNature même.</p>
 </ul>
 </section>
 <section id="donnees-sig">
-<h3>Données SIG<a class="headerlink" href="#donnees-sig" title="Permalink to this headline"></a></h3>
+<h3>Données SIG<a class="headerlink" href="#donnees-sig" title="Lien permanent vers cette rubrique"></a></h3>
 <ul class="simple">
 <li><p>Le schéma <code class="docutils literal notranslate"><span class="pre">ref_geo</span></code> permet de gérer les données SIG (zonages, communes, MNT…) de manière centralisée, potentiellement partagé avec d’autres BDD</p></li>
 <li><p>Il contient une table des zonages, des types de zonages, des communes, des grilles (mailles) et un MNT raster ou vectorisé (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/issues/235">https://github.com/PnX-SI/GeoNature/issues/235</a>)</p></li>
@@ -565,9 +676,9 @@ Il s’agit maintenant de gérer ses permissions dans GeoNature même.</p>
 </ul>
 </section>
 <section id="profils-de-taxons">
-<h3>Profils de taxons<a class="headerlink" href="#profils-de-taxons" title="Permalink to this headline"></a></h3>
+<h3>Profils de taxons<a class="headerlink" href="#profils-de-taxons" title="Lien permanent vers cette rubrique"></a></h3>
 <section id="introduction">
-<h4>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline"></a></h4>
+<h4>Introduction<a class="headerlink" href="#introduction" title="Lien permanent vers cette rubrique"></a></h4>
 <p>GeoNature dispose d’un mécanisme permettant de calculer des profils pour chaque taxon en se basant sur les données validées présentes dans la Synthèse de l’instance.</p>
 <p>Ces profils sont stockés dans un schéma dédié <code class="docutils literal notranslate"><span class="pre">gn_profiles</span></code>, et plus précisément dans les deux vues matérialisées suivantes :</p>
 <ol class="arabic simple">
@@ -580,14 +691,14 @@ Il s’agit maintenant de gérer ses permissions dans GeoNature même.</p>
 <li><p>Le nombre de données valides pour le taxon considéré</p></li>
 </ul>
 <ol class="arabic simple" start="2">
-<li><p>La vue matérialisée <code class="docutils literal notranslate"><span class="pre">gn_profiles.vm_cor_taxon_phenology</span></code> comporte les “combinaisons” d’informations relatives à la phénologie des taxons (voir détail des calculs ci-dessous) :</p></li>
+<li><p>La vue matérialisée <code class="docutils literal notranslate"><span class="pre">gn_profiles.vm_cor_taxon_phenology</span></code> comporte les « combinaisons » d’informations relatives à la phénologie des taxons (voir détail des calculs ci-dessous) :</p></li>
 </ol>
 <ul class="simple">
 <li><p>La période d’observation</p></li>
 <li><p>Le stade de vie (activable ou non)</p></li>
 <li><p>Les altitudes min et max</p></li>
-<li><p>Les altitudes “fiables” en écartant les valeurs extrêmes</p></li>
-<li><p>Le nombre de données correspondant à cette “combinaison phénologique”</p></li>
+<li><p>Les altitudes « fiables » en écartant les valeurs extrêmes</p></li>
+<li><p>Le nombre de données correspondant à cette « combinaison phénologique »</p></li>
 </ul>
 <p>La fonction <code class="docutils literal notranslate"><span class="pre">gn_profiles.refresh_profiles()</span></code> permet de rafraichir ces vues matérialisées.</p>
 <p>Pour lancer manuellement cette fonction, ouvrez une console SQL et exécutez la requête <code class="docutils literal notranslate"><span class="pre">SELECT</span> <span class="pre">gn_profiles.refresh_profiles();</span></code>.</p>
@@ -595,13 +706,13 @@ Il s’agit maintenant de gérer ses permissions dans GeoNature même.</p>
 <p>Pour automatiser l’éxecution de cette fonction (tous les jours à minuit dans cet exemple), <a class="reference internal" href="installation.html#cron"><span class="std std-ref">créer une tâche planfiée</span></a>.</p>
 </section>
 <section id="usage">
-<h4>Usage<a class="headerlink" href="#usage" title="Permalink to this headline"></a></h4>
+<h4>Usage<a class="headerlink" href="#usage" title="Lien permanent vers cette rubrique"></a></h4>
 <p>Pour chaque taxon (cd_ref) disposant de données dans la vue <code class="docutils literal notranslate"><span class="pre">gn_profiles.v_synthese_for_profiles</span></code> (vue filtrée basée sur la synthèse de l’instance), un profil est généré. Il comporte l’aire d’occurrence, les limites altitudinales et les combinaisons phénologiques jugées cohérentes sur la base des données disponibles.</p>
 <p>Ces profils sont déclinés sur :</p>
 <ul class="simple">
-<li><p>Le module de validation permet d’attirer l’attention des validateurs sur les données qui sortent du “cadre” déjà connu pour le taxon considéré, et d’apporter des éléments de contexte en complément de la donnée en cours de validation</p></li>
+<li><p>Le module de validation permet d’attirer l’attention des validateurs sur les données qui sortent du « cadre » déjà connu pour le taxon considéré, et d’apporter des éléments de contexte en complément de la donnée en cours de validation</p></li>
 <li><p>Le module Synthèse (fiche d’information, onglet validation) permet d’apporter des éléments de contexte en complément des données brutes consultées</p></li>
-<li><p>Le module Occtax permet d’alerter les utilisateurs lors de la saisie de données qui sortent du “cadre” déjà connu pour un taxon considéré</p></li>
+<li><p>Le module Occtax permet d’alerter les utilisateurs lors de la saisie de données qui sortent du « cadre » déjà connu pour un taxon considéré</p></li>
 </ul>
 <img alt="https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/validation.png" src="https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/validation.png" />
 <img alt="https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/contexte_donnee.png" src="https://raw.githubusercontent.com/PnX-SI/GeoNature/develop/docs/images/contexte_donnee.png" />
@@ -613,20 +724,20 @@ Il s’agit maintenant de gérer ses permissions dans GeoNature même.</p>
 </ul>
 </section>
 <section id="configuration-et-parametrage">
-<h4>Configuration et paramétrage<a class="headerlink" href="#configuration-et-parametrage" title="Permalink to this headline"></a></h4>
+<h4>Configuration et paramétrage<a class="headerlink" href="#configuration-et-parametrage" title="Lien permanent vers cette rubrique"></a></h4>
 <p><em>Paramètres de calcul des profils</em> :</p>
 <p>Le calcul des profils de taxons repose sur plusieurs variables, paramétrables soit pour tout le mécanisme, soit pour des taxons donnés.</p>
 <p>Les paramètres généraux dans la table <code class="docutils literal notranslate"><span class="pre">gn_profiles.t_parameters</span></code> :</p>
 <ul class="simple">
-<li><p>Le paramètre <code class="docutils literal notranslate"><span class="pre">id_valid_status_for_profiles</span></code> : permet de lister les <code class="docutils literal notranslate"><span class="pre">id_nomenclatures</span></code> des statuts de validation à prendre en compte pour les calculs des profils. Par exemple, en ne listant que les identifiants des nomenclatures “Certain -très probable” et “Probable”, seules ces données valides seront prises en compte lors du calcul des profils (comportement par défaut). En listant tous les identifiants des nomenclatures des statuts de validation, l’ensemble des données alimenteront les profils de taxons.</p></li>
+<li><p>Le paramètre <code class="docutils literal notranslate"><span class="pre">id_valid_status_for_profiles</span></code> : permet de lister les <code class="docutils literal notranslate"><span class="pre">id_nomenclatures</span></code> des statuts de validation à prendre en compte pour les calculs des profils. Par exemple, en ne listant que les identifiants des nomenclatures « Certain -très probable » et « Probable », seules ces données valides seront prises en compte lors du calcul des profils (comportement par défaut). En listant tous les identifiants des nomenclatures des statuts de validation, l’ensemble des données alimenteront les profils de taxons.</p></li>
 <li><p>Le paramètre <code class="docutils literal notranslate"><span class="pre">id_rang_for_profiles</span></code> : permet de lister les <code class="docutils literal notranslate"><span class="pre">id_rang</span></code> de Taxref à prendre en compte pour les calculs des profils. Par défaut, les profils ne sont calculés que pour les cd_ref correspondant à des Genres, Espèces et Sous-espèces.</p></li>
 <li><p>Le paramètre <code class="docutils literal notranslate"><span class="pre">proportion_kept_data</span></code> définit le pourcentage de données à conserver lors du calcul des altitudes valides (<code class="docutils literal notranslate"><span class="pre">gn_profiles.vm_cor_taxon_phenology</span></code>), en retirant ainsi les extrêmes. Ce paramètre, définit à 95% par défaut, doit être compris entre 51 et 100% (voir détails ci-après).</p></li>
 </ul>
 <p>Les deux premiers paramètres permettent de filtrer les données dans la vue <code class="docutils literal notranslate"><span class="pre">gn_profiles.v_synthese_for_profiles</span></code>. Cette vue comporte les données de la synthèse qui répondent aux paramètres et qui alimenteront les profils de taxons. Les clauses WHERE de cette vue peuvent être adaptées pour filtrer les données sur davantage de critères et répondre aux besoins plus spécifiques, mais sa structure doit rester inchangée.</p>
 <p>Les paramètres définis par taxon le sont dans la table <code class="docutils literal notranslate"><span class="pre">gn_profiles.cor_taxons_profiles_parameters</span></code> :</p>
-<p>Les profils peuvent être calculés avec des règles différentes en fonction des taxons. Ceux-ci sont définis au niveau du cd_nom, à n’importe quel rang (espèce, famille, règne etc). Ils seront appliqués de manière récursive à tous les taxons situés “sous” le cd_ref paramétré.</p>
+<p>Les profils peuvent être calculés avec des règles différentes en fonction des taxons. Ceux-ci sont définis au niveau du cd_nom, à n’importe quel rang (espèce, famille, règne etc). Ils seront appliqués de manière récursive à tous les taxons situés « sous » le cd_ref paramétré.</p>
 <p>Dans le cas où un taxon hérite de plusieurs règles (une définie pour son ordre et une autre définie pour sa famille par exemple), les paramètres définis au plus proche du taxon considéré seront pris en compte.</p>
-<p>Par exemple, s’il existe des paramètres pour le phylum “Animalia” (cd_nom 183716) et d’autres pour le renard (cd_nom 60585), les paramètres du renard seront appliqués en priorité pour cette espèce, mais les paramètres Animalia s’appliqueront à tous les autres animaux.</p>
+<p>Par exemple, s’il existe des paramètres pour le phylum « Animalia » (cd_nom 183716) et d’autres pour le renard (cd_nom 60585), les paramètres du renard seront appliqués en priorité pour cette espèce, mais les paramètres Animalia s’appliqueront à tous les autres animaux.</p>
 <p>Les règles appliquables à chaque taxon sont récupérées par la fonction <code class="docutils literal notranslate"><span class="pre">gn_profiles.get_profiles_parameters(cdnom)</span></code>.</p>
 <p>Pour chaque cd_nom, il est ainsi possible de définir les paramètres suivants :</p>
 <ul class="simple">
@@ -644,7 +755,7 @@ Il s’agit maintenant de gérer ses permissions dans GeoNature même.</p>
 </div>
 </section>
 <section id="calcul-des-phenologies">
-<h4>Calcul des phénologies<a class="headerlink" href="#calcul-des-phenologies" title="Permalink to this headline"></a></h4>
+<h4>Calcul des phénologies<a class="headerlink" href="#calcul-des-phenologies" title="Lien permanent vers cette rubrique"></a></h4>
 <p>Pour chaque taxon, la phénologie est calculée en croisant dans un premier temps les périodes d’observations et, selon les paramètres, les stades de vie.</p>
 <p>Pour chacune des combinaisons obtenues (période x stade de vie), sont alors calculées :</p>
 <ul class="simple">
@@ -655,9 +766,9 @@ Il s’agit maintenant de gérer ses permissions dans GeoNature même.</p>
 <li><p>Le nombre de données valides correspondantes</p></li>
 </ul>
 <p><em>Exclusion des données extrêmes</em></p>
-<p>Afin que des données exceptionnelles, bien que valides, ne soient pas considérées comme une “norme”, les profils permettent d’exclure un certain pourcentage de données extrêmes. Pour ce faire :</p>
+<p>Afin que des données exceptionnelles, bien que valides, ne soient pas considérées comme une « norme », les profils permettent d’exclure un certain pourcentage de données extrêmes. Pour ce faire :</p>
 <ul class="simple">
-<li><p>Le nombre de données exclues est systématiquement arrondi à l’entier supérieur, pour les extrêmes “bas” et les extrêmes “hauts”</p></li>
+<li><p>Le nombre de données exclues est systématiquement arrondi à l’entier supérieur, pour les extrêmes « bas » et les extrêmes « hauts »</p></li>
 <li><p>Aucune altitude fiable n’est calculée s’il y a davantage de données exclues que de données conservées</p></li>
 <li><p>Le paramètre <code class="docutils literal notranslate"><span class="pre">proportion_kept_data</span></code> doit donc être compris entre 51 et 100% : en dessous de 50%, le nombre de données supprimées est supérieur au nombre de données conservées, aucune altitude fiable ne sera calculée. Si le paramètre est à 100%, les altitudes fiables seront identiques aux altitudes extrêmes observées pour la période (et le stade) donnés</p></li>
 </ul>
@@ -672,14 +783,14 @@ Il s’agit maintenant de gérer ses permissions dans GeoNature même.</p>
 </section>
 </section>
 <section id="gestion-de-la-sensibilite">
-<h3>Gestion de la sensibilité<a class="headerlink" href="#gestion-de-la-sensibilite" title="Permalink to this headline"></a></h3>
+<h3>Gestion de la sensibilité<a class="headerlink" href="#gestion-de-la-sensibilite" title="Lien permanent vers cette rubrique"></a></h3>
 <section id="id1">
-<h4>Introduction<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h4>
+<h4>Introduction<a class="headerlink" href="#id1" title="Lien permanent vers cette rubrique"></a></h4>
 <p>Les régles de sensibilité définies par défaut sont issues des règles du SINP.
 Elles dépendent de l’espèce et de l’observation. C’est-à-dire que pour une espèce donnée,
 plusieurs niveaux de sensibilité sont possibles selon l’observation.</p>
 <section id="niveaux-de-sensibilite">
-<h5>Niveaux de sensibilité<a class="headerlink" href="#niveaux-de-sensibilite" title="Permalink to this headline"></a></h5>
+<h5>Niveaux de sensibilité<a class="headerlink" href="#niveaux-de-sensibilite" title="Lien permanent vers cette rubrique"></a></h5>
 <p>Voici les 5 niveaux de sensibilité définis par le SINP :</p>
 <ul class="simple">
 <li><p>Sensible - Aucune diffusion</p></li>
@@ -693,7 +804,7 @@ d’une espèce (et donc une espèce) sensible.
 Cette documentation propose une méthode pour y arriver dans l’outil GeoNature.</p>
 </section>
 <section id="pour-plus-d-informations">
-<h5>Pour plus d’informations<a class="headerlink" href="#pour-plus-d-informations" title="Permalink to this headline"></a></h5>
+<h5>Pour plus d’informations<a class="headerlink" href="#pour-plus-d-informations" title="Lien permanent vers cette rubrique"></a></h5>
 <p>Vous pouvez consulter :</p>
 <ul class="simple">
 <li><p>La page du site du <a class="reference external" href="https://inpn.mnhn.fr/programme/donnees-observations-especes/references/sensibilite">MNHN traitant de la sensibilité</a>.</p></li>
@@ -702,29 +813,21 @@ Cette documentation propose une méthode pour y arriver dans l’outil GeoNature
 </section>
 </section>
 <section id="attention">
-<h4>Attention<a class="headerlink" href="#attention" title="Permalink to this headline"></a></h4>
+<h4>Attention<a class="headerlink" href="#attention" title="Lien permanent vers cette rubrique"></a></h4>
 <p>L’objectif de ce document n’est pas de modifier les règles établies par
 le SINP. Il est donc conseillé de respecter ces règles définies au niveau
 régional et national et donc de ne pas ajouter de règles locales.</p>
 </section>
 <section id="integration-dans-geonature">
-<h4>Intégration dans GeoNature<a class="headerlink" href="#integration-dans-geonature" title="Permalink to this headline"></a></h4>
-<section id="schema-gn-synthese">
-<h5>Schéma gn_synthese<a class="headerlink" href="#schema-gn-synthese" title="Permalink to this headline"></a></h5>
-<p>A chaque insertion d’une donnée dans la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code>,
-un trigger (<code class="docutils literal notranslate"><span class="pre">tri_insert_calculate_sensitivity</span></code>) fait appel à une
-fonction (<code class="docutils literal notranslate"><span class="pre">fct_tri_cal_sensi_diff_level_on_each_statement</span></code>) qui appelle
-elle-même les fonctions (<code class="docutils literal notranslate"><span class="pre">get_id_nomenclature_sensitivity</span></code> et
-<code class="docutils literal notranslate"><span class="pre">calculate_cd_diffusion_level</span></code>) du schéma <code class="docutils literal notranslate"><span class="pre">gn_sensitivity</span></code> pour le
-calcul de la sensibilité.</p>
-<p>La fonction <code class="docutils literal notranslate"><span class="pre">get_id_nomenclature_sensitivity</span></code> calcule le niveau de
-sensibilité en fonction de l’espèce, du type de sensibilité, de la durée
-de validité, de la période d’observation et du statut biologique.
-La fonction <code class="docutils literal notranslate"><span class="pre">calculate_cd_diffusion_level</span></code> calcule le niveau de diffusion.
-Actuellement, ce calcul est une simple copie du niveau de sensibilité.</p>
-</section>
+<h4>Intégration dans GeoNature<a class="headerlink" href="#integration-dans-geonature" title="Lien permanent vers cette rubrique"></a></h4>
+<p>Le référentiel de sensibilité fournie par l’INPN est normalement intégré
+à GeoNature lors de son installation. Sinon, il peut être manuellement
+intégré avec la commande :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(venv)$ geonature db upgrade ref_sensitivity_inpn@head
+</pre></div>
+</div>
 <section id="schema-gn-sensitivity">
-<h5>Schéma gn_sensitivity<a class="headerlink" href="#schema-gn-sensitivity" title="Permalink to this headline"></a></h5>
+<h5>Schéma gn_sensitivity<a class="headerlink" href="#schema-gn-sensitivity" title="Lien permanent vers cette rubrique"></a></h5>
 <p>3 tables sont utilisées par ces fonctions :</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code> qui relie notamment une espèce à un niveau de
@@ -736,24 +839,40 @@ sensibilité en fonction de la zone géographique (pas encore abordée
 ici)</p></li>
 </ul>
 <p>S’il n’y a aucune entrée dans <code class="docutils literal notranslate"><span class="pre">cor_sensitivity_criteria</span></code>, le niveau de
-sensibilité défini dans <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code> est directement appliqué.</p>
+sensibilité défini dans <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code> est appliqué peu importe
+le statut biologique ou le comportement de l’occurence.
+De même, s’il n’y a aucune entrée dans <code class="docutils literal notranslate"><span class="pre">cor_sensitivity_area</span></code>, le niveau
+de sensibilité est appliqué peu importe la localisation de l’observation.</p>
+</section>
+<section id="schema-gn-synthese">
+<h5>Schéma gn_synthese<a class="headerlink" href="#schema-gn-synthese" title="Lien permanent vers cette rubrique"></a></h5>
+<p>A chaque insertion d’une donnée dans la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code>,
+un trigger (<code class="docutils literal notranslate"><span class="pre">tri_insert_calculate_sensitivity</span></code>) fait appel à une
+fonction (<code class="docutils literal notranslate"><span class="pre">fct_tri_cal_sensitivity_on_each_statement</span></code>) qui appelle
+elle-même la fonction <code class="docutils literal notranslate"><span class="pre">gn_sensitivity.get_id_nomenclature_sensitivity</span></code>
+pour le calcul de la sensibilité.</p>
+<p>La fonction <code class="docutils literal notranslate"><span class="pre">get_id_nomenclature_sensitivity</span></code> calcule le niveau de
+sensibilité en fonction de l’espèce, du type de sensibilité, de la durée
+de validité, de la période d’observation, du statut biologique et du
+comportement de l’occurence.</p>
 </section>
 </section>
 <section id="personnalisation">
-<h4>Personnalisation<a class="headerlink" href="#personnalisation" title="Permalink to this headline"></a></h4>
+<h4>Personnalisation<a class="headerlink" href="#personnalisation" title="Lien permanent vers cette rubrique"></a></h4>
 <p>Pour l’instant, seule la personnalisation de la sensibilité pour
 une espèce donnée (peu importe l’observation) est abordée ici.</p>
 <section id="sensibilite-de-l-espece-toute-observation-confondue">
-<h5>Sensibilité de l’espèce toute observation confondue<a class="headerlink" href="#sensibilite-de-l-espece-toute-observation-confondue" title="Permalink to this headline"></a></h5>
+<h5>Sensibilité de l’espèce toute observation confondue<a class="headerlink" href="#sensibilite-de-l-espece-toute-observation-confondue" title="Lien permanent vers cette rubrique"></a></h5>
 <ol class="arabic">
 <li><p>Dans <code class="docutils literal notranslate"><span class="pre">gn_sensitivity.t_sensitivity_rules</span></code> : Changez le niveau de
 sensibilité <code class="docutils literal notranslate"><span class="pre">id_nomenclature_sensitivity</span></code> par celui désiré. Pour la
 valeur à renseigner, voir dans <code class="docutils literal notranslate"><span class="pre">t_nomenclature</span></code> en filtrant avec
-<code class="docutils literal notranslate"><span class="pre">id_type=ref_nomenclatures.get_id_nomenclature_type('SENSIBILITE')</span></code>. En général l’identifiant varie entre 65 (non sensible) et 69
+<code class="docutils literal notranslate"><span class="pre">id_type=ref_nomenclatures.get_id_nomenclature_type('SENSIBILITE')</span></code>.
+En général l’identifiant varie entre 65 (non sensible) et 69
 (aucune diffusion). Attention ces identifiants peuvent varier en fonction de
 votre installation.</p></li>
 <li><p>Dans <code class="docutils literal notranslate"><span class="pre">cor_sensitivity_criteria</span></code> : s’il y a une correspondance
-d’<code class="docutils literal notranslate"><span class="pre">id_sensitivity</span></code> avec <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code>, supprimez cette ligne.</p></li>
+d”<code class="docutils literal notranslate"><span class="pre">id_sensitivity</span></code> avec <code class="docutils literal notranslate"><span class="pre">t_sensitivity_rules</span></code>, modifiez ou supprimez cette ligne.</p></li>
 <li><p>Lancez la commande SQL suivante :</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="n">REFRESH</span><span class="w"> </span><span class="n">MATERIALIZED</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">gn_sensitivity</span><span class="p">.</span><span class="n">t_sensitivity_rules_cd_ref</span><span class="p">;</span><span class="w"></span>
 </pre></div>
@@ -761,33 +880,22 @@ d’<code class="docutils literal notranslate"><span class="pre">id_sensitivity<
 <p>Pour rafraîchir la vue materialisée utilisée par les fonctions
 appelées par le trigger de <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code>.</p>
 </li>
-<li><p>Il est maintenant nécessaire de mettre à jour les lignes concernant
-la sensibilité de vos anciennes observations dans la synthèse en
-déclenchant le trigger de calcul de la sensibilité. Or ce dernier est
-appelé uniquement lors d’un <code class="docutils literal notranslate"><span class="pre">INSERT</span></code> ou d’un <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code>. Il est alors
-possible de faire un <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code> sans changer les données en lançant la
-commande SQL suivante :</p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">gn_synthese</span><span class="p">.</span><span class="n">synthese</span><span class="w"></span>
-<span class="k">SET</span><span class="w"> </span><span class="n">cd_nom</span><span class="o">=</span><span class="n">cd_nom</span><span class="w"></span>
-<span class="k">WHERE</span><span class="w"> </span><span class="n">cd_nom</span><span class="o">=</span><span class="p">:</span><span class="n">cd_nom_de_votre_espece</span><span class="p">;</span><span class="w"></span>
+<li><p>Il est maintenant nécessaire de mettre à jour la sensibilité de vos
+observations présentent dans la synthèse. Pour cela, lancez la commande suivante :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>(venv)$ geonature sensitivity update-synthese
 </pre></div>
 </div>
 </li>
 </ol>
-<p><strong>Note</strong> : Il n’est pas possible de définir la sensibilité à <em>NULL</em> dans
-cet <code class="docutils literal notranslate"><span class="pre">UPDATE</span></code> sinon le trigger ne se déclenchera pas.</p>
-<p><strong>Note 2</strong> : Si vous avez modifié plusieurs espèces à la fois, modifiez
-le <code class="docutils literal notranslate"><span class="pre">WHERE</span></code> avec un <code class="docutils literal notranslate"><span class="pre">IN</span></code> ainsi qu’un <code class="docutils literal notranslate"><span class="pre">ARRAY</span></code> contenant tous les cd_nom
-de vos espèces.</p>
-<p>Normalement, les valeurs dans les colonnes
-<code class="docutils literal notranslate"><span class="pre">id_nomenclature_diffusion_level</span></code> et <code class="docutils literal notranslate"><span class="pre">id_nomenclature_sensitivity</span></code> de la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code> ont
+<p>Normalement, les valeurs dans la colonne <code class="docutils literal notranslate"><span class="pre">id_nomenclature_sensitivity</span></code>
+de la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code> ont
 changé. Vous pouvez le vérifier en navigant dans le module Synthèse
 puis dans les détails d’une observation de votre/vos espèce(s).</p>
 </section>
 </section>
 </section>
 <section id="fonctions">
-<h3>Fonctions<a class="headerlink" href="#fonctions" title="Permalink to this headline"></a></h3>
+<h3>Fonctions<a class="headerlink" href="#fonctions" title="Lien permanent vers cette rubrique"></a></h3>
 <p>La base de données contient de nombreuses fonctions.</p>
 <p><strong>gn_synthese</strong></p>
 <table class="docutils align-default">
@@ -944,14 +1052,14 @@ d’une observation avec tous les zonages</p></td>
 </div>
 </section>
 <section id="tables-transversales">
-<h3>Tables transversales<a class="headerlink" href="#tables-transversales" title="Permalink to this headline"></a></h3>
+<h3>Tables transversales<a class="headerlink" href="#tables-transversales" title="Lien permanent vers cette rubrique"></a></h3>
 <p>GeoNature contient aussi des tables de stockage transversales qui peuvent être utilisées par tous les modules. C’est le cas pour la validation, la sensibilité, l’historisation des modifications et les médias.</p>
 <p>Cela permet de ne pas avoir à mettre en place des tables et mécanismes dans chaque module, mais de s’appuyer sur un stockage, des fonctions et développements factorisés, centralisés et partagés.</p>
 <p>Ces tables utilisent notamment le mécanisme des UUID (identifiant unique) pour retrouver les enregistrements. Depuis une table source (Occtax ou un autre module) on peut retrouver les enregistrements stockées dans les tables transversales en utilisant un <code class="docutils literal notranslate"><span class="pre">WHERE</span> <span class="pre">&lt;TABLE_TRANSVERSALE&gt;.uuid_attached_row</span> <span class="pre">=</span> <span class="pre">&lt;MON_UUID_SOURCE&gt;</span></code> et ainsi retrouver l’historique de validation, les médias ou encore la sensibilité associés à une donnée.</p>
 <p>Voir <a class="reference external" href="https://github.com/PnX-SI/GeoNature/issues/339">https://github.com/PnX-SI/GeoNature/issues/339</a></p>
 </section>
 <section id="triggers-vers-la-synthese">
-<h3>Triggers vers la synthèse<a class="headerlink" href="#triggers-vers-la-synthese" title="Permalink to this headline"></a></h3>
+<h3>Triggers vers la synthèse<a class="headerlink" href="#triggers-vers-la-synthese" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Voir ceux mis en place de Occtax vers Synthèse.</p>
 <p>Cheminement d’une donnée Occtax :</p>
 <ol class="arabic simple">
@@ -963,7 +1071,7 @@ d’une observation avec tous les zonages</p></td>
 </ol>
 </section>
 <section id="triggers-dans-la-synthese">
-<h3>Triggers dans la synthèse<a class="headerlink" href="#triggers-dans-la-synthese" title="Permalink to this headline"></a></h3>
+<h3>Triggers dans la synthèse<a class="headerlink" href="#triggers-dans-la-synthese" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Version 2.1.0 de GeoNature</p>
 <img alt="https://geonature.fr/docs/img/2019-06-triggers-gn_synthese.jpg" src="https://geonature.fr/docs/img/2019-06-triggers-gn_synthese.jpg" />
 <p><strong>Table : synthese</strong></p>
@@ -1052,7 +1160,7 @@ Respecte le standard Occurrence de taxon du SINP.</p>
 <ul class="simple">
 <li><p>delete_and_insert_area_taxon</p>
 <ul>
-<li><p>Fonction qui met à jour la table <code class="docutils literal notranslate"><span class="pre">cor_area_taxon</span></code> en fonction d’un <code class="docutils literal notranslate"><span class="pre">cd_nom</span></code> et d’une liste d’<code class="docutils literal notranslate"><span class="pre">id</span> <span class="pre">area</span></code></p></li>
+<li><p>Fonction qui met à jour la table <code class="docutils literal notranslate"><span class="pre">cor_area_taxon</span></code> en fonction d’un <code class="docutils literal notranslate"><span class="pre">cd_nom</span></code> et d’une liste d”<code class="docutils literal notranslate"><span class="pre">id</span> <span class="pre">area</span></code></p></li>
 <li><p>Actions :</p>
 <ol class="arabic simple">
 <li><p>Suppression des enregistrement de la table <code class="docutils literal notranslate"><span class="pre">cor_area_taxon</span></code> avec le <code class="docutils literal notranslate"><span class="pre">cd_nom</span></code> et les <code class="docutils literal notranslate"><span class="pre">id_area</span></code> concernés</p></li>
@@ -1072,7 +1180,7 @@ Respecte le standard Occurrence de taxon du SINP.</p>
 </section>
 </section>
 <section id="modularite">
-<h2>Modularité<a class="headerlink" href="#modularite" title="Permalink to this headline"></a></h2>
+<h2>Modularité<a class="headerlink" href="#modularite" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Chaque module doit avoir son propre schéma dans la BDD, avec ses propres fichiers SQL de création comme le module OccTax : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/data">https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/data</a></p>
 <p>Côté Backend, chaque module a aussi son modèle et ses routes : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/backend">https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/backend</a></p>
 <p>Idem côté Frontend, où chaque module a sa configuration et ses composants : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/frontend/app">https://github.com/PnX-SI/GeoNature/tree/develop/contrib/occtax/frontend/app</a></p>
@@ -1080,7 +1188,7 @@ Respecte le standard Occurrence de taxon du SINP.</p>
 <p>Plus d’infos sur le développement d’un module : <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/docs/development.rst#d%C3%A9velopper-et-installer-un-gn_module">https://github.com/PnX-SI/GeoNature/blob/master/docs/development.rst#d%C3%A9velopper-et-installer-un-gn_module</a></p>
 </section>
 <section id="configuration">
-<h2>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline"></a></h2>
+<h2>Configuration<a class="headerlink" href="#configuration" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Pour configurer GeoNature, actuellement il y a :</p>
 <ul class="simple">
 <li><p>Une configuration pour l’installation : <code class="docutils literal notranslate"><span class="pre">config/settings.ini</span></code></p></li>
@@ -1090,21 +1198,31 @@ Respecte le standard Occurrence de taxon du SINP.</p>
 </ul>
 <img alt="http://geonature.fr/docs/img/admin-manual/administration-geonature.png" src="http://geonature.fr/docs/img/admin-manual/administration-geonature.png" />
 <section id="configuration-generale-de-l-application">
-<h3>Configuration générale de l’application<a class="headerlink" href="#configuration-generale-de-l-application" title="Permalink to this headline"></a></h3>
-<p>L’installation de GeoNature génère le fichier de configuration globale <code class="docutils literal notranslate"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/config/geonature_config.toml</span></code>. Ce fichier est aussi copié dans le frontend (<code class="docutils literal notranslate"><span class="pre">frontend/conf/app.config.ts</span></code>), à ne pas modifier.</p>
-<p>Par défaut, le fichier <code class="docutils literal notranslate"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/config/geonature_config.toml</span></code> est minimaliste et généré à partir des infos présentes dans le fichier <code class="docutils literal notranslate"><span class="pre">config/settings.ini</span></code>.</p>
-<p>Il est possible de le compléter en surcouchant les paramètres présents dans le fichier <code class="docutils literal notranslate"><span class="pre">config/default_config.toml.example</span></code>.</p>
-<p>A chaque modification du fichier global de configuration (<code class="docutils literal notranslate"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/config/geonature_config.toml</span></code>), il faut regénérer le fichier de configuration du frontend.</p>
-<p>Ainsi après chaque modification des fichiers de configuration globale, placez-vous dans le backend de GeoNature (<code class="docutils literal notranslate"><span class="pre">/home/monuser/GeoNature/backend</span></code>) et lancez les commandes :</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">source venv/bin/activate</span>
-<span class="go">geonature update_configuration</span>
-<span class="go">sudo systemctl restart geonature</span>
-<span class="go">deactivate</span>
+<h3>Configuration générale de l’application<a class="headerlink" href="#configuration-generale-de-l-application" title="Lien permanent vers cette rubrique"></a></h3>
+<p>La configuration générale de GeoNature se fait dans le fichier <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code>.
+Une version minimaliste est généré à l’installation à partir du fichier <code class="docutils literal notranslate"><span class="pre">config/settings.ini</span></code>.
+Vous pouvez compléter votre configuration en vous inspirant des paramètres par défaut présent dans le fichier <code class="docutils literal notranslate"><span class="pre">config/default_config.toml.example</span></code>.</p>
+<p>Le frontend lit sa configuration depuis le fichier <code class="docutils literal notranslate"><span class="pre">frontend/conf/app.config.ts</span></code> mais ce dernier n’est pas à modifier manuellement : il est généré à partir des paramètres présents dans le fichier <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code>.</p>
+<p id="post-config-change">Ainsi, à chaque modification du fichier de configuration, vous devez :</p>
+<ul class="simple">
+<li><p>relancer le backend : <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">geonature</span></code></p></li>
+<li><p>regénérer le fichier de configuration du frontend :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">source</span> backend/venv/bin/activate
+geonature generate-frontend-config
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>rebuilder le frontend :</p></li>
+</ul>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> frontend
+nvm use
+npm run build
 </pre></div>
 </div>
 </section>
 <section id="configuration-d-un-gn-module">
-<h3>Configuration d’un gn_module<a class="headerlink" href="#configuration-d-un-gn-module" title="Permalink to this headline"></a></h3>
+<h3>Configuration d’un gn_module<a class="headerlink" href="#configuration-d-un-gn-module" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Lors de l’installation d’un module, un fichier de configuration est créé : <code class="docutils literal notranslate"><span class="pre">&lt;MODULE_DIRECTORY&gt;/config/conf_gn_module.toml</span></code>.</p>
 <p>Comme pour la configuration globale, ce fichier est minimaliste et peut être surcouché. Le fichier <code class="docutils literal notranslate"><span class="pre">conf_gn_module.toml.example</span></code>, situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">config</span></code> du module, décrit l’ensemble des variables de configuration disponibles ainsi que leurs valeurs par défaut.</p>
 <p>A chaque modification de ce fichier, lancer les commandes suivantes depuis le backend de GeoNature (<code class="docutils literal notranslate"><span class="pre">/home/monuser/GeoNature/backend</span></code>). Le fichier est copié à destination du frontend <code class="docutils literal notranslate"><span class="pre">&lt;nom_module&gt;/frontend/app/module.config.ts</span></code>, qui est alors recompilé automatiquement.</p>
@@ -1116,18 +1234,19 @@ Respecte le standard Occurrence de taxon du SINP.</p>
 </section>
 </section>
 <section id="exploitation">
-<h2>Exploitation<a class="headerlink" href="#exploitation" title="Permalink to this headline"></a></h2>
+<h2>Exploitation<a class="headerlink" href="#exploitation" title="Lien permanent vers cette rubrique"></a></h2>
 <section id="logs">
-<h3>Logs<a class="headerlink" href="#logs" title="Permalink to this headline"></a></h3>
+<h3>Logs<a class="headerlink" href="#logs" title="Lien permanent vers cette rubrique"></a></h3>
 <ul class="simple">
 <li><p>Logs d’installation de GeoNature : <code class="docutils literal notranslate"><span class="pre">geonature/install/install.log</span></code></p></li>
-<li><p>Logs de GeoNature : <code class="docutils literal notranslate"><span class="pre">/var/log/geonature.log</span></code></p></li>
+<li><p>Logs de GeoNature : <code class="docutils literal notranslate"><span class="pre">/var/log/geonature/geonature.log</span></code></p></li>
+<li><p>Logs du worker Celery : <code class="docutils literal notranslate"><span class="pre">/var/log/geonature/geonature-worker.log</span></code></p></li>
 <li><p>Logs de TaxHub : <code class="docutils literal notranslate"><span class="pre">/var/log/taxhub.log</span></code></p></li>
 <li><p>Logs de UsersHub : <code class="docutils literal notranslate"><span class="pre">/var/log/usershub.log</span></code></p></li>
 </ul>
 </section>
 <section id="commandes-geonature">
-<h3>Commandes GeoNature<a class="headerlink" href="#commandes-geonature" title="Permalink to this headline"></a></h3>
+<h3>Commandes GeoNature<a class="headerlink" href="#commandes-geonature" title="Lien permanent vers cette rubrique"></a></h3>
 <p>GeoNature est fourni avec une série de commandes pour administrer l’application.
 Pour les exécuter, il est nécessaire d’être dans le virtualenv python de GeoNature</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd &lt;GEONATURE_DIRECTORY&gt;/backend</span>
@@ -1140,17 +1259,15 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 <li><p><code class="docutils literal notranslate"><span class="pre">activate_gn_module</span></code> : Active un gn_module installé (Possibilité d’activer seulement le backend ou le frontend)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">deactivate_gn_module</span></code> : Désactive gn_un module activé (Possibilté de désactiver seulement le backend ou le frontend)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">dev_back</span></code> : Lance le backend en mode développement</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">dev_front</span></code> : Lance le frontend en mode développement</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">generate_frontend_module_route</span></code> : Génère ou regénère le fichier de routing du frontend en incluant les gn_module installés (Fait automatiquement lors de l’installation d’un module)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">install_gn_module</span></code> : Installe un gn_module</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">start_gunicorn</span></code> : Lance l’API du backend avec gunicorn</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">update_configuration</span></code> : Met à jour la configuration du cœur de l’application. A exécuter suite à une modification du fichier <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">generate_frontend_config</span></code> : Regénère le fichier de configuration du frontend. A exécuter suite à une modification du fichier <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code></p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">update_module_configuration</span></code> : Met à jour la configuration d’un module. A exécuter suite à une modification du fichier <code class="docutils literal notranslate"><span class="pre">conf_gn_module.toml</span></code>.</p></li>
 </ul>
 <p>Effectuez <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">&lt;nom_commande&gt;</span> <span class="pre">--help</span></code> pour accéder à la documentation et à des exemples d’utilisation de chaque commande.</p>
 </section>
 <section id="demarrer-arreter-les-api">
-<h3>Démarrer / arrêter les API<a class="headerlink" href="#demarrer-arreter-les-api" title="Permalink to this headline"></a></h3>
+<h3>Démarrer / arrêter les API<a class="headerlink" href="#demarrer-arreter-les-api" title="Lien permanent vers cette rubrique"></a></h3>
 <ul class="simple">
 <li><p>Démarrer GeoNature : <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">start</span> <span class="pre">geonature</span></code></p></li>
 <li><p>Arrêter GeoNature : <code class="docutils literal notranslate"><span class="pre">systemctl</span> <span class="pre">stop</span> <span class="pre">geonature</span></code></p></li>
@@ -1160,7 +1277,7 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 <p>Les mêmes commandes sont disponibles pour TaxHub en remplacant <code class="docutils literal notranslate"><span class="pre">geonature</span></code> par <code class="docutils literal notranslate"><span class="pre">taxhub</span></code>.</p>
 </section>
 <section id="supervision-des-services">
-<h3>Supervision des services<a class="headerlink" href="#supervision-des-services" title="Permalink to this headline"></a></h3>
+<h3>Supervision des services<a class="headerlink" href="#supervision-des-services" title="Lien permanent vers cette rubrique"></a></h3>
 <ul class="simple">
 <li><p>Vérifier que les applications GeoNature et TaxHub sont accessibles en http</p></li>
 <li><p>Vérifier que leurs services (API) sont lancés et fonctionnent correctement (tester les deux routes ci-dessous).</p>
@@ -1174,7 +1291,7 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 </ul>
 </section>
 <section id="maintenance">
-<h3>Maintenance<a class="headerlink" href="#maintenance" title="Permalink to this headline"></a></h3>
+<h3>Maintenance<a class="headerlink" href="#maintenance" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Lors d’une opération de maintenance (montée en version, modification de la base de données…), vous pouvez rendre l’application momentanémment indisponible.</p>
 <p>Pour cela, désactivez la configuration Apache de GeoNature, puis activez la configuration du mode de maintenance :</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo a2dissite geonature</span>
@@ -1197,7 +1314,7 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 </ul>
 </section>
 <section id="parametres-gunicorn">
-<h3>Paramètres Gunicorn<a class="headerlink" href="#parametres-gunicorn" title="Permalink to this headline"></a></h3>
+<h3>Paramètres Gunicorn<a class="headerlink" href="#parametres-gunicorn" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Voici les paramètres de Gunicorn par défaut :</p>
 <blockquote>
 <div><ul class="simple">
@@ -1209,12 +1326,26 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 </ul>
 </div></blockquote>
 <p>Pour modifier une de ces variables, créer un fichier <code class="docutils literal notranslate"><span class="pre">environ</span></code> à la racine de votre dossier GeoNature, et indiquer la variable d’environnement avec sa valeur modifiée.</p>
+<p>Si vous souhaitez modifier de manière plus avancé la ligne de commande <code class="docutils literal notranslate"><span class="pre">gunicorn</span></code>, surcouchez le service systemd :</p>
+<blockquote>
+<div><ul>
+<li><p>Lancez <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">edit</span> <span class="pre">geonature</span></code> ce qui va créer le fichier <code class="docutils literal notranslate"><span class="pre">/etc/systemd/system/geonature.service.d/override.conf</span></code> et ouvrir un éditeur pour vous permettre de le modifier</p></li>
+<li><p>Indiquez :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>[Service]
+ExecStart=
+ExecStart=/path/to/venv/bin/unicorn geonature:create_app() …
+</pre></div>
+</div>
+<p>Note : le premier <code class="docutils literal notranslate"><span class="pre">ExecStart</span></code> permet de réinitialiser la commande de lancement de gunicorn.</p>
+</li>
+</ul>
+</div></blockquote>
 </section>
 </section>
 <section id="sauvegarde-et-restauration">
-<h2>Sauvegarde et restauration<a class="headerlink" href="#sauvegarde-et-restauration" title="Permalink to this headline"></a></h2>
+<h2>Sauvegarde et restauration<a class="headerlink" href="#sauvegarde-et-restauration" title="Lien permanent vers cette rubrique"></a></h2>
 <section id="sauvegarde">
-<h3>Sauvegarde<a class="headerlink" href="#sauvegarde" title="Permalink to this headline"></a></h3>
+<h3>Sauvegarde<a class="headerlink" href="#sauvegarde" title="Lien permanent vers cette rubrique"></a></h3>
 <ul class="simple">
 <li><p>Sauvegarde de la base de données :</p></li>
 </ul>
@@ -1263,7 +1394,7 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 </ul>
 </section>
 <section id="restauration">
-<h3>Restauration<a class="headerlink" href="#restauration" title="Permalink to this headline"></a></h3>
+<h3>Restauration<a class="headerlink" href="#restauration" title="Lien permanent vers cette rubrique"></a></h3>
 <ul>
 <li><p>Restauration de la base de données :</p>
 <ul>
@@ -1309,8 +1440,8 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 </section>
 </section>
 <section id="customisation">
-<h2>Customisation<a class="headerlink" href="#customisation" title="Permalink to this headline"></a></h2>
-<p>La customisation de l’application nécessite de relancer la compilation du frontend à chaque modification. Cette opération étant relativement longue, une solution alternative (mais avancée) consiste à passer le frontend de manière temporaire en mode ‘developpement’.</p>
+<h2>Customisation<a class="headerlink" href="#customisation" title="Lien permanent vers cette rubrique"></a></h2>
+<p>La customisation de l’application nécessite de relancer la compilation du frontend à chaque modification. Cette opération étant relativement longue, une solution alternative (mais avancée) consiste à passer le frontend de manière temporaire en mode “developpement”.</p>
 <p>Pour cela exécuter la commande suivante depuis le répertoire <code class="docutils literal notranslate"><span class="pre">frontend</span></code></p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">npm run start -- --host=0.0.0.0 --disable-host-check</span>
 </pre></div>
@@ -1321,7 +1452,7 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 <p>Une fois les modifications terminées, remodifier le fichier <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code> pour remettre l’URL initiale, relancez l’application (<code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">supervisorctl</span> <span class="pre">restart</span> <span class="pre">geonature2</span></code> ou <code class="docutils literal notranslate"><span class="pre">sudo</span> <span class="pre">systemctl</span> <span class="pre">restart</span> <span class="pre">geonature</span></code>), puis relancez la compilation du frontend (<code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">build</span></code>). Faites enfin un <code class="docutils literal notranslate"><span class="pre">ctrl+c</span></code> dans le terminal ou le frontend a été lancé pour stopper le serveur de développement.</p>
 <p>Si la manipulation vous parait compliquée, vous pouvez suivre la documentation qui suit, qui fait relancer la compilation du frontend à chaque modification.</p>
 <section id="integrer-son-logo">
-<h3>Intégrer son logo<a class="headerlink" href="#integrer-son-logo" title="Permalink to this headline"></a></h3>
+<h3>Intégrer son logo<a class="headerlink" href="#integrer-son-logo" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Le logo affiché dans la barre de navigation de GeoNature peut être modifié dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/frontend/src/custom/images</span></code>. Remplacez alors le fichier <code class="docutils literal notranslate"><span class="pre">logo_structure.png</span></code> par votre propre logo, en conservant ce nom pour le nouveau fichier. Le bandeau fait 50px de hauteur, vous pouvez donc mettre une image faisant cette hauteur. Il est également possible de modifier la taille de l’image en CSS dans le fichier <code class="docutils literal notranslate"><span class="pre">frontend/src/assets/custom.css</span></code> de la manière suivante:</p>
 <div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="c">/* la balise img affichant l&#39;image a l&#39;id &#39;logo-structure */</span><span class="w"></span>
 <span class="p">#</span><span class="nn">logo-structure</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
@@ -1337,7 +1468,7 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 </div>
 </section>
 <section id="customiser-le-contenu">
-<h3>Customiser le contenu<a class="headerlink" href="#customiser-le-contenu" title="Permalink to this headline"></a></h3>
+<h3>Customiser le contenu<a class="headerlink" href="#customiser-le-contenu" title="Lien permanent vers cette rubrique"></a></h3>
 <ul class="simple">
 <li><p>Customiser le contenu de la page d’introduction :</p></li>
 </ul>
@@ -1359,7 +1490,7 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 </div>
 </section>
 <section id="customiser-l-aspect-esthetique">
-<h3>Customiser l’aspect esthétique<a class="headerlink" href="#customiser-l-aspect-esthetique" title="Permalink to this headline"></a></h3>
+<h3>Customiser l’aspect esthétique<a class="headerlink" href="#customiser-l-aspect-esthetique" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Les couleurs de textes, couleurs de fonds, forme des boutons etc peuvent être adaptées en renseignant le fichier <code class="docutils literal notranslate"><span class="pre">custom.css</span></code>, situé dans le répertoire <code class="docutils literal notranslate"><span class="pre">geonature/frontend/src/assets</span></code>.</p>
 <p>Pour remplacer la couleur de fond du bandeau de navigation par une image, on peut par exemple apporter la modification suivante :</p>
 <div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="w"> </span><span class="nt">html</span><span class="w"> </span><span class="nt">body</span><span class="w"> </span><span class="nt">pnx-root</span><span class="w"> </span><span class="nt">pnx-nav-home</span><span class="w"> </span><span class="nt">mat-sidenav-container</span><span class="p">.</span><span class="nc">sidenav-container</span><span class="p">.</span><span class="nc">mat-drawer-container</span><span class="p">.</span><span class="nc">mat-sidenav-container</span><span class="w"> </span><span class="nt">mat-sidenav-content</span><span class="p">.</span><span class="nc">mat-drawer-content</span><span class="p">.</span><span class="nc">mat-sidenav-content</span><span class="w"> </span><span class="nt">mat-toolbar</span><span class="p">#</span><span class="nn">app-toolbar</span><span class="p">.</span><span class="nc">row</span><span class="p">.</span><span class="nc">mat-toolbar</span><span class="w"></span>
@@ -1377,7 +1508,7 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 </div>
 </section>
 <section id="customiser-les-noms-et-pictos-des-modules">
-<h3>Customiser les noms et pictos des modules<a class="headerlink" href="#customiser-les-noms-et-pictos-des-modules" title="Permalink to this headline"></a></h3>
+<h3>Customiser les noms et pictos des modules<a class="headerlink" href="#customiser-les-noms-et-pictos-des-modules" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Vous pouvez modifier l’intitulé et le pictogramme des modules dans le menu des modules. Pour cela, adaptez le contenu des champs <code class="docutils literal notranslate"><span class="pre">module_label</span></code> et <code class="docutils literal notranslate"><span class="pre">module_picto</span></code> (avec des icones de la librairie Font Awesome - <a class="reference external" href="https://fontawesome.com">https://fontawesome.com</a>) dans la table <code class="docutils literal notranslate"><span class="pre">gn_commons.t_modules</span></code>.</p>
 <p>Exemple :</p>
 <div class="highlight-SQL notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Module Occtax</span>
@@ -1406,15 +1537,15 @@ Pour les exécuter, il est nécessaire d’être dans le virtualenv python de Ge
 <p>Depuis la version 2.5.0, il est aussi possible de customiser l’ordre des modules dans le menu, par ordre alphabétique par défaut, en renseignant le champs <code class="docutils literal notranslate"><span class="pre">gn_commons.t_modules.module_order</span></code>.</p>
 </section>
 <section id="customiser-les-exports-pdf">
-<h3>Customiser les exports PDF<a class="headerlink" href="#customiser-les-exports-pdf" title="Permalink to this headline"></a></h3>
+<h3>Customiser les exports PDF<a class="headerlink" href="#customiser-les-exports-pdf" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Vous pouvez modifier le bandeau et le logo fournis par défaut dans les exports PDF en modifiant les images <code class="docutils literal notranslate"><span class="pre">Bandeau_pdf.png</span></code> et <code class="docutils literal notranslate"><span class="pre">Logo_pdf.png</span></code> dans <code class="docutils literal notranslate"><span class="pre">backend/static/images</span></code>.
-Le style des fichiers est également customisable grâce au fichier “backend/geonature/static/css/custom.css”. La classe <code class="docutils literal notranslate"><span class="pre">main-color</span></code> permet notamment de changer la couleur des séparateurs (orange par défaut).</p>
+Le style des fichiers est également customisable grâce au fichier « backend/geonature/static/css/custom.css ». La classe <code class="docutils literal notranslate"><span class="pre">main-color</span></code> permet notamment de changer la couleur des séparateurs (orange par défaut).</p>
 </section>
 </section>
 <section id="integrer-des-donnees">
-<h2>Intégrer des données<a class="headerlink" href="#integrer-des-donnees" title="Permalink to this headline"></a></h2>
+<h2>Intégrer des données<a class="headerlink" href="#integrer-des-donnees" title="Lien permanent vers cette rubrique"></a></h2>
 <section id="referentiel-geographique">
-<h3>Référentiel géographique<a class="headerlink" href="#referentiel-geographique" title="Permalink to this headline"></a></h3>
+<h3>Référentiel géographique<a class="headerlink" href="#referentiel-geographique" title="Lien permanent vers cette rubrique"></a></h3>
 <p>GeoNature est fourni avec des données géographiques de base sur la métropôle (MNT national à 250m et communes de métropôle).</p>
 <p><strong>1.</strong> Si vous souhaitez modifier le MNT pour mettre celui de votre territoire :</p>
 <ul class="simple">
@@ -1431,7 +1562,7 @@ Le style des fichiers est également customisable grâce au fichier “backend/g
 <span class="go">sudo -n -u postgres -s psql -d MYDBNAME -c &quot;TRUNCATE TABLE ref_geo.dem_vector;&quot;</span>
 </pre></div>
 </div>
-<p>Placer votre propre fichier MNT (ou vos différents fichiers “dalles”) dans le répertoire <code class="docutils literal notranslate"><span class="pre">/tmp/geonature</span></code> (adapter le nom du fichier et son chemin ainsi que les paramètres en majuscule).</p>
+<p>Placer votre propre fichier MNT (ou vos différents fichiers « dalles ») dans le répertoire <code class="docutils literal notranslate"><span class="pre">/tmp/geonature</span></code> (adapter le nom du fichier et son chemin ainsi que les paramètres en majuscule).</p>
 <p>Pour utiliser celui proposé par défaut :</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wget --cache=off http://geonature.fr/data/ign/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -P /tmp/geonature</span>
 <span class="go">unzip /tmp/geonature/BDALTIV2_2-0_250M_ASC_LAMB93-IGN69_FRANCE_2017-06-21.zip -d /tmp/geonature</span>
@@ -1462,7 +1593,7 @@ fichiers par *.asc :</p>
 </ul>
 </section>
 <section id="donnees-externes">
-<h3>Données externes<a class="headerlink" href="#donnees-externes" title="Permalink to this headline"></a></h3>
+<h3>Données externes<a class="headerlink" href="#donnees-externes" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Il peut s’agir de données partenaires, de données historiques ou de données saisies dans d’autres outils.</p>
 <p>2 possibilités s’offrent à vous :</p>
 <ul class="simple">
@@ -1489,11 +1620,11 @@ fichiers par *.asc :</p>
 </section>
 </section>
 <section id="creation-de-compte">
-<h2>Création de compte<a class="headerlink" href="#creation-de-compte" title="Permalink to this headline"></a></h2>
+<h2>Création de compte<a class="headerlink" href="#creation-de-compte" title="Lien permanent vers cette rubrique"></a></h2>
 <section id="configuration-de-la-creation-de-compte">
-<h3>Configuration de la création de compte<a class="headerlink" href="#configuration-de-la-creation-de-compte" title="Permalink to this headline"></a></h3>
+<h3>Configuration de la création de compte<a class="headerlink" href="#configuration-de-la-creation-de-compte" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Depuis la version 2.1.0, UsersHub propose une API de création de compte utilisateur. Une interface a été ajoutée à GeoNature pour permettre aux futurs utilisateurs de faire des demandes de création de compte depuis la page d’authentification de GeoNature. Ce mode est activable/désactivable depuis la configuration globale de GeoNature.</p>
-<p>Pour des raisons de sécurité, l’API de création de compte est réservée aux utilisateurs “admin” grâce à un token secret. GeoNature a donc besoin de se connecter en tant qu’administrateur à UsersHub pour éxecuter les requêtes d’administration de compte.
+<p>Pour des raisons de sécurité, l’API de création de compte est réservée aux utilisateurs « admin » grâce à un token secret. GeoNature a donc besoin de se connecter en tant qu’administrateur à UsersHub pour éxecuter les requêtes d’administration de compte.
 Renseigner les paramètres suivants dans le fichier de configuration (<code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code>). L’utilisateur doit avoir des droits 6 dans UsersHub</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">USERSHUB</span><span class="p">]</span>
     <span class="n">URL_USERSHUB</span> <span class="o">=</span> <span class="s1">&#39;http://mon_adresse_usershub.fr&#39;</span> <span class="c1"># sans slash final</span>
@@ -1520,7 +1651,7 @@ Renseigner les paramètres suivants dans le fichier de configuration (<code clas
     <span class="n">ENABLE_SIGN_UP</span> <span class="o">=</span> <span class="n">true</span>
 </pre></div>
 </div>
-<p>Deux modes sont alors disponibles. Soit l’utilisateur est automatiquement accepté et un compte lui est créé après une confirmation de son email, soit un mail est envoyé à un administrateur pour confirmer la demande. Le compte ne sera crée qu’après validation par l’administrateur. Le paramètre <code class="docutils literal notranslate"><span class="pre">AUTO_ACCOUNT_CREATION</span></code> contrôle ce comportement (par défaut le compte créé sans validation par un administrateur: true). Dans le mode “création de compte validé par administrateur”, il est indispensable de renseigner un email où seront envoyés les emails de validation (paramètre <code class="docutils literal notranslate"><span class="pre">VALIDATOR_EMAIL</span></code>)</p>
+<p>Deux modes sont alors disponibles. Soit l’utilisateur est automatiquement accepté et un compte lui est créé après une confirmation de son email, soit un mail est envoyé à un administrateur pour confirmer la demande. Le compte ne sera crée qu’après validation par l’administrateur. Le paramètre <code class="docutils literal notranslate"><span class="pre">AUTO_ACCOUNT_CREATION</span></code> contrôle ce comportement (par défaut le compte créé sans validation par un administrateur: true). Dans le mode « création de compte validé par administrateur », il est indispensable de renseigner un email où seront envoyés les emails de validation (paramètre <code class="docutils literal notranslate"><span class="pre">VALIDATOR_EMAIL</span></code>)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># automatique</span>
 <span class="p">[</span><span class="n">ACCOUNT_MANAGEMENT</span><span class="p">]</span>
     <span class="n">ENABLE_SIGN_UP</span> <span class="o">=</span> <span class="n">true</span>
@@ -1533,8 +1664,8 @@ Renseigner les paramètres suivants dans le fichier de configuration (<code clas
     <span class="n">VALIDATOR_EMAIL</span> <span class="o">=</span> <span class="s1">&#39;email@validateur.io&#39;</span>
 </pre></div>
 </div>
-<p>L’utilisateur qui demande la création de compte est automatiquement mis dans un “groupe” UsersHub (par défaut, il s’agit du groupe “En poste”). Ce groupe est paramétrable depuis la table <code class="docutils literal notranslate"><span class="pre">utilisateurs.cor_role_app_profil</span></code>. (La ligne où <code class="docutils literal notranslate"><span class="pre">is_default_group_for_app</span> <span class="pre">=</span> <span class="pre">true</span></code> sera utilisée comme groupe par défaut pour GeoNature). Il n’est pas en paramètre de GeoNature pusqu’il serait falsifiable via l’API. ⚠️ <strong>Attention</strong>, si vous effectuez une migration depuis une version de GeoNature &lt; 2.2.0, aucun groupe par défaut n’est défini, vous devez définir à la main le groupe par défaut pour l’application GeoNature dans la table <code class="docutils literal notranslate"><span class="pre">utilisateurs.cor_role_app_profil</span></code>.</p>
-<p>Dans le mode “création de compte validé par administrateur”, lorsque l’inscription est validée par un administrateur, un email est envoyé à l’utilisateur pour lui indiquer la confirmation de son inscription.
+<p>L’utilisateur qui demande la création de compte est automatiquement mis dans un « groupe » UsersHub (par défaut, il s’agit du groupe « En poste »). Ce groupe est paramétrable depuis la table <code class="docutils literal notranslate"><span class="pre">utilisateurs.cor_role_app_profil</span></code>. (La ligne où <code class="docutils literal notranslate"><span class="pre">is_default_group_for_app</span> <span class="pre">=</span> <span class="pre">true</span></code> sera utilisée comme groupe par défaut pour GeoNature). Il n’est pas en paramètre de GeoNature pusqu’il serait falsifiable via l’API. ⚠️ <strong>Attention</strong>, si vous effectuez une migration depuis une version de GeoNature &lt; 2.2.0, aucun groupe par défaut n’est défini, vous devez définir à la main le groupe par défaut pour l’application GeoNature dans la table <code class="docutils literal notranslate"><span class="pre">utilisateurs.cor_role_app_profil</span></code>.</p>
+<p>Dans le mode « création de compte validé par administrateur », lorsque l’inscription est validée par un administrateur, un email est envoyé à l’utilisateur pour lui indiquer la confirmation de son inscription.
 Il est possible de personnaliser le texte de la partie finale de cet email située juste avant la signature à l’aide du paramètre <code class="docutils literal notranslate"><span class="pre">ADDON_USER_EMAIL</span></code> (toujours à ajouter à la rubrique <code class="docutils literal notranslate"><span class="pre">[ACCOUNT_MANAGEMENT]</span></code>).
 Vous pouvez utiliser des balises HTML compatibles avec les emails pour ce texte.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">ACCOUNT_MANAGEMENT</span><span class="p">]</span>
@@ -1543,7 +1674,7 @@ Vous pouvez utiliser des balises HTML compatibles avec les emails pour ce texte.
 <span class="s2">      &lt;/p&gt;&quot;&quot;&quot;</span>
 </pre></div>
 </div>
-<p>Il est également possible de créer automatiquement un jeu de données et un cadre d’acquisition “personnel” à l’utilisateur afin qu’il puisse saisir des données dès sa création de compte via le paramètre <code class="docutils literal notranslate"><span class="pre">AUTO_DATASET_CREATION</span></code>. Par la suite l’administrateur pourra rattacher l’utilisateur à des JDD et CA via son organisme.</p>
+<p>Il est également possible de créer automatiquement un jeu de données et un cadre d’acquisition « personnel » à l’utilisateur afin qu’il puisse saisir des données dès sa création de compte via le paramètre <code class="docutils literal notranslate"><span class="pre">AUTO_DATASET_CREATION</span></code>. Par la suite l’administrateur pourra rattacher l’utilisateur à des JDD et CA via son organisme.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">ACCOUNT_MANAGEMENT</span><span class="p">]</span>
     <span class="n">AUTO_ACCOUNT_CREATION</span> <span class="o">=</span> <span class="n">true</span>
     <span class="n">ENABLE_SIGN_UP</span> <span class="o">=</span> <span class="n">true</span>
@@ -1552,11 +1683,11 @@ Vous pouvez utiliser des balises HTML compatibles avec les emails pour ce texte.
 </div>
 </section>
 <section id="customisation-du-formulaire">
-<h3>Customisation du formulaire<a class="headerlink" href="#customisation-du-formulaire" title="Permalink to this headline"></a></h3>
+<h3>Customisation du formulaire<a class="headerlink" href="#customisation-du-formulaire" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Le formulaire de création de compte est par défaut assez minimaliste (nom, prénom, email, mot de passe, organisme, remarque).</p>
-<p><em>NB</em> l’organisme est demandé à l’utilisateur à titre “informatif”, c’est à l’administrateur de rattacher individuellement l’utilisateur à son organisme, et éventuellement de le créer, s’il n’existe pas.</p>
+<p><em>NB</em> l’organisme est demandé à l’utilisateur à titre « informatif », c’est à l’administrateur de rattacher individuellement l’utilisateur à son organisme, et éventuellement de le créer, s’il n’existe pas.</p>
 <p>Il est possible d’ajouter des champs au formulaire grâce à un générateur controlé par la configuration. Plusieurs type de champs peuvent être ajoutés (text, textarea, number, select, checkbox mais aussi taxonomy, nomenclature etc…).</p>
-<p>L’exemple ci-dessous permet de créer un champs de type “checkbox” obligatoire, avec un lien vers un document (une charte par exemple) et un champ de type “select”, non obligatoire. (voir le fichier <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml.example</span></code> pour un exemple plus exhaustif).</p>
+<p>L’exemple ci-dessous permet de créer un champs de type « checkbox » obligatoire, avec un lien vers un document (une charte par exemple) et un champ de type « select », non obligatoire. (voir le fichier <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml.example</span></code> pour un exemple plus exhaustif).</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">ACCOUNT_MANAGEMENT</span><span class="p">]</span>
 <span class="p">[[</span><span class="n">ACCOUNT_MANAGEMENT</span><span class="o">.</span><span class="n">ACCOUNT_FORM</span><span class="p">]]</span>
     <span class="n">type_widget</span> <span class="o">=</span> <span class="s2">&quot;checkbox&quot;</span>
@@ -1578,8 +1709,8 @@ Vous pouvez utiliser des balises HTML compatibles avec les emails pour ce texte.
 </div>
 </section>
 <section id="espace-utilisateur">
-<h3>Espace utilisateur<a class="headerlink" href="#espace-utilisateur" title="Permalink to this headline"></a></h3>
-<p>Enfin, un espace “utilisateur” est accessible lorsque l’on est connecté, permettant de modifier ses informations personnelles, y compris son mot de passe.</p>
+<h3>Espace utilisateur<a class="headerlink" href="#espace-utilisateur" title="Lien permanent vers cette rubrique"></a></h3>
+<p>Enfin, un espace « utilisateur » est accessible lorsque l’on est connecté, permettant de modifier ses informations personnelles, y compris son mot de passe.</p>
 <p>Cet espace est activable grâce au paramètre <code class="docutils literal notranslate"><span class="pre">ENABLE_USER_MANAGEMENT</span></code>. Par défaut, il est désactivé.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">ACCOUNT_MANAGEMENT</span><span class="p">]</span>
 <span class="n">AUTO_ACCOUNT_CREATION</span> <span class="o">=</span> <span class="n">true</span>
@@ -1590,19 +1721,19 @@ Vous pouvez utiliser des balises HTML compatibles avec les emails pour ce texte.
 </section>
 </section>
 <section id="id2">
-<h2>Accès public<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
+<h2>Accès public<a class="headerlink" href="#id2" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Cette section de la documentation concerne l’implémentation d’un utilisateur-lecteur pour votre instance GeoNature.</p>
 <p>Etapes :</p>
 <dl class="simple">
 <dt>1/ UsersHub :</dt><dd><ul class="simple">
 <li><p>Aller dans la section <cite>Utilisateurs</cite></p></li>
 <li><p>Créer un utilisateur</p></li>
-<li><p>Définir un identifiant et un mot de passe (par défaut utilisateur ‘public’ et mot de passe ‘public’)</p></li>
+<li><p>Définir un identifiant et un mot de passe (par défaut utilisateur “public” et mot de passe “public”)</p></li>
 <li><p>Aller ensuite dans la section <cite>Applications</cite></p></li>
-<li><p>Pour GeoNature, cliquer sur le premier icône ‘Voir les membres’</p></li>
+<li><p>Pour GeoNature, cliquer sur le premier icône “Voir les membres”</p></li>
 <li><p>Cliquer sur ajouter un rôle</p></li>
 <li><p>Choisir l’utilisateur juste créé</p></li>
-<li><p>Attribuer le rôle 1, ‘lecteur’</p></li>
+<li><p>Attribuer le rôle 1, “lecteur”</p></li>
 </ul>
 </dd>
 <dt>2/ Configuration GeoNature :</dt><dd><ul class="simple">
@@ -1616,33 +1747,24 @@ PUBLIC_LOGIN = &#39;public&#39;
 PUBLIC_PASSWORD = &#39;public&#39;
 </pre></div>
 </div>
-<blockquote>
-<div><ul class="simple">
-<li><p>Mettre à jour la configuration de GeoNature</p></li>
-</ul>
-</div></blockquote>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ source backend/venv/bin/activate
-$ geonature update_configuration
-$ sudo systemctl restart geonature
-</pre></div>
-</div>
-<p>A ce moment là, cet utilisateur a tous les droits sur GeoNature.
-Il s’agit donc de gérer ses permissions dans GeoNature même.</p>
+<p><a class="reference internal" href="#post-config-change"><span class="std std-ref">Exécuter les actions post-modification de la configuration</span></a>.</p>
+<p>A ce moment-là, cet utilisateur a tous les droits sur GeoNature.
+Il s’agit maintenant de gérer ses permissions dans GeoNature même.</p>
 <p>3/ GeoNature</p>
 <blockquote>
 <div><ul class="simple">
 <li><p>Se connecter à GeoNature avec un utilisateur administrateur</p></li>
 <li><p>Aller dans le module Admin</p></li>
-<li><p>Cliquer sur ‘Gestion des permissions’</p></li>
+<li><p>Cliquer sur “Gestion des permissions”</p></li>
 <li><p>Choisissez l’utilisateur sélectionné</p></li>
-<li><p>Editer le CRUVED pour chacun des modules de l’instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser ‘3’ pour les modules d’intérêt.</p></li>
+<li><p>Editer le CRUVED pour chacun des modules de l’instance. Passer à 0 tous les droits et tous les modules devant être supprimés. Laisser “3” pour les modules d’intérêt.</p></li>
 </ul>
 </div></blockquote>
 </section>
 <section id="module-occtax">
-<h2>Module OCCTAX<a class="headerlink" href="#module-occtax" title="Permalink to this headline"></a></h2>
+<h2>Module OCCTAX<a class="headerlink" href="#module-occtax" title="Lien permanent vers cette rubrique"></a></h2>
 <section id="installer-le-module">
-<h3>Installer le module<a class="headerlink" href="#installer-le-module" title="Permalink to this headline"></a></h3>
+<h3>Installer le module<a class="headerlink" href="#installer-le-module" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Le module est fourni par défaut avec l’installation de GeoNature.</p>
 <p>Si vous l’avez supprimé, lancez les commandes suivantes depuis le repertoire <code class="docutils literal notranslate"><span class="pre">backend</span></code> de GeoNature</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">source venv/bin/activate</span>
@@ -1651,13 +1773,13 @@ Il s’agit donc de gérer ses permissions dans GeoNature même.</p>
 </div>
 </section>
 <section id="configuration-du-module">
-<h3>Configuration du module<a class="headerlink" href="#configuration-du-module" title="Permalink to this headline"></a></h3>
+<h3>Configuration du module<a class="headerlink" href="#configuration-du-module" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Le fichier de configuration du module se trouve ici : <code class="docutils literal notranslate"><span class="pre">&lt;GEONATURE_DIRECTORY&gt;/external_modules/occtax/config/conf_gn_module.toml</span></code>.</p>
 <p>Pour voir l’ensemble des variables de configuration disponibles du module ainsi que leurs valeurs par défaut, ouvrir le fichier <code class="docutils literal notranslate"><span class="pre">/home/&lt;mon_user&gt;/geonature/external_modules/occtax/config/conf_gn_module.toml.example</span></code>.</p>
 <p>Les surcouches de configuration doivent être faites dans le fichier <code class="docutils literal notranslate"><span class="pre">conf_gn_module.toml</span></code>, en ne modifiant jamais le fichier <code class="docutils literal notranslate"><span class="pre">conf_gn_module.toml.example</span></code>.</p>
 <p>Après toute modification de la configuration d’un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a></p>
 <section id="afficher-masquer-des-champs-du-formulaire">
-<h4>Afficher/masquer des champs du formulaire<a class="headerlink" href="#afficher-masquer-des-champs-du-formulaire" title="Permalink to this headline"></a></h4>
+<h4>Afficher/masquer des champs du formulaire<a class="headerlink" href="#afficher-masquer-des-champs-du-formulaire" title="Lien permanent vers cette rubrique"></a></h4>
 <p>La quasi-totalité des champs du standard Occurrences de taxons sont présents dans la base de données, et peuvent donc être saisis à partir du formulaire.</p>
 <p>Pour plus de souplesse et afin de répondre aux besoins de chacun, l’ensemble des champs sont masquables (sauf les champs essentiels : observateur, taxon …)</p>
 <p>En modifiant les variables des champs ci-dessous, vous pouvez donc personnaliser le formulaire :</p>
@@ -1696,12 +1818,18 @@ Il s’agit donc de gérer ses permissions dans GeoNature même.</p>
 </pre></div>
 </div>
 <p>Si le champ est masqué, une valeur par défaut est inscrite en base (voir plus loin pour définir ces valeurs).</p>
+</section>
+<section id="modifier-le-champ-observateurs">
+<h4>Modifier le champ Observateurs<a class="headerlink" href="#modifier-le-champ-observateurs" title="Lien permanent vers cette rubrique"></a></h4>
 <p>Par défaut le champ <code class="docutils literal notranslate"><span class="pre">Observateurs</span></code> est une liste déroulante qui pointe vers une liste du schéma <code class="docutils literal notranslate"><span class="pre">utilisateurs</span></code>.
 Il est possible de passer ce champ en texte libre en mettant à <code class="docutils literal notranslate"><span class="pre">true</span></code> la variable <code class="docutils literal notranslate"><span class="pre">observers_txt</span></code>.</p>
 <p>Le paramètre <code class="docutils literal notranslate"><span class="pre">id_observers_list</span></code> permet de changer la liste d’observateurs proposée dans le formulaire. Vous pouvez modifier le numéro de liste du module ou modifier le contenu de la liste dans UsersHub (<code class="docutils literal notranslate"><span class="pre">utilisateurs.t_listes</span></code> et <code class="docutils literal notranslate"><span class="pre">utilisateurs.cor_role_liste</span></code>)</p>
 <p>Par défaut, l’ensemble des observateurs de la liste 9 (observateurs faune/flore) sont affichés.</p>
+</section>
+<section id="personnaliser-la-liste-des-taxons-saisissables-dans-le-module">
+<h4>Personnaliser la liste des taxons saisissables dans le module<a class="headerlink" href="#personnaliser-la-liste-des-taxons-saisissables-dans-le-module" title="Lien permanent vers cette rubrique"></a></h4>
 <p>Le module est fourni avec une liste restreinte de taxons (8 seulement). C’est à l’administrateur de changer ou de remplir cette liste.</p>
-<p>Le paramètre <code class="docutils literal notranslate"><span class="pre">id_taxon_list</span> <span class="pre">=</span> <span class="pre">100</span></code> correspond à un ID de liste de la table <code class="docutils literal notranslate"><span class="pre">taxonomie.bib_listes</span></code> (L’ID 100 correspond à la liste “Saisie Occtax”). Vous pouvez changer ce paramètre avec l’ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.</p>
+<p>Le paramètre <code class="docutils literal notranslate"><span class="pre">id_taxon_list</span> <span class="pre">=</span> <span class="pre">100</span></code> correspond à un ID de liste de la table <code class="docutils literal notranslate"><span class="pre">taxonomie.bib_listes</span></code> (L’ID 100 correspond à la liste « Saisie Occtax »). Vous pouvez changer ce paramètre avec l’ID de liste que vous souhaitez, ou bien garder cet ID et changer le contenu de cette liste.</p>
 <p>Voici les requêtes SQL pour remplir la liste 100 avec tous les taxons de Taxref à partir du rang <code class="docutils literal notranslate"><span class="pre">genre</span></code> :</p>
 <p>Il faut d’abord remplir la table <code class="docutils literal notranslate"><span class="pre">taxonomie.bib_noms</span></code> (table des taxons de sa structure), puis remplir la liste 100, avec l’ensemble des taxons de <code class="docutils literal notranslate"><span class="pre">bib_noms</span></code> :</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">DELETE</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">taxonomie</span><span class="p">.</span><span class="n">cor_nom_liste</span><span class="p">;</span><span class="w"></span>
@@ -1718,18 +1846,24 @@ Il est possible de passer ce champ en texte libre en mettant à <code class="doc
 </pre></div>
 </div>
 <p>Il est également possible d’éditer des listes à partir de l’application TaxHub.</p>
+</section>
+<section id="gerer-les-valeurs-par-defaut-des-nomenclatures">
+<h4>Gérer les valeurs par défaut des nomenclatures<a class="headerlink" href="#gerer-les-valeurs-par-defaut-des-nomenclatures" title="Lien permanent vers cette rubrique"></a></h4>
 <p>Le formulaire de saisie pré-remplit des valeurs par défaut pour simplifier la saisie. Ce sont également ces valeurs qui sont prises en compte pour remplir dans la BDD les champs du formulaire qui sont masqués.</p>
 <p>La table <code class="docutils literal notranslate"><span class="pre">pr_occtax.defaults_nomenclatures_value</span></code> définit les valeurs par défaut pour chaque nomenclature.</p>
 <p>La table contient les deux colonnes suivantes :</p>
 <ul class="simple">
-<li><p>l’<code class="docutils literal notranslate"><span class="pre">id_type</span></code> de nomenclature (voir table <code class="docutils literal notranslate"><span class="pre">ref_nomenclature.bib_nomenclatures_types</span></code>)</p></li>
-<li><p>l’<code class="docutils literal notranslate"><span class="pre">id_nomenclature</span></code> (voir table <code class="docutils literal notranslate"><span class="pre">ref_nomenclature.t_nomenclatures</span></code>)</p></li>
+<li><p>l”<code class="docutils literal notranslate"><span class="pre">id_type</span></code> de nomenclature (voir table <code class="docutils literal notranslate"><span class="pre">ref_nomenclature.bib_nomenclatures_types</span></code>)</p></li>
+<li><p>l”<code class="docutils literal notranslate"><span class="pre">id_nomenclature</span></code> (voir table <code class="docutils literal notranslate"><span class="pre">ref_nomenclature.t_nomenclatures</span></code>)</p></li>
 </ul>
 <p>Pour chaque type de nomenclature, on associe l’ID de la nomenclature que l’on souhaite voir apparaitre par défaut.</p>
 <p>Le mécanisme peut être poussé plus loin en associant une nomenclature par défaut par organisme, règne et group2_inpn.
 La valeur 0 pour ses champs revient à mettre la valeur par défaut pour tous les organismes, tous les règnes et tous les group2_inpn.</p>
 <p>Une interface de gestion des nomenclatures est prévue d’être développée pour simplifier cette configuration.</p>
 <p>TODO : valeur par défaut de la validation</p>
+</section>
+<section id="personnaliser-l-interface-map-list">
+<h4>Personnaliser l’interface Map-list<a class="headerlink" href="#personnaliser-l-interface-map-list" title="Lien permanent vers cette rubrique"></a></h4>
 <p>La liste des champs affichés par défaut dans le tableau peut être modifiée avec le paramètre <code class="docutils literal notranslate"><span class="pre">default_maplist_columns</span></code>.</p>
 <p>Par défaut :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">default_maplist_columns</span> <span class="o">=</span> <span class="p">[</span>
@@ -1741,6 +1875,9 @@ La valeur 0 pour ses champs revient à mettre la valeur par défaut pour tous le
 </pre></div>
 </div>
 <p>Voir la vue <code class="docutils literal notranslate"><span class="pre">occtax.v_releve_list</span></code> pour voir les champs disponibles.</p>
+</section>
+<section id="ajouter-une-contrainte-d-echelle-de-saisie-sur-la-carte">
+<h4>Ajouter une contrainte d’échelle de saisie sur la carte<a class="headerlink" href="#ajouter-une-contrainte-d-echelle-de-saisie-sur-la-carte" title="Lien permanent vers cette rubrique"></a></h4>
 <p>Il est possible de contraindre la saisie de la géométrie d’un relevé sur la carte par un seuil d’échelle minimum avec le paramètre <code class="docutils literal notranslate"><span class="pre">releve_map_zoom_level</span></code>.</p>
 <p>Par défaut :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Zoom level on the map from which you can add point/line/polygon</span>
@@ -1755,7 +1892,7 @@ Par exemple, pour contraindre la saisie à l’affichage de la carte IGN au 1/25
 </section>
 </section>
 <section id="gestion-des-exports">
-<h3>Gestion des exports<a class="headerlink" href="#gestion-des-exports" title="Permalink to this headline"></a></h3>
+<h3>Gestion des exports<a class="headerlink" href="#gestion-des-exports" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Les exports du module sont basés sur une vue (par défaut <code class="docutils literal notranslate"><span class="pre">pr_occtax.export_occtax_sinp</span></code>)</p>
 <p>Il est possible de définir une autre vue pour avoir des exports personnalisés.
 Pour cela, créer votre vue, et modifier les paramètres suivants :</p>
@@ -1782,16 +1919,16 @@ Pour cela, créer votre vue, et modifier les paramètres suivants :</p>
 </div>
 </section>
 <section id="attribuer-des-droits">
-<h3>Attribuer des droits<a class="headerlink" href="#attribuer-des-droits" title="Permalink to this headline"></a></h3>
+<h3>Attribuer des droits<a class="headerlink" href="#attribuer-des-droits" title="Lien permanent vers cette rubrique"></a></h3>
 <p>La gestion des droits (CRUVED) se fait module par module. Cependant si on ne redéfinit pas de droit pour un module, ce sont les droits de l’application mère (GeoNature elle-même) qui seront attribués à l’utilisateur pour l’ensemble de ses sous-modules.</p>
 <p>Pour ne pas afficher le module Occtax à un utilisateur où à un groupe, il faut lui mettre l’action Read (R) à 0.</p>
 <p>L’administration des droits des utilisateurs pour le module Occtax se fait dans le backoffice de gestion des permissions de GeoNature.</p>
 </section>
 </section>
 <section id="module-admin">
-<h2>Module Admin<a class="headerlink" href="#module-admin" title="Permalink to this headline"></a></h2>
+<h2>Module Admin<a class="headerlink" href="#module-admin" title="Lien permanent vers cette rubrique"></a></h2>
 <section id="administration-des-champs-additionnels">
-<h3>Administration des champs additionnels<a class="headerlink" href="#administration-des-champs-additionnels" title="Permalink to this headline"></a></h3>
+<h3>Administration des champs additionnels<a class="headerlink" href="#administration-des-champs-additionnels" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Certains protocoles nécessitent la saisie de champs qui vont au-delà des standards du SINP sur lesquels GeoNature s’appuie. Les champs additionnels permettent ainsi d’étendre les formulaires en ajoutant des informations spécifiques pour des jeux de données (JDD) ou pour l’ensemble d’un module.</p>
 <p>Les champs additionnels ne sont pas créés comme des colonnes à part entière, mais leurs valeurs sont stockées dans un champs <code class="docutils literal notranslate"><span class="pre">additional_data</span></code> au format JSON.</p>
 <p>Actuellement seul le module Occtax implémente la gestion de ces champs additionnels.</p>
@@ -1802,36 +1939,42 @@ Un champ additionnel est définit par:</p>
 <li><p>son label (nom tel qu’il sera affiché sur l’interface)</p></li>
 <li><p>son type de widget : vous devez définir si le champs est une liste déroulante, une checkbox, une nomenclature, un entier, un champ texte, etc…</p></li>
 <li><p>le (ou les) module(s) auquel il est rattaché</p></li>
-<li><p>le (ou les) objet(s) auquel il est rattaché. Il s’agit du placement et de la table de rattachement du champs dans le module. Par exemple Occtax est composé de 3 “objets/table”. Les objets “relevé”, “occurrence” et “dénombrement”.</p></li>
+<li><p>le (ou les) objet(s) auquel il est rattaché. Il s’agit du placement et de la table de rattachement du champs dans le module. Par exemple Occtax est composé de 3 « objets/table ». Les objets « relevé », « occurrence » et « dénombrement ».</p></li>
 <li><p>le (ou les) JDD auquel il est rattaché. Si aucun JDD n’est renseigné le champ sera proposé dans tout le module pour tous les JDD. S’il est rattaché à un JDD, le champs sera chargé dynamiquement à la selection du JDD dans le formulaire</p></li>
 <li><p>une série d’autres options pour paramétrer le comportement du champs (obligatoire, ordre, description, exportable etc…)</p></li>
 </ul>
 <p>Exemples de configuration :</p>
 <ul class="simple">
-<li><p>Un champs type “select” :</p></li>
+<li><p>Un champs type « select » :</p></li>
 </ul>
 <img alt="_images/select_exemple.png" src="_images/select_exemple.png" />
 <ul class="simple">
-<li><p>Un champs type “multiselect” (la clé “value” est obligatoire dans le dictionnaire de valeurs) :</p></li>
+<li><p>Un champs type « multiselect » (la clé « value » est obligatoire dans le dictionnaire de valeurs) :</p></li>
 </ul>
 <img alt="_images/multiselect3.png" src="_images/multiselect3.png" />
 <ul class="simple">
-<li><p>Un champs type “html”. C’est un champs de type “présentation”, aucune valeur ne sera enregistré en base de données pour ce champs :</p></li>
+<li><p>Un champs type « html ». C’est un champs de type « présentation », aucune valeur ne sera enregistré en base de données pour ce champs :</p></li>
 </ul>
 <img alt="_images/html1.png" src="_images/html1.png" />
+<ul class="simple">
+<li><p>Un champs de type « datalist ». Ce champs permet de générer une liste de valeurs à partir d’une API. Dans le champ « attributs additionnels », renseignez les éléments suivants :</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>``{&quot;api&quot;: &quot;url_vers_la_ressource&quot;, &quot;keyValue&quot;: &quot;champ à stocker en base&quot;, &quot;keyLabel&quot;: &quot;champ à afficher en interface&quot;}
+</pre></div>
+</div>
 <section id="configuration-avancee-des-champs">
-<h4>Configuration avancée des champs<a class="headerlink" href="#configuration-avancee-des-champs" title="Permalink to this headline"></a></h4>
-<p>Le champs “Attribut additionnels” permet d’ajouter des éléments de configuration sur les formulaires sour forme de JSON:
-- Ajouter une icone “?” et un tooltip au survol du formulaire : <cite>{“description” : “mon toolitp”}</cite>
-- Ajouter un sous-titre descriptif : <cite>{“help” : “mon sous titre”}</cite>
-- Ajouter des valeurs min/max pour un input <cite>number</cite> : <cite>{“min”: 1, “max”: 10}</cite></p>
+<h4>Configuration avancée des champs<a class="headerlink" href="#configuration-avancee-des-champs" title="Lien permanent vers cette rubrique"></a></h4>
+<p>Le champs « Attribut additionnels » permet d’ajouter des éléments de configuration sur les formulaires sour forme de JSON:
+- Ajouter une icone « ? » et un tooltip au survol du formulaire : <cite>{« description » : « mon toolitp »}</cite>
+- Ajouter un sous-titre descriptif : <cite>{« help » : « mon sous titre »}</cite>
+- Ajouter des valeurs min/max pour un input <cite>number</cite> : <cite>{« min »: 1, « max »: 10}</cite></p>
 </section>
 </section>
 </section>
 <section id="module-occhab">
-<h2>Module OCCHAB<a class="headerlink" href="#module-occhab" title="Permalink to this headline"></a></h2>
+<h2>Module OCCHAB<a class="headerlink" href="#module-occhab" title="Lien permanent vers cette rubrique"></a></h2>
 <section id="id3">
-<h3>Installer le module<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h3>
+<h3>Installer le module<a class="headerlink" href="#id3" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Le module OCCHAB fait parti du coeur de GeoNature. Son installation est au choix de l’administrateur.</p>
 <p>Pour l’installer, lancer les commande suivante:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd backend</span>
@@ -1841,17 +1984,17 @@ Un champ additionnel est définit par:</p>
 </div>
 </section>
 <section id="id4">
-<h3>Base de données<a class="headerlink" href="#id4" title="Permalink to this headline"></a></h3>
+<h3>Base de données<a class="headerlink" href="#id4" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Le module s’appuie sur deux schémas.:
 <code class="docutils literal notranslate"><span class="pre">ref_habitats</span></code>:  Le réferentiel habitat du MNHN
 <code class="docutils literal notranslate"><span class="pre">pr_occhab</span></code>: le schéma qui contient les données d’occurrence d’habitat, basé sur standard du MNHN</p>
 </section>
 <section id="id5">
-<h3>Configuration<a class="headerlink" href="#id5" title="Permalink to this headline"></a></h3>
+<h3>Configuration<a class="headerlink" href="#id5" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Le parametrage du module OCCHAB se fait depuis le fichier <code class="docutils literal notranslate"><span class="pre">/home/`whoami`/geonature/contrib/config/conf_gn_module.toml</span></code>
 Après toute modification de la configuration d’un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a></p>
 <section id="formulaire">
-<h4>Formulaire<a class="headerlink" href="#formulaire" title="Permalink to this headline"></a></h4>
+<h4>Formulaire<a class="headerlink" href="#formulaire" title="Lien permanent vers cette rubrique"></a></h4>
 <ul class="simple">
 <li><p>La liste des habitats fournit pour la saisie est basé sur une liste définit en base de données (table <code class="docutils literal notranslate"><span class="pre">ref_habitat.cor_list_habitat</span></code> et <code class="docutils literal notranslate"><span class="pre">ref_habitat.bib_list_habitat</span></code>). Il est possible d’éditer cette liste directement den base de données, d’en créer une autre et de changer la liste utiliser par le module. Editer alors ce paramètre:</p></li>
 </ul>
@@ -1889,10 +2032,10 @@ Après toute modification de la configuration d’un module, il faut regénérer
 </section>
 </section>
 <section id="module-synthese">
-<h2>Module SYNTHESE<a class="headerlink" href="#module-synthese" title="Permalink to this headline"></a></h2>
+<h2>Module SYNTHESE<a class="headerlink" href="#module-synthese" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Le module Synthèse est un module du coeur de GeoNature, fourni par défaut lors de l’installation.</p>
 <section id="id6">
-<h3>Configuration<a class="headerlink" href="#id6" title="Permalink to this headline"></a></h3>
+<h3>Configuration<a class="headerlink" href="#id6" title="Lien permanent vers cette rubrique"></a></h3>
 <p>L’ensemble des paramètres de configuration du module se trouve dans le fichier général de configuration de GeoNature <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code> puisqu’il s’agit d’un module du coeur.</p>
 <p><strong>1.</strong> Modifier les filtres géographiques disponibles par défaut dans l’interface de recherche.</p>
 <p>Editer la variable <code class="docutils literal notranslate"><span class="pre">AREA_FILTERS</span></code> en y ajoutant le label et le code du type d’entité géographique que vous souhaitez rajouter. Voir table <code class="docutils literal notranslate"><span class="pre">ref_geo.bib_areas_types</span></code>. Dans l’exemple on ajoute le type ZNIEFF1 (<code class="docutils literal notranslate"><span class="pre">code_type</span> <span class="pre">=</span> <span class="pre">&quot;ZNIEFF1&quot;</span></code>). Attention, dans ce cas les entités géographiques correspondantes au type <cite>ZNIEFF1</cite>, doivent également être présentes dans la table <code class="docutils literal notranslate"><span class="pre">ref_geo.l_areas</span></code>.
@@ -2011,7 +2154,7 @@ Attention : Si des données sont déjà présentes dans la synthèse et que l’
 </ul>
 <p>Ces champs doivent impérativement être présents dans la vue, mais ne seront pas nécessairement dans le fichier d’export si ils ne figurent pas dans la variable <code class="docutils literal notranslate"><span class="pre">EXPORT_COLUMNS</span></code>. De manière générale, préférez rajouter des champs plutôt que d’en enlever !</p>
 <p>Le nom de ces champs peut cependant être modifié. Dans ce cas, modifiez le fichier <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code>, section <code class="docutils literal notranslate"><span class="pre">SYNTHESE</span></code> parmis les variables suivantes (<code class="docutils literal notranslate"><span class="pre">EXPORT_ID_SYNTHESE_COL,</span> <span class="pre">EXPORT_ID_DATASET_COL,</span> <span class="pre">EXPORT_ID_DIGITISER_COL,</span> <span class="pre">EXPORT_OBSERVERS_COL,</span> <span class="pre">EXPORT_GEOJSON_4326_COL,</span> <span class="pre">EXPORT_GEOJSON_LOCAL_COL</span></code>).</p>
-<p>NB : Lorsqu’on effectue une recherche dans la synthèse, on interroge la vue <code class="docutils literal notranslate"><span class="pre">gn_synthese.v_synthese_for_web_app</span></code>. L’interface web passe ensuite une liste d’<code class="docutils literal notranslate"><span class="pre">id_synthese</span></code> à la vue <code class="docutils literal notranslate"><span class="pre">gn_synthese.v_synthese_for_export</span></code> correspondant à la recherche précedemment effectuée (ce qui permet à cette seconde vue d’être totalement modifiable).</p>
+<p>NB : Lorsqu’on effectue une recherche dans la synthèse, on interroge la vue <code class="docutils literal notranslate"><span class="pre">gn_synthese.v_synthese_for_web_app</span></code>. L’interface web passe ensuite une liste d”<code class="docutils literal notranslate"><span class="pre">id_synthese</span></code> à la vue <code class="docutils literal notranslate"><span class="pre">gn_synthese.v_synthese_for_export</span></code> correspondant à la recherche précedemment effectuée (ce qui permet à cette seconde vue d’être totalement modifiable).</p>
 <p>La vue <code class="docutils literal notranslate"><span class="pre">gn_synthese.v_synthese_for_web_app</span></code> est taillée pour l’interface web, il ne faut donc PAS la modifier.</p>
 <p><strong>Export des métadonnées</strong></p>
 <p>En plus des observations brutes, il est possible d’effectuer un export des métadonnées associées aux observations. L’export est au format CSV et est construit à partir de la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.v_metadata_for_export</span></code>. Vous pouvez modifier le SQL de création de cette vue pour customiser votre export (niveau SQL avancé).</p>
@@ -2044,7 +2187,7 @@ Attention : Si des données sont déjà présentes dans la synthèse et que l’
 </section>
 </section>
 <section id="module-validation">
-<h2>Module VALIDATION<a class="headerlink" href="#module-validation" title="Permalink to this headline"></a></h2>
+<h2>Module VALIDATION<a class="headerlink" href="#module-validation" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Le module VALIDATION, integré depuis la version 2.1.0 dans le coeur de GeoNature permet de valider des occurrences de taxon en s’appuyant sur les données présentes dans la SYNTHESE. Le module s’appuie sur le <a class="reference external" href="http://www.naturefrance.fr/la-reunion/protocole-de-validation">standard Validation</a> du SINP et sur ses <a class="reference external" href="http://standards-sinp.mnhn.fr/nomenclature/80-niveaux-de-validation-validation-manuelle-ou-combinee-2018-05-14/">nomenclatures officiels</a>.</p>
 <p>Afin de valider une occurrence, celle-ci doit impérativement avoir un UUID. En effet, la validation est stockée en BDD dans la table transversale <code class="docutils literal notranslate"><span class="pre">gn_commons.t_validations</span></code>  (<a class="reference external" href="admin-manual.html#tables-transversales">voir doc</a> ) qui impose la présence de cet UUID.</p>
 <p>La table <code class="docutils literal notranslate"><span class="pre">gn_commons.t_validations</span></code> contient l’ensemble de l’historique de validation des occurrences. Pour une même occurrence (identifiée par un UUID unique) on peut donc retrouver plusieurs lignes dans la table correspondant au différents statuts de validation attribués à cet occurrence dans le temps.</p>
@@ -2052,11 +2195,11 @@ Attention : Si des données sont déjà présentes dans la synthèse et que l’
 <p>NB : une donnée non présente dans la SYNTHESE, ne remontera pas dans l’interface du module VALIDATION. Cependant rien n’empêche un administrateur avancé d’utiliser la table de validation et son mécanisme pour des données qui ne seraient pas en SYNTHESE (du moment que les données disposent d’un UUID).</p>
 <p>Au niveau de l’interface, le formulaire de recherche est commun avec le module SYNTHESE. Les paramètres de configuration du formulaire sont donc également partagés et administrables depuis le fichier <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code>, rubrique SYNTHESE.</p>
 <section id="id7">
-<h3>Configuration<a class="headerlink" href="#id7" title="Permalink to this headline"></a></h3>
+<h3>Configuration<a class="headerlink" href="#id7" title="Lien permanent vers cette rubrique"></a></h3>
 <p>Le parametrage du module VALIDATION se fait depuis le fichier <code class="docutils literal notranslate"><span class="pre">/home/`whoami`/geonature/contrib/gn_module_validation/config/conf_gn_module.toml</span></code>
 Après toute modification de la configuration d’un module, il faut regénérer le fichier de configuration du frontend comme expliqué ici : <a class="reference internal" href="#configuration-d-un-gn-module">Configuration d’un gn_module</a></p>
 <section id="liste-des-champs-visibles">
-<h4>Liste des champs visibles<a class="headerlink" href="#liste-des-champs-visibles" title="Permalink to this headline"></a></h4>
+<h4>Liste des champs visibles<a class="headerlink" href="#liste-des-champs-visibles" title="Lien permanent vers cette rubrique"></a></h4>
 <p>Gestion de l’affichage des colonnes de la liste via le paramètre <code class="docutils literal notranslate"><span class="pre">COLUMN_LIST</span></code> :</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="n">COLUMN_LIST</span><span class="p">]]</span>
 <span class="n">column_label</span> <span class="o">=</span> <span class="s2">&quot;nomenclature_life_stage.label_default&quot;</span> <span class="c1"># Champs de la synthèse, éventuellement en suivant des relationships</span>
@@ -2067,7 +2210,7 @@ Après toute modification de la configuration d’un module, il faut regénérer
 </div>
 </section>
 <section id="e-mail">
-<h4>E-mail<a class="headerlink" href="#e-mail" title="Permalink to this headline"></a></h4>
+<h4>E-mail<a class="headerlink" href="#e-mail" title="Lien permanent vers cette rubrique"></a></h4>
 <p>Il est possible de personnaliser le message du mail envoyé aux observateurs.
 Pour ce faire il faut modifier les  paramètres <code class="docutils literal notranslate"><span class="pre">MAIL_BODY</span></code> et <code class="docutils literal notranslate"><span class="pre">MAIL_SUBJECT</span></code></p>
 <p>Pour afficher dans le mail des données relatives à l’observation ou au taxon il faut respecter la syntaxe suivante:
@@ -2088,9 +2231,9 @@ Pour ce faire il faut modifier les  paramètres <code class="docutils literal no
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="user-manual.html" class="btn btn-neutral float-left" title="MANUEL UTILISATEUR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="import-level-1.html" class="btn btn-neutral float-right" title="IMPORT NIVEAU 1" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="user-manual.html" class="btn btn-neutral float-left" title="MANUEL UTILISATEUR" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
+        <a href="import-level-1.html" class="btn btn-neutral float-right" title="IMPORT NIVEAU 1" accesskey="n" rel="next">Suivant <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
@@ -2099,9 +2242,9 @@ Pour ce faire il faut modifier les  paramètres <code class="docutils literal no
     <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
   </div>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>

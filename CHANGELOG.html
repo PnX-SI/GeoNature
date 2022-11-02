@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="fr" >
 <head>
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CHANGELOG &mdash; GeoNature 2.0 documentation</title>
+  <title>CHANGELOG &mdash; Documentation GeoNature 2.0</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,10 +14,12 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/translations.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="search" title="Recherche" href="search.html" />
     <link rel="prev" title="AUTEURS" href="authors.html" /> 
 </head>
 
@@ -34,7 +36,7 @@
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Rechercher docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -51,6 +53,7 @@
 <li class="toctree-l1"><a class="reference internal" href="FAQ.html">FAQ</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">AUTEURS</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">CHANGELOG</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#alouatta-macconnelli-2022-11-02">2.10.0 - Alouatta macconnelli (2022-11-02)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id1">2.9.2 (2022-02-15)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#id2">2.9.1 (2022-01-27)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#actias-luna-2022-01-13">2.9.0 - Actias luna (2022-01-13)</a></li>
@@ -135,7 +138,7 @@
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>CHANGELOG</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/CHANGELOG.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/CHANGELOG.rst.txt" rel="nofollow"> Afficher la source de la page</a>
       </li>
   </ul>
   <hr/>
@@ -144,9 +147,145 @@
            <div itemprop="articleBody">
              
   <section id="changelog">
-<h1>CHANGELOG<a class="headerlink" href="#changelog" title="Permalink to this headline"></a></h1>
+<h1>CHANGELOG<a class="headerlink" href="#changelog" title="Lien permanent vers cette rubrique"></a></h1>
+<section id="alouatta-macconnelli-2022-11-02">
+<h2>2.10.0 - Alouatta macconnelli (2022-11-02)<a class="headerlink" href="#alouatta-macconnelli-2022-11-02" title="Lien permanent vers cette rubrique"></a></h2>
+<ul class="simple">
+<li><p><strong>Angular 12, tests automatisés frontend et backend</strong></p></li>
+<li><p><strong>Discussions, signalement, partage, épinglage d’une occurrence</strong></p></li>
+</ul>
+<p>⚠️ Passage de la version 7 à 12 d’Angular. Avant de mettre à jour GeoNature sur cette version, vérifiez que les modules que vous utilisez sont disponibles dans une version compatible avec GeoNature 2.10.0 ou plus (compatibilité Angular 12).</p>
+<p>Modules compatibles à date de la publication de la version 2.10 de GeoNature :</p>
+<ul class="simple">
+<li><p>Import</p></li>
+<li><p>Export</p></li>
+<li><p>Dashboard</p></li>
+<li><p>Monitoring</p></li>
+</ul>
+<p><strong>🚀 Nouveautés</strong></p>
+<ul class="simple">
+<li><p>Possibiliter de dupliquer le module Occtax (#621)</p></li>
+<li><p>Mise à jour d’Angular de la version 7 à 12 et des dépendances javascript liées (#1547)</p></li>
+<li><p>Mise en place de tests automatisés frontend avec Cypress, simulant les actions de l’utilisateur et vérifiant la conformité des résultats dans les modules Occtax, Synthèse et Métadonnées</p></li>
+<li><p>Renforcement et nettoyage des tests automatisés backend (augmentation de la couverture de code de 49,8% à 63,1%)</p></li>
+<li><p>Documentation de l’utilisation et de la mise en place des tests automatisés backend et frontend (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/writing_tests.rst">https://github.com/PnX-SI/GeoNature/blob/develop/docs/writing_tests.rst</a> et <a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/develop/docs/writing_tests_frontend.rst">https://github.com/PnX-SI/GeoNature/blob/develop/docs/writing_tests_frontend.rst</a>)</p></li>
+<li><p>Simplification du CRUVED minimum pour accéder à GeoNature, ne nécessitant plus d’avoir obligatoirement un CRUVED défini au niveau global de GeoNature (#1622)</p></li>
+<li><p>[Métadonnées] Remplacement de la liste des imports par la liste des sources dans la fiche des JDD (#1249)</p></li>
+<li><p>[Métadonnées] Lister les cadres d’acquisition par ordre alphabétique</p></li>
+<li><p>[Admin] Amélioration de l’interface (#2101)</p></li>
+<li><p>Amélioration des fiches des observations dans les modules Synthèse et Validation (#1474)</p></li>
+<li><p>Ajout d’un permalien sur les fiches des observations dans les modules Synthèse et Validation (#1727)</p></li>
+<li><p>Signaler une occurrence et paramètre <code class="docutils literal notranslate"><span class="pre">ALERT_MODULES</span></code> associé (#1750)</p></li>
+<li><p>Epingler une occurrence et son paramètre <code class="docutils literal notranslate"><span class="pre">PIN_MODULES</span></code> associé (#1819)</p></li>
+<li><p>Discussions sur une occurrence et ses paramètres <code class="docutils literal notranslate"><span class="pre">DISCUSSION_MODULES</span></code> et <code class="docutils literal notranslate"><span class="pre">DICUSSION_MAX_LENGTH</span></code> associés (#1731)</p></li>
+<li><p>Ajout de la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">db</span> <span class="pre">status</span></code> permettant de lister les migrations Alembic, leurs dépendances et identifier celles qui ont été appliquées ou non (#1574)</p></li>
+<li><p>Ajout d’un worker Celery pour l’exécution de tâches asynchrones</p></li>
+<li><p>Déplacement du fichier de log GeoNature : <code class="docutils literal notranslate"><span class="pre">/var/log/geonature/geonature.log</span></code>.</p></li>
+<li><p>Suppression de la table <code class="docutils literal notranslate"><span class="pre">gn_sensitivity.cor_sensitivity_synthese</span></code> et des triggers associés (#1710)</p></li>
+<li><p>Suppression du paramètre <code class="docutils literal notranslate"><span class="pre">CRUVED_SEARCH_WITH_OBSERVER_AS_TXT</span></code> permettant d’ajouter le filtre sur l’observers_txt en ILIKE sur les portée 1 et 2 du CRUVED</p></li>
+<li><p>Documentation : Ajout d’exemples de configuration pour utiliser les fonds IGN (#1703)</p></li>
+<li><p>Documentation : Complément de la documentation sur les calculs de la sensibilité</p></li>
+<li><p>Suppression du paramètre de configuration <code class="docutils literal notranslate"><span class="pre">LOCAL_SRID</span></code>. Le SRID local est fourni à l’installation, puis auto-détecté depuis la base de données à l’usage.</p></li>
+<li><p>Suppression du paramètre de configuration <code class="docutils literal notranslate"><span class="pre">id_area_type_municipality</span></code>.</p></li>
+<li><p>[Occtax] Révision du style des fiches d’information des relevés (#1876)</p></li>
+<li><p>[Occtax] Ajout des valeurs par défaut directement dans la base de données (#1857)</p></li>
+<li><p>[Monitoring] Ajout d’un trigger calculant automatiquement l’altitude des sites</p></li>
+<li><p>[Profils] Ajout des paramètres <code class="docutils literal notranslate"><span class="pre">default_spatial_precision</span></code>, <code class="docutils literal notranslate"><span class="pre">default_temporal_precision_days</span></code> et <code class="docutils literal notranslate"><span class="pre">default_active_life_stage</span></code> dans la table <code class="docutils literal notranslate"><span class="pre">gn_profiles.t_parameters</span></code>, remplaçant les valeurs par défaut définies au niveau du règne dans la table <code class="docutils literal notranslate"><span class="pre">gn_profiles.cor_taxons_parameters</span></code></p></li>
+<li><p>Ajout d’une couche d’objets linéaires dans le référentiel géographique (<a class="reference external" href="https://github.com/PnX-SI/RefGeo/pull/4">https://github.com/PnX-SI/RefGeo/pull/4</a>)</p></li>
+<li><p>Installation de la version 15 de Taxref par défaut lors des nouvelles installations</p></li>
+<li><p>Possibilité de limiter la recherche de lieux à un ou plusieurs pays avec le paramètre <code class="docutils literal notranslate"><span class="pre">OSM_RESTRICT_COUNTRY_CODES</span></code> (#2010)</p></li>
+<li><p>On ne peut pas fermer un cadre d’acquisition qui ne contient que des jeux de données sans données</p></li>
+<li><p>Rechargement (<code class="docutils literal notranslate"><span class="pre">reload</span></code>) automatique de GeoNature quand on modifie la configuration de GeoNature (#2045)</p></li>
+<li><p>Redémarrage (<code class="docutils literal notranslate"><span class="pre">restart</span></code>) automatique du worker Celery lors du redémarrage de GeoNature (#2045)</p></li>
+<li><p>Synthèse : ajout d’un message lors du chargement des données (#1637)</p></li>
+<li><p>Cartes : Faire remonter la géométrie de l’objet selectionné dans la liste (#2036)</p></li>
+<li><p>Ajout du paramètre <code class="docutils literal notranslate"><span class="pre">CODE_APPLICATION</span></code>, suite à la suppression du paramètre <code class="docutils literal notranslate"><span class="pre">ID_APP</span></code> (#1635)</p></li>
+<li><p>[Metadonnées] Formulaire des CA : correction de la saisie des CA parents ( #2097)</p></li>
+</ul>
+<p><strong>🐛 Corrections</strong></p>
+<ul class="simple">
+<li><p>Remise en place de la rotation automatique des fichiers de logs (#1627)</p></li>
+<li><p>[OCCTAX] Ajout des valeurs par défaut des nomenclatures au niveau de la base de données (#1857)</p></li>
+<li><p>[OCCTAX] Correction d’un bug d’édition de géométrie non pris en compte</p></li>
+<li><p>Map List: à la selection d’une ligne dans le tableau, placement de la géométrie correspondante au dessus des autres géométries (#2036)</p></li>
+<li><p>Correction de l’URL pour la mise à jour des mots de passe (#1620)</p></li>
+<li><p>Statistiques sur la page d’accueil : utilisation des bonnes permissions (action R du module SYNTHESE). Les données et la carte sont masquées si les permissions sont manquantes.</p></li>
+<li><p>Amélioration du responsive de la page d’accueil (#1682)</p></li>
+<li><p>Correction de l’intégration des régions quand GeoNature n’est pas installé avec la projection 2154 (#1695)</p></li>
+<li><p>[Occtax] Correction de l’affichage de la liste tronquée des habitats (#1701)</p></li>
+<li><p>Correction du style des tooltips (#1775)</p></li>
+<li><p>[Validation] Correction du filtre par observations disposant d’un média (#1757)</p></li>
+<li><p>[Validation] Chargement des observations ayant un UUID uniquement</p></li>
+<li><p>[Synthèse] Amélioration de la liste dans la recherche des taxons (#1803)</p></li>
+<li><p>Correction des URL et redirection de renouvellement du mot de passe (#1810 / #1620)</p></li>
+<li><p>Correction du CSS du bloc introduction de la page d’accueil (#1824)</p></li>
+<li><p>Suppression de l’accès à la gestion du compte pour l’utilisateur « public » (#1844)</p></li>
+<li><p>Réduction du niveau de logs de l’outil Fiona pour améliorer les performances des exports en format SIG (#1875)</p></li>
+<li><p>Correction de la concaténation des champs additionnels au niveau des triggers de Occtax vers Synthèse et correction des données dans la Synthèse (#1467)</p></li>
+<li><p>Correction des données dans la Synthèse suite au problème d’enregistrement des dénombrements dans Occtax, corrigé dans la version 2.9.0 (#1479)</p></li>
+<li><p>Correction des triggers de Occtax vers Synthèse lors de la modification de dénombrements multiples et correction des données dans la Synthèse (#1821)</p></li>
+<li><p>Modification du script de démarrage <code class="docutils literal notranslate"><span class="pre">systemd</span></code> pour lancer GeoNature et son worker Celery après PostgreSQL (#1970)</p></li>
+<li><p>Correction de l’installation de psycopg2 (#1994)</p></li>
+<li><p>Correction de la route de récupération des jeux de données quand on lui passe plusieurs filtres</p></li>
+<li><p>Correction de la fonction <code class="docutils literal notranslate"><span class="pre">gn_synthese.update_sensitivity()</span></code> en cas de valeurs nulles</p></li>
+<li><p>[OCCTAX] Correction d’un bug d’édition de géométrie non pris en compte (#2023)</p></li>
+<li><p>[OCCTAX] Correction de l’affichage des dates en utilisant l’UTC pour éviter les soucis de fuseaux horaires différents entre le serveur et le navigateur de l’utilisateur (#2005)</p></li>
+</ul>
+<p><strong>💻 Développement</strong></p>
+<ul class="simple">
+<li><p>Mise à jour des dépendances backend et frontend</p></li>
+<li><p>Mise à jour de Flask version 1.1 à 2.2</p></li>
+<li><p>Routage dynamique des modules, supprimant la nécessité de générer le fichier de routage du frontend (#2059)</p></li>
+<li><p>Ajout de Celery pour les traitements asynchrones</p></li>
+<li><p>Possibilité de configurer GeoNature avec un fichier python en définissant le nom du module dans la variable d’environnement <code class="docutils literal notranslate"><span class="pre">GEONATURE_SETTINGS</span></code></p></li>
+<li><p>Utilisation de la pagination fournit par Flask-SQLAlchemy pour <code class="docutils literal notranslate"><span class="pre">get_color_taxon()</span></code></p></li>
+<li><p>Suppression de la table <code class="docutils literal notranslate"><span class="pre">gn_exports.t_config_export</span></code> et du schéma <code class="docutils literal notranslate"><span class="pre">gn_exports</span></code> créés par GeoNature (si le module Export n’est pas déjà installé) (#1642)</p></li>
+<li><p>Suppression des commandes GeoNature <code class="docutils literal notranslate"><span class="pre">dev-front</span></code> et <code class="docutils literal notranslate"><span class="pre">frontend-build</span></code> (#1800, #2088) :</p></li>
+<li><p>Rétablissement de l’utilisation de <code class="docutils literal notranslate"><span class="pre">nvm</span></code> pour installer NodeJS (#1726)</p></li>
+<li><p>Ajout de la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">default-config</span></code></p></li>
+<li><p>Externalisation du <code class="docutils literal notranslate"><span class="pre">ref_geo</span></code>, de son schéma de données et de ses modèles en tant que module indépendant dans un dépôt dédié (#228)</p></li>
+<li><p>Intégration des régions par défaut lors de l’installation de GeoNature</p></li>
+<li><p>Amélioration des composants frontend DynamicForm</p></li>
+<li><p>Possibilité de filtrer le composant frontend « nomenclature » par règne ou Goup2INPN</p></li>
+<li><p>Amélioration du style des tooltips (#1717)</p></li>
+<li><p>Ajout de la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">sensitivity</span> <span class="pre">refresh-rules-cache</span></code> pour rafraichir la vue matérialisé <code class="docutils literal notranslate"><span class="pre">gn_synthese.t_sensitivity_rules_cd_ref</span></code> (à lancer à chaque modification de règles dans la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.t_sensitivity_rules</span></code>)</p></li>
+<li><p>La configuration du module n’est pas écrasée lors d’une réinstallation de ce dernier</p></li>
+<li><p>Suppression de la vue <code class="docutils literal notranslate"><span class="pre">gn_synthese.v_synthese_decode_nomenclatures</span></code></p></li>
+<li><p>Génération automatique de la documentation quand on publie une nouvelle version</p></li>
+<li><p>Ajout de la commande <code class="docutils literal notranslate"><span class="pre">geonature</span> <span class="pre">ref_geo</span> <span class="pre">info</span></code> qui compte le nombre de zonages par type</p></li>
+<li><p>Suppression des dépendances « geog » et « numpy » en utilisation la fonction PostGIS <code class="docutils literal notranslate"><span class="pre">ST_DWithin</span></code> pour la recherche par cercle (#1972)</p></li>
+<li><p>La variable d’environnement <code class="docutils literal notranslate"><span class="pre">DATA_DIRECTORY</span></code> permet de définir un dossier pour la mise en cache et réutilisation des ressources téléchargées lors de la création de la base de données</p></li>
+<li><p>Chargement de la configuration des modules packagés directement lors de l’import du module <code class="docutils literal notranslate"><span class="pre">config</span></code> (avant même l’appelle à <code class="docutils literal notranslate"><span class="pre">create_app</span></code>) (#2055)</p></li>
+</ul>
+<p><strong>⚠️ Notes de version</strong></p>
+<ul>
+<li><p><strong>Avant</strong> de mettre à jour GeoNature :</p>
+<ul>
+<li><p>Mettre à jour les TaxHub (1.10.4) et UsersHub (2.3.1), sans la partie migration de la base de données avec Alembic (elle sera faite lors de la mise à jour de GeoNature)</p></li>
+<li><p>Mettre à jour les modules compatibles avec GeoNature 2.10, sans lancer le rebuild du Frontend (cela sera fait lors de la mise à jour de GeoNature)</p></li>
+<li><p>Si vous avez des modules spécifiques, mettez à jour Angular de la version 7 à 12 (<a class="reference external" href="https://update.angular.io/?v=7.2-12.0">https://update.angular.io/?v=7.2-12.0</a>)</p></li>
+<li><p>Archiver les anciens fichiers de log <code class="docutils literal notranslate"><span class="pre">/var/log/geonature.log*</span></code>. Les nouveaux fichiers de logs seront placés dans le dossier <code class="docutils literal notranslate"><span class="pre">/var/log/geonature/</span></code>.</p></li>
+<li><p>Supprimer les paramètres de configuration qui ont disparu s’ils sont présents dans votre fichier de configuration <code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code> :</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">LOCAL_SRID</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CRUVED_SEARCH_WITH_OBSERVER_AS_TXT</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">id_area_type_municipality</span></code></p></li>
+</ul>
+</li>
+<li><p>Installation du worker Celery : il vous faut installer le broker <code class="docutils literal notranslate"><span class="pre">redis</span></code> :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># sudo apt install redis</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>Suivez la procédure de mise à jour classique</p></li>
+</ul>
+<p><strong>📝 Merci aux contributeurs</strong></p>
+<p>&#64;bouttier / &#64;antoinececchimnhn / &#64;TheoLechemia / &#64;jpm-cbna / &#64;mvergez / &#64;ophdlv / &#64;Adrien-Pajot / &#64;Gaetanbrl / &#64;pierrejego / &#64;jbrieuclp / &#64;amandine-sahl / &#64;joelclems / &#64;metourneau / &#64;gildeluermoz / &#64;camillemonchicourt</p>
+</section>
 <section id="id1">
-<h2>2.9.2 (2022-02-15)<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
+<h2>2.9.2 (2022-02-15)<a class="headerlink" href="#id1" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Optimisation du nombre d’informations renvoyées par l’API pour les utilisateurs et les organismes</p></li>
@@ -158,7 +297,7 @@
 </ul>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
-<li><p>Correction d’une régression sur la récupération de la liste des taxons (#1674)</p></li>
+<li><p>Correction d’une régression sur la récupération de la liste des taxons (#1672)</p></li>
 <li><p>Correction de l’authentification au CAS de l’INPN</p></li>
 <li><p>Correction du calcul de la sensibilité (#1284) :</p>
 <ul>
@@ -183,7 +322,7 @@
 </ul>
 </section>
 <section id="id2">
-<h2>2.9.1 (2022-01-27)<a class="headerlink" href="#id2" title="Permalink to this headline"></a></h2>
+<h2>2.9.1 (2022-01-27)<a class="headerlink" href="#id2" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Utilisation du paramètre <code class="docutils literal notranslate"><span class="pre">page</span></code> de Flask à la place du paramètre maison <code class="docutils literal notranslate"><span class="pre">offset</span></code> pour la pagination des routes (rétro-compatible)</p></li>
@@ -204,7 +343,7 @@
 </ul>
 </section>
 <section id="actias-luna-2022-01-13">
-<h2>2.9.0 - Actias luna (2022-01-13)<a class="headerlink" href="#actias-luna-2022-01-13" title="Permalink to this headline"></a></h2>
+<h2>2.9.0 - Actias luna (2022-01-13)<a class="headerlink" href="#actias-luna-2022-01-13" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Profils de taxons</strong></p>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
@@ -215,7 +354,7 @@
 <li><p>Affichage des scores de chaque observation par rapport au profil du taxon dans la liste des observations du module Validation, ainsi que dans les fiches détails des observations dans les modules Synthèse et Validation (#1105)</p></li>
 <li><p>Ajout de filtres des observations par score ou critère des profils de taxon dans le module Validation (#1105)</p></li>
 <li><p>Ajout d’une alerte de contextualisation d’une observation par rapport au profil de taxon, lors de sa saisie dans le module Occtax</p></li>
-<li><p>Mise en place de paramètres pour activer ou non les profils de taxons, paramétrer leurs règles et définir les statut de validation pris en compte pour le calcul des profils (“Certain-très probable” et “Probable” par défaut)</p></li>
+<li><p>Mise en place de paramètres pour activer ou non les profils de taxons, paramétrer leurs règles et définir les statut de validation pris en compte pour le calcul des profils (« Certain-très probable » et « Probable » par défaut)</p></li>
 <li><p>Documentation des profils de taxons et de leur paramètrage (<a class="reference external" href="https://docs.geonature.fr/admin-manual.html#profils-de-taxons">https://docs.geonature.fr/admin-manual.html#profils-de-taxons</a>)</p></li>
 <li><p>Suppression de la vue matérialisée <code class="docutils literal notranslate"><span class="pre">gn_synthese.vm_min_max_for_taxons</span></code> et de la fonction <code class="docutils literal notranslate"><span class="pre">gn_synthese.fct_calculate_min_max_for_taxon()</span></code> qui n’étaient pas utilisées</p></li>
 </ul>
@@ -238,7 +377,7 @@
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>[OCCTAX] Correction de l’enregistrement des dénombrements lors de l’enchainement des relevés (#1479 par &#64;jbrieuclp)</p></li>
-<li><p>[OCCTAX] Correction du filtre du champs “Habitat” par typologie d’habitat</p></li>
+<li><p>[OCCTAX] Correction du filtre du champs « Habitat » par typologie d’habitat</p></li>
 <li><p>[ADMIN] Correction de l’affichage du module (#1427 par &#64;jbrieuclp)</p></li>
 <li><p>[ADMIN] Sécurisation du module (#839)</p></li>
 <li><p>[VALIDATION] Corrections de la validation des observations (#1485 / #1529)</p></li>
@@ -316,7 +455,7 @@
 </ul>
 </section>
 <section id="id3">
-<h2>2.8.1 (2021-10-17)<a class="headerlink" href="#id3" title="Permalink to this headline"></a></h2>
+<h2>2.8.1 (2021-10-17)<a class="headerlink" href="#id3" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout de l’indication du département au formulaire des communes (#1480)</p></li>
@@ -329,7 +468,7 @@
 </ul>
 </section>
 <section id="vaccinium-myrtillus-2021-10-18">
-<h2>2.8.0 - Vaccinium myrtillus (2021-10-18)<a class="headerlink" href="#vaccinium-myrtillus-2021-10-18" title="Permalink to this headline"></a></h2>
+<h2>2.8.0 - Vaccinium myrtillus (2021-10-18)<a class="headerlink" href="#vaccinium-myrtillus-2021-10-18" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Gestion de la base de données avec Alembic</strong></p>
 <p>⚠️ Avant de mettre à jour GeoNature, vérifiez que les modules que vous utilisez disposent d’une version compatible avec la 2.8.0, suite au passage à la version 3 de Marshmallow.</p>
 <p><strong>🚀 Nouveautés</strong></p>
@@ -357,7 +496,7 @@
 <ul class="simple">
 <li><p>Corrections et améliorations des formulaires dynamiques et des champs additionnels</p></li>
 <li><p>Correction de l’envoi d’email lors de la récupération du mot de passe (#1471)</p></li>
-<li><p>Occtax : Correction du focus sur le champs “taxon” quand on enchaine les taxons (#1462)</p></li>
+<li><p>Occtax : Correction du focus sur le champs « taxon » quand on enchaine les taxons (#1462)</p></li>
 <li><p>Occtax : Correction du formulaire de modification quand le relevé est une ligne ou un polygone (#1461)</p></li>
 <li><p>Occtax : Correction de la conservation de la date quand on enchaine les relevés (#1442)</p></li>
 <li><p>Occtax : Correction du paramètre d’export des champs additionnels (#1440)</p></li>
@@ -459,7 +598,7 @@
 </ul>
 </section>
 <section id="id4">
-<h2>2.7.5 (2021-07-28)<a class="headerlink" href="#id4" title="Permalink to this headline"></a></h2>
+<h2>2.7.5 (2021-07-28)<a class="headerlink" href="#id4" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Compatibilité avec Occtax-mobile 1.3. Possibilité d’ajouter la query string <code class="docutils literal notranslate"><span class="pre">fields</span></code> sur la route <code class="docutils literal notranslate"><span class="pre">meta/datasets</span></code> pour choisir les champs renvoyés par l’API</p></li>
@@ -471,7 +610,7 @@
 </ul>
 </section>
 <section id="id5">
-<h2>2.7.4 (2021-07-23)<a class="headerlink" href="#id5" title="Permalink to this headline"></a></h2>
+<h2>2.7.4 (2021-07-23)<a class="headerlink" href="#id5" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Correction d’un import manquant entrainant un problème de compilation du frontend (#1424)</p></li>
@@ -483,7 +622,7 @@
 </ul>
 </section>
 <section id="id6">
-<h2>2.7.3 (2021-07-22)<a class="headerlink" href="#id6" title="Permalink to this headline"></a></h2>
+<h2>2.7.3 (2021-07-22)<a class="headerlink" href="#id6" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Métadonnées : ajout des paramètres <code class="docutils literal notranslate"><span class="pre">CD_NOMENCLATURE_ROLE_TYPE_DS</span></code> et <code class="docutils literal notranslate"><span class="pre">CD_NOMENCLATURE_ROLE_TYPE_AF</span></code> pour limiter les rôles utilisables au niveau des jeux de données et des cadres d’acquisition (#1417)</p></li>
@@ -507,13 +646,13 @@
 </ul>
 </section>
 <section id="id7">
-<h2>2.7.2 (2021-07-05)<a class="headerlink" href="#id7" title="Permalink to this headline"></a></h2>
+<h2>2.7.2 (2021-07-05)<a class="headerlink" href="#id7" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>OCCTAX : correction de la vérification du CRUVED (#1413)</p></li>
-<li><p>OCCTAX : correction du dégrisement du formulaire au chargement de la fonctionnalité “mes lieux” (#1414)</p></li>
+<li><p>OCCTAX : correction du dégrisement du formulaire au chargement de la fonctionnalité « mes lieux » (#1414)</p></li>
 <li><p>OCCTAX : Déplacement des champs additionnels pour les dénombrements avant les médias (#1409)</p></li>
-<li><p>Suppression des champs additionnels de type “taxonomy” qui n’étaient pas supportés</p></li>
+<li><p>Suppression des champs additionnels de type « taxonomy » qui n’étaient pas supportés</p></li>
 </ul>
 <p><strong>⚠️ Notes de version</strong></p>
 <p>Si vous mettez à jour GeoNature :</p>
@@ -523,7 +662,7 @@
 </ul>
 </section>
 <section id="id8">
-<h2>2.7.1 (2021-07-02)<a class="headerlink" href="#id8" title="Permalink to this headline"></a></h2>
+<h2>2.7.1 (2021-07-02)<a class="headerlink" href="#id8" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Installation des dépendances javascript des modules lors de la migration de version de GeoNature (#1252)</p></li>
@@ -537,7 +676,7 @@
 </ul>
 </section>
 <section id="androsace-delphinensis-2021-06-30">
-<h2>2.7.0 - Androsace delphinensis (2021-06-30)<a class="headerlink" href="#androsace-delphinensis-2021-06-30" title="Permalink to this headline"></a></h2>
+<h2>2.7.0 - Androsace delphinensis (2021-06-30)<a class="headerlink" href="#androsace-delphinensis-2021-06-30" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Nécessite la version 1.8.x de TaxHub.</p>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
@@ -564,13 +703,13 @@
 <li><p>Possibilité d’ouvrir l’accès à GeoNature sans authentification (voir documentation d’administration) (#1323)</p></li>
 <li><p>Métadonnées : Optimisation du temps de chargement des listes des CA et JDD (#1291)</p></li>
 <li><p>Métadonnées : Passage de la version 1.3.9 du standard SINP à la version 1.3.10 et ajout des champs liés dans les formulaires (#1291)</p></li>
-<li><p>Métadonnées : Révision du design la partie “Acteurs” du formulaire et mise à part de l’acteur de type “Contact principal”, obligatoire dans le standard SINP</p></li>
+<li><p>Métadonnées : Révision du design la partie « Acteurs » du formulaire et mise à part de l’acteur de type « Contact principal », obligatoire dans le standard SINP</p></li>
 <li><p>Métadonnées : Ordonnancement des JDD par leur nom</p></li>
 <li><p>Métadonnées : Ajout de la suppression en cascade au niveau des tables des CA et des JDD</p></li>
 <li><p>Métadonnées : Ajout d’un message quand un CA ou JDD n’a pas d’acteur (#1404)</p></li>
 <li><p>Synthèse et validation : Ajout d’un filtre avancé <code class="docutils literal notranslate"><span class="pre">Possède</span> <span class="pre">des</span> <span class="pre">médias</span></code> (#1179, #1338, #1180)</p></li>
 <li><p>Synthèse : Affichage du contenu json du champs des données additionnelles, dans la fiche détail d’une observation</p></li>
-<li><p>Synthèse : Ajout de la possibilité d’afficher la colonne “Effectif” dans la liste des observations</p></li>
+<li><p>Synthèse : Ajout de la possibilité d’afficher la colonne « Effectif » dans la liste des observations</p></li>
 <li><p>DynamicForm : enrichissement des formulaires dynamiques pour les médias, l’ajout de liens externes</p></li>
 <li><p>Ajout d’une contrainte d’unicité de la combinaison des champs <code class="docutils literal notranslate"><span class="pre">id_type</span></code> et <code class="docutils literal notranslate"><span class="pre">area_code</span></code> dans <code class="docutils literal notranslate"><span class="pre">ref_geo.l_areas</span></code> (#1270)</p></li>
 <li><p>Ajout d’une contrainte d’unicité du champs <code class="docutils literal notranslate"><span class="pre">type_code</span></code> de la table <code class="docutils literal notranslate"><span class="pre">ref_geo.bib_areas_types</span></code></p></li>
@@ -584,18 +723,18 @@
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Occtax : Correction d’un bug sur le champs observateur lors de la modification d’un relevé (#1177)</p></li>
-<li><p>Occtax : Renseignement par défaut de l’utilisateur connecté à la création d’un relevé en mode “observers_txt” (#1292)</p></li>
+<li><p>Occtax : Renseignement par défaut de l’utilisateur connecté à la création d’un relevé en mode « observers_txt » (#1292)</p></li>
 <li><p>Occtax : Déplacement des boutons d’action à gauche dans la liste des taxons d’un relevé pour éviter qu’ils soient masqués quand les noms de taxon sont longs (#1299 et #1337)</p></li>
 <li><p>Occtax : Correction de la possibilité de modifier un relevé si U=1 (#1365)</p></li>
 <li><p>Occtax : Suppression du zoom quand on localise le relevé (#1317)</p></li>
 <li><p>Occtax : Correction du nombre de lignes affichées après une recherche</p></li>
 <li><p>Occtax : Correction de la suppression d’un habitat lors de la modification d’un relevé (#1296)</p></li>
-<li><p>Occtax : Correction des champs “Habitat” et “Lieu” quand on enchaine des relevés (#1191)</p></li>
+<li><p>Occtax : Correction des champs « Habitat » et « Lieu » quand on enchaine des relevés (#1191)</p></li>
 <li><p>Occtax : Correction de l’enchainement des saisies (#1300)</p></li>
 <li><p>Occtax : Correction de l’affichage des taxons quand le nom est long (#1299, #1337)</p></li>
 <li><p>Occtax : Correction de l’observateur par défaut en mode <code class="docutils literal notranslate"><span class="pre">observers_txt</span></code></p></li>
 <li><p>Occtax : Correction des messages d’information multiples (#1367)</p></li>
-<li><p>Occtax : Correction de la mise à jour du “digitiser” lors d’une édition de relevé (#1392)</p></li>
+<li><p>Occtax : Correction de la mise à jour du « digitiser » lors d’une édition de relevé (#1392)</p></li>
 <li><p>Occtax : Correction du trigger alimentant les observateurs de la synthèse depuis Occtax (#1399)</p></li>
 <li><p>Métadonnées : Correction de la suppression d’un JDD sans données, depuis la liste des JDD (#1312)</p></li>
 <li><p>Métadonnées : Correction de la récupération des valeurs de nomenclature depuis MTD n’existant pas dans GeoNature (#1297)</p></li>
@@ -634,7 +773,7 @@
 </div>
 </section>
 <section id="id9">
-<h2>2.6.2 (2021-02-15)<a class="headerlink" href="#id9" title="Permalink to this headline"></a></h2>
+<h2>2.6.2 (2021-02-15)<a class="headerlink" href="#id9" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Metadonnées : correction d’un bug sur la fiche JDD si le module d’import n’est pas installé</p></li>
@@ -643,11 +782,11 @@
 </ul>
 </section>
 <section id="id10">
-<h2>2.6.1 (2021-02-11)<a class="headerlink" href="#id10" title="Permalink to this headline"></a></h2>
+<h2>2.6.1 (2021-02-11)<a class="headerlink" href="#id10" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Correction de la fonction <code class="docutils literal notranslate"><span class="pre">gn_synthese.fct_tri_cal_sensi_diff_level_on_each_statement()</span></code> non compatible avec PostgreSQL 10 (#1255)</p></li>
-<li><p>Synthèse : correction de l’affichage du filtre “statut de validation” (#1267)</p></li>
+<li><p>Synthèse : correction de l’affichage du filtre « statut de validation » (#1267)</p></li>
 <li><p>Permissions : correction de l’URL de redirection après l’éditiondes permissions (#1253)</p></li>
 <li><p>Précision de la documentation de mise à jour de GeoNature (#1251)</p></li>
 <li><p>Ajout du paramètre <code class="docutils literal notranslate"><span class="pre">DISPLAY_EMAIL_INFO_OBS</span></code> dans le fichier d’exemple de configuration (#1066 par &#64;jbdesbas)</p></li>
@@ -664,8 +803,8 @@
 </ul>
 </section>
 <section id="saxifraga-2021-02-04">
-<h2>2.6.0 - Saxifraga (2021-02-04)<a class="headerlink" href="#saxifraga-2021-02-04" title="Permalink to this headline"></a></h2>
-<p>Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimum (qui n’est pas fourni par défaut avec Debian 9) pour les triggers déclenchés “on each statement”, plus performants.</p>
+<h2>2.6.0 - Saxifraga (2021-02-04)<a class="headerlink" href="#saxifraga-2021-02-04" title="Lien permanent vers cette rubrique"></a></h2>
+<p>Nécessite Debian 10, car cette nouvelle version nécessite PostgreSQL 10 minimum (qui n’est pas fourni par défaut avec Debian 9) pour les triggers déclenchés « on each statement », plus performants.</p>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Sensibilité : Ajout d’un trigger sur la synthèse déclenchant automatiquement le calcul de la sensibilité des observations et calculant ensuite leur niveau de diffusion (si celui-ci est NULL) en fonction de la sensibilité (#413 et #871)</p></li>
@@ -707,11 +846,11 @@
 <li><p>Meilleur nettoyage des sessions enregistrées dans le navigateur (#1178)</p></li>
 <li><p>Correction des droits CRUVED et de leur héritage (#1170)</p></li>
 <li><p>Synthèse : Retour du bouton pour revenir à l’observation dans son module d’origine (Occtax par exemple) depuis la fiche info d’une observation (#1147)</p></li>
-<li><p>Synthèse : Suppression du message “Aucun historique de validation” quand une observation n’a pas encore de validation (#1147)</p></li>
+<li><p>Synthèse : Suppression du message « Aucun historique de validation » quand une observation n’a pas encore de validation (#1147)</p></li>
 <li><p>Synthèse : Correction du CRUVED sur le R = 1 (ajout des JDD de l’utilisateur)</p></li>
 <li><p>Synthèse : Correction de l’export des statuts basé sur une recherche géographique (#1203)</p></li>
 <li><p>Occtax : Correction de l’erreur de chargement de l’observateur lors de la modification d’un relevé (#1177)</p></li>
-<li><p>Occtax : Suppression de l’obligation de remplir les champs “Déterminateur” et “Méthode de détermination”</p></li>
+<li><p>Occtax : Suppression de l’obligation de remplir les champs « Déterminateur » et « Méthode de détermination »</p></li>
 <li><p>Métadonnées : Suppression du graphique de répartition des espèces dans les exports PDF car il était partiellement fonctionnel</p></li>
 <li><p>Synthèse : Fonction <code class="docutils literal notranslate"><span class="pre">import_row_from_table</span></code>, test sur <code class="docutils literal notranslate"><span class="pre">LOWER(tbl_name)</span></code></p></li>
 <li><p>Redirection vers le formulaire d’authentification si l’on essaie d’accéder à une URL sans être authentifié et sans passer par le frontend (#1193)</p></li>
@@ -734,7 +873,7 @@
 </ul>
 </section>
 <section id="id11">
-<h2>2.5.5 (2020-11-19)<a class="headerlink" href="#id11" title="Permalink to this headline"></a></h2>
+<h2>2.5.5 (2020-11-19)<a class="headerlink" href="#id11" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout d’un composant fil d’ariane (#1143)</p></li>
@@ -750,7 +889,7 @@
 </ul>
 </section>
 <section id="id12">
-<h2>2.5.4 (2020-11-17)<a class="headerlink" href="#id12" title="Permalink to this headline"></a></h2>
+<h2>2.5.4 (2020-11-17)<a class="headerlink" href="#id12" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout de scripts <code class="docutils literal notranslate"><span class="pre">sql</span></code> et <code class="docutils literal notranslate"><span class="pre">sh</span></code> de restauration des medias dans <code class="docutils literal notranslate"><span class="pre">data/medias</span></code> (#1148)</p></li>
@@ -773,14 +912,14 @@
 </ul>
 </section>
 <section id="id13">
-<h2>2.5.3 (2020-11-04)<a class="headerlink" href="#id13" title="Permalink to this headline"></a></h2>
+<h2>2.5.3 (2020-11-04)<a class="headerlink" href="#id13" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Mise en place de l’héritage du CRUVED au niveau des objets des modules (#1028)</p></li>
 <li><p>Révision de l’export des observations de la Synthèse (noms plus lisibles, ajout des communes et d’informations taxonomiques, complément des champs existants (#755)</p></li>
 <li><p>Ajout d’un paramètre permettant d’ajouter un message personnalisé à la fin des emails (inscriptions, exports…) (#1050 par &#64;jpm-cbna)</p></li>
 <li><p>Ajout d’une alerte de dépréciation sur les fonctions <code class="docutils literal notranslate"><span class="pre">utils-sqlalchemy</span></code> présentes dans GeoNature</p></li>
-<li><p>Ajout d’un widget de type “HTML” dans les formulaires dynamiques, permettant d’ajouter des informations dans un formulaire (#1043 et #1068 par &#64;jpm-cbna)</p></li>
+<li><p>Ajout d’un widget de type « HTML » dans les formulaires dynamiques, permettant d’ajouter des informations dans un formulaire (#1043 et #1068 par &#64;jpm-cbna)</p></li>
 <li><p>Ajout de la possibilité d’ajouter un texte d’aide sur les champs des formulaires dynamiques (#1065 par &#64;jpm-cbna)</p></li>
 <li><p>Ajout de la possibilité de définir un min et un max au composant commun <code class="docutils literal notranslate"><span class="pre">date</span></code> (#1069 par &#64;jpm-cbna)</p></li>
 <li><p>Ajout de la possibilité de définir le nombre de lignes du composant commun <code class="docutils literal notranslate"><span class="pre">textarea</span></code> (#1067 par &#64;jpm-cbna)</p></li>
@@ -807,7 +946,7 @@
 </ul>
 <p><strong>⚠️ Notes de version</strong></p>
 <ul class="simple">
-<li><p>Désormais les objets des modules (par exemple les objets ‘Permissions’ et ‘Nomenclatures’ du module ‘ADMIN’) héritent automatiquement des permissions définies au niveau du module parent et à défaut au niveau de GeoNature  (#1028). Il s’agit d’une évolution de mise en cohérence puisque les modules héritaient déjà des permissions de GeoNature, mais pas leurs objets. Si vous avez défini des permissions particulières aux niveaux des objets, vérifier leur cohérence avec le nouveau fonctionnement. NB : si vous aviez mis des droits R=0 pour un groupe au module ‘ADMIN’, les utilisateurs de ce groupe ne pourront pas accéder aux sous-modules ‘permissions’ et ‘nomenclatures’.</p></li>
+<li><p>Désormais les objets des modules (par exemple les objets “Permissions” et “Nomenclatures” du module “ADMIN”) héritent automatiquement des permissions définies au niveau du module parent et à défaut au niveau de GeoNature  (#1028). Il s’agit d’une évolution de mise en cohérence puisque les modules héritaient déjà des permissions de GeoNature, mais pas leurs objets. Si vous avez défini des permissions particulières aux niveaux des objets, vérifier leur cohérence avec le nouveau fonctionnement. NB : si vous aviez mis des droits R=0 pour un groupe au module “ADMIN”, les utilisateurs de ce groupe ne pourront pas accéder aux sous-modules “permissions” et “nomenclatures”.</p></li>
 <li><p>Exécuter ensuite le script SQL de mise à jour de la BDD de GeoNature (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.2to2.5.3.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/migrations/2.5.2to2.5.3.sql</a>). Attention, si vous avez customisé les vues des exports Occtax et Synthèse, elles seront supprimées et recrées automatiquement par le script SQL de mise à jour de la BDD de GeoNature pour intégrer leurs évolutions réalisées dans cette nouvelle version. Révisez éventuellement ces vues avant et/ou après la mise à jour.</p></li>
 <li><p>Suivez la procédure classique de mise à jour de GeoNature (<a class="reference external" href="http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application">http://docs.geonature.fr/installation-standalone.html#mise-a-jour-de-l-application</a>).</p></li>
 <li><p>Les noms de colonnes de l’export de la Synthèse ont été entièrement revus dans la vue fournie par défaut (<code class="docutils literal notranslate"><span class="pre">gn_synthese.v_synthese_for_export</span></code>). Si vous aviez surcouché le paramètre <code class="docutils literal notranslate"><span class="pre">EXPORT_COLUMNS</span></code> dans le fichier <code class="docutils literal notranslate"><span class="pre">config/geonature_config.toml</span></code>, vérifiez les noms des colonnes.</p></li>
@@ -815,7 +954,7 @@
 </ul>
 </section>
 <section id="id14">
-<h2>2.5.2 (2020-10-13)<a class="headerlink" href="#id14" title="Permalink to this headline"></a></h2>
+<h2>2.5.2 (2020-10-13)<a class="headerlink" href="#id14" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Occtax : correction du problème d’installation du module dans le fichier <code class="docutils literal notranslate"><span class="pre">schemas.py</span></code></p></li>
@@ -829,14 +968,14 @@
 </ul>
 </section>
 <section id="id15">
-<h2>2.5.1 (2020-10-06)<a class="headerlink" href="#id15" title="Permalink to this headline"></a></h2>
+<h2>2.5.1 (2020-10-06)<a class="headerlink" href="#id15" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>Ajout d’un paramètre <code class="docutils literal notranslate"><span class="pre">DISPLAY_EMAIL_INFO_OBS</span></code> définissant si les adresses email des observateurs sont affichées ou non dans les fiches info des observations des modules Synthèse et Validation (#1066)</p></li>
-<li><p>Occtax : correction de l’affichage du champs “Technique de collecte Campanule” (#1059)</p></li>
+<li><p>Occtax : correction de l’affichage du champs « Technique de collecte Campanule » (#1059)</p></li>
 <li><p>Occtax : correction du fichier d’exemple de configuration <code class="docutils literal notranslate"><span class="pre">contrib/occtax/config/conf_gn_module.toml.example</span></code> (#1059)</p></li>
 <li><p>Occtax : paramètre <code class="docutils literal notranslate"><span class="pre">DISPLAY_SETTINGS_TOOLS</span></code> renommé <code class="docutils literal notranslate"><span class="pre">ENABLE_SETTINGS_TOOLS</span></code> et désactivé par défaut (#1060)</p></li>
-<li><p>Occtax : quand le paramètre <code class="docutils literal notranslate"><span class="pre">ENABLE_SETTINGS_TOOLS</span></code> est désactivé, remise en place du fonctionnement de l’outil “Echainer les relevés”. Dans ce cas, quand on enchaine les relevés, on conserve le JDD, les observateurs, les dates et heures d’un relevé à l’autre (#1060)</p></li>
+<li><p>Occtax : quand le paramètre <code class="docutils literal notranslate"><span class="pre">ENABLE_SETTINGS_TOOLS</span></code> est désactivé, remise en place du fonctionnement de l’outil « Echainer les relevés ». Dans ce cas, quand on enchaine les relevés, on conserve le JDD, les observateurs, les dates et heures d’un relevé à l’autre (#1060)</p></li>
 <li><p>Occtax : correction de l’observateur par défaut en mode <code class="docutils literal notranslate"><span class="pre">observers_as_txt</span></code></p></li>
 <li><p>Verification des UUID : autoriser toutes les versions (#1063)</p></li>
 </ul>
@@ -847,7 +986,7 @@
 </ul>
 </section>
 <section id="manidae-2020-09-30">
-<h2>2.5.0 - Manidae (2020-09-30)<a class="headerlink" href="#manidae-2020-09-30" title="Permalink to this headline"></a></h2>
+<h2>2.5.0 - Manidae (2020-09-30)<a class="headerlink" href="#manidae-2020-09-30" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Occtax v2 et médias</p>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
@@ -867,21 +1006,21 @@
 </li>
 <li><p>Passage de la version 1.2.1 à la version 2.0.0 du standard Occurrences de taxon (dans les modules Occtax, Synthèse et Validation) (#516)</p>
 <ul>
-<li><p>Ajout des champs “Comportement”, “NomLieu”, “Habitat”, “Méthode de regroupement”, “Type de regroupement” et “Profondeur”</p></li>
-<li><p>Ajout du champs “Précision” dans Occtax et suppression de sa valeur par défaut à 100 m</p></li>
-<li><p>Renommage du champs “Méthode d’observation” en “Technique d’observation”</p></li>
-<li><p>Suppression du champs “Technique d’observation” actuel de la synthèse</p></li>
-<li><p>Renommage du champs “Technique d’observation” actuel d’Occtax en “Technique de collecte Campanule”</p></li>
+<li><p>Ajout des champs « Comportement », « NomLieu », « Habitat », « Méthode de regroupement », « Type de regroupement » et « Profondeur »</p></li>
+<li><p>Ajout du champs « Précision » dans Occtax et suppression de sa valeur par défaut à 100 m</p></li>
+<li><p>Renommage du champs « Méthode d’observation » en « Technique d’observation »</p></li>
+<li><p>Suppression du champs « Technique d’observation » actuel de la synthèse</p></li>
+<li><p>Renommage du champs « Technique d’observation » actuel d’Occtax en « Technique de collecte Campanule »</p></li>
 <li><p>Ajout et mise à jour de quelques nomenclatures</p></li>
 <li><p>Ajout d’un document de suivi de l’implémentation du standard Occurrences de taxon dans GeoNature (<code class="docutils literal notranslate"><span class="pre">docs/implementation_gn_standard_occtax2.0.ods</span></code>) (#516)</p></li>
 </ul>
 </li>
-<li><p>Passage de la version 1.3.9 à la version 1.3.10 du standard de Métadonnées. Mise à jour des nomenclatures “CA_OBJECTIFS” et mise à jour des métadonnées existantes en conséquence (par &#64;DonovanMaillard)</p></li>
+<li><p>Passage de la version 1.3.9 à la version 1.3.10 du standard de Métadonnées. Mise à jour des nomenclatures « CA_OBJECTIFS » et mise à jour des métadonnées existantes en conséquence (par &#64;DonovanMaillard)</p></li>
 <li><p>Ajout d’un champs <code class="docutils literal notranslate"><span class="pre">addtional_data</span></code> de type <code class="docutils literal notranslate"><span class="pre">jsonb</span></code> dans la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code>, en prévision de l’ajout des champs additionnels dans Occtax et Synthèse (#1007)</p></li>
 <li><p>Mise en place de la gestion transversale et générique des médias (images, audios, vidéos, PDF…) dans <code class="docutils literal notranslate"><span class="pre">gn_commons.t_medias</span></code> et le Dynamic-Form (#336) et implémentation dans le module Occtax (désactivables avec le paramètre <code class="docutils literal notranslate"><span class="pre">ENABLE_MEDIAS</span></code>) (#620 par &#64;joelclems)</p></li>
 <li><p>Mise en place de miniatures et d’aperçus des médias, ainsi que de nombreux contrôles des fichiers et de leurs formats</p></li>
 <li><p>Affichage des médias dans les fiches d’information des modules de saisie, ainsi que dans les modules Synthèse et Validation</p></li>
-<li><p>Ajout de la fonctionnalité “Mes lieux” (<code class="docutils literal notranslate"><span class="pre">gn_commons.t_places</span></code>), permettant de stocker la géométrie de ieux individuels fréquemment utilisés, implémentée dans le module cartographique d’Occtax (désactivable avec le paramètre <code class="docutils literal notranslate"><span class="pre">ENABLE_MY_PLACES</span></code>) (#246 par &#64;metourneau)</p></li>
+<li><p>Ajout de la fonctionnalité « Mes lieux » (<code class="docutils literal notranslate"><span class="pre">gn_commons.t_places</span></code>), permettant de stocker la géométrie de ieux individuels fréquemment utilisés, implémentée dans le module cartographique d’Occtax (désactivable avec le paramètre <code class="docutils literal notranslate"><span class="pre">ENABLE_MY_PLACES</span></code>) (#246 par &#64;metourneau)</p></li>
 <li><p>Tri de l’ordre des modules dans le menu latéral par ordre alphabétique par défaut et possibilité de les ordonner avec le nouveau champs <code class="docutils literal notranslate"><span class="pre">gn_commons.t_modules.module_order</span></code> (#787 par &#64;alainlaupinmnhn)</p></li>
 <li><p>Arrêt du support de l’installation packagée sur Debian 9 et Ubuntu 16 pour passer à Python version 3.6 et plus</p></li>
 <li><p>Prise en charge de PostGIS 3 et notamment l’installation de l’extension <code class="docutils literal notranslate"><span class="pre">postgis_raster</span></code> (#946 par &#64;jpm-cbna)</p></li>
@@ -894,7 +1033,7 @@
 <li><p>Métadonnées : Ajout d’un paramètre permettant de définir le nombre de CA affichés sur la page (100 par défaut)</p></li>
 <li><p>Métadonnées : Tri des CA et JDD par ordre alphabétique</p></li>
 <li><p>Métadonnées : Ajout d’un champs <code class="docutils literal notranslate"><span class="pre">id_digitiser</span></code> dans la table des CA et des JDD, utilisé en plus des acteurs pour le CRUVED des JDD (#921)</p></li>
-<li><p>Dynamic-Form : Ajout d’un composant “select” prenant une API en entrée (#1029)</p></li>
+<li><p>Dynamic-Form : Ajout d’un composant « select » prenant une API en entrée (#1029)</p></li>
 <li><p>Dynamic-Form : Ajout de la possibilité d’afficher une définition d’un champs sous forme de tooltip</p></li>
 <li><p>CAS INPN : Redirection vers la page de connexion de GeoNature quand on se déconnecte</p></li>
 <li><p>Ajout d’une contrainte d’unicité sur <code class="docutils literal notranslate"><span class="pre">schema_name</span></code> et <code class="docutils literal notranslate"><span class="pre">table_name</span></code> sur la table <code class="docutils literal notranslate"><span class="pre">gn_commons_bib_tables_location_unique</span></code> (#962)</p></li>
@@ -923,7 +1062,7 @@
 <li><p>Correction et complément des scripts de migration de données depuis GINCO v1 (<code class="docutils literal notranslate"><span class="pre">data/scripts/import_ginco/occtax.sql</span></code>)</p></li>
 <li><p>Import des utilisateurs depuis le CAS INPN : Activer les utilisateurs importés par défaut et récupérer leur email</p></li>
 <li><p>Calcul automatique de la sensibilité : Ajout de la récursivité dans la récupération des critères de sensibilité au niveau de la fonction <code class="docutils literal notranslate"><span class="pre">gn_sensitivity.get_id_nomenclature_sensitivity</span></code> (#284)</p></li>
-<li><p>Typo sur le terme “Preuve d’existence” (par &#64;RomainBaghi)</p></li>
+<li><p>Typo sur le terme « Preuve d’existence » (par &#64;RomainBaghi)</p></li>
 </ul>
 <p><strong>⚠️ Notes de version</strong></p>
 <p>Si vous mettez à jour GeoNature :</p>
@@ -943,7 +1082,7 @@
 </ul>
 </section>
 <section id="id16">
-<h2>2.4.1 (2020-06-25)<a class="headerlink" href="#id16" title="Permalink to this headline"></a></h2>
+<h2>2.4.1 (2020-06-25)<a class="headerlink" href="#id16" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Occurrences sans géométrie précise : Ajout d’un champs <code class="docutils literal notranslate"><span class="pre">id_area_attachment</span></code> dans la table <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code> permettant d’associer une observation à un zonage dans le référentiel géographique (<code class="docutils literal notranslate"><span class="pre">ref_geo.l_areas.id_area</span></code>) (#845 et #867)</p></li>
@@ -966,7 +1105,7 @@
 </ul>
 </section>
 <section id="fiches-de-metadonnees-2020-06-22">
-<h2>2.4.0 - Fiches de métadonnées (2020-06-22)<a class="headerlink" href="#fiches-de-metadonnees-2020-06-22" title="Permalink to this headline"></a></h2>
+<h2>2.4.0 - Fiches de métadonnées (2020-06-22)<a class="headerlink" href="#fiches-de-metadonnees-2020-06-22" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Métadonnées : Ajout d’une fiche pour chaque jeu de données et cadres d’acquisition, incluant une carte de l’étendue des observations et un graphique de répartition des taxons par Groupe INPN (#846 par &#64;FloVollmer)</p></li>
@@ -1007,7 +1146,7 @@
 <li><p>Mise à jour de la librairie python Markupsafe en version 1.1, corrigeant un problème de setuptools (#881)</p></li>
 <li><p>Page Maintenance : Correction de l’affichage de l’image (par &#64;jpm-cbna)</p></li>
 <li><p>Correction du multiselect du composant <code class="docutils literal notranslate"><span class="pre">pnx-nomenclatures</span></code> (#885 par &#64;jpm-cbna)</p></li>
-<li><p>Correction de l’<code class="docutils literal notranslate"><span class="pre">input('coordinates')</span></code> du composant <code class="docutils literal notranslate"><span class="pre">marker</span></code> (#901 par &#64;jbrieuclp)</p></li>
+<li><p>Correction de l”<code class="docutils literal notranslate"><span class="pre">input('coordinates')</span></code> du composant <code class="docutils literal notranslate"><span class="pre">marker</span></code> (#901 par &#64;jbrieuclp)</p></li>
 <li><p>Utilisation de NVM quand on installe les dépendances javascript (#926 par &#64;jpm-cbna)</p></li>
 <li><p>Formulaire JDD : Correction de l’affichage de la liste des modules (#861)</p></li>
 <li><p>Correction de l’utilisation des paramètres du proxy (#944)</p></li>
@@ -1058,7 +1197,7 @@
 </ul>
 </section>
 <section id="id17">
-<h2>2.3.2 (2020-02-24)<a class="headerlink" href="#id17" title="Permalink to this headline"></a></h2>
+<h2>2.3.2 (2020-02-24)<a class="headerlink" href="#id17" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Possibilité de charger les commandes d’un module dans les commandes de GeoNature</p></li>
@@ -1071,7 +1210,7 @@
 </ul>
 </section>
 <section id="id18">
-<h2>2.3.1 (2020-02-18)<a class="headerlink" href="#id18" title="Permalink to this headline"></a></h2>
+<h2>2.3.1 (2020-02-18)<a class="headerlink" href="#id18" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Installation globale : Compatibilité Debian 10 (PostgreSQL 11, PostGIS 2.5)</p></li>
@@ -1105,7 +1244,7 @@
 </ul>
 </section>
 <section id="occhab-de-noel-2019-12-27">
-<h2>2.3.0 - Occhab de Noël (2019-12-27)<a class="headerlink" href="#occhab-de-noel-2019-12-27" title="Permalink to this headline"></a></h2>
+<h2>2.3.0 - Occhab de Noël (2019-12-27)<a class="headerlink" href="#occhab-de-noel-2019-12-27" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Développement du module Occhab (Occurrences d’habitats) basé sur une version minimale du standard SINP du même nom et s’appuyant sur le référentiel Habref du SINP (#735)</p>
@@ -1208,24 +1347,24 @@ deactivate
 </ul>
 </section>
 <section id="id19">
-<h2>2.2.1 (2019-10-09)<a class="headerlink" href="#id19" title="Permalink to this headline"></a></h2>
+<h2>2.2.1 (2019-10-09)<a class="headerlink" href="#id19" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>La route de changement de mot de passe était désactivée par le mauvais paramètre (<code class="docutils literal notranslate"><span class="pre">ENABLE_SIGN_UP</span></code> au lieu de <code class="docutils literal notranslate"><span class="pre">ENABLE_USER_MANAGEMENT</span></code>)</p></li>
-<li><p>Désactivation du mode “enchainement des relevés” en mode édition (#669). Correction effacement du même relevé (#744)</p></li>
+<li><p>Désactivation du mode « enchainement des relevés » en mode édition (#669). Correction effacement du même relevé (#744)</p></li>
 <li><p>Correction d’affichage du module métadonnées lorsque les AF n’ont pas de JDD pour des raisons de droit (#743)</p></li>
 <li><p>Diverses corrections de doublons d’import et de logs de débugs (#742)</p></li>
 <li><p>Montée de version du sous-module d’authentification: 1.4.2</p></li>
 </ul>
 </section>
 <section id="module-utilisateurs-2019-09-18">
-<h2>2.2.0 - Module utilisateurs (2019-09-18)<a class="headerlink" href="#module-utilisateurs-2019-09-18" title="Permalink to this headline"></a></h2>
+<h2>2.2.0 - Module utilisateurs (2019-09-18)<a class="headerlink" href="#module-utilisateurs-2019-09-18" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout d’interfaces et de paramètres de création de compte, de récupération de son mot de passe et d’administration de son profil, basé sur l’API UsersHub 2.1.0 (par &#64;jbrieuclp et &#64;TheoLechemia) #615</p></li>
 <li><p>Ajout d’une fonctionnalité de création automatique d’un CA et d’un JDD personnel lors de la validation d’un compte créé automatiquement (paramétrable)</p></li>
 <li><p>Amélioration du composant de création dynamique de formulaire (support de text-area, checkbox simple et multiple et exemple d’utilisation à partir de la conf GeoNature)</p></li>
-<li><p>Le composant ‘observateur’ permet de rechercher sur le nom ou le prénom (utilisation des RegEx) #567</p></li>
+<li><p>Le composant “observateur” permet de rechercher sur le nom ou le prénom (utilisation des RegEx) #567</p></li>
 <li><p>Mise à jour de Flask en version 1.1.1</p></li>
 <li><p>Nouvelle version du sous-module d’authentification (1.4.1), compatible avec UsersHub 2.1.0</p></li>
 <li><p>Mise à jour du sous-module de nomenclatures (version 1.3.0)</p></li>
@@ -1255,7 +1394,7 @@ deactivate
 </ul>
 </section>
 <section id="id20">
-<h2>2.1.2 (2019-07-25)<a class="headerlink" href="#id20" title="Permalink to this headline"></a></h2>
+<h2>2.1.2 (2019-07-25)<a class="headerlink" href="#id20" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🐛 Corrections</strong></p>
 <ul class="simple">
 <li><p>SYNTHESE : Correction d’une URL en dur pour la recherche de rangs taxonomiques</p></li>
@@ -1270,7 +1409,7 @@ deactivate
 <p>Ceci est une version corrective mineure. Si vous migrez depuis la 2.1.0, passez directement à cette version en suivant les notes de version de la 2.1.1.</p>
 </section>
 <section id="id21">
-<h2>2.1.1 (2019-07-18)<a class="headerlink" href="#id21" title="Permalink to this headline"></a></h2>
+<h2>2.1.1 (2019-07-18)<a class="headerlink" href="#id21" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>SYNTHESE: Factorisation du formulaire de recherche (utilisé dans le module synthese et validation)</p></li>
@@ -1294,13 +1433,13 @@ deactivate
 <li><p>Nombreuses corrections du module de validation (non utilisation des id_nomenclature, simplification des vues et de la table <code class="docutils literal notranslate"><span class="pre">gn_commons.t_validations</span></code>)</p></li>
 <li><p>Ordonnancement de listes déroulantes (#685)</p></li>
 <li><p>OCCTAX : correction de l’édition d’un relevé à la géométrie de type Polyline (#684)</p></li>
-<li><p>OCCTAX : correction l’édition et du contrôle conditionnel des champs de “preuves” (preuve d’existence numérique / non numérique) (#679)</p></li>
+<li><p>OCCTAX : correction l’édition et du contrôle conditionnel des champs de « preuves » (preuve d’existence numérique / non numérique) (#679)</p></li>
 <li><p>OCCTAX : correction du parametre <code class="docutils literal notranslate"><span class="pre">DATE_FORM_WITH_TODAY</span></code> non pris en compte (#670)</p></li>
 <li><p>OCCTAX: correction de la date_max non remplie lorsque <code class="docutils literal notranslate"><span class="pre">DATE_FORM_WITH_TODAY</span> <span class="pre">=</span> <span class="pre">false</span></code></p></li>
 <li><p>OCCTAX: correction d’un bug lors de l’enchainement de relevé lorsque l’heure est remplie</p></li>
 <li><p>SYNTHESE: correction des doublons lorsqu’il y a plusieurs observateurs</p></li>
 <li><p>Correction du composant <code class="docutils literal notranslate"><span class="pre">dynamicForm</span></code> sur les champs de recherche de type texte (recherche sur Preuve numérique) (#530)</p></li>
-<li><p>Désactivation du mode “enchainer les relevés” en mode édition (#699)</p></li>
+<li><p>Désactivation du mode « enchainer les relevés » en mode édition (#699)</p></li>
 <li><p>Correction de <code class="docutils literal notranslate"><span class="pre">gn_monitoring</span></code> : utiliser <code class="docutils literal notranslate"><span class="pre">gn_commons.t_modules</span></code> à la place de <code class="docutils literal notranslate"><span class="pre">utilisateurs.t_applications</span></code> pour associer des sites de suivi à des modules</p></li>
 <li><p>Fix de SQLalchemy 1.3.3 et jointure sur objet Table</p></li>
 <li><p>Le trigger remplissant <code class="docutils literal notranslate"><span class="pre">cor_area_synthese</span></code> en intersectant <code class="docutils literal notranslate"><span class="pre">gn_synthese.synthese</span></code> avec <code class="docutils literal notranslate"><span class="pre">ref_geo.l_areas</span></code> ne prend plus que les zonages ayant le champs <code class="docutils literal notranslate"><span class="pre">enabled=true</span></code></p></li>
@@ -1318,7 +1457,7 @@ deactivate
 </ul>
 </section>
 <section id="module-validation-2019-06-01">
-<h2>2.1.0 - Module validation (2019-06-01)<a class="headerlink" href="#module-validation-2019-06-01" title="Permalink to this headline"></a></h2>
+<h2>2.1.0 - Module validation (2019-06-01)<a class="headerlink" href="#module-validation-2019-06-01" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Intégration du module Validation dans GeoNature (développé par &#64;JulienCorny, financé par &#64;sig-pnrnm)</p></li>
@@ -1376,7 +1515,7 @@ deactivate
 </ul>
 </section>
 <section id="id22">
-<h2>2.0.1 (2019-03-18)<a class="headerlink" href="#id22" title="Permalink to this headline"></a></h2>
+<h2>2.0.1 (2019-03-18)<a class="headerlink" href="#id22" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>🚀 Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Développement : ajout d’une fonction de génération dynamique de requête SQL (avec vérification et cast des types)</p></li>
@@ -1395,7 +1534,7 @@ deactivate
 <li><p>Correction ajout rang et cd_nom sur l’autocomplete de la synthese, absent dans le script de migration</p></li>
 <li><p>DEPOBIO : Correction de la déconnexion au CAS INPN</p></li>
 <li><p>Occtax et Metadata: correction lors de la mise à jour d’un élement (Merge mal géré par SQLAlchemy lorsqu’on n’a pas une valeur NULL) (#588)</p></li>
-<li><p>Composant “jeu de données” : retour à l’affichage du nom long (#583)</p></li>
+<li><p>Composant « jeu de données » : retour à l’affichage du nom long (#583)</p></li>
 <li><p>Amélioration du style du composant multiselect</p></li>
 <li><p>Metadata : formulaire cadre d’acquisition - listage uniquement des cadres d’acquisition parent pour ne pas avoir de cadres d’acquisition imbriqués</p></li>
 <li><p>Ajouts de tests automatisés complémentaires</p></li>
@@ -1409,7 +1548,7 @@ deactivate
 </ul>
 </section>
 <section id="la-refonte-2019-02-28">
-<h2>2.0.0 - La refonte (2019-02-28)<a class="headerlink" href="#la-refonte-2019-02-28" title="Permalink to this headline"></a></h2>
+<h2>2.0.0 - La refonte (2019-02-28)<a class="headerlink" href="#la-refonte-2019-02-28" title="Lien permanent vers cette rubrique"></a></h2>
 <p>La version 2 de GeoNature est une refonte complète de l’application.</p>
 <ul class="simple">
 <li><p>Refonte technologique en migrant de PHP/Symfony/ExtJS/Openlayers à Python3/Flask/Angular4/Leaflet</p></li>
@@ -1430,7 +1569,7 @@ deactivate
 <li><p>Ajout d’un export des métadonnées dans la synthèse</p></li>
 <li><p>Centralisation de la configuration cartographique dans la configuration globale de GeoNature (<code class="docutils literal notranslate"><span class="pre">geonature_config.toml</span></code>)</p></li>
 <li><p>Cartographie : zoom sur l’emprise des résultats après une recherche</p></li>
-<li><p>Migration de la gestion des métadonnées dans un module à part : ‘METADATA’ (#550)</p></li>
+<li><p>Migration de la gestion des métadonnées dans un module à part : “METADATA” (#550)</p></li>
 <li><p>Export vue synthèse customisable (voir doc)</p></li>
 <li><p>Lien vers doc par module (customisables dans <code class="docutils literal notranslate"><span class="pre">gn_commons.t_modules</span></code>) (#556)</p></li>
 <li><p>Ajout du code du département dans les filtres par commune (#555)</p></li>
@@ -1482,7 +1621,7 @@ deactivate
 </ul>
 </section>
 <section id="rc-4-2-2019-01-23">
-<h2>2.0.0-rc.4.2 (2019-01-23)<a class="headerlink" href="#rc-4-2-2019-01-23" title="Permalink to this headline"></a></h2>
+<h2>2.0.0-rc.4.2 (2019-01-23)<a class="headerlink" href="#rc-4-2-2019-01-23" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Mise en place de logs rotatifs pour éviter de surcharger le serveur</p></li>
@@ -1519,7 +1658,7 @@ deactivate
 </ul>
 </section>
 <section id="rc-4-1-2019-01-21">
-<h2>2.0.0-rc.4.1 (2019-01-21)<a class="headerlink" href="#rc-4-1-2019-01-21" title="Permalink to this headline"></a></h2>
+<h2>2.0.0-rc.4.1 (2019-01-21)<a class="headerlink" href="#rc-4-1-2019-01-21" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Corrections</strong></p>
 <ul class="simple">
 <li><p>Mise à jour des paquets du frontend (#538)</p></li>
@@ -1534,7 +1673,7 @@ deactivate
 </ul>
 </section>
 <section id="rc-4-2019-01-15">
-<h2>2.0.0-rc.4 (2019-01-15)<a class="headerlink" href="#rc-4-2019-01-15" title="Permalink to this headline"></a></h2>
+<h2>2.0.0-rc.4 (2019-01-15)<a class="headerlink" href="#rc-4-2019-01-15" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Intégration de la gestion des permissions (CRUVED) dans la BDD de GeoNature, géré via une interface d’administration dédié (#517)</p></li>
@@ -1597,7 +1736,7 @@ deactivate
 </ul>
 </section>
 <section id="rc-3-1-2018-10-21">
-<h2>2.0.0-rc.3.1 (2018-10-21)<a class="headerlink" href="#rc-3-1-2018-10-21" title="Permalink to this headline"></a></h2>
+<h2>2.0.0-rc.3.1 (2018-10-21)<a class="headerlink" href="#rc-3-1-2018-10-21" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Corrections</strong></p>
 <ul class="simple">
 <li><p>Correction du script <code class="docutils literal notranslate"><span class="pre">ìnstall_all.sh</span></code> au niveau de la génération de la configuration Apache de TaxHub et UsersHub (#493)</p></li>
@@ -1612,7 +1751,7 @@ deactivate
 </ul>
 </section>
 <section id="rc-3-2018-10-18">
-<h2>2.0.0-rc.3 (2018-10-18)<a class="headerlink" href="#rc-3-2018-10-18" title="Permalink to this headline"></a></h2>
+<h2>2.0.0-rc.3 (2018-10-18)<a class="headerlink" href="#rc-3-2018-10-18" title="Lien permanent vers cette rubrique"></a></h2>
 <ul class="simple">
 <li><p>Possibilité d’utiliser le MNT en raster ou en vecteur dans la BDD (+ doc MNT) #439 (merci &#64;mathieubossaert)</p></li>
 <li><p>INSTALL_ALL - gestion du format date du serveur PostgreSQL (#435)</p></li>
@@ -1673,7 +1812,7 @@ deactivate
 </ul>
 </section>
 <section id="rc-2-2018-09-24">
-<h2>2.0.0-rc.2 (2018-09-24)<a class="headerlink" href="#rc-2-2018-09-24" title="Permalink to this headline"></a></h2>
+<h2>2.0.0-rc.2 (2018-09-24)<a class="headerlink" href="#rc-2-2018-09-24" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Script <code class="docutils literal notranslate"><span class="pre">install_all.sh</span></code> compatible Ubuntu (16 et 18)</p></li>
@@ -1694,7 +1833,7 @@ deactivate
 <li><p>Champs Multiselect : Ne pas afficher les valeurs selectionnées dans la liste quand on modifie un objet</p></li>
 <li><p>Trigger Occtax vers Synthèse : Correction des problèmes d’heure de relevés mal copiés dans la Synthèse</p></li>
 <li><p>Correction des altitudes (non abouti) (#424)</p></li>
-<li><p>Données exemple : Suppression de l’<code class="docutils literal notranslate"><span class="pre">observers_txt</span></code> dans la synthèse</p></li>
+<li><p>Données exemple : Suppression de l”<code class="docutils literal notranslate"><span class="pre">observers_txt</span></code> dans la synthèse</p></li>
 <li><p>Suppression d’un <code class="docutils literal notranslate"><span class="pre">id_municipality</span></code> en dur dans une route</p></li>
 <li><p>Suppression de la librairie Certifi non utilisée</p></li>
 </ul>
@@ -1705,7 +1844,7 @@ deactivate
 </ul>
 </section>
 <section id="rc-1-2018-09-21">
-<h2>2.0.0-rc.1 (2018-09-21)<a class="headerlink" href="#rc-1-2018-09-21" title="Permalink to this headline"></a></h2>
+<h2>2.0.0-rc.1 (2018-09-21)<a class="headerlink" href="#rc-1-2018-09-21" title="Lien permanent vers cette rubrique"></a></h2>
 <p>La version 2 de GeoNature est une refonte complète de l’application.</p>
 <ul class="simple">
 <li><p>Refonte technologique en migrant de PHP/Symfony/ExtJS/Openlayers à Python3/Flask/Angular4/Leaflet</p></li>
@@ -1853,7 +1992,7 @@ deactivate
 </ul>
 </section>
 <section id="beta5-2018-07-16">
-<h2>2.0.0.beta5 (2018-07-16)<a class="headerlink" href="#beta5-2018-07-16" title="Permalink to this headline"></a></h2>
+<h2>2.0.0.beta5 (2018-07-16)<a class="headerlink" href="#beta5-2018-07-16" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout d’un message d’erreur si l’utilisateur n’a pas de JDD ou si il y a eu un problème lors de la récupération des JDD de MTD</p></li>
@@ -1911,7 +2050,7 @@ deactivate
 </ul>
 </section>
 <section id="beta4-2018-05-25">
-<h2>2.0.0.beta4 (2018-05-25)<a class="headerlink" href="#beta4-2018-05-25" title="Permalink to this headline"></a></h2>
+<h2>2.0.0.beta4 (2018-05-25)<a class="headerlink" href="#beta4-2018-05-25" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Synthèse : début de mise en place du backend, de l’API et du frontend #345</p></li>
@@ -1936,7 +2075,7 @@ deactivate
 </ul>
 </section>
 <section id="beta3-2018-03-28">
-<h2>2.0.0.beta3 (2018-03-28)<a class="headerlink" href="#beta3-2018-03-28" title="Permalink to this headline"></a></h2>
+<h2>2.0.0.beta3 (2018-03-28)<a class="headerlink" href="#beta3-2018-03-28" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Travail sur le module générique de Suivi intégré à GeoNature (<code class="docutils literal notranslate"><span class="pre">gn_monitoring</span></code>). Gestion des fichiers de configuration</p></li>
@@ -1968,7 +2107,7 @@ deactivate
 </ul>
 </section>
 <section id="beta2-2018-03-16">
-<h2>2.0.0.beta2 (2018-03-16)<a class="headerlink" href="#beta2-2018-03-16" title="Permalink to this headline"></a></h2>
+<h2>2.0.0.beta2 (2018-03-16)<a class="headerlink" href="#beta2-2018-03-16" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Compléments de la documentation (schéma architecture, administration, installation, développement, FAQ…)</p></li>
@@ -1990,7 +2129,7 @@ deactivate
 </ul>
 </section>
 <section id="beta1-2018-02-16">
-<h2>2.0.0.beta1 (2018-02-16)<a class="headerlink" href="#beta1-2018-02-16" title="Permalink to this headline"></a></h2>
+<h2>2.0.0.beta1 (2018-02-16)<a class="headerlink" href="#beta1-2018-02-16" title="Lien permanent vers cette rubrique"></a></h2>
 <p>La version 2 de GeoNature est une refonte complète de l’application.</p>
 <ul class="simple">
 <li><p>Refonte technologique en migrant de PHP/Symfony/ExtJS/Openlayers à Python3/Flask/Angular4/Leaflet</p></li>
@@ -2040,7 +2179,7 @@ deactivate
 </ul>
 </section>
 <section id="id23">
-<h2>1.9.1 (2018-05-17)<a class="headerlink" href="#id23" title="Permalink to this headline"></a></h2>
+<h2>1.9.1 (2018-05-17)<a class="headerlink" href="#id23" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Corrections</strong></p>
 <ul class="simple">
 <li><p>Installation - Suppression des couches SIG (communes, znieff…) pour les télécharger sur <a class="reference external" href="http://geonature.fr/data/inpn/layers/">http://geonature.fr/data/inpn/layers/</a> et ainsi alléger le dépôt de 158 Mo.</p></li>
@@ -2056,7 +2195,7 @@ deactivate
 </ul>
 </section>
 <section id="id24">
-<h2>1.9.0 (2017-07-06)<a class="headerlink" href="#id24" title="Permalink to this headline"></a></h2>
+<h2>1.9.0 (2017-07-06)<a class="headerlink" href="#id24" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>ATTENTION : Les évolutions de cette version concernent aussi la webapi. Si vous utilisez les applications GeoNature-mobile, vous devez attendre la sortie d’une version de GeoNature-mobile-webapi (https://github.com/PnEcrins/GeoNature-mobile-webapi) compatible avec cette version 1.9.0 de GeoNature.</strong> Coming soon !</p>
 <p>A noter aussi que cette version de GeoNature est compatible avec GeoNature-atlas 1.2.4 et +.</p>
 <p><strong>Nouveautés</strong></p>
@@ -2064,8 +2203,8 @@ deactivate
 <li><p>Ajout de la création des index spatiaux à la création initiale de la base.</p></li>
 <li><p>Création ou mise à jour des géométries compatible PostGIS 2.</p></li>
 <li><p>Ajout du champ diffusable (oui/non) dans le formulaire web de saisie, uniquement pour ContactFaune et Mortalité (TODO : faire la même chose pour les autres protocoles).</p></li>
-<li><p>Multi-projection : Les versions antérieures de GeoNature n’étaient compatibles qu’avec la projection Lambert 93 (srid: 2154). Cette version permet de choisir sa projection locale. Elle ajoute un paramètre <code class="docutils literal notranslate"><span class="pre">srid_local</span></code> dans le <code class="docutils literal notranslate"><span class="pre">config/settings.ini</span></code> et renomme tous les champs <code class="docutils literal notranslate"><span class="pre">the_geom_2154</span></code> en <code class="docutils literal notranslate"><span class="pre">the_geom_local</span></code> des tables “métier”.
-Ce paramètre est notamment utilisé lors de la création de la base pour affecter le srid de la projection locale à tous les champs <code class="docutils literal notranslate"><span class="pre">the_geom_local</span></code> présents dans les tables de la base. Ce paramètre est également utilisé pour mettre en cohérence le système de projection local utilisé dans toutes les couches SIG présentes dans la base et les géométries stockées dans les champs <code class="docutils literal notranslate"><span class="pre">the_geom_local</span></code> des tables “métier”. Le paramétrage du service WMS dans <code class="docutils literal notranslate"><span class="pre">wms/wms.map</span></code> est également pris en charge par le script d’installation de l’application.</p></li>
+<li><p>Multi-projection : Les versions antérieures de GeoNature n’étaient compatibles qu’avec la projection Lambert 93 (srid: 2154). Cette version permet de choisir sa projection locale. Elle ajoute un paramètre <code class="docutils literal notranslate"><span class="pre">srid_local</span></code> dans le <code class="docutils literal notranslate"><span class="pre">config/settings.ini</span></code> et renomme tous les champs <code class="docutils literal notranslate"><span class="pre">the_geom_2154</span></code> en <code class="docutils literal notranslate"><span class="pre">the_geom_local</span></code> des tables « métier ».
+Ce paramètre est notamment utilisé lors de la création de la base pour affecter le srid de la projection locale à tous les champs <code class="docutils literal notranslate"><span class="pre">the_geom_local</span></code> présents dans les tables de la base. Ce paramètre est également utilisé pour mettre en cohérence le système de projection local utilisé dans toutes les couches SIG présentes dans la base et les géométries stockées dans les champs <code class="docutils literal notranslate"><span class="pre">the_geom_local</span></code> des tables « métier ». Le paramétrage du service WMS dans <code class="docutils literal notranslate"><span class="pre">wms/wms.map</span></code> est également pris en charge par le script d’installation de l’application.</p></li>
 <li><p>Correction de l’installation de npm</p></li>
 <li><p>Script <code class="docutils literal notranslate"><span class="pre">install_all.sh</span></code> mis à jour avec les nouvelles versions de GeoNature-atlas, de TaxHub et de UsersHub.</p></li>
 </ul>
@@ -2080,7 +2219,7 @@ ATTENTION : ce script SQL renomme tous les champs <code class="docutils literal 
 </ul>
 </section>
 <section id="id25">
-<h2>1.8.4 (2017-04-10)<a class="headerlink" href="#id25" title="Permalink to this headline"></a></h2>
+<h2>1.8.4 (2017-04-10)<a class="headerlink" href="#id25" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Corrections</strong></p>
 <ul class="simple">
 <li><p>Correction du script d’installation globale (<code class="docutils literal notranslate"><span class="pre">install_all</span></code>) si l’utilisateur de BDD par défaut a été renommé (<code class="docutils literal notranslate"><span class="pre">data/grant.sql</span></code>)</p></li>
@@ -2088,7 +2227,7 @@ ATTENTION : ce script SQL renomme tous les champs <code class="docutils literal 
 </ul>
 </section>
 <section id="id26">
-<h2>1.8.3 (2017-02-23)<a class="headerlink" href="#id26" title="Permalink to this headline"></a></h2>
+<h2>1.8.3 (2017-02-23)<a class="headerlink" href="#id26" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Multi-organisme : l’organisme associé à la donnée est désormais celui de l’utilisateur connecté dans l’application (lors de la création d’une observation uniquement).</p></li>
@@ -2106,7 +2245,7 @@ ATTENTION : ce script SQL renomme tous les champs <code class="docutils literal 
 <p>Si vous migrez depuis la version 1.8.2, éxécutez le fichier SQL <code class="docutils literal notranslate"><span class="pre">data/update_1.8.2to1.8.3.sql</span></code>.</p>
 </section>
 <section id="id27">
-<h2>1.8.2 (2017-01-11)<a class="headerlink" href="#id27" title="Permalink to this headline"></a></h2>
+<h2>1.8.2 (2017-01-11)<a class="headerlink" href="#id27" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Modularité des scripts SQL de création de la base en les dissociant par protocole et en regroupant les triggers dans les schémas de chaque protocole (préparation GeoNature V2)</p></li>
@@ -2118,7 +2257,7 @@ ATTENTION : ce script SQL renomme tous les champs <code class="docutils literal 
 <p>Si vous migrez depuis la version 1.8.1, éxécutez le fichier <code class="docutils literal notranslate"><span class="pre">data/update_1.8.1to1.8.2.sql</span></code>. Consultez les dernières lignes de ce fichier : vous devez évaluer si la requête d’insertion dans la table <code class="docutils literal notranslate"><span class="pre">taxonomie.cor_taxon_attribut</span></code> doit être faite ou non (vous pourriez avoir déjà constaté et corrigé cette erreur lors d’une précédente migration). Cela corrige l’absence de taxons protégés dans votre synthese en récupérant les informations de protection présentes dans le champ <code class="docutils literal notranslate"><span class="pre">filtre3</span></code> de la table <code class="docutils literal notranslate"><span class="pre">save.bib_taxons</span></code></p>
 </section>
 <section id="id28">
-<h2>1.8.1 (2017-01-05)<a class="headerlink" href="#id28" title="Permalink to this headline"></a></h2>
+<h2>1.8.1 (2017-01-05)<a class="headerlink" href="#id28" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout des sauvegardes et de l’installation globale avec un exemple détaillé dans la documentation : <a class="reference external" href="http://docs.geonature.fr">http://docs.geonature.fr</a></p></li>
@@ -2131,7 +2270,7 @@ ATTENTION : ce script SQL renomme tous les champs <code class="docutils literal 
 <p>Si vous migrez depuis la version 1.8.0, éxécutez le fichier <code class="docutils literal notranslate"><span class="pre">data/update_1.8to1.8.1.sql</span></code></p>
 </section>
 <section id="id29">
-<h2>1.8.0 (2016-12-14)<a class="headerlink" href="#id29" title="Permalink to this headline"></a></h2>
+<h2>1.8.0 (2016-12-14)<a class="headerlink" href="#id29" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Passage à TAXREF version 9</p></li>
@@ -2175,11 +2314,11 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 </dl>
 </section>
 <section id="id30">
-<h2>1.7.4 (2016-07-06)<a class="headerlink" href="#id30" title="Permalink to this headline"></a></h2>
+<h2>1.7.4 (2016-07-06)<a class="headerlink" href="#id30" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Corrections de bugs</strong></p>
 <ul class="simple">
 <li><p>Correction du script d’installation des tables liées au Contact flore (5a1fb07)</p></li>
-<li><p>Mise en cohérence avec GeoNature-mobile utilisant les classes ‘gasteropodes’ et ‘bivalves’ et non la classe générique ‘mollusques’.</p></li>
+<li><p>Mise en cohérence avec GeoNature-mobile utilisant les classes “gasteropodes” et “bivalves” et non la classe générique “mollusques”.</p></li>
 </ul>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
@@ -2190,11 +2329,11 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 <p><strong>Note de version</strong></p>
 <ul class="simple">
 <li><p>Vous pouvez passer directement de la version 1.6.0 à la 1.7.4 mais en vous référant aux notes de version de la 1.7.0.</p></li>
-<li><p>Remplacer <code class="docutils literal notranslate"><span class="pre">id_classe_mollusques</span></code> par <code class="docutils literal notranslate"><span class="pre">id_classe_gasteropodes</span></code> dans <code class="docutils literal notranslate"><span class="pre">web/js/config.js</span></code> et renseigner la valeur en cohérence avec l’<code class="docutils literal notranslate"><span class="pre">id_liste</span></code> retenu dans la table <code class="docutils literal notranslate"><span class="pre">taxonomie.bib_listes</span></code> pour les gastéropodes. Attention, vous devez avoir établi une correspondance entre les taxons gastéropodes et bivalves et leur liste dans la table <code class="docutils literal notranslate"><span class="pre">taxonomie.cor_taxon_liste</span></code>.</p></li>
+<li><p>Remplacer <code class="docutils literal notranslate"><span class="pre">id_classe_mollusques</span></code> par <code class="docutils literal notranslate"><span class="pre">id_classe_gasteropodes</span></code> dans <code class="docutils literal notranslate"><span class="pre">web/js/config.js</span></code> et renseigner la valeur en cohérence avec l”<code class="docutils literal notranslate"><span class="pre">id_liste</span></code> retenu dans la table <code class="docutils literal notranslate"><span class="pre">taxonomie.bib_listes</span></code> pour les gastéropodes. Attention, vous devez avoir établi une correspondance entre les taxons gastéropodes et bivalves et leur liste dans la table <code class="docutils literal notranslate"><span class="pre">taxonomie.cor_taxon_liste</span></code>.</p></li>
 </ul>
 </section>
 <section id="id31">
-<h2>1.7.3 (2016-05-19)<a class="headerlink" href="#id31" title="Permalink to this headline"></a></h2>
+<h2>1.7.3 (2016-05-19)<a class="headerlink" href="#id31" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Corrections de bugs</strong></p>
 <ul class="simple">
 <li><p>Correction de coordonnées vides dans l’export de Flore station. cf <a class="reference external" href="https://github.com/PnX-SI/GeoNature/commit/0793a3d3d2b3719ed515058d1a0ba9baf7cb2096">https://github.com/PnX-SI/GeoNature/commit/0793a3d3d2b3719ed515058d1a0ba9baf7cb2096</a></p></li>
@@ -2208,7 +2347,7 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 </ul>
 </section>
 <section id="id32">
-<h2>1.7.2 (2016-04-27)<a class="headerlink" href="#id32" title="Permalink to this headline"></a></h2>
+<h2>1.7.2 (2016-04-27)<a class="headerlink" href="#id32" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Corrections de bug</strong></p>
 <ul class="simple">
 <li><p>Correction d’un bug dans l’export XLS depuis Flore Station.</p></li>
@@ -2219,14 +2358,14 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 </ul>
 </section>
 <section id="id33">
-<h2>1.7.1 (2016-04-27)<a class="headerlink" href="#id33" title="Permalink to this headline"></a></h2>
+<h2>1.7.1 (2016-04-27)<a class="headerlink" href="#id33" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Corrections de bug</strong></p>
 <ul class="simple">
 <li><p>Ajout des listes flore manquantes dans le script de mise à jour <code class="docutils literal notranslate"><span class="pre">data/update_1.6to1.7.sql</span></code>.</p></li>
 </ul>
 </section>
 <section id="id34">
-<h2>1.7.0 (2016-04-24)<a class="headerlink" href="#id34" title="Permalink to this headline"></a></h2>
+<h2>1.7.0 (2016-04-24)<a class="headerlink" href="#id34" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Nouveautés</strong></p>
 <ul class="simple">
 <li><p>Ajout du contact flore</p></li>
@@ -2296,7 +2435,7 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 </ul>
 </section>
 <section id="id35">
-<h2>1.6.0 (2016-01-14)<a class="headerlink" href="#id35" title="Permalink to this headline"></a></h2>
+<h2>1.6.0 (2016-01-14)<a class="headerlink" href="#id35" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Note de version</strong></p>
 <ul>
 <li><p>Pour les changements dans la base de données vous pouvez exécuter le fichier <code class="docutils literal notranslate"><span class="pre">data/update_1.5to1.6.sql</span></code></p></li>
@@ -2334,7 +2473,7 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 <ul class="simple">
 <li><p>Intégration de la librairie <code class="docutils literal notranslate"><span class="pre">OpenLayers.js</span></code> en local dans le code car les liens distants ne fonctionnaient plus - Fix #97</p></li>
 <li><p>Correction d’une erreur lors de l’enregistrement de la saisie invertébrés - Fix #104</p></li>
-<li><p>Correction d’une erreur de redirection si on choisit “Quitter” après la saisie de l’enregistrement (contact faune, mortalité et invertébrés) - Fix #102</p></li>
+<li><p>Correction d’une erreur de redirection si on choisit « Quitter » après la saisie de l’enregistrement (contact faune, mortalité et invertébrés) - Fix #102</p></li>
 <li><p>Correction du trigger <code class="docutils literal notranslate"><span class="pre">contactfaune.synthese_update_cor_role_fiche_cf()</span></code> - Fix #95</p></li>
 <li><p>Correction d’un bug dans les listes déroulantes des taxons filtrée par classe qui n’affichaient rien - Fix #109</p></li>
 <li><p>Correction d’un bug sur le contenu des exports shape avec le critère de protection activé - Fix #114</p></li>
@@ -2347,12 +2486,12 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 </ul>
 </section>
 <section id="id36">
-<h2>1.5.0 (2015-11-26)<a class="headerlink" href="#id36" title="Permalink to this headline"></a></h2>
+<h2>1.5.0 (2015-11-26)<a class="headerlink" href="#id36" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Note de version</strong></p>
 <ul>
 <li><p>Pour les changements dans la base de données vous pouvez exécuter le fichier <code class="docutils literal notranslate"><span class="pre">data/update_1.4to1.5.sql</span></code></p></li>
 <li><p>Le bandeau de la page d’accueil <code class="docutils literal notranslate"><span class="pre">web/images/bandeau_faune.jpg</span></code> a été renommé en <code class="docutils literal notranslate"><span class="pre">bandeau_geonature.jpg</span></code>. Renommez le votre si vous aviez personnalisé ce bandeau.</p></li>
-<li><p>Si vous souhaitez désactiver certains programmes dans le “Comment ?” de la synthèse vous devez utiliser le champs <code class="docutils literal notranslate"><span class="pre">actif</span></code> de la table <code class="docutils literal notranslate"><span class="pre">meta.bib_programmes</span></code>.</p></li>
+<li><p>Si vous souhaitez désactiver certains programmes dans le « Comment ? » de la synthèse vous devez utiliser le champs <code class="docutils literal notranslate"><span class="pre">actif</span></code> de la table <code class="docutils literal notranslate"><span class="pre">meta.bib_programmes</span></code>.</p></li>
 <li><p>Compléter si nécessaire les champs <code class="docutils literal notranslate"><span class="pre">url</span></code>, <code class="docutils literal notranslate"><span class="pre">target</span></code>, <code class="docutils literal notranslate"><span class="pre">picto</span></code>, <code class="docutils literal notranslate"><span class="pre">groupe</span></code> et <code class="docutils literal notranslate"><span class="pre">actif</span></code> dans la table <code class="docutils literal notranslate"><span class="pre">synthese.bib_sources</span></code>.</p></li>
 <li><p>Nouvelle répartition des paramètres de configuration javascript en 2 fichiers (<code class="docutils literal notranslate"><span class="pre">config.js</span></code> et <code class="docutils literal notranslate"><span class="pre">configmap.js</span></code>). Vous devez reprendre vos paramètres de configuration du fichier <code class="docutils literal notranslate"><span class="pre">web/js/config.js</span></code> et les ventiler dans ces deux fichiers.</p></li>
 <li><p>Ajouter le paramètre <code class="docutils literal notranslate"><span class="pre">id_source_mortalite</span> <span class="pre">=</span> <span class="pre">2;</span></code> au fichier <code class="docutils literal notranslate"><span class="pre">web/js/config.js</span></code>;</p></li>
@@ -2360,7 +2499,7 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 <li><p>Bien définir le système de coordonnées à utiliser pour les pointages par coordonnées fournies en renseignant le paramètre <code class="docutils literal notranslate"><span class="pre">gps_user_projection</span></code> dans le fichier <code class="docutils literal notranslate"><span class="pre">web/js/configmap.js</span></code>;</p></li>
 <li><p>Ajouter le paramètre <code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">static</span> <span class="pre">$id_source_mortalite</span> <span class="pre">=</span> <span class="pre">2;</span></code> au fichier <code class="docutils literal notranslate"><span class="pre">lib/sfGeonatureConfig.php</span></code>;</p></li>
 <li><p>Ajouter le paramètre <code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">static</span> <span class="pre">$srid_ol_map</span> <span class="pre">=</span> <span class="pre">3857;</span></code> au fichier <code class="docutils literal notranslate"><span class="pre">lib/sfGeonatureConfig.php</span></code>;</p></li>
-<li><p>L’altitude est calculée automatiquement à partir du service “Alticodage” de l’API GeoPortail de l’IGN et non pluas à partir de la couche <code class="docutils literal notranslate"><span class="pre">layers.l_isolines20</span></code>. Ajoutez ce service dans votre contrat API Geoportail. Il n’est donc plus nécessaire de remplir la couche <code class="docutils literal notranslate"><span class="pre">layers.l_isolines20</span></code>. Cette couche peut toutefois encore être utile si l’utilisateur supprime l’altitude calculée par l’API Geoportail dans les formulaires de saisie.</p></li>
+<li><p>L’altitude est calculée automatiquement à partir du service « Alticodage » de l’API GeoPortail de l’IGN et non pluas à partir de la couche <code class="docutils literal notranslate"><span class="pre">layers.l_isolines20</span></code>. Ajoutez ce service dans votre contrat API Geoportail. Il n’est donc plus nécessaire de remplir la couche <code class="docutils literal notranslate"><span class="pre">layers.l_isolines20</span></code>. Cette couche peut toutefois encore être utile si l’utilisateur supprime l’altitude calculée par l’API Geoportail dans les formulaires de saisie.</p></li>
 <li><p>Le loup et le lynx sont retirés par défaut de la saisie (saisie recommandée dans le protocole national du réseau grands prédateurs)</p></li>
 <li><p>Le cerf, chamois et le bouquetin doivent être saisis selon 6 critères de sexe et age et non 5 comme les autres taxons. Comportement peut-être changé en modifiant la vue <code class="docutils literal notranslate"><span class="pre">contactfaune.v_nomade_taxons_faune</span></code>.</p></li>
 <li><p>Mortailité est désormais une source à part entière alors qu’elles étaient mélangées avec la source ContactFaune précédemment. Si vous avez déjà des données de mortalité enregistrées, vous devez adapter la requête SQL ci-dessous avec votre <code class="docutils literal notranslate"><span class="pre">id_source</span></code> pour Mortalité et l’exécuter :</p>
@@ -2375,7 +2514,7 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 <ul class="simple">
 <li><p>Optimisation des vues aux chargement des listes de taxons. Fixes #64</p></li>
 <li><p>Généricité des champs dans <code class="docutils literal notranslate"><span class="pre">meta.bib_programmes</span></code> (champs <code class="docutils literal notranslate"><span class="pre">sitpn</span></code> renommé en <code class="docutils literal notranslate"><span class="pre">public</span></code>). Fixes #68</p></li>
-<li><p>Ajout d’un champ <code class="docutils literal notranslate"><span class="pre">actif</span></code> à la table <code class="docutils literal notranslate"><span class="pre">meta.bib_programmes</span></code> permettant de masquer certains programmes dans le “Comment ?” de la synthèse. Fixes #66</p></li>
+<li><p>Ajout d’un champ <code class="docutils literal notranslate"><span class="pre">actif</span></code> à la table <code class="docutils literal notranslate"><span class="pre">meta.bib_programmes</span></code> permettant de masquer certains programmes dans le « Comment ? » de la synthèse. Fixes #66</p></li>
 <li><p>Ajout d’un champ <code class="docutils literal notranslate"><span class="pre">url</span></code>, <code class="docutils literal notranslate"><span class="pre">target</span></code>, <code class="docutils literal notranslate"><span class="pre">picto</span></code>, <code class="docutils literal notranslate"><span class="pre">groupe</span></code> et <code class="docutils literal notranslate"><span class="pre">actif</span></code> dans la table <code class="docutils literal notranslate"><span class="pre">synthese.bib_sources</span></code> pour générer la page d’accueil dynamiquement et de manière générique. Fixes #69</p></li>
 <li><p>Construire dynamiquement la liste des liens vers la saisie des différents protocoles à partir de la table <code class="docutils literal notranslate"><span class="pre">synthese.bib_sources</span></code>. Fixes #69</p></li>
 <li><p>Tous les styles des éléments de la page d’accueil ont été passés en CSS. Fixes #57</p></li>
@@ -2383,7 +2522,7 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 <li><p>Recentrage sur la position de l’utilisation en utilisant le protocole de géolocalisation intégré au navigateur de l’utilisateur. Fixes #65</p></li>
 <li><p>Un message automatique conseille les utilisateurs d’Internet Explorer de plutôt utiliser Firefox ou Chrome. Fixes #65</p></li>
 <li><p>Tri par défaut par date décroissante des 50 dernières observations affichées à l’ouverture de la Synthèse. Fixes #51</p></li>
-<li><p>Vocabulaire. “Dessiner un point” remplacé par “Localiser l’observation”. Fixes #66</p></li>
+<li><p>Vocabulaire. « Dessiner un point » remplacé par « Localiser l’observation ». Fixes #66</p></li>
 <li><p>Mise à jour des copyrights dans les pieds de page de toutes les applications.</p></li>
 <li><p>Refonte du CSS du formulaire de login avec bootstrap et une image de fond différente.</p></li>
 <li><p>Refonte Bootstrap de la page d’accueil.</p></li>
@@ -2391,7 +2530,7 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 <li><p>FloreStation et Bryophytes - Homogénéiser interaction carte liste - ajout d’un popup au survol. Fixes #74</p></li>
 <li><p>Suppression d’images non utilisées dans le répertoire <code class="docutils literal notranslate"><span class="pre">web/images</span></code>.</p></li>
 <li><p>Mise en cohérence des vues taxonomiques faune. Fixes #81</p></li>
-<li><p>Calcul de l’altitude à partir du service “Alticodage” de l’API GeoPortail de l’IGN.</p></li>
+<li><p>Calcul de l’altitude à partir du service « Alticodage » de l’API GeoPortail de l’IGN.</p></li>
 <li><p>Factorisation et généralisation du module permettant un positionnement des pointages par saisie de coordonnées selon projection et bbox fournies en paramètres de config.</p></li>
 <li><p>Création d’une configuration javascript carto dédiée (<code class="docutils literal notranslate"><span class="pre">configmap.js</span></code>).</p></li>
 </ul>
@@ -2402,7 +2541,7 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 </ul>
 </section>
 <section id="id37">
-<h2>1.4.0 (2015-10-16)<a class="headerlink" href="#id37" title="Permalink to this headline"></a></h2>
+<h2>1.4.0 (2015-10-16)<a class="headerlink" href="#id37" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Note de version</strong></p>
 <ul class="simple">
 <li><p>La gestion de la taxonomie a été mis en conformité avec le schéma <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code> de la base de données de TaxHub (<a class="reference external" href="https://github.com/PnX-SI/TaxHub">https://github.com/PnX-SI/TaxHub</a>). Ainsi le schéma <code class="docutils literal notranslate"><span class="pre">taxonomie</span></code> intégré à GeoNature 1.3.0 doit être globalement revu. L’ensemble des modifications peuvent être réalisées en éxecutant la partie correspondante dans le fichier <code class="docutils literal notranslate"><span class="pre">data/update_1.3to1.4.sql</span></code> (<a class="reference external" href="https://github.com/PnX-SI/GeoNature/blob/master/data/update_1.3to1.4.sql">https://github.com/PnX-SI/GeoNature/blob/master/data/update_1.3to1.4.sql</a>).</p></li>
@@ -2418,7 +2557,7 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 </ul>
 </section>
 <section id="id38">
-<h2>1.3.0 (2015-02-11)<a class="headerlink" href="#id38" title="Permalink to this headline"></a></h2>
+<h2>1.3.0 (2015-02-11)<a class="headerlink" href="#id38" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Pré-Version de GeoNature - Faune ET Flore. Le fonctionnement de l’ensemble n’a pas été totalement testé, des bugs sont identifiés, d’autres subsistent certainement.</p>
 <p><strong>Changements</strong></p>
 <ul class="simple">
@@ -2453,7 +2592,7 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 </ul>
 </section>
 <section id="id39">
-<h2>1.2.0 (2015-02-11)<a class="headerlink" href="#id39" title="Permalink to this headline"></a></h2>
+<h2>1.2.0 (2015-02-11)<a class="headerlink" href="#id39" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Version stabilisée de GeoNature - Faune uniquement (Synthèse Faune + Saisie ContactFauneVertebre, ContactFauneInvertebre et Mortalité).</p>
 <p><strong>Changements</strong></p>
 <ul class="simple">
@@ -2470,7 +2609,7 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 </ul>
 </section>
 <section id="id40">
-<h2>1.1.0 (2014-12-11)<a class="headerlink" href="#id40" title="Permalink to this headline"></a></h2>
+<h2>1.1.0 (2014-12-11)<a class="headerlink" href="#id40" title="Lien permanent vers cette rubrique"></a></h2>
 <p><strong>Changements</strong></p>
 <ul class="simple">
 <li><p>Modification du schéma de la base pour être compatible taxref v7</p></li>
@@ -2483,7 +2622,7 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 </ul>
 </section>
 <section id="id41">
-<h2>1.0.0 (2014-12-10)<a class="headerlink" href="#id41" title="Permalink to this headline"></a></h2>
+<h2>1.0.0 (2014-12-10)<a class="headerlink" href="#id41" title="Lien permanent vers cette rubrique"></a></h2>
 <p>Version fonctionnelle des applications : visualisation de la synthèse faune, saisie d’une donnée de contact (vertébrés, invertébrés, mortalité)</p>
 <p><strong>Changements</strong></p>
 <ul class="simple">
@@ -2501,7 +2640,7 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 </ul>
 </section>
 <section id="id42">
-<h2>0.1.0 (2014-12-01)<a class="headerlink" href="#id42" title="Permalink to this headline"></a></h2>
+<h2>0.1.0 (2014-12-01)<a class="headerlink" href="#id42" title="Lien permanent vers cette rubrique"></a></h2>
 <ul class="simple">
 <li><p>Création du projet et de la documentation</p></li>
 </ul>
@@ -2511,8 +2650,8 @@ Vous devez désormais remplir cette colonne manuellement.</p>
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="authors.html" class="btn btn-neutral float-left" title="AUTEURS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Pied de page">
+        <a href="authors.html" class="btn btn-neutral float-left" title="AUTEURS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Précédent</a>
     </div>
 
   <hr/>
@@ -2521,9 +2660,9 @@ Vous devez désormais remplir cette colonne manuellement.</p>
     <p>&#169; Copyright 2018-2019, PnE, PnC.</p>
   </div>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  Compilé avec <a href="https://www.sphinx-doc.org/">Sphinx</a> en utilisant un
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">thème</a>
+    fourni par <a href="https://readthedocs.org">Read the Docs</a>.
    
 
 </footer>

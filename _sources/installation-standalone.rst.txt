@@ -11,7 +11,10 @@ Installer les paquets suivants :
 
 ::  
     
-  $ sudo apt install unzip git postgresql postgis python2 python3-pip python3-venv libgdal-dev libffi-dev libpangocairo-1.0-0 apache2
+  $ sudo apt install unzip git postgresql postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis
+
+
+Note : le paquet ``redis`` n’est pas nécessaire si vous ne souhaitez pas installer le worker celery.
 
 
 Installation de l'application
@@ -52,11 +55,12 @@ Installation de l'application
 
 Rendez vous dans le dossier ``install`` et lancez successivement dans l’ordre les scripts suivant :
 
-* ``01_install_backend.sh`` : Création du virtualenv python, installation des dépendances et du backend GeoNature dans celui-ci, création du service systemd (permettant d’utiliser ``sudo systemctl {start,stop} geonature2``).
-* ``02_create_db.sh`` : Création du role postgresql, de la base de données, ajout des extensions nécessaires (postgis, …), création des schémas nécessaires à GeoNature et ajout des données métiers.
-* ``03_install_gn_modules.sh`` : Installation des modules OccTax, OccHab et validation (si activé dans le fichier `settings.ini`).
-* ``04_install_frontend.sh`` : Création des dossiers et liens symboliques nécessaires, création des fichier custom à partir des fichiers d’exemple, génération des fichiers de configuration grâce à la commande `geonature`, installation de nvm, npm et node ainsi que toutes les dépendances javascript nécessaires puis build du front.
-* ``05_configure_apache.sh`` : Installation du fichier de configuration Apache ``/etc/apache2/conf-available/geonature.conf`` et activation des modules Apache nécessaires.
+* ``01_install_backend.sh`` : Création du virtualenv python, installation des dépendances et du backend GeoNature dans celui-ci.
+* ``02_configure_systemd.sh`` : Création des services systemd ``geonature`` et ``geonature-worker``, configuration de ``logrotate``, création des dossiers ``/run/geonature`` et ``/var/log/geonature``.
+* ``03_create_db.sh`` : Création du role postgresql, de la base de données, ajout des extensions nécessaires (postgis, …), création des schémas nécessaires à GeoNature et ajout des données métiers.
+* ``04_install_gn_modules.sh`` : Installation des modules OccTax, OccHab et validation (si activé dans le fichier `settings.ini`).
+* ``05_install_frontend.sh`` : Création des dossiers et liens symboliques nécessaires, création des fichier custom à partir des fichiers d’exemple, génération des fichiers de configuration grâce à la commande `geonature`, installation de nvm, npm et node ainsi que toutes les dépendances javascript nécessaires puis build du front.
+* ``06_configure_apache.sh`` : Installation du fichier de configuration Apache ``/etc/apache2/conf-available/geonature.conf`` et activation des modules Apache nécessaires.
 
 Vous pouvez alors démarrer le backend GeoNature : ``sudo systemctl start geonature2``
 
@@ -138,80 +142,7 @@ Voir la doc d'installation de TaxHub : http://taxhub.readthedocs.io/
 Voir la doc d'installation de UsersHub : http://usershub.readthedocs.io/
 
 Passer en mode développement
-----------------------------
+---------------------------------
 
-Si vous avez téléchargé GeoNature zippé (via la procédure d'installation globale ``install_all.sh`` ou en suivant la documentation d'installation standalone), il est nécessaire de rattacher votre répertoire au dépôt GitHub afin de pouvoir télécharger les dernières avancées du coeur en ``git pull``. Pour cela, suivez les commandes suivantes en vous placant à la racine du répertoire de GeoNature.
-
-::
-
-    --- Se créer un répertoire .git ---
-    mkdir .git
-    ---  récupérer l'historique du dépôt --- 
-    git clone --depth=2 --bare https://github.com/PnX-SI/GeoNature.git .git
-    --- initialiser un dépôt git à partir de l'historique téléchargé --- 
-    git init
-    --- vérifier que le dépôt distant et le contenu local sont synchronisés --- 
-    git pull
-    --- Reset sur HEAD pour mettre à jour les status --- 
-    git reset HEAD
-    -> vous êtes à jour sur la branche master
-    --- Cloner les sous-modules pour récupérer les dépendances
-    git submodule init
-    git submodule update
-    --- Installer les dépendances de développement
-    cd backend && pip install -r requirements-dev.txt
-
-
-@TODO : A relire et à basculer dans DOC DEVELOPEMENT ?
-
-Editez le fichier de configuration de GeoNature (``<GEONATURE_DIRECTORY>/config/geonature_config.toml``) de la manière suivante :
-
-::
-    
-    URL_APPLICATION = 'http://127.0.0.1:4200'
-    API_ENDPOINT = 'http://127.0.0.1:8000'
-    API_TAXHUB =  'http://127.0.0.1:5000/api'
-    ID_APPLICATION_GEONATURE = 3
-
-Puis le fichier ``/home/<mon_user>/geonature/frontend/src/conf/app.config.ts`` :
-
-::
-    
-    URL_APPLICATION: 'http://127.0.0.1:4200',
-    API_ENDPOINT: 'http://127.0.0.1:8000',
-    API_TAXHUB:  'http://127.0.0.1:5000/api',
-    ID_APPLICATION_GEONATURE: 3
-
-* Lancer le serveur de développement du frontend grâce à Angular-CLI :
-
-  ::
-    
-    cd frontend
-    npm run start
-
-* Lancer l'API en mode développement
-
-Ouvrir un nouveau terminal :
-
-::
-    
-    cd backend
-
-Stopper d'abord gunicorn qui est lancé en mode production via le supervisor :
-
-::
-    
-    sudo supervisorctl stop geonature2
-
-Puis lancer le backend en mode développement :
-
-::
-    
-    source venv/bin/activate
-    geonature dev_back
-
-**Le serveur de développement du backend est disponible à l'adresse 127.0.0.1:8000**
-
-**Le serveur de développement du frontend est disponible à l'adresse 127.0.0.1:4200**.
-
-Vous pouvez vous connecter à l'application avec l'identifiant ``admin`` et le mot de passe ``admin``.
+.. Note::
+    Consultez le guide :ref:`mode-dev` de GeoNature.
