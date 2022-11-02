@@ -41,7 +41,7 @@
             <em class="fa fa-xl fa-search color-blue"></em>
             <div class="large">
               <mat-spinner *ngIf="!generalStat" diameter="20"></mat-spinner>
-              {{ generalStat?.nb_data }}
+              {{ generalStat?.nb_data | number: '1.0-0':locale }}
             </div>
             <div class="text-muted">Observations</div>
           </div>
@@ -53,8 +53,7 @@
             <em class="fa fa-xl fa fa-leaf color-orange"></em>
             <div class="large">
               <mat-spinner *ngIf="!generalStat" diameter="20"></mat-spinner>
-
-              {{ generalStat?.nb_species }}
+              {{ generalStat?.nb_species | number: '1.0-0':locale }}
             </div>
             <div class="text-muted">Taxons</div>
           </div>
@@ -66,8 +65,9 @@
             <em class="fa fa-xl fa-users color-teal"></em>
             <div class="large">
               <mat-spinner *ngIf="!generalStat; else hasStat" diameter="20"></mat-spinner>
-
-              <ng-template #hasStat>~{{ generalStat?.nb_observers }}</ng-template>
+              <ng-template #hasStat>
+                ~{{ generalStat?.nb_observers | number: '1.0-0':locale }}
+              </ng-template>
             </div>
             <div class="text-muted">Observateurs</div>
           </div>
@@ -79,8 +79,7 @@
             <em class="fa fa-xl fa fa-book color-red"></em>
             <div class="large">
               <mat-spinner *ngIf="!generalStat" diameter="20"></mat-spinner>
-
-              {{ generalStat?.nb_dataset }}
+              {{ generalStat?.nb_dataset | number: '1.0-0':locale }}
             </div>
             <div class="text-muted">Jeux de données</div>
           </div>
@@ -89,10 +88,10 @@
     </div>
     <div class="d-flex justify-content-center">
       <div class="col-xs-12 pr-2 text-muted">
-        <small
-          >Dernière mise à jour
-          {{ generalStat?.createdDate | date: 'full':undefined:locale }}</small
-        >
+        <small>
+          Dernière mise à jour
+          {{ generalStat?.createdDate | date: 'full':undefined:locale }}
+        </small>
       </div>
     </div>
   </div>
