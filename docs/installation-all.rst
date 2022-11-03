@@ -68,17 +68,12 @@ Vous pouvez vous connecter avec l'utilisateur intégré par défaut (admin/admin
 :Note:
 
     * GeoNature-atlas compatible avec GeoNature V2 est disponible sur https://github.com/PnX-SI/GeoNature-atlas
-    * Vous pouvez utiliser le schéma ``ref_geo`` de GeoNature pour votre territoire, les communes et les mailles, si vous les avez intégré dans ``ref_geo.l_areas`` au préalable.
+    * Vous pouvez utiliser le schéma ``ref_geo`` de GeoNature pour votre territoire, les communes et les mailles.
     
-:Note:
-
-    Une version expérimentale du calcul automatique de la sensibilité est disponible : https://github.com/PnX-SI/GeoNature/issues/284
-
 Si vous rencontrez une erreur, se reporter aux fichiers de logs :
 
 - Logs de l'installation de la base de données : ``/home/`whoami`/geonature/var/log/install_db.log``
 - Log général de l'installation de l'application : ``/home/`whoami`/install_all.log``
-
 
 Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre adresse, editez le fichier de configuration Apache (``/etc/apache2/sites-available/geonature.conf``) en modifiant l'alias :
 
