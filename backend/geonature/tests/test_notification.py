@@ -332,8 +332,13 @@ class TestNotification:
         response = NotificationUtil.create_notification(notificationData)
         assert response == json.dumps(
             {
-                "success": False,
-                "information": "This categorie of notification in not implement yet",
+                "result": [
+                    {
+                        "success": False,
+                        "categorie": "test",
+                        "information": "This categorie of notification in not implement yet",
+                    }
+                ]
             }
         )
 
@@ -341,7 +346,15 @@ class TestNotification:
         notificationData = {"categories": [rule_categorie.code]}
         response = NotificationUtil.create_notification(notificationData)
         assert response == json.dumps(
-            {"success": False, "information": "Notification is missing id_role to be notify"}
+            {
+                "result": [
+                    {
+                        "success": False,
+                        "categorie": "Code_CATEGORIE",
+                        "information": "Notification is missing id_role to be notify",
+                    }
+                ]
+            }
         )
 
         # Categorie exist and user witout rules
@@ -351,5 +364,14 @@ class TestNotification:
         }
         response = NotificationUtil.create_notification(notificationData)
         assert response == json.dumps(
-            {"success": False, "information": "No rules for this user/category"}
+            {
+                "result": [
+                    {
+                        "success": False,
+                        "categorie": "Code_CATEGORIE",
+                        "role": users["user"].id_role,
+                        "information": "No rules for this user/category",
+                    }
+                ]
+            }
         )
