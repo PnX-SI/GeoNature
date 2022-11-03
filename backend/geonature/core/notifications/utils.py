@@ -37,6 +37,7 @@ class NotificationUtil:
 
     def create_notification(notificationData):
         log = logging.getLogger()
+        resultInformation = {"result": []}
         # for all categories given
         categories = notificationData.get("categories")
         if not categories:
@@ -49,12 +50,14 @@ class NotificationUtil:
             # Check if method exist in config
             categorie_exists = NotificationCategory.query.filter_by(code=category).first()
             if not categorie_exists:
-                return json.dumps(
+                resultInformation["result"].append(
                     {
                         "success": False,
+                        "categorie": category,
                         "information": "This categorie of notification in not implement yet",
                     }
                 )
+                break
             # Set notification title, label categorie if not set
             title = notificationData.get("title", categorie_exists.label)
 
@@ -62,12 +65,14 @@ class NotificationUtil:
             # Can be several user to notify ( exemple multi digitiser for an observation)
             idRoles = notificationData.get("id_roles")
             if not idRoles:
-                return json.dumps(
+                resultInformation["result"].append(
                     {
                         "success": False,
+                        "categorie": category,
                         "information": "Notification is missing id_role to be notify",
                     }
                 )
+                break
 
             for role in idRoles:
                 userNotificationsRules = NotificationRule.query.filter(
@@ -77,9 +82,15 @@ class NotificationUtil:
 
                 # if no information then no rules return OK with information
                 if userNotificationsRules.all() == []:
-                    return json.dumps(
-                        {"success": False, "information": "No rules for this user/category"}
+                    resultInformation["result"].append(
+                        {
+                            "success": False,
+                            "categorie": category,
+                            "role": role,
+                            "information": "No rules for this user/category",
+                        }
                     )
+                    break
 
                 # loop on all methods subscribed by user
                 # No need to test id method exist ( foreign key constraint)
@@ -93,7 +104,7 @@ class NotificationUtil:
                         notificationTemplate = NotificationTemplate.query.filter_by(
                             code_method=method,
                             code_category=category,
-                        ).one()
+                        ).first()
                         if notificationTemplate:
                             # erase existing content with template
                             template = Template(notificationTemplate.content)
@@ -105,7 +116,8 @@ class NotificationUtil:
                         message = NotificationUtil.create_database_notification(
                             role, title, content, url
                         )
-                        log.debug("Notification return %s ", message)
+                        resultInformation.append(message)
+                        break
 
                     # if method is type MAIL
                     if method == "MAIL":
@@ -115,8 +127,39 @@ class NotificationUtil:
 
                         if result:
                             email = str(result[0])
-                            log.debug("Notification email : %s", email)
                             # Send mail via celery
                             if title and content and email:
                                 mailTask = send_notification_mail.s(title, content, email)
                                 mailTask.delay()
+                                resultInformation["result"].append(
+                                    {
+                                        "success": True,
+                                        "categorie": category,
+                                        "role": role,
+                                        "method": method,
+                                        "information": "Notification send",
+                                    }
+                                )
+
+                            else:
+                                resultInformation["result"].append(
+                                    {
+                                        "success": False,
+                                        "categorie": category,
+                                        "role": role,
+                                        "title": title,
+                                        "content": content,
+                                        "email": email,
+                                        "information": "Missing information to send mail",
+                                    }
+                                )
+                        else:
+                            resultInformation["result"].append(
+                                {
+                                    "success": False,
+                                    "categorie": category,
+                                    "role": role,
+                                    "information": "Missing user email to send mail",
+                                }
+                            )
+        return json.dumps(resultInformation)
