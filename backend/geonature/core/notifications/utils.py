@@ -47,7 +47,7 @@ class NotificationUtil:
         for category in categories:
 
             # Check if method exist in config
-            categorie_exists = NotificationCategory.query.filter_by(code=category).one()
+            categorie_exists = NotificationCategory.query.filter_by(code=category).first()
             if not categorie_exists:
                 return json.dumps(
                     {
