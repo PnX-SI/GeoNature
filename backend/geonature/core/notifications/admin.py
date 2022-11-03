@@ -39,7 +39,7 @@ class NotificationCategoryAdmin(ModelView):
     column_descriptions = {
         "code": "Code catégorie",
         "label": "Label catégorie",
-        "description": "Description du code a utiliser ensuite dans la notification",
+        "description": "Description du code à utiliser ensuite dans la notification",
     }
 
 

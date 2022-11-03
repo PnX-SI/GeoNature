@@ -54,7 +54,7 @@ class NotificationUtil:
                     {
                         "success": False,
                         "categorie": category,
-                        "information": "This categorie of notification in not implement yet",
+                        "information": "This category of notification is not implemented yet",
                     }
                 )
                 break
@@ -69,7 +69,7 @@ class NotificationUtil:
                     {
                         "success": False,
                         "categorie": category,
-                        "information": "Notification is missing id_role to be notify",
+                        "information": "Notification is missing id_role to be notified",
                     }
                 )
                 break
@@ -137,7 +137,7 @@ class NotificationUtil:
                                         "categorie": category,
                                         "role": role,
                                         "method": method,
-                                        "information": "Notification send",
+                                        "information": "Notification sent",
                                     }
                                 )
 

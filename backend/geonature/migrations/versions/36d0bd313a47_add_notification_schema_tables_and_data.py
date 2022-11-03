@@ -111,7 +111,7 @@ def upgrade():
             {
                 "code": "MAIL",
                 "label": "Notification par mail",
-                "description": "Envoi des notifications par mail",
+                "description": "Envoi des notifications par email",
             },
         ],
     )
