@@ -125,36 +125,6 @@ def upgrade():
                 "label": "Modification du statut d'une observation",
                 "description": "Se déclenche en cas de modification d'un statut d'observation ",
             },
-            {
-                "code": "VALIDATION-2",
-                "label": "Observation validée",
-                "description": "Se déclenche en cas du passage d'une observation en statut Validée",
-            },
-            {
-                "code": "VALIDATION-3",
-                "label": "Passage d'une observation au statut Probable",
-                "description": "Se déclenche en cas du passage d'une observation en statut Probable",
-            },
-            {
-                "code": "VALIDATION-4",
-                "label": "Passage d'une observation au statut Douteux",
-                "description": "Se déclenche en cas du passage d'une observation en statut Douteux",
-            },
-            {
-                "code": "VALIDATION-5",
-                "label": "Passage d'une observation au statut Invalide",
-                "description": "Se déclenche en cas du passage d'une observation en statut Invalide",
-            },
-            {
-                "code": "VALIDATION-6",
-                "label": "Passage d'une observation au statut Non réalisable",
-                "description": "Se déclenche en cas du passage d'une observation en statut Non réalisable",
-            },
-            {
-                "code": "VALIDATION-7",
-                "label": "Passage d'une observation au statut Inconnu",
-                "description": "Se déclenche en cas du passage d'une observation en statut Inconnu",
-            },
         ],
     )
 
@@ -168,67 +138,7 @@ def upgrade():
                 "content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
             },
             {
-                "code_category": "VALIDATION-2",
-                "code_method": "BDD",
-                "content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
-            },
-            {
-                "code_category": "VALIDATION-3",
-                "code_method": "BDD",
-                "content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
-            },
-            {
-                "code_category": "VALIDATION-4",
-                "code_method": "BDD",
-                "content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
-            },
-            {
-                "code_category": "VALIDATION-5",
-                "code_method": "BDD",
-                "content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
-            },
-            {
-                "code_category": "VALIDATION-6",
-                "code_method": "BDD",
-                "content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
-            },
-            {
-                "code_category": "VALIDATION-7",
-                "code_method": "BDD",
-                "content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
-            },
-            {
                 "code_category": "VALIDATION-1",
-                "code_method": "MAIL",
-                "content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
-            },
-            {
-                "code_category": "VALIDATION-2",
-                "code_method": "MAIL",
-                "content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
-            },
-            {
-                "code_category": "VALIDATION-3",
-                "code_method": "MAIL",
-                "content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
-            },
-            {
-                "code_category": "VALIDATION-4",
-                "code_method": "MAIL",
-                "content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
-            },
-            {
-                "code_category": "VALIDATION-5",
-                "code_method": "MAIL",
-                "content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
-            },
-            {
-                "code_category": "VALIDATION-6",
-                "code_method": "MAIL",
-                "content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
-            },
-            {
-                "code_category": "VALIDATION-7",
                 "code_method": "MAIL",
                 "content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
             },
