@@ -48,18 +48,18 @@ class NotificationUtil:
         for category in categories:
 
             # Check if method exist in config
-            categorie_exists = NotificationCategory.query.filter_by(code=category).first()
-            if not categorie_exists:
+            category_exists = NotificationCategory.query.filter_by(code=category).first()
+            if not category_exists:
                 resultInformation["result"].append(
                     {
                         "success": False,
-                        "categorie": category,
+                        "category": category,
                         "information": "This category of notification is not implemented yet",
                     }
                 )
                 break
-            # Set notification title, label categorie if not set
-            title = notificationData.get("title", categorie_exists.label)
+            # Set notification title, label category if not set
+            title = notificationData.get("title", category_exists.label)
 
             # Get notification method for wanted users
             # Can be several user to notify ( exemple multi digitiser for an observation)
@@ -68,7 +68,7 @@ class NotificationUtil:
                 resultInformation["result"].append(
                     {
                         "success": False,
-                        "categorie": category,
+                        "category": category,
                         "information": "Notification is missing id_role to be notified",
                     }
                 )
@@ -85,7 +85,7 @@ class NotificationUtil:
                     resultInformation["result"].append(
                         {
                             "success": False,
-                            "categorie": category,
+                            "category": category,
                             "role": role,
                             "information": "No rules for this user/category",
                         }
@@ -116,7 +116,7 @@ class NotificationUtil:
                         message = NotificationUtil.create_database_notification(
                             role, title, content, url
                         )
-                        resultInformation.append(message)
+                        resultInformation["result"].append(message)
                         break
 
                     # if method is type MAIL
@@ -134,7 +134,7 @@ class NotificationUtil:
                                 resultInformation["result"].append(
                                     {
                                         "success": True,
-                                        "categorie": category,
+                                        "category": category,
                                         "role": role,
                                         "method": method,
                                         "information": "Notification sent",
@@ -145,21 +145,21 @@ class NotificationUtil:
                                 resultInformation["result"].append(
                                     {
                                         "success": False,
-                                        "categorie": category,
+                                        "category": category,
                                         "role": role,
                                         "title": title,
                                         "content": content,
                                         "email": email,
-                                        "information": "Missing information to send mail",
+                                        "information": "Missing information to send email",
                                     }
                                 )
                         else:
                             resultInformation["result"].append(
                                 {
                                     "success": False,
-                                    "categorie": category,
+                                    "category": category,
                                     "role": role,
-                                    "information": "Missing user email to send mail",
+                                    "information": "Missing user email to send email",
                                 }
                             )
         return json.dumps(resultInformation)

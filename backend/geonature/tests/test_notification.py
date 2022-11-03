@@ -320,8 +320,8 @@ class TestNotification:
         content = "after templating"
         url = "ta"
 
-        # Categorie missing
-        notificationData = {"categorie": "test"}
+        # Category missing
+        notificationData = {"category": "test"}
         response = NotificationUtil.create_notification(notificationData)
         assert response == json.dumps(
             {"success": False, "information": "Category is missing from the request"}
@@ -335,8 +335,8 @@ class TestNotification:
                 "result": [
                     {
                         "success": False,
-                        "categorie": "test",
-                        "information": "This categorie of notification in not implement yet",
+                        "category": "test",
+                        "information": "This category of notification is not implemented yet",
                     }
                 ]
             }
@@ -350,8 +350,8 @@ class TestNotification:
                 "result": [
                     {
                         "success": False,
-                        "categorie": "Code_CATEGORIE",
-                        "information": "Notification is missing id_role to be notify",
+                        "category": "Code_CATEGORIE",
+                        "information": "Notification is missing id_role to be notified",
                     }
                 ]
             }
@@ -368,7 +368,7 @@ class TestNotification:
                 "result": [
                     {
                         "success": False,
-                        "categorie": "Code_CATEGORIE",
+                        "category": "Code_CATEGORIE",
                         "role": users["user"].id_role,
                         "information": "No rules for this user/category",
                     }
