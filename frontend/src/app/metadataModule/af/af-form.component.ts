@@ -97,7 +97,7 @@ export class AfFormComponent implements OnInit {
     }
     //UPDATE
     if (this.afFormS.acquisition_framework.getValue() !== null) {
-      //si modification on assign les valeurs du formulaire au dataset modifié
+      //si modification on assigne les valeurs du formulaire au CA modifié
       api = this.metadataDataS.updateAF(af.id_acquisition_framework, af);
     } else {
       //si creation on envoie le contenu du formulaire
@@ -108,7 +108,7 @@ export class AfFormComponent implements OnInit {
     api
       .pipe(
         tap(() => {
-          this._commonService.translateToaster('success', 'MetaData.Datasetadded');
+          this._commonService.translateToaster('success', 'MetaData.AFadded');
           this.metadataS.getMetadata(); //rechargement de la liste de la page principale
         })
       )
