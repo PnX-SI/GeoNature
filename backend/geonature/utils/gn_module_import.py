@@ -332,6 +332,7 @@ def add_application_db(app, module_code, url, enable_frontend, enable_backend):
                 module_picto="fa-puzzle-piece",
                 active_frontend=enable_frontend,
                 active_backend=enable_backend,
+                ng_module=module_code.lower(),
             )
             DB.session.add(new_module)
             DB.session.commit()
