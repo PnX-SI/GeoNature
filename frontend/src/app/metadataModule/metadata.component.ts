@@ -1,16 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.service';
 import { AppConfig } from '@geonature_config/app.config';
-import { Router, NavigationExtras } from '@angular/router';
+import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { NgbDateStruct } from '@ng-bootstrap/ng-bootstrap';
-import { forkJoin, Observable, BehaviorSubject, combineLatest } from 'rxjs';
-import { tap, map, startWith, distinctUntilChanged, debounceTime, filter } from 'rxjs/operators';
+import { Observable, combineLatest, of } from 'rxjs';
+import { map, distinctUntilChanged } from 'rxjs/operators';
+import { omitBy, isEmpty } from 'lodash';
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { CommonService } from '@geonature_common/service/common.service';
-import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthese-data.service';
 import { MetadataService } from './services/metadata.service';
 
 @Component({
@@ -27,10 +26,15 @@ export class MetadataComponent implements OnInit {
   get expandAccordions(): boolean {
     return this.metadataService.expandAccordions;
   }
+
   /* liste des organismes issues de l'API pour le select. */
   public organisms: any[] = [];
   /* liste des roles issues de l'API pour le select. */
   public roles: any[] = [];
+  /* list des types de ref geo */
+  public typeAreas: any[] = [];
+
+  public areaFilters: Array<any>;
 
   get isLoading(): boolean {
     return this.metadataService.isLoading;
@@ -59,6 +63,8 @@ export class MetadataComponent implements OnInit {
 
     this._dfs.getRoles({ group: false }).subscribe((roles) => (this.roles = roles));
 
+    this._dfs.getAreasTypes().subscribe((types) => (this.typeAreas = types));
+
     this.afPublishModalLabel = AppConfig.METADATA.CLOSED_MODAL_LABEL;
     this.afPublishModalContent = AppConfig.METADATA.CLOSED_MODAL_CONTENT;
 
@@ -72,6 +78,19 @@ export class MetadataComponent implements OnInit {
         afs.slice(pageIndex * pageSize, (pageIndex + 1) * pageSize)
       )
     );
+    // format areas filter
+    this.areaFilters = AppConfig.METADATA.METADATA_AREA_FILTERS.map((area) => {
+      if (typeof area['type_code'] === 'string') {
+        area['type_code_array'] = [area['type_code']];
+      } else {
+        area['type_code_array'] = area['type_code'];
+      }
+      return area;
+    });
+  }
+
+  getOptionText(option) {
+    return option?.area_name;
   }
 
   setDsObservationCount(datasets, dsNbObs) {
@@ -94,10 +113,22 @@ export class MetadataComponent implements OnInit {
   }
 
   private advancedSearch() {
-    const formValue = this.metadataService.formatFormValue(
-      Object.assign({}, this.metadataService.form.value)
-    );
-    this.metadataService.getMetadata(formValue);
+    let formValues = this.metadataService.form.value;
+    // reformat areas value
+    let area = [];
+    let omited = omitBy(formValues, (value = [], field) => {
+      // omit control names started by area_
+      if (!field || !field.startsWith('area_')) return false;
+      // use only one areas ids list
+      if (value) {
+        area = [...area, ...value.map((area) => [area.id_type, area.id_area])];
+      }
+      return true;
+    });
+    let finalFormValue = { ...omited, area: area.length ? area : null };
+    this.metadataService.formatFormValue(Object.assign({}, formValues));
+    console.log(Object.assign({}, finalFormValue));
+    this.metadataService.getMetadata(finalFormValue);
     this.metadataService.expandAccordions = true;
   }
 
@@ -154,4 +185,7 @@ export class MetadataComponent implements OnInit {
 
     this.modal.dismissAll();
   }
+
+  displayMetaAreaFilters = () =>
+    AppConfig.METADATA?.METADATA_AREA_FILTERS && AppConfig.METADATA?.METADATA_AREA_FILTERS.length;
 }

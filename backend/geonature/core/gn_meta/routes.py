@@ -22,7 +22,7 @@ from flask import (
     g,
 )
 from flask.json import jsonify
-from sqlalchemy import inspect
+from sqlalchemy import inspect, and_, or_
 from sqlalchemy.sql import text, exists, select, update
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import Load, joinedload, raiseload
@@ -76,6 +76,8 @@ import geonature.utils.utilsmails as mail
 from geonature.utils.errors import GeonatureApiError
 from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 
+# from geonature.core.ref_geo.models import BibAreasTypes, LiMunicipalities, LAreas
+from ref_geo.models import LAreas
 
 routes = Blueprint("gn_meta", __name__, cli_group="metadata")
 
@@ -512,49 +514,64 @@ def get_export_pdf_dataset(id_dataset, info_role):
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 
 
-@routes.route("/acquisition_frameworks", methods=["GET"])
+@routes.route("/acquisition_frameworks", methods=["POST"])
 @permissions.check_cruved_scope(
     "R",
     True,
 )
-def get_acquisition_frameworks(info_role):
+def post_acquisition_frameworks(info_role):
     """
     Get a simple list of AF without any nested relationships
     Use for AF select in form
     Get the GeoNature CRUVED
     """
     only = []
-    af_list = (
-        TAcquisitionFramework.query.filter_by_readable()
-        .filter_by_params(request.args.to_dict())
-        .order_by(TAcquisitionFramework.acquisition_framework_name)
-        .options(
-            Load(TAcquisitionFramework).raiseload("*"),
-            # for permission checks:
-            joinedload("creator"),
-            joinedload("cor_af_actor").options(
+    # READ REQUEST ARGS
+    data = request.json
+    dataset = data["datasets"]
+    creator = data["creator"]
+    actors = data["actors"]
+    datasets = data["datasets"] if "datasets" in data else None
+    areas = data["area"] if "area" in data else None
+    # QUERY
+    af_list = TAcquisitionFramework.query.filter_by_readable().filter_by_params(data)
+    # FILTER BY AREAS
+    if areas and areas is not None:
+        areaFilter = []
+        for type_area, id_area in areas:
+            areaFilter.append(and_(LAreas.id_type == type_area, LAreas.id_area == id_area))
+        af_list = af_list.filter(
+            TAcquisitionFramework.t_datasets.any(
+                TDatasets.synthese_records.any(Synthese.areas.any(or_(*areaFilter)))
+            )
+        )
+
+    af_list = af_list.order_by(TAcquisitionFramework.acquisition_framework_name).options(
+        Load(TAcquisitionFramework).raiseload("*"),
+        # for permission checks:
+        joinedload("creator"),
+        joinedload("cor_af_actor").options(
+            joinedload("role"),
+            joinedload("organism"),
+        ),
+        joinedload("t_datasets").options(
+            joinedload("digitizer"),
+            joinedload("cor_dataset_actor").options(
                 joinedload("role"),
                 joinedload("organism"),
             ),
-            joinedload("t_datasets").options(
-                joinedload("digitizer"),
-                joinedload("cor_dataset_actor").options(
-                    joinedload("role"),
-                    joinedload("organism"),
-                ),
-            ),
-        )
+        ),
     )
-    if request.args.get("datasets", default=False, type=int):
+    if datasets and datasets is not None:
         only.extend(
             [
                 "t_datasets",
             ]
         )
-    if request.args.get("creator", default=False, type=int):
+    if creator and creator is not None:
         only.append("creator")
         af_list = af_list.options(joinedload("creator"))
-    if request.args.get("actors", default=False, type=int):
+    if actors and actors is not None:
         only.extend(
             [
                 "cor_af_actor",
@@ -568,7 +585,7 @@ def get_acquisition_frameworks(info_role):
                 joinedload("nomenclature_actor_role"),
             ),
         )
-        if request.args.get("datasets", default=False, type=int):
+        if datasets and datasets is not None:
             only.extend(
                 [
                     "t_datasets.cor_dataset_actor",
