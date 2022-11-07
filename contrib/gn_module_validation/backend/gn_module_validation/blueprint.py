@@ -301,33 +301,14 @@ def notifyChange(data, idsynthese):
         )
         roles = [str(role) for role in idRoles]
 
-        # Add mandatory dat
-        categoriesArray = ["VALIDATION-1"]
-        # Statut Certain
-        if nomenclature.cd_nomenclature == "1":
-            categoriesArray.append("VALIDATION-2")
-        # Statut Probable
-        if nomenclature.cd_nomenclature == "2":
-            categoriesArray.append("VALIDATION-3")
-        # Statut Douteux
-        if nomenclature.cd_nomenclature == "3":
-            categoriesArray.append("VALIDATION-4")
-        # Statut Invalide
-        if nomenclature.cd_nomenclature == "4":
-            categoriesArray.append("VALIDATION-5")
-        # Statut Non réalisable
-        if nomenclature.cd_nomenclature == "5":
-            categoriesArray.append("VALIDATION-6")
-        # Statut Inconnu
-        if nomenclature.cd_nomenclature == "6":
-            categoriesArray.append("VALIDATION-7")
+        # Add mandatory data
+        categoriesArray = ["VALIDATION-STATUS-CHANGED"]
 
         data["categories"] = categoriesArray
         data["id_roles"] = roles
-        data["title"] = "Modification de statut"
 
         # Add optional data
-        data["mnemonique"] = nomenclature.mnemonique
+        data["info_statut"] = nomenclature
         data["id_synthese"] = idsynthese
         data["url"] = (
             current_app.config["URL_APPLICATION"] + "/#/validation/occurrence/" + idsynthese

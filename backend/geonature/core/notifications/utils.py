@@ -45,11 +45,16 @@ class NotificationUtil:
                 {"success": False, "information": "Category is missing from the request"}
             )
 
+        # loop on given categories
         for category in categories:
 
-            # Check if method exist in config
-            category_exists = NotificationCategory.query.filter_by(code=category).first()
-            if not category_exists:
+            # Check if method exist in config and loop on regex
+            categoryRegex = category + "%"
+            databaseCategories = NotificationCategory.query.filter(
+                NotificationCategory.code.like(categoryRegex)
+            )
+
+            if databaseCategories.count() == 0:
                 resultInformation["result"].append(
                     {
                         "success": False,
@@ -58,108 +63,125 @@ class NotificationUtil:
                     }
                 )
                 break
-            # Set notification title, label category if not set
-            title = notificationData.get("title", category_exists.label)
 
-            # Get notification method for wanted users
-            # Can be several user to notify ( exemple multi digitiser for an observation)
-            idRoles = notificationData.get("id_roles")
-            if not idRoles:
-                resultInformation["result"].append(
-                    {
-                        "success": False,
-                        "category": category,
-                        "information": "Notification is missing id_role to be notified",
-                    }
-                )
-                break
+            ## Loop on categories
+            for databaseCategory in databaseCategories:
 
-            for role in idRoles:
-                userNotificationsRules = NotificationRule.query.filter(
-                    NotificationRule.id_role == role,
-                    NotificationRule.code_category == category,
-                )
+                # Set notification title, label category if not set
+                title = notificationData.get("title", databaseCategory.label)
 
-                # if no information then no rules return OK with information
-                if userNotificationsRules.all() == []:
+                # Get notification method for wanted users
+                # Can be several user to notify ( exemple multi digitiser for an observation)
+                idRoles = notificationData.get("id_roles")
+                if not idRoles:
                     resultInformation["result"].append(
                         {
                             "success": False,
-                            "category": category,
-                            "role": role,
-                            "information": "No rules for this user/category",
+                            "category": databaseCategory.code,
+                            "information": "Notification is missing id_role to be notified",
                         }
                     )
                     break
 
-                # loop on all methods subscribed by user
-                # No need to test id method exist ( foreign key constraint)
-                for rule in userNotificationsRules.all():
-                    method = rule.code_method
+                for role in idRoles:
+                    userNotificationsRules = NotificationRule.query.filter(
+                        NotificationRule.id_role == role,
+                        NotificationRule.code_category == databaseCategory.code,
+                    )
 
-                    # If content exist use it, otherwise use template
-                    content = notificationData.get("content")
-                    if not content:
-                        # get template for this method and category
-                        notificationTemplate = NotificationTemplate.query.filter_by(
-                            code_method=method,
-                            code_category=category,
-                        ).first()
-                        if notificationTemplate:
-                            # erase existing content with template
-                            template = Template(notificationTemplate.content)
-                            content = template.render(notificationData)
-
-                    # if method is type BDD
-                    if method == "BDD":
-                        url = notificationData.get("url", "")
-                        message = NotificationUtil.create_database_notification(
-                            role, title, content, url
+                    # if no information then no rules return OK with information
+                    if userNotificationsRules.all() == []:
+                        resultInformation["result"].append(
+                            {
+                                "success": False,
+                                "category": databaseCategory.code,
+                                "role": role,
+                                "information": "No rules for this user/category",
+                            }
                         )
-                        resultInformation["result"].append(message)
                         break
 
-                    # if method is type MAIL
-                    if method == "MAIL":
+                    # loop on all methods subscribed by user
+                    # No need to test id method exist ( foreign key constraint)
+                    for rule in userNotificationsRules.all():
+                        method = rule.code_method
 
-                        # get email for this user notification
-                        result = DB.session.query(User.email).filter(User.id_role == role).one()
-
-                        if result:
-                            email = str(result[0])
-                            # Send mail via celery
-                            if title and content and email:
-                                mailTask = send_notification_mail.s(title, content, email)
-                                mailTask.delay()
+                        # If content exist use it, otherwise use template
+                        content = notificationData.get("content")
+                        if not content:
+                            # get template for this method and category
+                            notificationTemplate = NotificationTemplate.query.filter_by(
+                                code_method=method,
+                                code_category=databaseCategory.code,
+                            ).first()
+                            if notificationTemplate:
+                                # erase existing content with template
+                                template = Template(notificationTemplate.content)
+                                content = template.render(notificationData)
+                            # if no content break | content is
+                            if not content or not content.strip():
                                 resultInformation["result"].append(
                                     {
-                                        "success": True,
-                                        "category": category,
+                                        "success": False,
+                                        "category": databaseCategory.code,
                                         "role": role,
-                                        "method": method,
-                                        "information": "Notification sent",
+                                        "information": "Empty content not notification sent",
                                     }
                                 )
+                                break
 
+                        # if method is type BDD
+                        if method == "BDD":
+                            url = notificationData.get("url", "")
+                            message = NotificationUtil.create_database_notification(
+                                role, title, content, url
+                            )
+                            resultInformation["result"].append(message)
+                            break
+
+                        # if method is type MAIL
+                        if method == "MAIL":
+
+                            # get email for this user notification
+                            result = (
+                                DB.session.query(User.email).filter(User.id_role == role).one()
+                            )
+
+                            if result:
+                                email = str(result[0])
+                                # Send mail via celery
+                                if title and content and email:
+                                    mailTask = send_notification_mail.s(title, content, email)
+                                    mailTask.delay()
+                                    resultInformation["result"].append(
+                                        {
+                                            "success": True,
+                                            "category": category,
+                                            "role": role,
+                                            "method": method,
+                                            "information": "Notification sent",
+                                        }
+                                    )
+
+                                else:
+                                    resultInformation["result"].append(
+                                        {
+                                            "success": False,
+                                            "category": category,
+                                            "role": role,
+                                            "title": title,
+                                            "content": content,
+                                            "email": email,
+                                            "information": "Missing information to send email",
+                                        }
+                                    )
                             else:
                                 resultInformation["result"].append(
                                     {
                                         "success": False,
                                         "category": category,
                                         "role": role,
-                                        "title": title,
-                                        "content": content,
-                                        "email": email,
-                                        "information": "Missing information to send email",
+                                        "information": "Missing user email to send email",
                                     }
                                 )
-                        else:
-                            resultInformation["result"].append(
-                                {
-                                    "success": False,
-                                    "category": category,
-                                    "role": role,
-                                    "information": "Missing user email to send email",
-                                }
-                            )
         return json.dumps(resultInformation)

@@ -121,10 +121,16 @@ def upgrade():
         bibNotificationsCategories,
         [
             {
-                "code": "VALIDATION-1",
+                "code": "VALIDATION-STATUS-CHANGED",
                 "label": "Modification du statut d'une observation",
                 "description": "Se déclenche en cas de modification d'un statut d'observation ",
             },
+            # exemple pour l'ajout d'un statut
+            # {
+            #    "code": "VALIDATION-STATUS-CHANGED-1",
+            #    "label": "Observation validée",
+            #    "description": "Se déclenche en cas de passage à l'état 'Certain - très probable' d'une observation ",
+            # },
         ],
     )
 
@@ -133,12 +139,18 @@ def upgrade():
         bibNotificationsTemplates,
         [
             {
-                "code_category": "VALIDATION-1",
+                "code_category": "VALIDATION-STATUS-CHANGED",
                 "code_method": "BDD",
-                "content": "Passage au statut <b>{{ mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
+                "content": " Passage au statut <b>{{ info_statut.mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
             },
+            # exemple pour l'ajout d'un statut
+            # {
+            #    "code_category": "VALIDATION-STATUS-CHANGED-1",
+            #    "code_method": "BDD",
+            #    "content": " {% if info_statut.mnemonique == 'Certain - très probable' %} Passage au statut <b>{{ info_statut.mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b> {% endif %}",
+            # },
             {
-                "code_category": "VALIDATION-1",
+                "code_category": "VALIDATION-STATUS-CHANGED",
                 "code_method": "MAIL",
                 "content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
             },
