@@ -153,10 +153,12 @@ for D in $(find ../external_modules  -type l | xargs readlink) ; do
             cd ..
         fi
         cd frontend
-        if [ -f 'package.json' ]
+        if [ -f 'package-lock.json' ]
         then
-          cd /home/`whoami`/geonature/frontend 
-          npm install $D/frontend --no-save
+          npm ci
+        elif [ -f 'package.json' ]
+        then
+          npm install
         fi
         cd ..
     fi

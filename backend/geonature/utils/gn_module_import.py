@@ -300,15 +300,6 @@ def install_frontend_dependencies(module_path):
                     ["npm", "install"],
                     cwd=str(frontend_module_path),
                 )
-            subprocess.check_call(
-                [
-                    "npm",
-                    "install",
-                    str(frontend_module_path),
-                    "--no-save",
-                ],
-                cwd=str(ROOT_DIR / "frontend"),
-            )
         except Exception as ex:
             log.info("Error while installing JS dependencies")
             raise GeoNatureError(ex)
