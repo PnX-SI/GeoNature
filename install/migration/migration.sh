@@ -136,7 +136,7 @@ source venv/bin/activate
 pip install --upgrade "pip>=19.3"  # https://www.python.org/dev/peps/pep-0440/#direct-references
 pip install -e .. -r requirements.txt
 # Installation des dépendances optionnelles
-grep -E "^SENTRY_DSN" "$myrootpath/geonature_old/config/geonature_config.toml" > /dev/null && pip install sentry[flask]
+grep -E "^SENTRY_DSN" "$myrootpath/geonature_old/config/geonature_config.toml" > /dev/null && pip install sentry-sdk[flask]
 # Installation des dépendances des modules
 # Boucle sur les liens symboliques de external_modules
 for D in $(find ../external_modules  -type l | xargs readlink) ; do
