@@ -135,11 +135,14 @@ python3 -m venv venv
 source venv/bin/activate
 pip install --upgrade "pip>=19.3"  # https://www.python.org/dev/peps/pep-0440/#direct-references
 pip install -e .. -r requirements.txt
+# Installation des dépendances optionnelles
+grep -E "^SENTRY_DSN" "$myrootpath/geonature_old/config/geonature_config.toml" > /dev/null && pip install sentry[flask]
 # Installation des dépendances des modules
 # Boucle sur les liens symboliques de external_modules
 for D in $(find ../external_modules  -type l | xargs readlink) ; do
     # si le lien symbolique exisite
     if [ -e "$D" ] ; then
+        echo "Installation du module $D…"
         cd "${D}"
         if [ -f 'setup.py' ]
         then
