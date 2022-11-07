@@ -168,15 +168,19 @@ cd $myrootpath/$currentdir/
 pip install --editable .
 
 
+echo "Upgrade database…"
 geonature db autoupgrade -x data-directory=tmp/ -x local-srid=$srid_local
 
 echo "Update configurations"
 geonature generate_frontend_config
 geonature generate_frontend_tsconfig_app
 geonature generate_frontend_tsconfig
-geonature update_module_configuration occtax
-geonature update_module_configuration validation
-geonature update_module_configuration occhab
+for D in $(find ../external_modules  -type l | xargs readlink) ; do
+    # si le lien symbolique exisite
+    if [ -e "$D" ] ; then
+        geonature update-module-configuration "$D"
+    fi
+done
 
 echo "Mise à jour des scripts systemd"
 cd $myrootpath/$currentdir/install
