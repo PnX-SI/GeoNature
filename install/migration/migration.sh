@@ -134,7 +134,7 @@ python3 -m venv venv
 
 source venv/bin/activate
 pip install --upgrade "pip>=19.3"  # https://www.python.org/dev/peps/pep-0440/#direct-references
-pip install -r requirements.txt
+pip install -e .. -r requirements.txt
 # Installation des dépendances des modules
 # Boucle sur les liens symboliques de external_modules
 for D in $(find ../external_modules  -type l | xargs readlink) ; do
@@ -165,7 +165,6 @@ for D in $(find ../external_modules  -type l | xargs readlink) ; do
 done
 
 cd $myrootpath/$currentdir/
-pip install --editable .
 
 
 echo "Upgrade database…"
