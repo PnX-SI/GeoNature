@@ -22,16 +22,16 @@ log = logging.getLogger()
 
 @pytest.fixture()
 def notification_data(users):
-
-    new_notification = Notification(
-        id_role=users["admin_user"].id_role,
-        title="title1",
-        content="content1",
-        url="https://geonature.fr/",
-        creation_date=datetime.datetime.now(),
-        code_status="UNREAD",
-    )
-    db.session.add(new_notification)
+    with db.session.begin_nested():
+        new_notification = Notification(
+            id_role=users["admin_user"].id_role,
+            title="title1",
+            content="content1",
+            url="https://geonature.fr/",
+            creation_date=datetime.datetime.now(),
+            code_status="UNREAD",
+        )
+        db.session.add(new_notification)
     return new_notification
 
 
@@ -55,25 +55,26 @@ def rule_method():
 
 @pytest.fixture()
 def rule_template(rule_category, rule_method):
-
-    new_template = NotificationTemplate(
-        code_category="Code_CATEGORY",
-        code_method="Code_METHOD",
-        content="{% if test == 'ok' %} message {% endif %}",
-    )
-    db.session.add(new_template)
+    with db.session.begin_nested():
+        new_template = NotificationTemplate(
+            code_category=rule_category.code,
+            code_method=rule_method.code,
+            content="{% if test == 'ok' %} message {% endif %}",
+        )
+        db.session.add(new_template)
 
     return new_template
 
 
 @pytest.fixture()
 def notification_rule(users, rule_method, rule_category):
-    new_notification_rule = NotificationRule(
-        id_role=users["admin_user"].id_role,
-        code_method=rule_method.code,
-        code_category=rule_category.code,
-    )
-    db.session.add(new_notification_rule)
+    with db.session.begin_nested():
+        new_notification_rule = NotificationRule(
+            id_role=users["admin_user"].id_role,
+            code_method=rule_method.code,
+            code_category=rule_category.code,
+        )
+        db.session.add(new_notification_rule)
 
     return new_notification_rule
 
