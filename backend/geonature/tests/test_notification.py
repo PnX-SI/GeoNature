@@ -36,12 +36,12 @@ def notification_data(users):
 
 
 @pytest.fixture()
-def rule_categorie():
-    new_categorie = NotificationCategory(
-        code="Code_CATEGORIE", label="Label_Categorie", description="description_categorie"
+def rule_category():
+    rule_category = NotificationCategory(
+        code="Code_CATEGORY", label="Label_Categorie", description="description_categorie"
     )
-    db.session.add(new_categorie)
-    return new_categorie
+    db.session.add(rule_category)
+    return rule_category
 
 
 @pytest.fixture()
@@ -54,11 +54,12 @@ def rule_method():
 
 
 @pytest.fixture()
-def rule_template(rule_method, rule_categorie):
+def rule_template(rule_category, rule_method):
+
     new_template = NotificationTemplate(
-        code_categorie=rule_categorie.code,
-        code_method=rule_method.code,
-        content="template {{ toto }}",
+        code_category="Code_CATEGORY",
+        code_method="Code_METHOD",
+        content="{% if test == 'ok' %} message {% endif %}",
     )
     db.session.add(new_template)
 
@@ -66,11 +67,11 @@ def rule_template(rule_method, rule_categorie):
 
 
 @pytest.fixture()
-def notification_rule(users, rule_method, rule_categorie):
+def notification_rule(users, rule_method, rule_category):
     new_notification_rule = NotificationRule(
         id_role=users["admin_user"].id_role,
         code_method=rule_method.code,
-        code_category=rule_categorie.code,
+        code_category=rule_category.code,
     )
     db.session.add(new_notification_rule)
 
@@ -192,7 +193,7 @@ class TestNotification:
         data = response.get_json()
         assert len(data) == 1
 
-    def test_create_rule(self, users, rule_method, rule_categorie):
+    def test_create_rule(self, users, rule_method, rule_category):
         # Init data for test
         url = "notifications.create_rule"
         log.info("Url d'appel %s", url_for(url))
@@ -208,13 +209,13 @@ class TestNotification:
 
         # TEST CONNECTED USER WITH DATA BUT WRONG KEY
         set_logged_user_cookie(self.client, users["admin_user"])
-        data = {"method": rule_method.code, "categorie": rule_categorie.code}
+        data = {"method": rule_method.code, "categorie": rule_category.code}
         response = self.client.put(url_for(url, data=data))
         assert response.status_code == 400
 
         # TEST CONNECTED USER WITH DATA BUT WRONG VALUE
         set_logged_user_cookie(self.client, users["admin_user"])
-        data = {"code_method": 1, "code_category": rule_categorie.code}
+        data = {"code_method": 1, "code_category": rule_category.code}
         response = self.client.put(url_for(url, data=data))
         assert response.status_code == 400
 
@@ -314,20 +315,22 @@ class TestNotification:
             {"success": False, "information": "Could not save notification in database"}
         )
 
-    def test_notification_creation(self, users, rule_categorie, notification_rule, rule_method):
+    def test_notification_creation(
+        self, users, rule_category, notification_rule, rule_method, rule_template
+    ):
         empty_id_role = ""
         title = "test creation"
         content = "after templating"
         url = "ta"
 
         # Category missing
-        notificationData = {"category": "test"}
+        notificationData = {"categoryWrongKey": "test"}
         response = NotificationUtil.create_notification(notificationData)
         assert response == json.dumps(
             {"success": False, "information": "Category is missing from the request"}
         )
 
-        # Categorie does not exist
+        # Category does not exist
         notificationData = {"categories": ["test"]}
         response = NotificationUtil.create_notification(notificationData)
         assert response == json.dumps(
@@ -342,24 +345,24 @@ class TestNotification:
             }
         )
 
-        # Categorie exist but no user
-        notificationData = {"categories": [rule_categorie.code]}
+        # Category exist but no user
+        notificationData = {"categories": [rule_category.code]}
         response = NotificationUtil.create_notification(notificationData)
         assert response == json.dumps(
             {
                 "result": [
                     {
                         "success": False,
-                        "category": "Code_CATEGORIE",
+                        "category": rule_category.code,
                         "information": "Notification is missing id_role to be notified",
                     }
                 ]
             }
         )
 
-        # Categorie exist and user witout rules
+        # Category exist and user but without rules linked
         notificationData = {
-            "categories": [rule_categorie.code],
+            "categories": [rule_category.code],
             "id_roles": [users["user"].id_role],
         }
         response = NotificationUtil.create_notification(notificationData)
@@ -368,9 +371,28 @@ class TestNotification:
                 "result": [
                     {
                         "success": False,
-                        "category": "Code_CATEGORIE",
+                        "category": rule_category.code,
                         "role": users["user"].id_role,
                         "information": "No rules for this user/category",
+                    }
+                ]
+            }
+        )
+
+        # Category exist and user with rules but without conditional template empty
+        notificationData = {
+            "categories": [rule_category.code],
+            "id_roles": [users["admin_user"].id_role],
+        }
+        response = NotificationUtil.create_notification(notificationData)
+        assert response == json.dumps(
+            {
+                "result": [
+                    {
+                        "success": False,
+                        "category": rule_category.code,
+                        "role": users["admin_user"].id_role,
+                        "information": "Empty content not notification sent",
                     }
                 ]
             }
