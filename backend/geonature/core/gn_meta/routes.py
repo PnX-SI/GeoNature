@@ -109,9 +109,12 @@ def get_datasets():
     :returns:  `list<TDatasets>`
     """
     params = MultiDict(request.args)
-    fields = params.get("fields", None)
+    allowed_fields = {"modules"}
+    fields = params.pop("fields", None)
     if fields:
         fields = fields.split(",")
+        if set(fields) - allowed_fields:
+            raise BadRequest(f"Allowed fields: {','.join(allowed_fields)}")
     if "create" in params:
         query = TDatasets.query.filter_by_creatable(params.pop("create"))
     else:
