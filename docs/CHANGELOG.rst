@@ -16,8 +16,11 @@ CHANGELOG
 * Correction et amélioration du script de mise à jour de GeoNature (``install/migration/migration.sh``) (#2110)
 * Correction de la commande d'installation des modules non packagés avec le routing dynamique (#2107)
 * Correction du message de confirmation d'enregistrement d'un cadre d'acquisition (#2108)
-* Correction d’une régression sur la route de récupération des jeux de données impactant l’application mobile
+* Correction d’une régression de la 2.10.0 sur la route de récupération des jeux de données impactant Occtax-mobile
 
+**⚠️ Notes de version**
+
+* Passez directement à cette version plutôt que la 2.10.0, mais en suivant les notes de version de la 2.10.0, en vous aidant éventuellement de l'exemple de migration.
 
 2.10.0 - Alouatta macconnelli (2022-11-02)
 ------------------------------------------
@@ -25,7 +28,7 @@ CHANGELOG
 * **Angular 12, tests automatisés frontend et backend**
 * **Discussions, signalement, partage, épinglage d'une occurrence**
 
-⚠️ Passage de la version 7 à 12 d'Angular. Avant de mettre à jour GeoNature sur cette version, vérifiez que les modules que vous utilisez sont disponibles dans une version compatible avec GeoNature 2.10.0 ou plus (compatibilité Angular 12).
+🔧 Passage de la version 7 à 12 d'Angular. Avant de mettre à jour GeoNature sur cette version, vérifiez que les modules que vous utilisez sont disponibles dans une version compatible avec GeoNature 2.10.0 ou plus (compatibilité Angular 12).
 
 Modules compatibles à date de la publication de la version 2.10 de GeoNature :
 
@@ -38,7 +41,7 @@ Modules compatibles à date de la publication de la version 2.10 de GeoNature :
 
 * **Avant** de mettre à jour GeoNature :
 
-  * Mettre à jour les TaxHub (1.10.4) et UsersHub (2.3.1), sans la partie migration de la base de données avec Alembic (elle sera faite lors de la mise à jour de GeoNature)
+  * Mettre à jour les versions de TaxHub (1.10.4) et UsersHub (2.3.1), sans la partie migration de la base de données avec Alembic (elle sera faite lors de la mise à jour de GeoNature)
   * Mettre à jour les modules compatibles avec GeoNature 2.10, en vous limitant aux étapes "Téléchargement de la nouvelle version du module", "Renommage des répertoires" et "Rapatriement de la configuration". La compilation de chaque module sera faite automatiquement lors de la mise à jour de GeoNature
   * Les nouveaux fichiers de logs seront placés dans le dossier ``/var/log/geonature/``. Vous pouvez archiver ou supprimer les anciens fichiers de log (``/var/log/geonature.log*``). 
   * Supprimer les paramètres de configuration qui ont disparu s’ils sont présents dans votre fichier de configuration ``geonature_config.toml`` :
@@ -53,10 +56,9 @@ Modules compatibles à date de la publication de la version 2.10 de GeoNature :
     # sudo apt install redis
 
 * Suivez la procédure de mise à jour classique de GeoNature (https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application)
-
 * Suivez les éventuelles notes de version spécifiques des modules installés (SQL de migration de leur schéma de BDD, stamp Alembic de la BDD)
 
-Un exemple de migration complète de GeoNature 2.9 à 2.10, ses dépendances et ses modules principaux est disponible sur https://geonature.fr/documents/procedures/2022-11-GN-210-Migrate.txt (pour information et à adapter à votre contexte).
+✅ Un exemple de migration complète de GeoNature 2.9 à 2.10, ses dépendances et ses modules principaux est disponible sur https://geonature.fr/documents/procedures/2022-11-GN-210-Migrate.txt (pour information et à adapter à votre contexte).
 
 **🚀 Nouveautés**
 
