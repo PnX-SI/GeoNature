@@ -22,25 +22,49 @@ Modules compatibles à date de la publication de la version 2.10 de GeoNature :
 * Dashboard
 * Monitoring
 
+**⚠️ Notes de version**
+
+* **Avant** de mettre à jour GeoNature :
+
+  * Mettre à jour les TaxHub (1.10.4) et UsersHub (2.3.1), sans la partie migration de la base de données avec Alembic (elle sera faite lors de la mise à jour de GeoNature)
+  * Mettre à jour les modules compatibles avec GeoNature 2.10, en vous limitant aux étapes "Téléchargement de la nouvelle version du module", "Renommage des répertoires" et "Rapatriement de la configuration". La compilation de chaque module sera faite automatiquement lors de la mise à jour de GeoNature
+  * Les nouveaux fichiers de logs seront placés dans le dossier ``/var/log/geonature/``. Vous pouvez archiver ou supprimer les anciens fichiers de log (``/var/log/geonature.log*``). 
+  * Supprimer les paramètres de configuration qui ont disparu s’ils sont présents dans votre fichier de configuration ``geonature_config.toml`` :
+  
+    * ``LOCAL_SRID``
+    * ``CRUVED_SEARCH_WITH_OBSERVER_AS_TXT``
+    * ``id_area_type_municipality``
+
+  * Installation du worker Celery : il vous faut installer le broker ``redis`` :
+    ::
+
+    # sudo apt install redis
+
+* Suivez la procédure de mise à jour classique de GeoNature (https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application)
+
+* Suivez les éventuelles notes de version spécifiques des modules installés (SQL de migration de leur schéma de BDD, stamp Alembic de la BDD)
+
+Un exemple de migration complète de GeoNature 2.9 à 2.10, ses dépendances et ses modules principaux est disponible sur https://geonature.fr/documents/procedures/2022-11-GN-210-Migrate.txt (pour information et à adapter à votre contexte).
+
 **🚀 Nouveautés**
 
-* Possibiliter de dupliquer le module Occtax (#621)
-* Mise à jour d'Angular de la version 7 à 12 et des dépendances javascript liées (#1547)
-* Mise en place de tests automatisés frontend avec Cypress, simulant les actions de l'utilisateur et vérifiant la conformité des résultats dans les modules Occtax, Synthèse et Métadonnées
-* Renforcement et nettoyage des tests automatisés backend (augmentation de la couverture de code de 49,8% à 63,1%)
-* Documentation de l'utilisation et de la mise en place des tests automatisés backend et frontend (https://github.com/PnX-SI/GeoNature/blob/develop/docs/writing_tests.rst et https://github.com/PnX-SI/GeoNature/blob/develop/docs/writing_tests_frontend.rst)
-* Simplification du CRUVED minimum pour accéder à GeoNature, ne nécessitant plus d'avoir obligatoirement un CRUVED défini au niveau global de GeoNature (#1622)
-* [Métadonnées] Remplacement de la liste des imports par la liste des sources dans la fiche des JDD (#1249)
-* [Métadonnées] Lister les cadres d'acquisition par ordre alphabétique
-* [Admin] Amélioration de l'interface (#2101)
+* Possibilité de dupliquer le module Occtax (#621)
 * Amélioration des fiches des observations dans les modules Synthèse et Validation (#1474)
 * Ajout d'un permalien sur les fiches des observations dans les modules Synthèse et Validation (#1727)
 * Signaler une occurrence et paramètre ``ALERT_MODULES`` associé (#1750)
 * Epingler une occurrence et son paramètre ``PIN_MODULES`` associé (#1819)
-* Discussions sur une occurrence et ses paramètres ``DISCUSSION_MODULES`` et ``DICUSSION_MAX_LENGTH`` associés (#1731)
+* Discussions sur une occurrence et ses paramètres ``DISCUSSION_MODULES`` et ``DISCUSSION_MAX_LENGTH`` associés (#1731)
+* Mise à jour d'Angular de la version 7 à 12 et des dépendances javascript liées (#1547)
+* Mise en place de tests automatisés frontend avec Cypress, simulant les actions de l'utilisateur et vérifiant la conformité des résultats dans les modules Occtax, Synthèse et Métadonnées
+* Renforcement et nettoyage des tests automatisés backend (augmentation de la couverture de code de 49,8% à 63,1%)
+* Documentation de l'utilisation et de la mise en place des tests automatisés backend et frontend (https://github.com/PnX-SI/GeoNature/blob/master/docs/writing_tests.rst et https://github.com/PnX-SI/GeoNature/blob/master/docs/writing_tests_frontend.rst)
+* Simplification du CRUVED minimum pour accéder à GeoNature, ne nécessitant plus d'avoir obligatoirement un CRUVED défini au niveau global de GeoNature (#1622)
+* [Métadonnées] Remplacement de la liste des imports par la liste des sources dans la fiche des JDD (#1249)
+* [Métadonnées] Lister les cadres d'acquisition par ordre alphabétique
+* [Admin] Amélioration de l'interface (#2101)
 * Ajout de la commande ``geonature db status`` permettant de lister les migrations Alembic, leurs dépendances et identifier celles qui ont été appliquées ou non (#1574)
 * Ajout d’un worker Celery pour l’exécution de tâches asynchrones
-* Déplacement du fichier de log GeoNature : ``/var/log/geonature/geonature.log``.
+* Déplacement du fichier de log GeoNature vers ``/var/log/geonature/geonature.log``.
 * Suppression de la table ``gn_sensitivity.cor_sensitivity_synthese`` et des triggers associés (#1710)
 * Suppression du paramètre ``CRUVED_SEARCH_WITH_OBSERVER_AS_TXT`` permettant d'ajouter le filtre sur l'observers_txt en ILIKE sur les portée 1 et 2 du CRUVED
 * Documentation : Ajout d'exemples de configuration pour utiliser les fonds IGN (#1703)
@@ -95,6 +119,7 @@ Modules compatibles à date de la publication de la version 2.10 de GeoNature :
 
 **💻 Développement**
 
+* Mise à jour d'Angular de la version 7 à 12 à répercuter dans les modules spécifiques (https://update.angular.io/?v=7.2-12.0)
 * Mise à jour des dépendances backend et frontend
 * Mise à jour de Flask version 1.1 à 2.2
 * Routage dynamique des modules, supprimant la nécessité de générer le fichier de routage du frontend (#2059)
@@ -117,28 +142,7 @@ Modules compatibles à date de la publication de la version 2.10 de GeoNature :
 * Ajout de la commande ``geonature ref_geo info`` qui compte le nombre de zonages par type
 * Suppression des dépendances "geog" et "numpy" en utilisation la fonction PostGIS ``ST_DWithin`` pour la recherche par cercle (#1972)
 * La variable d’environnement ``DATA_DIRECTORY`` permet de définir un dossier pour la mise en cache et réutilisation des ressources téléchargées lors de la création de la base de données
-* Chargement de la configuration des modules packagés directement lors de l’import du module ``config`` (avant même l’appelle à ``create_app``) (#2055)
-
-**⚠️ Notes de version**
-
-* **Avant** de mettre à jour GeoNature :
-
-  * Mettre à jour les TaxHub (1.10.4) et UsersHub (2.3.1), sans la partie migration de la base de données avec Alembic (elle sera faite lors de la mise à jour de GeoNature)
-  * Mettre à jour les modules compatibles avec GeoNature 2.10, sans lancer le rebuild du Frontend (cela sera fait lors de la mise à jour de GeoNature)
-  * Si vous avez des modules spécifiques, mettez à jour Angular de la version 7 à 12 (https://update.angular.io/?v=7.2-12.0)
-  * Archiver les anciens fichiers de log ``/var/log/geonature.log*``. Les nouveaux fichiers de logs seront placés dans le dossier ``/var/log/geonature/``.
-  * Supprimer les paramètres de configuration qui ont disparu s’ils sont présents dans votre fichier de configuration ``geonature_config.toml`` :
-  
-    * ``LOCAL_SRID``
-    * ``CRUVED_SEARCH_WITH_OBSERVER_AS_TXT``
-    * ``id_area_type_municipality``
-
-  * Installation du worker Celery : il vous faut installer le broker ``redis`` :
-    ::
-
-    # sudo apt install redis
-
-* Suivez la procédure de mise à jour classique
+* Chargement de la configuration des modules packagés directement lors de l’import du module ``config`` (avant même l’appel à ``create_app``) (#2055)
 
 **📝 Merci aux contributeurs**
 
