@@ -19,6 +19,7 @@ CHANGELOG
 * [OCCTAX] Correction d'un bug d'édition de géométrie non pris en compte
 * Map List: à la selection d'une ligne dans le tableau, placement de la géométrie correspondante au dessus des autres géométries (#2036)
 * [METADONNEES] Formulaire des CA : correction de la saisie des CA parents ( #2097)
+* [FRONTEND|MAP]  récupération des images des markers à la racine
 
 **⚠️ Notes de version**
 
