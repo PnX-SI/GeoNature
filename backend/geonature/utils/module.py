@@ -124,7 +124,7 @@ def import_backend_enabled_modules():
             continue
         if module_object.module_code in current_app.config["DISABLED_MODULES"]:
             continue
-        logging.info(f"Loading module {module_object.module_code}…")
+        logging.debug(f"Loading module {module_object.module_code}…")
         try:
             yield import_gn_module(module_object)
         except Exception as e:
