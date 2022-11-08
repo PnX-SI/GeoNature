@@ -5,7 +5,12 @@ CHANGELOG
 2.10.1 (unreleased)
 -------------------
 
-* 
+**🐛 Corrections**
+
+* La commande ``geonature`` ignore les modules dont le chargement a rencontré une erreur (#2109)
+* Correction et amélioration du script de mise à jour de GeoNature (``install/migration/migration.sh``) (#2110)
+* Correction de la commande d'installation des modules non packagés avec le routing dynamique (#2107)
+* Correction du message de confirmation d'enregistrement d'un cadre d'acquisition (#2108)
 
 2.10.0 - Alouatta macconnelli (2022-11-02)
 ------------------------------------------
