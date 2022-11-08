@@ -20,6 +20,11 @@ fi
 
 echo "OK, let's migrate GeoNature version..."
 
+sudo systemctl stop usershub
+sudo systemctl stop taxhub
+sudo systemctl stop geonature
+sudo systemctl stop geonature-worker
+
 . $myrootpath/geonature_old/config/settings.ini
 
 cp $myrootpath/geonature_old/config/settings.ini config/settings.ini
@@ -194,8 +199,10 @@ if [ -f "/var/log/geonature.log" ]; then
     sudo chown $USER: /var/log/geonature/geonature.log
 fi
 
-sudo systemctl restart geonature
-sudo systemctl restart geonature-worker
+sudo systemctl start usershub
+sudo systemctl start taxhub
+sudo systemctl start geonature
+sudo systemctl start geonature-worker
 
 deactivate
 
