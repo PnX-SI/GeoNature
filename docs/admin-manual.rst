@@ -1835,6 +1835,24 @@ Pour ne pas afficher le module Occtax à un utilisateur où à un groupe, il fau
 
 L'administration des droits des utilisateurs pour le module Occtax se fait dans le backoffice de gestion des permissions de GeoNature.
 
+Dupliquer le module Occtax
+""""""""""""""""""""""""""
+
+Les champs additionnels d'Occtax permettent de démultiplier les possibilités du formulaire. Lorsqu'on associe des champs additionnels à un jeu de données, on souhaite parfois dissocier le module Occtax avec les champs habituels du standard du module "Occtax" que l'on a augmenté avec des champs additionnels.
+
+Il est possible d'ajouter une entrée dans la table ``gn_commons.t_modules`` pour simuler un "nouveau module" dans le menu latéral des modules GeoNature. 
+
+En passant les paramètres ``id_dataset`` et ``module_label`` à la colonne ``module_path``, on est alors redirigé vers le module "Occtax" préfiltré uniquement avec les données de notre JDD. Le nom du module dans la barre superieure est également changé. Le JDD sera également pré-sélectionné dans le formulaire et les champs additionnels automatiquement ajoutés.
+
+Exemple d'insertion dans la table ``gn_commons.t_modules`` :
+
+NB : ``active_backend`` doit être à false et ``active_frontend`` à `true`
+
+::
+
+  INSERT INTO gn_commons.t_modules (module_code,module_label,module_picto,module_desc,module_group,module_path,module_external_url,module_target,module_comment,active_frontend,active_backend,module_doc_url,module_order,"type",) VALUES
+      ('OCCTAX_DS_2','OCCTAX DS 2','fa-paw',NULL,NULL,'occtax?id_dataset=:id_dataset&module_label=Occtax DS 2',NULL,NULL,NULL,true,false,NULL,NULL,NULL);
+
 
 Module Admin
 -------------
