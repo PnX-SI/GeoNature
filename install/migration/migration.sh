@@ -182,10 +182,12 @@ echo "Update configurations"
 geonature generate_frontend_config
 geonature generate_frontend_tsconfig_app
 geonature generate_frontend_tsconfig
-for D in $(find external_modules  -type l | xargs readlink) ; do
+for D in $(find external_modules -type l) ; do
     # si le lien symbolique exisite
-    if [ -e "$D" ] ; then
-        geonature update-module-configuration "$D"
+    module_path=$(readlink $D)
+    module_code=$(basename $D)
+    if [ -e "$module_path" ] ; then
+        geonature update-module-configuration "$module_code"
     fi
 done
 
