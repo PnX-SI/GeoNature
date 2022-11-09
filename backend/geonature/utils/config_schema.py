@@ -168,7 +168,12 @@ class MetadataConfig(Schema):
     CD_NOMENCLATURE_ROLE_TYPE_DS = fields.List(fields.Str(), load_default=[])
     CD_NOMENCLATURE_ROLE_TYPE_AF = fields.List(fields.Str(), load_default=[])
     METADATA_AREA_FILTERS = fields.List(
-        fields.Dict, load_default=[{"label": "Communes", "type_code": "COM"}]
+        fields.Dict,
+        load_default=[
+            {"label": "Communes", "type_code": "COM"},
+            {"label": "Départements", "type_code": "DEP"},
+            {"label": "Régions", "type_code": "REG"},
+        ],
     )
 
 

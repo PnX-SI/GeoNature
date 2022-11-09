@@ -31,8 +31,6 @@ export class MetadataComponent implements OnInit {
   public organisms: any[] = [];
   /* liste des roles issues de l'API pour le select. */
   public roles: any[] = [];
-  /* list des types de ref geo */
-  public typeAreas: any[] = [];
 
   public areaFilters: Array<any>;
 
@@ -62,8 +60,6 @@ export class MetadataComponent implements OnInit {
     this._dfs.getOrganisms().subscribe((organisms) => (this.organisms = organisms));
 
     this._dfs.getRoles({ group: false }).subscribe((roles) => (this.roles = roles));
-
-    this._dfs.getAreasTypes().subscribe((types) => (this.typeAreas = types));
 
     this.afPublishModalLabel = AppConfig.METADATA.CLOSED_MODAL_LABEL;
     this.afPublishModalContent = AppConfig.METADATA.CLOSED_MODAL_CONTENT;
@@ -127,7 +123,6 @@ export class MetadataComponent implements OnInit {
     });
     let finalFormValue = { ...omited, area: area.length ? area : null };
     this.metadataService.formatFormValue(Object.assign({}, formValues));
-    console.log(Object.assign({}, finalFormValue));
     this.metadataService.getMetadata(finalFormValue);
     this.metadataService.expandAccordions = true;
   }

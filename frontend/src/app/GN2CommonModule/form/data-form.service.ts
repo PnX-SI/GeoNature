@@ -335,9 +335,9 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/types`);
   }
 
-  autocompleteRefGeo(area_name, id_type) {
+  autocompleteRefGeo(area_name, type_code) {
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/geo/areas?area_name=${area_name}&id_type=${id_type}`
+      `${AppConfig.API_ENDPOINT}/geo/areas?area_name=${area_name}&type_code=${type_code}`
     );
   }
 
@@ -364,8 +364,11 @@ export class DataFormService {
   }
 
   getAcquisitionFrameworksList(searchTerms = {}) {
+    let urlGetParams = Object.keys(searchTerms).map((k) =>
+      searchTerms[k] ? `${k}=${searchTerms[k] || null}` : ''
+    );
     return this._http.post<any>(
-      `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`,
+      `${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks?${urlGetParams.join('&')}`,
       searchTerms
     );
   }

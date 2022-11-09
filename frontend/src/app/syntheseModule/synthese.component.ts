@@ -91,7 +91,6 @@ export class SyntheseComponent implements OnInit {
         initialFilter['id_dataset'] = params.get('id_dataset');
       } else {
         initialFilter['limit'] = AppConfig.SYNTHESE.NB_LAST_OBS;
-        initialFilter['limit'] = 6000;
       }
 
       // reinitialize the form

@@ -76,7 +76,6 @@ import geonature.utils.utilsmails as mail
 from geonature.utils.errors import GeonatureApiError
 from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 
-# from geonature.core.ref_geo.models import BibAreasTypes, LiMunicipalities, LAreas
 from ref_geo.models import LAreas
 
 routes = Blueprint("gn_meta", __name__, cli_group="metadata")
@@ -514,37 +513,22 @@ def get_export_pdf_dataset(id_dataset, info_role):
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 
 
-@routes.route("/acquisition_frameworks", methods=["POST"])
+@routes.route("/acquisition_frameworks", methods=["GET", "POST"])
 @permissions.check_cruved_scope(
     "R",
     True,
 )
-def post_acquisition_frameworks(info_role):
+def get_acquisition_frameworks(info_role):
     """
     Get a simple list of AF without any nested relationships
     Use for AF select in form
     Get the GeoNature CRUVED
     """
     only = []
-    # READ REQUEST ARGS
-    data = request.json
-    dataset = data["datasets"]
-    creator = data["creator"]
-    actors = data["actors"]
-    datasets = data["datasets"] if "datasets" in data else None
-    areas = data["area"] if "area" in data else None
     # QUERY
-    af_list = TAcquisitionFramework.query.filter_by_readable().filter_by_params(data)
-    # FILTER BY AREAS
-    if areas and areas is not None:
-        areaFilter = []
-        for type_area, id_area in areas:
-            areaFilter.append(and_(LAreas.id_type == type_area, LAreas.id_area == id_area))
-        af_list = af_list.filter(
-            TAcquisitionFramework.t_datasets.any(
-                TDatasets.synthese_records.any(Synthese.areas.any(or_(*areaFilter)))
-            )
-        )
+    af_list = TAcquisitionFramework.query.filter_by_readable()
+    if request.method == "POST":
+        af_list = af_list.filter_by_params(request.json)
 
     af_list = af_list.order_by(TAcquisitionFramework.acquisition_framework_name).options(
         Load(TAcquisitionFramework).raiseload("*"),
@@ -562,16 +546,16 @@ def post_acquisition_frameworks(info_role):
             ),
         ),
     )
-    if datasets and datasets is not None:
+    if request.args.get("datasets", default=False, type=int):
         only.extend(
             [
                 "t_datasets",
             ]
         )
-    if creator and creator is not None:
+    if request.args.get("creator", default=False, type=int):
         only.append("creator")
         af_list = af_list.options(joinedload("creator"))
-    if actors and actors is not None:
+    if request.args.get("actors", default=False, type=int):
         only.extend(
             [
                 "cor_af_actor",
@@ -585,7 +569,7 @@ def post_acquisition_frameworks(info_role):
                 joinedload("nomenclature_actor_role"),
             ),
         )
-        if datasets and datasets is not None:
+        if request.args.get("datasets", default=False, type=int):
             only.extend(
                 [
                     "t_datasets.cor_dataset_actor",
