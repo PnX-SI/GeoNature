@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.10.2 (2022-11-09)
+-------------------
+
+**🚀 Nouveautés**
+
+* Documentation de la fonctionnalité de duplication d’OccTax
+
+**🐛 Corrections**
+
+* Correction du script de migration pour générer la configuration frontend des modules
+* Correction des triggers d’OccTax pour correctement identifier la bonne source
+
+
 2.10.1 (2022-11-08)
 -------------------
 
