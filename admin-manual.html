@@ -136,6 +136,10 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#gestion-des-exports">Gestion des exports</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#attribuer-des-droits">Attribuer des droits</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dupliquer-le-module-occtax">Dupliquer le module Occtax</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#associer-des-jeux-de-donnees-et-des-champs-additionnels">Associer des jeux de données et des champs additionnels</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#module-admin">Module Admin</a><ul>
@@ -1923,6 +1927,37 @@ Pour cela, créer votre vue, et modifier les paramètres suivants :</p>
 <p>La gestion des droits (CRUVED) se fait module par module. Cependant si on ne redéfinit pas de droit pour un module, ce sont les droits de l’application mère (GeoNature elle-même) qui seront attribués à l’utilisateur pour l’ensemble de ses sous-modules.</p>
 <p>Pour ne pas afficher le module Occtax à un utilisateur où à un groupe, il faut lui mettre l’action Read (R) à 0.</p>
 <p>L’administration des droits des utilisateurs pour le module Occtax se fait dans le backoffice de gestion des permissions de GeoNature.</p>
+</section>
+<section id="dupliquer-le-module-occtax">
+<h3>Dupliquer le module Occtax<a class="headerlink" href="#dupliquer-le-module-occtax" title="Lien permanent vers cette rubrique"></a></h3>
+<p>Il est possible de « dupliquer » le module Occtax pour créer des nouveaux modules, basé sur le moteur d’Occtax, en y ajoutant des champs additionnels propre au module.</p>
+<p>Le schéma de base de données ainsi que les routes du backend utilisées restent les mêmes (celles d’Occtax). En base de données un nouveau champs <code class="docutils literal notranslate"><span class="pre">id_module</span></code> permet de différencier les données venant des differents modules. Concernant l’API, les routes sont appelées avec le préfixe du module code :</p>
+<ul class="simple">
+<li><p>route Occtax : <code class="docutils literal notranslate"><span class="pre">/occtax/releves</span></code></p></li>
+<li><p>route du module dupliqué : <cite>occtax/&lt;MODULE_CODE&gt;/releves</cite></p></li>
+</ul>
+<p>Pour créer un nouveau module « Occtax dupliqué », ajoutez une ligne dans la table <code class="docutils literal notranslate"><span class="pre">gn_commons.t_modules</span></code>.</p>
+<p>La ligne doit contenir les informations suivantes :</p>
+<ul class="simple">
+<li><p>le <code class="docutils literal notranslate"><span class="pre">module_code</span></code> doit être unique,</p></li>
+<li><p>les champs <code class="docutils literal notranslate"><span class="pre">active_frontend=true</span></code>, <code class="docutils literal notranslate"><span class="pre">active_backend=false</span></code>, <code class="docutils literal notranslate"><span class="pre">ng_module=occtax</span></code> et le champs <code class="docutils literal notranslate"><span class="pre">module_path</span></code> pour l’URL derrière lequel le module sera servi (<code class="docutils literal notranslate"><span class="pre">/florestation</span></code> par exemple)</p></li>
+</ul>
+<p>Exemple :</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INSERT</span> <span class="n">INTO</span> <span class="n">gn_commons</span><span class="o">.</span><span class="n">t_modules</span> <span class="p">(</span><span class="n">module_code</span><span class="p">,</span> <span class="n">module_label</span><span class="p">,</span> <span class="n">module_picto</span><span class="p">,</span> <span class="n">module_desc</span><span class="p">,</span> <span class="n">module_path</span><span class="p">,</span><span class="n">active_frontend</span><span class="p">,</span> <span class="n">active_backend</span><span class="p">,</span> <span class="n">ng_module</span><span class="p">)</span> <span class="n">VALUES</span>
+     <span class="p">(</span><span class="s1">&#39;FLORE_STATION&#39;</span><span class="p">,</span><span class="s1">&#39;Flore station v2&#39;</span><span class="p">,</span><span class="s1">&#39;fa-leaf&#39;</span><span class="p">,</span><span class="s1">&#39;Module de saisie Flore station (sous module Occtax)&#39;</span><span class="p">,</span><span class="s1">&#39;flore_station&#39;</span><span class="p">,</span><span class="n">true</span><span class="p">,</span><span class="n">false</span><span class="p">,</span><span class="s1">&#39;occtax&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Ajoutez ensuite une « source » dans la synthese (<code class="docutils literal notranslate"><span class="pre">gn_synthese.t_sources</span></code>) pour ce nouveau module.</p>
+<p>Dans l’exemple ci-dessous, remplacez <code class="docutils literal notranslate"><span class="pre">&lt;MODULE_PATH&gt;</span></code> par le contenu de la colonne <code class="docutils literal notranslate"><span class="pre">module_path</span></code> ainsi que <code class="docutils literal notranslate"><span class="pre">&lt;ID_MODULE&gt;</span></code> par l’id du module que vous venez de créer.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">INSERT</span> <span class="n">INTO</span> <span class="n">gn_synthese</span><span class="o">.</span><span class="n">t_sources</span> <span class="p">(</span><span class="n">name_source</span><span class="p">,</span><span class="n">desc_source</span><span class="p">,</span><span class="n">entity_source_pk_field</span><span class="p">,</span><span class="n">url_source</span><span class="p">,,</span><span class="n">id_module</span><span class="p">)</span> <span class="n">VALUES</span>
+<span class="p">(</span><span class="s1">&#39;Flore station (sous-module Occtax)&#39;</span><span class="p">,</span><span class="s1">&#39;Données issues du protocole Flore station&#39;</span><span class="p">,</span><span class="s1">&#39;pr_occtax.cor_counting_occtax.id_counting_occtax&#39;</span><span class="p">,</span><span class="s1">&#39;#/&lt;MODULE_PATH&gt;/info/id_counting&#39;</span><span class="p">,</span> <span class="o">&lt;</span><span class="n">ID_MODULE</span><span class="o">&gt;</span><span class="p">);</span>
+</pre></div>
+</div>
+<section id="associer-des-jeux-de-donnees-et-des-champs-additionnels">
+<h4>Associer des jeux de données et des champs additionnels<a class="headerlink" href="#associer-des-jeux-de-donnees-et-des-champs-additionnels" title="Lien permanent vers cette rubrique"></a></h4>
+<p>Dans le module Métadonnées (formulaire des jeux de données), associez les jeux de données que vous souhaitez rendre saissisables au nouveau module dupliqué.</p>
+<p>Vous pouvez ensuite créer des nouveaux champs additionnels et les associer à ce module. De la même manière que dans Occtax, on peut les associer aux trois niveaux du formulaire (relevé, occurrence, dénombrement).</p>
+</section>
 </section>
 </section>
 <section id="module-admin">
