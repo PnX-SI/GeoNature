@@ -1838,20 +1838,32 @@ L'administration des droits des utilisateurs pour le module Occtax se fait dans 
 Dupliquer le module Occtax
 """"""""""""""""""""""""""
 
-Les champs additionnels d'Occtax permettent de démultiplier les possibilités du formulaire. Lorsqu'on associe des champs additionnels à un jeu de données, on souhaite parfois dissocier le module Occtax avec les champs habituels du standard du module "Occtax" que l'on a augmenté avec des champs additionnels.
+Il est possible de "dupliquer" le module Occtax pour créer des nouveaux modules, basé sur le moteur d'Occtax, en y ajoutant des champs additionnels propre au module.
+Le schéma de base de données ainsi que les routes du backend utilisées restent les mêmes (celles d'occtax). En base de données un nouveau champs `id_module` permet de différencier les données venant des differents modules. Concernant l'API, les routes sont appelé avec le préfixe du module code :
+- route occtax : `/occtax/releves`
+- route : `occtax/<MODULE_CODE>/releves`
 
-Il est possible d'ajouter une entrée dans la table ``gn_commons.t_modules`` pour simuler un "nouveau module" dans le menu latéral des modules GeoNature. 
+Pour créer un nouveau module "occtax dupliqué", ajoutez une ligne dans la table `gn_common.t_modules`
+La ligne doit contenir les information suivantes:
+le  `module_code` doit être unique, les champs `active_frontend=true`, `active_backend=false`, `ng_module=occtax` et le champs `module_path` pour l'url derrière lequel le module sera servi (`/florestation` par exemple)
 
-En passant les paramètres ``id_dataset`` et ``module_label`` à la colonne ``module_path``, on est alors redirigé vers le module "Occtax" préfiltré uniquement avec les données de notre JDD. Le nom du module dans la barre superieure est également changé. Le JDD sera également pré-sélectionné dans le formulaire et les champs additionnels automatiquement ajoutés.
+Exemple :
+:: 
+  INSERT INTO gn_commons.t_modules (module_code, module_label, module_picto, module_desc, module_path,active_frontend, active_backend, ng_module) VALUES
+	 ('FLORE_STATION','Flore station v2','fa-leaf','Module de saisie Flore station (sous module Occtax)','flore_station',true,false,'occtax');
 
-Exemple d'insertion dans la table ``gn_commons.t_modules`` :
-
-NB : ``active_backend`` doit être à false et ``active_frontend`` à `true`
+Ajoutez ensuite une "source" dans la synthese (`gn_synthese.t_sources`) pour ce nouveau module. 
+Dans l'exemple ci-dessous, remplacez `<MODULE_PATH>`` par le contenu de la colonne `module_path` ainsi que `<ID_MODULE>` par l'id du module que vous venez de créer.
 
 ::
+  INSERT INTO gn_synthese.t_sources (name_source,desc_source,entity_source_pk_field,url_source,,id_module) VALUES
+    ('Flore station (sous-module Occtax)','Données issues du protocole Flore station','pr_occtax.cor_counting_occtax.id_counting_occtax','#/<MODULE_PATH>/info/id_counting', <ID_MODULE>);
 
-  INSERT INTO gn_commons.t_modules (module_code,module_label,module_picto,module_desc,module_group,module_path,module_external_url,module_target,module_comment,active_frontend,active_backend,module_doc_url,module_order,"type",) VALUES
-      ('OCCTAX_DS_2','OCCTAX DS 2','fa-paw',NULL,NULL,'occtax?id_dataset=:id_dataset&module_label=Occtax DS 2',NULL,NULL,NULL,true,false,NULL,NULL,NULL);
+Associer des jeux de données et des champs additionnels
+```````````````````````````````````````````````````````
+
+Dans le module Métadonnées (formulaire des jeux de données), associez les jeux de données que vous souhaitez rendre saissisable au nouveau module.
+Vous pouvez ensuite créer des nouveaux champs additionnels et les associer au module. De la même manière que dans Occtax, on peut les associer aux trois niveau du formulaire (relevé, occurrence, dénombrement)
 
 
 Module Admin
