@@ -1845,7 +1845,7 @@ Le schéma de base de données ainsi que les routes du backend utilisées resten
 - route Occtax : ``/occtax/releves``
 - route du module dupliqué : `occtax/<MODULE_CODE>/releves`
 
-Pour créer un nouveau module "Occtax dupliqué", ajoutez une ligne dans la table ``gn_common.t_modules``.
+Pour créer un nouveau module "Occtax dupliqué", ajoutez une ligne dans la table ``gn_commons.t_modules``.
 
 La ligne doit contenir les informations suivantes :
 
