@@ -77,35 +77,6 @@ def gn_module_deactivate(module_code, activ_front, activ_back):
         )
 
 
-def install_frontend_dependencies(module_path):
-    """
-    Install module frontend dependencies in the GN node_modules directory
-    """
-    log.info("Installing JS dependencies...")
-    frontend_module_path = Path(module_path) / "frontend"
-    if (frontend_module_path / "package.json").is_file():
-        try:
-            subprocess.check_call(
-                ["/bin/bash", "-i", "-c", "nvm use"], cwd=str(ROOT_DIR / "frontend")
-            )
-            try:
-                subprocess.check_call(
-                    ["npm", "ci"],
-                    cwd=str(frontend_module_path),
-                )
-            except subprocess.CalledProcessError:  # probably missing package-lock.json
-                subprocess.check_call(
-                    ["npm", "install"],
-                    cwd=str(frontend_module_path),
-                )
-        except Exception as ex:
-            log.info("Error while installing JS dependencies")
-            raise GeoNatureError(ex)
-    else:
-        log.info("No package.json - skip js packages installation")
-    log.info("...%s\n", MSG_OK)
-
-
 def create_module_config(module_code, output_file=None):
     """
     Create the frontend config

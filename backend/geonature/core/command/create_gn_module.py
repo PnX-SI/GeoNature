@@ -29,7 +29,6 @@ from geonature.core.command.main import main
 from geonature.utils.gn_module_import import (
     gn_module_activate,
     gn_module_deactivate,
-    install_frontend_dependencies,
     create_module_config,
 )
 from geonature.utils.module import get_module_config_path
@@ -42,8 +41,7 @@ log = logging.getLogger(__name__)
 @main.command()
 @click.argument("module_path")
 @click.argument("module_code")
-@click.option("--skip-frontend", is_flag=True)
-def install_packaged_gn_module(module_path, module_code, skip_frontend):
+def install_packaged_gn_module(module_path, module_code):
     # install python package and dependencies
     subprocess.run(f"pip install -e '{module_path}'", shell=True, check=True)
 
@@ -94,12 +92,6 @@ def install_packaged_gn_module(module_path, module_code, skip_frontend):
         db_upgrade(revision=alembic_branch + "@head")
     else:
         log.info("Module do not provide any migration files, skipping database upgrade.")
-
-    ### Frontend
-    if not skip_frontend:
-        install_frontend_dependencies(os.path.abspath(module_path))
-
-    log.info("Module installé, pensez à recompiler le frontend.")
 
 
 @click.option("--frontend", type=bool, required=False, default=True)
