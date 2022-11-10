@@ -21,7 +21,7 @@ from flask import (
 )
 from utils_flask_sqla.response import json_resp
 
-from pypnusershub.db.models import User, Organisme
+from pypnusershub.db.models import User, Organisme, Application
 from pypnusershub.db.tools import encode_token
 from pypnusershub.routes import insert_or_update_organism, insert_or_update_role
 from geonature.utils import utilsrequests
@@ -83,7 +83,13 @@ def loginCas():
             cookie_exp = datetime.datetime.utcnow()
             expiration = current_app.config["COOKIE_EXPIRATION"]
             cookie_exp += datetime.timedelta(seconds=expiration)
-            user["id_application"] = current_app.config["ID_APP"]
+            data["id_application"] = (
+                Application.query.filter_by(
+                    code_application=current_app.config["CODE_APPLICATION"]
+                )
+                .one()
+                .id_application
+            )
             token = encode_token(user)
             response.set_cookie("token", token, expires=cookie_exp)
 

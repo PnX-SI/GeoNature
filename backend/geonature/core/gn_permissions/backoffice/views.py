@@ -33,7 +33,7 @@ from geonature.core.gn_permissions.models import (
     VUsersPermissions,
 )
 from geonature.core.users.models import CorRole
-from pypnusershub.db.models import Organisme as BibOrganismes
+from pypnusershub.db.models import Organisme as BibOrganismes, Application
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_permissions import decorators as permissions
 
@@ -163,13 +163,18 @@ def users(info_role):
     Only display user which have profil in GeoNature and active user
     """
 
+    id_app = (
+        Application.query.filter_by(code_application=current_app.config["CODE_APPLICATION"])
+        .one()
+        .id_application
+    )
     q = (
         DB.session.query(AppRole, func.count(CorRoleActionFilterModuleObject.id_role))
         .outerjoin(
             CorRoleActionFilterModuleObject,
             CorRoleActionFilterModuleObject.id_role == AppRole.id_role,
         )
-        .filter(AppRole.id_application == current_app.config["ID_APPLICATION_GEONATURE"])
+        .filter(AppRole.id_application == id_app)
         .group_by(AppRole)
         .order_by(AppRole.groupe.desc(), AppRole.nom_role.asc())
     )

@@ -159,21 +159,6 @@ def create_app(with_external_mods=True):
 
     admin.init_app(app)
 
-    # Pass the ID_APP to the submodule to avoid token conflict between app on the same server
-    with app.app_context():
-        try:
-            gn_app = Application.query.filter_by(code_application=config["CODE_APPLICATION"]).one()
-        except (
-            OperationalError,  # database does not exist
-            ProgrammingError,  # database empty
-            NoResultFound,  # database has schema but not required data
-        ):
-            logging.warning(
-                "Warning: unable to find GeoNature application, database not yet initialized?"
-            )
-        else:
-            app.config["ID_APP"] = app.config["ID_APPLICATION_GEONATURE"] = gn_app.id_application
-
     for blueprint_path, url_prefix in [
         ("pypnusershub.routes:routes", "/auth"),
         ("pypn_habref_api.routes:routes", "/habref"),

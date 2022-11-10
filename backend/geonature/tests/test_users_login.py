@@ -14,11 +14,12 @@ from .utils import logged_user_headers
 class TestUsersLogin:
     @pytest.fixture
     def user(self, app):
-        id_app = app.config["ID_APP"]
         with db.session.begin_nested():
             user = User(groupe=False, active=True, identifiant="user", password="password")
             db.session.add(user)
-            application = Application.query.get(id_app)
+            application = Application.query.filter_by(
+                code_application=app.config["CODE_APPLICATION"]
+            ).one()
             profil = Profils.query.filter(Profils.applications.contains(application)).first()
             right = UserApplicationRight(
                 role=user, id_profil=profil.id_profil, id_application=application.id_application
