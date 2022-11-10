@@ -11,6 +11,7 @@ from geojson import Point
 from sqlalchemy import func
 from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound, Unauthorized
 from werkzeug.datastructures import MultiDict
+from ref_geo.models import BibAreasTypes, LAreas
 
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
@@ -25,6 +26,12 @@ from geonature.utils.env import db
 
 from .fixtures import *
 from .utils import logged_user_headers, set_logged_user_cookie
+
+
+@pytest.fixture(scope="function")
+def first_area_commune():
+    commune = BibAreasTypes.query.filter_by(type_code="COM").one()
+    return LAreas.query.filter(LAreas.id_type == commune.id_type).first()
 
 
 # TODO: maybe move it to global fixture
@@ -223,14 +230,24 @@ class TestGNMeta:
         )
         assert response.status_code == 200
 
-    def test_get_post_acquisition_frameworks(self, users):
-        response = self.client.get(url_for("gn_meta.get_acquisition_frameworks"))
+    def test_get_post_acquisition_frameworks(self, users, first_area_commune):
+        # SIMPLE TEST WITH GET REQUEST
+        response = self.client.post(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            json={},
+        )
         assert response.status_code == Unauthorized.code
 
         set_logged_user_cookie(self.client, users["admin_user"])
-        # POST EMPTY REQUEST FAIL
+        # POST EMPTY REQUEST FAIL WITHOUT ANY PARAMS
         response = self.client.post(url_for("gn_meta.get_acquisition_frameworks"))
         assert response.status_code == 400
+        # POST REQUEST WITHOUT JSON AND WITHOUT QUERY STRING
+        response = self.client.post(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            json={},
+        )
+        assert response.status_code == 200
         # POST REQUEST WITHOUT JSON
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),
@@ -242,10 +259,10 @@ class TestGNMeta:
             json={},
         )
         assert response.status_code == 200
-        # POST REQUEST WITHOUT JSON AND WITHOUT QUERY STRING
+        # TEST RESPONSE WITH ONE FILTER AREA
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),
-            json={},
+            json={"area": [[first_area_commune.id_type, first_area_commune.id_area]]},
         )
         assert response.status_code == 200
 
