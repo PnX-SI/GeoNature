@@ -57,7 +57,7 @@ echo "############### Installation des paquets systèmes ###############"
 
 # Installing required environment for GeoNature and TaxHub
 echo "Installation de l'environnement logiciel..."
-sudo apt-get install -y unzip git postgresql postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis || exit 1
+sudo apt-get install -y unzip git postgresql postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis xvfb || exit 1
 
 
 # Apache configuration
