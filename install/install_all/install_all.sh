@@ -59,6 +59,9 @@ echo "############### Installation des paquets systèmes ###############"
 echo "Installation de l'environnement logiciel..."
 sudo apt-get install -y unzip git postgresql postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis || exit 1
 
+if [ "${mode}" = "dev" ]; then
+    sudo apt-get install -y xvfb || exit 1
+fi
 
 # Apache configuration
 sudo a2enmod rewrite || exit 1
