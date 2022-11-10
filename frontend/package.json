@@ -4,8 +4,8 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --poll=2000 --configuration=development",
-    "build": "ng build --aot=false --build-optimizer=false --configuration production",
+    "start": "ng serve",
+    "build": "ng build",
     "format": "prettier --write '**/*.ts'",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
