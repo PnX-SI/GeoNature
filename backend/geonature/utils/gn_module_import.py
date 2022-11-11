@@ -1,81 +1,9 @@
-"""
-    Fonctions utilisés pour l'installation et le chargement
-    d'un nouveau module geonature
-"""
-import subprocess
-import logging
-import os
 import json
 from contextlib import ExitStack
 
-from pathlib import Path
-from sqlalchemy.orm.exc import NoResultFound
-
 from geonature.utils.config import config
-from geonature.utils.errors import GeoNatureError
 from geonature.utils.module import get_dist_from_code, get_module_config
-from geonature.core.gn_commons.models import TModules
-from geonature import create_app
-
-from geonature.utils.env import (
-    ROOT_DIR,
-    DB,
-)
-
-log = logging.getLogger(__name__)
-
-MSG_OK = "\033[92mok\033[0m\n"
-
-
-def gn_module_activate(module_code, activ_front, activ_back):
-    # TODO utiliser les commande os de python
-    log.info("Activate module")
-
-    app = None
-    # TODO gestion des erreurs
-    if module_code in config["DISABLED_MODULES"]:
-        raise GeoNatureError("Module {} is not activated".format(module_code))
-    else:
-        app = create_app()
-        with app.app_context():
-            try:
-                module = (
-                    DB.session.query(TModules)
-                    .filter(TModules.module_code == module_code.upper())
-                    .one()
-                )
-                module.active_frontend = activ_front
-                module.active_backend = activ_back
-                DB.session.merge(module)
-                DB.session.commit()
-            except NoResultFound:
-                raise GeoNatureError(
-                    """The module does not exist.
-                    \n Check the gn_commons.t_module to get the module name"""
-                )
-
-
-def gn_module_deactivate(module_code, activ_front, activ_back):
-    log.info("Desactivate module")
-
-    app = None
-    try:
-        app = create_app()
-        with app.app_context():
-            module = (
-                DB.session.query(TModules)
-                .filter(TModules.module_code == module_code.upper())
-                .one()
-            )
-            module.active_frontend = not activ_front
-            module.active_backend = not activ_back
-            DB.session.merge(module)
-            DB.session.commit()
-    except NoResultFound:
-        raise GeoNatureError(
-            """The module does not exist.
-            \n Check the gn_commons.t_module to get the module name"""
-        )
+from geonature.utils.env import ROOT_DIR
 
 
 def install_frontend_dependencies(module_path):

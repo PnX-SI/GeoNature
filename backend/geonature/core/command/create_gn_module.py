@@ -27,8 +27,6 @@ from geonature.utils.module import get_dist_from_code
 
 from geonature.core.command.main import main
 from geonature.utils.gn_module_import import (
-    gn_module_activate,
-    gn_module_deactivate,
     install_frontend_dependencies,
     create_frontend_module_config,
 )
@@ -116,42 +114,3 @@ def install_packaged_gn_module(module_path, module_code, skip_frontend):
         create_frontend_module_config(module_code)
 
     log.info("Module installé, pensez à recompiler le frontend.")
-
-
-@click.option("--frontend", type=bool, required=False, default=True)
-@click.option("--backend", type=bool, required=False, default=True)
-@main.command()
-@click.argument("module_code")
-def activate_gn_module(module_code, frontend, backend):
-    """
-    Active un module gn installé
-
-    Exemples:
-    # Active que le backend du module occtax
-    - geonature activate_gn_module occtax --frontend=false
-    # Active que le frontend du module occtax)
-    - geonature activate_gn_module occtax --backend=false
-
-    """
-    # TODO vérifier que l'utilisateur est root ou du groupe geonature
-    gn_module_activate(module_code.upper(), frontend, backend)
-
-
-@click.option("--frontend", type=bool, required=False, default=True)
-@click.option("--backend", type=bool, required=False, default=True)
-@main.command()
-@click.argument("module_code")
-def deactivate_gn_module(module_code, frontend, backend):
-    """
-    Desactive un module gn activé
-
-
-    Exemples:
-    # Désactive que le backend du module occtax
-    - geonature deactivate_gn_module occtax --frontend=false
-    # Désactive que le frontend du module occtax
-    - geonature deactivate_gn_module occtax --backend=false (
-
-    """
-    # TODO vérifier que l'utilisateur est root ou du groupe geonature
-    gn_module_deactivate(module_code.upper(), frontend, backend)
