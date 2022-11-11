@@ -5,23 +5,25 @@
 import logging
 from os import environ
 from collections import ChainMap
-import subprocess
+from pkg_resources import iter_entry_points
 
 import toml
 import click
 from flask.cli import run_command
 
-from geonature.utils.env import GEONATURE_VERSION, ROOT_DIR
+from geonature.utils.env import GEONATURE_VERSION
 from geonature.utils.command import (
     create_frontend_config,
 )
-from geonature.utils.gn_module_import import create_frontend_module_config
-from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
 from geonature import create_app
 from geonature.core.gn_meta.mtd.mtd_utils import import_all_dataset_af_and_actors
+from geonature.utils.config import config
+from geonature.utils.config_schema import GnGeneralSchemaConf, GnPySchemaConf
+from geonature.utils.command import (
+    create_frontend_module_config,
+    build_frontend,
+)
 
-# from rq import Queue, Connection, Worker
-# import redis
 from flask.cli import FlaskGroup
 
 
@@ -41,6 +43,25 @@ def normalize(name):
 @click.pass_context
 def main(ctx):
     pass
+
+
+@main.command()
+@click.option("--host", default="0.0.0.0")
+@click.option("--port", default=8000)
+@click.pass_context
+def dev_back(ctx, host, port):
+    """
+    Lance l'api du backend avec flask
+
+    Exemples
+
+    - geonature dev_back
+
+    - geonature dev_back --port=8080 --port=0.0.0.0
+    """
+    if not environ.get("FLASK_DEBUG"):
+        environ["FLASK_DEBUG"] = "true"
+    ctx.invoke(run_command, host=host, port=port)
 
 
 @main.command()
@@ -83,37 +104,29 @@ def generate_frontend_module_config(module_code, output_file):
 
 
 @main.command()
-@click.option("--host", default="0.0.0.0")
-@click.option("--port", default=8000)
-@click.pass_context
-def dev_back(ctx, host, port):
-    """
-    Lance l'api du backend avec flask
-
-    Exemples
-
-    - geonature dev_back
-
-    - geonature dev_back --port=8080 --port=0.0.0.0
-    """
-    if not environ.get("FLASK_DEBUG"):
-        environ["FLASK_DEBUG"] = "true"
-    ctx.invoke(run_command, host=host, port=port)
-
-
-@main.command()
+@click.option("--modules", type=bool, required=False, default=True)
 @click.option("--build", type=bool, required=False, default=True)
-def update_configuration(build):
+def update_configuration(modules, build):
     """
     Régénère la configuration du front et lance le rebuild.
     """
+    click.echo("Génération de la configuration du frontend :")
+    click.echo("  GeoNature … ", nl=False)
     create_frontend_config()
+    click.secho("OK", fg="green")
+    if modules:
+        for module_code_entry in iter_entry_points("gn_module", "code"):
+            module_code = module_code_entry.resolve()
+            click.echo(f"  Module {module_code} … ", nl=False)
+            if module_code in config["DISABLED_MODULES"]:
+                click.secho("désactivé, ignoré", fg="white")
+                continue
+            click.secho("OK", fg="green")
+            create_frontend_module_config(module_code)
     if build:
-        subprocess.run(
-            ["/bin/bash", "-i", "-c", "nvm use && npm run build"],
-            check=True,
-            cwd=str(ROOT_DIR / "frontend"),
-        )
+        click.echo("Rebuild du frontend …")
+        build_frontend()
+        click.secho("Rebuild du frontend terminé.", fg="green")
 
 
 @main.command()

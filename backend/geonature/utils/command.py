@@ -6,25 +6,19 @@
     fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si
     un paquet PIP du requirement GeoNature n'a pas été bien installé
 """
-import logging
 import json
+import subprocess
 from contextlib import nullcontext
 
 from jinja2 import Template
-from pathlib import Path
 
 from geonature import create_app
 from geonature.utils.env import ROOT_DIR
 from geonature.utils.config import config_frontend
-
-log = logging.getLogger(__name__)
-
-MSG_OK = "\033[92mok\033[0m\n"
+from geonature.utils.module import get_dist_from_code, get_module_config
 
 
 def create_frontend_config(input_file=None, output_file=None):
-    log.info("Generating configuration")
-
     if input_file is None:
         input_file = (ROOT_DIR / "frontend/src/conf/app.config.ts.sample").open("r")
     else:
@@ -38,8 +32,41 @@ def create_frontend_config(input_file=None, output_file=None):
     if output_file is None:
         output_file = (ROOT_DIR / "frontend/src/conf/app.config.ts").open("w")
     else:
-        ouptut_file = nullcontext(output_file)
+        output_file = nullcontext(output_file)
     with output_file as f:
         f.write(app_config_template)
 
-    log.info("...%s\n", MSG_OK)
+
+def create_frontend_module_config(module_code, output_file=None):
+    """
+    Create the frontend config
+    """
+    module_code = module_code.upper()
+    module_config = get_module_config(get_dist_from_code(module_code))
+    if output_file is None:
+        output_file = (
+            ROOT_DIR / "frontend/external_modules" / module_code.lower() / "app/module.config.ts"
+        ).open("w")
+    else:
+        output_file = nullcontext(output_file)
+    with output_file as f:
+        f.write("export const ModuleConfig = ")
+        json.dump(module_config, f, indent=True, sort_keys=True)
+
+
+def install_frontend_dependencies(module_frontend_path):
+    with (ROOT_DIR / "frontend" / ".nvmrc").open("r") as f:
+        node_version = f.read().strip()
+    subprocess.run(
+        ["/bin/bash", "-i", "-c", f"nvm exec {node_version} npm ci --omit=dev"],
+        check=True,
+        cwd=module_frontend_path,
+    )
+
+
+def build_frontend():
+    subprocess.run(
+        ["/bin/bash", "-i", "-c", "nvm exec npm run build"],
+        check=True,
+        cwd=str(ROOT_DIR / "frontend"),
+    )

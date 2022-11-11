@@ -13,6 +13,7 @@ import logging
 import subprocess
 import site
 import importlib
+from pathlib import Path
 import pkg_resources
 from pkg_resources import load_entry_point, get_entry_info
 import sqlalchemy.orm.exc as sa_exc
@@ -26,9 +27,10 @@ from geonature.utils.env import db, ROOT_DIR
 from geonature.utils.module import get_dist_from_code
 
 from geonature.core.command.main import main
-from geonature.utils.gn_module_import import (
+from geonature.utils.command import (
     install_frontend_dependencies,
     create_frontend_module_config,
+    build_frontend,
 )
 from geonature.utils.module import get_module_config_path
 from geonature.core.gn_commons.models import TModules
@@ -40,8 +42,8 @@ log = logging.getLogger(__name__)
 @main.command()
 @click.argument("module_path")
 @click.argument("module_code")
-@click.option("--skip-frontend", is_flag=True)
-def install_packaged_gn_module(module_path, module_code, skip_frontend):
+@click.option("--build", type=bool, required=False, default=True)
+def install_gn_module(module_path, module_code, build):
     # install python package and dependencies
     subprocess.run(f"pip install -e '{module_path}'", shell=True, check=True)
 
@@ -93,24 +95,26 @@ def install_packaged_gn_module(module_path, module_code, skip_frontend):
     else:
         log.info("Module do not provide any migration files, skipping database upgrade.")
 
-    ### Frontend
-    if not skip_frontend:
-        # symlink module in exernal module directory
-        module_frontend_path = os.path.realpath(f"{module_path}/frontend")
-        module_symlink = ROOT_DIR / "frontend" / "external_modules" / module_code.lower()
-        if os.path.exists(module_symlink):
-            if module_frontend_path != os.path.realpath(os.readlink(module_symlink)):
-                click.echo(
-                    f"Correction du lien symbolique {module_symlink} → {module_frontend_path}"
-                )
-                os.unlink(module_symlink)
-                os.symlink(module_frontend_path, module_symlink)
-        else:
-            click.echo(f"Création du lien symbolique {module_symlink} → {module_frontend_path}")
+    # symlink module in exernal module directory
+    module_frontend_path = os.path.realpath(f"{module_path}/frontend")
+    module_symlink = ROOT_DIR / "frontend" / "external_modules" / module_code.lower()
+    if os.path.exists(module_symlink):
+        if module_frontend_path != os.path.realpath(os.readlink(module_symlink)):
+            click.echo(f"Correction du lien symbolique {module_symlink} → {module_frontend_path}")
+            os.unlink(module_symlink)
             os.symlink(module_frontend_path, module_symlink)
+    else:
+        click.echo(f"Création du lien symbolique {module_symlink} → {module_frontend_path}")
+        os.symlink(module_frontend_path, module_symlink)
 
-        install_frontend_dependencies(os.path.abspath(module_path))
-        # generation du fichier de configuration du frontend
-        create_frontend_module_config(module_code)
+    if (Path(module_path) / "frontend" / "package-lock.json").is_file():
+        click.echo("Installation des dépendances frontend…")
+        install_frontend_dependencies(module_frontend_path)
 
-    log.info("Module installé, pensez à recompiler le frontend.")
+    click.echo("Création de la configuration frontend…")
+    create_frontend_module_config(module_code)
+
+    if build:
+        click.echo("Rebuild du frontend …")
+        build_frontend()
+        click.secho("Rebuild du frontend terminé.", fg="green")
