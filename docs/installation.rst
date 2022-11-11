@@ -155,50 +155,116 @@ Installation d'un module GeoNature
 
 L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur (NB : les modules Occtax, Occhab et Validation sont fournis par défaut). Pour ajouter un gn_module externe, il est nécessaire de l'installer :
 
-**1.** Téléchargez le module depuis son dépôt Github puis dézippez-le dans le repertoire utilisateur, au même niveau que le dossier ``geonature``.
+Téléchargement
+--------------
 
-::
+Téléchargez le module depuis son dépôt Github puis dézippez-le dans le repertoire utilisateur, au même niveau que le dossier de GeoNature.
 
-    cd /home/`whoami`
 
-**2.** Renseignez l'éventuel fichier ``config/settings.ini`` du module.
+Installation automatique
+------------------------
 
-**3.** Installez le module. Rendez-vous dans le répertoire ``backend`` de GeoNature et activez le virtualenv pour rendre disponible les commandes GeoNature :
+Installation avec la sous-commande ``install-gn-module`` :
 
-::
+.. code-block:: bash
 
-    source venv/bin/activate
+    source <dossier GeoNature>/backend/venv/bin/activate
+    geonature install-gn-module <dossier du module> <code du module>
 
-Lancez ensuite la commande ``geonature install_gn_module <mon_chemin_absolu_vers_le_module> <url_relative_du_module>``
+Exemple pour le module d’import :
 
-Le premier paramètre est l'emplacement absolu du module sur votre serveur et le deuxième est le chemin derrière lequel on accédera au module dans le navigateur.
+.. code-block:: bash
 
-Exemple pour un module Import :
+    source ~/GeoNature/backend/venv/bin/activate
+    geonature install-gn-module ~/gn_module_import/ IMPORT
 
-::
 
-    geonature install_gn_module /home/`whoami`/gn_module_import import
+Installation manuelle
+---------------------
 
-Le module sera disponible à l'adresse ``http://mon-geonature.fr/geonature/#/import``
+**Installation du backend**
 
-L'API du module sera disponible à l'adresse ``http://mon-geonature.fr/api/import``
+Installer le module avec ``pip`` en mode éditable après avoir activé le venv de GeoNature :
 
-Cette commande exécute les actions suivantes :
+.. code-block:: bash
 
-- Vérification de la conformité de la structure du module (présence des fichiers et dossiers obligatoires)
-- Intégration du blueprint du module dans l'API de GeoNature
-- Vérification de la conformité des paramètres utilisateurs
-- Génération du routing Angular pour le frontend
+    source <dossier GeoNature>/backend/venv/bin/activate
+    pip install --editable <dossier du module>
 
-**4.** Complétez l'éventuelle configuration du module (``config/conf_gn_module.toml``) à partir des paramètres présents dans ``config/conf_gn_module.toml.example`` dont vous pouvez surcoucher les valeurs par défaut. Puis relancez la mise à jour de la configuration (depuis le répertoire ``geonature/backend`` et une fois dans le venv (``source venv/bin/activate``) : ``geonature update_module_configuration nom_du_module``)
+.. _module_install_frontend:
 
-**5.** Re-build du frontend :
+**Installation du frontend**
 
-::
+* Créer un lien symbolique dans le dossier ``frontend/external_modules`` de GeoNature vers le dossier ``frontend`` du module.
+  Le lien symbolique doit être nommé suivant le code du module en minuscule :
 
-    cd frontend
+.. code-block:: bash
+
+    cd <dossier GeoNature>/frontend/external_modules/
+    ln -s <dossier du module>/frontend <code du module en minuscule>
+
+Exemple pour le module d’import :
+
+.. code-block:: bash
+
+    cd ~/GeoNature/frontend/external_modules/
+    ln -s ~/gn_module_import/frontend import
+
+* Générer la configuration frontend du module :
+
+.. code-block:: bash
+
+    source <dossier GeoNature>/backend/venv/bin/activate
+    geonature update-module-configuration <CODE DU MODULE>
+
+* Re-builder le frontend :
+
+.. code-block:: bash
+
+    cd <dossier GeoNature>/frontend/
     nvm use
     npm run build
+
+**Installation de la base de données**
+
+.. code-block:: bash
+
+    source <dossier GeoNature>/backend/venv/bin/activate
+    geonature upgrade-modules <code du module>
+
+Configuration du module
+-----------------------
+
+De manière facultative, vous pouvez modifier la configuration du module. La plupart des modules fournissent un fichier d’exemple ``conf_gn_module.toml.example`` dans leur dossier ``config``.
+Afin de modifier les paramètres par défaut du module, vous pouvez le copier :
+
+* Dans le dossier ``config`` de GeoNature en le nommant ``<code du module en minuscule>_config.toml`` (recommandé). Exemple pour le module d’import :
+
+.. code-block:: bash
+
+    cp ~/gn_module_import/config/conf_gn_module.toml.example ~/GeoNature/config/import_config.toml
+
+* Dans le dossier ``config`` du module en le nommant ``conf_gn_module.toml``. Exemple pour le module d’import :
+
+.. code-block:: bash
+
+    cp ~/gn_module_import/config/conf_gn_module.toml.example ~/gn_module_import/config/conf_gn_module.toml
+
+
+Après chaque modification du module, vous devez :
+
+* Recharger GeoNature :
+
+.. code-block:: bash
+
+    sudo systemctl reload geonature
+
+* Re-générer la configuration frontend du module et re-builder le frontend avec la sous-commande ``update-configuration`` :
+
+.. code-block:: bash
+
+    source <dossier GeoNature>/backend/venv/bin/activate
+    geonature update-configuration
 
 
 Mise à jour de l'application
