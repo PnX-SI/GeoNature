@@ -22,7 +22,7 @@ from click import ClickException
 from flask import current_app
 from flask_migrate import upgrade as db_upgrade
 
-from geonature.utils.env import db, GN_EXTERNAL_MODULE
+from geonature.utils.env import db, ROOT_DIR
 from geonature.utils.module import get_dist_from_code
 
 from geonature.utils.command import (
@@ -99,17 +99,22 @@ def install_packaged_gn_module(module_path, module_code, skip_frontend):
     else:
         log.info("Module do not provide any migration files, skipping database upgrade.")
 
-    # symlink module in exernal module directory
-    module_symlink = GN_EXTERNAL_MODULE / module_code.lower()
-    if os.path.exists(module_symlink):
-        target = os.readlink(module_symlink)
-        if os.path.realpath(module_path) != os.path.realpath(target):
-            raise ClickException(f"Module symlink has wrong target: '{target}'")
-    else:
-        os.symlink(os.path.abspath(module_path), module_symlink)
-
     ### Frontend
     if not skip_frontend:
+        # symlink module in exernal module directory
+        module_frontend_path = os.path.realpath(f"{module_path}/frontend")
+        module_symlink = ROOT_DIR / "frontend" / "external_modules" / module_code.lower()
+        if os.path.exists(module_symlink):
+            if module_frontend_path != os.path.realpath(os.readlink(module_symlink)):
+                click.echo(
+                    f"Correction du lien symbolique {module_symlink} → {module_frontend_path}"
+                )
+                os.unlink(module_symlink)
+                os.symlink(module_frontend_path, module_symlink)
+        else:
+            click.echo(f"Création du lien symbolique {module_symlink} → {module_frontend_path}")
+            os.symlink(module_frontend_path, module_symlink)
+
         # creation du lien symbolique des assets externes
         enable_frontend = create_external_assets_symlink(module_path, module_code.lower())
 

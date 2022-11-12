@@ -16,8 +16,8 @@ export class RoutingService {
           path: module.module_path,
           loadChildren: () =>
             import(
-              /* webpackInclude: /\/external_modules\/[^/]*\/frontend\// */
-              '../../../../external_modules/' + module.ng_module + '/frontend/app/gnModule.module'
+              /* webpackInclude: /\/external_modules\/[^/]*\// */
+              '../../../external_modules/' + module.ng_module + '/app/gnModule.module'
             ).then((m) => m.GeonatureModule),
           canActivate: [ModuleGuardService],
           data: {

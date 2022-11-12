@@ -16,7 +16,6 @@ from pathlib import Path
 from geonature import create_app
 from geonature.utils.env import (
     ROOT_DIR,
-    GN_EXTERNAL_MODULE,
 )
 from geonature.utils.module import list_frontend_enabled_modules
 from geonature.utils.config import config_frontend
@@ -49,13 +48,11 @@ def tsconfig_app_templating(app=None):
             template = Template(input_file.read())
             routes = []
             for module in list_frontend_enabled_modules():
-                module_dir = Path(GN_EXTERNAL_MODULE / module.module_code.lower())
-                # test if module have frontend
-                if (module_dir / "frontend").is_dir():
-                    location = "{}/frontend/app".format(module_dir)
-                    routes.append({"location": location})
-
-                # TODO test if two modules with the same name is okay for Angular
+                module_dir = Path(
+                    ROOT_DIR / "frontend" / "external_modules" / module.module_code.lower()
+                )
+                location = "{}/app".format(module_dir)
+                routes.append({"location": location})
 
             route_template = template.render(routes=routes)
 

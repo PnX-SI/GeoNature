@@ -35,6 +35,3 @@ ma.SQLAlchemySchema.OPTIONS_CLASS.session = db.session
 ma.SQLAlchemyAutoSchema.OPTIONS_CLASS.session = db.session
 os.environ["FLASK_MIGRATE"] = "geonature.utils.env.migrate"
 migrate = Migrate()
-
-GN_EXTERNAL_MODULE = ROOT_DIR / "external_modules"
-GN_MODULE_FE_FILE = "frontend/app/gnModule.module"
