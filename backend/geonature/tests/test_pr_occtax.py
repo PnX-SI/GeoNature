@@ -12,10 +12,14 @@ from sqlalchemy import func
 from geonature.core.gn_permissions.models import VUsersPermissions
 from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
+from geonature.utils.config import config
 from .utils import set_logged_user_cookie
 from .fixtures import *
 
 occtax = pytest.importorskip("occtax")
+pytestmark = pytest.mark.skipif(
+    "OCCTAX" in config["DISABLED_MODULES"], reason="OccTax is disabled"
+)
 
 from occtax.models import DefaultNomenclaturesValue, TRelevesOccurrence
 from occtax.repositories import ReleveRepository
