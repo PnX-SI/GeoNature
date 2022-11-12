@@ -93,7 +93,7 @@ def getAltitude():
 
     .. :quickref: Ref Geo;
     """
-    if request.json is None:
+    if not request.is_json:
         raise BadRequest("Missing request payload")
     try:
         geojson = request.json["geometry"]
