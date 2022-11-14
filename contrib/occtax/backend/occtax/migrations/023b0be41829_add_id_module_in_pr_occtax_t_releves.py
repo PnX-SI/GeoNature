@@ -18,6 +18,9 @@ depends_on = None
 
 def upgrade():
     op.execute(
+        "ALTER TABLE pr_occtax.t_releves_occtax DISABLE TRIGGER tri_update_synthese_t_releve_occtax"
+    )
+    op.execute(
         """
             ALTER TABLE pr_occtax.t_releves_occtax
             ADD column id_module integer;
@@ -27,6 +30,9 @@ def upgrade():
             UPDATE pr_occtax.t_releves_occtax
             SET id_module = (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'OCCTAX');
         """
+    )
+    op.execute(
+        "ALTER TABLE pr_occtax.t_releves_occtax ENABLE TRIGGER tri_update_synthese_t_releve_occtax"
     )
 
 
