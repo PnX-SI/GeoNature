@@ -41,7 +41,7 @@ cp -r $myrootpath/geonature_old/frontend/src/custom/* frontend/src/custom/
 if [ ! -f $myrootpath/geonature_old/frontend/src/assets/custom.css ]
 then
   cp $myrootpath/geonature_old/frontend/src/custom/custom.scss $myrootpath/geonature/frontend/src/assets/custom.css
-else 
+else
   cp $myrootpath/geonature_old/frontend/src/assets/custom.css $myrootpath/geonature/frontend/src/assets/custom.css
 fi
 
@@ -71,19 +71,30 @@ then
 fi
 cp $myrootpath/geonature_old/frontend/src/favicon.ico frontend/src/favicon.ico
 cp -r $myrootpath/geonature_old/external_modules/* external_modules
+
+
 # On supprime le lien symbolique qui pointe vers geonature_old/contrib/occtax et validation
 rm -r external_modules/occtax
 rm -r external_modules/validation
 rm -r external_modules/occhab
-# Rapatrier le fichier de conf de Occtax et de validation
-cp $myrootpath/geonature_old/contrib/occtax/config/conf_gn_module.toml $myrootpath/$currentdir/contrib/occtax/config/conf_gn_module.toml
-cp $myrootpath/geonature_old/contrib/gn_module_validation/config/conf_gn_module.toml $myrootpath/$currentdir/contrib/gn_module_validation/config/conf_gn_module.toml
-cp $myrootpath/geonature_old/contrib/gn_module_occhab/config/conf_gn_module.toml $myrootpath/$currentdir/contrib/gn_module_occhab/config/conf_gn_module.toml
 
-# On recrée le lien symbolique sur le nouveau répertoire de GeoNature
+# Rapatrier le fichier de conf de Occtax et recrée le lien symbolique sur le nouveau répertoire de GeoNature
+cp $myrootpath/geonature_old/contrib/occtax/config/conf_gn_module.toml $myrootpath/$currentdir/contrib/occtax/config/conf_gn_module.toml
 ln -s $myrootpath/$currentdir/contrib/occtax external_modules/occtax
-ln -s $myrootpath/$currentdir/contrib/gn_module_validation external_modules/validation
-ln -s $myrootpath/$currentdir/contrib/gn_module_occhab external_modules/occhab
+
+# Création des liens symboliques et rapatriment des fichiers de configuration si le module est installé
+MODULES_LIST=("occhab" "validation")
+DIR="$myrootpath/geonature_old/external_modules"
+
+for module in "${MODULES_LIST[@]}"
+do
+  if [ -d "$DIR/$module" ]; then
+    echo "Get $module config files"
+    cp $myrootpath/geonature_old/contrib/gn_module_${module}/config/conf_gn_module.toml $myrootpath/$currentdir/contrib/gn_module_${module}/config/conf_gn_module.toml
+    ln -s $myrootpath/$currentdir/contrib/gn_module_${module} external_modules/${module}
+  fi
+done
+
 
 cp -r $myrootpath/geonature_old/frontend/src/external_assets/* $myrootpath/$currentdir/frontend/src/external_assets/
 
