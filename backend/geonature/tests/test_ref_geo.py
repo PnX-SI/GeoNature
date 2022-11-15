@@ -41,7 +41,9 @@ def has_french_dem():
     script = ScriptDirectory.from_config(config)
     migration_context = MigrationContext.configure(db.session.connection())
     current_heads = migration_context.get_current_heads()
-    current_heads = set(map(lambda rev: rev.revision, script.get_all_current(current_heads)))
+    current_heads = set(
+        map(lambda rev: rev.revision, script.get_all_current(current_heads))
+    )
     return "1715cf31a75d" in current_heads  # ign bd alti
 
 
@@ -52,8 +54,14 @@ def area_commune():
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction")
 class TestRefGeo:
-    expected_altitude = pytest.approx({"altitude_min": 984, "altitude_max": 2335}, rel=1e-2)
-    expected_communes = {"La Motte-en-Champsaur", "Saint-Bonnet-en-Champsaur", "Aubessagne"}
+    expected_altitude = pytest.approx(
+        {"altitude_min": 984, "altitude_max": 2335}, rel=1e-2
+    )
+    expected_communes = {
+        "La Motte-en-Champsaur",
+        "Saint-Bonnet-en-Champsaur",
+        "Aubessagne",
+    }
 
     def test_get_geo_info(self):
         response = self.client.post(
@@ -189,7 +197,8 @@ class TestRefGeo:
         )
 
         communes = {
-            area["area_name"] for area in response.json[str(area_commune.id_type)]["areas"]
+            area["area_name"]
+            for area in response.json[str(area_commune.id_type)]["areas"]
         }
         assert communes == self.expected_communes
 
@@ -209,7 +218,8 @@ class TestRefGeo:
         id_type = area_commune.id_type
 
         response = self.client.post(
-            url_for("ref_geo.getAreasIntersection"), json={"geometry": polygon, "id_type": id_type}
+            url_for("ref_geo.getAreasIntersection"),
+            json={"geometry": polygon, "id_type": id_type},
         )
         assert response.status_code == 200
         resp_json = response.json
@@ -254,7 +264,9 @@ class TestRefGeo:
         assert response.status_code == 200
 
     def test_get_areas_enable_wrong(self):
-        response = self.client.get(url_for("ref_geo.get_areas"), query_string={"enable": "wrong"})
+        response = self.client.get(
+            url_for("ref_geo.get_areas"), query_string={"enable": "wrong"}
+        )
 
         assert response.status_code == 400
         assert (
@@ -263,13 +275,17 @@ class TestRefGeo:
         )
 
     def test_get_areas_enable_false(self):
-        response = self.client.get(url_for("ref_geo.get_areas"), query_string={"enable": False})
+        response = self.client.get(
+            url_for("ref_geo.get_areas"), query_string={"enable": False}
+        )
 
         assert response.status_code == 200
         assert all(not area["enable"] for area in response.json)
 
     def test_get_areas_enable_true(self):
-        response = self.client.get(url_for("ref_geo.get_areas"), query_string={"enable": True})
+        response = self.client.get(
+            url_for("ref_geo.get_areas"), query_string={"enable": True}
+        )
 
         assert response.status_code == 200
         assert all(area["enable"] for area in response.json)
@@ -295,10 +311,25 @@ class TestRefGeo:
         assert all(area["id_type"] == area_commune.id_type for area in response.json)
 
     def test_get_areas_area_name(self):
-        response = self.client.get(url_for("ref_geo.get_areas"), query_string={"area_name": CITY})
+        response = self.client.get(
+            url_for("ref_geo.get_areas"), query_string={"area_name": CITY}
+        )
 
         assert response.status_code == 200
         assert response.json[0]["area_name"] == CITY
+
+    def test_get_areas_as_geojson(self, area_commune):
+        type_code = area_commune.type_code
+
+        response = self.client.get(
+            url_for("ref_geo.get_areas"),
+            query_string={"type_code": type_code, "format": "geojson"},
+        )
+
+        assert response.status_code == 200
+        assert response.json[0].get("geometry") is not None
+        assert response.json[0].get("properties") is not None
+        assert response.json[0].get("type") is not None
 
     def test_get_area_size(self):
         response = self.client.post(

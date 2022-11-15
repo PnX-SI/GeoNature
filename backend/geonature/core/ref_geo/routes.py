@@ -7,9 +7,13 @@ import sqlalchemy as sa
 from sqlalchemy import func
 from sqlalchemy.sql import text
 from sqlalchemy.orm import joinedload
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, Forbidden
+import requests
 
 from geonature.utils.env import db
+
+from geonature.core.gn_permissions import decorators as permissions
+from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module
 
 from ref_geo.models import BibAreasTypes, LiMunicipalities, LAreas
 from utils_flask_sqla.response import json_resp
@@ -175,6 +179,14 @@ def get_municipalities():
     return [d.as_dict() for d in data]
 
 
+def to_geojson(data):
+    features = []
+    for feature in data:
+        geometry = feature.pop("geojson_4326", None)
+        features.append({"type": "Feature", "properties": feature, "geometry": geometry})
+    return features
+
+
 @routes.route("/areas", methods=["GET"])
 def get_areas():
     """
@@ -212,13 +224,20 @@ def get_areas():
     if "type_code" in params:
         q = q.filter(LAreas.area_type.has(BibAreasTypes.type_code.in_(params["type_code"])))
 
-    if "area_name" in params:
+    if "area_name" in params and params["area_name"] is not None:
         q = q.filter(LAreas.area_name.ilike("%{}%".format(params.get("area_name")[0])))
 
     limit = int(params.get("limit")[0]) if params.get("limit") else 100
 
     data = q.limit(limit)
-    return jsonify([d.as_dict(fields=["area_type.type_code"]) for d in data])
+    response = [d.as_dict(fields=["area_type.type_code"]) for d in data]
+
+    # allow to format response
+    format = request.args.get("format", default="", type=str)
+    # format features as geojson according to standard
+    if format == "geojson":
+        response = to_geojson(response)
+    return jsonify(response)
 
 
 @routes.route("/area_size", methods=["Post"])

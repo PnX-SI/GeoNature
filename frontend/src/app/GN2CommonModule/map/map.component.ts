@@ -5,6 +5,7 @@ import { Map, LatLngExpression, LatLngBounds } from 'leaflet';
 import { AppConfig } from '@geonature_config/app.config';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import * as L from 'leaflet';
+import { find } from 'lodash';
 import { CommonService } from '../service/common.service';
 
 import 'leaflet-draw';
@@ -128,7 +129,7 @@ export class MapComponent implements OnInit {
     } else {
       center = L.latLng(AppConfig.MAPCONFIG.CENTER[0], AppConfig.MAPCONFIG.CENTER[1]);
     }
-
+    // MAP
     const map = L.map(this.mapContainer.nativeElement, {
       zoomControl: false,
       center: center,
@@ -138,10 +139,16 @@ export class MapComponent implements OnInit {
     this.map = map;
     (map as any)._onResize();
 
+    // ZOOM CONTROL
     L.control.zoom({ position: 'topright' }).addTo(map);
+
+    // SCALE
+    L.control.scale().addTo(map);
+
+    // LAYERS CONTROL
+    // Baselayers
     const baseControl = {};
     const BASEMAP = JSON.parse(JSON.stringify(AppConfig.MAPCONFIG.BASEMAP));
-
     BASEMAP.forEach((basemap, index) => {
       const formatedBasemap = this.formatBaseMapConfig(basemap);
       if (basemap.service === 'wms') {
@@ -159,13 +166,14 @@ export class MapComponent implements OnInit {
         map.addLayer(baseControl[basemap.name]);
       }
     });
-    this.mapService.layerControl = L.control.layers(baseControl);
+    // overlays
+    const overlaysLayers = this.mapService.createOverLayers();
+    this.mapService.layerControl = L.control.layers(baseControl, overlaysLayers);
     this.mapService.layerControl.addTo(map);
-    L.control.scale().addTo(map);
 
     this.mapService.setMap(map);
     this.mapService.initializeLeafletDrawFeatureGroup();
-
+    // GET EXTEND ON EACH ZOOM
     map.on('moveend', (e) => {
       const zoom = this.map.getZoom();
       // keep current extend only if current zoom != 0
@@ -175,6 +183,12 @@ export class MapComponent implements OnInit {
           zoom: this.map.getZoom(),
         };
       }
+    });
+
+    // on L.controler.layers add over layer to map
+    map.on('overlayadd', (overlay) => {
+      // once - load JSON or WFS overlay data async if not already loaded
+      this.mapService.loadOverlay(overlay);
     });
 
     setTimeout(() => {

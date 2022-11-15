@@ -63,13 +63,17 @@ class CasSchemaConf(Schema):
     CAS_URL_VALIDATION = fields.String(
         load_default="https://preprod-inpn.mnhn.fr/auth/serviceValidate"
     )
-    CAS_USER_WS = fields.Nested(CasUserSchemaConf, load_default=CasUserSchemaConf().load({}))
+    CAS_USER_WS = fields.Nested(
+        CasUserSchemaConf, load_default=CasUserSchemaConf().load({})
+    )
     USERS_CAN_SEE_ORGANISM_DATA = fields.Boolean(load_default=False)
     # Quel modules seront associés au JDD récupérés depuis MTD
 
 
 class MTDSchemaConf(Schema):
-    JDD_MODULE_CODE_ASSOCIATION = fields.List(fields.String, load_default=["OCCTAX", "OCCHAB"])
+    JDD_MODULE_CODE_ASSOCIATION = fields.List(
+        fields.String, load_default=["OCCTAX", "OCCHAB"]
+    )
     ID_INSTANCE_FILTER = fields.Integer(load_default=None)
 
 
@@ -144,14 +148,17 @@ class AlembicConfig(Schema):
 class AdditionalFields(Schema):
     IMPLEMENTED_MODULES = fields.List(fields.String(), load_default=["OCCTAX"])
     IMPLEMENTED_OBJECTS = fields.List(
-        fields.String(), load_default=["OCCTAX_RELEVE", "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"]
+        fields.String(),
+        load_default=["OCCTAX_RELEVE", "OCCTAX_OCCURENCE", "OCCTAX_DENOMBREMENT"],
     )
 
 
 class MetadataConfig(Schema):
     NB_AF_DISPLAYED = fields.Integer(load_default=50, validate=OneOf([10, 25, 50, 100]))
     ENABLE_CLOSE_AF = fields.Boolean(load_default=False)
-    AF_SHEET_CLOSED_LINK_NAME = fields.String(load_default="Lien du certificat de dépôt")
+    AF_SHEET_CLOSED_LINK_NAME = fields.String(
+        load_default="Lien du certificat de dépôt"
+    )
     CLOSED_AF_TITLE = fields.String(load_default="")
     AF_PDF_TITLE = fields.String(load_default="Cadre d'acquisition: ")
     DS_PDF_TITLE = fields.String(load_default="")
@@ -191,7 +198,9 @@ class GnPySchemaConf(Schema):
 
     UPLOAD_FOLDER = fields.String(load_default="static/medias")
     BASE_DIR = fields.String(
-        load_default=os.path.dirname(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+        load_default=os.path.dirname(
+            os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
+        )
     )
     CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
@@ -278,7 +287,9 @@ class Synthese(Schema):
     EXPORT_METADATA_ID_DATASET_COL = fields.String(load_default="jdd_id")
     EXPORT_METADATA_ACTOR_COL = fields.String(load_default="acteurs")
     # Formats d'export disponibles ["csv", "geojson", "shapefile", "gpkg"]
-    EXPORT_FORMAT = fields.List(fields.String(), load_default=["csv", "geojson", "shapefile"])
+    EXPORT_FORMAT = fields.List(
+        fields.String(), load_default=["csv", "geojson", "shapefile"]
+    )
     # Nombre de résultat à afficher pour la rechercher autocompleté de taxon
     TAXON_RESULT_NUMBER = fields.Integer(load_default=20)
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
@@ -308,9 +319,13 @@ class Synthese(Schema):
     # Limit comment max length for the discussion tab
     DISCUSSION_MAX_LENGTH = fields.Integer(load_default=1500)
     # Allow disable discussion tab for synthese or validation
-    DISCUSSION_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
+    DISCUSSION_MODULES = fields.List(
+        fields.String(), load_default=["SYNTHESE", "VALIDATION"]
+    )
     # Allow disable alert synthese module for synthese or validation or any
-    ALERT_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
+    ALERT_MODULES = fields.List(
+        fields.String(), load_default=["SYNTHESE", "VALIDATION"]
+    )
     # Allow to activate pin tool for any, some or all VALIDATION, SYNTHESE
     PIN_MODULES = fields.List(fields.String(), load_default=["SYNTHESE", "VALIDATION"])
 
@@ -357,6 +372,8 @@ class MapConfig(Schema):
     # et Suisse)
     # Laisser à null pour n'avoir aucune restriction
     OSM_RESTRICT_COUNTRY_CODES = fields.String(load_default=None)
+    REF_LAYERS = fields.List(fields.Dict(), load_default=[])
+    REF_LAYERS_LEGEND = fields.Boolean(load_default=False)
 
 
 class TaxHub(Schema):
@@ -395,7 +412,9 @@ class GnGeneralSchemaConf(Schema):
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     MTD = fields.Nested(MTDSchemaConf, load_default=MTDSchemaConf().load({}))
     NB_MAX_DATA_SENSITIVITY_REPORT = fields.Integer(load_default=1000000)
-    ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
+    ADDITIONAL_FIELDS = fields.Nested(
+        AdditionalFields, load_default=AdditionalFields().load({})
+    )
     PUBLIC_ACCESS = fields.Nested(PublicAccess, load_default=PublicAccess().load({}))
     TAXHUB = fields.Nested(TaxHub, load_default=TaxHub().load({}))
 
