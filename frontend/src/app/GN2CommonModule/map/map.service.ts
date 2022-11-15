@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Map, GeoJSON, Layer, FeatureGroup, Marker, LatLng } from 'leaflet';
 import { Subject, Observable } from 'rxjs';
+import { find } from 'lodash';
 
 import * as L from 'leaflet';
 import 'leaflet.markercluster';
@@ -47,9 +48,20 @@ export class MapService {
     color: 'green',
   };
 
-  constructor(private http: HttpClient, private _commonService: CommonService) {
+  constructor(private _httpClient: HttpClient, private _commonService: CommonService) {
     this.fileLayerFeatureGroup = new L.FeatureGroup();
   }
+
+  getAreas = (params) => {
+    let queryString: HttpParams = new HttpParams();
+    for (let key in params) {
+      queryString = queryString.set(key, params[key]);
+    }
+
+    return this._httpClient.get<any>(`${AppConfig.API_ENDPOINT}/geo/areas`, {
+      params: queryString,
+    });
+  };
 
   setMap(map) {
     this.map = map;
@@ -126,11 +138,6 @@ export class MapService {
           'input',
           'leaflet-bar leaflet-control leaflet-control-custom'
         );
-        // customLegend.onclick = () => {
-        //   if (func) {
-        //     func();
-        //   }
-        // };
         return customLegend;
       },
     });
@@ -149,27 +156,31 @@ export class MapService {
     });
   }
 
+  lineStyle(color = '#3388ff', weight = 3) {
+    return {
+      color: color || '#3388ff',
+      weight: weight || 3,
+    };
+  }
+
+  defaultStyle(color = '#3388ff', fill = true, fillOpacity = 0.2, weight = 3) {
+    return {
+      color: color,
+      fill: fill,
+      fillOpacity: fillOpacity,
+      weight: weight,
+    };
+  }
+
   createGeojson(geojson, asCluster: boolean, onEachFeature?, style?): GeoJSON {
-    const geojsonLayer = L.geoJSON(geojson, {
+    const geojsonLayer = L.geoJSON(geojson?.features || geojson, {
       style: (feature) => {
         switch (feature.geometry.type) {
           // No color nor opacity for linestrings
           case 'LineString':
-            return style
-              ? style
-              : {
-                  color: '#3388ff',
-                  weight: 3,
-                };
+            return style || this.lineStyle();
           default:
-            return style
-              ? style
-              : {
-                  color: '#3388ff',
-                  fill: true,
-                  fillOpacity: 0.2,
-                  weight: 3,
-                };
+            return style || this.defaultStyle();
         }
       },
       pointToLayer: (feature, latlng) => {
@@ -181,6 +192,13 @@ export class MapService {
       return (L as any).markerClusterGroup().addLayer(geojsonLayer);
     }
     return geojsonLayer;
+  }
+
+  createWMS(layerCfg) {
+    return L.tileLayer.wms(layerCfg.url, {
+      ...layerCfg.params,
+      crs: layerCfg.params?.crs ? L.CRS[layerCfg.params.crs.replace(':', '')] : null,
+    });
   }
 
   removeAllLayers(map, featureGroup) {
@@ -249,6 +267,126 @@ export class MapService {
       let geojson = this.leafletDrawFeatureGroup.toGeoJSON();
       geojson = (geojson as any).features[0];
       this.setGeojsonCoord(geojson);
+    }
+  }
+
+  /**
+   * init layer by type and create empty layer for WFS and GeoJson
+   * @param type  string
+   * @returns
+   */
+  getLayerCreator = (type) =>
+    find(
+      [
+        {
+          geojson: (cfg) => this.createGeojson([], false, null, cfg?.style),
+        },
+        {
+          wfs: (cfg) => this.createGeojson([], false, null, cfg?.style),
+        },
+        {
+          wms: this.createWMS,
+        },
+        {
+          area: (cfg) => this.createGeojson([], false, null, cfg?.style),
+        },
+      ],
+      type
+    )[type];
+
+  /**
+   * Method to custom controler.layers layers name with legend and name
+   * @param title string
+   * @param fill string
+   * @param stroke string
+   * @returns
+   */
+  getLegendBox({ title, fillColor, fillOpacity, color, weight, legendUrl }) {
+    let padding = 'padding-left:10px';
+    if (!fillColor && !color && !legendUrl) {
+      return title;
+    }
+    if (legendUrl) {
+      return `<span class="title-overlay" >${title}</span> </br> <img style="${padding}" src="${legendUrl}">`;
+    }
+    fillColor = fillColor || 'rgba(255,255,255)';
+    fillOpacity = fillOpacity || 1;
+    color = color || 'grey';
+    weight = weight + 2 || 3;
+
+    let svgSquare = `<svg width="16" height="16">
+      <rect width="300" height="100" style="fill:${fillColor};fill-opacity:${fillOpacity};stroke-width:${weight};stroke:${color}" />
+    </svg>`;
+    return `<span data-qa="title-overlay">${title}</span> <br/> <span style="${padding}">${svgSquare}</span>`;
+  }
+
+  /**
+   * will create overlays layers -> L.control.overlays
+   * @returns
+   */
+  createOverLayers(map) {
+    const OVERLAYERS = JSON.parse(JSON.stringify(AppConfig.MAPCONFIG.REF_LAYERS));
+    const overlaysLayers = {};
+    OVERLAYERS.map((lyr) => [lyr, this.getLayerCreator(lyr.type)(lyr)])
+      .filter((l) => l[1])
+      .forEach((lyr) => {
+        let title = lyr[0]?.label || '';
+        let style = lyr[0]?.style || {};
+
+        // this code create dict for L.controler.layers
+        // key is name display as checkbox label
+        // value is layer
+        let layerLeaf = lyr[1];
+        let legendUrl = '';
+        layerLeaf.configId = lyr[0].code;
+        if (layerLeaf?.options?.service === 'wms' && layerLeaf._url) {
+          legendUrl = `${layerLeaf._url}?TRANSPARENT=TRUE&VERSION=1.3.0&REQUEST=GetLegendGraphic&LAYER=${layerLeaf.options.layers}&FORMAT=image%2Fpng&LEGEND_OPTIONS=forceLabels%3Aon%3BfontAntiAliasing%3Atrue`;
+        }
+        // leaflet layers controler required object
+        if (AppConfig.MAPCONFIG?.REF_LAYERS_LEGEND) {
+          overlaysLayers[this.getLegendBox({ title: title, ...style, legendUrl: legendUrl })] =
+            lyr[1];
+        } else {
+          overlaysLayers[`<span data-qa="title-overlay">${title}</span>`] = lyr[1];
+        }
+        if (lyr[0].activate) {
+          map.addLayer(layerLeaf);
+          this.loadOverlay(layerLeaf);
+        }
+      });
+    return overlaysLayers;
+  }
+
+  /**
+   * Will load WFS and GeoJson only if empty and only on added to map event
+   * @param overlay leaflet layer
+   * @returns
+   */
+  loadOverlay(overlay) {
+    let overlayer = overlay?.layer || overlay;
+    let cfgLayer = JSON.parse(JSON.stringify(AppConfig.MAPCONFIG.REF_LAYERS));
+    let layerAdded = cfgLayer.filter((o) => o.code === overlayer.configId)[0];
+
+    if (['wms'].includes(layerAdded.type) || overlayer.getLayers().length) return;
+
+    // Load geojson file or WFS - application/json only
+    if (['geojson', 'wfs'].includes(layerAdded.type)) {
+      this._httpClient.get<any>(layerAdded.url).subscribe((res = { features: [] }) => {
+        overlayer.addData(res);
+      });
+    }
+
+    // Load ref_geo data
+    if (['area'].includes(layerAdded.type)) {
+      let params = { type_code: layerAdded.code, format: 'geojson', ...layerAdded.params };
+      this.getAreas(params).subscribe((res) => {
+        let geojson = {
+          type: 'FeatureCollection',
+          name: layerAdded.label,
+          features: res.map((r) => ({ ...r, geometry: JSON.parse(r.geometry) })),
+        };
+        overlayer.addData(geojson);
+      });
     }
   }
 }

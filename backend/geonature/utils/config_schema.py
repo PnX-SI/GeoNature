@@ -435,6 +435,8 @@ class MapConfig(Schema):
     # et Suisse)
     # Laisser à null pour n'avoir aucune restriction
     OSM_RESTRICT_COUNTRY_CODES = fields.String(load_default=None)
+    REF_LAYERS = fields.List(fields.Dict(), load_default=[])
+    REF_LAYERS_LEGEND = fields.Boolean(load_default=False)
 
 
 class TaxHub(Schema):

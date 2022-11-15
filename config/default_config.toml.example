@@ -242,6 +242,15 @@ MAIL_ON_ERROR = false
     url = "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
     subdomains = ["mt0", "mt1", "mt2", "mt3"]
 
+# There are no defaut layers, but this document how to add one:
+#[[MAPCONFIG.REF_LAYERS]]
+#    code = "COM",
+#    label = "Communes"
+#    type = "area"
+#    activate = false
+#    style = { color = "grey", fill = false, fillOpacity = "0.0", weight = 2 }
+#    params = {limit = 2000}
+
 # Configuration du module Synthese
 [SYNTHESE]
     # Liste des entités géographiques sur lesquelles les filtres
