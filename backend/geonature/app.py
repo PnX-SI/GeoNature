@@ -196,10 +196,8 @@ def create_app(with_external_mods=True):
                     )
                 except Exception as e:
                     logging.exception(e)
-                    logging.warning(
-                        f"Unable to load module {module_object.module_code}, skipping…"
-                    )
-                    current_app.config["DISABLED_MODULES"].append(module_object.module_code)
+                    logging.warning(f"Unable to load module {module_code}, skipping…")
+                    current_app.config["DISABLED_MODULES"].append(module_code)
                 else:
                     module_blueprint.config = config[module_code]
                     app.register_blueprint(module_blueprint, url_prefix=f"/{module_code.lower()}")
