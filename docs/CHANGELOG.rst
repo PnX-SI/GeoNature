@@ -2,6 +2,19 @@
 CHANGELOG
 =========
 
+2.10.3 (2022-11-15)
+-------------------
+
+**🚀 Nouveautés**
+
+* Optimisation d’une migration OccTax particulièrement lente en désactivant temporairement les triggers (#2138)
+
+**🐛 Corrections**
+
+* Correction de la fonctionnalité d’inscription des utilisateurs (#1874)
+* Correction d’une régression des performances de la routes ``/modules`` (#2136)
+
+
 2.10.2 (2022-11-09)
 -------------------
 
