@@ -10,73 +10,73 @@ from sqlalchemy.orm import relationship
 from utils_flask_sqla.serializers import serializable
 from pypnusershub.db.models import User
 
-from geonature.utils.env import DB
+from geonature.utils.env import db
 
 
 @serializable
-class NotificationMethod(DB.Model):
+class NotificationMethod(db.Model):
     __tablename__ = "bib_notifications_methods"
     __table_args__ = {"schema": "gn_notifications"}
-    code = DB.Column(DB.Unicode, primary_key=True)
-    label = DB.Column(DB.Unicode)
-    description = DB.Column(DB.Unicode)
+    code = db.Column(db.Unicode, primary_key=True)
+    label = db.Column(db.Unicode)
+    description = db.Column(db.Unicode)
 
     def __str__(self):
         return self.code.capitalize()
 
 
 @serializable
-class NotificationCategory(DB.Model):
+class NotificationCategory(db.Model):
     __tablename__ = "bib_notifications_categories"
     __table_args__ = {"schema": "gn_notifications"}
-    code = DB.Column(DB.Unicode, primary_key=True)
-    label = DB.Column(DB.Unicode)
-    description = DB.Column(DB.Unicode)
+    code = db.Column(db.Unicode, primary_key=True)
+    label = db.Column(db.Unicode)
+    description = db.Column(db.Unicode)
 
     def __str__(self):
         return self.code.capitalize()
 
 
 @serializable
-class NotificationTemplate(DB.Model):
+class NotificationTemplate(db.Model):
     __tablename__ = "bib_notifications_templates"
     __table_args__ = {"schema": "gn_notifications"}
-    code_category = DB.Column(
-        DB.Unicode,
+    code_category = db.Column(
+        db.Unicode,
         ForeignKey(NotificationCategory.code),
         primary_key=True,
     )
-    code_method = DB.Column(DB.Unicode, ForeignKey(NotificationMethod.code), primary_key=True)
-    content = DB.Column(DB.Unicode)
+    code_method = db.Column(db.Unicode, ForeignKey(NotificationMethod.code), primary_key=True)
+    content = db.Column(db.Unicode)
 
     def __str__(self):
         return self.content
 
 
 @serializable
-class Notification(DB.Model):
+class Notification(db.Model):
     __tablename__ = "t_notifications"
     __table_args__ = {"schema": "gn_notifications"}
-    id_notification = DB.Column(DB.Integer, primary_key=True)
-    id_role = DB.Column(DB.Integer, ForeignKey(User.id_role), nullable=False)
-    title = DB.Column(DB.Unicode)
-    content = DB.Column(DB.Unicode)
-    url = DB.Column(DB.Unicode)
-    code_status = DB.Column(DB.Unicode)
-    creation_date = DB.Column(DB.DateTime(), default=datetime.datetime.utcnow)
+    id_notification = db.Column(db.Integer, primary_key=True)
+    id_role = db.Column(db.Integer, ForeignKey(User.id_role), nullable=False)
+    title = db.Column(db.Unicode)
+    content = db.Column(db.Unicode)
+    url = db.Column(db.Unicode)
+    code_status = db.Column(db.Unicode)
+    creation_date = db.Column(db.DateTime(), default=datetime.datetime.utcnow)
 
-    user = DB.relationship(User)
+    user = db.relationship(User)
 
 
 @serializable
-class NotificationRule(DB.Model):
+class NotificationRule(db.Model):
     __tablename__ = "t_notifications_rules"
     __table_args__ = {"schema": "gn_notifications"}
-    id_notification_rules = DB.Column(DB.Integer, primary_key=True)
-    id_role = DB.Column(DB.Integer, ForeignKey(User.id_role), nullable=False)
-    code_method = DB.Column(DB.Unicode, ForeignKey(NotificationMethod.code), nullable=False)
-    code_category = DB.Column(
-        DB.Unicode,
+    id_notification_rules = db.Column(db.Integer, primary_key=True)
+    id_role = db.Column(db.Integer, ForeignKey(User.id_role), nullable=False)
+    code_method = db.Column(db.Unicode, ForeignKey(NotificationMethod.code), nullable=False)
+    code_category = db.Column(
+        db.Unicode,
         ForeignKey(NotificationCategory.code),
         nullable=False,
     )
@@ -84,4 +84,4 @@ class NotificationRule(DB.Model):
     notification_method = relationship(NotificationMethod)
     notification_category = relationship(NotificationCategory)
 
-    user = DB.relationship(User)
+    user = db.relationship(User)

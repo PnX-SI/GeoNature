@@ -14,7 +14,7 @@ from sqlalchemy.orm import joinedload
 
 from utils_flask_sqla.response import json_resp
 
-from geonature.utils.env import DB
+from geonature.utils.env import db
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.notifications.models import (
@@ -76,7 +76,7 @@ def update_notification(id_notification):
         raise Forbidden
     notification.code_status = "READ"
     try:
-        DB.session.commit()
+        db.session.commit()
     except:
         return json.dumps({"success": False, "information": "Could not update notification"})
     else:
@@ -124,7 +124,7 @@ def delete_all_notifications():
     nbNotificationsDeleted = Notification.query.filter(
         Notification.id_role == g.current_user.id_role
     ).delete()
-    DB.session.commit()
+    db.session.commit()
     return jsonify(nbNotificationsDeleted)
 
 
@@ -152,8 +152,8 @@ def create_rule():
         code_category=code_category,
     )
     try:
-        DB.session.add(new_rule)
-        DB.session.commit()
+        db.session.add(new_rule)
+        db.session.commit()
     except:
         return json.dumps({"success": False, "information": "Could not save rule in database"})
     else:
@@ -168,7 +168,7 @@ def delete_all_rules():
     nbRulesDeleted = NotificationRule.query.filter(
         NotificationRule.id_role == g.current_user.id_role
     ).delete()
-    DB.session.commit()
+    db.session.commit()
     return jsonify(nbRulesDeleted)
 
 
@@ -181,7 +181,7 @@ def delete_rule(id_notification_rules):
         NotificationRule.id_role == g.current_user.id_role,
         NotificationRule.id_notification_rules == id_notification_rules,
     ).delete()
-    DB.session.commit()
+    db.session.commit()
     return jsonify(nbRulesDeleted)
 
 
