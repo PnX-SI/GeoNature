@@ -4,7 +4,7 @@ from geonature.core.notifications.models import (
     NotificationRule,
     NotificationTemplate,
 )
-from geonature.utils.env import DB
+from geonature.utils.env import db
 from jinja2 import Template
 from pypnusershub.db.models import User
 from geonature.core.notifications.tasks import send_notification_mail
@@ -26,8 +26,8 @@ class NotificationUtil:
             code_status="UNREAD",
         )
         try:
-            DB.session.add(new_notification)
-            DB.session.commit()
+            db.session.add(new_notification)
+            db.session.commit()
         except:
             return json.dumps(
                 {"success": False, "information": "Could not save notification in database"}
@@ -144,7 +144,7 @@ class NotificationUtil:
 
                             # get email for this user notification
                             result = (
-                                DB.session.query(User.email).filter(User.id_role == role).one()
+                                db.session.query(User.email).filter(User.id_role == role).one()
                             )
 
                             if result:
