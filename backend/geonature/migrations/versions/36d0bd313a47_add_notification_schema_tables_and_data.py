@@ -8,6 +8,7 @@ Create Date: 2022-09-22 09:58:19.055808
 import datetime
 from alembic import op
 from sqlalchemy import Column, ForeignKey, Integer, Unicode, DateTime
+from sqlalchemy.schema import UniqueConstraint
 from utils_flask_sqla.migrations.utils import logger
 
 
@@ -94,6 +95,9 @@ def upgrade():
             Unicode,
             ForeignKey(SCHEMA_NAME + ".bib_notifications_categories.code"),
             nullable=False,
+        ),
+        UniqueConstraint(
+            "id_role", "code_method", "code_category", name="un_role_method_category"
         ),
         schema=SCHEMA_NAME,
     )
