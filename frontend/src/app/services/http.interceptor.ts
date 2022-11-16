@@ -10,8 +10,7 @@ import {
 } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
-
-const WHITE_LIST = ['nominatim.openstreetmap.org'];
+import { AppConfig } from '@geonature_config/app.config';
 
 @Injectable()
 export class MyCustomInterceptor implements HttpInterceptor {
@@ -52,14 +51,8 @@ export class MyCustomInterceptor implements HttpInterceptor {
   }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // add a custom header
-    const customReq = request.clone({
-      withCredentials: true,
-    });
-
-    //Creation d'une liste blanche pour autoriser les CROS request.
-    if (WHITE_LIST.indexOf(this.extractHostname(request.url)) === -1) {
-      // add a custom header
+    // set withCredential = true to send and accept cookie from the API
+    if (this.extractHostname(AppConfig.API_ENDPOINT) == this.extractHostname(request.url)) {
       request = request.clone({
         withCredentials: true,
       });
