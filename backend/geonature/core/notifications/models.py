@@ -71,7 +71,12 @@ class Notification(db.Model):
 @serializable
 class NotificationRule(db.Model):
     __tablename__ = "t_notifications_rules"
-    __table_args__ = {"schema": "gn_notifications"}
+    __table_args__ = (
+        db.UniqueConstraint(
+            "id_role", "code_method", "code_category", name="un_role_method_category"
+        ),
+        {"schema": "gn_notifications"},
+    )
     id_notification_rules = db.Column(db.Integer, primary_key=True)
     id_role = db.Column(db.Integer, ForeignKey(User.id_role), nullable=False)
     code_method = db.Column(db.Unicode, ForeignKey(NotificationMethod.code), nullable=False)
