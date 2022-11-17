@@ -7,7 +7,7 @@ Create Date: 2022-09-22 09:58:19.055808
 """
 import datetime
 from alembic import op
-from sqlalchemy import Column, ForeignKey, Integer, Unicode, DateTime
+from sqlalchemy import Column, ForeignKey, Integer, Unicode, UnicodeText, DateTime
 from sqlalchemy.schema import UniqueConstraint
 from utils_flask_sqla.migrations.utils import logger
 
@@ -33,7 +33,7 @@ def upgrade():
         "bib_notifications_methods",
         Column("code", Unicode, primary_key=True),
         Column("label", Unicode),
-        Column("description", Unicode),
+        Column("description", UnicodeText),
         schema=SCHEMA_NAME,
     )
 
@@ -42,7 +42,7 @@ def upgrade():
         "bib_notifications_categories",
         Column("code", Unicode, primary_key=True),
         Column("label", Unicode),
-        Column("description", Unicode),
+        Column("description", UnicodeText),
         schema=SCHEMA_NAME,
     )
 
@@ -61,7 +61,7 @@ def upgrade():
             ForeignKey(SCHEMA_NAME + ".bib_notifications_methods.code"),
             primary_key=True,
         ),
-        Column("content", Unicode),
+        Column("content", UnicodeText),
         schema=SCHEMA_NAME,
     )
 
@@ -72,7 +72,7 @@ def upgrade():
         Column("id_notification", Integer, primary_key=True),
         Column("id_role", Integer, ForeignKey("utilisateurs.t_roles.id_role"), nullable=False),
         Column("title", Unicode),
-        Column("content", Unicode),
+        Column("content", UnicodeText),
         Column("url", Unicode),
         Column("code_status", Unicode),
         Column("creation_date", DateTime, default=datetime.datetime.utcnow),
@@ -82,7 +82,7 @@ def upgrade():
     logger.info("Create table " + SCHEMA_NAME + ".t_notifications_rules")
     tNotificationsRules = op.create_table(
         "t_notifications_rules",
-        Column("id_notification_rules", Integer, primary_key=True),
+        Column("id", Integer, primary_key=True),
         Column("id_role", Integer, ForeignKey("utilisateurs.t_roles.id_role"), nullable=False),
         Column(
             "code_method",

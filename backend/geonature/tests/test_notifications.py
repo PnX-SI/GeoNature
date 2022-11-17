@@ -4,6 +4,7 @@ import json
 import datetime
 
 from flask import url_for
+from werkzeug.exceptions import Forbidden
 
 from geonature.utils.env import db
 from geonature.core.notifications.models import (
@@ -62,7 +63,6 @@ def rule_template(rule_category, rule_method):
             content="{% if test == 'ok' %} message {% endif %}",
         )
         db.session.add(new_template)
-
     return new_template
 
 
@@ -75,7 +75,6 @@ def notification_rule(users, rule_method, rule_category):
             code_category=rule_category.code,
         )
         db.session.add(new_notification_rule)
-
     return new_notification_rule
 
 
@@ -97,7 +96,7 @@ class TestNotification:
         data = response.get_json()
         assert len(data) == 0
 
-        # TEST CONNECTED USER WIT NOTIFICATION
+        # TEST CONNECTED USER WITH NOTIFICATION
         set_logged_user_cookie(self.client, users["admin_user"])
         response = self.client.get(url_for(url))
         assert response.status_code == 200
@@ -130,9 +129,11 @@ class TestNotification:
     def test_update_notification(self, users, notification_data):
         # Init data for test
         url = "notifications.update_notification"
-        log.info("Url d'appel %s", url_for(url, id_notification=1))
+        log.info("Url d'appel %s", url_for(url, id_notification=notification_data.id_notification))
 
-        response = self.client.post(url_for(url, id_notification=1))
+        response = self.client.post(
+            url_for(url, id_notification=notification_data.id_notification)
+        )
         assert response.status_code == 401
 
         # TEST CONNECTED USER BUT NOTIFICATION DOES NOT EXIST FOR THIS USER
@@ -164,6 +165,11 @@ class TestNotification:
         assert response.status_code == 200
         data = response.get_json()
         assert data == 0
+        assert db.session.query(
+            Notification.query.filter_by(
+                id_notification=notification_data.id_notification
+            ).exists()
+        ).scalar()
 
         # TEST CONNECTED USER WITH NOTIFICATION
         set_logged_user_cookie(self.client, users["admin_user"])
@@ -171,6 +177,11 @@ class TestNotification:
         assert response.status_code == 200
         data = response.get_json()
         assert data == 1
+        assert not db.session.query(
+            Notification.query.filter_by(
+                id_notification=notification_data.id_notification
+            ).exists()
+        ).scalar()
 
     def test_list_notification_rules(self, users, notification_rule):
         # Init data for test
@@ -220,6 +231,8 @@ class TestNotification:
         response = self.client.put(url_for(url, data=data))
         assert response.status_code == 400
 
+        # TODO test successful rule creation
+
     def test_delete_all_rules(self, users, notification_rule):
         # Init data for test
         url = "notifications.delete_all_rules"
@@ -235,6 +248,11 @@ class TestNotification:
         assert response.status_code == 200
         data = response.get_json()
         assert data == 0
+        assert db.session.query(
+            NotificationRule.query.filter_by(
+                id=notification_rule.id,
+            ).exists()
+        ).scalar()
 
         # TEST CONNECTED USER WITH RULE
         set_logged_user_cookie(self.client, users["admin_user"])
@@ -242,31 +260,40 @@ class TestNotification:
         assert response.status_code == 200
         data = response.get_json()
         assert data == 1
+        assert not db.session.query(
+            NotificationRule.query.filter_by(
+                id=notification_rule.id,
+            ).exists()
+        ).scalar()
 
     def test_delete_rule(self, users, notification_rule):
         # Init data for test
         url = "notifications.delete_rule"
-        log.info("Url d'appel %s", url_for(url, id_notification_rules=1))
+        log.info("Url d'appel %s", url_for(url, id=1))
 
         # TEST NO USER
-        response = self.client.delete(url_for(url, id_notification_rules=1))
+        response = self.client.delete(url_for(url, id=1))
         assert response.status_code == 401
 
         # TEST CONNECTED USER WITHOUT RULE
         set_logged_user_cookie(self.client, users["user"])
-        response = self.client.delete(url_for(url, id_notification_rules=1))
-        assert response.status_code == 200
-        data = response.get_json()
-        assert data == 0
+        response = self.client.delete(url_for(url, id=notification_rule.id))
+        assert response.status_code == Forbidden.code
+        assert db.session.query(
+            NotificationRule.query.filter_by(
+                id=notification_rule.id,
+            ).exists()
+        ).scalar()
 
         # TEST CONNECTED USER WITH RULE
-        set_logged_user_cookie(self.client, users["user"])
-        response = self.client.delete(
-            url_for(url, id_notification_rules=notification_rule.id_notification_rules)
-        )
-        assert response.status_code == 200
-        data = response.get_json()
-        assert data == 0
+        set_logged_user_cookie(self.client, users["admin_user"])
+        response = self.client.delete(url_for(url, id=notification_rule.id))
+        assert response.status_code == 204
+        assert not db.session.query(
+            NotificationRule.query.filter_by(
+                id=notification_rule.id,
+            ).exists()
+        ).scalar()
 
     def test_list_methods(self, users, rule_method):
 

@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import {
-  CategoriesRules,
-  MethodRules,
+  NotificationCategory,
+  NotificationMethod,
+  NotificationRule,
   NotificationDataService,
-  Rules,
 } from '@geonature/components/notification/notification-data.service';
 
 @Component({
@@ -12,9 +12,9 @@ import {
   styleUrls: ['./rules.component.scss'],
 })
 export class RulesComponent implements OnInit {
-  rulesMethods: MethodRules[];
-  rulesCategories: CategoriesRules[];
-  userRules: Rules[];
+  rulesMethods: NotificationMethod[] = [];
+  rulesCategories: NotificationCategory[] = [];
+  userRules: NotificationRule[] = [];
 
   constructor(private notificationDataService: NotificationDataService) {}
 
@@ -91,7 +91,7 @@ export class RulesComponent implements OnInit {
       // if checkbox not checked remove rule
       for (var rule of this.userRules) {
         if (rule.code_category == categorie && rule.code_method == method) {
-          this.deleteRule(rule.id_notification_rules);
+          this.deleteRule(rule.id);
           break;
         }
       }

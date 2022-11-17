@@ -1,63 +1,36 @@
 from flask_admin.contrib.sqla import ModelView
 
 from geonature.utils.env import DB
+from geonature.core.notifications.models import NotificationCategory
 
 
 class NotificationTemplateAdmin(ModelView):
-    form_columns = (
-        "code_category",
-        "code_method",
-        "content",
-    )
-    column_exclude_list = ()
-    column_display_all_relations = True
-    form_args = {
-        "code_category": {"label": "Catégorie"},
-        "code_method": {"label": "Methode d'envoi"},
-        "content": {"label": "Contenu de la notification"},
-    }
-    column_descriptions = {
+    column_list = ("code_category", "code_method", "content")
+    column_labels = {
         "code_category": "Catégorie",
-        "code_method": "Methode d'envoi",
+        "code_method": "Méthode d'envoi",
         "content": "Contenu du template de notification",
+    }
+    form_columns = ("category", "method", "content")
+    form_args = {
+        "category": {"label": "Catégorie", "get_label": "display"},
+        "method": {"label": "Methode d'envoi", "get_label": "display"},
+        "content": {"label": "Contenu de la notification"},
     }
 
 
 class NotificationCategoryAdmin(ModelView):
-    form_columns = (
-        "code",
-        "label",
-        "description",
-    )
-    column_exclude_list = ()
-    column_display_all_relations = True
+    column_list = ("code", "label", "description")
+    form_columns = ("code", "label", "description")
     form_args = {
-        "code": {"label": "Id de la catégorie de notification"},
-        "label": {"label": "Titre affiché dans la notification"},
-        "description": {"label": "Description de la règle de notification"},
-    }
-    column_descriptions = {
-        "code": "Code catégorie",
-        "label": "Label catégorie",
-        "description": "Description du code à utiliser ensuite dans la notification",
+        "code": {"description": "Identifiant de la catégorie de notification"},
+        "label": {"description": "Titre affiché dans la notification"},
     }
 
 
 class NotificationMethodAdmin(ModelView):
-    form_columns = (
-        "code",
-        "label",
-        "description",
-    )
-    column_exclude_list = ()
-    column_display_all_relations = True
+    column_list = ("code", "label", "description")
+    form_columns = ("code", "label", "description")
     form_args = {
-        "code": {"label": "Id de la méthode de notification"},
-        "label": {"label": "Titre pour cette méthode"},
-        "description": {"label": "Description de la méthode"},
-    }
-    column_descriptions = {
-        "code": "Code méthode",
-        "label": "Label méthode",
-        "description": "Description de la méthode",
+        "code": {"description": "Identifiant de la méthode de notification"},
     }

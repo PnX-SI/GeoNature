@@ -19,10 +19,17 @@ class NotificationMethod(db.Model):
     __table_args__ = {"schema": "gn_notifications"}
     code = db.Column(db.Unicode, primary_key=True)
     label = db.Column(db.Unicode)
-    description = db.Column(db.Unicode)
+    description = db.Column(db.UnicodeText)
+
+    @property
+    def display(self):
+        if self.label:
+            return f"{self} – {self.label}"
+        else:
+            return str(self)
 
     def __str__(self):
-        return self.code.capitalize()
+        return self.code
 
 
 @serializable
@@ -31,10 +38,17 @@ class NotificationCategory(db.Model):
     __table_args__ = {"schema": "gn_notifications"}
     code = db.Column(db.Unicode, primary_key=True)
     label = db.Column(db.Unicode)
-    description = db.Column(db.Unicode)
+    description = db.Column(db.UnicodeText)
+
+    @property
+    def display(self):
+        if self.label:
+            return f"{self} – {self.label}"
+        else:
+            return str(self)
 
     def __str__(self):
-        return self.code.capitalize()
+        return self.code
 
 
 @serializable
@@ -47,7 +61,10 @@ class NotificationTemplate(db.Model):
         primary_key=True,
     )
     code_method = db.Column(db.Unicode, ForeignKey(NotificationMethod.code), primary_key=True)
-    content = db.Column(db.Unicode)
+    content = db.Column(db.UnicodeText)
+
+    category = db.relationship(NotificationCategory)
+    method = db.relationship(NotificationMethod)
 
     def __str__(self):
         return self.content
@@ -60,7 +77,7 @@ class Notification(db.Model):
     id_notification = db.Column(db.Integer, primary_key=True)
     id_role = db.Column(db.Integer, ForeignKey(User.id_role), nullable=False)
     title = db.Column(db.Unicode)
-    content = db.Column(db.Unicode)
+    content = db.Column(db.UnicodeText)
     url = db.Column(db.Unicode)
     code_status = db.Column(db.Unicode)
     creation_date = db.Column(db.DateTime(), default=datetime.datetime.utcnow)
@@ -77,7 +94,7 @@ class NotificationRule(db.Model):
         ),
         {"schema": "gn_notifications"},
     )
-    id_notification_rules = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     id_role = db.Column(db.Integer, ForeignKey(User.id_role), nullable=False)
     code_method = db.Column(db.Unicode, ForeignKey(NotificationMethod.code), nullable=False)
     code_category = db.Column(
@@ -86,7 +103,6 @@ class NotificationRule(db.Model):
         nullable=False,
     )
 
-    notification_method = relationship(NotificationMethod)
-    notification_category = relationship(NotificationCategory)
-
+    method = relationship(NotificationMethod)
+    category = relationship(NotificationCategory)
     user = db.relationship(User)
