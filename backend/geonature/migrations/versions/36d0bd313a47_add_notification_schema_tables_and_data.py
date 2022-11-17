@@ -108,7 +108,7 @@ def upgrade():
         bibNotificationsMethods,
         [
             {
-                "code": "BDD",
+                "code": "DB",
                 "label": "Notification en base de données",
                 "description": "Sauvegarde des informations en base de données",
             },
@@ -131,7 +131,7 @@ def upgrade():
             },
             # exemple pour l'ajout d'un statut
             # {
-            #    "code": "VALIDATION-STATUS-CHANGED-1",
+            #    "code": "VALIDATION-STATUS-CHANGED-PROBABLE",
             #    "label": "Observation validée",
             #    "description": "Se déclenche en cas de passage à l'état 'Certain - très probable' d'une observation ",
             # },
@@ -144,19 +144,19 @@ def upgrade():
         [
             {
                 "code_category": "VALIDATION-STATUS-CHANGED",
-                "code_method": "BDD",
-                "content": " Passage au statut <b>{{ info_statut.mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b>",
+                "code_method": "DB",
+                "content": " Passage au statut <b>{{ status.mnemonique }}</b> pour l'observation <b>n°{{ synthese.id_synthese }}</b>",
             },
             # exemple pour l'ajout d'un statut
             # {
-            #    "code_category": "VALIDATION-STATUS-CHANGED-1",
+            #    "code_category": "VALIDATION-STATUS-CHANGED-PROBABLE",
             #    "code_method": "BDD",
-            #    "content": " {% if info_statut.mnemonique == 'Certain - très probable' %} Passage au statut <b>{{ info_statut.mnemonique }}</b> pour l'observation <b>n°{{ id_synthese }}</b> {% endif %}",
+            #    "content": " {% if status.mnemonique == 'Certain - très probable' %} Passage au statut <b>{{ status.mnemonique }}</b> pour l'observation <b>n°{{ synthese.id_synthese }}</b> {% endif %}",
             # },
             {
                 "code_category": "VALIDATION-STATUS-CHANGED",
                 "code_method": "MAIL",
-                "content": '<p>Bonjour {{ name }}!</p><p>Le statut de l\'<a href="{{ url }}">observation {{ id_synthese }}</a> a été modifié en <b>{{ mnemonique}}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
+                "content": '<p>Bonjour {{ role.nom_complet }} !</p><p>Le statut de l\'<a href="{{ url }}">observation {{ synthese.id_synthese }}</a> a été modifié en <b>{{ status.mnemonique }}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
             },
         ],
     )
