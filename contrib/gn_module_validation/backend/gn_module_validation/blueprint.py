@@ -20,7 +20,7 @@ from geonature.core.gn_commons.models.base import TValidations
 
 from werkzeug.exceptions import BadRequest
 from geonature.core.gn_commons.models import TValidations
-from geonature.core.notifications.utils import NotificationUtil
+from geonature.core.notifications.utils import dispatch_notifications
 
 
 blueprint = Blueprint("validation", __name__)
@@ -232,9 +232,8 @@ def post_status(info_role, id_synthese):
         # t_validations.id_validation:
 
         # t_validations.uuid_attached_row:
-        uuid = (
-            DB.session.query(Synthese.unique_id_sinp).filter(Synthese.id_synthese == int(id)).one()
-        )
+        synthese = Synthese.query.get_or_404(int(id))
+        uuid = synthese.unique_id_sinp
 
         # t_validations.id_validator:
         id_validator = info_role.id_role
@@ -245,7 +244,7 @@ def post_status(info_role, id_synthese):
         # t_validations.validation_auto
         val_auto = False
         val_dict = {
-            "uuid_attached_row": uuid[0],
+            "uuid_attached_row": uuid,
             "id_nomenclature_valid_status": id_validation_status,
             "id_validator": id_validator,
             "validation_comment": validation_comment,
@@ -261,10 +260,11 @@ def post_status(info_role, id_synthese):
         except ValidationError as error:
             raise BadRequest(error.messages)
         DB.session.add(validation)
-        DB.session.commit()
 
         # Send element to notification system
-        notifyChange(data, id)
+        notify_validation_state_change(synthese, validation)
+
+        DB.session.commit()
 
     return jsonify(TNomenclatures.query.get(id_validation_status).as_dict())
 
@@ -283,35 +283,19 @@ def get_validation_date(uuid):
 
 
 # Send notification
-def notifyChange(data, idsynthese):
-
-    # If notification enabled only
-    if current_app.config["NOTIFICATION"]["ENABLED"] == True:
-
-        # return nomenclature
-        nomenclature = TNomenclatures.query.filter(
-            TNomenclatures.id_nomenclature == data["statut"]
-        ).first()
-
-        # idRole is a list separated by coma
-        idRoles = (
-            DB.session.query(Synthese.id_digitiser)
-            .filter(Synthese.id_synthese == int(idsynthese))
-            .one()
-        )
-        roles = [str(role) for role in idRoles]
-
-        # Add mandatory data
-        categoriesArray = ["VALIDATION-STATUS-CHANGED"]
-
-        data["categories"] = categoriesArray
-        data["id_roles"] = roles
-
-        # Add optional data
-        data["info_statut"] = nomenclature
-        data["id_synthese"] = idsynthese
-        data["url"] = (
-            current_app.config["URL_APPLICATION"] + "/#/validation/occurrence/" + idsynthese
-        )
-
-        NotificationUtil.create_notification(data)
+def notify_validation_state_change(synthese, validation):
+    dispatch_notifications(
+        code_categories=["VALIDATION-STATUS-CHANGED%"],
+        id_roles=[synthese.id_digitiser],
+        title="Changement de statut de validation",
+        url=(
+            current_app.config["URL_APPLICATION"]
+            + "/#/validation/occurrence/"
+            + str(synthese.id_synthese),
+        ),
+        context={
+            "synthese": synthese,
+            "validation": validation,
+            "status": validation.nomenclature_valid_status,
+        },
+    )

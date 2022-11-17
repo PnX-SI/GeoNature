@@ -14,7 +14,7 @@ from geonature.core.notifications.models import (
     NotificationRule,
     NotificationTemplate,
 )
-from geonature.core.notifications.utils import NotificationUtil
+from geonature.core.notifications.utils import dispatch_notifications
 
 from .utils import set_logged_user_cookie
 
@@ -329,99 +329,99 @@ class TestNotification:
         data = response.get_json()
         assert len(data) > 0
 
-    def test_notification_database_creation(self, users):
-        empty_id_role = ""
-        title = "test creation"
-        content = "after templating"
-        url = "ta"
+    # def test_notification_database_creation(self, users):
+    #    empty_id_role = ""
+    #    title = "test creation"
+    #    content = "after templating"
+    #    url = "ta"
 
-        # Id role does not exist
-        response = NotificationUtil.create_database_notification(
-            empty_id_role, title, content, url
-        )
-        assert response == json.dumps(
-            {"success": False, "information": "Could not save notification in database"}
-        )
+    #    # Id role does not exist
+    #    response = NotificationUtil.create_database_notification(
+    #        empty_id_role, title, content, url
+    #    )
+    #    assert response == json.dumps(
+    #        {"success": False, "information": "Could not save notification in database"}
+    #    )
 
-    def test_notification_creation(
-        self, users, rule_category, notification_rule, rule_method, rule_template
-    ):
-        empty_id_role = ""
-        title = "test creation"
-        content = "after templating"
-        url = "ta"
+    # def test_notification_creation(
+    #    self, users, rule_category, notification_rule, rule_method, rule_template
+    # ):
+    #    empty_id_role = ""
+    #    title = "test creation"
+    #    content = "after templating"
+    #    url = "ta"
 
-        # Category missing
-        notificationData = {"categoryWrongKey": "test"}
-        response = NotificationUtil.create_notification(notificationData)
-        assert response == json.dumps(
-            {"success": False, "information": "Category is missing from the request"}
-        )
+    #    # Category missing
+    #    notificationData = {"categoryWrongKey": "test"}
+    #    response = NotificationUtil.create_notification(notificationData)
+    #    assert response == json.dumps(
+    #        {"success": False, "information": "Category is missing from the request"}
+    #    )
 
-        # Category does not exist
-        notificationData = {"categories": ["test"]}
-        response = NotificationUtil.create_notification(notificationData)
-        assert response == json.dumps(
-            {
-                "result": [
-                    {
-                        "success": False,
-                        "category": "test",
-                        "information": "This category of notification is not implemented yet",
-                    }
-                ]
-            }
-        )
+    #    # Category does not exist
+    #    notificationData = {"categories": ["test"]}
+    #    response = NotificationUtil.create_notification(notificationData)
+    #    assert response == json.dumps(
+    #        {
+    #            "result": [
+    #                {
+    #                    "success": False,
+    #                    "category": "test",
+    #                    "information": "This category of notification is not implemented yet",
+    #                }
+    #            ]
+    #        }
+    #    )
 
-        # Category exist but no user
-        notificationData = {"categories": [rule_category.code]}
-        response = NotificationUtil.create_notification(notificationData)
-        assert response == json.dumps(
-            {
-                "result": [
-                    {
-                        "success": False,
-                        "category": rule_category.code,
-                        "information": "Notification is missing id_role to be notified",
-                    }
-                ]
-            }
-        )
+    #    # Category exist but no user
+    #    notificationData = {"categories": [rule_category.code]}
+    #    response = NotificationUtil.create_notification(notificationData)
+    #    assert response == json.dumps(
+    #        {
+    #            "result": [
+    #                {
+    #                    "success": False,
+    #                    "category": rule_category.code,
+    #                    "information": "Notification is missing id_role to be notified",
+    #                }
+    #            ]
+    #        }
+    #    )
 
-        # Category exist and user but without rules linked
-        notificationData = {
-            "categories": [rule_category.code],
-            "id_roles": [users["user"].id_role],
-        }
-        response = NotificationUtil.create_notification(notificationData)
-        assert response == json.dumps(
-            {
-                "result": [
-                    {
-                        "success": False,
-                        "category": rule_category.code,
-                        "role": users["user"].id_role,
-                        "information": "No rules for this user/category",
-                    }
-                ]
-            }
-        )
+    #    # Category exist and user but without rules linked
+    #    notificationData = {
+    #        "categories": [rule_category.code],
+    #        "id_roles": [users["user"].id_role],
+    #    }
+    #    response = NotificationUtil.create_notification(notificationData)
+    #    assert response == json.dumps(
+    #        {
+    #            "result": [
+    #                {
+    #                    "success": False,
+    #                    "category": rule_category.code,
+    #                    "role": users["user"].id_role,
+    #                    "information": "No rules for this user/category",
+    #                }
+    #            ]
+    #        }
+    #    )
 
-        # Category exist and user with rules but without conditional template empty
-        notificationData = {
-            "categories": [rule_category.code],
-            "id_roles": [users["admin_user"].id_role],
-        }
-        response = NotificationUtil.create_notification(notificationData)
-        assert response == json.dumps(
-            {
-                "result": [
-                    {
-                        "success": False,
-                        "category": rule_category.code,
-                        "role": users["admin_user"].id_role,
-                        "information": "Empty content not notification sent",
-                    }
-                ]
-            }
-        )
+    #    # Category exist and user with rules but without conditional template empty
+    #    notificationData = {
+    #        "categories": [rule_category.code],
+    #        "id_roles": [users["admin_user"].id_role],
+    #    }
+    #    response = NotificationUtil.create_notification(notificationData)
+    #    assert response == json.dumps(
+    #        {
+    #            "result": [
+    #                {
+    #                    "success": False,
+    #                    "category": rule_category.code,
+    #                    "role": users["admin_user"].id_role,
+    #                    "information": "Empty content not notification sent",
+    #                }
+    #            ]
+    #        }
+    #    )
