@@ -9,7 +9,8 @@ import {
 } from '@angular/common/http';
 
 import { AppConfig } from '../../../conf/app.config';
-import * as internal from 'stream';
+
+import { Observable } from 'rxjs';
 
 /** Interface to display notifications */
 export interface NotificationCard {
@@ -22,40 +23,34 @@ export interface NotificationCard {
 }
 
 /** Interface to serialise method rules */
-export interface MethodRules {
+export interface NotificationMethod {
   code: string;
   label: string;
   description: string;
 }
 
 /** Interface to serialise categorie rules */
-export interface CategoriesRules {
+export interface NotificationCategory {
   code: string;
   label: string;
   description: string;
 }
 
 /** Interface to serialise categorie rules */
-export interface Rules {
-  id_notification_rules: number;
+export interface NotificationRule {
+  id: number;
   code_category: string;
   code_method: string;
+  method?: NotificationMethod;
+  category?: NotificationCategory;
 }
 
 @Injectable()
 export class NotificationDataService {
   constructor(private _api: HttpClient) {}
 
-  // Create notification via API
-  // Could be used for notification on frond environnement
-  createNotification(data) {
-    return this._api.put(`${AppConfig.API_ENDPOINT}/notifications/notification`, data, {
-      headers: new HttpHeaders().set('Content-Type', 'application/json'),
-    });
-  }
-
   // returns notifications content for this user
-  getNotifications() {
+  getNotifications(): Observable<NotificationCard[]> {
     return this._api.get<NotificationCard[]>(
       `${AppConfig.API_ENDPOINT}/notifications/notifications`
     );
@@ -89,26 +84,26 @@ export class NotificationDataService {
 
   // returns all rules for current user
   getRules() {
-    return this._api.get<Rules[]>(`${AppConfig.API_ENDPOINT}/notifications/rules`);
+    return this._api.get<NotificationRule[]>(`${AppConfig.API_ENDPOINT}/notifications/rules`);
   }
 
   // returns notifications content for this user
   getRulesCategories() {
-    return this._api.get<CategoriesRules[]>(`${AppConfig.API_ENDPOINT}/notifications/categories`);
+    return this._api.get<NotificationCategory[]>(
+      `${AppConfig.API_ENDPOINT}/notifications/categories`
+    );
   }
 
   // returns notifications content for this user
   getRulesMethods() {
-    return this._api.get<MethodRules[]>(`${AppConfig.API_ENDPOINT}/notifications/methods`);
+    return this._api.get<NotificationMethod[]>(`${AppConfig.API_ENDPOINT}/notifications/methods`);
   }
 
   deleteRules() {
-    return this._api.delete<any>(`${AppConfig.API_ENDPOINT}/notifications/rules`);
+    return this._api.delete<{}>(`${AppConfig.API_ENDPOINT}/notifications/rules`);
   }
 
-  deleteRule(id_notification_rules) {
-    return this._api.delete<any>(
-      `${AppConfig.API_ENDPOINT}/notifications/rules/${id_notification_rules}`
-    );
+  deleteRule(id: number) {
+    return this._api.delete<{}>(`${AppConfig.API_ENDPOINT}/notifications/rules/${id}`);
   }
 }
