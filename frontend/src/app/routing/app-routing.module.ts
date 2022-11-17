@@ -12,6 +12,8 @@ import { NewPasswordComponent } from '../modules/login/new-password/new-password
 
 import { LoginComponent } from '../modules/login/login/login.component';
 import { NavHomeComponent } from '../components/nav-home/nav-home.component';
+import { NotificationComponent } from '../components/notification/notification.component';
+import { RulesComponent } from '../components/notification/rules/rules.component';
 
 const defaultRoutes: Routes = [
   {
@@ -79,6 +81,14 @@ const defaultRoutes: Routes = [
             /* webpackChunkName: "user" */
             '@geonature/userModule/user.module'
           ).then((m) => m.UserModule),
+      },
+      {
+        path: 'notification',
+        component: NotificationComponent,
+      },
+      {
+        path: 'notification/rules',
+        component: RulesComponent,
       },
       {
         path: '**',
