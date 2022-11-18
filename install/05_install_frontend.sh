@@ -76,7 +76,7 @@ if [[ -z "${CI}" || "${CI}" == false ]] ; then
 
   echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
   # Generate the app.config.ts
-  geonature generate_frontend_config
+  geonature generate-frontend-config
 
   echo "Désactivation du venv..."
   deactivate
