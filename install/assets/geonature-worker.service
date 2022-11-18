@@ -2,8 +2,6 @@
 Description=GeoNature Celery Worker Service
 After=redis-server.service
 After=postgresql.service
-Requires=redis-server.service
-Requires=postgresql.service
 ReloadPropagatedFrom=geonature.service
 
 [Service]
