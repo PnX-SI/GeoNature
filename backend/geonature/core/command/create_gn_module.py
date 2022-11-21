@@ -26,7 +26,8 @@ from geonature.utils.command import (
 @click.argument("module_path")
 @click.argument("module_code")
 @click.option("--build", type=bool, required=False, default=True)
-def install_gn_module(module_path, module_code, build):
+@click.option("--upgrade-db", type=bool, required=False, default=True)
+def install_gn_module(module_path, module_code, build, upgrade_db):
     click.echo("Installation du backend…")
     subprocess.run(f"pip install -e '{module_path}'", shell=True, check=True)
 
@@ -39,9 +40,6 @@ def install_gn_module(module_path, module_code, build):
     module_dist = get_dist_from_code(module_code)
     if not module_dist:
         raise ClickException(f"Aucun module ayant pour code {module_code} n’a été trouvé")
-
-    click.echo("Installation de la basse de données…")
-    module_db_upgrade(module_dist)
 
     # symlink module in exernal module directory
     module_frontend_path = os.path.realpath(f"{module_path}/frontend")
@@ -66,6 +64,10 @@ def install_gn_module(module_path, module_code, build):
         click.echo("Rebuild du frontend …")
         build_frontend()
         click.secho("Rebuild du frontend terminé.", fg="green")
+
+    if upgrade_db:
+        click.echo("Installation de la basse de données…")
+        module_db_upgrade(module_dist)
 
 
 @main.command()
