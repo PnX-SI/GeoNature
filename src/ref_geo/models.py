@@ -2,6 +2,7 @@ from datetime import datetime
 
 from geoalchemy2 import Geometry
 from sqlalchemy import ForeignKey
+from sqlalchemy.orm import deferred
 from sqlalchemy.dialects.postgresql import JSONB
 
 from utils_flask_sqla.serializers import serializable
@@ -35,7 +36,7 @@ class LAreas(db.Model):
     area_code = db.Column(db.Unicode)
     geom = db.Column(Geometry("GEOMETRY"))
     centroid = db.Column(Geometry("POINT"))
-    geojson_4326 = db.Column(db.Unicode)
+    geojson_4326 = deferred(db.Column(db.Unicode))
     source = db.Column(db.Unicode)
     enable = db.Column(db.Boolean, nullable=False, default=True)
     meta_create_date = db.Column(db.DateTime, default=datetime.now)

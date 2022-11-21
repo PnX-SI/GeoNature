@@ -1,6 +1,14 @@
 CHANGELOG
 =========
 
+1.2.1 (unreleased)
+------------------
+
+**🐛 Corrections**
+
+* Marquage du champs géométrique ``ref_geo.l_areas.geojson_4326`` comme différé afin de ne pas le renvoyer en raison de son poids sauf si demandé explicitement.
+
+
 1.2.0 (2022-10-20)
 ------------------
 
