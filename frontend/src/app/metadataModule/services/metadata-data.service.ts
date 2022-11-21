@@ -30,14 +30,4 @@ export class MetadataDataService {
   patchDataset(id_dataset, value) {
     return this._api.patch<any>(`${AppConfig.API_ENDPOINT}/meta/dataset/${id_dataset}`, value);
   }
-
-  getdatasetImports(id_dataset, params = {}) {
-    let queryString = new HttpParams();
-    for (let key in params) {
-      queryString = queryString.set(key, params[key].toString());
-    }
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/import/by_dataset/${id_dataset}`, {
-      params: queryString,
-    });
-  }
 }
