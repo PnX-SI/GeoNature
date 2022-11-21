@@ -1,6 +1,7 @@
 from sqlalchemy import inspect
-from geonature.utils.env import MA
-from marshmallow import pre_load, fields, EXCLUDE
+from marshmallow import pre_load, post_dump, fields, EXCLUDE
+from flask import g
+
 from .models import (
     TDatasets,
     TAcquisitionFramework,
@@ -8,9 +9,11 @@ from .models import (
     CorDatasetActor,
     TBibliographicReference,
 )
+from geonature.utils.env import MA
 from geonature.core.gn_commons.models import TModules
 from geonature.core.gn_commons.schemas import ModuleSchema
 from geonature.core.gn_synthese.schemas import SourceSchema
+from geonature.core.gn_permissions.tools import get_scopes_by_action
 
 from utils_flask_sqla.schema import SmartRelationshipsMixin
 from pypnusershub.schemas import UserSchema, OrganismeSchema
@@ -66,6 +69,24 @@ class DatasetSchema(CruvedSchemaMixin, SmartRelationshipsMixin, MA.SQLAlchemyAut
     cor_territories = MA.Nested(NomenclatureSchema, many=True, unknown=EXCLUDE)
     acquisition_framework = MA.Nested("AcquisitionFrameworkSchema", dump_only=True)
     sources = MA.Nested(SourceSchema, many=True, dump_only=True)
+
+    @post_dump(pass_original=True)
+    def module_input(self, item, original, many, **kwargs):
+        if "modules" in item:
+            for i, module in enumerate(original.modules):
+                create_scope = get_scopes_by_action(
+                    id_role=g.current_user.id_role, module_code=module.module_code
+                )["C"]
+                if not original.has_instance_permission(create_scope):
+                    continue
+                if hasattr(module, "generate_input_url_for_dataset"):
+                    item["modules"][i].update(
+                        {
+                            "input_url": module.generate_input_url_for_dataset(original),
+                            "input_label": module.generate_input_url_for_dataset.label,
+                        }
+                    )
+        return item
 
 
 class BibliographicReferenceSchema(
