@@ -124,10 +124,6 @@ export class DataFormService {
   //   );
   // }
 
-  getImports(id_dataset) {
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/import/by_dataset/${id_dataset}`);
-  }
-
   getObservers(idMenu) {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/users/menu/${idMenu}`);
   }
