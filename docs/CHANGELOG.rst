@@ -2,6 +2,15 @@
 CHANGELOG
 =========
 
+2.10.4 (unreleased)
+-------------------
+
+**🐛 Corrections**
+
+* Mise à jour du RefGeo en version 1.2.1 afin de corriger une régression des performances dans la synthèse
+* Correction de la génération du rapport de sensibilité
+
+
 2.10.3 (2022-11-15)
 -------------------
 
