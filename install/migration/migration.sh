@@ -146,7 +146,7 @@ geonature upgrade-modules
 
 echo "Redémarrage des services…"
 for service in ${SERVICES[@]}; do
-    sudo systemctl stop "${service}"
+    sudo systemctl start "${service}"
 done
 
 deactivate
