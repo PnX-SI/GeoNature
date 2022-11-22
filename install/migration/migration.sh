@@ -57,6 +57,15 @@ for file in $(find "${custom_component_dir}" -type f -name "*.sample"); do
     fi
 done
 
+echo "Récupération des fichiers statiques …"
+cd "${currentdir}/backend/static"
+for static_dir in "${previousdir}"/backend/static/*; do
+    if [ ! -d "${static_dir}" ] || [ "$(basename ${static_dir})" = "node_modules" ]; then
+        continue
+    fi
+    cp -a "${static_dir}" .
+done
+
 echo "Mise à jour de node si nécessaire …"
 cd "${currentdir}"/frontend
 export NVM_DIR="$HOME/.nvm"
