@@ -1,15 +1,17 @@
 from geonature.core.gn_commons.models.base import TModules
 import pytest
-
 from datetime import datetime as dt
 
 from flask import url_for, current_app, g
+import copy
 from werkzeug.exceptions import Forbidden, NotFound
 from shapely.geometry import Point
 from geoalchemy2.shape import from_shape
 from sqlalchemy import func
 
 from geonature.core.gn_permissions.models import VUsersPermissions
+from geonature.core.gn_commons.repositories import get_table_location_id
+from pypnnomenclature.repository import get_nomenclature_id_term
 from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
 from geonature.utils.config import config
@@ -163,6 +165,19 @@ def unexisting_id_releve():
 @pytest.fixture(scope="function")
 def permission(users):
     return db.session.query(VUsersPermissions).filter_by(id_role=users["user"].id_role).first()
+
+
+@pytest.fixture(scope="function")
+def media_data():
+    return {
+        "id_table_location": get_table_location_id("pr_occtax", "cor_counting_occtax"),
+        "id_nomenclature_media_type": get_nomenclature_id_term("TYPE_MEDIA", "2")[0],  # Photo
+        "title_fr": "Eratigena etrica (719818)",
+        "description_fr": "Tégénaire des maisons",
+        "media_url": "https://inpn.mnhn.fr/photos/uploads/webtofs/inpn/ant/96639.jpg",
+        "author": "S. Déjean",
+        "is_public": True,
+    }
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "datasets")
@@ -369,3 +384,139 @@ class TestReleveRepository:
 
         with pytest.raises(NotFound):
             repository.delete(unexisting_id_releve, permission)
+
+
+@pytest.mark.usefixtures("client_class", "temporary_transaction")
+class TestReleveApiV1Medias:
+    """
+    Test pour valider l'insertion.modification de médias
+    dans l'api v1 destinée à occtax_mobile
+    """
+
+    def test_post_occurrence_with_media(
+        self, users, releve_data, occurrence_data, media_data, from_geofeature=False
+    ):
+
+        set_logged_user_cookie(self.client, users["user"])
+
+        #
+        # 1) test post media
+        #
+
+        response_post_media = self.client.post(
+            url_for("gn_commons.insert_or_update_media"),
+            json=media_data,
+        )
+
+        assert response_post_media.status_code == 200
+        json_resp_post_media = response_post_media.json
+        assert json_resp_post_media["id_media"] is not None
+
+        #
+        # 2) test post releve
+        #
+
+        # ajout de id_media aux données
+        media_data["id_media"] = json_resp_post_media["id_media"]
+
+        # on ne garde q'un dénombrement pour l'exemple
+        occurrence_data["cor_counting_occtax"].pop()
+        # ajout des média dans le premier denombrement de occurrence_data
+        occurrence_data["cor_counting_occtax"][0]["medias"] = [media_data]
+        releve_data["properties"]["t_occurrences_occtax"] = [occurrence_data]
+
+        # releve_data : mette depth à 3 pour pouvoir extraire les medias!
+        releve_data["depth"] = 3
+
+        # test si on utilise le méthode classique
+        # ou la méthode from_geofeature
+        if from_geofeature:
+            releve_data["from_geofeature"] = True
+
+        response_post = self.client.post(
+            url_for("pr_occtax.insertOrUpdateOneReleve"),
+            json=releve_data,
+        )
+        assert response_post.status_code == 200
+        json_resp_post_releve = response_post.json
+
+        # test si 1 occurence
+        occurences_post = json_resp_post_releve["properties"]["t_occurrences_occtax"]
+        assert len(occurences_post) == 1
+
+        # test si 1 denombrement
+        countings_post = occurences_post[0]["cor_counting_occtax"]
+        assert len(countings_post) == 1
+
+        # on vérifie que l'on bien le media
+        counting_post = countings_post[0]
+        medias_post = counting_post["medias"]
+        assert len(medias_post) == 1
+
+        media_post = medias_post[0]
+
+        # test sur les valeurs attendues du media
+        for media_key in media_data:
+            assert media_post[media_key] == media_data[media_key]
+
+        # test sur l'id_media
+        assert media_post["id_media"] == json_resp_post_media["id_media"]
+
+        # test sur la clé uuid_attached_row
+        # doit correspondre à counting["unique_id_sinp_occtax"]
+        assert media_post["uuid_attached_row"] == counting_post["unique_id_sinp_occtax"]
+
+        #
+        # 3 test d'update de releve
+        #
+
+        # on corrige le nom latin
+        media_post["title_fr"] = "Eratigena atrica (719818)"
+
+        # preparation des données
+        data_patch = json_resp_post_releve
+        # - from_geofeature
+        if from_geofeature:
+            data_patch["from_geofeature"] = True
+        # -- depth
+        data_patch["depth"] = 3
+        # - observers
+        observer_list = [observer["id_role"] for observer in data_patch["properties"]["observers"]]
+        data_patch["properties"]["observers"] = observer_list
+        # - on enlève les champs non nécessaire
+        #   si non on a une erreur
+        del data_patch["properties"]["dataset"]
+        del data_patch["properties"]["digitiser"]
+        del data_patch["properties"]["t_occurrences_occtax"][0]["taxref"]
+
+        # api d'update
+        response_patch = self.client.post(
+            url_for("pr_occtax.insertOrUpdateOneReleve"),
+            json=data_patch,
+        )
+        assert response_patch.status_code == 200
+        json_resp_patch_releve = response_patch.json
+        # on vérifie que l'on bien le media
+        counting_patch = json_resp_patch_releve["properties"]["t_occurrences_occtax"][0][
+            "cor_counting_occtax"
+        ][0]
+
+        medias_patch = counting_patch["medias"]
+
+        assert len(medias_patch) == 1
+
+        media_patch = medias_patch[0]
+
+        # on teste si la modification a bien été prise en compte
+        assert media_patch["title_fr"] == "Eratigena atrica (719818)"
+
+    def test_post_occurrence_with_media_and_from_dict(
+        self, users, releve_data, occurrence_data, media_data
+    ):
+        """
+        Test similaire au précédent mais en utilisant la méthode from_geofeature
+        """
+
+        return self.test_post_occurrence_with_media(
+            users, releve_data, occurrence_data, media_data, from_geofeature=True
+        )

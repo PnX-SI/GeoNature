@@ -23,7 +23,7 @@ from marshmallow import ValidationError
 from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
 
 from geonature.core.gn_commons.models import TAdditionalFields
-from geonature.core.gn_commons.models.base import TModules
+from geonature.core.gn_commons.models.base import TModules, TMedias
 from geonature.utils.env import DB, db, ROOT_DIR
 from pypnusershub.db.models import User, Organisme
 from utils_flask_sqla_geo.generic import GenericTableGeo
@@ -318,6 +318,17 @@ def insertOrUpdateOneReleve(info_role):
     releveRepository = ReleveRepository(TRelevesOccurrence)
     data = dict(request.get_json())
     depth = data.pop("depth", None)
+
+    from_geofeature = data.pop("from_geofeature", None)
+
+    if from_geofeature:
+        releve = TRelevesOccurrence()
+        releve.from_geofeature(
+            {"type": "Feature", "properties": data["properties"], "geometry": data["geometry"]}
+        )
+
+        return releve.get_geofeature(depth=depth)
+
     occurrences_occtax = None
     if "t_occurrences_occtax" in data["properties"]:
         occurrences_occtax = data["properties"]["t_occurrences_occtax"]
@@ -372,6 +383,31 @@ def insertOrUpdateOneReleve(info_role):
             # pop the id if None. otherwise DB.merge is not OK
             if "id_counting_occtax" in cnt and cnt["id_counting_occtax"] is None:
                 cnt.pop("id_counting_occtax")
+
+            medias_data = []
+
+            if "medias" in cnt:
+                medias_data = cnt["medias"]
+                del cnt["medias"]
+
+                medias = []
+                for media_data in medias_data:
+                    # on autorise pas la creation de media ici
+                    # => une erreur est levée
+                    #   si media_data n'a pas de clé id_media
+                    #   ou si le media cherché n'est pas trouvé
+                    media = (
+                        db.session.query(TMedias).filter_by(id_media=media_data["id_media"]).one()
+                    )
+
+                    for key in media_data:
+                        if hasattr(TMedias, key):
+                            setattr(media, key, media_data[key])
+
+                    medias.append(media)
+
+                cnt["medias"] = medias
+
             countingOccurrence = CorCountingOccurrence(**cnt)
             occtax.cor_counting_occtax.append(countingOccurrence)
         releve.t_occurrences_occtax.append(occtax)

@@ -2,6 +2,12 @@
 CHANGELOG
 =========
 
+2.11 (Unreleased)
+
+**🐛 Corrections**
+
+* Travail sur l'api de releve occtax V1 pour pouvoir gérer les médias (#2150)
+
 2.10.3 (2022-11-15)
 -------------------
 
@@ -69,9 +75,9 @@ Modules compatibles à date de la publication de la version 2.10 de GeoNature :
 
   * Mettre à jour les versions de TaxHub (1.10.4) et UsersHub (2.3.1), sans la partie migration de la base de données avec Alembic (elle sera faite lors de la mise à jour de GeoNature)
   * Mettre à jour les modules compatibles avec GeoNature 2.10, en vous limitant aux étapes "Téléchargement de la nouvelle version du module", "Renommage des répertoires" et "Rapatriement de la configuration". La compilation de chaque module sera faite automatiquement lors de la mise à jour de GeoNature
-  * Les nouveaux fichiers de logs seront placés dans le dossier ``/var/log/geonature/``. Vous pouvez archiver ou supprimer les anciens fichiers de log (``/var/log/geonature.log*``). 
+  * Les nouveaux fichiers de logs seront placés dans le dossier ``/var/log/geonature/``. Vous pouvez archiver ou supprimer les anciens fichiers de log (``/var/log/geonature.log*``).
   * Supprimer les paramètres de configuration qui ont disparu s’ils sont présents dans votre fichier de configuration ``geonature_config.toml`` :
-  
+
     * ``LOCAL_SRID``
     * ``CRUVED_SEARCH_WITH_OBSERVER_AS_TXT``
     * ``id_area_type_municipality``
