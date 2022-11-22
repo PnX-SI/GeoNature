@@ -360,9 +360,7 @@ def sensi_report():
             "identifiantOrigine": row.Synthese.entity_source_pk_value,
             "occStatutBiologique": row.occStatutBiologique,
             "identifiantPermanent": row.Synthese.unique_id_sinp,
-            "sensiAlerte": row.sensiAlerte,
             "sensible": "Oui" if row.cd_sensi != "0" else "Non",
-            "sensiDateAttribution": row.sensiDateAttribution,
             "sensiNiveau": f"{row.cd_nomenclature} = {row.label_fr}",
         }
         for row in data
@@ -394,9 +392,7 @@ def sensi_report():
             "identifiantOrigine",
             "occStatutBiologique",
             "identifiantPermanent",
-            "sensiAlerte",
             "sensible",
-            "sensiDateAttribution",
             "sensiNiveau",
         ],
         _header=header,
