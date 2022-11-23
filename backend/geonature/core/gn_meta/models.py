@@ -279,10 +279,19 @@ class TDatasetsQuery(BaseQuery):
             ors = [
                 TDatasets.id_digitizer == user.id_role,
                 TDatasets.cor_dataset_actor.any(id_role=user.id_role),
+                TDatasets.acquisition_framework.has(id_digitizer=user.id_role),
+                TDatasets.acquisition_framework.has(
+                    TAcquisitionFramework.cor_af_actor.any(id_role=user.id_role),
+                ),
             ]
             # if organism is None => do not filter on id_organism even if level = 2
             if scope == 2 and user.id_organisme is not None:
-                ors.append(TDatasets.cor_dataset_actor.any(id_organism=user.id_organisme))
+                ors += [
+                    TDatasets.cor_dataset_actor.any(id_organism=user.id_organisme),
+                    TDatasets.acquisition_framework.has(
+                        TAcquisitionFramework.cor_af_actor.any(id_organism=user.id_organisme),
+                    ),
+                ]
             self = self.filter(or_(*ors))
         return self
 
