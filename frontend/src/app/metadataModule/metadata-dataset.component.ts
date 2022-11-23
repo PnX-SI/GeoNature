@@ -19,7 +19,6 @@ import { CommonService } from '@geonature_common/service/common.service';
 export class MetadataDatasetComponent implements OnInit {
   @Input() dataset: any;
   stateChangeSaving: boolean = false;
-  moduleImportIsAuthorized: boolean = false;
 
   constructor(
     private _dfs: DataFormService,
@@ -31,14 +30,7 @@ export class MetadataDatasetComponent implements OnInit {
     private _commonService: CommonService
   ) {}
 
-  ngOnInit() {
-    //vérification que l'utilisateur est autorisé à utiliser le module d'import
-    this.moduleService.getModules().forEach((mod) => {
-      if (mod.module_code == 'IMPORT' && mod.cruved['C'] > 0) {
-        return (this.moduleImportIsAuthorized = true);
-      }
-    });
-  }
+  ngOnInit() {}
 
   switchDatasetState(event) {
     this.stateChangeSaving = true;

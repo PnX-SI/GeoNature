@@ -71,21 +71,6 @@
   >
     <mat-icon> info </mat-icon>
   </a>
-  <a
-    *ngIf="moduleImportIsAuthorized"
-    mat-icon-button
-    type="button"
-    [disabled]="!dataset.active"
-    [routerLink]="['/import/process/step/1']"
-    [queryParams]="{ datasetId: dataset.id_dataset, resetStepper: true }"
-  >
-    <mat-icon *ngIf="!dataset.active; else elseImport" matTooltip="Le jeu de donnée est inactif">
-      upload
-    </mat-icon>
-    <ng-template #elseImport>
-      <mat-icon matTooltip="Importer dans ce jeu de donnée"> upload </mat-icon>
-    </ng-template>
-  </a>
 
   <a
     mat-icon-button
