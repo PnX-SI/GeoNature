@@ -442,7 +442,6 @@ class TestGNMeta:
 
     def test_get_acquisition_framework_bbox(self, users, acquisition_frameworks, synthese_data):
         id_af = acquisition_frameworks["orphan_af"].id_acquisition_framework
-        geom = Point(geometry=to_shape(synthese_data[0].the_geom_4326))
 
         set_logged_user_cookie(self.client, users["user"])
 
@@ -452,10 +451,7 @@ class TestGNMeta:
         data = response.json
 
         assert response.status_code == 200
-        assert data["type"] == "Point"
-        assert data["coordinates"] == [
-            pytest.approx(coord, 0.9) for coord in [geom.geometry.x, geom.geometry.y]
-        ]
+        assert data["type"] == "Polygon"
 
     def test_datasets_permissions(self, app, datasets, users):
         ds = datasets["own_dataset"]

@@ -181,6 +181,8 @@ def get_observations_for_web(info_role):
         nom_vern_or_lb_nom,
         "count_min_max",
         count_min_max,
+        "entity_source_pk_value",
+        VSyntheseForWebApp.entity_source_pk_value,
     ]
     observations = func.json_build_object(*columns).label("obs_as_json")
 
