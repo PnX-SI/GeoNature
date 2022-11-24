@@ -2,7 +2,7 @@
 Démarrage de l'application
 """
 
-import logging, os
+import logging, warnings, os, sys
 from itertools import chain
 from pkg_resources import iter_entry_points, load_entry_point
 from importlib import import_module
@@ -80,6 +80,10 @@ def create_app(with_external_mods=True):
 
     if "SCRIPT_NAME" not in os.environ:
         os.environ["SCRIPT_NAME"] = app.config["APPLICATION_ROOT"].rstrip("/")
+
+    # Enable deprecation warnings in debug mode
+    if app.debug and not sys.warnoptions:
+        warnings.filterwarnings(action="default", category=DeprecationWarning)
 
     # set from headers HTTP_HOST, SERVER_NAME, and SERVER_PORT
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
