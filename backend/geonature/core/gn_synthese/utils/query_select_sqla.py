@@ -8,6 +8,8 @@ much more efficient
 import datetime
 import uuid
 
+from flask import current_app
+
 from sqlalchemy import func, or_, and_, select
 from sqlalchemy.sql import text
 from sqlalchemy.orm import aliased

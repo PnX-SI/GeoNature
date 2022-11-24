@@ -612,8 +612,7 @@ export class DataFormService {
               ...data.additional_attributes,
             };
           });
-        })
-      }));
+        }));
 }
 
 getStatusValues(statusType: String) {

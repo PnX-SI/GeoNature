@@ -19,8 +19,7 @@ import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/
 export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
   @ViewChild('tree', { static: true })
   public treeComponent: TreeComponent;
-  public AppConfig = AppConfig;
-  public URL_AUTOCOMPLETE = AppConfig.API_TAXHUB + '/taxref/search/lb_nom';
+  public URL_AUTOCOMPLETE;
   public taxonsTree;
   public treeOptions;
   public selectedNodes = [];

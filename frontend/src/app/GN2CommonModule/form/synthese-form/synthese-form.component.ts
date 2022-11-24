@@ -18,10 +18,11 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class SyntheseSearchComponent implements OnInit {
   public AppConfig = AppConfig;
-  public organisms: any;
+  public organisms: Array<any>;;
   public taxonApiEndPoint = `${AppConfig.API_ENDPOINT}/synthese/taxons_autocomplete`;
   public validationStatus: Array<any>;
   private params: any;
+
   @Input() displayValidation = false;
   @Output() searchClicked = new EventEmitter();
   @Output() resetFilter = new EventEmitter();
@@ -47,7 +48,7 @@ export class SyntheseSearchComponent implements OnInit {
     });
 
     // format areas filter
-    this.areaFilters = AppConfig.SYNTHESE.AREA_FILTERS.map((area) => {
+    this.formService.areasFilters.map((area) => {
       if (typeof area['type_code'] === 'string') {
         area['type_code_array'] = [area['type_code']];
       } else {

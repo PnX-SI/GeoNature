@@ -43,7 +43,8 @@
       </div>
     </div>
 
-  <div [hidden]="!AppConfig.SYNTHESE.DISPLAY_TAXON_TREE" class="form-group">
+  <pre>{{storeService.displayTaxonTree}}</pre>
+  <div [hidden]="!storeService.displayTaxonTree" class="form-group">
     <button
       (click)="toggleTree()"
       id="btn-tree"

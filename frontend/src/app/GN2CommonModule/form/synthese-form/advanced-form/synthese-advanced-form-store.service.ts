@@ -7,7 +7,6 @@ import { SyntheseDataService } from '@geonature_common/form/synthese-form/synthe
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { DynamicFormService } from '@geonature_common/form/dynamic-form-generator/dynamic-form.service';
 import { TreeModel } from '@circlon/angular-tree-component';
-import { AppConfig } from '@geonature_config/app.config';
 import { formatTaxonTree } from '@geonature_common/form/taxon-tree/taxon-tree.service';
 
 @Injectable()
@@ -30,7 +29,8 @@ export class TaxonAdvancedStoreService {
     private _formService: SyntheseFormService,
     private _formGen: DynamicFormService
   ) {
-    if (AppConfig.SYNTHESE.DISPLAY_TAXON_TREE) {
+    if (this.cfg.SYNTHESE.DISPLAY_TAXON_TREE) {
+      this.displayTaxonTree = true;
       this._validationDataService.getTaxonTree().subscribe((data) => {
         this.taxonTree = formatTaxonTree(data);
       });
@@ -58,7 +58,7 @@ export class TaxonAdvancedStoreService {
         // Display only the taxhub attributes set in the config
         this.taxhubAttributes = attrs
           .filter((attr) => {
-            return AppConfig.SYNTHESE.ID_ATTRIBUT_TAXHUB.indexOf(attr.id_attribut) !== -1;
+            return this.cfg.SYNTHESE.ID_ATTRIBUT_TAXHUB.indexOf(attr.id_attribut) !== -1;
           })
           .map((attr) => {
             // Format attributes to fit with the GeoNature dynamicFormComponent
@@ -99,5 +99,6 @@ export class TaxonAdvancedStoreService {
         }
         this.taxonomyGroup2Inpn = all_groups;
       });
-    }
+    });
+  }
 }
