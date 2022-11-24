@@ -3,7 +3,7 @@ import requests
 import json
 
 
-from flask import Blueprint, request, current_app, Response, redirect
+from flask import Blueprint, request, current_app, Response, redirect, g
 from sqlalchemy.sql import distinct, and_
 from werkzeug.exceptions import NotFound, BadRequest
 
@@ -314,9 +314,9 @@ def after_confirmation():
 
 
 @routes.route("/role", methods=["PUT"])
-@permissions.check_cruved_scope("R", True)
+@permissions.check_cruved_scope("R")
 @json_resp
-def update_role(info_role):
+def update_role():
     """
     Modifie le role de l'utilisateur du token en cours
     """
@@ -324,10 +324,7 @@ def update_role(info_role):
         return {"message": "Page introuvable"}, 404
     data = dict(request.get_json())
 
-    user = DB.session.query(User).get(info_role.id_role)
-
-    if user is None:
-        return {"message": "Droit insuffisant"}, 403
+    user = g.current_user
 
     attliste = [k for k in data]
     for att in attliste:

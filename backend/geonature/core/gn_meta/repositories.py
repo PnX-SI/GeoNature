@@ -33,36 +33,36 @@ from werkzeug.exceptions import Unauthorized
 log = logging.getLogger()
 
 
-def cruved_ds_filter(model, info_role):
-    if info_role.value_filter not in ("1", "2", "3"):
+def cruved_ds_filter(model, role, scope):
+    if scope not in (1, 2, 3):
         raise Unauthorized("Not a valid cruved value")
-    elif info_role.value_filter == "3":
+    elif scope == 3:
         return True
-    elif info_role.value_filter in ("1", "2"):
+    elif scope in (1, 2):
         sub_q = DB.session.query(TDatasets).join(
             CorDatasetActor, TDatasets.id_dataset == CorDatasetActor.id_dataset
         )
 
         or_filter = [
-            TDatasets.id_digitizer == info_role.id_role,
-            CorDatasetActor.id_role == info_role.id_role,
+            TDatasets.id_digitizer == role.id_role,
+            CorDatasetActor.id_role == role.id_role,
         ]
 
         # if organism is None => do not filter on id_organism even if level = 2
-        if info_role.value_filter == "2" and info_role.id_organisme is not None:
-            or_filter.append(CorDatasetActor.id_organism == info_role.id_organisme)
+        if scope == 2 and role.id_organisme is not None:
+            or_filter.append(CorDatasetActor.id_organism == role.id_organisme)
         sub_q = sub_q.filter(and_(or_(*or_filter), model.id_dataset == TDatasets.id_dataset))
         return sub_q.exists()
 
     return True
 
 
-def cruved_af_filter(model, info_role):
-    if info_role.value_filter not in ("1", "2", "3"):
+def cruved_af_filter(model, role, scope):
+    if scope not in (1, 2, 3):
         raise Unauthorized("Not a valid cruved value")
-    elif info_role.value_filter == "3":
+    elif scope == 3:
         return True
-    elif info_role.value_filter in ("1", "2"):
+    elif scope in (1, 2):
         sub_q = DB.session.query(TAcquisitionFramework).join(
             CorAcquisitionFrameworkActor,
             TAcquisitionFramework.id_acquisition_framework
@@ -70,13 +70,13 @@ def cruved_af_filter(model, info_role):
         )
 
         or_filter = [
-            TAcquisitionFramework.id_digitizer == info_role.id_role,
-            CorAcquisitionFrameworkActor.id_role == info_role.id_role,
+            TAcquisitionFramework.id_digitizer == role.id_role,
+            CorAcquisitionFrameworkActor.id_role == role.id_role,
         ]
 
         # if organism is None => do not filter on id_organism even if level = 2
-        if info_role.value_filter == "2" and info_role.id_organisme is not None:
-            or_filter.append(CorAcquisitionFrameworkActor.id_organism == info_role.id_organisme)
+        if scope == 2 and role.id_organisme is not None:
+            or_filter.append(CorAcquisitionFrameworkActor.id_organism == role.id_organisme)
         sub_q = sub_q.filter(
             and_(
                 or_(*or_filter),
@@ -86,7 +86,7 @@ def cruved_af_filter(model, info_role):
         return sub_q.exists()
 
 
-def get_metadata_list(info_role, args, exclude_cols):
+def get_metadata_list(role, scope, args, exclude_cols):
     num = args.get("num")
     uuid = args.get("uuid")
     name = args.get("name")
@@ -127,8 +127,8 @@ def get_metadata_list(info_role, args, exclude_cols):
 
     query = query.filter(
         or_(
-            cruved_af_filter(TAcquisitionFramework, info_role),
-            cruved_ds_filter(TDatasets, info_role),
+            cruved_af_filter(TAcquisitionFramework, role, scope),
+            cruved_ds_filter(TDatasets, role, scope),
         )
     )
     if args.get("selector") == "af":

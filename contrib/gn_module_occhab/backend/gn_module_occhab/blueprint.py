@@ -8,6 +8,7 @@ from flask import (
     send_from_directory,
     request,
     render_template,
+    g,
 )
 from geojson import FeatureCollection, Feature
 from geoalchemy2.shape import from_shape
@@ -95,7 +96,7 @@ def post_station(info_role):
             session=session, id_role=info_role.id_role, module_code="OCCHAB"
         )
         # check if allowed to update or raise 403
-        station.check_if_allowed(info_role, "U", user_cruved["U"])
+        station.check_if_allowed(g.current_user, "U", user_cruved["U"])
         DB.session.merge(station)
     else:
         DB.session.add(station)
