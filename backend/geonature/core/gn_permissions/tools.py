@@ -276,42 +276,6 @@ class UserCruved:
         return self.build_herited_user_cruved(permissions)
 
 
-# FIXME: to remove ?
-def get_user_permissions(
-    user, code_filter_type, code_action=None, module_code=None, code_object=None
-):
-    """
-    Get all the permissions of a user for an action, a module (or an object) and a filter_type
-    Users permissions could be multiples because of user's group. The view mapped by VUsersPermissions does not take the
-    max because some filter type could be not quantitative
-
-    Parameters:
-        user(dict)
-        code_filter_type(str): <SCOPE, GEOGRAPHIC ...>
-        code_action(str): <C,R,U,V,E,D> or None if all actions wanted
-        module_code(str): 'GEONATURE', 'OCCTAX'
-        code_object(str): 'PERMISSIONS', 'DATASET' (table gn_permissions.t_oject)
-    Return:
-        Array<VUsersPermissions>
-    """
-    user_cruved = UserCruved(
-        id_role=user["id_role"],
-        code_filter_type=code_filter_type,
-        module_code=module_code,
-        object_code=code_object,
-    ).get_user_perm_list(code_action=code_action)
-    object_for_error = None
-
-    try:
-        assert len(user_cruved) > 0
-        return user_cruved
-    except AssertionError:
-        object_for_error = ",".join(filter(None, (code_object, module_code)))
-        raise Forbidden(
-            f"User {user['id_role']} cannot '{code_action}' in module/app/object {object_for_error}"
-        )
-
-
 def beautifulize_cruved(actions, cruved):
     """
     Build more readable the cruved dict with the actions label

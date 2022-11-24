@@ -9,7 +9,6 @@ from geonature.core.gn_permissions.models import CorRoleActionFilterModuleObject
 from geonature.core.gn_permissions.tools import (
     cruved_scope_for_user_in_module,
     get_user_from_token_and_raise,
-    get_user_permissions,
 )
 from geonature.utils.env import DB
 
@@ -84,24 +83,6 @@ class TestGnPermissionsTools:
             assert resp["id_role"] == user.id_role
             assert resp["id_organisme"] == user.id_organisme
             assert resp["identifiant"] == user.identifiant
-
-    def test_get_user_permissions_forbidden(self, unavailable_user_id):
-        """
-        Test get_user_permissions
-        """
-        fake_user = {"id_role": unavailable_user_id, "nom_role": "Administrateur"}
-        # get_user_permissions(fake_user, code_action="C", code_filter_type="SCOPE")
-        with pytest.raises(Forbidden):
-            get_user_permissions(fake_user, code_action="C", code_filter_type="SCOPE")
-        # with module code
-
-    def test_get_user_permissions(self, users):
-        user = users["self_user"]
-        user_json = {"id_role": user.id_role, "nom_role": user.nom_role}
-
-        permissions = get_user_permissions(user_json, code_action="C", code_filter_type="SCOPE")
-
-        assert all(permission.id_role == user.id_role for permission in permissions)
 
     def test_cruved_scope_for_user_in_module(self, users):
         admin_user = users["admin_user"]
