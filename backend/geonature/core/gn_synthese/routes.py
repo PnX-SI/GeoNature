@@ -280,7 +280,6 @@ def get_one_synthese(scope, id_synthese):
         "medias",
         "areas",
         "areas.area_type",
-        "areas_status",
     ]
 
     # get reports info only if activated by admin config
