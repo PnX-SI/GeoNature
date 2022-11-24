@@ -63,43 +63,51 @@ def taxon_attribut(noms_example, attribut_example, synthese_data):
 synthese_properties = {
     "type": "object",
     "properties": {
-        "id": {"type": "number"},
-        "cd_nom": {"type": "number"},
-        "count_min_max": {"type": "string"},
-        "dataset_name": {"type": "string"},
-        "date_min": {"type": "string"},
-        "entity_source_pk_value": {
-            "oneOf": [
-                {"type": "null"},
-                {"type": "string"},
-            ],
-        },
-        "lb_nom": {"type": "string"},
-        "nom_vern_or_lb_nom": {"type": "string"},
-        "unique_id_sinp": {
-            "type": "string",
-            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-        },
-        "observers": {
-            "oneOf": [
-                {"type": "null"},
-                {"type": "string"},
-            ],
-        },
-        "url_source": {
-            "oneOf": [
-                {"type": "null"},
-                {"type": "string"},
-            ],
+        "observations": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "id": {"type": "number"},
+                    "cd_nom": {"type": "number"},
+                    "count_min_max": {"type": "string"},
+                    "dataset_name": {"type": "string"},
+                    "date_min": {"type": "string"},
+                    "entity_source_pk_value": {
+                        "oneOf": [
+                            {"type": "null"},
+                            {"type": "string"},
+                        ],
+                    },
+                    "lb_nom": {"type": "string"},
+                    "nom_vern_or_lb_nom": {"type": "string"},
+                    "unique_id_sinp": {
+                        "type": "string",
+                        "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
+                    },
+                    "observers": {
+                        "oneOf": [
+                            {"type": "null"},
+                            {"type": "string"},
+                        ],
+                    },
+                    "url_source": {
+                        "oneOf": [
+                            {"type": "null"},
+                            {"type": "string"},
+                        ],
+                    },
+                },
+                "required": [  # obligatoire pour le fonctionement du front
+                    "id",
+                    "cd_nom",
+                    "url_source",
+                    "entity_source_pk_value",
+                ],
+                # "additionalProperties": False,
+            },
         },
     },
-    "required": [  # obligatoire pour le fonctionement du front
-        "id",
-        "cd_nom",
-        "url_source",
-        "entity_source_pk_value",
-    ],
-    "additionalProperties": False,
 }
 
 
@@ -152,34 +160,38 @@ class TestSynthese:
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
         assert len(r.json["features"]) == 1
-        assert r.json["features"][0]["properties"]["cd_nom"] == taxon_attribut.bib_nom.cd_nom
+        assert (
+            r.json["features"][0]["properties"]["observations"][0]["cd_nom"]
+            == taxon_attribut.bib_nom.cd_nom
+        )
 
-        # test geometry filters
+        # test intersection filters
         com_type = BibAreasTypes.query.filter_by(type_code="COM").one()
-        vesdun = LAreas.query.filter_by(area_type=com_type, area_name="Vesdun").one()
         query_string = {
-            "geoIntersection": """
-            POLYGON((2.313844516928274 46.62891246017805,2.654420688803274 46.62891246017805,2.654420688803274 46.415359531851166,2.313844516928274 46.415359531851166,2.313844516928274 46.62891246017805))
-            """,
-            f"area_{com_type.id_type}": vesdun.id_area,
+            "geoIntersection": "POLYGON ((5.852731 45.7775, 5.852731 44.820481, 7.029224 44.820481, 7.029224 45.7775, 5.852731 45.7775))",
         }
         r = self.client.get(url, query_string=query_string)
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
-        assert len(r.json["features"]) >= 2
+        assert len(r.json["features"]) == 1
 
         # test geometry filter with circle radius
         query_string = {
-            "geoIntersection": "POINT ({} {})".format(
-                current_app.config["MAPCONFIG"]["CENTER"][1] + 0.01,
-                current_app.config["MAPCONFIG"]["CENTER"][0] - 0.10,
-            ),
+            "geoIntersection": "POINT (5.92 45.56)",
             "radius": "20000",  # 20km
         }
         r = self.client.get(url, query_string=query_string)
         assert r.status_code == 200
         validate_json(instance=r.json, schema=schema)
-        assert len(r.json["features"]) >= 2
+        assert len(r.json["features"]) == 1
+
+        # test ref geo area filter
+        chambery = LAreas.query.filter_by(area_type=com_type, area_name="Chambéry").one()
+        query_string = {f"area_{com_type.id_type}": chambery.id_area}
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        validate_json(instance=r.json, schema=schema)
+        assert len(r.json["features"]) == 1
 
         # test organisms and multiple same arg in query string
         id_organisme = users["self_user"].id_organisme
@@ -221,13 +233,12 @@ class TestSynthese:
             url_for("gn_synthese.get_observations_for_web"), query_string={"limit": 100}
         )
         data = response.get_json()
-
         features = data["features"]
         assert len(features) > 0
-        assert all(
-            feat["properties"]["lb_nom"] in [synt.nom_cite for synt in synthese_data]
-            for feat in features
-        )
+
+        for feat in features:
+            for obs in feat["properties"]["observations"]:
+                assert obs["lb_nom"] in [synt.nom_cite for synt in synthese_data]
         assert response.status_code == 200
 
     def test_filter_cor_observers(self, users, synthese_data):
@@ -444,9 +455,6 @@ class TestSynthese:
         assert response_empty.json == 0
 
     def test_get_bbox(self, synthese_data):
-        # In synthese, all entries are located at the same point
-        geom = Point(geometry=to_shape(synthese_data[0].the_geom_4326))
-
         response = self.client.get(url_for("gn_synthese.get_bbox"))
 
         assert response.status_code == 200
@@ -454,16 +462,11 @@ class TestSynthese:
 
     def test_get_bbox_id_dataset(self, synthese_data, datasets, unexisted_id):
         id_dataset = datasets["own_dataset"].id_dataset
-        # In synthese, all entries are located at the same point
-        geom = Point(geometry=to_shape(synthese_data[0].the_geom_4326))
         url = "gn_synthese.get_bbox"
 
         response = self.client.get(url_for(url), query_string={"id_dataset": id_dataset})
         assert response.status_code == 200
-        assert response.json["type"] == "Point"
-        assert response.json["coordinates"] == [
-            pytest.approx(coord, 0.9) for coord in [geom.geometry.x, geom.geometry.y]
-        ]
+        assert response.json["type"] == "Polygon"
 
         response_empty = self.client.get(url_for(url), query_string={"id_dataset": unexisted_id})
         assert response_empty.status_code == 204
@@ -476,10 +479,7 @@ class TestSynthese:
         response = self.client.get(url_for(url), query_string={"id_source": id_source})
 
         assert response.status_code == 200
-        assert response.json["type"] == "Point"
-        assert response.json["coordinates"] == [
-            pytest.approx(coord, 0.9) for coord in [bbox_geom.geometry.x, bbox_geom.geometry.y]
-        ]
+        assert response.json["type"] == "Polygon"
 
     def test_get_bbox_id_source_empty(self, unexisted_id_source):
         url = "gn_synthese.get_bbox"

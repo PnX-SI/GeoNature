@@ -281,25 +281,20 @@ def create_synthese(geom, taxon, user, dataset, source, uuid):
 
 @pytest.fixture()
 def synthese_data(app, users, datasets, source):
-    map_center_point = Point(
-        app.config["MAPCONFIG"]["CENTER"][1],
-        app.config["MAPCONFIG"]["CENTER"][0],
-    )
-    geom_4326 = from_shape(map_center_point, srid=4326)
     data = []
     with db.session.begin_nested():
-        for cd_nom in [713776, 2497]:
-            taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
+        for (cd_nom, point) in [
+            (713776, Point(5.92, 45.56)),
+            (2497, Point(-1.54, 46.85)),
+        ]:
+
             unique_id_sinp = (
                 "f4428222-d038-40bc-bc5c-6e977bbbc92b" if not data else func.uuid_generate_v4()
             )
+            geom = from_shape(point, srid=4326)
+            taxon = Taxref.query.filter_by(cd_nom=cd_nom).one()
             s = create_synthese(
-                geom_4326,
-                taxon,
-                users["self_user"],
-                datasets["own_dataset"],
-                source,
-                unique_id_sinp,
+                geom, taxon, users["self_user"], datasets["own_dataset"], source, unique_id_sinp
             )
             db.session.add(s)
             data.append(s)
