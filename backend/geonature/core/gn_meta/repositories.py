@@ -33,24 +33,6 @@ from werkzeug.exceptions import Unauthorized
 log = logging.getLogger()
 
 
-def cruved_filter(q, model, info_role):
-    if info_role.value_filter in ("1", "2"):
-        or_filter = [
-            getattr(model, "id_digitizer") == info_role.id_role,
-            CorDatasetActor.id_role == info_role.id_role,
-        ]
-        if not CorDatasetActor in [mapper.class_ for mapper in q._join_entities]:
-            q = q.outerjoin(
-                CorDatasetActor, CorDatasetActor.id_dataset == getattr(model, "id_dataset")
-            )
-
-        # if organism is None => do not filter on id_organism even if level = 2
-        if info_role.value_filter == "2" and info_role.id_organisme is not None:
-            or_filter.append(CorDatasetActor.id_organism == info_role.id_organisme)
-        q = q.filter(or_(*or_filter))
-    return q
-
-
 def cruved_ds_filter(model, info_role):
     if info_role.value_filter not in ("1", "2", "3"):
         raise Unauthorized("Not a valid cruved value")
