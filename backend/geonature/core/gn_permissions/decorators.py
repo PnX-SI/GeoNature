@@ -2,6 +2,7 @@
 Decorators to protects routes with permissions
 """
 from functools import wraps
+from warnings import warn
 
 from flask import request, g
 from werkzeug.exceptions import Unauthorized, Forbidden
@@ -71,6 +72,10 @@ def check_cruved_scope(
                 raise Forbidden(description=message)
             # if get_role = True : set info_role as kwargs
             if get_role:
+                warn(
+                    "'get_role' is deprecated, see https://github.com/PnX-SI/GeoNature/issues/2162",
+                    DeprecationWarning,
+                )
                 kwargs["info_role"] = user_with_highter_perm
             if get_scope:
                 kwargs["scope"] = int(user_with_highter_perm.value_filter)
