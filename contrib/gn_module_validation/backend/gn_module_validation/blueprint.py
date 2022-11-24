@@ -55,33 +55,32 @@ def get_synthese_data(info_role):
 
     enable_profile = current_app.config["FRONTEND"]["ENABLE_PROFILES"]
     fields = {
-        'id_synthese',
-        'unique_id_sinp',
-        'entity_source_pk_value',
-        'meta_update_date',
-        'id_nomenclature_valid_status',
-        'nomenclature_valid_status.cd_nomenclature',
-        'nomenclature_valid_status.mnemonique',
-        'nomenclature_valid_status.label_default',
-        'last_validation.validation_date',
-        'last_validation.validation_auto',
-        'taxref.cd_nom',
-        'taxref.nom_vern',
-        'taxref.lb_nom',
-        'taxref.nom_vern_or_lb_nom',
-        'dataset.validable'
+        "id_synthese",
+        "unique_id_sinp",
+        "entity_source_pk_value",
+        "meta_update_date",
+        "id_nomenclature_valid_status",
+        "nomenclature_valid_status.cd_nomenclature",
+        "nomenclature_valid_status.mnemonique",
+        "nomenclature_valid_status.label_default",
+        "last_validation.validation_date",
+        "last_validation.validation_auto",
+        "taxref.cd_nom",
+        "taxref.nom_vern",
+        "taxref.lb_nom",
+        "taxref.nom_vern_or_lb_nom",
+        "dataset.validable",
     }
 
     if enable_profile:
         fields |= {
-            'profile.score',
-            'profile.valid_phenology',
-            'profile.valid_altitude',
-            'profile.valid_distribution',
+            "profile.score",
+            "profile.valid_phenology",
+            "profile.valid_altitude",
+            "profile.valid_distribution",
         }
 
-    fields |= { col['column_name']
-               for col in blueprint.config["COLUMN_LIST"] }
+    fields |= {col["column_name"] for col in blueprint.config["COLUMN_LIST"]}
 
     filters = request.json or {}
 
@@ -99,56 +98,42 @@ def get_synthese_data(info_role):
     to use to populate relationships models.
     """
     last_validation_subquery = (
-        TValidations.query
-        .filter(TValidations.uuid_attached_row==Synthese.unique_id_sinp)
+        TValidations.query.filter(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
         .order_by(TValidations.validation_date.desc())
         .limit(1)
         .subquery()
-        .lateral('last_validation')
+        .lateral("last_validation")
     )
     last_validation = aliased(TValidations, last_validation_subquery)
-    lateral_join = { last_validation : Synthese.last_validation}
+    lateral_join = {last_validation: Synthese.last_validation}
 
     if enable_profile:
         profile_subquery = (
-            VConsistancyData
-            .query
-            .filter(VConsistancyData.id_synthese==Synthese.id_synthese)
+            VConsistancyData.query.filter(VConsistancyData.id_synthese == Synthese.id_synthese)
             .limit(result_limit)
             .subquery()
-            .lateral('profile')
+            .lateral("profile")
         )
 
         profile = aliased(VConsistancyData, profile_subquery)
         lateral_join[profile] = Synthese.profile
 
-    relationships = list({
-        field.split('.', 1)[0]
-        for field in fields
-        if '.' in field
-            and not (
-                field.startswith('last_validation.')
-                or
-                field.startswith('profile.')
-            )
-    })
+    relationships = list(
+        {
+            field.split(".", 1)[0]
+            for field in fields
+            if "." in field
+            and not (field.startswith("last_validation.") or field.startswith("profile."))
+        }
+    )
 
     # Get dataset relationship : filter only validable dataset
-    dataset_index = relationships.index('dataset')
+    dataset_index = relationships.index("dataset")
     relationships = [getattr(Synthese, rel) for rel in relationships]
-    aliases = [
-        aliased(rel.property.mapper.class_)
-        for rel in relationships
-    ]
+    aliases = [aliased(rel.property.mapper.class_) for rel in relationships]
     dataset_alias = aliases[dataset_index]
 
-    query = (
-        db.session.query(
-            Synthese,
-            *aliases,
-            *lateral_join.keys()
-        )
-    )
+    query = db.session.query(Synthese, *aliases, *lateral_join.keys())
 
     for rel, alias in zip(relationships, aliases):
         query = query.outerjoin(rel.of_type(alias))
@@ -156,17 +141,13 @@ def get_synthese_data(info_role):
     for alias in lateral_join.keys():
         query = query.outerjoin(alias, sa.true())
 
-    query = (
-        query
-        .filter(Synthese.the_geom_4326.isnot(None))
-        .order_by(Synthese.date_min.desc())
-    )
+    query = query.filter(Synthese.the_geom_4326.isnot(None)).order_by(Synthese.date_min.desc())
 
     # filter with profile
     if enable_profile:
         score = filters.pop("score", None)
         if score is not None:
-            query = query.filter(profile.score==score)
+            query = query.filter(profile.score == score)
         valid_distribution = filters.pop("valid_distribution", None)
         if valid_distribution is not None:
             query = query.filter(profile.valid_distribution.is_(valid_distribution))
@@ -185,43 +166,43 @@ def get_synthese_data(info_role):
     query = query.filter(dataset_alias.validable == True)
 
     # Step 2: give SyntheseQuery the Core selectable from ORM query
-    assert(len(query.selectable.froms) == 1)
+    assert len(query.selectable.froms) == 1
 
     query = (
-        SyntheseQuery(Synthese, query.selectable, filters,
-                      query_joins=query.selectable.froms[0])
+        SyntheseQuery(Synthese, query.selectable, filters, query_joins=query.selectable.froms[0])
         .filter_query_all_filters(info_role)
         .limit(result_limit)
     )
 
     # Step 3: Construct Synthese model from query result
     query = (
-        Synthese.query
-        .options(*[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)])
+        Synthese.query.options(
+            *[contains_eager(rel, alias=alias) for rel, alias in zip(relationships, aliases)]
+        )
         .options(*[contains_eager(rel, alias=alias) for alias, rel in lateral_join.items()])
         .from_statement(query)
     )
     # The raise option ensure that we have correctly retrived relationships data at step 3
-    return jsonify(
-        query.as_geofeaturecollection(fields=fields, unloaded='raise')
-    )
+    return jsonify(query.as_geofeaturecollection(fields=fields, unloaded="raise"))
 
 
 @blueprint.route("/statusNames", methods=["GET"])
 @permissions.check_cruved_scope("R", True, module_code="VALIDATION")
 def get_statusNames(info_role):
     nomenclatures = (
-        TNomenclatures.query
-        .join(BibNomenclaturesTypes)
+        TNomenclatures.query.join(BibNomenclaturesTypes)
         .filter(BibNomenclaturesTypes.mnemonique == "STATUT_VALID")
         .filter(TNomenclatures.active == True)
         .order_by(TNomenclatures.cd_nomenclature)
     )
-    return jsonify([
-            nomenc.as_dict(fields=['id_nomenclature', 'mnemonique',
-                                   'cd_nomenclature', 'definition_default'])
+    return jsonify(
+        [
+            nomenc.as_dict(
+                fields=["id_nomenclature", "mnemonique", "cd_nomenclature", "definition_default"]
+            )
             for nomenc in nomenclatures.all()
-    ])
+        ]
+    )
 
 
 @blueprint.route("/<id_synthese>", methods=["POST"])
@@ -243,9 +224,9 @@ def post_status(info_role, id_synthese):
         # t_validations.id_validation:
 
         # t_validations.uuid_attached_row:
-        uuid = DB.session.query(Synthese.unique_id_sinp).filter(
-            Synthese.id_synthese == int(id)
-        ).one()
+        uuid = (
+            DB.session.query(Synthese.unique_id_sinp).filter(Synthese.id_synthese == int(id)).one()
+        )
 
         # t_validations.id_validator:
         id_validator = info_role.id_role
@@ -258,18 +239,17 @@ def post_status(info_role, id_synthese):
         val_dict = {
             "uuid_attached_row": uuid[0],
             "id_nomenclature_valid_status": id_validation_status,
-            "id_validator" : id_validator,
-            "validation_comment" : validation_comment,
+            "id_validator": id_validator,
+            "validation_comment": validation_comment,
             "validation_date": str(val_date),
-            "validation_auto" : val_auto,
+            "validation_auto": val_auto,
         }
         # insert values in t_validations
         validationSchema = TValidationSchema()
         try:
             validation = validationSchema.load(
-                val_dict, instance=TValidations(),
-                session=DB.session
-                )
+                val_dict, instance=TValidations(), session=DB.session
+            )
         except ValidationError as error:
             raise BadRequest(error.messages)
         DB.session.add(validation)
@@ -283,13 +263,8 @@ def get_validation_date(uuid):
     Retourne la date de validation
     pour l'observation uuid
     """
-    s = (
-        Synthese.query
-        .filter_by(unique_id_sinp=uuid)
-        .lateraljoin_last_validation()
-        .first_or_404()
-    )
+    s = Synthese.query.filter_by(unique_id_sinp=uuid).lateraljoin_last_validation().first_or_404()
     if s.last_validation:
         return jsonify(str(s.last_validation.validation_date))
     else:
-        return '', 204
+        return "", 204

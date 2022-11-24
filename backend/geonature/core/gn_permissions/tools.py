@@ -16,7 +16,7 @@ from pypnusershub.db.tools import (
     AccessRightsExpiredError,
     UnreadableAccessRightsError,
 )
-from pypnusershub.db.models import (User, AppRole)
+from pypnusershub.db.models import User, AppRole
 
 from geonature.core.gn_commons.models import TModules
 from apptax.taxonomie.models import Taxref
@@ -42,18 +42,18 @@ def user_from_token(token, secret_key=None):
     except BadSignature:
         raise UnreadableAccessRightsError("Token BadSignature", 403)
 
+
 def log_expiration_warning():
-    log.warning("""
+    log.warning(
+        """
         The parameter redirect_on_expiration will be soon removed.
         The redirection will be default to GeoNature login page
         """
     )
 
+
 def get_user_from_token_and_raise(
-    request,
-    secret_key=None,
-    redirect_on_expiration=None,
-    redirect_on_invalid_token=None
+    request, secret_key=None, redirect_on_expiration=None, redirect_on_invalid_token=None
 ):
     """
     Déserialisation du token utilisateur.
@@ -68,17 +68,17 @@ def get_user_from_token_and_raise(
         if redirect_on_expiration:
             log_expiration_warning()
             raise RequestRedirect(new_url=redirect_on_expiration)
-        raise Unauthorized(description='No token.')
+        raise Unauthorized(description="No token.")
     except AccessRightsExpiredError:
         if redirect_on_expiration:
             log_expiration_warning()
             raise RequestRedirect(new_url=redirect_on_expiration)
-        raise Unauthorized(description='Token expired.')
+        raise Unauthorized(description="Token expired.")
     except UnreadableAccessRightsError:
         if redirect_on_invalid_token:
             log_expiration_warning()
             raise RequestRedirect(new_url=redirect_on_invalid_token)
-        raise Unauthorized(description='Token corrupted.')
+        raise Unauthorized(description="Token corrupted.")
     except Exception as e:
         trap_all_exceptions = current_app.config.get("TRAP_ALL_EXCEPTIONS", True)
         if not trap_all_exceptions:
@@ -137,10 +137,8 @@ class UserCruved:
             - code_objet et GEONATURE
             - ALL et GEONATURE
         """
-        q = (
-            VUsersPermissions.query
-            .filter(VUsersPermissions.id_role == self._id_role)
-            .filter(VUsersPermissions.code_filter_type == self._code_filter_type)
+        q = VUsersPermissions.query.filter(VUsersPermissions.id_role == self._id_role).filter(
+            VUsersPermissions.code_filter_type == self._code_filter_type
         )
         if code_action:
             q = q.filter(VUsersPermissions.code_action == code_action)
@@ -167,11 +165,9 @@ class UserCruved:
             - code_objet et GEONATURE
             - ALL et GEONATURE
         """
-        q = (
-            VUsersPermissions.query
-            .filter(VUsersPermissions.code_filter_type != self._code_filter_type)
-            .filter(VUsersPermissions.gathering == gathering)
-        )
+        q = VUsersPermissions.query.filter(
+            VUsersPermissions.code_filter_type != self._code_filter_type
+        ).filter(VUsersPermissions.gathering == gathering)
         return q.all()
 
     @staticmethod
@@ -292,7 +288,9 @@ class UserCruved:
         permissions = self.build_herited_user_cruved(permissions)
         if permissions is not None:
             (max_perm, is_inherited_by_module, herited_by) = permissions
-            other_filters_permissions = self._build_other_filters_for_max_perm_query(max_perm.gathering)
+            other_filters_permissions = self._build_other_filters_for_max_perm_query(
+                max_perm.gathering
+            )
             return max_perm, is_inherited_by_module, herited_by, other_filters_permissions
 
 
@@ -333,15 +331,16 @@ def cruved_scope_for_user_in_module(
 
 
 def _get_scopes_by_action(id_role, module_code, object_code):
-    cruved = UserCruved(id_role=id_role, code_filter_type="SCOPE",
-                        module_code=module_code, object_code=object_code)
-    return { action: int(scope) for action, scope in cruved.get_perm_for_all_actions()[0].items() }
+    cruved = UserCruved(
+        id_role=id_role, code_filter_type="SCOPE", module_code=module_code, object_code=object_code
+    )
+    return {action: int(scope) for action, scope in cruved.get_perm_for_all_actions()[0].items()}
 
 
 def get_scopes_by_action(id_role=None, module_code=None, object_code=None):
     if id_role is None:
         id_role = g.current_user.id_role
-    if 'scopes_by_action' not in g:
+    if "scopes_by_action" not in g:
         g.scopes_by_action = dict()
     key = (id_role, module_code, object_code)
     if key not in g.scopes_by_action:
@@ -370,6 +369,7 @@ class PermissionsManager:
     Elle permet de vérifier l'accès d'un utilisateur et de récupérer
     ses permissions.
     """
+
     _main_module_code = "GEONATURE"
     _main_object_code = "ALL"
     _property_filter_type = "SCOPE"
@@ -421,7 +421,6 @@ class PermissionsManager:
         self._without_outdated = without_outdated
         self.permissions = {}
 
-
     def _build_inheritance_rules(self, append_extra_rules=None):
         """
         Construction de la liste des règles permettant d'applatir les
@@ -463,7 +462,7 @@ class PermissionsManager:
         return active_rules
 
     def _get_access_permissions(self):
-        """ Fournie toutes les permissions d'accès d'un utilisateur.
+        """Fournie toutes les permissions d'accès d'un utilisateur.
 
         Construit la requête de récupération de toutes les permissions d'accès
         de l'utilisateur défini en se basant sur le filtre d'appartenance
@@ -479,7 +478,9 @@ class PermissionsManager:
             Un tableau d'objet VUsersPermissions résultant de la requête.
         """
         query = self._build_base_query()
-        query = query.filter(VUsersPermissions.code_filter_type == PermissionsManager._property_filter_type)
+        query = query.filter(
+            VUsersPermissions.code_filter_type == PermissionsManager._property_filter_type
+        )
 
         # List of module_code, object_code couples to select
         ors = []
@@ -495,7 +496,7 @@ class PermissionsManager:
         return query.all()
 
     def _get_all_permissions(self, property_value=None):
-        """ Fournie toutes les permissions (avec tous les filtres) d'un utilisateur.
+        """Fournie toutes les permissions (avec tous les filtres) d'un utilisateur.
 
         Construit la requête de récupération de toutes les permissions de
         l'utilisateur défini en se basant sur les règles d'héritage entre
@@ -517,10 +518,12 @@ class PermissionsManager:
         array<VUsersPermissions>
             Un tableau d'objet VUsersPermissions résultant de la requête.
         """
-        filter_by_modules = VUsersPermissions.module_code.in_((
-            self._main_module_code,
-            self._module_code,
-        ))
+        filter_by_modules = VUsersPermissions.module_code.in_(
+            (
+                self._main_module_code,
+                self._module_code,
+            )
+        )
 
         # Default query send all permissions link to main and current initialized modules
         query = self._build_base_query().filter(filter_by_modules)
@@ -557,11 +560,7 @@ class PermissionsManager:
             Retourne la requete de base.
         """
 
-        query = (
-            DB.session
-            .query(fields)
-            .filter(VUsersPermissions.id_role == self._id_role)
-        )
+        query = DB.session.query(fields).filter(VUsersPermissions.id_role == self._id_role)
 
         if self._without_outdated:
             # TODO: check if filter on end_date work as expected !
@@ -582,8 +581,7 @@ class PermissionsManager:
         (différent de self._property_filter_type).
         """
         query = (
-            DB.session
-            .query(VUsersPermissions)
+            DB.session.query(VUsersPermissions)
             .filter(VUsersPermissions.code_filter_type != PermissionsManager._property_filter_type)
             .filter(VUsersPermissions.gathering == gathering)
         )
@@ -614,10 +612,7 @@ class PermissionsManager:
         sorted_perms = {}
         for permission in permissions:
             for k, (module_code, object_code) in self._inheritance_rules.items():
-                if (
-                    permission.code_object == object_code
-                    and permission.module_code == module_code
-                ):
+                if permission.code_object == object_code and permission.module_code == module_code:
                     sorted_perms.setdefault(k, []).append(permission)
 
         # Return the sorted list of keys from inheritance rules dictionary
@@ -780,14 +775,14 @@ class PermissionsManager:
             },
             "permission": {
                 "id": int(perm.id_permission),
-                "module" : perm.module_code,
+                "module": perm.module_code,
                 "action": perm.code_action,
                 "object": perm.code_object,
                 "filter": perm.code_filter_type,
                 "value": perm.value_filter,
                 "gathering": str(perm.gathering),
-                "end_date" : perm.end_date
-            }
+                "end_date": perm.end_date,
+            },
         }
         return auth
 
@@ -817,8 +812,7 @@ class PermissionsManager:
         access_permission = self.get_access_permission()
 
         if access_permission is None or (
-            access_permission is not None
-            and access_permission.value_filter == "0"
+            access_permission is not None and access_permission.value_filter == "0"
         ):
             if self._object_code:
                 message = f"User {self._id_role} cannot {self._action_code} {self._object_code}"
@@ -877,7 +871,7 @@ class PermissionsManager:
                     "object": perm.code_object,
                     "filters": {
                         perm.code_filter_type: perm.value_filter,
-                    }
+                    },
                 }
             else:
                 gathered_filters[gathering]["filters"][perm.code_filter_type] = perm.value_filter
@@ -887,18 +881,24 @@ class PermissionsManager:
         return output
 
 
-
-
-
 class UserPermissions:
     def __init__(self, id_role):
         self.id_role = id_role
         self.permissions = {}
 
     def append_permission(
-        self, module_code, action_code, object_code,
-        label, code, filter_type, filter_value, gathering, end_date,
-        is_inherited, inherited_by=None,
+        self,
+        module_code,
+        action_code,
+        object_code,
+        label,
+        code,
+        filter_type,
+        filter_value,
+        gathering,
+        end_date,
+        is_inherited,
+        inherited_by=None,
     ):
         """Les permissions non héritées doivent être ajouté en premier.
 
@@ -915,10 +915,10 @@ class UserPermissions:
         # WARNING : filters_values and labels MUST be in same order !
         # TODO : find a better way to mainter labels and values in same order.
         labels = None
-        if filter_type == 'GEOGRAPHIC':
+        if filter_type == "GEOGRAPHIC":
             filter_value = split_value_filter(filter_value)
             labels = format_geographic_filter_values(filter_value)
-        if filter_type == 'TAXONOMIC':
+        if filter_type == "TAXONOMIC":
             filter_value = split_value_filter(filter_value)
             labels = format_taxonomic_filter_values(filter_value)
 
@@ -934,11 +934,13 @@ class UserPermissions:
                 "action": action_code,
                 "object": object_code,
                 "end_date": end_date,
-                "filters": [{
-                    "type": filter_type,
-                    "value": filter_value,
-                    "label": labels,
-                }],
+                "filters": [
+                    {
+                        "type": filter_type,
+                        "value": filter_value,
+                        "label": labels,
+                    }
+                ],
                 "is_inherited": is_inherited,
                 "inherited_by": (inherited_by if is_inherited else None),
             }
@@ -946,7 +948,7 @@ class UserPermissions:
             recorded_gathering = self.permissions[module_code][permission_hash]["gathering"]
             recorded_filters = self.permissions[module_code][permission_hash]["filters"]
             if (
-                not any(f['type'] == filter_type for f in recorded_filters)
+                not any(f["type"] == filter_type for f in recorded_filters)
                 and gathering == recorded_gathering
             ):
                 new_filter = {
@@ -957,20 +959,20 @@ class UserPermissions:
                 self.permissions[module_code][permission_hash]["filters"].append(new_filter)
 
 
-
-
 def split_value_filter(data: str):
-    if data == None or data == '':
+    if data == None or data == "":
         return []
-    values = list(map(int, data.split(',')))
+    values = list(map(int, data.split(",")))
     unduplicated_data = unduplicate_values(values)
     unduplicated_data.sort()
     return unduplicated_data
+
 
 def unduplicate_values(data: list) -> list:
     unduplicated_data = []
     [unduplicated_data.append(x) for x in data if x not in unduplicated_data]
     return unduplicated_data
+
 
 def format_geographic_filter_values(areas: [int]):
     formated_geo = []
@@ -985,19 +987,17 @@ def format_geographic_filter_values(areas: [int]):
             formated_geo.append(name)
     return formated_geo
 
+
 def get_areas_infos(area_ids: [int]):
-    data = (DB
-        .session.query(
-            LAreas.area_name,
-            LAreas.area_code,
-            BibAreasTypes.type_code
-        )
+    data = (
+        DB.session.query(LAreas.area_name, LAreas.area_code, BibAreasTypes.type_code)
         .join(LAreas, LAreas.id_type == BibAreasTypes.id_type)
         .filter(LAreas.id_area.in_(tuple(area_ids)))
         .order_by(LAreas.id_area)
         .all()
     )
     return [row._asdict() for row in data]
+
 
 def format_taxonomic_filter_values(taxa: [int]):
     formated_taxonomic = []
@@ -1010,20 +1010,18 @@ def format_taxonomic_filter_values(taxa: [int]):
 
 
 def get_taxons_infos(taxon_ids: [int]):
-    data = (DB
-        .session.query(Taxref)
+    data = (
+        DB.session.query(Taxref)
         .filter(Taxref.cd_nom.in_(tuple(taxon_ids)))
         .order_by(Taxref.cd_nom)
         .all()
     )
     return [row.as_dict() for row in data]
 
+
 def build_value_filter_from_list(data: list):
     unduplicated_data = unduplicate_values(data)
     return ",".join(map(str, unduplicated_data))
-
-
-
 
 
 # -----------------------------------------------------------------------
@@ -1035,14 +1033,14 @@ def prepare_output(d, remove_in_key=None):
         for item in d:
             output.append(prepare_output(item, remove_in_key))
         return output
-    elif isinstance(d, dict) :
+    elif isinstance(d, dict):
         new = {}
         for k, v in d.items():
             # Remove None and empty values
             if v != None and v != "":
                 # Remove substring in key
                 if remove_in_key:
-                    k = k.replace(remove_in_key, '').strip('_')
+                    k = k.replace(remove_in_key, "").strip("_")
                 # Value processing recursively
                 new[format_to_camel_case(k)] = prepare_output(v, remove_in_key)
         return new
@@ -1051,8 +1049,8 @@ def prepare_output(d, remove_in_key=None):
 
 
 def format_to_camel_case(snake_str):
-    components = snake_str.split('_')
-    return components[0].lower() + ''.join(x.title() for x in components[1:])
+    components = snake_str.split("_")
+    return components[0].lower() + "".join(x.title() for x in components[1:])
 
 
 def prepare_input(d):
@@ -1061,15 +1059,16 @@ def prepare_input(d):
         for item in d:
             output.append(prepare_input(item))
         return output
-    elif isinstance(d, dict) :
+    elif isinstance(d, dict):
         return dict((format_to_snake_case(k), v) for k, v in d.items())
     else:
         return d
 
 
 def format_to_snake_case(camel_str):
-    return ''.join(['_'+char.lower() if char.isupper()
-        else char for char in camel_str]).lstrip('_')
+    return "".join(["_" + char.lower() if char.isupper() else char for char in camel_str]).lstrip(
+        "_"
+    )
 
 
 def format_role_name(role):
@@ -1080,9 +1079,10 @@ def format_role_name(role):
         name_parts.append(role.nom_role)
     return " ".join(name_parts)
 
+
 def format_end_access_date(end_date, date_format="%Y-%m-%d"):
     formated_end_date = None
-    if (end_date):
+    if end_date:
         date = datetime.date(end_date["year"], end_date["month"], end_date["day"])
         formated_end_date = date.strftime(date_format)
     return formated_end_date

@@ -14,7 +14,9 @@ from geonature.core.gn_permissions.models import (
     TObjects,
 )
 from geonature.core.gn_permissions.tools import (
-    format_end_access_date, build_value_filter_from_list, unduplicate_values 
+    format_end_access_date,
+    build_value_filter_from_list,
+    unduplicate_values,
 )
 from geonature.utils.env import DB
 
@@ -24,8 +26,7 @@ log = logging.getLogger(__name__)
 class PermissionRepository:
     def delete_permission_by_gathering(self, gathering):
         result = (
-            DB.session
-            .query(CorRoleActionFilterModuleObject)
+            DB.session.query(CorRoleActionFilterModuleObject)
             .filter(CorRoleActionFilterModuleObject.gathering == gathering)
             .delete()
         )
@@ -38,21 +39,12 @@ class PermissionRepository:
                     CorModuleActionObjectFilter.label,
                     CorModuleActionObjectFilter.code,
                 )
+                .join(TModules, TModules.id_module == CorModuleActionObjectFilter.id_module)
+                .join(TActions, TActions.id_action == CorModuleActionObjectFilter.id_action)
+                .join(TObjects, TObjects.id_object == CorModuleActionObjectFilter.id_object)
                 .join(
-                    TModules, 
-                    TModules.id_module == CorModuleActionObjectFilter.id_module
-                )
-                .join(
-                    TActions, 
-                    TActions.id_action == CorModuleActionObjectFilter.id_action
-                )
-                .join(
-                    TObjects, 
-                    TObjects.id_object == CorModuleActionObjectFilter.id_object
-                )
-                .join(
-                    BibFiltersType, 
-                    BibFiltersType.id_filter_type == CorModuleActionObjectFilter.id_filter_type
+                    BibFiltersType,
+                    BibFiltersType.id_filter_type == CorModuleActionObjectFilter.id_filter_type,
                 )
                 .filter(TModules.module_code == module_code)
                 .filter(TActions.code_action == action_code)
@@ -64,10 +56,10 @@ class PermissionRepository:
         except exc.NoResultFound:
             log.warning(
                 "Permission available not found for: "
-                f"module={module_code}, "+
-                f"action={action_code}, "+
-                f"object={object_code}, "+
-                f"filter_type={filter_type_code}. "
+                f"module={module_code}, "
+                + f"action={action_code}, "
+                + f"object={object_code}, "
+                + f"filter_type={filter_type_code}. "
             )
             return False
         return data
@@ -84,26 +76,30 @@ class PermissionRepository:
                 sa.cast(CorRoleActionFilterModuleObject.end_date, sa.Date),
                 CorRoleActionFilterModuleObject.gathering,
                 BibFiltersType.code_filter_type,
-                CorRoleActionFilterModuleObject.value_filter
+                CorRoleActionFilterModuleObject.value_filter,
             )
             .select_from(CorRoleActionFilterModuleObject)
             .join(User, User.id_role == CorRoleActionFilterModuleObject.id_role)
-            .join(CorModuleActionObjectFilter, sa.and_(
-                CorModuleActionObjectFilter.id_module == CorRoleActionFilterModuleObject.id_module,
-                CorModuleActionObjectFilter.id_action == CorRoleActionFilterModuleObject.id_action,
-                CorModuleActionObjectFilter.id_object == CorRoleActionFilterModuleObject.id_object,
-                CorModuleActionObjectFilter.id_filter_type == CorRoleActionFilterModuleObject.id_filter_type,
-            ))
             .join(
-                TActions, 
-                TActions.id_action == CorModuleActionObjectFilter.id_action
+                CorModuleActionObjectFilter,
+                sa.and_(
+                    CorModuleActionObjectFilter.id_module
+                    == CorRoleActionFilterModuleObject.id_module,
+                    CorModuleActionObjectFilter.id_action
+                    == CorRoleActionFilterModuleObject.id_action,
+                    CorModuleActionObjectFilter.id_object
+                    == CorRoleActionFilterModuleObject.id_object,
+                    CorModuleActionObjectFilter.id_filter_type
+                    == CorRoleActionFilterModuleObject.id_filter_type,
+                ),
             )
-            .join(
-                TObjects, 
-                TObjects.id_object == CorModuleActionObjectFilter.id_object
-            )
+            .join(TActions, TActions.id_action == CorModuleActionObjectFilter.id_action)
+            .join(TObjects, TObjects.id_object == CorModuleActionObjectFilter.id_object)
             .join(TModules, TModules.id_module == CorRoleActionFilterModuleObject.id_module)
-            .join(BibFiltersType, BibFiltersType.id_filter_type == CorRoleActionFilterModuleObject.id_filter_type)
+            .join(
+                BibFiltersType,
+                BibFiltersType.id_filter_type == CorRoleActionFilterModuleObject.id_filter_type,
+            )
         )
         query = query.filter(User.id_role == id_role)
         if gatherings:
@@ -119,7 +115,7 @@ class PermissionRepository:
         object_id = self.get_object_id(data["object"])
         end_access_date = format_end_access_date(data["end_date"])
         id_request = data.get("id_request")
-        
+
         # TODO: check if this permission with all this specific filters already exist
 
         # (Re)create permissions
@@ -129,7 +125,7 @@ class PermissionRepository:
                 filter_type_id = self.get_filter_id(key)
                 if key in ("geographic", "taxonomic"):
                     value_filter = build_value_filter_from_list(unduplicate_values(val))
-                else: 
+                else:
                     value_filter = val
 
                 # (Re)create permission with same gathering
@@ -148,47 +144,47 @@ class PermissionRepository:
                     DB.session.add(permission)
 
     def get_module_id(self, module_code):
-        return (DB
-            .session.query(TModules.id_module)
+        return (
+            DB.session.query(TModules.id_module)
             .filter(TModules.module_code == module_code)
             .scalar()
         )
 
     def get_action_id(self, action_code):
-        return (DB
-            .session.query(TActions.id_action)
+        return (
+            DB.session.query(TActions.id_action)
             .filter(TActions.code_action == action_code)
             .scalar()
         )
 
     def get_object_id(self, object_code):
-        return (DB
-            .session.query(TObjects.id_object)
+        return (
+            DB.session.query(TObjects.id_object)
             .filter(TObjects.code_object == object_code)
             .scalar()
         )
 
     def get_filter_id(self, filter_code):
-        return (DB
-            .session.query(BibFiltersType.id_filter_type)
+        return (
+            DB.session.query(BibFiltersType.id_filter_type)
             .filter(BibFiltersType.code_filter_type == filter_code.upper())
             .scalar()
         )
+
     def get_module_objects(self, id_module):
         query = (
             DB.session.query(TObjects)
             .join(
-                CorModuleActionObjectFilter, 
+                CorModuleActionObjectFilter,
                 CorModuleActionObjectFilter.id_object == TObjects.id_object,
             )
-            .filter_by(id_module = id_module)
-            
+            .filter_by(id_module=id_module)
         )
         return query.all()
-    
+
     def get_id_request(self, gathering):
-        return (DB
-            .session.query(CorRoleActionFilterModuleObject.id_request)
+        return (
+            DB.session.query(CorRoleActionFilterModuleObject.id_request)
             .filter(CorRoleActionFilterModuleObject.gathering == gathering)
             .limit(1)
             .scalar()

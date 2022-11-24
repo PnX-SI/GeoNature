@@ -6,13 +6,7 @@ import copy
 import locale
 import logging
 
-from flask import (
-    Blueprint,
-    request,
-    Response,
-    session,
-    jsonify
-)
+from flask import Blueprint, request, Response, session, jsonify
 from utils_flask_sqla.response import json_resp
 
 from geonature.core.gn_commons.models import TModules
@@ -24,7 +18,7 @@ from geonature.core.gn_permissions.repositories import PermissionRepository
 from geonature.utils.env import DB
 
 
-locale.setlocale(locale.LC_TIME, '')
+locale.setlocale(locale.LC_TIME, "")
 
 log = logging.getLogger(__name__)
 
@@ -32,6 +26,7 @@ routes = Blueprint("gn_permissions", __name__, template_folder="templates")
 
 from .access_request.routes import *
 from .permissions.routes import *
+
 
 @routes.route("/cruved", methods=["GET"])
 @permissions.check_cruved_scope(action="R", get_role=True, module_code="GEONATURE")
@@ -53,11 +48,9 @@ def get_cruved(info_role):
     params = request.args.to_dict()
 
     # get modules
-    q = DB.session.query(TModules).options(
-        joinedload(TModules.objects)
-    )
+    q = DB.session.query(TModules).options(joinedload(TModules.objects))
     if "module_code" in params:
-        codes = params["module_code"].split(',')
+        codes = params["module_code"].split(",")
         q = q.filter(TModules.module_code.in_(codes))
     modules = q.all()
 
@@ -70,7 +63,8 @@ def get_cruved(info_role):
         module_objects = PermissionRepository().get_module_objects(mod_as_dict["id_module"])
 
         module_cruved, herited = cruved_scope_for_user_in_module(
-            id_role=info_role.id_role, module_code=mod_as_dict["module_code"],
+            id_role=info_role.id_role,
+            module_code=mod_as_dict["module_code"],
         )
         mod_as_dict["cruved"] = module_cruved
 
@@ -108,8 +102,6 @@ def logout():
     return Response("Logout", 200)
 
 
-
-
 @routes.route("/modules", methods=["GET"])
 @permissions.check_cruved_scope(action="R", module_code="ADMIN", object_code="PERMISSIONS")
 def get_all_modules():
@@ -129,7 +121,7 @@ def get_all_modules():
 
     query = DB.session.query(TModules)
     if "codes" in params:
-        codes = params["codes"].split(',')
+        codes = params["codes"].split(",")
         query = query.filter(TModules.module_code.in_(codes))
 
     modules = []
@@ -138,7 +130,3 @@ def get_all_modules():
 
     output = prepare_output(modules, remove_in_key="module")
     return jsonify(output), 200
-
-
-
-

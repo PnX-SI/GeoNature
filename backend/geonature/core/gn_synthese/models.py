@@ -25,8 +25,13 @@ from apptax.taxonomie.models import Taxref
 from ref_geo.models import LAreas
 
 from geonature.core.gn_meta.models import TDatasets, TAcquisitionFramework
-from geonature.core.gn_commons.models import THistoryActions, TValidations, last_validation, \
-                                             TMedias, TModules
+from geonature.core.gn_commons.models import (
+    THistoryActions,
+    TValidations,
+    last_validation,
+    TMedias,
+    TModules,
+)
 from geonature.utils.env import DB, db
 
 
@@ -43,11 +48,13 @@ class TSources(DB.Model):
     meta_update_date = DB.Column(DB.DateTime)
 
 
-cor_observer_synthese = DB.Table("cor_observer_synthese",
-    DB.Column("id_synthese", DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True
-),
+cor_observer_synthese = DB.Table(
+    "cor_observer_synthese",
+    DB.Column(
+        "id_synthese", DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True
+    ),
     DB.Column("id_role", DB.Integer, ForeignKey(User.id_role), primary_key=True),
-    schema='gn_synthese',
+    schema="gn_synthese",
 )
 
 
@@ -61,10 +68,13 @@ class CorObserverSynthese(DB.Model):
     id_role = DB.Column(DB.Integer, ForeignKey(User.id_role), primary_key=True)
 
 
-corAreaSynthese = DB.Table("cor_area_synthese",
-    DB.Column("id_synthese", DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True),
+corAreaSynthese = DB.Table(
+    "cor_area_synthese",
+    DB.Column(
+        "id_synthese", DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True
+    ),
     DB.Column("id_area", DB.Integer, ForeignKey(LAreas.id_area), primary_key=True),
-    schema='gn_synthese',
+    schema="gn_synthese",
 )
 
 
@@ -100,14 +110,14 @@ class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
 
     def lateraljoin_last_validation(self):
         subquery = (
-            TValidations.query
-            .filter(TValidations.uuid_attached_row==Synthese.unique_id_sinp)
+            TValidations.query.filter(TValidations.uuid_attached_row == Synthese.unique_id_sinp)
             .limit(1)
             .subquery()
-            .lateral('last_validation')
+            .lateral("last_validation")
         )
-        return self.outerjoin(subquery, sa.true()) \
-                   .options(contains_eager(Synthese.last_validation, alias=subquery))
+        return self.outerjoin(subquery, sa.true()).options(
+            contains_eager(Synthese.last_validation, alias=subquery)
+        )
 
     def filter_by_scope(self, scope, user=None):
         if user is None:
@@ -115,19 +125,17 @@ class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
         if scope == 0:
             self = self.filter(sa.false())
         elif scope in (1, 2):
-            ors = [
-            ]
+            ors = []
             datasets = (
-                TDatasets.query
-                .filter_by_readable(user)
-                .with_entities(TDatasets.id_dataset)
-                .all()
+                TDatasets.query.filter_by_readable(user).with_entities(TDatasets.id_dataset).all()
             )
-            self = self.filter(or_(
-                Synthese.id_digitizer == user.id_role,
-                Synthese.cor_observers.any(id_role=user.id_role),
-                Synthese.id_dataset.in_([ds.id_dataset for ds in datasets]),
-            ))
+            self = self.filter(
+                or_(
+                    Synthese.id_digitizer == user.id_role,
+                    Synthese.cor_observers.any(id_role=user.id_role),
+                    Synthese.id_dataset.in_([ds.id_dataset for ds in datasets]),
+                )
+            )
         return self
 
 
@@ -135,7 +143,9 @@ class SyntheseQuery(GeoFeatureCollectionMixin, BaseQuery):
 class CorAreaSynthese(DB.Model):
     __tablename__ = "cor_area_synthese"
     __table_args__ = {"schema": "gn_synthese", "extend_existing": True}
-    id_synthese = DB.Column(DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True)
+    id_synthese = DB.Column(
+        DB.Integer, ForeignKey("gn_synthese.synthese.id_synthese"), primary_key=True
+    )
     id_area = DB.Column(DB.Integer, ForeignKey(LAreas.id_area), primary_key=True)
 
 
@@ -147,27 +157,27 @@ class Synthese(DB.Model):
     __table_args__ = {"schema": "gn_synthese"}
     query_class = SyntheseQuery
     nomenclatures_fields = [
-        'nomenclature_geo_object_nature',
-        'nomenclature_grp_typ',
-        'nomenclature_obs_technique',
-        'nomenclature_bio_status',
-        'nomenclature_bio_condition',
-        'nomenclature_naturalness',
-        'nomenclature_exist_proof',
-        'nomenclature_valid_status',
-        'nomenclature_diffusion_level',
-        'nomenclature_life_stage',
-        'nomenclature_sex',
-        'nomenclature_obj_count',
-        'nomenclature_type_count',
-        'nomenclature_sensitivity',
-        'nomenclature_observation_status',
-        'nomenclature_blurring',
-        'nomenclature_source_status',
-        'nomenclature_info_geo_type',
-        'nomenclature_behaviour',
-        'nomenclature_biogeo_status',
-        'nomenclature_determination_method',
+        "nomenclature_geo_object_nature",
+        "nomenclature_grp_typ",
+        "nomenclature_obs_technique",
+        "nomenclature_bio_status",
+        "nomenclature_bio_condition",
+        "nomenclature_naturalness",
+        "nomenclature_exist_proof",
+        "nomenclature_valid_status",
+        "nomenclature_diffusion_level",
+        "nomenclature_life_stage",
+        "nomenclature_sex",
+        "nomenclature_obj_count",
+        "nomenclature_type_count",
+        "nomenclature_sensitivity",
+        "nomenclature_observation_status",
+        "nomenclature_blurring",
+        "nomenclature_source_status",
+        "nomenclature_info_geo_type",
+        "nomenclature_behaviour",
+        "nomenclature_biogeo_status",
+        "nomenclature_determination_method",
     ]
 
     id_synthese = DB.Column(DB.Integer, primary_key=True)
@@ -179,53 +189,113 @@ class Synthese(DB.Model):
     module = relationship(TModules)
     entity_source_pk_value = DB.Column(DB.Integer)  # FIXME varchar in db!
     id_dataset = DB.Column(DB.Integer, ForeignKey(TDatasets.id_dataset))
-    dataset = DB.relationship(TDatasets, backref=DB.backref('synthese_records', lazy='dynamic'))
+    dataset = DB.relationship(TDatasets, backref=DB.backref("synthese_records", lazy="dynamic"))
     grp_method = DB.Column(DB.Unicode(length=255))
 
-    id_nomenclature_geo_object_nature = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_geo_object_nature = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_geo_object_nature])
+    id_nomenclature_geo_object_nature = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
+    nomenclature_geo_object_nature = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_geo_object_nature]
+    )
     id_nomenclature_grp_typ = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
     nomenclature_grp_typ = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_grp_typ])
-    id_nomenclature_obs_technique = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_obs_technique = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_obs_technique])
+    id_nomenclature_obs_technique = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
+    nomenclature_obs_technique = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_obs_technique]
+    )
     id_nomenclature_bio_status = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_bio_status = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_bio_status])
-    id_nomenclature_bio_condition = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_bio_condition = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_bio_condition])
+    nomenclature_bio_status = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_bio_status]
+    )
+    id_nomenclature_bio_condition = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
+    nomenclature_bio_condition = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_bio_condition]
+    )
     id_nomenclature_naturalness = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_naturalness = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_naturalness])
+    nomenclature_naturalness = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_naturalness]
+    )
     id_nomenclature_exist_proof = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_exist_proof = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_exist_proof])
-    id_nomenclature_valid_status = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_valid_status = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_valid_status])
+    nomenclature_exist_proof = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_exist_proof]
+    )
+    id_nomenclature_valid_status = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
+    nomenclature_valid_status = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_valid_status]
+    )
     id_nomenclature_exist_proof = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_exist_proof = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_exist_proof])
-    id_nomenclature_diffusion_level = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_diffusion_level = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_diffusion_level])
+    nomenclature_exist_proof = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_exist_proof]
+    )
+    id_nomenclature_diffusion_level = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
+    nomenclature_diffusion_level = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_diffusion_level]
+    )
     id_nomenclature_life_stage = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_life_stage = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_life_stage])
+    nomenclature_life_stage = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_life_stage]
+    )
     id_nomenclature_sex = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
     nomenclature_sex = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_sex])
     id_nomenclature_obj_count = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_obj_count = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_obj_count])
+    nomenclature_obj_count = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_obj_count]
+    )
     id_nomenclature_type_count = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_type_count = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_type_count])
+    nomenclature_type_count = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_type_count]
+    )
     id_nomenclature_sensitivity = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_sensitivity = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_sensitivity])
-    id_nomenclature_observation_status = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_observation_status = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_observation_status])
+    nomenclature_sensitivity = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_sensitivity]
+    )
+    id_nomenclature_observation_status = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
+    nomenclature_observation_status = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_observation_status]
+    )
     id_nomenclature_blurring = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_blurring = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_blurring])
-    id_nomenclature_source_status = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_source_status = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_source_status])
-    id_nomenclature_info_geo_type = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_info_geo_type = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_info_geo_type])
+    nomenclature_blurring = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_blurring]
+    )
+    id_nomenclature_source_status = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
+    nomenclature_source_status = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_source_status]
+    )
+    id_nomenclature_info_geo_type = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
+    nomenclature_info_geo_type = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_info_geo_type]
+    )
     id_nomenclature_behaviour = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_behaviour = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_behaviour])
-    id_nomenclature_biogeo_status = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_biogeo_status = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_biogeo_status])
-    id_nomenclature_determination_method = db.Column(db.Integer, ForeignKey(TNomenclatures.id_nomenclature))
-    nomenclature_determination_method = db.relationship(TNomenclatures, foreign_keys=[id_nomenclature_determination_method])
+    nomenclature_behaviour = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_behaviour]
+    )
+    id_nomenclature_biogeo_status = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
+    nomenclature_biogeo_status = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_biogeo_status]
+    )
+    id_nomenclature_determination_method = db.Column(
+        db.Integer, ForeignKey(TNomenclatures.id_nomenclature)
+    )
+    nomenclature_determination_method = db.relationship(
+        TNomenclatures, foreign_keys=[id_nomenclature_determination_method]
+    )
 
     reference_biblio = DB.Column(DB.Unicode(length=5000))
     count_min = DB.Column(DB.Integer)
@@ -266,14 +336,10 @@ class Synthese(DB.Model):
     last_action = DB.Column(DB.Unicode)
 
     areas = relationship(LAreas, secondary=corAreaSynthese)
-    validations = relationship(TValidations, backref='attached_row')
-    last_validation = relationship(last_validation,
-                                   uselist=False,
-                                   viewonly=True)
+    validations = relationship(TValidations, backref="attached_row")
+    last_validation = relationship(last_validation, uselist=False, viewonly=True)
     medias = relationship(
-        TMedias,
-        primaryjoin=(TMedias.uuid_attached_row==foreign(unique_id_sinp)),
-        uselist=True
+        TMedias, primaryjoin=(TMedias.uuid_attached_row == foreign(unique_id_sinp)), uselist=True
     )
 
     cor_observers = DB.relationship(User, secondary=cor_observer_synthese)
@@ -393,8 +459,7 @@ class VSyntheseForWebApp(DB.Model):
     st_asgeojson = DB.Column(DB.Unicode)
 
     has_medias = column_property(
-        exists([TMedias.id_media]).\
-            where(TMedias.uuid_attached_row==unique_id_sinp)
+        exists([TMedias.id_media]).where(TMedias.uuid_attached_row == unique_id_sinp)
     )
 
     def get_geofeature(self, recursif=False, fields=[]):
@@ -449,7 +514,9 @@ def synthese_export_serialization(cls):
             geometry = {"type": "Point", "coordinates": [0, 0]}
 
         feature = Feature(
-            id=str(getattr(self, idCol)), geometry=geometry, properties=self.as_dict_ordered(),
+            id=str(getattr(self, idCol)),
+            geometry=geometry,
+            properties=self.as_dict_ordered(),
         )
         return feature
 

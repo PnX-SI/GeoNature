@@ -3,7 +3,10 @@ from uuid import UUID
 
 from flask import g
 from flask_sqlalchemy import BaseQuery
-from geonature.core.gn_permissions.tools import cruved_scope_for_user_in_module, get_scopes_by_action
+from geonature.core.gn_permissions.tools import (
+    cruved_scope_for_user_in_module,
+    get_scopes_by_action,
+)
 from geonature.utils.errors import GeonatureApiError
 import sqlalchemy as sa
 from sqlalchemy import ForeignKey, or_
@@ -28,14 +31,14 @@ class FilterMixin:
     def compute_filter(cls, **kwargs):
         f = sa.true()
         for key, value in kwargs.items():
-            if '.' in key:
-                rel_name, key = key.split('.', 1)
+            if "." in key:
+                rel_name, key = key.split(".", 1)
                 try:
                     rel = getattr(cls, rel_name)
                 except AttributeError:
                     continue
                 remote_cls = rel.property.mapper.class_
-                if not hasattr(remote_cls, 'compute_filter'):
+                if not hasattr(remote_cls, "compute_filter"):
                     continue
                 _f = remote_cls.compute_filter(**{key: value})
                 if rel.property.uselist:
@@ -87,6 +90,7 @@ class CorAcquisitionFrameworkVoletSINP(DB.Model):
         primaryjoin=(TNomenclatures.id_nomenclature == id_nomenclature_voletsinp),
     )
 
+
 class CorAcquisitionFrameworkTerritory(DB.Model):
     __tablename__ = "cor_acquisition_framework_territory"
     __table_args__ = {"schema": "gn_meta"}
@@ -115,7 +119,8 @@ class CorAcquisitionFrameworkActor(DB.Model):
     __table_args__ = {"schema": "gn_meta"}
     id_cafa = DB.Column(DB.Integer, primary_key=True)
     id_acquisition_framework = DB.Column(
-        DB.Integer, ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
+        DB.Integer,
+        ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
     id_role = DB.Column(DB.Integer, ForeignKey(User.id_role))
     id_organism = DB.Column(DB.Integer, ForeignKey(Organisme.id_organisme))
@@ -141,7 +146,8 @@ class CorAcquisitionFrameworkActor(DB.Model):
         lazy="joined",
     )
 
-@serializable(exclude=['actor'])
+
+@serializable(exclude=["actor"])
 class CorDatasetActor(DB.Model):
     __tablename__ = "cor_dataset_actor"
     __table_args__ = {"schema": "gn_meta"}
@@ -176,7 +182,8 @@ class CorDatasetActor(DB.Model):
             actor = self.role.nom_complet
         else:
             actor = self.organism.nom_organisme
-        return '{} ({})'.format(actor, self.nomenclature_actor_role.label_default)
+        return "{} ({})".format(actor, self.nomenclature_actor_role.label_default)
+
 
 @serializable
 class CorDatasetProtocol(DB.Model):
@@ -215,9 +222,8 @@ class CruvedMixin:
     Classe abstraite permettant d'ajouter des méthodes de
     contrôle d'accès à la donnée des class TDatasets et TAcquisitionFramework
     """
-    def get_object_cruved(
-        self, user_cruved
-    ):
+
+    def get_object_cruved(self, user_cruved):
         """
         Return the user's cruved for a Model instance.
         Use in the map-list interface to allow or not an action
@@ -242,30 +248,24 @@ class TBibliographicReference(CruvedMixin, db.Model):
     __table_args__ = {"schema": "gn_meta"}
     id_bibliographic_reference = DB.Column(DB.Integer, primary_key=True)
     id_acquisition_framework = DB.Column(
-        DB.Integer, ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
+        DB.Integer,
+        ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
     )
     publication_url = DB.Column(DB.Unicode)
     publication_reference = DB.Column(DB.Unicode)
-
 
 
 class TDatasetsQuery(BaseQuery):
     def _get_read_scope(self, user=None):
         if user is None:
             user = g.current_user
-        cruved = get_scopes_by_action(
-            id_role=user.id_role,
-            module_code="GEONATURE"
-        )
-        return cruved['R']
+        cruved = get_scopes_by_action(id_role=user.id_role, module_code="GEONATURE")
+        return cruved["R"]
 
     def _get_create_scope(self, module_code, user=None):
         if user is None:
             user = g.current_user
-        cruved = get_scopes_by_action(
-            id_role=user.id_role,
-            module_code=module_code
-        )
+        cruved = get_scopes_by_action(id_role=user.id_role, module_code=module_code)
         return cruved["C"]
 
     def filter_by_scope(self, scope, user=None):
@@ -276,7 +276,7 @@ class TDatasetsQuery(BaseQuery):
         elif scope in (1, 2):
             ors = [
                 TDatasets.id_digitizer == user.id_role,
-                TDatasets.cor_dataset_actor.any(id_role=user.id_role)
+                TDatasets.cor_dataset_actor.any(id_role=user.id_role),
             ]
             # if organism is None => do not filter on id_organism even if level = 2
             if scope == 2 and user.id_organisme is not None:
@@ -320,11 +320,9 @@ class TDatasetsQuery(BaseQuery):
 
     def filter_by_readable(self, user=None):
         """
-            Return the datasets where the user has autorization via its CRUVED
+        Return the datasets where the user has autorization via its CRUVED
         """
-        return self.filter_by_scope(
-            self._get_read_scope(user)
-        )
+        return self.filter_by_scope(self._get_read_scope(user))
 
     def filter_by_creatable(self, module_code, user=None):
         """
@@ -339,19 +337,23 @@ class TDatasetsQuery(BaseQuery):
         return query.filter_by_scope(scope)
 
 
-
-@serializable(exclude=['user_actors', 'organism_actors'])
+@serializable(exclude=["user_actors", "organism_actors"])
 class TDatasets(CruvedMixin, FilterMixin, db.Model):
     __tablename__ = "t_datasets"
     __table_args__ = {"schema": "gn_meta"}
     query_class = TDatasetsQuery
 
     id_dataset = DB.Column(DB.Integer, primary_key=True)
-    unique_dataset_id = DB.Column(UUIDType(as_uuid=True), default=select([func.uuid_generate_v4()]))
-    id_acquisition_framework = DB.Column(
-        DB.Integer, ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
+    unique_dataset_id = DB.Column(
+        UUIDType(as_uuid=True), default=select([func.uuid_generate_v4()])
     )
-    acquisition_framework = DB.relationship("TAcquisitionFramework", lazy="joined")  # join AF as required for permissions checks
+    id_acquisition_framework = DB.Column(
+        DB.Integer,
+        ForeignKey("gn_meta.t_acquisition_frameworks.id_acquisition_framework"),
+    )
+    acquisition_framework = DB.relationship(
+        "TAcquisitionFramework", lazy="joined"
+    )  # join AF as required for permissions checks
     dataset_name = DB.Column(DB.Unicode)
     dataset_shortname = DB.Column(DB.Unicode)
     dataset_desc = DB.Column(DB.Unicode)
@@ -438,12 +440,14 @@ class TDatasets(CruvedMixin, FilterMixin, db.Model):
         lazy="select",
         secondary=CorDatasetTerritory.__table__,
         primaryjoin=(CorDatasetTerritory.id_dataset == id_dataset),
-        secondaryjoin=(CorDatasetTerritory.id_nomenclature_territory == TNomenclatures.id_nomenclature),
+        secondaryjoin=(
+            CorDatasetTerritory.id_nomenclature_territory == TNomenclatures.id_nomenclature
+        ),
         foreign_keys=[
             CorDatasetTerritory.id_dataset,
             CorDatasetTerritory.id_nomenclature_territory,
         ],
-        backref=DB.backref("territory_dataset", lazy="select")
+        backref=DB.backref("territory_dataset", lazy="select"),
     )
 
     # because CorDatasetActor could be an User or an Organisme object...
@@ -451,16 +455,16 @@ class TDatasets(CruvedMixin, FilterMixin, db.Model):
         CorDatasetActor,
         lazy="joined",
         cascade="save-update, merge, delete, delete-orphan",
-        backref=DB.backref("actor_dataset", lazy="select")
+        backref=DB.backref("actor_dataset", lazy="select"),
     )
 
     @hybrid_property
     def user_actors(self):
-        return [ actor.role for actor in self.cor_dataset_actor if actor.role is not None ]
+        return [actor.role for actor in self.cor_dataset_actor if actor.role is not None]
 
     @hybrid_property
     def organism_actors(self):
-        return [ actor.organism for actor in self.cor_dataset_actor if actor.organism is not None ]
+        return [actor.organism for actor in self.cor_dataset_actor if actor.organism is not None]
 
     def is_deletable(self):
         return not DB.session.query(self.synthese_records.exists()).scalar()
@@ -476,7 +480,9 @@ class TDatasets(CruvedMixin, FilterMixin, db.Model):
                 return True
             if scope == 2 and g.current_user.organisme in self.organism_actors:
                 return True
-            return _through_af and self.acquisition_framework.has_instance_permission(scope, _through_ds=False)
+            return _through_af and self.acquisition_framework.has_instance_permission(
+                scope, _through_ds=False
+            )
         elif scope == 3:
             return True
 
@@ -485,7 +491,7 @@ class TDatasets(CruvedMixin, FilterMixin, db.Model):
 
     @staticmethod
     def get_id(uuid_dataset):
-        return(
+        return (
             DB.session.query(TDatasets.id_dataset)
             .filter(TDatasets.unique_dataset_id == uuid_dataset)
             .scalar()
@@ -493,7 +499,7 @@ class TDatasets(CruvedMixin, FilterMixin, db.Model):
 
     @staticmethod
     def get_uuid(id_dataset):
-        return(
+        return (
             DB.session.query(TDatasets.unique_dataset_id)
             .filter(TDatasets.id_dataset == id_dataset)
             .scalar()
@@ -502,7 +508,7 @@ class TDatasets(CruvedMixin, FilterMixin, db.Model):
     @classmethod
     def compute_filter(cls, **kwargs):
         f = super().compute_filter(**kwargs)
-        uuid = kwargs.get('uuid')
+        uuid = kwargs.get("uuid")
         if uuid is not None:
             try:
                 uuid = UUID(uuid.strip())
@@ -510,20 +516,18 @@ class TDatasets(CruvedMixin, FilterMixin, db.Model):
                 pass
             else:
                 f &= TDatasets.unique_dataset_id == uuid
-        name = kwargs.get('name')
+        name = kwargs.get("name")
         if name is not None:
-            f &= TDatasets.dataset_name.ilike(f'%{name}%')
+            f &= TDatasets.dataset_name.ilike(f"%{name}%")
         return f
 
 
 class TAcquisitionFrameworkQuery(BaseQuery):
     def _get_read_scope(self):
         cruved, herited = cruved_scope_for_user_in_module(
-            id_role=g.current_user.id_role,
-            module_code="GEONATURE"
+            id_role=g.current_user.id_role, module_code="GEONATURE"
         )
-        return int(cruved['R'])
-
+        return int(cruved["R"])
 
     def filter_by_scope(self, scope, user=None):
         if user is None:
@@ -552,22 +556,20 @@ class TAcquisitionFrameworkQuery(BaseQuery):
 
     def filter_by_readable(self):
         """
-            Return the afs where the user has autorization via its CRUVED
+        Return the afs where the user has autorization via its CRUVED
         """
-        return self.filter_by_scope(
-            self._get_read_scope()
-        )
+        return self.filter_by_scope(self._get_read_scope())
 
     def filter_by_params(self, params={}):
         # XXX frontend retro-compatibility
-        selector = params.get('selector')
-        if selector == 'ds':
-            params = { f'datasets.{key}': value for key, value in params.items() }
+        selector = params.get("selector")
+        if selector == "ds":
+            params = {f"datasets.{key}": value for key, value in params.items()}
         f = TAcquisitionFramework.compute_filter(**params)
         return self.filter(f)
 
 
-@serializable(exclude=['user_actors', 'organism_actors'])
+@serializable(exclude=["user_actors", "organism_actors"])
 class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
     __tablename__ = "t_acquisition_frameworks"
     __table_args__ = {"schema": "gn_meta"}
@@ -608,22 +610,20 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
 
     creator = DB.relationship(User, lazy="joined")  # = digitizer
     nomenclature_territorial_level = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[id_nomenclature_territorial_level],
-        lazy='joined')
+        TNomenclatures, foreign_keys=[id_nomenclature_territorial_level], lazy="joined"
+    )
 
     nomenclature_financing_type = DB.relationship(
-        TNomenclatures,
-        foreign_keys=[id_nomenclature_financing_type],
-        lazy='joined')
+        TNomenclatures, foreign_keys=[id_nomenclature_financing_type], lazy="joined"
+    )
 
     cor_af_actor = relationship(
         CorAcquisitionFrameworkActor,
         lazy="joined",
-        #cascade="save-update, merge, delete, delete-orphan",
+        # cascade="save-update, merge, delete, delete-orphan",
         cascade="all,delete-orphan",
         uselist=True,
-        backref=DB.backref("actor_af", lazy="select")
+        backref=DB.backref("actor_af", lazy="select"),
     )
 
     cor_objectifs = DB.relationship(
@@ -641,33 +641,43 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
             CorAcquisitionFrameworkObjectif.id_acquisition_framework,
             CorAcquisitionFrameworkObjectif.id_nomenclature_objectif,
         ],
-        backref=DB.backref("objectif_af", lazy="select")
+        backref=DB.backref("objectif_af", lazy="select"),
     )
 
     cor_volets_sinp = DB.relationship(
         TNomenclatures,
         lazy="select",
         secondary=CorAcquisitionFrameworkVoletSINP.__table__,
-        primaryjoin=(CorAcquisitionFrameworkVoletSINP.id_acquisition_framework == id_acquisition_framework),
-        secondaryjoin=(CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp == TNomenclatures.id_nomenclature),
+        primaryjoin=(
+            CorAcquisitionFrameworkVoletSINP.id_acquisition_framework == id_acquisition_framework
+        ),
+        secondaryjoin=(
+            CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp
+            == TNomenclatures.id_nomenclature
+        ),
         foreign_keys=[
             CorAcquisitionFrameworkVoletSINP.id_acquisition_framework,
             CorAcquisitionFrameworkVoletSINP.id_nomenclature_voletsinp,
         ],
-        backref=DB.backref("volet_sinp_af", lazy="select")
+        backref=DB.backref("volet_sinp_af", lazy="select"),
     )
 
     cor_territories = DB.relationship(
         TNomenclatures,
         lazy="select",
         secondary=CorAcquisitionFrameworkTerritory.__table__,
-        primaryjoin=(CorAcquisitionFrameworkTerritory.id_acquisition_framework == id_acquisition_framework),
-        secondaryjoin=(CorAcquisitionFrameworkTerritory.id_nomenclature_territory == TNomenclatures.id_nomenclature),
+        primaryjoin=(
+            CorAcquisitionFrameworkTerritory.id_acquisition_framework == id_acquisition_framework
+        ),
+        secondaryjoin=(
+            CorAcquisitionFrameworkTerritory.id_nomenclature_territory
+            == TNomenclatures.id_nomenclature
+        ),
         foreign_keys=[
             CorAcquisitionFrameworkTerritory.id_acquisition_framework,
             CorAcquisitionFrameworkTerritory.id_nomenclature_territory,
         ],
-        backref=DB.backref("territory_af", lazy="select")
+        backref=DB.backref("territory_af", lazy="select"),
     )
 
     bibliographical_references = DB.relationship(
@@ -688,17 +698,17 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
 
     @hybrid_property
     def user_actors(self):
-        return [ actor.role for actor in self.cor_af_actor if actor.role is not None ]
+        return [actor.role for actor in self.cor_af_actor if actor.role is not None]
 
     @hybrid_property
     def organism_actors(self):
-        return [ actor.organism for actor in self.cor_af_actor if actor.organism is not None ]
+        return [actor.organism for actor in self.cor_af_actor if actor.organism is not None]
 
     def is_deletable(self):
         return not db.session.query(
-            TDatasets.query
-            .filter_by(id_acquisition_framework=self.id_acquisition_framework)
-            .exists()
+            TDatasets.query.filter_by(
+                id_acquisition_framework=self.id_acquisition_framework
+            ).exists()
         ).scalar()
 
     def has_instance_permission(self, scope, _through_ds=True):
@@ -710,17 +720,22 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
             if scope == 2 and g.current_user.organisme in self.organism_actors:
                 return True
             # rights on DS give rights on AF!
-            return _through_ds and any(map(lambda ds: ds.has_instance_permission(scope, _through_af=False), self.t_datasets))
+            return _through_ds and any(
+                map(
+                    lambda ds: ds.has_instance_permission(scope, _through_af=False),
+                    self.t_datasets,
+                )
+            )
         elif scope == 3:
             return True
 
     @staticmethod
     def get_id(uuid_af):
         """
-            return the acquisition framework's id
-            from its UUID if exist or None
+        return the acquisition framework's id
+        from its UUID if exist or None
         """
-        return(
+        return (
             DB.session.query(TAcquisitionFramework.id_acquisition_framework)
             .filter(TAcquisitionFramework.unique_acquisition_framework_id == uuid_af)
             .scalar()
@@ -729,12 +744,12 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
     @staticmethod
     def get_user_af(user, only_query=False, only_user=False):
         """get the af(s) where the user is actor (himself or with its organism - only himelsemf id only_use=True) or digitizer
-            param:
-              - user from TRole model
-              - only_query: boolean (return the query not the id_datasets allowed if true)
-              - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
+        param:
+          - user from TRole model
+          - only_query: boolean (return the query not the id_datasets allowed if true)
+          - only_user: boolean: return only the dataset where user himself is actor (not with its organoism)
 
-            return: a list of id_dataset or a query"""
+        return: a list of id_dataset or a query"""
         q = DB.session.query(TAcquisitionFramework.id_acquisition_framework).outerjoin(
             CorAcquisitionFrameworkActor,
             CorAcquisitionFrameworkActor.id_acquisition_framework
@@ -763,7 +778,7 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
     @classmethod
     def compute_filter(cls, **kwargs):
         f = super().compute_filter(**kwargs)
-        uuid = kwargs.get('uuid')
+        uuid = kwargs.get("uuid")
         if uuid is not None:
             try:
                 uuid = UUID(uuid.strip())
@@ -771,9 +786,9 @@ class TAcquisitionFramework(CruvedMixin, FilterMixin, db.Model):
                 pass
             else:
                 f &= TAcquisitionFramework.unique_acquisition_framework_id == uuid
-        name = kwargs.get('name')
+        name = kwargs.get("name")
         if name is not None:
-            f &= TAcquisitionFramework.acquisition_framework_name.ilike(f'%{name}%')
+            f &= TAcquisitionFramework.acquisition_framework_name.ilike(f"%{name}%")
         return f
 
 
@@ -803,10 +818,7 @@ class TDatasetDetails(TDatasets):
         TNomenclatures,
         foreign_keys=[TDatasets.id_nomenclature_resource_type],
     )
-    additional_fields = DB.relationship(
-        "TAdditionalFields",
-        secondary=cor_field_dataset
-    )
+    additional_fields = DB.relationship("TAdditionalFields", secondary=cor_field_dataset)
 
 
 @serializable
@@ -814,6 +826,7 @@ class TAcquisitionFrameworkDetails(TAcquisitionFramework):
     """
     Class which extends TAcquisitionFramework with nomenclatures relationships
     """
+
     nomenclature_territorial_level = DB.relationship(
         TNomenclatures,
         foreign_keys=[TAcquisitionFramework.id_nomenclature_territorial_level],

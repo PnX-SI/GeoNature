@@ -14,20 +14,21 @@ from utils_flask_sqla.migrations.utils import logger
 
 
 # revision identifiers, used by Alembic.
-revision = 'dfec5f64ac73'
-down_revision = '61e46813d621'
+revision = "dfec5f64ac73"
+down_revision = "61e46813d621"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
-    recompute_sensitivity = context.get_x_argument(as_dictionary=True).get('recompute-sensitivity')
+    recompute_sensitivity = context.get_x_argument(as_dictionary=True).get("recompute-sensitivity")
     if recompute_sensitivity is not None:
         recompute_sensitivity = bool(strtobool(recompute_sensitivity))
     else:
         recompute_sensitivity = True
 
-    op.execute("""
+    op.execute(
+        """
     CREATE OR REPLACE FUNCTION gn_sensitivity.get_id_nomenclature_sensitivity(my_date_obs date, my_cd_ref integer, my_geom geometry, my_criterias jsonb)
      RETURNS integer
      LANGUAGE plpgsql
@@ -69,7 +70,8 @@ def upgrade():
             return sensitivity;
         END;
         $function$
-    """)
+    """
+    )
 
     if recompute_sensitivity:
         logger.info("Recompute sensitivity…")
@@ -78,7 +80,8 @@ def upgrade():
 
 
 def downgrade():
-    op.execute("""
+    op.execute(
+        """
     CREATE OR REPLACE FUNCTION gn_sensitivity.get_id_nomenclature_sensitivity(my_date_obs date, my_cd_ref integer, my_geom geometry, my_criterias jsonb)
      RETURNS integer
      LANGUAGE plpgsql
@@ -200,4 +203,5 @@ def downgrade():
 
     END;
     $function$
-    """)
+    """
+    )

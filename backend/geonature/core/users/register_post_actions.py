@@ -22,12 +22,12 @@ from geonature.utils.env import db, DB
 
 def validate_temp_user(data):
     """
-       Send an email after the action of account creation.
+    Send an email after the action of account creation.
 
-       :param admin_validation_required: if True an admin will receive an
-       email to validate the account creation else the user himself
-       receive the email.
-       :type admin_validation_required: bool
+    :param admin_validation_required: if True an admin will receive an
+    email to validate the account creation else the user himself
+    receive the email.
+    :type admin_validation_required: bool
     """
     token = data.get("token", None)
 
@@ -46,11 +46,11 @@ def validate_temp_user(data):
         template = "email_admin_validate_account.html"
         recipients = current_app.config["ACCOUNT_MANAGEMENT"]["VALIDATOR_EMAIL"]
     url_validation = url_for("users.confirmation", token=user.token_role, _external=True)
-    
+
     if current_app.config["URL_USERSHUB"]:
-        url_usershub=current_app.config.get("URL_USERSHUB") + "/temp_users/list"
+        url_usershub = current_app.config.get("URL_USERSHUB") + "/temp_users/list"
     else:
-        url_usershub=None
+        url_usershub = None
 
     msg_html = render_template(
         template,
@@ -77,8 +77,8 @@ def execute_actions_after_validation(data):
 
 def create_dataset_user(user):
     """
-        After dataset validation, add a personnal AF and JDD so the user
-        can add new user.
+    After dataset validation, add a personnal AF and JDD so the user
+    can add new user.
     """
     af_desc_and_name = "Cadre d'acquisition personnel de {name} {surname}".format(
         name=user["nom_role"], surname=user["prenom_role"]
@@ -128,7 +128,7 @@ def create_dataset_user(user):
     new_dataset.cor_dataset_actor = [ds_productor, ds_contact]
     db.session.add(new_dataset)
 
-    for module_code in current_app.config['ACCOUNT_MANAGEMENT']['DATASET_MODULES_ASSOCIATION']:
+    for module_code in current_app.config["ACCOUNT_MANAGEMENT"]["DATASET_MODULES_ASSOCIATION"]:
         module = TModules.query.filter_by(module_code=module_code).one_or_none()
         if module is None:
             warn("Module code '{}' does not exist, can not associate dataset.".format(module_code))

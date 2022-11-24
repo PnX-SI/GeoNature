@@ -32,7 +32,7 @@ from .models import (
     TOccurrencesOccurrence,
     CorCountingOccurrence,
     VReleveOccurrence,
-    DefaultNomenclaturesValue
+    DefaultNomenclaturesValue,
 )
 from .repositories import (
     ReleveRepository,
@@ -98,14 +98,14 @@ def getReleves(info_role):
     for n in data:
         releve_cruved = n.get_releve_cruved(user, user_cruved)
         feature = n.get_geofeature(
-			fields=[
-				"t_occurrences_occtax",
-				"t_occurrences_occtax.cor_counting_occtax",
-				"t_occurrences_occtax.taxref",
-				"observers",
-				"digitiser",
-				"dataset",
-				"t_occurrences_occtax.cor_counting_occtax.medias"
+            fields=[
+                "t_occurrences_occtax",
+                "t_occurrences_occtax.cor_counting_occtax",
+                "t_occurrences_occtax.taxref",
+                "observers",
+                "digitiser",
+                "dataset",
+                "t_occurrences_occtax.cor_counting_occtax.medias",
             ]
         )
         feature["properties"]["rights"] = releve_cruved
@@ -158,8 +158,7 @@ def getOneCounting(id_counting):
             )
             .join(
                 TRelevesOccurrence,
-                TRelevesOccurrence.id_releve_occtax
-                == TOccurrencesOccurrence.id_releve_occtax,
+                TRelevesOccurrence.id_releve_occtax == TOccurrencesOccurrence.id_releve_occtax,
             )
             .filter(CorCountingOccurrence.id_counting_occtax == id_counting)
             .one()
@@ -234,9 +233,7 @@ def getViewReleveOccurrence(info_role):
     # Order by
     if "orderby" in parameters:
         if parameters.get("orderby") in VReleveOccurrence.__table__.columns:
-            orderCol = getattr(
-                VReleveOccurrence.__table__.columns, parameters["orderby"]
-            )
+            orderCol = getattr(VReleveOccurrence.__table__.columns, parameters["orderby"])
 
         if "order" in parameters:
             if parameters["order"] == "desc":
@@ -473,9 +470,8 @@ def createReleve(info_role):
     """
     # nouveau releve vide
     releve = TRelevesOccurrence()
-    releve = (
-        ReleveSchema()
-        .dump(releveHandler(request=request, releve=releve, info_role=info_role))
+    releve = ReleveSchema().dump(
+        releveHandler(request=request, releve=releve, info_role=info_role)
     )
 
     return {
@@ -498,9 +494,8 @@ def updateReleve(id_releve, info_role):
     if not releve:
         return {"message": "not found"}, 404
 
-    releve = (
-        ReleveSchema()
-        .dump(releveHandler(request=request, releve=releve, info_role=info_role))
+    releve = ReleveSchema().dump(
+        releveHandler(request=request, releve=releve, info_role=info_role)
     )
 
     return {
@@ -557,7 +552,6 @@ def createOccurrence(id_releve, info_role):
     )
 
 
-
 @blueprint.route("/occurrence/<int:id_occurrence>", methods=["POST"])
 @permissions.check_cruved_scope("U", True, module_code="OCCTAX")
 def updateOccurrence(id_occurrence, info_role):
@@ -606,7 +600,7 @@ def deleteOneOccurence(id_occ):
     DB.session.delete(occ)
     DB.session.commit()
 
-    return '', 204
+    return "", 204
 
 
 @blueprint.route("/releve/occurrence_counting/<int:id_count>", methods=["DELETE"])
@@ -623,7 +617,7 @@ def deleteOneOccurenceCounting(id_count):
     # TODO check ccc ownership!
     DB.session.delete(ccc)
     DB.session.commit()
-    return '', 204
+    return "", 204
 
 
 @blueprint.route("/defaultNomenclatures", methods=["GET"])
@@ -636,8 +630,8 @@ def getDefaultNomenclatures():
 
     """
     organism = request.args.get("organism")
-    regne = request.args.get("regne", '0')
-    group2_inpn = request.args.get("group2_inpn", '0')
+    regne = request.args.get("regne", "0")
+    group2_inpn = request.args.get("group2_inpn", "0")
     types = request.args.getlist("id_type")
 
     q = db.session.query(
@@ -705,18 +699,19 @@ def export(info_role):
     file_name = datetime.datetime.now().strftime("%Y_%m_%d_%Hh%Mm%S")
     file_name = filemanager.removeDisallowedFilenameChars(file_name)
 
-    #Ajout des colonnes additionnels
+    # Ajout des colonnes additionnels
     additional_col_names = []
-    query_add_fields = DB.session.query(TAdditionalFields).filter(
-        TAdditionalFields.modules.any(module_code="OCCTAX")
-    ).filter(TAdditionalFields.exportable == True)
+    query_add_fields = (
+        DB.session.query(TAdditionalFields)
+        .filter(TAdditionalFields.modules.any(module_code="OCCTAX"))
+        .filter(TAdditionalFields.exportable == True)
+    )
     global_add_fields = query_add_fields.filter(~TAdditionalFields.datasets.any()).all()
     if "id_dataset" in request.args:
         dataset_add_fields = query_add_fields.filter(
-            TAdditionalFields.datasets.any(id_dataset=request.args['id_dataset'])
+            TAdditionalFields.datasets.any(id_dataset=request.args["id_dataset"])
         ).all()
         global_add_fields = [*global_add_fields, *dataset_add_fields]
-
 
     additional_col_names = [field.field_name for field in global_add_fields]
     if export_format == "csv":
@@ -728,23 +723,21 @@ def export(info_role):
             serialize_result = [
                 as_dict_with_add_cols(
                     export_view, row, export_col_name_additional_data, additional_col_names
-                ) for row in data
+                )
+                for row in data
             ]
         else:
             serialize_result = [export_view.as_dict(row) for row in data]
-        return to_csv_resp(
-            file_name, serialize_result , columns, ";"
-        )
+        return to_csv_resp(file_name, serialize_result, columns, ";")
     elif export_format == "geojson":
         if additional_col_names:
             features = []
-            for row in data :
+            for row in data:
                 properties = as_dict_with_add_cols(
                     export_view, row, export_col_name_additional_data, additional_col_names
                 )
                 feature = Feature(
-                    properties=properties,
-                    geometry=to_shape(getattr(row, export_geom_column))
+                    properties=properties, geometry=to_shape(getattr(row, export_geom_column))
                 )
                 features.append(feature)
             serialize_result = FeatureCollection(features)
@@ -757,9 +750,7 @@ def export(info_role):
             serialize_result, as_file=True, filename=file_name, indent=4, extension="geojson"
         )
     else:
-        db_cols = [
-            db_col for db_col in export_view.db_cols if db_col.key in export_columns
-        ]
+        db_cols = [db_col for db_col in export_view.db_cols if db_col.key in export_columns]
         dir_name, file_name = export_as_geo_file(
             export_format=export_format,
             export_view=export_view,
@@ -768,8 +759,6 @@ def export(info_role):
             data=data,
             file_name=file_name,
         )
-        db_cols = [
-            db_col for db_col in export_view.db_cols if db_col.key in export_columns
-        ]
+        db_cols = [db_col for db_col in export_view.db_cols if db_col.key in export_columns]
 
         return send_from_directory(dir_name, file_name, as_attachment=True)

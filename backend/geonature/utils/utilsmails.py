@@ -12,16 +12,17 @@ log = logging.getLogger()
 
 name_address_email_regex = re.compile(r"^([^<]+)<([^>]+)>$", re.IGNORECASE)
 
+
 def send_mail(recipients, subject, msg_html):
     """Envoi d'un email à l'aide de Flask_mail.
 
     .. :quickref:  Fonction générique d'envoi d'email.
-    
+
     Parameters
     ----------
     recipients : str or [str]
-        Chaine contenant des emails séparés par des virgules ou liste 
-        contenant des emails. Un email encadré par des chevrons peut être 
+        Chaine contenant des emails séparés par des virgules ou liste
+        contenant des emails. Un email encadré par des chevrons peut être
         précédé d'un libellé qui sera utilisé lors de l'envoi.
 
     subject : str
@@ -36,32 +37,25 @@ def send_mail(recipients, subject, msg_html):
     """
     if not MAIL:
         raise Exception("No configuration for email")
-    
+
     with MAIL.connect() as conn:
-        mail_sender = current_app.config.get('MAIL_DEFAULT_SENDER') 
+        mail_sender = current_app.config.get("MAIL_DEFAULT_SENDER")
         if not mail_sender:
             mail_sender = current_app.config["MAIL_USERNAME"]
-        msg = Message(
-            subject, 
-            sender=mail_sender, 
-            recipients=clean_recipients(recipients)
-        )
+        msg = Message(subject, sender=mail_sender, recipients=clean_recipients(recipients))
         msg.html = msg_html
         conn.send(msg)
 
 
-
-
-
 def clean_recipients(recipients):
-    """Retourne une liste contenant des emails (str) ou des tuples 
+    """Retourne une liste contenant des emails (str) ou des tuples
     contenant un libelé et l'email correspondant.
 
     Parameters
     ----------
     recipients : str or [str]
-        Chaine contenant des emails séparés par des virgules ou liste 
-        contenant des emails. Un email encadré par des chevrons peut être 
+        Chaine contenant des emails séparés par des virgules ou liste
+        contenant des emails. Un email encadré par des chevrons peut être
         précédé d'un libellé qui sera utilisé lors de l'envoi.
 
     Returns
@@ -71,7 +65,7 @@ def clean_recipients(recipients):
     """
     if type(recipients) is list and len(recipients) > 0:
         splited_recipients = recipients
-    elif type(recipients) is str and recipients != '':
+    elif type(recipients) is str and recipients != "":
         splited_recipients = recipients.split(",")
     else:
         raise Exception("Recipients not set")
@@ -97,5 +91,5 @@ def split_name_address(email):
     name_address = email
     match = name_address_email_regex.match(email)
     if match:
-        name_address=(match.group(1).strip(), match.group(2).strip())
+        name_address = (match.group(1).strip(), match.group(2).strip())
     return name_address

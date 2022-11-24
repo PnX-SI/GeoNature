@@ -40,16 +40,16 @@ class VUsersPermissions(DB.Model):
 
     def __str__(self):
         msg = (
-            "VUsersPermissions " +
-            f"role='{self.id_role}', " +
-            f"module='{self.module_code}', " +
-            f"action='{self.code_action}', " +
-            f"object='{self.code_object}', " +
-            f"filter_type='{self.code_filter_type}', " +
-            f"filter_value='{self.value_filter}', " +
-            f"gathering='{self.gathering}', " +
-            f"end_date='{self.end_date}', " +
-            f"herited_from_group='{self.group_name}' "
+            "VUsersPermissions "
+            + f"role='{self.id_role}', "
+            + f"module='{self.module_code}', "
+            + f"action='{self.code_action}', "
+            + f"object='{self.code_object}', "
+            + f"filter_type='{self.code_filter_type}', "
+            + f"filter_value='{self.value_filter}', "
+            + f"gathering='{self.gathering}', "
+            + f"end_date='{self.end_date}', "
+            + f"herited_from_group='{self.group_name}' "
         )
         return msg
 
@@ -78,7 +78,7 @@ class BibFiltersValues(DB.Model):
     __table_args__ = {"schema": "gn_permissions"}
     id_filter_value = DB.Column(DB.Integer, primary_key=True)
     id_filter_type = DB.Column(DB.Integer, ForeignKey(BibFiltersType.id_filter_type))
-    filter_type = db.relationship(BibFiltersType, backref='values')
+    filter_type = db.relationship(BibFiltersType, backref="values")
     value_format = DB.Column(DB.Enum(FilterValueFormats))
     predefined = DB.Column(DB.Boolean)
     value_or_field = DB.Column(DB.Unicode(length=50))
@@ -105,6 +105,7 @@ class TObjects(DB.Model):
 
     def __str__(self):
         return f"{self.code_object} ({self.description_object})"
+
 
 @serializable
 class CorRoleActionFilterModuleObject(DB.Model):
@@ -159,15 +160,15 @@ class CorRoleActionFilterModuleObject(DB.Model):
     )
 
     def is_already_exist(self):
-        """ Retourne la première permission trouvée correspondant à l'objet courant.
-            ATTENTION: cette méthode ne vérifie pas tous les filtres d'une permission. Elle
-            vérifie seulement qu'il n'existe pas déjà un enregistrement similaire dans la table.
-            Tous les champs sont vérifiés à l'exception de la clé "id_permission".
+        """Retourne la première permission trouvée correspondant à l'objet courant.
+        ATTENTION: cette méthode ne vérifie pas tous les filtres d'une permission. Elle
+        vérifie seulement qu'il n'existe pas déjà un enregistrement similaire dans la table.
+        Tous les champs sont vérifiés à l'exception de la clé "id_permission".
 
-            Returns
-            -------
-            CorRoleActionFilterModuleObject or None
-                Un objet CorRoleActionFilterModuleObject s'il existe ou sinon None.
+        Returns
+        -------
+        CorRoleActionFilterModuleObject or None
+            Un objet CorRoleActionFilterModuleObject s'il existe ou sinon None.
         """
         privilege = {
             "id_role": self.id_role,
@@ -180,17 +181,14 @@ class CorRoleActionFilterModuleObject(DB.Model):
             "value_filter": self.value_filter,
             "id_request": self.id_request,
         }
-        return (
-            DB.session.query(CorRoleActionFilterModuleObject)
-            .filter_by(**privilege)
-            .first()
-        )
+        return DB.session.query(CorRoleActionFilterModuleObject).filter_by(**privilege).first()
 
 
 class RequestStates(str, enum.Enum):
     pending: str = "pending"
     refused: str = "refused"
     accepted: str = "accepted"
+
 
 @serializable
 class TRequests(DB.Model):
@@ -216,6 +214,7 @@ class TRequests(DB.Model):
         primaryjoin=(User.id_role == id_role),
         foreign_keys=[id_role],
     )
+
 
 @serializable
 class CorModuleActionObjectFilter(DB.Model):

@@ -36,17 +36,18 @@ from geonature.utils.errors import GeonatureApiError
 
 class SyntheseQuery:
     """
-        class for building synthese query and manage join
+    class for building synthese query and manage join
 
-        Attributes:
-            query: SQLA select object
-            filters: dict of query string filters
-            model: a SQLA model
-            _already_joined_table: (private) a list of already joined table. Auto build with 'add_join' method
-            query_joins = SQLA Join object
+    Attributes:
+        query: SQLA select object
+        filters: dict of query string filters
+        model: a SQLA model
+        _already_joined_table: (private) a list of already joined table. Auto build with 'add_join' method
+        query_joins = SQLA Join object
     """
 
-    def __init__(self,
+    def __init__(
+        self,
         model,
         query,
         filters,
@@ -165,8 +166,10 @@ class SyntheseQuery:
         if "cd_ref_parent" in self.filters:
             # find all taxon child from cd_ref parent
             cd_ref_parent_int = list(map(lambda x: int(x), self.filters.pop("cd_ref_parent")))
-            sql = text("SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_children(:id_parent)")
-            result = DB.session.execute(sql, {"id_parent":cd_ref_parent_int})
+            sql = text(
+                "SELECT DISTINCT cd_ref FROM taxonomie.find_all_taxons_children(:id_parent)"
+            )
+            result = DB.session.execute(sql, {"id_parent": cd_ref_parent_int})
             if result:
                 cd_ref_childs = [r[0] for r in result]
 
@@ -227,13 +230,11 @@ class SyntheseQuery:
 
     def filter_other_filters(self):
         """
-            Other filters
+        Other filters
         """
 
         if "has_medias" in self.filters:
-            self.query = self.query.where(
-                self.model.has_medias
-            )
+            self.query = self.query.where(self.model.has_medias)
 
         if "id_dataset" in self.filters:
             self.query = self.query.where(
@@ -274,7 +275,7 @@ class SyntheseQuery:
             self.query = self.query.where(self.model.date_max <= date_max)
 
         if "id_acquisition_framework" in self.filters:
-            if hasattr(self.model, 'id_acquisition_framework'):
+            if hasattr(self.model, "id_acquisition_framework"):
                 self.query = self.query.where(
                     self.model.id_acquisition_framework.in_(
                         self.filters.pop("id_acquisition_framework")

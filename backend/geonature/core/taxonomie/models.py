@@ -7,7 +7,7 @@ from apptax.taxonomie.models import (
     Taxref,
     CorTaxonAttribut,
     VMTaxrefListForautocomplete,
-    BibListes
+    BibListes,
 )
 
 

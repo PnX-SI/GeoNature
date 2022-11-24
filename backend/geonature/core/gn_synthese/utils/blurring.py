@@ -2,17 +2,18 @@ import logging
 from collections import namedtuple
 
 from flask import current_app
-from sqlalchemy import (func, not_, and_, or_, select, column, text, union, literal, exists)
+from sqlalchemy import func, not_, and_, or_, select, column, text, union, literal, exists
 
 from pypnnomenclature.models import (
     TNomenclatures,
     BibNomenclaturesTypes,
 )
 
-from geonature.core.gn_synthese.models import (CorAreaSynthese, Synthese)
-from ref_geo.models import (LAreas, BibAreasTypes)
+from geonature.core.gn_synthese.models import CorAreaSynthese, Synthese
+from ref_geo.models import LAreas, BibAreasTypes
 from apptax.taxonomie.models import Taxref
 from geonature.utils.env import DB
+
 
 class DataBlurring:
     def __init__(
@@ -28,7 +29,7 @@ class DataBlurring:
                 "output_field": "st_asgeojson",
                 "area_field": "geojson_4326",
             },
-        ]
+        ],
     ):
         # get the root logger
         self.log = logging.getLogger()
@@ -76,7 +77,9 @@ class DataBlurring:
                     result = dict(result)
                     result = self._erase_fields(result)
                     for col in self.geom_fields:
-                        blurred_geometry = geojson_by_synthese_ids[synthese_id][col["output_field"]]
+                        blurred_geometry = geojson_by_synthese_ids[synthese_id][
+                            col["output_field"]
+                        ]
                         result[col["output_field"]] = blurred_geometry
                     # Re-convert to RowProxy object
                     if not self.result_to_dict:
@@ -103,8 +106,8 @@ class DataBlurring:
                 "GEOGRAPHIC": filters["GEOGRAPHIC"] if "GEOGRAPHIC" in types else "ALL",
                 "TAXONOMIC": filters["TAXONOMIC"] if "TAXONOMIC" in types else "ALL",
             }
-            if (details["GEOGRAPHIC"] == "ALL" and details["TAXONOMIC"] == "ALL"):
-                if perm["object"] == 'ALL':
+            if details["GEOGRAPHIC"] == "ALL" and details["TAXONOMIC"] == "ALL":
+                if perm["object"] == "ALL":
                     see_all["PRIVATE_OBSERVATION"] = True
                     see_all["SENSITIVE_OBSERVATION"] = True
                 else:
@@ -132,7 +135,9 @@ class DataBlurring:
         areas_used_to_blur = self._get_distinct_config_areas_types_codes()
         areas_sizes = self._get_areas_size_hierarchy(areas_used_to_blur)
 
-        sorted_synthese_by_area_type = self._sort_synthese_id_by_area_type_id(synthese_results, ignored_object)
+        sorted_synthese_by_area_type = self._sort_synthese_id_by_area_type_id(
+            synthese_results, ignored_object
+        )
         if not sorted_synthese_by_area_type:
             return {}
 
@@ -150,7 +155,7 @@ class DataBlurring:
                 values = self._build_values_clause(synthese_ids)
                 priority = int(areas_sizes[area_type_code])
                 obs_cte = (
-                    select([literal(priority).label("priority"), column('id_synthese')])
+                    select([literal(priority).label("priority"), column("id_synthese")])
                     .select_from(text(f"(VALUES {values}) AS t (id_synthese)"))
                     .cte(name=name)
                 )
@@ -163,9 +168,9 @@ class DataBlurring:
                         distinct=obs_cte.c.id_synthese,
                     )
                     .select_from(
-                        CorAreaSynthese.__table__
-                        .join(LAreas, LAreas.id_area == CorAreaSynthese.id_area)
-                        .join(obs_cte, obs_cte.c.id_synthese == CorAreaSynthese.id_synthese)
+                        CorAreaSynthese.__table__.join(
+                            LAreas, LAreas.id_area == CorAreaSynthese.id_area
+                        ).join(obs_cte, obs_cte.c.id_synthese == CorAreaSynthese.id_synthese)
                     )
                     .where(LAreas.id_type == area_type_id)
                 )
@@ -175,13 +180,16 @@ class DataBlurring:
 
             # Build blurred geom by id_synthese query
             geom_columns = self._prepare_geom_columns(object_cte)
-            blurred_obs_query = (
-                select([object_cte.c.priority, object_cte.c.id_synthese, *geom_columns])
-                .select_from(object_cte)
-            )
+            blurred_obs_query = select(
+                [object_cte.c.priority, object_cte.c.id_synthese, *geom_columns]
+            ).select_from(object_cte)
 
             # Build permissions conditions
-            if object_type in exact_filters and exact_filters[object_type] and len(exact_filters[object_type]) > 0 :
+            if (
+                object_type in exact_filters
+                and exact_filters[object_type]
+                and len(exact_filters[object_type]) > 0
+            ):
                 nomenclature_ids = (
                     diffusion_level_ids
                     if object_type == "PRIVATE_OBSERVATION"
@@ -197,8 +205,10 @@ class DataBlurring:
                 # Build permissions NOT EXISTS clause
                 permissions_cte = (
                     select([object_cte.c.id_synthese])
-                    .select_from(object_cte
-                        .join(Synthese.__table__, Synthese.id_synthese == object_cte.c.id_synthese)
+                    .select_from(
+                        object_cte.join(
+                            Synthese.__table__, Synthese.id_synthese == object_cte.c.id_synthese
+                        )
                         .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
                         .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
                     )
@@ -206,7 +216,7 @@ class DataBlurring:
                     .cte(name=f"{object_type}_PERM")
                 )
                 blurred_obs_query = blurred_obs_query.where(
-                    ~exists([literal('X')])
+                    ~exists([literal("X")])
                     .select_from(permissions_cte)
                     .where(permissions_cte.c.id_synthese == object_cte.c.id_synthese)
                 )
@@ -226,9 +236,9 @@ class DataBlurring:
         )
 
         # DEBUG QUERY:
-        #from sqlalchemy.dialects import postgresql
-        #print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
-        #exit()
+        # from sqlalchemy.dialects import postgresql
+        # print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
+        # exit()
 
         results = DB.session.execute(query)
         geojson_by_synthese_ids = {}
@@ -274,10 +284,11 @@ class DataBlurring:
             if ignored_object != "PRIVATE_OBSERVATION":
                 diffusion_level_id = result[self.diffusion_column]
                 if diffusion_level_id in area_type_by_diffusion_level:
-                    (area_type_id, area_type_code) = area_type_by_diffusion_level[diffusion_level_id]
+                    (area_type_id, area_type_code) = area_type_by_diffusion_level[
+                        diffusion_level_id
+                    ]
                     (
-                        sorted_ids
-                        .setdefault("PRIVATE_OBSERVATION", {})
+                        sorted_ids.setdefault("PRIVATE_OBSERVATION", {})
                         .setdefault((area_type_id, area_type_code), [])
                         .append(result["id_synthese"])
                     )
@@ -287,8 +298,7 @@ class DataBlurring:
                 if sensitivity_id in area_type_by_sensitivity:
                     (area_type_id, area_type_code) = area_type_by_sensitivity[sensitivity_id]
                     (
-                        sorted_ids
-                        .setdefault("SENSITIVE_OBSERVATION", {})
+                        sorted_ids.setdefault("SENSITIVE_OBSERVATION", {})
                         .setdefault((area_type_id, area_type_code), [])
                         .append(result["id_synthese"])
                     )
@@ -298,7 +308,7 @@ class DataBlurring:
         values = []
         for val in ids:
             values.append(f"({val})")
-        return ', '.join(values)
+        return ", ".join(values)
 
     def _get_diffusion_levels_area_types(self):
         area_types_by_diffusion_levels = self._get_diffusion_level_area_type_codes()
@@ -368,9 +378,8 @@ class DataBlurring:
         return area_type_for_sensitivity
 
     def _get_area_types_ids_by_codes(self, area_type_codes):
-        query = (
-            select([BibAreasTypes.id_type, BibAreasTypes.type_code])
-            .where(BibAreasTypes.type_code.in_(area_type_codes))
+        query = select([BibAreasTypes.id_type, BibAreasTypes.type_code]).where(
+            BibAreasTypes.type_code.in_(area_type_codes)
         )
         results = DB.session.execute(query)
 
@@ -397,9 +406,9 @@ class DataBlurring:
         return sensitivity_levels
 
     def _split_value_filter(self, data: str):
-        if data == None or data == '':
+        if data == None or data == "":
             return []
-        values = data.split(',')
+        values = data.split(",")
         # Cas to integer
         values = list(map(int, values))
         return values
@@ -410,7 +419,6 @@ class DataBlurring:
                 if hasattr(record, field):
                     setattr(record, field, None)
         return record
-
 
     def blurOneObsAreas(self, obs):
         # Get area blurred types
@@ -448,7 +456,11 @@ class DataBlurring:
 
         # Remove too precise areas
         if more_restrictive_size != None and "areas" in obs["properties"]:
-            obs["properties"]["areas"][:] = [area for area in obs["properties"]["areas"] if DataBlurring._checkAreaSize(area, more_restrictive_size)]
+            obs["properties"]["areas"][:] = [
+                area
+                for area in obs["properties"]["areas"]
+                if DataBlurring._checkAreaSize(area, more_restrictive_size)
+            ]
 
         return obs
 
@@ -488,17 +500,18 @@ class DataBlurring:
             # Build permissions query
             query = (
                 select([Synthese.id_synthese])
-                .select_from(Synthese.__table__
-                    .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
-                    .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+                .select_from(
+                    Synthese.__table__.join(
+                        CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese
+                    ).join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
                 )
                 .where(or_(*permissions_ors))
                 .where(Synthese.id_synthese == id_synthese)
             )
 
             # DEBUG QUERY:
-            #from sqlalchemy.dialects import postgresql
-            #print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
+            # from sqlalchemy.dialects import postgresql
+            # print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
 
             results = DB.session.execute(query)
             if results.first() is not None:
@@ -525,17 +538,18 @@ class DataBlurring:
             # Build permissions query
             query = (
                 select([Synthese.id_synthese])
-                .select_from(Synthese.__table__
-                    .join(CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese)
-                    .join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
+                .select_from(
+                    Synthese.__table__.join(
+                        CorAreaSynthese, CorAreaSynthese.id_synthese == Synthese.id_synthese
+                    ).join(Taxref, Taxref.cd_nom == Synthese.cd_nom)
                 )
                 .where(or_(*permissions_ors))
                 .where(Synthese.id_synthese == id_synthese)
             )
 
             # DEBUG QUERY:
-            #from sqlalchemy.dialects import postgresql
-            #print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
+            # from sqlalchemy.dialects import postgresql
+            # print(query.compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True}))
 
             results = DB.session.execute(query)
             if results.first() is not None:
@@ -561,9 +575,8 @@ class DataBlurring:
             if "TAXONOMIC" in exact_filter.keys() and exact_filter["TAXONOMIC"] != "ALL":
                 filter_value = exact_filter["TAXONOMIC"]
                 splited_values = self._split_value_filter(filter_value)
-                stmt = (
-                    DB.select([column("cd_ref")])
-                    .select_from(func.taxonomie.find_all_taxons_children(splited_values))
+                stmt = DB.select([column("cd_ref")]).select_from(
+                    func.taxonomie.find_all_taxons_children(splited_values)
                 )
                 conditions.append(Taxref.cd_ref.in_(stmt))
             permissions_ors.append(and_(*conditions))
@@ -572,8 +585,8 @@ class DataBlurring:
 
     @staticmethod
     def _checkAreaSize(area, more_restrictive_size):
-        current_size = area['area_type']['size_hierarchy']
-        return (False if current_size != None and current_size < more_restrictive_size else True)
+        current_size = area["area_type"]["size_hierarchy"]
+        return False if current_size != None and current_size < more_restrictive_size else True
 
     def _get_distinct_config_areas_types_codes(self):
         areas_codes = []

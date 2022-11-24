@@ -69,11 +69,7 @@ def post_station(info_role):
     if observers_list is not None:
         observers = (
             DB.session.query(User)
-            .filter(
-                User.id_role.in_(
-                    list(map(lambda user: user["id_role"], observers_list))
-                )
-            )
+            .filter(User.id_role.in_(list(map(lambda user: user["id_role"], observers_list))))
             .all()
         )
         for o in observers:
@@ -127,9 +123,7 @@ def get_one_station(id_station, info_role):
     user_cruved = get_or_fetch_user_cruved(
         session=session, id_role=info_role.id_role, module_code="OCCHAB"
     )
-    station_geojson["properties"]["rights"] = station.get_model_cruved(
-        info_role, user_cruved
-    )
+    station_geojson["properties"]["rights"] = station.get_model_cruved(info_role, user_cruved)
     return station_geojson
 
 
@@ -236,9 +230,7 @@ def export_all_habitats(
     )
     if export_format == "csv":
         formated_data = [export_view.as_dict(d, fields=[]) for d in results]
-        return to_csv_resp(
-            file_name, formated_data, separator=";", columns=columns_to_serialize
-        )
+        return to_csv_resp(file_name, formated_data, separator=";", columns=columns_to_serialize)
     elif export_format == "geojson":
         features = []
         for r in results:

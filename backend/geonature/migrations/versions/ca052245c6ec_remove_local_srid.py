@@ -10,14 +10,15 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'ca052245c6ec'
-down_revision = '1dbc45309d6e'
+revision = "ca052245c6ec"
+down_revision = "1dbc45309d6e"
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
-    op.execute("""
+    op.execute(
+        """
     CREATE OR REPLACE FUNCTION gn_synthese.import_json_row(datain jsonb, datageojson text DEFAULT NULL::text)
      RETURNS boolean
      LANGUAGE plpgsql
@@ -148,17 +149,21 @@ def upgrade():
       END;
     $function$
     ;
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     DELETE FROM
         gn_commons.t_parameters
     WHERE
         parameter_name = 'local_srid'
-    """)
+    """
+    )
 
 
 def downgrade():
-    op.execute("""
+    op.execute(
+        """
     INSERT INTO
         gn_commons.t_parameters (
             id_organism,
@@ -172,8 +177,10 @@ def downgrade():
         'Valeur du SRID local',
         Find_SRID('ref_geo', 'l_areas', 'geom')
     )
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     CREATE OR REPLACE FUNCTION gn_synthese.import_json_row(datain jsonb, datageojson text DEFAULT NULL::text)
      RETURNS boolean
      LANGUAGE plpgsql
@@ -306,4 +313,5 @@ def downgrade():
       END;
     $function$
     ;
-    """)
+    """
+    )

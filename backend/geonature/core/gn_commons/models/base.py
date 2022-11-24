@@ -34,10 +34,16 @@ class BibTablesLocation(DB.Model):
 cor_module_dataset = DB.Table(
     "cor_module_dataset",
     DB.Column(
-        "id_module", DB.Integer, ForeignKey("gn_commons.t_modules.id_module"), primary_key=True,
+        "id_module",
+        DB.Integer,
+        ForeignKey("gn_commons.t_modules.id_module"),
+        primary_key=True,
     ),
     DB.Column(
-        "id_dataset", DB.Integer, ForeignKey("gn_meta.t_datasets.id_dataset"), primary_key=True,
+        "id_dataset",
+        DB.Integer,
+        ForeignKey("gn_meta.t_datasets.id_dataset"),
+        primary_key=True,
     ),
     schema="gn_commons",
 )
@@ -46,7 +52,7 @@ cor_module_dataset = DB.Table(
 @serializable
 class CorModuleDataset(DB.Model):
     __tablename__ = "cor_module_dataset"
-    __table_args__ = {"schema": "gn_commons", 'extend_existing': True}
+    __table_args__ = {"schema": "gn_commons", "extend_existing": True}
     id_module = DB.Column(
         DB.Integer,
         ForeignKey("gn_commons.t_modules.id_module"),
@@ -66,8 +72,8 @@ class TModules(DB.Model):
 
     type = DB.Column(DB.Unicode)
     mapper_args = {
-        'polymorphic_identity': 'modules',
-        'polymorphic_on': 'type',
+        "polymorphic_identity": "modules",
+        "polymorphic_on": "type",
     }
 
     id_module = DB.Column(DB.Integer, primary_key=True)
@@ -99,15 +105,15 @@ class TMedias(DB.Model):
     __table_args__ = {"schema": "gn_commons"}
     id_media = DB.Column(DB.Integer, primary_key=True)
     id_nomenclature_media_type = DB.Column(
-        DB.Integer,
-        ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature")
+        DB.Integer, ForeignKey("ref_nomenclatures.t_nomenclatures.id_nomenclature")
     )
     id_table_location = DB.Column(
-        DB.Integer,
-        ForeignKey("gn_commons.bib_tables_location.id_table_location")
+        DB.Integer, ForeignKey("gn_commons.bib_tables_location.id_table_location")
     )
     unique_id_media = DB.Column(UUID(as_uuid=True), default=select([func.uuid_generate_v4()]))
-    uuid_attached_row = DB.Column(UUID(as_uuid=True), ForeignKey("gn_synthese.synthese.unique_id_sinp"))
+    uuid_attached_row = DB.Column(
+        UUID(as_uuid=True), ForeignKey("gn_synthese.synthese.unique_id_sinp")
+    )
     title_fr = DB.Column(DB.Unicode)
     title_en = DB.Column(DB.Unicode)
     title_it = DB.Column(DB.Unicode)
@@ -182,7 +188,9 @@ class TValidations(DB.Model):
     __table_args__ = {"schema": "gn_commons"}
 
     id_validation = DB.Column(DB.Integer, primary_key=True)
-    uuid_attached_row = DB.Column(UUID(as_uuid=True), ForeignKey("gn_synthese.synthese.unique_id_sinp"))
+    uuid_attached_row = DB.Column(
+        UUID(as_uuid=True), ForeignKey("gn_synthese.synthese.unique_id_sinp")
+    )
     id_nomenclature_valid_status = DB.Column(
         DB.Integer,
         ForeignKey(TNomenclatures.id_nomenclature),
@@ -190,7 +198,7 @@ class TValidations(DB.Model):
     nomenclature_valid_status = relationship(
         TNomenclatures,
         foreign_keys=[id_nomenclature_valid_status],
-        lazy='joined',
+        lazy="joined",
     )
     id_validator = DB.Column(DB.Integer, ForeignKey(User.id_role))
     validator_role = DB.relationship(User)
@@ -200,11 +208,12 @@ class TValidations(DB.Model):
     validation_auto = DB.Column(DB.Boolean)
     validation_label = DB.relationship(TNomenclatures)
 
+
 last_validation_query = (
     select([TValidations])
     .order_by(TValidations.validation_date.desc())
     .limit(1)
-    .alias('last_validation')
+    .alias("last_validation")
 )
 last_validation = aliased(TValidations, last_validation_query)
 
@@ -258,33 +267,35 @@ class TPlaces(DB.Model):
     place_name = DB.Column(DB.String)
     place_geom = DB.Column(Geometry("GEOMETRY", 4326))
 
+
 @serializable
 class BibWidgets(DB.Model):
     __tablename__ = "bib_widgets"
     __table_args__ = {"schema": "gn_commons"}
     id_widget = DB.Column(DB.Integer, primary_key=True)
     widget_name = DB.Column(DB.String, nullable=False)
+
     def __str__(self):
         return self.widget_name.capitalize()
 
 
 cor_field_object = DB.Table(
-    'cor_field_object',
-    DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additional_fields.id_field')),
-    DB.Column('id_object', DB.Integer, DB.ForeignKey('gn_permissions.t_objects.id_object')),
+    "cor_field_object",
+    DB.Column("id_field", DB.Integer, DB.ForeignKey("gn_commons.t_additional_fields.id_field")),
+    DB.Column("id_object", DB.Integer, DB.ForeignKey("gn_permissions.t_objects.id_object")),
     schema="gn_commons",
 )
 
 cor_field_module = DB.Table(
-    'cor_field_module',
-    DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additional_fields.id_field')),
-    DB.Column('id_module', DB.Integer, DB.ForeignKey('gn_commons.t_modules.id_module')),
+    "cor_field_module",
+    DB.Column("id_field", DB.Integer, DB.ForeignKey("gn_commons.t_additional_fields.id_field")),
+    DB.Column("id_module", DB.Integer, DB.ForeignKey("gn_commons.t_modules.id_module")),
     schema="gn_commons",
 )
 
 cor_field_dataset = DB.Table(
-    'cor_field_dataset',
-    DB.Column('id_field', DB.Integer, DB.ForeignKey('gn_commons.t_additional_fields.id_field')),
-    DB.Column('id_dataset', DB.Integer, DB.ForeignKey('gn_meta.t_datasets.id_dataset')),
+    "cor_field_dataset",
+    DB.Column("id_field", DB.Integer, DB.ForeignKey("gn_commons.t_additional_fields.id_field")),
+    DB.Column("id_dataset", DB.Integer, DB.ForeignKey("gn_meta.t_datasets.id_dataset")),
     schema="gn_commons",
 )

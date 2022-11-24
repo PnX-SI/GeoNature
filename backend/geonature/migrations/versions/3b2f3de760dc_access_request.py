@@ -13,25 +13,24 @@ from sqlalchemy.sql import text
 
 
 # revision identifiers, used by Alembic.
-revision = '3b2f3de760dc'
-down_revision = 'ca052245c6ec'
+revision = "3b2f3de760dc"
+down_revision = "ca052245c6ec"
 branch_labels = None
-depends_on = (
-    '10e87bc144cd',  # utilisateurs.get_id_role_by_name()
-)
+depends_on = ("10e87bc144cd",)  # utilisateurs.get_id_role_by_name()
 
 
 def upgrade():
     bindparams = {
-        'admin_role': context.get_x_argument(as_dictionary=True).get('admin-role', 'Grp_admin'),
+        "admin_role": context.get_x_argument(as_dictionary=True).get("admin-role", "Grp_admin"),
     }
-    package = 'geonature.migrations.data.migrations'
-    resource = 'access_request.sql'
+    package = "geonature.migrations.data.migrations"
+    resource = "access_request.sql"
     op.get_bind().execute(text(importlib.resources.read_text(package, resource)), bindparams)
 
 
 def downgrade():
-    op.execute("""
+    op.execute(
+        """
     CREATE TABLE gn_permissions.cor_filter_type_module (
         id_filter_type int4 NOT NULL,
         id_module int4 NOT NULL,
@@ -39,16 +38,20 @@ def downgrade():
         CONSTRAINT fk_cor_filter_module_id_filter FOREIGN KEY (id_filter_type) REFERENCES gn_permissions.bib_filters_type(id_filter_type) ON UPDATE CASCADE,
         CONSTRAINT fk_cor_filter_module_id_module FOREIGN KEY (id_module) REFERENCES gn_commons.t_modules(id_module) ON UPDATE CASCADE
     )
-    """)
+    """
+    )
     # FIXME Necessary? Does this table was used?
-    op.execute("""
+    op.execute(
+        """
     INSERT INTO gn_permissions.cor_filter_type_module
         (id_filter_type, id_module)
     SELECT DISTINCT id_filter_type, id_module
         FROM gn_permissions.cor_module_action_object_filter
         ORDER BY id_filter_type, id_module;
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     CREATE TABLE gn_permissions.cor_object_module (
         id_cor_object_module serial NOT NULL,
         id_object int4 NOT NULL,
@@ -58,8 +61,10 @@ def downgrade():
         CONSTRAINT fk_cor_object_module_id_module FOREIGN KEY (id_module) REFERENCES gn_commons.t_modules(id_module) ON UPDATE CASCADE ON DELETE CASCADE,
         CONSTRAINT fk_cor_object_module_id_object FOREIGN KEY (id_object) REFERENCES gn_permissions.t_objects(id_object) ON UPDATE CASCADE ON DELETE CASCADE
     )
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     INSERT INTO gn_permissions.cor_object_module
         (id_object, id_module)
     SELECT DISTINCT c.id_object, c.id_module
@@ -68,8 +73,10 @@ def downgrade():
         ON o.id_object = c.id_object
         WHERE o.code_object != 'ALL'
         ORDER BY id_object, id_module;
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     CREATE TABLE gn_permissions.t_filters (
         id_filter serial NOT NULL,
         label_filter varchar(255) NOT NULL,
@@ -79,9 +86,11 @@ def downgrade():
         CONSTRAINT pk_t_filters PRIMARY KEY (id_filter),
         CONSTRAINT fk_t_filters_id_filter_type FOREIGN KEY (id_filter_type) REFERENCES gn_permissions.bib_filters_type(id_filter_type) ON UPDATE CASCADE
     )
-    """)
+    """
+    )
     # FIXME: get these values from new tables????
-    op.execute("""
+    op.execute(
+        """
     INSERT INTO gn_permissions.t_filters (label_filter, value_filter, description_filter, id_filter_type)
     VALUES
         ('Aucune donnée', '0', 'Aucune donnée',
@@ -100,7 +109,8 @@ def downgrade():
             (SELECT id_filter_type FROM gn_permissions.bib_filters_type WHERE code_filter_type='PRECISION')),
         ('Données précises', 'DONNEES_PRECISES', 'Filtre qui affiche les données sensibles  précises à l''utilisateur',
             (SELECT id_filter_type FROM gn_permissions.bib_filters_type WHERE code_filter_type='PRECISION'))
-    """)
+    """
+    )
     op.execute("DROP VIEW gn_permissions.v_roles_permissions")
     op.execute("DROP INDEX gn_permissions.unique_t_objects_code")
     op.execute("DROP INDEX gn_permissions.unique_t_actions_code")
@@ -108,28 +118,39 @@ def downgrade():
     op.execute("DROP INDEX gn_permissions.unique_cor_m_a_o_f_ids")
     op.execute("DROP INDEX gn_permissions.unique_bib_filters_values")
     op.execute("DROP INDEX gn_permissions.unique_bib_filters_type_code")
-    op.execute("""
+    op.execute(
+        """
     ALTER TABLE gn_permissions.cor_module_action_object_filter
         DROP CONSTRAINT fk_cor_module_action_object_filter_id_filter_type
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     ALTER TABLE gn_permissions.cor_module_action_object_filter
         DROP CONSTRAINT fk_cor_module_action_object_filter_id_object
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     ALTER TABLE gn_permissions.cor_module_action_object_filter
         DROP CONSTRAINT fk_cor_module_action_object_filter_id_action
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     ALTER TABLE gn_permissions.cor_module_action_object_filter
         DROP CONSTRAINT fk_cor_module_action_object_filter_id_module
-    """)
+    """
+    )
     op.execute("DROP TABLE gn_permissions.cor_module_action_object_filter")
-    op.execute("""
+    op.execute(
+        """
     DELETE FROM gn_permissions.cor_role_action_filter_module_object
         WHERE id_object = gn_permissions.get_id_object('ACCESS_REQUESTS')
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     CREATE FUNCTION gn_permissions.fct_tri_does_user_have_already_scope_filter()
      RETURNS trigger
      LANGUAGE plpgsql
@@ -172,58 +193,78 @@ def downgrade():
 
     $function$
     ;
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     CREATE TRIGGER tri_check_no_multiple_scope_perm BEFORE
     INSERT
         OR
     UPDATE
         ON
         gn_permissions.cor_role_action_filter_module_object FOR EACH ROW EXECUTE PROCEDURE gn_permissions.fct_tri_does_user_have_already_scope_filter()
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     DROP TRIGGER tri_check_no_multiple_filter_type
         ON gn_permissions.cor_role_action_filter_module_object
-    """)
+    """
+    )
     op.execute("DROP FUNCTION gn_permissions.fct_tri_only_one_filter_type_by_permission")
-    op.execute("""
+    op.execute(
+        """
     ALTER TABLE gn_permissions.cor_role_action_filter_module_object
         ADD COLUMN id_filter integer
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     ALTER TABLE ONLY gn_permissions.cor_role_action_filter_module_object
         ADD CONSTRAINT  fk_cor_r_a_f_m_o_id_filter
         FOREIGN KEY (id_filter) REFERENCES gn_permissions.t_filters (id_filter) ON UPDATE CASCADE
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     UPDATE gn_permissions.cor_role_action_filter_module_object AS c
         SET id_filter = f.id_filter
         FROM gn_permissions.t_filters AS f
         WHERE c.id_filter_type = f.id_filter_type
         AND c.value_filter = f.value_filter
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     ALTER TABLE gn_permissions.cor_role_action_filter_module_object
         ALTER COLUMN id_filter SET NOT NULL
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     ALTER TABLE gn_permissions.cor_role_action_filter_module_object
         DROP CONSTRAINT fk_cor_r_a_f_m_o_id_request
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     ALTER TABLE gn_permissions.cor_role_action_filter_module_object
         DROP CONSTRAINT fk_cor_r_a_f_m_o_id_filter_type
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     ALTER TABLE gn_permissions.cor_role_action_filter_module_object
         DROP COLUMN gathering,
         DROP COLUMN end_date,
         DROP COLUMN id_filter_type,
         DROP COLUMN value_filter,
         DROP COLUMN id_request
-    """)
+    """
+    )
     ###### Create trigger tri_check_no_multiple_filter_type???? FIXME
-    op.execute("""
+    op.execute(
+        """
     CREATE VIEW gn_permissions.v_roles_permissions
     AS WITH p_user_permission AS (
              SELECT u.id_role,
@@ -300,72 +341,94 @@ def downgrade():
          JOIN gn_permissions.t_objects obj ON obj.id_object = v.id_object
          JOIN gn_permissions.bib_filters_type filter_type ON filters.id_filter_type = filter_type.id_filter_type
          JOIN gn_commons.t_modules modules ON modules.id_module = v.id_module;
-    """)
+    """
+    )
     for old_code_type, new_code_type, label, description in [
-                (
-                    'SCOPE',
-                    'SCOPE',
-                    'Permissions de type Portée',
-                    'Filtre de type Portée',
-                ), (
-                    'PRECISION',
-                    'SENSITIVITY',
-                    'Permissions de type Sensibilité',
-                    'Permission de type Sensibilité',
-                ), (
-                    'GEOGRAPHIC',
-                    'GEOGRAPHIC',
-                    'Permissions de type Géographique',
-                    'Ajouter des id_area séparés par des virgules',
-                ), (
-                    'TAXONOMIC',
-                    'TAXONOMIC',
-                    'Permissions de type Taxonomique',
-                    'Ajouter des cd_nom séparés par des virgules',
-                ),
-            ]:
-        stmt = sa.text("""
+        (
+            "SCOPE",
+            "SCOPE",
+            "Permissions de type Portée",
+            "Filtre de type Portée",
+        ),
+        (
+            "PRECISION",
+            "SENSITIVITY",
+            "Permissions de type Sensibilité",
+            "Permission de type Sensibilité",
+        ),
+        (
+            "GEOGRAPHIC",
+            "GEOGRAPHIC",
+            "Permissions de type Géographique",
+            "Ajouter des id_area séparés par des virgules",
+        ),
+        (
+            "TAXONOMIC",
+            "TAXONOMIC",
+            "Permissions de type Taxonomique",
+            "Ajouter des cd_nom séparés par des virgules",
+        ),
+    ]:
+        stmt = sa.text(
+            """
         UPDATE gn_permissions.bib_filters_type
         SET
             code_filter_type = :new_code_type,
             label_filter_type = :label,
             description_filter_type = :description
         WHERE code_filter_type = :old_code_type ;
-        """)
-        bindparams = {'old_code_type': old_code_type, 'new_code_type': new_code_type,
-                      'label': label, 'description': description}
+        """
+        )
+        bindparams = {
+            "old_code_type": old_code_type,
+            "new_code_type": new_code_type,
+            "label": label,
+            "description": description,
+        }
         op.get_bind().execute(stmt, bindparams)
-    op.execute("""
+    op.execute(
+        """
     DELETE FROM gn_permissions.t_objects
         WHERE code_object in ('ACCESS_REQUESTS', 'PRIVATE_OBSERVATION', 'SENSITIVE_OBSERVATION')
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     DROP TRIGGER tri_modify_meta_update_date_t_requests
         ON gn_permissions.t_requests
-    """)
+    """
+    )
     op.execute("DROP FUNCTION gn_permissions.tri_func_modify_meta_update_date")
-    op.execute("""
+    op.execute(
+        """
     ALTER TABLE gn_permissions.t_requests
         DROP CONSTRAINT fk_t_requests_processed_by
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     ALTER TABLE gn_permissions.t_requests
         DROP CONSTRAINT fk_t_requests_id_role
-    """)
+    """
+    )
     op.execute("DROP TABLE gn_permissions.t_requests")
     op.execute("DROP TYPE gn_permissions.request_states")
     op.execute("DROP SEQUENCE gn_permissions.t_requests_id_request_seq")
     # truncate gn_permissions.bib_filters_values
-    op.execute("""
+    op.execute(
+        """
     ALTER TABLE gn_permissions.bib_filters_values
         DROP CONSTRAINT fk_bib_filters_values_id_filter_type
-    """)
+    """
+    )
     op.execute("DROP TABLE gn_permissions.bib_filters_values")
     op.execute("DROP TYPE gn_permissions.filter_value_formats")
     op.execute("DROP SEQUENCE gn_permissions.bib_filters_values_id_filter_value_seq")
-    op.execute("""
+    op.execute(
+        """
     ALTER TABLE gn_permissions.cor_role_action_filter_module_object
         DROP CONSTRAINT fk_cor_r_a_f_m_o_id_module
-    """)
+    """
+    )
     op.execute("DROP FUNCTION gn_permissions.get_id_filter_type")
     op.execute("DROP FUNCTION gn_permissions.get_id_action")

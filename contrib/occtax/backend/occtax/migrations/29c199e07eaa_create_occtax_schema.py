@@ -14,26 +14,27 @@ from sqlalchemy.sql import text
 
 
 # revision identifiers, used by Alembic.
-revision = '29c199e07eaa'
+revision = "29c199e07eaa"
 down_revision = None
-branch_labels = ('occtax',)
-depends_on = (
-    'f06cc80cc8ba',  # GeoNature 2.7.5
-)
+branch_labels = ("occtax",)
+depends_on = ("f06cc80cc8ba",)  # GeoNature 2.7.5
 
 
 def upgrade():
-    local_srid = op.get_bind().execute(func.Find_SRID('ref_geo', 'l_areas', 'geom')).scalar()
-    operations = text(importlib.resources.read_text('occtax.migrations.data', 'occtax.sql'))
-    op.get_bind().execute(operations, {'local_srid': local_srid})
+    local_srid = op.get_bind().execute(func.Find_SRID("ref_geo", "l_areas", "geom")).scalar()
+    operations = text(importlib.resources.read_text("occtax.migrations.data", "occtax.sql"))
+    op.get_bind().execute(operations, {"local_srid": local_srid})
 
 
 def downgrade():
-    op.execute("""
+    op.execute(
+        """
     DELETE FROM gn_permissions.t_objects
     WHERE code_object LIKE 'OCCTAX_%'
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     DO $$ BEGIN
         IF EXISTS (
            SELECT FROM information_schema.tables
@@ -48,19 +49,26 @@ def downgrade():
             AND module_code = 'OCCTAX';
         END IF;
     END $$;
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     DELETE FROM gn_synthese.t_sources
     WHERE name_source = 'Occtax'
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     DELETE FROM utilisateurs.cor_role_liste crl
     USING utilisateurs.t_listes l
     WHERE crl.id_liste = l.id_liste
     AND code_liste = 'obsocctax'
-    """)
-    op.execute("""
+    """
+    )
+    op.execute(
+        """
     DELETE FROM utilisateurs.t_listes
     WHERE code_liste = 'obsocctax'
-    """)
+    """
+    )
     op.execute("DROP SCHEMA pr_occtax CASCADE")

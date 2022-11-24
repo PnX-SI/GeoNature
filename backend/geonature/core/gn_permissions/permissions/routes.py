@@ -3,7 +3,7 @@ import uuid
 
 import logging
 from flask import current_app, request
-from sqlalchemy import (and_, distinct, func, or_, exc)
+from sqlalchemy import and_, distinct, func, or_, exc
 
 from pypnusershub.db.models import AppRole, Organisme, User
 from utils_flask_sqla.response import json_resp
@@ -22,9 +22,18 @@ from geonature.core.gn_commons.models import TModules
 
 
 from geonature.core.gn_permissions.tools import (
-    PermissionsManager, UserPermissions, split_value_filter, unduplicate_values,
-    format_geographic_filter_values, get_areas_infos, format_taxonomic_filter_values,
-    get_taxons_infos, build_value_filter_from_list, prepare_input, prepare_output, format_role_name
+    PermissionsManager,
+    UserPermissions,
+    split_value_filter,
+    unduplicate_values,
+    format_geographic_filter_values,
+    get_areas_infos,
+    format_taxonomic_filter_values,
+    get_taxons_infos,
+    build_value_filter_from_list,
+    prepare_input,
+    prepare_output,
+    format_role_name,
 )
 from geonature.core.gn_permissions.repositories import PermissionRepository
 
@@ -73,6 +82,7 @@ log = logging.getLogger()
 #     output = prepare_output(filters, remove_in_key="filter_type")
 #     return output
 
+
 @routes.route("/filters-values", methods=["GET"])
 @permissions.check_cruved_scope(action="R", module_code="ADMIN", object_code="PERMISSIONS")
 @json_resp
@@ -87,12 +97,8 @@ def get_all_filters_values():
     filtres correspondantes.
     """
     q = (
-        DB.session
-        .query(BibFiltersValues, BibFiltersType.code_filter_type)
-        .join(
-            BibFiltersType,
-            BibFiltersType.id_filter_type == BibFiltersValues.id_filter_type
-        )
+        DB.session.query(BibFiltersValues, BibFiltersType.code_filter_type)
+        .join(BibFiltersType, BibFiltersType.id_filter_type == BibFiltersValues.id_filter_type)
         .order_by(
             BibFiltersValues.id_filter_type,
             BibFiltersValues.value_or_field,
@@ -111,13 +117,12 @@ def get_all_filters_values():
         fvalue["filter_type_code"] = code
         fvalue["filter_type_id"] = fvalue["id_filter_type"]
         del fvalue["id_filter_type"]
-        if (fvalue["predefined"]):
+        if fvalue["predefined"]:
             fvalue["value"] = fvalue["value_or_field"]
 
         filters_values[code].append(fvalue)
 
     return prepare_output(filters_values, remove_in_key="filter_value")
-
 
 
 @routes.route("/objects", methods=["GET"])
@@ -157,39 +162,31 @@ def get_permissions_for_all_roles(info_role):
     # Subquery to get only implemented permissions (= link to cor_module_action_object_filter)
     gatherings_for_roles = (
         DB.session.query(
-            CorRoleActionFilterModuleObject.id_role,
-            CorRoleActionFilterModuleObject.gathering
+            CorRoleActionFilterModuleObject.id_role, CorRoleActionFilterModuleObject.gathering
         )
         .distinct(CorRoleActionFilterModuleObject.gathering)
         .join(
             CorModuleActionObjectFilter,
             (CorModuleActionObjectFilter.id_module == CorRoleActionFilterModuleObject.id_module)
-            &
-            (CorModuleActionObjectFilter.id_action == CorRoleActionFilterModuleObject.id_action)
-            &
-            (CorModuleActionObjectFilter.id_object == CorRoleActionFilterModuleObject.id_object)
-            &
-            (CorModuleActionObjectFilter.id_filter_type == CorRoleActionFilterModuleObject.id_filter_type)
+            & (CorModuleActionObjectFilter.id_action == CorRoleActionFilterModuleObject.id_action)
+            & (CorModuleActionObjectFilter.id_object == CorRoleActionFilterModuleObject.id_object)
+            & (
+                CorModuleActionObjectFilter.id_filter_type
+                == CorRoleActionFilterModuleObject.id_filter_type
+            ),
         )
         .subquery()
     )
 
     # Get roles with permissions
     query = (
-        DB.session.query(
-                User,
-                Organisme,
-                func.count(distinct(gatherings_for_roles.c.gathering))
-            )
-            .join(AppRole, AppRole.id_role == User.id_role)
-            .outerjoin(gatherings_for_roles, gatherings_for_roles.c.id_role == User.id_role)
-            .outerjoin(Organisme, Organisme.id_organisme == User.id_organisme)
-            .filter(AppRole.id_application == current_app.config["ID_APPLICATION_GEONATURE"])
-            .group_by(
-                User.id_role,
-                Organisme.id_organisme
-            )
-            .order_by(User.groupe.desc(), User.prenom_role, User.nom_role)
+        DB.session.query(User, Organisme, func.count(distinct(gatherings_for_roles.c.gathering)))
+        .join(AppRole, AppRole.id_role == User.id_role)
+        .outerjoin(gatherings_for_roles, gatherings_for_roles.c.id_role == User.id_role)
+        .outerjoin(Organisme, Organisme.id_organisme == User.id_organisme)
+        .filter(AppRole.id_application == current_app.config["ID_APPLICATION_GEONATURE"])
+        .group_by(User.id_role, Organisme.id_organisme)
+        .order_by(User.groupe.desc(), User.prenom_role, User.nom_role)
     )
 
     # Filter with user authentified permissions
@@ -245,20 +242,19 @@ def get_permissions_by_role_id(id_role):
 
     # Prepare role infos
     if not user:
-        response = {
-            "message": f"Id de rôle introuvable : {id_role} .",
-            "status": "error"
-        }
+        response = {"message": f"Id de rôle introuvable : {id_role} .", "status": "error"}
         return response, 404
     role = format_role(user)
 
     # Get, prepare and add groups of an user (for permissions inheritance)
     role["groups"] = []
     for group in user.groups:
-        role["groups"].append({
-            "id": group.id_role,
-            "group_name": format_role_name(group),
-        })
+        role["groups"].append(
+            {
+                "id": group.id_role,
+                "group_name": format_role_name(group),
+            }
+        )
 
     # Prepare permissions
 
@@ -266,8 +262,16 @@ def get_permissions_by_role_id(id_role):
     results = PermissionRepository().get_all_personal_permissions(id_role=id_role)
     for result in results:
         (
-            id_role, label, code, module, action_code, object_code,
-            end_date, gathering, filter_type, filter_value
+            id_role,
+            label,
+            code,
+            module,
+            action_code,
+            object_code,
+            end_date,
+            gathering,
+            filter_type,
+            filter_value,
         ) = result
         user_permissions.append_permission(
             label=label,
@@ -279,13 +283,13 @@ def get_permissions_by_role_id(id_role):
             gathering=gathering,
             filter_type=filter_type,
             filter_value=filter_value,
-            is_inherited=False
+            is_inherited=False,
         )
 
     # return user_permissions.permissions
 
     # Recover inherited permissions if necessary
-    if ("with-inheritance" in params and is_true(params["with-inheritance"])):
+    if "with-inheritance" in params and is_true(params["with-inheritance"]):
         inheritance = []
         # Get all modules
         modules = DB.session.query(TModules).order_by(TModules.module_order).all()
@@ -299,7 +303,7 @@ def get_permissions_by_role_id(id_role):
                     id_role=id_role,
                     module_code=module_code,
                     action_code=action_code,
-                    without_outdated=False
+                    without_outdated=False,
                 ).get_full_access_permission()
                 if perm_infos is None:
                     continue
@@ -315,19 +319,21 @@ def get_permissions_by_role_id(id_role):
                     prepared_inherited_by["by_group"] or prepared_inherited_by["by_module"]
                 )
                 for perm in [max_perm, *other_filters_permissions]:
-                    inheritance.append({
-                        "module_code": module_code,
-                        "action_code": action_code,
-                        "object_code": perm.code_object,
-                        "gathering": str(perm.gathering),
-                        "label": perm.permission_label,
-                        "code": perm.permission_code,
-                        "end_date": perm.end_date,
-                        "filter_type": perm.code_filter_type,
-                        "filter_value": perm.value_filter,
-                        "is_inherited": is_inherited,
-                        "inherited_by": prepared_inherited_by,
-                    })
+                    inheritance.append(
+                        {
+                            "module_code": module_code,
+                            "action_code": action_code,
+                            "object_code": perm.code_object,
+                            "gathering": str(perm.gathering),
+                            "label": perm.permission_label,
+                            "code": perm.permission_code,
+                            "end_date": perm.end_date,
+                            "filter_type": perm.code_filter_type,
+                            "filter_value": perm.value_filter,
+                            "is_inherited": is_inherited,
+                            "inherited_by": prepared_inherited_by,
+                        }
+                    )
 
             # For this module get its related objects
             module_objects = PermissionRepository().get_module_objects(module.id_module)
@@ -345,7 +351,7 @@ def get_permissions_by_role_id(id_role):
                         module_code=module_code,
                         action_code=action_code,
                         object_code=object_code,
-                        without_outdated=True
+                        without_outdated=True,
                     ).get_full_access_permission()
                     if perm_infos is None:
                         continue
@@ -363,28 +369,30 @@ def get_permissions_by_role_id(id_role):
                     )
 
                     for perm in [max_perm, *other_filters_permissions]:
-                        inheritance.append({
-                            "module_code": module_code,
-                            "action_code": action_code,
-                            "object_code": object_code,
-                            "gathering": str(perm.gathering),
-                            "label": perm.permission_label,
-                            "code": perm.permission_code,
-                            "end_date": perm.end_date,
-                            "filter_type": perm.code_filter_type,
-                            "filter_value": perm.value_filter,
-                            "is_inherited": is_inherited,
-                            "inherited_by": prepared_inherited_by,
-                        })
+                        inheritance.append(
+                            {
+                                "module_code": module_code,
+                                "action_code": action_code,
+                                "object_code": object_code,
+                                "gathering": str(perm.gathering),
+                                "label": perm.permission_label,
+                                "code": perm.permission_code,
+                                "end_date": perm.end_date,
+                                "filter_type": perm.code_filter_type,
+                                "filter_value": perm.value_filter,
+                                "is_inherited": is_inherited,
+                                "inherited_by": prepared_inherited_by,
+                            }
+                        )
 
         # Append inherited permissions
         for perm in inheritance:
-            #perm_detail = gatherings[perm["gathering"]]
+            # perm_detail = gatherings[perm["gathering"]]
             if perm["label"] is None and perm["code"] is None:
                 log.warn(
-                    "Permission not implemented detected (see cor_module_action_object_filter table). "+
-                    "Please remove this useless permission from cor_role_action_filter_module_object:"+
-                    f" {perm}"
+                    "Permission not implemented detected (see cor_module_action_object_filter table). "
+                    + "Please remove this useless permission from cor_role_action_filter_module_object:"
+                    + f" {perm}"
                 )
             elif perm["is_inherited"] and perm["module_code"] != "GEONATURE":
                 # WARNING : only add an inherited permission by an object if a
@@ -406,7 +414,9 @@ def get_permissions_by_role_id(id_role):
 
     # Add permissions list to role (remove "gathering from output")
     for module_name in user_permissions.permissions:
-        user_permissions.permissions[module_name] = list(user_permissions.permissions[module_name].values())
+        user_permissions.permissions[module_name] = list(
+            user_permissions.permissions[module_name].values()
+        )
     role["permissions"] = user_permissions.permissions
 
     # Send response
@@ -414,10 +424,10 @@ def get_permissions_by_role_id(id_role):
 
 
 def prepare_inherited_by(role, permission, inherited_by, is_inherited_by_module):
-    group_name = (permission.group_name if permission.group_name else None)
-    itself = (True if (role["type"] == "GROUP" and role["user_name"] == group_name) else False)
-    by_group = (True if (group_name and not itself) else False)
-    group_name = (group_name if by_group else None)
+    group_name = permission.group_name if permission.group_name else None
+    itself = True if (role["type"] == "GROUP" and role["user_name"] == group_name) else False
+    by_group = True if (group_name and not itself) else False
+    group_name = group_name if by_group else None
     return {
         "by_module": is_inherited_by_module,
         "module_code": (inherited_by[0] if inherited_by else None),
@@ -427,11 +437,8 @@ def prepare_inherited_by(role, permission, inherited_by, is_inherited_by_module)
     }
 
 
-
-
 def is_true(param):
     return True if (param.lower() in ["true", "1"]) else False
-
 
 
 @routes.route("/<gathering>", methods=["DELETE"])
@@ -458,20 +465,18 @@ def delete_permission(gathering):
         log.info(f"No permissions found for gathering {gathering}")
         response = {
             "message": f"Aucune permission trouvé pour le groupement : {gathering} .",
-            "status": "error"
+            "status": "error",
         }
         return response, 404
     except Exception as exp:
         log.error("Error %s", exp)
         response = {
             "message": f"Une exception est survenue durant la suppression : {exp} .",
-            "status": "error"
+            "status": "error",
         }
         return response, 500
 
     return "", 204
-
-
 
 
 @routes.route("/availables/actions-objects", methods=["GET"])
@@ -493,26 +498,17 @@ def get_availables_actions_objects():
     params = request.args.to_dict()
 
     # Build query
-    query = (DB.session
-        .query(
+    query = (
+        DB.session.query(
             CorModuleActionObjectFilter.label,
             TActions.code_action,
             TObjects.code_object,
             TModules.module_code,
         )
         .distinct()
-        .join(
-            TModules,
-            TModules.id_module == CorModuleActionObjectFilter.id_module
-        )
-        .join(
-            TActions,
-            TActions.id_action == CorModuleActionObjectFilter.id_action
-        )
-        .join(
-            TObjects,
-            TObjects.id_object == CorModuleActionObjectFilter.id_object
-        )
+        .join(TModules, TModules.id_module == CorModuleActionObjectFilter.id_module)
+        .join(TActions, TActions.id_action == CorModuleActionObjectFilter.id_action)
+        .join(TObjects, TObjects.id_object == CorModuleActionObjectFilter.id_object)
         .order_by(
             CorModuleActionObjectFilter.id_action,
             CorModuleActionObjectFilter.id_object,
@@ -528,14 +524,17 @@ def get_availables_actions_objects():
     for result in query.all():
         (label, action_code, object_code, module_code) = result
 
-        availables.append({
-            "module_code": module_code,
-            "action_code": action_code,
-            "object_code": object_code,
-            "label": label,
-        })
+        availables.append(
+            {
+                "module_code": module_code,
+                "action_code": action_code,
+                "object_code": object_code,
+                "label": label,
+            }
+        )
 
     return prepare_output(availables)
+
 
 @routes.route("/availables/actions-objects-filters", methods=["GET"])
 @permissions.check_cruved_scope("R", module_code="ADMIN", object_code="PERMISSIONS")
@@ -563,8 +562,8 @@ def get_availables_actions_objects_filters():
     params = request.args.to_dict()
 
     # Build query
-    query = (DB.session
-        .query(
+    query = (
+        DB.session.query(
             TActions.code_action,
             TObjects.code_object,
             BibFiltersType.code_filter_type,
@@ -573,21 +572,12 @@ def get_availables_actions_objects_filters():
             TModules.module_code,
         )
         .distinct()
-        .join(
-            TModules,
-            TModules.id_module == CorModuleActionObjectFilter.id_module
-        )
-        .join(
-            TActions,
-            TActions.id_action == CorModuleActionObjectFilter.id_action
-        )
-        .join(
-            TObjects,
-            TObjects.id_object == CorModuleActionObjectFilter.id_object
-        )
+        .join(TModules, TModules.id_module == CorModuleActionObjectFilter.id_module)
+        .join(TActions, TActions.id_action == CorModuleActionObjectFilter.id_action)
+        .join(TObjects, TObjects.id_object == CorModuleActionObjectFilter.id_object)
         .join(
             BibFiltersType,
-            BibFiltersType.id_filter_type == CorModuleActionObjectFilter.id_filter_type
+            BibFiltersType.id_filter_type == CorModuleActionObjectFilter.id_filter_type,
         )
         .order_by(
             CorModuleActionObjectFilter.id_action,
@@ -609,14 +599,16 @@ def get_availables_actions_objects_filters():
     for result in query.all():
         (action_code, object_code, filter_type_code, code, description, module_code) = result
 
-        availables.append({
-            "module_code": module_code,
-            "action_code": action_code,
-            "object_code": object_code,
-            "filter_type_code": filter_type_code,
-            "code": code,
-            "description": description,
-        })
+        availables.append(
+            {
+                "module_code": module_code,
+                "action_code": action_code,
+                "object_code": object_code,
+                "filter_type_code": filter_type_code,
+                "code": code,
+                "description": description,
+            }
+        )
 
     return prepare_output(availables)
 
@@ -654,14 +646,11 @@ def post_permission(info_role):
     if exp:
         response = {
             "message": f"Une erreur est survenue durant l'ajout de la permission : {exp} .",
-            "status": "error"
+            "status": "error",
         }
         code = 500
     else:
-        response = {
-            "message": "Succès de l'ajout de la permission.",
-            "status": "success"
-        }
+        response = {"message": "Succès de l'ajout de la permission.", "status": "success"}
         code = 200
 
     return response, code
@@ -705,14 +694,11 @@ def update_permission(info_role, gathering):
     if exp:
         response = {
             "message": f"Une erreur est survenue durant la mise à jour de la permission : {exp} .",
-            "status": "error"
+            "status": "error",
         }
         code = 500
     else:
-        response = {
-            "message": "Succès de la modification de la permission.",
-            "status": "success"
-        }
+        response = {"message": "Succès de la modification de la permission.", "status": "success"}
         code = 200
 
     return response, code

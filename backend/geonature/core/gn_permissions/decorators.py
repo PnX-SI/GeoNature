@@ -20,6 +20,7 @@ def login_required(view_func):
         if g.current_user is None:
             raise Unauthorized
         return view_func(*args, **kwargs)
+
     return decorated_view
 
 
@@ -56,10 +57,7 @@ def check_cruved_scope(
         @wraps(fn)
         def __check_cruved_scope(*args, **kwargs):
             user = get_user_from_token_and_raise(
-                request,
-                action,
-                redirect_on_expiration,
-                redirect_on_invalid_token
+                request, action, redirect_on_expiration, redirect_on_invalid_token
             )
             user_with_highter_perm = None
 
@@ -154,7 +152,7 @@ def check_permissions(
                 id_role=user["id_role"],
                 module_code=module_code,
                 action_code=action_code,
-                object_code=object_code
+                object_code=object_code,
             )
 
             if perms_manager.check_access():
@@ -168,10 +166,12 @@ def check_permissions(
                     kwargs["scope"] = int(getattr(old_access_permission, "value_filter"))
 
                 # Store data globally within the current context
-                g.user = old_access_permission # Retro-compatibility
+                g.user = old_access_permission  # Retro-compatibility
                 g.auth = old_access_permission
                 g.permissions = permissions
 
             return fn(*args, **kwargs)
+
         return __check_permissions
+
     return _check_permissions

@@ -12,17 +12,15 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'c9854947fa23'
-down_revision = '3b2f3de760dc'
+revision = "c9854947fa23"
+down_revision = "3b2f3de760dc"
 branch_labels = None
-depends_on = (
-    "441fc2d0f616",  # [ref_geo] add areas types size_hierarchy field
-)
-
+depends_on = ("441fc2d0f616",)  # [ref_geo] add areas types size_hierarchy field
 
 
 def upgrade():
-    op.execute("""
+    op.execute(
+        """
     DROP VIEW gn_synthese.v_synthese_for_export;
     CREATE VIEW gn_synthese.v_synthese_for_export AS
         SELECT
@@ -166,11 +164,13 @@ def upgrade():
                 ON ( s.id_nomenclature_biogeo_status = n22.id_nomenclature )
             LEFT JOIN ref_habitats.habref AS hab
                 ON ( hab.cd_hab = s.cd_hab ) ;
-    """)
+    """
+    )
 
 
 def downgrade():
-    op.execute("""
+    op.execute(
+        """
     DROP VIEW gn_synthese.v_synthese_for_export;
     CREATE VIEW gn_synthese.v_synthese_for_export
     AS SELECT s.date_min::date AS date_debut,
@@ -284,4 +284,5 @@ def downgrade():
          LEFT JOIN ref_nomenclatures.t_nomenclatures n21 ON s.id_nomenclature_valid_status = n21.id_nomenclature
          LEFT JOIN ref_nomenclatures.t_nomenclatures n22 ON s.id_nomenclature_biogeo_status = n22.id_nomenclature
          LEFT JOIN ref_habitats.habref hab ON hab.cd_hab = s.cd_hab;
-    """)
+    """
+    )

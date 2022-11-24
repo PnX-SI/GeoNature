@@ -19,9 +19,9 @@ from geonature.utils.errors import GeoNatureError
 
 class TMediaRepository:
     """
-        Reposity permettant de manipuler un objet média
-        au niveau de la base de données et du système de fichier
-        de façon synchrone
+    Reposity permettant de manipuler un objet média
+    au niveau de la base de données et du système de fichier
+    de façon synchrone
     """
 
     media_data = dict()
@@ -49,9 +49,9 @@ class TMediaRepository:
 
     def create_or_update_media(self):
         """
-            Création ou modification d'un média :
-             - Enregistrement en base de données
-             - Stockage du fichier
+        Création ou modification d'un média :
+         - Enregistrement en base de données
+         - Stockage du fichier
         """
         if self.new:
             try:
@@ -105,7 +105,7 @@ class TMediaRepository:
 
     def _persist_media_db(self):
         """
-            Enregistrement des données dans la base
+        Enregistrement des données dans la base
         """
         # @TODO récupérer les exceptions
         try:
@@ -213,7 +213,7 @@ class TMediaRepository:
 
     def upload_file(self):
         """
-            Upload des fichiers sur le serveur
+        Upload des fichiers sur le serveur
         """
 
         # SI c'est une modification =>
@@ -259,8 +259,8 @@ class TMediaRepository:
 
     def get_image_with_exp(self):
         """
-            Fonction qui tente de récupérer une image
-            et qui lance des exceptions en cas d'erreur
+        Fonction qui tente de récupérer une image
+        et qui lance des exceptions en cas d'erreur
         """
 
         try:
@@ -277,8 +277,8 @@ class TMediaRepository:
 
     def has_thumbnails(self):
         """
-            Test si la liste des thumbnails
-            définis par défaut existe
+        Test si la liste des thumbnails
+        définis par défaut existe
         """
         for thumbnail_height in self.thumbnail_sizes:
             if not self.has_thumbnail(thumbnail_height):
@@ -287,7 +287,7 @@ class TMediaRepository:
 
     def has_thumbnail(self, size):
         """
-            Test si le thumbnail de taille X existe
+        Test si le thumbnail de taille X existe
         """
         if not os.path.isfile(self.absolute_file_path(size)):
             return False
@@ -295,8 +295,8 @@ class TMediaRepository:
 
     def create_thumbnails(self):
         """
-            Creation automatique des thumbnails
-            dont les tailles sont spécifiés dans la config
+        Creation automatique des thumbnails
+        dont les tailles sont spécifiés dans la config
         """
         # Test si les thumbnails existent déjà
         if self.has_thumbnails():
@@ -325,8 +325,8 @@ class TMediaRepository:
 
     def get_thumbnail_url(self, size):
         """
-            Fonction permettant de récupérer l'url d'un thumbnail
-            Si le thumbnail n'existe pas il est créé à la volé
+        Fonction permettant de récupérer l'url d'un thumbnail
+        Si le thumbnail n'existe pas il est créé à la volé
         """
         # Get Thumb path and create if not exists
         if not self.has_thumbnail(size):
@@ -367,7 +367,7 @@ class TMediaRepository:
 
     def _load_from_id(self, id_media):
         """
-            Charge un média de la base à partir de son identifiant
+        Charge un média de la base à partir de son identifiant
         """
         media = DB.session.query(TMedias).get(id_media)
         return media
@@ -375,14 +375,14 @@ class TMediaRepository:
 
 class TMediumRepository:
     """
-        Classe permettant de manipuler des collections
-        d'objet média
+    Classe permettant de manipuler des collections
+    d'objet média
     """
 
     def get_medium_for_entity(self, entity_uuid):
         """
-            Retourne la liste des médias pour un objet
-            en fonction de son uuid
+        Retourne la liste des médias pour un objet
+        en fonction de son uuid
         """
         medium = DB.session.query(TMedias).filter(TMedias.uuid_attached_row == entity_uuid).all()
         return medium
@@ -390,9 +390,9 @@ class TMediumRepository:
     @staticmethod
     def sync_medias():
         """
-            Met à jour les médias
-              - supprime les médias sans uuid_attached_row plus vieux que 24h
-              - supprime les médias dont l'object attaché n'existe plus
+        Met à jour les médias
+          - supprime les médias sans uuid_attached_row plus vieux que 24h
+          - supprime les médias dont l'object attaché n'existe plus
         """
 
         # delete media temp > 24h
@@ -400,8 +400,9 @@ class TMediumRepository:
             DB.session.query(TMedias.id_media)
             .filter(
                 and_(
-                    TMedias.meta_update_date < (datetime.datetime.now() - datetime.timedelta(hours=24)),
-                    TMedias.uuid_attached_row == None
+                    TMedias.meta_update_date
+                    < (datetime.datetime.now() - datetime.timedelta(hours=24)),
+                    TMedias.uuid_attached_row == None,
                 )
             )
             .all()
@@ -409,8 +410,8 @@ class TMediumRepository:
 
         id_medias_temp = [res.id_media for res in res_medias_temp]
 
-        if (id_medias_temp):
-            print('sync media remove temp media with ids : ', id_medias_temp)
+        if id_medias_temp:
+            print("sync media remove temp media with ids : ", id_medias_temp)
 
         for id_media in id_medias_temp:
             TMediaRepository(id_media=id_media).delete()
@@ -419,43 +420,44 @@ class TMediumRepository:
 
         # liste des id des medias fichiers
         liste_fichiers = []
-        search_path = pathlib.Path(current_app.config["BASE_DIR"],current_app.config["UPLOAD_FOLDER"])
+        search_path = pathlib.Path(
+            current_app.config["BASE_DIR"], current_app.config["UPLOAD_FOLDER"]
+        )
         for (repertoire, sous_repertoires, fichiers) in os.walk(search_path):
             for f in fichiers:
-                id_media = f.split('_')[0]
+                id_media = f.split("_")[0]
                 try:
                     id_media = int(id_media)
-                    f_data = {
-                        'id_media': id_media,
-                        'path': pathlib.Path(repertoire, f)
-                    }
+                    f_data = {"id_media": id_media, "path": pathlib.Path(repertoire, f)}
                     liste_fichiers.append(f_data)
                 except ValueError:
                     pass
 
-
         # liste des media fichier supprimés en base
-        ids_media_file = [x['id_media'] for x in liste_fichiers]
+        ids_media_file = [x["id_media"] for x in liste_fichiers]
         ids_media_file = list(dict.fromkeys(ids_media_file))
 
         # suppression des fichiers dont le media n'existe plpus en base
-        ids_media_base = DB.session.query(TMedias.id_media).filter(TMedias.id_media.in_(ids_media_file)).all()
+        ids_media_base = (
+            DB.session.query(TMedias.id_media).filter(TMedias.id_media.in_(ids_media_file)).all()
+        )
         ids_media_base = [x[0] for x in ids_media_base]
 
         ids_media_to_delete = [x for x in ids_media_file if x not in ids_media_base]
 
-        if (ids_media_to_delete):
-            print('sync media remove unassociated medias with ids : ', ids_media_to_delete)
+        if ids_media_to_delete:
+            print("sync media remove unassociated medias with ids : ", ids_media_to_delete)
 
         for f_data in liste_fichiers:
-            if f_data['id_media'] not in ids_media_to_delete:
+            if f_data["id_media"] not in ids_media_to_delete:
                 continue
-            if 'thumbnail' in str(f_data['path']):
-                os.remove(f_data['path'])
+            if "thumbnail" in str(f_data["path"]):
+                os.remove(f_data["path"])
             else:
-                deleted_paths = str(f_data['path']).split('/')
-                deleted_paths[-1] = 'deleted_' + deleted_paths[-1]
-                rename_file(f_data['path'], "/".join(deleted_paths))
+                deleted_paths = str(f_data["path"]).split("/")
+                deleted_paths[-1] = "deleted_" + deleted_paths[-1]
+                rename_file(f_data["path"], "/".join(deleted_paths))
+
 
 def get_table_location_id(schema_name, table_name):
     try:
