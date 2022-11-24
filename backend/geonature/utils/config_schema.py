@@ -255,7 +255,7 @@ class GnFrontEndConf(Schema):
 
 
 class Synthese(Schema):
-    #--------------------------------------------------------------------
+    # --------------------------------------------------------------------
     # SYNTHESE - SEARCH FORM
     AREA_FILTERS = fields.List(
         fields.Dict, load_default=[{"label": "Communes", "type_code": "COM"}]
@@ -271,55 +271,61 @@ class Synthese(Schema):
     # Id of the observer list -- utilisateurs.t_menus
     ID_SEARCH_OBSERVER_LIST = fields.Integer(load_default=1)
     # Regulatory or not status list of fields
-    STATUS_FILTERS = fields.List(fields.Dict, missing=[
-        {
-            "id": "protections",
-            "show": True,
-            "display_name": "Taxons protégés",
-            "status_types": ["PN", "PR", "PD"],
-        },
-        {
-            "id": "regulations",
-            "show": True,
-            "display_name": "Taxons réglementés",
-            "status_types": ["REGLII", "REGLLUTTE", "REGL", "REGLSO"],
-        },
-        {
-            "id": "znief",
-            "show": True,
-            "display_name": "Espèces déterminantes ZNIEFF",
-            "status_types": ["ZDET"],
-        },
-    ])
+    STATUS_FILTERS = fields.List(
+        fields.Dict,
+        missing=[
+            {
+                "id": "protections",
+                "show": True,
+                "display_name": "Taxons protégés",
+                "status_types": ["PN", "PR", "PD"],
+            },
+            {
+                "id": "regulations",
+                "show": True,
+                "display_name": "Taxons réglementés",
+                "status_types": ["REGLII", "REGLLUTTE", "REGL", "REGLSO"],
+            },
+            {
+                "id": "znief",
+                "show": True,
+                "display_name": "Espèces déterminantes ZNIEFF",
+                "status_types": ["ZDET"],
+            },
+        ],
+    )
     # Red lists list of fields
-    RED_LISTS_FILTERS = fields.List(fields.Dict, missing=[
-        {
-            "id": "worldwide",
-            "show": True,
-            "display_name": "Liste rouge mondiale",
-            "status_type": "LRM",
-        },
-        {
-            "id": "european",
-            "show": True,
-            "display_name": "Liste rouge européenne",
-            "status_type": "LRE",
-        },
-        {
-            "id": "national",
-            "show": True,
-            "display_name": "Liste rouge nationale",
-            "status_type": "LRN",
-        },
-        {
-            "id": "regional",
-            "show": True,
-            "display_name": "Liste rouge régionale",
-            "status_type": "LRR",
-        },
-    ])
+    RED_LISTS_FILTERS = fields.List(
+        fields.Dict,
+        missing=[
+            {
+                "id": "worldwide",
+                "show": True,
+                "display_name": "Liste rouge mondiale",
+                "status_type": "LRM",
+            },
+            {
+                "id": "european",
+                "show": True,
+                "display_name": "Liste rouge européenne",
+                "status_type": "LRE",
+            },
+            {
+                "id": "national",
+                "show": True,
+                "display_name": "Liste rouge nationale",
+                "status_type": "LRN",
+            },
+            {
+                "id": "regional",
+                "show": True,
+                "display_name": "Liste rouge régionale",
+                "status_type": "LRR",
+            },
+        ],
+    )
 
-    #--------------------------------------------------------------------
+    # --------------------------------------------------------------------
     # SYNTHESE - OBSERVATIONS LIST
     # Listes des champs renvoyés par l'API synthese '/synthese'
     # Si on veut afficher des champs personnalisés dans le frontend (paramètre LIST_COLUMNS_FRONTEND) il faut
@@ -331,7 +337,7 @@ class Synthese(Schema):
     # Colonnes affichées sur la liste des résultats de la sytnthese
     LIST_COLUMNS_FRONTEND = fields.List(fields.Dict, load_default=DEFAULT_LIST_COLUMN)
 
-    #--------------------------------------------------------------------
+    # --------------------------------------------------------------------
     # SYNTHESE - DOWNLOADS (AKA EXPORTS)
     EXPORT_COLUMNS = fields.List(fields.String(), load_default=DEFAULT_EXPORT_COLUMNS)
     # Certaines colonnes sont obligatoires pour effectuer les filtres CRUVED
@@ -348,7 +354,7 @@ class Synthese(Schema):
     # Nombre max d'observation dans les exports
     NB_MAX_OBS_EXPORT = fields.Integer(load_default=50000)
 
-    #--------------------------------------------------------------------
+    # --------------------------------------------------------------------
     # SYNTHESE - OBSERVATION DETAILS
     # Liste des id attributs Taxhub à afficher sur la fiche détaile de la synthese
     # et sur les filtres taxonomiques avancés
@@ -356,7 +362,7 @@ class Synthese(Schema):
     # Display email on synthese and validation info obs modal
     DISPLAY_EMAIL = fields.Boolean(load_default=True)
 
-    #--------------------------------------------------------------------
+    # --------------------------------------------------------------------
     # SYNTHESE - SHARED PARAMETERS
     # Nom des colonnes de la table gn_synthese.synthese que l'on veux retirer des filtres dynamiques
     # et de la modale d'information détaillée d'une observation example = "[non_digital_proof]"
