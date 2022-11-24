@@ -7,7 +7,7 @@ import { SideNavService } from './sidenav-service';
 @Component({
   selector: 'pnx-sidenav-items',
   templateUrl: './sidenav-items.component.html',
-  styleUrls: ['./sidenav-items.component.scss']
+  styleUrls: ['./sidenav-items.component.scss'],
 })
 export class SidenavItemsComponent implements OnInit {
   public nav = [{}];

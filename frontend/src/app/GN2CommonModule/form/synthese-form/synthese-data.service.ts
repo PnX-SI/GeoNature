@@ -5,7 +5,7 @@ import {
   HttpHeaders,
   HttpEventType,
   HttpErrorResponse,
-  HttpEvent
+  HttpEvent,
 } from '@angular/common/http';
 import { GeoJSON } from 'leaflet';
 import { AppConfig } from '@geonature_config/app.config';
@@ -16,7 +16,7 @@ import { Observable } from 'rxjs';
 export const FormatMapMime = new Map([
   ['csv', 'text/csv'],
   ['json', 'application/json'],
-  ['shp', 'application/zip']
+  ['shp', 'application/zip'],
 ]);
 
 @Injectable()
@@ -33,7 +33,7 @@ export class SyntheseDataService {
     let queryUrl = new HttpParams();
     for (let key in params) {
       if (Array.isArray(params[key])) {
-        params[key].forEach(value => {
+        params[key].forEach((value) => {
           queryUrl = queryUrl.append(key, value);
         });
       } else {
@@ -43,7 +43,6 @@ export class SyntheseDataService {
     return queryUrl;
   }
 
-
   getSyntheseData(params) {
     return this._api.post<any>(`${AppConfig.API_ENDPOINT}/synthese/for_web`, params);
   }
@@ -52,33 +51,40 @@ export class SyntheseDataService {
     return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/general_stats`);
   }
 
-  getTaxaCount(params={}){
+  getTaxaCount(params = {}) {
     let queryString = new HttpParams();
     for (let key in params) {
-      queryString = queryString.set(key, params[key].toString())
+      queryString = queryString.set(key, params[key].toString());
     }
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_count`, {params: queryString});
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/taxa_count`, {
+      params: queryString,
+    });
   }
 
-  getObsCount(params={}){
+  getObsCount(params = {}) {
     let queryString = new HttpParams();
     for (let key in params) {
-      queryString = queryString.set(key, params[key].toString())
+      queryString = queryString.set(key, params[key].toString());
     }
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observation_count`, {params: queryString});
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observation_count`, {
+      params: queryString,
+    });
   }
 
-  getObsBbox(params={}){
+  getObsBbox(params = {}) {
     let queryString = new HttpParams();
     for (let key in params) {
-      queryString = queryString.set(key, params[key].toString())
+      queryString = queryString.set(key, params[key].toString());
     }
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observations_bbox`, {params: queryString});
+    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observations_bbox`, {
+      params: queryString,
+    });
   }
-
 
   getObsCountByColumn(column) {
-    return this._api.get<any>(`${AppConfig.API_ENDPOINT}/synthese/observation_count_per_column/${column}`);
+    return this._api.get<any>(
+      `${AppConfig.API_ENDPOINT}/synthese/observation_count_per_column/${column}`
+    );
   }
 
   getOneSyntheseObservation(id_synthese) {
@@ -110,7 +116,7 @@ export class SyntheseDataService {
         headers: new HttpHeaders().set('Content-Type', 'application/json'),
         observe: 'events',
         responseType: 'blob',
-        reportProgress: true
+        reportProgress: true,
       }
     );
 
@@ -127,7 +133,7 @@ export class SyntheseDataService {
         headers: new HttpHeaders().set('Content-Type', 'application/json'),
         observe: 'events',
         responseType: 'blob',
-        reportProgress: true
+        reportProgress: true,
       }
     );
 
@@ -141,7 +147,7 @@ export class SyntheseDataService {
       headers: new HttpHeaders().set('Content-Type', `${FormatMapMime.get(format)}`),
       observe: 'events',
       responseType: 'blob',
-      reportProgress: true
+      reportProgress: true,
     });
     this.subscribeAndDownload(source, filename, format);
   }
@@ -157,9 +163,9 @@ export class SyntheseDataService {
       observe: 'events',
       responseType: 'blob',
       reportProgress: true,
-      params: queryString
+      params: queryString,
     });
-    this.subscribeAndDownload(source, filename, "csv", false);
+    this.subscribeAndDownload(source, filename, 'csv', false);
   }
 
   downloadSensiReport(filename: string, args: { [key: string]: string }) {
@@ -173,9 +179,9 @@ export class SyntheseDataService {
       observe: 'events',
       responseType: 'blob',
       reportProgress: true,
-      params: queryString
+      params: queryString,
     });
-    this.subscribeAndDownload(source, filename, "csv", false);
+    this.subscribeAndDownload(source, filename, 'csv', false);
   }
 
   subscribeAndDownload(
@@ -185,7 +191,7 @@ export class SyntheseDataService {
     addDateToFilename: boolean = true
   ): void {
     const subscription = source.subscribe(
-      event => {
+      (event) => {
         if (event.type === HttpEventType.Response) {
           this._blob = new Blob([event.body], { type: event.headers.get('Content-Type') });
         }
@@ -198,7 +204,8 @@ export class SyntheseDataService {
         this.isDownloading = false;
         const date = new Date();
         const extension = format === 'shapefile' ? 'zip' : format;
-        this.saveBlob(this._blob,
+        this.saveBlob(
+          this._blob,
           `${fileName}${addDateToFilename ? '_' + date.toISOString() : ''}.${extension}`
         );
         subscription.unsubscribe();

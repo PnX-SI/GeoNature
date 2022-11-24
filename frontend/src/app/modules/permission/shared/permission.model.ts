@@ -7,7 +7,7 @@ export class Permission implements IPermission {
   action: string;
   object: string;
   gathering?: string;
-  endDate: string;// TODO: use Date
+  endDate: string; // TODO: use Date
   filters: IPermissionFilter[];
   isInherited: boolean;
   inheritedBy: IInheritance;

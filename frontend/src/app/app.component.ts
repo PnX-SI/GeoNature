@@ -8,17 +8,13 @@ import { TranslateService } from '@ngx-translate/core';
 import { AuthService } from '@geonature/components/auth/auth.service';
 import { AppConfig } from '../conf/app.config';
 
-
 @Component({
   selector: 'pnx-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  constructor(
-    private _authService: AuthService,
-    private translate: TranslateService,
-  ) {
+  constructor(private _authService: AuthService, private translate: TranslateService) {
     // Register all locales (default 'en') used by GeoNature for Angular Pipes
     registerLocaleData(localeFr, 'fr');
     registerLocaleData(localeZh, 'zh');
@@ -28,6 +24,5 @@ export class AppComponent implements OnInit {
     translate.use(AppConfig.DEFAULT_LANGUAGE);
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 }

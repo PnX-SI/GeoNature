@@ -6,7 +6,7 @@ import {
   HostListener,
   AfterContentChecked,
   OnChanges,
-  ChangeDetectorRef
+  ChangeDetectorRef,
 } from '@angular/core';
 import { GeoJSON } from 'leaflet';
 import { MapListService } from '@geonature_common/map-list/map-list.service';
@@ -19,14 +19,14 @@ import { HttpParams } from '@angular/common/http/';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SyntheseModalDownloadComponent } from './modal-download/modal-download.component';
 // import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { DatatableComponent} from '@swimlane/ngx-datatable';
-import {ColumnMode} from '@swimlane/ngx-datatable';
+import { DatatableComponent } from '@swimlane/ngx-datatable';
+import { ColumnMode } from '@swimlane/ngx-datatable';
 import { CruvedStoreService } from '@geonature_common/service/cruved-store.service';
 import { SyntheseInfoObsComponent } from '@geonature/shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 @Component({
   selector: 'pnx-synthese-list',
   templateUrl: 'synthese-list.component.html',
-  styleUrls: ['synthese-list.component.scss']
+  styleUrls: ['synthese-list.component.scss'],
 })
 export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChecked {
   public SYNTHESE_CONFIG = AppConfig.SYNTHESE;
@@ -61,23 +61,28 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     this.rowNumber = Math.trunc(h / 37);
 
     // On map click, select on the list a change the page
-    this.mapListService.onMapClik$.subscribe(id => {
-      this.mapListService.tableData.map(e => {
+    this.mapListService.onMapClik$.subscribe((id) => {
+      this.mapListService.tableData.map((e) => {
         if (e.selected && !id.includes(e.id)) {
-          e.selected = false
+          e.selected = false;
+        } else if (id.includes(e.id)) {
+          e.selected = true;
         }
-        else if (id.includes(e.id)) {
-          e.selected = true
-        }
-      })
-      let observations = this.mapListService.tableData.filter(e => {
-        return id.includes(e.id)
-      })
-      this.mapListService.tableData.sort((a,b) => { return b.selected - a.selected})
-      this.mapListService.tableData = [...this.mapListService.tableData]
-      this.mapListService.selectedRow = observations
-      const page = Math.trunc(this.mapListService.tableData.findIndex(e => {return e.id === id[0]}) / this.rowNumber)
-      this.table.offset = page
+      });
+      let observations = this.mapListService.tableData.filter((e) => {
+        return id.includes(e.id);
+      });
+      this.mapListService.tableData.sort((a, b) => {
+        return b.selected - a.selected;
+      });
+      this.mapListService.tableData = [...this.mapListService.tableData];
+      this.mapListService.selectedRow = observations;
+      const page = Math.trunc(
+        this.mapListService.tableData.findIndex((e) => {
+          return e.id === id[0];
+        }) / this.rowNumber
+      );
+      this.table.offset = page;
     });
   }
 
@@ -121,7 +126,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
     row.id_synthese = row.id;
     const modalRef = this.ngbModal.open(SyntheseInfoObsComponent, {
       size: 'lg',
-      windowClass: 'large-modal'
+      windowClass: 'large-modal',
     });
     modalRef.componentInstance.idSynthese = row.id_synthese;
     modalRef.componentInstance.uuidSynthese = row.unique_id_sinp;
@@ -130,7 +135,7 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
 
   openDownloadModal() {
     this.ngbModal.open(SyntheseModalDownloadComponent, {
-      size: 'lg'
+      size: 'lg',
     });
   }
 
@@ -139,7 +144,9 @@ export class SyntheseListComponent implements OnInit, OnChanges, AfterContentChe
   }
 
   getDate(date) {
-    function pad(s) { return (s < 10) ? '0' + s : s; }
+    function pad(s) {
+      return s < 10 ? '0' + s : s;
+    }
     const d = new Date(date);
     return [pad(d.getDate()), pad(d.getMonth() + 1), d.getFullYear()].join('-');
   }

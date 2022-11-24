@@ -8,7 +8,7 @@ import { of, Subject, Subscription } from 'rxjs';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 import { CommonService } from '@geonature_common/service/common.service';
-import { IModule, IObject, IPermission, IRolePermission } from '../permission.interface'
+import { IModule, IObject, IPermission, IRolePermission } from '../permission.interface';
 import { DeletePermissionDialog } from './delete-permission-dialog/delete-permission-dialog.component';
 import { PermissionService } from '../permission.service';
 import { ToastrService } from 'ngx-toastr';
@@ -19,10 +19,9 @@ import { HttpParams } from '@angular/common/http';
 @Component({
   selector: 'gn-permission-detail',
   templateUrl: './permission-detail.component.html',
-  styleUrls: ['./permission-detail.component.scss']
+  styleUrls: ['./permission-detail.component.scss'],
 })
 export class PermissionDetailComponent implements OnInit {
-
   loading: boolean = false;
   locale: string;
   destroy$: Subject<boolean> = new Subject<boolean>();
@@ -31,12 +30,12 @@ export class PermissionDetailComponent implements OnInit {
   objects: Record<string, IObject> = {};
   objectsOrder: Record<string, string[]> = {};
   permissionsByCode: Record<string, Record<string, IPermission[]>> = {};
-  permissionsNbrByCode: Record<string, {total: number, inherited: number, owned: number}> = {};
+  permissionsNbrByCode: Record<string, { total: number; inherited: number; owned: number }> = {};
   showInheritance: boolean = true;
   modules: IModule[];
   subscription: Subscription;
 
-  compareObjectCode = function(a, b) {
+  compareObjectCode = function (a, b) {
     if (b == 'ALL') {
       return 1;
     } else if (a < b) {
@@ -46,7 +45,7 @@ export class PermissionDetailComponent implements OnInit {
     } else {
       return 0;
     }
-  }
+  };
 
   constructor(
     public activatedRoute: ActivatedRoute,
@@ -55,7 +54,7 @@ export class PermissionDetailComponent implements OnInit {
     public permissionService: PermissionService,
     private router: Router,
     private translateService: TranslateService,
-    private toasterService: ToastrService,
+    private toasterService: ToastrService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
@@ -77,28 +76,29 @@ export class PermissionDetailComponent implements OnInit {
     this.idRole = urlParams.get('idRole') as unknown as number;
     if (urlParams.has('name') && urlParams.has('type')) {
       this.role = {
-        'id': this.idRole,
-        'userName': urlParams.get('name'),
-        'type': urlParams.get('type') as 'USER' | 'GROUP',
+        id: this.idRole,
+        userName: urlParams.get('name'),
+        type: urlParams.get('type') as 'USER' | 'GROUP',
       };
     }
   }
 
   private loadPermissionsObjects() {
-    this.permissionService.getObjects().subscribe(objects => {
+    this.permissionService.getObjects().subscribe((objects) => {
       this.objects = {};
       objects.forEach((obj) => {
         this.objects[obj.code] = obj;
       });
-    })
+    });
   }
 
   private loadRole() {
     this.loading = true;
-    let params = new HttpParams().set('with-inheritance', (this.showInheritance ? '1' : '0'));
-    this.permissionService.getRoleById(this.idRole, params)
+    let params = new HttpParams().set('with-inheritance', this.showInheritance ? '1' : '0');
+    this.permissionService
+      .getRoleById(this.idRole, params)
       .pipe(
-        map( role => {
+        map((role) => {
           this.role = role;
 
           // Extract modules codes and dispatch permissions by module code
@@ -106,7 +106,7 @@ export class PermissionDetailComponent implements OnInit {
           for (let prop in role.permissions) {
             let permissions = role.permissions[prop];
             permissions.forEach((item) => {
-              if (! modulesCodes.includes(item.module)) {
+              if (!modulesCodes.includes(item.module)) {
                 modulesCodes.push(item.module);
                 // Initialize permission sort by module and object
                 this.permissionsByCode[item.module] = {};
@@ -118,8 +118,8 @@ export class PermissionDetailComponent implements OnInit {
                 // Initialize numbers of permissions
                 this.permissionsNbrByCode[item.module] = {
                   total: 1,
-                  inherited: (item.isInherited ? 1 : 0),
-                  owned: (item.isInherited ? 0 : 1),
+                  inherited: item.isInherited ? 1 : 0,
+                  owned: item.isInherited ? 0 : 1,
                 };
               } else {
                 // Add permission sort by module and object
@@ -130,8 +130,8 @@ export class PermissionDetailComponent implements OnInit {
                 }
 
                 // Add object order
-                if (! this.objectsOrder[item.module].includes(item.object)) {
-                  this.objectsOrder[item.module].push(item.object)
+                if (!this.objectsOrder[item.module].includes(item.object)) {
+                  this.objectsOrder[item.module].push(item.object);
                 }
 
                 // Update numbers of permissions
@@ -143,7 +143,7 @@ export class PermissionDetailComponent implements OnInit {
                 }
               }
             });
-          };
+          }
           // Reorder objects code
           for (let prop in this.objectsOrder) {
             let objects = this.objectsOrder[prop];
@@ -152,21 +152,19 @@ export class PermissionDetailComponent implements OnInit {
           }
           return modulesCodes;
         }),
-        mergeMap( modulesCodes => {
+        mergeMap((modulesCodes) => {
           if (modulesCodes.length > 0) {
-            return this.permissionService.getModules(modulesCodes)
+            return this.permissionService.getModules(modulesCodes);
           } else {
             return of([]);
           }
         })
       )
-      .subscribe(modules => {
+      .subscribe((modules) => {
         this.modules = modules;
         this.loading = false;
       });
   }
-
-
 
   private getI18nLocale() {
     this.locale = this.translateService.currentLang;
@@ -183,7 +181,7 @@ export class PermissionDetailComponent implements OnInit {
 
   onShowInheritanceChange(ob: MatSlideToggleChange) {
     if (ob.checked != this.showInheritance) {
-      this.showInheritance = ob.checked
+      this.showInheritance = ob.checked;
       this.loadRole();
     }
   }
@@ -191,14 +189,14 @@ export class PermissionDetailComponent implements OnInit {
   openEditModal(permission: IPermission = new Permission()): void {
     const dialogRef = this.dialog.open(EditPermissionModal, {
       data: {
-        "role": this.role,
-        "permission": permission,
+        role: this.role,
+        permission: permission,
       },
       disableClose: true,
       panelClass: 'edit-permission-modal',
     });
 
-    dialogRef.afterClosed().subscribe(msg => {
+    dialogRef.afterClosed().subscribe((msg) => {
       if (msg == 'OK') {
         this.loadRole();
       }
@@ -208,21 +206,21 @@ export class PermissionDetailComponent implements OnInit {
   openDeleteDialog(permission: IPermission): void {
     const dialogRef = this.dialog.open(DeletePermissionDialog, {
       maxWidth: 800,
-      data: permission
+      data: permission,
     });
 
-    dialogRef.afterClosed().subscribe(permission => {
+    dialogRef.afterClosed().subscribe((permission) => {
       if (permission) {
         this.permissionService.deletePermission(permission.gathering).subscribe(
           () => {
             this.commonService.translateToaster('info', 'Permissions.deleteOk');
             this.loadRole();
           },
-          error => {
-            const msg = (error.error && error.error.msg) ? error.error.msg : error.message;
+          (error) => {
+            const msg = error.error && error.error.msg ? error.error.msg : error.message;
             console.log(msg);
             this.translateService
-              .get('Permissions.deleteKo', {errorMsg: msg})
+              .get('Permissions.deleteKo', { errorMsg: msg })
               .subscribe((translatedTxt: string) => {
                 this.toasterService.error(translatedTxt);
               });

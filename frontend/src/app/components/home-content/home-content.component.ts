@@ -16,10 +16,9 @@ import { takeUntil } from 'rxjs/operators';
   selector: 'pnx-home-content',
   templateUrl: './home-content.component.html',
   styleUrls: ['./home-content.component.scss'],
-  providers: [MapService, SyntheseDataService]
+  providers: [MapService, SyntheseDataService],
 })
 export class HomeContentComponent implements OnInit {
-
   public appConfig: any;
   public showLastObsMap: boolean = false;
   public lastObs: any;
@@ -34,7 +33,7 @@ export class HomeContentComponent implements OnInit {
     private _globalSub: GlobalSubService,
     private _mapService: MapService,
     private _moduleService: ModuleService,
-    private translateService: TranslateService,
+    private translateService: TranslateService
   ) {
     // this work here thanks to APP_INITIALIZER on ModuleService
     let synthese_module = this._moduleService.getModule('SYNTHESE');
@@ -55,7 +54,7 @@ export class HomeContentComponent implements OnInit {
     this.appConfig = AppConfig;
 
     if (this.showLastObsMap) {
-      this._syntheseApi.getSyntheseData({ limit: 100 }).subscribe(result => {
+      this._syntheseApi.getSyntheseData({ limit: 100 }).subscribe((result) => {
         this.lastObs = result.data;
       });
     }
@@ -81,7 +80,7 @@ export class HomeContentComponent implements OnInit {
       // Compute refresh need
       const currentDatetime = new Date();
       const cacheEndDatetime = new Date(stats.createdDate);
-      const milliSecondsTtl = (AppConfig.FRONTEND.STAT_BLOC_TTL * 1000)
+      const milliSecondsTtl = AppConfig.FRONTEND.STAT_BLOC_TTL * 1000;
       const futureTimestamp = cacheEndDatetime.getTime() + milliSecondsTtl;
       cacheEndDatetime.setTime(futureTimestamp);
 
@@ -105,7 +104,7 @@ export class HomeContentComponent implements OnInit {
         //   }
         //   return stat;
         // })
-        .subscribe(stats => {
+        .subscribe((stats) => {
           stats['createdDate'] = new Date().toUTCString();
           localStorage.setItem('homePage.stats', JSON.stringify(stats));
           this.generalStat = stats;
@@ -130,8 +129,10 @@ export class HomeContentComponent implements OnInit {
       click: () => {
         // Open popup
         let popup = `<div style="max-height: 300px; overflow: scroll;"> `;
-        for (let i = 0; i<feature.properties.nom_vern_or_lb_nom.length; i++) {
-          popup = popup + `
+        for (let i = 0; i < feature.properties.nom_vern_or_lb_nom.length; i++) {
+          popup =
+            popup +
+            `
           ${feature.properties.nom_vern_or_lb_nom[i]} <br>
           <b> Observé le: </b> ${feature.properties.date_min[i]} <br>
           <b> Par</b>:  ${feature.properties.observers[i]}<br><br>
@@ -139,7 +140,7 @@ export class HomeContentComponent implements OnInit {
         }
         popup = popup + `<\div>`;
         layer.bindPopup(popup).openPopup();
-      }
+      },
     });
   }
 }

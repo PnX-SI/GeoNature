@@ -16,10 +16,9 @@ import { MetadataDataService } from '../services/metadata-data.service';
   selector: 'pnx-datasets-form',
   templateUrl: './dataset-form.component.html',
   styleUrls: ['../form.component.scss'],
-  providers: [DatasetFormService]
+  providers: [DatasetFormService],
 })
 export class DatasetFormComponent implements OnInit {
-
   public form: FormGroup;
   //observable pour la liste déroulantes HTML des AF
   public acquisitionFrameworks: Observable<any>;
@@ -45,11 +44,11 @@ export class DatasetFormComponent implements OnInit {
           return params['id'] ? this._dfs.getDataset(params['id']) : of(null);
         })
       )
-      .subscribe(dataset => this.datasetFormS.dataset.next(dataset));
+      .subscribe((dataset) => this.datasetFormS.dataset.next(dataset));
 
     this.form = this.datasetFormS.form;
 
-    this._dfs.getTaxaBibList().subscribe(d => this.taxaBibList = d);
+    this._dfs.getTaxaBibList().subscribe((d) => (this.taxaBibList = d));
     // get Modules
     if (!this.moduleService.getModules()) {
       this.moduleService.fetchModules();
@@ -66,11 +65,13 @@ export class DatasetFormComponent implements OnInit {
     }
   }
 
-  addMainContact(){
-    this.datasetFormS.addActor({id_nomenclature_actor_role: this.actorFormS.getIDRoleTypeByCdNomenclature("1")})
+  addMainContact() {
+    this.datasetFormS.addActor({
+      id_nomenclature_actor_role: this.actorFormS.getIDRoleTypeByCdNomenclature('1'),
+    });
   }
-  addGenericContact(){
-    this.datasetFormS.genericActorForm.push(this.actorFormS.createForm())
+  addGenericContact() {
+    this.datasetFormS.genericActorForm.push(this.actorFormS.createForm());
   }
 
   mergeActors(dataset, genericActors) {
@@ -78,8 +79,7 @@ export class DatasetFormComponent implements OnInit {
   }
 
   postDataset() {
-    if (this.form.invalid || this.datasetFormS.genericActorForm.invalid)
-      return;
+    if (this.form.invalid || this.datasetFormS.genericActorForm.invalid) return;
 
     let api: Observable<any>;
     //UPDATE
@@ -91,7 +91,7 @@ export class DatasetFormComponent implements OnInit {
     } else {
       //si creation on envoie le contenu du formulaire
       const dataset = Object.assign({}, this.form.value);
-      this.mergeActors(dataset, this.datasetFormS.genericActorForm.value)
+      this.mergeActors(dataset, this.datasetFormS.genericActorForm.value);
       api = this.metadataDataS.createDataset(dataset);
     }
 
@@ -104,11 +104,10 @@ export class DatasetFormComponent implements OnInit {
         })
       )
       .subscribe(
-        (dataset: any) =>{
-          this._router.navigate(['/metadata/dataset_detail', dataset.id_dataset])
-
+        (dataset: any) => {
+          this._router.navigate(['/metadata/dataset_detail', dataset.id_dataset]);
         },
-        error => {
+        (error) => {
           if (error.status === 403) {
             this._commonService.translateToaster('error', 'NotAllowed');
             this._router.navigate(['/metadata/']);

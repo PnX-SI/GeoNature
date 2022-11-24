@@ -6,7 +6,14 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
 
-import { IActionObject, IFilter, IFilterValue, IModule, IPermission, IRolePermission } from '../../permission.interface';
+import {
+  IActionObject,
+  IFilter,
+  IFilterValue,
+  IModule,
+  IPermission,
+  IRolePermission,
+} from '../../permission.interface';
 import { PermissionService } from '../../permission.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
@@ -17,12 +24,9 @@ import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
   selector: 'gn-edit-permission-modal',
   templateUrl: './edit-permission-modal.component.html',
   styleUrls: ['./edit-permission-modal.component.scss'],
-  providers: [
-    { provide: STEPPER_GLOBAL_OPTIONS, useValue: {showError: true} },
-  ]
+  providers: [{ provide: STEPPER_GLOBAL_OPTIONS, useValue: { showError: true } }],
 })
 export class EditPermissionModal implements OnInit {
-
   permission: IPermission;
   role: IRolePermission;
   // Boolean to check if its updateMode
@@ -47,7 +51,7 @@ export class EditPermissionModal implements OnInit {
     private formBuilder: FormBuilder,
     private commonService: CommonService,
     private translateService: TranslateService,
-    private toasterService: ToastrService,
+    private toasterService: ToastrService
   ) {
     this.role = data.role;
     this.permission = data.permission;
@@ -73,12 +77,12 @@ export class EditPermissionModal implements OnInit {
   }
 
   private loadModules() {
-    this.permissionService.getModules().subscribe( modules => {
+    this.permissionService.getModules().subscribe((modules) => {
       this.modules = modules;
 
       if (this.updateMode.getValue()) {
         let module = this.getModule(this.permission.module);
-        this.formGroup.patchValue({modules: {module: module} });
+        this.formGroup.patchValue({ modules: { module: module } });
 
         this.loadActionsObjects(module);
       }
@@ -86,11 +90,11 @@ export class EditPermissionModal implements OnInit {
   }
 
   private getModule(code: string) {
-    return this.modules.find(module => module.code == code);
+    return this.modules.find((module) => module.code == code);
   }
 
   private loadFiltersValues() {
-    this.permissionService.getFiltersValues().subscribe( fValues => {
+    this.permissionService.getFiltersValues().subscribe((fValues) => {
       // Extract filter type codes and dispatch filter values by filter type code
       this.filtersValues = {};
       for (let prop in fValues) {
@@ -111,7 +115,7 @@ export class EditPermissionModal implements OnInit {
     this.datePickerMin = this.transformToDateObject(today);
 
     // TODO: improve pnx-date to not set maxDate for unlimited future date
-    const maxAccessDuration = dayDuration * 3650;// 10 years
+    const maxAccessDuration = dayDuration * 3650; // 10 years
     const in2YearsDate = new Date(today.valueOf() + maxAccessDuration);
     this.datePickerMax = this.transformToDateObject(in2YearsDate);
   }
@@ -133,14 +137,17 @@ export class EditPermissionModal implements OnInit {
       actionsObjects: this.formBuilder.group({
         actionObject: ['', Validators.required],
       }),
-      filters: this.formBuilder.group({
-        geographic: [''],
-        taxonomic: [''],
-        precision: [''],
-        scope: ['', Validators.required],
-      }, {
-        validator: atLeastOne('geographic','taxonomic', 'precision', 'scope')
-      }),
+      filters: this.formBuilder.group(
+        {
+          geographic: [''],
+          taxonomic: [''],
+          precision: [''],
+          scope: ['', Validators.required],
+        },
+        {
+          validator: atLeastOne('geographic', 'taxonomic', 'precision', 'scope'),
+        }
+      ),
       validating: this.formBuilder.group({
         endDate: [''],
       }),
@@ -148,12 +155,12 @@ export class EditPermissionModal implements OnInit {
   }
 
   loadActionsObjects(module: IModule) {
-    this.permissionService.getActionsObjects(module.code).subscribe( actionsOjects => {
+    this.permissionService.getActionsObjects(module.code).subscribe((actionsOjects) => {
       this.actionsOjects = actionsOjects;
 
       if (this.updateMode.getValue()) {
         let actionObj = this.getActionsObjects(this.permission.action, this.permission.object);
-        this.formGroup.patchValue({actionsObjects: {actionObject: actionObj} });
+        this.formGroup.patchValue({ actionsObjects: { actionObject: actionObj } });
 
         this.loadFilters(actionObj);
       }
@@ -161,25 +168,24 @@ export class EditPermissionModal implements OnInit {
   }
 
   private getActionsObjects(action: string, object: string) {
-    return this.actionsOjects.find(ao => ao.actionCode == action && ao.objectCode == object);
+    return this.actionsOjects.find((ao) => ao.actionCode == action && ao.objectCode == object);
   }
 
   loadFilters(actionObj: IActionObject) {
-    this.permissionService.getActionsObjectsFilters(actionObj)
-      .subscribe( filters => {
-        this.availableFilters = [];
-        filters.forEach(filter => {
-          this.availableFilters.push(filter.filterTypeCode);
-        });
-
-        if (this.updateMode.getValue()) {
-          this.permission.filters.forEach(filter => {
-            let filterFormOjbect = {filters: {}};
-            filterFormOjbect['filters'][filter.type.toLowerCase()] = this.buildFilterValue(filter);
-            this.formGroup.patchValue(filterFormOjbect);
-          });
-        }
+    this.permissionService.getActionsObjectsFilters(actionObj).subscribe((filters) => {
+      this.availableFilters = [];
+      filters.forEach((filter) => {
+        this.availableFilters.push(filter.filterTypeCode);
       });
+
+      if (this.updateMode.getValue()) {
+        this.permission.filters.forEach((filter) => {
+          let filterFormOjbect = { filters: {} };
+          filterFormOjbect['filters'][filter.type.toLowerCase()] = this.buildFilterValue(filter);
+          this.formGroup.patchValue(filterFormOjbect);
+        });
+      }
+    });
   }
 
   private buildFilterValue(filter) {
@@ -223,52 +229,48 @@ export class EditPermissionModal implements OnInit {
     this.formGroup.patchValue({
       validating: {
         endDate: endDateObject,
-      }
-    })
+      },
+    });
   }
 
   public addPermission() {
     const permissionData = this.getPermissionData();
 
-    this.permissionService
-      .addPermission(permissionData)
-      .subscribe(
-        () => {
-          this.commonService.translateToaster('info', 'Permissions.addingOk');
-          this.modalRef.close('OK');
-        },
-        error => {
-          const msg = (error.error && error.error.msg) ? error.error.msg : error.message;
-          console.log(msg);
-          this.translateService
-            .get('Permissions.addingKo', {errorMsg: msg})
-            .subscribe((translatedTxt: string) => {
-              this.toasterService.error(translatedTxt);
-            });
-        }
-      );
+    this.permissionService.addPermission(permissionData).subscribe(
+      () => {
+        this.commonService.translateToaster('info', 'Permissions.addingOk');
+        this.modalRef.close('OK');
+      },
+      (error) => {
+        const msg = error.error && error.error.msg ? error.error.msg : error.message;
+        console.log(msg);
+        this.translateService
+          .get('Permissions.addingKo', { errorMsg: msg })
+          .subscribe((translatedTxt: string) => {
+            this.toasterService.error(translatedTxt);
+          });
+      }
+    );
   }
 
   public updatePermission() {
     const permissionData = this.getPermissionData();
 
-    this.permissionService
-      .updatePermission(permissionData)
-      .subscribe(
-        () => {
-          this.commonService.translateToaster('info', 'Permissions.updatingOk');
-          this.modalRef.close('OK');
-        },
-        error => {
-          const msg = (error.error && error.error.msg) ? error.error.msg : error.message;
-          console.log(msg);
-          this.translateService
-            .get('Permissions.updatingKo', {errorMsg: msg})
-            .subscribe((translatedTxt: string) => {
-              this.toasterService.error(translatedTxt);
-            });
-        }
-      );
+    this.permissionService.updatePermission(permissionData).subscribe(
+      () => {
+        this.commonService.translateToaster('info', 'Permissions.updatingOk');
+        this.modalRef.close('OK');
+      },
+      (error) => {
+        const msg = error.error && error.error.msg ? error.error.msg : error.message;
+        console.log(msg);
+        this.translateService
+          .get('Permissions.updatingKo', { errorMsg: msg })
+          .subscribe((translatedTxt: string) => {
+            this.toasterService.error(translatedTxt);
+          });
+      }
+    );
   }
 
   private getPermissionData() {
@@ -285,10 +287,10 @@ export class EditPermissionModal implements OnInit {
         scope: formData.filters.scope ? formData.filters.scope : null,
         precision: formData.filters.precision ? formData.filters.precision : null,
       },
-      endDate: formData.validating.endDate
+      endDate: formData.validating.endDate,
     };
 
-    if (this.updateMode.getValue() && ! this.permission.isInherited) {
+    if (this.updateMode.getValue() && !this.permission.isInherited) {
       permissionData['gathering'] = this.permission.gathering;
     }
 

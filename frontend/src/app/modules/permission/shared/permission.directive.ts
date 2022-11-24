@@ -1,4 +1,4 @@
-import { FormGroup, ValidationErrors, } from '@angular/forms';
+import { FormGroup, ValidationErrors } from '@angular/forms';
 
 /**
  * Validates if at least one of the provided fields has a value.
@@ -8,7 +8,7 @@ import { FormGroup, ValidationErrors, } from '@angular/forms';
  */
 export function atLeastOne(...fields: string[]) {
   return (fg: FormGroup): ValidationErrors | null => {
-    return fields.some(fieldName => {
+    return fields.some((fieldName) => {
       const field = fg.get(fieldName).value;
       if (typeof field === 'number') {
         return field && field >= 0 ? true : false;
@@ -18,7 +18,9 @@ export function atLeastOne(...fields: string[]) {
         return field && field.length > 0 ? true : false;
       } else {
         let fieldType = typeof field;
-        console.log(`In atLeastOne Directive field type "${fieldType}" not implemented for field ${fieldName}.`)
+        console.log(
+          `In atLeastOne Directive field type "${fieldType}" not implemented for field ${fieldName}.`
+        );
       }
     })
       ? null

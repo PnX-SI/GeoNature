@@ -12,13 +12,12 @@ import { IPermission } from '../../permission.interface';
   templateUrl: 'delete-permission-dialog.component.html',
 })
 export class DeletePermissionDialog {
-
   locale: string;
   destroy$: Subject<boolean> = new Subject<boolean>();
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public permission: IPermission,
-    private translateService: TranslateService,
+    private translateService: TranslateService
   ) {
     this.getI18nLocale();
   }

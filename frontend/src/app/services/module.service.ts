@@ -5,19 +5,24 @@ import { catchError, tap } from 'rxjs/operators';
 
 @Injectable()
 export class ModuleService {
-
   private _modules: BehaviorSubject<any[]> = new BehaviorSubject([]);
-  get modules(): any[] { return this._modules.getValue(); };
-  set modules(value: any[]) { this._modules.next(value); };
-  get $_modules(): Observable<any[]> { return this._modules.asObservable(); };
+  get modules(): any[] {
+    return this._modules.getValue();
+  }
+  set modules(value: any[]) {
+    this._modules.next(value);
+  }
+  get $_modules(): Observable<any[]> {
+    return this._modules.asObservable();
+  }
 
-  constructor(private _api: DataFormService) { }
+  constructor(private _api: DataFormService) {}
 
   fetchModules(): Observable<any[]> {
     // see CruvedStoreService.fetchCruved comments about the catchError
     return this._api.getModulesList([]).pipe(
-      catchError(err => of([])), // TODO: error MUST be handled in case we are logged! (typically, api down)
-      tap((modules) => this.modules = modules),
+      catchError((err) => of([])), // TODO: error MUST be handled in case we are logged! (typically, api down)
+      tap((modules) => (this.modules = modules))
     );
   }
 
@@ -26,7 +31,7 @@ export class ModuleService {
   }
 
   getDisplayedModules() {
-    return this.modules.filter(mod => {
+    return this.modules.filter((mod) => {
       return (
         mod.module_code.toLowerCase() !== 'geonature' &&
         (mod.active_frontend || mod.module_external_url)
@@ -44,6 +49,6 @@ export class ModuleService {
         return mod;
       }
     }
-    return null;  // module with this code not found
+    return null; // module with this code not found
   }
 }

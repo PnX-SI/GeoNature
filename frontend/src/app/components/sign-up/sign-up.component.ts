@@ -10,7 +10,7 @@ import { CommonService } from '@geonature_common/service/common.service';
 @Component({
   selector: 'pnx-signup',
   templateUrl: './sign-up.component.html',
-  styleUrls: ['./sign-up.component.scss']
+  styleUrls: ['./sign-up.component.scss'],
 })
 export class SignUpComponent implements OnInit {
   form: FormGroup;
@@ -42,12 +42,12 @@ export class SignUpComponent implements OnInit {
       identifiant: ['', Validators.required],
       email: [
         '',
-        [Validators.pattern('^[+a-z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$'), Validators.required]
+        [Validators.pattern('^[+a-z0-9._-]+@[a-z0-9._-]{2,}.[a-z]{2,4}$'), Validators.required],
       ],
       password: ['', [Validators.required]],
       password_confirmation: ['', [Validators.required]],
       remarques: ['', null],
-      organisme: ['', null]
+      organisme: ['', null],
     });
     this.form.setValidators([similarValidator('password', 'password_confirmation')]);
     this.dynamicFormGroup = this.fb.group({});
@@ -63,15 +63,13 @@ export class SignUpComponent implements OnInit {
       }
       this._authService
         .signupUser(finalForm)
-        .subscribe(
-          res => {
-            const callbackMessage = AppConfig.ACCOUNT_MANAGEMENT.AUTO_ACCOUNT_CREATION
-              ? 'AutoAccountEmailConfirmation'
-              : 'AdminAccountEmailConfirmation';
-            this._commonService.translateToaster('info', callbackMessage);
-            this._router.navigate(['/login']);
-          },
-        )
+        .subscribe((res) => {
+          const callbackMessage = AppConfig.ACCOUNT_MANAGEMENT.AUTO_ACCOUNT_CREATION
+            ? 'AutoAccountEmailConfirmation'
+            : 'AdminAccountEmailConfirmation';
+          this._commonService.translateToaster('info', callbackMessage);
+          this._router.navigate(['/login']);
+        })
         .add(() => {
           this.disableSubmit = false;
         });

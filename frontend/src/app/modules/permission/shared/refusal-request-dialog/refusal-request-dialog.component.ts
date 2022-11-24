@@ -10,8 +10,5 @@ import { IPermissionRequest } from '../../permission.interface';
   styleUrls: ['./refusal-request-dialog.component.scss'],
 })
 export class RefusalRequestDialog {
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public request: IPermissionRequest,
-  ) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public request: IPermissionRequest) {}
 }

@@ -7,7 +7,7 @@ import {
   HttpHeaders,
   HttpRequest,
   HttpEventType,
-  HttpErrorResponse
+  HttpErrorResponse,
 } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
 import { CommonService } from '@geonature_common/service/common.service';
@@ -15,13 +15,13 @@ import { CommonService } from '@geonature_common/service/common.service';
 export const FormatMapMime = new Map([
   ['csv', 'text/csv'],
   ['json', 'application/json'],
-  ['shp', 'application/zip']
+  ['shp', 'application/zip'],
 ]);
 
 @Component({
   selector: 'pnx-modal-download',
   templateUrl: 'modal-download.component.html',
-  styleUrls: ['./modal-download.component.scss']
+  styleUrls: ['./modal-download.component.scss'],
 })
 export class ModalDownloadComponent implements OnInit {
   @Input() pathDownload: string;
@@ -43,7 +43,7 @@ export class ModalDownloadComponent implements OnInit {
     private _commonService: CommonService
   ) {
     this.downloadProgress$ = <BehaviorSubject<number>>new BehaviorSubject(0.0);
-    this.downloadProgress$.subscribe(state => {
+    this.downloadProgress$.subscribe((state) => {
       if (state === 100) {
         this.done();
         this.endLoad = true;
@@ -75,11 +75,11 @@ export class ModalDownloadComponent implements OnInit {
       headers: new HttpHeaders().set('Content-Type', `${FormatMapMime.get(format)}`),
       observe: 'events',
       responseType: 'blob',
-      reportProgress: true
+      reportProgress: true,
     });
 
     const subscription = source.subscribe(
-      event => {
+      (event) => {
         switch (event.type) {
           case HttpEventType.DownloadProgress:
             if (event.hasOwnProperty('total')) {

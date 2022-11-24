@@ -33,18 +33,18 @@ export class MapService {
 
   selectedStyle = {
     color: '#ff0000',
-    weight: 3
+    weight: 3,
   };
 
   originStyle = {
     color: '#3388ff',
     fill: false,
     fillOpacity: 0.2,
-    weight: 3
+    weight: 3,
   };
 
   searchStyle = {
-    color: 'green'
+    color: 'green',
   };
 
   constructor(private http: HttpClient, private _commonService: CommonService) {
@@ -69,7 +69,7 @@ export class MapService {
   }
 
   setGeojsonCoord(geojsonCoord) {
-      this._geojsonCoord.next(geojsonCoord);
+    this._geojsonCoord.next(geojsonCoord);
   }
 
   zoomOnMarker(coordinates, zoomLevel = 15) {
@@ -88,9 +88,9 @@ export class MapService {
   addCustomLegend(position, id, logoUrl?, func?) {
     const LayerControl = L.Control.extend({
       options: {
-        position: position
+        position: position,
       },
-      onAdd: map => {
+      onAdd: (map) => {
         const customLegend = L.DomUtil.create(
           'div',
           'leaflet-bar leaflet-control leaflet-control-custom'
@@ -111,7 +111,7 @@ export class MapService {
           }
         };
         return customLegend;
-      }
+      },
     });
     return LayerControl;
   }
@@ -119,9 +119,9 @@ export class MapService {
   addSearchBar() {
     const control = L.Control.extend({
       options: {
-        position: 'topright'
+        position: 'topright',
       },
-      onAdd: map => {
+      onAdd: (map) => {
         const customLegend = L.DomUtil.create(
           'input',
           'leaflet-bar leaflet-control leaflet-control-custom'
@@ -132,25 +132,25 @@ export class MapService {
         //   }
         // };
         return customLegend;
-      }
+      },
     });
     return control;
   }
 
-  createMarker(x, y, isDraggable) {    
+  createMarker(x, y, isDraggable) {
     return L.marker([y, x], {
       icon: L.icon({
         iconUrl: 'marker-icon.png',
         iconSize: [24, 36],
-        iconAnchor: [12, 36]
+        iconAnchor: [12, 36],
       }),
-      draggable: isDraggable
+      draggable: isDraggable,
     });
   }
 
   createGeojson(geojson, asCluster: boolean, onEachFeature?, style?): GeoJSON {
     const geojsonLayer = L.geoJSON(geojson, {
-      style: feature => {
+      style: (feature) => {
         switch (feature.geometry.type) {
           // No color nor opacity for linestrings
           case 'LineString':
@@ -158,7 +158,7 @@ export class MapService {
               ? style
               : {
                   color: '#3388ff',
-                  weight: 3
+                  weight: 3,
                 };
           default:
             return style
@@ -167,14 +167,14 @@ export class MapService {
                   color: '#3388ff',
                   fill: true,
                   fillOpacity: 0.2,
-                  weight: 3
+                  weight: 3,
                 };
         }
       },
       pointToLayer: (feature, latlng) => {
         return L.circleMarker(latlng);
       },
-      onEachFeature: onEachFeature
+      onEachFeature: onEachFeature,
     });
     if (asCluster) {
       return (L as any).markerClusterGroup().addLayer(geojsonLayer);
@@ -184,15 +184,15 @@ export class MapService {
 
   removeAllLayers(map, featureGroup) {
     if (featureGroup) {
-      featureGroup.eachLayer(layer => {
+      featureGroup.eachLayer((layer) => {
         featureGroup.removeLayer(layer);
       });
     }
   }
   removeLayerFeatureGroups(featureGroups: Array<any>) {
-    featureGroups.forEach(featureGroup => {
+    featureGroups.forEach((featureGroup) => {
       if (featureGroup) {
-        featureGroup.eachLayer(layer => {
+        featureGroup.eachLayer((layer) => {
           featureGroup.removeLayer(layer);
         });
       }
@@ -206,7 +206,7 @@ export class MapService {
       // send observable
       let markerCoord = this.marker.getLatLng();
       let geojson = {
-        geometry: { type: 'Point', coordinates: [markerCoord.lng, markerCoord.lat] }
+        geometry: { type: 'Point', coordinates: [markerCoord.lng, markerCoord.lat] },
       };
       this.setGeojsonCoord(geojson);
       this.marker.on('moveend', (event: L.LeafletMouseEvent) => {
@@ -215,7 +215,7 @@ export class MapService {
         } else {
           markerCoord = this.marker.getLatLng();
           geojson = {
-            geometry: { type: 'Point', coordinates: [markerCoord.lng, markerCoord.lat] }
+            geometry: { type: 'Point', coordinates: [markerCoord.lng, markerCoord.lat] },
           };
           // send observable
           this.setGeojsonCoord(geojson);
@@ -228,14 +228,14 @@ export class MapService {
     } else {
       let layer;
       if (data.geometry.type === 'LineString') {
-        const myLatLong = coordinates.map(point => {
+        const myLatLong = coordinates.map((point) => {
           return L.latLng(point[1], point[0]);
         });
         layer = L.polyline(myLatLong);
         this.leafletDrawFeatureGroup.addLayer(layer);
       }
       if (data.geometry.type === 'Polygon') {
-        const myLatLong = coordinates[0].map(point => {
+        const myLatLong = coordinates[0].map((point) => {
           return L.latLng(point[1], point[0]);
         });
         layer = L.polygon(myLatLong);

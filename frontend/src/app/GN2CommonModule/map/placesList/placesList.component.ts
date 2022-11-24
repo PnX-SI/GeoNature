@@ -16,7 +16,7 @@ import { timeStamp } from 'console';
  */
 @Component({
   selector: 'pnx-placesList',
-  templateUrl: 'placesList.component.html'
+  templateUrl: 'placesList.component.html',
 })
 export class PlacesListComponent extends MarkerComponent implements OnInit {
   @ViewChild('modalContent', { static: false }) public modalContent: any;
@@ -91,22 +91,20 @@ export class PlacesListComponent extends MarkerComponent implements OnInit {
     }
     this.selectedPlace = this.place;
     if (confirm('Êtes-vous sûr de vouloir supprimer ce lieu?')) {
-      this._dfs.deletePlace(this.selectedPlace.id).subscribe(res => {
+      this._dfs.deletePlace(this.selectedPlace.id).subscribe((res) => {
         this.fetchPlaces();
       });
     }
   }
 
   fetchPlaces() {
-    this._dfs.getPlaces().subscribe(
-      res => {
-        this.places = res;
-        if (this.places.length > 0) {
-          this.place = this.places[0];
-        } else {
-          this.place = null;
-        }
-      },
-    );
+    this._dfs.getPlaces().subscribe((res) => {
+      this.places = res;
+      if (this.places.length > 0) {
+        this.place = this.places[0];
+      } else {
+        this.place = null;
+      }
+    });
   }
 }

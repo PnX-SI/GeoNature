@@ -9,8 +9,5 @@ import { IPermissionRequest } from '../../permission.interface';
   templateUrl: 'accept-request-dialog.component.html',
 })
 export class AcceptRequestDialog {
-
-  constructor(
-    @Inject(MAT_DIALOG_DATA) public request: IPermissionRequest,
-  ) {}
+  constructor(@Inject(MAT_DIALOG_DATA) public request: IPermissionRequest) {}
 }

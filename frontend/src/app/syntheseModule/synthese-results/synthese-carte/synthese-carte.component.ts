@@ -12,7 +12,7 @@ import * as L from 'leaflet';
   selector: 'pnx-synthese-carte',
   templateUrl: 'synthese-carte.component.html',
   styleUrls: ['synthese-carte.component.scss'],
-  providers: []
+  providers: [],
 })
 export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges {
   public leafletDrawOptions = leafletDrawOption;
@@ -27,13 +27,13 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
   originStyle = {
     color: '#3388ff',
     fill: false,
-    weight: 3
+    weight: 3,
   };
 
   selectedStyle = {
     color: '#ff0000',
     weight: 3,
-    fill: false
+    fill: false,
   };
 
   @Input() inputSyntheseData: GeoJSON;
@@ -54,7 +54,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
   ngAfterViewInit() {
     // event from the list
     // On table click, change style layer and zoom
-    this.mapListService.onTableClick$.subscribe(id => {
+    this.mapListService.onTableClick$.subscribe((id) => {
       const selectedLayer = this.mapListService.layerDict[id];
       //selectedLayer.bringToFront();
       this.toggleStyle(selectedLayer);
@@ -81,11 +81,11 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
       this.mapListService.layerDict[id_] = layer;
     }
     layer.on({
-      click: e => {
+      click: (e) => {
         // toggle style
         this.toggleStyle(layer);
         this.mapListService.mapSelected.next(id);
-      }
+      },
     });
   }
 
@@ -114,7 +114,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
     layer.setStyle({
       color: '#3388ff',
       weight: 3,
-      fill: false
+      fill: false,
     });
   }
 
@@ -141,7 +141,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges 
         ? (L as any).markerClusterGroup()
         : new L.FeatureGroup();
 
-      change.inputSyntheseData.currentValue.features.forEach(geojson => {
+      change.inputSyntheseData.currentValue.features.forEach((geojson) => {
         // we don't create a generic function for setStyle and event on each layer to avoid
         // a if on possible milion of point (with multipoint we must set the event on each point)
         if (geojson.type == 'Point' || geojson.type == 'MultiPoint') {

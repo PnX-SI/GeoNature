@@ -27,7 +27,7 @@ const routes: Routes = [
   { path: 'dataset_detail/:id', component: DatasetCardComponent },
   { path: 'af', component: AfFormComponent },
   { path: 'af/:id', component: AfFormComponent },
-  { path: 'af_detail/:id', component: AfCardComponent }
+  { path: 'af_detail/:id', component: AfCardComponent },
 ];
 
 export class MetadataPaginator extends MatPaginatorIntl {
@@ -53,7 +53,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
   imports: [
     HttpClientXsrfModule.withOptions({
       cookieName: 'token',
-      headerName: 'token'
+      headerName: 'token',
     }),
     CommonModule,
     GN2CommonModule,
@@ -61,7 +61,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
     ChartModule,
     RouterModule.forChild(routes),
     MatCheckboxModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
   ],
   exports: [],
   declarations: [
@@ -71,7 +71,7 @@ export class MetadataPaginator extends MatPaginatorIntl {
     DatasetCardComponent,
     AfFormComponent,
     ActorComponent,
-    AfCardComponent
+    AfCardComponent,
   ],
   providers: [
     MetadataService,
@@ -79,8 +79,8 @@ export class MetadataPaginator extends MatPaginatorIntl {
     ActorFormService,
     {
       provide: MatPaginatorIntl,
-      useClass: MetadataPaginator
-    }
-  ]
+      useClass: MetadataPaginator,
+    },
+  ],
 })
-export class MetadataModule { }
+export class MetadataModule {}

@@ -1,17 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 
 import { Observable, of, Subject, concat } from 'rxjs';
-import {
-  distinctUntilChanged,
-  debounceTime,
-  switchMap,
-  tap,
-  catchError,
-} from 'rxjs/operators';
+import { distinctUntilChanged, debounceTime, switchMap, tap, catchError } from 'rxjs/operators';
 
 import { DataFormService } from '@geonature_common/form/data-form.service';
 import { GenericFormComponent } from '@geonature_common/form/genericForm.component';
-
 
 /**
  * Ce composant a le même comportement que {@link AreasComponent|pnx-areas}.
@@ -43,7 +36,6 @@ import { GenericFormComponent } from '@geonature_common/form/genericForm.compone
   templateUrl: 'taxa.component.html',
 })
 export class TaxaComponent extends GenericFormComponent implements OnInit {
-
   taxa: Observable<any>;
   taxaInput$ = new Subject<string>();
   loading = false;

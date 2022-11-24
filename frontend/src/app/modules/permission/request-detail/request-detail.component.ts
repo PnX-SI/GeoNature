@@ -15,7 +15,7 @@ import { RefusalRequestDialog } from '../shared/refusal-request-dialog/refusal-r
 @Component({
   selector: 'gn-permission-request-detail',
   templateUrl: './request-detail.component.html',
-  styleUrls: ['./request-detail.component.scss']
+  styleUrls: ['./request-detail.component.scss'],
 })
 export class RequestDetailComponent implements OnInit {
   [x: string]: any;
@@ -31,7 +31,7 @@ export class RequestDetailComponent implements OnInit {
     public permissionService: PermissionService,
     private toasterService: ToastrService,
     private translateService: TranslateService,
-    private router: Router,
+    private router: Router
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = () => false;
   }
@@ -46,52 +46,51 @@ export class RequestDetailComponent implements OnInit {
     this.token = urlParams.get('requestToken');
     if (urlParams.has('user') && urlParams.has('organism')) {
       this.request = {
-        'token': this.token,
-        'userName': urlParams.get('user'),
-        'organismName': urlParams.get('organism'),
+        token: this.token,
+        userName: urlParams.get('user'),
+        organismName: urlParams.get('organism'),
       };
     }
   }
 
   private loadRequest() {
-    this.permissionService.getRequestByToken(this.token)
-      .subscribe(
-        data => {
-          this.request = data;
-          this.errorMsg = undefined;
-        },
-        error => {
-          this.errorMsg = (error.error && error.error.msg) ? error.error.msg : error.message;
-          this.request = undefined;
+    this.permissionService.getRequestByToken(this.token).subscribe(
+      (data) => {
+        this.request = data;
+        this.errorMsg = undefined;
+      },
+      (error) => {
+        this.errorMsg = error.error && error.error.msg ? error.error.msg : error.message;
+        this.request = undefined;
 
-          if (error.status === 404) {
-            this.errorMsg = `Token « ${this.token} » de la demande d'accès introuvable.`
-          }
-          this.translateService
-            .get('Permissions.errors.stdMsg', {errorMsg: this.errorMsg})
-            .subscribe((translatedTxt: string) => {
-              this.toasterService.error(translatedTxt);
-            });
+        if (error.status === 404) {
+          this.errorMsg = `Token « ${this.token} » de la demande d'accès introuvable.`;
         }
-      );
+        this.translateService
+          .get('Permissions.errors.stdMsg', { errorMsg: this.errorMsg })
+          .subscribe((translatedTxt: string) => {
+            this.toasterService.error(translatedTxt);
+          });
+      }
+    );
   }
 
   openAcceptDialog(request: IPermissionRequest): void {
     const dialogRef = this.dialog.open(AcceptRequestDialog, {
-      data: request
+      data: request,
     });
 
-    dialogRef.afterClosed().subscribe(request_token => {
+    dialogRef.afterClosed().subscribe((request_token) => {
       if (request_token) {
         this.permissionService.acceptRequest(request_token).subscribe(
           () => {
             this.router.navigate(['permissions/requests/processed']);
             this.commonService.translateToaster('info', 'Permissions.accessRequest.acceptOk');
           },
-          error => {
-            const msg = (error.error && error.error.msg) ? error.error.msg : error.message;
+          (error) => {
+            const msg = error.error && error.error.msg ? error.error.msg : error.message;
             this.translateService
-              .get('Permissions.accessRequest.acceptKo', {errorMsg: msg})
+              .get('Permissions.accessRequest.acceptKo', { errorMsg: msg })
               .subscribe((translatedTxt: string) => {
                 this.toasterService.error(translatedTxt);
               });
@@ -103,20 +102,20 @@ export class RequestDetailComponent implements OnInit {
 
   openPendingDialog(request: IPermissionRequest): void {
     const dialogRef = this.dialog.open(PendingRequestDialog, {
-      data: request
+      data: request,
     });
 
-    dialogRef.afterClosed().subscribe(request_token => {
+    dialogRef.afterClosed().subscribe((request_token) => {
       if (request_token) {
         this.permissionService.pendingRequest(request_token).subscribe(
           () => {
             this.router.navigate(['permissions/requests/pending']);
             this.commonService.translateToaster('info', 'Permissions.accessRequest.pendingOk');
           },
-          error => {
-            const msg = (error.error && error.error.msg) ? error.error.msg : error.message;
+          (error) => {
+            const msg = error.error && error.error.msg ? error.error.msg : error.message;
             this.translateService
-              .get('Permissions.accessRequest.pendingKo', {errorMsg: msg})
+              .get('Permissions.accessRequest.pendingKo', { errorMsg: msg })
               .subscribe((translatedTxt: string) => {
                 this.toasterService.error(translatedTxt);
               });
@@ -128,20 +127,20 @@ export class RequestDetailComponent implements OnInit {
 
   openRefusalDialog(request: IPermissionRequest): void {
     const dialogRef = this.dialog.open(RefusalRequestDialog, {
-      data: request
+      data: request,
     });
 
-    dialogRef.afterClosed().subscribe(request => {
+    dialogRef.afterClosed().subscribe((request) => {
       if (request) {
         this.permissionService.refuseRequest(request).subscribe(
           () => {
             this.router.navigate(['permissions/requests/processed']);
             this.commonService.translateToaster('info', 'Permissions.accessRequest.refusalOk');
           },
-          error => {
-            const msg = (error.error && error.error.msg) ? error.error.msg : error.message;
+          (error) => {
+            const msg = error.error && error.error.msg ? error.error.msg : error.message;
             this.translateService
-              .get('Permissions.accessRequest.refusalKo', {errorMsg: msg})
+              .get('Permissions.accessRequest.refusalKo', { errorMsg: msg })
               .subscribe((translatedTxt: string) => {
                 this.toasterService.error(translatedTxt);
               });

@@ -10,12 +10,12 @@ export const leafletDrawOption: any = {
       allowIntersection: false, // Restricts shapes to simple polygons
       drawError: {
         color: '#e1e100', // Color the shape will turn when intersects
-        message: 'Intersection forbidden !' // Message that will show when intersect
-      }
-    }
+        message: 'Intersection forbidden !', // Message that will show when intersect
+      },
+    },
   },
   edit: {
     remove: false,
-    moveMarker: true
-  }
+    moveMarker: true,
+  },
 };

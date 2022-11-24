@@ -6,7 +6,7 @@ import { debounceTime, distinctUntilChanged, filter } from 'rxjs/operators';
 @Component({
   selector: 'pnx-map-list-generic-filter',
   templateUrl: 'generic-filters.component.html',
-  styleUrls: ['generic-filters.component.scss']
+  styleUrls: ['generic-filters.component.scss'],
 })
 export class MapListGenericFiltersComponent implements OnInit {
   @Input() availableColumns: Array<any>;
@@ -18,8 +18,12 @@ export class MapListGenericFiltersComponent implements OnInit {
 
   ngOnInit() {
     this.mapListService.genericFilterInput.valueChanges
-      .pipe(distinctUntilChanged(), debounceTime(400), filter(value => value !== null))
-      .subscribe(value => {
+      .pipe(
+        distinctUntilChanged(),
+        debounceTime(400),
+        filter((value) => value !== null)
+      )
+      .subscribe((value) => {
         if (value !== null && this.mapListService.colSelected.name === '') {
           this._commonService.translateToaster('warning', 'MapList.NoColumnSelected');
         } else {
@@ -28,7 +32,7 @@ export class MapListGenericFiltersComponent implements OnInit {
           );
           if (value.length > 0) {
             this.mapListService.refreshData(this.apiEndPoint, 'set', [
-              { param: this.mapListService.colSelected.prop, value: value }
+              { param: this.mapListService.colSelected.prop, value: value },
             ]);
           } else {
             this.mapListService.deleteAndRefresh(
@@ -43,7 +47,7 @@ export class MapListGenericFiltersComponent implements OnInit {
   toggle(col) {
     const isChecked = this.isChecked(col);
     if (isChecked) {
-      this.mapListService.displayColumns = this.mapListService.displayColumns.filter(c => {
+      this.mapListService.displayColumns = this.mapListService.displayColumns.filter((c) => {
         return c.prop !== col.prop;
       });
     } else {

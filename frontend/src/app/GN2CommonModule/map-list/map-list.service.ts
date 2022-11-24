@@ -44,13 +44,13 @@ export class MapListService {
     color: '#3388ff',
     fill: false,
     fillOpacity: 0.2,
-    weight: 3
+    weight: 3,
   };
 
   selectedStyle = {
     color: '#ff0000',
     weight: 3,
-    fill: true
+    fill: true,
   };
 
   constructor(
@@ -68,7 +68,7 @@ export class MapListService {
 
   onTableClick(map: Map): void {
     // On table click, change style layer and zoom
-    this.onTableClick$.subscribe(id => {
+    this.onTableClick$.subscribe((id) => {
       const selectedLayer = this.layerDict[id];
       this.toggleStyle(selectedLayer);
       this.zoomOnSelectedLayer(map, selectedLayer);
@@ -76,7 +76,7 @@ export class MapListService {
   }
 
   onMapClick(): void {
-    this.onMapClik$.subscribe(id => {
+    this.onMapClik$.subscribe((id) => {
       this.selectedRow = []; // clear selected list
 
       const integerId = parseInt(id);
@@ -137,19 +137,20 @@ export class MapListService {
     this.isLoading = true;
     return this._http
       .get<any>(`${AppConfig.API_ENDPOINT}/${this.endPoint}`, { params: this.urlQuery })
-      .pipe(delay(200), finalize(() => (this.isLoading = false)));
+      .pipe(
+        delay(200),
+        finalize(() => (this.isLoading = false))
+      );
   }
 
   loadData() {
-    this.dataService().subscribe(
-      data => {
-        this.page.totalElements = data.total;
-        this.page.itemPerPage = parseInt(this.urlQuery.get('limit'));
-        this.page.pageNumber = data.page;
-        this.geojsonData = data.items;
-        this.loadTableData(data.items, this.customCallBack);
-      },
-    );
+    this.dataService().subscribe((data) => {
+      this.page.totalElements = data.total;
+      this.page.itemPerPage = parseInt(this.urlQuery.get('limit'));
+      this.page.pageNumber = data.page;
+      this.geojsonData = data.items;
+      this.loadTableData(data.items, this.customCallBack);
+    });
   }
 
   getData(endPoint, param?: Array<any>, customCallBack?) {
@@ -173,11 +174,11 @@ export class MapListService {
     // set or append a param to urlQuery
     if (params) {
       if (method === 'set') {
-        params.forEach(param => {
+        params.forEach((param) => {
           this.setHttpParam(param.param, param.value);
         });
       } else {
-        params.forEach(param => {
+        params.forEach((param) => {
           this.appendHttpParam(param.param, param.value);
         });
       }
@@ -210,11 +211,11 @@ export class MapListService {
 
   deleteObsFront(idDelete: number) {
     // supprimer une observation sur la carte et la liste en front seulement
-    this.tableData = this.tableData.filter(row => {
+    this.tableData = this.tableData.filter((row) => {
       return row[this.idName] !== idDelete;
     });
 
-    this.geojsonData.features = this.geojsonData.features.filter(row => {
+    this.geojsonData.features = this.geojsonData.features.filter((row) => {
       return row['id'] !== idDelete.toString();
     });
     this.geojsonData = Object.assign({}, this.geojsonData);
@@ -259,7 +260,7 @@ export class MapListService {
 
   zoomOnSeveralSelectedLayers(map, layers) {
     let group = new L.FeatureGroup();
-    layers.forEach(layer => {
+    layers.forEach((layer) => {
       this.layerDict[layer];
       group.addLayer(this.layerDict[layer]);
     });
@@ -284,7 +285,7 @@ export class MapListService {
   loadTableData(data, customCallBack?) {
     this.tableData = [];
     if (customCallBack) {
-      data.features.forEach(feature => {
+      data.features.forEach((feature) => {
         let newFeature = null;
         if (customCallBack) {
           newFeature = customCallBack(feature);
@@ -292,16 +293,16 @@ export class MapListService {
         this.tableData.push(newFeature.properties);
       });
     } else {
-      data.features.forEach(feature => {
+      data.features.forEach((feature) => {
         for (let i = 0; i < feature.properties.id.length; i++) {
-          let item = {}
+          let item = {};
           for (let data_prop in feature.properties) {
-            if (data_prop !== "geojson") {
-              item[data_prop] = feature.properties[data_prop][i]
-              item["selected"] = false
+            if (data_prop !== 'geojson') {
+              item[data_prop] = feature.properties[data_prop][i];
+              item['selected'] = false;
             }
           }
-          item["geojson"] = feature.properties["geojson"]
+          item['geojson'] = feature.properties['geojson'];
           this.tableData.push(item);
         }
       });

@@ -23,9 +23,9 @@ export interface IPermissionRequest {
   taxonomicFilters?: number[];
   taxonomicFiltersLabels?: string[];
   sensitiveAccess?: boolean;
-  endAccessDate?: string;// TODO: use Date
+  endAccessDate?: string; // TODO: use Date
   processedState?: string;
-  processedDate?: string;// TODO: use DateTime
+  processedDate?: string; // TODO: use DateTime
   processedBy?: IRolePermission;
   refusalReason?: string;
   additionalData?: IAdditionalData[];
@@ -49,8 +49,8 @@ export interface IRolePermission {
   organismName?: string;
   type: 'USER' | 'GROUP';
   permissionsNbr?: number;
-  permissions?: Record<string, IPermission[]>;// Not use in list to decrease bandwidth consumption.
-  groups?: IGroupPermission[]
+  permissions?: Record<string, IPermission[]>; // Not use in list to decrease bandwidth consumption.
+  groups?: IGroupPermission[];
 }
 
 export interface IGroupPermission {
@@ -65,7 +65,7 @@ export interface IPermission {
   module: string;
   action: string;
   object: string;
-  endDate: string;// TODO: use Date
+  endDate: string; // TODO: use Date
   //filters: Record<string, IPermissionFilter[]>;
   filters: IPermissionFilter[];
   isInherited: boolean;
@@ -88,7 +88,7 @@ export interface IInheritance {
 
 // OBJECT
 export interface IObject {
-  id: number
+  id: number;
   code: string;
   description: string;
 }

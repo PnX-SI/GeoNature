@@ -4,8 +4,8 @@ import { Directive, ElementRef, Input, Renderer2 } from '@angular/core';
   selector: '[displayMouseOver]',
   host: {
     '(mouseenter)': 'onMouseEnter()',
-    '(mouseleave)': 'onMouseLeave()'
-  }
+    '(mouseleave)': 'onMouseLeave()',
+  },
 })
 export class DisplayMouseOverDirective {
   private _defaultColor = null;

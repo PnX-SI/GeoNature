@@ -8,7 +8,6 @@ import { takeUntil } from 'rxjs/operators';
 import { IPermissionRequestDatatableColumn, IPermissionRequest } from '../../permission.interface';
 import { PermissionService } from '../../permission.service';
 
-
 @Component({
   selector: 'gn-processed-permission-request-list',
   templateUrl: './processed-request-list.component.html',

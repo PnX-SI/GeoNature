@@ -5,7 +5,7 @@ import { takeUntil } from 'rxjs/operators';
 import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 
 import { DatatableComponent } from '@swimlane/ngx-datatable';
-import { IRolePermission } from '../permission.interface'
+import { IRolePermission } from '../permission.interface';
 import { PermissionService } from '../permission.service';
 
 interface DatatableColumn {

@@ -3,7 +3,7 @@ import { Routes } from '@angular/router';
 // Module components
 import { AccessRequestComponent } from './access-request/access-request.component';
 import { PermissionDetailComponent } from './permission-detail/permission-detail.component';
-import { PermissionListComponent } from "./permission-list/permission-list.component";
+import { PermissionListComponent } from './permission-list/permission-list.component';
 import { RequestDetailComponent } from './request-detail/request-detail.component';
 import { PendingRequestListComponent } from './request-list/pending-request-list/pending-request-list.component';
 import { ProcessedRequestListComponent } from './request-list/processed-request-list/processed-request-list.component';
@@ -34,7 +34,7 @@ export const routes: Routes = [
         data: {
           breadcrumb: {
             label: 'Rôle: :idRole',
-            title: 'Détail des permissions d\'un rôle.',
+            title: "Détail des permissions d'un rôle.",
             iconClass: 'account_circle',
           },
         },
@@ -52,7 +52,7 @@ export const routes: Routes = [
     data: {
       breadcrumb: {
         label: 'Demandes',
-        title: 'Listes des demandes de permissions d\'accès.',
+        title: "Listes des demandes de permissions d'accès.",
         iconClass: 'how_to_reg',
       },
     },
@@ -85,7 +85,7 @@ export const routes: Routes = [
         data: {
           breadcrumb: {
             label: 'Demande: :requestToken',
-            title: 'Détail d\'une demande de permissions d\'accès.',
+            title: "Détail d'une demande de permissions d'accès.",
             iconClass: 'check_circle',
           },
         },

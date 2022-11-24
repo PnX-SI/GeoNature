@@ -1,4 +1,3 @@
-
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material/sidenav';
@@ -14,10 +13,9 @@ import { SideNavService } from '../sidenav-items/sidenav-service';
 @Component({
   selector: 'pnx-nav-home',
   templateUrl: './nav-home.component.html',
-  styleUrls: ['./nav-home.component.scss']
+  styleUrls: ['./nav-home.component.scss'],
 })
 export class NavHomeComponent implements OnInit, OnDestroy {
-
   public moduleName = 'Accueil';
   private subscription: Subscription;
   public currentUser: User;
@@ -25,7 +23,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   public currentDocUrl: string;
   public locale: string;
   public moduleUrl: string;
-  @ViewChild('sidenav', {static: true}) public sidenav: MatSidenav;
+  @ViewChild('sidenav', { static: true }) public sidenav: MatSidenav;
 
   constructor(
     private translateService: TranslateService,
@@ -33,7 +31,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
     private activatedRoute: ActivatedRoute,
     public sideNavService: SideNavService,
     private globalSubService: GlobalSubService,
-    private router: Router,
+    private router: Router
   ) {}
 
   ngOnInit() {
@@ -67,7 +65,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   changeLanguage(lang) {
     this.defineLanguage(lang);
     const prev = this.router.url;
-    this.router.navigate(['/']).then(data => {
+    this.router.navigate(['/']).then((data) => {
       this.router.navigate([prev]);
     });
   }

@@ -1,10 +1,4 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  Output,
-  EventEmitter
-} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormControl } from '@angular/forms';
 
 /**
@@ -27,7 +21,7 @@ import { FormControl } from '@angular/forms';
 @Component({
   selector: 'pnx-multiselect',
   templateUrl: './multiselect.component.html',
-  styleUrls: ['./multiselect.component.scss']
+  styleUrls: ['./multiselect.component.scss'],
 })
 export class MultiSelectComponent implements OnInit {
   public selectedItems = [];
@@ -90,7 +84,5 @@ export class MultiSelectComponent implements OnInit {
     this.debounceTime = this.debounceTime || 100;
     this.disabled = this.disabled || false;
     this.displayAll = this.displayAll || false;
-
   }
-
 }

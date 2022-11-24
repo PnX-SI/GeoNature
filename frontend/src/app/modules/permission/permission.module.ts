@@ -8,14 +8,14 @@ import { GN2CommonModule } from '@geonature_common/GN2Common.module';
 // Components
 import { AccessRequestComponent } from './access-request/access-request.component';
 import { AccessRequestConventionComponent } from '../../../custom/components/access-request-convention/access-request-convention.component';
-import { ConventiondModalContent } from './convention-modal/convention-modal.component'
-import { PendingRequestListComponent } from './request-list/pending-request-list/pending-request-list.component'
-import { PermissionDetailComponent } from './permission-detail/permission-detail.component'
-import { PermissionListComponent } from './permission-list/permission-list.component'
-import { ProcessedRequestListComponent } from './request-list/processed-request-list/processed-request-list.component'
-import { RequestDetailComponent } from './request-detail/request-detail.component'
+import { ConventiondModalContent } from './convention-modal/convention-modal.component';
+import { PendingRequestListComponent } from './request-list/pending-request-list/pending-request-list.component';
+import { PermissionDetailComponent } from './permission-detail/permission-detail.component';
+import { PermissionListComponent } from './permission-list/permission-list.component';
+import { ProcessedRequestListComponent } from './request-list/processed-request-list/processed-request-list.component';
+import { RequestDetailComponent } from './request-detail/request-detail.component';
 import { RequestDisplayComponent } from './request-display/request-display.component';
-import { RequestListComponent } from './request-list/request-list.component'
+import { RequestListComponent } from './request-list/request-list.component';
 
 // Dialog
 import { AcceptRequestDialog } from './shared/accept-request-dialog/accept-request-dialog.component';
@@ -26,7 +26,7 @@ import { RefusalRequestDialog } from './shared/refusal-request-dialog/refusal-re
 
 // Services
 import { PermissionService } from './permission.service';
-import { routes } from './permissions.routes'
+import { routes } from './permissions.routes';
 
 @NgModule({
   imports: [RouterModule.forChild(routes), GN2CommonModule, CommonModule],

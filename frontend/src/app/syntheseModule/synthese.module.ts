@@ -26,14 +26,14 @@ const routes: Routes = [
     GN2CommonModule,
     SharedSyntheseModule,
     CommonModule,
-    TreeModule
+    TreeModule,
   ],
   declarations: [
     SyntheseComponent,
     SyntheseListComponent,
     SyntheseCarteComponent,
     SyntheseModalDownloadComponent,
-    TaxonSheetComponent
+    TaxonSheetComponent,
   ],
   entryComponents: [SyntheseInfoObsComponent, SyntheseModalDownloadComponent],
   providers: [
@@ -41,7 +41,7 @@ const routes: Routes = [
     DynamicFormService,
     TaxonAdvancedStoreService,
     SyntheseStoreService,
-    SyntheseFormService
-  ]
+    SyntheseFormService,
+  ],
 })
 export class SyntheseModule {}

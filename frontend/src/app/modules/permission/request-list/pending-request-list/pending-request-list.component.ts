@@ -9,10 +9,9 @@ import { ToastrService } from 'ngx-toastr';
 
 import { AcceptRequestDialog } from '../../shared/accept-request-dialog/accept-request-dialog.component';
 import { CommonService } from '@geonature_common/service/common.service';
-import { IPermissionRequest, IPermissionRequestDatatableColumn, } from '../../permission.interface';
+import { IPermissionRequest, IPermissionRequestDatatableColumn } from '../../permission.interface';
 import { PermissionService } from '../../permission.service';
 import { RefusalRequestDialog } from '../../shared/refusal-request-dialog/refusal-request-dialog.component';
-
 
 @Component({
   selector: 'gn-pending-permission-request-list',

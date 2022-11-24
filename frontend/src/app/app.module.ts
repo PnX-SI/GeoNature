@@ -6,7 +6,7 @@ import {
   HttpClientModule,
   HttpClient,
   HttpClientXsrfModule,
-  HTTP_INTERCEPTORS
+  HTTP_INTERCEPTORS,
 } from '@angular/common/http';
 
 // For Angular Dependencies
@@ -44,7 +44,7 @@ import {
   AuthGuard,
   ModuleGuardService,
   SignUpGuard,
-  UserManagementGuard
+  UserManagementGuard,
 } from '@geonature/routing/routes-guards.service';
 import { ModuleService } from './services/module.service';
 import { CruvedStoreService } from './GN2CommonModule/service/cruved-store.service';
@@ -57,16 +57,16 @@ import { GlobalSubService } from './services/global-sub.service';
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
-import { UserDataService } from "./userModule/services/user-data.service";
+import { UserDataService } from './userModule/services/user-data.service';
 
 // Config
 import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
 
-
 export function get_modules(moduleService: ModuleService) {
-    return () => {return moduleService.fetchModules().toPromise(); };
+  return () => {
+    return moduleService.fetchModules().toPromise();
+  };
 }
-
 
 @NgModule({
   imports: [
@@ -80,16 +80,16 @@ export function get_modules(moduleService: ModuleService) {
     ToastrModule.forRoot({
       positionClass: 'toast-top-center',
       tapToDismiss: true,
-      timeOut: 3000
+      timeOut: 3000,
     }),
     GN2CommonModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
         useFactory: createTranslateLoader,
-        deps: [HttpClient]
-      }
-    })
+        deps: [HttpClient],
+      },
+    }),
   ],
   declarations: [
     AppComponent,
@@ -121,8 +121,8 @@ export function get_modules(moduleService: ModuleService) {
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
     // { provide: APP_INITIALIZER, useFactory: get_cruved, deps: [CruvedStoreService], multi: true},
-     { provide: APP_INITIALIZER, useFactory: get_modules, deps: [ModuleService], multi: true},
+    { provide: APP_INITIALIZER, useFactory: get_modules, deps: [ModuleService], multi: true },
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

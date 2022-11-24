@@ -6,7 +6,7 @@ import { CruvedStoreService } from '../GN2CommonModule/service/cruved-store.serv
   selector: 'pnx-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss'],
-  providers: []
+  providers: [],
 })
 export class AdminComponent implements OnInit {
   URL_NOMENCLATURE_ADMIN = AppConfig.API_ENDPOINT + '/admin/';

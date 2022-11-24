@@ -4,30 +4,33 @@ import { delay } from 'rxjs/operators';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { APP_CONFIG_TOKEN } from '@geonature_config/app.config';
-import { IRolePermission, IPermissionRequest, IModule, IActionObject, IFilter, IFilterValue, IObject } from './permission.interface'
-
+import {
+  IRolePermission,
+  IPermissionRequest,
+  IModule,
+  IActionObject,
+  IFilter,
+  IFilterValue,
+  IObject,
+} from './permission.interface';
 
 @Injectable()
 export class PermissionService {
-
-  constructor(
-    @Inject(APP_CONFIG_TOKEN) private cfg,
-    private http: HttpClient,
-  ) {}
+  constructor(@Inject(APP_CONFIG_TOKEN) private cfg, private http: HttpClient) {}
 
   getBreadcrumbsRoot() {
     return [
       {
         label: 'Accueil',
         iconClass: 'home',
-        title: "Accueil de GeoNature.",
-        url: '/'
+        title: 'Accueil de GeoNature.',
+        url: '/',
       },
       {
         label: 'Admin',
         iconClass: 'settings',
         title: "Accueil de l'administration de GeoNature.",
-        url: '/admin'
+        url: '/admin',
       },
     ];
   }
@@ -45,8 +48,8 @@ export class PermissionService {
   getRoleById(id: number, params: HttpParams = null): Observable<IRolePermission> {
     const url = `${this.cfg.API_ENDPOINT}/permissions/roles/${id}`;
     let options = {
-      'params': (params ? params : null),
-    }
+      params: params ? params : null,
+    };
     return this.http.get<IRolePermission>(url, options);
   }
 
@@ -66,7 +69,7 @@ export class PermissionService {
     if (codes.length > 0) {
       params = new HttpParams().set('codes', codes.join(','));
     }
-    return this.http.get<IModule[]>(url, {params: params});
+    return this.http.get<IModule[]>(url, { params: params });
   }
 
   getActionsObjects(module: string = ''): Observable<IActionObject[]> {
@@ -75,7 +78,7 @@ export class PermissionService {
     if (module) {
       params = new HttpParams().set('module', module);
     }
-    return this.http.get<IActionObject[]>(url, {params: params});
+    return this.http.get<IActionObject[]>(url, { params: params });
   }
 
   getActionsObjectsFilters(actionObj: IActionObject): Observable<IFilter[]> {
@@ -87,7 +90,7 @@ export class PermissionService {
         .set('action', actionObj.actionCode)
         .set('object', actionObj.objectCode);
     }
-    return this.http.get<IFilter[]>(url, {params: params});
+    return this.http.get<IFilter[]>(url, { params: params });
   }
 
   getFiltersValues(): Observable<Record<string, IFilterValue[]>> {
@@ -107,17 +110,17 @@ export class PermissionService {
 
   getAllProcessedRequests(): Observable<IPermissionRequest[]> {
     const params = new HttpParams().set('state', 'processed');
-    return this.getAllRequests(params)
+    return this.getAllRequests(params);
   }
 
   getAllPendingRequests(): Observable<IPermissionRequest[]> {
     const params = new HttpParams().set('state', 'pending');
-    return this.getAllRequests(params)
+    return this.getAllRequests(params);
   }
 
   private getAllRequests(params: HttpParams): Observable<IPermissionRequest[]> {
     const url = `${this.cfg.API_ENDPOINT}/permissions/requests`;
-    return this.http.get<IPermissionRequest[]>(url, {params: params});
+    return this.http.get<IPermissionRequest[]>(url, { params: params });
   }
 
   getRequestByToken(token: string): Observable<IPermissionRequest> {
@@ -127,12 +130,12 @@ export class PermissionService {
 
   acceptRequest(token: string): Observable<IPermissionRequest> {
     const url = `${this.cfg.API_ENDPOINT}/permissions/requests/${token}`;
-    return this.http.patch<IPermissionRequest>(url, {'processedState': 'accepted'});
+    return this.http.patch<IPermissionRequest>(url, { processedState: 'accepted' });
   }
 
   pendingRequest(token: string): Observable<IPermissionRequest> {
     const url = `${this.cfg.API_ENDPOINT}/permissions/requests/${token}`;
-    return this.http.patch<IPermissionRequest>(url, {'processedState': 'pending'});
+    return this.http.patch<IPermissionRequest>(url, { processedState: 'pending' });
   }
 
   refuseRequest(request: IPermissionRequest): Observable<IPermissionRequest> {

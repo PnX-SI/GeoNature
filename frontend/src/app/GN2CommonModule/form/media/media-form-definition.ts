@@ -35,27 +35,27 @@ export const mediaFormDefinitionsDict = {
         default:
           return '*';
       }
-    }
+    },
   },
   media_url: {
     attribut_label: 'URL',
     type_widget: 'text',
     hidden: ({ value }) => value.bFile,
-    required: ({ value }) => !value.bFile
+    required: ({ value }) => !value.bFile,
   },
   displayDetails: {
     type_widget: 'bool_checkbox',
     attribut_label: 'Avancé',
     definition: "Afficher plus d'options pour le formulaire",
     value: true,
-    hidden: ({ meta }) => !(meta.details && meta.details.length) || meta.hideDetailsFields
+    hidden: ({ meta }) => !(meta.details && meta.details.length) || meta.hideDetailsFields,
   },
   id_nomenclature_media_type: {
     attribut_label: 'Type de média',
     type_widget: 'nomenclature',
     required: true,
     code_nomenclature_type: 'TYPE_MEDIA',
-    hidden: hideDetails
+    hidden: hideDetails,
   },
   bFile: {
     attribut_label: 'Import du média',
@@ -74,45 +74,45 @@ export const mediaFormDefinitionsDict = {
           'Vidéo Youtube',
           'Vidéo Viméo',
           'Page web',
-          'Vidéo (fichier)'
+          'Vidéo (fichier)',
         ].includes(label_fr) || hideDetails({ value, meta, attribut_name })
       );
-    }
+    },
   },
   title_fr: {
     attribut_label: 'Titre',
     type_widget: 'text',
     required: true,
-    hidden: hideDetails
+    hidden: hideDetails,
   },
   description_fr: {
     attribut_label: 'Description',
     type_widget: 'text',
-    hidden: hideDetails
+    hidden: hideDetails,
   },
   author: {
     attribut_label: 'Auteur',
     type_widget: 'text',
-    hidden: hideDetails
+    hidden: hideDetails,
   },
   id_media: {
     attribut_label: 'ID media',
     type_widget: 'number',
-    hidden: true
+    hidden: true,
   },
   uuid_attached_row: {
     attribut_label: 'uuid_attached_row',
     type_widget: 'text',
-    hidden: true
+    hidden: true,
   },
   media_path: {
     attribut_label: 'Path',
     type_widget: 'text',
-    hidden: true
+    hidden: true,
   },
   id_table_location: {
     attribut_label: 'ID table location',
     type_widget: 'number',
-    hidden: true
-  }
+    hidden: true,
+  },
 };
