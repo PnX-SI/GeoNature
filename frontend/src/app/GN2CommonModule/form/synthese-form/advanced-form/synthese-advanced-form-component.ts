@@ -9,7 +9,6 @@ import { DynamicFormService } from '@geonature_common/form/dynamic-form-generato
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
 import { TaxonAdvancedStoreService } from '@geonature_common/form/synthese-form/advanced-form/synthese-advanced-form-store.service';
 
-
 @Component({
   selector: 'pnx-validation-taxon-advanced',
   templateUrl: './synthese-advanced-form.component.html',
@@ -41,7 +40,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
 
     const actionMapping: IActionMapping = {
       mouse: {
-        click: (tree, node, $event) => { },
+        click: (tree, node, $event) => {},
         checkboxClick: (tree, node, $event) => {
           node.toggleSelected();
           if (!node.isExpanded) {
@@ -105,7 +104,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
         1
       );
       // Reset input checkbox Reactive From to not send "False"
-      this.formService.searchForm.controls[event.target.id].reset()
+      this.formService.searchForm.controls[event.target.id].reset();
     }
   }
 
@@ -127,10 +126,7 @@ export class TaxonAdvancedModalComponent implements OnInit, AfterContentInit {
 
   onRedListsDeleted(event) {
     let key = `${event.statusType} [${event.value.code}]`;
-    this.formService.selectedRedLists.splice(
-      this.formService.selectedRedLists.indexOf(key),
-      1
-    );
+    this.formService.selectedRedLists.splice(this.formService.selectedRedLists.indexOf(key), 1);
   }
 
   onTaxRefAttributsSelected(event) {

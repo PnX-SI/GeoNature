@@ -59,7 +59,7 @@ export class SyntheseFormService {
 
     // Add protection status filters defined in configuration parameters
     this.statusFilters = Object.assign([], this.cfg.SYNTHESE.STATUS_FILTERS);
-    this.statusFilters.forEach(status => {
+    this.statusFilters.forEach((status) => {
       const control_name = `${status.id}_status`;
       this.searchForm.addControl(control_name, new FormControl(new Array()));
       status['control_name'] = control_name;
@@ -68,7 +68,7 @@ export class SyntheseFormService {
 
     // Add red lists filters defined in configuration parameters
     this.redListsFilters = Object.assign([], this.cfg.SYNTHESE.RED_LISTS_FILTERS);
-    this.redListsFilters.forEach(redList => {
+    this.redListsFilters.forEach((redList) => {
       const control_name = `${redList.id}_red_lists`;
       this.searchForm.addControl(control_name, new FormControl(new Array()));
       redList['control'] = this.searchForm.controls[control_name];
@@ -187,7 +187,9 @@ export class SyntheseFormService {
   getSelectedTaxonsSummary(): String {
     let summary = [];
     if (this.selectedTaxonFromRankInput.length > 0) {
-      summary.push('Rangs : ' + this.selectedTaxonFromRankInput.map(e => e.lb_nom).join(', ') + '.');
+      summary.push(
+        'Rangs : ' + this.selectedTaxonFromRankInput.map((e) => e.lb_nom).join(', ') + '.'
+      );
     }
     if (this.selectedCdRefFromTree.length > 0) {
       summary.push('Arbre taxo : ' + this.selectedCdRefFromTree.length + ' taxons.');

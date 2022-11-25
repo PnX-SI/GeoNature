@@ -38,23 +38,19 @@ export class TaxonAdvancedStoreService {
 
     // Set protection status filters data
     this._formService.statusFilters.forEach((status) => {
-      this._dataService
-        .getStatusType(status.status_types)
-        .subscribe(data => {
-          status.values = data;
-        });
+      this._dataService.getStatusType(status.status_types).subscribe((data) => {
+        status.values = data;
+      });
 
       // Set red lists filters data
       this._formService.redListsFilters.forEach((redList) => {
-        this._dataService
-          .getStatusValues(redList.status_type)
-          .subscribe(data => {
-            redList.values = data;
-          });
+        this._dataService.getStatusValues(redList.status_type).subscribe((data) => {
+          redList.values = data;
+        });
       });
 
       // Get TaxHub attributes
-      this._dataService.getTaxhubBibAttributes().subscribe(attrs => {
+      this._dataService.getTaxhubBibAttributes().subscribe((attrs) => {
         // Display only the taxhub attributes set in the config
         this.taxhubAttributes = attrs
           .filter((attr) => {
@@ -78,7 +74,7 @@ export class TaxonAdvancedStoreService {
         this.formBuilded = true;
       });
       // Load LR,  habitat and group2inpn
-      this._dataService.getTaxonomyLR().subscribe(data => {
+      this._dataService.getTaxonomyLR().subscribe((data) => {
         this.taxonomyLR = data;
       });
 
