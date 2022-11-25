@@ -5,3 +5,4 @@ utils-flask-sqlalchemy-geo>=0.2.5,<1.0.0
 utils-flask-sqlalchemy>=0.3.0,<1.0.0
 taxhub>=1.10.4,<2.0.0
 pypn-ref-geo>=1.2.1,<2.0.0
+usershub>=2.3.2,<3.0.0
