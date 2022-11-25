@@ -340,32 +340,4 @@ class TestOcctaxGetReleveFilterWrongType:
 
         response = self.client.get(url_for("pr_occtax.getReleves"), query_string=query_string)
 
-        assert response.status_code == 500
-
-
-@pytest.mark.usefixtures("temporary_transaction")
-class TestReleveRepository:
-    def test_get_one(self, releve_occtax, permission):
-        repository = ReleveRepository(TRelevesOccurrence)
-        repo = repository.get_one(id_releve=releve_occtax.id_releve_occtax, info_user=permission)
-
-        assert repo[0].id_releve_occtax == releve_occtax.id_releve_occtax
-
-    def test_get_one_not_found(self, unexisting_id_releve, permission):
-        repository = ReleveRepository(TRelevesOccurrence)
-
-        with pytest.raises(NotFound):
-            repository.get_one(id_releve=unexisting_id_releve, info_user=permission)
-
-    def test_delete(self, releve_occtax, permission):
-        repository = ReleveRepository(TRelevesOccurrence)
-
-        rel = repository.delete(releve_occtax.id_releve_occtax, permission)
-
-        assert rel.id_releve_occtax == releve_occtax.id_releve_occtax
-
-    def test_delete_not_found(self, unexisting_id_releve):
-        repository = ReleveRepository(TRelevesOccurrence)
-
-        with pytest.raises(NotFound):
-            repository.delete(unexisting_id_releve, permission)
+        assert response.status_code == 500  # FIXME 500 should not be possible

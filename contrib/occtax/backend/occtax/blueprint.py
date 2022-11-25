@@ -20,13 +20,10 @@ from shapely.geometry import asShape
 from geoalchemy2.shape import from_shape, to_shape
 from marshmallow import ValidationError
 
-from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
-
 from geonature.core.gn_commons.models import TAdditionalFields
 from geonature.core.gn_commons.models.base import TModules
+from geonature.core.gn_meta.models import TDatasets
 from geonature.utils.env import DB, db, ROOT_DIR
-from pypnusershub.db.models import User, Organisme
-from utils_flask_sqla_geo.generic import GenericTableGeo
 
 from geonature.utils import filemanager
 from .models import (
@@ -42,13 +39,17 @@ from .repositories import (
 )
 from .schemas import OccurrenceSchema, ReleveCruvedSchema, ReleveSchema
 from .utils import as_dict_with_add_cols
-from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils.utilsgeometrytools import export_as_geo_file
 
 from geonature.core.users.models import UserRigth
 from geonature.core.gn_permissions import decorators as permissions
-from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
+from geonature.core.gn_permissions.tools import get_scopes_by_action
+
+from pypnusershub.db.models import User, Organisme
+from utils_flask_sqla_geo.generic import GenericTableGeo
+from utils_flask_sqla_geo.utilsgeometry import remove_third_dimension
+from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 
 
 blueprint = Blueprint("pr_occtax", __name__)
@@ -65,9 +66,9 @@ def set_current_module(endpoint, values):
 
 @blueprint.route("/<module_code>/releves", methods=["GET"])
 @blueprint.route("/releves", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
+@permissions.check_cruved_scope("R", get_scope=True)
 @json_resp
-def getReleves(info_role):
+def getReleves(scope):
     """
     Route for map list web interface
 
@@ -76,7 +77,7 @@ def getReleves(info_role):
     """
 
     releve_repository = ReleveRepository(TRelevesOccurrence)
-    q = releve_repository.get_filtered_query(info_role)
+    q = releve_repository.get_filtered_query(g.current_user, scope)
 
     parameters = request.args
 
@@ -99,14 +100,9 @@ def getReleves(info_role):
     # Pour obtenir le nombre de résultat de la requete sans le LIMIT
     nb_results_without_limit = query_without_limit.count()
 
-    user = info_role
-    user_cruved = get_or_fetch_user_cruved(
-        session=session, id_role=info_role.id_role, module_code=g.current_module.module_code
-    )
-
     featureCollection = []
     for n in data:
-        releve_cruved = n.get_releve_cruved(user, user_cruved)
+        releve_cruved = n.get_releve_cruved()
         feature = n.get_geofeature(
             fields=[
                 "t_occurrences_occtax",
@@ -184,8 +180,8 @@ def getOneCounting(id_counting):
 
 @blueprint.route("/<module_code>/releve/<int:id_releve>", methods=["GET"])
 @blueprint.route("/releve/<int:id_releve>", methods=["GET"])
-@permissions.check_cruved_scope("R", True)
-def getOneReleve(id_releve, info_role):
+@permissions.check_cruved_scope("R", get_scope=True)
+def getOneReleve(id_releve, scope):
     """
     Get one releve
 
@@ -197,16 +193,9 @@ def getOneReleve(id_releve, info_role):
     :rtype: `dict{'releve':<TRelevesOccurrence>, 'cruved': Cruved}`
     """
     releveCruvedSchema = ReleveCruvedSchema()
-    releve = DB.session.query(TRelevesOccurrence).get(id_releve)
-
-    if not releve:
-        raise NotFound('The releve "{}" does not exist'.format(id_releve))
-    # check if the user is autorized
-    releve = releve.get_releve_if_allowed(info_role)
-
-    user_cruved = get_or_fetch_user_cruved(
-        session=session, id_role=info_role.id_role, module_code=g.current_module.module_code
-    )
+    releve = TRelevesOccurrence.query.get_or_404(id_releve)
+    if not releve.has_instance_permission(scope):
+        raise Forbidden()
 
     releve_cruved = {
         "releve": {
@@ -214,7 +203,7 @@ def getOneReleve(id_releve, info_role):
             "id": releve.id_releve_occtax,
             "geometry": releve.geom_4326,
         },
-        "cruved": releve.get_releve_cruved(info_role, user_cruved),
+        "cruved": releve.get_releve_cruved(),
     }
 
     return releveCruvedSchema.dump(releve_cruved)
@@ -222,9 +211,8 @@ def getOneReleve(id_releve, info_role):
 
 @blueprint.route("/<module_code>/releve", methods=["POST"])
 @blueprint.route("/releve", methods=["POST"])
-@permissions.check_cruved_scope("C", True)
-@json_resp
-def insertOrUpdateOneReleve(info_role):
+@permissions.login_required
+def insertOrUpdateOneReleve():
     """
     Route utilisée depuis l'appli mobile => depreciée et non utilisée par l'appli web
     Post one Occtax data (Releve + Occurrence + Counting)
@@ -254,7 +242,6 @@ def insertOrUpdateOneReleve(info_role):
     :returns: GeoJson<TRelevesOccurrence>
     """
 
-    releveRepository = ReleveRepository(TRelevesOccurrence)
     data = dict(request.get_json())
     depth = data.pop("depth", None)
     occurrences_occtax = None
@@ -280,7 +267,7 @@ def insertOrUpdateOneReleve(info_role):
     releve.geom_4326 = from_shape(two_dimension_geom, srid=4326)
 
     if observersList is not None:
-        observers = DB.session.query(User).filter(User.id_role.in_(observersList)).all()
+        observers = User.query.filter(User.id_role.in_(observersList)).all()
         for o in observers:
             releve.observers.append(o)
 
@@ -317,40 +304,28 @@ def insertOrUpdateOneReleve(info_role):
 
     # if its a update
     if releve.id_releve_occtax:
-        # get update right of the user
-        user_cruved = get_or_fetch_user_cruved(
-            session=session, id_role=info_role.id_role, module_code=g.current_module.module_code
-        )
-        update_code_filter = user_cruved["U"]
-        # info_role.code_action = update_data_scope
-        user = UserRigth(
-            id_role=info_role.id_role,
-            value_filter=update_code_filter,
-            code_action="U",
-            id_organisme=info_role.id_organisme,
-        )
-        releve = releveRepository.update(releve, user, shape)
+        scope = get_scopes_by_action()["U"]
+        if not releve.has_instance_permission(scope):
+            raise Forbidden(
+                f"User {g.current_user.id_role} is not allowed to update releve {releve.id_releve_occtax}"
+            )
+        DB.session.merge(releve)
     # if its a simple post
     else:
+        scope = get_scopes_by_action()["C"]
+        if not TDatasets.query.get(releve.id_dataset).has_instance_permission(scope):
+            raise Forbidden(
+                f"User {g.current_user.id_role} is not allowed to create releve in dataset {dataset.id_dataset}"
+            )
         # set id_digitiser
-        releve.id_digitiser = info_role.id_role
-        if info_role.value_filter in ("0", "1", "2"):
-            # Check if user can add a releve in the current dataset
-            allowed = releve.user_is_in_dataset_actor(info_role)
-            if not allowed:
-                raise Forbidden(
-                    "User {} has no right in dataset {}".format(
-                        info_role.id_role, releve.id_dataset
-                    )
-                )
+        releve.id_digitiser = g.current_user.id_role
         DB.session.add(releve)
     DB.session.commit()
-    DB.session.flush()
 
     return releve.get_geofeature(depth=depth)
 
 
-def releveHandler(request, *, releve, info_role):
+def releveHandler(request, *, releve, scope):
     releveSchema = ReleveSchema()
     # Modification de la requete geojson en releve
     json_req = request.get_json()
@@ -363,42 +338,29 @@ def releveHandler(request, *, releve, info_role):
         raise BadRequest(error.messages)
     # Test des droits d'édition du relevé
     if releve.id_releve_occtax is not None:
-        user_cruved = get_or_fetch_user_cruved(
-            session=session, id_role=info_role.id_role, module_code=g.current_module.module_code
-        )
-        # info_role.code_action = update_data_scope
-        user = UserRigth(
-            id_role=info_role.id_role,
-            value_filter=user_cruved["U"],
-            code_action="U",
-            id_organisme=info_role.id_organisme,
-        )
-
-        releve = releve.get_releve_if_allowed(user)
-        # fin test, si ici => c'est ok
+        scope = get_scopes_by_action()["U"]
+        if not releve.has_instance_permission(scope):
+            raise Forbidden(
+                f"User {g.current_user.id_role} can not update releve {releve.id_releve_occtax}"
+            )
     # if creation
     else:
-        if info_role.value_filter in ("0", "1", "2"):
-            # Check if user can add a releve in the current dataset
-            allowed = releve.user_is_in_dataset_actor(info_role)
-            if not allowed:
-                raise Forbidden(
-                    "User {} has no right in dataset {}".format(
-                        info_role.id_role, releve.id_dataset
-                    )
-                )
+        # Check if user can add a releve in the current dataset
+        if not TDatasets.query.get(releve.id_dataset).has_instance_permission(scope):
+            raise Forbidden(
+                f"User {g.current_user.id_role} has no right in dataset {releve.id_dataset}"
+            )
         # set id_digitiser
-        releve.id_digitiser = info_role.id_role
+        releve.id_digitiser = g.current_user.id_role
     DB.session.add(releve)
     DB.session.commit()
-    DB.session.flush()
     return releve
 
 
 @blueprint.route("/<module_code>/only/releve", methods=["POST"])
 @blueprint.route("/only/releve", methods=["POST"])
-@permissions.check_cruved_scope("C", True)
-def createReleve(info_role):
+@permissions.check_cruved_scope("C", get_scope=True)
+def createReleve(scope):
     """
     Post one Occtax data (Releve + Occurrence + Counting)
 
@@ -428,9 +390,7 @@ def createReleve(info_role):
     """
     # nouveau releve vide
     releve = TRelevesOccurrence()
-    releve = ReleveSchema().dump(
-        releveHandler(request=request, releve=releve, info_role=info_role)
-    )
+    releve = ReleveSchema().dump(releveHandler(request=request, releve=releve, scope=scope))
 
     return {
         "geometry": releve.pop("geom_4326", None),
@@ -441,8 +401,8 @@ def createReleve(info_role):
 
 @blueprint.route("/<module_code>/only/releve/<int:id_releve>", methods=["POST"])
 @blueprint.route("/only/releve/<int:id_releve>", methods=["POST"])
-@permissions.check_cruved_scope("U", True)
-def updateReleve(id_releve, info_role):
+@permissions.check_cruved_scope("U", get_scope=True)
+def updateReleve(id_releve, scope):
     """
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
@@ -453,9 +413,7 @@ def updateReleve(id_releve, info_role):
     if not releve:
         return {"message": "not found"}, 404
 
-    releve = ReleveSchema().dump(
-        releveHandler(request=request, releve=releve, info_role=info_role)
-    )
+    releve = ReleveSchema().dump(releveHandler(request=request, releve=releve, scope=scope))
 
     return {
         "geometry": releve.pop("geom_4326", None),
@@ -464,24 +422,10 @@ def updateReleve(id_releve, info_role):
     }
 
 
-def occurrenceHandler(request, *, occurrence, info_role):
+def occurrenceHandler(request, *, occurrence, scope):
     releve = TRelevesOccurrence.query.get_or_404(occurrence.id_releve_occtax)
-
-    # Test des droits d'édition du relevé si modification
-    if occurrence.id_occurrence_occtax is not None:
-        user_cruved = get_or_fetch_user_cruved(
-            session=session, id_role=info_role.id_role, module_code=g.current_module.module_code
-        )
-        # info_role.code_action = update_data_scope
-        info_role = UserRigth(
-            id_role=info_role.id_role,
-            value_filter=user_cruved["U"],
-            code_action="U",
-            id_organisme=info_role.id_organisme,
-        )
-
-    releve = releve.get_releve_if_allowed(info_role)
-    # fin test, si ici => c'est ok
+    if not releve.has_instance_permission(scope):
+        raise Forbidden()
 
     occurrenceSchema = OccurrenceSchema()
     try:
@@ -497,8 +441,8 @@ def occurrenceHandler(request, *, occurrence, info_role):
 
 @blueprint.route("/<module_code>/releve/<int:id_releve>/occurrence", methods=["POST"])
 @blueprint.route("/releve/<int:id_releve>/occurrence", methods=["POST"])
-@permissions.check_cruved_scope("C", True)
-def createOccurrence(id_releve, info_role):
+@permissions.check_cruved_scope("C", get_scope=True)
+def createOccurrence(id_releve, scope):
     """
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
@@ -507,14 +451,14 @@ def createOccurrence(id_releve, info_role):
     occurrence = TOccurrencesOccurrence()
     occurrence.id_releve_occtax = id_releve
     return OccurrenceSchema().dump(
-        occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role)
+        occurrenceHandler(request=request, occurrence=occurrence, scope=scope)
     )
 
 
 @blueprint.route("/<module_code>/occurrence/<int:id_occurrence>", methods=["POST"])
 @blueprint.route("/occurrence/<int:id_occurrence>", methods=["POST"])
-@permissions.check_cruved_scope("U", True)
-def updateOccurrence(id_occurrence, info_role):
+@permissions.check_cruved_scope("U", get_scope=True)
+def updateOccurrence(id_occurrence, scope):
     """
     Post one Occurrence data (Occurrence + Counting) for add to Releve
 
@@ -522,15 +466,14 @@ def updateOccurrence(id_occurrence, info_role):
     occurrence = TOccurrencesOccurrence.query.get_or_404(id_occurrence)
 
     return OccurrenceSchema().dump(
-        occurrenceHandler(request=request, occurrence=occurrence, info_role=info_role)
+        occurrenceHandler(request=request, occurrence=occurrence, scope=scope)
     )
 
 
 @blueprint.route("/<module_code>/releve/<int:id_releve>", methods=["DELETE"])
 @blueprint.route("/releve/<int:id_releve>", methods=["DELETE"])
-@permissions.check_cruved_scope("D", True)
-@json_resp
-def deleteOneReleve(id_releve, info_role):
+@permissions.check_cruved_scope("D", get_scope=True)
+def deleteOneReleve(id_releve, scope):
     """Delete one releve and its associated occurrences and counting
 
     .. :quickref: Occtax;
@@ -538,16 +481,18 @@ def deleteOneReleve(id_releve, info_role):
     :params int id_releve: ID of the releve to delete
 
     """
-    releveRepository = ReleveRepository(TRelevesOccurrence)
-    releveRepository.delete(id_releve, info_role)
-
-    return {"message": "delete with success"}, 200
+    releve = TRelevesOccurrence.query.get_or_404(id_releve)
+    if not releve.has_instance_permission(scope):
+        raise Forbidden()
+    db.session.delete(releve)
+    db.session.commit()
+    return jsonify({"message": "delete with success"})
 
 
 @blueprint.route("/<module_code>/occurrence/<int:id_occ>", methods=["DELETE"])
 @blueprint.route("/occurrence/<int:id_occ>", methods=["DELETE"])
-@permissions.check_cruved_scope("D")
-def deleteOneOccurence(id_occ):
+@permissions.check_cruved_scope("D", get_scope=True)
+def deleteOneOccurence(id_occ, scope):
     """Delete one occurrence and associated counting
 
     .. :quickref: Occtax;
@@ -557,7 +502,8 @@ def deleteOneOccurence(id_occ):
     """
     occ = TOccurrencesOccurrence.query.get_or_404(id_occ)
 
-    # TODO: check occ ownership!
+    if not occ.releve.has_instance_permission(scope):
+        raise Forbidden()
 
     DB.session.delete(occ)
     DB.session.commit()
@@ -614,8 +560,8 @@ def getDefaultNomenclatures():
 
 @blueprint.route("/<module_code>/export", methods=["GET"])
 @blueprint.route("/export", methods=["GET"])
-@permissions.check_cruved_scope("E", True)
-def export(info_role):
+@permissions.check_cruved_scope("E", get_scope=True)
+def export(scope):
     """Export data from pr_occtax.v_export_occtax view (parameter)
 
     .. :quickref: Occtax; Export data from pr_occtax.v_export_occtax
@@ -644,7 +590,7 @@ def export(info_role):
     )
 
     releve_repository = ReleveRepository(export_view)
-    q = releve_repository.get_filtered_query(info_role, from_generic_table=True)
+    q = releve_repository.get_filtered_query(g.current_user, scope, from_generic_table=True)
     q = get_query_occtax_filters(
         request.args,
         export_view,
