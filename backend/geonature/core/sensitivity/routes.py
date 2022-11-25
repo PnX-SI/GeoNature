@@ -1,3 +1,8 @@
+import pathlib
+from io import TextIOWrapper
+from contextlib import ExitStack, nullcontext
+from zipfile import ZipFile
+
 import click
 from flask import Blueprint, current_app
 from sqlalchemy import func
@@ -5,7 +10,10 @@ from sqlalchemy.schema import Table
 
 from geonature.utils.env import db
 
+from utils_flask_sqla.utils import remote_file
+
 from .models import SensitivityRule
+from .utils import remove_sensitivity_referential, insert_sensitivity_referential
 
 
 routes = Blueprint("sensitivity", __name__)
@@ -67,6 +75,47 @@ def info():
             ).scalar()
         )
     )
+
+
+@routes.cli.command()
+@click.option("--source-name", required=True)
+@click.option("--csvfile", required=True)
+@click.option("--url", help="Le fichier ou l’archive est à télécharger")
+@click.option("--zipfile", help="Le fichier CSV est contenu dans une archive")
+@click.option("--encoding")
+def add_referential(source_name, csvfile, url, zipfile, encoding):
+    """
+    Ajoute les règles pour une source données
+    """
+    filepath = zipfile or csvfile
+    with ExitStack() as stack:
+        if url:
+            filepath = stack.enter_context(remote_file(url, filepath))
+        else:
+            filepath = pathlib.Path(filepath)
+        if zipfile:
+            archive = stack.enter_context(ZipFile(filepath))
+            csvfile = stack.enter_context(
+                TextIOWrapper(archive.open(csvfile, "r"), encoding=encoding)
+            )
+        else:
+            csvfile = stack.enter_context(filepath.open("r", encoding=encoding))
+        click.echo(f"Ajout de règles de sensibilité '{source_name}'")
+        count = insert_sensitivity_referential(source_name, csvfile)
+    db.session.commit()
+    click.echo(f"{count} règles ajoutées")
+
+
+@routes.cli.command()
+@click.argument("source")
+def remove_referential(source):
+    """
+    Supprime les règles d’une source données
+    """
+    click.echo(f"Suppression des règles de sensibilité '{source}'")
+    count = remove_sensitivity_referential(source)
+    db.session.commit()
+    click.echo(f"{count} règles supprimées")
 
 
 @routes.cli.command()
