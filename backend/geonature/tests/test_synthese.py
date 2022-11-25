@@ -188,6 +188,32 @@ class TestSynthese:
         validate_json(instance=r.json, schema=schema)
         assert len(r.json["features"]) >= 2
 
+        # test status lr
+        query_string = {"regulations_status": ["REGLLUTTE"]}
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        # test status znieff
+        query_string = {"znief_status": True}
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        # test status protection
+        query_string = {"protections_status": ["PN"]}
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        # test LR
+        query_string = {"worldwide_red_lists": ["LC"]}
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        query_string = {"european_red_lists": ["LC"]}
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        query_string = {"national_red_lists": ["LC"]}
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+        query_string = {"regional_red_lists": ["LC"]}
+        r = self.client.get(url, query_string=query_string)
+        assert r.status_code == 200
+
     def test_get_synthese_data_cruved(self, app, users, synthese_data, datasets):
         set_logged_user_cookie(self.client, users["self_user"])
 
