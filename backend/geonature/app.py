@@ -5,7 +5,6 @@ Démarrage de l'application
 import logging, os
 from itertools import chain
 from pkg_resources import iter_entry_points, load_entry_point
-from urllib.parse import urlsplit
 from importlib import import_module
 
 from flask import Flask, g, request, current_app
@@ -78,16 +77,9 @@ def create_app(with_external_mods=True):
     app = Flask(__name__.split(".")[0], static_folder=static_folder)
 
     app.config.update(config)
-    api_uri = urlsplit(app.config["API_ENDPOINT"])
-    app.config["APPLICATION_ROOT"] = api_uri.path
-    app.config["PREFERRED_URL_SCHEME"] = api_uri.scheme
+
     if "SCRIPT_NAME" not in os.environ:
         os.environ["SCRIPT_NAME"] = app.config["APPLICATION_ROOT"].rstrip("/")
-    app.config["TEMPLATES_AUTO_RELOAD"] = True
-    # disable cache for downloaded files (PDF file stat for ex)
-    app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-    if "GEONATURE_SETTINGS" in os.environ:
-        app.config.from_object(os.environ["GEONATURE_SETTINGS"])
 
     # set from headers HTTP_HOST, SERVER_NAME, and SERVER_PORT
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
