@@ -89,12 +89,6 @@ def create_app(with_external_mods=True):
     if "GEONATURE_SETTINGS" in os.environ:
         app.config.from_object(os.environ["GEONATURE_SETTINGS"])
 
-    if len(app.config["SECRET_KEY"]) < 20:
-        raise Exception(
-            "The SECRET_KEY config option must have a length "
-            "greater or equals to 20 characters."
-        )
-
     # set from headers HTTP_HOST, SERVER_NAME, and SERVER_PORT
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
     app.wsgi_app = RequestID(app.wsgi_app)

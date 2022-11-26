@@ -13,7 +13,7 @@ from marshmallow import (
     ValidationError,
     post_load,
 )
-from marshmallow.validate import OneOf, Regexp, Email
+from marshmallow.validate import OneOf, Regexp, Email, Length
 
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
@@ -182,7 +182,7 @@ class GnPySchemaConf(Schema):
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(load_default=True)
     SESSION_TYPE = fields.String(load_default="filesystem")
-    SECRET_KEY = fields.String(required=True)
+    SECRET_KEY = fields.String(required=True, validate=Length(min=20))
     # le cookie expire toute les 7 jours par défaut
     COOKIE_EXPIRATION = fields.Integer(load_default=3600 * 24 * 7)
     COOKIE_AUTORENEW = fields.Boolean(load_default=True)
