@@ -24,7 +24,6 @@ config_default = {
     # disable cache for downloaded files (PDF file stat for ex)
     # TODO: use Flask.get_send_file_max_age(filename) to return 0 only for generated PDF files
     "SEND_FILE_MAX_AGE_DEFAULT": 0,
-    "TEMPLATES_AUTO_RELOAD": True,
 }
 
 config = ChainMap({}, config_programmatic, config_backend, config_frontend, config_default)
