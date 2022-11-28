@@ -5,14 +5,14 @@ import { MapListService } from '@geonature_common/map-list/map-list.service';
 import { CommonService } from '@geonature_common/service/common.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SyntheseFormService } from '@geonature_common/form/synthese-form/synthese-form.service';
-import { SyntheseStoreService } from '@geonature_common/form/synthese-form/synthese-store.service';
+import { SyntheseStoreService } from './services/store.service';
 import { SyntheseModalDownloadComponent } from './synthese-results/synthese-list/modal-download/modal-download.component';
 import { AppConfig } from '@geonature_config/app.config';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
 import { SyntheseInfoObsComponent } from '../shared/syntheseSharedModule/synthese-info-obs/synthese-info-obs.component';
 import * as cloneDeep from 'lodash/cloneDeep';
-
+import { EventToggle } from './synthese-results/synthese-carte/synthese-carte.component';
 @Component({
   selector: 'pnx-synthese',
   styleUrls: ['synthese.component.scss'],
@@ -39,8 +39,15 @@ export class SyntheseComponent implements OnInit {
 
   loadAndStoreData(formParams) {
     this.searchService.dataLoaded = false;
+    this._fs.searchForm.markAsPristine();
     this.searchService.getSyntheseData(formParams).subscribe(
       (data) => {
+        // mark the form pristine at each search in order to manage store data
+        if (this._fs.searchForm.value.with_areas) {
+          this._syntheseStore.gridData = data;
+        } else {
+          this._syntheseStore.pointData = data;
+        }
         // Store the list of id_synthese for exports
         this._syntheseStore.idSyntheseList = this.extractSyntheseIds(data);
 
@@ -68,6 +75,7 @@ export class SyntheseComponent implements OnInit {
         }
       }
     );
+
     if (this.firstLoad && 'limit' in formParams) {
       //toaster
       this._toasterService.info(
@@ -76,6 +84,42 @@ export class SyntheseComponent implements OnInit {
       );
     }
     this.firstLoad = false;
+  }
+
+  fetchOrRenderData(event: EventToggle) {
+    // if the form has change reload data
+    // else load data from cache if already loaded
+
+    if (this._fs.searchForm.dirty) {
+      this.loadAndStoreData(this._fs.formatParams());
+    } else {
+      if (event == 'point') {
+        console.log('passe point');
+        if (this._syntheseStore.pointData) {
+          this._mapListService.geojsonData = this.simplifyGeoJson(
+            cloneDeep(this._syntheseStore.pointData)
+          );
+          this._mapListService.loadTableData(this._syntheseStore.pointData);
+        } else {
+          this.loadAndStoreData(this._fs.formatParams());
+        }
+      } else {
+        if (this._syntheseStore.gridData) {
+          this._mapListService.geojsonData = this.simplifyGeoJson(
+            cloneDeep(this._syntheseStore.gridData)
+          );
+          this._mapListService.loadTableData(this._syntheseStore.gridData);
+        } else {
+          this.loadAndStoreData(this._fs.formatParams());
+        }
+      }
+    }
+  }
+  onSearchEvent(form) {
+    // on search button click, clean cache and call loadAndStoreData
+    this._syntheseStore.gridData = null;
+    this._syntheseStore.pointData = null;
+    this.loadAndStoreData(form);
   }
 
   private extractSyntheseIds(geojson) {

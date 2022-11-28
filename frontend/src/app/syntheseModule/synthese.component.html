@@ -10,8 +10,7 @@
     id="sidebar"
     class="collapse show"
   >
-    <!-- <pnx-synthese-search (searchClicked)="loadAndStoreData($event)"></pnx-synthese-search> -->
-    <pnx-synthese-search (searchClicked)="loadAndStoreData($event)"> </pnx-synthese-search>
+    <pnx-synthese-search (searchClicked)="onSearchEvent($event)"> </pnx-synthese-search>
   </nav>
 
   <div class="row row-sm page-content">
@@ -31,7 +30,7 @@
     </button>
     <div class="col-sm-12 col-md-7 padding-sm">
       <pnx-synthese-carte
-      (onAreasToggle)="loadAndStoreData($event)"
+      (onAreasToggle)="fetchOrRenderData($event)"
       [inputSyntheseData]="_mapListService.geojsonData"
       ></pnx-synthese-carte>
     </div>

@@ -73,7 +73,6 @@ export class SyntheseSearchComponent implements OnInit {
       if (this.params.id_dataset) {
         this.formService.searchForm.controls.id_dataset.setValue([+this.params.id_dataset]);
       }
-      this.formService.searchForm.markAsDirty();
     }
   }
 
