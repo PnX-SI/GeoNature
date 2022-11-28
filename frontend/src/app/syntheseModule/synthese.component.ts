@@ -115,11 +115,15 @@ export class SyntheseComponent implements OnInit {
       }
     }
   }
-  onSearchEvent(form) {
+  onSearchEvent() {
+    // reinitlize limit = 100
+    this._fs.searchForm.patchValue({
+      limit: null,
+    });
     // on search button click, clean cache and call loadAndStoreData
     this._syntheseStore.gridData = null;
     this._syntheseStore.pointData = null;
-    this.loadAndStoreData(form);
+    this.loadAndStoreData(this._fs.formatParams());
   }
 
   private extractSyntheseIds(geojson) {
@@ -147,33 +151,39 @@ export class SyntheseComponent implements OnInit {
 
   ngOnInit() {
     this._route.queryParamMap.subscribe((params) => {
-      let initialFilter = {};
+      this._fs.searchForm.patchValue({
+        limit: AppConfig.SYNTHESE.NB_LAST_OBS,
+        with_areas:
+          AppConfig.SYNTHESE.ENABLE_AREA_AGGREGATION &&
+          AppConfig.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT,
+      });
+      if (params.get('id_dataset')) {
+        this._fs.searchForm.patchValue({ id_dataset: params.get('id_dataset') });
+      }
+      if (params.get('id_acquisition_framework')) {
+        this._fs.searchForm.patchValue({
+          id_acquisition_framework: params.get('id_acquisition_framework'),
+        });
+      }
       const idSynthese = this._route.snapshot.paramMap.get('id_synthese');
+
       if (idSynthese) {
-        initialFilter['id_synthese'] = idSynthese;
+        this._fs.searchForm.patchValue({ id_synthese: params.get('idSynthese') });
         this.openInfoModal(idSynthese);
       }
 
-      initialFilter['with_areas'] =
-        AppConfig.SYNTHESE.ENABLE_AREA_AGGREGATION &&
-        AppConfig.SYNTHESE.AREA_AGGREGATION_BY_DEFAULT;
-      if (params.get('id_acquisition_framework')) {
-        initialFilter['id_acquisition_framework'] = params.get('id_acquisition_framework');
-      } else if (params.get('id_dataset')) {
-        initialFilter['id_dataset'] = params.get('id_dataset');
-      } else {
-        initialFilter['limit'] = AppConfig.SYNTHESE.NB_LAST_OBS;
-      }
-
-      // reinitialize the form
-      this._fs.searchForm.reset();
       this._fs.selectedCdRefFromTree = [];
       this._fs.selectedTaxonFromRankInput = [];
       this._fs.selectedtaxonFromComponent = [];
       this._fs.selectedRedLists = [];
       this._fs.selectedStatus = [];
       this._fs.selectedTaxRefAttributs = [];
-      this.loadAndStoreData(initialFilter);
+      this.loadAndStoreData(this._fs.formatParams());
+      // remove initial parameter passed by url
+      this._fs.searchForm.patchValue({
+        id_dataset: null,
+        id_acquisition_framework: null,
+      });
     });
   }
 
