@@ -6,129 +6,67 @@
     fichiers de routing du frontend etc...). Ces dernières doivent pouvoir fonctionner même si
     un paquet PIP du requirement GeoNature n'a pas été bien installé
 """
-import sys
-import logging
-import subprocess
 import json
+import subprocess
+from contextlib import nullcontext
 
-from flask import current_app
 from jinja2 import Template
-from pathlib import Path
 
 from geonature import create_app
-from geonature.utils.env import (
-    BACKEND_DIR,
-    ROOT_DIR,
-    GN_MODULE_FE_FILE,
-    DB,
-    GN_EXTERNAL_MODULE,
-)
-from geonature.utils.errors import ConfigError
-from geonature.utils.utilstoml import load_and_validate_toml
-from geonature.utils.config_schema import GnGeneralSchemaConf
-from geonature.utils.module import list_frontend_enabled_modules
+from geonature.utils.env import FRONTEND_DIR
 from geonature.utils.config import config_frontend
-
-log = logging.getLogger(__name__)
-
-MSG_OK = "\033[92mok\033[0m\n"
+from geonature.utils.module import get_dist_from_code, get_module_config
 
 
-def frontend_routes_templating(app=None):
-    if not app:
-        app = create_app(with_external_mods=False)
+def create_frontend_config(input_file=None, output_file=None):
+    if input_file is None:
+        input_file = (FRONTEND_DIR / "src/conf/app.config.ts.sample").open("r")
+    else:
+        input_file = nullcontext(input_file)
+    with input_file as f:
+        template = Template(f.read())
 
-    with app.app_context():
+    parameters = json.dumps(config_frontend, indent=True)
+    app_config_template = template.render(parameters=parameters)
 
-        log.info("Generating frontend routing")
-        # recuperation de la configuration
-        configs_gn = app.config
-
-        with open(
-            str(ROOT_DIR / "frontend/src/app/routing/app-routing.module.ts.sample"), "r"
-        ) as input_file:
-            template = Template(input_file.read())
-            routes = []
-            for module_object in list_frontend_enabled_modules():
-                module_dir = Path(GN_EXTERNAL_MODULE / module_object.module_code.lower())
-                # test if module have frontend
-                if (module_dir / "frontend").is_dir():
-                    path = module_object.module_path.lstrip("/")
-                    location = "() => import('{}/{}').then(m => m.GeonatureModule)".format(
-                        module_dir, GN_MODULE_FE_FILE
-                    )
-                    routes.append(
-                        {
-                            "path": path,
-                            "location": location,
-                            "module_code": module_object.module_code,
-                        }
-                    )
-
-                # TODO test if two modules with the same name is okay for Angular
-            route_template = template.render(
-                routes=routes,
-                enable_user_management=configs_gn["ACCOUNT_MANAGEMENT"].get(
-                    "ENABLE_USER_MANAGEMENT"
-                ),
-            )
-
-            with open(
-                str(ROOT_DIR / "frontend/src/app/routing/app-routing.module.ts"), "w"
-            ) as output_file:
-                output_file.write(route_template)
-
-        log.info("...%s\n", MSG_OK)
+    if output_file is None:
+        output_file = (FRONTEND_DIR / "src/conf/app.config.ts").open("w")
+    else:
+        output_file = nullcontext(output_file)
+    with output_file as f:
+        f.write(app_config_template)
 
 
-def tsconfig_templating():
-    log.info("Generating tsconfig.json")
-    with open(str(ROOT_DIR / "frontend/tsconfig.json.sample"), "r") as input_file:
-        template = Template(input_file.read())
-        tsconfig_templated = template.render(geonature_path=ROOT_DIR)
-
-    with open(str(ROOT_DIR / "frontend/tsconfig.json"), "w") as output_file:
-        output_file.write(tsconfig_templated)
-    log.info("...%s\n", MSG_OK)
-
-
-def tsconfig_app_templating(app=None):
-    if not app:
-        app = create_app(with_external_mods=False)
-
-    with app.app_context():
-
-        log.info("Generating tsconfig.app.json")
-
-        with open(str(ROOT_DIR / "frontend/src/tsconfig.app.json.sample"), "r") as input_file:
-            template = Template(input_file.read())
-            routes = []
-            for module in list_frontend_enabled_modules():
-                module_dir = Path(GN_EXTERNAL_MODULE / module.module_code.lower())
-                # test if module have frontend
-                if (module_dir / "frontend").is_dir():
-                    location = "{}/frontend/app".format(module_dir)
-                    routes.append({"location": location})
-
-                # TODO test if two modules with the same name is okay for Angular
-
-            route_template = template.render(routes=routes)
-
-            with open(str(ROOT_DIR / "frontend/src/tsconfig.app.json"), "w") as output_file:
-                output_file.write(route_template)
-
-        log.info("...%s\n", MSG_OK)
+def create_frontend_module_config(module_code, output_file=None):
+    """
+    Create the frontend config
+    """
+    module_code = module_code.upper()
+    module_config = get_module_config(get_dist_from_code(module_code))
+    if output_file is None:
+        output_file = (
+            FRONTEND_DIR / "external_modules" / module_code.lower() / "app/module.config.ts"
+        ).open("w")
+    else:
+        output_file = nullcontext(output_file)
+    with output_file as f:
+        f.write("export const ModuleConfig = ")
+        json.dump(module_config, f, indent=True, sort_keys=True)
 
 
-def create_frontend_config():
-    log.info("Generating configuration")
+def install_frontend_dependencies(module_frontend_path):
+    with (FRONTEND_DIR / ".nvmrc").open("r") as f:
+        node_version = f.read().strip()
+    subprocess.run(
+        ["/bin/bash", "-i", "-c", f"nvm exec {node_version} npm ci --omit=dev"],
+        check=True,
+        cwd=module_frontend_path,
+    )
 
-    with open(str(ROOT_DIR / "frontend/src/conf/app.config.ts.sample"), "r") as input_file:
-        template = Template(input_file.read())
-        parameters = json.dumps(config_frontend, indent=True)
-        app_config_template = template.render(parameters=parameters)
 
-        with open(str(ROOT_DIR / "frontend/src/conf/app.config.ts"), "w") as output_file:
-            output_file.write(app_config_template)
-
-    log.info("...%s\n", MSG_OK)
+def build_frontend():
+    subprocess.run(
+        ["/bin/bash", "-i", "-c", "nvm exec npm run build"],
+        check=True,
+        cwd=str(FRONTEND_DIR),
+    )

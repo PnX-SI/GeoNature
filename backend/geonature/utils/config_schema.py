@@ -4,6 +4,8 @@
 
 import os
 
+from pkg_resources import iter_entry_points, load_entry_point
+
 from marshmallow import (
     Schema,
     fields,
@@ -11,7 +13,7 @@ from marshmallow import (
     ValidationError,
     post_load,
 )
-from marshmallow.validate import OneOf, Regexp, Email
+from marshmallow.validate import OneOf, Regexp, Email, Length
 
 from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_EXPORT_COLUMNS,
@@ -19,7 +21,9 @@ from geonature.core.gn_synthese.synthese_config import (
     DEFAULT_COLUMNS_API_SYNTHESE,
 )
 from geonature.utils.env import GEONATURE_VERSION
+from geonature.utils.module import get_module_config
 from geonature.utils.utilsmails import clean_recipients
+from geonature.utils.utilstoml import load_and_validate_toml
 
 
 class EmailStrOrListOfEmailStrField(fields.Field):
@@ -96,8 +100,8 @@ class MailConfig(Schema):
 
 
 class CeleryConfig(Schema):
-    broker_url = fields.String()
-    result_backend = fields.String(required=False)
+    broker_url = fields.String(load_default="redis://localhost:6379/0")
+    result_backend = fields.String(load_default="redis://localhost:6379/0")
 
 
 class AccountManagement(Schema):
@@ -178,7 +182,7 @@ class GnPySchemaConf(Schema):
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = fields.Boolean(load_default=True)
     SESSION_TYPE = fields.String(load_default="filesystem")
-    SECRET_KEY = fields.String(required=True)
+    SECRET_KEY = fields.String(required=True, validate=Length(min=20))
     # le cookie expire toute les 7 jours par défaut
     COOKIE_EXPIRATION = fields.Integer(load_default=3600 * 24 * 7)
     COOKIE_AUTORENEW = fields.Boolean(load_default=True)
@@ -192,7 +196,7 @@ class GnPySchemaConf(Schema):
     CAS = fields.Nested(CasSchemaConf, load_default=CasSchemaConf().load({}))
     MAIL_ON_ERROR = fields.Boolean(load_default=False)
     MAIL_CONFIG = fields.Nested(MailConfig, load_default=MailConfig().load({}))
-    CELERY = fields.Nested(CeleryConfig)
+    CELERY = fields.Nested(CeleryConfig, load_default=CeleryConfig().load({}))
     METADATA = fields.Nested(MetadataConfig, load_default=MetadataConfig().load({}))
     ADMIN_APPLICATION_LOGIN = fields.String()
     ACCOUNT_MANAGEMENT = fields.Nested(
@@ -317,14 +321,14 @@ BASEMAP = [
         "name": "OpenStreetMap",
         "url": "//{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png",
         "options": {
-            "attribution": "&copy OpenStreetMap",
+            "attribution": "<a href='https://www.openstreetmap.org/copyright' target='_blank'>© OpenStreetMap contributors</a>",
         },
     },
     {
         "name": "OpenTopoMap",
         "url": "//a.tile.opentopomap.org/{z}/{x}/{y}.png",
         "options": {
-            "attribution": "© OpenTopoMap",
+            "attribution": "Map data: © <a href='https://www.openstreetmap.org/copyright' target='_blank'>OpenStreetMap contributors</a>, SRTM | Map style: © <a href='https://opentopomap.org' target='_blank'>OpenTopoMap</a> (<a href='https://creativecommons.org/licenses/by-sa/3.0/' target='_blank'>CC-BY-SA</a>)",
         },
     },
     {
@@ -332,7 +336,7 @@ BASEMAP = [
         "layer": "//{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
         "options": {
             "subdomains": ["mt0", "mt1", "mt2", "mt3"],
-            "attribution": "© GoogleMap",
+            "attribution": "© Google Maps",
         },
     },
 ]
@@ -373,6 +377,7 @@ class GnGeneralSchemaConf(Schema):
     CODE_APPLICATION = fields.String(load_default="GN")
     XML_NAMESPACE = fields.String(load_default="{http://inpn.mnhn.fr/mtd}")
     MTD_API_ENDPOINT = fields.Url(load_default="https://preprod-inpn.mnhn.fr/mtd")
+    DISABLED_MODULES = fields.List(fields.String(), load_default=[])
     CAS_PUBLIC = fields.Nested(CasFrontend, load_default=CasFrontend().load({}))
     RIGHTS = fields.Nested(RightsSchemaConf, load_default=RightsSchemaConf().load({}))
     FRONTEND = fields.Nested(GnFrontEndConf, load_default=GnFrontEndConf().load({}))
@@ -418,15 +423,11 @@ class GnGeneralSchemaConf(Schema):
                 "AUTO_ACCOUNT_CREATION, VALIDATOR_EMAIL",
             )
 
-
-class ManifestSchemaConf(Schema):
-    package_format_version = fields.String(required=True)
-    module_code = fields.String(required=True)
-    module_version = fields.String(required=True)
-    min_geonature_version = fields.String(required=True)
-    max_geonature_version = fields.String(required=True)
-    exclude_geonature_versions = fields.List(fields.String)
-
-
-class ManifestSchemaProdConf(Schema):
-    module_code = fields.String(required=True)
+    @post_load
+    def insert_module_config(self, data, **kwargs):
+        for module_code_entry in iter_entry_points("gn_module", "code"):
+            module_code = module_code_entry.resolve()
+            if module_code in data["DISABLED_MODULES"]:
+                continue
+            data[module_code] = get_module_config(module_code_entry.dist)
+        return data

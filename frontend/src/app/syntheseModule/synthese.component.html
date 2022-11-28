@@ -1,4 +1,8 @@
-<div id="cover-spin" *ngIf="!searchService.dataLoaded"></div>
+<div id="cover-spin" *ngIf="!searchService.dataLoaded">
+  <div class="alert alert-warning" id="cover-message">
+    <span >Chargement des données en cours (cela peut prendre du temps)…</span>
+  </div>
+</div>
 
 <div class="wrapper" data-qa='pnx-synthese'>
   <nav

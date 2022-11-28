@@ -24,6 +24,7 @@ from utils_flask_sqla_geo.generic import GenericTableGeo
 
 from geonature.core.gn_permissions import decorators as permissions
 from geonature.core.gn_permissions.tools import get_or_fetch_user_cruved
+from geonature.core.gn_commons.models import TModules
 from geonature.utils.env import DB, ROOT_DIR
 from geonature.utils.errors import GeonatureApiError
 from geonature.utils import filemanager
@@ -258,12 +259,11 @@ def export_all_habitats(
         except GeonatureApiError as e:
             message = str(e)
 
+        module_url = TModules.query.filter_by(module_code="OCCHAB").one().module_path
         return render_template(
             "error.html",
             error=message,
-            redirect=current_app.config["URL_APPLICATION"]
-            + "/#/"
-            + blueprint.config["MODULE_URL"],
+            redirect=current_app.config["URL_APPLICATION"] + "/#/" + module_url,
         )
 
 

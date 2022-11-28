@@ -4,8 +4,7 @@ Démarrage de l'application
 
 import logging, os
 from itertools import chain
-from pkg_resources import iter_entry_points
-from urllib.parse import urlsplit
+from pkg_resources import iter_entry_points, load_entry_point
 from importlib import import_module
 
 from flask import Flask, g, request, current_app
@@ -22,7 +21,6 @@ from sqlalchemy.engine import RowProxy
 from geonature.utils.config import config
 from geonature.utils.env import MAIL, DB, db, MA, migrate, BACKEND_DIR
 from geonature.utils.logs import config_loggers
-from geonature.utils.module import import_backend_enabled_modules
 from geonature.core.admin.admin import admin
 from geonature.middlewares import RequestID
 
@@ -75,25 +73,13 @@ class MyJSONProvider(DefaultJSONProvider):
 
 
 def create_app(with_external_mods=True):
-    app = Flask(__name__.split(".")[0], static_folder="../static")
+    static_folder = os.environ.get("GEONATURE_STATIC_FOLDER", "../static")
+    app = Flask(__name__.split(".")[0], static_folder=static_folder)
 
     app.config.update(config)
-    api_uri = urlsplit(app.config["API_ENDPOINT"])
-    app.config["APPLICATION_ROOT"] = api_uri.path
-    app.config["PREFERRED_URL_SCHEME"] = api_uri.scheme
+
     if "SCRIPT_NAME" not in os.environ:
         os.environ["SCRIPT_NAME"] = app.config["APPLICATION_ROOT"].rstrip("/")
-    app.config["TEMPLATES_AUTO_RELOAD"] = True
-    # disable cache for downloaded files (PDF file stat for ex)
-    app.config["SEND_FILE_MAX_AGE_DEFAULT"] = 0
-    if "GEONATURE_SETTINGS" in os.environ:
-        app.config.from_object(os.environ["GEONATURE_SETTINGS"])
-
-    if len(app.config["SECRET_KEY"]) < 20:
-        raise Exception(
-            "The SECRET_KEY config option must have a length "
-            "greater or equals to 20 characters."
-        )
 
     # set from headers HTTP_HOST, SERVER_NAME, and SERVER_PORT
     app.wsgi_app = ProxyFix(app.wsgi_app, x_host=1)
@@ -158,21 +144,6 @@ def create_app(with_external_mods=True):
 
     admin.init_app(app)
 
-    # Pass the ID_APP to the submodule to avoid token conflict between app on the same server
-    with app.app_context():
-        try:
-            gn_app = Application.query.filter_by(code_application=config["CODE_APPLICATION"]).one()
-        except (
-            OperationalError,  # database does not exist
-            ProgrammingError,  # database empty
-            NoResultFound,  # database has schema but not required data
-        ):
-            logging.warning(
-                "Warning: unable to find GeoNature application, database not yet initialized?"
-            )
-        else:
-            app.config["ID_APP"] = app.config["ID_APPLICATION_GEONATURE"] = gn_app.id_application
-
     for blueprint_path, url_prefix in [
         ("pypnusershub.routes:routes", "/auth"),
         ("pypn_habref_api.routes:routes", "/habref"),
@@ -201,24 +172,20 @@ def create_app(with_external_mods=True):
 
         # Loading third-party modules
         if with_external_mods:
-            try:
-                for (
-                    module_object,
-                    module_config,
-                    module_blueprint,
-                ) in import_backend_enabled_modules():
-                    app.config[module_config["MODULE_CODE"]] = module_config
-                    app.register_blueprint(
-                        module_blueprint, url_prefix=module_config["MODULE_URL"]
+            for module_code_entry in iter_entry_points("gn_module", "code"):
+                module_code = module_code_entry.resolve()
+                if module_code in config["DISABLED_MODULES"]:
+                    continue
+                try:
+                    module_blueprint = load_entry_point(
+                        module_code_entry.dist, "gn_module", "blueprint"
                     )
-            except (OperationalError, ProgrammingError) as sqla_error:
-                if not isinstance(sqla_error, ProgrammingError) or isinstance(
-                    sqla_error.orig, UndefinedTable
-                ):
-                    logging.warning(
-                        "Warning: database not yet initialized, skipping loading of external modules"
-                    )
+                except Exception as e:
+                    logging.exception(e)
+                    logging.warning(f"Unable to load module {module_code}, skipping…")
+                    current_app.config["DISABLED_MODULES"].append(module_code)
                 else:
-                    raise
+                    module_blueprint.config = config[module_code]
+                    app.register_blueprint(module_blueprint, url_prefix=f"/{module_code.lower()}")
 
     return app

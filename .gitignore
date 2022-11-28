@@ -9,7 +9,7 @@ log/*
 .vscode/
 geonature_config.toml
 external_assets/
-external_modules/*
+frontend/external_modules/*
 tmp/
 var/
 data/migrations/v1tov2/old/v1_compat.ini
@@ -31,7 +31,6 @@ backend/run.py
 *.pem
 *.ipynb
 
-tsconfig.json
 .angulardoc.json
 Pipfile.lock
 
@@ -147,7 +146,6 @@ ENV/
 .mypy_cache/
 
 *.pid
-package-lock.json
 *.orig
 
 

@@ -19,13 +19,12 @@
     ],
     "types":[
     ],
-    "baseUrl": "{{geonature_path}}/frontend/node_modules",
+    "baseUrl": "./",
     "paths": {
-      "@angular/*": ["{{geonature_path}}/frontend/node_modules/@angular/*"],
-      "@geonature_common/*" : ["{{geonature_path}}/frontend/src/app/GN2CommonModule/*"],
-      "@geonature/*" : ["{{geonature_path}}/frontend/src/app/*"],
-      "@geonature_config/*" : ["{{geonature_path}}/frontend/src/conf/*"],
-      "@librairies/*" : ["{{geonature_path}}/frontend/node_modules/*"]
+      "@geonature_common/*" : ["src/app/GN2CommonModule/*"],
+      "@geonature/*" : ["src/app/*"],
+      "@geonature_config/*" : ["src/conf/*"],
+      "@librairies/*" : ["./node_modules/*"]
     }
   }
 }

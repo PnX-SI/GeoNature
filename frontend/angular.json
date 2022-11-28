@@ -7,6 +7,15 @@
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "prefix": "pnx",
+          "style": "scss"
+        },
+        "@schematics/angular:directive": {
+          "prefix": "pnx"
+        }
+      },
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
@@ -17,13 +26,21 @@
             "main": "src/main.ts",
             "tsConfig": "src/tsconfig.app.json",
             "polyfills": "src/polyfills.ts",
+            "inlineStyleLanguage": "scss",
             "assets": [
-              "src/assets", "src/custom", "src/favicon.ico", "src/external_assets",
+              "src/favicon.ico",
+              "src/custom",
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "external_modules/*/assets/",
+                "output": "./assets/"
+              },
               {
                 "glob": "**/*",
                 "input": "node_modules/leaflet/dist/images/",
                 "output": "./assets/"
-             }
+              }
             ],
             "styles": [
               "node_modules/primeng/resources/themes/nova/theme.css",
@@ -54,14 +71,7 @@
           },
           "configurations": {
             "production": {
-              "optimization": true,
               "outputHashing": "all",
-              "sourceMap": false,
-              "namedChunks": false,
-              "aot": true,
-              "extractLicenses": true,
-              "vendorChunk": false,
-              "buildOptimizer": true,
               "fileReplacements": [
                 {
                   "replace": "src/environments/environment.ts",
@@ -76,19 +86,9 @@
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
-            },
-            "e2e": {
-              "extractLicenses": false,
-              "sourceMap": true,
-              "namedChunks": true,
-              "vendorChunk": true,
-              "optimization": false,
-              "buildOptimizer": false,
-              "customWebpackConfig": {
-                "path": "./cypress/coverage.webpack.ts"
-              }
             }
-          }
+          },
+          "defaultConfiguration": "production"
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
@@ -103,134 +103,17 @@
             "development": {
               "browserTarget": "geonature:build:development"
             }
-          }
+          },
+          "defaultConfiguration": "development"
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "geonature:build"
           }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "src/tsconfig.app.json",
-              "src/tsconfig.spec.json",
-              "cypress/tsconfig.json"
-            ],
-            "exclude": ["**/node_modules/**/*"]
-          }
-        },
-        "cypress-run": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "devServerTarget": "geonature:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "geonature:serve:production"
-            }
-          }
-        },
-        "cypress-open": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "watch": true,
-            "headless": false
-          }
-        },
-        "e2e": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "devServerTarget": "geonature:serve-coverage",
-            "watch": true,
-            "headless": false
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "geonature:serve-coverage:production"
-            }
-          }
-        },
-        "e2e-ci": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "devServerTarget": "geonature:serve-coverage",
-            "headless": true,
-            "watch": false,
-            "report": true
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "geonature:serve-coverage:production"
-            }
-          }
-        }
-      }
-    },
-    "geonature-e2e": {
-      "root": "e2e",
-      "sourceRoot": "e2e",
-      "projectType": "application",
-      "architect": {
-        "e2e": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "devServerTarget": "geonature-e2e:serve",
-            "watch": true,
-            "headless": true,
-            "report": true
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "geonature-e2e:serve:production"
-            }
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": ["e2e/cypress/tsconfig.json"],
-            "exclude": ["**/node_modules/**/*"]
-          }
-        },
-        "cypress-run": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "devServerTarget": "geonature-e2e:serve",
-            "configFile": "e2e/cypress.json"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "geonature-e2e:serve:production"
-            }
-          }
-        },
-        "cypress-open": {
-          "builder": "@cypress/schematic:cypress",
-          "options": {
-            "watch": true,
-            "headless": false,
-            "configFile": "e2e/cypress.json"
-          }
         }
       }
     }
   },
-  "defaultProject": "geonature",
-  "cli": {
-    "warnings": {
-      "typescriptMismatch": false
-    }
-  },
-  "schematics": {
-    "@schematics/angular:component": {
-      "prefix": "pnx",
-      "styleext": "scss"
-    },
-    "@schematics/angular:directive": {
-      "prefix": "pnx"
-    }
-  }
+  "defaultProject": "geonature"
 }

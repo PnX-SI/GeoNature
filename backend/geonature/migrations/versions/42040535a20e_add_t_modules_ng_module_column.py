@@ -25,13 +25,42 @@ def upgrade():
             sa.Unicode(length=500),
         ),
     )
-    op.execute(
-        """
-        UPDATE gn_commons.t_modules
-        SET ng_module = LOWER(module_code)
-        WHERE module_code NOT IN ('GEONATURE', 'ADMIN', 'METADATA', 'SYNTHESE')
-        """
+    monitoring_present = (
+        op.get_bind()
+        .execute(
+            """
+    SELECT EXISTS (
+        SELECT FROM pg_tables
+        WHERE  schemaname = 'gn_monitoring'
+        AND    tablename  = 't_module_complements'
     )
+    """
+        )
+        .scalar()
+    )
+    if monitoring_present:
+        op.execute(
+            """
+            UPDATE gn_commons.t_modules m
+            SET ng_module = LOWER(m.module_code)
+            FROM gn_commons.t_modules mod
+            LEFT JOIN gn_monitoring.t_module_complements modcomp USING(id_module)
+            WHERE
+                m.id_module = mod.id_module
+                AND
+                mod.module_code NOT IN ('GEONATURE', 'ADMIN', 'METADATA', 'SYNTHESE')
+                AND
+                modcomp.id_module IS NULL
+            """
+        )
+    else:
+        op.execute(
+            """
+            UPDATE gn_commons.t_modules
+            SET ng_module = LOWER(module_code)
+            WHERE module_code NOT IN ('GEONATURE', 'ADMIN', 'METADATA', 'SYNTHESE')
+            """
+        )
 
 
 def downgrade():

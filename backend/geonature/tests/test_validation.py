@@ -6,6 +6,7 @@ from werkzeug.exceptions import Unauthorized, BadRequest
 
 from geonature.core.gn_synthese.models import Synthese
 from geonature.utils.env import db
+from geonature.utils.config import config
 
 from pypnnomenclature.models import TNomenclatures
 
@@ -14,6 +15,9 @@ from .utils import set_logged_user_cookie
 
 
 gn_module_validation = pytest.importorskip("gn_module_validation")
+pytestmark = pytest.mark.skipif(
+    "VALIDATION" in config["DISABLED_MODULES"], reason="Validation is disabled"
+)
 
 
 @pytest.mark.usefixtures("client_class", "temporary_transaction", "app")

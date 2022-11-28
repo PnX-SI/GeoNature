@@ -59,6 +59,9 @@ echo "############### Installation des paquets systèmes ###############"
 echo "Installation de l'environnement logiciel..."
 sudo apt-get install -y unzip git postgresql postgis python3-pip python3-venv python3-dev libpq-dev libgdal-dev libffi-dev libpangocairo-1.0-0 apache2 redis || exit 1
 
+if [ "${mode}" = "dev" ]; then
+    sudo apt-get install -y xvfb || exit 1
+fi
 
 # Apache configuration
 sudo a2enmod rewrite || exit 1
@@ -77,9 +80,10 @@ if [ ! -d "${GEONATURE_DIR}" ]; then
         git submodule init
         git submodule update
     else
-        wget https://github.com/PnX-SI/GeoNature/archive/$geonature_release.zip -O GeoNature-$geonature_release.zip || exit 1
-        unzip GeoNature-$geonature_release.zip || exit 1
-        mv GeoNature-$geonature_release "${GEONATURE_DIR}"
+        escaped_geonature_release=${geonature_release//\//-}
+        wget https://github.com/PnX-SI/GeoNature/archive/$geonature_release.zip -O GeoNature-$escaped_geonature_release.zip || exit 1
+        unzip GeoNature-$escaped_geonature_release.zip || exit 1
+        mv GeoNature-$escaped_geonature_release "${GEONATURE_DIR}"
     fi
 fi
 
@@ -102,6 +106,7 @@ sed -i "s/user_pg=.*$/user_pg=$user_pg/g" config/settings.ini
 sed -i "s/db_host=.*$/db_host=$pg_host/g" config/settings.ini
 sed -i "s/user_pg_pass=.*$/user_pg_pass=$user_pg_pass/g" config/settings.ini
 sed -i "s/srid_local=.*$/srid_local=$srid_local/g" config/settings.ini
+sed -i "s/install_bdc_statuts=.*$/install_bdc_statuts=$install_bdc_statuts/g" config/settings.ini
 sed -i "s/install_sig_layers=.*$/install_sig_layers=$install_sig_layers/g" config/settings.ini
 sed -i "s/install_grid_layer=.*$/install_grid_layer=$install_grid_layer/g" config/settings.ini
 sed -i "s/install_default_dem=.*$/install_default_dem=$install_default_dem/g" config/settings.ini
@@ -133,9 +138,11 @@ echo "Installation de la config apache pour GeoNature"
 
 sudo a2enconf geonature || exit 1
 
-sudo systemctl start geonature || exit 1
 if [ "${mode}" != dev ]; then
+    sudo systemctl start geonature || exit 1
+    sudo systemctl start geonature-worker || exit 1
     sudo systemctl enable geonature || exit 1
+    sudo systemctl enable geonature-worker || exit 1
 fi
 
 
@@ -150,9 +157,10 @@ if [ ! -d "${TAXHUB_DIR}" ]; then
         git submodule init || exit 1
         git submodule update || exit 1
     else
-        wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip -O TaxHub-$taxhub_release.zip || exit 1
-        unzip TaxHub-$taxhub_release.zip || exit 1
-        mv TaxHub-$taxhub_release "${TAXHUB_DIR}"
+        escaped_taxhub_release=${taxhub_release//\//-}
+        wget https://github.com/PnX-SI/TaxHub/archive/$taxhub_release.zip -O TaxHub-$escaped_taxhub_release.zip || exit 1
+        unzip TaxHub-$escaped_taxhub_release.zip || exit 1
+        mv TaxHub-$escaped_taxhub_release "${TAXHUB_DIR}"
     fi
 fi
 
@@ -205,9 +213,10 @@ if [ "$install_usershub_app" = true ]; then
             git submodule init || exit 1
             git submodule update || exit 1
         else
-            wget https://github.com/PnX-SI/UsersHub/archive/$usershub_release.zip -O UsersHub-$usershub_release.zip || exit 1
-            unzip UsersHub-$usershub_release.zip || exit 1
-            mv UsersHub-$usershub_release "${USERSHUB_DIR}"
+            escaped_usershub_release=${usershub_release//\//-}
+            wget https://github.com/PnX-SI/UsersHub/archive/$usershub_release.zip -O UsersHub-$escaped_usershub_release.zip || exit 1
+            unzip UsersHub-$escaped_usershub_release.zip || exit 1
+            mv UsersHub-$escaped_usershub_release "${USERSHUB_DIR}"
         fi
     fi
     cd "${USERSHUB_DIR}"

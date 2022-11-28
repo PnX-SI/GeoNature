@@ -171,6 +171,7 @@
             >
               <ng-container *ngIf="row.rights.U; else disabledEditBlc">
                 <a
+                  data-qa="edit-releve"
                   class="btn btn-outline-shadow btn-no-padding btn-ghost"
                   [routerLink]="['form/releve', row.id_releve_occtax]"
                 >
@@ -238,7 +239,7 @@
                 class="btn btn-outline-shadow btn-no-padding btn-ghost"
                 [disabled]="!row.rights.D"
                 (click)="openDeleteModal($event, modalConfirm, iElement, row)"
-                [attr.data-qa]='"pnx-occtax-delete-taxa-"+rowIndex'
+                data-qa="pnx-occtax-delete-taxa"
               >
                 <i
                   [ngClass]="{'disabled' : !row.rights.D}"

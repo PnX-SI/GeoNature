@@ -14,8 +14,6 @@ from utils_flask_sqla.response import json_resp, json_resp_accept_empty_list
 
 
 from geonature.utils.errors import (
-    ConfigError,
-    GNModuleInstallError,
     GeoNatureError,
     GeonatureApiError,
 )

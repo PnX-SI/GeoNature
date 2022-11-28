@@ -2,67 +2,200 @@
 CHANGELOG
 =========
 
-2.10.0 (unreleased)
+2.10.4 (unreleased)
+-------------------
+
+**🐛 Corrections**
+
+* Mise à jour du RefGeo en version 1.2.1 afin de corriger une régression des performances dans la synthèse
+* Correction de la génération du rapport de sensibilité
+
+
+2.10.3 (2022-11-15)
 -------------------
 
 **🚀 Nouveautés**
 
-* Simplification du CRUVED minimum pour accéder à GeoNature, ne nécessitant plus d'avoir obligatoirement un CRUVED défini au niveau global de GeoNature (#1622)
-* Ajout de la commande ``geonature db status``
-* Ajout d’un worker Celery pour l’exécution de tâches asynchrones
-* Déplacement du fichier de log GeoNature dans le dossier ``/var/log/geonature/``
-* Suppression de la table ``gn_sensitivity.cor_sensitivity_synthese`` et des triggers associés.
+* Optimisation d’une migration OccTax particulièrement lente en désactivant temporairement les triggers (#2138)
 
 **🐛 Corrections**
 
-* Remise en place de la rotation des fichiers de logs
+* Correction de la fonctionnalité d’inscription des utilisateurs (#1874)
+* Correction d’une régression des performances de la routes ``/modules`` (#2136)
+
+
+2.10.2 (2022-11-09)
+-------------------
+
+**🚀 Nouveautés**
+
+* Documentation de la fonctionnalité de duplication d’OccTax
+
+**🐛 Corrections**
+
+* Correction du script de migration pour générer la configuration frontend des modules
+* Correction des triggers d’OccTax pour correctement identifier la bonne source
+
+
+2.10.1 (2022-11-08)
+-------------------
+
+**🚀 Nouveautés**
+
+* Ajout du paramètre de configuration ``DISABLED_MODULES``
+* Installation des dépendances frontend des modules dans le dossier frontend des modules eux-mêmes
+
+**🐛 Corrections**
+
+* La commande ``geonature`` ignore les modules dont le chargement a rencontré une erreur (#2109)
+* Correction et amélioration du script de mise à jour de GeoNature (``install/migration/migration.sh``) (#2110)
+* Correction de la commande d'installation des modules non packagés avec le routing dynamique (#2107)
+* Correction du message de confirmation d'enregistrement d'un cadre d'acquisition (#2108)
+* Correction d’une régression de la 2.10.0 sur la route de récupération des jeux de données impactant Occtax-mobile
 
 **⚠️ Notes de version**
 
-* Installation du worker Celery : il vous faut installer le broker redis :
-  ::
+* Passez directement à cette version plutôt que la 2.10.0, mais en suivant les notes de version de la 2.10.0, en vous aidant éventuellement de l'exemple de migration.
+
+2.10.0 - Alouatta macconnelli (2022-11-02)
+------------------------------------------
+
+* **Angular 12, tests automatisés frontend et backend**
+* **Discussions, signalement, partage, épinglage d'une occurrence**
+
+🔧 Passage de la version 7 à 12 d'Angular. Avant de mettre à jour GeoNature sur cette version, vérifiez que les modules que vous utilisez sont disponibles dans une version compatible avec GeoNature 2.10.0 ou plus (compatibilité Angular 12).
+
+Modules compatibles à date de la publication de la version 2.10 de GeoNature :
+
+* Import
+* Export
+* Dashboard
+* Monitoring
+
+**⚠️ Notes de version**
+
+* **Avant** de mettre à jour GeoNature :
+
+  * Mettre à jour les versions de TaxHub (1.10.4) et UsersHub (2.3.1), sans la partie migration de la base de données avec Alembic (elle sera faite lors de la mise à jour de GeoNature)
+  * Mettre à jour les modules compatibles avec GeoNature 2.10, en vous limitant aux étapes "Téléchargement de la nouvelle version du module", "Renommage des répertoires" et "Rapatriement de la configuration". La compilation de chaque module sera faite automatiquement lors de la mise à jour de GeoNature
+  * Les nouveaux fichiers de logs seront placés dans le dossier ``/var/log/geonature/``. Vous pouvez archiver ou supprimer les anciens fichiers de log (``/var/log/geonature.log*``). 
+  * Supprimer les paramètres de configuration qui ont disparu s’ils sont présents dans votre fichier de configuration ``geonature_config.toml`` :
+  
+    * ``LOCAL_SRID``
+    * ``CRUVED_SEARCH_WITH_OBSERVER_AS_TXT``
+    * ``id_area_type_municipality``
+
+  * Installation du worker Celery : il vous faut installer le broker ``redis`` :
+    ::
 
     # sudo apt install redis
 
-* Passage à angular 12 (développeur), executez les commandes suivantes :
-  ::
+* Suivez la procédure de mise à jour classique de GeoNature (https://docs.geonature.fr/installation.html#mise-a-jour-de-l-application)
+* Suivez les éventuelles notes de version spécifiques des modules installés (SQL de migration de leur schéma de BDD, stamp Alembic de la BDD)
 
-    # depuis le répertoire frontend
-    nvm use
-    npm install --legacy-peer-deps
-    # depuis le virtualenv
-    geonature generate_frontend_modules_route
-    geonature generate_frontend_tsconfig
-    geonature generate_frontend_tsconfig_app
+✅ Un exemple de migration complète de GeoNature 2.9 à 2.10, ses dépendances et ses modules principaux est disponible sur https://geonature.fr/documents/procedures/2022-11-GN-210-Migrate.txt (pour information et à adapter à votre contexte).
 
-* Modification du fichier SCSS du composant personnalisable introduction.
-  Ce composant possède désormais un fichier SCSS avec une règle qui lui est propre.
-  Il est donc nécessaire de :
+**🚀 Nouveautés**
 
-  * se placer dans le dossier du composant : `cd ~/geonature/frontend/src/custom/components/introduction/`
-  * copier le fichier *introduction.component.scss.sample* en *introduction.component.scss* avec : `cp introduction.component.scss.sample introduction.component.scss`
-  * modifier votre fichier `frontend/src/custom/components/introduction/introduction.component.ts` en :
+* Possibilité de dupliquer le module Occtax (#621)
+* Amélioration des fiches des observations dans les modules Synthèse et Validation (#1474)
+* Ajout d'un permalien sur les fiches des observations dans les modules Synthèse et Validation (#1727)
+* Signaler une occurrence et paramètre ``ALERT_MODULES`` associé (#1750)
+* Epingler une occurrence et son paramètre ``PIN_MODULES`` associé (#1819)
+* Discussions sur une occurrence et ses paramètres ``DISCUSSION_MODULES`` et ``DISCUSSION_MAX_LENGTH`` associés (#1731)
+* Mise à jour d'Angular de la version 7 à 12 et des dépendances javascript liées (#1547)
+* Mise en place de tests automatisés frontend avec Cypress, simulant les actions de l'utilisateur et vérifiant la conformité des résultats dans les modules Occtax, Synthèse et Métadonnées
+* Renforcement et nettoyage des tests automatisés backend (augmentation de la couverture de code de 49,8% à 63,1%)
+* Documentation de l'utilisation et de la mise en place des tests automatisés backend et frontend (https://github.com/PnX-SI/GeoNature/blob/master/docs/writing_tests.rst et https://github.com/PnX-SI/GeoNature/blob/master/docs/writing_tests_frontend.rst)
+* Simplification du CRUVED minimum pour accéder à GeoNature, ne nécessitant plus d'avoir obligatoirement un CRUVED défini au niveau global de GeoNature (#1622)
+* [Métadonnées] Remplacement de la liste des imports par la liste des sources dans la fiche des JDD (#1249)
+* [Métadonnées] Lister les cadres d'acquisition par ordre alphabétique
+* [Admin] Amélioration de l'interface (#2101)
+* Ajout de la commande ``geonature db status`` permettant de lister les migrations Alembic, leurs dépendances et identifier celles qui ont été appliquées ou non (#1574)
+* Ajout d’un worker Celery pour l’exécution de tâches asynchrones
+* Déplacement du fichier de log GeoNature vers ``/var/log/geonature/geonature.log``.
+* Suppression de la table ``gn_sensitivity.cor_sensitivity_synthese`` et des triggers associés (#1710)
+* Suppression du paramètre ``CRUVED_SEARCH_WITH_OBSERVER_AS_TXT`` permettant d'ajouter le filtre sur l'observers_txt en ILIKE sur les portée 1 et 2 du CRUVED
+* Documentation : Ajout d'exemples de configuration pour utiliser les fonds IGN (#1703)
+* Documentation : Complément de la documentation sur les calculs de la sensibilité
+* Suppression du paramètre de configuration ``LOCAL_SRID``. Le SRID local est fourni à l’installation, puis auto-détecté depuis la base de données à l’usage.
+* Suppression du paramètre de configuration ``id_area_type_municipality``.
+* [Occtax] Révision du style des fiches d'information des relevés (#1876)
+* [Occtax] Ajout des valeurs par défaut directement dans la base de données (#1857)
+* [Monitoring] Ajout d'un trigger calculant automatiquement l'altitude des sites
+* [Profils] Ajout des paramètres ``default_spatial_precision``, ``default_temporal_precision_days`` et ``default_active_life_stage`` dans la table ``gn_profiles.t_parameters``, remplaçant les valeurs par défaut définies au niveau du règne dans la table ``gn_profiles.cor_taxons_parameters``
+* Ajout d'une couche d'objets linéaires dans le référentiel géographique (https://github.com/PnX-SI/RefGeo/pull/4)
+* Installation de la version 15 de Taxref par défaut lors des nouvelles installations
+* Possibilité de limiter la recherche de lieux à un ou plusieurs pays avec le paramètre ``OSM_RESTRICT_COUNTRY_CODES`` (#2010)
+* On ne peut pas fermer un cadre d'acquisition qui ne contient que des jeux de données sans données
+* Rechargement (``reload``) automatique de GeoNature quand on modifie la configuration de GeoNature (#2045)
+* Redémarrage (``restart``) automatique du worker Celery lors du redémarrage de GeoNature (#2045)
+* Synthèse : ajout d'un message lors du chargement des données (#1637)
+* Cartes : Faire remonter la géométrie de l'objet selectionné dans la liste (#2036)
+* Ajout du paramètre ``CODE_APPLICATION``, suite à la suppression du paramètre ``ID_APP`` (#1635)
+* [Metadonnées] Formulaire des CA : correction de la saisie des CA parents (#2097)
+* [Accueil] Amélioration du formatage des nombres dans le bloc de statistiques (#2085)
 
-    * remplacant :
+**🐛 Corrections**
 
-        ::
+* Remise en place de la rotation automatique des fichiers de logs (#1627)
+* [OCCTAX] Ajout des valeurs par défaut des nomenclatures au niveau de la base de données (#1857)
+* [OCCTAX] Correction d'un bug d'édition de géométrie non pris en compte
+* Map List: à la selection d'une ligne dans le tableau, placement de la géométrie correspondante au dessus des autres géométries (#2036)
+* Correction de l’URL pour la mise à jour des mots de passe (#1620)
+* Statistiques sur la page d’accueil : utilisation des bonnes permissions (action R du module SYNTHESE). Les données et la carte sont masquées si les permissions sont manquantes.
+* Amélioration du responsive de la page d'accueil (#1682)
+* Correction de l'intégration des régions quand GeoNature n'est pas installé avec la projection 2154 (#1695)
+* [Occtax] Correction de l'affichage de la liste tronquée des habitats (#1701)
+* Correction du style des tooltips (#1775)
+* [Validation] Correction du filtre par observations disposant d'un média (#1757)
+* [Validation] Chargement des observations ayant un UUID uniquement
+* [Synthèse] Amélioration de la liste dans la recherche des taxons (#1803)
+* Correction des URL et redirection de renouvellement du mot de passe (#1810 / #1620)
+* Correction du CSS du bloc introduction de la page d'accueil (#1824)
+* Suppression de l'accès à la gestion du compte pour l'utilisateur "public" (#1844)
+* Réduction du niveau de logs de l'outil Fiona pour améliorer les performances des exports en format SIG (#1875)
+* Correction de la concaténation des champs additionnels au niveau des triggers de Occtax vers Synthèse et correction des données dans la Synthèse (#1467)
+* Correction des données dans la Synthèse suite au problème d'enregistrement des dénombrements dans Occtax, corrigé dans la version 2.9.0 (#1479)
+* Correction des triggers de Occtax vers Synthèse lors de la modification de dénombrements multiples et correction des données dans la Synthèse (#1821)
+* Modification du script de démarrage ``systemd`` pour lancer GeoNature et son worker Celery après PostgreSQL (#1970)
+* Correction de l'installation de psycopg2 (#1994)
+* Correction de la route de récupération des jeux de données quand on lui passe plusieurs filtres
+* Correction de la fonction ``gn_synthese.update_sensitivity()`` en cas de valeurs nulles
+* [OCCTAX] Correction d'un bug d'édition de géométrie non pris en compte (#2023)
+* [OCCTAX] Correction de l'affichage des dates en utilisant l'UTC pour éviter les soucis de fuseaux horaires différents entre le serveur et le navigateur de l'utilisateur (#2005)
+* [Métadonnées] Correction de l'affichage des boutons de création d'un JDD et d'un CA seulement si l'utilisateur en a les droits (#1822)
 
-          @Component({
-            selector: 'pnx-introduction',
-            templateUrl: 'introduction.component.html'
-          })
+**💻 Développement**
 
-    * par :
+* Mise à jour d'Angular de la version 7 à 12 à répercuter dans les modules spécifiques (https://update.angular.io/?v=7.2-12.0)
+* Mise à jour des dépendances backend et frontend
+* Mise à jour de Flask version 1.1 à 2.2
+* Routage dynamique des modules, supprimant la nécessité de générer le fichier de routage du frontend (#2059)
+* Ajout de Celery pour les traitements asynchrones
+* Possibilité de configurer GeoNature avec un fichier python en définissant le nom du module dans la variable d’environnement ``GEONATURE_SETTINGS``
+* Utilisation de la pagination fournit par Flask-SQLAlchemy pour ``get_color_taxon()``
+* Suppression de la table ``gn_exports.t_config_export`` et du schéma ``gn_exports`` créés par GeoNature (si le module Export n'est pas déjà installé) (#1642)
+* Suppression des commandes GeoNature ``dev-front`` et ``frontend-build`` (#1800, #2088) :
+* Rétablissement de l’utilisation de ``nvm`` pour installer NodeJS (#1726)
+* Ajout de la commande ``geonature default-config``
+* Externalisation du ``ref_geo``, de son schéma de données et de ses modèles en tant que module indépendant dans un dépôt dédié (#228)
+* Intégration des régions par défaut lors de l'installation de GeoNature
+* Amélioration des composants frontend DynamicForm
+* Possibilité de filtrer le composant frontend "nomenclature" par règne ou Goup2INPN
+* Amélioration du style des tooltips (#1717)
+* Ajout de la commande ``geonature sensitivity refresh-rules-cache`` pour rafraichir la vue matérialisé ``gn_synthese.t_sensitivity_rules_cd_ref`` (à lancer à chaque modification de règles dans la table ``gn_synthese.t_sensitivity_rules``)
+* La configuration du module n’est pas écrasée lors d’une réinstallation de ce dernier
+* Suppression de la vue ``gn_synthese.v_synthese_decode_nomenclatures``
+* Génération automatique de la documentation quand on publie une nouvelle version
+* Ajout de la commande ``geonature ref_geo info`` qui compte le nombre de zonages par type
+* Suppression des dépendances "geog" et "numpy" en utilisation la fonction PostGIS ``ST_DWithin`` pour la recherche par cercle (#1972)
+* La variable d’environnement ``DATA_DIRECTORY`` permet de définir un dossier pour la mise en cache et réutilisation des ressources téléchargées lors de la création de la base de données
+* Chargement de la configuration des modules packagés directement lors de l’import du module ``config`` (avant même l’appel à ``create_app``) (#2055)
 
-        ::
+**📝 Merci aux contributeurs**
 
-          @Component({
-            selector: 'pnx-introduction',
-            styleUrls: ['introduction.component.scss'],
-            templateUrl: 'introduction.component.html'
-          })
-
-  * le changement sera pris en compte au prochain *build* du frontend de GeoNature.
+@bouttier / @antoinececchimnhn / @TheoLechemia / @jpm-cbna / @mvergez / @ophdlv / @Adrien-Pajot / @Gaetanbrl / @pierrejego / @jbrieuclp / @amandine-sahl / @joelclems / @metourneau / @gildeluermoz / @camillemonchicourt
 
 2.9.2 (2022-02-15)
 ------------------
@@ -100,7 +233,6 @@ CHANGELOG
     (venv)$ geonature db autoupgrade -x clear-diffusion-level=false
 
   Si vous redescendez à l’état antérieur de votre base de données, les niveaux de diffusion seront restaurés à partir du niveau de sensibilité ; vous pouvez éviter ceci avec ``-x restore-diffusion-level=false``.
-
 
 2.9.1 (2022-01-27)
 ------------------

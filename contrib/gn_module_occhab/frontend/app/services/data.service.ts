@@ -17,7 +17,7 @@ export class OccHabDataService {
 
   postStation(data) {
     return this._http.post(
-      `${AppConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/station`,
+      `${AppConfig.API_ENDPOINT}/occhab/station`,
       data
     );
   }
@@ -30,26 +30,26 @@ export class OccHabDataService {
       }
     }
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/stations`,
+      `${AppConfig.API_ENDPOINT}/occhab/stations`,
       { params: queryString }
     );
   }
 
   getOneStation(idStation) {
     return this._http.get<any>(
-      `${AppConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/station/${idStation}`
+      `${AppConfig.API_ENDPOINT}/occhab/station/${idStation}`
     );
   }
 
   deleteOneStation(idStation) {
     return this._http.delete<any>(
-      `${AppConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/station/${idStation}`
+      `${AppConfig.API_ENDPOINT}/occhab/station/${idStation}`
     );
   }
 
   exportStations(export_format, idsStation?: Array<number>) {
     const sub = this._http.post(
-      `${AppConfig.API_ENDPOINT}/${ModuleConfig.MODULE_URL}/export_stations/${export_format}`,
+      `${AppConfig.API_ENDPOINT}/occhab/export_stations/${export_format}`,
       { idsStation: idsStation },
       {
         observe: "events",

@@ -23,7 +23,7 @@ from geonature.core.users.register_post_actions import (
 )
 
 from pypnusershub.env import REGISTER_POST_ACTION_FCT
-from pypnusershub.db.models import User
+from pypnusershub.db.models import User, Application
 from pypnusershub.db.models_register import TempUser
 from pypnusershub.routes_register import bp as user_api
 from pypnusershub.routes import check_auth
@@ -227,7 +227,11 @@ def inscription():
 
     data = request.get_json()
     # ajout des valeurs non présentes dans le form
-    data["id_application"] = current_app.config["ID_APPLICATION_GEONATURE"]
+    data["id_application"] = (
+        Application.query.filter_by(code_application=current_app.config["CODE_APPLICATION"])
+        .one()
+        .id_application
+    )
     data["groupe"] = False
     data["confirmation_url"] = config["API_ENDPOINT"] + "/users/after_confirmation"
 
@@ -276,7 +280,14 @@ def confirmation():
     if token is None:
         return {"message": "Token introuvable"}, 404
 
-    data = {"token": token, "id_application": current_app.config["ID_APPLICATION_GEONATURE"]}
+    data = {
+        "token": token,
+        "id_application": Application.query.filter_by(
+            code_application=current_app.config["CODE_APPLICATION"]
+        )
+        .one()
+        .id_application,
+    }
 
     r = s.post(
         url=config["API_ENDPOINT"] + "/pypn/register/post_usershub/valid_temp_user",
@@ -293,7 +304,7 @@ def confirmation():
 def after_confirmation():
     data = dict(request.get_json())
     type_action = "valid_temp_user"
-    after_confirmation_fn = function_dict.get(type_action, None)
+    after_confirmation_fn = REGISTER_POST_ACTION_FCT.get(type_action, None)
     result = after_confirmation_fn(data)
     if result != 0 and result["msg"] != "ok":
         msg = f"Problem in GeoNature API after confirmation {type_action} : {result['msg']}"

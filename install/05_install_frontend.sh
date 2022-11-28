@@ -54,9 +54,6 @@ parseScriptOptions "${@}"
 
 write_log "Préparation du frontend..."
 
-# Create in frontend directory a symbolic link to backend static directory
-ln -sf "${BASE_DIR}/frontend/node_modules" "${BASE_DIR}/backend/static"
-
 # Create external assets directory
 cd "${BASE_DIR}/frontend"
 mkdir -p "src/external_assets"
@@ -79,13 +76,7 @@ if [[ -z "${CI}" || "${CI}" == false ]] ; then
 
   echo "Création de la configuration du frontend depuis 'config/geonature_config.toml'..."
   # Generate the app.config.ts
-  geonature generate_frontend_config
-  # Generate the tsconfig.json
-  geonature generate_frontend_tsconfig
-  # Generate the src/tsconfig.app.json
-  geonature generate_frontend_tsconfig_app
-  # Generate the modules routing file by templating
-  geonature generate_frontend_modules_route
+  geonature generate-frontend-config
 
   echo "Désactivation du venv..."
   deactivate
@@ -111,6 +102,10 @@ if [[ "${MODE}" == "dev" ]]; then
 else
   npm ci --omit=dev || exit 1
 fi
+cd "${BASE_DIR}/backend/static"
+npm ci || exit 1
+
+cd "${BASE_DIR}/frontend"
 
 
 if [[ "${MODE}" != "dev" ]]; then

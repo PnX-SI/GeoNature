@@ -2,26 +2,19 @@ import { Injectable } from "@angular/core";
 import { FormControl, Validators } from "@angular/forms";
 import { isEqual } from "lodash";
 import { BehaviorSubject, Observable, of } from "rxjs";
-import { distinctUntilChanged, tap, filter, map, switchMap } from "rxjs/operators";
-import { GeoJSON } from "leaflet";
+import { filter, map, switchMap } from "rxjs/operators";
 import { OcctaxFormService } from "../occtax-form.service";
 import { OcctaxFormParamService } from "../form-param/form-param.service";
 
 @Injectable()
 export class OcctaxFormMapService {
   private _geometry: FormControl;
-  public geojson: BehaviorSubject<GeoJSON> = new BehaviorSubject(null);
+  public geojson: BehaviorSubject<any> = new BehaviorSubject(null);
   public markerCoordinates;
   public leafletDrawGeoJson;
 
   get geometry() {
     return this._geometry;
-  }
-  set geometry(geojson: GeoJSON) {
-    if (!isEqual(geojson.geometry, this._geometry.value)) {
-      this._geometry.setValue(geojson.geometry);
-      this._geometry.markAsDirty();
-    }
   }
 
   constructor(
@@ -36,6 +29,27 @@ export class OcctaxFormMapService {
     this._geometry = new FormControl(null, Validators.required);
   }
 
+  setGeometryFromMap(geojson) {
+    this.manageGeometryChange(geojson.geometry);
+  }
+
+  setGeometryFromAPI(geojson) {
+    this.manageGeometryChange(geojson);
+    if (geojson.type == "Point") {
+      this.markerCoordinates = geojson.coordinates;
+    } else {
+      this.leafletDrawGeoJson = geojson;
+    }
+  }
+
+  manageGeometryChange(geojson) {
+    if (!isEqual(geojson, this._geometry.value)) {
+      this._geometry.setValue(geojson);
+      this._geometry.markAsDirty();
+      this.occtaxFormService.disabled = false;
+    }
+  }
+
   /**
    * Initialise les observables pour la mise en place des actions automatiques
    **/
@@ -48,31 +62,11 @@ export class OcctaxFormMapService {
           return editionMode
             ? this.releveGeojsonValue
             : of(this.occtaxParamS.get("geometry"));
-        })
+        }),
+        filter((geojson) => geojson != null)
       )
       .subscribe((geometry) => {
-        this._geometry.setValue(geometry)
-      });
-
-    //active la saisie si la geometry est valide
-
-    this._geometry.valueChanges
-      .pipe(
-        distinctUntilChanged(),
-        tap(() => {
-          this.markerCoordinates = null;
-          this.leafletDrawGeoJson = null;
-        }),
-        filter(() => this._geometry.valid),
-        map((geojson) => geojson.geometry ? geojson.geometry : geojson)
-      )
-      .subscribe((geojson) => {                
-        if (geojson.type == "Point") {
-          this.markerCoordinates = geojson.coordinates;          
-        } else {
-          this.leafletDrawGeoJson = geojson;
-        }
-        this.occtaxFormService.disabled = false;
+        this.setGeometryFromAPI(geometry);
       });
   }
 

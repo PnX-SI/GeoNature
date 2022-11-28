@@ -97,6 +97,12 @@ def get_datasets(info_role):
     :returns:  `list<TDatasets>`
     """
     params = MultiDict(request.args)
+    allowed_fields = {"modules"}
+    fields = params.pop("fields", None)
+    if fields:
+        fields = fields.split(",")
+        if set(fields) - allowed_fields:
+            raise BadRequest(f"Allowed fields: {','.join(allowed_fields)}")
     if "create" in params:
         query = TDatasets.query.filter_by_creatable(params.pop("create"))
     else:
@@ -198,7 +204,7 @@ def get_dataset(info_role, id_dataset):
 def upload_canvas():
     """Upload the canvas as a temporary image used while generating the pdf file"""
     data = request.data[22:]
-    filepath = str(BACKEND_DIR) + "/static/images/taxa.png"
+    filepath = str(Path(current_app.static_folder) / "images" / "taxa.png")
     fm.remove_file(filepath)
     if data:
         binary_data = a2b_base64(data)
@@ -364,9 +370,7 @@ def sensi_report():
             "identifiantOrigine": row.Synthese.entity_source_pk_value,
             "occStatutBiologique": row.occStatutBiologique,
             "identifiantPermanent": row.Synthese.unique_id_sinp,
-            "sensiAlerte": row.sensiAlerte,
             "sensible": "Oui" if row.cd_sensi != "0" else "Non",
-            "sensiDateAttribution": row.sensiDateAttribution,
             "sensiNiveau": f"{row.cd_nomenclature} = {row.label_fr}",
         }
         for row in data
@@ -398,9 +402,7 @@ def sensi_report():
             "identifiantOrigine",
             "occStatutBiologique",
             "identifiantPermanent",
-            "sensiAlerte",
             "sensible",
-            "sensiDateAttribution",
             "sensiNiveau",
         ],
         _header=header,
@@ -502,12 +504,7 @@ def get_export_pdf_dataset(id_dataset, info_role):
         dt.datetime.now().strftime("%d%m%Y_%H%M%S"),
     )
 
-    try:
-        f = open(str(BACKEND_DIR) + "/static/images/taxa.png")
-        f.close()
-        dataset["chart"] = True
-    except IOError:
-        dataset["chart"] = False
+    dataset["chart"] = (Path(current_app.static_folder) / "images" / "taxa.png").exists()
 
     # Appel de la methode pour generer un pdf
     pdf_file = fm.generate_pdf("dataset_template_pdf.html", dataset, filename)

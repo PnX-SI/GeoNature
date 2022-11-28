@@ -49,6 +49,7 @@ Contributeurs
 * Aboubakr Oudghiri (Ouidou)
 * Matthieu Etourneau (Geofit)
 * Florent Richard (Geofit)
+* Antoine Cecchi (UMS Patrinat)
 * Judith Panijel (UMS Patrinat)
 * Alain Laupin (UMS Patrinat)
 * Ludovic Le Pontois (Parc national des Pyrénées)
@@ -61,3 +62,5 @@ Contributeurs
 * Aurélie Jambon (Natural Solutuons)
 * Julien Graziani (Natural Solutions)
 * Ophélie Da Silva (Natural Solutions)
+* Gaëtan Bruel (JDev)
+* Pierre Jégo (JDev)

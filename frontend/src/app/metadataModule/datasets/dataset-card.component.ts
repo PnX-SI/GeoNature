@@ -25,7 +25,6 @@ export class DatasetCardComponent implements OnInit {
   public nbTaxons: number = null;
   public nbObservations: number = null;
   public bbox: any = null;
-  public imports: any = [];
   public taxs;
 
   @ViewChild(BaseChartDirective, { static: false }) public chart: BaseChartDirective;
@@ -112,10 +111,6 @@ export class DatasetCardComponent implements OnInit {
       .getObsBbox({ id_dataset: this.id_dataset })
       .subscribe((res: any) => (this.bbox = res));
 
-    this.metadataDataS
-      .getdatasetImports(this.id_dataset)
-      .subscribe((res: any) => (this.imports = res));
-
     this._dfs.getDataset(this.id_dataset).subscribe((dataset) => (this.dataset = dataset));
 
     this._dfs
@@ -162,20 +157,6 @@ export class DatasetCardComponent implements OnInit {
     });
   }
 
-  uuidReportImport(id_import) {
-    const imp = this.dataset.imports.find((imp) => imp.id_import == id_import);
-    this._dataService.downloadUuidReport(`UUID_Import-${id_import}_JDD-${imp.id_dataset}`, {
-      id_import: id_import,
-    });
-  }
-
-  sensiReportImport(id_import) {
-    const imp = this.dataset.imports.find((imp) => imp.id_import == id_import);
-    this._dataService.downloadSensiReport(`Sensibilite_Import-${id_import}_JDD-${imp.id_dataset}`, {
-      id_import: id_import,
-    });
-  }
-
   delete_Dataset(idDataset) {
     if (window.confirm('Etes-vous sûr de vouloir supprimer ce jeu de données ?')) {
       this._dfs.deleteDs(idDataset).subscribe((d) => {
@@ -183,6 +164,7 @@ export class DatasetCardComponent implements OnInit {
       });
     }
   }
+
   deleteDataset(dataset) {
     const message = `${this.translate.instant('Delete')} ${dataset.dataset_name} ?`;
     const dialogRef = this.dialog.open(ConfirmationDialog, {

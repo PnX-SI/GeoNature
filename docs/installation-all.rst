@@ -68,17 +68,12 @@ Vous pouvez vous connecter avec l'utilisateur intégré par défaut (admin/admin
 :Note:
 
     * GeoNature-atlas compatible avec GeoNature V2 est disponible sur https://github.com/PnX-SI/GeoNature-atlas
-    * Vous pouvez utiliser le schéma ``ref_geo`` de GeoNature pour votre territoire, les communes et les mailles, si vous les avez intégré dans ``ref_geo.l_areas`` au préalable.
+    * Vous pouvez utiliser le schéma ``ref_geo`` de GeoNature pour votre territoire, les communes et les mailles.
     
-:Note:
-
-    Une version expérimentale du calcul automatique de la sensibilité est disponible : https://github.com/PnX-SI/GeoNature/issues/284
-
 Si vous rencontrez une erreur, se reporter aux fichiers de logs :
 
 - Logs de l'installation de la base de données : ``/home/`whoami`/geonature/var/log/install_db.log``
 - Log général de l'installation de l'application : ``/home/`whoami`/install_all.log``
-
 
 Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre adresse, editez le fichier de configuration Apache (``/etc/apache2/sites-available/geonature.conf``) en modifiant l'alias :
 
@@ -92,54 +87,3 @@ Si vous souhaitez que GeoNature soit à la racine du serveur, ou à une autre ad
 :Note:
 
     Il est aussi important de configurer l'accès au serveur en HTTPS plutôt qu'en HTTP pour chiffrer le contenu des échanges entre le navigateur et le serveur (https://docs.ovh.com/fr/hosting/les-certificats-ssl-sur-les-hebergements-web/).
-
-
-Installation d'un module GeoNature
-----------------------------------
-
-L'installation de GeoNature n'est livrée qu'avec les schémas de base de données et les modules du coeur (NB : les modules Occtax, Occhab et Validation sont fournis par défaut). Pour ajouter un gn_module externe, il est nécessaire de l'installer :
-
-**1.** Téléchargez le module depuis son dépôt Github puis dézippez-le dans le repertoire utilisateur, au même niveau que le dossier ``geonature``.
-
-::
-
-    cd /home/`whoami`
-
-**2.** Renseignez l'éventuel fichier ``config/settings.ini`` du module.
-
-**3.** Installez le module. Rendez-vous dans le répertoire ``backend`` de GeoNature et activez le virtualenv pour rendre disponible les commandes GeoNature :
-
-::
-
-    source venv/bin/activate
-
-Lancez ensuite la commande ``geonature install_gn_module <mon_chemin_absolu_vers_le_module> <url_relative_du_module>``
-
-Le premier paramètre est l'emplacement absolu du module sur votre serveur et le deuxième est le chemin derrière lequel on accédera au module dans le navigateur.
-
-Exemple pour un module Import :
-
-::
-
-    geonature install_gn_module /home/`whoami`/gn_module_import import
-
-Le module sera disponible à l'adresse ``http://mon-geonature.fr/geonature/#/import``
-
-L'API du module sera disponible à l'adresse ``http://mon-geonature.fr/api/import``
-
-Cette commande exécute les actions suivantes :
-
-- Vérification de la conformité de la structure du module (présence des fichiers et dossiers obligatoires)
-- Intégration du blueprint du module dans l'API de GeoNature
-- Vérification de la conformité des paramètres utilisateurs
-- Génération du routing Angular pour le frontend
-
-**4.** Complétez l'éventuelle configuration du module (``config/conf_gn_module.toml``) à partir des paramètres présents dans ``config/conf_gn_module.toml.example`` dont vous pouvez surcoucher les valeurs par défaut. Puis relancez la mise à jour de la configuration (depuis le répertoire ``geonature/backend`` et une fois dans le venv (``source venv/bin/activate``) : ``geonature update_module_configuration nom_du_module``)
-
-**5.** Re-build du frontend :
-
-::
-
-    cd frontend
-    nvm use
-    npm run build

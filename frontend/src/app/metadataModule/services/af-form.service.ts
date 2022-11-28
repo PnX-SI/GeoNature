@@ -115,9 +115,9 @@ export class AcquisitionFrameworkFormService {
     //gère lactivation/désactivation de la zone de saisie du framework Parent
     this.form.get('is_parent').valueChanges.subscribe((value: boolean) => {
       if (value) {
-        this.form.get('acquisition_framework_parent_id').enable();
-      } else {
         this.form.get('acquisition_framework_parent_id').disable();
+      } else {
+        this.form.get('acquisition_framework_parent_id').enable();
       }
     });
   }

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import current_app
+from flask import current_app, g
 from marshmallow import pre_load, post_load, pre_dump, fields, ValidationError
 from marshmallow_sqlalchemy.convert import ModelConverter as BaseModelConverter
 from shapely.geometry import asShape
@@ -15,6 +15,7 @@ from .models import CorCountingOccurrence, TOccurrencesOccurrence, TRelevesOccur
 from geonature.core.gn_meta.schemas import DatasetSchema
 from geonature.core.gn_commons.schemas import MediaSchema
 from geonature.core.taxonomie.schemas import TaxrefSchema
+from geonature.utils.config import config
 from pypnusershub.db.models import User
 from pypn_habref_api.schemas import HabrefSchema
 
@@ -118,7 +119,7 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
     observers = MA.Nested(
         ObserverSchema,
         many=True,
-        allow_none=current_app.config.get("OCCTAX", {}).get("observers_txt", True),
+        allow_none=config.get("OCCTAX", {}).get("observers_txt", True),
     )
     digitiser = MA.Nested(ObserverSchema, dump_only=True)
     dataset = MA.Nested(DatasetSchema, dump_only=True)
@@ -126,6 +127,7 @@ class ReleveSchema(MA.SQLAlchemyAutoSchema):
 
     @pre_load
     def make_releve(self, data, **kwargs):
+        data["id_module"] = g.current_module.id_module
         if data.get("observers") is None:
             data["observers"] = []
         if data.get("id_releve_occtax") is None:

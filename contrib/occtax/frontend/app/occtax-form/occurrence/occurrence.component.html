@@ -126,25 +126,27 @@
         {{'Taxon.Errors.DeterminerRequiredError' |translate}}
       </small>
     </div>
-    <div 
-      *ngIf="occtaxConfig.form_fields.determination_method" 
-      class="col-lg-4 col-sm-6"
-    >
-      <pnx-nomenclature 
-        label="{{ 'Taxon.DeterminationMethod' | translate }}"
-        [parentFormControl]="occurrenceForm.get('id_nomenclature_determination_method')"
-        codeNomenclatureType="METH_DETERMIN" 
-        [regne]="taxref?.regne"
-        [group2Inpn]="taxref?.group2_inpn">
-      </pnx-nomenclature>
-      <small
-        *ngIf="occurrenceForm.get('id_nomenclature_determination_method').hasError('required') && occurrenceForm.get('id_nomenclature_determination_method').touched"
-        class="error" 
-        style="color:red"
+      <div 
+        *ngIf="occtaxConfig.form_fields.determination_method" 
+        class="col-lg-8 col-sm-6"
       >
-        {{'Taxon.Errors.DeterminationMethodRequiredError' |translate}}
-      </small>
-    </div>
+        <pnx-nomenclature 
+          label="{{ 'Taxon.DeterminationMethod' | translate }}"
+          [parentFormControl]="occurrenceForm.get('id_nomenclature_determination_method')"
+          codeNomenclatureType="METH_DETERMIN" 
+          [regne]="taxref?.regne"
+          [group2Inpn]="taxref?.group2_inpn">
+        </pnx-nomenclature>
+        <small
+          *ngIf="occurrenceForm.get('id_nomenclature_determination_method').hasError('required') && occurrenceForm.get('id_nomenclature_determination_method').touched"
+          class="error" 
+          style="color:red"
+        >
+          {{'Taxon.Errors.DeterminationMethodRequiredError' |translate}}
+        </small>
+      </div>
+  </div>
+  <div class="row">
     <div 
       *ngIf="occtaxConfig.form_fields.observation_status" 
       class="col-lg-4 col-sm-6"
@@ -233,8 +235,6 @@
       </pnx-nomenclature>
     </div>
   </div>
-
-
   <div class="row">
     <div 
       *ngIf="occtaxConfig.form_fields.exist_proof" 
