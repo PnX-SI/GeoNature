@@ -54,6 +54,7 @@ export class SyntheseFormService {
       taxonomy_group2_inpn: null,
       taxon_rank: null,
       with_areas: null,
+      limit: null,
     });
 
     this.searchForm.setValidators([this.periodValidator()]);
