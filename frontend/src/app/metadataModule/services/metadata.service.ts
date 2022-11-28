@@ -104,15 +104,22 @@ export class MetadataService {
   }
   //recuperation cadres d'acquisition
   getMetadata(params = {}) {
-    params['datasets'] = 1;
-    params['creator'] = 1;
-    params['actors'] = 1;
     this.isLoading = true;
     this._acquisitionFrameworks.next([]);
 
+    let selectors = {
+      datasets: 1,
+      creator: 1,
+      actors: 1,
+    };
+
+    delete params['datasets'];
+    delete params['creator'];
+    delete params['actors'];
+
     //forkJoin pour lancer les 2 requetes simultanément
     forkJoin({
-      afs: this.dataFormService.getAcquisitionFrameworksList(params),
+      afs: this.dataFormService.getAcquisitionFrameworksList(selectors, params),
       datasetNbObs: this._syntheseDataService.getObsCountByColumn('id_dataset'),
     })
       .pipe(
