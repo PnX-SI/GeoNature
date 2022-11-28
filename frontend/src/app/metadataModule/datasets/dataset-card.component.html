@@ -295,7 +295,7 @@
 
     <div class="col-4">
       <!-- Bloc boutons -->
-      <div *ngIf="dataset.cruved.E || moduleImportIsAuthorized" class="card">
+      <div *ngIf="dataset.cruved.E" class="card">
         <div class="card-body">
           <button
             *ngIf="dataset.cruved.E"
@@ -350,23 +350,23 @@
               <mat-icon> format_list_numbered </mat-icon>
             </button>
           </span>
-
+          <div *ngFor="let module of dataset?.modules">
           <span
-            *ngIf="moduleImportIsAuthorized"
+            *ngIf="module.input_label"
             [matTooltip]="
-              dataset.active ? 'Importer dans ce jeu de données' : 'Le jeu de données est inactif'
+              dataset.active ? module.input_label : 'Le jeu de données est inactif'
             "
-          >
-            <button
+          ><button
               [disabled]="!dataset.active"
               mat-raised-button
               color="primary"
-              (click)="importDs(dataset.id_dataset)"
+              (click)="useModuleWithDs(module)"
             >
-              Importer des données
+              {{module.input_label}}
               <mat-icon> publish </mat-icon>
             </button>
           </span>
+          </div>
         </div>
       </div>
       <!-- Fin bloc boutons -->

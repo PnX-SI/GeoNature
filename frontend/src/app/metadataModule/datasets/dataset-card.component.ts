@@ -74,8 +74,6 @@ export class DatasetCardComponent implements OnInit {
 
   public spinner = true;
 
-  public moduleImportIsAuthorized: boolean = false;
-
   constructor(
     private _route: ActivatedRoute,
     private _dfs: DataFormService,
@@ -127,13 +125,6 @@ export class DatasetCardComponent implements OnInit {
           this.chart && this.chart.chart.update();
         }, 1000);
       });
-
-    //vérification que l'utilisateur est autorisé à utiliser le module d'import
-    this.moduleService.getModules().forEach((mod) => {
-      if (mod.module_code == 'IMPORT' && mod.cruved['C'] > 0) {
-        return (this.moduleImportIsAuthorized = true);
-      }
-    });
   }
 
   uuidReport(ds_id) {
@@ -185,14 +176,8 @@ export class DatasetCardComponent implements OnInit {
     });
   }
 
-  importDs(idDataset) {
-    let navigationExtras: NavigationExtras = {
-      queryParams: {
-        datasetId: idDataset,
-        resetStepper: true,
-      },
-    };
-    this._router.navigate(['/import/process/step/1'], navigationExtras);
+  useModuleWithDs(module) {
+    this._router.navigateByUrl(module?.input_url);
   }
 
   syntheseDs(idDataset) {
