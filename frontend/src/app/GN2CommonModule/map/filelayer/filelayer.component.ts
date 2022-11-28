@@ -89,14 +89,9 @@ export class LeafletFileLayerComponent implements OnInit, AfterViewInit, OnChang
             let propertiesContent = '';
             // loop on properties dict to build the popup
             // eslint-disable-next-line guard-for-in
-            for (let prop in currentFeature.properties.observations) {
+            for (let prop in currentFeature.properties) {
               propertiesContent +=
-                '<b>' +
-                prop +
-                '</b> : ' +
-                currentFeature.properties.observations[prop] +
-                ' ' +
-                '<br>';
+                '<b>' + prop + '</b> : ' + currentFeature.properties[prop] + ' ' + '<br>';
             }
 
             //on right click display popup
