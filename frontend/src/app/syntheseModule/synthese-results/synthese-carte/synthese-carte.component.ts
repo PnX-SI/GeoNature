@@ -21,6 +21,8 @@ import { LangChangeEvent, TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 
+export type EventToggle = 'grid' | 'point';
+
 @Component({
   selector: 'pnx-synthese-carte',
   templateUrl: 'synthese-carte.component.html',
@@ -63,7 +65,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
   };
 
   @Input() inputSyntheseData: GeoJSON;
-  @Output() onAreasToggle = new EventEmitter<any>();
+  @Output() onAreasToggle = new EventEmitter<EventToggle>();
 
   constructor(
     @Inject(APP_CONFIG_TOKEN) private config,
@@ -90,7 +92,6 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     this.formService.searchForm.patchValue({
       with_areas: this.areasEnable,
     });
-    this.formService.searchForm.markAsDirty();
   }
 
   ngOnDestroy() {
@@ -160,8 +161,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
           this.formService.searchForm.patchValue({
             with_areas: switchBtn.checked,
           });
-          this.formService.searchForm.markAsDirty();
-          this.onAreasToggle.emit(this.formService.formatParams());
+          this.onAreasToggle.emit(switchBtn.checked ? 'grid' : 'point');
 
           // Show areas legend if areas toggle button is enable
           if (this.areasEnable) {
