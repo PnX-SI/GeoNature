@@ -129,9 +129,9 @@ export class SyntheseComponent implements OnInit {
   private extractSyntheseIds(geojson) {
     let ids = [];
     for (let feature of geojson.features) {
-      for (let obs of Object.values(feature.properties.observations)) {
+      feature.properties.observations.forEach((obs) => {
         ids.push(obs['id']);
-      }
+      });
     }
     return ids;
   }
