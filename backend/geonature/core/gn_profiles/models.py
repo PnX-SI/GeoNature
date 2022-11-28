@@ -13,7 +13,8 @@ from pypnnomenclature.models import TNomenclatures
 
 from geonature.utils.env import DB, db
 from geonature.core.gn_synthese.models import Synthese
-from geonature.core.taxonomie.models import Taxref
+
+from apptax.taxonomie.models import Taxref
 
 
 @serializable

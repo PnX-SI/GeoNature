@@ -24,7 +24,6 @@ import sqlalchemy as sa
 from utils_flask_sqla.generic import serializeQuery, GenericTable
 from utils_flask_sqla.response import to_csv_resp, to_json_resp, json_resp
 from utils_flask_sqla_geo.generic import GenericTableGeo
-from werkzeug.exceptions import BadRequest
 
 from geonature.utils import filemanager
 from geonature.utils.env import DB
