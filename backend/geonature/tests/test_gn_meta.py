@@ -231,7 +231,7 @@ class TestGNMeta:
         assert response.status_code == 200
 
     def test_get_post_acquisition_frameworks(self, users, first_area_commune):
-        # SIMPLE TEST WITH GET REQUEST
+        # SIMPLE TEST WITH POST REQUEST
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),
             json={},
@@ -241,7 +241,7 @@ class TestGNMeta:
         set_logged_user_cookie(self.client, users["admin_user"])
         # POST EMPTY REQUEST FAIL WITHOUT ANY PARAMS
         response = self.client.post(url_for("gn_meta.get_acquisition_frameworks"))
-        assert response.status_code == 400
+        assert response.status_code == BadRequest.code
         # POST REQUEST WITHOUT JSON AND WITHOUT QUERY STRING
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),

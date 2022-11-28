@@ -334,6 +334,18 @@ class TDatasetsQuery(BaseQuery):
             scope = create_scope
         return query.filter_by_scope(scope)
 
+    def filter_by_area(self, areas):
+        from geonature.core.gn_synthese.models import Synthese
+
+        areaFilter = []
+        for type_area, id_area in areas:
+            areaFilter.append(sa.and_(LAreas.id_type == type_area, LAreas.id_area == id_area))
+        return self.filter(
+            TAcquisitionFramework.t_datasets.any(
+                TDatasets.synthese_records.any(Synthese.areas.any(sa.or_(*areaFilter)))
+            )
+        )
+
 
 @serializable(exclude=["user_actors", "organism_actors"])
 class TDatasets(CruvedMixin, FilterMixin, db.Model):
@@ -559,6 +571,9 @@ class TAcquisitionFrameworkQuery(BaseQuery):
         return self.filter_by_scope(self._get_read_scope())
 
     def filter_by_areas(self, areas):
+        """
+        Filter meta by areas
+        """
         from geonature.core.gn_synthese.models import Synthese
 
         areaFilter = []
@@ -578,7 +593,7 @@ class TAcquisitionFrameworkQuery(BaseQuery):
             params = {f"datasets.{key}": value for key, value in params.items()}
         f = TAcquisitionFramework.compute_filter(**params)
         qs = self.filter(f)
-        if areas and areas is not None:
+        if areas:
             qs = qs.filter_by_areas(areas)
         return qs
 
