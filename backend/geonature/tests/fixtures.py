@@ -49,6 +49,7 @@ __all__ = [
     "filters",
     "medium",
     "module",
+    "synthese_same_geom",
     "isolate_synthese",
 ]
 
@@ -298,6 +299,27 @@ def synthese_data(app, users, datasets, source):
             )
             db.session.add(s)
             data.append(s)
+    return data
+
+
+@pytest.fixture(scope="function")
+def synthese_same_geom(users, datasets, source):
+    point = Point(5.5, 45.5)
+    geom_4326 = from_shape(point, srid=4326)
+    taxon = Taxref.query.filter_by(cd_nom=212).one()
+    data = []
+    with db.session.begin_nested():
+        for i in range(2):
+            s = create_synthese(
+                geom_4326,
+                taxon,
+                users["self_user"],
+                datasets["own_dataset"],
+                source,
+                func.uuid_generate_v4(),
+            )
+            data.append(s)
+            db.session.add(s)
     return data
 
 

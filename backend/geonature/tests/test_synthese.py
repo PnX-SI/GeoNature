@@ -241,6 +241,18 @@ class TestSynthese:
                 assert obs["lb_nom"] in [synt.nom_cite for synt in synthese_data]
         assert response.status_code == 200
 
+    def test_get_synthese_data_aggregate(self, users, synthese_same_geom):
+        # Test geometry aggregation
+        set_logged_user_cookie(self.client, users["admin_user"])
+        response = self.client.get(
+            url_for("gn_synthese.get_observations_for_web"),
+            query_string={"cd_nom": synthese_same_geom[0].cd_nom},
+        )
+        data = response.get_json()
+        features = data["features"]
+        assert len(features) == 1
+        assert len(features[0]["properties"]["observations"]) == 2
+
     def test_filter_cor_observers(self, users, synthese_data):
         """
         Test avec un cruved R2 qui join sur cor_synthese_observers
