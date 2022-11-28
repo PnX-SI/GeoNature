@@ -2,6 +2,38 @@
 CHANGELOG
 =========
 
+2.11.0 (unreleased)
+-------------------
+
+**🚀 Nouveautés**
+
+* Modules GeoNature :
+
+  * Suppression du support des modules non packagés (#2058).
+  * La commande ``install-packaged-gn-module`` devient ``install-gn-module``.
+  * Suppression des paramètres ``ID_MODULE``, ``FRONTEND_PATH`` et ``MODULE_URL`` de la configuration frontend des modules, voir #2165 pour adapter vos modules.
+  * Recherche de la configuration des modules également dans le dossier ``config`` de GeoNature, sous le nom ``{module_code}_config.toml`` (le code du module étant en minuscule).
+  * La commande ``update-module-configuration`` est renommé ``generate-frontend-module-config`` par homogénéité avec la commande ``generate-frontend-config``.
+  * La commande ``update-configuration`` génère la configuration frontend de tous les modules actifs en plus de la configuration GeoNature (puis lancer le build du frontend).
+  * Les liens symboliques dans le dossier ``external_modules`` sont supprimés au profit de liens symboliques dans le dossier ``frontend/external_modules`` pointant directement vers le dossier ``frontend`` des modules considérés. Ces liens sont créés par la commande ``install-gn-module``. Le processus de migration convertie automatiquement vos liens symboliques existants.
+  * Ajout de la commande ``upgrade-modules`` permettant d’insérer le module dans la table ``t_modules`` et de monter sa branche Alembic afin de créer son schéma de base de données. Il n’est pas nécessaire de lancer cette commande manuellement pour les modules installés avec la commande ``install-gn-module`` sauf lorsque cette dernière est appelée avec le paramètre ``--upgrade-db=false``.
+  * Les assets frontend ne sont plus collecté dans un dossier portant le nom du module. Le mainteneur du module doit donc créer cette arborescence lui même.
+
+* Les fichiers ``tsconfig.json`` et ``tsconfig.app.json`` n’ont plus besoin d’être générés.
+* Ajout d’une commande permettant l’installation du référentiel de sensibilité à partir d’un fichier.
+* Support de la configuration par variable d’environnement préfixée par ``GEONATURE_`` (*e.g* ``GEONATURE_SQLALCHEMY_DATABASE_URI``). Les paramètres définis ainsi peuvent être exclus de la configuration TOML, y compris les paramètres obligatoires.
+
+**🐛 Corrections**
+
+* Installation d’une dépendance Debian manquante pour Cypress (#2125)
+* Les fichiers de service systemd ont été corrigé pour fonctionner sur une machine sans PostgreSQL (BDD sur un autre hôte)
+
+**💻 Développement**
+
+* Nettoyage du frontend : dépendances, configuration Angular.
+* Homogénéisation de la configuration entre ``current_app.config`` et ``geonature.utils.config.config``.
+
+
 2.10.4 (unreleased)
 -------------------
 
