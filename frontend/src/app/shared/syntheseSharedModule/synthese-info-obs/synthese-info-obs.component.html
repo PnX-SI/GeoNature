@@ -389,16 +389,54 @@
       </tr>
     </table>
 
-    <h5 class="underlined underlined-sm main-color">Réglementation</h5>
-    <table class="font-xs table table-striped table-sm">
-      <tr *ngFor="let arrete of selectedObsTaxonDetail?.statuts_protection">
-        <td>
-          <a [href]="arrete.url"> {{ arrete.intitule }} </a>
-        </td>
-      </tr>
-    </table>
-  </mat-tab>
 
+    <h5 class="underlined underlined-sm main-color">Statuts</h5>
+    <table
+      class="font-xs table table-sm"
+      *ngIf="selectedObsTaxonDetail?.status; else noStatus"
+    >
+      <ng-container *ngFor="let status of selectedObsTaxonDetail?.status | keyvalue">
+        <tr class="table-primary">
+          <th> {{ status.value.display }} </th>
+        </tr>
+        <tr *ngFor="let text of status.value.text | keyvalue">
+          <td>
+            <ul class="list-unstyled mt-2">
+              <li *ngIf="text.value.full_citation" class="d-flex w-100 justify-content-between">
+                <span class="flex-shrink-1 w-75">
+                  <strong [innerHtml]="text.value.full_citation | safeHTML"></strong>
+                  <br />
+                  ({{ text.value.lb_adm_tr }} - {{ text.value.cd_sig }})
+                </span>
+                <a
+                  *ngIf="text.value.doc_url"
+                  class="btn align-self-start"
+                  href="{{ text.value.doc_url }}"
+                  mat-stroked-button
+                  color="primary"
+                  target="_blank"
+                >
+                  Voir / Télécharger
+                  <mat-icon aria-hidden="true">launch</mat-icon>
+                </a>
+              </li>
+              <li>
+                <span *ngFor="let value of text.value.values | keyvalue">
+                  <strong *ngIf="value.value.code != 'true'">
+                    {{ value.value.code_statut }}
+                  </strong>
+                  {{ value.value.label_statut }}
+                  {{ value.value.rq_statut }}
+                </span>
+              </li>
+            </ul>
+          </td>
+        </tr>
+      </ng-container>
+
+    </table>
+    <ng-template #noStatus><p >Aucun</p></ng-template>
+  </mat-tab>
   <ng-container *ngIf="selectedObs?.medias?.length">
     <mat-tab label="Médias">
       <h5 class="underlined underlined-sm main-color">Médias</h5>

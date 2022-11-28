@@ -145,8 +145,14 @@ export class DataFormService {
     });
   }
 
-  getTaxonInfo(cd_nom: number) {
-    return this._http.get<Taxon>(`${AppConfig.API_TAXHUB}/taxref/${cd_nom}`);
+  getTaxonInfo(cd_nom: number, areasStatus?: Array<string>) {
+    let query_string = new HttpParams();
+    if (areasStatus) {
+      query_string = query_string.append('areas_status', areasStatus.join(','));
+    }
+    return this._http.get<Taxon>(`${AppConfig.API_TAXHUB}/taxref/${cd_nom}`, {
+      params: query_string
+    });
   }
 
   getTaxonAttributsAndMedia(cd_nom: number, id_attributs?: Array<number>) {
