@@ -80,7 +80,9 @@ def generate_frontend_config(input_file, output_file):
     Génération des fichiers de configurations pour javascript
     """
     create_frontend_config(input_file, output_file)
-    click.echo("Configuration générée. Pensez à rebuilder le frontend pour la production.", err=True)
+    click.echo(
+        "Configuration générée. Pensez à rebuilder le frontend pour la production.", err=True
+    )
 
 
 @main.command()
@@ -100,7 +102,9 @@ def generate_frontend_module_config(module_code, output_file):
 
     """
     create_frontend_module_config(module_code, output_file)
-    click.echo("Configuration générée. Pensez à rebuilder le frontend pour la production.", err=True)
+    click.echo(
+        "Configuration générée. Pensez à rebuilder le frontend pour la production.", err=True
+    )
 
 
 @main.command()
