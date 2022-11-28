@@ -9,6 +9,8 @@ CHANGELOG
 
 * Mise à jour du RefGeo en version 1.2.1 afin de corriger une régression des performances dans la synthèse
 * Correction de la génération du rapport de sensibilité
+* Correction d’un filtre de permissions sur les jeux de données
+* Correction des boutons d’ajout de données dans les jeux de données
 
 
 2.10.3 (2022-11-15)
