@@ -24,7 +24,7 @@ export class NavHomeComponent implements OnInit, OnDestroy {
   public currentDocUrl: string;
   public locale: string;
   public moduleUrl: string;
-  public notificationNumber: any;
+  public notificationNumber: number;
 
   @ViewChild('sidenav', { static: true }) public sidenav: MatSidenav;
 
@@ -96,10 +96,18 @@ export class NavHomeComponent implements OnInit, OnDestroy {
         this.currentDocUrl = module.module_doc_url;
       }
     });
+    if (this.appConfig.NOTIFICATION.ENABLED == true) {
+      // Update notification count to display in badge
+      this.updateNotificationCount();
+    }
   }
 
   closeSideBar() {
     this.sideNavService.sidenav.toggle();
+    if (this.appConfig.NOTIFICATION.ENABLED == true) {
+      // Update notification count to display in badge
+      this.updateNotificationCount();
+    }
   }
 
   private updateNotificationCount() {
