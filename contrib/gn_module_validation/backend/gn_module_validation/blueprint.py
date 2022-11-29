@@ -290,7 +290,7 @@ def notify_validation_state_change(synthese, validation):
         title="Changement de statut de validation",
         url=(
             current_app.config["URL_APPLICATION"]
-            + "/#/validation/occurrence/"
+            + "/#/synthese/occurrence/"
             + str(synthese.id_synthese),
         ),
         context={
