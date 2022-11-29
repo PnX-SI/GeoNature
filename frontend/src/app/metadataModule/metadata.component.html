@@ -197,7 +197,7 @@
                 </thead>
                 <tbody>
                   <tr
-                    *ngFor="let dataset of af.datasetsTemp; let last = last"
+                    *ngFor="let dataset of af.t_datasets; let last = last"
                     [attr.data-qa]='"pnx-metadata-dataset-name-"+dataset.dataset_name'
                     pnx-metadata-dataset
                     [dataset]="dataset"

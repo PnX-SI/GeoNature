@@ -383,6 +383,45 @@ class TestGNMeta:
         response = self.client.get(get_af_url)
         assert response.status_code == 200
 
+    def test_get_acquisition_frameworks_search_name(self, users, acquisition_frameworks, datasets):
+        set_logged_user_cookie(self.client, users["admin_user"])
+        af = acquisition_frameworks["orphan_af"]
+        af_name = af.acquisition_framework_name
+        get_af_url = url_for("gn_meta.get_acquisition_frameworks")
+        query_string = {"search": af_name}
+
+        response = self.client.get(get_af_url, query_string=query_string)
+
+        data = response.json
+        assert af_name in [af["acquisition_framework_name"] for af in data]
+
+    def test_get_acquisition_frameworks_search_datasetname(
+        self, users, acquisition_frameworks, datasets
+    ):
+        set_logged_user_cookie(self.client, users["admin_user"])
+        af = acquisition_frameworks["orphan_af"]
+        ds_name = datasets["own_dataset"].dataset_name
+        get_af_url = url_for("gn_meta.get_acquisition_frameworks")
+        query_string = {"search": ds_name}
+
+        response = self.client.get(get_af_url, query_string=query_string)
+
+        data = response.json
+        assert af.acquisition_framework_name in [af["acquisition_framework_name"] for af in data]
+
+    def test_get_acquisition_frameworks_search_datasetname_wrong(
+        self, users, acquisition_frameworks, datasets
+    ):
+        set_logged_user_cookie(self.client, users["admin_user"])
+        get_af_url = url_for("gn_meta.get_acquisition_frameworks")
+        # To be sure it returns nothing
+        query_string = {"search": uuid.uuid4()}
+
+        response = self.client.get(get_af_url, query_string=query_string)
+
+        data = response.json
+        assert len(data) == 0
+
     def test_get_export_pdf_acquisition_frameworks(self, users, acquisition_frameworks):
         af_id = acquisition_frameworks["own_af"].id_acquisition_framework
 

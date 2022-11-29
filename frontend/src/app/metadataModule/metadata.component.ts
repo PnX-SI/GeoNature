@@ -64,7 +64,7 @@ export class MetadataComponent implements OnInit {
 
     //Combinaison des observables pour afficher les éléments filtrés en fonction de l'état du paginator
     this.acquisitionFrameworks = combineLatest(
-      this.metadataService.filteredAcquisitionFrameworks.pipe(distinctUntilChanged()),
+      this.metadataService.acquisitionFrameworks.pipe(distinctUntilChanged()),
       this.metadataService.pageIndex.asObservable().pipe(distinctUntilChanged()),
       this.metadataService.pageSize.asObservable().pipe(distinctUntilChanged())
     ).pipe(

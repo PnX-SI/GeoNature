@@ -509,6 +509,11 @@ class TDatasets(FilterMixin, db.Model):
         name = kwargs.get("name")
         if name is not None:
             f &= TDatasets.dataset_name.ilike(f"%{name}%")
+
+        search = kwargs.get("search")
+        if search is not None:
+            # Check if joinload
+            f &= TDatasets.dataset_name.ilike(f"%{search}%")
         return f
 
 
@@ -794,6 +799,15 @@ class TAcquisitionFramework(FilterMixin, db.Model):
         name = kwargs.get("name")
         if name is not None:
             f &= TAcquisitionFramework.acquisition_framework_name.ilike(f"%{name}%")
+
+        search = kwargs.get("search")
+        if search is not None:
+            # Check if joinload
+            f &= or_(
+                TAcquisitionFramework.acquisition_framework_name.ilike(f"%{search}%"),
+                TAcquisitionFramework.t_datasets.any(TDatasets.compute_filter(search=search)),
+            )
+
         return f
 
 
