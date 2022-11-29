@@ -291,17 +291,14 @@ export class MapListService {
         if (customCallBack) {
           newFeature = customCallBack(feature);
         }
-        this.tableData.push(newFeature.properties.observations);
+        this.tableData.push(newFeature.properties);
       });
     } else {
       data.features.forEach((feature) => {
-        for (let obs of Object.values(feature.properties.observations)) {
-          obs['selected'] = false;
-          this.tableData.push(obs);
-        }
+        this.tableData.push(feature.properties);
       });
     }
-    //this.tableData = [...this.tableData];
+    this.tableData = [...this.tableData];
   }
 }
 

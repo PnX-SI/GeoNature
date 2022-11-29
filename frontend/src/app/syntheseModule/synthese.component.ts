@@ -63,7 +63,8 @@ export class SyntheseComponent implements OnInit {
 
         // Store geojson
         this._mapListService.geojsonData = this.simplifyGeoJson(cloneDeep(data));
-        this._mapListService.loadTableData(data);
+        this.formatDataForTable(data);
+
         this._mapListService.idName = 'id';
         this.searchService.dataLoaded = true;
       },
@@ -86,6 +87,18 @@ export class SyntheseComponent implements OnInit {
     this.firstLoad = false;
   }
 
+  /** table data expect an array obs observation
+   * the geojson get from API is a list of features whith an observation list
+   */
+  formatDataForTable(geojson) {
+    this._mapListService.tableData = [];
+    geojson.features.forEach((feature) => {
+      feature.properties.observations.forEach((obs) => {
+        this._mapListService.tableData.push(obs);
+      });
+    });
+  }
+
   fetchOrRenderData(event: EventToggle) {
     // if the form has change reload data
     // else load data from cache if already loaded
@@ -94,12 +107,10 @@ export class SyntheseComponent implements OnInit {
       this.loadAndStoreData(this._fs.formatParams());
     } else {
       if (event == 'point') {
-        console.log('passe point');
         if (this._syntheseStore.pointData) {
           this._mapListService.geojsonData = this.simplifyGeoJson(
             cloneDeep(this._syntheseStore.pointData)
           );
-          this._mapListService.loadTableData(this._syntheseStore.pointData);
         } else {
           this.loadAndStoreData(this._fs.formatParams());
         }
@@ -108,7 +119,6 @@ export class SyntheseComponent implements OnInit {
           this._mapListService.geojsonData = this.simplifyGeoJson(
             cloneDeep(this._syntheseStore.gridData)
           );
-          this._mapListService.loadTableData(this._syntheseStore.gridData);
         } else {
           this.loadAndStoreData(this._fs.formatParams());
         }
