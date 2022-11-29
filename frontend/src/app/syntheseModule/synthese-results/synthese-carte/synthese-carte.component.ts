@@ -279,7 +279,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
             geojson.geometry.type === 'Polygon' ? 1 : 2
           );
           if (this.areasEnable) {
-            this.setAreasStyle(new L.Polygon(latLng), geojson.properties.observations.id);
+            this.setAreasStyleAndEvent(new L.Polygon(latLng), geojson.properties.observations.id);
           } else {
             this.setStyleEventAndAdd(
               new L.Polygon(latLng).bindTooltip(`${countObs} observation(s)`),
@@ -317,7 +317,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
-  private setAreasStyle(layer, ids) {
+  private setAreasStyleAndEvent(layer, ids) {
     this.originAreasStyle['fillColor'] = this.getColor(ids.length);
     layer.setStyle(this.originAreasStyle);
     this.eventOnEachFeature(ids, layer);
