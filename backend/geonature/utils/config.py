@@ -4,22 +4,38 @@ from urllib.parse import urlsplit
 
 from flask import Config
 from flask.helpers import get_root_path
+from marshmallow import EXCLUDE
+from marshmallow.exceptions import ValidationError
 
 from geonature.utils.config_schema import (
     GnGeneralSchemaConf,
     GnPySchemaConf,
 )
-from geonature.utils.utilstoml import load_and_validate_toml
+from geonature.utils.utilstoml import load_toml
 from geonature.utils.env import CONFIG_FILE
+from geonature.utils.errors import ConfigError
 
 
+__all__ = ["config", "config_frontend"]
+
+
+# Load config from GEONATURE_* env vars and from GEONATURE_SETTINGS python module (if any)
 config_programmatic = Config(get_root_path("geonature"))
 config_programmatic.from_prefixed_env(prefix="GEONATURE")
 if "GEONATURE_SETTINGS" in os.environ:
     config_programmatic.from_object(os.environ["GEONATURE_SETTINGS"])
-partial = config_programmatic.keys()
-config_backend = load_and_validate_toml(CONFIG_FILE, GnPySchemaConf, partial=partial)
-config_frontend = load_and_validate_toml(CONFIG_FILE, GnGeneralSchemaConf, partial=partial)
+
+# Load toml file and override with env & py config
+config_toml = load_toml(CONFIG_FILE) if CONFIG_FILE else {}
+config_toml.update(config_programmatic)
+
+# Validate config
+try:
+    config_backend = GnPySchemaConf().load(config_toml, unknown=EXCLUDE)
+    config_frontend = GnGeneralSchemaConf().load(config_toml, unknown=EXCLUDE)
+except ValidationError as e:
+    raise ConfigError(CONFIG_FILE, e.messages)
+
 config_default = {
     # disable cache for downloaded files (PDF file stat for ex)
     # TODO: use Flask.get_send_file_max_age(filename) to return 0 only for generated PDF files
