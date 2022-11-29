@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { forkJoin, Observable, BehaviorSubject, combineLatest, of } from 'rxjs';
+import { forkJoin, Observable, BehaviorSubject, combineLatest } from 'rxjs';
 import {
   tap,
   map,
@@ -9,8 +9,10 @@ import {
   distinctUntilChanged,
   debounceTime,
   filter,
-  switchMap,
+  pairwise,
 } from 'rxjs/operators';
+import { forkJoin, Observable, BehaviorSubject } from 'rxjs';
+import { tap, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 
 import { AppConfig } from '@geonature_config/app.config';
@@ -60,47 +62,43 @@ export class MetadataService {
 
     // rapid search event
     //combinaison de la zone de recherche et du chargement des données
-    this.filteredAcquisitionFrameworks = combineLatest(
-      this.rapidSearchControl.valueChanges.pipe(
-        startWith(''),
-        debounceTime(200),
-        distinctUntilChanged(),
-        map((term) => this._removeAccentAndLower(term))
-      ),
-      this._acquisitionFrameworks.asObservable()
-    ).pipe(
-      //hack de reprise de la valeur du rapidSearch si changement de page et retour ici
-      map(([term, afs]: [string, any[]]): [string, any[]] => {
-        if (this.rapidSearchControl.value !== null && term !== this.rapidSearchControl.value) {
-          return [this._removeAccentAndLower(this.rapidSearchControl.value), afs];
-        }
-        return [term, afs];
-      }),
-      map(([term, afs]: [string, any[]]): [string, any[]] => {
-        //restaure les datasets avant les filtres
-        afs.map((af) => (af['datasetsTemp'] = af['t_datasets']));
-        return [term, afs];
-      }),
-      //filtre des éléments selon le texte, retourne les AF filtrés
-      map(([term, afs]: [string, any[]]): any[] =>
-        term === '' ? afs : this._filterAcquisitionFrameworks(term)
-      )
-    );
-
-    //retour à la premiere page du tableau pour voir les résultats du filtre rapide
+    this.filteredAcquisitionFrameworks = this._acquisitionFrameworks.asObservable();
     this.rapidSearchControl.valueChanges
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe((term) => {
+        if (term !== null) {
+          this.search(term);
+          this.pageIndex.next(0);
+        }
+      });
+  }
+
+  search(term: string) {
+    //TODO: add advanced search query strings here
+    const formValue = this.formatFormValue(Object.assign({}, this.form.value));
+    const params = {
+      ...(term !== '' ? { search: term } : {}),
+      ...APIPARAMS,
+      // formValue will always has selector as a non null property: need to
+      // filter out when only selector is null
+      ...(Object.keys(formValue).length > 1 ? formValue : {}),
+    };
+
+    return this.getMetadataObservable(params)
       .pipe(
-        //ouverture ou fermeture de l'accordion selon s'il y a une recherche ou non
-        tap((term) => (this.expandAccordions = term !== ''))
+        map((afs: any[]): any[] =>
+          term === '' ? afs : this._filterAcquisitionFrameworks(afs, term)
+        ),
+        tap(() => {
+          this.expandAccordions = term !== '';
+        })
       )
-      .subscribe(() => this.pageIndex.next(0));
-    AppConfig.METADATA.METADATA_AREA_FILTERS.forEach((area) => {
-      const control_name = 'area_' + area['type_code'].toLowerCase();
-      this.form.addControl(control_name, new FormControl(new Array()));
-      const control = this.form.controls[control_name];
-      area['control'] = control;
-    });
-    this.formBuilded = true;
+      .subscribe(
+        (afs) => {
+          this._acquisitionFrameworks.next(afs);
+        },
+        (err) => (this.isLoading = false)
+      );
   }
   //recuperation cadres d'acquisition
   getMetadata(params = {}, selectors = { datasets: 1, creator: 1, actors: 1 }) {
@@ -108,45 +106,41 @@ export class MetadataService {
     this._acquisitionFrameworks.next([]);
 
     //forkJoin pour lancer les 2 requetes simultanément
-    forkJoin({
-      afs: this.dataFormService.getAcquisitionFrameworksList(selectors, params),
+    return forkJoin({
+      afs: this.dataFormService.getAcquisitionFrameworksList(apiParams),
       datasetNbObs: this._syntheseDataService.getObsCountByColumn('id_dataset'),
-    })
-      .pipe(
-        tap(() => (this.isLoading = false)),
-        map((val) => {
-          //val: {afs: CA[], datasetNbObs: {id_dataset: number, count: number}[]}
-          //boucle sur les CA pour attribuer le nombre de données au JDD et création de la clé datasetsTemp
-          for (let i = 0; i < val.afs.length; i++) {
-            this.setDsObservationCount(val.afs[i]['t_datasets'], val.datasetNbObs);
-          }
-          //renvoie uniquement les CA
-          return val.afs;
-        })
-      )
-      .subscribe(
-        (afs) => this._acquisitionFrameworks.next(afs),
-        (err) => (this.isLoading = false)
-      );
+    }).pipe(
+      tap(() => (this.isLoading = false)),
+      map((val) => {
+        //val: {afs: CA[], datasetNbObs: {id_dataset: number, count: number}[]}
+        //boucle sur les CA pour attribuer le nombre de données au JDD et création de la clé datasetsTemp
+        for (let i = 0; i < val.afs.length; i++) {
+          this.setDsObservationCount(val.afs[i]['t_datasets'], val.datasetNbObs);
+        }
+        //renvoie uniquement les CA
+        return val.afs;
+      })
+    );
+  }
+
+  getMetadata(params = {}) {
+    this.getMetadataObservable(params).subscribe(
+      (afs) => this._acquisitionFrameworks.next(afs),
+      (err) => (this.isLoading = false)
+    );
   }
 
   /**
    *  Filtre les éléments CA et JDD selon la valeur de la barre de recherche
    **/
-  private _filterAcquisitionFrameworks(filterValue) {
-    return this.acquisitionFrameworks.filter((af) => {
-      //recherche des cadres d'acquisition qui matchent
-      if (
-        af.id_acquisition_framework == filterValue ||
-        this._removeAccentAndLower(af.unique_acquisition_framework_id) == filterValue ||
-        this._removeAccentAndLower(af.acquisition_framework_name).includes(filterValue) ||
-        this._removeAccentAndLower(af.acquisition_framework_start_date) == filterValue
-      ) {
+  private _filterAcquisitionFrameworks(afs, filterValue) {
+    return afs.filter((af) => {
+      if (filterValue.includes(af.acquisition_framework_name)) {
         return true;
       }
-      //Sinon on filtre les JDD qui matchent eventuellement.
+      //on filtre les JDD qui matchent eventuellement.
       if (af.t_datasets) {
-        af.datasetsTemp = af.t_datasets.filter((ds) => {
+        const tempDatasets = af.t_datasets.filter((ds) => {
           return (
             ds.id_dataset == filterValue ||
             this._removeAccentAndLower(ds.dataset_name).includes(filterValue) ||
@@ -154,7 +148,10 @@ export class MetadataService {
             this._removeAccentAndLower(ds.meta_create_date) == filterValue
           );
         });
-        return af.datasetsTemp.length; //On envoie ce test pour garder le CA si un JDD a matché
+        if (tempDatasets.length !== 0) {
+          af.t_datasets = tempDatasets;
+        }
+        return af.datasets.length; //On envoie ce test pour garder le CA si un JDD a matché
       }
       return false;
     });
