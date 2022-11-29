@@ -2180,6 +2180,60 @@ Modifiez la variable ``EXCLUDED_COLUMNS``
     [SYNTHESE]
         EXCLUDED_COLUMNS = ['non_digital_proof'] # pour enlever le filtre 'preuve non numérique'
 
+**5.** Configurer les filtres des statuts de protection et des listes rouges
+
+Il existe deux paramètres qui permettent de configurer les statuts de protection et les listes rouges à afficher dans la fenêtre acancée du module Synthese.
+Il s'agit de :
+
+* ``RED_LISTS_FILTERS`` : pour configurer les listes rouges. Les listes déroulantes configurées affichent les codes et intitulés des valeurs des listes (*CR - En danger critique*, *DD - Données insuffisantes*, ...).
+* ``STATUS_FILTERS`` : pour configurer les statuts de protection. Les listes déroulantes configurées affichent l'intitulé suivi du code des types de textes (*Protection départementale - PD*, *Protection nationale - PN*).
+
+Ces paramètres se présentent sous la forme d'une liste de dictionnaires. Il est possible d'ajouter de nouveaux filtres en ajoutant de nouveaux dictionnaires à la liste.
+
+Voici un exemple :
+
+::
+
+    [SYNTHESE]
+        RED_LISTS_FILTERS = [
+            { "id" = "worldwide", "show" = true, "display_name" = "Liste rouge mondiale", "status_type" = "LRM" },
+            { "id" = "european", "show" = true, "display_name" = "Liste rouge européenne", "status_type" = "LRE" },
+            { "id" = "national", "show" = true, "display_name" = "Liste rouge nationale", "status_type" = "LRN" },
+            { "id" = "regional", "show" = true, "display_name" = "Liste rouge régionale", "status_type" = "LRR" },
+        ]
+        STATUS_FILTERS = [
+            { "id" = "protections", "show" = true, "display_name" = "Taxons protégés", "status_types" = ["PN", "PR", "PD"] },
+            { "id" = "regulations", "show" = true, "display_name" = "Taxons réglementés", "status_types" = ["REGLII", "REGL", "REGLSO"] },
+            { "id" = "invasive", "show" = true, "display_name" = "Espèces envahissantes", "status_types" = ["REGLLUTTE"] },
+            { "id" = "znief", "show" = true, "display_name" = "Espèces déterminantes ZNIEFF", "status_types" = ["ZDET"] },
+        ]
+
+Pour chaque dictionnaire, voici le détail des champs (ils sont tous obligatoires) :
+
+* ``id`` : correspond à un mot clé (sans caractères spéciaux ou accentués) qui doit être unique dans la liste.
+* ``show`` : permet de rapidement afficher (= ``true``) ou cacher (= ``false``) un filtre sur l'interface sans avoir à supprimer la ligne.
+* ``display_name`` : indique le texte de l'intitulé de la liste déroulante qui sera affiché sur l'interface.
+* ``status_type`` : pour les statuts de protection cela correspond à une liste des codes de types de statuts de protections à afficher dans la liste déroulante. Les codes existant sont consultables dans le champ ``cd_type_statut`` de la table ``taxonomie.bdc_statut_type``. Pour les listes rouges, il faut seulement indiquer le code de la liste.
+
+Au niveau de la base de données, il est possible de limiter les recherches uniquement aux textes correspondant à la zone géographique des observations de votre installation.
+Pour cela, il suffit de mettre une valeur ``false`` dans le champ ``enable`` de la table ``taxonomie.bdc_statut_texte`` pour tous les textes que vous ne souhaitez pas prendre en compte. Si vous avez une grande quantité d'observations, cette étape est fortement recommandée !
+
+Exemple de requête de mise à jour de la table ``taxonomie.bdc_statut_texte`` :
+
+::
+
+  UPDATE taxonomie.bdc_statut_text
+  SET enable = false
+  WHERE cd_doc NOT IN (
+    366749, 901, 738, 758, 763, 625, 633, 3561, 643, 713, 716, 730, 731,
+    703, 694, 694, 732, 733, 174768, 174769, 174770, 195368, 268129,
+    268409, 146732, 145082, 196448, 158248, 755, 756, 358269, 358270,
+    160321, 275396, 31345, 138062, 31343, 300831, 138065, 87486, 165208,
+    87625, 31341, 87619, 138063, 144173, 220350, 321049, 208629, 87484,
+    146311, 88261, 300212, 146310, 31346, 249369, 138064
+  ) ;
+
+
 
 D'autres élements sont paramètrables dans le module synthese. La liste complète est disponible dans le fichier ``config/geonature_config.toml`` rubrique ``SYNTHESE``.
 

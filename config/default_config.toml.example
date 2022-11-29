@@ -405,12 +405,16 @@ MAIL_ON_ERROR = false
     DISCUSSION_MAX_LENGTH = 1500
     ALERT_MODULES = ["SYNTHESE","VALIDATION"]
     PIN_MODULES = ["SYNTHESE","VALIDATION"]
+    # Configuration des filtres de listes rouges affichées dans la fenêtre avancée de la SYNTHESE
+    # Voir la documentation Manuel Administrateur > Module SYNTHESE > 5. Configurer les filtres des statuts de protection et des listes rouges
     RED_LISTS_FILTERS = [
         { "id" = "worldwide", "show" = true, "display_name" = "Liste rouge mondiale", "status_type" = "LRM" },
         { "id" = "european", "show" = true, "display_name" = "Liste rouge européenne", "status_type" = "LRE" },
         { "id" = "national", "show" = true, "display_name" = "Liste rouge nationale", "status_type" = "LRN" },
         { "id" = "regional", "show" = true, "display_name" = "Liste rouge régionale", "status_type" = "LRR" },
     ]
+    # Configuration des filtres de statuts de protection affichées dans la fenêtre avancée de la SYNTHESE
+    # Voir la documentation Manuel Administrateur > Module SYNTHESE > 5. Configurer les filtres des statuts de protection et des listes rouges
     STATUS_FILTERS = [
         { "id" = "protections", "show" = true, "display_name" = "Taxons protégés", "status_types" = ["PN", "PR", "PD"] },
         { "id" = "regulations", "show" = true, "display_name" = "Taxons réglementés", "status_types" = ["REGLII", "REGL", "REGLSO"] },

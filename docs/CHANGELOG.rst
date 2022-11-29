@@ -22,11 +22,16 @@ CHANGELOG
 * Les fichiers ``tsconfig.json`` et ``tsconfig.app.json`` n’ont plus besoin d’être générés.
 * Ajout d’une commande permettant l’installation du référentiel de sensibilité à partir d’un fichier.
 * Support de la configuration par variable d’environnement préfixée par ``GEONATURE_`` (*e.g* ``GEONATURE_SQLALCHEMY_DATABASE_URI``). Les paramètres définis ainsi peuvent être exclus de la configuration TOML, y compris les paramètres obligatoires.
+* [Synthèse] Ajout de filtres sur les statuts de protection et les listes rouges dans le fenêtre de recherche avancée basés sur la [BDC Statuts](https://inpn.mnhn.fr/programme/base-de-connaissance-statuts/presentation). Ajout des paramètres de configuration ``STATUS_FILTERS`` et ``RED_LISTS_FILTERS`` dans la section ``SYNTHESE``. Il est possible de [modifier les listes et statuts affichés comme indiqué dans la documentation de la configuration du Module SYNTHESE](admin-manual.rst). (#1492)
+* [Synthèse] Affichage dans la fiche d'une observation, onglet *Taxonomie*, des informations issues de la *BDC Statuts* (statuts de protection, listes rouges) en rapport avec le taxon et l'emplacement géographique de l'observation sélectionnée (#1492)
+* [Synthèse] L'export des statuts de protection est maintenant basé sur les données de la *BDC Statuts* (#1492)
+*
 
 **🐛 Corrections**
 
 * Installation d’une dépendance Debian manquante pour Cypress (#2125)
 * Les fichiers de service systemd ont été corrigé pour fonctionner sur une machine sans PostgreSQL (BDD sur un autre hôte)
+* La *BDC Statuts* est maintenance chargée lors de l'intégration continue juste après le chargement des départements (#1492)
 
 **💻 Développement**
 
