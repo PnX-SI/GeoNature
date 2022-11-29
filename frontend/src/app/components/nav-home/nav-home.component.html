@@ -69,7 +69,12 @@
       </ng-container>
 
       <ng-template #noUserManagement>
-        <ng-container>
+        <ng-container
+          *ngIf="
+            appConfig.PUBLIC_ACCESS.PUBLIC_LOGIN != currentUser?.user_login;
+            else publicAccessUser
+          "
+        >
           <mat-icon> person </mat-icon>
           <span class="user-name">
             {{ currentUser?.user_login }}
