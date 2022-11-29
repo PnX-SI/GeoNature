@@ -30,7 +30,7 @@ def dispatch_notifications(
     roles = [User.query.get(id_role) for id_role in id_roles]
 
     for category, role in product(categories, roles):
-        dispatch_notification(category, role, title, content=content, context=context)
+        dispatch_notification(category, role, title, url, content=content, context=context)
 
 
 def dispatch_notification(category, role, title=None, url=None, *, content=None, context={}):
