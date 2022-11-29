@@ -16,7 +16,9 @@
       </button>
 
       <span class="mx-2">
-        <a data-qa="nav-home-module-name" class="home-link" href="{{ moduleUrl }}">{{ moduleName }}</a>
+        <a data-qa="nav-home-module-name" class="home-link" href="{{ moduleUrl }}">{{
+          moduleName
+        }}</a>
       </span>
 
       <img
@@ -37,8 +39,8 @@
       <ng-container
         *ngIf="
           !appConfig.CAS_PUBLIC.CAS_AUTHENTIFICATION &&
-          appConfig.PUBLIC_ACCESS.PUBLIC_LOGIN != currentUser?.user_login &&
-          appConfig.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT ;
+            appConfig.PUBLIC_ACCESS.PUBLIC_LOGIN != currentUser?.user_login &&
+            appConfig.ACCOUNT_MANAGEMENT.ENABLE_USER_MANAGEMENT;
           else noUserManagement
         "
       >
@@ -67,23 +69,19 @@
       </ng-container>
 
       <ng-template #noUserManagement>
-        <ng-container
-            *ngIf="
-              appConfig.PUBLIC_ACCESS.PUBLIC_LOGIN != currentUser?.user_login ;
-              else publicAccessUser
-            "
-        >
+        <ng-container>
           <mat-icon> person </mat-icon>
           <span class="user-name">
             {{ currentUser?.user_login }}
           </span>
           <!-- add notification only if user connected and notification enabled -->
-          <ng-container *ngIf="appConfig.NOTIFICATION.ENABLED == true" >
+          <ng-container *ngIf="appConfig.NOTIFICATION.ENABLED == true">
             <a
               class="mx-2 mat-elevation-z1"
               mat-icon-button
               matTooltip="Accéder aux notifications"
               matBadge="{{ notificationNumber }}"
+              matBadgeHidden="{{ notificationNumber == 0 }}"
               (click)="openNotification()"
             >
               <mat-icon>notifications</mat-icon>
