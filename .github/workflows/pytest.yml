@@ -89,10 +89,10 @@ jobs:
         run: |
           geonature db upgrade geonature@head -x local-srid=2154
           geonature db autoupgrade -x local-srid=2154
-          geonature taxref import-v15 --skip-bdc-statuts
+          geonature db upgrade ref_geo_fr_departments@head
+          geonature taxref import-v15
           geonature db upgrade geonature-samples@head
           geonature db upgrade nomenclatures_taxonomie_data@head
-          geonature db upgrade ref_geo_fr_departments@head
           geonature db upgrade ref_geo_fr_municipalities@head
           geonature db upgrade ref_geo_inpn_grids_5@head
           geonature sensitivity add-referential \
