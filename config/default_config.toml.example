@@ -546,4 +546,4 @@ MAIL_ON_ERROR = false
 # Notification
 [NOTIFICATION]
     #Enabled
-    ENABLED = false
+    ENABLED = true
