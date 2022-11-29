@@ -7,6 +7,7 @@ import pytest
 from flask import url_for
 from flask_sqlalchemy import BaseQuery
 from geoalchemy2.shape import to_shape
+
 from geojson import Point
 from sqlalchemy import func
 from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound, Unauthorized
@@ -14,14 +15,18 @@ from werkzeug.datastructures import MultiDict
 from ref_geo.models import BibAreasTypes, LAreas
 
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
+from geonature.core.gn_meta.models import (
+    CorDatasetActor,
+    TAcquisitionFramework,
+    TDatasets,
+)
 from geonature.core.gn_meta.routes import get_af_from_id
 from geonature.core.gn_permissions.models import (
     CorRoleActionFilterModuleObject,
     TActions,
     TFilters,
 )
-from geonature.core.gn_synthese.models import Synthese
+from geonature.core.gn_synthese.models import Synthese, CorAreaSynthese
 from geonature.utils.env import db
 
 from .fixtures import *
@@ -32,6 +37,18 @@ from .utils import logged_user_headers, set_logged_user_cookie
 def first_area_commune():
     commune = BibAreasTypes.query.filter_by(type_code="COM").one()
     return LAreas.query.filter(LAreas.id_type == commune.id_type).first()
+
+
+def getCommByIdSynthese(id_synthese):
+    """
+    Return area by synthese
+    """
+    areasSynthese = CorAreaSynthese.query.filter(CorAreaSynthese.id_synthese == id_synthese).all()
+    idsAreas = [d.id_area for d in areasSynthese]
+    commune = BibAreasTypes.query.filter_by(type_code="COM").one()
+    communes = LAreas.query.filter(LAreas.id_type == commune.id_type)
+    communeMatch = communes.filter(LAreas.id_area.in_(idsAreas)).one_or_none()
+    return communeMatch
 
 
 # TODO: maybe move it to global fixture
@@ -153,7 +170,10 @@ class TestGNMeta:
         # Post with only required attributes
         response = self.client.post(
             url_for("gn_meta.create_acquisition_framework"),
-            json={"acquisition_framework_name": "test", "acquisition_framework_desc": "desc"},
+            json={
+                "acquisition_framework_name": "test",
+                "acquisition_framework_desc": "desc",
+            },
         )
 
         assert response.status_code == 200
@@ -275,7 +295,53 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
         assert response.status_code == 200
 
-    def test_get_acquisition_frameworks_list_excluded_fields(self, users, acquisition_frameworks):
+    def test_filter_acquisition_by_geo(self, synthese_data, users, first_area_commune, datasets):
+        # security test already passed in previous tests
+        set_logged_user_cookie(self.client, users["admin_user"])
+
+        # will test if synthese CA is correctly return by a commune
+        entityDataset = synthese_data[0].dataset
+
+        # get commune from CoreArea Table or intersection
+        communeBySynthese = getCommByIdSynthese(synthese_data[0].id_synthese)
+        # return commune
+        response = self.client.post(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            json={"area": [[communeBySynthese.id_type, communeBySynthese.id_area]]},
+        )
+        response = response.json[0]
+        # test id_acquisition framework return the correct synthese's parent id_acquisition_framework
+        assert response["id_acquisition_framework"] == entityDataset.id_acquisition_framework
+
+        # test no response if a commune have no CA
+        # get area without synthese
+        corAreaEmpty = [d.id_area for d in CorAreaSynthese.query.all()]
+        areaWithoutSynthese = LAreas.query.filter(~LAreas.id_area.in_(corAreaEmpty)).first()
+        # get CA
+        response = self.client.post(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            json={"area": [[areaWithoutSynthese.id_type, areaWithoutSynthese.id_area]]},
+        )
+        resp = response.json
+        # will return empty response
+        assert len(resp) == 0
+
+        # will test if an other CA is correctly return for an other synthese and commune
+        # get synthese
+        firstSynthese = Synthese.query.filter(
+            Synthese.id_dataset != entityDataset.id_dataset
+        ).first()
+        # get commune for this id synthese
+        otherComm = getCommByIdSynthese(firstSynthese.id_synthese)
+        response = self.client.post(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            json={"area": [[otherComm.id_type, otherComm.id_area]]},
+        )
+        assert len(response.json) > 0
+        response = response.json[0]
+        assert response["id_acquisition_framework"] != entityDataset.id_acquisition_framework
+
+    def test_get_acquisition_frameworks_list_excluded_fields(self, users):
         excluded = ["id_acquisition_framework", "id_digitizer"]
         set_logged_user_cookie(self.client, users["admin_user"])
 
@@ -287,9 +353,7 @@ class TestGNMeta:
         for field in excluded:
             assert all(field not in list(dic.keys()) for dic in response.json)
 
-    def test_get_acquisition_frameworks_list_excluded_fields_not_nested(
-        self, users, acquisition_frameworks
-    ):
+    def test_get_acquisition_frameworks_list_excluded_fields_not_nested(self, users):
         excluded = ["id_acquisition_framework", "id_digitizer"]
 
         set_logged_user_cookie(self.client, users["admin_user"])
@@ -324,7 +388,8 @@ class TestGNMeta:
 
         response = self.client.get(
             url_for(
-                "gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id
+                "gn_meta.get_export_pdf_acquisition_frameworks",
+                id_acquisition_framework=af_id,
             )
         )
 
@@ -335,7 +400,8 @@ class TestGNMeta:
 
         response = self.client.get(
             url_for(
-                "gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id
+                "gn_meta.get_export_pdf_acquisition_frameworks",
+                id_acquisition_framework=af_id,
             )
         )
 
@@ -348,7 +414,10 @@ class TestGNMeta:
         set_logged_user_cookie(self.client, users["user"])
 
         response = self.client.get(
-            url_for("gn_meta.get_acquisition_framework_stats", id_acquisition_framework=id_af)
+            url_for(
+                "gn_meta.get_acquisition_framework_stats",
+                id_acquisition_framework=id_af,
+            )
         )
         data = response.json
 
@@ -763,14 +832,20 @@ class TestGNMeta:
 
         af = acquisition_frameworks["own_af"]
         response = self.client.get(
-            url_for("gn_meta.publish_acquisition_framework", af_id=af.id_acquisition_framework)
+            url_for(
+                "gn_meta.publish_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
         )
         assert response.status_code == Conflict.code, response.json
         mocked_publish_mail.assert_not_called()
 
         af = acquisition_frameworks["orphan_af"]
         response = self.client.get(
-            url_for("gn_meta.publish_acquisition_framework", af_id=af.id_acquisition_framework)
+            url_for(
+                "gn_meta.publish_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
         )
         assert response.status_code == Conflict.code, response.json
         mocked_publish_mail.assert_not_called()
@@ -781,7 +856,10 @@ class TestGNMeta:
         set_logged_user_cookie(self.client, users["user"])
         af = acquisition_frameworks["orphan_af"]
         response = self.client.get(
-            url_for("gn_meta.publish_acquisition_framework", af_id=af.id_acquisition_framework)
+            url_for(
+                "gn_meta.publish_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
         )
         assert response.status_code == 200, response.json
         mocked_publish_mail.assert_called_once()
