@@ -109,8 +109,8 @@ def upgrade():
         [
             {
                 "code": "DB",
-                "label": "Notification en base de données",
-                "description": "Sauvegarde des informations en base de données",
+                "label": "Notification dans l'application",
+                "description": "Sauvegarde des informations pour une visualistion dans l'application",
             },
             {
                 "code": "MAIL",
