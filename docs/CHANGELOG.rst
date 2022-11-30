@@ -34,7 +34,7 @@ CHANGELOG
 * Homogénéisation de la configuration entre ``current_app.config`` et ``geonature.utils.config.config``.
 
 
-2.10.4 (unreleased)
+2.10.4 (2022-11-30)
 -------------------
 
 **🐛 Corrections**
@@ -43,6 +43,7 @@ CHANGELOG
 * Correction de la génération du rapport de sensibilité
 * Correction d’un filtre de permissions sur les jeux de données
 * Correction des boutons d’ajout de données dans les jeux de données
+* Ajout d’une dépendance à GeoNature dans les migrations OccTax pour corriger un problème aléatoire lors du passage des migrations
 
 
 2.10.3 (2022-11-15)

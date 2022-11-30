@@ -13,7 +13,7 @@ import sqlalchemy as sa
 revision = "61802a0f83b8"
 down_revision = "576cbd26b012"
 branch_labels = None
-depends_on = None
+depends_on = ("f4ffdc68072c",)  # add id_module in gn_synthese.t_sources
 
 
 def upgrade():
