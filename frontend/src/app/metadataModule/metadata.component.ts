@@ -111,17 +111,17 @@ export class MetadataComponent implements OnInit {
   private advancedSearch() {
     let formValues = this.metadataService.form.value;
     // reformat areas value
-    let area = [];
+    let areas = [];
     let omited = omitBy(formValues, (value = [], field) => {
       // omit control names started by area_
       if (!field || !field.startsWith('area_')) return false;
       // use only one areas ids list
       if (value) {
-        area = [...area, ...value.map((area) => [area.id_type, area.id_area])];
+        areas = [...areas, ...value.map((area) => [area.id_type, area.id_area])];
       }
       return true;
     });
-    let finalFormValue = { ...omited, area: area.length ? area : null };
+    let finalFormValue = { ...omited, areas: areas.length ? areas : null };
     this.metadataService.formatFormValue(Object.assign({}, formValues));
     this.metadataService.getMetadata(finalFormValue);
     this.metadataService.expandAccordions = true;

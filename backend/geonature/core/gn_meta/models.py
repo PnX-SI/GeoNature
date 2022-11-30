@@ -588,7 +588,7 @@ class TAcquisitionFrameworkQuery(BaseQuery):
     def filter_by_params(self, params={}):
         # XXX frontend retro-compatibility
         selector = params.get("selector")
-        areas = params.pop("area", None)
+        areas = params.pop("areas", None)
         if selector == "ds":
             params = {f"datasets.{key}": value for key, value in params.items()}
         f = TAcquisitionFramework.compute_filter(**params)

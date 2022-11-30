@@ -282,7 +282,7 @@ class TestGNMeta:
         # TEST RESPONSE WITH ONE FILTER AREA
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),
-            json={"area": [[first_area_commune.id_type, first_area_commune.id_area]]},
+            json={"areas": [[first_area_commune.id_type, first_area_commune.id_area]]},
         )
         assert response.status_code == 200
 
@@ -307,7 +307,7 @@ class TestGNMeta:
         # return commune
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),
-            json={"area": [[communeBySynthese.id_type, communeBySynthese.id_area]]},
+            json={"areas": [[communeBySynthese.id_type, communeBySynthese.id_area]]},
         )
         response = response.json[0]
         # test id_acquisition framework return the correct synthese's parent id_acquisition_framework
@@ -320,7 +320,7 @@ class TestGNMeta:
         # get CA
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),
-            json={"area": [[areaWithoutSynthese.id_type, areaWithoutSynthese.id_area]]},
+            json={"areas": [[areaWithoutSynthese.id_type, areaWithoutSynthese.id_area]]},
         )
         resp = response.json
         # will return empty response
@@ -331,7 +331,7 @@ class TestGNMeta:
         otherComm = getCommByIdSynthese(isolate_synthese.id_synthese)
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),
-            json={"area": [[otherComm.id_type, otherComm.id_area]]},
+            json={"areas": [[otherComm.id_type, otherComm.id_area]]},
         )
         assert len(response.json) > 0
         response = response.json[0]
