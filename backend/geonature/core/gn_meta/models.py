@@ -579,15 +579,10 @@ class TAcquisitionFrameworkQuery(BaseQuery):
         """
         Filter meta by areas
         """
-        from geonature.core.gn_synthese.models import Synthese
-
-        areaFilter = []
-        for type_area, id_area in areas:
-            areaFilter.append(sa.and_(LAreas.id_type == type_area, LAreas.id_area == id_area))
         return self.filter(
             TAcquisitionFramework.t_datasets.any(
-                TDatasets.synthese_records.any(Synthese.areas.any(sa.or_(*areaFilter)))
-            )
+                TDatasets.query.filter_by_areas(areas).whereclause,
+            ),
         )
 
     def filter_by_params(self, params={}):
