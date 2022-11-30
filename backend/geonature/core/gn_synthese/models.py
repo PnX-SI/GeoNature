@@ -312,7 +312,7 @@ class Synthese(DB.Model):
     meta_update_date = DB.Column(DB.DateTime)
     last_action = DB.Column(DB.Unicode)
 
-    areas = relationship(LAreas, secondary=corAreaSynthese)
+    areas = relationship(LAreas, secondary=corAreaSynthese, backref="synthese_obs")
     area_attachment = relationship(LAreas, foreign_keys=[id_area_attachment])
     validations = relationship(TValidations, backref="attached_row")
     last_validation = relationship(last_validation, uselist=False, viewonly=True)
