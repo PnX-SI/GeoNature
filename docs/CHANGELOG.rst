@@ -40,10 +40,10 @@ CHANGELOG
 **🐛 Corrections**
 
 * Mise à jour du RefGeo en version 1.2.1 afin de corriger une régression des performances dans la synthèse
-* Correction de la génération du rapport de sensibilité
-* Correction d’un filtre de permissions sur les jeux de données
-* Correction des boutons d’ajout de données dans les jeux de données
-* Ajout d’une dépendance à GeoNature dans les migrations OccTax pour corriger un problème aléatoire lors du passage des migrations
+* Correction de la génération du rapport de sensibilité dans les fiches des métadonnées
+* Correction d’un filtre de permissions sur les jeux de données (#2160)
+* Correction des boutons d’ajout de données dans les jeux de données (#2152)
+* Ajout d’une dépendance à GeoNature dans les migrations Occtax pour corriger un problème aléatoire lors du passage des migrations (#2178)
 
 
 2.10.3 (2022-11-15)
