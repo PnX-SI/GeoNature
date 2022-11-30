@@ -327,6 +327,21 @@ export class DataFormService {
     return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/areas`, { params: params });
   }
 
+  getAreasTypes() {
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/types`);
+  }
+
+  autocompleteRefGeo(params) {
+    let queryString: HttpParams = new HttpParams();
+    for (let key in params) {
+      queryString = queryString.set(key, params[key]);
+    }
+
+    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/geo/areas`, {
+      params: queryString,
+    });
+  }
+
   getValidationHistory(uuid_attached_row) {
     return this._http.get<any>(
       `${AppConfig.API_ENDPOINT}/gn_commons/history/${uuid_attached_row}`,
@@ -349,13 +364,13 @@ export class DataFormService {
     });
   }
 
-  getAcquisitionFrameworksList(searchTerms = {}) {
+  getAcquisitionFrameworksList(selectors = {}, params = {}) {
     let queryString: HttpParams = new HttpParams();
-    for (let key in searchTerms) {
-      queryString = queryString.set(key, searchTerms[key]);
+    for (let key in selectors) {
+      queryString = queryString.set(key, selectors[key]);
     }
 
-    return this._http.get<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`, {
+    return this._http.post<any>(`${AppConfig.API_ENDPOINT}/meta/acquisition_frameworks`, params, {
       params: queryString,
     });
   }

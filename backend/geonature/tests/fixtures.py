@@ -49,6 +49,7 @@ __all__ = [
     "filters",
     "medium",
     "module",
+    "isolate_synthese",
 ]
 
 
@@ -260,9 +261,26 @@ def source():
     return source
 
 
+def create_synthese(geom, taxon, user, dataset, source, uuid):
+    now = datetime.datetime.now()
+    return Synthese(
+        id_source=source.id_source,
+        unique_id_sinp=uuid,
+        dataset=dataset,
+        digitiser=user,
+        nom_cite=taxon.lb_nom,
+        cd_nom=taxon.cd_nom,
+        cd_hab=3,
+        the_geom_4326=geom,
+        the_geom_point=geom,
+        the_geom_local=func.st_transform(geom, 2154),
+        date_min=now,
+        date_max=now,
+    )
+
+
 @pytest.fixture()
 def synthese_data(app, users, datasets, source):
-    now = datetime.datetime.now()
     map_center_point = Point(
         app.config["MAPCONFIG"]["CENTER"][1],
         app.config["MAPCONFIG"]["CENTER"][0],
@@ -275,24 +293,35 @@ def synthese_data(app, users, datasets, source):
             unique_id_sinp = (
                 "f4428222-d038-40bc-bc5c-6e977bbbc92b" if not data else func.uuid_generate_v4()
             )
-            s = Synthese(
-                id_source=source.id_source,
-                unique_id_sinp=unique_id_sinp,
-                dataset=datasets["own_dataset"],
-                digitiser=users["self_user"],
-                nom_cite=taxon.lb_nom,
-                cd_nom=taxon.cd_nom,
-                cd_hab=3,
-                the_geom_4326=geom_4326,
-                the_geom_point=geom_4326,
-                the_geom_local=func.st_transform(geom_4326, 2154),
-                date_min=now,
-                date_max=now,
+            s = create_synthese(
+                geom_4326,
+                taxon,
+                users["self_user"],
+                datasets["own_dataset"],
+                source,
+                unique_id_sinp,
             )
             db.session.add(s)
             data.append(s)
-
     return data
+
+
+@pytest.fixture()
+def isolate_synthese(users, datasets, source):
+    map_center_point = Point(-3.486786, 48.832182)
+    geom_4326 = from_shape(map_center_point, srid=4326)
+    taxon = Taxref.query.filter_by(cd_nom=79306).one()
+    with db.session.begin_nested():
+        s = create_synthese(
+            geom_4326,
+            taxon,
+            users["self_user"],
+            datasets["belong_af_1"],
+            source,
+            func.uuid_generate_v4(),
+        )
+        db.session.add(s)
+    return s
 
 
 @pytest.fixture(scope="function")

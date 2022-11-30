@@ -22,7 +22,7 @@ from flask import (
     g,
 )
 from flask.json import jsonify
-from sqlalchemy import inspect
+from sqlalchemy import inspect, and_, or_
 from sqlalchemy.sql import text, exists, select, update
 from sqlalchemy.sql.functions import func
 from sqlalchemy.orm import Load, joinedload, raiseload
@@ -76,6 +76,7 @@ import geonature.utils.utilsmails as mail
 from geonature.utils.errors import GeonatureApiError
 from .mtd import sync_af_and_ds as mtd_sync_af_and_ds
 
+from ref_geo.models import LAreas
 
 routes = Blueprint("gn_meta", __name__, cli_group="metadata")
 
@@ -501,7 +502,7 @@ def get_export_pdf_dataset(id_dataset, scope):
     return send_from_directory(str(pdf_file_posix.parent), pdf_file_posix.name, as_attachment=True)
 
 
-@routes.route("/acquisition_frameworks", methods=["GET"])
+@routes.route("/acquisition_frameworks", methods=["GET", "POST"])
 @permissions.check_cruved_scope(
     "R",
     get_scope=True,
@@ -513,26 +514,26 @@ def get_acquisition_frameworks(scope):
     Get the GeoNature CRUVED
     """
     only = []
-    af_list = (
-        TAcquisitionFramework.query.filter_by_readable()
-        .filter_by_params(request.args.to_dict())
-        .order_by(TAcquisitionFramework.acquisition_framework_name)
-        .options(
-            Load(TAcquisitionFramework).raiseload("*"),
-            # for permission checks:
-            joinedload("creator"),
-            joinedload("cor_af_actor").options(
+    # QUERY
+    af_list = TAcquisitionFramework.query.filter_by_readable()
+    if request.method == "POST":
+        af_list = af_list.filter_by_params(request.json)
+
+    af_list = af_list.order_by(TAcquisitionFramework.acquisition_framework_name).options(
+        Load(TAcquisitionFramework).raiseload("*"),
+        # for permission checks:
+        joinedload("creator"),
+        joinedload("cor_af_actor").options(
+            joinedload("role"),
+            joinedload("organism"),
+        ),
+        joinedload("t_datasets").options(
+            joinedload("digitizer"),
+            joinedload("cor_dataset_actor").options(
                 joinedload("role"),
                 joinedload("organism"),
             ),
-            joinedload("t_datasets").options(
-                joinedload("digitizer"),
-                joinedload("cor_dataset_actor").options(
-                    joinedload("role"),
-                    joinedload("organism"),
-                ),
-            ),
-        )
+        ),
     )
     if request.args.get("datasets", default=False, type=int):
         only.extend(

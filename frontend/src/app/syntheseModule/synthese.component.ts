@@ -37,8 +37,6 @@ export class SyntheseComponent implements OnInit {
   ) {}
 
   loadAndStoreData(formParams) {
-    console.log(formParams);
-
     this.searchService.dataLoaded = false;
     this.searchService.getSyntheseData(formParams).subscribe(
       (data) => {

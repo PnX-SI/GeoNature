@@ -60,6 +60,8 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
    * tableau d'objets comprenant le champ identifiant et le champ pour
    * l'affichage (`area_name`), vous pouvez l'indiquer en passant une
    * valeur `null` à cet attribut.
+   * Exemple :
+   * [valueFieldName]="'id_type'"
    */
   @Input() valueFieldName: string = 'id_area';
   /**
@@ -96,9 +98,6 @@ export class AreasComponent extends GenericFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Patch to force 'id_area' as default value for valueFieldName
-    // when this attribute is defined in HTML but with an undefined value
-    // TODO : try to resolve this problem in DynamicForm with conditional attribute maybe
     this.valueFieldName = this.valueFieldName === undefined ? 'id_area' : this.valueFieldName;
 
     this.getAreas();

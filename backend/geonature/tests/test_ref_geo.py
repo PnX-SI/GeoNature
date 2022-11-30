@@ -321,3 +321,57 @@ class TestRefGeo:
 
         assert response.status_code == 400
         assert response.json["description"] == "Missing 'geometry' in request payload"
+
+    def test_get_types(self):
+        response = self.client.get(url_for("ref_geo.get_area_types"))
+        print(response.json)
+        assert response.status_code == 200
+
+    def test_get_types_by_code(self, area_commune):
+        type_code = area_commune.type_code
+
+        # GET area type with fake code
+        response = self.client.get(
+            url_for("ref_geo.get_area_types"), query_string={"code": type_code + "_FOO"}
+        )
+        assert response.status_code == BadRequest.code
+
+        # GET area type with correct code
+        response = self.client.get(
+            url_for("ref_geo.get_area_types"), query_string={"code": type_code}
+        )
+        area = response.json[0]
+        assert response.status_code == 200
+        assert area["type_name"] == area_commune.type_name
+        assert area["type_code"] == area_commune.type_code
+        assert area["id_type"] == area_commune.id_type
+
+    def test_get_types_by_name(self, area_commune):
+        type_name = area_commune.type_name
+        # GET area type with correct name
+        response = self.client.get(
+            url_for("ref_geo.get_area_types"), query_string={"name": area_commune.type_name}
+        )
+        assert response.status_code == 200
+        assert response.json[0]["type_code"] == area_commune.type_code
+
+        # GET area type with fake name
+        response = self.client.get(
+            url_for("ref_geo.get_area_types"), query_string={"name": type_name + "_FOO"}
+        )
+        assert response.status_code == 200
+        assert len(response.json) == 0
+
+        # GET area type with exact name
+        response = self.client.get(
+            url_for("ref_geo.get_area_types"), query_string={"name": type_name}
+        )
+        assert response.status_code == 200
+        assert response.json[0]["type_code"] == area_commune.type_code
+
+        # GET area type with part of name
+        response = self.client.get(
+            url_for("ref_geo.get_area_types"), query_string={"name": type_name[:1]}
+        )
+        assert response.status_code == 200
+        assert len(response.json) > 0

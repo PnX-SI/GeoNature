@@ -4,7 +4,7 @@ import json
 from flask import Blueprint, request, current_app
 from flask.json import jsonify
 import sqlalchemy as sa
-from sqlalchemy import func
+from sqlalchemy import func, distinct, asc, desc
 from sqlalchemy.sql import text
 from sqlalchemy.orm import joinedload
 from werkzeug.exceptions import BadRequest
@@ -241,3 +241,41 @@ def get_area_size():
     query = db.session.query(area_size_func.params(geojson=geojson))
 
     return jsonify(db.session.execute(query).scalar())
+
+
+@routes.route("/types", methods=["Get"])
+def get_area_types():
+    """
+    Get areas types list
+
+    .. :quickref: Areas;
+
+    :query str code: Type area code (ref_geo.bib_areas_types.type_code)
+    :query str name: Type area name (ref_geo.bib_areas_types.type_name)
+    :query str sort: sort value as ASC - DESC
+    """
+    type_code = request.args.get("code")
+    type_name = request.args.get("name")
+    sort = request.args.get("sort")
+    query = db.session.query(BibAreasTypes)
+    # GET ONLY INFO FOR A SPECIFIC CODE
+    if type_code:
+        code_exists = (
+            db.session.query(BibAreasTypes)
+            .filter(BibAreasTypes.type_code == type_code)
+            .one_or_none()
+        )
+        if not code_exists:
+            raise BadRequest("This area type code does not exist")
+        query = query.filter(BibAreasTypes.type_code == type_code)
+    # FILTER BY NAME
+    if type_name:
+        query = query.filter(BibAreasTypes.type_name.ilike("%{}%".format(type_name)))
+    # SORT
+    if sort == "asc":
+        query = query.order_by(asc("type_name"))
+    if sort == "desc":
+        query = query.order_by(desc("type_name"))
+    # FIELDS
+    fields = ["type_name", "type_code", "id_type"]
+    return jsonify([d.as_dict(fields=fields) for d in query.all()])

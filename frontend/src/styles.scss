@@ -15,6 +15,10 @@ mat-sidenav-content {
   background-color: $solitude;
 }
 
+.cdk-overlay-container {
+  z-index: 2000 !important; 
+}
+
 .purple {
   color: #673ab7;
 }

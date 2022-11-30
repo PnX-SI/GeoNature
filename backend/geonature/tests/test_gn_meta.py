@@ -7,13 +7,19 @@ import pytest
 from flask import url_for
 from flask_sqlalchemy import BaseQuery
 from geoalchemy2.shape import to_shape
+
 from geojson import Point
 from sqlalchemy import func
 from werkzeug.exceptions import BadRequest, Conflict, Forbidden, NotFound, Unauthorized
 from werkzeug.datastructures import MultiDict
+from ref_geo.models import BibAreasTypes, LAreas
 
 from geonature.core.gn_commons.models import TModules
-from geonature.core.gn_meta.models import CorDatasetActor, TAcquisitionFramework, TDatasets
+from geonature.core.gn_meta.models import (
+    CorDatasetActor,
+    TAcquisitionFramework,
+    TDatasets,
+)
 from geonature.core.gn_meta.routes import get_af_from_id
 from geonature.core.gn_permissions.models import (
     CorRoleActionFilterModuleObject,
@@ -25,6 +31,30 @@ from geonature.utils.env import db
 
 from .fixtures import *
 from .utils import logged_user_headers, set_logged_user_cookie
+
+
+@pytest.fixture(scope="function")
+def commune_without_obs():
+    return LAreas.query.filter(
+        LAreas.area_type.has(
+            BibAreasTypes.type_code == "COM",
+        ),
+        ~LAreas.synthese_obs.any(),
+    ).first()
+
+
+def getCommBySynthese(obs):
+    """
+    Return area by synthese
+    """
+    return LAreas.query.filter(
+        LAreas.area_type.has(
+            BibAreasTypes.type_code == "COM",
+        ),
+        LAreas.synthese_obs.any(
+            Synthese.id_synthese == obs.id_synthese,
+        ),
+    ).first()
 
 
 # TODO: maybe move it to global fixture
@@ -146,7 +176,10 @@ class TestGNMeta:
         # Post with only required attributes
         response = self.client.post(
             url_for("gn_meta.create_acquisition_framework"),
-            json={"acquisition_framework_name": "test", "acquisition_framework_desc": "desc"},
+            json={
+                "acquisition_framework_name": "test",
+                "acquisition_framework_desc": "desc",
+            },
         )
 
         assert response.status_code == 200
@@ -223,6 +256,42 @@ class TestGNMeta:
         )
         assert response.status_code == 200
 
+    def test_get_post_acquisition_frameworks(self, users, commune_without_obs):
+        # SIMPLE TEST WITH POST REQUEST
+        response = self.client.post(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            json={},
+        )
+        assert response.status_code == Unauthorized.code
+
+        set_logged_user_cookie(self.client, users["admin_user"])
+        # POST EMPTY REQUEST FAIL WITHOUT ANY PARAMS
+        response = self.client.post(url_for("gn_meta.get_acquisition_frameworks"))
+        assert response.status_code == BadRequest.code
+        # POST REQUEST WITHOUT JSON AND WITHOUT QUERY STRING
+        response = self.client.post(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            json={},
+        )
+        assert response.status_code == 200
+        # POST REQUEST WITHOUT JSON
+        response = self.client.post(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            query_string={
+                "datasets": "1",
+                "creator": "1",
+                "actors": "1",
+            },
+            json={},
+        )
+        assert response.status_code == 200
+        # TEST RESPONSE WITH ONE FILTER AREA
+        response = self.client.post(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            json={"areas": [[commune_without_obs.id_type, commune_without_obs.id_area]]},
+        )
+        assert response.status_code == 200
+
     def test_get_acquisition_frameworks_list(self, users):
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
         assert response.status_code == Unauthorized.code
@@ -232,7 +301,51 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
         assert response.status_code == 200
 
-    def test_get_acquisition_frameworks_list_excluded_fields(self, users, acquisition_frameworks):
+    def test_filter_acquisition_by_geo(
+        self, synthese_data, users, isolate_synthese, commune_without_obs
+    ):
+        # security test already passed in previous tests
+        set_logged_user_cookie(self.client, users["admin_user"])
+
+        # get 2 synthese observations in two differents AF and two differents communes
+        s1, s2 = synthese_data[0], isolate_synthese
+        comm1, comm2 = getCommBySynthese(s1), getCommBySynthese(s2)
+
+        # prerequisite for the test:
+        assert (
+            s1.dataset.acquisition_framework != s2.dataset.acquisition_framework
+        )  # prerequisite for the test
+        assert comm1 != comm2
+
+        # search metadata in first commune
+        response = self.client.post(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            json={"areas": [[comm1.id_type, comm1.id_area]]},
+        )
+        ids = [af["id_acquisition_framework"] for af in response.json]
+        assert s1.dataset.id_acquisition_framework in ids
+        assert s2.dataset.id_acquisition_framework not in ids
+
+        # will test if an other CA is correctly return for an other synthese with diff location
+        # get commune for this id synthese
+        response = self.client.post(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            json={"areas": [[comm2.id_type, comm2.id_area]]},
+        )
+        ids = [af["id_acquisition_framework"] for af in response.json]
+        assert s1.dataset.id_acquisition_framework not in ids
+        assert s2.dataset.id_acquisition_framework in ids
+
+        # test no response if a commune have observations
+        response = self.client.post(
+            url_for("gn_meta.get_acquisition_frameworks"),
+            json={"areas": [[commune_without_obs.id_type, commune_without_obs.id_area]]},
+        )
+        resp = response.json
+        # will return empty response
+        assert len(resp) == 0
+
+    def test_get_acquisition_frameworks_list_excluded_fields(self, users):
         excluded = ["id_acquisition_framework", "id_digitizer"]
         set_logged_user_cookie(self.client, users["admin_user"])
 
@@ -244,9 +357,7 @@ class TestGNMeta:
         for field in excluded:
             assert all(field not in list(dic.keys()) for dic in response.json)
 
-    def test_get_acquisition_frameworks_list_excluded_fields_not_nested(
-        self, users, acquisition_frameworks
-    ):
+    def test_get_acquisition_frameworks_list_excluded_fields_not_nested(self, users):
         excluded = ["id_acquisition_framework", "id_digitizer"]
 
         set_logged_user_cookie(self.client, users["admin_user"])
@@ -281,7 +392,8 @@ class TestGNMeta:
 
         response = self.client.get(
             url_for(
-                "gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id
+                "gn_meta.get_export_pdf_acquisition_frameworks",
+                id_acquisition_framework=af_id,
             )
         )
 
@@ -292,7 +404,8 @@ class TestGNMeta:
 
         response = self.client.get(
             url_for(
-                "gn_meta.get_export_pdf_acquisition_frameworks", id_acquisition_framework=af_id
+                "gn_meta.get_export_pdf_acquisition_frameworks",
+                id_acquisition_framework=af_id,
             )
         )
 
@@ -305,7 +418,10 @@ class TestGNMeta:
         set_logged_user_cookie(self.client, users["user"])
 
         response = self.client.get(
-            url_for("gn_meta.get_acquisition_framework_stats", id_acquisition_framework=id_af)
+            url_for(
+                "gn_meta.get_acquisition_framework_stats",
+                id_acquisition_framework=id_af,
+            )
         )
         data = response.json
 
@@ -720,14 +836,20 @@ class TestGNMeta:
 
         af = acquisition_frameworks["own_af"]
         response = self.client.get(
-            url_for("gn_meta.publish_acquisition_framework", af_id=af.id_acquisition_framework)
+            url_for(
+                "gn_meta.publish_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
         )
         assert response.status_code == Conflict.code, response.json
         mocked_publish_mail.assert_not_called()
 
         af = acquisition_frameworks["orphan_af"]
         response = self.client.get(
-            url_for("gn_meta.publish_acquisition_framework", af_id=af.id_acquisition_framework)
+            url_for(
+                "gn_meta.publish_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
         )
         assert response.status_code == Conflict.code, response.json
         mocked_publish_mail.assert_not_called()
@@ -738,7 +860,10 @@ class TestGNMeta:
         set_logged_user_cookie(self.client, users["user"])
         af = acquisition_frameworks["orphan_af"]
         response = self.client.get(
-            url_for("gn_meta.publish_acquisition_framework", af_id=af.id_acquisition_framework)
+            url_for(
+                "gn_meta.publish_acquisition_framework",
+                af_id=af.id_acquisition_framework,
+            )
         )
         assert response.status_code == 200, response.json
         mocked_publish_mail.assert_called_once()

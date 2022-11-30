@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { NgbDateParserFormatter } from '@ng-bootstrap/ng-bootstrap';
-import { forkJoin, Observable, BehaviorSubject, combineLatest } from 'rxjs';
+import { forkJoin, Observable, BehaviorSubject, combineLatest, of } from 'rxjs';
 import {
   tap,
   map,
@@ -9,7 +9,7 @@ import {
   distinctUntilChanged,
   debounceTime,
   filter,
-  pairwise,
+  switchMap,
 } from 'rxjs/operators';
 import { PageEvent, MatPaginator } from '@angular/material/paginator';
 
@@ -31,9 +31,10 @@ export class MetadataService {
 
   /* resultat du filtre sur _acquisitionFrameworks */
   public filteredAcquisitionFrameworks: Observable<any[]>;
-
   public isLoading: boolean = false;
   public expandAccordions: boolean = false;
+
+  public formBuilded = false;
 
   pageSizeOptions: number[] = [10, 25, 50, 100];
   pageSize: BehaviorSubject<number> = new BehaviorSubject(AppConfig.METADATA.NB_AF_DISPLAYED);
@@ -93,20 +94,22 @@ export class MetadataService {
         tap((term) => (this.expandAccordions = term !== ''))
       )
       .subscribe(() => this.pageIndex.next(0));
+    AppConfig.METADATA.METADATA_AREA_FILTERS.forEach((area) => {
+      const control_name = 'area_' + area['type_code'].toLowerCase();
+      this.form.addControl(control_name, new FormControl(new Array()));
+      const control = this.form.controls[control_name];
+      area['control'] = control;
+    });
+    this.formBuilded = true;
   }
-
   //recuperation cadres d'acquisition
-
-  getMetadata(params = {}) {
-    params['datasets'] = 1;
-    params['creator'] = 1;
-    params['actors'] = 1;
+  getMetadata(params = {}, selectors = { datasets: 1, creator: 1, actors: 1 }) {
     this.isLoading = true;
     this._acquisitionFrameworks.next([]);
 
     //forkJoin pour lancer les 2 requetes simultanément
     forkJoin({
-      afs: this.dataFormService.getAcquisitionFrameworksList(params),
+      afs: this.dataFormService.getAcquisitionFrameworksList(selectors, params),
       datasetNbObs: this._syntheseDataService.getObsCountByColumn('id_dataset'),
     })
       .pipe(
