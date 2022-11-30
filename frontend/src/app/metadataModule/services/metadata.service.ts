@@ -103,19 +103,9 @@ export class MetadataService {
     this.formBuilded = true;
   }
   //recuperation cadres d'acquisition
-  getMetadata(params = {}) {
+  getMetadata(params = {}, selectors = { datasets: 1, creator: 1, actors: 1 }) {
     this.isLoading = true;
     this._acquisitionFrameworks.next([]);
-
-    let selectors = {
-      datasets: 1,
-      creator: 1,
-      actors: 1,
-    };
-
-    delete params['datasets'];
-    delete params['creator'];
-    delete params['actors'];
 
     //forkJoin pour lancer les 2 requetes simultanément
     forkJoin({
