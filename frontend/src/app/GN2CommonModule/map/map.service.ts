@@ -326,7 +326,7 @@ export class MapService {
    * will create overlays layers -> L.control.overlays
    * @returns
    */
-  createOverLayers() {
+  createOverLayers(map) {
     const OVERLAYERS = JSON.parse(JSON.stringify(AppConfig.MAPCONFIG.REF_LAYERS));
     const overlaysLayers = {};
     OVERLAYERS.map((lyr) => [lyr, this.getLayerCreator(lyr.type)(lyr)])
@@ -351,6 +351,10 @@ export class MapService {
         } else {
           overlaysLayers[title] = lyr[1];
         }
+        if (lyr[0].activate) {
+          map.addLayer(layerLeaf);
+          this.loadOverlay(layerLeaf);
+        }
       });
     return overlaysLayers;
   }
@@ -361,15 +365,16 @@ export class MapService {
    * @returns
    */
   loadOverlay(overlay) {
+    let overlayer = overlay?.layer || overlay;
     let cfgLayer = JSON.parse(JSON.stringify(AppConfig.MAPCONFIG.REF_LAYERS));
-    let layerAdded = cfgLayer.filter((o) => o.code === overlay.layer.configId)[0];
+    let layerAdded = cfgLayer.filter((o) => o.code === overlayer.configId)[0];
 
-    if (['wms'].includes(layerAdded.type) || overlay.layer.getLayers().length) return;
+    if (['wms'].includes(layerAdded.type) || overlayer.getLayers().length) return;
 
     // Load geojson file or WFS - application/json only
     if (['geojson', 'wfs'].includes(layerAdded.type)) {
       this._httpClient.get<any>(layerAdded.url).subscribe((res = { features: [] }) => {
-        overlay.layer.addData(res);
+        overlayer.addData(res);
       });
     }
 
@@ -382,7 +387,7 @@ export class MapService {
           name: layerAdded.label,
           features: res.map((r) => ({ ...r, geometry: JSON.parse(r.geometry) })),
         };
-        overlay.layer.addData(geojson);
+        overlayer.addData(geojson);
       });
     }
   }

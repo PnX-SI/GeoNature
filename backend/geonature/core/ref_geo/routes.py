@@ -6,7 +6,7 @@ from flask.json import jsonify
 import sqlalchemy as sa
 from sqlalchemy import func
 from sqlalchemy.sql import text
-from sqlalchemy.orm import joinedload
+from sqlalchemy.orm import joinedload, undefer
 from werkzeug.exceptions import BadRequest, Forbidden
 import requests
 
@@ -224,19 +224,22 @@ def get_areas():
     if "type_code" in params:
         q = q.filter(LAreas.area_type.has(BibAreasTypes.type_code.in_(params["type_code"])))
 
-    if "area_name" in params and params["area_name"] is not None:
+    if "area_name" in params:
         q = q.filter(LAreas.area_name.ilike("%{}%".format(params.get("area_name")[0])))
 
     limit = int(params.get("limit")[0]) if params.get("limit") else 100
 
     data = q.limit(limit)
-    response = [d.as_dict(fields=["area_type.type_code"]) for d in data]
 
     # allow to format response
     format = request.args.get("format", default="", type=str)
     # format features as geojson according to standard
     if format == "geojson":
-        response = to_geojson(response)
+        fields = ["id_area", "id_type", "geojson_4326", "area_type.type_code", "area_name"]
+        data = data.options(undefer("geojson_4326"))
+        response = [d.as_dict(fields=fields) for d in data]
+        return to_geojson(response)
+    response = [d.as_dict(fields=["area_type.type_code"]) for d in data]
     return jsonify(response)
 
 

@@ -143,6 +143,22 @@
   },
   "LOCAL_SRID": 2154,
   "METADATA": {
+    "REF_LAYERS":[{
+      "code": "znieff1",
+      "type": "wms",
+      "label": "Znieff de Bretagne",
+      "activate": false,
+      "url": "https://geobretagne.fr/geoserver/dreal_b/znieff1/wms",
+      "params": {
+       "layers": "znieff1",
+       "crs": "EPSG:4326",
+       "service": "wms",
+       "format": "image/png",
+       "version": "1.3.0",
+       "request": "GetMap",
+       "transparent": true
+      }
+    }],
     "CD_NOMENCLATURE_ROLE_TYPE_AF": [],
     "ENABLE_CLOSE_AF": false,
     "CLOSED_MODAL_CONTENT": "L'action de fermeture est irr\u00e9versible. Il ne sera\n    plus possible d'ajouter des jeux de donn\u00e9es au cadre d'acquisition par la suite.",
