@@ -295,7 +295,7 @@ class TestGNMeta:
         response = self.client.get(url_for("gn_meta.get_acquisition_frameworks_list"))
         assert response.status_code == 200
 
-    def test_filter_acquisition_by_geo(self, synthese_data, users, first_area_commune, datasets):
+    def test_filter_acquisition_by_geo(self, synthese_data, users, isolate_synthese):
         # security test already passed in previous tests
         set_logged_user_cookie(self.client, users["admin_user"])
 
@@ -326,13 +326,9 @@ class TestGNMeta:
         # will return empty response
         assert len(resp) == 0
 
-        # will test if an other CA is correctly return for an other synthese and commune
-        # get synthese
-        firstSynthese = Synthese.query.filter(
-            Synthese.id_dataset != entityDataset.id_dataset
-        ).first()
+        # will test if an other CA is correctly return for an other synthese with diff location
         # get commune for this id synthese
-        otherComm = getCommByIdSynthese(firstSynthese.id_synthese)
+        otherComm = getCommByIdSynthese(isolate_synthese.id_synthese)
         response = self.client.post(
             url_for("gn_meta.get_acquisition_frameworks"),
             json={"area": [[otherComm.id_type, otherComm.id_area]]},
