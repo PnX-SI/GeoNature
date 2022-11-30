@@ -1,4 +1,7 @@
-<div class="container-fluid" data-qa="pnx-metadata">
+<div
+  class="container-fluid"
+  data-qa="pnx-metadata"
+>
   <div class="card card-page">
     <div class="card-header">
       <h3 class="main-color">Catalogue des jeux de données</h3>
@@ -39,7 +42,11 @@
           >
         </div>
         <div class="col-sm-3">
-          <button mat-raised-button color="primary" (click)="openSearchModal(searchModal)">
+          <button
+            mat-raised-button
+            color="primary"
+            (click)="openSearchModal(searchModal)"
+          >
             Recherche avancée
           </button>
           <button
@@ -58,22 +65,27 @@
       <div>Liste des cadres d'acquisition et des jeux de données associés</div>
       <br />
 
-      <ng-container
-        *ngIf="(acquisitionFrameworks | async)?.length || isLoading; else noAcquisitionFrameworks"
-      >
+      <ng-container *ngIf="(acquisitionFrameworks | async)?.length || isLoading; else noAcquisitionFrameworks">
         <mat-accordion [multi]="true">
-          <div class="tab-title" *ngIf="!isLoading">
+          <div
+            class="tab-title"
+            *ngIf="!isLoading"
+          >
             <div class="col-md-1">ID</div>
             <div class="col-md-2">Nom</div>
             <div class="col-md-2">Date de création</div>
             <div class="col-md-5">Acteurs</div>
             <div class="col-md-1">Actions</div>
           </div>
-          <mat-spinner *ngIf="isLoading" diameter="50" strokeWidth="2" style="margin: 0 auto">
+          <mat-spinner
+            *ngIf="isLoading"
+            diameter="50"
+            strokeWidth="2"
+            style="margin: 0 auto"
+          >
           </mat-spinner>
 
-          <ng-container *ngFor="let af of (acquisitionFrameworks | async); let idx = index"
-          >
+          <ng-container *ngFor="let af of (acquisitionFrameworks | async); let idx = index">
             <mat-expansion-panel
               [expanded]="expandAccordions"
               [attr.data-qa]='"pnx-metadata-acq-framework"'
@@ -90,7 +102,10 @@
 
                   <div class="col-md-1">{{ af.id_acquisition_framework }}</div>
                   <div class="col-md-2">
-                    <a [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]" [attr.data-qa]='"pnx-metadata-acq-framework-"+af.unique_acquisition_framework_id'>
+                    <a
+                      [routerLink]="['/metadata/af_detail', af.id_acquisition_framework]"
+                      [attr.data-qa]='"pnx-metadata-acq-framework-"+af.unique_acquisition_framework_id'
+                    >
                       {{ af.acquisition_framework_name }}
                       <br />
                       <small style="color: gray"> {{ af.unique_acquisition_framework_id }} </small>
@@ -209,11 +224,21 @@
   </div>
 </div>
 
-<ng-template #searchModal let-c="close" let-d="dismiss">
+<ng-template
+  #searchModal
+  let-c="close"
+  let-d="dismiss"
+>
   <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel">Rechercher</h5>
+    <h5
+      class="modal-title"
+      id="exampleModalLabel"
+    >Rechercher</h5>
   </div>
-  <div class="modal-body" style="align-items: flex-end">
+  <div
+    class="modal-body"
+    style="align-items: flex-end"
+  >
     <label> Rechercher sur:</label>
     <select
       [formControl]="metadataService.form.get('selector')"
@@ -232,7 +257,10 @@
     />
     <label>Nom</label>
 
-    <input [formControl]="metadataService.form.get('name')" class="form-control form-control-sm" />
+    <input
+      [formControl]="metadataService.form.get('name')"
+      class="form-control form-control-sm"
+    />
 
     <pnx-date
       [parentFormControl]="metadataService.form.get('date')"
@@ -240,20 +268,50 @@
     ></pnx-date>
     <label>Acteur (organisme)</label>
 
-    <select [formControl]="metadataService.form.get('organism')" class="form-control form-control">
-      <option value="" selected>--</option>
-      <option *ngFor="let org of organisms" value="{{ org.id_organisme }}">
+    <select
+      [formControl]="metadataService.form.get('organism')"
+      class="form-control form-control"
+    >
+      <option
+        value=""
+        selected
+      >--</option>
+      <option
+        *ngFor="let org of organisms"
+        value="{{ org.id_organisme }}"
+      >
         {{ org.nom_organisme }}
       </option>
     </select>
     <label> Acteur (personne)</label>
 
-    <select class="form-control form-control" [formControl]="metadataService.form.get('person')">
-      <option value="" selected>--</option>
-      <option *ngFor="let role of roles" value="{{ role.id_role }}">
+    <select
+      class="form-control form-control"
+      [formControl]="metadataService.form.get('person')"
+    >
+      <option
+        value=""
+        selected
+      >--</option>
+      <option
+        *ngFor="let role of roles"
+        value="{{ role.id_role }}"
+      >
         {{ role?.nom_complet }}
       </option>
     </select>
+
+    <div *ngIf="displayMetaAreaFilters() && metadataService.formBuilded">
+      <div *ngFor="let area of areaFilters; let i = index">
+        <pnx-areas
+          [parentFormControl]="area.control"
+          [label]="area.label"
+          [typeCodes]="area.type_code_array"
+          [valueFieldName]="null"
+        >
+        </pnx-areas>
+      </div>
+    </div>
 
     <div class="mt-2">
       <button
@@ -263,17 +321,32 @@
       >
         Rechercher
       </button>
-      <button mat-raised-button color="warn" class="uppercase" (click)="c()">Fermer</button>
+      <button
+        mat-raised-button
+        color="warn"
+        class="uppercase"
+        (click)="c()"
+      >Fermer</button>
     </div>
   </div>
 </ng-template>
 
-<ng-template #publishModal let-c="close" let-d="dismiss">
+<ng-template
+  #publishModal
+  let-c="close"
+  let-d="dismiss"
+>
   <div class="modal-header">
-    <h5 class="modal-title" id="publishModalLabel">{{ afPublishModalLabel }}</h5>
+    <h5
+      class="modal-title"
+      id="publishModalLabel"
+    >{{ afPublishModalLabel }}</h5>
   </div>
 
-  <div class="modal-body" style="align-items: flex-end">
+  <div
+    class="modal-body"
+    style="align-items: flex-end"
+  >
     <div class="col">
       <span>
         <p style="text-align: justify">{{ afPublishModalContent }}</p>
@@ -283,9 +356,21 @@
 
   <div class="modal-footer">
     <div class="col"></div>
-    <div mat-dialog-actions align="end">
-      <button mat-raised-button cdkFocusInitial class="mr-1" (click)="c()">Annuler</button>
-      <button mat-raised-button color="primary" (click)="publishAf()">Confirmer</button>
+    <div
+      mat-dialog-actions
+      align="end"
+    >
+      <button
+        mat-raised-button
+        cdkFocusInitial
+        class="mr-1"
+        (click)="c()"
+      >Annuler</button>
+      <button
+        mat-raised-button
+        color="primary"
+        (click)="publishAf()"
+      >Confirmer</button>
     </div>
     <br />
   </div>
