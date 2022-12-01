@@ -3,7 +3,7 @@ import logging
 import json
 import datetime
 
-from flask import url_for
+from flask import url_for, jsonify
 from werkzeug.exceptions import Forbidden
 
 from geonature.utils.env import db
@@ -47,11 +47,11 @@ def rule_category():
 
 @pytest.fixture()
 def rule_method():
-    new_method = NotificationMethod(
+    rule_method = NotificationMethod(
         code="Code_METHOD", label="Label_Method", description="description_method"
     )
-    db.session.add(new_method)
-    return new_method
+    db.session.add(rule_method)
+    return rule_method
 
 
 @pytest.fixture()
@@ -205,7 +205,7 @@ class TestNotification:
         data = response.get_json()
         assert len(data) == 1
 
-    def test_create_rule(self, users, rule_method, rule_category):
+    def test_create_rule_ko(self, users, rule_method, rule_category):
         # Init data for test
         url = "notifications.create_rule"
         log.info("Url d'appel %s", url_for(url))
@@ -229,14 +229,23 @@ class TestNotification:
         set_logged_user_cookie(self.client, users["admin_user"])
         data = {"code_method": 1, "code_category": rule_category.code}
         response = self.client.put(url_for(url), json=data, content_type="application/json")
-        assert response.status_code == 400
+        assert response.status_code == 500
+
+    def test_create_rule_ok(self, users, rule_method, rule_category):
+
+        url = "notifications.create_rule"
+        log.info("Url d'appel %s", url_for(url))
 
         # TEST SUCCESSFULL RULE CREATION
         set_logged_user_cookie(self.client, users["user"])
         data = {"code_method": rule_method.code, "code_category": rule_category.code}
         response = self.client.put(url_for(url), json=data, content_type="application/json")
-        print(response.get_json())
         assert response.status_code == 200
+
+        newRule = response.get_json()
+        assert newRule.get("code_method") == rule_method.code
+        assert newRule.get("code_category") == rule_category.code
+        assert newRule.get("id_role") == users["user"].id_role
 
     def test_delete_all_rules(self, users, notification_rule):
         # Init data for test
@@ -334,21 +343,46 @@ class TestNotification:
         data = response.get_json()
         assert len(data) > 0
 
-    def test_dispatch_single_notification(
-        self, users, rule_category, notification_rule, rule_method, rule_template
+    # test only notification insertion in database whitout dispatch
+    def test_send_db_notification(self, users):
+
+        result = utils.send_db_notification(
+            users["admin_user"], "test creation", "no templating", "https://geonature.org"
+        )
+        assert result is not None
+        assert result.user == users["admin_user"]
+        assert result.code_status == "UNREAD"
+
+    def test_dispatch_notifications_database(
+        self, app, users, rule_category, notification_rule, rule_method, rule_template
     ):
-        empty_id_role = users["admin_user"]
+        role = users["user"]
+        # enable configuration if not by default
+        app.config["NOTIFICATION"]["ENABLED"] == True
+
+        # Create rule for further dispatching
+        new_rule = NotificationRule(
+            id_role=users["user"].id_role,
+            code_method="DB",
+            code_category=rule_category.code,
+        )
+        db.session.add(new_rule)
+
         title = "test creation"
-        content = "after templating"
-        url = "ta"
+        content = "no templating"
+        url = "https://geonature.org"
         context = {}
 
-        # Id role does not exist
-        response = utils.dispatch_notifications(
-            rule_category.code,
-            [users["admin_user"].id_role],
+        # test create database notification
+        result = utils.dispatch_notifications(
+            [rule_category.code],
+            [users["user"].id_role],
             title,
             url,
             content=content,
             context=context,
         )
+
+        assert result is not None
+        assert result.user == role
+        assert result.code_status == "UNREAD"
