@@ -137,7 +137,7 @@ def create_rule():
     if not code_category:
         raise BadRequest("Missing category")
 
-    # Save notification in database as UNREAD
+    # Create new rule for current user
     new_rule = NotificationRule(
         id_role=g.current_user.id_role,
         code_method=code_method,
