@@ -14,7 +14,7 @@ from geonature.core.notifications.models import (
     NotificationRule,
     NotificationTemplate,
 )
-from geonature.core.notifications.utils import dispatch_notifications
+from geonature.core.notifications import utils
 
 from .utils import set_logged_user_cookie
 
@@ -211,7 +211,7 @@ class TestNotification:
         log.info("Url d'appel %s", url_for(url))
 
         # TEST NO USER
-        response = self.client.put(url_for(url))
+        response = self.client.put(url_for(url), content_type="application/json")
         assert response.status_code == 401
 
         # TEST CONNECTED USER WITHOUT DATA
@@ -222,16 +222,21 @@ class TestNotification:
         # TEST CONNECTED USER WITH DATA BUT WRONG KEY
         set_logged_user_cookie(self.client, users["admin_user"])
         data = {"method": rule_method.code, "categorie": rule_category.code}
-        response = self.client.put(url_for(url, data=data))
+        response = self.client.put(url_for(url), json=data, content_type="application/json")
         assert response.status_code == 400
 
         # TEST CONNECTED USER WITH DATA BUT WRONG VALUE
         set_logged_user_cookie(self.client, users["admin_user"])
         data = {"code_method": 1, "code_category": rule_category.code}
-        response = self.client.put(url_for(url, data=data))
+        response = self.client.put(url_for(url), json=data, content_type="application/json")
         assert response.status_code == 400
 
-        # TODO test successful rule creation
+        # TEST SUCCESSFULL RULE CREATION
+        set_logged_user_cookie(self.client, users["user"])
+        data = {"code_method": rule_method.code, "code_category": rule_category.code}
+        response = self.client.put(url_for(url), json=data, content_type="application/json")
+        print(response.get_json())
+        assert response.status_code == 200
 
     def test_delete_all_rules(self, users, notification_rule):
         # Init data for test
@@ -329,99 +334,21 @@ class TestNotification:
         data = response.get_json()
         assert len(data) > 0
 
-    # def test_notification_database_creation(self, users):
-    #    empty_id_role = ""
-    #    title = "test creation"
-    #    content = "after templating"
-    #    url = "ta"
+    def test_dispatch_single_notification(
+        self, users, rule_category, notification_rule, rule_method, rule_template
+    ):
+        empty_id_role = users["admin_user"]
+        title = "test creation"
+        content = "after templating"
+        url = "ta"
+        context = {}
 
-    #    # Id role does not exist
-    #    response = NotificationUtil.create_database_notification(
-    #        empty_id_role, title, content, url
-    #    )
-    #    assert response == json.dumps(
-    #        {"success": False, "information": "Could not save notification in database"}
-    #    )
-
-    # def test_notification_creation(
-    #    self, users, rule_category, notification_rule, rule_method, rule_template
-    # ):
-    #    empty_id_role = ""
-    #    title = "test creation"
-    #    content = "after templating"
-    #    url = "ta"
-
-    #    # Category missing
-    #    notificationData = {"categoryWrongKey": "test"}
-    #    response = NotificationUtil.create_notification(notificationData)
-    #    assert response == json.dumps(
-    #        {"success": False, "information": "Category is missing from the request"}
-    #    )
-
-    #    # Category does not exist
-    #    notificationData = {"categories": ["test"]}
-    #    response = NotificationUtil.create_notification(notificationData)
-    #    assert response == json.dumps(
-    #        {
-    #            "result": [
-    #                {
-    #                    "success": False,
-    #                    "category": "test",
-    #                    "information": "This category of notification is not implemented yet",
-    #                }
-    #            ]
-    #        }
-    #    )
-
-    #    # Category exist but no user
-    #    notificationData = {"categories": [rule_category.code]}
-    #    response = NotificationUtil.create_notification(notificationData)
-    #    assert response == json.dumps(
-    #        {
-    #            "result": [
-    #                {
-    #                    "success": False,
-    #                    "category": rule_category.code,
-    #                    "information": "Notification is missing id_role to be notified",
-    #                }
-    #            ]
-    #        }
-    #    )
-
-    #    # Category exist and user but without rules linked
-    #    notificationData = {
-    #        "categories": [rule_category.code],
-    #        "id_roles": [users["user"].id_role],
-    #    }
-    #    response = NotificationUtil.create_notification(notificationData)
-    #    assert response == json.dumps(
-    #        {
-    #            "result": [
-    #                {
-    #                    "success": False,
-    #                    "category": rule_category.code,
-    #                    "role": users["user"].id_role,
-    #                    "information": "No rules for this user/category",
-    #                }
-    #            ]
-    #        }
-    #    )
-
-    #    # Category exist and user with rules but without conditional template empty
-    #    notificationData = {
-    #        "categories": [rule_category.code],
-    #        "id_roles": [users["admin_user"].id_role],
-    #    }
-    #    response = NotificationUtil.create_notification(notificationData)
-    #    assert response == json.dumps(
-    #        {
-    #            "result": [
-    #                {
-    #                    "success": False,
-    #                    "category": rule_category.code,
-    #                    "role": users["admin_user"].id_role,
-    #                    "information": "Empty content not notification sent",
-    #                }
-    #            ]
-    #        }
-    #    )
+        # Id role does not exist
+        response = utils.dispatch_notifications(
+            rule_category.code,
+            [users["admin_user"].id_role],
+            title,
+            url,
+            content=content,
+            context=context,
+        )
