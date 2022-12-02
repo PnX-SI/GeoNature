@@ -1,0 +1,83 @@
+<main role="main" class="flex-shrink-0">
+  <div class="container" id="manageNotif">
+    <h1 class="mt-2">Gestion des règles de notification</h1>
+    <p class="lead">Gérer vos règles de notification selon le type d'action</p>
+    <div class="row mt-3">
+      <div class="col-12" id="manageNotif">
+        <div class="card">
+          <div class="card-header">
+            <div class="row">
+              <div class="col-6">
+                <b>Actions</b>
+              </div>
+              <div
+                class="col text-center"
+                *ngFor="let ruleMethod of rulesMethods"
+                id="type-{{ ruleMethod.code }}"
+                title="{{ ruleMethod.description }}"
+              >
+                {{ ruleMethod.label }}
+              </div>
+            </div>
+          </div>
+          <ul class="list-group list-group-flush" id="listValidationNotif">
+            <li
+              class="list-group-item"
+              *ngFor="let ruleCategory of rulesCategories"
+              id="list-{{ ruleCategory.code }}"
+            >
+              <div class="row" id="listType-{{ ruleCategory.code }}">
+                <div class="col-6">
+                  <span>{{ ruleCategory.label }}</span
+                  ><br />
+                  <mat-card
+                    ><span class="text-small box">{{
+                      ruleCategory.description
+                    }}</span></mat-card
+                  >
+                </div>
+                <div class="col" style="margin: auto" *ngFor="let ruleMethod of rulesMethods">
+                  <div class="btn-switch btn-margin-auto">
+                    <input
+                      id="{{ ruleCategory.code }}-{{
+                        ruleMethod.code
+                      }}"
+                      name="{{ ruleCategory.code }}-{{
+                        ruleMethod.code
+                      }}"
+                      type="checkbox"
+                      [checked]="
+                        hasUserSubscribed(
+                          ruleCategory.code,
+                          ruleMethod.code
+                        )
+                      "
+                      (change)="
+                        updateRule(
+                          ruleCategory.code,
+                          ruleMethod.code,
+                          $event
+                        )
+                      "
+                    />
+                    <label
+                      for="{{ ruleCategory.code }}-{{
+                        ruleMethod.code
+                      }}"
+                      class="label-default"
+                    ></label>
+                  </div>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="manageNotif-Validate mt-3">
+      <button type="button" class="btn btn-light" (click)="deleteRules()">
+        Supprimer toutes mes règles de notification
+      </button>
+    </div>
+  </div>
+</main>

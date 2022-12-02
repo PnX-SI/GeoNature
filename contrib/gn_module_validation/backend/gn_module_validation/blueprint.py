@@ -1,24 +1,16 @@
 import logging
 import datetime
 import json
-from geojson import FeatureCollection
 
 from flask import Blueprint, request, jsonify, current_app
-from flask.globals import session
 from flask.json import jsonify
 import sqlalchemy as sa
-from sqlalchemy import select, func
-from sqlalchemy.sql.expression import cast, outerjoin
-from sqlalchemy.sql.sqltypes import Integer
-from sqlalchemy.orm import aliased, joinedload, contains_eager, relation, selectinload
+from sqlalchemy.orm import aliased, contains_eager, selectinload
 from marshmallow import ValidationError
 
-from utils_flask_sqla.response import json_resp
-from utils_flask_sqla.serializers import SERIALIZERS
 from pypnnomenclature.models import TNomenclatures, BibNomenclaturesTypes
 
 from geonature.utils.env import DB, db
-from geonature.utils.utilssqlalchemy import test_is_uuid
 from geonature.core.gn_synthese.models import Synthese, TReport
 from geonature.core.gn_profiles.models import VConsistancyData
 from geonature.core.gn_synthese.utils.query_select_sqla import SyntheseQuery
@@ -28,6 +20,7 @@ from geonature.core.gn_commons.models.base import TValidations
 
 from werkzeug.exceptions import BadRequest
 from geonature.core.gn_commons.models import TValidations
+from geonature.core.notifications.utils import dispatch_notifications
 
 
 blueprint = Blueprint("validation", __name__)
@@ -194,6 +187,7 @@ def get_synthese_data(info_role):
         syntheseModelQuery = syntheseModelQuery.options(
             selectinload(Synthese.reports).joinedload(TReport.report_type)
         )
+
     query = syntheseModelQuery.from_statement(query)
 
     # The raise option ensure that we have correctly retrived relationships data at step 3
@@ -227,6 +221,7 @@ def post_status(info_role, id_synthese):
         id_validation_status = data["statut"]
     except KeyError:
         raise BadRequest("Aucun statut de validation n'est sélectionné")
+    validation_status = TNomenclatures.query.get_or_404(id_validation_status)
     try:
         validation_comment = data["comment"]
     except KeyError:
@@ -238,9 +233,8 @@ def post_status(info_role, id_synthese):
         # t_validations.id_validation:
 
         # t_validations.uuid_attached_row:
-        uuid = (
-            DB.session.query(Synthese.unique_id_sinp).filter(Synthese.id_synthese == int(id)).one()
-        )
+        synthese = Synthese.query.get_or_404(int(id))
+        uuid = synthese.unique_id_sinp
 
         # t_validations.id_validator:
         id_validator = info_role.id_role
@@ -251,7 +245,7 @@ def post_status(info_role, id_synthese):
         # t_validations.validation_auto
         val_auto = False
         val_dict = {
-            "uuid_attached_row": uuid[0],
+            "uuid_attached_row": uuid,
             "id_nomenclature_valid_status": id_validation_status,
             "id_validator": id_validator,
             "validation_comment": validation_comment,
@@ -267,8 +261,13 @@ def post_status(info_role, id_synthese):
         except ValidationError as error:
             raise BadRequest(error.messages)
         DB.session.add(validation)
+
+        # Send element to notification system
+        notify_validation_state_change(synthese, validation, validation_status)
+
         DB.session.commit()
-    return jsonify(TNomenclatures.query.get(id_validation_status).as_dict())
+
+    return jsonify(validation_status.as_dict())
 
 
 @blueprint.route("/date/<uuid:uuid>", methods=["GET"])
@@ -282,3 +281,24 @@ def get_validation_date(uuid):
         return jsonify(str(s.last_validation.validation_date))
     else:
         return "", 204
+
+
+# Send notification
+def notify_validation_state_change(synthese, validation, status):
+    if not synthese.id_digitiser:
+        return
+    dispatch_notifications(
+        code_categories=["VALIDATION-STATUS-CHANGED%"],
+        id_roles=[synthese.id_digitiser],
+        title="Changement de statut de validation",
+        url=(
+            current_app.config["URL_APPLICATION"]
+            + "/#/synthese/occurrence/"
+            + str(synthese.id_synthese),
+        ),
+        context={
+            "synthese": synthese,
+            "validation": validation,
+            "status": status,
+        },
+    )

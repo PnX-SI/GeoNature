@@ -8,8 +8,17 @@ from geonature.utils.env import db
 from geonature.utils.config import config
 from geonature.core.gn_commons.models import TAdditionalFields
 from geonature.core.gn_commons.admin import BibFieldAdmin
+from geonature.core.notifications.admin import (
+    NotificationTemplateAdmin,
+    NotificationCategoryAdmin,
+    NotificationMethodAdmin,
+)
+from geonature.core.notifications.models import (
+    NotificationTemplate,
+    NotificationCategory,
+    NotificationMethod,
+)
 from geonature.core.gn_permissions.tools import get_scopes_by_action
-
 
 from pypnnomenclature.admin import (
     BibNomenclaturesTypesAdminConfig,
@@ -71,14 +80,6 @@ class ProtectedTNomenclaturesAdminConfig(
     object_code = "NOMENCLATURES"
 
 
-class ProtectedBibNomenclaturesTypesAdminConfig(
-    CruvedProtectedMixin,
-    BibNomenclaturesTypesAdminConfig,
-):
-    module_code = "ADMIN"
-    object_code = "NOMENCLATURES"
-
-
 class ProtectedBibFieldAdmin(
     CruvedProtectedMixin,
     BibFieldAdmin,
@@ -87,6 +88,31 @@ class ProtectedBibFieldAdmin(
     object_code = "ADDITIONAL_FIELDS"
 
 
+class ProtectedNotificationTemplateAdmin(
+    CruvedProtectedMixin,
+    NotificationTemplate,
+):
+    module_code = "ADMIN"
+    object_code = "NOTIFICATIONS"
+
+
+class ProtectedNotificationCategoryAdmin(
+    CruvedProtectedMixin,
+    NotificationCategory,
+):
+    module_code = "ADMIN"
+    object_code = "NOTIFICATIONS"
+
+
+class ProtectedNotificationMethodAdmin(
+    CruvedProtectedMixin,
+    NotificationMethod,
+):
+    module_code = "ADMIN"
+    object_code = "NOTIFICATIONS"
+
+
+## déclaration de la page d'admin
 admin = Admin(
     template_mode="bootstrap4",
     name="Administration GeoNature",
@@ -98,7 +124,7 @@ admin = Admin(
     ),
 )
 
-
+## ajout des liens
 admin.add_link(
     MenuLink(
         name="Retourner à GeoNature",
@@ -108,6 +134,7 @@ admin.add_link(
     )
 )
 
+## ajout des elements
 
 admin.add_view(
     ProtectedBibNomenclaturesTypesAdminConfig(
@@ -133,6 +160,35 @@ admin.add_view(
         db.session,
         name="Bibliothèque de champs additionnels",
         category="Champs additionnels",
+    )
+)
+
+# Ajout de la vue pour la gestion des templates de notifications
+# accès protegé par CruvedProtectedMixin
+admin.add_view(
+    NotificationTemplateAdmin(
+        NotificationTemplate,
+        db.session,
+        name="Templates des notifications",
+        category="Notifications",
+    )
+)
+
+admin.add_view(
+    NotificationCategoryAdmin(
+        NotificationCategory,
+        db.session,
+        name="Catégories des notifications",
+        category="Notifications",
+    )
+)
+
+admin.add_view(
+    NotificationMethodAdmin(
+        NotificationMethod,
+        db.session,
+        name="Méthodes de notification",
+        category="Notifications",
     )
 )
 

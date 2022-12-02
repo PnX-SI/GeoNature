@@ -371,6 +371,10 @@ class TaxHub(Schema):
     ID_TYPE_MAIN_PHOTO = fields.Integer(load_default=1)
 
 
+class NotificationConf(Schema):
+    ENABLED = fields.Boolean(load_default=True)
+
+
 # class a utiliser pour les paramètres que l'on veut passer au frontend
 class GnGeneralSchemaConf(Schema):
     appName = fields.String(load_default="GeoNature2")
@@ -406,6 +410,7 @@ class GnGeneralSchemaConf(Schema):
     ADDITIONAL_FIELDS = fields.Nested(AdditionalFields, load_default=AdditionalFields().load({}))
     PUBLIC_ACCESS = fields.Nested(PublicAccess, load_default=PublicAccess().load({}))
     TAXHUB = fields.Nested(TaxHub, load_default=TaxHub().load({}))
+    NOTIFICATION = fields.Nested(NotificationConf, load_default=NotificationConf().load({}))
 
     @validates_schema
     def validate_enable_sign_up(self, data, **kwargs):

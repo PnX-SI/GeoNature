@@ -1,0 +1,71 @@
+.containerCards {
+  padding: 2rem;
+}
+
+.dateTitle-notification {
+  margin-top: 2.5em;
+}
+
+.dateTitle-notification span {
+  font-weight: 400;
+  background-color: rgba(219, 219, 219, 0.438);
+  color: rgb(59, 59, 59);
+  padding: 10px 15px;
+  border-radius: 2px;
+}
+
+.mat-card {
+  padding: 0;
+  border-radius: 0;
+}
+
+.card {
+  padding: 16px;
+  border-radius: 0;
+}
+
+.cardNotification .btn {
+  color: var(--purple) !important;
+  border-color: var(--purple) !important;
+}
+
+.cardNotification .btn:hover {
+  color: white !important;
+  background-color: var(--purple) !important;
+}
+
+.cardIcon {
+  background-color: var(--purple);
+  padding: 13px;
+  width: 50px;
+  height: 50px;
+  color: white;
+  border-radius: 2em;
+  font-size: 1.5em;
+}
+
+.cardNotification p {
+  margin: 0;
+}
+
+.cardTitle a {
+  color: #683ab7bd;
+  font-weight: 500 !important;
+  line-height: 1.3;
+  text-decoration: none;
+}
+
+/* Card unread */
+.UNREAD {
+  background-color: #c4b0e638;
+  border-left: #673ab7 4px solid;
+}
+
+.UNREAD .cardTitle {
+  color: #673ab7;
+}
+
+.URL.card:hover {
+  cursor: pointer;
+  background-color: #c4b0e67d;
+}

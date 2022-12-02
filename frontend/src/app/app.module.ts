@@ -29,6 +29,8 @@ import { SidenavItemsComponent } from './components/sidenav-items/sidenav-items.
 import { PageNotFoundComponent } from './components/page-not-found/page-not-found.component';
 import { NavHomeComponent } from './components/nav-home/nav-home.component';
 import { LoginModule } from './modules/login/login.module';
+import { NotificationComponent } from './components/notification/notification.component';
+import { RulesComponent } from './components/notification/rules/rules.component';
 
 // Custom component (footer, presentation etc...)
 import { FooterComponent } from '../custom/components/footer/footer.component';
@@ -56,6 +58,7 @@ export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
 import { UserDataService } from './userModule/services/user-data.service';
+import { NotificationDataService } from './components/notification/notification-data.service';
 
 // Config
 import { APP_CONFIG_TOKEN, AppConfig } from '@geonature_config/app.config';
@@ -109,6 +112,8 @@ export function getModulesAndInitRouting(injector) {
     NavHomeComponent,
     FooterComponent,
     IntroductionComponent,
+    NotificationComponent,
+    RulesComponent,
   ],
   providers: [
     AuthService,
@@ -122,6 +127,7 @@ export function getModulesAndInitRouting(injector) {
     SideNavService,
     CruvedStoreService,
     UserDataService,
+    NotificationDataService,
     { provide: APP_CONFIG_TOKEN, useValue: AppConfig },
     { provide: HTTP_INTERCEPTORS, useClass: MyCustomInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: UnauthorizedInterceptor, multi: true },
