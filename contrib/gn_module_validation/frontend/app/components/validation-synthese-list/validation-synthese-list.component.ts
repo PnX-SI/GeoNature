@@ -240,7 +240,7 @@ export class ValidationSyntheseListComponent
   ngOnChanges(changes) {
     if (changes.inputSyntheseData && changes.inputSyntheseData.currentValue) {
       // reset page 0 when new data appear
-      this.table.offset = 0;
+      if (this.table) {this.table.offset = 0;}
       this.openInfoModal(this.inputSyntheseData.filter(i => i.id_synthese == this?.idSynthese)[0])
     }
     this.deselectAll();
