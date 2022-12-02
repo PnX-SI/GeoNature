@@ -221,6 +221,7 @@ def post_status(info_role, id_synthese):
         id_validation_status = data["statut"]
     except KeyError:
         raise BadRequest("Aucun statut de validation n'est sélectionné")
+    validation_status = TNomenclatures.query.get_or_404(id_validation_status)
     try:
         validation_comment = data["comment"]
     except KeyError:
@@ -262,11 +263,11 @@ def post_status(info_role, id_synthese):
         DB.session.add(validation)
 
         # Send element to notification system
-        notify_validation_state_change(synthese, validation)
+        notify_validation_state_change(synthese, validation, validation_status)
 
         DB.session.commit()
 
-    return jsonify(TNomenclatures.query.get(id_validation_status).as_dict())
+    return jsonify(validation_status.as_dict())
 
 
 @blueprint.route("/date/<uuid:uuid>", methods=["GET"])
@@ -283,7 +284,9 @@ def get_validation_date(uuid):
 
 
 # Send notification
-def notify_validation_state_change(synthese, validation):
+def notify_validation_state_change(synthese, validation, status):
+    if not synthese.id_digitiser:
+        return
     dispatch_notifications(
         code_categories=["VALIDATION-STATUS-CHANGED%"],
         id_roles=[synthese.id_digitiser],
@@ -296,6 +299,6 @@ def notify_validation_state_change(synthese, validation):
         context={
             "synthese": synthese,
             "validation": validation,
-            "status": validation.nomenclature_valid_status,
+            "status": status,
         },
     )
