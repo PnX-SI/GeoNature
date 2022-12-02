@@ -372,7 +372,7 @@ class TaxHub(Schema):
 
 
 class NotificationConf(Schema):
-    ENABLED = fields.Boolean(load_default=False)
+    ENABLED = fields.Boolean(load_default=True)
 
 
 # class a utiliser pour les paramètres que l'on veut passer au frontend
