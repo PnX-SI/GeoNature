@@ -2,6 +2,7 @@ import pytest
 import logging
 import json
 import datetime
+from unittest.mock import patch
 
 from flask import url_for, jsonify, current_app
 from werkzeug.exceptions import Forbidden, Unauthorized, BadRequest
@@ -15,6 +16,7 @@ from geonature.core.notifications.models import (
     NotificationTemplate,
 )
 from geonature.core.notifications import utils
+from geonature.tests.fixtures import celery_eager
 
 from .utils import set_logged_user_cookie
 
@@ -72,6 +74,18 @@ def rule_template(rule_category, rule_method):
             code_category=rule_category.code,
             code_method=rule_method.code,
             content="{% if test == 'ok' %} message {% endif %}",
+        )
+        db.session.add(new_template)
+    return new_template
+
+
+@pytest.fixture()
+def rule_mail_template(rule_category):
+    with db.session.begin_nested():
+        new_template = NotificationTemplate(
+            code_category=rule_category.code,
+            code_method="MAIL",
+            content="{% if role.identifiant == 'admin_user' %}{{ message }}{% endif %}",
         )
         db.session.add(new_template)
     return new_template
@@ -453,3 +467,40 @@ class TestNotification:
         assert notif.content == content
         assert notif.url == url
         assert notif.code_status == "UNREAD"
+
+    def test_dispatch_notifications_mail_with_template(
+        self, users, rule_category, rule_mail_template, notifications_enabled, celery_eager
+    ):
+        with db.session.begin_nested():
+            users["user"].email = "user@geonature.fr"
+            users["admin_user"].email = "admin@geonature.fr"
+            db.session.add(
+                NotificationRule(
+                    id_role=users["user"].id_role,
+                    code_method="MAIL",
+                    code_category=rule_category.code,
+                )
+            )
+            db.session.add(
+                NotificationRule(
+                    id_role=users["admin_user"].id_role,
+                    code_method="MAIL",
+                    code_category=rule_category.code,
+                )
+            )
+
+        title = "test creation"
+        content = "no templating"
+        url = "https://geonature.fr"
+        context = {"message": "msg"}
+
+        with patch("geonature.utils.utilsmails.send_mail") as mock:
+            utils.dispatch_notifications(
+                ["Code_CATEGORY"],
+                [users["user"].id_role, users["admin_user"].id_role],
+                title,
+                url,
+                context=context,
+            )
+            # user should not be notified as template evaluate to empty string
+            mock.assert_called_once_with("admin@geonature.fr", title, "msg")
