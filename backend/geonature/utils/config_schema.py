@@ -279,7 +279,7 @@ class Synthese(Schema):
     # Regulatory or not status list of fields
     STATUS_FILTERS = fields.List(
         fields.Dict,
-        missing=[
+        load_default=[
             {
                 "id": "protections",
                 "show": True,
@@ -303,7 +303,7 @@ class Synthese(Schema):
     # Red lists list of fields
     RED_LISTS_FILTERS = fields.List(
         fields.Dict,
-        missing=[
+        load_default=[
             {
                 "id": "worldwide",
                 "show": True,
