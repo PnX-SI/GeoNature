@@ -559,9 +559,6 @@ def export_status(info_role):
     """
     if request.is_json:
         filters = request.json
-    elif request.data:
-        #  decode byte to str - compat python 3.5
-        filters = json.loads(request.data.decode("utf-8"))
     else:
         filters = {key: request.args.getlist(key) for key, value in request.args.items()}
 

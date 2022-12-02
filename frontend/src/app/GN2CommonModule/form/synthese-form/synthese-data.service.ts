@@ -144,7 +144,6 @@ export class SyntheseDataService {
     this.isDownloading = true;
 
     const source = this._api.post(`${url}`, postParams, {
-      headers: new HttpHeaders().set('Content-Type', `${FormatMapMime.get(format)}`),
       observe: 'events',
       responseType: 'blob',
       reportProgress: true,
