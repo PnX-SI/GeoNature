@@ -129,13 +129,21 @@ def create_rule():
     if requestData is None:
         raise BadRequest("Empty request data")
 
-    code_method = requestData.get("code_method", "")
+    code_method = requestData.get("code_method")
     if not code_method:
         raise BadRequest("Missing method")
+    if not db.session.query(
+        NotificationMethod.query.filter_by(code=str(code_method)).exists()
+    ).scalar():
+        raise BadRequest("Invalid method")
 
-    code_category = requestData.get("code_category", "")
+    code_category = requestData.get("code_category")
     if not code_category:
         raise BadRequest("Missing category")
+    if not db.session.query(
+        NotificationCategory.query.filter_by(code=str(code_category)).exists()
+    ).scalar():
+        raise BadRequest("Invalid category")
 
     # Create new rule for current user
     new_rule = NotificationRule(
