@@ -84,7 +84,7 @@ def rule_mail_template(rule_category):
     with db.session.begin_nested():
         new_template = NotificationTemplate(
             code_category=rule_category.code,
-            code_method="MAIL",
+            code_method="EMAIL",
             content="{% if role.identifiant == 'admin_user' %}{{ message }}{% endif %}",
         )
         db.session.add(new_template)
@@ -477,14 +477,14 @@ class TestNotification:
             db.session.add(
                 NotificationRule(
                     id_role=users["user"].id_role,
-                    code_method="MAIL",
+                    code_method="EMAIL",
                     code_category=rule_category.code,
                 )
             )
             db.session.add(
                 NotificationRule(
                     id_role=users["admin_user"].id_role,
-                    code_method="MAIL",
+                    code_method="EMAIL",
                     code_category=rule_category.code,
                 )
             )
@@ -503,4 +503,4 @@ class TestNotification:
                 context=context,
             )
             # user should not be notified as template evaluate to empty string
-            mock.assert_called_once_with("admin@geonature.fr", title, "msg")
+            mock.assert_called_once_with("admin@geonature.fr", f"[GeoNature] {title}", "msg")

@@ -113,8 +113,8 @@ def upgrade():
                 "description": "Sauvegarde des informations pour une visualistion dans l'application",
             },
             {
-                "code": "MAIL",
-                "label": "Notification par mail",
+                "code": "EMAIL",
+                "label": "Notification par email",
                 "description": "Envoi des notifications par email",
             },
         ],
@@ -127,13 +127,13 @@ def upgrade():
             {
                 "code": "VALIDATION-STATUS-CHANGED",
                 "label": "Modification du statut d'une observation",
-                "description": "Se déclenche en cas de modification d'un statut d'observation ",
+                "description": "Se déclenche en cas de modification du statut d'une de vos observations",
             },
             # exemple pour l'ajout d'un statut
             # {
             #    "code": "VALIDATION-STATUS-CHANGED-PROBABLE",
             #    "label": "Observation validée",
-            #    "description": "Se déclenche en cas de passage à l'état 'Certain - très probable' d'une observation ",
+            #    "description": "Se déclenche en cas de passage à l'état 'Certain - très probable' d'une observation",
             # },
         ],
     )
@@ -145,18 +145,18 @@ def upgrade():
             {
                 "code_category": "VALIDATION-STATUS-CHANGED",
                 "code_method": "DB",
-                "content": " Passage au statut <b>{{ status.mnemonique }}</b> pour l'observation <b>n°{{ synthese.id_synthese }}</b>",
+                "content": "Passage au statut <b>{{ status.mnemonique }}</b> pour votre observation <b>n°{{ synthese.id_synthese }}</b>",
             },
             # exemple pour l'ajout d'un statut
             # {
             #    "code_category": "VALIDATION-STATUS-CHANGED-PROBABLE",
             #    "code_method": "BDD",
-            #    "content": " {% if status.mnemonique == 'Certain - très probable' %} Passage au statut <b>{{ status.mnemonique }}</b> pour l'observation <b>n°{{ synthese.id_synthese }}</b> {% endif %}",
+            #    "content": "{% if status.mnemonique == 'Certain - très probable' %} Passage au statut <b>{{ status.mnemonique }}</b> pour l'observation <b>n°{{ synthese.id_synthese }}</b> {% endif %}",
             # },
             {
                 "code_category": "VALIDATION-STATUS-CHANGED",
-                "code_method": "MAIL",
-                "content": '<p>Bonjour {{ role.nom_complet }} !</p><p>Le statut de l\'<a href="{{ url }}">observation {{ synthese.id_synthese }}</a> a été modifié en <b>{{ status.mnemonique }}</b>.</p><p>Vous recevez ce mail via le service de notification de geonature</p>',
+                "code_method": "EMAIL",
+                "content": '<p>Bonjour {{ role.nom_complet }} !</p><p>Le statut de votre <a href="{{ url }}">observation {{ synthese.id_synthese }}</a> a été modifié en <b>{{ status.mnemonique }}</b>.</p><p>Vous recevez cet email automatiquement via le service de notification de GeoNature.</p>',
             },
         ],
     )

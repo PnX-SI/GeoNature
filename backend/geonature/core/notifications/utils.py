@@ -62,7 +62,7 @@ def dispatch_notification(category, role, title=None, url=None, *, content=None,
 
         if rule.code_method == "DB":
             send_db_notification(role, title, notification_content, url)
-        elif rule.code_method == "MAIL":
+        elif rule.code_method == "EMAIL":
             send_mail_notification(role, title, notification_content)
 
 
@@ -84,4 +84,4 @@ def send_mail_notification(role, title, content):
     if not role.email:
         return
     current_app.logger.info(f"Send email notification to {role} ({role.email})")
-    send_notification_mail.delay(title, content, role.email)
+    send_notification_mail.delay(f"[GeoNature] {title}", content, role.email)
