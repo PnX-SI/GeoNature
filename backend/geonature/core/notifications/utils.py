@@ -45,24 +45,25 @@ def dispatch_notification(category, role, title=None, url=None, *, content=None,
         NotificationRule.code_category == category.code,
     )
     for rule in rules.all():
-        if not content:
+        if content:
+            notification_content = content
+        else:
             # get template for this method and category
-            notificationTemplate = NotificationTemplate.query.filter_by(
+            notification_template = NotificationTemplate.query.filter_by(
                 category=category,
                 method=rule.method,
             ).one_or_none()
-            if not notificationTemplate:
+            if not notification_template:
                 continue
-            template = Template(notificationTemplate.content)
-            content = template.render(context)
+            notification_content = Template(notification_template.content).render(context)
             # if no content break | content is
-            if not content.strip():
+            if not notification_content.strip():
                 continue
 
         if rule.code_method == "DB":
-            send_db_notification(role, title, content, url)
+            send_db_notification(role, title, notification_content, url)
         elif rule.code_method == "MAIL":
-            send_mail_notification(role, title, content)
+            send_mail_notification(role, title, notification_content)
 
 
 def send_db_notification(role, title, content, url):
