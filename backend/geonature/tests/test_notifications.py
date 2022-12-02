@@ -46,6 +46,15 @@ def rule_category():
 
 
 @pytest.fixture()
+def rule_category_1():
+    rule_category_1 = NotificationCategory(
+        code="Code_CATEGORY_1", label="Label_Categorie_1", description="description_categorie_1"
+    )
+    db.session.add(rule_category_1)
+    return rule_category_1
+
+
+@pytest.fixture()
 def rule_method():
     rule_method = NotificationMethod(
         code="Code_METHOD", label="Label_Method", description="description_method"
@@ -353,36 +362,47 @@ class TestNotification:
         assert result.user == users["admin_user"]
         assert result.code_status == "UNREAD"
 
-    def test_dispatch_notifications_database(
-        self, app, users, rule_category, notification_rule, rule_method, rule_template
+    def test_dispatch_notifications_database_with_like(
+        self, app, users, rule_category, rule_category_1, rule_template
     ):
-        role = users["user"]
-        # enable configuration if not by default
-        app.config["NOTIFICATION"]["ENABLED"] == True
 
-        # Create rule for further dispatching
-        new_rule = NotificationRule(
-            id_role=users["user"].id_role,
-            code_method="DB",
-            code_category=rule_category.code,
-        )
-        db.session.add(new_rule)
+        with db.session.begin_nested():
 
-        title = "test creation"
-        content = "no templating"
-        url = "https://geonature.org"
-        context = {}
+            role = users["user"]
+            # enable configuration if not by default
+            app.config["NOTIFICATION"]["ENABLED"] == True
 
-        # test create database notification
-        result = utils.dispatch_notifications(
-            [rule_category.code],
-            [users["user"].id_role],
-            title,
-            url,
-            content=content,
-            context=context,
-        )
+            # Create rule for further dispatching
+            new_rule = NotificationRule(
+                id_role=users["user"].id_role,
+                code_method="DB",
+                code_category=rule_category_1.code,
+            )
+            db.session.add(new_rule)
 
-        assert result is not None
-        assert result.user == role
-        assert result.code_status == "UNREAD"
+            title = "test creation"
+            content = "no templating"
+            url = "https://geonature.org"
+            context = {}
+
+            assert not db.session.query(
+                Notification.query.filter_by(
+                    id_role=role.id_role,
+                ).exists()
+            ).scalar()
+
+            # test create database notification
+            utils.dispatch_notifications(
+                ["Code_CATEGORY%"],
+                [users["user"].id_role],
+                title,
+                url,
+                content=content,
+                context=context,
+            )
+
+            assert db.session.query(
+                Notification.query.filter_by(
+                    id_role=role.id_role,
+                ).exists()
+            )
