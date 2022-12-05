@@ -64,6 +64,24 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     weight: 3,
   };
 
+  private defaultIcon = new L.Icon({
+    iconUrl: 'assets/images/default_marker.png',
+    iconSize: [28, 38],
+    shadowUrl: 'assets/images/marker-shadow.png',
+    shadowAnchor: [8, 15],
+    shadowSize: [25, 18],
+    iconAnchor: [14, 38],
+  });
+
+  private selectedIcon = new L.Icon({
+    iconUrl: 'assets/images/selected_marker.png',
+    iconSize: [28, 38],
+    shadowUrl: 'assets/images/marker-shadow.png',
+    shadowAnchor: [8, 15],
+    shadowSize: [25, 18],
+    iconAnchor: [14, 38],
+  });
+
   @Input() inputSyntheseData: GeoJSON;
   @Output() onAreasToggle = new EventEmitter<EventToggle>();
 
@@ -264,14 +282,15 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
           }
           for (let i = 0; i < geojson.geometry.coordinates.length; i++) {
             const latLng = L.GeoJSON.coordsToLatLng(geojson.geometry.coordinates[i]);
-            const circleMarker = L.circleMarker(latLng);
-            circleMarker.bindTooltip(`${countObs}`, {
+            const Marker = L.marker(latLng);
+            Marker.bindTooltip(`${countObs}`, {
               permanent: true,
               direction: 'center',
+              offset: L.point({ x: 0, y: -25 }),
               className: 'number-obs',
             });
-            circleMarker['countObs'] = countObs;
-            this.setStyleEventAndAdd(circleMarker, geojson.properties.observations.id);
+            Marker['countObs'] = countObs;
+            this.setIconEventAndAdd(Marker, geojson.properties.observations.id);
           }
         } else if (geojson.geometry.type == 'Polygon' || geojson.geometry.type == 'MultiPolygon') {
           const latLng = L.GeoJSON.coordsToLatLngs(
@@ -279,7 +298,10 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
             geojson.geometry.type === 'Polygon' ? 1 : 2
           );
           if (this.areasEnable) {
-            this.setAreasStyleAndEvent(new L.Polygon(latLng), geojson.properties.observations.id);
+            this.setAreasStyleEventAndAdd(
+              new L.Polygon(latLng),
+              geojson.properties.observations.id
+            );
           } else {
             this.setStyleEventAndAdd(
               new L.Polygon(latLng).bindTooltip(`${countObs} observation(s)`),
@@ -317,7 +339,7 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     }
   }
 
-  private setAreasStyleAndEvent(layer, ids) {
+  private setAreasStyleEventAndAdd(layer, ids) {
     this.originAreasStyle['fillColor'] = this.getColor(ids.length);
     layer.setStyle(this.originAreasStyle);
     this.eventOnEachFeature(ids, layer);
@@ -343,6 +365,34 @@ export class SyntheseCarteComponent implements OnInit, AfterViewInit, OnChanges,
     this.setDefaultStyle(layer);
     this.eventOnEachFeature(ids, layer);
     this.cluserOrSimpleFeatureGroup.addLayer(layer);
+  }
+
+  private setIconEventAndAdd(layer, ids) {
+    layer.setIcon(this.defaultIcon);
+    for (let id of ids) {
+      this.mapListService.layerDict[id] = layer;
+    }
+    layer.on({
+      click: (e) => {
+        this.toggleIcon(layer);
+        this.mapListService.mapSelected.next(ids);
+        if (this.areasEnable) {
+          this.bindAreasPopup(layer, ids);
+        }
+      },
+    });
+    this.cluserOrSimpleFeatureGroup.addLayer(layer);
+  }
+
+  private toggleIcon(selectedLayer) {
+    // Reset style of previous selected layer
+    if (this.mapListService.selectedLayer !== undefined) {
+      this.mapListService.selectedLayer.setIcon(this.defaultIcon);
+    }
+    // Apply new selected layer
+    this.mapListService.selectedLayer = selectedLayer;
+    // Set selected style on new selected layer
+    this.mapListService.selectedLayer.setIcon(this.selectedIcon);
   }
 
   private setDefaultStyle(layer) {
