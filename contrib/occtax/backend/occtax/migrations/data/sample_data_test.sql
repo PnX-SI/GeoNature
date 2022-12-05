@@ -17,6 +17,23 @@ INSERT INTO gn_commons.t_modules
 (module_code, module_label, module_path, active_frontend, active_backend, ng_module)
 VALUES('OCCTAX_DS', 'Occtax ds',  'occtax_ds', true, false, 'occtax');
 
+-- ajout d’une source pour le module occtax dupliqué
+WITH s AS (
+    SELECT s.*
+    FROM gn_synthese.t_sources s
+    JOIN gn_commons.t_modules USING (id_module)
+    WHERE module_code = 'OCCTAX'
+)
+INSERT INTO
+    gn_synthese.t_sources (name_source, desc_source, entity_source_pk_field, url_source, id_module)
+SELECT
+    s.name_source || ' DS',
+    s.desc_source || ' DS',
+    s.entity_source_pk_field,
+    s.url_source,
+    (SELECT id_module FROM gn_commons.t_modules WHERE module_code = 'OCCTAX_DS')
+FROM s;
+
 
 -- Insérer un cadre d'acquisition d'exemple
 
