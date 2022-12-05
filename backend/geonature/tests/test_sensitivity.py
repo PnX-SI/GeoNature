@@ -14,6 +14,7 @@ from geonature.core.sensitivity.models import (
     CorSensitivityCriteria,
 )
 from geonature.core.gn_synthese.models import Synthese
+from geonature.tests.fixtures import source
 
 from ref_geo.models import LAreas, BibAreasTypes
 from apptax.taxonomie.models import Taxref
@@ -296,7 +297,7 @@ class TestSensitivity:
         assert db.session.execute(query).scalar() == not_sensitive.mnemonique
         transaction.rollback()
 
-    def test_synthese_sensitivity(self, app):
+    def test_synthese_sensitivity(self, app, source):
         taxon = Taxref.query.first()
         sensitivity_nomenc_type = BibNomenclaturesTypes.query.filter_by(
             mnemonique="SENSIBILITE"
@@ -322,6 +323,7 @@ class TestSensitivity:
         date_obs = datetime.now()
         with db.session.begin_nested():
             s = Synthese(
+                source=source,
                 cd_nom=taxon.cd_nom,
                 nom_cite="Sensitive taxon",
                 date_min=date_obs,

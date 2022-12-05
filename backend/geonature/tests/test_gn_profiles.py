@@ -31,6 +31,7 @@ DATE_MAX = "2021-01-05"
 
 
 def create_synthese_record(
+    source,
     cd_nom=None,
     date_min=datetime.now(),
     date_max=datetime.now(),
@@ -51,6 +52,7 @@ def create_synthese_record(
     geom_4326 = WKTElement(f"POINT({str(x)} {str(y)})", srid=4326)
 
     return Synthese(
+        source=source,
         cd_nom=cd_nom,
         date_min=date_min,
         date_max=date_max,
@@ -80,9 +82,12 @@ def cd_nom_for_profiles():
 
 
 @pytest.fixture(scope="function")
-def sample_synthese_records_for_profile(datasets, valid_status_for_profiles, cd_nom_for_profiles):
+def sample_synthese_records_for_profile(
+    datasets, source, valid_status_for_profiles, cd_nom_for_profiles
+):
     # set a profile for taxon
     synthese_record_for_profile = create_synthese_record(
+        source=source,
         cd_nom=cd_nom_for_profiles,
         x=6.12,
         y=44.85,
@@ -114,10 +119,12 @@ def sample_synthese_records_for_profile(datasets, valid_status_for_profiles, cd_
 @pytest.fixture(scope="function")
 def wrong_sample_synthese_records_for_profile(
     datasets,
+    source,
     cd_nom_for_profiles,
 ):
     # This obs will be not used for computing profiles as it has no dates
     wrong_new_obs = create_synthese_record(
+        source=source,
         cd_nom=cd_nom_for_profiles,
         x=20.12,
         y=55.85,
