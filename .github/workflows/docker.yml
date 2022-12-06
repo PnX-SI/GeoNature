@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - develop
-      - feat/docker
+      - feat/docker-compose
   release:
     types: [published]
 
@@ -25,6 +25,14 @@ jobs:
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       -
+        name: Login to GHCR
+        uses: docker/login-action@v2
+        if: github.event_name != 'pull_request'
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      -
         name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
@@ -34,28 +42,35 @@ jobs:
             type=ref,event=branch
             type=ref,event=tag
       -
-        name: Login to GHCR
-        uses: docker/login-action@v2
-        if: github.event_name != 'pull_request'
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      -
         id: build
         name: Build and export
         uses: docker/build-push-action@v3
         with:
           context: .
           file: ./backend/Dockerfile
-          target: prod-full
+          target: prod
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-      - name: show metadata
-        run: |
-          echo "${{ steps.build.outputs.metadata['image.name'] }}"
-          echo "${{ fromJSON(steps.build.outputs.metadata)['image.name'] }}"
+      -
+        name: Docker meta
+        id: wheels-meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/geonature-backend
+          tags: |
+            type=ref,event=branch,prefix=wheels-
+            type=ref,event=tag,prefix=wheels-
+      -
+        name: Build and export
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: ./backend/Dockerfile
+          target: wheels
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.wheels-meta.outputs.tags }}
+          labels: ${{ steps.wheels-meta.outputs.labels }}
 
   frontend-config:
     name: Generate frontend config
